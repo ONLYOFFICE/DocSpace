@@ -314,7 +314,6 @@ export default connect(mapStateToProps, {
   //setIsEditingForm,
 })(
   inject(({ peopleStore }) => ({
-    editingForm: peopleStore.editingFormStore,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
     toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
     resetProfile: peopleStore.targetUserStore.resetTargetUser,

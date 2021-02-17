@@ -35,27 +35,24 @@ class DataLossWarningDialogComponent extends React.Component {
       onContinue,
       setIsVisibleDataLossDialog,
       setIsEditingForm,
-      editingForm,
+      callback,
     } = this.props;
 
-    setIsVisibleDataLossDialog(false, null);
+    setIsVisibleDataLossDialog(false);
     setIsEditingForm(false);
 
-    if (editingForm.callback) {
-      editingForm.callback();
+    if (callback) {
+      callback();
     } else {
       onContinue && onContinue();
     }
   };
   render() {
-    const { t, editingForm } = this.props;
+    const { t, isVisibleDataLossDialog } = this.props;
 
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={editingForm.isVisibleDataLossDialog}
-          onClose={this.onClose}
-        >
+        <ModalDialog visible={isVisibleDataLossDialog} onClose={this.onClose}>
           <ModalDialog.Header>{t("DataLossWarningHeader")}</ModalDialog.Header>
           <ModalDialog.Body>
             <Text fontSize="13px">{t("DataLossWarningBody")}</Text>
@@ -91,15 +88,17 @@ const DataLossWarningDialog = (props) => (
 );
 
 DataLossWarningDialog.propTypes = {
-  editingForm: PropTypes.object.isRequired,
+  //editingForm: PropTypes.object.isRequired,
   onContinue: PropTypes.func.isRequired,
 };
 
 export default inject(({ peopleStore }) => {
   return {
-    editingForm: peopleStore.editingFormStore,
+    isVisibleDataLossDialog:
+      peopleStore.editingFormStore.isVisibleDataLossDialog,
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+    callback: peopleStore.editingFormStore.callback,
   };
 })(observer(DataLossWarningDialog));

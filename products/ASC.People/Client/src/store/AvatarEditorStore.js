@@ -18,6 +18,9 @@ class AvatarEditorStore {
   constructor() {
     makeObservable(this, {
       visible: observable,
+      avatarMax: observable,
+      createdAvatar: observable,
+      croppedAvatar: observable,
       toggleAvatarEditor: action,
       setAvatarMax: action,
       setCreatedAvatar: action,

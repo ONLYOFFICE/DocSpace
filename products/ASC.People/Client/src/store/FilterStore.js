@@ -24,6 +24,7 @@ class FilterStore {
       filter: observable,
       setFilterParams: action,
       setFilterUrl: action,
+      resetFilter: action,
     });
   }
 

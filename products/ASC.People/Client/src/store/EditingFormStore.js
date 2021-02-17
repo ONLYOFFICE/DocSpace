@@ -3,11 +3,13 @@ import { action, makeObservable, observable } from "mobx";
 class EditingFormStore {
   isEdit = false;
   isVisibleDataLossDialog = false;
+  callback = null;
 
   constructor() {
     makeObservable(this, {
       isEdit: observable,
       isVisibleDataLossDialog: observable,
+      callback: observable,
       setIsEditingForm: action,
       setIsVisibleDataLossDialog: action,
     });
@@ -18,11 +20,8 @@ class EditingFormStore {
   };
 
   setIsVisibleDataLossDialog = (isVisible, callback = null) => {
-    if (typeof callback === "function") {
-      this.isVisibleDataLossDialog = isVisible;
-      return callback();
-    }
-    return (this.isVisibleDataLossDialog = isVisible);
+    this.isVisibleDataLossDialog = isVisible;
+    this.callback = callback;
   };
 }
 

@@ -11,7 +11,12 @@ class TargetUserStore {
     makeObservable(this, {
       targetUser: observable,
       getTargetUser: action,
+      setTargetUser: action,
       resetTargetUser: action,
+      updateProfile: action,
+      updateCreatedAvatar: action,
+      updateProfileCulture: action,
+      getUserPhoto: action,
       getDisableProfileType: computed,
     });
   }

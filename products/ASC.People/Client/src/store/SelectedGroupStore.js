@@ -12,6 +12,8 @@ class SelectedGroupStore {
       targetedGroup: observable,
       setSelectedGroup: action,
       setTargetedGroup: action,
+      resetGroup: action,
+      selectGroup: action,
       group: computed,
     });
   }

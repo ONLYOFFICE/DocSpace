@@ -39,7 +39,7 @@ const SectionHeaderContent = (props) => {
     match,
     settings,
     filter,
-    editingForm,
+    isEdit,
     setFilter,
     setIsVisibleDataLossDialog,
     toggleAvatarEditor,
@@ -60,7 +60,7 @@ const SectionHeaderContent = (props) => {
     : "";
 
   const onClickBackHandler = () => {
-    if (editingForm.isEdit) {
+    if (isEdit) {
       setIsVisibleDataLossDialog(true, onClickBack);
     } else {
       onClickBack();
@@ -131,7 +131,7 @@ export default connect(mapStateToProps, {
 })(
   inject(({ auth, peopleStore }) => ({
     settings: auth.settingsStore,
-    editingForm: peopleStore.editingFormStore,
+    isEdit: peopleStore.editingFormStore.isEdit,
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     filter: peopleStore.filterStore.filter,

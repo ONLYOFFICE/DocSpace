@@ -44,6 +44,7 @@ class PeopleStore {
 
     makeObservable(this, {
       isLoading: observable,
+      setIsLoading: action,
       setGroupsStore: action,
       setUsersStore: action,
       setTargetUserStore: action,
@@ -70,11 +71,18 @@ class PeopleStore {
     const re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
     const match = window.location.pathname.match(re);
 
+    authStore.settingsStore.setModuleInfo(
+      config.homepage,
+      "f4d98afd-d336-4332-8778-3c6945c81ea0"
+    );
+
     if (match && match.length > 0) {
       const newFilter = getFilterByLocation(window.location);
       await this.usersStore.getUsersList(newFilter);
     }
+
     await this.groupsStore.getGroupList();
+    await authStore.settingsStore.getPortalPasswordSettings();
   };
 
   setIsLoading = (loading) => {
