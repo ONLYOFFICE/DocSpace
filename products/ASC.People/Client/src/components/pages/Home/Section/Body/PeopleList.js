@@ -1,10 +1,15 @@
 import React from "react";
+import { connect } from "react-redux";
 import { CustomScrollbarsVirtualList } from "asc-web-components";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
+import InfiniteLoader from "react-window-infinite-loader";
 import RowWrapper from "./RowWrapper";
 
 import memoize from "memoize-one";
+
+import { loadMoreUsers } from "../../../../../store/people/actions";
+import { getUsers } from "../../../../../store/people/selectors";
 
 const PeopleList = ({
   peopleList,
@@ -19,6 +24,8 @@ const PeopleList = ({
   getUserContextOptions,
   onContentRowSelect,
   needForUpdate,
+  filter,
+  loadMoreUsers,
 }) => {
   //console.log("PeopleList render");
 
@@ -67,23 +74,51 @@ const PeopleList = ({
     needForUpdate
   );
 
+  const isItemLoaded = (index) => !!peopleList[index];
+
+  const loadMoreItems = () => {
+    console.log("filter", filter);
+    loadMoreUsers(filter);
+  };
+
   return (
     <AutoSizer>
       {({ height, width, style }) => (
-        <List
-          style={style}
-          height={height}
-          width={width}
-          itemData={itemData}
-          itemCount={peopleList.length}
-          itemSize={itemData.isMobile ? 57 : 48}
-          outerElementType={CustomScrollbarsVirtualList}
+        <InfiniteLoader
+          isItemLoaded={isItemLoaded}
+          itemCount={filter.total}
+          loadMoreItems={loadMoreItems}
         >
-          {RowWrapper}
-        </List>
+          {({ onItemsRendered, ref }) => (
+            <List
+              style={style}
+              height={height}
+              width={width}
+              itemData={itemData}
+              itemCount={peopleList.length}
+              itemSize={itemData.isMobile ? 57 : 48}
+              outerElementType={CustomScrollbarsVirtualList}
+              onItemsRendered={onItemsRendered}
+              ref={ref}
+            >
+              {RowWrapper}
+            </List>
+          )}
+        </InfiniteLoader>
       )}
     </AutoSizer>
   );
 };
 
-export default PeopleList;
+const mapStateToProps = (state) => {
+  const { filter } = state.people;
+
+  return {
+    filter,
+    getUsers: getUsers(state),
+  };
+};
+
+export default connect(mapStateToProps, {
+  loadMoreUsers,
+})(PeopleList);
