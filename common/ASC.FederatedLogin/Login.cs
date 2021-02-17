@@ -76,7 +76,7 @@ namespace ASC.FederatedLogin
 
         public async Task Invoke(HttpContext context)
         {
-            var scope = context.PushRewritenUri();
+            _ = context.PushRewritenUri();
 
             if (string.IsNullOrEmpty(context.Request.Query["p"]))
             {
@@ -240,7 +240,6 @@ namespace ASC.FederatedLogin
             using var scope = ServiceProvider.CreateScope();
             var login = scope.ServiceProvider.GetService<Login>();
             await login.Invoke(context);
-            await Next.Invoke(context);
         }
     }
 

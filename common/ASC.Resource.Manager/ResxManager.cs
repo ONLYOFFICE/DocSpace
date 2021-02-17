@@ -81,17 +81,19 @@ namespace ASC.Resource.Manager
                     if (File.Exists(zipFileName))
                     {
                         using var resXResourceReader = new ResXResourceReader(zipFileName);
-                        try
-                        {
+                        resXResourceReader.BasePath = Path.GetDirectoryName(zipFileName);
+                        //resXResourceReader.UseResXDataNodes = true;
+                        //try
+                        //{
                             foreach (var v in resXResourceReader.OfType<DictionaryEntry>())
                             {
                                 toAdd.Add(new ResWord { Title = v.Key.ToString(), ValueTo = v.Value?.ToString() });
                             }
-                        }
-                        catch (Exception)
-                        {
+                        //}
+                        //catch (Exception)
+                        //{
 
-                        }
+                        //}
                     }
 
                     foreach (var k in keys)
