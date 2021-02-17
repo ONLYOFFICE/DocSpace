@@ -177,11 +177,11 @@ SendInviteDialog.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const { selection } = state.people;
-  const usersToInviteIds = getUsersToInviteIds(state);
+  // const { selection } = state.people;
+  // const usersToInviteIds = getUsersToInviteIds(state);
 
   return {
-    userIds: usersToInviteIds,
+    // userIds: usersToInviteIds,
     //selectedUsers: selection,
   };
 };
@@ -190,5 +190,6 @@ export default connect(mapStateToProps)(
   inject(({ peopleStore }) => ({
     selectedUsers: peopleStore.selectionStore.selection,
     setSelected: peopleStore.selectionStore.setSelected,
+    userIds: peopleStore.selectionStore.getUsersToInviteIds,
   }))(observer(withRouter(SendInviteDialog)))
 );

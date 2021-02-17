@@ -189,13 +189,13 @@ DeleteUsersDialog.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const { filter, selection } = state.people;
+  // const { filter, selection } = state.people;
 
-  const usersToRemoveIds = getUsersToRemoveIds(state);
+  // const usersToRemoveIds = getUsersToRemoveIds(state);
 
   return {
     //filter,
-    userIds: usersToRemoveIds,
+    // userIds: usersToRemoveIds,
     //selectedUsers: selection,
   };
 };
@@ -210,5 +210,6 @@ export default connect(mapStateToProps)(
     removeUser: peopleStore.usersStore.removeUser,
     selectedUsers: peopleStore.selectionStore.selection,
     setSelected: peopleStore.selectionStore.setSelected,
+    userIds: peopleStore.selectionStore.getUsersToRemoveIds,
   }))(observer(withRouter(DeleteUsersDialog)))
 );

@@ -195,10 +195,10 @@ const mapStateToProps = (state, ownProps) => {
   const { userType } = ownProps;
 
   return {
-    userIds:
-      userType === EmployeeType.User
-        ? getUsersToMakeEmployeesIds(state)
-        : getUsersToMakeGuestsIds(state),
+    // userIds:
+    //   userType === EmployeeType.User
+    //     ? getUsersToMakeEmployeesIds(state)
+    //     : getUsersToMakeGuestsIds(state),
     //selectedUsers: selection,
   };
 };
@@ -209,5 +209,9 @@ export default connect(mapStateToProps)(
     updateUserType: peopleStore.usersStore.updateUserType,
     selectedUsers: peopleStore.selectionStore.selection,
     setSelected: peopleStore.selectionStore.setSelected,
+    userIds:
+      "userType" === EmployeeType.User
+        ? peopleStore.selectionStore.getUsersToMakeEmployeesIds
+        : peopleStore.selectionStore.getUsersToMakeGuestsIds,
   }))(observer(withRouter(ChangeUserTypeDialog)))
 );

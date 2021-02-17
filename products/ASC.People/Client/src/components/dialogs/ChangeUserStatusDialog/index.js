@@ -201,10 +201,10 @@ const mapStateToProps = (state, ownProps) => {
   const { userStatus } = ownProps;
 
   return {
-    userIds:
-      userStatus === EmployeeStatus.Active
-        ? getUsersToActivateIds(state)
-        : getUsersToDisableIds(state),
+    // userIds:
+    //   userStatus === EmployeeStatus.Active
+    //     ? getUsersToActivateIds(state)
+    //     : getUsersToDisableIds(state),
     //selectedUsers: selection,
   };
 };
@@ -218,5 +218,9 @@ export default connect(mapStateToProps)(
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
     selectedUsers: peopleStore.selectionStore.selection,
     setSelected: peopleStore.selectionStore.setSelected,
+    userIds:
+      "userStatus" === EmployeeStatus.Active
+        ? peopleStore.selectionStore.getUsersToActivateIds
+        : peopleStore.selectionStore.getUsersToDisableIds,
   }))(observer(withRouter(ChangeUserStatusDialog)))
 );

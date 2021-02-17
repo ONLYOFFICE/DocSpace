@@ -21,11 +21,17 @@ class SelectionStore {
       setSelected: action,
       hasAnybodySelected: computed,
       hasUsersToMakeEmployees: computed,
+      getUsersToMakeEmployeesIds: computed,
       hasUsersToMakeGuests: computed,
+      getUsersToMakeGuestsIds: computed,
       hasUsersToActivate: computed,
+      getUsersToActivateIds: computed,
       hasUsersToDisable: computed,
+      getUsersToDisableIds: computed,
       hasUsersToInvite: computed,
+      getUsersToInviteIds: computed,
       hasUsersToRemove: computed,
+      getUsersToRemoveIds: computed,
     });
   }
 
@@ -77,6 +83,19 @@ class SelectionStore {
     return !!users.length;
   }
 
+  get getUsersToMakeEmployeesIds() {
+    const users = this.selection.filter((x) => {
+      return (
+        !x.isAdmin &&
+        !x.isOwner &&
+        x.isVisitor &&
+        x.status !== EmployeeStatus.Disabled &&
+        x.id !== authStore.userStore.user.id
+      );
+    });
+    return users.map((u) => u.id);
+  }
+
   get hasUsersToMakeGuests() {
     const users = this.selection.filter((x) => {
       return (
@@ -90,6 +109,19 @@ class SelectionStore {
     return !!users.length;
   }
 
+  get getUsersToMakeGuestsIds() {
+    const users = this.selection.filter((x) => {
+      return (
+        !x.isAdmin &&
+        !x.isOwner &&
+        !x.isVisitor &&
+        x.status !== EmployeeStatus.Disabled &&
+        x.id !== authStore.userStore.user.id
+      );
+    });
+    return users.map((u) => u.id);
+  }
+
   get hasUsersToActivate() {
     const users = this.selection.filter(
       (x) =>
@@ -98,6 +130,16 @@ class SelectionStore {
         x.id !== authStore.userStore.user.id
     );
     return !!users.length;
+  }
+
+  get getUsersToActivateIds() {
+    const users = this.selection.filter(
+      (x) =>
+        !x.isOwner &&
+        x.status !== EmployeeStatus.Active &&
+        x.id !== authStore.userStore.user.id
+    );
+    return users.map((u) => u.id);
   }
 
   get hasUsersToDisable() {
@@ -110,6 +152,16 @@ class SelectionStore {
     return !!users.length;
   }
 
+  get getUsersToDisableIds() {
+    const users = this.selection.filter(
+      (x) =>
+        !x.isOwner &&
+        x.status !== EmployeeStatus.Disabled &&
+        x.id !== authStore.userStore.user.id
+    );
+    return users.map((u) => u.id);
+  }
+
   get hasUsersToInvite() {
     const users = this.selection.filter(
       (x) =>
@@ -119,11 +171,27 @@ class SelectionStore {
     return !!users.length;
   }
 
+  get getUsersToInviteIds() {
+    const users = this.selection.filter(
+      (x) =>
+        x.activationStatus === EmployeeActivationStatus.Pending &&
+        x.status === EmployeeStatus.Active
+    );
+    return users.map((u) => u.id);
+  }
+
   get hasUsersToRemove() {
     const users = this.selection.filter(
       (x) => x.status === EmployeeStatus.Disabled
     );
     return !!users.length;
+  }
+
+  get getUsersToRemoveIds() {
+    const users = this.selection.filter(
+      (x) => x.status === EmployeeStatus.Disabled
+    );
+    return users.map((u) => u.id);
   }
 }
 
