@@ -231,7 +231,7 @@ function fetchPeopleByFilter(dispatch, filter) {
     filterData = Filter.getDefault();
     filterData.employeeStatus = EmployeeStatus.Active;
   }
-  filterData.pageCount = filterData.total;
+
   return api.people.getUserList(filterData).then((data) => {
     filterData.total = data.total;
     dispatch(setFilter(filterData));
@@ -313,5 +313,25 @@ export function updateProfileInUsers(updatedProfile) {
       }
     });
     return dispatch(setUsers(updatedUsers));
+  };
+}
+
+export function loadMoreUsers(filter) {
+  return (dispatch) => {
+    let filterData = filter && filter.clone();
+
+    if (!filterData) {
+      filterData = Filter.getDefault();
+      filterData.employeeStatus = EmployeeStatus.Active;
+    }
+
+    if (filter.hasNext()) filterData.page = filterData.page + 1;
+
+    api.people.getUserList(filterData).then((data) => {
+      filterData.total = data.total;
+      dispatch(setUsers(data.items));
+    });
+
+    dispatch(setFilter(filterData));
   };
 }
