@@ -89,10 +89,10 @@ const MainContainer = styled.div`
 `;
 
 class SectionBodyContent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = this.mapPropsToState();
-  }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = this.mapPropsToState();
+  // }
 
   mapPropsToState = () => {
     const { group, users, groups, t } = this.props;
@@ -506,7 +506,7 @@ function mapStateToProps(state) {
     //settings,
     //group: state.group.targetGroup,
     //groups: convertGroups(state.people.groups),
-    users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
+    //            users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
     // groupHeadCaption,
     // groupsCaption,
     // groupCaption,

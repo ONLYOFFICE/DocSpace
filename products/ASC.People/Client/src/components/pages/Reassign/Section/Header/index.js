@@ -59,7 +59,7 @@ const SectionHeaderContent = (props) => {
 
 function mapStateToProps(state) {
   return {
-    profile: state.profile.targetUser,
+    // profile: state.profile.targetUser,
     //settings: state.auth.settings,
   };
 }
