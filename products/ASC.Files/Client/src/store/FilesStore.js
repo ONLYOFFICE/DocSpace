@@ -5,7 +5,7 @@ import FileActionStore from "./FileActionStore";
 import SelectedFolderStore from "./SelectedFolderStore";
 import formatsStore from "./FormatsStore";
 import treeFoldersStore from "./TreeFoldersStore";
-import { createTreeFolders } from "./files/selectors";
+import { createTreeFolders, loopTreeFolders } from "../helpers/files-helpers";
 
 const { FilesFilter } = api;
 const { FolderType, FilterType, FileType } = constants;
@@ -91,18 +91,17 @@ class FilesStore {
       deselectFile: action,
       addFileToRecentlyViewed: action,
       createFile: action,
+      createFolder: action,
       updateFile: action,
       getAccessOption: action,
       getExternalAccessOption: action,
       setSelections: action,
       getShareUsers: action,
       setShareFiles: action,
-      itemOperationToFolder: action,
       markItemAsFavorite: action,
       removeItemFromFavorite: action,
       fetchFavoritesFolder: action,
       getFileInfo: action,
-      loopFilesOperations: action,
     });
 
     this.fileActionStore = new FileActionStore();
@@ -449,6 +448,10 @@ class FilesStore {
       return Promise.resolve(file);
     });
   };
+
+  createFolder(parentFolderId, title) {
+    return api.files.createFolder(parentFolderId, title);
+  }
 
   //TODO: action?
   setFile = (file) => {
@@ -940,41 +943,6 @@ class FilesStore {
     return axios.all(requests);
   };
 
-  itemOperationToFolder = (
-    destFolderId,
-    folderIds,
-    fileIds,
-    conflictResolveType,
-    deleteAfter,
-    isCopy
-  ) => {
-    /*return dispatch(
-      selectItemOperation(
-        destFolderId,
-        folderIds,
-        fileIds,
-        conflictResolveType,
-        deleteAfter,
-        isCopy
-      )
-    )
-      .then((res) => {
-        const id = res[0] && res[0].id ? res[0].id : null;
-        dispatch(loopFilesOperations(id, destFolderId, isCopy));
-      })
-      .catch((err) => {
-        dispatch(
-          setPrimaryProgressBarData({
-            visible: true,
-            alert: true,
-          })
-        );
-        //toastr.error(err);
-        setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
-        setTimeout(() => dispatch(clearSecondaryProgressData()), TIMEOUT);
-      });*/
-  };
-
   markItemAsFavorite = (id) => api.files.markAsFavorite(id);
 
   removeItemFromFavorite = (id) => api.files.removeFromFavorite(id);
@@ -994,131 +962,6 @@ class FilesStore {
   getFileInfo = async (id) => {
     const fileInfo = await api.files.getFileInfo(id);
     this.setFile(fileInfo);
-  };
-
-  loopFilesOperations = (id, destFolderId, isCopy) => {
-    /*
-    const progressData = getSecondaryProgressData(state);
-    const treeFolders = getTreeFolders(state);
-
-    const loopOperation = () => {
-      api.files
-        .getProgress()
-        .then((res) => {
-          const currentItem = res.find((x) => x.id === id);
-          if (currentItem && currentItem.progress !== 100) {
-            dispatch(
-              setSecondaryProgressBarData({
-                icon: isCopy ? "duplicate" : "move",
-                label: progressData.label,
-                percent: currentItem.progress,
-                visible: true,
-                alert: false,
-              })
-            );
-            setTimeout(() => loopOperation(), 1000);
-          } else {
-            dispatch(
-              setSecondaryProgressBarData({
-                icon: isCopy ? "duplicate" : "move",
-                label: progressData.label,
-                percent: 100,
-                visible: true,
-                alert: false,
-              })
-            );
-            api.files
-              .getFolder(destFolderId)
-              .then((data) => {
-                let newTreeFolders = treeFolders;
-                let path = data.pathParts.slice(0);
-                let folders = data.folders;
-                let foldersCount = data.current.foldersCount;
-                loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-
-                if (!isCopy || destFolderId === this.selectedFolderStore.id) {
-                  dispatch(fetchFiles(this.selectedFolderStore.id, this.filter))
-                    .then((data) => {
-                      if (!isRecycleBinFolder) {
-                        newTreeFolders = treeFolders;
-                        path = data.selectedFolder.pathParts.slice(0);
-                        folders = data.selectedFolder.folders;
-                        foldersCount = data.selectedFolder.foldersCount;
-                        loopTreeFolders(
-                          path,
-                          newTreeFolders,
-                          folders,
-                          foldersCount
-                        );
-                        //dispatch(setUpdateTree(true));
-                        dispatch(setTreeFolders(newTreeFolders));
-                      }
-                    })
-                    .catch((err) => {
-                      dispatch(
-                        setPrimaryProgressBarData({
-                          visible: true,
-                          alert: true,
-                        })
-                      );
-                      //toastr.error(err);
-                      setTimeout(
-                        () => dispatch(clearSecondaryProgressData()),
-                        TIMEOUT
-                      );
-                    })
-                    .finally(() => {
-                      setTimeout(
-                        () => dispatch(clearSecondaryProgressData()),
-                        TIMEOUT
-                      );
-                    });
-                } else {
-                  dispatch(
-                    setSecondaryProgressBarData({
-                      icon: "duplicate",
-                      label: progressData.label,
-                      percent: 100,
-                      visible: true,
-                      alert: false,
-                    })
-                  );
-                  setTimeout(
-                    () => dispatch(clearSecondaryProgressData()),
-                    TIMEOUT
-                  );
-                  //dispatch(setUpdateTree(true));
-                  dispatch(setTreeFolders(newTreeFolders));
-                }
-              })
-              .catch((err) => {
-                dispatch(
-                  setSecondaryProgressBarData({
-                    visible: true,
-                    alert: true,
-                  })
-                );
-                //toastr.error(err);
-                setTimeout(
-                  () => dispatch(clearSecondaryProgressData()),
-                  TIMEOUT
-                );
-              });
-          }
-        })
-        .catch((err) => {
-          dispatch(
-            setSecondaryProgressBarData({
-              visible: true,
-              alert: true,
-            })
-          );
-          //toastr.error(err);
-          setTimeout(() => dispatch(clearSecondaryProgressData()), TIMEOUT);
-        });
-    };
-
-    loopOperation();*/
   };
 }
 

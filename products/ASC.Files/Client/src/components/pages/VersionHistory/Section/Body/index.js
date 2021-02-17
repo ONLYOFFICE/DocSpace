@@ -1,20 +1,9 @@
 import React from "react";
-//import { connect } from "react-redux";
 import { withRouter } from "react-router";
 
 import { RowContainer } from "asc-web-components";
 import { Loaders } from "asc-web-common";
 import VersionRow from "./VersionRow";
-
-// import {
-//   fetchFileVersions,
-//   setIsLoading,
-//   setFirstLoad,
-// } from "../../../../../store/files/actions";
-// import {
-//   getFileVersions,
-//   getIsLoading,
-// } from "../../../../../store/files/selectors";
 import { inject, observer } from "mobx-react";
 
 class SectionBodyContent extends React.Component {
@@ -66,26 +55,6 @@ class SectionBodyContent extends React.Component {
     );
   }
 }
-
-// const mapStateToProps = (state) => {
-//   return {
-//     versions: getFileVersions(state),
-//     isLoading: getIsLoading(state),
-//   };
-// };
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     fetchFileVersions: (fileId) => dispatch(fetchFileVersions(fileId)),
-//     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-//     setFirstLoad: (isFirstLoad) => dispatch(setFirstLoad(isFirstLoad)),
-//   };
-// };
-
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(withRouter(SectionBodyContent));
 
 export default inject(
   ({ auth, initFilesStore, filesStore, versionHistoryStore }) => {

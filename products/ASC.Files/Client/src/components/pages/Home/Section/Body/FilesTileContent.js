@@ -1,38 +1,10 @@
 import React from "react";
-//import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Link, Text, Icons, Badge } from "asc-web-components";
 import { constants, api, toastr } from "asc-web-common";
-import {
-  //createFile,
-  createFolder,
-  //renameFolder,
-  //updateFile,
-  //fetchFiles,
-  //setTreeFolders,
-  //setIsLoading,
-} from "../../../../../store/files/actions";
-import {
-  //canWebEdit,
-  //getDragging,
-  //getFileAction,
-  //getFilter,
-  //getFolders,
-  //getIsLoading,
-  //getNewRowItems,
-  //getSelectedFolder,
-  //getSelectedFolderNew,
-  //getSelectedFolderParentId,
-  getTitleWithoutExst,
-  //getTreeFolders,
-  //isImage,
-  //isSound,
-  //isVideo,
-  //getIsRecycleBinFolder,
-  //getRootFolderId,
-} from "../../../../../store/files/selectors";
+import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import TileContent from "./TileContent";
@@ -40,7 +12,6 @@ import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 const { FileAction } = constants;
-//const { getSettings } = initStore.auth.selectors;
 
 const SimpleFilesTileContent = styled(TileContent)`
   .rowMainContainer {
@@ -153,7 +124,7 @@ class FilesTileContent extends React.PureComponent {
   };
 
   createItem = (e) => {
-    const { createFile, item, setIsLoading, i18n } = this.props;
+    const { createFile, item, setIsLoading, i18n, createFolder } = this.props;
     const { itemTitle } = this.state;
 
     setIsLoading(true);
@@ -443,33 +414,6 @@ class FilesTileContent extends React.PureComponent {
   }
 }
 
-// function mapStateToProps(state, props) {
-//   return {
-//filter: getFilter(state),
-//fileAction: getFileAction(state),
-//parentFolder: getSelectedFolderParentId(state),
-//isTrashFolder: getIsRecycleBinFolder(state),
-//treeFolders: getTreeFolders(state),
-//rootFolderId: getRootFolderId(state),
-//newItems: getSelectedFolderNew(state),
-//selectedFolder: getSelectedFolder(state),
-//folders: getFolders(state),
-//     newRowItems: getNewRowItems(state),
-//dragging: getDragging(state),
-//isLoading: getIsLoading(state),
-//     canWebEdit: canWebEdit(props.item.fileExst)(state),
-//   };
-// }
-
-// export default connect(mapStateToProps, {
-//   createFile,
-//   updateFile,
-//   renameFolder,
-//   setTreeFolders,
-//   setIsLoading,
-//   fetchFiles,
-// })(withRouter(withTranslation()(FilesTileContent)));
-
 export default inject(
   (
     { auth, initFilesStore, filesStore, formatsStore, treeFoldersStore },
@@ -490,6 +434,7 @@ export default inject(
       createFile,
       updateFile,
       renameFolder,
+      createFolder,
     } = filesStore;
 
     const {
@@ -532,6 +477,7 @@ export default inject(
       fetchFiles,
       setTreeFolders,
       createFile,
+      createFolder,
       updateFile,
       renameFolder,
     };

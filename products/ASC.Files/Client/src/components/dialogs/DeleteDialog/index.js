@@ -11,24 +11,8 @@ import {
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
-import //fetchFiles,
-//setTreeFolders,
-//setSecondaryProgressBarData,
-//clearSecondaryProgressData,
-//setUpdateTree,
-"../../../store/files/actions";
 import { TIMEOUT } from "../../../helpers/constants";
-import {
-  loopTreeFolders,
-  //getSelectedFolderId,
-  //getFilter,
-  //getTreeFolders,
-  //getIsLoading,
-  //getIsRecycleBinFolder,
-  //getSelection,
-  //isRootFolder,
-  //getIsPrivacyFolder,
-} from "../../../store/files/selectors";
+import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
 const i18n = createI18N({
@@ -301,27 +285,6 @@ const ModalDialogContainerTranslated = withTranslation()(DeleteDialogComponent);
 const DeleteDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
-
-// const mapStateToProps = (state) => {
-//   return {
-//currentFolderId: getSelectedFolderId(state),
-//filter: getFilter(state),
-//treeFolders: getTreeFolders(state),
-//isLoading: getIsLoading(state),
-//isRecycleBinFolder: getIsRecycleBinFolder(state),
-//isPrivacy: getIsPrivacyFolder(state),
-//selection: getSelection(state),
-//     isRootFolder: isRootFolder(state),
-//   };
-// };
-
-// export default connect(mapStateToProps, {
-//   setTreeFolders,
-//   setSecondaryProgressBarData,
-//   clearSecondaryProgressData,
-//   setUpdateTree,
-//   fetchFiles,
-// })(withRouter(DeleteDialog));
 
 export default inject(
   ({ initFilesStore, filesStore, uploadDataStore, treeFoldersStore }) => {

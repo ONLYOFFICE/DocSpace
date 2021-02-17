@@ -4,17 +4,7 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
-// import {
-//   fetchFiles,
-//   setSecondaryProgressBarData,
-//   clearSecondaryProgressData,
-// } from "../../../store/files/actions";
 import { TIMEOUT } from "../../../helpers/constants";
-// import {
-//   getSelectedFolderId,
-//   getFilter,
-//   getIsLoading,
-// } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
 
@@ -172,20 +162,6 @@ const ModalDialogContainerTranslated = withTranslation()(
 const EmptyTrashDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
-
-// const mapStateToProps = (state) => {
-//   return {
-//     currentFolderId: getSelectedFolderId(state),
-//     filter: getFilter(state),
-//     isLoading: getIsLoading(state),
-//   };
-// };
-
-// export default connect(mapStateToProps, {
-//   setSecondaryProgressBarData,
-//   clearSecondaryProgressData,
-//   fetchFiles,
-// })(withRouter(EmptyTrashDialog));
 
 export default inject(({ initFilesStore, filesStore, uploadDataStore }) => {
   const { isLoading } = initFilesStore;

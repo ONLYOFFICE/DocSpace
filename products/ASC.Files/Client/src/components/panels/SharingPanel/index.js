@@ -10,36 +10,10 @@ import {
   DropDownItem,
   Textarea,
 } from "asc-web-components";
-//import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
-import {
-  utils as commonUtils,
-  constants,
-  toastr /* store */,
-} from "asc-web-common";
-// import {
-//   getShareUsers,
-//   setShareFiles,
-//setSharingPanelVisible,
-//setIsLoading,
-//   setFiles,
-//   setFolders,
-//selectUploadedFile,
-//   updateUploadedItem,
-// } from "../../../store/files/actions";
-// import {
-//   getAccessOption,
-//   getExternalAccessOption,
-//getSelection,
-//getSharePanelVisible,
-//   getCanShareOwnerChange,
-//getIsLoading,
-//getFiles,
-//getFolders,
-//getIsPrivacyFolder,
-//getUploadSelection,
-// } from "../../../store/files/selectors";
+import { utils as commonUtils, constants, toastr } from "asc-web-common";
+
 import {
   StyledAsidePanel,
   StyledContent,
@@ -58,13 +32,6 @@ const i18n = createI18N({
 });
 const { changeLanguage } = commonUtils;
 const { ShareAccessRights } = constants;
-//const { replaceFileStream } = store.auth.actions;
-// const {
-//   getCurrentUserId,
-//   getSettingsCustomNamesGroupsCaption,
-//   getSettings,
-//   isDesktopClient,
-// } = store.auth.selectors;
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -626,42 +593,6 @@ const SharingPanelContainerTranslated = withTranslation()(
 const SharingPanel = (props) => (
   <SharingPanelContainerTranslated i18n={i18n} {...props} />
 );
-
-// const mapStateToProps = (state, ownProps) => {
-//const selection = getSelection(state);
-//const uploadSelection = getUploadSelection(state);
-// const selectedFile = ownProps.uploadPanelVisible
-//   ? uploadSelection
-//   : selection; // TODO: take out this implementation from this component
-
-//   return {
-//     getAccessOption: (selection) => getAccessOption(state, selection),
-//     getExternalAccessOption: (selection) =>
-//       getExternalAccessOption(state, selection),
-//isMyId: getCurrentUserId(state),
-//selection: selectedFile,
-//isPrivacy: getIsPrivacyFolder(state),
-//isDesktop: isDesktopClient(state),
-//groupsCaption: getSettingsCustomNamesGroupsCaption(state),
-//sharingPanelVisible: getSharePanelVisible(state),
-//     canShareOwnerChange: getCanShareOwnerChange(state),
-//isLoading: getIsLoading(state),
-//files: getFiles(state),
-//folders: getFolders(state),
-//settings: getSettings(state),
-//uploadSelection,
-//   };
-// };
-
-// export default connect(mapStateToProps, {
-//   replaceFileStream,
-//   setSharingPanelVisible,
-//   setIsLoading,
-//   setFiles,
-//   setFolders,
-//   selectUploadedFile,
-//   updateUploadedItem,
-// })(withRouter(SharingPanel));
 
 export default inject(
   (

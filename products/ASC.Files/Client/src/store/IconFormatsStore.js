@@ -1,5 +1,5 @@
 import { makeObservable, makeAutoObservable } from "mobx";
-import { presentInArray } from "../store/files/selectors";
+import { presentInArray } from "../helpers/files-helpers";
 
 class IconFormatsStore {
   archive = [

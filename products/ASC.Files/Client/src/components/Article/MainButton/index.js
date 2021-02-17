@@ -1,31 +1,14 @@
 import React, { useEffect } from "react";
-//import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { MainButton, DropDownItem } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { isMobile } from "react-device-detect";
-//import { setAction, startUpload } from "../../../store/files/actions";
-// import {
-//   canCreate,
-//getFilter,
-//getSelectedFolder,
-//getFirstLoad,
-//getIsPrivacyFolder,
-// } from "../../../store/files/selectors";
-import {
-  utils as commonUtils,
-  constants,
-  //store as initStore,
-  Loaders,
-} from "asc-web-common";
+import { utils as commonUtils, constants, Loaders } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { inject, observer } from "mobx-react";
 
-//const { settingsStore } = initStore;
-
-//const { getSettings } = initStore.auth.selectors;
 const i18n = createI18N({
   page: "Article",
   localesPath: "Article",
@@ -181,17 +164,6 @@ const ArticleMainButtonContent = (props) => {
 ArticleMainButtonContent.propTypes = {
   history: PropTypes.object.isRequired,
 };
-
-// const mapStateToProps = (state) => {
-//   return {
-//     canCreate: canCreate(state),
-//firstLoad: getFirstLoad(state),
-//settings: getSettings(state),
-//filter: getFilter(state),
-//selectedFolder: getSelectedFolder(state),
-//isPrivacy: getIsPrivacyFolder(state),
-//   };
-// };
 
 export default inject(
   ({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {

@@ -1,27 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
-//import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { ModalDialog } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils, toastr } from "asc-web-common";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
-// import {
-//setSecondaryProgressBarData,
-//   itemOperationToFolder,
-// } from "../../../store/files/actions";
-// import {
-//getFilter,
-//getSelection,
-//getPathParts,
-//getSelectedFolderId,
-//getIsRecycleBinFolder,
-//   getOperationsFolders,
-// } from "../../../store/files/selectors";
 import { ThirdPartyMoveDialog } from "../../dialogs";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
+
 const i18n = createI18N({
   page: "OperationsPanel",
   localesPath: "panels/OperationsPanel",
@@ -206,31 +194,13 @@ const OperationsPanel = (props) => (
   <OperationsPanelContainerTranslated i18n={i18n} {...props} />
 );
 
-// const mapStateToProps = (state) => {
-//   return {
-//filter: getFilter(state),
-//selection: getSelection(state),
-//expandedKeys: getPathParts(state),
-//currentFolderId: getSelectedFolderId(state),
-//isRecycleBin: getIsRecycleBinFolder(state),
-//     operationsFolders: getOperationsFolders(state),
-//   };
-// };
-
-// export default connect(mapStateToProps, {
-//   setSecondaryProgressBarData,
-//   itemOperationToFolder,
-// })(withRouter(OperationsPanel));
-
 export default inject(
   ({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
-    const { secondaryProgressDataStore } = uploadDataStore;
     const {
-      selection,
-      selectedFolderStore,
-      filter,
+      secondaryProgressDataStore,
       itemOperationToFolder,
-    } = filesStore;
+    } = uploadDataStore;
+    const { selection, selectedFolderStore, filter } = filesStore;
     const { isRecycleBinFolder, operationsFolders } = treeFoldersStore;
     const { setSecondaryProgressBarData } = secondaryProgressDataStore;
 

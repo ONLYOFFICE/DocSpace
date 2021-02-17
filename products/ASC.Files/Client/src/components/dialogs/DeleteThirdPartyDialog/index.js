@@ -1,24 +1,9 @@
 import React from "react";
 import { withRouter } from "react-router";
-//import { connect } from "react-redux";
 import { ModalDialog, Button } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils, toastr, api } from "asc-web-common";
-// import {
-//   deleteThirdParty,
-//   setThirdPartyProviders,
-//fetchFiles,
-//   setUpdateTree,
-//setTreeFolders,
-// } from "../../../store/files/actions";
-import {
-  //getThirdPartyProviders,
-  //getSelectedFolderId,
-  loopTreeFolders,
-  //getTreeFolders,
-  //getCommonFolderId,
-  //getMyFolderId,
-} from "../../../store/files/selectors";
+import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
 const i18n = createI18N({
@@ -119,24 +104,7 @@ const DeleteThirdPartyDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-// const mapStateToProps = (state) => {
-//   return {
-//     providers: getThirdPartyProviders(state),
-//currentFolderId: getSelectedFolderId(state),
-//treeFolders: getTreeFolders(state),
-//commonId: getCommonFolderId(state),
-//myId: getMyFolderId(state),
-//   };
-// };
-
-// export default connect(mapStateToProps, {
-//   setThirdPartyProviders,
-//   fetchFiles,
-//   setUpdateTree,
-//   setTreeFolders,
-// })(withRouter(DeleteThirdPartyDialog));
-
-export default inject(({ auth, filesStore, thirdParty, treeFoldersStore }) => {
+export default inject(({ filesStore, thirdParty, treeFoldersStore }) => {
   const { providers, setThirdPartyProviders, deleteThirdParty } = thirdParty;
   const { fetchFiles } = filesStore;
 

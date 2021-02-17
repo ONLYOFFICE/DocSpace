@@ -1,6 +1,7 @@
 import { makeObservable, action, observable } from "mobx";
 import { api } from "asc-web-common";
 import { TIMEOUT } from "../helpers/constants";
+import { loopTreeFolders } from "../helpers/files-helpers";
 import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
 import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 import formatsStore from "./FormatsStore";
@@ -12,8 +13,8 @@ import sumBy from "lodash/sumBy";
 
 const { docserviceStore } = formatsStore;
 const { canConvert } = docserviceStore;
-const { loopTreeFolders, setTreeFolders } = treeFoldersStore;
-const { fetchFiles, filter, selectedFolderStore } = filesStore;
+const { setTreeFolders } = treeFoldersStore;
+const { fetchFiles, selectedFolderStore } = filesStore;
 
 const chunkSize = 1024 * 1023; //~0.999mb
 
@@ -62,6 +63,7 @@ class UploadDataStore {
       updateUploadedItem: action,
       setConvertDialogVisible: action,
       startUpload: action,
+      itemOperationToFolder: action,
     });
 
     this.secondaryProgressDataStore = new SecondaryProgressDataStore();
@@ -348,29 +350,31 @@ class UploadDataStore {
       selectedFolderStore.id === folderId &&
       window.location.pathname.indexOf("/history") === -1
     ) {
-      return fetchFiles(selectedFolderStore.id, filter.clone(), false).then(
-        (data) => {
-          const path = data.selectedFolder.pathParts;
-          const newTreeFolders = treeFoldersStore.treeFolders;
-          const folders = data.selectedFolder.folders;
-          const foldersCount = data.selectedFolder.foldersCount;
-          loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-          console.log("newTreeFolders", newTreeFolders);
-          setTreeFolders(newTreeFolders);
-          //dispatch(setUpdateTree(true));
-        }
-      );
-    } else {
-      return api.files.getFolder(folderId, filter.clone()).then((data) => {
-        const path = data.pathParts;
+      return fetchFiles(
+        selectedFolderStore.id,
+        filesStore.filter.clone(),
+        false
+      ).then((data) => {
+        const path = data.selectedFolder.pathParts;
         const newTreeFolders = treeFoldersStore.treeFolders;
-        const folders = data.folders;
-        const foldersCount = data.count;
+        const folders = data.selectedFolder.folders;
+        const foldersCount = data.selectedFolder.foldersCount;
         loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-        console.log("newTreeFolders", newTreeFolders);
         setTreeFolders(newTreeFolders);
         //dispatch(setUpdateTree(true));
       });
+    } else {
+      return api.files
+        .getFolder(folderId, filesStore.filter.clone())
+        .then((data) => {
+          const path = data.pathParts;
+          const newTreeFolders = treeFoldersStore.treeFolders;
+          const folders = data.folders;
+          const foldersCount = data.count;
+          loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+          setTreeFolders(newTreeFolders);
+          //dispatch(setUpdateTree(true));
+        });
     }
   };
 
@@ -594,6 +598,166 @@ class UploadDataStore {
       this.primaryProgressDataStore.clearPrimaryProgressData();
       this.setUploadData(uploadData);
     }, TIMEOUT);
+  };
+
+  selectItemOperation(
+    destFolderId,
+    folderIds,
+    fileIds,
+    conflictResolveType,
+    deleteAfter,
+    isCopy
+  ) {
+    return isCopy
+      ? api.files.copyToFolder(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        )
+      : api.files.moveToFolder(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+  }
+
+  itemOperationToFolder = (
+    destFolderId,
+    folderIds,
+    fileIds,
+    conflictResolveType,
+    deleteAfter,
+    isCopy
+  ) => {
+    const { clearSecondaryProgressData } = this.secondaryProgressDataStore;
+    const {
+      clearPrimaryProgressData,
+      setPrimaryProgressBarData,
+    } = this.primaryProgressDataStore;
+
+    this.selectItemOperation(
+      destFolderId,
+      folderIds,
+      fileIds,
+      conflictResolveType,
+      deleteAfter,
+      isCopy
+    )
+      .then((res) => {
+        const id = res[0] && res[0].id ? res[0].id : null;
+        this.loopFilesOperations(id, destFolderId, isCopy);
+      })
+      .catch((err) => {
+        setPrimaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      });
+  };
+
+  loopFilesOperations = (id, destFolderId, isCopy) => {
+    const label = this.secondaryProgressDataStore.label;
+    const treeFolders = treeFoldersStore.treeFolders;
+
+    const {
+      clearSecondaryProgressData,
+      setSecondaryProgressBarData,
+    } = this.secondaryProgressDataStore;
+
+    const loopOperation = () => {
+      api.files
+        .getProgress()
+        .then((res) => {
+          const currentItem = res.find((x) => x.id === id);
+          if (currentItem && currentItem.progress !== 100) {
+            this.secondaryProgressDataStore.setSecondaryProgressBarData({
+              icon: isCopy ? "duplicate" : "move",
+              label,
+              percent: currentItem.progress,
+              visible: true,
+              alert: false,
+            });
+
+            setTimeout(() => loopOperation(), 1000);
+          } else {
+            this.secondaryProgressDataStore.setSecondaryProgressBarData({
+              icon: isCopy ? "duplicate" : "move",
+              label,
+              percent: 100,
+              visible: true,
+              alert: false,
+            });
+
+            api.files.getFolder(destFolderId).then((data) => {
+              let newTreeFolders = treeFolders;
+              let path = data.pathParts.slice(0);
+              let folders = data.folders;
+              let foldersCount = data.current.foldersCount;
+              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+
+              if (!isCopy || destFolderId === this.selectedFolderStore.id) {
+                fetchFiles(this.selectedFolderStore.id, filesStore.filter)
+                  .then((data) => {
+                    if (!treeFoldersStore.isRecycleBinFolder) {
+                      newTreeFolders = treeFolders;
+                      path = data.selectedFolder.pathParts.slice(0);
+                      folders = data.selectedFolder.folders;
+                      foldersCount = data.selectedFolder.foldersCount;
+                      loopTreeFolders(
+                        path,
+                        newTreeFolders,
+                        folders,
+                        foldersCount
+                      );
+                      //dispatch(setUpdateTree(true));
+                      setTreeFolders(newTreeFolders);
+                    }
+                  })
+                  .finally(() => {
+                    setTimeout(
+                      () =>
+                        this.secondaryProgressDataStore.clearSecondaryProgressData(),
+                      TIMEOUT
+                    );
+                  });
+              } else {
+                this.secondaryProgressDataStore.setSecondaryProgressBarData({
+                  icon: "duplicate",
+                  label,
+                  percent: 100,
+                  visible: true,
+                  alert: false,
+                });
+
+                setTimeout(
+                  () =>
+                    this.secondaryProgressDataStore.clearSecondaryProgressData(),
+                  TIMEOUT
+                );
+                //dispatch(setUpdateTree(true));
+                setTreeFolders(newTreeFolders);
+              }
+            });
+          }
+        })
+        .catch((err) => {
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          //toastr.error(err);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        });
+    };
+
+    loopOperation();
   };
 }
 

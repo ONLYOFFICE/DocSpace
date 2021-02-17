@@ -2,15 +2,7 @@ import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import {
-  constants,
-  Headline,
-  //store,
-  api,
-  toastr,
-  Loaders,
-} from "asc-web-common";
-//import { connect } from "react-redux";
+import { constants, Headline, api, toastr, Loaders } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import {
   ContextMenuButton,
@@ -19,15 +11,6 @@ import {
   IconButton,
   utils,
 } from "asc-web-components";
-// import {
-//   fetchFiles,
-//   setAction,
-//   setSecondaryProgressBarData,
-//   clearSecondaryProgressData,
-//   setIsLoading,
-//   setSelected,
-//   setSharingPanelVisible,
-// } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   EmptyTrashDialog,
@@ -35,30 +18,8 @@ import {
   DownloadDialog,
 } from "../../../../dialogs";
 import { OperationsPanel } from "../../../../panels";
-// import {
-//   getUserAccess,
-//   getWebEditSelected,
-//getIsRecycleBinFolder,
-//   canCreate,
-//getSelectedFolderTitle,
-//getFilter,
-//getSelectedFolderId,
-//getSelection,
-//getSelectedFolderParentId,
-//getIsRootFolder,
-//   getHeaderVisible,
-//   getHeaderIndeterminate,
-//   getHeaderChecked,
-//   getAccessedSelected,
-//   getSelectionLength,
-//getSharePanelVisible,
-//   getIsThirdPartySelection,
-//getIsPrivacyFolder,
-//   getOnlyFoldersSelected,
-// } from "../../../../../store/files/selectors";
 import { inject, observer } from "mobx-react";
 
-//const { isAdmin, isDesktopClient } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
@@ -692,42 +653,6 @@ class SectionHeaderContent extends React.Component {
     );
   }
 }
-
-// const mapStateToProps = (state) => {
-//   return {
-//isRootFolder: getIsRootFolder(state),
-//isAdmin: isAdmin(state),
-//isRecycleBin: getIsRecycleBinFolder(state),
-//isPrivacy: getIsPrivacyFolder(state),
-//isDesktop: isDesktopClient(state),
-//parentId: getSelectedFolderParentId(state),
-//selection: getSelection(state),
-//title: getSelectedFolderTitle(state),
-//filter: getFilter(state),
-//     deleteDialogVisible: getUserAccess(state),
-//currentFolderId: getSelectedFolderId(state),
-//     canCreate: canCreate(state),
-//     isWebEditSelected: getWebEditSelected(state),
-//     isHeaderVisible: getHeaderVisible(state),
-//     isHeaderIndeterminate: getHeaderIndeterminate(state),
-//     isHeaderChecked: getHeaderChecked(state),
-//     isAccessedSelected: getAccessedSelected(state),
-//     isItemsSelected: getSelectionLength(state),
-//sharingPanelVisible: getSharePanelVisible(state),
-//     isThirdPartySelection: getIsThirdPartySelection(state),
-//     isOnlyFoldersSelected: getOnlyFoldersSelected(state),
-//   };
-// };
-
-// export default connect(mapStateToProps, {
-//   setAction,
-//   setSecondaryProgressBarData,
-//   setIsLoading,
-//   clearSecondaryProgressData,
-//   fetchFiles,
-//   setSelected,
-//   setSharingPanelVisible,
-// })(withTranslation()(withRouter(SectionHeaderContent)));
 
 export default inject(
   ({

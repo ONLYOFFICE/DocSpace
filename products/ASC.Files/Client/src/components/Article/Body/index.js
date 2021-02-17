@@ -1,20 +1,8 @@
 import React from "react";
-//import { connect } from "react-redux";
-//import { utils } from "asc-web-components";
 import { toastr, Loaders } from "asc-web-common";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
-import //fetchFiles,
-//setIsLoading,
-//setSelectedNode,
-"../../../store/files/actions";
-// import {
-//   getTreeFolders,
-//   getFilter,
-//   getSelectedFolderTitle,
-//   getSelectedTreeNode,
-// } from "../../../store/files/selectors";
 import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";

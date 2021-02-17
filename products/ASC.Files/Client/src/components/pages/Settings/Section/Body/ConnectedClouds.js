@@ -1,5 +1,4 @@
 import React from "react";
-//import { connect } from "react-redux";
 import styled from "styled-components";
 import {
   Box,
@@ -11,41 +10,12 @@ import {
   Row,
   Icons,
 } from "asc-web-components";
-//import { store } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import EmptyFolderContainer from "../../../Home/Section/Body/EmptyFolderContainer";
 import { createI18N } from "../../../../../helpers/i18n";
 import { Trans } from "react-i18next";
-// import {
-//   getOAuthToken,
-//   openConnectWindow,
-//   setConnectItem,
-//   setShowThirdPartyPanel,
-//fetchFiles,
-//setSelectedNode,
-// } from "../../../../../store/files/actions";
-import //getThirdPartyCapabilities,
-//getGoogleConnect,
-//getBoxConnect,
-//getDropboxConnect,
-//getOneDriveConnect,
-// getNextCloudConnect,
-// getSharePointConnect,
-// getkDriveConnect,
-// getYandexConnect,
-// getOwnCloudConnect,
-// getWebDavConnect,
-//getConnectItem,
-//getShowThirdPartyPanel,
-//getThirdPartyProviders,
-//getMyDirectoryFolders,
-//getCommonDirectoryFolders,
-//getFilter,
-"../../../../../store/files/selectors";
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
 import { inject, observer } from "mobx-react";
-
-//const { isAdmin } = store.auth.selectors;
 
 const i18n = createI18N({
   page: "SectionBodyContent",
@@ -543,36 +513,6 @@ class ConnectClouds extends React.Component {
     );
   }
 }
-
-// function mapStateToProps(state) {
-//   return {
-//isAdmin: isAdmin(state),
-//     capabilities: getThirdPartyCapabilities(state),
-//     googleConnectItem: getGoogleConnect(state),
-//     boxConnectItem: getBoxConnect(state),
-//     dropboxConnectItem: getDropboxConnect(state),
-//     oneDriveConnectItem: getOneDriveConnect(state),
-//     nextCloudConnectItem: getNextCloudConnect(state),
-//     sharePointConnectItem: getSharePointConnect(state),
-//     kDriveConnectItem: getkDriveConnect(state),
-//     yandexConnectItem: getYandexConnect(state),
-//     ownCloudConnectItem: getOwnCloudConnect(state),
-//     webDavConnectItem: getWebDavConnect(state),
-//     connectItem: getConnectItem(state),
-//     showThirdPartyPanel: getShowThirdPartyPanel(state),
-//     providers: getThirdPartyProviders(state),
-//     myDirectoryFolders: getMyDirectoryFolders(state),
-//     commonDirectoryFolders: getCommonDirectoryFolders(state),
-//filter: getFilter(state),
-//   };
-// }
-
-// export default connect(mapStateToProps, {
-//   setConnectItem,
-//   setShowThirdPartyPanel,
-//   fetchFiles,
-//   setSelectedNode,
-// })(withTranslation()(ConnectClouds));
 
 export default inject(
   ({ auth, filesStore, settingsStore, treeFoldersStore }) => {

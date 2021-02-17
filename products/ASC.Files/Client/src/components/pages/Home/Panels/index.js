@@ -1,11 +1,5 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-// import {
-//   getSelection,
-//   getSharePanelVisible,
-//   getUploadPanelVisible,
-//   getUploadSelection,
-// } from "../../../../store/files/selectors";
 import { SharingPanel, UploadPanel } from "../../../panels";
 
 const Panels = (props) => {
