@@ -186,10 +186,9 @@ const Login = (props) => {
   }, [language]);
 
   return (
-    <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktop}>
       <FormWrapper i18n={i18n} {...props} />
-      {/*<Register />*/}
-    </LoginFormWrapper>
+
+   
   );
 };
 

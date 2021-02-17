@@ -30,5 +30,7 @@
   "TooltipPasswordDigits": "digits",
   "TooltipPasswordCapital": "capital letters",
   "TooltipPasswordSpecial": "special characters (!@#$%^&*)", 
-  "LoginRegistrationBtn": "Register"
+  "LoginRegistrationBtn": "Register",
+  "RegistrationTitle": "Cloud office applications",
+  "RegistrationDesc": "Create Portal"
 }
