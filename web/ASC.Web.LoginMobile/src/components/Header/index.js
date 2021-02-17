@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import Logo from "../../../../../public/images/nav.logo.opened.react.svg";
+import Logo from "../../../public/images/nav.logo.opened.react.svg";
 
 const StyledHeader = styled("div")`
   width: 100%;

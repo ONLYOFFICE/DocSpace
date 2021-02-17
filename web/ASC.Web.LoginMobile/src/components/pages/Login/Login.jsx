@@ -10,7 +10,7 @@ import { Text, toastr } from "ASC.Web.Components";
 import i18n from "../../../i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import RegisterButton from "./sub-components/register-button";
-import Header from "./sub-components/header-login-mobile";
+import Header from "../../Header";
 import LoginForm from "./sub-components/login-form";
 
 const { login, setIsLoaded, reloadPortalSettings } = store.auth.actions;
@@ -112,9 +112,6 @@ class Form extends Component {
       emailError,
       socialButtons,
     } = this.state;
-    //const { confirmedEmail } = match.params;
-
-    //console.log("Login render");
 
     return (
       <>
