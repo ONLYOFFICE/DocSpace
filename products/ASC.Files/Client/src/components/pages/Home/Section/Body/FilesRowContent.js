@@ -1,5 +1,4 @@
 import React from "react";
-//import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -11,46 +10,10 @@ import {
   IconButton,
   Badge,
 } from "asc-web-components";
-import {
-  constants,
-  api,
-  toastr /* store as initStore */,
-} from "asc-web-common";
-import {
-  //clearSecondaryProgressData,
-  //createFile,
-  createFolder,
-  //fetchFiles,
-  //renameFolder,
-  //setIsLoading,
-  //setNewRowItems,
-  //setSecondaryProgressBarData,
-  //setTreeFolders,
-  //setUpdateTree,
-  //updateFile,
-} from "../../../../../store/files/actions";
+import { constants, api, toastr } from "asc-web-common";
+
 import { TIMEOUT } from "../../../../../helpers/constants";
-import {
-  //canConvert,
-  //canWebEdit,
-  //getDragging,
-  //getFileAction,
-  //getFilter,
-  //getFolders,
-  //getIsLoading,
-  //getIsPrivacyFolder,
-  //getIsRecycleBinFolder,
-  //getNewRowItems,
-  //getPathParts,
-  //getSelectedFolder,
-  //getSelectedFolderNew,
-  //getSelectedFolderParentId,
-  getTitleWithoutExst,
-  //getTreeFolders,
-  //isImage,
-  //isSound,
-  //isVideo,
-} from "../../../../../store/files/selectors";
+import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../panels";
 import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
@@ -60,8 +23,6 @@ import { observer, inject } from "mobx-react";
 
 const { FileAction } = constants;
 const sideColor = "#A3A9AE";
-//const {  getSettings,  isDesktopClient } = initStore.auth.selectors;
-//const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
 
 const SimpleFilesRowContent = styled(RowContent)`
   .badge-ext {
@@ -182,6 +143,7 @@ class FilesRowContent extends React.PureComponent {
       i18n,
       t,
       setEncryptionAccess,
+      createFolder,
     } = this.props;
     const { itemTitle } = this.state;
 
@@ -758,45 +720,6 @@ class FilesRowContent extends React.PureComponent {
   }
 }
 
-// function mapStateToProps(state, props) {
-//   return {
-//filter: getFilter(state),
-//fileAction: getFileAction(state),
-//parentFolder: getSelectedFolderParentId(state),
-//isTrashFolder: getIsRecycleBinFolder(state),
-//settings: getSettings(state),
-//treeFolders: getTreeFolders(state),
-//selectedFolderPathParts: getPathParts(state),
-//newItems: getSelectedFolderNew(state),
-//selectedFolder: getSelectedFolder(state),
-//folders: getFolders(state),
-//     newRowItems: getNewRowItems(state),
-//isLoading: getIsLoading(state),
-//isPrivacy: getIsPrivacyFolder(state),
-//isDesktop: isDesktopClient(state),
-//     canWebEdit: canWebEdit(props.item.fileExst)(state),
-//     canConvert: canConvert(props.item.fileExst)(state),
-//     isImage: isImage(props.item.fileExst)(state),
-//     isSound: isSound(props.item.fileExst)(state),
-//     isVideo: isVideo(props.item.fileExst)(state),
-//   };
-// }
-
-// export default connect(mapStateToProps, {
-//   createFile,
-//   updateFile,
-//   renameFolder,
-//   setTreeFolders,
-//   setSecondaryProgressBarData,
-//   setUpdateTree,
-//   setNewRowItems,
-//   setIsLoading,
-//   clearSecondaryProgressData,
-//   fetchFiles,
-//   getEncryptionAccess,
-//   replaceFileStream,
-// })(withRouter(withTranslation()(FilesRowContent)));
-
 export default inject(
   (
     {
@@ -833,6 +756,7 @@ export default inject(
       createFile,
       updateFile,
       renameFolder,
+      createFolder,
     } = filesStore;
 
     const {
@@ -885,6 +809,7 @@ export default inject(
       clearSecondaryProgressData,
       setNewRowItems,
       createFile,
+      createFolder,
       updateFile,
       renameFolder,
       replaceFileStream,

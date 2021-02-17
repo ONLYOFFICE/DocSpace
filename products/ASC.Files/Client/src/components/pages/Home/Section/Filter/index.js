@@ -1,17 +1,4 @@
 import React from "react";
-//import { connect } from "react-redux";
-// import {
-//   fetchFiles,
-//   setViewAs,
-//   setIsLoading,
-// } from "../../../../../store/files/actions";
-// import {
-//getFilter,
-//getSelectedFolderId,
-//getViewAs,
-//   getFilterSelectedItem,
-//getFirstLoad,
-// } from "../../../../../store/files/selectors";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
@@ -19,7 +6,7 @@ import { withRouter } from "react-router";
 import {
   constants,
   FilterInput,
-  /* store, */ Loaders,
+  Loaders,
   utils,
 } from "asc-web-common";
 //import equal from "fast-deep-equal/react";
@@ -28,11 +15,6 @@ import { inject, observer } from "mobx-react";
 
 const { withLayoutSize } = utils;
 
-// const {
-//   getCurrentUser,
-//   getSettingsCustomNames,
-//   getLanguage,
-// } = store.auth.selectors;
 const { FilterType } = constants;
 
 const getFilterType = (filterValues) => {
@@ -331,24 +313,6 @@ class SectionFilterContent extends React.Component {
   }
 }
 
-// function mapStateToProps(state) {
-//   return {
-//user: getCurrentUser(state),
-//customNames: getSettingsCustomNames(state),
-//language: getLanguage(state),
-//firstLoad: getFirstLoad(state),
-//filter: getFilter(state),
-//selectedFolderId: getSelectedFolderId(state),
-//     selectedItem: getFilterSelectedItem(state),
-//viewAs: getViewAs(state),
-//   };
-// }
-
-// export default connect(mapStateToProps, {
-//   fetchFiles,
-//   setViewAs,
-//   setIsLoading,
-// })(withRouter(withLayoutSize(withTranslation()(SectionFilterContent))));
 
 export default inject(({ auth, initFilesStore, filesStore }) => {
   const { setIsLoading, setViewAs, viewAs } = initFilesStore;

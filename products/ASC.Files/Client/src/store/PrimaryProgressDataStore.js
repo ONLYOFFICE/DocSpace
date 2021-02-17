@@ -1,4 +1,4 @@
-import { makeObservable, action, observable, computed } from "mobx";
+import { makeObservable, action, observable } from "mobx";
 
 class PrimaryProgressDataStore {
   percent = 0;

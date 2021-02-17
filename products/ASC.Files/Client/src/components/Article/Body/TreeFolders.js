@@ -2,36 +2,9 @@ import React from "react";
 import { TreeMenu, TreeNode, Icons } from "asc-web-components";
 import styled from "styled-components";
 //import equal from "fast-deep-equal/react";
-import {
-  api,
-  constants,
-  toastr /* store as initStore */,
-} from "asc-web-common";
-// import { connect } from "react-redux";
-// import {
-//setFilter,
-//setTreeFolders,
-//setDragItem,
-//setDragging,
-//setIsLoading,
-//   setUpdateTree,
-// } from "../../../store/files/actions";
-// import {
-//getTreeFolders,
-//getFilter,
-//getDragging,
-//   getUpdateTree,
-//getSelectedFolderId,
-//getMyFolderId,
-//getShareFolderId,
-//getRootFolderId,
-//   getDraggableItems,
-//getIsPrivacyFolder,
-// } from "../../../store/files/selectors";
+import { api, constants, toastr } from "asc-web-common";
 import { onConvertFiles } from "../../../helpers/files-converter";
 import { observer, inject } from "mobx-react";
-
-//const { isAdmin, isDesktopClient } = initStore.auth.selectors;
 
 const { files } = api;
 const { FolderType, ShareAccessRights } = constants;
@@ -500,36 +473,6 @@ TreeFolders.defaultProps = {
   selectedKeys: [],
   needUpdate: true,
 };
-
-// function mapStateToProps(state) {
-//   return {
-//treeFolders: getTreeFolders(state),
-//filter: getFilter(state),
-//myId: getMyFolderId(state),
-//commonId: getShareFolderId(state),
-//currentId: getSelectedFolderId(state),
-//isAdmin: isAdmin(state),
-//dragging: getDragging(state),
-//     updateTree: getUpdateTree(state),
-//rootFolderId: getRootFolderId(state),
-//     draggableItems: getDraggableItems(state),
-//isDesktop: isDesktopClient(state),
-//isPrivacy: getIsPrivacyFolder(state),
-//   };
-// }
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//setFilter: (filter) => dispatch(setFilter(filter)),
-//setTreeFolders: (treeFolders) => dispatch(setTreeFolders(treeFolders)),
-//setDragItem: (dragItem) => dispatch(setDragItem(dragItem)),
-//setDragging: (dragging) => dispatch(setDragging(dragging)),
-//setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-//     setUpdateTree: (updateTree) => dispatch(setUpdateTree(updateTree)),
-//   };
-// };
-
-//export default connect(mapStateToProps, mapDispatchToProps)(TreeFolders);
 
 export default inject(
   ({ auth, initFilesStore, filesStore, treeFoldersStore }) => {

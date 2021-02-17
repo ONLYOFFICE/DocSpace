@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from "react-router";
-//import { connect } from "react-redux";
 import ModalDialogContainer from "../ModalDialogContainer";
 import {
   ModalDialog,
@@ -13,15 +12,6 @@ import {
 import { ReactSVG } from "react-svg";
 import { withTranslation } from "react-i18next";
 import { utils, api } from "asc-web-common";
-import {
-  getFileIcon,
-  getFolderIcon,
-  //getSortedFiles,
-} from "../../../store/files/selectors";
-// import {
-//   setSecondaryProgressBarData,
-//   clearSecondaryProgressData,
-// } from "../../../store/files/actions";
 import { TIMEOUT } from "../../../helpers/constants";
 import DownloadContent from "./DownloadContent";
 import { createI18N } from "../../../helpers/i18n";
@@ -190,8 +180,8 @@ class DownloadDialogComponent extends React.Component {
   getItemIcon = (item) => {
     const extension = item.fileExst;
     const icon = extension
-      ? getFileIcon(extension, 24)
-      : getFolderIcon(item.providerKey, 24);
+      ? this.props.getFileIcon(extension, 24)
+      : this.props.getFolderIcon(item.providerKey, 24);
 
     return (
       <ReactSVG
@@ -604,20 +594,10 @@ const DownloadDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-// const mapStateToProps = (state) => {
-//   return {
-//     sortedFiles: getSortedFiles(state),
-//   };
-// };
-
-// export default connect(mapStateToProps, {
-//   setSecondaryProgressBarData,
-//   clearSecondaryProgressData,
-// })(withRouter(DownloadDialog));
-
-export default inject(({ filesStore, uploadDataStore }) => {
+export default inject(({ filesStore, uploadDataStore, formatsStore }) => {
   const { secondaryProgressDataStore } = uploadDataStore;
   const { sortedFiles } = filesStore;
+  const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
   const {
     setSecondaryProgressBarData,
     clearSecondaryProgressData,
@@ -628,5 +608,7 @@ export default inject(({ filesStore, uploadDataStore }) => {
 
     setSecondaryProgressBarData,
     clearSecondaryProgressData,
+    getFileIcon,
+    getFolderIcon,
   };
 })(withRouter(observer(DownloadDialog)));

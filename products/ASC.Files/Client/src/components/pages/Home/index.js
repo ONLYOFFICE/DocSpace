@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
-//import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
-//import { RequestLoader } from "asc-web-components";
 import { PageLayout, utils, api, toastr } from "asc-web-common";
 import { withTranslation, I18nextProvider, Trans } from "react-i18next";
 import {
@@ -17,32 +15,6 @@ import {
   SectionHeaderContent,
   SectionPagingContent,
 } from "./Section";
-// import {
-//   fetchFiles,
-//   setDragging,
-//   setIsLoading,
-//   setFirstLoad,
-//   startUpload,
-//   setSelections,
-//   setUploadPanelVisible,
-// } from "../../../store/files/actions";
-// import {
-//   getConvertDialogVisible,
-//   getSelectedFolderId,
-//   getFileActionId,
-//   getFilter,
-//   getPrimaryProgressData,
-//   getSecondaryProgressData,
-//   getTreeFolders,
-//   getViewAs,
-//   getIsLoading,
-//   getDragging,
-//   getFirstLoad,
-//   isSecondaryProgressFinished,
-//   getSelectionLength,
-//   getSelectionTitle,
-//   getShowOwnerChangePanel,
-// } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
 import { ChangeOwnerPanel } from "../../panels";
@@ -56,7 +28,6 @@ const i18n = createI18N({
 });
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
-//const { getSettingsHomepage } = store.auth.selectors;
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -326,41 +297,6 @@ const Home = (props) => {
 Home.propTypes = {
   history: PropTypes.object.isRequired,
 };
-
-// function mapStateToProps(state, ownProps) {
-//   return {
-//     convertDialogVisible: getConvertDialogVisible(state),
-//     currentFolderId: getSelectedFolderId(state),
-//     fileActionId: getFileActionId(state),
-//     filter: getFilter(state),
-//     primaryProgressData: getPrimaryProgressData(state),
-//     secondaryProgressData: getSecondaryProgressData(state),
-//     treeFolders: getTreeFolders(state),
-//     viewAs: getViewAs(state),
-//     isLoading: getIsLoading(state),
-//     homepage: getSettingsHomepage(state),
-//     dragging: getDragging(state),
-//     firstLoad: getFirstLoad(state),
-//     isProgressFinished: isSecondaryProgressFinished(state),
-//     selectionLength: getSelectionLength(state),
-//     selectionTitle: getSelectionTitle(state),
-//     showOwnerChangePanel: getShowOwnerChangePanel(state),
-//   };
-// }
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     setDragging: (dragging) => dispatch(setDragging(dragging)),
-//     startUpload: (files, folderId, t) =>
-//       dispatch(startUpload(files, folderId, t)),
-//     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-//     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
-//     fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
-//     setSelections: (items) => dispatch(setSelections(items)),
-//     setUploadPanelVisible: (uploadPanelVisible) =>
-//       dispatch(setUploadPanelVisible(uploadPanelVisible)),
-//   };
-// };
 
 export default inject(
   ({

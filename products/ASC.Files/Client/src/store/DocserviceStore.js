@@ -1,5 +1,5 @@
 import { makeObservable } from "mobx";
-import { presentInArray } from "../store/files/selectors";
+import { presentInArray } from "../helpers/files-helpers";
 
 class DocserviceStore {
   coauthorDocs = [".pptx", ".ppsx", ".xlsx", ".csv", ".docx", ".txt"];

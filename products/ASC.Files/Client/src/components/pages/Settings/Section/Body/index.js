@@ -1,31 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-//import { connect } from "react-redux";
 import { Heading, ToggleButton } from "asc-web-components";
-import { Error403, Error520 /* store */ } from "asc-web-common";
-// import {
-//   setUpdateIfExist,
-//   setStoreOriginal,
-//   setEnableThirdParty,
-//   setConfirmDelete,
-//   setStoreForceSave,
-//   setForceSave,
-// } from "../../../../../store/files/actions";
-// import {
-//getIsLoading,
-//getSettingsSelectedTreeNode,
-//   getSettingsTreeStoreOriginalFiles,
-//   getSettingsTreeConfirmDelete,
-//   getSettingsTreeUpdateIfExist,
-//   getSettingsTreeForceSave,
-//   getSettingsTreeStoreForceSave,
-//   getSettingsTreeEnableThirdParty,
-//   getSettingsTree,
-// } from "../../../../../store/files/selectors";
+import { Error403, Error520 } from "asc-web-common";
 import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
-
-//const { isAdmin } = store.auth.selectors;
 
 const StyledSettings = styled.div`
   display: grid;
@@ -179,30 +157,6 @@ const SectionBodyContent = ({
     content
   );
 };
-
-// function mapStateToProps(state) {
-//   return {
-//isAdmin: isAdmin(state),
-//selectedTreeNode: getSettingsSelectedTreeNode(state),
-//     storeOriginalFiles: getSettingsTreeStoreOriginalFiles(state),
-//     confirmDelete: getSettingsTreeConfirmDelete(state),
-//     updateIfExist: getSettingsTreeUpdateIfExist(state),
-//     forceSave: getSettingsTreeForceSave(state),
-//     storeForceSave: getSettingsTreeStoreForceSave(state),
-//     enableThirdParty: getSettingsTreeEnableThirdParty(state),
-//isLoading: getIsLoading(state),
-//     settingsTree: getSettingsTree(state),
-//   };
-// }
-
-// export default connect(mapStateToProps, {
-//   setUpdateIfExist,
-//   setStoreOriginal,
-//   setEnableThirdParty,
-//   setConfirmDelete,
-//   setStoreForceSave,
-//   setForceSave,
-// })(SectionBodyContent);
 
 export default inject(
   ({ auth, initFilesStore, settingsStore, treeFoldersStore }) => {

@@ -10,18 +10,10 @@ import {
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-//import { connect } from "react-redux";
-import { toastr /* store */ } from "asc-web-common";
-// import {
-//   markAsVersion,
-//   restoreVersion,
-//   updateCommentVersion,
-// } from "../../../../../store/files/actions";
+import { toastr } from "asc-web-common";
 import VersionBadge from "./VersionBadge";
 import StyledVersionRow from "./StyledVersionRow";
 import { inject, observer } from "mobx-react";
-
-//const { getLanguage } = store.auth.selectors;
 
 const VersionRow = (props) => {
   const {
@@ -233,27 +225,6 @@ const VersionRow = (props) => {
     </StyledVersionRow>
   );
 };
-
-// const mapStateToProps = (state) => {
-//   return {
-//     culture: getLanguage(state),
-//   };
-// };
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     markAsVersion: (id, isVersion, version) =>
-//       dispatch(markAsVersion(id, isVersion, version)),
-//     restoreVersion: (id, version) => dispatch(restoreVersion(id, version)),
-//     updateCommentVersion: (id, comment, version) =>
-//       dispatch(updateCommentVersion(id, comment, version)),
-//   };
-// };
-
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(withRouter(withTranslation()(VersionRow)));
 
 export default inject(({ auth, versionHistoryStore }) => {
   const { user } = auth.userStore;

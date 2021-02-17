@@ -1,26 +1,9 @@
 import React, { useEffect } from "react";
-//import { connect } from "react-redux";
 import styled from "styled-components";
 import { Link } from "asc-web-components";
 import { history, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
-// import {
-//   getGoogleConnect,
-//   getBoxConnect,
-//   getDropboxConnect,
-//   getOneDriveConnect,
-//   getNextCloudConnect,
-//   getWebDavConnect,
-// } from "../../../store/files/selectors";
-// import {
-//   getOAuthToken,
-//   openConnectWindow,
-//   setConnectItem,
-//setSelectedFolder,
-//setSelectedNode,
-//   setShowThirdPartyPanel,
-// } from "../../../store/files/actions";
 import { inject, observer } from "mobx-react";
 
 const { changeLanguage } = utils;
@@ -232,24 +215,6 @@ const ThirdPartyList = (props) => {
     </I18nextProvider>
   );
 };
-
-// function mapStateToProps(state) {
-//   return {
-//     googleConnectItem: getGoogleConnect(state),
-//     boxConnectItem: getBoxConnect(state),
-//     dropboxConnectItem: getDropboxConnect(state),
-//     oneDriveConnectItem: getOneDriveConnect(state),
-//     nextCloudConnectItem: getNextCloudConnect(state),
-//     webDavConnectItem: getWebDavConnect(state),
-//   };
-// }
-
-// export default connect(mapStateToProps, {
-//   setConnectItem,
-//   setSelectedNode,
-//   setSelectedFolder,
-//   setShowThirdPartyPanel,
-// })(ThirdPartyList);
 
 export default inject(
   ({ initFilesStore, filesStore, settingsStore, treeFoldersStore }) => {

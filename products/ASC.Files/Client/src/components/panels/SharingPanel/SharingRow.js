@@ -5,7 +5,7 @@ import copy from "copy-to-clipboard";
 import LinkRow from "./linkRow";
 import AccessComboBox from "./AccessComboBox";
 //import equal from "fast-deep-equal/react";
-import { getAccessIcon } from "../../../store/files/selectors";
+import { getAccessIcon } from "../../../helpers/files-helpers";
 
 class SharingRow extends React.Component {
   constructor(props) {

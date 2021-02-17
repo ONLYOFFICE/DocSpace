@@ -7,9 +7,6 @@ import { createI18N } from "../../../helpers/i18n";
 
 const { changeLanguage } = utils;
 
-//import { connect } from "react-redux";
-//import { withRouter } from "react-router";
-//import { getOperationsFolders } from "../../../store/files/selectors";
 const i18n = createI18N({
   page: "ThirdPartyMoveDialog",
   localesPath: "dialogs/ThirdPartyMoveDialog",

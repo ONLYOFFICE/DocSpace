@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-//import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { PageLayout, Loaders, utils /* store */ } from "asc-web-common";
+import { PageLayout, Loaders, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -12,15 +11,6 @@ import {
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { createI18N } from "../../../helpers/i18n";
 //import { setDocumentTitle } from "../../../helpers/utils";
-// import {
-//   setIsVerHistoryPanel,
-//   setFilesFilter,
-// } from "../../../store/files/actions";
-// import {
-//   getFilter,
-//   getIsLoading,
-//   getFileVersions,
-// } from "../../../store/files/selectors";
 import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
@@ -29,7 +19,6 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = utils;
-//const { getIsTabletView } = store.auth.selectors;
 
 class PureVersionHistory extends React.Component {
   componentDidMount() {
@@ -114,28 +103,6 @@ const VersionHistory = (props) => {
 VersionHistory.propTypes = {
   history: PropTypes.object.isRequired,
 };
-
-// function mapStateToProps(state) {
-//   return {
-//     isLoading: getIsLoading(state),
-//     isTabletView: getIsTabletView(state),
-//     filter: getFilter(state),
-//     versions: getFileVersions(state),
-//   };
-// }
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     setIsVerHistoryPanel: (isVisible) =>
-//       dispatch(setIsVerHistoryPanel(isVisible)),
-//     setFilesFilter: (filter) => dispatch(setFilesFilter(filter)),
-//   };
-// };
-
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(withRouter(VersionHistory));
 
 export default inject(
   ({ auth, initFilesStore, filesStore, versionHistoryStore }) => {

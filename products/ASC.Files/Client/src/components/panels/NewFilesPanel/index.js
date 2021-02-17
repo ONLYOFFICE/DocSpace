@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-//import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import {
   Backdrop,
@@ -22,25 +21,6 @@ import {
   StyledBody,
   StyledFooter,
 } from "../StyledPanels";
-import {
-  getFileIcon,
-  getFolderIcon,
-  //getFilter,
-  //getFiles,
-  //getFolders,
-  //getTreeFolders,
-  //getSelectedFolder,
-  //getIsPrivacyFolder,
-} from "../../../store/files/selectors";
-// import {
-//fetchFiles,
-//setMediaViewerData,
-//setTreeFolders,
-//   setUpdateTree,
-//   setNewRowItems,
-//setIsLoading,
-//   addFileToRecentlyViewed,
-// } from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
 const i18n = createI18N({
@@ -72,8 +52,8 @@ class NewFilesPanelComponent extends React.Component {
   getItemIcon = (item, isEdit) => {
     const extension = item.fileExst;
     const icon = extension
-      ? getFileIcon(extension, 24)
-      : getFolderIcon(item.providerKey, 24);
+      ? this.props.getFileIcon(extension, 24)
+      : this.props.getFolderIcon(item.providerKey, 24);
 
     return (
       <ReactSVG
@@ -312,28 +292,14 @@ const NewFilesPanel = (props) => (
   <NewFilesPanelContainerTranslated i18n={i18n} {...props} />
 );
 
-// const mapStateToProps = (state) => {
-//   return {
-//     filter: getFilter(state),
-//     files: getFiles(state),
-//     folders: getFolders(state),
-//     treeFolders: getTreeFolders(state),
-//     isPrivacy: getIsPrivacyFolder(state),
-//   };
-// };
-
-// export default connect(mapStateToProps, {
-//   setMediaViewerData,
-//   setTreeFolders,
-//   setUpdateTree,
-//   setNewRowItems,
-//   fetchFiles,
-//   addFileToRecentlyViewed,
-//   setIsLoading,
-// })(withRouter(NewFilesPanel));
-
 export default inject(
-  ({ initFilesStore, filesStore, mediaViewerDataStore, treeFoldersStore }) => {
+  ({
+    initFilesStore,
+    filesStore,
+    mediaViewerDataStore,
+    treeFoldersStore,
+    formatsStore,
+  }) => {
     const { setIsLoading } = initFilesStore;
     const {
       files,
@@ -345,6 +311,7 @@ export default inject(
     } = filesStore;
     const { treeFolders, setTreeFolders, isPrivacyFolder } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;
+    const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
 
     return {
       files,
@@ -359,6 +326,8 @@ export default inject(
       setMediaViewerData,
       addFileToRecentlyViewed,
       setNewRowItems,
+      getFileIcon,
+      getFolderIcon,
     };
   }
 )(withRouter(observer(NewFilesPanel)));

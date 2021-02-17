@@ -1,26 +1,15 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-
 import { Backdrop, Heading, Aside } from "asc-web-components";
-import { utils, Loaders /* store */ } from "asc-web-common";
-
+import { utils, Loaders } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
-
-//import { setIsVerHistoryPanel } from "../../../store/files/actions";
-// import {
-//   getVerHistoryFileId,
-//   getIsLoading,
-//   getFileVersions,
-// } from "../../../store/files/selectors";
-
 import {
   StyledVersionHistoryPanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody,
 } from "../StyledPanels";
-
 import { SectionBodyContent } from "../../pages/VersionHistory/Section/";
 import { inject, observer } from "mobx-react";
 
@@ -30,8 +19,6 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = utils;
-
-//const { getIsTabletView, getSettingsHomepage } = store.auth.selectors;
 
 class PureVersionHistoryPanel extends React.Component {
   componentDidUpdate(preProps) {
@@ -118,28 +105,6 @@ VersionHistoryPanelContainer.propTypes = {
   visible: PropTypes.bool,
   onClose: PropTypes.func,
 };
-
-// function mapStateToProps(state) {
-//   return {
-//     fileId: getVerHistoryFileId(state),
-//     isTabletView: getIsTabletView(state),
-//     homepage: getSettingsHomepage(state),
-//     isLoading: getIsLoading(state),
-//     versions: getFileVersions(state),
-//   };
-// }
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     setIsVerHistoryPanel: (isVisible) =>
-//       dispatch(setIsVerHistoryPanel(isVisible)),
-//   };
-// }
-
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(VersionHistoryPanel);
 
 export default inject(({ auth, initFilesStore, versionHistoryStore }) => {
   const { isTabletView, homepage } = auth.settingsStore;
