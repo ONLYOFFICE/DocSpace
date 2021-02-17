@@ -21,7 +21,6 @@ class InviteLinksStore {
     const res = await api.portal.getInvitationLinks();
     this.inviteLinks.userLink = res.userLink;
     this.inviteLinks.guestLink = res.guestLink;
-    console.log(this.inviteLinks);
   };
 }
 
