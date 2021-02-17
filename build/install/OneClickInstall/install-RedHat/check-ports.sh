@@ -37,9 +37,3 @@ if [ "$APPSERVER_INSTALLED" = "true" ] || [ "$DOCUMENT_SERVER_INSTALLED" = "true
 		exit;	
 	fi
 fi
-
-#appserver: 80 8081 8083 5001 5002
-#docs: 8083 5432 5672 6379 
-#els: 9200
-#kafka: 2181 9092
-#mysql: 3306

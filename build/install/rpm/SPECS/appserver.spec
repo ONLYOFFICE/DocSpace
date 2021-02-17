@@ -12,7 +12,7 @@ AutoReq:        no
 AutoProv:       no
 License:        GPLv3
 Source0:        https://github.com/ONLYOFFICE/appserver/archive/%GIT_BRANCH.tar.gz
-BuildRequires:  nodejs >= 10.0
+BuildRequires:  nodejs >= 12.0
 BuildRequires:  yarn
 BuildRequires:  libgdiplus
 BuildRequires:  dotnet-sdk-3.1
@@ -43,7 +43,6 @@ rm -rf %{_rpmdir}/%{_arch}/%{name}-*
 %include build.spec
 
 %include install.spec
-
 
 %include files.spec
 

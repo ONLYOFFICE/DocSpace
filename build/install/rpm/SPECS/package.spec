@@ -73,7 +73,7 @@ Summary:        urlshortener
 Group:          Applications/Internet
 Requires:       %name-common
 Requires:       dotnet-sdk-3.1
-Requires:       nodejs >= 10.0
+Requires:       nodejs >= 12.0
 AutoReqProv:    no
 %description    urlshortener
 
@@ -82,7 +82,7 @@ Summary:        socket
 Group:          Applications/Internet
 Requires:       %name-common
 Requires:       dotnet-sdk-3.1
-Requires:       nodejs >= 10.0
+Requires:       nodejs >= 12.0
 AutoReqProv:    no
 %description    socket
 
@@ -91,7 +91,7 @@ Summary:        thumbnails
 Group:          Applications/Internet
 Requires:       %name-common
 Requires:       dotnet-sdk-3.1
-Requires:       nodejs >= 10.0
+Requires:       nodejs >= 12.0
 AutoReqProv:    no
 %description    thumbnails
 

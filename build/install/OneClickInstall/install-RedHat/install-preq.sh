@@ -28,7 +28,7 @@ rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-$REV.noarch.r
 rpm -ivh https://rpms.remirepo.net/enterprise/remi-release-$REV.rpm || true
 
 #add nodejs repo
-curl -sL https://rpm.nodesource.com/setup_10.x | bash - || true
+curl -sL https://rpm.nodesource.com/setup_12.x | bash - || true
 
 #add yarn
 curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo || true
