@@ -1,18 +1,14 @@
-import React, { Profiler, useEffect } from "react";
-import { connect } from "react-redux";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { Loader } from "asc-web-components";
-import { PageLayout, utils, store, toastr, Loaders } from "asc-web-common";
+import { PageLayout, utils, toastr, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
   ArticleBodyContent,
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
-import { fetchProfile, resetProfile } from "../../../store/profile/actions";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
-import { setDocumentTitle } from "../../../helpers/utils";
 import { withRouter } from "react-router";
 import { isChrome, isAndroid } from "react-device-detect";
 import { inject, observer } from "mobx-react";
@@ -21,11 +17,17 @@ const i18n = createI18N({
   localesPath: "pages/Profile",
 });
 const { changeLanguage } = utils;
-const { isAdmin, isVisitor, getLanguage } = store.auth.selectors;
 
 class PureProfile extends React.Component {
   componentDidMount() {
-    const { match, fetchProfile, profile, location, t } = this.props;
+    const {
+      match,
+      fetchProfile,
+      profile,
+      location,
+      t,
+      setDocumentTitle,
+    } = this.props;
     const { userId } = match.params;
     isChrome && isAndroid && window && window.scroll(0, 0);
     setDocumentTitle(t("Profile"));
@@ -117,20 +119,13 @@ Profile.propTypes = {
   language: PropTypes.string,
 };
 
-function mapStateToProps(state) {
-  return {
-    //isVisitor: isVisitor(state),
-  };
-}
-
-export default connect(mapStateToProps)(
-  inject(({ auth, peopleStore }) => ({
-    isVisitor: auth.userStore.user.isVisitor,
-    isLoaded: auth.isLoaded,
-    isAdmin: auth.isAdmin,
-    language: auth.language,
-    resetProfile: peopleStore.targetUserStore.resetTargetUser,
-    fetchProfile: peopleStore.targetUserStore.getTargetUser,
-    profile: peopleStore.targetUserStore.targetUser,
-  }))(observer(Profile))
-);
+export default inject(({ auth, peopleStore }) => ({
+  setDocumentTitle: auth.setDocumentTitle,
+  isVisitor: auth.userStore.user.isVisitor,
+  isLoaded: auth.isLoaded,
+  isAdmin: auth.isAdmin,
+  language: auth.language,
+  resetProfile: peopleStore.targetUserStore.resetTargetUser,
+  fetchProfile: peopleStore.targetUserStore.getTargetUser,
+  profile: peopleStore.targetUserStore.targetUser,
+}))(observer(Profile));

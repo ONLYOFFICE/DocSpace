@@ -1,16 +1,11 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { IconButton } from "asc-web-components";
-import { Headline, store } from "asc-web-common";
+import { Headline } from "asc-web-common";
 import { withTranslation } from "react-i18next";
-import { resetGroup } from "../../../../../store/group/actions";
-// import { setFilter } from "../../../../../store/people/actions";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
-
-const { settingsStore } = store;
 
 const Wrapper = styled.div`
   display: grid;
@@ -76,34 +71,10 @@ SectionHeaderContent.defaultProps = {
   group: null,
 };
 
-function mapStateToProps(state) {
-  return {
-    //settings: state.auth.settings,
-    //group: state.group.targetGroup,
-    //groupCaption: state.auth.settings.customNames.groupCaption,
-    //filter: state.people.filter,
-  };
-}
-
-// const SectionHeaderContentWrapper = observer((props) => {
-//   return (
-//     <SectionHeaderContent
-//       groupCaption={settingsStore.customNames.groupCaption}
-//       {...props}
-//     />
-//   );
-// });
-
-export default connect(mapStateToProps)(
-  inject(({ auth, peopleStore }) => ({
-    groupCaption: auth.settingsStore.customNames.groupCaption,
-    filter: peopleStore.filterStore.filter,
-    setFilter: peopleStore.filterStore.setFilterParams,
-    group: peopleStore.selectedGroupStore.targetedGroup,
-    resetGroup: peopleStore.selectedGroupStore.resetGroup,
-  }))(observer(withRouter(withTranslation()(SectionHeaderContent))))
-);
-
-// export default connect(mapStateToProps, { resetGroup, setFilter })(
-//   withTranslation()(withRouter(SectionHeaderContentWrapper))
-// );
+export default inject(({ auth, peopleStore }) => ({
+  groupCaption: auth.settingsStore.customNames.groupCaption,
+  filter: peopleStore.filterStore.filter,
+  setFilter: peopleStore.filterStore.setFilterParams,
+  group: peopleStore.selectedGroupStore.targetedGroup,
+  resetGroup: peopleStore.selectedGroupStore.resetGroup,
+}))(observer(withRouter(withTranslation()(SectionHeaderContent))));

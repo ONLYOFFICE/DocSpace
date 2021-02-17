@@ -1,19 +1,10 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { IconButton } from "asc-web-components";
-import { Headline, store } from "asc-web-common";
+import { Headline } from "asc-web-common";
 import { useTranslation } from "react-i18next";
-import {
-  //setFilter,
-  setIsVisibleDataLossDialog,
-  toggleAvatarEditor,
-} from "../../../../../store/people/actions";
-import { resetProfile } from "../../../../../store/profile/actions";
 import { inject, observer } from "mobx-react";
-
-const { settingsStore } = store;
 
 const Wrapper = styled.div`
   display: grid;
@@ -67,15 +58,18 @@ const SectionHeaderContent = (props) => {
     }
   };
 
-  const setFilterAndReset = (filter) => {
-    props.resetProfile();
-    setFilter(filter);
-  };
+  const setFilterAndReset = useCallback(
+    (filter) => {
+      props.resetProfile();
+      setFilter(filter);
+    },
+    [props, setFilter]
+  );
 
-  const goBackAndReset = () => {
+  const goBackAndReset = useCallback(() => {
     props.resetProfile();
     history.goBack();
-  };
+  }, [history, props]);
 
   const onClickBack = useCallback(() => {
     avatarEditorIsOpen
@@ -84,12 +78,12 @@ const SectionHeaderContent = (props) => {
       ? setFilterAndReset(filter)
       : goBackAndReset();
   }, [
-    history,
-    profile,
-    setFilter,
-    filter,
-    //settings.homepage,
     avatarEditorIsOpen,
+    toggleAvatarEditor,
+    profile,
+    setFilterAndReset,
+    filter,
+    goBackAndReset,
   ]);
   return (
     <Wrapper>
@@ -109,43 +103,15 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    // profile: state.profile.targetUser,
-    //settings: state.auth.settings,
-    //filter: state.people.filter,
-    //editingForm: state.people.editingForm,
-    // avatarEditorIsOpen: state.people.avatarEditorIsOpen,
-  };
-}
-
-// const SectionHeaderContentWrapper = observer((props) => {
-//   return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
-// });
-
-export default connect(mapStateToProps, {
-  //setFilter,
-  //setIsVisibleDataLossDialog,
-  // toggleAvatarEditor,
-  // resetProfile,
-})(
-  inject(({ auth, peopleStore }) => ({
-    settings: auth.settingsStore,
-    isEdit: peopleStore.editingFormStore.isEdit,
-    setIsVisibleDataLossDialog:
-      peopleStore.editingFormStore.setIsVisibleDataLossDialog,
-    filter: peopleStore.filterStore.filter,
-    setFilter: peopleStore.filterStore.setFilterParams,
-    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
-    resetProfile: peopleStore.targetUserStore.resetTargetUser,
-    profile: peopleStore.targetUserStore.targetUser,
-    avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
-  }))(observer(withRouter(SectionHeaderContent)))
-);
-
-// export default connect(mapStateToProps, {
-//   setFilter,
-//   setIsVisibleDataLossDialog,
-//   toggleAvatarEditor,
-//   resetProfile,
-// })(withRouter(SectionHeaderContentWrapper));
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  isEdit: peopleStore.editingFormStore.isEdit,
+  setIsVisibleDataLossDialog:
+    peopleStore.editingFormStore.setIsVisibleDataLossDialog,
+  filter: peopleStore.filterStore.filter,
+  setFilter: peopleStore.filterStore.setFilterParams,
+  toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+  resetProfile: peopleStore.targetUserStore.resetTargetUser,
+  profile: peopleStore.targetUserStore.targetUser,
+  avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
+}))(observer(withRouter(SectionHeaderContent)));

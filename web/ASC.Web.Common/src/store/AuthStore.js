@@ -6,6 +6,7 @@ import ModuleStore from "./ModuleStore";
 import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
+import { isAdmin } from "../utils";
 
 class AuthStore {
   userStore = null;
@@ -80,30 +81,12 @@ class AuthStore {
   }
 
   get isAdmin() {
-    const { user: currentUser } = this.userStore;
+    const { user } = this.userStore;
     const { currentProductId } = this.settingsStore;
 
-    if (!currentUser || !currentUser.id) return false;
+    if (!user || !user.id) return false;
 
-    let productName = null;
-
-    switch (currentProductId) {
-      case "f4d98afd-d336-4332-8778-3c6945c81ea0":
-        productName = "people";
-        break;
-      case "e67be73d-f9ae-4ce1-8fec-1880cb518cb4":
-        productName = "documents";
-        break;
-      default:
-        break;
-    }
-
-    const isProductAdmin =
-      currentUser.listAdminModules && productName
-        ? currentUser.listAdminModules.includes(productName)
-        : false;
-
-    return currentUser.isAdmin || currentUser.isOwner || isProductAdmin;
+    return isAdmin(user, currentProductId);
   }
 
   get product() {
@@ -214,6 +197,27 @@ class AuthStore {
       });
       return promise;
     });
+  };
+
+  setDocumentTitle = (subTitle = null) => {
+    let title;
+
+    const currentModule = this.settingsStore.product;
+    const organizationName = this.settingsStore.organizationName;
+
+    if (subTitle) {
+      if (this.isAuthenticated && currentModule) {
+        title = subTitle + " - " + currentModule.title;
+      } else {
+        title = subTitle + " - " + organizationName;
+      }
+    } else if (currentModule && organizationName) {
+      title = currentModule.title + " - " + organizationName;
+    } else {
+      title = organizationName;
+    }
+
+    document.title = title;
   };
 }
 

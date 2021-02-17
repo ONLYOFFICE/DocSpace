@@ -54,12 +54,12 @@ export function setIsLoaded(isLoaded) {
   };
 }
 
-export function setIsLoadedSection(isLoadedSection) {
-  return {
-    type: SET_IS_LOADED_SECTION,
-    isLoadedSection,
-  };
-}
+// export function setIsLoadedSection(isLoadedSection) {
+//   return {
+//     type: SET_IS_LOADED_SECTION,
+//     isLoadedSection,
+//   };
+// }
 
 export function setLogout() {
   return {

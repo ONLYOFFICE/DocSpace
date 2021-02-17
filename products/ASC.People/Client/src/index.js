@@ -1,24 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
-import store from "./store/store";
 import "./custom.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { ErrorBoundary, store as commonStore } from "asc-web-common";
 import { Provider as MobxProvider } from "mobx-react";
-import { peopleStore } from "./store/";
+import PeopleStore from "./store/PeopleStore";
 
 const { authStore } = commonStore;
+const peopleStore = new PeopleStore();
 
 ReactDOM.render(
-  <Provider store={store}>
-    <MobxProvider auth={authStore} peopleStore={peopleStore}>
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    </MobxProvider>
-  </Provider>,
+  <MobxProvider auth={authStore} peopleStore={peopleStore}>
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  </MobxProvider>,
   document.getElementById("root")
 );
 

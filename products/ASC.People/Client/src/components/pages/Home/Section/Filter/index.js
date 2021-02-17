@@ -81,8 +81,8 @@ class SectionFilterContent extends React.Component {
   };
 
   getData = () => {
-    const { groups, t, settings, isAdmin } = this.props;
-    const { guestCaption, userCaption, groupCaption } = settings.customNames;
+    const { groups, t, customNames, isAdmin } = this.props;
+    const { guestCaption, userCaption, groupCaption } = customNames;
 
     const options = !isAdmin
       ? []
@@ -181,6 +181,7 @@ class SectionFilterContent extends React.Component {
 
   getSelectedFilterData = () => {
     const { filter } = this.props;
+
     const selectedFilterData = {
       filterValues: [],
       sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
@@ -230,6 +231,7 @@ class SectionFilterContent extends React.Component {
   render() {
     const selectedFilterData = this.getSelectedFilterData();
     const { t, language, isLoaded, sectionWidth } = this.props;
+
     return isLoaded ? (
       <FilterInput
         sectionWidth={sectionWidth}
@@ -253,7 +255,7 @@ class SectionFilterContent extends React.Component {
 
 export default inject(({ auth, peopleStore }) => {
   return {
-    settings: auth.settingsStore,
+    customNames: auth.settingsStore.customNames,
     isLoaded: auth.isLoaded,
     isAdmin: auth.isAdmin,
     language: auth.language,

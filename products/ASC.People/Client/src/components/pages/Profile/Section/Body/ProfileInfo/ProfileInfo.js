@@ -8,7 +8,7 @@ import {
   HelpButton,
 } from "asc-web-components";
 import styled from "styled-components";
-import { api, toastr, Loaders, store } from "asc-web-common";
+import { api, toastr, Loaders } from "asc-web-common";
 import { inject, observer } from "mobx-react";
 
 const { resendUserInvites } = api.people;
@@ -327,15 +327,6 @@ class ProfileInfo extends React.PureComponent {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    // updateProfileCulture: (id, culture) =>
-    //   dispatch(updateProfileCulture(id, culture)),
-    //fetchPeople: (filter) => dispatch(fetchPeople(filter)),
-    //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-  };
-};
-
 export default inject(({ auth, peopleStore }) => ({
   settings: auth.settingsStore,
   groupCaption: auth.settingsStore.customNames.groupCaption,
@@ -348,5 +339,3 @@ export default inject(({ auth, peopleStore }) => ({
   setIsLoading: peopleStore.setIsLoading,
   updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
 }))(observer(ProfileInfo));
-
-//export default connect(mapStateToProps, mapDispatchToProps)(ProfileInfoWrapper);

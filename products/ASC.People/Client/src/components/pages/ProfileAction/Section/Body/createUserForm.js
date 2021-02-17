@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 import {
   Avatar,
   Button,
@@ -10,29 +9,6 @@ import {
   utils,
 } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
-import {
-  toEmployeeWrapper,
-  getUserRole,
-  getUserContactsPattern,
-  getUserContacts,
-  mapGroupsToGroupSelectorOptions,
-  mapGroupSelectorOptionsToGroups,
-  filterGroupSelectorOptions,
-} from "../../../../../store/people/selectors";
-import {
-  createProfile,
-  updateCreatedAvatar,
-  setCreatedAvatar,
-  setCroppedAvatar,
-  resetProfile,
-} from "../../../../../store/profile/actions";
-import {
-  setFilter,
-  updateProfileInUsers,
-  setIsVisibleDataLossDialog,
-  setIsEditingForm,
-  toggleAvatarEditor,
-} from "../../../../../store/people/actions";
 import {
   MainContainer,
   AvatarContainer,
@@ -47,13 +23,21 @@ import DepartmentField from "./FormFields/DepartmentField";
 import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import { DataLossWarningDialog } from "../../../../dialogs";
-import { api, toastr, store } from "asc-web-common";
+import { api, toastr } from "asc-web-common";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import {
+  toEmployeeWrapper,
+  getUserRole,
+  getUserContactsPattern,
+  getUserContacts,
+  mapGroupsToGroupSelectorOptions,
+  mapGroupSelectorOptionsToGroups,
+  filterGroupSelectorOptions,
+} from "../../../../../helpers/people-helpers";
 
 const { createThumbnailsAvatar, loadAvatar } = api.people;
 const { isTablet } = utils.device;
-const { settingsStore } = store;
 
 class CreateUserForm extends React.Component {
   constructor(props) {
@@ -654,66 +638,22 @@ class CreateUserForm extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  //const { settings } = state.auth;
-  // const { groups, filter, editingForm } = state.people;
-  // const { createdAvatar, croppedAvatar } = state.profile;
-  return {
-    //settings,
-    //groups,
-    //filter,
-    //editingForm,
-    // createdAvatar,
-    // croppedAvatar,
-  };
-};
-
-// const CreateUserFormWrapper = observer((props) => {
-//   return <CreateUserForm settings={settingsStore.settings} {...props} />;
-// });
-
-export default connect(mapStateToProps, {
-  // createProfile,
-  // updateCreatedAvatar,
-  //setFilter,
-  // updateProfileInUsers,
-  // setIsVisibleDataLossDialog,
-  // setIsEditingForm,
-  // toggleAvatarEditor,
-  // setCreatedAvatar,
-  // setCroppedAvatar,
-  // resetProfile,
-})(
-  inject(({ auth, peopleStore }) => ({
-    settings: auth.settingsStore,
-    isEdit: peopleStore.editingFormStore.isEdit,
-    groups: peopleStore.groupsStore.groups,
-    setIsVisibleDataLossDialog:
-      peopleStore.editingFormStore.setIsVisibleDataLossDialog,
-    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
-    filter: peopleStore.filterStore.filter,
-    setFilter: peopleStore.filterStore.setFilterParams,
-    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
-    resetProfile: peopleStore.targetUserStore.resetTargetUser,
-    createProfile: peopleStore.usersStore.createUser,
-    createdAvatar: peopleStore.avatarEditorStore.createdAvatar,
-    setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
-    croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
-    setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
-    updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
-    updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
-  }))(observer(withRouter(withTranslation()(CreateUserForm))))
-);
-
-// export default connect(mapStateToProps, {
-//   createProfile,
-//   updateCreatedAvatar,
-//   setFilter,
-//   updateProfileInUsers,
-//   setIsVisibleDataLossDialog,
-//   setIsEditingForm,
-//   toggleAvatarEditor,
-//   setCreatedAvatar,
-//   setCroppedAvatar,
-//   resetProfile,
-// })(withRouter(withTranslation()(CreateUserFormWrapper)));
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  isEdit: peopleStore.editingFormStore.isEdit,
+  groups: peopleStore.groupsStore.groups,
+  setIsVisibleDataLossDialog:
+    peopleStore.editingFormStore.setIsVisibleDataLossDialog,
+  setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+  filter: peopleStore.filterStore.filter,
+  setFilter: peopleStore.filterStore.setFilterParams,
+  toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+  resetProfile: peopleStore.targetUserStore.resetTargetUser,
+  createProfile: peopleStore.usersStore.createUser,
+  createdAvatar: peopleStore.avatarEditorStore.createdAvatar,
+  setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
+  croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
+  setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
+  updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
+  updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
+}))(observer(withRouter(withTranslation()(CreateUserForm))));

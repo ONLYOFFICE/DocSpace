@@ -1,29 +1,12 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import { AvatarEditor, utils, Loader } from "asc-web-components";
 import { api, toastr } from "asc-web-common";
-import {
-  fetchProfile,
-  updateProfile,
-  // getUserPhoto,
-  setAvatarMax,
-  updateCreatedAvatar,
-  setCreatedAvatar,
-  setCroppedAvatar,
-  resetProfile,
-} from "../../../../../store/profile/actions";
-import { toEmployeeWrapper } from "../../../../../store/people/selectors";
-import {
-  toggleAvatarEditor,
-  updateProfileInUsers,
-  setIsEditingForm,
-} from "../../../../../store/people/actions";
-import { setDocumentTitle } from "../../../../../helpers/utils";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import { toEmployeeWrapper } from "../../../../../helpers/people-helpers";
 
 const { createThumbnailsAvatar, loadAvatar } = api.people;
 const { isTablet } = utils.device;
@@ -48,7 +31,7 @@ class CreateAvatarEditorPage extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { match, fetchProfile, t, profile } = this.props;
+    const { match, fetchProfile, t, profile, setDocumentTitle } = this.props;
     const { avatar } = this.state;
     const { userId } = match.params;
 
@@ -290,55 +273,19 @@ class CreateAvatarEditorPage extends React.PureComponent {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    // profile: state.profile.targetUser,
-    // avatarMax: state.profile.avatarMax,
-    // createdAvatar: state.profile.createdAvatar,
-    // croppedAvatar: state.profile.croppedAvatar,
-    //settings: state.auth.settings,
-    //editingForm: state.people.editingForm,
-  };
-}
-
-export default connect(mapStateToProps, {
-  // fetchProfile,
-  // updateProfile,
-  //toggleAvatarEditor,
-  //setAvatarMax,
-  // updateCreatedAvatar,
-  // updateProfileInUsers,
-  // setCreatedAvatar,
-  // setCroppedAvatar,
-  // resetProfile,
-  //setIsEditingForm,
-})(
-  inject(({ peopleStore }) => ({
-    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
-    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
-    resetProfile: peopleStore.targetUserStore.resetTargetUser,
-    fetchProfile: peopleStore.targetUserStore.getTargetUser,
-    profile: peopleStore.targetUserStore.targetUser,
-    setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
-    setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
-    updateProfile: peopleStore.targetUserStore.updateProfile,
-    updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
-    getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
-    createdAvatar: peopleStore.avatarEditorStore.createdAvatar,
-    avatarMax: peopleStore.avatarEditorStore.avatarMax,
-    croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
-  }))(observer(withRouter(withTranslation()(CreateAvatarEditorPage))))
-);
-
-// export default connect(mapStateToProps, {
-//   fetchProfile,
-//   updateProfile,
-//   toggleAvatarEditor,
-//   setAvatarMax,
-//   updateCreatedAvatar,
-//   updateProfileInUsers,
-//   setCreatedAvatar,
-//   setCroppedAvatar,
-//   resetProfile,
-//   setIsEditingForm,
-// })(withTranslation()(withRouter(CreateAvatarEditorPage)));
+export default inject(({ auth, peopleStore }) => ({
+  setDocumentTitle: auth.setDocumentTitle,
+  setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+  toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+  resetProfile: peopleStore.targetUserStore.resetTargetUser,
+  fetchProfile: peopleStore.targetUserStore.getTargetUser,
+  profile: peopleStore.targetUserStore.targetUser,
+  setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
+  setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
+  updateProfile: peopleStore.targetUserStore.updateProfile,
+  updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
+  getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+  createdAvatar: peopleStore.avatarEditorStore.createdAvatar,
+  avatarMax: peopleStore.avatarEditorStore.avatarMax,
+  croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
+}))(observer(withRouter(withTranslation()(CreateAvatarEditorPage))));

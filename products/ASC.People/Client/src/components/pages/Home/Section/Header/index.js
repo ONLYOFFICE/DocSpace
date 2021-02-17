@@ -8,16 +8,6 @@ import {
   utils,
 } from "asc-web-components";
 import { Headline, toastr, Loaders, constants } from "asc-web-common";
-import { connect } from "react-redux";
-import {
-  hasAnybodySelected,
-  hasUsersToMakeEmployees,
-  hasUsersToMakeGuests,
-  hasUsersToActivate,
-  hasUsersToDisable,
-  hasUsersToInvite,
-  hasUsersToRemove,
-} from "../../../../../store/people/selectors";
 import { withTranslation } from "react-i18next";
 import {
   InviteDialog,
@@ -494,42 +484,28 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    // hasAnybodySelected: hasAnybodySelected(state),
-    // hasUsersToMakeEmployees: hasUsersToMakeEmployees(state),
-    // hasUsersToMakeGuests: hasUsersToMakeGuests(state),
-    // hasUsersToActivate: hasUsersToActivate(state),
-    // hasUsersToDisable: hasUsersToDisable(state),
-    // hasUsersToInvite: hasUsersToInvite(state),
-    // hasUsersToRemove: hasUsersToRemove(state),
-  };
-};
-
-export default connect(mapStateToProps)(
-  inject(({ auth, peopleStore }) => ({
-    customNames: auth.settingsStore.customNames,
-    homepage: auth.settingsStore.homepage,
-    isLoaded: auth.isLoaded,
-    isAdmin: auth.isAdmin,
-    fetchPeople: peopleStore.usersStore.getUsersList,
-    selection: peopleStore.selectionStore.selection,
-    selectByStatus: peopleStore.selectionStore.selectByStatus,
-    isHeaderVisible: peopleStore.headerMenuStore.isHeaderVisible,
-    isHeaderIndeterminate: peopleStore.headerMenuStore.isHeaderIndeterminate,
-    isHeaderChecked: peopleStore.headerMenuStore.isHeaderChecked,
-    clearSelection: peopleStore.selectionStore.clearSelection,
-    selectAll: peopleStore.selectionStore.selectAll,
-    hasAnybodySelected: peopleStore.selectionStore.hasAnybodySelected,
-    hasUsersToMakeEmployees: peopleStore.selectionStore.hasUsersToMakeEmployees,
-    hasUsersToMakeGuests: peopleStore.selectionStore.hasUsersToMakeGuests,
-    hasUsersToActivate: peopleStore.selectionStore.hasUsersToActivate,
-    hasUsersToDisable: peopleStore.selectionStore.hasUsersToDisable,
-    hasUsersToInvite: peopleStore.selectionStore.hasUsersToInvite,
-    hasUsersToRemove: peopleStore.selectionStore.hasUsersToRemove,
-    deleteGroup: peopleStore.groupsStore.deleteGroup,
-    removeUser: peopleStore.usersStore.removeUser,
-    updateUserStatus: peopleStore.usersStore.updateUserStatus,
-    group: peopleStore.selectedGroupStore.group,
-  }))(observer(withTranslation()(withRouter(SectionHeaderContent))))
-);
+export default inject(({ auth, peopleStore }) => ({
+  customNames: auth.settingsStore.customNames,
+  homepage: auth.settingsStore.homepage,
+  isLoaded: auth.isLoaded,
+  isAdmin: auth.isAdmin,
+  fetchPeople: peopleStore.usersStore.getUsersList,
+  selection: peopleStore.selectionStore.selection,
+  selectByStatus: peopleStore.selectionStore.selectByStatus,
+  isHeaderVisible: peopleStore.headerMenuStore.isHeaderVisible,
+  isHeaderIndeterminate: peopleStore.headerMenuStore.isHeaderIndeterminate,
+  isHeaderChecked: peopleStore.headerMenuStore.isHeaderChecked,
+  clearSelection: peopleStore.selectionStore.clearSelection,
+  selectAll: peopleStore.selectionStore.selectAll,
+  hasAnybodySelected: peopleStore.selectionStore.hasAnybodySelected,
+  hasUsersToMakeEmployees: peopleStore.selectionStore.hasUsersToMakeEmployees,
+  hasUsersToMakeGuests: peopleStore.selectionStore.hasUsersToMakeGuests,
+  hasUsersToActivate: peopleStore.selectionStore.hasUsersToActivate,
+  hasUsersToDisable: peopleStore.selectionStore.hasUsersToDisable,
+  hasUsersToInvite: peopleStore.selectionStore.hasUsersToInvite,
+  hasUsersToRemove: peopleStore.selectionStore.hasUsersToRemove,
+  deleteGroup: peopleStore.groupsStore.deleteGroup,
+  removeUser: peopleStore.usersStore.removeUser,
+  updateUserStatus: peopleStore.usersStore.updateUserStatus,
+  group: peopleStore.selectedGroupStore.group,
+}))(observer(withTranslation()(withRouter(SectionHeaderContent))));

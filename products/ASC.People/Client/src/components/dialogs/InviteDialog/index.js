@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import {
   ModalDialog,
@@ -12,9 +11,8 @@ import {
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import copy from "copy-to-clipboard";
-import { api, utils, store } from "asc-web-common";
+import { api, utils } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
-import { getPortalInviteLinks } from "../../../store/portal/actions";
 import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
@@ -23,7 +21,6 @@ const i18n = createI18N({
 });
 const { getShortenedLink } = api.portal;
 const { changeLanguage } = utils;
-const { settingsStore } = store;
 
 const textAreaName = "link-textarea";
 
@@ -211,21 +208,6 @@ class InviteDialogComponent extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    //settings: state.auth.settings.hasShortenService,
-    // userInvitationLink: state.portal.inviteLinks.userLink,
-    // guestInvitationLink: state.portal.inviteLinks.guestLink,
-    //guestsCaption: state.auth.settings.customNames.guestsCaption,
-  };
-};
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     getPortalInviteLinks: () => dispatch(getPortalInviteLinks()),
-//   };
-// };
-
 const InviteDialogTranslated = withTranslation()(InviteDialogComponent);
 
 const InviteDialog = (props) => (
@@ -238,30 +220,10 @@ InviteDialog.propTypes = {
   onCloseButton: PropTypes.func.isRequired,
 };
 
-// const InviteDialogWrapper = observer((props) => {
-//   return (
-//     <InviteDialog
-//       settings={settingsStore.hasShortenService}
-//       guestsCaption={settingsStore.customNames.guestsCaption}
-//       {...props}
-//     />
-//   );
-// });
-
-export default connect(
-  mapStateToProps
-  //mapDispatchToProps
-)(
-  inject(({ auth, peopleStore }) => ({
-    settings: auth.settingsStore,
-    guestsCaption: auth.settingsStore.customNames.guestsCaption,
-    getPortalInviteLinks: peopleStore.inviteLinksStore.getPortalInviteLinks,
-    userInvitationLink: peopleStore.inviteLinksStore.inviteLinks.userLink,
-    guestInvitationLink: peopleStore.inviteLinksStore.inviteLinks.guestLink,
-  }))(observer(InviteDialog))
-);
-
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(InviteDialogWrapper);
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  guestsCaption: auth.settingsStore.customNames.guestsCaption,
+  getPortalInviteLinks: peopleStore.inviteLinksStore.getPortalInviteLinks,
+  userInvitationLink: peopleStore.inviteLinksStore.inviteLinks.userLink,
+  guestInvitationLink: peopleStore.inviteLinksStore.inviteLinks.guestLink,
+}))(observer(InviteDialog));

@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
 import { api, constants, store } from "asc-web-common";
 import { isMobileOnly } from "react-device-detect";
 
@@ -19,6 +19,7 @@ class UsersStore {
       updateUserStatus: action,
       updateUserType: action,
       updateProfileInUsers: action,
+      peopleList: computed,
     });
   }
 
@@ -37,7 +38,6 @@ class UsersStore {
     this.peopleStore.selectedGroupStore.setSelectedGroup(filterData.group);
 
     this.users = res.items;
-    console.log("user: ", this.users.length);
   };
 
   setUsers = (users) => {
@@ -201,7 +201,7 @@ class UsersStore {
     return this.peopleStore.selectionStore.selection.some((el) => el.id === id);
   };
 
-  composePeopleList = () => {
+  get peopleList() {
     const list = this.users.map((user) => {
       const {
         id,
@@ -251,7 +251,7 @@ class UsersStore {
     });
 
     return list;
-  };
+  }
 }
 
 export default UsersStore;

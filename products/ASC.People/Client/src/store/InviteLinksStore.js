@@ -19,7 +19,6 @@ class InviteLinksStore {
     if (!isViewerAdmin) return Promise.resolve();
 
     const res = await api.portal.getInvitationLinks();
-    debugger;
     this.inviteLinks.userLink = res.userLink;
     this.inviteLinks.guestLink = res.guestLink;
     console.log(this.inviteLinks);

@@ -8,35 +8,14 @@ import {
   TextInput,
   utils,
 } from "asc-web-components";
-import {
-  PeopleSelector,
-  store as initStore,
-  toastr,
-  Loaders,
-} from "asc-web-common";
-import {
-  createGroup,
-  resetGroup,
-  updateGroup,
-} from "../../../../../store/group/actions";
-import { selectGroup, setFilter } from "../../../../../store/people/actions";
-
+import { PeopleSelector, toastr, Loaders } from "asc-web-common";
 import { GUID_EMPTY } from "../../../../../helpers/constants";
 import PropTypes from "prop-types";
 import React from "react";
-import { connect } from "react-redux";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-
-const {
-  getCurrentProductName,
-  //getSettings,
-  getCurrentUser,
-} = initStore.auth.selectors;
-
-const { settingsStore } = initStore;
 
 const MainContainer = styled.div`
   display: flex;
@@ -492,64 +471,23 @@ const convertGroups = (groups) => {
     : [];
 };
 
-function mapStateToProps(state) {
-  //const currentModuleName = getCurrentProductName(state);
-  //const settings = getSettings(state);
-  // const {
-  //   groupHeadCaption,
-  //   groupsCaption,
-  //   groupCaption,
-  // } = settings.customNames;
-  //const { isLoaded } = state.auth;
-
+export default inject(({ auth, peopleStore }) => {
+  const groups = convertGroups(peopleStore.groupsStore.groups);
   return {
-    //settings,
-    //group: state.group.targetGroup,
-    //groups: convertGroups(state.people.groups),
-    //            users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
-    // groupHeadCaption,
-    // groupsCaption,
-    // groupCaption,
-    //me: getCurrentUser(state),
-    //currentModuleName,
-    //filter: state.people.filter,
-    // isLoaded,
+    settings: auth.settingsStore,
+    groupCaption: auth.settingsStore.customNames.groupCaption,
+    groupsCaption: auth.settingsStore.customNames.groupsCaption,
+    groupHeadCaption: auth.settingsStore.customNames.groupHeadCaption,
+    isLoaded: auth.isLoaded,
+    currentModuleName: auth.product.title,
+    me: auth.userStore.user,
+    groups,
+    filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
+    selectGroup: peopleStore.selectedGroupStore.selectGroup,
+    updateGroup: peopleStore.groupsStore.updateGroup,
+    createGroup: peopleStore.groupsStore.createGroup,
+    group: peopleStore.selectedGroupStore.targetedGroup,
+    resetGroup: peopleStore.selectedGroupStore.resetGroup,
   };
-}
-
-export default connect(mapStateToProps, {
-  // resetGroup,
-  //createGroup,
-  //updateGroup,
-  // selectGroup,
-  // setFilter,
-})(
-  inject(({ auth, peopleStore }) => {
-    const groups = convertGroups(peopleStore.groupsStore.groups);
-    return {
-      settings: auth.settingsStore,
-      groupCaption: auth.settingsStore.customNames.groupCaption,
-      groupsCaption: auth.settingsStore.customNames.groupsCaption,
-      groupHeadCaption: auth.settingsStore.customNames.groupHeadCaption,
-      isLoaded: auth.isLoaded,
-      currentModuleName: auth.product.title,
-      me: auth.userStore.user,
-      groups,
-      filter: peopleStore.filterStore.filter,
-      setFilter: peopleStore.filterStore.setFilterParams,
-      selectGroup: peopleStore.selectedGroupStore.selectGroup,
-      updateGroup: peopleStore.groupsStore.updateGroup,
-      createGroup: peopleStore.groupsStore.createGroup,
-      group: peopleStore.selectedGroupStore.targetedGroup,
-      resetGroup: peopleStore.selectedGroupStore.resetGroup,
-    };
-  })(observer(withRouter(withTranslation()(SectionBodyContent))))
-);
-
-// export default connect(mapStateToProps, {
-//   resetGroup,
-//   createGroup,
-//   updateGroup,
-//   selectGroup,
-//   setFilter,
-// })(withRouter(withTranslation()(SectionBodyContentWrapper)));
+})(observer(withRouter(withTranslation()(SectionBodyContent))));

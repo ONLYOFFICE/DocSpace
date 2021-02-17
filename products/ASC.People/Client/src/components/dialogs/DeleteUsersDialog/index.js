@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import {
@@ -14,10 +13,8 @@ import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
-import { removeUser, setSelected } from "../../../store/people/actions";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";
-import { getUsersToRemoveIds } from "../../../store/people/selectors";
 import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "DeleteUsersDialog",
@@ -188,28 +185,10 @@ DeleteUsersDialog.propTypes = {
   removeUser: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  // const { filter, selection } = state.people;
-
-  // const usersToRemoveIds = getUsersToRemoveIds(state);
-
-  return {
-    //filter,
-    // userIds: usersToRemoveIds,
-    //selectedUsers: selection,
-  };
-};
-
-// export default connect(mapStateToProps, { removeUser, setSelected })(
-//   withRouter(DeleteUsersDialog)
-// );
-
-export default connect(mapStateToProps)(
-  inject(({ peopleStore }) => ({
-    filter: peopleStore.filterStore.filter,
-    removeUser: peopleStore.usersStore.removeUser,
-    selectedUsers: peopleStore.selectionStore.selection,
-    setSelected: peopleStore.selectionStore.setSelected,
-    userIds: peopleStore.selectionStore.getUsersToRemoveIds,
-  }))(observer(withRouter(DeleteUsersDialog)))
-);
+export default inject(({ peopleStore }) => ({
+  filter: peopleStore.filterStore.filter,
+  removeUser: peopleStore.usersStore.removeUser,
+  selectedUsers: peopleStore.selectionStore.selection,
+  setSelected: peopleStore.selectionStore.setSelected,
+  userIds: peopleStore.selectionStore.getUsersToRemoveIds,
+}))(observer(withRouter(DeleteUsersDialog)));

@@ -6,21 +6,20 @@ import {
   ToggleContent,
   Link,
 } from "asc-web-components";
-import {
-  getUserContacts,
-  getUserRole,
-} from "../../../../../store/people/selectors";
-
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import React from "react";
-import { store } from "asc-web-common";
+import { utils } from "asc-web-common";
 import styled from "styled-components";
 
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import {
+  getUserContacts,
+  getUserRole,
+} from "../../../../../helpers/people-helpers";
 
-const { isMe } = store.auth.selectors;
+const { isMe } = utils;
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -91,6 +90,14 @@ const stringFormat = (string, data) =>
   string.replace(/\{(\d+)\}/g, (m, n) => data[n] || m);
 
 class SectionBodyContent extends React.PureComponent {
+  componentDidMount() {
+    const { cultures, getPortalCultures, profile, viewer } = this.props;
+    const isSelf = isMe(viewer, profile.userName);
+    if (isSelf && !cultures.length) {
+      getPortalCultures();
+    }
+  }
+
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
 
   onEditProfileClick = () =>
@@ -99,7 +106,7 @@ class SectionBodyContent extends React.PureComponent {
     );
 
   render() {
-    const { profile, settings, isAdmin, viewer, t } = this.props;
+    const { profile, cultures, culture, isAdmin, viewer, t } = this.props;
 
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -111,6 +118,8 @@ class SectionBodyContent extends React.PureComponent {
       null;
     const infoContacts = contacts && createContacts(contacts.contact);
     const isSelf = isMe(viewer, profile.userName);
+
+    console.log("Profile", cultures, culture);
 
     return (
       <ProfileWrapper>
@@ -138,8 +147,8 @@ class SectionBodyContent extends React.PureComponent {
           isSelf={isSelf}
           isAdmin={isAdmin}
           t={t}
-          cultures={settings.cultures}
-          culture={settings.culture}
+          cultures={cultures}
+          culture={culture}
         />
         {isSelf && false && (
           <ToggleWrapper isSelf={true}>
@@ -181,26 +190,13 @@ class SectionBodyContent extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    //settings: state.auth.settings,
-    // profile: state.profile.targetUser,
-    // isAdmin: isAdmin(state),
-    //viewer: state.auth.user,
-  };
-};
-
-// const SectionBodyContentWrapper = observer((props) => {
-//   return <SectionBodyContent settings={settingsStore.settings} {...props} />;
-// });
-
 export default inject(({ auth, peopleStore }) => ({
   settings: auth.settingsStore,
+  homepage: auth.settingsStore.homepage,
+  cultures: auth.settingsStore.cultures,
+  culture: auth.settingsStore.culture,
+  getPortalCultures: auth.settingsStore.getPortalCultures,
   isAdmin: auth.isAdmin,
   profile: peopleStore.targetUserStore.targetUser,
   viewer: auth.userStore.user,
 }))(observer(withRouter(withTranslation()(SectionBodyContent))));
-
-// export default connect(mapStateToProps)(
-//   withRouter(withTranslation()(SectionBodyContentWrapper))
-// );

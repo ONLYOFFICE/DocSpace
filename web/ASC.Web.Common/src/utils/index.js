@@ -125,3 +125,31 @@ export function tryRedirectTo(page) {
 
   return true;
 }
+
+export function isMe(user, userName) {
+  return (
+    user && user.id && (userName === "@self" || user.userName === userName)
+  );
+}
+
+export function isAdmin(currentUser, currentProductId) {
+  let productName = null;
+
+  switch (currentProductId) {
+    case "f4d98afd-d336-4332-8778-3c6945c81ea0":
+      productName = "people";
+      break;
+    case "e67be73d-f9ae-4ce1-8fec-1880cb518cb4":
+      productName = "documents";
+      break;
+    default:
+      break;
+  }
+
+  const isProductAdmin =
+    currentUser.listAdminModules && productName
+      ? currentUser.listAdminModules.includes(productName)
+      : false;
+
+  return currentUser.isAdmin || currentUser.isOwner || isProductAdmin;
+}

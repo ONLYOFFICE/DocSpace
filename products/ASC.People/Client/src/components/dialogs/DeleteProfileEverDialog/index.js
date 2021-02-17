@@ -1,11 +1,10 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
-import { api, utils, toastr, store } from "asc-web-common";
-import { fetchPeople } from "../../../store/people/actions";
+import { api, utils, toastr } from "asc-web-common";
+
 import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
@@ -15,10 +14,9 @@ const i18n = createI18N({
   localesPath: "dialogs/DeleteProfileEverDialog",
 });
 
-const { deleteUser } = api.people;
+const { deleteUser } = api.people; //TODO: Move to action
 const { Filter } = api;
 const { changeLanguage } = utils;
-const { settingsStore } = store;
 
 class DeleteProfileEverDialogComponent extends React.Component {
   constructor(props) {

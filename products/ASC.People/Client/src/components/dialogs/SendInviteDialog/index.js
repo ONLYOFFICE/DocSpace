@@ -15,9 +15,6 @@ import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";
-import { connect } from "react-redux";
-import { getUsersToInviteIds } from "../../../store/people/selectors";
-import { setSelected } from "../../../store/people/actions";
 import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
@@ -176,20 +173,8 @@ SendInviteDialog.propTypes = {
   setSelected: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  // const { selection } = state.people;
-  // const usersToInviteIds = getUsersToInviteIds(state);
-
-  return {
-    // userIds: usersToInviteIds,
-    //selectedUsers: selection,
-  };
-};
-
-export default connect(mapStateToProps)(
-  inject(({ peopleStore }) => ({
-    selectedUsers: peopleStore.selectionStore.selection,
-    setSelected: peopleStore.selectionStore.setSelected,
-    userIds: peopleStore.selectionStore.getUsersToInviteIds,
-  }))(observer(withRouter(SendInviteDialog)))
-);
+export default inject(({ peopleStore }) => ({
+  selectedUsers: peopleStore.selectionStore.selection,
+  setSelected: peopleStore.selectionStore.setSelected,
+  userIds: peopleStore.selectionStore.getUsersToInviteIds,
+}))(observer(withRouter(SendInviteDialog)));

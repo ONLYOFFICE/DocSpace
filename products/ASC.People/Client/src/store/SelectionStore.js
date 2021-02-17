@@ -1,5 +1,6 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import { constants, store } from "asc-web-common";
+import { getUserStatus } from "../helpers/people-helpers";
 
 const { EmployeeStatus, EmployeeActivationStatus } = constants;
 const { authStore } = store;
@@ -16,6 +17,7 @@ class SelectionStore {
       selectUser: action,
       deselectUser: action,
       selectAll: action,
+      setSelection: action,
       clearSelection: action,
       selectByStatus: action,
       setSelected: action,
@@ -35,6 +37,10 @@ class SelectionStore {
     });
   }
 
+  setSelection = (selection) => {
+    this.selection = selection;
+  };
+
   selectUser = (user) => {
     const u = user;
     return this.selection.push(u);
@@ -46,24 +52,55 @@ class SelectionStore {
   };
 
   selectAll = () => {
-    const list = this.peopleStore.usersStore.composePeopleList();
-    this.selection = list;
+    const list = this.peopleStore.usersStore.peopleList;
+    this.setSelection(list);
   };
 
   clearSelection = () => {
-    return (this.selection = []);
+    return this.setSelection([]);
   };
 
   selectByStatus = (status) => {
-    const list = this.peopleStore.usersStore
-      .composePeopleList()
-      .filter((u) => u.status === status);
+    const list = this.peopleStore.usersStore.peopleList.filter(
+      (u) => u.status === status
+    );
 
     return (this.selection = list);
   };
 
+  getUserChecked = (user, selected) => {
+    const status = getUserStatus(user);
+    switch (selected) {
+      case "all":
+        return true;
+      case "active":
+        return status === "normal";
+      case "disabled":
+        return status === "disabled";
+      case "invited":
+        return status === "pending";
+      default:
+        return false;
+    }
+  };
+
+  getUsersBySelected = (users, selected) => {
+    let newSelection = [];
+    users.forEach((user) => {
+      const checked = this.getUserChecked(user, selected);
+
+      if (checked) newSelection.push(user);
+    });
+
+    return newSelection;
+  };
+
   setSelected = (selected) => {
-    return (this.selected = selected);
+    this.selected = selected;
+    const list = this.peopleStore.usersStore.peopleList;
+    this.setSelection(this.getUsersBySelected(list, selected));
+
+    return selected;
   };
 
   get hasAnybodySelected() {

@@ -1,12 +1,6 @@
 import { createSelector } from "reselect";
 import isEmpty from "lodash/isEmpty";
 
-export function isMe(user, userName) {
-  return (
-    user && user.id && (userName === "@self" || user.userName === userName)
-  );
-}
-
 const toModuleWrapper = (item, iconName) => {
   return {
     id: item.id,

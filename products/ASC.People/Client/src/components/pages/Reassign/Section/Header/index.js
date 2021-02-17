@@ -1,13 +1,10 @@
 import React, { useCallback } from "react";
-import { connect } from "react-redux";
 import { IconButton } from "asc-web-components";
-import { Headline, store } from "asc-web-common";
+import { Headline } from "asc-web-common";
 import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
-
-const { settingsStore } = store;
 
 const Wrapper = styled.div`
   display: grid;
@@ -57,23 +54,6 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    // profile: state.profile.targetUser,
-    //settings: state.auth.settings,
-  };
-}
-
-// const SectionHeaderContentWrapper = observer((props) => {
-//   return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
-// });
-
-export default connect(mapStateToProps)(
-  inject(({ auth }) => ({
-    settings: auth.settingsStore,
-  }))(observer(withRouter(SectionHeaderContent)))
-);
-
-// export default connect(mapStateToProps)(
-//   withRouter(SectionHeaderContentWrapper)
-// );
+export default inject(({ auth }) => ({
+  settings: auth.settingsStore,
+}))(observer(withRouter(SectionHeaderContent)));

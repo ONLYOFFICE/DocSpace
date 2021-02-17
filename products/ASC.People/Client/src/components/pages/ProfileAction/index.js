@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Loader } from "asc-web-components";
 import { PageLayout, utils, store, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
@@ -15,11 +13,8 @@ import {
   AvatarEditorPage,
   CreateAvatarEditorPage,
 } from "./Section";
-import { fetchProfile } from "../../../store/profile/actions";
-import { setIsEditingForm } from "../../../store/people/actions";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
-import { setDocumentTitle } from "../../../helpers/utils";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 const i18n = createI18N({
@@ -27,11 +22,17 @@ const i18n = createI18N({
   localesPath: "pages/ProfileAction",
 });
 const { changeLanguage } = utils;
-const { isAdmin } = store.auth.selectors;
 
 class ProfileAction extends React.Component {
   componentDidMount() {
-    const { match, fetchProfile, isEdit, setIsEditingForm, t } = this.props;
+    const {
+      match,
+      fetchProfile,
+      isEdit,
+      setIsEditingForm,
+      t,
+      setDocumentTitle,
+    } = this.props;
     const { userId } = match.params;
 
     setDocumentTitle(t("ProfileAction"));
@@ -140,27 +141,13 @@ const ProfileActionContainer = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    // isVisitor: state.auth.user.isVisitor,
-    // profile: state.profile.targetUser,
-    // isAdmin: isAdmin(state),
-    //isEdit: state.people.editingForm.isEdit,
-    // avatarEditorIsOpen: state.people.avatarEditorIsOpen,
-  };
-}
-
-export default connect(mapStateToProps, {
-  /*fetchProfile*/
-  /*setIsEditingForm*/
-})(
-  inject(({ auth, peopleStore }) => ({
-    isAdmin: auth.isAdmin,
-    isVisitor: auth.userStore.user.isVisitor,
-    isEdit: peopleStore.editingFormStore.isEdit,
-    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
-    fetchProfile: peopleStore.targetUserStore.getTargetUser,
-    profile: peopleStore.targetUserStore.targetUser,
-    avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
-  }))(observer(ProfileActionContainer))
-);
+export default inject(({ auth, peopleStore }) => ({
+  setDocumentTitle: auth.setDocumentTitle,
+  isAdmin: auth.isAdmin,
+  isVisitor: auth.userStore.user.isVisitor,
+  isEdit: peopleStore.editingFormStore.isEdit,
+  setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+  fetchProfile: peopleStore.targetUserStore.getTargetUser,
+  profile: peopleStore.targetUserStore.targetUser,
+  avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
+}))(observer(ProfileActionContainer));

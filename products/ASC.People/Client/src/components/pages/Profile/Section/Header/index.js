@@ -6,13 +6,9 @@ import {
 } from "asc-web-components";
 import { Headline, toastr } from "asc-web-common";
 import { withRouter } from "react-router";
-import {
-  getUserStatus,
-  toEmployeeWrapper,
-} from "../../../../../store/people/selectors";
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
-import { store, api, constants } from "asc-web-common";
+import { store, utils, api, constants } from "asc-web-common";
 import {
   DeleteSelfProfileDialog,
   ChangePasswordDialog,
@@ -21,12 +17,16 @@ import {
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
+import {
+  getUserStatus,
+  toEmployeeWrapper,
+} from "../../../../../helpers/people-helpers";
 
 const i18n = createI18N({
   page: "Profile",
   localesPath: "pages/Profile",
 });
-const { isAdmin, isMe } = store.auth.selectors;
+const { isMe } = utils;
 const {
   resendUserInvites,
   createThumbnailsAvatar,
@@ -294,7 +294,7 @@ class SectionHeaderContent extends React.PureComponent {
 
   getUserContextOptions = (user, viewer) => {
     let status = "";
-    const { t } = this.props;
+    const { t, isAdmin } = this.props;
 
     if (isAdmin || (!isAdmin && isMe(user, viewer.userName))) {
       status = getUserStatus(user);
@@ -495,20 +495,6 @@ class SectionHeaderContent extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    //settings: state.auth.settings,
-    // profile: state.profile.targetUser,
-    //viewer: state.auth.user,
-    // isAdmin: isAdmin(state),
-    //filter: state.people.filter,
-  };
-};
-
-// const SectionHeaderContentWrapper = observer((props) => {
-//   return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
-// });
-
 export default inject(({ auth, peopleStore }) => ({
   settings: auth.settingsStore,
   isAdmin: auth.isAdmin,
@@ -522,10 +508,3 @@ export default inject(({ auth, peopleStore }) => ({
   updateProfile: peopleStore.targetUserStore.updateProfile,
   getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
 }))(observer(withRouter(withTranslation()(SectionHeaderContent))));
-
-// export default connect(mapStateToProps, {
-//   updateUserStatus,
-//   fetchProfile,
-//   updateProfile,
-//   setFilter,
-// })(withRouter(withTranslation()(SectionHeaderContentWrapper)));

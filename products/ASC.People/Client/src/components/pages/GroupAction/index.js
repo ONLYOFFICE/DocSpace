@@ -9,7 +9,6 @@ import {
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
-import { setDocumentTitle } from "../../../helpers/utils";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 const i18n = createI18N({
@@ -20,7 +19,7 @@ const { changeLanguage } = utils;
 
 class GroupAction extends React.Component {
   componentDidMount() {
-    const { match, fetchGroup, t } = this.props;
+    const { match, fetchGroup, t, setDocumentTitle } = this.props;
     const { groupId } = match.params;
 
     setDocumentTitle(t("GroupAction"));
@@ -111,15 +110,8 @@ const GroupActionContainer = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    //settings: state.auth.settings,
-    //group: state.group.targetGroup,
-    // isAdmin: isAdmin(state),
-  };
-}
-
 export default inject(({ auth, peopleStore }) => ({
+  setDocumentTitle: auth.setDocumentTitle,
   isAdmin: auth.isAdmin,
   fetchGroup: peopleStore.selectedGroupStore.setTargetedGroup,
   group: peopleStore.selectedGroupStore.targetedGroup,

@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import {
@@ -15,12 +14,8 @@ import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { utils, toastr, constants } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { updateUserType, setSelected } from "../../../store/people/actions";
 import { createI18N } from "../../../helpers/i18n";
-import {
-  getUsersToMakeEmployeesIds,
-  getUsersToMakeGuestsIds,
-} from "../../../store/people/selectors";
+
 import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
@@ -190,28 +185,13 @@ ChangeUserTypeDialog.propTypes = {
   selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-const mapStateToProps = (state, ownProps) => {
-  // const { selection } = state.people;
-  const { userType } = ownProps;
-
-  return {
-    // userIds:
-    //   userType === EmployeeType.User
-    //     ? getUsersToMakeEmployeesIds(state)
-    //     : getUsersToMakeGuestsIds(state),
-    //selectedUsers: selection,
-  };
-};
-
-export default connect(mapStateToProps)(
-  inject(({ peopleStore }) => ({
-    filter: peopleStore.filterStore.filter,
-    updateUserType: peopleStore.usersStore.updateUserType,
-    selectedUsers: peopleStore.selectionStore.selection,
-    setSelected: peopleStore.selectionStore.setSelected,
-    userIds:
-      "userType" === EmployeeType.User
-        ? peopleStore.selectionStore.getUsersToMakeEmployeesIds
-        : peopleStore.selectionStore.getUsersToMakeGuestsIds,
-  }))(observer(withRouter(ChangeUserTypeDialog)))
-);
+export default inject(({ peopleStore }, ownProps) => ({
+  filter: peopleStore.filterStore.filter,
+  updateUserType: peopleStore.usersStore.updateUserType,
+  selectedUsers: peopleStore.selectionStore.selection,
+  setSelected: peopleStore.selectionStore.setSelected,
+  userIds:
+    ownProps.userType === EmployeeType.User
+      ? peopleStore.selectionStore.getUsersToMakeEmployeesIds
+      : peopleStore.selectionStore.getUsersToMakeGuestsIds,
+}))(observer(withRouter(ChangeUserTypeDialog)));

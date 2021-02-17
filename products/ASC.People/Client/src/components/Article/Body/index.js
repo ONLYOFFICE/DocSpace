@@ -1,19 +1,11 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
-import { setIsLoading } from "../../../store/people/actions";
-import { getSelectedGroup } from "../../../store/people/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import {
-  history,
-  utils as commonUtils,
-  store as initStore,
-  Loaders,
-} from "asc-web-common";
+import { history, utils as commonUtils, Loaders } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 import styled, { css } from "styled-components";
-import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
+import { getSelectedGroup } from "../../../helpers/people-helpers";
 
 const i18n = createI18N({
   page: "Article",
@@ -21,7 +13,6 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = commonUtils;
-const { isAdmin } = initStore.auth.selectors;
 
 const StyledTreeMenu = styled(TreeMenu)`
   ${(props) =>
@@ -80,7 +71,7 @@ class ArticleBodyContent extends React.Component {
   }
 
   changeTitleDocument(data = null) {
-    const { groups, selectedKeys } = this.props;
+    const { groups, selectedKeys, setDocumentTitle } = this.props;
 
     const currentGroup = getSelectedGroup(
       groups,
@@ -237,6 +228,7 @@ export default inject(({ auth, peopleStore }) => {
     ? [peopleStore.selectedGroupStore.selectedGroup]
     : ["root"];
   return {
+    setDocumentTitle: auth.setDocumentTitle,
     isLoaded: auth.isLoaded,
     isAdmin: auth.isAdmin,
     groups,

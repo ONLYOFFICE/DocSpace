@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 import { withTranslation, Trans } from "react-i18next";
 import {
   Row,
@@ -15,7 +14,7 @@ import {
 } from "asc-web-components";
 import UserContent from "./userContent";
 import equal from "fast-deep-equal/react";
-import { store, api, constants, toastr, Loaders } from "asc-web-common";
+import { api, constants, toastr, Loaders } from "asc-web-common";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,
@@ -32,8 +31,6 @@ const i18n = createI18N({
 });
 const { Consumer } = utils.context;
 const { isArrayEqual } = utils.array;
-const { getIsLoadedSection } = store.auth.selectors;
-const { setIsLoadedSection } = store.auth.actions;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
 
@@ -51,28 +48,21 @@ class SectionBodyContent extends React.PureComponent {
         deleteProfileEver: false,
       },
       isEmailValid: false,
+      isLoadedSection: true,
     };
   }
 
   componentDidMount() {
-    const {
-      isLoaded,
-      fetchPeople,
-      filter,
-      setIsLoadedSection,
-      peopleList,
-    } = this.props;
-    if (!isLoaded) return;
-    if (peopleList.length <= 0) {
-      fetchPeople(filter)
-        .then(() =>
-          isLoaded ? setIsLoadedSection(true) : setIsLoadedSection()
-        )
-        .catch((error) => {
-          isLoaded ? setIsLoadedSection(true) : setIsLoadedSection();
-          toastr.error(error);
-        });
-    }
+    const { isLoaded, fetchPeople, filter, peopleList } = this.props;
+    if (!isLoaded || peopleList.length > 0) return;
+
+    this.setState({ isLoadedSection: false });
+
+    fetchPeople(filter)
+      .catch((error) => {
+        toastr.error(error);
+      })
+      .finally(() => this.setState({ isLoadedSection: isLoaded }));
   }
 
   findUserById = (id) => this.props.peopleList.find((man) => man.id === id);
@@ -363,7 +353,6 @@ class SectionBodyContent extends React.PureComponent {
     //console.log("Home SectionBodyContent render()");
     const {
       isLoaded,
-      isLoadedSection,
       peopleList,
       history,
       settings,
@@ -377,7 +366,7 @@ class SectionBodyContent extends React.PureComponent {
       currentUserId,
     } = this.props;
 
-    const { dialogsVisible, user } = this.state;
+    const { dialogsVisible, user, isLoadedSection } = this.state;
 
     return !isLoaded || (isMobile && isLoading) || !isLoadedSection ? (
       <Loaders.Rows isRectangle={false} />
@@ -523,26 +512,18 @@ class SectionBodyContent extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isLoadedSection: getIsLoadedSection(state),
-  };
-};
-
-export default connect(mapStateToProps, { setIsLoadedSection })(
-  inject(({ auth, peopleStore }) => ({
-    settings: auth.settingsStore,
-    isLoaded: auth.isLoaded,
-    isAdmin: auth.isAdmin,
-    currentUserId: auth.userStore.user.id,
-    fetchPeople: peopleStore.usersStore.getUsersList,
-    peopleList: peopleStore.usersStore.composePeopleList(),
-    filter: peopleStore.filterStore.filter,
-    resetFilter: peopleStore.filterStore.resetFilter,
-    selectUser: peopleStore.selectionStore.selectUser,
-    deselectUser: peopleStore.selectionStore.deselectUser,
-    selectGroup: peopleStore.selectedGroupStore.selectGroup,
-    updateUserStatus: peopleStore.usersStore.updateUserStatus,
-    isLoading: peopleStore.isLoading,
-  }))(observer(withRouter(withTranslation()(SectionBodyContent))))
-);
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  isLoaded: auth.isLoaded,
+  isAdmin: auth.isAdmin,
+  currentUserId: auth.userStore.user.id,
+  fetchPeople: peopleStore.usersStore.getUsersList,
+  peopleList: peopleStore.usersStore.peopleList,
+  filter: peopleStore.filterStore.filter,
+  resetFilter: peopleStore.resetFilter,
+  selectUser: peopleStore.selectionStore.selectUser,
+  deselectUser: peopleStore.selectionStore.deselectUser,
+  selectGroup: peopleStore.selectedGroupStore.selectGroup,
+  updateUserStatus: peopleStore.usersStore.updateUserStatus,
+  isLoading: peopleStore.isLoading,
+}))(observer(withRouter(withTranslation()(SectionBodyContent))));

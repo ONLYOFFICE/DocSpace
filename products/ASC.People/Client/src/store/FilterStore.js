@@ -25,6 +25,7 @@ class FilterStore {
       setFilterParams: action,
       setFilterUrl: action,
       resetFilter: action,
+      setFilter: action,
     });
   }
 
@@ -68,11 +69,15 @@ class FilterStore {
 
   setFilterParams = (data) => {
     this.setFilterUrl(data);
-    return (this.filter = data);
+    this.setFilter(data);
   };
 
   resetFilter = () => {
-    return (this.filter = Filter.getDefault());
+    this.setFilter(Filter.getDefault());
+  };
+
+  setFilter = (filter) => {
+    this.filter = filter;
   };
 }
 

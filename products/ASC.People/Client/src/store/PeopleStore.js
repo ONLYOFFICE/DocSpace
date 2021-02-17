@@ -31,32 +31,23 @@ class PeopleStore {
   isLoading = false;
 
   constructor() {
-    this.setGroupsStore(new GroupsStore(this));
-    this.setUsersStore(new UsersStore(this));
-    this.setTargetUserStore(new TargetUserStore(this));
-    this.setSelectedGroupStore(new SelectedGroupStore(this));
-    this.setEditingFormStore(new EditingFormStore(this));
-    this.setFilterStore(new FilterStore(this));
-    this.setSelectionStore(new SelectionStore(this));
-    this.setHeaderMenuStore(new HeaderMenuStore(this));
-    this.setAvatarEditorStore(new AvatarEditorStore(this));
-    this.setInviteLinksStore(new InviteLinksStore(this));
+    this.groupsStore = new GroupsStore(this);
+    this.usersStore = new UsersStore(this);
+    this.targetUserStore = new TargetUserStore(this);
+    this.selectedGroupStore = new SelectedGroupStore(this);
+    this.editingFormStore = new EditingFormStore(this);
+    this.filterStore = new FilterStore();
+    this.selectionStore = new SelectionStore(this);
+    this.headerMenuStore = new HeaderMenuStore(this);
+    this.avatarEditorStore = new AvatarEditorStore(this);
+    this.inviteLinksStore = new InviteLinksStore(this);
 
     makeObservable(this, {
       isLoading: observable,
       setIsLoading: action,
-      setGroupsStore: action,
-      setUsersStore: action,
-      setTargetUserStore: action,
-      setSelectedGroupStore: action,
-      setEditingFormStore: action,
-      setFilterStore: action,
-      setSelectionStore: action,
-      setHeaderMenuStore: action,
-      setAvatarEditorStore: action,
-      setInviteLinksStore: action,
       init: action,
       isPeoplesAdmin: computed,
+      resetFilter: action,
     });
   }
 
@@ -89,36 +80,20 @@ class PeopleStore {
     this.isLoading = loading;
   };
 
-  setGroupsStore = (store) => {
-    this.groupsStore = store;
-  };
-  setUsersStore = (store) => {
-    this.usersStore = store;
-  };
-  setTargetUserStore = (store) => {
-    this.targetUserStore = store;
-  };
-  setSelectedGroupStore = (store) => {
-    this.selectedGroupStore = store;
-  };
-  setEditingFormStore = (store) => {
-    this.editingFormStore = store;
-  };
-  setFilterStore = (store) => {
-    this.filterStore = store;
-  };
-  setSelectionStore = (store) => {
-    this.selectionStore = store;
-  };
-  setHeaderMenuStore = (store) => {
-    this.headerMenuStore = store;
-  };
-  setAvatarEditorStore = (store) => {
-    this.avatarEditorStore = store;
-  };
-  setInviteLinksStore = (store) => {
-    this.inviteLinksStore = store;
+  resetFilter = (withoutGroup = false) => {
+    const { filter } = this.filterStore;
+    const { getUsersList } = this.usersStore;
+    let newFilter;
+
+    if (withoutGroup) {
+      const { group } = filter;
+      newFilter = filter.reset(group);
+    } else {
+      newFilter = filter.clone(true);
+    }
+
+    return getUsersList(newFilter);
   };
 }
 
-export default new PeopleStore();
+export default PeopleStore;
