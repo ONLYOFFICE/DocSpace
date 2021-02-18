@@ -46,11 +46,11 @@ namespace ASC.Web.Core.Users
 
         public PeopleNamesItem Item { get; set; }
 
-        public string ItemID { get; set; }
+        public string ItemId { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {
-            return new PeopleNamesSettings { ItemID = PeopleNamesItem.DefaultID };
+            return new PeopleNamesSettings { ItemId = PeopleNamesItem.DefaultID };
         }
     }
 
@@ -187,9 +187,9 @@ namespace ASC.Web.Core.Users
             get
             {
                 var settings = SettingsManager.Load<PeopleNamesSettings>();
-                return PeopleNamesItem.CustomID.Equals(settings.ItemID, StringComparison.InvariantCultureIgnoreCase) && settings.Item != null ?
+                return PeopleNamesItem.CustomID.Equals(settings.ItemId, StringComparison.InvariantCultureIgnoreCase) && settings.Item != null ?
                     settings.Item :
-                    GetPeopleNames(settings.ItemID);
+                    GetPeopleNames(settings.ItemId);
             }
         }
 
@@ -243,7 +243,7 @@ namespace ASC.Web.Core.Users
         public void SetPeopleNames(string schemaId)
         {
             var settings = SettingsManager.Load<PeopleNamesSettings>();
-            settings.ItemID = schemaId;
+            settings.ItemId = schemaId;
             SettingsManager.Save(settings);
         }
 
@@ -251,7 +251,7 @@ namespace ASC.Web.Core.Users
         {
             var settings = SettingsManager.Load<PeopleNamesSettings>();
             custom.Id = PeopleNamesItem.CustomID;
-            settings.ItemID = PeopleNamesItem.CustomID;
+            settings.ItemId = PeopleNamesItem.CustomID;
             settings.Item = custom;
             SettingsManager.Save(settings);
         }
