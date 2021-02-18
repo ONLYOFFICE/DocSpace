@@ -327,7 +327,6 @@ class SectionBodyContent extends React.Component {
       setTreeFolders,
       setIsLoading,
       fetchFiles,
-      //setUpdateTree,
       setAction,
       selection,
     } = this.props;
@@ -347,7 +346,6 @@ class SectionBodyContent extends React.Component {
             const newTreeFolders = treeFolders;
             const folders = data.selectedFolder.folders;
             loopTreeFolders(path, newTreeFolders, folders, null, newItem);
-            //setUpdateTree(true);
             setTreeFolders(newTreeFolders);
           }
         })
@@ -422,7 +420,6 @@ class SectionBodyContent extends React.Component {
       t,
       setSecondaryProgressBarData,
       fetchFiles,
-      //setUpdateTree,
     } = this.props;
     api.files.getProgress().then((res) => {
       const deleteProgress = res.find((x) => x.id === id);
@@ -451,7 +448,6 @@ class SectionBodyContent extends React.Component {
               const folders = data.selectedFolder.folders;
               const foldersCount = data.selectedFolder.foldersCount;
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              //setUpdateTree(true);
               setTreeFolders(newTreeFolders);
             }
             isFolder
@@ -2034,6 +2030,7 @@ export default inject(
     uploadDataStore,
     dialogsStore,
     treeFoldersStore,
+    selectedFolderStore
   }) => {
     const { providers, capabilities } = settingsStore.thirdPartyStore;
     const { mediaViewersFormatsStore, iconFormatsStore } = formatsStore;
@@ -2070,7 +2067,7 @@ export default inject(
       deselectFile,
       filter,
       fileActionStore,
-      selectedFolderStore,
+      
       addFileToRecentlyViewed,
       updateFile,
       currentFolderCount,

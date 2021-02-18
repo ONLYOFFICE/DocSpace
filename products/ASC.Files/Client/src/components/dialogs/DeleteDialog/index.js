@@ -64,7 +64,6 @@ class DeleteDialogComponent extends React.Component {
       clearSecondaryProgressData,
       t,
       fetchFiles,
-      //setUpdateTree,
     } = this.props;
     const successMessage = t("DeleteSelectedElem");
     api.files
@@ -96,7 +95,6 @@ class DeleteDialogComponent extends React.Component {
               const folders = data.selectedFolder.folders;
               const foldersCount = data.selectedFolder.foldersCount;
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              //setUpdateTree(true);
               setTreeFolders(newTreeFolders);
             }
             toastr.success(successMessage);
@@ -286,10 +284,16 @@ const DeleteDialog = (props) => (
 );
 
 export default inject(
-  ({ initFilesStore, filesStore, uploadDataStore, treeFoldersStore }) => {
+  ({
+    initFilesStore,
+    filesStore,
+    uploadDataStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
     const { isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
-    const { fetchFiles, selection, selectedFolderStore, filter } = filesStore;
+    const { fetchFiles, selection, filter } = filesStore;
 
     const {
       treeFolders,

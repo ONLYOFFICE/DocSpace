@@ -1,19 +1,15 @@
 import { makeObservable, observable, computed, action } from "mobx";
 import { api, constants } from "asc-web-common";
-import SelectedFolderStore from "./SelectedFolderStore";
+import selectedFolderStore from "./SelectedFolderStore";
 
 const { FolderType } = constants;
 class TreeFoldersStore {
-  selectedFolderStore = null;
-
   treeFolders = [];
   selectedTreeNode = [];
   expandedKeys = [];
 
   constructor() {
     makeObservable(this, {
-      selectedFolderStore: observable,
-
       treeFolders: observable,
       selectedTreeNode: observable,
       expandedKeys: observable,
@@ -44,8 +40,6 @@ class TreeFoldersStore {
       setTreeFolders: action,
       setExpandedKeys: action,
     });
-
-    this.selectedFolderStore = new SelectedFolderStore();
   }
 
   fetchTreeFolders = async () => {
@@ -129,46 +123,38 @@ class TreeFoldersStore {
   /////////////////////////////////////TODO: IS
 
   get isMyFolder() {
-    return this.myFolder && this.myFolder.id === this.selectedFolderStore.id;
+    return this.myFolder && this.myFolder.id === selectedFolderStore.id;
   }
 
   get isShareFolder() {
-    return (
-      this.shareFolder && this.shareFolder.id === this.selectedFolderStore.id
-    );
+    return this.shareFolder && this.shareFolder.id === selectedFolderStore.id;
   }
 
   get isFavoritesFolder() {
     return (
-      this.favoritesFolder &&
-      this.selectedFolderStore.id === this.favoritesFolder.id
+      this.favoritesFolder && selectedFolderStore.id === this.favoritesFolder.id
     );
   }
 
   get isRecentFolder() {
-    return (
-      this.recentFolder && this.selectedFolderStore.id === this.recentFolder.id
-    );
+    return this.recentFolder && selectedFolderStore.id === this.recentFolder.id;
   }
 
   get isPrivacyFolder() {
     return (
       this.privacyFolder &&
-      this.privacyFolder.rootFolderType ===
-        this.selectedFolderStore.rootFolderType
+      this.privacyFolder.rootFolderType === selectedFolderStore.rootFolderType
     );
   }
 
   get isCommonFolder() {
-    return (
-      this.commonFolder && this.commonFolder.id === this.selectedFolderStore.id
-    );
+    return this.commonFolder && this.commonFolder.id === selectedFolderStore.id;
   }
 
   get isRecycleBinFolder() {
     return (
       this.recycleBinFolder &&
-      this.selectedFolderStore.id === this.recycleBinFolder.id
+      selectedFolderStore.id === this.recycleBinFolder.id
     );
   }
 

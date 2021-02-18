@@ -189,9 +189,15 @@ const TreeSettings = (props) => {
 };
 
 export default inject(
-  ({ auth, initFilesStore, filesStore, settingsStore, treeFoldersStore }) => {
+  ({
+    auth,
+    initFilesStore,
+    settingsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
     const { setIsLoading, isLoading } = initFilesStore;
-    const { setSelectedFolder } = filesStore.selectedFolderStore;
+    const { setSelectedFolder } = selectedFolderStore;
     const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
     const {
       getFilesSettings,

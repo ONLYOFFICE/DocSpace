@@ -57,9 +57,10 @@ class SelectedFolderStore {
     for (let key of selectedFolderItems) {
       if (key in this) {
         this[key] = selectedFolder[key];
+        console.log(`${key}: ${selectedFolder[key]}`);
       }
     }
   };
 }
 
-export default SelectedFolderStore;
+export default new SelectedFolderStore();

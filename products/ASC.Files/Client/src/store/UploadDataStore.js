@@ -6,6 +6,7 @@ import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
 import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 import formatsStore from "./FormatsStore";
 import treeFoldersStore from "./TreeFoldersStore";
+import selectedFolderStore from "./SelectedFolderStore";
 import filesStore from "./FilesStore";
 import uniqueid from "lodash/uniqueId";
 import throttle from "lodash/throttle";
@@ -14,7 +15,7 @@ import sumBy from "lodash/sumBy";
 const { docserviceStore } = formatsStore;
 const { canConvert } = docserviceStore;
 const { setTreeFolders } = treeFoldersStore;
-const { fetchFiles, selectedFolderStore } = filesStore;
+const { fetchFiles } = filesStore;
 
 const chunkSize = 1024 * 1023; //~0.999mb
 
@@ -361,7 +362,6 @@ class UploadDataStore {
         const foldersCount = data.selectedFolder.foldersCount;
         loopTreeFolders(path, newTreeFolders, folders, foldersCount);
         setTreeFolders(newTreeFolders);
-        //dispatch(setUpdateTree(true));
       });
     } else {
       return api.files
@@ -373,7 +373,6 @@ class UploadDataStore {
           const foldersCount = data.count;
           loopTreeFolders(path, newTreeFolders, folders, foldersCount);
           setTreeFolders(newTreeFolders);
-          //dispatch(setUpdateTree(true));
         });
     }
   };
@@ -702,8 +701,8 @@ class UploadDataStore {
               let foldersCount = data.current.foldersCount;
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
 
-              if (!isCopy || destFolderId === this.selectedFolderStore.id) {
-                fetchFiles(this.selectedFolderStore.id, filesStore.filter)
+              if (!isCopy || destFolderId === selectedFolderStore.id) {
+                fetchFiles(selectedFolderStore.id, filesStore.filter)
                   .then((data) => {
                     if (!treeFoldersStore.isRecycleBinFolder) {
                       newTreeFolders = treeFolders;
@@ -716,7 +715,6 @@ class UploadDataStore {
                         folders,
                         foldersCount
                       );
-                      //dispatch(setUpdateTree(true));
                       setTreeFolders(newTreeFolders);
                     }
                   })
@@ -741,7 +739,6 @@ class UploadDataStore {
                     this.secondaryProgressDataStore.clearSecondaryProgressData(),
                   TIMEOUT
                 );
-                //dispatch(setUpdateTree(true));
                 setTreeFolders(newTreeFolders);
               }
             });

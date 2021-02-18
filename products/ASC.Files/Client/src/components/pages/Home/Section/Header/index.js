@@ -662,6 +662,7 @@ export default inject(
     uploadDataStore,
     dialogsStore,
     treeFoldersStore,
+    selectedFolderStore,
   }) => {
     const { setIsLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
@@ -670,7 +671,7 @@ export default inject(
       fileActionStore,
       fetchFiles,
       selection,
-      selectedFolderStore,
+
       filter,
       canCreate,
       isHeaderVisible,

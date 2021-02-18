@@ -195,12 +195,18 @@ const OperationsPanel = (props) => (
 );
 
 export default inject(
-  ({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
+  ({
+    auth,
+    filesStore,
+    uploadDataStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
     const {
       secondaryProgressDataStore,
       itemOperationToFolder,
     } = uploadDataStore;
-    const { selection, selectedFolderStore, filter } = filesStore;
+    const { selection, filter } = filesStore;
     const { isRecycleBinFolder, operationsFolders } = treeFoldersStore;
     const { setSecondaryProgressBarData } = secondaryProgressDataStore;
 
