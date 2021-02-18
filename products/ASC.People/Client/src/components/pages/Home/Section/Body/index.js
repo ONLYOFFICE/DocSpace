@@ -316,7 +316,6 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onContentRowSelect = (checked, user) => {
-    console.log("ContentRow onSelect", checked, user);
     if (checked) {
       this.props.selectUser(user);
     } else {

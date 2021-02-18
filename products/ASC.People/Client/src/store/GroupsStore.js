@@ -42,12 +42,8 @@ class GroupsStore {
       groupManager,
       members
     );
-    console.log("res: ", res);
-    console.log("old groups: ", this.groups);
     this.peopleStore.selectedGroupStore.resetGroup();
     await this.getGroupList();
-    console.log("new groups: ", this.groups);
-
     return Promise.resolve(res);
   };
 }

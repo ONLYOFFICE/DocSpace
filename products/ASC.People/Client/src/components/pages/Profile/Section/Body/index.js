@@ -119,8 +119,6 @@ class SectionBodyContent extends React.PureComponent {
     const infoContacts = contacts && createContacts(contacts.contact);
     const isSelf = isMe(viewer, profile.userName);
 
-    console.log("Profile", cultures, culture);
-
     return (
       <ProfileWrapper>
         <AvatarWrapper>

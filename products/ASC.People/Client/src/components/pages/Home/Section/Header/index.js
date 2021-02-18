@@ -170,7 +170,6 @@ const SectionHeaderContent = (props) => {
 
   const onSelectorSelect = useCallback(
     (item) => {
-      console.log("onSelectorSelect", item);
       onSelect && onSelect(item.props.statusId);
     },
     [onSelect]
