@@ -32,18 +32,6 @@ const LoginContainer = styled.div`
   }
 `;
 
-const LoginFormWrapper = styled.div`
-  display: grid;
-  grid-template-rows: ${(props) =>
-    props.enabledJoin
-      ? props.isDesktop
-        ? css`1fr 10px`
-        : css`1fr 66px`
-      : css`1fr`};
-  width: 100%;
-  height: calc(100vh-56px);
-`;
-
 class Form extends Component {
   constructor(props) {
     super(props);
@@ -180,7 +168,7 @@ Form.defaultProps = {
 const FormWrapper = withTranslation()(Form);
 
 const Login = (props) => {
-  const { language, enabledJoin, isDesktop } = props;
+  const language = 'en'//window.navigator.language;
 
   useEffect(() => {
     i18n.changeLanguage(language);
@@ -200,30 +188,6 @@ Login.propTypes = {
   isDesktop: PropTypes.bool, //.isRequired,
 };
 
-function mapStateToProps(state) {
-  const { isLoaded, settings, isAuthenticated } = state.auth;
-  const {
-    greetingSettings,
-    organizationName,
-    hashSettings,
-    enabledJoin,
-    defaultPage,
-  } = settings;
 
-  return {
-    isAuthenticated,
-    isLoaded,
-    isDesktop: isDesktopClient(state),
-    organizationName,
-    language: getLanguage(state),
-    hashSettings,
-    enabledJoin,
-    defaultPage,
-  };
-}
 
-export default withRouter(Login); //connect(mapStateToProps, {
-//login,
-//setIsLoaded,
-//reloadPortalSettings,
-//})(withRouter(LoginForm));
+export default withRouter(Login);
