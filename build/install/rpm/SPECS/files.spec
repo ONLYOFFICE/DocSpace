@@ -31,6 +31,7 @@
 %defattr(-, onlyoffice, onlyoffice, -)
 %config %{_sysconfdir}/onlyoffice/appserver/
 %{_var}/log/onlyoffice/appserver/
+%{_var}/www/appserver/sql/
 %dir %{_sysconfdir}/onlyoffice/
 %dir %{_var}/log/onlyoffice/
 
