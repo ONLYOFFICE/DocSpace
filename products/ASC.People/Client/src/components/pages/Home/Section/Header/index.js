@@ -111,6 +111,7 @@ const SectionHeaderContent = (props) => {
     hasUsersToRemove,
     isLoaded,
     selectAll,
+    setSelected,
     selectByStatus,
   } = props;
 
@@ -123,12 +124,16 @@ const SectionHeaderContent = (props) => {
 
   //console.log("SectionHeaderContent render");
 
-  const onCheck = () => {
-    return isHeaderChecked ? clearSelection() : selectAll();
+  const onCheck = (checked) => {
+    setSelected(checked ? "all" : "close");
   };
-  const onSelect = useCallback((status) => selectByStatus(status), [
-    selectByStatus,
+  const onSelect = useCallback((selected) => setSelected(selected), [
+    setSelected,
   ]);
+
+  const onClose = () => {
+    setSelected("none");
+  };
 
   const toggleEmployeeDialog = useCallback(
     () => setEmployeeDialogVisible(!employeeDialogVisible),
@@ -170,7 +175,7 @@ const SectionHeaderContent = (props) => {
 
   const onSelectorSelect = useCallback(
     (item) => {
-      onSelect && onSelect(item.props.statusId);
+      onSelect && onSelect(item.key);
     },
     [onSelect]
   );
@@ -184,24 +189,13 @@ const SectionHeaderContent = (props) => {
         isSelect: true,
         fontWeight: "bold",
         children: [
-          <DropDownItem
-            key="active"
-            label={t("LblActive")}
-            data-index={0}
-            statusId={1}
-          />,
+          <DropDownItem key="active" label={t("LblActive")} data-index={0} />,
           <DropDownItem
             key="disabled"
             label={t("LblTerminated")}
             data-index={1}
-            statusId={2}
           />,
-          <DropDownItem
-            key="invited"
-            label={t("LblInvited")}
-            data-index={2}
-            statusId={0}
-          />,
+          <DropDownItem key="invited" label={t("LblInvited")} data-index={2} />,
         ],
         onSelect: onSelectorSelect,
       },
@@ -412,7 +406,7 @@ const SectionHeaderContent = (props) => {
                 visible={isHeaderVisible}
                 moreLabel={t("More")}
                 closeTitle={t("CloseButton")}
-                onClose={clearSelection}
+                onClose={onClose}
                 selected={menuItems[0].label}
                 sectionWidth={context.sectionWidth}
               />
@@ -490,6 +484,7 @@ export default inject(({ auth, peopleStore }) => ({
   isAdmin: auth.isAdmin,
   fetchPeople: peopleStore.usersStore.getUsersList,
   selection: peopleStore.selectionStore.selection,
+  setSelected: peopleStore.selectionStore.setSelected,
   selectByStatus: peopleStore.selectionStore.selectByStatus,
   isHeaderVisible: peopleStore.headerMenuStore.isHeaderVisible,
   isHeaderIndeterminate: peopleStore.headerMenuStore.isHeaderIndeterminate,

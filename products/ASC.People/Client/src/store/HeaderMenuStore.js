@@ -11,9 +11,10 @@ class HeaderMenuStore {
   }
 
   get isHeaderVisible() {
-    const { selection } = this.peopleStore.selectionStore;
-
-    return !!selection.length;
+    const { selection, selected } = this.peopleStore.selectionStore;
+    console.log("selected: ", selected);
+    console.log("selection.length: ", selection.length);
+    return !!selection.length || selected !== "none";
   }
 
   get isHeaderIndeterminate() {
