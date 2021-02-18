@@ -33,7 +33,7 @@ export const getTitleWithoutExst = (item) => {
     : item.title;
 };
 
-export const createTreeFolders = (pathParts, filterData) => {
+export const createTreeFolders = (pathParts, expandedKeys) => {
   let treeFolders = [];
   if (pathParts.length > 0) {
     for (let item of pathParts) {
@@ -42,7 +42,7 @@ export const createTreeFolders = (pathParts, filterData) => {
   }
   if (treeFolders.length > 0) {
     treeFolders = treeFolders.concat(
-      filterData.treeFolders.filter((x) => !treeFolders.includes(x))
+      expandedKeys.filter((x) => !treeFolders.includes(x))
     );
   }
   return treeFolders;

@@ -47,15 +47,6 @@ const {
   canWebFilterEditing,
 } = docserviceStore;
 
-const {
-  privacyFolder,
-  isRecycleBinFolder,
-  isPrivacyFolder,
-  isRecentFolder,
-  //isFavoritesFolder,
-  commonFolder,
-} = treeFoldersStore;
-
 class FilesStore {
   fileActionStore = null;
   selectedFolderStore = null;
@@ -63,7 +54,6 @@ class FilesStore {
   firstLoad = true;
   files = [];
   folders = [];
-  treeFolders = [];
   selection = [];
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
@@ -245,13 +235,15 @@ class FilesStore {
   fetchFiles = (folderId, filter, clearFilter = true) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
+    const { privacyFolder, expandedKeys, setExpandedKeys } = treeFoldersStore;
 
     if (privacyFolder && privacyFolder.id === +folderId) {
       if (!isEncryptionSupport) {
-        filterData.treeFolders = createTreeFolders(
+        const newExpandedKeys = createTreeFolders(
           privacyFolder.pathParts,
-          filterData
+          expandedKeys
         );
+        setExpandedKeys(newExpandedKeys);
         filterData.total = 0;
         this.setFilesFilter(filterData); //TODO: FILTER
         if (clearFilter) {
@@ -275,7 +267,11 @@ class FilesStore {
       const isPrivacyFolder =
         data.current.rootFolderType === FolderType.Privacy;
 
-      filterData.treeFolders = createTreeFolders(data.pathParts, filterData);
+      const newExpandedKeys = createTreeFolders(
+        data.pathParts,
+        treeFoldersStore.expandedKeys
+      );
+      treeFoldersStore.setExpandedKeys(newExpandedKeys);
       filterData.total = data.total;
       this.setFilesFilter(filterData); //TODO: FILTER
       this.setFolders(
@@ -360,6 +356,10 @@ class FilesStore {
       item.providerKey && this.selectedFolderStore.isRootFolder;
 
     if (item.id <= 0) return [];
+
+    const isRecycleBinFolder = treeFoldersStore.isRecycleBinFolder;
+    const isPrivacyFolder = treeFoldersStore.isPrivacyFolder;
+    const isRecentFolder = treeFoldersStore.isRecentFolder;
 
     if (isRecycleBinFolder) {
       options.push("download");
@@ -532,6 +532,7 @@ class FilesStore {
   get canShareOwnerChange() {
     const pathParts = this.selectedFolderStore.pathParts;
     const userId = userStore.user.id;
+    const commonFolder = treeFoldersStore.commonFolder;
     return (
       (isAdmin ||
         (this.selection.length && this.selection[0].createdBy.id === userId)) &&
@@ -650,6 +651,7 @@ class FilesStore {
       );
 
       const isFolder = selectedItem ? false : fileExst ? false : true;
+      const isRecycleBinFolder = treeFoldersStore.isRecycleBinFolder;
 
       const draggable =
         selectedItem &&

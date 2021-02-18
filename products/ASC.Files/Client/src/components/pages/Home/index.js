@@ -329,8 +329,6 @@ export default inject(
       setSelections,
     } = filesStore;
 
-    const { treeFolders } = treeFoldersStore;
-
     const { id } = fileActionStore;
 
     const { visible, percent, icon, alert } = primaryProgressDataStore;
@@ -357,7 +355,6 @@ export default inject(
       fileActionId: id,
       currentFolderId: filesStore.selectedFolderStore.id,
       isLoading,
-      treeFolders,
       filter,
       viewAs,
       primaryProgressData,

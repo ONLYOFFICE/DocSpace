@@ -266,6 +266,8 @@ class FilesRowContent extends React.PureComponent {
       item,
       isTrashFolder,
       openDocEditor,
+      expandedKeys,
+      addExpandedKeys,
     } = this.props;
     const { id, fileExst, viewUrl, providerKey } = item;
 
@@ -273,13 +275,12 @@ class FilesRowContent extends React.PureComponent {
 
     if (!fileExst) {
       setIsLoading(true);
-      const newFilter = filter.clone();
 
-      if (!newFilter.treeFolders.includes(parentFolder.toString())) {
-        newFilter.treeFolders.push(parentFolder.toString());
+      if (!expandedKeys.includes(parentFolder + "")) {
+        addExpandedKeys(parentFolder + "");
       }
 
-      fetchFiles(id, newFilter)
+      fetchFiles(id, filter)
         .catch((err) => {
           toastr.error(err);
           setIsLoading(false);
@@ -764,6 +765,8 @@ export default inject(
       setTreeFolders,
       isRecycleBinFolder,
       isPrivacyFolder,
+      expandedKeys,
+      addExpandedKeys,
     } = treeFoldersStore;
 
     const { type, extension, id } = filesStore.fileActionStore;
@@ -801,6 +804,7 @@ export default inject(
       isImage,
       isSound,
       newRowItems,
+      expandedKeys,
 
       setIsLoading,
       fetchFiles,
@@ -815,6 +819,7 @@ export default inject(
       replaceFileStream,
       getEncryptionAccess,
       setEncryptionAccess,
+      addExpandedKeys,
     };
   }
 )(withRouter(withTranslation()(observer(FilesRowContent))));
