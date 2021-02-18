@@ -61,7 +61,6 @@ const toModuleWrapper = (item, noAction = true, iconName = null) => {
     iconUrl: item.iconUrl,
     imageUrl: item.imageUrl,
     notifications: 0,
-    url: item.link,
     isolateMode: item.isolateMode,
     isPrimary: item.isPrimary,
     ...description,
