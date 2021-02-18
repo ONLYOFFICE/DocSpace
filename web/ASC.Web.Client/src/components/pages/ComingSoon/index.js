@@ -7,6 +7,7 @@ import { Text, Link, Icons, Badge, Box } from "asc-web-components";
 import { toastr, PageLayout, utils, store, Loaders } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import { isMobile, isIOS, isAndroid } from "react-device-detect";
 
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
@@ -22,7 +23,8 @@ const i18n = createI18N({
 const { changeLanguage } = utils;
 
 const ComingSoonPage = styled.div`
-  width: 375px;
+  padding: ${isMobile ? "62px 0 0 0" : "0"};
+  width: 336px;
   margin: 0 auto;
 
   .module-logo-icon {
@@ -48,14 +50,25 @@ const ComingSoonPage = styled.div`
     margin: 8px 0;
     .view-web-link {
       margin: 8px;
+      :focus {
+        outline: 0;
+      }
     }
   }
 `;
 
-const ExternalLink = ({ label }) => (
+const ExternalLink = ({ label, href }) => (
   <Box className="link-box">
     <Icons.ExternalLinkIcon color="#333333" size="small" />
-    <Link as="span" className="view-web-link" color="#555F65" isBold isHovered>
+    <Link
+      as="a"
+      href={href}
+      target="_blank"
+      className="view-web-link"
+      color="#555F65"
+      isBold
+      isHovered
+    >
       {label}
     </Link>
   </Box>
@@ -66,7 +79,17 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
   const { error } = match.params;
   const pageLink = window.location.pathname;
   const currentModule = modules.find((m) => m.link === pageLink);
-  const { id, title, description, imageUrl } = currentModule;
+  const { id, title, description, imageUrl, link } = currentModule;
+  const appLink =
+    id === "2A923037-8B2D-487b-9A22-5AC0918ACF3F"
+      ? "mailto:"
+      : id === "32D24CB5-7ECE-4606-9C94-19216BA42086"
+      ? isIOS
+        ? "webcal:"
+        : isAndroid
+        ? "content://com.android.calendar/time/"
+        : false
+      : false;
 
   setDocumentTitle();
 
@@ -98,7 +121,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
         )}
         src={imageUrl}
       />
-      <Box displayProp="flex" flexDirection="column" widthProp="200px">
+      <Box displayProp="flex" flexDirection="column" widthProp="220px">
         <Text fontWeight="600" fontSize="19px" className="module-title">
           {title}
         </Text>
@@ -109,12 +132,15 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
           borderRadius="2px"
           className="coming-soon-badge"
         />
-        <ExternalLink label={t("ViewWeb")} />
-        <ExternalLink
-          label={t("OpenApp", {
-            title: "App",
-          })}
-        />
+        <ExternalLink label={t("ViewWeb")} href={link} />
+        {appLink && (
+          <ExternalLink
+            label={t("OpenApp", {
+              title: title,
+            })}
+            href={appLink}
+          />
+        )}
       </Box>
     </ComingSoonPage>
   );

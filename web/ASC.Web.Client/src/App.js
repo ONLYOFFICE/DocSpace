@@ -16,6 +16,7 @@ import {
   Layout,
 } from "asc-web-common";
 import Home from "./components/pages/Home";
+import config from "../package.json";
 
 const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
@@ -30,6 +31,7 @@ const {
   getPortalSettings,
   getModules,
   getIsAuthenticated,
+  setProductVersion,
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
@@ -46,7 +48,10 @@ class App extends React.Component {
       getModules,
       setIsLoaded,
       getIsAuthenticated,
+      setProductVersion,
     } = this.props;
+
+    setProductVersion();
 
     getIsAuthenticated()
       .then((isAuthenticated) => {
@@ -156,6 +161,7 @@ const mapDispatchToProps = (dispatch) => {
     getUser: () => getUser(dispatch),
     getModules: () => getModules(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
+    setProductVersion: () => dispatch(setProductVersion(config.version)),
   };
 };
 
