@@ -201,13 +201,21 @@ export const getAvailableModules = createSelector(
     const isUserAdmin = user.isAdmin;
     const customModules = getCustomModules(isUserAdmin);
     const products = modules.map((m) => toModuleWrapper(m, false));
+    const primaryProducts = products.filter((m) => m.isPrimary === true);
+    const dummyProducts = products.filter((m) => m.isPrimary === false);
 
     return [
       {
         separator: true,
         id: "nav-products-separator",
       },
-      ...products,
+      ...primaryProducts,
+      {
+        separator: true,
+        dashed: true,
+        id: "nav-dummy-products-separator",
+      },
+      ...dummyProducts,
       ...customModules,
     ];
   }

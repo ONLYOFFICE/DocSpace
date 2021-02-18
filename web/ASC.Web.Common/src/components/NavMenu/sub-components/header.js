@@ -164,6 +164,7 @@ const HeaderComponent = ({
               onClick,
               link,
               title,
+              dashed,
             }) => (
               <NavItem
                 separator={!!separator}
@@ -177,6 +178,7 @@ const HeaderComponent = ({
                 onClick={onClick}
                 onBadgeClick={onBadgeClick}
                 link={link}
+                dashed={dashed}
               >
                 {title}
               </NavItem>
