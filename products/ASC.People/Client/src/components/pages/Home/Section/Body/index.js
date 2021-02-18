@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation, Trans } from "react-i18next";
-import { Row, Avatar, RowContainer, utils } from "asc-web-components";
-import UserContent from "./userContent";
+import { utils } from "asc-web-components";
+
 import {
   selectUser,
   deselectUser,
@@ -53,6 +53,26 @@ const StyledContainer = styled.div`
   height: calc(100vh - 220px);
   margin-bottom: 16px;
   margin-top: -22px;
+  .hide-scrollbars {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+
+    &::-webkit-scrollbar {
+      width: 1px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: transparent;
+    }
+  }
+
+  .hide-scrollbars::-webkit-scrollbar {
+    display: none;
+  }
 `;
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
@@ -385,7 +405,7 @@ class SectionBodyContent extends React.PureComponent {
       <>
         <Consumer>
           {(context) => (
-            <StyledContainer>
+            <StyledContainer id="peopleListContainer">
               <PeopleList
                 peopleList={peopleList}
                 widthProp={widthProp}

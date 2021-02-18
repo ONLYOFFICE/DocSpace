@@ -90,13 +90,14 @@ const PeopleList = ({
         >
           {({ onItemsRendered, ref }) => (
             <List
+              className="hide-scrollbars"
               style={style}
               height={height}
               width={width}
               itemData={itemData}
               itemCount={peopleList.length}
               itemSize={itemData.isMobile ? 57 : 48}
-              outerElementType={CustomScrollbarsVirtualList}
+              //outerElementType={CustomScrollbarsVirtualList}
               onItemsRendered={onItemsRendered}
               ref={ref}
             >
