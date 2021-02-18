@@ -1,28 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 
-import { FieldContainer, TextInput } from "ASC.Web.Components";
+import { FieldContainer, EmailInput } from "ASC.Web.Components";
 
 const EmailField = ({
   t,
   userNameValid,
   errorText,
-  userName,
   isLoading,
   onChangeLogin,
-  onKeyPress,
 }) => {
+  const [errors, setErrors] = useState(null);
+
+  const onChangeEmail = (result) => {
+    const { errors, isValid, value } = result;
+
+    setErrors(null);
+
+    if (!isValid && errors.length > 0 && value) {
+      setErrors(t("IncorrectEmail"));
+    }
+
+    onChangeLogin && onChangeLogin(result);
+  };
+
   return (
     <FieldContainer
       isVertical={true}
       labelVisible={false}
-      hasError={!userNameValid}
-      errorMessage={errorText ? errorText : t("RequiredFieldMessage")} //TODO: Add wrong login server error
+      hasError={userNameValid}
+      errorMessage={errors ? errors : errorText} //TODO: Add wrong login server error
     >
-      <TextInput
+      <EmailInput
         id="login"
         name="login"
-        hasError={!userNameValid}
-        value={userName}
+        hasError={userNameValid}
+        //value={userName}
         placeholder={t("RegistrationEmailWatermark")}
         size="large"
         scale={true}
@@ -30,8 +42,7 @@ const EmailField = ({
         tabIndex={1}
         isDisabled={isLoading}
         autoComplete="username"
-        onChange={onChangeLogin}
-        onKeyDown={onKeyPress}
+        onValidateInput={onChangeEmail}
       />
     </FieldContainer>
   );

@@ -32,5 +32,6 @@
   "TooltipPasswordSpecial": "Специальные символы (!@#$%^&*)",
   "LoginRegistrationBtn": "Регистрация",
   "RegistrationTitle": "Облачные офисные приложения",
-  "RegistrationDesc": "Создать портал"
+  "RegistrationDesc": "Создать портал",
+  "IncorrectEmail": "Неверный email"
 }

@@ -68,31 +68,30 @@ const LoginForm = ({
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError ] = useState(false)
 
   const onSubmitHandler = () => {
     errorText && setErrorText("");
-    let hasError = false;
-
+    let isError = false
     const clearUserName = userName.trim();
 
     if (!clearUserName) {
-      hasError = true;
-      setUserNameValid(!hasError);
+      isError = true
+      setErrorText(t('RequiredFieldMessage'))
+      setHasError(isError)
     }
 
     const clearPass = password.trim();
 
     if (!clearPass) {
-      hasError = true;
-      setPasswordValid(!hasError);
+      isError = true
+      setPasswordValid(false);
+      setHasError(isError);
     }
 
-    if (hasError) return false;
+    if (isError) return false;
 
     setIsLoading(true);
-    //const hash = createPasswordHash(pass, fakeApi.fakeHashSettings);
-
-    // checkPwd(); //?
 
     fakeApi
       .login(clearUserName, clearPass)
@@ -107,10 +106,12 @@ const LoginForm = ({
       .finally(setIsLoading(false));
   };
 
-  const onChangeLogin = (e) => {
-    setUserName(e.target.value);
-    !userNameValid && setUserNameValid(true);
-    errorText && setErrorText("");
+  const onChangeLogin = (result) => {
+    const { value, isValid } = result;
+    setUserName(value);
+    setUserNameValid(isValid);
+    setHasError(false)
+    //errors.length > 0 ? setErrorText(errors) : setErrorText(null);
   };
 
   const onChangePassword = (e) => {
@@ -123,12 +124,14 @@ const LoginForm = ({
     <StyledLoginForm>
       <EmailField
         t={t}
-        userNameValid={userNameValid}
+        userNameValid={hasError}
         errorText={errorText}
         userName={userName}
         isLoading={isLoading}
+        errorText={errorText}
         onChangeLogin={onChangeLogin}
         onKeyPress={onKeyPress}
+        
       />
       <PasswordField
         t={t}
