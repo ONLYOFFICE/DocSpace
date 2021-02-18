@@ -138,10 +138,7 @@ class Confirm extends React.PureComponent {
       });
 
       this.createConfirmUser(registerData, loginData, this.state.key)
-        .then(() => {
-          toastr.success("User has been created successfully");
-          tryRedirectTo(defaultPage);
-        })
+        .then(() => window.location.replace(defaultPage))
         .catch((error) => {
           console.error("confirm error", error);
           this.setState({
@@ -161,30 +158,16 @@ class Confirm extends React.PureComponent {
 
     const user = await api.people.createUser(data, key);
 
+    console.log("Created user", user);
+
+    const { login } = this.props;
+    const { userName, passwordHash } = loginData;
+
+    const response = await login(userName, passwordHash);
+
+    console.log("Login", response);
+
     return user;
-
-    //TODO: Fix working process
-    //       dispatch(setCurrentUser(user));
-    //     })
-    //     .then(() => {
-    //       const promise = new Promise((resolve, reject) => {
-    //         setTimeout(() => {
-    //           login(
-    //             loginData.userName,
-    //             loginData.passwordHash
-    //           )(dispatch)
-    //             .then(() => {
-    //               resolve(loadInitInfo(dispatch));
-    //             })
-    //             .catch((e) => {
-    //               reject(e);
-    //             });
-    //         }, 1000);
-    //       });
-
-    //       return promise;
-    //     });
-    // };
   };
 
   onKeyPress = (event) => {
