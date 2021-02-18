@@ -202,15 +202,17 @@ class FilesTileContent extends React.PureComponent {
       isVideo,
       isImage,
       isSound,
+      expandedKeys,
+      addExpandedKeys,
     } = this.props;
     if (!fileExst) {
       setIsLoading(true);
-      const newFilter = filter.clone();
-      if (!newFilter.treeFolders.includes(parentFolder.toString())) {
-        newFilter.treeFolders.push(parentFolder.toString());
+
+      if (!expandedKeys.includes(parentFolder + "")) {
+        addExpandedKeys(parentFolder + "");
       }
 
-      fetchFiles(id, newFilter)
+      fetchFiles(id, filter)
         .catch((err) => {
           toastr.error(err);
           setIsLoading(false);
@@ -441,6 +443,8 @@ export default inject(
       treeFolders,
       setTreeFolders,
       isRecycleBinFolder,
+      expandedKeys,
+      addExpandedKeys,
     } = treeFoldersStore;
 
     const { type, extension, id } = filesStore.fileActionStore;
@@ -472,6 +476,7 @@ export default inject(
       isImage,
       isSound,
       newRowItems,
+      expandedKeys,
 
       setIsLoading,
       fetchFiles,
@@ -480,6 +485,7 @@ export default inject(
       createFolder,
       updateFile,
       renameFolder,
+      addExpandedKeys,
     };
   }
 )(withRouter(withTranslation()(observer(FilesTileContent))));

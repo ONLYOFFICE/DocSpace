@@ -8,6 +8,7 @@ class TreeFoldersStore {
 
   treeFolders = [];
   selectedTreeNode = [];
+  expandedKeys = [];
 
   constructor() {
     makeObservable(this, {
@@ -15,6 +16,7 @@ class TreeFoldersStore {
 
       treeFolders: observable,
       selectedTreeNode: observable,
+      expandedKeys: observable,
 
       myFolderId: computed,
       //shareFolderId: computed,
@@ -40,6 +42,7 @@ class TreeFoldersStore {
 
       fetchTreeFolders: action,
       setTreeFolders: action,
+      setExpandedKeys: action,
     });
 
     this.selectedFolderStore = new SelectedFolderStore();
@@ -58,6 +61,14 @@ class TreeFoldersStore {
     if (node[0]) {
       this.selectedTreeNode = node;
     }
+  };
+
+  setExpandedKeys = (expandedKeys) => {
+    this.expandedKeys = expandedKeys;
+  };
+
+  addExpandedKeys = (item) => {
+    this.expandedKeys.push(item);
   };
 
   /////////////////////////////////////TODO: FOLDER

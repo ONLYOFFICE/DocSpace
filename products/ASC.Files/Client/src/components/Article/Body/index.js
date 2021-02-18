@@ -12,33 +12,16 @@ class ArticleBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { selectedFolderTitle, filter, treeFolders } = props;
+    const { selectedFolderTitle } = props;
 
     selectedFolderTitle
       ? setDocumentTitle(selectedFolderTitle)
       : setDocumentTitle();
 
     this.state = {
-      expandedKeys: filter.treeFolders,
-      data: treeFolders,
       showNewFilesPanel: false,
     };
   }
-
-  // componentDidUpdate(prevProps) {
-  //   const { filter, treeFolders } = this.props;
-
-  //   if (
-  //     filter.treeFolders.length !== prevProps.filter.treeFolders.length ||
-  //     this.state.expandedKeys.length !== filter.treeFolders.length
-  //   ) {
-  //     this.setState({ expandedKeys: filter.treeFolders });
-  //   }
-
-  //   if (!utils.array.isArrayEqual(prevProps.treeFolders, treeFolders)) {
-  //     this.setState({ data: treeFolders });
-  //   }
-  // }
 
   componentDidMount() {
     if (this.props.currentId) {
@@ -85,15 +68,16 @@ class ArticleBodyContent extends React.Component {
   };
 
   setNewFilesCount = (folderPath, filesCount) => {
-    const data = this.state.data;
+    const data = this.props.treeFolders;
     const dataItem = data.find((x) => x.id === folderPath[0]);
     dataItem.newItems = filesCount ? filesCount : dataItem.newItems - 1;
-    this.setState({ data });
+
+    this.props.setTreeFolders(data);
   };
 
   render() {
     const { treeFolders, onTreeDrop, selectedTreeNode } = this.props;
-    const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
+    const { showNewFilesPanel, newFolderId } = this.state;
 
     return (
       <>
@@ -114,7 +98,6 @@ class ArticleBodyContent extends React.Component {
               selectedKeys={selectedTreeNode}
               onSelect={this.onSelect}
               data={treeFolders}
-              expandedKeys={expandedKeys}
               onBadgeClick={this.onShowNewFilesPanel}
               onTreeDrop={onTreeDrop}
             />
@@ -130,7 +113,7 @@ class ArticleBodyContent extends React.Component {
 export default inject(({ initFilesStore, filesStore, treeFoldersStore }) => {
   const { setIsLoading } = initFilesStore;
   const { fetchFiles, selectedFolderStore, filter } = filesStore;
-  const { treeFolders, setSelectedNode } = treeFoldersStore;
+  const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
   const selectedTreeNode = [selectedFolderStore.id + ""];
 
   return {
@@ -142,5 +125,6 @@ export default inject(({ initFilesStore, filesStore, treeFoldersStore }) => {
     setIsLoading,
     fetchFiles,
     setSelectedNode,
+    setTreeFolders,
   };
 })(observer(ArticleBodyContent));

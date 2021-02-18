@@ -36,30 +36,8 @@ class TreeFolders extends React.Component {
   constructor(props) {
     super(props);
 
-    const { data, expandedKeys } = props;
-    this.state = { treeData: data, expandedKeys, isExpand: false };
+    this.state = { isExpand: false };
   }
-
-  // componentDidUpdate(prevProps) {
-  //   const { expandedKeys, data, needUpdate } = this.props;
-  //   if (
-  //     needUpdate &&
-  //     expandedKeys &&
-  //     this.state.expandedKeys.length !== expandedKeys.length
-  //   ) {
-  //     this.setState({ expandedKeys });
-  //   }
-
-  //   if (!equal(prevProps.data, data)) {
-  //     //!utils.array.isArrayEqual(prevProps.data, data)) {
-  //     this.setState({ treeData: data });
-  //   }
-
-  //   if (this.props.updateTree) {
-  //     this.props.setUpdateTree(false);
-  //     this.forceUpdate();
-  //   }
-  // }
 
   onBadgeClick = (e) => {
     const id = e.currentTarget.dataset.id;
@@ -354,10 +332,11 @@ class TreeFolders extends React.Component {
         const listIds = data.listIds;
         listIds.push(itemId);
 
-        const treeData = [...this.state.treeData];
+        const treeData = [...this.props.treeFolders];
+
         this.getNewTreeData(treeData, listIds, data.folders, 10);
         this.props.needUpdate && this.props.setTreeFolders(treeData);
-        this.setState({ treeData });
+        //this.setState({ treeData });
       })
       .catch((err) => toastr.error(err))
       .finally(() => {
@@ -373,12 +352,9 @@ class TreeFolders extends React.Component {
       }
     }
     if (this.props.needUpdate) {
-      const newFilter = this.props.filter.clone();
-      newFilter.treeFolders = data;
-      this.props.setFilter(newFilter);
+      const expandedKeys = data;
+      this.props.setExpandedKeys(expandedKeys);
     }
-
-    this.setState({ expandedKeys: data });
   };
 
   onMouseEnter = (data) => {
@@ -434,8 +410,14 @@ class TreeFolders extends React.Component {
   };
 
   render() {
-    const { selectedKeys, isLoading, onSelect, dragging } = this.props;
-    const { treeData, expandedKeys } = this.state;
+    const {
+      selectedKeys,
+      isLoading,
+      onSelect,
+      dragging,
+      expandedKeys,
+      treeFolders,
+    } = this.props;
     //const loadProp = needUpdate ? { loadData: this.onLoadData } : {};
 
     return (
@@ -463,7 +445,7 @@ class TreeFolders extends React.Component {
         gapBetweenNodesTablet="26"
         isFullFillSelection={false}
       >
-        {this.getItems(treeData)}
+        {this.getItems(treeFolders)}
       </StyledTreeMenu>
     );
   }
@@ -485,6 +467,8 @@ export default inject(
       myFolderId,
       commonFolderId,
       isPrivacyFolder,
+      expandedKeys,
+      setExpandedKeys,
     } = treeFoldersStore;
     const { pathParts, id } = selectedFolderStore;
 
@@ -494,18 +478,20 @@ export default inject(
       dragging,
       rootFolderId: pathParts,
       currentId: id,
-      treeFolders,
       myId: myFolderId,
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
       filter,
       draggableItems: dragging ? selection : false,
+      expandedKeys,
+      treeFolders,
 
       setDragging,
       setIsLoading,
       setTreeFolders,
       setFilter,
       setDragItem,
+      setExpandedKeys,
     };
   }
 )(observer(TreeFolders));
