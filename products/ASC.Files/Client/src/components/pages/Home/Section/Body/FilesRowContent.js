@@ -357,7 +357,6 @@ class FilesRowContent extends React.PureComponent {
       selectedFolderPathParts,
       newItems,
       setNewRowItems,
-      //setUpdateTree,
     } = this.props;
     if (item.fileExst) {
       api.files
@@ -368,7 +367,6 @@ class FilesRowContent extends React.PureComponent {
             (x) => x.id === selectedFolderPathParts[0]
           );
           dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;
-          //setUpdateTree(true);
           setTreeFolders(data);
           setNewRowItems([`${item.id}`]);
         })
@@ -730,6 +728,7 @@ export default inject(
       formatsStore,
       uploadDataStore,
       treeFoldersStore,
+      selectedFolderStore
     },
     { item }
   ) => {
@@ -751,7 +750,6 @@ export default inject(
       folders,
       fetchFiles,
       filter,
-      selectedFolderStore,
       setNewRowItems,
       newRowItems,
       createFile,

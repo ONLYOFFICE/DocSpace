@@ -17,6 +17,7 @@ import versionHistoryStore from "./store/VersionHistoryStore";
 import uploadDataStore from "./store/UploadDataStore";
 import dialogsStore from "./store/DialogsStore";
 import treeFoldersStore from "./store/TreeFoldersStore";
+import selectedFolderStore from "./store/SelectedFolderStore";
 
 const { authStore } = commonStore;
 
@@ -32,6 +33,7 @@ ReactDOM.render(
     uploadDataStore={uploadDataStore}
     dialogsStore={dialogsStore}
     treeFoldersStore={treeFoldersStore}
+    selectedFolderStore={selectedFolderStore}
   >
     <ErrorBoundary>
       <App />

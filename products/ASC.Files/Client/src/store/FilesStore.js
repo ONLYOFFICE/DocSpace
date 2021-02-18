@@ -3,7 +3,7 @@ import { api, constants, store, history } from "asc-web-common";
 import axios from "axios";
 import queryString from "query-string";
 import FileActionStore from "./FileActionStore";
-import SelectedFolderStore from "./SelectedFolderStore";
+import selectedFolderStore from "./SelectedFolderStore";
 import formatsStore from "./FormatsStore";
 import treeFoldersStore from "./TreeFoldersStore";
 import { createTreeFolders } from "../helpers/files-helpers";
@@ -49,7 +49,6 @@ const {
 
 class FilesStore {
   fileActionStore = null;
-  selectedFolderStore = null;
 
   firstLoad = true;
   files = [];
@@ -62,7 +61,6 @@ class FilesStore {
   constructor() {
     makeObservable(this, {
       fileActionStore: observable,
-      selectedFolderStore: observable,
 
       firstLoad: observable,
       files: observable,
@@ -114,7 +112,6 @@ class FilesStore {
     });
 
     this.fileActionStore = new FileActionStore();
-    this.selectedFolderStore = new SelectedFolderStore();
   }
 
   setFirstLoad = (firstLoad) => {
@@ -252,7 +249,7 @@ class FilesStore {
           this.fileActionStore.setAction({ type: null });
           this.setSelected("close");
 
-          this.selectedFolderStore.setSelectedFolder({
+          selectedFolderStore.setSelectedFolder({
             folders: [],
             ...privacyFolder,
             pathParts: privacyFolder.pathParts,
@@ -282,7 +279,7 @@ class FilesStore {
         this.setSelected("close");
       }
 
-      this.selectedFolderStore.setSelectedFolder({
+      selectedFolderStore.setSelectedFolder({
         folders: data.folders,
         ...data.current,
         pathParts: data.pathParts,
@@ -290,7 +287,7 @@ class FilesStore {
       });
 
       const selectedFolder = {
-        selectedFolder: { ...this.selectedFolderStore },
+        selectedFolder: { ...selectedFolderStore },
       };
       return Promise.resolve(selectedFolder);
     });
@@ -318,7 +315,7 @@ class FilesStore {
   };
 
   isCanShare = () => {
-    const folderType = this.selectedFolderStore.rootFolderType;
+    const folderType = selectedFolderStore.rootFolderType;
     const isVisitor = (userStore.user && userStore.user.isVisitor) || false;
 
     if (isVisitor) {
@@ -353,7 +350,7 @@ class FilesStore {
     const isFavorite = item.fileStatus === 32;
     const isFullAccess = item.access < 2;
     const isThirdPartyFolder =
-      item.providerKey && this.selectedFolderStore.isRootFolder;
+      item.providerKey && selectedFolderStore.isRootFolder;
 
     if (item.id <= 0) return [];
 
@@ -498,7 +495,7 @@ class FilesStore {
   };
 
   getFilesCount = () => {
-    const { filesCount, foldersCount } = this.selectedFolderStore;
+    const { filesCount, foldersCount } = selectedFolderStore;
     return filesCount + this.folders ? this.folders.length : foldersCount;
   };
 
@@ -511,9 +508,7 @@ class FilesStore {
   get currentFilesCount() {
     const serviceFilesCount = this.getServiceFilesCount();
     const filesCount = this.getFilesCount();
-    return this.selectedFolderStore.providerItem
-      ? serviceFilesCount
-      : filesCount;
+    return selectedFolderStore.providerItem ? serviceFilesCount : filesCount;
   }
 
   get iconOfDraggedFile() {
@@ -530,7 +525,7 @@ class FilesStore {
   }
 
   get canShareOwnerChange() {
-    const pathParts = this.selectedFolderStore.pathParts;
+    const pathParts = selectedFolderStore.pathParts;
     const userId = userStore.user.id;
     const commonFolder = treeFoldersStore.commonFolder;
     return (
@@ -561,14 +556,12 @@ class FilesStore {
   }
 
   get canCreate() {
-    switch (this.selectedFolderStore.rootFolderType) {
+    switch (selectedFolderStore.rootFolderType) {
       case FolderType.USER:
         return true;
       case FolderType.SHARE:
-        const canCreateInSharedFolder = this.selectedFolderStore.access === 1;
-        return (
-          !this.selectedFolderStore.isRootFolder && canCreateInSharedFolder
-        );
+        const canCreateInSharedFolder = selectedFolderStore.access === 1;
+        return !selectedFolderStore.isRootFolder && canCreateInSharedFolder;
       case FolderType.Privacy:
         return isDesktopClient && isEncryptionSupport;
       case FolderType.COMMON:
@@ -588,7 +581,7 @@ class FilesStore {
     items.unshift({
       id: -1,
       title: "",
-      parentId: this.selectedFolderStore.id,
+      parentId: selectedFolderStore.id,
       fileExst: this.fileActionStore.extension,
       icon,
     });
@@ -746,7 +739,7 @@ class FilesStore {
   }
 
   get userAccess() {
-    switch (this.selectedFolderStore.rootFolderType) {
+    switch (selectedFolderStore.rootFolderType) {
       case FolderType.USER:
         return true;
       case FolderType.SHARE:
@@ -779,7 +772,7 @@ class FilesStore {
 
   get isThirdPartySelection() {
     const withProvider = this.selection.find((x) => !x.providerKey);
-    return !withProvider && this.selectedFolderStore.isRootFolder;
+    return !withProvider && selectedFolderStore.isRootFolder;
   }
 
   get isWebEditSelected() {
@@ -995,7 +988,7 @@ class FilesStore {
     this.setFolders(favoritesFolder.folders);
     this.setFiles(favoritesFolder.files);
 
-    this.selectedFolderStore.setSelectedFolder({
+    selectedFolderStore.setSelectedFolder({
       folders: favoritesFolder.folders,
       ...favoritesFolder.current,
       pathParts: favoritesFolder.pathParts,

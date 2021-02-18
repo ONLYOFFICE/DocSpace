@@ -217,9 +217,14 @@ const ThirdPartyList = (props) => {
 };
 
 export default inject(
-  ({ initFilesStore, filesStore, settingsStore, treeFoldersStore }) => {
+  ({
+    initFilesStore,
+    settingsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
     const { setIsLoading } = initFilesStore;
-    const { setSelectedFolder } = filesStore.selectedFolderStore;
+    const { setSelectedFolder } = selectedFolderStore;
     const { setSelectedNode } = treeFoldersStore;
     const {
       setConnectItem,

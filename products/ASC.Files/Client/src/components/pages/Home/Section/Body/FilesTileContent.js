@@ -418,7 +418,14 @@ class FilesTileContent extends React.PureComponent {
 
 export default inject(
   (
-    { auth, initFilesStore, filesStore, formatsStore, treeFoldersStore },
+    {
+      auth,
+      initFilesStore,
+      filesStore,
+      formatsStore,
+      treeFoldersStore,
+      selectedFolderStore,
+    },
     { item }
   ) => {
     const { homepage, culture } = auth.settingsStore;
@@ -461,11 +468,11 @@ export default inject(
       homepage,
       fileAction,
       folders,
-      rootFolderId: filesStore.selectedFolderStore.pathParts,
-      selectedFolderId: filesStore.selectedFolderStore.id,
-      selectedFolderPathParts: filesStore.selectedFolderStore.pathParts,
-      newItems: filesStore.selectedFolderStore.new,
-      parentFolder: filesStore.selectedFolderStore.parentId,
+      rootFolderId: selectedFolderStore.pathParts,
+      selectedFolderId: selectedFolderStore.id,
+      selectedFolderPathParts: selectedFolderStore.pathParts,
+      newItems: selectedFolderStore.new,
+      parentFolder: selectedFolderStore.parentId,
       isLoading,
       treeFolders,
       isTrashFolder: isRecycleBinFolder,

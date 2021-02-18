@@ -166,10 +166,16 @@ ArticleMainButtonContent.propTypes = {
 };
 
 export default inject(
-  ({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
+  ({
+    auth,
+    filesStore,
+    uploadDataStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
     const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
-    const { id } = filesStore.selectedFolderStore;
+    const { id } = selectedFolderStore;
     const { startUpload } = uploadDataStore;
 
     return {

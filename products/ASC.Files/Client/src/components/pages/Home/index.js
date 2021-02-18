@@ -306,6 +306,7 @@ export default inject(
     uploadDataStore,
     dialogsStore,
     treeFoldersStore,
+    selectedFolderStore,
   }) => {
     const {
       dragging,
@@ -353,7 +354,7 @@ export default inject(
       firstLoad,
       dragging,
       fileActionId: id,
-      currentFolderId: filesStore.selectedFolderStore.id,
+      currentFolderId: selectedFolderStore.id,
       isLoading,
       filter,
       viewAs,

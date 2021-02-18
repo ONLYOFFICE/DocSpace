@@ -27,7 +27,6 @@ const PureConnectDialogContainer = (props) => {
     t,
     item,
     treeFolders,
-    //setUpdateTree,
     setTreeFolders,
     fetchThirdPartyProviders,
     fetchTreeFolders,
@@ -149,7 +148,6 @@ const PureConnectDialogContainer = (props) => {
             isCorporate ? folderData : null
           );
           setTreeFolders(newTreeFolders);
-          //setUpdateTree(true);
           fetchThirdPartyProviders();
 
           const newFolder =
@@ -188,7 +186,6 @@ const PureConnectDialogContainer = (props) => {
     selectedFolderFolders,
     selectedFolderId,
     setTreeFolders,
-    //setUpdateTree,
     showUrlField,
     treeFolders,
     urlValue,
@@ -337,39 +334,41 @@ const ConnectDialog = (props) => {
   );
 };
 
-export default inject(({ filesStore, settingsStore, treeFoldersStore }) => {
-  const {
-    providers,
-    getOAuthToken,
-    saveThirdParty,
-    openConnectWindow,
-    fetchThirdPartyProviders,
-  } = settingsStore.thirdPartyStore;
-  const { fetchFiles } = filesStore;
+export default inject(
+  ({ filesStore, settingsStore, treeFoldersStore, selectedFolderStore }) => {
+    const {
+      providers,
+      getOAuthToken,
+      saveThirdParty,
+      openConnectWindow,
+      fetchThirdPartyProviders,
+    } = settingsStore.thirdPartyStore;
+    const { fetchFiles } = filesStore;
 
-  const {
-    treeFolders,
-    setTreeFolders,
-    myFolderId,
-    commonFolderId,
-    fetchTreeFolders,
-  } = treeFoldersStore;
-  const { id, folders } = filesStore.selectedFolderStore;
+    const {
+      treeFolders,
+      setTreeFolders,
+      myFolderId,
+      commonFolderId,
+      fetchTreeFolders,
+    } = treeFoldersStore;
+    const { id, folders } = selectedFolderStore;
 
-  return {
-    selectedFolderId: id,
-    selectedFolderFolders: folders,
-    treeFolders,
-    myFolderId,
-    commonFolderId,
-    providers,
+    return {
+      selectedFolderId: id,
+      selectedFolderFolders: folders,
+      treeFolders,
+      myFolderId,
+      commonFolderId,
+      providers,
 
-    fetchFiles,
-    setTreeFolders,
-    getOAuthToken,
-    saveThirdParty,
-    openConnectWindow,
-    fetchThirdPartyProviders,
-    fetchTreeFolders,
-  };
-})(observer(ConnectDialog));
+      fetchFiles,
+      setTreeFolders,
+      getOAuthToken,
+      saveThirdParty,
+      openConnectWindow,
+      fetchThirdPartyProviders,
+      fetchTreeFolders,
+    };
+  }
+)(observer(ConnectDialog));

@@ -110,21 +110,23 @@ class ArticleBodyContent extends React.Component {
   }
 }
 
-export default inject(({ initFilesStore, filesStore, treeFoldersStore }) => {
-  const { setIsLoading } = initFilesStore;
-  const { fetchFiles, selectedFolderStore, filter } = filesStore;
-  const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
-  const selectedTreeNode = [selectedFolderStore.id + ""];
+export default inject(
+  ({ initFilesStore, filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const { setIsLoading } = initFilesStore;
+    const { fetchFiles, filter } = filesStore;
+    const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
+    const selectedTreeNode = [selectedFolderStore.id + ""];
 
-  return {
-    selectedFolderTitle: selectedFolderStore.title,
-    treeFolders,
-    selectedTreeNode,
-    filter,
+    return {
+      selectedFolderTitle: selectedFolderStore.title,
+      treeFolders,
+      selectedTreeNode,
+      filter,
 
-    setIsLoading,
-    fetchFiles,
-    setSelectedNode,
-    setTreeFolders,
-  };
-})(observer(ArticleBodyContent));
+      setIsLoading,
+      fetchFiles,
+      setSelectedNode,
+      setTreeFolders,
+    };
+  }
+)(observer(ArticleBodyContent));

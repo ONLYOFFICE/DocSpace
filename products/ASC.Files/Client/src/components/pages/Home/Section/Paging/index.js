@@ -162,15 +162,9 @@ const SectionPagingContent = ({
   );
 };
 
-export default inject(({ initFilesStore, filesStore }) => {
+export default inject(({ initFilesStore, filesStore, selectedFolderStore }) => {
   const { setIsLoading } = initFilesStore;
-  const {
-    files,
-    folders,
-    fetchFiles,
-    filter,
-    selectedFolderStore,
-  } = filesStore;
+  const { files, folders, fetchFiles, filter } = filesStore;
 
   return {
     files,

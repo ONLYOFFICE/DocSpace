@@ -163,22 +163,24 @@ const EmptyTrashDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-export default inject(({ initFilesStore, filesStore, uploadDataStore }) => {
-  const { isLoading } = initFilesStore;
-  const { secondaryProgressDataStore } = uploadDataStore;
-  const { fetchFiles, filter } = filesStore;
-  const {
-    setSecondaryProgressBarData,
-    clearSecondaryProgressData,
-  } = secondaryProgressDataStore;
+export default inject(
+  ({ initFilesStore, filesStore, uploadDataStore, selectedFolderStore }) => {
+    const { isLoading } = initFilesStore;
+    const { secondaryProgressDataStore } = uploadDataStore;
+    const { fetchFiles, filter } = filesStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
 
-  return {
-    currentFolderId: filesStore.selectedFolderStore.id,
-    isLoading,
-    filter,
+    return {
+      currentFolderId: selectedFolderStore.id,
+      isLoading,
+      filter,
 
-    fetchFiles,
-    setSecondaryProgressBarData,
-    clearSecondaryProgressData,
-  };
-})(withRouter(observer(EmptyTrashDialog)));
+      fetchFiles,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    };
+  }
+)(withRouter(observer(EmptyTrashDialog)));
