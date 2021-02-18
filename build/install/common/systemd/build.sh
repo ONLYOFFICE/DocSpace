@@ -34,13 +34,13 @@ reassign_values (){
 	api )	
 		SERVICE_NAME="$1"
 		SERVICE_PORT="5000"
-		WORK_DIR="/var/www/studio/api/"
+		WORK_DIR="/var/www/appserver/studio/api/"
 		EXEC_FILE="ASC.Web.Api.dll"
 	;;
 	api_system )	
 		SERVICE_NAME="$1"
 		SERVICE_PORT="5010"
-		WORK_DIR="/var/www/services/apisystem/"
+		WORK_DIR="/var/www/appserver/services/apisystem/"
 		EXEC_FILE="ASC.ApiSystem.dll"
 	;;
 	urlshortener )
@@ -64,48 +64,48 @@ reassign_values (){
 	studio_notify )
 		SERVICE_NAME="$1"
 		SERVICE_PORT="5006"
-		WORK_DIR="/var/www/services/studio.notify/"
+		WORK_DIR="/var/www/appserver/services/studio.notify/"
 		EXEC_FILE="ASC.Studio.Notify.dll"
-		CORE=" --core:products:folder=/var/www/products --core:products:subfolder=server "
+		CORE=" --core:products:folder=/var/www/appserver/products --core:products:subfolder=server "
 	;;
 	notify )
 		SERVICE_NAME="$1"
 		SERVICE_PORT="5005"
-		WORK_DIR="/var/www/services/notify/"
+		WORK_DIR="/var/www/appserver/services/notify/"
 		EXEC_FILE="ASC.Notify.dll"
-		CORE=" --core:products:folder=/var/www/products --core:products:subfolder=server "
+		CORE=" --core:products:folder=/var/www/appserver/products --core:products:subfolder=server "
 	;;
 	people )
 		SERVICE_NAME="$1"
 		SERVICE_PORT="5004"
-		WORK_DIR="/var/www/products/ASC.People/server/"
+		WORK_DIR="/var/www/appserver/products/ASC.People/server/"
 		EXEC_FILE="ASC.People.dll"
 	;;
 	files )
 		SERVICE_NAME="$1"
 		SERVICE_PORT="5007"
-		WORK_DIR="/var/www/products/ASC.Files/server/"
+		WORK_DIR="/var/www/appserver/products/ASC.Files/server/"
 		EXEC_FILE="ASC.Files.dll"
 	;;
 	files_service )
 		SERVICE_NAME="$1"
 		SERVICE_PORT="5009"
-		WORK_DIR="/var/www/products/ASC.Files/service/"
+		WORK_DIR="/var/www/appserver/products/ASC.Files/service/"
 		EXEC_FILE="ASC.Files.Service.dll"
-		CORE=" --core:products:folder=/var/www/products --core:products:subfolder=server"
+		CORE=" --core:products:folder=/var/www/appserver/products --core:products:subfolder=server"
 	;;
 	studio )
 		SERVICE_NAME="$1"
 		SERVICE_PORT="5003"
-		WORK_DIR="/var/www/studio/server/"
+		WORK_DIR="/var/www/appserver/studio/server/"
 		EXEC_FILE="ASC.Web.Studio.dll"
 	;;
 	backup )
 		SERVICE_NAME="$1"
 		SERVICE_PORT="5012"
-		WORK_DIR="/var/www/services/backup/"
+		WORK_DIR="/var/www/appserver/services/backup/"
 		EXEC_FILE="ASC.Data.Backup.dll"
-		CORE=" --core:products:folder=/var/www/products --core:products:subfolder=server"
+		CORE=" --core:products:folder=/var/www/appserver/products --core:products:subfolder=server"
 	;;
   esac
   

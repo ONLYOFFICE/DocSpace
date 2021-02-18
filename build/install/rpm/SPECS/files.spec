@@ -3,29 +3,29 @@
 
 %files api
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/studio/api/
-%{_var}/www/products/ASC.People/server/ASC.People.dll
-%{_var}/www/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/appserver/studio/api/
+%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
+%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
 %{_sysconfdir}/systemd/system/appserver-api.service
-%dir %{_var}/www/studio
-%dir %{_var}/www/products/
-%dir %{_var}/www/products/ASC.People/
-%dir %{_var}/www/products/ASC.People/server/
-%dir %{_var}/www/products/ASC.Files/
-%dir %{_var}/www/products/ASC.Files/server/
+%dir %{_var}/www/appserver/studio
+%dir %{_var}/www/appserver/products/
+%dir %{_var}/www/appserver/products/ASC.People/
+%dir %{_var}/www/appserver/products/ASC.People/server/
+%dir %{_var}/www/appserver/products/ASC.Files/
+%dir %{_var}/www/appserver/products/ASC.Files/server/
 
 %files backup
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/services/backup/
-%{_var}/www/products/ASC.People/server/ASC.People.dll
-%{_var}/www/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/appserver/services/backup/
+%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
+%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
 %{_sysconfdir}/systemd/system/appserver-backup.service
-%dir %{_var}/www/services/
-%dir %{_var}/www/products/
-%dir %{_var}/www/products/ASC.People/
-%dir %{_var}/www/products/ASC.People/server/
-%dir %{_var}/www/products/ASC.Files/
-%dir %{_var}/www/products/ASC.Files/server/
+%dir %{_var}/www/appserver/services/
+%dir %{_var}/www/appserver/products/
+%dir %{_var}/www/appserver/products/ASC.People/
+%dir %{_var}/www/appserver/products/ASC.People/server/
+%dir %{_var}/www/appserver/products/ASC.Files/
+%dir %{_var}/www/appserver/products/ASC.Files/server/
 
 %files common
 %defattr(-, onlyoffice, onlyoffice, -)
@@ -36,74 +36,74 @@
 
 %files files_services
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/products/ASC.Files/service/
+%{_var}/www/appserver/products/ASC.Files/service/
 %{_sysconfdir}/systemd/system/appserver-files_service.service
-%dir %{_var}/www/products/
-%dir %{_var}/www/products/ASC.Files/
+%dir %{_var}/www/appserver/products/
+%dir %{_var}/www/appserver/products/ASC.Files/
 
 %files notify
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/services/notify/
-%{_var}/www/products/ASC.People/server/ASC.People.dll
-%{_var}/www/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/appserver/services/notify/
+%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
+%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
 %{_sysconfdir}/systemd/system/appserver-notify.service
-%dir %{_var}/www/services/
-%dir %{_var}/www/products/
-%dir %{_var}/www/products/ASC.People/
-%dir %{_var}/www/products/ASC.People/server/
-%dir %{_var}/www/products/ASC.Files/
-%dir %{_var}/www/products/ASC.Files/server/
+%dir %{_var}/www/appserver/services/
+%dir %{_var}/www/appserver/products/
+%dir %{_var}/www/appserver/products/ASC.People/
+%dir %{_var}/www/appserver/products/ASC.People/server/
+%dir %{_var}/www/appserver/products/ASC.Files/
+%dir %{_var}/www/appserver/products/ASC.Files/server/
 
 %files files
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/products/ASC.Files/server/
-%{_var}/www/products/ASC.People/server/ASC.People.dll
+%{_var}/www/appserver/products/ASC.Files/server/
+%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
 %{_sysconfdir}/systemd/system/appserver-files.service
-%dir %{_var}/www/products/
-%dir %{_var}/www/products/ASC.People/
-%dir %{_var}/www/products/ASC.People/server/
-%dir %{_var}/www/products/ASC.Files/
+%dir %{_var}/www/appserver/products/
+%dir %{_var}/www/appserver/products/ASC.People/
+%dir %{_var}/www/appserver/products/ASC.People/server/
+%dir %{_var}/www/appserver/products/ASC.Files/
 
 %files api_system
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/services/apisystem/
+%{_var}/www/appserver/services/apisystem/
 %{_sysconfdir}/systemd/system/appserver-api_system.service
-%dir %{_var}/www/services/
+%dir %{_var}/www/appserver/services/
 
 %files proxy
 %defattr(-, onlyoffice, onlyoffice, -)
 %{_sysconfdir}/nginx/includes/*
 %{_sysconfdir}/nginx/conf.d/*
-%{_var}/www/story/
-%{_var}/www/products/ASC.People/client/
-%{_var}/www/products/ASC.Files/client/
-%{_var}/www/public/
-%{_var}/www/studio/client/
-%dir %{_var}/www/studio/
-%dir %{_var}/www/products/ASC.People/
-%dir %{_var}/www/products/ASC.Files/
+%{_var}/www/appserver/story/
+%{_var}/www/appserver/products/ASC.People/client/
+%{_var}/www/appserver/products/ASC.Files/client/
+%{_var}/www/appserver/public/
+%{_var}/www/appserver/studio/client/
+%dir %{_var}/www/appserver/studio/
+%dir %{_var}/www/appserver/products/ASC.People/
+%dir %{_var}/www/appserver/products/ASC.Files/
 
 %files studio.notify
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/services/studio.notify/
-%{_var}/www/products/ASC.People/server/ASC.People.dll
-%{_var}/www/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/appserver/services/studio.notify/
+%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
+%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
 %{_sysconfdir}/systemd/system/appserver-studio_notify.service
-%dir %{_var}/www/products/
-%dir %{_var}/www/products/ASC.People/
-%dir %{_var}/www/products/ASC.People/server/
-%dir %{_var}/www/products/ASC.Files/
-%dir %{_var}/www/services/
+%dir %{_var}/www/appserver/products/
+%dir %{_var}/www/appserver/products/ASC.People/
+%dir %{_var}/www/appserver/products/ASC.People/server/
+%dir %{_var}/www/appserver/products/ASC.Files/
+%dir %{_var}/www/appserver/services/
 
 %files people.server
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/products/ASC.People/server/
-%{_var}/www/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/appserver/products/ASC.People/server/
+%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
 %{_sysconfdir}/systemd/system/appserver-people.service
-%dir %{_var}/www/products/
-%dir %{_var}/www/products/ASC.People/
-%dir %{_var}/www/products/ASC.Files/
-%dir %{_var}/www/products/ASC.Files/server/
+%dir %{_var}/www/appserver/products/
+%dir %{_var}/www/appserver/products/ASC.People/
+%dir %{_var}/www/appserver/products/ASC.Files/
+%dir %{_var}/www/appserver/products/ASC.Files/server/
 
 %files urlshortener
 %defattr(-, onlyoffice, onlyoffice, -)
@@ -131,13 +131,13 @@
 
 %files studio
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/studio/server/
-%{_var}/www/products/ASC.People/server/ASC.People.dll
-%{_var}/www/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/appserver/studio/server/
+%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
+%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
 %{_sysconfdir}/systemd/system/appserver-studio.service
-%dir %{_var}/www/studio/
-%dir %{_var}/www/products/
-%dir %{_var}/www/products/ASC.People/
-%dir %{_var}/www/products/ASC.People/server/
-%dir %{_var}/www/products/ASC.Files/
-%dir %{_var}/www/products/ASC.Files/server/
+%dir %{_var}/www/appserver/studio/
+%dir %{_var}/www/appserver/products/
+%dir %{_var}/www/appserver/products/ASC.People/
+%dir %{_var}/www/appserver/products/ASC.People/server/
+%dir %{_var}/www/appserver/products/ASC.Files/
+%dir %{_var}/www/appserver/products/ASC.Files/server/

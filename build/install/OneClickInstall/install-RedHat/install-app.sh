@@ -13,7 +13,6 @@ EOF
 MYSQL_SERVER_HOST=${MYSQL_SERVER_HOST:-"localhost"}
 MYSQL_SERVER_DB_NAME=${MYSQL_SERVER_DB_NAME:-"${package_sysname}"}
 MYSQL_SERVER_USER=${MYSQL_SERVER_USER:-"root"}
-MYSQL_SERVER_PASS=${MYSQL_SERVER_PASS:-"bbThb75KEvbxczk2019!"}
 MYSQL_SERVER_PORT=${MYSQL_SERVER_PORT:-3306}
 
 if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ]; then
@@ -27,15 +26,15 @@ if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ]; then
 		sleep 1
 	done
 
-	if ! mysql "-u$MYSQL_SERVER_USER" "-p$MYSQL_SERVER_PASS" -e ";" >/dev/null 2>&1; then
+	if ! mysql "-u$MYSQL_SERVER_USER" "-p$MYSQL_TEMPORARY_ROOT_PASS" -e ";" >/dev/null 2>&1; then
 		if [ -z $MYSQL_TEMPORARY_ROOT_PASS ]; then
 		   MYSQL="mysql --connect-expired-password -u$MYSQL_SERVER_USER -D mysql";
 		else
 		   MYSQL="mysql --connect-expired-password -u$MYSQL_SERVER_USER -p${MYSQL_TEMPORARY_ROOT_PASS} -D mysql";
 		fi
 
-		$MYSQL -e "ALTER USER '${MYSQL_SERVER_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${MYSQL_SERVER_PASS}'" >/dev/null 2>&1 \
-		|| $MYSQL -e "UPDATE user SET plugin='mysql_native_password', authentication_string=PASSWORD('${MYSQL_SERVER_PASS}') WHERE user='${MYSQL_SERVER_USER}' and host='localhost';"		
+		$MYSQL -e "ALTER USER '${MYSQL_SERVER_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${MYSQL_TEMPORARY_ROOT_PASS}'" >/dev/null 2>&1 \
+		|| $MYSQL -e "UPDATE user SET plugin='mysql_native_password', authentication_string=PASSWORD('${MYSQL_TEMPORARY_ROOT_PASS}') WHERE user='${MYSQL_SERVER_USER}' and host='localhost';"		
 
 		systemctl restart mysqld
 	fi
@@ -146,7 +145,6 @@ if [ "$APPSERVER_INSTALLED" = "false" ]; then
 
 	${package_manager} install -y ${package_sysname}-appserver.x86_64
 
-	#configuration appserver
 	if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ]; then
 expect << EOF
 		set timeout -1
@@ -163,7 +161,7 @@ expect << EOF
 		send "\025$MYSQL_SERVER_USER\r"
 
 		expect -re "Database password:"
-		send "\025$MYSQL_SERVER_PASS\r"
+		send "\025$MYSQL_TEMPORARY_ROOT_PASS\r"
 
 		expect eof	
 EOF

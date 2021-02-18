@@ -51,29 +51,29 @@ cd %{_builddir}/AppServer-%GIT_BRANCH/
 dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config
 dotnet build -r linux-x64 ASC.Web.sln
 cd products/ASC.People/Server
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/products/ASC.People/server
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/appserver/products/ASC.People/server
 cd ../../../
 cd products/ASC.Files/Server
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/products/ASC.Files/server
-cp -avrf DocStore %{_builddir}%{_var}/www/products/ASC.Files/server/
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/appserver/products/ASC.Files/server
+cp -avrf DocStore %{_builddir}%{_var}/www/appserver/products/ASC.Files/server/
 cd ../../../
 cd products/ASC.Files/Service
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/products/ASC.Files/service
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/appserver/products/ASC.Files/service
 cd ../../../
 cd web/ASC.Web.Api
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/studio/api
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/appserver/studio/api
 cd ../../
 cd web/ASC.Web.Studio
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/studio/server
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/appserver/studio/server
 cd ../../
 cd common/services/ASC.Data.Backup
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/services/backup
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/appserver/services/backup
 cd ../../../
 cd common/services/ASC.Notify
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/services/notify
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/appserver/services/notify
 cd ../../../
 cd common/services/ASC.ApiSystem
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/services/apisystem
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/appserver/services/apisystem
 cd ../../../
 cd common/services/ASC.Thumbnails.Svc
 dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/services/thumb/service
@@ -93,4 +93,4 @@ yarn install --cwd common/ASC.Socket.IO --frozen-lockfile
 
 cd common/services/ASC.Studio.Notify
 dotnet add ASC.Studio.Notify.csproj reference ../../../products/ASC.People/Server/ASC.People.csproj  ../../../products/ASC.Files/Server/ASC.Files.csproj
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/services/studio.notify
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/appserver/services/studio.notify

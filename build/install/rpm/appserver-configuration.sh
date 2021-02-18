@@ -2,8 +2,8 @@
 ENVIRONMENT="production"
 
 APP_DIR="/etc/onlyoffice/appserver"
-APP_CONF="$APP_DIR/config/appsettings.json"
-USER_CONF="$APP_DIR/config/appsettings.$ENVIRONMENT.json"
+APP_CONF="$APP_DIR/appsettings.json"
+USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 NGINX_CONF="/etc/nginx/conf.d"
 SYSTEMD_DIR="/etc/systemd/system"
 
@@ -194,10 +194,10 @@ restart_services() {
 }
 
 input_db_params(){
-    local def_DB_HOST="localhost"
-    local def_DB_NAME="onlyoffice"
-    local def_DB_USER="root"
-    local def_DB_PWD="bbThb75KEvbxczk2019!"
+    local user_connectionString=$(json -f $USER_CONF ConnectionStrings.default.connectionString)
+    local def_DB_HOST=$(echo $user_connectionString | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
+    local def_DB_NAME=$(echo $user_connectionString | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
+    local def_DB_USER=$(echo $user_connectionString | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
 
 	read -e -p "Database host: " -i "$DB_HOST" DB_HOST
 	read -e -p "Database name: " -i "$DB_NAME" DB_NAME
@@ -348,15 +348,17 @@ execute_mysql_script(){
     DB_TABLES_COUNT=$($MYSQL --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}'"); 
     
     if [ "${DB_TABLES_COUNT}" -eq "0" ]; then
+		local SQL_DIR="/var/www/appserver/sql"
+
 		echo -n "Installing MYSQL database... "
 
 		#Adding data to the db
-		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $APP_DIR/onlyoffice.sql
+		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $SQL_DIR/onlyoffice.sql
 		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$APP_DIR/createdb.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$APP_DIR/onlyoffice.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$APP_DIR/onlyoffice.data.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$APP_DIR/onlyoffice.resources.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "$SQL_DIR/createdb.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.data.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.resources.sql" >/dev/null 2>&1
 	else
 		echo -n "Upgrading MySQL database... "
     fi
