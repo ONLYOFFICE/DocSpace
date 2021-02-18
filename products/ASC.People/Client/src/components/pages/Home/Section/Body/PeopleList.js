@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { CustomScrollbarsVirtualList } from "asc-web-components";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
@@ -8,10 +7,7 @@ import RowWrapper from "./RowWrapper";
 
 import memoize from "memoize-one";
 
-import {
-  loadMoreUsers,
-  setUserContextOptions,
-} from "../../../../../store/people/actions";
+import { loadMoreUsers } from "../../../../../store/people/actions";
 import { getUsers } from "../../../../../store/people/selectors";
 
 const PeopleList = ({
@@ -29,10 +25,8 @@ const PeopleList = ({
   needForUpdate,
   filter,
   loadMoreUsers,
-  setUserContextOptions,
 }) => {
   //console.log("PeopleList render");
-  console.log(setUserContextOptions);
   const createItemData = memoize(
     (
       peopleList,
@@ -101,7 +95,6 @@ const PeopleList = ({
               itemData={itemData}
               itemCount={peopleList.length}
               itemSize={itemData.isMobile ? 57 : 48}
-              //outerElementType={CustomScrollbarsVirtualList}
               onItemsRendered={onItemsRendered}
               ref={ref}
             >
@@ -125,5 +118,4 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   loadMoreUsers,
-  setUserContextOptions,
 })(PeopleList);

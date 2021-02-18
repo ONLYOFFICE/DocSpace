@@ -364,7 +364,6 @@ export function loadMoreUsers(filter) {
 
 export function setUserContextOptions(contextOptions) {
   return (dispatch) => {
-    console.log(contextOptions);
     dispatch(setContextOptions(contextOptions));
   };
 }
