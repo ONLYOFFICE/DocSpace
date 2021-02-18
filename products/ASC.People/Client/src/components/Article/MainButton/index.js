@@ -112,16 +112,16 @@ const ArticleMainButtonContentContainer = withTranslation()(
   PureArticleMainButtonContent
 );
 
-const ArticleMainButtonContent = ({ language, ...rest }) => {
+const ArticleMainButtonContent = ({ language, isAdmin, ...rest }) => {
   useEffect(() => {
     changeLanguage(i18n, language);
   }, [language]);
 
-  return (
+  return isAdmin ? (
     <I18nextProvider i18n={i18n}>
       <ArticleMainButtonContentContainer {...rest} />
     </I18nextProvider>
-  );
+  ) : null;
 };
 
 ArticleMainButtonContent.propTypes = {
@@ -130,6 +130,7 @@ ArticleMainButtonContent.propTypes = {
 };
 
 export default inject(({ auth }) => ({
+  isAdmin: auth.isAdmin,
   settings: auth.settingsStore,
   isLoaded: auth.isLoaded,
   language: auth.language,
