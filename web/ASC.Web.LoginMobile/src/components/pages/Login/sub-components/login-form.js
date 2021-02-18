@@ -80,9 +80,9 @@ const LoginForm = ({
       setUserNameValid(!hasError);
     }
 
-    const pass = password.trim();
+    const clearPass = password.trim();
 
-    if (!pass) {
+    if (!clearPass) {
       hasError = true;
       setPasswordValid(!hasError);
     }
@@ -90,12 +90,12 @@ const LoginForm = ({
     if (hasError) return false;
 
     setIsLoading(true);
-    const hash = createPasswordHash(pass, fakeApi.fakeHashSettings);
+    //const hash = createPasswordHash(pass, fakeApi.fakeHashSettings);
 
     // checkPwd(); //?
 
     fakeApi
-      .login(clearUserName, hash)
+      .login(clearUserName, clearPass)
       .then(() => {
         tryRedirectTo("/portal-selection");
       })

@@ -17,12 +17,13 @@ const StyledRegistration = styled(Box)`
 `;
 
 const RegistrationComponent = ({ t }) => {
-  return (<><Header /> <StyledRegistration>
-      
-    <RegistrationTitle t={t} />
-    Registration
-  </StyledRegistration></>
-    
+  return (
+    <>
+      <StyledRegistration>
+        <RegistrationTitle t={t} />
+        Registration
+      </StyledRegistration>
+    </>
   );
 };
 

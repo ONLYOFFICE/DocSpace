@@ -23,6 +23,8 @@ const LoginContainer = styled.div`
   grid-gap: 30px;
   align-items: center;
   margin: 34px 32px 0 32px;
+  height: min-content;
+  width: 100%;
 
   .greeting-title {
     width: 100%;
@@ -115,7 +117,6 @@ class Form extends Component {
 
     return (
       <>
-        <Header />
         <LoginContainer>
           <Text
             fontSize="23px"
