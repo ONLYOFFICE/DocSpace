@@ -32,6 +32,7 @@ export const SET_IS_EDITING_FORM = "SET_IS_EDITING_FORM";
 export const SET_IS_LOADING = "SET_IS_LOADING";
 export const TOGGLE_AVATAR_EDITOR = "TOGGLE_AVATAR_EDITOR";
 export const ADD_USERS = "ADD_USERS";
+export const SET_CONTEXT_OPTIONS = "SET_CONTEXT_OPTIONS";
 
 export function setIsLoading(isLoading) {
   return {
@@ -187,6 +188,13 @@ export function setSelectGroup(groupId) {
   return {
     type: SELECT_GROUP,
     groupId,
+  };
+}
+
+export function setContextOptions(contextOptions) {
+  return {
+    type: SET_CONTEXT_OPTIONS,
+    contextOptions,
   };
 }
 
@@ -351,5 +359,12 @@ export function loadMoreUsers(filter) {
     });
 
     dispatch(setFilter(filterData));
+  };
+}
+
+export function setUserContextOptions(contextOptions) {
+  return (dispatch) => {
+    console.log(contextOptions);
+    dispatch(setContextOptions(contextOptions));
   };
 }

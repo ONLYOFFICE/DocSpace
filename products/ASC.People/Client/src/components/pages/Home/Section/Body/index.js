@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation, Trans } from "react-i18next";
-import { utils } from "asc-web-components";
+import { utils, ContextMenu } from "asc-web-components";
 
 import {
   selectUser,
@@ -17,6 +17,7 @@ import {
 import {
   getPeopleList,
   getIsEmptyGroup,
+  getContextOptions,
 } from "../../../../../store/people/selectors";
 
 import equal from "fast-deep-equal/react";
@@ -395,6 +396,7 @@ class SectionBodyContent extends React.PureComponent {
       isAdmin,
       currentUserId,
       isEmptyGroup,
+      userContextOptions,
     } = this.props;
 
     const { dialogsVisible, user } = this.state;
@@ -419,6 +421,10 @@ class SectionBodyContent extends React.PureComponent {
                 getUserContextOptions={this.getUserContextOptions}
                 onContentRowSelect={this.onContentRowSelect}
                 needForUpdate={this.needForUpdate}
+              />
+              <ContextMenu
+                targetAreaId="peopleListContainer"
+                options={userContextOptions}
               />
             </StyledContainer>
           )}
@@ -481,6 +487,7 @@ const mapStateToProps = (state) => {
     isAdmin: isAdmin(state),
     currentUserId: getCurrentUserId(state),
     isEmptyGroup: getIsEmptyGroup(state),
+    userContextOptions: getContextOptions(state),
   };
 };
 

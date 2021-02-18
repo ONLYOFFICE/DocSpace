@@ -1,6 +1,8 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Row, Avatar } from "asc-web-components";
 import UserContent from "./userContent";
+import { setUserContextOptions } from "../../../../../store/people/actions";
 
 const PeopleRow = ({
   man,
@@ -15,6 +17,7 @@ const PeopleRow = ({
   getUserContextOptions,
   onContentRowSelect,
   needForUpdate,
+  setUserContextOptions,
 }) => {
   //console.log("PeopleRow render");
   const { checked, role, displayName, avatar, id, status, options } = man;
@@ -32,6 +35,11 @@ const PeopleRow = ({
   const element = (
     <Avatar size="min" role={role} userName={displayName} source={avatar} />
   );
+
+  const setContextOptions = () => {
+    setUserContextOptions(contextOptionsProps.contextOptions);
+  };
+
   return (
     <Row
       key={id}
@@ -43,6 +51,7 @@ const PeopleRow = ({
       {...contextOptionsProps}
       needForUpdate={needForUpdate}
       sectionWidth={sectionWidth}
+      onContextMenu={setContextOptions}
     >
       <UserContent
         isMobile={isMobile}
@@ -56,4 +65,15 @@ const PeopleRow = ({
     </Row>
   );
 };
-export default PeopleRow;
+
+const mapStateToProps = (state) => {
+  const { filter } = state.people;
+
+  return {
+    filter,
+  };
+};
+
+export default connect(mapStateToProps, {
+  setUserContextOptions,
+})(PeopleRow);

@@ -8,7 +8,10 @@ import RowWrapper from "./RowWrapper";
 
 import memoize from "memoize-one";
 
-import { loadMoreUsers } from "../../../../../store/people/actions";
+import {
+  loadMoreUsers,
+  setUserContextOptions,
+} from "../../../../../store/people/actions";
 import { getUsers } from "../../../../../store/people/selectors";
 
 const PeopleList = ({
@@ -26,9 +29,10 @@ const PeopleList = ({
   needForUpdate,
   filter,
   loadMoreUsers,
+  setUserContextOptions,
 }) => {
   //console.log("PeopleList render");
-
+  console.log(setUserContextOptions);
   const createItemData = memoize(
     (
       peopleList,
@@ -121,4 +125,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   loadMoreUsers,
+  setUserContextOptions,
 })(PeopleList);

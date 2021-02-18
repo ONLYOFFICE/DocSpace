@@ -14,6 +14,7 @@ import {
   SET_IS_LOADING,
   TOGGLE_AVATAR_EDITOR,
   ADD_USERS,
+  SET_CONTEXT_OPTIONS,
 } from "./actions";
 import { isUserSelected, skipUser, getUsersBySelected } from "./selectors";
 import { api } from "asc-web-common";
@@ -35,6 +36,7 @@ const initialState = {
     isVisibleDataLossDialog: false,
   },
   isLoading: false,
+  contextOptions: [],
 };
 const peopleReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -116,6 +118,11 @@ const peopleReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         isLoading: action.isLoading,
       });
+    case SET_CONTEXT_OPTIONS:
+      return Object.assign({}, state, {
+        contextOptions: action.contextOptions,
+      });
+
     default:
       return state;
   }
