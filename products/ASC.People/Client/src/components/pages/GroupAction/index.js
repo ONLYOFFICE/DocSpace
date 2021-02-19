@@ -1,6 +1,6 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { Loader } from "asc-web-components";
-import { PageLayout, Loaders } from "asc-web-common";
+import { PageLayout } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,

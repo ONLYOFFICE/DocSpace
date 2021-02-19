@@ -46,7 +46,7 @@ class CustomTitles extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, greetingSettings, organizationName } = props;
+    const { t, greetingSettings /*, organizationName*/ } = props;
 
     greetingTitleFromSessionStorage = getFromSessionStorage("greetingTitle");
 
@@ -253,4 +253,4 @@ export default inject(({ auth, setup }) => {
     setGreetingTitle,
     restoreGreetingTitle,
   };
-})(withTranslation()(observer(CustomTitles)));
+})(withTranslation("Settings")(observer(CustomTitles)));

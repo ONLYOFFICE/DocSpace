@@ -1,8 +1,8 @@
-import React, { Suspense } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 //import { RequestLoader } from "asc-web-components";
-import { PageLayout, utils, Loaders } from "asc-web-common";
+import { PageLayout, utils } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
@@ -18,44 +18,7 @@ import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 class Home extends React.Component {
-  // constructor(props) {
-  //   super(props);
-
-  //   this.state = {
-  // isHeaderVisible: false,
-  // isHeaderIndeterminate: false,
-  // isHeaderChecked: false,
-  //   };
-  // }
-
-  // renderGroupButtonMenu = () => {
-  //   const { users, selection, selected, setSelected } = this.props;
-
-  //   const headerVisible = selection.length > 0;
-  //   const headerIndeterminate =
-  //     headerVisible && selection.length > 0 && selection.length < users.length;
-  //   const headerChecked = headerVisible && selection.length === users.length;
-
-  //   let newState = {};
-
-  //   if (headerVisible || selected === "close") {
-  //     newState.isHeaderVisible = headerVisible;
-  //     if (selected === "close") {
-  //       setSelected("none");
-  //     }
-  //   }
-
-  //   newState.isHeaderIndeterminate = headerIndeterminate;
-  //   newState.isHeaderChecked = headerChecked;
-
-  //   this.setState(newState);
-  // };
-
   componentDidUpdate(prevProps) {
-    // if (this.props.selection !== prevProps.selection) {
-    //   this.renderGroupButtonMenu();
-    // }
-
     if (this.props.isLoading !== prevProps.isLoading) {
       if (this.props.isLoading) {
         utils.showLoader();
@@ -65,35 +28,13 @@ class Home extends React.Component {
     }
   }
 
-  // onSectionHeaderContentCheck = (checked) => {
-  //   console.log("onSectionHeaderContentCheck");
-  //   this.props.setSelected(checked ? "all" : "none");
-  // };
-
-  // onSectionHeaderContentSelect = (selected) => {
-  //   console.log("onSectionHeaderContentSelect");
-  //   this.props.setSelected(selected);
-  // };
-
-  // onClose = () => {
-  //   const { clearSelection } = this.props;
-  //   clearSelection();
-  //   this.setState({ isHeaderVisible: false });
-  // };
-
   onLoading = (status) => {
     this.props.setIsLoading(status);
   };
 
   render() {
-    // const {
-    // isHeaderVisible,
-    // isHeaderIndeterminate,
-    // isHeaderChecked,
-    // selected,
-    // } = this.state;
     console.log("Home render");
-    const { isLoaded } = this.props;
+    const { isLoaded, isAdmin } = this.props;
 
     return (
       <PageLayout
@@ -105,43 +46,30 @@ class Home extends React.Component {
           <ArticleHeaderContent />
         </PageLayout.ArticleHeader>
 
-        {/* {isAdmin && ( */}
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent />
-        </PageLayout.ArticleMainButton>
-        {/* )} */}
+        {isAdmin && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
 
         <PageLayout.ArticleBody>
           <ArticleBodyContent />
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-            <SectionHeaderContent
-              // isHeaderVisible={isHeaderVisible}
-              // isHeaderIndeterminate={isHeaderIndeterminate}
-              // isHeaderChecked={isHeaderChecked}
-              // onCheck={this.onSectionHeaderContentCheck}
-              // onSelect={this.onSectionHeaderContentSelect}
-              // onClose={this.onClose}
-              onLoading={this.onLoading}
-            />
+          <SectionHeaderContent onLoading={this.onLoading} />
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionFilter>
-            <SectionFilterContent onLoading={this.onLoading} />
+          <SectionFilterContent onLoading={this.onLoading} />
         </PageLayout.SectionFilter>
 
         <PageLayout.SectionBody>
-            <SectionBodyContent
-              isMobile={isMobile}
-              // selected={selected}
-              onLoading={this.onLoading}
-              // onChange={this.onRowChange}
-            />
+          <SectionBodyContent isMobile={isMobile} onLoading={this.onLoading} />
         </PageLayout.SectionBody>
 
         <PageLayout.SectionPaging>
-            <SectionPagingContent onLoading={this.onLoading} />
+          <SectionPagingContent onLoading={this.onLoading} />
         </PageLayout.SectionPaging>
       </PageLayout>
     );
@@ -149,23 +77,14 @@ class Home extends React.Component {
 }
 
 Home.propTypes = {
-  //users: PropTypes.array,
   history: PropTypes.object.isRequired,
   isLoaded: PropTypes.bool,
-  // isAdmin: PropTypes.bool,
+  isAdmin: PropTypes.bool,
 };
 
 export default inject(({ auth, peopleStore }) => ({
   isLoaded: auth.isLoaded,
-  // isAdmin: auth.isAdmin,
-  // organizationName: auth.settingsStore.organizationName,
-  // users: peopleStore.usersStore.users,
-  // groups: peopleStore.groupsStore.groups,
-  // selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
-  // clearSelection: peopleStore.selectionStore.clearSelection,
+  isAdmin: auth.isAdmin,
   isLoading: peopleStore.isLoading,
   setIsLoading: peopleStore.setIsLoading,
-  // selection: peopleStore.selectionStore.selection,
-  // setSelected: peopleStore.selectionStore.setSelected,
-  // selected: peopleStore.selectionStore.selected,
 }))(observer(withRouter(Home)));

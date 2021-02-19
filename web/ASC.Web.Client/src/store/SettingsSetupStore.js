@@ -138,12 +138,13 @@ class SettingsSetupStore {
 
   setLanguageAndTime = async (lng, timeZoneID) => {
     const res = await api.settings.setLanguageAndTime(lng, timeZoneID);
-
+    console.log("setLanguageAndTime", res);
     this.setPortalLanguageAndTime({ lng, timeZoneID });
   };
 
   setGreetingTitle = async (greetingTitle) => {
     const res = await api.settings.setGreetingSettings(greetingTitle);
+    console.log("setGreetingTitle", res);
     this.setGreetingSettings(greetingTitle);
   };
 
@@ -159,6 +160,7 @@ class SettingsSetupStore {
 
   updateConsumerProps = async (newProps) => {
     const res = await api.settings.updateConsumerProps(newProps);
+    console.log("updateConsumerProps", res);
     await this.getConsumers();
   };
 }

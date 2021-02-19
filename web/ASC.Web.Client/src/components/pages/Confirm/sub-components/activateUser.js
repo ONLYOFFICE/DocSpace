@@ -16,7 +16,7 @@ import { constants, utils as commonUtils, api } from "asc-web-common";
 import { inject, observer } from "mobx-react";
 
 const { EmployeeActivationStatus } = constants;
-const { createPasswordHash, tryRedirectTo } = commonUtils;
+const { createPasswordHash } = commonUtils;
 
 const inputWidth = "400px";
 
@@ -399,4 +399,4 @@ export default inject(({ auth }) => {
     getSettings,
     getPortalPasswordSettings,
   };
-})(withRouter(withTranslation()(observer(ActivateUserForm))));
+})(withRouter(withTranslation("Confirm")(observer(ActivateUserForm))));

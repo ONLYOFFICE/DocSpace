@@ -218,4 +218,4 @@ export default inject(({ setup, auth }) => {
     updateConsumerProps,
     setSelectedConsumer,
   };
-})(withTranslation()(observer(ThirdPartyServices)));
+})(withTranslation("Settings")(observer(ThirdPartyServices)));

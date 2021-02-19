@@ -447,17 +447,17 @@ SectionBodyContent.defaultProps = {
   group: null,
 };
 
-const convertUsers = (users) => {
-  return users
-    ? users.map((u) => {
-        return {
-          key: u.id,
-          groups: u.groups || [],
-          label: u.displayName,
-        };
-      })
-    : [];
-};
+// const convertUsers = (users) => {
+//   return users
+//     ? users.map((u) => {
+//         return {
+//           key: u.id,
+//           groups: u.groups || [],
+//           label: u.displayName,
+//         };
+//       })
+//     : [];
+// };
 
 const convertGroups = (groups) => {
   return groups

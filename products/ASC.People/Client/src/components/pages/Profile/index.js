@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { PageLayout, toastr, Loaders } from "asc-web-common";
 import {
@@ -63,26 +63,26 @@ class Profile extends React.Component {
       <PageLayout withBodyAutoFocus={true}>
         {!isVisitor && (
           <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
+            <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
         )}
         {!isVisitor && isAdmin && (
           <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
+            <ArticleMainButtonContent />
           </PageLayout.ArticleMainButton>
         )}
         {!isVisitor && (
           <PageLayout.ArticleBody>
-              <ArticleBodyContent />
+            <ArticleBodyContent />
           </PageLayout.ArticleBody>
         )}
 
         <PageLayout.SectionHeader>
-            {profile ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
+          {profile ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-            {profile ? <SectionBodyContent /> : <Loaders.ProfileView />}
+          {profile ? <SectionBodyContent /> : <Loaders.ProfileView />}
         </PageLayout.SectionBody>
       </PageLayout>
     );

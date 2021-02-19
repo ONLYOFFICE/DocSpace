@@ -16,7 +16,7 @@ import { api, PageLayout, utils as commonUtils } from "asc-web-common";
 
 import { inject, observer } from "mobx-react";
 
-const { createPasswordHash, tryRedirectTo } = commonUtils;
+const { createPasswordHash } = commonUtils;
 const inputWidth = "400px";
 
 const ConfirmContainer = styled.div`
@@ -404,4 +404,4 @@ export default inject(({ auth }) => {
     getSettings,
     getPortalPasswordSettings,
   };
-})(withRouter(withTranslation()(observer(CreateUserForm))));
+})(withRouter(withTranslation("Confirm")(observer(CreateUserForm))));

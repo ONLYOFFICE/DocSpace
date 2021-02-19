@@ -93,7 +93,7 @@ const SectionHeaderContent = (props) => {
     isHeaderChecked,
     //onCheck,
     //onSelect,
-    clearSelection,
+    //clearSelection,
     group,
     isAdmin,
     t,
@@ -110,9 +110,9 @@ const SectionHeaderContent = (props) => {
     hasUsersToInvite,
     hasUsersToRemove,
     isLoaded,
-    selectAll,
+    //selectAll,
     setSelected,
-    selectByStatus,
+    //selectByStatus,
   } = props;
 
   const {

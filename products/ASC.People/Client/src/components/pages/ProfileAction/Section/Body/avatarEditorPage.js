@@ -43,7 +43,7 @@ class AvatarEditorPage extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { match, fetchProfile, profile } = this.props;
+    const { match, fetchProfile /*, profile*/ } = this.props;
     const { userId } = match.params;
     const { avatar } = this.state;
     const prevUserId = prevProps.match.params.userId;

@@ -86,7 +86,7 @@ class Customization extends React.Component {
       portalTimeZoneId,
       rawCultures,
       rawTimezones,
-      organizationName,
+      /*organizationName,*/
       t,
     } = props;
     const languages = mapCulturesToArray(rawCultures, t);
@@ -287,4 +287,4 @@ export default inject(({ auth, setup }) => {
     getPortalTimezones,
     getCurrentCustomSchema,
   };
-})(withTranslation()(observer(Customization)));
+})(withTranslation("Settings")(observer(Customization)));

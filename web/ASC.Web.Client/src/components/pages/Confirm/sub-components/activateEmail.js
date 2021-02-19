@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
 import { Loader } from "asc-web-components";
 import { PageLayout } from "asc-web-common";
 import PropTypes from "prop-types";
@@ -51,4 +50,4 @@ export default inject(({ auth }) => {
     logout,
     changeEmail: userStore.changeEmail,
   };
-})(withRouter(withTranslation()(observer(ActivateEmailForm))));
+})(withRouter(observer(ActivateEmailForm)));

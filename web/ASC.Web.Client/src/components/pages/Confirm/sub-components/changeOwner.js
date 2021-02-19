@@ -126,14 +126,7 @@ const ChangeOwnerForm = (props) => (
   </PageLayout>
 );
 
-// function mapStateToProps(state) {
-//   return {
-//     greetingTitle: state.auth.settings.greetingSettings,
-//     defaultPage: state.auth.settings.defaultPage,
-//   };
-// }
-
 export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   defaultPage: auth.settingsStore.defaultPage,
-}))(withRouter(withTranslation()(observer(ChangeOwnerForm))));
+}))(withRouter(withTranslation("Confirm")(observer(ChangeOwnerForm))));
