@@ -78,6 +78,9 @@ const StyledDesktopContainer = styled(EmptyScreenContainer)`
   }
   span {
     font-size: 14px;
+    > p {
+      font-size: 14px;
+    }
   }
   ${commonStyles}
 
@@ -115,18 +118,24 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
   const { error } = match.params;
   const { pathname, protocol, hostname } = window.location;
   const currentModule = modules.find((m) => m.link === pathname);
-  const { id, title, description, imageUrl, link } = currentModule;
-  const webLink = protocol + "//" + hostname + link;
-  const appLink =
-    id === "2A923037-8B2D-487b-9A22-5AC0918ACF3F"
-      ? "mailto:"
+  const {
+    id,
+    title,
+    description,
+    imageUrl,
+    link,
+    originUrl,
+    helpUrl,
+  } = currentModule;
+  const url = originUrl ? originUrl : link;
+  const webLink = protocol + "//" + hostname + url;
+  const appLink = isIOS
+    ? id === "2A923037-8B2D-487b-9A22-5AC0918ACF3F"
+      ? "message:"
       : id === "32D24CB5-7ECE-4606-9C94-19216BA42086"
-      ? isIOS
-        ? "calshow:"
-        : isAndroid
-        ? "content://com.android.calendar/time/"
-        : false
-      : false;
+      ? "calshow:"
+      : false
+    : false;
 
   setDocumentTitle();
 
@@ -160,6 +169,24 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
     </>
   );
 
+  const moduleDescription = (
+    <Text className="module-info">
+      {description}{" "}
+      {helpUrl && (
+        <Link
+          as="a"
+          href={helpUrl}
+          target="_blank"
+          color="#555F65"
+          isBold
+          isHovered
+        >
+          {t("LearnMore")}...
+        </Link>
+      )}
+    </Text>
+  );
+
   return !isLoaded ? (
     <></>
   ) : isMobile ? (
@@ -182,8 +209,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
         <Text fontWeight="600" fontSize="19px" className="module-title">
           {title}
         </Text>
-        <Text className="module-info">{description}</Text>
-
+        {moduleDescription}
         {appButtons}
       </Box>
     </ComingSoonPage>
@@ -192,7 +218,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
       imageSrc={imageUrl}
       imageAlt={title}
       headerText={title}
-      descriptionText={description}
+      descriptionText={moduleDescription}
       buttons={appButtons}
     />
   );
