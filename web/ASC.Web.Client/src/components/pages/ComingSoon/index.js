@@ -59,6 +59,9 @@ const ComingSoonPage = styled.div`
 
   .module-info {
     margin-bottom: 18px;
+    .learn-more-link {
+      white-space: nowrap;
+    }
   }
 
   .coming-soon-badge {
@@ -80,6 +83,9 @@ const StyledDesktopContainer = styled(EmptyScreenContainer)`
     font-size: 14px;
     > p {
       font-size: 14px;
+      .learn-more-link {
+        white-space: nowrap;
+      }
     }
   }
   ${commonStyles}
@@ -177,6 +183,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
           as="a"
           href={helpUrl}
           target="_blank"
+          className="learn-more-link"
           color="#555F65"
           isBold
           isHovered
