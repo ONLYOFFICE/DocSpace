@@ -704,7 +704,7 @@ export default inject(
       filter,
       sharingPanelVisible,
       canCreate,
-      isItemsSelected: selection.length,
+      isItemsSelected: !!selection.length,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
