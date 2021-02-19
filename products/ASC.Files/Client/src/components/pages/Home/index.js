@@ -176,7 +176,7 @@ class PureHome extends React.Component {
     const {
       isLoading,
       isProgressFinished,
-      secondaryProgressData,
+      secondaryProgressDataStoreIcon,
       selectionLength,
       selectionTitle,
     } = this.props;
@@ -193,7 +193,7 @@ class PureHome extends React.Component {
       isProgressFinished !== prevProps.isProgressFinished
     ) {
       this.showOperationToast(
-        secondaryProgressData.icon,
+        secondaryProgressDataStoreIcon,
         selectionLength,
         selectionTitle
       );
@@ -203,13 +203,21 @@ class PureHome extends React.Component {
   render() {
     //console.log("Home render");
     const {
-      primaryProgressData,
-      secondaryProgressData,
       viewAs,
       convertDialogVisible,
       fileActionId,
       firstLoad,
       showOwnerChangePanel,
+
+      primaryProgressDataVisible,
+      primaryProgressDataPercent,
+      primaryProgressDataIcon,
+      primaryProgressDataAlert,
+
+      secondaryProgressDataStoreVisible,
+      secondaryProgressDataStorePercent,
+      secondaryProgressDataStoreIcon,
+      secondaryProgressDataStoreAlert,
     } = this.props;
 
     return (
@@ -228,19 +236,19 @@ class PureHome extends React.Component {
           onDrop={this.onDrop}
           setSelections={this.props.setSelections}
           onMouseMove={this.onMouseMove}
-          showPrimaryProgressBar={primaryProgressData.visible}
-          primaryProgressBarValue={primaryProgressData.percent}
-          primaryProgressBarIcon={primaryProgressData.icon}
-          showPrimaryButtonAlert={primaryProgressData.alert}
-          showSecondaryProgressBar={secondaryProgressData.visible}
-          secondaryProgressBarValue={secondaryProgressData.percent}
-          secondaryProgressBarIcon={secondaryProgressData.icon}
-          showSecondaryButtonAlert={secondaryProgressData.alert}
+          showPrimaryProgressBar={primaryProgressDataVisible}
+          primaryProgressBarValue={primaryProgressDataPercent}
+          primaryProgressBarIcon={primaryProgressDataIcon}
+          showPrimaryButtonAlert={primaryProgressDataAlert}
+          showSecondaryProgressBar={secondaryProgressDataStoreVisible}
+          secondaryProgressBarValue={secondaryProgressDataStorePercent}
+          secondaryProgressBarIcon={secondaryProgressDataStoreIcon}
+          showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
           viewAs={viewAs}
           hideAside={
             !!fileActionId ||
-            primaryProgressData.visible ||
-            secondaryProgressData.visible
+            primaryProgressDataVisible ||
+            secondaryProgressDataStoreVisible
           }
           isLoaded={!firstLoad}
           onOpenUploadPanel={this.showUploadPanel}
@@ -305,7 +313,6 @@ export default inject(
     filesStore,
     uploadDataStore,
     dialogsStore,
-    treeFoldersStore,
     selectedFolderStore,
   }) => {
     const {
@@ -326,21 +333,26 @@ export default inject(
       filter,
       fileActionStore,
       selection,
-      selectionTitle,
+
       setSelections,
     } = filesStore;
 
     const { id } = fileActionStore;
 
-    const { visible, percent, icon, alert } = primaryProgressDataStore;
-    const primaryProgressData = { visible, percent, icon, alert };
+    const {
+      visible: primaryProgressDataVisible,
+      percent: primaryProgressDataPercent,
+      icon: primaryProgressDataIcon,
+      alert: primaryProgressDataAlert,
+    } = primaryProgressDataStore;
 
-    const secondaryProgressData = {
-      visible: secondaryProgressDataStore.visible,
-      percent: secondaryProgressDataStore.percent,
-      icon: secondaryProgressDataStore.icon,
-      alert: secondaryProgressDataStore.alert,
-    };
+    const {
+      visible: secondaryProgressDataStoreVisible,
+      percent: secondaryProgressDataStorePercent,
+      icon: secondaryProgressDataStoreIcon,
+      alert: secondaryProgressDataStoreAlert,
+      isSecondaryProgressFinished: isProgressFinished,
+    } = secondaryProgressDataStore;
 
     const {
       convertDialogVisible,
@@ -348,6 +360,11 @@ export default inject(
     } = dialogsStore;
 
     const { setUploadPanelVisible, startUpload } = uploadDataStore;
+
+    const selectionLength = isProgressFinished ? selection.length : null;
+    const selectionTitle = isProgressFinished
+      ? filesStore.selectionTitle
+      : null;
 
     return {
       homepage: auth.settingsStore.homepage,
@@ -358,13 +375,21 @@ export default inject(
       isLoading,
       filter,
       viewAs,
-      primaryProgressData,
-      secondaryProgressData,
+
+      primaryProgressDataVisible,
+      primaryProgressDataPercent,
+      primaryProgressDataIcon,
+      primaryProgressDataAlert,
+
+      secondaryProgressDataStoreVisible,
+      secondaryProgressDataStorePercent,
+      secondaryProgressDataStoreIcon,
+      secondaryProgressDataStoreAlert,
+
       convertDialogVisible,
       showOwnerChangePanel,
-      selectionLength: selection.length,
-      isProgressFinished:
-        secondaryProgressDataStore.isSecondaryProgressFinished,
+      selectionLength,
+      isProgressFinished,
       selectionTitle,
 
       setFirstLoad,
