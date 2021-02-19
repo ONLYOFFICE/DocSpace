@@ -3,7 +3,14 @@ import { ReactSVG } from "react-svg";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { Text, Link, Icons, Badge, Box } from "asc-web-components";
+import {
+  Text,
+  Link,
+  Icons,
+  Badge,
+  Box,
+  EmptyScreenContainer,
+} from "asc-web-components";
 import { toastr, PageLayout, utils, store, Loaders } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -21,6 +28,18 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = utils;
+
+const commonStyles = `
+  .link-box {
+    margin: 8px 0;
+    .view-web-link {
+      margin: 8px;
+      :focus {
+        outline: 0;
+      }
+    }
+  }
+`;
 
 const ComingSoonPage = styled.div`
   padding: ${isMobile ? "62px 0 0 0" : "0"};
@@ -46,20 +65,37 @@ const ComingSoonPage = styled.div`
     margin-bottom: 26px;
   }
 
-  .link-box {
-    margin: 8px 0;
-    .view-web-link {
-      margin: 8px;
-      :focus {
-        outline: 0;
-      }
-    }
+  ${commonStyles}
+`;
+
+const StyledDesktopContainer = styled(EmptyScreenContainer)`
+  img {
+    width: 150px;
+    height: 150px;
+  }
+  span:first-of-type {
+    font-size: 24px;
+  }
+  span {
+    font-size: 14px;
+  }
+  ${commonStyles}
+
+  .view-web-link {
+    font-size: 14px;
+  }
+
+  .coming-soon-badge > div > p {
+    font-size: 13px;
   }
 `;
 
 const ExternalLink = ({ label, href }) => (
   <Box className="link-box">
-    <Icons.ExternalLinkIcon color="#333333" size="small" />
+    <Icons.ExternalLinkIcon
+      color="#333333"
+      size={isMobile ? "small" : "medium"}
+    />
     <Link
       as="a"
       href={href}
@@ -77,15 +113,16 @@ const ExternalLink = ({ label, href }) => (
 const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
   const { t } = useTranslation("translation", { i18n });
   const { error } = match.params;
-  const pageLink = window.location.pathname;
-  const currentModule = modules.find((m) => m.link === pageLink);
+  const { pathname, protocol, hostname } = window.location;
+  const currentModule = modules.find((m) => m.link === pathname);
   const { id, title, description, imageUrl, link } = currentModule;
+  const webLink = protocol + "//" + hostname + link;
   const appLink =
     id === "2A923037-8B2D-487b-9A22-5AC0918ACF3F"
       ? "mailto:"
       : id === "32D24CB5-7ECE-4606-9C94-19216BA42086"
       ? isIOS
-        ? "webcal:"
+        ? "calshow:"
         : isAndroid
         ? "content://com.android.calendar/time/"
         : false
@@ -103,9 +140,29 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
     changeLanguage(i18n);
   }, []);
 
+  const appButtons = (
+    <>
+      <Badge
+        label={t("ComingSoon")}
+        maxWidth="150px"
+        borderRadius="2px"
+        className="coming-soon-badge"
+      />
+      <ExternalLink label={t("ViewWeb")} href={webLink} />
+      {appLink && (
+        <ExternalLink
+          label={t("OpenApp", {
+            title: title,
+          })}
+          href={appLink}
+        />
+      )}
+    </>
+  );
+
   return !isLoaded ? (
     <></>
-  ) : (
+  ) : isMobile ? (
     <ComingSoonPage>
       <ReactSVG
         className="module-logo-icon"
@@ -126,23 +183,18 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
           {title}
         </Text>
         <Text className="module-info">{description}</Text>
-        <Badge
-          label={t("ComingSoon")}
-          maxWidth="150px"
-          borderRadius="2px"
-          className="coming-soon-badge"
-        />
-        <ExternalLink label={t("ViewWeb")} href={link} />
-        {appLink && (
-          <ExternalLink
-            label={t("OpenApp", {
-              title: title,
-            })}
-            href={appLink}
-          />
-        )}
+
+        {appButtons}
       </Box>
     </ComingSoonPage>
+  ) : (
+    <StyledDesktopContainer
+      imageSrc={imageUrl}
+      imageAlt={title}
+      headerText={title}
+      descriptionText={description}
+      buttons={appButtons}
+    />
   );
 };
 
