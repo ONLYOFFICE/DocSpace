@@ -144,7 +144,7 @@ export function setFilterUrl(filter) {
     params.push(`${PAGE_COUNT}=${filter.pageCount}`);
   }
 
-  params.push(`${PAGE}=${filter.page + 1}`);
+  //params.push(`${PAGE}=${filter.page + 1}`);
   params.push(`${SORT_BY}=${filter.sortBy}`);
   params.push(`${SORT_ORDER}=${filter.sortOrder}`);
 
@@ -256,6 +256,7 @@ function fetchPeopleByFilter(dispatch, filter) {
     filterData.employeeStatus = EmployeeStatus.Active;
   }
 
+  filterData.page = 0;
   return api.people.getUserList(filterData).then((data) => {
     filterData.total = data.total;
     dispatch(setFilter(filterData));
