@@ -1,21 +1,18 @@
 import React, { Component, useEffect } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 
-import {  store, api,  } from "ASC.Web.Common";
+import {  api  } from "ASC.Web.Common";
 import { Text, toastr } from "ASC.Web.Components";
 
 import i18n from "../../../i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import RegisterButton from "./sub-components/register-button";
-import Header from "../../Header";
 import LoginForm from "./sub-components/login-form";
 
-const { login, setIsLoaded, reloadPortalSettings } = store.auth.actions;
-const { getLanguage, isDesktopClient } = store.auth.selectors;
-const { sendInstructionsToChangePassword } = api.people;
+const { sendInstructionsToChangePassword } = api.people; //?
 
 const LoginContainer = styled.div`
   display: grid;
@@ -144,27 +141,6 @@ class Form extends Component {
   }
 }
 
-Form.propTypes = {
-  login: PropTypes.func, //.isRequired,
-  match: PropTypes.object, //.isRequired,
-  hashSettings: PropTypes.object,
-  reloadPortalSettings: PropTypes.func,
-  setIsLoaded: PropTypes.func, //.isRequired,
-  t: PropTypes.func, //.isRequired,
-  i18n: PropTypes.object, //.isRequired,
-  language: PropTypes.string, //.isRequired,
-  socialButtons: PropTypes.array,
-  organizationName: PropTypes.string,
-  homepage: PropTypes.string,
-  defaultPage: PropTypes.string,
-};
-
-Form.defaultProps = {
-  identifier: "",
-  password: "",
-  email: "",
-};
-
 const FormWrapper = withTranslation()(Form);
 
 const Login = (props) => {
@@ -180,14 +156,5 @@ const Login = (props) => {
    
   );
 };
-
-Login.propTypes = {
-  language: PropTypes.string, //.isRequired,
-  isLoaded: PropTypes.bool,
-  enabledJoin: PropTypes.bool,
-  isDesktop: PropTypes.bool, //.isRequired,
-};
-
-
 
 export default withRouter(Login);
