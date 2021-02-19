@@ -82,13 +82,7 @@ const getCustomModules = (isAdmin) => {
     "SettingsIcon"
   );
 
-  return [
-    {
-      separator: true,
-      id: "nav-products-separator-custom",
-    },
-    settingsModuleWrapper,
-  ];
+  return [settingsModuleWrapper];
 };
 
 export const getCurrentUser = (state) => state.auth.user;
@@ -210,13 +204,13 @@ export const getAvailableModules = createSelector(
         id: "nav-products-separator",
       },
       ...primaryProducts,
+      ...customModules,
       {
         separator: true,
         dashed: true,
         id: "nav-dummy-products-separator",
       },
       ...dummyProducts,
-      ...customModules,
     ];
   }
 );
