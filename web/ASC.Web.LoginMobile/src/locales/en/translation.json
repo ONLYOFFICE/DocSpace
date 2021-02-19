@@ -18,10 +18,16 @@
   "TooltipPasswordLength": "-30 characters",
   "TooltipPasswordDigits": "digits",
   "TooltipPasswordCapital": "capital letters",
-  "TooltipPasswordSpecial": "special characters (!@#$%^&*)", 
+  "TooltipPasswordSpecial": "special characters (!@#$%^&*)",
   "LoginRegistrationBtn": "Register",
   "RegistrationTitle": "Cloud office applications",
   "RegistrationDesc": "Create portal",
   "IncorrectEmail": "Incorrect email",
-  "LengthPassLess": "Add {{lengthSetting}} characters"
+  "LengthPassLess": "Add {{lengthSetting}} characters",
+  "JoinBtn": "Join", 
+  "PlaceholderPortalName": "portalname",
+  "PlaceholderFirstName": "First name",
+  "PlaceholderLastName": "Last name",
+  "LocalDomain": "Incorrect local domain",
+  "IncorrectDomain": "Incorrect domain"
 }

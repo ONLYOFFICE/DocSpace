@@ -1,12 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 
 import { Box } from "ASC.Web.Components";
 import i18n from "../../../i18n";
 
-import Header from "../../Header";
-import { RegistrationTitle } from "./sub-components";
+import { fakeApi } from "LoginMobileApi";
+
+import { RegistrationTitle, RegistrationForm } from "./sub-components";
 
 const StyledRegistration = styled(Box)`
   display: grid;
@@ -15,14 +16,22 @@ const StyledRegistration = styled(Box)`
   align-items: center;
   margin: 33px 32px 0 32px;
   height: min-content;
+  width: 100%;
 `;
 
 const RegistrationComponent = ({ t }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onJoinHandler = (portalName, email, FirstName, LastName, pass) => {
+    setIsLoading(true);
+    fakeApi.join( portalName, email, FirstName, LastName, pass);
+  };
+
   return (
     <>
       <StyledRegistration>
         <RegistrationTitle t={t} />
-        Registration
+        <RegistrationForm isLoading={isLoading} t={t} onJoin={onJoinHandler} />
       </StyledRegistration>
     </>
   );
