@@ -20,6 +20,8 @@ const EmailField = ({
       setErrors(t("IncorrectEmail"));
     }
 
+    console.log(errors);
+
     onChangeLogin && onChangeLogin(result);
   };
 

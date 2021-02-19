@@ -16,7 +16,6 @@ const PasswordField = ({
   password,
   isLoading,
   onChangePassword,
-  onKeyPress,
 }) => {
   const tooltipPassTitle = t("TooltipPasswordTitle");
   const tooltipPassLength = `${settings.minLength}${t(
@@ -37,7 +36,7 @@ const PasswordField = ({
       isVertical={true}
       labelVisible={false}
       hasError={!passwordValid}
-      errorMessage={errorText ? "" : t("RequiredFieldMessage")} //TODO: Add wrong password server error
+      errorMessage={errorText} //TODO: Add wrong password server error
     >
       <PasswordInput
         simpleView={true}
@@ -54,8 +53,7 @@ const PasswordField = ({
         isDisabled={isLoading}
         autoComplete="current-password"
         onChange={onChangePassword}
-        onKeyDown={onKeyPress}
-        isTextTooltipVisible={true}
+        isTextTooltipVisible={passwordValid}
         tooltipPasswordTitle={tooltipPassTitle}
         tooltipPasswordLength={tooltipPassLength}
         tooltipPasswordDigits={tooltipPassDigits}
