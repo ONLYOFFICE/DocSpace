@@ -12,14 +12,14 @@ const App = () => {
     <>
       <Header />
       <Main>
-      <Router history={history}>
-        <Switch>
-          <Redirect exact from="/" to="/login" />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/portal-selection" component={PortalSelection} />
-          <Route exact path="/registration" component={Registration} />
-        </Switch>
-      </Router>
+        <Router history={history}>
+          <Switch>
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/portal-selection" component={PortalSelection} />
+            <Route exact path="/registration" component={Registration} />
+            <Redirect from="/" to="/login" />
+          </Switch>
+        </Router>
       </Main>
     </>
   );
