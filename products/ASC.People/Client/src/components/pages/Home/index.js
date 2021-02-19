@@ -99,8 +99,8 @@ class PureHome extends React.Component {
     // isHeaderChecked,
     // selected,
     // } = this.state;
-
-    const { isAdmin, isLoaded } = this.props;
+    console.log("Home render");
+    const { isLoaded } = this.props;
 
     return (
       <PageLayout
@@ -112,11 +112,11 @@ class PureHome extends React.Component {
           <ArticleHeaderContent />
         </PageLayout.ArticleHeader>
 
-        {isAdmin && (
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
-        )}
+        {/* {isAdmin && ( */}
+        <PageLayout.ArticleMainButton>
+          <ArticleMainButtonContent />
+        </PageLayout.ArticleMainButton>
+        {/* )} */}
 
         <PageLayout.ArticleBody>
           <ArticleBodyContent />
@@ -143,7 +143,7 @@ class PureHome extends React.Component {
             isMobile={isMobile}
             // selected={selected}
             onLoading={this.onLoading}
-            onChange={this.onRowChange}
+            // onChange={this.onRowChange}
           />
         </PageLayout.SectionBody>
 
@@ -170,38 +170,23 @@ const Home = (props) => {
 };
 
 Home.propTypes = {
-  users: PropTypes.array,
+  //users: PropTypes.array,
   history: PropTypes.object.isRequired,
   isLoaded: PropTypes.bool,
-  isAdmin: PropTypes.bool,
+  // isAdmin: PropTypes.bool,
 };
-
-function mapStateToProps(state) {
-  // const { users, selection, selected, selectedGroup, groups } = state.people;
-  return {
-    //users,
-    //selection,
-    // selected,
-    //selectedGroup,
-    // groups,
-    // organizationName: getOrganizationName(state),
-    // isAdmin: isAdmin(state),
-    //isLoading: getIsLoading(state),
-    // isLoaded: getIsLoaded(state),
-  };
-}
 
 export default inject(({ auth, peopleStore }) => ({
   isLoaded: auth.isLoaded,
-  isAdmin: auth.isAdmin,
-  organizationName: auth.settingsStore.organizationName,
-  users: peopleStore.usersStore.users,
-  groups: peopleStore.groupsStore.groups,
-  selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
-  clearSelection: peopleStore.selectionStore.clearSelection,
+  // isAdmin: auth.isAdmin,
+  // organizationName: auth.settingsStore.organizationName,
+  // users: peopleStore.usersStore.users,
+  // groups: peopleStore.groupsStore.groups,
+  // selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
+  // clearSelection: peopleStore.selectionStore.clearSelection,
   isLoading: peopleStore.isLoading,
   setIsLoading: peopleStore.setIsLoading,
-  selection: peopleStore.selectionStore.selection,
-  setSelected: peopleStore.selectionStore.setSelected,
-  selected: peopleStore.selectionStore.selected,
+  // selection: peopleStore.selectionStore.selection,
+  // setSelected: peopleStore.selectionStore.setSelected,
+  // selected: peopleStore.selectionStore.selected,
 }))(observer(withRouter(Home)));
