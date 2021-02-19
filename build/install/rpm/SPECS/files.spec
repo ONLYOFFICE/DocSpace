@@ -108,27 +108,27 @@
 
 %files urlshortener
 %defattr(-, onlyoffice, onlyoffice, -)
-/services/urlshortener/service/
-/services/urlshortener/client/
+/services/ASC.UrlShortener/
 %{_sysconfdir}/systemd/system/appserver-urlshortener.service
 %dir /services/
-%dir /services/urlshortener/
+%dir /services/ASC.UrlShortener/
+%dir /services/ASC.UrlShortener/service
 
 %files thumbnails
 %defattr(-, onlyoffice, onlyoffice, -)
-/services/thumb/service/
-/services/thumb/client/
+/services/ASC.Thumbnails/
 %{_sysconfdir}/systemd/system/appserver-thumbnails.service
 %dir /services/
-%dir /services/thumb/
+%dir /services/ASC.Thumbnails/
+%dir /services/ASC.Thumbnails/service
 
 %files socket
 %defattr(-, onlyoffice, onlyoffice, -)
-/services/socket/service/
 /services/ASC.Socket.IO/
 %{_sysconfdir}/systemd/system/appserver-socket.service
 %dir /services/
-%dir /services/socket/
+%dir /services/ASC.Socket.IO/
+%dir /services/ASC.Socket.IO/service
 
 %files studio
 %defattr(-, onlyoffice, onlyoffice, -)

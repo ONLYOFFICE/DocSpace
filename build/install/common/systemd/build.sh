@@ -46,19 +46,19 @@ reassign_values (){
 	urlshortener )
 		SERVICE_NAME="$1"
 		SERVICE_PORT="5015"
-		WORK_DIR="/services/urlshortener/service/"
+		WORK_DIR="/services/ASC.UrlShortener/service/"
 		EXEC_FILE="ASC.UrlShortener.Svc.dll"
 	;;
 	thumbnails )	
 		SERVICE_NAME="$1"
 		SERVICE_PORT="5016"
-		WORK_DIR="/services/thumb/service/"
+		WORK_DIR="/services/ASC.Thumbnails/service/"
 		EXEC_FILE="ASC.Thumbnails.Svc.dll"
 	;;
 	socket )	
 		SERVICE_NAME="$1"
 		SERVICE_PORT="9999"
-		WORK_DIR="/services/socket/service/"
+		WORK_DIR="/services/ASC.Socket.IO/service/"
 		EXEC_FILE="ASC.Socket.IO.Svc.dll"
 	;;
 	studio_notify )
