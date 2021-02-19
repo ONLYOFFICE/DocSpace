@@ -1,26 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
+import styled from "styled-components";
 
 import { PasswordInput, FieldContainer } from "ASC.Web.Components";
 
-const settings = {
-  minLength: 6,
-  upperCase: false,
-  digits: false,
-  specSymbols: false,
-};
-
+const StyledFieldContainer = styled(FieldContainer)`
+  .password-field-wrapper {
+    width: 100%;
+  }
+`;
 const PasswordField = ({
   t,
-  passwordValid,
-  errorText,
-  password,
+  hasError,
+  value,
   isLoading,
+  settings,
+  isRegisterForm,
   onChangePassword,
 }) => {
+  const [validation, setValidation] = useState({
+    isValid: false,
+    errors: "",
+  });
+
   const tooltipPassTitle = t("TooltipPasswordTitle");
-  const tooltipPassLength = `${settings.minLength}${t(
-    "TooltipPasswordLength"
-  )}`;
+  const tooltipPassLength = settings.minLength
+    ? `${settings.minLength}${t("TooltipPasswordLength")}`
+    : null;
   const tooltipPassDigits = settings.digits
     ? `${t("TooltipPasswordDigits")}`
     : null;
@@ -31,37 +36,93 @@ const PasswordField = ({
     ? `${t("TooltipPasswordSpecial")}`
     : null;
 
+  const onChangePassHandler = (e) => {
+    const pass = e.target.value;
+    const cleanPass = pass.trim();
+    let isValid = true;
+
+    if (!cleanPass) isValid = false;
+
+    if (isRegisterForm) {
+      isValid = validation.isValid;
+    }
+
+    onChangePassword(cleanPass, isValid);
+  };
+
+  const isValidPassHandler = (isValid, validation) => {
+    const errorsArr = [];
+    let errors = "";
+    for (let key in validation) {
+      if (!validation[key]) {
+        errorsArr.push("Incorrect" + key[0].toUpperCase() + key.slice(1));
+      }
+    }
+
+    const translatedErrors = errorsArr.map((item) => {
+      return t(`${item}`, { lengthSetting: settings.minLength });
+    });
+
+    if (translatedErrors.length > 0) {
+      errors = "Add " + translatedErrors.join(", ");
+    }
+
+    setValidation({ isValid, errors });
+  };
+
+  const hasErrorUpdated = isRegisterForm
+    ? (hasError && !validation.isValid) || !!validation.errors
+    : hasError;
+
+  const needTooltip = isRegisterForm
+    ? (hasError && !validation.isValid) || !!validation.errors
+    : false;
+
   return (
-    <FieldContainer
+    <StyledFieldContainer
       isVertical={true}
       labelVisible={false}
-      hasError={!passwordValid}
-      errorMessage={errorText} //TODO: Add wrong password server error
+      hasError={hasErrorUpdated}
+      errorMessage={
+        validation.errors ? validation.errors : t("RequiredFieldMessage")
+      } //TODO: Add wrong password server error
     >
       <PasswordInput
-        simpleView={true}
+        simpleView={!isRegisterForm}
         passwordSettings={settings}
         id="password"
         inputName="password"
         placeholder={t("Password")}
         type="password"
-        hasError={!passwordValid}
-        inputValue={password}
+        hasError={hasErrorUpdated}
+        inputValue={value}
         size="large"
         scale={true}
         tabIndex={1}
         isDisabled={isLoading}
         autoComplete="current-password"
-        onChange={onChangePassword}
-        isTextTooltipVisible={passwordValid}
+        onChange={onChangePassHandler}
+        isTextTooltipVisible={!needTooltip && isRegisterForm}
+        isDisableTooltip={true}
+        hideNewPasswordButton={true}
         tooltipPasswordTitle={tooltipPassTitle}
         tooltipPasswordLength={tooltipPassLength}
         tooltipPasswordDigits={tooltipPassDigits}
         tooltipPasswordCapital={tooltipPassCapital}
         tooltipPasswordSpecial={tooltipPassSpecial}
+        onValidateInput={isValidPassHandler}
       />
-    </FieldContainer>
+    </StyledFieldContainer>
   );
+};
+
+PasswordField.defaultProps = {
+  settings: {
+    minLength: 6,
+    upperCase: true,
+    digits: true,
+    specSymbols: true,
+  },
 };
 
 export default PasswordField;

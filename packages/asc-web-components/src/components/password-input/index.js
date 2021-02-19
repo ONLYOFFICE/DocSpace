@@ -96,7 +96,7 @@ class PasswordInput extends React.Component {
       ? "transparent"
       : redColor;
 
-    this.props.onValidateInput && this.props.onValidateInput(progressScore);
+    this.props.onValidateInput && this.props.onValidateInput(progressScore, passwordValidation);
 
     this.setState({
       progressColor: progressColor,
