@@ -3,48 +3,53 @@ import React, { useState } from "react";
 import { FieldContainer, EmailInput } from "ASC.Web.Components";
 
 const EmailField = ({
+  value,
   t,
-  userNameValid,
+  hasError,
   errorText,
   isLoading,
-  onChangeLogin,
+  onChangeEmail,
 }) => {
   const [errors, setErrors] = useState(null);
+  const [isEmpty, setIsEmpty] = useState(true);
 
-  const onChangeEmail = (result) => {
-    const { errors, isValid, value } = result;
+  const onChangeEmailHandler = (result) => {
+    const { errors, value, isValid } = result;
+    let errorsString = "";
 
-    setErrors(null);
+    setIsEmpty(!value);
 
-    if (!isValid && errors.length > 0 && value) {
-      setErrors(t("IncorrectEmail"));
+    if (errors.length > 0) {
+      const translatedErrors = errors.map((item) => {
+        return t(`${item}`);
+      });
+      errorsString = translatedErrors.join(", ");
+      errorsString = errorsString[0].toUpperCase() + errorsString.slice(1);
     }
 
-    console.log(errors);
-
-    onChangeLogin && onChangeLogin(result);
+    setErrors(errorsString);
+    onChangeEmail && onChangeEmail(value, isValid);
   };
 
   return (
     <FieldContainer
       isVertical={true}
       labelVisible={false}
-      hasError={userNameValid}
-      errorMessage={errors ? errors : errorText} //TODO: Add wrong login server error
+      hasError={hasError}
+      errorMessage={isEmpty ? t("RequiredFieldMessage") : errors} //TODO: Add wrong login server error
     >
       <EmailInput
         id="login"
         name="login"
-        hasError={userNameValid}
-        //value={userName}
+        hasError={hasError}
+        value={value}
         placeholder={t("RegistrationEmailWatermark")}
         size="large"
         scale={true}
-        isAutoFocussed={true}
         tabIndex={1}
         isDisabled={isLoading}
         autoComplete="username"
-        onValidateInput={onChangeEmail}
+        onValidateInput={onChangeEmailHandler}
       />
     </FieldContainer>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { FieldContainer, TextInput } from "ASC.Web.Components";
 
@@ -6,23 +6,20 @@ const TextField = ({
   t,
   hasError,
   value,
-  errorText,
-  placeholder,
+  isLoading,
   id,
   type,
-  isLoading,
+  placeholder,
   onChangeValue,
+  isAutoFocussed,
 }) => {
-  const [isValid, setIsValid] = useState(true);
-
   const onChangeHandler = (e) => {
     const { value } = e.target;
     const cleanVal = value.trim();
     let isValid = true;
-    if (!isValid) {
+    if (!cleanVal) {
       isValid = false;
     }
-    setIsValid(isValid);
     onChangeValue(cleanVal, isValid);
   };
 
@@ -42,7 +39,7 @@ const TextField = ({
         placeholder={t(`${placeholder}`)}
         size="large"
         scale={true}
-        isAutoFocussed={true}
+        isAutoFocussed={isAutoFocussed}
         tabIndex={1}
         isDisabled={isLoading}
         autoComplete="username"
