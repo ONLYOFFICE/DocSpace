@@ -2,7 +2,7 @@
 
 PRODUCT="onlyoffice/appserver"
 BASE_DIR="/etc/${PRODUCT}"
-PATH_TO_CONF="${BASE_DIR}/config"
+PATH_TO_CONF="${BASE_DIR}"
 STORAGE_ROOT="${BASE_DIR}/data"
 LOG_DIR="/var/log/${PRODUCT}"
 DOTNET_RUN="/usr/bin/dotnet"

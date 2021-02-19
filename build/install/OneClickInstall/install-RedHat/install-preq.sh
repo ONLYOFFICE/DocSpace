@@ -63,7 +63,7 @@ type=rpm-md
 END
 
 #install kafka
-mkdir -p /var/www/appserver/services/
+mkdir -p /var/www/appserver/services/kafka
 getent passwd kafka >/dev/null || useradd -m -d /var/www/appserver/services/kafka -s /sbin/nologin -p kafka kafka
 cd /var/www/appserver/services/kafka
 wget https://downloads.apache.org/kafka/2.7.0/kafka_2.13-2.7.0.tgz

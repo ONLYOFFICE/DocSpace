@@ -94,3 +94,6 @@ yarn install --cwd common/ASC.Socket.IO --frozen-lockfile
 cd common/services/ASC.Studio.Notify
 dotnet add ASC.Studio.Notify.csproj reference ../../../products/ASC.People/Server/ASC.People.csproj  ../../../products/ASC.Files/Server/ASC.Files.csproj
 dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/appserver/services/studio.notify
+cd ../../../
+
+sed -i "s@var/www@var/www/appserver@" config/nginx/onlyoffice-*.conf
