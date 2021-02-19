@@ -21,14 +21,8 @@ import {
   DeleteSelfProfileDialog,
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
-import { createI18N } from "../../../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
-//import { isMobile } from "react-device-detect";
 
-const i18n = createI18N({
-  page: "Home",
-  localesPath: "pages/Home",
-});
 const { Consumer } = utils.context;
 const { isArrayEqual } = utils.array;
 const { resendUserInvites } = api.people;
@@ -205,7 +199,7 @@ class SectionBodyContent extends React.PureComponent {
         toastr.success(
           <Trans
             i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
-            i18n={i18n}
+            ns="Home"
           >
             The email activation instructions have been sent to the
             <strong>{{ email: user.email }}</strong> email address
@@ -525,4 +519,4 @@ export default inject(({ auth, peopleStore }) => ({
   selectGroup: peopleStore.selectedGroupStore.selectGroup,
   updateUserStatus: peopleStore.usersStore.updateUserStatus,
   isLoading: peopleStore.isLoading,
-}))(observer(withRouter(withTranslation()(SectionBodyContent))));
+}))(observer(withRouter(withTranslation("Home")(SectionBodyContent))));

@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { Suspense } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 //import { RequestLoader } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
-import { withTranslation, I18nextProvider } from "react-i18next";
+import { PageLayout, utils, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
@@ -15,16 +14,10 @@ import {
   SectionFilterContent,
   SectionPagingContent,
 } from "./Section";
-import { createI18N } from "../../../helpers/i18n";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-const i18n = createI18N({
-  page: "Home",
-  localesPath: "pages/Home",
-});
-const { changeLanguage } = utils;
 
-class PureHome extends React.Component {
+class Home extends React.Component {
   // constructor(props) {
   //   super(props);
 
@@ -123,51 +116,37 @@ class PureHome extends React.Component {
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          <SectionHeaderContent
-            // isHeaderVisible={isHeaderVisible}
-            // isHeaderIndeterminate={isHeaderIndeterminate}
-            // isHeaderChecked={isHeaderChecked}
-            // onCheck={this.onSectionHeaderContentCheck}
-            // onSelect={this.onSectionHeaderContentSelect}
-            // onClose={this.onClose}
-            onLoading={this.onLoading}
-          />
+            <SectionHeaderContent
+              // isHeaderVisible={isHeaderVisible}
+              // isHeaderIndeterminate={isHeaderIndeterminate}
+              // isHeaderChecked={isHeaderChecked}
+              // onCheck={this.onSectionHeaderContentCheck}
+              // onSelect={this.onSectionHeaderContentSelect}
+              // onClose={this.onClose}
+              onLoading={this.onLoading}
+            />
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionFilter>
-          <SectionFilterContent onLoading={this.onLoading} />
+            <SectionFilterContent onLoading={this.onLoading} />
         </PageLayout.SectionFilter>
 
         <PageLayout.SectionBody>
-          <SectionBodyContent
-            isMobile={isMobile}
-            // selected={selected}
-            onLoading={this.onLoading}
-            // onChange={this.onRowChange}
-          />
+            <SectionBodyContent
+              isMobile={isMobile}
+              // selected={selected}
+              onLoading={this.onLoading}
+              // onChange={this.onRowChange}
+            />
         </PageLayout.SectionBody>
 
         <PageLayout.SectionPaging>
-          <SectionPagingContent onLoading={this.onLoading} />
+            <SectionPagingContent onLoading={this.onLoading} />
         </PageLayout.SectionPaging>
       </PageLayout>
     );
   }
 }
-
-const HomeContainer = withTranslation()(PureHome);
-
-const Home = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <HomeContainer {...props} />
-    </I18nextProvider>
-  );
-};
 
 Home.propTypes = {
   //users: PropTypes.array,

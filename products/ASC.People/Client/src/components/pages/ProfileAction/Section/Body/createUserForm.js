@@ -402,7 +402,7 @@ class CreateUserForm extends React.Component {
 
   render() {
     const { isLoading, errors, profile, selector, isMobile } = this.state;
-    const { t, settings, i18n, createdAvatar, croppedAvatar } = this.props;
+    const { t, settings, createdAvatar, croppedAvatar } = this.props;
     const {
       regDateCaption,
       userPostCaption,
@@ -476,7 +476,7 @@ class CreateUserForm extends React.Component {
               helpButtonHeaderContent={t("Mail")}
               tooltipContent={
                 <Text fontSize="13px" as="div">
-                  <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
+                  <Trans i18nKey="EmailPopupHelper" ns="ProfileAction">
                     The main e-mail is needed to restore access to the portal in
                     case of loss of the password and send notifications.
                     <p className="tooltip_email" style={{ margin: "1rem 0" }}>
@@ -656,4 +656,4 @@ export default inject(({ auth, peopleStore }) => ({
   setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
   updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
   updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
-}))(observer(withRouter(withTranslation()(CreateUserForm))));
+}))(observer(withRouter(withTranslation("ProfileAction")(CreateUserForm))));

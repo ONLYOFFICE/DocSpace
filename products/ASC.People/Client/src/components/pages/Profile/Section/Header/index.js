@@ -8,24 +8,19 @@ import { Headline, toastr } from "asc-web-common";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
-import { store, utils, api, constants } from "asc-web-common";
+import { utils, api, constants } from "asc-web-common";
 import {
   DeleteSelfProfileDialog,
   ChangePasswordDialog,
   ChangeEmailDialog,
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
-import { createI18N } from "../../../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
 import {
   getUserStatus,
   toEmployeeWrapper,
 } from "../../../../../helpers/people-helpers";
 
-const i18n = createI18N({
-  page: "Profile",
-  localesPath: "pages/Profile",
-});
 const { isMe } = utils;
 const {
   resendUserInvites,
@@ -282,7 +277,7 @@ class SectionHeaderContent extends React.PureComponent {
         toastr.success(
           <Trans
             i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
-            i18n={i18n}
+            ns="Profile"
           >
             The email activation instructions have been sent to the
             <strong>{{ email: this.state.profile.email }}</strong> email address
@@ -507,4 +502,4 @@ export default inject(({ auth, peopleStore }) => ({
   profile: peopleStore.targetUserStore.targetUser,
   updateProfile: peopleStore.targetUserStore.updateProfile,
   getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
-}))(observer(withRouter(withTranslation()(SectionHeaderContent))));
+}))(observer(withRouter(withTranslation("Profile")(SectionHeaderContent))));

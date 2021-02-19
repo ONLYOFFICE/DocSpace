@@ -1,18 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import { history, utils as commonUtils, Loaders } from "asc-web-common";
-import { createI18N } from "../../../helpers/i18n";
+import { withTranslation } from "react-i18next";
+import { history, Loaders } from "asc-web-common";
+
 import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import { getSelectedGroup } from "../../../helpers/people-helpers";
-
-const i18n = createI18N({
-  page: "Article",
-  localesPath: "Article",
-});
-
-const { changeLanguage } = commonUtils;
 
 const StyledTreeMenu = styled(TreeMenu)`
   ${(props) =>
@@ -206,19 +199,7 @@ const getTreeGroups = (groups, departments) => {
   return treeData;
 };
 
-const ArticleBodyContentWrapper = withTranslation()(ArticleBodyContent);
-
-const BodyContent = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ArticleBodyContentWrapper {...props} />
-    </I18nextProvider>
-  );
-};
+const BodyContent = withTranslation("Article")(ArticleBodyContent);
 
 export default inject(({ auth, peopleStore }) => {
   const groups = peopleStore.groupsStore.groups;

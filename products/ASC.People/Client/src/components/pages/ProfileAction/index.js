@@ -13,15 +13,10 @@ import {
   AvatarEditorPage,
   CreateAvatarEditorPage,
 } from "./Section";
-import { I18nextProvider, withTranslation } from "react-i18next";
-import { createI18N } from "../../../helpers/i18n";
+import { withTranslation } from "react-i18next";
+
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
-const i18n = createI18N({
-  page: "ProfileAction",
-  localesPath: "pages/ProfileAction",
-});
-const { changeLanguage } = utils;
 
 class ProfileAction extends React.Component {
   componentDidMount() {
@@ -36,7 +31,7 @@ class ProfileAction extends React.Component {
     const { userId } = match.params;
 
     setDocumentTitle(t("ProfileAction"));
-    changeLanguage(i18n);
+
     if (isEdit) {
       setIsEditingForm(false);
     }
@@ -75,47 +70,45 @@ class ProfileAction extends React.Component {
     }
 
     return (
-      <I18nextProvider i18n={i18n}>
-        <PageLayout>
-          {!isVisitor && (
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
-          )}
-          {!isVisitor && isAdmin && (
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-          )}
-          {!isVisitor && (
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
-          )}
+      <PageLayout>
+        {!isVisitor && (
+          <PageLayout.ArticleHeader>
+            <ArticleHeaderContent />
+          </PageLayout.ArticleHeader>
+        )}
+        {!isVisitor && isAdmin && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
+        {!isVisitor && (
+          <PageLayout.ArticleBody>
+            <ArticleBodyContent />
+          </PageLayout.ArticleBody>
+        )}
 
-          <PageLayout.SectionHeader>
-            {loaded ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
-          </PageLayout.SectionHeader>
+        <PageLayout.SectionHeader>
+          {loaded ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
+        </PageLayout.SectionHeader>
 
-          <PageLayout.SectionBody>
-            {loaded ? (
-              type ? (
-                avatarEditorIsOpen ? (
-                  <CreateAvatarEditorPage />
-                ) : (
-                  <CreateUserForm />
-                )
-              ) : avatarEditorIsOpen ? (
-                <AvatarEditorPage />
+        <PageLayout.SectionBody>
+          {loaded ? (
+            type ? (
+              avatarEditorIsOpen ? (
+                <CreateAvatarEditorPage />
               ) : (
-                <UpdateUserForm />
+                <CreateUserForm />
               )
+            ) : avatarEditorIsOpen ? (
+              <AvatarEditorPage />
             ) : (
-              <Loaders.ProfileView isEdit={false} />
-            )}
-          </PageLayout.SectionBody>
-        </PageLayout>
-      </I18nextProvider>
+              <UpdateUserForm />
+            )
+          ) : (
+            <Loaders.ProfileView isEdit={false} />
+          )}
+        </PageLayout.SectionBody>
+      </PageLayout>
     );
   }
 }
@@ -127,20 +120,6 @@ ProfileAction.propTypes = {
   isAdmin: PropTypes.bool,
 };
 
-const ProfileActionTranslate = withTranslation()(withRouter(ProfileAction));
-
-const ProfileActionContainer = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ProfileActionTranslate {...props} />
-    </I18nextProvider>
-  );
-};
-
 export default inject(({ auth, peopleStore }) => ({
   setDocumentTitle: auth.setDocumentTitle,
   isAdmin: auth.isAdmin,
@@ -150,4 +129,4 @@ export default inject(({ auth, peopleStore }) => ({
   fetchProfile: peopleStore.targetUserStore.getTargetUser,
   profile: peopleStore.targetUserStore.targetUser,
   avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
-}))(observer(ProfileActionContainer));
+}))(withTranslation("ProfileAction")(withRouter(observer(ProfileAction))));

@@ -265,5 +265,7 @@ export default inject(({ auth, peopleStore }) => {
     filter: peopleStore.filterStore.filter,
   };
 })(
-  observer(withRouter(withLayoutSize(withTranslation()(SectionFilterContent))))
+  observer(
+    withRouter(withLayoutSize(withTranslation("Home")(SectionFilterContent)))
+  )
 );

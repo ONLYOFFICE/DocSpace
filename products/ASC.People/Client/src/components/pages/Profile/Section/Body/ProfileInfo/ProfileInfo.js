@@ -1,5 +1,5 @@
 import React from "react";
-import { Trans } from "react-i18next";
+import { Trans, withTranslation } from "react-i18next";
 import {
   Text,
   IconButton,
@@ -136,13 +136,18 @@ class ProfileInfo extends React.PureComponent {
 
   onLanguageSelect = (language) => {
     console.log("onLanguageSelect", language);
-    const { profile, updateProfileCulture } = this.props;
+    const { profile, updateProfileCulture, i18n } = this.props;
 
     if (profile.cultureName === language.key) return;
 
-    updateProfileCulture(profile.id, language.key).catch((error) =>
-      toastr.error(error && error.message ? error.message : error)
-    );
+    updateProfileCulture(profile.id, language.key)
+      .then(() => {
+        console.log("changeLanguage to", language.key);
+        i18n && i18n.changeLanguage(language.key);
+      })
+      .catch((error) =>
+        toastr.error(error && error.message ? error.message : error)
+      );
   };
 
   getLanguages = () => {
@@ -173,7 +178,6 @@ class ProfileInfo extends React.PureComponent {
     const isSelf = this.props.isSelf;
     const {
       t,
-      i18n,
       userPostCaption,
       regDateCaption,
       groupCaption,
@@ -195,7 +199,7 @@ class ProfileInfo extends React.PureComponent {
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage = (
       <Text fontSize="13px">
-        <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
+        <Trans i18nKey="NotFoundLanguage" ns="Profile">
           "In case you cannot find your language in the list of the available
           ones, feel free to write to us at
           <Link href={`mailto:${supportEmail}`} isHovered={true}>
@@ -338,4 +342,4 @@ export default inject(({ auth, peopleStore }) => ({
   filter: peopleStore.filterStore.filter,
   setIsLoading: peopleStore.setIsLoading,
   updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
-}))(observer(ProfileInfo));
+}))(observer(withTranslation("Profile")(ProfileInfo)));

@@ -502,4 +502,4 @@ export default inject(({ auth, peopleStore }) => ({
   removeUser: peopleStore.usersStore.removeUser,
   updateUserStatus: peopleStore.usersStore.updateUserStatus,
   group: peopleStore.selectedGroupStore.group,
-}))(observer(withTranslation()(withRouter(SectionHeaderContent))));
+}))(observer(withTranslation("Home")(withRouter(SectionHeaderContent))));

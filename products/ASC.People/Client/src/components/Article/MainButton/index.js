@@ -1,19 +1,11 @@
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
+import React from "react";
+//import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { MainButton, DropDownItem } from "asc-web-components";
 import { InviteDialog } from "./../../dialogs";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import { utils, toastr, Loaders } from "asc-web-common";
-import { createI18N } from "../../../helpers/i18n";
+import { withTranslation } from "react-i18next";
+import { toastr, Loaders } from "asc-web-common";
 import { inject, observer } from "mobx-react";
-
-const i18n = createI18N({
-  page: "Article",
-  localesPath: "Article",
-});
-
-const { changeLanguage } = utils;
 
 class PureArticleMainButtonContent extends React.Component {
   constructor(props) {
@@ -108,26 +100,9 @@ class PureArticleMainButtonContent extends React.Component {
   }
 }
 
-const ArticleMainButtonContentContainer = withTranslation()(
+const ArticleMainButtonContent = withTranslation("Article")(
   PureArticleMainButtonContent
 );
-
-const ArticleMainButtonContent = ({ language, isAdmin, ...rest }) => {
-  useEffect(() => {
-    changeLanguage(i18n, language);
-  }, [language]);
-
-  return isAdmin ? (
-    <I18nextProvider i18n={i18n}>
-      <ArticleMainButtonContentContainer {...rest} />
-    </I18nextProvider>
-  ) : null;
-};
-
-ArticleMainButtonContent.propTypes = {
-  history: PropTypes.object.isRequired,
-  language: PropTypes.string,
-};
 
 export default inject(({ auth }) => ({
   isAdmin: auth.isAdmin,

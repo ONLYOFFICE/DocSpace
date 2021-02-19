@@ -12,26 +12,16 @@ import {
 import { withTranslation } from "react-i18next";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { utils, toastr, constants } from "asc-web-common";
+import { toastr, constants } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { createI18N } from "../../../helpers/i18n";
 
 import { inject, observer } from "mobx-react";
 
-const i18n = createI18N({
-  page: "ChangeUserTypeDialog",
-  localesPath: "dialogs/ChangeUserTypeDialog",
-});
-
 const { EmployeeType } = constants;
-
-const { changeLanguage } = utils;
 
 class ChangeUserTypeDialogComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
 
     const { selectedUsers, userIds } = props;
 
@@ -169,12 +159,8 @@ class ChangeUserTypeDialogComponent extends React.Component {
   }
 }
 
-const ChangeUserTypeDialogTranslated = withTranslation()(
+const ChangeUserTypeDialog = withTranslation("ChangeUserTypeDialog")(
   ChangeUserTypeDialogComponent
-);
-
-const ChangeUserTypeDialog = (props) => (
-  <ChangeUserTypeDialogTranslated i18n={i18n} {...props} />
 );
 
 ChangeUserTypeDialog.propTypes = {

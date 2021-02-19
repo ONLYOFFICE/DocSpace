@@ -315,4 +315,4 @@ export default inject(({ auth, peopleStore }) => ({
   setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
   updateProfile: peopleStore.targetUserStore.updateProfile,
   getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
-}))(observer(withRouter(withTranslation()(AvatarEditorPage))));
+}))(observer(withRouter(withTranslation("ProfileAction")(AvatarEditorPage))));

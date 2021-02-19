@@ -12,24 +12,15 @@ import {
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import { api, utils, toastr } from "asc-web-common";
+import { api, toastr } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
-const i18n = createI18N({
-  page: "DeleteUsersDialog",
-  localesPath: "dialogs/DeleteUsersDialog",
-});
 
 const { Filter } = api;
-const { changeLanguage } = utils;
 
 class DeleteGroupUsersDialogComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
-
     const { selectedUsers, userIds } = props;
 
     const listUsers = selectedUsers.map((item, index) => {
@@ -165,12 +156,8 @@ class DeleteGroupUsersDialogComponent extends React.Component {
   }
 }
 
-const DeleteGroupUsersDialogTranslated = withTranslation()(
+const DeleteUsersDialog = withTranslation("DeleteUsersDialog")(
   DeleteGroupUsersDialogComponent
-);
-
-const DeleteUsersDialog = (props) => (
-  <DeleteGroupUsersDialogTranslated i18n={i18n} {...props} />
 );
 
 DeleteUsersDialog.propTypes = {
