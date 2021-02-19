@@ -1,7 +1,6 @@
 import React from "react";
 import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils } from "asc-web-common";
 import SharingPanel from "../SharingPanel";
 import {
   StyledAsidePanel,
@@ -10,23 +9,13 @@ import {
   StyledBody,
 } from "../StyledPanels";
 import FileList from "./FileList";
-
-import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
-
-const i18n = createI18N({
-  page: "UploadPanel",
-  localesPath: "panels/UploadPanel",
-});
-const { changeLanguage } = commonUtils;
 
 const DownloadBodyStyle = { height: `calc(100vh - 62px)` };
 
 class UploadPanelComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
 
     this.ref = React.createRef();
     this.scrollRef = React.createRef();
@@ -127,11 +116,7 @@ class UploadPanelComponent extends React.Component {
   }
 }
 
-const UploadPanelContainerTranslated = withTranslation()(UploadPanelComponent);
-
-const UploadPanel = (props) => (
-  <UploadPanelContainerTranslated i18n={i18n} {...props} />
-);
+const UploadPanel = withTranslation("UploadPanel")(UploadPanelComponent);
 
 export default inject(({ dialogsStore, uploadDataStore }) => {
   const { sharingPanelVisible } = dialogsStore;

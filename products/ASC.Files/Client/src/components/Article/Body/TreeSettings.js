@@ -2,17 +2,9 @@ import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { TreeMenu, TreeNode, Icons } from "asc-web-components";
 import styled from "styled-components";
-import { history, utils } from "asc-web-common";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import { createI18N } from "../../../helpers/i18n";
+import { history } from "asc-web-common";
+import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-
-const i18n = createI18N({
-  page: "Settings",
-  localesPath: "pages/Settings",
-});
-
-const { changeLanguage } = utils;
 
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
@@ -175,18 +167,7 @@ const PureTreeSettings = ({
   );
 };
 
-const TreeSettingsContainer = withTranslation()(PureTreeSettings);
-
-const TreeSettings = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-  return (
-    <I18nextProvider i18n={i18n}>
-      <TreeSettingsContainer {...props} />
-    </I18nextProvider>
-  );
-};
+const TreeSettings = withTranslation("Settings")(PureTreeSettings);
 
 export default inject(
   ({

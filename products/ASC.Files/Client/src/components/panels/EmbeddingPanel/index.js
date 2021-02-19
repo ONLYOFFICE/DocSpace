@@ -10,7 +10,7 @@ import {
   TextInput,
   Textarea,
 } from "asc-web-components";
-import { utils, toastr } from "asc-web-common";
+import { toastr } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import {
   StyledEmbeddingPanel,
@@ -19,13 +19,6 @@ import {
   StyledBody,
 } from "../StyledPanels";
 import copy from "copy-to-clipboard";
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "EmbeddingPanel",
-  localesPath: "panels/EmbeddingPanel",
-});
-
-const { changeLanguage } = utils;
 
 class EmbeddingPanelComponent extends React.Component {
   constructor(props) {
@@ -37,8 +30,6 @@ class EmbeddingPanelComponent extends React.Component {
       heightValue: "100%",
       link: `<iframe src="${props.embeddingLink}" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency> </iframe>`,
     };
-
-    changeLanguage(i18n);
   }
 
   onArrowClick = () => this.props.onClose();
@@ -226,12 +217,4 @@ EmbeddingPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-const EmbeddingPanelContainerTranslated = withTranslation()(
-  EmbeddingPanelComponent
-);
-
-const EmbeddingPanel = (props) => (
-  <EmbeddingPanelContainerTranslated i18n={i18n} {...props} />
-);
-
-export default EmbeddingPanel;
+export default withTranslation("EmbeddingPanel")(EmbeddingPanelComponent);

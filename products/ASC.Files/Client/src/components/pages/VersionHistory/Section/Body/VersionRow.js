@@ -244,4 +244,4 @@ export default inject(({ auth, versionHistoryStore }) => {
     restoreVersion,
     updateCommentVersion,
   };
-})(withRouter(withTranslation()(observer(VersionRow))));
+})(withRouter(withTranslation("VersionHistory")(observer(VersionRow))));

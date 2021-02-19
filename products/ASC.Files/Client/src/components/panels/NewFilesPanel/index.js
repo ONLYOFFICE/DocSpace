@@ -12,7 +12,7 @@ import {
   Button,
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, api, toastr } from "asc-web-common";
+import { api, toastr } from "asc-web-common";
 import { ReactSVG } from "react-svg";
 import {
   StyledAsidePanel,
@@ -21,20 +21,11 @@ import {
   StyledBody,
   StyledFooter,
 } from "../StyledPanels";
-import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
-const i18n = createI18N({
-  page: "NewFilesPanel",
-  localesPath: "panels/NewFilesPanel",
-});
-
-const { changeLanguage } = commonUtils;
 
 class NewFilesPanelComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
 
     this.state = { files: [] };
   }
@@ -148,12 +139,7 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   setNewFilesCount = (folderPath, markAsReadAll, item) => {
-    const {
-      treeFolders,
-      setTreeFolders,
-      folders,
-      files,
-    } = this.props;
+    const { treeFolders, setTreeFolders, folders, files } = this.props;
 
     const data = treeFolders;
     let dataItem;
@@ -281,13 +267,7 @@ NewFilesPanelComponent.propTypes = {
   visible: PropTypes.bool,
 };
 
-const NewFilesPanelContainerTranslated = withTranslation()(
-  NewFilesPanelComponent
-);
-
-const NewFilesPanel = (props) => (
-  <NewFilesPanelContainerTranslated i18n={i18n} {...props} />
-);
+const NewFilesPanel = withTranslation("NewFilesPanel")(NewFilesPanelComponent);
 
 export default inject(
   ({

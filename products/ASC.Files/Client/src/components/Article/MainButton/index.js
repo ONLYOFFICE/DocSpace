@@ -1,20 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { MainButton, DropDownItem } from "asc-web-components";
-import { withTranslation, I18nextProvider } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import { utils as commonUtils, constants, Loaders } from "asc-web-common";
-import { createI18N } from "../../../helpers/i18n";
+import { constants, Loaders } from "asc-web-common";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { inject, observer } from "mobx-react";
 
-const i18n = createI18N({
-  page: "Article",
-  localesPath: "Article",
-});
-
-const { changeLanguage } = commonUtils;
 const { FileAction } = constants;
 
 class PureArticleMainButtonContent extends React.Component {
@@ -146,20 +139,9 @@ class PureArticleMainButtonContent extends React.Component {
   }
 }
 
-const ArticleMainButtonContentContainer = withTranslation()(
+const ArticleMainButtonContent = withTranslation("Article")(
   PureArticleMainButtonContent
 );
-
-const ArticleMainButtonContent = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ArticleMainButtonContentContainer {...props} />
-    </I18nextProvider>
-  );
-};
 
 ArticleMainButtonContent.propTypes = {
   history: PropTypes.object.isRequired,

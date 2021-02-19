@@ -9,18 +9,12 @@ import {
   Scrollbar,
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { api, utils, toastr } from "asc-web-common";
+import { api, toastr } from "asc-web-common";
 import { TIMEOUT } from "../../../helpers/constants";
 import { loopTreeFolders } from "../../../helpers/files-helpers";
-import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
-const i18n = createI18N({
-  page: "DeleteDialog",
-  localesPath: "dialogs/DeleteDialog",
-});
 
 const { files } = api;
-const { changeLanguage } = utils;
 
 class DeleteDialogComponent extends React.Component {
   constructor(props) {
@@ -48,7 +42,6 @@ class DeleteDialogComponent extends React.Component {
       }
       i++;
     }
-    changeLanguage(i18n);
 
     this.state = { foldersList, filesList, selection };
   }
@@ -277,11 +270,7 @@ class DeleteDialogComponent extends React.Component {
   }
 }
 
-const ModalDialogContainerTranslated = withTranslation()(DeleteDialogComponent);
-
-const DeleteDialog = (props) => (
-  <ModalDialogContainerTranslated i18n={i18n} {...props} />
-);
+const DeleteDialog = withTranslation("DeleteDialog")(DeleteDialogComponent);
 
 export default inject(
   ({

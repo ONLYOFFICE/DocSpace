@@ -992,7 +992,6 @@ class SectionBodyContent extends React.Component {
       privacyInstructions,
       title,
       t,
-      i18n,
     } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
@@ -1027,7 +1026,7 @@ class SectionBodyContent extends React.Component {
         </Text>
         {!isDesktop && (
           <Text fontSize="12px">
-            <Trans i18nKey="PrivateRoomSupport" i18n={i18n}>
+            <Trans i18nKey="PrivateRoomSupport" ns="Home">
               Work in Private Room is available via {{ organizationName }}
               desktop app.
               <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
@@ -2030,7 +2029,7 @@ export default inject(
     uploadDataStore,
     dialogsStore,
     treeFoldersStore,
-    selectedFolderStore
+    selectedFolderStore,
   }) => {
     const { providers, capabilities } = settingsStore.thirdPartyStore;
     const { mediaViewersFormatsStore, iconFormatsStore } = formatsStore;
@@ -2067,7 +2066,7 @@ export default inject(
       deselectFile,
       filter,
       fileActionStore,
-      
+
       addFileToRecentlyViewed,
       updateFile,
       currentFolderCount,
@@ -2194,4 +2193,4 @@ export default inject(
       getFolderIcon,
     };
   }
-)(withRouter(withTranslation()(observer(SectionBodyContent))));
+)(withRouter(withTranslation("Home")(observer(SectionBodyContent))));

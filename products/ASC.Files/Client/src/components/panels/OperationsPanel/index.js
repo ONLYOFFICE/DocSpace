@@ -3,25 +3,16 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { ModalDialog } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, toastr } from "asc-web-common";
+import { toastr } from "asc-web-common";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import { ThirdPartyMoveDialog } from "../../dialogs";
-import { createI18N } from "../../../helpers/i18n";
+
 import { inject, observer } from "mobx-react";
-
-const i18n = createI18N({
-  page: "OperationsPanel",
-  localesPath: "panels/OperationsPanel",
-});
-
-const { changeLanguage } = commonUtils;
 
 class OperationsPanelComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
 
     this.state = {
       showProviderDialog: false,
@@ -186,12 +177,8 @@ OperationsPanelComponent.propTypes = {
   visible: PropTypes.bool,
 };
 
-const OperationsPanelContainerTranslated = withTranslation()(
+const OperationsPanel = withTranslation("OperationsPanel")(
   OperationsPanelComponent
-);
-
-const OperationsPanel = (props) => (
-  <OperationsPanelContainerTranslated i18n={i18n} {...props} />
 );
 
 export default inject(

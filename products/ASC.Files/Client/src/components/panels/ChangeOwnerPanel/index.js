@@ -9,8 +9,7 @@ import {
   Aside,
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils, toastr } from "asc-web-common";
-import { createI18N } from "../../../helpers/i18n";
+import { toastr } from "asc-web-common";
 import OwnerSelector from "./OwnerSelector";
 import {
   StyledAsidePanel,
@@ -21,17 +20,9 @@ import {
 } from "../StyledPanels";
 import { inject, observer } from "mobx-react";
 
-const i18n = createI18N({
-  page: "ChangeOwnerPanel",
-  localesPath: "panels/ChangeOwnerPanel",
-});
-const { changeLanguage } = utils;
-
 class ChangeOwnerComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
 
     const owner = props.selection[0].createdBy;
     this.state = { showPeopleSelector: false, owner };
@@ -178,10 +169,8 @@ class ChangeOwnerComponent extends React.Component {
   }
 }
 
-const ModalDialogContainerTranslated = withTranslation()(ChangeOwnerComponent);
-
-const ChangeOwnerPanel = (props) => (
-  <ModalDialogContainerTranslated i18n={i18n} {...props} />
+const ChangeOwnerPanel = withTranslation("ChangeOwnerPanel")(
+  ChangeOwnerComponent
 );
 
 export default inject(({ auth, initFilesStore, filesStore, dialogsStore }) => {

@@ -11,17 +11,10 @@ import {
 } from "asc-web-components";
 import { ReactSVG } from "react-svg";
 import { withTranslation } from "react-i18next";
-import { utils, api } from "asc-web-common";
+import { api } from "asc-web-common";
 import { TIMEOUT } from "../../../helpers/constants";
 import DownloadContent from "./DownloadContent";
-import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
-const i18n = createI18N({
-  page: "DownloadDialog",
-  localesPath: "dialogs/DownloadDialog",
-});
-
-const { changeLanguage } = utils;
 
 const formatKeys = Object.freeze({
   OriginalFormat: 0,
@@ -41,8 +34,6 @@ class DownloadDialogComponent extends React.Component {
   constructor(props) {
     super(props);
     const { sortedFiles } = this.props;
-
-    changeLanguage(i18n);
 
     this.state = {
       documents: sortedFiles.documents,
@@ -586,12 +577,8 @@ class DownloadDialogComponent extends React.Component {
   }
 }
 
-const ModalDialogContainerTranslated = withTranslation()(
+const DownloadDialog = withTranslation("DownloadDialog")(
   DownloadDialogComponent
-);
-
-const DownloadDialog = (props) => (
-  <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
 export default inject(({ filesStore, uploadDataStore, formatsStore }) => {

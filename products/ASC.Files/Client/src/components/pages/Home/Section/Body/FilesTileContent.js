@@ -124,7 +124,7 @@ class FilesTileContent extends React.PureComponent {
   };
 
   createItem = (e) => {
-    const { createFile, item, setIsLoading, i18n, createFolder } = this.props;
+    const { createFile, item, setIsLoading, createFolder } = this.props;
     const { itemTitle } = this.state;
 
     setIsLoading(true);
@@ -136,7 +136,7 @@ class FilesTileContent extends React.PureComponent {
           .then(() => this.completeAction(e))
           .finally(() => {
             toastr.success(
-              <Trans i18nKey="FolderCreated" i18n={i18n}>
+              <Trans i18nKey="FolderCreated" ns="Home">
                 New folder {{ itemTitle }} is created
               </Trans>
             );
@@ -147,7 +147,7 @@ class FilesTileContent extends React.PureComponent {
           .finally(() => {
             const exst = item.fileExst;
             toastr.success(
-              <Trans i18nKey="FileCreated" i18n={i18n}>
+              <Trans i18nKey="FileCreated" ns="Home">
                 New file {{ itemTitle }}.{{ exst }} is created
               </Trans>
             );
@@ -495,4 +495,4 @@ export default inject(
       addExpandedKeys,
     };
   }
-)(withRouter(withTranslation()(observer(FilesTileContent))));
+)(withRouter(withTranslation("Home")(observer(FilesTileContent))));
