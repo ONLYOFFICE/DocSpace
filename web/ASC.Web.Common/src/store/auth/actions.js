@@ -28,6 +28,7 @@ export const SET_IS_ENCRYPTION_SUPPORT = "SET_IS_ENCRYPTION_SUPPORT";
 export const SET_IS_AUTHENTICATED = "SET_IS_AUTHENTICATED";
 export const SET_IS_TABLET_VIEW = "SET_IS_TABLET_VIEW";
 export const SET_ARTICLE_PINNED = "SET_ARTICLE_PINNED";
+export const SET_PRODUCT_VERSION = "SET_PRODUCT_VERSION";
 
 export function setCurrentUser(user) {
   return {
@@ -164,6 +165,13 @@ export function setIsTabletView(isTabletView) {
   return {
     type: SET_IS_TABLET_VIEW,
     isTabletView,
+  };
+}
+
+export function setProductVersion(version) {
+  return {
+    type: SET_PRODUCT_VERSION,
+    version,
   };
 }
 

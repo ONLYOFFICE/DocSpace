@@ -3,12 +3,14 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { Text } from "asc-web-components";
-import { toastr, ModuleTile, PageLayout, utils } from "asc-web-common";
+import { toastr, ModuleTile, PageLayout, utils, store } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
+
+const { getModules, getIsLoaded } = store.auth.selectors;
 
 const i18n = createI18N({
   page: "Home",
@@ -55,7 +57,9 @@ const HomeContainer = styled.div`
 const Tiles = ({ modules, isPrimary }) => {
   let index = 0;
 
-  const mapped = modules.filter((m) => m.isPrimary === isPrimary);
+  const mapped = modules.filter(
+    (m) => m.isPrimary === isPrimary && m.isolateMode !== true
+  );
 
   return mapped.length > 0 ? (
     <div className="home-modules">
@@ -107,10 +111,7 @@ const Body = ({ modules, match, isLoaded }) => {
 };
 
 const Home = (props) => {
-  const { defaultPage } = props;
-  return utils.tryRedirectTo(defaultPage) ? (
-    <></>
-  ) : (
+  return (
     <PageLayout>
       <PageLayout.SectionBody>
         <Body {...props} />
@@ -125,12 +126,9 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { modules, isLoaded, settings } = state.auth;
-  const { defaultPage } = settings;
   return {
-    modules,
-    isLoaded,
-    defaultPage,
+    modules: getModules(state),
+    isLoaded: getIsLoaded(state),
   };
 }
 

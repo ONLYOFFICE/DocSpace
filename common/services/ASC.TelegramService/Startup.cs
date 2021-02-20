@@ -25,9 +25,6 @@
 
 using ASC.Api.Core;
 using ASC.Common;
-using ASC.Common.DependencyInjection;
-
-using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,11 +48,6 @@ namespace ASC.TelegramService
             DIHelper.TryAdd<TelegramLauncher>();
 
             services.AddHostedService<TelegramLauncher>();
-        }
-
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
-            builder.Register(Configuration, HostEnvironment.ContentRootPath);
         }
     }
 }

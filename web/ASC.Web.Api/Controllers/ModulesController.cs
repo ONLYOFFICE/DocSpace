@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
@@ -33,6 +34,20 @@ namespace ASC.Web.Api.Controllers
             }
 
             return result;
+        }
+
+        [Read("info")]
+        public IEnumerable<Module> GetAllWithInfo()
+        {
+            foreach (var a in WebItemManagerSecurity.GetItems(WebZoneType.StartProductList))
+            {
+                if(a is Product product)
+                {
+                    product.Init();
+                    yield return new Module(product);
+                }
+                
+            }
         }
     }
 }

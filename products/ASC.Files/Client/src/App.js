@@ -38,6 +38,7 @@ const {
   getIsEncryptionSupport,
   getEncryptionKeys,
   getIsAuthenticated,
+  setProductVersion,
 } = commonStore.auth.actions;
 const {
   getCurrentUser,
@@ -68,9 +69,11 @@ class App extends React.Component {
       getEncryptionKeys,
       isDesktop,
       getIsAuthenticated,
+      setProductVersion,
     } = this.props;
 
     setModuleInfo();
+    setProductVersion();
 
     if (this.isEditor) {
       setIsLoaded();
@@ -229,6 +232,7 @@ const mapDispatchToProps = (dispatch) => {
     getIsEncryptionSupport: () => getIsEncryptionSupport(dispatch),
     getEncryptionKeys: () => getEncryptionKeys(dispatch),
     setEncryptionKeys: (keys) => dispatch(setEncryptionKeys(keys)),
+    setProductVersion: () => dispatch(setProductVersion(config.version)),
   };
 };
 

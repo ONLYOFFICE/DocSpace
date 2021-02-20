@@ -17,6 +17,7 @@ export const SET_LOGO_SIZES = "SET_LOGO_SIZES";
 export const SET_LOGO_URLS = "SET_LOGO_URLS";
 export const SET_CONSUMERS = "SET_CONSUMERS";
 export const SET_SELECTED_CONSUMER = "SET_SELECTED_CONSUMER";
+export const SET_PRODUCT_VERSION = "SET_PRODUCT_VERSION";
 
 export function setOptions(options) {
   return {

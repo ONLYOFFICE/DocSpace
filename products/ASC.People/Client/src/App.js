@@ -37,6 +37,7 @@ const {
   getPortalPasswordSettings,
   getPortalCultures,
   getIsAuthenticated,
+  setProductVersion,
 } = commonStore.auth.actions;
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
@@ -56,9 +57,12 @@ class App extends React.Component {
       fetchPeople,
       setIsLoaded,
       getIsAuthenticated,
+      setProductVersion,
     } = this.props;
 
     setModuleInfo();
+    setProductVersion();
+
     getIsAuthenticated().then((isAuthenticated) => {
       if (!isAuthenticated) {
         utils.updateTempContent();
@@ -191,6 +195,7 @@ const mapDispatchToProps = (dispatch) => {
       return Promise.resolve();
     },
     setIsLoaded: () => dispatch(setIsLoaded(true)),
+    setProductVersion: () => dispatch(setProductVersion(config.version)),
   };
 };
 
