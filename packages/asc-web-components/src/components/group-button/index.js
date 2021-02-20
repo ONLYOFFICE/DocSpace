@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
-import { Icons } from "../icons";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import Checkbox from "../checkbox";
@@ -14,6 +14,14 @@ import {
   StyledGroupButton,
 } from "./styled-group-button";
 import ExpanderDownIcon from "../../../../../public/images/expander-down.react.svg";
+import commonIconsStyles from "../../utils/common-icons-style";
+
+const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
 class GroupButton extends React.Component {
   constructor(props) {
     super(props);
@@ -120,7 +128,7 @@ class GroupButton extends React.Component {
             >
               {itemLabel}
               <Caret isOpen={this.state.isOpen}>
-                <ExpanderDownIcon size="scale" color={color} />
+                <StyledExpanderDownIcon size="scale" color={color} />
               </Caret>
             </StyledDropdownToggle>
             <DropDown

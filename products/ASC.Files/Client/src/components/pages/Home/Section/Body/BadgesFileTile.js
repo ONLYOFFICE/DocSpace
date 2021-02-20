@@ -8,6 +8,7 @@ import FileActionsConvertEditDocIcon from "../../../../../../public/images/file.
 import FileActionsLockedIcon from "../../../../../../public/images/file.actions.locked.react.svg";
 import AccessEditIcon from "../../../../../../public/images/access.edit.react.svg";
 import FileActionsConvertIcon from "../../../../../../public/images/access.edit.react.svg";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
 
 const StyledBadgesFileTile = styled.div`
   display: flex;
@@ -21,7 +22,32 @@ const StyledBadgesFileTile = styled.div`
     margin: 5px;
   }
 `;
-
+const StyledFileActionsConvertEditDocIcon = styled(
+  FileActionsConvertEditDocIcon
+)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+const StyledAccessEditIcon = styled(AccessEditIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+const StyledFileActionsConvertIcon = styled(FileActionsConvertIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
 class BadgesFileTile extends React.PureComponent {
   render() {
     const { item, canConvert, canWebEdit } = this.props;
@@ -30,34 +56,30 @@ class BadgesFileTile extends React.PureComponent {
     return (
       <StyledBadgesFileTile>
         {canConvert && (
-          <FileActionsConvertIcon
+          <StyledFileActionsConvertIcon
             className="badge"
             size="small"
-            isfill={true}
             color="#A3A9AE"
           />
         )}
         {canWebEdit && (
-          <AccessEditIcon
+          <StyledAccessEditIcon
             className="badge"
             size="small"
-            isfill={true}
             color="#A3A9AE"
           />
         )}
         {fileStatus === 1 && (
-          <FileActionsConvertEditDocIcon
+          <StyledFileActionsConvertEditDocIcon
             className="badge"
             size="small"
-            isfill={true}
             color="#3B72A7"
           />
         )}
         {false && (
-          <FileActionsLockedIcon
+          <StyledFileActionsLockedIcon
             className="badge"
             size="small"
-            isfill={true}
             color="#3B72A7"
           />
         )}

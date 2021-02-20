@@ -5,11 +5,11 @@ import { withTranslation } from "react-i18next";
 import TreeMenu from "@appserver/components/src/components/tree-menu";
 import TreeNode from "@appserver/components/src/components/tree-menu/sub-components/tree-node";
 import { Icons } from "@appserver/components/src/components/icons";
-import ExpanderDownIcon from "../../../../../../../../../public/images/expander-down.react.svg"
+import ExpanderDownIcon from "../../../../../../../../../public/images/expander-down.react.svg";
 import Link from "@appserver/components/src/components/link";
 import Text from "@appserver/components/src/components/text";
 import { isArrayEqual } from "@appserver/components/src/utils/array";
-import ExpanderRightIcon from "../../../../../../../../../public/images/expander-right.react.svg"
+import ExpanderRightIcon from "../../../../../../../../../public/images/expander-right.react.svg";
 import {
   getKeyByLink,
   settingsTree,
@@ -18,7 +18,7 @@ import {
   getCurrentSettingsCategory,
 } from "../../../utils";
 import { ReactSVG } from "react-svg";
-
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
     font-size: inherit;
@@ -35,8 +35,33 @@ const StyledTreeMenu = styled(TreeMenu)`
   .rc-tree-node-content-wrapper-open {
     pointer-events: none;
   }
+
+  .tree_icon {
+    path {
+      fill: dimgray;
+    }
+  }
+  svg {
+    &:not(:root) {
+      width: 100%;
+      height: 100%;
+    }
+  }
 `;
 
+const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+
+const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
 const getTreeItems = (data, path, t) => {
   return data.map((item) => {
     if (item.children && item.children.length && !item.isCategory) {
@@ -53,11 +78,7 @@ const getTreeItems = (data, path, t) => {
             //   isfill: true,
             //   color: "dimgray",
             // })
-            item.icon && <ReactSVG src={item.icon}  beforeInjection={(svg) => {
-              svg
-              .querySelector("path")
-              .setAttribute("fill", "dimgray");
-            }}/>
+            item.icon && <ReactSVG className="tree_icon" src={item.icon} />
           }
           disableSwitch={true}
         >
@@ -81,7 +102,7 @@ const getTreeItems = (data, path, t) => {
           //   isfill: true,
           //   color: "dimgray",
           // })
-          item.icon && <ReactSVG src={item.icon}/>
+          item.icon && <ReactSVG src={item.icon} className="tree_icon" />
         }
         disableSwitch={true}
       />
@@ -150,9 +171,9 @@ class ArticleBodyContent extends React.Component {
       return null;
     }
     if (obj.expanded) {
-      return <ExpanderDownIcon size="scale" isfill={true} color="dimgray" />;
+      return <StyledExpanderDownIcon size="scale" color="dimgray" />;
     } else {
-      return <ExpanderRightIcon size="scale" isfill={true} color="dimgray" />;
+      return <StyledExpanderRightIcon size="scale" color="dimgray" />;
     }
   };
 

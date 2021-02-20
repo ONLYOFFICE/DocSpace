@@ -6,6 +6,7 @@ import styled, { css } from "styled-components";
 import Badge from "@appserver/components/src/components/badge";
 import Link from "@appserver/components/src/components/link";
 import Text from "@appserver/components/src/components/text";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
 import MenuIcon from "../../../../../../public/images/menu.react.svg";
 
 const baseColor = "#7A95B0",
@@ -72,6 +73,12 @@ const VersionBadge = styled.div`
   left: 10px;
 `;
 
+const StyledMenuIcon = styled(MenuIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${props => props.color};
+  }
+`;
 const NavItem = React.memo((props) => {
   //console.log("NavItem render");
   const {
@@ -109,7 +116,7 @@ const NavItem = React.memo((props) => {
       ) : (
         <>
           <VersionBadge>BETA</VersionBadge>
-          <MenuIcon color={color} size="big" isfill={true} />
+          <StyledMenuIcon color={color} size="big" />
         </>
       )}
       {children && (

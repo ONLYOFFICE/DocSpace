@@ -28,6 +28,8 @@ import { onConvertFiles } from "../../../helpers/files-converter";
 import { ReactSVG } from "react-svg";
 import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
 import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+
 const { isAdmin, isDesktopClient } = initStore.auth.selectors;
 
 const { files } = api;
@@ -56,6 +58,18 @@ const StyledTreeMenu = styled(TreeMenu)`
   }*/
 `;
 
+const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
+const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
 class TreeFolders extends React.Component {
   constructor(props) {
     super(props);
@@ -291,9 +305,9 @@ class TreeFolders extends React.Component {
       return null;
     }
     if (obj.expanded) {
-      return <ExpanderDownIcon size="scale" isfill color="dimgray" />;
+      return <StyledExpanderDownIcon size="scale" />;
     } else {
-      return <ExpanderRightIcon size="scale" isfill color="dimgray" />;
+      return <StyledExpanderRightIcon size="scale" />;
     }
   };
 

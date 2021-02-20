@@ -104,6 +104,12 @@ const IconWrapper = styled.div`
   width: ${(props) => props.theme.dropDownItem.icon.width};
   margin-right: ${(props) => props.theme.dropDownItem.icon.marginRight};
   line-height: ${(props) => props.theme.dropDownItem.icon.lineHeight};
+  svg {
+    &:not(:root) {
+      width: 100%;
+      height: 100%;
+    }
+  }
 `;
 IconWrapper.defaultProps = { theme: Base };
 

@@ -2,6 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation, Trans } from "react-i18next";
+import styled from "styled-components";
 import {
   Row,
   Avatar,

@@ -1,19 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
+import styled from "styled-components";
 import { findDOMNode } from "react-dom";
 import screenfull from "screenfull";
-
 import ReactPlayer from "react-player";
+
 import Duration from "./duration";
 import Progress from "./progress";
-
-import styled from "styled-components";
 import MediaPauseIcon from "../../../../../../public/images/media.pause.react.svg";
 import MediaPlayIcon from "../../../../../../public/images/media.play.react.svg";
 import MediaFullScreenIcon from "../../../../../../public/images/media.fullscreen.react.svg";
 import MediaMuteIcon from "../../../../../../public/images/media.mute.react.svg";
 import MediaMuteOffIcon from "../../../../../../public/images/media.muteoff.react.svg";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
 
 const controlsHeight = 40;
 const StyledControls = styled.div`
@@ -63,7 +62,21 @@ const StyledVideoControlBtn = styled.div`
     line-height: 19px;
   }
 `;
-
+const StyledMediaPauseIcon = styled(MediaPauseIcon)`
+  ${commonIconsStyles}
+`;
+const StyledMediaPlayIcon = styled(MediaPlayIcon)`
+  ${commonIconsStyles}
+`;
+const StyledMediaFullScreenIcon = styled(MediaFullScreenIcon)`
+  ${commonIconsStyles}
+`;
+const StyledMediaMuteIcon = styled(MediaMuteIcon)`
+  ${commonIconsStyles}
+`;
+const StyledMediaMuteOffIcon = styled(MediaMuteOffIcon)`
+  ${commonIconsStyles}
+`;
 const VideoControlBtn = (props) => {
   return (
     <StyledVideoControlBtn {...props}>{props.children}</StyledVideoControlBtn>
@@ -83,11 +96,11 @@ const PlayBtn = (props) => {
     <VideoControlBtn onClick={props.onClick}>
       {props.playing ? (
         <div className="pauseBtnContainer">
-          <MediaPauseIcon size="scale" />
+          <StyledMediaPauseIcon size="scale" />
         </div>
       ) : (
         <div className="playBtnContainer">
-          <MediaPlayIcon size="scale" />
+          <StyledMediaPlayIcon size="scale" />
         </div>
       )}
     </VideoControlBtn>
@@ -101,7 +114,7 @@ const FullScreenBtn = (props) => {
   return (
     <VideoControlBtn onClick={props.onClick}>
       <div className="fullscreenBtnContainer">
-        <MediaFullScreenIcon size="scale" />
+        <StyledMediaFullScreenIcon size="scale" />
       </div>
     </VideoControlBtn>
   );
@@ -194,9 +207,9 @@ class ValumeBtn extends Component {
         <VideoControlBtn onClick={this.props.onChangeMute}>
           <div className="muteBtnContainer">
             {this.props.muted ? (
-              <MediaMuteOffIcon size="scale" />
+              <StyledMediaMuteOffIcon size="scale" />
             ) : (
-              <MediaMuteIcon size="scale" />
+              <StyledMediaMuteIcon size="scale" />
             )}
           </div>
         </VideoControlBtn>

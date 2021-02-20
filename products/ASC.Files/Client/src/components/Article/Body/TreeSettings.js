@@ -23,6 +23,8 @@ import {
 } from "../../../store/files/selectors";
 import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
 import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+
 const { isAdmin } = initStore.auth.selectors;
 
 const i18n = createI18N({
@@ -67,7 +69,24 @@ const StyledTreeMenu = styled(TreeMenu)`
     }
   }
 `;
-
+const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
+const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
+const StyledSettingsIcon = styled(SettingsIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
 const PureTreeSettings = ({
   match,
   enableThirdParty,
@@ -103,9 +122,9 @@ const PureTreeSettings = ({
       return null;
     }
     if (obj.expanded) {
-      return <ExpanderDownIcon size="scale" isfill color="dimgray" />;
+      return <StyledExpanderDownIcon size="scale" />;
     } else {
-      return <ExpanderRightIcon size="scale" isfill color="dimgray" />;
+      return <StyledExpanderRightIcon size="scale" />;
     }
   };
 
@@ -138,7 +157,7 @@ const PureTreeSettings = ({
         key="settings"
         title={t("TreeSettingsMenuTitle")}
         isLeaf={false}
-        icon={<SettingsIcon size="scale" isfill color="dimgray" />}
+        icon={<StyledSettingsIcon size="scale" />}
       >
         <TreeNode
           className="settings-node"

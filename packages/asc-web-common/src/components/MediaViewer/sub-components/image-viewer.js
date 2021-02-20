@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Viewer from "react-viewer";
+import styled from "styled-components";
+
 import MediaZoomInIcon from "../../../../../../public/images/media.zoomin.react.svg";
 import MediaZoomOutIcon from "../../../../../../public/images/media.zoomout.react.svg";
 import MediaRotateLeftIcon from "../../../../../../public/images/media.rotateleft.react.svg";
@@ -8,10 +10,31 @@ import MediaRotateRightIcon from "../../../../../../public/images/media.rotateri
 import MediaResetIcon from "../../../../../../public/images/media.reset.react.svg";
 import MediaDeleteIcon from "../../../../../../public/images/media.delete.react.svg";
 import MediaDownloadIcon from "../../../../../../public/images/media.download.react.svg";
-import styled from "styled-components";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
 import MediaScrollButton from "./scroll-button";
 import ControlBtn from "./control-btn";
 
+const StyledMediaZoomInIcon = styled(MediaZoomInIcon)`
+  ${commonIconsStyles}
+`;
+const StyledMediaZoomOutIcon = styled(MediaZoomOutIcon)`
+  ${commonIconsStyles}
+`;
+const StyledMediaRotateLeftIcon = styled(MediaRotateLeftIcon)`
+  ${commonIconsStyles}
+`;
+const StyledMediaRotateRightIcon = styled(MediaRotateRightIcon)`
+  ${commonIconsStyles}
+`;
+const StyledMediaResetIcon = styled(MediaResetIcon)`
+  ${commonIconsStyles}
+`;
+const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
+  ${commonIconsStyles}
+`;
+const StyledMediaDownloadIcon = styled(MediaDownloadIcon)`
+  ${commonIconsStyles}
+`;
 const StyledViewer = styled(Viewer)`
   .react-viewer-footer {
     bottom: 5px !important;
@@ -115,7 +138,7 @@ var customToolbar = [
     actionType: 1,
     render: (
       <div className="iconContainer zoomIn">
-        <MediaZoomInIcon size="scale" />
+        <StyledMediaZoomInIcon size="scale" />
       </div>
     ),
   },
@@ -124,7 +147,7 @@ var customToolbar = [
     actionType: 2,
     render: (
       <div className="iconContainer zoomOut">
-        <MediaZoomOutIcon size="scale" />
+        <StyledMediaZoomOutIcon size="scale" />
       </div>
     ),
   },
@@ -133,7 +156,7 @@ var customToolbar = [
     actionType: 7,
     render: (
       <div className="iconContainer reset">
-        <MediaResetIcon size="scale" />
+        <StyledMediaResetIcon size="scale" />
       </div>
     ),
   },
@@ -142,7 +165,7 @@ var customToolbar = [
     actionType: 5,
     render: (
       <div className="iconContainer rotateLeft">
-        <MediaRotateLeftIcon size="scale" />
+        <StyledMediaRotateLeftIcon size="scale" />
       </div>
     ),
   },
@@ -151,7 +174,7 @@ var customToolbar = [
     actionType: 6,
     render: (
       <div className="iconContainer rotateRight">
-        <MediaRotateRightIcon size="scale" />
+        <StyledMediaRotateRightIcon size="scale" />
       </div>
     ),
   },
@@ -170,7 +193,7 @@ var customToolbar = [
     render: (
       <ControlBtn className="controlBtn">
         <div className="btnContainer">
-          <MediaDeleteIcon size="scale" />
+          <StyledMediaDeleteIcon size="scale" />
         </div>
       </ControlBtn>
     ),
@@ -180,7 +203,7 @@ var customToolbar = [
     render: (
       <ControlBtn className="controlBtn">
         <div className="btnContainer">
-          <MediaDownloadIcon size="scale" />
+          <StyledMediaDownloadIcon size="scale" />
         </div>
       </ControlBtn>
     ),

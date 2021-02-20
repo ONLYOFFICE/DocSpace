@@ -57,12 +57,52 @@ import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
 import { setEncryptionAccess } from "../../../../../helpers/desktop";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
 
 const { FileAction } = constants;
 const sideColor = "#A3A9AE";
 const { getSettings, isDesktopClient } = initStore.auth.selectors;
 const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
 
+const StyledCheckIcon = styled(CheckIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: "#A3A9AE";
+  }
+  :hover {
+    fill: "#657077";
+  }
+`;
+
+const StyledCrossIcon = styled(CrossIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: "#A3A9AE";
+  }
+  :hover {
+    fill: "#657077";
+  }
+`;
+
+const StyledFavoriteIcon = styled(FavoriteIcon)`
+  ${commonIconsStyles}
+`;
+
+const StyledFileActionsConvertEditDocIcon = styled(
+  FileActionsConvertEditDocIcon
+)`
+  ${commonIconsStyles}
+  path {
+    fill: "#3B72A7";
+  }
+`;
+
+const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: "#3B72A7";
+  }
+`;
 const SimpleFilesRowContent = styled(RowContent)`
   .badge-ext {
     margin-left: -8px;
@@ -97,24 +137,10 @@ const SimpleFilesRowContent = styled(RowContent)`
   }
 `;
 
-const okIcon = (
-  <CheckIcon
-    className="edit-ok-icon"
-    size="scale"
-    isfill={true}
-    color="#A3A9AE"
-    hoveredcolor="#657077"
-  />
-);
+const okIcon = <StyledCheckIcon className="edit-ok-icon" size="scale" />;
 
 const cancelIcon = (
-  <CrossIcon
-    className="edit-cancel-icon"
-    size="scale"
-    isfill={true}
-    color="#A3A9AE"
-    hoveredcolor="#657077"
-  />
+  <StyledCrossIcon className="edit-cancel-icon" size="scale" />
 );
 
 class FilesRowContent extends React.PureComponent {
@@ -630,7 +656,7 @@ class FilesRowContent extends React.PureComponent {
                   />
                 )}
                 {fileStatus === 32 && !isTrashFolder && (
-                  <FavoriteIcon
+                  <StyledFavoriteIcon
                     className="favorite"
                     size="small"
                     data-action="remove"
@@ -640,19 +666,15 @@ class FilesRowContent extends React.PureComponent {
                   />
                 )}
                 {fileStatus === 1 && (
-                  <FileActionsConvertEditDocIcon
+                  <StyledFileActionsConvertEditDocIcon
                     className="badge"
                     size="small"
-                    isfill={true}
-                    color="#3B72A7"
                   />
                 )}
                 {locked && (
-                  <FileActionsLockedIcon
+                  <StyledFileActionsLockedIcon
                     className="badge lock-file"
                     size="small"
-                    isfill={true}
-                    color="#3B72A7"
                     data-id={item.id}
                     data-locked={true}
                     onClick={this.props.onClickLock}

@@ -6,7 +6,7 @@ import Text from "@appserver/components/src/components/text";
 import Loader from "@appserver/components/src/components/loader";
 import toastr from "@appserver/components/src/components/toast/toastr";
 import Link from "@appserver/components/src/components/link";
-import ArrowRightIcon from "../../../../../../public/images/arrow.right.react.svg"
+import ArrowRightIcon from "../../../../../../public/images/arrow.right.react.svg";
 import { changeLanguage } from "@appserver/common/src/utils";
 import store from "@appserver/common/src/store";
 import {
@@ -15,6 +15,7 @@ import {
 } from "../../../../../store/settings/actions";
 import { default as clientStore } from "../../../../../store/store";
 import { setDocumentTitle } from "../../../../../helpers/utils";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
 
 const { getLanguage } = store.auth.selectors;
 const {
@@ -38,6 +39,13 @@ const mapTimezonesToArray = (timezones) => {
 const findSelectedItemByKey = (items, selectedItemKey) => {
   return items.find((item) => item.key === selectedItemKey);
 };
+
+const StyledArrowRightIcon = styled(ArrowRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -233,7 +241,7 @@ class Customization extends React.Component {
               >
                 {t("StudioTimeLanguageSettings")}
               </Link>
-              <ArrowRightIcon size="small" isfill={true} color="#333333" />
+              <StyledArrowRightIcon size="small" color="#333333" />
             </div>
             {language && language.label && timezone && timezone.label && (
               <Text className="category-item-subheader" truncate={true}>
@@ -254,7 +262,7 @@ class Customization extends React.Component {
               >
                 {t("CustomTitles")}
               </Link>
-              <ArrowRightIcon size="small" isfill={true} color="#333333" />
+              <StyledArrowRightIcon size="small"  color="#333333" />
             </div>
             <Text className="category-item-description">
               {t("CustomTitlesSettingsDescription")}

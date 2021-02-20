@@ -6,6 +6,15 @@ import Text from "@appserver/components/src/components/text";
 import { tablet, smallTablet } from "@appserver/components/src/utils/device";
 import CatalogPinIcon from "../../../../../../public/images/catalog.pin.react.svg"
 import CatalogUnpinIcon from "../../../../../../public/images/catalog.unpin.react.svg"
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+
+const StyledCatalogPinIcon = styled(CatalogPinIcon)`
+  ${commonIconsStyles}
+`;
+
+const StyledCatalogUnpinIcon = styled(CatalogUnpinIcon)`
+  ${commonIconsStyles}
+`;
 
 const StyledArticlePinPanel = styled.div`
   border-top: 1px solid #eceef1;
@@ -64,14 +73,14 @@ const ArticlePinPanel = React.memo((props) => {
       {pinned ? (
         <div onClick={onUnpin}>
           <div className="icon-wrapper">
-            <CatalogUnpinIcon size="scale" />
+            <StyledCatalogUnpinIcon size="scale" />
           </div>
           <Text {...textStyles}>{unpinText}</Text>
         </div>
       ) : (
         <div onClick={onPin}>
           <div className="icon-wrapper">
-            <CatalogPinIcon size="scale" />
+            <StyledCatalogPinIcon size="scale" />
           </div>
           <Text {...textStyles}>{pinText}</Text>
         </div>

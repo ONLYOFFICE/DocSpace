@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
+import styled from "styled-components";
 
 import Text from "../../text";
 import {
@@ -11,6 +12,11 @@ import {
 } from "./styled-combobutton";
 
 import ExpanderDownIcon from "../../../../../../public/images/expander-down.react.svg";
+import commonIconsStyles from "../../../utils/common-icons-style";
+
+const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
+  ${commonIconsStyles}
+`;
 class ComboButton extends React.Component {
   render() {
     const {
@@ -29,8 +35,6 @@ class ComboButton extends React.Component {
     } = this.props;
 
     const defaultOption = selectedOption.default;
-
-    //const SelectedIcon = Icons[selectedOption.icon];
 
     return (
       <StyledComboButton
@@ -59,8 +63,10 @@ class ComboButton extends React.Component {
             isDisabled={isDisabled}
             defaultOption={defaultOption}
           >
-            <SelectedIcon size="scale" className="combo-button_selected-icon" />
-            <ReactSVG src={selectedOption.icon} />
+            <ReactSVG
+              src={selectedOption.icon}
+              className="combo-button_selected-icon"
+            />
           </StyledIcon>
         )}
         <Text
@@ -80,7 +86,7 @@ class ComboButton extends React.Component {
           className="combo-buttons_arrow-icon"
         >
           {(withOptions || withAdvancedOptions) && (
-            <ExpanderDownIcon
+            <StyledExpanderDownIcon
               size="scale"
               className="combo-buttons_expander-icon"
             />
