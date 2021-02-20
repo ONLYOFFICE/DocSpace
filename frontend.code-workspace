@@ -23,10 +23,6 @@
 		{
 			"name": "ASC.Files.Client"
 			"path": "./products/ASC.Files/Client"
-		},
-		{
-			"name": "ASC.Web.LoginMobile"
-			"path": "./web/ASC.Web.LoginMobile"
 		}
 	],
 	"settings": {
