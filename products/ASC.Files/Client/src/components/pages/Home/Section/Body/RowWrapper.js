@@ -62,6 +62,7 @@ const RowWrapper = memo(({ data, index, style }) => {
     onClickFavorite,
     lockFile,
     openDocEditor,
+    setItemContextOptions,
   } = data;
 
   const item = items[index];
@@ -95,6 +96,10 @@ const RowWrapper = memo(({ data, index, style }) => {
   const displayShareButton =
     sectionWidth < 500 ? "26px" : !canShare ? "38px" : "96px";
 
+  const setContextOptions = () => {
+    setItemContextOptions(contextOptionsProps.contextOptions);
+  };
+
   return (
     <div style={style}>
       <SimpleFilesRow
@@ -111,6 +116,7 @@ const RowWrapper = memo(({ data, index, style }) => {
         needForUpdate={needForUpdate}
         selectItem={onSelectItem.bind(this, item)}
         contextButtonSpacerWidth={displayShareButton}
+        onContextMenu={setContextOptions}
       >
         <FilesRowContent
           sectionWidth={sectionWidth}

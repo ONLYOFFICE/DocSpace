@@ -1736,3 +1736,5 @@ export const getUploadedFile = (id) => {
 export const getUploadSelection = (state) => {
   return state.files.selectedUploadFile;
 };
+
+export const getContextOptions = (state) => state.files.contextOptions;

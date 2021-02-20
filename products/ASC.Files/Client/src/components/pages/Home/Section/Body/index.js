@@ -16,6 +16,7 @@ import {
   Box,
   Text,
   utils,
+  ContextMenu,
 } from "asc-web-components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
@@ -99,6 +100,7 @@ import {
   getThirdPartyCapabilities,
   getIsVerHistoryPanel,
   getIsLoading,
+  getContextOptions,
 } from "../../../../../store/files/selectors";
 import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
 import { isMobile } from "react-device-detect";
@@ -1820,6 +1822,7 @@ class SectionBodyContent extends React.Component {
       history,
       filter,
       isLoading,
+      itemContextOptions,
     } = this.props;
 
     const {
@@ -2005,7 +2008,7 @@ class SectionBodyContent extends React.Component {
         ) : (
           <Consumer>
             {(context) => (
-              <StyledContainer>
+              <StyledContainer id="fileListContainer">
                 <FileList
                   items={items}
                   context={context}
@@ -2026,6 +2029,10 @@ class SectionBodyContent extends React.Component {
                   onClickFavorite={this.onClickFavorite}
                   lockFile={this.lockFile}
                   openDocEditor={this.openDocEditor}
+                />
+                <ContextMenu
+                  targetAreaId="fileListContainer"
+                  options={itemContextOptions}
                 />
               </StyledContainer>
             )}
@@ -2107,6 +2114,7 @@ const mapStateToProps = (state) => {
     isTabletView: getIsTabletView(state),
     isVersionHistoryPanel: getIsVerHistoryPanel(state),
     isLoading: getIsLoading(state),
+    itemContextOptions: getContextOptions(state),
   };
 };
 

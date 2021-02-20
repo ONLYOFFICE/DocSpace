@@ -44,6 +44,7 @@ import {
   UPDATE_UPLOADED_FILE,
   ADD_FILES,
   ADD_FOLDERS,
+  SET_CONTEXT_OPTIONS,
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -412,6 +413,7 @@ const initialState = {
     versions: null,
   },
   ownerPanelVisible: false,
+  contextOptions: [],
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -671,7 +673,10 @@ const filesReducer = (state = initialState, action) => {
           folders: state.folders.concat(action.folders),
         });
       else return state;
-
+    case SET_CONTEXT_OPTIONS:
+      return Object.assign({}, state, {
+        contextOptions: action.contextOptions,
+      });
     default:
       return state;
   }

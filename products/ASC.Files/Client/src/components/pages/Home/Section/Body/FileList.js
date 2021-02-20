@@ -5,7 +5,10 @@ import { FixedSizeList as List } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
 import memoize from "memoize-one";
 
-import { loadMoreFiles } from "../../../../../store/files/actions";
+import {
+  loadMoreFiles,
+  setItemContextOptions,
+} from "../../../../../store/files/actions";
 import RowWrapper from "./RowWrapper";
 
 const FileList = ({
@@ -30,6 +33,7 @@ const FileList = ({
   openDocEditor,
   filter,
   loadMoreFiles,
+  setItemContextOptions,
 }) => {
   const createItemData = memoize(
     (
@@ -51,7 +55,8 @@ const FileList = ({
       onMediaFileClick,
       onClickFavorite,
       lockFile,
-      openDocEditor
+      openDocEditor,
+      setItemContextOptions
     ) => ({
       items,
       context,
@@ -72,6 +77,7 @@ const FileList = ({
       onClickFavorite,
       lockFile,
       openDocEditor,
+      setItemContextOptions,
     })
   );
 
@@ -94,7 +100,8 @@ const FileList = ({
     onMediaFileClick,
     onClickFavorite,
     lockFile,
-    openDocEditor
+    openDocEditor,
+    setItemContextOptions
   );
 
   const folderId = filter.folder;
@@ -144,4 +151,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   loadMoreFiles,
+  setItemContextOptions,
 })(FileList);

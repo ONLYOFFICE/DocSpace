@@ -85,6 +85,7 @@ export const SELECT_UPLOADED_FILE = "SELECT_UPLOADED_FILE";
 export const UPDATE_UPLOADED_FILE = "UPDATE_UPLOADED_FILE";
 export const ADD_FILES = "ADD_FILES";
 export const ADD_FOLDERS = "ADD_FOLDERS";
+export const SET_CONTEXT_OPTIONS = "SET_CONTEXT_OPTIONS";
 
 export function setFile(file) {
   return {
@@ -393,6 +394,13 @@ export function addFolders(folders) {
   return {
     type: ADD_FOLDERS,
     folders,
+  };
+}
+
+export function setContextOptions(contextOptions) {
+  return {
+    type: SET_CONTEXT_OPTIONS,
+    contextOptions,
   };
 }
 
@@ -2046,5 +2054,11 @@ export function loadMoreFiles(folderId, filter, clearFilter = true) {
         })
       );
     });
+  };
+}
+
+export function setItemContextOptions(contextOptions) {
+  return (dispatch) => {
+    dispatch(setContextOptions(contextOptions));
   };
 }
