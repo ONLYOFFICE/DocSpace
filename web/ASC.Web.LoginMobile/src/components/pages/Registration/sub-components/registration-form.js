@@ -94,10 +94,11 @@ const RegistrationForm = ({ t, isLoading, onJoin }) => {
         id="portal-name"
         className="fields"
         t={t}
-        placeholder={t('PlaceholderPortalName')}
+        placeholder={t("PlaceholderPortalName")}
         isAutoFocussed
         value={portalName.val}
         hasError={!portalName.isValid && hasError}
+        isLoading={isLoading}
         onChangeValue={onChangePortalNameHandler}
       />
       <EmailField
@@ -105,27 +106,36 @@ const RegistrationForm = ({ t, isLoading, onJoin }) => {
         t={t}
         value={email.val}
         hasError={!email.isValid && hasError}
+        isLoading={isLoading}
         onChangeEmail={onChangeEmailHandler}
       />
       <TextField
         id="first-name"
         className="fields"
         t={t}
-        placeholder={t('PlaceholderFirstName')}
+        placeholder={t("PlaceholderFirstName")}
         value={firstName.val}
         hasError={!firstName.isValid && hasError}
+        isLoading={isLoading}
         onChangeValue={onChangeFirstNameHandler}
       />
       <TextField
         id="last-name"
         className="fields"
         t={t}
-        placeholder={t('PlaceholderLastName')}
+        placeholder={t("PlaceholderLastName")}
         value={lastName.val}
         hasError={!lastName.isValid && hasError}
+        isLoading={isLoading}
         onChangeValue={onChangeLastNameHandler}
       />
-      <PasswordField t={t} onChangePassword={onChangePasswordHandler} />
+      <PasswordField
+        t={t}
+        isDisabled={isLoading}
+        isRegisterForm
+        hasError={!password.isValid && hasError}
+        onChangePassword={onChangePasswordHandler}
+      />
       <Button
         className="registration-button"
         primary

@@ -6,7 +6,6 @@ const EmailField = ({
   value,
   t,
   hasError,
-  errorText,
   isLoading,
   onChangeEmail,
 }) => {
@@ -17,7 +16,9 @@ const EmailField = ({
     const { errors, value, isValid } = result;
     let errorsString = "";
 
-    setIsEmpty(!value);
+    const cleanEmail = value.trim();
+
+    setIsEmpty(!cleanEmail);
 
     if (errors.length > 0) {
       const translatedErrors = errors.map((item) => {
@@ -28,7 +29,7 @@ const EmailField = ({
     }
 
     setErrors(errorsString);
-    onChangeEmail && onChangeEmail(value, isValid);
+    onChangeEmail && onChangeEmail(cleanEmail, isValid);
   };
 
   return (

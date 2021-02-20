@@ -2,12 +2,9 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 import { Checkbox, Button, Link, Text } from "ASC.Web.Components";
-import { utils } from "ASC.Web.Common";
 
 import { PasswordField, TextField } from "../../../fields";
-import { fakeApi } from "LoginMobileApi";
 
-const { tryRedirectTo } = utils;
 
 const StyledLoginForm = styled("form")`
   width: 100%;
@@ -58,87 +55,57 @@ const LoginForm = ({
   t,
   isChecked,
   socialButtons,
-  onKeyPress,
+  isLoading,
   onChangeCheckbox,
   onClickForgot,
+  onLogin,
 }) => {
-  const [errorText, setErrorText] = useState("");
-  const [userName, setUserName] = useState("");
-  const [userNameValid, setUserNameValid] = useState(true);
-  const [password, setPassword] = useState("");
-  const [passwordValid, setPasswordValid] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [userName, setUserName] = useState({ val: "", isValid: false });
+  const [password, setPassword] = useState({ val: "", isValid: false });
 
   const onSubmitHandler = () => {
-    errorText && setErrorText("");
-    let isError = false;
-    const cleanUserName = userName.trim();
+    const isValid = checkingValid();
 
-    if (!cleanUserName) {
-      isError = true;
-      setUserNameValid(false);
-      setErrorText(t("RequiredFieldMessage"));
-      setHasError(isError);
-    }
+    if (!isValid) return;
 
-    const cleanPass = password.trim();
-
-    if (!cleanPass) {
-      isError = true;
-      setPasswordValid(false);
-      setErrorText(t("RequiredFieldMessage"));
-      setHasError(isError);
-    }
-
-    if (isError) return false;
-
-    setIsLoading(true);
-
-    fakeApi
-      .login(cleanUserName, cleanPass)
-      .then(() => {
-        tryRedirectTo("/portal-selection");
-      })
-      .catch((err) => {
-        setErrorText(err);
-        setPasswordValid(false);
-        setUserNameValid(false);
-      })
-      .finally(setIsLoading(false));
+    onLogin(userName.val, password.val);
   };
 
-  const onChangeLogin = (value, isValid) => {
-    setUserName(value);
-    setUserNameValid(isValid);
+  const checkingValid = () => {
+    let isValid = false;
+    if (userName.isValid && password.isValid) isValid = true;
+    setHasError(!isValid);
+    return isValid;
   };
 
-  const onChangePassword = (e) => {
-    setPassword(e.target.value);
-    setPasswordValid(true);
+  const onChangeLogin = (val, isValid) => {
+    setUserName({ val, isValid });
+  };
+
+  const onChangePassword = (val, isValid) => {
+    setPassword({ val, isValid });
   };
 
   return (
     <StyledLoginForm>
       <TextField
         t={t}
-        hasError={!userNameValid}
-        errorText={errorText}
-        value={userName}
+        hasError={!userName.isValid && hasError}
+        value={userName.val}
         isLoading={isLoading}
         id="email"
         type="email"
+        isAutoFocussed
         placeholder="RegistrationEmailWatermark"
         onChangeValue={onChangeLogin}
       />
       <PasswordField
         t={t}
-        passwordValid={passwordValid}
-        errorText={errorText}
-        password={password}
+        hasError={!password.isValid && hasError}
+        password={password.val}
         isLoading={isLoading}
         onChangePassword={onChangePassword}
-        onKeyPress={onKeyPress}
       />
       <div className="login-forgot-wrapper">
         <Checkbox
@@ -166,7 +133,6 @@ const LoginForm = ({
         size="large"
         scale={true}
         label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
-        tabIndex={1}
         isDisabled={isLoading}
         isLoading={isLoading}
         onClick={onSubmitHandler}

@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 
-import {  api  } from "ASC.Web.Common";
+import { api, utils } from "ASC.Web.Common";
 import { Text, toastr } from "ASC.Web.Components";
 
 import i18n from "../../../i18n";
@@ -12,6 +12,9 @@ import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-di
 import RegisterButton from "./sub-components/register-button";
 import LoginForm from "./sub-components/login-form";
 
+import { fakeApi } from "LoginMobileApi";
+
+const { tryRedirectTo } = utils;
 const { sendInstructionsToChangePassword } = api.people; //?
 
 const LoginContainer = styled.div`
@@ -85,8 +88,23 @@ class Form extends Component {
 
   onClickRegistration = () => {
     const { history } = this.props;
-    history.push('/registration')
-  }
+    history.push("/registration");
+  };
+
+  onLoginHandler = (userName, pass) => {
+    this.setState({ isLoading: true });
+    fakeApi
+      .login(userName, pass)
+      .then(() => {
+        tryRedirectTo("/portal-selection");
+      })
+      .catch((err) => {
+        //setErrorText(err); //TODO: error handler
+        //setPasswordValid(false);
+        //setUserNameValid(false);
+      })
+      .finally(this.setState({ isLoading: false }));
+  };
 
   render() {
     const { t } = this.props;
@@ -120,6 +138,7 @@ class Form extends Component {
             isLoading={isLoading}
             onChangeCheckbox={this.onChangeCheckbox}
             onClickForgot={this.onClickForgot}
+            onLogin={this.onLoginHandler}
           />
 
           {openDialog && (
@@ -134,7 +153,10 @@ class Form extends Component {
               t={t}
             />
           )}
-          <RegisterButton title={t("LoginRegistrationBtn")} onClick={this.onClickRegistration}/>
+          <RegisterButton
+            title={t("LoginRegistrationBtn")}
+            onClick={this.onClickRegistration}
+          />
         </LoginContainer>
       </>
     );
@@ -144,17 +166,13 @@ class Form extends Component {
 const FormWrapper = withTranslation()(Form);
 
 const Login = (props) => {
-  const language = 'en'//window.navigator.language;
+  const language = "en"; //window.navigator.language;
 
   useEffect(() => {
     i18n.changeLanguage(language);
   }, [language]);
 
-  return (
-      <FormWrapper i18n={i18n} {...props} />
-
-   
-  );
+  return <FormWrapper i18n={i18n} {...props} />;
 };
 
 export default withRouter(Login);

@@ -17,9 +17,10 @@ const TextField = ({
     const { value } = e.target;
     const cleanVal = value.trim();
     let isValid = true;
-    if (!cleanVal) {
+    
+    if (!cleanVal) 
       isValid = false;
-    }
+    
     onChangeValue(cleanVal, isValid);
   };
 
