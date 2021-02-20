@@ -64,7 +64,7 @@ const PasswordField = ({
     });
 
     if (translatedErrors.length > 0) {
-      errors = "Add " + translatedErrors.join(", ");
+      errors = t("Add") + translatedErrors.join(", ");
     }
 
     setValidation({ isValid, errors });

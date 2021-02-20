@@ -23,11 +23,15 @@
   "RegistrationTitle": "Облачные офисные приложения",
   "RegistrationDesc": "Создать портал",
   "IncorrectEmail": "Неверный email",
-  "LengthPassLess": "Добавьте {{lengthSetting}} символов",
   "JoinBtn": "Присоединиться",
   "PlaceholderPortalName": "portalname",
   "PlaceholderFirstName": "Имя",
   "PlaceholderLastName": "Фамилия",
   "LocalDomain": "Некорректный локальный домен",
-  "IncorrectDomain": "Некорректный домен"
+  "IncorrectDomain": "Некорректный домен",
+  "IncorrectDigits": "цыфры",
+  "IncorrectCapital": "заглавные симпволы",
+  "IncorrectSpecial": "специальные символы",
+  "IncorrectLength": "{{lengthSetting}}-30 добавьте",
+  "Add": "Добавьте "
 }

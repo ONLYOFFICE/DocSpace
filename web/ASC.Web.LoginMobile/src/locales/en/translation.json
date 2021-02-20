@@ -23,11 +23,15 @@
   "RegistrationTitle": "Cloud office applications",
   "RegistrationDesc": "Create portal",
   "IncorrectEmail": "Incorrect email",
-  "LengthPassLess": "Add {{lengthSetting}} characters",
-  "JoinBtn": "Join", 
+  "JoinBtn": "Join",
   "PlaceholderPortalName": "portalname",
   "PlaceholderFirstName": "First name",
   "PlaceholderLastName": "Last name",
   "LocalDomain": "Incorrect local domain",
-  "IncorrectDomain": "Incorrect domain"
+  "IncorrectDomain": "Incorrect domain",
+  "IncorrectDigits": "digits",
+  "IncorrectCapital": "capital letters",
+  "IncorrectSpecial": "special letters",
+  "IncorrectLength": "{{lengthSetting}}-30 characters",
+  "Add": "Add "
 }
