@@ -49,11 +49,11 @@ namespace ASC.Resource.Manager
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
 
-                project = "Projects";
-                module = "Messages";
-                filePath = "MessageResource.resx";
-                exportPath = @"C:\Git\portals\";
-                key = "*";
+                project = "WebStudio";
+                module = "WebStudio";
+                filePath = "AuditResource.resx";
+                exportPath = @"C:\Git\portals_core\web\ASC.Web.Api\Core\";
+                key = "EmailNotSpecified";
 
                 if (format == "json")
                 {
@@ -156,16 +156,19 @@ namespace ASC.Resource.Manager
                 }
                 else
                 {
-                    var filePath = Directory.GetFiles(exportPath, $"{fileName}", SearchOption.AllDirectories).FirstOrDefault();
-                    if (string.IsNullOrEmpty(filePath)) return;
-                    
                     var resultFiles = new ConcurrentBag<string>();
+                    var filePath = "";
                     var asmbl = "";
-                    var assmlPath = Path.GetDirectoryName(filePath);
+                    var assmlPath = "";
 
-                    var name = Path.GetFileNameWithoutExtension(fileName);
                     if (key == "*")
                     {
+                        filePath = Directory.GetFiles(exportPath, $"{fileName}", SearchOption.AllDirectories).FirstOrDefault();
+                        if (string.IsNullOrEmpty(filePath)) return;
+
+                        assmlPath = Path.GetDirectoryName(filePath);
+
+                        var name = Path.GetFileNameWithoutExtension(fileName);
                         var designerPath = Path.Combine(Path.GetDirectoryName(filePath), $"{name}.Designer.cs");
                         var data = File.ReadAllText(designerPath);
                         var regex = new Regex(@"namespace\s(\S*)\s", RegexOptions.IgnoreCase);
@@ -197,9 +200,8 @@ namespace ASC.Resource.Manager
                         }
 
                         key = CheckExist(fileName, $"{nsp}.{name},{matches[0].Groups[1].Value}", exportPath);
+                        exportPath = Path.GetDirectoryName(filePath);
                     }
-
-                    exportPath = Path.GetDirectoryName(filePath);
 
                     if (string.IsNullOrEmpty(exportPath))
                     {
@@ -214,7 +216,7 @@ namespace ASC.Resource.Manager
                         }
                     });
 
-                    AddResourceForCsproj(asmbl, filePath.Substring(assmlPath.Length + 1), resultFiles.OrderBy(r=> r));
+                    //AddResourceForCsproj(asmbl, filePath.Substring(assmlPath.Length + 1), resultFiles.OrderBy(r=> r));
                 }
             }
         }
