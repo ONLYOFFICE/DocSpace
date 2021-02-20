@@ -37,3 +37,4 @@ import { Checkbox } from "@appserver/components";
 | `value`           |    `string`    |    -     |   -    |    -    | Value of the input                                          |
 | `title`           |     `bool`     |    -     |   -    |    -    | Title                                                       |
 | `truncate`        |     `bool`     |    -     |   -    | `false` | Disables word wrapping                                      |
+| `color`           |    `string`    |    -     |   -    | `#FFFF` | Makes the checkbox a different color                         |

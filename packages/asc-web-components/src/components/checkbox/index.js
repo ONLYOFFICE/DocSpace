@@ -1,51 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+
 import { Icons } from "../icons";
 import Text from "../text";
-
-const disableColor = "#A3A9AE";
-const hoverColor = disableColor;
-
-const Label = styled.label`
-  display: flex;
-  align-items: center;
-  position: relative;
-  margin: 0;
-  user-select: none;
-  -o-user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-  .checkbox {
-    margin-right: 12px;
-  }
-
-  ${(props) =>
-    props.isDisabled
-      ? css`
-          cursor: not-allowed;
-        `
-      : css`
-          cursor: pointer;
-
-          &:hover {
-            svg {
-              rect:first-child {
-                stroke: ${hoverColor};
-              }
-            }
-          }
-        `}
-`;
-
-const HiddenInput = styled.input`
-  opacity: 0.0001;
-  position: absolute;
-  right: 0;
-  z-index: -1;
-`;
+import { StyledLabel, HiddenInput } from "./styled-checkbox";
 
 // eslint-disable-next-line react/prop-types
 const CheckboxIcon = ({ isChecked, isDisabled, isIndeterminate }) => {
@@ -59,17 +17,7 @@ const CheckboxIcon = ({ isChecked, isDisabled, isIndeterminate }) => {
     size: "medium",
     className: "checkbox",
   };
-
-  if (isDisabled) {
-    newProps.isfill = true;
-    newProps.color = "#F8F9F9";
-
-    if (isIndeterminate || isChecked) {
-      newProps.isStroke = true;
-      newProps.stroke = "#ECEEF1";
-    }
-  }
-
+  
   return <>{React.createElement(Icons[iconName], { ...newProps })}</>;
 };
 
@@ -108,6 +56,7 @@ class Checkbox extends React.Component {
     //console.log("Checkbox render");
     const {
       isDisabled,
+      isIndeterminate,
       id,
       className,
       label,
@@ -116,30 +65,36 @@ class Checkbox extends React.Component {
       title,
       truncate,
     } = this.props;
-    const colorProps = isDisabled ? { color: disableColor } : {};
 
     return (
-      <Label
+      <StyledLabel
         id={id}
         style={style}
         isDisabled={isDisabled}
+        isIndeterminate={isIndeterminate}
         className={className}
       >
         <HiddenInput
           type="checkbox"
           checked={this.state.checked}
-          disabled={isDisabled}
+          isDisabled={isDisabled}
           ref={this.ref}
           value={value}
           onChange={this.onInputChange}
         />
         <CheckboxIcon {...this.props} />
         {this.props.label && (
-          <Text as="span" title={title} truncate={truncate} {...colorProps}>
+          <Text
+            as="span"
+            title={title}
+            isDisabled={isDisabled}
+            truncate={truncate}
+            className="checkbox-text"
+          >
             {label}
           </Text>
         )}
-      </Label>
+      </StyledLabel>
     );
   }
 }

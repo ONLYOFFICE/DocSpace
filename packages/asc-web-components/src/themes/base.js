@@ -345,20 +345,20 @@ const Base = {
     },
   },
 
-  // checkbox: {
-  //   fillColor: white,
-  //   borderColor: grayMid,
-  //   arrowColor: black,
-  //   indeterminateColor: black,
+  checkbox: {
+    fillColor: white,
+    borderColor: grayMid,
+    arrowColor: black,
+    indeterminateColor: black,
 
-  //   disableArrowColor: grayMid,
-  //   disableBorderColor: grayLightMid,
-  //   disableFillColor: grayLight,
-  //   disableIndeterminateColor: gray,
+    disableArrowColor: grayMid,
+    disableBorderColor: grayLightMid,
+    disableFillColor: grayLight,
+    disableIndeterminateColor: gray,
 
-  //   hoverBorderColor: gray,
-  //   hoverIndeterminateColor: gray,
-  // },
+    hoverBorderColor: gray,
+    hoverIndeterminateColor: gray,
+  },
 
   // slider: {
   //   sliderBarColorProgress: blueMain,
