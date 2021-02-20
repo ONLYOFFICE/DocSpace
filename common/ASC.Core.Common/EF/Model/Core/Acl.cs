@@ -1,14 +1,10 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using ASC.Common.Security.Authorizing;
 using ASC.Core.Common.EF.Model;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    [Table("core_acl")]
     public class Acl : BaseEntity
     {
         public int Tenant { get; set; }
