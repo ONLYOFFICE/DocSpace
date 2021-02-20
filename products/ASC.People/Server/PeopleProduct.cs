@@ -67,6 +67,8 @@ namespace ASC.People
             }
         }
 
+        public override bool IsPrimary { get => true; }
+
         public override void Init()
         {
             _context = new ProductContext
