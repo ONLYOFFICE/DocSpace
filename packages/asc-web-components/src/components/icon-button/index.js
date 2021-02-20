@@ -138,7 +138,7 @@ class IconButton extends React.PureComponent {
       style,
       dataTip,
     } = this.props;
-    console.log("input-block");
+  
     return (
       <StyledOuter
         className={className}
@@ -154,6 +154,7 @@ class IconButton extends React.PureComponent {
         data-event="click focus"
         data-for={id}
         style={style}
+        color={this.state.currentIconColor}
         //{...this.props}
       >
         {/* {React.createElement(Icons["CalendarIcon"], {
@@ -163,13 +164,8 @@ class IconButton extends React.PureComponent {
         })} */}
 
         <ReactSVG
+          className="icon-button_svg"
           src={this.state.currentIconName}
-          beforeInjection={(svg) => {
-            //const [firstGElement] = [...svg.querySelectorAll("path")];
-            svg
-              .querySelector("path")
-              .setAttribute("fill", this.state.currentIconColor);
-          }}
         />
       </StyledOuter>
     );
