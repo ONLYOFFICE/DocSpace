@@ -21,6 +21,7 @@ import {
   SET_IS_AUTHENTICATED,
   SET_IS_TABLET_VIEW,
   SET_ARTICLE_PINNED,
+  SET_PRODUCT_VERSION,
 } from "./actions";
 import {
   LANGUAGE,
@@ -56,7 +57,7 @@ const initialState = {
     timezones: [],
     utcOffset: "00:00:00",
     utcHoursOffset: 0,
-    defaultPage: "/products/files",
+    defaultPage: "/",
     homepage: "", //config.homepage,
     datePattern: "M/d/yyyy",
     datePatternJQ: "00/00/0000",
@@ -94,6 +95,7 @@ const initialState = {
     isTabletView: false,
     isArticlePinned: localStorage.getItem(ARTICLE_PINNED_KEY) || false,
   },
+  version: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -226,6 +228,12 @@ const authReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         settings: { ...state.settings, isArticlePinned: action.isPinned },
       });
+
+    case SET_PRODUCT_VERSION:
+      return Object.assign({}, state, {
+        version: action.version,
+      });
+
     default:
       return state;
   }

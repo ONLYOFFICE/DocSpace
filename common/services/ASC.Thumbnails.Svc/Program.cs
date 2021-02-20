@@ -87,7 +87,7 @@ namespace ASC.Thumbnails.Svc
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
-                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath, false, false);
+                    builder.Register(context.Configuration, false, false);
                 })
                 .UseConsoleLifetime()
                 .Build();

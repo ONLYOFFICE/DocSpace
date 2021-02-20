@@ -9,15 +9,14 @@ import {
   Login,
   Error404,
   Offline,
-  ComingSoon,
   NavMenu,
   Main,
   utils,
   toastr,
   Layout,
-  ScrollToTop,
 } from "asc-web-common";
 import Home from "./components/pages/Home";
+import config from "../package.json";
 
 const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
@@ -25,12 +24,14 @@ const Settings = lazy(() => import("./components/pages/Settings"));
 const Wizard = lazy(() => import("./components/pages/Wizard"));
 const Payments = lazy(() => import("./components/pages/Payments"));
 const ThirdPartyResponse = lazy(() => import("./components/pages/ThirdParty"));
+const ComingSoon = lazy(() => import("./components/pages/ComingSoon"));
 const {
   setIsLoaded,
   getUser,
   getPortalSettings,
   getModules,
   getIsAuthenticated,
+  setProductVersion,
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
@@ -47,7 +48,10 @@ class App extends React.Component {
       getModules,
       setIsLoaded,
       getIsAuthenticated,
+      setProductVersion,
     } = this.props;
+
+    setProductVersion();
 
     getIsAuthenticated()
       .then((isAuthenticated) => {
@@ -85,7 +89,6 @@ class App extends React.Component {
     return navigator.onLine ? (
       <Layout>
         <Router history={history}>
-          <ScrollToTop />
           {!this.isThirdPartyResponse && <NavMenu />}
           <Main>
             <Suspense fallback={null}>
@@ -118,7 +121,14 @@ class App extends React.Component {
                 />
                 <PrivateRoute
                   exact
-                  path={["/coming-soon"]}
+                  path={[
+                    "/coming-soon",
+                    "/products/mail",
+                    "/products/projects",
+                    "/products/crm",
+                    "/products/calendar",
+                    "/products/talk/",
+                  ]}
                   component={ComingSoon}
                 />
                 <PrivateRoute path="/payments" component={Payments} />
@@ -151,6 +161,7 @@ const mapDispatchToProps = (dispatch) => {
     getUser: () => getUser(dispatch),
     getModules: () => getModules(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
+    setProductVersion: () => dispatch(setProductVersion(config.version)),
   };
 };
 

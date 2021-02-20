@@ -8,8 +8,9 @@ import NavLogoItem from "./nav-logo-item";
 
 import Loaders from "../../Loaders/index";
 import { ReactSVG } from "react-svg";
+import { useTranslation } from "react-i18next";
 
-import { utils } from "asc-web-components";
+import { utils, Box, Link, Text } from "asc-web-components";
 import { connect } from "react-redux";
 import {
   getCurrentProductId,
@@ -72,6 +73,12 @@ const Header = styled.header`
   }
 `;
 
+const versionBadgeProps = {
+  color: "#7A95B0",
+  fontWeight: "600",
+  fontSize: "13px",
+};
+
 const HeaderComponent = ({
   currentProductName,
   totalNotifications,
@@ -84,9 +91,12 @@ const HeaderComponent = ({
   currentProductId,
   toggleAside,
   isLoaded,
+  version,
   isAuthenticated,
   ...props
 }) => {
+  const { t } = useTranslation();
+
   const isNavAvailable = mainModules.length > 0;
   const onLogoClick = () => {
     window.open(defaultPage, "_self");
@@ -152,8 +162,9 @@ const HeaderComponent = ({
               iconUrl,
               notifications,
               onClick,
-              url,
+              link,
               title,
+              dashed,
             }) => (
               <NavItem
                 separator={!!separator}
@@ -166,12 +177,30 @@ const HeaderComponent = ({
                 badgeNumber={notifications}
                 onClick={onClick}
                 onBadgeClick={onBadgeClick}
-                url={url}
+                link={link}
+                dashed={dashed}
               >
                 {title}
               </NavItem>
             )
           )}
+          <Box className="version-box">
+            <Link
+              as="a"
+              href={`https://github.com/ONLYOFFICE/AppServer/releases`}
+              target="_blank"
+              {...versionBadgeProps}
+            >
+              {t("Version")} {version}
+            </Link>
+            <Text as="span" {...versionBadgeProps}>
+              {" "}
+              -{" "}
+            </Text>
+            <Link as="a" href="/about" target="_blank" {...versionBadgeProps}>
+              {t("AboutShort")}
+            </Link>
+          </Box>
         </Nav>
       )}
     </>
@@ -193,12 +222,13 @@ HeaderComponent.propTypes = {
   toggleAside: PropTypes.func,
   logoUrl: PropTypes.string,
   isLoaded: PropTypes.bool,
+  version: PropTypes.string,
   isAuthenticated: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => {
   const { logoUrl } = state.auth.settings;
-  const { isAuthenticated } = state.auth;
+  const { isAuthenticated, version } = state.auth;
 
   return {
     defaultPage: getDefaultPage(state),
@@ -208,6 +238,7 @@ const mapStateToProps = (state) => {
     currentProductId: getCurrentProductId(state),
     isLoaded: getIsLoaded(state),
     logoUrl,
+    version,
     isAuthenticated,
   };
 };
