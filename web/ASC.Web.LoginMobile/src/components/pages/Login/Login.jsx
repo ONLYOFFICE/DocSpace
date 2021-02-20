@@ -1,11 +1,11 @@
-import React, { Component, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 
-import { api, utils } from "ASC.Web.Common";
-import { Text, toastr } from "ASC.Web.Components";
+import { utils } from "ASC.Web.Common";
+import { Text } from "ASC.Web.Components";
 
 import i18n from "../../../i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
@@ -15,7 +15,6 @@ import LoginForm from "./sub-components/login-form";
 import { fakeApi } from "LoginMobileApi";
 
 const { tryRedirectTo } = utils;
-const { sendInstructionsToChangePassword } = api.people; //?
 
 const LoginContainer = styled.div`
   display: grid;
@@ -32,91 +31,65 @@ const LoginContainer = styled.div`
   }
 `;
 
-class Form extends Component {
-  constructor(props) {
-    super(props);
+const Form = ({t}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState(false);
+  const [socialButtons, setSocialButtons] = useState([]);
 
-    this.state = {
-      isLoading: false,
-      isDisabled: false,
-      isChecked: false,
-      openDialog: false,
-      email: "",
-      emailError: false,
-      errorText: "",
-      socialButtons: [],
-    };
-  }
-
-  onChangeEmail = (event) => {
-    this.setState({ email: event.target.value, emailError: false });
+  const onChangeEmail = (event) => {
+    setEmail(event.target.value);
+    setEmailError(false)
   };
 
-  onChangeCheckbox = () => this.setState({ isChecked: !this.state.isChecked });
+  const onChangeCheckbox = () => setIsChecked(!isChecked);
 
-  onClickForgot = () => {
-    this.setState({
-      openDialog: true,
-      isDisabled: true,
-      email: this.state.identifier,
-    });
+  const onClickForgot = () => {
+    setOpenDialog(true)
+    // email: this.state.identifier,  replace to login-forn
   };
 
-  onSendPasswordInstructions = () => {
-    if (!this.state.email.trim()) {
-      this.setState({ emailError: true });
+  const onSendPasswordInstructions = () => {
+    if (!email.trim()) {
+      setEmailError(true)
     } else {
-      this.setState({ isLoading: true });
-      sendInstructionsToChangePassword(this.state.email)
-        .then(
+      setIsLoading(true)
+      fakeApi.sendInstructionsToChangePassword(email)
+        .then( /*
           (res) => toastr.success(res),
-          (message) => toastr.error(message)
+          (message) => toastr.error(message)*/
+          // TODO: indication errors 
         )
-        .finally(this.onDialogClose());
+        .finally(onDialogClose());
     }
   };
 
-  onDialogClose = () => {
-    this.setState({
-      openDialog: false,
-      isDisabled: false,
-      isLoading: false,
-      email: "",
-      emailError: false,
-    });
+  const onDialogClose = () => {
+    setOpenDialog(false);
+    setIsLoading(false);
+    setEmail('');
+    setEmailError(false);
   };
 
-  onClickRegistration = () => {
+  const onClickRegistration = () => {
     const { history } = this.props;
     history.push("/registration");
   };
 
-  onLoginHandler = (userName, pass) => {
-    this.setState({ isLoading: true });
+  const onLoginHandler = (userName, pass) => {
+    setIsLoading(true)
     fakeApi
       .login(userName, pass)
       .then(() => {
         tryRedirectTo("/portal-selection");
       })
       .catch((err) => {
-        //setErrorText(err); //TODO: error handler
-        //setPasswordValid(false);
-        //setUserNameValid(false);
+        //TODO: error handler
       })
-      .finally(this.setState({ isLoading: false }));
+      .finally(setIsLoading(false));
   };
-
-  render() {
-    const { t } = this.props;
-
-    const {
-      isLoading,
-      isChecked,
-      openDialog,
-      email,
-      emailError,
-      socialButtons,
-    } = this.state;
 
     return (
       <>
@@ -136,9 +109,9 @@ class Form extends Component {
             isChecked={isChecked}
             socialButtons={socialButtons}
             isLoading={isLoading}
-            onChangeCheckbox={this.onChangeCheckbox}
-            onClickForgot={this.onClickForgot}
-            onLogin={this.onLoginHandler}
+            onChangeCheckbox={onChangeCheckbox}
+            onClickForgot={onClickForgot}
+            onLogin={onLoginHandler}
           />
 
           {openDialog && (
@@ -147,21 +120,21 @@ class Form extends Component {
               isLoading={isLoading}
               email={email}
               emailError={emailError}
-              onChangeEmail={this.onChangeEmail}
-              onSendPasswordInstructions={this.onSendPasswordInstructions}
-              onDialogClose={this.onDialogClose}
+              onChangeEmail={onChangeEmail}
+              onSendPasswordInstructions={onSendPasswordInstructions}
+              onDialogClose={onDialogClose}
               t={t}
             />
           )}
           <RegisterButton
             title={t("LoginRegistrationBtn")}
-            onClick={this.onClickRegistration}
+            onClick={onClickRegistration}
           />
         </LoginContainer>
       </>
     );
   }
-}
+
 
 const FormWrapper = withTranslation()(Form);
 

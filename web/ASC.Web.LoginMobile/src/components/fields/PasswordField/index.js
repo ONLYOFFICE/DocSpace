@@ -22,6 +22,8 @@ const PasswordField = ({
     errors: "",
   });
 
+  const [isEmptyPass, setIsEmptyPass] = useState(true);
+
   const tooltipPassTitle = t("TooltipPasswordTitle");
   const tooltipPassLength = settings.minLength
     ? `${settings.minLength}${t("TooltipPasswordLength")}`
@@ -41,10 +43,14 @@ const PasswordField = ({
     const cleanPass = pass.trim();
     let isValid = true;
 
-    if (!cleanPass) isValid = false;
+    if (!cleanPass) {
+      isValid = false;
+      setIsEmptyPass(true);
+    }
 
-    if (isRegisterForm) {
+    if (isRegisterForm && cleanPass) {
       isValid = validation.isValid;
+      setIsEmptyPass(false);
     }
 
     onChangePassword(cleanPass, isValid);
@@ -78,13 +84,17 @@ const PasswordField = ({
     ? (hasError && !validation.isValid) || !!validation.errors
     : false;
 
+  console.log(validation.errors);
+
   return (
     <StyledFieldContainer
       isVertical={true}
       labelVisible={false}
       hasError={hasErrorUpdated}
       errorMessage={
-        validation.errors ? validation.errors : t("RequiredFieldMessage")
+        validation.errors && !isEmptyPass
+          ? validation.errors
+          : t("RequiredFieldMessage")
       } //TODO: Add wrong password server error
     >
       <PasswordInput
