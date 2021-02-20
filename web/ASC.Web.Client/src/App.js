@@ -2,14 +2,19 @@ import React from "react";
 import { Provider } from "react-redux";
 import Shell from "./Shell";
 import store from "./store/store";
-
+import ThemeProvider from "@appserver/components/src/components/theme-provider";
 import "./custom.scss";
+import { Base, Dark } from "@appserver/components/src/themes";
 
-const App = () => (
-  <Provider store={store}>
-    <Shell />
-  </Provider>
-);
+const App = () => {
+  return (
+    <ThemeProvider theme={Base}>
+      <Provider store={store}>
+        <Shell />
+      </Provider>
+    </ThemeProvider>
+  );
+};
 
 export default App;
 
