@@ -111,6 +111,7 @@ const HeaderComponent = ({
     e.preventDefault();
   };
 
+  //TODO: getCustomModules
   const getCustomModules = () => {
     if (!isAdmin) {
       return [];
@@ -218,7 +219,7 @@ const HeaderComponent = ({
               </NavItem>
             )
           )}
-          {getCustomModules()}
+          {/*getCustomModules()*/}
           <Box className="version-box">
             <Link
               as="a"
@@ -270,11 +271,12 @@ export default inject(({ auth }) => {
     isAuthenticated,
     isAdmin,
     product,
+    availableModules,
   } = auth;
   const { logoUrl, defaultPage, currentProductId, version } = settingsStore;
-  const { modules, totalNotifications } = moduleStore;
+  const { totalNotifications } = moduleStore;
 
-  const mainModules = modules.filter((m) => !m.isolateMode);
+  const mainModules = availableModules.filter((m) => !m.isolateMode);
 
   return {
     isAdmin,

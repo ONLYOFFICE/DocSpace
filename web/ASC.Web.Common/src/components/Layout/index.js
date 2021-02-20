@@ -175,7 +175,7 @@ Layout.propTypes = {
   isTabletView: PropTypes.bool,
   children: PropTypes.any,
   setIsTabletView: PropTypes.func,
-  isArticlePinned: PropTypes.func,
+  isArticlePinned: PropTypes.bool,
 };
 
 export default inject(({ auth }) => {

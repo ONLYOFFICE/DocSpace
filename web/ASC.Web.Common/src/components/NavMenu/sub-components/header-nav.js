@@ -82,13 +82,13 @@ const HeaderNav = ({
     return currentUserActions;
   }, [onProfileClick, onAboutClick, onLogoutClick]);
 
-    const [isOpen, setIsOpen] = useState(false); //TODO: Need to refactoring
-    const isOpenProfileMenu = (value) => {
-      setIsOpen(value);
-    };
+  const [isOpen, setIsOpen] = useState(false); //TODO: Need to refactoring
+  const isOpenProfileMenu = (value) => {
+    setIsOpen(value);
+  };
   //console.log("HeaderNav render");
   return (
-      <StyledNav isOpen={isOpen} className="profileMenuIcon hidingHeader">
+    <StyledNav isOpen={isOpen} className="profileMenuIcon hidingHeader">
       {modules
         .filter((m) => m.isolateMode)
         .map((m) => (
@@ -107,11 +107,11 @@ const HeaderNav = ({
         ))}
 
       {isAuthenticated && user ? (
-          <ProfileActions
-            userActions={getCurrentUserActions()}
-            user={user}
-            isOpenProfileMenu={isOpenProfileMenu}
-          />
+        <ProfileActions
+          userActions={getCurrentUserActions()}
+          user={user}
+          isOpenProfileMenu={isOpenProfileMenu}
+        />
       ) : (
         <></>
       )}
@@ -135,7 +135,6 @@ export default inject(({ auth }) => {
   const {
     settingsStore,
     userStore,
-    moduleStore,
     isAuthenticated,
     isLoaded,
     language,
@@ -143,7 +142,6 @@ export default inject(({ auth }) => {
   } = auth;
   const { homepage, defaultPage } = settingsStore;
   const { user } = userStore;
-  const { modules } = moduleStore;
 
   return {
     user,
@@ -152,7 +150,7 @@ export default inject(({ auth }) => {
     isLoaded,
     language,
     defaultPage: defaultPage || "/",
-    modules,
+    modules: auth.availableModules,
     logout,
   };
 })(observer(HeaderNav));

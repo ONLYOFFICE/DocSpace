@@ -7,6 +7,7 @@ import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
 import { isAdmin } from "../utils";
+import isEmpty from "lodash/isEmpty";
 
 class AuthStore {
   userStore = null;
@@ -29,6 +30,7 @@ class AuthStore {
       isLoaded: computed,
       language: computed,
       product: computed,
+      availableModules: computed,
       userStore: observable,
       moduleStore: observable,
       settingsStore: observable,
@@ -97,6 +99,52 @@ class AuthStore {
       (item) => item.id === this.settingsStore.currentProductId
     );
   }
+
+  get availableModules() {
+    const { user } = this.userStore;
+    const { modules, toModuleWrapper } = this.moduleStore;
+    if (isEmpty(modules) || isEmpty(this.userStore.user)) {
+      return [];
+    }
+
+    const isUserAdmin = user.isAdmin;
+    const customModules = this.getCustomModules(isUserAdmin);
+    const products = modules.map((m) => toModuleWrapper(m, false));
+    const primaryProducts = products.filter((m) => m.isPrimary === true);
+    const dummyProducts = products.filter((m) => m.isPrimary === false);
+
+    return [
+      {
+        separator: true,
+        id: "nav-products-separator",
+      },
+      ...primaryProducts,
+      ...customModules,
+      {
+        separator: true,
+        dashed: true,
+        id: "nav-dummy-products-separator",
+      },
+      ...dummyProducts,
+    ];
+  }
+
+  getCustomModules = (isAdmin) => {
+    if (!isAdmin) {
+      return [];
+    }
+    const settingsModuleWrapper = this.moduleStore.toModuleWrapper(
+      {
+        id: "settings",
+        title: "Settings",
+        link: "/settings",
+      },
+      false,
+      "SettingsIcon"
+    );
+
+    return [settingsModuleWrapper];
+  };
 
   getIsAuthenticated = async () => {
     const isAuthenticated = await api.user.checkIsAuthenticated();
