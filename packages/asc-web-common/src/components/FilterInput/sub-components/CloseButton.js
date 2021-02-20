@@ -13,7 +13,7 @@ const CloseButton = (props) => {
         color={"#A3A9AE"}
         clickColor={"#A3A9AE"}
         size={10}
-        iconName={"CrossIcon"}
+        iconName={"static/images/cross.react.svg"}
         isFill={true}
         isDisabled={isDisabled}
         onClick={!isDisabled ? onClick : undefined}

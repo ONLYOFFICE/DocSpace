@@ -30,7 +30,7 @@ import toastr from "../toast/toastr";
 import ToggleContent from "../toggle-content";
 import Tooltip from "../tooltip";
 import { Icons } from "../icons";
-
+import SettingsIcon from "../../../../../public/images/settings.react.svg";
 const array_items = [
   {
     key: "0",
@@ -52,28 +52,28 @@ const array_items = [
 const options = [
   {
     key: 0,
-    icon: "CatalogEmployeeIcon", // optional item
+    icon: "static/images/catalog.employee.react.svg", // optional item
     label: "Option 1",
     disabled: false, // optional item
     onClick: () => {}, // optional item
   },
   {
     key: 1,
-    icon: "CatalogEmployeeIcon", // optional item
+    icon: "static/images/catalog.employee.react.svg", // optional item
     label: "Option 2",
     disabled: false, // optional item
     onClick: () => {}, // optional item
   },
   {
     key: 2,
-    icon: "CatalogEmployeeIcon", // optional item
+    icon: "static/images/catalog.employee.react.svg", // optional item
     label: "Option 3",
     disabled: true, // optional item
     onClick: () => {}, // optional item
   },
   {
     key: 3,
-    icon: "CatalogEmployeeIcon", // optional item
+    icon: "static/images/catalog.employee.react.svg", // optional item
     label: "Option 4",
     disabled: false, // optional item
     onClick: () => {}, // optional item
@@ -103,13 +103,13 @@ const elementIcon = <Icons.CatalogFolderIcon size="big" />;
 const elementComboBox = (
   <ComboBox
     options={[
-      { key: 1, icon: "ItemActiveIcon", label: "Open" },
+      { key: 1, icon: "static/images/item.active.react.svg", label: "Open" },
       { key: 2, icon: "CheckIcon", label: "Closed" },
     ]}
     onSelect={(option) => console.log(option)}
     selectedOption={{
       key: 0,
-      icon: "ItemActiveIcon",
+      icon: "static/images/item.active.react.svg",
       label: "",
     }}
     scaled={false}
@@ -266,7 +266,7 @@ storiesOf("Components|All", module)
           {/*
             <div style={{ padding: "8px 0" }}>
             <ContextMenuButton
-              iconName="VerticalDotsIcon"
+              iconName="static/images/vertical-dots.react.svg"
               size={16}
               color="#A3A9AE"
               isDisabled={false}
@@ -288,7 +288,7 @@ storiesOf("Components|All", module)
                   size="25"
                   isDisabled={false}
                   onClick={() => {}}
-                  iconName={"SearchIcon"}
+                  iconName={"search.react.svg"}
                   isFill={true}
                   isClickable={false}
                 />
@@ -332,12 +332,12 @@ storiesOf("Components|All", module)
               {({ value, set }) => (
                 <InputBlock
                   placeholder="Add input text"
-                  iconName={"SearchIcon"}
+                  iconName={"static/images/search.react.svg"}
                   onIconClick={() => {}}
                   onChange={(e) => set(e.target.value)}
                   value={value}
                 >
-                  <Icons.SettingsIcon size="medium" />
+                  <SettingsIcon size="medium" />
                 </InputBlock>
               )}
             </StringValue>

@@ -14,18 +14,13 @@ import {
   store as initStore,
   Loaders,
 } from "@appserver/common/src";
-
-import {
-  DepartmentsGroupIcon,
-  CatalogFolderIcon,
-  ExpanderDownIcon,
-  ExpanderRightIcon,
-} from "@appserver/components/src/components/icons/svg";
-
+import CatalogFolderIcon from "../../../../../../../public/images/catalog.folder.react.svg"
+import DepartmentsGroupIcon from "../../../../public/images/departments.group.react.svg"
+import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg"
 import { createI18N } from "../../../helpers/i18n";
 import styled, { css } from "styled-components";
 import { setDocumentTitle } from "../../../helpers/utils";
-
+import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg"
 const i18n = createI18N({
   page: "Article",
   localesPath: "Article",

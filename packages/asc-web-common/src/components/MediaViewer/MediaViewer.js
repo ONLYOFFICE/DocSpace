@@ -2,12 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Text from "@appserver/components/src/components/text";
-import {
-  CrossIcon,
-  MediaDeleteIcon,
-  MediaDownloadIcon,
-} from "@appserver/components/src/components/icons/svg";
-
+import MediaDeleteIcon from "../../../../../public/images/media.delete.react.svg"
+import MediaDownloadIcon from "../../../../../public/images/media.download.react.svg"
 import ImageViewer from "./sub-components/image-viewer";
 import VideoViewer from "./sub-components/video-viewer";
 import MediaScrollButton from "./sub-components/scroll-button";
@@ -15,6 +11,7 @@ import ControlBtn from "./sub-components/control-btn";
 import StyledMediaViewer from "./StyledMediaViewer";
 import equal from "fast-deep-equal/react";
 import Hammer from "hammerjs";
+import CrossIcon from "../../../../../public/images/cross.react.svg"
 
 const StyledVideoViewer = styled(VideoViewer)`
   z-index: 4001;

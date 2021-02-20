@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Heading from "@appserver/components/src/components/heading";
+import { Base } from "@appserver/components/src/themes";
 
 const size = {
   header: "28px",
@@ -18,6 +19,8 @@ const StyledHeading = styled(Heading)`
   line-height: 56px;
   font-size: ${(props) => size[props.headlineType]};
   font-weight: ${(props) => weight[props.headlineType]};
+  color: ${(props) => props.theme.color};
 `;
+StyledHeading.defaultProps = { theme: Base };
 
 export default StyledHeading;

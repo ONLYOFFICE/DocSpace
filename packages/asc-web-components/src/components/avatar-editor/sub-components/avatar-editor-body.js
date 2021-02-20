@@ -29,7 +29,7 @@ import {
   DropZoneContainer,
   Slider,
   StyledErrorContainer,
-} from "./styled-avatar-editor-body"
+} from "./styled-avatar-editor-body";
 
 class AvatarEditorBody extends React.Component {
   constructor(props) {
@@ -394,7 +394,7 @@ class AvatarEditorBody extends React.Component {
                           size="16"
                           isDisabled={false}
                           onClick={this.deleteImage}
-                          iconName={"CatalogTrashIcon"}
+                          iconName={"static/images/catalog.trash.react.svg"}
                           isFill={true}
                           isClickable={true}
                           color="#FFFFFF"
@@ -406,7 +406,7 @@ class AvatarEditorBody extends React.Component {
                           size="16"
                           isDisabled={false}
                           onClick={this.onZoomMinusClick}
-                          iconName={"ZoomMinusIcon"}
+                          iconName={"static/images/zoom-minus.react.svg"}
                           isFill={true}
                           isClickable={false}
                         />
@@ -424,7 +424,7 @@ class AvatarEditorBody extends React.Component {
                           size="16"
                           isDisabled={false}
                           onClick={this.onZoomPlusClick}
-                          iconName={"ZoomPlusIcon"}
+                          iconName={"static/images/zoom-plus.react.svg"}
                           isFill={true}
                           isClickable={false}
                         />

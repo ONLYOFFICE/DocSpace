@@ -1,12 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import {
-  CatalogUnpinIcon,
-  CatalogPinIcon,
-} from "@appserver/components/src/components/icons/svg";
+
 import Text from "@appserver/components/src/components/text";
 import { tablet, smallTablet } from "@appserver/components/src/utils/device";
+import CatalogPinIcon from "../../../../../../public/images/catalog.pin.react.svg"
+import CatalogUnpinIcon from "../../../../../../public/images/catalog.unpin.react.svg"
 
 const StyledArticlePinPanel = styled.div`
   border-top: 1px solid #eceef1;

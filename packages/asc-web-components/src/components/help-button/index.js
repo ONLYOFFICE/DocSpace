@@ -227,7 +227,7 @@ HelpButton.defaultProps = {
   zIndex: 310,
   displayType: "auto",
   className: "icon-button",
-  iconName: "QuestionIcon",
+  iconName: "static/images/question.react.svg",
   color: "#A3A9AE",
 };
 

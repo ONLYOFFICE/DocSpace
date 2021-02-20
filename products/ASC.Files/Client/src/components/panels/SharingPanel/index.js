@@ -483,7 +483,7 @@ class SharingPanelComponent extends React.Component {
                 <div ref={this.ref} className="sharing_panel-drop-down-wrapper">
                   <IconButton
                     size="17"
-                    iconName="PlusIcon"
+                    iconName="static/images/actions.header.touch.react.svg"
                     className="sharing_panel-plus-icon"
                     {...onPlusClickProp}
                     color="A3A9AE"
@@ -510,7 +510,7 @@ class SharingPanelComponent extends React.Component {
 
                 {/*<IconButton
                   size="16"
-                  iconName="KeyIcon"
+                  iconName="images/key.react.svg"
                   onClick={this.onKeyClick}
                 />*/}
               </div>

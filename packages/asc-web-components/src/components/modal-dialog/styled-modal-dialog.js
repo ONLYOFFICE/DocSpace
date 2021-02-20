@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Base } from "../../themes";
-import { Icons } from "../icons";
 import Box from "../box";
+import CrossSidebarIcon from "../../../../../public/images/cross.sidebar.react.svg"
 
 const Dialog = styled.div`
   position: relative;
@@ -44,7 +44,7 @@ const StyledHeader = styled.div`
 `;
 StyledHeader.defaultProps = { theme: Base };
 
-const CloseButton = styled(Icons.CrossSidebarIcon)`
+const CloseButton = styled(CrossSidebarIcon)`
   cursor: pointer;
   position: absolute;
 

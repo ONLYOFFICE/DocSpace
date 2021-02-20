@@ -2,8 +2,12 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import styled from "styled-components";
-import { Icons, Badge } from "@appserver/components";
+import { Badge } from "@appserver/components";
 import { canWebEdit, canConvert } from "../../../../../store/files/selectors";
+import FileActionsConvertEditDocIcon from "../../../../../../public/images/file.actions.convert.edit.doc.react.svg";
+import FileActionsLockedIcon from "../../../../../../public/images/file.actions.locked.react.svg";
+import AccessEditIcon from "../../../../../../public/images/access.edit.react.svg";
+import FileActionsConvertIcon from "../../../../../../public/images/access.edit.react.svg";
 
 const StyledBadgesFileTile = styled.div`
   display: flex;
@@ -26,7 +30,7 @@ class BadgesFileTile extends React.PureComponent {
     return (
       <StyledBadgesFileTile>
         {canConvert && (
-          <Icons.FileActionsConvertIcon
+          <FileActionsConvertIcon
             className="badge"
             size="small"
             isfill={true}
@@ -34,7 +38,7 @@ class BadgesFileTile extends React.PureComponent {
           />
         )}
         {canWebEdit && (
-          <Icons.AccessEditIcon
+          <AccessEditIcon
             className="badge"
             size="small"
             isfill={true}
@@ -42,7 +46,7 @@ class BadgesFileTile extends React.PureComponent {
           />
         )}
         {fileStatus === 1 && (
-          <Icons.FileActionsConvertEditDocIcon
+          <FileActionsConvertEditDocIcon
             className="badge"
             size="small"
             isfill={true}
@@ -50,7 +54,7 @@ class BadgesFileTile extends React.PureComponent {
           />
         )}
         {false && (
-          <Icons.FileActionsLockedIcon
+          <FileActionsLockedIcon
             className="badge"
             size="small"
             isfill={true}

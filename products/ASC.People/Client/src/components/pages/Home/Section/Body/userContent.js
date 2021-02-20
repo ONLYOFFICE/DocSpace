@@ -4,12 +4,13 @@ import {
   RowContent,
   Link,
   LinkWithDropdown,
-  Icons,
   Text,
   Box,
 } from "@appserver/components/src";
 import { connect } from "react-redux";
 
+import SendClockIcon from "../../../../../../public/images/send.clock.react.svg";
+import CatalogSpamIcon from "../../../../../../public/images/catalog.spam.react.svg";
 const getFormattedGroups = (user, selectGroup) => {
   let temp = [];
   const groups = user.groups;
@@ -113,10 +114,10 @@ const UserContent = ({
       </Link>
       <>
         {statusType === "pending" && (
-          <Icons.SendClockIcon size="small" isfill={true} color="#3B72A7" />
+          <SendClockIcon size="small" isfill={true} color="#3B72A7" />
         )}
         {statusType === "disabled" && (
-          <Icons.CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
+          <CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
         )}
       </>
       {title ? (

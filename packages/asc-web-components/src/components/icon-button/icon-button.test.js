@@ -5,7 +5,7 @@ import IconButton from ".";
 const baseProps = {
   size: "25",
   isDisabled: false,
-  iconName: "SearchIcon",
+  iconName: "static/images/search.react.svg",
   isFill: true,
 };
 

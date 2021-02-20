@@ -25,13 +25,17 @@ storiesOf("Components|Row", module)
     const elementComboBox = (
       <ComboBox
         options={[
-          { key: 1, icon: "ItemActiveIcon", label: "Open" },
+          {
+            key: 1,
+            icon: "static/images/item.active.react.svg",
+            label: "Open",
+          },
           { key: 2, icon: "CheckIcon", label: "Closed" },
         ]}
         onSelect={(option) => console.log(option)}
         selectedOption={{
           key: 0,
-          icon: "ItemActiveIcon",
+          icon: "static/images/item.active.react.svg",
           label: "",
         }}
         scaled={false}

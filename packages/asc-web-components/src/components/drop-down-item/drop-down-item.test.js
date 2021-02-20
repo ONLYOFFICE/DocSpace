@@ -8,7 +8,7 @@ const baseProps = {
   tabIndex: -1,
   label: "test",
   disabled: false,
-  icon: "NavLogoIcon",
+  icon: "static/images/nav.logo.react.svg",
   noHover: false,
   onClick: jest.fn(),
 };

@@ -5,14 +5,11 @@ import { withTranslation } from "react-i18next";
 import TreeMenu from "@appserver/components/src/components/tree-menu";
 import TreeNode from "@appserver/components/src/components/tree-menu/sub-components/tree-node";
 import { Icons } from "@appserver/components/src/components/icons";
-import {
-  ExpanderDownIcon,
-  ExpanderRightIcon,
-} from "@appserver/components/src/components/icons/svg";
+import ExpanderDownIcon from "../../../../../../../../../public/images/expander-down.react.svg"
 import Link from "@appserver/components/src/components/link";
 import Text from "@appserver/components/src/components/text";
 import { isArrayEqual } from "@appserver/components/src/utils/array";
-
+import ExpanderRightIcon from "../../../../../../../../../public/images/expander-right.react.svg"
 import {
   getKeyByLink,
   settingsTree,
@@ -20,6 +17,7 @@ import {
   selectKeyOfTreeElement,
   getCurrentSettingsCategory,
 } from "../../../utils";
+import { ReactSVG } from "react-svg";
 
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
@@ -49,12 +47,17 @@ const getTreeItems = (data, path, t) => {
           }
           key={item.key}
           icon={
-            item.icon &&
-            React.createElement(Icons[item.icon], {
-              size: "scale",
-              isfill: true,
-              color: "dimgray",
-            })
+            // item.icon &&
+            // React.createElement(Icons[item.icon], {
+            //   size: "scale",
+            //   isfill: true,
+            //   color: "dimgray",
+            // })
+            item.icon && <ReactSVG src={item.icon}  beforeInjection={(svg) => {
+              svg
+              .querySelector("path")
+              .setAttribute("fill", "dimgray");
+            }}/>
           }
           disableSwitch={true}
         >
@@ -72,12 +75,13 @@ const getTreeItems = (data, path, t) => {
           </Link>
         }
         icon={
-          item.icon &&
-          React.createElement(Icons[item.icon], {
-            size: "scale",
-            isfill: true,
-            color: "dimgray",
-          })
+          // item.icon &&
+          // React.createElement(Icons[item.icon], {
+          //   size: "scale",
+          //   isfill: true,
+          //   color: "dimgray",
+          // })
+          item.icon && <ReactSVG src={item.icon}/>
         }
         disableSwitch={true}
       />

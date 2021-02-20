@@ -75,7 +75,7 @@ const sectionHeaderContent = (
     />
     <Headline type="content">Section Header</Headline>
     <IconButton
-      iconName={"PlusIcon"}
+      iconName={"static/images/actions.header.touch.react.svg"}
       size="16"
       onClick={(e) => action("PlusIcon Clicked")(e)}
     />

@@ -2,7 +2,6 @@ import {
   Button,
   ComboBox,
   FieldContainer,
-  Icons,
   SearchInput,
   SelectedItem,
   TextInput,
@@ -28,7 +27,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-
+import CatalogGuestIcon from "../../../../../../public/images/catalog.guest.react.svg";
 const {
   getCurrentProductName,
   getSettings,
@@ -348,7 +347,7 @@ class SectionBodyContent extends React.Component {
                 toggleAction={this.onHeadSelectorClick}
                 displayType="toggle"
               >
-                <Icons.CatalogGuestIcon size="medium" />
+                <CatalogGuestIcon size="medium" />
               </ComboBox>
               <PeopleSelector
                 isOpen={isHeadSelectorOpen}
@@ -383,7 +382,7 @@ class SectionBodyContent extends React.Component {
                 toggleAction={this.onUsersSelectorClick}
                 displayType="toggle"
               >
-                <Icons.CatalogGuestIcon size="medium" />
+                <CatalogGuestIcon size="medium" />
               </ComboBox>
               <PeopleSelector
                 isOpen={isUsersSelectorOpen}

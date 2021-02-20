@@ -12,7 +12,7 @@ const baseData = () => [
 
 const baseProps = {
   title: "Actions",
-  iconName: "VerticalDotsIcon",
+  iconName: "static/images/vertical-dots.react.svg",
   size: 16,
   color: "#A3A9AE",
   getData: baseData,

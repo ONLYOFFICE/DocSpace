@@ -13,7 +13,7 @@ import { DropDownItem } from "@appserver/components";
   isSeparator={false}
   isHeader={false}
   label="Button 1"
-  icon="NavLogoIcon"
+  icon="static/images/nav.logo.react.svg"
   onClick={() => console.log("Button 1 clicked")}
 />
 ```

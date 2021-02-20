@@ -6,8 +6,7 @@ import { withKnobs, text } from "@storybook/addon-knobs/react";
 import { action } from "@storybook/addon-actions";
 import EmptyScreenContainer from ".";
 import Link from "../link";
-import { Icons } from "../icons";
-
+import CrossIcon from "../../../../../public/images/cross.react.svg"
 storiesOf("Components| EmptyScreenContainer", module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
@@ -29,7 +28,7 @@ storiesOf("Components| EmptyScreenContainer", module)
       )}
       buttons={
         <>
-          <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
+          <CrossIcon size="small" style={{ marginRight: "4px" }} />
           <Link
             type="action"
             isHovered={true}

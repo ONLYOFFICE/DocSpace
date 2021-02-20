@@ -12,7 +12,10 @@ import ModuleTile from "./ModuleTile";
 import { changeLanguage, tryRedirectTo } from "@appserver/common/src/utils";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
-
+import { ReactSVG } from "react-svg";
+import { IconButton } from "@appserver/components/src";
+import ContextMenuButton from "@appserver/components/src/components/context-menu-button";
+import ExpanderDownIcon from "../../../../../../public/images/expander-down.react.svg"
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home",
@@ -74,7 +77,12 @@ Tiles.propTypes = {
   modules: PropTypes.array.isRequired,
   isPrimary: PropTypes.bool.isRequired,
 };
-
+const iconStyle = {
+  width: "20px",
+  height: "20px",
+  minWidth: "20px",
+  minHeight: "20px",
+};
 const Body = ({ modules, match, isLoaded }) => {
   const { t } = useTranslation("translation", { i18n });
   const { error } = match.params;
@@ -87,6 +95,7 @@ const Body = ({ modules, match, isLoaded }) => {
     changeLanguage(i18n);
   }, []);
 
+  console.log("!!")
   return !isLoaded ? (
     <></>
   ) : (
@@ -94,11 +103,19 @@ const Body = ({ modules, match, isLoaded }) => {
       <Tiles modules={modules} isPrimary={true} />
       <Tiles modules={modules} isPrimary={false} />
 
-      {!modules || !modules.length ? (
-        <Text className="home-error-text" fontSize="14px" color="#c30">
-          {t("NoOneModulesAvailable")}
-        </Text>
-      ) : null}
+      {/* <IconButton iconName={"static/images/cross.react.svg"} /> */}
+      {/* <ContextMenuButton
+        className="action-button"
+        directionX="right"
+        title={t("Actions")}
+        //iconName="static/images/cross.react.svg"
+        size={17}
+        color="#A3A9AE"
+        //getData={getContextOptionsGroup}
+        isDisabled={false}
+      /> */}
+
+      {/* <ExpanderDownIcon color="#A3A9AE" isfill={true} size="scale" style={iconStyle}/> */}
     </HomeContainer>
   );
 };

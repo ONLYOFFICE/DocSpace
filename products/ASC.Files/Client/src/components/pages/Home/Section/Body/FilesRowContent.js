@@ -7,10 +7,15 @@ import {
   RowContent,
   Link,
   Text,
-  Icons,
   IconButton,
   Badge,
 } from "@appserver/components";
+
+import FavoriteIcon from "../../../../../../public/images/favorite.react.svg";
+import FileActionsConvertEditDocIcon from "../../../../../../public/images/file.actions.convert.edit.doc.react.svg";
+import FileActionsLockedIcon from "../../../../../../public/images/file.actions.locked.react.svg";
+import CheckIcon from "../../../../../../public/images/check.react.svg";
+import CrossIcon from "../../../../../../../../../public/images/cross.react.svg";
 import { constants, api, toastr, store as initStore } from "@appserver/common";
 import {
   clearSecondaryProgressData,
@@ -93,7 +98,7 @@ const SimpleFilesRowContent = styled(RowContent)`
 `;
 
 const okIcon = (
-  <Icons.CheckIcon
+  <CheckIcon
     className="edit-ok-icon"
     size="scale"
     isfill={true}
@@ -103,7 +108,7 @@ const okIcon = (
 );
 
 const cancelIcon = (
-  <Icons.CrossIcon
+  <CrossIcon
     className="edit-cancel-icon"
     size="scale"
     isfill={true}
@@ -616,7 +621,7 @@ class FilesRowContent extends React.PureComponent {
                 {canWebEdit && !isTrashFolder && (
                   <IconButton
                     onClick={this.onFilesClick}
-                    iconName="AccessEditIcon"
+                    iconName="images/access.edit.react.svg"
                     className="badge"
                     size="small"
                     isfill={true}
@@ -625,7 +630,7 @@ class FilesRowContent extends React.PureComponent {
                   />
                 )}
                 {fileStatus === 32 && !isTrashFolder && (
-                  <Icons.FavoriteIcon
+                  <FavoriteIcon
                     className="favorite"
                     size="small"
                     data-action="remove"
@@ -635,7 +640,7 @@ class FilesRowContent extends React.PureComponent {
                   />
                 )}
                 {fileStatus === 1 && (
-                  <Icons.FileActionsConvertEditDocIcon
+                  <FileActionsConvertEditDocIcon
                     className="badge"
                     size="small"
                     isfill={true}
@@ -643,7 +648,7 @@ class FilesRowContent extends React.PureComponent {
                   />
                 )}
                 {locked && (
-                  <Icons.FileActionsLockedIcon
+                  <FileActionsLockedIcon
                     className="badge lock-file"
                     size="small"
                     isfill={true}

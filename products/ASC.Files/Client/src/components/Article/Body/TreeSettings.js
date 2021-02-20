@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { history, utils, store as initStore } from "@appserver/common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
-
+import SettingsIcon from "../../../../../../../public/images/settings.react.svg";
 import {
   setSelectedNode,
   setExpandSettingsTree,
@@ -21,6 +21,8 @@ import {
   getEnableThirdParty,
   getSelectedTreeNode,
 } from "../../../store/files/selectors";
+import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
+import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
 const { isAdmin } = initStore.auth.selectors;
 
 const i18n = createI18N({
@@ -101,9 +103,9 @@ const PureTreeSettings = ({
       return null;
     }
     if (obj.expanded) {
-      return <Icons.ExpanderDownIcon size="scale" isfill color="dimgray" />;
+      return <ExpanderDownIcon size="scale" isfill color="dimgray" />;
     } else {
-      return <Icons.ExpanderRightIcon size="scale" isfill color="dimgray" />;
+      return <ExpanderRightIcon size="scale" isfill color="dimgray" />;
     }
   };
 
@@ -136,7 +138,7 @@ const PureTreeSettings = ({
         key="settings"
         title={t("TreeSettingsMenuTitle")}
         isLeaf={false}
-        icon={<Icons.SettingsIcon size="scale" isfill color="dimgray" />}
+        icon={<SettingsIcon size="scale" isfill color="dimgray" />}
       >
         <TreeNode
           className="settings-node"

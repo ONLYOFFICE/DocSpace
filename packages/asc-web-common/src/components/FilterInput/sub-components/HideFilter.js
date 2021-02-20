@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import DropDown from "@appserver/components/src/components/drop-down";
-import { ExpanderDownIcon } from "@appserver/components/src/components/icons/svg";
 
+import ExpanderDownIcon from "../../../../../../public/images/expander-down.react.svg";
 import { Caret, StyledHideFilterButton } from "../StyledFilterInput";
 
 class HideFilter extends React.Component {

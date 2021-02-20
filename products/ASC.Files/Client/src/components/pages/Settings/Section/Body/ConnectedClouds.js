@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Icons } from "@appserver/components";
+
 import ModalDialog from "@appserver/components/src/components/modal-dialog";
 import Button from "@appserver/components/src/components/button";
 import Text from "@appserver/components/src/components/text";
@@ -42,6 +42,16 @@ import {
   getFilter,
 } from "../../../../../store/files/selectors";
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
+import BoxIcon from "../../../../../../public/images/icon_box.react.svg";
+import DropBoxIcon from "../../../../../../public/images/icon_dropbox.react.svg";
+import GoogleDriveIcon from "../../../../../../public/images/icon_google_drive.react.svg";
+import KDriveIcon from "../../../../../../public/images/icon_kdrive.react.svg";
+import NextCloudIcon from "../../../../../../public/images/icon_nextcloud.react.svg";
+import OneDriveIcon from "../../../../../../public/images/icon_onedrive.react.svg";
+import OwnCloudIcon from "../../../../../../public/images/icon_owncloud.react.svg";
+import SharePointIcon from "../../../../../../public/images/icon_sharepoint.react.svg";
+import WebDavIcon from "../../../../../../public/images/icon_webdav.react.svg";
+import YandexDiskIcon from "./../../../../../public/images/icon_yandex_disk.react.svg";
 
 const { isAdmin } = store.auth.selectors;
 
@@ -227,28 +237,28 @@ class ConnectClouds extends React.Component {
   getThirdPartyIcon = (iconName) => {
     switch (iconName) {
       case "Box":
-        return <Icons.BoxIcon size="big" />;
+        return <BoxIcon size="big" />;
       case "DropboxV2":
-        return <Icons.DropBoxIcon size="big" />;
+        return <DropBoxIcon size="big" />;
       case "GoogleDrive":
-        return <Icons.GoogleDriveIcon size="big" />;
+        return <GoogleDriveIcon size="big" />;
       case "OneDrive":
-        return <Icons.OneDriveIcon size="big" />;
+        return <OneDriveIcon size="big" />;
       case "SharePoint":
-        return <Icons.SharePointIcon size="big" />;
+        return <SharePointIcon size="big" />;
       case "kDrive":
-        return <Icons.KDriveIcon size="big" />;
+        return <KDriveIcon size="big" />;
       case "Yandex":
-        return <Icons.YandexDiskIcon size="big" />;
+        return <YandexDiskIcon size="big" />;
       /*--------------------------------------------*/
       case "OwnCloud":
-        return <Icons.OwnCloudIcon size="big" />;
+        return <OwnCloudIcon size="big" />;
       case "NextCloud":
-        return <Icons.NextCloudIcon size="big" />;
+        return <NextCloudIcon size="big" />;
       case "OneDriveForBusiness":
-        return <Icons.OneDriveIcon size="big" />;
+        return <OneDriveIcon size="big" />;
       case "WebDav":
-        return <Icons.WebDavIcon size="big" />;
+        return <WebDavIcon size="big" />;
 
       default:
         return;

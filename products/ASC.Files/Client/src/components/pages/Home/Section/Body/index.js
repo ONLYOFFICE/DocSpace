@@ -797,7 +797,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("Open"),
-            icon: "CatalogFolderIcon",
+            icon: "static/images/catalog.folder.react.svg",
             onClick: this.onOpenLocation,
             disabled: false,
           };
@@ -805,7 +805,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("ShowVersionHistory"),
-            icon: "HistoryIcon",
+            icon: "images/history.react.svg",
             onClick: this.showVersionHistory,
             disabled: false,
             "data-id": item.id,
@@ -814,7 +814,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("FinalizeVersion"),
-            icon: "HistoryFinalizedIcon",
+            icon: "images/history-finalized.react.svg",
             onClick: this.finalizeVersion,
             disabled: false,
             "data-id": item.id,
@@ -829,7 +829,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("OpenLocation"),
-            icon: "DownloadAsIcon",
+            icon: "images/download-as.react.svg",
             onClick: this.onOpenLocation,
             disabled: false,
           };
@@ -837,7 +837,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("MarkAsFavorite"),
-            icon: "FavoritesIcon",
+            icon: "images/favorites.react.svg",
             onClick: this.onClickFavorite,
             disabled: false,
             "data-action": "mark",
@@ -848,7 +848,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("UnblockVersion"),
-            icon: "LockIcon",
+            icon: "images/lock.react.svg",
             onClick: this.lockFile,
             disabled: false,
           };
@@ -856,7 +856,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("SharingSettings"),
-            icon: "CatalogSharedIcon",
+            icon: "images/catalog.shared.react.svg",
             onClick: this.onClickShare,
             disabled: isSharable,
           };
@@ -864,14 +864,14 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("SendByEmail"),
-            icon: "MailIcon",
+            icon: "static/images/mail.react.svg",
             disabled: true,
           };
         case "owner-change":
           return {
             key: option,
             label: t("ChangeOwner"),
-            icon: "CatalogUserIcon",
+            icon: "images/catalog.user.react.svg",
             onClick: this.onOwnerChange,
             disabled: false,
           };
@@ -879,7 +879,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("LinkForPortalUsers"),
-            icon: "InvitationLinkIcon",
+            icon: "static/images/invitation.link.react.svg",
             onClick: this.onClickLinkForPortal,
             disabled: false,
           };
@@ -887,7 +887,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("Edit"),
-            icon: "AccessEditIcon",
+            icon: "images/access.edit.react.svg",
             onClick: this.onClickLinkEdit,
             disabled: false,
             "data-id": item.id,
@@ -897,7 +897,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("Preview"),
-            icon: "EyeIcon",
+            icon: "static/images/eye.react.svg",
             onClick: this.onClickLinkEdit,
             disabled: true,
             "data-id": item.id,
@@ -907,7 +907,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("View"),
-            icon: "EyeIcon",
+            icon: "static/images/eye.react.svg",
             onClick: this.onMediaFileClick,
             disabled: false,
           };
@@ -915,7 +915,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("Download"),
-            icon: "DownloadIcon",
+            icon: "images/download.react.svg",
             onClick: this.onClickDownload,
             disabled: false,
           };
@@ -923,7 +923,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("MoveTo"),
-            icon: "MoveToIcon",
+            icon: "images/move.react.svg",
             onClick: this.onMoveAction,
             disabled: false,
           };
@@ -931,7 +931,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("Copy"),
-            icon: "CopyIcon",
+            icon: "static/images/copy.react.svg",
             onClick: this.onCopyAction,
             disabled: false,
           };
@@ -939,7 +939,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("Duplicate"),
-            icon: "CopyIcon",
+            icon: "static/images/copy.react.svg",
             onClick: this.onDuplicate,
             disabled: false,
           };
@@ -947,7 +947,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("Rename"),
-            icon: "RenameIcon",
+            icon: "images/rename.react.svg",
             onClick: this.onClickRename,
             disabled: false,
           };
@@ -956,7 +956,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("ThirdPartyInfo"),
-            icon: "AccessEditIcon",
+            icon: "images/access.edit.react.svg",
             onClick: this.onChangeThirdPartyInfo,
             disabled: false,
             "data-provider-key": item.providerKey,
@@ -966,7 +966,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
-            icon: "CatalogTrashIcon",
+            icon: "static/images/catalog.trash.react.svg",
             onClick: this.onClickDelete,
             disabled: false,
             "data-is-third-party": isThirdPartyFolder ? true : false,
@@ -977,7 +977,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("RemoveFromFavorites"),
-            icon: "FavoritesIcon",
+            icon: "images/favorites.react.svg",
             onClick: this.onClickFavorite,
             disabled: false,
             "data-action": "remove",
@@ -1339,7 +1339,7 @@ class SectionBodyContent extends React.Component {
           className="empty-folder_container-icon"
           size="12"
           onClick={this.onResetFilter}
-          iconName="CrossIcon"
+          iconName="static/images/cross.react.svg"
           isFill
           color="#657077"
         />
@@ -1750,7 +1750,7 @@ class SectionBodyContent extends React.Component {
           color={color}
           hoverColor="#657077"
           size={18}
-          iconName="CatalogSharedIcon"
+          iconName="images/catalog.shared.react.svg"
         />
         {this.props.t("Share")}
       </Text>

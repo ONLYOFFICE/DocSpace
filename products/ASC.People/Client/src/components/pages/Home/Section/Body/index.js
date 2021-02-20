@@ -516,7 +516,7 @@ class SectionBodyContent extends React.PureComponent {
                 className="empty-folder_container-icon"
                 size="12"
                 onClick={this.onResetFilter}
-                iconName="CrossIcon"
+                iconName="static/images/cross.react.svg"
                 isFill
                 color="#657077"
               />

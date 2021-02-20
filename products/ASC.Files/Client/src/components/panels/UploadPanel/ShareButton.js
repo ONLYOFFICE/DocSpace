@@ -1,5 +1,5 @@
 import React from "react";
-import  IconButton  from "@appserver/components/src/components/icon-button";
+import IconButton from "@appserver/components/src/components/icon-button";
 import { connect } from "react-redux";
 import {
   setSharingPanelVisible,
@@ -34,7 +34,7 @@ const ShareButton = (props) => {
 
   return (
     <IconButton
-      iconName="CatalogSharedIcon"
+      iconName="images/catalog.shared.react.svg"
       className="upload_panel-icon"
       color={color}
       isClickable

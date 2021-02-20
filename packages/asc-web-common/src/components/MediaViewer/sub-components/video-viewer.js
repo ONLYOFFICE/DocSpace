@@ -9,13 +9,11 @@ import Duration from "./duration";
 import Progress from "./progress";
 
 import styled from "styled-components";
-import {
-  MediaPauseIcon,
-  MediaPlayIcon,
-  MediaFullScreenIcon,
-  MediaMuteOffIcon,
-  MediaMuteIcon,
-} from "@appserver/components/src/components/icons/svg";
+import MediaPauseIcon from "../../../../../../public/images/media.pause.react.svg";
+import MediaPlayIcon from "../../../../../../public/images/media.play.react.svg";
+import MediaFullScreenIcon from "../../../../../../public/images/media.fullscreen.react.svg";
+import MediaMuteIcon from "../../../../../../public/images/media.mute.react.svg";
+import MediaMuteOffIcon from "../../../../../../public/images/media.muteoff.react.svg";
 
 const controlsHeight = 40;
 const StyledControls = styled.div`

@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import equal from "fast-deep-equal/react";
 
 import Text from "../text";
-import { Icons } from "../icons";
 import StyledSocialButton from "./styled-social-button";
+import { ReactSVG } from "react-svg";
 // eslint-disable-next-line no-unused-vars
 
 class SocialButton extends React.Component {
@@ -16,8 +16,7 @@ class SocialButton extends React.Component {
     const { label, iconName } = this.props;
     return (
       <StyledSocialButton {...this.props}>
-        {React.createElement(Icons[iconName], {})}
-
+        <ReactSVG src={iconName} />
         {label && (
           <Text as="span" className="social_button_text">
             {label}

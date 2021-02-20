@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Icons } from "../../icons";
+
 import Text from "../../text";
 import {
   StyledArrowIcon,
@@ -10,6 +10,7 @@ import {
   StyledComboButton,
 } from "./styled-combobutton";
 
+import ExpanderDownIcon from "../../../../../../public/images/expander-down.react.svg";
 class ComboButton extends React.Component {
   render() {
     const {
@@ -78,7 +79,7 @@ class ComboButton extends React.Component {
           className="combo-buttons_arrow-icon"
         >
           {(withOptions || withAdvancedOptions) && (
-            <Icons.ExpanderDownIcon
+            <ExpanderDownIcon
               size="scale"
               className="combo-buttons_expander-icon"
             />

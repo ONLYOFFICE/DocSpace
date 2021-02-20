@@ -1,13 +1,9 @@
 import React from "react";
-import {
-  Row,
-  LinkWithDropdown,
-  ToggleButton,
-  Icons,
-} from "@appserver/components";
+import { Row, LinkWithDropdown, ToggleButton } from "@appserver/components";
 import { StyledLinkRow } from "../StyledPanels";
 import AccessComboBox from "./AccessComboBox";
 import constants from "@appserver/common/src/constants";
+import AccessEditIcon from "../../../../public/images/access.edit.react.svg";
 
 const { ShareAccessRights } = constants;
 
@@ -52,7 +48,7 @@ class LinkRow extends React.Component {
                 isDisabled={isDisabled}
               />
             ) : (
-              <Icons.AccessEditIcon
+              <AccessEditIcon
                 size="medium"
                 className="sharing_panel-owner-icon"
               />

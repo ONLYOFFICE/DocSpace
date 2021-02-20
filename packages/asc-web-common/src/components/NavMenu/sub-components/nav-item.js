@@ -4,11 +4,9 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
 import Badge from "@appserver/components/src/components/badge";
-//import Icons from "@appserver/components/src/components/icons";
 import Link from "@appserver/components/src/components/link";
 import Text from "@appserver/components/src/components/text";
-
-import { MenuIcon } from "@appserver/components/src/components/icons/svg";
+import MenuIcon from "../../../../../../public/images/menu.react.svg";
 
 const baseColor = "#7A95B0",
   activeColor = "#FFFFFF",
@@ -111,7 +109,7 @@ const NavItem = React.memo((props) => {
       ) : (
         <>
           <VersionBadge>BETA</VersionBadge>
-        <MenuIcon color={color} size="big" isfill={true} />
+          <MenuIcon color={color} size="big" isfill={true} />
         </>
       )}
       {children && (

@@ -441,7 +441,7 @@ class SectionHeaderContent extends React.PureComponent {
             className="action-button"
             directionX="right"
             title={t("Actions")}
-            iconName="VerticalDotsIcon"
+            iconName="static/images/vertical-dots.react.svg"
             size={17}
             color="#A3A9AE"
             getData={contextOptions}

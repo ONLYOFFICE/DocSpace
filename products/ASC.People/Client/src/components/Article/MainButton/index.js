@@ -61,34 +61,34 @@ class PureArticleMainButtonContent extends React.Component {
       <>
         <MainButton isDisabled={false} isDropdown={true} text={t("Actions")}>
           <DropDownItem
-            icon="AddEmployeeIcon"
+            icon="images/add.employee.react.svg"
             label={userCaption}
             onClick={this.goToEmployeeCreate}
           />
           <DropDownItem
-            icon="AddGuestIcon"
+            icon="images/add.guest.react.svg"
             label={guestCaption}
             onClick={this.goToGuestCreate}
           />
           <DropDownItem
-            icon="AddDepartmentIcon"
+            icon="images/add.department.react.svg"
             label={groupCaption}
             onClick={this.goToGroupCreate}
           />
           <DropDownItem isSeparator />
           <DropDownItem
-            icon="InvitationLinkIcon"
+            icon="static/images/invitation.link.react.svg"
             label={t("InviteLinkTitle")}
             onClick={this.onInvitationDialogClick}
           />
           {/* <DropDownItem
-              icon="PlaneIcon"
+              icon="images/plane.react.svg"
               label={t('LblInviteAgain')}
               onClick={this.onNotImplementedClick.bind(this, "Invite again action")}
             /> */}
           {false && (
             <DropDownItem
-              icon="ImportIcon"
+              icon="images/import.react.svg"
               label={t("ImportPeople")}
               onClick={this.onDropDownItemClick.bind(
                 this,

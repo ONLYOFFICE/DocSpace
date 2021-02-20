@@ -5,7 +5,7 @@ import SocialButton from ".";
 describe("<SocialButton />", () => {
   it("renders without error", () => {
     const wrapper = mount(
-      <SocialButton iconName={"ShareGoogleIcon"} label={"Test Caption"} />
+      <SocialButton iconName={"static/images/share.google.react.svg"} label={"Test Caption"} />
     );
 
     expect(wrapper).toExist();
@@ -15,7 +15,7 @@ describe("<SocialButton />", () => {
     // const onClick= () => alert('SocialButton clicked');
 
     const wrapper = shallow(
-      <SocialButton iconName={"ShareGoogleIcon"} label={"Test Caption"} />
+      <SocialButton iconName={"static/images/share.google.react.svg"} label={"Test Caption"} />
     ).instance();
 
     const shouldUpdate = wrapper.shouldComponentUpdate(wrapper.props);
@@ -28,7 +28,7 @@ describe("<SocialButton />", () => {
 
     const wrapper = mount(
       <SocialButton
-        iconName={"ShareGoogleIcon"}
+        iconName={"static/images/share.google.react.svg"}
         label={"Test Caption"}
         onClick={testClick}
         isDisabled={true}
@@ -45,7 +45,7 @@ describe("<SocialButton />", () => {
 
     const wrapper = mount(
       <SocialButton
-        iconName={"ShareGoogleIcon"}
+        iconName={"static/images/share.google.react.svg"}
         label={"Test Caption"}
         onClick={testClick}
         isDisabled={false}
@@ -59,7 +59,7 @@ describe("<SocialButton />", () => {
 
   it("accepts id", () => {
     const wrapper = mount(
-      <SocialButton iconName={"ShareGoogleIcon"} id="testId" />
+      <SocialButton iconName={"static/images/share.google.react.svg"} id="testId" />
     );
 
     expect(wrapper.prop("id")).toEqual("testId");
@@ -67,7 +67,7 @@ describe("<SocialButton />", () => {
 
   it("accepts className", () => {
     const wrapper = mount(
-      <SocialButton iconName={"ShareGoogleIcon"} className="test" />
+      <SocialButton iconName={"ShareGoogleIcostatic/images/share.google.react.svgn"} className="test" />
     );
 
     expect(wrapper.prop("className")).toEqual("test");
@@ -75,7 +75,7 @@ describe("<SocialButton />", () => {
 
   it("accepts style", () => {
     const wrapper = mount(
-      <SocialButton iconName={"ShareGoogleIcon"} style={{ color: "red" }} />
+      <SocialButton iconName={"static/images/share.google.react.svg"} style={{ color: "red" }} />
     );
 
     expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");

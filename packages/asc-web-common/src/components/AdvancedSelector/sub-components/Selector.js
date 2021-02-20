@@ -319,7 +319,7 @@ const Selector = (props) => {
             <HelpButton
               id={`info-${option.key}`}
               className="option-info"
-              iconName="InfoIcon"
+              iconName="static/images/info.react.svg"
               color="#D8D8D8"
               getContent={getOptionTooltipContent}
               place="top"
@@ -348,7 +348,7 @@ const Selector = (props) => {
             <HelpButton
               id={`info-${option.key}`}
               className="option-info"
-              iconName="InfoIcon"
+              iconName="static/images/info.react.svg"
               color="#D8D8D8"
               getContent={getOptionTooltipContent}
               place="top"

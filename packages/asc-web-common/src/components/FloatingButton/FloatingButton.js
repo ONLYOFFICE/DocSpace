@@ -7,15 +7,12 @@ import {
   StyledCircle,
 } from "./StyledFloatingButton";
 
-import {
-  ButtonUploadIcon,
-  ButtonFileIcon,
-  ButtonTrashIcon,
-  ButtonMoveIcon,
-  ButtonDuplicateIcon,
-  ButtonAlertIcon,
-} from "@appserver/components/src/components/icons/svg";
-
+import ButtonUploadIcon from "../../../../../public/images/button.upload.react.svg"
+import ButtonFileIcon from "../../../../../public/images/button.file.react.svg"
+import ButtonTrashIcon from "../../../../../public/images/button.trash.react.svg"
+import ButtonMoveIcon from "../../../../../public/images/button.move.react.svg"
+import ButtonDuplicateIcon from "../../../../../public/images/button.duplicate.react.svg"
+import ButtonAlertIcon from "../../../../../public/images/button.alert.react.svg"
 const FloatingButton = ({ id, className, style, ...rest }) => {
   const { icon, alert, percent, onClick } = rest;
 

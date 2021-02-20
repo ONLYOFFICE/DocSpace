@@ -1,15 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Viewer from "react-viewer";
-import {
-  MediaZoomInIcon,
-  MediaZoomOutIcon,
-  MediaResetIcon,
-  MediaRotateLeftIcon,
-  MediaRotateRightIcon,
-  MediaDeleteIcon,
-  MediaDownloadIcon,
-} from "@appserver/components/src/components/icons/svg";
+import MediaZoomInIcon from "../../../../../../public/images/media.zoomin.react.svg";
+import MediaZoomOutIcon from "../../../../../../public/images/media.zoomout.react.svg";
+import MediaRotateLeftIcon from "../../../../../../public/images/media.rotateleft.react.svg";
+import MediaRotateRightIcon from "../../../../../../public/images/media.rotateright.react.svg";
+import MediaResetIcon from "../../../../../../public/images/media.reset.react.svg";
+import MediaDeleteIcon from "../../../../../../public/images/media.delete.react.svg";
+import MediaDownloadIcon from "../../../../../../public/images/media.download.react.svg";
 import styled from "styled-components";
 import MediaScrollButton from "./scroll-button";
 import ControlBtn from "./control-btn";

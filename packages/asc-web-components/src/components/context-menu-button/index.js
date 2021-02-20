@@ -269,7 +269,7 @@ ContextMenuButton.defaultProps = {
   opened: false,
   data: [],
   title: "",
-  iconName: "VerticalDotsIcon",
+  iconName: "static/images/vertical-dots.react.svg",
   size: 16,
   isDisabled: false,
   directionX: "left",

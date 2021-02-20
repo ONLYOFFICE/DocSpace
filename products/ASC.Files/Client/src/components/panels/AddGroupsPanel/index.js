@@ -140,7 +140,7 @@ class AddGroupsPanelComponent extends React.Component {
               </Heading>
               {/*<IconButton
                 size="16"
-                iconName="PlusIcon"
+                iconName="static/images/actions.header.touch.react.svg"
                 className="header_aside-panel-plus-icon"
                 onClick={this.onPLusClick}
               />*/}

@@ -6,7 +6,6 @@ import {
   Textarea,
   Button,
   ModalDialog,
-  Icons,
 } from "@appserver/components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
@@ -20,6 +19,7 @@ import {
 } from "../../../../../store/files/actions";
 import VersionBadge from "./VersionBadge";
 import StyledVersionRow from "./StyledVersionRow";
+import ExternalLinkIcon from "../../../../../../public/images/external.link.react.svg";
 
 const { getLanguage } = store.auth.selectors;
 
@@ -113,7 +113,7 @@ const VersionRow = (props) => {
             {title}
           </Link>
           <Link className="icon-link" onClick={onOpenFile}>
-            <Icons.ExternalLinkIcon color="#333333" size="scale" />
+            <ExternalLinkIcon color="#333333" size="scale" />
           </Link>
           <Text
             className="version_content-length"
@@ -185,21 +185,21 @@ const VersionRow = (props) => {
 
           <div className="version_links-container">
             {canEdit && (
-          <Link
-            onClick={onRestoreClick}
-            {...linkStyles}
-            className="version_link-action"
-          >
-            {t("Restore")}
-          </Link>
+              <Link
+                onClick={onRestoreClick}
+                {...linkStyles}
+                className="version_link-action"
+              >
+                {t("Restore")}
+              </Link>
             )}
-          <Link
-            onClick={onDownloadAction}
-            {...linkStyles}
-            className="version_link-action"
-          >
-            {t("Download")}
-          </Link>
+            <Link
+              onClick={onDownloadAction}
+              {...linkStyles}
+              className="version_link-action"
+            >
+              {t("Download")}
+            </Link>
           </div>
         </Box>
         {showEditPanel && (

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Link, Text, Icons, Badge } from "@appserver/components";
+import { Link, Text, Badge } from "@appserver/components";
 import { constants, api, toastr, store as initStore } from "@appserver/common";
 import {
   createFile,
@@ -37,6 +37,8 @@ import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import TileContent from "./TileContent";
 import { isMobile } from "react-device-detect";
+import CheckIcon from "../../../../../../public/images/check.react.svg";
+import CrossIcon from "../../../../../../../../../public/images/cross.react.svg"
 
 const { FileAction } = constants;
 const { getSettings } = initStore.auth.selectors;
@@ -86,7 +88,7 @@ const SimpleFilesTileContent = styled(TileContent)`
 `;
 
 const okIcon = (
-  <Icons.CheckIcon
+  <CheckIcon
     className="edit-ok-icon"
     size="scale"
     isfill={true}
@@ -95,7 +97,7 @@ const okIcon = (
 );
 
 const cancelIcon = (
-  <Icons.CrossIcon
+  <CrossIcon
     className="edit-cancel-icon"
     size="scale"
     isfill={true}

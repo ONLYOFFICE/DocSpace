@@ -12,7 +12,7 @@ const toModuleWrapper = (item, iconName) => {
   return {
     id: item.id,
     title: item.title,
-    iconName: item.iconName || iconName || "PeopleIcon", //TODO: Change to URL
+    iconName: item.iconName || iconName || "static/images/people.react.svg", //TODO: Change to URL
     iconUrl: item.iconUrl,
     notifications: 0,
     url: item.link,

@@ -16,7 +16,7 @@ import Button from "../button";
 import RadioButton from "../radio-button";
 import DropDownItem from "../drop-down-item";
 import Section from "../../../.storybook/decorators/section";
-
+import NavLogoIcon from "../../../../../public/images/nav.logo.react.svg";
 const iconNames = Object.keys(Icons);
 const sizeOptions = ["base", "middle", "big", "huge", "content"];
 
@@ -29,7 +29,7 @@ storiesOf("Components|Input", module)
     const comboOptions = [
       {
         key: 1,
-        icon: "CatalogEmployeeIcon",
+        icon: "static/images/catalog.employee.react.svg",
         label: "Option 1",
       },
       {
@@ -48,7 +48,7 @@ storiesOf("Components|Input", module)
       },
       {
         key: 5,
-        icon: "CopyIcon",
+        icon: "static/images/copy.react.svg",
         label: "Option 5",
       },
       {
@@ -84,7 +84,7 @@ storiesOf("Components|Input", module)
           children.push(<Button label="button" key={i} />);
           break;
         case "icon":
-          children.push(<Icons.NavLogoIcon size="medium" key={i} />);
+          children.push(<NavLogoIcon size="medium" key={i} />);
           break;
         default:
           break;
@@ -163,7 +163,7 @@ storiesOf("Components|Input", module)
                   size="content"
                   directionX="right"
                 >
-                  <Icons.NavLogoIcon size="medium" key="comboIcon" />
+                  <NavLogoIcon size="medium" key="comboIcon" />
                 </ComboBox>
               </td>
             </tr>

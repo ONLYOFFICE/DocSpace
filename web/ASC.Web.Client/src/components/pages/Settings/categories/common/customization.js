@@ -6,7 +6,7 @@ import Text from "@appserver/components/src/components/text";
 import Loader from "@appserver/components/src/components/loader";
 import toastr from "@appserver/components/src/components/toast/toastr";
 import Link from "@appserver/components/src/components/link";
-import { ArrowRightIcon } from "@appserver/components/src/components/icons/svg";
+import ArrowRightIcon from "../../../../../../public/images/arrow.right.react.svg"
 import { changeLanguage } from "@appserver/common/src/utils";
 import store from "@appserver/common/src/store";
 import {

@@ -13,7 +13,7 @@ import TreeMenu from ".";
 import TreeNode from "./sub-components/tree-node";
 import { Icons } from "../icons";
 import { action } from "@storybook/addon-actions";
-
+import ExpanderDownIcon from "../../../../../public/images/expander-down.react.svg"
 const iconNames = Object.keys(Icons);
 
 const treeData = [
@@ -149,11 +149,11 @@ const TreeMenuStory = (props) => {
     }
     if (obj.expanded) {
       return (
-        <Icons.ExpanderDownIcon
+        <ExpanderDownIcon
           size="scale"
           isfill={true}
           color="dimgray"
-        ></Icons.ExpanderDownIcon>
+        />
       );
     } else {
       return (

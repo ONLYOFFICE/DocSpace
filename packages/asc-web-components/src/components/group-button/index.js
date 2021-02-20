@@ -13,7 +13,7 @@ import {
   StyledDropdownToggle,
   StyledGroupButton,
 } from "./styled-group-button";
-
+import ExpanderDownIcon from "../../../../../public/images/expander-down.react.svg";
 class GroupButton extends React.Component {
   constructor(props) {
     super(props);
@@ -120,7 +120,7 @@ class GroupButton extends React.Component {
             >
               {itemLabel}
               <Caret isOpen={this.state.isOpen}>
-                <Icons.ExpanderDownIcon size="scale" color={color} />
+                <ExpanderDownIcon size="scale" color={color} />
               </Caret>
             </StyledDropdownToggle>
             <DropDown

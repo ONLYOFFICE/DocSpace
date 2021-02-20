@@ -1,24 +1,32 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Icons } from "../icons";
 import Text from "../text";
 import { StyledLabel, HiddenInput } from "./styled-checkbox";
+import CheckboxIndeterminateIcon from "../../../../../public/images/checkbox.indeterminate.react.svg";
+import CheckboxCheckedIcon from "../../../../../public/images/checkbox.checked.react.svg";
+import CheckboxIcon from "../../../../../public/images/checkbox.react.svg";
 
 // eslint-disable-next-line react/prop-types
-const CheckboxIcon = ({ isChecked, isDisabled, isIndeterminate }) => {
-  const iconName = isIndeterminate
-    ? "CheckboxIndeterminateIcon"
-    : isChecked
-    ? "CheckboxCheckedIcon"
-    : "CheckboxIcon";
+const RenderCheckboxIcon = ({ isChecked, isIndeterminate }) => {
+  // let newProps = {
+  //   size: "medium",
+  //   className: "checkbox",
+  // };
 
-  let newProps = {
-    size: "medium",
-    className: "checkbox",
-  };
-  
-  return <>{React.createElement(Icons[iconName], { ...newProps })}</>;
+  // return <>{React.createElement(Icons[iconName], { ...newProps })}</>;
+
+  return (
+    <>
+      {isIndeterminate ? (
+        <CheckboxIndeterminateIcon className="checkbox" />
+      ) : isChecked ? (
+        <CheckboxCheckedIcon className="checkbox" />
+      ) : (
+        <CheckboxIcon className="checkbox" />
+      )}
+    </>
+  );
 };
 
 class Checkbox extends React.Component {
@@ -82,7 +90,7 @@ class Checkbox extends React.Component {
           value={value}
           onChange={this.onInputChange}
         />
-        <CheckboxIcon {...this.props} />
+        <RenderCheckboxIcon {...this.props} />
         {this.props.label && (
           <Text
             as="span"
