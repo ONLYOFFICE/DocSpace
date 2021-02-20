@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import { ReactSVG } from "react-svg";
 
 import Text from "../../text";
 import {
@@ -30,7 +30,7 @@ class ComboButton extends React.Component {
 
     const defaultOption = selectedOption.default;
 
-    const SelectedIcon = Icons[selectedOption.icon];
+    //const SelectedIcon = Icons[selectedOption.icon];
 
     return (
       <StyledComboButton
@@ -60,6 +60,7 @@ class ComboButton extends React.Component {
             defaultOption={defaultOption}
           >
             <SelectedIcon size="scale" className="combo-button_selected-icon" />
+            <ReactSVG src={selectedOption.icon} />
           </StyledIcon>
         )}
         <Text

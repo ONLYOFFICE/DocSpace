@@ -1,6 +1,5 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { Icons } from "../../icons";
 import { getCssFromSvg } from "../../icons/get-css-from-svg";
 import { TreeNode } from "rc-tree";
 import ReactDOMServer from "react-dom/server";
