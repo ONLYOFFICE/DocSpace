@@ -107,6 +107,9 @@ import {
   ConnectDialog,
   ThirdPartyMoveDialog,
 } from "../../../../dialogs";
+
+import FileList from "./FileList";
+
 const {
   isAdmin,
   getSettings,
@@ -160,40 +163,25 @@ const CustomTooltip = styled.div`
   }
 `;
 
-const SimpleFilesRow = styled(Row)`
-  margin-top: -2px;
-  ${(props) =>
-    !props.contextOptions &&
-    `
-    & > div:last-child {
-        width: 0px;
-      }
-  `}
-
-  .share-button-icon {
-    margin-right: 7px;
-    margin-top: -1px;
-  }
-
-  .share-button:hover,
-  .share-button-icon:hover {
-    cursor: pointer;
-    color: #657077;
-    path {
-      fill: #657077;
+const StyledContainer = styled.div`
+  height: calc(100vh - 220px);
+  margin-bottom: 16px;
+  margin-top: -22px;
+  .hide-scrollbars {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    &::-webkit-scrollbar {
+      width: 1px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: transparent;
     }
   }
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-  @media (max-width: 1312px) {
-    .share-button {
-      padding-top: 3px;
-    }
-  }
-
-  .styled-element {
-    margin-right: 1px;
-    margin-bottom: 2px;
+  .hide-scrollbars::-webkit-scrollbar {
+    display: none;
   }
 `;
 
@@ -268,12 +256,17 @@ class SectionBodyContent extends React.Component {
   // }
 
   componentDidUpdate(prevProps) {
-    const { folderId } = this.props;
+    const { folderId, filter, fetchFiles, setIsLoading } = this.props;
 
-    if (isMobile) {
-      if (folderId !== prevProps.folderId) {
+    if (folderId !== prevProps.folderId) {
+      if (isMobile) {
         this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
       }
+
+      setIsLoading(true);
+      fetchFiles(folderId, filter)
+        .catch((err) => toastr.error(err))
+        .finally(() => setIsLoading(false));
     }
   }
 
@@ -2012,98 +2005,29 @@ class SectionBodyContent extends React.Component {
         ) : (
           <Consumer>
             {(context) => (
-              <RowContainer
-                className="files-row-container"
-                draggable
-                useReactWindow={false}
-              >
-                {items.map((item) => {
-                  const {
-                    checked,
-                    isFolder,
-                    value,
-                    contextOptions,
-                    canShare,
-                  } = item;
-                  const sectionWidth = context.sectionWidth;
-                  const isEdit =
-                    !!fileAction.type &&
-                    editingId === item.id &&
-                    item.fileExst === fileAction.extension;
-                  const contextOptionsProps =
-                    !isEdit && contextOptions && contextOptions.length > 0
-                      ? {
-                          contextOptions: this.getFilesContextOptions(
-                            contextOptions,
-                            item
-                          ),
-                        }
-                      : {};
-                  const checkedProps =
-                    isEdit || item.id <= 0 ? {} : { checked };
-                  const element = this.getItemIcon(
-                    item,
-                    isEdit || item.id <= 0
-                  );
-                  const sharedButton =
-                    !canShare ||
-                    (isPrivacy && !item.fileExst) ||
-                    isEdit ||
-                    item.id <= 0 ||
-                    sectionWidth < 500
-                      ? null
-                      : this.getSharedButton(item.shared);
-                  const displayShareButton =
-                    sectionWidth < 500 ? "26px" : !canShare ? "38px" : "96px";
-                  let classNameProp =
-                    isFolder && item.access < 2 && !isRecycleBin
-                      ? { className: " dropable" }
-                      : { className: "" };
-
-                  if (item.draggable) classNameProp.className += " draggable";
-
-                  return (
-                    <DragAndDrop
-                      {...classNameProp}
-                      onDrop={this.onDrop.bind(this, item)}
-                      onMouseDown={this.onMouseDown}
-                      dragging={dragging && isFolder && item.access < 2}
-                      key={`dnd-key_${item.id}`}
-                      {...contextOptionsProps}
-                      value={value}
-                    >
-                      <SimpleFilesRow
-                        sectionWidth={sectionWidth}
-                        key={item.id}
-                        data={item}
-                        element={element}
-                        contentElement={sharedButton}
-                        onSelect={this.onContentRowSelect}
-                        editing={editingId}
-                        isPrivacy={isPrivacy}
-                        {...checkedProps}
-                        {...contextOptionsProps}
-                        needForUpdate={this.needForUpdate}
-                        selectItem={this.onSelectItem.bind(this, item)}
-                        contextButtonSpacerWidth={displayShareButton}
-                      >
-                        <FilesRowContent
-                          sectionWidth={sectionWidth}
-                          isMobile={isMobile}
-                          item={item}
-                          viewer={viewer}
-                          culture={settings.culture}
-                          onEditComplete={this.onEditComplete}
-                          onMediaFileClick={this.onMediaFileClick}
-                          onClickFavorite={this.onClickFavorite}
-                          onClickLock={this.lockFile}
-                          openDocEditor={this.openDocEditor}
-                        />
-                      </SimpleFilesRow>
-                    </DragAndDrop>
-                  );
-                })}
-              </RowContainer>
+              <StyledContainer>
+                <FileList
+                  items={items}
+                  context={context}
+                  fileAction={fileAction}
+                  editingId={editingId}
+                  getFilesContextOptions={this.getFilesContextOptions}
+                  getItemIcon={this.getItemIcon}
+                  isPrivacy={isPrivacy}
+                  getSharedButton={this.getSharedButton}
+                  onContentRowSelect={this.onContentRowSelect}
+                  needForUpdate={this.needForUpdate}
+                  onSelectItem={this.onSelectItem}
+                  isMobile={isMobile}
+                  viewer={viewer}
+                  settings={settings}
+                  onEditComplete={this.onEditComplete}
+                  onMediaFileClick={this.onMediaFileClick}
+                  onClickFavorite={this.onClickFavorite}
+                  lockFile={this.lockFile}
+                  openDocEditor={this.openDocEditor}
+                />
+              </StyledContainer>
             )}
           </Consumer>
         )}

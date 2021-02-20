@@ -42,6 +42,8 @@ import {
   SET_CHANGE_OWNER_VISIBLE,
   SELECT_UPLOADED_FILE,
   UPDATE_UPLOADED_FILE,
+  ADD_FILES,
+  ADD_FOLDERS,
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -51,9 +53,9 @@ const initialState = {
   fileAction: {
     type: null,
   },
-  files: null,
+  files: [],
   filter: FilesFilter.getDefault(),
-  folders: null,
+  folders: [],
   treeFolders: [],
   selected: "close",
   viewAs: "row",
@@ -455,6 +457,7 @@ const filesReducer = (state = initialState, action) => {
         treeFolders: action.treeFolders,
       });
     case SET_FILTER:
+      console.log(action.filter);
       return Object.assign({}, state, {
         filter: action.filter,
       });
@@ -656,6 +659,18 @@ const filesReducer = (state = initialState, action) => {
         },
       };
     }
+    case ADD_FILES:
+      if (state.files.length + action.files.length <= state.filter.total)
+        return Object.assign({}, state, {
+          files: state.files.concat(action.files),
+        });
+      else return state;
+    case ADD_FOLDERS:
+      if (state.folders.length + action.folders.length <= state.filter.total)
+        return Object.assign({}, state, {
+          folders: state.folders.concat(action.folders),
+        });
+      else return state;
 
     default:
       return state;

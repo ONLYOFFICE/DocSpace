@@ -83,6 +83,8 @@ export const SET_FILE_VERSIONS = "SET_FILE_VERSIONS";
 export const SET_CHANGE_OWNER_VISIBLE = "SET_CHANGE_OWNER_VISIBLE";
 export const SELECT_UPLOADED_FILE = "SELECT_UPLOADED_FILE";
 export const UPDATE_UPLOADED_FILE = "UPDATE_UPLOADED_FILE";
+export const ADD_FILES = "ADD_FILES";
+export const ADD_FOLDERS = "ADD_FOLDERS";
 
 export function setFile(file) {
   return {
@@ -371,11 +373,26 @@ export function selectUploadedFile(file) {
     file,
   };
 }
+
 export function updateUploadedFile(id, info) {
   return {
     type: UPDATE_UPLOADED_FILE,
     id,
     info,
+  };
+}
+
+export function addFiles(files) {
+  return {
+    type: ADD_FILES,
+    files,
+  };
+}
+
+export function addFolders(folders) {
+  return {
+    type: ADD_FOLDERS,
+    folders,
   };
 }
 
@@ -410,7 +427,7 @@ export function setFilterUrl(filter) {
     params.push(`${PREVIEW}=${URLParams.preview}`);
   }
 
-  params.push(`${PAGE}=${filter.page + 1}`);
+  //params.push(`${PAGE}=${filter.page + 1}`);
   params.push(`${SORT_BY}=${filter.sortBy}`);
   params.push(`${SORT_ORDER}=${filter.sortOrder}`);
 
@@ -454,6 +471,7 @@ export function fetchFiles(folderId, filter, clearFilter = true) {
       }
     }
 
+    filterData.page = 0;
     return files.getFolder(folderId, filter).then((data) => {
       const isPrivacyFolder =
         data.current.rootFolderType === FolderType.Privacy;
@@ -1963,5 +1981,70 @@ export function updateUploadedItem(id) {
     return api.files
       .getFileInfo(id)
       .then((data) => dispatch(updateUploadedFile(id, data)));
+  };
+}
+
+export function loadMoreFiles(folderId, filter, clearFilter = true) {
+  return (dispatch, getState) => {
+    const filterData = filter ? filter.clone() : FilesFilter.getDefault();
+    filterData.folder = folderId;
+
+    const state = getState();
+    const privacyFolder = getPrivacyFolder(state);
+
+    if (privacyFolder && privacyFolder.id === +folderId) {
+      const isEncryptionSupported = isEncryptionSupport(state);
+
+      if (!isEncryptionSupported) {
+        filterData.treeFolders = createTreeFolders(
+          privacyFolder.pathParts,
+          filterData
+        );
+        filterData.total = 0;
+        dispatch(setFilesFilter(filterData));
+        if (clearFilter) {
+          dispatch(setFolders([]));
+          dispatch(setFiles([]));
+          dispatch(setAction({ type: null }));
+          dispatch(setSelected("close"));
+          dispatch(
+            setSelectedFolder({
+              folders: [],
+              ...privacyFolder,
+              pathParts: privacyFolder.pathParts,
+              ...{ new: 0 },
+            })
+          );
+        }
+        return Promise.resolve();
+      }
+    }
+
+    if (filter.hasNext()) filterData.page++;
+
+    return files.getFolder(folderId, filter).then((data) => {
+      const isPrivacyFolder =
+        data.current.rootFolderType === FolderType.Privacy;
+      filterData.treeFolders = createTreeFolders(data.pathParts, filterData);
+      filterData.total = data.total;
+      dispatch(setFilesFilter(filterData));
+      dispatch(
+        addFolders(isPrivacyFolder && !isEncryptionSupport ? [] : data.folders)
+      );
+      dispatch(
+        addFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files)
+      );
+      if (clearFilter) {
+        dispatch(setSelected("close"));
+      }
+      return dispatch(
+        setSelectedFolder({
+          folders: data.folders,
+          ...data.current,
+          pathParts: data.pathParts,
+          ...{ new: data.new },
+        })
+      );
+    });
   };
 }

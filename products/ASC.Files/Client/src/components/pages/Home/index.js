@@ -38,7 +38,8 @@ import {
   getViewAs,
   getIsLoading,
   getDragging,
-  getHeaderVisible,  getFirstLoad,
+  getHeaderVisible,
+  getFirstLoad,
   isSecondaryProgressFinished,
   getSelectionLength,
   getSelectionTitle,
@@ -305,10 +306,6 @@ class PureHome extends React.Component {
               onDropZoneUpload={this.onDrop}
             />
           </PageLayout.SectionBody>
-
-          <PageLayout.SectionPaging>
-            <SectionPagingContent />
-          </PageLayout.SectionPaging>
         </PageLayout>
       </>
     );
