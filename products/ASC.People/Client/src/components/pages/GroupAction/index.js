@@ -33,6 +33,10 @@ class GroupAction extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.resetGroup();
+  }
+
   render() {
     console.log("GroupAction render");
 

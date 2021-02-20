@@ -20,6 +20,7 @@ import {
   utils,
   toastr,
   Layout,
+  ScrollToTop,
   regDesktop,
 } from "asc-web-common";
 import { inject, observer } from "mobx-react";
@@ -57,9 +58,11 @@ class App extends React.Component {
       getEncryptionKeys,
       isDesktop,
       getIsAuthenticated,
+      setProductVersion,
     } = this.props;
 
     setModuleInfo();
+    setProductVersion();
 
     if (this.isEditor) {
       setIsLoaded();
@@ -135,6 +138,7 @@ class App extends React.Component {
     return navigator.onLine ? (
       <Layout>
         <Router history={history}>
+          <ScrollToTop />
           {!this.isEditor && <NavMenu />}
           <Main isDesktop={isDesktop}>
             <Suspense fallback={null}>
@@ -194,11 +198,11 @@ export default inject(({ auth, initFilesStore }) => ({
   encryptionKeys: auth.settingsStore.encryptionKeys,
   isEncryption: auth.settingsStore.isEncryptionSupport,
   isLoaded: initFilesStore.isLoaded,
-
   setIsLoaded: initFilesStore.setIsLoaded,
   setEncryptionKeys: auth.settingsStore.setEncryptionKeys,
   loadFilesInfo: async () => {
     await auth.init();
     await initFilesStore.initFiles();
+    auth.setProductVersion(config.version);
   },
 }))(observer(App));

@@ -1,14 +1,18 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Link } from "asc-web-components";
 import { history } from "asc-web-common";
 import { withTranslation } from "react-i18next";
+import { isMobile } from "react-device-detect";
 
 import { inject, observer } from "mobx-react";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
-
+  ${isMobile &&
+  css`
+    margin-bottom: 64px;
+  `}
   .tree-thirdparty-list {
     padding-top: 3px;
     display: flex;

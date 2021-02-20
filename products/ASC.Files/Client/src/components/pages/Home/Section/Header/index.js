@@ -4,6 +4,7 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import { constants, Headline, api, toastr, Loaders } from "asc-web-common";
 import { withTranslation } from "react-i18next";
+import { isMobile } from "react-device-detect";
 import {
   ContextMenuButton,
   DropDownItem,
@@ -19,7 +20,9 @@ import {
 } from "../../../../dialogs";
 import { OperationsPanel } from "../../../../panels";
 import { inject, observer } from "mobx-react";
+import { loopTreeFolders } from "../../../../../helpers/files-helpers";
 
+const { files } = api;
 const { FilterType, FileAction } = constants;
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
@@ -101,13 +104,38 @@ const StyledContainer = styled.div`
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
 
+    ${isMobile &&
+    css`
+      position: sticky;
+    `}
+
+    ${(props) =>
+      !props.isTabletView
+        ? props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 40 + "px"};
+          `
+        : props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 32 + "px"};
+          `}
+
     @media ${tablet} {
+      padding-bottom: 0;
+      ${!isMobile &&
+      css`
+        height: 56px;
+      `}
       & > div:first-child {
         ${(props) =>
+          !isMobile &&
           props.width &&
           css`
             width: ${props.width + 16 + "px"};
           `}
+
         position: absolute;
         ${(props) =>
           !props.isDesktop &&
@@ -292,8 +320,128 @@ class SectionHeaderContent extends React.Component {
   onOpenSharingPanel = () =>
     this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
 
-  onDeleteAction = () =>
-    this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
+  loopDeleteOperation = (id) => {
+    const {
+      currentFolderId,
+      filter,
+      treeFolders,
+      setTreeFolders,
+      isRecycleBin,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+      t,
+      fetchFiles,
+      setUpdateTree,
+    } = this.props;
+    const successMessage = isRecycleBin
+      ? t("DeleteFromTrash")
+      : t("DeleteSelectedElem");
+    api.files
+      .getProgress()
+      .then((res) => {
+        const currentProcess = res.find((x) => x.id === id);
+        if (currentProcess && currentProcess.progress !== 100) {
+          setSecondaryProgressBarData({
+            icon: "trash",
+            percent: currentProcess.progress,
+            label: t("DeleteOperation"),
+            visible: true,
+            alert: false,
+          });
+          setTimeout(() => this.loopDeleteOperation(id), 1000);
+        } else {
+          setSecondaryProgressBarData({
+            icon: "trash",
+            percent: 100,
+            label: t("DeleteOperation"),
+            visible: true,
+            alert: false,
+          });
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+          fetchFiles(currentFolderId, filter).then((data) => {
+            if (!isRecycleBin) {
+              const path = data.selectedFolder.pathParts.slice(0);
+              const newTreeFolders = treeFolders;
+              const folders = data.selectedFolder.folders;
+              const foldersCount = data.selectedFolder.foldersCount;
+              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+              setUpdateTree(true);
+              setTreeFolders(newTreeFolders);
+            }
+            toastr.success(successMessage);
+          });
+        }
+      })
+      .catch((err) => {
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      });
+  };
+
+  onDelete = () => {
+    const {
+      isRecycleBin,
+      isPrivacy,
+      t,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+      selection,
+    } = this.props;
+
+    const deleteAfter = true; //Delete after finished
+    const immediately = isRecycleBin || isPrivacy ? true : false; //Don't move to the Recycle Bin
+
+    const folderIds = [];
+    const fileIds = [];
+
+    let i = 0;
+    while (selection.length !== i) {
+      if (selection[i].fileExst) {
+        fileIds.push(selection[i].id);
+      } else {
+        folderIds.push(selection[i].id);
+      }
+      i++;
+    }
+
+    if (folderIds.length || fileIds.length) {
+      setSecondaryProgressBarData({
+        icon: "trash",
+        visible: true,
+        label: t("DeleteOperation"),
+        percent: 0,
+        alert: false,
+      });
+
+      files
+        .removeFiles(folderIds, fileIds, deleteAfter, immediately)
+        .then((res) => {
+          const id = res[0] && res[0].id ? res[0].id : null;
+          this.loopDeleteOperation(id);
+        })
+        .catch((err) => {
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          //toastr.error(err);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        });
+    }
+  };
+
+  onDeleteAction = () => {
+    //console.log(this.props.confirmDelete);
+    if (this.props.confirmDelete) {
+      this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
+    } else {
+      this.onDelete();
+    }
+  };
 
   onEmptyTrashAction = () =>
     this.setState({ showEmptyTrashDialog: !this.state.showEmptyTrashDialog });
@@ -502,6 +650,7 @@ class SectionHeaderContent extends React.Component {
       title,
       canCreate,
       isDesktop,
+      isTabletView,
     } = this.props;
 
     const {
@@ -523,6 +672,7 @@ class SectionHeaderContent extends React.Component {
             canCreate={canCreate}
             title={title}
             isDesktop={isDesktop}
+            isTabletView={isTabletView}
           >
             {isHeaderVisible ? (
               <div className="group-button-menu-container">
@@ -663,6 +813,7 @@ export default inject(
     dialogsStore,
     treeFoldersStore,
     selectedFolderStore,
+    settingsStore,
   }) => {
     const { setIsLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
@@ -713,7 +864,9 @@ export default inject(
       isOnlyFoldersSelected,
       isThirdPartySelection,
       isWebEditSelected,
-
+      isTabletView: auth.settingsStore.isTabletView,
+      confirmDelete: settingsStore.settingsTree.confirmDelete,
+      treeFolders: treeFoldersStore.treeFolders,
       setSelected,
       setAction,
       setIsLoading,

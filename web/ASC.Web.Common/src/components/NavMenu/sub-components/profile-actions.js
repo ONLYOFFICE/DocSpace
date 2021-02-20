@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Avatar, DropDownItem, Link } from "asc-web-components";
 import ProfileMenu from "../../ProfileMenu";
+import { inject, observer } from "mobx-react";
 
 class ProfileActions extends React.PureComponent {
   constructor(props) {
@@ -19,13 +20,19 @@ class ProfileActions extends React.PureComponent {
     this.setState({ opened: opened });
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
+    const { isHeaderVisible, isTabletView } = this.props;
     if (this.props.user !== prevProps.user) {
       this.setState({ user: this.props.user });
     }
 
     if (this.props.opened !== prevProps.opened) {
       this.setOpened(this.props.opened);
+    }
+    if (this.state.opened !== prevState.opened) {
+      isTabletView &&
+        isHeaderVisible &&
+        this.props.isOpenProfileMenu(this.state.opened);
     }
   }
 
@@ -39,7 +46,9 @@ class ProfileActions extends React.PureComponent {
   };
 
   onClose = (e) => {
-    if (this.ref.current.contains(e.target)) return;
+    const path = e.path || (e.composedPath && e.composedPath());
+    const dropDownItem = path ? path.find((x) => x === this.ref.current) : null;
+    if (!dropDownItem) return;
 
     this.setOpened(!this.state.opened);
   };
@@ -101,6 +110,9 @@ ProfileActions.propTypes = {
   opened: PropTypes.bool,
   user: PropTypes.object,
   userActions: PropTypes.array,
+  isHeaderVisible: PropTypes.bool,
+  isTabletView: PropTypes.bool,
+  isOpenProfileMenu: PropTypes.func,
 };
 
 ProfileActions.defaultProps = {
@@ -109,4 +121,9 @@ ProfileActions.defaultProps = {
   userActions: [],
 };
 
-export default ProfileActions;
+export default inject(({ auth }) => {
+  return {
+    isHeaderVisible: auth.settingsStore.isHeaderVisible,
+    isTabletView: auth.settingsStore.isTabletView,
+  };
+})(observer(ProfileActions));

@@ -15,6 +15,7 @@ class AuthStore {
 
   isLoading = false;
   isAuthenticated = false;
+  version = null;
 
   constructor() {
     this.setUserStore(new UserStore());
@@ -31,6 +32,7 @@ class AuthStore {
       userStore: observable,
       moduleStore: observable,
       settingsStore: observable,
+      version: observable,
       init: action,
       login: action,
       logout: action,
@@ -41,6 +43,7 @@ class AuthStore {
       replaceFileStream: action,
       getEncryptionAccess: action,
       setEncryptionAccess: action,
+      setProductVersion: action,
     });
   }
 
@@ -218,6 +221,10 @@ class AuthStore {
     }
 
     document.title = title;
+  };
+
+  setProductVersion = (version) => {
+    this.version = version;
   };
 }
 

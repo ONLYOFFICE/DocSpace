@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { Text } from "asc-web-components";
-import { toastr, ModuleTile, PageLayout, utils } from "asc-web-common";
+import { toastr, ModuleTile, PageLayout, utils, store } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
@@ -47,7 +47,9 @@ const HomeContainer = styled.div`
 const Tiles = ({ modules, isPrimary }) => {
   let index = 0;
 
-  const mapped = modules.filter((m) => m.isPrimary === isPrimary);
+  const mapped = modules.filter(
+    (m) => m.isPrimary === isPrimary && m.isolateMode !== true
+  );
 
   console.log("Tiles", mapped, isPrimary);
 
@@ -93,10 +95,7 @@ const Body = ({ modules, match, isLoaded }) => {
 };
 
 const Home = (props) => {
-  const { defaultPage } = props;
-  return utils.tryRedirectTo(defaultPage) ? (
-    <></>
-  ) : (
+  return (
     <PageLayout>
       <PageLayout.SectionBody>
         <Body {...props} />

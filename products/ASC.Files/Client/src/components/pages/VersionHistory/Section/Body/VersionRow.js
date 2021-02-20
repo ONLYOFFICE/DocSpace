@@ -31,8 +31,8 @@ const VersionRow = (props) => {
 
   const canEdit = info.access === 1 || info.access === 0;
 
-  const title = `${new Date(info.created).toLocaleString(culture)} ${
-    info.createdBy.displayName
+  const title = `${new Date(info.updated).toLocaleString(culture)} ${
+    info.updatedBy.displayName
   }`;
 
   const linkStyles = { isHovered: true, type: "action" };
@@ -78,7 +78,6 @@ const VersionRow = (props) => {
   ];
 
   const onClickProp = canEdit ? { onClick: onVersionClick } : {};
-
   return (
     <StyledVersionRow
       showEditPanel={showEditPanel}
@@ -100,6 +99,7 @@ const VersionRow = (props) => {
             fontWeight={600}
             fontSize="14px"
             title={title}
+            isTextOverflow={true}
             className="version-link-file"
           >
             {title}

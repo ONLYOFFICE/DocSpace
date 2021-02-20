@@ -54,12 +54,10 @@ const HeaderUnAuth = ({
   isAuthenticated,
   isLoaded,
 }) => {
-  //console.log("HeaderUnAuth render");
-
   const { t } = useTranslation();
 
   return (
-    <Header>
+    <Header isLoaded={isLoaded} className="navMenuHeaderUnAuth">
       <Box
         displayProp="flex"
         justifyContent="space-between"

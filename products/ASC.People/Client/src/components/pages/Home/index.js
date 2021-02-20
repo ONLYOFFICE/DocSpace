@@ -34,13 +34,14 @@ class Home extends React.Component {
 
   render() {
     console.log("Home render");
-    const { isLoaded, isAdmin } = this.props;
+    const { isLoaded, isAdmin, isHeaderVisible } = this.props;
 
     return (
       <PageLayout
         withBodyScroll={true}
         withBodyAutoFocus={!isMobile}
         isLoaded={isLoaded}
+        isHeaderVisible={isHeaderVisible}
       >
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />
@@ -87,4 +88,5 @@ export default inject(({ auth, peopleStore }) => ({
   isAdmin: auth.isAdmin,
   isLoading: peopleStore.isLoading,
   setIsLoading: peopleStore.setIsLoading,
+  isHeaderVisible: auth.settingsStore.isHeaderVisible,
 }))(observer(withRouter(Home)));

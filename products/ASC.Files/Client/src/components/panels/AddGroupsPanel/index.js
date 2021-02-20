@@ -140,6 +140,7 @@ class AddGroupsPanelComponent extends React.Component {
 
             <StyledBody ref={this.scrollRef}>
               <GroupSelector
+                className="groupSelector"
                 isOpen={visible}
                 isMultiSelect
                 displayType="aside"
@@ -152,6 +153,7 @@ class AddGroupsPanelComponent extends React.Component {
                     directionX="right"
                     onAccessChange={this.onAccessChange}
                     accessOptions={accessOptions}
+                    arrowIconColor="#000000"
                   />
                 }
                 showCounter

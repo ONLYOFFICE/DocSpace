@@ -26,6 +26,7 @@ import { api, constants, MediaViewer, toastr, Loaders } from "asc-web-common";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import { loopTreeFolders } from "../../../../../helpers/files-helpers";
 import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
+import { isMobile } from "react-device-detect";
 import {
   DeleteThirdPartyDialog,
   ConnectDialog,
@@ -39,7 +40,6 @@ import { observer, inject } from "mobx-react";
 const { FilesFilter } = api;
 const { FileAction } = constants;
 const { Consumer } = utils.context;
-
 const linkStyles = {
   isHovered: true,
   type: "action",
@@ -146,6 +146,10 @@ class SectionBodyContent extends React.Component {
   }
 
   componentDidMount() {
+    this.customScrollElm = document.querySelector(
+      "#customScrollBar > .scroll-body"
+    );
+
     let previewId = queryString.parse(this.props.location.search).preview;
 
     if (previewId) {
@@ -181,8 +185,16 @@ class SectionBodyContent extends React.Component {
   //   }
   // }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   //if (this.props && this.props.firstLoad) return true;
+  componentDidUpdate(prevProps) {
+    const { folderId } = this.props;
+
+    if (isMobile) {
+      if (folderId !== prevProps.folderId) {
+        this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
+      }
+    }
+  }
+
 
   //   const {
   //     showMoveToPanel,
@@ -1712,6 +1724,7 @@ class SectionBodyContent extends React.Component {
       isVersionHistoryPanel,
       history,
       filter,
+      isLoading,
     } = this.props;
 
     //console.log("Section body", this.props);
@@ -1769,6 +1782,8 @@ class SectionBodyContent extends React.Component {
       ) : (
         this.renderEmptyFolderContainer()
       )
+    ) : isMobile && isLoading ? (
+      <Loaders.Rows />
     ) : (
       <>
         {showMoveToPanel && (

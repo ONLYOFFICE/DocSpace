@@ -1,17 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
-import {
-  Row,
-  Avatar,
-  EmptyScreenContainer,
-  IconButton,
-  Link,
-  RowContainer,
-  utils,
-  Box,
-  Grid,
-} from "asc-web-components";
+import { Row, Avatar, RowContainer, utils } from "asc-web-components";
 import UserContent from "./userContent";
 import equal from "fast-deep-equal/react";
 import { api, constants, toastr, Loaders } from "asc-web-common";
@@ -21,6 +11,8 @@ import {
   DeleteSelfProfileDialog,
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
+
+import EmptyScreen from "./sub-components/EmptyScreen";
 import { inject, observer } from "mobx-react";
 
 const { Consumer } = utils.context;
@@ -172,7 +164,6 @@ class SectionBodyContent extends React.PureComponent {
 
   toggleDeleteProfileEverDialog = (e) => {
     this.onCloseDialog();
-
     const user = this.findUserById(e.currentTarget.dataset.id);
 
     if (!user) return;
@@ -193,6 +184,7 @@ class SectionBodyContent extends React.PureComponent {
   onInviteAgainClick = (e) => {
     const user = this.findUserById(e.currentTarget.dataset.id);
     const { onLoading } = this.props;
+
     onLoading(true);
     resendUserInvites([user.id])
       .then(() =>
@@ -320,7 +312,7 @@ class SectionBodyContent extends React.PureComponent {
   onResetFilter = () => {
     const { onLoading, resetFilter } = this.props;
     onLoading(true);
-    resetFilter().finally(() => onLoading(false));
+    resetFilter(true).finally(() => onLoading(false));
   };
 
   needForUpdate = (currentProps, nextProps) => {
@@ -357,6 +349,7 @@ class SectionBodyContent extends React.PureComponent {
       isLoading,
       isAdmin,
       currentUserId,
+      isEmptyGroup,
     } = this.props;
 
     const { dialogsVisible, user, isLoadedSection } = this.state;
@@ -466,40 +459,10 @@ class SectionBodyContent extends React.PureComponent {
         )}
       </>
     ) : (
-      <EmptyScreenContainer
-        imageSrc="images/empty_screen_filter.png"
-        imageAlt="Empty Screen Filter image"
-        headerText={t("NotFoundTitle")}
-        descriptionText={t("NotFoundDescription")}
-        buttons={
-          <Grid
-            marginProp="13px 0"
-            gridColumnGap="8px"
-            columnsProp={["12px 1fr"]}
-          >
-            <Box>
-              <IconButton
-                className="empty-folder_container-icon"
-                size="12"
-                onClick={this.onResetFilter}
-                iconName="CrossIcon"
-                isFill
-                color="#657077"
-              />
-            </Box>
-            <Box marginProp="-4px 0 0 0">
-              <Link
-                type="action"
-                isHovered={true}
-                fontWeight="600"
-                color="#555f65"
-                onClick={this.onResetFilter}
-              >
-                {t("ClearButton")}
-              </Link>
-            </Box>
-          </Grid>
-        }
+      <EmptyScreen
+        t={t}
+        onResetFilter={this.onResetFilter}
+        isEmptyGroup={isEmptyGroup}
       />
     );
   }
@@ -519,4 +482,5 @@ export default inject(({ auth, peopleStore }) => ({
   selectGroup: peopleStore.selectedGroupStore.selectGroup,
   updateUserStatus: peopleStore.usersStore.updateUserStatus,
   isLoading: peopleStore.isLoading,
+  isEmptyGroup: peopleStore.selectedGroupStore.isEmptyGroup,
 }))(observer(withRouter(withTranslation("Home")(SectionBodyContent))));

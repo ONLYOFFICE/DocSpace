@@ -8,7 +8,7 @@ import {
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withRouter } from "react-router";
-import { isChrome, isAndroid } from "react-device-detect";
+
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
@@ -23,9 +23,9 @@ class Profile extends React.Component {
       setDocumentTitle,
     } = this.props;
     const { userId } = match.params;
-    isChrome && isAndroid && window && window.scroll(0, 0);
-    setDocumentTitle(t("Profile"));
 
+    setDocumentTitle(t("Profile"));
+    this.documentElement = document.getElementsByClassName("hidingHeader");
     const queryString = ((location && location.search) || "").slice(1);
     const queryParams = queryString.split("&");
     const arrayOfQueryParams = queryParams.map((queryParam) =>
@@ -39,15 +39,27 @@ class Profile extends React.Component {
     if (!profile) {
       fetchProfile(userId);
     }
+
+    if (!profile && this.documentElement) {
+      for (var i = 0; i < this.documentElement.length; i++) {
+        this.documentElement[i].style.transition = "none";
+  }
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const { match, fetchProfile } = this.props;
+    const { match, fetchProfile, profile } = this.props;
     const { userId } = match.params;
     const prevUserId = prevProps.match.params.userId;
 
     if (userId !== undefined && userId !== prevUserId) {
       fetchProfile(userId);
+    }
+
+    if (profile && this.documentElement) {
+      for (var i = 0; i < this.documentElement.length; i++) {
+        this.documentElement[i].style.transition = "";
+  }
     }
   }
 
@@ -56,11 +68,12 @@ class Profile extends React.Component {
   }
 
   render() {
-    //console.log("Profile render")
-    const { profile, isVisitor, isAdmin } = this.props;
+    //console.log("Profile render");
+
+    const { profile, isVisitor, isAdmin, isLoaded } = this.props;
 
     return (
-      <PageLayout withBodyAutoFocus={true}>
+      <PageLayout withBodyAutoFocus={true} isLoaded={isLoaded}>
         {!isVisitor && (
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />

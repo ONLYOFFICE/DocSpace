@@ -6,22 +6,12 @@ import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
+
 import Loaders from "../../Loaders/index";
 import { ReactSVG } from "react-svg";
-
-import { utils } from "asc-web-components";
 import { useTranslation } from "react-i18next";
-// import { connect } from "react-redux";
-// import {
-//   getCurrentProductId,
-//   getCurrentProductName,
-//   getDefaultPage,
-//   //getMainModules,
-//   getTotalNotificationsCount,
-//   getIsLoaded,
-// } from "../../../store/auth/selectors";
-//import store from "../../../store";
-//const { moduleStore, settingsStore } = store;
+
+import { utils, Box, Link, Text } from "asc-web-components";
 
 const { desktop } = utils.device;
 
@@ -75,6 +65,12 @@ const Header = styled.header`
   }
 `;
 
+const versionBadgeProps = {
+  color: "#7A95B0",
+  fontWeight: "600",
+  fontSize: "13px",
+};
+
 const HeaderComponent = ({
   currentProductName,
   totalNotifications,
@@ -86,10 +82,12 @@ const HeaderComponent = ({
   isNavOpened,
   currentProductId,
   toggleAside,
+  isLoaded,
+  version,
+  isAuthenticated,
   isAdmin,
   ...props
 }) => {
-  //console.log("Header render");
   const { t } = useTranslation();
 
   const isNavAvailable = mainModules.length > 0;
@@ -144,7 +142,12 @@ const HeaderComponent = ({
 
   return (
     <>
-      <Header module={currentProductName}>
+      <Header
+        module={currentProductName}
+        isLoaded={isLoaded}
+        isAuthenticated={isAuthenticated}
+        className="navMenuHeader hidingHeader"
+      >
         <NavItem
           iconName="MenuIcon"
           badgeNumber={totalNotifications}
@@ -172,6 +175,7 @@ const HeaderComponent = ({
           {currentProductName}
         </Headline>
       </Header>
+
       {isNavAvailable && (
         <Nav
           opened={isNavOpened}
@@ -193,6 +197,7 @@ const HeaderComponent = ({
               notifications,
               link,
               title,
+              dashed,
             }) => (
               <NavItem
                 separator={!!separator}
@@ -207,12 +212,30 @@ const HeaderComponent = ({
                 onClick={onItemClick}
                 onBadgeClick={onBadgeClick}
                 url={link}
+                dashed={dashed}
               >
                 {title}
               </NavItem>
             )
           )}
           {getCustomModules()}
+          <Box className="version-box">
+            <Link
+              as="a"
+              href={`https://github.com/ONLYOFFICE/AppServer/releases`}
+              target="_blank"
+              {...versionBadgeProps}
+            >
+              {t("Version")} {version}
+            </Link>
+            <Text as="span" {...versionBadgeProps}>
+              {" "}
+              -{" "}
+            </Text>
+            <Link as="a" href="/about" target="_blank" {...versionBadgeProps}>
+              {t("AboutShort")}
+            </Link>
+          </Box>
         </Nav>
       )}
     </>
@@ -234,6 +257,7 @@ HeaderComponent.propTypes = {
   toggleAside: PropTypes.func,
   logoUrl: PropTypes.string,
   isLoaded: PropTypes.bool,
+  version: PropTypes.string,
   isAuthenticated: PropTypes.bool,
   isAdmin: PropTypes.bool,
 };
@@ -247,7 +271,7 @@ export default inject(({ auth }) => {
     isAdmin,
     product,
   } = auth;
-  const { logoUrl, defaultPage, currentProductId } = settingsStore;
+  const { logoUrl, defaultPage, currentProductId, version } = settingsStore;
   const { modules, totalNotifications } = moduleStore;
 
   const mainModules = modules.filter((m) => !m.isolateMode);
@@ -259,6 +283,7 @@ export default inject(({ auth }) => {
     mainModules,
     totalNotifications,
     isLoaded,
+    version,
     isAuthenticated,
     currentProductId,
     currentProductName: (product && product.title) || "",

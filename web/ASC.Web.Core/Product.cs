@@ -59,6 +59,8 @@ namespace ASC.Web.Core
 
         Guid IWebItem.ID { get { return ProductID; } }
 
+        public virtual bool IsPrimary { get => false; }
+
         public abstract string ApiURL { get; }
     }
 }

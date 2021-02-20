@@ -52,7 +52,7 @@ i18n
     },
 
     react: {
-      useSuspense: true,
+      useSuspense: false,
     },
   });
 

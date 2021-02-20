@@ -235,7 +235,7 @@ class FilesTileContent extends React.PureComponent {
   };
 
   onMobileRowClick = (e) => {
-    if (window.innerWidth > 1024) return;
+    if (!isMobile) return;
 
     this.onFilesClick();
   };

@@ -15,16 +15,24 @@ import {
   SET_GREETING_SETTINGS,
   //SET_CUSTOM_NAMES,
   SET_WIZARD_COMPLETED,
+  SET_HEADER_VISIBLE,
   FETCH_ENCRYPTION_KEYS,
   SET_IS_ENCRYPTION_SUPPORT,
   SET_IS_AUTHENTICATED,
   SET_IS_TABLET_VIEW,
+  SET_ARTICLE_PINNED,
+  SET_PRODUCT_VERSION,
 } from "./actions";
-import { LANGUAGE } from "../../constants";
+import {
+  LANGUAGE,
+  ARTICLE_PINNED_KEY,
+  // AUTH_KEY,
+  // HEADER_VISIBLE_KEY,
+} from "../../constants";
 
 const desktop = window["AscDesktopEditor"] !== undefined;
-const desktopEncryption =
-  desktop && typeof window.AscDesktopEditor.cloudCryptoCommand === "function";
+// const desktopEncryption =
+//   desktop && typeof window.AscDesktopEditor.cloudCryptoCommand === "function";
 const lang = localStorage["language"]
   ? localStorage
       .getItem("language")
@@ -49,7 +57,7 @@ const initialState = {
     timezones: [],
     utcOffset: "00:00:00",
     utcHoursOffset: 0,
-    defaultPage: "/", //"/products/files",
+    defaultPage: "/",
     homepage: "", //config.homepage,
     datePattern: "M/d/yyyy",
     datePatternJQ: "00/00/0000",
@@ -82,8 +90,12 @@ const initialState = {
     //isDesktopEncryption: desktopEncryption,
     isEncryptionSupport: false,
     encryptionKeys: null,
+
+    isHeaderVisible: false,
     isTabletView: false,
+    isArticlePinned: localStorage.getItem(ARTICLE_PINNED_KEY) || false,
   },
+  version: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -196,6 +208,14 @@ const authReducer = (state = initialState, action) => {
           //isEncryptionSupport: state.isDesktopEncryption && action.isSupport,
         },
       };
+
+    case SET_HEADER_VISIBLE:
+      return Object.assign({}, state, {
+        settings: {
+          ...state.settings,
+          isHeaderVisible: action.isHeaderVisible,
+        },
+      });
     case SET_IS_TABLET_VIEW:
       return Object.assign({}, state, {
         settings: {
@@ -203,6 +223,17 @@ const authReducer = (state = initialState, action) => {
           isTabletView: action.isTabletView,
         },
       });
+
+    case SET_ARTICLE_PINNED:
+      return Object.assign({}, state, {
+        settings: { ...state.settings, isArticlePinned: action.isPinned },
+      });
+
+    case SET_PRODUCT_VERSION:
+      return Object.assign({}, state, {
+        version: action.version,
+      });
+
     default:
       return state;
   }

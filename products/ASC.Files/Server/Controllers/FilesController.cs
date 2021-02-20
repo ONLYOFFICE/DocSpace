@@ -158,7 +158,7 @@ namespace ASC.Api.Documents
         public Module GetModule()
         {
             ProductEntryPoint.Init();
-            return new Module(ProductEntryPoint, true);
+            return new Module(ProductEntryPoint);
         }
 
         [Read("@root")]
@@ -1174,15 +1174,15 @@ namespace ASC.Api.Documents
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
         [Delete("file/{fileId}", DisableFormat = true)]
-        public IEnumerable<FileOperationWraper> DeleteFile(string fileId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper> DeleteFile(string fileId, [FromBody] DeleteModel model)
         {
-            return FilesControllerHelperString.DeleteFile(fileId, deleteAfter, immediately);
+            return FilesControllerHelperString.DeleteFile(fileId, model.DeleteAfter, model.Immediately);
         }
 
         [Delete("file/{fileId:int}")]
-        public IEnumerable<FileOperationWraper> DeleteFile(int fileId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper> DeleteFile(int fileId, [FromBody] DeleteModel model)
         {
-            return FilesControllerHelperInt.DeleteFile(fileId, deleteAfter, immediately);
+            return FilesControllerHelperInt.DeleteFile(fileId, model.DeleteAfter, model.Immediately);
         }
 
         /// <summary>

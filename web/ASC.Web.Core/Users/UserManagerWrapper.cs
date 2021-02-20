@@ -289,7 +289,7 @@ namespace ASC.Web.Core.Users
             return null;
         }
 
-        public string GeneratePassword()
+        public static string GeneratePassword()
         {
             return Guid.NewGuid().ToString();
         }

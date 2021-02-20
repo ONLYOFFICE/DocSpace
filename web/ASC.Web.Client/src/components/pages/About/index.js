@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
+﻿import React, { useEffect } from "react";
 import { Text, Link } from "asc-web-components";
 import { PageLayout } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import version from "../../../../package.json";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
+import { isMobile } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
 
 const BodyStyle = styled.div`
-  margin-top: 24px;
+  margin-top: ${isMobile ? "80px" : "24px"};
 
   .avatar {
     text-align: center;

@@ -62,7 +62,6 @@ namespace ASC.Web.Files.Configuration
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
             UserManager userManager,
-            IServiceProvider serviceProvider,
             NotifyConfiguration notifyConfiguration
             //            SubscriptionManager subscriptionManager
             )
@@ -80,6 +79,8 @@ namespace ASC.Web.Files.Configuration
         private ProductContext _productContext;
 
         public override bool Visible { get { return true; } }
+
+        public override bool IsPrimary { get => true; }
 
         public override void Init()
         {

@@ -43,3 +43,10 @@ export function deleteGroup(id) {
     url: `/group/${id}.json`,
   });
 }
+
+export function getGroupListFull() {
+  return request({
+    method: "get",
+    url: "/group/full",
+  });
+}

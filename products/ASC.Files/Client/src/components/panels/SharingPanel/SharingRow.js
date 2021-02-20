@@ -127,25 +127,20 @@ class SharingRow extends React.Component {
       },
       {
         key: "linkItem_3",
-        label: `${t("ShareVia")} Google Plus`,
-        onClick: () => toastr.warning("Share via Google Plus"),
-      },
-      {
-        key: "linkItem_4",
         label: `${t("ShareVia")} Facebook`,
         onClick: this.onShareFacebook,
       },
       {
-        key: "linkItem_5",
+        key: "linkItem_4",
         label: `${t("ShareVia")} Twitter`,
         onClick: this.onShareTwitter,
       },
       {
-        key: "linkItem_6",
+        key: "linkItem_5",
         isSeparator: true,
       },
       {
-        key: "linkItem_7",
+        key: "linkItem_6",
         label: t("Embedding"),
         onClick: () => onShowEmbeddingPanel(shareLink),
       },

@@ -83,6 +83,7 @@ class PureHome extends React.Component {
     }
 
     setIsLoading(true);
+
     Promise.all(requests)
       .catch((err) => {
         Promise.resolve(FilesFilter.getDefault());
@@ -180,7 +181,9 @@ class PureHome extends React.Component {
         utils.hideLoader();
       }
     }
-
+    if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
+      this.props.setHeaderVisible(this.props.isHeaderVisible);
+    }
     if (
       isProgressFinished &&
       isProgressFinished !== prevProps.isProgressFinished
@@ -200,6 +203,7 @@ class PureHome extends React.Component {
       convertDialogVisible,
       fileActionId,
       firstLoad,
+      isHeaderVisible,
       showOwnerChangePanel,
 
       primaryProgressDataVisible,
@@ -244,6 +248,7 @@ class PureHome extends React.Component {
             secondaryProgressDataStoreVisible
           }
           isLoaded={!firstLoad}
+          isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
         >
           <PageLayout.ArticleHeader>
@@ -381,6 +386,8 @@ export default inject(
       setUploadPanelVisible,
       setSelections,
       startUpload,
+      isHeaderVisible: auth.settingsStore.isHeaderVisible,
+      setHeaderVisible: auth.settingsStore.setHeaderVisible,
     };
   }
 )(withRouter(observer(Home)));

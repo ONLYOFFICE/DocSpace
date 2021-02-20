@@ -28,9 +28,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
           return fetchPeople(filter);
         })
         .catch((error) => toastr.error(error))
-        .finally(() => {
-          this.setState({ isRequestRunning: false }, () => onClose());
-        });
+        .finally(onClose);
     });
   };
 

@@ -58,7 +58,9 @@ class DeleteDialogComponent extends React.Component {
       t,
       fetchFiles,
     } = this.props;
-    const successMessage = t("DeleteSelectedElem");
+    const successMessage = isRecycleBinFolder
+      ? t("DeleteFromTrash")
+      : t("DeleteSelectedElem");
     api.files
       .getProgress()
       .then((res) => {

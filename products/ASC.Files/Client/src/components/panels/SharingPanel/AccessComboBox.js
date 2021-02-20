@@ -14,6 +14,7 @@ const AccessComboBox = (props) => {
     itemId,
     onAccessChange,
     t,
+    arrowIconColor,
   } = props;
   const {
     FullAccess,
@@ -100,12 +101,15 @@ const AccessComboBox = (props) => {
   );
 
   const accessIcon = getAccessIcon(access);
+  const selectedOption = arrowIconColor
+    ? { key: 0, arrowIconColor }
+    : { key: 0 };
 
   return (
     <ComboBox
       advancedOptions={advancedOptions}
       options={[]}
-      selectedOption={{ key: 0 }}
+      selectedOption={selectedOption}
       size="content"
       className="panel_combo-box"
       scaled={false}

@@ -1,6 +1,6 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import api from "../api";
-import { LANGUAGE } from "../constants";
+import { ARTICLE_PINNED_KEY, LANGUAGE } from "../constants";
 
 class SettingsStore {
   isLoading = false;
@@ -47,7 +47,11 @@ class SettingsStore {
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
   encryptionKeys = null;
+
+  isHeaderVisible = false;
   isTabletView = false;
+  isArticlePinned = localStorage.getItem(ARTICLE_PINNED_KEY) || false;
+
   hashSettings = null;
   title = "";
   ownerId = null;
@@ -84,7 +88,9 @@ class SettingsStore {
       isDesktopClient: observable,
       isEncryptionSupport: observable,
       encryptionKeys: observable,
+      isHeaderVisible: observable,
       isTabletView: observable,
+      isArticlePinned: observable,
       hashSettings: observable,
       ownerId: observable,
       nameSchemaId: observable,
@@ -108,6 +114,9 @@ class SettingsStore {
       setPasswordSettings: action,
       getPortalPasswordSettings: action,
       setTimezones: action,
+      getPortalTimezones: action,
+      setHeaderVisible: action,
+      setIsTabletView: action,
     });
   }
 
@@ -221,6 +230,21 @@ class SettingsStore {
   getPortalTimezones = async (token = undefined) => {
     const timezones = await api.settings.getPortalTimezones(token);
     this.setTimezones(timezones);
+  };
+
+  setHeaderVisible = (isHeaderVisible) => {
+    this.isHeaderVisible = isHeaderVisible;
+  };
+
+  setIsTabletView = (isTabletView) => {
+    this.isTabletView = isTabletView;
+  };
+
+  setArticlePinned = (isPinned) => {
+    isPinned
+      ? localStorage.setItem(ARTICLE_PINNED_KEY, isPinned)
+      : localStorage.removeItem(ARTICLE_PINNED_KEY);
+    this.isArticlePinned = isPinned;
   };
 }
 

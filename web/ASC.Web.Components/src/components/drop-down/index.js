@@ -7,6 +7,7 @@ import Backdrop from "../backdrop";
 import Box from "../box";
 import { VariableSizeList } from "react-window";
 import onClickOutside from "react-onclickoutside";
+import { isMobile } from "react-device-detect";
 
 const StyledDropdown = styled.div`
   font-family: "Open Sans", sans-serif, Arial;
@@ -120,6 +121,7 @@ class DropDown extends React.PureComponent {
   }
 
   handleClickOutside = (e) => {
+    e.preventDefault();
     this.toggleDropDown(e);
   };
 
@@ -262,13 +264,20 @@ class DropDownContainer extends React.Component {
   };
   render() {
     const { withBackdrop = true, open } = this.props;
+    const eventTypesProp = isMobile
+      ? { eventTypes: ["click", "touchend"] }
+      : {};
 
     return (
       <>
         {withBackdrop ? (
           <Backdrop visible={open} zIndex={199} onClick={this.toggleDropDown} />
         ) : null}
-        <EnhancedComponent disableOnClickOutside={true} {...this.props} />
+        <EnhancedComponent
+          {...eventTypesProp}
+          disableOnClickOutside={true}
+          {...this.props}
+        />
       </>
     );
   }

@@ -16,7 +16,7 @@ const StyledArticlePinPanel = styled.div`
     position: fixed;
     bottom: 0;
     width: 208px;
-    z-index: 2;
+    z-index: 10;
     background-color: #f8f9f9;
   }
 

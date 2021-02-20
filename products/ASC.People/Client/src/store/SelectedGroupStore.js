@@ -15,6 +15,7 @@ class SelectedGroupStore {
       resetGroup: action,
       selectGroup: action,
       group: computed,
+      isEmptyGroup: computed,
     });
   }
 
@@ -45,6 +46,24 @@ class SelectedGroupStore {
   get group() {
     const { groups } = this.peopleStore.groupsStore;
     return groups.find((g) => g.id === this.selectedGroup);
+  }
+
+  get isEmptyGroup() {
+    const { groups } = this.peopleStore.groupsStore;
+    const { filter } = this.peopleStore.filterStore;
+
+    const { group, search, role, activationStatus, employeeStatus } = filter;
+
+    let countMembers;
+    groups.filter((el) => {
+      if (el.id === group) countMembers = el.members.length;
+    });
+
+    const filterIsClear =
+      !search && !role && !activationStatus && !employeeStatus;
+
+    if (countMembers === 0 && filterIsClear && group) return true;
+    return false;
   }
 }
 

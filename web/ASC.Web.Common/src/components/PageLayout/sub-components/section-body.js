@@ -4,6 +4,9 @@ import styled, { css } from "styled-components";
 import { utils, Scrollbar, DragAndDrop } from "asc-web-components";
 import SelectedFrame from "./SelectedFrame";
 import equal from "fast-deep-equal/react";
+import { LayoutContextConsumer } from "../../Layout/context";
+import { isMobile } from "react-device-detect";
+import { inject, observer } from "mobx-react";
 
 const { tablet } = utils.device;
 
@@ -40,6 +43,7 @@ const StyledSectionBody = styled.div`
   ${(props) =>
     props.withScroll &&
     `
+
     margin-left: -24px;
   `}
 `;
@@ -76,13 +80,12 @@ class SectionBody extends React.Component {
     this.scrollRef = React.createRef();
   }
 
-  shouldComponentUpdate(nextProps) {
-    return !equal(this.props, nextProps);
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   return !equal(this.props, nextProps);
+  // }
 
   componentDidMount() {
     if (!this.props.autoFocus) return;
-
     this.focusRef.current.focus();
   }
 
@@ -92,7 +95,7 @@ class SectionBody extends React.Component {
   }
 
   render() {
-    //console.log("PageLayout SectionBody render");
+    //console.log("PageLayout SectionBody render" );
     const {
       autoFocus,
       children,
@@ -102,6 +105,7 @@ class SectionBody extends React.Component {
       uploadFiles,
       viewAs,
       withScroll,
+      isLoaded,
     } = this.props;
 
     const focusProps = autoFocus
@@ -119,22 +123,43 @@ class SectionBody extends React.Component {
         onDrop={onDrop}
         withScroll={withScroll}
         viewAs={viewAs}
+        pinned={pinned}
+        isLoaded={isLoaded}
       >
         {withScroll ? (
-          <Scrollbar {...scrollProp} stype="mediumBlack">
-            <SelectedFrame
-              viewAs={viewAs}
-              scrollRef={this.scrollRef}
-              setSelections={setSelections}
-            >
-              <div className="section-wrapper">
-                <div className="section-wrapper-content" {...focusProps}>
-                  {children}
-                  <StyledSpacer pinned={pinned} />
+          !isMobile ? (
+            <Scrollbar {...scrollProp} stype="mediumBlack">
+              <SelectedFrame
+                viewAs={viewAs}
+                scrollRef={this.scrollRef}
+                setSelections={setSelections}
+              >
+                <div className="section-wrapper">
+                  <div className="section-wrapper-content" {...focusProps}>
+                    {children}
+                    <StyledSpacer pinned={pinned} />
+                  </div>
                 </div>
-              </div>
-            </SelectedFrame>
-          </Scrollbar>
+              </SelectedFrame>
+            </Scrollbar>
+          ) : (
+            <LayoutContextConsumer>
+              {(ref) => (
+                <SelectedFrame
+                  viewAs={viewAs}
+                  scrollRef={ref.scrollRefLayout}
+                  setSelections={setSelections}
+                >
+                  <div className="section-wrapper">
+                    <div className="section-wrapper-content" {...focusProps}>
+                      {children}
+                      <StyledSpacer pinned={pinned} />
+                    </div>
+                  </div>
+                </SelectedFrame>
+              )}
+            </LayoutContextConsumer>
+          )
         ) : (
           <SelectedFrame
             viewAs={viewAs}
@@ -149,16 +174,30 @@ class SectionBody extends React.Component {
         )}
       </StyledDropZoneBody>
     ) : (
-      <StyledSectionBody viewAs={viewAs} withScroll={withScroll}>
+      <StyledSectionBody
+        viewAs={viewAs}
+        withScroll={withScroll}
+        pinned={pinned}
+        isLoaded={isLoaded}
+      >
         {withScroll ? (
-          <Scrollbar {...scrollProp} stype="mediumBlack">
+          !isMobile ? (
+            <Scrollbar {...scrollProp} stype="mediumBlack">
+              <div className="section-wrapper">
+                <div className="section-wrapper-content" {...focusProps}>
+                  {children}
+                  <StyledSpacer pinned={pinned} />
+                </div>
+              </div>
+            </Scrollbar>
+          ) : (
             <div className="section-wrapper">
               <div className="section-wrapper-content" {...focusProps}>
                 {children}
                 <StyledSpacer pinned={pinned} />
               </div>
             </div>
-          </Scrollbar>
+          )
         ) : (
           <div className="section-wrapper">
             {children}
@@ -185,6 +224,7 @@ SectionBody.propTypes = {
     PropTypes.any,
   ]),
   viewAs: PropTypes.string,
+  isLoaded: PropTypes.bool,
 };
 
 SectionBody.defaultProps = {
@@ -194,4 +234,8 @@ SectionBody.defaultProps = {
   withScroll: true,
 };
 
-export default SectionBody;
+export default inject(({ auth }) => {
+  return {
+    isLoaded: auth.isLoaded,
+  };
+})(observer(SectionBody));

@@ -24,7 +24,7 @@ const EmptyTrashDialogComponent = (props) => {
 
   const loopEmptyTrash = useCallback(
     (id) => {
-      const successMessage = "Success empty recycle bin";
+      const successMessage = t("SuccessEmptyTrash");
       api.files
         .getProgress()
         .then((res) => {

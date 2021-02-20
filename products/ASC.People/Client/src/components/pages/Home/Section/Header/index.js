@@ -16,6 +16,7 @@ import {
   ChangeUserStatusDialog,
   ChangeUserTypeDialog,
 } from "../../../../dialogs";
+import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 const { tablet, desktop } = utils.device;
@@ -28,14 +29,37 @@ const StyledContainer = styled.div`
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
+    ${isMobile &&
+    css`
+      position: sticky;
+    `}
+    ${(props) =>
+      !props.isTabletView
+        ? props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 40 + "px"};
+          `
+        : props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 24 + "px"};
+          `}
 
     @media ${tablet} {
+      padding-bottom: 0;
+      ${!isMobile &&
+      css`
+        height: 56px;
+      `}
       & > div:first-child {
         ${(props) =>
+          !isMobile &&
           props.width &&
           css`
             width: ${props.width + 16 + "px"};
           `}
+
         position: absolute;
         top: 56px;
         z-index: 180;
@@ -110,6 +134,7 @@ const SectionHeaderContent = (props) => {
     hasUsersToInvite,
     hasUsersToRemove,
     isLoaded,
+    isTabletView,
     //selectAll,
     setSelected,
     //selectByStatus,
@@ -122,7 +147,7 @@ const SectionHeaderContent = (props) => {
     groupsCaption,
   } = customNames;
 
-  //console.log("SectionHeaderContent render");
+  //console.log("SectionHeaderContent render", props.isTabletView);
 
   const onCheck = (checked) => {
     setSelected(checked ? "all" : "close");
@@ -351,6 +376,7 @@ const SectionHeaderContent = (props) => {
           isHeaderVisible={isHeaderVisible}
           isLoaded={isLoaded}
           width={context.sectionWidth}
+          isTabletView={isTabletView}
         >
           {employeeDialogVisible && (
             <ChangeUserTypeDialog
@@ -502,4 +528,5 @@ export default inject(({ auth, peopleStore }) => ({
   removeUser: peopleStore.usersStore.removeUser,
   updateUserStatus: peopleStore.usersStore.updateUserStatus,
   group: peopleStore.selectedGroupStore.group,
+  isTabletView: auth.settingsStore.isTabletView, 
 }))(observer(withTranslation("Home")(withRouter(SectionHeaderContent))));

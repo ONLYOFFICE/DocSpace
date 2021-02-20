@@ -1,10 +1,7 @@
 ﻿
 using ASC.Api.Core;
 using ASC.Api.Settings;
-using ASC.Common.DependencyInjection;
 using ASC.Web.Api.Controllers;
-
-using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,11 +32,6 @@ namespace ASC.Web.Api
             DIHelper.TryAdd<SecurityController>();
             DIHelper.TryAdd<SmtpSettingsController>();
             DIHelper.TryAdd<ThirdPartyController>();
-        }
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
-            builder.Register(Configuration, HostEnvironment.ContentRootPath);
-
         }
     }
 }

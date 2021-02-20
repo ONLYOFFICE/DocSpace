@@ -131,6 +131,7 @@ class AddUsersPanelComponent extends React.Component {
               directionX="right"
               onAccessChange={this.onAccessChange}
               accessOptions={accessOptions}
+              arrowIconColor="#000000"
             />
           ),
         }
@@ -171,6 +172,7 @@ class AddUsersPanelComponent extends React.Component {
 
             <StyledBody ref={this.scrollRef}>
               <PeopleSelector
+                className="peopleSelector"
                 role={isMultiSelect ? null : "user"}
                 employeeStatus={1}
                 displayType="aside"
