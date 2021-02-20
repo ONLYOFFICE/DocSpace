@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from "react";
+import React, { Component } from "react";
 import { withRouter } from "react-router";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
@@ -18,17 +18,11 @@ import SettingsContainer from "./sub-components/settings-container";
 import InputContainer from "./sub-components/input-container";
 import ModalContainer from "./sub-components/modal-dialog-container";
 
-import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
 
-const i18n = createI18N({
-  page: "Wizard",
-  localesPath: "pages/Wizard",
-});
-
 const { tablet } = utils.device;
-const { changeLanguage, createPasswordHash } = commonUtils;
+const { createPasswordHash } = commonUtils;
 
 const { EmailSettings } = utils.email;
 const emailSettings = new EmailSettings();
@@ -500,20 +494,16 @@ Body.propTypes = {
   licenseUpload: PropTypes.string,
 };
 
-const WizardWrapper = withTranslation()(Body);
+const WizardWrapper = withTranslation("Wizard")(Body);
 
 const WizardPage = (props) => {
   const { isLoaded } = props;
-
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
 
   return (
     isLoaded && (
       <PageLayout>
         <PageLayout.SectionBody>
-          <WizardWrapper i18n={i18n} {...props} />
+          <WizardWrapper {...props} />
         </PageLayout.SectionBody>
       </PageLayout>
     )

@@ -8,14 +8,14 @@ import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { toEmployeeWrapper } from "../../../../../helpers/people-helpers";
 
-const { createThumbnailsAvatar, loadAvatar } = api.people;
+const { /*createThumbnailsAvatar,*/ loadAvatar } = api.people;
 const { isTablet } = utils.device;
 
-const dialogsDataset = {
-  changeEmail: "changeEmail",
-  changePassword: "changePassword",
-  changePhone: "changePhone",
-};
+// const dialogsDataset = {
+//   changeEmail: "changeEmail",
+//   changePassword: "changePassword",
+//   changePhone: "changePhone",
+// };
 
 const AvatarEditorBody = styled.div`
   margin-bottom: 24px;
@@ -46,7 +46,7 @@ class CreateAvatarEditorPage extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { match, fetchProfile, profile } = this.props;
+    const { match, fetchProfile /*, profile*/ } = this.props;
     const { userId } = match.params;
     const { avatar } = this.state;
     const prevUserId = prevProps.match.params.userId;
@@ -288,4 +288,6 @@ export default inject(({ auth, peopleStore }) => ({
   createdAvatar: peopleStore.avatarEditorStore.createdAvatar,
   avatarMax: peopleStore.avatarEditorStore.avatarMax,
   croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
-}))(observer(withRouter(withTranslation()(CreateAvatarEditorPage))));
+}))(
+  observer(withRouter(withTranslation("ProfileAction")(CreateAvatarEditorPage)))
+);

@@ -77,4 +77,4 @@ export default inject(({ auth, peopleStore }) => ({
   setFilter: peopleStore.filterStore.setFilterParams,
   group: peopleStore.selectedGroupStore.targetedGroup,
   resetGroup: peopleStore.selectedGroupStore.resetGroup,
-}))(observer(withRouter(withTranslation()(SectionHeaderContent))));
+}))(observer(withRouter(withTranslation("GroupAction")(SectionHeaderContent))));

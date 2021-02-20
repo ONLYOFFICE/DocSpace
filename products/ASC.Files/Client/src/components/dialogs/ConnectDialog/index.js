@@ -8,18 +8,9 @@ import {
   FieldContainer,
   toastr,
 } from "asc-web-components";
-import { utils as commonUtils } from "asc-web-common";
 import { loopTreeFolders } from "../../../helpers/files-helpers";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import { createI18N } from "../../../helpers/i18n";
+import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-
-const i18n = createI18N({
-  page: "ConnectDialog",
-  localesPath: "dialogs/ConnectDialog",
-});
-
-const { changeLanguage } = commonUtils;
 
 const PureConnectDialogContainer = (props) => {
   const {
@@ -321,18 +312,9 @@ const PureConnectDialogContainer = (props) => {
   );
 };
 
-const ConnectDialogContainer = withTranslation()(PureConnectDialogContainer);
-
-const ConnectDialog = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ConnectDialogContainer {...props} />
-    </I18nextProvider>
-  );
-};
+const ConnectDialog = withTranslation("ConnectDialog")(
+  PureConnectDialogContainer
+);
 
 export default inject(
   ({ filesStore, settingsStore, treeFoldersStore, selectedFolderStore }) => {

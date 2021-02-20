@@ -723,4 +723,4 @@ export default inject(
       clearSecondaryProgressData,
     };
   }
-)(withTranslation()(withRouter(observer(SectionHeaderContent))));
+)(withTranslation("Home")(withRouter(observer(SectionHeaderContent))));

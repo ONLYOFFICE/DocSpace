@@ -13,7 +13,7 @@ const SectionPagingContent = ({
   selectedCount,
   selectedFolderId,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("Home");
   const onNextClick = useCallback(
     (e) => {
       if (!filter.hasNext()) {

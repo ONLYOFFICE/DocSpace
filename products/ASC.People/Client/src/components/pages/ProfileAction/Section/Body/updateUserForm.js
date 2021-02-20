@@ -534,9 +534,8 @@ class UpdateUserForm extends React.Component {
     } = this.state;
     const {
       t,
-      i18n,
       settings,
-      avatarMax,
+      //avatarMax,
       disableProfileType,
       isAdmin,
     } = this.props;
@@ -672,7 +671,7 @@ class UpdateUserForm extends React.Component {
               helpButtonHeaderContent={t("Mail")}
               tooltipContent={
                 <Text fontSize="13px" as="div">
-                  <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
+                  <Trans i18nKey="EmailPopupHelper" ns="ProfileAction">
                     The main e-mail is needed to restore access to the portal in
                     case of loss of the password and send notifications.
                     <p
@@ -916,4 +915,4 @@ export default inject(({ auth, peopleStore }) => ({
   updateProfile: peopleStore.targetUserStore.updateProfile,
   getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
   disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
-}))(observer(withRouter(withTranslation()(UpdateUserForm))));
+}))(observer(withRouter(withTranslation("ProfileAction")(UpdateUserForm))));

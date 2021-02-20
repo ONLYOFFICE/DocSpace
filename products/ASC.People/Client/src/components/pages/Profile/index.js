@@ -1,24 +1,18 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { PageLayout, utils, toastr, Loaders } from "asc-web-common";
+import { PageLayout, toastr, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
   ArticleBodyContent,
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
-import { I18nextProvider, withTranslation } from "react-i18next";
-import { createI18N } from "../../../helpers/i18n";
 import { withRouter } from "react-router";
 import { isChrome, isAndroid } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-const i18n = createI18N({
-  page: "Profile",
-  localesPath: "pages/Profile",
-});
-const { changeLanguage } = utils;
+import { withTranslation } from "react-i18next";
 
-class PureProfile extends React.Component {
+class Profile extends React.Component {
   componentDidMount() {
     const {
       match,
@@ -95,20 +89,6 @@ class PureProfile extends React.Component {
   }
 }
 
-const ProfileContainer = withTranslation()(withRouter(PureProfile));
-
-const Profile = ({ language, ...rest }) => {
-  useEffect(() => {
-    changeLanguage(i18n, language);
-  }, [language]);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ProfileContainer {...rest} />
-    </I18nextProvider>
-  );
-};
-
 Profile.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
@@ -128,4 +108,4 @@ export default inject(({ auth, peopleStore }) => ({
   resetProfile: peopleStore.targetUserStore.resetTargetUser,
   fetchProfile: peopleStore.targetUserStore.getTargetUser,
   profile: peopleStore.targetUserStore.targetUser,
-}))(observer(Profile));
+}))(observer(withRouter(withTranslation("Profile")(Profile))));

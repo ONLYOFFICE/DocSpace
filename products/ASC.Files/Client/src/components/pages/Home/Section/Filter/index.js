@@ -333,5 +333,7 @@ export default inject(
     };
   }
 )(
-  withRouter(withLayoutSize(withTranslation()(observer(SectionFilterContent))))
+  withRouter(
+    withLayoutSize(withTranslation("Home")(observer(SectionFilterContent)))
+  )
 );

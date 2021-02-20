@@ -2,24 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
 
-const i18n = createI18N({
-  page: "DataLossWarningDialog",
-  localesPath: "dialogs/DataLossWarningDialog",
-});
-
-const { changeLanguage } = utils;
-
 class DataLossWarningDialogComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    changeLanguage(i18n);
-  }
-
   onClose = () => {
     const { setIsVisibleDataLossDialog } = this.props;
     setIsVisibleDataLossDialog(false);
@@ -74,12 +60,8 @@ class DataLossWarningDialogComponent extends React.Component {
   }
 }
 
-const DataLossWarningDialogTranslated = withTranslation()(
+const DataLossWarningDialog = withTranslation("DataLossWarningDialog")(
   DataLossWarningDialogComponent
-);
-
-const DataLossWarningDialog = (props) => (
-  <DataLossWarningDialogTranslated i18n={i18n} {...props} />
 );
 
 DataLossWarningDialog.propTypes = {

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
-import { PeopleSelector, utils, constants } from "asc-web-common";
+import { PeopleSelector, constants } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import {
   StyledAddUsersPanelPanel,
@@ -10,20 +10,11 @@ import {
   StyledBody,
 } from "../StyledPanels";
 import AccessComboBox from "../SharingPanel/AccessComboBox";
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "AddUsersPanel",
-  localesPath: "panels/AddUsersPanel",
-});
-
-const { changeLanguage } = utils;
 const { ShareAccessRights } = constants;
 
 class AddUsersPanelComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
 
     this.state = {
       showActionPanel: false,
@@ -208,12 +199,4 @@ AddUsersPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-const AddUsersPanelContainerTranslated = withTranslation()(
-  AddUsersPanelComponent
-);
-
-const AddUsersPanel = (props) => (
-  <AddUsersPanelContainerTranslated i18n={i18n} {...props} />
-);
-
-export default AddUsersPanel;
+export default withTranslation("AddUsersPanel")(AddUsersPanelComponent);

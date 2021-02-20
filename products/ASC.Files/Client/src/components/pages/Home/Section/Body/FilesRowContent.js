@@ -140,7 +140,6 @@ class FilesRowContent extends React.PureComponent {
       isPrivacy,
       isDesktop,
       replaceFileStream,
-      i18n,
       t,
       setEncryptionAccess,
       createFolder,
@@ -166,7 +165,7 @@ class FilesRowContent extends React.PureComponent {
           .then(() => this.completeAction(itemId))
           .then(() =>
             toastr.success(
-              <Trans i18nKey="FolderCreated" i18n={i18n}>
+              <Trans i18nKey="FolderCreated" ns="Home">
                 New folder {{ itemTitle }} is created
               </Trans>
             )
@@ -197,7 +196,7 @@ class FilesRowContent extends React.PureComponent {
           .then(() => {
             const exst = item.fileExst;
             return toastr.success(
-              <Trans i18nKey="FileCreated" i18n={i18n}>
+              <Trans i18nKey="FileCreated" ns="Home">
                 New file {{ itemTitle }}.{{ exst }} is created
               </Trans>
             );
@@ -728,7 +727,7 @@ export default inject(
       formatsStore,
       uploadDataStore,
       treeFoldersStore,
-      selectedFolderStore
+      selectedFolderStore,
     },
     { item }
   ) => {
@@ -820,4 +819,4 @@ export default inject(
       addExpandedKeys,
     };
   }
-)(withRouter(withTranslation()(observer(FilesRowContent))));
+)(withRouter(withTranslation("Home")(observer(FilesRowContent))));

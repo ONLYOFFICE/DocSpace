@@ -3,20 +3,13 @@ import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
-import { api, utils, toastr } from "asc-web-common";
+import { api, toastr } from "asc-web-common";
 
 import ModalDialogContainer from "../ModalDialogContainer";
-import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
-
-const i18n = createI18N({
-  page: "DeleteProfileEverDialog",
-  localesPath: "dialogs/DeleteProfileEverDialog",
-});
 
 const { deleteUser } = api.people; //TODO: Move to action
 const { Filter } = api;
-const { changeLanguage } = utils;
 
 class DeleteProfileEverDialogComponent extends React.Component {
   constructor(props) {
@@ -25,8 +18,6 @@ class DeleteProfileEverDialogComponent extends React.Component {
     this.state = {
       isRequestRunning: false,
     };
-
-    changeLanguage(i18n);
   }
   onDeleteProfileEver = () => {
     const { onClose, filter, fetchPeople, user, t } = this.props;
@@ -59,7 +50,10 @@ class DeleteProfileEverDialogComponent extends React.Component {
           <ModalDialog.Header>{t("Confirmation")}</ModalDialog.Header>
           <ModalDialog.Body>
             <Text>
-              <Trans i18nKey="DeleteUserConfirmation" i18n={i18n}>
+              <Trans
+                i18nKey="DeleteUserConfirmation"
+                ns="DeleteProfileEverDialog"
+              >
                 {{ userCaption }} <strong>{{ user: user.displayName }}</strong>{" "}
                 will be deleted.
               </Trans>
@@ -94,12 +88,8 @@ class DeleteProfileEverDialogComponent extends React.Component {
   }
 }
 
-const DeleteProfileEverDialogTranslated = withTranslation()(
+const DeleteProfileEverDialog = withTranslation("DeleteProfileEverDialog")(
   DeleteProfileEverDialogComponent
-);
-
-const DeleteProfileEverDialog = (props) => (
-  <DeleteProfileEverDialogTranslated i18n={i18n} {...props} />
 );
 
 DeleteProfileEverDialog.propTypes = {

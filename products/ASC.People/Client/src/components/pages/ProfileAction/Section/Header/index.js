@@ -38,7 +38,7 @@ const SectionHeaderContent = (props) => {
   } = props;
   const { userCaption, guestCaption } = settings.customNames;
   const { type } = match.params;
-  const { t } = useTranslation();
+  const { t } = useTranslation("ProfileAction");
 
   const headerText = avatarEditorIsOpen
     ? t("EditPhoto")

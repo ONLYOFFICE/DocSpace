@@ -123,4 +123,4 @@ export default inject(({ auth }) => ({
   isLoaded: auth.isLoaded,
   currentPhone: auth.userStore.mobilePhone,
   greetingTitle: auth.settingsStore.greetingSettings,
-}))(withRouter(withTranslation()(observer(ChangePhoneForm))));
+}))(withRouter(withTranslation("Confirm")(observer(ChangePhoneForm))));

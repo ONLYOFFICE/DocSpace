@@ -197,4 +197,4 @@ export default inject(({ auth, peopleStore }) => ({
   isAdmin: auth.isAdmin,
   profile: peopleStore.targetUserStore.targetUser,
   viewer: auth.userStore.user,
-}))(observer(withRouter(withTranslation()(SectionBodyContent))));
+}))(observer(withRouter(withTranslation("Profile")(SectionBodyContent))));

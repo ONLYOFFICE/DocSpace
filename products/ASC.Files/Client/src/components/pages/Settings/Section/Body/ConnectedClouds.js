@@ -12,15 +12,9 @@ import {
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import EmptyFolderContainer from "../../../Home/Section/Body/EmptyFolderContainer";
-import { createI18N } from "../../../../../helpers/i18n";
 import { Trans } from "react-i18next";
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
 import { inject, observer } from "mobx-react";
-
-const i18n = createI18N({
-  page: "SectionBodyContent",
-  localesPath: "pages/Settings",
-});
 
 const StyledServicesBlock = styled.div`
   display: grid;
@@ -391,7 +385,7 @@ class ConnectClouds extends React.Component {
               <Text as="div">
                 {t("ConnectDescription")}
                 {isAdmin && (
-                  <Trans i18nKey="ConnectAdminDescription" i18n={i18n}>
+                  <Trans i18nKey="ConnectAdminDescription" ns="Settings">
                     For successful connection enter the necessary data at
                     <Link
                       isHovered
@@ -565,4 +559,4 @@ export default inject(
       openConnectWindow,
     };
   }
-)(withTranslation()(observer(ConnectClouds)));
+)(withTranslation("Settings")(observer(ConnectClouds)));

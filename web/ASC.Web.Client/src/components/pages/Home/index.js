@@ -6,16 +6,8 @@ import { toastr, ModuleTile, PageLayout, utils } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
-
-const i18n = createI18N({
-  page: "Home",
-  localesPath: "pages/Home",
-});
-
-const { changeLanguage } = utils;
 
 const HomeContainer = styled.div`
   padding: 62px 15px 0 15px;
@@ -78,15 +70,11 @@ Tiles.propTypes = {
 };
 
 const Body = ({ modules, match, isLoaded }) => {
-  const { t } = useTranslation("translation", { i18n });
+  const { t } = useTranslation("Home");
   const { error } = match.params;
   setDocumentTitle();
 
   useEffect(() => error && toastr.error(error), [error]);
-
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
 
   return !isLoaded ? (
     <></>

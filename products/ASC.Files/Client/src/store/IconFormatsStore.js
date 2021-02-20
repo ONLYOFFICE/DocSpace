@@ -1,4 +1,4 @@
-import { makeObservable, makeAutoObservable } from "mobx";
+import { makeAutoObservable } from "mobx";
 import { presentInArray } from "../helpers/files-helpers";
 
 class IconFormatsStore {

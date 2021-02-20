@@ -2,23 +2,11 @@ import React from "react";
 import { withRouter } from "react-router";
 import { ModalDialog, Button } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils, toastr, api } from "asc-web-common";
+import { toastr, api } from "asc-web-common";
 import { loopTreeFolders } from "../../../helpers/files-helpers";
-import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
-const i18n = createI18N({
-  page: "DeleteThirdPartyDialog",
-  localesPath: "dialogs/DeleteThirdPartyDialog",
-});
-
-const { changeLanguage } = utils;
 
 class DeleteThirdPartyDialogComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    changeLanguage(i18n);
-  }
-
   updateTree = (path, folders) => {
     const { t, treeFolders, removeItem, setTreeFolders } = this.props;
 
@@ -89,12 +77,8 @@ class DeleteThirdPartyDialogComponent extends React.Component {
   }
 }
 
-const ModalDialogContainerTranslated = withTranslation()(
+const DeleteThirdPartyDialog = withTranslation("DeleteThirdPartyDialog")(
   DeleteThirdPartyDialogComponent
-);
-
-const DeleteThirdPartyDialog = (props) => (
-  <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
 export default inject(

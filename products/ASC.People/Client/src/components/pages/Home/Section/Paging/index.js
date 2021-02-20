@@ -12,7 +12,7 @@ const SectionPagingContent = ({
   selectedCount,
   isLoaded,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("Home");
   const onNextClick = useCallback(
     (e) => {
       if (!filter.hasNext()) {
@@ -147,13 +147,6 @@ const SectionPagingContent = ({
     <Loaders.Filter />
   );
 };
-
-function mapStateToProps(state) {
-  return {
-    //filter: getFilter(state),
-    // isLoaded: getIsLoaded(state),
-  };
-}
 
 export default inject(({ auth, peopleStore }) => ({
   isLoaded: auth.isLoaded,

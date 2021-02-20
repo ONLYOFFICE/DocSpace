@@ -68,10 +68,10 @@ const MainContainer = styled.div`
 `;
 
 class SectionBodyContent extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = this.mapPropsToState();
-  // }
+  constructor(props) {
+    super(props);
+    this.state = this.mapPropsToState();
+  }
 
   mapPropsToState = () => {
     const { group, users, groups, t } = this.props;
@@ -447,17 +447,17 @@ SectionBodyContent.defaultProps = {
   group: null,
 };
 
-const convertUsers = (users) => {
-  return users
-    ? users.map((u) => {
-        return {
-          key: u.id,
-          groups: u.groups || [],
-          label: u.displayName,
-        };
-      })
-    : [];
-};
+// const convertUsers = (users) => {
+//   return users
+//     ? users.map((u) => {
+//         return {
+//           key: u.id,
+//           groups: u.groups || [],
+//           label: u.displayName,
+//         };
+//       })
+//     : [];
+// };
 
 const convertGroups = (groups) => {
   return groups
@@ -490,4 +490,4 @@ export default inject(({ auth, peopleStore }) => {
     group: peopleStore.selectedGroupStore.targetedGroup,
     resetGroup: peopleStore.selectedGroupStore.resetGroup,
   };
-})(observer(withRouter(withTranslation()(SectionBodyContent))));
+})(observer(withRouter(withTranslation("GroupAction")(SectionBodyContent))));

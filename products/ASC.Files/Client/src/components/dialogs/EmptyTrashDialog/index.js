@@ -1,20 +1,13 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { api, utils, toastr } from "asc-web-common";
+import { api, toastr } from "asc-web-common";
 import { TIMEOUT } from "../../../helpers/constants";
-import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
 
-const i18n = createI18N({
-  page: "EmptyTrashDialog",
-  localesPath: "dialogs/EmptyTrashDialog",
-});
-
 const { files } = api;
-const { changeLanguage } = utils;
 
 const EmptyTrashDialogComponent = (props) => {
   const {
@@ -28,10 +21,6 @@ const EmptyTrashDialogComponent = (props) => {
     clearSecondaryProgressData,
     fetchFiles,
   } = props;
-
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
 
   const loopEmptyTrash = useCallback(
     (id) => {
@@ -155,12 +144,8 @@ const EmptyTrashDialogComponent = (props) => {
   );
 };
 
-const ModalDialogContainerTranslated = withTranslation()(
+const EmptyTrashDialog = withTranslation("EmptyTrashDialog")(
   EmptyTrashDialogComponent
-);
-
-const EmptyTrashDialog = (props) => (
-  <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
 export default inject(

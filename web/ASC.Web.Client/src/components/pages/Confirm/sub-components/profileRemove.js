@@ -120,4 +120,4 @@ const ProfileRemoveForm = (props) => (
 export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   logout: auth.logout,
-}))(withRouter(withTranslation()(observer(ProfileRemoveForm))));
+}))(withRouter(withTranslation("Confirm")(observer(ProfileRemoveForm))));

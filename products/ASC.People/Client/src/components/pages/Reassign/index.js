@@ -7,14 +7,8 @@ import {
   ArticleBodyContent,
 } from "../../Article";
 // import { SectionHeaderContent } from './Section';
-import { I18nextProvider } from "react-i18next";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
-import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
-const i18n = createI18N({
-  page: "Reassign",
-  localesPath: "pages/Reassign",
-});
 
 class Reassign extends React.Component {
   componentDidMount() {
@@ -49,31 +43,29 @@ class Reassign extends React.Component {
     // }
 
     return (
-      <I18nextProvider i18n={i18n}>
-        <PageLayout>
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
+      <PageLayout>
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
 
-          {isAdmin && (
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-          )}
+        {isAdmin && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
 
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
 
-          <PageLayout.SectionHeader>
-            <SectionHeaderContent />
-          </PageLayout.SectionHeader>
+        <PageLayout.SectionHeader>
+          <SectionHeaderContent />
+        </PageLayout.SectionHeader>
 
-          <PageLayout.SectionBody>
-            <SectionBodyContent />
-          </PageLayout.SectionBody>
-        </PageLayout>
-      </I18nextProvider>
+        <PageLayout.SectionBody>
+          <SectionBodyContent />
+        </PageLayout.SectionBody>
+      </PageLayout>
     );
   }
 }

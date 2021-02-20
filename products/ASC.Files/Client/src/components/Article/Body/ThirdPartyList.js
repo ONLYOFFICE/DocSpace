@@ -1,17 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Link } from "asc-web-components";
-import { history, utils } from "asc-web-common";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import { createI18N } from "../../../helpers/i18n";
+import { history } from "asc-web-common";
+import { withTranslation } from "react-i18next";
+
 import { inject, observer } from "mobx-react";
-
-const { changeLanguage } = utils;
-
-const i18n = createI18N({
-  page: "Article",
-  localesPath: "Article",
-});
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
@@ -203,18 +196,7 @@ const PureThirdPartyListContainer = ({
   );
 };
 
-const ThirdPartyListContainer = withTranslation()(PureThirdPartyListContainer);
-
-const ThirdPartyList = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ThirdPartyListContainer {...props} />
-    </I18nextProvider>
-  );
-};
+const ThirdPartyList = withTranslation("Article")(PureThirdPartyListContainer);
 
 export default inject(
   ({

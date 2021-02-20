@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 import { PageLayout, utils, api, toastr } from "asc-web-common";
-import { withTranslation, I18nextProvider, Trans } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import {
   ArticleBodyContent,
   ArticleHeaderContent,
@@ -18,15 +18,10 @@ import {
 
 import { ConvertDialog } from "../../dialogs";
 import { ChangeOwnerPanel } from "../../panels";
-import { createI18N } from "../../../helpers/i18n";
 import { getFilterByLocation } from "../../../helpers/converters";
 import Panels from "./Panels";
 import { observer, inject } from "mobx-react";
-const i18n = createI18N({
-  page: "Home",
-  localesPath: "pages/Home",
-});
-const { changeLanguage } = utils;
+
 const { FilesFilter } = api;
 
 class PureHome extends React.Component {
@@ -135,32 +130,30 @@ class PureHome extends React.Component {
   };
 
   showOperationToast = (type, qty, title) => {
-    const { i18n } = this.props;
-
     switch (type) {
       case "move":
         if (qty > 1) {
           return toastr.success(
-            <Trans i18nKey="MoveItems" i18n={i18n}>
+            <Trans i18nKey="MoveItems" ns="Home">
               {{ qty }} elements has been moved
             </Trans>
           );
         }
         return toastr.success(
-          <Trans i18nKey="MoveItem" i18n={i18n}>
+          <Trans i18nKey="MoveItem" ns="Home">
             {{ title }} moved
           </Trans>
         );
       case "duplicate":
         if (qty > 1) {
           return toastr.success(
-            <Trans i18nKey="CopyItems" i18n={i18n}>
+            <Trans i18nKey="CopyItems" ns="Home">
               {{ qty }} elements copied
             </Trans>
           );
         }
         return toastr.success(
-          <Trans i18nKey="CopyItem" i18n={i18n}>
+          <Trans i18nKey="CopyItem" ns="Home">
             {{ title }} copied
           </Trans>
         );
@@ -289,18 +282,7 @@ class PureHome extends React.Component {
   }
 }
 
-const HomeContainer = withTranslation()(PureHome);
-
-const Home = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-  return (
-    <I18nextProvider i18n={i18n}>
-      <HomeContainer {...props} />
-    </I18nextProvider>
-  );
-};
+const Home = withTranslation("Home")(PureHome);
 
 Home.propTypes = {
   history: PropTypes.object.isRequired,

@@ -1,21 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Loader } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
+import { PageLayout } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
   ArticleBodyContent,
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
-import { I18nextProvider, withTranslation } from "react-i18next";
-import { createI18N } from "../../../helpers/i18n";
+import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
-const i18n = createI18N({
-  page: "GroupAction",
-  localesPath: "pages/GroupAction",
-});
-const { changeLanguage } = utils;
 
 class GroupAction extends React.Component {
   componentDidMount() {
@@ -23,7 +17,6 @@ class GroupAction extends React.Component {
     const { groupId } = match.params;
 
     setDocumentTitle(t("GroupAction"));
-    changeLanguage(i18n);
 
     if (groupId) {
       fetchGroup(groupId);
@@ -46,7 +39,7 @@ class GroupAction extends React.Component {
     const { group, match, isAdmin } = this.props;
 
     return (
-      <I18nextProvider i18n={i18n}>
+      <>
         {group || !match.params.groupId ? (
           <PageLayout withBodyScroll={true}>
             <PageLayout.ArticleHeader>
@@ -92,23 +85,14 @@ class GroupAction extends React.Component {
             </PageLayout.SectionBody>
           </PageLayout>
         )}
-      </I18nextProvider>
+      </>
     );
   }
 }
 
-const GroupActionWrapper = withTranslation()(withRouter(GroupAction));
-
-const GroupActionContainer = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-  return (
-    <I18nextProvider i18n={i18n}>
-      <GroupActionWrapper {...props} />
-    </I18nextProvider>
-  );
-};
+const GroupActionContainer = withTranslation("GroupAction")(
+  withRouter(GroupAction)
+);
 
 export default inject(({ auth, peopleStore }) => ({
   setDocumentTitle: auth.setDocumentTitle,

@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-//import i18n from "../../../i18n";
-import { I18nextProvider, withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import {
   Text,
@@ -15,14 +14,7 @@ import {
 } from "asc-web-components";
 import { PeopleSelector } from "asc-web-common";
 import isEmpty from "lodash/isEmpty";
-
-import { createI18N } from "../../../../../../helpers/i18n";
 import { inject } from "mobx-react";
-
-const i18n = createI18N({
-  page: "Settings",
-  localesPath: "pages/Settings",
-});
 
 const OwnerContainer = styled.div`
   .link_style {
@@ -233,13 +225,7 @@ class PureOwnerSettings extends Component {
   }
 }
 
-const AccessRightsContainer = withTranslation()(PureOwnerSettings);
-
-const OwnerSettings = (props) => (
-  <I18nextProvider i18n={i18n}>
-    <AccessRightsContainer {...props} />
-  </I18nextProvider>
-);
+const OwnerSettings = withTranslation("Settings")(PureOwnerSettings);
 
 OwnerSettings.defaultProps = {
   owner: {},

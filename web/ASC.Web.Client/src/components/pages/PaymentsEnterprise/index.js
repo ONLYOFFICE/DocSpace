@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { PageLayout, utils, store } from "asc-web-common";
+import React from "react";
+import { PageLayout } from "asc-web-common";
 import { Loader, utils as Utils } from "asc-web-components";
 import styled from "styled-components";
 import { withRouter } from "react-router";
@@ -9,15 +9,9 @@ import HeaderContainer from "./sub-components/headerContainer";
 import AdvantagesContainer from "./sub-components/advantagesContainer";
 import ButtonContainer from "./sub-components/buttonContainer";
 import ContactContainer from "./sub-components/contactContainer";
-import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
-const i18n = createI18N({
-  page: "PaymentsEnterprise",
-  localesPath: "pages/PaymentsEnterprise",
-});
 
-const { changeLanguage } = utils;
 const { tablet, size } = Utils.device;
 
 const StyledBody = styled.div`
@@ -71,16 +65,12 @@ class Body extends React.Component {
     );
   }
 }
-const PaymentsWrapper = withTranslation()(Body);
+const PaymentsWrapper = withTranslation("PaymentsEnterprise")(Body);
 const PaymentsEnterprise = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-
   return (
     <PageLayout>
       <PageLayout.SectionBody>
-        <PaymentsWrapper {...props} i18n={i18n} />
+        <PaymentsWrapper {...props} />
       </PageLayout.SectionBody>
     </PageLayout>
   );

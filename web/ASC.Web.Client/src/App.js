@@ -15,6 +15,7 @@ import {
 } from "asc-web-common";
 import Home from "./components/pages/Home";
 import { inject, observer } from "mobx-react";
+import "./i18n";
 
 const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));

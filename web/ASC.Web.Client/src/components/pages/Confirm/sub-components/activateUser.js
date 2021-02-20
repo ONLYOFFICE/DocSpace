@@ -16,7 +16,7 @@ import { constants, utils as commonUtils, api } from "asc-web-common";
 import { inject, observer } from "mobx-react";
 
 const { EmployeeActivationStatus } = constants;
-const { createPasswordHash, tryRedirectTo } = commonUtils;
+const { createPasswordHash } = commonUtils;
 
 const inputWidth = "400px";
 
@@ -131,7 +131,7 @@ class Confirm extends React.PureComponent {
         this.state.userId,
         EmployeeActivationStatus.Activated
       )
-        .then(() => tryRedirectTo(defaultPage))
+        .then(() => window.location.replace(defaultPage))
         .catch((error) => {
           console.error("activate error", error);
           this.setState({
@@ -161,35 +161,26 @@ class Confirm extends React.PureComponent {
       key
     );
 
+    console.log("changePassword", res1);
+
     const res2 = await api.people.updateActivationStatus(
       activationStatus,
       userId,
       key
     );
 
-    //TODO: Fix working process
-    // .then((data) => {
-    //   const promise = new Promise((resolve, reject) => {
-    //     setTimeout(() => {
-    //       login(
-    //         loginData.userName,
-    //         loginData.passwordHash
-    //       )(dispatch)
-    //         .then(() => {
-    //           resolve(loadInitInfo(dispatch));
-    //         })
-    //         .catch((e) => {
-    //           reject(e);
-    //         });
-    //     }, 1000);
-    //   });
+    console.log("updateActivationStatus", res2);
 
-    //   return promise;
-    // })
-    // .then((data) => {
-    //   return api.people.updateUser(changedData);
-    // })
-    // .then((user) => dispatch(setCurrentUser(user)));
+    const { login } = this.props;
+    const { userName, passwordHash } = loginData;
+
+    const res3 = await login(userName, passwordHash);
+
+    console.log("Login", res3);
+
+    const res4 = await api.people.updateUser(changedData);
+
+    console.log("updateUser", res4);
   };
 
   onKeyPress = (event) => {
@@ -408,4 +399,4 @@ export default inject(({ auth }) => {
     getSettings,
     getPortalPasswordSettings,
   };
-})(withRouter(withTranslation()(observer(ActivateUserForm))));
+})(withRouter(withTranslation("Confirm")(observer(ActivateUserForm))));

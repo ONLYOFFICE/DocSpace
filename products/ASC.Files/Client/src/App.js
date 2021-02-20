@@ -5,6 +5,7 @@ import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
 import VersionHistory from "./components/pages/VersionHistory";
 import config from "../package.json";
+import "./i18n";
 
 import {
   history,

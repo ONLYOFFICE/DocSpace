@@ -25,7 +25,7 @@ const textStyle = {
 
 const SectionHeaderContent = (props) => {
   const { history, settings } = props;
-  const { t } = useTranslation();
+  const { t } = useTranslation("Reassign");
 
   const onClickBack = useCallback(() => {
     history.push(settings.homepage);

@@ -14,8 +14,6 @@ import { Trans } from "react-i18next";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject, observer } from "mobx-react";
-import { utils } from "asc-web-common";
-const { changeLanguage } = utils;
 
 const mapCulturesToArray = (cultures, t) => {
   return cultures.map((culture) => {
@@ -69,7 +67,7 @@ class LanguageAndTimeZone extends React.Component {
       portalTimeZoneId,
       rawCultures,
       rawTimezones,
-      organizationName,
+      /*organizationName,*/
       t,
     } = props;
     const languages = mapCulturesToArray(rawCultures, t);
@@ -185,7 +183,8 @@ class LanguageAndTimeZone extends React.Component {
       this.setState({ isLoadedData: true });
     }
     if (language !== prevProps.language) {
-      changeLanguage(i18n)
+      i18n
+        .changeLanguage(language)
         .then((t) => {
           const newLocaleLanguages = mapCulturesToArray(
             this.props.rawCultures,
@@ -234,7 +233,7 @@ class LanguageAndTimeZone extends React.Component {
     const { setLanguageAndTime, i18n } = this.props;
     this.setState({ isLoading: true }, function () {
       setLanguageAndTime(this.state.language.key, this.state.timezone.key)
-        .then(() => changeLanguage(i18n))
+        .then(() => i18n.changeLanguage(this.state.language.key))
         .then((t) => toastr.success(t("SuccessfullySaveSettingsMessage")))
         .catch((error) => toastr.error(error))
         .finally(() => this.setState({ isLoading: false }));
@@ -295,7 +294,7 @@ class LanguageAndTimeZone extends React.Component {
   };
 
   render() {
-    const { t, i18n } = this.props;
+    const { t } = this.props;
     const {
       isLoadedData,
       languages,
@@ -309,7 +308,7 @@ class LanguageAndTimeZone extends React.Component {
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage = (
       <Text fontSize="13px">
-        <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
+        <Trans i18nKey="NotFoundLanguage" ns="Settings">
           "In case you cannot find your language in the list of the available
           ones, feel free to write to us at
           <Link href={`mailto:${supportEmail}`} isHovered={true}>
@@ -420,4 +419,4 @@ export default inject(({ auth, setup }) => {
     getCurrentCustomSchema,
     getPortalTimezones,
   };
-})(withTranslation()(observer(LanguageAndTimeZone)));
+})(withTranslation("Settings")(observer(LanguageAndTimeZone)));

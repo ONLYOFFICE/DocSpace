@@ -18,8 +18,10 @@ import {
   Main,
   toastr,
 } from "asc-web-common";
+import { Loader } from "asc-web-components";
 import config from "../package.json";
 import { inject, observer } from "mobx-react";
+import "./i18n";
 
 // const Profile = lazy(() => import("./components/pages/Profile"));
 // const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -44,7 +46,9 @@ const App = (props) => {
     <Router history={history}>
       <NavMenu />
       <Main>
-        <Suspense fallback={null}>
+        <Suspense
+          fallback={<Loader className="pageLoader" type="rombs" size="40px" />}
+        >
           <Switch>
             <Redirect exact from="/" to={`${homepage}`} />
             <PrivateRoute

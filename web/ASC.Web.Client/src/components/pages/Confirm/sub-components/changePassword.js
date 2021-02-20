@@ -234,4 +234,4 @@ export default inject(({ auth }) => {
     getSettings,
     getPortalPasswordSettings,
   };
-})(withRouter(withTranslation()(observer(ChangePasswordForm))));
+})(withRouter(withTranslation("Confirm")(observer(ChangePasswordForm))));

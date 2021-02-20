@@ -12,7 +12,7 @@ import {
 } from "asc-web-components";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
-import { utils as commonUtils, constants, toastr } from "asc-web-common";
+import { constants, toastr } from "asc-web-common";
 
 import {
   StyledAsidePanel,
@@ -23,14 +23,8 @@ import {
 } from "../StyledPanels";
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
 import SharingRow from "./SharingRow";
-import { createI18N } from "../../../helpers/i18n";
 //import { setEncryptionAccess } from "../../../helpers/desktop";
 import { inject, observer } from "mobx-react";
-const i18n = createI18N({
-  page: "SharingPanel",
-  localesPath: "panels/SharingPanel",
-});
-const { changeLanguage } = commonUtils;
 const { ShareAccessRights } = constants;
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
@@ -38,8 +32,6 @@ const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 class SharingPanelComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
 
     this.state = {
       showActionPanel: false,
@@ -117,7 +109,6 @@ class SharingPanelComponent extends React.Component {
       setIsLoading,
       isPrivacy,
       replaceFileStream,
-      i18n,
       t,
       uploadPanelVisible,
       updateUploadedItem,
@@ -203,7 +194,7 @@ class SharingPanelComponent extends React.Component {
               return replaceFileStream(item.id, encryptedFile, true, true).then(
                 () =>
                   toastr.success(
-                    <Trans i18nKey="EncryptedFileSharing" i18n={i18n}>
+                    <Trans i18nKey="EncryptedFileSharing" ns="SharingPanel">
                       File {{ title }} successfully shared
                     </Trans>
                   )
@@ -586,13 +577,7 @@ class SharingPanelComponent extends React.Component {
   }
 }
 
-const SharingPanelContainerTranslated = withTranslation()(
-  SharingPanelComponent
-);
-
-const SharingPanel = (props) => (
-  <SharingPanelContainerTranslated i18n={i18n} {...props} />
-);
+const SharingPanel = withTranslation("SharingPanel")(SharingPanelComponent);
 
 export default inject(
   (

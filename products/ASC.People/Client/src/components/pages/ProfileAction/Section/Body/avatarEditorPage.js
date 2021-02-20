@@ -43,7 +43,7 @@ class AvatarEditorPage extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { match, fetchProfile, profile } = this.props;
+    const { match, fetchProfile /*, profile*/ } = this.props;
     const { userId } = match.params;
     const { avatar } = this.state;
     const prevUserId = prevProps.match.params.userId;
@@ -315,4 +315,4 @@ export default inject(({ auth, peopleStore }) => ({
   setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
   updateProfile: peopleStore.targetUserStore.updateProfile,
   getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
-}))(observer(withRouter(withTranslation()(AvatarEditorPage))));
+}))(observer(withRouter(withTranslation("ProfileAction")(AvatarEditorPage))));
