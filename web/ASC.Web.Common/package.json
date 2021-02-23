@@ -1,6 +1,6 @@
 {
   "name": "asc-web-common",
-  "version": "1.0.329",
+  "version": "1.0.330",
   "description": "Ascensio System SIA common components and solutions library",
   "license": "AGPL-3.0",
   "files": [
@@ -120,9 +120,9 @@
   "peerDependencies": {
     "asc-web-components": "file:../../packages/asc-web-components",
     "i18next": "19.0.3",
-    "prop-types": "^15.7.2",
     "mobx": "^6.1.1",
     "mobx-react": "^7.1.0",
+    "prop-types": "^15.7.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-i18next": "11.3.0",
