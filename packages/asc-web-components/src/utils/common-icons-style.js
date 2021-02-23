@@ -1,12 +1,11 @@
 import { css } from "styled-components";
 
 const iconSizes = {
-    small: 12,
-    medium: 16,
-    big: 24,
-  };
+  small: 12,
+  medium: 16,
+  big: 24,
+};
 const getSizeStyle = (size) => {
-  console.log("getSizeStyle", size)
   switch (size) {
     case "scale":
       return `

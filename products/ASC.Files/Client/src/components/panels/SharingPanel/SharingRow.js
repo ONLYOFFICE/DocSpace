@@ -4,7 +4,6 @@ import {
   ComboBox,
   Row,
   Text,
-  Icons,
   DropDownItem,
 } from "@appserver/components";
 import { toastr } from "@appserver/common";
