@@ -16,19 +16,6 @@ const Panels = (props) => {
   ];
 };
 
-// function mapStateToProps(state) {
-//   //   const commonSelection = getSelection(state);
-//   //   const uploadSelection = getUploadSelection(state);
-//   //   const uploadPanelVisible = getUploadPanelVisible(state);
-//   //   const selectionItem = uploadPanelVisible ? uploadSelection : commonSelection;
-//   // TODO: implement fetching selection data from this component
-//   return {
-//     uploadPanelVisible: getUploadPanelVisible(state),
-//     sharingPanelVisible: getSharePanelVisible(state),
-//     selection: selectionItem,
-//   };
-// }
-
 export default inject(({ dialogsStore, uploadDataStore }) => {
   const { sharingPanelVisible } = dialogsStore;
   const { uploadPanelVisible } = uploadDataStore;

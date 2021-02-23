@@ -109,13 +109,6 @@ const AdvantagesContainer = ({ organizationName }) => {
   );
 };
 
-// function mapStateToProps({ auth }) {
-//   const { organizationName } = auth.settings;
-//   return {
-//     organizationName,
-//   };
-// }
-
 export default inject(({ auth }) => ({
   organizationName: auth.settingsStore.organizationName,
 }))(AdvantagesContainer);

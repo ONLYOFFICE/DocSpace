@@ -111,13 +111,6 @@ class PureAccessRights extends Component {
   }
 }
 
-// function mapStateToProps(state) {
-//   const { organizationName } = state.auth.settings;
-//   return {
-//     organizationName,
-//   };
-// }
-
 export default inject(({ auth }) => ({
   organizationName: auth.settingsStore.organizationName,
 }))(withTranslation("Settings")(withRouter(PureAccessRights)));
