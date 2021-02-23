@@ -1,18 +1,30 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
-import store from "./store/store";
 import "./custom.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { ErrorBoundary } from "asc-web-common";
+import { ErrorBoundary, store as commonStore } from "asc-web-common";
+import { Provider as MobxProvider } from "mobx-react";
+import PaymentStore from "./store/PaymentStore";
+import WizardStore from "./store/WizardStore";
+import SettingsSetupStore from "./store/SettingsSetupStore";
+
+const { authStore } = commonStore;
+const paymentStore = new PaymentStore();
+const wizardStore = new WizardStore();
+const setupStore = new SettingsSetupStore();
 
 ReactDOM.render(
-  <Provider store={store}>
+  <MobxProvider
+    auth={authStore}
+    payments={paymentStore}
+    wizard={wizardStore}
+    setup={setupStore}
+  >
     <ErrorBoundary>
       <App />
     </ErrorBoundary>
-  </Provider>,
+  </MobxProvider>,
   document.getElementById("root")
 );
 

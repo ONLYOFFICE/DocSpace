@@ -1,29 +1,11 @@
 import React from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { createI18N } from "../../../helpers/i18n";
-import {
-  setIsVisibleDataLossDialog,
-  setIsEditingForm,
-} from "../../../store/people/actions";
-
-const i18n = createI18N({
-  page: "DataLossWarningDialog",
-  localesPath: "dialogs/DataLossWarningDialog",
-});
-
-const { changeLanguage } = utils;
+import { inject, observer } from "mobx-react";
 
 class DataLossWarningDialogComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    changeLanguage(i18n);
-  }
-
   onClose = () => {
     const { setIsVisibleDataLossDialog } = this.props;
     setIsVisibleDataLossDialog(false);
@@ -34,27 +16,24 @@ class DataLossWarningDialogComponent extends React.Component {
       onContinue,
       setIsVisibleDataLossDialog,
       setIsEditingForm,
-      editingForm,
+      callback,
     } = this.props;
 
-    setIsVisibleDataLossDialog(false, null);
+    setIsVisibleDataLossDialog(false);
     setIsEditingForm(false);
 
-    if (editingForm.callback) {
-      editingForm.callback();
+    if (callback) {
+      callback();
     } else {
       onContinue && onContinue();
     }
   };
   render() {
-    const { t, editingForm } = this.props;
+    const { t, isVisibleDataLossDialog } = this.props;
 
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={editingForm.isVisibleDataLossDialog}
-          onClose={this.onClose}
-        >
+        <ModalDialog visible={isVisibleDataLossDialog} onClose={this.onClose}>
           <ModalDialog.Header>{t("DataLossWarningHeader")}</ModalDialog.Header>
           <ModalDialog.Body>
             <Text fontSize="13px">{t("DataLossWarningBody")}</Text>
@@ -81,26 +60,22 @@ class DataLossWarningDialogComponent extends React.Component {
   }
 }
 
-const DataLossWarningDialogTranslated = withTranslation()(
+const DataLossWarningDialog = withTranslation("DataLossWarningDialog")(
   DataLossWarningDialogComponent
 );
 
-const DataLossWarningDialog = (props) => (
-  <DataLossWarningDialogTranslated i18n={i18n} {...props} />
-);
-
 DataLossWarningDialog.propTypes = {
-  editingForm: PropTypes.object.isRequired,
+  //editingForm: PropTypes.object.isRequired,
   onContinue: PropTypes.func.isRequired,
 };
 
-function mapStateToProps(state) {
+export default inject(({ peopleStore }) => {
   return {
-    editingForm: state.people.editingForm,
+    isVisibleDataLossDialog:
+      peopleStore.editingFormStore.isVisibleDataLossDialog,
+    setIsVisibleDataLossDialog:
+      peopleStore.editingFormStore.setIsVisibleDataLossDialog,
+    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+    callback: peopleStore.editingFormStore.callback,
   };
-}
-
-export default connect(mapStateToProps, {
-  setIsVisibleDataLossDialog,
-  setIsEditingForm,
-})(DataLossWarningDialog);
+})(observer(DataLossWarningDialog));

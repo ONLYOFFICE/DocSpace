@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import styled from "styled-components";
 import {
   Box,
@@ -11,46 +10,11 @@ import {
   Row,
   Icons,
 } from "asc-web-components";
-import { store } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import EmptyFolderContainer from "../../../Home/Section/Body/EmptyFolderContainer";
-import { createI18N } from "../../../../../helpers/i18n";
 import { Trans } from "react-i18next";
-import {
-  getOAuthToken,
-  openConnectWindow,
-  setConnectItem,
-  setShowThirdPartyPanel,
-  fetchFiles,
-  setSelectedNode,
-} from "../../../../../store/files/actions";
-import {
-  getThirdPartyCapabilities,
-  getGoogleConnect,
-  getBoxConnect,
-  getDropboxConnect,
-  getOneDriveConnect,
-  getNextCloudConnect,
-  getSharePointConnect,
-  getkDriveConnect,
-  getYandexConnect,
-  getOwnCloudConnect,
-  getWebDavConnect,
-  getConnectItem,
-  getShowThirdPartyPanel,
-  getThirdPartyProviders,
-  getMyDirectoryFolders,
-  getCommonDirectoryFolders,
-  getFilter,
-} from "../../../../../store/files/selectors";
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
-
-const { isAdmin } = store.auth.selectors;
-
-const i18n = createI18N({
-  page: "SectionBodyContent",
-  localesPath: "pages/Settings",
-});
+import { inject, observer } from "mobx-react";
 
 const StyledServicesBlock = styled.div`
   display: grid;
@@ -160,11 +124,13 @@ class ConnectClouds extends React.Component {
         "Authorization",
         "height=600, width=1020"
       );
-      openConnectWindow(selectedServiceData.title, authModal).then((modal) =>
-        getOAuthToken(modal).then((token) =>
-          this.showOAuthModal(token, selectedServiceData)
-        )
-      );
+      this.props
+        .openConnectWindow(selectedServiceData.title, authModal)
+        .then((modal) =>
+          this.props
+            .getOAuthToken(modal)
+            .then((token) => this.showOAuthModal(token, selectedServiceData))
+        );
     }
 
     this.setState({
@@ -419,7 +385,7 @@ class ConnectClouds extends React.Component {
               <Text as="div">
                 {t("ConnectDescription")}
                 {isAdmin && (
-                  <Trans i18nKey="ConnectAdminDescription" i18n={i18n}>
+                  <Trans i18nKey="ConnectAdminDescription" ns="Settings">
                     For successful connection enter the necessary data at
                     <Link
                       isHovered
@@ -542,32 +508,55 @@ class ConnectClouds extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    isAdmin: isAdmin(state),
-    capabilities: getThirdPartyCapabilities(state),
-    googleConnectItem: getGoogleConnect(state),
-    boxConnectItem: getBoxConnect(state),
-    dropboxConnectItem: getDropboxConnect(state),
-    oneDriveConnectItem: getOneDriveConnect(state),
-    nextCloudConnectItem: getNextCloudConnect(state),
-    sharePointConnectItem: getSharePointConnect(state),
-    kDriveConnectItem: getkDriveConnect(state),
-    yandexConnectItem: getYandexConnect(state),
-    ownCloudConnectItem: getOwnCloudConnect(state),
-    webDavConnectItem: getWebDavConnect(state),
-    connectItem: getConnectItem(state),
-    showThirdPartyPanel: getShowThirdPartyPanel(state),
-    providers: getThirdPartyProviders(state),
-    myDirectoryFolders: getMyDirectoryFolders(state),
-    commonDirectoryFolders: getCommonDirectoryFolders(state),
-    filter: getFilter(state),
-  };
-}
+export default inject(
+  ({ auth, filesStore, settingsStore, treeFoldersStore }) => {
+    const {
+      providers,
+      connectItem,
+      capabilities,
+      setConnectItem,
+      showThirdPartyPanel,
+      setShowThirdPartyPanel,
+      googleConnectItem,
+      boxConnectItem,
+      dropboxConnectItem,
+      oneDriveConnectItem,
+      nextCloudConnectItem,
+      kDriveConnectItem,
+      yandexConnectItem,
+      ownCloudConnectItem,
+      webDavConnectItem,
+      getOAuthToken,
+      openConnectWindow,
+    } = settingsStore.thirdPartyStore;
+    const { fetchFiles, filter } = filesStore;
+    const { setSelectedNode, myFolder, commonFolder } = treeFoldersStore;
 
-export default connect(mapStateToProps, {
-  setConnectItem,
-  setShowThirdPartyPanel,
-  fetchFiles,
-  setSelectedNode,
-})(withTranslation()(ConnectClouds));
+    return {
+      isAdmin: auth.isAdmin,
+      filter,
+      providers,
+      showThirdPartyPanel,
+      connectItem,
+      capabilities,
+      googleConnectItem,
+      boxConnectItem,
+      dropboxConnectItem,
+      oneDriveConnectItem,
+      nextCloudConnectItem,
+      kDriveConnectItem,
+      yandexConnectItem,
+      ownCloudConnectItem,
+      webDavConnectItem,
+      myDirectoryFolders: myFolder && myFolder.folders,
+      commonDirectoryFolders: commonFolder && commonFolder.folders,
+
+      fetchFiles,
+      setSelectedNode,
+      setConnectItem,
+      setShowThirdPartyPanel,
+      getOAuthToken,
+      openConnectWindow,
+    };
+  }
+)(withTranslation("Settings")(observer(ConnectClouds)));

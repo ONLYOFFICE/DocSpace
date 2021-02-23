@@ -3,17 +3,8 @@ import styled from "styled-components";
 import { Row, Text, Icons, Tooltip, Link } from "asc-web-components";
 
 import LoadingButton from "./LoadingButton";
-import { connect } from "react-redux";
-import {
-  cancelCurrentUpload,
-} from "../../../store/files/actions";
-import {
-  getLoadingFile,
-  isUploaded,
-  isMediaOrImage,
-  getIconSrc,
-} from "../../../store/files/selectors";
 import ShareButton from "./ShareButton";
+import { inject, observer } from "mobx-react";
 
 const StyledFileRow = styled(Row)`
   margin: 0 16px;
@@ -74,7 +65,6 @@ const FileRow = (props) => {
     isMedia,
     ext,
     name,
-    uniqueId,
   } = props;
 
   const onCancelCurrentUpload = (e) => {
@@ -135,7 +125,7 @@ const FileRow = (props) => {
             <></>
           )}
           {item.fileId ? (
-            <ShareButton uniqueId={uniqueId} />
+            <ShareButton uniqueId={item.uniqueId} />
           ) : item.error || (!item.fileId && uploaded) ? (
             <div className="upload_panel-icon">
               {" "}
@@ -168,41 +158,46 @@ const FileRow = (props) => {
     </>
   );
 };
-const mapStateToProps = (state, ownProps) => {
-  const loadingFile = getLoadingFile(state);
 
-  const { item } = ownProps;
+export default inject(
+  ({ filesStore, formatsStore, uploadDataStore }, { item }) => {
+    let ext;
+    let name;
+    let splitted;
+    if (item.file) {
+      splitted = item.file.name.split(".");
+      ext = splitted.length > 1 ? "." + splitted.pop() : "";
+      name = splitted[0];
+    } else {
+      ext = item.fileInfo.fileExst;
+      splitted = item.fileInfo.title.split(".");
+      name = splitted[0];
+    }
 
-  let ext;
-  let name;
-  let splitted;
-  if (item.file) {
-    splitted = item.file.name.split(".");
-    ext = splitted.length > 1 ? "." + splitted.pop() : "";
-    name = splitted[0];
-  } else {
-    ext = item.fileInfo.fileExst;
-    splitted = item.fileInfo.title.split(".");
-    name = splitted[0];
-  }
+    const { iconFormatsStore, mediaViewersFormatsStore } = formatsStore;
+    const { cancelCurrentUpload } = filesStore;
+    const { uploaded, primaryProgressDataStore } = uploadDataStore;
+    const { loadingFile: file } = primaryProgressDataStore;
+    const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
+    const fileIcon = iconFormatsStore.getIconSrc(ext, 24);
 
-  const { uniqueId } = item;
+    const loadingFile = !file || !file.uniqueId ? null : file;
 
-  return {
-    currentFileUploadProgress:
-      loadingFile && loadingFile.uniqueId === uniqueId
+    const currentFileUploadProgress =
+      file && loadingFile.uniqueId === item.uniqueId
         ? loadingFile.percent
-        : null,
-    uploaded: isUploaded(state),
-    isMedia: isMediaOrImage(ext)(state),
-    fileIcon: getIconSrc(ext, 24)(state),
-    ext,
-    name,
-    uniqueId,
-  };
-};
+        : null;
 
-export default connect(mapStateToProps, {
-  cancelCurrentUpload,
-  // setMediaViewerData,
-})(FileRow);
+    return {
+      currentFileUploadProgress,
+      uploaded,
+      isMedia,
+      fileIcon,
+      ext,
+      name,
+      loadingFile,
+
+      cancelCurrentUpload,
+    };
+  }
+)(observer(FileRow));

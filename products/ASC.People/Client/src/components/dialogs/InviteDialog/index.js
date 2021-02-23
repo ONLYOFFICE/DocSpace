@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import {
   ModalDialog,
@@ -12,15 +11,10 @@ import {
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import copy from "copy-to-clipboard";
-import { api, utils } from "asc-web-common";
-import { createI18N } from "../../../helpers/i18n";
-import { getPortalInviteLinks } from "../../../store/portal/actions";
-const i18n = createI18N({
-  page: "InviteDialog",
-  localesPath: "dialogs/InviteDialog",
-});
+import { api } from "asc-web-common";
+import { inject, observer } from "mobx-react";
+
 const { getShortenedLink } = api.portal;
-const { changeLanguage } = utils;
 
 const textAreaName = "link-textarea";
 
@@ -109,19 +103,17 @@ class InviteDialogComponent extends React.Component {
       guestInvitationLink,
     } = this.props;
 
-    changeLanguage(i18n).then(() => {
-      if (!userInvitationLink || !guestInvitationLink) {
-        getPortalInviteLinks().then(() => {
-          this.setState({
-            visible: true,
-            userInvitationLink: this.props.userInvitationLink,
-            guestInvitationLink: this.props.guestInvitationLink,
-          });
+    if (!userInvitationLink || !guestInvitationLink) {
+      getPortalInviteLinks().then(() => {
+        this.setState({
+          visible: true,
+          userInvitationLink: this.props.userInvitationLink,
+          guestInvitationLink: this.props.guestInvitationLink,
         });
-      } else {
-        this.setState({ visible: true });
-      }
-    });
+      });
+    } else {
+      this.setState({ visible: true });
+    }
   }
 
   onClickToCloseButton = () =>
@@ -208,26 +200,7 @@ class InviteDialogComponent extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    settings: state.auth.settings.hasShortenService,
-    userInvitationLink: state.portal.inviteLinks.userLink,
-    guestInvitationLink: state.portal.inviteLinks.guestLink,
-    guestsCaption: state.auth.settings.customNames.guestsCaption,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getPortalInviteLinks: () => dispatch(getPortalInviteLinks()),
-  };
-};
-
-const InviteDialogTranslated = withTranslation()(InviteDialogComponent);
-
-const InviteDialog = (props) => (
-  <InviteDialogTranslated i18n={i18n} {...props} />
-);
+const InviteDialog = withTranslation("InviteDialog")(InviteDialogComponent);
 
 InviteDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
@@ -235,4 +208,10 @@ InviteDialog.propTypes = {
   onCloseButton: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(InviteDialog);
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  guestsCaption: auth.settingsStore.customNames.guestsCaption,
+  getPortalInviteLinks: peopleStore.inviteLinksStore.getPortalInviteLinks,
+  userInvitationLink: peopleStore.inviteLinksStore.inviteLinks.userLink,
+  guestInvitationLink: peopleStore.inviteLinksStore.inviteLinks.guestLink,
+}))(observer(InviteDialog));

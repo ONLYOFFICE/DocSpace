@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { ReactSVG } from "react-svg";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import {
@@ -11,23 +10,13 @@ import {
   Box,
   EmptyScreenContainer,
 } from "asc-web-components";
-import { toastr, PageLayout, utils, store, Loaders } from "asc-web-common";
+import { toastr, PageLayout, Loaders } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { isMobile, isIOS, isAndroid } from "react-device-detect";
+import { isMobile, isIOS } from "react-device-detect";
 
-import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
-
-const { getModules, getIsLoaded } = store.auth.selectors;
-const { setCurrentProductId } = store.auth.actions;
-
-const i18n = createI18N({
-  page: "ComingSoon",
-  localesPath: "pages/ComingSoon",
-});
-
-const { changeLanguage } = utils;
+import { inject } from "mobx-react";
 
 const commonStyles = `
   .link-box {
@@ -120,7 +109,7 @@ const ExternalLink = ({ label, href }) => (
 );
 
 const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
-  const { t } = useTranslation("translation", { i18n });
+  const { t } = useTranslation("ComingSoon");
   const { error } = match.params;
   const { pathname, protocol, hostname } = window.location;
   const currentModule = modules.find((m) => m.link === pathname);
@@ -150,10 +139,6 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
   }, [id, setCurrentProductId]);
 
   useEffect(() => error && toastr.error(error), [error]);
-
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
 
   const appButtons = (
     <>
@@ -246,13 +231,8 @@ ComingSoon.propTypes = {
   isLoaded: PropTypes.bool,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    modules: getModules(state),
-    isLoaded: getIsLoaded(state),
-  };
-};
-
-export default connect(mapStateToProps, { setCurrentProductId })(
-  withRouter(ComingSoon)
-);
+export default inject(({ auth }) => ({
+  modules: auth.moduleStore.modules,
+  isLoaded: auth.isLoaded,
+  setCurrentProductId: auth.settingsStore.setCurrentProductId,
+}))(withRouter(ComingSoon));

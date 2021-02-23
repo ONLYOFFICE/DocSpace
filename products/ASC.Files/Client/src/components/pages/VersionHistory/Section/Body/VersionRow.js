@@ -10,17 +10,10 @@ import {
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
-import { toastr, store } from "asc-web-common";
-import {
-  markAsVersion,
-  restoreVersion,
-  updateCommentVersion,
-} from "../../../../../store/files/actions";
+import { toastr } from "asc-web-common";
 import VersionBadge from "./VersionBadge";
 import StyledVersionRow from "./StyledVersionRow";
-
-const { getLanguage } = store.auth.selectors;
+import { inject, observer } from "mobx-react";
 
 const VersionRow = (props) => {
   const {
@@ -233,23 +226,22 @@ const VersionRow = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    culture: getLanguage(state),
-  };
-};
+export default inject(({ auth, versionHistoryStore }) => {
+  const { user } = auth.userStore;
+  const { culture } = auth.settingsStore;
+  const language = (user && user.cultureName) || culture || "en-US";
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    markAsVersion: (id, isVersion, version) =>
-      dispatch(markAsVersion(id, isVersion, version)),
-    restoreVersion: (id, version) => dispatch(restoreVersion(id, version)),
-    updateCommentVersion: (id, comment, version) =>
-      dispatch(updateCommentVersion(id, comment, version)),
-  };
-};
+  const {
+    markAsVersion,
+    restoreVersion,
+    updateCommentVersion,
+  } = versionHistoryStore;
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(withTranslation()(VersionRow)));
+  return {
+    culture: language,
+
+    markAsVersion,
+    restoreVersion,
+    updateCommentVersion,
+  };
+})(withRouter(withTranslation("VersionHistory")(observer(VersionRow))));

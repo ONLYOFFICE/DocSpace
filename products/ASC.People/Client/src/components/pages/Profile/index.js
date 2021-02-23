@@ -1,29 +1,27 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import PropTypes from "prop-types";
-import { PageLayout, utils, store, toastr, Loaders } from "asc-web-common";
+import { PageLayout, toastr, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
   ArticleBodyContent,
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
-import { fetchProfile, resetProfile } from "../../../store/profile/actions";
-import { I18nextProvider, withTranslation } from "react-i18next";
-import { createI18N } from "../../../helpers/i18n";
-import { setDocumentTitle } from "../../../helpers/utils";
 import { withRouter } from "react-router";
 
-const i18n = createI18N({
-  page: "Profile",
-  localesPath: "pages/Profile",
-});
-const { changeLanguage } = utils;
-const { isAdmin, isVisitor, getLanguage, getIsLoaded } = store.auth.selectors;
+import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
 
-class PureProfile extends React.Component {
+class Profile extends React.Component {
   componentDidMount() {
-    const { match, fetchProfile, profile, location, t } = this.props;
+    const {
+      match,
+      fetchProfile,
+      profile,
+      location,
+      t,
+      setDocumentTitle,
+    } = this.props;
     const { userId } = match.params;
 
     setDocumentTitle(t("Profile"));
@@ -45,7 +43,7 @@ class PureProfile extends React.Component {
     if (!profile && this.documentElement) {
       for (var i = 0; i < this.documentElement.length; i++) {
         this.documentElement[i].style.transition = "none";
-      }
+  }
     }
   }
 
@@ -61,7 +59,7 @@ class PureProfile extends React.Component {
     if (profile && this.documentElement) {
       for (var i = 0; i < this.documentElement.length; i++) {
         this.documentElement[i].style.transition = "";
-      }
+  }
     }
   }
 
@@ -104,20 +102,6 @@ class PureProfile extends React.Component {
   }
 }
 
-const ProfileContainer = withTranslation()(withRouter(PureProfile));
-
-const Profile = ({ language, ...rest }) => {
-  useEffect(() => {
-    changeLanguage(i18n, language);
-  }, [language]);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ProfileContainer {...rest} />
-    </I18nextProvider>
-  );
-};
-
 Profile.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
@@ -128,18 +112,13 @@ Profile.propTypes = {
   language: PropTypes.string,
 };
 
-function mapStateToProps(state) {
-  const { targetUser } = state.profile;
-  return {
-    profile: targetUser,
-    isLoaded: getIsLoaded(state),
-    isVisitor: isVisitor(state),
-    isAdmin: isAdmin(state),
-    language: getLanguage(state),
-  };
-}
-
-export default connect(mapStateToProps, {
-  fetchProfile,
-  resetProfile,
-})(Profile);
+export default inject(({ auth, peopleStore }) => ({
+  setDocumentTitle: auth.setDocumentTitle,
+  isVisitor: auth.userStore.user.isVisitor,
+  isLoaded: auth.isLoaded,
+  isAdmin: auth.isAdmin,
+  language: auth.language,
+  resetProfile: peopleStore.targetUserStore.resetTargetUser,
+  fetchProfile: peopleStore.targetUserStore.getTargetUser,
+  profile: peopleStore.targetUserStore.targetUser,
+}))(observer(withRouter(withTranslation("Profile")(Profile))));

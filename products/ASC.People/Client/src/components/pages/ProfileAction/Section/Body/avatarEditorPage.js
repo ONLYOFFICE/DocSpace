@@ -1,20 +1,12 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import { AvatarEditor, utils, Loader } from "asc-web-components";
 import { api, toastr } from "asc-web-common";
-import {
-  fetchProfile,
-  updateProfile,
-  getUserPhoto,
-  setAvatarMax,
-} from "../../../../../store/profile/actions";
-import { toEmployeeWrapper } from "../../../../../store/people/selectors";
-import { toggleAvatarEditor } from "../../../../../store/people/actions";
-import { setDocumentTitle } from "../../../../../helpers/utils";
 import { isMobile } from "react-device-detect";
+import { inject, observer } from "mobx-react";
+import { toEmployeeWrapper } from "../../../../../helpers/people-helpers";
 
 const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
 const { isTablet } = utils.device;
@@ -36,7 +28,7 @@ class AvatarEditorPage extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { match, fetchProfile, t, profile } = this.props;
+    const { match, fetchProfile, t, profile, setDocumentTitle } = this.props;
     const { avatar } = this.state;
     const { userId } = match.params;
 
@@ -51,7 +43,7 @@ class AvatarEditorPage extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { match, fetchProfile, profile } = this.props;
+    const { match, fetchProfile /*, profile*/ } = this.props;
     const { userId } = match.params;
     const { avatar } = this.state;
     const prevUserId = prevProps.match.params.userId;
@@ -72,7 +64,7 @@ class AvatarEditorPage extends React.PureComponent {
 
   updateUserPhotoInState = () => {
     var profile = toEmployeeWrapper(this.props.profile);
-    getUserPhoto(profile.id).then((userPhotoData) => {
+    this.props.getUserPhoto(profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -96,7 +88,7 @@ class AvatarEditorPage extends React.PureComponent {
   mapPropsToState = (props) => {
     var profile = toEmployeeWrapper(props.profile);
 
-    getUserPhoto(profile.id).then((userPhotoData) => {
+    this.props.getUserPhoto(profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -258,7 +250,7 @@ class AvatarEditorPage extends React.PureComponent {
       return;
     }
 
-    getUserPhoto(profile.id).then((userPhotoData) => {
+    this.props.getUserPhoto(profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -314,17 +306,13 @@ class AvatarEditorPage extends React.PureComponent {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    profile: state.profile.targetUser,
-    avatarMax: state.profile.avatarMax,
-    settings: state.auth.settings,
-  };
-}
-
-export default connect(mapStateToProps, {
-  fetchProfile,
-  updateProfile,
-  toggleAvatarEditor,
-  setAvatarMax,
-})(withTranslation()(withRouter(AvatarEditorPage)));
+export default inject(({ auth, peopleStore }) => ({
+  setDocumentTitle: auth.setDocumentTitle,
+  toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+  fetchProfile: peopleStore.targetUserStore.getTargetUser,
+  profile: peopleStore.targetUserStore.targetUser,
+  avatarMax: peopleStore.avatarEditorStore.avatarMax,
+  setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
+  updateProfile: peopleStore.targetUserStore.updateProfile,
+  getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+}))(observer(withRouter(withTranslation("ProfileAction")(AvatarEditorPage))));

@@ -1,10 +1,10 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { connect } from "react-redux";
 import styled from "styled-components";
 import { Button, Text, toastr } from "asc-web-components";
 import { PageLayout, utils as commonUtils } from "asc-web-common";
+import { inject, observer } from "mobx-react";
 const { tryRedirectTo } = commonUtils;
 
 const BodyStyle = styled.div`
@@ -118,7 +118,7 @@ Form.propTypes = {};
 
 Form.defaultProps = {};
 
-const ChangePasswordForm = (props) => (
+const ChangeOwnerForm = (props) => (
   <PageLayout>
     <PageLayout.SectionBody>
       <Form {...props} />
@@ -126,14 +126,7 @@ const ChangePasswordForm = (props) => (
   </PageLayout>
 );
 
-function mapStateToProps(state) {
-  return {
-    greetingTitle: state.auth.settings.greetingSettings,
-    defaultPage: state.auth.settings.defaultPage,
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  {}
-)(withRouter(withTranslation()(ChangePasswordForm)));
+export default inject(({ auth }) => ({
+  greetingTitle: auth.settingsStore.greetingSettings,
+  defaultPage: auth.settingsStore.defaultPage,
+}))(withRouter(withTranslation("Confirm")(observer(ChangeOwnerForm))));

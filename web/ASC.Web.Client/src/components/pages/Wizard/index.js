@@ -1,8 +1,7 @@
-import React, { Component, useEffect } from "react";
+import React, { Component } from "react";
 import { withRouter } from "react-router";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import {
@@ -19,28 +18,11 @@ import SettingsContainer from "./sub-components/settings-container";
 import InputContainer from "./sub-components/input-container";
 import ModalContainer from "./sub-components/modal-dialog-container";
 
-import {
-  getPortalPasswordSettings,
-  getPortalTimezones,
-  getPortalCultures,
-  setIsWizardLoaded,
-  getMachineName,
-  getIsRequiredLicense,
-  setPortalOwner,
-  setLicense,
-  resetLicenseUploaded,
-} from "../../../store/wizard/actions";
-
-import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
-
-const i18n = createI18N({
-  page: "Wizard",
-  localesPath: "pages/Wizard",
-});
+import { inject, observer } from "mobx-react";
 
 const { tablet } = utils.device;
-const { changeLanguage, createPasswordHash } = commonUtils;
+const { createPasswordHash } = commonUtils;
 
 const { EmailSettings } = utils.email;
 const emailSettings = new EmailSettings();
@@ -222,7 +204,13 @@ class Body extends Component {
     const valid = this.checkingValid();
 
     if (valid) {
-      const { setPortalOwner, wizardToken, hashSettings } = this.props;
+      const {
+        setPortalOwner,
+        wizardToken,
+        hashSettings,
+        getPortalSettings,
+        setWizardComplete,
+      } = this.props;
 
       const {
         password,
@@ -248,6 +236,10 @@ class Body extends Component {
         wizardToken,
         analytics
       )
+        .then(() => {
+          setWizardComplete();
+          getPortalSettings();
+        })
         .then(() => history.push("/login"))
         .catch((e) =>
           this.setState({
@@ -502,20 +494,16 @@ Body.propTypes = {
   licenseUpload: PropTypes.string,
 };
 
-const WizardWrapper = withTranslation()(Body);
+const WizardWrapper = withTranslation("Wizard")(Body);
 
 const WizardPage = (props) => {
   const { isLoaded } = props;
-
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
 
   return (
     isLoaded && (
       <PageLayout>
         <PageLayout.SectionBody>
-          <WizardWrapper i18n={i18n} {...props} />
+          <WizardWrapper {...props} />
         </PageLayout.SectionBody>
       </PageLayout>
     )
@@ -527,29 +515,38 @@ WizardPage.propTypes = {
   isLoaded: PropTypes.bool,
 };
 
-function mapStateToProps({ wizard, auth }) {
+export default inject(({ auth, wizard }) => {
   const {
-    isWizardLoaded,
-    machineName,
-    isLicenseRequired,
-    licenseUpload,
-  } = wizard;
-
-  const {
+    passwordSettings,
     culture,
     wizardToken,
-    passwordSettings,
     cultures,
     timezones,
     timezone,
     urlLicense,
     hashSettings,
-  } = auth.settings;
+    getPortalSettings,
+    setWizardComplete,
+    getPortalTimezones,
+    getPortalCultures,
+    getPortalPasswordSettings,
+  } = auth.settingsStore;
+
+  const {
+    isWizardLoaded,
+    machineName,
+    isLicenseRequired,
+    licenseUpload,
+    setIsWizardLoaded,
+    getMachineName,
+    getIsRequiredLicense,
+    setPortalOwner,
+    setLicense,
+    resetLicenseUploaded,
+  } = wizard;
 
   return {
     isLoaded: auth.isLoaded,
-    isWizardLoaded,
-    machineName,
     culture,
     wizardToken,
     passwordSettings,
@@ -557,20 +554,21 @@ function mapStateToProps({ wizard, auth }) {
     timezones,
     timezone,
     urlLicense,
+    hashSettings,
+    isWizardLoaded,
+    machineName,
     isLicenseRequired,
     licenseUpload,
-    hashSettings,
+    getPortalSettings,
+    setWizardComplete,
+    getPortalPasswordSettings,
+    getPortalCultures,
+    getPortalTimezones,
+    setIsWizardLoaded,
+    getMachineName,
+    getIsRequiredLicense,
+    setPortalOwner,
+    setLicense,
+    resetLicenseUploaded,
   };
-}
-
-export default connect(mapStateToProps, {
-  getPortalPasswordSettings,
-  getPortalCultures,
-  getPortalTimezones,
-  setIsWizardLoaded,
-  getMachineName,
-  getIsRequiredLicense,
-  setPortalOwner,
-  setLicense,
-  resetLicenseUploaded,
-})(withRouter(WizardPage));
+})(withRouter(observer(WizardPage)));

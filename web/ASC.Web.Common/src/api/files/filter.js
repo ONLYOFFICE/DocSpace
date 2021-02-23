@@ -9,7 +9,6 @@ const DEFAULT_VIEW = "row";
 const DEFAULT_FILTER_TYPE = null;
 const DEFAULT_SEARCH_TYPE = true; //withSubfolders
 const DEFAULT_SEARCH = null;
-const DEFAULT_FOLDER_PATH = [];
 const DEFAULT_AUTHOR_TYPE = null;
 const DEFAULT_SELECTED_ITEM = {};
 const DEFAULT_FOLDER = "@my";
@@ -35,7 +34,6 @@ class FilesFilter {
     withSubfolders = DEFAULT_SEARCH_TYPE,
     search = DEFAULT_SEARCH,
     authorType = DEFAULT_AUTHOR_TYPE,
-    treeFolders = DEFAULT_FOLDER_PATH,
     selectedItem = DEFAULT_SELECTED_ITEM,
     folder = DEFAULT_FOLDER
   ) {
@@ -49,7 +47,6 @@ class FilesFilter {
     this.search = search;
     this.total = total;
     this.authorType = authorType;
-    this.treeFolders = treeFolders;
     this.selectedItem = selectedItem;
     this.folder = folder;
   }
@@ -121,7 +118,6 @@ class FilesFilter {
       this.withSubfolders,
       this.search,
       this.authorType,
-      this.treeFolders,
       this.selectedItem,
       this.folder
     );

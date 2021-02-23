@@ -1,20 +1,11 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Text } from "asc-web-components";
-import { utils } from "asc-web-common";
-
 import { useTranslation, Trans } from "react-i18next";
-import { createI18N } from "../../../../helpers/i18n";
 import moment from "moment";
-const { changeLanguage } = utils;
-
-const i18n = createI18N({
-  page: "PaymentsEnterprise",
-  localesPath: "pages/PaymentsEnterprise",
-});
+import { inject, observer } from "mobx-react";
 
 const StyledHeader = styled.div`
   display: grid;
@@ -43,13 +34,12 @@ const HeaderContainer = ({
   organizationName,
 }) => {
   useEffect(() => {
-    changeLanguage(i18n);
     const moment = require("moment");
     require("moment/min/locales.min");
     culture && moment.locale(culture);
   }, [culture]);
 
-  const { t } = useTranslation("translation", { i18n });
+  const { t } = useTranslation("PaymentsEnterprise");
 
   const now = moment();
 
@@ -59,7 +49,7 @@ const HeaderContainer = ({
   return licenseDate.isAfter(now, "day") ? (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
-        <Trans i18nKey="HeaderLicense" i18n={i18n}>
+        <Trans i18nKey="HeaderLicense" ns="PaymentsEnterprise">
           {{ organizationName }}
         </Trans>
       </Text>
@@ -71,7 +61,7 @@ const HeaderContainer = ({
   ) : !trialMode ? (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
-        <Trans i18nKey="HeaderLicense" i18n={i18n}>
+        <Trans i18nKey="HeaderLicense" ns="PaymentsEnterprise">
           {{ organizationName }}
         </Trans>
       </Text>
@@ -91,7 +81,7 @@ const HeaderContainer = ({
         {t("HeaderExpiredTrialLicense")}
       </Text>
       <Text className="payments-header-additional_support">
-        <Trans i18nKey="ExpiryTrialLicense" i18n={i18n}>
+        <Trans i18nKey="ExpiryTrialLicense" ns="PaymentsEnterprise">
           {{ organizationName }}
         </Trans>
       </Text>
@@ -104,14 +94,14 @@ HeaderContainer.propTypes = {
   expiresDate: PropTypes.object,
   trialMode: PropTypes.bool,
 };
-function mapStateToProps({ auth, payments }) {
-  const { culture, organizationName } = auth.settings;
-  const { expiresDate, trialMode } = payments.currentLicense;
+
+export default inject(({ auth, payments }) => {
+  const { organizationName, culture } = auth.settingsStore;
+  const { expiresDate, trialMode } = payments;
   return {
+    organizationName,
     culture,
     expiresDate,
     trialMode,
-    organizationName,
   };
-}
-export default connect(mapStateToProps)(withRouter(HeaderContainer));
+})(withRouter(observer(HeaderContainer)));

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
-import { GroupSelector, utils, constants } from "asc-web-common";
+import { GroupSelector, constants } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import {
   StyledAddGroupsPanel,
@@ -10,20 +10,12 @@ import {
   StyledBody,
 } from "../StyledPanels";
 import AccessComboBox from "../SharingPanel/AccessComboBox";
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "AddGroupsPanel",
-  localesPath: "panels/AddGroupsPanel",
-});
 
-const { changeLanguage } = utils;
 const { ShareAccessRights } = constants;
 
 class AddGroupsPanelComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
 
     this.state = {
       showActionPanel: false,
@@ -88,24 +80,24 @@ class AddGroupsPanelComponent extends React.Component {
   componentWillUnmount() {
     window.removeEventListener("keyup", this.onKeyPress);
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    const { showActionPanel, accessRight } = this.state;
-    const { visible } = this.props;
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   const { showActionPanel, accessRight } = this.state;
+  //   const { visible } = this.props;
 
-    if (accessRight !== nextState.accessRight) {
-      return true;
-    }
+  //   if (accessRight !== nextState.accessRight) {
+  //     return true;
+  //   }
 
-    if (showActionPanel !== nextState.showActionPanel) {
-      return true;
-    }
+  //   if (showActionPanel !== nextState.showActionPanel) {
+  //     return true;
+  //   }
 
-    if (visible !== nextProps.visible) {
-      return true;
-    }
+  //   if (visible !== nextProps.visible) {
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
   render() {
     const { t, visible, accessOptions } = this.props;
@@ -180,12 +172,4 @@ AddGroupsPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-const AddGroupsPanelContainerTranslated = withTranslation()(
-  AddGroupsPanelComponent
-);
-
-const AddGroupsPanel = (props) => (
-  <AddGroupsPanelContainerTranslated i18n={i18n} {...props} />
-);
-
-export default AddGroupsPanel;
+export default withTranslation("AddGroupsPanel")(AddGroupsPanelComponent);

@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 import ModalDialogContainer from "../ModalDialogContainer";
 import {
   ModalDialog,
@@ -12,25 +11,10 @@ import {
 } from "asc-web-components";
 import { ReactSVG } from "react-svg";
 import { withTranslation } from "react-i18next";
-import { utils, api } from "asc-web-common";
-import {
-  getFileIcon,
-  getFolderIcon,
-  getSortedFiles,
-} from "../../../store/files/selectors";
-import {
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-} from "../../../store/files/actions";
+import { api } from "asc-web-common";
 import { TIMEOUT } from "../../../helpers/constants";
 import DownloadContent from "./DownloadContent";
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "DownloadDialog",
-  localesPath: "dialogs/DownloadDialog",
-});
-
-const { changeLanguage } = utils;
+import { inject, observer } from "mobx-react";
 
 const formatKeys = Object.freeze({
   OriginalFormat: 0,
@@ -50,8 +34,6 @@ class DownloadDialogComponent extends React.Component {
   constructor(props) {
     super(props);
     const { sortedFiles } = this.props;
-
-    changeLanguage(i18n);
 
     this.state = {
       documents: sortedFiles.documents,
@@ -189,8 +171,8 @@ class DownloadDialogComponent extends React.Component {
   getItemIcon = (item) => {
     const extension = item.fileExst;
     const icon = extension
-      ? getFileIcon(extension, 24)
-      : getFolderIcon(item.providerKey, 24);
+      ? this.props.getFileIcon(extension, 24)
+      : this.props.getFolderIcon(item.providerKey, 24);
 
     return (
       <ReactSVG
@@ -595,21 +577,25 @@ class DownloadDialogComponent extends React.Component {
   }
 }
 
-const ModalDialogContainerTranslated = withTranslation()(
+const DownloadDialog = withTranslation("DownloadDialog")(
   DownloadDialogComponent
 );
 
-const DownloadDialog = (props) => (
-  <ModalDialogContainerTranslated i18n={i18n} {...props} />
-);
+export default inject(({ filesStore, uploadDataStore, formatsStore }) => {
+  const { secondaryProgressDataStore } = uploadDataStore;
+  const { sortedFiles } = filesStore;
+  const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+  const {
+    setSecondaryProgressBarData,
+    clearSecondaryProgressData,
+  } = secondaryProgressDataStore;
 
-const mapStateToProps = (state) => {
   return {
-    sortedFiles: getSortedFiles(state),
-  };
-};
+    sortedFiles,
 
-export default connect(mapStateToProps, {
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-})(withRouter(DownloadDialog));
+    setSecondaryProgressBarData,
+    clearSecondaryProgressData,
+    getFileIcon,
+    getFolderIcon,
+  };
+})(withRouter(observer(DownloadDialog)));

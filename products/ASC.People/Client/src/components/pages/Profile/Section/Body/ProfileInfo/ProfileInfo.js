@@ -1,5 +1,5 @@
 import React from "react";
-import { Trans } from "react-i18next";
+import { Trans, withTranslation } from "react-i18next";
 import {
   Text,
   IconButton,
@@ -9,13 +9,7 @@ import {
 } from "asc-web-components";
 import styled from "styled-components";
 import { api, toastr, Loaders } from "asc-web-common";
-import { connect } from "react-redux";
-import { updateProfileCulture } from "../../../../../../store/profile/actions";
-import { getFilter } from "../../../../../../store/people/selectors";
-import {
-  fetchPeople,
-  setIsLoading,
-} from "../../../../../../store/people/actions";
+import { inject, observer } from "mobx-react";
 
 const { resendUserInvites } = api.people;
 
@@ -142,13 +136,18 @@ class ProfileInfo extends React.PureComponent {
 
   onLanguageSelect = (language) => {
     console.log("onLanguageSelect", language);
-    const { profile, updateProfileCulture } = this.props;
+    const { profile, updateProfileCulture, i18n } = this.props;
 
     if (profile.cultureName === language.key) return;
 
-    updateProfileCulture(profile.id, language.key).catch((error) =>
-      toastr.error(error && error.message ? error.message : error)
-    );
+    updateProfileCulture(profile.id, language.key)
+      .then(() => {
+        console.log("changeLanguage to", language.key);
+        i18n && i18n.changeLanguage(language.key);
+      })
+      .catch((error) =>
+        toastr.error(error && error.message ? error.message : error)
+      );
   };
 
   getLanguages = () => {
@@ -179,7 +178,6 @@ class ProfileInfo extends React.PureComponent {
     const isSelf = this.props.isSelf;
     const {
       t,
-      i18n,
       userPostCaption,
       regDateCaption,
       groupCaption,
@@ -201,14 +199,14 @@ class ProfileInfo extends React.PureComponent {
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage = (
       <Text fontSize="13px">
-        <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
+        <Trans i18nKey="NotFoundLanguage" ns="Profile">
           "In case you cannot find your language in the list of the available
           ones, feel free to write to us at
           <Link href={`mailto:${supportEmail}`} isHovered={true}>
             {{ supportEmail }}
-          </Link>{" "}
+          </Link>
           to take part in the translation and get up to 1 year free of charge."
-        </Trans>{" "}
+        </Trans>
         <Link
           isHovered={true}
           href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
@@ -333,31 +331,15 @@ class ProfileInfo extends React.PureComponent {
   }
 }
 
-function mapStateToProps(state) {
-  const { customNames } = state.auth.settings;
-  const {
-    groupCaption,
-    regDateCaption,
-    userPostCaption,
-    userCaption,
-    guestCaption,
-  } = customNames;
-
-  return {
-    groupCaption,
-    regDateCaption,
-    userPostCaption,
-    userCaption,
-    guestCaption,
-    filter: getFilter(state),
-  };
-}
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateProfileCulture: (id, culture) =>
-      dispatch(updateProfileCulture(id, culture)),
-    fetchPeople: (filter) => dispatch(fetchPeople(filter)),
-    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileInfo);
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  groupCaption: auth.settingsStore.customNames.groupCaption,
+  regDateCaption: auth.settingsStore.customNames.regDateCaption,
+  userPostCaption: auth.settingsStore.customNames.userPostCaption,
+  userCaption: auth.settingsStore.customNames.userCaption,
+  guestCaption: auth.settingsStore.customNames.guestCaption,
+  fetchPeople: peopleStore.usersStore.getUsersList,
+  filter: peopleStore.filterStore.filter,
+  setIsLoading: peopleStore.setIsLoading,
+  updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
+}))(observer(withTranslation("Profile")(ProfileInfo)));
