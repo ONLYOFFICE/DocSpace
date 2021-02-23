@@ -29,45 +29,47 @@ class SettingsSetupStore {
     makeAutoObservable(this);
   }
 
-  setOptions(options) {
+  setOptions = (options) => {
     this.security.accessRight.options = options;
-  }
+  };
 
-  setUsers(users) {
+  setUsers = (users) => {
     this.security.accessRight.users = users;
-  }
+  };
 
-  setAdmins(admins) {
+  setAdmins = (admins) => {
     this.security.accessRight.admins = admins;
-  }
+  };
 
-  setOwner(owner) {
+  setOwner = (owner) => {
     this.security.accessRight.owner = owner;
-  }
+  };
 
-  setFilter(filter) {
+  setFilter = (filter) => {
     this.security.accessRight.filter = filter;
-  }
+  };
 
-  setLogoText(text) {
+  setLogoText = (text) => {
     this.common.whiteLabel.logoText = text;
-  }
+  };
 
-  setLogoSizes(sizes) {
+  setLogoSizes = (sizes) => {
     this.common.whiteLabel.logoSizes = sizes;
-  }
+  };
 
-  setLogoUrls(urls) {
+  setLogoUrls = (urls) => {
     this.common.whiteLabel.logoUrls = urls;
-  }
+  };
 
-  setConsumers(consumers) {
+  setConsumers = (consumers) => {
     this.integration.consumers = consumers;
-  }
+  };
 
-  setSelectedConsumer(selectedConsumer) {
-    this.selectedConsumer = selectedConsumer;
-  }
+  setSelectedConsumer = (selectedConsumerName) => {
+    this.integration.selectedConsumer =
+      this.integration.consumers.find((c) => c.name === selectedConsumerName) ||
+      {};
+  };
 
   changeAdmins = async (userIds, productId, isAdmin, filter) => {
     let filterData = filter && filter.clone();
