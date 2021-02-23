@@ -13,7 +13,8 @@ import TreeMenu from ".";
 import TreeNode from "./sub-components/tree-node";
 import { Icons } from "../icons";
 import { action } from "@storybook/addon-actions";
-import ExpanderDownIcon from "../../../../../public/images/expander-down.react.svg"
+import ExpanderDownIcon from "../../../../../public/images/expander-down.react.svg";
+import ExpanderRightIcon from "../../../../../public/images/expander-right.react.svg";
 const iconNames = Object.keys(Icons);
 
 const treeData = [
@@ -148,20 +149,14 @@ const TreeMenuStory = (props) => {
       return null;
     }
     if (obj.expanded) {
-      return (
-        <ExpanderDownIcon
-          size="scale"
-          isfill={true}
-          color="dimgray"
-        />
-      );
+      return <ExpanderDownIcon size="scale" isfill={true} color="dimgray" />;
     } else {
       return (
-        <Icons.ExpanderRightIcon
+        <ExpanderRightIcon
           size="scale"
           isfill={true}
           color="dimgray"
-        ></Icons.ExpanderRightIcon>
+        ></ExpanderRightIcon>
       );
     }
   };

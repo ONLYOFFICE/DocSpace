@@ -5,9 +5,14 @@ import PropTypes from "prop-types";
 import Box from "@appserver/components/src/components/box";
 import Text from "@appserver/components/src/components/text";
 import toastr from "@appserver/components/src/components/toast/toastr";
-import UnionIcon from "../svg/union.react.svg"
+import UnionIcon from "../svg/union.react.svg";
 import RecoverAccessModalDialog from "./recover-access-modal-dialog";
 import { sendRecoverRequest } from "../../../api/settings/index";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+
+const StyledUnionIcon = styled(UnionIcon)`
+  ${commonIconsStyles}
+`;
 
 const RecoverContainer = styled(Box)`
   cursor: pointer;
@@ -89,7 +94,7 @@ const RecoverAccess = ({ t }) => {
           onClick={onRecoverClick}
         >
           <Box paddingProp="16px 8px 16px 16px" className="recover-icon">
-            <UnionIcon className="UNION"/>
+            <StyledUnionIcon />
           </Box>
           <Box
             paddingProp="18px 16px 18px 0px"

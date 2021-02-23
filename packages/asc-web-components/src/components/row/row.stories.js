@@ -7,9 +7,8 @@ import Row from ".";
 import Text from "../text";
 import Avatar from "../avatar";
 import ComboBox from "../combobox";
-import { Icons } from "../icons";
 import Section from "../../../.storybook/decorators/section";
-
+import CatalogFolderIcon from "../../../../../public/images/catalog.folder.react.svg";
 storiesOf("Components|Row", module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
@@ -21,7 +20,7 @@ storiesOf("Components|Row", module)
     const elementAvatar = (
       <Avatar size="min" role="user" userName="Demo Avatar" />
     );
-    const elementIcon = <Icons.CatalogFolderIcon size="big" />;
+    const elementIcon = <CatalogFolderIcon size="big" />;
     const elementComboBox = (
       <ComboBox
         options={[

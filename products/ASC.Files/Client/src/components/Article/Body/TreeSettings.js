@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { TreeMenu, TreeNode, Icons } from "@appserver/components";
+import { TreeMenu, TreeNode } from "@appserver/components";
 import styled from "styled-components";
 import { history, utils, store as initStore } from "@appserver/common";
 import { withTranslation, I18nextProvider } from "react-i18next";

@@ -1,5 +1,4 @@
 import React from "react";
-import { Icons } from "@appserver/components";
 import ComboBox from "@appserver/components/src/components/combobox";
 import constants from "@appserver/common/src/constants";
 import DropDownItem from "@appserver/components/src/components/drop-down-item";

@@ -1,5 +1,5 @@
 import React from "react";
-import { TreeMenu, TreeNode, Icons } from "@appserver/components";
+import { TreeMenu, TreeNode } from "@appserver/components";
 import styled from "styled-components";
 import equal from "fast-deep-equal/react";
 import { api, constants, toastr, store as initStore } from "@appserver/common";

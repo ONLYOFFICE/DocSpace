@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import TreeMenu from "@appserver/components/src/components/tree-menu";
 import TreeNode from "@appserver/components/src/components/tree-menu/sub-components/tree-node";
-import { Icons } from "@appserver/components/src/components/icons";
 import ExpanderDownIcon from "../../../../../../../../../public/images/expander-down.react.svg";
 import Link from "@appserver/components/src/components/link";
 import Text from "@appserver/components/src/components/text";

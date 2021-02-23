@@ -31,6 +31,7 @@ import ToggleContent from "../toggle-content";
 import Tooltip from "../tooltip";
 import { Icons } from "../icons";
 import SettingsIcon from "../../../../../public/images/settings.react.svg";
+import CatalogFolderIcon from "../../../../../public/images/catalog.folder.react.svg";
 const array_items = [
   {
     key: "0",
@@ -99,7 +100,7 @@ const arrayUsers = [
 const element = "Icon";
 
 const elementAvatar = <Avatar size="min" role="user" userName="Demo Avatar" />;
-const elementIcon = <Icons.CatalogFolderIcon size="big" />;
+const elementIcon = <CatalogFolderIcon size="big" />;
 const elementComboBox = (
   <ComboBox
     options={[

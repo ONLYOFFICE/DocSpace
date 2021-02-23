@@ -8,8 +8,8 @@ import Row from "../row";
 import RowContent from "../row-content";
 import Avatar from "../avatar";
 import Link from "../link";
-import { Icons } from "../icons";
-
+import SendClockIcon from "../../../../../public/images/send.clock.react.svg";
+import CatalogSpamIcon from "../../../../../public/images/catalog.spam.react.svg";
 const getRndString = (n) =>
   Math.random()
     .toString(36)
@@ -96,14 +96,14 @@ storiesOf("Components|RowContainer", module)
                   </Link>
                   <>
                     {user.status === "pending" && (
-                      <Icons.SendClockIcon
+                      <SendClockIcon
                         size="small"
                         isfill={true}
                         color="#3B72A7"
                       />
                     )}
                     {user.status === "disabled" && (
-                      <Icons.CatalogSpamIcon
+                      <CatalogSpamIcon
                         size="small"
                         isfill={true}
                         color="#3B72A7"

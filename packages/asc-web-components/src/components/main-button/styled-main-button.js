@@ -109,6 +109,16 @@ const StyledSecondaryButton = styled(StyledMainButton)`
     props.theme.mainButton.secondaryButton.cornerRoundsTopLeft};
   border-bottom-left-radius: ${(props) =>
     props.theme.mainButton.secondaryButton.cornerRoundsBottomLeft};
+
+  svg {
+    width: 16px;
+    min-width: 16px;
+    height: 16px;
+    min-height: 16px;
+    path {
+      fill: #fff;
+    }
+  }
 `;
 StyledSecondaryButton.defaultProps = { theme: Base };
 
