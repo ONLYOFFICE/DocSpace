@@ -15,6 +15,7 @@ import {
 } from "asc-web-common";
 import Home from "./components/pages/Home";
 import { inject, observer } from "mobx-react";
+import config from "../package.json";
 import "./i18n";
 
 const About = lazy(() => import("./components/pages/About"));
@@ -82,57 +83,53 @@ const App = (props) => {
   //   });
 
   return navigator.onLine ? (
-      <Layout>
-        <Router history={history}>
-      {!isThirdPartyResponse && <NavMenu />}
-          <Main>
-            <Suspense fallback={null}>
-              <Switch>
-                <Route exact path="/wizard" component={Wizard} />
-                <PublicRoute
-                  exact
-                  path={[
-                    "/login",
-                    "/login/error=:error",
-                    "/login/confirmed-email=:confirmedEmail",
-                  ]}
-                  component={Login}
-                />
-                <Route path="/confirm" component={Confirm} />
-                <PrivateRoute
-                  path={`/thirdparty/:provider`}
-                  component={ThirdPartyResponse}
-                />
-                <PrivateRoute
-                  exact
-                  path={["/", "/error=:error"]}
-                  component={Home}
-                />
-                <PrivateRoute exact path="/about" component={About} />
-                <PrivateRoute
-                  restricted
-                  path="/settings"
-                  component={Settings}
-                />
-                <PrivateRoute
-                  exact
-                  path={[
-                    "/coming-soon",
-                    "/products/mail",
-                    "/products/projects",
-                    "/products/crm",
-                    "/products/calendar",
-                    "/products/talk/",
-                  ]}
-                  component={ComingSoon}
-                />
-                <PrivateRoute path="/payments" component={Payments} />
-                <PrivateRoute component={Error404} />
-              </Switch>
-            </Suspense>
-          </Main>
-        </Router>
-      </Layout>
+    <Layout>
+      <Router history={history}>
+        {!isThirdPartyResponse && <NavMenu />}
+        <Main>
+          <Suspense fallback={null}>
+            <Switch>
+              <Route exact path="/wizard" component={Wizard} />
+              <PublicRoute
+                exact
+                path={[
+                  "/login",
+                  "/login/error=:error",
+                  "/login/confirmed-email=:confirmedEmail",
+                ]}
+                component={Login}
+              />
+              <Route path="/confirm" component={Confirm} />
+              <PrivateRoute
+                path={`/thirdparty/:provider`}
+                component={ThirdPartyResponse}
+              />
+              <PrivateRoute
+                exact
+                path={["/", "/error=:error"]}
+                component={Home}
+              />
+              <PrivateRoute exact path="/about" component={About} />
+              <PrivateRoute restricted path="/settings" component={Settings} />
+              <PrivateRoute
+                exact
+                path={[
+                  "/coming-soon",
+                  "/products/mail",
+                  "/products/projects",
+                  "/products/crm",
+                  "/products/calendar",
+                  "/products/talk/",
+                ]}
+                component={ComingSoon}
+              />
+              <PrivateRoute path="/payments" component={Payments} />
+              <PrivateRoute component={Error404} />
+            </Switch>
+          </Suspense>
+        </Main>
+      </Router>
+    </Layout>
   ) : (
     <Offline />
   );
@@ -145,8 +142,8 @@ export default inject(({ auth }) => {
   const isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
 
   return {
-    loadBaseInfo: () => { 
-      init(); 
+    loadBaseInfo: () => {
+      init();
       auth.setProductVersion(config.version);
     },
     isThirdPartyResponse,
