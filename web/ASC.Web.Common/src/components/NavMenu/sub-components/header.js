@@ -272,8 +272,9 @@ export default inject(({ auth }) => {
     isAdmin,
     product,
     availableModules,
+    version,
   } = auth;
-  const { logoUrl, defaultPage, currentProductId, version } = settingsStore;
+  const { logoUrl, defaultPage, currentProductId } = settingsStore;
   const { totalNotifications } = moduleStore;
 
   const mainModules = availableModules.filter((m) => !m.isolateMode);
