@@ -3,10 +3,9 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import { withKnobs, boolean } from "@storybook/addon-knobs/react";
 import Section from "../../../.storybook/decorators/section";
-
 import PeopleSelector from ".";
+
 import { Button } from "asc-web-components";
-import withProvider from "../../../.storybook/decorators/redux";
 import { text } from "@storybook/addon-knobs";
 //import withReadme from "storybook-readme/with-readme";
 //import Readme from "./README.md";
@@ -71,7 +70,6 @@ class PeopleSelectorExample extends React.Component {
 }
 
 storiesOf("Components|PeopleSelector", module)
-  .addDecorator(withProvider)
   .addDecorator(withKnobs)
   //.addDecorator(withReadme(Readme))
   .addParameters({ options: { addonPanelInRight: false } })

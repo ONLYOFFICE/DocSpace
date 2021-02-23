@@ -465,9 +465,13 @@ PageLayout.propTypes = {
   children: PropTypes.any,
 };
 
-export default inject(({ auth }) => ({
-  language: auth.language,
-  isTabletView: auth.settingsStore.isTabletView,
-  isArticlePinned: auth.settingsStore.isArticlePinned,
-  setArticlePinned: auth.settingsStore.setArticlePinned,
-}))(observer(PageLayout));
+export default inject(({ auth }) => {
+  const { language, settingsStore } = auth;
+  const { isTabletView, isArticlePinned, setArticlePinned } = settingsStore;
+  return {
+    language,
+    isTabletView,
+    isArticlePinned,
+    setArticlePinned,
+  };
+})(observer(PageLayout));

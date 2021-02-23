@@ -39,14 +39,6 @@ NavLogoItem.propTypes = {
   logoUrl: PropTypes.string,
 };
 
-// const mapStateToProps = (state) => {
-//   const { logoUrl } = state.auth.settings;
-
-//   return {
-//     logoUrl,
-//   };
-// };
-
 export default inject(({ auth }) => ({
   logoUrl: auth.settingsStore.logoUrl,
 }))(observer(NavLogoItem));
