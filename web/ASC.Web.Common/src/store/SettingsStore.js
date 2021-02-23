@@ -50,7 +50,8 @@ class SettingsStore {
 
   isHeaderVisible = false;
   isTabletView = false;
-  isArticlePinned = localStorage.getItem(ARTICLE_PINNED_KEY) || false;
+  isArticlePinned =
+    localStorage.getItem(ARTICLE_PINNED_KEY) === "true" || false;
 
   hashSettings = null;
   title = "";
