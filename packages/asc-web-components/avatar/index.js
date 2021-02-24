@@ -14,7 +14,7 @@ import {
   StyledAvatar,
 } from "./styled-avatar";
 import Link from "../link";
-import commonIconsStyles from "../../utils/common-icons-style";
+import commonIconsStyles from "../utils/common-icons-style";
 
 const StyledGuestIcon = styled(GuestIcon)`
   ${commonIconsStyles}

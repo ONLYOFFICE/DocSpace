@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 
 import { withTranslation } from "react-i18next";
-import ModalDialog from "@appserver/components/src/components/modal-dialog";
-import Text from "@appserver/components/src/components/text";
-import Button from "@appserver/components/src/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Text from "@appserver/components/text";
+import Button from "@appserver/components/button";
 
 const StyledOperationDialog = styled.div`
   .operation-button {
@@ -60,4 +60,4 @@ const PureThirdPartyMoveContainer = ({
 
 export default withTranslation("ThirdPartyMoveDialog")(
   PureThirdPartyMoveContainer
-  );
+);

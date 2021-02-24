@@ -14,7 +14,7 @@ import { withRouter } from "react-router";
 import VersionBadge from "./VersionBadge";
 import StyledVersionRow from "./StyledVersionRow";
 import ExternalLinkIcon from "../../../../../../public/images/external.link.react.svg";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
@@ -185,21 +185,21 @@ const VersionRow = (props) => {
 
           <div className="version_links-container">
             {canEdit && (
-          <Link
-            onClick={onRestoreClick}
-            {...linkStyles}
-            className="version_link-action"
-          >
-            {t("Restore")}
-          </Link>
+              <Link
+                onClick={onRestoreClick}
+                {...linkStyles}
+                className="version_link-action"
+              >
+                {t("Restore")}
+              </Link>
             )}
-          <Link
-            onClick={onDownloadAction}
-            {...linkStyles}
-            className="version_link-action"
-          >
-            {t("Download")}
-          </Link>
+            <Link
+              onClick={onDownloadAction}
+              {...linkStyles}
+              className="version_link-action"
+            >
+              {t("Download")}
+            </Link>
           </div>
         </Box>
         {showEditPanel && (

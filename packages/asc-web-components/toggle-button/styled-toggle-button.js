@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
-import { Base } from "../../themes/index";
-import NoUserSelect from "../../utils/commonStyles";
+import Base from "@appserver/components/themes/base";
+import NoUserSelect from "../utils/commonStyles";
 
 const ToggleButtonContainer = styled.label`
   position: absolute;
@@ -38,7 +38,7 @@ const ToggleButtonContainer = styled.label`
   .toggle-button {
     min-width: 28px;
   }
-  
+
   .toggle-button-text {
     margin-top: 2px;
 

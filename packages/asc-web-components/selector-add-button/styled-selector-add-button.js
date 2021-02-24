@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Base from "../../themes/base";
+import Base from "@appserver/components/themes/base";
 
 const StyledButton = styled.div`
   display: inline-block;

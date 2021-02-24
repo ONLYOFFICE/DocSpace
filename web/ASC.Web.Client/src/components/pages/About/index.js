@@ -1,6 +1,6 @@
 ﻿import React, { useEffect } from "react";
-import Text from "@appserver/components/src/components/text";
-import Link from "@appserver/components/src/components/link";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 import PageLayout from "@appserver/common/src/components/PageLayout";
 import { useTranslation } from "react-i18next";
 import version from "../../../../package.json";

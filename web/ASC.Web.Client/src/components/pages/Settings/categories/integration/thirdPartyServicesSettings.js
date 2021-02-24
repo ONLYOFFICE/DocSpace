@@ -2,12 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import Box from "@appserver/components/src/components/box";
-import Text from "@appserver/components/src/components/text";
-import Link from "@appserver/components/src/components/link";
-import toastr from "@appserver/components/src/components/toast/toastr";
-
-
+import Box from "@appserver/components/box";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import toastr from "@appserver/components/toast/toastr";
 
 import ConsumerItem from "./sub-components/consumerItem";
 import ConsumerModalDialog from "./sub-components/consumerModalDialog";
@@ -215,8 +213,8 @@ export default inject(({ setup, auth }) => {
   return {
     consumers,
     urlAuthKeys,
-  getConsumers,
-  updateConsumerProps,
-  setSelectedConsumer,
+    getConsumers,
+    updateConsumerProps,
+    setSelectedConsumer,
   };
 })(withTranslation("Settings")(observer(ThirdPartyServices)));

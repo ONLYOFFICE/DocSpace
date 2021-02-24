@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { Base } from "../../themes/index";
+import Base from "@appserver/components/themes/base";
 
 const StyledLabel = styled.label`
   display: flex;

@@ -2,13 +2,11 @@ import React, { useEffect } from "react";
 import { ReactSVG } from "react-svg";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import {
-  Text,
-  Link,
-  Badge,
-  Box,
-  EmptyScreenContainer,
-} from "@appserver/components/src";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import Badge from "@appserver/components/badge";
+import Box from "@appserver/components/box";
+import EmptyScreenContainer from "@appserver/components/empty-screen-container";
 import ExternalLinkIcon from "../../../../../../public/images/external.link.react.svg";
 import { toastr, PageLayout, Loaders } from "@appserver/common/src";
 import { useTranslation } from "react-i18next";

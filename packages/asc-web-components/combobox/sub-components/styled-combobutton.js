@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { Base } from "../../../themes";
-import NoUserSelect from "../../../utils/commonStyles";
+import Base from "@appserver/components/themes/base";
+import NoUserSelect from "../../utils/commonStyles";
 
 const StyledComboButton = styled.div`
   display: flex;

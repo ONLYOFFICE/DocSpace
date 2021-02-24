@@ -1,8 +1,8 @@
 import styled, { css } from "styled-components";
 import React from "react";
 import Text from "../text";
-import { Base } from "../../themes";
-import NoUserSelect from "../../utils/commonStyles";
+import Base from "@appserver/components/themes/base";
+import NoUserSelect from "../utils/commonStyles";
 
 const colorCss = css`
   color: ${(props) => (props.color ? props.color : props.theme.link.color)};

@@ -2,7 +2,12 @@ import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
-import { Row, Avatar, RowContainer, utils } from "@appserver/components/src";
+
+import Row from "@appserver/components/row";
+import Avatar from "@appserver/components/avatar";
+import RowContainer from "@appserver/components/row-container";
+import utils from "@appserver/components/utils";
+
 import UserContent from "./userContent";
 import equal from "fast-deep-equal/react";
 import { api, constants, toastr, Loaders } from "@appserver/common/src";
@@ -45,12 +50,12 @@ class SectionBodyContent extends React.PureComponent {
 
     this.setState({ isLoadedSection: false });
 
-      fetchPeople(filter)
-        .catch((error) => {
-          toastr.error(error);
+    fetchPeople(filter)
+      .catch((error) => {
+        toastr.error(error);
       })
       .finally(() => this.setState({ isLoadedSection: isLoaded }));
-    }
+  }
 
   findUserById = (id) => this.props.peopleList.find((man) => man.id === id);
 
@@ -464,7 +469,7 @@ class SectionBodyContent extends React.PureComponent {
         t={t}
         onResetFilter={this.onResetFilter}
         isEmptyGroup={isEmptyGroup}
-              />
+      />
     );
   }
 }

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { ToastContainer } from "react-toastify";
-import { tablet } from "../../utils/device";
-import Base from "../../themes/base";
+import { tablet } from "../utils/device";
+import Base from "@appserver/components/themes/base";
 
 const StyledToastContainer = styled(ToastContainer)`
   z-index: ${(props) => props.theme.toast.zIndex};

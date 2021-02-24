@@ -7,20 +7,20 @@ import { BooleanValue } from "react-values";
 import Box from "../Box";
 import Text from "../Text";
 import JSONPretty from "react-json-pretty";
-import { Base, Dark } from "../../themes";
+import Base from "@appserver/components/themes/base";
 import Heading from "../Heading";
 import Checkbox from "../Checkbox";
 
 const LightTheme = {
   backgroundColor: "#FFF",
   fontFamily: "sans-serif",
-  text: { color: "#333" }
+  text: { color: "#333" },
 };
 
 const DarkTheme = {
   backgroundColor: "#1F2933",
   fontFamily: "Open Sans",
-  text: { color: "#E4E7EB" }
+  text: { color: "#E4E7EB" },
 };
 
 storiesOf("Components|ThemeProvider", module)
@@ -32,7 +32,7 @@ storiesOf("Components|ThemeProvider", module)
           <ThemeProvider theme={value ? DarkTheme : LightTheme}>
             <Checkbox
               checked={value}
-              onChange={e => toggle(e.target.value)}
+              onChange={(e) => toggle(e.target.value)}
               label={value ? "Dark" : "Light"}
             />
           </ThemeProvider>
@@ -47,7 +47,7 @@ storiesOf("Components|ThemeProvider", module)
       main: "line-height:1.5;background:#FFF;overflow:auto;",
       error: "line-height:1.5;background:#FFF;overflow:auto;",
       key: "color:#444;",
-      string: "color:#00873D;"
+      string: "color:#00873D;",
     };
     return (
       <ThemeProvider theme={LightTheme}>
@@ -71,7 +71,7 @@ storiesOf("Components|ThemeProvider", module)
       main: "line-height:1.5;background:#1F2933;overflow:auto;",
       error: "line-height:1.5;background:#1F2933;overflow:auto;",
       key: "color:#1F97CA;",
-      string: "color:#00873D;"
+      string: "color:#00873D;",
     };
     return (
       <ThemeProvider theme={DarkTheme}>

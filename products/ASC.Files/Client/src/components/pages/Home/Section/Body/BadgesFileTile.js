@@ -7,7 +7,7 @@ import FileActionsConvertEditDocIcon from "../../../../../../public/images/file.
 import FileActionsLockedIcon from "../../../../../../public/images/file.actions.locked.react.svg";
 import AccessEditIcon from "../../../../../../public/images/access.edit.react.svg";
 import FileActionsConvertIcon from "../../../../../../public/images/access.edit.react.svg";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const StyledBadgesFileTile = styled.div`
   display: flex;

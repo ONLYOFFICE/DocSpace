@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { ThemeProvider as Provider } from "styled-components";
-import GlobalStyle from "../../utils/globalStyles";
+import GlobalStyle from "../utils/globalStyles";
 
 const ThemeProvider = props => {
   const { theme, children } = props;

@@ -3,10 +3,10 @@ import { ReactSVG } from "react-svg";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
-import Badge from "@appserver/components/src/components/badge";
-import Link from "@appserver/components/src/components/link";
-import Text from "@appserver/components/src/components/text";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import Badge from "@appserver/components/badge";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import MenuIcon from "../../../../../../public/images/menu.react.svg";
 
 const baseColor = "#7A95B0",
@@ -77,7 +77,7 @@ const VersionBadge = styled.div`
 const StyledMenuIcon = styled(MenuIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${props => props.color};
+    fill: ${(props) => props.color};
   }
 `;
 const NavItem = React.memo((props) => {

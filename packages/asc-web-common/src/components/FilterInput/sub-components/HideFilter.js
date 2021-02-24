@@ -2,12 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import DropDown from "@appserver/components/src/components/drop-down";
+import DropDown from "@appserver/components/drop-down";
 
 import ExpanderDownIcon from "../../../../../../public/images/expander-down.react.svg";
 import { Caret, StyledHideFilterButton } from "../StyledFilterInput";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
-
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}

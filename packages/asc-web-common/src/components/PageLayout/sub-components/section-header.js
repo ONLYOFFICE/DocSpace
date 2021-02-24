@@ -5,7 +5,7 @@ import classnames from "classnames";
 import PropTypes from "prop-types";
 import { LayoutContextConsumer } from "../../Layout/context";
 import { isMobile } from "react-device-detect";
-import { tablet, desktop } from "@appserver/components/src/utils/device";
+import { tablet, desktop } from "@appserver/components/utils/device";
 
 const StyledSectionHeader = styled.div`
   border-bottom: 1px solid #eceef1;
@@ -51,7 +51,7 @@ const StyledSectionHeader = styled.div`
       z-index: ${(props) => (!props.isHeaderVisible ? "149" : "190")};
       padding-right: 16px;
     `}
-    }
+  }
   ${isMobile &&
   css`
     .section-header,
@@ -119,7 +119,7 @@ class SectionHeader extends React.Component {
               })}
               {...rest}
             />
-      </StyledSectionHeader>
+          </StyledSectionHeader>
         )}
       </LayoutContextConsumer>
     );

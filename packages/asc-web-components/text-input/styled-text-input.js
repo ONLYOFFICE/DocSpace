@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import commonInputStyles from "./common-input-styles";
 import Input from "./Input";
-import { Base } from "../../themes";
+import Base from "@appserver/components/themes/base";
 
 /* eslint-enable react/prop-types, no-unused-vars */
 const StyledTextInput = styled(Input).attrs((props) => ({

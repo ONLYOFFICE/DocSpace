@@ -1,7 +1,7 @@
 import React from "react";
-import ComboBox from "@appserver/components/src/components/combobox";
+import ComboBox from "@appserver/components/combobox";
 import constants from "@appserver/common/src/constants";
-import DropDownItem from "@appserver/components/src/components/drop-down-item";
+import DropDownItem from "@appserver/components/drop-down-item";
 import { getAccessIcon } from "../../../helpers/files-helpers";
 import { ReactSVG } from "react-svg";
 

@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import PropTypes from "prop-types";
-import Text from "@appserver/components/src/components/text";
+import Text from "@appserver/components/text";
 import StyledModuleTile from "./StyledModuleTile";
 
 const ModuleTile = (props) => {
@@ -15,7 +15,7 @@ const ModuleTile = (props) => {
     },
     [link, onClick]
   );
-console.log("imageUrl", imageUrl)
+  console.log("imageUrl", imageUrl);
   return (
     <StyledModuleTile>
       {isPrimary ? (

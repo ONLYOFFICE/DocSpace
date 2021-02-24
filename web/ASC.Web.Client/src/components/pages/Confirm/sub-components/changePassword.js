@@ -4,12 +4,12 @@ import { withTranslation } from "react-i18next";
 import axios from "axios";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Button from "@appserver/components/src/components/button";
-import Text from "@appserver/components/src/components/text";
-import PasswordInput from "@appserver/components/src/components/password-input";
-import Loader from "@appserver/components/src/components/loader";
-import toastr from "@appserver/components/src/components/toast/toastr";
-import Heading from "@appserver/components/src/components/heading";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import PasswordInput from "@appserver/components/password-input";
+import Loader from "@appserver/components/loader";
+import toastr from "@appserver/components/toast/toastr";
+import Heading from "@appserver/components/heading";
 
 import PageLayout from "@appserver/common/src/components/PageLayout";
 import store from "@appserver/common/src/store";

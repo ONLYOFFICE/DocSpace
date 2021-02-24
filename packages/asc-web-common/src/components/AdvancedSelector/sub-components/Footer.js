@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Button from "@appserver/components/src/components/button";
+import Button from "@appserver/components/button";
 import StyledFooter from "./StyledFooter";
 
 const Footer = (props) => {

@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import Heading from "@appserver/components/src/components/heading";
-import { Base } from "@appserver/components/src/themes";
+import Heading from "@appserver/components/heading";
+import Base from "@appserver/components/themes/base";
 
 const size = {
   header: "28px",

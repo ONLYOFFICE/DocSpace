@@ -2,17 +2,15 @@ import React from "react";
 
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
-import FieldContainer from "@appserver/components/src/components/field-container";
-import Text from "@appserver/components/src/components/text";
-import Loader from "@appserver/components/src/components/loader";
-import Button from "@appserver/components/src/components/button";
-import toastr from "@appserver/components/src/components/toast/toastr";
-import Link from "@appserver/components/src/components/link";
-import TextInput from "@appserver/components/src/components/text-input";
-
+import FieldContainer from "@appserver/components/field-container";
+import Text from "@appserver/components/text";
+import Loader from "@appserver/components/loader";
+import Button from "@appserver/components/button";
+import toastr from "@appserver/components/toast/toastr";
+import Link from "@appserver/components/link";
+import TextInput from "@appserver/components/text-input";
 
 import { inject, observer } from "mobx-react";
-
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -480,8 +478,8 @@ export default inject(({ setup }) => {
     logoText,
     rawSizes,
     logoUrls,
-  getWhiteLabelLogoText,
-  getWhiteLabelLogoSizes,
-  getWhiteLabelLogoUrls,
+    getWhiteLabelLogoText,
+    getWhiteLabelLogoSizes,
+    getWhiteLabelLogoUrls,
   };
 })(withTranslation("Settings")(observer(WhiteLabel)));

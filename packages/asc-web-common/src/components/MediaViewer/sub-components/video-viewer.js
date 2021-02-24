@@ -12,7 +12,7 @@ import MediaPlayIcon from "../../../../../../public/images/media.play.react.svg"
 import MediaFullScreenIcon from "../../../../../../public/images/media.fullscreen.react.svg";
 import MediaMuteIcon from "../../../../../../public/images/media.mute.react.svg";
 import MediaMuteOffIcon from "../../../../../../public/images/media.muteoff.react.svg";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const controlsHeight = 40;
 const StyledControls = styled.div`

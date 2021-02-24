@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Button from "@appserver/components/src/components/button";
-import TextInput from "@appserver/components/src/components/text-input";
-import Text from "@appserver/components/src/components/text";
-import ModalDialog from "@appserver/components/src/components/modal-dialog";
-import FieldContainer from "@appserver/components/src/components/field-container";
+import Button from "@appserver/components/button";
+import TextInput from "@appserver/components/text-input";
+import Text from "@appserver/components/text";
+import ModalDialog from "@appserver/components/modal-dialog";
+import FieldContainer from "@appserver/components/field-container";
 
 import ModalDialogContainer from "./modal-dialog-container";
 

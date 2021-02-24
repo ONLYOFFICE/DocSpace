@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import equal from "fast-deep-equal/react";
-import Scrollbar from "@appserver/components/src/components/scrollbar";
-import { tablet, smallTablet } from "@appserver/components/src/utils/device";
+import Scrollbar from "@appserver/components/scrollbar";
+import { tablet, smallTablet } from "@appserver/components/utils/device";
 
 const StyledArticleBody = styled.div`
   ${(props) => props.displayBorder && `outline: 1px dotted;`}

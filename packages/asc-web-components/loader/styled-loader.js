@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import PropTypes from "prop-types";
-import { Base } from "../../themes";
+import Base from "@appserver/components/themes/base";
 
 const BounceAnimation = keyframes`
 0% { margin-bottom: 0; display: none; }
@@ -58,4 +58,11 @@ const StyledDualRing = styled.svg`
 `;
 StyledDualRing.defaultProps = { theme: Base };
 
-export { LoadingLabel, LoadingWrapper, DotWrapper, Dot, StyledOval, StyledDualRing };
+export {
+  LoadingLabel,
+  LoadingWrapper,
+  DotWrapper,
+  Dot,
+  StyledOval,
+  StyledDualRing,
+};

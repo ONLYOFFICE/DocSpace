@@ -9,15 +9,15 @@ import InfiniteLoader from "react-window-infinite-loader";
 import AutoSizer from "react-virtualized-auto-sizer";
 import ReactTooltip from "react-tooltip";
 
-import Checkbox from "@appserver/components/src/components/checkbox";
-import Link from "@appserver/components/src/components/link";
-import ComboBox from "@appserver/components/src/components/combobox";
-import SearchInput from "@appserver/components/src/components/search-input";
-import Loader from "@appserver/components/src/components/loader";
-import Text from "@appserver/components/src/components/text";
-import Tooltip from "@appserver/components/src/components/tooltip";
-import CustomScrollbarsVirtualList from "@appserver/components/src/components/scrollbar/custom-scrollbars-virtual-list";
-import HelpButton from "@appserver/components/src/components/help-button";
+import Checkbox from "@appserver/components/checkbox";
+import Link from "@appserver/components/link";
+import ComboBox from "@appserver/components/combobox";
+import SearchInput from "@appserver/components/search-input";
+import Loader from "@appserver/components/loader";
+import Text from "@appserver/components/text";
+import Tooltip from "@appserver/components/tooltip";
+import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
+import HelpButton from "@appserver/components/help-button";
 
 import StyledSelector from "./StyledSelector";
 

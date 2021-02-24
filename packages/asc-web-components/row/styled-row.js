@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-import { tablet } from "../../utils/device";
-import { Base } from "../../themes";
+import { tablet } from "../utils/device";
+import Base from "@appserver/components/themes/base";
 
 const StyledRow = styled.div`
   cursor: default;

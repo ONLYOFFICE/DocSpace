@@ -2,12 +2,12 @@ import React from "react";
 import { withRouter } from "react-router";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
-import TreeMenu from "@appserver/components/src/components/tree-menu";
-import TreeNode from "@appserver/components/src/components/tree-menu/sub-components/tree-node";
+import TreeMenu from "@appserver/components/tree-menu";
+import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import ExpanderDownIcon from "../../../../../../../../../public/images/expander-down.react.svg";
-import Link from "@appserver/components/src/components/link";
-import Text from "@appserver/components/src/components/text";
-import { isArrayEqual } from "@appserver/components/src/utils/array";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import { isArrayEqual } from "@appserver/components/utils/array";
 import ExpanderRightIcon from "../../../../../../../../../public/images/expander-right.react.svg";
 import {
   //getKeyByLink,
@@ -17,7 +17,7 @@ import {
   getCurrentSettingsCategory,
 } from "../../../utils";
 import { ReactSVG } from "react-svg";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
     font-size: inherit;

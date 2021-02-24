@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Base } from "../../themes";
+import Base from "@appserver/components/themes/base";
 
 const StyledButtonsWrapper = styled.div`
   display: grid;

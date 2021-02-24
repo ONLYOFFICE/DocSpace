@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { Base } from "../../themes";
+import Base from "@appserver/components/themes/base";
 import DropDown from "../drop-down";
 
 const hoveredCss = css`

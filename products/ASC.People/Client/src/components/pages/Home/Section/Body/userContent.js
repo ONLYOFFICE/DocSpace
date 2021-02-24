@@ -1,15 +1,15 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import styled from "styled-components";
-import {
-  RowContent,
-  Link,
-  LinkWithDropdown,
-  Text,
-  Box,
-} from "@appserver/components/src";
+
+import RowContent from "@appserver/components/row-container";
+import Link from "@appserver/components/link";
+import LinkWithDropdown from "@appserver/components/link-with-dropdown";
+import Text from "@appserver/components/text";
+import Box from "@appserver/components/box";
+
 import { inject, observer } from "mobx-react";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import SendClockIcon from "../../../../../../public/images/send.clock.react.svg";
 import CatalogSpamIcon from "../../../../../../public/images/catalog.spam.react.svg";
 

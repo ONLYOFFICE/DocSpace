@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 
-import ModalDialog from "@appserver/components/src/components/modal-dialog";
-import Button from "@appserver/components/src/components/button";
-import Text from "@appserver/components/src/components/text";
-import Link from "@appserver/components/src/components/link";
-import Box from "@appserver/components/src/components/box";
-import Row from "@appserver/components/src/components/row";
-import RowContainer from "@appserver/components/src/components/row-container";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import Box from "@appserver/components/box";
+import Row from "@appserver/components/row";
+import RowContainer from "@appserver/components/row-container";
 
 import { withTranslation } from "react-i18next";
 import EmptyFolderContainer from "../../../Home/Section/Body/EmptyFolderContainer";
@@ -23,7 +23,7 @@ import OwnCloudIcon from "../../../../../../public/images/icon_owncloud.react.sv
 import SharePointIcon from "../../../../../../public/images/icon_sharepoint.react.svg";
 import WebDavIcon from "../../../../../../public/images/icon_webdav.react.svg";
 import YandexDiskIcon from "./../../../../../public/images/icon_yandex_disk.react.svg";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 
 const StyledServicesBlock = styled.div`
@@ -100,7 +100,7 @@ const StyledOwnCloudIcon = styled(OwnCloudIcon)`
 const StyledSharePointIcon = styled(SharePointIcon)`
   ${commonIconsStyles}
 `;
-const StyledWebDavIcon= styled(WebDavIcon)`
+const StyledWebDavIcon = styled(WebDavIcon)`
   ${commonIconsStyles}
 `;
 const StyledYandexDiskIcon = styled(YandexDiskIcon)`
@@ -170,7 +170,7 @@ class ConnectClouds extends React.Component {
           this.props
             .getOAuthToken(modal)
             .then((token) => this.showOAuthModal(token, selectedServiceData))
-      );
+        );
     }
 
     this.setState({
@@ -572,7 +572,7 @@ export default inject(
     const { fetchFiles, filter } = filesStore;
     const { setSelectedNode, myFolder, commonFolder } = treeFoldersStore;
 
-  return {
+    return {
       isAdmin: auth.isAdmin,
       filter,
       providers,
@@ -593,8 +593,8 @@ export default inject(
 
       fetchFiles,
       setSelectedNode,
-  setConnectItem,
-  setShowThirdPartyPanel,
+      setConnectItem,
+      setShowThirdPartyPanel,
       getOAuthToken,
       openConnectWindow,
     };

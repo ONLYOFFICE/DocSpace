@@ -1,12 +1,12 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import FieldContainer from "@appserver/components/src/components/field-container";
-import Loader from "@appserver/components/src/components/loader";
-import toastr from "@appserver/components/src/components/toast/toastr";
-import TextInput from "@appserver/components/src/components/text-input";
-import Link from "@appserver/components/src/components/link";
-import SaveCancelButtons from "@appserver/components/src/components/save-cancel-buttons";
+import FieldContainer from "@appserver/components/field-container";
+import Loader from "@appserver/components/loader";
+import toastr from "@appserver/components/toast/toastr";
+import TextInput from "@appserver/components/text-input";
+import Link from "@appserver/components/link";
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject, observer } from "mobx-react";
@@ -248,7 +248,7 @@ export default inject(({ auth, setup }) => {
   return {
     greetingSettings,
     organizationName,
-  setGreetingTitle,
-  restoreGreetingTitle,
+    setGreetingTitle,
+    restoreGreetingTitle,
   };
 })(withTranslation("Settings")(observer(CustomTitles)));

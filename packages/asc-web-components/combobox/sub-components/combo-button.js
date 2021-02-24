@@ -11,8 +11,8 @@ import {
   StyledComboButton,
 } from "./styled-combobutton";
 
-import ExpanderDownIcon from "../../../../../../public/images/expander-down.react.svg";
-import commonIconsStyles from "../../../utils/common-icons-style";
+import ExpanderDownIcon from "../../../../public/images/expander-down.react.svg";
+import commonIconsStyles from "../../utils/common-icons-style";
 
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}

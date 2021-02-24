@@ -1,12 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  ModalDialog,
-  Button,
-  Text,
-  EmailInput,
-  FieldContainer,
-} from "@appserver/components/src";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import EmailInput from "@appserver/components/email-input";
+import FieldContainer from "@appserver/components/field-container";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { api, toastr } from "@appserver/common/src";

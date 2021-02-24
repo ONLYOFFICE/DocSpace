@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
-import { tablet } from "../../utils/device";
-import { Base } from "../../themes";
+import { tablet } from "../utils/device";
+import Base from "@appserver/components/themes/base";
 function getHorizontalCss(labelWidth) {
   return css`
     display: flex;

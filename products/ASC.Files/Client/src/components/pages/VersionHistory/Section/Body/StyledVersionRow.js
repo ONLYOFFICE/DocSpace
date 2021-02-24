@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import Row from "@appserver/components/src/components/row";
-import { tablet } from "@appserver/components/src/utils/device";
+import Row from "@appserver/components/row";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledVersionRow = styled(Row)`
   min-height: 70px;

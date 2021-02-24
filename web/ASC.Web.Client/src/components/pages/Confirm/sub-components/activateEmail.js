@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import Loader from "@appserver/components/src/components/loader";
+import Loader from "@appserver/components/loader";
 import PageLayout from "@appserver/common/src/components/PageLayout";
 import { utils as commonUtils } from "@appserver/common/src/utils";
 import { inject, observer } from "mobx-react";
@@ -47,7 +47,7 @@ const ActivateEmailForm = (props) => (
 export default inject(({ auth }) => {
   const { logout, userStore } = auth;
   return {
-  logout,
+    logout,
     changeEmail: userStore.changeEmail,
   };
 })(withRouter(observer(ActivateEmailForm)));

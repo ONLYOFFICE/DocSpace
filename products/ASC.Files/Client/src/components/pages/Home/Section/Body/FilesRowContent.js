@@ -23,7 +23,7 @@ import EditingWrapperComponent from "./EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
 //import { setEncryptionAccess } from "../../../../../helpers/desktop";
 import { observer, inject } from "mobx-react";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const { FileAction, ShareAccessRights } = constants;
 const sideColor = "#A3A9AE";
@@ -791,15 +791,15 @@ export default inject(
       filter,
       setNewRowItems,
       newRowItems,
-  createFile,
-  updateFile,
-  renameFolder,
+      createFile,
+      updateFile,
+      renameFolder,
       createFolder,
     } = filesStore;
 
     const {
       treeFolders,
-  setTreeFolders,
+      setTreeFolders,
       isRecycleBinFolder,
       isPrivacyFolder,
       expandedKeys,
@@ -810,7 +810,7 @@ export default inject(
 
     const fileAction = { type, extension, id };
     const {
-  setSecondaryProgressBarData,
+      setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
 
@@ -843,18 +843,18 @@ export default inject(
       newRowItems,
       expandedKeys,
 
-  setIsLoading,
+      setIsLoading,
       fetchFiles,
       setTreeFolders,
       setSecondaryProgressBarData,
-  clearSecondaryProgressData,
+      clearSecondaryProgressData,
       setNewRowItems,
       createFile,
       createFolder,
       updateFile,
       renameFolder,
       replaceFileStream,
-  getEncryptionAccess,
+      getEncryptionAccess,
       setEncryptionAccess,
       addExpandedKeys,
     };

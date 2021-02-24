@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import ModalDialog from "@appserver/components/src/components/modal-dialog";
-import EmailInput from "@appserver/components/src/components/email-input";
-import Button from "@appserver/components/src/components/button";
-import Box from "@appserver/components/src/components/box";
-import Text from "@appserver/components/src/components/text";
-import { tablet } from "@appserver/components/src/utils/device";
+import ModalDialog from "@appserver/components/modal-dialog";
+import EmailInput from "@appserver/components/email-input";
+import Button from "@appserver/components/button";
+import Box from "@appserver/components/box";
+import Text from "@appserver/components/text";
+import { tablet } from "@appserver/components/utils/device";
 
 const BtnContainer = styled(Box)`
   width: 100px;

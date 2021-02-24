@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 import { Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { format } from "react-string-format";
-import ModalDialog from "@appserver/components/src/components/modal-dialog";
-import Text from "@appserver/components/src/components/text";
-import Button from "@appserver/components/src/components/button";
-import TextInput from "@appserver/components/src/components/text-input";
-import Box from "@appserver/components/src/components/box";
-import Link from "@appserver/components/src/components/link";
-import toastr from "@appserver/components/src/components/toast/toastr";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Text from "@appserver/components/text";
+import Button from "@appserver/components/button";
+import TextInput from "@appserver/components/text-input";
+import Box from "@appserver/components/box";
+import Link from "@appserver/components/link";
+import toastr from "@appserver/components/toast/toastr";
 import ModalDialogContainer from "./modalDialogContainer";
 
 class ConsumerModalDialog extends React.Component {

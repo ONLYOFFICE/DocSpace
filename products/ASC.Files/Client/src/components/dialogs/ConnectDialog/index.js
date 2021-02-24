@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { toastr } from "@appserver/components";
-import Button from "@appserver/components/src/components/button";
-import ModalDialog from "@appserver/components/src/components/modal-dialog";
-import Checkbox from "@appserver/components/src/components/checkbox";
-import TextInput from "@appserver/components/src/components/text-input";
-import PasswordInput from "@appserver/components/src/components/password-input";
-import FieldContainer from "@appserver/components/src/components/field-container";
-import { changeLanguage } from "@appserver/common/src/utils";
-import {
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Checkbox from "@appserver/components/checkbox";
+import TextInput from "@appserver/components/text-input";
+import PasswordInput from "@appserver/components/password-input";
+import FieldContainer from "@appserver/components/field-container";
 
 import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { withTranslation } from "react-i18next";
@@ -315,7 +313,7 @@ const PureConnectDialogContainer = (props) => {
 
 const ConnectDialog = withTranslation("ConnectDialog")(
   PureConnectDialogContainer
-  );
+);
 
 export default inject(
   ({ filesStore, settingsStore, treeFoldersStore, selectedFolderStore }) => {
@@ -337,7 +335,7 @@ export default inject(
     } = treeFoldersStore;
     const { id, folders } = selectedFolderStore;
 
-  return {
+    return {
       selectedFolderId: id,
       selectedFolderFolders: folders,
       treeFolders,
@@ -346,12 +344,12 @@ export default inject(
       providers,
 
       fetchFiles,
-  setTreeFolders,
+      setTreeFolders,
       getOAuthToken,
       saveThirdParty,
       openConnectWindow,
-  fetchThirdPartyProviders,
-  fetchTreeFolders,
+      fetchThirdPartyProviders,
+      fetchTreeFolders,
     };
   }
 )(observer(ConnectDialog));

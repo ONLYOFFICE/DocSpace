@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mobile } from "../../utils/device";
+import { mobile } from "../utils/device";
 
 const EmptyContentBody = styled.div`
   margin: 0 auto;

@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import { Resizable } from "re-resizable";
 import { isMobile } from "react-device-detect";
-import { tablet } from "@appserver/components/src/utils/device";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledArticle = styled.article`
   @media ${tablet} {
@@ -35,7 +35,7 @@ const StyledArticle = styled.article`
       margin-top: 56px;
       height: calc(100% - 56px) !important;
       width: 240px !important;
-    @media ${tablet} {
+      @media ${tablet} {
         margin-top: ${(props) => (props.pinned ? "56px;" : "0;")};
       }
     `}

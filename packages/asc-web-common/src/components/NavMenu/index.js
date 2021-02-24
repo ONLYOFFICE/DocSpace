@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import Backdrop from "@appserver/components/src/components/backdrop";
-import Toast from "@appserver/components/src/components/toast";
-import Aside from "@appserver/components/src/components/aside";
+import Backdrop from "@appserver/components/backdrop";
+import Toast from "@appserver/components/toast";
+import Aside from "@appserver/components/aside";
 
 import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
@@ -147,38 +147,38 @@ class NavMenu extends React.Component {
       <LayoutContextConsumer>
         {(value) => (
           <StyledContainer isLoaded={isLoaded} isVisible={value.isVisible}>
-        <Toast />
+            <Toast />
 
-        <Backdrop
-          visible={isBackdropVisible}
-          onClick={this.backdropClick}
-          withBackground={true}
-        />
+            <Backdrop
+              visible={isBackdropVisible}
+              onClick={this.backdropClick}
+              withBackground={true}
+            />
 
-        {!isDesktop &&
-          (isLoaded && isAuthenticated ? (
-            <>
-              <HeaderNav history={history} />
-              <Header
-                isNavOpened={isNavOpened}
-                onClick={this.showNav}
-                onNavMouseEnter={this.handleNavMouseEnter}
-                onNavMouseLeave={this.handleNavMouseLeave}
-                toggleAside={this.toggleAside}
-              />
-            </>
-          ) : !isLoaded && isAuthenticated ? (
-            <Loaders.Header />
-          ) : (
-            <HeaderUnAuth />
-          ))}
+            {!isDesktop &&
+              (isLoaded && isAuthenticated ? (
+                <>
+                  <HeaderNav history={history} />
+                  <Header
+                    isNavOpened={isNavOpened}
+                    onClick={this.showNav}
+                    onNavMouseEnter={this.handleNavMouseEnter}
+                    onNavMouseLeave={this.handleNavMouseLeave}
+                    toggleAside={this.toggleAside}
+                  />
+                </>
+              ) : !isLoaded && isAuthenticated ? (
+                <Loaders.Header />
+              ) : (
+                <HeaderUnAuth />
+              ))}
 
-        {isAsideAvailable && (
-          <Aside visible={isAsideVisible} onClick={this.backdropClick}>
-            {asideContent}
-          </Aside>
-        )}
-      </StyledContainer>
+            {isAsideAvailable && (
+              <Aside visible={isAsideVisible} onClick={this.backdropClick}>
+                {asideContent}
+              </Aside>
+            )}
+          </StyledContainer>
         )}
       </LayoutContextConsumer>
     );

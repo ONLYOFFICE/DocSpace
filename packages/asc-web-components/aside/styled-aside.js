@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Base } from "../../themes";
+import Base from "@appserver/components/themes/base";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */

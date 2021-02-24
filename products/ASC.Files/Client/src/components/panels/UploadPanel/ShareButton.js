@@ -1,5 +1,5 @@
 import React from "react";
-import  IconButton  from "@appserver/components/src/components/icon-button";
+import IconButton from "@appserver/components/icon-button";
 import { inject, observer } from "mobx-react";
 
 const ShareButton = (props) => {
@@ -45,7 +45,7 @@ export default inject(({ dialogsStore, uploadDataStore }, { uniqueId }) => {
     sharingPanelVisible,
     uploadedFile,
 
-  setSharingPanelVisible,
-  selectUploadedFile,
+    setSharingPanelVisible,
+    selectUploadedFile,
   };
 })(observer(ShareButton));

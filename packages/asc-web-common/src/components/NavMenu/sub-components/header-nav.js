@@ -6,7 +6,7 @@ import ProfileActions from "./profile-actions";
 import history from "../../../history";
 
 import { useTranslation } from "react-i18next";
-import { tablet } from "@appserver/components/src/utils/device";
+import { tablet } from "@appserver/components/utils/device";
 import { inject, observer } from "mobx-react";
 const StyledNav = styled.nav`
   display: flex;
@@ -44,50 +44,50 @@ const HeaderNav = ({
   logout,
   isAuthenticated,
 }) => {
-    const { t } = useTranslation();
-    const onProfileClick = useCallback(() => {
-      if (homepage == "/products/people") {
-        history.push("/products/people/view/@self");
-      } else {
-        window.open("/products/people/view/@self", "_self");
-      }
-    }, []);
+  const { t } = useTranslation();
+  const onProfileClick = useCallback(() => {
+    if (homepage == "/products/people") {
+      history.push("/products/people/view/@self");
+    } else {
+      window.open("/products/people/view/@self", "_self");
+    }
+  }, []);
 
-    const onAboutClick = useCallback(() => history.push("/about"), []);
+  const onAboutClick = useCallback(() => history.push("/about"), []);
 
-    const onLogoutClick = useCallback(() => logout && logout(), [logout]);
+  const onLogoutClick = useCallback(() => logout && logout(), [logout]);
 
-    const getCurrentUserActions = useCallback(() => {
-      const currentUserActions = [
-        {
-          key: "ProfileBtn",
-          label: t("Profile"),
-          onClick: onProfileClick,
-          url: "/products/people/view/@self",
-        },
-        {
-          key: "AboutBtn",
-          label: t("AboutCompanyTitle"),
-          onClick: onAboutClick,
-          url: "/about",
-        },
-        {
-          key: "LogoutBtn",
-          label: t("LogoutButton"),
-          onClick: onLogoutClick,
-        },
-      ];
+  const getCurrentUserActions = useCallback(() => {
+    const currentUserActions = [
+      {
+        key: "ProfileBtn",
+        label: t("Profile"),
+        onClick: onProfileClick,
+        url: "/products/people/view/@self",
+      },
+      {
+        key: "AboutBtn",
+        label: t("AboutCompanyTitle"),
+        onClick: onAboutClick,
+        url: "/about",
+      },
+      {
+        key: "LogoutBtn",
+        label: t("LogoutButton"),
+        onClick: onLogoutClick,
+      },
+    ];
 
-      return currentUserActions;
-    }, [onProfileClick, onAboutClick, onLogoutClick]);
+    return currentUserActions;
+  }, [onProfileClick, onAboutClick, onLogoutClick]);
 
-    const [isOpen, setIsOpen] = useState(false); //TODO: Need to refactoring
-    const isOpenProfileMenu = (value) => {
-      setIsOpen(value);
-    };
-    //console.log("HeaderNav render");
-    return (
-      <StyledNav isOpen={isOpen} className="profileMenuIcon hidingHeader">
+  const [isOpen, setIsOpen] = useState(false); //TODO: Need to refactoring
+  const isOpenProfileMenu = (value) => {
+    setIsOpen(value);
+  };
+  //console.log("HeaderNav render");
+  return (
+    <StyledNav isOpen={isOpen} className="profileMenuIcon hidingHeader">
       {modules
         .filter((m) => m.isolateMode)
         .map((m) => (
@@ -105,17 +105,17 @@ const HeaderNav = ({
           />
         ))}
 
-        {isAuthenticated && user ? (
-          <ProfileActions
-            userActions={getCurrentUserActions()}
-            user={user}
-            isOpenProfileMenu={isOpenProfileMenu}
-          />
-        ) : (
-          <></>
-        )}
-      </StyledNav>
-    );
+      {isAuthenticated && user ? (
+        <ProfileActions
+          userActions={getCurrentUserActions()}
+          user={user}
+          isOpenProfileMenu={isOpenProfileMenu}
+        />
+      ) : (
+        <></>
+      )}
+    </StyledNav>
+  );
 };
 
 HeaderNav.displayName = "HeaderNav";

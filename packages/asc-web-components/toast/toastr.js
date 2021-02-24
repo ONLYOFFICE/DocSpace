@@ -6,7 +6,7 @@ import { CheckToastIcon, DangerToastIcon, InfoToastIcon } from "./svg";
 import IconButton from "../icon-button";
 import Text from "../text";
 import { StyledCloseWrapper, StyledDiv, IconWrapper } from "./styled-toastr";
-import commonIconsStyles from "../../utils/common-icons-style";
+import commonIconsStyles from "../utils/common-icons-style";
 
 const StyledCheckToastIcon = styled(CheckToastIcon)`
   ${commonIconsStyles}

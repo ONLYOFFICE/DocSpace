@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
-import Base from "../../themes/base";
-import { tablet } from "../../utils/device";
+import Base from "@appserver/components/themes/base";
+import { tablet } from "../utils/device";
 
 const itemTruncate = css`
   white-space: nowrap;

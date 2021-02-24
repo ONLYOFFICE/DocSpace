@@ -1,8 +1,8 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
-import NoUserSelect from "../../utils/commonStyles";
-import { Base } from "../../themes";
+import NoUserSelect from "../utils/commonStyles";
+import Base from "@appserver/components/themes/base";
 
 const activeCss = css`
   background-color: ${(props) =>

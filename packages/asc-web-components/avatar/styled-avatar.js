@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
-import { Base } from "../../themes";
-import NoUserSelect from "../../utils/commonStyles";
+import Base from "@appserver/components/themes/base";
+import NoUserSelect from "../utils/commonStyles";
 import { CameraIcon } from "./svg";
-import commonIconsStyles from "../../utils/common-icons-style";
+import commonIconsStyles from "../utils/common-icons-style";
 
 const EditLink = styled.div`
   padding-left: ${(props) => props.theme.avatar.editLink.paddingLeft};

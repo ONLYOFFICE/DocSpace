@@ -7,7 +7,7 @@ import { RefreshIcon } from "./svg";
 import Link from "../link";
 import Text from "../text";
 import Tooltip from "../tooltip";
-import { Base } from "../../themes";
+import Base from "@appserver/components/themes/base";
 import {
   Progress,
   CopyLink,
@@ -96,7 +96,8 @@ class PasswordInput extends React.Component {
       ? "transparent"
       : redColor;
 
-    this.props.onValidateInput && this.props.onValidateInput(progressScore, passwordValidation);
+    this.props.onValidateInput &&
+      this.props.onValidateInput(progressScore, passwordValidation);
 
     this.setState({
       progressColor: progressColor,
@@ -334,7 +335,10 @@ class PasswordInput extends React.Component {
     } = this.props;
 
     const { type, progressColor, progressWidth, inputValue } = this.state;
-    const iconName = type === "password" ? "static/images/eye.off.react.svg" : "static/images/eye.react.svg";
+    const iconName =
+      type === "password"
+        ? "static/images/eye.off.react.svg"
+        : "static/images/eye.react.svg";
 
     return (
       <>

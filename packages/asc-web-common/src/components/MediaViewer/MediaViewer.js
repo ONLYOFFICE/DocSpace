@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Text from "@appserver/components/src/components/text";
+import Text from "@appserver/components/text";
 import MediaDeleteIcon from "../../../../../public/images/media.delete.react.svg";
 import MediaDownloadIcon from "../../../../../public/images/media.download.react.svg";
 import ImageViewer from "./sub-components/image-viewer";
@@ -12,7 +12,7 @@ import StyledMediaViewer from "./StyledMediaViewer";
 import equal from "fast-deep-equal/react";
 import Hammer from "hammerjs";
 import CrossIcon from "../../../../../public/images/cross.react.svg";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const StyledVideoViewer = styled(VideoViewer)`
   z-index: 4001;
@@ -39,7 +39,6 @@ const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
 const StyledMediaDownloadIcon = styled(MediaDownloadIcon)`
   ${commonIconsStyles}
 `;
-
 
 let ctrIsPressed = false;
 class MediaViewer extends React.Component {

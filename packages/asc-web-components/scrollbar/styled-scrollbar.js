@@ -1,16 +1,16 @@
 import { Scrollbars } from "react-custom-scrollbars";
 import styled from "styled-components";
-import { Base } from "../../themes";
+import Base from "@appserver/components/themes/base";
 
 const StyledScrollbar = styled(Scrollbars)`
   .nav-thumb-vertical {
-    background-color: ${props =>
+    background-color: ${(props) =>
       props.color
         ? props.color
         : props.theme.scrollbar.backgroundColorVertical};
   }
   .nav-thumb-horizontal {
-    background-color: ${props =>
+    background-color: ${(props) =>
       props.color
         ? props.color
         : props.theme.scrollbar.backgroundColorHorizontal};
@@ -18,7 +18,7 @@ const StyledScrollbar = styled(Scrollbars)`
 `;
 
 StyledScrollbar.defaultProps = {
-  theme: Base
+  theme: Base,
 };
 
 export default StyledScrollbar;

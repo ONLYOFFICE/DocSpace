@@ -6,9 +6,9 @@ import { LayoutContextConsumer } from "../../Layout/context";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
-import Scrollbar from "@appserver/components/src/components/scrollbar";
-import DragAndDrop from "@appserver/components/src/components/drag-and-drop";
-import { tablet } from "@appserver/components/src/utils/device";
+import Scrollbar from "@appserver/components/scrollbar";
+import DragAndDrop from "@appserver/components/drag-and-drop";
+import { tablet } from "@appserver/components/utils/device";
 import SelectedFrame from "./SelectedFrame";
 
 const commonStyles = css`
@@ -34,7 +34,7 @@ const commonStyles = css`
     .people-row-container,
     .files-row-container {
       margin-top: -22px;
-  }
+    }
   }
 `;
 

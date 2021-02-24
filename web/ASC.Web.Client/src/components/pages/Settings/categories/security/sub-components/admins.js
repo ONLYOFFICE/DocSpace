@@ -4,21 +4,19 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 
-
-
-import Text from "@appserver/components/src/components/text";
-import Avatar from "@appserver/components/src/components/avatar";
-import Row from "@appserver/components/src/components/row";
-import RowContent from "@appserver/components/src/components/row-content";
-import RowContainer from "@appserver/components/src/components/row-container";
-import Link from "@appserver/components/src/components/link";
-import Paging from "@appserver/components/src/components/paging";
-import IconButton from "@appserver/components/src/components/icon-button";
-import toastr from "@appserver/components/src/components/toast/toastr";
-import Button from "@appserver/components/src/components/button";
-import RequestLoader from "@appserver/components/src/components/request-loader";
-import Loader from "@appserver/components/src/components/loader";
-import EmptyScreenContainer from "@appserver/components/src/components/empty-screen-container";
+import Text from "@appserver/components/text";
+import Avatar from "@appserver/components/avatar";
+import Row from "@appserver/components/row";
+import RowContent from "@appserver/components/row-content";
+import RowContainer from "@appserver/components/row-container";
+import Link from "@appserver/components/link";
+import Paging from "@appserver/components/paging";
+import IconButton from "@appserver/components/icon-button";
+import toastr from "@appserver/components/toast/toastr";
+import Button from "@appserver/components/button";
+import RequestLoader from "@appserver/components/request-loader";
+import Loader from "@appserver/components/loader";
+import EmptyScreenContainer from "@appserver/components/empty-screen-container";
 
 import FilterInput from "@appserver/common/src/components/FilterInput";
 import PeopleSelector from "@appserver/common/src/components/PeopleSelector";
@@ -487,7 +485,9 @@ class PureAdminsSettings extends Component {
                                     false,
                                     "00000000-0000-0000-0000-000000000000"
                                   )}
-                                  iconName={"static/images/catalog.trash.react.svg"}
+                                  iconName={
+                                    "static/images/catalog.trash.react.svg"
+                                  }
                                   isFill={true}
                                   isClickable={false}
                                 />

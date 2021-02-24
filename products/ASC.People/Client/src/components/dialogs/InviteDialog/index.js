@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  ModalDialog,
-  Link,
-  Checkbox,
-  Button,
-  Textarea,
-  Text,
-} from "@appserver/components/src";
+
+import Link from "@appserver/components/link";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Checkbox from "@appserver/components/checkbox";
+import Button from "@appserver/components/button";
+import Textarea from "@appserver/components/textarea";
+import Text from "@appserver/components/text";
+
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import copy from "copy-to-clipboard";
@@ -103,17 +103,17 @@ class InviteDialogComponent extends React.Component {
       guestInvitationLink,
     } = this.props;
 
-      if (!userInvitationLink || !guestInvitationLink) {
-        getPortalInviteLinks().then(() => {
-          this.setState({
-            visible: true,
-            userInvitationLink: this.props.userInvitationLink,
-            guestInvitationLink: this.props.guestInvitationLink,
-          });
+    if (!userInvitationLink || !guestInvitationLink) {
+      getPortalInviteLinks().then(() => {
+        this.setState({
+          visible: true,
+          userInvitationLink: this.props.userInvitationLink,
+          guestInvitationLink: this.props.guestInvitationLink,
         });
-      } else {
-        this.setState({ visible: true });
-      }
+      });
+    } else {
+      this.setState({ visible: true });
+    }
   }
 
   onClickToCloseButton = () =>

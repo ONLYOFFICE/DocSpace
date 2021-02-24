@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import Link from "@appserver/components/src/components/link";
+import Link from "@appserver/components/link";
 import { history } from "@appserver/common";
 import { changeLanguage } from "@appserver/common/src/utils";
 import { withTranslation, I18nextProvider } from "react-i18next";
@@ -226,7 +226,7 @@ export default inject(
       openConnectWindow,
     } = settingsStore.thirdPartyStore;
 
-  return {
+    return {
       googleConnectItem,
       boxConnectItem,
       dropboxConnectItem,
@@ -237,8 +237,8 @@ export default inject(
       setIsLoading,
       setSelectedFolder,
       setSelectedNode,
-  setConnectItem,
-  setShowThirdPartyPanel,
+      setConnectItem,
+      setShowThirdPartyPanel,
       getOAuthToken,
       openConnectWindow,
     };

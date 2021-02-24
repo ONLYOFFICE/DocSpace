@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 import commonTextStyles from "../text/common-text-styles";
-import { Base } from "../../themes/index";
+import Base from "@appserver/components/themes/base";
 
 const fontSizeStyle = (props) => props.theme.heading.fontSize[props.size];
 

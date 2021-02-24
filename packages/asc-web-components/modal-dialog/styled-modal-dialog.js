@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { Base } from "../../themes";
+import Base from "@appserver/components/themes/base";
 import Box from "../box";
-import CrossSidebarIcon from "../../../../../public/images/cross.sidebar.react.svg"
+import CrossSidebarIcon from "../../../public/images/cross.sidebar.react.svg";
 
 const Dialog = styled.div`
   position: relative;

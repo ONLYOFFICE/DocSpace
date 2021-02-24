@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import Text from "@appserver/components/src/components/text";
-import ToggleContent from "@appserver/components/src/components/toggle-content";
-import RadioButtonGroup from "@appserver/components/src/components/radio-button-group";
+import Text from "@appserver/components/text";
+import ToggleContent from "@appserver/components/toggle-content";
+import RadioButtonGroup from "@appserver/components/radio-button-group";
 
 const ProjectsContainer = styled.div`
   display: flex;

@@ -1,12 +1,12 @@
 import React, { useCallback, useState, useMemo } from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import {
-  GroupButtonsMenu,
-  DropDownItem,
-  ContextMenuButton,
-  utils,
-} from "@appserver/components/src";
+
+import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
+import DropDownItem from "@appserver/components/drop-down-item";
+import ContextMenuButton from "@appserver/components/context-menu-button";
+import utils from "@appserver/components/utils";
+
 import { Headline, toastr, Loaders, constants } from "@appserver/common/src";
 import { withTranslation } from "react-i18next";
 import {
@@ -528,5 +528,5 @@ export default inject(({ auth, peopleStore }) => ({
   removeUser: peopleStore.usersStore.removeUser,
   updateUserStatus: peopleStore.usersStore.updateUserStatus,
   group: peopleStore.selectedGroupStore.group,
-  isTabletView: auth.settingsStore.isTabletView, 
+  isTabletView: auth.settingsStore.isTabletView,
 }))(observer(withTranslation("Home")(withRouter(SectionHeaderContent))));

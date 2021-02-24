@@ -1,7 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Selector from "./sub-components/Selector";
-import { utils, Backdrop, DropDown, Aside } from "@appserver/components/src";
+import utils from "@appserver/components/utils";
+import Backdrop from "@appserver/components/backdrop";
+import DropDown from "@appserver/components/drop-down";
+import Aside from "@appserver/components/aside";
 
 import throttle from "lodash/throttle";
 const { desktop } = utils.device;

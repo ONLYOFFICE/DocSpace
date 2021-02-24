@@ -1,15 +1,14 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import Text from "@appserver/components/src/components/text";
-import Loader from "@appserver/components/src/components/loader";
-import toastr from "@appserver/components/src/components/toast/toastr";
-import Link from "@appserver/components/src/components/link";
+import Text from "@appserver/components/text";
+import Loader from "@appserver/components/loader";
+import toastr from "@appserver/components/toast/toastr";
+import Link from "@appserver/components/link";
 import ArrowRightIcon from "../../../../../../public/images/arrow.right.react.svg";
 import { setDocumentTitle } from "../../../../../helpers/utils";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
-
 
 const mapCulturesToArray = (cultures, t) => {
   return cultures.map((culture) => {
@@ -249,7 +248,7 @@ class Customization extends React.Component {
               >
                 {t("CustomTitles")}
               </Link>
-              <StyledArrowRightIcon size="small"  color="#333333" />
+              <StyledArrowRightIcon size="small" color="#333333" />
             </div>
             <Text className="category-item-description">
               {t("CustomTitlesSettingsDescription")}
@@ -284,9 +283,9 @@ export default inject(({ auth, setup }) => {
     rawCultures: cultures,
     nameSchemaId,
     organizationName,
-  getPortalCultures,
-  setLanguageAndTime,
-  getPortalTimezones,
+    getPortalCultures,
+    setLanguageAndTime,
+    getPortalTimezones,
     getCurrentCustomSchema,
   };
 })(withTranslation("Settings")(observer(Customization)));

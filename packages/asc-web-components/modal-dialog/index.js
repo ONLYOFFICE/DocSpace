@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Backdrop from "../backdrop";
 import Aside from "../aside";
 import Heading from "../heading";
-import { desktop } from "../../utils/device";
+import { desktop } from "../utils/device";
 import throttle from "lodash/throttle";
 import Box from "../box";
 import {

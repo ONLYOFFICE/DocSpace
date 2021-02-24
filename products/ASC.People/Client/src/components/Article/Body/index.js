@@ -2,7 +2,10 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 
-import { utils, TreeMenu, TreeNode, Link } from "@appserver/components/src";
+import utils from "@appserver/components/utils";
+import TreeMenu from "@appserver/components/tree-menu";
+import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
+import Link from "@appserver/components/link";
 import { withTranslation } from "react-i18next";
 import { history, Loaders } from "@appserver/common/src";
 import CatalogFolderIcon from "../../../../../../../public/images/catalog.folder.react.svg";
@@ -14,7 +17,7 @@ import { createI18N } from "../../../helpers/i18n";
 import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import { getSelectedGroup } from "../../../helpers/people-helpers";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const StyledTreeMenu = styled(TreeMenu)`
   ${(props) =>
@@ -205,19 +208,19 @@ const getTreeGroups = (groups, departments) => {
       root: true,
       children:
         (groups &&
-        groups.map((g) => {
-          return {
-            key: g.id,
-            title: (
-              <Link
-                {...linkProps}
-                href={`${history.location.pathname}?group=${g.id}&${newLink}`}
-              >
-                {g.name}
-              </Link>
-            ),
-            root: false,
-          };
+          groups.map((g) => {
+            return {
+              key: g.id,
+              title: (
+                <Link
+                  {...linkProps}
+                  href={`${history.location.pathname}?group=${g.id}&${newLink}`}
+                >
+                  {g.name}
+                </Link>
+              ),
+              root: false,
+            };
           })) ||
         [],
     },

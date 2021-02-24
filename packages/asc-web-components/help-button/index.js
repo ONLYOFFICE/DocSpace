@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 
 import IconButton from "../icon-button";
 import Tooltip from "../tooltip";
-import { handleAnyClick } from "../../utils/event";
+import { handleAnyClick } from "../utils/event";
 import uniqueId from "lodash/uniqueId";
 import Aside from "../aside";
-import { desktop } from "../../utils/device";
+import { desktop } from "../utils/device";
 import Backdrop from "../backdrop";
 import Heading from "../heading";
 import throttle from "lodash/throttle";

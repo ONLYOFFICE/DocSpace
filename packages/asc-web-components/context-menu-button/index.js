@@ -9,7 +9,7 @@ import Backdrop from "../backdrop";
 import Aside from "../aside";
 import Heading from "../heading";
 import Link from "../link";
-import { desktop } from "../../utils/device";
+import { desktop } from "../utils/device";
 import {
   StyledBodyContent,
   StyledHeaderContent,

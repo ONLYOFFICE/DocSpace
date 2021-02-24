@@ -3,7 +3,7 @@ import TextareaAutosize from "react-autosize-textarea";
 
 import Scrollbar from "../scrollbar/index";
 import commonInputStyle from "../text-input/common-input-styles";
-import { Base } from "../../themes";
+import Base from "@appserver/components/themes/base";
 
 const ClearScrollbar = ({ isDisabled, heightScale, hasError, ...props }) => (
   <Scrollbar {...props} />

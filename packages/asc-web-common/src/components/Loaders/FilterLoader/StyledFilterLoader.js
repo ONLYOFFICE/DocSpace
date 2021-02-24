@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mobile } from "@appserver/components/src/utils/device";
+import { mobile } from "@appserver/components/utils/device";
 
 const StyledFilter = styled.div`
   width: 100%;

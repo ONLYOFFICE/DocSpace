@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Loader from "../loader";
 import StyledButton from "./styled-button";
-import { Base } from "../../themes/index";
+import Base from "@appserver/components/themes/base";
 
 // eslint-disable-next-line no-unused-vars, react/prop-types
 
@@ -38,7 +38,7 @@ const Button = React.forwardRef((props, ref) => {
   const iconProps = { primary, size, icon, isHovered };
 
   return (
-    <StyledButton innerRef={ref}  {...props}>
+    <StyledButton innerRef={ref} {...props}>
       {isLoading || icon ? (
         isLoading ? (
           <Loader

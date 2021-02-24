@@ -1,7 +1,7 @@
 import Scrollbar from "../scrollbar";
 import styled, { css } from "styled-components";
-import NoUserSelect from "../../utils/commonStyles";
-import { Base } from "../../themes";
+import NoUserSelect from "../utils/commonStyles";
+import Base from "@appserver/components/themes/base";
 
 const StyledScrollbar = styled(Scrollbar)`
   width: ${(props) => props.theme.tabsContainer.scrollbar.width} !important;

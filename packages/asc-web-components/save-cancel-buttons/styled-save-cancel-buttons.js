@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-import { Base } from "../../themes";
-import { tablet } from "../../utils/device";
+import Base from "@appserver/components/themes/base";
+import { tablet } from "../utils/device";
 
 const StyledSaveCancelButtons = styled.div`
   display: flex;

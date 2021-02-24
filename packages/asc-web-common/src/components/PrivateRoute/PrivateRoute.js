@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
-//import Loader from "@appserver/components/src/components/loader";
+//import Loader from "@appserver/components/loader";
 import PageLayout from "../PageLayout";
 import { Error401, Error404 } from "../../pages/errors";
 import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
