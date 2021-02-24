@@ -1,8 +1,7 @@
-import { store as commonStore } from "@appserver/common/src";
+import authStore from "@appserver/common/src/store/AuthStore";
 import PaymentStore from "./PaymentStore";
 import WizardStore from "./WizardStore";
 import SettingsSetupStore from "./SettingsSetupStore";
-const { authStore } = commonStore;
 
 const paymentStore = new PaymentStore();
 const wizardStore = new WizardStore();

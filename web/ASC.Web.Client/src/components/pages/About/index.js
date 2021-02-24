@@ -2,10 +2,9 @@
 import Text from "@appserver/components/src/components/text";
 import Link from "@appserver/components/src/components/link";
 import PageLayout from "@appserver/common/src/components/PageLayout";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import version from "../../../../package.json";
 import styled from "styled-components";
-import { Trans } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
 
