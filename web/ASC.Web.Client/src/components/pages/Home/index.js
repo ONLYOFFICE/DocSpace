@@ -8,7 +8,7 @@ import toastr from "@appserver/common/src/components/Toast/toastr";
 import PageLayout from "@appserver/common/src/components/PageLayout";
 import history from "@appserver/common/src/history";
 import ModuleTile from "./ModuleTile";
-import { changeLanguage, tryRedirectTo } from "@appserver/common/src/utils";
+import { tryRedirectTo } from "@appserver/common/src/utils";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
 
