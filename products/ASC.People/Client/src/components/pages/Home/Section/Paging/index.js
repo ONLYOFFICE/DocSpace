@@ -1,12 +1,9 @@
 import React, { useCallback, useMemo } from "react";
-import { connect } from "react-redux";
 import { isMobile } from "react-device-detect";
-import { fetchPeople } from "../../../../../store/people/actions";
 import { Paging } from "@appserver/components/src";
 import { useTranslation } from "react-i18next";
-import { getFilter } from "../../../../../store/people/selectors";
-import { store, Loaders } from "@appserver/common/src";
-const { getIsLoaded } = store.auth.selectors;
+import { Loaders } from "@appserver/common/src";
+import { inject, observer } from "mobx-react";
 
 const SectionPagingContent = ({
   fetchPeople,
@@ -15,7 +12,7 @@ const SectionPagingContent = ({
   selectedCount,
   isLoaded,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("Home");
   const onNextClick = useCallback(
     (e) => {
       if (!filter.hasNext()) {
@@ -151,11 +148,8 @@ const SectionPagingContent = ({
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    filter: getFilter(state),
-    isLoaded: getIsLoaded(state),
-  };
-}
-
-export default connect(mapStateToProps, { fetchPeople })(SectionPagingContent);
+export default inject(({ auth, peopleStore }) => ({
+  isLoaded: auth.isLoaded,
+  fetchPeople: peopleStore.usersStore.getUsersList,
+  filter: peopleStore.filterStore.filter,
+}))(observer(SectionPagingContent));

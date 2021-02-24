@@ -11,8 +11,8 @@ import { toastr } from "@appserver/common";
 import copy from "copy-to-clipboard";
 import LinkRow from "./linkRow";
 import AccessComboBox from "./AccessComboBox";
-import equal from "fast-deep-equal/react";
-import { getAccessIcon } from "../../../store/files/selectors";
+//import equal from "fast-deep-equal/react";
+import { getAccessIcon } from "../../../helpers/files-helpers";
 
 class SharingRow extends React.Component {
   constructor(props) {
@@ -30,16 +30,16 @@ class SharingRow extends React.Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    if (!equal(this.props, nextProps)) {
-      return true;
-    }
-    if (this.state.access !== this.props.item.access) {
-      return true;
-    }
+  // shouldComponentUpdate(nextProps) {
+  //   if (!equal(this.props, nextProps)) {
+  //     return true;
+  //   }
+  //   if (this.state.access !== this.props.item.access) {
+  //     return true;
+  //   }
 
-    return true;
-  }
+  //   return true;
+  // }
 
   onCopyInternalLink = () => {
     const { internalLink, t } = this.props;
@@ -134,25 +134,20 @@ class SharingRow extends React.Component {
     },
     {
       key: "linkItem_3",
-      label: `${t("ShareVia")} Google Plus`,
-      onClick: () => toastr.warning("Share via Google Plus"),
-    },
-    {
-      key: "linkItem_4",
       label: `${t("ShareVia")} Facebook`,
         onClick: this.onShareFacebook,
     },
     {
-      key: "linkItem_5",
+        key: "linkItem_4",
       label: `${t("ShareVia")} Twitter`,
         onClick: this.onShareTwitter,
     },
     {
-      key: "linkItem_6",
+        key: "linkItem_5",
       isSeparator: true,
     },
     {
-      key: "linkItem_7",
+        key: "linkItem_6",
       label: t("Embedding"),
         onClick: () => onShowEmbeddingPanel(shareLink),
     },

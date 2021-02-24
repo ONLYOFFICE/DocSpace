@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -10,17 +11,10 @@ import NavLogoItem from "./nav-logo-item";
 import Loaders from "../../Loaders/index";
 import history from "../../../history";
 import { ReactSVG } from "react-svg";
+import { useTranslation } from "react-i18next";
 
+import { Box, Text } from "@appserver/components/src";
 import { desktop } from "@appserver/components/src/utils/device";
-import { connect } from "react-redux";
-import {
-  getCurrentProductId,
-  getCurrentProductName,
-  getDefaultPage,
-  getMainModules,
-  getTotalNotificationsCount,
-  getIsLoaded,
-} from "../../../store/auth/selectors";
 
 const backgroundColor = "#0F4071";
 
@@ -72,6 +66,12 @@ const Header = styled.header`
   }
 `;
 
+const versionBadgeProps = {
+  color: "#7A95B0",
+  fontWeight: "600",
+  fontSize: "13px",
+};
+
 const HeaderComponent = ({
   currentProductName,
   totalNotifications,
@@ -84,21 +84,62 @@ const HeaderComponent = ({
   currentProductId,
   toggleAside,
   isLoaded,
+  version,
   isAuthenticated,
+  isAdmin,
   ...props
 }) => {
+  const { t } = useTranslation();
+
   const isNavAvailable = mainModules.length > 0;
   const onLogoClick = () => {
     history.push(defaultPage);
   };
 
   const onBadgeClick = (e) => {
-    const item = mainModules.find(
-      (module) => module.id === e.currentTarget.dataset.id
-    );
+    if (!e) return;
+    const id = e.currentTarget.dataset.id;
+    const item = mainModules.find((m) => m.id === id);
     toggleAside();
 
     if (item) item.onBadgeClick(e);
+  };
+
+  const onItemClick = (e) => {
+    if (!e) return;
+    const link = e.currentTarget.dataset.link;
+    window.open(link, "_self");
+    e.preventDefault();
+  };
+
+  //TODO: getCustomModules
+  const getCustomModules = () => {
+    if (!isAdmin) {
+      return [];
+    } // Temporarily hiding the settings module
+
+    return (
+      <>
+        <NavItem
+          separator={true}
+          key={"nav-modules-separator"}
+          data-id={"nav-modules-separator"}
+        />
+        <NavItem
+          separator={false}
+          key={"settings"}
+          data-id={"settings"}
+          data-link="/settings"
+          opened={isNavOpened}
+          active={"settings" == currentProductId}
+          iconName={"SettingsIcon"}
+          onClick={onItemClick}
+          url="/settings"
+        >
+          {t("Settings")}
+        </NavItem>
+      </>
+    );
   };
 
   return (
@@ -143,6 +184,11 @@ const HeaderComponent = ({
           onMouseLeave={onNavMouseLeave}
         >
           <NavLogoItem opened={isNavOpened} onClick={onLogoClick} />
+          <NavItem
+            separator={true}
+            key={"nav-products-separator"}
+            data-id={"nav-products-separator"}
+          />
           {mainModules.map(
             ({
               id,
@@ -150,27 +196,47 @@ const HeaderComponent = ({
               iconName,
               iconUrl,
               notifications,
-              onClick,
-              url,
+              link,
               title,
+              dashed,
             }) => (
               <NavItem
                 separator={!!separator}
                 key={id}
                 data-id={id}
+                data-link={link}
                 opened={isNavOpened}
                 active={id == currentProductId}
                 iconName={iconName}
                 iconUrl={iconUrl}
                 badgeNumber={notifications}
-                onClick={onClick}
+                onClick={onItemClick}
                 onBadgeClick={onBadgeClick}
-                url={url}
+                url={link}
+                dashed={dashed}
               >
                 {title}
               </NavItem>
             )
           )}
+          {/*getCustomModules()*/}
+          <Box className="version-box">
+            <Link
+              as="a"
+              href={`https://github.com/ONLYOFFICE/AppServer/releases`}
+              target="_blank"
+              {...versionBadgeProps}
+            >
+              {t("Version")} {version}
+            </Link>
+            <Text as="span" {...versionBadgeProps}>
+              {" "}
+              -{" "}
+            </Text>
+            <Link as="a" href="/about" target="_blank" {...versionBadgeProps}>
+              {t("AboutShort")}
+            </Link>
+          </Box>
         </Nav>
       )}
     </>
@@ -192,23 +258,37 @@ HeaderComponent.propTypes = {
   toggleAside: PropTypes.func,
   logoUrl: PropTypes.string,
   isLoaded: PropTypes.bool,
+  version: PropTypes.string,
   isAuthenticated: PropTypes.bool,
+  isAdmin: PropTypes.bool,
 };
 
-const mapStateToProps = (state) => {
-  const { logoUrl } = state.auth.settings;
-  const { isAuthenticated } = state.auth;
+export default inject(({ auth }) => {
+  const {
+    settingsStore,
+    moduleStore,
+    isLoaded,
+    isAuthenticated,
+    isAdmin,
+    product,
+    availableModules,
+    version,
+  } = auth;
+  const { logoUrl, defaultPage, currentProductId } = settingsStore;
+  const { totalNotifications } = moduleStore;
+
+  const mainModules = availableModules.filter((m) => !m.isolateMode);
 
   return {
-    defaultPage: getDefaultPage(state),
-    totalNotifications: getTotalNotificationsCount(state),
-    mainModules: getMainModules(state),
-    currentProductName: getCurrentProductName(state),
-    currentProductId: getCurrentProductId(state),
-    isLoaded: getIsLoaded(state),
+    isAdmin,
+    defaultPage,
     logoUrl,
+    mainModules,
+    totalNotifications,
+    isLoaded,
+    version,
     isAuthenticated,
+    currentProductId,
+    currentProductName: (product && product.title) || "",
   };
-};
-
-export default connect(mapStateToProps)(HeaderComponent);
+})(observer(HeaderComponent));

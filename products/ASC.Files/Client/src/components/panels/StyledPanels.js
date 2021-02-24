@@ -7,14 +7,7 @@ const PanelStyles = css`
 
     .optionalBlock {
       margin-right: 4px;
-    }
-
-    &.add-groups {
-      .combo-buttons_arrow-icon {
-        flex: 0 0 5px;
-        width: 5px;
-        margin-top: 16px;
-      }
+      display: flex;
     }
 
     .combo-button {
@@ -23,6 +16,19 @@ const PanelStyles = css`
 
     .combo-button-label {
       margin: 0;
+    }
+  }
+
+  .groupSelector,
+  .peopleSelector {
+    .combo-buttons_arrow-icon {
+      flex: 0 0 6px;
+      width: 6px;
+      margin-top: auto;
+      margin-bottom: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 

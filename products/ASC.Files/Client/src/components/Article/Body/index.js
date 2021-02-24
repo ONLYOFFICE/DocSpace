@@ -1,55 +1,27 @@
 import React from "react";
-import { connect } from "react-redux";
-import { utils } from "@appserver/components";
+
 import { toastr, Loaders } from "@appserver/common";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
-import {
-  fetchFiles,
-  setIsLoading,
-  setSelectedNode,
-} from "../../../store/files/actions";
-import {
-  getTreeFolders,
-  getFilter,
-  getSelectedFolderTitle,
-  getSelectedTreeNode,
-} from "../../../store/files/selectors";
 import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
+import { inject, observer } from "mobx-react";
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { selectedFolderTitle, filter, treeFolders } = props;
+    const { selectedFolderTitle } = props;
 
     selectedFolderTitle
       ? setDocumentTitle(selectedFolderTitle)
       : setDocumentTitle();
 
     this.state = {
-      expandedKeys: filter.treeFolders,
-      data: treeFolders,
       showNewFilesPanel: false,
     };
-  }
-
-  componentDidUpdate(prevProps) {
-    const { filter, treeFolders } = this.props;
-
-    if (
-      filter.treeFolders.length !== prevProps.filter.treeFolders.length ||
-      this.state.expandedKeys.length !== filter.treeFolders.length
-    ) {
-      this.setState({ expandedKeys: filter.treeFolders });
-    }
-
-    if (!utils.array.isArrayEqual(prevProps.treeFolders, treeFolders)) {
-      this.setState({ data: treeFolders });
-    }
   }
 
   componentDidMount() {
@@ -97,17 +69,17 @@ class ArticleBodyContent extends React.Component {
   };
 
   setNewFilesCount = (folderPath, filesCount) => {
-    const data = this.state.data;
+    const data = this.props.treeFolders;
     const dataItem = data.find((x) => x.id === folderPath[0]);
     dataItem.newItems = filesCount ? filesCount : dataItem.newItems - 1;
-    this.setState({ data });
+
+    this.props.setTreeFolders(data);
   };
 
   render() {
-    const { treeFolders, filter, onTreeDrop, selectedTreeNode } = this.props;
-    const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
+    const { treeFolders, onTreeDrop, selectedTreeNode } = this.props;
+    const { showNewFilesPanel, newFolderId } = this.state;
 
-    //console.log("Article Body render");
     return (
       <>
         {showNewFilesPanel && (
@@ -127,8 +99,6 @@ class ArticleBodyContent extends React.Component {
               selectedKeys={selectedTreeNode}
               onSelect={this.onSelect}
               data={treeFolders}
-              filter={filter}
-              expandedKeys={expandedKeys}
               onBadgeClick={this.onShowNewFilesPanel}
               onTreeDrop={onTreeDrop}
             />
@@ -141,21 +111,23 @@ class ArticleBodyContent extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+export default inject(
+  ({ initFilesStore, filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const { setIsLoading } = initFilesStore;
+    const { fetchFiles, filter } = filesStore;
+    const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
+    const selectedTreeNode = [selectedFolderStore.id + ""];
+
   return {
-    treeFolders: getTreeFolders(state),
-    filter: getFilter(state),
-    selectedTreeNode: getSelectedTreeNode(state),
-    selectedFolderTitle: getSelectedFolderTitle(state),
+      selectedFolderTitle: selectedFolderStore.title,
+      treeFolders,
+      selectedTreeNode,
+      filter,
+
+      setIsLoading,
+      fetchFiles,
+      setSelectedNode,
+      setTreeFolders,
   };
 }
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-    setSelectedNode: (node) => dispatch(setSelectedNode(node)),
-    fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ArticleBodyContent);
+)(observer(ArticleBodyContent));

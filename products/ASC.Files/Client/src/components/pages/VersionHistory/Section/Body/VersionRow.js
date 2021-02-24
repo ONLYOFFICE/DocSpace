@@ -10,18 +10,10 @@ import {
 } from "@appserver/components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
-import { api, toastr, store } from "@appserver/common";
-import { setIsLoading } from "../../../../../store/files/actions";
-import {
-  markAsVersion,
-  restoreVersion,
-  updateCommentVersion,
-} from "../../../../../store/files/actions";
+
 import VersionBadge from "./VersionBadge";
 import StyledVersionRow from "./StyledVersionRow";
-
-const { getLanguage } = store.auth.selectors;
+import { inject, observer } from "mobx-react";
 
 const VersionRow = (props) => {
   const {
@@ -39,8 +31,8 @@ const VersionRow = (props) => {
 
   const canEdit = info.access === 1 || info.access === 0;
 
-  const title = `${new Date(info.created).toLocaleString(culture)} ${
-    info.createdBy.displayName
+  const title = `${new Date(info.updated).toLocaleString(culture)} ${
+    info.updatedBy.displayName
   }`;
 
   const linkStyles = { isHovered: true, type: "action" };
@@ -86,7 +78,6 @@ const VersionRow = (props) => {
   ];
 
   const onClickProp = canEdit ? { onClick: onVersionClick } : {};
-
   return (
     <StyledVersionRow
       showEditPanel={showEditPanel}
@@ -108,6 +99,7 @@ const VersionRow = (props) => {
             fontWeight={600}
             fontSize="14px"
             title={title}
+            isTextOverflow={true}
             className="version-link-file"
           >
             {title}
@@ -234,23 +226,22 @@ const VersionRow = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    culture: getLanguage(state),
-  };
-};
+export default inject(({ auth, versionHistoryStore }) => {
+  const { user } = auth.userStore;
+  const { culture } = auth.settingsStore;
+  const language = (user && user.cultureName) || culture || "en-US";
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    markAsVersion: (id, isVersion, version) =>
-      dispatch(markAsVersion(id, isVersion, version)),
-    restoreVersion: (id, version) => dispatch(restoreVersion(id, version)),
-    updateCommentVersion: (id, comment, version) =>
-      dispatch(updateCommentVersion(id, comment, version)),
-  };
-};
+  const {
+    markAsVersion,
+    restoreVersion,
+    updateCommentVersion,
+  } = versionHistoryStore;
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(withTranslation()(VersionRow)));
+  return {
+    culture: language,
+
+    markAsVersion,
+    restoreVersion,
+    updateCommentVersion,
+  };
+})(withRouter(withTranslation("VersionHistory")(observer(VersionRow))));

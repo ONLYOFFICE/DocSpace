@@ -41,7 +41,7 @@ const StyledVersionRow = styled(Row)`
     width: 10px;
     height: 10px;
     margin-left: 9px;
-
+    margin-right: 16px;
     @media ${tablet} {
       margin-top: -1px;
     }

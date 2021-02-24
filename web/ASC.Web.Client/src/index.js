@@ -1,14 +1,29 @@
 import("./bootstrap");
+//import React from "react";
+//import ReactDOM from "react-dom";
+//import "./custom.scss";
+//import App from "./App";
+//import * as serviceWorker from "./serviceWorker";
+// import { ErrorBoundary, store as commonStore } from "@appserver/common/src";
+// import { Provider as MobxProvider } from "mobx-react";
+// const { authStore } = commonStore;
+// const paymentStore = new PaymentStore();
+// const wizardStore = new WizardStore();
+// const setupStore = new SettingsSetupStore();
 
-// import React from "react";
-// import ReactDOM from "react-dom";
-// import { Provider } from "react-redux";
-// import store from "./store/store";
-// //import "./custom.scss";
-// import App from "./App";
-// import * as serviceWorker from "./serviceWorker";
-// import { redirectToDefaultPage } from "@appserver/common/src/utils";
-// import ErrorBoundary from "@appserver/common/src/components/ErrorBoundary";
+// ReactDOM.render(
+//   <MobxProvider
+//     auth={authStore}
+//     payments={paymentStore}
+//     wizard={wizardStore}
+//     setup={setupStore}
+//   >
+//     <ErrorBoundary>
+//       <App />
+//     </ErrorBoundary>
+//   </MobxProvider>,
+//   document.getElementById("root")
+// );
 
 // redirectToDefaultPage();
 

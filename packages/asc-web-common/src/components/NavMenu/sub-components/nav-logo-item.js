@@ -1,8 +1,8 @@
 import React from "react";
-import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { inject, observer } from "mobx-react";
 
 const LogoItem = styled.div`
   display: flex;
@@ -21,7 +21,7 @@ const LogoItem = styled.div`
   }
 `;
 
-const NavLogoItem = React.memo((props) => {
+const NavLogoItem = (props) => {
   //console.log("NavLogoItem render");
   return (
     <LogoItem opened={props.opened}>
@@ -30,7 +30,7 @@ const NavLogoItem = React.memo((props) => {
       </Link>
     </LogoItem>
   );
-});
+};
 
 NavLogoItem.displayName = "NavLogoItem";
 
@@ -40,12 +40,6 @@ NavLogoItem.propTypes = {
   logoUrl: PropTypes.string,
 };
 
-const mapStateToProps = (state) => {
-  const { logoUrl } = state.auth.settings;
-
-  return {
-    logoUrl,
-  };
-};
-
-export default connect(mapStateToProps)(NavLogoItem);
+export default inject(({ auth }) => ({
+  logoUrl: auth.settingsStore.logoUrl,
+}))(observer(NavLogoItem));

@@ -71,13 +71,20 @@ export function createPasswordHash(password, hashSettings) {
 
 export function updateTempContent(isAuth = false) {
   if (isAuth) {
-    let el = document.getElementById("burger-loader-svg");
-    let el1 = document.getElementById("logo-loader-svg");
-    let el2 = document.getElementById("avatar-loader-svg");
+    const el = document.getElementById("burger-loader-svg");
+    if (el) {
+      el.style.display = "block";
+    }
 
-    el.style.display = "block";
-    el1.style.display = "block";
-    el2.style.display = "block";
+    const el1 = document.getElementById("logo-loader-svg");
+    if (el1) {
+      el1.style.display = "block";
+    }
+
+    const el2 = document.getElementById("avatar-loader-svg");
+    if (el2) {
+      el2.style.display = "block";
+    }
   } else {
     const tempElm = document.getElementById("temp-content");
     if (tempElm) {
@@ -119,4 +126,32 @@ export function tryRedirectTo(page) {
   history.push(page);
 
   return true;
+}
+
+export function isMe(user, userName) {
+  return (
+    user && user.id && (userName === "@self" || user.userName === userName)
+  );
+}
+
+export function isAdmin(currentUser, currentProductId) {
+  let productName = null;
+
+  switch (currentProductId) {
+    case "f4d98afd-d336-4332-8778-3c6945c81ea0":
+      productName = "people";
+      break;
+    case "e67be73d-f9ae-4ce1-8fec-1880cb518cb4":
+      productName = "documents";
+      break;
+    default:
+      break;
+  }
+
+  const isProductAdmin =
+    currentUser.listAdminModules && productName
+      ? currentUser.listAdminModules.includes(productName)
+      : false;
+
+  return currentUser.isAdmin || currentUser.isOwner || isProductAdmin;
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
+import PropTypes from "prop-types";
 import MobileLayout from "./MobileLayout";
 import { utils } from "@appserver/components/src";
 import {
@@ -11,12 +12,7 @@ import {
   isChrome,
   isTablet,
 } from "react-device-detect";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import store from "../../store";
-
-const { setIsTabletView } = store.auth.actions;
-const { getIsTabletView, isArticlePinned } = store.auth.selectors;
+import { inject, observer } from "mobx-react";
 
 const { size, isSmallTablet } = utils.device;
 
@@ -176,20 +172,16 @@ const Layout = (props) => {
 };
 
 Layout.propTypes = {
-  children: PropTypes.any,
   isTabletView: PropTypes.bool,
+  children: PropTypes.any,
   setIsTabletView: PropTypes.func,
-};
-const mapStateToProps = (state) => {
-  return {
-    isTabletView: getIsTabletView(state),
-    isArticlePinned: isArticlePinned(state),
-  };
+  isArticlePinned: PropTypes.bool,
 };
 
-const mapDispatchToProps = (dispatch) => {
+export default inject(({ auth }) => {
   return {
-    setIsTabletView: (isTabletView) => dispatch(setIsTabletView(isTabletView)),
+    isTabletView: auth.settingsStore.isTabletView,
+    isArticlePinned: auth.settingsStore.isArticlePinned,
+    setIsTabletView: auth.settingsStore.setIsTabletView,
   };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Layout);
+})(observer(Layout));

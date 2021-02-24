@@ -1,13 +1,13 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { connect } from "react-redux";
 import styled from "styled-components";
 import Button from "@appserver/components/src/components/button";
 import Text from "@appserver/components/src/components/text";
 import toastr from "@appserver/components/src/components/toast/toastr";
 import PageLayout from "@appserver/common/src/components/PageLayout";
 import commonUtils from "@appserver/common/src/utils";
+import { inject, observer } from "mobx-react";
 const { tryRedirectTo } = commonUtils;
 
 const BodyStyle = styled.div`
@@ -121,7 +121,7 @@ Form.propTypes = {};
 
 Form.defaultProps = {};
 
-const ChangePasswordForm = (props) => (
+const ChangeOwnerForm = (props) => (
   <PageLayout>
     <PageLayout.SectionBody>
       <Form {...props} />
@@ -129,14 +129,7 @@ const ChangePasswordForm = (props) => (
   </PageLayout>
 );
 
-function mapStateToProps(state) {
-  return {
-    greetingTitle: state.auth.settings.greetingSettings,
-    defaultPage: state.auth.settings.defaultPage,
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  {}
-)(withRouter(withTranslation()(ChangePasswordForm)));
+export default inject(({ auth }) => ({
+  greetingTitle: auth.settingsStore.greetingSettings,
+  defaultPage: auth.settingsStore.defaultPage,
+}))(withRouter(withTranslation("Confirm")(observer(ChangeOwnerForm))));

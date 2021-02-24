@@ -1,11 +1,9 @@
 
 using ASC.Api.Core;
-using ASC.Common.DependencyInjection;
 using ASC.Data.Storage;
 using ASC.Data.Storage.DiscStorage;
 using ASC.FederatedLogin;
-
-using Autofac;
+using ASC.FederatedLogin.LoginProviders;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,11 +34,9 @@ namespace ASC.Web.Studio
             DIHelper.TryAdd<Login>();
             DIHelper.TryAdd<PathUtils>();
             DIHelper.TryAdd<StorageHandlerScope>();
-        }
-
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
-            builder.Register(Configuration, HostEnvironment.ContentRootPath);
+            DIHelper.TryAdd<GoogleLoginProvider>();
+            DIHelper.TryAdd<FacebookLoginProvider>();
+            DIHelper.TryAdd<LinkedInLoginProvider>();
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

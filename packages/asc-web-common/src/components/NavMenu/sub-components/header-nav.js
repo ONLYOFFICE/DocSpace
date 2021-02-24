@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
@@ -8,14 +7,7 @@ import history from "../../../history";
 
 import { useTranslation } from "react-i18next";
 import { tablet } from "@appserver/components/src/utils/device";
-import { logout } from "../../../store/auth/actions";
-import {
-  getCurrentUser,
-  getLanguage,
-  getIsolateModules,
-  getIsLoaded,
-} from "../../../store/auth/selectors";
-
+import { inject, observer } from "mobx-react";
 const StyledNav = styled.nav`
   display: flex;
   padding: 0 24px 0 16px;
@@ -44,8 +36,14 @@ const StyledNav = styled.nav`
     padding: 0 16px;
   }
 `;
-const HeaderNav = React.memo(
-  ({ history, homepage, modules, user, logout, isAuthenticated }) => {
+const HeaderNav = ({
+  history,
+  homepage,
+  modules,
+  user,
+  logout,
+  isAuthenticated,
+}) => {
     const { t } = useTranslation();
     const onProfileClick = useCallback(() => {
       if (homepage == "/products/people") {
@@ -90,14 +88,19 @@ const HeaderNav = React.memo(
     //console.log("HeaderNav render");
     return (
       <StyledNav isOpen={isOpen} className="profileMenuIcon hidingHeader">
-        {modules.map((module) => (
+      {modules
+        .filter((m) => m.isolateMode)
+        .map((m) => (
           <NavItem
-            key={module.id}
-            iconName={module.iconName}
-            iconUrl={module.iconUrl}
-            badgeNumber={module.notifications}
-            onClick={module.onClick}
-            onBadgeClick={module.onBadgeClick}
+            key={m.id}
+            iconName={m.iconName}
+            iconUrl={m.iconUrl}
+            badgeNumber={m.notifications}
+            onClick={(e) => {
+              window.open(m.link, "_self");
+              e.preventDefault();
+            }}
+            onBadgeClick={(e) => console.log(m.iconName + "Badge Clicked", e)}
             noHover={true}
           />
         ))}
@@ -113,8 +116,7 @@ const HeaderNav = React.memo(
         )}
       </StyledNav>
     );
-  }
-);
+};
 
 HeaderNav.displayName = "HeaderNav";
 
@@ -128,19 +130,26 @@ HeaderNav.propTypes = {
   isLoaded: PropTypes.bool,
 };
 
-function mapStateToProps(state) {
-  const { settings, isAuthenticated } = state.auth;
-  const { defaultPage, homepage } = settings;
+export default inject(({ auth }) => {
+  const {
+    settingsStore,
+    userStore,
+    isAuthenticated,
+    isLoaded,
+    language,
+    logout,
+  } = auth;
+  const { homepage, defaultPage } = settingsStore;
+  const { user } = userStore;
 
   return {
+    user,
     homepage,
-    defaultPage: defaultPage || "/",
-    user: getCurrentUser(state),
     isAuthenticated,
-    isLoaded: getIsLoaded(state),
-    modules: getIsolateModules(state),
-    language: getLanguage(state),
+    isLoaded,
+    language,
+    defaultPage: defaultPage || "/",
+    modules: auth.availableModules,
+    logout,
   };
-}
-
-export default connect(mapStateToProps, { logout })(HeaderNav);
+})(observer(HeaderNav));

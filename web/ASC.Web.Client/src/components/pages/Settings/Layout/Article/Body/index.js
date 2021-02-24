@@ -14,10 +14,10 @@ import Text from "@appserver/components/src/components/text";
 import { isArrayEqual } from "@appserver/components/src/utils/array";
 
 import {
-  getKeyByLink,
+  //getKeyByLink,
   settingsTree,
   getSelectedLinkByKey,
-  selectKeyOfTreeElement,
+  //selectKeyOfTreeElement,
   getCurrentSettingsCategory,
 } from "../../../utils";
 
@@ -176,4 +176,4 @@ class ArticleBodyContent extends React.Component {
   }
 }
 
-export default withRouter(withTranslation()(ArticleBodyContent));
+export default withRouter(withTranslation("Settings")(ArticleBodyContent));

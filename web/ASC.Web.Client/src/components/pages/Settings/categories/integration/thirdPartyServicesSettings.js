@@ -1,12 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import {
-  getConsumers,
-  setSelectedConsumer,
-  updateConsumerProps,
-} from "../../../../../store/settings/actions";
-import { getConsumersList } from "../../../../../store/settings/selectors";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import Box from "@appserver/components/src/components/box";
@@ -14,13 +7,11 @@ import Text from "@appserver/components/src/components/text";
 import Link from "@appserver/components/src/components/link";
 import toastr from "@appserver/components/src/components/toast/toastr";
 
-import { tablet, mobile } from "@appserver/components/src/utils/device";
 
-import commonStore from "@appserver/common/src/store";
+
 import ConsumerItem from "./sub-components/consumerItem";
 import ConsumerModalDialog from "./sub-components/consumerModalDialog";
-
-const { getUrlAuthKeys } = commonStore.auth.selectors;
+import { inject, observer } from "mobx-react";
 
 const RootContainer = styled(Box)`
   @media ${tablet} {
@@ -210,15 +201,22 @@ ThirdPartyServices.propTypes = {
   setSelectedConsumer: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    consumers: getConsumersList(state),
-    urlAuthKeys: getUrlAuthKeys(state),
-  };
-};
+export default inject(({ setup, auth }) => {
+  const { settingsStore } = auth;
+  const { urlAuthKeys } = settingsStore;
+  const {
+    getConsumers,
+    integration,
+    updateConsumerProps,
+    setSelectedConsumer,
+  } = setup;
+  const { consumers } = integration;
 
-export default connect(mapStateToProps, {
+  return {
+    consumers,
+    urlAuthKeys,
   getConsumers,
   updateConsumerProps,
   setSelectedConsumer,
-})(withTranslation()(ThirdPartyServices));
+  };
+})(withTranslation("Settings")(observer(ThirdPartyServices)));

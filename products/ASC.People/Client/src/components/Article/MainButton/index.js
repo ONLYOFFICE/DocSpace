@@ -1,20 +1,12 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import React from "react";
+//import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { store } from "@appserver/common/src";
+
 import { MainButton, DropDownItem } from "@appserver/components/src";
 import { InviteDialog } from "./../../dialogs";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import { utils, toastr, Loaders } from "@appserver/common/src";
-import { createI18N } from "../../../helpers/i18n";
-const { getLanguage, getSettings } = store.auth.selectors;
-const i18n = createI18N({
-  page: "Article",
-  localesPath: "Article",
-});
-
-const { changeLanguage } = utils;
+import { withTranslation } from "react-i18next";
+import { toastr, Loaders } from "@appserver/common/src";
+import { inject, observer } from "mobx-react";
 
 class PureArticleMainButtonContent extends React.Component {
   constructor(props) {
@@ -109,34 +101,13 @@ class PureArticleMainButtonContent extends React.Component {
   }
 }
 
-const ArticleMainButtonContentContainer = withTranslation()(
+const ArticleMainButtonContent = withTranslation("Article")(
   PureArticleMainButtonContent
 );
 
-const ArticleMainButtonContent = ({ language, ...rest }) => {
-  useEffect(() => {
-    changeLanguage(i18n, language);
-  }, [language]);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ArticleMainButtonContentContainer {...rest} />
-    </I18nextProvider>
-  );
-};
-
-ArticleMainButtonContent.propTypes = {
-  history: PropTypes.object.isRequired,
-  language: PropTypes.string,
-};
-
-const mapStateToProps = (state) => {
-  const { isLoaded } = state.auth;
-  return {
-    isLoaded,
-    settings: getSettings(state),
-    language: getLanguage(state),
-  };
-};
-
-export default connect(mapStateToProps)(withRouter(ArticleMainButtonContent));
+export default inject(({ auth }) => ({
+  isAdmin: auth.isAdmin,
+  settings: auth.settingsStore,
+  isLoaded: auth.isLoaded,
+  language: auth.language,
+}))(observer(withRouter(ArticleMainButtonContent)));

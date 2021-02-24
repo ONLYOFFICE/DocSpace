@@ -3,9 +3,8 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import Box from "@appserver/components/src/components/box";
 import RecoverAccess from "./recover-access-container";
-
-import { connect } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 
 const backgroundColor = "#0F4071";
 
@@ -97,16 +96,13 @@ HeaderUnAuth.propTypes = {
   isLoaded: PropTypes.bool,
 };
 
-const mapStateToProps = (state) => {
-  const { isAuthenticated, isLoaded, settings } = state.auth;
-  const { enableAdmMess, wizardToken } = settings;
-
+export default inject(({ auth }) => {
+  const { settingsStore, isAuthenticated, isLoaded } = auth;
+  const { enableAdmMess, wizardToken } = settingsStore;
   return {
     enableAdmMess,
-    wizardToken,
+    wizardToken: wizardToken || "/",
     isAuthenticated,
     isLoaded,
   };
-};
-
-export default connect(mapStateToProps)(HeaderUnAuth);
+})(observer(HeaderUnAuth));

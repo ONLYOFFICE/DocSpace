@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import { Router, Switch } from "react-router-dom";
+import { inject, observer } from "mobx-react";
 import NavMenu from "@appserver/common/src/components/NavMenu";
 import Main from "@appserver/common/src/components/Main";
 import Box from "@appserver/components/src/components/box";
@@ -11,14 +11,8 @@ import Layout from "@appserver/common/src/components/Layout";
 import ScrollToTop from "@appserver/common/src/components/Layout/ScrollToTop";
 import history from "@appserver/common/src/history";
 import toastr from "@appserver/common/src/components/Toast/toastr";
-import {
-  setIsLoaded,
-  getUser,
-  getPortalSettings,
-  getModules,
-  getIsAuthenticated,
-} from "@appserver/common/src/store/auth/actions";
 import { updateTempContent } from "@appserver/common/src/utils";
+import config from "../package.json";
 
 const Payments = React.lazy(() => import("./components/pages/Payments"));
 const Error404 = React.lazy(() =>
@@ -29,6 +23,7 @@ const Login = React.lazy(() => import("login/page"));
 const People = React.lazy(() => import("people/page"));
 const Files = React.lazy(() => import("files/page"));
 const About = React.lazy(() => import("./components/pages/About"));
+const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
 
 const PaymentsRoute = (props) => (
   <React.Suspense fallback={null}>
@@ -85,40 +80,63 @@ const AboutRoute = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
+
+const ComingSoonRoute = (props) => (
+  <React.Suspense fallback={null}>
+    <ErrorBoundary>
+      <ComingSoon {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
 const Shell = ({ items = [], page = "home", ...rest }) => {
+  // useEffect(() => {
+  //   //utils.removeTempContent();
+
+  //   const {
+  //     getPortalSettings,
+  //     getUser,
+  //     getModules,
+  //     setIsLoaded,
+  //     getIsAuthenticated,
+  //   } = rest;
+
+  //   getIsAuthenticated()
+  //     .then((isAuthenticated) => {
+  //       if (isAuthenticated) updateTempContent(isAuthenticated);
+
+  //       const requests = [];
+  //       if (!isAuthenticated) {
+  //         requests.push(getPortalSettings());
+  //       } else if (
+  //         !window.location.pathname.includes("confirm/EmailActivation")
+  //       ) {
+  //         requests.push(getUser());
+  //         requests.push(getPortalSettings());
+  //         requests.push(getModules());
+  //       }
+
+  //       return Promise.all(requests).finally(() => {
+  //         updateTempContent();
+  //         setIsLoaded();
+  //       });
+  //     })
+  //     .catch((err) => toastr.error(err.message));
+  // }, []);
+
+  const { isLoaded, loadBaseInfo, isThirdPartyResponse } = rest;
+
   useEffect(() => {
-    //utils.removeTempContent();
+    try {
+      loadBaseInfo();
+    } catch (err) {
+      toastr.error(err);
+    }
+  }, [loadBaseInfo]);
 
-    const {
-      getPortalSettings,
-      getUser,
-      getModules,
-      setIsLoaded,
-      getIsAuthenticated,
-    } = rest;
-
-    getIsAuthenticated()
-      .then((isAuthenticated) => {
-        if (isAuthenticated) updateTempContent(isAuthenticated);
-
-        const requests = [];
-        if (!isAuthenticated) {
-          requests.push(getPortalSettings());
-        } else if (
-          !window.location.pathname.includes("confirm/EmailActivation")
-        ) {
-          requests.push(getUser());
-          requests.push(getPortalSettings());
-          requests.push(getModules());
-        }
-
-        return Promise.all(requests).finally(() => {
-          updateTempContent();
-          setIsLoaded();
-        });
-      })
-      .catch((err) => toastr.error(err.message));
-  }, []);
+  useEffect(() => {
+    console.log("App render", isLoaded);
+    if (isLoaded) updateTempContent();
+  }, [isLoaded]);
 
   return (
     <Layout>
@@ -151,6 +169,18 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 ]}
                 component={LoginRoute}
               />
+              <PrivateRoute
+                exact
+                path={[
+                  "/coming-soon",
+                  "/products/mail",
+                  "/products/projects",
+                  "/products/crm",
+                  "/products/calendar",
+                  "/products/talk/",
+                ]}
+                component={ComingSoonRoute}
+              />
               <PrivateRoute path="/payments" component={PaymentsRoute} />
               <PrivateRoute component={Error404Route} />
             </Switch>
@@ -161,24 +191,40 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  const { modules, isLoaded, settings } = state.auth;
-  const { organizationName } = settings;
+// const mapStateToProps = (state) => {
+//   const { modules, isLoaded, settings } = state.auth;
+//   const { organizationName } = settings;
+//   return {
+//     modules,
+//     isLoaded,
+//     organizationName,
+//   };
+// };
+
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     getIsAuthenticated: () => getIsAuthenticated(dispatch),
+//     getPortalSettings: () => getPortalSettings(dispatch),
+//     getUser: () => getUser(dispatch),
+//     getModules: () => getModules(dispatch),
+//     setIsLoaded: () => dispatch(setIsLoaded(true)),
+//   };
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Shell);
+
+export default inject(({ auth }) => {
+  const { init, isLoaded } = auth;
+
+  const pathname = window.location.pathname.toLowerCase();
+  const isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
+
   return {
-    modules,
+    loadBaseInfo: () => {
+      init();
+      auth.setProductVersion(config.version);
+    },
+    isThirdPartyResponse,
     isLoaded,
-    organizationName,
   };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getIsAuthenticated: () => getIsAuthenticated(dispatch),
-    getPortalSettings: () => getPortalSettings(dispatch),
-    getUser: () => getUser(dispatch),
-    getModules: () => getModules(dispatch),
-    setIsLoaded: () => dispatch(setIsLoaded(true)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Shell);
+})(observer(Shell));

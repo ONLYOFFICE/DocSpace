@@ -1,15 +1,8 @@
 import React, { useCallback, useMemo } from "react";
-import { connect } from "react-redux";
 import { isMobile } from "react-device-detect";
-import { fetchFiles, setIsLoading } from "../../../../../store/files/actions";
-import {
-  getFilter,
-  getSelectedFolderId,
-  getFiles,
-  getFolders,
-} from "../../../../../store/files/selectors";
 import { Paging } from "@appserver/components";
 import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 
 const SectionPagingContent = ({
   filter,
@@ -20,7 +13,7 @@ const SectionPagingContent = ({
   selectedCount,
   selectedFolderId,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("Home");
   const onNextClick = useCallback(
     (e) => {
       if (!filter.hasNext()) {
@@ -169,15 +162,17 @@ const SectionPagingContent = ({
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    filter: getFilter(state),
-    selectedFolderId: getSelectedFolderId(state),
-    files: getFiles(state),
-    folders: getFolders(state),
-  };
-}
+export default inject(({ initFilesStore, filesStore, selectedFolderStore }) => {
+  const { setIsLoading } = initFilesStore;
+  const { files, folders, fetchFiles, filter } = filesStore;
 
-export default connect(mapStateToProps, { fetchFiles, setIsLoading })(
-  SectionPagingContent
-);
+  return {
+    files,
+    folders,
+    selectedFolderId: selectedFolderStore.id,
+    filter,
+
+    setIsLoading,
+    fetchFiles,
+  };
+})(observer(SectionPagingContent));

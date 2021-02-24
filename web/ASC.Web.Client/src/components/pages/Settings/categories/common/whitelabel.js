@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
 import FieldContainer from "@appserver/components/src/components/field-container";
@@ -9,11 +9,9 @@ import Button from "@appserver/components/src/components/button";
 import toastr from "@appserver/components/src/components/toast/toastr";
 import Link from "@appserver/components/src/components/link";
 import TextInput from "@appserver/components/src/components/text-input";
-import {
-  getWhiteLabelLogoText,
-  getWhiteLabelLogoSizes,
-  getWhiteLabelLogoUrls,
-} from "../../../../../store/settings/actions";
+
+
+import { inject, observer } from "mobx-react";
 
 
 const StyledComponent = styled.div`
@@ -241,7 +239,7 @@ class WhiteLabel extends React.Component {
           <div className="settings-block">
             <Text fontSize="16px">{t("LogoSettings")}</Text>
             <Text className="margin-top" fontSize="14px">
-              <Trans i18nKey="LogoUploadRecommendation">
+              <Trans i18nKey="LogoUploadRecommendation" ns="Settings">
                 We recommended that you use images in <strong>PNG</strong>{" "}
                 format with transparent background
               </Trans>
@@ -468,16 +466,22 @@ class WhiteLabel extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    logoText: state.settings.common.whiteLabel.logoText,
-    rawSizes: state.settings.common.whiteLabel.logoSizes,
-    logoUrls: state.settings.common.whiteLabel.logoUrls,
-  };
-}
+export default inject(({ setup }) => {
+  const {
+    common,
+    getWhiteLabelLogoText,
+    getWhiteLabelLogoSizes,
+    getWhiteLabelLogoUrls,
+  } = setup;
 
-export default connect(mapStateToProps, {
+  const { logoText, logoSizes: rawSizes, logoUrls } = common.whiteLabel;
+
+  return {
+    logoText,
+    rawSizes,
+    logoUrls,
   getWhiteLabelLogoText,
   getWhiteLabelLogoSizes,
   getWhiteLabelLogoUrls,
-})(withTranslation()(WhiteLabel));
+  };
+})(withTranslation("Settings")(observer(WhiteLabel)));

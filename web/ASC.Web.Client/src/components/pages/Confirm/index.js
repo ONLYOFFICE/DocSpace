@@ -1,17 +1,8 @@
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, lazy } from "react";
 import { Route, Switch } from "react-router-dom";
 import ConfirmRoute from "../../../helpers/confirmRoute";
-import { I18nextProvider } from "react-i18next";
-import { Error404, utils, store, PageLayout, Loaders } from "@appserver/common";
-import { changeLanguage } from "@appserver/common/src/utils";
-import { connect } from "react-redux";
-
-const { getIsLoaded } = store.auth.selectors;
-
-const i18n = createI18N({
-  page: "Confirm",
-  localesPath: "pages/Confirm",
-});
+import { Error404, PageLayout, Loaders } from "@appserver/common";
+import { inject, observer } from "mobx-react";
 
 const ActivateUserForm = lazy(() => import("./sub-components/activateUser"));
 const CreateUserForm = lazy(() => import("./sub-components/createUser"));
@@ -25,10 +16,6 @@ const ProfileRemoveForm = lazy(() => import("./sub-components/profileRemove"));
 const ChangeOwnerForm = lazy(() => import("./sub-components/changeOwner"));
 
 const Confirm = ({ match, isLoaded }) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-
   //console.log("Confirm render");
   return !isLoaded ? (
     <PageLayout>
@@ -37,7 +24,6 @@ const Confirm = ({ match, isLoaded }) => {
       </PageLayout.SectionBody>
     </PageLayout>
   ) : (
-    <I18nextProvider i18n={i18n}>
       <Suspense fallback={null}>
         <Switch>
           <ConfirmRoute
@@ -83,14 +69,12 @@ const Confirm = ({ match, isLoaded }) => {
           {/* <Route component={Error404} /> */}
         </Switch>
       </Suspense>
-    </I18nextProvider>
   );
 };
 
-function mapStateToProps(state) {
+export default inject(({ auth }) => {
+  const { isLoaded } = auth;
   return {
-    isLoaded: getIsLoaded(state),
+    isLoaded,
   };
-}
-
-export default connect(mapStateToProps)(Confirm);
+})(observer(Confirm));

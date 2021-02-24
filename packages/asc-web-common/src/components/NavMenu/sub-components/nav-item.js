@@ -15,7 +15,8 @@ const baseColor = "#7A95B0",
   separatorColor = "#3E668D";
 
 const NavItemSeparator = styled.div`
-  border-bottom: 1px solid ${separatorColor};
+  border-bottom: 1px ${(props) => (props.dashed ? "dashed" : "solid")}
+    ${separatorColor};
   margin: 0 16px;
 `;
 
@@ -88,17 +89,19 @@ const NavItem = React.memo((props) => {
     onBadgeClick,
     url,
     noHover,
+    ...rest
   } = props;
   const color = active ? activeColor : baseColor;
 
   return separator ? (
-    <NavItemSeparator />
+    <NavItemSeparator {...rest} />
   ) : (
     <NavItemWrapper
       noHover={noHover}
       href={url}
       onClick={onClick}
       iconColor={color}
+      {...rest}
     >
       {iconUrl ? (
         <ReactSVG
@@ -110,7 +113,7 @@ const NavItem = React.memo((props) => {
         />
       ) : (
         <>
-          <VersionBadge>BETA</VersionBadge>
+          {iconName === "MenuIcon" && <VersionBadge>BETA</VersionBadge>}
         <MenuIcon color={color} size="big" isfill={true} />
         </>
       )}
@@ -151,6 +154,7 @@ NavItem.propTypes = {
   opened: PropTypes.bool,
   separator: PropTypes.bool,
   noHover: PropTypes.bool,
+  dashed: PropTypes.bool,
 };
 
 export default NavItem;

@@ -1,34 +1,10 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { TreeMenu, TreeNode, Icons } from "@appserver/components";
 import styled from "styled-components";
-import { history, utils, store as initStore } from "@appserver/common";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import { createI18N } from "../../../helpers/i18n";
-
-import {
-  setSelectedNode,
-  setExpandSettingsTree,
-  getFilesSettings,
-  setSelectedFolder,
-  setIsLoading,
-} from "../../../store/files/actions";
-import {
-  getIsLoading,
-  getSettingsSelectedTreeNode,
-  getExpandedSetting,
-  getEnableThirdParty,
-  getSelectedTreeNode,
-} from "../../../store/files/selectors";
-const { isAdmin } = initStore.auth.selectors;
-
-const i18n = createI18N({
-  page: "Settings",
-  localesPath: "pages/Settings",
-});
-
-const { changeLanguage } = utils;
+import { history } from "@appserver/common";
+import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
@@ -77,7 +53,7 @@ const PureTreeSettings = ({
   setExpandSettingsTree,
   getFilesSettings,
   setSelectedFolder,
-  selectedFolder,
+  //selectedFolder,
   setIsLoading,
   t,
 }) => {
@@ -110,7 +86,8 @@ const PureTreeSettings = ({
   const onSelect = (section) => {
     const path = section[0];
 
-    if (selectedFolder) setSelectedFolder({});
+    //if (selectedFolder) setSelectedFolder({});
+    setSelectedFolder({}); //getSelectedTreeNode
 
     if (path === "settings") {
       setSelectedNode(["common"]);
@@ -190,34 +167,38 @@ const PureTreeSettings = ({
   );
 };
 
-const TreeSettingsContainer = withTranslation()(PureTreeSettings);
+const TreeSettings = withTranslation("Settings")(PureTreeSettings);
 
-const TreeSettings = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-  return (
-    <I18nextProvider i18n={i18n}>
-      <TreeSettingsContainer {...props} />
-    </I18nextProvider>
-  );
-};
+export default inject(
+  ({
+    auth,
+    initFilesStore,
+    settingsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
+    const { setIsLoading, isLoading } = initFilesStore;
+    const { setSelectedFolder } = selectedFolderStore;
+    const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
+    const {
+      getFilesSettings,
+      enableThirdParty,
+      expandedSetting,
+      setExpandSettingsTree,
+    } = settingsStore;
 
-function mapStateToProps(state) {
   return {
-    selectedTreeNode: getSettingsSelectedTreeNode(state),
-    expandedSetting: getExpandedSetting(state),
-    enableThirdParty: getEnableThirdParty(state),
-    isAdmin: isAdmin(state),
-    isLoading: getIsLoading(state),
-    selectedFolder: getSelectedTreeNode(state),
-  };
-}
+      isAdmin: auth.isAdmin,
+      isLoading,
+      selectedTreeNode,
+      enableThirdParty,
+      expandedSetting,
 
-export default connect(mapStateToProps, {
+      setIsLoading,
+      setSelectedFolder,
   setSelectedNode,
+      getFilesSettings,
   setExpandSettingsTree,
-  getFilesSettings,
-  setSelectedFolder,
-  setIsLoading,
-})(withRouter(TreeSettings));
+    };
+  }
+)(withRouter(observer(TreeSettings)));

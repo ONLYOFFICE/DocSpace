@@ -13,14 +13,14 @@ namespace ASC.Api.Core
         public string Description { get; set; }
         public bool IsPrimary { get; set; }
 
-        public Module(Product product, bool isPrimary = false)
+        public Module(Product product)
         {
             Id = product.ProductID;
             Title = product.Name;
             Description = product.Description;
             ImageUrl = product.Context.LargeIconFileName;
             Link = product.StartURL;
-            IsPrimary = isPrimary;
+            IsPrimary = product.IsPrimary;
         }
     }
 }

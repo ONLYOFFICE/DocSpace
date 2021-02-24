@@ -1,16 +1,14 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { ValidationResult } from "./../helpers/constants";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import Loader from "@appserver/components/src/components/loader";
 import PageLayout from "@appserver/common/src/components/PageLayout";
 import api from "@appserver/common/src/api";
 import constants from "@appserver/common/src/constants";
 import utils from "@appserver/common/src/utils";
-import { isAuthenticated } from "@appserver/common/src/store/auth/selectors";
-const { logout } = store.auth.actions;
-const { checkConfirmLink } = api.user;
+import { inject, observer } from "mobx-react";
+const { checkConfirmLink } = api.user; //TODO: Move AuthStore
 const { getObjectByLocation } = utils;
 
 class ConfirmRoute extends React.Component {
@@ -101,12 +99,10 @@ class ConfirmRoute extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+export default inject(({ auth }) => {
+  const { isAuthenticated, logout } = auth;
   return {
-    isAuthenticated: isAuthenticated(state),
+    isAuthenticated,
+    logout,
   };
-}
-
-export default connect(mapStateToProps, { checkConfirmLink, logout })(
-  withRouter(ConfirmRoute)
-);
+})(observer(withRouter(ConfirmRoute)));

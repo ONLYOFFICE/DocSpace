@@ -3,9 +3,8 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import equal from "fast-deep-equal/react";
 import { LayoutContextConsumer } from "../../Layout/context";
-import { getIsLoaded } from "../../../store/auth/selectors";
-import { connect } from "react-redux";
 import { isMobile } from "react-device-detect";
+import { inject, observer } from "mobx-react";
 
 import Scrollbar from "@appserver/components/src/components/scrollbar";
 import DragAndDrop from "@appserver/components/src/components/drag-and-drop";
@@ -82,9 +81,9 @@ class SectionBody extends React.Component {
     this.scrollRef = React.createRef();
   }
 
-  shouldComponentUpdate(nextProps) {
-    return !equal(this.props, nextProps);
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   return !equal(this.props, nextProps);
+  // }
 
   componentDidMount() {
     if (!this.props.autoFocus) return;
@@ -236,9 +235,8 @@ SectionBody.defaultProps = {
   withScroll: true,
 };
 
-const mapStateToProps = (state) => {
+export default inject(({ auth }) => {
   return {
-    isLoaded: getIsLoaded(state),
+    isLoaded: auth.isLoaded,
   };
-};
-export default connect(mapStateToProps)(SectionBody);
+})(observer(SectionBody));

@@ -1,35 +1,12 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import styled, { css } from "styled-components";
 import Link from "@appserver/components/src/components/link";
 import { history } from "@appserver/common";
 import { changeLanguage } from "@appserver/common/src/utils";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import { createI18N } from "../../../helpers/i18n";
-import {
-  getGoogleConnect,
-  getBoxConnect,
-  getDropboxConnect,
-  getOneDriveConnect,
-  getNextCloudConnect,
-  getWebDavConnect,
-} from "../../../store/files/selectors";
-import {
-  getOAuthToken,
-  openConnectWindow,
-  setConnectItem,
-  setSelectedFolder,
-  setSelectedNode,
-  setShowThirdPartyPanel,
-} from "../../../store/files/actions";
 
-const { changeLanguage } = utils;
-
-const i18n = createI18N({
-  page: "Article",
-  localesPath: "Article",
-});
+import { inject, observer } from "mobx-react";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
@@ -122,6 +99,8 @@ const PureThirdPartyListContainer = ({
   setShowThirdPartyPanel,
   setSelectedNode,
   setSelectedFolder,
+  getOAuthToken,
+  openConnectWindow,
 }) => {
   const redirectAction = () => {
     const thirdPartyUrl = "/products/files/settings/thirdParty";
@@ -222,33 +201,46 @@ const PureThirdPartyListContainer = ({
   );
 };
 
-const ThirdPartyListContainer = withTranslation()(PureThirdPartyListContainer);
+const ThirdPartyList = withTranslation("Article")(PureThirdPartyListContainer);
 
-const ThirdPartyList = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ThirdPartyListContainer {...props} />
-    </I18nextProvider>
-  );
-};
+export default inject(
+  ({
+    initFilesStore,
+    settingsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
+    const { setIsLoading } = initFilesStore;
+    const { setSelectedFolder } = selectedFolderStore;
+    const { setSelectedNode } = treeFoldersStore;
+    const {
+      setConnectItem,
+      setShowThirdPartyPanel,
+      googleConnectItem,
+      boxConnectItem,
+      dropboxConnectItem,
+      oneDriveConnectItem,
+      nextCloudConnectItem,
+      webDavConnectItem,
+      getOAuthToken,
+      openConnectWindow,
+    } = settingsStore.thirdPartyStore;
 
-function mapStateToProps(state) {
   return {
-    googleConnectItem: getGoogleConnect(state),
-    boxConnectItem: getBoxConnect(state),
-    dropboxConnectItem: getDropboxConnect(state),
-    oneDriveConnectItem: getOneDriveConnect(state),
-    nextCloudConnectItem: getNextCloudConnect(state),
-    webDavConnectItem: getWebDavConnect(state),
-  };
-}
+      googleConnectItem,
+      boxConnectItem,
+      dropboxConnectItem,
+      oneDriveConnectItem,
+      nextCloudConnectItem,
+      webDavConnectItem,
 
-export default connect(mapStateToProps, {
+      setIsLoading,
+      setSelectedFolder,
+      setSelectedNode,
   setConnectItem,
-  setSelectedNode,
-  setSelectedFolder,
   setShowThirdPartyPanel,
-})(ThirdPartyList);
+      getOAuthToken,
+      openConnectWindow,
+    };
+  }
+)(observer(ThirdPartyList));

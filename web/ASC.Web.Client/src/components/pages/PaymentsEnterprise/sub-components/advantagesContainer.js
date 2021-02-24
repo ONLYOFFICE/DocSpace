@@ -1,18 +1,12 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import styled from "styled-components";
-import {changeLanguage} from "@appserver/common/src/utils";
+
 import Text from "@appserver/components/src/components/text";
 import Box from "@appserver/components/src/components/box";
 import { tablet } from "@appserver/components/src/utils/device";
-import { createI18N } from "../../../../helpers/i18n";
 import { useTranslation, Trans } from "react-i18next";
+import { inject } from "mobx-react";
 
-
-const i18n = createI18N({
-  page: "PaymentsEnterprise",
-  localesPath: "pages/PaymentsEnterprise",
-});
 
 const StyledBodyAdvantages = styled.div`
   display: grid;
@@ -43,11 +37,7 @@ const StyledBodyAdvantages = styled.div`
 `;
 
 const AdvantagesContainer = ({ organizationName }) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-
-  const { t } = useTranslation("translation", { i18n });
+  const { t } = useTranslation("PaymentsEnterprise");
   return (
     <StyledBodyAdvantages>
       <Text className="header-advantages" fontSize="22px" isBold={true}>
@@ -63,7 +53,7 @@ const AdvantagesContainer = ({ organizationName }) => {
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
           <Text isBold={true}>
-            <Trans i18nKey="AdvantageEditor" i18n={i18n}>
+            <Trans i18nKey="AdvantageEditor" ns="PaymentsEnterprise">
               {{ organizationName }}
             </Trans>
           </Text>
@@ -121,10 +111,6 @@ const AdvantagesContainer = ({ organizationName }) => {
   );
 };
 
-function mapStateToProps({ auth }) {
-  const { organizationName } = auth.settings;
-  return {
-    organizationName,
-  };
-}
-export default connect(mapStateToProps)(AdvantagesContainer);
+export default inject(({ auth }) => ({
+  organizationName: auth.settingsStore.organizationName,
+}))(AdvantagesContainer);

@@ -1,34 +1,13 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { MainButton, DropDownItem } from "@appserver/components";
-import { withTranslation, I18nextProvider } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import { setAction, startUpload } from "../../../store/files/actions";
-import {
-  canCreate,
-  getFilter,
-  getSelectedFolder,
-  getFirstLoad,
-  getIsPrivacyFolder,
-} from "../../../store/files/selectors";
-import {
-  utils as commonUtils,
-  constants,
-  store as initStore,
-  Loaders,
-} from "@appserver/common";
-import { createI18N } from "../../../helpers/i18n";
+import { constants, Loaders } from "@appserver/common";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
+import { inject, observer } from "mobx-react";
 
-const { getSettings } = initStore.auth.selectors;
-const i18n = createI18N({
-  page: "Article",
-  localesPath: "Article",
-});
-
-const { changeLanguage } = commonUtils;
 const { FileAction } = constants;
 
 class PureArticleMainButtonContent extends React.Component {
@@ -45,10 +24,10 @@ class PureArticleMainButtonContent extends React.Component {
   onUploadFileClick = () => {
     if (this.props.isPrivacy) {
       encryptionUploadDialog((encryptedFile, encrypted) => {
-        const { selectedFolder, startUpload, t } = this.props;
+        const { selectedFolderId, startUpload, t } = this.props;
         encryptedFile.encrypted = encrypted;
         this.goToHomePage();
-        startUpload([encryptedFile], selectedFolder.id, t);
+        startUpload([encryptedFile], selectedFolderId, t);
       });
     } else {
       this.inputFilesElement.click();
@@ -58,26 +37,26 @@ class PureArticleMainButtonContent extends React.Component {
   onUploadFolderClick = () => this.inputFolderElement.click();
 
   goToHomePage = () => {
-    const { settings, history, filter } = this.props;
+    const { homepage, history, filter } = this.props;
     const urlFilter = filter.toUrlParams();
-    history.push(`${settings.homepage}/filter?${urlFilter}`);
+    history.push(`${homepage}/filter?${urlFilter}`);
   };
 
   onFileChange = (e) => {
-    const { selectedFolder, startUpload, t } = this.props;
+    const { selectedFolderId, startUpload, t } = this.props;
     this.goToHomePage();
-    startUpload(e.target.files, selectedFolder.id, t);
+    startUpload(e.target.files, selectedFolderId, t);
   };
 
   onInputClick = (e) => (e.target.value = null);
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return (
-      nextProps.canCreate !== this.props.canCreate ||
-      nextProps.firstLoad !== this.props.firstLoad ||
-      nextProps.isPrivacy !== this.props.isPrivacy
-    );
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   return (
+  //     nextProps.canCreate !== this.props.canCreate ||
+  //     nextProps.firstLoad !== this.props.firstLoad ||
+  //     nextProps.isPrivacy !== this.props.isPrivacy
+  //   );
+  // }
 
   render() {
     //console.log("Files ArticleMainButtonContent render");
@@ -160,36 +139,37 @@ class PureArticleMainButtonContent extends React.Component {
   }
 }
 
-const ArticleMainButtonContentContainer = withTranslation()(
+const ArticleMainButtonContent = withTranslation("Article")(
   PureArticleMainButtonContent
 );
-
-const ArticleMainButtonContent = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ArticleMainButtonContentContainer {...props} />
-    </I18nextProvider>
-  );
-};
 
 ArticleMainButtonContent.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    canCreate: canCreate(state),
-    firstLoad: getFirstLoad(state),
-    settings: getSettings(state),
-    filter: getFilter(state),
-    selectedFolder: getSelectedFolder(state),
-    isPrivacy: getIsPrivacyFolder(state),
-  };
-};
+export default inject(
+  ({
+    auth,
+    filesStore,
+    uploadDataStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
+    const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
+    const { isPrivacyFolder } = treeFoldersStore;
+    const { id } = selectedFolderStore;
+    const { startUpload } = uploadDataStore;
 
-export default connect(mapStateToProps, { setAction, startUpload })(
-  withRouter(ArticleMainButtonContent)
-);
+  return {
+      homepage: auth.settingsStore.homepage,
+      firstLoad,
+      selectedFolderId: id,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      canCreate,
+
+      setAction: fileActionStore.setAction,
+      startUpload,
+  };
+  }
+)(withRouter(observer(ArticleMainButtonContent)));

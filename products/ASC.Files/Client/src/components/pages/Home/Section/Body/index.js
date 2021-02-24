@@ -1,9 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 import { ReactSVG } from "react-svg";
 import { withTranslation, Trans } from "react-i18next";
-import equal from "fast-deep-equal/react";
+//import equal from "fast-deep-equal/react";
 import copy from "copy-to-clipboard";
 import styled from "styled-components";
 import queryString from "query-string";
@@ -22,84 +21,10 @@ import FilesRowContent from "./FilesRowContent";
 import FilesTileContent from "./FilesTileContent";
 import TileContainer from "./TileContainer";
 import Tile from "./Tile";
-import {
-  api,
-  constants,
-  MediaViewer,
-  toastr,
-  Loaders,
-  store,
-} from "@appserver/common";
-import {
-  clearSecondaryProgressData,
-  loopFilesOperations,
-  markItemAsFavorite,
-  removeItemFromFavorite,
-  fetchFavoritesFolder,
-  deselectFile,
-  updateFile,
-  fetchFiles,
-  selectFile,
-  setAction,
-  setDragging,
-  setDragItem,
-  setIsLoading,
-  setMediaViewerData,
-  setUpdateTree,
-  setSecondaryProgressBarData,
-  setSelected,
-  setSelection,
-  setTreeFolders,
-  getFileInfo,
-  addFileToRecentlyViewed,
-  setIsVerHistoryPanel,
-  setVerHistoryFileId,
-  setSharingPanelVisible,
-  setChangeOwnerPanelVisible,
-} from "../../../../../store/files/actions";
+import { api, constants, MediaViewer, toastr, Loaders } from "@appserver/common";
+
 import { TIMEOUT } from "../../../../../helpers/constants";
-import {
-  getCurrentFilesCount,
-  getDragging,
-  getDragItem,
-  getFileAction,
-  getFileIcon,
-  getFiles,
-  getFilter,
-  getFirstLoad,
-  getFolderIcon,
-  getSelectedFolderId,
-  getFolders,
-  getMediaViewerId,
-  getMediaViewerVisibility,
-  getSelectedFolderParentId,
-  getSelected,
-  getSelectedFolderTitle,
-  getSelection,
-  getTreeFolders,
-  getViewAs,
-  loopTreeFolders,
-  getFilesList,
-  getMediaViewerImageFormats,
-  getMediaViewerMediaFormats,
-  getIsShareFolder,
-  getIsCommonFolder,
-  getIsRecycleBinFolder,
-  getIsRecentFolder,
-  getIsMyFolder,
-  getIsFavoritesFolder,
-  getMyFolderId,
-  getTooltipLabel,
-  getIsPrivacyFolder,
-  getPrivacyInstructionsLink,
-  getIconOfDraggedFile,
-  getSharePanelVisible,
-  isRootFolder,
-  getThirdPartyProviders,
-  getThirdPartyCapabilities,
-  getIsVerHistoryPanel,
-  getIsLoading,
-} from "../../../../../store/files/selectors";
+import { loopTreeFolders } from "../../../../../helpers/files-helpers";
 import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
 import { isMobile } from "react-device-detect";
 import {
@@ -107,15 +32,8 @@ import {
   ConnectDialog,
   ThirdPartyMoveDialog,
 } from "../../../../dialogs";
-const {
-  isAdmin,
-  getSettings,
-  getCurrentUser,
-  isDesktopClient,
-  isEncryptionSupport,
-  getOrganizationName,
-  getIsTabletView,
-} = store.auth.selectors;
+import { observer, inject } from "mobx-react";
+
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
 
@@ -277,67 +195,62 @@ class SectionBodyContent extends React.Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    //if (this.props && this.props.firstLoad) return true;
 
-    const {
-      showMoveToPanel,
-      showCopyPanel,
-      isDrag,
-      showDeleteThirdPartyDialog,
-      connectDialogVisible,
-      showThirdPartyMoveDialog,
-    } = this.state;
-    const { isVersionHistoryPanel, isLoading } = this.props;
+  //   const {
+  //     showMoveToPanel,
+  //     showCopyPanel,
+  //     isDrag,
+  //     showDeleteThirdPartyDialog,
+  //     connectDialogVisible,
+  //     showThirdPartyMoveDialog,
+  //   } = this.state;
+  //   const { isVersionHistoryPanel } = this.props;
 
-    if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
-      return true;
-    }
+  //   if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
+  //     return true;
+  //   }
 
-    if (this.state.showSharingPanel !== nextState.showSharingPanel) {
-      return true;
-    }
+  //   if (this.state.showSharingPanel !== nextState.showSharingPanel) {
+  //     return true;
+  //   }
 
-    if (this.props.dragItem !== nextProps.dragItem) {
-      return false;
-    }
+  //   if (this.props.dragItem !== nextProps.dragItem) {
+  //     return false;
+  //   }
 
-    if (!equal(this.props, nextProps)) {
-      return true;
-    }
+  //   if (!equal(this.props, nextProps)) {
+  //     return true;
+  //   }
 
-    if (
-      showMoveToPanel !== nextState.showMoveToPanel ||
-      showCopyPanel !== nextState.showCopyPanel
-    ) {
-      return true;
-    }
+  //   if (
+  //     showMoveToPanel !== nextState.showMoveToPanel ||
+  //     showCopyPanel !== nextState.showCopyPanel
+  //   ) {
+  //     return true;
+  //   }
 
-    if (isDrag !== nextState.isDrag) {
-      return true;
-    }
+  //   if (isDrag !== nextState.isDrag) {
+  //     return true;
+  //   }
 
-    if (showDeleteThirdPartyDialog !== nextState.showDeleteThirdPartyDialog) {
-      return true;
-    }
+  //   if (showDeleteThirdPartyDialog !== nextState.showDeleteThirdPartyDialog) {
+  //     return true;
+  //   }
 
-    if (connectDialogVisible !== nextState.connectDialogVisible) {
-      return true;
-    }
+  //   if (connectDialogVisible !== nextState.connectDialogVisible) {
+  //     return true;
+  //   }
 
-    if (showThirdPartyMoveDialog !== nextState.showThirdPartyMoveDialog) {
-      return true;
-    }
+  //   if (showThirdPartyMoveDialog !== nextState.showThirdPartyMoveDialog) {
+  //     return true;
+  //   }
 
-    if (isVersionHistoryPanel !== nextProps.isVersionHistoryPanel) {
-      return true;
-    }
+  //   if (isVersionHistoryPanel !== nextProps.isVersionHistoryPanel) {
+  //     return true;
+  //   }
 
-    if (isLoading !== nextProps.isLoading) {
-      return true;
-    }
-    return false;
-  }
+  //   return false;
+  // }
 
   onOpenLocation = () => {
     const { filter, selection } = this.props;
@@ -417,7 +330,7 @@ class SectionBodyContent extends React.Component {
 
   onEditComplete = (id, isFolder) => {
     const {
-      folderId,
+      selectedFolderId,
       fileAction,
       filter,
       folders,
@@ -426,7 +339,6 @@ class SectionBodyContent extends React.Component {
       setTreeFolders,
       setIsLoading,
       fetchFiles,
-      setUpdateTree,
       setAction,
       selection,
     } = this.props;
@@ -438,7 +350,7 @@ class SectionBodyContent extends React.Component {
       fileAction.type === FileAction.Rename
     ) {
       setIsLoading(true);
-      fetchFiles(folderId, filter)
+      fetchFiles(selectedFolderId, filter)
         .then((data) => {
           const newItem = (item && item.id) === -1 ? null : item; //TODO not add new folders?
           if (isFolder) {
@@ -446,13 +358,12 @@ class SectionBodyContent extends React.Component {
             const newTreeFolders = treeFolders;
             const folders = data.selectedFolder.folders;
             loopTreeFolders(path, newTreeFolders, folders, null, newItem);
-            setUpdateTree(true);
             setTreeFolders(newTreeFolders);
           }
         })
         .finally(() => {
           this.setState({ editingId: null }, () => {
-            setAction({ type: null });
+            setAction({ type: null, id: null, extension: null });
             setIsLoading(false);
           });
           fileAction.type === FileAction.Rename &&
@@ -521,7 +432,6 @@ class SectionBodyContent extends React.Component {
       t,
       setSecondaryProgressBarData,
       fetchFiles,
-      setUpdateTree,
     } = this.props;
     api.files.getProgress().then((res) => {
       const deleteProgress = res.find((x) => x.id === id);
@@ -550,7 +460,6 @@ class SectionBodyContent extends React.Component {
               const folders = data.selectedFolder.folders;
               const foldersCount = data.selectedFolder.foldersCount;
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              setUpdateTree(true);
               setTreeFolders(newTreeFolders);
             }
             isFolder
@@ -610,7 +519,7 @@ class SectionBodyContent extends React.Component {
   };
 
   onClickLinkForPortal = () => {
-    const { settings, selection } = this.props;
+    const { homepage, selection } = this.props;
     const item = selection[0];
     const isFile = !!item.fileExst;
     const { t } = this.props;
@@ -619,9 +528,7 @@ class SectionBodyContent extends React.Component {
         ? item.canOpenPlayer
           ? `${window.location.href}&preview=${item.id}`
           : item.webUrl
-        : `${window.location.origin + settings.homepage}/filter?folder=${
-            item.id
-          }`
+        : `${window.location.origin + homepage}/filter?folder=${item.id}`
     );
 
     toastr.success(t("LinkCopySuccess"));
@@ -656,7 +563,7 @@ class SectionBodyContent extends React.Component {
 
   showVersionHistory = (e) => {
     const {
-      settings,
+      homepage,
       history,
       setIsLoading,
       setIsVerHistoryPanel,
@@ -671,7 +578,7 @@ class SectionBodyContent extends React.Component {
       setVerHistoryFileId(fileId);
       setIsVerHistoryPanel(true);
     } else {
-      history.push(`${settings.homepage}/${fileId}/history`);
+      history.push(`${homepage}/${fileId}/history`);
     }
   };
 
@@ -992,7 +899,7 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  needForUpdate = (currentProps, nextProps) => {
+  /*needForUpdate = (currentProps, nextProps) => {
     if (currentProps.widthProp !== nextProps.widthProp) {
       return true;
     }
@@ -1016,7 +923,7 @@ class SectionBodyContent extends React.Component {
     }
 
     return false;
-  };
+  };*/
 
   onContentRowSelect = (checked, file) => {
     if (!file) return;
@@ -1097,7 +1004,6 @@ class SectionBodyContent extends React.Component {
       privacyInstructions,
       title,
       t,
-      i18n,
     } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
@@ -1132,7 +1038,7 @@ class SectionBodyContent extends React.Component {
         </Text>
         {!isDesktop && (
           <Text fontSize="12px">
-            <Trans i18nKey="PrivateRoomSupport" i18n={i18n}>
+            <Trans i18nKey="PrivateRoomSupport" ns="Home">
               Work in Private Room is available via {{ organizationName }}
               desktop app.
               <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
@@ -1644,7 +1550,11 @@ class SectionBodyContent extends React.Component {
     conflictResolveType,
     deleteAfter
   ) => {
-    const { loopFilesOperations, clearSecondaryProgressData } = this.props;
+    const {
+      loopFilesOperations,
+      clearSecondaryProgressData,
+      setSecondaryProgressBarData,
+    } = this.props;
 
     api.files
       .copyToFolder(
@@ -1675,7 +1585,11 @@ class SectionBodyContent extends React.Component {
     conflictResolveType,
     deleteAfter
   ) => {
-    const { loopFilesOperations, clearSecondaryProgressData } = this.props;
+    const {
+      loopFilesOperations,
+      clearSecondaryProgressData,
+      setSecondaryProgressBarData,
+    } = this.props;
 
     api.files
       .moveToFolder(
@@ -1715,21 +1629,6 @@ class SectionBodyContent extends React.Component {
     const { selected, setSelected, setSelection } = this.props;
     selected === "close" && setSelected("none");
     setSelection([item]);
-  };
-
-  onCreateAddTempItem = (items, folderId, fileAction) => {
-    if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
-    const icon = fileAction.extension
-      ? getFileIcon(`.${fileAction.extension}`, 24)
-      : getFolderIcon(null, 24);
-
-    items.unshift({
-      id: -1,
-      title: "",
-      parentId: folderId,
-      fileExst: fileAction.extension,
-      icon,
-    });
   };
 
   getSharedButton = (shared) => {
@@ -1805,8 +1704,7 @@ class SectionBodyContent extends React.Component {
     const {
       viewer,
       parentId,
-      folderId,
-      settings,
+      culture,
       selection,
       fileAction,
       isRecycleBin,
@@ -1828,6 +1726,8 @@ class SectionBodyContent extends React.Component {
       filter,
       isLoading,
     } = this.props;
+
+    //console.log("Section body", this.props);
 
     const {
       editingId,
@@ -1851,10 +1751,6 @@ class SectionBodyContent extends React.Component {
     }
 
     const items = filesList;
-
-    if (fileAction && fileAction.type === FileAction.Create) {
-      this.onCreateAddTempItem(items, folderId, fileAction);
-    }
 
     var playlist = [];
     let id = 0;
@@ -1994,12 +1890,12 @@ class SectionBodyContent extends React.Component {
                     viewAs={viewAs}
                     {...checkedProps}
                     {...contextOptionsProps}
-                    needForUpdate={this.needForUpdate}
+                    //needForUpdate={this.needForUpdate}
                   >
                     <FilesTileContent
                       item={item}
                       viewer={viewer}
-                      culture={settings.culture}
+                      culture={culture}
                       onEditComplete={this.onEditComplete}
                       onMediaFileClick={this.onMediaFileClick}
                       openDocEditor={this.openDocEditor}
@@ -2083,7 +1979,7 @@ class SectionBodyContent extends React.Component {
                         isPrivacy={isPrivacy}
                         {...checkedProps}
                         {...contextOptionsProps}
-                        needForUpdate={this.needForUpdate}
+                        //needForUpdate={this.needForUpdate}
                         selectItem={this.onSelectItem.bind(this, item)}
                         contextButtonSpacerWidth={displayShareButton}
                       >
@@ -2092,7 +1988,7 @@ class SectionBodyContent extends React.Component {
                           isMobile={isMobile}
                           item={item}
                           viewer={viewer}
-                          culture={settings.culture}
+                          culture={culture}
                           onEditComplete={this.onEditComplete}
                           onMediaFileClick={this.onMediaFileClick}
                           onClickFavorite={this.onClickFavorite}
@@ -2136,80 +2032,180 @@ SectionBodyContent.defaultProps = {
   files: null,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    currentFolderCount: getCurrentFilesCount(state),
-    currentMediaFileId: getMediaViewerId(state),
-    dragging: getDragging(state),
-    dragItem: getDragItem(state),
-    fileAction: getFileAction(state),
-    files: getFiles(state),
-    filesList: getFilesList(state)(state),
-    filter: getFilter(state),
-    firstLoad: getFirstLoad(state),
-    folderId: getSelectedFolderId(state),
-    folders: getFolders(state),
-    isAdmin: isAdmin(state),
-    isCommon: getIsCommonFolder(state),
-    isDesktop: isDesktopClient(state),
-    isEncryptionSupport: isEncryptionSupport(state),
-    isFavorites: getIsFavoritesFolder(state),
-    isMy: getIsMyFolder(state),
-    isRecycleBin: getIsRecycleBinFolder(state),
-    isRecent: getIsRecentFolder(state),
-    isShare: getIsShareFolder(state),
-    isPrivacy: getIsPrivacyFolder(state),
-    mediaViewerImageFormats: getMediaViewerImageFormats(state),
-    mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
-    mediaViewerVisible: getMediaViewerVisibility(state),
-    myDocumentsId: getMyFolderId(state),
-    organizationName: getOrganizationName(state),
-    parentId: getSelectedFolderParentId(state),
-    privacyInstructions: getPrivacyInstructionsLink(state),
-    selected: getSelected(state),
-    selectedFolderId: getSelectedFolderId(state),
-    selection: getSelection(state),
-    settings: getSettings(state),
-    title: getSelectedFolderTitle(state),
-    treeFolders: getTreeFolders(state),
-    viewAs: getViewAs(state),
-    viewer: getCurrentUser(state),
-    tooltipValue: getTooltipLabel(state),
-    iconOfDraggedFile: getIconOfDraggedFile(state)(state),
-    sharingPanelVisible: getSharePanelVisible(state),
-    isRootFolder: isRootFolder(state),
-    providers: getThirdPartyProviders(state),
-    capabilities: getThirdPartyCapabilities(state),
-    isTabletView: getIsTabletView(state),
-    isVersionHistoryPanel: getIsVerHistoryPanel(state),
-    isLoading: getIsLoading(state),
-  };
-};
+export default inject(
+  ({
+    auth,
+    initFilesStore,
+    filesStore,
+    settingsStore,
+    mediaViewerDataStore,
+    formatsStore,
+    versionHistoryStore,
+    uploadDataStore,
+    dialogsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
+    const { providers, capabilities } = settingsStore.thirdPartyStore;
+    const { mediaViewersFormatsStore, iconFormatsStore } = formatsStore;
+    const { secondaryProgressDataStore, loopFilesOperations } = uploadDataStore;
+    const {
+      homepage,
+      culture,
+      isEncryptionSupport,
+      isTabletView,
+      organizationName,
+      isDesktopClient,
+    } = auth.settingsStore;
+    const {
+      dragging,
+      setDragging,
+      setIsLoading,
+      viewAs,
+      dragItem,
+      setDragItem,
+      privacyInstructions,
+      tooltipValue,
+    } = initFilesStore;
+    const {
+      files,
+      folders,
+      selected,
+      setSelected,
+      firstLoad,
+      filesList,
+      fetchFiles,
+      setSelection,
+      selection,
+      selectFile,
+      deselectFile,
+      filter,
+      fileActionStore,
 
-export default connect(mapStateToProps, {
-  deselectFile,
-  updateFile,
+      addFileToRecentlyViewed,
+      updateFile,
+      currentFolderCount,
+      iconOfDraggedFile,
+      markItemAsFavorite,
+      removeItemFromFavorite,
+      fetchFavoritesFolder,
+      getFileInfo,
+    } = filesStore;
+
+    const { getFileIcon, getFolderIcon } = iconFormatsStore;
+
+    const {
+      treeFolders,
+      setTreeFolders,
+      myFolderId,
+      isMyFolder,
+      isRecycleBinFolder,
+      isShareFolder,
+      isFavoritesFolder,
+      isCommonFolder,
+      isRecentFolder,
+      isPrivacyFolder,
+    } = treeFoldersStore;
+
+    const { type, extension, id, setAction } = fileActionStore;
+
+    const fileAction = { type, extension, id };
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+
+    const {
+      sharingPanelVisible,
+      setChangeOwnerPanelVisible,
+      setSharingPanelVisible,
+    } = dialogsStore;
+
+    const {
+      isVisible: isVersionHistoryPanel,
+      setIsVerHistoryPanel,
+      setVerHistoryFileId,
+    } = versionHistoryStore;
+
+    const { images, media } = mediaViewersFormatsStore;
+    const {
+      id: currentMediaFileId,
+      visible: mediaViewerVisible,
+      setMediaViewerData,
+    } = mediaViewerDataStore;
+
+  return {
+      isAdmin: auth.isAdmin,
+      homepage,
+      culture,
+      isEncryptionSupport,
+      isTabletView,
+      viewer: auth.userStore.user,
+      organizationName,
+      isDesktop: isDesktopClient,
+      dragging,
+      fileAction,
+      files,
+      folders,
+      selected,
+      firstLoad,
+      filesList,
+      title: selectedFolderStore.title,
+      parentId: selectedFolderStore.parentId,
+      selectedFolderId: selectedFolderStore.id,
+      selection,
+      treeFolders,
+      isRecycleBin: isRecycleBinFolder,
+      myDocumentsId: myFolderId,
+      isShare: isShareFolder,
+      isFavorites: isFavoritesFolder,
+      isCommon: isCommonFolder,
+      isRecent: isRecentFolder,
+      isMy: isMyFolder,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      viewAs,
+      dragItem,
+      currentMediaFileId,
+      mediaViewerVisible,
+      sharingPanelVisible,
+      isVersionHistoryPanel,
+      privacyInstructions,
+      isRootFolder: selectedFolderStore.isRootFolder,
+      mediaViewerImageFormats: images,
+      mediaViewerMediaFormats: media,
+      providers,
+      capabilities,
+      currentFolderCount,
+      iconOfDraggedFile,
+      tooltipValue,
+
+      setDragging,
+      setAction,
+      setSelected,
+      setIsLoading,
+      setSelection,
   fetchFiles,
   selectFile,
-  setAction,
+      deselectFile,
   setTreeFolders,
-  setDragging,
   setDragItem,
   setMediaViewerData,
   setSecondaryProgressBarData,
-  setSelection,
-  setSelected,
-  setUpdateTree,
-  setIsLoading,
+      setChangeOwnerPanelVisible,
+      setSharingPanelVisible,
   clearSecondaryProgressData,
+      setIsVerHistoryPanel,
+      setVerHistoryFileId,
+      addFileToRecentlyViewed,
+      updateFile,
   markItemAsFavorite,
   removeItemFromFavorite,
   fetchFavoritesFolder,
   getFileInfo,
-  addFileToRecentlyViewed,
   loopFilesOperations,
-  setSharingPanelVisible,
-  setIsVerHistoryPanel,
-  setVerHistoryFileId,
-  setChangeOwnerPanelVisible,
-})(withRouter(withTranslation()(SectionBodyContent)));
+      getFileIcon,
+      getFolderIcon,
+    };
+  }
+)(withRouter(withTranslation("Home")(observer(SectionBodyContent))));

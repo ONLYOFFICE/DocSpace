@@ -53,7 +53,6 @@ export function getFilterByLocation(location) {
     withSubfolders,
     search,
     authorType,
-    defaultFilter.treeFolders,
     defaultFilter.selectedItem,
     folder
   );

@@ -10,38 +10,13 @@ import {
   DropDownItem,
   Textarea,
 } from "@appserver/components";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
 import {
-  utils as commonUtils,
+import {
   constants,
   toastr,
-  store,
 } from "@appserver/common";
-import {
-  getShareUsers,
-  setShareFiles,
-  setSharingPanelVisible,
-  setIsLoading,
-  setFiles,
-  setFolders,
-  selectUploadedFile,
-  updateUploadedItem,
-} from "../../../store/files/actions";
-import {
-  getAccessOption,
-  getExternalAccessOption,
-  getSelection,
-  getSharePanelVisible,
-  getCanShareOwnerChange,
-  getIsLoading,
-  getFiles,
-  getFolders,
-  getIsPrivacyFolder,
-  getUploadPanelVisible,
-  getUploadSelection,
-} from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
   StyledContent,
@@ -51,29 +26,15 @@ import {
 } from "../StyledPanels";
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
 import SharingRow from "./SharingRow";
-import { createI18N } from "../../../helpers/i18n";
-import { setEncryptionAccess } from "../../../helpers/desktop";
-const i18n = createI18N({
-  page: "SharingPanel",
-  localesPath: "panels/SharingPanel",
-});
-const { changeLanguage } = commonUtils;
+//import { setEncryptionAccess } from "../../../helpers/desktop";
+import { inject, observer } from "mobx-react";
 const { ShareAccessRights } = constants;
-const { replaceFileStream } = store.auth.actions;
-const {
-  getCurrentUserId,
-  getSettingsCustomNamesGroupsCaption,
-  getSettings,
-  isDesktopClient,
-} = store.auth.selectors;
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
 class SharingPanelComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
 
     this.state = {
       showActionPanel: false,
@@ -151,12 +112,13 @@ class SharingPanelComponent extends React.Component {
       setIsLoading,
       isPrivacy,
       replaceFileStream,
-      i18n,
       t,
       uploadPanelVisible,
       updateUploadedItem,
       uploadSelection,
       isDesktop,
+      setEncryptionAccess,
+      setShareFiles,
     } = this.props;
 
     const folderIds = [];
@@ -235,7 +197,7 @@ class SharingPanelComponent extends React.Component {
               return replaceFileStream(item.id, encryptedFile, true, true).then(
                 () =>
                   toastr.success(
-                    <Trans i18nKey="EncryptedFileSharing" i18n={i18n}>
+                    <Trans i18nKey="EncryptedFileSharing" ns="SharingPanel">
                       File {{ title }} successfully shared
                     </Trans>
                   )
@@ -312,6 +274,7 @@ class SharingPanelComponent extends React.Component {
       getExternalAccessOption,
       selection,
       setIsLoading,
+      getShareUsers,
     } = this.props;
 
     if (folderId.length !== 0 || fileId.length !== 0) {
@@ -342,7 +305,7 @@ class SharingPanelComponent extends React.Component {
   };
 
   getInternalLink = () => {
-    const { settings, selection } = this.props;
+    const { homepage, selection } = this.props;
     const item = selection[0];
     const isFile = !!item.fileExst;
 
@@ -352,9 +315,7 @@ class SharingPanelComponent extends React.Component {
       ? item.canOpenPlayer
         ? `${window.location.href}&preview=${item.id}`
         : item.webUrl
-      : `${window.location.origin + settings.homepage}/filter?folder=${
-          item.id
-        }`;
+      : `${window.location.origin + homepage}/filter?folder=${item.id}`;
   };
 
   onShowEmbeddingPanel = (link) =>
@@ -619,46 +580,69 @@ class SharingPanelComponent extends React.Component {
   }
 }
 
-const SharingPanelContainerTranslated = withTranslation()(
-  SharingPanelComponent
-);
+const SharingPanel = withTranslation("SharingPanel")(SharingPanelComponent);
 
-const SharingPanel = (props) => (
-  <SharingPanelContainerTranslated i18n={i18n} {...props} />
-);
-
-const mapStateToProps = (state, ownProps) => {
-  const selection = getSelection(state);
-  const uploadSelection = getUploadSelection(state);
-  const selectedFile = ownProps.uploadPanelVisible
-    ? uploadSelection
-    : selection; // TODO: take out this implementation from this component
+export default inject(
+  (
+    {
+      auth,
+      initFilesStore,
+      filesStore,
+      uploadDataStore,
+      dialogsStore,
+      treeFoldersStore,
+    },
+    { uploadPanelVisible }
+  ) => {
+    const { replaceFileStream, setEncryptionAccess } = auth;
+    const { customNames, isDesktopClient, homepage } = auth.settingsStore;
+    const { setIsLoading, isLoading } = initFilesStore;
+    const {
+      files,
+      folders,
+      selection,
+      canShareOwnerChange,
+      getAccessOption,
+      getExternalAccessOption,
+      setFiles,
+      setFolders,
+      getShareUsers,
+      setShareFiles,
+    } = filesStore;
+    const { isPrivacyFolder } = treeFoldersStore;
+    const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
+    const {
+      uploadSelection,
+      selectUploadedFile,
+      updateUploadedItem,
+    } = uploadDataStore;
 
   return {
-    getAccessOption: (selection) => getAccessOption(state, selection),
-    getExternalAccessOption: (selection) =>
-      getExternalAccessOption(state, selection),
-    isMyId: getCurrentUserId(state),
-    selection: selectedFile,
-    isPrivacy: getIsPrivacyFolder(state),
-    isDesktop: isDesktopClient(state),
-    groupsCaption: getSettingsCustomNamesGroupsCaption(state),
-    sharingPanelVisible: getSharePanelVisible(state),
-    canShareOwnerChange: getCanShareOwnerChange(state),
-    isLoading: getIsLoading(state),
-    files: getFiles(state),
-    folders: getFolders(state),
-    settings: getSettings(state),
+      isMyId: auth.userStore.user.id,
+      groupsCaption: customNames.groupsCaption,
+      isDesktop: isDesktopClient,
+      homepage,
+      files,
+      folders,
+      selection: uploadPanelVisible ? uploadSelection : selection,
+      isLoading,
+      isPrivacy: isPrivacyFolder,
+      sharingPanelVisible,
     uploadSelection,
-  };
-};
+      canShareOwnerChange,
 
-export default connect(mapStateToProps, {
+      setIsLoading,
+      setSharingPanelVisible,
+      selectUploadedFile,
+      updateUploadedItem,
   replaceFileStream,
-  setSharingPanelVisible,
-  setIsLoading,
+      setEncryptionAccess,
+      getAccessOption,
+      getExternalAccessOption,
   setFiles,
   setFolders,
-  selectUploadedFile,
-  updateUploadedItem,
-})(withRouter(SharingPanel));
+      getShareUsers,
+      setShareFiles,
+    };
+  }
+)(withRouter(observer(SharingPanel)));

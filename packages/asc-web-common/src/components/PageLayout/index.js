@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/src/components/backdrop";
 import ProgressBar from "@appserver/components/src/components/progress-bar";
@@ -25,11 +24,8 @@ import SectionToggler from "./sub-components/section-toggler";
 import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
-import { getIsTabletView } from "../../store/auth/selectors";
-import { isArticlePinned } from "../../store/auth/selectors";
-import { setArticlePinned } from "../../store/auth/actions";
+import { inject, observer } from "mobx-react";
 
-const { getLanguage } = store.auth.selectors;
 
 function ArticleHeader() {
   return null;
@@ -471,16 +467,13 @@ PageLayout.propTypes = {
   children: PropTypes.any,
 };
 
-function mapStateToProps(state) {
+export default inject(({ auth }) => {
+  const { language, settingsStore } = auth;
+  const { isTabletView, isArticlePinned, setArticlePinned } = settingsStore;
   return {
-    language: getLanguage(state),
-    isTabletView: getIsTabletView(state),
-    isArticlePinned: isArticlePinned(state),
+    language,
+    isTabletView,
+    isArticlePinned,
+    setArticlePinned,
   };
-}
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setArticlePinned: (isPinned) => dispatch(setArticlePinned(isPinned)),
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(PageLayout);
+})(observer(PageLayout));

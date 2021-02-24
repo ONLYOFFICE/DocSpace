@@ -1,38 +1,11 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import { utils, TreeMenu, TreeNode, Link } from "@appserver/components/src";
-import {
-  selectGroup,
-  setIsVisibleDataLossDialog,
-  setIsLoading,
-} from "../../../store/people/actions";
-import { getSelectedGroup } from "../../../store/people/selectors";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import {
-  history,
-  utils as commonUtils,
-  store as initStore,
-  Loaders,
-} from "@appserver/common/src";
+import { withTranslation } from "react-i18next";
+import { history, Loaders } from "@appserver/common/src";
 
-import {
-  DepartmentsGroupIcon,
-  CatalogFolderIcon,
-  ExpanderDownIcon,
-  ExpanderRightIcon,
-} from "@appserver/components/src/components/icons/svg";
-
-import { createI18N } from "../../../helpers/i18n";
 import styled, { css } from "styled-components";
-import { setDocumentTitle } from "../../../helpers/utils";
-
-const i18n = createI18N({
-  page: "Article",
-  localesPath: "Article",
-});
-
-const { changeLanguage } = commonUtils;
-const { isAdmin } = initStore.auth.selectors;
+import { inject, observer } from "mobx-react";
+import { getSelectedGroup } from "../../../helpers/people-helpers";
 
 const StyledTreeMenu = styled(TreeMenu)`
   ${(props) =>
@@ -89,7 +62,7 @@ class ArticleBodyContent extends React.Component {
   }
 
   changeTitleDocument(data = null) {
-    const { groups, selectedKeys } = this.props;
+    const { groups, selectedKeys, setDocumentTitle } = this.props;
 
     const currentGroup = getSelectedGroup(
       groups,
@@ -111,9 +84,9 @@ class ArticleBodyContent extends React.Component {
     return false;
   }
   onSelectHandler = (data) => {
-    const { editingForm, setIsVisibleDataLossDialog } = this.props;
+    const { isEdit, setIsVisibleDataLossDialog } = this.props;
 
-    if (editingForm.isEdit) {
+    if (isEdit) {
       setIsVisibleDataLossDialog(true, this.onSelect(data));
     } else {
       this.onSelect(data)();
@@ -123,11 +96,12 @@ class ArticleBodyContent extends React.Component {
     const { setIsLoading } = this.props;
     return () => {
       const { selectGroup } = this.props;
+      const groupId =
+        data && data.length === 1 && data[0] !== "root" ? data[0] : null;
       setIsLoading(true);
       this.changeTitleDocument(data);
-      selectGroup(
-        data && data.length === 1 && data[0] !== "root" ? data[0] : null
-      ).finally(() => setIsLoading(false));
+      selectGroup(groupId);
+      setIsLoading(false);
     };
   };
   switcherIcon = (obj) => {
@@ -197,6 +171,7 @@ const getTreeGroups = (groups, departments) => {
       ),
       root: true,
       children:
+        (groups &&
         groups.map((g) => {
           return {
             key: g.id,
@@ -210,48 +185,34 @@ const getTreeGroups = (groups, departments) => {
             ),
             root: false,
           };
-        }) || [],
+          })) ||
+        [],
     },
   ];
 
   return treeData;
 };
 
-const ArticleBodyContentWrapper = withTranslation()(ArticleBodyContent);
+const BodyContent = withTranslation("Article")(ArticleBodyContent);
 
-const BodyContent = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ArticleBodyContentWrapper {...props} />
-    </I18nextProvider>
-  );
-};
-
-function mapStateToProps(state) {
-  const groups = state.people.groups;
-  const { isLoaded, settings } = state.auth;
-  const { customNames } = settings;
-  const { groupsCaption } = customNames;
-  const { editingForm } = state.people;
-
+export default inject(({ auth, peopleStore }) => {
+  const groups = peopleStore.groupsStore.groups;
+  const { groupsCaption } = auth.settingsStore.customNames;
+  const data = getTreeGroups(groups, groupsCaption);
+  const selectedKeys = peopleStore.selectedGroupStore.selectedGroup
+    ? [peopleStore.selectedGroupStore.selectedGroup]
+    : ["root"];
   return {
-    data: getTreeGroups(groups, groupsCaption),
-    selectedKeys: state.people.selectedGroup
-      ? [state.people.selectedGroup]
-      : ["root"],
+    setDocumentTitle: auth.setDocumentTitle,
+    isLoaded: auth.isLoaded,
+    isAdmin: auth.isAdmin,
     groups,
-    isAdmin: isAdmin(state),
-    isLoaded,
-    editingForm,
+    data,
+    selectedKeys,
+    selectGroup: peopleStore.selectedGroupStore.selectGroup,
+    isEdit: peopleStore.editingFormStore.isEdit,
+    setIsVisibleDataLossDialog:
+      peopleStore.editingFormStore.setIsVisibleDataLossDialog,
+    setIsLoading: peopleStore.setIsLoading,
   };
-}
-
-export default connect(mapStateToProps, {
-  selectGroup,
-  setIsVisibleDataLossDialog,
-  setIsLoading,
-})(BodyContent);
+})(observer(BodyContent));

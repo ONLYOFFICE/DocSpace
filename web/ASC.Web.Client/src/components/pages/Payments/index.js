@@ -1,9 +1,9 @@
 import React from "react";
 
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 import PaymentsEnterprise from "../PaymentsEnterprise";
 import PaymentsSaaS from "../PaymentsSaaS";
+import { inject, observer } from "mobx-react";
 class Payments extends React.Component {
   render() {
     const { standaloneMode } = this.props;
@@ -11,10 +11,6 @@ class Payments extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    standaloneMode: state.payments.standaloneMode,
-  };
-}
-
-export default connect(mapStateToProps)(withRouter(Payments));
+export default inject(({ payments }) => ({
+  standaloneMode: payments.standaloneMode,
+}))(withRouter(observer(Payments)));

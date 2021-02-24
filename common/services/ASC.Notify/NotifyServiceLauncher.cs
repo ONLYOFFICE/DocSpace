@@ -107,7 +107,6 @@ namespace ASC.Notify
         private void InitializeNotifySchedulers()
         {
             NotifyConfiguration.Configure();
-            WebItemManager.LoadItems();
             foreach (var pair in NotifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
             {
                 Log.DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);

@@ -1,52 +1,19 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 import ModalDialog from "@appserver/components/src/components/modal-dialog";
 import Button from "@appserver/components/src/components/button";
 import { withTranslation } from "react-i18next";
-import { utils, toastr, api } from "@appserver/common";
-import {
-  deleteThirdParty,
-  setThirdPartyProviders,
-  fetchFiles,
-  setUpdateTree,
-  setTreeFolders,
-} from "../../../store/files/actions";
-import {
-  getThirdPartyProviders,
-  getSelectedFolderId,
-  loopTreeFolders,
-  getTreeFolders,
-  getCommonFolderId,
-  getMyFolderId,
-} from "../../../store/files/selectors";
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "DeleteThirdPartyDialog",
-  localesPath: "dialogs/DeleteThirdPartyDialog",
-});
-
-const { changeLanguage } = utils;
+import { toastr, api } from "@appserver/common";
+import { loopTreeFolders } from "../../../helpers/files-helpers";
+import { inject, observer } from "mobx-react";
 
 class DeleteThirdPartyDialogComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    changeLanguage(i18n);
-  }
-
   updateTree = (path, folders) => {
-    const {
-      t,
-      treeFolders,
-      removeItem,
-      setTreeFolders,
-      setUpdateTree,
-    } = this.props;
+    const { t, treeFolders, removeItem, setTreeFolders } = this.props;
 
     const newTreeFolders = treeFolders;
     loopTreeFolders(path, newTreeFolders, folders, null);
     setTreeFolders(newTreeFolders);
-    setUpdateTree(true);
     toastr.success(t("SuccessDeleteThirdParty", { service: removeItem.title }));
   };
 
@@ -60,6 +27,7 @@ class DeleteThirdPartyDialogComponent extends React.Component {
       currentFolderId,
       commonId,
       myId,
+      deleteThirdParty,
     } = this.props;
 
     const providerItem = providers.find((x) => x.provider_id === removeItem.id);
@@ -110,27 +78,33 @@ class DeleteThirdPartyDialogComponent extends React.Component {
   }
 }
 
-const ModalDialogContainerTranslated = withTranslation()(
+const DeleteThirdPartyDialog = withTranslation("DeleteThirdPartyDialog")(
   DeleteThirdPartyDialogComponent
 );
 
-const DeleteThirdPartyDialog = (props) => (
-  <ModalDialogContainerTranslated i18n={i18n} {...props} />
-);
+export default inject(
+  ({ filesStore, thirdParty, treeFoldersStore, selectedFolderStore }) => {
+    const { providers, setThirdPartyProviders, deleteThirdParty } = thirdParty;
+    const { fetchFiles } = filesStore;
 
-const mapStateToProps = (state) => {
+    const {
+      treeFolders,
+      setTreeFolders,
+      myFolderId,
+      commonFolderId,
+    } = treeFoldersStore;
+
   return {
-    providers: getThirdPartyProviders(state),
-    currentFolderId: getSelectedFolderId(state),
-    treeFolders: getTreeFolders(state),
-    commonId: getCommonFolderId(state),
-    myId: getMyFolderId(state),
-  };
-};
+      currentFolderId: selectedFolderStore.id,
+      treeFolders,
+      myId: myFolderId,
+      commonId: commonFolderId,
+      providers,
 
-export default connect(mapStateToProps, {
-  setThirdPartyProviders,
   fetchFiles,
-  setUpdateTree,
   setTreeFolders,
-})(withRouter(DeleteThirdPartyDialog));
+      setThirdPartyProviders,
+      deleteThirdParty,
+    };
+  }
+)(withRouter(observer(DeleteThirdPartyDialog)));

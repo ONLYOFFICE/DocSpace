@@ -126,4 +126,4 @@ class SectionHeaderContent extends React.Component {
   }
 }
 
-export default withRouter(withTranslation()(SectionHeaderContent));
+export default withRouter(withTranslation("Settings")(SectionHeaderContent));

@@ -91,11 +91,11 @@ module.exports = {
         studio: "studio@http://localhost:5001/remoteEntry.js",
         people: "people@http://localhost:5002/remoteEntry.js",
         files: "files@http://localhost:5008/remoteEntry.js",
-        login: "login@http://localhost:5020/remoteEntry.js",
+        login: "login@http://localhost:5011/remoteEntry.js",
       },
       exposes: {
         "./shell": "./src/Shell",
-        "./store": "./src/store/store",
+        "./store": "./src/store",
       },
       shared: {
         ...deps,

@@ -7,6 +7,8 @@ import Main from "../Main";
 import PageLayout from ".";
 import history from "../../history";
 import Headline from "../Headline";
+import store from "../../store";
+import { Provider as MobxProvider } from "mobx-react";
 import {
   IconButton,
   ContextMenuButton,
@@ -17,8 +19,8 @@ import {
 import withReadme from "storybook-readme/with-readme";
 import { boolean, withKnobs } from "@storybook/addon-knobs/react";
 import Readme from "./README.md";
-import withProvider from "../../../.storybook/decorators/redux";
 import { Router } from "react-router-dom";
+const { authStore } = store;
 
 const HeaderContent = styled.div`
   display: flex;
@@ -136,43 +138,48 @@ const sectionPagingContent = (
 );
 
 storiesOf("Components|PageLayout", module)
-  .addDecorator(withProvider)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add("base", () => (
-    <Router history={history}>
-      <NavMenu
-        isBackdropVisible={boolean("isBackdropVisible", false)}
-        isNavHoverEnabled={boolean("isNavHoverEnabled", true)}
-        isNavOpened={boolean("isNavOpened", false)}
-        isAsideVisible={boolean("isAsideVisible", false)}
-      />
-      <Main>
-        <PageLayout withBodyScroll={true}>
-          <PageLayout.ArticleHeader>
-            {articleHeaderContent}
-          </PageLayout.ArticleHeader>
+    <MobxProvider auth={authStore}>
+      <Router history={history}>
+        <NavMenu
+          isBackdropVisible={boolean("isBackdropVisible", false)}
+          isNavHoverEnabled={boolean("isNavHoverEnabled", true)}
+          isNavOpened={boolean("isNavOpened", false)}
+          isAsideVisible={boolean("isAsideVisible", false)}
+        />
+        <Main>
+          <PageLayout withBodyScroll={true}>
+            <PageLayout.ArticleHeader>
+              {articleHeaderContent}
+            </PageLayout.ArticleHeader>
 
-          <PageLayout.ArticleMainButton>
-            {articleMainButtonContent}
-          </PageLayout.ArticleMainButton>
+            <PageLayout.ArticleMainButton>
+              {articleMainButtonContent}
+            </PageLayout.ArticleMainButton>
 
-          <PageLayout.ArticleBody>{articleBodyContent}</PageLayout.ArticleBody>
+            <PageLayout.ArticleBody>
+              {articleBodyContent}
+            </PageLayout.ArticleBody>
 
-          <PageLayout.SectionHeader>
-            {sectionHeaderContent}
-          </PageLayout.SectionHeader>
+            <PageLayout.SectionHeader>
+              {sectionHeaderContent}
+            </PageLayout.SectionHeader>
 
-          <PageLayout.SectionFilter>
-            {sectionFilterContent}
-          </PageLayout.SectionFilter>
+            <PageLayout.SectionFilter>
+              {sectionFilterContent}
+            </PageLayout.SectionFilter>
 
-          <PageLayout.SectionBody>{sectionBodyContent}</PageLayout.SectionBody>
+            <PageLayout.SectionBody>
+              {sectionBodyContent}
+            </PageLayout.SectionBody>
 
-          <PageLayout.SectionPaging>
-            {sectionPagingContent}
-          </PageLayout.SectionPaging>
-        </PageLayout>
-      </Main>
-    </Router>
+            <PageLayout.SectionPaging>
+              {sectionPagingContent}
+            </PageLayout.SectionPaging>
+          </PageLayout>
+        </Main>
+      </Router>
+    </MobxProvider>
   ));

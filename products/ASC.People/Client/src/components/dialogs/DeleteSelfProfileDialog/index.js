@@ -3,14 +3,8 @@ import PropTypes from "prop-types";
 import { ModalDialog, Button, Link, Text } from "@appserver/components/src";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { api, utils, toastr } from "@appserver/common/src";
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "DeleteSelfProfileDialog",
-  localesPath: "dialogs/DeleteSelfProfileDialog",
-});
+import { api, toastr } from "@appserver/common/src";
 const { sendInstructionsToDelete } = api.people;
-const { changeLanguage } = utils;
 
 class DeleteSelfProfileDialogComponent extends React.Component {
   constructor(props) {
@@ -19,8 +13,6 @@ class DeleteSelfProfileDialogComponent extends React.Component {
     this.state = {
       isRequestRunning: false,
     };
-
-    changeLanguage(i18n);
   }
   onDeleteSelfProfileInstructions = () => {
     const { onClose } = this.props;
@@ -83,12 +75,8 @@ class DeleteSelfProfileDialogComponent extends React.Component {
   }
 }
 
-const DeleteSelfProfileDialogTranslated = withTranslation()(
+const DeleteSelfProfileDialog = withTranslation("DeleteSelfProfileDialog")(
   DeleteSelfProfileDialogComponent
-);
-
-const DeleteSelfProfileDialog = (props) => (
-  <DeleteSelfProfileDialogTranslated i18n={i18n} {...props} />
 );
 
 DeleteSelfProfileDialog.propTypes = {

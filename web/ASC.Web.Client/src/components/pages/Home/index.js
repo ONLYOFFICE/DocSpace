@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect } from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
@@ -10,13 +9,8 @@ import PageLayout from "@appserver/common/src/components/PageLayout";
 import history from "@appserver/common/src/history";
 import ModuleTile from "./ModuleTile";
 import { changeLanguage, tryRedirectTo } from "@appserver/common/src/utils";
-import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
-
-const i18n = createI18N({
-  page: "Home",
-  localesPath: "pages/Home",
-});
+import { inject, observer } from "mobx-react";
 
 const HomeContainer = styled.div`
   padding: 62px 15px 0 15px;
@@ -55,13 +49,17 @@ const HomeContainer = styled.div`
 
 const Tiles = ({ modules, isPrimary }) => {
   let index = 0;
-  const mapped = modules.filter((m) => m.isPrimary === isPrimary);
+  const mapped = modules.filter(
+    (m) => m.isPrimary === isPrimary && m.isolateMode !== true
+  );
+
+  console.log("Tiles", mapped, isPrimary);
 
   return mapped.length > 0 ? (
     <div className="home-modules">
-      {mapped.map((module) => (
+      {mapped.map((m) => (
         <div className="home-module" key={++index}>
-          <ModuleTile {...module} onClick={() => history.push(module.link)} />
+          <ModuleTile {...m} onClick={() => history.push(m.link)} />
         </div>
       ))}
     </div>
@@ -76,16 +74,11 @@ Tiles.propTypes = {
 };
 
 const Body = ({ modules, match, isLoaded }) => {
-  const { t } = useTranslation("translation", { i18n });
+  const { t } = useTranslation("Home");
   const { error } = match.params;
-
   setDocumentTitle();
 
   useEffect(() => error && toastr.error(error), [error]);
-
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
 
   return !isLoaded ? (
     <></>
@@ -119,16 +112,16 @@ const Home = (props) => {
 Home.propTypes = {
   modules: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool,
+  defaultPage: PropTypes.string,
 };
 
-function mapStateToProps(state) {
-  const { modules, isLoaded, settings } = state.auth;
-  const { defaultPage } = settings;
+export default inject(({ auth }) => {
+  const { isLoaded, settingsStore, moduleStore } = auth;
+  const { defaultPage } = settingsStore;
+  const { modules } = moduleStore;
   return {
+    defaultPage,
     modules,
     isLoaded,
-    defaultPage,
   };
-}
-
-export default connect(mapStateToProps)(withRouter(Home));
+})(withRouter(observer(Home)));

@@ -5,7 +5,7 @@ import { tablet } from "@appserver/components/src/utils/device";
 
 const StyledArticleHeader = styled.div`
   border-bottom: 1px solid #eceef1;
-  height: 56px;
+  height: 64px;
 
   @media ${tablet} {
     display: none;

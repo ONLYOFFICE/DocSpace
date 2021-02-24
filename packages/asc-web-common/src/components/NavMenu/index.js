@@ -10,12 +10,12 @@ import HeaderNav from "./sub-components/header-nav";
 import HeaderUnAuth from "./sub-components/header-unauth";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import i18n from "./i18n";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { getLanguage, isDesktopClient } from "../../store/auth/selectors";
+//import { getLanguage, isDesktopClient } from "../../store/auth/selectors";
 import Loaders from "../Loaders";
 import { LayoutContextConsumer } from "../Layout/context";
 import { isMobile } from "react-device-detect";
+import { inject, observer } from "mobx-react";
 
 const backgroundColor = "#0F4071";
 
@@ -231,15 +231,13 @@ NavMenuWrapper.propTypes = {
   language: PropTypes.string.isRequired,
 };
 
-function mapStateToProps(state) {
-  const { isAuthenticated, isLoaded } = state.auth;
-
+export default inject(({ auth }) => {
+  const { settingsStore, isAuthenticated, isLoaded, language } = auth;
+  const { isDesktopClient: isDesktop } = settingsStore;
   return {
     isAuthenticated,
     isLoaded,
-    isDesktop: isDesktopClient(state),
-    language: getLanguage(state),
+    isDesktop,
+    language,
   };
-}
-
-export default connect(mapStateToProps)(withRouter(NavMenuWrapper));
+})(withRouter(observer(NavMenuWrapper)));

@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 import ModalDialogContainer from "../ModalDialogContainer";
 import {
   ModalDialog,
@@ -10,34 +9,12 @@ import {
   Scrollbar,
 } from "@appserver/components";
 import { withTranslation } from "react-i18next";
-import { api, utils, toastr } from "@appserver/common";
-import {
-  fetchFiles,
-  setTreeFolders,
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-  setUpdateTree,
-} from "../../../store/files/actions";
+import { api, toastr } from "@appserver/common";
 import { TIMEOUT } from "../../../helpers/constants";
-import {
-  loopTreeFolders,
-  getSelectedFolderId,
-  getFilter,
-  getTreeFolders,
-  getIsLoading,
-  getIsRecycleBinFolder,
-  getSelection,
-  isRootFolder,
-  getIsPrivacyFolder,
-} from "../../../store/files/selectors";
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "DeleteDialog",
-  localesPath: "dialogs/DeleteDialog",
-});
+import { loopTreeFolders } from "../../../helpers/files-helpers";
+import { inject, observer } from "mobx-react";
 
 const { files } = api;
-const { changeLanguage } = utils;
 
 class DeleteDialogComponent extends React.Component {
   constructor(props) {
@@ -65,7 +42,6 @@ class DeleteDialogComponent extends React.Component {
       }
       i++;
     }
-    changeLanguage(i18n);
 
     this.state = { foldersList, filesList, selection };
   }
@@ -81,9 +57,10 @@ class DeleteDialogComponent extends React.Component {
       clearSecondaryProgressData,
       t,
       fetchFiles,
-      setUpdateTree,
     } = this.props;
-    const successMessage = t("DeleteSelectedElem");
+    const successMessage = isRecycleBinFolder
+      ? t("DeleteFromTrash")
+      : t("DeleteSelectedElem");
     api.files
       .getProgress()
       .then((res) => {
@@ -113,7 +90,6 @@ class DeleteDialogComponent extends React.Component {
               const folders = data.selectedFolder.folders;
               const foldersCount = data.selectedFolder.foldersCount;
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              setUpdateTree(true);
               setTreeFolders(newTreeFolders);
             }
             toastr.success(successMessage);
@@ -296,29 +272,46 @@ class DeleteDialogComponent extends React.Component {
   }
 }
 
-const ModalDialogContainerTranslated = withTranslation()(DeleteDialogComponent);
+const DeleteDialog = withTranslation("DeleteDialog")(DeleteDialogComponent);
 
-const DeleteDialog = (props) => (
-  <ModalDialogContainerTranslated i18n={i18n} {...props} />
-);
+export default inject(
+  ({
+    initFilesStore,
+    filesStore,
+    uploadDataStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
+    const { isLoading } = initFilesStore;
+    const { secondaryProgressDataStore } = uploadDataStore;
+    const { fetchFiles, selection, filter } = filesStore;
 
-const mapStateToProps = (state) => {
+    const {
+      treeFolders,
+      setTreeFolders,
+      isRecycleBinFolder,
+      isPrivacyFolder,
+    } = treeFoldersStore;
+
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+
   return {
-    currentFolderId: getSelectedFolderId(state),
-    filter: getFilter(state),
-    treeFolders: getTreeFolders(state),
-    isLoading: getIsLoading(state),
-    isRecycleBinFolder: getIsRecycleBinFolder(state),
-    isPrivacy: getIsPrivacyFolder(state),
-    selection: getSelection(state),
-    isRootFolder: isRootFolder(state),
-  };
-};
+      currentFolderId: selectedFolderStore.id,
+      selection,
+      isLoading,
+      treeFolders,
+      isRecycleBinFolder,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      isRootFolder: selectedFolderStore.isRootFolder,
 
-export default connect(mapStateToProps, {
+      fetchFiles,
   setTreeFolders,
   setSecondaryProgressBarData,
   clearSecondaryProgressData,
-  setUpdateTree,
-  fetchFiles,
-})(withRouter(DeleteDialog));
+    };
+  }
+)(withRouter(observer(DeleteDialog)));
