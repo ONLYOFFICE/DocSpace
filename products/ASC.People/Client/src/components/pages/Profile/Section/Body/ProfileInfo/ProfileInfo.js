@@ -85,7 +85,7 @@ class ProfileInfo extends React.PureComponent {
     super(props);
     this.state = {
       profile: props.profile,
-};
+    };
   }
 
   onGroupClick = (e) => {
@@ -100,25 +100,25 @@ class ProfileInfo extends React.PureComponent {
   };
 
   getFormattedDepartments = (departments) => {
-  const formattedDepartments = departments.map((department, index) => {
-    return (
-      <span key={index}>
-        <Link
-          type="page"
-          fontSize="13px"
-          isHovered={true}
-          data-id={department.id}
+    const formattedDepartments = departments.map((department, index) => {
+      return (
+        <span key={index}>
+          <Link
+            type="page"
+            fontSize="13px"
+            isHovered={true}
+            data-id={department.id}
             onClick={this.onGroupClick}
-        >
-          {department.name}
-        </Link>
-        {departments.length - 1 !== index ? ", " : ""}
-      </span>
-    );
-  });
+          >
+            {department.name}
+          </Link>
+          {departments.length - 1 !== index ? ", " : ""}
+        </span>
+      );
+    });
 
-  return formattedDepartments;
-};
+    return formattedDepartments;
+  };
 
   onSentInviteAgain = (id) => {
     const { t } = this.props;
@@ -232,7 +232,7 @@ class ProfileInfo extends React.PureComponent {
                     <IconButton
                       color="#C96C27"
                       size={16}
-                      iconName="DangerIcon"
+                      iconName="images/danger.react.svg"
                       isFill={true}
                     />
                   </IconButtonWrapper>

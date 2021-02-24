@@ -6,6 +6,8 @@ Required for formatted output of elements inside Row
 
 ```js
 import { RowContent } from "@appserver/components";
+import SendClockIcon from "../../../../../public/images/send.clock.react.svg";
+
 ```
 
 ```jsx
@@ -14,8 +16,8 @@ import { RowContent } from "@appserver/components";
     Demo
   </Link>
   <>
-    <Icons.SendClockIcon size="small" isfill={true} color="#3B72A7" />
-    <Icons.CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
+    <SendClockIcon size="small" isfill={true} color="#3B72A7" />
+    <CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
   </>
   <Link type="page" title="Demo" fontSize="12px" color="#A3A9AE">
     Demo

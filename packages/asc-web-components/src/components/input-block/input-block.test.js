@@ -9,7 +9,7 @@ describe("<IconButton />", () => {
     const wrapper = mount(
       <InputBlock
         mask={mask}
-        iconName={"SearchIcon"}
+        iconName={"static/images/search.react.svg"}
         onIconClick={(event) => alert(event.target.value)}
         onChange={(event) => alert(event.target.value)}
       >
@@ -27,7 +27,10 @@ describe("<IconButton />", () => {
 
   it("test base size props", () => {
     const wrapper = mount(
-      <InputBlock iconName="SearchIcon" size="base"></InputBlock>
+      <InputBlock
+        iconName="static/images/search.react.svg"
+        size="base"
+      ></InputBlock>
     );
 
     expect(wrapper.prop("size")).toBe("base");
@@ -35,7 +38,10 @@ describe("<IconButton />", () => {
 
   it("test middle size props", () => {
     const wrapper = mount(
-      <InputBlock iconName="SearchIcon" size="middle"></InputBlock>
+      <InputBlock
+        iconName="static/images/search.react.svg"
+        size="middle"
+      ></InputBlock>
     );
 
     expect(wrapper.prop("size")).toBe("middle");
@@ -43,7 +49,10 @@ describe("<IconButton />", () => {
 
   it("test big size props", () => {
     const wrapper = mount(
-      <InputBlock iconName="SearchIcon" size="big"></InputBlock>
+      <InputBlock
+        iconName="static/images/search.react.svg"
+        size="big"
+      ></InputBlock>
     );
 
     expect(wrapper.prop("size")).toBe("big");
@@ -51,7 +60,10 @@ describe("<IconButton />", () => {
 
   it("test huge size props", () => {
     const wrapper = mount(
-      <InputBlock iconName="SearchIcon" size="huge"></InputBlock>
+      <InputBlock
+        iconName="static/images/search.react.svg"
+        size="huge"
+      ></InputBlock>
     );
 
     expect(wrapper.prop("size")).toBe("huge");
@@ -59,7 +71,10 @@ describe("<IconButton />", () => {
 
   it("test iconSize props", () => {
     const wrapper = mount(
-      <InputBlock iconName="SearchIcon" iconSize={18}></InputBlock>
+      <InputBlock
+        iconName="static/images/search.react.svg"
+        iconSize={18}
+      ></InputBlock>
     );
 
     expect(wrapper.prop("iconSize")).toBe(18);
@@ -91,7 +106,11 @@ describe("<IconButton />", () => {
   it("call onChange", () => {
     const onChange = jest.fn();
     const wrapper = mount(
-      <InputBlock iconName="SearchIcon" size="huge" onChange={onChange} />
+      <InputBlock
+        iconName="static/images/search.react.svg"
+        size="huge"
+        onChange={onChange}
+      />
     );
     const input = wrapper.find("input");
     input.first().simulate("change", { target: { value: "test" } });
@@ -101,7 +120,7 @@ describe("<IconButton />", () => {
     const onIconClick = jest.fn();
     const wrapper = mount(
       <InputBlock
-        iconName="SearchIcon"
+        iconName="static/images/search.react.svg"
         size="huge"
         isDisabled={false}
         onIconClick={onIconClick}
@@ -113,7 +132,9 @@ describe("<IconButton />", () => {
   });
   it("not call onChange", () => {
     const onChange = jest.fn();
-    const wrapper = mount(<InputBlock iconName="SearchIcon" size="huge" />);
+    const wrapper = mount(
+      <InputBlock iconName="static/images/search.react.svg" size="huge" />
+    );
     const input = wrapper.find("input");
     input.first().simulate("change", { target: { value: "test" } });
     expect(onChange).not.toHaveBeenCalled();
@@ -122,7 +143,7 @@ describe("<IconButton />", () => {
     const onIconClick = jest.fn();
     const wrapper = mount(
       <InputBlock
-        iconName="SearchIcon"
+        iconName="static/images/search.react.svg"
         size="huge"
         isDisabled={true}
         onIconClick={onIconClick}

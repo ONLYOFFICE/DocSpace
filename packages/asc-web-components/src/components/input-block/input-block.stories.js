@@ -17,6 +17,7 @@ import InputBlock from ".";
 import { Icons } from "../icons";
 import Button from "../button";
 import Section from "../../../.storybook/decorators/section";
+import SettingsIcon from "../../../../../public/images/settings.react.svg";
 
 const iconNames = Object.keys(Icons);
 iconNames.push("NONE");
@@ -51,7 +52,7 @@ storiesOf("Components|Input", module)
           children.push(<Button label="OK" key={i} />);
           break;
         case "icon":
-          children.push(<Icons.SettingsIcon size="medium" key={i} />);
+          children.push(<SettingsIcon size="medium" key={i} />);
           break;
         default:
           break;
@@ -85,7 +86,11 @@ storiesOf("Components|Input", module)
                 iconSize={number("iconSize", 0)}
                 mask={text("mask", null)}
                 isDisabled={boolean("isDisabled", false)}
-                iconName={select("iconName", iconNames, "SearchIcon")}
+                iconName={select(
+                  "iconName",
+                  iconNames,
+                  "static/images/search.react.svg"
+                )}
                 iconColor={color("iconColor", "#D0D5DA")}
                 isIconFill={boolean("isIconFill", false)}
                 value={value}

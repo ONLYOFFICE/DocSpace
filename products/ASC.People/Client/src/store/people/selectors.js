@@ -62,39 +62,59 @@ export const getUserRole = (user) => {
 export const getUserContactsPattern = () => {
   return {
     contact: [
-      { type: "mail", icon: "MailIcon", link: "mailto:{0}" },
-      { type: "phone", icon: "PhoneIcon", link: "tel:{0}" },
-      { type: "mobphone", icon: "MobileIcon", link: "tel:{0}" },
-      { type: "gmail", icon: "GmailIcon", link: "mailto:{0}" },
-      { type: "skype", icon: "SkypeIcon", link: "skype:{0}?userinfo" },
-      { type: "msn", icon: "WindowsMsnIcon" },
-      { type: "icq", icon: "IcqIcon", link: "https://www.icq.com/people/{0}" },
-      { type: "jabber", icon: "JabberIcon" },
-      { type: "aim", icon: "AimIcon" },
+      {
+        type: "mail",
+        icon: "static/images/mail.react.svg",
+        link: "mailto:{0}",
+      },
+      { type: "phone", icon: "images/phone.react.svg", link: "tel:{0}" },
+      { type: "mobphone", icon: "images/mobile.react.svg", link: "tel:{0}" },
+      { type: "gmail", icon: "images/gmail.react.svg", link: "mailto:{0}" },
+      {
+        type: "skype",
+        icon: "images/skype.react.svg",
+        link: "skype:{0}?userinfo",
+      },
+      { type: "msn", icon: "images/windows.msn.react.svg" },
+      {
+        type: "icq",
+        icon: "images/icq.react.svg",
+        link: "https://www.icq.com/people/{0}",
+      },
+      { type: "jabber", icon: "images/jabber.react.svg" },
+      { type: "aim", icon: "images/aim.react.svg" },
     ],
     social: [
       {
         type: "facebook",
-        icon: "ShareFacebookIcon",
+        icon: "images/share.facebook.react.svg",
         link: "https://facebook.com/{0}",
       },
       {
         type: "livejournal",
-        icon: "LivejournalIcon",
+        icon: "images/livejournal.react.svg",
         link: "https://{0}.livejournal.com",
       },
-      { type: "myspace", icon: "MyspaceIcon", link: "https://myspace.com/{0}" },
+      {
+        type: "myspace",
+        icon: "images/myspace.react.svg",
+        link: "https://myspace.com/{0}",
+      },
       {
         type: "twitter",
-        icon: "ShareTwitterIcon",
+        icon: "images/share.twitter.react.svg",
         link: "https://twitter.com/{0}",
       },
       {
         type: "blogger",
-        icon: "BloggerIcon",
+        icon: "images/blogger.react.svg",
         link: "https://{0}.blogspot.com",
       },
-      { type: "yahoo", icon: "YahooIcon", link: "mailto:{0}@yahoo.com" },
+      {
+        type: "yahoo",
+        icon: "images/yahoo.react.svg",
+        link: "mailto:{0}@yahoo.com",
+      },
     ],
   };
 };

@@ -718,7 +718,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="PlusIcon"
+                          iconName="static/images/actions.header.touch.react.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -729,7 +729,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="option-button"
                           directionX="right"
-                          iconName="VerticalDotsIcon"
+                          iconName="static/images/vertical-dots.react.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -743,7 +743,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="PlusIcon"
+                          iconName="static/images/actions.header.touch.react.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"

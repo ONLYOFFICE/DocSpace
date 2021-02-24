@@ -1,10 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
 import { ArrowContentIcon } from "./svg";
 import Heading from "../heading";
 import { StyledContent, StyledContainer } from "./styled-toggle-content";
+import commonIconsStyles from "../../utils/common-icons-style";
 
+const StyledArrowContentIcon = styled(ArrowContentIcon)`
+  ${commonIconsStyles}
+`;
 // eslint-disable-next-line react/prop-types, no-unused-vars
 class ToggleContent extends React.Component {
   constructor(props) {
@@ -41,7 +46,10 @@ class ToggleContent extends React.Component {
         style={style}
       >
         <span className="span-toggle-content" onClick={this.toggleContent}>
-          <ArrowContentIcon className="arrow-toggle-content" size="medium" />
+          <StyledArrowContentIcon
+            className="arrow-toggle-content"
+            size="medium"
+          />
           <Heading
             className="heading-toggle-content"
             level={2}

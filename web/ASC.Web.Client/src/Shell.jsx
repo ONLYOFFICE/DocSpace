@@ -23,8 +23,16 @@ const Login = React.lazy(() => import("login/page"));
 const People = React.lazy(() => import("people/page"));
 const Files = React.lazy(() => import("files/page"));
 const About = React.lazy(() => import("./components/pages/About"));
+const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
 
+const SettingsRoute = (props) => (
+  <React.Suspense fallback={null}>
+    <ErrorBoundary>
+      <Settings {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
 const PaymentsRoute = (props) => (
   <React.Suspense fallback={null}>
     <ErrorBoundary>
@@ -182,6 +190,11 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 component={ComingSoonRoute}
               />
               <PrivateRoute path="/payments" component={PaymentsRoute} />
+              <PrivateRoute
+                restricted
+                path="/settings"
+                component={SettingsRoute}
+              />
               <PrivateRoute component={Error404Route} />
             </Switch>
           </Main>

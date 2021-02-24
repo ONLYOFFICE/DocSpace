@@ -1,7 +1,7 @@
 import React from "react";
-
 import PropTypes from "prop-types";
-import { Icons } from "../icons";
+import { ReactSVG } from "react-svg";
+
 import { StyledDropdownItem, IconWrapper } from "./styled-drop-down-item";
 
 const DropDownItem = (props) => {
@@ -15,7 +15,7 @@ const DropDownItem = (props) => {
     onClick,
     className,
   } = props;
- 
+
   const onClickAction = (e) => {
     onClick && !disabled && onClick(e);
   };
@@ -29,10 +29,11 @@ const DropDownItem = (props) => {
     >
       {icon && (
         <IconWrapper>
-          {React.createElement(Icons[icon], {
+          {/* {React.createElement(Icons[icon], {
             size: "scale",
             className: "drop-down-item_icon",
-          })}
+          })} */}
+          <ReactSVG src={icon} className="drop-down-item_icon" />
         </IconWrapper>
       )}
       {isSeparator ? "\u00A0" : label ? label : children && children}

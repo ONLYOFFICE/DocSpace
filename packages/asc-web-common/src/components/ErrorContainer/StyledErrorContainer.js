@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledErrorContainer = styled.div`
-  background: #ffffff;
+  //background: #ffffff;
   cursor: default;
   height: 100%;
   width: 100%;

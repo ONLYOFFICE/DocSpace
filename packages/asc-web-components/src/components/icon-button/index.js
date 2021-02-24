@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Icons } from "../icons";
 import isEmpty from "lodash/isEmpty";
 import StyledOuter from "./styled-icon-button";
+import { ReactSVG } from "react-svg";
 
 class IconButton extends React.PureComponent {
   constructor(props) {
@@ -137,7 +138,7 @@ class IconButton extends React.PureComponent {
       style,
       dataTip,
     } = this.props;
-
+  
     return (
       <StyledOuter
         className={className}
@@ -153,13 +154,19 @@ class IconButton extends React.PureComponent {
         data-event="click focus"
         data-for={id}
         style={style}
+        color={this.state.currentIconColor}
         //{...this.props}
       >
-        {React.createElement(Icons[this.state.currentIconName], {
+        {/* {React.createElement(Icons["CalendarIcon"], {
           size: "scale",
           color: this.state.currentIconColor,
           isfill: isFill,
-        })}
+        })} */}
+
+        <ReactSVG
+          className="icon-button_svg"
+          src={this.state.currentIconName}
+        />
       </StyledOuter>
     );
   }
@@ -191,7 +198,7 @@ IconButton.defaultProps = {
   color: "#d0d5da",
   size: 25,
   isFill: true,
-  iconName: "AZSortingIcon",
+  iconName: "static/images/a-z.sorting.react.svg",
   isDisabled: false,
   isClickable: false,
   dataTip: "",

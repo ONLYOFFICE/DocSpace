@@ -1,6 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
+import styled from "styled-components";
 import { Row, Avatar, RowContainer, utils } from "@appserver/components/src";
 import UserContent from "./userContent";
 import equal from "fast-deep-equal/react";

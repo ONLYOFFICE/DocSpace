@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Base } from "../../themes";
 import NoUserSelect from "../../utils/commonStyles";
 import { CameraIcon } from "./svg";
+import commonIconsStyles from "../../utils/common-icons-style";
 
 const EditLink = styled.div`
   padding-left: ${(props) => props.theme.avatar.editLink.paddingLeft};
@@ -21,6 +22,7 @@ const EditLink = styled.div`
 EditLink.defaultProps = { theme: Base };
 
 const EmptyIcon = styled(CameraIcon)`
+  ${commonIconsStyles}
   border-radius: ${(props) => props.theme.avatar.image.borderRadius};
 `;
 EmptyIcon.defaultProps = { theme: Base };

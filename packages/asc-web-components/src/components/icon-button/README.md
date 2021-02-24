@@ -13,7 +13,7 @@ import { IconButton } from "@appserver/components";
   size="25"
   isDisabled={false}
   onClick={() => alert("Clicked")}
-  iconName={"SearchIcon"}
+  iconName={"static/images/search.react.svg"}
   isFill={true}
   isClickable={false}
 />

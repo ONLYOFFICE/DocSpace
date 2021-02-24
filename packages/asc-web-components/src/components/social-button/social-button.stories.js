@@ -11,15 +11,15 @@ storiesOf("Components|Buttons|SocialButtons", module)
   .addDecorator(withReadme(Readme))
   .add("social button", () => {
     const socialNetworks = [
-      "ShareGoogleIcon",
+      "static/images/share.google.react.svg",
       "ShareFacebookIcon",
       "ShareTwitterIcon",
-      "ShareLinkedInIcon",
+      "static/images/share.linkedin.react.svg",
     ];
     const iconName = select(
       "iconName",
       ["", ...socialNetworks],
-      "ShareGoogleIcon"
+      "static/images/share.google.react.svg"
     );
 
     return (

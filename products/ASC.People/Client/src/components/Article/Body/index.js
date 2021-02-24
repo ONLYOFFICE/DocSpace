@@ -1,11 +1,20 @@
 import React from "react";
+import styled, { css } from "styled-components";
+import { withTranslation, I18nextProvider } from "react-i18next";
+
 import { utils, TreeMenu, TreeNode, Link } from "@appserver/components/src";
 import { withTranslation } from "react-i18next";
 import { history, Loaders } from "@appserver/common/src";
+import CatalogFolderIcon from "../../../../../../../public/images/catalog.folder.react.svg";
+import DepartmentsGroupIcon from "../../../../public/images/departments.group.react.svg";
+import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
+import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
+import { createI18N } from "../../../helpers/i18n";
 
 import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import { getSelectedGroup } from "../../../helpers/people-helpers";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
 
 const StyledTreeMenu = styled(TreeMenu)`
   ${(props) =>
@@ -15,6 +24,30 @@ const StyledTreeMenu = styled(TreeMenu)`
     `}
 `;
 
+const StyledCatalogFolderIcon = styled(CatalogFolderIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+const StyledDepartmentsGroupIcon = styled(DepartmentsGroupIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
 const getItems = (data) => {
   return data.map((item) => {
     if (item.children) {
@@ -44,7 +77,7 @@ const getItems = (data) => {
         className="inner-folder"
         key={item.key}
         title={item.title}
-        icon={<CatalogFolderIcon size="scale" isfill={true} color="#657077" />}
+        icon={<StyledCatalogFolderIcon size="scale" color="#657077" />}
       />
     );
   });
@@ -109,9 +142,9 @@ class ArticleBodyContent extends React.Component {
       return null;
     }
     if (obj.expanded) {
-      return <ExpanderDownIcon size="scale" isfill={true} color="dimgray" />;
+      return <StyledExpanderDownIcon size="scale" color="dimgray" />;
     } else {
-      return <ExpanderRightIcon size="scale" isfill={true} color="dimgray" />;
+      return <StyledExpanderRightIcon size="scale" color="dimgray" />;
     }
   };
 

@@ -1,15 +1,30 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
+import styled from "styled-components";
 import {
   RowContent,
   Link,
   LinkWithDropdown,
-  Icons,
   Text,
   Box,
 } from "@appserver/components/src";
 import { inject, observer } from "mobx-react";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import SendClockIcon from "../../../../../../public/images/send.clock.react.svg";
+import CatalogSpamIcon from "../../../../../../public/images/catalog.spam.react.svg";
 
+const StyledSendClockIcon = styled(SendClockIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: "#3B72A7";
+  }
+`;
+const StyledCatalogSpamIcon = styled(CatalogSpamIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: "#3B72A7";
+  }
+`;
 const getFormattedGroups = (user, selectGroup) => {
   let temp = [];
   const groups = user.groups;
@@ -112,12 +127,8 @@ const UserContent = ({
         {displayName}
       </Link>
       <>
-        {statusType === "pending" && (
-          <Icons.SendClockIcon size="small" isfill={true} color="#3B72A7" />
-        )}
-        {statusType === "disabled" && (
-          <Icons.CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
-        )}
+        {statusType === "pending" && <StyledSendClockIcon size="small" />}
+        {statusType === "disabled" && <StyledCatalogSpamIcon size="small" />}
       </>
       {title ? (
         <Text

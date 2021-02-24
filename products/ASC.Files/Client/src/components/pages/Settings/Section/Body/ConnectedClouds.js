@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Icons } from "@appserver/components";
+
 import ModalDialog from "@appserver/components/src/components/modal-dialog";
 import Button from "@appserver/components/src/components/button";
 import Text from "@appserver/components/src/components/text";
@@ -13,6 +13,17 @@ import { withTranslation } from "react-i18next";
 import EmptyFolderContainer from "../../../Home/Section/Body/EmptyFolderContainer";
 import { Trans } from "react-i18next";
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
+import BoxIcon from "../../../../../../public/images/icon_box.react.svg";
+import DropBoxIcon from "../../../../../../public/images/icon_dropbox.react.svg";
+import GoogleDriveIcon from "../../../../../../public/images/icon_google_drive.react.svg";
+import KDriveIcon from "../../../../../../public/images/icon_kdrive.react.svg";
+import NextCloudIcon from "../../../../../../public/images/icon_nextcloud.react.svg";
+import OneDriveIcon from "../../../../../../public/images/icon_onedrive.react.svg";
+import OwnCloudIcon from "../../../../../../public/images/icon_owncloud.react.svg";
+import SharePointIcon from "../../../../../../public/images/icon_sharepoint.react.svg";
+import WebDavIcon from "../../../../../../public/images/icon_webdav.react.svg";
+import YandexDiskIcon from "./../../../../../public/images/icon_yandex_disk.react.svg";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 
 const StyledServicesBlock = styled.div`
@@ -65,6 +76,36 @@ const ServiceItem = (props) => {
   return <img {...dataProps} {...rest} alt="" />;
 };
 
+const StyledBoxIcon = styled(BoxIcon)`
+  ${commonIconsStyles}
+`;
+const StyledDropBoxIcon = styled(DropBoxIcon)`
+  ${commonIconsStyles}
+`;
+const StyledGoogleDriveIcon = styled(GoogleDriveIcon)`
+  ${commonIconsStyles}
+`;
+const StyledKDriveIcon = styled(KDriveIcon)`
+  ${commonIconsStyles}
+`;
+const StyledNextCloudIcon = styled(NextCloudIcon)`
+  ${commonIconsStyles}
+`;
+const StyledOneDriveIcon = styled(OneDriveIcon)`
+  ${commonIconsStyles}
+`;
+const StyledOwnCloudIcon = styled(OwnCloudIcon)`
+  ${commonIconsStyles}
+`;
+const StyledSharePointIcon = styled(SharePointIcon)`
+  ${commonIconsStyles}
+`;
+const StyledWebDavIcon= styled(WebDavIcon)`
+  ${commonIconsStyles}
+`;
+const StyledYandexDiskIcon = styled(YandexDiskIcon)`
+  ${commonIconsStyles}
+`;
 class ConnectClouds extends React.Component {
   constructor(props) {
     super(props);
@@ -194,28 +235,28 @@ class ConnectClouds extends React.Component {
   getThirdPartyIcon = (iconName) => {
     switch (iconName) {
       case "Box":
-        return <Icons.BoxIcon size="big" />;
+        return <StyledBoxIcon size="big" />;
       case "DropboxV2":
-        return <Icons.DropBoxIcon size="big" />;
+        return <StyledDropBoxIcon size="big" />;
       case "GoogleDrive":
-        return <Icons.GoogleDriveIcon size="big" />;
+        return <StyledGoogleDriveIcon size="big" />;
       case "OneDrive":
-        return <Icons.OneDriveIcon size="big" />;
+        return <StyledOneDriveIcon size="big" />;
       case "SharePoint":
-        return <Icons.SharePointIcon size="big" />;
+        return <StyledSharePointIcon size="big" />;
       case "kDrive":
-        return <Icons.KDriveIcon size="big" />;
+        return <StyledKDriveIcon size="big" />;
       case "Yandex":
-        return <Icons.YandexDiskIcon size="big" />;
+        return <StyledYandexDiskIcon size="big" />;
       /*--------------------------------------------*/
       case "OwnCloud":
-        return <Icons.OwnCloudIcon size="big" />;
+        return <StyledOwnCloudIcon size="big" />;
       case "NextCloud":
-        return <Icons.NextCloudIcon size="big" />;
+        return <StyledNextCloudIcon size="big" />;
       case "OneDriveForBusiness":
-        return <Icons.OneDriveIcon size="big" />;
+        return <StyledOneDriveIcon size="big" />;
       case "WebDav":
-        return <Icons.WebDavIcon size="big" />;
+        return <StyledWebDavIcon size="big" />;
 
       default:
         return;

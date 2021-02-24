@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import {
   Link,
   Text,
@@ -6,15 +7,22 @@ import {
   Textarea,
   Button,
   ModalDialog,
-  Icons,
 } from "@appserver/components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 
 import VersionBadge from "./VersionBadge";
 import StyledVersionRow from "./StyledVersionRow";
+import ExternalLinkIcon from "../../../../../../public/images/external.link.react.svg";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 
+const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: "#333333";
+  }
+`;
 const VersionRow = (props) => {
   const {
     info,
@@ -105,7 +113,7 @@ const VersionRow = (props) => {
             {title}
           </Link>
           <Link className="icon-link" onClick={onOpenFile}>
-            <Icons.ExternalLinkIcon color="#333333" size="scale" />
+            <StyledExternalLinkIcon size="scale" />
           </Link>
           <Text
             className="version_content-length"

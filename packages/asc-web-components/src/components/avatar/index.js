@@ -1,5 +1,6 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
 import { GuestIcon, AdministratorIcon, OwnerIcon } from "./svg";
 import {
@@ -13,15 +14,25 @@ import {
   StyledAvatar,
 } from "./styled-avatar";
 import Link from "../link";
+import commonIconsStyles from "../../utils/common-icons-style";
 
+const StyledGuestIcon = styled(GuestIcon)`
+  ${commonIconsStyles}
+`;
+const StyledAdministratorIcon= styled(AdministratorIcon)`
+  ${commonIconsStyles}
+`;
+const StyledOwnerIcon = styled(OwnerIcon)`
+  ${commonIconsStyles}
+`;
 const getRoleIcon = (role) => {
   switch (role) {
     case "guest":
-      return <GuestIcon size="scale" />;
+      return <StyledGuestIcon size="scale" />;
     case "admin":
-      return <AdministratorIcon size="scale" />;
+      return <StyledAdministratorIcon size="scale" />;
     case "owner":
-      return <OwnerIcon size="scale" />;
+      return <StyledOwnerIcon size="scale" />;
     default:
       return null;
   }

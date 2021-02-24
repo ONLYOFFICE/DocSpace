@@ -25,7 +25,11 @@ storiesOf("Components|Buttons", module)
         <IconButton
           color={color("color", "#d0d5da")}
           size={number("size", 25)}
-          iconName={select("iconName", iconNames, "SearchIcon")}
+          iconName={select(
+            "iconName",
+            iconNames,
+            "static/images/search.react.svg"
+          )}
           isFill={boolean("isFill", false)}
           isDisabled={boolean("isDisabled", false)}
           onClick={action("clicked")}

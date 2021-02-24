@@ -29,7 +29,7 @@ const SelectedItem = (props) => {
         <IconButton
           color="#979797"
           size={10}
-          iconName="CrossIcon"
+          iconName="static/images/cross.react.svg"
           isFill={true}
           isDisabled={isDisabled}
         />

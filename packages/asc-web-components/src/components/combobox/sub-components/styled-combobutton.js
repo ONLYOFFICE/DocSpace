@@ -146,6 +146,12 @@ const StyledIcon = styled.div`
           : props.theme.comboBox.childrenButton.color};
     }
   }
+  svg {
+    &:not(:root) {
+      width: 100%;
+      height: 100%;
+    }
+  }
 `;
 StyledIcon.defaultProps = { theme: Base };
 

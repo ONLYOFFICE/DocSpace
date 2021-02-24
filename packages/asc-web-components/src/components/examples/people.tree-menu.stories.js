@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { storiesOf } from "@storybook/react";
 import TreeMenu from "../tree-menu";
 import TreeNode from "../tree-menu/sub-components/tree-node";
-import { Icons } from "../icons";
+import CatalogDepartmentsIcon from "../../../../../public/images/catalog.departments.react.svg";
+import CatalogFolderIcon from "../../../../../public/images/catalog.folder.react.svg";
+import ExpanderDownIcon from "../../../../../public/images/expander-down.react.svg";
+import ExpanderRightIcon from "../../../../../public/images/expander-right.react.svg";
 
 const treeData = [
   {
@@ -113,7 +116,7 @@ const TreeMenuStory = (props) => {
             key={item.key}
             icon={
               item.root ? (
-                <Icons.CatalogDepartmentsIcon
+                <CatalogDepartmentsIcon
                   size="scale"
                   isfill={true}
                   color="dimgray"
@@ -133,11 +136,7 @@ const TreeMenuStory = (props) => {
           title={item.title}
           icon={
             !item.root ? (
-              <Icons.CatalogFolderIcon
-                size="scale"
-                isfill={true}
-                color="dimgray"
-              />
+              <CatalogFolderIcon size="scale" isfill={true} color="dimgray" />
             ) : (
               ""
             )
@@ -152,13 +151,9 @@ const TreeMenuStory = (props) => {
       return null;
     }
     if (obj.expanded) {
-      return (
-        <Icons.ExpanderDownIcon size="scale" isfill={true} color="dimgray" />
-      );
+      return <ExpanderDownIcon size="scale" isfill={true} color="dimgray" />;
     } else {
-      return (
-        <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray" />
-      );
+      return <ExpanderRightIcon size="scale" isfill={true} color="dimgray" />;
     }
   };
 

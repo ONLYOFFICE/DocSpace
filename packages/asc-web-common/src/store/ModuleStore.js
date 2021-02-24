@@ -105,7 +105,7 @@ class ModuleStore {
       link: item.link,
       originUrl: item.originUrl,
       helpUrl: item.helpUrl,
-      iconName: item.iconName || iconName || "PeopleIcon", //TODO: Change to URL
+      iconName: item.iconName || iconName || "static/images/people.react.svg", //TODO: Change to URL
       iconUrl: item.iconUrl,
       imageUrl: item.imageUrl,
       notifications: 0,

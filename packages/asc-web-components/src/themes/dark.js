@@ -327,20 +327,20 @@ const Dark = {
     },
   },
 
-  // checkbox: {
-  //   fillColor: white,
-  //   borderColor: grayMid,
-  //   arrowColor: black,
-  //   indeterminateColor: black,
+  checkbox: {
+    fillColor: white,
+    borderColor: grayMid,
+    arrowColor: black,
+    indeterminateColor: black,
 
-  //   disableArrowColor: grayMid,
-  //   disableBorderColor: grayLightMid,
-  //   disableFillColor: grayLight,
-  //   disableIndeterminateColor: gray,
+    disableArrowColor: grayMid,
+    disableBorderColor: grayLightMid,
+    disableFillColor: grayLight,
+    disableIndeterminateColor: gray,
 
-  //   hoverBorderColor: gray,
-  //   hoverIndeterminateColor: black,
-  // },
+    hoverBorderColor: gray,
+    hoverIndeterminateColor: black,
+  },
 
   // switchButton: {
   //   fillColor: white,

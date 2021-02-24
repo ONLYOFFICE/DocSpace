@@ -4,7 +4,6 @@ import {
   ComboBox,
   Row,
   Text,
-  Icons,
   DropDownItem,
 } from "@appserver/components";
 import { toastr } from "@appserver/common";
@@ -13,6 +12,7 @@ import LinkRow from "./linkRow";
 import AccessComboBox from "./AccessComboBox";
 //import equal from "fast-deep-equal/react";
 import { getAccessIcon } from "../../../helpers/files-helpers";
+import { ReactSVG } from "react-svg";
 
 class SharingRow extends React.Component {
   constructor(props) {
@@ -158,7 +158,7 @@ class SharingRow extends React.Component {
       ? { onClick: onShowChangeOwnerPanel }
       : {};
 
-    const accessIcon = getAccessIcon(access);
+    const accessIconUrl = getAccessIcon(access);
 
   return (
       <>
@@ -186,12 +186,22 @@ class SharingRow extends React.Component {
             key={`internal-link-key_${id}`}
           element={
               isOwner || isLocked ? (
-                React.createElement(Icons[accessIcon], {
-                  size: "medium",
-                  className: "sharing_panel-owner-icon",
-                  isfill: true,
-                  color: isLoading ? "#D0D5DA" : "#a3a9ae",
-                })
+                <ReactSVG
+                  src={accessIconUrl}
+                  className="sharing_panel-owner-icon"
+                  beforeInjection={(svg) => {
+                    svg
+                      .querySelector("path")
+                      .setAttribute("fill", isLoading ? "#D0D5DA" : "#a3a9ae");
+                    svg.setAttribute(
+                      "style",
+                      `width:16px;
+                  min-width:16px;
+                  height:16px;
+                  min-height:16px;`
+                    );
+                  }}
+                />
               ) : (
                 <AccessComboBox
                   t={t}
@@ -232,7 +242,7 @@ class SharingRow extends React.Component {
                 !shareLink &&
                 !isLocked && (
                 <IconButton
-                  iconName="RemoveIcon"
+                    iconName="images/remove.react.svg"
                     id={id}
                     {...onRemoveUserProp}
                   className="sharing_panel-remove-icon"

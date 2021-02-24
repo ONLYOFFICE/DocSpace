@@ -19,7 +19,7 @@ import { Tooltip, IconButton, Text } from "@appserver/components";
     data-offset="{'top': 100, 'right': 100}"
     data-place="top"
   >
-    <IconButton isClickable={true} size={20} iconName="QuestionIcon" />
+    <IconButton isClickable={true} size={20} iconName="static/images/question.react.svg" />
   </div>
   <Tooltip
     id="tooltipContent"

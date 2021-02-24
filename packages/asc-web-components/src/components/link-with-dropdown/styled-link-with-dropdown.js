@@ -1,10 +1,9 @@
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 
-import { Icons } from "../icons";
 import Text from "../text";
 import { Base } from "../../themes";
-
+import ExpanderDownIcon from "../../../../../public/images/expander-down.react.svg";
 // eslint-disable-next-line no-unused-vars
 const SimpleLinkWithDropdown = ({
   isBold,
@@ -39,14 +38,14 @@ const color = (props) =>
   isDisabled ? props.theme.linkWithDropdown.disableColor : props.color;
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const ExpanderDownIcon = ({
+const ExpanderDownIconWrapper = ({
   isSemitransparent,
   dropdownType,
   isOpen,
   ...props
-}) => <Icons.ExpanderDownIcon {...props} />;
+}) => <ExpanderDownIcon {...props} />;
 
-const Caret = styled(ExpanderDownIcon)`
+const Caret = styled(ExpanderDownIconWrapper)`
   position: absolute;
 
   width: ${(props) => props.theme.linkWithDropdown.caret.width};

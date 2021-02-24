@@ -6,12 +6,15 @@ import {
   RowContent,
   Link,
   Text,
-  Icons,
   IconButton,
   Badge,
 } from "@appserver/components";
 import { constants, api, toastr } from "@appserver/common";
-
+import FavoriteIcon from "../../../../../../public/images/favorite.react.svg";
+import FileActionsConvertEditDocIcon from "../../../../../../public/images/file.actions.convert.edit.doc.react.svg";
+import FileActionsLockedIcon from "../../../../../../public/images/file.actions.locked.react.svg";
+import CheckIcon from "../../../../../../public/images/check.react.svg";
+import CrossIcon from "../../../../../../../../../public/images/cross.react.svg";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../panels";
@@ -20,10 +23,50 @@ import EditingWrapperComponent from "./EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
 //import { setEncryptionAccess } from "../../../../../helpers/desktop";
 import { observer, inject } from "mobx-react";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
 
 const { FileAction, ShareAccessRights } = constants;
 const sideColor = "#A3A9AE";
 
+const StyledCheckIcon = styled(CheckIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: "#A3A9AE";
+  }
+  :hover {
+    fill: "#657077";
+  }
+`;
+
+const StyledCrossIcon = styled(CrossIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: "#A3A9AE";
+  }
+  :hover {
+    fill: "#657077";
+  }
+`;
+
+const StyledFavoriteIcon = styled(FavoriteIcon)`
+  ${commonIconsStyles}
+`;
+
+const StyledFileActionsConvertEditDocIcon = styled(
+  FileActionsConvertEditDocIcon
+)`
+  ${commonIconsStyles}
+  path {
+    fill: "#3B72A7";
+  }
+`;
+
+const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: "#3B72A7";
+  }
+`;
 const SimpleFilesRowContent = styled(RowContent)`
   .badge-ext {
     margin-left: -8px;
@@ -59,24 +102,10 @@ const SimpleFilesRowContent = styled(RowContent)`
   }
 `;
 
-const okIcon = (
-  <Icons.CheckIcon
-    className="edit-ok-icon"
-    size="scale"
-    isfill={true}
-    color="#A3A9AE"
-    hoveredcolor="#657077"
-  />
-);
+const okIcon = <StyledCheckIcon className="edit-ok-icon" size="scale" />;
 
 const cancelIcon = (
-  <Icons.CrossIcon
-    className="edit-cancel-icon"
-    size="scale"
-    isfill={true}
-    color="#A3A9AE"
-    hoveredcolor="#657077"
-  />
+  <StyledCrossIcon className="edit-cancel-icon" size="scale" />
 );
 
 class FilesRowContent extends React.PureComponent {
@@ -587,7 +616,7 @@ class FilesRowContent extends React.PureComponent {
                 {canWebEdit && !isTrashFolder && accessToEdit && (
                   <IconButton
                     onClick={this.onFilesClick}
-                    iconName="AccessEditIcon"
+                    iconName="images/access.edit.react.svg"
                     className="badge"
                     size="small"
                     isfill={true}
@@ -607,7 +636,7 @@ class FilesRowContent extends React.PureComponent {
                   />
                 )}
                 {fileStatus === 32 && !isTrashFolder && (
-                  <Icons.FavoriteIcon
+                  <StyledFavoriteIcon
                     className="favorite"
                     size="small"
                     data-action="remove"
@@ -617,11 +646,18 @@ class FilesRowContent extends React.PureComponent {
                   />
                 )}
                 {fileStatus === 1 && (
-                  <Icons.FileActionsConvertEditDocIcon
+                  <StyledFileActionsConvertEditDocIcon
                     className="badge"
                     size="small"
-                    isfill={true}
-                    color="#3B72A7"
+                  />
+                )}
+                {locked && (
+                  <StyledFileActionsLockedIcon
+                    className="badge lock-file"
+                    size="small"
+                    data-id={item.id}
+                    data-locked={true}
+                    onClick={this.props.onClickLock}
                   />
                 )}
                 {versionGroup > 1 && (

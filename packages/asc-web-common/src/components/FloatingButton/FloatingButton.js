@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
+
 import {
   StyledFloatingButton,
   StyledAlertIcon,
@@ -7,15 +9,17 @@ import {
   StyledCircle,
 } from "./StyledFloatingButton";
 
-import {
-  ButtonUploadIcon,
-  ButtonFileIcon,
-  ButtonTrashIcon,
-  ButtonMoveIcon,
-  ButtonDuplicateIcon,
-  ButtonAlertIcon,
-} from "@appserver/components/src/components/icons/svg";
+import ButtonUploadIcon from "../../../../../public/images/button.upload.react.svg";
+import ButtonFileIcon from "../../../../../public/images/button.file.react.svg";
+import ButtonTrashIcon from "../../../../../public/images/button.trash.react.svg";
+import ButtonMoveIcon from "../../../../../public/images/button.move.react.svg";
+import ButtonDuplicateIcon from "../../../../../public/images/button.duplicate.react.svg";
+import ButtonAlertIcon from "../../../../../public/images/button.alert.react.svg";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
 
+const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
+  ${commonIconsStyles}
+`;
 const FloatingButton = ({ id, className, style, ...rest }) => {
   const { icon, alert, percent, onClick } = rest;
 
@@ -49,7 +53,7 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
           )}
 
           <StyledAlertIcon>
-            {alert ? <ButtonAlertIcon size="medium" /> : <></>}
+            {alert ? <StyledButtonAlertIcon size="medium" /> : <></>}
           </StyledAlertIcon>
         </StyledFloatingButton>
       </StyledCircle>

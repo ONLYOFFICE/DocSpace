@@ -24,7 +24,7 @@ const SelectorAddButton = (props) => {
       <IconButton
         color="#979797"
         size={14}
-        iconName="PlusIcon"
+        iconName="static/images/actions.header.touch.react.svg"
         isFill={true}
         isDisabled={isDisabled}
         isClickable={!isDisabled}

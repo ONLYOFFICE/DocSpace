@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import { ReactSVG } from "react-svg";
 import { Icons } from "../icons";
 import { handleAnyClick } from "../../utils/event";
 import Text from "../text";
@@ -96,11 +96,13 @@ class MainButton extends React.PureComponent {
             {...this.props}
             onClick={this.onSecondaryButtonClick}
           >
-            {this.iconNames.includes(this.props.iconName) &&
-              React.createElement(Icons[this.props.iconName], {
-                size: "medium",
-                color: "#ffffff",
-              })}
+            {this.iconNames.includes(this.props.iconName) && (
+              // React.createElement(Icons[this.props.iconName], {
+              //   size: "medium",
+              //   color: "#ffffff",
+              // })}
+              <ReactSVG src={this.props.iconName} />
+            )}
           </StyledSecondaryButton>
         )}
       </GroupMainButton>
@@ -126,7 +128,7 @@ MainButton.defaultProps = {
   text: "Button",
   isDisabled: false,
   isDropdown: true,
-  iconName: "PeopleIcon",
+  iconName: "static/images/people.react.svg",
 };
 
 export default MainButton;

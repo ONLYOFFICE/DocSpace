@@ -10,7 +10,7 @@ import { ContextMenuButton } from "@appserver/components";
 
 ```jsx
 <ContextMenuButton
-  iconName="VerticalDotsIcon"
+  iconName="static/images/vertical-dots.react.svg"
   size={16}
   color="#A3A9AE"
   isDisabled={false}

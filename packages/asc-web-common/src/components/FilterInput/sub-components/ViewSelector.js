@@ -26,7 +26,7 @@ class ViewSelector extends React.Component {
           color={viewAs === "row" ? "#ffffff" : "#A3A9AE"}
           hoverColor={"#ffffff"}
           clickColor={"#ffffff"}
-          iconName={"FilterViewSelectorRowIcon"}
+          iconName={"static/images/filter.view.selector.row.react.svg"}
           isDisabled={isDisabled}
           isFill={true}
           onClick={this.onClickViewSelector}
@@ -41,7 +41,7 @@ class ViewSelector extends React.Component {
           color={viewAs === "tile" ? "#ffffff" : "#A3A9AE"}
           hoverColor={"#ffffff"}
           clickColor={"#ffffff"}
-          iconName={"FilterViewSelectorTileIcon"}
+          iconName={"static/images/filter.view.selector.tile.react.svg"}
           isDisabled={isDisabled}
           isFill={true}
           onClick={this.onClickViewSelector}

@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Link, Text, Icons, Badge } from "@appserver/components";
+import { Link, Text, Badge } from "@appserver/components";
 import { constants, api, toastr } from "@appserver/common";
 import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../panels";
@@ -10,6 +10,8 @@ import EditingWrapperComponent from "./EditingWrapperComponent";
 import TileContent from "./TileContent";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import CheckIcon from "../../../../../../public/images/check.react.svg";
+import CrossIcon from "../../../../../../../../../public/images/cross.react.svg"
 
 const { FileAction } = constants;
 
@@ -58,7 +60,7 @@ const SimpleFilesTileContent = styled(TileContent)`
 `;
 
 const okIcon = (
-  <Icons.CheckIcon
+  <CheckIcon
     className="edit-ok-icon"
     size="scale"
     isfill={true}
@@ -67,7 +69,7 @@ const okIcon = (
 );
 
 const cancelIcon = (
-  <Icons.CrossIcon
+  <CrossIcon
     className="edit-cancel-icon"
     size="scale"
     isfill={true}

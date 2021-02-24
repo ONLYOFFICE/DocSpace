@@ -15,7 +15,7 @@ const ModuleTile = (props) => {
     },
     [link, onClick]
   );
-
+console.log("imageUrl", imageUrl)
   return (
     <StyledModuleTile>
       {isPrimary ? (

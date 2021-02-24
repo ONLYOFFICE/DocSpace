@@ -26,7 +26,13 @@ storiesOf("Components|MainButton", module)
     let isDropdown = boolean("isDropdown", true);
 
     let icon = !isDropdown
-      ? { iconName: `${select("iconName", iconNames, "PeopleIcon")}` }
+      ? {
+          iconName: `${select(
+            "iconName",
+            iconNames,
+            "static/images/people.react.svg"
+          )}`,
+        }
       : {};
 
     return (
@@ -40,7 +46,7 @@ storiesOf("Components|MainButton", module)
           {...icon}
         >
           <DropDownItem
-            icon="CatalogEmployeeIcon"
+            icon="static/images/catalog.employee.react.svg"
             label="New employee"
             onClick={() => action("New employee clicked")}
           />
@@ -50,13 +56,13 @@ storiesOf("Components|MainButton", module)
             onClick={() => action("New quest clicked")}
           />
           <DropDownItem
-            icon="CatalogDepartmentsIcon"
+            icon="static/images/catalog.departments.react.svg"
             label="New department"
             onClick={() => action("New department clicked")}
           />
           <DropDownItem isSeparator />
           <DropDownItem
-            icon="InvitationLinkIcon"
+            icon="static/images/invitation.link.react.svg"
             label="Invitation link"
             onClick={() => action("Invitation link clicked")}
           />

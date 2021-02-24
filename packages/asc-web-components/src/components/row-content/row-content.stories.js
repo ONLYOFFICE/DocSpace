@@ -6,9 +6,9 @@ import Readme from "./README.md";
 import Section from "../../../.storybook/decorators/section";
 import RowContent from ".";
 import Link from "../link";
-import { Icons } from "../icons";
 import Checkbox from "../checkbox";
-
+import SendClockIcon from "../../../../../public/images/send.clock.react.svg";
+import CatalogSpamIcon from "../../../../../public/images/catalog.spam.react.svg";
 storiesOf("Components|RowContent", module)
   .addDecorator(withReadme(Readme))
   .add("base", () => {
@@ -27,8 +27,8 @@ storiesOf("Components|RowContent", module)
             Demo
           </Link>
           <>
-            <Icons.SendClockIcon size="small" isfill={true} color="#3B72A7" />
-            <Icons.CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
+            <SendClockIcon size="small" isfill={true} color="#3B72A7" />
+            <CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
           </>
           <Link type="page" title="Demo" fontSize="12px" color="#A3A9AE">
             Demo
@@ -71,7 +71,7 @@ storiesOf("Components|RowContent", module)
             Demo Demo
           </Link>
           <>
-            <Icons.CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
+            <CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
           </>
           <></>
           <Link
@@ -151,7 +151,7 @@ storiesOf("Components|RowContent", module)
             Demo Demo Demo Demo
           </Link>
           <>
-            <Icons.SendClockIcon size="small" isfill={true} color="#3B72A7" />
+            <SendClockIcon size="small" isfill={true} color="#3B72A7" />
           </>
           <Link type="page" title="Demo" fontSize="12px" color="#A3A9AE">
             Demo

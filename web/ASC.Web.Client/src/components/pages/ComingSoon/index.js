@@ -5,11 +5,11 @@ import { withRouter } from "react-router";
 import {
   Text,
   Link,
-  Icons,
   Badge,
   Box,
   EmptyScreenContainer,
 } from "@appserver/components/src";
+import ExternalLinkIcon from "../../../../../../public/images/external.link.react.svg";
 import { toastr, PageLayout, Loaders } from "@appserver/common/src";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -90,10 +90,7 @@ const StyledDesktopContainer = styled(EmptyScreenContainer)`
 
 const ExternalLink = ({ label, href }) => (
   <Box className="link-box">
-    <Icons.ExternalLinkIcon
-      color="#333333"
-      size={isMobile ? "small" : "medium"}
-    />
+    <ExternalLinkIcon color="#333333" size={isMobile ? "small" : "medium"} />
     <Link
       as="a"
       href={href}

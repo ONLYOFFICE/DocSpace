@@ -79,35 +79,35 @@ class PureArticleMainButtonContent extends React.Component {
         />
         <DropDownItem
           className="main-button_drop-down"
-          icon="SpreadsheetIcon"
+          icon="images/spreadsheet.react.svg"
           label={t("NewSpreadsheet")}
           onClick={this.onCreate}
           data-format="xlsx"
         />
         <DropDownItem
           className="main-button_drop-down"
-          icon="ActionsPresentationIcon"
+          icon="images/actions.presentation.react.svg"
           label={t("NewPresentation")}
           onClick={this.onCreate}
           data-format="pptx"
         />
         <DropDownItem
           className="main-button_drop-down"
-          icon="CatalogFolderIcon"
+          icon="static/images/catalog.folder.react.svg"
           label={t("NewFolder")}
           onClick={this.onCreate}
         />
         <DropDownItem isSeparator />
         <DropDownItem
           className="main-button_drop-down"
-          icon="ActionsUploadIcon"
+          icon="images/actions.upload.react.svg"
           label={t("UploadFiles")}
           onClick={this.onUploadFileClick}
         />
         {!isMobile && (
           <DropDownItem
             className="main-button_drop-down"
-            icon="ActionsUploadIcon"
+            icon="images/actions.upload.react.svg"
             label={t("UploadFolder")}
             disabled={isPrivacy}
             onClick={this.onUploadFolderClick}

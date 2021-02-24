@@ -487,7 +487,7 @@ class PureAdminsSettings extends Component {
                                     false,
                                     "00000000-0000-0000-0000-000000000000"
                                   )}
-                                  iconName={"CatalogTrashIcon"}
+                                  iconName={"static/images/catalog.trash.react.svg"}
                                   isFill={true}
                                   isClickable={false}
                                 />
@@ -531,7 +531,7 @@ class PureAdminsSettings extends Component {
                         className="cross_icon"
                         size="12"
                         onClick={this.onResetFilter}
-                        iconName="CrossIcon"
+                        iconName="static/images/cross.react.svg"
                         isFill
                         color="#657077"
                       />

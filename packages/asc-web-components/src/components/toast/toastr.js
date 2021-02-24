@@ -1,18 +1,31 @@
 import React from "react";
 import { toast } from "react-toastify";
+import styled from "styled-components";
 
 import { CheckToastIcon, DangerToastIcon, InfoToastIcon } from "./svg";
 import IconButton from "../icon-button";
 import Text from "../text";
 import { StyledCloseWrapper, StyledDiv, IconWrapper } from "./styled-toastr";
+import commonIconsStyles from "../../utils/common-icons-style";
+
+const StyledCheckToastIcon = styled(CheckToastIcon)`
+  ${commonIconsStyles}
+`;
+const StyledDangerToastIcon = styled(DangerToastIcon)`
+  ${commonIconsStyles}
+`;
+const StyledInfoToastIcon = styled(InfoToastIcon)`
+  ${commonIconsStyles}
+`;
+
 // eslint-disable-next-line react/prop-types
 const Icon = ({ type }) =>
   type === "success" ? (
-    <CheckToastIcon className="toastr_icon"  />
+    <StyledCheckToastIcon className="toastr_icon" />
   ) : type === "error" || type === "warning" ? (
-    <DangerToastIcon  className="toastr_icon" />
+    <StyledDangerToastIcon className="toastr_icon" />
   ) : (
-    <InfoToastIcon className="toastr_icon" />
+    <StyledInfoToastIcon className="toastr_icon" />
   );
 
 const toastr = {
@@ -28,7 +41,7 @@ const CloseButton = ({ closeToast }) => (
     <IconButton
       className="closeButton"
       onClick={closeToast}
-      iconName="CrossIcon"
+      iconName="static/images/cross.react.svg"
       size={12}
       color="#333333"
     />

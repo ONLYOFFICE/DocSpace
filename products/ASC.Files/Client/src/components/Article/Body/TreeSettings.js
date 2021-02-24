@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
 import { withRouter } from "react-router";
-import { TreeMenu, TreeNode, Icons } from "@appserver/components";
+import { TreeMenu, TreeNode } from "@appserver/components";
 import styled from "styled-components";
 import { history } from "@appserver/common";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-
+import SettingsIcon from "../../../../../../../public/images/settings.react.svg";
+import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
+import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
+import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
   @media (max-width: 1024px) {
@@ -41,7 +44,24 @@ const StyledTreeMenu = styled(TreeMenu)`
     }
   }
 `;
-
+const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
+const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
+const StyledSettingsIcon = styled(SettingsIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
 const PureTreeSettings = ({
   match,
   enableThirdParty,
@@ -77,9 +97,9 @@ const PureTreeSettings = ({
       return null;
     }
     if (obj.expanded) {
-      return <Icons.ExpanderDownIcon size="scale" isfill color="dimgray" />;
+      return <StyledExpanderDownIcon size="scale" />;
     } else {
-      return <Icons.ExpanderRightIcon size="scale" isfill color="dimgray" />;
+      return <StyledExpanderRightIcon size="scale" />;
     }
   };
 
@@ -113,7 +133,7 @@ const PureTreeSettings = ({
         key="settings"
         title={t("TreeSettingsMenuTitle")}
         isLeaf={false}
-        icon={<Icons.SettingsIcon size="scale" isfill color="dimgray" />}
+        icon={<StyledSettingsIcon size="scale" />}
       >
         <TreeNode
           className="settings-node"

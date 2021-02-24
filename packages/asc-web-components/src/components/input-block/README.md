@@ -15,7 +15,7 @@ const mask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
 ```jsx
 <InputBlock
   mask={mask}
-  iconName={"SearchIcon"}
+  iconName={"static/images/search.react.svg"}
   onIconClick={(event) => alert(event.target.value)}
   onChange={(event) => alert(event.target.value)}
 >

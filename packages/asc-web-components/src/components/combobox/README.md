@@ -6,13 +6,14 @@ Custom combo box input
 
 ```js
 import { ComboBox } from "@appserver/components";
+import NavLogoIcon from "../../../../../public/images/nav.logo.react.svg"
 ```
 
 ```js
 const options = [
   {
     key: 1,
-    icon: "CatalogEmployeeIcon", // optional item
+    icon: "static/images/catalog.employee.react.svg", // optional item
     label: "Option 1",
     disabled: false, // optional item
     onClick: clickFunction, // optional item
@@ -88,7 +89,7 @@ const advancedOptions = (
   size="content"
   directionX="right"
 >
-  <Icons.NavLogoIcon size="medium" key="comboIcon" />
+  <NavLogoIcon size="medium" key="comboIcon" />
 </ComboBox>
 ```
 
@@ -106,7 +107,7 @@ To use Combobox as a toggle button, you must declare it according to the paramet
   displayType="toggle"
   toggleAction={alert("action")}
 >
-  <Icons.NavLogoIcon size="medium" key="comboIcon" />
+  <NavLogoIcon size="medium" key="comboIcon" />
 </ComboBox>
 ```
 

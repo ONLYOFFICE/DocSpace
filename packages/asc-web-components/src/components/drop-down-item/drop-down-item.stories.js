@@ -35,7 +35,7 @@ storiesOf("Components | DropDown", module)
           />
           <DropDownItem
             disabled
-            icon={useIcon ? "CopyIcon" : ""}
+            icon={useIcon ? "static/images/copy.react.svg" : ""}
             label="Button 3"
             onClick={() => console.log("Button 3 clicked")}
           />
@@ -50,13 +50,13 @@ storiesOf("Components | DropDown", module)
             label={isHeader ? "Category" : ""}
           />
           <DropDownItem
-            icon={useIcon ? "NavLogoIcon" : ""}
+            icon={useIcon ? "static/images/nav.logo.react.svg" : ""}
             label="Button 5"
             onClick={() => console.log("Button 5 clicked")}
           />
           <DropDownItem
             disabled
-            icon={useIcon ? "NavLogoIcon" : ""}
+            icon={useIcon ? "static/images/nav.logo.react.svg" : ""}
             label="Button 6"
             onClick={() => console.log("Button 6 clicked")}
           />

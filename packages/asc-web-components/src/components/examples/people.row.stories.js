@@ -6,7 +6,8 @@ import Link from "../link";
 import RowContent from "../row-content";
 import { Icons } from "../icons";
 import Section from "../../../.storybook/decorators/section";
-
+import SendClockIcon from "../../../../../public/images/send.clock.react.svg";
+import CatalogSpamIcon from "../../../../../public/images/catalog.spam.react.svg";
 const fakeUsers = [
   {
     id: "1",
@@ -252,18 +253,10 @@ storiesOf("EXAMPLES|Row", module).add("people", () => {
               </Link>
               <>
                 {user.status === "pending" && (
-                  <Icons.SendClockIcon
-                    size="small"
-                    isfill={true}
-                    color="#3B72A7"
-                  />
+                  <SendClockIcon size="small" isfill={true} color="#3B72A7" />
                 )}
                 {user.status === "disabled" && (
-                  <Icons.CatalogSpamIcon
-                    size="small"
-                    isfill={true}
-                    color="#3B72A7"
-                  />
+                  <CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
                 )}
               </>
               {user.isHead ? (

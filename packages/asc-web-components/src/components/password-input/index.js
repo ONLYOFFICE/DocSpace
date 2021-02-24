@@ -334,7 +334,7 @@ class PasswordInput extends React.Component {
     } = this.props;
 
     const { type, progressColor, progressWidth, inputValue } = this.state;
-    const iconName = type === "password" ? "EyeOffIcon" : "EyeIcon";
+    const iconName = type === "password" ? "static/images/eye.off.react.svg" : "static/images/eye.react.svg";
 
     return (
       <>

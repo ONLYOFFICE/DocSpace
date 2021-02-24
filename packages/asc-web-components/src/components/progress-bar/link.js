@@ -1,9 +1,8 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
-import { Icons } from "../icons";
 import Text from "../text";
-
+import  ExpanderDownIcon from "../../../../../public/images/expander-down.react.svg"
 const StyledLinkWrapper = styled.span`
   position: relative;
 
@@ -54,7 +53,7 @@ class Link extends React.Component {
       <StyledLinkWrapper {...rest}>
         <StyledLink color={color} isOpen={isOpen}>
           <Text color={color}>{children}</Text>
-          {showIcon && <Icons.ExpanderDownIcon className="progress-bar_icon" />}
+          {showIcon && <ExpanderDownIcon className="progress-bar_icon" />}
         </StyledLink>
       </StyledLinkWrapper>
     );

@@ -26,7 +26,7 @@ const ShareButton = (props) => {
 
   return (
     <IconButton
-      iconName="CatalogSharedIcon"
+      iconName="images/catalog.shared.react.svg"
       className="upload_panel-icon"
       color={color}
       isClickable
