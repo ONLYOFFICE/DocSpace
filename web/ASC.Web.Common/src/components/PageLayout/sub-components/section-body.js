@@ -5,9 +5,8 @@ import { utils, Scrollbar, DragAndDrop } from "asc-web-components";
 import SelectedFrame from "./SelectedFrame";
 import equal from "fast-deep-equal/react";
 import { LayoutContextConsumer } from "../../Layout/context";
-import { getIsLoaded } from "../../../store/auth/selectors";
-import { connect } from "react-redux";
 import { isMobile } from "react-device-detect";
+import { inject, observer } from "mobx-react";
 
 const { tablet } = utils.device;
 
@@ -81,9 +80,9 @@ class SectionBody extends React.Component {
     this.scrollRef = React.createRef();
   }
 
-  shouldComponentUpdate(nextProps) {
-    return !equal(this.props, nextProps);
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   return !equal(this.props, nextProps);
+  // }
 
   componentDidMount() {
     if (!this.props.autoFocus) return;
@@ -235,9 +234,8 @@ SectionBody.defaultProps = {
   withScroll: true,
 };
 
-const mapStateToProps = (state) => {
+export default inject(({ auth }) => {
   return {
-    isLoaded: getIsLoaded(state),
+    isLoaded: auth.isLoaded,
   };
-};
-export default connect(mapStateToProps)(SectionBody);
+})(observer(SectionBody));

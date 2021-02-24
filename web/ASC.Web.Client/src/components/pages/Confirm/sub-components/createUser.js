@@ -11,15 +11,12 @@ import {
   EmailInput,
 } from "asc-web-components";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { store, PageLayout, utils as commonUtils } from "asc-web-common";
-import {
-  getConfirmationInfo,
-  createConfirmUser,
-} from "../../../../store/confirm/actions";
-const { logout, login } = store.auth.actions;
-const { createPasswordHash, tryRedirectTo } = commonUtils;
+import { api, PageLayout, utils as commonUtils } from "asc-web-common";
+
+import { inject, observer } from "mobx-react";
+
+const { createPasswordHash } = commonUtils;
 const inputWidth = "400px";
 
 const ConfirmContainer = styled.div`
@@ -64,6 +61,7 @@ class Confirm extends React.PureComponent {
     super(props);
 
     this.state = {
+      isConfirmLoaded: false,
       email: "",
       emailValid: true,
       firstName: "",
@@ -89,12 +87,7 @@ class Confirm extends React.PureComponent {
 
   onSubmit = () => {
     this.setState({ isLoading: true }, () => {
-      const {
-        defaultPage,
-        createConfirmUser,
-        linkData,
-        hashSettings,
-      } = this.props;
+      const { defaultPage, linkData, hashSettings } = this.props;
       const isVisitor = parseInt(linkData.emplType) === 2;
 
       this.setState({ errorText: "" });
@@ -144,11 +137,8 @@ class Confirm extends React.PureComponent {
         isVisitor: isVisitor,
       });
 
-      createConfirmUser(registerData, loginData, this.state.key)
-        .then(() => {
-          toastr.success("User has been created successfully");
-          tryRedirectTo(defaultPage);
-        })
+      this.createConfirmUser(registerData, loginData, this.state.key)
+        .then(() => window.location.replace(defaultPage))
         .catch((error) => {
           console.error("confirm error", error);
           this.setState({
@@ -157,6 +147,27 @@ class Confirm extends React.PureComponent {
           });
         });
     });
+  };
+
+  createConfirmUser = async (registerData, loginData, key) => {
+    const data = Object.assign(
+      { fromInviteLink: true },
+      registerData,
+      loginData
+    );
+
+    const user = await api.people.createUser(data, key);
+
+    console.log("Created user", user);
+
+    const { login } = this.props;
+    const { userName, passwordHash } = loginData;
+
+    const response = await login(userName, passwordHash);
+
+    console.log("Login", response);
+
+    return user;
   };
 
   onKeyPress = (event) => {
@@ -170,12 +181,19 @@ class Confirm extends React.PureComponent {
   validatePassword = (value) => this.setState({ passwordValid: value });
 
   componentDidMount() {
-    const { getConfirmationInfo, history } = this.props;
+    const { history, getSettings, getPortalPasswordSettings } = this.props;
 
-    getConfirmationInfo(this.state.key).catch((e) => {
-      console.error("get settings error", e);
-      history.push(`/login/error=${e}`);
-    });
+    const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
+
+    Promise.all(requests)
+      .then(() => {
+        this.setState({ isConfirmLoaded: true });
+        console.log("get settings success");
+      })
+      .catch((e) => {
+        console.error("get settings error", e);
+        history.push(`/login/error=${e}`);
+      });
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -353,8 +371,6 @@ class Confirm extends React.PureComponent {
 }
 
 Confirm.propTypes = {
-  getConfirmationInfo: PropTypes.func.isRequired,
-  createConfirmUser: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
@@ -366,20 +382,26 @@ const CreateUserForm = (props) => (
   </PageLayout>
 );
 
-function mapStateToProps(state) {
-  return {
-    isConfirmLoaded: state.confirm.isConfirmLoaded,
-    isAuthenticated: state.auth.isAuthenticated,
-    settings: state.auth.settings.passwordSettings,
-    greetingTitle: state.auth.settings.greetingSettings,
-    hashSettings: state.auth.settings.hashSettings,
-    defaultPage: state.auth.settings.defaultPage,
-  };
-}
+export default inject(({ auth }) => {
+  const { login, logout, isAuthenticated, settingsStore } = auth;
+  const {
+    passwordSettings,
+    greetingSettings,
+    hashSettings,
+    defaultPage,
+    getSettings,
+    getPortalPasswordSettings,
+  } = settingsStore;
 
-export default connect(mapStateToProps, {
-  getConfirmationInfo,
-  createConfirmUser,
-  login,
-  logout,
-})(withRouter(withTranslation()(CreateUserForm)));
+  return {
+    settings: passwordSettings,
+    greetingTitle: greetingSettings,
+    hashSettings,
+    defaultPage,
+    isAuthenticated,
+    login,
+    logout,
+    getSettings,
+    getPortalPasswordSettings,
+  };
+})(withRouter(withTranslation("Confirm")(observer(CreateUserForm))));

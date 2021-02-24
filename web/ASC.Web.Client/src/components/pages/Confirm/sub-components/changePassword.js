@@ -1,7 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import {
@@ -13,14 +12,11 @@ import {
   Heading,
 } from "asc-web-components";
 import { PageLayout } from "asc-web-common";
-import { store, utils as commonUtils } from "asc-web-common";
-import {
-  getConfirmationInfo,
-  changePassword,
-} from "../../../../store/confirm/actions";
+import { utils as commonUtils, api } from "asc-web-common";
+
+import { inject, observer } from "mobx-react";
 
 const { createPasswordHash, tryRedirectTo } = commonUtils;
-const { logout, getPortalSettings } = store.auth.actions;
 
 const BodyStyle = styled.form`
   margin: 70px auto 0 auto;
@@ -49,9 +45,10 @@ class Form extends React.PureComponent {
     const { linkData } = props;
 
     this.state = {
+      isConfirmLoaded: false,
       password: "",
       passwordValid: true,
-      isValidConfirmLink: false,
+      // isValidConfirmLink: false,
       isLoading: false,
       passwordEmpty: false,
       key: linkData.confirmHeader,
@@ -75,7 +72,7 @@ class Form extends React.PureComponent {
   onSubmit = (e) => {
     this.setState({ isLoading: true }, function () {
       const { userId, password, key } = this.state;
-      const { changePassword, hashSettings, defaultPage } = this.props;
+      const { hashSettings, defaultPage } = this.props;
       let hasError = false;
 
       if (!this.state.passwordValid) {
@@ -91,7 +88,8 @@ class Form extends React.PureComponent {
       }
       const hash = createPasswordHash(password, hashSettings);
 
-      changePassword(userId, hash, key)
+      api.people
+        .changePassword(userId, hash, key)
         .then(() => this.props.logout())
         .then(() => {
           toastr.success(this.props.t("ChangePasswordSuccess"));
@@ -105,11 +103,19 @@ class Form extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { getConfirmationInfo, defaultPage } = this.props;
-    getConfirmationInfo(this.state.key).catch((error) => {
-      toastr.error(this.props.t(`${error}`));
-      tryRedirectTo(defaultPage);
-    });
+    const { defaultPage, getSettings, getPortalPasswordSettings } = this.props;
+
+    const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
+
+    Promise.all(requests)
+      .then(() => {
+        this.setState({ isConfirmLoaded: true });
+        console.log("get settings success");
+      })
+      .catch((error) => {
+        toastr.error(this.props.t(`${error}`));
+        tryRedirectTo(defaultPage);
+      });
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -208,20 +214,24 @@ const ChangePasswordForm = (props) => (
   </PageLayout>
 );
 
-function mapStateToProps(state) {
+export default inject(({ auth }) => {
+  const { settingsStore, logout, isAuthenticated } = auth;
+  const {
+    greetingSettings,
+    hashSettings,
+    defaultPage,
+    passwordSettings,
+    getSettings,
+    getPortalPasswordSettings,
+  } = settingsStore;
   return {
-    isValidConfirmLink: state.auth.isValidConfirmLink,
-    isConfirmLoaded: state.confirm.isConfirmLoaded,
-    settings: state.auth.settings.passwordSettings,
-    isAuthenticated: state.auth.isAuthenticated,
-    greetingTitle: state.auth.settings.greetingSettings,
-    hashSettings: state.auth.settings.hashSettings,
-    defaultPage: state.auth.settings.defaultPage,
+    settings: passwordSettings,
+    hashSettings,
+    greetingTitle: greetingSettings,
+    defaultPage,
+    logout,
+    isAuthenticated,
+    getSettings,
+    getPortalPasswordSettings,
   };
-}
-
-export default connect(mapStateToProps, {
-  changePassword,
-  getConfirmationInfo,
-  logout,
-})(withRouter(withTranslation()(ChangePasswordForm)));
+})(withRouter(withTranslation("Confirm")(observer(ChangePasswordForm))));

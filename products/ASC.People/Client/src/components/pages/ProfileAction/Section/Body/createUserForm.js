@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 import {
   Avatar,
   Button,
@@ -10,29 +9,6 @@ import {
   utils,
 } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
-import {
-  toEmployeeWrapper,
-  getUserRole,
-  getUserContactsPattern,
-  getUserContacts,
-  mapGroupsToGroupSelectorOptions,
-  mapGroupSelectorOptionsToGroups,
-  filterGroupSelectorOptions,
-} from "../../../../../store/people/selectors";
-import {
-  createProfile,
-  updateCreatedAvatar,
-  setCreatedAvatar,
-  setCroppedAvatar,
-  resetProfile,
-} from "../../../../../store/profile/actions";
-import {
-  setFilter,
-  updateProfileInUsers,
-  setIsVisibleDataLossDialog,
-  setIsEditingForm,
-  toggleAvatarEditor,
-} from "../../../../../store/people/actions";
 import {
   MainContainer,
   AvatarContainer,
@@ -49,6 +25,17 @@ import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import { DataLossWarningDialog } from "../../../../dialogs";
 import { api, toastr } from "asc-web-common";
 import { isMobile } from "react-device-detect";
+import { inject, observer } from "mobx-react";
+import {
+  toEmployeeWrapper,
+  getUserRole,
+  getUserContactsPattern,
+  getUserContacts,
+  mapGroupsToGroupSelectorOptions,
+  mapGroupSelectorOptionsToGroups,
+  filterGroupSelectorOptions,
+} from "../../../../../helpers/people-helpers";
+
 const { createThumbnailsAvatar, loadAvatar } = api.people;
 const { isTablet } = utils.device;
 
@@ -57,33 +44,6 @@ class CreateUserForm extends React.Component {
     super(props);
 
     this.state = this.mapPropsToState(props);
-
-    this.validate = this.validate.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.onInputChange = this.onInputChange.bind(this);
-    this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
-    this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
-    this.onCancel = this.onCancel.bind(this);
-    this.onCancelHandler = this.onCancelHandler.bind(this);
-
-    this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
-    this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
-    this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
-    this.onContactsItemRemove = this.onContactsItemRemove.bind(this);
-
-    this.onShowGroupSelector = this.onShowGroupSelector.bind(this);
-    this.onCloseGroupSelector = this.onCloseGroupSelector.bind(this);
-    this.onSearchGroups = this.onSearchGroups.bind(this);
-    this.onSelectGroups = this.onSelectGroups.bind(this);
-    this.onRemoveGroup = this.onRemoveGroup.bind(this);
-
-    this.openAvatarEditor = this.openAvatarEditor.bind(this);
-    this.openAvatarEditorPage = this.openAvatarEditorPage.bind(this);
-    this.onSaveAvatar = this.onSaveAvatar.bind(this);
-    this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
-    this.createAvatar = this.createAvatar.bind(this);
-    this.onLoadFileAvatar = this.onLoadFileAvatar.bind(this);
-
     this.mainFieldsContainerRef = React.createRef();
   }
 
@@ -107,7 +67,7 @@ class CreateUserForm extends React.Component {
       .catch((error) => toastr.error(error));
   }
 
-  openAvatarEditor() {
+  openAvatarEditor = () => {
     let avatarDefault = this.state.avatar.image;
     let avatarDefaultSizes = /_orig_(\d*)-(\d*)./g.exec(
       this.state.avatar.image
@@ -129,15 +89,15 @@ class CreateUserForm extends React.Component {
     this.setState({
       visibleAvatarEditor: true,
     });
-  }
+  };
 
-  openAvatarEditorPage() {
+  openAvatarEditorPage = () => {
     const { toggleAvatarEditor } = this.props;
 
     toggleAvatarEditor(true);
-  }
+  };
 
-  onLoadFileAvatar(file, fileData) {
+  onLoadFileAvatar = (file, fileData) => {
     let data = new FormData();
     let _this = this;
     data.append("file", file);
@@ -182,9 +142,9 @@ class CreateUserForm extends React.Component {
         img.src = response.data;
       })
       .catch((error) => toastr.error(error));
-  }
+  };
 
-  onSaveAvatar(isUpdate, result, avatar, croppedImage) {
+  onSaveAvatar = (isUpdate, result, avatar, croppedImage) => {
     var stateCopy = Object.assign({}, this.state);
     const { setCreatedAvatar, setCroppedAvatar, resetProfile } = this.props;
 
@@ -207,9 +167,9 @@ class CreateUserForm extends React.Component {
     }
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onCloseAvatarEditor() {
+  onCloseAvatarEditor = () => {
     this.setState({
       visibleAvatarEditor: false,
       croppedAvatarImage: "",
@@ -217,7 +177,7 @@ class CreateUserForm extends React.Component {
         tmpFile: "",
       },
     });
-  }
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.match.params.type !== prevProps.match.params.type) {
@@ -269,32 +229,32 @@ class CreateUserForm extends React.Component {
     };
   };
   setIsEdit() {
-    const { editingForm, setIsEditingForm } = this.props;
-    if (!editingForm.isEdit) setIsEditingForm(true);
+    const { isEdit, setIsEditingForm } = this.props;
+    if (!isEdit) setIsEditingForm(true);
   }
 
-  onInputChange(event) {
+  onInputChange = (event) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile[event.target.name] = event.target.value;
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onBirthdayDateChange(value) {
+  onBirthdayDateChange = (value) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.birthday = value ? value.toJSON() : null;
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onWorkFromDateChange(value) {
+  onWorkFromDateChange = (value) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.workFrom = value ? value.toJSON() : null;
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  validate() {
+  validate = () => {
     const { profile, errors: stateErrors } = this.state;
     const errors = {
       firstName: !profile.firstName.trim(),
@@ -313,11 +273,11 @@ class CreateUserForm extends React.Component {
 
     this.setState({ errors: errors });
     return !hasError;
-  }
+  };
 
-  handleSubmit() {
+  handleSubmit = () => {
     if (!this.validate()) return false;
-    const { setIsEditingForm } = this.props;
+    const { setIsEditingForm, settings } = this.props;
 
     this.setState({ isLoading: true });
     this.props
@@ -328,7 +288,7 @@ class CreateUserForm extends React.Component {
         } else {
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.props.history.push(
-            `${this.props.settings.homepage}/view/${profile.userName}`
+            `${settings.homepage}/view/${profile.userName}`
           );
         }
         setIsEditingForm(false);
@@ -337,24 +297,24 @@ class CreateUserForm extends React.Component {
         toastr.error(error);
         this.setState({ isLoading: false });
       });
-  }
+  };
 
-  onCancelHandler() {
-    const { editingForm, setIsVisibleDataLossDialog } = this.props;
+  onCancelHandler = () => {
+    const { isEdit, setIsVisibleDataLossDialog } = this.props;
 
-    if (editingForm.isEdit) {
+    if (isEdit) {
       setIsVisibleDataLossDialog(true);
     } else {
       this.onCancel();
     }
-  }
+  };
 
-  onCancel() {
+  onCancel = () => {
     const { filter, setFilter } = this.props;
     setFilter(filter);
-  }
+  };
 
-  onContactsItemAdd(item) {
+  onContactsItemAdd = (item) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.contacts.push({
       id: new Date().getTime().toString(),
@@ -363,9 +323,9 @@ class CreateUserForm extends React.Component {
     });
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onContactsItemTypeChange(item) {
+  onContactsItemTypeChange = (item) => {
     const id = item.key.split("_")[0];
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.contacts.forEach((element) => {
@@ -373,9 +333,9 @@ class CreateUserForm extends React.Component {
     });
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onContactsItemTextChange(event) {
+  onContactsItemTextChange = (event) => {
     const id = event.target.name.split("_")[0];
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.contacts.forEach((element) => {
@@ -383,9 +343,9 @@ class CreateUserForm extends React.Component {
     });
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onContactsItemRemove(event) {
+  onContactsItemRemove = (event) => {
     const id = event.target.closest(".remove_icon").dataset.for.split("_")[0];
     var stateCopy = Object.assign({}, this.state);
     const filteredArray = stateCopy.profile.contacts.filter((element) => {
@@ -394,39 +354,39 @@ class CreateUserForm extends React.Component {
     stateCopy.profile.contacts = filteredArray;
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onShowGroupSelector() {
+  onShowGroupSelector = () => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.selector.visible = true;
     this.setState(stateCopy);
-  }
+  };
 
-  onCloseGroupSelector() {
+  onCloseGroupSelector = () => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.selector.visible = false;
     this.setState(stateCopy);
-  }
+  };
 
-  onSearchGroups(template) {
+  onSearchGroups = (template) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.selector.options = filterGroupSelectorOptions(
       stateCopy.selector.allOptions,
       template
     );
     this.setState(stateCopy);
-  }
+  };
 
-  onSelectGroups(selected) {
+  onSelectGroups = (selected) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.groups = mapGroupSelectorOptionsToGroups(selected);
     stateCopy.selector.selected = selected;
     stateCopy.selector.visible = false;
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onRemoveGroup(id) {
+  onRemoveGroup = (id) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.groups = stateCopy.profile.groups.filter(
       (group) => group.id !== id
@@ -435,14 +395,14 @@ class CreateUserForm extends React.Component {
       (option) => option.key !== id
     );
     this.setState(stateCopy);
-  }
+  };
 
   onValidateEmailField = (value) =>
     this.setState({ errors: { ...this.state.errors, email: !value.isValid } });
 
   render() {
     const { isLoading, errors, profile, selector, isMobile } = this.state;
-    const { t, settings, i18n, createdAvatar, croppedAvatar } = this.props;
+    const { t, settings, createdAvatar, croppedAvatar } = this.props;
     const {
       regDateCaption,
       userPostCaption,
@@ -516,7 +476,7 @@ class CreateUserForm extends React.Component {
               helpButtonHeaderContent={t("Mail")}
               tooltipContent={
                 <Text fontSize="13px" as="div">
-                  <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
+                  <Trans i18nKey="EmailPopupHelper" ns="ProfileAction">
                     The main e-mail is needed to restore access to the portal in
                     case of loss of the password and send notifications.
                     <p className="tooltip_email" style={{ margin: "1rem 0" }}>
@@ -678,29 +638,22 @@ class CreateUserForm extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { settings } = state.auth;
-  const { groups, filter, editingForm } = state.people;
-  const { createdAvatar, croppedAvatar } = state.profile;
-  return {
-    settings,
-    groups,
-    filter,
-    editingForm,
-    createdAvatar,
-    croppedAvatar,
-  };
-};
-
-export default connect(mapStateToProps, {
-  createProfile,
-  updateCreatedAvatar,
-  setFilter,
-  updateProfileInUsers,
-  setIsVisibleDataLossDialog,
-  setIsEditingForm,
-  toggleAvatarEditor,
-  setCreatedAvatar,
-  setCroppedAvatar,
-  resetProfile,
-})(withRouter(withTranslation()(CreateUserForm)));
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  isEdit: peopleStore.editingFormStore.isEdit,
+  groups: peopleStore.groupsStore.groups,
+  setIsVisibleDataLossDialog:
+    peopleStore.editingFormStore.setIsVisibleDataLossDialog,
+  setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+  filter: peopleStore.filterStore.filter,
+  setFilter: peopleStore.filterStore.setFilterParams,
+  toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+  resetProfile: peopleStore.targetUserStore.resetTargetUser,
+  createProfile: peopleStore.usersStore.createUser,
+  createdAvatar: peopleStore.avatarEditorStore.createdAvatar,
+  setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
+  croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
+  setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
+  updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
+  updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
+}))(observer(withRouter(withTranslation("ProfileAction")(CreateUserForm))));

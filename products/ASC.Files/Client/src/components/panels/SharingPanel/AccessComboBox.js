@@ -1,7 +1,7 @@
 import React from "react";
 import { ComboBox, Icons, DropDownItem } from "asc-web-components";
 import { constants } from "asc-web-common";
-import { getAccessIcon } from "../../../store/files/selectors";
+import { getAccessIcon } from "../../../helpers/files-helpers";
 
 const { ShareAccessRights } = constants;
 

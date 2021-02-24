@@ -1,25 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Box } from "asc-web-components";
 import { useTranslation } from "react-i18next";
 import { utils, Loaders, ErrorContainer, PageLayout } from "asc-web-common";
-import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 
-const i18n = createI18N({
-  page: "ThirdParty",
-  localesPath: "pages/ThirdParty",
-});
-
-const { getObjectByLocation, changeLanguage } = utils;
+const { getObjectByLocation } = utils;
 
 const ThirdPartyResponsePage = ({ match }) => {
   const { params } = match;
   const { provider } = params;
-  const { t } = useTranslation("translation", { i18n });
+  const { t } = useTranslation("ThirdParty");
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    changeLanguage(i18n);
     const urlParams = getObjectByLocation(window.location);
     const code = urlParams ? urlParams.code || null : null;
     const error = urlParams ? urlParams.error || null : null;

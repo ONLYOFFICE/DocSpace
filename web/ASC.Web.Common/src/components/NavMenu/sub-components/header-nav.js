@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
@@ -7,14 +6,7 @@ import ProfileActions from "./profile-actions";
 import { useTranslation } from "react-i18next";
 import { utils } from "asc-web-components";
 
-import { logout } from "../../../store/auth/actions";
-import {
-  getCurrentUser,
-  getLanguage,
-  getIsolateModules,
-  getIsLoaded,
-} from "../../../store/auth/selectors";
-
+import { inject, observer } from "mobx-react";
 const { tablet } = utils.device;
 
 const StyledNav = styled.nav`
@@ -45,77 +37,87 @@ const StyledNav = styled.nav`
     padding: 0 16px;
   }
 `;
-const HeaderNav = React.memo(
-  ({ history, homepage, modules, user, logout, isAuthenticated }) => {
-    const { t } = useTranslation();
-    const onProfileClick = useCallback(() => {
-      if (homepage == "/products/people") {
-        history.push("/products/people/view/@self");
-      } else {
-        window.open("/products/people/view/@self", "_self");
-      }
-    }, []);
+const HeaderNav = ({
+  history,
+  homepage,
+  modules,
+  user,
+  logout,
+  isAuthenticated,
+}) => {
+  const { t } = useTranslation();
+  const onProfileClick = useCallback(() => {
+    if (homepage == "/products/people") {
+      history.push("/products/people/view/@self");
+    } else {
+      window.open("/products/people/view/@self", "_self");
+    }
+  }, []);
 
-    const onAboutClick = useCallback(() => window.open("/about", "_self"), []);
+  const onAboutClick = useCallback(() => window.open("/about", "_self"), []);
 
-    const onLogoutClick = useCallback(() => logout && logout(), [logout]);
+  const onLogoutClick = useCallback(() => logout && logout(), [logout]);
 
-    const getCurrentUserActions = useCallback(() => {
-      const currentUserActions = [
-        {
-          key: "ProfileBtn",
-          label: t("Profile"),
-          onClick: onProfileClick,
-          url: "/products/people/view/@self",
-        },
-        {
-          key: "AboutBtn",
-          label: t("AboutCompanyTitle"),
-          onClick: onAboutClick,
-          url: "/about",
-        },
-        {
-          key: "LogoutBtn",
-          label: t("LogoutButton"),
-          onClick: onLogoutClick,
-        },
-      ];
+  const getCurrentUserActions = useCallback(() => {
+    const currentUserActions = [
+      {
+        key: "ProfileBtn",
+        label: t("Profile"),
+        onClick: onProfileClick,
+        url: "/products/people/view/@self",
+      },
+      {
+        key: "AboutBtn",
+        label: t("AboutCompanyTitle"),
+        onClick: onAboutClick,
+        url: "/about",
+      },
+      {
+        key: "LogoutBtn",
+        label: t("LogoutButton"),
+        onClick: onLogoutClick,
+      },
+    ];
 
-      return currentUserActions;
-    }, [onProfileClick, onAboutClick, onLogoutClick]);
+    return currentUserActions;
+  }, [onProfileClick, onAboutClick, onLogoutClick]);
 
-    const [isOpen, setIsOpen] = useState(false); //TODO: Need to refactoring
-    const isOpenProfileMenu = (value) => {
-      setIsOpen(value);
-    };
-    //console.log("HeaderNav render");
-    return (
-      <StyledNav isOpen={isOpen} className="profileMenuIcon hidingHeader">
-        {modules.map((module) => (
+  const [isOpen, setIsOpen] = useState(false); //TODO: Need to refactoring
+  const isOpenProfileMenu = (value) => {
+    setIsOpen(value);
+  };
+  //console.log("HeaderNav render");
+  return (
+    <StyledNav isOpen={isOpen} className="profileMenuIcon hidingHeader">
+      {modules
+        .filter((m) => m.isolateMode)
+        .map((m) => (
           <NavItem
-            key={module.id}
-            iconName={module.iconName}
-            iconUrl={module.iconUrl}
-            badgeNumber={module.notifications}
-            onClick={module.onClick}
-            onBadgeClick={module.onBadgeClick}
+            key={m.id}
+            iconName={m.iconName}
+            iconUrl={m.iconUrl}
+            badgeNumber={m.notifications}
+            onClick={(e) => {
+              window.open(m.link, "_self");
+              e.preventDefault();
+            }}
+            onBadgeClick={(e) => console.log(m.iconName + "Badge Clicked", e)}
             noHover={true}
           />
         ))}
 
-        {isAuthenticated && user ? (
-          <ProfileActions
-            userActions={getCurrentUserActions()}
-            user={user}
-            isOpenProfileMenu={isOpenProfileMenu}
-          />
-        ) : (
-          <></>
-        )}
-      </StyledNav>
-    );
-  }
-);
+      {isAuthenticated && user ? (
+        <ProfileActions
+          userActions={getCurrentUserActions()}
+          user={user}
+          isOpenProfileMenu={isOpenProfileMenu}
+        />
+      ) : (
+        <></>
+      )}
+    </StyledNav>
+  );
+};
 
 HeaderNav.displayName = "HeaderNav";
 
@@ -129,19 +131,26 @@ HeaderNav.propTypes = {
   isLoaded: PropTypes.bool,
 };
 
-function mapStateToProps(state) {
-  const { settings, isAuthenticated } = state.auth;
-  const { defaultPage, homepage } = settings;
+export default inject(({ auth }) => {
+  const {
+    settingsStore,
+    userStore,
+    isAuthenticated,
+    isLoaded,
+    language,
+    logout,
+  } = auth;
+  const { homepage, defaultPage } = settingsStore;
+  const { user } = userStore;
 
   return {
+    user,
     homepage,
-    defaultPage: defaultPage || "/",
-    user: getCurrentUser(state),
     isAuthenticated,
-    isLoaded: getIsLoaded(state),
-    modules: getIsolateModules(state),
-    language: getLanguage(state),
+    isLoaded,
+    language,
+    defaultPage: defaultPage || "/",
+    modules: auth.availableModules,
+    logout,
   };
-}
-
-export default connect(mapStateToProps, { logout })(HeaderNav);
+})(observer(HeaderNav));

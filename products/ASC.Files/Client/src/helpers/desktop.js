@@ -1,15 +1,11 @@
-import store from "../store/store";
-import { store as commonStore } from "asc-web-common";
-import { getEncryptedFormats } from "../store/files/selectors";
-import { desktopConstants } from "asc-web-common";
+import formatsStore from "../store/FormatsStore";
+import { desktopConstants, store } from "asc-web-common";
 
-const { getEncryptionAccess } = commonStore.auth.actions;
+const { authStore } = store;
+const { docserviceStore } = formatsStore;
 
 export function encryptionUploadDialog(callback) {
-  const state = store.getState();
-  const filter = getEncryptedFormats(state)
-    .map((f) => "*" + f)
-    .join(" ");
+  const filter = docserviceStore.encryptedDocs.map((f) => "*" + f).join(" ");
 
   const data = {
     cryptoEngineId: desktopConstants.guid,
@@ -28,15 +24,15 @@ export function encryptionUploadDialog(callback) {
 }
 
 export function setEncryptionAccess(file) {
-  return getEncryptionAccess(file.id).then((keys) => {
+  return authStore.getEncryptionAccess(file.id).then((keys) => {
     let promise = new Promise((resolve, reject) => {
       try {
         window.AscDesktopEditor.cloudCryptoCommand(
           "share",
           {
-            "cryptoEngineId": desktopConstants.guid,
-            "file": [file.viewUrl],
-            "keys": keys,
+            cryptoEngineId: desktopConstants.guid,
+            file: [file.viewUrl],
+            keys: keys,
           },
           (obj) => {
             let file = null;

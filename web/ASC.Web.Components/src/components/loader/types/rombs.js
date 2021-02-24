@@ -70,8 +70,7 @@ const Romb = styled.div`
 `;
 
 Romb.propTypes = {
-  width: PropTypes.string,
-  height: PropTypes.string,
+  size: PropTypes.string.isRequired,
 };
 
 // eslint-disable-next-line react/prop-types

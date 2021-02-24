@@ -1,20 +1,10 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 
 import { RowContainer } from "asc-web-components";
 import { Loaders } from "asc-web-common";
 import VersionRow from "./VersionRow";
-
-import {
-  fetchFileVersions,
-  setIsLoading,
-  setFirstLoad,
-} from "../../../../../store/files/actions";
-import {
-  getFileVersions,
-  getIsLoading,
-} from "../../../../../store/files/selectors";
+import { inject, observer } from "mobx-react";
 
 class SectionBodyContent extends React.Component {
   componentDidMount() {
@@ -66,22 +56,20 @@ class SectionBodyContent extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    versions: getFileVersions(state),
-    isLoading: getIsLoading(state),
-  };
-};
+export default inject(
+  ({ auth, initFilesStore, filesStore, versionHistoryStore }) => {
+    const { setIsLoading, isLoading } = initFilesStore;
+    const { setFirstLoad } = filesStore;
+    const { versions, fetchFileVersions } = versionHistoryStore;
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetchFileVersions: (fileId) => dispatch(fetchFileVersions(fileId)),
-    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-    setFirstLoad: (isFirstLoad) => dispatch(setFirstLoad(isFirstLoad)),
-  };
-};
+    return {
+      culture: auth.settingsStore.culture,
+      isLoading,
+      versions,
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(SectionBodyContent));
+      setFirstLoad,
+      setIsLoading,
+      fetchFileVersions,
+    };
+  }
+)(withRouter(observer(SectionBodyContent)));

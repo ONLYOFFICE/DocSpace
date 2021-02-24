@@ -1,3 +1,2 @@
-import { default as auth } from "./auth";
-
-export default { auth };
+import authStore from "./AuthStore";
+export default { authStore };

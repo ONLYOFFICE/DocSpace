@@ -1,22 +1,12 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import { Text, Loader, toastr, Link, Icons } from "asc-web-components";
 import styled from "styled-components";
-import { store, utils } from "asc-web-common";
-import {
-  setLanguageAndTime,
-  getPortalTimezones,
-} from "../../../../../store/settings/actions";
-import { default as clientStore } from "../../../../../store/store";
+import { utils } from "asc-web-common";
 import { setDocumentTitle } from "../../../../../helpers/utils";
-const { getLanguage } = store.auth.selectors;
+import { inject, observer } from "mobx-react";
+
 const { changeLanguage } = utils;
-const {
-  getPortalCultures,
-  getModules,
-  getCurrentCustomSchema,
-} = store.auth.actions;
 
 const mapCulturesToArray = (cultures, t) => {
   return cultures.map((culture) => {
@@ -96,7 +86,7 @@ class Customization extends React.Component {
       portalTimeZoneId,
       rawCultures,
       rawTimezones,
-      organizationName,
+      /*organizationName,*/
       t,
     } = props;
     const languages = mapCulturesToArray(rawCultures, t);
@@ -157,7 +147,7 @@ class Customization extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { timezones, languages } = this.state;
-    const { i18n, language, nameSchemaId } = this.props;
+    const { i18n, language, nameSchemaId, getCurrentCustomSchema } = this.props;
 
     if (timezones.length && languages.length && !prevState.isLoadedData) {
       this.setState({ isLoadedData: true });
@@ -180,8 +170,8 @@ class Customization extends React.Component {
             language: newLocaleSelectedLanguage,
           });
         })
-        .then(() => getModules(clientStore.dispatch))
-        .then(() => getCurrentCustomSchema(clientStore.dispatch, nameSchemaId));
+        //.then(() => getModules(clientStore.dispatch))
+        .then(() => getCurrentCustomSchema(nameSchemaId));
     }
   }
 
@@ -269,7 +259,7 @@ class Customization extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+export default inject(({ auth, setup }) => {
   const {
     culture,
     timezone,
@@ -277,20 +267,24 @@ function mapStateToProps(state) {
     cultures,
     nameSchemaId,
     organizationName,
-  } = state.auth.settings;
+    getPortalCultures,
+    getCurrentCustomSchema,
+    getPortalTimezones,
+  } = auth.settingsStore;
+
+  const { setLanguageAndTime } = setup;
+
   return {
     portalLanguage: culture,
+    language: culture,
     portalTimeZoneId: timezone,
-    language: getLanguage(state),
     rawTimezones: timezones,
     rawCultures: cultures,
-    nameSchemaId: nameSchemaId,
+    nameSchemaId,
     organizationName,
+    getPortalCultures,
+    setLanguageAndTime,
+    getPortalTimezones,
+    getCurrentCustomSchema,
   };
-}
-
-export default connect(mapStateToProps, {
-  getPortalCultures,
-  setLanguageAndTime,
-  getPortalTimezones,
-})(withTranslation()(Customization));
+})(withTranslation("Settings")(observer(Customization)));

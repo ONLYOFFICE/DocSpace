@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import PropTypes from "prop-types";
-import { PageLayout, utils, store, Loaders } from "asc-web-common";
+import { PageLayout, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -14,26 +13,25 @@ import {
   AvatarEditorPage,
   CreateAvatarEditorPage,
 } from "./Section";
-import { fetchProfile } from "../../../store/profile/actions";
-import { setIsEditingForm } from "../../../store/people/actions";
-import { I18nextProvider, withTranslation } from "react-i18next";
-import { createI18N } from "../../../helpers/i18n";
-import { setDocumentTitle } from "../../../helpers/utils";
+import { withTranslation } from "react-i18next";
+
 import { withRouter } from "react-router";
-const i18n = createI18N({
-  page: "ProfileAction",
-  localesPath: "pages/ProfileAction",
-});
-const { changeLanguage } = utils;
-const { isAdmin } = store.auth.selectors;
+import { inject, observer } from "mobx-react";
 
 class ProfileAction extends React.Component {
   componentDidMount() {
-    const { match, fetchProfile, isEdit, setIsEditingForm, t } = this.props;
+    const {
+      match,
+      fetchProfile,
+      isEdit,
+      setIsEditingForm,
+      t,
+      setDocumentTitle,
+    } = this.props;
     const { userId } = match.params;
     this.documentElement = document.getElementsByClassName("hidingHeader");
     setDocumentTitle(t("ProfileAction"));
-    changeLanguage(i18n);
+
     if (isEdit) {
       setIsEditingForm(false);
     }
@@ -44,7 +42,7 @@ class ProfileAction extends React.Component {
     if (!this.loaded && this.documentElement) {
       for (var i = 0; i < this.documentElement.length; i++) {
         this.documentElement[i].style.transition = "none";
-      }
+  }
     }
   }
 
@@ -60,7 +58,7 @@ class ProfileAction extends React.Component {
     if (this.loaded && this.documentElement) {
       for (var i = 0; i < this.documentElement.length; i++) {
         this.documentElement[i].style.transition = "";
-      }
+  }
     }
   }
 
@@ -84,47 +82,45 @@ class ProfileAction extends React.Component {
     }
 
     return (
-      <I18nextProvider i18n={i18n}>
-        <PageLayout>
-          {!isVisitor && (
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
-          )}
-          {!isVisitor && isAdmin && (
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-          )}
-          {!isVisitor && (
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
-          )}
+      <PageLayout>
+        {!isVisitor && (
+          <PageLayout.ArticleHeader>
+            <ArticleHeaderContent />
+          </PageLayout.ArticleHeader>
+        )}
+        {!isVisitor && isAdmin && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
+        {!isVisitor && (
+          <PageLayout.ArticleBody>
+            <ArticleBodyContent />
+          </PageLayout.ArticleBody>
+        )}
 
-          <PageLayout.SectionHeader>
+        <PageLayout.SectionHeader>
             {this.loaded ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
-          </PageLayout.SectionHeader>
+        </PageLayout.SectionHeader>
 
-          <PageLayout.SectionBody>
+        <PageLayout.SectionBody>
             {this.loaded ? (
-              type ? (
-                avatarEditorIsOpen ? (
-                  <CreateAvatarEditorPage />
-                ) : (
-                  <CreateUserForm />
-                )
-              ) : avatarEditorIsOpen ? (
-                <AvatarEditorPage />
+            type ? (
+              avatarEditorIsOpen ? (
+                <CreateAvatarEditorPage />
               ) : (
-                <UpdateUserForm />
+                <CreateUserForm />
               )
+            ) : avatarEditorIsOpen ? (
+              <AvatarEditorPage />
             ) : (
-              <Loaders.ProfileView isEdit={false} />
-            )}
-          </PageLayout.SectionBody>
-        </PageLayout>
-      </I18nextProvider>
+              <UpdateUserForm />
+            )
+          ) : (
+            <Loaders.ProfileView isEdit={false} />
+          )}
+        </PageLayout.SectionBody>
+      </PageLayout>
     );
   }
 }
@@ -136,30 +132,13 @@ ProfileAction.propTypes = {
   isAdmin: PropTypes.bool,
 };
 
-const ProfileActionTranslate = withTranslation()(withRouter(ProfileAction));
-
-const ProfileActionContainer = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ProfileActionTranslate {...props} />
-    </I18nextProvider>
-  );
-};
-
-function mapStateToProps(state) {
-  return {
-    isVisitor: state.auth.user.isVisitor,
-    profile: state.profile.targetUser,
-    isAdmin: isAdmin(state),
-    isEdit: state.people.editingForm.isEdit,
-    avatarEditorIsOpen: state.people.avatarEditorIsOpen,
-  };
-}
-
-export default connect(mapStateToProps, { fetchProfile, setIsEditingForm })(
-  ProfileActionContainer
-);
+export default inject(({ auth, peopleStore }) => ({
+  setDocumentTitle: auth.setDocumentTitle,
+  isAdmin: auth.isAdmin,
+  isVisitor: auth.userStore.user.isVisitor,
+  isEdit: peopleStore.editingFormStore.isEdit,
+  setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+  fetchProfile: peopleStore.targetUserStore.getTargetUser,
+  profile: peopleStore.targetUserStore.targetUser,
+  avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
+}))(withTranslation("ProfileAction")(withRouter(observer(ProfileAction))));

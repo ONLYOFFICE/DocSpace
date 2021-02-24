@@ -1,13 +1,10 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
 import { Loader } from "asc-web-components";
 import { PageLayout } from "asc-web-common";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { store, utils as commonUtils } from "asc-web-common";
-import { changeEmail } from "../../../../store/confirm/actions";
-const { logout } = store.auth.actions;
+import { utils as commonUtils } from "asc-web-common";
+import { inject, observer } from "mobx-react";
 const { tryRedirectTo } = commonUtils;
 
 class ActivateEmail extends React.PureComponent {
@@ -47,7 +44,10 @@ const ActivateEmailForm = (props) => (
   </PageLayout>
 );
 
-export default connect(null, {
-  logout,
-  changeEmail,
-})(withRouter(withTranslation()(ActivateEmailForm)));
+export default inject(({ auth }) => {
+  const { logout, userStore } = auth;
+  return {
+    logout,
+    changeEmail: userStore.changeEmail,
+  };
+})(withRouter(observer(ActivateEmailForm)));

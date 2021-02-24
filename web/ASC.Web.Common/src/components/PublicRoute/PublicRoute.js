@@ -1,20 +1,18 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
-import { connect } from "react-redux";
-import { getIsLoaded, isAuthenticated } from "../../store/auth/selectors";
 import PageLayout from "../PageLayout";
 import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
+import { inject, observer } from "mobx-react";
 
 export const PublicRoute = ({ component: Component, ...rest }) => {
   const { wizardToken, wizardCompleted, isAuthenticated, isLoaded } = rest;
-
   const renderComponent = (props) => {
-    if(!isLoaded) {
+    if (!isLoaded) {
       return (
         <PageLayout>
           <PageLayout.SectionBody>
-            <RectangleLoader  height="90vh"/>
+            <RectangleLoader height="90vh" />
           </PageLayout.SectionBody>
         </PageLayout>
       );
@@ -47,16 +45,14 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
   return <Route {...rest} render={renderComponent} />;
 };
 
-function mapStateToProps(state) {
-  const { settings } = state.auth;
-  const {wizardToken, wizardCompleted} = settings;
-  return {
-    isAuthenticated: isAuthenticated(state),
-    isLoaded: getIsLoaded(state),
+export default inject(({ auth }) => {
+  const { settingsStore, isAuthenticated, isLoaded } = auth;
+  const { wizardToken, wizardCompleted } = settingsStore;
 
+  return {
     wizardToken,
     wizardCompleted,
+    isAuthenticated,
+    isLoaded,
   };
-}
-
-export default connect(mapStateToProps)(PublicRoute);
+})(observer(PublicRoute));

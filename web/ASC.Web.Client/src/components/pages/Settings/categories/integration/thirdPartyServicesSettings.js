@@ -1,22 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import {
-  getConsumers,
-  setSelectedConsumer,
-  updateConsumerProps,
-} from "../../../../../store/settings/actions";
-import { getConsumersList } from "../../../../../store/settings/selectors";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { Box, Text, Link, toastr } from "asc-web-components";
 import { utils } from "asc-web-components";
-import { store as commonStore } from "asc-web-common";
 import ConsumerItem from "./sub-components/consumerItem";
 import ConsumerModalDialog from "./sub-components/consumerModalDialog";
-
-const { getUrlAuthKeys } = commonStore.auth.selectors;
+import { inject, observer } from "mobx-react";
 
 const tablet = utils.device.tablet;
 const mobile = utils.device.mobile;
@@ -209,15 +200,22 @@ ThirdPartyServices.propTypes = {
   setSelectedConsumer: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    consumers: getConsumersList(state),
-    urlAuthKeys: getUrlAuthKeys(state),
-  };
-};
+export default inject(({ setup, auth }) => {
+  const { settingsStore } = auth;
+  const { urlAuthKeys } = settingsStore;
+  const {
+    getConsumers,
+    integration,
+    updateConsumerProps,
+    setSelectedConsumer,
+  } = setup;
+  const { consumers } = integration;
 
-export default connect(mapStateToProps, {
-  getConsumers,
-  updateConsumerProps,
-  setSelectedConsumer,
-})(withTranslation()(ThirdPartyServices));
+  return {
+    consumers,
+    urlAuthKeys,
+    getConsumers,
+    updateConsumerProps,
+    setSelectedConsumer,
+  };
+})(withTranslation("Settings")(observer(ThirdPartyServices)));

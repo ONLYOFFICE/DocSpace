@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -11,52 +10,19 @@ import {
   IconButton,
   Badge,
 } from "asc-web-components";
-import { constants, api, toastr, store as initStore } from "asc-web-common";
-import {
-  clearSecondaryProgressData,
-  createFile,
-  createFolder,
-  fetchFiles,
-  renameFolder,
-  setIsLoading,
-  setNewRowItems,
-  setSecondaryProgressBarData,
-  setTreeFolders,
-  setUpdateTree,
-  updateFile,
-} from "../../../../../store/files/actions";
+import { constants, api, toastr } from "asc-web-common";
+
 import { TIMEOUT } from "../../../../../helpers/constants";
-import {
-  canConvert,
-  canWebEdit,
-  getDragging,
-  getFileAction,
-  getFilter,
-  getFolders,
-  getIsLoading,
-  getIsPrivacyFolder,
-  getIsRecycleBinFolder,
-  getNewRowItems,
-  getPathParts,
-  getSelectedFolder,
-  getSelectedFolderNew,
-  getSelectedFolderParentId,
-  getTitleWithoutExst,
-  getTreeFolders,
-  isImage,
-  isSound,
-  isVideo,
-} from "../../../../../store/files/selectors";
+import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../panels";
 import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
-import { setEncryptionAccess } from "../../../../../helpers/desktop";
+//import { setEncryptionAccess } from "../../../../../helpers/desktop";
+import { observer, inject } from "mobx-react";
 
 const { FileAction, ShareAccessRights } = constants;
 const sideColor = "#A3A9AE";
-const { getSettings, isDesktopClient } = initStore.auth.selectors;
-const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
 
 const SimpleFilesRowContent = styled(RowContent)`
   .badge-ext {
@@ -175,8 +141,9 @@ class FilesRowContent extends React.PureComponent {
       isPrivacy,
       isDesktop,
       replaceFileStream,
-      i18n,
       t,
+      setEncryptionAccess,
+      createFolder,
     } = this.props;
     const { itemTitle } = this.state;
 
@@ -199,7 +166,7 @@ class FilesRowContent extends React.PureComponent {
           .then(() => this.completeAction(itemId))
           .then(() =>
             toastr.success(
-              <Trans i18nKey="FolderCreated" i18n={i18n}>
+              <Trans i18nKey="FolderCreated" ns="Home">
                 New folder {{ itemTitle }} is created
               </Trans>
             )
@@ -230,7 +197,7 @@ class FilesRowContent extends React.PureComponent {
           .then(() => {
             const exst = item.fileExst;
             return toastr.success(
-              <Trans i18nKey="FileCreated" i18n={i18n}>
+              <Trans i18nKey="FileCreated" ns="Home">
                 New file {{ itemTitle }}.{{ exst }} is created
               </Trans>
             );
@@ -299,6 +266,8 @@ class FilesRowContent extends React.PureComponent {
       item,
       isTrashFolder,
       openDocEditor,
+      expandedKeys,
+      addExpandedKeys,
     } = this.props;
     const { id, fileExst, viewUrl, providerKey } = item;
 
@@ -306,13 +275,12 @@ class FilesRowContent extends React.PureComponent {
 
     if (!fileExst) {
       setIsLoading(true);
-      const newFilter = filter.clone();
 
-      if (!newFilter.treeFolders.includes(parentFolder.toString())) {
-        newFilter.treeFolders.push(parentFolder.toString());
+      if (!expandedKeys.includes(parentFolder + "")) {
+        addExpandedKeys(parentFolder + "");
       }
 
-      fetchFiles(id, newFilter)
+      fetchFiles(id, filter)
         .catch((err) => {
           toastr.error(err);
           setIsLoading(false);
@@ -374,10 +342,10 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onShowVersionHistory = (e) => {
-    const { settings, history } = this.props;
+    const { homepage, history } = this.props;
     const fileId = e.currentTarget.dataset.id;
 
-    history.push(`${settings.homepage}/${fileId}/history`);
+    history.push(`${homepage}/${fileId}/history`);
   };
 
   onBadgeClick = () => {
@@ -389,7 +357,6 @@ class FilesRowContent extends React.PureComponent {
       selectedFolderPathParts,
       newItems,
       setNewRowItems,
-      setUpdateTree,
     } = this.props;
     if (item.fileExst) {
       api.files
@@ -400,13 +367,12 @@ class FilesRowContent extends React.PureComponent {
             (x) => x.id === selectedFolderPathParts[0]
           );
           dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;
-          setUpdateTree(true);
           setTreeFolders(data);
           setNewRowItems([`${item.id}`]);
         })
         .catch((err) => toastr.error(err));
     } else {
-      const newFolderId = this.props.selectedFolder.pathParts;
+      const newFolderId = this.props.selectedFolderPathParts;
       newFolderId.push(item.id);
       this.setState({
         showNewFilesPanel: !showNewFilesPanel,
@@ -425,7 +391,7 @@ class FilesRowContent extends React.PureComponent {
 
   getConvertProgress = (fileId) => {
     const {
-      selectedFolder,
+      selectedFolderId,
       filter,
       setIsLoading,
       setSecondaryProgressBarData,
@@ -461,7 +427,7 @@ class FilesRowContent extends React.PureComponent {
           });
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           const newFilter = filter.clone();
-          fetchFiles(selectedFolder.id, newFilter)
+          fetchFiles(selectedFolderId, newFilter)
             .catch((err) => {
               setSecondaryProgressBarData({
                 visible: true,
@@ -539,6 +505,7 @@ class FilesRowContent extends React.PureComponent {
       item.access === ShareAccessRights.FullAccess ||
       item.access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
     const isEdit = id === editingId && fileExst === fileAction.extension;
+
     const linkStyles =
       isTrashFolder || window.innerWidth <= 1024
         ? { noHover: true }
@@ -755,43 +722,105 @@ class FilesRowContent extends React.PureComponent {
   }
 }
 
-function mapStateToProps(state, props) {
-  return {
-    filter: getFilter(state),
-    fileAction: getFileAction(state),
-    parentFolder: getSelectedFolderParentId(state),
-    isTrashFolder: getIsRecycleBinFolder(state),
-    settings: getSettings(state),
-    treeFolders: getTreeFolders(state),
-    selectedFolderPathParts: getPathParts(state),
-    newItems: getSelectedFolderNew(state),
-    selectedFolder: getSelectedFolder(state),
-    folders: getFolders(state),
-    newRowItems: getNewRowItems(state),
-    dragging: getDragging(state),
-    isLoading: getIsLoading(state),
-    isPrivacy: getIsPrivacyFolder(state),
-    isDesktop: isDesktopClient(state),
+export default inject(
+  (
+    {
+      auth,
+      initFilesStore,
+      filesStore,
+      formatsStore,
+      uploadDataStore,
+      treeFoldersStore,
+      selectedFolderStore,
+    },
+    { item }
+  ) => {
+    const {
+      replaceFileStream,
+      getEncryptionAccess,
+      setEncryptionAccess,
+    } = auth;
+    const { homepage, culture, isDesktopClient } = auth.settingsStore;
+    const { setIsLoading, isLoading } = initFilesStore;
+    const { secondaryProgressDataStore } = uploadDataStore;
+    const {
+      iconFormatsStore,
+      mediaViewersFormatsStore,
+      docserviceStore,
+    } = formatsStore;
 
-    canWebEdit: canWebEdit(props.item.fileExst)(state),
-    canConvert: canConvert(props.item.fileExst)(state),
-    isImage: isImage(props.item.fileExst)(state),
-    isSound: isSound(props.item.fileExst)(state),
-    isVideo: isVideo(props.item.fileExst)(state),
-  };
-}
+    const {
+      folders,
+      fetchFiles,
+      filter,
+      setNewRowItems,
+      newRowItems,
+      createFile,
+      updateFile,
+      renameFolder,
+      createFolder,
+    } = filesStore;
 
-export default connect(mapStateToProps, {
-  createFile,
-  updateFile,
-  renameFolder,
-  setTreeFolders,
-  setSecondaryProgressBarData,
-  setUpdateTree,
-  setNewRowItems,
-  setIsLoading,
-  clearSecondaryProgressData,
-  fetchFiles,
-  getEncryptionAccess,
-  replaceFileStream,
-})(withRouter(withTranslation()(FilesRowContent)));
+    const {
+      treeFolders,
+      setTreeFolders,
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      expandedKeys,
+      addExpandedKeys,
+    } = treeFoldersStore;
+
+    const { type, extension, id } = filesStore.fileActionStore;
+
+    const fileAction = { type, extension, id };
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+
+    const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
+    const canConvert = docserviceStore.canConvert(item.fileExst);
+    const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
+    const isImage = iconFormatsStore.isImage(item.fileExst);
+    const isSound = iconFormatsStore.isSound(item.fileExst);
+
+    return {
+      isDesktop: isDesktopClient,
+      homepage,
+      culture,
+      fileAction,
+      folders,
+      selectedFolderId: selectedFolderStore.id,
+      selectedFolderPathParts: selectedFolderStore.pathParts,
+      newItems: selectedFolderStore.new,
+      parentFolder: selectedFolderStore.parentId,
+      isLoading,
+      treeFolders,
+      isTrashFolder: isRecycleBinFolder,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      canWebEdit,
+      canConvert,
+      isVideo,
+      isImage,
+      isSound,
+      newRowItems,
+      expandedKeys,
+
+      setIsLoading,
+      fetchFiles,
+      setTreeFolders,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+      setNewRowItems,
+      createFile,
+      createFolder,
+      updateFile,
+      renameFolder,
+      replaceFileStream,
+      getEncryptionAccess,
+      setEncryptionAccess,
+      addExpandedKeys,
+    };
+  }
+)(withRouter(withTranslation("Home")(observer(FilesRowContent))));

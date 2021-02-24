@@ -1,8 +1,6 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Router, Route, Switch } from "react-router-dom";
-import { connect } from "react-redux";
 import {
-  store as CommonStore,
   history,
   PrivateRoute,
   PublicRoute,
@@ -16,7 +14,9 @@ import {
   Layout,
 } from "asc-web-common";
 import Home from "./components/pages/Home";
+import { inject, observer } from "mobx-react";
 import config from "../package.json";
+import "./i18n";
 
 const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
@@ -25,144 +25,128 @@ const Wizard = lazy(() => import("./components/pages/Wizard"));
 const Payments = lazy(() => import("./components/pages/Payments"));
 const ThirdPartyResponse = lazy(() => import("./components/pages/ThirdParty"));
 const ComingSoon = lazy(() => import("./components/pages/ComingSoon"));
-const {
-  setIsLoaded,
-  getUser,
-  getPortalSettings,
-  getModules,
-  getIsAuthenticated,
-  setProductVersion,
-} = CommonStore.auth.actions;
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
+const App = (props) => {
+  //constructor(props) {
+  //super(props);
 
-    const pathname = window.location.pathname.toLowerCase();
-    this.isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
-  }
-  componentDidMount() {
-    const {
-      getPortalSettings,
-      getUser,
-      getModules,
-      setIsLoaded,
-      getIsAuthenticated,
-      setProductVersion,
-    } = this.props;
+  //const pathname = window.location.pathname.toLowerCase();
+  //this.isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
+  //}
 
-    setProductVersion();
+  const { isLoaded, loadBaseInfo, isThirdPartyResponse } = props;
 
-    getIsAuthenticated()
-      .then((isAuthenticated) => {
-        if (isAuthenticated) utils.updateTempContent(isAuthenticated);
+  useEffect(() => {
+    try {
+      loadBaseInfo();
+    } catch (err) {
+      toastr.error(err);
+    }
+  }, [loadBaseInfo]);
 
-        if (this.isThirdPartyResponse) {
-          setIsLoaded();
-          return;
-        }
+  useEffect(() => {
+    console.log("App render", isLoaded);
+    if (isLoaded) utils.updateTempContent();
+  }, [isLoaded]);
 
-        const requests = [];
-        if (!isAuthenticated) {
-          requests.push(getPortalSettings());
-        } else if (
-          !window.location.pathname.includes("confirm/EmailActivation")
-        ) {
-          requests.push(getUser());
-          requests.push(getPortalSettings());
-          requests.push(getModules());
-        }
+  // useEffect(() => {
+  //   debugger;
+  //   utils.updateTempContent(isAuthenticated);
+  // }, [isAuthenticated]);
 
-        Promise.all(requests)
-          .catch((e) => {
-            toastr.error(e);
-          })
-          .finally(() => {
-            utils.updateTempContent();
-            setIsLoaded();
-          });
-      })
-      .catch((err) => toastr.error(err));
-  }
+  // if (this.isThirdPartyResponse) {
+  //   //setIsLoaded();
+  //   return;
+  // }
 
-  render() {
-    return navigator.onLine ? (
-      <Layout>
-        <Router history={history}>
-          {!this.isThirdPartyResponse && <NavMenu />}
-          <Main>
-            <Suspense fallback={null}>
-              <Switch>
-                <Route exact path="/wizard" component={Wizard} />
-                <PublicRoute
-                  exact
-                  path={[
-                    "/login",
-                    "/login/error=:error",
-                    "/login/confirmed-email=:confirmedEmail",
-                  ]}
-                  component={Login}
-                />
-                <Route path="/confirm" component={Confirm} />
-                <PrivateRoute
-                  path={`/thirdparty/:provider`}
-                  component={ThirdPartyResponse}
-                />
-                <PrivateRoute
-                  exact
-                  path={["/", "/error=:error"]}
-                  component={Home}
-                />
-                <PrivateRoute exact path="/about" component={About} />
-                <PrivateRoute
-                  restricted
-                  path="/settings"
-                  component={Settings}
-                />
-                <PrivateRoute
-                  exact
-                  path={[
-                    "/coming-soon",
-                    "/products/mail",
-                    "/products/projects",
-                    "/products/crm",
-                    "/products/calendar",
-                    "/products/talk/",
-                  ]}
-                  component={ComingSoon}
-                />
-                <PrivateRoute path="/payments" component={Payments} />
-                <PrivateRoute component={Error404} />
-              </Switch>
-            </Suspense>
-          </Main>
-        </Router>
-      </Layout>
-    ) : (
-      <Offline />
-    );
-  }
-}
+  //utils.updateTempContent();
+  //setIsLoaded();
 
-const mapStateToProps = (state) => {
-  const { modules, isLoaded, settings } = state.auth;
-  const { organizationName } = settings;
+  // const requests = [];
+  // if (!isAuthenticated) {
+  //   requests.push(getPortalSettings());
+  // } else if (
+  //   !window.location.pathname.includes("confirm/EmailActivation")
+  // ) {
+  //   requests.push(getUser());
+  //   requests.push(getPortalSettings());
+  //   //requests.push(getModules());
+  // }
+
+  // Promise.all(requests)
+  //   .catch((e) => {
+  //     toastr.error(e);
+  //   })
+  //   .finally(() => {
+  //     utils.updateTempContent();
+  //     setIsLoaded();
+  //   });
+
+  return navigator.onLine ? (
+    <Layout>
+      <Router history={history}>
+        {!isThirdPartyResponse && <NavMenu />}
+        <Main>
+          <Suspense fallback={null}>
+            <Switch>
+              <Route exact path="/wizard" component={Wizard} />
+              <PublicRoute
+                exact
+                path={[
+                  "/login",
+                  "/login/error=:error",
+                  "/login/confirmed-email=:confirmedEmail",
+                ]}
+                component={Login}
+              />
+              <Route path="/confirm" component={Confirm} />
+              <PrivateRoute
+                path={`/thirdparty/:provider`}
+                component={ThirdPartyResponse}
+              />
+              <PrivateRoute
+                exact
+                path={["/", "/error=:error"]}
+                component={Home}
+              />
+              <PrivateRoute exact path="/about" component={About} />
+              <PrivateRoute restricted path="/settings" component={Settings} />
+              <PrivateRoute
+                exact
+                path={[
+                  "/coming-soon",
+                  "/products/mail",
+                  "/products/projects",
+                  "/products/crm",
+                  "/products/calendar",
+                  "/products/talk/",
+                ]}
+                component={ComingSoon}
+              />
+              <PrivateRoute path="/payments" component={Payments} />
+              <PrivateRoute component={Error404} />
+            </Switch>
+          </Suspense>
+        </Main>
+      </Router>
+    </Layout>
+  ) : (
+    <Offline />
+  );
+};
+
+export default inject(({ auth }) => {
+  const { init, isLoaded } = auth;
+
+  const pathname = window.location.pathname.toLowerCase();
+  const isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
+
   return {
-    modules,
+    loadBaseInfo: () => {
+      init();
+      auth.setProductVersion(config.version);
+    },
+    isThirdPartyResponse,
     isLoaded,
-    organizationName,
   };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getIsAuthenticated: () => getIsAuthenticated(dispatch),
-    getPortalSettings: () => getPortalSettings(dispatch),
-    getUser: () => getUser(dispatch),
-    getModules: () => getModules(dispatch),
-    setIsLoaded: () => dispatch(setIsLoaded(true)),
-    setProductVersion: () => dispatch(setProductVersion(config.version)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+})(observer(App));

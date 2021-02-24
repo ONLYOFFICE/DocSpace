@@ -2,15 +2,7 @@ import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import {
-  constants,
-  Headline,
-  store,
-  api,
-  toastr,
-  Loaders,
-} from "asc-web-common";
-import { connect } from "react-redux";
+import { constants, Headline, api, toastr, Loaders } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import {
@@ -20,17 +12,6 @@ import {
   IconButton,
   utils,
 } from "asc-web-components";
-import {
-  fetchFiles,
-  setAction,
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-  setIsLoading,
-  setSelected,
-  setSharingPanelVisible,
-  setTreeFolders,
-  setUpdateTree,
-} from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   EmptyTrashDialog,
@@ -38,34 +19,10 @@ import {
   DownloadDialog,
 } from "../../../../dialogs";
 import { OperationsPanel } from "../../../../panels";
-import {
-  getUserAccess,
-  getWebEditSelected,
-  getIsRecycleBinFolder,
-  canCreate,
-  getSelectedFolderTitle,
-  getFilter,
-  getSelectedFolderId,
-  getSelection,
-  getSelectedFolderParentId,
-  getIsRootFolder,
-  getHeaderVisible,
-  getHeaderIndeterminate,
-  getHeaderChecked,
-  getAccessedSelected,
-  getSelectionLength,
-  getSharePanelVisible,
-  getIsThirdPartySelection,
-  getIsPrivacyFolder,
-  getOnlyFoldersSelected,
-  getSettingsTreeConfirmDelete,
-  loopTreeFolders,
-  getTreeFolders,
-} from "../../../../../store/files/selectors";
+import { inject, observer } from "mobx-react";
+import { loopTreeFolders } from "../../../../../helpers/files-helpers";
 
 const { files } = api;
-
-const { isAdmin, isDesktopClient, getIsTabletView } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
@@ -298,7 +255,7 @@ class SectionHeaderContent extends React.Component {
         }
       })
       .catch((err) => {
-        setSecondaryProgressBarData({
+        this.props.setSecondaryProgressBarData({
           visible: true,
           alert: true,
         });
@@ -847,43 +804,76 @@ class SectionHeaderContent extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isRootFolder: getIsRootFolder(state),
-    isAdmin: isAdmin(state),
-    isRecycleBin: getIsRecycleBinFolder(state),
-    isPrivacy: getIsPrivacyFolder(state),
-    isDesktop: isDesktopClient(state),
-    parentId: getSelectedFolderParentId(state),
-    selection: getSelection(state),
-    title: getSelectedFolderTitle(state),
-    filter: getFilter(state),
-    deleteDialogVisible: getUserAccess(state),
-    currentFolderId: getSelectedFolderId(state),
-    canCreate: canCreate(state),
-    isWebEditSelected: getWebEditSelected(state),
-    isHeaderVisible: getHeaderVisible(state),
-    isHeaderIndeterminate: getHeaderIndeterminate(state),
-    isHeaderChecked: getHeaderChecked(state),
-    isAccessedSelected: getAccessedSelected(state),
-    isItemsSelected: getSelectionLength(state),
-    sharingPanelVisible: getSharePanelVisible(state),
-    isThirdPartySelection: getIsThirdPartySelection(state),
-    isOnlyFoldersSelected: getOnlyFoldersSelected(state),
-    isTabletView: getIsTabletView(state),
-    confirmDelete: getSettingsTreeConfirmDelete(state),
-    treeFolders: getTreeFolders(state),
-  };
-};
+export default inject(
+  ({
+    auth,
+    initFilesStore,
+    filesStore,
+    uploadDataStore,
+    dialogsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    settingsStore,
+  }) => {
+    const { setIsLoading } = initFilesStore;
+    const { secondaryProgressDataStore } = uploadDataStore;
+    const {
+      setSelected,
+      fileActionStore,
+      fetchFiles,
+      selection,
 
-export default connect(mapStateToProps, {
-  setAction,
-  setSecondaryProgressBarData,
-  setIsLoading,
-  clearSecondaryProgressData,
-  fetchFiles,
-  setSelected,
-  setSharingPanelVisible,
-  setTreeFolders,
-  setUpdateTree,
-})(withTranslation()(withRouter(SectionHeaderContent)));
+      filter,
+      canCreate,
+      isHeaderVisible,
+      isHeaderIndeterminate,
+      isHeaderChecked,
+      userAccess,
+      isAccessedSelected,
+      isOnlyFoldersSelected,
+      isThirdPartySelection,
+      isWebEditSelected,
+    } = filesStore;
+    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+    const { setAction } = fileActionStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+    const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
+
+    return {
+      isAdmin: auth.isAdmin,
+      isDesktop: auth.settingsStore.isDesktopClient,
+      isRootFolder: selectedFolderStore.parentId === 0,
+      title: selectedFolderStore.title,
+      parentId: selectedFolderStore.parentId,
+      currentFolderId: selectedFolderStore.id,
+      selection,
+      isRecycleBin: isRecycleBinFolder,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      sharingPanelVisible,
+      canCreate,
+      isItemsSelected: !!selection.length,
+      isHeaderVisible,
+      isHeaderIndeterminate,
+      isHeaderChecked,
+      deleteDialogVisible: userAccess,
+      isAccessedSelected,
+      isOnlyFoldersSelected,
+      isThirdPartySelection,
+      isWebEditSelected,
+      isTabletView: auth.settingsStore.isTabletView,
+      confirmDelete: settingsStore.settingsTree.confirmDelete,
+      treeFolders: treeFoldersStore.treeFolders,
+      setSelected,
+      setAction,
+      setIsLoading,
+      fetchFiles,
+      setSecondaryProgressBarData,
+      setSharingPanelVisible,
+      clearSecondaryProgressData,
+    };
+  }
+)(withTranslation("Home")(withRouter(observer(SectionHeaderContent))));

@@ -1,47 +1,22 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 import { withTranslation, Trans } from "react-i18next";
 import { Row, Avatar, RowContainer, utils } from "asc-web-components";
 import UserContent from "./userContent";
-import {
-  selectUser,
-  deselectUser,
-  setSelection,
-  updateUserStatus,
-  resetFilter,
-  fetchPeople,
-  selectGroup,
-} from "../../../../../store/people/actions";
-import {
-  getPeopleList,
-  getIsEmptyGroup,
-} from "../../../../../store/people/selectors";
-
 import equal from "fast-deep-equal/react";
-import { store, api, constants, toastr, Loaders } from "asc-web-common";
+import { api, constants, toastr, Loaders } from "asc-web-common";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,
   DeleteSelfProfileDialog,
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
-import { createI18N } from "../../../../../helpers/i18n";
-import EmptyScreen from "./sub-components/EmptyScreen";
 
-const i18n = createI18N({
-  page: "Home",
-  localesPath: "pages/Home",
-});
+import EmptyScreen from "./sub-components/EmptyScreen";
+import { inject, observer } from "mobx-react";
+
 const { Consumer } = utils.context;
 const { isArrayEqual } = utils.array;
-const {
-  getSettings,
-  getIsLoadedSection,
-  isAdmin,
-  getCurrentUserId,
-} = store.auth.selectors;
-const { setIsLoadedSection } = store.auth.actions;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
 
@@ -59,12 +34,21 @@ class SectionBodyContent extends React.PureComponent {
         deleteProfileEver: false,
       },
       isEmailValid: false,
+      isLoadedSection: true,
     };
   }
 
   componentDidMount() {
-    const { isLoaded } = this.props;
-    if (!isLoaded) return;
+    const { isLoaded, fetchPeople, filter, peopleList } = this.props;
+    if (!isLoaded || peopleList.length > 0) return;
+
+    this.setState({ isLoadedSection: false });
+
+    fetchPeople(filter)
+      .catch((error) => {
+        toastr.error(error);
+      })
+      .finally(() => this.setState({ isLoadedSection: isLoaded }));
   }
 
   findUserById = (id) => this.props.peopleList.find((man) => man.id === id);
@@ -207,7 +191,7 @@ class SectionBodyContent extends React.PureComponent {
         toastr.success(
           <Trans
             i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
-            i18n={i18n}
+            ns="Home"
           >
             The email activation instructions have been sent to the
             <strong>{{ email: user.email }}</strong> email address
@@ -318,7 +302,6 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onContentRowSelect = (checked, user) => {
-    //console.log("ContentRow onSelect", checked, user);
     if (checked) {
       this.props.selectUser(user);
     } else {
@@ -352,10 +335,9 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    // console.log("Home SectionBodyContent render()");
+    //console.log("Home SectionBodyContent render()");
     const {
       isLoaded,
-      isLoadedSection,
       peopleList,
       history,
       settings,
@@ -370,7 +352,7 @@ class SectionBodyContent extends React.PureComponent {
       isEmptyGroup,
     } = this.props;
 
-    const { dialogsVisible, user } = this.state;
+    const { dialogsVisible, user, isLoadedSection } = this.state;
 
     return !isLoaded || (isMobile && isLoading) || !isLoadedSection ? (
       <Loaders.Rows isRectangle={false} />
@@ -486,29 +468,19 @@ class SectionBodyContent extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { isLoaded } = state.auth;
-  const { filter, isLoading } = state.people;
-  return {
-    isLoaded,
-    isLoadedSection: getIsLoadedSection(state),
-    filter,
-    isLoading,
-    peopleList: getPeopleList(state),
-    settings: getSettings(state),
-    isAdmin: isAdmin(state),
-    currentUserId: getCurrentUserId(state),
-    isEmptyGroup: getIsEmptyGroup(state),
-  };
-};
-
-export default connect(mapStateToProps, {
-  selectUser,
-  deselectUser,
-  setSelection,
-  updateUserStatus,
-  resetFilter,
-  fetchPeople,
-  selectGroup,
-  setIsLoadedSection,
-})(withRouter(withTranslation()(SectionBodyContent)));
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  isLoaded: auth.isLoaded,
+  isAdmin: auth.isAdmin,
+  currentUserId: auth.userStore.user.id,
+  fetchPeople: peopleStore.usersStore.getUsersList,
+  peopleList: peopleStore.usersStore.peopleList,
+  filter: peopleStore.filterStore.filter,
+  resetFilter: peopleStore.resetFilter,
+  selectUser: peopleStore.selectionStore.selectUser,
+  deselectUser: peopleStore.selectionStore.deselectUser,
+  selectGroup: peopleStore.selectedGroupStore.selectGroup,
+  updateUserStatus: peopleStore.usersStore.updateUserStatus,
+  isLoading: peopleStore.isLoading,
+  isEmptyGroup: peopleStore.selectedGroupStore.isEmptyGroup,
+}))(observer(withRouter(withTranslation("Home")(SectionBodyContent))));

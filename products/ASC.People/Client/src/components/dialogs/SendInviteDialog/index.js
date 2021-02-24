@@ -12,25 +12,15 @@ import {
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import { api, utils, toastr } from "asc-web-common";
+import { api, toastr } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { createI18N } from "../../../helpers/i18n";
-import { connect } from "react-redux";
-import { getUsersToInviteIds } from "../../../store/people/selectors";
-import { setSelected } from "../../../store/people/actions";
+import { inject, observer } from "mobx-react";
 
-const i18n = createI18N({
-  page: "SendInviteDialog",
-  localesPath: "dialogs/SendInviteDialog",
-});
 const { resendUserInvites } = api.people;
-const { changeLanguage } = utils;
 
 class SendInviteDialogComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
 
     const { userIds, selectedUsers } = props;
 
@@ -161,10 +151,8 @@ class SendInviteDialogComponent extends React.Component {
   }
 }
 
-const SendInviteDialogTranslated = withTranslation()(SendInviteDialogComponent);
-
-const SendInviteDialog = (props) => (
-  <SendInviteDialogTranslated i18n={i18n} {...props} />
+const SendInviteDialog = withTranslation("SendInviteDialog")(
+  SendInviteDialogComponent
 );
 
 SendInviteDialog.propTypes = {
@@ -175,16 +163,8 @@ SendInviteDialog.propTypes = {
   setSelected: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  const { selection } = state.people;
-  const usersToInviteIds = getUsersToInviteIds(state);
-
-  return {
-    userIds: usersToInviteIds,
-    selectedUsers: selection,
-  };
-};
-
-export default connect(mapStateToProps, { setSelected })(
-  withRouter(SendInviteDialog)
-);
+export default inject(({ peopleStore }) => ({
+  selectedUsers: peopleStore.selectionStore.selection,
+  setSelected: peopleStore.selectionStore.setSelected,
+  userIds: peopleStore.selectionStore.getUsersToInviteIds,
+}))(observer(withRouter(SendInviteDialog)));

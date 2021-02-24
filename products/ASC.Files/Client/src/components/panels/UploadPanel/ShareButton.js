@@ -1,14 +1,6 @@
 import React from "react";
 import { IconButton } from "asc-web-components";
-import { connect } from "react-redux";
-import {
-  setSharingPanelVisible,
-  selectUploadedFile,
-} from "../../../store/files/actions";
-import {
-  getSharePanelVisible,
-  getUploadedFile,
-} from "../../../store/files/selectors";
+import { inject, observer } from "mobx-react";
 
 const ShareButton = (props) => {
   //console.log("Share button render");
@@ -43,16 +35,17 @@ const ShareButton = (props) => {
   );
 };
 
-const mapStateToProps = (state, ownProps) => {
-  const uniqueId = ownProps.uniqueId;
+export default inject(({ dialogsStore, uploadDataStore }, { uniqueId }) => {
+  const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
+  const { selectUploadedFile, getUploadedFile } = uploadDataStore;
+
+  const uploadedFile = getUploadedFile(uniqueId);
 
   return {
-    sharingPanelVisible: getSharePanelVisible(state),
-    uploadedFile: getUploadedFile(uniqueId)(state),
-  };
-};
+    sharingPanelVisible,
+    uploadedFile,
 
-export default connect(mapStateToProps, {
-  setSharingPanelVisible,
-  selectUploadedFile,
-})(ShareButton);
+    setSharingPanelVisible,
+    selectUploadedFile,
+  };
+})(observer(ShareButton));
