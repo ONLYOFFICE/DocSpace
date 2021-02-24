@@ -25,6 +25,7 @@
 
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -48,12 +49,16 @@ using System.Linq;
 
 namespace ASC.CRM.Core.Dao
 {
+    [Scope]
     public class SearchDao : AbstractDao
     {
         private Dictionary<EntityType, IEnumerable<int>> _findedIDs;
-        private bool _fullTextSearchEnable;
-        private DaoFactory DaoFactory { get; set; }
 
+        //TODO: setting _fullTextSearchEnable field
+        private bool _fullTextSearchEnable;
+
+
+        private DaoFactory DaoFactory { get; set; }
 
         public SearchDao(DbContextManager<CRMDbContext> dbContextManager,
                       TenantManager tenantManager,
@@ -61,19 +66,21 @@ namespace ASC.CRM.Core.Dao
                       CRMSecurity cRMSecurity,
                       TenantUtil tenantUtil,
                       PathProvider pathProvider,
-                      FactoryIndexer<TasksWrapper> tasksWrapperIndexer,
-                      FactoryIndexer<InvoicesWrapper> invoicesWrapperIndexer,
+                      FactoryIndexerTask tasksWrapperIndexer,
+                      FactoryIndexerInvoice invoicesWrapperIndexer,
                       IOptionsMonitor<ILog> logger,
+                      AscCache ascCache,
                       WebImageSupplier webImageSupplier,
                       BundleSearch bundleSearch
                       ) :
            base(dbContextManager,
                 tenantManager,
                 securityContext,
-                logger)
+                logger,
+                ascCache)
         {
-            TasksWrapperIndexer = tasksWrapperIndexer;
-            InvoicesWrapperIndexer = invoicesWrapperIndexer;
+            FactoryIndexerTask = tasksWrapperIndexer;
+            FactoryIndexerInvoice = invoicesWrapperIndexer;
             CRMSecurity = cRMSecurity;
             TenantUtil = tenantUtil;
             PathProvider = pathProvider;
@@ -81,14 +88,15 @@ namespace ASC.CRM.Core.Dao
             BundleSearch = bundleSearch;
         }
 
+        
         public BundleSearch BundleSearch { get; }
 
         public WebImageSupplier WebImageSupplier { get; }
 
         public TenantUtil TenantUtil { get; }
         public PathProvider PathProvider { get; }
-        public FactoryIndexer<TasksWrapper> TasksWrapperIndexer { get; }
-        public FactoryIndexer<InvoicesWrapper> InvoicesWrapperIndexer { get; }
+        public FactoryIndexerTask FactoryIndexerTask { get; }
+        public FactoryIndexerInvoice FactoryIndexerInvoice { get; }
         public CRMSecurity CRMSecurity { get; }
 
         public SearchResultItem[] Search(String searchText)
@@ -97,13 +105,7 @@ namespace ASC.CRM.Core.Dao
                .ToArray();
 
             if (keywords.Length == 0) return new List<SearchResultItem>().ToArray();
-
-            _fullTextSearchEnable = BundleSearch.Support(EntityType.Case)
-                                    && BundleSearch.Support(EntityType.Contact)
-                                    && BundleSearch.Support(EntityType.Opportunity)
-                                    && BundleSearch.Support(EntityType.Task)
-                                    && BundleSearch.Support(EntityType.Invoice);
-
+            
             if (_fullTextSearchEnable)
             {
                 _findedIDs = new Dictionary<EntityType, IEnumerable<int>>();
@@ -128,14 +130,14 @@ namespace ASC.CRM.Core.Dao
 
                 List<int> tasksId;
 
-                if (TasksWrapperIndexer.TrySelectIds(r => r.MatchAll(searchText), out tasksId))
+                if (FactoryIndexerTask.TrySelectIds(r => r.MatchAll(searchText), out tasksId))
                 {
                     _findedIDs.Add(EntityType.Task, tasksId);
                 }
 
                 List<int> invoicesId;
 
-                if (InvoicesWrapperIndexer.TrySelectIds(r => r.MatchAll(searchText), out invoicesId))
+                if (FactoryIndexerInvoice.TrySelectIds(r => r.MatchAll(searchText), out invoicesId))
                 {
                     _findedIDs.Add(EntityType.Invoice, invoicesId);
                 }
@@ -201,7 +203,7 @@ namespace ASC.CRM.Core.Dao
           
         private bool IncludeToSearch(EntityType entityType)
         {
-            return !BundleSearch.Support(entityType) || _findedIDs.ContainsKey(entityType);
+            return _findedIDs.ContainsKey(entityType);
         }
 
         private SearchResultItem[] GetSearchResultItems(String[] keywords)
@@ -465,22 +467,4 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
-    public static class SearchDaoExtention
-    {
-        public static DIHelper AddSearchDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<SearchDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService()
-                           .AddCRMSecurityService()
-                           .AddTenantUtilService()
-                           .AddCRMPathProviderService()
-                           .AddFactoryIndexerService<TasksWrapper>()
-                           .AddFactoryIndexerService<InvoicesWrapper>()
-                           .AddWebImageSupplierService()
-                           .AddBundleSearchService();
-        }
-    }
 }

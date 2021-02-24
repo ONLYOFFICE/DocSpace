@@ -36,6 +36,7 @@ using System.Threading.Tasks;
 
 namespace ASC.Web.CRM.HttpHandlers
 {
+    [Transient]
     public class FileHandler
     {
         public FileHandler(RequestDelegate next,
@@ -110,18 +111,6 @@ namespace ASC.Web.CRM.HttpHandlers
                 default:
                     throw new ArgumentException(String.Format("action='{0}' is not defined", action));
             }
-        }
-    }
-
-
-    public static class FileHandlerExtension
-    {
-        public static DIHelper AddFileHandlerService(this DIHelper services)
-        {
-            services.TryAddTransient<FileHandler>();
-
-            return services.AddGlobalService()
-                           .AddContactPhotoManagerService();                           
         }
     }
 } 

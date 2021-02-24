@@ -26,6 +26,7 @@
 
 using ASC.Collections;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -49,12 +50,14 @@ namespace ASC.CRM.Core.Dao
             TenantManager tenantManager,
             SecurityContext securityContext,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> logger
+            IOptionsMonitor<ILog> logger,
+            AscCache ascCache
             )
             : base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger)
+                 logger,
+                 ascCache)
 
         {
             _invoiceTaxCache = new HttpRequestDictionary<InvoiceTax>(httpContextAccessor?.HttpContext, "crm_invoice_tax");
@@ -91,18 +94,21 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
+    [Scope]
     public class InvoiceTaxDao : AbstractDao
     {
         public InvoiceTaxDao(
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> logger
+            IOptionsMonitor<ILog> logger,
+            AscCache ascCache
             )
             : base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger)
+                 logger,
+                 ascCache)
         {
 
         }
@@ -265,15 +271,4 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
-    public static class InvoiceTaxDaoExtention
-    {
-        public static DIHelper AddInvoiceTaxDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<InvoiceLineDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService();
-        }
-    }
 }

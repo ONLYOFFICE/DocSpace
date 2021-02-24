@@ -48,12 +48,14 @@ using System.IO;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using ASC.Common;
+using ASC.Common.Caching;
 
 
 #endregion
 
 namespace ASC.CRM.Core.Dao
 {
+    [Scope]
     public class ReportDao : AbstractDao
     {
         const string TimeFormat = "[h]:mm:ss;@";
@@ -68,6 +70,7 @@ namespace ASC.CRM.Core.Dao
                        SecurityContext securityContext,
                        FilesIntegration filesIntegration,
                        IOptionsMonitor<ILog> logger,
+                       AscCache ascCache,
                        TenantUtil tenantUtil,
                        SettingsManager settingsManager,
                        Global global,
@@ -76,7 +79,8 @@ namespace ASC.CRM.Core.Dao
             base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger)
+                 logger,
+                 ascCache)
         {
             TenantUtil = tenantUtil;
 
@@ -2220,22 +2224,5 @@ namespace ASC.CRM.Core.Dao
         //}
 
         //#endregion
-    }
-
-    public static class ReportDaoExtention
-    {
-        public static DIHelper AddReportDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<ReportDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService()
-                           .AddFilesIntegrationService()
-                           .AddTenantUtilService()
-                           .AddSettingsManagerService()
-                          // .AddGlobalService()
-                           .AddUserManagerService();
-        }
     }
 }

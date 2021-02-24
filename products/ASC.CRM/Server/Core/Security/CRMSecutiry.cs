@@ -858,23 +858,5 @@ namespace ASC.CRM.Core
         {
             return IsAdmin || task.ResponsibleID == SecurityContext.CurrentAccount.ID || task.CreateBy == SecurityContext.CurrentAccount.ID;
         }
-    }
-
-    public static class CRMSecurityExtention
-    {        
-        public static DIHelper AddCRMSecurityService(this DIHelper services)
-        {
-            services.TryAddScoped<CRMSecurity>();
-            
-            return services.AddSecurityContextService()
-                           .AddAuthorizationManagerService()
-                           .AddUserManagerService()
-                           .AddDisplayUserSettingsService()
-       //                    .AddDaoFactoryService()
-                           .AddWebItemSecurity()
-                           .AddPermissionContextService()
-                           .AddCurrencyProviderService()
-                           ;
-        }
-    }
+    }  
 }

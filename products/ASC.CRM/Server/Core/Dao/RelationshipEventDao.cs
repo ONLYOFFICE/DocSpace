@@ -26,6 +26,7 @@
 
 using ASC.Collections;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -54,7 +55,6 @@ using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
 namespace ASC.CRM.Core.Dao
 {
-
     public class CachedRelationshipEventDao : RelationshipEventDao
     {
         private readonly HttpRequestDictionary<RelationshipEvent> _relationshipEventCache;
@@ -68,8 +68,8 @@ namespace ASC.CRM.Core.Dao
             SetupInfo setupInfo,
             PathProvider pathProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> logger
-
+            IOptionsMonitor<ILog> logger,
+            AscCache ascCache
             ) :
                         base(dbContextManager,
                             tenantManager,
@@ -79,7 +79,8 @@ namespace ASC.CRM.Core.Dao
                             tenantUtil,
                             setupInfo,
                             pathProvider,
-                            logger)
+                            logger,
+                            ascCache)
         {
             _relationshipEventCache = new HttpRequestDictionary<RelationshipEvent>(httpContextAccessor?.HttpContext, "crm_relationshipEvent");
         }
@@ -100,6 +101,7 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
+    [Scope]
     public class RelationshipEventDao : AbstractDao
     {
 
@@ -111,12 +113,14 @@ namespace ASC.CRM.Core.Dao
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
             PathProvider pathProvider,
-            IOptionsMonitor<ILog> logger
+            IOptionsMonitor<ILog> logger,
+            AscCache ascCache
             ) :
                                             base(dbContextManager,
                                                  tenantManager,
                                                  securityContext,
-                                                 logger)
+                                                 logger,
+                                                 ascCache)
         {
             FilesIntegration = filesIntegration;
             TenantUtil = tenantUtil;
@@ -136,7 +140,7 @@ namespace ASC.CRM.Core.Dao
 
         public FilesIntegration FilesIntegration { get; }
 
-        public FactoryIndexer<EventsWrapper> FactoryIndexer { get; }
+        public FactoryIndexerEvents FactoryIndexer { get; }
 
         public RelationshipEvent AttachFiles(int contactID, EntityType entityType, int entityID, int[] fileIDs)
         {
@@ -441,7 +445,7 @@ namespace ASC.CRM.Core.Dao
             if (item.CreateOn.Kind == DateTimeKind.Utc)
                 item.CreateOn = TenantUtil.DateTimeFromUtc(item.CreateOn);
 
-            FactoryIndexer.IndexAsync(EventsWrapper.FromEvent(TenantID, item));
+            FactoryIndexer.Index(itemToInsert);
 
             return item;
         }
@@ -640,16 +644,14 @@ namespace ASC.CRM.Core.Dao
 
             relativeFiles.ForEach(f => RemoveFile(f));
 
-            var itemToDelete = new DbRelationshipEvent
-            {
-                Id = item.ID,
-                TenantId = TenantID
-            };
+            var itemToDelete = Query(CRMDbContext.RelationshipEvent).Where(x => x.Id == item.ID).Single();
+
+            FactoryIndexer.DeleteAsync(itemToDelete);
 
             CRMDbContext.RelationshipEvent.Remove(itemToDelete);
+            
             CRMDbContext.SaveChanges();
 
-            FactoryIndexer.DeleteAsync(EventsWrapper.FromEvent(TenantID, item));
         }
 
         [DataContract]
@@ -716,22 +718,4 @@ namespace ASC.CRM.Core.Dao
             }
         }
     }
-
-    public static class RelationshipEventDaoExtention
-    {
-        public static DIHelper AddRelationshipEventDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<RelationshipEventDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService()
-                           .AddFilesIntegrationService()
-                           .AddCRMSecurityService()
-                           .AddTenantUtilService()
-                           .AddSetupInfo()
-                           .AddCRMPathProviderService();
-        }
-    }
-
 }   

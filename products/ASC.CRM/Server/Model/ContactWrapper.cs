@@ -85,6 +85,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
+    [Transient]
     public class PersonWrapperHelper
     {
         public PersonWrapperHelper()
@@ -112,16 +113,6 @@ namespace ASC.Api.CRM.Wrappers
         }
 
 
-    }
-
-    public static class PersonWrapperHelperHelperExtension
-    {
-        public static DIHelper AddPersonWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<PersonWrapperHelper>();
-
-            return services;
-        }
     }
 
     /// <summary>
@@ -372,6 +363,7 @@ namespace ASC.Api.CRM.Wrappers
         public ContactWrapper Contact { get; set; }
     }
 
+    [Transient]
     public class ContactWrapperHelper
     {
         public ContactWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
@@ -560,20 +552,6 @@ namespace ASC.Api.CRM.Wrappers
             result.Title = person.JobTitle;
 
             return result;
-        }
-    }
-
-    public static class ContactWrapperHelperExtension
-    {
-        public static DIHelper AddContactWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<ContactWrapperHelper>();
-
-            return services.AddApiDateTimeHelper()
-                           .AddEmployeeWraper()
-                           .AddCRMSecurityService()
-                           .AddCurrencyProviderService()
-                           .AddCRMPathProviderService();
         }
     }
 

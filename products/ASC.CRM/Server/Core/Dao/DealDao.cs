@@ -26,6 +26,7 @@
 
 using ASC.Collections;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -57,10 +58,11 @@ namespace ASC.CRM.Core.Dao
                        TenantManager tenantManager,
                        SecurityContext securityContext,
                        CRMSecurity cRMSecurity,
-                       FactoryIndexer<DealsWrapper> factoryIndexer,
+                       FactoryIndexerDeal factoryIndexer,
                        FilesIntegration filesIntegration,
                        IHttpContextAccessor httpContextAccessor,
                        IOptionsMonitor<ILog> logger,
+                       AscCache ascCache,
                        BundleSearch bundleSearch)
             : base(dbContextManager,
                  tenantManager,
@@ -109,20 +111,23 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
+    [Scope]
     public class DealDao : AbstractDao
     {
         public DealDao(DbContextManager<CRMDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
                        CRMSecurity cRMSecurity,
-                       FactoryIndexer<DealsWrapper> factoryIndexer,
+                       FactoryIndexerDeal factoryIndexer,
                        FilesIntegration filesIntegration,
                        IOptionsMonitor<ILog> logger,
+                       AscCache ascCache,
                        BundleSearch bundleSearch) :
             base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger)
+                 logger,
+                 ascCache)
         {
             CRMSecurity = cRMSecurity;
             FactoryIndexer = factoryIndexer;
@@ -134,7 +139,7 @@ namespace ASC.CRM.Core.Dao
 
         public FilesIntegration FilesIntegration { get; }
 
-        public FactoryIndexer<DealsWrapper> FactoryIndexer { get; }
+        public FactoryIndexerDeal FactoryIndexer { get; }
 
         public TenantUtil TenantUtil { get; }
         public CRMSecurity CRMSecurity { get; }
@@ -190,8 +195,8 @@ namespace ASC.CRM.Core.Dao
             var result = CreateNewDealInDb(deal);
 
             deal.ID = result;
-
-            FactoryIndexer.IndexAsync(DealsWrapper.FromDeal(TenantID, deal));
+            
+            FactoryIndexer.Index(Query(CRMDbContext.Deals).Where(x => x.Id == deal.ID).FirstOrDefault());
 
             return result;
         }
@@ -243,14 +248,13 @@ namespace ASC.CRM.Core.Dao
             var result = items.Select(item => CreateNewDealInDb(item)).ToArray();
 
             tx.Commit();
-
-            foreach (var deal in items)
+                                    
+            foreach (var deal in Query(CRMDbContext.Deals).Where(x => result.Contains(x.Id)))
             {
-                FactoryIndexer.IndexAsync(DealsWrapper.FromDeal(TenantID, deal));
+                FactoryIndexer.Index(deal);
             }
 
             return result;
-
         }
 
         public virtual void EditDeal(Deal deal)
@@ -285,7 +289,7 @@ namespace ASC.CRM.Core.Dao
             CRMDbContext.Update(itemToUpdate);
             CRMDbContext.SaveChanges();
 
-            FactoryIndexer.IndexAsync(DealsWrapper.FromDeal(TenantID, deal));
+            FactoryIndexer.Index(itemToUpdate);
         }
 
 
@@ -793,12 +797,12 @@ namespace ASC.CRM.Core.Dao
 
             CRMSecurity.DemandDelete(deal);
 
+            FactoryIndexer.Delete(Query(CRMDbContext.Deals).Where(x => x.Id == dealID).Single());
+
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
 
             DeleteBatchDealsExecute(new List<Deal>() { deal });
-
-            FactoryIndexer.DeleteAsync(DealsWrapper.FromDeal(TenantID, deal));
 
             return deal;
         }
@@ -973,21 +977,5 @@ namespace ASC.CRM.Core.Dao
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
 
         }
-    }
-
-    public static class DealDaoExtention
-    {
-        public static DIHelper AddDealDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<DealDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService()
-                           .AddCRMSecurityService()
-                           .AddFactoryIndexerService<DealsWrapper>()
-                           .AddFilesIntegrationService()
-                           .AddBundleSearchService();
-        }
-    }
+    }  
 }

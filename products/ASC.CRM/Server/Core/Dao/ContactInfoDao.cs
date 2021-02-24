@@ -25,6 +25,7 @@
 
 using ASC.Collections;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -53,8 +54,8 @@ namespace ASC.CRM.Core.Dao
              SecurityContext securityContext,
              TenantUtil tenantUtil,
              IOptionsMonitor<ILog> logger,
-             FactoryIndexer<EmailWrapper> factoryIndexerEmailWrapper,
-             FactoryIndexer<InfoWrapper> factoryIndexerInfoWrapper,
+             AscCache ascCache,
+             FactoryIndexerContactInfo factoryIndexerContactInfo,
              IHttpContextAccessor httpContextAccessor,
              IServiceProvider serviceProvider
              )
@@ -64,8 +65,8 @@ namespace ASC.CRM.Core.Dao
                 securityContext, 
                 tenantUtil,
                 logger,
-                factoryIndexerEmailWrapper,
-                factoryIndexerInfoWrapper,
+                ascCache,
+                factoryIndexerContactInfo,
                 serviceProvider)
         {
             _contactInfoCache = new HttpRequestDictionary<ContactInfo>(httpContextAccessor?.HttpContext, "crm_contact_info");
@@ -110,6 +111,7 @@ namespace ASC.CRM.Core.Dao
 
     }
 
+    [Scope]
     public class ContactInfoDao : AbstractDao
     {     
         public ContactInfoDao(
@@ -118,25 +120,24 @@ namespace ASC.CRM.Core.Dao
              SecurityContext securityContext,
              TenantUtil tenantUtil,
              IOptionsMonitor<ILog> logger,
-             FactoryIndexer<EmailWrapper> factoryIndexerEmailWrapper,
-             FactoryIndexer<InfoWrapper> factoryIndexerInfoWrapper,
+             AscCache ascCache,
+             FactoryIndexerContactInfo factoryIndexerContactInfo,
              IServiceProvider serviceProvider)
            : base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger)
+                 logger,
+                 ascCache)
         {
             TenantUtil = tenantUtil;
             ServiceProvider = serviceProvider;
 
-            FactoryIndexerEmailWrapper = factoryIndexerEmailWrapper;
-            FactoryIndexerInfoWrapper = factoryIndexerInfoWrapper;
+            FactoryIndexerContactInfo = factoryIndexerContactInfo;
         }
 
         public IServiceProvider ServiceProvider { get; }
         public TenantUtil TenantUtil { get; }
-        public FactoryIndexer<EmailWrapper> FactoryIndexerEmailWrapper { get; }
-        public FactoryIndexer<InfoWrapper> FactoryIndexerInfoWrapper { get; }
+        public FactoryIndexerContactInfo FactoryIndexerContactInfo { get; }
 
         public virtual ContactInfo GetByID(int id)
         {
@@ -153,8 +154,7 @@ namespace ASC.CRM.Core.Dao
             CRMDbContext.ContactsInfo.Remove(itemToDelete);
             CRMDbContext.SaveChanges();
 
-            FactoryIndexerEmailWrapper.DeleteAsync(r => r.Where(a => a.Id, id));
-        
+            FactoryIndexerContactInfo.Delete(r => r.Where(a => a.Id, id));        
         }
 
         public virtual void DeleteByContact(int contactID)
@@ -166,28 +166,15 @@ namespace ASC.CRM.Core.Dao
 
             CRMDbContext.SaveChanges();
 
-            FactoryIndexerInfoWrapper.DeleteAsync(r => r.Where(a => a.ContactId, contactID));
-
-            var infos = GetList(contactID, ContactInfoType.Email, null, null);
-
-            FactoryIndexerEmailWrapper.Update(new EmailWrapper { Id = contactID,
-                                                                 EmailInfoWrapper = infos.Select(r => EmailInfoWrapper.FromContactInfo(TenantID, r)).ToList() }, 
-                                                                 UpdateAction.Replace, r => r.EmailInfoWrapper);
-        
+            FactoryIndexerContactInfo.Delete(r => r.Where(a => a.ContactId, contactID));       
         }
 
         public virtual int Update(ContactInfo contactInfo) 
         {
             var result = UpdateInDb(contactInfo);
-            
-            if (contactInfo.InfoType == ContactInfoType.Email)
-            {
-                var infos = GetList(contactInfo.ContactID, ContactInfoType.Email, null, null);
 
-                FactoryIndexerEmailWrapper.Update(new EmailWrapper { Id = contactInfo.ContactID, EmailInfoWrapper = infos.Select(r => EmailInfoWrapper.FromContactInfo(TenantID, r)).ToList() }, UpdateAction.Replace, r => r.EmailInfoWrapper);
-            }
-                        
-            FactoryIndexerInfoWrapper.UpdateAsync(InfoWrapper.Get(ServiceProvider, contactInfo));
+            FactoryIndexerContactInfo.Update(Query(CRMDbContext.ContactsInfo)
+                                        .Where(x => x.ContactId == contactInfo.ID).Single());
 
             return result;
         }
@@ -223,21 +210,12 @@ namespace ASC.CRM.Core.Dao
             var id = SaveInDb(contactInfo);
 
             contactInfo.ID = id;
-                        
-            FactoryIndexerInfoWrapper.IndexAsync(InfoWrapper.Get(ServiceProvider, contactInfo));
 
-            if (contactInfo.InfoType == ContactInfoType.Email)
-            {
-                FactoryIndexerEmailWrapper.Index(new EmailWrapper
-                {
-                    Id = contactInfo.ContactID, 
-                    TenantId = TenantID, 
-                    EmailInfoWrapper = new List<EmailInfoWrapper>
-                    {
-                      EmailInfoWrapper.FromContactInfo(TenantID, contactInfo)
-                    }
-                });
-            }
+            var dbContactInfo = Query(CRMDbContext.ContactsInfo)
+                                        .Where(x => x.ContactId == contactInfo.ID)
+                                        .Single();
+
+            FactoryIndexerContactInfo.Index(dbContactInfo);
 
             return id;
         }
@@ -321,12 +299,14 @@ namespace ASC.CRM.Core.Dao
             
             if (contact != null)
             {
-
-                FactoryIndexerEmailWrapper.IndexAsync(EmailWrapper.GetEmailWrapper(TenantID, contact, items.Where(r => r.InfoType == ContactInfoType.Email).ToList()));
+                var itemIDs = items.Select(y => y.ID);
                 
-                foreach (var item in items.Where(r => r.InfoType != ContactInfoType.Email))
+                var dbContactInfos = Query(CRMDbContext.ContactsInfo)
+                            .Where(x => itemIDs.Contains(x.Id));
+
+                foreach (var dbContactInfo in dbContactInfos)
                 {
-                    FactoryIndexerInfoWrapper.IndexAsync(InfoWrapper.Get(ServiceProvider, item));
+                    FactoryIndexerContactInfo.Index(dbContactInfo);
                 }
             }
 
@@ -352,13 +332,15 @@ namespace ASC.CRM.Core.Dao
             
             if (contact != null)
             {
-                FactoryIndexerEmailWrapper.IndexAsync(EmailWrapper.GetEmailWrapper(TenantID, contact, items.Where(r => r.InfoType == ContactInfoType.Email).ToList()));
-            
-                foreach (var item in items.Where(r => r.InfoType != ContactInfoType.Email))
+                var itemIDs = items.Select(y => y.ID);
+
+                var dbContactInfos = Query(CRMDbContext.ContactsInfo)
+                            .Where(x => itemIDs.Contains(x.Id));
+
+                foreach (var dbContactInfo in dbContactInfos)
                 {
-                    FactoryIndexerInfoWrapper.IndexAsync(InfoWrapper.Get(ServiceProvider, item));
+                    FactoryIndexerContactInfo.Index(dbContactInfo);
                 }
-            
             }
 
             return result.ToArray();
@@ -377,23 +359,6 @@ namespace ASC.CRM.Core.Dao
                              InfoType = dbContactInfo.Type,
                              IsPrimary = dbContactInfo.IsPrimary                              
                        };
-        }
-    }
-
-
-
-    public static class ContactInfoDaoExtention
-    {
-        public static DIHelper AddContactInfoDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<ContactDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService()
-                           .AddTenantUtilService()
-                           .AddFactoryIndexerService<EmailWrapper>()
-                           .AddFactoryIndexerService<InfoWrapper>();
         }
     }
 }

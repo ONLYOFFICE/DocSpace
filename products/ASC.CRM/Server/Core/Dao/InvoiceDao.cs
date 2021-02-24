@@ -26,6 +26,7 @@
 
 using ASC.Collections;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -58,9 +59,10 @@ namespace ASC.CRM.Core.Dao
         public CachedInvoiceDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            FactoryIndexer<InvoicesWrapper> factoryIndexer,
+            FactoryIndexerInvoice factoryIndexer,
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> logger,
+            AscCache ascCache,
             SettingsManager settingsManager,
             InvoiceSetting invoiceSetting,
             InvoiceFormattedData invoiceFormattedData)
@@ -69,6 +71,7 @@ namespace ASC.CRM.Core.Dao
                  securityContext,
                  factoryIndexer,
                  logger,
+                 ascCache,
                  settingsManager,
                  invoiceSetting,
                  invoiceFormattedData
@@ -108,6 +111,7 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
+    [Scope]
     public class InvoiceDao : AbstractDao
     {
         public List<KeyValuePair<InvoiceStatus, InvoiceStatus>> invoiceStatusMap = new List<KeyValuePair<InvoiceStatus, InvoiceStatus>>()
@@ -123,15 +127,17 @@ namespace ASC.CRM.Core.Dao
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            FactoryIndexer<InvoicesWrapper> factoryIndexer,
+            FactoryIndexerInvoice factoryIndexer,
             IOptionsMonitor<ILog> logger,
+            AscCache ascCache,
             SettingsManager settingsManager,
             InvoiceSetting invoiceSetting,
             InvoiceFormattedData invoiceFormattedData)
               : base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger)
+                 logger,
+                 ascCache)
         {
             FactoryIndexer = factoryIndexer;
             SettingsManager = settingsManager;
@@ -144,7 +150,7 @@ namespace ASC.CRM.Core.Dao
         public InvoiceFormattedData InvoiceFormattedData { get; }
         public  SettingsManager SettingsManager { get; }
 
-        public FactoryIndexer<InvoicesWrapper> FactoryIndexer { get; }
+        public FactoryIndexerInvoice FactoryIndexer { get; }
 
         public TenantUtil TenantUtil { get; }
         public CRMSecurity CRMSecurity { get; }
@@ -526,7 +532,7 @@ namespace ASC.CRM.Core.Dao
 
             var result = SaveOrUpdateInvoiceInDb(invoice);
 
-            FactoryIndexer.IndexAsync(InvoicesWrapper.FromInvoice(TenantID, invoice));
+            FactoryIndexer.Index(Query(CRMDbContext.Invoices).Where(x => x.Id == invoice.ID).Single());
 
             return result;
         }
@@ -781,14 +787,16 @@ namespace ASC.CRM.Core.Dao
 
             using var tx = CRMDbContext.Database.BeginTransaction();
 
+            var dbInvoicesQuery = Query(CRMDbContext.Invoices).Where(x => invoiceID.Contains(x.Id));
+
             CRMDbContext.InvoiceLine.RemoveRange(Query(CRMDbContext.InvoiceLine).Where(x => invoiceID.Contains(x.InvoiceId)));
-            CRMDbContext.Invoices.RemoveRange(Query(CRMDbContext.Invoices).Where(x => invoiceID.Contains(x.Id)));
+            CRMDbContext.Invoices.RemoveRange(dbInvoicesQuery);
 
             CRMDbContext.SaveChanges();
 
             tx.Commit();
 
-            invoices.ForEach(invoice => FactoryIndexer.DeleteAsync(InvoicesWrapper.FromInvoice(TenantID, invoice)));
+            dbInvoicesQuery.ToList().ForEach(invoice => FactoryIndexer.Delete(invoice));
 
         }
 
@@ -985,19 +993,4 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
-    public static class InvoiceDaoExtention
-    {
-        public static DIHelper AddInvoiceDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<InvoiceDao>();
-            
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService()
-                           .AddFactoryIndexerService<InvoicesWrapper>()
-                           .AddSettingsManagerService()
-                           .AddInvoiceFormattedDataService()
-                           .AddInvoiceSettingService();                           
-        }
-    }
 }

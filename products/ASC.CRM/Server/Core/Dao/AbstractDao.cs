@@ -53,13 +53,14 @@ namespace ASC.CRM.Core.Dao
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> logger
+            IOptionsMonitor<ILog> logger,
+            AscCache ascCache
             )
         {
 
             Logger = logger.Get("ASC.CRM");
 
-            _cache = AscCache.Memory;
+            _cache = ascCache;
             CRMDbContext = dbContextManager.Get(CRMConstants.DatabaseId);
             TenantID = tenantManager.GetCurrentTenant().TenantId;
             SecurityContext = securityContext;

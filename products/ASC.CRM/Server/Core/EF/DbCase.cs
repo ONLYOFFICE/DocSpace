@@ -1,18 +1,25 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
+
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Model;
+using ASC.ElasticSearch;
+
+using Microsoft.EntityFrameworkCore;
+
+using Nest;
 
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_case")]
-    public partial class DbCase : IDbCrm
+    public class DbCase : IDbCrm, ISearchItem
     {
-        [Key]
-        [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
         
         [Required]
-        [Column("title", TypeName = "varchar(255)")]
+        [Text(Analyzer = "whitespacecustom")]
         public string Title { get; set; }
         
         [Column("is_closed")]
@@ -33,5 +40,62 @@ namespace ASC.CRM.Core.EF
 
         [Column("last_modifed_by", TypeName = "char(38)")]
         public Guid? LastModifedBy { get; set; }
+
+        [NotMapped]
+        [Ignore]
+        public string IndexName
+        {
+            get
+            {
+                return "crm_case";
+            }
+        }
+
+        [Ignore]
+        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        {
+            get
+            {
+                return (a) => new[] { Title };
+            }
+        }
     }
+
+    public static class DbCaseExtension
+    {
+        public static ModelBuilderWrapper AddDbCase(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbCase, Provider.MySql);
+
+            return modelBuilder;
+        }
+        private static void MySqlAddDbCase(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbCase>(entity =>
+            {
+                entity.HasIndex(e => e.CreateOn)
+                    .HasName("create_on");
+
+                entity.HasIndex(e => e.LastModifedOn)
+                    .HasName("last_modifed_on");
+
+                entity.HasIndex(e => e.TenantId)
+                    .HasName("tenant_id");
+
+                entity.Property(e => e.CreateBy)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.LastModifedBy)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Title)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+        }
+    }
+
 }

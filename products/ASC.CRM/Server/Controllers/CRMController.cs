@@ -186,8 +186,6 @@ namespace ASC.Api.CRM
         public InvoiceBaseWrapperHelper InvoiceBaseWrapperHelper { get; }
         public InvoiceItemWrapperHelper InvoiceItemWrapperHelper { get; }
         public InvoiceWrapperHelper InvoiceWrapperHelper { get; }
-
-
         public FactoryIndexer<Web.CRM.Core.Search.InfoWrapper> FactoryIndexerInfoWrapper { get; }
         public FactoryIndexer<Web.CRM.Core.Search.EmailWrapper> FactoryIndexerEmailWrapper { get; }
         public FactoryIndexer<Web.CRM.Core.Search.FieldsWrapper> FactoryIndexerFieldsWrapper { get; }
@@ -276,24 +274,4 @@ namespace ASC.Api.CRM
             }
         }
     }
-
-    public static class CRMControllerExtention
-    {
-        public static DIHelper AddCRMControllerService(this DIHelper services)
-        {
-            return services.AddCRMSecurityService()
-                           .AddDaoFactoryService()
-                           .AddApiContextService()
-                           .AddGlobalService()
-                           .AddMessageTargetService()
-                           .AddTaskWrapperHelperService()
-                           .AddFileStorageService()
-                           .AddNotifyClientService()
-                           .AddSecurityContextService()
-                           .AddUserManagerService()
-                           .AddCurrencyProviderService();
-                
-        }
-    }
-
 }

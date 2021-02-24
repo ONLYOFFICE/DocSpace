@@ -24,6 +24,7 @@
 */
 
 
+using ASC.CRM.Resources;
 using ASC.Data.Storage;
 using ASC.Web.Core;
 using ASC.Web.Core.WebZones;
@@ -33,8 +34,18 @@ using System;
 namespace ASC.Web.CRM.Configuration
 {
     [WebZone(WebZoneType.CustomProductList)]
-    public class VoipModule : IAddon, IRenderCustomNavigation
+    public class VoipModule : IAddon
     {
+        public VoipModule(PathProvider pathProvider,
+                          SetupInfo setupInfo)
+        {
+            PathProvider = pathProvider;
+            SetupInfo = setupInfo;
+        }
+
+        public PathProvider PathProvider { get; }
+        public SetupInfo SetupInfo { get; }
+
         public Guid ID
         {
             get { return WebItemManager.VoipModuleID; }
@@ -62,7 +73,7 @@ namespace ASC.Web.CRM.Configuration
 
         public string ProductClassName { get { return "voip"; } }
 
-        public bool Visible { get { return SetupInfo.VoipEnabled == "true"; } }
+        public bool Visible { get { return SetupInfo.VoipEnabled; } }
 
         public AddonContext Context { get; private set; }
 
@@ -86,33 +97,6 @@ namespace ASC.Web.CRM.Configuration
             get { return Context; }
         }
 
-        public Control LoadCustomNavigationControl(Page page)
-        {
-            return null;
-        }
-
-        public string RenderCustomNavigation(Page page)
-        {
-            try
-            {
-                if (!VoipNumberData.CanMakeOrReceiveCall) return string.Empty;
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
-            page.RegisterBodyScripts("~/js/asc/core/voip.navigationitem.js");
-
-            return
-                string.Format(@"<li class=""top-item-box voip display-none"">
-                                  <a class=""voipActiveBox inner-text"" title=""{0}"">
-                                      <svg><use base=""{1}"" href=""/skins/default/images/svg/top-studio-menu.svg#svgTopStudioMenuphone""></use></svg>
-                                      <span class=""inner-label"">{2}</span>
-                                  </a>
-                                </li>",
-                              "VoIP",
-                              WebPath.GetPath("/"),
-                              0);
-        }
+        public string ApiURL => throw new NotImplementedException();
     }
 }

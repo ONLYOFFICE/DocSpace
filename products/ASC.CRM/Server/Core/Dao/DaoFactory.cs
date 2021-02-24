@@ -26,8 +26,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using ASC.VoipService.Dao;
 using System;
-using ASC.Common;
-using ASC.Core.Common.Settings;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -155,37 +153,6 @@ namespace ASC.CRM.Core.Dao
         public VoipDao GetVoipDao()
         {
             return ServiceProvider.GetService<VoipDao>();
-        }
-    }
-
-    public static class DaoFactoryExtention
-    {
-        public static DIHelper AddDaoFactoryService(this DIHelper services)
-        {
-            services.TryAddScoped<DaoFactory>();
-
-            //    return services;
-            return services.AddTaskDaoService()
-                           .AddListItemDaoService()
-                           .AddContactDaoService()
-                           .AddCustomFieldDaoService()
-                           .AddDealDaoService()
-                           .AddDealMilestoneDaoService()
-                           .AddTagDaoService()
-                           .AddSearchDaoService()
-                           .AddRelationshipEventDaoService()
-                           .AddFileDaoService()
-                           .AddCasesDaoService()
-                           .AddTaskTemplateDaoService()
-                           .AddTaskTemplateContainerDaoService()
-                         //  .AddReportDaoService()
-                           .AddCurrencyRateDaoService()
-                           .AddCurrencyInfoDaoService()
-                           .AddContactInfoDaoService()
-                           .AddInvoiceDaoService()
-                           .AddInvoiceLineDaoService()
-                           .AddInvoiceTaxDaoService()
-                           .AddInvoiceLineDaoService();
         }
     }
 }

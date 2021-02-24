@@ -152,6 +152,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
+    [Transient]
     public class TaskWrapperHelper
     {
 
@@ -226,18 +227,6 @@ namespace ASC.Api.CRM.Wrappers
             result.CanEdit = CRMSecurity.CanEdit(task);
 
             return result;
-        }
-    }
-
-    public static class TaskWrapperHelperExtension
-    {
-        public static DIHelper AddTaskWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<TaskWrapperHelper>();
-
-            return services.AddApiDateTimeHelper()
-                           .AddEmployeeWraper()
-                           .AddCRMSecurityService();
         }
     }
 }

@@ -42,7 +42,9 @@ using ASC.Web.Core.Users;
 using ASC.Web.CRM.Services.NotifyService;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
-using Ionic.Zip;
+
+using ICSharpCode.SharpZipLib.Zip;
+
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System;
@@ -58,7 +60,12 @@ namespace ASC.Web.CRM.Classes
 {
     public class ExportDataCache
     {
-        public readonly ICache Cache = AscCache.Memory;
+        public ExportDataCache(AscCache ascCache)
+        {
+            Cache = ascCache;
+        }
+
+        public readonly ICache Cache;
 
         public String GetStateCacheKey(string key)
         {
@@ -146,9 +153,7 @@ namespace ASC.Web.CRM.Classes
         public SecurityContext SecurityContext { get; }
         public DaoFactory DaoFactory { get; }
         public ExportDataCache ExportDataCache { get; }
-
         public UserManager UserManager { get; }
-
         public FileUtility FileUtility { get; }
 
         private readonly int _tenantId;
@@ -324,7 +329,7 @@ namespace ASC.Web.CRM.Classes
                 _totalCount += historyDao.GetAllItemsCount();
                 _totalCount += invoiceItemDao.GetInvoiceItemsCount();
 
-                using (var zipStream = new ZipOutputStream(stream, true))
+                using (var zipStream = new ZipOutputStream(stream))
                 {
                     zipStream.AlternateEncoding = Encoding.UTF8;
                     zipStream.AlternateEncodingUsage = ZipOption.Always;

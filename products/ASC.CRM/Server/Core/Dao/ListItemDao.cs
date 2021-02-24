@@ -25,6 +25,7 @@
 
 using ASC.Collections;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -53,11 +54,13 @@ namespace ASC.CRM.Core.Dao
             TenantManager tenantManager,
             SecurityContext securityContext,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> logger)
+            IOptionsMonitor<ILog> logger,
+            AscCache ascCache)
             : base(dbContextManager,
                   tenantManager,
                   securityContext,
-                  logger)
+                  logger,
+                  ascCache)
         {
             _listItemCache = new HttpRequestDictionary<ListItem>(httpContextAccessor?.HttpContext, "crm_list_item");
         }
@@ -113,17 +116,20 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
+    [Scope]
     public class ListItemDao : AbstractDao
     {
         public ListItemDao(
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> logger)
+            IOptionsMonitor<ILog> logger,
+            AscCache ascCache)
             : base(dbContextManager,
                   tenantManager,
                   securityContext,
-                  logger)
+                  logger,
+                  ascCache)
         {
 
 
@@ -599,16 +605,4 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
-
-    public static class ListItemDaoExtention
-    {
-        public static DIHelper AddListItemDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<ListItemDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService();
-        }
-    }
 }

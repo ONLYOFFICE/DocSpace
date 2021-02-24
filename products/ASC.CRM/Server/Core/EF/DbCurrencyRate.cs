@@ -10,12 +10,15 @@ namespace ASC.CRM.Core.EF
         [Key]
         [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
+
         [Required]
         [Column("from_currency", TypeName = "varchar(255)")]
         public string FromCurrency { get; set; }
+        
         [Required]
         [Column("to_currency", TypeName = "varchar(255)")]
         public string ToCurrency { get; set; }
+        
         [Column("rate", TypeName = "decimal(10,2)")]
         public decimal Rate { get; set; }
         [Required]

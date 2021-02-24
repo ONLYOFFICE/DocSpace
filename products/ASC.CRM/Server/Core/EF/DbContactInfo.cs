@@ -1,19 +1,23 @@
 ﻿using ASC.CRM.Core.Enums;
+using ASC.ElasticSearch;
+
+using Nest;
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
 
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_contact_info")]
-    public partial class DbContactInfo : IDbCrm
+    public partial class DbContactInfo : IDbCrm, ISearchItem
     {
-        [Key]
-        [Column("id", TypeName = "int(10)")]
         public int Id { get; set; }
 
         [Required]
         [Column("data", TypeName = "text")]
+        [Text(Analyzer = "whitespacecustom")]
         public string Data { get; set; }
         
         [Column("category", TypeName = "int(255)")]
@@ -36,6 +40,26 @@ namespace ASC.CRM.Core.EF
         
         [Column("last_modifed_by", TypeName = "char(38)")]
         public Guid LastModifedBy { get; set; }
+
+        [NotMapped]
+        [Ignore]
+        public string IndexName
+        {
+            get
+            {
+                return "crm_field_value";
+            }
+        }
+
+        [Ignore]
+        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        {
+            get
+            {
+                return (a) => new[] { Value };
+            }
+        }
+
 
     }
 }

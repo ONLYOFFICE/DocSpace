@@ -24,6 +24,7 @@
 */
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -44,6 +45,7 @@ using System.Linq;
 
 namespace ASC.CRM.Core.Dao
 {
+    [Scope]
     public class CustomFieldDao : AbstractDao
     {
         public CustomFieldDao(
@@ -51,19 +53,21 @@ namespace ASC.CRM.Core.Dao
             TenantManager tenantManager,
             SecurityContext securityContext,
             TenantUtil tenantUtil,
-            IOptionsMonitor<ILog> logger
+            IOptionsMonitor<ILog> logger,
+            AscCache ascCache
             ) :
               base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger)
+                 logger,
+                 ascCache)
         {
             TenantUtil = tenantUtil;
         }
 
         public TenantUtil TenantUtil { get; }
 
-        public FactoryIndexer<FieldsWrapper> FactoryIndexer { get; }
+        public FactoryIndexerFieldValue FactoryIndexer { get; }
 
         public void SaveList(List<CustomField> items)
         {
@@ -122,16 +126,7 @@ namespace ASC.CRM.Core.Dao
 
                 var id = dbFieldValue.Id;
 
-                FactoryIndexer.IndexAsync(new FieldsWrapper
-                {
-                    Id = id,
-                    EntityId = entityID,
-                    EntityType = (int)entityType,
-                    Value = fieldValue,
-                    FieldId = fieldID,
-                    LastModifiedOn = lastModifiedOn,
-                    TenantId = TenantID
-                });
+                FactoryIndexer.Index(dbFieldValue);
             }
         }
 
@@ -582,16 +577,4 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
-    public static class CustomFieldDaoExtention
-    {
-        public static DIHelper AddCustomFieldDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<CustomFieldDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService()
-                           .AddTenantUtilService();
-        }
-    }
 }

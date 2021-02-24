@@ -75,6 +75,7 @@ namespace ASC.Api.CRM
         }
     }
 
+    [Transient]
     public class CurrencyInfoWrapperHelper
     {
         public CurrencyInfoWrapperHelper()
@@ -98,19 +99,7 @@ namespace ASC.Api.CRM
             };
         }
     }
-
-    public static class CurrencyInfoWrapperExtension
-    {
-        public static DIHelper AddCurrencyInfoWrapperService(this DIHelper services)
-        {
-            services.TryAddTransient<CurrencyInfoWrapperHelper>();
-
-            return services;
-        }
-    }
-
-
-
+      
     /// <summary>
     ///  Currency rate information
     /// </summary>
@@ -131,7 +120,7 @@ namespace ASC.Api.CRM
         public decimal Rate { get; set; }
     }
 
-
+    [Transient]
     public class CurrencyRateInfoWrapperHelper
     {
         public CurrencyRateInfoWrapperHelper(CurrencyInfoWrapperHelper currencyInfoWrapperHelper)
@@ -155,16 +144,6 @@ namespace ASC.Api.CRM
                 IsBasic = currencyInfoWrapper.IsBasic,
                 Rate = rate
             };
-        }
-    }
-
-    public static class CurrencyRateInfoWrapperExtension
-    {
-        public static DIHelper AddCurrencyRateInfoWrapperService(this DIHelper services)
-        {
-            services.TryAddTransient<CurrencyRateInfoWrapper>();
-
-            return services;
         }
     }
 }

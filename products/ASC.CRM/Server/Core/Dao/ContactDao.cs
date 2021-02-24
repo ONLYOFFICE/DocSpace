@@ -26,6 +26,7 @@
 
 using ASC.Collections;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -62,9 +63,10 @@ namespace ASC.CRM.Core.Dao
             TenantUtil tenantUtil,
             AuthorizationManager authorizationManager,
             FilesIntegration filesIntegration,
-            FactoryIndexer<ContactsWrapper> factoryIndexerContactsWrapper,
-            FactoryIndexer<EmailWrapper> factoryIndexerEmailWrapper,
+            FactoryIndexerContact factoryIndexerContact,
+            FactoryIndexerContactInfo factoryIndexerContactInfo,
             IOptionsMonitor<ILog> logger,
+            AscCache ascCache, 
             DbContextManager<CoreDbContext> coreDbContext,
             BundleSearch bundleSearch) :
                  base(dbContextManager,
@@ -74,9 +76,10 @@ namespace ASC.CRM.Core.Dao
                  tenantUtil,
                  authorizationManager,
                  filesIntegration,
-                 factoryIndexerContactsWrapper,
-                 factoryIndexerEmailWrapper,
+                 factoryIndexerContact,
+                 factoryIndexerContactInfo,
                  logger,
+                 ascCache,
                  coreDbContext,
                  bundleSearch)
         {
@@ -126,6 +129,7 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
+    [Scope]
     public class ContactDao : AbstractDao
     {
         public ContactDao(
@@ -136,31 +140,35 @@ namespace ASC.CRM.Core.Dao
             TenantUtil tenantUtil,
             AuthorizationManager authorizationManager,
             FilesIntegration filesIntegration,
-            FactoryIndexer<ContactsWrapper> factoryIndexerContactsWrapper,
-            FactoryIndexer<EmailWrapper> factoryIndexerEmailWrapper,
+            FactoryIndexerContact factoryIndexerContact,
+            FactoryIndexerContactInfo factoryIndexerContactInfo,
             IOptionsMonitor<ILog> logger,
+            AscCache ascCache,
             DbContextManager<CoreDbContext> coreDbContext,
             BundleSearch bundleSearch
             ) :
                  base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger)
+                 logger,
+                 ascCache)
         {
             CRMSecurity = cRMSecurity;
             TenantUtil = tenantUtil;
             AuthorizationManager = authorizationManager;
             FilesIntegration = filesIntegration;
-            FactoryIndexerContactsWrapper = factoryIndexerContactsWrapper;
-            FactoryIndexerEmailWrapper = factoryIndexerEmailWrapper;
+            FactoryIndexerContact = factoryIndexerContact;
+            FactoryIndexerContactInfo = factoryIndexerContactInfo;
             CoreDbContext = coreDbContext.Value;
             BundleSearch = bundleSearch;
+
         }
 
         public BundleSearch BundleSearch { get; }
         public CoreDbContext CoreDbContext { get; }
-        public FactoryIndexer<EmailWrapper> FactoryIndexerEmailWrapper { get; }
-        public FactoryIndexer<ContactsWrapper> FactoryIndexerContactsWrapper { get; }
+        public FactoryIndexerContact FactoryIndexerContact { get; }
+        public FactoryIndexerContactInfo FactoryIndexerContactInfo { get; }
+
         public FilesIntegration FilesIntegration { get; }
         public AuthorizationManager AuthorizationManager { get; }
         public TenantUtil TenantUtil { get; }
@@ -411,12 +419,14 @@ namespace ASC.CRM.Core.Dao
 
             List<int> contactsIds;
 
-            if (FactoryIndexerEmailWrapper.TrySelectIds(s => s.MatchAll(searchText), out contactsIds))
+            IReadOnlyCollection<DbContactInfo> dbContactInfos;
+
+            if (FactoryIndexerContactInfo.TrySelect(s => s.MatchAll(searchText), out dbContactInfos))
             {
-                if (!contactsIds.Any())
+                if (!dbContactInfos.Any())
                     return contacts;
 
-                ids = contactsIds.Select(r => Convert.ToInt32(r)).ToList();
+                ids = dbContactInfos.Select(r => r.Id).ToList();
             }
 
             var isAdmin = CRMSecurity.IsAdmin;
@@ -1271,12 +1281,10 @@ namespace ASC.CRM.Core.Dao
             CRMDbContext.Update(itemToUpdate);
             CRMDbContext.SaveChanges();
 
-
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
 
-            FactoryIndexerContactsWrapper.UpdateAsync(contact);
-
+            FactoryIndexerContact.Update(itemToUpdate);
         }
 
         public void UpdateContactStatus(IEnumerable<int> contactid, int statusid)
@@ -1394,7 +1402,9 @@ namespace ASC.CRM.Core.Dao
         public virtual int SaveContact(Contact contact)
         {
             var result = SaveContactToDb(contact);
-            FactoryIndexerContactsWrapper.IndexAsync(contact);
+
+            FactoryIndexerContact.Index(Query(CRMDbContext.Contacts)
+                                        .Where(x => x.Id == contact.ID).Single());
 
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
@@ -1606,20 +1616,13 @@ namespace ASC.CRM.Core.Dao
 
             CRMSecurity.DemandDelete(contact);
 
+            FactoryIndexerContact.Delete(Query(CRMDbContext.Contacts)
+              .Where(x => x.Id == contactID).Single());
+
             DeleteBatchContactsExecute(new List<Contact>() { contact });
 
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
-
-            var person = contact as Person;
-            if (person != null)
-            {
-                FactoryIndexerContactsWrapper.DeleteAsync(person);
-            }
-            else
-            {
-                FactoryIndexerContactsWrapper.DeleteAsync(contact as Company);
-            }
 
             return contact;
         }
@@ -2082,24 +2085,5 @@ namespace ASC.CRM.Core.Dao
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
         }
-    }
-
-    public static class ContactDaoExtention
-    {
-        public static DIHelper AddContactDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<ContactDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddCRMSecurityService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService()
-                           .AddTenantUtilService()
-                           .AddAuthorizationManagerService()
-                           .AddFilesIntegrationService()
-                           .AddFactoryIndexerService<ContactsWrapper>()
-                           .AddFactoryIndexerService<EmailWrapper>()
-                           .AddBundleSearchService();
-        }
-    }
+    }  
 }

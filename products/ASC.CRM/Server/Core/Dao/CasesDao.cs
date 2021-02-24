@@ -46,6 +46,7 @@ using SortedByType = ASC.CRM.Core.Enums.SortedByType;
 using Microsoft.Extensions.Options;
 using ASC.Common.Logging;
 using ASC.Common;
+using ASC.Common.Caching;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -61,6 +62,7 @@ namespace ASC.CRM.Core.Dao
             FilesIntegration filesIntegration,
             AuthorizationManager authorizationManager,
             IOptionsMonitor<ILog> logger,
+            AscCache ascCache,
             IHttpContextAccessor httpContextAccessor,
             BundleSearch bundleSearch)
             :
@@ -72,6 +74,7 @@ namespace ASC.CRM.Core.Dao
                  filesIntegration,
                  authorizationManager,
                  logger,
+                 ascCache,
                  bundleSearch)
 
         {
@@ -109,6 +112,7 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
+    [Scope]
     public class CasesDao : AbstractDao
     {
         public CasesDao(
@@ -120,12 +124,14 @@ namespace ASC.CRM.Core.Dao
             FilesIntegration filesIntegration,
             AuthorizationManager authorizationManager,
             IOptionsMonitor<ILog> logger,
+            AscCache ascCache,
             BundleSearch bundleSearch
             ) :
                  base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger)
+                 logger,
+                 ascCache)
         {
             CRMSecurity = cRMSecurity;
             TenantUtil = tenantUtil;
@@ -682,23 +688,6 @@ namespace ASC.CRM.Core.Dao
 
                 CRMSecurity.SetAccessTo(item, responsibles.Distinct().ToList());
             }
-        }
-    }
-
-    public static class CasesDaoExtention
-    {
-        public static DIHelper AddCasesDaoService(this DIHelper services)
-        {            
-            services.TryAddScoped<CasesDao>();
-                     
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService()
-                           .AddCRMSecurityService()
-                           .AddTenantUtilService()
-                           .AddFilesIntegrationService()
-                           .AddAuthorizationManagerService()
-                           .AddBundleSearchService();
         }
     }
 }

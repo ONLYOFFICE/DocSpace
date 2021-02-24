@@ -26,102 +26,39 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Common;
-using ASC.CRM.Core;
-using ASC.CRM.Core.Enums;
-using ASC.ElasticSearch;
+using ASC.CRM.Core.EF;
 
 namespace ASC.Web.CRM.Core.Search
 {
     public class BundleSearch
     {
-        public BundleSearch(FactoryIndexer<ContactsWrapper> contactsWrapperFactoryIndexer,
-                            FactoryIndexer<InfoWrapper> infoWrapperFactoryIndexer,
-                            FactoryIndexer<FieldsWrapper> fieldsWrapperFactoryIndexer,
-                            FactoryIndexer<EventsWrapper> eventsWrapperFactoryIndexer,
-                            FactoryIndexer<DealsWrapper> dealsWrapperFactoryIndexer,
-                            FactoryIndexer<TasksWrapper> tasksWrapperFactoryIndexer,
-                            FactoryIndexer<CasesWrapper> casesWrapperFactoryIndexer,
-                            FactoryIndexer<InvoicesWrapper> invoicesWrapperFactoryIndexer,
-                            FactoryIndexerHelper factoryIndexerHelper,
-                            ContactsWrapper contactsWrapper,
-                            InfoWrapper infoWrapper,
-                            FieldsWrapper fieldsWrapper,
-                            EventsWrapper eventsWrapper,
-                            DealsWrapper dealsWrapper,
-                            TasksWrapper tasksWrapper,
-                            CasesWrapper casesWrapper,
-                            InvoicesWrapper invoicesWrapper)
+        public BundleSearch(FactoryIndexerContact factoryIndexerContact,
+                            FactoryIndexerContactInfo factoryIndexerContactInfo,
+                            FactoryIndexerFieldValue fieldsWrapperFactoryIndexer,
+                            FactoryIndexerEvents factoryIndexerEvents,
+                            FactoryIndexerDeal factoryIndexerDeal,
+                            FactoryIndexerTask factoryIndexerTask,
+                            FactoryIndexerCase factoryIndexerCase,
+                            FactoryIndexerInvoice factoryIndexerInvoice)
         {
-            ContactsWrapperFactoryIndexer = contactsWrapperFactoryIndexer;
-            InfoWrapperFactoryIndexer = infoWrapperFactoryIndexer;
-            FieldsWrapperFactoryIndexer = fieldsWrapperFactoryIndexer;
-            EventsWrapperFactoryIndexer = eventsWrapperFactoryIndexer;
-            DealsWrapperFactoryIndexer = dealsWrapperFactoryIndexer;
-            TasksWrapperFactoryIndexer = tasksWrapperFactoryIndexer;
-            CasesWrapperFactoryIndexer = casesWrapperFactoryIndexer;
-            InvoicesWrapperFactoryIndexer = invoicesWrapperFactoryIndexer;
-            FactoryIndexerHelper = factoryIndexerHelper;
-
-            ContactsWrapper = contactsWrapper;
-            InfoWrapper = infoWrapper;
-            FieldsWrapper = fieldsWrapper;
-            EventsWrapper = eventsWrapper;
-            DealsWrapper = dealsWrapper;
-            TasksWrapper = tasksWrapper;
-            CasesWrapper = casesWrapper;
-            InvoicesWrapper = invoicesWrapper;
-
+            FactoryIndexerContact = factoryIndexerContact;
+            FactoryIndexerContactInfo = factoryIndexerContactInfo;
+            FactoryIndexerFieldValue = fieldsWrapperFactoryIndexer;
+            FactoryIndexerEvents = factoryIndexerEvents;
+            FactoryIndexerDeal = factoryIndexerDeal;
+            FactoryIndexerTask = factoryIndexerTask;
+            FactoryIndexerCase = factoryIndexerCase;
+            FactoryIndexerInvoice = factoryIndexerInvoice;
         }
 
-        public ContactsWrapper ContactsWrapper { get; }
-        public InfoWrapper InfoWrapper { get; }
-        public FieldsWrapper FieldsWrapper { get; }
-        public EventsWrapper EventsWrapper { get; }
-        public DealsWrapper DealsWrapper { get; }
-        public TasksWrapper TasksWrapper { get; }
-        public CasesWrapper CasesWrapper { get; }
-        public InvoicesWrapper InvoicesWrapper { get; }
-
-        public FactoryIndexerHelper FactoryIndexerHelper { get; }
-        public FactoryIndexer<ContactsWrapper> ContactsWrapperFactoryIndexer { get; }
-        public FactoryIndexer<InfoWrapper> InfoWrapperFactoryIndexer { get; }
-        public FactoryIndexer<FieldsWrapper> FieldsWrapperFactoryIndexer { get; }
-        public FactoryIndexer<EventsWrapper> EventsWrapperFactoryIndexer { get; }
-        public FactoryIndexer<DealsWrapper> DealsWrapperFactoryIndexer { get; }
-        public FactoryIndexer<TasksWrapper> TasksWrapperFactoryIndexer { get; }
-        public FactoryIndexer<CasesWrapper> CasesWrapperFactoryIndexer { get; }
-        public FactoryIndexer<InvoicesWrapper> InvoicesWrapperFactoryIndexer { get; }
-
-        public bool Support(EntityType entityType)
-        {
-            switch (entityType)
-            {
-                case EntityType.Person:
-                case EntityType.Contact:
-                case EntityType.Company:
-                    return FactoryIndexerHelper.Support(ContactsWrapper) &&
-                           FactoryIndexerHelper.Support(InfoWrapper) &&
-                           FactoryIndexerHelper.Support(FieldsWrapper) &&
-                           FactoryIndexerHelper.Support(EventsWrapper);
-                case EntityType.Opportunity:
-                    return FactoryIndexerHelper.Support(DealsWrapper) &&
-                           FactoryIndexerHelper.Support(FieldsWrapper) &&
-                           FactoryIndexerHelper.Support(EventsWrapper);
-                case EntityType.RelationshipEvent:
-                    return FactoryIndexerHelper.Support(EventsWrapper);
-                case EntityType.Task:
-                    return FactoryIndexerHelper.Support(TasksWrapper);
-                case EntityType.Case:
-                    return FactoryIndexerHelper.Support(CasesWrapper) &&
-                           FactoryIndexerHelper.Support(FieldsWrapper) &&
-                           FactoryIndexerHelper.Support(EventsWrapper);
-                case EntityType.Invoice:
-                    return FactoryIndexerHelper.Support(InvoicesWrapper);
-            }
-
-            return false;
-        }
+        public FactoryIndexerContact FactoryIndexerContact { get; }
+        public FactoryIndexerContactInfo FactoryIndexerContactInfo { get; }
+        public FactoryIndexerFieldValue FactoryIndexerFieldValue { get; }
+        public FactoryIndexerEvents FactoryIndexerEvents { get; }
+        public FactoryIndexerDeal FactoryIndexerDeal { get; }
+        public FactoryIndexerTask FactoryIndexerTask { get; }
+        public FactoryIndexerCase FactoryIndexerCase { get; }
+        public FactoryIndexerInvoice FactoryIndexerInvoice { get; }
 
         public bool TrySelectCase(string text, out List<int> result)
         {
@@ -129,21 +66,23 @@ namespace ASC.Web.CRM.Core.Search
             result = new List<int>();
 
             List<int> casesId;
-            if (CasesWrapperFactoryIndexer.TrySelectIds(s => s.MatchAll(text), out casesId))
+
+            if (FactoryIndexerCase.TrySelectIds(s => s.MatchAll(text), out casesId))
             {
                 result.AddRange(casesId);
                 success = true;
             }
 
-            IReadOnlyCollection<FieldsWrapper> casesCustom;
-            if (FieldsWrapperFactoryIndexer.TrySelect(s => s.MatchAll(text).Where(r => r.EntityType, 7), out casesCustom))
+            IReadOnlyCollection<DbFieldValue> casesCustom;
+            if (FactoryIndexerFieldValue.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 7), out casesCustom))
             {
                 result.AddRange(casesCustom.Select(r => r.EntityId).ToList());
                 success = true;
             }
 
-            IReadOnlyCollection<EventsWrapper> events;
-            if (!EventsWrapperFactoryIndexer.TrySelect(s => s.MatchAll(text).Where(r => r.EntityType, 7).Gt(r => r.EntityId, 0), out events))
+            IReadOnlyCollection<DbRelationshipEvent> events;
+            
+            if (!FactoryIndexerEvents.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 7).Gt(r => r.EntityId, 0), out events))
             {
                 result.AddRange(events.Select(r => r.EntityId).ToList());
                 success = true;
@@ -159,31 +98,31 @@ namespace ASC.Web.CRM.Core.Search
 
             List<int> contactsId;
 
-            if (ContactsWrapperFactoryIndexer.TrySelectIds(s => s.MatchAll(text), out contactsId))
+            if (FactoryIndexerContact.TrySelectIds(s => s.MatchAll(text), out contactsId))
             {
                 result.AddRange(contactsId);
                 success = true;
             }
 
-            IReadOnlyCollection<InfoWrapper> infos;
+            IReadOnlyCollection<DbContactInfo> infos;
 
-            if (InfoWrapperFactoryIndexer.TrySelect(s => s.MatchAll(text), out infos))
+            if (FactoryIndexerContactInfo.TrySelect(s => s.MatchAll(text), out infos))
             {
                 result.AddRange(infos.Select(r => r.ContactId).ToList());
                 success = true;
             }
 
-            IReadOnlyCollection<FieldsWrapper> personCustom;
+            IReadOnlyCollection<DbFieldValue> personCustom;
 
-            if (FieldsWrapperFactoryIndexer.TrySelect(s => s.MatchAll(text).In(r => r.EntityType, new[] { 0, 4, 5 }), out personCustom))
+            if (FactoryIndexerFieldValue.TrySelect(s => s.MatchAll(text).In(r => r.EntityType, new[] { 0, 4, 5 }), out personCustom))
             {
                 result.AddRange(personCustom.Select(r => r.EntityId).ToList());
                 success = true;
             }
 
-            IReadOnlyCollection<EventsWrapper> events;
+            IReadOnlyCollection<DbRelationshipEvent> events;
 
-            if (EventsWrapperFactoryIndexer.TrySelect(s => s.MatchAll(text).Gt(r => r.ContactId, 0), out events))
+            if (FactoryIndexerEvents.TrySelect(s => s.MatchAll(text).Gt(r => r.ContactId, 0), out events))
             {
                 result.AddRange(events.Select(r => r.ContactId).ToList());
                 success = true;
@@ -198,54 +137,30 @@ namespace ASC.Web.CRM.Core.Search
             result = new List<int>();
 
             List<int> dealsId;
-            if (DealsWrapperFactoryIndexer.TrySelectIds(s => s.MatchAll(text), out dealsId))
+           
+            if (FactoryIndexerDeal.TrySelectIds(s => s.MatchAll(text), out dealsId))
             {
                 result.AddRange(dealsId);
                 success = true;
             }
 
-            IReadOnlyCollection<FieldsWrapper> casesCustom;
-            if (FieldsWrapperFactoryIndexer.TrySelect(s => s.MatchAll(text).Where(r => r.EntityType, 1), out casesCustom))
+            IReadOnlyCollection<DbFieldValue> casesCustom;
+            
+            if (FactoryIndexerFieldValue.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 1), out casesCustom))
             {
                 result.AddRange(casesCustom.Select(r => r.EntityId).ToList());
                 success = true;
             }
 
-            IReadOnlyCollection<EventsWrapper> events;
-            if (!EventsWrapperFactoryIndexer.TrySelect(s => s.MatchAll(text).Where(r => r.EntityType, 1).Gt(r => r.EntityId, 0), out events))
+            IReadOnlyCollection<DbRelationshipEvent> events;
+
+            if (!FactoryIndexerEvents.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 1).Gt(r => r.EntityId, 0), out events))
             {
                 result.AddRange(events.Select(r => r.EntityId).ToList());
                 success = true;
             }
 
             return success;
-        }
-    }
-
-    public static class BundleSearchExtention
-    {
-        public static DIHelper AddBundleSearchService(this DIHelper services)
-        {
-            services.TryAddScoped<BundleSearch>();
-
-
-            return services.AddFactoryIndexerService<ContactsWrapper>()
-                           .AddFactoryIndexerService<InfoWrapper>()
-                           .AddFactoryIndexerService<FieldsWrapper>()
-                           .AddFactoryIndexerService<EventsWrapper>()
-                           .AddFactoryIndexerService<DealsWrapper>()
-                           .AddFactoryIndexerService<TasksWrapper>()
-                           .AddFactoryIndexerService<CasesWrapper>()
-                           .AddFactoryIndexerService<InvoicesWrapper>()
-                           .AddFactoryIndexerHelperService()
-                           .AddContactsWrapperService()
-                           .AddInfoWrapperService()
-                           .AddFieldsWrapperService()
-                           .AddEventsWrapperService()
-                           .AddDealsWrapperService()
-                           .AddTasksWrapperService()
-                           .AddCasesWrapperService()
-                           .AddInvoicesWrapperService();
         }
     }
 }

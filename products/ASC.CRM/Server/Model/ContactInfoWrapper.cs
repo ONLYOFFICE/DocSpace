@@ -108,7 +108,6 @@ namespace ASC.Api.CRM.Wrappers
         [DataMember(Order = 8, IsRequired = false, EmitDefaultValue = false)]
         public Boolean IsPrimary { get; set; }
 
-
         public static Address GetSample()
         {
             return new Address
@@ -166,6 +165,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
+    [Transient]
     public class ContactInfoWrapperHelper
     {
         public ContactInfoWrapperHelper()
@@ -187,15 +187,5 @@ namespace ASC.Api.CRM.Wrappers
             };
         }
 
-    }
-
-    public static class ContactInfoWrapperHelperExtension
-    {
-        public static DIHelper AddContactInfoWrapperService(this DIHelper services)
-        {
-            services.TryAddTransient<ContactInfoWrapperHelper>();
-
-            return services;
-        }
     }
 }

@@ -56,7 +56,7 @@ namespace ASC.CRM.Core.Dao
                       SecurityContext securityContext,
                       CRMSecurity cRMSecurity,
                       TenantUtil tenantUtil,
-                      FactoryIndexer<TasksWrapper> factoryIndexer,
+                      FactoryIndexerTask factoryIndexer,
                       IOptionsMonitor<ILog> logger,
                       IHttpContextAccessor httpContextAccessor,
                       DbContextManager<UserDbContext> userDbContext,
@@ -113,6 +113,7 @@ namespace ASC.CRM.Core.Dao
 
     }
 
+    [Scope]
     public class TaskDao : AbstractDao
     {
         public TaskDao(DbContextManager<CRMDbContext> dbContextManager,
@@ -120,7 +121,7 @@ namespace ASC.CRM.Core.Dao
                        SecurityContext securityContext,
                        CRMSecurity cRMSecurity,
                        TenantUtil tenantUtil,
-                       FactoryIndexer<TasksWrapper> factoryIndexer,
+                       FactoryIndexerTask factoryIndexer,
                        IOptionsMonitor<ILog> logger,
                        DbContextManager<UserDbContext> userDbContext,
                        DbContextManager<CoreDbContext> coreDbContext
@@ -141,7 +142,7 @@ namespace ASC.CRM.Core.Dao
 
         public UserDbContext UserDbContext { get; }
 
-        public FactoryIndexer<TasksWrapper> FactoryIndexer { get; }
+        public FactoryIndexerTask FactoryIndexer { get; }
 
         public TenantUtil TenantUtil { get; }
 
@@ -853,7 +854,6 @@ namespace ASC.CRM.Core.Dao
                 CRMDbContext.SaveChanges();
 
                 newTask.ID = itemToInsert.Id;
-
             }
             else
             {
@@ -889,12 +889,9 @@ namespace ASC.CRM.Core.Dao
                 newTask.LastModifedBy = SecurityContext.CurrentAccount.ID;
 
                 newTask.IsClosed = oldTask.IsClosed;
-
             }
-
-           
-
-            FactoryIndexer.IndexAsync(TasksWrapper.FromTask(TenantID, newTask));
+            
+            FactoryIndexer.Index(Query(CRMDbContext.Tasks).Where(x => x.Id == newTask.ID).Single());
 
             return newTask;
         }
@@ -936,7 +933,7 @@ namespace ASC.CRM.Core.Dao
 
             newTask.ID = dbTask.Id;
 
-            FactoryIndexer.IndexAsync(TasksWrapper.FromTask(TenantID, newTask));
+            FactoryIndexer.Index(dbTask);
 
             return newTask.ID;
         }
@@ -969,11 +966,14 @@ namespace ASC.CRM.Core.Dao
 
             CRMSecurity.DemandEdit(task);
 
+            var dbTask = Query(CRMDbContext.Tasks).Where(x => x.Id == taskID).Single();
+
+            FactoryIndexer.Delete(dbTask);
+
             CRMDbContext.Tasks.Remove(new DbTask { Id = taskID });
 
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
 
-            FactoryIndexer.DeleteAsync(TasksWrapper.FromTask(TenantID, task));
         }
 
         public List<Task> CreateByTemplate(List<TaskTemplate> templateItems, EntityType entityType, int entityID)
@@ -1177,21 +1177,4 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
-
-    public static class TaskDaoExtention
-    {
-        public static DIHelper AddTaskDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<TaskDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService()
-                           .AddCRMSecurityService()
-                           .AddTenantUtilService()
-                           .AddFactoryIndexerService<TasksWrapper>()
-                           .AddUserDbContextService()
-                           .AddCoreDbContextService();
-        }
-    }
 }

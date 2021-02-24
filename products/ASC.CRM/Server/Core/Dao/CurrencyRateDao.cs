@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -35,17 +36,20 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
 {
+    [Scope]
     public class CurrencyRateDao : AbstractDao
     {
         public CurrencyRateDao(
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> logger) :
+            IOptionsMonitor<ILog> logger,
+            AscCache ascCache) :
               base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger)
+                 logger, 
+                 ascCache)
         {
 
         }
@@ -172,18 +176,6 @@ namespace ASC.CRM.Core.Dao
                 LastModifedBy = dbCurrencyRate.LastModifedBy,
                 LastModifedOn = dbCurrencyRate.LastModifedOn
             };
-        }
-    }
-
-    public static class CurrencyRateDaoExtention
-    {
-        public static DIHelper AddCurrencyRateDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<CurrencyRateDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService();
         }
     }
 }

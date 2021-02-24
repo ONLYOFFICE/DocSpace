@@ -1,6 +1,8 @@
 ﻿using System;
 using ASC.Common;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -38,84 +40,16 @@ namespace ASC.CRM.Core.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbCase>(entity =>
-            {
-                entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on");
+            ModelBuilderWrapper.From(modelBuilder, Provider)
+                               .AddDbFieldValue()
+                               .AddDbContact()
+                               .AddDbCase()
+                               .AddDbRelationshipEvent()
+                               .AddDbDeal()
+                               .AddDbTask();
 
-                entity.HasIndex(e => e.LastModifedOn)
-                    .HasName("last_modifed_on");
 
-                entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
-
-                entity.Property(e => e.CreateBy)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.LastModifedBy)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.Title)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-            });
-
-            modelBuilder.Entity<DbContact>(entity =>
-            {
-                entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on");
-
-                entity.HasIndex(e => new { e.LastModifedOn, e.TenantId })
-                    .HasName("last_modifed_on");
-
-                entity.HasIndex(e => new { e.TenantId, e.CompanyId })
-                    .HasName("company_id");
-
-                entity.HasIndex(e => new { e.TenantId, e.DisplayName })
-                    .HasName("display_name");
-
-                entity.Property(e => e.CompanyName)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.CreateBy)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.Currency)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.DisplayName)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.FirstName)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.Industry)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.LastModifedBy)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.LastName)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.Notes)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.Title)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-            });
+       
 
             modelBuilder.Entity<DbContactInfo>(entity =>
             {
@@ -181,44 +115,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<DbDeal>(entity =>
-            {
-                entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on");
-
-                entity.HasIndex(e => e.DealMilestoneId)
-                    .HasName("deal_milestone_id");
-
-                entity.HasIndex(e => e.LastModifedOn)
-                    .HasName("last_modifed_on");
-
-                entity.HasIndex(e => new { e.TenantId, e.ContactId })
-                    .HasName("contact_id");
-
-                entity.Property(e => e.BidCurrency)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.CreateBy)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.Description)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.LastModifedBy)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.ResponsibleId)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.Title)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-            });
+;
 
             modelBuilder.Entity<DbDealMilestone>(entity =>
             {
@@ -271,26 +168,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<DbFieldValue>(entity =>
-            {
-                entity.HasIndex(e => e.FieldId)
-                    .HasName("field_id");
-
-                entity.HasIndex(e => e.LastModifedOn)
-                    .HasName("last_modifed_on");
-
-                entity.HasIndex(e => new { e.TenantId, e.EntityId, e.EntityType, e.FieldId })
-                    .HasName("tenant_id");
-
-                entity.Property(e => e.LastModifedBy)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.Value)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-            });
-
+    
             modelBuilder.Entity<DbInvoice>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
@@ -453,32 +331,6 @@ namespace ASC.CRM.Core.EF
                     .HasName("project_id");
             });
 
-            modelBuilder.Entity<DbRelationshipEvent>(entity =>
-            {
-                entity.HasIndex(e => e.ContactId)
-                    .HasName("IX_Contact");
-
-                entity.HasIndex(e => e.LastModifedOn)
-                    .HasName("last_modifed_on");
-
-                entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
-
-                entity.HasIndex(e => new { e.EntityId, e.EntityType })
-                    .HasName("IX_Entity");
-
-                entity.Property(e => e.Content)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.CreateBy)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.LastModifedBy)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-            });
 
             modelBuilder.Entity<DbReportFile>(entity =>
             {
@@ -509,49 +361,6 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_bin");
             });
 
-            modelBuilder.Entity<DbTask>(entity =>
-            {
-                entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on");
-
-                entity.HasIndex(e => e.Deadline)
-                    .HasName("deadline");
-
-                entity.HasIndex(e => e.LastModifedOn)
-                    .HasName("last_modifed_on");
-
-                entity.HasIndex(e => new { e.TenantId, e.ContactId })
-                    .HasName("IX_Contact");
-
-                entity.HasIndex(e => new { e.TenantId, e.ResponsibleId })
-                    .HasName("responsible_id");
-
-                entity.HasIndex(e => new { e.TenantId, e.EntityId, e.EntityType })
-                    .HasName("IX_Entity");
-
-                entity.Property(e => e.ContactId).HasDefaultValueSql("'-1'");
-
-                entity.Property(e => e.CreateBy)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.Description)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.LastModifedBy)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.ResponsibleId)
-                    .HasDefaultValueSql("'00000000-0000-0000-0000-000000000000'")
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.Title)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-            });
 
             modelBuilder.Entity<DbTaskTemplate>(entity =>
             {

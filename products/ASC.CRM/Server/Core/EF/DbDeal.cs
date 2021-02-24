@@ -23,72 +23,158 @@
  *
 */
 
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Model;
 using ASC.CRM.Core.Enums;
+using ASC.ElasticSearch;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+using Nest;
+
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
 
 namespace ASC.CRM.Core.EF
 {
+    [ElasticsearchType(RelationName = "crm_deal")]
     [Table("crm_deal")]
-    public partial class DbDeal : IDbCrm
+    public class DbDeal : IDbCrm, ISearchItem
     {
-        [Key]
-        [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
-        
-        [Required]
-        [Column("title", TypeName = "varchar(255)")]
+
+        [Text(Analyzer = "whitespacecustom")]
         public string Title { get; set; }
-        
-        [Column("description", TypeName = "text")]
+
+        [Text(Analyzer = "whitespacecustom")]
         public string Description { get; set; }
-        
-        [Required]
-        [Column("responsible_id", TypeName = "char(38)")]
+
+        [Column("responsible_id")]
         public Guid ResponsibleId { get; set; }
-        
-        [Column("contact_id", TypeName = "int(11)")]
+
+        [Column("contact_id")]
         public int ContactId { get; set; }
-        
-        [Column("create_on", TypeName = "datetime")]
+
+        [Column("create_on")]
         public DateTime CreateOn { get; set; }
-        
-        [Required]        
-        [Column("create_by", TypeName = "char(38)")]
+
+        [Column("create_by")]
         public Guid CreateBy { get; set; }
-        
-        [Column("bid_currency", TypeName = "varchar(255)")]
+
+        [Column("bid_currency")]
         public string BidCurrency { get; set; }
-        
-        [Column("bid_value", TypeName = "decimal(50,9)")]
+
+        [Column("bid_value")]
         public decimal BidValue { get; set; }
-        
-        [Column("bid_type", TypeName = "int(11)")]
+
+        [Column("bid_type")]
         public BidType BidType { get; set; }
-        
-        [Column("deal_milestone_id", TypeName = "int(11)")]
+
+        [Column("deal_milestone_id")]
         public int DealMilestoneId { get; set; }
-                
-        [Column("tenant_id", TypeName = "int(11)")]
+
+        [Column("tenant_id")]
         public int TenantId { get; set; }
-        
-        [Column("expected_close_date", TypeName = "datetime")]
+
+        [Column("expected_close_date")]
         public DateTime ExpectedCloseDate { get; set; }
-        
-        [Column("per_period_value", TypeName = "int(11)")]
+
+        [Column("per_period_value")]
         public int PerPeriodValue { get; set; }
-       
-        [Column("deal_milestone_probability", TypeName = "int(11)")]
+
+        [Column("deal_milestone_probability")]
         public int DealMilestoneProbability { get; set; }
-       
-        [Column("last_modifed_on", TypeName = "datetime")]
+
+        [Column("last_modifed_on")]
         public DateTime? LastModifedOn { get; set; }
 
-        [Column("last_modifed_by", TypeName = "char(38)")]
+        [Column("last_modifed_by")]
         public Guid LastModifedBy { get; set; }
 
-        [Column("actual_close_date", TypeName = "datetime")]
+        [Column("actual_close_date")]
         public DateTime? ActualCloseDate { get; set; }
+
+        [NotMapped]
+        [Ignore]
+        public string IndexName
+        {
+            get
+            {
+                return "crm_deal";
+            }
+        }
+
+        [Ignore]
+        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        {
+            get
+            {
+                return (a) => new[] { Title, Description };
+            }
+        }
+    }
+
+    public static class DbDealExtension
+    {
+        public static ModelBuilderWrapper AddDbDeal(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbDeal, Provider.MySql)
+                .Add(PgSqlAddDbDeal, Provider.Postgre);
+
+            return modelBuilder;
+        }
+        private static void MySqlAddDbDeal(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbDeal>(entity =>
+            {
+                entity.Property(x => x.Id)
+                      .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Title)
+                     .HasCharSet("utf8")
+                     .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Description)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.ResponsibleId)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.HasIndex(e => new { e.TenantId, e.ContactId })
+                    .HasName("contact_id");
+
+                entity.HasIndex(e => e.CreateOn)
+                    .HasName("create_on");
+
+                entity.Property(e => e.CreateBy)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.BidCurrency)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.HasIndex(e => e.LastModifedOn)
+                    .HasName("last_modifed_on");
+
+                entity.HasIndex(e => e.DealMilestoneId)
+                    .HasName("deal_milestone_id");
+
+                entity.Property(e => e.LastModifedBy)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+        }
+
+        private static void PgSqlAddDbDeal(this ModelBuilder modelBuilder)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

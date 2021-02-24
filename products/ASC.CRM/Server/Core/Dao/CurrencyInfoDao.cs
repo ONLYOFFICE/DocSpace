@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -36,16 +37,19 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
 {
+    [Scope]
     public class CurrencyInfoDao : AbstractDao
     {               
         public CurrencyInfoDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> logger) :
-                                                base(dbContextManager,
-                                                    tenantManager,
-                                                    securityContext,
-                                                    logger)
+            IOptionsMonitor<ILog> logger,
+            AscCache ascCache) :
+                            base(dbContextManager,
+                                tenantManager,
+                                securityContext,
+                                logger,
+                                ascCache)
         {
             
                         
@@ -88,18 +92,6 @@ namespace ASC.CRM.Core.Dao
                     dbCurrencyInfo.IsConvertable,
                     dbCurrencyInfo.IsBasic               
                 );
-        }
-    }
-
-    public static class CurrencyInfoDaoExtention
-    {
-        public static DIHelper AddCurrencyInfoDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<CurrencyInfoDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService();
         }
     }
 }

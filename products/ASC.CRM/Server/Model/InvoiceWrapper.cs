@@ -116,6 +116,7 @@ namespace ASC.Api.CRM.Wrappers
         public bool CanDelete { get; set; }
     }
 
+    [Transient]
     public class InvoiceBaseWrapperHelper
     {
         public InvoiceBaseWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
@@ -200,21 +201,6 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-    public static class InvoiceBaseWrapperHelperExtension
-    {
-        public static DIHelper AddInvoiceBaseWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<InvoiceBaseWrapperHelper>();
-
-            return services.AddApiDateTimeHelper()
-                           .AddEmployeeWraper()
-                           .AddCRMSecurityService()
-                           .AddSettingsManagerService()
-                           .AddCurrencyProviderService()
-                           .AddInvoiceStatusWrapperHelperService();
-        }
-    }
-
     /// <summary>
     ///  Invoice
     /// </summary>
@@ -254,7 +240,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-
+    [Transient]
     public class InvoiceWrapperHelper
     {
         public InvoiceWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
@@ -342,21 +328,6 @@ namespace ASC.Api.CRM.Wrappers
 
             return result;
 
-        }
-    }
-
-    public static class InvoiceWrapperHelperExtension
-    {
-        public static DIHelper AddInvoiceWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<InvoiceWrapperHelper>();
-
-            return services.AddCurrencyProviderService()
-                           .AddSettingsManagerService()
-                           .AddApiDateTimeHelper()
-                           .AddEmployeeWraper()
-                           .AddCRMSecurityService()
-                           .AddInvoiceStatusWrapperHelperService();
         }
     }
 
@@ -475,19 +446,18 @@ namespace ASC.Api.CRM.Wrappers
 
     }
 
-    public static class InvoiceItemWrapperHelperExtension
-    {
-        public static DIHelper AddInvoiceItemWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<InvoiceWrapperHelper>();
-
-            return services.AddCurrencyProviderService()
-                           .AddSettingsManagerService()
-                           .AddApiDateTimeHelper()
-                           .AddEmployeeWraper()
-                           .AddCRMSecurityService();
-        }
-    }
+    //public static class InvoiceItemWrapperHelperExtension
+    //{
+    //    public static DIHelper AddInvoiceItemWrapperHelperService(this DIHelper services)
+    //    {
+    //        services.TryAddTransient<InvoiceWrapperHelper>();
+    //        return services.AddCurrencyProviderService()
+    //                       .AddSettingsManagerService()
+    //                       .AddApiDateTimeHelper()
+    //                       .AddEmployeeWraper()
+    //                       .AddCRMSecurityService();
+    //    }
+    //}
 
     /// <summary>
     ///  Invoice Tax
@@ -525,6 +495,7 @@ namespace ASC.Api.CRM.Wrappers
         public bool CanDelete { get; set; }
     }
 
+    [Transient]
     public class InvoiceTaxWrapperHelper
     {
         public InvoiceTaxWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
@@ -553,16 +524,6 @@ namespace ASC.Api.CRM.Wrappers
                 CanEdit = CRMSecurity.CanEdit(invoiceTax),
                 CanDelete = CRMSecurity.CanDelete(invoiceTax)
             };
-        }
-    }
-
-    public static class InvoiceTaxWrapperHelperExtension
-    {
-        public static DIHelper AddInvoiceTaxWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<InvoiceTaxWrapperHelper>();
-
-            return services;
         }
     }
 
@@ -623,6 +584,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
+    [Transient]
     public class InvoiceLineWrapperHelper
     {
         public InvoiceLineWrapperHelper()
@@ -644,16 +606,6 @@ namespace ASC.Api.CRM.Wrappers
                 Price = invoiceLine.Price,
                 Discount = invoiceLine.Discount
             };
-        }
-    }
-
-    public static class InvoiceLineWrapperHelperExtension
-    {
-        public static DIHelper AddInvoiceLineWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<InvoiceLineWrapperHelper>();
-
-            return services;
         }
     }
 
@@ -685,6 +637,7 @@ namespace ASC.Api.CRM.Wrappers
 
     }
 
+    [Transient]
     public class InvoiceStatusWrapperHelper
     {
         public InvoiceStatusWrapperHelper()
@@ -701,13 +654,4 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-    public static class InvoiceStatusWrapperHelperExtension
-    {
-        public static DIHelper AddInvoiceStatusWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<InvoiceStatusWrapperHelper>();
-
-            return services;
-        }
-    }
 }

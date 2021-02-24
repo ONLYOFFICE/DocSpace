@@ -1,24 +1,31 @@
-﻿using ASC.CRM.Core.Enums;
+﻿using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Model;
+using ASC.CRM.Core.Enums;
+using ASC.ElasticSearch;
+
+using Microsoft.EntityFrameworkCore;
+
+using Nest;
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
 
 namespace ASC.CRM.Core.EF
 {
+    [ElasticsearchType(RelationName = "crm_contact")]
     [Table("crm_contact")]
-    public partial class DbContact : IDbCrm
+    public partial class DbContact : IDbCrm, ISearchItem
     {
-        [Key]
-        [Column("id", TypeName = "int(11)")]
         public int Id { get; set; }
                 
         [Column("is_company")]
         public bool IsCompany { get; set; }
         
-        [Column("notes", TypeName = "text")]
         public string Notes { get; set; }
         
-        [Column("title", TypeName = "varchar(255)")]
+        [Text(Analyzer = "whitespacecustom")]
         public string Title { get; set; }
         
         [Column("first_name", TypeName = "varchar(255)")]
@@ -66,6 +73,100 @@ namespace ASC.CRM.Core.EF
 
         [Column("tenant_id", TypeName = "int(11)")]
         public int TenantId { get; set; }
+
+        [NotMapped]
+        [Ignore]
+        public string IndexName
+        {
+            get
+            {
+                return "crm_contact";
+            }
+        }
+
+        [Ignore]
+        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        {
+            get
+            {
+                return (a) => new[] { Title };
+            }
+        }
+    }
+
+    public static class DbContactExtension
+    {
+        public static ModelBuilderWrapper AddDbContact(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbContact, Provider.MySql)
+                .Add(PgSqlAddDbContact, Provider.Postgre);
+
+            return modelBuilder;
+        }
+
+        private static void MySqlAddDbContact(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbContact>(entity =>
+            {
+                entity.HasIndex(e => e.CreateOn)
+                    .HasName("create_on");
+
+                entity.HasIndex(e => new { e.LastModifedOn, e.TenantId })
+                    .HasName("last_modifed_on");
+
+                entity.HasIndex(e => new { e.TenantId, e.CompanyId })
+                    .HasName("company_id");
+
+                entity.HasIndex(e => new { e.TenantId, e.DisplayName })
+                    .HasName("display_name");
+
+                entity.Property(e => e.CompanyName)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.CreateBy)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Currency)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.DisplayName)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.FirstName)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Industry)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.LastModifedBy)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.LastName)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Notes)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Title)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+        }
+
+        private static void PgSqlAddDbContact(this ModelBuilder modelBuilder)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 }

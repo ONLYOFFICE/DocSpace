@@ -28,6 +28,7 @@
 
 using ASC.Collections;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -53,11 +54,14 @@ namespace ASC.CRM.Core.Dao
                                 TenantManager tenantManager,
                                 SecurityContext securityContext,
                                 IHttpContextAccessor httpContextAccessor,
-                                IOptionsMonitor<ILog> logger)
+                                IOptionsMonitor<ILog> logger,
+                                AscCache ascCache)
             : base(dbContextManager,
                   tenantManager,
                   securityContext,
-                  logger)
+                  logger,
+                  ascCache
+                  )
         {
 
             _dealMilestoneCache = new HttpRequestDictionary<DealMilestone>(httpContextAccessor?.HttpContext, "crm_deal_milestone");
@@ -110,17 +114,20 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
+    [Scope]
     public class DealMilestoneDao : AbstractDao
     {
 
         public DealMilestoneDao(DbContextManager<CRMDbContext> dbContextManager,
                                 TenantManager tenantManager,
                                 SecurityContext securityContext,
-                                IOptionsMonitor<ILog> logger) :
-                                                                    base(dbContextManager,
-                                                                         tenantManager,
-                                                                         securityContext,
-                                                                         logger)
+                                IOptionsMonitor<ILog> logger,
+                                AscCache ascCache) :
+                                            base(dbContextManager,
+                                                    tenantManager,
+                                                    securityContext,
+                                                    logger,
+                                                    ascCache)
         {
 
 
@@ -295,18 +302,6 @@ namespace ASC.CRM.Core.Dao
                 Probability = dbDealMilestone.Probability,
                 SortOrder = dbDealMilestone.SortOrder
             };
-        }
-    }
-
-    public static class DealMilestoneDaoExtention
-    {
-        public static DIHelper AddDealMilestoneDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<DealMilestoneDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService();
         }
     }
 }

@@ -25,6 +25,7 @@
 
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -40,16 +41,19 @@ using System.Linq;
 
 namespace ASC.CRM.Core.Dao
 {
+    [Scope]
     public class TagDao : AbstractDao
     {
         public TagDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> logger) :
-                                            base(dbContextManager,
-                                                 tenantManager,
-                                                 securityContext,
-                                                 logger)
+            IOptionsMonitor<ILog> logger,
+            AscCache ascCache) :
+                        base(dbContextManager,
+                                tenantManager,
+                                securityContext,
+                                logger,
+                                ascCache)
         {
 
         }
@@ -418,15 +422,4 @@ namespace ASC.CRM.Core.Dao
 
     }
 
-    public static class TagDaoExtention
-    {
-        public static DIHelper AddTagDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<TagDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService();
-        }
-    }
 }     

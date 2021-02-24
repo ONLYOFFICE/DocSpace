@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -38,17 +39,20 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
 {
+    [Scope]
     public class FileDao : AbstractDao
     {
         public FileDao(FilesIntegration filesIntegration,
                        DbContextManager<CRMDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
-                       IOptionsMonitor<ILog> logger) :
+                       IOptionsMonitor<ILog> logger,
+                       AscCache ascCache) :
             base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger)
+                 logger,
+                 ascCache)
         {
             FilesIntegration = filesIntegration;
         }
@@ -99,16 +103,4 @@ namespace ASC.CRM.Core.Dao
 
     }
 
-    public static class FileDaoExtention
-    {
-        public static DIHelper AddFileDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<FileDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService()
-                           .AddFilesIntegrationService();
-        }
-    }
 }

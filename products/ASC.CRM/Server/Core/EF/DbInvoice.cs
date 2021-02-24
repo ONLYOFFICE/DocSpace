@@ -1,12 +1,17 @@
 ﻿using ASC.CRM.Core.Enums;
+using ASC.ElasticSearch;
+
+using Nest;
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
 
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_invoice")]
-    public partial class DbInvoice : IDbCrm
+    public class DbInvoice : IDbCrm, ISearchItem
     {
         [Key]
         [Column("id", TypeName = "int(11)")]
@@ -82,5 +87,24 @@ namespace ASC.CRM.Core.EF
         
         [Column("tenant_id", TypeName = "int(11)")]
         public int TenantId { get; set; }
+
+        [NotMapped]
+        [Ignore]
+        public string IndexName
+        {
+            get
+            {
+                return "crm_deal";
+            }
+        }
+
+        [Ignore]
+        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        {
+            get
+            {
+                return (a) => new[] { Description };
+            }
+        }
     }
 }

@@ -26,11 +26,9 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Api.Core;
-using ASC.Api.CRM.Wrappers;
+
 using ASC.Common;
 using ASC.CRM.Core;
-using ASC.Web.Api.Models;
 
 namespace ASC.Api.CRM
 {
@@ -69,6 +67,7 @@ namespace ASC.Api.CRM
         }
     }
 
+    [Transient]
     public class CurrencyRateWrapperHelper
     {
         public CurrencyRateWrapperHelper()
@@ -85,17 +84,4 @@ namespace ASC.Api.CRM
             };
         }
     }
-
-    public static class CurrencyRateWrapperHelperExtension
-    {
-        public static DIHelper AddCurrencyRateWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<CurrencyRateWrapperHelper>();
-
-            return services;
-        }
-    }
-
-
-
 }

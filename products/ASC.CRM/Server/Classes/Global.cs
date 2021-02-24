@@ -48,6 +48,7 @@ using System.Text;
 
 namespace ASC.Web.CRM.Classes
 {
+    [Transient]
     public class Global
     {
         public Global(StorageFactory storageFactory,
@@ -201,67 +202,6 @@ namespace ASC.Web.CRM.Classes
         //    }
         //}
 
-        //Code snippet
-
-        public static String GetUpButtonHTML(Uri requestUrlReferrer)
-        {
-            return String.Format(@"<a title='{0}' {1} class='studio-level-up{2}' style='margin-top: 2px;'></a>",
-                                  CRMCommonResource.Up,
-                                  requestUrlReferrer != null ? "href='" + requestUrlReferrer.OriginalString + "'" : "",
-                                  requestUrlReferrer != null ? "" : " disable");
-        }
-
-        public static String RenderItemHeaderWithMenu(String title, EntityType entityType, Boolean isPrivate, Boolean canEdit)
-        {
-            var sbIcon = new StringBuilder();
-            var sbPrivateMark = new StringBuilder();
-
-            string titleIconClass;
-            switch (entityType)
-            {
-                case EntityType.Contact:
-                    titleIconClass = "group";
-                    break;
-                case EntityType.Person:
-                    titleIconClass = "people";
-                    break;
-                case EntityType.Company:
-                    titleIconClass = "company";
-                    break;
-                case EntityType.Case:
-                    titleIconClass = "cases";
-                    break;
-                case EntityType.Opportunity:
-                    titleIconClass = "opportunities";
-                    break;
-                case EntityType.Invoice:
-                    titleIconClass = "documents";
-                    break;
-                default:
-                    titleIconClass = string.Empty;
-                    break;
-            }
-            if (!String.IsNullOrEmpty(titleIconClass))
-            {
-                if (isPrivate)
-                {
-                    sbPrivateMark.AppendFormat("<div class='privateMark' title='{0}'></div>", CRMCommonResource.Private);
-                }
-                sbIcon.AppendFormat("<span class='main-title-icon {0}'>{1}</span>", titleIconClass, sbPrivateMark);
-            }
-
-            return String.Format(@" <div class='header-with-menu crm-pageHeader'>
-                                        {0}<span class='crm-pageHeaderText text-overflow'>{1}</span>
-                                        {2}
-                                    </div>
-                                  ",
-                                        sbIcon,
-                                        title,
-                                        canEdit ? "<span class='menu-small'></span>" : ""
-                                      );
-        }
-
-
         /// <summary>
         /// The method to Decode your Base64 strings.
         /// </summary>
@@ -350,22 +290,5 @@ namespace ASC.Web.CRM.Classes
             reader.DateParseHandling = DateParseHandling.None;
             return JObject.Load(reader);
         }               
-    }
-
-    public static class GlobalExtention
-    {
-        public static DIHelper AddGlobalService(this DIHelper services)
-        {            
-            services.TryAddScoped<Global>();
-
-            return services.AddStorageFactoryService()
-                           .AddSecurityContextService()
-                           .AddSetupInfo()
-                           .AddFilesLinkUtilityService()
-                           .AddCRMSecurityService()
-                           .AddTenantManagerService()
-                           .AddSettingsManagerService()
-                           .AddPdfCreatorService();
-        }
     }
 }

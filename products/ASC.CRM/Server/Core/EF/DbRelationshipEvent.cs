@@ -1,21 +1,32 @@
-﻿using ASC.CRM.Core.Enums;
+﻿using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Model;
+using ASC.CRM.Core.Enums;
+using ASC.ElasticSearch;
+
+using Microsoft.EntityFrameworkCore;
+
+using Nest;
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
 
 namespace ASC.CRM.Core.EF
 {
+    [ElasticsearchType(RelationName = "crm_relationship_event")]
     [Table("crm_relationship_event")]
-    public partial class DbRelationshipEvent : IDbCrm
+    public class DbRelationshipEvent : IDbCrm, ISearchItem
     {
         [Key]
-        [Column("id", TypeName = "int(11)")]
+        [Column("id")]
         public int Id { get; set; }
 
-        [Column("contact_id", TypeName = "int(11)")]
+        [Column("contact_id")]
         public int ContactId { get; set; }
         
-        [Column("content", TypeName = "text")]
+        [Column("content")]
+        [Text(Analyzer = "whitespacecustom")]
         public string Content { get; set; }
         
         [Required]
@@ -45,5 +56,70 @@ namespace ASC.CRM.Core.EF
         
         [Column("have_files", TypeName = "int(11)")]
         public bool HaveFiles { get; set; }
+
+        [NotMapped]
+        [Ignore]
+        public string IndexName
+        {
+            get
+            {
+                return "crm_relationship_event";
+            }
+        }
+
+        [Ignore]
+        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        {
+            get
+            {
+                return (a) => new[] { Content };
+            }
+        }
+    }
+
+    public static class DbRelationshipEventExtension
+    {
+        public static ModelBuilderWrapper AddDbRelationshipEvent(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbRelationshipEvent, Provider.MySql)
+                .Add(PgSqlAddDbRelationshipEvent, Provider.Postgre);
+
+            return modelBuilder;
+        }
+        private static void MySqlAddDbRelationshipEvent(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbRelationshipEvent>(entity =>
+            {
+                entity.HasIndex(e => e.ContactId)
+                    .HasName("IX_Contact");
+
+                entity.HasIndex(e => e.LastModifedOn)
+                    .HasName("last_modifed_on");
+
+                entity.HasIndex(e => e.TenantId)
+                    .HasName("tenant_id");
+
+                entity.HasIndex(e => new { e.EntityId, e.EntityType })
+                    .HasName("IX_Entity");
+
+                entity.Property(e => e.Content)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.CreateBy)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.LastModifedBy)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+        }
+
+        private static void PgSqlAddDbRelationshipEvent(this ModelBuilder modelBuilder)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -91,6 +91,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
+    [Transient]
     public class CasesWrapperHelper
     {
         public CasesWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
@@ -153,18 +154,6 @@ namespace ASC.Api.CRM.Wrappers
             result.Members = membersWrapperList;
          
             return result;
-        }
-    }
-
-    public static class CasesWrapperHelperExtension
-    {
-        public static DIHelper AddCasesWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<CasesWrapperHelper>();
-
-            return services.AddApiDateTimeHelper()
-                           .AddEmployeeWraper()
-                           .AddCRMSecurityService();
         }
     }
 }

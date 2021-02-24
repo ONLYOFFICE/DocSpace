@@ -39,6 +39,7 @@ using System.Globalization;
 
 namespace ASC.Api.CRM
 {
+    [Scope]
     public sealed class CRMCalendar : BaseCalendar
     {
         [AllDayLongUTCAttribute]
@@ -127,22 +128,6 @@ namespace ASC.Api.CRM
             return (startDate <= eventStartDate && eventStartDate <= endDate) ||
                    (startDate <= eventEndDate && eventEndDate <= endDate) ||
                    (eventStartDate < startDate && eventEndDate > endDate);
-        }
-    }
-
-
-    public static class CRMCalendarDaoExtention
-    {
-        public static DIHelper AddCRMCalendarService(this DIHelper services)
-        {
-            services.TryAddScoped<CRMCalendar>();
-            services.TryAddScoped<TimeZoneConverter>();
-
-            return services.AddWebItemManagerSecurity()
-                            .AddDaoFactoryService()
-                            .AddAuthContextService()
-                            .AddTenantManagerService()
-                            .AddTenantUtilService();
         }
     }
 }

@@ -131,6 +131,7 @@ namespace ASC.Api.CRM.Wrappers
     }
 
 
+    [Transient]
     public class OpportunityWrapperHelper
     {
         public OpportunityWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
@@ -214,21 +215,6 @@ namespace ASC.Api.CRM.Wrappers
             dealWrapper.Members = membersWrapperList;
 
             return dealWrapper;
-        }
-    }
-
-    public static class OpportunityWrapperHelperExtension
-    {
-        public static DIHelper AddOpportunityWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<OpportunityWrapperHelper>();
-
-            return services.AddApiDateTimeHelper()
-                           .AddEmployeeWraper()
-                           .AddCRMSecurityService()
-                           .AddDaoFactoryService()
-                           .AddContactWrapperHelperService()
-                           .AddCurrencyProviderService();
         }
     }
 }

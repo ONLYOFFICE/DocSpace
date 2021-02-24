@@ -26,6 +26,7 @@
 
 using ASC.Collections;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -50,11 +51,13 @@ namespace ASC.CRM.Core.Dao
             TenantManager tenantManager,
             SecurityContext securityContext,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> logger)
+            IOptionsMonitor<ILog> logger,
+            AscCache ascCache)
               : base(dbContextManager,
                     tenantManager,
                     securityContext,
-                    logger)
+                    logger,
+                    ascCache)
         {
             _invoiceLineCache = new HttpRequestDictionary<InvoiceLine>(httpContextAccessor?.HttpContext, "crm_invoice_line");
         }
@@ -90,16 +93,19 @@ namespace ASC.CRM.Core.Dao
         }
     }
     
+    [Scope]
     public class InvoiceLineDao : AbstractDao
     {
         public InvoiceLineDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> logger)
+            IOptionsMonitor<ILog> logger,
+            AscCache ascCache)
               : base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger)
+                 logger,
+                 ascCache)
         {
 
         }
@@ -282,18 +288,6 @@ namespace ASC.CRM.Core.Dao
                 Price = dbInvoiceLine.Price,
                 Discount = dbInvoiceLine.Discount
             };
-        }
-    }
-
-    public static class InvoiceLineDaoExtention
-    {
-        public static DIHelper AddInvoiceLineDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<InvoiceLineDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService();
         }
     }
 }

@@ -61,7 +61,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-
+    [Transient]
     public class EntityWrapperHelper
     {
         public EntityWrapperHelper(DaoFactory daoFactory)
@@ -107,20 +107,6 @@ namespace ASC.Api.CRM.Wrappers
             return result;
         }
     }
-
-
-    public static class EntityWrapperHelperExtension
-    {
-        public static DIHelper AddEntityWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<EntityWrapperHelper>();
-
-            return services;
-        }
-    }
-
-
-
 
     [DataContract(Name = "historyEvent", Namespace = "")]
     public class RelationshipEventWrapper
@@ -173,6 +159,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
+    [Transient]
     public class RelationshipEventWrapperHelper
     {
         public RelationshipEventWrapperHelper(
@@ -243,17 +230,4 @@ namespace ASC.Api.CRM.Wrappers
         }        
     }
 
-    public static class RelationshipEventWrapperHelperExtension
-    {
-        public static DIHelper AddRelationshipEventWrapperHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<RelationshipEventWrapperHelper>();
-
-            return services.AddApiDateTimeHelper()
-                           .AddEmployeeWraper()
-                           .AddCRMSecurityService()
-                           .AddContactWrapperHelperService()
-                           .AddFileWrapperHelperService();
-        }
-    }
 }

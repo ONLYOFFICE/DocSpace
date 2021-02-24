@@ -38,6 +38,7 @@ using System.Linq;
 
 namespace ASC.CRM.Core.Dao
 {
+    [Scope]
     public class TaskTemplateContainerDao : AbstractDao
     {
         public TaskTemplateContainerDao(
@@ -133,6 +134,7 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
+    [Scope]
     public class TaskTemplateDao : AbstractDao
     {
         public TaskTemplateDao(DbContextManager<CRMDbContext> dbContextManager,
@@ -280,30 +282,5 @@ namespace ASC.CRM.Core.Dao
             };
         }     
     }
-
-
-    public static class TaskTemplateDaoExtention
-    {
-        public static DIHelper AddTaskTemplateDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<TaskTemplateDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService();
-        }
-    }
-
-    public static class TaskTemplateContainerDaoExtention
-    {
-        public static DIHelper AddTaskTemplateContainerDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<TaskTemplateContainerDao>();
-
-            return services.AddCRMDbContextService()
-                           .AddTenantManagerService()
-                           .AddSecurityContextService();
-        }
-    }   
-
+     
 }

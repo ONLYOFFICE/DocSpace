@@ -139,8 +139,6 @@ namespace ASC.Api.CRM
                 CreateOn = DateTime.UtcNow
             };
 
-            FactoryIndexerCasesWrapper.IndexAsync(Web.CRM.Core.Search.CasesWrapper.GetCasesWrapper(ServiceProvider, cases));
-
             SetAccessToCases(cases, isPrivate, accessList, isNotify, false);
 
             var membersList = members != null ? members.ToList() : new List<int>();
@@ -497,8 +495,6 @@ namespace ASC.Api.CRM
             var cases = DaoFactory.GetCasesDao().DeleteCases(caseid);
 
             if (cases == null) throw new ItemNotFoundException();
-
-            FactoryIndexerCasesWrapper.DeleteAsync(Web.CRM.Core.Search.CasesWrapper.GetCasesWrapper(ServiceProvider, cases));
 
             MessageService.Send(MessageAction.CaseDeleted, MessageTarget.Create(cases.ID), cases.Title);
 
