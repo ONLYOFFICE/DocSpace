@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import MobileLayout from "./MobileLayout";
-import { utils } from "@appserver/components/src";
+import utils from "@appserver/components/utils";
 import {
   isIOS,
   isFirefox,

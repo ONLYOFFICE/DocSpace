@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import Text from "@appserver/components/src/components/text";
+import Text from "@appserver/components/text";
 import toastr from "@appserver/common/src/components/Toast/toastr";
 import PageLayout from "@appserver/common/src/components/PageLayout";
 import history from "@appserver/common/src/history";

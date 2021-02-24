@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Headline from "@appserver/common/src/components/Headline";
-import IconButton from "@appserver/components/src/components/icon-button";
-import { tablet } from "@appserver/components/src/utils/device";
+import IconButton from "@appserver/components/icon-button";
+import { tablet } from "@appserver/components/utils/device";
 
 import {
   getKeyByLink,

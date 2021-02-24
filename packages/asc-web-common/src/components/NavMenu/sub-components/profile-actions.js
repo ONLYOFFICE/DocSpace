@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Avatar from "@appserver/components/src/components/avatar";
-import DropDownItem from "@appserver/components/src/components/drop-down-item";
-import Link from "@appserver/components/src/components/link";
+import Avatar from "@appserver/components/avatar";
+import DropDownItem from "@appserver/components/drop-down-item";
+import Link from "@appserver/components/link";
 import ProfileMenu from "../../ProfileMenu";
 import { inject, observer } from "mobx-react";
 

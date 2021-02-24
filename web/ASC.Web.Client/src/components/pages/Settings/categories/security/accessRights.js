@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import TabContainer from "@appserver/components/src/components/tabs-container";
+import TabContainer from "@appserver/components/tabs-container";
 
-import { changeLanguage }  from "@appserver/common/src/utils";
+import { changeLanguage } from "@appserver/common/src/utils";
 
 import OwnerSettings from "./sub-components/owner";
 import AdminsSettings from "./sub-components/admins";
@@ -12,8 +12,6 @@ import AdminsSettings from "./sub-components/admins";
 
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject } from "mobx-react";
-
-
 
 const MainContainer = styled.div`
   padding-bottom: 16px;

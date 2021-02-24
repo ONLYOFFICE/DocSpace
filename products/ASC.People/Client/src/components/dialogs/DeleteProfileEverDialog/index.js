@@ -1,7 +1,11 @@
 import React from "react";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import { ModalDialog, Button, Text } from "@appserver/components/src";
+
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Text from "@appserver/components/text";
+
 import { withTranslation, Trans } from "react-i18next";
 import { api, toastr } from "@appserver/common/src";
 
@@ -29,7 +33,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
         })
         .catch((error) => toastr.error(error))
         .finally(onClose);
-        });
+    });
   };
 
   onReassignDataClick = () => {

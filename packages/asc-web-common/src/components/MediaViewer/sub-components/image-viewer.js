@@ -10,7 +10,7 @@ import MediaRotateRightIcon from "../../../../../../public/images/media.rotateri
 import MediaResetIcon from "../../../../../../public/images/media.reset.react.svg";
 import MediaDeleteIcon from "../../../../../../public/images/media.delete.react.svg";
 import MediaDownloadIcon from "../../../../../../public/images/media.download.react.svg";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import MediaScrollButton from "./scroll-button";
 import ControlBtn from "./control-btn";
 

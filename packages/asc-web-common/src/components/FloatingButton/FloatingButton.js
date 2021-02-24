@@ -15,7 +15,7 @@ import ButtonTrashIcon from "../../../../../public/images/button.trash.react.svg
 import ButtonMoveIcon from "../../../../../public/images/button.move.react.svg";
 import ButtonDuplicateIcon from "../../../../../public/images/button.duplicate.react.svg";
 import ButtonAlertIcon from "../../../../../public/images/button.alert.react.svg";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}

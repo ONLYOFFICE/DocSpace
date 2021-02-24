@@ -1,6 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ModalDialog, Button, Link, Text } from "@appserver/components/src";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
 import { withTranslation, Trans } from "react-i18next";
 import { api, toastr } from "@appserver/common/src";
 

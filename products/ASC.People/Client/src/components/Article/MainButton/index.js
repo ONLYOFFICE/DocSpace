@@ -2,7 +2,8 @@ import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 
-import { MainButton, DropDownItem } from "@appserver/components/src";
+import MainButton from "@appserver/components/main-button";
+import DropDownItem from "@appserver/components/drop-down-item";
 import { InviteDialog } from "./../../dialogs";
 import { withTranslation } from "react-i18next";
 import { toastr, Loaders } from "@appserver/common/src";

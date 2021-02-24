@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import Backdrop from "@appserver/components/src/components/backdrop";
-import ProgressBar from "@appserver/components/src/components/progress-bar";
-import { size } from "@appserver/components/src/utils/device";
-import { Provider } from "@appserver/components/src/utils/context";
+import Backdrop from "@appserver/components/backdrop";
+import ProgressBar from "@appserver/components/progress-bar";
+import { size } from "@appserver/components/utils/device";
+import { Provider } from "@appserver/components/utils/context";
 
 import store from "../../store";
 import { withTranslation } from "react-i18next";
@@ -25,7 +25,6 @@ import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
-
 
 function ArticleHeader() {
   return null;
@@ -364,12 +363,12 @@ class PageLayoutComponent extends React.Component {
                   {showPrimaryProgressBar && showSecondaryProgressBar ? (
                     <>
                       <FloatingButton
-                          className="layout-progress-bar"
+                        className="layout-progress-bar"
                         icon={primaryProgressBarIcon}
                         percent={primaryProgressBarValue}
                         alert={showPrimaryButtonAlert}
                         onClick={onOpenUploadPanel}
-                        />
+                      />
                       <FloatingButton
                         className="layout-progress-second-bar"
                         icon={secondaryProgressBarIcon}

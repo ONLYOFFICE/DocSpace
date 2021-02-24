@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import {  Tooltip } from "@appserver/components";
-import Row from "@appserver/components/src/components/row";
-import Text from "@appserver/components/src/components/text";
-import Link from "@appserver/components/src/components/link";
+import { Tooltip } from "@appserver/components";
+import Row from "@appserver/components/row";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 import LoadingButton from "./LoadingButton";
 import ShareButton from "./ShareButton";
 import LoadErrorIcon from "../../../../public/images/load.error.react.svg";

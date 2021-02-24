@@ -2,14 +2,14 @@ import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import Box from "@appserver/components/src/components/box";
-import EmailInput from "@appserver/components/src/components/email-input";
-import FileInput from "@appserver/components/src/components/file-input";
-import PasswordInput from "@appserver/components/src/components/password-input";
-import Link from "@appserver/components/src/components/link";
-import Checkbox from "@appserver/components/src/components/checkbox";
+import Box from "@appserver/components/box";
+import EmailInput from "@appserver/components/email-input";
+import FileInput from "@appserver/components/file-input";
+import PasswordInput from "@appserver/components/password-input";
+import Link from "@appserver/components/link";
+import Checkbox from "@appserver/components/checkbox";
 
-import { tablet } from "@appserver/components/src/utils/device";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledContainer = styled(Box)`
   width: 311px;

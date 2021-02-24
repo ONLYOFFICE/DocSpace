@@ -2,11 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import Text from "@appserver/components/src/components/text";
-import { tablet, smallTablet } from "@appserver/components/src/utils/device";
-import CatalogPinIcon from "../../../../../../public/images/catalog.pin.react.svg"
-import CatalogUnpinIcon from "../../../../../../public/images/catalog.unpin.react.svg"
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import Text from "@appserver/components/text";
+import { tablet, smallTablet } from "@appserver/components/utils/device";
+import CatalogPinIcon from "../../../../../../public/images/catalog.pin.react.svg";
+import CatalogUnpinIcon from "../../../../../../public/images/catalog.unpin.react.svg";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const StyledCatalogPinIcon = styled(CatalogPinIcon)`
   ${commonIconsStyles}

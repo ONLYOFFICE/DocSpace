@@ -5,8 +5,8 @@ import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
-import Text from "@appserver/components/src/components/text";
-import Link from "@appserver/components/src/components/link";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 
 const StyledContactContainer = styled.div`
   display: grid;

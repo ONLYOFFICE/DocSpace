@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
-import { Box, Text } from "@appserver/components/src";
+
+import Box from "@appserver/components/box";
+import Text from "@appserver/components/text";
 // import { useStore } from "react-redux";
 // import dynamic from "@redux-dynostore/react-redux";
 // import { attachReducer } from "@redux-dynostore/core";

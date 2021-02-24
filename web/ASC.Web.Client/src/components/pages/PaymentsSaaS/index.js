@@ -1,5 +1,5 @@
 import React from "react";
-import Text from "@appserver/components/src/components/text";
+import Text from "@appserver/components/text";
 
 class PaymentsSaaS extends React.Component {
   render() {

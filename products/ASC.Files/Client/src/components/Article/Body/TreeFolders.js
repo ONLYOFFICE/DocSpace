@@ -7,7 +7,7 @@ import { onConvertFiles } from "../../../helpers/files-converter";
 import { ReactSVG } from "react-svg";
 import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
 import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 import { observer, inject } from "mobx-react";
 
@@ -505,7 +505,7 @@ export default inject(
     } = treeFoldersStore;
     const { pathParts, id } = selectedFolderStore;
 
-  return {
+    return {
       isAdmin: auth.isAdmin,
       isDesktop: auth.settingsStore.isDesktopClient,
       dragging,
@@ -525,6 +525,6 @@ export default inject(
       setFilter,
       setDragItem,
       setExpandedKeys,
-  };
-}
+    };
+  }
 )(observer(TreeFolders));

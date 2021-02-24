@@ -3,9 +3,9 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import Button from "@appserver/components/src/components/button"
-import { tablet } from "@appserver/components/src/utils/device";
-import toastr from "@appserver/components/src/components/toast/toastr";
+import Button from "@appserver/components/button";
+import { tablet } from "@appserver/components/utils/device";
+import toastr from "@appserver/components/toast/toastr";
 
 const StyledButtonContainer = styled.div`
   background: #edf2f7;

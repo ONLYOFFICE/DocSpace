@@ -1,6 +1,6 @@
 import React from "react";
-import Text from "@appserver/components/src/components/text";
-import Box from "@appserver/components/src/components/box";
+import Text from "@appserver/components/text";
+import Box from "@appserver/components/box";
 const VersionBadge = ({
   className,
   isVersion,

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 //import Routes from "./Routes";
-//import { Box, Text } from "@appserver/components/src";
-import Box from "@appserver/components/src/components/box";
-import Text from "@appserver/components/src/components/text";
+//import { Box, Text } from "@appserver/components";
+import Box from "@appserver/components/box";
+import Text from "@appserver/components/text";
 
 const PeopleContent = (props) => {
   const [isLoading, setIsLoading] = useState(true);

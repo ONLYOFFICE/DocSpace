@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { tablet, mobile } from "@appserver/components/src/utils/device";
+import { tablet, mobile } from "@appserver/components/utils/device";
 
 const StyledContainer = styled.div`
   width: 100%;

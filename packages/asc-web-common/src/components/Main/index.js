@@ -1,7 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { isIOS, isFirefox, isMobile } from "react-device-detect";
-import { utils } from "@appserver/components/src";
 
 const StyledMain = styled.main`
   height: ${(props) =>

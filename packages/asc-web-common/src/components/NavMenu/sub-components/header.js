@@ -13,8 +13,9 @@ import history from "../../../history";
 import { ReactSVG } from "react-svg";
 import { useTranslation } from "react-i18next";
 
-import { Box, Text } from "@appserver/components/src";
-import { desktop } from "@appserver/components/src/utils/device";
+import Box from "@appserver/components/box";
+import Text from "@appserver/components/text";
+import { desktop } from "@appserver/components/utils/device";
 
 const backgroundColor = "#0F4071";
 

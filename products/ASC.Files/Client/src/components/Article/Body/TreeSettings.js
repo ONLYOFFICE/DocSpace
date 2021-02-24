@@ -8,7 +8,7 @@ import { inject, observer } from "mobx-react";
 import SettingsIcon from "../../../../../../../public/images/settings.react.svg";
 import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
 import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
   @media (max-width: 1024px) {
@@ -207,7 +207,7 @@ export default inject(
       setExpandSettingsTree,
     } = settingsStore;
 
-  return {
+    return {
       isAdmin: auth.isAdmin,
       isLoading,
       selectedTreeNode,
@@ -216,9 +216,9 @@ export default inject(
 
       setIsLoading,
       setSelectedFolder,
-  setSelectedNode,
+      setSelectedNode,
       getFilesSettings,
-  setExpandSettingsTree,
+      setExpandSettingsTree,
     };
   }
 )(withRouter(observer(TreeSettings)));

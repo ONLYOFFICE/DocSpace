@@ -9,9 +9,9 @@ import PageLayout from "@appserver/common/src/components/PageLayout";
 import ErrorContainer from "@appserver/common/src/components/ErrorContainer";
 import history from "@appserver/common/src/history";
 import commonUtils from "@appserver/common/src/utils";
-import Loader from "@appserver/components/src/components/loader";
-import { tablet } from "@appserver/components/src/utils/device";
-import { EmailSettings } from "@appserver/components/src/utils/email";
+import Loader from "@appserver/components/loader";
+import { tablet } from "@appserver/components/utils/device";
+import { EmailSettings } from "@appserver/components/utils/email";
 
 import HeaderContainer from "./sub-components/header-container";
 import ButtonContainer from "./sub-components/button-container";

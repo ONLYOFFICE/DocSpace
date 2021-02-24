@@ -2,10 +2,10 @@ import React from "react";
 import equal from "fast-deep-equal/react";
 import PropTypes from "prop-types";
 
-import ComboBox from "@appserver/components/src/components/combobox";
-import IconButton from "@appserver/components/src/components/icon-button";
-import DropDownItem from "@appserver/components/src/components/drop-down-item";
-import RadioButtonGroup from "@appserver/components/src/components/radio-button-group";
+import ComboBox from "@appserver/components/combobox";
+import IconButton from "@appserver/components/icon-button";
+import DropDownItem from "@appserver/components/drop-down-item";
+import RadioButtonGroup from "@appserver/components/radio-button-group";
 
 import { StyledIconButton } from "../StyledFilterInput";
 

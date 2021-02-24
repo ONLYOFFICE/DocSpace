@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import Box from "@appserver/components/src/components/box";
-import Text from "@appserver/components/src/components/text";
-import toastr from "@appserver/components/src/components/toast/toastr";
+import Box from "@appserver/components/box";
+import Text from "@appserver/components/text";
+import toastr from "@appserver/components/toast/toastr";
 import UnionIcon from "../svg/union.react.svg";
 import RecoverAccessModalDialog from "./recover-access-modal-dialog";
 import { sendRecoverRequest } from "../../../api/settings/index";
-import commonIconsStyles from "@appserver/components/src/utils/common-icons-style";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const StyledUnionIcon = styled(UnionIcon)`
   ${commonIconsStyles}

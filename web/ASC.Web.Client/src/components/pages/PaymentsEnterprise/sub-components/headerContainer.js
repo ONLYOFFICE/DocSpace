@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { withRouter } from "react-router";
-import Text from "@appserver/components/src/components/text";
+import Text from "@appserver/components/text";
 import { useTranslation, Trans } from "react-i18next";
 import moment from "moment";
 import { inject, observer } from "mobx-react";

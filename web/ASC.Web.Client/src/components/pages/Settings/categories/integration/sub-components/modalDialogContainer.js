@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { tablet } from "@appserver/components/src/utils/device";
+import { tablet } from "@appserver/components/utils/device";
 
 const ModalDialogContainer = styled.div`
   .modal-dialog-aside-footer {

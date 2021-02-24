@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "components": ["@appserver/components/src/components"]
+      "components": ["@appserver/components"]
     }
   },
   "exclude": ["node_modules"]

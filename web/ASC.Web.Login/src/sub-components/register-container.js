@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-import Box from "@appserver/components/src/components/box";
-import Text from "@appserver/components/src/components/text";
-import toastr from "@appserver/components/src/components/toast/toastr";
+import Box from "@appserver/components/box";
+import Text from "@appserver/components/text";
+import toastr from "@appserver/components/toast/toastr";
 
 import RegisterModalDialog from "./register-modal-dialog";
 import styled from "styled-components";

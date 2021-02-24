@@ -1,11 +1,10 @@
 import React from "react";
-import {
-  EmptyScreenContainer,
-  IconButton,
-  Link,
-  Box,
-  Grid,
-} from "@appserver/components/src";
+
+import EmptyScreenContainer from "@appserver/components/empty-screen-container";
+import IconButton from "@appserver/components/icon-button";
+import Link from "@appserver/components/link";
+import Box from "@appserver/components/box";
+import Grid from "@appserver/components/grid";
 
 const EmptyScreen = ({ t, onResetFilter, isEmptyGroup }) => {
   const title = isEmptyGroup ? "EmptyGroupTitle" : "NotFoundTitle";

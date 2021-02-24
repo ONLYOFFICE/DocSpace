@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
-import ModalDialog from "@appserver/components/src/components/modal-dialog";
-import Button from "@appserver/components/src/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
 import { toastr, api } from "@appserver/common";
 import { loopTreeFolders } from "../../../helpers/files-helpers";
@@ -94,15 +94,15 @@ export default inject(
       commonFolderId,
     } = treeFoldersStore;
 
-  return {
+    return {
       currentFolderId: selectedFolderStore.id,
       treeFolders,
       myId: myFolderId,
       commonId: commonFolderId,
       providers,
 
-  fetchFiles,
-  setTreeFolders,
+      fetchFiles,
+      setTreeFolders,
       setThirdPartyProviders,
       deleteThirdParty,
     };

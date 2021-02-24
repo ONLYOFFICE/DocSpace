@@ -2,13 +2,13 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
-import FieldContainer from "@appserver/components/src/components/field-container";
-import Text from "@appserver/components/src/components/text";
-import ComboBox from "@appserver/components/src/components/combobox";
-import Loader from "@appserver/components/src/components/loader";
-import toastr from "@appserver/components/src/components/toast/toastr";
-import Link from "@appserver/components/src/components/link";
-import SaveCancelButtons from "@appserver/components/src/components/save-cancel-buttons";
+import FieldContainer from "@appserver/components/field-container";
+import Text from "@appserver/components/text";
+import ComboBox from "@appserver/components/combobox";
+import Loader from "@appserver/components/loader";
+import toastr from "@appserver/components/toast/toastr";
+import Link from "@appserver/components/link";
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject, observer } from "mobx-react";
@@ -412,9 +412,9 @@ export default inject(({ auth, setup }) => {
     greetingSettings,
     nameSchemaId,
     organizationName,
-  getPortalCultures,
-  setLanguageAndTime,
+    getPortalCultures,
+    setLanguageAndTime,
     getCurrentCustomSchema,
-  getPortalTimezones,
+    getPortalTimezones,
   };
 })(withTranslation("Settings")(observer(LanguageAndTimeZone)));

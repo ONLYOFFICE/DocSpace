@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box } from "@appserver/components/src";
+import Box from "@appserver/components/box";
 import { useTranslation } from "react-i18next";
 import {
   changeLanguage,

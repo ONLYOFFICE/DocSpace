@@ -5,8 +5,8 @@ import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
 
 import { inject, observer } from "mobx-react";
-import Button from "@appserver/components/src/components/button";
-import Text from "@appserver/components/src/components/text";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
 import PageLayout from "@appserver/common/src/components/PageLayout";
 import store from "@appserver/common/src/store";
 import api from "@appserver/common/src/api";

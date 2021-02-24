@@ -1,5 +1,6 @@
 import React, { Component, createRef } from "react";
-import { Scrollbar, utils } from "@appserver/components/src";
+import utils from "@appserver/components/utils";
+import Scrollbar from "@appserver/components/scrollbar";
 import { LayoutContextProvider } from "./context";
 import PropTypes from "prop-types";
 import { isMobile, isSafari, isIOS, isChrome } from "react-device-detect";

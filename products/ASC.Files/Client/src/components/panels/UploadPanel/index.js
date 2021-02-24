@@ -1,8 +1,8 @@
 import React from "react";
-import IconButton from "@appserver/components/src/components/icon-button";
-import Backdrop from "@appserver/components/src/components/backdrop";
-import Heading from "@appserver/components/src/components/heading";
-import Aside from "@appserver/components/src/components/aside";
+import IconButton from "@appserver/components/icon-button";
+import Backdrop from "@appserver/components/backdrop";
+import Heading from "@appserver/components/heading";
+import Aside from "@appserver/components/aside";
 import { withTranslation } from "react-i18next";
 import SharingPanel from "../SharingPanel";
 import {
@@ -137,8 +137,8 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
     uploadPanelVisible,
     uploaded,
 
-  setUploadPanelVisible,
+    setUploadPanelVisible,
     clearUploadData,
-  cancelUpload,
+    cancelUpload,
   };
 })(observer(UploadPanel));

@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { tablet, size } from "@appserver/components/src/utils/device";
+import { tablet, size } from "@appserver/components/utils/device";
 import {
   isIOS,
   isTablet,
