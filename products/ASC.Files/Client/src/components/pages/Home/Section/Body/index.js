@@ -807,7 +807,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("Preview"),
-            icon: "static/images/eye.react.svg",
+            icon: "/static/images/eye.react.svg",
             onClick: this.onClickLinkEdit,
             disabled: true,
             "data-id": item.id,
@@ -817,7 +817,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("View"),
-            icon: "static/images/eye.react.svg",
+            icon: "/static/images/eye.react.svg",
             onClick: this.onMediaFileClick,
             disabled: false,
           };
@@ -841,7 +841,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("Copy"),
-            icon: "static/images/copy.react.svg",
+            icon: "/static/images/copy.react.svg",
             onClick: this.onCopyAction,
             disabled: false,
           };
@@ -849,7 +849,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("Duplicate"),
-            icon: "static/images/copy.react.svg",
+            icon: "/static/images/copy.react.svg",
             onClick: this.onDuplicate,
             disabled: false,
           };
@@ -876,7 +876,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
-            icon: "static/images/catalog.trash.react.svg",
+            icon: "/static/images/catalog.trash.react.svg",
             onClick: this.onClickDelete,
             disabled: false,
             "data-is-third-party": isThirdPartyFolder ? true : false,
