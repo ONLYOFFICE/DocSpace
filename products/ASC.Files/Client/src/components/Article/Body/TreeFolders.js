@@ -128,17 +128,11 @@ class TreeFolders extends React.Component {
         break;
     }
 
-    // return React.createElement(Icons[iconName], {
-    //   size: "scale",
-    //   isfill: true,
-    //   color: "#657077",
-    // });
-
     return (
       <ReactSVG
         src={iconUrl}
         beforeInjection={(svg) => {
-          svg.setAttribute("style", `width: 24px; height: 24px;`);
+          svg.setAttribute("style", `width: 100%;`);
           svg.setAttribute("fill", "#657077");
         }}
       />
