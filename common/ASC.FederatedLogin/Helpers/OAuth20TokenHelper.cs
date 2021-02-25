@@ -34,7 +34,6 @@ using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.LoginProviders;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.FederatedLogin.Helpers
 {

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
+
 using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
+
 using Microsoft.EntityFrameworkCore;
+
 using Nest;
 
 namespace ASC.Files.Core.EF
@@ -46,17 +48,14 @@ namespace ASC.Files.Core.EF
 
 
         [Nested]
-        [NotMapped]
         public List<DbFolderTree> Folders { get; set; }
 
-        [NotMapped]
         [Ignore]
         public string IndexName
         {
             get => Tables.File;
         }
 
-        [NotMapped]
         public Document Document { get; set; }
 
         [Ignore]
@@ -84,6 +83,10 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder.Entity<DbFile>(entity =>
             {
+                entity.Ignore(r => r.Folders);
+                entity.Ignore(r => r.IndexName);
+                entity.Ignore(r => r.Document);
+
                 entity.HasKey(e => new { e.TenantId, e.Id, e.Version })
                     .HasName("PRIMARY");
 
@@ -175,6 +178,10 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder.Entity<DbFile>(entity =>
             {
+                entity.Ignore(r => r.Folders);
+                entity.Ignore(r => r.IndexName);
+                entity.Ignore(r => r.Document);
+
                 entity.HasKey(e => new { e.Id, e.TenantId, e.Version })
                     .HasName("files_file_pkey");
 

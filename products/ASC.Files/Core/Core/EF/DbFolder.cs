@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Linq.Expressions;
+
 using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
+
 using Microsoft.EntityFrameworkCore;
+
 using Nest;
 
 namespace ASC.Files.Core.EF
@@ -56,6 +59,8 @@ namespace ASC.Files.Core.EF
             modelBuilder.Entity<DbFolder>(entity =>
             {
                 entity.ToTable("files_folder");
+
+                entity.Ignore(r => r.IndexName);
 
                 entity.HasIndex(e => e.ModifiedOn)
                     .HasName("modified_on");
