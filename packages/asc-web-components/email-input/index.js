@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import TextInput from "../text-input";
-import { EmailSettings, parseAddress } from "../../utils/email/";
+import { EmailSettings, parseAddress } from "../utils/email/";
 import equal from "fast-deep-equal/react";
 
 /* eslint-disable no-unused-vars */

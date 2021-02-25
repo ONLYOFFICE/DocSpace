@@ -8,7 +8,7 @@ import {
 } from "@appserver/components";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import React from "react";
-import { utils } from "@appserver/common";
+import  utils from "@appserver/common/src/utils";
 import styled from "styled-components";
 
 import { withRouter } from "react-router";

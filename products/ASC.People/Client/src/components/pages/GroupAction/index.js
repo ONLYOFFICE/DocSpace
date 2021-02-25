@@ -1,6 +1,6 @@
 import React from "react";
 import { Loader } from "@appserver/components";
-import { PageLayout } from "@appserver/common";
+import PageLayout from "@appserver/common/src/components/PageLayout";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,

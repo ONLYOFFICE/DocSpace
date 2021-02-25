@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import Text from "../../text";
-import { isArrayEqual } from "../../../utils/array";
+import { isArrayEqual } from "../../utils/array";
 import { StyledWeekdays, StyledWeekday } from "../styled-calendar";
 
 class Weekdays extends React.Component {

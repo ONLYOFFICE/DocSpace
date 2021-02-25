@@ -14,7 +14,7 @@ import {
   isDesktop,
   //isTablet,
   //isMobile
-} from "../../../utils/device";
+} from "../../utils/device";
 import resizeImage from "resize-image";
 import throttle from "lodash/throttle";
 import Link from "../../link";

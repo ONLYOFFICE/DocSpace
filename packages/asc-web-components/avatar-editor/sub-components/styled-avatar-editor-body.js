@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 
-import { tablet, desktop, mobile } from "../../../utils/device";
+import { tablet, desktop, mobile } from "../../utils/device";
 
 const StyledAvatarEditorBody = styled.div`
   max-width: ${(props) => props.theme.avatarEditorBody.maxWidth};
