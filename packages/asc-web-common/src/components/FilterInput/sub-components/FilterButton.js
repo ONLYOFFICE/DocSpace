@@ -17,7 +17,6 @@ class FilterButton extends React.PureComponent {
     return (
       <ContextMenuButton
         className="filter-button"
-        color="#A3A9AE"
         directionY="bottom"
         getData={getData}
         iconName="images/rectangle.filter.react.svg"
