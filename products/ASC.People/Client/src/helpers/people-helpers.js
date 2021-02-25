@@ -1,5 +1,7 @@
 import { find, cloneDeep } from "lodash";
-import { constants, utils } from "@appserver/common/src";
+import constants from "@appserver/common/constants";
+import utils from "@appserver/common/utils";
+
 const { isAdmin } = utils;
 
 const { EmployeeActivationStatus, EmployeeStatus } = constants;

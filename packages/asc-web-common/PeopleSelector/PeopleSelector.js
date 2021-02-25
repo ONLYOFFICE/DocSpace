@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import AdvancedSelector from "../AdvancedSelector";
-import { getUserList } from "../../api/people";
-import { getGroupList } from "../../api/groups";
-import Filter from "../../api/people/filter";
+import { getUserList } from "../api/people";
+import { getGroupList } from "../api/groups";
+import Filter from "../api/people/filter";
 import UserTooltip from "./sub-components/UserTooltip";
-import { changeLanguage } from "../../utils";
+import { changeLanguage } from "../utils";
 
 class PeopleSelector extends React.Component {
   constructor(props) {

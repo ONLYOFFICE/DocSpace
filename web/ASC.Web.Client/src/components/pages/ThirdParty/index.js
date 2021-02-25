@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Box from "@appserver/components/box";
 import { useTranslation } from "react-i18next";
-import {
-  changeLanguage,
-  getObjectByLocation,
-} from "@appserver/common/src/utils";
-import ErrorContainer from "@appserver/common/src/components/ErrorContainer";
-import PageLayout from "@appserver/common/src/components/PageLayout";
+import { getObjectByLocation } from "@appserver/common/utils";
+import ErrorContainer from "@appserver/common/ErrorContainer";
+import PageLayout from "@appserver/common/PageLayout";
 import { setDocumentTitle } from "../../../helpers/utils";
 
 const { getObjectByLocation } = utils;

@@ -18,8 +18,8 @@ import RequestLoader from "@appserver/components/request-loader";
 import Loader from "@appserver/components/loader";
 import EmptyScreenContainer from "@appserver/components/empty-screen-container";
 
-import FilterInput from "@appserver/common/src/components/FilterInput";
-import PeopleSelector from "@appserver/common/src/components/PeopleSelector";
+import FilterInput from "@appserver/common/FilterInput";
+import PeopleSelector from "@appserver/common/PeopleSelector";
 
 import isEmpty from "lodash/isEmpty";
 import { inject, observer } from "mobx-react";

@@ -1,5 +1,6 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { constants, store } from "@appserver/common/src";
+import constants from "@appserver/common/constants";
+import store from "@appserver/common/store";
 import { getUserStatus } from "../helpers/people-helpers";
 
 const { EmployeeStatus, EmployeeActivationStatus } = constants;

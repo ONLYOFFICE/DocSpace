@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Error520Container from "../../pages/errors/520";
+import Error520Container from "../pages/errors/520";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {

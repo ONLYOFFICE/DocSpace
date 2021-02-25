@@ -5,7 +5,7 @@ import ProgressBar from "@appserver/components/progress-bar";
 import { size } from "@appserver/components/utils/device";
 import { Provider } from "@appserver/components/utils/context";
 
-import store from "../../store";
+import store from "../store";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import i18n from "./i18n";
@@ -21,7 +21,7 @@ import SubSectionBody from "./sub-components/section-body";
 import SubSectionBodyContent from "./sub-components/section-body-content";
 import SubSectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
-import { changeLanguage } from "../../utils";
+import { changeLanguage } from "../utils";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";

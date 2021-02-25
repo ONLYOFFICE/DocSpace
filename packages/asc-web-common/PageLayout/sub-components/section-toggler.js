@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { tablet } from "@appserver/components/utils/device";
-import CatalogButtonIcon from "../../../../../../public/images/catalog.button.react.svg";
+import CatalogButtonIcon from "../../../../public/images/catalog.button.react.svg";
 
 const StyledSectionToggler = styled.div`
   height: 64px;

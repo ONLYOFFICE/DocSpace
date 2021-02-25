@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
-import PageLayout from "@appserver/common/src/components/PageLayout";
+import PageLayout from "@appserver/common/PageLayout";
 import Loader from "@appserver/components/loader";
 import { tablet, size } from "@appserver/components/utils/device";
 import HeaderContainer from "./sub-components/headerContainer";

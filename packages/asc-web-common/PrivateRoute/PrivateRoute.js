@@ -3,10 +3,10 @@ import React from "react";
 import { Redirect, Route } from "react-router-dom";
 //import Loader from "@appserver/components/loader";
 import PageLayout from "../PageLayout";
-import { Error401, Error404 } from "../../pages/errors";
+import { Error401, Error404 } from "../pages/errors";
 import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
 import { inject, observer } from "mobx-react";
-import { isMe } from "../../utils";
+import { isMe } from "../utils";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {

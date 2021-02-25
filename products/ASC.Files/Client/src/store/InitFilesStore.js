@@ -1,5 +1,6 @@
 import { makeObservable, action, observable, computed } from "mobx";
-import { store, utils } from "@appserver/common/src";
+import store from "@appserver/common/store";
+import utils from "@appserver/common/utils";
 import filesStore from "./FilesStore";
 import treeFoldersStore from "./TreeFoldersStore";
 import config from "../../package.json";

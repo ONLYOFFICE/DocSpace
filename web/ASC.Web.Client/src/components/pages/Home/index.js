@@ -4,11 +4,11 @@ import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import Text from "@appserver/components/text";
-import toastr from "@appserver/common/src/components/Toast/toastr";
-import PageLayout from "@appserver/common/src/components/PageLayout";
-import history from "@appserver/common/src/history";
+import toastr from "@appserver/common/Toast/toastr";
+import PageLayout from "@appserver/common/PageLayout";
+import history from "@appserver/common/history";
 import ModuleTile from "./ModuleTile";
-import { tryRedirectTo } from "@appserver/common/src/utils";
+import { tryRedirectTo } from "@appserver/common/utils";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
 

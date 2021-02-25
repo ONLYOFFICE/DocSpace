@@ -7,7 +7,10 @@ import DropDownItem from "@appserver/components/drop-down-item";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import utils from "@appserver/components/utils";
 
-import { Headline, toastr, Loaders, constants } from "@appserver/common/src";
+import Headline from "@appserver/common/Headline";
+import toastr from "@appserver/common/toastr";
+import Loaders from "@appserver/common/Loaders";
+import constants from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
 import {
   InviteDialog,

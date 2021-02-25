@@ -1,5 +1,7 @@
 import { makeObservable, observable, computed, action } from "mobx";
-import { api, constants } from "@appserver/common/src";
+import api from "@appserver/common/api";
+import constants from "@appserver/common/constants";
+
 import selectedFolderStore from "./SelectedFolderStore";
 
 const { FolderType } = constants;

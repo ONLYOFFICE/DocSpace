@@ -1,4 +1,4 @@
-import commonStore from "@appserver/common/src/store";
+import commonStore from "@appserver/common/store";
 //import store from "../store/store";
 
 const { authStore } = commonStore;

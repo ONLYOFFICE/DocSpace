@@ -7,7 +7,8 @@ import EmailInput from "@appserver/components/email-input";
 import FieldContainer from "@appserver/components/field-container";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { api, toastr } from "@appserver/common/src";
+import api from "@appserver/common/api";
+import toastr from "@appserver/common/Toast/toastr";
 
 const { sendInstructionsToChangeEmail } = api.people;
 

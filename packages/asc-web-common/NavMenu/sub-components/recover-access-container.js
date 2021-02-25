@@ -7,7 +7,7 @@ import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
 import UnionIcon from "../svg/union.react.svg";
 import RecoverAccessModalDialog from "./recover-access-modal-dialog";
-import { sendRecoverRequest } from "../../../api/settings/index";
+import { sendRecoverRequest } from "../../api/settings/index";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const StyledUnionIcon = styled(UnionIcon)`

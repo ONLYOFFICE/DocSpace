@@ -1,5 +1,8 @@
 import { makeObservable, action, observable, computed } from "mobx";
-import { api, constants, store, history } from "@appserver/common/src";
+import api from "@appserver/common/api";
+import constants from "@appserver/common/constants";
+import store from "@appserver/common/store";
+import history from "@appserver/common/history";
 import queryString from "query-string";
 import FileActionStore from "./FileActionStore";
 import selectedFolderStore from "./SelectedFolderStore";

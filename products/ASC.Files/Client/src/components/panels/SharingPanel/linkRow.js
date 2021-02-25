@@ -1,8 +1,10 @@
 import React from "react";
-import { Row, LinkWithDropdown, ToggleButton } from "@appserver/components";
+import Row from "@appserver/components/row";
+import LinkWithDropdown from "@appserver/components/link-with-dropdown";
+import ToggleButton from "@appserver/components/toggle-button";
 import { StyledLinkRow } from "../StyledPanels";
 import AccessComboBox from "./AccessComboBox";
-import constants from "@appserver/common/src/constants";
+import constants from "@appserver/common/constants";
 import AccessEditIcon from "../../../../public/images/access.edit.react.svg";
 
 const { ShareAccessRights } = constants;

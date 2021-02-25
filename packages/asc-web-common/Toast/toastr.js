@@ -1,7 +1,7 @@
 import Toastr from "@appserver/components/toast/toastr";
 import i18n from "./i18n";
-import { LANGUAGE } from "../../constants";
-import { changeLanguage } from "../../utils";
+import { LANGUAGE } from "../constants";
+import { changeLanguage } from "../utils";
 const toastr = {
   clear: clear,
   error: error,

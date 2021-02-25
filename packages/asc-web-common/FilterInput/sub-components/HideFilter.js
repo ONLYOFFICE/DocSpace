@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import DropDown from "@appserver/components/drop-down";
 
-import ExpanderDownIcon from "../../../../../../public/images/expander-down.react.svg";
+import ExpanderDownIcon from "../../../../public/images/expander-down.react.svg";
 import { Caret, StyledHideFilterButton } from "../StyledFilterInput";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 

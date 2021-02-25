@@ -11,9 +11,9 @@ import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
 import Heading from "@appserver/components/heading";
 
-import PageLayout from "@appserver/common/src/components/PageLayout";
-import store from "@appserver/common/src/store";
-import commonUtils from "@appserver/common/src/utils";
+import PageLayout from "@appserver/common/PageLayout";
+import store from "@appserver/common/store";
+import commonUtils from "@appserver/common/utils";
 
 import { inject, observer } from "mobx-react";
 

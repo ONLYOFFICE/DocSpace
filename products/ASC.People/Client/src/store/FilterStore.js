@@ -1,6 +1,7 @@
 import { action, makeObservable, observable } from "mobx";
 //import { getFilterByLocation } from "../helpers/converters";
-import { api, history } from "@appserver/common/src";
+import api from "@appserver/common/api";
+import history from "@appserver/common/history";
 import config from "../../package.json";
 import {
   EMPLOYEE_STATUS,

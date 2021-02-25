@@ -1,5 +1,5 @@
 import { makeObservable, action, observable } from "mobx";
-import { api } from "@appserver/common/src";
+import api from "@appserver/common/api";
 
 class VersionHistoryStore {
   isVisible = false;

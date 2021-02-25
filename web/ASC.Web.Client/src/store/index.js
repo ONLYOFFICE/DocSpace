@@ -1,4 +1,4 @@
-import authStore from "@appserver/common/src/store/AuthStore";
+import authStore from "@appserver/common/store/AuthStore";
 import PaymentStore from "./PaymentStore";
 import WizardStore from "./WizardStore";
 import SettingsSetupStore from "./SettingsSetupStore";

@@ -9,7 +9,7 @@ import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
 
 import Loaders from "../../Loaders/index";
-import history from "../../../history";
+import history from "../../history";
 import { ReactSVG } from "react-svg";
 import { useTranslation } from "react-i18next";
 

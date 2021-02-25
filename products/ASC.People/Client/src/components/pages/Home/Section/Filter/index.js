@@ -4,7 +4,9 @@ import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
-import { FilterInput, Loaders, utils } from "@appserver/common/src";
+import FilterInput from "@appserver/common/FilterInput";
+import Loaders from "@appserver/common/Loaders";
+import utils from "@appserver/common/utils";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 

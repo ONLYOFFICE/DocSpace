@@ -1,6 +1,6 @@
 import React from "react";
 import ComboBox from "@appserver/components/combobox";
-import constants from "@appserver/common/src/constants";
+import constants from "@appserver/common/constants";
 import DropDownItem from "@appserver/components/drop-down-item";
 import { getAccessIcon } from "../../../helpers/files-helpers";
 import { ReactSVG } from "react-svg";

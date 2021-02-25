@@ -1,4 +1,4 @@
-import { api } from "@appserver/common/src";
+import api from "@appserver/common/api";
 import { makeAutoObservable } from "mobx";
 
 class WizardStore {

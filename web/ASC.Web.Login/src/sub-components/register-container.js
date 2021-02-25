@@ -7,7 +7,7 @@ import toastr from "@appserver/components/toast/toastr";
 import RegisterModalDialog from "./register-modal-dialog";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { sendRegisterRequest } from "@appserver/common/src/api/settings";
+import { sendRegisterRequest } from "@appserver/common/api/settings";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import i18n from "../i18n";
 import { inject, observer } from "mobx-react";

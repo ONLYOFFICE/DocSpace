@@ -1,5 +1,5 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { store } from "@appserver/common/src";
+import store from "@appserver/common/store";
 
 import GroupsStore from "./GroupsStore";
 import UsersStore from "./UsersStore";

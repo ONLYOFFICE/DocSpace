@@ -12,7 +12,8 @@ import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import { api, toastr } from "@appserver/common/src";
+import api from "@appserver/common/api";
+import toastr from "@appserver/common/Toast";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
 

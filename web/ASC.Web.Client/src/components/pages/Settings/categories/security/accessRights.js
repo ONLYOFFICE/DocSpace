@@ -4,8 +4,6 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import TabContainer from "@appserver/components/tabs-container";
 
-import { changeLanguage } from "@appserver/common/src/utils";
-
 import OwnerSettings from "./sub-components/owner";
 import AdminsSettings from "./sub-components/admins";
 // import ModulesSettings from "./sub-components/modules";

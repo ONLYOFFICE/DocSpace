@@ -1,6 +1,6 @@
 import React from "react";
 import ContentLoader from "react-content-loader";
-import { LoaderStyle } from "../../constants/index";
+import { LoaderStyle } from "../constants/index";
 
 const TextLoader = (props) => (
   <ContentLoader

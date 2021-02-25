@@ -13,16 +13,16 @@ import Checkbox from "@appserver/components/checkbox";
 import HelpButton from "@appserver/components/help-button";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
-import PageLayout from "@appserver/common/src/components/PageLayout";
+import PageLayout from "@appserver/common/PageLayout";
 
 import i18n from "./i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
 
-import { checkPwd } from "@appserver/common/src/desktop";
+import { checkPwd } from "@appserver/common/desktop";
 
-import { sendInstructionsToChangePassword } from "@appserver/common/src/api/people";
-import { createPasswordHash, tryRedirectTo } from "@appserver/common/src/utils";
+import { sendInstructionsToChangePassword } from "@appserver/common/api/people";
+import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 
 const LoginContainer = styled.div`

@@ -3,10 +3,10 @@ import { Route } from "react-router-dom";
 import { ValidationResult } from "./../helpers/constants";
 import { withRouter } from "react-router";
 import Loader from "@appserver/components/loader";
-import PageLayout from "@appserver/common/src/components/PageLayout";
-import api from "@appserver/common/src/api";
-import constants from "@appserver/common/src/constants";
-import utils from "@appserver/common/src/utils";
+import PageLayout from "@appserver/common/PageLayout";
+import api from "@appserver/common/api";
+import constants from "@appserver/common/constants";
+import utils from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 const { checkConfirmLink } = api.user; //TODO: Move AuthStore
 const { getObjectByLocation } = utils;

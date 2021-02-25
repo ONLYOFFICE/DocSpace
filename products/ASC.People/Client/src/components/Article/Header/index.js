@@ -1,5 +1,6 @@
 import React from "react";
-import { Headline, Loaders } from "@appserver/common/src";
+import Headline from "@appserver/common/Headline";
+import Loaders from "@appserver/common/Loaders";
 import { inject, observer } from "mobx-react";
 
 const ArticleHeaderContent = ({ currentModuleName }) => {

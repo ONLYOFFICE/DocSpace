@@ -1,5 +1,6 @@
 import { action, makeObservable, observable } from "mobx";
-import { api, store } from "@appserver/common/src";
+import api from "@appserver/common/api";
+import store from "@appserver/common/store";
 
 const { authStore } = store;
 

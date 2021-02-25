@@ -1,9 +1,9 @@
 import React from "react";
 ..import { connect } from "react-redux";
 import { Router, Switch, Redirect } from "react-router-dom";
-import history from "@appserver/common/src/history";
-import PrivateRoute from "@appserver/common/src/components/PrivateRoute";
-import Error404 from "@appserver/common/src/pages/errors/404";
+import history from "@appserver/common/history";
+import PrivateRoute from "@appserver/common/PrivateRoute";
+import Error404 from "@appserver/common/pages/errors/404";
 
 import Home from "./components/pages/Home";
 //import Profile from "./components/pages/Profile";

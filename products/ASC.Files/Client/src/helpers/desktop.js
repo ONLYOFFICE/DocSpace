@@ -1,6 +1,6 @@
 import formatsStore from "../store/FormatsStore";
-import { store as commonStore } from "@appserver/common";
-import { desktopConstants } from "@appserver/common/src/desktop";
+import commonStore from "@appserver/common/store";
+import { desktopConstants } from "@appserver/common/desktop";
 
 const { authStore } = store;
 const { docserviceStore } = formatsStore;

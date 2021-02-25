@@ -10,7 +10,7 @@ import toastr from "@appserver/components/toast/toastr";
 import Button from "@appserver/components/button";
 import RequestLoader from "@appserver/components/request-loader";
 import Loader from "@appserver/components/loader";
-import PeopleSelector from "@appserver/common/src/components/PeopleSelector";
+import PeopleSelector from "@appserver/common/PeopleSelector";
 import isEmpty from "lodash/isEmpty";
 import { inject } from "mobx-react";
 

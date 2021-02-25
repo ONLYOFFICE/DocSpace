@@ -1,23 +1,21 @@
 import React, { useEffect } from "react";
 import { Router, Switch } from "react-router-dom";
 import { inject, observer } from "mobx-react";
-import NavMenu from "@appserver/common/src/components/NavMenu";
-import Main from "@appserver/common/src/components/Main";
+import NavMenu from "@appserver/common/NavMenu";
+import Main from "@appserver/common/Main";
 import Box from "@appserver/components/box";
-import PrivateRoute from "@appserver/common/src/components/PrivateRoute";
-import PublicRoute from "@appserver/common/src/components/PublicRoute";
-import ErrorBoundary from "@appserver/common/src/components/ErrorBoundary";
-import Layout from "@appserver/common/src/components/Layout";
-import ScrollToTop from "@appserver/common/src/components/Layout/ScrollToTop";
-import history from "@appserver/common/src/history";
-import toastr from "@appserver/common/src/components/Toast/toastr";
-import { updateTempContent } from "@appserver/common/src/utils";
+import PrivateRoute from "@appserver/common/PrivateRoute";
+import PublicRoute from "@appserver/common/PublicRoute";
+import ErrorBoundary from "@appserver/common/ErrorBoundary";
+import Layout from "@appserver/common/Layout";
+import ScrollToTop from "@appserver/common/Layout/ScrollToTop";
+import history from "@appserver/common/history";
+import toastr from "@appserver/common/Toast/toastr";
+import { updateTempContent } from "@appserver/common/utils";
 import config from "../package.json";
 
 const Payments = React.lazy(() => import("./components/pages/Payments"));
-const Error404 = React.lazy(() =>
-  import("@appserver/common/src/pages/errors/404")
-);
+const Error404 = React.lazy(() => import("@appserver/common/pages/errors/404"));
 const Home = React.lazy(() => import("./components/pages/Home"));
 const Login = React.lazy(() => import("login/page"));
 const People = React.lazy(() => import("people/page"));

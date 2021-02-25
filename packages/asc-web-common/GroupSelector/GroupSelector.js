@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import AdvancedSelector from "../AdvancedSelector";
-import { getGroupList } from "../../api/groups";
-import { changeLanguage } from "../../utils";
+import { getGroupList } from "../api/groups";
+import { changeLanguage } from "../utils";
 
 class GroupSelector extends React.Component {
   constructor(props) {

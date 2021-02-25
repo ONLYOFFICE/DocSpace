@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { isMobile } from "react-device-detect";
 import Paging from "@appserver/components/paging";
 import { useTranslation } from "react-i18next";
-import { Loaders } from "@appserver/common/src";
+import Loaders from "@appserver/common/Loaders";
 import { inject, observer } from "mobx-react";
 
 const SectionPagingContent = ({
