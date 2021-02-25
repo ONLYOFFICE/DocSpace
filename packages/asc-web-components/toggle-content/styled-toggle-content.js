@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 
 const StyledContainer = styled.div`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);

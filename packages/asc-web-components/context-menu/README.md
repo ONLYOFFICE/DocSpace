@@ -7,7 +7,7 @@ ContextMenu is used for a call context actions on a page.
 ### Usage
 
 ```js
-import { ContextMenu } from "@appserver/components";
+import ContextMenu from "@appserver/components/context-menu";
 ```
 
 ```jsx

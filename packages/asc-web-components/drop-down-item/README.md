@@ -5,7 +5,7 @@ Is a item of DropDown component
 ### Usage
 
 ```js
-import { DropDownItem } from "@appserver/components";
+import DropDownItem from "@appserver/components/drop-down-item";
 ```
 
 ```jsx

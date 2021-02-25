@@ -5,7 +5,7 @@ ContextMenuButton is used for displaying context menu actions on a list's item
 ### Usage
 
 ```js
-import { ContextMenuButton } from "@appserver/components";
+import ContextMenuButton from "@appserver/components/context-menu-button";
 ```
 
 ```jsx

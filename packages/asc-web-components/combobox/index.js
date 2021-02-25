@@ -5,7 +5,7 @@ import equal from "fast-deep-equal/react";
 import ComboButton from "./sub-components/combo-button";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
-import  StyledComboBox  from "./styled-combobox";
+import StyledComboBox from "./styled-combobox";
 
 class ComboBox extends React.Component {
   constructor(props) {

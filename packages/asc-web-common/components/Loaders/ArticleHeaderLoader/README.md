@@ -5,7 +5,7 @@ Component that displays article header loader
 ### Usage
 
 ```js
-import { Loaders } from "@appserver/common";
+import Loaders from "@appserver/common/components/Loaders";
 ```
 
 ```jsx

@@ -5,7 +5,7 @@ Is a dropdown with any number of action
 ### Usage
 
 ```js
-import { DropDown } from "@appserver/components";
+import DropDown from "@appserver/components/drop-down";
 ```
 
 ```jsx

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 import Box from "../box";
 import CrossSidebarIcon from "../../../public/images/cross.sidebar.react.svg";
 

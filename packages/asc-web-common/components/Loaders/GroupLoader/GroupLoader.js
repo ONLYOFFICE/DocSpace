@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { StyledGroup, StyledLastRow, StyledSpacer } from "./StyledGroupLoader";
-import RectangleLoader from "../RectangleLoader/index";
+import RectangleLoader from "../RectangleLoader";
 
 const GroupLoader = ({ id, className, style, ...rest }) => {
   const {

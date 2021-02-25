@@ -7,7 +7,7 @@ import { RefreshIcon } from "./svg";
 import Link from "../link";
 import Text from "../text";
 import Tooltip from "../tooltip";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 import {
   Progress,
   CopyLink,

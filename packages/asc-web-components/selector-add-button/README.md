@@ -3,7 +3,7 @@
 ### Usage
 
 ```js
-import { SelectorAddButton } from "@appserver/components";
+import SelectorAddButton from "@appserver/components/selector-add-button";
 ```
 
 ```jsx

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 
 const DateInputStyle = styled.div`
   width: ${(props) => props.theme.datePicker.width};

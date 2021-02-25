@@ -9,13 +9,11 @@ import history from "../../history";
 import Headline from "../Headline";
 import store from "../../store";
 import { Provider as MobxProvider } from "mobx-react";
-import {
-  IconButton,
-  ContextMenuButton,
-  MainButton,
-  SearchInput,
-  Paging,
-} from "@appserver/components";
+import IconButton from "@appserver/components/icon-button";
+import ContextMenuButton from "@appserver/components/context-menu-button";
+import MainButton from "@appserver/components/main-button";
+import SearchInput from "@appserver/components/search-input";
+import Paging from "@appserver/components/paging";
 import withReadme from "storybook-readme/with-readme";
 import { boolean, withKnobs } from "@storybook/addon-knobs/react";
 import Readme from "./README.md";

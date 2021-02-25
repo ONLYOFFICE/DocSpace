@@ -7,8 +7,8 @@ import {
   StyledBox4,
   StyledSpacer,
 } from "./StyledProfileView";
-import RectangleLoader from "../RectangleLoader/index";
-import CircleLoader from "../CircleLoader/index";
+import RectangleLoader from "../RectangleLoader";
+import CircleLoader from "../CircleLoader";
 
 const ProfileViewLoader = ({ id, className, style, isEdit, ...rest }) => {
   const {

@@ -6,7 +6,7 @@ import {
   StyledBox2,
   StyledSpacer,
 } from "./StyledSectionHeaderLoader";
-import RectangleLoader from "../RectangleLoader/index";
+import RectangleLoader from "../RectangleLoader";
 
 const SectionHeaderLoader = ({ id, className, style, ...rest }) => {
   const {

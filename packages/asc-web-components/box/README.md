@@ -5,7 +5,7 @@ A container that lays out its contents in one direction. Box provides general CS
 ### Usage
 
 ```js
-import { Box } from "@appserver/components";
+import Box from "@appserver/components/box";
 ```
 
 ```jsx

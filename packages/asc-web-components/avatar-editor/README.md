@@ -5,7 +5,7 @@ Used to display user avatar editor on page.
 ### Usage
 
 ```js
-import { AvatarEditor } from "@appserver/components";
+import AvatarEditor from "@appserver/components/avatar-editor";
 ```
 
 ```jsx

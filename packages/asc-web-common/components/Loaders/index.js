@@ -1,16 +1,16 @@
-import Rectangle from "./RectangleLoader/index";
-import Circle from "./CircleLoader/index";
-import Header from "./HeaderLoader/index";
-import SectionHeader from "./SectionHeaderLoader/index";
-import ArticleHeader from "./ArticleHeaderLoader/index";
-import TreeFolders from "./TreeFolderLoader/index";
-import Row from "./RowLoader/index";
-import Rows from "./RowsLoader/index";
+import Rectangle from "./RectangleLoader";
+import Circle from "./CircleLoader";
+import Header from "./HeaderLoader";
+import SectionHeader from "./SectionHeaderLoader";
+import ArticleHeader from "./ArticleHeaderLoader";
+import TreeFolders from "./TreeFolderLoader";
+import Row from "./RowLoader";
+import Rows from "./RowsLoader";
 import Text from "./TextLoader";
-import Filter from "./FilterLoader/index";
-import ProfileView from "./ProfileViewLoader/index";
+import Filter from "./FilterLoader";
+import ProfileView from "./ProfileViewLoader";
 import SettingsFiles from "./SettingsFilesLoader";
-import Group from "./GroupLoader/index";
+import Group from "./GroupLoader";
 import HistoryRows from "./HistoryRowsLoader";
 
 export default {

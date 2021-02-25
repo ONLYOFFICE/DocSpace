@@ -5,7 +5,7 @@ Password entry field with advanced capabilities for displaying, validation of co
 ### Usage
 
 ```js
-import { PasswordInput } from "@appserver/components";
+import PasswordInput from "@appserver/components/password-input";
 ```
 
 ```js

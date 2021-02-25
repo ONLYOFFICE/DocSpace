@@ -7,7 +7,7 @@ import { BooleanValue } from "react-values";
 import Box from "../Box";
 import Text from "../Text";
 import JSONPretty from "react-json-pretty";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 import Heading from "../Heading";
 import Checkbox from "../Checkbox";
 

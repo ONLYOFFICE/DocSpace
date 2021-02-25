@@ -5,7 +5,7 @@ IconButton is used for a action on a page
 ### Usage
 
 ```js
-import { IconButton } from "@appserver/components";
+import IconButton from "@appserver/components/icon-button";
 ```
 
 ```jsx

@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 
 const StyledDropdown = styled.div`
   font-family: ${(props) => props.theme.fontFamily};

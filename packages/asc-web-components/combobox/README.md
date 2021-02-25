@@ -5,8 +5,8 @@ Custom combo box input
 ### Usage
 
 ```js
-import { ComboBox } from "@appserver/components";
-import NavLogoIcon from "../../../../../public/images/nav.logo.react.svg"
+import ComboBox from "@appserver/components/combobox";
+import NavLogoIcon from "../../../../../public/images/nav.logo.react.svg";
 ```
 
 ```js

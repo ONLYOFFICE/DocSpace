@@ -5,7 +5,7 @@ Base DatePicker component
 ### Usage
 
 ```js
-import { DatePicker } from "@appserver/components";
+import DatePicker from "@appserver/components/date-picker";
 ```
 
 ```jsx

@@ -5,7 +5,7 @@ SearchInput description
 ### Usage
 
 ```js
-import { SearchInput } from "@appserver/components";
+import SearchInput from "@appserver/components/search-input";
 ```
 
 ```jsx

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Loader from "../loader";
 import StyledButton from "./styled-button";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 
 // eslint-disable-next-line no-unused-vars, react/prop-types
 

@@ -5,7 +5,7 @@ A container that lays out its contents in a 2-dimensional grid system. Use Box c
 ### Usage
 
 ```js
-import { Grid } from "@appserver/components";
+import Grid from "@appserver/components/grid";
 ```
 
 ```jsx

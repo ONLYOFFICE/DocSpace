@@ -5,7 +5,7 @@ Paging is used to navigate med content pages
 ### Usage
 
 ```js
-import { Paging } from "@appserver/components";
+import Paging from "@appserver/components/paging";
 ```
 
 ```jsx

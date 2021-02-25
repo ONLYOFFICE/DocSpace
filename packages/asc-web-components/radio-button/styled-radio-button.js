@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import NoUserSelect from "../utils/commonStyles";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
 const ClearLabel = ({ spacing, isDisabled, orientation, ...props }) => (

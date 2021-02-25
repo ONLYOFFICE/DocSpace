@@ -5,17 +5,12 @@ List of all available icons
 ### Usage
 
 ```js
-import { Icons } from "@appserver/components";
-import NavLogoIcon from "../../../../../public/images/nav.logo.react.svg"
+import Icons from "@appserver/components/icons";
+import NavLogoIcon from "../../../../../public/images/nav.logo.react.svg";
 ```
 
 ```jsx
-<NavLogoIcon
-  color="#333333"
-  isfill={false}
-  isStroke={false}
-  size="small"
-/>
+<NavLogoIcon color="#333333" isfill={false} isStroke={false} size="small" />
 ```
 
 ### Properties

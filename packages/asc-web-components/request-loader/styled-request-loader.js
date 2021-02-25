@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Loader from "../loader";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 
 const StyledOuter = styled.div`
   position: fixed;

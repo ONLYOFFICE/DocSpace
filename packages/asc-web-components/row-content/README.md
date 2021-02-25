@@ -5,7 +5,7 @@ Required for formatted output of elements inside Row
 ### Usage
 
 ```js
-import { RowContent } from "@appserver/components";
+import  RowContent  from "@appserver/components/row-content";
 import SendClockIcon from "../../../../../public/images/send.clock.react.svg";
 
 ```

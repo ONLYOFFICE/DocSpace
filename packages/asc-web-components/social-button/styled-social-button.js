@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 
 const ButtonWrapper = ({ label, iconName, isDisabled, ...props }) => (
   <button type="button" {...props}></button>

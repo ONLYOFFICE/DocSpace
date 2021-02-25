@@ -5,7 +5,7 @@ Input field for single-line strings
 ### Usage
 
 ```js
-import { TextInput } from "@appserver/components";
+import TextInput from "@appserver/components/text-input";
 ```
 
 ```js

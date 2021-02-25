@@ -5,7 +5,7 @@ import { withKnobs, boolean } from "@storybook/addon-knobs/react";
 import Section from "../../../.storybook/decorators/section";
 import PeopleSelector from ".";
 
-import { Button } from "@appserver/components";
+import Button from "@appserver/components/button";
 import { text } from "@storybook/addon-knobs";
 //import withReadme from "storybook-readme/with-readme";
 //import Readme from "./README.md";

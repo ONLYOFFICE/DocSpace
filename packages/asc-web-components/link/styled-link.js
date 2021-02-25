@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import React from "react";
 import Text from "../text";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 import NoUserSelect from "../utils/commonStyles";
 
 const colorCss = css`

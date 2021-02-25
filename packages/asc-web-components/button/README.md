@@ -5,7 +5,7 @@ Button is used for a action on a page.
 ### Usage
 
 ```js
-import { Button } from "@appserver/components";
+import Button from "@appserver/components/button";
 ```
 
 ```jsx

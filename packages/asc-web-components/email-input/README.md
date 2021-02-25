@@ -5,9 +5,8 @@ Email entry field with advanced capabilities for validation based on settings
 ### Usage
 
 ```js
-import { EmailInput, utils } from "@appserver/components";
-
-const { EmailSettings } = utils.email;
+import EmailInput from "@appserver/components/email-input";
+import { EmailSettings } from "@appserver/components/utils/email";
 
 const settings = new EmailSettings();
 

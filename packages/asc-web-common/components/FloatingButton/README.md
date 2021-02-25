@@ -5,7 +5,7 @@ Component that displays floating button
 ### Usage
 
 ```js
-import { FloatingButton } from "@appserver/common";
+import FloatingButton from "@appserver/common/components/FloatingButton";
 ```
 
 ```jsx

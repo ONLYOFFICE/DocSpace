@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { StyledTreeFolder, StyledContainer } from "./StyledTreeFolderLoader";
-import RectangleLoader from "../RectangleLoader/index";
-import CircleLoader from "../CircleLoader/index";
+import RectangleLoader from "../RectangleLoader";
+import CircleLoader from "../CircleLoader";
 
 const TreeFolderLoader = ({ id, className, style, ...rest }) => {
   const {

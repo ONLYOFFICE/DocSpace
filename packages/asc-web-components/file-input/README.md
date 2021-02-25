@@ -5,7 +5,7 @@ File entry field
 ### Usage
 
 ```js
-import { FileInput } from "@appserver/components";
+import FileInput from "@appserver/components/file-input";
 ```
 
 ```jsx

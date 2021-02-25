@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import MobileLayout from "./MobileLayout";
-import utils from "@appserver/components/utils";
+import { size, isSmallTablet } from "@appserver/components/utils/device";
 import {
   isIOS,
   isFirefox,
@@ -13,8 +13,6 @@ import {
   isTablet,
 } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-
-const { size, isSmallTablet } = utils.device;
 
 const StyledContainer = styled.div`
   width: 100%;

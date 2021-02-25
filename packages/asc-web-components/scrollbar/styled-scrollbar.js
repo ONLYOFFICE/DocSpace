@@ -1,6 +1,6 @@
 import { Scrollbars } from "react-custom-scrollbars";
 import styled from "styled-components";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 
 const StyledScrollbar = styled(Scrollbars)`
   .nav-thumb-vertical {

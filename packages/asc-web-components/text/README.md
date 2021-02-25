@@ -5,7 +5,7 @@ Component that displays plain text
 ## Usage
 
 ```js
-import { Text } from "@appserver/components";
+import  Text  from "@appserver/components/text";
 ```
 
 ```jsx

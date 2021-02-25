@@ -5,7 +5,7 @@ Used to filter tables
 ### Usage
 
 ```js
-import { FilterInput } from "@appserver/common";
+import FilterInput from "@appserver/common/components/FilterInput";
 ```
 
 ```jsx

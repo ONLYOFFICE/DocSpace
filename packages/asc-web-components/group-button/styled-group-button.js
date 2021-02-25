@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 
 import { tablet } from "../utils/device";
 import NoUserSelect from "../utils/commonStyles";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 
 const activatedCss = css`
   cursor: pointer;

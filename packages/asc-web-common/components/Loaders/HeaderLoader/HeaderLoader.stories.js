@@ -10,7 +10,7 @@ import {
 import Section from "../../../../.storybook/decorators/sectionBlue";
 
 import Loaders from "..";
-import { LoaderStyle } from "../../../constants/index";
+import { LoaderStyle } from "../../../constants";
 import styled from "styled-components";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";

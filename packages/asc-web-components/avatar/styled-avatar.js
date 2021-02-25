@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 import NoUserSelect from "../utils/commonStyles";
 import { CameraIcon } from "./svg";
 import commonIconsStyles from "../utils/common-icons-style";

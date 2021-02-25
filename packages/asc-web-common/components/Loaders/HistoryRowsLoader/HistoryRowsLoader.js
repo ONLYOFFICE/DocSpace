@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import StyledRow from "./StyledHistoryRowsLoader";
-import RectangleLoader from "../RectangleLoader/index";
+import RectangleLoader from "../RectangleLoader";
 
 const HistoryRow = ({ id, className, style, ...rest }) => {
   const {

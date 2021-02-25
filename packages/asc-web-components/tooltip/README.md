@@ -7,7 +7,9 @@ Custom tooltip
 ### Usage with IconButton
 
 ```js
-import { Tooltip, IconButton, Text } from "@appserver/components";
+import Tooltip from "@appserver/components/tooltip";
+import IconButton from "@appserver/components/icon-button";
+import Text from "@appserver/components/text";
 ```
 
 ```jsx

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import StyledContainer from "./StyledArticleHeader";
-import RectangleLoader from "../RectangleLoader/index";
+import RectangleLoader from "../RectangleLoader";
 
 const ArticleHeaderLoader = ({ id, className, style, ...rest }) => {
   const {

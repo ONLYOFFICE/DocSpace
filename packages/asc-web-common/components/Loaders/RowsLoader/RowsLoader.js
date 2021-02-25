@@ -1,5 +1,5 @@
 import React from "react";
-import RowLoader from "../RowLoader/index";
+import RowLoader from "../RowLoader";
 import PropTypes from "prop-types";
 const RowsLoader = ({ count, ...props }) => {
   const items = [];

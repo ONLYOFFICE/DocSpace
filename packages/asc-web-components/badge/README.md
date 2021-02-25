@@ -5,7 +5,7 @@ Used for buttons, numbers or status markers next to icons.
 ### Usage
 
 ```js
-import { Badge } from "@appserver/components";
+import Badge from "@appserver/components/badge";
 ```
 
 ```jsx

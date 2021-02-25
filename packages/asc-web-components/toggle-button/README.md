@@ -5,7 +5,7 @@ Custom toggle button input
 ### Usage
 
 ```js
-import { ToggleButton } from "@appserver/components";
+import ToggleButton from "@appserver/components/toggle-button";
 ```
 
 ```jsx

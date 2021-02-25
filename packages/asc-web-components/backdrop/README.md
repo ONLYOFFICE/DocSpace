@@ -5,7 +5,7 @@ Background for displaying modal dialogs
 ### Usage
 
 ```js
-import { Backdrop } from "@appserver/components";
+import Backdrop from "@appserver/components/backdrop";
 ```
 
 ```jsx

@@ -5,7 +5,7 @@ Component that displays Heading text with custom styles
 ### Usage
 
 ```js
-import { Headline } from "@appserver/common";
+import Headline from "@appserver/common/components/Headline";
 ```
 
 ```jsx

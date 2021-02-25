@@ -5,7 +5,7 @@ import { TreeNode } from "rc-tree";
 import ReactDOMServer from "react-dom/server";
 import PropTypes from "prop-types";
 import NoUserSelect from "../../utils/commonStyles";
-import Base from "@appserver/components/themes/base";
+import Base from "../../themes/base";
 import CatalogFolderIcon from "../../../../public/images/catalog.folder.react.svg";
 import CheckboxCheckedIcon from "../../../../public/images/checkbox.checked.react.svg";
 import CheckboxIndeterminateIcon from "../../../../public/images/checkbox.indeterminate.react.svg";

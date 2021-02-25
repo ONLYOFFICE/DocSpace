@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 import PropTypes from "prop-types";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 
 const BounceAnimation = keyframes`
 0% { margin-bottom: 0; display: none; }

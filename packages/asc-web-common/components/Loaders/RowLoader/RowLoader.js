@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { StyledRow, StyledBox1, StyledBox2 } from "./StyledRowLoader";
-import RectangleLoader from "../RectangleLoader/index";
-import CircleLoader from "../CircleLoader/index";
+import RectangleLoader from "../RectangleLoader";
+import CircleLoader from "../CircleLoader";
 
 const RowLoader = ({ id, className, style, isRectangle, ...rest }) => {
   const {

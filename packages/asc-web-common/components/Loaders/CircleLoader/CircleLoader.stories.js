@@ -10,7 +10,7 @@ import {
 import Section from "../../../../.storybook/decorators/section";
 
 import CircleLoader from ".";
-import { LoaderStyle } from "../../../constants/index";
+import { LoaderStyle } from "../../../constants";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 

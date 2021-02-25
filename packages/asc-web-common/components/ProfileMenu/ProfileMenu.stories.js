@@ -6,7 +6,8 @@ import ProfileMenu from ".";
 import Section from "../../../.storybook/decorators/section";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
-import { DropDownItem, Avatar } from "@appserver/components";
+import DropDownItem from "@appserver/components/drop-down-item";
+import Avatar from "@appserver/components/avatar";
 
 const roleOptions = ["owner", "admin", "guest", "user"];
 const defaultAvatar =

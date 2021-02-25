@@ -5,7 +5,7 @@ Save and cancel buttons are located in the settings sections.
 ### Usage
 
 ```js
-import { SaveCancelButtons } from "@appserver/components";
+import SaveCancelButtons from "@appserver/components/save-cancel-button";
 ```
 
 ```jsx

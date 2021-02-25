@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { StyledHeader, StyledSpacer } from "./StyledHeaderLoader";
-import RectangleLoader from "../RectangleLoader/index";
+import RectangleLoader from "../RectangleLoader";
 import CircleLoader from "../CircleLoader/index";
 
 const HeaderLoader = ({ id, className, style, ...rest }) => {

@@ -5,7 +5,7 @@ Default page layout
 ### Usage
 
 ```js
-import { PageLayout } from "@appserver/common";
+import PageLayout from "@appserver/common/components/PageLayout";
 ```
 
 ```jsx

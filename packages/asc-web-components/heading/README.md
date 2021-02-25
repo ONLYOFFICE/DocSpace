@@ -5,7 +5,7 @@ Heading text structured in levels.
 ## Usage
 
 ```js
-import { Heading } from "@appserver/components";
+import Heading from "@appserver/components/heading";
 ```
 
 ```jsx

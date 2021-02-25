@@ -3,7 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 import { tablet, mobile } from "../utils/device";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 // eslint-disable-next-line no-unused-vars
 const SimpleInput = ({ onValidateInput, onCopyToClipboard, ...props }) => (
   <div {...props}></div>

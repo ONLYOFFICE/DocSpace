@@ -3,7 +3,7 @@
 ### Usage
 
 ```js
-import { ProfileMenu } from "@appserver/common";
+import ProfileMenu from "@appserver/common/components/ProfileMenu";
 ```
 
 ```jsx

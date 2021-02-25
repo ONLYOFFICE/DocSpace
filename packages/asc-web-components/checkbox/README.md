@@ -5,7 +5,7 @@ Custom checkbox input
 ### Usage
 
 ```js
-import { Checkbox } from "@appserver/components";
+import Checkbox from "@appserver/components/checkbox";
 ```
 
 ```jsx
@@ -37,4 +37,4 @@ import { Checkbox } from "@appserver/components";
 | `value`           |    `string`    |    -     |   -    |    -    | Value of the input                                          |
 | `title`           |     `bool`     |    -     |   -    |    -    | Title                                                       |
 | `truncate`        |     `bool`     |    -     |   -    | `false` | Disables word wrapping                                      |
-| `color`           |    `string`    |    -     |   -    | `#FFFF` | Makes the checkbox a different color                         |
+| `color`           |    `string`    |    -     |   -    | `#FFFF` | Makes the checkbox a different color                        |

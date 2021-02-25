@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import StyledFilter from "./StyledFilterLoader";
-import RectangleLoader from "../RectangleLoader/index";
+import RectangleLoader from "../RectangleLoader";
 
 const FilterLoader = ({ id, className, style, ...rest }) => {
   const {

@@ -5,7 +5,7 @@ Component displays the field name in the form
 ### Usage
 
 ```js
-import { Label } from "@appserver/components";
+import Label from "@appserver/components/label";
 ```
 
 ```jsx

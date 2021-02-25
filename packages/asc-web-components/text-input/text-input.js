@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import equal from "fast-deep-equal/react";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 import StyledTextInput from "./styled-text-input";
 
 class TextInput extends React.Component {

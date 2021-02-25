@@ -12,7 +12,8 @@ You can change the CSS styles in the theme, and they will be applied to all chil
 ### Usage
 
 ```js
-import { ThemeProvider, Themes } from "app-components";
+import ThemeProvider from "@appserver/components/theme-provider";
+import Themes from "@appserver/components/themes";
 ```
 
 ```jsx
@@ -27,6 +28,6 @@ const newTheme = {...Themes.Base, color: "red"}
 
 ### ThemeProvider Properties
 
-| Props   |   Type   | Required | Values |    Default    | Description                                 |
-| ------- | :------: | :------: | :----: | :-----------: | ------------------------------------------- |
+| Props   |   Type   | Required | Values |    Default    | Description                                |
+| ------- | :------: | :------: | :----: | :-----------: | ------------------------------------------ |
 | `theme` | `object` |    ✅    |   -    | `Base styles` | Applies a theme to all children components |

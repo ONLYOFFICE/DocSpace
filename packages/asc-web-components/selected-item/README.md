@@ -3,7 +3,7 @@
 ### Usage
 
 ```js
-import { SelectedItem } from "@appserver/components";
+import SelectedItem from "@appserver/components/selected-item";
 ```
 
 ```jsx

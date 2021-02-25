@@ -1,11 +1,9 @@
 import React, { Component, createRef } from "react";
-import utils from "@appserver/components/utils";
+import { isTouchDevice } from "@appserver/components/utils/device";
 import Scrollbar from "@appserver/components/scrollbar";
 import { LayoutContextProvider } from "./context";
 import PropTypes from "prop-types";
 import { isMobile, isSafari, isIOS, isChrome } from "react-device-detect";
-
-const { isTouchDevice } = utils.device;
 class MobileLayout extends Component {
   constructor(props) {
     super(props);

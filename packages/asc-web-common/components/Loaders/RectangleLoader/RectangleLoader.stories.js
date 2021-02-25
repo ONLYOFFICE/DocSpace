@@ -12,7 +12,7 @@ import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 
 import Loaders from "..";
-import { LoaderStyle } from "../../../constants/index";
+import { LoaderStyle } from "../../../constants";
 
 storiesOf("Components|Loaders", module)
   .addDecorator(withKnobs)

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import React from "react";
 
 import commonInputStyle from "../text-input/common-input-styles";
-import Base from "@appserver/components/themes/base";
+import Base from "../themes/base";
 
 const StyledIconBlock = styled.div`
   display: ${(props) => props.theme.inputBlock.display};
