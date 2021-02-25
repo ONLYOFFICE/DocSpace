@@ -4,7 +4,11 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
-import api from "@appserver/common/api";
+import {
+  changePassword,
+  updateActivationStatus,
+  updateUser,
+} from "@appserver/common/api/people";
 import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
@@ -14,9 +18,8 @@ import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
 import PageLayout from "@appserver/common/components/PageLayout";
 import constants from "@appserver/common/constants";
-import commonUtils from "@appserver/common/utils";
+import { createPasswordHash } from "@appserver/common/utils";
 const { EmployeeActivationStatus } = constants;
-const { createPasswordHash } = commonUtils;
 
 const inputWidth = "400px";
 
@@ -155,19 +158,11 @@ class Confirm extends React.PureComponent {
       LastName: personalData.lastname,
     };
 
-    const res1 = await api.people.changePassword(
-      userId,
-      loginData.passwordHash,
-      key
-    );
+    const res1 = await changePassword(userId, loginData.passwordHash, key);
 
     console.log("changePassword", res1);
 
-    const res2 = await api.people.updateActivationStatus(
-      activationStatus,
-      userId,
-      key
-    );
+    const res2 = await updateActivationStatus(activationStatus, userId, key);
 
     console.log("updateActivationStatus", res2);
 
@@ -178,7 +173,7 @@ class Confirm extends React.PureComponent {
 
     console.log("Login", res3);
 
-    const res4 = await api.people.updateUser(changedData);
+    const res4 = await updateUser(changedData);
 
     console.log("updateUser", res4);
   };

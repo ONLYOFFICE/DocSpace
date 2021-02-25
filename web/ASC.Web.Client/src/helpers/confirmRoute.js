@@ -4,12 +4,9 @@ import { ValidationResult } from "./../helpers/constants";
 import { withRouter } from "react-router";
 import Loader from "@appserver/components/loader";
 import PageLayout from "@appserver/common/components/PageLayout";
-import api from "@appserver/common/api";
-import constants from "@appserver/common/constants";
-import utils from "@appserver/common/utils";
+import { checkConfirmLink } from "@appserver/common/api/user"; //TODO: Move AuthStore
+import { getObjectByLocation } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
-const { checkConfirmLink } = api.user; //TODO: Move AuthStore
-const { getObjectByLocation } = utils;
 
 class ConfirmRoute extends React.Component {
   constructor(props) {

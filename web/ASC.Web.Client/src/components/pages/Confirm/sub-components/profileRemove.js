@@ -8,12 +8,7 @@ import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import PageLayout from "@appserver/common/components/PageLayout";
-import store from "@appserver/common/store";
-import api from "@appserver/common/api";
-const { logout } = store.auth.actions;
-const { deleteSelf } = api.people;
-
-const { deleteSelf } = api.people; //TODO: Move inside UserStore
+import { deleteSelf } from "@appserver/common/api/people"; //TODO: Move inside UserStore
 
 const ProfileRemoveContainer = styled.div`
   display: flex;

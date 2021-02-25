@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Box from "@appserver/components/box";
 import { useTranslation } from "react-i18next";
 import { getObjectByLocation } from "@appserver/common/utils";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";

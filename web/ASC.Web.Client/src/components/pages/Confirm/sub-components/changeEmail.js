@@ -4,9 +4,7 @@ import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import Loader from "@appserver/components/loader";
 import PageLayout from "@appserver/common/components/PageLayout";
-import commonUtils from "@appserver/common/utils";
-
-const { tryRedirectTo } = commonUtils;
+import { tryRedirectTo } from "@appserver/common/utils";
 
 class ChangeEmail extends React.PureComponent {
   componentDidMount() {

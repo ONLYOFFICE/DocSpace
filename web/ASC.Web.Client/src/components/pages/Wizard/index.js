@@ -8,7 +8,7 @@ import axios from "axios";
 import PageLayout from "@appserver/common/components/PageLayout";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import history from "@appserver/common/history";
-import commonUtils from "@appserver/common/utils";
+import { createPasswordHash } from "@appserver/common/utils";
 import Loader from "@appserver/components/loader";
 import { tablet } from "@appserver/components/utils/device";
 import { EmailSettings } from "@appserver/components/utils/email";
@@ -21,8 +21,6 @@ import ModalContainer from "./sub-components/modal-dialog-container";
 
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
-
-const { createPasswordHash } = commonUtils;
 
 const emailSettings = new EmailSettings();
 emailSettings.allowDomainPunycode = true;

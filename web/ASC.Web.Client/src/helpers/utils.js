@@ -1,7 +1,5 @@
-import commonStore from "@appserver/common/store";
+import authStore from "@appserver/common/store/AuthStore";
 //import store from "../store/store";
-
-const { authStore } = commonStore;
 
 //const { getCurrentProduct } = commonStore.auth.selectors;
 

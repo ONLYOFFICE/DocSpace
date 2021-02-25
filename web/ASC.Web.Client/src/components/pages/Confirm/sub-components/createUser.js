@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
-import api from "@appserver/common/api";
+import { createUser } from "@appserver/common/api/people";
 import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
@@ -14,9 +14,8 @@ import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
 import EmailInput from "@appserver/components/email-input";
 import PageLayout from "@appserver/common/components/PageLayout";
-import commonUtils from "@appserver/common/utils";
+import { createPasswordHash } from "@appserver/common/utils";
 
-const { createPasswordHash } = commonUtils;
 const inputWidth = "400px";
 
 const ConfirmContainer = styled.div`
@@ -156,7 +155,7 @@ class Confirm extends React.PureComponent {
       loginData
     );
 
-    const user = await api.people.createUser(data, key);
+    const user = await createUser(data, key);
 
     console.log("Created user", user);
 
