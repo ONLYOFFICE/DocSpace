@@ -1,12 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace ASC.Core.Common.EF.Model
 {
     public class NotifyInfo
     {
-        [Key]
         public int NotifyId { get; set; }
         public int State { get; set; }
         public int Attempts { get; set; }

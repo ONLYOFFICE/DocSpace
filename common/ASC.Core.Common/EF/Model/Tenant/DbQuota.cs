@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using ASC.Core.Common.EF.Model;
+﻿using ASC.Core.Common.EF.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
     public class DbQuota : BaseEntity
     {
-        [Key]
         public int Tenant { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

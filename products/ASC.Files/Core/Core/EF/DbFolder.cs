@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
 using ASC.Common;
 using ASC.Core.Common.EF;
@@ -28,7 +27,6 @@ namespace ASC.Files.Core.EF
         public int FoldersCount { get; set; }
         public int FilesCount { get; set; }
 
-        [NotMapped]
         [Ignore]
         public string IndexName
         {

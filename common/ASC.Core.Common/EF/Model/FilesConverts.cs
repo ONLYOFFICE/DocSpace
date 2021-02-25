@@ -1,11 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
     public class FilesConverts
     {
-        [Key]
         public string Input { get; set; }
         public string Output { get; set; }
     }

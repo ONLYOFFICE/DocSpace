@@ -1,12 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace ASC.Core.Common.EF.Model
 {
     public class NotifyQueue
     {
-        [Key]
         public int NotifyId { get; set; }
         public int TenantId { get; set; }
         public string Sender { get; set; }

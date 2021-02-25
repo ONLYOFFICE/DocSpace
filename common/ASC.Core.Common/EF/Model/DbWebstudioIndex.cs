@@ -1,12 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace ASC.Core.Common.EF.Model
 {
     public class DbWebstudioIndex : BaseEntity
     {
-        [Key]
         public string IndexName { get; set; }
         public DateTime LastModified { get; set; }
         public override object[] GetKeys()

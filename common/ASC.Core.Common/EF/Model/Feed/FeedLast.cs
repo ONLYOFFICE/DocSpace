@@ -1,12 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace ASC.Core.Common.EF.Model
 {
     public class FeedLast : BaseEntity
     {
-        [Key]
         public string LastKey { get; set; }
         public DateTime LastDate { get; set; }
 

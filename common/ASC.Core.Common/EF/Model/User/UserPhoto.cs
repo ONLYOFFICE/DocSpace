@@ -1,14 +1,12 @@
 ﻿using ASC.Core.Common.EF.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace ASC.Core.Common.EF
 {
     public class UserPhoto : BaseEntity
     {
         public int Tenant { get; set; }
-        [Key]
         public Guid UserId { get; set; }
         public byte[] Photo { get; set; }
         public override object[] GetKeys()

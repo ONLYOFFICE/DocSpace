@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using ASC.Core.Common.EF.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +7,6 @@ namespace ASC.Core.Common.EF
     public class UserSecurity : BaseEntity
     {
         public int Tenant { get; set; }
-        [Key]
         public Guid UserId { get; set; }
         public string PwdHash { get; set; }
         public string PwdHashSha512 { get; set; }

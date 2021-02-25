@@ -1,11 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
     public class DbTenantPartner
     {
-        [Key]
         public int TenantId { get; set; }
         public string PartnerId { get; set; }
         public string AffiliateId { get; set; }

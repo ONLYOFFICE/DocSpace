@@ -1,12 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace ASC.Core.Common.EF.Model.Resource
 {
     public class ResCultures
     {
-        [Key]
         public string Title { get; set; }
         public string Value { get; set; }
         public bool Available { get; set; }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using ASC.Core.Tenants;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +12,6 @@ namespace ASC.Core.Common.EF.Model
         public string MappedDomain { get; set; }
         public int Version { get; set; }
         public DateTime? Version_Changed { get; set; }
-        [NotMapped]
         public DateTime VersionChanged { get => Version_Changed ?? DateTime.MinValue; set => Version_Changed = value; }
         public string Language { get; set; }
         public string TimeZone { get; set; }
@@ -21,9 +19,7 @@ namespace ASC.Core.Common.EF.Model
         public TenantTrustedDomainsType TrustedDomainsEnabled { get; set; }
         public TenantStatus Status { get; set; }
         public DateTime? StatusChanged { get; set; }
-
         //hack for DateTime?
-        [NotMapped]
         public DateTime StatusChangedHack { get { return StatusChanged ?? DateTime.MinValue; } set { StatusChanged = value; } }
         public DateTime CreationDateTime { get; set; }
         public Guid OwnerId { get; set; }
