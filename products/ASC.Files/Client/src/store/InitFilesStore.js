@@ -1,11 +1,12 @@
 import { makeObservable, action, observable, computed } from "mobx";
-import { store, utils } from "@appserver/common/src";
+import store from "studio/store";
+import { utils } from "@appserver/common/src";
 import filesStore from "./FilesStore";
 import treeFoldersStore from "./TreeFoldersStore";
 import config from "../../package.json";
 
-const { authStore } = store;
-const { isAdmin } = authStore;
+const { auth } = store;
+const { isAdmin } = auth;
 
 class InitFilesStore {
   isLoaded = false;
@@ -87,14 +88,14 @@ class InitFilesStore {
   }
 
   initFiles = () => {
-    const isAuthenticated = authStore.isAuthenticated;
+    const isAuthenticated = auth.isAuthenticated;
     const {
       getPortalCultures,
       isDesktopClient,
       getIsEncryptionSupport,
       getEncryptionKeys,
       setModuleInfo,
-    } = authStore.settingsStore;
+    } = auth.settingsStore;
 
     const homepage = "/products/files"; //TODO: add homepage to config?
     setModuleInfo(homepage, "e67be73d-f9ae-4ce1-8fec-1880cb518cb4");
