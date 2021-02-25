@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
 using ASC.Core.Tenants;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +22,7 @@ namespace ASC.Core.Common.EF.Model
         public TenantStatus Status { get; set; }
         public DateTime? StatusChanged { get; set; }
         //hack for DateTime?
+       
         public DateTime StatusChangedHack { get { return StatusChanged ?? DateTime.MinValue; } set { StatusChanged = value; } }
         public DateTime CreationDateTime { get; set; }
         public Guid OwnerId { get; set; }
@@ -51,6 +54,7 @@ namespace ASC.Core.Common.EF.Model
                     OwnerId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef")
                 }
                 );
+
             return modelBuilder;
         }
 
@@ -60,7 +64,7 @@ namespace ASC.Core.Common.EF.Model
             //    .HasOne(r => r.Partner)
             //    .WithOne(r => r.Tenant)
             //    .HasPrincipalKey<DbTenant>(r => new { r.Id });
-
+           
             modelBuilder.Entity<DbTenant>(entity =>
             {
                 entity.ToTable("tenants_tenants");
@@ -172,10 +176,14 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.Version_Changed)
                     .HasColumnName("version_changed")
                     .HasColumnType("datetime");
+
+                entity.Ignore(c => c.StatusChangedHack);
+                entity.Ignore(c => c.VersionChanged);
             });
         }
         public static void PgSqlAddDbTenant(this ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DbTenant>().Ignore(c => c.StatusChangedHack);
             modelBuilder.Entity<DbTenant>(entity =>
             {
                 entity.ToTable("tenants_tenants", "onlyoffice");
@@ -273,6 +281,9 @@ namespace ASC.Core.Common.EF.Model
                     .HasDefaultValueSql("2");
 
                 entity.Property(e => e.Version_Changed).HasColumnName("version_changed");
+
+                entity.Ignore(c => c.StatusChangedHack);
+                entity.Ignore(c => c.VersionChanged);
             });
         }
     }
