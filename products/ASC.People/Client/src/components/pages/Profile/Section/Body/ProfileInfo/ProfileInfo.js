@@ -8,9 +8,9 @@ import {
   HelpButton,
 } from "@appserver/components";
 import styled from "styled-components";
-import api from "@appserver/common/src/api";
-import toastr from "@appserver/common/src/components/Toast";
-import Loaders from "@appserver/common/src/components/Loaders";
+import api from "@appserver/common/api";
+import toastr from "@appserver/common/components/Toast";
+import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 
 const { resendUserInvites } = api.people;
@@ -148,8 +148,8 @@ class ProfileInfo extends React.PureComponent {
         i18n && i18n.changeLanguage(language.key);
       })
       .catch((error) =>
-      toastr.error(error && error.message ? error.message : error)
-    );
+        toastr.error(error && error.message ? error.message : error)
+      );
   };
 
   getLanguages = () => {

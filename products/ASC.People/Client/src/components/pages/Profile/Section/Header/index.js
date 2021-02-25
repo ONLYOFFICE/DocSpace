@@ -4,14 +4,14 @@ import {
   ContextMenuButton,
   AvatarEditor,
 } from "@appserver/components";
-import Headline from "@appserver/common/src/components/Headline";
-import toastr from "@appserver/common/src/components/Toast";
+import Headline from "@appserver/common/components/Headline";
+import toastr from "@appserver/common/components/Toast";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
-import utils from "@appserver/common/src/utils";
-import api from "@appserver/common/src/api";
-import constants from "@appserver/common/src/constants";
+import utils from "@appserver/common/utils";
+import api from "@appserver/common/api";
+import constants from "@appserver/common/constants";
 import {
   DeleteSelfProfileDialog,
   ChangePasswordDialog,

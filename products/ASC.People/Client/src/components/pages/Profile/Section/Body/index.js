@@ -8,7 +8,7 @@ import {
 } from "@appserver/components";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import React from "react";
-import  utils from "@appserver/common/src/utils";
+import utils from "@appserver/common/utils";
 import styled from "styled-components";
 
 import { withRouter } from "react-router";
@@ -197,5 +197,5 @@ export default inject(({ auth, peopleStore }) => ({
   isAdmin: auth.isAdmin,
   profile: peopleStore.targetUserStore.targetUser,
   viewer: auth.userStore.user,
-  isTabletView: auth.settingsStore.isTabletView
+  isTabletView: auth.settingsStore.isTabletView,
 }))(observer(withRouter(withTranslation("Profile")(SectionBodyContent))));

@@ -11,9 +11,9 @@ import utils from "@appserver/components/utils";
 import UserContent from "./userContent";
 import equal from "fast-deep-equal/react";
 import api from "@appserver/common/api";
-import toastr from "@appserver/common/Toast";
+import toastr from "@appserver/common/components/Toast";
 import constants from "@appserver/common/constants";
-import Loaders from "@appserver/common/Loaders";
+import Loaders from "@appserver/common/components/Loaders";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,

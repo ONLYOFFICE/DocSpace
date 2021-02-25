@@ -12,7 +12,7 @@ import Text from "@appserver/components/text";
 import PasswordInput from "@appserver/components/password-input";
 import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
-import PageLayout from "@appserver/common/PageLayout";
+import PageLayout from "@appserver/common/components/PageLayout";
 import constants from "@appserver/common/constants";
 import commonUtils from "@appserver/common/utils";
 const { EmployeeActivationStatus } = constants;

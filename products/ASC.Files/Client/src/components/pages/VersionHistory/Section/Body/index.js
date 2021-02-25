@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 
-import { RowContainer } from "@appserver/components";
+import RowContainer from "@appserver/components/row-container";
 import Loaders from "@appserver/common/Loaders";
 import VersionRow from "./VersionRow";
 import { inject, observer } from "mobx-react";

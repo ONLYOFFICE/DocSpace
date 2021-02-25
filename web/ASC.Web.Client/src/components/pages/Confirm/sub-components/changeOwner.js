@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
-import PageLayout from "@appserver/common/PageLayout";
+import PageLayout from "@appserver/common/components/PageLayout";
 import commonUtils from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 const { tryRedirectTo } = commonUtils;

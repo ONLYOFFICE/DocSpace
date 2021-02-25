@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { ArticleHeaderContent, ArticleBodyContent } from "./Article";
 import { SectionHeaderContent } from "./Section";
 import { inject, observer } from "mobx-react";
-import PageLayout from "@appserver/common/PageLayout";
+import PageLayout from "@appserver/common/components/PageLayout";
 const Layout = ({
   currentProductId,
   setCurrentProductId,

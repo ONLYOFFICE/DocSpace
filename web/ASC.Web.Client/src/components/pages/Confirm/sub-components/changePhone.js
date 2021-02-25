@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
 import Text from "@appserver/components/text";
-import PageLayout from "@appserver/common/PageLayout";
+import PageLayout from "@appserver/common/components/PageLayout";
 import { inject, observer } from "mobx-react";
 
 const BodyStyle = styled.div`

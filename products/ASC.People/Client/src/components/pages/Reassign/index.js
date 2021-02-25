@@ -1,6 +1,6 @@
 import React from "react";
 // import PropTypes from "prop-types";
-import PageLayout from "@appserver/common/src/components/PageLayout";
+import PageLayout from "@appserver/common/components/PageLayout";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -43,29 +43,29 @@ class Reassign extends React.Component {
     // }
 
     return (
-        <PageLayout>
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
+      <PageLayout>
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
 
-          {isAdmin && (
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-          )}
+        {isAdmin && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
 
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
 
-          <PageLayout.SectionHeader>
-            <SectionHeaderContent />
-          </PageLayout.SectionHeader>
+        <PageLayout.SectionHeader>
+          <SectionHeaderContent />
+        </PageLayout.SectionHeader>
 
-          <PageLayout.SectionBody>
-            <SectionBodyContent />
-          </PageLayout.SectionBody>
-        </PageLayout>
+        <PageLayout.SectionBody>
+          <SectionBodyContent />
+        </PageLayout.SectionBody>
+      </PageLayout>
     );
   }
 }

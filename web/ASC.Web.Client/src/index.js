@@ -4,7 +4,7 @@ import("./bootstrap");
 //import "./custom.scss";
 //import App from "./App";
 //import * as serviceWorker from "./serviceWorker";
-//import ErrorBoundary from "@appserver/common/ErrorBoundary";
+//import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 //import commonStore from '@appserver/common/store';
 // import { Provider as MobxProvider } from "mobx-react";
 // const { authStore } = commonStore;

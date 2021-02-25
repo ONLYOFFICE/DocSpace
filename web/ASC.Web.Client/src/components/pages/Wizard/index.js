@@ -5,8 +5,8 @@ import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-import PageLayout from "@appserver/common/PageLayout";
-import ErrorContainer from "@appserver/common/ErrorContainer";
+import PageLayout from "@appserver/common/components/PageLayout";
+import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import history from "@appserver/common/history";
 import commonUtils from "@appserver/common/utils";
 import Loader from "@appserver/components/loader";

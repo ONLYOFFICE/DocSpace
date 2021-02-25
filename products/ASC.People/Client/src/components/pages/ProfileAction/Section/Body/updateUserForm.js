@@ -25,8 +25,8 @@ import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import styled from "styled-components";
 import { DataLossWarningDialog } from "../../../../dialogs";
-import api from "@appserver/common/src/api";
-import toastr from "@appserver/common/src/components/Toast";
+import api from "@appserver/common/api";
+import toastr from "@appserver/common/components/Toast";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,

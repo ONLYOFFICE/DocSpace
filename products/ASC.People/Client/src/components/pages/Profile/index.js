@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import PageLayout from "@appserver/common/src/components/PageLayout";
-import toastr from "@appserver/common/src/components/Toast";
-import Loaders from "@appserver/common/src/components/Loaders";
+import PageLayout from "@appserver/common/components/PageLayout";
+import toastr from "@appserver/common/components/Toast";
+import Loaders from "@appserver/common/components/Loaders";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -45,7 +45,7 @@ class Profile extends React.Component {
     if (!profile && this.documentElement) {
       for (var i = 0; i < this.documentElement.length; i++) {
         this.documentElement[i].style.transition = "none";
-  }
+      }
     }
   }
 
@@ -61,7 +61,7 @@ class Profile extends React.Component {
     if (profile && this.documentElement) {
       for (var i = 0; i < this.documentElement.length; i++) {
         this.documentElement[i].style.transition = "";
-  }
+      }
     }
   }
 

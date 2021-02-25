@@ -1,7 +1,7 @@
 ﻿import React, { useEffect } from "react";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
-import PageLayout from "@appserver/common/PageLayout";
+import PageLayout from "@appserver/common/components/PageLayout";
 import { useTranslation, Trans } from "react-i18next";
 import version from "../../../../package.json";
 import styled from "styled-components";

@@ -1,5 +1,5 @@
 import React from "react";
-import PeopleSelector from "@appserver/common/PeopleSelector";
+import PeopleSelector from "@appserver/common/components/PeopleSelector";
 import Aside from "@appserver/components/aside";
 import Backdrop from "@appserver/components/backdrop";
 import Heading from "@appserver/components/heading";

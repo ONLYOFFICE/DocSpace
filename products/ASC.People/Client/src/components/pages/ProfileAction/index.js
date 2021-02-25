@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import PageLayout from "@appserver/common/src/components/PageLayout";
-import Loaders from "@appserver/common/src/components/Loaders";
+import PageLayout from "@appserver/common/components/PageLayout";
+import Loaders from "@appserver/common/components/Loaders";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -43,7 +43,7 @@ class ProfileAction extends React.Component {
     if (!this.loaded && this.documentElement) {
       for (var i = 0; i < this.documentElement.length; i++) {
         this.documentElement[i].style.transition = "none";
-  }
+      }
     }
   }
 
@@ -59,7 +59,7 @@ class ProfileAction extends React.Component {
     if (this.loaded && this.documentElement) {
       for (var i = 0; i < this.documentElement.length; i++) {
         this.documentElement[i].style.transition = "";
-  }
+      }
     }
   }
 
@@ -83,45 +83,45 @@ class ProfileAction extends React.Component {
     }
 
     return (
-        <PageLayout>
-          {!isVisitor && (
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
-          )}
-          {!isVisitor && isAdmin && (
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-          )}
-          {!isVisitor && (
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
-          )}
+      <PageLayout>
+        {!isVisitor && (
+          <PageLayout.ArticleHeader>
+            <ArticleHeaderContent />
+          </PageLayout.ArticleHeader>
+        )}
+        {!isVisitor && isAdmin && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
+        {!isVisitor && (
+          <PageLayout.ArticleBody>
+            <ArticleBodyContent />
+          </PageLayout.ArticleBody>
+        )}
 
-          <PageLayout.SectionHeader>
-            {this.loaded ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
-          </PageLayout.SectionHeader>
+        <PageLayout.SectionHeader>
+          {this.loaded ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
+        </PageLayout.SectionHeader>
 
-          <PageLayout.SectionBody>
-            {this.loaded ? (
-              type ? (
-                avatarEditorIsOpen ? (
-                  <CreateAvatarEditorPage />
-                ) : (
-                  <CreateUserForm />
-                )
-              ) : avatarEditorIsOpen ? (
-                <AvatarEditorPage />
+        <PageLayout.SectionBody>
+          {this.loaded ? (
+            type ? (
+              avatarEditorIsOpen ? (
+                <CreateAvatarEditorPage />
               ) : (
-                <UpdateUserForm />
+                <CreateUserForm />
               )
+            ) : avatarEditorIsOpen ? (
+              <AvatarEditorPage />
             ) : (
-              <Loaders.ProfileView isEdit={false} />
-            )}
-          </PageLayout.SectionBody>
-        </PageLayout>
+              <UpdateUserForm />
+            )
+          ) : (
+            <Loaders.ProfileView isEdit={false} />
+          )}
+        </PageLayout.SectionBody>
+      </PageLayout>
     );
   }
 }

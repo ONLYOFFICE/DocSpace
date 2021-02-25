@@ -6,8 +6,8 @@ import MainButton from "@appserver/components/main-button";
 import DropDownItem from "@appserver/components/drop-down-item";
 import { InviteDialog } from "./../../dialogs";
 import { withTranslation } from "react-i18next";
-import toastr from "@appserver/common/Toast/toastr";
-import Loaders from "@appserver/common/Loaders";
+import toastr from "@appserver/common/components/Toast";
+import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 
 class PureArticleMainButtonContent extends React.Component {

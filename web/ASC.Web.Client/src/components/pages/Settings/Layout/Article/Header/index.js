@@ -1,5 +1,5 @@
 import React from "react";
-import Headline from "@appserver/common/Headline";
+import Headline from "@appserver/common/components/Headline";
 import { useTranslation } from "react-i18next";
 
 const ArticleHeaderContent = () => {

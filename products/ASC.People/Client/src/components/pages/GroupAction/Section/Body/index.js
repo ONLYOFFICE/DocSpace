@@ -7,9 +7,9 @@ import {
   TextInput,
   utils,
 } from "@appserver/components";
-import toastr from "@appserver/common/src/components/Toast";
-import Loaders from "@appserver/common/src/components/Loaders";
-import PeopleSelector from "@appserver/common/src/components/PeopleSelector";
+import toastr from "@appserver/common/components/Toast";
+import Loaders from "@appserver/common/components/Loaders";
+import PeopleSelector from "@appserver/common/components/PeopleSelector";
 import { GUID_EMPTY } from "../../../../../helpers/constants";
 import PropTypes from "prop-types";
 import React from "react";
@@ -513,6 +513,6 @@ export default inject(({ auth, peopleStore }) => {
     group: peopleStore.selectedGroupStore.targetedGroup,
     resetGroup: peopleStore.selectedGroupStore.resetGroup,
     selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
-    setSelectGroup: peopleStore.selectedGroupStore.setSelectedGroup
+    setSelectGroup: peopleStore.selectedGroupStore.setSelectedGroup,
   };
 })(observer(withRouter(withTranslation("GroupAction")(SectionBodyContent))));

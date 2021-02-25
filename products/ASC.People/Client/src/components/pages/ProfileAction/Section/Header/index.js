@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router";
-import { IconButton } from "@appserver/components";
-import Headline from "@appserver/common/src/components/Headline";
+import IconButton from "@appserver/components";
+import Headline from "@appserver/common/components/Headline";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 

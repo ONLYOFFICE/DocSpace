@@ -8,7 +8,7 @@ import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import Link from "@appserver/components/link";
 // import { withTranslation } from "react-i18next";
 import history from "@appserver/common/history";
-import Loaders from "@appserver/common/Loaders";
+import Loaders from "@appserver/common/components/Loaders";
 import CatalogFolderIcon from "../../../../../../../public/images/catalog.folder.react.svg";
 import DepartmentsGroupIcon from "../../../../public/images/departments.group.react.svg";
 import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";

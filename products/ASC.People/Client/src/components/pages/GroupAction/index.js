@@ -1,6 +1,6 @@
 import React from "react";
 import { Loader } from "@appserver/components";
-import PageLayout from "@appserver/common/src/components/PageLayout";
+import PageLayout from "@appserver/common/components/PageLayout";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -96,7 +96,7 @@ class GroupAction extends React.Component {
 
 const GroupActionContainer = withTranslation("GroupAction")(
   withRouter(GroupAction)
-  );
+);
 
 export default inject(({ auth, peopleStore }) => ({
   setDocumentTitle: auth.setDocumentTitle,

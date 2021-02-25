@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import Loader from "@appserver/components/loader";
-import PageLayout from "@appserver/common/PageLayout";
+import PageLayout from "@appserver/common/components/PageLayout";
 import commonUtils from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 const { tryRedirectTo } = commonUtils;

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 //import RequestLoader from "@appserver/components/request-loader";
-import PageLayout from "@appserver/common/PageLayout";
+import PageLayout from "@appserver/common/components/PageLayout";
 import utils from "@appserver/common/utils";
 import {
   ArticleHeaderContent,

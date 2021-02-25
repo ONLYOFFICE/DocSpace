@@ -13,7 +13,7 @@ import PasswordInput from "@appserver/components/password-input";
 import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
 import EmailInput from "@appserver/components/email-input";
-import PageLayout from "@appserver/common/PageLayout";
+import PageLayout from "@appserver/common/components/PageLayout";
 import commonUtils from "@appserver/common/utils";
 
 const { createPasswordHash } = commonUtils;

@@ -3,7 +3,7 @@ import { Route } from "react-router-dom";
 import { ValidationResult } from "./../helpers/constants";
 import { withRouter } from "react-router";
 import Loader from "@appserver/components/loader";
-import PageLayout from "@appserver/common/PageLayout";
+import PageLayout from "@appserver/common/components/PageLayout";
 import api from "@appserver/common/api";
 import constants from "@appserver/common/constants";
 import utils from "@appserver/common/utils";

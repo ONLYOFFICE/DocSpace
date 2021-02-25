@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import Link from "@appserver/components/link";
-import { history } from "@appserver/common";
+import history from "@appserver/common";
 import { changeLanguage } from "@appserver/common/utils";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { isMobile } from "react-device-detect";

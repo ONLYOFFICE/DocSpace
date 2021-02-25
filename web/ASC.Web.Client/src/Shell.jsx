@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 import { Router, Switch } from "react-router-dom";
 import { inject, observer } from "mobx-react";
-import NavMenu from "@appserver/common/NavMenu";
-import Main from "@appserver/common/Main";
+import NavMenu from "@appserver/common/components/NavMenu";
+import Main from "@appserver/common/components/Main";
 import Box from "@appserver/components/box";
-import PrivateRoute from "@appserver/common/PrivateRoute";
-import PublicRoute from "@appserver/common/PublicRoute";
-import ErrorBoundary from "@appserver/common/ErrorBoundary";
-import Layout from "@appserver/common/Layout";
-import ScrollToTop from "@appserver/common/Layout/ScrollToTop";
+import PrivateRoute from "@appserver/common/components/PrivateRoute";
+import PublicRoute from "@appserver/common/components/PublicRoute";
+import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
+import Layout from "@appserver/common/components/Layout";
+import ScrollToTop from "@appserver/common/components/Layout/ScrollToTop";
 import history from "@appserver/common/history";
-import toastr from "@appserver/common/Toast/toastr";
+import toastr from "@appserver/common/components/Toast";
 import { updateTempContent } from "@appserver/common/utils";
 import config from "../package.json";
 

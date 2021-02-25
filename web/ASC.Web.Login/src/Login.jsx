@@ -13,7 +13,7 @@ import Checkbox from "@appserver/components/checkbox";
 //import HelpButton from "@appserver/components/help-button";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
-import PageLayout from "@appserver/common/PageLayout";
+import PageLayout from "@appserver/common/components/PageLayout";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
 import { checkPwd } from "@appserver/common/desktop";

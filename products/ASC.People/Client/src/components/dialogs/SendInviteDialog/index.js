@@ -13,7 +13,7 @@ import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
 import api from "@appserver/common/api";
-import toastr from "@appserver/common/Toast";
+import toastr from "@appserver/common/components/Toast";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
 

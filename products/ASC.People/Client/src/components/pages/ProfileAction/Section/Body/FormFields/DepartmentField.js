@@ -1,11 +1,9 @@
 import React from "react";
 import equal from "fast-deep-equal/react";
-import {
-  FieldContainer,
-  SelectorAddButton,
-  SelectedItem,
-} from "@appserver/components";
-import GroupSelector from "@appserver/common/src/components/GroupSelector";
+import FieldContainer from "@appserver/components/field-container";
+import SelectorAddButton from "@appserver/components/selector-add-button";
+import SelectedItem from "@appserver/components/selected-item";
+import GroupSelector from "@appserver/common/components/GroupSelector";
 
 class DepartmentField extends React.Component {
   shouldComponentUpdate(nextProps) {
