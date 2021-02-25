@@ -8,7 +8,7 @@ import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import TextInput from "@appserver/components/text-input";
 import Textarea from "@appserver/components/textarea";
-import toastr from "@appserver/common/src/components/Toast/toastr";
+import toastr from "@appserver/common/components/Toast";
 import { withTranslation } from "react-i18next";
 import {
   StyledEmbeddingPanel,

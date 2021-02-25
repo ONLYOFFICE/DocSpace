@@ -2,15 +2,15 @@ import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import toastr from "@appserver/common/src/components/Toast/toastr";
-import Loaders from "@appserver/common/src/components/Loaders";
-import Headline from "@appserver/common/src/components/Headline";
-import { FilterType, FileAction } from "@appserver/common/src/constants";
+import toastr from "@appserver/common/components/Toast/toastr";
+import Loaders from "@appserver/common/components/Loaders";
+import Headline from "@appserver/common/components/Headline";
+import { FilterType, FileAction } from "@appserver/common/constants";
 import {
   getProgress,
   downloadFiles,
   removeFiles,
-} from "@appserver/common/src/api/files";
+} from "@appserver/common/api/files";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import ContextMenuButton from "@appserver/components/context-menu-button";

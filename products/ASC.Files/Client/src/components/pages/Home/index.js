@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 import axios from "axios";
-import toastr from "@appserver/common/src/components/Toast/toastr";
-import PageLayout from "@appserver/common/src/components/PageLayout";
-import { showLoader, hideLoader } from "@appserver/common/src/utils";
-import FilesFilter from "@appserver/common/src/api/files/filter";
-import { getGroup } from "@appserver/common/src/api/groups";
-import { getUserById } from "@appserver/common/src/api/people";
+import toastr from "@appserver/common/components/Toast";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { showLoader, hideLoader } from "@appserver/common/utils";
+import FilesFilter from "@appserver/common/api/files/filter";
+import { getGroup } from "@appserver/common/api/groups";
+import { getUserById } from "@appserver/common/api/people";
 import { withTranslation, Trans } from "react-i18next";
 import {
   ArticleBodyContent,

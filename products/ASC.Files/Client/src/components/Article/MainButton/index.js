@@ -5,8 +5,8 @@ import MainButton from "@appserver/components/main-button";
 import DropDownItem from "@appserver/components/drop-down-item";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import Loaders from "@appserver/common/src/components/Loaders";
-import { FileAction } from "@appserver/common/src/constants";
+import Loaders from "@appserver/common/components/Loaders";
+import { FileAction } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { inject, observer } from "mobx-react";
 

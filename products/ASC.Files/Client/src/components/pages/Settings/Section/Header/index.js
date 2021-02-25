@@ -1,5 +1,5 @@
 import React from "react";
-import Headline from "@appserver/common/src/components/Headline";
+import Headline from "@appserver/common/components/Headline";
 
 const SectionHeaderContent = ({ title }) => {
   return (

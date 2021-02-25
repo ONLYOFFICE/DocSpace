@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import Heading from "@appserver/components/heading";
 import ToggleButton from "@appserver/components/toggle-button";
-import Error403 from "@appserver/common/src/pages/errors/403";
-import Error520 from "@appserver/common/src/pages/errors/520";
+import Error403 from "@appserver/common/pages/errors/403";
+import Error520 from "@appserver/common/pages/errors/520";
 import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 

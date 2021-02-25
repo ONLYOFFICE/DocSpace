@@ -1,6 +1,6 @@
 import React from "react";
 import store from "studio/store";
-import ErrorBoundary from "@appserver/common/src/components/ErrorBoundary";
+import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@appserver/components/theme-provider";
 import "./custom.scss";

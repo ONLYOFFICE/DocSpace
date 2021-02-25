@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-import toastr from "@appserver/common/src/components/Toast/toastr";
+import toastr from "@appserver/common/components/Toast";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import { ThirdPartyMoveDialog } from "../../dialogs";

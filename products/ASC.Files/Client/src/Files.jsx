@@ -15,25 +15,25 @@ import VersionHistory from "./components/pages/VersionHistory";
 import config from "../package.json";
 import "./i18n";
 
-import Layout from "@appserver/common/src/components/Layout";
-import history from "@appserver/common/src/history";
-import PrivateRoute from "@appserver/common/src/components/PrivateRoute";
-import PublicRoute from "@appserver/common/src/components/PublicRoute";
-import NavMenu from "@appserver/common/src/components/NavMenu";
-import Main from "@appserver/common/src/components/Main";
-import ScrollToTop from "@appserver/common/src/components/Layout/ScrollToTop";
-import toastr from "@appserver/common/src/components/Toast/toastr";
-import { updateTempContent } from "@appserver/common/src/utils";
+import Layout from "@appserver/common/components/Layout";
+import history from "@appserver/common/history";
+import PrivateRoute from "@appserver/common/components/PrivateRoute";
+import PublicRoute from "@appserver/common/components/PublicRoute";
+import NavMenu from "@appserver/common/components/NavMenu";
+import Main from "@appserver/common/components/Main";
+import ScrollToTop from "@appserver/common/components/Layout/ScrollToTop";
+import toastr from "@appserver/common/components/Toast/toastr";
+import { updateTempContent } from "@appserver/common/utils";
 //import { regDesktop } from "@appserver/common/src/desktop";
 
 const Error520 = React.lazy(() =>
-  import("@appserver/common/src/pages/errors/520")
+  import("@appserver/common/pages/errors/520")
 );
 const Error404 = React.lazy(() =>
-  import("@appserver/common/src/pages/errors/404")
+  import("@appserver/common/pages/errors/404")
 );
 const Offline = React.lazy(() =>
-  import("@appserver/common/src/pages/errors/offline")
+  import("@appserver/common/pages/errors/offline")
 );
 //const Login = React.lazy(() => import("login/page"));
 

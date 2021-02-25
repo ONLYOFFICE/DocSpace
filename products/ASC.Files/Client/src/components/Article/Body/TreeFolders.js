@@ -3,9 +3,9 @@ import TreeMenu from "@appserver/components/tree-menu";
 import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import styled from "styled-components";
 //import equal from "fast-deep-equal/react";
-import { getFolder } from "@appserver/common/src/api/files";
-import { FolderType, ShareAccessRights } from "@appserver/common/src/constants";
-import toastr from "@appserver/common/src/components/Toast/toastr";
+import { getFolder } from "@appserver/common/api/files";
+import { FolderType, ShareAccessRights } from "@appserver/common/constants";
+import toastr from "@appserver/common/components/Toast";
 
 import { onConvertFiles } from "../../../helpers/files-converter";
 import { ReactSVG } from "react-svg";

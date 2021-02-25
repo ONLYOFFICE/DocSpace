@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import TreeMenu from "@appserver/components/tree-menu";
 import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import styled from "styled-components";
-import history from "@appserver/common/src/history";
+import history from "@appserver/common/history";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import SettingsIcon from "../../../../../../../public/images/settings.react.svg";

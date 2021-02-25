@@ -1,6 +1,6 @@
 import { makeObservable, action, observable, computed } from "mobx";
 import store from "@appserver/common/store";
-import utils from "@appserver/common/utils";
+import { updateTempContent } from "@appserver/common/utils";
 import filesStore from "./FilesStore";
 import treeFoldersStore from "./TreeFoldersStore";
 import config from "../../package.json";
@@ -102,11 +102,11 @@ class InitFilesStore {
 
     const requests = [];
 
-    utils.updateTempContent();
+    updateTempContent();
     if (!isAuthenticated) {
       return this.setIsLoaded(true);
     } else {
-      utils.updateTempContent(isAuthenticated);
+      updateTempContent(isAuthenticated);
     }
 
     if (!this.isEditor) {

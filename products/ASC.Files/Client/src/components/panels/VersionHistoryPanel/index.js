@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
 import Heading from "@appserver/components/heading";
 import Aside from "@appserver/components/aside";
-import Loaders from "@appserver/common/src/components/Loaders";
+import Loaders from "@appserver/common/components/Loaders";
 import { withTranslation } from "react-i18next";
 import {
   StyledVersionHistoryPanel,

@@ -3,8 +3,8 @@ import { withRouter } from "react-router";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
-import { getFolder } from "@appserver/common/src/api/files";
-import toastr from "@appserver/common/src/components/Toast/toastr";
+import { getFolder } from "@appserver/common/api/files";
+import toastr from "@appserver/common/components/Toast";
 import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { inject, observer } from "mobx-react";
 

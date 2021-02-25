@@ -7,7 +7,7 @@ import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import { withTranslation } from "react-i18next";
-import toastr from "@appserver/common/src/components/Toast/toastr";
+import toastr from "@appserver/common/components/Toast";
 import OwnerSelector from "./OwnerSelector";
 import {
   StyledAsidePanel,

@@ -10,8 +10,8 @@ import Box from "@appserver/components/box";
 import RowContainer from "@appserver/components/row-container";
 import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
-import { getNewFiles, markAsRead } from "@appserver/common/src/api/files";
-import toastr from "@appserver/common/src/components/Toast/toastr";
+import { getNewFiles, markAsRead } from "@appserver/common/api/files";
+import toastr from "@appserver/common/components/Toast";
 import { ReactSVG } from "react-svg";
 import {
   StyledAsidePanel,

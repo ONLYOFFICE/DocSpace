@@ -2,23 +2,23 @@ import React from "react";
 import { withRouter } from "react-router";
 import Toast from "@appserver/components/toast";
 import Box from "@appserver/components/box";
-import { regDesktop } from "@appserver/common/src/desktop";
-import Loaders from "@appserver/common/src/components/Loaders";
+import { regDesktop } from "@appserver/common/desktop";
+import Loaders from "@appserver/common/components/Loaders";
 import {
   getObjectByLocation,
   showLoader,
   hideLoader,
   tryRedirectTo,
-} from "@appserver/common/src/utils";
+} from "@appserver/common/utils";
 import {
   getDocServiceUrl,
   openEdit,
   setEncryptionKeys,
   getEncryptionAccess,
-} from "@appserver/common/src/api/files";
-import { checkIsAuthenticated } from "@appserver/common/src/api/user";
-import { getUser } from "@appserver/common/src/api/people";
-import toastr from "@appserver/common/src/components/Toast/toastr";
+} from "@appserver/common/api/files";
+import { checkIsAuthenticated } from "@appserver/common/api/user";
+import { getUser } from "@appserver/common/api/people";
+import toastr from "@appserver/common/components/Toast/toastr";
 
 import { setDocumentTitle } from "../../../helpers/utils";
 import { changeTitle, setFavicon, isIPad } from "./utils";

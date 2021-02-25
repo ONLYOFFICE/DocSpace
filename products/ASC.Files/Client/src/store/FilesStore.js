@@ -1,7 +1,12 @@
 import { makeObservable, action, observable, computed } from "mobx";
 import store from "studio/store";
 import api from "@appserver/common/api";
-import constants from "@appserver/common/constants";
+import {
+  FolderType,
+  FilterType,
+  FileType,
+  FileAction,
+} from "@appserver/common/constants";
 import history from "@appserver/common/history";
 import queryString from "query-string";
 import FileActionStore from "./FileActionStore";
@@ -24,7 +29,7 @@ import {
 import config from "../../package.json";
 
 const { FilesFilter } = api;
-const { FolderType, FilterType, FileType, FileAction } = constants;
+//const { FolderType, FilterType, FileType, FileAction } = constants;
 const { settingsStore, userStore, isAdmin } = store.auth;
 const { isEncryptionSupport, isDesktopClient } = settingsStore;
 

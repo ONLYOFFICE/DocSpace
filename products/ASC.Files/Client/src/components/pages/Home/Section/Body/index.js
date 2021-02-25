@@ -19,7 +19,7 @@ import FilesRowContent from "./FilesRowContent";
 import FilesTileContent from "./FilesTileContent";
 import TileContainer from "./TileContainer";
 import Tile from "./Tile";
-import FilesFilter from "@appserver/common/src/api/files/filter";
+import FilesFilter from "@appserver/common/api/files/filter";
 import {
   deleteFile,
   getProgress,
@@ -28,11 +28,11 @@ import {
   finalizeVersion,
   copyToFolder,
   moveToFolder,
-} from "@appserver/common/src/api/files";
-import { FileAction } from "@appserver/common/src/constants";
-import MediaViewer from "@appserver/common/src/components/MediaViewer";
-import toastr from "@appserver/common/src/components/Toast/toastr";
-import Loaders from "@appserver/common/src/components/Loaders";
+} from "@appserver/common/api/files";
+import { FileAction } from "@appserver/common/constants";
+import MediaViewer from "@appserver/common/components/MediaViewer";
+import toastr from "@appserver/common/components/Toast";
+import Loaders from "@appserver/common/components/Loaders";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import { loopTreeFolders } from "../../../../../helpers/files-helpers";
 import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";

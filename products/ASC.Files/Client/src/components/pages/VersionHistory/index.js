@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import PageLayout from "@appserver/common/src/components/PageLayout";
-import Loaders from "@appserver/common/src/components/Loaders";
+import PageLayout from "@appserver/common/components/PageLayout";
+import Loaders from "@appserver/common/components/Loaders";
 import { withTranslation } from "react-i18next";
 import {
   ArticleHeaderContent,

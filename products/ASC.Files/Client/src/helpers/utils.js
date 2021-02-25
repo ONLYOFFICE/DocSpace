@@ -1,4 +1,4 @@
-import authStore from "@appserver/common/src/store/AuthStore";
+import authStore from "@appserver/common/store/AuthStore";
 
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;

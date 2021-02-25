@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
-import PageLayout from "@appserver/common/src/components/PageLayout";
-import Loaders from "@appserver/common/src/components/Loaders";
-import { showLoader, hideLoader } from "@appserver/common/src/utils";
+import PageLayout from "@appserver/common/components/PageLayout";
+import Loaders from "@appserver/common/components/Loaders";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,

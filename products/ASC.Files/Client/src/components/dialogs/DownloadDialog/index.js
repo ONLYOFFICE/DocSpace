@@ -9,7 +9,7 @@ import RowContent from "@appserver/components/row-content";
 import RowContainer from "@appserver/components/row-container";
 import { ReactSVG } from "react-svg";
 import { withTranslation } from "react-i18next";
-import { downloadFormatFiles } from "@appserver/common/src/api/files";
+import { downloadFormatFiles } from "@appserver/common/api/files";
 import { TIMEOUT } from "../../../helpers/constants";
 import DownloadContent from "./DownloadContent";
 import { inject, observer } from "mobx-react";

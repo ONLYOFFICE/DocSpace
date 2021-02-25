@@ -11,9 +11,9 @@ import {
   convertFile,
   markAsRead,
   getFileConversationProgress,
-} from "@appserver/common/src/api/files";
-import { FileAction, ShareAccessRights } from "@appserver/common/src/constants";
-import toastr from "@appserver/common/src/components/Toast/toastr";
+} from "@appserver/common/api/files";
+import { FileAction, ShareAccessRights } from "@appserver/common/constants";
+import toastr from "@appserver/common/components/Toast";
 import FavoriteIcon from "../../../../../../public/images/favorite.react.svg";
 import FileActionsConvertEditDocIcon from "../../../../../../public/images/file.actions.convert.edit.doc.react.svg";
 import FileActionsLockedIcon from "../../../../../../public/images/file.actions.locked.react.svg";
