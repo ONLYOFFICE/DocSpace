@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { PageLayout, toastr, Loaders } from "@appserver/common";
+import PageLayout from "@appserver/common/src/components/PageLayout";
+import toastr from "@appserver/common/src/components/Toast";
+import Loaders from "@appserver/common/src/components/Loaders";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,

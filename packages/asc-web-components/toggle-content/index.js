@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { ArrowContentIcon } from "./svg";
 import Heading from "../heading";
 import { StyledContent, StyledContainer } from "./styled-toggle-content";
-import commonIconsStyles from "../../utils/common-icons-style";
+import commonIconsStyles from "../utils/common-icons-style";
 
 const StyledArrowContentIcon = styled(ArrowContentIcon)`
   ${commonIconsStyles}

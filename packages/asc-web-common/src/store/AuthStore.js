@@ -138,7 +138,8 @@ class AuthStore {
         link: "/settings",
       },
       false,
-      "SettingsIcon"
+      "SettingsIcon",
+      "static/images/settings.react.svg"
     );
 
     return [settingsModuleWrapper];

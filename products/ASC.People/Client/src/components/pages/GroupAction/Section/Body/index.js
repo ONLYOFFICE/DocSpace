@@ -7,11 +7,9 @@ import {
   TextInput,
   utils,
 } from "@appserver/components";
-import {
-  PeopleSelector,
-  toastr,
-  Loaders,
-} from "@appserver/common";
+import toastr from "@appserver/common/src/components/Toast";
+import Loaders from "@appserver/common/src/components/Loaders";
+import PeopleSelector from "@appserver/common/src/components/PeopleSelector";
 import { GUID_EMPTY } from "../../../../../helpers/constants";
 import PropTypes from "prop-types";
 import React from "react";

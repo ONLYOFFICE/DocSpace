@@ -8,7 +8,9 @@ import {
   HelpButton,
 } from "@appserver/components";
 import styled from "styled-components";
-import { api, toastr, Loaders } from "@appserver/common";
+import api from "@appserver/common/src/api";
+import toastr from "@appserver/common/src/components/Toast";
+import Loaders from "@appserver/common/src/components/Loaders";
 import { inject, observer } from "mobx-react";
 
 const { resendUserInvites } = api.people;

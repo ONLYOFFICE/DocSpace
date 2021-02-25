@@ -5,7 +5,7 @@ import {
   SelectorAddButton,
   SelectedItem,
 } from "@appserver/components";
-import { GroupSelector } from "@appserver/common";
+import GroupSelector from "@appserver/common/src/components/GroupSelector";
 
 class DepartmentField extends React.Component {
   shouldComponentUpdate(nextProps) {

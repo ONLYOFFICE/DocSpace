@@ -23,7 +23,8 @@ import DepartmentField from "./FormFields/DepartmentField";
 import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import { DataLossWarningDialog } from "../../../../dialogs";
-import { api, toastr } from "@appserver/common";
+import api from "@appserver/common/src/api";
+import toastr from "@appserver/common/src/components/Toast";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import {
