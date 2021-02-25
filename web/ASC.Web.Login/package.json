@@ -20,10 +20,7 @@
     "babel-loader": "8.2.2",
     "css-loader": "^3.6.0",
     "html-webpack-plugin": "4.5.0",
-    "i18next": "^19.8.4",
-    "i18next-http-backend": "^1.1.0",
     "json-loader": "^0.5.7",
-    "react-i18next": "^11.7.3",
     "source-map-loader": "^1.1.2",
     "style-loader": "1.2.1",
     "webpack": "5.14.0",
@@ -54,6 +51,11 @@
     "react-window": "^1.8.6",
     "resize-image": "^0.1.0",
     "sjcl": "^1.0.8",
-    "styled-components": "^5.2.1"
+    "styled-components": "^5.2.1",
+    "i18next": "^19.8.4",
+    "i18next-http-backend": "^1.1.0",
+    "react-i18next": "^11.7.3",
+    "mobx": "^6.1.1",
+    "mobx-react": "^7.1.0"
   }
 }

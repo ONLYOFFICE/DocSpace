@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+..import { connect } from "react-redux";
 import { Router, Switch, Redirect } from "react-router-dom";
 import history from "@appserver/common/src/history";
 import PrivateRoute from "@appserver/common/src/components/PrivateRoute";
