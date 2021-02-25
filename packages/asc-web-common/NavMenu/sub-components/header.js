@@ -1,13 +1,13 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { Link as LogoLink  } from "react-router-dom";
 import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
-
+import  Link  from "@appserver/components/link";
 import Loaders from "../../Loaders/index";
 import history from "../../history";
 import { ReactSVG } from "react-svg";
@@ -93,8 +93,13 @@ const HeaderComponent = ({
   const { t } = useTranslation();
 
   const isNavAvailable = mainModules.length > 0;
+
   const onLogoClick = () => {
     history.push(defaultPage);
+  };
+
+  const onLinkClick = () => {
+    history.push("/about");
   };
 
   const onBadgeClick = (e) => {
@@ -157,7 +162,7 @@ const HeaderComponent = ({
           noHover={true}
         />
 
-        <Link className="header-logo-wrapper" to={defaultPage}>
+        <LogoLink className="header-logo-wrapper" to={defaultPage}>
           <ReactSVG
             className="header-logo-icon"
             loading={() => (
@@ -172,7 +177,7 @@ const HeaderComponent = ({
             )}
             src={props.logoUrl}
           />
-        </Link>
+        </LogoLink>
         <Headline className="header-module-title" type="header" color="#FFF">
           {currentProductName}
         </Headline>
@@ -234,7 +239,12 @@ const HeaderComponent = ({
               {" "}
               -{" "}
             </Text>
-            <Link as="a" href="/about" target="_blank" {...versionBadgeProps}>
+            <Link
+              as="a"
+              onClick={onLinkClick}
+              target="_blank"
+              {...versionBadgeProps}
+            >
               {t("AboutShort")}
             </Link>
           </Box>

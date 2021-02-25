@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import GroupButton from "../group-button";
 import DropDownItem from "../drop-down-item";
 import throttle from "lodash/throttle";
-import { isArrayEqual } from "../../utils/array";
+import { isArrayEqual } from "../utils/array";
 import {
   StyledGroupButtonsMenu,
   CloseButton,

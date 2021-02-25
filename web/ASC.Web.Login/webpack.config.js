@@ -10,7 +10,7 @@ module.exports = {
 
   devServer: {
     contentBase: [path.join(__dirname, "public"), path.join(__dirname, "dist")],
-    // contentBasePublicPath: "/login",
+    contentBasePublicPath: "/login",
     port: 5011,
     historyApiFallback: true,
     hot: false,

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import Checkbox from "../checkbox";
-import { isArrayEqual } from "../../utils/array";
+import { isArrayEqual } from "../utils/array";
 import {
   StyledCheckbox,
   Separator,
@@ -13,8 +13,8 @@ import {
   StyledDropdownToggle,
   StyledGroupButton,
 } from "./styled-group-button";
-import ExpanderDownIcon from "../../../../../public/images/expander-down.react.svg";
-import commonIconsStyles from "../../utils/common-icons-style";
+import ExpanderDownIcon from "../../../public/images/expander-down.react.svg";
+import commonIconsStyles from "../utils/common-icons-style";
 
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}

@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import Base from "@appserver/components/themes/base";
-import NoUserSelect from "../../utils/commonStyles";
+import NoUserSelect from "../utils/commonStyles";
 
 const HoverStyle = css`
   &:hover {

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { tablet, desktop } from "../../utils/device";
+import { tablet, desktop } from "../utils/device";
 import Base from "@appserver/components/themes/base";
 
 const StyledGroupButtonsMenu = styled.div`

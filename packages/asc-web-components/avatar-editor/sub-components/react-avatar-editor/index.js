@@ -4,7 +4,7 @@ import React from "react";
 
 import loadImageURL from "./utils/load-image-url";
 import loadImageFile from "./utils/load-image-file";
-import { isTouchDevice } from "../../../../utils/device";
+import { isTouchDevice } from "../../../utils/device";
 const makeCancelable = (promise) => {
   let hasCanceled_ = false;
 

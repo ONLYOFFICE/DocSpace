@@ -1,6 +1,6 @@
 import React from "react";
 // import PropTypes from "prop-types";
-import { PageLayout } from "@appserver/common";
+import PageLayout from "@appserver/common/src/components/PageLayout";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,

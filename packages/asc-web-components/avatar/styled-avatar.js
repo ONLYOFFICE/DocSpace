@@ -5,6 +5,7 @@ import NoUserSelect from "../utils/commonStyles";
 import { CameraIcon } from "./svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
+
 const EditLink = styled.div`
   padding-left: ${(props) => props.theme.avatar.editLink.paddingLeft};
   padding-right: ${(props) => props.theme.avatar.editLink.paddingRight};
@@ -65,9 +66,10 @@ const AvatarWrapper = styled.div`
 `;
 AvatarWrapper.defaultProps = { theme: Base };
 
-const leftStyle = (props) => props.theme.avatar.roleWrapperContainer.left;
+const leftStyle = (props) =>
+  props.theme.avatar.roleWrapperContainer.left[props.size];
 const bottomStyle = (props) =>
-  props.theme.avatar.roleWrapperContainer.bottomStyle;
+  props.theme.avatar.roleWrapperContainer.bottom[props.size];
 
 const RoleWrapper = styled.div`
   position: absolute;

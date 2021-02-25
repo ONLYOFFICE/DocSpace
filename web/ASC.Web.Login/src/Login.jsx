@@ -10,20 +10,17 @@ import TextInput from "@appserver/components/text-input";
 import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
 import Checkbox from "@appserver/components/checkbox";
-import HelpButton from "@appserver/components/help-button";
+//import HelpButton from "@appserver/components/help-button";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
 import PageLayout from "@appserver/common/PageLayout";
-
-import i18n from "./i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
-
 import { checkPwd } from "@appserver/common/desktop";
-
 import { sendInstructionsToChangePassword } from "@appserver/common/api/people";
 import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
+import "./i18n";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -424,8 +421,6 @@ Form.propTypes = {
   hashSettings: PropTypes.object,
   greetingTitle: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
-  i18n: PropTypes.object.isRequired,
-  language: PropTypes.string.isRequired,
   socialButtons: PropTypes.array,
   organizationName: PropTypes.string,
   homepage: PropTypes.string,
@@ -441,24 +436,16 @@ Form.defaultProps = {
 
 const FormWrapper = withTranslation()(Form);
 
-// const LoginForm = (props) => <FormWrapper i18n={i18n} {...props} />;
-
-// export default LoginForm;
-
-const RegisterWrapper = withTranslation()(Register);
+//const RegisterWrapper = withTranslation()(Register);
 
 const LoginForm = (props) => {
-  const { language, enabledJoin, isDesktop } = props;
-
-  useEffect(() => {
-    i18n.changeLanguage(language);
-  }, [language]);
+  const { enabledJoin, isDesktop } = props;
 
   return (
     <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktop}>
       <PageLayout>
         <PageLayout.SectionBody>
-          <FormWrapper i18n={i18n} {...props} />
+          <FormWrapper {...props} />
         </PageLayout.SectionBody>
       </PageLayout>
       <Register />
@@ -467,14 +454,13 @@ const LoginForm = (props) => {
 };
 
 LoginForm.propTypes = {
-  language: PropTypes.string.isRequired,
   isLoaded: PropTypes.bool,
   enabledJoin: PropTypes.bool,
   isDesktop: PropTypes.bool.isRequired,
 };
 
 export default inject(({ auth }) => {
-  const { settingsStore, isAuthenticated, isLoaded, language, login } = auth;
+  const { settingsStore, isAuthenticated, isLoaded, login } = auth;
   const {
     greetingSettings: greetingTitle,
     organizationName,
@@ -487,7 +473,6 @@ export default inject(({ auth }) => {
   return {
     isAuthenticated,
     isLoaded,
-    language,
     organizationName,
     greetingTitle,
     hashSettings,

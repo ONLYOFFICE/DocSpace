@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import Day from "./day";
-import { isArrayEqual } from "../../../utils/array";
+import { isArrayEqual } from "../../utils/array";
 import { StyledDays } from "../styled-calendar";
 
 class Days extends React.Component {

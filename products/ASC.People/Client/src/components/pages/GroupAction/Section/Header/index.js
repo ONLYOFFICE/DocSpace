@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { IconButton } from "@appserver/components";
-import { Headline } from "@appserver/common";
+import Headline from "@appserver/common/src/components/Headline";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";

@@ -43,6 +43,7 @@ class AuthStore {
       getEncryptionAccess: action,
       setEncryptionAccess: action,
       setProductVersion: action,
+      reset: action
     });
   }
 
@@ -137,7 +138,8 @@ class AuthStore {
         link: "/settings",
       },
       false,
-      "SettingsIcon"
+      "SettingsIcon",
+      "static/images/settings.react.svg"
     );
 
     return [settingsModuleWrapper];
@@ -164,6 +166,12 @@ class AuthStore {
     }
   };
 
+  reset = () => {
+    this.userStore = new UserStore();
+    this.moduleStore = new ModuleStore();
+    this.settingsStore = new SettingsStore();
+  };
+
   logout = async (withoutRedirect) => {
     const response = await api.user.logout();
 
@@ -175,12 +183,7 @@ class AuthStore {
 
     isDesktop && logoutDesktop();
 
-    //dispatch(setLogout());
-
-    //this.setIsAuthenticated(false);
-    this.setUserStore(new UserStore());
-    this.setModuleStore(new ModuleStore());
-    this.setSettingsStore(new SettingsStore());
+    this.reset();
 
     this.init();
 
