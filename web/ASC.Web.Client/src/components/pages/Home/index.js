@@ -74,7 +74,7 @@ Tiles.propTypes = {
 };
 
 const Body = ({ modules, match, isLoaded }) => {
-  const { t } = useTranslation("Home");
+  const { t } = useTranslation();
   const { error } = match.params;
   setDocumentTitle();
 
