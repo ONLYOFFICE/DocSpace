@@ -1,11 +1,8 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
-    [Table("account_links")]
     public class AccountLinks : BaseEntity
     {
         public string Id { get; set; }
