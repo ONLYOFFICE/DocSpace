@@ -126,7 +126,7 @@ class IconButton extends React.PureComponent {
     if (!isEmpty(newState)) this.setState(newState);
   }
   render() {
-    //console.log("IconButton render");
+    //console.log("IconButton render", this.state.currentIconColor);
     const {
       className,
       size,
@@ -138,7 +138,7 @@ class IconButton extends React.PureComponent {
       style,
       dataTip,
     } = this.props;
-  
+
     return (
       <StyledOuter
         className={className}
@@ -195,7 +195,6 @@ IconButton.propTypes = {
 };
 
 IconButton.defaultProps = {
-  color: "#d0d5da",
   size: 25,
   isFill: true,
   iconName: "static/images/a-z.sorting.react.svg",

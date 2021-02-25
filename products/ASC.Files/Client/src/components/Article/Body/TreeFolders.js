@@ -85,7 +85,7 @@ class TreeFolders extends React.Component {
         iconUrl = "images/catalog.private.react.svg";
         break;
       case FolderType.TRASH:
-        iconUrl = "static/images/catalog.trash.react.svg";
+        iconUrl = "images/catalog.trash.react.svg";
         break;
       default:
         break;
