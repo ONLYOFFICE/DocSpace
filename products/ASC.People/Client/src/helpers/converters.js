@@ -9,12 +9,8 @@ import {
   PAGE,
   PAGE_COUNT,
 } from "./constants";
-import api from "@appserver/common/api";
-import utils from "@appserver/common/utils";
-
-const { Filter } = api;
-const { getObjectByLocation } = utils;
-
+import { Filter } from "@appserver/common/api";
+import { getObjectByLocation } from "@appserver/common/utils";
 export function getFilterByLocation(location) {
   const urlFilter = getObjectByLocation(location);
 

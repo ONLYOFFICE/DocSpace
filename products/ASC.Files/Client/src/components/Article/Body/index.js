@@ -1,6 +1,7 @@
 import React from "react";
 
-import { toastr, Loaders } from "@appserver/common";
+import toastr from "@appserver/common/src/components/Toast/toastr";
+import Loaders from "@appserver/common/src/components/Loaders";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";

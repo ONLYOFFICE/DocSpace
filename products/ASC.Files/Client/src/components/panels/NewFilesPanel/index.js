@@ -1,18 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import {
-  Backdrop,
-  Heading,
-  Aside,
-  Row,
-  Box,
-  RowContainer,
-  Link,
-  Button,
-} from "@appserver/components";
+import Backdrop from "@appserver/components/backdrop";
+import Link from "@appserver/components/link";
+import Heading from "@appserver/components/heading";
+import Aside from "@appserver/components/aside";
+import Row from "@appserver/components/row";
+import Box from "@appserver/components/box";
+import RowContainer from "@appserver/components/row-container";
+import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
-import { api, toastr } from "@appserver/common";
+import { getNewFiles, markAsRead } from "@appserver/common/src/api/files";
+import toastr from "@appserver/common/src/components/Toast/toastr";
 import { ReactSVG } from "react-svg";
 import {
   StyledAsidePanel,
@@ -33,8 +32,7 @@ class NewFilesPanelComponent extends React.Component {
   componentDidMount() {
     const { folderId, setIsLoading } = this.props;
     setIsLoading(true);
-    api.files
-      .getNewFiles(folderId[folderId.length - 1])
+    getNewFiles(folderId[folderId.length - 1])
       .then((files) => this.setState({ files }))
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
@@ -75,8 +73,7 @@ class NewFilesPanelComponent extends React.Component {
       }
     }
 
-    api.files
-      .markAsRead(folderIds, fileIds)
+    markAsRead(folderIds, fileIds)
       .then(() => {
         this.setNewFilesCount(folderId, markAsReadFiles);
         this.props.setNewRowItems(itemsIds);
@@ -290,7 +287,7 @@ export default inject(
     const { setMediaViewerData } = mediaViewerDataStore;
     const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
 
-  return {
+    return {
       files,
       folders,
       treeFolders,
@@ -300,9 +297,9 @@ export default inject(
       setIsLoading,
       fetchFiles,
       setTreeFolders,
-  setMediaViewerData,
+      setMediaViewerData,
       addFileToRecentlyViewed,
-  setNewRowItems,
+      setNewRowItems,
       getFileIcon,
       getFolderIcon,
     };

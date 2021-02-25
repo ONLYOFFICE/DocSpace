@@ -43,7 +43,7 @@ class AuthStore {
       getEncryptionAccess: action,
       setEncryptionAccess: action,
       setProductVersion: action,
-      reset: action
+      reset: action,
     });
   }
 

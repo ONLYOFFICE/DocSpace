@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { Scrollbar } from "@appserver/components";
+import Scrollbar from "@appserver/components/scrollbar";
 
 const PanelStyles = css`
   .panel_combo-box {

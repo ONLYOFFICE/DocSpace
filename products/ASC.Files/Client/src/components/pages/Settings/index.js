@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
-import { PageLayout, utils, Loaders } from "@appserver/common";
+import PageLayout from "@appserver/common/src/components/PageLayout";
+import Loaders from "@appserver/common/src/components/Loaders";
+import { showLoader, hideLoader } from "@appserver/common/src/utils";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
@@ -45,9 +47,9 @@ const PureSettings = ({
 
   useEffect(() => {
     if (isLoading) {
-      utils.showLoader();
+      showLoader();
     } else {
-      utils.hideLoader();
+      hideLoader();
     }
   }, [isLoading]);
 

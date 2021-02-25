@@ -22,7 +22,7 @@ import OneDriveIcon from "../../../../../../public/images/icon_onedrive.react.sv
 import OwnCloudIcon from "../../../../../../public/images/icon_owncloud.react.svg";
 import SharePointIcon from "../../../../../../public/images/icon_sharepoint.react.svg";
 import WebDavIcon from "../../../../../../public/images/icon_webdav.react.svg";
-import YandexDiskIcon from "./../../../../../public/images/icon_yandex_disk.react.svg";
+import YandexDiskIcon from "../../../../../../public/images/icon_yandex_disk.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 

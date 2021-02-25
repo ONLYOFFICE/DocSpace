@@ -2,14 +2,18 @@ import React from "react";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import RowContent from "@appserver/components/row-content";
+import IconButton from "@appserver/components/icon-button";
+import Badge from "@appserver/components/badge";
 import {
-  RowContent,
-  Link,
-  Text,
-  IconButton,
-  Badge,
-} from "@appserver/components";
-import { constants, api, toastr } from "@appserver/common";
+  convertFile,
+  markAsRead,
+  getFileConversationProgress,
+} from "@appserver/common/src/api/files";
+import { FileAction, ShareAccessRights } from "@appserver/common/src/constants";
+import toastr from "@appserver/common/src/components/Toast/toastr";
 import FavoriteIcon from "../../../../../../public/images/favorite.react.svg";
 import FileActionsConvertEditDocIcon from "../../../../../../public/images/file.actions.convert.edit.doc.react.svg";
 import FileActionsLockedIcon from "../../../../../../public/images/file.actions.locked.react.svg";
@@ -25,7 +29,6 @@ import { isMobile } from "react-device-detect";
 import { observer, inject } from "mobx-react";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
-const { FileAction, ShareAccessRights } = constants;
 const sideColor = "#A3A9AE";
 
 const StyledCheckIcon = styled(CheckIcon)`
@@ -388,8 +391,7 @@ class FilesRowContent extends React.PureComponent {
       setNewRowItems,
     } = this.props;
     if (item.fileExst) {
-      api.files
-        .markAsRead([], [item.id])
+      markAsRead([], [item.id])
         .then(() => {
           const data = treeFolders;
           const dataItem = data.find(
@@ -428,7 +430,7 @@ class FilesRowContent extends React.PureComponent {
       clearSecondaryProgressData,
       fetchFiles,
     } = this.props;
-    api.files.getFileConversationProgress(fileId).then((res) => {
+    getFileConversationProgress(fileId).then((res) => {
       if (res && res[0] && res[0].progress !== 100) {
         setSecondaryProgressBarData({
           icon: "file",
@@ -481,7 +483,7 @@ class FilesRowContent extends React.PureComponent {
       alert: false,
     });
     this.setState({ showConvertDialog: false }, () =>
-      api.files.convertFile(item.id).then((convertRes) => {
+      convertFile(item.id).then((convertRes) => {
         if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {
           this.getConvertProgress(item.id);
         }

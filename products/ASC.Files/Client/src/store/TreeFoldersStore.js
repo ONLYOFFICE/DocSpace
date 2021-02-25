@@ -1,10 +1,8 @@
 import { makeObservable, observable, computed, action } from "mobx";
-import api from "@appserver/common/api";
-import constants from "@appserver/common/constants";
-
+import { getFoldersTree } from "@appserver/common/api/files";
+import { FolderType } from "@appserver/common/constants";
 import selectedFolderStore from "./SelectedFolderStore";
 
-const { FolderType } = constants;
 class TreeFoldersStore {
   treeFolders = [];
   selectedTreeNode = [];
@@ -45,7 +43,7 @@ class TreeFoldersStore {
   }
 
   fetchTreeFolders = async () => {
-    const treeFolders = await api.files.getFoldersTree();
+    const treeFolders = await getFoldersTree();
     this.setTreeFolders(treeFolders);
   };
 

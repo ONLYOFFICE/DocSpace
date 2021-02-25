@@ -1,14 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { MainButton, DropDownItem } from "@appserver/components";
+import MainButton from "@appserver/components/main-button";
+import DropDownItem from "@appserver/components/drop-down-item";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import { constants, Loaders } from "@appserver/common";
+import Loaders from "@appserver/common/src/components/Loaders";
+import { FileAction } from "@appserver/common/src/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { inject, observer } from "mobx-react";
-
-const { FileAction } = constants;
 
 class PureArticleMainButtonContent extends React.Component {
   onCreate = (e) => {
@@ -93,7 +93,7 @@ class PureArticleMainButtonContent extends React.Component {
         />
         <DropDownItem
           className="main-button_drop-down"
-          icon="static/images/catalog.folder.react.svg"
+          icon="images/catalog.folder.react.svg"
           label={t("NewFolder")}
           onClick={this.onCreate}
         />
@@ -160,7 +160,7 @@ export default inject(
     const { id } = selectedFolderStore;
     const { startUpload } = uploadDataStore;
 
-  return {
+    return {
       homepage: auth.settingsStore.homepage,
       firstLoad,
       selectedFolderId: id,
@@ -170,6 +170,6 @@ export default inject(
 
       setAction: fileActionStore.setAction,
       startUpload,
-  };
+    };
   }
 )(withRouter(observer(ArticleMainButtonContent)));

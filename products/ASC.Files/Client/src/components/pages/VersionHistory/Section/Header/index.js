@@ -1,8 +1,9 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import { Headline } from "@appserver/common";
-import { IconButton, utils } from "@appserver/components";
+import Headline from "@appserver/common/src/components/Headline";
+import IconButton from "@appserver/components/icon-button";
+import utils from "@appserver/components/utils";
 
 const { desktop } = utils.device;
 

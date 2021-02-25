@@ -2,8 +2,12 @@ import React from "react";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Link, Text, Badge } from "@appserver/components";
-import { constants, api, toastr } from "@appserver/common";
+import Badge from "@appserver/components/badge";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import { markAsRead } from "@appserver/common/src/api/files";
+import { FileAction } from "@appserver/common/src/constants";
+import toastr from "@appserver/common/src/components/Toast/toastr";
 import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
@@ -11,9 +15,7 @@ import TileContent from "./TileContent";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import CheckIcon from "../../../../../../public/images/check.react.svg";
-import CrossIcon from "../../../../../../../../../public/images/cross.react.svg"
-
-const { FileAction } = constants;
+import CrossIcon from "../../../../../../../../../public/images/cross.react.svg";
 
 const SimpleFilesTileContent = styled(TileContent)`
   .rowMainContainer {
@@ -294,8 +296,7 @@ class FilesTileContent extends React.PureComponent {
       fetchFiles,
     } = this.props;
     if (item.fileExst) {
-      api.files
-        .markAsRead([], [item.id])
+      markAsRead([], [item.id])
         .then(() => {
           const data = treeFolders;
           const dataItem = data.find((x) => x.id === rootFolderId);
@@ -442,15 +443,15 @@ export default inject(
       fetchFiles,
       filter,
       newRowItems,
-  createFile,
-  updateFile,
-  renameFolder,
+      createFile,
+      updateFile,
+      renameFolder,
       createFolder,
     } = filesStore;
 
     const {
       treeFolders,
-  setTreeFolders,
+      setTreeFolders,
       isRecycleBinFolder,
       expandedKeys,
       addExpandedKeys,
@@ -487,8 +488,8 @@ export default inject(
       newRowItems,
       expandedKeys,
 
-  setIsLoading,
-  fetchFiles,
+      setIsLoading,
+      fetchFiles,
       setTreeFolders,
       createFile,
       createFolder,

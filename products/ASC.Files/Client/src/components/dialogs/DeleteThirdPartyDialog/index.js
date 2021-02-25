@@ -3,7 +3,8 @@ import { withRouter } from "react-router";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
-import { toastr, api } from "@appserver/common";
+import { getFolder } from "@appserver/common/src/api/files";
+import toastr from "@appserver/common/src/components/Toast/toastr";
 import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { inject, observer } from "mobx-react";
 
@@ -46,7 +47,7 @@ class DeleteThirdPartyDialogComponent extends React.Component {
           });
         } else {
           const folderId = providerItem.corporate ? commonId : myId;
-          api.files.getFolder(folderId).then((data) => {
+          getFolder(folderId).then((data) => {
             const path = [folderId];
             this.updateTree(path, data.folders);
           });

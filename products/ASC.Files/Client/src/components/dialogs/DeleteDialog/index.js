@@ -1,20 +1,17 @@
 import React from "react";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
-import {
-  ModalDialog,
-  Button,
-  Text,
-  Checkbox,
-  Scrollbar,
-} from "@appserver/components";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import Checkbox from "@appserver/components/checkbox";
+import Scrollbar from "@appserver/components/scrollbar";
 import { withTranslation } from "react-i18next";
-import { api, toastr } from "@appserver/common";
+import { getProgress, removeFiles } from "@appserver/common/src/api/files";
+import toastr from "@appserver/common/src/components/Toast/toastr";
 import { TIMEOUT } from "../../../helpers/constants";
 import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { inject, observer } from "mobx-react";
-
-const { files } = api;
 
 class DeleteDialogComponent extends React.Component {
   constructor(props) {
@@ -61,8 +58,7 @@ class DeleteDialogComponent extends React.Component {
     const successMessage = isRecycleBinFolder
       ? t("DeleteFromTrash")
       : t("DeleteSelectedElem");
-    api.files
-      .getProgress()
+    getProgress()
       .then((res) => {
         const currentProcess = res.find((x) => x.id === id);
         if (currentProcess && currentProcess.progress !== 100) {
@@ -143,8 +139,7 @@ class DeleteDialogComponent extends React.Component {
         alert: false,
       });
 
-      files
-        .removeFiles(folderIds, fileIds, deleteAfter, immediately)
+      removeFiles(folderIds, fileIds, deleteAfter, immediately)
         .then((res) => {
           const id = res[0] && res[0].id ? res[0].id : null;
           this.loopDeleteOperation(id);
@@ -298,7 +293,7 @@ export default inject(
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
 
-  return {
+    return {
       currentFolderId: selectedFolderStore.id,
       selection,
       isLoading,
@@ -309,9 +304,9 @@ export default inject(
       isRootFolder: selectedFolderStore.isRootFolder,
 
       fetchFiles,
-  setTreeFolders,
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
+      setTreeFolders,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
     };
   }
 )(withRouter(observer(DeleteDialog)));

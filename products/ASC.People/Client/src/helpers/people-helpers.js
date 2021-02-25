@@ -1,10 +1,10 @@
 import { find, cloneDeep } from "lodash";
-import constants from "@appserver/common/constants";
-import utils from "@appserver/common/utils";
-
+import {
+  EmployeeActivationStatus,
+  EmployeeStatus,
+} from "@appserver/common/constants";
+import { isAdmin } from "@appserver/common/utils";
 const { isAdmin } = utils;
-
-const { EmployeeActivationStatus, EmployeeStatus } = constants;
 
 export const getUserStatus = (user) => {
   if (

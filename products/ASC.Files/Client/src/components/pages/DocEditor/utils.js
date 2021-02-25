@@ -1,9 +1,9 @@
 import { setDocumentTitle } from "../../../helpers/utils";
 import { isIOS, deviceType } from "react-device-detect";
 
-import textIcon from "./icons/text.ico";
-import presentationIcon from "./icons/presentation.ico";
-import spreadsheetIcon from "./icons/spreadsheet.ico";
+//import textIcon from "./icons/text.ico";
+//import presentationIcon from "./icons/presentation.ico";
+//import spreadsheetIcon from "./icons/spreadsheet.ico";
 
 export const changeTitle = (docSaved, docTitle) => {
   docSaved ? setDocumentTitle(docTitle) : setDocumentTitle(`*${docTitle}`);
@@ -15,13 +15,13 @@ export const setFavicon = (fileType) => {
 
   switch (fileType) {
     case "docx":
-      favicon.href = textIcon;
+      //favicon.href = textIcon;
       break;
     case "pptx":
-      favicon.href = presentationIcon;
+      //favicon.href = presentationIcon;
       break;
     case "xlsx":
-      favicon.href = spreadsheetIcon;
+      //favicon.href = spreadsheetIcon;
       break;
 
     default:

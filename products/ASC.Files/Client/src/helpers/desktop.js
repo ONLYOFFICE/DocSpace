@@ -1,8 +1,7 @@
 import formatsStore from "../store/FormatsStore";
-import commonStore from "@appserver/common/store";
+import store from "studio/store";
 import { desktopConstants } from "@appserver/common/desktop";
 
-const { authStore } = store;
 const { docserviceStore } = formatsStore;
 
 export function encryptionUploadDialog(callback) {
@@ -25,7 +24,7 @@ export function encryptionUploadDialog(callback) {
 }
 
 export function setEncryptionAccess(file) {
-  return authStore.getEncryptionAccess(file.id).then((keys) => {
+  return store.auth.getEncryptionAccess(file.id).then((keys) => {
     let promise = new Promise((resolve, reject) => {
       try {
         window.AscDesktopEditor.cloudCryptoCommand(

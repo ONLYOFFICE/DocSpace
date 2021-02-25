@@ -1,22 +1,17 @@
 import React from "react";
-import {
-  Backdrop,
-  Heading,
-  Aside,
-  IconButton,
-  Checkbox,
-  Button,
-  DropDown,
-  DropDownItem,
-  Textarea,
-} from "@appserver/components";
+import Backdrop from "@appserver/components/backdrop";
+import Heading from "@appserver/components/heading";
+import Aside from "@appserver/components/aside";
+import IconButton from "@appserver/components/icon-button";
+import Checkbox from "@appserver/components/checkbox";
+import Button from "@appserver/components/button";
+import DropDown from "@appserver/components/drop-down";
+import DropDownItem from "@appserver/components/drop-down-item";
+import Textarea from "@appserver/components/textarea";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
-import {
-import {
-  constants,
-  toastr,
-} from "@appserver/common";
+import toastr from "@appserver/common/src/components/Toast/toastr";
+import { ShareAccessRights } from "@appserver/common/src/constants";
 import {
   StyledAsidePanel,
   StyledContent,
@@ -28,7 +23,6 @@ import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
 import SharingRow from "./SharingRow";
 //import { setEncryptionAccess } from "../../../helpers/desktop";
 import { inject, observer } from "mobx-react";
-const { ShareAccessRights } = constants;
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -143,7 +137,7 @@ class SharingPanelComponent extends React.Component {
 
       if (item.sharedTo.shareLink && item.access !== baseItem.access) {
         externalAccess = item.access;
-    }
+      }
     }
 
     for (let item of baseShareData) {
@@ -202,8 +196,8 @@ class SharingPanelComponent extends React.Component {
                     </Trans>
                   )
               );
-    });
-    });
+            });
+          });
         }
 
         if (uploadPanelVisible && uploadSelection) {
@@ -444,7 +438,7 @@ class SharingPanelComponent extends React.Component {
                 <div ref={this.ref} className="sharing_panel-drop-down-wrapper">
                   <IconButton
                     size="17"
-                    iconName="static/images/actions.header.touch.react.svg"
+                    iconName="images/actions.header.touch.react.svg"
                     className="sharing_panel-plus-icon"
                     {...onPlusClickProp}
                     color="A3A9AE"
@@ -617,7 +611,7 @@ export default inject(
       updateUploadedItem,
     } = uploadDataStore;
 
-  return {
+    return {
       isMyId: auth.userStore.user.id,
       groupsCaption: customNames.groupsCaption,
       isDesktop: isDesktopClient,
@@ -628,19 +622,19 @@ export default inject(
       isLoading,
       isPrivacy: isPrivacyFolder,
       sharingPanelVisible,
-    uploadSelection,
+      uploadSelection,
       canShareOwnerChange,
 
       setIsLoading,
       setSharingPanelVisible,
       selectUploadedFile,
       updateUploadedItem,
-  replaceFileStream,
+      replaceFileStream,
       setEncryptionAccess,
       getAccessOption,
       getExternalAccessOption,
-  setFiles,
-  setFolders,
+      setFiles,
+      setFolders,
       getShareUsers,
       setShareFiles,
     };

@@ -1,7 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Backdrop, Heading, Aside, IconButton } from "@appserver/components";
-import { GroupSelector, constants } from "@appserver/common";
+import Backdrop from "@appserver/components/backdrop";
+import Heading from "@appserver/components/heading";
+import Aside from "@appserver/components/aside";
+import IconButton from "@appserver/components/icon-button";
+import { ShareAccessRights } from "@appserver/common/src/constants";
+import GroupSelector from "@appserver/common/src/components/GroupSelector";
 import { withTranslation } from "react-i18next";
 import {
   StyledAddGroupsPanel,
@@ -10,8 +14,6 @@ import {
   StyledBody,
 } from "../StyledPanels";
 import AccessComboBox from "../SharingPanel/AccessComboBox";
-
-const { ShareAccessRights } = constants;
 
 class AddGroupsPanelComponent extends React.Component {
   constructor(props) {
@@ -154,7 +156,7 @@ class AddGroupsPanelComponent extends React.Component {
                     onAccessChange={this.onAccessChange}
                     accessOptions={accessOptions}
                     arrowIconColor="#000000"
-              />
+                  />
                 }
                 showCounter
               />

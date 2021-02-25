@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { Heading, ToggleButton } from "@appserver/components";
-import { Error403, Error520, store } from "@appserver/common";
+import Heading from "@appserver/components/heading";
+import ToggleButton from "@appserver/components/toggle-button";
+import Error403 from "@appserver/common/src/pages/errors/403";
+import Error520 from "@appserver/common/src/pages/errors/520";
 import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 
@@ -180,7 +182,7 @@ export default inject(
 
     const settingsTree = Object.keys(settings).length !== 0 ? settings : {};
 
-  return {
+    return {
       isAdmin: auth.isAdmin,
       isLoading,
       selectedTreeNode,
@@ -192,12 +194,12 @@ export default inject(
       storeForceSave: storeForcesave,
       enableThirdParty,
 
-  setUpdateIfExist,
-  setStoreOriginal,
-  setEnableThirdParty,
-  setConfirmDelete,
-  setStoreForceSave,
-  setForceSave,
+      setUpdateIfExist,
+      setStoreOriginal,
+      setEnableThirdParty,
+      setConfirmDelete,
+      setStoreForceSave,
+      setForceSave,
     };
   }
 )(observer(SectionBodyContent));

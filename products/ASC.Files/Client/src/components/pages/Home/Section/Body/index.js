@@ -6,23 +6,33 @@ import { withTranslation, Trans } from "react-i18next";
 import copy from "copy-to-clipboard";
 import styled from "styled-components";
 import queryString from "query-string";
-import {
-  Row,
-  RowContainer,
-  Link,
-  IconButton,
-  DragAndDrop,
-  Box,
-  Text,
-  utils,
-} from "@appserver/components";
+import Row from "@appserver/components/row";
+import RowContainer from "@appserver/components/row-container";
+import Link from "@appserver/components/link";
+import IconButton from "@appserver/components/icon-button";
+import DragAndDrop from "@appserver/components/drag-and-drop";
+import Box from "@appserver/components/box";
+import Text from "@appserver/components/text";
+import { Consumer } from "@appserver/components/utils/context";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
 import FilesTileContent from "./FilesTileContent";
 import TileContainer from "./TileContainer";
 import Tile from "./Tile";
-import { api, constants, MediaViewer, toastr, Loaders } from "@appserver/common";
-
+import FilesFilter from "@appserver/common/src/api/files/filter";
+import {
+  deleteFile,
+  getProgress,
+  deleteFolder,
+  lockFile,
+  finalizeVersion,
+  copyToFolder,
+  moveToFolder,
+} from "@appserver/common/src/api/files";
+import { FileAction } from "@appserver/common/src/constants";
+import MediaViewer from "@appserver/common/src/components/MediaViewer";
+import toastr from "@appserver/common/src/components/Toast/toastr";
+import Loaders from "@appserver/common/src/components/Loaders";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import { loopTreeFolders } from "../../../../../helpers/files-helpers";
 import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
@@ -37,9 +47,6 @@ import { observer, inject } from "mobx-react";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
 
-const { FilesFilter } = api;
-const { FileAction } = constants;
-const { Consumer } = utils.context;
 const linkStyles = {
   isHovered: true,
   type: "action",
@@ -194,7 +201,6 @@ class SectionBodyContent extends React.Component {
       }
     }
   }
-
 
   //   const {
   //     showMoveToPanel,
@@ -407,8 +413,7 @@ class SectionBodyContent extends React.Component {
       label: t("DeleteOperation"),
       alert: false,
     });
-    api.files
-      .deleteFile(fileId)
+    deleteFile(fileId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, false);
@@ -433,7 +438,7 @@ class SectionBodyContent extends React.Component {
       setSecondaryProgressBarData,
       fetchFiles,
     } = this.props;
-    api.files.getProgress().then((res) => {
+    getProgress().then((res) => {
       const deleteProgress = res.find((x) => x.id === id);
       if (deleteProgress && deleteProgress.progress !== 100) {
         setSecondaryProgressBarData({
@@ -495,8 +500,7 @@ class SectionBodyContent extends React.Component {
       label: progressLabel,
       alert: false,
     });
-    api.files
-      .deleteFolder(folderId, currentFolderId)
+    deleteFolder(folderId, currentFolderId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, true);
@@ -609,7 +613,7 @@ class SectionBodyContent extends React.Component {
       isLockedFile = !Boolean(locked);
     }
 
-    api.files.lockFile(fileId, isLockedFile).then((res) => {
+    lockFile(fileId, isLockedFile).then((res) => {
       /*const newFiles = files;
         const indexOfFile = newFiles.findIndex(x => x.id === res.id);
         newFiles[indexOfFile] = res;*/
@@ -628,8 +632,7 @@ class SectionBodyContent extends React.Component {
 
     setIsLoading(true);
 
-    api.files
-      .finalizeVersion(fileId, 0, false)
+    finalizeVersion(fileId, 0, false)
       .then((data) => {
         //console.log("api.files.finalizeVersion", data);
         return fetchFiles(selectedFolderId, filter).catch((err) =>
@@ -704,7 +707,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("Open"),
-            icon: "static/images/catalog.folder.react.svg",
+            icon: "images/catalog.folder.react.svg",
             onClick: this.onOpenLocation,
             disabled: false,
           };
@@ -1556,14 +1559,13 @@ class SectionBodyContent extends React.Component {
       setSecondaryProgressBarData,
     } = this.props;
 
-    api.files
-      .copyToFolder(
-        destFolderId,
-        folderIds,
-        fileIds,
-        conflictResolveType,
-        deleteAfter
-      )
+    copyToFolder(
+      destFolderId,
+      folderIds,
+      fileIds,
+      conflictResolveType,
+      deleteAfter
+    )
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         loopFilesOperations(id, destFolderId, true);
@@ -1591,14 +1593,13 @@ class SectionBodyContent extends React.Component {
       setSecondaryProgressBarData,
     } = this.props;
 
-    api.files
-      .moveToFolder(
-        destFolderId,
-        folderIds,
-        fileIds,
-        conflictResolveType,
-        deleteAfter
-      )
+    moveToFolder(
+      destFolderId,
+      folderIds,
+      fileIds,
+      conflictResolveType,
+      deleteAfter
+    )
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         loopFilesOperations(id, destFolderId, false);
@@ -2134,7 +2135,7 @@ export default inject(
       setMediaViewerData,
     } = mediaViewerDataStore;
 
-  return {
+    return {
       isAdmin: auth.isAdmin,
       homepage,
       culture,
@@ -2185,25 +2186,25 @@ export default inject(
       setSelected,
       setIsLoading,
       setSelection,
-  fetchFiles,
-  selectFile,
+      fetchFiles,
+      selectFile,
       deselectFile,
-  setTreeFolders,
-  setDragItem,
-  setMediaViewerData,
-  setSecondaryProgressBarData,
+      setTreeFolders,
+      setDragItem,
+      setMediaViewerData,
+      setSecondaryProgressBarData,
       setChangeOwnerPanelVisible,
       setSharingPanelVisible,
-  clearSecondaryProgressData,
+      clearSecondaryProgressData,
       setIsVerHistoryPanel,
       setVerHistoryFileId,
       addFileToRecentlyViewed,
       updateFile,
-  markItemAsFavorite,
-  removeItemFromFavorite,
-  fetchFavoritesFolder,
-  getFileInfo,
-  loopFilesOperations,
+      markItemAsFavorite,
+      removeItemFromFavorite,
+      fetchFavoritesFolder,
+      getFileInfo,
+      loopFilesOperations,
       getFileIcon,
       getFolderIcon,
     };

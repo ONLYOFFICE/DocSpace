@@ -1,7 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Backdrop, Heading, Aside } from "@appserver/components";
-import { Loaders } from "@appserver/common";
+import Backdrop from "@appserver/components/backdrop";
+import Heading from "@appserver/components/heading";
+import Aside from "@appserver/components/aside";
+import Loaders from "@appserver/common/src/components/Loaders";
 import { withTranslation } from "react-i18next";
 import {
   StyledVersionHistoryPanel,
@@ -81,7 +83,7 @@ class PureVersionHistoryPanel extends React.Component {
 
 const VersionHistoryPanel = withTranslation("VersionHistory")(
   PureVersionHistoryPanel
-  );
+);
 
 VersionHistoryPanel.propTypes = {
   fileId: PropTypes.string,

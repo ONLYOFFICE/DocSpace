@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { PageLayout, Loaders } from "@appserver/common";
+import PageLayout from "@appserver/common/src/components/PageLayout";
+import Loaders from "@appserver/common/src/components/Loaders";
 import { withTranslation } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -25,8 +26,8 @@ class PureVersionHistory extends React.Component {
     const { isTabletView } = this.props;
     if (isTabletView !== prevProps.isTabletView && !isTabletView) {
       this.redirectToPanelView();
-      }
     }
+  }
 
   redirectToPanelView = () => {
     const { setIsVerHistoryPanel } = this.props;
@@ -43,38 +44,38 @@ class PureVersionHistory extends React.Component {
     const { isLoading, versions } = this.props;
 
     return (
-          <PageLayout
-            withBodyScroll={true}
-            withBodyAutoFocus={true}
-            headerBorderBottom={true}
-          >
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
+      <PageLayout
+        withBodyScroll={true}
+        withBodyAutoFocus={true}
+        headerBorderBottom={true}
+      >
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
 
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
+        <PageLayout.ArticleMainButton>
+          <ArticleMainButtonContent />
+        </PageLayout.ArticleMainButton>
 
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
 
-            <PageLayout.SectionHeader>
+        <PageLayout.SectionHeader>
           {versions && !isLoading ? (
             <SectionHeaderContent
               title={versions[0].title}
               onClickBack={this.redirectToHomepage}
-              />
-        ) : (
+            />
+          ) : (
             <Loaders.SectionHeader title="version-history-title-loader" />
           )}
         </PageLayout.SectionHeader>
 
-            <PageLayout.SectionBody>
+        <PageLayout.SectionBody>
           <SectionBodyContent />
-            </PageLayout.SectionBody>
-          </PageLayout>
+        </PageLayout.SectionBody>
+      </PageLayout>
     );
   }
 }
@@ -96,7 +97,7 @@ export default inject(
       versions,
     } = versionHistoryStore;
 
-  return {
+    return {
       isTabletView: auth.settingsStore.isTabletView,
       isLoading,
       filter,
@@ -105,6 +106,6 @@ export default inject(
       setFilesFilter,
       setIsVerHistoryPanel,
       setVerHistoryFileId,
-  };
-}
+    };
+  }
 )(withRouter(observer(VersionHistory)));

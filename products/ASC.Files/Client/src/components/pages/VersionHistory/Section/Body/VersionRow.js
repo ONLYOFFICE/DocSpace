@@ -1,16 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import {
-  Link,
-  Text,
-  Box,
-  Textarea,
-  Button,
-  ModalDialog,
-} from "@appserver/components";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import Box from "@appserver/components/box";
+import Textarea from "@appserver/components/textarea";
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-
 import VersionBadge from "./VersionBadge";
 import StyledVersionRow from "./StyledVersionRow";
 import ExternalLinkIcon from "../../../../../../public/images/external.link.react.svg";
