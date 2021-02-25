@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { EmptyScreenContainer } from "@appserver/components";
+import EmptyScreenContainer from "@appserver/components/empty-screen-container";
 
 const EmptyFolderWrapper = styled.div`
   .empty-folder_container {

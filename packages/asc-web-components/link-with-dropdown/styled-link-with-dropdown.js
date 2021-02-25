@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import Text from "../text";
 import Base from "@appserver/components/themes/base";
-import ExpanderDownIcon from "../../../../../public/images/expander-down.react.svg";
+import ExpanderDownIcon from "../../../public/images/expander-down.react.svg";
 // eslint-disable-next-line no-unused-vars
 const SimpleLinkWithDropdown = ({
   isBold,

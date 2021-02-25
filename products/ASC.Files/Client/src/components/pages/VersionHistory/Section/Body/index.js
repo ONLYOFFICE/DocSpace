@@ -1,8 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
-
-import { RowContainer } from "@appserver/components";
-import  Loaders from "@appserver/common/src/components/Loaders";
+import RowContainer from "@appserver/components/row-container";
+import Loaders from "@appserver/common/src/components/Loaders";
 import VersionRow from "./VersionRow";
 import { inject, observer } from "mobx-react";
 
@@ -24,35 +23,35 @@ class SectionBodyContent extends React.Component {
   };
   render() {
     const { versions, culture, isLoading } = this.props;
-  console.log("VersionHistory SectionBodyContent render()", versions);
+    console.log("VersionHistory SectionBodyContent render()", versions);
 
-  let itemVersion = null;
+    let itemVersion = null;
 
     return versions && !isLoading ? (
-    <RowContainer useReactWindow={false}>
-      {versions.map((info, index) => {
-        let isVersion = true;
-        if (itemVersion === info.versionGroup) {
-          isVersion = false;
-        } else {
-          itemVersion = info.versionGroup;
-        }
+      <RowContainer useReactWindow={false}>
+        {versions.map((info, index) => {
+          let isVersion = true;
+          if (itemVersion === info.versionGroup) {
+            isVersion = false;
+          } else {
+            itemVersion = info.versionGroup;
+          }
 
-        return (
-          <VersionRow
+          return (
+            <VersionRow
               getFileVersions={this.getFileVersions}
-            isVersion={isVersion}
-            key={info.id}
-            info={info}
-            index={index}
-            culture={culture}
-          />
-        );
-      })}
-    </RowContainer>
+              isVersion={isVersion}
+              key={info.id}
+              info={info}
+              index={index}
+              culture={culture}
+            />
+          );
+        })}
+      </RowContainer>
     ) : (
       <Loaders.HistoryRows title="version-history-body-loader" />
-  );
+    );
   }
 }
 
@@ -62,7 +61,7 @@ export default inject(
     const { setFirstLoad } = filesStore;
     const { versions, fetchFileVersions } = versionHistoryStore;
 
-  return {
+    return {
       culture: auth.settingsStore.culture,
       isLoading,
       versions,
@@ -70,6 +69,6 @@ export default inject(
       setFirstLoad,
       setIsLoading,
       fetchFileVersions,
-  };
+    };
   }
 )(withRouter(observer(SectionBodyContent)));

@@ -1,5 +1,5 @@
 import { makeObservable, action, observable } from "mobx";
-import { api } from "@appserver/common/src";
+import api from "@appserver/common/src/api";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
 import SecondaryProgressDataStore from "./SecondaryProgressDataStore";

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { utils } from "@appserver/components";
+import utils from "@appserver/components/utils";
 
 const tablet = utils.device.tablet;
 

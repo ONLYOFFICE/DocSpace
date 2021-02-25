@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import styled from "styled-components";
-import { Badge } from "@appserver/components";
+import Badge from "@appserver/components/badge";
 import { inject, observer } from "mobx-react";
 import FileActionsConvertEditDocIcon from "../../../../../../public/images/file.actions.convert.edit.doc.react.svg";
 import FileActionsLockedIcon from "../../../../../../public/images/file.actions.locked.react.svg";

@@ -1,5 +1,5 @@
 import { makeObservable, action, observable, computed } from "mobx";
-import { api } from "@appserver/common/src";
+import api from "@appserver/common/src/api";
 
 class ThirdPartyStore {
   capabilities = [];

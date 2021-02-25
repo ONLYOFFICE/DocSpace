@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Tooltip } from "@appserver/components";
+import Tooltip from "@appserver/components/tooltip";
 import Row from "@appserver/components/row";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";

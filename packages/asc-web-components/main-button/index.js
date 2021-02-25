@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 import { Icons } from "../icons";
-import { handleAnyClick } from "../../utils/event";
+import { handleAnyClick } from "../utils/event";
 import Text from "../text";
 import {
   StyledSecondaryButton,

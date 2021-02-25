@@ -1,17 +1,15 @@
 import React from "react";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
-import {
-  ModalDialog,
-  Button,
-  Text,
-  Row,
-  RowContent,
-  RowContainer,
-} from "@appserver/components";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import Row from "@appserver/components/row";
+import RowContent from "@appserver/components/row-content";
+import RowContainer from "@appserver/components/row-container";
 import { ReactSVG } from "react-svg";
 import { withTranslation } from "react-i18next";
-import { api } from "@appserver/common";
+import { downloadFormatFiles } from "@appserver/common/src/api/files";
 import { TIMEOUT } from "../../../helpers/constants";
 import DownloadContent from "./DownloadContent";
 import { inject, observer } from "mobx-react";
@@ -151,8 +149,7 @@ class DownloadDialogComponent extends React.Component {
         label: t("ArchivingData"),
         alert: false,
       });
-      api.files
-        .downloadFormatFiles(fileConvertIds, folderIds)
+      downloadFormatFiles(fileConvertIds, folderIds)
         .then((res) => {
           onClose();
           onDownloadProgress(res[0]);
@@ -593,8 +590,8 @@ export default inject(({ filesStore, uploadDataStore, formatsStore }) => {
   return {
     sortedFiles,
 
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
+    setSecondaryProgressBarData,
+    clearSecondaryProgressData,
     getFileIcon,
     getFolderIcon,
   };

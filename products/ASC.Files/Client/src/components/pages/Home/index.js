@@ -3,7 +3,12 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 import axios from "axios";
-import { PageLayout, utils, api, toastr } from "@appserver/common";
+import toastr from "@appserver/common/src/components/Toast/toastr";
+import PageLayout from "@appserver/common/src/components/PageLayout";
+import { showLoader, hideLoader } from "@appserver/common/src/utils";
+import FilesFilter from "@appserver/common/src/api/files/filter";
+import { getGroup } from "@appserver/common/src/api/groups";
+import { getUserById } from "@appserver/common/src/api/people";
 import { withTranslation, Trans } from "react-i18next";
 import {
   ArticleBodyContent,
@@ -22,8 +27,6 @@ import { ChangeOwnerPanel } from "../../panels";
 import { getFilterByLocation } from "../../../helpers/converters";
 import Panels from "./Panels";
 import { observer, inject } from "mobx-react";
-
-const { FilesFilter } = api;
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -78,9 +81,9 @@ class PureHome extends React.Component {
     const requests = [Promise.resolve(newFilter)];
 
     if (type === "group") {
-      requests.push(api.groups.getGroup(itemId));
+      requests.push(getGroup(itemId));
     } else if (type === "user") {
-      requests.push(api.people.getUserById(itemId));
+      requests.push(getUserById(itemId));
     }
 
     setIsLoading(true);
@@ -178,9 +181,9 @@ class PureHome extends React.Component {
     } = this.props;
     if (isLoading !== prevProps.isLoading) {
       if (isLoading) {
-        utils.showLoader();
+        showLoader();
       } else {
-        utils.hideLoader();
+        hideLoader();
       }
     }
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {

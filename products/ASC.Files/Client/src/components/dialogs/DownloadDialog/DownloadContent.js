@@ -1,11 +1,9 @@
 import React from "react";
-import {
-  Row,
-  RowContent,
-  RowContainer,
-  Text,
-  LinkWithDropdown,
-} from "@appserver/components";
+import Row from "@appserver/components/row";
+import RowContent from "@appserver/components/row-content";
+import RowContainer from "@appserver/components/row-container";
+import Text from "@appserver/components/text";
+import LinkWithDropdown from "@appserver/components/link-with-dropdown";
 import styled from "styled-components";
 
 const StyledDownloadContent = styled.div`

@@ -3,14 +3,13 @@ import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { constants, FilterInput, Loaders, utils } from "@appserver/common";
+import { FilterType } from "@appserver/common/src/constants";
+import Loaders from "@appserver/common/src/components/Loaders";
+import FilterInput from "@appserver/common/src/components/FilterInput";
+import { withLayoutSize } from "@appserver/common/src/utils";
 //import equal from "fast-deep-equal/react";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-
-const { withLayoutSize } = utils;
-
-const { FilterType } = constants;
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -317,7 +316,7 @@ export default inject(
     const { customNames, culture } = auth.settingsStore;
     const language = (user && user.cultureName) || culture || "en-US";
 
-  return {
+    return {
       customNames,
       user,
       language,
@@ -328,8 +327,8 @@ export default inject(
       viewAs,
 
       setIsLoading,
-  fetchFiles,
-  setViewAs,
+      fetchFiles,
+      setViewAs,
     };
   }
 )(

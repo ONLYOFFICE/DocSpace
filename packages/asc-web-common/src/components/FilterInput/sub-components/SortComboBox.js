@@ -165,7 +165,7 @@ class SortComboBox extends React.Component {
             clickColor={"#333"}
             color={"#A3A9AE"}
             hoverColor={"#333"}
-            iconName={"static/images/z-a.sorting.react.svg"}
+            iconName="images/z-a.sorting.react.svg"
             isDisabled={isDisabled}
             isFill={true}
             onClick={this.onButtonClick}

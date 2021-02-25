@@ -1,5 +1,6 @@
 import { makeObservable, action, observable, computed } from "mobx";
-import { api, constants, store, history } from "@appserver/common/src";
+import store from "studio/store";
+import { api, constants, history } from "@appserver/common/src";
 import queryString from "query-string";
 import FileActionStore from "./FileActionStore";
 import selectedFolderStore from "./SelectedFolderStore";
@@ -22,8 +23,7 @@ import config from "../../package.json";
 
 const { FilesFilter } = api;
 const { FolderType, FilterType, FileType, FileAction } = constants;
-const { authStore } = store;
-const { settingsStore, userStore, isAdmin } = authStore;
+const { settingsStore, userStore, isAdmin } = store.auth;
 const { isEncryptionSupport, isDesktopClient } = settingsStore;
 
 const {
@@ -225,7 +225,9 @@ class FilesStore {
     params.push(`${SORT_BY}=${filter.sortBy}`);
     params.push(`${SORT_ORDER}=${filter.sortOrder}`);
 
-    history.push(`${config.homepage}/filter?${params.join("&")}`);
+    //console.log("window", window.location);
+    const homepage = "/products/files"; //TODO: add homepage to config?
+    history.push(`${homepage}/filter?${params.join("&")}`);
   };
 
   fetchFiles = (folderId, filter, clearFilter = true) => {

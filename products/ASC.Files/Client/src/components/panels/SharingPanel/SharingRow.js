@@ -1,12 +1,10 @@
 import React from "react";
-import {
-  IconButton,
-  ComboBox,
-  Row,
-  Text,
-  DropDownItem,
-} from "@appserver/components";
-import { toastr } from "@appserver/common";
+import IconButton from "@appserver/components/icon-button";
+import ComboBox from "@appserver/components/combobox";
+import Row from "@appserver/components/row";
+import Text from "@appserver/components/text";
+import DropDownItem from "@appserver/components/drop-down-item";
+import toastr from "@appserver/common/src/components/Toast/toastr";
 import copy from "copy-to-clipboard";
 import LinkRow from "./linkRow";
 import AccessComboBox from "./AccessComboBox";
@@ -20,7 +18,7 @@ class SharingRow extends React.Component {
 
     this.state = {
       access: props.item.access,
-  };
+    };
   }
 
   componentDidUpdate() {
@@ -109,49 +107,49 @@ class SharingRow extends React.Component {
       selection && selection.length === 1 && shareLink;
     const internalLinkVisible = index === 0 && internalLink;
 
-  const internalLinkData = [
-    {
-      key: "linkItem",
-      label: t("CopyInternalLink"),
+    const internalLinkData = [
+      {
+        key: "linkItem",
+        label: t("CopyInternalLink"),
         onClick: this.onCopyInternalLink,
-    },
-  ];
+      },
+    ];
 
-  const externalLinkOptions = [
-    {
-      key: "linkItem_0",
-      label: t("CopyExternalLink"),
+    const externalLinkOptions = [
+      {
+        key: "linkItem_0",
+        label: t("CopyExternalLink"),
         onClick: this.onCopyClick,
-    },
-    {
-      key: "linkItem_1",
-      isSeparator: true,
-    },
-    {
-      key: "linkItem_2",
-      label: `${t("ShareVia")} e-mail`,
+      },
+      {
+        key: "linkItem_1",
+        isSeparator: true,
+      },
+      {
+        key: "linkItem_2",
+        label: `${t("ShareVia")} e-mail`,
         onClick: this.onShareEmail,
-    },
-    {
-      key: "linkItem_3",
-      label: `${t("ShareVia")} Facebook`,
+      },
+      {
+        key: "linkItem_3",
+        label: `${t("ShareVia")} Facebook`,
         onClick: this.onShareFacebook,
-    },
-    {
+      },
+      {
         key: "linkItem_4",
-      label: `${t("ShareVia")} Twitter`,
+        label: `${t("ShareVia")} Twitter`,
         onClick: this.onShareTwitter,
-    },
-    {
+      },
+      {
         key: "linkItem_5",
-      isSeparator: true,
-    },
-    {
+        isSeparator: true,
+      },
+      {
         key: "linkItem_6",
-      label: t("Embedding"),
+        label: t("Embedding"),
         onClick: () => onShowEmbeddingPanel(shareLink),
-    },
-  ];
+      },
+    ];
 
     const onRemoveUserProp = !isLoading ? { onClick: onRemoveUserClick } : {};
     const onShowChangeOwnerPanelProp = !isLoading
@@ -160,7 +158,7 @@ class SharingRow extends React.Component {
 
     const accessIconUrl = getAccessIcon(access);
 
-  return (
+    return (
       <>
         {externalLinkVisible && (
           <LinkRow
@@ -178,13 +176,13 @@ class SharingRow extends React.Component {
             options={internalLinkData}
             {...this.props}
           />
-      )}
+        )}
 
         {!shareLink && (
-        <Row
-          className="sharing-row"
+          <Row
+            className="sharing-row"
             key={`internal-link-key_${id}`}
-          element={
+            element={
               isOwner || isLocked ? (
                 <ReactSVG
                   src={accessIconUrl}
@@ -211,51 +209,51 @@ class SharingRow extends React.Component {
                   itemId={id}
                   accessOptions={accessOptions}
                   isDisabled={isLoading}
-              />
-            )
-          }
-          contextButtonSpacerWidth="0px"
-        >
-          <>
+                />
+              )
+            }
+            contextButtonSpacerWidth="0px"
+          >
+            <>
               {!shareLink &&
                 (isOwner && canShareOwnerChange ? (
                   <Link isHovered type="action" {...onShowChangeOwnerPanelProp}>
                     {label ? label : userName ? userName : displayName}
                   </Link>
                 ) : (
-              <Text truncate className="sharing_panel-text">
+                  <Text truncate className="sharing_panel-text">
                     {label ? label : userName ? userName : displayName}
-              </Text>
+                  </Text>
                 ))}
               {isOwner ? (
-              <Text className="sharing_panel-remove-icon" color="#A3A9AE">
-                {t("Owner")}
-              </Text>
+                <Text className="sharing_panel-remove-icon" color="#A3A9AE">
+                  {t("Owner")}
+                </Text>
               ) : id === isMyId ? (
-              <Text
-                className="sharing_panel-remove-icon"
-                //color="#A3A9AE"
-              >
-                {t("AccessRightsFullAccess")}
-              </Text>
-            ) : (
+                <Text
+                  className="sharing_panel-remove-icon"
+                  //color="#A3A9AE"
+                >
+                  {t("AccessRightsFullAccess")}
+                </Text>
+              ) : (
                 !shareLink &&
                 !isLocked && (
-                <IconButton
+                  <IconButton
                     iconName="images/remove.react.svg"
                     id={id}
                     {...onRemoveUserProp}
-                  className="sharing_panel-remove-icon"
-                  color="#A3A9AE"
+                    className="sharing_panel-remove-icon"
+                    color="#A3A9AE"
                     isDisabled={isLoading}
-                />
-              )
-            )}
-          </>
-        </Row>
-      )}
-    </>
-  );
+                  />
+                )
+              )}
+            </>
+          </Row>
+        )}
+      </>
+    );
   }
 }
 

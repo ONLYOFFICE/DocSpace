@@ -86,7 +86,7 @@ module.exports = {
         studio: "studio@http://localhost:5001/remoteEntry.js",
       },
       exposes: {
-        "./page": "./src/Files.jsx",
+        "./page": "./src/bootstrap.js", //TODO: "./page": "./src/App.js",
       },
       shared: {
         ...deps,

@@ -10,9 +10,8 @@ import {
   AUTHOR_TYPE,
   FOLDER,
 } from "./constants";
-import { api, utils } from "@appserver/common";
-const { FilesFilter } = api;
-const { getObjectByLocation } = utils;
+import FilesFilter from "@appserver/common/src/api/files/filter";
+import { getObjectByLocation } from "@appserver/common/src/utils";
 
 export function getFilterByLocation(location) {
   const urlFilter = getObjectByLocation(location);

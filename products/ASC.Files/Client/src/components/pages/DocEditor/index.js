@@ -1,13 +1,28 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { Toast, Box } from "@appserver/components";
-import { utils, api, toastr, Loaders, regDesktop } from "@appserver/common";
+import Toast from "@appserver/components/toast";
+import Box from "@appserver/components/box";
+import { regDesktop } from "@appserver/common/src/desktop";
+import Loaders from "@appserver/common/src/components/Loaders";
+import {
+  getObjectByLocation,
+  showLoader,
+  hideLoader,
+  tryRedirectTo,
+} from "@appserver/common/src/utils";
+import {
+  getDocServiceUrl,
+  openEdit,
+  setEncryptionKeys,
+  getEncryptionAccess,
+} from "@appserver/common/src/api/files";
+import { checkIsAuthenticated } from "@appserver/common/src/api/user";
+import { getUser } from "@appserver/common/src/api/people";
+import toastr from "@appserver/common/src/components/Toast/toastr";
 
 import { setDocumentTitle } from "../../../helpers/utils";
 import { changeTitle, setFavicon, isIPad } from "./utils";
 import throttle from "lodash/throttle";
-
-const { getObjectByLocation, showLoader, hideLoader, tryRedirectTo } = utils;
 
 let documentIsReady = false;
 
@@ -53,34 +68,33 @@ class PureEditor extends React.Component {
         document.documentElement.style.setProperty("--vh", `${vh}px`);
       }
 
-    showLoader();
+      showLoader();
 
-      const docApiUrl = await api.files.getDocServiceUrl();
+      const docApiUrl = await getDocServiceUrl();
 
       if (!doc) {
-        const isAuthenticated = await api.user.checkIsAuthenticated();
+        const isAuthenticated = await checkIsAuthenticated();
 
         if (!isAuthenticated) return tryRedirectTo("/login");
       }
 
-      const config = await api.files.openEdit(fileId, doc);
+      const config = await openEdit(fileId, doc);
 
       if (isDesktop) {
         const isEncryption =
           config.editorConfig["encryptionKeys"] !== undefined;
-        const user = await api.people.getUser();
+        const user = await getUser();
 
         regDesktop(
           user,
           isEncryption,
           config.editorConfig.encryptionKeys,
           (keys) => {
-            api.files.setEncryptionKeys(keys);
+            setEncryptionKeys(keys);
           },
           true,
           (callback) => {
-            api.files
-              .getEncryptionAccess(fileId)
+            getEncryptionAccess(fileId)
               .then((keys) => {
                 var data = {
                   keys,
@@ -140,9 +154,9 @@ class PureEditor extends React.Component {
       setFavicon(fileType);
       setDocumentTitle(docTitle);
 
-          if (window.innerWidth < 720) {
-            config.type = "mobile";
-          }
+      if (window.innerWidth < 720) {
+        config.type = "mobile";
+      }
 
       const events = {
         events: {
@@ -158,7 +172,7 @@ class PureEditor extends React.Component {
 
       const newConfig = Object.assign(config, events);
 
-          if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
+      if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
       hideLoader();
 
@@ -167,7 +181,7 @@ class PureEditor extends React.Component {
       console.log(error);
       toastr.error(error.message, null, 0, true);
     }
-    };
+  };
 
   onSDKAppReady = () => {
     console.log("ONLYOFFICE Document Editor is ready");
@@ -225,11 +239,11 @@ class PureEditor extends React.Component {
         <Toast />
 
         {!this.state.isLoading ? (
-        <div id="editor"></div>
+          <div id="editor"></div>
         ) : (
           <Box paddingProp="16px">
             <Loaders.Rectangle height="96vh" />
-      </Box>
+          </Box>
         )}
       </Box>
     );

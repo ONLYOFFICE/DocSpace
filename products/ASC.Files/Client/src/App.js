@@ -1,10 +1,49 @@
-import Shell from "studio/shell";
-
+import React from "react";
+import store from "studio/store";
+import ErrorBoundary from "@appserver/common/src/components/ErrorBoundary";
+import { Provider as MobxProvider } from "mobx-react";
+import ThemeProvider from "@appserver/components/theme-provider";
 import "./custom.scss";
+import { Base, Dark } from "@appserver/components/themes";
+import initFilesStore from "./store/InitFilesStore";
+import filesStore from "./store/FilesStore";
+import settingsStore from "./store/SettingsStore";
+import mediaViewerDataStore from "./store/MediaViewerDataStore";
+import formatsStore from "./store/FormatsStore";
+import versionHistoryStore from "./store/VersionHistoryStore";
+import uploadDataStore from "./store/UploadDataStore";
+import dialogsStore from "./store/DialogsStore";
+import treeFoldersStore from "./store/TreeFoldersStore";
+import selectedFolderStore from "./store/SelectedFolderStore";
+import "./i18n";
 
-const App = () => (
-    <Shell />
-);
+const Shell = React.lazy(() => import("./Files"));
+
+const App = () => {
+  return (
+    <ThemeProvider theme={Base}>
+      <MobxProvider
+        auth={store.auth}
+        initFilesStore={initFilesStore}
+        filesStore={filesStore}
+        settingsStore={settingsStore}
+        mediaViewerDataStore={mediaViewerDataStore}
+        formatsStore={formatsStore}
+        versionHistoryStore={versionHistoryStore}
+        uploadDataStore={uploadDataStore}
+        dialogsStore={dialogsStore}
+        treeFoldersStore={treeFoldersStore}
+        selectedFolderStore={selectedFolderStore}
+      >
+        <ErrorBoundary>
+          <React.Suspense fallback={null}>
+            <Shell />
+          </React.Suspense>
+        </ErrorBoundary>
+      </MobxProvider>
+    </ThemeProvider>
+  );
+};
 
 export default App;
 

@@ -1,8 +1,12 @@
 import React from "react";
-import { TreeMenu, TreeNode } from "@appserver/components";
+import TreeMenu from "@appserver/components/tree-menu";
+import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import styled from "styled-components";
 //import equal from "fast-deep-equal/react";
-import { api, constants, toastr } from "@appserver/common";
+import { getFolder } from "@appserver/common/src/api/files";
+import { FolderType, ShareAccessRights } from "@appserver/common/src/constants";
+import toastr from "@appserver/common/src/components/Toast/toastr";
+
 import { onConvertFiles } from "../../../helpers/files-converter";
 import { ReactSVG } from "react-svg";
 import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
@@ -10,9 +14,6 @@ import ExpanderRightIcon from "../../../../../../../public/images/expander-right
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 import { observer, inject } from "mobx-react";
-
-const { files } = api;
-const { FolderType, ShareAccessRights } = constants;
 
 const backgroundDragColor = "#EFEFB2";
 const backgroundDragEnterColor = "#F8F7BF";
@@ -62,7 +63,7 @@ class TreeFolders extends React.Component {
   };
 
   getFolderIcon = (item) => {
-    let iconUrl = "static/images/catalog.folder.react.svg";
+    let iconUrl = "images/catalog.folder.react.svg";
 
     switch (item.rootFolderType) {
       case FolderType.USER:
@@ -90,7 +91,7 @@ class TreeFolders extends React.Component {
         break;
     }
 
-    if (item.parentId !== 0) iconUrl = "static/images/catalog.folder.react.svg";
+    if (item.parentId !== 0) iconUrl = "images/catalog.folder.react.svg";
 
     switch (item.providerKey) {
       case "GoogleDrive":
@@ -109,19 +110,19 @@ class TreeFolders extends React.Component {
         iconUrl = "images/cloud.services.onedrive.react.svg";
         break;
       case "kDrive":
-        iconUrl = "static/images/catalog.folder.react.svg";
+        iconUrl = "images/catalog.folder.react.svg";
         break;
       case "Yandex":
-        iconUrl = "static/images/catalog.folder.react.svg";
+        iconUrl = "images/catalog.folder.react.svg";
         break;
       case "NextCloud":
         iconUrl = "images/cloud.services.nextcloud.react.svg";
         break;
       case "OwnCloud":
-        iconUrl = "static/images/catalog.folder.react.svg";
+        iconUrl = "images/catalog.folder.react.svg";
         break;
       case "WebDav":
-        iconUrl = "static/images/catalog.folder.react.svg";
+        iconUrl = "images/catalog.folder.react.svg";
         break;
       default:
         break;
@@ -322,8 +323,7 @@ class TreeFolders extends React.Component {
     newFilter.withSubfolders = null;
     newFilter.authorType = null;
 
-    return files
-      .getFolder(folderId, newFilter)
+    return getFolder(folderId, newFilter)
       .then((data) => {
         arrayFolders = data.folders;
 

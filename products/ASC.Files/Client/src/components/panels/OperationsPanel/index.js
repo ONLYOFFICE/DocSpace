@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { ModalDialog } from "@appserver/components";
+import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-import { toastr } from "@appserver/common";
+import toastr from "@appserver/common/src/components/Toast/toastr";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import { ThirdPartyMoveDialog } from "../../dialogs";
@@ -197,7 +197,7 @@ export default inject(
     const { isRecycleBinFolder, operationsFolders } = treeFoldersStore;
     const { setSecondaryProgressBarData } = secondaryProgressDataStore;
 
-  return {
+    return {
       expandedKeys: selectedFolderStore.pathParts,
       currentFolderId: selectedFolderStore.id,
       selection,
@@ -205,8 +205,8 @@ export default inject(
       filter,
       operationsFolders,
 
-  setSecondaryProgressBarData,
-  itemOperationToFolder,
+      setSecondaryProgressBarData,
+      itemOperationToFolder,
     };
   }
 )(withRouter(observer(OperationsPanel)));

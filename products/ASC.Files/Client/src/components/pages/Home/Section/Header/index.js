@@ -2,16 +2,22 @@ import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import { constants, Headline, api, toastr, Loaders } from "@appserver/common";
+import toastr from "@appserver/common/src/components/Toast/toastr";
+import Loaders from "@appserver/common/src/components/Loaders";
+import Headline from "@appserver/common/src/components/Headline";
+import { FilterType, FileAction } from "@appserver/common/src/constants";
+import {
+  getProgress,
+  downloadFiles,
+  removeFiles,
+} from "@appserver/common/src/api/files";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import {
-  ContextMenuButton,
-  DropDownItem,
-  GroupButtonsMenu,
-  IconButton,
-  utils,
-} from "@appserver/components";
+import ContextMenuButton from "@appserver/components/context-menu-button";
+import DropDownItem from "@appserver/components/drop-down-item";
+import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
+import IconButton from "@appserver/components/icon-button";
+import utils from "@appserver/components/utils";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   EmptyTrashDialog,
@@ -22,8 +28,6 @@ import { OperationsPanel } from "../../../../panels";
 import { inject, observer } from "mobx-react";
 import { loopTreeFolders } from "../../../../../helpers/files-helpers";
 
-const { files } = api;
-const { FilterType, FileAction } = constants;
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
 
@@ -236,8 +240,7 @@ class SectionHeaderContent extends React.Component {
 
   loop = (data) => {
     const url = data.url;
-    api.files
-      .getProgress()
+    getProgress()
       .then((res) => {
         const currentItem = res.find((x) => x.id === data.id);
         if (!url) {
@@ -297,8 +300,7 @@ class SectionHeaderContent extends React.Component {
       alert: false,
     });
 
-    api.files
-      .downloadFiles(fileIds, folderIds)
+    downloadFiles(fileIds, folderIds)
       .then((res) => {
         this.loop(res[0]);
       })
@@ -336,8 +338,7 @@ class SectionHeaderContent extends React.Component {
     const successMessage = isRecycleBin
       ? t("DeleteFromTrash")
       : t("DeleteSelectedElem");
-    api.files
-      .getProgress()
+    getProgress()
       .then((res) => {
         const currentProcess = res.find((x) => x.id === id);
         if (currentProcess && currentProcess.progress !== 100) {
@@ -417,8 +418,7 @@ class SectionHeaderContent extends React.Component {
         alert: false,
       });
 
-      files
-        .removeFiles(folderIds, fileIds, deleteAfter, immediately)
+      removeFiles(folderIds, fileIds, deleteAfter, immediately)
         .then((res) => {
           const id = res[0] && res[0].id ? res[0].id : null;
           this.loopDeleteOperation(id);
@@ -437,7 +437,7 @@ class SectionHeaderContent extends React.Component {
   onDeleteAction = () => {
     //console.log(this.props.confirmDelete);
     if (this.props.confirmDelete) {
-    this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
+      this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
     } else {
       this.onDelete();
     }
@@ -718,7 +718,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="static/images/actions.header.touch.react.svg"
+                          iconName="images/actions.header.touch.react.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -729,7 +729,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="option-button"
                           directionX="right"
-                          iconName="static/images/vertical-dots.react.svg"
+                          iconName="images/vertical-dots.react.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -743,7 +743,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="static/images/actions.header.touch.react.svg"
+                          iconName="images/actions.header.touch.react.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -842,7 +842,7 @@ export default inject(
     } = secondaryProgressDataStore;
     const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
 
-  return {
+    return {
       isAdmin: auth.isAdmin,
       isDesktop: auth.settingsStore.isDesktopClient,
       isRootFolder: selectedFolderStore.parentId === 0,
@@ -868,11 +868,11 @@ export default inject(
       confirmDelete: settingsStore.settingsTree.confirmDelete,
       treeFolders: treeFoldersStore.treeFolders,
       setSelected,
-  setAction,
-  setIsLoading,
-  fetchFiles,
+      setAction,
+      setIsLoading,
+      fetchFiles,
       setSecondaryProgressBarData,
-  setSharingPanelVisible,
+      setSharingPanelVisible,
       clearSecondaryProgressData,
     };
   }

@@ -1,11 +1,11 @@
 import React from "react";
-import { Row, LinkWithDropdown, ToggleButton } from "@appserver/components";
+import Row from "@appserver/components/row";
+import ToggleButton from "@appserver/components/toggle-button";
+import LinkWithDropdown from "@appserver/components/link-with-dropdown";
 import { StyledLinkRow } from "../StyledPanels";
 import AccessComboBox from "./AccessComboBox";
-import constants from "@appserver/common/src/constants";
+import { ShareAccessRights } from "@appserver/common/src/constants";
 import AccessEditIcon from "../../../../public/images/access.edit.react.svg";
-
-const { ShareAccessRights } = constants;
 
 class LinkRow extends React.Component {
   onToggleButtonChange = () => {

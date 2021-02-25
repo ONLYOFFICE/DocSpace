@@ -1,16 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  Backdrop,
-  Heading,
-  Aside,
-  IconButton,
-  Text,
-  Link,
-  TextInput,
-  Textarea,
-} from "@appserver/components";
-import { toastr } from "@appserver/common";
+import Backdrop from "@appserver/components/backdrop";
+import Heading from "@appserver/components/heading";
+import Aside from "@appserver/components/aside";
+import IconButton from "@appserver/components/icon-button";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import TextInput from "@appserver/components/text-input";
+import Textarea from "@appserver/components/textarea";
+import toastr from "@appserver/common/src/components/Toast/toastr";
 import { withTranslation } from "react-i18next";
 import {
   StyledEmbeddingPanel,

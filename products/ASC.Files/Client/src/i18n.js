@@ -2,8 +2,7 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import Backend from "i18next-http-backend";
 import config from "../package.json";
-import { constants } from "@appserver/common/src";
-const { LANGUAGE /*i18nBaseSettings*/ } = constants;
+import { LANGUAGE /*i18nBaseSettings*/ } from "@appserver/common/src/constants";
 
 //import LanguageDetector from "i18next-browser-languagedetector";
 // not like to use this?
@@ -11,6 +10,7 @@ const { LANGUAGE /*i18nBaseSettings*/ } = constants;
 // for passing in lng and translations on init
 
 const languages = ["en", "ru"];
+const homepage = "/products/files"; //TODO: add homepage to config?
 
 i18n
   /*
@@ -48,7 +48,7 @@ i18n
     },
 
     backend: {
-      loadPath: `${config.homepage}/locales/{{lng}}/{{ns}}.json`,
+      loadPath: `${homepage}/locales/{{lng}}/{{ns}}.json`,
     },
 
     react: {

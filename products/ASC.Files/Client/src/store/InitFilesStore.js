@@ -7,7 +7,7 @@ import config from "../../package.json";
 const { authStore } = store;
 const { isAdmin } = authStore;
 
-class MainFilesStore {
+class InitFilesStore {
   isLoaded = false;
   isLoading = false;
   viewAs = "row";
@@ -96,7 +96,8 @@ class MainFilesStore {
       setModuleInfo,
     } = authStore.settingsStore;
 
-    setModuleInfo(config.homepage, "e67be73d-f9ae-4ce1-8fec-1880cb518cb4");
+    const homepage = "/products/files"; //TODO: add homepage to config?
+    setModuleInfo(homepage, "e67be73d-f9ae-4ce1-8fec-1880cb518cb4");
 
     const requests = [];
 
@@ -119,4 +120,4 @@ class MainFilesStore {
   };
 }
 
-export default new MainFilesStore();
+export default new InitFilesStore();

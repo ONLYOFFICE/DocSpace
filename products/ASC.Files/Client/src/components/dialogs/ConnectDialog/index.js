@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { toastr } from "@appserver/components";
+import toastr from "@appserver/components/toast";
 import Button from "@appserver/components/button";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Checkbox from "@appserver/components/checkbox";
