@@ -37,7 +37,15 @@ const StyledTreeMenu = styled(TreeMenu)`
     margin-left: 4px;
   }*/
 `;
+const StyledFolderSVG = styled.div`
+  svg {
+    width: 100%;
 
+    path {
+      fill: #657077;
+    }
+  }
+`;
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
@@ -85,7 +93,7 @@ class TreeFolders extends React.Component {
         iconUrl = "images/catalog.private.react.svg";
         break;
       case FolderType.TRASH:
-        iconUrl = "images/catalog.trash.react.svg";
+        iconUrl = "/static/images/catalog.trash.react.svg";
         break;
       default:
         break;
@@ -129,13 +137,9 @@ class TreeFolders extends React.Component {
     }
 
     return (
-      <ReactSVG
-        src={iconUrl}
-        beforeInjection={(svg) => {
-          svg.setAttribute("style", `width: 100%;`);
-          svg.setAttribute("fill", "#657077");
-        }}
-      />
+      <StyledFolderSVG>
+        <ReactSVG src={iconUrl} />
+      </StyledFolderSVG>
     );
   };
 
