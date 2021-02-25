@@ -63,12 +63,12 @@ type=rpm-md
 END
 
 #install kafka
-mkdir -p /var/www/appserver/services/kafka
+mkdir -p /var/www/appserver/services/
 getent passwd kafka >/dev/null || useradd -m -d /var/www/appserver/services/kafka -s /sbin/nologin -p kafka kafka
 cd /var/www/appserver/services/kafka
 wget https://downloads.apache.org/kafka/2.7.0/kafka_2.13-2.7.0.tgz
 tar xzf kafka_*.tgz --strip 1 && rm -rf kafka_*.tgz
-chown -R kafka *
+chown -R kafka /var/www/appserver/services/kafka
 cd -
 
 cat > /etc/systemd/system/zookeeper.service <<END
