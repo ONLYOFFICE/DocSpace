@@ -1,6 +1,7 @@
 import React from "react";
 import equal from "fast-deep-equal/react";
-import { FieldContainer, TextInput } from "@appserver/components";
+import FieldContainer from "@appserver/components/field-container";
+import TextInput from "@appserver/components/text-input";
 
 class TextField extends React.Component {
   shouldComponentUpdate(nextProps) {

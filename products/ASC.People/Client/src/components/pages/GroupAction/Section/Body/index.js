@@ -1,12 +1,11 @@
-import {
-  Button,
-  ComboBox,
-  FieldContainer,
-  SearchInput,
-  SelectedItem,
-  TextInput,
-  utils,
-} from "@appserver/components";
+import Button from "@appserver/components/button";
+import ComboBox from "@appserver/components/combobox";
+import FieldContainer from "@appserver/components/field-container";
+import SearchInput from "@appserver/components/search-input";
+import SelectedItem from "@appserver/components/selected-item";
+import TextInput from "@appserver/components/text-input";
+import { tablet } from "@appserver/components/utils/device";
+
 import toastr from "@appserver/common/components/Toast";
 import Loaders from "@appserver/common/components/Loaders";
 import PeopleSelector from "@appserver/common/components/PeopleSelector";
@@ -61,7 +60,7 @@ const MainContainer = styled.div`
     }
   }
 
-  @media ${utils.device.tablet} {
+  @media ${tablet} {
     max-width: 320px;
 
     .selected-members_container {

@@ -1,10 +1,8 @@
 import React from "react";
 import equal from "fast-deep-equal/react";
-import {
-  FieldContainer,
-  RadioButtonGroup,
-  PasswordInput,
-} from "@appserver/components";
+import FieldContainer from "@appserver/components/field-container";
+import RadioButtonGroup from "@appserver/components/radio-button-group";
+import PasswordInput from "@appserver/components/password-input";
 
 class PasswordField extends React.Component {
   shouldComponentUpdate(nextProps) {

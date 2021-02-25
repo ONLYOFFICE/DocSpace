@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import equal from "fast-deep-equal/react";
-import { FieldContainer, TextInput, Button } from "@appserver/components";
+import FieldContainer from "@appserver/components/field-container";
+import TextInput from "@appserver/components/text-input";
+import Button from "@appserver/components/button";
 
 const InputContainer = styled.div`
   width: 100%;

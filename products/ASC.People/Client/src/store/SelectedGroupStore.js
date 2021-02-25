@@ -1,5 +1,5 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import api from "@appserver/common/api";
+import { getGroup } from "@appserver/common/api/groups";
 
 class SelectedGroupStore {
   selectedGroup = null;
@@ -35,7 +35,7 @@ class SelectedGroupStore {
   };
 
   setTargetedGroup = async (groupId) => {
-    const res = await api.groups.getGroup(groupId);
+    const res = await getGroup(groupId);
     this.targetedGroup = res;
   };
 

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Heading } from "@appserver/components";
+import Heading from "@appserver/components/heading";
 
 const Container = styled.div`
   margin: 0 0 40px 0;

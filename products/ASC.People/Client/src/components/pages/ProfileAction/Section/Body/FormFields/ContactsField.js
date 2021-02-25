@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import equal from "fast-deep-equal/react";
 import ContactField from "./ContactField";
-import { ComboBox } from "@appserver/components";
+import ComboBox from "@appserver/components/combobox";
 
 const Container = styled.div`
   width: 100%;

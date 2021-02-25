@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import IconButton from "@appserver/components";
+import IconButton from "@appserver/components/icon-button";
 import Headline from "@appserver/common/components/Headline";
 import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";

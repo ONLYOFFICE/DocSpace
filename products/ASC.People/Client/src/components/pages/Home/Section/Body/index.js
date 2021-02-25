@@ -6,13 +6,14 @@ import styled from "styled-components";
 import Row from "@appserver/components/row";
 import Avatar from "@appserver/components/avatar";
 import RowContainer from "@appserver/components/row-container";
-import utils from "@appserver/components/utils";
+import { Consumer } from "@appserver/components/utils/context";
+import { isArrayEqual } from "@appserver/components/utils/array";
 
 import UserContent from "./userContent";
 import equal from "fast-deep-equal/react";
-import api from "@appserver/common/api";
+import { resendUserInvites } from "@appserver/common/api/people";
 import toastr from "@appserver/common/components/Toast";
-import constants from "@appserver/common/constants";
+import { EmployeeStatus } from "@appserver/common/constants";
 import Loaders from "@appserver/common/components/Loaders";
 import {
   ChangeEmailDialog,
@@ -23,11 +24,6 @@ import {
 
 import EmptyScreen from "./sub-components/EmptyScreen";
 import { inject, observer } from "mobx-react";
-
-const { Consumer } = utils.context;
-const { isArrayEqual } = utils.array;
-const { resendUserInvites } = api.people;
-const { EmployeeStatus } = constants;
 
 const isRefetchPeople = true;
 

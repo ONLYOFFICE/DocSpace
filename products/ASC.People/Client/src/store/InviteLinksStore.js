@@ -1,5 +1,5 @@
 import { action, makeObservable, observable } from "mobx";
-import api from "@appserver/common/api";
+import { getInvitationLinks } from "@appserver/common/api/portal";
 import store from "@appserver/common/store";
 
 const { authStore } = store;
@@ -19,7 +19,7 @@ class InviteLinksStore {
 
     if (!isViewerAdmin) return Promise.resolve();
 
-    const res = await api.portal.getInvitationLinks();
+    const res = await getInvitationLinks();
     this.inviteLinks.userLink = res.userLink;
     this.inviteLinks.guestLink = res.guestLink;
   };

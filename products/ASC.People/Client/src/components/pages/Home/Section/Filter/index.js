@@ -6,11 +6,9 @@ import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
 import FilterInput from "@appserver/common/components/FilterInput";
 import Loaders from "@appserver/common/components/Loaders";
-import utils from "@appserver/common/utils";
+import { withLayoutSize } from "@appserver/common/utils";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-
-const { withLayoutSize } = utils;
 
 const getEmployeeStatus = (filterValues) => {
   const employeeStatus = result(

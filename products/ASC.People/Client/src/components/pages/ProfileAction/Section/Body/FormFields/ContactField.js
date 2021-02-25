@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import equal from "fast-deep-equal/react";
-import { ComboBox, TextInput, IconButton } from "@appserver/components";
+import ComboBox from "@appserver/components/combobox";
+import TextInput from "@appserver/components/text-input";
+import IconButton from "@appserver/components/icon-button";
 
 const Container = styled.div`
   display: flex;

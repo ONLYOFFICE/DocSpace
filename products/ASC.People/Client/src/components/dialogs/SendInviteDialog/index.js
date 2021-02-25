@@ -12,12 +12,10 @@ import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import api from "@appserver/common/api";
+import { resendUserInvites } from "@appserver/common/api/people";
 import toastr from "@appserver/common/components/Toast";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
-
-const { resendUserInvites } = api.people;
 
 class SendInviteDialogComponent extends React.Component {
   constructor(props) {

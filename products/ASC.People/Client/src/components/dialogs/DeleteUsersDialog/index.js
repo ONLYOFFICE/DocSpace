@@ -12,12 +12,10 @@ import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import api from "@appserver/common/api";
+import { Filter } from "@appserver/common/api";
 import toastr from "@appserver/common/components/Toast";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
-
-const { Filter } = api;
 
 class DeleteGroupUsersDialogComponent extends React.Component {
   constructor(props) {

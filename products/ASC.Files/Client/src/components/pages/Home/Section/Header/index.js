@@ -17,7 +17,8 @@ import ContextMenuButton from "@appserver/components/context-menu-button";
 import DropDownItem from "@appserver/components/drop-down-item";
 import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
 import IconButton from "@appserver/components/icon-button";
-import utils from "@appserver/components/utils";
+import { tablet, desktop } from "@appserver/components/utils/device";
+import { Consumer } from "@appserver/components/utils/context";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   EmptyTrashDialog,
@@ -27,9 +28,6 @@ import {
 import { OperationsPanel } from "../../../../panels";
 import { inject, observer } from "mobx-react";
 import { loopTreeFolders } from "../../../../../helpers/files-helpers";
-
-const { tablet, desktop } = utils.device;
-const { Consumer } = utils.context;
 
 const StyledContainer = styled.div`
   .header-container {

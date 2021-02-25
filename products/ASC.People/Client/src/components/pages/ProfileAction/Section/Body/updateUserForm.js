@@ -1,14 +1,14 @@
 import React from "react";
 import { withRouter } from "react-router";
-import {
-  Avatar,
-  Button,
-  Textarea,
-  Text,
-  AvatarEditor,
-  Link,
-  utils,
-} from "@appserver/components";
+
+import Avatar from "@appserver/components/avatar";
+import Button from "@appserver/components/button";
+import Textarea from "@appserver/components/textarea";
+import Text from "@appserver/components/text";
+import AvatarEditor from "@appserver/components/avatar-editor";
+import Link from "@appserver/components/link";
+import { isTablet } from "@appserver/components/utils/device";
+
 import { withTranslation, Trans } from "react-i18next";
 
 import {
@@ -25,7 +25,11 @@ import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import styled from "styled-components";
 import { DataLossWarningDialog } from "../../../../dialogs";
-import api from "@appserver/common/api";
+import {
+  createThumbnailsAvatar,
+  loadAvatar,
+  deleteAvatar,
+} from "@appserver/common/api/people";
 import toastr from "@appserver/common/components/Toast";
 import {
   ChangeEmailDialog,
@@ -43,9 +47,6 @@ import {
   mapGroupsToGroupSelectorOptions,
   toEmployeeWrapper,
 } from "../../../../../helpers/people-helpers";
-
-const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
-const { isTablet } = utils.device;
 
 const dialogsDataset = {
   changeEmail: "changeEmail",

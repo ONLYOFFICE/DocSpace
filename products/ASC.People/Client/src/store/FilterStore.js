@@ -1,6 +1,6 @@
 import { action, makeObservable, observable } from "mobx";
 //import { getFilterByLocation } from "../helpers/converters";
-import api from "@appserver/common/api";
+import { Filter } from "@appserver/common/api";
 import history from "@appserver/common/history";
 import config from "../../package.json";
 import {
@@ -14,8 +14,6 @@ import {
   PAGE,
   PAGE_COUNT,
 } from "../helpers/constants";
-
-const { Filter } = api;
 
 class FilterStore {
   filter = Filter.getDefault();

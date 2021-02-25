@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import { IconButton } from "@appserver/components";
+import IconButton from "@appserver/components/icon-button";
 import Headline from "@appserver/common/components/Headline";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";

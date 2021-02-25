@@ -1,19 +1,15 @@
 import React from "react";
 import { Trans, withTranslation } from "react-i18next";
-import {
-  Text,
-  IconButton,
-  Link,
-  ComboBox,
-  HelpButton,
-} from "@appserver/components";
+import Text from "@appserver/components/text";
+import IconButton from "@appserver/components/icon-button";
+import Link from "@appserver/components/link";
+import ComboBox from "@appserver/components/combobox";
+import HelpButton from "@appserver/components/help-button";
 import styled from "styled-components";
-import api from "@appserver/common/api";
+import { resendUserInvites } from "@appserver/common/api/people";
 import toastr from "@appserver/common/components/Toast";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
-
-const { resendUserInvites } = api.people;
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;

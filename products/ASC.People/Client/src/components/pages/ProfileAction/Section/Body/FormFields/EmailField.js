@@ -1,6 +1,7 @@
 import React from "react";
 import equal from "fast-deep-equal/react";
-import { FieldContainer, EmailInput } from "@appserver/components";
+import FieldContainer from "@appserver/components/field-container";
+import EmailInput from "@appserver/components/email-input";
 
 class EmailField extends React.Component {
   shouldComponentUpdate(nextProps) {

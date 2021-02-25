@@ -1,6 +1,7 @@
 import React from "react";
 import equal from "fast-deep-equal/react";
-import { FieldContainer, DatePicker } from "@appserver/components";
+import FieldContainer from "@appserver/components/field-container";
+import DatePicker from "@appserver/components/date-picker";
 
 class DateField extends React.Component {
   shouldComponentUpdate(nextProps) {

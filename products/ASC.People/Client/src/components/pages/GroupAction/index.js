@@ -1,5 +1,5 @@
 import React from "react";
-import { Loader } from "@appserver/components";
+import Loader from "@appserver/components/loader";
 import PageLayout from "@appserver/common/components/PageLayout";
 import {
   ArticleHeaderContent,

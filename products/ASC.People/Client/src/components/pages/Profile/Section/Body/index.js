@@ -1,14 +1,12 @@
-import {
-  Avatar,
-  Button,
-  IconButton,
-  Text,
-  ToggleContent,
-  Link,
-} from "@appserver/components";
+import Avatar from "@appserver/components/avatar";
+import Button from "@appserver/components/button";
+import IconButton from "@appserver/components/icon-button";
+import Text from "@appserver/components/text";
+import ToggleContent from "@appserver/components/toggle-content";
+import Link from "@appserver/components/link";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import React from "react";
-import utils from "@appserver/common/utils";
+import { isMe } from "@appserver/common/utils";
 import styled from "styled-components";
 
 import { withRouter } from "react-router";
@@ -18,8 +16,6 @@ import {
   getUserContacts,
   getUserRole,
 } from "../../../../../helpers/people-helpers";
-
-const { isMe } = utils;
 
 const ProfileWrapper = styled.div`
   display: flex;

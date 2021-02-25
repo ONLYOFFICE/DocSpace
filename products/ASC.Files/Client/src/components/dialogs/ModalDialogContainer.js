@@ -1,7 +1,5 @@
 import styled from "styled-components";
-import utils from "@appserver/components/utils";
-
-const tablet = utils.device.tablet;
+import { tablet } from "@appserver/components/utils/device";
 
 const ModalDialogContainer = styled.div`
   .flex {

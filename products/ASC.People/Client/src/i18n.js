@@ -3,7 +3,6 @@ import { initReactI18next } from "react-i18next";
 import Backend from "i18next-http-backend";
 import config from "../package.json";
 import { LANGUAGE } from "@appserver/common/constants";
-//const { LANGUAGE /*i18nBaseSettings*/ } = constants;
 
 //import LanguageDetector from "i18next-browser-languagedetector";
 // not like to use this?

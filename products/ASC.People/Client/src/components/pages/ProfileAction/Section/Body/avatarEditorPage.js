@@ -2,15 +2,18 @@ import React from "react";
 import { withRouter } from "react-router";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
-import { AvatarEditor, utils, Loader } from "@appserver/components";
-import api from "@appserver/common/api";
+import AvatarEditor from "@appserver/components/avatar-editor";
+import Loader from "@appserver/components/loader";
+import { isTablet } from "@appserver/components/utils/device";
+import {
+  createThumbnailsAvatar,
+  loadAvatar,
+  deleteAvatar,
+} from "@appserver/common/api/people";
 import toastr from "@appserver/common/components/Toast";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { toEmployeeWrapper } from "../../../../../helpers/people-helpers";
-
-const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
-const { isTablet } = utils.device;
 
 const dialogsDataset = {
   changeEmail: "changeEmail",

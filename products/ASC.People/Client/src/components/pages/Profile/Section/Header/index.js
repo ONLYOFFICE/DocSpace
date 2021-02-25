@@ -1,17 +1,20 @@
 import React from "react";
-import {
-  IconButton,
-  ContextMenuButton,
-  AvatarEditor,
-} from "@appserver/components";
+import IconButton from "@appserver/components/icon-button";
+import ContextMenuButton from "@appserver/components/context-menu-button";
+import AvatarEditor from "@appserver/components/avatar-editor";
 import Headline from "@appserver/common/components/Headline";
 import toastr from "@appserver/common/components/Toast";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
-import utils from "@appserver/common/utils";
-import api from "@appserver/common/api";
-import constants from "@appserver/common/constants";
+import { isMe } from "@appserver/common/utils";
+import {
+  resendUserInvites,
+  createThumbnailsAvatar,
+  loadAvatar,
+  deleteAvatar,
+} from "@appserver/common/api/people";
+import { EmployeeStatus } from "@appserver/common/constants";
 import {
   DeleteSelfProfileDialog,
   ChangePasswordDialog,
@@ -23,15 +26,6 @@ import {
   getUserStatus,
   toEmployeeWrapper,
 } from "../../../../../helpers/people-helpers";
-
-const { isMe } = utils;
-const {
-  resendUserInvites,
-  createThumbnailsAvatar,
-  loadAvatar,
-  deleteAvatar,
-} = api.people;
-const { EmployeeStatus } = constants;
 
 const StyledContainer = styled.div`
   position: relative;

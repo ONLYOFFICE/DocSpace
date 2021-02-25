@@ -5,12 +5,13 @@ import { withRouter } from "react-router";
 import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
 import DropDownItem from "@appserver/components/drop-down-item";
 import ContextMenuButton from "@appserver/components/context-menu-button";
-import utils from "@appserver/components/utils";
+import { tablet, desktop } from "@appserver/components/utils/device";
+import { Consumer } from "@appserver/components/utils/context";
 
 import Headline from "@appserver/common/components/Headline";
 import toastr from "@appserver/common/toastr";
 import Loaders from "@appserver/common/components/Loaders";
-import constants from "@appserver/common/constants";
+import { EmployeeType, EmployeeStatus } from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
 import {
   InviteDialog,
@@ -21,11 +22,6 @@ import {
 } from "../../../../dialogs";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-
-const { tablet, desktop } = utils.device;
-const { Consumer } = utils.context;
-
-const { EmployeeType, EmployeeStatus } = constants;
 
 const StyledContainer = styled.div`
   .group-button-menu-container {

@@ -13,12 +13,10 @@ import { withTranslation } from "react-i18next";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import toastr from "@appserver/common/components/Toast";
-import constants from "@appserver/common/constants";
+import { EmployeeType } from "@appserver/common/constants";
 import ModalDialogContainer from "../ModalDialogContainer";
 
 import { inject, observer } from "mobx-react";
-
-const { EmployeeType } = constants;
 
 class ChangeUserTypeDialogComponent extends React.Component {
   constructor(props) {

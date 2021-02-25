@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 
-import utils from "@appserver/components/utils";
+import { isArrayEqual } from "@appserver/components/utils/array";
 import TreeMenu from "@appserver/components/tree-menu";
 import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import Link from "@appserver/components/link";
@@ -108,13 +108,11 @@ class ArticleBodyContent extends React.Component {
     currentGroup ? setDocumentTitle(currentGroup.name) : setDocumentTitle();
   }
   shouldComponentUpdate(nextProps) {
-    if (
-      !utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)
-    ) {
+    if (!isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)) {
       return true;
     }
 
-    if (!utils.array.isArrayEqual(nextProps.data, this.props.data)) {
+    if (!isArrayEqual(nextProps.data, this.props.data)) {
       return true;
     }
 

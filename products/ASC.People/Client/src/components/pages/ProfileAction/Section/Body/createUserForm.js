@@ -1,13 +1,13 @@
 import React from "react";
 import { withRouter } from "react-router";
-import {
-  Avatar,
-  Button,
-  Textarea,
-  AvatarEditor,
-  Text,
-  utils,
-} from "@appserver/components";
+
+import Avatar from "@appserver/components/avatar";
+import Button from "@appserver/components/button";
+import Textarea from "@appserver/components/textarea";
+import Text from "@appserver/components/text";
+import AvatarEditor from "@appserver/components/avatar-editor";
+import { isTablet } from "@appserver/components/utils/device";
+
 import { withTranslation, Trans } from "react-i18next";
 import {
   MainContainer,
@@ -23,7 +23,10 @@ import DepartmentField from "./FormFields/DepartmentField";
 import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import { DataLossWarningDialog } from "../../../../dialogs";
-import api from "@appserver/common/api";
+import {
+  createThumbnailsAvatar,
+  loadAvatar,
+} from "@appserver/common/api/people";
 import toastr from "@appserver/common/components/Toast";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
@@ -36,9 +39,6 @@ import {
   mapGroupSelectorOptionsToGroups,
   filterGroupSelectorOptions,
 } from "../../../../../helpers/people-helpers";
-
-const { createThumbnailsAvatar, loadAvatar } = api.people;
-const { isTablet } = utils.device;
 
 class CreateUserForm extends React.Component {
   constructor(props) {

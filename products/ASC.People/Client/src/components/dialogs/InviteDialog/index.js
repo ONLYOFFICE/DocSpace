@@ -11,10 +11,8 @@ import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import copy from "copy-to-clipboard";
-import api from "@appserver/common/api";
+import { getShortenedLink } from "@appserver/common/api/portal";
 import { inject, observer } from "mobx-react";
-
-const { getShortenedLink } = api.portal;
 
 const textAreaName = "link-textarea";
 

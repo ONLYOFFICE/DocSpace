@@ -5,10 +5,8 @@ import Button from "@appserver/components/button";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import { withTranslation, Trans } from "react-i18next";
-import api from "@appserver/common/api";
+import { sendInstructionsToChangePassword } from "@appserver/common/api/people";
 import toastr from "@appserver/common/components/Toast";
-
-const { sendInstructionsToChangePassword } = api.people;
 
 class ChangePasswordDialogComponent extends React.Component {
   constructor() {

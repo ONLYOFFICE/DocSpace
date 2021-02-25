@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { utils } from "@appserver/components";
+import { tablet } from "@appserver/components/utils/device";
 
 const MainContainer = styled.div`
   display: flex;
@@ -33,7 +33,7 @@ const MainContainer = styled.div`
     }
   }
 
-  @media ${utils.device.tablet} {
+  @media ${tablet} {
     flex-direction: column;
   }
 `;

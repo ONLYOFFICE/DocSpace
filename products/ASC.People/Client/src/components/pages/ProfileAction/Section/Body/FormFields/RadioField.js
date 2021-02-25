@@ -1,6 +1,7 @@
 import React from "react";
 import equal from "fast-deep-equal/react";
-import { FieldContainer, RadioButtonGroup } from "@appserver/components";
+import FieldContainer from "@appserver/components/field-container";
+import RadioButtonGroup from "@appserver/components/radio-button-group";
 
 class RadioField extends React.Component {
   shouldComponentUpdate(nextProps) {
