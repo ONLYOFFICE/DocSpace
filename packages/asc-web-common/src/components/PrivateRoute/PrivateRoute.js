@@ -70,7 +70,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       //   rest,
       //   Component.name || Component.displayName
       // );
-      return <Component {...props} />;
+      return <Component {...props} {...rest} />;
     }
 
     if (restricted) {

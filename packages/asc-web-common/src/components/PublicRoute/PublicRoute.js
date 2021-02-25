@@ -40,7 +40,7 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
       );
     }
 
-    return <Component {...props} />;
+    return <Component {...props} {...rest} />;
   };
   return <Route {...rest} render={renderComponent} />;
 };
