@@ -19,9 +19,9 @@ class AuthStore {
   version = null;
 
   constructor() {
-    this.setUserStore(new UserStore());
-    this.setModuleStore(new ModuleStore());
-    this.setSettingsStore(new SettingsStore());
+    this.userStore = new UserStore();
+    this.moduleStore = new ModuleStore();
+    this.settingsStore = new SettingsStore();
 
     makeObservable(this, {
       isLoading: observable,
@@ -39,9 +39,6 @@ class AuthStore {
       login: action,
       logout: action,
       setIsAuthenticated: action,
-      setUserStore: action,
-      setModuleStore: action,
-      setSettingsStore: action,
       replaceFileStream: action,
       getEncryptionAccess: action,
       setEncryptionAccess: action,
@@ -194,18 +191,6 @@ class AuthStore {
 
   setIsAuthenticated = (isAuthenticated) => {
     this.isAuthenticated = isAuthenticated;
-  };
-
-  setUserStore = (store) => {
-    this.userStore = store;
-  };
-
-  setModuleStore = (store) => {
-    this.moduleStore = store;
-  };
-
-  setSettingsStore = (store) => {
-    this.settingsStore = store;
   };
 
   getEncryptionAccess = (fileId) => {
