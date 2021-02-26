@@ -19,7 +19,7 @@ const StyledHeading = styled(Heading)`
   line-height: 65px;
   font-size: ${(props) => size[props.headlineType]};
   font-weight: ${(props) => weight[props.headlineType]};
-  color: ${(props) => props.theme.color};
+  color: ${(props) => (props.color ? props.color : props.theme.color)};
 `;
 StyledHeading.defaultProps = { theme: Base };
 

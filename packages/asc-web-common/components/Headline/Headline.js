@@ -18,7 +18,6 @@ Headline.propTypes = {
 };
 
 Headline.defaultProps = {
-  //color: "#333333",
   title: null,
   truncate: false,
   isInline: false,
