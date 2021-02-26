@@ -1,9 +1,7 @@
 import { action, makeObservable, observable } from "mobx";
 import { getInvitationLinks } from "@appserver/common/api/portal";
-import store from "@appserver/common/store";
-
-const { authStore } = store;
-
+import store from "studio/store";
+const { auth: authStore } = store;
 class InviteLinksStore {
   inviteLinks = {};
 

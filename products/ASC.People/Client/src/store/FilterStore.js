@@ -1,6 +1,6 @@
 import { action, makeObservable, observable } from "mobx";
 //import { getFilterByLocation } from "../helpers/converters";
-import { Filter } from "@appserver/common/api";
+import Filter from "@appserver/common/api/people/filter";
 import history from "@appserver/common/history";
 import config from "../../package.json";
 import {

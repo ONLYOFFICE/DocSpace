@@ -1,7 +1,5 @@
 import Shell from "studio/shell";
 
-import "./custom.scss";
-
 const App = () => (
     <Shell />
 );

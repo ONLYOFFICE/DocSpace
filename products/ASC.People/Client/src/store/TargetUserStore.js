@@ -1,8 +1,7 @@
 import api from "@appserver/common/api";
-import store from "@appserver/common/store";
 import { action, computed, makeObservable, observable } from "mobx";
-
-const { authStore } = store;
+import store from "studio/store";
+const { auth: authStore } = store;
 
 class TargetUserStore {
   targetUser = null;

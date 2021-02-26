@@ -3,14 +3,17 @@ import Headline from "@appserver/common/components/Headline";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 
-const ArticleHeaderContent = ({ currentModuleName }) => {
-  return currentModuleName ? (
+const ArticleHeaderContent = ({ isLoaded, currentModuleName }) => {
+  return isLoaded ? (
     <Headline type="menu">{currentModuleName}</Headline>
   ) : (
     <Loaders.ArticleHeader />
   );
 };
 
-export default inject(({ auth }) => ({
-  currentModuleName: auth.product.title,
-}))(observer(ArticleHeaderContent));
+export default inject(({ auth }) => {
+  return {
+    isLoaded: auth.isLoaded,
+    currentModuleName: "", //TODO: FIX (auth.isLoaded && auth.product.title) || null,
+  };
+})(observer(ArticleHeaderContent));

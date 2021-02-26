@@ -1,6 +1,4 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import store from "@appserver/common/store";
-
 import GroupsStore from "./GroupsStore";
 import UsersStore from "./UsersStore";
 import { getFilterByLocation } from "../helpers/converters";
@@ -13,8 +11,8 @@ import SelectionStore from "./SelectionStore";
 import HeaderMenuStore from "./HeaderMenuStore";
 import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
-
-const { authStore } = store;
+import store from "studio/store";
+const { auth: authStore } = store;
 
 class PeopleStore {
   groupsStore = null;
@@ -29,6 +27,7 @@ class PeopleStore {
   inviteLinksStore = null;
 
   isLoading = false;
+  isLoaded = false;
 
   constructor() {
     this.groupsStore = new GroupsStore(this);
@@ -44,7 +43,9 @@ class PeopleStore {
 
     makeObservable(this, {
       isLoading: observable,
+      isLoaded: observable,
       setIsLoading: action,
+      setIsLoaded: action,
       init: action,
       isPeoplesAdmin: computed,
       resetFilter: action,
@@ -74,10 +75,16 @@ class PeopleStore {
 
     await this.groupsStore.getGroupList();
     await authStore.settingsStore.getPortalPasswordSettings();
+
+    this.setIsLoaded(true);
   };
 
   setIsLoading = (loading) => {
     this.isLoading = loading;
+  };
+
+  setIsLoaded = (isLoaded) => {
+    this.isLoaded = isLoaded;
   };
 
   resetFilter = (withoutGroup = false) => {

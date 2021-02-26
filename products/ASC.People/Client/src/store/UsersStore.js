@@ -1,12 +1,13 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import api from "@appserver/common/api";
-import constants from "@appserver/common/constants";
-import store from "@appserver/common/store";
+import {
+  EmployeeStatus,
+  EmployeeActivationStatus,
+} from "@appserver/common/constants";
 import { isMobileOnly } from "react-device-detect";
-
 const { Filter } = api;
-const { EmployeeStatus, EmployeeActivationStatus } = constants;
-const { authStore } = store;
+import store from "studio/store";
+const { auth: authStore } = store;
 class UsersStore {
   users = [];
 

@@ -9,7 +9,7 @@ import {
   PAGE,
   PAGE_COUNT,
 } from "./constants";
-import { Filter } from "@appserver/common/api";
+import Filter from "@appserver/common/api/people/filter";
 import { getObjectByLocation } from "@appserver/common/utils";
 export function getFilterByLocation(location) {
   const urlFilter = getObjectByLocation(location);
