@@ -1,30 +1,12 @@
 import React from "react";
-import store from "studio/store";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
-import { Provider as MobxProvider } from "mobx-react";
-import ThemeProvider from "@appserver/components/theme-provider";
-import "./custom.scss";
-import { Base, Dark } from "@appserver/components/themes";
-import "./i18n";
+import Shell from "studio/shell";
 
-const Shell = React.lazy(() => import("./Shell")); //import("studio/shell"));
 const App = () => {
   return (
-    <ThemeProvider theme={Base}>
-      <MobxProvider
-        {...store}
-        // auth={authStore}
-        // payments={paymentStore}
-        // wizard={wizardStore}
-        // setup={setupStore}
-      >
-        <ErrorBoundary>
-          <React.Suspense fallback={null}>
-            <Shell />
-          </React.Suspense>
-        </ErrorBoundary>
-      </MobxProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <Shell />
+    </ErrorBoundary>
   );
 };
 

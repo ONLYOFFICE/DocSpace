@@ -7,6 +7,7 @@ const deps = require("./package.json").dependencies;
 module.exports = {
   entry: "./src/index",
   mode: "development",
+  devtool: "inline-source-map",
   devServer: {
     contentBase: [path.join(__dirname, "public"), path.join(__dirname, "dist")],
     contentBasePublicPath: "/products/files/",
@@ -14,18 +15,24 @@ module.exports = {
     historyApiFallback: true,
     hot: false,
     hotOnly: false,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Headers":
+        "X-Requested-With, content-type, Authorization",
+    },
+    //openPage: "http://localhost:8092/products/files",
   },
-
-  output: {
-    publicPath: "auto",
-    chunkFilename: "[id].[contenthash].js",
-  },
-
   resolve: {
     extensions: [".jsx", ".js", ".json"],
     fallback: {
       crypto: false,
     },
+  },
+
+  output: {
+    publicPath: "auto",
+    chunkFilename: "[id].[contenthash].js",
   },
 
   module: {
@@ -86,7 +93,7 @@ module.exports = {
         studio: "studio@http://localhost:5001/remoteEntry.js",
       },
       exposes: {
-        "./page": "./src/bootstrap.js", //TODO: "./page": "./src/App.js",
+        "./app": "./src/Files.jsx",
       },
       shared: {
         ...deps,

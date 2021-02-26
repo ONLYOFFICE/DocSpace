@@ -2,6 +2,7 @@
   "name": "@appserver/files",
   "version": "0.1.0",
   "private": "true",
+  "homepage": "/products/files",
   "scripts": {
     "start": "webpack-cli serve",
     "build": "webpack --mode production",

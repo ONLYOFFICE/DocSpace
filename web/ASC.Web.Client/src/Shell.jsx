@@ -12,14 +12,20 @@ import ScrollToTop from "@appserver/common/components/Layout/ScrollToTop";
 import history from "@appserver/common/history";
 import toastr from "@appserver/common/components/Toast";
 import { updateTempContent } from "@appserver/common/utils";
+import { Provider as MobxProvider } from "mobx-react";
+import ThemeProvider from "@appserver/components/theme-provider";
+import { Base, Dark } from "@appserver/components/themes";
+import store from "studio/store";
 import config from "../package.json";
+import "./custom.scss";
+import "./i18n";
 
 const Payments = React.lazy(() => import("./components/pages/Payments"));
 const Error404 = React.lazy(() => import("@appserver/common/pages/errors/404"));
 const Home = React.lazy(() => import("./components/pages/Home"));
-const Login = React.lazy(() => import("login/page"));
-const People = React.lazy(() => import("people/page"));
-const Files = React.lazy(() => import("files/page"));
+const Login = React.lazy(() => import("login/app"));
+const People = React.lazy(() => import("people/app"));
+const Files = React.lazy(() => import("files/app"));
 const About = React.lazy(() => import("./components/pages/About"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
@@ -224,7 +230,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
 // export default connect(mapStateToProps, mapDispatchToProps)(Shell);
 
-export default inject(({ auth }) => {
+const ShellWrapper = inject(({ auth }) => {
   const { init, isLoaded } = auth;
 
   const pathname = window.location.pathname.toLowerCase();
@@ -239,3 +245,11 @@ export default inject(({ auth }) => {
     isLoaded,
   };
 })(observer(Shell));
+
+export default () => (
+  <ThemeProvider theme={Base}>
+    <MobxProvider {...store}>
+      <ShellWrapper />
+    </MobxProvider>
+  </ThemeProvider>
+);

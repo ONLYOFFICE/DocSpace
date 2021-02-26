@@ -7,7 +7,7 @@ const deps = require("./package.json").dependencies;
 module.exports = {
   entry: "./src/index",
   mode: "development",
-
+  devtool: "inline-source-map",
   devServer: {
     contentBase: [path.join(__dirname, "public"), path.join(__dirname, "dist")],
     contentBasePublicPath: "/login",
@@ -76,7 +76,7 @@ module.exports = {
         studio: "studio@http://localhost:5001/remoteEntry.js",
       },
       exposes: {
-        "./page": "./src/Login.jsx",
+        "./app": "./src/Login.jsx",
       },
       shared: {
         ...deps,
