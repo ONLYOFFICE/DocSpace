@@ -16,6 +16,9 @@ import {
 import ExpanderDownIcon from "../../../public/images/expander-down.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
+const textColor = "#333333",
+  disabledTextColor = "#A3A9AE";
+  
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
