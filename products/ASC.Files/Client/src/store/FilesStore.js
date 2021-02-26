@@ -233,8 +233,7 @@ class FilesStore {
     params.push(`${SORT_ORDER}=${filter.sortOrder}`);
 
     //console.log("window", window.location);
-    const homepage = "/products/files"; //TODO: add homepage to config?
-    history.push(`${homepage}/filter?${params.join("&")}`);
+    history.push(`${config.homepage}/filter?${params.join("&")}`);
   };
 
   fetchFiles = (folderId, filter, clearFilter = true) => {

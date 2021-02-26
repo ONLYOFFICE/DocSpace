@@ -97,8 +97,7 @@ class InitFilesStore {
       setModuleInfo,
     } = auth.settingsStore;
 
-    const homepage = "/products/files"; //TODO: add homepage to config?
-    setModuleInfo(homepage, "e67be73d-f9ae-4ce1-8fec-1880cb518cb4");
+    setModuleInfo(config.homepage, "e67be73d-f9ae-4ce1-8fec-1880cb518cb4");
 
     const requests = [];
 
