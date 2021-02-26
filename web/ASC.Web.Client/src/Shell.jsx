@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import styled from "styled-components";
 import { Router, Switch } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "@appserver/common/components/NavMenu";
@@ -11,6 +12,7 @@ import Layout from "@appserver/common/components/Layout";
 import ScrollToTop from "@appserver/common/components/Layout/ScrollToTop";
 import history from "@appserver/common/history";
 import toastr from "@appserver/common/components/Toast";
+import RectangleLoader from "@appserver/common/components/Loaders/RectangleLoader";
 import { updateTempContent } from "@appserver/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@appserver/components/theme-provider";
@@ -30,15 +32,24 @@ const About = React.lazy(() => import("./components/pages/About"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
 
+const LoadingBody = styled.div`
+  padding: 20px;
+`;
+const LoadingShell = () => (
+  <LoadingBody>
+    <RectangleLoader height="100%" />
+  </LoadingBody>
+);
+
 const SettingsRoute = (props) => (
-  <React.Suspense fallback={null}>
+  <React.Suspense fallback={<LoadingShell />}>
     <ErrorBoundary>
       <Settings {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
 const PaymentsRoute = (props) => (
-  <React.Suspense fallback={null}>
+  <React.Suspense fallback={<LoadingShell />}>
     <ErrorBoundary>
       <Payments {...props} />
     </ErrorBoundary>
@@ -46,7 +57,7 @@ const PaymentsRoute = (props) => (
 );
 
 const Error404Route = (props) => (
-  <React.Suspense fallback={null}>
+  <React.Suspense fallback={<LoadingShell />}>
     <ErrorBoundary>
       <Error404 {...props} />
     </ErrorBoundary>
@@ -54,7 +65,7 @@ const Error404Route = (props) => (
 );
 
 const HomeRoute = (props) => (
-  <React.Suspense fallback={null}>
+  <React.Suspense fallback={<LoadingShell />}>
     <ErrorBoundary>
       <Home {...props} />
     </ErrorBoundary>
@@ -62,7 +73,7 @@ const HomeRoute = (props) => (
 );
 
 const LoginRoute = (props) => (
-  <React.Suspense fallback={null}>
+  <React.Suspense fallback={<LoadingShell />}>
     <ErrorBoundary>
       <Login {...props} />
     </ErrorBoundary>
@@ -70,7 +81,7 @@ const LoginRoute = (props) => (
 );
 
 const PeopleRoute = (props) => (
-  <React.Suspense fallback={null}>
+  <React.Suspense fallback={<LoadingShell />}>
     <ErrorBoundary>
       <People {...props} />
     </ErrorBoundary>
@@ -78,7 +89,7 @@ const PeopleRoute = (props) => (
 );
 
 const FilesRoute = (props) => (
-  <React.Suspense fallback={null}>
+  <React.Suspense fallback={<LoadingShell />}>
     <ErrorBoundary>
       <Files {...props} />
     </ErrorBoundary>
@@ -86,7 +97,7 @@ const FilesRoute = (props) => (
 );
 
 const AboutRoute = (props) => (
-  <React.Suspense fallback={null}>
+  <React.Suspense fallback={<LoadingShell />}>
     <ErrorBoundary>
       <About {...props} />
     </ErrorBoundary>
@@ -94,7 +105,7 @@ const AboutRoute = (props) => (
 );
 
 const ComingSoonRoute = (props) => (
-  <React.Suspense fallback={null}>
+  <React.Suspense fallback={<LoadingShell />}>
     <ErrorBoundary>
       <ComingSoon {...props} />
     </ErrorBoundary>
