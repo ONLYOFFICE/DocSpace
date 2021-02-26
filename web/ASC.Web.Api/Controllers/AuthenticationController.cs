@@ -174,8 +174,14 @@ namespace ASC.Web.Api.Controllers
                 if ((string.IsNullOrEmpty(memberModel.Provider) && string.IsNullOrEmpty(memberModel.SerializedProfile)) || memberModel.Provider == "email")
                 {
                     memberModel.UserName.ThrowIfNull(new ArgumentException(@"userName empty", "userName"));
-                    memberModel.PasswordHash.ThrowIfNull(new ArgumentException(@"password empty", "password"));
-
+                    if (!string.IsNullOrEmpty(memberModel.Password))
+                    {
+                        memberModel.Password.ThrowIfNull(new ArgumentException(@"password empty", "password"));
+                    }
+                    else
+                    {
+                        memberModel.PasswordHash.ThrowIfNull(new ArgumentException(@"PasswordHash empty", "PasswordHash"));
+                    }
                     int counter;
                     int.TryParse(Cache.Get<string>("loginsec/" + memberModel.UserName), out counter);
                     if (++counter > SetupInfo.LoginThreshold && !SetupInfo.IsSecretEmail(memberModel.UserName))
