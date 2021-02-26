@@ -14,6 +14,6 @@ const ArticleHeaderContent = ({ isLoaded, currentModuleName }) => {
 export default inject(({ auth }) => {
   return {
     isLoaded: auth.isLoaded,
-    currentModuleName: "", //TODO: FIX (auth.isLoaded && auth.product.title) || null,
+    currentModuleName: auth.product.title,
   };
 })(observer(ArticleHeaderContent));

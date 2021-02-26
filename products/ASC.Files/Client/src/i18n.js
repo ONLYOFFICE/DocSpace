@@ -11,7 +11,6 @@ import { LANGUAGE } from "@appserver/common/constants";
 // for passing in lng and translations on init
 
 const languages = ["en", "ru"];
-const homepage = "/products/files"; //TODO: add homepage to config?
 
 i18n
   /*
@@ -49,7 +48,7 @@ i18n
     },
 
     backend: {
-      loadPath: `${homepage}/locales/{{lng}}/{{ns}}.json`,
+      loadPath: `${config.homepage}/locales/{{lng}}/{{ns}}.json`,
     },
 
     react: {
