@@ -1,3 +1,4 @@
+import React from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 
@@ -35,7 +36,7 @@ SimpleLinkWithDropdown.propTypes = {
 };
 
 const color = (props) =>
-  isDisabled ? props.theme.linkWithDropdown.disableColor : props.color;
+  props.isDisabled ? props.theme.linkWithDropdown.disableColor : props.color;
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
 const ExpanderDownIconWrapper = ({

@@ -96,8 +96,9 @@ const HeaderNav = ({
             iconName={m.iconName}
             iconUrl={m.iconUrl}
             badgeNumber={m.notifications}
+            url={m.link}
             onClick={(e) => {
-              window.open(m.link, "_self");
+              history.push(m.link);
               e.preventDefault();
             }}
             onBadgeClick={(e) => console.log(m.iconName + "Badge Clicked", e)}

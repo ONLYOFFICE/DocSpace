@@ -22,6 +22,10 @@ const textColor = "#333333",
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
+    color: ${(props) =>
+      props.disabled
+        ? props.theme.groupButton.disableColor
+        : props.theme.groupButton.color};
     fill: ${(props) => props.color};
   }
 `;
@@ -98,7 +102,6 @@ class GroupButton extends React.Component {
       style,
     } = this.props;
 
-    const color = disabled ? disabledTextColor : textColor;
     const itemLabel = !isSelect ? label : this.state.selected;
     const dropDownMaxHeightProp = dropDownMaxHeight
       ? { maxHeight: dropDownMaxHeight }
@@ -131,7 +134,7 @@ class GroupButton extends React.Component {
             >
               {itemLabel}
               <Caret isOpen={this.state.isOpen}>
-                <StyledExpanderDownIcon size="scale" color={color} />
+                <StyledExpanderDownIcon size="scale" disabled={disabled} />
               </Caret>
             </StyledDropdownToggle>
             <DropDown

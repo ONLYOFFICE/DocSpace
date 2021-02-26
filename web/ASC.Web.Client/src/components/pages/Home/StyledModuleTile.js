@@ -44,7 +44,11 @@ const StyledModuleTile = styled.div`
         width: auto;
         max-width: 50%;
       }
+      a {
+        text-decoration: none;
+      }
     }
+
     .title-text {
       flex: 1 1 auto;
       padding: 1.25rem;
@@ -73,6 +77,9 @@ const StyledModuleTile = styled.div`
     .sub-title-text {
       margin: 16px 0 16px 0;
       text-align: center;
+    }
+    a {
+      text-decoration: none;
     }
   }
 `;

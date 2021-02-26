@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import PropTypes from "prop-types";
 import Text from "@appserver/components/text";
 import StyledModuleTile from "./StyledModuleTile";
-
+import { Link } from "react-router-dom";
 const ModuleTile = (props) => {
   // console.log("ModuleTile render", props);
   const { title, imageUrl, link, description, isPrimary, onClick } = props;
@@ -15,7 +15,7 @@ const ModuleTile = (props) => {
     },
     [link, onClick]
   );
-  console.log("imageUrl", imageUrl);
+
   return (
     <StyledModuleTile>
       {isPrimary ? (
@@ -29,13 +29,15 @@ const ModuleTile = (props) => {
           </div>
 
           <div className="title-text-wrapper">
-            <div onClick={handleClick} className="title-text">
-              <Text fontSize="36px" className="title-text-header selectable">
-                {title}
-              </Text>
-              <Text fontSize="12px" className="title-text-description">
-                {description}
-              </Text>
+            <div className="title-text">
+              <Link to={`${link}`}>
+                <Text fontSize="36px" className="title-text-header selectable">
+                  {title}
+                </Text>
+                <Text fontSize="12px" className="title-text-description">
+                  {description}
+                </Text>
+              </Link>
             </div>
           </div>
         </div>
@@ -50,13 +52,11 @@ const ModuleTile = (props) => {
           </div>
           <div>
             <div>
-              <Text
-                fontSize="18px"
-                className="sub-title-text"
-                onClick={handleClick}
-              >
-                {title}
-              </Text>
+              <Link to={`${link}`}>
+                <Text fontSize="18px" className="sub-title-text">
+                  {title}
+                </Text>
+              </Link>
             </div>
           </div>
         </div>

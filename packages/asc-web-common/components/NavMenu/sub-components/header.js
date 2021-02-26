@@ -2,7 +2,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Link as LogoLink } from "react-router-dom";
+import { useLocation, Link as LinkWithoutRedirect } from "react-router-dom";
 import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import Nav from "./nav";
@@ -67,6 +67,23 @@ const Header = styled.header`
   }
 `;
 
+const StyledLink = styled.div`
+  display: inline;
+  .nav-menu-header_link {
+    color: #7a95b0;
+    font-size: 13px;
+  }
+
+  a {
+    text-decoration: none;
+  }
+  :hover {
+    color: #7a95b0;
+    -webkit-text-decoration: underline;
+    text-decoration: underline;
+  }
+`;
+
 const versionBadgeProps = {
   color: "#7A95B0",
   fontWeight: "600",
@@ -91,6 +108,7 @@ const HeaderComponent = ({
   ...props
 }) => {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
 
   const isNavAvailable = mainModules.length > 0;
 
@@ -114,7 +132,7 @@ const HeaderComponent = ({
   const onItemClick = (e) => {
     if (!e) return;
     const link = e.currentTarget.dataset.link;
-    window.open(link, "_self");
+    history.push(link);
     e.preventDefault();
   };
 
@@ -147,7 +165,7 @@ const HeaderComponent = ({
       </>
     );
   };
-
+  const isMainPage = pathname === "/";
   return (
     <>
       <Header
@@ -162,7 +180,7 @@ const HeaderComponent = ({
           noHover={true}
         />
 
-        <LogoLink className="header-logo-wrapper" to={defaultPage}>
+        <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           <ReactSVG
             className="header-logo-icon"
             loading={() => (
@@ -177,7 +195,7 @@ const HeaderComponent = ({
             )}
             src={props.logoUrl}
           />
-        </LogoLink>
+        </LinkWithoutRedirect>
         <Headline className="header-module-title" type="header" color="#FFF">
           {currentProductName}
         </Headline>
@@ -212,7 +230,7 @@ const HeaderComponent = ({
                 data-id={id}
                 data-link={link}
                 opened={isNavOpened}
-                active={id == currentProductId}
+                active={isMainPage ? false : id == currentProductId}
                 iconName={iconName}
                 iconUrl={iconUrl}
                 badgeNumber={notifications}
@@ -239,14 +257,11 @@ const HeaderComponent = ({
               {" "}
               -{" "}
             </Text>
-            <Link
-              as="a"
-              onClick={onLinkClick}
-              target="_blank"
-              {...versionBadgeProps}
-            >
-              {t("AboutShort")}
-            </Link>
+            <StyledLink>
+              <LinkWithoutRedirect to="/about" className="nav-menu-header_link">
+                {t("AboutShort")}
+              </LinkWithoutRedirect>
+            </StyledLink>
           </Box>
         </Nav>
       )}

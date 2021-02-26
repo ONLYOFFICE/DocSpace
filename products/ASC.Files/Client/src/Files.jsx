@@ -102,12 +102,11 @@ class FilesContent extends React.Component {
 }
 
 const Files = inject(({ auth, initFilesStore }) => {
-  const homepage = config.homepage; // "/products/files"; //TODO: add homepage to config?
   return {
     //isDesktop: auth.settingsStore.isDesktopClient,
     user: auth.userStore.user,
     isAuthenticated: auth.isAuthenticated,
-    homepage: auth.settingsStore.homepage || homepage,
+    homepage: auth.settingsStore.homepage || config.homepage,
     encryptionKeys: auth.settingsStore.encryptionKeys,
     isEncryption: auth.settingsStore.isEncryptionSupport,
     isLoaded: auth.isLoaded && initFilesStore.isLoaded,
