@@ -27,6 +27,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using System.Resources;
@@ -73,6 +74,7 @@ namespace ASC.Resource.Manager
                 }
 
                 var toAdd = new List<ResWord>();
+                var toAddFiles = new Dictionary<string,ResXFileRef>();
 
                 if (!string.IsNullOrEmpty(key))
                 {
@@ -82,18 +84,46 @@ namespace ASC.Resource.Manager
                     {
                         using var resXResourceReader = new ResXResourceReader(zipFileName);
                         resXResourceReader.BasePath = Path.GetDirectoryName(zipFileName);
-                        //resXResourceReader.UseResXDataNodes = true;
-                        //try
-                        //{
-                            foreach (var v in resXResourceReader.OfType<DictionaryEntry>())
-                            {
-                                toAdd.Add(new ResWord { Title = v.Key.ToString(), ValueTo = v.Value?.ToString() });
-                            }
-                        //}
-                        //catch (Exception)
-                        //{
+                        resXResourceReader.UseResXDataNodes = true;
 
-                        //}
+                        foreach (var v in resXResourceReader.OfType<DictionaryEntry>())
+                        {
+                            var k = v.Key.ToString();
+                            var val = v.Value as ResXDataNode;
+
+                            if (keys.Any())
+                            {
+                                if (val.FileRef != null)
+                                {
+                                    var fileRef = new ResXFileRef(Path.GetFileName(val.FileRef.FileName), val.FileRef.TypeName);
+                                    toAddFiles.Add(k, fileRef);
+                                }
+                                else
+                                {
+                                    k = keys.FirstOrDefault(r => r == k);
+                                    if (k != null)
+                                    {
+                                        var word = fileWords.FirstOrDefault(r => r.Title == k);
+                                        if (word != null)
+                                        {
+                                            toAdd.Add(word);
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (val.FileRef != null)
+                                {
+                                    var fileRef = new ResXFileRef(Path.GetFileName(val.FileRef.FileName), val.FileRef.TypeName);
+                                    toAddFiles.Add(k, fileRef);
+                                }
+                                else
+                                {
+                                    toAdd.Add(new ResWord { Title = k, ValueTo = val.GetValue((ITypeResolutionService)null)?.ToString() });
+                                }
+                            }
+                        }
                     }
 
                     foreach (var k in keys)
@@ -118,6 +148,11 @@ namespace ASC.Resource.Manager
                 foreach (var word in toAdd.Where(r => r != null && (!string.IsNullOrEmpty(r.ValueTo) || language == "Neutral")).OrderBy(x => x.Title))
                 {
                     resXResourceWriter.AddResource(word.Title, word.ValueTo);
+                }
+
+                foreach(var f in toAddFiles)
+                {
+                    resXResourceWriter.AddResource(new ResXDataNode(f.Key, f.Value));
                 }
 
                 resXResourceWriter.Generate();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -24,6 +25,7 @@ namespace ASC.Resource.Manager
         private static readonly XName EmbededXname = XName.Get("EmbeddedResource", CsProjScheme);
         private static readonly XName DependentUpon = XName.Get("DependentUpon", CsProjScheme);
         private const string IncludeAttribute = "Include";
+        private const string ConditionAttribute = "Condition";
 
         public static void Main(string[] args)
         {
@@ -49,11 +51,11 @@ namespace ASC.Resource.Manager
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
 
-                project = "WebStudio";
-                module = "WebStudio";
-                filePath = "AuditResource.resx";
-                exportPath = @"C:\Git\portals_core\web\ASC.Web.Api\Core\";
-                key = "EmailNotSpecified";
+                project = "Addons";
+                //module = "Core";
+                //filePath = "ProjectsEnumResource.resx";
+                exportPath = @"C:\Git\portals\";
+                key = "*";
 
                 if (format == "json")
                 {
@@ -81,7 +83,7 @@ namespace ASC.Resource.Manager
                 }
 
                 enabledSettings = scopeClass.Configuration.GetSetting<EnabledSettings>("enabled");
-                cultures = scopeClass.ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
+                cultures = scopeClass.ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).ToList();//.Intersect(enabledSettings.Langs).ToList();
                 projects = scopeClass.ResourceData.GetAllFiles();
 
                 ExportWithProject(project, module, filePath, culture, exportPath, key);
@@ -156,14 +158,14 @@ namespace ASC.Resource.Manager
                 }
                 else
                 {
-                    var resultFiles = new ConcurrentBag<string>();
-                    var filePath = "";
+                    var resultFiles = new ConcurrentBag<Tuple<string, string>>();
+                    var filePath = Directory.GetFiles(exportPath, $"{fileName}", SearchOption.AllDirectories).FirstOrDefault();
                     var asmbl = "";
                     var assmlPath = "";
+                    var nsp = "";
 
                     if (key == "*")
                     {
-                        filePath = Directory.GetFiles(exportPath, $"{fileName}", SearchOption.AllDirectories).FirstOrDefault();
                         if (string.IsNullOrEmpty(filePath)) return;
 
                         assmlPath = Path.GetDirectoryName(filePath);
@@ -178,9 +180,9 @@ namespace ASC.Resource.Manager
                             return;
                         }
 
-                        File.Delete(designerPath);
+                        //File.Delete(designerPath);
 
-                        var nsp = matches[0].Groups[1].Value;
+                        nsp = matches[0].Groups[1].Value;
                         
                         do
                         {
@@ -202,6 +204,10 @@ namespace ASC.Resource.Manager
                         key = CheckExist(fileName, $"{nsp}.{name},{matches[0].Groups[1].Value}", exportPath);
                         exportPath = Path.GetDirectoryName(filePath);
                     }
+                    else
+                    {
+                        exportPath = Path.GetDirectoryName(filePath);
+                    }
 
                     if (string.IsNullOrEmpty(exportPath))
                     {
@@ -212,11 +218,36 @@ namespace ASC.Resource.Manager
                         var any = export(serviceProvider, projectName, moduleName, fileName, c, exportPath, key);
                         if (any)
                         {
-                            resultFiles.Add($"{filePath.Replace(".resx", (c == "Neutral" ? $".resx" : $".{c}.resx"))}".Substring(assmlPath.Length + 1));
+                            resultFiles.Add(new Tuple<string, string>(c, $"{filePath.Replace(".resx", (c == "Neutral" ? $".resx" : $".{c}.resx"))}".Substring(assmlPath.Length + 1)));
                         }
                     });
 
-                    //AddResourceForCsproj(asmbl, filePath.Substring(assmlPath.Length + 1), resultFiles.OrderBy(r=> r));
+                    AddResourceForCsproj(asmbl, filePath.Substring(assmlPath.Length + 1), resultFiles.OrderBy(r=> r.Item2));
+
+                    var startInfo = new ProcessStartInfo
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        FileName = scopeClass.Configuration["resGen"],
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        Arguments = $"{Path.GetFileName(filePath)} /str:cs,{nsp},{Path.GetFileNameWithoutExtension(filePath)},{Path.GetFileNameWithoutExtension(filePath)}.Designer.cs /publicClass",
+                        WorkingDirectory = Path.GetDirectoryName(filePath)
+                    };
+
+                    using (var p = Process.Start(startInfo))
+                    {
+                        if (p.WaitForExit(10000))
+                        {
+                            Console.WriteLine($"{Path.GetFileNameWithoutExtension(filePath)}.Designer.cs");
+                        }
+                        p.Close();
+                    }
+
+                    var resourcesFile = filePath.Replace(".resx", ".resources");
+                    if (File.Exists(resourcesFile))
+                    {
+                        File.Delete(resourcesFile);
+                    }
                 }
             }
         }
@@ -226,11 +257,13 @@ namespace ASC.Resource.Manager
             var resName = Path.GetFileNameWithoutExtension(fileName);
             var bag = new ConcurrentBag<string>();
 
-            var csFiles = Directory.GetFiles(Path.GetFullPath(path), "*.cs", SearchOption.AllDirectories);
+            var csFiles = Directory.GetFiles(Path.GetFullPath(path), "*.cs", SearchOption.AllDirectories).Except(Directory.GetFiles(Path.GetFullPath(path), "*Resource.Designer.cs", SearchOption.AllDirectories));
             csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.aspx", SearchOption.AllDirectories)).ToArray();
+            csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.Master", SearchOption.AllDirectories)).ToArray();
             csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.ascx", SearchOption.AllDirectories)).ToArray();
             csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.html", SearchOption.AllDirectories)).ToArray();
             csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.js", SearchOption.AllDirectories).Where(r => !r.Contains("node_modules"))).ToArray();
+            csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.xsl", SearchOption.AllDirectories)).ToArray();
             var xmlFiles = Directory.GetFiles(Path.GetFullPath(path), "*.xml", SearchOption.AllDirectories);
 
             string localInit() => "";
@@ -262,7 +295,7 @@ namespace ASC.Resource.Manager
             return string.Join(',', bag.ToArray().Distinct());
         }
 
-        private static void AddResourceForCsproj(string csproj, string fileName, IEnumerable<string> files)
+        private static void AddResourceForCsproj(string csproj, string fileName, IEnumerable<Tuple<string,string>> files)
         {
             if (!files.Any()) return;
 
@@ -299,14 +332,14 @@ namespace ASC.Resource.Manager
                     reference = embeded.FirstOrDefault(r =>
                     {
                         var attr = r.Attribute(IncludeAttribute);
-                        return attr != null && attr.Value == file;
+                        return attr != null && attr.Value == file.Item2;
                     });
-
+                    
                     referenceNotExist = reference == null;
                     if (referenceNotExist)
                     {
                         reference = new XElement(EmbededXname);
-                        if (file != fileName)
+                        if (file.Item2 != fileName)
                         {
                             reference.Add(new XElement(DependentUpon, Path.GetFileName(fileName)));
                         }
@@ -315,7 +348,8 @@ namespace ASC.Resource.Manager
 
                 if (referenceNotExist)
                 {
-                    reference.SetAttributeValue(IncludeAttribute, file);
+                    reference.SetAttributeValue(IncludeAttribute, file.Item2);
+                    reference.SetAttributeValue(ConditionAttribute, string.Format("$(Cultures.Contains('{0}'))", file.Item1));
                     node.Add(reference);
                 }
             }
