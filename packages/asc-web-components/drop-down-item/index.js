@@ -29,10 +29,6 @@ const DropDownItem = (props) => {
     >
       {icon && (
         <IconWrapper>
-          {/* {React.createElement(Icons[icon], {
-            size: "scale",
-            className: "drop-down-item_icon",
-          })} */}
           <ReactSVG src={icon} className="drop-down-item_icon" />
         </IconWrapper>
       )}
