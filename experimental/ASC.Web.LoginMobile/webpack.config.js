@@ -33,10 +33,7 @@ module.exports = {
         __dirname,
         "../../packages/asc-web-common/src"
       ),
-      "LoginMobileApi": path.resolve(
-        __dirname,
-        './src/api'
-      )
+      LoginMobileApi: path.resolve(__dirname, "./src/api"),
     },
   },
 
@@ -51,7 +48,16 @@ module.exports = {
       },
       {
         test: /\.react.svg$/,
-        use: ["@svgr/webpack"],
+        use: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              svgoConfig: {
+                plugins: [{ removeViewBox: false }],
+              },
+            },
+          },
+        ],
       },
       { test: /\.json$/, loader: "json-loader" },
       {

@@ -46,7 +46,16 @@ module.exports = {
       },
       {
         test: /\.react.svg$/,
-        use: ["@svgr/webpack"],
+        use: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              svgoConfig: {
+                plugins: [{ removeViewBox: false }],
+              },
+            },
+          },
+        ],
       },
       { test: /\.json$/, loader: "json-loader" },
       {
