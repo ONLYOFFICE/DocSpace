@@ -72,7 +72,7 @@ class PureArticleMainButtonContent extends React.Component {
       >
         <DropDownItem
           className="main-button_drop-down"
-          icon="ActionsDocumentsIcon"
+          icon="images/actions.documents.react.svg"
           label={t("NewDocument")}
           onClick={this.onCreate}
           data-format="docx"
