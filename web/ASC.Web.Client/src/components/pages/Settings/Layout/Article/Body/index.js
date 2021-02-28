@@ -36,6 +36,7 @@ const StyledTreeMenu = styled(TreeMenu)`
   }
 
   .tree_icon {
+    display: inline;
     path {
       fill: dimgray;
     }
@@ -70,15 +71,7 @@ const getTreeItems = (data, path, t) => {
             <Text className="inherit-title-link header">{t(item.tKey)}</Text>
           }
           key={item.key}
-          icon={
-            // item.icon &&
-            // React.createElement(Icons[item.icon], {
-            //   size: "scale",
-            //   isfill: true,
-            //   color: "dimgray",
-            // })
-            item.icon && <ReactSVG className="tree_icon" src={item.icon} />
-          }
+          icon={item.icon && <ReactSVG className="tree_icon" src={item.icon} />}
           disableSwitch={true}
         >
           {getTreeItems(item.children, path, t)}
@@ -94,15 +87,7 @@ const getTreeItems = (data, path, t) => {
             {t(item.tKey)}
           </Link>
         }
-        icon={
-          // item.icon &&
-          // React.createElement(Icons[item.icon], {
-          //   size: "scale",
-          //   isfill: true,
-          //   color: "dimgray",
-          // })
-          item.icon && <ReactSVG src={item.icon} className="tree_icon" />
-        }
+        icon={item.icon && <ReactSVG src={item.icon} className="tree_icon" />}
         disableSwitch={true}
       />
     );
