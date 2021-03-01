@@ -592,13 +592,15 @@ namespace ASC.Api.Documents
         [Update("file/{fileId}/saveediting", DisableFormat = true)]
         public FileWrapper<string> SaveEditingFromForm(string fileId, [FromForm]SaveEditingModel model)
         {
-            return FilesControllerHelperString.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
+            using var stream = model.Stream.OpenReadStream();
+            return FilesControllerHelperString.SaveEditing(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
         }
 
         [Update("file/{fileId:int}/saveediting")]
         public FileWrapper<int> SaveEditingFromForm(int fileId, [FromForm]SaveEditingModel model)
         {
-            return FilesControllerHelperInt.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
+            using var stream = model.Stream.OpenReadStream();
+            return FilesControllerHelperInt.SaveEditing(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
         }
 
         /// <summary>
