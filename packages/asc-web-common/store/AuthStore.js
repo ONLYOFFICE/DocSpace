@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { setWithCredentialsStatus } from "../api/client";
 import history from "../history";
@@ -23,28 +23,7 @@ class AuthStore {
     this.moduleStore = new ModuleStore();
     this.settingsStore = new SettingsStore();
 
-    makeObservable(this, {
-      isLoading: observable,
-      isAuthenticated: observable,
-      isAdmin: computed,
-      isLoaded: computed,
-      language: computed,
-      product: computed,
-      availableModules: computed,
-      userStore: observable,
-      moduleStore: observable,
-      settingsStore: observable,
-      version: observable,
-      init: action,
-      login: action,
-      logout: action,
-      setIsAuthenticated: action,
-      replaceFileStream: action,
-      getEncryptionAccess: action,
-      setEncryptionAccess: action,
-      setProductVersion: action,
-      reset: action,
-    });
+    makeAutoObservable(this);
   }
 
   init = async () => {
@@ -93,9 +72,11 @@ class AuthStore {
   }
 
   get product() {
-    return this.moduleStore.modules.find(
-      (item) => item.id === this.settingsStore.currentProductId
-    ) || "";
+    return (
+      this.moduleStore.modules.find(
+        (item) => item.id === this.settingsStore.currentProductId
+      ) || ""
+    );
   }
 
   get availableModules() {
@@ -107,7 +88,9 @@ class AuthStore {
 
     const isUserAdmin = user.isAdmin;
     const customModules = this.getCustomModules(isUserAdmin);
-    const products = modules.map((m) => toModuleWrapper(m, false));
+
+    const newModules = JSON.parse(JSON.stringify(modules));
+    const products = newModules.map((m) => toModuleWrapper(m, false));
     const primaryProducts = products.filter((m) => m.isPrimary === true);
     const dummyProducts = products.filter((m) => m.isPrimary === false);
 

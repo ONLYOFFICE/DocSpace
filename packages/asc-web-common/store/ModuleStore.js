@@ -50,7 +50,12 @@ class ModuleStore {
     this.setModules(extendedModules);
   };
 
-  toModuleWrapper = (item, noAction = true, iconName = null, iconUrl = null) => {
+  toModuleWrapper = (
+    item,
+    noAction = true,
+    iconName = null,
+    iconUrl = null
+  ) => {
     switch (item.id) {
       case "6743007c-6f95-4d20-8c88-a8601ce5e76d":
         item.iconName = "CrmIcon";
