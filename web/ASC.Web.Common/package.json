@@ -1,6 +1,6 @@
 {
   "name": "asc-web-common",
-  "version": "1.0.317",
+  "version": "1.0.318",
   "description": "Ascensio System SIA common components and solutions library",
   "license": "AGPL-3.0",
   "files": [
@@ -132,5 +132,9 @@
   "engines": {
     "node": ">=8",
     "npm": ">=5"
+  },
+  "api": {
+    "url": "api/2.0",
+    "timeout": "30000"
   }
 }
