@@ -46,11 +46,7 @@ const HeaderNav = ({
 }) => {
   const { t } = useTranslation();
   const onProfileClick = useCallback(() => {
-    if (homepage == "/products/people") {
-      history.push("/products/people/view/@self");
-    } else {
-      window.open("/products/people/view/@self", "_self");
-    }
+    history.push("/products/people/view/@self");
   }, []);
 
   const onAboutClick = useCallback(() => history.push("/about"), []);
