@@ -19,7 +19,7 @@ module.exports = {
   plugins,
   env: {
     test: {
-      presets: ["@babel/preset-env", "@babel/preset-react", "jest"],
+      presets: ["@babel/preset-env", "@babel/preset-react"],
     },
   },
 };
