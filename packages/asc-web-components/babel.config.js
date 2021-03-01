@@ -6,7 +6,6 @@ const presets = [
     },
   ],
   "@babel/preset-react",
-  "@emotion/babel-preset-css-prop",
 ];
 
 const plugins = [
