@@ -71,7 +71,7 @@ class PureArticleMainButtonContent extends React.Component {
           />
           <DropDownItem isSeparator />
           <DropDownItem
-            icon="static/images/invitation.link.react.svg"
+            icon="/static/images/invitation.link.react.svg"
             label={t("InviteLinkTitle")}
             onClick={this.onInvitationDialogClick}
           />
