@@ -128,7 +128,7 @@ MainButton.defaultProps = {
   text: "Button",
   isDisabled: false,
   isDropdown: true,
-  iconName: "static/images/people.react.svg",
+  iconName: "/static/images/people.react.svg",
 };
 
 export default MainButton;

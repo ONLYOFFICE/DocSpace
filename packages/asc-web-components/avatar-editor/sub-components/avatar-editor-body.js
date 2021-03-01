@@ -394,7 +394,7 @@ class AvatarEditorBody extends React.Component {
                           size="16"
                           isDisabled={false}
                           onClick={this.deleteImage}
-                          iconName={"static/images/catalog.trash.react.svg"}
+                          iconName={"/static/images/catalog.trash.react.svg"}
                           isFill={true}
                           isClickable={true}
                           color="#FFFFFF"
@@ -406,7 +406,7 @@ class AvatarEditorBody extends React.Component {
                           size="16"
                           isDisabled={false}
                           onClick={this.onZoomMinusClick}
-                          iconName={"static/images/zoom-minus.react.svg"}
+                          iconName={"/static/images/zoom-minus.react.svg"}
                           isFill={true}
                           isClickable={false}
                         />
@@ -424,7 +424,7 @@ class AvatarEditorBody extends React.Component {
                           size="16"
                           isDisabled={false}
                           onClick={this.onZoomPlusClick}
-                          iconName={"static/images/zoom-plus.react.svg"}
+                          iconName={"/static/images/zoom-plus.react.svg"}
                           isFill={true}
                           isClickable={false}
                         />
