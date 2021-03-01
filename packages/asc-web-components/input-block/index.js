@@ -10,7 +10,7 @@ import {
   StyledIconBlock,
 } from "./styled-input-block";
 
-const iconNames = Object.keys(Icons);
+// const iconNames = Object.keys(Icons);
 
 class InputBlock extends React.Component {
   constructor(props) {
@@ -116,7 +116,8 @@ class InputBlock extends React.Component {
           mask={mask}
           keepCharPositions={keepCharPositions}
         />
-        {iconNames.includes(iconName) && (
+        {/* {iconNames.includes(iconName) && ( */}
+        {iconName && (
           <div className="append">
             <StyledIconBlock
               isDisabled={isDisabled}

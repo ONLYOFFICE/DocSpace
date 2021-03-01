@@ -62,11 +62,12 @@ const getItems = (data) => {
           key={item.key}
           icon={
             item.root ? (
-              <DepartmentsGroupIcon
-                size="scale"
-                isfill={true}
-                color="#657077"
-              />
+              <StyledDepartmentsGroupIcon size="scale" color="#657077" /* isfill={true} */ /> // TODO: Add isFill prop if need
+              // <DepartmentsGroupIcon
+              //   size="scale"
+              //   isfill={true}
+              //   color="#657077"
+              // />
             ) : (
               ""
             )
