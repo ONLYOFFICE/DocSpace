@@ -42,7 +42,7 @@ const SectionBodyContent = ({
   setForceSave,
   isAdmin,
   isErrorSettings,
-  settingsTree,
+  isLoadedSettingsTree,
 
   t,
 }) => {
@@ -55,7 +55,7 @@ const SectionBodyContent = ({
   };
 
   const renderAdminSettings = () => {
-    return Object.keys(settingsTree).length === 0 || isLoading ? null : (
+    return !isLoadedSettingsTree || isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -90,7 +90,7 @@ const SectionBodyContent = ({
   };
 
   const renderCommonSettings = () => {
-    return Object.keys(settingsTree).length === 0 || isLoading ? null : (
+    return !isLoadedSettingsTree || isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -165,7 +165,7 @@ export default inject(
     const { isLoading } = initFilesStore;
     const { selectedTreeNode } = treeFoldersStore;
     const {
-      settingsTree: settings,
+      isLoadedSettingsTree,
       storeOriginalFiles,
       confirmDelete,
       updateIfExist,
@@ -180,13 +180,11 @@ export default inject(
       setForceSave,
     } = settingsStore;
 
-    const settingsTree = Object.keys(settings).length !== 0 ? settings : {};
-
     return {
       isAdmin: auth.isAdmin,
       isLoading,
       selectedTreeNode,
-      settingsTree,
+      isLoadedSettingsTree,
       storeOriginalFiles,
       confirmDelete,
       updateIfExist,

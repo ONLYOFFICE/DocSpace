@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-
+import { Base } from "../../themes";
 import { tablet, desktop, mobile } from "../../utils/device";
 
 const StyledAvatarEditorBody = styled.div`
