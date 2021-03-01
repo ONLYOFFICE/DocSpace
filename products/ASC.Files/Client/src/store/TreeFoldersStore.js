@@ -39,6 +39,7 @@ class TreeFoldersStore {
       fetchTreeFolders: action,
       setTreeFolders: action,
       setExpandedKeys: action,
+      setSelectedNode: action,
     });
   }
 

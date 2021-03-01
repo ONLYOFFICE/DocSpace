@@ -16,6 +16,9 @@ import {
 import Link from "../link";
 import commonIconsStyles from "../utils/common-icons-style";
 
+const whiteColor = "#FFFFFF";
+
+
 const StyledGuestIcon = styled(GuestIcon)`
   ${commonIconsStyles}
 `;

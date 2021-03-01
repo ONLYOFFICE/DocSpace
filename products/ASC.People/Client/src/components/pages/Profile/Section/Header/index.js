@@ -408,7 +408,7 @@ class SectionHeaderContent extends React.PureComponent {
         showContextButton={(isAdmin && !profile.isOwner) || IsMe}
       >
         <IconButton
-          iconName="ArrowPathIcon"
+          iconName="/static/images/arrow.path.react.svg"
           color="#A3A9AE"
           size="17"
           hoverColor="#657077"
@@ -425,7 +425,7 @@ class SectionHeaderContent extends React.PureComponent {
             className="action-button"
             directionX="right"
             title={t("Actions")}
-            iconName="static/images/vertical-dots.react.svg"
+            iconName="/static/images/vertical-dots.react.svg"
             size={17}
             color="#A3A9AE"
             getData={contextOptions}

@@ -106,7 +106,7 @@ const PureThirdPartyListContainer = ({
     const thirdPartyUrl = "/products/files/settings/thirdParty";
     if (history.location.pathname !== thirdPartyUrl) {
       setSelectedNode(["thirdParty"]);
-      setSelectedFolder({});
+      setSelectedFolder(null);
       return history.push(thirdPartyUrl);
     }
   };

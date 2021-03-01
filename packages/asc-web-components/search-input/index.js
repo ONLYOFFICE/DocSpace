@@ -81,8 +81,8 @@ class SearchInput extends React.Component {
           isDisabled={this.props.isDisabled}
           iconName={
             !!this.state.inputValue || this.props.showClearButton
-              ? "static/images/cross.react.svg"
-              : "static/images/search.react.svg"
+              ? "/static/images/cross.react.svg"
+              : "/static/images/search.react.svg"
           }
           isIconFill={true}
           iconSize={clearButtonSize}

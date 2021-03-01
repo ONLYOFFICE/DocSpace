@@ -863,7 +863,7 @@ export default inject(
       isThirdPartySelection,
       isWebEditSelected,
       isTabletView: auth.settingsStore.isTabletView,
-      confirmDelete: settingsStore.settingsTree.confirmDelete,
+      confirmDelete: settingsStore.confirmDelete,
       treeFolders: treeFoldersStore.treeFolders,
       setSelected,
       setAction,

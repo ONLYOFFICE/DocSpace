@@ -41,7 +41,7 @@ const CloseButton = ({ closeToast }) => (
     <IconButton
       className="closeButton"
       onClick={closeToast}
-      iconName="static/images/cross.react.svg"
+      iconName="/static/images/cross.react.svg"
       size={12}
       color="#333333"
     />
