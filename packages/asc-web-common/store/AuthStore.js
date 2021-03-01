@@ -95,7 +95,7 @@ class AuthStore {
   get product() {
     return this.moduleStore.modules.find(
       (item) => item.id === this.settingsStore.currentProductId
-    );
+    ) || "";
   }
 
   get availableModules() {
