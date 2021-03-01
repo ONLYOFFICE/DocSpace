@@ -2,7 +2,9 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const path = require("path");
-const deps = require("./package.json").dependencies;
+const pkg = require("./package.json");
+const deps = pkg.dependencies;
+const homepage = pkg.homepage;
 
 module.exports = {
   entry: "./src/index",
@@ -101,7 +103,7 @@ module.exports = {
         studio: "studio@http://localhost:5001/remoteEntry.js",
         people: "people@http://localhost:5002/remoteEntry.js",
         files: "files@http://localhost:5008/remoteEntry.js",
-        login: "login@http://localhost:5011/remoteEntry.js",
+        login: `login@${homepage}/login/remoteEntry.js`,
       },
       exposes: {
         "./shell": "./src/Shell",
