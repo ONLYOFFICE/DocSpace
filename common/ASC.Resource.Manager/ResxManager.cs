@@ -100,7 +100,11 @@ namespace ASC.Resource.Manager
                                 }
                                 else
                                 {
-                                    k = keys.FirstOrDefault(r => r == k);
+                                    if(!keys.Any(r=> r.EndsWith("*") && k.StartsWith(r.Replace("*", ""))) && !k.Contains("_"))
+                                    {
+                                        k = keys.FirstOrDefault(r => r == k);
+                                    }
+
                                     if (k != null)
                                     {
                                         var word = fileWords.FirstOrDefault(r => r.Title == k);

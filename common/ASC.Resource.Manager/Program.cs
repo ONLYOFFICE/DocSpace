@@ -51,9 +51,9 @@ namespace ASC.Resource.Manager
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
 
-                project = "Addons";
-                //module = "Core";
-                //filePath = "ProjectsEnumResource.resx";
+                project = "CRM";
+                //module = "Common";
+                //filePath = "CRMCommonResource.resx";
                 exportPath = @"C:\Git\portals\";
                 key = "*";
 
@@ -164,7 +164,8 @@ namespace ASC.Resource.Manager
                     var assmlPath = "";
                     var nsp = "";
 
-                    if (key == "*")
+                    var keys = key.Split(",");
+                    if (keys.Contains("*"))
                     {
                         if (string.IsNullOrEmpty(filePath)) return;
 
@@ -202,6 +203,13 @@ namespace ASC.Resource.Manager
                         }
 
                         key = CheckExist(fileName, $"{nsp}.{name},{matches[0].Groups[1].Value}", exportPath);
+                        var additional =  string.Join(",", keys.Where(r => r.Contains("_*")).ToArray());
+
+                        if (!string.IsNullOrEmpty(additional))
+                        {
+                            key += "," + additional;
+                        }
+
                         exportPath = Path.GetDirectoryName(filePath);
                     }
                     else
@@ -223,6 +231,8 @@ namespace ASC.Resource.Manager
                     });
 
                     AddResourceForCsproj(asmbl, filePath.Substring(assmlPath.Length + 1), resultFiles.OrderBy(r=> r.Item2));
+                    var assmblName = Path.GetFileNameWithoutExtension(asmbl);
+                    nsp = assmblName + "." + Path.GetDirectoryName(filePath.Substring(assmlPath.Length + 1)).Replace('\\', '.');
 
                     var startInfo = new ProcessStartInfo
                     {
@@ -290,6 +300,7 @@ namespace ASC.Resource.Manager
 
             _ = Parallel.ForEach(csFiles, localInit, func(@$"\W+{resName}\.(\w*)"), localFinally);
             _ = Parallel.ForEach(csFiles, localInit, func(@$"CustomNamingPeople\.Substitute\<{resName}\>\(""(\w*)""\)"), localFinally);
+            _ = Parallel.ForEach(csFiles, localInit, func(@$"{resName}\.ResourceManager\.GetString\(""(\w*)"""), localFinally);
             _ = Parallel.ForEach(xmlFiles, localInit, func(@$"\|(\w*)\|{fullClassName.Replace(".", "\\.")}"), localFinally);
 
             return string.Join(',', bag.ToArray().Distinct());
