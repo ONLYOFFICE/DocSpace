@@ -62,7 +62,7 @@ namespace ASC.CRM.Core.Dao
                        FilesIntegration filesIntegration,
                        IHttpContextAccessor httpContextAccessor,
                        IOptionsMonitor<ILog> logger,
-                       AscCache ascCache,
+                       ICache ascCache,
                        BundleSearch bundleSearch)
             : base(dbContextManager,
                  tenantManager,
@@ -71,6 +71,7 @@ namespace ASC.CRM.Core.Dao
                  factoryIndexer,
                  filesIntegration,
                  logger,
+                 ascCache,
                  bundleSearch)
         {
             _dealCache = new HttpRequestDictionary<Deal>(httpContextAccessor?.HttpContext, "crm_deal");
@@ -121,7 +122,7 @@ namespace ASC.CRM.Core.Dao
                        FactoryIndexerDeal factoryIndexer,
                        FilesIntegration filesIntegration,
                        IOptionsMonitor<ILog> logger,
-                       AscCache ascCache,
+                       ICache ascCache,
                        BundleSearch bundleSearch) :
             base(dbContextManager,
                  tenantManager,

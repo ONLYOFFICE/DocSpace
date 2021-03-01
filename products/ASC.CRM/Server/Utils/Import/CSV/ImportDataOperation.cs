@@ -47,14 +47,16 @@ namespace ASC.Web.CRM.Classes
 {
     public class ImportDataCache
     {
-        public ImportDataCache(TenantManager tenantManager)
+        public ImportDataCache(TenantManager tenantManager,
+                              ICache cache)
         {
-            TenantID = tenantManager.CurrentTenant.TenantId;
+            TenantID = tenantManager.GetCurrentTenant().TenantId;
+            Cache = cache;
         }
 
         public int TenantID { get; }
 
-        public readonly ICache Cache = AscCache.Memory;
+        public readonly ICache Cache;
 
         public String GetStateCacheKey(EntityType entityType, int tenantId = -1)
         {
@@ -139,7 +141,7 @@ namespace ASC.Web.CRM.Classes
             SecurityContext = securityContext;
             _dataStore = global.GetStore();
 
-            _tenantID = tenantManager.CurrentTenant.TenantId;
+            _tenantID = tenantManager.GetCurrentTenant().TenantId;
             _author = SecurityContext.CurrentAccount;
 
             NotifyClient = notifyClient;

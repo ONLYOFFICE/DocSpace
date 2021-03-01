@@ -69,7 +69,7 @@ namespace ASC.CRM.Core.Dao
                       FactoryIndexerTask tasksWrapperIndexer,
                       FactoryIndexerInvoice invoicesWrapperIndexer,
                       IOptionsMonitor<ILog> logger,
-                      AscCache ascCache,
+                      ICache ascCache,
                       WebImageSupplier webImageSupplier,
                       BundleSearch bundleSearch
                       ) :

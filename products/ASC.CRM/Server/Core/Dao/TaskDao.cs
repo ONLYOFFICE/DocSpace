@@ -26,6 +26,7 @@
 
 using ASC.Collections;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -58,6 +59,7 @@ namespace ASC.CRM.Core.Dao
                       TenantUtil tenantUtil,
                       FactoryIndexerTask factoryIndexer,
                       IOptionsMonitor<ILog> logger,
+                      ICache ascCache,
                       IHttpContextAccessor httpContextAccessor,
                       DbContextManager<UserDbContext> userDbContext,
                       DbContextManager<CoreDbContext> coreDbContext
@@ -69,6 +71,7 @@ namespace ASC.CRM.Core.Dao
                 tenantUtil,
                 factoryIndexer,
                 logger,
+                ascCache,
                 userDbContext,
                 coreDbContext
                 )
@@ -123,13 +126,15 @@ namespace ASC.CRM.Core.Dao
                        TenantUtil tenantUtil,
                        FactoryIndexerTask factoryIndexer,
                        IOptionsMonitor<ILog> logger,
+                       ICache ascCache,
                        DbContextManager<UserDbContext> userDbContext,
                        DbContextManager<CoreDbContext> coreDbContext
                        ) :
             base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger)
+                 logger,
+                 ascCache)
         {
             CRMSecurity = cRMSecurity;
             TenantUtil = tenantUtil;

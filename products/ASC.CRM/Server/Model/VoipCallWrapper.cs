@@ -25,6 +25,7 @@
 
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.VoipService;
 using ASC.Web.Api.Models;
 using System.Collections.Generic;
@@ -72,24 +73,44 @@ namespace ASC.Api.CRM.Wrappers
         [DataMember(Order = 14)]
         public int RecordDuration { get; set; }
 
-        public VoipCallWrapper(VoipCall call, ContactWrapper contact = null)
+    }
+
+    [Scope]
+    public class VoipCallWrapperHelper
+    {
+        public VoipCallWrapperHelper(EmployeeWraperHelper employeeWraper,
+                                     ApiDateTimeHelper apiDateTimeHelper)
         {
-            Id = call.Id;
-            From = call.From;
-            To = call.To;
-            Status = call.Status;
-            AnsweredBy = EmployeeWraper.Get(call.AnsweredBy);
-            DialDate = new ApiDateTime(call.DialDate);
-            DialDuration = call.DialDuration;
-            Cost = call.Price + call.ChildCalls.Sum(r=> r.Price) + call.VoipRecord.Price;
-            Contact = contact;
-            RecordUrl = call.VoipRecord.Uri;
-            RecordDuration = call.VoipRecord.Duration;
+            EmployeeWraperHelper = employeeWraper;
+            ApiDateTimeHelper = apiDateTimeHelper;
+        }
+
+        public ApiDateTimeHelper ApiDateTimeHelper { get; }
+        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+
+        public VoipCallWrapper Get(VoipCall call, ContactWrapper contact = null)
+        {
+            var result = new VoipCallWrapper
+            {
+                Id = call.Id,
+                From = call.From,
+                To = call.To,
+                Status = call.Status,
+                AnsweredBy = EmployeeWraperHelper.Get(call.AnsweredBy),
+                DialDate =  ApiDateTimeHelper.Get(call.DialDate),
+                DialDuration = call.DialDuration,
+                Cost = call.Price + call.ChildCalls.Sum(r => r.Price) + call.VoipRecord.Price,
+                Contact = contact,
+                RecordUrl = call.VoipRecord.Uri,
+                RecordDuration = call.VoipRecord.Duration
+            };
 
             if (call.ChildCalls.Any())
             {
-                Calls = call.ChildCalls.Select(childCall => new VoipCallWrapper(childCall));
+                result.Calls = call.ChildCalls.Select(childCall => Get(childCall));
             }
+
+            return result;
         }
     }
 }

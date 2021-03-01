@@ -75,13 +75,12 @@ namespace ASC.Api.CRM
         }
     }
 
-    [Transient]
+    [Singletone]
     public class CurrencyInfoWrapperHelper
     {
         public CurrencyInfoWrapperHelper()
         {
         }
-
 
 
         public CurrencyInfoWrapper Get(CurrencyInfo currencyInfo)
@@ -120,7 +119,7 @@ namespace ASC.Api.CRM
         public decimal Rate { get; set; }
     }
 
-    [Transient]
+    [Scope]
     public class CurrencyRateInfoWrapperHelper
     {
         public CurrencyRateInfoWrapperHelper(CurrencyInfoWrapperHelper currencyInfoWrapperHelper)

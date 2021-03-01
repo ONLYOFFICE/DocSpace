@@ -70,7 +70,7 @@ namespace ASC.CRM.Core.Dao
                        SecurityContext securityContext,
                        FilesIntegration filesIntegration,
                        IOptionsMonitor<ILog> logger,
-                       AscCache ascCache,
+                       ICache ascCache,
                        TenantUtil tenantUtil,
                        SettingsManager settingsManager,
                        Global global,

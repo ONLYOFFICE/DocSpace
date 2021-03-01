@@ -38,6 +38,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.CRM
 {
+    [Scope]
     public class PathProvider
     {
         public PathProvider(IHttpContextAccessor httpContextAccessor,                           
@@ -105,16 +106,6 @@ namespace ASC.Web.CRM
         //    return fileName;
         //}
 
-    }
-
-    public static class PathProviderExtention
-    {
-        public static DIHelper AddCRMPathProviderService(this DIHelper services)
-        {
-            services.TryAddScoped<PathProvider>();
-
-            return services.AddCommonLinkUtilityService();
-        }
-    }
+    }  
 
 }

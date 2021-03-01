@@ -56,7 +56,7 @@ namespace ASC.CRM.Core.Dao
                 CRMSecurity cRMSecurity,
                 IHttpContextAccessor httpContextAccessor,
                 IOptionsMonitor<ILog> logger,
-                AscCache ascCache
+                ICache ascCache
             ) : base(dbContextManager,
                  tenantManager,
                  securityContext,
@@ -110,7 +110,7 @@ namespace ASC.CRM.Core.Dao
                 TenantUtil tenantUtil,
                 CRMSecurity cRMSecurity,
                 IOptionsMonitor<ILog> logger,
-                AscCache ascCache
+                ICache ascCache
             ) : base(dbContextManager,
                  tenantManager,
                  securityContext,

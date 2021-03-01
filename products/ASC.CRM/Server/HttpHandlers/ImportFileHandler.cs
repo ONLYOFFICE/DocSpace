@@ -28,13 +28,15 @@ using ASC.CRM.Core;
 using ASC.Web.Core;
 using ASC.Web.Core.Utility;
 using ASC.Web.CRM.Configuration;
+
 using Microsoft.AspNetCore.Http;
+
 using System;
 
 
 namespace ASC.Web.CRM.Classes
 {
-    public class ImportFileHandler : IFileUploadHandler
+    public class ImportFileHandler
     {
         public ImportFileHandler(WebItemSecurity webItemSecurity,
                                 CRMSecurity cRMSecurity,
@@ -43,7 +45,6 @@ namespace ASC.Web.CRM.Classes
             CRMSecurity = cRMSecurity;
             WebItemSecurity = webItemSecurity;
             Global = global;
-
         }
 
         public Global Global { get; }

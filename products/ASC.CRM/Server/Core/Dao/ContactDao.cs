@@ -66,7 +66,7 @@ namespace ASC.CRM.Core.Dao
             FactoryIndexerContact factoryIndexerContact,
             FactoryIndexerContactInfo factoryIndexerContactInfo,
             IOptionsMonitor<ILog> logger,
-            AscCache ascCache, 
+            ICache ascCache, 
             DbContextManager<CoreDbContext> coreDbContext,
             BundleSearch bundleSearch) :
                  base(dbContextManager,
@@ -143,7 +143,7 @@ namespace ASC.CRM.Core.Dao
             FactoryIndexerContact factoryIndexerContact,
             FactoryIndexerContactInfo factoryIndexerContactInfo,
             IOptionsMonitor<ILog> logger,
-            AscCache ascCache,
+            ICache ascCache,
             DbContextManager<CoreDbContext> coreDbContext,
             BundleSearch bundleSearch
             ) :

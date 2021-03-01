@@ -653,7 +653,7 @@ namespace ASC.Api.CRM
                 }
             }
 
-            var categories = DaoFactory.GetListItemDao().GetItems(categoryIDs.ToArray()).ToDictionary(x => x.ID, x => new HistoryCategoryBaseWrapper(x));
+            var categories = DaoFactory.GetListItemDao().GetItems(categoryIDs.ToArray()).ToDictionary(x => x.ID, x => HistoryCategoryWrapperHelper.Get(x));
 
             var files = DaoFactory.GetRelationshipEventDao().GetFiles(eventIDs.ToArray());
 

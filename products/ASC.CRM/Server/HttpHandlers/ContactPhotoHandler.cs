@@ -31,55 +31,52 @@ using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Core;
 using ASC.Web.Core.Files;
-using ASC.Web.Core.Utility;
 using ASC.Web.CRM.Configuration;
-using ASC.Web.CRM.Core;
 using ASC.Web.Studio.Core;
-using Autofac;
-using Microsoft.AspNetCore.Http;
-using System;
 
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+
+using System;
+using System.Threading.Tasks;
 
 namespace ASC.Web.CRM.Classes
 {
-    public class ContactPhotoHandler : IFileUploadHandler
+    public class ContactPhotoHandlerMiddleware
     {
-        public ContactPhotoHandler(SetupInfo setupInfo,
-                                   CRMSecurity cRMSecurity,
-                                   FileSizeComment fileSizeComment,
-                                   WebItemSecurity webItemSecurity,
-                                   MessageTarget messageTarget,
-                                   MessageService messageService)
+        public ContactPhotoHandlerMiddleware(RequestDelegate next)
         {
-            SetupInfo = setupInfo;
-            FileSizeComment = fileSizeComment;
-            CRMSecurity = cRMSecurity;
-            WebItemSecurity = webItemSecurity;
-            MessageTarget = messageTarget;
-            MessageService = messageService;
+            _next = next;
         }
 
-        public MessageService MessageService { get; }
-        public DaoFactory DaoFactory { get; }
-        public MessageTarget MessageTarget { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public FileSizeComment FileSizeComment { get; }
-        public CRMSecurity CRMSecurity { get; }
-        public SetupInfo SetupInfo { get; }
+        private readonly RequestDelegate _next;
 
-        public FileUploadResult ProcessUpload(HttpContext context)
+        public async Task Invoke(HttpContext context,
+                                 SetupInfo setupInfo,
+                                 CRMSecurity cRMSecurity,
+                                 FileSizeComment fileSizeComment,
+                                 WebItemSecurity webItemSecurity,
+                                 MessageTarget messageTarget,
+                                 MessageService messageService,
+                                 DaoFactory daoFactory)
         {
-            if (!WebItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))
-                throw CRMSecurity.CreateSecurityException();
+
+            if (!webItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))
+                throw cRMSecurity.CreateSecurityException();
+
+            context.Request.EnableBuffering();
+
 
             var contactId = Convert.ToInt32(context.Request["contactID"]);
+            
             Contact contact = null;
+
             if (contactId != 0)
             {
-                contact = DaoFactory.GetContactDao().GetByID(contactId);
+                contact = daoFactory.GetContactDao().GetByID(contactId);
 
-                if (!CRMSecurity.CanEdit(contact))
-                    throw CRMSecurity.CreateSecurityException();
+                if (!cRMSecurity.CanEdit(contact))
+                    throw cRMSecurity.CreateSecurityException();
             }
 
             var fileUploadResult = new FileUploadResult();
@@ -91,10 +88,10 @@ namespace ASC.Web.CRM.Classes
             if (String.IsNullOrEmpty(file.FileName) || file.ContentLength == 0)
                 throw new InvalidOperationException(CRMErrorsResource.InvalidFile);
 
-            if (0 < SetupInfo.MaxImageUploadSize && SetupInfo.MaxImageUploadSize < file.ContentLength)
+            if (0 < setupInfo.MaxImageUploadSize && setupInfo.MaxImageUploadSize < file.ContentLength)
             {
                 fileUploadResult.Success = false;
-                fileUploadResult.Message = FileSizeComment.GetFileImageSizeNote(CRMCommonResource.ErrorMessage_UploadFileSize, false).HtmlEncode();
+                fileUploadResult.Message = fileSizeComment.GetFileImageSizeNote(CRMCommonResource.ErrorMessage_UploadFileSize, false).HtmlEncode();
                 return fileUploadResult;
             }
 
@@ -137,7 +134,9 @@ namespace ASC.Web.CRM.Classes
             if (contact != null)
             {
                 var messageAction = contact is Company ? MessageAction.CompanyUpdatedPhoto : MessageAction.PersonUpdatedPhoto;
-                MessageService.Send(messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
+                
+                messageService.Send(messageAction, messageTarget.Create(contact.ID), contact.GetTitle());
+            
             }
 
             return fileUploadResult;

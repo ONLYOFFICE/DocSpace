@@ -5,6 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="HttpHandlers\**" />
+    <Content Remove="HttpHandlers\**" />
+    <EmbeddedResource Remove="HttpHandlers\**" />
+    <None Remove="HttpHandlers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ContactPhotoManagerCacheItem.proto" />
+  </ItemGroup>
+
+
+  <ItemGroup>
     <Compile Remove="Classes\BasePage.cs" />
     <Compile Remove="Classes\SocialMedia\SocialMediaAccountNotFound.cs" />
     <Compile Remove="Classes\SocialMedia\SocialMediaImageDescription.cs" />
@@ -28,6 +40,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="LumenWorksCsvReader" Version="4.0.0" />
     <PackageReference Include="SharpZipLib" Version="1.3.1" />
     <PackageReference Include="Twilio.AspNet.Core" Version="5.37.2" />
   </ItemGroup>
@@ -172,6 +189,11 @@
       <LastGenOutput>CRMPatternResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="proto\ContactPhotoManagerCacheItem.proto" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <Folder Include="Classes\SocialMedia\" />

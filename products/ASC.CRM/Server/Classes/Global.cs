@@ -58,8 +58,8 @@ namespace ASC.Web.CRM.Classes
                       CRMSecurity cRMSecurity,
                       TenantManager tenantManager,
                       SettingsManager settingsManager,
-                      IConfiguration configuration
-         //             PdfCreator pdfCreator
+                      IConfiguration configuration,
+                      PdfCreator pdfCreator
                       )
         {
             StorageFactory = storageFactory;
@@ -70,10 +70,10 @@ namespace ASC.Web.CRM.Classes
             TenantID = tenantManager.GetCurrentTenant().TenantId;
             SettingsManager = settingsManager;
             Configuration = configuration;
-           // PdfCreator = pdfCreator;
+            PdfCreator = pdfCreator;
         }
 
-//        public PdfCreator PdfCreator { get; }
+        public PdfCreator PdfCreator { get; }
         public IConfiguration Configuration { get; }
 
         public SettingsManager SettingsManager { get; }
@@ -102,9 +102,7 @@ namespace ASC.Web.CRM.Classes
         public StorageFactory StorageFactory { get; }
 
         public CRMSecurity CRMSecurity { get; }
-
-        
-
+               
         public IDataStore GetStore()
         {
             return StorageFactory.GetStorage(TenantID.ToString(), "crm");
@@ -184,23 +182,27 @@ namespace ASC.Web.CRM.Classes
             tenantSettings.DefaultCurrency = currency;            
             SettingsManager.Save<CRMSettings>(tenantSettings);
         }
-               
-        //public ASC.Files.Core.File<int> GetInvoicePdfExistingOrCreate(ASC.CRM.Core.Entities.Invoice invoice, DaoFactory factory)
-        //{
-        //    var existingFile = invoice.GetInvoiceFile(factory);
-        //    if (existingFile != null)
-        //    {
-        //        return existingFile;
-        //    }
-        //    else
-        //    {
-        //        var newFile = PdfCreator.CreateFile(invoice, factory);
-        //        invoice.FileID = Int32.Parse(newFile.ID.ToString());
-        //        factory.GetInvoiceDao().UpdateInvoiceFileID(invoice.ID, invoice.FileID);
-        //        factory.GetRelationshipEventDao().AttachFiles(invoice.ContactID, invoice.EntityType, invoice.EntityID, new[] { invoice.FileID });
-        //        return newFile;
-        //    }
-        //}
+
+        public ASC.Files.Core.File<int> GetInvoicePdfExistingOrCreate(ASC.CRM.Core.Entities.Invoice invoice, DaoFactory factory)
+        {
+            var existingFile = invoice.GetInvoiceFile(factory);
+            if (existingFile != null)
+            {
+                return existingFile;
+            }
+            else
+            {
+                var newFile = PdfCreator.CreateFile(invoice, factory);
+
+                invoice.FileID = Int32.Parse(newFile.ID.ToString());
+                
+                factory.GetInvoiceDao().UpdateInvoiceFileID(invoice.ID, invoice.FileID);
+                
+                factory.GetRelationshipEventDao().AttachFiles(invoice.ContactID, invoice.EntityType, invoice.EntityID, new[] { invoice.FileID });
+                
+                return newFile;
+            }
+        }
 
         /// <summary>
         /// The method to Decode your Base64 strings.

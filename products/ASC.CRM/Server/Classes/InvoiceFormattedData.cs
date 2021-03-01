@@ -37,6 +37,7 @@ using System.Text;
 
 namespace ASC.Web.CRM.Classes
 {
+    [Scope]
     public class InvoiceFormattedData
     {
         public InvoiceFormattedData(DaoFactory daoFactory,
@@ -680,17 +681,5 @@ namespace ASC.Web.CRM.Classes
             return data;
         }
 
-    }
-
-
-    public static class InvoiceFormattedDataExtention
-    {
-        public static DIHelper AddInvoiceFormattedDataService(this DIHelper services)
-        {
-            services.TryAddScoped<InvoiceFormattedData>();
-
-            return services.AddOrganisationLogoManagerService();
-        //                   .AddDaoFactoryService();
-        }
-    }
+    } 
 }

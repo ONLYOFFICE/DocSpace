@@ -43,6 +43,7 @@ namespace ASC.CRM.Core.EF
             ModelBuilderWrapper.From(modelBuilder, Provider)
                                .AddDbFieldValue()
                                .AddDbContact()
+                               .AddDbContactInfo()
                                .AddDbCase()
                                .AddDbRelationshipEvent()
                                .AddDbDeal()
@@ -51,22 +52,6 @@ namespace ASC.CRM.Core.EF
 
        
 
-            modelBuilder.Entity<DbContactInfo>(entity =>
-            {
-                entity.HasIndex(e => e.LastModifedOn)
-                    .HasName("last_modifed_on");
-
-                entity.HasIndex(e => new { e.TenantId, e.ContactId })
-                    .HasName("IX_Contact");
-
-                entity.Property(e => e.Data)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
-                entity.Property(e => e.LastModifedBy)
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-            });
 
             modelBuilder.Entity<DbCurrencyInfo>(entity =>
             {

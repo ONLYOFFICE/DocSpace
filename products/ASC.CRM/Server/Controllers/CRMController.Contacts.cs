@@ -1568,7 +1568,7 @@ namespace ASC.Api.CRM
                     {
                         var people = person;
 
-                        if (AuthManager.UserFormatter.GetUserName(people.FirstName, people.LastName).IndexOf(prefix, StringComparison.Ordinal) != -1)
+                        if (UserFormatter.GetUserName(people.FirstName, people.LastName).IndexOf(prefix, StringComparison.Ordinal) != -1)
                         {
                             findedContacts.Add(person);
                         }
@@ -1991,7 +1991,7 @@ namespace ASC.Api.CRM
 
             if (nearestTasks.Any())
             {
-                taskCategories = DaoFactory.GetListItemDao().GetItems(ListType.TaskCategory).ConvertAll(item => new TaskCategoryBaseWrapper(item));
+                taskCategories = DaoFactory.GetListItemDao().GetItems(ListType.TaskCategory).ConvertAll(item => TaskCategoryWrapperHelper.Get(item));
             }
 
             foreach (var contact in itemList)

@@ -41,7 +41,7 @@ namespace ASC.Web.CRM.Classes
         public ImportFromCSV(TenantManager tenantProvider,
                              ImportDataCache importDataCache)
         {
-            TenantId = tenantProvider.CurrentTenant.TenantId;
+            TenantId = tenantProvider.GetCurrentTenant().TenantId;
             ImportDataCache = importDataCache;
         }
 

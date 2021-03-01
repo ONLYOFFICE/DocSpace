@@ -67,7 +67,7 @@ namespace ASC.Api.CRM
         }
     }
 
-    [Transient]
+    [Scope]
     public class CurrencyRateWrapperHelper
     {
         public CurrencyRateWrapperHelper()

@@ -165,7 +165,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-    [Transient]
+    [Scope]
     public class ContactInfoWrapperHelper
     {
         public ContactInfoWrapperHelper()

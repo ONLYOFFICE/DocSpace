@@ -4,10 +4,17 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Model;
+
+using Microsoft.EntityFrameworkCore;
+
+using Nest;
+
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_currency_info")]
-    public partial class DbCurrencyInfo 
+    public sealed class DbCurrencyInfo 
     {
         [Required]
         [Column("resource_key", TypeName = "varchar(255)")]

@@ -34,7 +34,6 @@ using ASC.Web.CRM.Core;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Utils;
 using Autofac;
-using Ionic.Zip;
 using Microsoft.Extensions.Options;
 using System;
 using System.Globalization;
@@ -47,9 +46,11 @@ using System.Xml;
 using Microsoft.Extensions.DependencyInjection;
 using ASC.Common;
 using ASC.Web.Files.Classes;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace ASC.Web.CRM.Classes
 {
+    [Scope]
     public class PdfCreator
     {
         public PdfCreator(IOptionsMonitor<ILog> logger,
@@ -61,7 +62,7 @@ namespace ASC.Web.CRM.Classes
                           InvoiceFormattedData invoiceFormattedData)
         {
             FilesPathProvider = filesPathProvider;
-            
+
             Logger = logger.Get("ASC.CRM");
 
             DocumentServiceConnector = documentServiceConnector;
@@ -72,7 +73,7 @@ namespace ASC.Web.CRM.Classes
         }
 
         public InvoiceFormattedData InvoiceFormattedData { get; }
-        
+
         public DaoFactory DaoFactory { get; }
 
         private Stream Template
@@ -97,62 +98,62 @@ namespace ASC.Web.CRM.Classes
         private const string DocumentLogoImage = "word/media/logo.jpeg";
 
         public void CreateAndSaveFile(int invoiceId)
-        {           
+        {
             Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}", invoiceId);
-            
+
             try
             {
-                    var invoice = DaoFactory.GetInvoiceDao().GetByID(invoiceId);
+                var invoice = DaoFactory.GetInvoiceDao().GetByID(invoiceId);
 
-                    if (invoice == null)
-                    {
-                        Logger.Warn(CRMErrorsResource.InvoiceNotFound + ". Invoice ID = " + invoiceId);
-                     
-                        return;
-                    }
+                if (invoice == null)
+                {
+                    Logger.Warn(CRMErrorsResource.InvoiceNotFound + ". Invoice ID = " + invoiceId);
 
-                    Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. Convertation", invoiceId);
+                    return;
+                }
 
-                    string urlToFile;
-                   
-                    using (var docxStream = GetStreamDocx(invoice))
-                    {
-                        urlToFile = GetUrlToFile(docxStream);
-                    }
+                Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. Convertation", invoiceId);
 
-                    Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. UrlToFile = {1}", invoiceId,
-                        urlToFile);
+                string urlToFile;
 
-                    var file = ServiceProvider.GetService<File<int>>();
+                using (var docxStream = GetStreamDocx(invoice))
+                {
+                    urlToFile = GetUrlToFile(docxStream);
+                }
 
-                    file.Title = string.Format("{0}{1}", invoice.Number, FormatPdf);
-                    file.FolderID = DaoFactory.GetFileDao().GetRoot();
+                Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. UrlToFile = {1}", invoiceId,
+                    urlToFile);
 
-                    var request = WebRequest.Create(urlToFile);
+                var file = ServiceProvider.GetService<File<int>>();
 
-                    using (var response = request.GetResponse())
-                    using (var stream = response.GetResponseStream())
-                    {
-                        file.ContentLength = response.ContentLength;
+                file.Title = string.Format("{0}{1}", invoice.Number, FormatPdf);
+                file.FolderID = DaoFactory.GetFileDao().GetRoot();
 
-                        Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. SaveFile", invoiceId);
-                        file = DaoFactory.GetFileDao().SaveFile(file, stream);
-                    }
+                var request = WebRequest.Create(urlToFile);
 
-                    if (file == null)
-                    {
-                        throw new Exception(CRMErrorsResource.FileCreateError);
-                    }
+                using (var response = request.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    file.ContentLength = response.ContentLength;
 
-                    invoice.FileID = Int32.Parse(file.ID.ToString());
+                    Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. SaveFile", invoiceId);
+                    file = DaoFactory.GetFileDao().SaveFile(file, stream);
+                }
 
-                    Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. UpdateInvoiceFileID. FileID = {1}", invoiceId, file.ID);
+                if (file == null)
+                {
+                    throw new Exception(CRMErrorsResource.FileCreateError);
+                }
 
-                    DaoFactory.GetInvoiceDao().UpdateInvoiceFileID(invoice.ID, invoice.FileID);
+                invoice.FileID = Int32.Parse(file.ID.ToString());
 
-                    Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. AttachFiles. FileID = {1}", invoiceId, file.ID);
-                    
-                    DaoFactory.GetRelationshipEventDao().AttachFiles(invoice.ContactID, invoice.EntityType, invoice.EntityID, new[] {invoice.FileID});
+                Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. UpdateInvoiceFileID. FileID = {1}", invoiceId, file.ID);
+
+                DaoFactory.GetInvoiceDao().UpdateInvoiceFileID(invoice.ID, invoice.FileID);
+
+                Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. AttachFiles. FileID = {1}", invoiceId, file.ID);
+
+                DaoFactory.GetRelationshipEventDao().AttachFiles(invoice.ContactID, invoice.EntityType, invoice.EntityID, new[] { invoice.FileID });
             }
             catch (Exception e)
             {
@@ -188,13 +189,13 @@ namespace ASC.Web.CRM.Classes
             Logger.DebugFormat("PdfCreator. GetUrlToFile. externalUri = {0}", externalUri);
 
             var revisionId = DocumentServiceConnector.GenerateRevisionId(Guid.NewGuid().ToString());
-            
+
             string urlToFile;
-            
+
             DocumentServiceConnector.GetConvertedUri(externalUri, FormatDocx, FormatPdf, revisionId, null, false, out urlToFile);
 
             Logger.DebugFormat("PdfCreator. GetUrlToFile. urlToFile = {0}", urlToFile);
-            
+
             return urlToFile;
 
         }
@@ -208,17 +209,17 @@ namespace ASC.Web.CRM.Classes
                 externalUri = DocumentServiceConnector.ReplaceCommunityAdress(externalUri);
 
                 var revisionId = DocumentServiceConnector.GenerateRevisionId(Guid.NewGuid().ToString());
-            
+
                 string urlToFile;
-                
+
                 DocumentServiceConnector.GetConvertedUri(externalUri, FormatDocx, FormatPdf, revisionId, null, true, out urlToFile);
 
                 return new ConverterData
-                    {
-                        StorageUrl = externalUri,
-                        RevisionId = revisionId,
-                        InvoiceId = data.ID,
-                    };
+                {
+                    StorageUrl = externalUri,
+                    RevisionId = revisionId,
+                    InvoiceId = data.ID,
+                };
             }
         }
 
@@ -228,7 +229,7 @@ namespace ASC.Web.CRM.Classes
             {
                 return null;
             }
-            
+
             string urlToFile;
 
             DocumentServiceConnector.GetConvertedUri(data.StorageUrl, FormatDocx, FormatPdf, data.RevisionId, null, true, out urlToFile);
@@ -277,7 +278,7 @@ namespace ASC.Web.CRM.Classes
         private Stream GetStreamDocx(Invoice data)
         {
             var invoiceData = InvoiceFormattedData.GetData(data, 0, 0);
-            var logo = new byte[] {};
+            var logo = new byte[] { };
 
             if (!string.IsNullOrEmpty(invoiceData.LogoBase64))
             {
@@ -288,32 +289,57 @@ namespace ASC.Web.CRM.Classes
                 logo = Convert.FromBase64String(OrganisationLogoManager.GetOrganisationLogoBase64(invoiceData.LogoBase64Id));
             }
 
-            using (var zip = ZipFile.Read(Template))
+            var result = new MemoryStream();
+
+            using (var zipOutputStream = new ZipOutputStream(Template))
+            using (var zipInputStream = new ZipInputStream(Template))
             {
-                var documentXmlStream = new MemoryStream();
-                foreach (var entry in zip.Entries.Where(entry => entry.FileName == DocumentXml))
+                ZipEntry zipEntry;
+               
+                while((zipEntry = zipInputStream.GetNextEntry()) != null)
                 {
-                    entry.Extract(documentXmlStream);
-                }
-                documentXmlStream.Position = 0;
-                zip.RemoveEntry(DocumentXml);
-                var document = new XmlDocument();
-                document.Load(documentXmlStream);
-                var documentStr = GenerateDocumentXml(document, invoiceData, logo);
-                zip.AddEntry(DocumentXml, documentStr, Encoding.UTF8);
+                    zipOutputStream.PutNextEntry(new ZipEntry(zipEntry.Name));
 
-                if (logo.Length > 0)
-                {
-                    zip.UpdateEntry(DocumentLogoImage, logo);
+                    if (zipEntry.Name == DocumentXml)
+                    {
+                        var documentXmlStream = new MemoryStream();
+
+                        zipInputStream.CopyTo(documentXmlStream);
+
+                        documentXmlStream.Position = 0;
+
+                        var document = new XmlDocument();
+
+                        document.Load(documentXmlStream);
+                        
+                        var documentStr = GenerateDocumentXml(document, invoiceData, logo);
+
+                        var documentStrAsStream = new MemoryStream(Encoding.UTF8.GetBytes(documentStr));
+
+                        documentStrAsStream.CopyTo(zipOutputStream);
+
+                        continue;
+
+                    }
+
+                    if (zipEntry.Name == DocumentLogoImage && logo.Length > 0)
+                    {
+                        var logoAsStream = new MemoryStream(logo);
+
+                        logoAsStream.CopyTo(zipOutputStream);
+
+                        continue;
+                    }
+
+                    zipInputStream.CopyTo(zipOutputStream);
                 }
 
-                var streamZip = new MemoryStream();
-                zip.Save(streamZip);
-                streamZip.Seek(0, SeekOrigin.Begin);
-                streamZip.Flush();
-                return streamZip;
+                zipOutputStream.Position = 0;
+
+                zipOutputStream.CopyTo(result);
             }
 
+            return result;
         }
 
         private string GenerateDocumentXml(XmlDocument xDocument, InvoiceFormattedData data, byte[] logo)
@@ -370,8 +396,8 @@ namespace ASC.Web.CRM.Classes
                     using (var stream = new MemoryStream(logo))
                     using (var img = System.Drawing.Image.FromStream(stream))
                     {
-                        var cx = img.Width*9525; //1px =  9525emu
-                        var cy = img.Height*9525; //1px =  9525emu
+                        var cx = img.Width * 9525; //1px =  9525emu
+                        var cy = img.Height * 9525; //1px =  9525emu
 
                         var newText = parent.CloneNode(true).OuterXml;
                         newText = newText
@@ -763,18 +789,20 @@ namespace ASC.Web.CRM.Classes
         public int FileId { get; set; }
     }
 
-
-    public static class PdfCreatorExtention
+    class CustomStaticDataSource: IStaticDataSource
     {
-        public static DIHelper AddPdfCreatorService(this DIHelper services)
+        private Stream _stream;
+        // Implement method from IStaticDataSource
+        public Stream GetSource()
         {
-            services.TryAddScoped<PdfCreator>();
+            return _stream;
+        }
 
-            return services.AddPathProviderService()
-                           .AddDocumentServiceConnectorService()
-                           .AddOrganisationLogoManagerService()
-                         //  .AddDaoFactoryService()
-                           .AddInvoiceFormattedDataService();
+        // Call this to provide the memorystream
+        public void SetStream(Stream inputStream)
+        {
+            _stream = inputStream;
+            _stream.Position = 0;
         }
     }
-}    
+}

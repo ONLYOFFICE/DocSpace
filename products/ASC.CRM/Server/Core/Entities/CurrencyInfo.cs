@@ -64,7 +64,6 @@ namespace ASC.CRM.Core
         [DataMember(Name = "isBasic")]
         public bool IsBasic { get; set; }
 
-
         public CurrencyInfo(string resourceKey, string abbreviation, string symbol, string cultureName, bool isConvertable, bool isBasic)
         {
             _resourceKey = resourceKey;
@@ -90,6 +89,5 @@ namespace ASC.CRM.Core
         {
             return string.Concat(Abbreviation, "-", Title);
         }
-
     }
 }

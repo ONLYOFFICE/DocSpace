@@ -24,6 +24,7 @@
 */
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -45,12 +46,14 @@ namespace ASC.CRM.Core.Dao
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> logger
+            IOptionsMonitor<ILog> logger,
+            ICache cache
             )
             : base(dbContextManager,
                   tenantManager,
                   securityContext,
-                  logger)
+                  logger,
+                  cache)
         {
 
         }
@@ -140,11 +143,13 @@ namespace ASC.CRM.Core.Dao
         public TaskTemplateDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> logger)
+            IOptionsMonitor<ILog> logger,
+            ICache cache)
             : base(dbContextManager,
                  tenantManager,
                  securityContext, 
-                 logger)
+                 logger, 
+                 cache)
         {
 
         }

@@ -879,7 +879,7 @@ namespace ASC.Api.CRM
                 DaoFactory.GetContactDao().GetContacts(contactIDs.ToArray()).ForEach(item =>
                     {
                         if (item == null) return;
-                        contacts.Add(item.ID, ToContactBaseWrapper(item));
+                        contacts.Add(item.ID, ContactWrapperHelper.GetContactBaseWrapper(item));
                     });
             }
 
@@ -914,7 +914,7 @@ namespace ASC.Api.CRM
 
                 if (!string.IsNullOrEmpty(deal.BidCurrency))
                 {
-                    dealWrapper.BidCurrency = ToCurrencyInfoWrapper(CurrencyProvider.Get(deal.BidCurrency));
+                    dealWrapper.BidCurrency = CurrencyInfoWrapperHelper.Get(CurrencyProvider.Get(deal.BidCurrency));
                 }
 
                 result.Add(dealWrapper);

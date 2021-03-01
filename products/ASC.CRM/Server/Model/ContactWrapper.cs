@@ -85,7 +85,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-    [Transient]
+    [Scope]
     public class PersonWrapperHelper
     {
         public PersonWrapperHelper()
@@ -111,8 +111,6 @@ namespace ASC.Api.CRM.Wrappers
                 Title = person.JobTitle
             };
         }
-
-
     }
 
     /// <summary>
@@ -363,7 +361,7 @@ namespace ASC.Api.CRM.Wrappers
         public ContactWrapper Contact { get; set; }
     }
 
-    [Transient]
+    [Scope]
     public class ContactWrapperHelper
     {
         public ContactWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,

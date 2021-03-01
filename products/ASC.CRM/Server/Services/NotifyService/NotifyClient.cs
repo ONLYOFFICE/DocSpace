@@ -49,6 +49,7 @@ using System.Web;
 
 namespace ASC.Web.CRM.Services.NotifyService
 {
+    [Scope]
     public class NotifyClient
     {
         public NotifyClient(IServiceProvider serviceProvider)
@@ -533,18 +534,6 @@ namespace ASC.Web.CRM.Services.NotifyService
                       { "OpportunityDescription", HttpUtility.HtmlEncode(deal.Description) }
                  })
             );
-        }
-    }
-
-
-    public static class NotifyClientExtention
-    {
-        public static DIHelper AddNotifyClientService(this DIHelper services)
-        {
-            services.TryAddScoped<NotifyClient>();
-
-            return services;
-
         }
     }
 }

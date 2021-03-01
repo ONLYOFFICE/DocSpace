@@ -116,7 +116,7 @@ namespace ASC.Api.CRM.Wrappers
         public bool CanDelete { get; set; }
     }
 
-    [Transient]
+    [Scope]
     public class InvoiceBaseWrapperHelper
     {
         public InvoiceBaseWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
@@ -240,7 +240,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-    [Transient]
+    [Scope]
     public class InvoiceWrapperHelper
     {
         public InvoiceWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
@@ -495,7 +495,7 @@ namespace ASC.Api.CRM.Wrappers
         public bool CanDelete { get; set; }
     }
 
-    [Transient]
+    [Scope]
     public class InvoiceTaxWrapperHelper
     {
         public InvoiceTaxWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
@@ -584,7 +584,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-    [Transient]
+    [Singletone]
     public class InvoiceLineWrapperHelper
     {
         public InvoiceLineWrapperHelper()
@@ -637,7 +637,7 @@ namespace ASC.Api.CRM.Wrappers
 
     }
 
-    [Transient]
+    [Singletone]
     public class InvoiceStatusWrapperHelper
     {
         public InvoiceStatusWrapperHelper()
@@ -653,5 +653,4 @@ namespace ASC.Api.CRM.Wrappers
             };
         }
     }
-
 }

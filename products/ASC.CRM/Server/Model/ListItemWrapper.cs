@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Web.Core.Utility.Skins;
@@ -47,8 +48,6 @@ namespace ASC.Api.CRM.Wrappers
         public HistoryCategoryBaseWrapper(ListItem listItem)
             : base(listItem)
         {
-            if (!String.IsNullOrEmpty(listItem.AdditionalParams))
-                ImagePath = WebImageSupplier.GetAbsoluteWebPath(listItem.AdditionalParams, ProductEntryPoint.ID);
         }
 
         [DataMember(Name = "id")]
@@ -96,6 +95,25 @@ namespace ASC.Api.CRM.Wrappers
                     ImagePath = "path to image",
                     RelativeItemsCount = 1
                 };
+        }
+    }
+
+    [Scope]
+    public sealed class HistoryCategoryWrapperHelper
+    {
+        public HistoryCategoryWrapperHelper(WebImageSupplier webImageSupplier)
+        {
+            WebImageSupplier = webImageSupplier;
+        }
+
+        public WebImageSupplier WebImageSupplier { get; }
+
+        public HistoryCategoryBaseWrapper Get(ListItem listItem)
+        {
+            return new HistoryCategoryBaseWrapper(listItem)
+            {
+                ImagePath = WebImageSupplier.GetAbsoluteWebPath(listItem.AdditionalParams, ProductEntryPoint.ID)
+            };
         }
     }
 
@@ -180,10 +198,9 @@ namespace ASC.Api.CRM.Wrappers
         {
         }
 
-        public TaskCategoryBaseWrapper(ListItem listItem)
-            : base(listItem)
+        public TaskCategoryBaseWrapper(ListItem listItem) : base(listItem)
         {
-            ImagePath = WebImageSupplier.GetAbsoluteWebPath(listItem.AdditionalParams, ProductEntryPoint.ID);
+
         }
 
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
@@ -208,10 +225,10 @@ namespace ASC.Api.CRM.Wrappers
         {
         }
 
-        public TaskCategoryWrapper(ListItem listItem)
-            : base(listItem)
+        public TaskCategoryWrapper(ListItem listItem): base(listItem)
         {
         }
+
 
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public int RelativeItemsCount { get; set; }
@@ -229,6 +246,32 @@ namespace ASC.Api.CRM.Wrappers
                 };
         }
     }
+
+
+    [Scope]
+    public sealed class TaskCategoryWrapperHelper
+    {
+        public TaskCategoryWrapperHelper(WebImageSupplier webImageSupplier)
+        {
+            WebImageSupplier = webImageSupplier;                
+        }
+
+        public WebImageSupplier WebImageSupplier { get; }
+
+        public TaskCategoryBaseWrapper Get(ListItem listItem)
+        {
+            return new TaskCategoryBaseWrapper(listItem)
+            {
+                ImagePath = WebImageSupplier.GetAbsoluteWebPath(listItem.AdditionalParams, ProductEntryPoint.ID)
+            };
+        }
+    }
+
+
+
+
+
+
 
     #endregion
 

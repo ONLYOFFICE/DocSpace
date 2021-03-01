@@ -131,7 +131,7 @@ namespace ASC.Api.CRM.Wrappers
     }
 
 
-    [Transient]
+    [Scope]
     public class OpportunityWrapperHelper
     {
         public OpportunityWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
@@ -139,7 +139,8 @@ namespace ASC.Api.CRM.Wrappers
                            CRMSecurity cRMSecurity,
                            DaoFactory daoFactory,
                            CurrencyProvider currencyProvider,
-                           ContactWrapperHelper contactBaseWrapperHelper
+                           ContactWrapperHelper contactBaseWrapperHelper,
+                           CurrencyInfoWrapperHelper currencyInfoWrapperHelper
                            )
         {
             ApiDateTimeHelper = apiDateTimeHelper;
@@ -148,8 +149,10 @@ namespace ASC.Api.CRM.Wrappers
             DaoFactory = daoFactory;
             ContactBaseWrapperHelper = contactBaseWrapperHelper;
             CurrencyProvider = currencyProvider;
+            CurrencyInfoWrapperHelper = currencyInfoWrapperHelper;
         }
 
+        public CurrencyInfoWrapperHelper CurrencyInfoWrapperHelper { get; }
         public CurrencyProvider CurrencyProvider  {get;}
         public ContactWrapperHelper ContactBaseWrapperHelper { get; }
         public DaoFactory DaoFactory { get; }
@@ -191,14 +194,14 @@ namespace ASC.Api.CRM.Wrappers
             }
 
             dealWrapper.AccessList = CRMSecurity.GetAccessSubjectTo(deal)
-                                                .Select(item => EmployeeWraperHelper.Get(item.Key)).ToItemList();
+                                                .Select(item => EmployeeWraperHelper.Get(item.Key));
 
             dealWrapper.IsPrivate = CRMSecurity.IsPrivate(deal);
 
             if (!string.IsNullOrEmpty(deal.BidCurrency))
-                dealWrapper.BidCurrency = ToCurrencyInfoWrapper(CurrencyProvider.Get(deal.BidCurrency));
+                dealWrapper.BidCurrency = CurrencyInfoWrapperHelper.Get(CurrencyProvider.Get(deal.BidCurrency));
 
-            dealWrapper.CustomFields = DaoFactory.GetCustomFieldDao().GetEnityFields(EntityType.Opportunity, deal.ID, false).ConvertAll(item => new CustomFieldBaseWrapper(item)).ToSmartList();
+            dealWrapper.CustomFields = DaoFactory.GetCustomFieldDao().GetEnityFields(EntityType.Opportunity, deal.ID, false).ConvertAll(item => new CustomFieldBaseWrapper(item));
 
             dealWrapper.Members = new List<ContactBaseWrapper>();
 

@@ -33,7 +33,9 @@ using ASC.Data.Storage;
 using ASC.Web.Core;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.CRM.Configuration;
+
 using Microsoft.Extensions.Options;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -73,22 +75,33 @@ namespace ASC.Web.CRM.Classes
         }
     }
 
+    [Scope]
     public class ContactPhotoManager
     {
         public ContactPhotoManager(Global global,
                                    WebImageSupplier webImageSupplier,
-                                   IOptionsMonitor<ILog> logger)
+                                   IOptionsMonitor<ILog> logger,
+                                   ICache cache,
+                                   ICacheNotify<ContactPhotoManagerCacheItem> cacheNotify)
         {
             Global = global;
             WebImageSupplier = webImageSupplier;
+            CacheNotify = cacheNotify;
+            Cache = cache;
 
             Logger = logger.Get("ASC.CRM");
+
+            CacheNotify.Subscribe((x) =>
+            {
+                Cache.Remove($"contact_photo_cache_key_id_{x.Id}");
+
+            }, CacheNotifyAction.Remove);
         }
 
         public ILog Logger { get; }
 
         public Global Global { get; }
-        
+
         public WebImageSupplier WebImageSupplier { get; }
 
         #region Members
@@ -96,12 +109,11 @@ namespace ASC.Web.CRM.Classes
         private const string PhotosBaseDirName = "photos";
         private const string PhotosDefaultTmpDirName = "temp";
 
-        private readonly Dictionary<int, IDictionary<Size, string>> _photoCache = new Dictionary<int, IDictionary<Size, string>>();
+        private readonly WorkerQueue<ResizeWorkerItem> ResizeQueue = new WorkerQueue<ResizeWorkerItem>();
+        private readonly ICacheNotify<ContactPhotoManagerCacheItem> CacheNotify;
+        private readonly ICache Cache;
 
-        private readonly WorkerQueue<ResizeWorkerItem> ResizeQueue = new WorkerQueue<ResizeWorkerItem>(2, TimeSpan.FromSeconds(30), 1, true);
-        private readonly ICacheNotify cachyNotify; 
-
-        private readonly Size _oldBigSize = new Size(145, 145);
+        private static readonly Size _oldBigSize = new Size(145, 145);
 
         private readonly Size _bigSize = new Size(200, 200);
         private readonly Size _mediumSize = new Size(82, 82);
@@ -113,82 +125,27 @@ namespace ASC.Web.CRM.Classes
 
         #region Cache and DataStore Methods
 
-        ContactPhotoManager()
-        {
-            cachyNotify = AscCache.Memory;
-            cachyNotify.Subscribe<KeyValuePair<int, KeyValuePair<Size, string>>>(
-                (item, action) =>
-                {
-                    var contactID = item.Key;
-                    var sizeUriPair = item.Value;
-
-                    switch (action)
-                    {
-                        case CacheNotifyAction.InsertOrUpdate:
-                            ToPrivateCache(contactID, sizeUriPair.Value, sizeUriPair.Key);
-                            break;
-                        case CacheNotifyAction.Remove:
-                            RemoveFromPrivateCache(contactID);
-                            break;
-                    }
-                });
-        }
-
         private String FromCache(int contactID, Size photoSize)
         {
-            lock (locker)
-            {
-                if (_photoCache.ContainsKey(contactID))
-                {
-                    if (_photoCache[contactID].ContainsKey(photoSize))
-                    {
-                        return _photoCache[contactID][photoSize];
-                    }
-                    if (photoSize == _bigSize && _photoCache[contactID].ContainsKey(_oldBigSize))
-                    {
-                        return _photoCache[contactID][_oldBigSize];
-                    }
-                }
-            }
+            var cacheItem = Cache.Get<Dictionary<Size, String>>($"contact_photo_cache_key_id_{contactID}");
+
+            if (cacheItem is null) return String.Empty;
+
+            if (cacheItem.ContainsKey(photoSize)) return cacheItem[photoSize];
+
             return String.Empty;
-        }
-
-        private void RemoveFromCache(int contactID)
-        {
-            cachyNotify.Publish(CreateCacheItem(contactID, "", Size.Empty), CacheNotifyAction.Remove);
-        }
-
-        private void RemoveFromPrivateCache(int contactID)
-        {
-            lock (locker)
-            {
-                _photoCache.Remove(contactID);
-            }
         }
 
         private void ToCache(int contactID, String photoUri, Size photoSize)
         {
-            cachyNotify.Publish(CreateCacheItem(contactID, photoUri, photoSize), CacheNotifyAction.InsertOrUpdate);
-        }
+            var photoUriBySize = Cache.Get<Dictionary<Size, String>>($"contact_photo_cache_key_id_{contactID}");
 
-        private void ToPrivateCache(int contactID, String photoUri, Size photoSize)
-        {
-            lock (locker)
-            {
-                if (_photoCache.ContainsKey(contactID))
-                    if (_photoCache[contactID].ContainsKey(photoSize))
-                        _photoCache[contactID][photoSize] = photoUri;
-                    else
-                        _photoCache[contactID].Add(photoSize, photoUri);
-                else
-                    _photoCache.Add(contactID, new Dictionary<Size, string> {{photoSize, photoUri}});
-            }
-        }
+            if (photoUriBySize.ContainsKey(photoSize))
+                photoUriBySize[photoSize] = photoUri;
+            else
+                photoUriBySize.Add(photoSize, photoUri);
 
-        private KeyValuePair<int, KeyValuePair<Size, string>> CreateCacheItem(int contactID, String photoUri, Size photoSize)
-        {
-            var sizeUriPair = new KeyValuePair<Size, string>(photoSize, photoUri);
-            return new KeyValuePair<int, KeyValuePair<Size, string>>(contactID, sizeUriPair);
+            Cache.Insert($"contact_photo_cache_key_id_{contactID}", photoUriBySize, TimeSpan.FromMinutes(15));
         }
 
         private String FromDataStore(int contactID, Size photoSize)
@@ -419,7 +376,8 @@ namespace ASC.Web.CRM.Classes
 
                 if (!isTmpDir)
                 {
-                    RemoveFromCache(contactID);
+                    Cache.Remove($"contact_photo_cache_key_id_{contactID}");
+                    CacheNotify.Publish(new ContactPhotoManagerCacheItem { Id = contactID }, CacheNotifyAction.Remove);
                 }
             }
         }
@@ -452,7 +410,7 @@ namespace ASC.Web.CRM.Classes
                 {
                     DeletePhoto(contactID, false, null, false);
                 }
-                foreach (var photoSize in new[] {_bigSize, _mediumSize, _smallSize})
+                foreach (var photoSize in new[] { _bigSize, _mediumSize, _smallSize })
                 {
                     var photoTmpPath = FromDataStoreRelative(isNewContact ? 0 : contactID, photoSize, true, tmpDirName);
                     if (string.IsNullOrEmpty(photoTmpPath)) throw new Exception("Temp phono not found");
@@ -475,10 +433,10 @@ namespace ASC.Web.CRM.Classes
                 }
                 DeletePhoto(contactID, true, tmpDirName, true);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.ErrorFormat("TryUploadPhotoFromTmp for contactID={0} failed witth error: {1}", contactID, ex);
-                
+
                 return;
             }
         }
@@ -519,14 +477,14 @@ namespace ASC.Web.CRM.Classes
         private PhotoData ResizeToBigSize(byte[] imageData, int contactID, bool uploadOnly, string tmpDirName)
         {
             var resizeWorkerItem = new ResizeWorkerItem
-                {
-                    ContactID = contactID,
-                    UploadOnly = uploadOnly,
-                    RequireFotoSize = new[] {_bigSize},
-                    ImageData = imageData,
-                    DataStore = Global.GetStore(),
-                    TmpDirName = tmpDirName
-                };
+            {
+                ContactID = contactID,
+                UploadOnly = uploadOnly,
+                RequireFotoSize = new[] { _bigSize },
+                ImageData = imageData,
+                DataStore = Global.GetStore(),
+                TmpDirName = tmpDirName
+            };
 
             ExecResizeImage(resizeWorkerItem);
 
@@ -558,14 +516,14 @@ namespace ASC.Web.CRM.Classes
         private void ExecGenerateThumbnail(byte[] imageData, int contactID, bool uploadOnly, string tmpDirName)
         {
             var resizeWorkerItem = new ResizeWorkerItem
-                {
-                    ContactID = contactID,
-                    UploadOnly = uploadOnly,
-                    RequireFotoSize = new[] {_mediumSize, _smallSize},
-                    ImageData = imageData,
-                    DataStore = Global.GetStore(),
-                    TmpDirName = tmpDirName
-                };
+            {
+                ContactID = contactID,
+                UploadOnly = uploadOnly,
+                RequireFotoSize = new[] { _mediumSize, _smallSize },
+                ImageData = imageData,
+                DataStore = Global.GetStore(),
+                TmpDirName = tmpDirName
+            };
 
             if (!ResizeQueue.GetItems().Contains(resizeWorkerItem))
                 ResizeQueue.Add(resizeWorkerItem);
@@ -674,15 +632,5 @@ namespace ASC.Web.CRM.Classes
         }
 
         #endregion
-    }
-
-    public static class ContactPhotoManagerExtension
-    {
-        public static DIHelper AddContactPhotoManagerService(this DIHelper services)
-        {
-            services.TryAddTransient<ContactPhotoManager>();
-            
-            return services;
-        }
     }
 }

@@ -1,5 +1,9 @@
-﻿using ASC.CRM.Core.Enums;
+﻿using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Model;
+using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
+
+using Microsoft.EntityFrameworkCore;
 
 using Nest;
 
@@ -10,13 +14,13 @@ using System.Linq.Expressions;
 
 namespace ASC.CRM.Core.EF
 {
+    [ElasticsearchType(RelationName = "crm_contact_info")]
     [Table("crm_contact_info")]
-    public partial class DbContactInfo : IDbCrm, ISearchItem
+    public sealed class DbContactInfo : IDbCrm, ISearchItem
     {
         public int Id { get; set; }
 
         [Required]
-        [Column("data", TypeName = "text")]
         [Text(Analyzer = "whitespacecustom")]
         public string Data { get; set; }
         
@@ -56,10 +60,43 @@ namespace ASC.CRM.Core.EF
         {
             get
             {
-                return (a) => new[] { Value };
+                return (a) => new[] { Data };
             }
         }
-
-
     }
+
+    public static class DbContactInfoExtension
+    {
+        public static ModelBuilderWrapper AddDbContactInfo(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbContactInfo, Provider.MySql);
+
+            return modelBuilder;
+        }
+
+        private static void MySqlAddDbContactInfo(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbContactInfo>(entity =>
+            {
+                entity.HasIndex(e => e.LastModifedOn)
+                    .HasName("last_modifed_on");
+
+                entity.HasIndex(e => new { e.TenantId, e.ContactId })
+                    .HasName("IX_Contact");
+
+                entity.Property(e => e.Data)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.LastModifedBy)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+        }
+    }
+
+
+
+
 }

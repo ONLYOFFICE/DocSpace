@@ -62,7 +62,7 @@ namespace ASC.CRM.Core.Dao
             FilesIntegration filesIntegration,
             AuthorizationManager authorizationManager,
             IOptionsMonitor<ILog> logger,
-            AscCache ascCache,
+            ICache ascCache,
             IHttpContextAccessor httpContextAccessor,
             BundleSearch bundleSearch)
             :
@@ -124,7 +124,7 @@ namespace ASC.CRM.Core.Dao
             FilesIntegration filesIntegration,
             AuthorizationManager authorizationManager,
             IOptionsMonitor<ILog> logger,
-            AscCache ascCache,
+            ICache ascCache,
             BundleSearch bundleSearch
             ) :
                  base(dbContextManager,

@@ -614,7 +614,7 @@ namespace ASC.Api.CRM
         
             var call = number.Call(to, contact.Id.ToString(CultureInfo.InvariantCulture));
 
-            return new VoipCallWrapper(call, contact);
+            return VoipCallWrapperHelper.Get(call, contact);
         
         }
 
@@ -633,7 +633,7 @@ namespace ASC.Api.CRM
             
             number.AnswerQueueCall(call.Id);
             
-            return new VoipCallWrapper(call);
+            return VoipCallWrapperHelper.Get(call);
 
         }
 
@@ -650,7 +650,7 @@ namespace ASC.Api.CRM
             var call = dao.GetCall(callId).NotFoundIfNull();
             var number = dao.GetCurrentNumber().NotFoundIfNull();
             number.RejectQueueCall(call.Id);
-            return new VoipCallWrapper(call);
+            return VoipCallWrapperHelper.Get(call);
         }
 
         /// <summary>
@@ -679,7 +679,7 @@ namespace ASC.Api.CRM
             }
 
             number.RedirectCall(call.Id, to);
-            return new VoipCallWrapper(call);
+            return VoipCallWrapperHelper.Get(call);
         }
 
         /// <summary>
@@ -743,17 +743,17 @@ namespace ASC.Api.CRM
 
             call = dao.SaveOrUpdateCall(call);
 
-            if (call.ContactId == 0) return new VoipCallWrapper(call);
+            if (call.ContactId == 0) return VoipCallWrapperHelper.Get(call);
             try
             {
                 var contact = GetContactByID(call.ContactId);
                 contact = GetContactWithFotos(contact);
 
-                return new VoipCallWrapper(call, contact);
+                return VoipCallWrapperHelper.Get(call, contact);
             }
             catch (Exception)
             {
-                return new VoipCallWrapper(call);
+                return VoipCallWrapperHelper.Get(call);
             }
 
         }
@@ -824,7 +824,7 @@ namespace ASC.Api.CRM
                             contact = new PersonWrapper() { SmallFotoUrl = defaultSmallPhoto, Id = -1 };
                         }            
                         
-                        return new VoipCallWrapper(r, contact);
+                        return VoipCallWrapperHelper.Get(r, contact);
 
                     }).ToList();
 
@@ -862,7 +862,7 @@ namespace ASC.Api.CRM
                         contact = new PersonWrapper() { SmallFotoUrl = defaultSmallPhoto, Id = -1 };
                     }
 
-                    return new VoipCallWrapper(r, contact);
+                    return VoipCallWrapperHelper.Get(r, contact);
                 
                 }).ToList();
 
@@ -887,12 +887,12 @@ namespace ASC.Api.CRM
 
             VoipEngine.GetContact(call);
 
-            if (call.ContactId == 0) return new VoipCallWrapper(call);
+            if (call.ContactId == 0) return VoipCallWrapperHelper.Get(call);
 
             var contact = GetContactByID(call.ContactId);
             contact = GetContactWithFotos(contact);
             
-            return new VoipCallWrapper(call, contact);
+            return VoipCallWrapperHelper.Get(call, contact);
         }
 
         private ContactWrapper GetContactWithFotos(ContactWrapper contact)

@@ -76,8 +76,8 @@ namespace ASC.CRM.Core
         public bool CanDelete<T>(FileEntry<T> entry, Guid userId)
         {
             return CanEdit(entry, userId);
-        }
-
+        }        
+        
         public bool CanEdit<T>(FileEntry<T> entry, Guid userId)
         {
             return
@@ -116,6 +116,11 @@ namespace ASC.CRM.Core
         public IEnumerable<Guid> WhoCanRead<T>(FileEntry<T> entry)
         {
             throw new NotImplementedException();
+        }
+
+        public bool CanCustomFilterEdit<T>(FileEntry<T> entry, Guid userId)
+        {
+            return CanEdit(entry, userId);
         }
     }
 

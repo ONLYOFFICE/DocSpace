@@ -152,10 +152,9 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-    [Transient]
+    [Scope]
     public class TaskWrapperHelper
     {
-
         public TaskWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,
                                  EmployeeWraperHelper employeeWraperHelper,
                                  CRMSecurity cRMSecurity,

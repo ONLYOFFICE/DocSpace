@@ -965,7 +965,7 @@ namespace ASC.Api.CRM
         [Read(@"task/category")]
         public IEnumerable<TaskCategoryWrapper> GetTaskCategories()
         {
-            var result = DaoFactory.GetListItemDao().GetItems(ListType.TaskCategory).ConvertAll(item => new TaskCategoryWrapper(item));
+            var result = DaoFactory.GetListItemDao().GetItems(ListType.TaskCategory).ConvertAll(item => (TaskCategoryWrapper)TaskCategoryWrapperHelper.Get(item));
 
             var relativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.TaskCategory);
 
@@ -1070,19 +1070,19 @@ namespace ASC.Api.CRM
 
         public HistoryCategoryWrapper ToHistoryCategoryWrapper(ListItem listItem)
         {
-            var result = new HistoryCategoryWrapper(listItem)
-                {
-                    RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.HistoryCategory, listItem.ID)
-                };
+            var result = (HistoryCategoryWrapper)HistoryCategoryWrapperHelper.Get(listItem);
+
+            result.RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.HistoryCategory, listItem.ID);
+              
             return result;
         }
 
         public TaskCategoryWrapper ToTaskCategoryWrapper(ListItem listItem)
         {
-            var result = new TaskCategoryWrapper(listItem)
-                {
-                    RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.TaskCategory, listItem.ID)
-                };
+            var result = (TaskCategoryWrapper)TaskCategoryWrapperHelper.Get(listItem);
+
+            result.RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.TaskCategory, listItem.ID);
+               
             return result;
         }
 

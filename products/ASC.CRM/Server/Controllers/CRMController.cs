@@ -7,6 +7,7 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Notify.Signalr;
 using ASC.Core.Tenants;
+using ASC.Core.Users;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
@@ -20,6 +21,7 @@ using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
+using ASC.Web.CRM.Core.Search;
 using ASC.Web.CRM.Services.NotifyService;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.WCFService;
@@ -45,6 +47,7 @@ namespace ASC.Api.CRM
                          TaskWrapperHelper taskWrapperHelper,
                          SecurityContext securityContext,
                          UserManager userManager,
+                         UserFormatter userFormatter,
                          CurrencyProvider currencyProvider,
                          Global global,
                          SettingsManager settingsManager,
@@ -85,14 +88,20 @@ namespace ASC.Api.CRM
                          InvoiceLineWrapperHelper invoiceLineWrapperHelper,
                          InvoiceTaxWrapperHelper invoiceTaxWrapperHelper,
                          ContactInfoWrapperHelper contactInfoWrapperHelper,
+                         HistoryCategoryWrapperHelper historyCategoryBaseWrapperHelper,
+                         TaskCategoryWrapperHelper taskCategoryWrapperHelper,
+                         VoipCallWrapperHelper voipCallWrapperHelper,
 
                          RelationshipEventWrapperHelper relationshipEventWrapperHelper,
                          DocbuilderReportsUtility docbuilderReportsUtility,
 
-                         FactoryIndexer<Web.CRM.Core.Search.InfoWrapper> factoryIndexerInfoWrapper,
-                         FactoryIndexer<Web.CRM.Core.Search.EmailWrapper> factoryIndexerEmailWrapper,
-                         FactoryIndexer<Web.CRM.Core.Search.CasesWrapper> factoryIndexerCasesWrapper,
-                         FactoryIndexer<Web.CRM.Core.Search.FieldsWrapper> factoryIndexerFieldsWrapper)
+                         FactoryIndexerContactInfo factoryIndexerContactInfo,
+                         FactoryIndexerCase factoryIndexerCase,
+                         FactoryIndexerFieldValue factoryIndexerFieldValue,
+
+              //           ExportToCsv exportToCsv,
+                         ImportFromCSV importFromCSV,
+                         ImportFromCSVManager importFromCSVManager)
         {
 
             VoipEngine = voipEngine;
@@ -112,6 +121,7 @@ namespace ASC.Api.CRM
             TaskWrapperHelper = taskWrapperHelper;
             SecurityContext = securityContext;
             UserManager = userManager;
+            UserFormatter = userFormatter;
             CurrencyProvider = currencyProvider;
             OpportunityWrapperHelper = opportunityWrapperHelper;
             EmployeeWraperHelper = employeeWraperHelper;
@@ -122,10 +132,9 @@ namespace ASC.Api.CRM
             CasesWrapperHelper = casesWrapperHelper;
             ServiceProvider = serviceProvider;
 
-            FactoryIndexerCasesWrapper = factoryIndexerCasesWrapper;
-            FactoryIndexerFieldsWrapper = factoryIndexerFieldsWrapper;
-            FactoryIndexerInfoWrapper = factoryIndexerInfoWrapper;
-            FactoryIndexerEmailWrapper = factoryIndexerEmailWrapper;
+            FactoryIndexerCase = factoryIndexerCase;
+            FactoryIndexerFieldValue = factoryIndexerFieldValue;
+            FactoryIndexerContactInfo = factoryIndexerContactInfo;
 
             InvoiceWrapperHelper = invoiceWrapperHelper;
             InvoiceItemWrapperHelper = invoiceItemWrapperHelper;
@@ -152,12 +161,20 @@ namespace ASC.Api.CRM
             DocbuilderReportsUtility = docbuilderReportsUtility;
             InvoiceSetting = invoiceSetting;
 
+            ContactInfoWrapperHelper = contactInfoWrapperHelper;
+            HistoryCategoryWrapperHelper = historyCategoryBaseWrapperHelper;
             ContactWrapperHelper = contactBaseWrapperHelper;
+            VoipCallWrapperHelper = voipCallWrapperHelper;
+
+            //ExportToCsv = exportToCsv;
+            ImportFromCSV = importFromCSV;
+            ImportFromCSVManager = importFromCSVManager;
         }
 
-
+        public ImportFromCSVManager ImportFromCSVManager { get; }
+        public TaskCategoryWrapperHelper TaskCategoryWrapperHelper { get; }
+        public HistoryCategoryWrapperHelper HistoryCategoryWrapperHelper { get; }
         public ContactInfoWrapperHelper ContactInfoWrapperHelper { get; }
-
         public VoipEngine VoipEngine { get; }
         public SignalrServiceClient SignalrServiceClient { get; }
         public IVoipProvider VoipProvider { get; }
@@ -166,6 +183,7 @@ namespace ASC.Api.CRM
         public CommonLinkUtility CommonLinkUtility { get; }
         public ContactPhotoManager ContactPhotoManager { get; }
         public ContactWrapperHelper ContactWrapperHelper { get; }
+        public VoipCallWrapperHelper VoipCallWrapperHelper { get; }
         public OrganisationLogoManager OrganisationLogoManager { get; }
         public InvoiceSetting InvoiceSetting { get; }
         public DocbuilderReportsUtility DocbuilderReportsUtility { get; }
@@ -186,10 +204,9 @@ namespace ASC.Api.CRM
         public InvoiceBaseWrapperHelper InvoiceBaseWrapperHelper { get; }
         public InvoiceItemWrapperHelper InvoiceItemWrapperHelper { get; }
         public InvoiceWrapperHelper InvoiceWrapperHelper { get; }
-        public FactoryIndexer<Web.CRM.Core.Search.InfoWrapper> FactoryIndexerInfoWrapper { get; }
-        public FactoryIndexer<Web.CRM.Core.Search.EmailWrapper> FactoryIndexerEmailWrapper { get; }
-        public FactoryIndexer<Web.CRM.Core.Search.FieldsWrapper> FactoryIndexerFieldsWrapper { get; }
-        public FactoryIndexer<Web.CRM.Core.Search.CasesWrapper> FactoryIndexerCasesWrapper { get; }
+        public FactoryIndexerContactInfo FactoryIndexerContactInfo { get; }
+        public FactoryIndexerFieldValue FactoryIndexerFieldValue { get; }
+        public FactoryIndexerCase FactoryIndexerCase { get; }
         public IServiceProvider ServiceProvider { get; }
         public CasesWrapperHelper CasesWrapperHelper { get; }
         public CurrencyRateWrapperHelper CurrencyRateWrapperHelper { get; }
@@ -202,17 +219,19 @@ namespace ASC.Api.CRM
         public OpportunityWrapperHelper OpportunityWrapperHelper { get; }
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public CurrencyProvider CurrencyProvider { get; }
+        public UserFormatter UserFormatter { get; }
         public UserManager UserManager { get; }
         public SecurityContext SecurityContext { get; }
         public TaskWrapperHelper TaskWrapperHelper { get; }
         public NotifyClient NotifyClient { get; }
         
-        private readonly ApiContext ApiContext;
-        
+        private readonly ApiContext ApiContext;        
         public MessageService MessageService { get; }
         public MessageTarget MessageTarget { get; }
         public CRMSecurity CRMSecurity { get; }
         public DaoFactory DaoFactory { get; }
+     //   public ExportToCsv ExportToCsv { get; }
+        public ImportFromCSV ImportFromCSV { get; }
 
         private static EntityType ToEntityType(string entityTypeStr)
         {

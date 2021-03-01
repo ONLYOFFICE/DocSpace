@@ -54,7 +54,7 @@ namespace ASC.CRM.Core.Dao
              SecurityContext securityContext,
              TenantUtil tenantUtil,
              IOptionsMonitor<ILog> logger,
-             AscCache ascCache,
+             ICache ascCache,
              FactoryIndexerContactInfo factoryIndexerContactInfo,
              IHttpContextAccessor httpContextAccessor,
              IServiceProvider serviceProvider
@@ -120,7 +120,7 @@ namespace ASC.CRM.Core.Dao
              SecurityContext securityContext,
              TenantUtil tenantUtil,
              IOptionsMonitor<ILog> logger,
-             AscCache ascCache,
+             ICache ascCache,
              FactoryIndexerContactInfo factoryIndexerContactInfo,
              IServiceProvider serviceProvider)
            : base(dbContextManager,

@@ -91,7 +91,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-    [Transient]
+    [Scope]
     public class CasesWrapperHelper
     {
         public CasesWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,

@@ -30,13 +30,15 @@ using ASC.CRM.Resources;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
+
 using Microsoft.AspNetCore.Http;
+
 using System;
 using System.IO;
 
 namespace ASC.Web.CRM.Classes
 {
-    public class OrganisationLogoHandler : IFileUploadHandler
+    public class OrganisationLogoHandler
     {
         public OrganisationLogoHandler(CRMSecurity cRMSecurity,
             SetupInfo setupInfo,
@@ -97,72 +99,6 @@ namespace ASC.Web.CRM.Classes
                 fileUploadResult.Message = exception.Message.HtmlEncode();
                 return fileUploadResult;
             }
-        }
-    }
-}
-
-
-
-namespace ASC.Web.Studio.Controls.FileUploader
-{
-    public class FileToUpload
-    {
-        public string FileName { get; private set; }
-        public Stream InputStream { get; private set; }
-        public string FileContentType { get; private set; }
-        public long ContentLength { get; private set; }
-        public bool NeedSaveToTemp { get; private set; }
-
-        public FileToUpload(HttpContext context)
-        {
-            if (IsHtml5Upload(context))
-            {
-                FileName = GetFileName(context);
-                InputStream = context.Request.InputStream;
-                FileContentType = GetFileContentType(context);
-                ContentLength = (int)context.Request.InputStream.Length;
-            }
-            else
-            {
-                var file = context.Request.Files[0];
-                FileName = file.FileName;
-                InputStream = file.InputStream;
-                FileContentType = file.ContentType;
-                ContentLength = file.ContentLength;
-            }
-
-            NeedSaveToTemp = Convert.ToBoolean(GetNeedSaveToTemp(context));
-
-            if (string.IsNullOrEmpty(FileContentType))
-            {
-                FileContentType = MimeMapping.GetMimeMapping(FileName) ?? string.Empty;
-            }
-            FileName = FileName.Replace("'", "_").Replace("\"", "_");
-        }
-
-        public static bool HasFilesToUpload(HttpContext context)
-        {
-            return 0 < context.Request.Form.Files.Count || (IsHtml5Upload(context) && context.Request.Form..InputStream != null);
-        }
-
-        private static string GetFileName(HttpContext context)
-        {
-            return context.Request["fileName"];
-        }
-
-        private static string GetNeedSaveToTemp(HttpContext context)
-        {
-            return context.Request["needSaveToTemp"];
-        }
-
-        private static string GetFileContentType(HttpContext context)
-        {
-            return context.Request["fileContentType"];
-        }
-
-        private static bool IsHtml5Upload(HttpContext context)
-        {
-            return "html5".Equals(context.Request["type"]);
         }
     }
 }

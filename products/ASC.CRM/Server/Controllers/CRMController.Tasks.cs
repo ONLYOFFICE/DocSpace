@@ -638,18 +638,20 @@ namespace ASC.Api.CRM
                 }
             }
 
-            var categories = DaoFactory.GetListItemDao().GetItems(categoryIDs.ToArray()).ToDictionary(x => x.ID, x => new TaskCategoryBaseWrapper(x));
-            var contacts = DaoFactory.GetContactDao().GetContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, x => ContactWrapperHelper.GetContactBaseWrapper(x));
-            var restrictedContacts = DaoFactory.GetContactDao().GetRestrictedContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, x => ContactWrapperHelper.GetContactBaseWrapper(x));
+            var categories = DaoFactory.GetListItemDao().GetItems(categoryIDs.ToArray()).ToDictionary(x => x.ID, x => TaskCategoryWrapperHelper.Get(x));
+            var contacts = DaoFactory.GetContactDao().GetContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, x => ContactWrapperHelper.GetContactBaseWithEmailWrapper(x));
+            var restrictedContacts = DaoFactory.GetContactDao().GetRestrictedContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, x => ContactWrapperHelper.GetContactBaseWithEmailWrapper(x));
 
             foreach (var item in itemList)
             {
-                var taskWrapper = new TaskWrapper(item) { CanEdit = CRMSecurity.CanEdit(item) };
+                var taskWrapper = TaskWrapperHelper.GetTaskWrapper(item);
+                taskWrapper.CanEdit = CRMSecurity.CanEdit(item);
 
                 if (contacts.ContainsKey(item.ContactID))
                 {
                     taskWrapper.Contact = contacts[item.ContactID];
                 }
+
                 if (restrictedContacts.ContainsKey(item.ContactID))
                 {
                     taskWrapper.Contact = restrictedContacts[item.ContactID];

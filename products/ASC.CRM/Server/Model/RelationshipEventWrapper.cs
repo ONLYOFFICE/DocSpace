@@ -61,7 +61,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-    [Transient]
+    [Scope]
     public class EntityWrapperHelper
     {
         public EntityWrapperHelper(DaoFactory daoFactory)
@@ -159,7 +159,7 @@ namespace ASC.Api.CRM.Wrappers
         }
     }
 
-    [Transient]
+    [Scope]
     public class RelationshipEventWrapperHelper
     {
         public RelationshipEventWrapperHelper(
@@ -169,7 +169,8 @@ namespace ASC.Api.CRM.Wrappers
                            FileWrapperHelper fileWrapperHelper,
                            CRMSecurity cRMSecurity,
                            DaoFactory daoFactory,
-                           EntityWrapperHelper entityWrapperHelper)
+                           EntityWrapperHelper entityWrapperHelper,
+                           HistoryCategoryWrapperHelper historyCategoryWrapperHelper)
         {
             ApiDateTimeHelper = apiDateTimeHelper;
             EmployeeWraperHelper = employeeWraperHelper;
@@ -178,8 +179,10 @@ namespace ASC.Api.CRM.Wrappers
             ContactBaseWrapperHelper = contactBaseWrapperHelper;
             FileWrapperHelper = fileWrapperHelper;
             EntityWrapperHelper = entityWrapperHelper;
+            HistoryCategoryWrapperHelper = historyCategoryWrapperHelper;
         }
 
+        public HistoryCategoryWrapperHelper HistoryCategoryWrapperHelper { get; }
         public FileWrapperHelper FileWrapperHelper { get; }
         public ContactWrapperHelper ContactBaseWrapperHelper { get; }
         public DaoFactory DaoFactory { get; }
@@ -204,7 +207,7 @@ namespace ASC.Api.CRM.Wrappers
 
             if (historyCategory != null)
             {
-                result.Category = new HistoryCategoryBaseWrapper(historyCategory);
+                result.Category = HistoryCategoryWrapperHelper.Get(historyCategory);
             }
 
             if (relationshipEvent.EntityID > 0)

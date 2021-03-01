@@ -33,10 +33,11 @@ using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Http;
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using ASC.Web.Core.Utility;
 
 namespace ASC.Web.CRM.Classes
 {
-    public class FileUploaderHandler : FileUploadHandler
+    public class FileUploaderHandler
     {
         public FileUploaderHandler(SetupInfo setupInfo,
                                    DaoFactory daoFactory,
@@ -51,7 +52,6 @@ namespace ASC.Web.CRM.Classes
             ServiceProvider = serviceProvider;
             TenantExtra = tenantExtra;
             TenantStatisticsProvider = tenantStatisticsProvider;
-            
         }
 
         public TenantExtra TenantExtra { get; }
@@ -61,7 +61,7 @@ namespace ASC.Web.CRM.Classes
         public DaoFactory DaoFactory { get; }
         public SetupInfo SetupInfo { get; }
 
-        public override FileUploadResult ProcessUpload(HttpContext context)
+        public FileUploadResult ProcessUpload(HttpContext context)
         {
             var fileUploadResult = new FileUploadResult();
 

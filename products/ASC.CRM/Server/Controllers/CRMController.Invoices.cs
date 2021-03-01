@@ -699,7 +699,7 @@ namespace ASC.Api.CRM
                 throw CRMSecurity.CreateSecurityException();
             }
 
-            return new FileWrapper(Global.GetInvoicePdfExistingOrCreate(invoice, DaoFactory));
+            return FileWrapperHelper.Get<int>(Global.GetInvoicePdfExistingOrCreate(invoice, DaoFactory));
         }
 
         /// <summary>

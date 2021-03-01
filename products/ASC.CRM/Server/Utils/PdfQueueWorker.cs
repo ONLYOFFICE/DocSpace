@@ -98,9 +98,11 @@ namespace ASC.Web.CRM.Classes
         public double Percentage { get; set; }
         public bool IsCompleted { get; set; }
 
-        public PdfProgressItem(IHttpContextAccessor httpContextAccessor, 
-                               int tenantId, 
-                               Guid userId, 
+
+
+        public PdfProgressItem(IHttpContextAccessor httpContextAccessor,
+                               int tenantId,
+                               Guid userId,
                                int invoiceId)
         {
             _contextUrl = context != null ? context.Request.GetUrlRewriter().ToString() : null;

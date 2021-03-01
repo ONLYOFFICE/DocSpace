@@ -62,7 +62,7 @@ namespace ASC.CRM.Core.Dao
             FactoryIndexerInvoice factoryIndexer,
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> logger,
-            AscCache ascCache,
+            ICache ascCache,
             SettingsManager settingsManager,
             InvoiceSetting invoiceSetting,
             InvoiceFormattedData invoiceFormattedData)
@@ -129,7 +129,7 @@ namespace ASC.CRM.Core.Dao
             SecurityContext securityContext,
             FactoryIndexerInvoice factoryIndexer,
             IOptionsMonitor<ILog> logger,
-            AscCache ascCache,
+            ICache ascCache,
             SettingsManager settingsManager,
             InvoiceSetting invoiceSetting,
             InvoiceFormattedData invoiceFormattedData)

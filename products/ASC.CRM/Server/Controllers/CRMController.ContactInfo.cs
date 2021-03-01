@@ -507,14 +507,8 @@ namespace ASC.Api.CRM
             DaoFactory.GetContactInfoDao().Delete(id);
 
             var messageAction = contact is Company ? MessageAction.CompanyUpdatedPrincipalInfo : MessageAction.PersonUpdatedPrincipalInfo;
+            
             MessageService.Send( messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
-
-            if (contactInfo.InfoType == ContactInfoType.Email)
-            {
-                FactoryIndexerEmailWrapper.DeleteAsync(EmailWrapper.GetEmailWrapper(TenantManager.CurrentTenant.TenantId, contact, new List<ContactInfo> { contactInfo}));
-            }
-
-            FactoryIndexerInfoWrapper.DeleteAsync(InfoWrapper.Get(ServiceProvider, contactInfo));
 
             return wrapper;
         }

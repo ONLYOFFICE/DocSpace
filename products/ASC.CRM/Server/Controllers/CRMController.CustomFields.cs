@@ -281,7 +281,7 @@ namespace ASC.Api.CRM
             var result = ToCustomFieldWrapper(customField);
             DaoFactory.GetCustomFieldDao().DeleteField(fieldid);
 
-            FactoryIndexerFieldsWrapper.DeleteAsync(Web.CRM.Core.Search.FieldsWrapper.GetEventsWrapper(ServiceProvider, customField));
+            FactoryIndexerFieldValue.DeleteAsync(Web.CRM.Core.Search.FieldsWrapper.GetEventsWrapper(ServiceProvider, customField));
 
             var messageAction = GetCustomFieldDeletedAction(ToEntityType(entityType));
             MessageService.Send( messageAction, MessageTarget.Create(customField.ID), result.Label);

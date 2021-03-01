@@ -54,7 +54,7 @@ namespace ASC.CRM.Core.Dao
             SecurityContext securityContext,
             TenantUtil tenantUtil,
             IOptionsMonitor<ILog> logger,
-            AscCache ascCache
+            ICache ascCache
             ) :
               base(dbContextManager,
                  tenantManager,

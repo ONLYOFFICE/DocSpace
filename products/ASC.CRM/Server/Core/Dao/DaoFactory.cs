@@ -26,9 +26,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using ASC.VoipService.Dao;
 using System;
+using ASC.Common;
 
 namespace ASC.CRM.Core.Dao
 {
+    [Scope]
     public class DaoFactory
     {
         public DaoFactory(IServiceProvider serviceProvider)

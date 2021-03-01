@@ -347,15 +347,4 @@ namespace ASC.Web.CRM.Classes
         }
 
     }
-
-    public static class CurrencyProviderExtention
-    {
-        public static DIHelper AddCurrencyProviderService(this DIHelper services)
-        {
-            services.TryAddScoped<CurrencyProvider>();
-
-            return services.AddSettingsManagerService();
-                        //   .AddDaoFactoryService();
-        }
-    }
 }
