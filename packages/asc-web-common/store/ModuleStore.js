@@ -54,20 +54,20 @@ class ModuleStore {
     switch (item.id) {
       case "6743007c-6f95-4d20-8c88-a8601ce5e76d":
         item.iconName = "CrmIcon";
-        item.iconUrl = "static/images/crm.react.svg";
+        item.iconUrl = "/static/images/crm.react.svg";
         item.imageUrl = "/images/crm.svg";
         item.helpUrl = "https://helpcenter.onlyoffice.com/userguides/crm.aspx";
         break;
       case "1e044602-43b5-4d79-82f3-fd6208a11960":
         item.iconName = "ProjectsIcon";
-        item.iconUrl = "static/images/projects.react.svg";
+        item.iconUrl = "/static/images/projects.react.svg";
         item.imageUrl = "/images/projects.svg";
         item.helpUrl =
           "https://helpcenter.onlyoffice.com/userguides/projects.aspx";
         break;
       case "2A923037-8B2D-487b-9A22-5AC0918ACF3F":
         item.iconName = "MailIcon";
-        item.iconUrl = "static/images/mail.react.svg";
+        item.iconUrl = "/static/images/mail.react.svg";
         item.imageUrl = "/images/mail.svg";
         break;
       case "32D24CB5-7ECE-4606-9C94-19216BA42086":
@@ -77,7 +77,7 @@ class ModuleStore {
         break;
       case "BF88953E-3C43-4850-A3FB-B1E43AD53A3E":
         item.iconName = "ChatIcon";
-        item.iconUrl = "static/images/chat.react.svg";
+        item.iconUrl = "/static/images/chat.react.svg";
         item.imageUrl = "/images/talk.svg";
         item.isolateMode = true;
         break;
@@ -105,7 +105,7 @@ class ModuleStore {
       link: item.link,
       originUrl: item.originUrl,
       helpUrl: item.helpUrl,
-      iconName: item.iconName || iconName || "static/images/people.react.svg", //TODO: Change to URL
+      iconName: item.iconName || iconName || "/static/images/people.react.svg", //TODO: Change to URL
       iconUrl: item.iconUrl || iconUrl,
       imageUrl: item.imageUrl,
       notifications: 0,

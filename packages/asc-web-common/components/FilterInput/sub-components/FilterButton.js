@@ -20,7 +20,7 @@ class FilterButton extends React.PureComponent {
         directionY="bottom"
         getData={getData}
         iconName="/static/images/rectangle.filter.react.svg"
-        iconOpenName="static/images/rectangle.filter.click.react.svg"
+        iconOpenName="/static/images/rectangle.filter.click.react.svg"
         id={id}
         isDisabled={isDisabled}
         size={iconSize}
