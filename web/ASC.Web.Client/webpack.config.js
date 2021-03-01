@@ -13,7 +13,18 @@ const config = {
   devServer: {
     contentBase: path.join(__dirname, "public"),
     port: 5001,
-    historyApiFallback: true,
+    historyApiFallback: {
+      // Paths with dots should still use the history fallback.
+      // See https://github.com/facebook/create-react-app/issues/387.
+      disableDotRule: true,
+      index: homepage,
+    },
+    proxy: [
+      {
+        context: "/api",
+        target: "http://localhost:8092",
+      },
+    ],
     hot: false,
     hotOnly: false,
     headers: {
