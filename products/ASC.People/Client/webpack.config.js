@@ -145,12 +145,10 @@ var config = {
 };
 
 module.exports = (env, argv) => {
-  if (argv.mode === "development") {
-    config.devtool = "inline-source-map";
-  }
-
   if (argv.mode === "production") {
     config.mode = "production";
+  } else {
+    config.devtool = "source-map";
   }
 
   return config;
