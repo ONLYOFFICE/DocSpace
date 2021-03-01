@@ -531,7 +531,7 @@ class PureAdminsSettings extends Component {
                         className="cross_icon"
                         size="12"
                         onClick={this.onResetFilter}
-                        iconName="static/images/cross.react.svg"
+                        iconName="/static/images/cross.react.svg"
                         isFill
                         color="#657077"
                       />

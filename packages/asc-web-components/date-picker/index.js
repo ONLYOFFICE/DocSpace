@@ -332,7 +332,7 @@ class DatePicker extends Component {
           isDisabled={isDisabled}
           isReadOnly={isReadOnly}
           hasError={hasError}
-          iconName="static/images/calendar.react.svg"
+          iconName="/static/images/calendar.react.svg"
           onIconClick={this.onClick}
           value={value}
           onChange={this.handleChange}

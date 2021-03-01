@@ -61,7 +61,7 @@ class ContactField extends React.Component {
           className="remove_icon"
           size="16"
           onClick={removeButtonOnChange}
-          iconName={"static/images/catalog.trash.react.svg"}
+          iconName={"/static/images/catalog.trash.react.svg"}
           isFill={true}
           isClickable={true}
           color="#A3A9AE"

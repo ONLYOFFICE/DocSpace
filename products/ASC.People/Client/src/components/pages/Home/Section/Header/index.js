@@ -454,7 +454,7 @@ const SectionHeaderContent = (props) => {
                       className="action-button"
                       directionX="right"
                       title={t("Actions")}
-                      iconName="static/images/vertical-dots.react.svg"
+                      iconName="/static/images/vertical-dots.react.svg"
                       size={17}
                       color="#A3A9AE"
                       getData={getContextOptionsGroup}
@@ -477,7 +477,7 @@ const SectionHeaderContent = (props) => {
                         className="action-button"
                         directionX="right"
                         title={t("Actions")}
-                        iconName="static/images/actions.header.touch.react.svg"
+                        iconName="/static/images/actions.header.touch.react.svg"
                         size={17}
                         color="#657077"
                         getData={getContextOptionsPlus}

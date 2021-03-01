@@ -35,7 +35,7 @@ const SectionHeaderContent = (props) => {
     <Wrapper>
       <div style={{ width: "17px" }}>
         <IconButton
-          iconName={"ArrowPathIcon"}
+          iconName="/static/images/arrow.path.react.svg"
           color="#A3A9AE"
           size="17"
           hoverColor="#657077"

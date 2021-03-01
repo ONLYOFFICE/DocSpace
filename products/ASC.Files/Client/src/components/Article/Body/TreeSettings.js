@@ -108,7 +108,7 @@ const PureTreeSettings = ({
     const path = section[0];
 
     //if (selectedFolder) setSelectedFolder({});
-    setSelectedFolder({}); //getSelectedTreeNode
+    setSelectedFolder(null); //getSelectedTreeNode
 
     if (path === "settings") {
       setSelectedNode(["common"]);
