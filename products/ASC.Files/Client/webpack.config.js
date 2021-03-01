@@ -1,16 +1,22 @@
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const path = require("path");
-const deps = require("./package.json").dependencies;
+const pkg = require("./package.json");
+const deps = pkg.dependencies;
+const homepage = pkg.homepage;
 
-module.exports = {
-  entry: "./src/index",
+var config = {
   mode: "development",
-  devtool: "inline-source-map",
+  entry: "./src/index",
+
   devServer: {
-    contentBase: [path.join(__dirname, "public"), path.join(__dirname, "dist")],
-    contentBasePublicPath: "/products/files/",
+    publicPath: homepage,
+
+    contentBase: [path.join(__dirname, "public")],
+    contentBasePublicPath: homepage,
     port: 5008,
     historyApiFallback: true,
     hot: false,
@@ -21,18 +27,19 @@ module.exports = {
       "Access-Control-Allow-Headers":
         "X-Requested-With, content-type, Authorization",
     },
-    //openPage: "http://localhost:8092/products/files",
   },
+
+  output: {
+    publicPath: "auto", //homepage
+    chunkFilename: "[id].[contenthash].js",
+    path: path.resolve(process.cwd(), "dist"),
+  },
+
   resolve: {
     extensions: [".jsx", ".js", ".json"],
     fallback: {
       crypto: false,
     },
-  },
-
-  output: {
-    publicPath: "auto",
-    chunkFilename: "[id].[contenthash].js",
   },
 
   module: {
@@ -95,11 +102,12 @@ module.exports = {
   },
 
   plugins: [
+    new CleanWebpackPlugin(),
     new ModuleFederationPlugin({
       name: "files",
       filename: "remoteEntry.js",
       remotes: {
-        studio: "studio@http://localhost:5001/remoteEntry.js",
+        studio: "studio@/remoteEntry.js",
       },
       exposes: {
         "./app": "./src/Files.jsx",
@@ -118,6 +126,32 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
+      publicPath: homepage,
+      //base: `${homepage}/`,
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "public",
+          globOptions: {
+            dot: true,
+            gitignore: true,
+            ignore: ["**/index.html"],
+          },
+        },
+      ],
     }),
   ],
+};
+
+module.exports = (env, argv) => {
+  if (argv.mode === "development") {
+    config.devtool = "inline-source-map";
+  }
+
+  if (argv.mode === "production") {
+    config.mode = "production";
+  }
+
+  return config;
 };

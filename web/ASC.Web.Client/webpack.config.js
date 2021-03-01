@@ -102,7 +102,7 @@ module.exports = {
       remotes: {
         studio: "studio@http://localhost:5001/remoteEntry.js",
         people: "people@http://localhost:5002/remoteEntry.js",
-        files: "files@http://localhost:5008/remoteEntry.js",
+        files: `files@${homepage}/products/files/remoteEntry.js`,
         login: `login@${homepage}/login/remoteEntry.js`,
       },
       exposes: {

@@ -106,7 +106,7 @@ const Files = inject(({ auth, initFilesStore }) => {
     //isDesktop: auth.settingsStore.isDesktopClient,
     user: auth.userStore.user,
     isAuthenticated: auth.isAuthenticated,
-    homepage: auth.settingsStore.homepage || config.homepage,
+    homepage: config.homepage, // auth.settingsStore.homepage
     encryptionKeys: auth.settingsStore.encryptionKeys,
     isEncryption: auth.settingsStore.isEncryptionSupport,
     isLoaded: auth.isLoaded && initFilesStore.isLoaded,
