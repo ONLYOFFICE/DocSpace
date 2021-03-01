@@ -7,7 +7,7 @@ class SettingsStore {
   thirdPartyStore = null;
 
   isErrorSettings = null;
-  expandedSetting = [];
+  expandedSetting = null;
 
   confirmDelete = null;
   enableThirdParty = null;

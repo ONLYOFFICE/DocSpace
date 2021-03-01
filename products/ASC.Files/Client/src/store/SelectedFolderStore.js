@@ -17,7 +17,7 @@ class SelectedFolderStore {
   updated = null;
   updatedBy = null;
   rootFolderType = null;
-  pathParts = [];
+  pathParts = null;
   providerItem = null;
 
   constructor() {
