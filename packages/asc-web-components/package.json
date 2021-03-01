@@ -4,6 +4,16 @@
   "private": true,
   "scripts": {
     "build": "echo 'skip it'",
-    "start": "echo 'skip it'"
+    "start": "echo 'skip it'",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
+  "devDependencies": {
+    "@storybook/addon-actions": "^6.1.20",
+    "@storybook/addon-docs": "^6.1.20",
+    "@storybook/addon-essentials": "^6.1.20",
+    "@storybook/addon-links": "^6.1.20",
+    "@storybook/react": "^6.1.20",
+    "react-values": "^0.3.3"
   }
 }
