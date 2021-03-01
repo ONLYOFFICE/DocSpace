@@ -33,11 +33,12 @@ const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
 
 const LoadingBody = styled.div`
+  width: 100vw;
   padding: 20px;
 `;
 const LoadingShell = () => (
   <LoadingBody>
-    <RectangleLoader height="100%" />
+    <RectangleLoader height="100%" width="100%" />
   </LoadingBody>
 );
 
