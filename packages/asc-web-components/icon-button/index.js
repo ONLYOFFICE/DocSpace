@@ -197,7 +197,7 @@ IconButton.propTypes = {
 IconButton.defaultProps = {
   size: 25,
   isFill: true,
-  iconName: "static/images/a-z.sorting.react.svg",
+  iconName: "/static/images/a-z.sorting.react.svg",
   isDisabled: false,
   isClickable: false,
   dataTip: "",
