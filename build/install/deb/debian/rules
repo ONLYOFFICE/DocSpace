@@ -1,0 +1,50 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+%:
+	dh $@ --with=systemd
+
+verride_dh_systemd_enable:
+	dh_systemd_enable --name={{package_sysname}}AppserverApi
+	dh_systemd_enable --name={{package_sysname}}AppserverApiSystem
+	dh_systemd_enable --name={{package_sysname}}AppserverBackup
+	dh_systemd_enable --name={{package_sysname}}AppserverFiles
+	dh_systemd_enable --name={{package_sysname}}AppserverFilesServices
+	dh_systemd_enable --name={{package_sysname}}AppserverNotify
+	dh_systemd_enable --name={{package_sysname}}AppserverPeopleServer
+	dh_systemd_enable --name={{package_sysname}}AppserverSocket
+	dh_systemd_enable --name={{package_sysname}}AppserverStudioNotify
+	dh_systemd_enable --name={{package_sysname}}AppserverStudio
+	dh_systemd_enable --name={{package_sysname}}AppserverThumbnails
+	dh_systemd_enable --name={{package_sysname}}AppserverThumbnails	
+
+override_dh_installinit:
+	dh_systemd_enable --name={{package_sysname}}AppserverApi
+	dh_systemd_enable --name={{package_sysname}}AppserverApiSystem
+	dh_systemd_enable --name={{package_sysname}}AppserverBackup
+	dh_systemd_enable --name={{package_sysname}}AppserverFiles
+	dh_systemd_enable --name={{package_sysname}}AppserverFilesServices
+	dh_systemd_enable --name={{package_sysname}}AppserverNotify
+	dh_systemd_enable --name={{package_sysname}}AppserverPeopleServer
+	dh_systemd_enable --name={{package_sysname}}AppserverSocket
+	dh_systemd_enable --name={{package_sysname}}AppserverStudioNotify
+	dh_systemd_enable --name={{package_sysname}}AppserverStudio
+	dh_systemd_enable --name={{package_sysname}}AppserverThumbnails
+	dh_systemd_enable --name={{package_sysname}}AppserverThumbnails	
+
+override_dh_systemd_start:
+	dh_systemd_enable --name={{package_sysname}}AppserverApi
+	dh_systemd_enable --name={{package_sysname}}AppserverApiSystem
+	dh_systemd_enable --name={{package_sysname}}AppserverBackup
+	dh_systemd_enable --name={{package_sysname}}AppserverFiles
+	dh_systemd_enable --name={{package_sysname}}AppserverFilesServices
+	dh_systemd_enable --name={{package_sysname}}AppserverNotify
+	dh_systemd_enable --name={{package_sysname}}AppserverPeopleServer
+	dh_systemd_enable --name={{package_sysname}}AppserverSocket
+	dh_systemd_enable --name={{package_sysname}}AppserverStudioNotify
+	dh_systemd_enable --name={{package_sysname}}AppserverStudio
+	dh_systemd_enable --name={{package_sysname}}AppserverThumbnails
+	dh_systemd_enable --name={{package_sysname}}AppserverThumbnails	

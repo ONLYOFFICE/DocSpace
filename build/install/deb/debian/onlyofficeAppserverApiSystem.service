@@ -1,0 +1,15 @@
+[Unit]
+Description=ONLYOFFICE AppServer API System Service
+
+[Service]
+PIDFile=/run/appserver/appserver-api_system.pid
+Type=simple
+User=onlyoffice
+Group=onlyoffice
+WorkingDirectory=/var/www/services/apisystem/
+ExecStart=ASC.ApiSystem.dll
+TimeoutSec=300
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

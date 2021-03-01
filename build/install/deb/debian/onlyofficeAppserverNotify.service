@@ -1,0 +1,15 @@
+[Unit]
+Description=ONLYOFFICE AppServer Notify Service
+
+[Service]
+PIDFile=/run/appserver/appserver-notify.pid
+Type=simple
+User=onlyoffice
+Group=onlyoffice
+WorkingDirectory=/var/www/services/notify/
+ExecStart=ASC.Notify.dll
+TimeoutSec=300
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

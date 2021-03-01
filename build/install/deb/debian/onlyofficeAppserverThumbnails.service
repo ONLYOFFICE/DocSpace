@@ -1,0 +1,15 @@
+[Unit]
+Description=ONLYOFFICE AppServer Thumbnails Service
+
+[Service]
+PIDFile=/run/appserver/appserver-thumbnails.pid
+Type=simple
+User=onlyoffice
+Group=onlyoffice
+WorkingDirectory=/services/thumbnails/service/
+ExecStart=ASC.Thumbnails.Svc.dll
+TimeoutSec=300
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
