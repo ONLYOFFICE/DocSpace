@@ -1,5 +1,5 @@
 import React from "react";
-//import Shell from "studio/shell";
+import Shell from "studio/shell";
 
 const App = () => {
   return <Shell />;
