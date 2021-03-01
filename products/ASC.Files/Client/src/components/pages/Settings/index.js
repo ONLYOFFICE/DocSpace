@@ -18,7 +18,7 @@ const PureSettings = ({
   //history,
   t,
   isLoading,
-  settingsTree,
+  isLoadedSettingsTree,
   setFirstLoad,
 }) => {
   const [title, setTitle] = useState("");
@@ -75,8 +75,7 @@ const PureSettings = ({
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          {(Object.keys(settingsTree).length === 0 && isLoading) ||
-          isLoading ? (
+          {(!isLoadedSettingsTree && isLoading) || isLoading ? (
             <Loaders.SectionHeader />
           ) : (
             <SectionHeaderContent title={t(`${title}`)} />
@@ -84,8 +83,7 @@ const PureSettings = ({
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {(Object.keys(settingsTree).length === 0 && isLoading) ||
-          isLoading ? (
+          {(!isLoadedSettingsTree && isLoading) || isLoading ? (
             setting === "thirdParty" ? (
               <Loaders.Rows />
             ) : (
@@ -107,13 +105,11 @@ export default inject(
     const { isLoading } = initFilesStore;
     const { setFirstLoad } = filesStore;
     const { setSelectedNode } = treeFoldersStore;
-    const { getFilesSettings, settingsTree: settings } = settingsStore;
-
-    const settingsTree = Object.keys(settings).length !== 0 ? settings : {};
+    const { getFilesSettings, isLoadedSettingsTree } = settingsStore;
 
     return {
       isLoading,
-      settingsTree,
+      isLoadedSettingsTree,
 
       setFirstLoad,
       setSelectedNode,
