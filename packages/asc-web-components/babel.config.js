@@ -6,6 +6,7 @@ const presets = [
     },
   ],
   "@babel/preset-react",
+  "@emotion/babel-preset-css-prop",
 ];
 
 const plugins = [
@@ -19,7 +20,7 @@ module.exports = {
   plugins,
   env: {
     test: {
-      presets: ["@babel/preset-env", "@babel/preset-react"],
+      presets: ["@babel/preset-env", "@babel/preset-react", "jest"],
     },
   },
 };
