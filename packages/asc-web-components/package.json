@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "build": "echo 'skip it'",
-    "start": "echo 'skip it'"
+    "start": "echo 'skip it'",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   }
 }
