@@ -235,7 +235,6 @@ class UsersStore {
 
       return {
         id,
-        checked: isViewerAdmin ? this.isUserSelected(user.id) : undefined,
         status,
         activationStatus,
         statusType,

@@ -12,6 +12,7 @@ import HeaderMenuStore from "./HeaderMenuStore";
 import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
 import store from "studio/store";
+import DialogStore from "./DialogStore";
 const { auth: authStore } = store;
 
 class PeopleStore {
@@ -25,6 +26,7 @@ class PeopleStore {
   headerMenuStore = null;
   avatarEditorStore = null;
   inviteLinksStore = null;
+  dialogStore = null;
 
   isLoading = false;
   isLoaded = false;
@@ -40,6 +42,7 @@ class PeopleStore {
     this.headerMenuStore = new HeaderMenuStore(this);
     this.avatarEditorStore = new AvatarEditorStore(this);
     this.inviteLinksStore = new InviteLinksStore(this);
+    this.dialogStore = new DialogStore();
 
     makeObservable(this, {
       isLoading: observable,

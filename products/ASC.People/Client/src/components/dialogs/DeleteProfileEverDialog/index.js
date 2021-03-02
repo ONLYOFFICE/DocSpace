@@ -5,12 +5,14 @@ import PropTypes from "prop-types";
 import Button from "@appserver/components/button";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
+import history from "@appserver/common/history";
 
 import { withTranslation, Trans } from "react-i18next";
 import api from "@appserver/common/api";
 import toastr from "@appserver/common/components/Toast";
 
 import ModalDialogContainer from "../ModalDialogContainer";
+
 import { inject, observer } from "mobx-react";
 
 const { deleteUser } = api.people; //TODO: Move to action
@@ -38,8 +40,8 @@ class DeleteProfileEverDialogComponent extends React.Component {
   };
 
   onReassignDataClick = () => {
-    const { history, settings, user } = this.props;
-    history.push(`${settings.homepage}/reassign/${user.userName}`);
+    const { homepage, user } = this.props;
+    history.push(`${homepage}/reassign/${user.userName}`);
   };
 
   render() {
@@ -101,11 +103,11 @@ DeleteProfileEverDialog.propTypes = {
   user: PropTypes.object.isRequired,
   filter: PropTypes.instanceOf(Filter).isRequired,
   fetchPeople: PropTypes.func.isRequired,
-  settings: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
 };
 
 export default inject(({ auth, peopleStore }) => ({
+  homepage: auth.settingsStore.homepage,
   userCaption: auth.settingsStore.customNames.userCaption,
   fetchPeople: peopleStore.usersStore.getUsersList,
+  filter: peopleStore.filterStore.filter,
 }))(observer(withRouter(DeleteProfileEverDialog)));
