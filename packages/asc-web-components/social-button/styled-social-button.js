@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
+import PropTypes from "prop-types";
 
 const ButtonWrapper = ({ label, iconName, isDisabled, ...props }) => (
   <button type="button" {...props}></button>

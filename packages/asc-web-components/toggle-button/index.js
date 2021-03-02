@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { ToggleButtonContainer, HiddenInput } from "./styled-toggle-button";
 import { ToggleButtonIcon, ToggleButtonCheckedIcon } from "./svg";
 import Text from "../text";
+import globalColors from "../utils/globalColors";
 
 const ToggleIcon = ({ isChecked }) => {
   return (
@@ -32,6 +33,8 @@ class ToggleButton extends Component {
 
   render() {
     const { isDisabled, label, onChange, id, className, style } = this.props;
+    const { gray } = globalColors;
+    const colorProps = isDisabled ? { color: gray } : {};
 
     //console.log("ToggleButton render");
 

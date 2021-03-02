@@ -15,10 +15,11 @@ import {
 } from "./styled-group-button";
 import ExpanderDownIcon from "../../../public/images/expander-down.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
+import Base from "../themes/base";
 
 const textColor = "#333333",
   disabledTextColor = "#A3A9AE";
-  
+
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
@@ -29,6 +30,7 @@ const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
     fill: ${(props) => props.color};
   }
 `;
+StyledExpanderDownIcon.defaultProps = { theme: Base };
 class GroupButton extends React.Component {
   constructor(props) {
     super(props);
