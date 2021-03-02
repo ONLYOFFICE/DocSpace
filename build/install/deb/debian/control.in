@@ -1,0 +1,86 @@
+Source: app-server
+Section: web
+Priority: optional
+Maintainer: onlyoffice
+Build-Depends: 
+Homepage: https://www.onlyoffice.com/
+
+Package: app-server
+Version: 1.0-0
+Architecture: all
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         appserver-api,
+         appserver-api_system,
+         appserver-backup,
+         appserver-files,
+         appserver-files_services,
+         appserver-notify,
+         appserver-people_server,
+         appserver-socket,
+         appserver-studio,
+         appserver-studio_notify,
+         appserver-thumbnails,
+         appserver-urlshortener
+Description: {{package_section_description}}
+
+
+Package: appserver-api,
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: API deb package
+
+Package: appserver-api_system,
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: API System deb package
+
+Package: appserver-backup,
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Backup deb package
+
+Package: appserver-files,
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Files deb package
+
+Package: appserver-files_services,
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Files Services deb package
+
+Package: appserver-notify,
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Notify deb package
+
+Package: appserver-people_server,
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: People Server deb package
+
+Package: appserver-socket,
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Socket deb package
+
+Package: appserver-studio,
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Studio deb package
+
+Package: appserver-studio_notify,
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Studio Notify deb package
+
+Package: appserver-thumbnails,
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Thumbnails deb package
+
+Package: appserver-urlshortener,
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Urlshortener deb package
