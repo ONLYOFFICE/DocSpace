@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import styled from "styled-components";
 
-import RowContent from "@appserver/components/row-container";
+import RowContent from "@appserver/components/row-content";
 import Link from "@appserver/components/link";
 import LinkWithDropdown from "@appserver/components/link-with-dropdown";
 import Text from "@appserver/components/text";
@@ -80,7 +80,7 @@ const UserContent = ({
   history,
   homepage,
   selectGroup,
-  widthProp,
+  //widthProp,
   isMobile,
   sectionWidth,
 }) => {
@@ -108,7 +108,7 @@ const UserContent = ({
 
   return (
     <RowContent
-      widthProp={widthProp}
+      //widthProp={widthProp}
       isMobile={isMobile}
       sideColor={sideInfoColor}
       sectionWidth={sectionWidth}

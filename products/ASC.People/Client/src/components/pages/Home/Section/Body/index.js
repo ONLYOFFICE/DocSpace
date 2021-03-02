@@ -348,7 +348,7 @@ class SectionBodyContent extends React.PureComponent {
       settings,
       t,
       filter,
-      widthProp,
+      //widthProp,
       isMobile,
       selectGroup,
       isLoading,
@@ -415,7 +415,7 @@ class SectionBodyContent extends React.PureComponent {
                   >
                     <UserContent
                       isMobile={isMobile}
-                      widthProp={widthProp}
+                      //widthProp={widthProp}
                       user={man}
                       history={history}
                       settings={settings}
