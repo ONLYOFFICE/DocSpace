@@ -129,7 +129,6 @@ class Wrapper extends React.Component {
     });
   }
   render() {
-    console.log(this.props);
     const {
       unknownError,
       unknownTypeError,

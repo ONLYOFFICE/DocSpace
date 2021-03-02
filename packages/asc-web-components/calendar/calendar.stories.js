@@ -69,7 +69,7 @@ export default {
       },
       source: {
         code: `
-        import Calendar from "@appserver/components/calendar";
+      import Calendar from "@appserver/components/calendar";
 
 <Calendar
   onChange={(date) => {
@@ -83,7 +83,7 @@ export default {
   maxDate={new Date("3000/01/01")}
   locale="ru"
 />
-  `,
+`,
       },
     },
   },
@@ -97,6 +97,7 @@ const Template = (args) => {
       selectedDate={new Date(args.selectedDate)}
       openToDate={new Date(args.openToDate)}
       minDate={new Date(args.minDate)}
+      locale="en"
     />
   );
 };
