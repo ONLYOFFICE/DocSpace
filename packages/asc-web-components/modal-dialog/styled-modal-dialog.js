@@ -62,6 +62,7 @@ const CloseButton = styled(CrossSidebarIcon)`
     }
   }
 `;
+CloseButton.defaultProps = { theme: Base };
 
 const BodyBox = styled(Box)`
   position: relative;
