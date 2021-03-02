@@ -150,6 +150,7 @@ const StyledWeekday = styled.div`
     text-align: center;
   }
 `;
+StyledWeekday.defaultProps = { theme: Base };
 
 export {
   Month,
