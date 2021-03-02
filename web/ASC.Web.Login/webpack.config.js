@@ -1,25 +1,49 @@
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const path = require("path");
-const deps = require("./package.json").dependencies;
+const pkg = require("./package.json");
+const deps = pkg.dependencies;
+const homepage = pkg.homepage;
 
-module.exports = {
-  entry: "./src/index",
+var config = {
   mode: "development",
-  devtool: "inline-source-map",
+  entry: "./src/index",
+
   devServer: {
-    contentBase: [path.join(__dirname, "public"), path.join(__dirname, "dist")],
-    contentBasePublicPath: "/login",
+    publicPath: homepage,
+
+    contentBase: [path.join(__dirname, "public")],
+    contentBasePublicPath: homepage,
     port: 5011,
-    historyApiFallback: true,
+    historyApiFallback: {
+      // Paths with dots should still use the history fallback.
+      // See https://github.com/facebook/create-react-app/issues/387.
+      disableDotRule: true,
+      index: homepage,
+    },
+    proxy: [
+      {
+        context: "/api",
+        target: "http://localhost:8092",
+      },
+    ],
     hot: false,
     hotOnly: false,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Headers":
+        "X-Requested-With, content-type, Authorization",
+    },
   },
 
   output: {
-    publicPath: "auto",
+    publicPath: "auto", //homepage
     chunkFilename: "[id].[contenthash].js",
+    path: path.resolve(process.cwd(), "dist"),
   },
 
   resolve: {
@@ -78,11 +102,12 @@ module.exports = {
   },
 
   plugins: [
+    new CleanWebpackPlugin(),
     new ModuleFederationPlugin({
       name: "login",
       filename: "remoteEntry.js",
       remotes: {
-        studio: "studio@http://localhost:5001/remoteEntry.js",
+        studio: "studio@/remoteEntry.js",
       },
       exposes: {
         "./app": "./src/Login.jsx",
@@ -101,6 +126,30 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
+      publicPath: homepage,
+      //base: `${homepage}/`,
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "public",
+          globOptions: {
+            dot: true,
+            gitignore: true,
+            ignore: ["**/index.html"],
+          },
+        },
+      ],
     }),
   ],
+};
+
+module.exports = (env, argv) => {
+  if (argv.mode === "production") {
+    config.mode = "production";
+  } else {
+    config.devtool = "source-map";
+  }
+
+  return config;
 };

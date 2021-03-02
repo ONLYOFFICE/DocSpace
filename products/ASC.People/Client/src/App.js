@@ -1,8 +1,7 @@
+import React from "react";
 import Shell from "studio/shell";
 
-const App = () => (
-    <Shell />
-);
+const App = () => <Shell />;
 
 export default App;
 

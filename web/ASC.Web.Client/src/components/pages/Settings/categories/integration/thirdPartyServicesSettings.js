@@ -6,6 +6,7 @@ import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
+import { tablet, mobile } from "@appserver/components/utils/device";
 
 import ConsumerItem from "./sub-components/consumerItem";
 import ConsumerModalDialog from "./sub-components/consumerModalDialog";

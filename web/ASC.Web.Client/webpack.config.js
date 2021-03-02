@@ -2,16 +2,29 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const path = require("path");
-const deps = require("./package.json").dependencies;
+const pkg = require("./package.json");
+const deps = pkg.dependencies;
+const homepage = pkg.homepage;
 
-module.exports = {
+const config = {
   entry: "./src/index",
   mode: "development",
-  devtool: "inline-source-map",
+
   devServer: {
-    contentBase: [path.join(__dirname, "public"), path.join(__dirname, "dist")],
+    contentBase: path.join(__dirname, "public"),
     port: 5001,
-    historyApiFallback: true,
+    historyApiFallback: {
+      // Paths with dots should still use the history fallback.
+      // See https://github.com/facebook/create-react-app/issues/387.
+      disableDotRule: true,
+      index: homepage,
+    },
+    proxy: [
+      {
+        context: "/api",
+        target: "http://localhost:8092",
+      },
+    ],
     hot: false,
     hotOnly: false,
     headers: {
@@ -32,6 +45,7 @@ module.exports = {
   output: {
     publicPath: "auto",
     chunkFilename: "[id].[contenthash].js",
+    path: path.resolve(process.cwd(), "dist"),
   },
 
   module: {
@@ -98,10 +112,10 @@ module.exports = {
       name: "studio",
       filename: "remoteEntry.js",
       remotes: {
-        studio: "studio@http://localhost:5001/remoteEntry.js",
-        people: "people@http://localhost:5002/remoteEntry.js",
-        files: "files@http://localhost:5008/remoteEntry.js",
-        login: "login@http://localhost:5011/remoteEntry.js",
+        studio: `studio@${homepage}/remoteEntry.js`,
+        people: `people@${homepage}/products/people//remoteEntry.js`,
+        files: `files@${homepage}/products/files/remoteEntry.js`,
+        login: `login@${homepage}/login/remoteEntry.js`,
       },
       exposes: {
         "./shell": "./src/Shell",
@@ -121,6 +135,17 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
+      publicPath: homepage,
     }),
   ],
+};
+
+module.exports = (env, argv) => {
+  if (argv.mode === "production") {
+    config.mode = "production";
+  } else {
+    config.devtool = "source-map";
+  }
+
+  return config;
 };
