@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.CRM.Core.Enums;
@@ -35,7 +36,7 @@ using System.Linq;
 
 namespace ASC.Web.CRM.Classes
 {
-
+    [Scope]
     public class ImportFromCSV
     {
         public ImportFromCSV(TenantManager tenantProvider,

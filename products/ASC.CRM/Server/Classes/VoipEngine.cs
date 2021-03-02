@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
 using ASC.Core;
@@ -44,6 +45,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.CRM.Classes
 {
+    [Scope]
     public class VoipEngine
     {
         private readonly WorkerQueue<QueueItem> Queue = new WorkerQueue<QueueItem>();

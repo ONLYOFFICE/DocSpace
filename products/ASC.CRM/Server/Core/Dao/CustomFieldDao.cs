@@ -544,6 +544,8 @@ namespace ASC.CRM.Core.Dao
 
             var fieldValue = Query(CRMDbContext.FieldValue).FirstOrDefault(x => x.FieldId == fieldID);
 
+            FactoryIndexer.Delete(fieldValue);
+
             CRMDbContext.Remove(fieldValue);
 
             CRMDbContext.SaveChanges();

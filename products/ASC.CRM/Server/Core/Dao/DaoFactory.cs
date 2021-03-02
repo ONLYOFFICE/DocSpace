@@ -30,7 +30,7 @@ using ASC.Common;
 
 namespace ASC.CRM.Core.Dao
 {
-    [Scope]
+    [Scope(Additional = typeof(DaoFactoryExtension))]
     public class DaoFactory
     {
         public DaoFactory(IServiceProvider serviceProvider)
@@ -124,7 +124,6 @@ namespace ASC.CRM.Core.Dao
         public CurrencyInfoDao GetCurrencyInfoDao()
         {
             return ServiceProvider.GetService<CurrencyInfoDao>();
-
         }
 
         public ContactInfoDao GetContactInfoDao()
@@ -157,6 +156,30 @@ namespace ASC.CRM.Core.Dao
             return ServiceProvider.GetService<VoipDao>();
         }
     }
+
+    public class DaoFactoryExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<TaskDao>();
+            services.TryAdd<ListItemDao>();
+            services.TryAdd<ContactDao>();
+            services.TryAdd<CustomFieldDao>();
+            services.TryAdd<DealMilestoneDao>();
+            services.TryAdd<TagDao>();
+            services.TryAdd<SearchDao>();
+            services.TryAdd<RelationshipEventDao>();
+            services.TryAdd<FileDao>();
+            services.TryAdd<CasesDao>();
+            services.TryAdd<TaskTemplateContainerDao>();
+            services.TryAdd<TaskTemplateDao>();
+
+            services.TryAdd<ReportDao>();
+            services.TryAdd<CurrencyInfoDao>();
+            services.TryAdd<ContactInfoDao>();
+        }
+    }
+
 }
 
 //TaskDao

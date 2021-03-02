@@ -34,6 +34,7 @@ using System;
 
 namespace ASC.Api.CRM
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public partial class CRMController : ControllerBase
@@ -70,7 +71,7 @@ namespace ASC.Api.CRM
                          SignalrServiceClient signalrServiceClient,
                          VoipEngine voipEngine,
 
-                         Web.Files.Classes.FilesSettings filesSettings,
+                         Web.Files.Classes.FilesSettingsHelper filesSettingsHelper,
                          ASC.Files.Core.Data.DaoFactory filesDaoFactory,
 
                          FileWrapperHelper fileWrapperHelper,
@@ -93,7 +94,7 @@ namespace ASC.Api.CRM
                          VoipCallWrapperHelper voipCallWrapperHelper,
 
                          RelationshipEventWrapperHelper relationshipEventWrapperHelper,
-                         DocbuilderReportsUtility docbuilderReportsUtility,
+                         DocbuilderReportsUtilityHelper docbuilderReportsUtilityHelper,
 
                          FactoryIndexerContactInfo factoryIndexerContactInfo,
                          FactoryIndexerCase factoryIndexerCase,
@@ -153,12 +154,12 @@ namespace ASC.Api.CRM
             PdfCreator = pdfCreator;
             FilesDaoFactory = filesDaoFactory;
 
-            FilesSettings = filesSettings;
+            FilesSettingsHelper = filesSettingsHelper;
             FileUploader = fileUploader;
             Global = global;
             ReportHelper = reportHelper;
             HttpContextAccessor = httpContextAccessor;
-            DocbuilderReportsUtility = docbuilderReportsUtility;
+            DocbuilderReportsUtilityHelper = docbuilderReportsUtilityHelper;
             InvoiceSetting = invoiceSetting;
 
             ContactInfoWrapperHelper = contactInfoWrapperHelper;
@@ -186,11 +187,11 @@ namespace ASC.Api.CRM
         public VoipCallWrapperHelper VoipCallWrapperHelper { get; }
         public OrganisationLogoManager OrganisationLogoManager { get; }
         public InvoiceSetting InvoiceSetting { get; }
-        public DocbuilderReportsUtility DocbuilderReportsUtility { get; }
+        public DocbuilderReportsUtilityHelper DocbuilderReportsUtilityHelper { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
         public ReportHelper ReportHelper { get; }
         public FileUploader FileUploader { get; }
-        public Web.Files.Classes.FilesSettings FilesSettings { get; }
+        public Web.Files.Classes.FilesSettingsHelper FilesSettingsHelper { get; }
         public ASC.Files.Core.Data.DaoFactory FilesDaoFactory { get; }
         public FileWrapperHelper FileWrapperHelper { get; }
         public RelationshipEventWrapperHelper RelationshipEventWrapperHelper { get; }

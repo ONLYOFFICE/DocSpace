@@ -38,15 +38,16 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using Microsoft.Extensions.DependencyInjection;
-
+using ASC.Common;
 
 namespace ASC.Web.CRM.Classes
 {
+    [Scope]
     public class ReportHelper
     {
         public ReportHelper(TenantUtil tenantUtil,
                             Global global,
-                            DocbuilderReportsUtility docbuilderReportsUtility,
+        //                    DocbuilderReportsUtilityHelper docbuilderReportsUtilityHelper,
                             SettingsManager settingsManager,
                             DaoFactory daoFactory,
                             IServiceProvider serviceProvider
@@ -54,7 +55,6 @@ namespace ASC.Web.CRM.Classes
         {
             TenantUtil = tenantUtil;
             Global = global;
-            DocbuilderReportsUtility = docbuilderReportsUtility;
             SettingsManager = settingsManager;
             ServiceProvider = serviceProvider;
             DaoFactory = daoFactory;
@@ -63,7 +63,6 @@ namespace ASC.Web.CRM.Classes
         public DaoFactory DaoFactory { get; }
         public IServiceProvider ServiceProvider { get; }
 
-        public DocbuilderReportsUtility DocbuilderReportsUtility { get; }
         public Global Global { get; }
         public SettingsManager SettingsManager { get; }
         public TenantUtil TenantUtil { get; }

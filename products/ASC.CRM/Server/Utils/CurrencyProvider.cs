@@ -43,6 +43,7 @@ using System.Text.RegularExpressions;
 
 namespace ASC.Web.CRM.Classes
 {
+    [Scope]
     public class CurrencyProvider
     {
         private readonly ILog _log;

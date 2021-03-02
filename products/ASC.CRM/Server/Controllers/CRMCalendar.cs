@@ -33,6 +33,7 @@ using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Web.Core;
 using ASC.Web.Core.Calendars;
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -42,7 +43,7 @@ namespace ASC.Api.CRM
     [Scope]
     public sealed class CRMCalendar : BaseCalendar
     {
-        [AllDayLongUTCAttribute]
+        [AllDayLongUTC]
         private class Event : BaseEvent
         {
         }
@@ -75,7 +76,7 @@ namespace ASC.Api.CRM
             Name = CRMCommonResource.ProductName;
             Description = "";
             SharingOptions = new SharingOptions();
-//            SharingOptions.PublicItems.Add(new SharingOptions.PublicItem { Id = userId, IsGroup = false });
+            //            SharingOptions.PublicItems.Add(new SharingOptions.PublicItem { Id = userId, IsGroup = false });
         }
 
         public override List<IEvent> LoadEvents(Guid userId, DateTime startDate, DateTime endDate)

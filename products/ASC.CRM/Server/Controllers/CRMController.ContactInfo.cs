@@ -34,8 +34,10 @@ using ASC.ElasticSearch;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Core.Search;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -157,13 +159,13 @@ namespace ASC.Api.CRM
 
 
             var contactInfo = new ContactInfo
-                {
-                    Data = data,
-                    InfoType = infoType,
-                    ContactID = contactid,
-                    IsPrimary = isPrimary,
-                    Category = (int)Enum.Parse(categoryType, category)
-                };
+            {
+                Data = data,
+                InfoType = infoType,
+                ContactID = contactid,
+                IsPrimary = isPrimary,
+                Category = (int)Enum.Parse(categoryType, category)
+            };
 
             if (contactInfo.InfoType == ContactInfoType.Address)
             {
@@ -175,7 +177,7 @@ namespace ASC.Api.CRM
             var contactInfoID = DaoFactory.GetContactInfoDao().Save(contactInfo);
 
             var messageAction = contact is Company ? MessageAction.CompanyUpdatedPrincipalInfo : MessageAction.PersonUpdatedPrincipalInfo;
-            MessageService.Send( messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
+            MessageService.Send(messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
 
 
             var contactInfoWrapper = ContactInfoWrapperHelper.Get(contactInfo);
@@ -215,27 +217,27 @@ namespace ASC.Api.CRM
             address.CategoryName = ((AddressCategory)address.Category).ToLocalizedString();
 
             var settings = new JsonSerializerSettings
+            {
+                ContractResolver = new DefaultContractResolver
                 {
-                    ContractResolver = new DefaultContractResolver
-                        {
-                            NamingStrategy = new CamelCaseNamingStrategy()
-                        },
-                    Formatting = Formatting.Indented
-                };
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                },
+                Formatting = Formatting.Indented
+            };
 
             var contactInfo = new ContactInfo
-                {
-                    InfoType = ContactInfoType.Address,
-                    ContactID = contactid,
-                    IsPrimary = address.IsPrimary,
-                    Category = address.Category,
-                    Data = JsonConvert.SerializeObject(address, settings)
-                };
+            {
+                InfoType = ContactInfoType.Address,
+                ContactID = contactid,
+                IsPrimary = address.IsPrimary,
+                Category = address.Category,
+                Data = JsonConvert.SerializeObject(address, settings)
+            };
 
             contactInfo.ID = DaoFactory.GetContactInfoDao().Save(contactInfo);
 
             var messageAction = contact is Company ? MessageAction.CompanyUpdatedPrincipalInfo : MessageAction.PersonUpdatedPrincipalInfo;
-            MessageService.Send( messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
+            MessageService.Send(messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
 
             return ContactInfoWrapperHelper.Get(contactInfo);
         }
@@ -274,7 +276,7 @@ namespace ASC.Api.CRM
                 if (contactInfo.InfoType == ContactInfoType.Address)
                 {
                     Address res;
-                    if(!Address.TryParse(contactInfo, out res))
+                    if (!Address.TryParse(contactInfo, out res))
                         throw new ArgumentException();
                 }
                 contactInfo.ContactID = contactid;
@@ -346,7 +348,7 @@ namespace ASC.Api.CRM
             DaoFactory.GetContactInfoDao().Update(contactInfo);
 
             var messageAction = contact is Company ? MessageAction.CompanyUpdatedPrincipalInfo : MessageAction.PersonUpdatedPrincipalInfo;
-            MessageService.Send( messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
+            MessageService.Send(messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
 
             var contactInfoWrapper = ContactInfoWrapperHelper.Get(contactInfo);
 
@@ -385,7 +387,7 @@ namespace ASC.Api.CRM
 
             if (!Enum.IsDefined(typeof(AddressCategory), address.Category)) throw new ArgumentException("Value does not fall within the expected range.", "address.Category");
 
-            address.CategoryName = ((AddressCategory) address.Category).ToLocalizedString();
+            address.CategoryName = ((AddressCategory)address.Category).ToLocalizedString();
 
             var settings = new JsonSerializerSettings
             {
@@ -403,7 +405,7 @@ namespace ASC.Api.CRM
             DaoFactory.GetContactInfoDao().Update(contactInfo);
 
             var messageAction = contact is Company ? MessageAction.CompanyUpdatedPrincipalInfo : MessageAction.PersonUpdatedPrincipalInfo;
-            MessageService.Send( messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
+            MessageService.Send(messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
 
             return ContactInfoWrapperHelper.Get(contactInfo);
         }
@@ -507,8 +509,8 @@ namespace ASC.Api.CRM
             DaoFactory.GetContactInfoDao().Delete(id);
 
             var messageAction = contact is Company ? MessageAction.CompanyUpdatedPrincipalInfo : MessageAction.PersonUpdatedPrincipalInfo;
-            
-            MessageService.Send( messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
+
+            MessageService.Send(messageAction, MessageTarget.Create(contact.ID), contact.GetTitle());
 
             return wrapper;
         }
@@ -516,13 +518,13 @@ namespace ASC.Api.CRM
         private static ContactInfo FromContactInfoWrapper(ContactInfoWrapper contactInfoWrapper)
         {
             return new ContactInfo
-                {
-                    ID = contactInfoWrapper.Id,
-                    Category = contactInfoWrapper.Category,
-                    Data = contactInfoWrapper.Data,
-                    InfoType = contactInfoWrapper.InfoType,
-                    IsPrimary = contactInfoWrapper.IsPrimary
-                };
+            {
+                ID = contactInfoWrapper.Id,
+                Category = contactInfoWrapper.Category,
+                Data = contactInfoWrapper.Data,
+                InfoType = contactInfoWrapper.InfoType,
+                IsPrimary = contactInfoWrapper.IsPrimary
+            };
         }
     }
 }

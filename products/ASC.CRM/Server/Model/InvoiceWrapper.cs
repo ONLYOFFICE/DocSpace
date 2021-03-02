@@ -381,6 +381,7 @@ namespace ASC.Api.CRM.Wrappers
         public bool CanDelete { get; set; }
     }
     
+    [Scope]
     public class InvoiceItemWrapperHelper
     {
         public InvoiceItemWrapperHelper(ApiDateTimeHelper apiDateTimeHelper,

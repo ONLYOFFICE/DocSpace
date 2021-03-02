@@ -9,6 +9,7 @@ using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Services.NotifyService;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace ASC.Api.CRM
 {
     public partial class CRMController
     {
-     
+
         /// <summary>
         ///  Returns the detailed information about the task with the ID specified in the request
         /// </summary>
@@ -434,7 +435,7 @@ namespace ASC.Api.CRM
             {
                 var contacts = DaoFactory.GetContactDao().GetContacts(contactId);
                 var task = tasks.First();
-                MessageService.Send( MessageAction.ContactsCreatedCrmTasks, MessageTarget.Create(tasks.Select(x => x.ID)), contacts.Select(x => x.GetTitle()), task.Title);
+                MessageService.Send(MessageAction.ContactsCreatedCrmTasks, MessageTarget.Create(tasks.Select(x => x.ID)), contacts.Select(x => x.GetTitle()), task.Title);
             }
 
             return ToTaskListWrapper(tasks);

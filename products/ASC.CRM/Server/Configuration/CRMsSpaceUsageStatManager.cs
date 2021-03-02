@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -38,6 +39,8 @@ using System.Linq;
 
 namespace ASC.Web.CRM.Configuration
 {
+
+    [Scope]
     public class CRMSpaceUsageStatManager : SpaceUsageStatManager
     {
         public CRMSpaceUsageStatManager(DbContextManager<FilesDbContext> filesDbContext,
@@ -46,7 +49,7 @@ namespace ASC.Web.CRM.Configuration
         {
             PathProvider = pathProvider;
             FilesDbContext = filesDbContext.Value;
-            TenantId = tenantManager.CurrentTenant.TenantId;
+            TenantId = tenantManager.GetCurrentTenant().TenantId;
         }
 
         public int TenantId { get; }

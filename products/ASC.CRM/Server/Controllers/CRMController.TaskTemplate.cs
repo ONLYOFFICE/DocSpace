@@ -28,6 +28,7 @@ using ASC.Api.CRM.Wrappers;
 using ASC.Common.Web;
 using ASC.CRM.Core.Entities;
 using ASC.Web.Api.Routing;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,16 +49,16 @@ namespace ASC.Api.CRM
         /// </returns>
         /// <exception cref="ArgumentException"></exception>
         /// <visible>false</visible>
-        [Create(@"{entityType:(contact|person|company|opportunity|case)}/tasktemplatecontainer")]
+        [Create(@"{entityType:regex(contact|person|company|opportunity|case)}/tasktemplatecontainer")]
         public TaskTemplateContainerWrapper CreateTaskTemplateContainer(string entityType, string title)
         {
             if (string.IsNullOrEmpty(title)) throw new ArgumentException();
 
             var taskTemplateContainer = new TaskTemplateContainer
-                {
-                    EntityType = ToEntityType(entityType),
-                    Title = title
-                };
+            {
+                EntityType = ToEntityType(entityType),
+                Title = title
+            };
 
             taskTemplateContainer.ID = DaoFactory.GetTaskTemplateContainerDao().SaveOrUpdate(taskTemplateContainer);
             return ToTaskTemplateContainerWrapper(taskTemplateContainer);
@@ -73,7 +74,7 @@ namespace ASC.Api.CRM
         ///     Task template container list
         /// </returns>
         /// <visible>false</visible>
-        [Read(@"{entityType:(contact|person|company|opportunity|case)}/tasktemplatecontainer")]
+        [Read(@"{entityType:regex(contact|person|company|opportunity|case)}/tasktemplatecontainer")]
         public IEnumerable<TaskTemplateContainerWrapper> GetTaskTemplateContainers(string entityType)
         {
             return ToTaskListTemplateContainerWrapper(DaoFactory.GetTaskTemplateContainerDao().GetItems(ToEntityType(entityType)));
@@ -213,16 +214,16 @@ namespace ASC.Api.CRM
             if (container == null) throw new ItemNotFoundException();
 
             var item = new TaskTemplate
-                {
-                    CategoryID = categoryid,
-                    ContainerID = containerid,
-                    DeadLineIsFixed = deadLineIsFixed,
-                    Description = description,
-                    isNotify = isNotify,
-                    ResponsibleID = responsibleid,
-                    Title = title,
-                    Offset = TimeSpan.FromTicks(offsetTicks)
-                };
+            {
+                CategoryID = categoryid,
+                ContainerID = containerid,
+                DeadLineIsFixed = deadLineIsFixed,
+                Description = description,
+                isNotify = isNotify,
+                ResponsibleID = responsibleid,
+                Title = title,
+                Offset = TimeSpan.FromTicks(offsetTicks)
+            };
 
             item.ID = DaoFactory.GetTaskTemplateDao().SaveOrUpdate(item);
 
@@ -269,17 +270,17 @@ namespace ASC.Api.CRM
             if (container == null) throw new ItemNotFoundException();
 
             var item = new TaskTemplate
-                {
-                    CategoryID = categoryid,
-                    ContainerID = containerid,
-                    DeadLineIsFixed = deadLineIsFixed,
-                    Description = description,
-                    isNotify = isNotify,
-                    ResponsibleID = responsibleid,
-                    Title = title,
-                    ID = id,
-                    Offset = TimeSpan.FromTicks(offsetTicks)
-                };
+            {
+                CategoryID = categoryid,
+                ContainerID = containerid,
+                DeadLineIsFixed = deadLineIsFixed,
+                Description = description,
+                isNotify = isNotify,
+                ResponsibleID = responsibleid,
+                Title = title,
+                ID = id,
+                Offset = TimeSpan.FromTicks(offsetTicks)
+            };
 
             item.ID = DaoFactory.GetTaskTemplateDao().SaveOrUpdate(item);
 
@@ -335,17 +336,17 @@ namespace ASC.Api.CRM
         protected TaskTemplateWrapper ToTaskTemplateWrapper(TaskTemplate taskTemplate)
         {
             return new TaskTemplateWrapper
-                {
-                    Category = GetTaskCategoryByID(taskTemplate.CategoryID),
-                    ContainerID = taskTemplate.ContainerID,
-                    DeadLineIsFixed = taskTemplate.DeadLineIsFixed,
-                    Description = taskTemplate.Description,
-                    Id = taskTemplate.ID,
-                    isNotify = taskTemplate.isNotify,
-                    Title = taskTemplate.Title,
-                    OffsetTicks = taskTemplate.Offset.Ticks,
-                    Responsible = EmployeeWraperHelper.Get(taskTemplate.ResponsibleID)
-                };
+            {
+                Category = GetTaskCategoryByID(taskTemplate.CategoryID),
+                ContainerID = taskTemplate.ContainerID,
+                DeadLineIsFixed = taskTemplate.DeadLineIsFixed,
+                Description = taskTemplate.Description,
+                Id = taskTemplate.ID,
+                isNotify = taskTemplate.isNotify,
+                Title = taskTemplate.Title,
+                OffsetTicks = taskTemplate.Offset.Ticks,
+                Responsible = EmployeeWraperHelper.Get(taskTemplate.ResponsibleID)
+            };
         }
 
         protected IEnumerable<TaskTemplateContainerWrapper> ToTaskListTemplateContainerWrapper(IEnumerable<TaskTemplateContainer> items)
@@ -359,11 +360,11 @@ namespace ASC.Api.CRM
             foreach (var item in items)
             {
                 var taskTemplateContainer = new TaskTemplateContainerWrapper
-                    {
-                        Title = item.Title,
-                        EntityType = item.EntityType.ToString(),
-                        Id = item.ID
-                    };
+                {
+                    Title = item.Title,
+                    EntityType = item.EntityType.ToString(),
+                    Id = item.ID
+                };
 
                 if (taskTemplateDictionary.ContainsKey(taskTemplateContainer.Id))
                 {

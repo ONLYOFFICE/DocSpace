@@ -33,6 +33,7 @@ using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Utility;
 using ASC.Web.CRM.Classes;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,14 +114,14 @@ namespace ASC.Api.CRM
         /// <exception cref="SecurityException"></exception>
         [Update(@"contact/status/settings")]
         public Boolean? UpdateCRMContactStatusSettings(Boolean? changeContactStatusGroupAuto)
-        {            
+        {
             var tenantSettings = SettingsManager.Load<CRMSettings>();
 
             tenantSettings.ChangeContactStatusGroupAuto = changeContactStatusGroupAuto;
 
             SettingsManager.Save<CRMSettings>(tenantSettings);
 
-            MessageService.Send( MessageAction.ContactTemperatureLevelSettingsUpdated);
+            MessageService.Send(MessageAction.ContactTemperatureLevelSettingsUpdated);
 
             return changeContactStatusGroupAuto;
         }
@@ -166,7 +167,7 @@ namespace ASC.Api.CRM
 
             SettingsManager.Save<CRMSettings>(tenantSettings);
 
-            MessageService.Send( MessageAction.ContactsTagSettingsUpdated);
+            MessageService.Send(MessageAction.ContactsTagSettingsUpdated);
 
             return addTagToContactGroupAuto;
         }
@@ -218,7 +219,7 @@ namespace ASC.Api.CRM
 
             SettingsManager.Save<CRMSettings>(tenantSettings);
 
-            MessageService.Send( MessageAction.OrganizationProfileUpdatedCompanyName, companyName);
+            MessageService.Send(MessageAction.OrganizationProfileUpdatedCompanyName, companyName);
 
             return companyName;
         }
@@ -248,20 +249,20 @@ namespace ASC.Api.CRM
             }
 
             var companyAddress = Newtonsoft.Json.JsonConvert.SerializeObject(new
-                {
-                    type = AddressCategory.Billing.ToString(),
-                    street,
-                    city,
-                    state,
-                    zip,
-                    country
-                });
+            {
+                type = AddressCategory.Billing.ToString(),
+                street,
+                city,
+                state,
+                zip,
+                country
+            });
 
             tenantSettings.InvoiceSetting.CompanyAddress = companyAddress;
 
             SettingsManager.Save<CRMSettings>(tenantSettings);
 
-            MessageService.Send( MessageAction.OrganizationProfileUpdatedAddress);
+            MessageService.Send(MessageAction.OrganizationProfileUpdatedAddress);
 
             return companyAddress;
         }
@@ -305,7 +306,7 @@ namespace ASC.Api.CRM
 
             SettingsManager.Save<CRMSettings>(tenantSettings);
 
-            MessageService.Send( MessageAction.OrganizationProfileUpdatedInvoiceLogo);
+            MessageService.Send(MessageAction.OrganizationProfileUpdatedInvoiceLogo);
 
             return companyLogoID;
         }
@@ -356,7 +357,7 @@ namespace ASC.Api.CRM
 
             SettingsManager.Save<CRMSettings>(tenantSettings);
 
-            MessageService.Send( MessageAction.WebsiteContactFormUpdatedKey);
+            MessageService.Send(MessageAction.WebsiteContactFormUpdatedKey);
 
             return tenantSettings.WebFormKey.ToString();
         }
@@ -384,13 +385,13 @@ namespace ASC.Api.CRM
             if (cur == null) throw new ArgumentException();
 
             Global.SaveDefaultCurrencySettings(cur);
-            MessageService.Send( MessageAction.CrmDefaultCurrencyUpdated);
+            MessageService.Send(MessageAction.CrmDefaultCurrencyUpdated);
 
             return CurrencyInfoWrapperHelper.Get(cur);
         }
 
         /// <visible>false</visible>
-        [Create(@"{entityType:(contact|opportunity|case|task)}/import/start")]
+        [Create(@"{entityType:regex(contact|opportunity|case|task)}/import/start")]
         public string StartImportFromCSV(string entityType, string csvFileURI, string jsonSettings)
         {
             EntityType entityTypeObj;
@@ -415,13 +416,13 @@ namespace ASC.Api.CRM
             }
 
             ImportFromCSVManager.StartImport(entityTypeObj, csvFileURI, jsonSettings);
-            
+
             return "";
 
         }
 
         /// <visible>false</visible>
-        [Read(@"{entityType:(contact|opportunity|case|task)}/import/status")]
+        [Read(@"{entityType:regex(contact|opportunity|case|task)}/import/status")]
         public IProgressItem GetImportFromCSVStatus(string entityType)
         {
             EntityType entityTypeObj;
@@ -473,9 +474,9 @@ namespace ASC.Api.CRM
         //public IProgressItem GetExportStatus()
         //{
         //    if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
-            
+
         //    return ExportToCsv.GetStatus(false);
-        
+
         //}
 
         ///// <visible>false</visible>
@@ -512,9 +513,9 @@ namespace ASC.Api.CRM
         //[Update(@"export/partial/cancel")]
         //public IProgressItem CancelPartialExport()
         //{
-            
+
         //    ExportToCsv.Cancel(true);
-            
+
         //    return ExportToCsv.GetStatus(true);
 
         //}
@@ -524,7 +525,7 @@ namespace ASC.Api.CRM
         //public IProgressItem StartPartialExport(string entityType, string base64FilterString)
         //{
         //    if (string.IsNullOrEmpty(base64FilterString)) throw new ArgumentException();
-            
+
         //    FilterObject filterObject;
         //    String fileName;
 

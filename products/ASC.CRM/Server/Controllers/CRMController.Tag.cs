@@ -33,6 +33,7 @@ using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,14 +53,15 @@ namespace ASC.Api.CRM
         ///   Tag
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
-        [Read(@"{entityType:(contact|opportunity|case)}/tag/{entityid:int}")]
+        [Read(@"{entityType:regex(contact|opportunity|case)}/tag/{entityid:int}")]
         public IEnumerable<string> GetEntityTags(string entityType, int entityid)
         {
             if (string.IsNullOrEmpty(entityType) || entityid <= 0) throw new ArgumentException();
 
             var entityTypeObj = ToEntityType(entityType);
 
-            switch (entityTypeObj) {
+            switch (entityTypeObj)
+            {
                 case EntityType.Contact:
                 case EntityType.Person:
                 case EntityType.Company:
@@ -113,7 +115,7 @@ namespace ASC.Api.CRM
         ///   Tag
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
-        [Create(@"{entityType:(contact|opportunity|case)}/tag")]
+        [Create(@"{entityType:regex(contact|opportunity|case)}/tag")]
         public string CreateTag(string entityType, string tagName)
         {
             if (string.IsNullOrEmpty(tagName)) throw new ArgumentException();
@@ -123,7 +125,7 @@ namespace ASC.Api.CRM
             var messageAction = GetEntityTagCreatedAction(entityTypeObj);
             DaoFactory.GetTagDao().AddTag(entityTypeObj, tagName);
 
-            MessageService.Send( messageAction, tagName);
+            MessageService.Send(messageAction, tagName);
 
             return tagName;
         }
@@ -138,7 +140,7 @@ namespace ASC.Api.CRM
         ///   Tag
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
-        [Read(@"{entityType:(contact|opportunity|case)}/tag")]
+        [Read(@"{entityType:regex(contact|opportunity|case)}/tag")]
         public IEnumerable<TagWrapper> GetAllTags(string entityType)
         {
             if (string.IsNullOrEmpty(entityType)) throw new ArgumentException();
@@ -149,7 +151,8 @@ namespace ASC.Api.CRM
             if (tagTitles.Count != relativeItemsCountArrayJSON.Count) throw new ArgumentException();
 
             var result = new List<TagWrapper>();
-            for (var i = 0; i < tagTitles.Count; i++) {
+            for (var i = 0; i < tagTitles.Count; i++)
+            {
                 result.Add(new TagWrapper(tagTitles[i], relativeItemsCountArrayJSON[i]));
             }
             return result.OrderBy(x => x.Title.Trim(), StringComparer.OrdinalIgnoreCase).ToList();
@@ -167,7 +170,7 @@ namespace ASC.Api.CRM
         /// <returns>
         ///    Tag
         /// </returns> 
-        [Create(@"{entityType:(contact|opportunity|case)}/taglist")]
+        [Create(@"{entityType:regex(contact|opportunity|case)}/taglist")]
         public string AddTagToBatch(string entityType, IEnumerable<int> entityid, string tagName)
         {
             var ids = entityid.ToList();
@@ -312,7 +315,7 @@ namespace ASC.Api.CRM
         /// <category>Tags</category>
         /// <param name="entityType" remark="Allowed values: contact,opportunity,case">Entity type</param>
         /// <returns>Tags</returns>
-        [Delete(@"{entityType:(contact|opportunity|case)}/tag/unused")]
+        [Delete(@"{entityType:regex(contact|opportunity|case)}/tag/unused")]
         public IEnumerable<string> DeleteUnusedTag(string entityType)
         {
             if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
@@ -338,7 +341,7 @@ namespace ASC.Api.CRM
         /// <returns>
         ///   Tag
         /// </returns> 
-        [Create(@"{entityType:(contact|opportunity|case)}/{entityid:int}/tag")]
+        [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/tag")]
         public string AddTagTo(string entityType, int entityid, string tagName)
         {
             if (entityid <= 0 || string.IsNullOrEmpty(tagName)) throw new ArgumentException();
@@ -352,7 +355,7 @@ namespace ASC.Api.CRM
             DaoFactory.GetTagDao().AddTagToEntity(entityTypeObj, entityid, tagName);
 
             var messageAction = GetTagCreatedAction(entityTypeObj, entityid);
-            MessageService.Send( messageAction, MessageTarget.Create(entityid), entityTitle, tagName);
+            MessageService.Send(messageAction, MessageTarget.Create(entityid), entityTitle, tagName);
 
             return tagName;
         }
@@ -371,7 +374,7 @@ namespace ASC.Api.CRM
         /// <returns>
         ///   Tag
         /// </returns>
-        [Create(@"{entityType:(company|person)}/{entityid:int}/tag/group")]
+        [Create(@"{entityType:regex(company|person)}/{entityid:int}/tag/group")]
         public string AddContactTagToGroup(string entityType, int entityid, string tagName)
         {
             if (entityid <= 0 || string.IsNullOrEmpty(tagName)) throw new ArgumentException();
@@ -441,7 +444,7 @@ namespace ASC.Api.CRM
             var messageActions = GetTagCreatedGroupAction(entityTypeObj);
             foreach (var messageAction in messageActions)
             {
-                MessageService.Send( messageAction, MessageTarget.Create(contactInst.ID), entityTitle, tagName);
+                MessageService.Send(messageAction, MessageTarget.Create(contactInst.ID), entityTitle, tagName);
             }
 
             return tagName;
@@ -459,7 +462,7 @@ namespace ASC.Api.CRM
         /// <returns>
         ///   Tag
         /// </returns>
-        [Delete(@"{entityType:(contact|opportunity|case)}/tag")]
+        [Delete(@"{entityType:regex(contact|opportunity|case)}/tag")]
         public string DeleteTag(string entityType, string tagName)
         {
             if (string.IsNullOrEmpty(entityType) || string.IsNullOrEmpty(tagName)) throw new ArgumentException();
@@ -472,7 +475,7 @@ namespace ASC.Api.CRM
             DaoFactory.GetTagDao().DeleteTag(entityTypeObj, tagName);
 
             var messageAction = GetEntityTagDeletedAction(entityTypeObj);
-            MessageService.Send( messageAction, tagName);
+            MessageService.Send(messageAction, tagName);
 
             return tagName;
         }
@@ -489,7 +492,7 @@ namespace ASC.Api.CRM
         /// <returns>
         ///   Tag
         /// </returns> 
-        [Delete(@"{entityType:(contact|opportunity|case)}/{entityid:int}/tag")]
+        [Delete(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/tag")]
         public string DeleteTagFrom(string entityType, int entityid, string tagName)
         {
             if (string.IsNullOrEmpty(entityType) || entityid <= 0 || string.IsNullOrEmpty(tagName)) throw new ArgumentException();
@@ -506,7 +509,7 @@ namespace ASC.Api.CRM
 
             var messageAction = GetTagDeletedAction(entityTypeObj, entityid);
 
-            MessageService.Send( messageAction, MessageTarget.Create(entityid), entityTitle, tagName);
+            MessageService.Send(messageAction, MessageTarget.Create(entityid), entityTitle, tagName);
 
             return tagName;
         }
@@ -525,7 +528,7 @@ namespace ASC.Api.CRM
         /// <returns>
         ///   Tag
         /// </returns>
-        [Delete(@"{entityType:(company|person)}/{entityid:int}/tag/group")]
+        [Delete(@"{entityType:regex(company|person)}/{entityid:int}/tag/group")]
         public string DeleteContactTagFromGroup(string entityType, int entityid, string tagName)
         {
             if (entityid <= 0 || string.IsNullOrEmpty(tagName)) throw new ArgumentException();
@@ -647,9 +650,9 @@ namespace ASC.Api.CRM
             switch (entityType)
             {
                 case EntityType.Company:
-                    return new List<MessageAction> {MessageAction.CompanyCreatedTag, MessageAction.CompanyCreatedPersonsTag};
+                    return new List<MessageAction> { MessageAction.CompanyCreatedTag, MessageAction.CompanyCreatedPersonsTag };
                 case EntityType.Person:
-                    return new List<MessageAction> {MessageAction.PersonCreatedTag, MessageAction.PersonCreatedCompanyTag};
+                    return new List<MessageAction> { MessageAction.PersonCreatedTag, MessageAction.PersonCreatedCompanyTag };
                 default:
                     throw new ArgumentException("Invalid entityType: " + entityType);
             }

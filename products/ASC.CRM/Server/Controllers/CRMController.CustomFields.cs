@@ -33,6 +33,7 @@ using ASC.ElasticSearch;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Core.Search;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +53,7 @@ namespace ASC.Api.CRM
         ///    User field list
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
-        [Read(@"{entityType:(contact|person|company|opportunity|case)}/customfield/definitions")]
+        [Read(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/definitions")]
         public IEnumerable<CustomFieldWrapper> GetCustomFieldDefinitions(string entityType)
         {
             return DaoFactory.GetCustomFieldDao().GetFieldsDescription(ToEntityType(entityType)).ConvertAll(ToCustomFieldWrapper);
@@ -66,7 +67,7 @@ namespace ASC.Api.CRM
         /// <short>Get user field values</short> 
         /// <category>User fields</category>
         /// <returns></returns>
-        [Read(@"{entityType:(contact|person|company|opportunity|case)}/{entityid:int}/customfield")]
+        [Read(@"{entityType:regex(contact|person|company|opportunity|case)}/{entityid:int}/customfield")]
         public IEnumerable<CustomFieldBaseWrapper> GetCustomFieldForSubject(string entityType, int entityid)
         {
             return DaoFactory.GetCustomFieldDao().GetEnityFields(ToEntityType(entityType), entityid, false).ConvertAll(ToCustomFieldBaseWrapper);
@@ -84,7 +85,7 @@ namespace ASC.Api.CRM
         /// <returns>
         ///    User field
         /// </returns>
-        [Create(@"{entityType:(contact|person|company|opportunity|case)}/{entityid:int}/customfield/{fieldid:int}")]
+        [Create(@"{entityType:regex(contact|person|company|opportunity|case)}/{entityid:int}/customfield/{fieldid:int}")]
         public CustomFieldBaseWrapper SetEntityCustomFieldValue(string entityType, int entityid, int fieldid, string fieldValue)
         {
             var customField = DaoFactory.GetCustomFieldDao().GetFieldDescription(fieldid);
@@ -191,7 +192,7 @@ namespace ASC.Api.CRM
         /// 
         /// ]]>
         /// </example>
-        [Create(@"{entityType:(contact|person|company|opportunity|case)}/customfield")]
+        [Create(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield")]
         public CustomFieldWrapper CreateCustomFieldValue(string entityType, string label, int fieldType, int position, string mask)
         {
             if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
@@ -200,7 +201,7 @@ namespace ASC.Api.CRM
             var wrapper = DaoFactory.GetCustomFieldDao().GetFieldDescription(fieldID);
 
             var messageAction = GetCustomFieldCreatedAction(entityTypeObj);
-            MessageService.Send( messageAction, MessageTarget.Create(wrapper.ID), wrapper.Label);
+            MessageService.Send(messageAction, MessageTarget.Create(wrapper.ID), wrapper.Label);
 
             return ToCustomFieldWrapper(DaoFactory.GetCustomFieldDao().GetFieldDescription(fieldID));
         }
@@ -229,7 +230,7 @@ namespace ASC.Api.CRM
         /// </remarks>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Update(@"{entityType:(contact|person|company|opportunity|case)}/customfield/{id:int}")]
+        [Update(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/{id:int}")]
         public CustomFieldWrapper UpdateCustomFieldValue(int id, string entityType, string label, int fieldType, int position, string mask)
         {
             if (id <= 0) throw new ArgumentException();
@@ -238,21 +239,21 @@ namespace ASC.Api.CRM
             var entityTypeObj = ToEntityType(entityType);
 
             var customField = new CustomField
-                {
-                    EntityType = entityTypeObj,
-                    FieldType = (CustomFieldType)fieldType,
-                    ID = id,
-                    Mask = mask,
-                    Label = label,
-                    Position = position
-                };
+            {
+                EntityType = entityTypeObj,
+                FieldType = (CustomFieldType)fieldType,
+                ID = id,
+                Mask = mask,
+                Label = label,
+                Position = position
+            };
 
             DaoFactory.GetCustomFieldDao().EditItem(customField);
 
             customField = DaoFactory.GetCustomFieldDao().GetFieldDescription(id);
 
             var messageAction = GetCustomFieldUpdatedAction(entityTypeObj);
-            MessageService.Send( messageAction, MessageTarget.Create(customField.ID), customField.Label);
+            MessageService.Send(messageAction, MessageTarget.Create(customField.ID), customField.Label);
 
             return ToCustomFieldWrapper(customField);
         }
@@ -269,7 +270,7 @@ namespace ASC.Api.CRM
         /// <returns>
         ///    User field
         /// </returns>
-        [Delete(@"{entityType:(contact|person|company|opportunity|case)}/customfield/{fieldid:int}")]
+        [Delete(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/{fieldid:int}")]
         public CustomFieldWrapper DeleteCustomField(string entityType, int fieldid)
         {
             if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
@@ -279,12 +280,11 @@ namespace ASC.Api.CRM
             if (customField == null) throw new ItemNotFoundException();
 
             var result = ToCustomFieldWrapper(customField);
+
             DaoFactory.GetCustomFieldDao().DeleteField(fieldid);
 
-            FactoryIndexerFieldValue.DeleteAsync(Web.CRM.Core.Search.FieldsWrapper.GetEventsWrapper(ServiceProvider, customField));
-
             var messageAction = GetCustomFieldDeletedAction(ToEntityType(entityType));
-            MessageService.Send( messageAction, MessageTarget.Create(customField.ID), result.Label);
+            MessageService.Send(messageAction, MessageTarget.Create(customField.ID), result.Label);
 
             return result;
         }
@@ -301,7 +301,7 @@ namespace ASC.Api.CRM
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Update(@"{entityType:(contact|person|company|opportunity|case)}/customfield/reorder")]
+        [Update(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/reorder")]
         public IEnumerable<CustomFieldBaseWrapper> UpdateCustomFieldsOrder(IEnumerable<int> fieldids, string entityType)
         {
             if (fieldids == null) throw new ArgumentException();
@@ -317,7 +317,7 @@ namespace ASC.Api.CRM
             DaoFactory.GetCustomFieldDao().ReorderFields(fieldids.ToArray());
 
             var messageAction = GetCustomFieldsUpdatedOrderAction(ToEntityType(entityType));
-            MessageService.Send( messageAction, MessageTarget.Create(fieldids), customFields.Select(x => x.Label));
+            MessageService.Send(messageAction, MessageTarget.Create(fieldids), customFields.Select(x => x.Label));
 
             return customFields.Select(ToCustomFieldBaseWrapper);
         }
@@ -330,9 +330,9 @@ namespace ASC.Api.CRM
         private CustomFieldWrapper ToCustomFieldWrapper(CustomField customField)
         {
             var result = new CustomFieldWrapper(customField)
-                {
-                    RelativeItemsCount = DaoFactory.GetCustomFieldDao().GetContactLinkCount(customField.EntityType, customField.ID)
-                };
+            {
+                RelativeItemsCount = DaoFactory.GetCustomFieldDao().GetContactLinkCount(customField.EntityType, customField.ID)
+            };
             return result;
         }
 

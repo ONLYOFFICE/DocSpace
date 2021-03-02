@@ -92,6 +92,7 @@ namespace ASC.Web.CRM.Classes
 
     [Serializable]
     [DataContract]
+    [Scope]
     public class InvoiceSetting
     {
         public InvoiceSetting(IConfiguration configuration)
@@ -258,18 +259,6 @@ namespace ASC.Web.CRM.Classes
             return new CRMReportSampleSettings { NeedToGenerate = true };
         }
     }
-
-    public static class InvoiceSettingExtention
-    {
-        public static DIHelper AddInvoiceSettingService(this DIHelper services)
-        {
-            services.TryAddScoped<InvoiceSetting>();
-
-            return services;
-
-        }
-    }
-
-    
+       
 
 }

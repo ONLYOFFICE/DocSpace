@@ -52,6 +52,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.CRM.Core
 {
+    [Scope]
     public class CRMSecurity
     {
         public readonly IAction _actionRead = new Action(new Guid("{6F05C382-8BCA-4469-9424-C807A98C40D7}"), "", true, false);

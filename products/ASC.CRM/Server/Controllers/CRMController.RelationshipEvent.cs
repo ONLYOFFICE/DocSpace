@@ -36,7 +36,9 @@ using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Services.NotifyService;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
+
 using Microsoft.AspNetCore.Http;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -45,6 +47,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
 namespace ASC.Api.CRM
@@ -78,7 +81,8 @@ namespace ASC.Api.CRM
         {
             var entityTypeObj = ToEntityType(entityType);
 
-            switch (entityTypeObj) {
+            switch (entityTypeObj)
+            {
                 case EntityType.Contact:
                     var contact = DaoFactory.GetContactDao().GetByID(entityId);
                     if (contact == null || !CRMSecurity.CanAccessTo(contact))
@@ -183,7 +187,7 @@ namespace ASC.Api.CRM
 
             var messageAction = GetHistoryDeletedAction(item.EntityType, item.ContactID);
             var entityTitle = wrapper.Contact == null ? wrapper.Entity.EntityTitle : wrapper.Contact.DisplayName;
-            MessageService.Send( messageAction, MessageTarget.Create(item.ID), entityTitle, wrapper.Category.Title);
+            MessageService.Send(messageAction, MessageTarget.Create(item.ID), entityTitle, wrapper.Category.Title);
 
             return wrapper;
         }
@@ -200,7 +204,7 @@ namespace ASC.Api.CRM
         /// <returns>
         ///     File info
         /// </returns>
-        [Create(@"{entityType:(contact|opportunity|case)}/{entityid:int}/files/text")]
+        [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files/text")]
         public FileWrapper<int> CreateTextFile(string entityType, int entityid, string title, string content)
         {
             if (title == null) throw new ArgumentNullException("title");
@@ -225,7 +229,7 @@ namespace ASC.Api.CRM
                 result = SaveFile(folderid, memStream, title);
             }
 
-            AttachFiles(entityType, entityid, new List<int> {(int)result.Id});
+            AttachFiles(entityType, entityid, new List<int> { (int)result.Id });
 
             return result;
         }
@@ -253,42 +257,42 @@ namespace ASC.Api.CRM
         /// <returns>
         /// File info
         /// </returns>
-        [Create(@"{entityType:(contact|opportunity|case)}/{entityid:int}/files/upload")]
-        public FileWrapper<int> UploadFileInCRM(
-            string entityType,
-            int entityid,
-            Stream file,
-            ContentType contentType,
-            ContentDisposition contentDisposition,
-            IEnumerable<IFormFile> files,
-            bool storeOriginalFileFlag
-            )
-        {
-            FilesSettings.StoreOriginalFilesSetting = storeOriginalFileFlag;
+        //[Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files/upload")]
+        //public FileWrapper<int> UploadFileInCRM(
+        //    string entityType,
+        //    int entityid,
+        //    Stream file,
+        //    ContentType contentType,
+        //    ContentDisposition contentDisposition,
+        //    IEnumerable<IFormFile> files,
+        //    bool storeOriginalFileFlag
+        //    )
+        //{
+        //    FilesSettings.StoreOriginalFilesSetting = storeOriginalFileFlag;
 
-            var folderid = GetRootFolderID();
+        //    var folderid = GetRootFolderID();
 
-            var fileNames = new List<string>();
+        //    var fileNames = new List<string>();
 
-            FileWrapper<int> uploadedFile = null;
-            if (files != null && files.Any())
-            {
-                //For case with multiple files
-                foreach (var postedFile in files)
-                {
-                    using var fileStream = postedFile.OpenReadStream();
-                    uploadedFile = SaveFile(folderid, fileStream, postedFile.FileName);
-                    fileNames.Add(uploadedFile.Title);
-                }
-            }
-            else if (file != null)
-            {
-                uploadedFile = SaveFile(folderid, file, contentDisposition.FileName);
-                fileNames.Add(uploadedFile.Title);
-            }
+        //    FileWrapper<int> uploadedFile = null;
+        //    if (files != null && files.Any())
+        //    {
+        //        //For case with multiple files
+        //        foreach (var postedFile in files)
+        //        {
+        //            using var fileStream = postedFile.OpenReadStream();
+        //            uploadedFile = SaveFile(folderid, fileStream, postedFile.FileName);
+        //            fileNames.Add(uploadedFile.Title);
+        //        }
+        //    }
+        //    else if (file != null)
+        //    {
+        //        uploadedFile = SaveFile(folderid, file, contentDisposition.FileName);
+        //        fileNames.Add(uploadedFile.Title);
+        //    }
 
-            return uploadedFile;
-        }
+        //    return uploadedFile;
+        //}
 
         private FileWrapper<int> SaveFile(int folderid, Stream file, string fileName)
         {
@@ -320,122 +324,122 @@ namespace ASC.Api.CRM
         /// <returns>
         ///   Created event
         /// </returns>
-        [Create(@"history")]
-        public RelationshipEventWrapper AddHistoryTo(
-            string entityType,
-            int entityId,
-            int contactId,
-            string content,
-            int categoryId,
-            ApiDateTime created,
-            IEnumerable<int> fileId,
-            IEnumerable<Guid> notifyUserList)
-        {
-            if (!string.IsNullOrEmpty(entityType) &&
-                !(
-                     string.Compare(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) == 0 ||
-                     string.Compare(entityType, "case", StringComparison.OrdinalIgnoreCase) == 0)
-                )
-                throw new ArgumentException();
+        //[Create(@"history")]
+        //public RelationshipEventWrapper AddHistoryTo(
+        //    string entityType,
+        //    int entityId,
+        //    int contactId,
+        //    string content,
+        //    int categoryId,
+        //    ApiDateTime created,
+        //    IEnumerable<int> fileId,
+        //    IEnumerable<Guid> notifyUserList)
+        //{
+        //    if (!string.IsNullOrEmpty(entityType) &&
+        //        !(
+        //             string.Compare(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) == 0 ||
+        //             string.Compare(entityType, "case", StringComparison.OrdinalIgnoreCase) == 0)
+        //        )
+        //        throw new ArgumentException();
 
-            var entityTypeObj = ToEntityType(entityType);
+        //    var entityTypeObj = ToEntityType(entityType);
 
-            var entityTitle = "";
-            if (contactId > 0) {
-                var contact = DaoFactory.GetContactDao().GetByID(contactId);
-                if (contact == null || !CRMSecurity.CanAccessTo(contact))
-                    throw new ArgumentException();
-                entityTitle = contact.GetTitle();
-            }
+        //    var entityTitle = "";
+        //    if (contactId > 0) {
+        //        var contact = DaoFactory.GetContactDao().GetByID(contactId);
+        //        if (contact == null || !CRMSecurity.CanAccessTo(contact))
+        //            throw new ArgumentException();
+        //        entityTitle = contact.GetTitle();
+        //    }
 
-            if (entityTypeObj == EntityType.Case) {
-                var cases = DaoFactory.GetCasesDao().GetByID(entityId);
-                if (cases == null || !CRMSecurity.CanAccessTo(cases))
-                    throw new ArgumentException();
-                if (contactId <= 0)
-                {
-                    entityTitle = cases.Title;
-                }
-            }
-            if (entityTypeObj == EntityType.Opportunity)
-            {
-                var deal = DaoFactory.GetDealDao().GetByID(entityId);
-                if (deal == null || !CRMSecurity.CanAccessTo(deal))
-                    throw new ArgumentException();
-                if (contactId <= 0)
-                {
-                    entityTitle = deal.Title;
-                }
-            }
+        //    if (entityTypeObj == EntityType.Case) {
+        //        var cases = DaoFactory.GetCasesDao().GetByID(entityId);
+        //        if (cases == null || !CRMSecurity.CanAccessTo(cases))
+        //            throw new ArgumentException();
+        //        if (contactId <= 0)
+        //        {
+        //            entityTitle = cases.Title;
+        //        }
+        //    }
+        //    if (entityTypeObj == EntityType.Opportunity)
+        //    {
+        //        var deal = DaoFactory.GetDealDao().GetByID(entityId);
+        //        if (deal == null || !CRMSecurity.CanAccessTo(deal))
+        //            throw new ArgumentException();
+        //        if (contactId <= 0)
+        //        {
+        //            entityTitle = deal.Title;
+        //        }
+        //    }
 
-            var relationshipEvent = new RelationshipEvent
-                {
-                    CategoryID = categoryId,
-                    EntityType = entityTypeObj,
-                    EntityID = entityId,
-                    Content = content,
-                    ContactID = contactId,
-                    CreateOn = created,
-                    CreateBy = SecurityContext.CurrentAccount.ID
-                };
+        //    var relationshipEvent = new RelationshipEvent
+        //        {
+        //            CategoryID = categoryId,
+        //            EntityType = entityTypeObj,
+        //            EntityID = entityId,
+        //            Content = content,
+        //            ContactID = contactId,
+        //            CreateOn = created,
+        //            CreateBy = SecurityContext.CurrentAccount.ID
+        //        };
 
-            var category = DaoFactory.GetListItemDao().GetByID(categoryId);
-            if (category == null) throw new ArgumentException();
+        //    var category = DaoFactory.GetListItemDao().GetByID(categoryId);
+        //    if (category == null) throw new ArgumentException();
 
-            var item = DaoFactory.GetRelationshipEventDao().CreateItem(relationshipEvent);
+        //    var item = DaoFactory.GetRelationshipEventDao().CreateItem(relationshipEvent);
 
 
-            notifyUserList = notifyUserList != null ? notifyUserList.ToList() : new List<Guid>();
-            var needNotify = notifyUserList.Any();
+        //    notifyUserList = notifyUserList != null ? notifyUserList.ToList() : new List<Guid>();
+        //    var needNotify = notifyUserList.Any();
 
-            var fileListInfoHashtable = new Hashtable();
+        //    var fileListInfoHashtable = new Hashtable();
 
-            if (fileId != null)
-            {
-                var fileIds = fileId.ToList();
-                var files = FilesDaoFactory.GetFileDao<int>().GetFiles(fileIds.ToArray());
+        //    if (fileId != null)
+        //    {
+        //        var fileIds = fileId.ToList();
+        //        var files = FilesDaoFactory.GetFileDao<int>().GetFiles(fileIds.ToArray());
 
-                if (needNotify)
-                {
-                    foreach (var file in files)
-                    {
-                        var extension = Path.GetExtension(file.Title);
-                        if (extension == null) continue;
+        //        if (needNotify)
+        //        {
+        //            foreach (var file in files)
+        //            {
+        //                var extension = Path.GetExtension(file.Title);
+        //                if (extension == null) continue;
 
-                        var fileInfo = string.Format("{0} ({1})", file.Title, extension.ToUpper());
-                        if (!fileListInfoHashtable.ContainsKey(fileInfo))
-                        {
-                            fileListInfoHashtable.Add(fileInfo, file.DownloadUrl);
-                        }
-                        else
-                        {
-                            fileInfo = string.Format("{0} ({1}, {2})", file.Title, extension.ToUpper(), file.UniqID);
-                            fileListInfoHashtable.Add(fileInfo, file.DownloadUrl);
-                        }
-                    }
-                }
+        //                var fileInfo = string.Format("{0} ({1})", file.Title, extension.ToUpper());
+        //                if (!fileListInfoHashtable.ContainsKey(fileInfo))
+        //                {
+        //                    fileListInfoHashtable.Add(fileInfo, file.DownloadUrl);
+        //                }
+        //                else
+        //                {
+        //                    fileInfo = string.Format("{0} ({1}, {2})", file.Title, extension.ToUpper(), file.UniqID);
+        //                    fileListInfoHashtable.Add(fileInfo, file.DownloadUrl);
+        //                }
+        //            }
+        //        }
 
-                DaoFactory.GetRelationshipEventDao().AttachFiles(item.ID, fileIds.ToArray());
+        //        DaoFactory.GetRelationshipEventDao().AttachFiles(item.ID, fileIds.ToArray());
 
-                if (files.Any())
-                {
-                    var fileAttachAction = GetFilesAttachAction(entityTypeObj, contactId);
-                    MessageService.Send( fileAttachAction, MessageTarget.Create(item.ID), entityTitle, files.Select(x => x.Title));
-                }
-            }
+        //        if (files.Any())
+        //        {
+        //            var fileAttachAction = GetFilesAttachAction(entityTypeObj, contactId);
+        //            MessageService.Send( fileAttachAction, MessageTarget.Create(item.ID), entityTitle, files.Select(x => x.Title));
+        //        }
+        //    }
 
-            if (needNotify)
-            {
-                NotifyClient.SendAboutAddRelationshipEventAdd(item, fileListInfoHashtable, DaoFactory, notifyUserList.ToArray());
-            }
+        //    if (needNotify)
+        //    {
+        //        NotifyClient.SendAboutAddRelationshipEventAdd(item, fileListInfoHashtable, DaoFactory, notifyUserList.ToArray());
+        //    }
 
-            var wrapper = RelationshipEventWrapperHelper.Get(item);
+        //    var wrapper = RelationshipEventWrapperHelper.Get(item);
 
-            var historyCreatedAction = GetHistoryCreatedAction(entityTypeObj, contactId);
-            MessageService.Send( historyCreatedAction, MessageTarget.Create(item.ID), entityTitle, category.Title);
+        //    var historyCreatedAction = GetHistoryCreatedAction(entityTypeObj, contactId);
+        //    MessageService.Send( historyCreatedAction, MessageTarget.Create(item.ID), entityTitle, category.Title);
 
-            return wrapper;
-        }
+        //    return wrapper;
+        //}
 
         /// <summary>
         ///     Associates the selected file(s) with the entity with the ID or type specified in the request
@@ -448,7 +452,7 @@ namespace ASC.Api.CRM
         /// <param name="fileids">List of IDs of the files</param>
         /// <category>Files</category>
         /// <returns>Entity with the file attached</returns>
-        [Create(@"{entityType:(contact|opportunity|case)}/{entityid:int}/files")]
+        [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files")]
         public RelationshipEventWrapper AttachFiles(string entityType, int entityid, IEnumerable<int> fileids)
         {
             if (entityid <= 0 || fileids == null) throw new ArgumentException();
@@ -471,15 +475,15 @@ namespace ASC.Api.CRM
                 case EntityType.Contact:
                     var relationshipEvent1 = DaoFactory.GetRelationshipEventDao().AttachFiles(entityid, EntityType.Any, 0, fileids.ToArray());
                     var messageAction = entityObj is Company ? MessageAction.CompanyAttachedFiles : MessageAction.PersonAttachedFiles;
-                    MessageService.Send( messageAction, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
+                    MessageService.Send(messageAction, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
                     return RelationshipEventWrapperHelper.Get(relationshipEvent1);
                 case EntityType.Opportunity:
                     var relationshipEvent2 = DaoFactory.GetRelationshipEventDao().AttachFiles(0, entityTypeObj, entityid, fileids.ToArray());
-                    MessageService.Send( MessageAction.OpportunityAttachedFiles, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
+                    MessageService.Send(MessageAction.OpportunityAttachedFiles, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
                     return RelationshipEventWrapperHelper.Get(relationshipEvent2);
                 case EntityType.Case:
                     var relationshipEvent3 = DaoFactory.GetRelationshipEventDao().AttachFiles(0, entityTypeObj, entityid, fileids.ToArray());
-                    MessageService.Send( MessageAction.CaseAttachedFiles, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
+                    MessageService.Send(MessageAction.CaseAttachedFiles, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
                     return RelationshipEventWrapperHelper.Get(relationshipEvent3);
                 default:
                     throw new ArgumentException();
@@ -510,7 +514,7 @@ namespace ASC.Api.CRM
         /// <returns>
         ///    File list
         /// </returns>
-        [Read(@"{entityType:(contact|opportunity|case)}/{entityid:int}/files")]
+        [Read(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files")]
         public IEnumerable<FileWrapper<int>> GetFiles(string entityType, int entityid)
         {
             if (entityid <= 0) throw new ArgumentException();
@@ -520,7 +524,7 @@ namespace ASC.Api.CRM
             switch (entityTypeObj)
             {
                 case EntityType.Contact:
-                    return DaoFactory.GetRelationshipEventDao().GetAllFiles(new[] {entityid}, EntityType.Any, 0).ConvertAll(file => FileWrapperHelper.Get<int>(file));
+                    return DaoFactory.GetRelationshipEventDao().GetAllFiles(new[] { entityid }, EntityType.Any, 0).ConvertAll(file => FileWrapperHelper.Get<int>(file));
                 case EntityType.Opportunity:
                 case EntityType.Case:
                     return DaoFactory.GetRelationshipEventDao().GetAllFiles(null, entityTypeObj, entityid).ConvertAll(file => FileWrapperHelper.Get<int>(file));
@@ -563,7 +567,7 @@ namespace ASC.Api.CRM
                                   : GetEntityTitle(evt.EntityType, evt.EntityID, false, out entityObj);
                 var messageAction = GetFilesDetachAction(evt.EntityType, evt.ContactID);
 
-                MessageService.Send( messageAction, MessageTarget.Create(file.ID), entityTitle, file.Title);
+                MessageService.Send(messageAction, MessageTarget.Create(file.ID), entityTitle, file.Title);
             }
 
             return result;
@@ -625,11 +629,11 @@ namespace ASC.Api.CRM
                                           entityWrappers.Add(
                                               string.Format("{0}_{1}", (int)entityType, item.ID),
                                               new EntityWrapper
-                                                  {
-                                                      EntityId = item.ID,
-                                                      EntityTitle = item.Title,
-                                                      EntityType = "opportunity"
-                                                  });
+                                              {
+                                                  EntityId = item.ID,
+                                                  EntityTitle = item.Title,
+                                                  EntityType = "opportunity"
+                                              });
                                       });
                         break;
                     case EntityType.Case:
@@ -641,11 +645,11 @@ namespace ASC.Api.CRM
                                           entityWrappers.Add(
                                               string.Format("{0}_{1}", (int)entityType, item.ID),
                                               new EntityWrapper
-                                                  {
-                                                      EntityId = item.ID,
-                                                      EntityTitle = item.Title,
-                                                      EntityType = "case"
-                                                  });
+                                              {
+                                                  EntityId = item.ID,
+                                                  EntityTitle = item.Title,
+                                                  EntityType = "case"
+                                              });
                                       });
                         break;
                     default:
@@ -697,9 +701,9 @@ namespace ASC.Api.CRM
             if (entityID == 0) return null;
 
             var result = new EntityWrapper
-                {
-                    EntityId = entityID
-                };
+            {
+                EntityId = entityID
+            };
 
             switch (entityType)
             {
@@ -714,7 +718,7 @@ namespace ASC.Api.CRM
                     break;
                 case EntityType.Opportunity:
                     var dealObj = DaoFactory.GetDealDao().GetByID(entityID);
-        
+
                     if (dealObj == null)
                         return null;
 

@@ -31,6 +31,7 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,16 +70,16 @@ namespace ASC.Api.CRM
             if (successProbability < 0) successProbability = 0;
 
             var dealMilestone = new DealMilestone
-                {
-                    Title = title,
-                    Color = color,
-                    Description = description,
-                    Probability = successProbability,
-                    Status = stageType
-                };
+            {
+                Title = title,
+                Color = color,
+                Description = description,
+                Probability = successProbability,
+                Status = stageType
+            };
 
             dealMilestone.ID = DaoFactory.GetDealMilestoneDao().Create(dealMilestone);
-            MessageService.Send( MessageAction.OpportunityStageCreated, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
+            MessageService.Send(MessageAction.OpportunityStageCreated, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
 
             return ToDealMilestoneWrapper(dealMilestone);
         }
@@ -118,17 +119,17 @@ namespace ASC.Api.CRM
             if (!curDealMilestoneExist) throw new ItemNotFoundException();
 
             var dealMilestone = new DealMilestone
-                {
-                    Title = title,
-                    Color = color,
-                    Description = description,
-                    Probability = successProbability,
-                    Status = stageType,
-                    ID = id
-                };
+            {
+                Title = title,
+                Color = color,
+                Description = description,
+                Probability = successProbability,
+                Status = stageType,
+                ID = id
+            };
 
             DaoFactory.GetDealMilestoneDao().Edit(dealMilestone);
-            MessageService.Send( MessageAction.OpportunityStageUpdated, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
+            MessageService.Send(MessageAction.OpportunityStageUpdated, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
 
             return ToDealMilestoneWrapper(dealMilestone);
         }
@@ -158,7 +159,7 @@ namespace ASC.Api.CRM
             dealMilestone.Color = color;
 
             DaoFactory.GetDealMilestoneDao().ChangeColor(id, color);
-            MessageService.Send( MessageAction.OpportunityStageUpdatedColor, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
+            MessageService.Send(MessageAction.OpportunityStageUpdatedColor, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
 
             return ToDealMilestoneWrapper(dealMilestone);
         }
@@ -189,7 +190,7 @@ namespace ASC.Api.CRM
             var result = idsList.Select(id => DaoFactory.GetDealMilestoneDao().GetByID(id)).ToList();
 
             DaoFactory.GetDealMilestoneDao().Reorder(idsList.ToArray());
-            MessageService.Send( MessageAction.OpportunityStagesUpdatedOrder, MessageTarget.Create(idsList), result.Select(x => x.Title));
+            MessageService.Send(MessageAction.OpportunityStagesUpdatedOrder, MessageTarget.Create(idsList), result.Select(x => x.Title));
 
             return result.Select(ToDealMilestoneWrapper);
         }
@@ -218,7 +219,7 @@ namespace ASC.Api.CRM
             var result = ToDealMilestoneWrapper(dealMilestone);
 
             DaoFactory.GetDealMilestoneDao().Delete(id);
-            MessageService.Send( MessageAction.OpportunityStageDeleted, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
+            MessageService.Send(MessageAction.OpportunityStageDeleted, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
 
             return result;
         }
@@ -242,15 +243,15 @@ namespace ASC.Api.CRM
             if (string.IsNullOrEmpty(title)) throw new ArgumentException();
 
             var listItem = new ListItem
-                {
-                    Title = title,
-                    Description = description,
-                    SortOrder = sortOrder,
-                    AdditionalParams = imageName
-                };
+            {
+                Title = title,
+                Description = description,
+                SortOrder = sortOrder,
+                AdditionalParams = imageName
+            };
 
             listItem.ID = DaoFactory.GetListItemDao().CreateItem(ListType.HistoryCategory, listItem);
-            MessageService.Send( MessageAction.HistoryEventCategoryCreated, MessageTarget.Create(listItem.ID), listItem.Title);
+            MessageService.Send(MessageAction.HistoryEventCategoryCreated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToHistoryCategoryWrapper(listItem);
         }
@@ -279,16 +280,16 @@ namespace ASC.Api.CRM
             if (!curHistoryCategoryExist) throw new ItemNotFoundException();
 
             var listItem = new ListItem
-                {
-                    Title = title,
-                    Description = description,
-                    SortOrder = sortOrder,
-                    AdditionalParams = imageName,
-                    ID = id
-                };
+            {
+                Title = title,
+                Description = description,
+                SortOrder = sortOrder,
+                AdditionalParams = imageName,
+                ID = id
+            };
 
             DaoFactory.GetListItemDao().EditItem(ListType.HistoryCategory, listItem);
-            MessageService.Send( MessageAction.HistoryEventCategoryUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
+            MessageService.Send(MessageAction.HistoryEventCategoryUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToHistoryCategoryWrapper(listItem);
         }
@@ -318,7 +319,7 @@ namespace ASC.Api.CRM
             historyCategory.AdditionalParams = imageName;
 
             DaoFactory.GetListItemDao().ChangePicture(id, imageName);
-            MessageService.Send( MessageAction.HistoryEventCategoryUpdatedIcon, MessageTarget.Create(historyCategory.ID), historyCategory.Title);
+            MessageService.Send(MessageAction.HistoryEventCategoryUpdatedIcon, MessageTarget.Create(historyCategory.ID), historyCategory.Title);
 
             return ToHistoryCategoryWrapper(historyCategory);
         }
@@ -347,7 +348,7 @@ namespace ASC.Api.CRM
             var result = titles.Select(title => DaoFactory.GetListItemDao().GetByTitle(ListType.HistoryCategory, title)).ToList();
 
             DaoFactory.GetListItemDao().ReorderItems(ListType.HistoryCategory, titles.ToArray());
-            MessageService.Send( MessageAction.HistoryEventCategoriesUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
+            MessageService.Send(MessageAction.HistoryEventCategoriesUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
 
             return result.ConvertAll(ToHistoryCategoryWrapper);
         }
@@ -373,14 +374,15 @@ namespace ASC.Api.CRM
             var listItem = dao.GetByID(id);
             if (listItem == null) throw new ItemNotFoundException();
 
-            if (dao.GetItemsCount(ListType.HistoryCategory) < 2) {
+            if (dao.GetItemsCount(ListType.HistoryCategory) < 2)
+            {
                 throw new ArgumentException("The last history category cannot be deleted");
             }
 
             var result = ToHistoryCategoryWrapper(listItem);
 
             dao.DeleteItem(ListType.HistoryCategory, id, 0);
-            MessageService.Send( MessageAction.HistoryEventCategoryDeleted, MessageTarget.Create(listItem.ID), listItem.Title);
+            MessageService.Send(MessageAction.HistoryEventCategoryDeleted, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return result;
         }
@@ -405,15 +407,15 @@ namespace ASC.Api.CRM
             if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
 
             var listItem = new ListItem
-                {
-                    Title = title,
-                    Description = description,
-                    SortOrder = sortOrder,
-                    AdditionalParams = imageName
-                };
+            {
+                Title = title,
+                Description = description,
+                SortOrder = sortOrder,
+                AdditionalParams = imageName
+            };
 
             listItem.ID = DaoFactory.GetListItemDao().CreateItem(ListType.TaskCategory, listItem);
-            MessageService.Send( MessageAction.CrmTaskCategoryCreated, MessageTarget.Create(listItem.ID), listItem.Title);
+            MessageService.Send(MessageAction.CrmTaskCategoryCreated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToTaskCategoryWrapper(listItem);
         }
@@ -446,16 +448,16 @@ namespace ASC.Api.CRM
             if (!curTaskCategoryExist) throw new ItemNotFoundException();
 
             var listItem = new ListItem
-                {
-                    Title = title,
-                    Description = description,
-                    SortOrder = sortOrder,
-                    AdditionalParams = imageName,
-                    ID = id
-                };
+            {
+                Title = title,
+                Description = description,
+                SortOrder = sortOrder,
+                AdditionalParams = imageName,
+                ID = id
+            };
 
             DaoFactory.GetListItemDao().EditItem(ListType.TaskCategory, listItem);
-            MessageService.Send( MessageAction.CrmTaskCategoryUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
+            MessageService.Send(MessageAction.CrmTaskCategoryUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToTaskCategoryWrapper(listItem);
         }
@@ -485,7 +487,7 @@ namespace ASC.Api.CRM
             taskCategory.AdditionalParams = imageName;
 
             DaoFactory.GetListItemDao().ChangePicture(id, imageName);
-            MessageService.Send( MessageAction.CrmTaskCategoryUpdatedIcon, MessageTarget.Create(taskCategory.ID), taskCategory.Title);
+            MessageService.Send(MessageAction.CrmTaskCategoryUpdatedIcon, MessageTarget.Create(taskCategory.ID), taskCategory.Title);
 
             return ToTaskCategoryWrapper(taskCategory);
         }
@@ -514,7 +516,7 @@ namespace ASC.Api.CRM
             var result = titles.Select(title => DaoFactory.GetListItemDao().GetByTitle(ListType.TaskCategory, title)).ToList();
 
             DaoFactory.GetListItemDao().ReorderItems(ListType.TaskCategory, titles.ToArray());
-            MessageService.Send( MessageAction.CrmTaskCategoriesUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
+            MessageService.Send(MessageAction.CrmTaskCategoriesUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
 
             return result.ConvertAll(ToTaskCategoryWrapper);
         }
@@ -540,12 +542,13 @@ namespace ASC.Api.CRM
             var listItem = dao.GetByID(categoryid);
             if (listItem == null) throw new ItemNotFoundException();
 
-             if (dao.GetItemsCount(ListType.TaskCategory) < 2) {
+            if (dao.GetItemsCount(ListType.TaskCategory) < 2)
+            {
                 throw new ArgumentException("The last task category cannot be deleted");
             }
 
-             dao.DeleteItem(ListType.TaskCategory, categoryid, newcategoryid);
-             MessageService.Send( MessageAction.CrmTaskCategoryDeleted, MessageTarget.Create(listItem.ID), listItem.Title);
+            dao.DeleteItem(ListType.TaskCategory, categoryid, newcategoryid);
+            MessageService.Send(MessageAction.CrmTaskCategoryDeleted, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToTaskCategoryWrapper(listItem);
         }
@@ -570,15 +573,15 @@ namespace ASC.Api.CRM
             if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
 
             var listItem = new ListItem
-                {
-                    Title = title,
-                    Description = description,
-                    Color = color,
-                    SortOrder = sortOrder
-                };
+            {
+                Title = title,
+                Description = description,
+                Color = color,
+                SortOrder = sortOrder
+            };
 
             listItem.ID = DaoFactory.GetListItemDao().CreateItem(ListType.ContactStatus, listItem);
-            MessageService.Send( MessageAction.ContactTemperatureLevelCreated, MessageTarget.Create(listItem.ID), listItem.Title);
+            MessageService.Send(MessageAction.ContactTemperatureLevelCreated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToContactStatusWrapper(listItem);
         }
@@ -611,16 +614,16 @@ namespace ASC.Api.CRM
             if (!curListItemExist) throw new ItemNotFoundException();
 
             var listItem = new ListItem
-                {
-                    ID = id,
-                    Title = title,
-                    Description = description,
-                    Color = color,
-                    SortOrder = sortOrder
-                };
+            {
+                ID = id,
+                Title = title,
+                Description = description,
+                Color = color,
+                SortOrder = sortOrder
+            };
 
             DaoFactory.GetListItemDao().EditItem(ListType.ContactStatus, listItem);
-            MessageService.Send( MessageAction.ContactTemperatureLevelUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
+            MessageService.Send(MessageAction.ContactTemperatureLevelUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToContactStatusWrapper(listItem);
         }
@@ -650,7 +653,7 @@ namespace ASC.Api.CRM
             contactStatus.Color = color;
 
             DaoFactory.GetListItemDao().ChangeColor(id, color);
-            MessageService.Send( MessageAction.ContactTemperatureLevelUpdatedColor, MessageTarget.Create(contactStatus.ID), contactStatus.Title);
+            MessageService.Send(MessageAction.ContactTemperatureLevelUpdatedColor, MessageTarget.Create(contactStatus.ID), contactStatus.Title);
 
             return ToContactStatusWrapper(contactStatus);
         }
@@ -679,7 +682,7 @@ namespace ASC.Api.CRM
             var result = titles.Select(title => DaoFactory.GetListItemDao().GetByTitle(ListType.ContactStatus, title)).ToList();
 
             DaoFactory.GetListItemDao().ReorderItems(ListType.ContactStatus, titles.ToArray());
-            MessageService.Send( MessageAction.ContactTemperatureLevelsUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
+            MessageService.Send(MessageAction.ContactTemperatureLevelsUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
 
             return result.ConvertAll(ToContactStatusWrapper);
         }
@@ -707,14 +710,15 @@ namespace ASC.Api.CRM
             var listItem = dao.GetByID(contactStatusid);
             if (listItem == null) throw new ItemNotFoundException();
 
-            if (dao.GetItemsCount(ListType.ContactStatus) < 2) {
+            if (dao.GetItemsCount(ListType.ContactStatus) < 2)
+            {
                 throw new ArgumentException("The last contact status cannot be deleted");
             }
 
             var contactStatus = ToContactStatusWrapper(listItem);
 
             dao.DeleteItem(ListType.ContactStatus, contactStatusid, 0);
-            MessageService.Send( MessageAction.ContactTemperatureLevelDeleted, MessageTarget.Create(contactStatus.Id), contactStatus.Title);
+            MessageService.Send(MessageAction.ContactTemperatureLevelDeleted, MessageTarget.Create(contactStatus.Id), contactStatus.Title);
 
             return contactStatus;
         }
@@ -757,14 +761,14 @@ namespace ASC.Api.CRM
             if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
 
             var listItem = new ListItem
-                {
-                    Title = title,
-                    Description = string.Empty,
-                    SortOrder = sortOrder
-                };
+            {
+                Title = title,
+                Description = string.Empty,
+                SortOrder = sortOrder
+            };
 
             listItem.ID = DaoFactory.GetListItemDao().CreateItem(ListType.ContactType, listItem);
-            MessageService.Send( MessageAction.ContactTypeCreated, MessageTarget.Create(listItem.ID), listItem.Title);
+            MessageService.Send(MessageAction.ContactTypeCreated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToContactTypeWrapper(listItem);
         }
@@ -795,14 +799,14 @@ namespace ASC.Api.CRM
             if (!curListItemExist) throw new ItemNotFoundException();
 
             var listItem = new ListItem
-                {
-                    ID = id,
-                    Title = title,
-                    SortOrder = sortOrder
-                };
+            {
+                ID = id,
+                Title = title,
+                SortOrder = sortOrder
+            };
 
             DaoFactory.GetListItemDao().EditItem(ListType.ContactType, listItem);
-            MessageService.Send( MessageAction.ContactTypeUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
+            MessageService.Send(MessageAction.ContactTypeUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToContactTypeWrapper(listItem);
         }
@@ -831,7 +835,7 @@ namespace ASC.Api.CRM
             var result = titles.Select(title => DaoFactory.GetListItemDao().GetByTitle(ListType.ContactType, title)).ToList();
 
             DaoFactory.GetListItemDao().ReorderItems(ListType.ContactType, titles.ToArray());
-            MessageService.Send( MessageAction.ContactTypesUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
+            MessageService.Send(MessageAction.ContactTypesUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
 
             return result.ConvertAll(ToContactTypeWrapper);
         }
@@ -858,15 +862,16 @@ namespace ASC.Api.CRM
 
             var listItem = dao.GetByID(contactTypeid);
             if (listItem == null) throw new ItemNotFoundException();
-            
-            if (dao.GetItemsCount(ListType.ContactType) < 2) {
+
+            if (dao.GetItemsCount(ListType.ContactType) < 2)
+            {
                 throw new ArgumentException("The last contact type cannot be deleted");
             }
-            
+
             var contactType = ToContactTypeWrapper(listItem);
 
             dao.DeleteItem(ListType.ContactType, contactTypeid, 0);
-            MessageService.Send( MessageAction.ContactTypeDeleted, MessageTarget.Create(listItem.ID), listItem.Title);
+            MessageService.Send(MessageAction.ContactTypeDeleted, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return contactType;
         }
@@ -1051,9 +1056,9 @@ namespace ASC.Api.CRM
         public ContactStatusWrapper ToContactStatusWrapper(ListItem listItem)
         {
             var result = new ContactStatusWrapper(listItem)
-                {
-                    RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactStatus, listItem.ID)
-                };
+            {
+                RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactStatus, listItem.ID)
+            };
 
             return result;
         }
@@ -1061,9 +1066,9 @@ namespace ASC.Api.CRM
         public ContactTypeWrapper ToContactTypeWrapper(ListItem listItem)
         {
             var result = new ContactTypeWrapper(listItem)
-                {
-                    RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactType, listItem.ID)
-                };
+            {
+                RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactType, listItem.ID)
+            };
 
             return result;
         }
@@ -1073,7 +1078,7 @@ namespace ASC.Api.CRM
             var result = (HistoryCategoryWrapper)HistoryCategoryWrapperHelper.Get(listItem);
 
             result.RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.HistoryCategory, listItem.ID);
-              
+
             return result;
         }
 
@@ -1082,16 +1087,16 @@ namespace ASC.Api.CRM
             var result = (TaskCategoryWrapper)TaskCategoryWrapperHelper.Get(listItem);
 
             result.RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.TaskCategory, listItem.ID);
-               
+
             return result;
         }
 
         private DealMilestoneWrapper ToDealMilestoneWrapper(DealMilestone dealMilestone)
         {
             var result = new DealMilestoneWrapper(dealMilestone)
-                {
-                    RelativeItemsCount = DaoFactory.GetDealMilestoneDao().GetRelativeItemsCount(dealMilestone.ID)
-                };
+            {
+                RelativeItemsCount = DaoFactory.GetDealMilestoneDao().GetRelativeItemsCount(dealMilestone.ID)
+            };
             return result;
         }
     }

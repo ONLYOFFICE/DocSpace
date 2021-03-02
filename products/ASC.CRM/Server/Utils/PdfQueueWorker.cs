@@ -33,12 +33,13 @@ using ASC.Common.Web;
 using ASC.Core;
 using Microsoft.AspNetCore.Http;
 using ASC.CRM.Core.Enums;
+using log4net;
 
 namespace ASC.Web.CRM.Classes
 {
     public class PdfQueueWorker
     {
-        private static readonly ProgressQueue Queue = new ProgressQueue(1, TimeSpan.FromMinutes(5), true);
+        private static readonly ProgressQueue<PdfProgressItem> Queue = new ProgressQueue<PdfProgressItem>();
 
         public static string GetTaskId(int tenantId, int invoiceId)
         {
@@ -61,27 +62,28 @@ namespace ASC.Web.CRM.Classes
 
         public static PdfProgressItem StartTask(HttpContext context, int tenantId, Guid userId, int invoiceId)
         {
-            lock (Queue.SynchRoot)
-            {
-                var task = GetTaskStatus(tenantId, invoiceId);
+            throw new Exception();
+            //lock (Queue.SynchRoot)
+            //{
+            //    var task = GetTaskStatus(tenantId, invoiceId);
 
-                if (task != null && task.IsCompleted)
-                {
-                    Queue.Remove(task);
-                    task = null;
-                }
+            //    if (task != null && task.IsCompleted)
+            //    {
+            //        Queue.Remove(task);
+            //        task = null;
+            //    }
 
-                if (task == null)
-                {
-                    task = new PdfProgressItem(context, tenantId, userId, invoiceId);
-                    Queue.Add(task);
-                }
+            //    if (task == null)
+            //    {
+            //        task = new PdfProgressItem(context, tenantId, userId, invoiceId);
+            //        Queue.Add(task);
+            //    }
 
-                if (!Queue.IsStarted)
-                    Queue.Start(x => x.RunJob());
+            //    if (!Queue.IsStarted)
+            //        Queue.Start(x => x.RunJob());
 
-                return task;
-            }
+            //    return task;
+            //}
         }
     }
 
@@ -97,15 +99,18 @@ namespace ASC.Web.CRM.Classes
         public object Error { get; set; }
         public double Percentage { get; set; }
         public bool IsCompleted { get; set; }
-
-
+        public PdfCreator PdfCreator { get; }
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
 
         public PdfProgressItem(IHttpContextAccessor httpContextAccessor,
                                int tenantId,
                                Guid userId,
                                int invoiceId)
         {
-            _contextUrl = context != null ? context.Request.GetUrlRewriter().ToString() : null;
+
+           
+            _contextUrl = httpContextAccessor.HttpContext != null ? httpContextAccessor.HttpContext.Request.GetUrlRewriter().ToString() : null;
             _tenantId = tenantId;
             _invoiceId = invoiceId;
             _userId = userId;
@@ -124,16 +129,16 @@ namespace ASC.Web.CRM.Classes
                 Percentage = 0;
                 Status = ProgressStatus.Started;
 
-                CoreContext.TenantManager.SetCurrentTenant(_tenantId);
+                TenantManager.SetCurrentTenant(_tenantId);
 
                 SecurityContext.AuthenticateMe(_userId);
 
-                if (HttpContext.Current == null && !WorkContext.IsMono)
-                {
-                    HttpContext.Current = new HttpContext(
-                        new HttpRequest("hack", _contextUrl, string.Empty),
-                        new HttpResponse(new System.IO.StringWriter()));
-                }
+                //if (HttpContext.Current == null && !WorkContext.IsMono)
+                //{
+                //    HttpContext.Current = new HttpContext(
+                //        new HttpRequest("hack", _contextUrl, string.Empty),
+                //        new HttpResponse(new System.IO.StringWriter()));
+                //}
 
                 PdfCreator.CreateAndSaveFile(_invoiceId);
 
@@ -143,6 +148,7 @@ namespace ASC.Web.CRM.Classes
             catch (Exception ex)
             {
                 LogManager.GetLogger("ASC.Web").Error(ex);
+
                 Percentage = 0;
                 Status = ProgressStatus.Failed;
                 Error = ex.Message;
@@ -152,11 +158,11 @@ namespace ASC.Web.CRM.Classes
                 // fake httpcontext break configuration manager for mono
                 if (!WorkContext.IsMono)
                 {
-                    if (HttpContext.Current != null)
-                    {
-                        new DisposableHttpContext(HttpContext.Current).Dispose();
-                        HttpContext.Current = null;
-                    }
+                    //if (HttpContext.Current != null)
+                    //{
+                    //    new DisposableHttpContext(HttpContext.Current).Dispose();
+                    //    HttpContext.Current = null;
+                    //}
                 }
 
                 IsCompleted = true;

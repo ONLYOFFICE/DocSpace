@@ -64,7 +64,7 @@ namespace ASC.Api.CRM
         /// <category>Contacts</category>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Read(@"contact/{contactid:int")]
+        [Read(@"contact/{contactid:int}")]
         public ContactWrapper GetContactByID(int contactid)
         {
             if (contactid <= 0) throw new ArgumentException();
@@ -130,10 +130,10 @@ namespace ASC.Api.CRM
         //        if (!scope.Resolve<ProjectSecurity>().CanLinkContact(project)) throw CRMSecurity.CreateSecurityException();
         //    }
 
-        //    DaoFactory.GetContactDao().SetRelativeContactProject(new List<int> {contactid}, projectid);
+        //    DaoFactory.GetContactDao().SetRelativeContactProject(new List<int> { contactid }, projectid);
 
         //    var messageAction = contact is Company ? MessageAction.ProjectLinkedCompany : MessageAction.ProjectLinkedPerson;
-        //    MessageService.Send( messageAction, MessageTarget.Create(contact.ID), project.Title, contact.GetTitle());
+        //    MessageService.Send(messageAction, MessageTarget.Create(contact.ID), project.Title, contact.GetTitle());
 
         //    return ToContactWrapper(contact);
         //}
@@ -174,7 +174,7 @@ namespace ASC.Api.CRM
 
         //    DaoFactory.GetContactDao().SetRelativeContactProject(contactIds, projectid);
 
-        //    MessageService.Send( MessageAction.ProjectLinkedContacts, MessageTarget.Create(contactIds), project.Title, contacts.Select(x => x.GetTitle()));
+        //    MessageService.Send(MessageAction.ProjectLinkedContacts, MessageTarget.Create(contactIds), project.Title, contacts.Select(x => x.GetTitle()));
 
         //    return contacts.ConvertAll(ToContactWrapper);
         //}
@@ -207,7 +207,7 @@ namespace ASC.Api.CRM
         //    DaoFactory.GetContactDao().RemoveRelativeContactProject(contactid, projectid);
 
         //    var action = contact is Company ? MessageAction.ProjectUnlinkedCompany : MessageAction.ProjectUnlinkedPerson;
-        //    MessageService.Send( action, MessageTarget.Create(contact.ID), project.Title, contact.GetTitle());
+        //    MessageService.Send(action, MessageTarget.Create(contact.ID), project.Title, contact.GetTitle());
 
         //    return ToContactBaseWrapper(contact);
         //}

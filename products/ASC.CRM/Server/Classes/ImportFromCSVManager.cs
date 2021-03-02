@@ -36,11 +36,13 @@ using ASC.Web.Core.Utility;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using ASC.CRM.Core.Enums;
+using ASC.Common;
 
 #endregion
 
 namespace ASC.Web.CRM.Classes
 {
+    [Scope]
     public class ImportFromCSVManager
     {
         public ImportFromCSVManager(Global global,

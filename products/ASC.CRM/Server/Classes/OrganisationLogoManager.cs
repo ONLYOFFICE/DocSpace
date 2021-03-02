@@ -41,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.CRM.Classes
 {
+    [Scope]
     public class OrganisationLogoManager
     {
         public OrganisationLogoManager(WebImageSupplier webImageSupplier,
@@ -130,7 +131,7 @@ namespace ASC.Web.CRM.Classes
 
 
         }
-
+            
         public String GetOrganisationLogoSrc(int logoID)
         {
             var bytestring = GetOrganisationLogoBase64(logoID);
@@ -194,17 +195,5 @@ namespace ASC.Web.CRM.Classes
 
             return ExecResizeImage(imageData, OrganisationLogoSize, Global.GetStore(), photoPath);
         }
-    }
-
-    public static class OrganisationLogoManagerExtention
-    {
-        public static DIHelper AddOrganisationLogoManagerService(this DIHelper services)
-        {
-            services.TryAddScoped<OrganisationLogoManager>();
-
-            return services.AddWebImageSupplierService();
-                        
-
-        }
-    }
+    }  
 }

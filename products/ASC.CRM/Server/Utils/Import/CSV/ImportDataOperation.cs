@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
@@ -45,6 +46,7 @@ using System.Linq;
 
 namespace ASC.Web.CRM.Classes
 {
+    [Scope]
     public class ImportDataCache
     {
         public ImportDataCache(TenantManager tenantManager,
