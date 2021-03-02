@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Avatar from "@appserver/components/avatar";
 import DropDownItem from "@appserver/components/drop-down-item";
 import Link from "@appserver/components/link";
-import ProfileMenu from "../../ProfileMenu";
+import ProfileMenu from "@appserver/common/components/ProfileMenu";
 import { inject, observer } from "mobx-react";
 
 class ProfileActions extends React.PureComponent {

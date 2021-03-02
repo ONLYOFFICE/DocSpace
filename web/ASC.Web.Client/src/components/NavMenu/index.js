@@ -8,12 +8,11 @@ import Aside from "@appserver/components/aside";
 import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
 import HeaderUnAuth from "./sub-components/header-unauth";
-import { I18nextProvider, withTranslation } from "react-i18next";
-import i18n from "./i18n";
+import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 //import { getLanguage, isDesktopClient } from "../../store/auth/selectors";
-import Loaders from "../Loaders";
-import { LayoutContextConsumer } from "../Layout/context";
+import Loaders from "@appserver/common/components/Loaders";
+import { LayoutContextConsumer } from "@appserver/common/components/Layout/context";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
@@ -211,26 +210,6 @@ NavMenu.defaultProps = {
   isDesktop: false,
 };
 
-const NavMenuTranslationWrapper = withTranslation()(NavMenu);
-
-const NavMenuWrapper = (props) => {
-  const { language } = props;
-
-  useEffect(() => {
-    i18n.changeLanguage(language);
-  }, [language]);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <NavMenuTranslationWrapper {...props} />
-    </I18nextProvider>
-  );
-};
-
-NavMenuWrapper.propTypes = {
-  language: PropTypes.string.isRequired,
-};
-
 export default inject(({ auth }) => {
   const { settingsStore, isAuthenticated, isLoaded, language } = auth;
   const { isDesktopClient: isDesktop } = settingsStore;
@@ -240,4 +219,4 @@ export default inject(({ auth }) => {
     isDesktop,
     language,
   };
-})(withRouter(observer(NavMenuWrapper)));
+})(withRouter(observer(withTranslation("NavMenu")(NavMenu))));

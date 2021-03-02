@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
-import history from "../../../history";
+//import history from "@appserver/common/history";
 
 import { useTranslation } from "react-i18next";
 import { tablet } from "@appserver/components/utils/device";
@@ -44,7 +44,7 @@ const HeaderNav = ({
   logout,
   isAuthenticated,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("NavMenu");
   const onProfileClick = useCallback(() => {
     history.push("/products/people/view/@self");
   }, []);

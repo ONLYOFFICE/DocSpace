@@ -4,12 +4,12 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { useLocation, Link as LinkWithoutRedirect } from "react-router-dom";
 import NavItem from "./nav-item";
-import Headline from "../../Headline";
+import Headline from "@appserver/common/components/Headline";
 import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
 import Link from "@appserver/components/link";
-import Loaders from "../../Loaders";
-import history from "../../../history";
+import Loaders from "@appserver/common/components/Loaders";
+import history from "@appserver/common/history";
 import { ReactSVG } from "react-svg";
 import { useTranslation } from "react-i18next";
 
