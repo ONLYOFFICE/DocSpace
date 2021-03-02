@@ -60,16 +60,20 @@ export default {
         import AvatarEditor from "@appserver/components/avatar-editor";
 
 <AvatarEditor
-  accept={[
-    'image/png',
-    'image/jpeg'
-  ]}
+  visible={true}
   onClose={() => {}}
-  onDeleteImage={function noRefCheck() {}}
-  onImageChange={function noRefCheck() {}}
-  onLoadFile={function noRefCheck() {}}
-  onLoadFileError={function noRefCheck() {}}
-  onSave={function noRefCheck() {}}
+  onSave={() => {})}
+  onDeleteImage={() => {})}
+  onImageChange={() => {})}
+  onLoadFile={() => {}}
+  headerLabel="Edit Photo"
+  selectNewPhotoLabel="Select new photo"
+  orDropFileHereLabel="or drop file here"
+  saveButtonLabel="Save"
+  maxSizeFileError="Maximum file size exceeded"
+  unknownTypeError="Unknown image file type"
+  unknownError="Error"
+  displayType="auto"
 />
         `,
       },
@@ -150,7 +154,6 @@ class Wrapper extends React.Component {
           onDeleteImage={this.onDeleteImage}
           onImageChange={this.onImageChange}
           onLoadFile={this.onLoadFile}
-          //headerLabel={"Edit Photo"}
           chooseFileLabel={"Drop files here, or click to select files"}
           chooseMobileFileLabel={"Click to select files"}
           saveButtonLoading={saveButtonLoading}

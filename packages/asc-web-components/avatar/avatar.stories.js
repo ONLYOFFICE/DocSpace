@@ -9,6 +9,26 @@ const editAction = () => console.log("Edit action");
 export default {
   title: "Components/Avatar",
   component: Avatar,
+  parameters: {
+    docs: {
+      description: {
+        component: "Used to display an avatar or brand.",
+      },
+      source: {
+        code: `
+        import Avatar from "@appserver/components/avatar";
+
+<Avatar 
+  size="max" 
+  role="admin" 
+  source="" 
+  userName="" 
+  editing={false}
+/>
+        `,
+      },
+    },
+  },
 };
 
 const Template = (args) => <Avatar {...args} />;

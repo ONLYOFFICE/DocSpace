@@ -89,34 +89,6 @@ export default {
   },
 };
 
-const locales = [
-  "az",
-  "zh-cn",
-  "cs",
-  "nl",
-  "en-gb",
-  "en",
-  "fi",
-  "fr",
-  "de",
-  "de-ch",
-  "el",
-  "it",
-  "ja",
-  "ko",
-  "lv",
-  "pl",
-  "pt",
-  "pt-br",
-  "ru",
-  "sk",
-  "sl",
-  "es",
-  "tr",
-  "uk",
-  "vi",
-];
-
 const Template = (args) => {
   return (
     <Calendar
@@ -125,7 +97,6 @@ const Template = (args) => {
       selectedDate={new Date(args.selectedDate)}
       openToDate={new Date(args.openToDate)}
       minDate={new Date(args.minDate)}
-      locale="en"
     />
   );
 };

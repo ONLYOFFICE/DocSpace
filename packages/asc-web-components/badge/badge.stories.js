@@ -5,6 +5,30 @@ import Badge from "./";
 export default {
   title: "Components/Badge",
   component: Badge,
+  parameters: {
+    docs: {
+      description: {
+        component: "Used for buttons, numbers or status markers next to icons.",
+      },
+      source: {
+        code: `
+        import Badge from "@appserver/components/badge";
+
+<Badge
+  label="10"
+  backgroundColor="#ED7309"
+  color="#FFFFFF"
+  fontSize="11px"
+  fontWeight={800}
+  borderRadius="11px"
+  padding="0 5px"
+  maxWidth="50px"
+  onClick={() => {}}
+/>
+        `,
+      },
+    },
+  },
   argTypes: {
     backgroundColor: { control: "color", description: "CSS background-color" },
     color: { control: "color", description: "CSS color" },

@@ -1,6 +1,6 @@
 import React from "react";
 
-import icon from "../../../public/images/button.alert.react.svg";
+import Icon from "../../../public/images/button.alert.react.svg";
 import Button from "./";
 
 export default {
@@ -35,6 +35,18 @@ export default {
       description: {
         component: "Button is used for a action on a page.",
       },
+      source: {
+        code: `
+        import Button from "@appserver/components/button";
+
+<Button
+  size="base"
+  isDisabled={false}
+  onClick={() => alert("Button clicked")}
+  label="OK"
+/>
+        `
+      }
     },
   },
   args: {
@@ -61,7 +73,6 @@ const Wrapper = (props) => (
 );
 
 const Template = (args) => <Button {...args} />;
-
 const PrimaryTemplate = (args) => {
   return (
     <Wrapper>
@@ -104,7 +115,7 @@ const WithIconTemplate = (args) => {
           {...args}
           primary
           size={size}
-          icon={<img src={icon} />}
+          icon={<Icon />}
           label={`With Icon ${size[0].toUpperCase()}${size.slice(1)}`}
         />
       ))}
@@ -113,7 +124,7 @@ const WithIconTemplate = (args) => {
           key={`all-icon-sec-${size}`}
           {...args}
           size={size}
-          icon={<img src={icon} />}
+          icon={<Icon />}
           label={`With Icon ${size[0].toUpperCase()}${size.slice(1)}`}
         />
       ))}
@@ -260,3 +271,6 @@ export const ScaleButtons = ScaleTemplate.bind({});
 export const DisabledButtons = DisabledTemplate.bind({});
 export const ClickedButtons = ClickedTemplate.bind({});
 export const HoveredButtons = HoveredTemplate.bind({});
+HoveredButtons.argTypes = {
+  isHovered: { table: { disable: true } },
+};
