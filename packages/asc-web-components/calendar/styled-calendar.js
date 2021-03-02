@@ -151,6 +151,8 @@ const StyledWeekday = styled.div`
   }
 `;
 
+StyledWeekday.defaultProps = { theme: Base };
+
 export {
   Month,
   CalendarStyle,
