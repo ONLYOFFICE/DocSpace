@@ -357,7 +357,7 @@ const Base = {
     disableIndeterminateColor: gray,
 
     hoverBorderColor: gray,
-    hoverIndeterminateColor: gray,
+    hoverIndeterminateColor: black,
   },
 
   // slider: {
@@ -1508,7 +1508,7 @@ const Base = {
       cursor: "pointer",
       color: white,
     },
-    
+
     comboBox: {
       color: black,
       minWidth: "80px",
