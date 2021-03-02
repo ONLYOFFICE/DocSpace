@@ -1,9 +1,9 @@
 import axios from "axios";
+import config from "../../package.json";
 //import history from "../history";
 
-const PREFIX = "api";
-const VERSION = "2.0";
-const baseURL = `${window.location.origin}/${PREFIX}/${VERSION}`;
+const baseURL = `${window.location.origin}/${config.api.url}`;
+const apiTimeout = config.api.timeout;
 
 /**
  * @description axios instance for ajax requests
@@ -12,7 +12,7 @@ const baseURL = `${window.location.origin}/${PREFIX}/${VERSION}`;
 const client = axios.create({
   baseURL: baseURL,
   responseType: "json",
-  timeout: 30000, // default is `0` (no timeout)
+  timeout: apiTimeout, // default is `0` (no timeout)
 });
 
 client.interceptors.response.use(
