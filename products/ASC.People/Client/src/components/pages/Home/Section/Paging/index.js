@@ -8,7 +8,7 @@ import { inject, observer } from "mobx-react";
 const SectionPagingContent = ({
   fetchPeople,
   filter,
-  onLoading,
+  setIsLoading,
   selectedCount,
   isLoaded,
 }) => {
@@ -24,10 +24,10 @@ const SectionPagingContent = ({
       const newFilter = filter.clone();
       newFilter.page++;
 
-      onLoading(true);
-      fetchPeople(newFilter).finally(() => onLoading(false));
+      setIsLoading(true);
+      fetchPeople(newFilter).finally(() => setIsLoading(false));
     },
-    [filter, fetchPeople, onLoading]
+    [filter, fetchPeople, setIsLoading]
   );
 
   const onPrevClick = useCallback(
@@ -42,10 +42,10 @@ const SectionPagingContent = ({
       const newFilter = filter.clone();
       newFilter.page--;
 
-      onLoading(true);
-      fetchPeople(newFilter).finally(() => onLoading(false));
+      setIsLoading(true);
+      fetchPeople(newFilter).finally(() => setIsLoading(false));
     },
-    [filter, fetchPeople, onLoading]
+    [filter, fetchPeople, setIsLoading]
   );
 
   const onChangePageSize = useCallback(
@@ -56,10 +56,10 @@ const SectionPagingContent = ({
       newFilter.page = 0;
       newFilter.pageCount = pageItem.key;
 
-      onLoading(true);
-      fetchPeople(newFilter).finally(() => onLoading(false));
+      setIsLoading(true);
+      fetchPeople(newFilter).finally(() => setIsLoading(false));
     },
-    [filter, fetchPeople, onLoading]
+    [filter, fetchPeople, setIsLoading]
   );
 
   const onChangePage = useCallback(
@@ -69,10 +69,10 @@ const SectionPagingContent = ({
       const newFilter = filter.clone();
       newFilter.page = pageItem.key;
 
-      onLoading(true);
-      fetchPeople(newFilter).finally(() => onLoading(false));
+      setIsLoading(true);
+      fetchPeople(newFilter).finally(() => setIsLoading(false));
     },
-    [filter, fetchPeople, onLoading]
+    [filter, fetchPeople, setIsLoading]
   );
 
   const countItems = useMemo(
@@ -152,4 +152,5 @@ export default inject(({ auth, peopleStore }) => ({
   isLoaded: auth.isLoaded,
   fetchPeople: peopleStore.usersStore.getUsersList,
   filter: peopleStore.filterStore.filter,
+  setIsLoading: peopleStore.setIsLoading,
 }))(observer(SectionPagingContent));

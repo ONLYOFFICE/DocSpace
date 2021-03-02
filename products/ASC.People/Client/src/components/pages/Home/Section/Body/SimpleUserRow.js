@@ -10,7 +10,7 @@ import { EmployeeStatus } from "@appserver/common/constants";
 import { resendUserInvites } from "@appserver/common/api/people"; //TODO: Move to store action
 
 const SimpleUserRow = ({
-  man,
+  person,
   sectionWidth,
   checked,
   isAdmin,
@@ -20,6 +20,7 @@ const SimpleUserRow = ({
   deselectUser,
   homepage,
   setChangeEmailDialogVisible,
+  setChangePasswordDialogVisible,
   setDeleteProfileDialogVisible,
   setDeleteSelfProfileDialogVisible,
   setDialogData,
@@ -30,14 +31,16 @@ const SimpleUserRow = ({
   const isRefetchPeople = true;
 
   const {
-    //checked,
+    email,
     role,
     displayName,
     avatar,
     id,
     status,
+    mobilePhone,
     options,
-  } = man;
+    userName,
+  } = person;
 
   const onContentRowSelect = (checked, user) => {
     if (checked) {
@@ -47,21 +50,19 @@ const SimpleUserRow = ({
     }
   };
 
-  const onEmailSentClick = (e) => {
-    window.open("mailto:" + man.email);
+  const onEmailSentClick = () => {
+    window.open("mailto:" + email);
   };
 
-  const onSendMessageClick = (e) => {
-    window.open(`sms:${man.mobilePhone}`);
+  const onSendMessageClick = () => {
+    window.open(`sms:${mobilePhone}`);
   };
 
-  const onEditClick = (e) => {
-    history.push(`${homepage}/edit/${man.userName}`);
+  const onEditClick = () => {
+    history.push(`${homepage}/edit/${userName}`);
   };
 
-  const toggleChangeEmailDialog = (e) => {
-    const { id, email } = man;
-
+  const toggleChangeEmailDialog = () => {
     setDialogData({
       email,
       id,
@@ -70,9 +71,7 @@ const SimpleUserRow = ({
     setChangeEmailDialogVisible(true);
   };
 
-  const toggleChangePasswordDialog = (e) => {
-    const { email } = man;
-
+  const toggleChangePasswordDialog = () => {
     setDialogData({
       email,
     });
@@ -83,8 +82,6 @@ const SimpleUserRow = ({
   const toggleDeleteSelfProfileDialog = (e) => {
     closeDialogs();
 
-    const { email } = man;
-
     setDialogData({
       email,
     });
@@ -94,8 +91,6 @@ const SimpleUserRow = ({
 
   const toggleDeleteProfileEverDialog = (e) => {
     closeDialogs();
-
-    const { id, displayName, userName } = man;
 
     setDialogData({
       id,
@@ -108,7 +103,7 @@ const SimpleUserRow = ({
 
   const onDisableClick = (e) => {
     //onLoading(true);
-    updateUserStatus(EmployeeStatus.Disabled, [man.id], isRefetchPeople)
+    updateUserStatus(EmployeeStatus.Disabled, [id], isRefetchPeople)
       .then(() => toastr.success(t("SuccessChangeUserStatus")))
       .catch((error) => toastr.error(error));
     //.finally(() => onLoading(false));
@@ -116,24 +111,23 @@ const SimpleUserRow = ({
 
   const onEnableClick = (e) => {
     //onLoading(true);
-    updateUserStatus(EmployeeStatus.Active, [man.id], isRefetchPeople)
+    updateUserStatus(EmployeeStatus.Active, [id], isRefetchPeople)
       .then(() => toastr.success(t("SuccessChangeUserStatus")))
       .catch((error) => toastr.error(error));
     //.finally(() => onLoading(false));
   };
 
   const onReassignDataClick = (e) => {
-    history.push(`${homepage}/reassign/${man.userName}`);
+    history.push(`${homepage}/reassign/${userName}`);
   };
 
   const onDeletePersonalDataClick = (e) => {
-    //const user = this.findUserById(e.currentTarget.dataset.id);
     toastr.success("Context action: Delete personal data"); //TODO: Implement and add translation
   };
 
-  const onInviteAgainClick = (e) => {
+  const onInviteAgainClick = () => {
     //onLoading(true);
-    resendUserInvites([man.id])
+    resendUserInvites([id])
       .then(() =>
         toastr.success(
           <Trans
@@ -141,7 +135,7 @@ const SimpleUserRow = ({
             ns="Home"
           >
             The email activation instructions have been sent to the
-            <strong>{{ email: man.email }}</strong> email address
+            <strong>{{ email: email }}</strong> email address
           </Trans>
         )
       )
@@ -264,7 +258,7 @@ const SimpleUserRow = ({
     <Row
       key={id}
       status={status}
-      data={man}
+      data={person}
       element={element}
       onSelect={onContentRowSelect}
       {...checkedProps}
@@ -275,7 +269,7 @@ const SimpleUserRow = ({
       <UserContent
         isMobile={isMobile}
         //widthProp={widthProp}
-        user={man}
+        user={person}
         history={history}
         selectGroup={selectGroup}
         sectionWidth={sectionWidth}
@@ -284,12 +278,12 @@ const SimpleUserRow = ({
   );
 };
 
-export default inject(({ auth, peopleStore }, { man }) => {
+export default inject(({ auth, peopleStore }, { person }) => {
   return {
     homepage: auth.settingsStore.homepage,
     isAdmin: auth.isAdmin,
     checked: peopleStore.selectionStore.selection.some(
-      (el) => el.id === man.id
+      (el) => el.id === person.id
     ),
     selectUser: peopleStore.selectionStore.selectUser,
     deselectUser: peopleStore.selectionStore.deselectUser,

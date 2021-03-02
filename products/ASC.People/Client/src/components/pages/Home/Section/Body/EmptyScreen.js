@@ -5,12 +5,22 @@ import IconButton from "@appserver/components/icon-button";
 import Link from "@appserver/components/link";
 import Box from "@appserver/components/box";
 import Grid from "@appserver/components/grid";
+import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 
-const EmptyScreen = ({ t, onResetFilter, isEmptyGroup }) => {
+const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
+  const { t } = useTranslation("Home");
+
   const title = isEmptyGroup ? "EmptyGroupTitle" : "NotFoundTitle";
   const description = isEmptyGroup
     ? "EmptyGroupDescription"
     : "NotFoundDescription";
+
+  const onResetFilter = () => {
+    setIsLoading(true);
+    resetFilter(true).finally(() => setIsLoading(false));
+  };
+
   return (
     <EmptyScreenContainer
       imageSrc="images/empty_screen_filter.png"
@@ -54,4 +64,8 @@ const EmptyScreen = ({ t, onResetFilter, isEmptyGroup }) => {
   );
 };
 
-export default EmptyScreen;
+export default inject(({ peopleStore }) => ({
+  resetFilter: peopleStore.resetFilter,
+  isEmptyGroup: peopleStore.selectedGroupStore.isEmptyGroup,
+  setIsLoading: peopleStore.setIsLoading,
+}))(observer(EmptyScreen));
