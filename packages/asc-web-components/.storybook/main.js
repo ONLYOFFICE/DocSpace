@@ -16,6 +16,10 @@ module.exports = {
     "../drop-down/*.stories.@(js|mdx)",
     "../drop-down-item/*.stories.@(js|mdx)",
     "../email-input/*.stories.@(js|mdx)",
+    "../empty-screen-container/*.stories.@(js|mdx)",
+    "../field-container/*.stories.@(js|mdx)",
+    "../file-input/*.stories.@(js|mdx)",
+    "../grid/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",
