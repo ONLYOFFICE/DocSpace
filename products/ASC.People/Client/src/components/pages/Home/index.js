@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 //import RequestLoader from "@appserver/components/request-loader";
@@ -18,72 +18,50 @@ import {
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 
-class Home extends React.Component {
-  componentDidUpdate(prevProps) {
-    if (this.props.isLoading !== prevProps.isLoading) {
-      if (this.props.isLoading) {
-        showLoader();
-      } else {
-        hideLoader();
-      }
-    }
-  }
+const Home = ({ isLoading }) => {
+  //console.log("People Home render");
 
-  render() {
-    //console.log("Home render");
-    const { isLoaded, isAdmin, isHeaderVisible } = this.props;
+  useEffect(() => {
+    isLoading ? showLoader() : hideLoader();
+  }, [isLoading]);
 
-    return (
-      <PageLayout
-        withBodyScroll={true}
-        withBodyAutoFocus={!isMobile}
-        isLoaded={isLoaded}
-        isHeaderVisible={isHeaderVisible}
-      >
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
+  return (
+    <PageLayout withBodyScroll withBodyAutoFocus={!isMobile}>
+      <PageLayout.ArticleHeader>
+        <ArticleHeaderContent />
+      </PageLayout.ArticleHeader>
 
-        {isAdmin && (
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
-        )}
+      <PageLayout.ArticleMainButton>
+        <ArticleMainButtonContent />
+      </PageLayout.ArticleMainButton>
 
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
+      <PageLayout.ArticleBody>
+        <ArticleBodyContent />
+      </PageLayout.ArticleBody>
 
-        <PageLayout.SectionHeader>
-          <SectionHeaderContent />
-        </PageLayout.SectionHeader>
+      <PageLayout.SectionHeader>
+        <SectionHeaderContent />
+      </PageLayout.SectionHeader>
 
-        <PageLayout.SectionFilter>
-          <SectionFilterContent />
-        </PageLayout.SectionFilter>
+      <PageLayout.SectionFilter>
+        <SectionFilterContent />
+      </PageLayout.SectionFilter>
 
-        <PageLayout.SectionBody>
-          <SectionBodyContent />
-        </PageLayout.SectionBody>
+      <PageLayout.SectionBody>
+        <SectionBodyContent />
+      </PageLayout.SectionBody>
 
-        <PageLayout.SectionPaging>
-          <SectionPagingContent />
-        </PageLayout.SectionPaging>
-      </PageLayout>
-    );
-  }
-}
-
-Home.propTypes = {
-  history: PropTypes.object.isRequired,
-  isLoaded: PropTypes.bool,
-  isAdmin: PropTypes.bool,
+      <PageLayout.SectionPaging>
+        <SectionPagingContent />
+      </PageLayout.SectionPaging>
+    </PageLayout>
+  );
 };
 
-export default inject(({ auth, peopleStore }) => ({
-  isLoaded: auth.isLoaded,
-  isAdmin: auth.isAdmin,
+Home.propTypes = {
+  isLoading: PropTypes.bool,
+};
+
+export default inject(({ peopleStore }) => ({
   isLoading: peopleStore.isLoading,
-  setIsLoading: peopleStore.setIsLoading,
-  isHeaderVisible: auth.settingsStore.isHeaderVisible,
 }))(observer(withRouter(Home)));

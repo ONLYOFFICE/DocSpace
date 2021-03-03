@@ -87,8 +87,8 @@ const stringFormat = (string, data) =>
 
 class SectionBodyContent extends React.PureComponent {
   componentDidMount() {
-    const { cultures, getPortalCultures, profile, viewer } = this.props;
-    const isSelf = isMe(viewer, profile.userName);
+    const { cultures, getPortalCultures, profile, viewer, isSelf } = this.props;
+    //const isSelf = isMe(viewer, profile.userName);
     if (isSelf && !cultures.length) {
       getPortalCultures();
     }
@@ -102,7 +102,15 @@ class SectionBodyContent extends React.PureComponent {
     );
 
   render() {
-    const { profile, cultures, culture, isAdmin, viewer, t } = this.props;
+    const {
+      profile,
+      cultures,
+      culture,
+      isAdmin,
+      viewer,
+      t,
+      isSelf,
+    } = this.props;
 
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -113,7 +121,7 @@ class SectionBodyContent extends React.PureComponent {
         createContacts(contacts.social)) ||
       null;
     const infoContacts = contacts && createContacts(contacts.contact);
-    const isSelf = isMe(viewer, profile.userName);
+    //const isSelf = isMe(viewer, profile.userName);
 
     return (
       <ProfileWrapper>
@@ -194,4 +202,5 @@ export default inject(({ auth, peopleStore }) => ({
   profile: peopleStore.targetUserStore.targetUser,
   viewer: auth.userStore.user,
   isTabletView: auth.settingsStore.isTabletView,
+  isSelf: peopleStore.targetUserStore.isMe,
 }))(observer(withRouter(withTranslation("Profile")(SectionBodyContent))));
