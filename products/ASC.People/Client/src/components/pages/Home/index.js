@@ -15,8 +15,8 @@ import {
   SectionFilterContent,
   SectionPagingContent,
 } from "./Section";
-import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import { isMobile } from "react-device-detect";
 
 class Home extends React.Component {
   componentDidUpdate(prevProps) {
@@ -29,12 +29,8 @@ class Home extends React.Component {
     }
   }
 
-  onLoading = (status) => {
-    this.props.setIsLoading(status);
-  };
-
   render() {
-    console.log("Home render");
+    //console.log("Home render");
     const { isLoaded, isAdmin, isHeaderVisible } = this.props;
 
     return (
@@ -59,19 +55,19 @@ class Home extends React.Component {
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          <SectionHeaderContent onLoading={this.onLoading} />
+          <SectionHeaderContent />
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionFilter>
-          <SectionFilterContent onLoading={this.onLoading} />
+          <SectionFilterContent />
         </PageLayout.SectionFilter>
 
         <PageLayout.SectionBody>
-          <SectionBodyContent isMobile={isMobile} onLoading={this.onLoading} />
+          <SectionBodyContent />
         </PageLayout.SectionBody>
 
         <PageLayout.SectionPaging>
-          <SectionPagingContent onLoading={this.onLoading} />
+          <SectionPagingContent />
         </PageLayout.SectionPaging>
       </PageLayout>
     );

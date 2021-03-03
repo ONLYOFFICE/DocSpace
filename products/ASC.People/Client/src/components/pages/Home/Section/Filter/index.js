@@ -56,7 +56,7 @@ const getGroup = (filterValues) => {
 
 class SectionFilterContent extends React.Component {
   onFilter = (data) => {
-    const { onLoading, fetchPeople, filter } = this.props;
+    const { setIsLoading, fetchPeople, filter } = this.props;
 
     const employeeStatus = getEmployeeStatus(data.filterValues);
     const activationStatus = getActivationStatus(data.filterValues);
@@ -77,8 +77,8 @@ class SectionFilterContent extends React.Component {
     newFilter.search = search;
     newFilter.group = group;
 
-    onLoading(true);
-    fetchPeople(newFilter).finally(() => onLoading(false));
+    setIsLoading(true);
+    fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
 
   getData = () => {
@@ -264,6 +264,7 @@ export default inject(({ auth, peopleStore }) => {
     groups: peopleStore.groupsStore.groups,
     fetchPeople: peopleStore.usersStore.getUsersList,
     filter: peopleStore.filterStore.filter,
+    setIsLoading: peopleStore.setIsLoading,
   };
 })(
   observer(

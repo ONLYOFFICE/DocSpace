@@ -50,7 +50,12 @@ class ModuleStore {
     this.setModules(extendedModules);
   };
 
-  toModuleWrapper = (item, noAction = true, iconName = null, iconUrl = null) => {
+  toModuleWrapper = (
+    item,
+    noAction = true,
+    iconName = null,
+    iconUrl = null
+  ) => {
     switch (item.id) {
       case "6743007c-6f95-4d20-8c88-a8601ce5e76d":
         item.iconName = "CrmIcon";
@@ -72,7 +77,7 @@ class ModuleStore {
         break;
       case "32D24CB5-7ECE-4606-9C94-19216BA42086":
         item.iconName = "CalendarCheckedIcon";
-        item.iconUrl = "static/images/calendar.checked.react.svg";
+        item.iconUrl = "/static/images/calendar.checked.react.svg";
         item.imageUrl = "/images/calendar.svg";
         break;
       case "BF88953E-3C43-4850-A3FB-B1E43AD53A3E":

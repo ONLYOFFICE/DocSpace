@@ -152,6 +152,7 @@ const StyledWeekday = styled.div`
     text-align: center;
   }
 `;
+StyledWeekday.defaultProps = { theme: Base };
 
 StyledWeekday.defaultProps = { theme: Base };
 

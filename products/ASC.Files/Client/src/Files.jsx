@@ -24,7 +24,7 @@ import "./custom.scss";
 import "./i18n";
 //import { regDesktop } from "@appserver/common/src/desktop";
 
-const Error404 = React.lazy(() => import("@appserver/common/pages/errors/404"));
+const Error404 = React.lazy(() => import("studio/Error404"));
 
 class FilesContent extends React.Component {
   constructor(props) {
@@ -106,7 +106,7 @@ const Files = inject(({ auth, initFilesStore }) => {
     //isDesktop: auth.settingsStore.isDesktopClient,
     user: auth.userStore.user,
     isAuthenticated: auth.isAuthenticated,
-    homepage: auth.settingsStore.homepage || config.homepage,
+    homepage: config.homepage, // auth.settingsStore.homepage
     encryptionKeys: auth.settingsStore.encryptionKeys,
     isEncryption: auth.settingsStore.isEncryptionSupport,
     isLoaded: auth.isLoaded && initFilesStore.isLoaded,
