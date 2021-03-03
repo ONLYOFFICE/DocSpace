@@ -71,9 +71,11 @@ const StyledLabel = styled.label`
             }
             rect:last-child {
               fill: ${(props) =>
-                props.color === "#FFFF"
-                  ? props.theme.checkbox.indeterminateColor
-                  : "white"};
+                props.color
+                  ? props.color === "#FFFF"
+                    ? props.theme.checkbox.indeterminateColor
+                    : "white"
+                  : props.theme.checkbox.indeterminateColor};
               stroke: ${(props) =>
                 props.color === "#FFFF"
                   ? props.theme.checkbox.fillColor
@@ -118,7 +120,7 @@ const StyledLabel = styled.label`
         ? css`
             cursor: not-allowed;
           `
-        : !props.indeterminate
+        : !props.isIndeterminate
         ? css`
             cursor: pointer;
 
@@ -139,11 +141,13 @@ const StyledLabel = styled.label`
             }
           rect:last-child {
               fill: ${(props) =>
-                props.indeterminate && props.color === "#FFFF"
-                  ? props.theme.checkbox.hoverIndeterminateColor
-                  : props.indeterminate
-                  ? "white"
-                  : props.color};
+                props.color
+                  ? props.isIndeterminate && props.color === "#FFFF"
+                    ? props.theme.checkbox.hoverIndeterminateColor
+                    : props.isIndeterminate
+                    ? "white"
+                    : props.color
+                  : props.theme.checkbox.hoverIndeterminateColor};
             `}
   }
 
