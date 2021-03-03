@@ -5,7 +5,7 @@ import Heading from "@appserver/components/heading";
 import Aside from "@appserver/components/aside";
 import IconButton from "@appserver/components/icon-button";
 import { ShareAccessRights } from "@appserver/common/constants";
-import GroupSelector from "@appserver/common/components/GroupSelector";
+import GroupSelector from "people/GroupSelector";
 import { withTranslation } from "react-i18next";
 import {
   StyledAddGroupsPanel,
