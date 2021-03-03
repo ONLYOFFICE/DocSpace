@@ -72,25 +72,21 @@ class Profile extends React.Component {
   render() {
     //console.log("Profile render");
 
-    const { profile, isVisitor, isAdmin, isLoaded } = this.props;
+    const { profile } = this.props;
 
     return (
-      <PageLayout withBodyAutoFocus={true} isLoaded={isLoaded}>
-        {!isVisitor && (
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
-        )}
-        {!isVisitor && isAdmin && (
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
-        )}
-        {!isVisitor && (
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
-        )}
+      <PageLayout withBodyAutoFocus>
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
+
+        <PageLayout.ArticleMainButton>
+          <ArticleMainButtonContent />
+        </PageLayout.ArticleMainButton>
+
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
           {profile ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
@@ -107,7 +103,6 @@ class Profile extends React.Component {
 Profile.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  isLoaded: PropTypes.bool,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
   isAdmin: PropTypes.bool,
@@ -116,8 +111,6 @@ Profile.propTypes = {
 
 export default inject(({ auth, peopleStore }) => ({
   setDocumentTitle: auth.setDocumentTitle,
-  isVisitor: auth.userStore.user.isVisitor,
-  isLoaded: auth.isLoaded,
   isAdmin: auth.isAdmin,
   language: auth.language,
   resetProfile: peopleStore.targetUserStore.resetTargetUser,

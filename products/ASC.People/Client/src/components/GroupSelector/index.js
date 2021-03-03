@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { withTranslation } from "react-i18next";
+import { I18nextProvider, withTranslation } from "react-i18next";
 import i18n from "./i18n";
-import AdvancedSelector from "../AdvancedSelector";
-import { getGroupList } from "../../api/groups";
-import { changeLanguage } from "../../utils";
+import AdvancedSelector from "@appserver/common/components/AdvancedSelector";
+import { getGroupList } from "@appserver/common/api/groups";
 
 class GroupSelector extends React.Component {
   constructor(props) {
@@ -15,8 +14,6 @@ class GroupSelector extends React.Component {
   }
 
   componentDidMount() {
-    changeLanguage(i18n);
-
     getGroupList(this.props.useFake)
       .then((groups) => this.setState({ options: this.convertGroups(groups) }))
       .catch((error) => console.log(error));
@@ -157,14 +154,10 @@ GroupSelector.defaultProps = {
   withoutAside: false,
 };
 
-const ExtendedGroupSelector = withTranslation()(GroupSelector);
+const ExtendedGroupSelector = withTranslation("GroupSelector")(GroupSelector);
 
-const GroupSelectorWithI18n = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-
-  return <ExtendedGroupSelector i18n={i18n} {...props} />;
-};
-
-export default GroupSelectorWithI18n;
+export default (props) => (
+  <I18nextProvider i18n={i18n}>
+    <ExtendedGroupSelector {...props} />
+  </I18nextProvider>
+);

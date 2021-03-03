@@ -10,7 +10,7 @@ import {
   StyledFilterItemContent,
   StyledCloseButtonBlock,
 } from "../StyledFilterInput";
-import GroupSelector from "../../GroupSelector";
+import GroupSelector from "people/GroupSelector"; //TODO: Move GroupSelector out of FilterItem
 import PeopleSelector from "../../PeopleSelector";
 
 class FilterItem extends React.Component {

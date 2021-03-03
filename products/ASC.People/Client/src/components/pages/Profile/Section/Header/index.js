@@ -7,7 +7,6 @@ import toastr from "@appserver/common/components/Toast";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
-import { isMe } from "@appserver/common/utils";
 import {
   resendUserInvites,
   createThumbnailsAvatar,
@@ -26,6 +25,7 @@ import {
   getUserStatus,
   toEmployeeWrapper,
 } from "../../../../../helpers/people-helpers";
+import Loaders from "@appserver/common/components/Loaders";
 
 const StyledContainer = styled.div`
   position: relative;
@@ -286,9 +286,9 @@ class SectionHeaderContent extends React.PureComponent {
 
   getUserContextOptions = (user, viewer) => {
     let status = "";
-    const { t, isAdmin } = this.props;
+    const { t, isAdmin, isMe } = this.props;
 
-    if (isAdmin || (!isAdmin && isMe(user, viewer.userName))) {
+    if (isAdmin || (!isAdmin && isMe)) {
       status = getUserStatus(user);
     }
 
@@ -311,7 +311,7 @@ class SectionHeaderContent extends React.PureComponent {
             label: t("EmailChangeButton"),
             onClick: this.toggleChangeEmailDialog,
           },
-          isMe(user, viewer.userName)
+          isMe
             ? viewer.isOwner
               ? {}
               : {
@@ -360,7 +360,7 @@ class SectionHeaderContent extends React.PureComponent {
             label: t("InviteAgainLbl"),
             onClick: this.onInviteAgainClick,
           },
-          !isMe(user, viewer.userName) &&
+          !isMe &&
             (user.status === EmployeeStatus.Active
               ? {
                   key: "disable",
@@ -372,7 +372,7 @@ class SectionHeaderContent extends React.PureComponent {
                   label: t("EnableUserButton"),
                   onClick: this.onEnableClick,
                 }),
-          isMe(user, viewer.userName) && {
+          isMe && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
             onClick: this.toggleDeleteSelfProfileDialog,
@@ -398,14 +398,14 @@ class SectionHeaderContent extends React.PureComponent {
       filter,
       settings,
       history,
+      isMe,
     } = this.props;
     const { avatar, visibleAvatarEditor, dialogsVisible } = this.state;
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
-    const IsMe = isMe(viewer, profile.userName);
 
     return (
       <StyledContainer
-        showContextButton={(isAdmin && !profile.isOwner) || IsMe}
+        showContextButton={(isAdmin && !profile.isOwner) || isMe}
       >
         <IconButton
           iconName="/static/images/arrow.path.react.svg"
@@ -420,7 +420,7 @@ class SectionHeaderContent extends React.PureComponent {
           {profile.displayName}
           {profile.isLDAP && ` (${t("LDAPLbl")})`}
         </Headline>
-        {((isAdmin && !profile.isOwner) || IsMe) && (
+        {((isAdmin && !profile.isOwner) || isMe) && (
           <ContextMenuButton
             className="action-button"
             directionX="right"
@@ -487,16 +487,21 @@ class SectionHeaderContent extends React.PureComponent {
   }
 }
 
-export default inject(({ auth, peopleStore }) => ({
-  settings: auth.settingsStore,
-  isAdmin: auth.isAdmin,
-  viewer: auth.userStore.user,
-  filter: peopleStore.filterStore.filter,
-  setFilter: peopleStore.filterStore.setFilterParams,
-  updateUserStatus: peopleStore.usersStore.updateUserStatus,
-  resetProfile: peopleStore.targetUserStore.resetTargetUser,
-  fetchProfile: peopleStore.targetUserStore.getTargetUser,
-  profile: peopleStore.targetUserStore.targetUser,
-  updateProfile: peopleStore.targetUserStore.updateProfile,
-  getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
-}))(observer(withRouter(withTranslation("Profile")(SectionHeaderContent))));
+export default inject(({ auth, peopleStore }) => {
+  console.log(peopleStore.targetUserStore);
+  return {
+    settings: auth.settingsStore,
+    isAdmin: auth.isAdmin,
+    isLoaded: auth.isLoaded,
+    viewer: auth.userStore.user,
+    filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
+    updateUserStatus: peopleStore.usersStore.updateUserStatus,
+    resetProfile: peopleStore.targetUserStore.resetTargetUser,
+    fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
+    isMe: peopleStore.targetUserStore.isMe,
+    updateProfile: peopleStore.targetUserStore.updateProfile,
+    getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+  };
+})(observer(withRouter(withTranslation("Profile")(SectionHeaderContent))));

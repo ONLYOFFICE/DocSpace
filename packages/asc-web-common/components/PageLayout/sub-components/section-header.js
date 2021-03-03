@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import equal from "fast-deep-equal/react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
-import { LayoutContextConsumer } from "../../Layout/context";
+import { LayoutContextConsumer } from "studio/Layout/context";
 import { isMobile } from "react-device-detect";
 import { tablet, desktop } from "@appserver/components/utils/device";
 

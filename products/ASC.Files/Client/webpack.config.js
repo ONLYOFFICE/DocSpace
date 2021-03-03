@@ -119,6 +119,7 @@ var config = {
       filename: "remoteEntry.js",
       remotes: {
         studio: "studio@/remoteEntry.js",
+        people: "people@/products/people/remoteEntry.js",
       },
       exposes: {
         "./app": "./src/Files.jsx",
