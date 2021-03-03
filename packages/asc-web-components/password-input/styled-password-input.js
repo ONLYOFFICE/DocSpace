@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-
+import Text from "../text";
 import { tablet, mobile } from "../utils/device";
 import Base from "../themes/base";
 // eslint-disable-next-line no-unused-vars
@@ -133,19 +133,28 @@ const Progress = styled.div`
 `;
 Progress.defaultProps = { theme: Base };
 
-// const TooltipStyle = styled.div`
-//   .__react_component_tooltip {
-//   }
-// `;
+const TooltipStyle = styled.div`
+  .__react_component_tooltip {
+  }
+`;
 
-// const StyledTooltipContainer = styled(Text)`
-//   //margin: 8px 16px 16px 16px;
-// `;
+const StyledTooltipContainer = styled(Text)`
+  //margin: 8px 16px 16px 16px;
+`;
 
-// const StyledTooltipItem = styled(Text)`
-//   margin-left: 8px;
-//   height: 24px;
-//   color: ${(props) => (props.valid ? "#44bb00" : "#B40404")};
-// `;
+const StyledTooltipItem = styled(Text)`
+  margin-left: 8px;
+  height: 24px;
+  color: ${(props) => (props.valid ? "#44bb00" : "#B40404")};
+`;
 
-export { Progress, CopyLink, NewPasswordButton, PasswordProgress, StyledInput };
+export {
+  Progress,
+  CopyLink,
+  NewPasswordButton,
+  PasswordProgress,
+  StyledInput,
+  TooltipStyle,
+  StyledTooltipContainer,
+  StyledTooltipItem,
+};
