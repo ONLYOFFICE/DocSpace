@@ -89,21 +89,39 @@ const LoginRoute = (props) => (
   </React.Suspense>
 );
 
-const PeopleRoute = (props) => (
-  <React.Suspense fallback={<LoadingShell />}>
-    <ErrorBoundary>
-      <People {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const PeopleRoute = (props) => {
+  useEffect(() => {
+    props.setModuleInfo(
+      "/products/people",
+      "f4d98afd-d336-4332-8778-3c6945c81ea0"
+    );
+  }, []);
 
-const FilesRoute = (props) => (
-  <React.Suspense fallback={<LoadingShell />}>
-    <ErrorBoundary>
-      <Files {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+  return (
+    <React.Suspense fallback={<LoadingShell />}>
+      <ErrorBoundary>
+        <People {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  );
+};
+
+const FilesRoute = (props) => {
+  useEffect(() => {
+    props.setModuleInfo(
+      "/products/files",
+      "e67be73d-f9ae-4ce1-8fec-1880cb518cb4"
+    );
+  }, []);
+
+  return (
+    <React.Suspense fallback={<LoadingShell />}>
+      <ErrorBoundary>
+        <Files {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  );
+};
 
 const AboutRoute = (props) => (
   <React.Suspense fallback={<LoadingShell />}>
@@ -155,7 +173,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   //     .catch((err) => toastr.error(err.message));
   // }, []);
 
-  const { isLoaded, loadBaseInfo, isThirdPartyResponse } = rest;
+  const { isLoaded, loadBaseInfo, isThirdPartyResponse, setModuleInfo } = rest;
 
   useEffect(() => {
     try {
@@ -169,6 +187,11 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     console.log("App render", isLoaded);
     if (isLoaded) updateTempContent();
   }, [isLoaded]);
+
+  useEffect(() => {
+    console.log("Current page ", page);
+    // setModuleInfo(page, "e67be73d-f9ae-4ce1-8fec-1880cb518cb4");
+  }, [page]);
 
   return (
     <Layout>
@@ -186,10 +209,12 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <PrivateRoute
                 path={["/products/people", "/products/people/filter"]}
                 component={PeopleRoute}
+                setModuleInfo={setModuleInfo}
               />
               <PrivateRoute
                 path={["/products/files", "/products/files/filter"]}
                 component={FilesRoute}
+                setModuleInfo={setModuleInfo}
               />
               <PrivateRoute path={["/about"]} component={AboutRoute} />
               <PublicRoute
@@ -252,7 +277,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 // export default connect(mapStateToProps, mapDispatchToProps)(Shell);
 
 const ShellWrapper = inject(({ auth }) => {
-  const { init, isLoaded } = auth;
+  const { init, isLoaded, settingsStore } = auth;
+  const { setModuleInfo } = settingsStore;
 
   const pathname = window.location.pathname.toLowerCase();
   const isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
@@ -264,6 +290,7 @@ const ShellWrapper = inject(({ auth }) => {
     },
     isThirdPartyResponse,
     isLoaded,
+    setModuleInfo,
   };
 })(observer(Shell));
 
