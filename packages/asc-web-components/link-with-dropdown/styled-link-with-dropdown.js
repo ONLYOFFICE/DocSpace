@@ -43,6 +43,7 @@ const ExpanderDownIconWrapper = ({
   isSemitransparent,
   dropdownType,
   isOpen,
+  isDisabled,
   ...props
 }) => <ExpanderDownIcon {...props} />;
 

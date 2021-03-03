@@ -62,13 +62,16 @@ const getItems = (data) => {
           key={item.key}
           icon={
             item.root ? (
-              <StyledDepartmentsGroupIcon size="scale" color="#657077" /* isfill={true} */ /> // TODO: Add isFill prop if need
+              <StyledDepartmentsGroupIcon
+                size="scale"
+                color="#657077" /* isfill={true} */
+              /> // TODO: Add isFill prop if need
+            ) : (
               // <DepartmentsGroupIcon
               //   size="scale"
               //   isfill={true}
               //   color="#657077"
               // />
-            ) : (
               ""
             )
           }
@@ -152,31 +155,34 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    const { isLoaded, data, selectedKeys, isAdmin } = this.props;
+    const { isLoaded, data, selectedKeys, isAdmin, isVisitor } = this.props;
 
     //console.log("PeopleTreeMenu", this.props);
-    return !isLoaded ? (
-      <Loaders.TreeFolders />
-    ) : (
-      <StyledTreeMenu
-        className="people-tree-menu"
-        checkable={false}
-        draggable={false}
-        disabled={false}
-        multiple={false}
-        showIcon={true}
-        defaultExpandAll={true}
-        switcherIcon={this.switcherIcon}
-        onSelect={this.onSelectHandler}
-        selectedKeys={selectedKeys}
-        isFullFillSelection={false}
-        gapBetweenNodes="22"
-        gapBetweenNodesTablet="26"
-        isEmptyRootNode={getItems(data).length > 0}
-        isAdmin={isAdmin}
-      >
-        {getItems(data)}
-      </StyledTreeMenu>
+    return (
+      !isVisitor &&
+      (!isLoaded ? (
+        <Loaders.TreeFolders />
+      ) : (
+        <StyledTreeMenu
+          className="people-tree-menu"
+          checkable={false}
+          draggable={false}
+          disabled={false}
+          multiple={false}
+          showIcon={true}
+          defaultExpandAll={true}
+          switcherIcon={this.switcherIcon}
+          onSelect={this.onSelectHandler}
+          selectedKeys={selectedKeys}
+          isFullFillSelection={false}
+          gapBetweenNodes="22"
+          gapBetweenNodesTablet="26"
+          isEmptyRootNode={getItems(data).length > 0}
+          isAdmin={isAdmin}
+        >
+          {getItems(data)}
+        </StyledTreeMenu>
+      ))
     );
   }
 }
@@ -241,6 +247,7 @@ export default inject(({ auth, peopleStore }) => {
   return {
     setDocumentTitle: auth.setDocumentTitle,
     isLoaded: auth.isLoaded,
+    isVisitor: auth.userStore.user.isVisitor,
     isAdmin: auth.isAdmin,
     groups,
     data,

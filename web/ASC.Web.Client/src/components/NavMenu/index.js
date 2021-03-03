@@ -12,7 +12,7 @@ import { I18nextProvider, withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 
 import Loaders from "@appserver/common/components/Loaders";
-import { LayoutContextConsumer } from "@appserver/common/components/Layout/context";
+import { LayoutContextConsumer } from "../Layout/context";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";

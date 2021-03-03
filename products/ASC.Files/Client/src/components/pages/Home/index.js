@@ -209,7 +209,6 @@ class PureHome extends React.Component {
       fileActionId,
       firstLoad,
       isHeaderVisible,
-      showOwnerChangePanel,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -227,8 +226,6 @@ class PureHome extends React.Component {
         {convertDialogVisible && (
           <ConvertDialog visible={convertDialogVisible} />
         )}
-
-        {showOwnerChangePanel && <ChangeOwnerPanel />}
 
         <Panels />
         <PageLayout
@@ -294,10 +291,6 @@ class PureHome extends React.Component {
 
 const Home = withTranslation("Home")(PureHome);
 
-Home.propTypes = {
-  history: PropTypes.object.isRequired,
-};
-
 export default inject(
   ({
     auth,
@@ -346,10 +339,7 @@ export default inject(
       isSecondaryProgressFinished: isProgressFinished,
     } = secondaryProgressDataStore;
 
-    const {
-      convertDialogVisible,
-      ownerPanelVisible: showOwnerChangePanel,
-    } = dialogsStore;
+    const { convertDialogVisible } = dialogsStore;
 
     const { setUploadPanelVisible, startUpload } = uploadDataStore;
 
@@ -379,7 +369,6 @@ export default inject(
       secondaryProgressDataStoreAlert,
 
       convertDialogVisible,
-      showOwnerChangePanel,
       selectionLength,
       isProgressFinished,
       selectionTitle,

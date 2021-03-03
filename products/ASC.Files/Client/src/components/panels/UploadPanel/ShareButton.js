@@ -12,16 +12,11 @@ const ShareButton = (props) => {
   if (isShared) color = "#657077";
 
   const onOpenSharingPanel = () => {
-    const {
-      setSharingPanelVisible,
-      sharingPanelVisible,
-      selectUploadedFile,
-      uploadedFile,
-    } = props;
+    const { setSharingPanelVisible, selectUploadedFile, uploadedFile } = props;
 
     const file = uploadedFile[0].fileInfo;
     selectUploadedFile([file]);
-    setSharingPanelVisible(!sharingPanelVisible);
+    setSharingPanelVisible(true);
   };
 
   return (
@@ -36,13 +31,12 @@ const ShareButton = (props) => {
 };
 
 export default inject(({ dialogsStore, uploadDataStore }, { uniqueId }) => {
-  const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
+  const { setSharingPanelVisible } = dialogsStore;
   const { selectUploadedFile, getUploadedFile } = uploadDataStore;
 
   const uploadedFile = getUploadedFile(uniqueId);
 
   return {
-    sharingPanelVisible,
     uploadedFile,
 
     setSharingPanelVisible,

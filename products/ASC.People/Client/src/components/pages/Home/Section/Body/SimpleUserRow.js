@@ -40,6 +40,7 @@ const SimpleUserRow = ({
     mobilePhone,
     options,
     userName,
+    currentUserId,
   } = person;
 
   const onContentRowSelect = (checked, user) => {
@@ -282,6 +283,7 @@ export default inject(({ auth, peopleStore }, { person }) => {
   return {
     homepage: auth.settingsStore.homepage,
     isAdmin: auth.isAdmin,
+    currentUserId: auth.userStore.user.id,
     checked: peopleStore.selectionStore.selection.some(
       (el) => el.id === person.id
     ),

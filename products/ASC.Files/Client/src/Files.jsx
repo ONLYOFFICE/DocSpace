@@ -24,7 +24,7 @@ import "./custom.scss";
 import "./i18n";
 //import { regDesktop } from "@appserver/common/src/desktop";
 
-const Error404 = React.lazy(() => import("@appserver/common/pages/errors/404"));
+const Error404 = React.lazy(() => import("studio/Error404"));
 
 class FilesContent extends React.Component {
   constructor(props) {

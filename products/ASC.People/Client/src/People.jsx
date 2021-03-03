@@ -17,7 +17,7 @@ import config from "../package.json";
 import "./custom.scss";
 import "./i18n";
 
-const Error404 = React.lazy(() => import("@appserver/common/pages/errors/404"));
+const Error404 = React.lazy(() => import("studio/Error404"));
 
 const PeopleContent = (props) => {
   const { homepage, isLoaded, loadBaseInfo } = props;

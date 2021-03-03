@@ -3,7 +3,7 @@ import React from "react";
 import { Router, Switch, Redirect } from "react-router-dom";
 import history from "@appserver/common/history";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
-import Error404 from "@appserver/common/pages/errors/404";
+import Error404 from "studio/Error404";
 
 import Home from "./components/pages/Home";
 //import Profile from "./components/pages/Profile";

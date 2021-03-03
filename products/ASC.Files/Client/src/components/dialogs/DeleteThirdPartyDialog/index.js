@@ -18,12 +18,13 @@ class DeleteThirdPartyDialogComponent extends React.Component {
     toastr.success(t("SuccessDeleteThirdParty", { service: removeItem.title }));
   };
 
+  onClose = () => this.props.setDeleteThirdPartyDialogVisible(false);
+
   onDeleteThirdParty = () => {
     const {
       setThirdPartyProviders,
       removeItem,
       providers,
-      onClose,
       fetchFiles,
       currentFolderId,
       commonId,
@@ -54,14 +55,14 @@ class DeleteThirdPartyDialogComponent extends React.Component {
         }
       })
       .catch((err) => toastr.error(err))
-      .finally(() => onClose());
+      .finally(() => this.onClose());
   };
 
   render() {
-    const { onClose, visible, t, removeItem } = this.props;
+    const { visible, t, removeItem } = this.props;
 
     return (
-      <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
+      <ModalDialog visible={visible} zIndex={310} onClose={this.onClose}>
         <ModalDialog.Header>{t("DeleteThirdParty")}</ModalDialog.Header>
         <ModalDialog.Body>
           {t("DeleteThirdPartyAlert", { service: removeItem.title })}
@@ -95,17 +96,26 @@ export default inject(
       commonFolderId,
     } = treeFoldersStore;
 
+    const {
+      deleteThirdPartyDialogVisible: visible,
+      setDeleteThirdPartyDialogVisible,
+      removeItem,
+    } = dialogsStore;
+
     return {
       currentFolderId: selectedFolderStore.id,
       treeFolders,
       myId: myFolderId,
       commonId: commonFolderId,
       providers,
+      visible,
+      removeItem,
 
       fetchFiles,
       setTreeFolders,
       setThirdPartyProviders,
       deleteThirdParty,
+      setDeleteThirdPartyDialogVisible,
     };
   }
 )(withRouter(observer(DeleteThirdPartyDialog)));

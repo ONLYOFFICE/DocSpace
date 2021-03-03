@@ -120,6 +120,13 @@ const config = {
       exposes: {
         "./shell": "./src/Shell",
         "./store": "./src/store",
+        "./Error404": "./src/components/pages/Errors/404/",
+        "./Error401": "./src/components/pages/Errors/401",
+        "./Error403": "./src/components/pages/Errors/403",
+        "./Error520": "./src/components/pages/Errors/520",
+        "./Layout": "./src/components/Layout",
+        "./Layout/context": "./src/components/Layout/context.js",
+        "./Main": "./src/components/Main",
       },
       shared: {
         ...deps,

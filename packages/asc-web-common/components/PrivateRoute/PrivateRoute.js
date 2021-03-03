@@ -3,8 +3,8 @@ import React from "react";
 import { Redirect, Route } from "react-router-dom";
 //import Loader from "@appserver/components/loader";
 import PageLayout from "../PageLayout";
-import Error401 from '../../pages/errors/401'
-import Error404 from '../../pages/errors/404'
+import Error401 from "studio/Error401";
+import Error404 from "studio/Error404";
 import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
 import { inject, observer } from "mobx-react";
 import { isMe } from "../../utils";
@@ -76,11 +76,25 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
     if (restricted) {
       console.log("PrivateRoute render Error401", rest);
-      return <Error401 />;
+      return (
+        <Redirect
+          to={{
+            pathname: "/error401",
+            state: { from: props.location },
+          }}
+        />
+      );
     }
 
     console.log("PrivateRoute render Error404", rest);
-    return <Error404 />;
+    return (
+      <Redirect
+        to={{
+          pathname: "/error404",
+          state: { from: props.location },
+        }}
+      />
+    );
   };
 
   //console.log("PrivateRoute render", rest);
