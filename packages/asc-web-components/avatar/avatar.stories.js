@@ -34,6 +34,9 @@ export default {
 const Template = (args) => <Avatar {...args} />;
 
 export const Default = Template.bind({});
+Default.args = {
+  role: 'admin'
+}
 
 /*import React from "react";
 import { storiesOf } from "@storybook/react";

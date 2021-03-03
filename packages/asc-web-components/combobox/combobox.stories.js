@@ -8,6 +8,14 @@ import NavLogoIcon from "../../../public/images/nav.logo.opened.react.svg";
 export default {
   title: "Components/ComboBox",
   component: ComboBox,
+  decorators: [
+    (Story) => (
+      <div style={{ height: "230px" }}>
+        <Story />
+      </div>
+    ),
+  ],
+
   argTypes: {
     advancedOptions: {
       description: "If you need display options not basic options",
@@ -247,17 +255,24 @@ const AdvancedOptionsTemplate = (args) => (
 );
 
 export const Default = Template.bind({});
+Default.args = {
+  opened: true,
+  scaled: false
+};
 export const BaseOptions = BaseOptionsTemplate.bind({});
 BaseOptions.args = {
   scaledOptions: false,
   scaled: false,
   noBorder: false,
   isDisabled: false,
+  opened: true,
 };
 export const AdvancedOptions = AdvancedOptionsTemplate.bind({});
 AdvancedOptions.args = {
+  opened: true,
   isDisabled: false,
   scaled: false,
   size: "content",
   directionX: "right",
+  directionY: "bottom",
 };

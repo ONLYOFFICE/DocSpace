@@ -11,6 +11,7 @@ module.exports = {
     "../combobox/*.stories.@(js|mdx)",
     "../context-menu/*.stories.@(js|mdx)",
     "../context-menu-button/*.stories.@(js|mdx)",
+    "../date-picker/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",

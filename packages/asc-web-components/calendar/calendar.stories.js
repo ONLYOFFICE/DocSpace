@@ -103,3 +103,9 @@ const Template = (args) => {
 };
 
 export const Default = Template.bind({});
+Default.args = {
+  maxDate: new Date(new Date().getFullYear() + 1 + "/01/01"),
+  minDate: new Date("1970/01/01"),
+  selectedDate: new Date(),
+  openToDate: new Date(),
+};
