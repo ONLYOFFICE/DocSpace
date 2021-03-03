@@ -118,6 +118,8 @@ class SettingsStore {
       getPortalTimezones: action,
       setHeaderVisible: action,
       setIsTabletView: action,
+      setValue: action,
+      setArticlePinned: action,
     });
   }
 
@@ -127,18 +129,21 @@ class SettingsStore {
     return `https://helpcenter.onlyoffice.com/${lang}/installation/groups-authorization-keys.aspx`;
   }
 
+  setValue = (key, value) => {
+    this[key] = value;
+  };
   getSettings = async () => {
     const newSettings = await api.settings.getSettings();
 
     Object.keys(newSettings).map((key) => {
       if (key in this) {
-        this[key] = newSettings[key];
+        this.setValue(key, newSettings[key]);
 
         if (key === "culture" && !localStorage.getItem(LANGUAGE)) {
           localStorage.setItem(LANGUAGE, newSettings[key]);
         }
       } else if (key === "passwordHash") {
-        this.hashSettings = newSettings[key];
+        this.setValue("hashSettings", newSettings[key]);
       }
     });
 
