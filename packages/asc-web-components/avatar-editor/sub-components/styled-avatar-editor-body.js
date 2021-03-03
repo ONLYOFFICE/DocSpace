@@ -57,7 +57,7 @@ const Slider = styled.input.attrs({
     cursor: pointer;
     -webkit-appearance: none;
     -webkit-box-shadow: ${(props) =>
-      props.theme.avatarEditorBody.sliderThumb.boxShadow};
+      props.theme.avatarEditorBody.slider.sliderThumb.boxShadow};
     box-shadow: ${(props) =>
       props.theme.avatarEditorBody.slider.sliderThumb.boxShadow};
   }
