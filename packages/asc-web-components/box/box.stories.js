@@ -1,6 +1,7 @@
 import React from "react";
 
-import { Box } from "./";
+//import { Box } from "./";
+import Box from "./";
 
 const containerProps = {
   widthProp: "100%",

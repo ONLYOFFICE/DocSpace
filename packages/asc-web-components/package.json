@@ -4,15 +4,15 @@
   "private": true,
   "scripts": {
     "build": "echo 'skip it'",
-	"start": "echo 'skip it,
-	"test": "jest",
+    "start": "echo 'skip it'",
+    "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-	"storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
-
+  },
   "devDependencies": {
-	"@storybook/addon-actions": "^6.1.20",
+    "@storybook/addon-actions": "^6.1.20",
     "@storybook/addon-controls": "^6.1.20",
     "@storybook/addon-docs": "^6.1.20",
     "@storybook/addon-essentials": "^6.1.20",
@@ -55,7 +55,6 @@
     "prettier": "2.1.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "react-values": "^0.3.3",
     "rollup": "^1.32.1",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-cleanup": "^3.2.1",
