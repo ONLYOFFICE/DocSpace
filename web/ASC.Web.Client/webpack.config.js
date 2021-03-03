@@ -127,6 +127,9 @@ const config = {
         "./Layout": "./src/components/Layout",
         "./Layout/context": "./src/components/Layout/context.js",
         "./Main": "./src/components/Main",
+        "./PeopleSelector": "./src/components/PeopleSelector",
+        "./PeopleSelector/UserTooltip":
+          "./src/components/PeopleSelector/sub-components/UserTooltip.js",
       },
       shared: {
         ...deps,
