@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Error520Container from "../../pages/errors/520";
+import Error520 from "studio/Error520";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -22,7 +22,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <Error520Container />;
+      return <Error520 />;
     }
 
     return this.props.children;

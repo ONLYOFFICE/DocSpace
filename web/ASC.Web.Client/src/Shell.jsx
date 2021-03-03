@@ -23,7 +23,8 @@ import "./custom.scss";
 import "./i18n";
 
 const Payments = React.lazy(() => import("./components/pages/Payments"));
-const Error404 = React.lazy(() => import("@appserver/common/pages/errors/404"));
+const Error404 = React.lazy(() => import("studio/Error404"));
+const Error401 = React.lazy(() => import("studio/Error401"));
 const Home = React.lazy(() => import("./components/pages/Home"));
 const Login = React.lazy(() => import("login/app"));
 const People = React.lazy(() => import("people/app"));
@@ -65,6 +66,13 @@ const Error404Route = (props) => (
   </React.Suspense>
 );
 
+const Error401Route = (props) => (
+  <React.Suspense fallback={<LoadingShell />}>
+    <ErrorBoundary>
+      <Error401 {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
 const HomeRoute = (props) => (
   <React.Suspense fallback={<LoadingShell />}>
     <ErrorBoundary>
@@ -211,6 +219,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path="/settings"
                 component={SettingsRoute}
               />
+              <PrivateRoute path="/error401" component={Error401Route} />
               <PrivateRoute component={Error404Route} />
             </Switch>
           </Main>
