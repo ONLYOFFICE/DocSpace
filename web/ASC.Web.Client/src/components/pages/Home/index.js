@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import Text from "@appserver/components/text";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
 import history from "@appserver/common/history";
 import ModuleTile from "./ModuleTile";

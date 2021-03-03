@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 import axios from "axios";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import FilesFilter from "@appserver/common/api/files/filter";

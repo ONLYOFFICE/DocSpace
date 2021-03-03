@@ -6,7 +6,7 @@ import SelectedItem from "@appserver/components/selected-item";
 import TextInput from "@appserver/components/text-input";
 import { tablet } from "@appserver/components/utils/device";
 
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import PeopleSelector from "studio/PeopleSelector";
 import { GUID_EMPTY } from "../../../../../helpers/constants";

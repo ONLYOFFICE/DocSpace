@@ -1,7 +1,7 @@
 import React from "react";
 import RowContainer from "@appserver/components/row-container";
 import { Consumer } from "@appserver/components/utils/context";
-import toastr from "@appserver/common/components/Toast/toastr";
+import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 
 import EmptyScreen from "./EmptyScreen";

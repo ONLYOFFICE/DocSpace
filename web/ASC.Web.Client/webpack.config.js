@@ -130,6 +130,7 @@ const config = {
         "./PeopleSelector": "./src/components/PeopleSelector",
         "./PeopleSelector/UserTooltip":
           "./src/components/PeopleSelector/sub-components/UserTooltip.js",
+        "./toastr": "./src/helpers/toastr",
       },
       shared: {
         ...deps,
@@ -154,7 +155,7 @@ module.exports = (env, argv) => {
   if (argv.mode === "production") {
     config.mode = "production";
   } else {
-    config.devtool = "source-map";
+    config.devtool = "cheap-module-source-map";
   }
 
   return config;
