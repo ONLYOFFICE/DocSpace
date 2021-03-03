@@ -335,7 +335,7 @@ class SharingPanelComponent extends React.Component {
   setShareDataItems = (shareDataItems) => this.setState({ shareDataItems });
 
   onClose = () => {
-    this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
+    this.props.setSharingPanelVisible(false);
     this.props.selectUploadedFile([]);
   };
 
@@ -604,7 +604,7 @@ export default inject(
       setShareFiles,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
-    const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
+    const { setSharingPanelVisible } = dialogsStore;
     const {
       uploadSelection,
       selectUploadedFile,
@@ -621,7 +621,6 @@ export default inject(
       selection: uploadPanelVisible ? uploadSelection : selection,
       isLoading,
       isPrivacy: isPrivacyFolder,
-      sharingPanelVisible,
       uploadSelection,
       canShareOwnerChange,
 

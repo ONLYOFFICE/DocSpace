@@ -5,6 +5,7 @@ import Heading from "@appserver/components/heading";
 import Aside from "@appserver/components/aside";
 import Loaders from "@appserver/common/components/Loaders";
 import { withTranslation } from "react-i18next";
+import history from "@appserver/common/history";
 import {
   StyledVersionHistoryPanel,
   StyledContent,
@@ -23,14 +24,12 @@ class PureVersionHistoryPanel extends React.Component {
   }
 
   redirectToPage = (fileId) => {
-    const { history, homepage, setIsVerHistoryPanel } = this.props;
-    setIsVerHistoryPanel(false);
-
-    history.replace(`${homepage}/${fileId}/history`);
+    this.onClose();
+    history.replace(`${this.props.homepage}/${fileId}/history`);
   };
 
-  onClosePanelHandler = () => {
-    this.props.onClose();
+  onClose = () => {
+    this.props.setIsVerHistoryPanel(false);
   };
 
   render() {
@@ -45,7 +44,7 @@ class PureVersionHistoryPanel extends React.Component {
         isLoading={true}
       >
         <Backdrop
-          onClick={this.onClosePanelHandler}
+          onClick={this.onClose}
           visible={visible}
           zIndex={zIndex}
           isAside={true}
@@ -87,8 +86,6 @@ const VersionHistoryPanel = withTranslation("VersionHistory")(
 
 VersionHistoryPanel.propTypes = {
   fileId: PropTypes.string,
-  visible: PropTypes.bool,
-  onClose: PropTypes.func,
 };
 
 export default inject(({ auth, initFilesStore, versionHistoryStore }) => {
@@ -99,6 +96,7 @@ export default inject(({ auth, initFilesStore, versionHistoryStore }) => {
     versions,
     setIsVerHistoryPanel,
     setVerHistoryFileId,
+    isVisible: visible,
   } = versionHistoryStore;
 
   return {
@@ -107,6 +105,7 @@ export default inject(({ auth, initFilesStore, versionHistoryStore }) => {
     isLoading,
     fileId,
     versions,
+    visible,
 
     setIsVerHistoryPanel,
     setVerHistoryFileId,
