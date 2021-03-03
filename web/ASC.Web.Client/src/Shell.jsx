@@ -158,7 +158,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   }, [loadBaseInfo]);
 
   useEffect(() => {
-    console.log("App render", isLoaded);
     if (isLoaded) updateTempContent();
   }, [isLoaded]);
 

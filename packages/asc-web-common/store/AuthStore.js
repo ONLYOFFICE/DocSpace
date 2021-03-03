@@ -137,7 +137,7 @@ class AuthStore {
     try {
       const response = await api.user.login(user, hash);
 
-      console.log("Login response", response);
+      if (!response || !response.token) throw "Empty API response";
 
       setWithCredentialsStatus(true);
 
