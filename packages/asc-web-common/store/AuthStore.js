@@ -143,9 +143,9 @@ class AuthStore {
 
       await this.init();
 
-      return true;
+      return Promise.resolve(true);
     } catch (e) {
-      return false;
+      return Promise.reject(e);
     }
   };
 
