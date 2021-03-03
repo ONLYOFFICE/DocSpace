@@ -4,6 +4,13 @@ import DatePicker from "./";
 export default {
   title: "Components/DatePicker",
   component: DatePicker,
+  decorators: [
+    (Story) => (
+      <div style={{ height: "380px" }}>
+        <Story />
+      </div>
+    ),
+  ],
   argTypes: {
     themeColor: { description: "Color of the selected day", control: "color" },
     selectedDate: { description: "Selected date value", control: "date" },
@@ -94,18 +101,16 @@ const Template = (args) => {
     "vi",
   ];
   return (
-    <div style={{ height: "380px" }}>
-      <DatePicker
-        {...args}
-        onChange={(date) => {
-          args.onChange(date);
-        }}
-        selectedDate={new Date(args.selectedDate)}
-        minDate={new Date(args.minDate)}
-        maxDate={new Date(args.maxDate)}
-        openToDate={new Date(args.openToDate)}
-      />
-    </div>
+    <DatePicker
+      {...args}
+      onChange={(date) => {
+        args.onChange(date);
+      }}
+      selectedDate={new Date(args.selectedDate)}
+      minDate={new Date(args.minDate)}
+      maxDate={new Date(args.maxDate)}
+      openToDate={new Date(args.openToDate)}
+    />
   );
 };
 

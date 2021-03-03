@@ -1,5 +1,4 @@
-import React from "react";
-import { BooleanValue } from "react-values";
+import React, { useState } from "react";
 
 import Backdrop from "./";
 import Button from "../button";
@@ -9,7 +8,6 @@ export default {
   component: Backdrop,
   argTypes: {
     visible: {
-      control: false,
       description: "Display or not",
     },
     zIndex: {
@@ -24,7 +22,6 @@ export default {
     },
     isAside: { description: "Must be true if used with Aside component" },
     onClick: { action: "On Hide", table: { disable: true } },
-    onClickButton: { action: "On Show", table: { disable: true } },
   },
   parameters: {
     docs: {
@@ -39,43 +36,29 @@ export default {
       },
     },
   },
-  decorators: [
-    (Story, props) => (
-      <BooleanValue>
-        {({ value, toggle }) => {
-          props.args.value = value;
-          props.args.toggle = toggle;
-          console.log(props);
-
-          return (
-            <>
-              <Button
-                label="Show Backdrop"
-                primary
-                size="medium"
-                onClick={(e) => {
-                  props.args.onClickButton(e);
-                  toggle(true);
-                }}
-              />
-              <Story />
-            </>
-          );
-        }}
-      </BooleanValue>
-    ),
-  ],
 };
 
-const Template = (args) => (
-  <Backdrop
-    {...args}
-    visible={args.value}
-    onClick={(e) => {
-      args.onClick(e);
-      args.toggle();
-    }}
-  />
-);
+const Template = (args) => {
+  const [isVisible, setIsVisible] = useState(args.visible);
+  const toggleVisible = () => setIsVisible(!isVisible);
+  return (
+    <>
+      <Button
+        label="Show Backdrop"
+        primary
+        size="medium"
+        onClick={toggleVisible}
+      />
+      <Backdrop
+        {...args}
+        visible={isVisible}
+        onClick={(e) => {
+          args.onClick(e);
+          toggleVisible(false);
+        }}
+      />
+    </>
+  );
+};
 
 export const Default = Template.bind({});

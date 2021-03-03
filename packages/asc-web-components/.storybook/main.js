@@ -12,6 +12,9 @@ module.exports = {
     "../context-menu/*.stories.@(js|mdx)",
     "../context-menu-button/*.stories.@(js|mdx)",
     "../date-picker/*.stories.@(js|mdx)",
+    "../drag-and-drop/*.stories.@(js|mdx)",
+    "../drop-down/*.stories.@(js|mdx)",
+    "../drop-down-item/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",
