@@ -7,12 +7,13 @@ import {
   ArticleMainButtonContent,
   ArticleBodyContent,
 } from "../../Article";
+import SectionUserBody from "./Section/Body/index";
 import {
   SectionHeaderContent,
-  CreateUserForm,
-  UpdateUserForm,
-  AvatarEditorPage,
-  CreateAvatarEditorPage,
+  // CreateUserForm,
+  // UpdateUserForm,
+  // AvatarEditorPage,
+  // CreateAvatarEditorPage,
 } from "./Section";
 import { withTranslation } from "react-i18next";
 
@@ -67,13 +68,7 @@ class ProfileAction extends React.Component {
     console.log("ProfileAction render");
 
     this.loaded = false;
-    const {
-      profile,
-      isVisitor,
-      match,
-      isAdmin,
-      avatarEditorIsOpen,
-    } = this.props;
+    const { profile, match } = this.props;
     const { userId, type } = match.params;
 
     if (type) {
@@ -84,21 +79,17 @@ class ProfileAction extends React.Component {
 
     return (
       <PageLayout>
-        {!isVisitor && (
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
-        )}
-        {!isVisitor && isAdmin && (
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
-        )}
-        {!isVisitor && (
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
-        )}
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
+
+        <PageLayout.ArticleMainButton>
+          <ArticleMainButtonContent />
+        </PageLayout.ArticleMainButton>
+
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
           {this.loaded ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
@@ -106,17 +97,7 @@ class ProfileAction extends React.Component {
 
         <PageLayout.SectionBody>
           {this.loaded ? (
-            type ? (
-              avatarEditorIsOpen ? (
-                <CreateAvatarEditorPage />
-              ) : (
-                <CreateUserForm />
-              )
-            ) : avatarEditorIsOpen ? (
-              <AvatarEditorPage />
-            ) : (
-              <UpdateUserForm />
-            )
+            <SectionUserBody />
           ) : (
             <Loaders.ProfileView isEdit={false} />
           )}
@@ -127,19 +108,18 @@ class ProfileAction extends React.Component {
 }
 
 ProfileAction.propTypes = {
+  setDocumentTitle: PropTypes.func.isRequired,
+  isEdit: PropTypes.bool,
+  setIsEditingForm: PropTypes.func.isRequired,
   fetchProfile: PropTypes.func.isRequired,
-  match: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  isAdmin: PropTypes.bool,
+  match: PropTypes.object.isRequired,
 };
 
 export default inject(({ auth, peopleStore }) => ({
   setDocumentTitle: auth.setDocumentTitle,
-  isAdmin: auth.isAdmin,
-  isVisitor: auth.userStore.user.isVisitor,
   isEdit: peopleStore.editingFormStore.isEdit,
   setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
   fetchProfile: peopleStore.targetUserStore.getTargetUser,
   profile: peopleStore.targetUserStore.targetUser,
-  avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
 }))(withTranslation("ProfileAction")(withRouter(observer(ProfileAction))));
