@@ -46,6 +46,7 @@ body.drag-cursor * {
   -moz-transition: opacity cubic-bezier(0.4, 0, 0.2, 1) 436ms;
   transition: opacity cubic-bezier(0.4, 0, 0.2, 1) 436ms;
   z-index: 9999;
+  top: 56px;
 }
 .insp-logo-frame {
   display: -webkit-flex;
@@ -72,13 +73,13 @@ body.drag-cursor * {
 }
 .ipl-progress-indicator-head {
   background-color: #c6dafc;
-  height: 4px;
+  height: 2px;
   overflow: hidden;
   position: relative;
 }
 .ipl-progress-indicator .first-indicator,
 .ipl-progress-indicator .second-indicator {
-  background-color: #056d8b;
+  background-color: red;
   bottom: 0;
   left: 0;
   right: 0;
