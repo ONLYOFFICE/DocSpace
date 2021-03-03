@@ -2378,10 +2378,10 @@
     is-plain-object "^5.0.0"
     universal-user-agent "^6.0.0"
 
-"@octokit/openapi-types@^5.2.1":
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/@octokit/openapi-types/-/openapi-types-5.2.1.tgz#5e846f86104aef96ace20091d8afb6be27979d8a"
-  integrity sha512-Bf7MBvQ1nMpv15ANaQtRBsC7YnwQFPM0eUztp3luQs9L6sBEiQ6ArM1Wx5CG+N7tXETtd0oE0DMcU4wbLlCZIw==
+"@octokit/openapi-types@^5.2.2":
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/@octokit/openapi-types/-/openapi-types-5.2.2.tgz#1590c118a131031610faffd4222ae54915e2b82d"
+  integrity sha512-b3nHy/0uufJJsaZERwZM0syLRO6gfr6vvBPLewQxBKzzbhGDx1ygTyoELMNADD7mIPPzGMqbfdCeJTSeZueZwA==
 
 "@octokit/plugin-enterprise-rest@^6.0.1":
   version "6.0.1"
@@ -2470,11 +2470,11 @@
     "@types/node" ">= 8"
 
 "@octokit/types@^6.0.3", "@octokit/types@^6.7.1":
-  version "6.11.1"
-  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-6.11.1.tgz#54ece128029526fa99bd71e757b9e35478403d95"
-  integrity sha512-UiSRTG2lrFbMUMwhKNR0uSV33Fzv4bNu1n5iFuuNOg80XCh0VYNhR4TQWgrkLhVxdDuej6s61aP3eQvVm6K6uA==
+  version "6.11.2"
+  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-6.11.2.tgz#43973dc29cdf59bf9d5f3ab0d16275c4b4a6eb8d"
+  integrity sha512-EKQRFZU/oOfUlqk9ntLIE5UO/bcOx8exFpdXGBciJP90f05me3mza0sacIpqVqmiIQP3nJsBjnZHMmtijE5XwQ==
   dependencies:
-    "@octokit/openapi-types" "^5.2.1"
+    "@octokit/openapi-types" "^5.2.2"
 
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.0"
@@ -2702,10 +2702,10 @@
     "@svgr/plugin-svgo" "^5.5.0"
     loader-utils "^2.0.0"
 
-"@tanem/svg-injector@^9.0.0":
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/@tanem/svg-injector/-/svg-injector-9.0.1.tgz#875948ea8a0c2241e01b4b18f803feac5f02740d"
-  integrity sha512-+v4o9pRDkouxE/olTTX/gNElTb5+hCz/tPQebxQCbgLq+T1SY0+xa1zsxbuF543R9OAdZ3TKZeYnzVE24BYbPQ==
+"@tanem/svg-injector@^9.0.1":
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@tanem/svg-injector/-/svg-injector-9.0.2.tgz#eb18703609b21b68928a3ac2d7eaffbca4fcad5d"
+  integrity sha512-P8eeDlGN1EZEwktctGAtza52KrabTI4m+cANObmEIqCtvw8wKGQ3V3BejMpg0OoYzsALNpsUtQDsopPZH/0ycg==
   dependencies:
     "@babel/runtime" "^7.12.18"
     content-type "^1.0.4"
@@ -5793,9 +5793,9 @@ ejs@^2.6.1:
   integrity sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==
 
 electron-to-chromium@^1.3.649:
-  version "1.3.677"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.677.tgz#b5d586b0d1976c97cc7e95262677ac5944199513"
-  integrity sha512-Tcmk+oKQgpjcM+KYanlkd76ZtpzalkpUULnlJDP6vjHtR7UU564IM9Qv5DxqHZNBQjzXm6mkn7Y8bw2OoE3FmQ==
+  version "1.3.678"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.678.tgz#c7c6960463167126b7ed076fade14cac6223bfff"
+  integrity sha512-E5ha1pE9+aWWrT2fUD5wdPBWUnYtKnEnloewbtVyrkAs79HvodOiNO4rMR94+hKbxgMFQG4fnPQACOc1cfMfBg==
 
 email-addresses@^3.1.0:
   version "3.1.0"
@@ -11593,11 +11593,11 @@ react-hammerjs@^1.0.1:
     hammerjs "^2.0.8"
 
 react-helmet-async@^1.0.2:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/react-helmet-async/-/react-helmet-async-1.0.7.tgz#b988fbc3abdc4b704982bb74b9cb4a08fcf062c1"
-  integrity sha512-By90p5uxAriGukbyejq2poK41DwTxpNWOpOjN8mIyX/BKrCd3+sXZ5pHUZXjHyjR5OYS7PGsOD9dbM61YxfFmA==
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/react-helmet-async/-/react-helmet-async-1.0.8.tgz#28178a85ca4d669dff295d5c119d575af4451855"
+  integrity sha512-FSOjIzbHdJYTQ0An0yZlqd4mmTzQxPLyZC2LF5zmobo6Af+tXDKnLmmAE7s+vZ7JuRt/L8baK3VnULSB1usY0g==
   dependencies:
-    "@babel/runtime" "^7.11.2"
+    "@babel/runtime" "^7.12.5"
     invariant "^2.2.4"
     prop-types "^15.7.2"
     react-fast-compare "^3.2.0"
@@ -11705,12 +11705,12 @@ react-string-format@^0.1.0:
   integrity sha512-xkIhnh2t1YmS4r8Zz92qs0Ia8EMbBoRlMEvvMtC0sQBSxxBmBujfssSA4PYYi0w2WvJYSEktgilB+320/mlsOQ==
 
 react-svg@^12.0.0:
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/react-svg/-/react-svg-12.0.0.tgz#4f99549a59cd97eb6757cf0a2f403a260fdce8fb"
-  integrity sha512-P/+hqW/Zf/qr7qouwvs+h8PyUaVMwikldYQzYBHuGlSXZhEAUaSlwfBZ+fX348K/GNnzG6Np8+/Q4EMkt4j3JA==
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/react-svg/-/react-svg-12.1.0.tgz#73c2e1a09e5d1bf71311810496f700072447ed1d"
+  integrity sha512-k93yg7ehkIb882o193VnMsWsTGFd2LkAESU7YnRJfu1DivFczjMBuQj3lcdBzsxNKDSk4PHT/6v5KASkX+H1SA==
   dependencies:
     "@babel/runtime" "^7.12.18"
-    "@tanem/svg-injector" "^9.0.0"
+    "@tanem/svg-injector" "^9.0.1"
     prop-types "^15.7.2"
 
 react-syntax-highlighter@^11.0.2:
