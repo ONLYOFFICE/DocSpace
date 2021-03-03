@@ -1,7 +1,6 @@
 import React from "react";
 
 import ComboBox from "./";
-import Button from "../button";
 import RadioButton from "../radio-button";
 import DropDownItem from "../drop-down-item";
 import NavLogoIcon from "../../../public/images/nav.logo.opened.react.svg";
@@ -50,6 +49,7 @@ export default {
   },
   parameters: {
     docs: {
+      description: { component: "Custom combo box input" },
       source: {
         code: `
           ### Usage

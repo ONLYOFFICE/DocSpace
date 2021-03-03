@@ -27,7 +27,7 @@ export default {
   parameters: {
     docs: {
       description: {
-        components:
+        component:
           "A container that lays out its contents in one direction. Box provides general CSS capabilities like flexbox layout, paddings, background color, border, and animation.",
       },
       source: {
