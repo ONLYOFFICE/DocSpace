@@ -29,6 +29,7 @@ const PureConnectDialogContainer = (props) => {
     getOAuthToken,
     saveThirdParty,
     openConnectWindow,
+    setConnectDialogVisible,
   } = props;
   const { corporate, title, link, token, provider_id, provider_key } = item;
 
@@ -71,10 +72,10 @@ const PureConnectDialogContainer = (props) => {
     setCustomerTitleValue(e.target.value);
   };
   const onChangeMakeShared = () => setMakeShared(!isCorporate);
-  const onClose = useCallback(() => !isLoading && props.onClose(), [
-    isLoading,
-    props,
-  ]);
+
+  const onClose = useCallback(() => {
+    !isLoading && setConnectDialogVisible(false);
+  }, [isLoading, setConnectDialogVisible]);
 
   const onSave = useCallback(() => {
     const isTitleValid = !!customerTitle.trim();
@@ -334,6 +335,11 @@ export default inject(
       fetchTreeFolders,
     } = treeFoldersStore;
     const { id, folders } = selectedFolderStore;
+    const {
+      connectDialogVisible,
+      setConnectDialogVisible,
+      connectItem: item,
+    } = dialogsStore;
 
     return {
       selectedFolderId: id,
@@ -342,6 +348,8 @@ export default inject(
       myFolderId,
       commonFolderId,
       providers,
+      visible: connectDialogVisible,
+      item,
 
       fetchFiles,
       setTreeFolders,
@@ -350,6 +358,7 @@ export default inject(
       openConnectWindow,
       fetchThirdPartyProviders,
       fetchTreeFolders,
+      setConnectDialogVisible,
     };
   }
 )(observer(ConnectDialog));

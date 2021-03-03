@@ -19,7 +19,7 @@ import Loader from "@appserver/components/loader";
 import EmptyScreenContainer from "@appserver/components/empty-screen-container";
 
 import FilterInput from "@appserver/common/components/FilterInput";
-import PeopleSelector from "@appserver/common/components/PeopleSelector";
+import PeopleSelector from "studio/PeopleSelector";
 
 import isEmpty from "lodash/isEmpty";
 import { inject, observer } from "mobx-react";

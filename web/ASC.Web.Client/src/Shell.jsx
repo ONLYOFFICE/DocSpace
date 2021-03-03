@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Router, Switch } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
-import Main from "@appserver/common/components/Main";
+import Main from "./components/Main";
 import Box from "@appserver/components/box";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
 import PublicRoute from "@appserver/common/components/PublicRoute";

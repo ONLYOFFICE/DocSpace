@@ -43,8 +43,8 @@ const {
   isPresentation,
   getFileIcon,
   getFolderIcon,
+  getIcon,
 } = iconFormatsStore;
-const { getIcon } = iconFormatsStore;
 const {
   canWebEdit,
   canWebComment,
@@ -90,6 +90,8 @@ class FilesStore {
       canShareOwnerChange: computed,
       selectionTitle: computed,
       currentFilesCount: computed,
+
+      canShare: computed,
 
       setFirstLoad: action,
       setFiles: action,
@@ -321,35 +323,7 @@ class FilesStore {
       this.selection = this.selection.filter((x) => x.id !== id);
   };
 
-  isCanShare = () => {
-    const folderType = selectedFolderStore.rootFolderType;
-    const isVisitor = (userStore.user && userStore.user.isVisitor) || false;
-
-    if (isVisitor) {
-      return false;
-    }
-
-    switch (folderType) {
-      case FolderType.USER:
-        return true;
-      case FolderType.SHARE:
-        return false;
-      case FolderType.COMMON:
-        return isAdmin;
-      case FolderType.TRASH:
-        return false;
-      case FolderType.Favorites:
-        return false;
-      case FolderType.Recent:
-        return false;
-      case FolderType.Privacy:
-        return true;
-      default:
-        return false;
-    }
-  };
-
-  getFilesContextOptions = (item, canOpenPlayer, canShare) => {
+  getFilesContextOptions = (item, canOpenPlayer) => {
     const options = [];
     const isVisitor = (userStore.user && userStore.user.isVisitor) || false;
 
@@ -391,7 +365,8 @@ class FilesStore {
 
       //TODO: use canShare selector
       if (
-        /*!(isRecentFolder || isFavoritesFolder || isVisitor) && */ canShare
+        /*!(isRecentFolder || isFavoritesFolder || isVisitor) && */ this
+          .canShare
       ) {
         options.push("sharing-settings");
       }
@@ -400,7 +375,7 @@ class FilesStore {
         options.push("send-by-email");
       }
 
-      this.canShareOwnerChange && options.push("owner-change");
+      //this.canShareOwnerChange && options.push("owner-change");
       options.push("link-for-portal-users");
 
       if (!isVisitor) {
@@ -512,6 +487,34 @@ class FilesStore {
     return filesLength + foldersLength;
   };
 
+  get canShare() {
+    const folderType = selectedFolderStore.rootFolderType;
+    const isVisitor = (userStore.user && userStore.user.isVisitor) || false;
+
+    if (isVisitor) {
+      return false;
+    }
+
+    switch (folderType) {
+      case FolderType.USER:
+        return true;
+      case FolderType.SHARE:
+        return false;
+      case FolderType.COMMON:
+        return isAdmin;
+      case FolderType.TRASH:
+        return false;
+      case FolderType.Favorites:
+        return false;
+      case FolderType.Recent:
+        return false;
+      case FolderType.Privacy:
+        return true;
+      default:
+        return false;
+    }
+  }
+
   get currentFilesCount() {
     const serviceFilesCount = this.getServiceFilesCount();
     const filesCount = this.getFilesCount();
@@ -595,15 +598,9 @@ class FilesStore {
   };
 
   get filesList() {
-    const items =
-      this.folders && this.files
-        ? [...this.folders, ...this.files]
-        : this.folders
-        ? this.folders
-        : this.files
-        ? this.files
-        : [];
+    //return [...this.folders, ...this.files];
 
+    const items = [...this.folders, ...this.files];
     const newItem = items.map((item) => {
       const {
         access,
@@ -637,36 +634,17 @@ class FilesStore {
         item.fileExst
       );
 
-      const canShare = this.isCanShare();
+      const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
-      const contextOptions = this.getFilesContextOptions(
-        item,
-        canOpenPlayer,
-        canShare
-      );
-      const checked = this.isFileSelected(this.selection, id, parentId);
+      //let value = fileExst ? `file_${id}` : `folder_${id}`;
+      //value += draggable ? "_draggable" : "";
 
-      const selectedItem = this.selection.find(
-        (x) => x.id === id && x.fileExst === fileExst
-      );
-
-      const isFolder = selectedItem ? false : fileExst ? false : true;
-      const isRecycleBinFolder = treeFoldersStore.isRecycleBinFolder;
-
-      const draggable =
-        selectedItem &&
-        isRecycleBinFolder &&
-        selectedItem.id !== this.fileActionStore.id;
-
-      let value = fileExst ? `file_${id}` : `folder_${id}`;
-      value += draggable ? "_draggable" : "";
-
-      const isCanWebEdit = canWebEdit(item.fileExst);
+      //const isCanWebEdit = canWebEdit(item.fileExst);
       const icon = getIcon(24, fileExst, providerKey);
 
       return {
         access,
-        checked,
+        //checked,
         comment,
         contentLength,
         contextOptions,
@@ -680,27 +658,27 @@ class FilesStore {
         foldersCount,
         icon,
         id,
-        isFolder,
+        //isFolder,
         locked,
         new: item.new,
         parentId,
         pureContentLength,
         rootFolderType,
-        selectedItem,
+        //selectedItem,
         shared,
         title,
         updated,
         updatedBy,
-        value,
+        //value,
         version,
         versionGroup,
         viewUrl,
         webUrl,
         providerKey,
-        draggable,
-        canOpenPlayer,
-        canWebEdit: isCanWebEdit,
-        canShare,
+        //draggable,
+        //canOpenPlayer,
+        //canWebEdit: isCanWebEdit,
+        //canShare,
       };
     });
 
@@ -774,7 +752,7 @@ class FilesStore {
   }
 
   get isOnlyFoldersSelected() {
-    return this.selection.every((selected) => selected.isFolder === true);
+    return this.selection.every((selected) => selected.fileExst !== undefined);
   }
 
   get isThirdPartySelection() {

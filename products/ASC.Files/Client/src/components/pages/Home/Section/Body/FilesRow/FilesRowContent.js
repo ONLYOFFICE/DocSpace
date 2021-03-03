@@ -7,6 +7,7 @@ import Text from "@appserver/components/text";
 import RowContent from "@appserver/components/row-content";
 import IconButton from "@appserver/components/icon-button";
 import Badge from "@appserver/components/badge";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import {
   convertFile,
   markAsRead,
@@ -14,23 +15,21 @@ import {
 } from "@appserver/common/api/files";
 import { FileAction, ShareAccessRights } from "@appserver/common/constants";
 import toastr from "@appserver/common/components/Toast";
-import FavoriteIcon from "../../../../../../public/images/favorite.react.svg";
-import FileActionsConvertEditDocIcon from "../../../../../../public/images/file.actions.convert.edit.doc.react.svg";
-import FileActionsLockedIcon from "../../../../../../public/images/file.actions.locked.react.svg";
-import CheckIcon from "../../../../../../public/images/check.react.svg";
-import CrossIcon from "../../../../../../../../../public/images/cross.react.svg";
-import { TIMEOUT } from "../../../../../helpers/constants";
-import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
-import { NewFilesPanel } from "../../../../panels";
-import { ConvertDialog } from "../../../../dialogs";
-import EditingWrapperComponent from "./EditingWrapperComponent";
+import FavoriteIcon from "../../../../../../../public/images/favorite.react.svg";
+import FileActionsConvertEditDocIcon from "../../../../../../../public/images/file.actions.convert.edit.doc.react.svg";
+import FileActionsLockedIcon from "../../../../../../../public/images/file.actions.locked.react.svg";
+import CheckIcon from "../../../../../../../public/images/check.react.svg";
+import CrossIcon from "../../../../../../../../../../public/images/cross.react.svg";
+import { TIMEOUT } from "../../../../../../helpers/constants";
+import { setEncryptionAccess } from "../../../../../../helpers/desktop";
+import { getTitleWithoutExst } from "../../../../../../helpers/files-helpers";
+import { NewFilesPanel } from "../../../../../panels";
+import { ConvertDialog } from "../../../../../dialogs";
+import EditingWrapperComponent from "../EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
-//import { setEncryptionAccess } from "../../../../../helpers/desktop";
 import { observer, inject } from "mobx-react";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const sideColor = "#A3A9AE";
-
 const StyledCheckIcon = styled(CheckIcon)`
   ${commonIconsStyles}
   path {
@@ -627,7 +626,7 @@ class FilesRowContent extends React.PureComponent {
                   />
                 )}
                 {locked && (
-                  <Icons.FileActionsLockedIcon
+                  <Icons.FileActionsLockedIcon // TODO: Icons
                     className="badge lock-file"
                     size="small"
                     isfill={true}
@@ -825,6 +824,7 @@ export default inject(
     return {
       isDesktop: isDesktopClient,
       homepage,
+      viewer: auth.userStore.user,
       culture,
       fileAction,
       folders,
