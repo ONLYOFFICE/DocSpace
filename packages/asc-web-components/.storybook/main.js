@@ -15,6 +15,7 @@ module.exports = {
     "../drag-and-drop/*.stories.@(js|mdx)",
     "../drop-down/*.stories.@(js|mdx)",
     "../drop-down-item/*.stories.@(js|mdx)",
+    "../email-input/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",

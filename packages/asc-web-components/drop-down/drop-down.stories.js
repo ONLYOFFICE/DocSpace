@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 
-import { action } from "@storybook/addon-actions";
-
 import DropDown from "./";
 import DropDownItem from "../drop-down-item";
 import GroupButton from "../group-button";
@@ -9,6 +7,7 @@ import GroupButton from "../group-button";
 export default {
   title: "Components/DropDown",
   component: DropDown,
+  subcomponents: { DropDownItem, GroupButton },
   decorators: [
     (Story) => (
       <div style={{ height: "200px", position: "relative" }}>
