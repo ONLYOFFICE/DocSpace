@@ -40,7 +40,7 @@ class GroupAction extends React.Component {
   render() {
     console.log("GroupAction render");
 
-    const { group, match, isAdmin } = this.props;
+    const { group, match } = this.props;
 
     return (
       <>
@@ -50,11 +50,9 @@ class GroupAction extends React.Component {
               <ArticleHeaderContent />
             </PageLayout.ArticleHeader>
 
-            {isAdmin && (
-              <PageLayout.ArticleMainButton>
-                <ArticleMainButtonContent />
-              </PageLayout.ArticleMainButton>
-            )}
+            <PageLayout.ArticleMainButton>
+              <ArticleMainButtonContent />
+            </PageLayout.ArticleMainButton>
 
             <PageLayout.ArticleBody>
               <ArticleBodyContent />
@@ -74,11 +72,9 @@ class GroupAction extends React.Component {
               <ArticleHeaderContent />
             </PageLayout.ArticleHeader>
 
-            {isAdmin && (
-              <PageLayout.ArticleMainButton>
-                <ArticleMainButtonContent />
-              </PageLayout.ArticleMainButton>
-            )}
+            <PageLayout.ArticleMainButton>
+              <ArticleMainButtonContent />
+            </PageLayout.ArticleMainButton>
 
             <PageLayout.ArticleBody>
               <ArticleBodyContent />
@@ -100,7 +96,6 @@ const GroupActionContainer = withTranslation("GroupAction")(
 
 export default inject(({ auth, peopleStore }) => ({
   setDocumentTitle: auth.setDocumentTitle,
-  isAdmin: auth.isAdmin,
   fetchGroup: peopleStore.selectedGroupStore.setTargetedGroup,
   group: peopleStore.selectedGroupStore.targetedGroup,
   resetGroup: peopleStore.selectedGroupStore.resetGroup,
