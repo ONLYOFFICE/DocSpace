@@ -126,6 +126,7 @@ const config = {
         "./Error520": "./src/components/pages/Errors/520",
         "./Layout": "./src/components/Layout",
         "./Layout/context": "./src/components/Layout/context.js",
+        "./Main": "./src/components/Main",
       },
       shared: {
         ...deps,
