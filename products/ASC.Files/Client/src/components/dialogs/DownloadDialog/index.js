@@ -55,6 +55,8 @@ class DownloadDialogComponent extends React.Component {
     };
   }
 
+  onClose = () => this.props.setDownloadDialogVisible(false);
+
   getTitleLabel = (format) => {
     switch (format) {
       case 0:
@@ -130,8 +132,7 @@ class DownloadDialogComponent extends React.Component {
 
   onDownload = () => {
     const {
-      onDownloadProgress,
-      onClose,
+      //onDownloadProgress,
       t,
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -151,8 +152,8 @@ class DownloadDialogComponent extends React.Component {
       });
       downloadFormatFiles(fileConvertIds, folderIds)
         .then((res) => {
-          onClose();
-          onDownloadProgress(res[0]);
+          this.onClose();
+          //onDownloadProgress(res[0]); //TODO: fix download action
         })
         .catch((err) => {
           setSecondaryProgressBarData({
@@ -410,7 +411,7 @@ class DownloadDialogComponent extends React.Component {
   };
 
   render() {
-    const { onClose, visible, t } = this.props;
+    const { visible, t } = this.props;
     const {
       documentsTitleFormat,
       spreadsheetsTitleFormat,
@@ -436,7 +437,7 @@ class DownloadDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
+        <ModalDialog visible={visible} onClose={this.onClose}>
           <ModalDialog.Header>{t("DownloadAs")}</ModalDialog.Header>
           <ModalDialog.Body>
             <Text>{t("ChooseFormatText")}</Text>
@@ -564,7 +565,7 @@ class DownloadDialogComponent extends React.Component {
               key="CancelButton"
               label={t("CancelButton")}
               size="medium"
-              onClick={onClose}
+              onClick={this.onClose}
               //isLoading={isLoading}
             />
           </ModalDialog.Footer>
@@ -578,21 +579,30 @@ const DownloadDialog = withTranslation("DownloadDialog")(
   DownloadDialogComponent
 );
 
-export default inject(({ filesStore, uploadDataStore, formatsStore }) => {
-  const { secondaryProgressDataStore } = uploadDataStore;
-  const { sortedFiles } = filesStore;
-  const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
-  const {
-    setSecondaryProgressBarData,
-    clearSecondaryProgressData,
-  } = secondaryProgressDataStore;
+export default inject(
+  ({ filesStore, uploadDataStore, formatsStore, dialogsStore }) => {
+    const { secondaryProgressDataStore } = uploadDataStore;
+    const { sortedFiles } = filesStore;
+    const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
 
-  return {
-    sortedFiles,
+    const {
+      downloadDialogVisible: visible,
+      setDownloadDialogVisible,
+    } = dialogsStore;
 
-    setSecondaryProgressBarData,
-    clearSecondaryProgressData,
-    getFileIcon,
-    getFolderIcon,
-  };
-})(withRouter(observer(DownloadDialog)));
+    return {
+      sortedFiles,
+      visible,
+
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+      getFileIcon,
+      getFolderIcon,
+      setDownloadDialogVisible,
+    };
+  }
+)(withRouter(observer(DownloadDialog)));

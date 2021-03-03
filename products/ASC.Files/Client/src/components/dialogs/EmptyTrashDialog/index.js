@@ -12,7 +12,6 @@ import { inject, observer } from "mobx-react";
 
 const EmptyTrashDialogComponent = (props) => {
   const {
-    onClose,
     visible,
     t,
     filter,
@@ -21,7 +20,10 @@ const EmptyTrashDialogComponent = (props) => {
     isLoading,
     clearSecondaryProgressData,
     fetchFiles,
+    setEmptyTrashDialogVisible,
   } = props;
+
+  const onClose = () => setEmptyTrashDialogVisible(false);
 
   const loopEmptyTrash = useCallback(
     (id) => {
@@ -148,7 +150,13 @@ const EmptyTrashDialog = withTranslation("EmptyTrashDialog")(
 );
 
 export default inject(
-  ({ initFilesStore, filesStore, uploadDataStore, selectedFolderStore }) => {
+  ({
+    initFilesStore,
+    filesStore,
+    uploadDataStore,
+    selectedFolderStore,
+    dialogsStore,
+  }) => {
     const { isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
     const { fetchFiles, filter } = filesStore;
@@ -157,14 +165,21 @@ export default inject(
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
 
+    const {
+      emptyTrashDialogVisible: visible,
+      setEmptyTrashDialogVisible,
+    } = dialogsStore;
+
     return {
       currentFolderId: selectedFolderStore.id,
       isLoading,
       filter,
+      visible,
 
       fetchFiles,
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
+      setEmptyTrashDialogVisible,
     };
   }
 )(withRouter(observer(EmptyTrashDialog)));

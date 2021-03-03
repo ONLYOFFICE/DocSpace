@@ -20,11 +20,11 @@ import IconButton from "@appserver/components/icon-button";
 import { tablet, desktop } from "@appserver/components/utils/device";
 import { Consumer } from "@appserver/components/utils/context";
 import { TIMEOUT } from "../../../../../helpers/constants";
-import {
-  EmptyTrashDialog,
-  DeleteDialog,
-  DownloadDialog,
-} from "../../../../dialogs";
+// import {
+//   EmptyTrashDialog,
+//   DeleteDialog,
+//   DownloadDialog,
+// } from "../../../../dialogs";
 import { OperationsPanel } from "../../../../panels";
 import { inject, observer } from "mobx-react";
 import { loopTreeFolders } from "../../../../../helpers/files-helpers";
@@ -159,11 +159,10 @@ class SectionHeaderContent extends React.Component {
     super(props);
 
     this.state = {
-      showDeleteDialog: false,
-      showDownloadDialog: false,
-      showEmptyTrashDialog: false,
-      showMoveToPanel: false,
-      showCopyPanel: false,
+      //showDeleteDialog: false,
+      //showDownloadDialog: false,
+      //showEmptyTrashDialog: false,
+      //showCopyPanel: false,
     };
   }
 
@@ -230,12 +229,10 @@ class SectionHeaderContent extends React.Component {
     toastr.success(t("LinkCopySuccess"));
   };
 
-  onMoveAction = () =>
-    this.setState({ showMoveToPanel: !this.state.showMoveToPanel });
+  onMoveAction = () => this.props.setMoveToPanelVisible(true);
+  onCopyAction = () => this.props.setCopyPanelVisible(true);
 
-  onCopyAction = () =>
-    this.setState({ showCopyPanel: !this.state.showCopyPanel });
-
+  //TODO: move to action, fix download dialog
   loop = (data) => {
     const url = data.url;
     getProgress()
@@ -317,8 +314,7 @@ class SectionHeaderContent extends React.Component {
 
   renameAction = () => toastr.info("renameAction click");
 
-  onOpenSharingPanel = () =>
-    this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
+  onOpenSharingPanel = () => this.props.setSharingPanelVisible(true);
 
   loopDeleteOperation = (id) => {
     const {
@@ -432,17 +428,17 @@ class SectionHeaderContent extends React.Component {
     }
   };
 
-  onDeleteAction = () => {
-    //console.log(this.props.confirmDelete);
-    if (this.props.confirmDelete) {
-      this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
-    } else {
-      this.onDelete();
-    }
-  };
+  //TODO: move to actions, fix delete dialog
+  // onDeleteAction = () => {
+  //   //console.log(this.props.confirmDelete);
+  //   if (this.props.confirmDelete) {
+  //     this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
+  //   } else {
+  //     this.onDelete();
+  //   }
+  // };
 
-  onEmptyTrashAction = () =>
-    this.setState({ showEmptyTrashDialog: !this.state.showEmptyTrashDialog });
+  onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
 
   getContextOptionsFolder = () => {
     const { t } = this.props;
@@ -639,9 +635,9 @@ class SectionHeaderContent extends React.Component {
 
     const {
       t,
-      selection,
+      //selection,
       isHeaderVisible,
-      isRecycleBin,
+      //isRecycleBin,
       isHeaderChecked,
       isHeaderIndeterminate,
       isRootFolder,
@@ -652,11 +648,10 @@ class SectionHeaderContent extends React.Component {
     } = this.props;
 
     const {
-      showDeleteDialog,
-      showEmptyTrashDialog,
-      showDownloadDialog,
-      showMoveToPanel,
-      showCopyPanel,
+      //showDeleteDialog,
+      //showEmptyTrashDialog,
+      //showDownloadDialog,
+      //showCopyPanel,
     } = this.state;
 
     const menuItems = this.getMenuItems();
@@ -695,7 +690,7 @@ class SectionHeaderContent extends React.Component {
                   <>
                     {!isRootFolder && (
                       <IconButton
-                        iconName="ArrowPathIcon"
+                        iconName="/static/images/arrow.path.react.svg"
                         size="17"
                         color="#A3A9AE"
                         hoverColor="#657077"
@@ -756,7 +751,7 @@ class SectionHeaderContent extends React.Component {
               </div>
             )}
 
-            {showDeleteDialog && (
+            {/* {showDeleteDialog && (
               <DeleteDialog
                 isRecycleBin={isRecycleBin}
                 visible={showDeleteDialog}
@@ -770,31 +765,31 @@ class SectionHeaderContent extends React.Component {
                 visible={showEmptyTrashDialog}
                 onClose={this.onEmptyTrashAction}
               />
-            )}
+            )} */}
 
-            {showMoveToPanel && (
+            {/* showMoveToPanel && (
               <OperationsPanel
                 isCopy={false}
                 visible={showMoveToPanel}
                 onClose={this.onMoveAction}
               />
-            )}
+            ) */}
 
-            {showCopyPanel && (
+            {/* {showCopyPanel && (
               <OperationsPanel
                 isCopy={true}
                 visible={showCopyPanel}
                 onClose={this.onCopyAction}
               />
-            )}
+            )} */}
 
-            {showDownloadDialog && (
+            {/* {showDownloadDialog && (
               <DownloadDialog
                 visible={showDownloadDialog}
                 onClose={this.downloadAsAction}
                 onDownloadProgress={this.loop}
               />
-            )}
+            )} */}
           </StyledContainer>
         )}
       </Consumer>
@@ -811,7 +806,7 @@ export default inject(
     dialogsStore,
     treeFoldersStore,
     selectedFolderStore,
-    settingsStore,
+    //settingsStore,
   }) => {
     const { setIsLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
@@ -838,7 +833,12 @@ export default inject(
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
-    const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
+    const {
+      setSharingPanelVisible,
+      setMoveToPanelVisible,
+      setCopyPanelVisible,
+      setEmptyTrashDialogVisible,
+    } = dialogsStore;
 
     return {
       isAdmin: auth.isAdmin,
@@ -851,7 +851,6 @@ export default inject(
       isRecycleBin: isRecycleBinFolder,
       isPrivacy: isPrivacyFolder,
       filter,
-      sharingPanelVisible,
       canCreate,
       isItemsSelected: !!selection.length,
       isHeaderVisible,
@@ -863,7 +862,7 @@ export default inject(
       isThirdPartySelection,
       isWebEditSelected,
       isTabletView: auth.settingsStore.isTabletView,
-      confirmDelete: settingsStore.confirmDelete,
+      //confirmDelete: settingsStore.confirmDelete,
       treeFolders: treeFoldersStore.treeFolders,
       setSelected,
       setAction,
@@ -872,6 +871,9 @@ export default inject(
       setSecondaryProgressBarData,
       setSharingPanelVisible,
       clearSecondaryProgressData,
+      setMoveToPanelVisible,
+      setCopyPanelVisible,
+      setEmptyTrashDialogVisible,
     };
   }
 )(withTranslation("Home")(withRouter(observer(SectionHeaderContent))));

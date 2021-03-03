@@ -56,7 +56,11 @@ class UploadPanelComponent extends React.Component {
 
   render() {
     //console.log("UploadPanel render");
-    const { t, uploadPanelVisible, sharingPanelVisible, uploaded } = this.props;
+    const {
+      t,
+      uploadPanelVisible,
+      /* sharingPanelVisible, */ uploaded,
+    } = this.props;
 
     const visible = uploadPanelVisible;
     const zIndex = 310;
@@ -113,7 +117,7 @@ class UploadPanelComponent extends React.Component {
             </StyledBody>
           </StyledContent>
         </Aside>
-        {sharingPanelVisible && <SharingPanel />}
+        {/* sharingPanelVisible && <SharingPanel /> */}
       </StyledAsidePanel>
     );
   }
@@ -122,7 +126,7 @@ class UploadPanelComponent extends React.Component {
 const UploadPanel = withTranslation("UploadPanel")(UploadPanelComponent);
 
 export default inject(({ dialogsStore, uploadDataStore }) => {
-  const { sharingPanelVisible } = dialogsStore;
+  //const { sharingPanelVisible } = dialogsStore;
 
   const {
     uploaded,
@@ -133,7 +137,7 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
   } = uploadDataStore;
 
   return {
-    sharingPanelVisible,
+    //sharingPanelVisible,
     uploadPanelVisible,
     uploaded,
 

@@ -106,7 +106,6 @@ class DeleteDialogComponent extends React.Component {
     const {
       isRecycleBinFolder,
       isPrivacy,
-      onClose,
       t,
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -129,7 +128,7 @@ class DeleteDialogComponent extends React.Component {
       i++;
     }
 
-    onClose();
+    this.onClose();
     if (folderIds.length || fileIds.length) {
       setSecondaryProgressBarData({
         icon: "trash",
@@ -173,8 +172,17 @@ class DeleteDialogComponent extends React.Component {
     }
   };
 
+  onClose = () => {
+    const { confirmDelete, setDeleteDialogVisible } = this.props;
+    if (confirmDelete) {
+      setDeleteDialogVisible(false);
+    } else {
+      //this.onDelete(); // TODO: header onDelete action, need move to actions
+    }
+  };
+
   render() {
-    const { onClose, visible, t, isLoading } = this.props;
+    const { visible, t, isLoading } = this.props;
     const { filesList, foldersList, selection } = this.state;
 
     const checkedSelections = selection.filter((x) => x.checked === true);
@@ -200,7 +208,7 @@ class DeleteDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
+        <ModalDialog visible={visible} onClose={this.onClose}>
           <ModalDialog.Header>{t("ConfirmationTitle")}</ModalDialog.Header>
           <ModalDialog.Body>
             <div className="modal-dialog-content">
@@ -257,7 +265,7 @@ class DeleteDialogComponent extends React.Component {
               key="CancelButton"
               label={t("CancelButton")}
               size="medium"
-              onClick={onClose}
+              onClick={this.onClose}
               isLoading={isLoading}
             />
           </ModalDialog.Footer>
@@ -276,6 +284,8 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     selectedFolderStore,
+    dialogsStore,
+    settingsStore,
   }) => {
     const { isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
@@ -293,6 +303,11 @@ export default inject(
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
 
+    const {
+      deleteDialogVisible: visible,
+      setDeleteDialogVisible,
+    } = dialogsStore;
+
     return {
       currentFolderId: selectedFolderStore.id,
       selection,
@@ -302,11 +317,14 @@ export default inject(
       isPrivacy: isPrivacyFolder,
       filter,
       isRootFolder: selectedFolderStore.isRootFolder,
+      visible,
+      confirmDelete: settingsStore.confirmDelete,
 
       fetchFiles,
       setTreeFolders,
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
+      setDeleteDialogVisible,
     };
   }
 )(withRouter(observer(DeleteDialog)));

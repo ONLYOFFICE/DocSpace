@@ -34,7 +34,7 @@ const SectionHeaderContent = (props) => {
   return (
     <StyledContainer>
       <IconButton
-        iconName="ArrowPathIcon"
+        iconName="/static/images/arrow.path.react.svg"
         size="17"
         color="#A3A9AE"
         hoverColor="#657077"
