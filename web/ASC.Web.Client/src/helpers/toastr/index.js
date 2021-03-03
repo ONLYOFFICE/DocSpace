@@ -1,23 +1,12 @@
-import Toastr from "@appserver/components/toast/toastr";
+import toastr from "@appserver/components/toast/toastr";
 import i18n from "./i18n";
-import { LANGUAGE } from "../../constants";
-import { changeLanguage } from "../../utils";
-const toastr = {
-  clear: clear,
-  error: error,
-  info: info,
-  success: success,
-  warning: warning,
-};
 
 const getTitleTranslation = (title) => {
-  const currentLng = localStorage.getItem(LANGUAGE);
-  if (i18n.language !== currentLng) changeLanguage(i18n, currentLng);
   return i18n.t(title);
 };
 
 function success(data, title, timeout, withCross, centerPosition) {
-  return Toastr.success(
+  return toastr.success(
     data,
     title ? title : getTitleTranslation("Done"),
     timeout,
@@ -27,7 +16,7 @@ function success(data, title, timeout, withCross, centerPosition) {
 }
 
 function error(data, title, timeout, withCross, centerPosition) {
-  return Toastr.error(
+  return toastr.error(
     data,
     title ? title : getTitleTranslation("Warning"),
     timeout,
@@ -37,7 +26,7 @@ function error(data, title, timeout, withCross, centerPosition) {
 }
 
 function warning(data, title, timeout, withCross, centerPosition) {
-  return Toastr.warning(
+  return toastr.warning(
     data,
     title ? title : getTitleTranslation("Alert"),
     timeout,
@@ -47,7 +36,7 @@ function warning(data, title, timeout, withCross, centerPosition) {
 }
 
 function info(data, title, timeout, withCross, centerPosition) {
-  return Toastr.info(
+  return toastr.info(
     data,
     title ? title : getTitleTranslation("Info"),
     timeout,
@@ -57,7 +46,13 @@ function info(data, title, timeout, withCross, centerPosition) {
 }
 
 function clear() {
-  return Toastr.clear();
+  return toastr.clear();
 }
 
-export default toastr;
+export default {
+  clear: clear,
+  error: error,
+  info: info,
+  success: success,
+  warning: warning,
+};

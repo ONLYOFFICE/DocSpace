@@ -4,7 +4,7 @@ import { Switch } from "react-router";
 import PeopleStore from "./store/PeopleStore";
 import Home from "./components/pages/Home";
 import Loader from "@appserver/components/loader";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
 import { updateTempContent } from "@appserver/common/utils";
 const Profile = React.lazy(() => import("./components/pages/Profile"));

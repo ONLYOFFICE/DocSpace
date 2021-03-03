@@ -130,6 +130,7 @@ const config = {
         "./PeopleSelector": "./src/components/PeopleSelector",
         "./PeopleSelector/UserTooltip":
           "./src/components/PeopleSelector/sub-components/UserTooltip.js",
+        "./toastr": "./src/helpers/toastr",
       },
       shared: {
         ...deps,

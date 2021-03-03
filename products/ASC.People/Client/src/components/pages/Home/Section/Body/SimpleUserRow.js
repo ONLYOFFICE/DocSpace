@@ -5,7 +5,7 @@ import UserContent from "./userContent";
 import history from "@appserver/common/history";
 import { inject, observer } from "mobx-react";
 import { Trans, useTranslation } from "react-i18next";
-import toastr from "@appserver/common/components/Toast/toastr";
+import toastr from "studio/toastr";
 import { EmployeeStatus } from "@appserver/common/constants";
 import { resendUserInvites } from "@appserver/common/api/people"; //TODO: Move to store action
 

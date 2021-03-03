@@ -4,7 +4,7 @@ import ComboBox from "@appserver/components/combobox";
 import Row from "@appserver/components/row";
 import Text from "@appserver/components/text";
 import DropDownItem from "@appserver/components/drop-down-item";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import copy from "copy-to-clipboard";
 import LinkRow from "./linkRow";
 import AccessComboBox from "./AccessComboBox";
