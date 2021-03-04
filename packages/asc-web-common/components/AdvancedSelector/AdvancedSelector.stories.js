@@ -15,7 +15,7 @@ import AdvancedSelector2 from ".";
 import Section from "../../../.storybook/decorators/section";
 import Button from "@appserver/components/button";
 import equal from "fast-deep-equal/react";
-import UserTooltip from "../PeopleSelector/sub-components/UserTooltip";
+import UserTooltip from "studio/PeopleSelector/UserTooltip";
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;

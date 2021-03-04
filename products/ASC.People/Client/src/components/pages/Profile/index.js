@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import PageLayout from "@appserver/common/components/PageLayout";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import {
   ArticleHeaderContent,

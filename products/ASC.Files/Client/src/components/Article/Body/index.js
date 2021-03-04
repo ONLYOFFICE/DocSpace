@@ -1,6 +1,6 @@
 import React from "react";
 
-import toastr from "@appserver/common/components/Toast/toastr";
+import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
@@ -119,7 +119,7 @@ export default inject(
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
     const selectedTreeNode = [selectedFolderStore.id + ""];
 
-  return {
+    return {
       selectedFolderTitle: selectedFolderStore.title,
       treeFolders,
       selectedTreeNode,
@@ -129,6 +129,6 @@ export default inject(
       fetchFiles,
       setSelectedNode,
       setTreeFolders,
-  };
-}
+    };
+  }
 )(observer(ArticleBodyContent));

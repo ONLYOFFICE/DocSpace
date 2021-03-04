@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
-import ProgressBar from "@appserver/components/progress-bar";
+//import ProgressBar from "@appserver/components/progress-bar";
 import { size } from "@appserver/components/utils/device";
 import { Provider } from "@appserver/components/utils/context";
 
-import store from "../../store";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import i18n from "./i18n";

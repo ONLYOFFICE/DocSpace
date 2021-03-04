@@ -31,7 +31,7 @@ import {
 } from "@appserver/common/api/files";
 import { FileAction } from "@appserver/common/constants";
 import MediaViewer from "@appserver/common/components/MediaViewer";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import { loopTreeFolders } from "../../../../../helpers/files-helpers";

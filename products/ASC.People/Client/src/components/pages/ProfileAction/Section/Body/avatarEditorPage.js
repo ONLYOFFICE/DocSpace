@@ -10,7 +10,7 @@ import {
   loadAvatar,
   deleteAvatar,
 } from "@appserver/common/api/people";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { toEmployeeWrapper } from "../../../../../helpers/people-helpers";

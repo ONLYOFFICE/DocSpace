@@ -18,7 +18,7 @@ import {
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
-import toastr from "@appserver/common/components/Toast/toastr";
+import toastr from "studio/toastr";
 
 import { setDocumentTitle } from "../../../helpers/utils";
 import { changeTitle, setFavicon, isIPad } from "./utils";

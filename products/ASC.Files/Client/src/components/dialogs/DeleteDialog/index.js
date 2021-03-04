@@ -8,7 +8,7 @@ import Checkbox from "@appserver/components/checkbox";
 import Scrollbar from "@appserver/components/scrollbar";
 import { withTranslation } from "react-i18next";
 import { getProgress, removeFiles } from "@appserver/common/api/files";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import { TIMEOUT } from "../../../helpers/constants";
 import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { inject, observer } from "mobx-react";

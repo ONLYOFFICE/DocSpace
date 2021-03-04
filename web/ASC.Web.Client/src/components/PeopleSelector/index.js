@@ -1,13 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { withTranslation } from "react-i18next";
+import { I18nextProvider, withTranslation } from "react-i18next";
 import i18n from "./i18n";
-import AdvancedSelector from "../../components/AdvancedSelector";
-import { getUserList } from "../../api/people";
-import { getGroupList } from "../../api/groups";
-import Filter from "../../api/people/filter";
+import AdvancedSelector from "@appserver/common/components/AdvancedSelector";
+import { getUserList } from "@appserver/common/api/people";
+import { getGroupList } from "@appserver/common/api/groups";
+import Filter from "@appserver/common/api/people/filter";
 import UserTooltip from "./sub-components/UserTooltip";
-import { changeLanguage } from "../../utils";
 
 class PeopleSelector extends React.Component {
   constructor(props) {
@@ -25,38 +24,30 @@ class PeopleSelector extends React.Component {
   componentDidMount() {
     const { groupsCaption, groupList } = this.props;
 
-    changeLanguage(i18n).then((t) => {
-      if (!groupList) {
-        getGroupList(this.props.useFake)
-          .then((groups) =>
-            this.setState({
-              groups: [
-                {
-                  key: "all",
-                  label: t("CustomAllGroups", { groupsCaption }),
-                  total: 0,
-                },
-              ].concat(this.convertGroups(groups)),
-            })
-          )
-          .catch((error) => console.log(error));
-      } else {
-        this.setState({
-          groups: [
-            {
-              key: "all",
-              label: t("CustomAllGroups", { groupsCaption }),
-              total: 0,
-            },
-          ].concat(groupList),
-        });
-      }
-    });
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.language !== prevProps.language) {
-      i18n.changeLanguage(this.props.language);
+    if (!groupList) {
+      getGroupList(this.props.useFake)
+        .then((groups) =>
+          this.setState({
+            groups: [
+              {
+                key: "all",
+                label: t("CustomAllGroups", { groupsCaption }),
+                total: 0,
+              },
+            ].concat(this.convertGroups(groups)),
+          })
+        )
+        .catch((error) => console.log(error));
+    } else {
+      this.setState({
+        groups: [
+          {
+            key: "all",
+            label: t("CustomAllGroups", { groupsCaption }),
+            total: 0,
+          },
+        ].concat(groupList),
+      });
     }
   }
 
@@ -240,6 +231,7 @@ class PeopleSelector extends React.Component {
       showCounter,
     } = this.props;
 
+    //console.log("PeopleSelector render");
     return (
       <AdvancedSelector
         id={id}
@@ -318,16 +310,8 @@ PeopleSelector.defaultProps = {
 
 const ExtendedPeopleSelector = withTranslation()(PeopleSelector);
 
-const PeopleSelectorWithI18n = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-
-  return <ExtendedPeopleSelector i18n={i18n} {...props} />;
-};
-
-PeopleSelectorWithI18n.propTypes = {
-  language: PropTypes.string,
-};
-
-export default PeopleSelectorWithI18n;
+export default (props) => (
+  <I18nextProvider i18n={i18n}>
+    <ExtendedPeopleSelector {...props} />
+  </I18nextProvider>
+);

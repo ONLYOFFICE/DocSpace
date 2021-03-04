@@ -7,7 +7,7 @@ import ComboBox from "@appserver/components/combobox";
 import HelpButton from "@appserver/components/help-button";
 import styled from "styled-components";
 import { resendUserInvites } from "@appserver/common/api/people";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 

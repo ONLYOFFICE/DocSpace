@@ -122,11 +122,20 @@ EmailInput.propTypes = {
     PropTypes.objectOf(PropTypes.bool),
   ]),
   hasError: PropTypes.bool,
+  size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
   id: PropTypes.string,
   onChange: PropTypes.func,
   onValidateInput: PropTypes.func,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   value: PropTypes.string,
+  autoComplete: PropTypes.string,
+  isDisabled: PropTypes.bool,
+  isReadOnly: PropTypes.bool,
+  name: PropTypes.string,
+  placeholder: PropTypes.string,
+  scale: PropTypes.bool,
+  size: "base",
+  size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
 };
 
 EmailInput.defaultProps = {

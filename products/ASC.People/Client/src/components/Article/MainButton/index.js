@@ -6,7 +6,7 @@ import MainButton from "@appserver/components/main-button";
 import DropDownItem from "@appserver/components/drop-down-item";
 import InviteDialog from "./../../dialogs/InviteDialog/index";
 import { withTranslation } from "react-i18next";
-import toastr from "@appserver/common/components/Toast/toastr";
+import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";

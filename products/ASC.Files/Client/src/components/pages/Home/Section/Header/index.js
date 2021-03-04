@@ -2,7 +2,7 @@ import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import toastr from "@appserver/common/components/Toast/toastr";
+import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import Headline from "@appserver/common/components/Headline";
 import { FilterType, FileAction } from "@appserver/common/constants";

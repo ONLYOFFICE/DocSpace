@@ -4,7 +4,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
 import { getFolder } from "@appserver/common/api/files";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { inject, observer } from "mobx-react";
 

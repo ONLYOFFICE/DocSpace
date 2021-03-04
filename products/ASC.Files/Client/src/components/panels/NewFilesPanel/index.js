@@ -11,7 +11,7 @@ import RowContainer from "@appserver/components/row-container";
 import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
 import { getNewFiles, markAsRead } from "@appserver/common/api/files";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import { ReactSVG } from "react-svg";
 import {
   StyledAsidePanel,
