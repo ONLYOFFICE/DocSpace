@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { useEffect } from "react";
 import { Redirect, Route } from "react-router-dom";
 //import Loader from "@appserver/components/loader";
 import PageLayout from "../PageLayout";
@@ -8,6 +8,7 @@ import Error404 from "studio/Error404";
 import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
 import { inject, observer } from "mobx-react";
 import { isMe } from "../../utils";
+import authStore from "@appserver/common/store/AuthStore";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -18,6 +19,9 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     allowForMe,
     user,
     computedMatch,
+    setModuleInfo,
+    modules,
+    homepage,
   } = rest;
 
   const { userId } = computedMatch.params;
@@ -97,19 +101,45 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     );
   };
 
+  useEffect(() => {
+    const currentModule = modules.find((m) => {
+      if (m.link.indexOf(computedMatch.path) !== -1) {
+        return true;
+      }
+    });
+
+    if (currentModule && homepage !== computedMatch.path) {
+      const { id } = currentModule;
+
+      setModuleInfo(computedMatch.path, id);
+    }
+  });
+
   //console.log("PrivateRoute render", rest);
   return <Route {...rest} render={renderComponent} />;
 };
 
 export default inject(({ auth }) => {
-  const { userStore, isAuthenticated, isLoaded, isAdmin } = auth;
+  const {
+    userStore,
+    isAuthenticated,
+    isLoaded,
+    isAdmin,
+    settingsStore,
+    moduleStore,
+  } = auth;
   const { user } = userStore;
+  const { setModuleInfo, homepage } = settingsStore;
+  const { modules } = moduleStore;
 
   return {
+    modules,
     user,
     isAuthenticated,
     isAdmin,
     isLoaded,
+    setModuleInfo,
+    homepage,
     //getUser: store.userStore.getCurrentUser,
   };
 })(observer(PrivateRoute));

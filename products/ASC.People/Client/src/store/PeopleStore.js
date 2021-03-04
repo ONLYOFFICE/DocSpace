@@ -66,10 +66,10 @@ class PeopleStore {
     const re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
     const match = window.location.pathname.match(re);
 
-    authStore.settingsStore.setModuleInfo(
+    /*authStore.settingsStore.setModuleInfo(
       config.homepage,
       "f4d98afd-d336-4332-8778-3c6945c81ea0"
-    );
+    );*/
 
     if (match && match.length > 0) {
       const newFilter = getFilterByLocation(window.location);

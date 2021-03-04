@@ -94,10 +94,9 @@ class InitFilesStore {
       isDesktopClient,
       getIsEncryptionSupport,
       getEncryptionKeys,
-      setModuleInfo,
     } = auth.settingsStore;
 
-    setModuleInfo(config.homepage, "e67be73d-f9ae-4ce1-8fec-1880cb518cb4");
+    //setModuleInfo(config.homepage, "e67be73d-f9ae-4ce1-8fec-1880cb518cb4");
 
     const requests = [];
 
