@@ -22,7 +22,6 @@ import FileActionsLockedIcon from "../../../../../../../public/images/file.actio
 import CheckIcon from "../../../../../../../public/images/check.react.svg";
 import CrossIcon from "../../../../../../../../../../public/images/cross.react.svg";
 import { TIMEOUT } from "../../../../../../helpers/constants";
-import { setEncryptionAccess } from "../../../../../../helpers/desktop";
 import { getTitleWithoutExst } from "../../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../../panels";
 import { ConvertDialog } from "../../../../../dialogs";
@@ -130,8 +129,61 @@ class FilesRowContent extends React.PureComponent {
     };
   }
 
+  onSelectItem = (item) => {
+    const { selected, setSelected, setSelection } = this.props;
+    selected === "close" && setSelected("none");
+    setSelection([item]);
+  };
+
+  //TODO: move to actions, used in files row content and tile
+  onEditComplete = (id, isFolder) => {
+    const {
+      selectedFolderId,
+      fileAction,
+      filter,
+      folders,
+      files,
+      treeFolders,
+      setTreeFolders,
+      setIsLoading,
+      fetchFiles,
+      setAction,
+    } = this.props;
+    const selectedItem = this.props.item;
+    const items = [...folders, ...files];
+    const item = items.find((o) => o.id === id && !o.fileExst); //TODO maybe need files find and folders find, not at one function?
+    if (
+      fileAction.type === FileAction.Create ||
+      fileAction.type === FileAction.Rename
+    ) {
+      setIsLoading(true);
+      fetchFiles(selectedFolderId, filter)
+        .then((data) => {
+          const newItem = (item && item.id) === -1 ? null : item; //TODO not add new folders?
+          if (isFolder) {
+            const path = data.selectedFolder.pathParts;
+            const newTreeFolders = treeFolders;
+            const folders = data.selectedFolder.folders;
+            loopTreeFolders(path, newTreeFolders, folders, null, newItem);
+            setTreeFolders(newTreeFolders);
+          }
+        })
+        .finally(() => {
+          setAction({ type: null, id: null, extension: null });
+          setIsLoading(false);
+
+          fileAction.type === FileAction.Rename &&
+            this.onSelectItem(selectedItem);
+        });
+    }
+
+    //this.setState({ editingId: null }, () => {
+    //  setAction({type: null});
+    //});
+  };
+
   completeAction = (id) => {
-    this.props.onEditComplete(id, !this.props.item.fileExst);
+    this.onEditComplete(id, !this.props.item.fileExst);
   };
 
   updateItem = (e) => {
@@ -502,7 +554,6 @@ class FilesRowContent extends React.PureComponent {
       canWebEdit,
       /* canConvert,*/
       sectionWidth,
-      editingId,
     } = this.props;
     const {
       itemTitle,
@@ -534,7 +585,7 @@ class FilesRowContent extends React.PureComponent {
     const accessToEdit =
       item.access === ShareAccessRights.FullAccess ||
       item.access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
-    const isEdit = id === editingId && fileExst === fileAction.extension;
+    const isEdit = id === fileAction.id && fileExst === fileAction.extension;
 
     const linkStyles =
       isTrashFolder || window.innerWidth <= 1024
@@ -785,6 +836,7 @@ export default inject(
     } = formatsStore;
 
     const {
+      files,
       folders,
       fetchFiles,
       filter,
@@ -795,6 +847,9 @@ export default inject(
       renameFolder,
       createFolder,
       openDocEditor,
+      selected,
+      setSelected,
+      setSelection
     } = filesStore;
 
     const {
@@ -806,7 +861,7 @@ export default inject(
       addExpandedKeys,
     } = treeFoldersStore;
 
-    const { type, extension, id, editingId } = filesStore.fileActionStore;
+    const { type, extension, id, setAction } = filesStore.fileActionStore;
 
     const fileAction = { type, extension, id };
     const {
@@ -826,6 +881,7 @@ export default inject(
       viewer: auth.userStore.user,
       culture,
       fileAction,
+      files,
       folders,
       selectedFolderId: selectedFolderStore.id,
       selectedFolderPathParts: selectedFolderStore.pathParts,
@@ -843,7 +899,7 @@ export default inject(
       isSound,
       newRowItems,
       expandedKeys,
-      editingId,
+      selected,
 
       setIsLoading,
       fetchFiles,
@@ -860,6 +916,9 @@ export default inject(
       setEncryptionAccess,
       addExpandedKeys,
       openDocEditor,
+      setAction,
+      setSelected,
+      setSelection
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesRowContent))));

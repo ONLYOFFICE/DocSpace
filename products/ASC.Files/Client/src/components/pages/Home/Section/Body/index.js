@@ -341,55 +341,6 @@ class SectionBodyContent extends React.Component {
     this.setState({ connectItem, connectDialogVisible: true });
   }; */
 
-  //TODO: move to actions, used in files row content and tile
-  // onEditComplete = (id, isFolder) => {
-  //   const {
-  //     selectedFolderId,
-  //     fileActionType,
-  //     filter,
-  //     folders,
-  //     files,
-  //     treeFolders,
-  //     setTreeFolders,
-  //     setIsLoading,
-  //     fetchFiles,
-  //     setAction,
-  //     selection,
-  //   } = this.props;
-  //   const selectedItem = selection[0];
-  //   const items = [...folders, ...files];
-  //   const item = items.find((o) => o.id === id && !o.fileExst); //TODO maybe need files find and folders find, not at one function?
-  //   if (
-  //     fileActionType === FileAction.Create ||
-  //     fileActionType === FileAction.Rename
-  //   ) {
-  //     setIsLoading(true);
-  //     fetchFiles(selectedFolderId, filter)
-  //       .then((data) => {
-  //         const newItem = (item && item.id) === -1 ? null : item; //TODO not add new folders?
-  //         if (isFolder) {
-  //           const path = data.selectedFolder.pathParts;
-  //           const newTreeFolders = treeFolders;
-  //           const folders = data.selectedFolder.folders;
-  //           loopTreeFolders(path, newTreeFolders, folders, null, newItem);
-  //           setTreeFolders(newTreeFolders);
-  //         }
-  //       })
-  //       .finally(() => {
-  //         this.setState({ editingId: null }, () => {
-  //           setAction({ type: null, id: null, extension: null });
-  //           setIsLoading(false);
-  //         });
-  //         fileActionType === FileAction.Rename &&
-  //           this.onSelectItem(selectedItem);
-  //       });
-  //   }
-
-  //   //this.setState({ editingId: null }, () => {
-  //   //  setAction({type: null});
-  //   //});
-  // };
-
   /*   onClickDelete = (e) => {
     const { isThirdParty, id, title } = e.currentTarget.dataset;
     const splitItem = id.split("-");
@@ -1634,11 +1585,11 @@ class SectionBodyContent extends React.Component {
     }
   };
 
-  onSelectItem = (item) => {
-    const { selected, setSelected, setSelection } = this.props;
-    selected === "close" && setSelected("none");
-    setSelection([item]);
-  };
+  // onSelectItem = (item) => {
+  //   const { selected, setSelected, setSelection } = this.props;
+  //   selected === "close" && setSelected("none");
+  //   setSelection([item]);
+  // };
 
   /*   getSharedButton = (shared) => {
     const color = shared ? "#657077" : "#a3a9ae";

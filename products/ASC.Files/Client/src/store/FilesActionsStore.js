@@ -17,7 +17,7 @@ class FilesActionStore {
     makeAutoObservable(this);
   }
 
-  onDeleteAction = (translations) => {
+  deleteAction = (translations) => {
     if (confirmDelete) {
       dialogsStore.setDeleteDialogVisible(false);
     } else {

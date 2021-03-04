@@ -103,13 +103,12 @@ const SimpleFilesRow = (props) => {
     setIsVerHistoryPanel,
     setVerHistoryFileId,
     setAction,
-    setEditingId,
     setSecondaryProgressBarData,
     markItemAsFavorite,
     removeItemFromFavorite,
     getFileInfo,
     fetchFavoritesFolder,
-    editingId,
+    actionId
   } = props;
 
   const {
@@ -301,8 +300,6 @@ const SimpleFilesRow = (props) => {
   };
 
   const onClickRename = () => {
-    setEditingId(id);
-
     setAction({
       type: FileAction.Rename,
       extension: fileExst,
@@ -532,7 +529,7 @@ const SimpleFilesRow = (props) => {
   const isMobile = sectionWidth < 500;
 
   const isEdit =
-    !!actionType && editingId === id && fileExst === actionExtension;
+    !!actionType && actionId === id && fileExst === actionExtension;
 
   const contextOptionsProps =
     !isEdit && contextOptions && contextOptions.length > 0
@@ -572,7 +569,6 @@ const SimpleFilesRow = (props) => {
         element={element}
         contentElement={sharedButton}
         onSelect={onContentRowSelect}
-        editing={editingId}
         isPrivacy={isPrivacy}
         {...checkedProps}
         {...contextOptionsProps}
@@ -642,7 +638,7 @@ export default inject(
     const { isRootFolder } = selectedFolderStore;
     const { providers, capabilities } = settingsStore.thirdPartyStore;
     const { setIsVerHistoryPanel, setVerHistoryFileId } = versionHistoryStore;
-    const { editingId, setAction, setEditingId } = fileActionStore;
+    const { setAction } = fileActionStore;
     const {
       setSecondaryProgressBarData,
     } = uploadDataStore.secondaryProgressDataStore;
@@ -678,7 +674,7 @@ export default inject(
       isTabletView,
       filter,
       selectedFolderId: selectedFolderStore.id,
-      editingId,
+      actionId: fileActionStore.id,
 
       fetchFiles,
       setSharingPanelVisible,
@@ -693,7 +689,6 @@ export default inject(
       setIsLoading,
       setIsVerHistoryPanel,
       setVerHistoryFileId,
-      setEditingId,
       setAction,
       setSecondaryProgressBarData,
       markItemAsFavorite,
