@@ -113,7 +113,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
       setModuleInfo(computedMatch.path, id);
     }
-  });
+  }, [computedMatch.path]);
 
   //console.log("PrivateRoute render", rest);
   return <Route {...rest} render={renderComponent} />;
