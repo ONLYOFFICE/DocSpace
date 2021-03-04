@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
@@ -42,7 +43,7 @@ const paddingStyle = (paddingProp) => `padding: ${paddingProp};`;
 const textAlignStyle = (textAlign) => `text-align: ${textAlign};`;
 const widthStyle = (widthProp) => `width: ${widthProp};`;
 
-const Box = styled.div`
+const StyledBox = styled.div`
   ${(props) => props.alignContent && alignContentStyle(props.alignContent)}
   ${(props) => props.alignItems && alignItemsStyle(props.alignItems)}
   ${(props) => props.alignSelf && alignSelfStyle(props.alignSelf)}
@@ -68,26 +69,68 @@ const Box = styled.div`
   ${(props) => props.widthProp && widthStyle(props.widthProp)}
 `;
 
+const Box = (props) => <StyledBox {...props} />;
 Box.propTypes = {
+  /** sets the distribution of space between and around content items
+   * along a flexbox's cross-axis or a grid's block axis */
   alignContent: PropTypes.string,
+  /** sets the align-self value on all direct children as a group.
+   * In Flexbox, it controls the alignment of items on the Cross Axis.
+   * In Grid Layout, it controls the alignment of items on the Block Axis
+   * within their grid area.  */
   alignItems: PropTypes.string,
+  /** overrides a grid or flex item's align-items value. In Grid,
+   * it aligns the item inside the grid area. In Flexbox, it aligns
+   * the item on the cross axis. */
   alignSelf: PropTypes.string,
+  /** sets all background style properties at once, such as color,
+   * image, origin and size, or repeat method.  */
   backgroundProp: PropTypes.string,
+  /** sets an element's border. It sets the values of border-width,
+   * border-style, and border-color. */
   borderProp: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  /** sets whether an element is treated as a block or inline element and
+   * the layout used for its children, such as flow layout, grid or flex. */
   displayProp: PropTypes.string,
+  /** sets the initial main size of a flex item. It sets the size of the content
+   * box unless otherwise set with box-sizing. */
   flexBasis: PropTypes.string,
+  /** sets how flex items are placed in the flex container defining the main axis and
+   * the direction (normal or reversed) */
   flexDirection: PropTypes.string,
+  /** sets how a flex item will grow or shrink to fit the space available in its
+   * flex container. It is a shorthand for flex-grow, flex-shrink, and flex-basis. */
   flexProp: PropTypes.string,
+  /** sets whether flex items are forced onto one line or can wrap onto multiple lines.
+   * If wrapping is allowed, it sets the direction that lines are stacked. */
   flexWrap: PropTypes.string,
+  /** is a shorthand property for grid-row-start, grid-column-start, grid-row-end and
+   * grid-column-end, specifying a grid item’s size and location within the grid by
+   * contributing a line, a span, or nothing (automatic) to its grid placement,
+   * thereby specifying the edges of its grid area. */
   gridArea: PropTypes.string,
+  /** defines the height of the border of the element area. */
   heightProp: PropTypes.string,
+  /** defines how the browser distributes space between and around content items along
+   * the main-axis of a flex container, and the inline axis of a grid container */
   justifyContent: PropTypes.string,
+  /** defines the default justify-self for all items of the box, giving them all
+   * a default way of justifying each box along the appropriate axis. */
   justifyItems: PropTypes.string,
+  /** sets the way a box is justified inside its alignment container along the appropriate axis. */
   justifySelf: PropTypes.string,
+  /** sets the margin area on all four sides of an element. It is a shorthand for margin-top,
+   * margin-right, margin-bottom, and margin-left. */
   marginProp: PropTypes.string,
+  /** sets what to do when an element's content is too big to fit in its block formatting context. */
   overflowProp: PropTypes.string,
+  /** sets the padding area on all four sides of an element. It is a shorthand for padding-top,
+   * padding-right, padding-bottom, and padding-left */
   paddingProp: PropTypes.string,
+  /** sets the horizontal alignment of a block element or table-cell box.
+   * This means it works like vertical-align but in the horizontal direction  */
   textAlign: PropTypes.string,
+  /** defines the width of the border of the element area. */
   widthProp: PropTypes.string,
 };
 

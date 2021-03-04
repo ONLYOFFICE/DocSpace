@@ -18,11 +18,10 @@ import commonIconsStyles from "../utils/common-icons-style";
 
 const whiteColor = "#FFFFFF";
 
-
 const StyledGuestIcon = styled(GuestIcon)`
   ${commonIconsStyles}
 `;
-const StyledAdministratorIcon= styled(AdministratorIcon)`
+const StyledAdministratorIcon = styled(AdministratorIcon)`
   ${commonIconsStyles}
 `;
 const StyledOwnerIcon = styled(OwnerIcon)`
@@ -56,7 +55,7 @@ Initials.propTypes = {
 };
 
 // eslint-disable-next-line react/display-name
-const Avatar = memo((props) => {
+const Avatar = (props) => {
   //console.log("Avatar render");
   const {
     size,
@@ -104,19 +103,26 @@ const Avatar = memo((props) => {
       <RoleWrapper size={size}>{roleIcon}</RoleWrapper>
     </StyledAvatar>
   );
-});
+};
 
 Avatar.propTypes = {
+  /** Size of avatar */
   size: PropTypes.oneOf(["max", "big", "medium", "small", "min"]),
+  /** Adds a user role table */
   role: PropTypes.oneOf(["owner", "admin", "guest", "user"]),
+  /** The address of the image for an image avatar */
   source: PropTypes.string,
+  /** Displays avatar edit layer */
   editLabel: PropTypes.string,
   userName: PropTypes.string,
   editing: PropTypes.bool,
+  /** Function called when the avatar change button is pressed */
   editAction: PropTypes.func,
-
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
@@ -129,4 +135,4 @@ Avatar.defaultProps = {
   editing: false,
 };
 
-export default Avatar;
+export default memo(Avatar);
