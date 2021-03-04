@@ -30,4 +30,4 @@ class FileActionStore {
   setEditingId = (editingId) => (this.editingId = editingId);
 }
 
-export default new FileActionStore();
+export default FileActionStore;

@@ -9,7 +9,7 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
 import history from "@appserver/common/history";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "@appserver/components/toast";
 
 import { lockFile, finalizeVersion } from "@appserver/common/api/files"; //TODO: move to actions
 
@@ -597,7 +597,7 @@ export default inject(
       dialogsStore,
       settingsStore,
       versionHistoryStore,
-      secondaryProgressDataStore,
+      uploadDataStore,
     },
     { item }
   ) => {
@@ -643,7 +643,9 @@ export default inject(
     const { providers, capabilities } = settingsStore.thirdPartyStore;
     const { setIsVerHistoryPanel, setVerHistoryFileId } = versionHistoryStore;
     const { editingId, setAction, setEditingId } = fileActionStore;
-    const { setSecondaryProgressBarData } = secondaryProgressDataStore;
+    const {
+      setSecondaryProgressBarData,
+    } = uploadDataStore.secondaryProgressDataStore;
 
     const selectedItem = selection.find(
       (x) => x.id === item.id && x.fileExst === item.fileExst
