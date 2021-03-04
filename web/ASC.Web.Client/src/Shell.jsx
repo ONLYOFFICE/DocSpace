@@ -89,21 +89,25 @@ const LoginRoute = (props) => (
   </React.Suspense>
 );
 
-const PeopleRoute = (props) => (
-  <React.Suspense fallback={<LoadingShell />}>
-    <ErrorBoundary>
-      <People {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const PeopleRoute = (props) => {
+  return (
+    <React.Suspense fallback={<LoadingShell />}>
+      <ErrorBoundary>
+        <People {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  );
+};
 
-const FilesRoute = (props) => (
-  <React.Suspense fallback={<LoadingShell />}>
-    <ErrorBoundary>
-      <Files {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const FilesRoute = (props) => {
+  return (
+    <React.Suspense fallback={<LoadingShell />}>
+      <ErrorBoundary>
+        <Files {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  );
+};
 
 const AboutRoute = (props) => (
   <React.Suspense fallback={<LoadingShell />}>
@@ -168,6 +172,11 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   useEffect(() => {
     if (isLoaded) updateTempContent();
   }, [isLoaded]);
+
+  useEffect(() => {
+    console.log("Current page ", page);
+    // setModuleInfo(page, "e67be73d-f9ae-4ce1-8fec-1880cb518cb4");
+  }, [page]);
 
   return (
     <Layout>

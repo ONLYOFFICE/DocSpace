@@ -20,6 +20,7 @@ import uploadDataStore from "./store/UploadDataStore";
 import dialogsStore from "./store/DialogsStore";
 import treeFoldersStore from "./store/TreeFoldersStore";
 import selectedFolderStore from "./store/SelectedFolderStore";
+import filesActionsStore from "./store/FilesActionsStore";
 import "./custom.scss";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
@@ -133,6 +134,7 @@ export default () => (
     dialogsStore={dialogsStore}
     treeFoldersStore={treeFoldersStore}
     selectedFolderStore={selectedFolderStore}
+    filesActionsStore={filesActionsStore}
   >
     <I18nextProvider i18n={i18n}>
       <Files />
