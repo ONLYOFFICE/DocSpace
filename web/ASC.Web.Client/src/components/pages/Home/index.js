@@ -53,7 +53,7 @@ const Tiles = ({ modules, isPrimary }) => {
     (m) => m.isPrimary === isPrimary && m.isolateMode !== true
   );
 
-  console.log("Tiles", mapped, isPrimary);
+  //console.log("Tiles", mapped, isPrimary);
 
   return mapped.length > 0 ? (
     <div className="home-modules">

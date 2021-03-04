@@ -158,7 +158,7 @@ class AuthStore {
   logout = async (withoutRedirect) => {
     const response = await api.user.logout();
 
-    console.log("Logout response ", response);
+    //console.log("Logout response ", response);
 
     setWithCredentialsStatus(false);
 
