@@ -13,8 +13,9 @@ import {
   markAsRead,
   getFileConversationProgress,
 } from "@appserver/common/api/files";
+import history from "@appserver/common/history";
 import { FileAction, ShareAccessRights } from "@appserver/common/constants";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import FavoriteIcon from "../../../../../../../public/images/favorite.react.svg";
 import FileActionsConvertEditDocIcon from "../../../../../../../public/images/file.actions.convert.edit.doc.react.svg";
 import FileActionsLockedIcon from "../../../../../../../public/images/file.actions.locked.react.svg";
@@ -121,7 +122,6 @@ class FilesRowContent extends React.PureComponent {
 
     this.state = {
       itemTitle: titleWithoutExt,
-      editingId: props.fileAction.id,
       showNewFilesPanel: false,
       newFolderId: [],
       newItems: props.item.new || props.item.fileStatus === 2,
@@ -239,23 +239,23 @@ class FilesRowContent extends React.PureComponent {
           });
   };
 
-  componentDidUpdate(prevProps) {
-    const { fileAction, item, newRowItems, setNewRowItems } = this.props;
-    const itemId = item.id.toString();
+  // componentDidUpdate(prevProps) {
+  //   const { fileAction, item, newRowItems, setNewRowItems } = this.props;
+  //   const itemId = item.id.toString();
 
-    if (newRowItems.length && newRowItems.includes(itemId)) {
-      const rowItems = newRowItems.filter((x) => x !== itemId);
-      if (this.state.newItems !== 0) {
-        this.setState({ newItems: 0 }, () => setNewRowItems(rowItems));
-      }
-    }
+  //   if (newRowItems.length && newRowItems.includes(itemId)) {
+  //     const rowItems = newRowItems.filter((x) => x !== itemId);
+  //     if (this.state.newItems !== 0) {
+  //       this.setState({ newItems: 0 }, () => setNewRowItems(rowItems));
+  //     }
+  //   }
 
-    if (fileAction) {
-      if (fileAction.id !== prevProps.fileAction.id) {
-        this.setState({ editingId: fileAction.id });
-      }
-    }
-  }
+  //   if (fileAction) {
+  //     if (fileAction.id !== prevProps.fileAction.id) {
+  //       this.setState({ editingId: fileAction.id });
+  //     }
+  //   }
+  // }
 
   renameTitle = (e) => {
     let title = e.target.value;
@@ -373,7 +373,7 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onShowVersionHistory = (e) => {
-    const { homepage, history } = this.props;
+    const { homepage } = this.props;
     const fileId = e.currentTarget.dataset.id;
 
     history.push(`${homepage}/${fileId}/history`);
@@ -502,10 +502,10 @@ class FilesRowContent extends React.PureComponent {
       canWebEdit,
       /* canConvert,*/
       sectionWidth,
+      editingId,
     } = this.props;
     const {
       itemTitle,
-      editingId,
       showNewFilesPanel,
       newItems,
       newFolderId,
@@ -626,11 +626,9 @@ class FilesRowContent extends React.PureComponent {
                   />
                 )}
                 {locked && (
-                  <Icons.FileActionsLockedIcon // TODO: Icons
+                  <StyledFileActionsLockedIcon
                     className="badge lock-file"
                     size="small"
-                    isfill={true}
-                    color="#3B72A7"
                     data-id={item.id}
                     data-locked={true}
                     onClick={this.props.onClickLock}
@@ -796,6 +794,7 @@ export default inject(
       updateFile,
       renameFolder,
       createFolder,
+      openDocEditor,
     } = filesStore;
 
     const {
@@ -807,7 +806,7 @@ export default inject(
       addExpandedKeys,
     } = treeFoldersStore;
 
-    const { type, extension, id } = filesStore.fileActionStore;
+    const { type, extension, id, editingId } = filesStore.fileActionStore;
 
     const fileAction = { type, extension, id };
     const {
@@ -844,6 +843,7 @@ export default inject(
       isSound,
       newRowItems,
       expandedKeys,
+      editingId,
 
       setIsLoading,
       fetchFiles,
@@ -859,6 +859,7 @@ export default inject(
       getEncryptionAccess,
       setEncryptionAccess,
       addExpandedKeys,
+      openDocEditor,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesRowContent))));

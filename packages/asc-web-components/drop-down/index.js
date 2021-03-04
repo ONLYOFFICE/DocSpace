@@ -171,33 +171,6 @@ class DropDown extends React.PureComponent {
   }
 }
 
-DropDown.propTypes = {
-  children: PropTypes.any,
-  className: PropTypes.string,
-  clickOutsideAction: PropTypes.func,
-  directionX: PropTypes.oneOf(["left", "right"]), //TODO: make more informative
-  directionY: PropTypes.oneOf(["bottom", "top"]),
-  disableOnClickOutside: PropTypes.func,
-  enableOnClickOutside: PropTypes.func,
-  id: PropTypes.string,
-  manualWidth: PropTypes.string,
-  manualX: PropTypes.string,
-  manualY: PropTypes.string,
-  maxHeight: PropTypes.number,
-  open: PropTypes.bool,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  withBackdrop: PropTypes.bool,
-  columnCount: PropTypes.number,
-  showDisabledItems: PropTypes.bool,
-};
-
-DropDown.defaultProps = {
-  directionX: "left",
-  directionY: "bottom",
-  withBackdrop: false,
-  showDisabledItems: false,
-};
-
 const EnhancedComponent = onClickOutside(DropDown);
 
 class DropDownContainer extends React.Component {
@@ -226,8 +199,30 @@ class DropDownContainer extends React.Component {
 }
 
 DropDownContainer.propTypes = {
+  children: PropTypes.any,
+  className: PropTypes.string,
+  clickOutsideAction: PropTypes.func,
+  directionX: PropTypes.oneOf(["left", "right"]), //TODO: make more informative
+  directionY: PropTypes.oneOf(["bottom", "top"]),
+  disableOnClickOutside: PropTypes.func,
+  enableOnClickOutside: PropTypes.func,
+  id: PropTypes.string,
+  manualWidth: PropTypes.string,
+  manualX: PropTypes.string,
+  manualY: PropTypes.string,
+  maxHeight: PropTypes.number,
   open: PropTypes.bool,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   withBackdrop: PropTypes.bool,
+  columnCount: PropTypes.number,
+  showDisabledItems: PropTypes.bool
+};
+
+DropDownContainer.defaultProps = {
+  directionX: "left",
+  directionY: "bottom",
+  withBackdrop: false,
+  showDisabledItems: false,
 };
 
 export default DropDownContainer;

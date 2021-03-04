@@ -4,14 +4,17 @@ class FileActionStore {
   id = null;
   type = null;
   extension = null;
+  editingId = null;
 
   constructor() {
     makeObservable(this, {
       type: observable,
       extension: observable,
       id: observable,
+      editingId: observable,
 
       setAction: action,
+      setEditingId: action,
     });
   }
 
@@ -23,6 +26,8 @@ class FileActionStore {
       }
     }
   };
+
+  setEditingId = (editingId) => (this.editingId = editingId);
 }
 
 export default FileActionStore;

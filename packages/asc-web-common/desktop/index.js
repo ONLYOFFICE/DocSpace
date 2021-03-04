@@ -1,4 +1,4 @@
-import toastr from "../components/Toast";
+import toastr from "@appserver/components/toast/toastr";
 import isEmpty from "lodash/isEmpty";
 import omit from "lodash/omit";
 

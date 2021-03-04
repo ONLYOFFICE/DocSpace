@@ -77,7 +77,9 @@ const CalendarStyle = styled.div`
 
   .calendar-month_selected-day {
     background-color: ${(props) =>
-      props.theme.calendar.selectedDay.backgroundColor};
+      props.color
+        ? props.color
+        : props.theme.calendar.selectedDay.backgroundColor};
     border-radius: ${(props) => props.theme.calendar.selectedDay.borderRadius};
     cursor: ${(props) => props.theme.calendar.selectedDay.cursor};
     color: ${(props) => props.theme.calendar.selectedDay.color};
@@ -150,6 +152,8 @@ const StyledWeekday = styled.div`
     text-align: center;
   }
 `;
+StyledWeekday.defaultProps = { theme: Base };
+
 StyledWeekday.defaultProps = { theme: Base };
 
 export {

@@ -5,7 +5,7 @@ import Heading from "@appserver/components/heading";
 import Aside from "@appserver/components/aside";
 import IconButton from "@appserver/components/icon-button";
 import { ShareAccessRights } from "@appserver/common/constants";
-import PeopleSelector from "@appserver/common/components/PeopleSelector";
+import PeopleSelector from "studio/PeopleSelector";
 import { withTranslation } from "react-i18next";
 import {
   StyledAddUsersPanelPanel,

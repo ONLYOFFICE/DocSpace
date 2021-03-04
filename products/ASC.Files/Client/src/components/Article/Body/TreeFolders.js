@@ -5,7 +5,7 @@ import styled from "styled-components";
 //import equal from "fast-deep-equal/react";
 import { getFolder } from "@appserver/common/api/files";
 import { FolderType, ShareAccessRights } from "@appserver/common/constants";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 
 import { onConvertFiles } from "../../../helpers/files-converter";
 import { ReactSVG } from "react-svg";

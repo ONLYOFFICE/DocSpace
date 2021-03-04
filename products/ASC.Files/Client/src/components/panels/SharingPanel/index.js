@@ -10,7 +10,7 @@ import DropDownItem from "@appserver/components/drop-down-item";
 import Textarea from "@appserver/components/textarea";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import { ShareAccessRights } from "@appserver/common/constants";
 import {
   StyledAsidePanel,

@@ -9,7 +9,7 @@ import Box from "@appserver/components/box";
 import EmptyScreenContainer from "@appserver/components/empty-screen-container";
 import ExternalLinkIcon from "../../../../../../public/images/external.link.react.svg";
 import Loaders from "@appserver/common/components/Loaders";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";

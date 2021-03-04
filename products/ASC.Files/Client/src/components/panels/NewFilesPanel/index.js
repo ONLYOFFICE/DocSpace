@@ -11,7 +11,7 @@ import RowContainer from "@appserver/components/row-container";
 import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
 import { getNewFiles, markAsRead } from "@appserver/common/api/files";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import { ReactSVG } from "react-svg";
 import {
   StyledAsidePanel,
@@ -109,7 +109,6 @@ class NewFilesPanelComponent extends React.Component {
       setMediaViewerData,
       fetchFiles,
       addFileToRecentlyViewed,
-      isPrivacy,
     } = this.props;
 
     if (!fileExst) {
@@ -119,7 +118,7 @@ class NewFilesPanelComponent extends React.Component {
       const isMedia = [2, 3, 4].includes(fileType);
 
       if (canEdit && providerKey) {
-        return addFileToRecentlyViewed(id, isPrivacy)
+        return addFileToRecentlyViewed(id)
           .then(() => console.log("Pushed to recently viewed"))
           .catch((e) => console.error(e))
           .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
@@ -283,7 +282,7 @@ export default inject(
       addFileToRecentlyViewed,
       setNewRowItems,
     } = filesStore;
-    const { treeFolders, setTreeFolders, isPrivacyFolder } = treeFoldersStore;
+    const { treeFolders, setTreeFolders } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;
     const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
 
@@ -291,7 +290,6 @@ export default inject(
       files,
       folders,
       treeFolders,
-      isPrivacy: isPrivacyFolder,
       filter,
 
       setIsLoading,

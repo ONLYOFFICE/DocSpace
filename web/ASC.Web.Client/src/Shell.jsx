@@ -11,7 +11,7 @@ import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/Layout/ScrollToTop";
 import history from "@appserver/common/history";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import RectangleLoader from "@appserver/common/components/Loaders/RectangleLoader";
 import { updateTempContent } from "@appserver/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
@@ -170,7 +170,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   }, [loadBaseInfo]);
 
   useEffect(() => {
-    console.log("App render", isLoaded);
     if (isLoaded) updateTempContent();
   }, [isLoaded]);
 

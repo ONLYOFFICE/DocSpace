@@ -1,4 +1,44 @@
 import React from "react";
+import Avatar from "./";
+
+const roleOptions = ["owner", "admin", "guest", "user"];
+const sizeOptions = ["max", "big", "medium", "small", "min"];
+
+const editAction = () => console.log("Edit action");
+
+export default {
+  title: "Components/Avatar",
+  component: Avatar,
+  parameters: {
+    docs: {
+      description: {
+        component: "Used to display an avatar or brand.",
+      },
+      source: {
+        code: `
+        import Avatar from "@appserver/components/avatar";
+
+<Avatar 
+  size="max" 
+  role="admin" 
+  source="" 
+  userName="" 
+  editing={false}
+/>
+        `,
+      },
+    },
+  },
+};
+
+const Template = (args) => <Avatar {...args} />;
+
+export const Default = Template.bind({});
+Default.args = {
+  role: 'admin'
+}
+
+/*import React from "react";
 import { storiesOf } from "@storybook/react";
 import { withKnobs, boolean, text, select } from "@storybook/addon-knobs/react";
 import withReadme from "storybook-readme/with-readme";
@@ -32,4 +72,4 @@ storiesOf("Components|Avatar", module)
         />
       </Section>
     );
-  });
+  });*/

@@ -8,7 +8,7 @@ import Settings from "./components/pages/Settings";
 import VersionHistory from "./components/pages/VersionHistory";
 import config from "../package.json";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
-import toastr from "@appserver/common/components/Toast/toastr";
+import toastr from "studio/toastr";
 import { updateTempContent } from "@appserver/common/utils";
 import initFilesStore from "./store/InitFilesStore";
 import filesStore from "./store/FilesStore";
@@ -20,6 +20,7 @@ import uploadDataStore from "./store/UploadDataStore";
 import dialogsStore from "./store/DialogsStore";
 import treeFoldersStore from "./store/TreeFoldersStore";
 import selectedFolderStore from "./store/SelectedFolderStore";
+import filesActionsStore from "./store/FilesActionsStore";
 import "./custom.scss";
 import "./i18n";
 //import { regDesktop } from "@appserver/common/src/desktop";
@@ -132,6 +133,7 @@ export default () => (
     dialogsStore={dialogsStore}
     treeFoldersStore={treeFoldersStore}
     selectedFolderStore={selectedFolderStore}
+    filesActionsStore={filesActionsStore}
   >
     <Files />
   </FilesProvider>

@@ -160,7 +160,7 @@ module.exports = (env, argv) => {
   if (argv.mode === "production") {
     config.mode = "production";
   } else {
-    config.devtool = "source-map";
+    config.devtool = "cheap-module-source-map";
   }
 
   return config;

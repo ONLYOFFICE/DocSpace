@@ -31,7 +31,7 @@ import {
 } from "@appserver/common/api/files";
 import { FileAction } from "@appserver/common/constants";
 import MediaViewer from "@appserver/common/components/MediaViewer";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import { loopTreeFolders } from "../../../../../helpers/files-helpers";
@@ -139,7 +139,7 @@ class SectionBodyContent extends React.Component {
     super(props);
 
     this.state = {
-      editingId: null,
+      //editingId: null,
 
       //showMoveToPanel: false,
       //showCopyPanel: false,
@@ -341,53 +341,54 @@ class SectionBodyContent extends React.Component {
     this.setState({ connectItem, connectDialogVisible: true });
   }; */
 
-  onEditComplete = (id, isFolder) => {
-    const {
-      selectedFolderId,
-      fileActionType,
-      filter,
-      folders,
-      files,
-      treeFolders,
-      setTreeFolders,
-      setIsLoading,
-      fetchFiles,
-      setAction,
-      selection,
-    } = this.props;
-    const selectedItem = selection[0];
-    const items = [...folders, ...files];
-    const item = items.find((o) => o.id === id && !o.fileExst); //TODO maybe need files find and folders find, not at one function?
-    if (
-      fileActionType === FileAction.Create ||
-      fileActionType === FileAction.Rename
-    ) {
-      setIsLoading(true);
-      fetchFiles(selectedFolderId, filter)
-        .then((data) => {
-          const newItem = (item && item.id) === -1 ? null : item; //TODO not add new folders?
-          if (isFolder) {
-            const path = data.selectedFolder.pathParts;
-            const newTreeFolders = treeFolders;
-            const folders = data.selectedFolder.folders;
-            loopTreeFolders(path, newTreeFolders, folders, null, newItem);
-            setTreeFolders(newTreeFolders);
-          }
-        })
-        .finally(() => {
-          this.setState({ editingId: null }, () => {
-            setAction({ type: null, id: null, extension: null });
-            setIsLoading(false);
-          });
-          fileActionType === FileAction.Rename &&
-            this.onSelectItem(selectedItem);
-        });
-    }
+  //TODO: move to actions, used in files row content and tile
+  // onEditComplete = (id, isFolder) => {
+  //   const {
+  //     selectedFolderId,
+  //     fileActionType,
+  //     filter,
+  //     folders,
+  //     files,
+  //     treeFolders,
+  //     setTreeFolders,
+  //     setIsLoading,
+  //     fetchFiles,
+  //     setAction,
+  //     selection,
+  //   } = this.props;
+  //   const selectedItem = selection[0];
+  //   const items = [...folders, ...files];
+  //   const item = items.find((o) => o.id === id && !o.fileExst); //TODO maybe need files find and folders find, not at one function?
+  //   if (
+  //     fileActionType === FileAction.Create ||
+  //     fileActionType === FileAction.Rename
+  //   ) {
+  //     setIsLoading(true);
+  //     fetchFiles(selectedFolderId, filter)
+  //       .then((data) => {
+  //         const newItem = (item && item.id) === -1 ? null : item; //TODO not add new folders?
+  //         if (isFolder) {
+  //           const path = data.selectedFolder.pathParts;
+  //           const newTreeFolders = treeFolders;
+  //           const folders = data.selectedFolder.folders;
+  //           loopTreeFolders(path, newTreeFolders, folders, null, newItem);
+  //           setTreeFolders(newTreeFolders);
+  //         }
+  //       })
+  //       .finally(() => {
+  //         this.setState({ editingId: null }, () => {
+  //           setAction({ type: null, id: null, extension: null });
+  //           setIsLoading(false);
+  //         });
+  //         fileActionType === FileAction.Rename &&
+  //           this.onSelectItem(selectedItem);
+  //       });
+  //   }
 
-    //this.setState({ editingId: null }, () => {
-    //  setAction({type: null});
-    //});
-  };
+  //   //this.setState({ editingId: null }, () => {
+  //   //  setAction({type: null});
+  //   //});
+  // };
 
   /*   onClickDelete = (e) => {
     const { isThirdParty, id, title } = e.currentTarget.dataset;
@@ -549,23 +550,23 @@ class SectionBodyContent extends React.Component {
     return window.open(this.props.selection[0].viewUrl, "_blank");
   }; */
 
-  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    if (providerKey) {
-      tab
-        ? (tab.location = url)
-        : window.open(`./doceditor?fileId=${id}`, "_blank");
-    } else {
-      return this.props
-        .addFileToRecentlyViewed(id, this.props.isPrivacy)
-        .then(() => console.log("Pushed to recently viewed"))
-        .catch((e) => console.error(e))
-        .finally(
-          tab
-            ? (tab.location = url)
-            : window.open(`./doceditor?fileId=${id}`, "_blank")
-        );
-    }
-  };
+  // openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+  //   if (providerKey) {
+  //     tab
+  //       ? (tab.location = url)
+  //       : window.open(`./doceditor?fileId=${id}`, "_blank");
+  //   } else {
+  //     return this.props
+  //       .addFileToRecentlyViewed(id, this.props.isPrivacy)
+  //       .then(() => console.log("Pushed to recently viewed"))
+  //       .catch((e) => console.error(e))
+  //       .finally(
+  //         tab
+  //           ? (tab.location = url)
+  //           : window.open(`./doceditor?fileId=${id}`, "_blank")
+  //       );
+  //   }
+  // };
 
   /*   onClickLinkEdit = (e) => {
     const { id, providerKey } = e.currentTarget.dataset;
@@ -949,23 +950,23 @@ class SectionBodyContent extends React.Component {
 
   svgLoader = () => <div style={{ width: "24px" }}></div>;
 
-  getItemIcon = (item, isEdit) => {
-    return (
-      <>
-        <ReactSVG
-          beforeInjection={(svg) => {
-            svg.setAttribute("style", "margin-top: 4px");
-            isEdit && svg.setAttribute("style", "margin: 4px 0 0 28px");
-          }}
-          src={item.icon}
-          loading={this.svgLoader}
-        />
-        {this.props.isPrivacy && item.fileExst && (
-          <EncryptedFileIcon isEdit={isEdit} />
-        )}
-      </>
-    );
-  };
+  // getItemIcon = (item, isEdit) => {
+  //   return (
+  //     <>
+  //       <ReactSVG
+  //         beforeInjection={(svg) => {
+  //           svg.setAttribute("style", "margin-top: 4px");
+  //           isEdit && svg.setAttribute("style", "margin: 4px 0 0 28px");
+  //         }}
+  //         src={item.icon}
+  //         loading={this.svgLoader}
+  //       />
+  //       {this.props.isPrivacy && item.fileExst && (
+  //         <EncryptedFileIcon isEdit={isEdit} />
+  //       )}
+  //     </>
+  //   );
+  // };
 
   onCreate = (e) => {
     const format = e.currentTarget.dataset.format || null;
@@ -1710,14 +1711,14 @@ class SectionBodyContent extends React.Component {
     //console.log("Files Home SectionBodyContent render", this.props);
 
     const {
-      viewer,
+      //viewer,
       parentId,
       //culture,
       selection,
-      fileActionType,
-      fileActionExtension,
+      //fileActionType,
+      //fileActionExtension,
       fileActionId,
-      isRecycleBin,
+      //isRecycleBin,
       isPrivacy,
       isEncryptionSupport,
       dragging,
@@ -1926,7 +1927,7 @@ export default inject(
       filter,
       fileActionStore,
 
-      addFileToRecentlyViewed,
+      //addFileToRecentlyViewed,
       //updateFile,
       //currentFolderCount,
       iconOfDraggedFile,
@@ -1987,7 +1988,7 @@ export default inject(
       //culture,
       isEncryptionSupport,
       //isTabletView,
-      viewer: auth.userStore.user,
+      //viewer: auth.userStore.user,
       organizationName,
       isDesktop: isDesktopClient,
       dragging,
@@ -2046,7 +2047,7 @@ export default inject(
       clearSecondaryProgressData,
       //setIsVerHistoryPanel,
       //setVerHistoryFileId,
-      addFileToRecentlyViewed,
+      //addFileToRecentlyViewed,
       //updateFile,
       //markItemAsFavorite,
       //removeItemFromFavorite,
