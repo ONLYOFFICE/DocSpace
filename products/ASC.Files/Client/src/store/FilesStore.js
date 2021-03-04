@@ -335,9 +335,11 @@ class FilesStore {
 
     if (item.id <= 0) return [];
 
-    const isRecycleBinFolder = treeFoldersStore.isRecycleBinFolder;
-    const isPrivacyFolder = treeFoldersStore.isPrivacyFolder;
-    const isRecentFolder = treeFoldersStore.isRecentFolder;
+    const {
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      isRecentFolder,
+    } = treeFoldersStore;
 
     if (isRecycleBinFolder) {
       options.push("download");
@@ -437,8 +439,8 @@ class FilesStore {
     return options;
   };
 
-  addFileToRecentlyViewed = (fileId, isPrivacy) => {
-    if (isPrivacy) return Promise.resolve();
+  addFileToRecentlyViewed = (fileId) => {
+    if (treeFoldersStore.isPrivacyFolder) return Promise.resolve();
     return api.files.addFileToRecentlyViewed(fileId);
   };
 
@@ -983,6 +985,23 @@ class FilesStore {
   getFileInfo = async (id) => {
     const fileInfo = await api.files.getFileInfo(id);
     this.setFile(fileInfo);
+  };
+
+  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    if (providerKey) {
+      tab
+        ? (tab.location = url)
+        : window.open(`./doceditor?fileId=${id}`, "_blank");
+    } else {
+      return this.addFileToRecentlyViewed(id)
+        .then(() => console.log("Pushed to recently viewed"))
+        .catch((e) => console.error(e))
+        .finally(
+          tab
+            ? (tab.location = url)
+            : window.open(`./doceditor?fileId=${id}`, "_blank")
+        );
+    }
   };
 }
 

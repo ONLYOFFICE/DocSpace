@@ -8,8 +8,10 @@ import Text from "@appserver/components/text";
 import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
+import history from "@appserver/common/history";
+import toastr from "@appserver/components/toast";
 
-import { lockFile } from "@appserver/common/api/files"; //TODO: move to actions
+import { lockFile, finalizeVersion } from "@appserver/common/api/files"; //TODO: move to actions
 
 const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
@@ -67,6 +69,7 @@ const SimpleFilesRow = (props) => {
     actionType,
     actionExtension,
     isPrivacy,
+    isFavorites,
     isRecycleBin,
     dragging,
     selected,
@@ -81,7 +84,12 @@ const SimpleFilesRow = (props) => {
     setSelection,
     providers,
     capabilities,
+    homepage,
+    isTabletView,
+    filter,
+    selectedFolderId,
 
+    fetchFiles,
     setSharingPanelVisible,
     setChangeOwnerPanelVisible,
     setConnectDialogVisible,
@@ -90,6 +98,18 @@ const SimpleFilesRow = (props) => {
     setRemoveItem,
     setMoveToPanelVisible,
     setCopyPanelVisible,
+    openDocEditor,
+    setIsLoading,
+    setIsVerHistoryPanel,
+    setVerHistoryFileId,
+    setAction,
+    setEditingId,
+    setSecondaryProgressBarData,
+    markItemAsFavorite,
+    removeItemFromFavorite,
+    getFileInfo,
+    fetchFavoritesFolder,
+    editingId,
   } = props;
 
   const {
@@ -102,6 +122,11 @@ const SimpleFilesRow = (props) => {
     contextOptions,
     icon,
     providerKey,
+    folderId,
+    viewUrl,
+    webUrl,
+    canOpenPlayer,
+    locked,
   } = item;
 
   const isThirdPartyFolder = providerKey && isRootFolder;
@@ -164,68 +189,39 @@ const SimpleFilesRow = (props) => {
   };
 
   const onOpenLocation = () => {
-    /*const { filter, selection } = this.props;
-    const { folderId, checked, id, isFolder } = selection[0];
-    const item = selection[0];
     const locationId = isFolder ? id : folderId;
     const locationFilter = isFolder ? filter : null;
 
-    return this.props
-      .fetchFiles(locationId, locationFilter)
-      .then(() => (isFolder ? null : this.onContentRowSelect(!checked, item)));*/
+    return fetchFiles(locationId, locationFilter).then(() =>
+      isFolder ? null : this.onContentRowSelect(!checked, item)
+    );
   };
 
-  const showVersionHistory = (e) => {
-    /*const {
-      homepage,
-      history,
-      setIsLoading,
-      setIsVerHistoryPanel,
-      setVerHistoryFileId,
-      isTabletView,
-    } = this.props;
-
-    const fileId = e.currentTarget.dataset.id;
-
+  const showVersionHistory = () => {
     if (!isTabletView) {
       setIsLoading(true);
-      setVerHistoryFileId(fileId);
+      setVerHistoryFileId(id);
       setIsVerHistoryPanel(true);
     } else {
-      history.push(`${homepage}/${fileId}/history`);
-    }*/
+      history.push(`${homepage}/${id}/history`);
+    }
   };
 
-  const finalizeVersion = (e) => {
-    /*const { selectedFolderId, filter, setIsLoading, fetchFiles } = this.props;
-
-    const fileId = e.currentTarget.dataset.id;
-    //const version = (e.currentTarget.dataset.version)++;
-
+  const finalizeVersion = () => {
     setIsLoading(true);
 
-    finalizeVersion(fileId, 0, false)
-      .then((data) => {
+    finalizeVersion(id, 0, false)
+      .then(() => {
         return fetchFiles(selectedFolderId, filter).catch((err) =>
           toastr.error(err)
         );
       })
-      .finally(() => setIsLoading(false));*/
+      .finally(() => setIsLoading(false));
   };
 
   const onClickFavorite = (e) => {
-    /*const {
-      markItemAsFavorite,
-      removeItemFromFavorite,
-      getFileInfo,
-      fetchFavoritesFolder,
-      isFavorites,
-      selectedFolderId,
-      setSelected,
-      //selection,
-      t,
-    } = this.props;
-    const { action, id } = e.currentTarget.dataset;
+    const { action } = e.currentTarget.dataset;
+
     //let data = selection.map(item => item.id)
     switch (action) {
       case "mark":
@@ -245,77 +241,45 @@ const SimpleFilesRow = (props) => {
           .catch((e) => toastr.error(e));
       default:
         return;
-    }*/
+    }
   };
 
-  const lockFile = (e) => {
-    // const {
-    //   selection,
-    //   /*files,*/ selectedFolderId,
-    //   filter,
-    //   setIsLoading,
-    //   fetchFiles,
-    // } = this.props;
-    // let fileId, isLockedFile;
-    // const file = selection[0];
-    // if (file) {
-    //   fileId = file.id;
-    //   isLockedFile = !file.locked;
-    // } else {
-    //   const { id, locked } = e.currentTarget.dataset;
-    //   fileId = Number(id);
-    //   isLockedFile = !Boolean(locked);
-    // }
-    // //TODO: move lockFile to actions
-    // lockFile(fileId, isLockedFile).then((res) => {
-    //   /*const newFiles = files;
-    //     const indexOfFile = newFiles.findIndex(x => x.id === res.id);
-    //     newFiles[indexOfFile] = res;*/
-    //   setIsLoading(true);
-    //   fetchFiles(selectedFolderId, filter)
-    //     .catch((err) => toastr.error(err))
-    //     .finally(() => setIsLoading(false));
-    // });
+  const lockFile = () => {
+    //TODO: move lockFile to actions
+    lockFile(id, locked).then((res) => {
+      /*const newFiles = files;
+        const indexOfFile = newFiles.findIndex(x => x.id === res.id);
+        newFiles[indexOfFile] = res;*/
+      setIsLoading(true);
+      fetchFiles(selectedFolderId, filter)
+        .catch((err) => toastr.error(err))
+        .finally(() => setIsLoading(false));
+    });
   };
 
   const onClickLinkForPortal = () => {
-    /*const { homepage, selection } = this.props;
-    const item = selection[0];
-    const isFile = !!item.fileExst;
+    const isFile = !!fileExst;
     const { t } = this.props;
     copy(
       isFile
-        ? item.canOpenPlayer
-          ? `${window.location.href}&preview=${item.id}`
-          : item.webUrl
-        : `${window.location.origin + homepage}/filter?folder=${item.id}`
+        ? canOpenPlayer
+          ? `${window.location.href}&preview=${id}`
+          : webUrl
+        : `${window.location.origin + homepage}/filter?folder=${id}`
     );
 
-    toastr.success(t("LinkCopySuccess"));*/
+    toastr.success(t("LinkCopySuccess"));
   };
 
-  const onClickLinkEdit = (e) => {
-    // const { id, providerKey } = e.currentTarget.dataset;
-    // return this.openDocEditor(id, providerKey);
-  };
+  const onClickLinkEdit = () => openDocEditor(id, providerKey);
 
-  const onClickDownload = () => {
-    // return window.open(this.props.selection[0].viewUrl, "_blank");
-  };
+  const onClickDownload = () => window.open(viewUrl, "_blank");
 
   const onDuplicate = () => {
-    /*const {
-      selection,
-      selectedFolderId,
-      setSecondaryProgressBarData,
-      t,
-    } = this.props;
     const folderIds = [];
     const fileIds = [];
-    selection[0].fileExst
-      ? fileIds.push(selection[0].id)
-      : folderIds.push(selection[0].id);
-    const conflictResolveType = 2; //Skip = 0, Overwrite = 1, Duplicate = 2
+    fileExst ? fileIds.push(id) : folderIds.push(id);
+    const conflictResolveType = 2; //Skip = 0, Overwrite = 1, Duplicate = 2 //TODO: get from settings
     const deleteAfter = false;
 
     setSecondaryProgressBarData({
@@ -325,28 +289,28 @@ const SimpleFilesRow = (props) => {
       label: t("CopyOperation"),
       alert: false,
     });
-    this.copyTo(
-      selectedFolderId,
-      folderIds,
-      fileIds,
-      conflictResolveType,
-      deleteAfter
-    );*/
+
+    //TODO: need add to action
+    // this.copyTo(
+    //   selectedFolderId,
+    //   folderIds,
+    //   fileIds,
+    //   conflictResolveType,
+    //   deleteAfter
+    // );
   };
 
   const onClickRename = () => {
-    /*const { id, fileExst } = this.props.selection[0];
+    setEditingId(id);
 
-    this.setState({ editingId: id }, () => {
-      this.props.setAction({
-        type: FileAction.Rename,
-        extension: fileExst,
-        id,
-      });
-    });*/
+    setAction({
+      type: FileAction.Rename,
+      extension: fileExst,
+      id,
+    });
   };
 
-  const onChangeThirdPartyInfo = (e) => {
+  const onChangeThirdPartyInfo = () => {
     const provider = providers.find((x) => x.provider_key === providerKey);
     const capabilityItem = capabilities.find((x) => x[0] === providerKey);
     const capability = {
@@ -358,7 +322,7 @@ const SimpleFilesRow = (props) => {
     setConnectItem({ ...provider, ...capability });
   };
 
-  const onClickDelete = (e) => {
+  const onClickDelete = () => {
     const splitItem = id.split("-");
 
     if (isThirdPartyFolder) {
@@ -393,7 +357,6 @@ const SimpleFilesRow = (props) => {
             icon: "HistoryIcon",
             onClick: showVersionHistory,
             disabled: false,
-            "data-id": item.id,
           };
         case "finalize-version":
           return {
@@ -402,8 +365,6 @@ const SimpleFilesRow = (props) => {
             icon: "HistoryFinalizedIcon",
             onClick: finalizeVersion,
             disabled: false,
-            "data-id": item.id,
-            "data-version": item.version,
           };
         case "separator0":
         case "separator1":
@@ -426,8 +387,6 @@ const SimpleFilesRow = (props) => {
             onClick: onClickFavorite,
             disabled: false,
             "data-action": "mark",
-            "data-id": item.id,
-            "data-title": item.title,
           };
         case "block-unblock-version":
           return {
@@ -475,8 +434,6 @@ const SimpleFilesRow = (props) => {
             icon: "AccessEditIcon",
             onClick: onClickLinkEdit,
             disabled: false,
-            "data-id": item.id,
-            "data-provider-key": item.providerKey,
           };
         case "preview":
           return {
@@ -485,8 +442,6 @@ const SimpleFilesRow = (props) => {
             icon: "EyeIcon",
             onClick: onClickLinkEdit,
             disabled: true,
-            "data-id": item.id,
-            "data-provider-key": item.providerKey,
           };
         case "view":
           return {
@@ -560,8 +515,6 @@ const SimpleFilesRow = (props) => {
             onClick: onClickFavorite,
             disabled: false,
             "data-action": "remove",
-            "data-id": item.id,
-            "data-title": item.title,
           };
         default:
           break;
@@ -575,8 +528,6 @@ const SimpleFilesRow = (props) => {
     selected === "close" && setSelected("none");
     setSelection([item]);
   };
-
-  const editingId = null; // TODO: move editingId to store
 
   const isMobile = sectionWidth < 500;
 
@@ -638,18 +589,27 @@ const SimpleFilesRow = (props) => {
 export default inject(
   (
     {
+      auth,
       initFilesStore,
       filesStore,
       treeFoldersStore,
       selectedFolderStore,
       dialogsStore,
       settingsStore,
+      versionHistoryStore,
+      uploadDataStore,
     },
     { item }
   ) => {
-    const { dragging } = initFilesStore;
+    const { homepage, isTabletView } = auth.settingsStore;
+    const { dragging, setIsLoading } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
-    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      isFavoritesFolder,
+    } = treeFoldersStore;
+
     const {
       setSharingPanelVisible,
       setChangeOwnerPanelVisible,
@@ -669,11 +629,23 @@ export default inject(
       selection,
       canShare,
       setSelection,
+      openDocEditor,
+      fetchFiles,
+      filter,
+      fileActionStore,
+      markItemAsFavorite,
+      removeItemFromFavorite,
+      getFileInfo,
+      fetchFavoritesFolder,
     } = filesStore;
 
     const { isRootFolder } = selectedFolderStore;
-
     const { providers, capabilities } = settingsStore.thirdPartyStore;
+    const { setIsVerHistoryPanel, setVerHistoryFileId } = versionHistoryStore;
+    const { editingId, setAction, setEditingId } = fileActionStore;
+    const {
+      setSecondaryProgressBarData,
+    } = uploadDataStore.secondaryProgressDataStore;
 
     const selectedItem = selection.find(
       (x) => x.id === item.id && x.fileExst === item.fileExst
@@ -688,6 +660,7 @@ export default inject(
       actionType: type,
       actionExtension: extension,
       isPrivacy: isPrivacyFolder,
+      isFavorites: isFavoritesFolder,
       isRecycleBin: isRecycleBinFolder,
       isRootFolder,
       canShare,
@@ -701,7 +674,13 @@ export default inject(
       draggable,
       providers,
       capabilities,
+      homepage,
+      isTabletView,
+      filter,
+      selectedFolderId: selectedFolderStore.id,
+      editingId,
 
+      fetchFiles,
       setSharingPanelVisible,
       setChangeOwnerPanelVisible,
       setConnectDialogVisible,
@@ -710,6 +689,17 @@ export default inject(
       showDeleteThirdPartyDialog,
       setMoveToPanelVisible,
       setCopyPanelVisible,
+      openDocEditor,
+      setIsLoading,
+      setIsVerHistoryPanel,
+      setVerHistoryFileId,
+      setEditingId,
+      setAction,
+      setSecondaryProgressBarData,
+      markItemAsFavorite,
+      removeItemFromFavorite,
+      getFileInfo,
+      fetchFavoritesFolder,
     };
   }
 )(withTranslation()(observer(SimpleFilesRow)));
