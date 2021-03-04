@@ -2,7 +2,7 @@ import { LANGUAGE } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
 import history from "../history";
-
+import TopLoaderService from "@appserver/components/top-loading-indicator";
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
   for (var key in obj) {
@@ -95,38 +95,12 @@ export function updateTempContent(isAuth = false) {
 
 export function hideLoader() {
   if (isMobile) return;
-
-  // if (window.loadingTimeout) {
-  //   clearTimeout(window.loadingTimeout);
-  //   window.loadingTimeout = null;
-  // }
-
-  // document.body.classList.remove("loading");
-
-  const ele = document.getElementById("ipl-progress-indicator");
-  if (ele) {
-    // fade out
-    ele.classList.add("available");
-    ele.style.display = "";
-    // setTimeout(() => {
-    //   // remove from DOM
-    //   ele.outerHTML = "";
-    // }, 2000);
-  }
+  TopLoaderService.end();
 }
 
 export function showLoader() {
   if (isMobile) return;
-
-  // window.loadingTimeout = setTimeout(() => {
-  //   document.body.classList.add("loading");
-  // }, 1000);
-
-  const ele = document.getElementById("ipl-progress-indicator");
-  if (ele) {
-    ele.classList.remove("available");
-    ele.style.display = "block";
-  }
+  TopLoaderService.start();
 }
 
 export { withLayoutSize } from "./withLayoutSize";
