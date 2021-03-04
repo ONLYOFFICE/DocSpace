@@ -66,8 +66,6 @@ class TreeFoldersStore {
     this.expandedKeys.push(item);
   };
 
-  /////////////////////////////////////TODO: FOLDER
-
   get myFolder() {
     return this.treeFolders.find((x) => x.rootFolderName === "@my");
   }
@@ -98,30 +96,13 @@ class TreeFoldersStore {
     return this.treeFolders.find((x) => x.rootFolderName === "@trash");
   }
 
-  /////////////////////////////////////TODO: ID
-
   get myFolderId() {
     return this.myFolder ? this.myFolder.id : null;
   }
 
-  // get shareFolderId() {
-  //   return this.shareFolder ?this.shareFolder.id : null;
-  // }
-
-  // get favoritesFolderId() {
-  //   return this.favoritesFolder ? this.favoritesFolder.id : null;
-  // }
-
-  // get recentFolderId() {
-
-  //   return this.recentFolder ? this.recentFolder.id : null;
-  // }
-
   get commonFolderId() {
     return this.commonFolder ? this.commonFolder.id : null;
   }
-
-  /////////////////////////////////////TODO: IS
 
   get isMyFolder() {
     return this.myFolder && this.myFolder.id === selectedFolderStore.id;

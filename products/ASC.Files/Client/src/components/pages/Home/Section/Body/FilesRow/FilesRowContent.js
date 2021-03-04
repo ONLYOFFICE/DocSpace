@@ -626,11 +626,9 @@ class FilesRowContent extends React.PureComponent {
                   />
                 )}
                 {locked && (
-                  <Icons.FileActionsLockedIcon // TODO: Icons
+                  <StyledFileActionsLockedIcon
                     className="badge lock-file"
                     size="small"
-                    isfill={true}
-                    color="#3B72A7"
                     data-id={item.id}
                     data-locked={true}
                     onClick={this.props.onClickLock}

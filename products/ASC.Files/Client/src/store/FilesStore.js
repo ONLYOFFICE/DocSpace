@@ -454,13 +454,11 @@ class FilesStore {
     return api.files.createFolder(parentFolderId, title);
   }
 
-  //TODO: action?
   setFile = (file) => {
     const fileIndex = this.files.findIndex((f) => f.id === file.id);
     if (fileIndex !== -1) this.files[fileIndex] = file;
   };
 
-  //TODO: action?
   setFolder = (folder) => {
     const folderIndex = this.folders.findIndex((f) => f.id === folder.id);
     if (folderIndex !== -1) this.folders[folderIndex] = folder;
