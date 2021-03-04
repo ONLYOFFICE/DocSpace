@@ -45,14 +45,14 @@ class DeleteDialogComponent extends React.Component {
 
   onDelete = () => {
     this.onClose();
-    const { t, onDeleteAction } = this.props;
+    const { t, deleteAction } = this.props;
     const translations = {
       deleteOperation: t("DeleteOperation"),
       deleteFromTrash: t("DeleteFromTrash"),
       deleteSelectedElem: t("DeleteSelectedElem"),
     };
 
-    onDeleteAction(translations);
+    deleteAction(translations);
   };
 
   onChange = (event) => {
@@ -184,7 +184,7 @@ export default inject(
     const { isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
     const { fetchFiles, selection, filter } = filesStore;
-    const { onDeleteAction } = filesActionsStore;
+    const { deleteAction } = filesActionsStore;
 
     const {
       treeFolders,
@@ -219,7 +219,7 @@ export default inject(
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
       setDeleteDialogVisible,
-      onDeleteAction,
+      deleteAction,
     };
   }
 )(withRouter(observer(DeleteDialog)));

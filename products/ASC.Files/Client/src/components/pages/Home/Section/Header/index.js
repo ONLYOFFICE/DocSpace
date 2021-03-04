@@ -218,36 +218,7 @@ class SectionHeaderContent extends React.Component {
   onMoveAction = () => this.props.setMoveToPanelVisible(true);
   onCopyAction = () => this.props.setCopyPanelVisible(true);
 
-  //TODO: move to action, fix download dialog
-  loop = (data) => {
-    const url = data.url;
-    getProgress()
-      .then((res) => {
-        const currentItem = res.find((x) => x.id === data.id);
-        if (!url) {
-          this.props.setSecondaryProgressBarData({
-            icon: "file",
-            visible: true,
-            percent: currentItem.progress,
-            label: this.props.t("ArchivingData"),
-            alert: false,
-          });
-          setTimeout(() => this.loop(currentItem), 1000);
-        } else {
-          setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
-          return (window.location.href = url);
-        }
-      })
-      .catch((err) => {
-        this.props.setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        //toastr.error(err);
-        setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
-      });
-  };
-
+  //TODO: move to actions?
   downloadAction = () => {
     const {
       t,
@@ -283,7 +254,7 @@ class SectionHeaderContent extends React.Component {
 
     downloadFiles(fileIds, folderIds)
       .then((res) => {
-        this.loop(res[0]);
+        this.props.getDownloadProgress(res[0], t("ArchivingData"));
       })
       .catch((err) => {
         setSecondaryProgressBarData({
@@ -302,7 +273,7 @@ class SectionHeaderContent extends React.Component {
   onDeleteAction = () => {
     const {
       t,
-      onDeleteAction,
+      deleteAction,
       confirmDelete,
       setDeleteDialogVisible,
     } = this.props;
@@ -316,7 +287,7 @@ class SectionHeaderContent extends React.Component {
         deleteSelectedElem: t("DeleteSelectedElem"),
       };
 
-      onDeleteAction(translations);
+      deleteAction(translations);
     }
   };
 
@@ -675,7 +646,7 @@ export default inject(
       setDeleteDialogVisible,
     } = dialogsStore;
 
-    const { onDeleteAction } = filesActionsStore;
+    const { deleteAction, getDownloadProgress } = filesActionsStore;
 
     return {
       isDesktop: auth.settingsStore.isDesktopClient,
@@ -710,9 +681,10 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setEmptyTrashDialogVisible,
-      onDeleteAction,
+      deleteAction,
       setDeleteDialogVisible,
       setDownloadDialogVisible,
+      getDownloadProgress,
     };
   }
 )(withTranslation("Home")(withRouter(observer(SectionHeaderContent))));

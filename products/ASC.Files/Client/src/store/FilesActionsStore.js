@@ -128,6 +128,41 @@ class FilesActionStore {
         });
     }
   };
+
+  getDownloadProgress = (data, label) => {
+    const url = data.url;
+
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+
+    getProgress()
+      .then((res) => {
+        const currentItem = res.find((x) => x.id === data.id);
+        if (!url) {
+          setSecondaryProgressBarData({
+            icon: "file",
+            visible: true,
+            percent: currentItem.progress,
+            label,
+            alert: false,
+          });
+          setTimeout(() => this.getDownloadProgress(currentItem, label), 1000);
+        } else {
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+          return (window.location.href = url);
+        }
+      })
+      .catch((err) => {
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      });
+  };
 }
 
 export default new FilesActionStore();
