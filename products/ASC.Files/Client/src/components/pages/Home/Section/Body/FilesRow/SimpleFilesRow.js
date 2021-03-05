@@ -10,6 +10,7 @@ import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
 import history from "@appserver/common/history";
 import toastr from "@appserver/components/toast";
+import { FileAction } from "@appserver/common/constants";
 
 import { lockFile, finalizeVersion } from "@appserver/common/api/files"; //TODO: move to actions
 
@@ -108,7 +109,7 @@ const SimpleFilesRow = (props) => {
     removeItemFromFavorite,
     getFileInfo,
     fetchFavoritesFolder,
-    actionId
+    actionId,
   } = props;
 
   const {
@@ -164,7 +165,7 @@ const SimpleFilesRow = (props) => {
           color={color}
           hoverColor="#657077"
           size={18}
-          iconName="CatalogSharedIcon"
+          iconName="images/catalog.shared.react.svg"
         />
         {t("Share")}
       </Text>

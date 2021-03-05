@@ -1,15 +1,15 @@
 import { makeAutoObservable } from "mobx";
-import store from "studio/store";
-import dialogsStore from "./DialogsStore";
 import uploadDataStore from "./UploadDataStore";
 import treeFoldersStore from "./TreeFoldersStore";
 import filesStore from "./FilesStore";
 import selectedFolderStore from "./SelectedFolderStore";
+import initFilesStore from "./InitFilesStore";
+
 import { removeFiles, getProgress } from "@appserver/common/api/files";
+import { FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
 
-const { confirmDelete } = store.auth.settingsStore;
 const { secondaryProgressDataStore } = uploadDataStore;
 
 class FilesActionStore {
@@ -18,10 +18,51 @@ class FilesActionStore {
   }
 
   deleteAction = (translations) => {
-    if (confirmDelete) {
-      dialogsStore.setDeleteDialogVisible(false);
-    } else {
-      return this.onDelete(translations);
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+    const { selection } = filesStore;
+
+    const deleteAfter = true; //Delete after finished TODO: get from settings
+    const immediately = isRecycleBinFolder || isPrivacyFolder ? true : false; //Don't move to the Recycle Bin
+
+    const folderIds = [];
+    const fileIds = [];
+
+    let i = 0;
+    while (selection.length !== i) {
+      if (selection[i].fileExst) {
+        fileIds.push(selection[i].id);
+      } else {
+        folderIds.push(selection[i].id);
+      }
+      i++;
+    }
+
+    if (folderIds.length || fileIds.length) {
+      setSecondaryProgressBarData({
+        icon: "trash",
+        visible: true,
+        label: translations.deleteOperation,
+        percent: 0,
+        alert: false,
+      });
+
+      removeFiles(folderIds, fileIds, deleteAfter, immediately)
+        .then((res) => {
+          const id = res[0] && res[0].id ? res[0].id : null;
+          this.loopDeleteOperation(id, translations);
+        })
+        .catch((err) => {
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          //toastr.error(err);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        });
     }
   };
 
@@ -80,55 +121,6 @@ class FilesActionStore {
       });
   };
 
-  onDelete = (translations) => {
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
-    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
-    const { selection } = filesStore;
-
-    const deleteAfter = true; //Delete after finished TODO: get from settings
-    const immediately = isRecycleBinFolder || isPrivacyFolder ? true : false; //Don't move to the Recycle Bin
-
-    const folderIds = [];
-    const fileIds = [];
-
-    let i = 0;
-    while (selection.length !== i) {
-      if (selection[i].fileExst) {
-        fileIds.push(selection[i].id);
-      } else {
-        folderIds.push(selection[i].id);
-      }
-      i++;
-    }
-
-    if (folderIds.length || fileIds.length) {
-      setSecondaryProgressBarData({
-        icon: "trash",
-        visible: true,
-        label: translations.deleteOperation,
-        percent: 0,
-        alert: false,
-      });
-
-      removeFiles(folderIds, fileIds, deleteAfter, immediately)
-        .then((res) => {
-          const id = res[0] && res[0].id ? res[0].id : null;
-          this.loopDeleteOperation(id, translations);
-        })
-        .catch((err) => {
-          setSecondaryProgressBarData({
-            visible: true,
-            alert: true,
-          });
-          //toastr.error(err);
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-        });
-    }
-  };
-
   getDownloadProgress = (data, label) => {
     const url = data.url;
 
@@ -162,6 +154,47 @@ class FilesActionStore {
         //toastr.error(err);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
+  };
+
+  editCompleteAction = (id, isFolder /* selectedItem */) => {
+    const { fetchFiles, filter, folders, files, fileActionStore } = filesStore;
+    const { type, setAction } = fileActionStore;
+    const { treeFolders, setTreeFolders } = treeFoldersStore;
+    const { setIsLoading } = initFilesStore;
+
+    const items = [...folders, ...files];
+    const item = items.find((o) => o.id === id && !o.fileExst); //TODO: maybe need files find and folders find, not at one function?
+    if (type === FileAction.Create || type === FileAction.Rename) {
+      setIsLoading(true);
+      fetchFiles(selectedFolderStore.id, filter)
+        .then((data) => {
+          const newItem = (item && item.id) === -1 ? null : item; //TODO: not add new folders?
+          if (isFolder) {
+            const path = data.selectedFolder.pathParts;
+            const newTreeFolders = treeFolders;
+            const folders = data.selectedFolder.folders;
+            loopTreeFolders(path, newTreeFolders, folders, null, newItem);
+            setTreeFolders(newTreeFolders);
+          }
+        })
+        .finally(() => {
+          setAction({ type: null, id: null, extension: null });
+          setIsLoading(false);
+
+          //uncomment if need to select item
+          //type === FileAction.Rename && this.onSelectItem(selectedItem);
+
+          // onSelectItem = (item) => {
+          //   const { selected, setSelected, setSelection } = this.props;
+          //   selected === "close" && setSelected("none");
+          //   setSelection([item]);
+          // };
+        });
+    }
+
+    //this.setState({ editingId: null }, () => {
+    //  setAction({type: null});
+    //});
   };
 }
 
