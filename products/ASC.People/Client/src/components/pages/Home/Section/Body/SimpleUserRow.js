@@ -2,12 +2,13 @@ import React from "react";
 import Row from "@appserver/components/row";
 import Avatar from "@appserver/components/avatar";
 import UserContent from "./userContent";
-import history from "@appserver/common/history";
 import { inject, observer } from "mobx-react";
 import { Trans, useTranslation } from "react-i18next";
 import toastr from "@appserver/common/components/Toast/toastr";
 import { EmployeeStatus } from "@appserver/common/constants";
 import { resendUserInvites } from "@appserver/common/api/people"; //TODO: Move to store action
+import { withRouter } from "react-router";
+// import { getUserContextOptions } from "./ContextMenu";
 
 const SimpleUserRow = ({
   person,
@@ -26,6 +27,8 @@ const SimpleUserRow = ({
   setDialogData,
   closeDialogs,
   updateUserStatus,
+  contextMenu,
+  history,
 }) => {
   const { t } = useTranslation("Home");
   const isRefetchPeople = true;
@@ -252,6 +255,7 @@ const SimpleUserRow = ({
     (isAdmin && showContextMenu) || (showContextMenu && id === currentUserId)
       ? {
           contextOptions: getUserContextOptions(options, id),
+          // contextOptions: contextMenu,
         }
       : {};
 
@@ -280,7 +284,10 @@ const SimpleUserRow = ({
 };
 
 export default inject(({ auth, peopleStore }, { person }) => {
+  // const { t } = useTranslation("Home");
+
   return {
+    // contextMenu: getUserContextOptions(person, t),
     homepage: auth.settingsStore.homepage,
     isAdmin: auth.isAdmin,
     currentUserId: auth.userStore.user.id,
@@ -308,4 +315,4 @@ export default inject(({ auth, peopleStore }, { person }) => {
 
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
   };
-})(observer(SimpleUserRow));
+})(withRouter(observer(SimpleUserRow)));
