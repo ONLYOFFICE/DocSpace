@@ -115,8 +115,8 @@ class FilesRowContent extends React.PureComponent {
     super(props);
     let titleWithoutExt = getTitleWithoutExst(props.item);
 
-    if (props.fileAction.id === -1) {
-      titleWithoutExt = this.getDefaultName(props.fileAction.extension);
+    if (props.fileActionId === -1) {
+      titleWithoutExt = this.getDefaultName(props.fileActionExt);
     }
 
     this.state = {
@@ -129,70 +129,18 @@ class FilesRowContent extends React.PureComponent {
     };
   }
 
-  onSelectItem = (item) => {
-    const { selected, setSelected, setSelection } = this.props;
-    selected === "close" && setSelected("none");
-    setSelection([item]);
-  };
-
-  //TODO: move to actions, used in files row content and tile
-  onEditComplete = (id, isFolder) => {
-    const {
-      selectedFolderId,
-      fileAction,
-      filter,
-      folders,
-      files,
-      treeFolders,
-      setTreeFolders,
-      setIsLoading,
-      fetchFiles,
-      setAction,
-    } = this.props;
-    const selectedItem = this.props.item;
-    const items = [...folders, ...files];
-    const item = items.find((o) => o.id === id && !o.fileExst); //TODO maybe need files find and folders find, not at one function?
-    if (
-      fileAction.type === FileAction.Create ||
-      fileAction.type === FileAction.Rename
-    ) {
-      setIsLoading(true);
-      fetchFiles(selectedFolderId, filter)
-        .then((data) => {
-          const newItem = (item && item.id) === -1 ? null : item; //TODO not add new folders?
-          if (isFolder) {
-            const path = data.selectedFolder.pathParts;
-            const newTreeFolders = treeFolders;
-            const folders = data.selectedFolder.folders;
-            loopTreeFolders(path, newTreeFolders, folders, null, newItem);
-            setTreeFolders(newTreeFolders);
-          }
-        })
-        .finally(() => {
-          setAction({ type: null, id: null, extension: null });
-          setIsLoading(false);
-
-          fileAction.type === FileAction.Rename &&
-            this.onSelectItem(selectedItem);
-        });
-    }
-
-    //this.setState({ editingId: null }, () => {
-    //  setAction({type: null});
-    //});
-  };
-
   completeAction = (id) => {
-    this.onEditComplete(id, !this.props.item.fileExst);
+    const { item } = this.props;
+    this.props.editCompleteAction(id, !item.fileExst, /* item */);
   };
 
-  updateItem = (e) => {
+  updateItem = () => {
     const {
-      fileAction,
       updateFile,
       renameFolder,
       item,
       setIsLoading,
+      fileActionId,
     } = this.props;
 
     const { itemTitle } = this.state;
@@ -203,15 +151,15 @@ class FilesRowContent extends React.PureComponent {
       this.setState({
         itemTitle: originalTitle,
       });
-      return this.completeAction(fileAction.id);
+      return this.completeAction(fileActionId);
     }
 
     item.fileExst
-      ? updateFile(fileAction.id, itemTitle)
-          .then(() => this.completeAction(fileAction.id))
+      ? updateFile(fileActionId, itemTitle)
+          .then(() => this.completeAction(fileActionId))
           .finally(() => setIsLoading(false))
-      : renameFolder(fileAction.id, itemTitle)
-          .then(() => this.completeAction(fileAction.id))
+      : renameFolder(fileActionId, itemTitle)
+          .then(() => this.completeAction(fileActionId))
           .finally(() => setIsLoading(false));
   };
 
@@ -292,7 +240,7 @@ class FilesRowContent extends React.PureComponent {
   };
 
   // componentDidUpdate(prevProps) {
-  //   const { fileAction, item, newRowItems, setNewRowItems } = this.props;
+  //   const { item, newRowItems, setNewRowItems } = this.props;
   //   const itemId = item.id.toString();
 
   //   if (newRowItems.length && newRowItems.includes(itemId)) {
@@ -303,8 +251,8 @@ class FilesRowContent extends React.PureComponent {
   //   }
 
   //   if (fileAction) {
-  //     if (fileAction.id !== prevProps.fileAction.id) {
-  //       this.setState({ editingId: fileAction.id });
+  //     if (fileActionId !== prevProps.fileActionId) {
+  //       this.setState({ editingId: fileActionId });
   //     }
   //   }
   // }
@@ -330,7 +278,7 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onClickUpdateItem = (e) => {
-    this.props.fileAction.type === FileAction.Create
+    this.props.fileActionType === FileAction.Create
       ? this.createItem(e)
       : this.updateItem(e);
   };
@@ -546,14 +494,14 @@ class FilesRowContent extends React.PureComponent {
     const {
       t,
       item,
-      fileAction,
       isTrashFolder,
-      folders,
       isLoading,
       isMobile,
       canWebEdit,
       /* canConvert,*/
       sectionWidth,
+      fileActionId,
+      fileActionExt,
     } = this.props;
     const {
       itemTitle,
@@ -585,7 +533,7 @@ class FilesRowContent extends React.PureComponent {
     const accessToEdit =
       item.access === ShareAccessRights.FullAccess ||
       item.access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
-    const isEdit = id === fileAction.id && fileExst === fileAction.extension;
+    const isEdit = id === fileActionId && fileExst === fileActionExt;
 
     const linkStyles =
       isTrashFolder || window.innerWidth <= 1024
@@ -618,7 +566,6 @@ class FilesRowContent extends React.PureComponent {
             visible={showNewFilesPanel}
             onClose={this.onShowNewFilesPanel}
             folderId={newFolderId}
-            folders={folders}
           />
         )}
         <SimpleFilesRowContent
@@ -818,14 +765,11 @@ export default inject(
       uploadDataStore,
       treeFoldersStore,
       selectedFolderStore,
+      filesActionsStore,
     },
     { item }
   ) => {
-    const {
-      replaceFileStream,
-      getEncryptionAccess,
-      setEncryptionAccess,
-    } = auth;
+    const { replaceFileStream, setEncryptionAccess } = auth;
     const { homepage, culture, isDesktopClient } = auth.settingsStore;
     const { setIsLoading, isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
@@ -836,8 +780,6 @@ export default inject(
     } = formatsStore;
 
     const {
-      files,
-      folders,
       fetchFiles,
       filter,
       setNewRowItems,
@@ -847,9 +789,6 @@ export default inject(
       renameFolder,
       createFolder,
       openDocEditor,
-      selected,
-      setSelected,
-      setSelection
     } = filesStore;
 
     const {
@@ -861,9 +800,12 @@ export default inject(
       addExpandedKeys,
     } = treeFoldersStore;
 
-    const { type, extension, id, setAction } = filesStore.fileActionStore;
+    const {
+      type: fileActionType,
+      extension: fileActionExt,
+      id: fileActionId,
+    } = filesStore.fileActionStore;
 
-    const fileAction = { type, extension, id };
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -880,9 +822,9 @@ export default inject(
       homepage,
       viewer: auth.userStore.user,
       culture,
-      fileAction,
-      files,
-      folders,
+      fileActionId,
+      fileActionType,
+      fileActionExt,
       selectedFolderId: selectedFolderStore.id,
       selectedFolderPathParts: selectedFolderStore.pathParts,
       newItems: selectedFolderStore.new,
@@ -899,7 +841,6 @@ export default inject(
       isSound,
       newRowItems,
       expandedKeys,
-      selected,
 
       setIsLoading,
       fetchFiles,
@@ -912,13 +853,10 @@ export default inject(
       updateFile,
       renameFolder,
       replaceFileStream,
-      getEncryptionAccess,
       setEncryptionAccess,
       addExpandedKeys,
       openDocEditor,
-      setAction,
-      setSelected,
-      setSelection
+      editCompleteAction: filesActionsStore.editCompleteAction,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesRowContent))));
