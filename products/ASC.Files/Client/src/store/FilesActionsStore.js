@@ -4,6 +4,8 @@ import treeFoldersStore from "./TreeFoldersStore";
 import filesStore from "./FilesStore";
 import selectedFolderStore from "./SelectedFolderStore";
 import initFilesStore from "./InitFilesStore";
+import settingsStore from "./SettingsStore";
+import dialogsStore from "./DialogsStore";
 
 import {
   removeFiles,
@@ -12,6 +14,7 @@ import {
   deleteFile,
   deleteFolder,
   moveToFolder,
+  finalizeVersion,
 } from "@appserver/common/api/files";
 import { FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
@@ -19,7 +22,16 @@ import { loopTreeFolders } from "../helpers/files-helpers";
 
 //import toastr from "@appserver/components/toast";
 
-const { fetchFiles } = filesStore;
+const {
+  fetchFiles,
+  markItemAsFavorite,
+  removeItemFromFavorite,
+  fetchFavoritesFolder,
+  getFileInfo,
+  setSelected,
+  selectFile,
+  deselectFile,
+} = filesStore;
 const { setTreeFolders } = treeFoldersStore;
 const { setIsLoading } = initFilesStore;
 const { secondaryProgressDataStore, loopFilesOperations } = uploadDataStore;
@@ -27,6 +39,7 @@ const {
   setSecondaryProgressBarData,
   clearSecondaryProgressData,
 } = secondaryProgressDataStore;
+const { setConnectDialogVisible, setConnectItem } = dialogsStore;
 
 class FilesActionStore {
   constructor() {
@@ -354,6 +367,109 @@ class FilesActionStore {
           );
       }
     });
+  };
+
+  lockFileAction = (id, locked) => {
+    setIsLoading(true);
+    lockFile(id, locked).then((res) => {
+      /*const newFiles = files;
+        const indexOfFile = newFiles.findIndex(x => x.id === res.id);
+        newFiles[indexOfFile] = res;*/
+      fetchFiles(selectedFolderStore.id, filter)
+        .catch((err) => toastr.error(err))
+        .finally(() => setIsLoading(false));
+    });
+  };
+
+  finalizeVersionAction = (id) => {
+    setIsLoading(true);
+
+    finalizeVersion(id, 0, false)
+      .then(() => {
+        return fetchFiles(selectedFolderStore.id, filter).catch((err) =>
+          toastr.error(err)
+        );
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  duplicateAction = (item, label) => {
+    const folderIds = [];
+    const fileIds = [];
+    item.fileExst ? fileIds.push(item.id) : folderIds.push(item.id);
+    const conflictResolveType = 2; //Skip = 0, Overwrite = 1, Duplicate = 2 //TODO: get from settings
+    const deleteAfter = false; //TODO: get from settings
+
+    setSecondaryProgressBarData({
+      icon: "duplicate",
+      visible: true,
+      percent: 0,
+      label,
+      alert: false,
+    });
+
+    this.copyToAction(
+      selectedFolderId,
+      folderIds,
+      fileIds,
+      conflictResolveType,
+      deleteAfter
+    );
+  };
+
+  setFavoriteAction = (action, id) => {
+    //let data = selection.map(item => item.id)
+    switch (action) {
+      case "mark":
+        return markItemAsFavorite([id]).then(() => getFileInfo(id));
+      //.then(() => toastr.success(t("MarkedAsFavorite")))
+      //.catch((e) => toastr.error(e));
+      case "remove":
+        return (
+          removeItemFromFavorite([id])
+            .then(() => {
+              return treeFoldersStore.isFavoritesFolder
+                ? fetchFavoritesFolder(selectedFolderId)
+                : getFileInfo(id);
+            })
+            //.then(() => toastr.success(t("RemovedFromFavorites")))
+            .then(() => setSelected("close"))
+        );
+      //.catch((e) => toastr.error(e));
+      default:
+        return;
+    }
+  };
+
+  selectRowAction = (checked, file) => {
+    filesStore.selected === "close" && setSelected("none");
+    if (checked) {
+      selectFile(file);
+    } else {
+      deselectFile(file);
+    }
+  };
+
+  openLocationAction = (locationId, isFolder) => {
+    const locationFilter = isFolder ? filesStore.filter : null;
+
+    return fetchFiles(locationId, locationFilter).then(() =>
+      //isFolder ? null : this.selectRowAction(!checked, item)
+      isFolder ? null : this.selectRowAction(false, item)
+    );
+  };
+
+  setThirdpartyInfo = () => {
+    const { providers, capabilities } = settingsStore.thirdPartyStore;
+    const provider = providers.find((x) => x.provider_key === providerKey);
+    const capabilityItem = capabilities.find((x) => x[0] === providerKey);
+    const capability = {
+      title: capabilityItem ? capabilityItem[0] : provider.customer_title,
+      link: capabilityItem ? capabilityItem[1] : " ",
+    };
+
+    setConnectDialogVisible(true);
+    setConnectItem({ ...provider, ...capability });
   };
 }
 
