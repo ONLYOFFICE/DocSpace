@@ -15,6 +15,7 @@ import {
   deleteFolder,
   moveToFolder,
   finalizeVersion,
+  lockFile,
 } from "@appserver/common/api/files";
 import { FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
@@ -376,7 +377,7 @@ class FilesActionStore {
         const indexOfFile = newFiles.findIndex(x => x.id === res.id);
         newFiles[indexOfFile] = res;*/
       fetchFiles(selectedFolderStore.id, filesStore.filter)
-        .catch((err) => toastr.error(err))
+        //.catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     });
   };
@@ -386,9 +387,10 @@ class FilesActionStore {
 
     finalizeVersion(id, 0, false)
       .then(() => {
-        return fetchFiles(selectedFolderStore.id, filesStore.filter).catch((err) =>
-          toastr.error(err)
-        );
+        return fetchFiles(
+          selectedFolderStore.id,
+          filesStore.filter
+        )//.catch((err) => toastr.error(err));
       })
       .finally(() => setIsLoading(false));
   };
