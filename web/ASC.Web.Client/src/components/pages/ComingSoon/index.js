@@ -17,6 +17,8 @@ import { isMobile, isIOS } from "react-device-detect";
 
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject } from "mobx-react";
+import i18n from "../../../i18n";
+import { I18nextProvider } from "react-i18next";
 
 const commonStyles = `
   .link-box {
@@ -228,8 +230,14 @@ ComingSoon.propTypes = {
   isLoaded: PropTypes.bool,
 };
 
-export default inject(({ auth }) => ({
+const ComingSoonWrapper = inject(({ auth }) => ({
   modules: auth.moduleStore.modules,
   isLoaded: auth.isLoaded,
   setCurrentProductId: auth.settingsStore.setCurrentProductId,
 }))(withRouter(ComingSoon));
+
+export default (props) => (
+  <I18nextProvider i18n={i18n}>
+    <ComingSoonWrapper {...props} />
+  </I18nextProvider>
+);

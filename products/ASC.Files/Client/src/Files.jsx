@@ -22,7 +22,8 @@ import treeFoldersStore from "./store/TreeFoldersStore";
 import selectedFolderStore from "./store/SelectedFolderStore";
 import filesActionsStore from "./store/FilesActionsStore";
 import "./custom.scss";
-import "./i18n";
+import i18n from "./i18n";
+import { I18nextProvider } from "react-i18next";
 //import { regDesktop } from "@appserver/common/src/desktop";
 
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -135,6 +136,8 @@ export default () => (
     selectedFolderStore={selectedFolderStore}
     filesActionsStore={filesActionsStore}
   >
-    <Files />
+    <I18nextProvider i18n={i18n}>
+      <Files />
+    </I18nextProvider>
   </FilesProvider>
 );

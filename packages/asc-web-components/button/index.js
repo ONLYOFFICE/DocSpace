@@ -10,7 +10,7 @@ const Icon = ({ size, primary, icon, isHovered }) => (
   <div className="btnIcon">
     {icon &&
       React.cloneElement(icon, {
-        isfill: true,
+        //isfill: true,
         size: size === "large" ? "large" : size === "big" ? "medium" : "small",
         color: icon.props.color
           ? isHovered
