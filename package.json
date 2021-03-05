@@ -6,15 +6,16 @@
     "packages/asc-web-common",
     "web/ASC.Web.Login",
     "web/ASC.Web.Client",
+    "web/ASC.Web.Editor",
     "products/ASC.People/Client",
     "products/ASC.Files/Client"
   ],
   "scripts": {
     "wipe": "rimraf node_modules yarn.lock web/**/node_modules products/**/node_modules",
     "build": "yarn workspaces run build",
-	"start": "concurrently \"wsrun --parallel start\"",
+    "start": "concurrently \"wsrun --parallel start\"",
     "test": "yarn workspace @appserver/components test",
-	"sb-components": "yarn workspace @appserver/components storybook"
+    "sb-components": "yarn workspace @appserver/components storybook"
   },
   "devDependencies": {
     "lerna": "^3.22.1",

@@ -27,6 +27,10 @@
     {
       "name": "🚀 @appserver/login",
       "path": "web\\ASC.Web.Login"
+    },
+    {
+      "name": "🚀 @appserver/editor",
+      "path": "web\\ASC.Web.Editor"
     }
   ],
   "settings": {
