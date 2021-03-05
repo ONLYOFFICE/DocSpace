@@ -375,7 +375,7 @@ class FilesActionStore {
       /*const newFiles = files;
         const indexOfFile = newFiles.findIndex(x => x.id === res.id);
         newFiles[indexOfFile] = res;*/
-      fetchFiles(selectedFolderStore.id, filter)
+      fetchFiles(selectedFolderStore.id, filesStore.filter)
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     });
@@ -386,7 +386,7 @@ class FilesActionStore {
 
     finalizeVersion(id, 0, false)
       .then(() => {
-        return fetchFiles(selectedFolderStore.id, filter).catch((err) =>
+        return fetchFiles(selectedFolderStore.id, filesStore.filter).catch((err) =>
           toastr.error(err)
         );
       })
