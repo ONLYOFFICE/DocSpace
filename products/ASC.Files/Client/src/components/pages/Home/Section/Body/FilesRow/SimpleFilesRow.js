@@ -165,7 +165,7 @@ const SimpleFilesRow = (props) => {
           color={color}
           hoverColor="#657077"
           size={18}
-          iconName="CatalogSharedIcon"
+          iconName="images/catalog.shared.react.svg"
         />
         {t("Share")}
       </Text>

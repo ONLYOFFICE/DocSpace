@@ -30,7 +30,7 @@ class SettingsStore {
   enableAdmMess = false;
   urlLicense = "https://gnu.org/licenses/gpl-3.0.html";
   urlSupport = "https://helpdesk.onlyoffice.com/";
-  logoUrl = "images/nav.logo.opened.react.svg";
+  logoUrl = "/static/images/nav.logo.opened.react.svg";
   customNames = {
     id: "Common",
     userCaption: "User",
