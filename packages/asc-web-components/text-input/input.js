@@ -13,12 +13,19 @@ const Input = ({
   keepCharPositions,
   fontWeight,
   isBold,
+  forwardedRef,
   ...props
-}) =>
-  props.mask != null ? (
+}) => {
+  const rest = {};
+
+  if (isAutoFocussed) rest.autoFocus = true;
+
+  if (forwardedRef) rest.ref = forwardedRef;
+
+  return props.mask != null ? (
     <MaskedInput keepCharPositions {...props} />
   ) : (
-    <input {...props} />
+    <input {...props} {...rest} />
   );
-
+};
 export default Input;

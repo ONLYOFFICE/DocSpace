@@ -7,20 +7,20 @@ import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import TextInput from "@appserver/components/text-input";
 import Link from "@appserver/components/link";
-import toastr from "@appserver/components/toast/toastr";
 import Checkbox from "@appserver/components/checkbox";
-//import HelpButton from "@appserver/components/help-button";
+import Toast from "@appserver/components/toast";
+import HelpButton from "@appserver/components/help-button";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
 import PageLayout from "@appserver/common/components/PageLayout";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
 import { checkPwd } from "@appserver/common/desktop";
-import { sendInstructionsToChangePassword } from "@appserver/common/api/people";
 import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
 import { I18nextProvider, useTranslation } from "react-i18next";
+import throttle from "lodash/throttle";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -28,6 +28,11 @@ const LoginContainer = styled.div`
   align-items: center;
   margin: 120px auto 0 auto;
   max-width: 960px;
+
+  .login-tooltip {
+    padding-left: 4px;
+    display: inline-block;
+  }
 
   @media (max-width: 768px) {
     padding: 0 16px;
@@ -115,7 +120,16 @@ const LoginFormWrapper = styled.div`
   height: calc(100vh-56px);
 `;
 
+const settings = {
+  minLength: 6,
+  upperCase: false,
+  digits: false,
+  specSymbols: false,
+};
+
 const Form = (props) => {
+  const inputRef = React.useRef(null);
+
   const [identifierValid, setIdentifierValid] = useState(true);
   const [identifier, setIdentifier] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -124,11 +138,12 @@ const Form = (props) => {
   const [passwordValid, setPasswordValid] = useState(true);
   const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState(false);
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+
   const [errorText, setErrorText] = useState("");
   const [socialButtons, setSocialButtons] = useState([]);
+
+  const { t } = useTranslation("Login");
 
   const {
     login,
@@ -139,60 +154,71 @@ const Form = (props) => {
     organizationName,
     greetingTitle,
   } = props;
-  const { error, confirmedEmail } = match.params;
-  const { t } = useTranslation("Login");
 
-  const onChangeLogin = (event) => {
-    setIdentifier(event.target.value);
-    !identifierValid && setIdentifierValid(true);
-    errorText && setErrorText("");
+  const { error, confirmedEmail } = match.params;
+
+  const onKeyDown = (e) => {
+    console.log("onKeyDown", e.key);
+    if (e.key === "Enter") {
+      onClearErrors(e);
+      !isDisabled && onSubmit(e);
+      e.preventDefault();
+    }
   };
 
-  const onChangePassword = (event) => {
-    setPassword(event.target.value);
+  const onClearErrors = (e) => {
+    console.log("onClearErrors", e);
+    !identifierValid && setIdentifierValid(true);
     !passwordValid && setPasswordValid(true);
     errorText && setErrorText("");
   };
 
-  const onChangeEmail = (event) => {
-    setEmail(event.target.value);
-    setEmailError(false);
+  //const throttledKeyPress = throttle(onKeyPress, 500);
+
+  useEffect(() => {
+    document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
+
+    error && setErrorText(error);
+    confirmedEmail && setIdentifier(confirmedEmail);
+
+    focusInput();
+
+    //window.addEventListener("keyup", throttledKeyPress, false);
+
+    /*return () => {
+      window.removeEventListener("keyup", throttledKeyPress, false);
+    };*/
+  }, []);
+
+  const focusInput = () => {
+    if (inputRef) {
+      inputRef.current.focus();
+    }
+  };
+
+  const onChangeLogin = (e) => {
+    console.log("onChangeLogin", e.target.value);
+    setIdentifier(e.target.value);
+    onClearErrors(e);
+  };
+
+  const onChangePassword = (e) => {
+    console.log("onChangePassword", e.target.value);
+    setPassword(e.target.value);
+    onClearErrors(e);
   };
 
   const onChangeCheckbox = () => setIsChecked(!isChecked);
 
   const onClick = () => {
-    setOpenDialog(true);
+    setIsDialogVisible(true);
     setIsDisabled(true);
-    setEmail(identifier);
-  };
-
-  const onKeyPress = (event) => {
-    if (event.key === "Enter") {
-      !isDisabled ? onSubmit() : onSendPasswordInstructions();
-    }
-  };
-
-  const onSendPasswordInstructions = () => {
-    if (!email.trim()) {
-      setEmailError(true);
-    } else {
-      setIsLoading(true);
-      sendInstructionsToChangePassword(email)
-        .then(
-          (res) => toastr.success(res),
-          (message) => toastr.error(message)
-        )
-        .finally(onDialogClose());
-    }
   };
 
   const onDialogClose = () => {
-    setOpenDialog(false);
+    setIsDialogVisible(false);
     setIsDisabled(false);
     setIsLoading(false);
-    setEmail("");
-    setEmailError(false);
   };
 
   const onSubmit = () => {
@@ -203,14 +229,14 @@ const Form = (props) => {
 
     if (!userName) {
       hasError = true;
-      setIdentifierValid(!hasError);
+      setIdentifierValid(false);
     }
 
     const pass = password.trim();
 
     if (!pass) {
       hasError = true;
-      setPasswordValid(!hasError);
+      setPasswordValid(false);
     }
 
     if (hasError) return false;
@@ -227,166 +253,139 @@ const Form = (props) => {
         setIdentifierValid(!error);
         setPasswordValid(!error);
         setIsLoading(false);
+        focusInput();
       });
-  };
-
-  useEffect(() => {
-    document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
-
-    error && setErrorText(error);
-    confirmedEmail && setIdentifier(confirmedEmail);
-    window.addEventListener("keyup", onKeyPress);
-
-    return () => {
-      window.removeEventListener("keyup", onKeyPress);
-    };
-  }, []);
-
-  const settings = {
-    minLength: 6,
-    upperCase: false,
-    digits: false,
-    specSymbols: false,
   };
 
   //console.log("Login render");
 
   return (
-    <>
-      <LoginContainer>
-        <Text
-          fontSize="32px"
-          fontWeight={600}
-          textAlign="center"
-          className="greeting-title"
+    <LoginContainer>
+      <Text
+        fontSize="32px"
+        fontWeight={600}
+        textAlign="center"
+        className="greeting-title"
+      >
+        {greetingTitle}
+      </Text>
+
+      <form className="auth-form-container">
+        <FieldContainer
+          isVertical={true}
+          labelVisible={false}
+          hasError={!identifierValid}
+          errorMessage={errorText ? errorText : t("RequiredFieldMessage")} //TODO: Add wrong login server error
         >
-          {greetingTitle}
-        </Text>
-
-        <form className="auth-form-container">
-          <FieldContainer
-            isVertical={true}
-            labelVisible={false}
+          <TextInput
+            id="login"
+            name="login"
+            type="email"
             hasError={!identifierValid}
-            errorMessage={errorText ? errorText : t("RequiredFieldMessage")} //TODO: Add wrong login server error
-          >
-            <TextInput
-              id="login"
-              name="login"
-              hasError={!identifierValid}
-              value={identifier}
-              placeholder={t("RegistrationEmailWatermark")}
-              size="large"
-              scale={true}
-              isAutoFocussed={true}
-              tabIndex={1}
-              isDisabled={isLoading}
-              autoComplete="username"
-              onChange={onChangeLogin}
-              onKeyDown={onKeyPress}
-            />
-          </FieldContainer>
-          <FieldContainer
-            isVertical={true}
-            labelVisible={false}
-            hasError={!passwordValid}
-            errorMessage={errorText ? "" : t("RequiredFieldMessage")} //TODO: Add wrong password server error
-          >
-            <PasswordInput
-              simpleView={true}
-              passwordSettings={settings}
-              id="password"
-              inputName="password"
-              placeholder={t("Password")}
-              type="password"
-              hasError={!passwordValid}
-              inputValue={password}
-              size="large"
-              scale={true}
-              tabIndex={1}
-              isDisabled={isLoading}
-              autoComplete="current-password"
-              onChange={onChangePassword}
-              onKeyDown={onKeyPress}
-            />
-          </FieldContainer>
-          <div className="login-forgot-wrapper">
-            <div className="login-checkbox-wrapper">
-              <Checkbox
-                className="login-checkbox"
-                isChecked={isChecked}
-                onChange={onChangeCheckbox}
-                label={<Text fontSize="13px">{t("Remember")}</Text>}
-              />
-              {/*<HelpButton
-                  className="login-tooltip"
-                  helpButtonHeaderContent={t("CookieSettingsTitle")}
-                  tooltipContent={
-                    <Text fontSize="12px">{t("RememberHelper")}</Text>
-                  }
-                />*/}
-              <Link
-                fontSize="13px"
-                color="#316DAA"
-                className="login-link"
-                type="page"
-                isHovered={false}
-                onClick={onClick}
-              >
-                {t("ForgotPassword")}
-              </Link>
-            </div>
-          </div>
-
-          {openDialog && (
-            <ForgotPasswordModalDialog
-              openDialog={openDialog}
-              isLoading={isLoading}
-              email={email}
-              emailError={emailError}
-              onChangeEmail={onChangeEmail}
-              onSendPasswordInstructions={onSendPasswordInstructions}
-              onDialogClose={onDialogClose}
-              t={t}
-            />
-          )}
-
-          <Button
-            id="button"
-            className="login-button"
-            primary
+            value={identifier}
+            placeholder={t("RegistrationEmailWatermark")}
             size="large"
             scale={true}
-            label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
+            isAutoFocussed={true}
             tabIndex={1}
             isDisabled={isLoading}
-            isLoading={isLoading}
-            onClick={onSubmit}
+            autoComplete="username"
+            onChange={onChangeLogin}
+            onKeyDown={onKeyDown}
+            forwardedRef={inputRef}
           />
+        </FieldContainer>
+        <FieldContainer
+          isVertical={true}
+          labelVisible={false}
+          hasError={!passwordValid}
+          errorMessage={errorText ? "" : t("RequiredFieldMessage")} //TODO: Add wrong password server error
+        >
+          <PasswordInput
+            simpleView={true}
+            passwordSettings={settings}
+            id="password"
+            inputName="password"
+            placeholder={t("Password")}
+            type="password"
+            hasError={!passwordValid}
+            inputValue={password}
+            size="large"
+            scale={true}
+            tabIndex={1}
+            isDisabled={isLoading}
+            autoComplete="current-password"
+            onChange={onChangePassword}
+            onKeyDown={onKeyDown}
+          />
+        </FieldContainer>
+        <div className="login-forgot-wrapper">
+          <div className="login-checkbox-wrapper">
+            <Checkbox
+              className="login-checkbox"
+              isChecked={isChecked}
+              onChange={onChangeCheckbox}
+              label={<Text fontSize="13px">{t("Remember")}</Text>}
+            />
+            <HelpButton
+              className="login-tooltip"
+              helpButtonHeaderContent={t("CookieSettingsTitle")}
+              tooltipContent={
+                <Text fontSize="12px">{t("RememberHelper")}</Text>
+              }
+            />
+            <Link
+              fontSize="13px"
+              color="#316DAA"
+              className="login-link"
+              type="page"
+              isHovered={false}
+              onClick={onClick}
+            >
+              {t("ForgotPassword")}
+            </Link>
+          </div>
+        </div>
 
-          {confirmedEmail && (
-            <Text isBold={true} fontSize="16px">
-              {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+        {isDialogVisible && (
+          <ForgotPasswordModalDialog
+            visible={isDialogVisible}
+            email={identifier}
+            onDialogClose={onDialogClose}
+          />
+        )}
+
+        <Button
+          id="submit"
+          className="login-button"
+          primary
+          size="large"
+          scale={true}
+          label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
+          tabIndex={1}
+          isDisabled={isLoading}
+          isLoading={isLoading}
+          onClick={onSubmit}
+        />
+
+        {confirmedEmail && (
+          <Text isBold={true} fontSize="16px">
+            {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+          </Text>
+        )}
+
+        {socialButtons.length ? (
+          <Box displayProp="flex" alignItems="center">
+            <div className="login-bottom-border"></div>
+            <Text className="login-bottom-text" color="#A3A9AE">
+              {t("Or")}
             </Text>
-          )}
-          {/* TODO: old error indication
-            
-            <Text fontSize="14px" color="#c30">
-              {errorText}
-            </Text> */}
-
-          {socialButtons.length ? (
-            <Box displayProp="flex" alignItems="center">
-              <div className="login-bottom-border"></div>
-              <Text className="login-bottom-text" color="#A3A9AE">
-                {t("Or")}
-              </Text>
-              <div className="login-bottom-border"></div>
-            </Box>
-          ) : null}
-        </form>
-      </LoginContainer>
-    </>
+            <div className="login-bottom-border"></div>
+          </Box>
+        ) : null}
+      </form>
+      <Toast />
+    </LoginContainer>
   );
 };
 
