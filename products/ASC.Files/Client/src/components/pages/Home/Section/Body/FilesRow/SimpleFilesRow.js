@@ -102,6 +102,7 @@ const SimpleFilesRow = (props) => {
     openLocationAction,
     selectRowAction,
     setThirdpartyInfo,
+    setMediaViewerData,
   } = props;
 
   const {
@@ -228,6 +229,11 @@ const SimpleFilesRow = (props) => {
   };
 
   const onChangeThirdPartyInfo = () => setThirdpartyInfo();
+
+  const onMediaFileClick = (fileId) => {
+    const itemId = typeof fileId !== "object" ? fileId : id;
+    setMediaViewerData({ visible: true, id: itemId });
+  };
 
   const onClickDelete = () => {
     if (isThirdPartyFolder) {
@@ -359,7 +365,7 @@ const SimpleFilesRow = (props) => {
             key: option,
             label: t("View"),
             icon: "EyeIcon",
-            //onClick: this.onMediaFileClick,
+            onClick: onMediaFileClick,
             disabled: false,
           };
         case "download":
@@ -507,6 +513,7 @@ export default inject(
       dialogsStore,
       versionHistoryStore,
       filesActionsStore,
+      mediaViewerDataStore,
     },
     { item }
   ) => {
@@ -558,6 +565,8 @@ export default inject(
       setThirdpartyInfo,
     } = filesActionsStore;
 
+    const { setMediaViewerData } = mediaViewerDataStore;
+
     return {
       dragging,
       actionType: type,
@@ -595,9 +604,10 @@ export default inject(
       openLocationAction,
       selectRowAction,
       setThirdpartyInfo,
+      setMediaViewerData,
     };
   }
-)(withTranslation()(observer(SimpleFilesRow)));
+)(withTranslation("Home")(observer(SimpleFilesRow)));
 
 // onDrop = (item, items, e) => {
 //   const { onDropZoneUpload, selectedFolderId } = this.props;
