@@ -2,11 +2,12 @@
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import PageLayout from "@appserver/common/components/PageLayout";
-import { useTranslation, Trans } from "react-i18next";
+import { I18nextProvider, useTranslation, Trans } from "react-i18next";
 import version from "../../../../package.json";
 import styled from "styled-components";
 import { isMobile } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
+import i18n from "./i18n";
 
 const BodyStyle = styled.div`
   margin-top: ${isMobile ? "80px" : "24px"};
@@ -191,11 +192,13 @@ const Body = () => {
 };
 
 const About = ({ language }) => (
-  <PageLayout>
-    <PageLayout.SectionBody>
-      <Body language={language} />
-    </PageLayout.SectionBody>
-  </PageLayout>
+  <I18nextProvider i18n={i18n}>
+    <PageLayout>
+      <PageLayout.SectionBody>
+        <Body language={language} />
+      </PageLayout.SectionBody>
+    </PageLayout>
+  </I18nextProvider>
 );
 
 export default About;
