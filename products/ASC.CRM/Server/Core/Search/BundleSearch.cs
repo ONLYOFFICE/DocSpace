@@ -26,10 +26,13 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.CRM.Core.EF;
 
 namespace ASC.Web.CRM.Core.Search
 {
+    [Scope]
     public class BundleSearch
     {
         public BundleSearch(FactoryIndexerContact factoryIndexerContact,

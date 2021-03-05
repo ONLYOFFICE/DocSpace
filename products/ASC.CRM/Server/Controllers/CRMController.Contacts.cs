@@ -32,6 +32,7 @@ using ASC.Common.Web;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Model;
 using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Models;
@@ -42,9 +43,11 @@ using ASC.Web.Studio.Core;
 using Autofac;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security;
 using System.Web;
@@ -686,17 +689,18 @@ namespace ASC.Api.CRM
         /// <returns>Person</returns>
         /// <exception cref="ArgumentException"></exception>
         [Create(@"contact/person")]
-        public PersonWrapper CreatePerson(
-            string firstName,
-            string lastName,
-            string jobTitle,
-            int companyId,
-            string about,
-            ShareType shareType,
-            IEnumerable<Guid> managerList,
-            IEnumerable<ItemKeyValuePair<int, string>> customFieldList,
-            IEnumerable<IFormFile> photo)
+        public PersonWrapper CreatePerson([FromForm] CreateOrUpdatePersonInDto intDto)
         {
+            string firstName = intDto.FirstName;
+            string lastName = intDto.LastName;
+            string jobTitle = intDto.JobTitle;
+            int companyId = intDto.CompanyId;
+            string about = intDto.About;
+            ShareType shareType = intDto.ShareType;
+            IEnumerable<Guid> managerList = intDto.ManagerList;
+            IEnumerable<ItemKeyValuePair<int, string>> customFieldList = intDto.CustomFieldList;
+            IEnumerable<IFormFile> photo = intDto.Photos;
+
             if (companyId > 0)
             {
                 var company = DaoFactory.GetContactDao().GetByID(companyId);
@@ -732,18 +736,18 @@ namespace ASC.Api.CRM
                 }
             }
 
-            var wrapper = (PersonWrapper)ContactWrapperHelper.GetContactWrapper(peopleInst);
+            var outDto = (PersonWrapper)ContactWrapperHelper.GetContactWrapper(peopleInst);
 
             var photoList = photo != null ? photo.ToList() : new List<IFormFile>();
 
             if (photoList.Any())
             {
-                wrapper.SmallFotoUrl = ChangeContactPhoto(peopleInst.ID, photoList);
+                outDto.SmallFotoUrl = ChangeContactPhoto(peopleInst.ID, photoList);
             }
 
             MessageService.Send(MessageAction.PersonCreated, MessageTarget.Create(peopleInst.ID), peopleInst.GetTitle());
 
-            return wrapper;
+            return outDto;
         }
 
         /// <summary>
@@ -862,18 +866,18 @@ namespace ASC.Api.CRM
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         [Update(@"contact/person/{personid:int}")]
-        public PersonWrapper UpdatePerson(
-            int personid,
-            string firstName,
-            string lastName,
-            string jobTitle,
-            int companyId,
-            string about,
-            ShareType shareType,
-            IEnumerable<Guid> managerList,
-            IEnumerable<ItemKeyValuePair<int, string>> customFieldList,
-            IEnumerable<IFormFile> photo)
+        public PersonWrapper UpdatePerson([FromQuery] int personid, [FromForm] CreateOrUpdatePersonInDto inDto)
         {
+            string firstName = inDto.FirstName;
+            string lastName = inDto.LastName;
+            string jobTitle = inDto.JobTitle;
+            int companyId = inDto.CompanyId;
+            string about = inDto.About;
+            ShareType shareType = inDto.ShareType;
+            IEnumerable<Guid> managerList = inDto.ManagerList;
+            IEnumerable<ItemKeyValuePair<int, string>> customFieldList = inDto.CustomFieldList;
+            IEnumerable<IFormFile> photo = inDto.Photos;
+
             if (personid <= 0 || string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName)) throw new ArgumentException();
 
             var peopleInst = new Person
@@ -907,18 +911,18 @@ namespace ASC.Api.CRM
                 }
             }
 
-            var wrapper = (PersonWrapper)ContactWrapperHelper.GetContactWrapper(peopleInst);
+            var outDto = (PersonWrapper)ContactWrapperHelper.GetContactWrapper(peopleInst);
 
             var photoList = photo != null ? photo.ToList() : new List<IFormFile>();
 
             if (photoList.Any())
             {
-                wrapper.SmallFotoUrl = ChangeContactPhoto(peopleInst.ID, photoList);
+                outDto.SmallFotoUrl = ChangeContactPhoto(peopleInst.ID, photoList);
             }
 
             MessageService.Send(MessageAction.PersonUpdated, MessageTarget.Create(peopleInst.ID), peopleInst.GetTitle());
 
-            return wrapper;
+            return outDto;
         }
 
         /// <summary>
@@ -937,14 +941,16 @@ namespace ASC.Api.CRM
         /// <exception cref="ArgumentException"></exception>
         [Create(@"contact/company")]
         public CompanyWrapper CreateCompany(
-            string companyName,
-            string about,
-            IEnumerable<int> personList,
-            ShareType shareType,
-            IEnumerable<Guid> managerList,
-            IEnumerable<ItemKeyValuePair<int, string>> customFieldList,
-            IEnumerable<IFormFile> photo)
+            [FromForm] CreateOrUpdateCompanyInDto inDto)
         {
+            var personList = inDto.PersonList;
+            string companyName = inDto.CompanyName;
+            string about = inDto.About;
+            ShareType shareType = inDto.ShareType;
+            IEnumerable<Guid> managerList = inDto.ManagerList;
+            IEnumerable<ItemKeyValuePair<int, string>> customFieldList = inDto.CustomFieldList;
+            IEnumerable<IFormFile> photo = inDto.Photos;
+
             var companyInst = new Company
             {
                 CompanyName = companyName,
@@ -1110,13 +1116,16 @@ namespace ASC.Api.CRM
         /// </returns>
         [Update(@"contact/company/{companyid:int}")]
         public CompanyWrapper UpdateCompany(
-            int companyid,
-            string companyName,
-            string about,
-            ShareType shareType,
-            IEnumerable<Guid> managerList,
-            IEnumerable<ItemKeyValuePair<int, string>> customFieldList)
+            [FromQuery]int companyid,
+            [FromForm] CreateOrUpdateCompanyInDto intDto)
         {
+            string companyName = intDto.CompanyName;
+            string about = intDto.About;
+            ShareType shareType = intDto.ShareType;
+            IEnumerable<Guid> managerList = intDto.ManagerList;
+            IEnumerable<ItemKeyValuePair<int, string>> customFieldList = intDto.CustomFieldList;
+            IEnumerable<IFormFile> photo = intDto.Photos;
+
             var companyInst = new Company
             {
                 ID = companyid,
@@ -1407,8 +1416,13 @@ namespace ASC.Api.CRM
         ///   Contact list
         /// </returns>
         [Update(@"contact/access")]
-        public IEnumerable<ContactWrapper> SetAccessToBatchContact(IEnumerable<int> contactid, bool isShared, IEnumerable<Guid> managerList)
+        public IEnumerable<ContactWrapper> SetAccessToBatchContact(
+            [FromBody]SetAccessToBatchContactInDto inDto)
         {
+            var contactid = inDto.ContactID;
+            var isShared = inDto.isShared;
+            var managerList = inDto.ManagerList;
+
             if (contactid == null) throw new ArgumentException();
 
             var result = new List<ContactWrapper>();
@@ -1442,16 +1456,17 @@ namespace ASC.Api.CRM
         /// </returns>
         [Update(@"contact/filter/access")]
         public IEnumerable<ContactWrapper> SetAccessToBatchContact(
-            IEnumerable<String> tags,
-            int? contactStage,
-            int? contactType,
-            ContactListViewType contactListView,
-            ApiDateTime fromDate,
-            ApiDateTime toDate,
-            bool isPrivate,
-            IEnumerable<Guid> managerList
-            )
+         [FromForm] SetAccessToBatchContactByFilterInDto inDto)
         {
+            IEnumerable<String> tags = inDto.Tags;
+            int? contactStage = inDto.ContactStage;
+            int? contactType = inDto.ContactType;
+            ContactListViewType contactListView = inDto.ContactListView;
+            ApiDateTime fromDate = inDto.FromDate;
+            ApiDateTime toDate = inDto.ToDate;
+            bool isPrivate = inDto.isPrivate;
+            IEnumerable<Guid> managerList = inDto.ManagerList;
+
             int contactStageInt = contactStage.HasValue ? contactStage.Value : -1;
             int contactTypeInt = contactType.HasValue ? contactType.Value : -1;
 

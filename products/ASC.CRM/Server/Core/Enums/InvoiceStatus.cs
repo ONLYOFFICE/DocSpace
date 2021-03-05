@@ -39,3 +39,4 @@ namespace ASC.CRM.Core.Enums
         Archived = 5
     }
 }
+
