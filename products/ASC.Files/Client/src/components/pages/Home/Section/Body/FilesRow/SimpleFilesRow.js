@@ -89,6 +89,7 @@ const SimpleFilesRow = (props) => {
     isTabletView,
     filter,
     selectedFolderId,
+    actionId,
 
     fetchFiles,
     setSharingPanelVisible,
@@ -109,7 +110,9 @@ const SimpleFilesRow = (props) => {
     removeItemFromFavorite,
     getFileInfo,
     fetchFavoritesFolder,
-    actionId,
+    copyToAction,
+    deleteFileAction,
+    deleteFolderAction,
   } = props;
 
   const {
@@ -290,14 +293,13 @@ const SimpleFilesRow = (props) => {
       alert: false,
     });
 
-    //TODO: need add to action
-    // this.copyTo(
-    //   selectedFolderId,
-    //   folderIds,
-    //   fileIds,
-    //   conflictResolveType,
-    //   deleteAfter
-    // );
+    copyToAction(
+      selectedFolderId,
+      folderIds,
+      fileIds,
+      conflictResolveType,
+      deleteAfter
+    );
   };
 
   const onClickRename = () => {
@@ -321,18 +323,22 @@ const SimpleFilesRow = (props) => {
   };
 
   const onClickDelete = () => {
-    const splitItem = id.split("-");
-
     if (isThirdPartyFolder) {
+      const splitItem = id.split("-");
       setRemoveItem({ id: splitItem[splitItem.length - 1], title });
       showDeleteThirdPartyDialog(true);
       return;
     }
 
-    const item = this.props.selection[0];
+    const translations = {
+      deleteOperation: t("DeleteOperation"),
+      folderRemoved: t("FolderRemoved"),
+      fileRemoved: t("FileRemoved"),
+    };
+
     item.fileExst
-      ? this.onDeleteFile(item.id, item.folderId)
-      : this.onDeleteFolder(item.id, item.parentId);
+      ? deleteFileAction(item.id, item.folderId, translations)
+      : deleteFolderAction(item.id, item.parentId, translations);
   };
 
   const getFilesContextOptions = (options, item) => {
@@ -595,6 +601,7 @@ export default inject(
       settingsStore,
       versionHistoryStore,
       uploadDataStore,
+      filesActionsStore,
     },
     { item }
   ) => {
@@ -696,6 +703,19 @@ export default inject(
       removeItemFromFavorite,
       getFileInfo,
       fetchFavoritesFolder,
+      copyToAction: filesActionsStore.copyToAction,
+      deleteFileAction: filesActionsStore.deleteFileAction,
+      deleteFolderAction: filesActionsStore.deleteFolderAction,
     };
   }
 )(withTranslation()(observer(SimpleFilesRow)));
+
+// onDrop = (item, items, e) => {
+//   const { onDropZoneUpload, selectedFolderId } = this.props;
+
+//   if (!item.fileExst) {
+//     onDropZoneUpload(items, item.id);
+//   } else {
+//     onDropZoneUpload(items, selectedFolderId);
+//   }
+// };
