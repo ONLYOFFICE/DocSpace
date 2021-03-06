@@ -100,7 +100,7 @@ namespace ASC.Resource.Manager
                                 }
                                 else
                                 {
-                                    if(!keys.Any(r=> r.EndsWith("*") && k.StartsWith(r.Replace("*", ""))) && !k.Contains("_"))
+                                    if (!keys.Any(r=> r.EndsWith("*") && k.StartsWith(r.Replace("*", ""))) && !k.Contains("_"))
                                     {
                                         k = keys.FirstOrDefault(r => r == k);
                                     }
@@ -111,6 +111,10 @@ namespace ASC.Resource.Manager
                                         if (word != null)
                                         {
                                             toAdd.Add(word);
+                                        }
+                                        else
+                                        {
+                                            toAdd.Add(new ResWord() { Title = k, ValueTo = val.GetValue((ITypeResolutionService)null)?.ToString() });
                                         }
                                     }
                                 }

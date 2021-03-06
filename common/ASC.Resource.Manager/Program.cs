@@ -51,11 +51,12 @@ namespace ASC.Resource.Manager
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
 
-                project = "CRM";
+                project = "Addons";
                 //module = "Common";
                 //filePath = "CRMCommonResource.resx";
                 exportPath = @"C:\Git\portals\";
-                key = "*";
+                key = "*,HtmlMaster*";
+                //key = "*";
 
                 if (format == "json")
                 {
@@ -159,7 +160,8 @@ namespace ASC.Resource.Manager
                 else
                 {
                     var resultFiles = new ConcurrentBag<Tuple<string, string>>();
-                    var filePath = Directory.GetFiles(exportPath, $"{fileName}", SearchOption.AllDirectories).FirstOrDefault();
+                    var filePath = Directory.GetFiles(exportPath, $"{fileName}", SearchOption.AllDirectories)
+                        .Where(r=> !Path.GetDirectoryName(r).EndsWith("ASC.Bar\\Resources")).FirstOrDefault();
                     var asmbl = "";
                     var assmlPath = "";
                     var nsp = "";
@@ -203,7 +205,7 @@ namespace ASC.Resource.Manager
                         }
 
                         key = CheckExist(fileName, $"{nsp}.{name},{matches[0].Groups[1].Value}", exportPath);
-                        var additional =  string.Join(",", keys.Where(r => r.Contains("_*")).ToArray());
+                        var additional =  string.Join(",", keys.Where(r => r.Length > 1 && r.Contains("*")).ToArray());
 
                         if (!string.IsNullOrEmpty(additional))
                         {
@@ -232,7 +234,13 @@ namespace ASC.Resource.Manager
 
                     AddResourceForCsproj(asmbl, filePath.Substring(assmlPath.Length + 1), resultFiles.OrderBy(r=> r.Item2));
                     var assmblName = Path.GetFileNameWithoutExtension(asmbl);
-                    nsp = assmblName + "." + Path.GetDirectoryName(filePath.Substring(assmlPath.Length + 1)).Replace('\\', '.');
+                    var f = Path.GetDirectoryName(filePath.Substring(assmlPath.Length + 1)).Replace('\\', '.');
+                    nsp = assmblName;
+
+                    if (!string.IsNullOrEmpty(f))
+                    {
+                        nsp += "." + Path.GetDirectoryName(filePath.Substring(assmlPath.Length + 1)).Replace('\\', '.');
+                    }
 
                     var startInfo = new ProcessStartInfo
                     {
@@ -285,7 +293,11 @@ namespace ASC.Resource.Manager
                 var matches = regex.Matches(data);
                 if (matches.Count > 0)
                 {
-                    return a + "," + string.Join(",", matches.Select(r => r.Groups[1].Value));
+                    var result = string.Join(",", matches.Select(r => r.Groups[1].Value));
+                    if (!string.IsNullOrEmpty(a))
+                        return a + "," + result;
+
+                    return result;
                 }
                 return a;
             };
@@ -300,8 +312,31 @@ namespace ASC.Resource.Manager
 
             _ = Parallel.ForEach(csFiles, localInit, func(@$"\W+{resName}\.(\w*)"), localFinally);
             _ = Parallel.ForEach(csFiles, localInit, func(@$"CustomNamingPeople\.Substitute\<{resName}\>\(""(\w*)""\)"), localFinally);
-            _ = Parallel.ForEach(csFiles, localInit, func(@$"{resName}\.ResourceManager\.GetString\(""(\w*)"""), localFinally);
+            _ = Parallel.ForEach(csFiles, localInit, func(@$"{resName}\.ResourceManager\.GetString\(""(\w*)""\)"), localFinally);
+            _ = Parallel.ForEach(csFiles, localInit, func(@$"{resName}\.ResourceManager\.GetString\(""(\w*)""\s*\+"), (r) => {
+
+                if (!bag.Contains(r) && !string.IsNullOrEmpty(r))
+                {
+                    bag.Add(r.Replace(",", "*,").Trim(',') + "*");
+                }
+            });
             _ = Parallel.ForEach(xmlFiles, localInit, func(@$"\|(\w*)\|{fullClassName.Replace(".", "\\.")}"), localFinally);
+
+            if (fileName == "TipsResource.resx")
+            {
+                _ = Parallel.ForEach(xmlFiles, localInit, func(@$"\<tip id=""(\w*)"""), localFinally);
+            }
+
+            if (fileName == "AuditReportResource.resx")
+            {
+                _ = Parallel.ForEach(csFiles.Where(r=> r.EndsWith("ActionMapper.cs")), localInit, func(@$"ResourceName\s*=\s*""(\w*)"""), localFinally);
+                _ = Parallel.ForEach(csFiles, localInit, func(@$"\[Event\(""(\w*)"""), localFinally);
+            }
+
+            if (fileName == "NamingPeopleResource.resx")
+            {
+                _ = Parallel.ForEach(xmlFiles.Where(r=> r.EndsWith("PeopleNames.xml")), localInit, func(@$"\>(\w*)\<"), localFinally);
+            }
 
             return string.Join(',', bag.ToArray().Distinct());
         }
