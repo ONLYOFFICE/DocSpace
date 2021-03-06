@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Toast from "@appserver/components/toast";
 import toastr from "@appserver/components/toast/toastr";
 import Box from "@appserver/components/box";
@@ -18,9 +18,9 @@ import {
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
-
-import { changeTitle, setFavicon, isIPad, setDocumentTitle } from "./utils";
 import throttle from "lodash/throttle";
+import { isIOS, deviceType } from "react-device-detect";
+import { homepage } from "../package.json";
 import "./custom.scss";
 
 let documentIsReady = false;
@@ -30,34 +30,24 @@ let fileType = null;
 
 let docSaved = null;
 
-const throttledChangeTitle = throttle(
-  () => changeTitle(docSaved, docTitle),
-  500
-);
+const Editor = () => {
+  const urlParams = getObjectByLocation(window.location);
+  const fileId = urlParams
+    ? urlParams.fileId || urlParams.fileid || null
+    : null;
+  const doc = urlParams ? urlParams.doc || null : null;
+  const isDesktop = window["AscDesktopEditor"] !== undefined;
 
-class Editor extends React.Component {
-  constructor(props) {
-    super(props);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
-    const urlParams = getObjectByLocation(window.location);
-    const fileId = urlParams
-      ? urlParams.fileId || urlParams.fileid || null
-      : null;
-    const doc = urlParams ? urlParams.doc || null : null;
-    const desktop = window["AscDesktopEditor"] !== undefined;
+  const throttledChangeTitle = throttle(
+    () => changeTitle(docSaved, docTitle),
+    500
+  );
 
-    this.state = {
-      fileId,
-      doc,
-      isLoading: true,
-      isDesktop: desktop,
-    };
-  }
-
-  async componentDidMount() {
+  const init = async () => {
     try {
-      const { fileId, doc, isDesktop } = this.state;
-
       if (!fileId) return;
 
       console.log("PureEditor componentDidMount", fileId, doc);
@@ -72,9 +62,13 @@ class Editor extends React.Component {
       const docApiUrl = await getDocServiceUrl();
 
       if (!doc) {
-        const isAuthenticated = await checkIsAuthenticated();
+        const success = await checkIsAuthenticated();
 
-        if (!isAuthenticated) return tryRedirectTo("/login");
+        if (!success) {
+          return tryRedirectTo("/login");
+        } else {
+          setIsAuthenticated(success);
+        }
       }
 
       const config = await openEdit(fileId, doc);
@@ -114,9 +108,9 @@ class Editor extends React.Component {
         );
       }
 
-      this.setState({ isLoading: false }, () =>
-        this.loadDocApi(docApiUrl, () => this.onLoad(config))
-      );
+      setIsLoading(false);
+
+      loadDocApi(docApiUrl, () => onLoad(config));
     } catch (error) {
       console.log(error);
       toastr.error(
@@ -126,9 +120,64 @@ class Editor extends React.Component {
         true
       );
     }
-  }
+  };
 
-  loadDocApi = (docApiUrl, onLoadCallback) => {
+  useEffect(() => {
+    init();
+  }, []);
+
+  const isIPad = () => {
+    return isIOS && deviceType === "tablet";
+  };
+
+  const setFavicon = (fileType) => {
+    const favicon = document.getElementById("favicon");
+    if (!favicon) return;
+    let icon = null;
+    switch (fileType) {
+      case "docx":
+        icon = "text.ico";
+        break;
+      case "pptx":
+        icon = "presentation.ico";
+        break;
+      case "xlsx":
+        icon = "spreadsheet.ico";
+        break;
+      default:
+        break;
+    }
+
+    if (icon) favicon.href = `${homepage}/images/${icon}`;
+  };
+
+  const changeTitle = (docSaved, docTitle) => {
+    docSaved ? setDocumentTitle(docTitle) : setDocumentTitle(`*${docTitle}`);
+  };
+
+  const setDocumentTitle = (subTitle = null) => {
+    //const { isAuthenticated, settingsStore, product: currentModule } = auth;
+    //const { organizationName } = settingsStore;
+    const organizationName = "ONLYOFFICE"; //TODO: Replace to API variant
+    const moduleTitle = "Documents"; //TODO: Replace to API variant
+
+    let title;
+    if (subTitle) {
+      if (isAuthenticated && moduleTitle) {
+        title = subTitle + " - " + moduleTitle;
+      } else {
+        title = subTitle + " - " + organizationName;
+      }
+    } else if (moduleTitle && organizationName) {
+      title = moduleTitle + " - " + organizationName;
+    } else {
+      title = organizationName;
+    }
+
+    document.title = title;
+  };
+
+  const loadDocApi = (docApiUrl, onLoadCallback) => {
     const script = document.createElement("script");
     script.setAttribute("type", "text/javascript");
     script.setAttribute("id", "scripDocServiceAddress");
@@ -142,7 +191,7 @@ class Editor extends React.Component {
     document.body.appendChild(script);
   };
 
-  onLoad = (config) => {
+  const onLoad = (config) => {
     console.log("Editor config: ", config);
     try {
       console.log(config);
@@ -159,13 +208,13 @@ class Editor extends React.Component {
 
       const events = {
         events: {
-          onAppReady: this.onSDKAppReady,
-          onDocumentStateChange: this.onDocumentStateChange,
-          onMetaChange: this.onMetaChange,
-          onDocumentReady: this.onDocumentReady,
-          onInfo: this.onSDKInfo,
-          onWarning: this.onSDKWarning,
-          onError: this.onSDKError,
+          onAppReady: onSDKAppReady,
+          onDocumentStateChange: onDocumentStateChange,
+          onMetaChange: onMetaChange,
+          onDocumentReady: onDocumentReady,
+          onInfo: onSDKInfo,
+          onWarning: onSDKWarning,
+          onError: onSDKError,
         },
       };
 
@@ -182,17 +231,17 @@ class Editor extends React.Component {
     }
   };
 
-  onSDKAppReady = () => {
+  const onSDKAppReady = () => {
     console.log("ONLYOFFICE Document Editor is ready");
   };
 
-  onSDKInfo = (event) => {
+  const onSDKInfo = (event) => {
     console.log(
       "ONLYOFFICE Document Editor is opened in mode " + event.data.mode
     );
   };
 
-  onSDKWarning = (event) => {
+  const onSDKWarning = (event) => {
     console.log(
       "ONLYOFFICE Document Editor reports a warning: code " +
         event.data.warningCode +
@@ -201,7 +250,7 @@ class Editor extends React.Component {
     );
   };
 
-  onSDKError = (event) => {
+  const onSDKError = (event) => {
     console.log(
       "ONLYOFFICE Document Editor reports an error: code " +
         event.data.errorCode +
@@ -210,18 +259,18 @@ class Editor extends React.Component {
     );
   };
 
-  onDocumentStateChange = (event) => {
+  const onDocumentStateChange = (event) => {
     if (!documentIsReady) return;
 
     docSaved = !event.data;
     throttledChangeTitle();
   };
 
-  onDocumentReady = () => {
+  const onDocumentReady = () => {
     documentIsReady = true;
   };
 
-  onMetaChange = (event) => {
+  const onMetaChange = (event) => {
     const newTitle = event.data.title;
     if (newTitle && newTitle !== docTitle) {
       setDocumentTitle(newTitle);
@@ -229,24 +278,22 @@ class Editor extends React.Component {
     }
   };
 
-  render() {
-    return (
-      <Box
-        widthProp="100vw"
-        heightProp={isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
-      >
-        <Toast />
+  return (
+    <Box
+      widthProp="100vw"
+      heightProp={isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
+    >
+      <Toast />
 
-        {!this.state.isLoading ? (
-          <div id="editor"></div>
-        ) : (
-          <Box paddingProp="16px">
-            <Loaders.Rectangle height="96vh" />
-          </Box>
-        )}
-      </Box>
-    );
-  }
-}
+      {!isLoading ? (
+        <div id="editor"></div>
+      ) : (
+        <Box paddingProp="16px">
+          <Loaders.Rectangle height="96vh" />
+        </Box>
+      )}
+    </Box>
+  );
+};
 
 export default Editor;

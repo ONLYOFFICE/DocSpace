@@ -113,9 +113,7 @@ var config = {
     new ModuleFederationPlugin({
       name: "editor",
       filename: "remoteEntry.js",
-      remotes: {
-        studio: "studio@/remoteEntry.js",
-      },
+      remotes: {},
       exposes: {
         "./app": "./src/Editor.jsx",
       },
