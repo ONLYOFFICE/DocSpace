@@ -54,7 +54,7 @@ namespace ASC.Resource.Manager
 
             if (!words.Any())
             {
-                Console.WriteLine("Error!!! Can't find appropriate project and module. Possibly wrong names!");
+                Console.WriteLine($"db empty file:{fName}, lang:{language}");
                 return false;
             }
 
@@ -100,7 +100,7 @@ namespace ASC.Resource.Manager
                                 }
                                 else
                                 {
-                                    if (!keys.Any(r=> r.EndsWith("*") && k.StartsWith(r.Replace("*", ""))) && !k.Contains("_"))
+                                    if (!keys.Any(r=> r.EndsWith("*") && k.StartsWith(r.Replace("*", ""))) && (!k.Contains("_") || k.StartsWith("subject_") || k.StartsWith("pattern_")))
                                     {
                                         k = keys.FirstOrDefault(r => r == k);
                                     }

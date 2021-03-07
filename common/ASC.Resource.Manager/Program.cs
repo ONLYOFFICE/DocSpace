@@ -26,16 +26,18 @@ namespace ASC.Resource.Manager
         private static readonly XName DependentUpon = XName.Get("DependentUpon", CsProjScheme);
         private const string IncludeAttribute = "Include";
         private const string ConditionAttribute = "Condition";
-
+        public static string[] Args;
         public static void Main(string[] args)
         {
+            Args = args;
             Parser.Default.ParseArguments<Options>(args).WithParsed(Export);
         }
 
         public static void Export(Options options)
         {
+            
             var services = new ServiceCollection();
-            var startup = new Startup();
+            var startup = new Startup(Args);
             startup.ConfigureServices(services);
 
             var serviceProvider = services.BuildServiceProvider();
@@ -51,11 +53,12 @@ namespace ASC.Resource.Manager
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
 
-                project = "Addons";
-                //module = "Common";
-                //filePath = "CRMCommonResource.resx";
-                exportPath = @"C:\Git\portals\";
-                key = "*,HtmlMaster*";
+                //project = "Addons";
+                //module = "Talk";
+                //filePath = "TalkResource.resx";
+                //culture = "ru";
+                //exportPath = @"C:\Git\portals\";
+                //key = "*,HtmlMaster*";
                 //key = "*";
 
                 if (format == "json")
@@ -153,15 +156,20 @@ namespace ASC.Resource.Manager
             }
             void ExportWithCulture(string projectName, string moduleName, string fileName, string culture, string exportPath, string key)
             {
+                var filePath = Directory.GetFiles(exportPath, $"{fileName}", SearchOption.AllDirectories)
+    .Where(r => !Path.GetDirectoryName(r).EndsWith("ASC.Bar\\Resources")).FirstOrDefault();
+
                 if (!string.IsNullOrEmpty(culture))
                 {
+                    exportPath = Path.GetDirectoryName(filePath);
                     export(serviceProvider, projectName, moduleName, fileName, culture, exportPath, key);
+
+                    Console.WriteLine(filePath);
                 }
                 else
                 {
                     var resultFiles = new ConcurrentBag<Tuple<string, string>>();
-                    var filePath = Directory.GetFiles(exportPath, $"{fileName}", SearchOption.AllDirectories)
-                        .Where(r=> !Path.GetDirectoryName(r).EndsWith("ASC.Bar\\Resources")).FirstOrDefault();
+
                     var asmbl = "";
                     var assmlPath = "";
                     var nsp = "";
@@ -232,6 +240,8 @@ namespace ASC.Resource.Manager
                         }
                     });
 
+                    Console.WriteLine(filePath);
+                    if (string.IsNullOrEmpty(asmbl)) return;
                     AddResourceForCsproj(asmbl, filePath.Substring(assmlPath.Length + 1), resultFiles.OrderBy(r=> r.Item2));
                     var assmblName = Path.GetFileNameWithoutExtension(asmbl);
                     var f = Path.GetDirectoryName(filePath.Substring(assmlPath.Length + 1)).Replace('\\', '.');
@@ -312,7 +322,7 @@ namespace ASC.Resource.Manager
 
             _ = Parallel.ForEach(csFiles, localInit, func(@$"\W+{resName}\.(\w*)"), localFinally);
             _ = Parallel.ForEach(csFiles, localInit, func(@$"CustomNamingPeople\.Substitute\<{resName}\>\(""(\w*)""\)"), localFinally);
-            _ = Parallel.ForEach(csFiles, localInit, func(@$"{resName}\.ResourceManager\.GetString\(""(\w*)""\)"), localFinally);
+            _ = Parallel.ForEach(csFiles, localInit, func(@$"{resName}\.ResourceManager\.GetString\(""(\w*)""[\),\,]"), localFinally);
             _ = Parallel.ForEach(csFiles, localInit, func(@$"{resName}\.ResourceManager\.GetString\(""(\w*)""\s*\+"), (r) => {
 
                 if (!bag.Contains(r) && !string.IsNullOrEmpty(r))
