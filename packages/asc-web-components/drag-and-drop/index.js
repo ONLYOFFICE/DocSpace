@@ -32,11 +32,17 @@ const DragAndDrop = (props) => {
 };
 
 DragAndDrop.propTypes = {
+  /** Children elements */
   children: PropTypes.any,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Sets the component as a dropzone */
   isDropZone: PropTypes.bool,
+  /** Show that the item is being dragged now. */
   dragging: PropTypes.bool,
+  /** Occurs when the mouse button is pressed */
   onMouseDown: PropTypes.func,
+  /** Occurs when the dragged element is dropped on the drop target */
   onDrop: PropTypes.func,
 };
 

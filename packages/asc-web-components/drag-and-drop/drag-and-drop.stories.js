@@ -6,37 +6,16 @@ export default {
   title: "Components/DragAndDrop",
   component: DragAndDrop,
   argTypes: {
-    dragging: { description: "Show that the item is being dragged now." },
-    isDropZone: { description: "Sets the component as a dropzone" },
-    onDrop: {
-      action: "onDrop",
-      description:
-        "Occurs when the dragged element is dropped on the drop target",
-    },
+    onDrop: { action: "onDrop" },
     targetFile: { action: "File: ", table: { disable: true } },
-    className: { description: "Accepts class" },
-    onMouseDown: {
-      description: "Occurs when the mouse button is pressed",
-      action: "onMouseDown",
-    },
-    children: { table: { disable: true } },
+    onMouseDown: { action: "onMouseDown" },
   },
   parameters: {
     docs: {
       description: {
-        component: `Drag And Drop component can be used as Dropzone
-        See documentation: https://github.com/react-dropzone/react-dropzone
-        `,
-      },
-      source: {
-        code: `
-        import DragAndDrop from "@appserver/components/drag-and-drop";
+        component: `Drag And Drop component can be used as Dropzone.
 
-<DragAndDrop onDrop={onDrop} style={width: 200, height: 200, border: "5px solid #999"}>
-  <Text style={textStyles} color="#999" fontSize="20px">
-    Drop items here
-  </Text>
-</DragAndDrop>
+See documentation: https://github.com/react-dropzone/react-dropzone
         `,
       },
     },
@@ -66,4 +45,3 @@ const Template = (args) => {
 };
 
 export const Default = Template.bind({});
-

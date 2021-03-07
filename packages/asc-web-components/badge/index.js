@@ -42,17 +42,29 @@ const Badge = (props) => {
 };
 
 Badge.propTypes = {
+  /** Value */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /** CSS background-color */
   backgroundColor: PropTypes.string,
+  /** CSS color */
   color: PropTypes.string,
+  /** CSS font-size */
   fontSize: PropTypes.string,
+  /** CSS font-weight */
   fontWeight: PropTypes.number,
+  /** CSS border-radius */
   borderRadius: PropTypes.string,
+  /** CSS padding */
   padding: PropTypes.string,
+  /** CSS max-width */
   maxWidth: PropTypes.string,
+  /** onClick event */
   onClick: PropTypes.func,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

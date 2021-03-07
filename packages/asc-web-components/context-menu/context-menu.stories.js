@@ -8,14 +8,7 @@ import ContextMenu from "./index";
 export default {
   title: "Components/ContextMenu",
   component: ContextMenu,
-  argTypes: {
-    className: { description: "Accepts class" },
-    id: { description: "Accepts id" },
-    options: { description: "DropDownItems collection" },
-    style: { description: "Accepts css style" },
-    targetAreaId: { description: "Id of container apply to" },
-    withBackdrop: { description: "Used to display backdrop" },
-  },
+  subcomponents: { RowContainer, Row, RowContent },
   parameters: {
     docs: {
       description: {
@@ -26,13 +19,6 @@ For use within separate component it is necessary to determine active zone and e
 
 In particular case, state is created containing options for particular Row element and passed to component when called.
         `,
-      },
-      source: {
-        code: `
-      import ContextMenu from "@appserver/components/context-menu";
-
-<ContextMenu targetAreaId="rowContainer" options={[]} />
-      `,
       },
     },
   },

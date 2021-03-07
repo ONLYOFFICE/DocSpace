@@ -198,24 +198,42 @@ class DropDownContainer extends React.Component {
   }
 }
 
-DropDownContainer.propTypes = {
-  children: PropTypes.any,
-  className: PropTypes.string,
-  clickOutsideAction: PropTypes.func,
-  directionX: PropTypes.oneOf(["left", "right"]), //TODO: make more informative
-  directionY: PropTypes.oneOf(["bottom", "top"]),
+DropDown.propTypes = {
   disableOnClickOutside: PropTypes.func,
   enableOnClickOutside: PropTypes.func,
+};
+
+DropDownContainer.propTypes = {
+  /** Children elements */
+  children: PropTypes.any,
+  /** Accepts class */
+  className: PropTypes.string,
+  /** Required for determining a click outside DropDown with the withBackdrop parameter */
+  clickOutsideAction: PropTypes.func,
+  /** Sets the opening direction relative to the parent */
+  directionX: PropTypes.oneOf(["left", "right"]), //TODO: make more informative
+  /** Sets the opening direction relative to the parent */
+  directionY: PropTypes.oneOf(["bottom", "top"]),
+  /** Accepts id */
   id: PropTypes.string,
+  /** Required if you need to specify the exact width of the component, for example 100% */
   manualWidth: PropTypes.string,
+  /** Required if you need to specify the exact distance from the parent component */
   manualX: PropTypes.string,
+  /** Required if you need to specify the exact distance from the parent component */
   manualY: PropTypes.string,
+  /** Required if the scrollbar is displayed */
   maxHeight: PropTypes.number,
+  /** Tells when the dropdown should be opened */
   open: PropTypes.bool,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Used to display backdrop */
   withBackdrop: PropTypes.bool,
+  /** Count of columns */
   columnCount: PropTypes.number,
-  showDisabledItems: PropTypes.bool
+  /** Display disabled items or not */
+  showDisabledItems: PropTypes.bool,
 };
 
 DropDownContainer.defaultProps = {

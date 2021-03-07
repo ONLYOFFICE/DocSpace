@@ -207,18 +207,23 @@ HelpButton.propTypes = {
   tooltipId: PropTypes.string,
   place: PropTypes.string,
   zIndex: PropTypes.number,
+  /** Tooltip display type  */
   displayType: PropTypes.oneOf(["dropdown", "aside", "auto"]),
+  /** Tooltip header content (tooltip opened in aside) */
   helpButtonHeaderContent: PropTypes.string,
   iconName: PropTypes.string,
   color: PropTypes.string,
   dataTip: PropTypes.string,
   getContent: PropTypes.func,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 HelpButton.defaultProps = {
+  iconName: "./static/images/question.react.svg",
   place: "top",
   offsetRight: 120,
   offsetLeft: 0,
@@ -227,7 +232,6 @@ HelpButton.defaultProps = {
   zIndex: 310,
   displayType: "auto",
   className: "icon-button",
-  iconName: "/static/images/question.react.svg",
   color: "#A3A9AE",
 };
 

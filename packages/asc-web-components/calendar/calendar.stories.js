@@ -5,23 +5,12 @@ export default {
   title: "Components/Calendar",
   component: Calendar,
   argTypes: {
-    themeColor: { control: "color", description: "Color of the selected day" },
-    maxDate: {
-      control: "date",
-      description: "Maximum date that the user can select",
-    },
-    selectedDate: { control: "date", description: "Selected date value" },
-    openToDate: {
-      control: "date",
-      description:
-        "The beginning of a period that shall be displayed by default",
-    },
-    minDate: {
-      control: "date",
-      description: "Minimum date that the user can select.",
-    },
+    themeColor: { control: "color" },
+    selectedDate: { control: "date" },
+    openToDate: { control: "date" },
+    maxDate: { control: "date" },
+    minDate: { control: "date" },
     locale: {
-      description: "Browser locale",
       control: {
         type: "select",
         options: [
@@ -53,37 +42,12 @@ export default {
         ],
       },
     },
-    onChange: {
-      description: "Function called when the user select a day",
-      action: "onChange",
-    },
-    size: { description: "Calendar size" },
-    className: { description: "Accepts class" },
-    id: { description: "Accepts id" },
-    style: { description: "Accepts css style" },
+    onChange: { action: "onChange" },
   },
   parameters: {
     docs: {
       description: {
         component: "Used to display custom calendar",
-      },
-      source: {
-        code: `
-      import Calendar from "@appserver/components/calendar";
-
-<Calendar
-  onChange={(date) => {
-    console.log("Selected date:", date);
-  }}
-  disabled={false}
-  themeColor="#ED7309"
-  selectedDate={new Date()}
-  openToDate={new Date()}
-  minDate={new Date("1970/01/01")}
-  maxDate={new Date("3000/01/01")}
-  locale="ru"
-/>
-`,
       },
     },
   },

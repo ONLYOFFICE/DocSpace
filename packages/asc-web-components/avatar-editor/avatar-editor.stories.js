@@ -1,48 +1,11 @@
 import React from "react";
-import AvatarEditor from "./";
+import AvatarEditorComponent from "./";
 import Avatar from "../avatar";
 
 export default {
   title: "Components/AvatarEditor",
-  component: AvatarEditor,
+  component: AvatarEditorComponent,
   argTypes: {
-    visible: { description: "Display avatar editor" },
-    image: { description: "Display avatar editor" },
-    accept: { description: "Accepted file types" },
-    displayType: { description: "Display type" },
-    useModalDialog: {
-      description: "Use for the view of the modal dialog or not",
-    },
-    selectNewPhotoLabel: {
-      description: "Translation string for file selection",
-    },
-    orDropFileHereLabel: {
-      description:
-        "Translation string for file dropping (concat with selectNewPhotoLabel prop)",
-    },
-    headerLabel: { description: "Translation string for title" },
-    saveButtonLabel: { description: "Translation string for save button" },
-    saveButtonLoading: {
-      description: "Tells when the button should show loader icon",
-    },
-    cancelButtonLabel: { description: "Translation string for cancel button" },
-    maxSizeFileError: { description: "Translation string for size warning" },
-    unknownTypeError: {
-      description: "Translation string for file type warning",
-    },
-    onLoadFileError: {
-      description: "Translation string for load file warning",
-    },
-    unknownError: { description: "Translation string for warning" },
-    maxSize: { description: "Max size of image" },
-    onSave: { description: "Save event" },
-    onClose: { description: "Closing event " },
-    onDeleteImage: { description: "Image deletion event" },
-    onLoadFile: { description: "Image upload event" },
-    onImageChange: { description: "Image change event" },
-    className: { description: "Accepts class" },
-    id: { description: "Accepts id" },
-    style: { description: "Accepts css style" },
     openEditor: { action: "onOpen", table: { disable: true } },
     closeEditor: { action: "onClose", table: { disable: true } },
     onSave: { action: "onSave", table: { disable: true } },
@@ -55,33 +18,11 @@ export default {
       description: {
         component: "Used to display user avatar editor on page.",
       },
-      source: {
-        code: `
-        import AvatarEditor from "@appserver/components/avatar-editor";
-
-<AvatarEditor
-  visible={true}
-  onClose={() => {}}
-  onSave={() => {})}
-  onDeleteImage={() => {})}
-  onImageChange={() => {})}
-  onLoadFile={() => {}}
-  headerLabel="Edit Photo"
-  selectNewPhotoLabel="Select new photo"
-  orDropFileHereLabel="or drop file here"
-  saveButtonLabel="Save"
-  maxSizeFileError="Maximum file size exceeded"
-  unknownTypeError="Unknown image file type"
-  unknownError="Error"
-  displayType="auto"
-/>
-        `,
-      },
     },
   },
 };
 
-class Wrapper extends React.Component {
+class AvatarEditor extends React.Component {
   constructor(props) {
     super(props);
 
@@ -145,7 +86,7 @@ class Wrapper extends React.Component {
           editAction={this.openEditor}
         />
         {this.props.children}
-        <AvatarEditor
+        <AvatarEditorComponent
           {...this.props}
           visible={this.state.isOpen || this.props.visible}
           onClose={this.onClose}
@@ -165,6 +106,6 @@ class Wrapper extends React.Component {
   }
 }
 const Template = (args) => {
-  return <Wrapper {...args} />;
+  return <AvatarEditor {...args} />;
 };
 export const Default = Template.bind({});

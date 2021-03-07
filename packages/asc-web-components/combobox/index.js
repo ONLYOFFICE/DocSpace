@@ -166,26 +166,49 @@ class ComboBox extends React.Component {
 }
 
 ComboBox.propTypes = {
+  /** If you need display options not basic options */
   advancedOptions: PropTypes.element,
+  /** Children elements */
   children: PropTypes.any,
+  /** Accepts class */
   className: PropTypes.string,
+  /** X direction selection */
   directionX: PropTypes.oneOf(["left", "right"]),
+  /** Y direction selection */
   directionY: PropTypes.oneOf(["bottom", "top"]),
+  /** Component Display Type */
   displayType: PropTypes.oneOf(["default", "toggle"]),
+  /** Height of Dropdown */
   dropDownMaxHeight: PropTypes.number,
+  /** Display disabled items or not when displayType !== toggle */
+  showDisabledItems: PropTypes.bool,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Indicates that component is disabled */
   isDisabled: PropTypes.bool,
+  /** Indicates that component is displayed without borders */
   noBorder: PropTypes.bool,
+  /** Will be triggered whenever an ComboBox is selected option */
   onSelect: PropTypes.func,
+  /** Tells when a component is open */
   opened: PropTypes.bool,
+  /** Combo box options */
   options: PropTypes.array.isRequired,
+  /** Indicates that component is scaled by parent */
   scaled: PropTypes.bool,
+  /** Indicates that component`s options is scaled by ComboButton */
   scaledOptions: PropTypes.bool,
+  /** Selected option */
   selectedOption: PropTypes.object.isRequired,
+  /** Select component width, one of default */
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "content"]),
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** The event will be raised when using `displayType: toggle` when clicking on a component */
   toggleAction: PropTypes.func,
+  /** Accepts css text-overflow */
   textOverflow: PropTypes.bool,
+  /** Disables clicking on the icon */
   disableIconClick: PropTypes.bool,
 };
 

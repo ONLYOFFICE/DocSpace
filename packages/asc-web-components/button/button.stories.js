@@ -6,52 +6,12 @@ import Button from "./";
 export default {
   title: "Components/Button",
   component: Button,
-  argTypes: {
-    label: { description: "Button text" },
-    size: { description: "Size of button" },
-    primary: { description: "Tells when the button should be primary" },
-    scale: { description: "Scale width of button to 100%" },
-    isClicked: {
-      description: "Tells when the button should present a clicked state",
-    },
-    isDisabled: {
-      description: "Tells when the button should present a disabled state",
-    },
-    isHovered: {
-      description: "Tells when the button should present a hovered state",
-    },
-    isLoading: { description: "Tells when the button should show loader icon" },
-    disableHover: { description: "Disable hover effect" },
-    icon: { description: "Icon node element" },
-    onClick: { description: "What the button will trigger when clicked " },
-    className: { description: "Accepts class" },
-    id: { description: "Accepts id" },
-    style: { description: "Accepts CSS style" },
-    tabIndex: { description: "Button tab index" },
-    minwidth: { description: "Sets the nim width of the button" },
-  },
   parameters: {
     docs: {
       description: {
         component: "Button is used for a action on a page.",
       },
-      source: {
-        code: `
-        import Button from "@appserver/components/button";
-
-<Button
-  size="base"
-  isDisabled={false}
-  onClick={() => alert("Button clicked")}
-  label="OK"
-/>
-        `
-      }
     },
-  },
-  args: {
-    size: "base",
-    label: "Base Button",
   },
 };
 
@@ -263,6 +223,10 @@ const HoveredTemplate = (args) => {
 };
 
 export const Default = Template.bind({});
+Default.args = {
+  size: "base",
+  label: "Base Button",
+};
 export const PrimaryButtons = PrimaryTemplate.bind({});
 export const SecondaryButtons = SecondaryTemplate.bind({});
 export const WithIconButtons = WithIconTemplate.bind({});

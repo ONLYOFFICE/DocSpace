@@ -1,56 +1,23 @@
 import React from "react";
 
-import Checkbox from "./";
+import CheckboxComponent from "./";
 
 export default {
   title: "Components/Checkbox",
-  component: Checkbox,
+  component: CheckboxComponent,
   parameters: {
     docs: {
       description: { component: "Custom checkbox input" },
-      source: {
-        code: `
-        import Checkbox from "@appserver/components/checkbox";
-
-<Checkbox
-  id="id"
-  name="name"
-  value="value"
-  label="label"
-  isChecked={false}
-  isIndeterminate={false}
-  isDisabled={false}
-  onChange={() => {}}
-/>
-        `,
-      },
     },
   },
   argTypes: {
-    className: { description: "Accepts class" },
-    id: { description: "Used as HTML id property" },
-    isChecked: {
-      description: "The checked property sets the checked state of a checkbox",
-    },
-    isDisabled: { description: "Disables the Checkbox input " },
-    isIndeterminate: {
-      description:
-        "If true, this state is shown as a rectangle in the checkbox",
-    },
-    label: { description: "Label of the input" },
-    name: { description: "Used as HTML `name` property" },
     onChange: {
-      description: "Will be triggered whenever an CheckboxInput is clicked ",
       action: "onChange",
     },
-    style: { description: "Accepts css style " },
-    value: { description: "Value of the input" },
-    title: { description: "Title " },
-    truncate: { description: "Disables word wrapping" },
   },
 };
 
-class Wrapper extends React.Component {
+class Checkbox extends React.Component {
   constructor(props) {
     super(props);
 
@@ -66,7 +33,7 @@ class Wrapper extends React.Component {
 
   render() {
     return (
-      <Checkbox
+      <CheckboxComponent
         {...this.props}
         isChecked={this.props.isChecked || this.state.isChecked}
         onChange={this.onChange}
@@ -75,7 +42,7 @@ class Wrapper extends React.Component {
   }
 }
 const Template = (args) => {
-  return <Wrapper {...args} />;
+  return <Checkbox {...args} />;
 };
 
 const AllCheckboxesTemplate = (args) => {

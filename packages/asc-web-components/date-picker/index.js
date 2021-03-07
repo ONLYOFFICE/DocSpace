@@ -379,24 +379,42 @@ class DatePicker extends Component {
 }
 
 DatePicker.propTypes = {
+  /** Function called when the user select a day */
   onChange: PropTypes.func,
+  /** Color of the selected day */
   themeColor: PropTypes.string,
+  /** Selected date value */
   selectedDate: PropTypes.instanceOf(Date),
+  /** Opened date value */
   openToDate: PropTypes.instanceOf(Date),
+  /** Minimum date that the user can select */
   minDate: PropTypes.instanceOf(Date),
+  /** Maximum date that the user can select */
   maxDate: PropTypes.instanceOf(Date),
+  /** Browser locale */
   locale: PropTypes.string,
+  /** Disabled react-calendar */
   isDisabled: PropTypes.bool,
+  /** Set input type is read only */
   isReadOnly: PropTypes.bool,
+  /** Set error date-input style */
   hasError: PropTypes.bool,
-  hasWarning: PropTypes.bool,
+  //hasWarning: PropTypes.bool,
+  /** Opens calendar */
   isOpen: PropTypes.bool,
+  /** Calendar size */
   calendarSize: PropTypes.oneOf(["base", "big"]),
+  /** Calendar display type */
   displayType: PropTypes.oneOf(["dropdown", "aside", "auto"]),
+  /** Calendar css z-index */
   zIndex: PropTypes.number,
+  /** Calendar header content (calendar opened in aside) */
   calendarHeaderContent: PropTypes.string,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

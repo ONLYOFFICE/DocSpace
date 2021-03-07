@@ -99,12 +99,20 @@ class Backdrop extends React.Component {
 }
 
 Backdrop.propTypes = {
+  /** Display or not */
   visible: PropTypes.bool,
+  /** CSS z-index */
   zIndex: PropTypes.number,
+  /** Accepts class */
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** The background is not displayed if the viewport width is less than 1024,
+   * set it to true for display */
   withBackground: PropTypes.bool,
+  /** Must be true if used with Aside component */
   isAside: PropTypes.bool,
 };
 

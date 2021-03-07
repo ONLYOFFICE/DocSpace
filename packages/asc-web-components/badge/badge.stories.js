@@ -10,38 +10,7 @@ export default {
       description: {
         component: "Used for buttons, numbers or status markers next to icons.",
       },
-      source: {
-        code: `
-        import Badge from "@appserver/components/badge";
-
-<Badge
-  label="10"
-  backgroundColor="#ED7309"
-  color="#FFFFFF"
-  fontSize="11px"
-  fontWeight={800}
-  borderRadius="11px"
-  padding="0 5px"
-  maxWidth="50px"
-  onClick={() => {}}
-/>
-        `,
-      },
     },
-  },
-  argTypes: {
-    backgroundColor: { control: "color", description: "CSS background-color" },
-    color: { control: "color", description: "CSS color" },
-    label: { control: "text", description: "Value" },
-    borderRadius: { description: "CSS border-radius" },
-    className: { description: "Accepts class" },
-    fontSize: { description: "CSS font-size" },
-    fontWeight: { description: "CSS font-weight" },
-    id: { description: "Accepts id" },
-    maxWidth: { description: "CSS max-width" },
-    onClick: { description: "onClick event" },
-    padding: { description: "CSS padding" },
-    style: { description: "Accepts css style" },
   },
 };
 

@@ -2,7 +2,7 @@ module.exports = {
   stories: [
     "../backdrop/*.stories.@(js|jsx|ts|tsx)",
     "../button/*.stories.@(js|jsx|ts|tsx)",
-    "../avatar/*.stories.@(js|jsx|ts|tsx)",
+    "../avatar/*.stories.@(js)",
     "../badge/*.stories.@(js|jsx|ts|tsx)",
     "../box/*.stories.@(js|jsx|ts|tsx)",
     "../avatar-editor/*.stories.@(js|jsx|ts|tsx)",
@@ -15,11 +15,16 @@ module.exports = {
     "../drag-and-drop/*.stories.@(js|mdx)",
     "../drop-down/*.stories.@(js|mdx)",
     "../drop-down-item/*.stories.@(js|mdx)",
-    "../email-input/*.stories.@(js|mdx)",
+    "../email-input/*.stories.@(js)",
+    "../email-input/*.stories.@(mdx)",
     "../empty-screen-container/*.stories.@(js|mdx)",
     "../field-container/*.stories.@(js|mdx)",
     "../file-input/*.stories.@(js|mdx)",
     "../grid/*.stories.@(js|mdx)",
+    "../group-button/*.stories.@(js|mdx)",
+    "../group-buttons-menu/*.stories.@(js|mdx)",
+    "../heading/*.stories.@(js|mdx)",
+    "../help-button/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",
@@ -27,5 +32,6 @@ module.exports = {
     "@storybook/addon-essentials",
     "@storybook/addon-actions",
     "@storybook/addon-controls",
+    "@storybook/addon-viewport",
   ],
 };

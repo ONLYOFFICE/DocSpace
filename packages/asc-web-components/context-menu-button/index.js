@@ -234,34 +234,53 @@ class ContextMenuButton extends React.Component {
 }
 
 ContextMenuButton.propTypes = {
+  /** Tells when the button should present a opened state */
   opened: PropTypes.bool,
+  /** Array of options for display */
   data: PropTypes.array,
+  /** Function for converting to inner data */
   getData: PropTypes.func.isRequired,
+  /** Specifies the icon title */
   title: PropTypes.string,
+  /** Specifies the icon name */
   iconName: PropTypes.string,
+  /** Specifies the icon size */
   size: PropTypes.number,
+  /** Specifies the icon color */
   color: PropTypes.string,
+  /** Tells when the button should present a disabled state */
   isDisabled: PropTypes.bool,
-
+  /** Specifies the icon hover color */
   hoverColor: PropTypes.string,
+  /** Specifies the icon click color */
   clickColor: PropTypes.string,
-
+  /** Specifies the icon hover name */
   iconHoverName: PropTypes.string,
+  /** Specifies the icon click name */
   iconClickName: PropTypes.string,
+  /** Specifies the icon open name */
   iconOpenName: PropTypes.string,
-
+  /** What the button will trigger when mouse hovered */
   onMouseEnter: PropTypes.func,
+  /** What the button will trigger when mouse leave */
   onMouseLeave: PropTypes.func,
+  /** What the button will trigger when mouse over button */
   onMouseOver: PropTypes.func,
+  /** What the button will trigger when mouse out of button */
   onMouseOut: PropTypes.func,
-
+  /** Direction X */
   directionX: PropTypes.string,
+  /** Direction Y */
   directionY: PropTypes.string,
-
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Set the number of columns */
   columnCount: PropTypes.number,
+  /** Set the display type */
   displayType: PropTypes.string,
 };
 

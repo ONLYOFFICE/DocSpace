@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 
 import Text from "../text";
 import { StyledLabel, HiddenInput } from "./styled-checkbox";
-import CheckboxIndeterminateIcon from "../../../public/images/checkbox.indeterminate.react.svg";
-import CheckboxCheckedIcon from "../../../public/images/checkbox.checked.react.svg";
-import CheckboxIcon from "../../../public/images/checkbox.react.svg";
+import CheckboxIndeterminateIcon from "./svg/checkbox.indeterminate.react.svg";
+import CheckboxCheckedIcon from "./svg/checkbox.checked.react.svg";
+import CheckboxIcon from "./svg/checkbox.react.svg";
 
 // eslint-disable-next-line react/prop-types
 const RenderCheckboxIcon = ({ isChecked, isIndeterminate }) => {
@@ -108,19 +108,29 @@ class Checkbox extends React.Component {
 }
 
 Checkbox.propTypes = {
+  /** Used as HTML id property */
   id: PropTypes.string,
+  /** Used as HTML `name` property */
   name: PropTypes.string,
+  /** Value of the input */
   value: PropTypes.string,
+  /** Label of the input */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-
+  /** The checked property sets the checked state of a checkbox */
   isChecked: PropTypes.bool,
+  /** If true, this state is shown as a rectangle in the checkbox */
   isIndeterminate: PropTypes.bool,
+  /** Disables the Checkbox input */
   isDisabled: PropTypes.bool,
-
+  /** Will be triggered whenever an CheckboxInput is clicked */
   onChange: PropTypes.func,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Title */
   title: PropTypes.string,
+  /** Disables word wrapping */
   truncate: PropTypes.bool,
 };
 

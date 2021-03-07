@@ -111,11 +111,17 @@ class ContextMenu extends React.PureComponent {
 }
 
 ContextMenu.propTypes = {
+  /** DropDownItems collection */
   options: PropTypes.array,
+  /** Id of container apply to */
   targetAreaId: PropTypes.string,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Used to display backdrop */
   withBackdrop: PropTypes.bool,
 };
 
