@@ -25,9 +25,6 @@ namespace ASC.Resource.Manager
         [Option('k', "key", Required = false, HelpText = "Key", Default = "")]
         public string Key { get; set; }
 
-        [Option("pathToConf", Required = false)]
-        public string PathToConf { get; set; }
-
         public void Deconstruct(out string project, out string module, out string filePath, out string exportPath, out string culture, out string format, out string key)
             => (project, module, filePath, exportPath, culture, format, key) = (Project, Module, FilePath, ExportPath, Culture, Format, Key);
     }

@@ -30,7 +30,20 @@ namespace ASC.Resource.Manager
         public static void Main(string[] args)
         {
             Args = args;
-            Parser.Default.ParseArguments<Options>(args).WithParsed(Export);
+
+            var copy = new List<string>();
+
+            for(var i =0;i<args.Length;i++)
+            {
+                if(args[i] == "--pathToConf" || args[i] == "--ConnectionStrings:default:connectionString")
+                {
+                    i = i + 2;
+                    continue;
+                }
+                copy.Add(args[i]);
+            }
+
+            Parser.Default.ParseArguments<Options>(copy).WithParsed(Export);
         }
 
         public static void Export(Options options)
@@ -53,9 +66,9 @@ namespace ASC.Resource.Manager
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
 
-                //project = "Addons";
-                //module = "Talk";
-                //filePath = "TalkResource.resx";
+                //project = "WebStudio";
+                //module = "Tips";
+                //filePath = "TipsResource.resx";
                 //culture = "ru";
                 //exportPath = @"C:\Git\portals\";
                 //key = "*,HtmlMaster*";
@@ -156,8 +169,7 @@ namespace ASC.Resource.Manager
             }
             void ExportWithCulture(string projectName, string moduleName, string fileName, string culture, string exportPath, string key)
             {
-                var filePath = Directory.GetFiles(exportPath, $"{fileName}", SearchOption.AllDirectories)
-    .Where(r => !Path.GetDirectoryName(r).EndsWith("ASC.Bar\\Resources")).FirstOrDefault();
+                var filePath = Directory.GetFiles(exportPath, $"{fileName}", SearchOption.AllDirectories).FirstOrDefault();
 
                 if (!string.IsNullOrEmpty(culture))
                 {
@@ -334,7 +346,19 @@ namespace ASC.Resource.Manager
 
             if (fileName == "TipsResource.resx")
             {
-                _ = Parallel.ForEach(xmlFiles, localInit, func(@$"\<tip id=""(\w*)"""), localFinally);
+                _ = Parallel.ForEach(xmlFiles, localInit, func(@$"<tip id=""(\w*)"""), (r) => {
+
+                    if (!string.IsNullOrEmpty(r))
+                    {
+                        var ids = r.Split(',');
+                        foreach (var id in ids)
+                        {
+                            bag.Add(id);
+                            bag.Add($"{id}MessageBody");
+                            bag.Add($"{id}MessageHeader");
+                        }
+                    }
+                });
             }
 
             if (fileName == "AuditReportResource.resx")
