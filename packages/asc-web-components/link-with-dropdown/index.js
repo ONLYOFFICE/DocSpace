@@ -125,20 +125,36 @@ class LinkWithDropdown extends React.Component {
 }
 
 LinkWithDropdown.propTypes = {
+  /** Color of link in all states - hover, active, visited */
   color: PropTypes.string,
+  /** Array of objects, each can contain `<DropDownItem />` props */
   data: PropTypes.array,
+  /** Type of dropdown: alwaysDashed is always show dotted style and icon of arrow,
+   * appearDashedAfterHover is show dotted style and icon arrow only after hover */
   dropdownType: PropTypes.oneOf(["alwaysDashed", "appearDashedAfterHover"]),
+  /** Font size of link */
   fontSize: PropTypes.string,
+  /** Font weight of link */
   fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  /** Set font weight */
   isBold: PropTypes.bool,
+  /** Set css-property 'opacity' to 0.5. Usually apply for users with "pending" status */
   isSemitransparent: PropTypes.bool,
+  /** Activate or deactivate _text-overflow_ CSS property with ellipsis (' … ') value */
   isTextOverflow: PropTypes.bool,
+  /** Title of link */
   title: PropTypes.string,
+  /** Set open prop */
   isOpen: PropTypes.bool,
+  /** Children element */
   children: PropTypes.any,
+  /** Accepts css class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Set disabled view */
   isDisabled: PropTypes.bool,
 };
 

@@ -1,109 +1,87 @@
-import React from "react";
-import { storiesOf } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import {
-  withKnobs,
-  boolean,
-  text,
-  select,
-  number,
-  color,
-} from "@storybook/addon-knobs/react";
-import { optionsKnob as options } from "@storybook/addon-knobs";
-import withReadme from "storybook-readme/with-readme";
-import { StringValue } from "react-values";
-import Readme from "./README.md";
+import React, { useState } from "react";
+
 import InputBlock from ".";
-import { Icons } from "../icons";
 import Button from "../button";
-import Section from "../../../.storybook/decorators/section";
-import SettingsIcon from "../../../../../public/images/settings.react.svg";
+import IconButton from "../icon-button";
 
-const iconNames = Object.keys(Icons);
-iconNames.push("NONE");
-
-const sizeOptions = ["base", "middle", "big", "huge"];
-
-const IconClick = function () {
-  action("iconClick")();
+export default {
+  title: "Components/InputBlock",
+  component: InputBlock,
+  argTypes: {
+    iconColor: { control: "color" },
+    hoverColor: { control: "color" },
+    onChange: { action: "onChange" },
+    onBlur: { action: "onBlur" },
+    onFocus: { action: "onFocus" },
+    onIconClick: { action: "onIconClick" },
+    optionsMultiSelect: {
+      control: {
+        type: "multi-select",
+        options: ["button", "icon"],
+      },
+    },
+  },
 };
 
-storiesOf("Components|Input", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("input block", () => {
-    const valuesMultiSelect = {
-      button: "button",
-      icon: "icon",
-    };
-    const optionsMultiSelect = options(
-      "Children",
-      valuesMultiSelect,
-      ["icon"],
-      {
-        display: "multi-select",
-      }
-    );
+const Template = ({ optionsMultiSelect, onChange, ...args }) => {
+  const [value, setValue] = useState("");
 
-    var children = [];
+  const children = [];
+
+  if (optionsMultiSelect) {
     optionsMultiSelect.forEach(function (item, i) {
       switch (item) {
         case "button":
           children.push(<Button label="OK" key={i} />);
           break;
         case "icon":
-          children.push(<SettingsIcon size="medium" key={i} />);
+          children.push(
+            <IconButton
+              size={16}
+              color=""
+              key={i}
+              color="#d0d5da"
+              iconName="static/images/settings.react.svg"
+            />
+          );
           break;
         default:
           break;
       }
     });
+  }
 
-    return (
-      <div>
-        <StringValue
-          onChange={(e) => {
-            action("onChange")(e);
-          }}
-        >
-          {({ value, set }) => (
-            <Section>
-              <InputBlock
-                id={text("id", "")}
-                name={text("name", "")}
-                placeholder={text("placeholder", "This is placeholder")}
-                maxLength={number("maxLength", 255)}
-                size={select("size", sizeOptions, "base")}
-                onBlur={action("onBlur")}
-                onFocus={action("onFocus")}
-                isAutoFocussed={boolean("isAutoFocussed", false)}
-                isReadOnly={boolean("isReadOnly", false)}
-                hasError={boolean("hasError", false)}
-                hasWarning={boolean("hasWarning", false)}
-                scale={boolean("scale", false)}
-                autoComplete={text("autoComplete", "off")}
-                tabIndex={number("tabIndex", 1)}
-                iconSize={number("iconSize", 0)}
-                mask={text("mask", null)}
-                isDisabled={boolean("isDisabled", false)}
-                iconName={select(
-                  "iconName",
-                  iconNames,
-                  "static/images/search.react.svg"
-                )}
-                iconColor={color("iconColor", "#D0D5DA")}
-                isIconFill={boolean("isIconFill", false)}
-                value={value}
-                onIconClick={IconClick}
-                onChange={(e) => {
-                  set(e.target.value);
-                }}
-              >
-                {children}
-              </InputBlock>
-            </Section>
-          )}
-        </StringValue>
-      </div>
-    );
-  });
+  return (
+    <InputBlock
+      {...args}
+      value={value}
+      onChange={(e) => {
+        setValue(e.target.value), onChange(e.target.value);
+      }}
+    >
+      {children}
+    </InputBlock>
+  );
+};
+
+export const Default = Template.bind({});
+Default.args = {
+  id: "",
+  name: "",
+  placeholder: "This is placeholder",
+  maxLength: 255,
+  size: "base",
+  isAutoFocussed: false,
+  isReadOnly: false,
+  hasError: false,
+  hasWarning: false,
+  scale: false,
+  autoComplete: "off",
+  tabIndex: 1,
+  iconSize: 0,
+  mask: null,
+  isDisabled: false,
+  iconName: "static/images/search.react.svg",
+  iconColor: "#D0D5DA",
+  isIconFill: false,
+};

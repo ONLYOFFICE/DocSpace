@@ -63,7 +63,7 @@ const AsideTemplate = (args) => {
           You tooltip content with{" "}
           <Link
             isHovered={true}
-            href="http://localhost:6006/?path=/story/components-buttons--help-button"
+            href="http://localhost:6006/?path=/story/components-helpbutton--default"
           >
             link
           </Link>

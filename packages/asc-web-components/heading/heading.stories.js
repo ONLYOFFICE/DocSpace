@@ -24,7 +24,7 @@ const Template = ({ headerText, ...args }) => {
 export const Default = Template.bind({});
 Default.args = {
   color: "#333333",
-  level: "1",
+  level: 1,
   title: "",
   truncate: false,
   isInline: false,

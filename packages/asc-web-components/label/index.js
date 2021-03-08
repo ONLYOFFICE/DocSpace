@@ -38,16 +38,27 @@ const Label = (props) => {
 };
 
 Label.propTypes = {
+  /** Indicates that the field to which the label is attached is required to fill */
   isRequired: PropTypes.bool,
+  /** Indicates that the field to which the label is attached is incorrect */
   error: PropTypes.bool,
+  /** Sets the 'display: inline-block' property */
   isInline: PropTypes.bool,
+  /** Title */
   title: PropTypes.string,
+  /** Disables word wrapping */
   truncate: PropTypes.bool,
+  /** The field ID to which the label is attached */
   htmlFor: PropTypes.string,
+  /** Text */
   text: PropTypes.string,
+  /** Sets the 'display' property */
   display: PropTypes.string,
+  /** Class name */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

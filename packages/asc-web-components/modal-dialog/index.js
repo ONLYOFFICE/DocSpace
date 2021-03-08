@@ -183,11 +183,17 @@ class ModalDialog extends React.Component {
 
 ModalDialog.propTypes = {
   children: PropTypes.any,
+  /** Display dialog or not */
   visible: PropTypes.bool,
+  /** Display type */
   displayType: PropTypes.oneOf(["auto", "modal", "aside"]),
+  /** Indicates the side panel has scale */
   scale: PropTypes.bool,
+  /** Will be triggered when a close button is clicked */
   onClose: PropTypes.func,
+  /** CSS z-index */
   zIndex: PropTypes.number,
+  /** CSS padding props for body section */
   bodyPadding: PropTypes.string,
   contentHeight: PropTypes.string,
   contentWidth: PropTypes.string,

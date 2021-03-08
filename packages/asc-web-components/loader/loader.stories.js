@@ -1,51 +1,68 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import { withKnobs, text, select, color } from "@storybook/addon-knobs/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
-import Loader from ".";
-import Section from "../../../.storybook/decorators/section";
+import Loader from "./";
 
-const typeOptions = ["base", "oval", "dual-ring", "rombs"];
+export default {
+  title: "Components/Loader",
+  component: Loader,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "Loader component is used for displaying loading actions on a page",
+      },
+    },
+  },
+  argTypes: {
+    color: { control: "color" },
+  },
+};
 
-storiesOf("Components|Loaders", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("base", () => (
-    <Section>
+const Template = (args) => {
+  return (
+    <div style={{ height: "100px" }}>
+      <Loader {...args} />
+    </div>
+  );
+};
+
+export const Default = Template.bind({});
+Default.args = {
+  type: "base",
+  color: "#63686a",
+  size: "18px",
+  label: "Loading content, please wait...",
+};
+
+const ExamplesTemplate = (args) => {
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr 1fr",
+        height: "100px",
+      }}
+    >
       <Loader
-        type={select("type", typeOptions, "base")}
-        color={color("color", "#63686a")}
-        size={text("size", "18px")}
-        label={text("label", "Loading content, please wait...")}
+        type={"base"}
+        color={"#63686a"}
+        size={"18px"}
+        label={"Loading content, please wait..."}
       />
-    </Section>
-  ))
-  .add("dual-ring", () => (
-    <Section>
       <Loader
-        type={select("type", typeOptions, "dual-ring")}
-        color={color("color", "#63686a")}
-        size={text("size", "40px")}
-        label={text("label", "Loading content, please wait.")}
+        type={"dual-ring"}
+        color={"#63686a"}
+        size={"40px"}
+        label={"Loading content, please wait."}
       />
-    </Section>
-  ))
-  .add("oval", () => (
-    <Section>
       <Loader
-        type={select("type", typeOptions, "oval")}
-        color={color("color", "#63686a")}
-        size={text("size", "40px")}
-        label={text("label", "Loading content, please wait.")}
+        type={"oval"}
+        color={"#63686a"}
+        size={"40px"}
+        label={"Loading content, please wait."}
       />
-    </Section>
-  ))
-  .add("rombs", () => (
-    <Section>
-      <Loader
-        type={select("type", typeOptions, "rombs")}
-        size={text("size", "40px")}
-      />
-    </Section>
-  ));
+      <Loader type={"rombs"} size={"40px"} />
+    </div>
+  );
+};
+
+export const Examples = ExamplesTemplate.bind({});
