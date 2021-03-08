@@ -47,8 +47,13 @@ class PasswordInput extends React.Component {
     this.hideTooltip && this.refTooltip.current.hideTooltip();
   };
 
-  onBlur = () => {
+  onBlur = (e) => {
     this.hideTooltip();
+    if (this.props.onBlur) this.props.onBlur(e);
+  };
+
+  onKeyDown = (e) => {
+    if (this.props.onKeyDown) this.props.onKeyDown(e);
   };
 
   changeInputType = () => {
@@ -369,6 +374,7 @@ class PasswordInput extends React.Component {
           hoverColor={"#A3A9AE"}
           isIconFill={true}
           onBlur={this.onBlur}
+          onKeyDown={this.onKeyDown}
           hasWarning={hasWarning}
           placeholder={placeholder}
           tabIndex={tabIndex}
@@ -470,6 +476,8 @@ PasswordInput.propTypes = {
   emailInputName: PropTypes.string,
   inputValue: PropTypes.string,
   onChange: PropTypes.func,
+  onKeyDown: PropTypes.func,
+  onBlur: PropTypes.func,
   inputWidth: PropTypes.string,
   hasError: PropTypes.bool,
   hasWarning: PropTypes.bool,

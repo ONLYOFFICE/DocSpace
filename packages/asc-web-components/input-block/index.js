@@ -44,6 +44,7 @@ class InputBlock extends React.Component {
       maxLength,
       onBlur,
       onFocus,
+      onKeyDown,
       isReadOnly,
       isAutoFocussed,
       autoComplete,
@@ -112,6 +113,7 @@ class InputBlock extends React.Component {
           size={size}
           scale={scale}
           onChange={this.onChange}
+          onKeyDown={onKeyDown}
           withBorder={false}
           mask={mask}
           keepCharPositions={keepCharPositions}

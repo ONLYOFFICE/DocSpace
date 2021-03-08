@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import Button from "@appserver/components/button";
@@ -6,95 +6,119 @@ import TextInput from "@appserver/components/text-input";
 import Text from "@appserver/components/text";
 import ModalDialog from "@appserver/components/modal-dialog";
 import FieldContainer from "@appserver/components/field-container";
-
+import toastr from "@appserver/components/toast/toastr";
 import ModalDialogContainer from "./modal-dialog-container";
+import { sendInstructionsToChangePassword } from "@appserver/common/api/people";
+import { useTranslation } from "react-i18next";
 
-class ForgotPasswordModalDialog extends React.Component {
-  render() {
-    const {
-      openDialog,
-      isLoading,
-      email,
-      emailError,
-      onChangeEmail,
-      onSendPasswordInstructions,
-      onDialogClose,
-      t,
-    } = this.props;
-    return (
-      <ModalDialogContainer>
-        <ModalDialog
-          visible={openDialog}
-          bodyPadding="16px 0 0 0"
-          onClose={onDialogClose}
-        >
-          <ModalDialog.Header>
-            <Text isBold={true} fontSize="21px">
-              {t("PasswordRecoveryTitle")}
-            </Text>
-          </ModalDialog.Header>
-          <ModalDialog.Body>
-            <Text
-              key="text-body"
-              className="text-body"
-              isBold={false}
-              fontSize="13px"
-            >
-              {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
-            </Text>
+const ForgotPasswordModalDialog = (props) => {
+  const [email, setEmail] = useState(props.email);
+  const [emailError, setEmailError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-            <FieldContainer
-              key="e-mail"
-              isVertical={true}
+  const { t } = useTranslation("Login");
+
+  const { visible, onDialogClose } = props;
+
+  useEffect(() => {}, []);
+
+  const onChangeEmail = (event) => {
+    //console.log("onChangeEmail", event.target.value);
+    setEmail(event.target.value);
+    setEmailError(false);
+  };
+
+  const onSendPasswordInstructions = () => {
+    if (!email.trim()) {
+      setEmailError(true);
+    } else {
+      setIsLoading(true);
+      sendInstructionsToChangePassword(email)
+        .then(
+          (res) => toastr.success(res),
+          (message) => toastr.error(message)
+        )
+        .finally(onDialogClose());
+    }
+  };
+
+  const onKeyDown = (e) => {
+    console.log("onKeyDown", e.key);
+    if (e.key === "Enter") {
+      onSendPasswordInstructions();
+      e.preventDefault();
+    }
+  };
+
+  return (
+    <ModalDialogContainer>
+      <ModalDialog
+        visible={visible}
+        bodyPadding="16px 0 0 0"
+        onClose={onDialogClose}
+      >
+        <ModalDialog.Header>
+          <Text isBold={true} fontSize="21px">
+            {t("PasswordRecoveryTitle")}
+          </Text>
+        </ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text
+            key="text-body"
+            className="text-body"
+            isBold={false}
+            fontSize="13px"
+          >
+            {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
+          </Text>
+
+          <FieldContainer
+            key="e-mail"
+            isVertical={true}
+            hasError={emailError}
+            labelVisible={false}
+            errorMessage={t("RequiredFieldMessage")}
+          >
+            <TextInput
               hasError={emailError}
-              labelVisible={false}
-              errorMessage={t("RequiredFieldMessage")}
-            >
-              <TextInput
-                hasError={emailError}
-                placeholder={t("PasswordRecoveryPlaceholder")}
-                isAutoFocussed={true}
-                id="e-mail"
-                name="e-mail"
-                type="text"
-                size="base"
-                scale={true}
-                tabIndex={2}
-                isDisabled={isLoading}
-                value={email}
-                onChange={onChangeEmail}
-              />
-            </FieldContainer>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              className="modal-dialog-button"
-              key="SendBtn"
-              label={isLoading ? t("LoadingProcessing") : t("SendButton")}
-              size="big"
-              scale={false}
-              primary={true}
-              onClick={onSendPasswordInstructions}
-              isLoading={isLoading}
-              isDisabled={isLoading}
+              placeholder={t("PasswordRecoveryPlaceholder")}
+              isAutoFocussed={true}
+              id="e-mail"
+              name="e-mail"
+              type="text"
+              size="base"
+              scale={true}
               tabIndex={2}
+              isDisabled={isLoading}
+              value={email}
+              onChange={onChangeEmail}
+              onKeyDown={onKeyDown}
             />
-          </ModalDialog.Footer>
-        </ModalDialog>
-      </ModalDialogContainer>
-    );
-  }
-}
+          </FieldContainer>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            className="modal-dialog-button"
+            key="SendBtn"
+            label={isLoading ? t("LoadingProcessing") : t("SendButton")}
+            size="big"
+            scale={false}
+            primary={true}
+            onClick={onSendPasswordInstructions}
+            isLoading={isLoading}
+            isDisabled={isLoading}
+            tabIndex={2}
+          />
+        </ModalDialog.Footer>
+      </ModalDialog>
+    </ModalDialogContainer>
+  );
+};
 
 ForgotPasswordModalDialog.propTypes = {
-  openDialog: PropTypes.bool.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  email: PropTypes.string.isRequired,
-  emailError: PropTypes.bool.isRequired,
-  onChangeEmail: PropTypes.func.isRequired,
-  onSendPasswordInstructions: PropTypes.func.isRequired,
+  email: PropTypes.string,
+  visible: PropTypes.bool.isRequired,
   onDialogClose: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
 };
 
 export default ForgotPasswordModalDialog;

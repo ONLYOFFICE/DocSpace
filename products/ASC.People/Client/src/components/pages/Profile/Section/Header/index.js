@@ -384,9 +384,10 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   onClickBack = () => {
-    const { filter, setFilter } = this.props;
+    const { filter, setFilter, history } = this.props;
+    const { location } = window;
     setFilter(filter);
-    //history.push(settings.homepage);
+    history.push(`${location.pathname}${location.search}`); //TODO: Maybe can do better
   };
 
   render() {
@@ -496,6 +497,7 @@ export default inject(({ auth, peopleStore }) => {
     viewer: auth.userStore.user,
     filter: peopleStore.filterStore.filter,
     setFilter: peopleStore.filterStore.setFilterParams,
+    setFilterUrl: peopleStore.filterStore.setFilterUrl,
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,

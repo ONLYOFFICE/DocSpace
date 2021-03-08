@@ -130,6 +130,7 @@ class DownloadDialogComponent extends React.Component {
     return [items, folders];
   };
 
+  //TODO: move to actions?
   onDownload = () => {
     const {
       //onDownloadProgress,
@@ -153,7 +154,7 @@ class DownloadDialogComponent extends React.Component {
       downloadFormatFiles(fileConvertIds, folderIds)
         .then((res) => {
           this.onClose();
-          //onDownloadProgress(res[0]); //TODO: fix download action
+          this.props.getDownloadProgress(res[0], t("ArchivingData"));
         })
         .catch((err) => {
           setSecondaryProgressBarData({
@@ -580,7 +581,13 @@ const DownloadDialog = withTranslation("DownloadDialog")(
 );
 
 export default inject(
-  ({ filesStore, uploadDataStore, formatsStore, dialogsStore }) => {
+  ({
+    filesStore,
+    uploadDataStore,
+    formatsStore,
+    dialogsStore,
+    filesActionsStore,
+  }) => {
     const { secondaryProgressDataStore } = uploadDataStore;
     const { sortedFiles } = filesStore;
     const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
@@ -594,6 +601,8 @@ export default inject(
       setDownloadDialogVisible,
     } = dialogsStore;
 
+    const { getDownloadProgress } = filesActionsStore;
+
     return {
       sortedFiles,
       visible,
@@ -603,6 +612,7 @@ export default inject(
       getFileIcon,
       getFolderIcon,
       setDownloadDialogVisible,
+      getDownloadProgress,
     };
   }
 )(withRouter(observer(DownloadDialog)));

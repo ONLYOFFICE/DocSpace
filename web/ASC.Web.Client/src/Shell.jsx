@@ -16,7 +16,7 @@ import RectangleLoader from "@appserver/common/components/Loaders/RectangleLoade
 import { updateTempContent } from "@appserver/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@appserver/components/theme-provider";
-import { Base, Dark } from "@appserver/components/themes";
+import { Base } from "@appserver/components/themes";
 import store from "studio/store";
 import config from "../package.json";
 import "./custom.scss";
@@ -89,21 +89,25 @@ const LoginRoute = (props) => (
   </React.Suspense>
 );
 
-const PeopleRoute = (props) => (
-  <React.Suspense fallback={<LoadingShell />}>
-    <ErrorBoundary>
-      <People {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const PeopleRoute = (props) => {
+  return (
+    <React.Suspense fallback={<LoadingShell />}>
+      <ErrorBoundary>
+        <People {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  );
+};
 
-const FilesRoute = (props) => (
-  <React.Suspense fallback={<LoadingShell />}>
-    <ErrorBoundary>
-      <Files {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const FilesRoute = (props) => {
+  return (
+    <React.Suspense fallback={<LoadingShell />}>
+      <ErrorBoundary>
+        <Files {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  );
+};
 
 const AboutRoute = (props) => (
   <React.Suspense fallback={<LoadingShell />}>
@@ -169,6 +173,11 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     if (isLoaded) updateTempContent();
   }, [isLoaded]);
 
+  useEffect(() => {
+    console.log("Current page ", page);
+    // setModuleInfo(page, "e67be73d-f9ae-4ce1-8fec-1880cb518cb4");
+  }, [page]);
+
   return (
     <Layout>
       <Router history={history}>
@@ -227,28 +236,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     </Layout>
   );
 };
-
-// const mapStateToProps = (state) => {
-//   const { modules, isLoaded, settings } = state.auth;
-//   const { organizationName } = settings;
-//   return {
-//     modules,
-//     isLoaded,
-//     organizationName,
-//   };
-// };
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     getIsAuthenticated: () => getIsAuthenticated(dispatch),
-//     getPortalSettings: () => getPortalSettings(dispatch),
-//     getUser: () => getUser(dispatch),
-//     getModules: () => getModules(dispatch),
-//     setIsLoaded: () => dispatch(setIsLoaded(true)),
-//   };
-// };
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Shell);
 
 const ShellWrapper = inject(({ auth }) => {
   const { init, isLoaded } = auth;

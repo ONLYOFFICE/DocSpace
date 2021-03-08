@@ -8,8 +8,9 @@ import Text from "@appserver/components/text";
 import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
-
-import { lockFile } from "@appserver/common/api/files"; //TODO: move to actions
+import history from "@appserver/common/history";
+import toastr from "@appserver/components/toast";
+import { FileAction } from "@appserver/common/constants";
 
 const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
@@ -69,27 +70,39 @@ const SimpleFilesRow = (props) => {
     isPrivacy,
     isRecycleBin,
     dragging,
-    selected,
-    setSelected,
-    selectFile,
-    deselectFile,
+    //selected,
+    //setSelected,
     checked,
     canShare,
     isFolder,
     draggable,
     isRootFolder,
-    setSelection,
-    providers,
-    capabilities,
+    //setSelection,
+    homepage,
+    isTabletView,
+    actionId,
 
     setSharingPanelVisible,
     setChangeOwnerPanelVisible,
-    setConnectDialogVisible,
     showDeleteThirdPartyDialog,
-    setConnectItem,
     setRemoveItem,
     setMoveToPanelVisible,
     setCopyPanelVisible,
+    openDocEditor,
+    setIsLoading,
+    setIsVerHistoryPanel,
+    setVerHistoryFileId,
+    setAction,
+    deleteFileAction,
+    deleteFolderAction,
+    lockFileAction,
+    duplicateAction,
+    finalizeVersionAction,
+    setFavoriteAction,
+    openLocationAction,
+    selectRowAction,
+    setThirdpartyInfo,
+    setMediaViewerData,
   } = props;
 
   const {
@@ -102,6 +115,11 @@ const SimpleFilesRow = (props) => {
     contextOptions,
     icon,
     providerKey,
+    folderId,
+    viewUrl,
+    webUrl,
+    canOpenPlayer,
+    locked,
   } = item;
 
   const isThirdPartyFolder = providerKey && isRootFolder;
@@ -109,12 +127,7 @@ const SimpleFilesRow = (props) => {
   const onContentRowSelect = (checked, file) => {
     if (!file) return;
 
-    selected === "close" && setSelected("none");
-    if (checked) {
-      selectFile(file);
-    } else {
-      deselectFile(file);
-    }
+    selectRowAction(checked, file);
   };
 
   const onClickShare = () => setSharingPanelVisible(true);
@@ -140,7 +153,7 @@ const SimpleFilesRow = (props) => {
           color={color}
           hoverColor="#657077"
           size={18}
-          iconName="CatalogSharedIcon"
+          iconName="images/catalog.shared.react.svg"
         />
         {t("Share")}
       </Text>
@@ -164,213 +177,81 @@ const SimpleFilesRow = (props) => {
   };
 
   const onOpenLocation = () => {
-    /*const { filter, selection } = this.props;
-    const { folderId, checked, id, isFolder } = selection[0];
-    const item = selection[0];
     const locationId = isFolder ? id : folderId;
-    const locationFilter = isFolder ? filter : null;
-
-    return this.props
-      .fetchFiles(locationId, locationFilter)
-      .then(() => (isFolder ? null : this.onContentRowSelect(!checked, item)));*/
+    openLocationAction(locationId, isFolder);
   };
 
-  const showVersionHistory = (e) => {
-    /*const {
-      homepage,
-      history,
-      setIsLoading,
-      setIsVerHistoryPanel,
-      setVerHistoryFileId,
-      isTabletView,
-    } = this.props;
-
-    const fileId = e.currentTarget.dataset.id;
-
+  const showVersionHistory = () => {
     if (!isTabletView) {
       setIsLoading(true);
-      setVerHistoryFileId(fileId);
+      setVerHistoryFileId(id);
       setIsVerHistoryPanel(true);
     } else {
-      history.push(`${homepage}/${fileId}/history`);
-    }*/
+      history.push(`${homepage}/${id}/history`);
+    }
   };
 
-  const finalizeVersion = (e) => {
-    /*const { selectedFolderId, filter, setIsLoading, fetchFiles } = this.props;
-
-    const fileId = e.currentTarget.dataset.id;
-    //const version = (e.currentTarget.dataset.version)++;
-
-    setIsLoading(true);
-
-    finalizeVersion(fileId, 0, false)
-      .then((data) => {
-        return fetchFiles(selectedFolderId, filter).catch((err) =>
-          toastr.error(err)
-        );
-      })
-      .finally(() => setIsLoading(false));*/
-  };
+  const finalizeVersion = () => finalizeVersionAction(id);
 
   const onClickFavorite = (e) => {
-    /*const {
-      markItemAsFavorite,
-      removeItemFromFavorite,
-      getFileInfo,
-      fetchFavoritesFolder,
-      isFavorites,
-      selectedFolderId,
-      setSelected,
-      //selection,
-      t,
-    } = this.props;
-    const { action, id } = e.currentTarget.dataset;
-    //let data = selection.map(item => item.id)
-    switch (action) {
-      case "mark":
-        return markItemAsFavorite([id])
-          .then(() => getFileInfo(id))
-          .then(() => toastr.success(t("MarkedAsFavorite")))
-          .catch((e) => toastr.error(e));
-      case "remove":
-        return removeItemFromFavorite([id])
-          .then(() => {
-            return isFavorites
-              ? fetchFavoritesFolder(selectedFolderId)
-              : getFileInfo(id);
-          })
-          .then(() => toastr.success(t("RemovedFromFavorites")))
-          .then(() => setSelected("close"))
-          .catch((e) => toastr.error(e));
-      default:
-        return;
-    }*/
+    const { action } = e.currentTarget.dataset;
+    setFavoriteAction(action, id);
   };
 
-  const lockFile = (e) => {
-    // const {
-    //   selection,
-    //   /*files,*/ selectedFolderId,
-    //   filter,
-    //   setIsLoading,
-    //   fetchFiles,
-    // } = this.props;
-    // let fileId, isLockedFile;
-    // const file = selection[0];
-    // if (file) {
-    //   fileId = file.id;
-    //   isLockedFile = !file.locked;
-    // } else {
-    //   const { id, locked } = e.currentTarget.dataset;
-    //   fileId = Number(id);
-    //   isLockedFile = !Boolean(locked);
-    // }
-    // //TODO: move lockFile to actions
-    // lockFile(fileId, isLockedFile).then((res) => {
-    //   /*const newFiles = files;
-    //     const indexOfFile = newFiles.findIndex(x => x.id === res.id);
-    //     newFiles[indexOfFile] = res;*/
-    //   setIsLoading(true);
-    //   fetchFiles(selectedFolderId, filter)
-    //     .catch((err) => toastr.error(err))
-    //     .finally(() => setIsLoading(false));
-    // });
-  };
+  const lockFile = () => lockFileAction(id, locked);
 
   const onClickLinkForPortal = () => {
-    /*const { homepage, selection } = this.props;
-    const item = selection[0];
-    const isFile = !!item.fileExst;
+    const isFile = !!fileExst;
     const { t } = this.props;
     copy(
       isFile
-        ? item.canOpenPlayer
-          ? `${window.location.href}&preview=${item.id}`
-          : item.webUrl
-        : `${window.location.origin + homepage}/filter?folder=${item.id}`
+        ? canOpenPlayer
+          ? `${window.location.href}&preview=${id}`
+          : webUrl
+        : `${window.location.origin + homepage}/filter?folder=${id}`
     );
 
-    toastr.success(t("LinkCopySuccess"));*/
+    toastr.success(t("LinkCopySuccess"));
   };
 
-  const onClickLinkEdit = (e) => {
-    // const { id, providerKey } = e.currentTarget.dataset;
-    // return this.openDocEditor(id, providerKey);
-  };
+  const onClickLinkEdit = () => openDocEditor(id, providerKey);
 
-  const onClickDownload = () => {
-    // return window.open(this.props.selection[0].viewUrl, "_blank");
-  };
+  const onClickDownload = () => window.open(viewUrl, "_blank");
 
-  const onDuplicate = () => {
-    /*const {
-      selection,
-      selectedFolderId,
-      setSecondaryProgressBarData,
-      t,
-    } = this.props;
-    const folderIds = [];
-    const fileIds = [];
-    selection[0].fileExst
-      ? fileIds.push(selection[0].id)
-      : folderIds.push(selection[0].id);
-    const conflictResolveType = 2; //Skip = 0, Overwrite = 1, Duplicate = 2
-    const deleteAfter = false;
-
-    setSecondaryProgressBarData({
-      icon: "duplicate",
-      visible: true,
-      percent: 0,
-      label: t("CopyOperation"),
-      alert: false,
-    });
-    this.copyTo(
-      selectedFolderId,
-      folderIds,
-      fileIds,
-      conflictResolveType,
-      deleteAfter
-    );*/
-  };
+  const onDuplicate = () => duplicateAction(item, t("CopyOperation"));
 
   const onClickRename = () => {
-    /*const { id, fileExst } = this.props.selection[0];
-
-    this.setState({ editingId: id }, () => {
-      this.props.setAction({
-        type: FileAction.Rename,
-        extension: fileExst,
-        id,
-      });
-    });*/
+    setAction({
+      type: FileAction.Rename,
+      extension: fileExst,
+      id,
+    });
   };
 
-  const onChangeThirdPartyInfo = (e) => {
-    const provider = providers.find((x) => x.provider_key === providerKey);
-    const capabilityItem = capabilities.find((x) => x[0] === providerKey);
-    const capability = {
-      title: capabilityItem ? capabilityItem[0] : provider.customer_title,
-      link: capabilityItem ? capabilityItem[1] : " ",
-    };
+  const onChangeThirdPartyInfo = () => setThirdpartyInfo();
 
-    setConnectDialogVisible(true);
-    setConnectItem({ ...provider, ...capability });
+  const onMediaFileClick = (fileId) => {
+    const itemId = typeof fileId !== "object" ? fileId : id;
+    setMediaViewerData({ visible: true, id: itemId });
   };
 
-  const onClickDelete = (e) => {
-    const splitItem = id.split("-");
-
+  const onClickDelete = () => {
     if (isThirdPartyFolder) {
+      const splitItem = id.split("-");
       setRemoveItem({ id: splitItem[splitItem.length - 1], title });
       showDeleteThirdPartyDialog(true);
       return;
     }
 
-    const item = this.props.selection[0];
+    const translations = {
+      deleteOperation: t("DeleteOperation"),
+      folderRemoved: t("FolderRemoved"),
+      fileRemoved: t("FileRemoved"),
+    };
+
     item.fileExst
-      ? this.onDeleteFile(item.id, item.folderId)
-      : this.onDeleteFolder(item.id, item.parentId);
+      ? deleteFileAction(item.id, item.folderId, translations)
+      : deleteFolderAction(item.id, item.parentId, translations);
   };
 
   const getFilesContextOptions = (options, item) => {
@@ -393,7 +274,6 @@ const SimpleFilesRow = (props) => {
             icon: "HistoryIcon",
             onClick: showVersionHistory,
             disabled: false,
-            "data-id": item.id,
           };
         case "finalize-version":
           return {
@@ -402,8 +282,6 @@ const SimpleFilesRow = (props) => {
             icon: "HistoryFinalizedIcon",
             onClick: finalizeVersion,
             disabled: false,
-            "data-id": item.id,
-            "data-version": item.version,
           };
         case "separator0":
         case "separator1":
@@ -426,8 +304,6 @@ const SimpleFilesRow = (props) => {
             onClick: onClickFavorite,
             disabled: false,
             "data-action": "mark",
-            "data-id": item.id,
-            "data-title": item.title,
           };
         case "block-unblock-version":
           return {
@@ -475,8 +351,6 @@ const SimpleFilesRow = (props) => {
             icon: "AccessEditIcon",
             onClick: onClickLinkEdit,
             disabled: false,
-            "data-id": item.id,
-            "data-provider-key": item.providerKey,
           };
         case "preview":
           return {
@@ -485,15 +359,13 @@ const SimpleFilesRow = (props) => {
             icon: "EyeIcon",
             onClick: onClickLinkEdit,
             disabled: true,
-            "data-id": item.id,
-            "data-provider-key": item.providerKey,
           };
         case "view":
           return {
             key: option,
             label: t("View"),
             icon: "EyeIcon",
-            //onClick: this.onMediaFileClick,
+            onClick: onMediaFileClick,
             disabled: false,
           };
         case "download":
@@ -560,8 +432,6 @@ const SimpleFilesRow = (props) => {
             onClick: onClickFavorite,
             disabled: false,
             "data-action": "remove",
-            "data-id": item.id,
-            "data-title": item.title,
           };
         default:
           break;
@@ -571,17 +441,15 @@ const SimpleFilesRow = (props) => {
     });
   };
 
-  const onSelectItem = () => {
-    selected === "close" && setSelected("none");
-    setSelection([item]);
-  };
-
-  const editingId = null; // TODO: move editingId to store
+  // const onSelectItem = () => {
+  //   selected === "close" && setSelected("none");
+  //   setSelection([item]);
+  // };
 
   const isMobile = sectionWidth < 500;
 
   const isEdit =
-    !!actionType && editingId === id && fileExst === actionExtension;
+    !!actionType && actionId === id && fileExst === actionExtension;
 
   const contextOptionsProps =
     !isEdit && contextOptions && contextOptions.length > 0
@@ -621,12 +489,11 @@ const SimpleFilesRow = (props) => {
         element={element}
         contentElement={sharedButton}
         onSelect={onContentRowSelect}
-        editing={editingId}
         isPrivacy={isPrivacy}
         {...checkedProps}
         {...contextOptionsProps}
         //needForUpdate={this.needForUpdate}
-        selectItem={onSelectItem}
+        //selectItem={onSelectItem}
         contextButtonSpacerWidth={displayShareButton}
       >
         <FilesRowContent item={item} sectionWidth={sectionWidth} />
@@ -638,23 +505,26 @@ const SimpleFilesRow = (props) => {
 export default inject(
   (
     {
+      auth,
       initFilesStore,
       filesStore,
       treeFoldersStore,
       selectedFolderStore,
       dialogsStore,
-      settingsStore,
+      versionHistoryStore,
+      filesActionsStore,
+      mediaViewerDataStore,
     },
     { item }
   ) => {
-    const { dragging } = initFilesStore;
+    const { homepage, isTabletView } = auth.settingsStore;
+    const { dragging, setIsLoading } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+
     const {
       setSharingPanelVisible,
       setChangeOwnerPanelVisible,
-      setConnectDialogVisible,
-      setConnectItem,
       setRemoveItem,
       showDeleteThirdPartyDialog,
       setMoveToPanelVisible,
@@ -662,18 +532,18 @@ export default inject(
     } = dialogsStore;
 
     const {
-      selected,
-      setSelected,
-      selectFile,
-      deselectFile,
+      //selected,
+      //setSelected,
       selection,
       canShare,
-      setSelection,
+      //setSelection,
+      openDocEditor,
+      fileActionStore,
     } = filesStore;
 
     const { isRootFolder } = selectedFolderStore;
-
-    const { providers, capabilities } = settingsStore.thirdPartyStore;
+    const { setIsVerHistoryPanel, setVerHistoryFileId } = versionHistoryStore;
+    const { setAction } = fileActionStore;
 
     const selectedItem = selection.find(
       (x) => x.id === item.id && x.fileExst === item.fileExst
@@ -683,6 +553,20 @@ export default inject(
     const draggable =
       selectedItem && isRecycleBinFolder && selectedItem.id !== id;
 
+    const {
+      deleteFileAction,
+      deleteFolderAction,
+      lockFileAction,
+      finalizeVersionAction,
+      duplicateAction,
+      setFavoriteAction,
+      openLocationAction,
+      selectRowAction,
+      setThirdpartyInfo,
+    } = filesActionsStore;
+
+    const { setMediaViewerData } = mediaViewerDataStore;
+
     return {
       dragging,
       actionType: type,
@@ -691,25 +575,46 @@ export default inject(
       isRecycleBin: isRecycleBinFolder,
       isRootFolder,
       canShare,
-      selected,
-      setSelected,
-      selectFile,
-      deselectFile,
-      setSelection,
+      //selected,
+      //setSelected,
+      //setSelection,
       checked: selection.some((el) => el.id === item.id),
       isFolder,
       draggable,
-      providers,
-      capabilities,
-
+      homepage,
+      isTabletView,
+      actionId: fileActionStore.id,
       setSharingPanelVisible,
       setChangeOwnerPanelVisible,
-      setConnectDialogVisible,
-      setConnectItem,
       setRemoveItem,
       showDeleteThirdPartyDialog,
       setMoveToPanelVisible,
       setCopyPanelVisible,
+      openDocEditor,
+      setIsLoading,
+      setIsVerHistoryPanel,
+      setVerHistoryFileId,
+      setAction,
+      deleteFileAction,
+      deleteFolderAction,
+      lockFileAction,
+      finalizeVersionAction,
+      duplicateAction,
+      setFavoriteAction,
+      openLocationAction,
+      selectRowAction,
+      setThirdpartyInfo,
+      setMediaViewerData,
     };
   }
-)(withTranslation()(observer(SimpleFilesRow)));
+)(withTranslation("Home")(observer(SimpleFilesRow)));
+
+// onDrop = (item, items, e) => {
+//   const { onDropZoneUpload, selectedFolderId } = this.props;
+
+//   if (!item.fileExst) {
+//     onDropZoneUpload(items, item.id);
+//   } else {
+//     onDropZoneUpload(items, selectedFolderId);
+//   }
+// };

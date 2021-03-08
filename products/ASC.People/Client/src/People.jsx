@@ -15,7 +15,8 @@ const GroupAction = React.lazy(() => import("./components/pages/GroupAction"));
 const Reassign = React.lazy(() => import("./components/pages/Reassign"));
 import config from "../package.json";
 import "./custom.scss";
-import "./i18n";
+import i18n from "./i18n";
+import { I18nextProvider } from "react-i18next";
 
 const Error404 = React.lazy(() => import("studio/Error404"));
 
@@ -86,8 +87,10 @@ const People = inject(({ auth, peopleStore }) => ({
 
 const peopleStore = new PeopleStore();
 
-export default () => (
+export default (props) => (
   <PeopleProvider peopleStore={peopleStore}>
-    <People />
+    <I18nextProvider i18n={i18n}>
+      <People {...props}/>
+    </I18nextProvider>
   </PeopleProvider>
 );

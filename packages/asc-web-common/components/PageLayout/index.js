@@ -4,10 +4,7 @@ import Backdrop from "@appserver/components/backdrop";
 //import ProgressBar from "@appserver/components/progress-bar";
 import { size } from "@appserver/components/utils/device";
 import { Provider } from "@appserver/components/utils/context";
-
-import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import i18n from "./i18n";
 import Article from "./sub-components/article";
 import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
@@ -20,7 +17,6 @@ import SubSectionBody from "./sub-components/section-body";
 import SubSectionBodyContent from "./sub-components/section-body-content";
 import SubSectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
-import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
@@ -60,7 +56,7 @@ function SectionPaging() {
 }
 SectionPaging.displayName = "SectionPaging";
 
-class PageLayoutComponent extends React.Component {
+class PageLayout extends React.Component {
   static ArticleHeader = ArticleHeader;
   static ArticleMainButton = ArticleMainButton;
   static ArticleBody = ArticleBody;
@@ -282,9 +278,7 @@ class PageLayoutComponent extends React.Component {
             {isArticleBodyAvailable && (
               <ArticlePinPanel
                 pinned={this.state.isArticlePinned}
-                pinText={this.props.t("Pin")}
                 onPin={this.pinArticle}
-                unpinText={this.props.t("Unpin")}
                 onUnpin={this.unpinArticle}
               />
             )}
@@ -410,11 +404,10 @@ class PageLayoutComponent extends React.Component {
   }
 }
 
-PageLayoutComponent.propTypes = {
+PageLayout.propTypes = {
   children: PropTypes.any,
   withBodyScroll: PropTypes.bool,
   withBodyAutoFocus: PropTypes.bool,
-  t: PropTypes.func,
   showPrimaryProgressBar: PropTypes.bool,
   primaryProgressBarValue: PropTypes.number,
   showPrimaryButtonAlert: PropTypes.bool,
@@ -437,19 +430,9 @@ PageLayoutComponent.propTypes = {
   firstLoad: PropTypes.bool,
 };
 
-PageLayoutComponent.defaultProps = {
+PageLayout.defaultProps = {
   withBodyScroll: true,
   withBodyAutoFocus: false,
-};
-
-const PageLayoutTranslated = withTranslation()(PageLayoutComponent);
-
-const PageLayout = ({ language, ...rest }) => {
-  useEffect(() => {
-    changeLanguage(i18n, language);
-  }, [language]);
-
-  return <PageLayoutTranslated i18n={i18n} {...rest} />;
 };
 
 PageLayout.ArticleHeader = ArticleHeader;
@@ -460,13 +443,8 @@ PageLayout.SectionFilter = SectionFilter;
 PageLayout.SectionBody = SectionBody;
 PageLayout.SectionPaging = SectionPaging;
 
-PageLayout.propTypes = {
-  language: PropTypes.string,
-  children: PropTypes.any,
-};
-
 export default inject(({ auth }) => {
-  const { isLoaded, language, settingsStore } = auth;
+  const { isLoaded, settingsStore } = auth;
   const {
     isHeaderVisible,
     isTabletView,
@@ -475,7 +453,6 @@ export default inject(({ auth }) => {
   } = settingsStore;
   return {
     isLoaded,
-    language,
     isTabletView,
     isHeaderVisible,
     isArticlePinned,

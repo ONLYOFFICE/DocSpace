@@ -8,7 +8,7 @@ import RegisterModalDialog from "./register-modal-dialog";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { sendRegisterRequest } from "@appserver/common/api/settings";
-import { I18nextProvider, withTranslation } from "react-i18next";
+import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import { inject, observer } from "mobx-react";
 
@@ -26,12 +26,15 @@ const StyledRegister = styled(Box)`
   cursor: pointer;
 `;
 
-const Register = ({ t }) => {
+const Register = (props) => {
+  const { enabledJoin, isAuthenticated } = props;
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState("");
   const [emailErr, setEmailErr] = useState(false);
+
+  const { t } = useTranslation("Login");
 
   const onRegisterClick = () => {
     setVisible(true);
@@ -64,50 +67,31 @@ const Register = ({ t }) => {
   };
 
   return (
-    <>
-      <StyledRegister onClick={onRegisterClick}>
-        <Text color="#316DAA">{t("Register")}</Text>
-      </StyledRegister>
+    enabledJoin &&
+    !isAuthenticated && (
+      <>
+        <StyledRegister onClick={onRegisterClick}>
+          <Text color="#316DAA">{t("Register")}</Text>
+        </StyledRegister>
 
-      {visible && (
-        <RegisterModalDialog
-          visible={visible}
-          loading={loading}
-          email={email}
-          emailErr={emailErr}
-          t={t}
-          onChangeEmail={onChangeEmail}
-          onRegisterModalClose={onRegisterModalClose}
-          onSendRegisterRequest={onSendRegisterRequest}
-        />
-      )}
-    </>
+        {visible && (
+          <RegisterModalDialog
+            visible={visible}
+            loading={loading}
+            email={email}
+            emailErr={emailErr}
+            t={t}
+            onChangeEmail={onChangeEmail}
+            onRegisterModalClose={onRegisterModalClose}
+            onSendRegisterRequest={onSendRegisterRequest}
+          />
+        )}
+      </>
+    )
   );
 };
 
 Register.propTypes = {
-  t: PropTypes.func.isRequired,
-};
-
-const RegisterTranslationWrapper = withTranslation()(Register);
-
-const RegisterWrapper = (props) => {
-  const { language, isAuthenticated, enabledJoin } = props;
-
-  useEffect(() => {
-    i18n.changeLanguage(language);
-  }, [language]);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      {enabledJoin && !isAuthenticated && (
-        <RegisterTranslationWrapper {...props} />
-      )}
-    </I18nextProvider>
-  );
-};
-
-RegisterWrapper.propTypes = {
   language: PropTypes.string,
   isAuthenticated: PropTypes.bool,
   enabledJoin: PropTypes.bool,
@@ -121,4 +105,4 @@ export default inject(({ auth }) => {
     isAuthenticated,
     language,
   };
-})(observer(RegisterWrapper));
+})(observer(Register));

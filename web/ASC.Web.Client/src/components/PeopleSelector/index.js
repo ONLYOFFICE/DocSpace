@@ -31,7 +31,7 @@ class PeopleSelector extends React.Component {
             groups: [
               {
                 key: "all",
-                label: t("CustomAllGroups", { groupsCaption }),
+                label: i18n.t("CustomAllGroups", { groupsCaption }),
                 total: 0,
               },
             ].concat(this.convertGroups(groups)),
@@ -43,7 +43,7 @@ class PeopleSelector extends React.Component {
         groups: [
           {
             key: "all",
-            label: t("CustomAllGroups", { groupsCaption }),
+            label: i18n.t("CustomAllGroups", { groupsCaption }),
             total: 0,
           },
         ].concat(groupList),

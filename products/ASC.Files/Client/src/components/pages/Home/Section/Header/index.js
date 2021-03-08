@@ -6,11 +6,7 @@ import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import Headline from "@appserver/common/components/Headline";
 import { FilterType, FileAction } from "@appserver/common/constants";
-import {
-  getProgress,
-  downloadFiles,
-  removeFiles,
-} from "@appserver/common/api/files";
+import { downloadFiles } from "@appserver/common/api/files";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import ContextMenuButton from "@appserver/components/context-menu-button";
@@ -20,14 +16,7 @@ import IconButton from "@appserver/components/icon-button";
 import { tablet, desktop } from "@appserver/components/utils/device";
 import { Consumer } from "@appserver/components/utils/context";
 import { TIMEOUT } from "../../../../../helpers/constants";
-// import {
-//   EmptyTrashDialog,
-//   DeleteDialog,
-//   DownloadDialog,
-// } from "../../../../dialogs";
-import { OperationsPanel } from "../../../../panels";
 import { inject, observer } from "mobx-react";
-import { loopTreeFolders } from "../../../../../helpers/files-helpers";
 
 const StyledContainer = styled.div`
   .header-container {
@@ -106,10 +95,12 @@ const StyledContainer = styled.div`
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
 
-    ${isMobile &&
-    css`
-      position: sticky;
-    `}
+    ${
+      isMobile &&
+      css`
+        position: sticky;
+      `
+    }
 
     ${(props) =>
       !props.isTabletView
@@ -126,10 +117,12 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       padding-bottom: 0;
-      ${!isMobile &&
-      css`
-        height: 56px;
-      `}
+      ${
+        !isMobile &&
+        css`
+          height: 56px;
+        `
+      }
       & > div:first-child {
         ${(props) =>
           !isMobile &&
@@ -157,13 +150,6 @@ const StyledContainer = styled.div`
 class SectionHeaderContent extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      //showDeleteDialog: false,
-      //showDownloadDialog: false,
-      //showEmptyTrashDialog: false,
-      //showCopyPanel: false,
-    };
   }
 
   onCreate = (format) => {
@@ -232,36 +218,7 @@ class SectionHeaderContent extends React.Component {
   onMoveAction = () => this.props.setMoveToPanelVisible(true);
   onCopyAction = () => this.props.setCopyPanelVisible(true);
 
-  //TODO: move to action, fix download dialog
-  loop = (data) => {
-    const url = data.url;
-    getProgress()
-      .then((res) => {
-        const currentItem = res.find((x) => x.id === data.id);
-        if (!url) {
-          this.props.setSecondaryProgressBarData({
-            icon: "file",
-            visible: true,
-            percent: currentItem.progress,
-            label: this.props.t("ArchivingData"),
-            alert: false,
-          });
-          setTimeout(() => this.loop(currentItem), 1000);
-        } else {
-          setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
-          return (window.location.href = url);
-        }
-      })
-      .catch((err) => {
-        this.props.setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        //toastr.error(err);
-        setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
-      });
-  };
-
+  //TODO: move to actions?
   downloadAction = () => {
     const {
       t,
@@ -297,7 +254,7 @@ class SectionHeaderContent extends React.Component {
 
     downloadFiles(fileIds, folderIds)
       .then((res) => {
-        this.loop(res[0]);
+        this.props.getDownloadProgress(res[0], t("ArchivingData"));
       })
       .catch((err) => {
         setSecondaryProgressBarData({
@@ -309,134 +266,30 @@ class SectionHeaderContent extends React.Component {
       });
   };
 
-  downloadAsAction = () =>
-    this.setState({ showDownloadDialog: !this.state.showDownloadDialog });
-
+  downloadAsAction = () => this.props.setDownloadDialogVisible(true);
   renameAction = () => toastr.info("renameAction click");
-
   onOpenSharingPanel = () => this.props.setSharingPanelVisible(true);
 
-  loopDeleteOperation = (id) => {
+  onDeleteAction = () => {
     const {
-      currentFolderId,
-      filter,
-      treeFolders,
-      setTreeFolders,
-      isRecycleBin,
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
       t,
-      fetchFiles,
-      setUpdateTree,
-    } = this.props;
-    const successMessage = isRecycleBin
-      ? t("DeleteFromTrash")
-      : t("DeleteSelectedElem");
-    getProgress()
-      .then((res) => {
-        const currentProcess = res.find((x) => x.id === id);
-        if (currentProcess && currentProcess.progress !== 100) {
-          setSecondaryProgressBarData({
-            icon: "trash",
-            percent: currentProcess.progress,
-            label: t("DeleteOperation"),
-            visible: true,
-            alert: false,
-          });
-          setTimeout(() => this.loopDeleteOperation(id), 1000);
-        } else {
-          setSecondaryProgressBarData({
-            icon: "trash",
-            percent: 100,
-            label: t("DeleteOperation"),
-            visible: true,
-            alert: false,
-          });
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          fetchFiles(currentFolderId, filter).then((data) => {
-            if (!isRecycleBin) {
-              const path = data.selectedFolder.pathParts.slice(0);
-              const newTreeFolders = treeFolders;
-              const folders = data.selectedFolder.folders;
-              const foldersCount = data.selectedFolder.foldersCount;
-              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              setUpdateTree(true);
-              setTreeFolders(newTreeFolders);
-            }
-            toastr.success(successMessage);
-          });
-        }
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        //toastr.error(err);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      });
-  };
-
-  onDelete = () => {
-    const {
-      isRecycleBin,
-      isPrivacy,
-      t,
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-      selection,
+      deleteAction,
+      confirmDelete,
+      setDeleteDialogVisible,
     } = this.props;
 
-    const deleteAfter = true; //Delete after finished
-    const immediately = isRecycleBin || isPrivacy ? true : false; //Don't move to the Recycle Bin
+    if (confirmDelete) {
+      setDeleteDialogVisible(true);
+    } else {
+      const translations = {
+        deleteOperation: t("DeleteOperation"),
+        deleteFromTrash: t("DeleteFromTrash"),
+        deleteSelectedElem: t("DeleteSelectedElem"),
+      };
 
-    const folderIds = [];
-    const fileIds = [];
-
-    let i = 0;
-    while (selection.length !== i) {
-      if (selection[i].fileExst) {
-        fileIds.push(selection[i].id);
-      } else {
-        folderIds.push(selection[i].id);
-      }
-      i++;
-    }
-
-    if (folderIds.length || fileIds.length) {
-      setSecondaryProgressBarData({
-        icon: "trash",
-        visible: true,
-        label: t("DeleteOperation"),
-        percent: 0,
-        alert: false,
-      });
-
-      removeFiles(folderIds, fileIds, deleteAfter, immediately)
-        .then((res) => {
-          const id = res[0] && res[0].id ? res[0].id : null;
-          this.loopDeleteOperation(id);
-        })
-        .catch((err) => {
-          setSecondaryProgressBarData({
-            visible: true,
-            alert: true,
-          });
-          //toastr.error(err);
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-        });
+      deleteAction(translations);
     }
   };
-
-  //TODO: move to actions, fix delete dialog
-  // onDeleteAction = () => {
-  //   //console.log(this.props.confirmDelete);
-  //   if (this.props.confirmDelete) {
-  //     this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
-  //   } else {
-  //     this.onDelete();
-  //   }
-  // };
 
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
 
@@ -635,9 +488,7 @@ class SectionHeaderContent extends React.Component {
 
     const {
       t,
-      //selection,
       isHeaderVisible,
-      //isRecycleBin,
       isHeaderChecked,
       isHeaderIndeterminate,
       isRootFolder,
@@ -646,13 +497,6 @@ class SectionHeaderContent extends React.Component {
       isDesktop,
       isTabletView,
     } = this.props;
-
-    const {
-      //showDeleteDialog,
-      //showEmptyTrashDialog,
-      //showDownloadDialog,
-      //showCopyPanel,
-    } = this.state;
 
     const menuItems = this.getMenuItems();
 
@@ -750,46 +594,6 @@ class SectionHeaderContent extends React.Component {
                 )}
               </div>
             )}
-
-            {/* {showDeleteDialog && (
-              <DeleteDialog
-                isRecycleBin={isRecycleBin}
-                visible={showDeleteDialog}
-                onClose={this.onDeleteAction}
-                selection={selection}
-              />
-            )}
-
-            {showEmptyTrashDialog && (
-              <EmptyTrashDialog
-                visible={showEmptyTrashDialog}
-                onClose={this.onEmptyTrashAction}
-              />
-            )} */}
-
-            {/* showMoveToPanel && (
-              <OperationsPanel
-                isCopy={false}
-                visible={showMoveToPanel}
-                onClose={this.onMoveAction}
-              />
-            ) */}
-
-            {/* {showCopyPanel && (
-              <OperationsPanel
-                isCopy={true}
-                visible={showCopyPanel}
-                onClose={this.onCopyAction}
-              />
-            )} */}
-
-            {/* {showDownloadDialog && (
-              <DownloadDialog
-                visible={showDownloadDialog}
-                onClose={this.downloadAsAction}
-                onDownloadProgress={this.loop}
-              />
-            )} */}
           </StyledContainer>
         )}
       </Consumer>
@@ -806,7 +610,8 @@ export default inject(
     dialogsStore,
     treeFoldersStore,
     selectedFolderStore,
-    //settingsStore,
+    filesActionsStore,
+    settingsStore,
   }) => {
     const { setIsLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
@@ -815,7 +620,6 @@ export default inject(
       fileActionStore,
       fetchFiles,
       selection,
-
       filter,
       canCreate,
       isHeaderVisible,
@@ -838,10 +642,13 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setEmptyTrashDialogVisible,
+      setDownloadDialogVisible,
+      setDeleteDialogVisible,
     } = dialogsStore;
 
+    const { deleteAction, getDownloadProgress } = filesActionsStore;
+
     return {
-      isAdmin: auth.isAdmin,
       isDesktop: auth.settingsStore.isDesktopClient,
       isRootFolder: selectedFolderStore.parentId === 0,
       title: selectedFolderStore.title,
@@ -862,8 +669,8 @@ export default inject(
       isThirdPartySelection,
       isWebEditSelected,
       isTabletView: auth.settingsStore.isTabletView,
-      //confirmDelete: settingsStore.confirmDelete,
-      treeFolders: treeFoldersStore.treeFolders,
+      confirmDelete: settingsStore.confirmDelete,
+
       setSelected,
       setAction,
       setIsLoading,
@@ -874,6 +681,10 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setEmptyTrashDialogVisible,
+      deleteAction,
+      setDeleteDialogVisible,
+      setDownloadDialogVisible,
+      getDownloadProgress,
     };
   }
 )(withTranslation("Home")(withRouter(observer(SectionHeaderContent))));

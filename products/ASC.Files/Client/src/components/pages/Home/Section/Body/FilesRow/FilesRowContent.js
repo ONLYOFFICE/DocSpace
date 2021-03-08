@@ -13,6 +13,7 @@ import {
   markAsRead,
   getFileConversationProgress,
 } from "@appserver/common/api/files";
+import history from "@appserver/common/history";
 import { FileAction, ShareAccessRights } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 import FavoriteIcon from "../../../../../../../public/images/favorite.react.svg";
@@ -21,7 +22,6 @@ import FileActionsLockedIcon from "../../../../../../../public/images/file.actio
 import CheckIcon from "../../../../../../../public/images/check.react.svg";
 import CrossIcon from "../../../../../../../../../../public/images/cross.react.svg";
 import { TIMEOUT } from "../../../../../../helpers/constants";
-import { setEncryptionAccess } from "../../../../../../helpers/desktop";
 import { getTitleWithoutExst } from "../../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../../panels";
 import { ConvertDialog } from "../../../../../dialogs";
@@ -115,13 +115,12 @@ class FilesRowContent extends React.PureComponent {
     super(props);
     let titleWithoutExt = getTitleWithoutExst(props.item);
 
-    if (props.fileAction.id === -1) {
-      titleWithoutExt = this.getDefaultName(props.fileAction.extension);
+    if (props.fileActionId === -1) {
+      titleWithoutExt = this.getDefaultName(props.fileActionExt);
     }
 
     this.state = {
       itemTitle: titleWithoutExt,
-      editingId: props.fileAction.id,
       showNewFilesPanel: false,
       newFolderId: [],
       newItems: props.item.new || props.item.fileStatus === 2,
@@ -131,16 +130,17 @@ class FilesRowContent extends React.PureComponent {
   }
 
   completeAction = (id) => {
-    this.props.onEditComplete(id, !this.props.item.fileExst);
+    const { item } = this.props;
+    this.props.editCompleteAction(id, !item.fileExst /* item */);
   };
 
-  updateItem = (e) => {
+  updateItem = () => {
     const {
-      fileAction,
       updateFile,
       renameFolder,
       item,
       setIsLoading,
+      fileActionId,
     } = this.props;
 
     const { itemTitle } = this.state;
@@ -151,15 +151,15 @@ class FilesRowContent extends React.PureComponent {
       this.setState({
         itemTitle: originalTitle,
       });
-      return this.completeAction(fileAction.id);
+      return this.completeAction(fileActionId);
     }
 
     item.fileExst
-      ? updateFile(fileAction.id, itemTitle)
-          .then(() => this.completeAction(fileAction.id))
+      ? updateFile(fileActionId, itemTitle)
+          .then(() => this.completeAction(fileActionId))
           .finally(() => setIsLoading(false))
-      : renameFolder(fileAction.id, itemTitle)
-          .then(() => this.completeAction(fileAction.id))
+      : renameFolder(fileActionId, itemTitle)
+          .then(() => this.completeAction(fileActionId))
           .finally(() => setIsLoading(false));
   };
 
@@ -239,23 +239,23 @@ class FilesRowContent extends React.PureComponent {
           });
   };
 
-  componentDidUpdate(prevProps) {
-    const { fileAction, item, newRowItems, setNewRowItems } = this.props;
-    const itemId = item.id.toString();
+  // componentDidUpdate(prevProps) {
+  //   const { item, newRowItems, setNewRowItems } = this.props;
+  //   const itemId = item.id.toString();
 
-    if (newRowItems.length && newRowItems.includes(itemId)) {
-      const rowItems = newRowItems.filter((x) => x !== itemId);
-      if (this.state.newItems !== 0) {
-        this.setState({ newItems: 0 }, () => setNewRowItems(rowItems));
-      }
-    }
+  //   if (newRowItems.length && newRowItems.includes(itemId)) {
+  //     const rowItems = newRowItems.filter((x) => x !== itemId);
+  //     if (this.state.newItems !== 0) {
+  //       this.setState({ newItems: 0 }, () => setNewRowItems(rowItems));
+  //     }
+  //   }
 
-    if (fileAction) {
-      if (fileAction.id !== prevProps.fileAction.id) {
-        this.setState({ editingId: fileAction.id });
-      }
-    }
-  }
+  //   if (fileAction) {
+  //     if (fileActionId !== prevProps.fileActionId) {
+  //       this.setState({ editingId: fileActionId });
+  //     }
+  //   }
+  // }
 
   renameTitle = (e) => {
     let title = e.target.value;
@@ -278,7 +278,7 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onClickUpdateItem = (e) => {
-    this.props.fileAction.type === FileAction.Create
+    this.props.fileActionType === FileAction.Create
       ? this.createItem(e)
       : this.updateItem(e);
   };
@@ -373,7 +373,7 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onShowVersionHistory = (e) => {
-    const { homepage, history } = this.props;
+    const { homepage } = this.props;
     const fileId = e.currentTarget.dataset.id;
 
     history.push(`${homepage}/${fileId}/history`);
@@ -494,18 +494,17 @@ class FilesRowContent extends React.PureComponent {
     const {
       t,
       item,
-      fileAction,
       isTrashFolder,
-      folders,
       isLoading,
       isMobile,
       canWebEdit,
       /* canConvert,*/
       sectionWidth,
+      fileActionId,
+      fileActionExt,
     } = this.props;
     const {
       itemTitle,
-      editingId,
       showNewFilesPanel,
       newItems,
       newFolderId,
@@ -534,7 +533,7 @@ class FilesRowContent extends React.PureComponent {
     const accessToEdit =
       item.access === ShareAccessRights.FullAccess ||
       item.access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
-    const isEdit = id === editingId && fileExst === fileAction.extension;
+    const isEdit = id === fileActionId && fileExst === fileActionExt;
 
     const linkStyles =
       isTrashFolder || window.innerWidth <= 1024
@@ -567,7 +566,6 @@ class FilesRowContent extends React.PureComponent {
             visible={showNewFilesPanel}
             onClose={this.onShowNewFilesPanel}
             folderId={newFolderId}
-            folders={folders}
           />
         )}
         <SimpleFilesRowContent
@@ -626,11 +624,9 @@ class FilesRowContent extends React.PureComponent {
                   />
                 )}
                 {locked && (
-                  <Icons.FileActionsLockedIcon // TODO: Icons
+                  <StyledFileActionsLockedIcon
                     className="badge lock-file"
                     size="small"
-                    isfill={true}
-                    color="#3B72A7"
                     data-id={item.id}
                     data-locked={true}
                     onClick={this.props.onClickLock}
@@ -769,14 +765,11 @@ export default inject(
       uploadDataStore,
       treeFoldersStore,
       selectedFolderStore,
+      filesActionsStore,
     },
     { item }
   ) => {
-    const {
-      replaceFileStream,
-      getEncryptionAccess,
-      setEncryptionAccess,
-    } = auth;
+    const { replaceFileStream, setEncryptionAccess } = auth;
     const { homepage, culture, isDesktopClient } = auth.settingsStore;
     const { setIsLoading, isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
@@ -787,7 +780,6 @@ export default inject(
     } = formatsStore;
 
     const {
-      folders,
       fetchFiles,
       filter,
       setNewRowItems,
@@ -796,6 +788,7 @@ export default inject(
       updateFile,
       renameFolder,
       createFolder,
+      openDocEditor,
     } = filesStore;
 
     const {
@@ -807,9 +800,12 @@ export default inject(
       addExpandedKeys,
     } = treeFoldersStore;
 
-    const { type, extension, id } = filesStore.fileActionStore;
+    const {
+      type: fileActionType,
+      extension: fileActionExt,
+      id: fileActionId,
+    } = filesStore.fileActionStore;
 
-    const fileAction = { type, extension, id };
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -826,8 +822,9 @@ export default inject(
       homepage,
       viewer: auth.userStore.user,
       culture,
-      fileAction,
-      folders,
+      fileActionId,
+      fileActionType,
+      fileActionExt,
       selectedFolderId: selectedFolderStore.id,
       selectedFolderPathParts: selectedFolderStore.pathParts,
       newItems: selectedFolderStore.new,
@@ -856,9 +853,10 @@ export default inject(
       updateFile,
       renameFolder,
       replaceFileStream,
-      getEncryptionAccess,
       setEncryptionAccess,
       addExpandedKeys,
+      openDocEditor,
+      editCompleteAction: filesActionsStore.editCompleteAction,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesRowContent))));
