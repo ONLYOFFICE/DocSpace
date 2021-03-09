@@ -1,66 +1,75 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import { withKnobs, color, select, date } from "@storybook/addon-knobs/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
-import Calendar from ".";
-import Section from "../../../.storybook/decorators/section";
+import Calendar from "./";
 
-function myDateKnob(name, defaultValue) {
-  const stringTimestamp = date(name, defaultValue);
-  return new Date(stringTimestamp);
-}
+export default {
+  title: "Components/Calendar",
+  component: Calendar,
+  argTypes: {
+    themeColor: { control: "color" },
+    selectedDate: { control: "date" },
+    openToDate: { control: "date" },
+    maxDate: { control: "date" },
+    minDate: { control: "date" },
+    locale: {
+      control: {
+        type: "select",
+        options: [
+          "az",
+          "zh-cn",
+          "cs",
+          "nl",
+          "en-gb",
+          "en",
+          "fi",
+          "fr",
+          "de",
+          "de-ch",
+          "el",
+          "it",
+          "ja",
+          "ko",
+          "lv",
+          "pl",
+          "pt",
+          "pt-br",
+          "ru",
+          "sk",
+          "sl",
+          "es",
+          "tr",
+          "uk",
+          "vi",
+        ],
+      },
+    },
+    onChange: { action: "onChange" },
+  },
+  parameters: {
+    docs: {
+      description: {
+        component: "Used to display custom calendar",
+      },
+    },
+  },
+};
 
-const locales = [
-  "az",
-  "zh-cn",
-  "cs",
-  "nl",
-  "en-gb",
-  "en",
-  "fi",
-  "fr",
-  "de",
-  "de-ch",
-  "el",
-  "it",
-  "ja",
-  "ko",
-  "lv",
-  "pl",
-  "pt",
-  "pt-br",
-  "ru",
-  "sk",
-  "sl",
-  "es",
-  "tr",
-  "uk",
-  "vi",
-];
+const Template = (args) => {
+  return (
+    <Calendar
+      {...args}
+      maxDate={new Date(args.maxDate)}
+      selectedDate={new Date(args.selectedDate)}
+      openToDate={new Date(args.openToDate)}
+      minDate={new Date(args.minDate)}
+      locale="en"
+    />
+  );
+};
 
-const arraySize = ["base", "big"];
-
-storiesOf("Components|Calendar", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("base", () => (
-    <Section>
-      <Calendar
-        onChange={(date) => {
-          action("Selected date")(date);
-        }}
-        themeColor={color("themeColor", "#ED7309")}
-        selectedDate={myDateKnob("selectedDate", new Date())}
-        openToDate={myDateKnob("openToDate", new Date())}
-        minDate={myDateKnob("minDate", new Date("1970/01/01"))}
-        maxDate={myDateKnob(
-          "maxDate",
-          new Date(new Date().getFullYear() + 1 + "/01/01")
-        )}
-        locale={select("locale", locales, "en")}
-        size={select("size", arraySize, "base")}
-      />
-    </Section>
-  ));
+export const Default = Template.bind({});
+Default.args = {
+  maxDate: new Date(new Date().getFullYear() + 1 + "/01/01"),
+  minDate: new Date("1970/01/01"),
+  selectedDate: new Date(),
+  openToDate: new Date(),
+};

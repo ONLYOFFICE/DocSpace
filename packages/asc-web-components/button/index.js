@@ -10,7 +10,7 @@ const Icon = ({ size, primary, icon, isHovered }) => (
   <div className="btnIcon">
     {icon &&
       React.cloneElement(icon, {
-        isfill: true,
+        //isfill: true,
         size: size === "large" ? "large" : size === "big" ? "medium" : "small",
         color: icon.props.color
           ? isHovered
@@ -59,25 +59,37 @@ const Button = React.forwardRef((props, ref) => {
 });
 
 Button.propTypes = {
+  /** Button text */
   label: PropTypes.string,
+  /** Tells when the button should be primary */
   primary: PropTypes.bool,
+  /** Size of button */
   size: PropTypes.oneOf(["base", "medium", "big", "large"]),
+  /** Scale width of button to 100% */
   scale: PropTypes.bool,
+  /** Icon node element */
   icon: PropTypes.node,
-
+  /** Button tab index */
   tabIndex: PropTypes.number,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts CSS style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-
+  /** Tells when the button should present a hovered state */
   isHovered: PropTypes.bool,
+  /** Disable hover effect */
   disableHover: PropTypes.bool,
+  /** Tells when the button should present a clicked state */
   isClicked: PropTypes.bool,
+  /** Tells when the button should present a disabled state */
   isDisabled: PropTypes.bool,
+  /** Tells when the button should show loader icon */
   isLoading: PropTypes.bool,
-
+  /** Sets the nim width of the button */
   minwidth: PropTypes.string,
-
+  /** What the button will trigger when clicked */
   onClick: PropTypes.func,
 };
 

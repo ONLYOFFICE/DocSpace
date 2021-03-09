@@ -115,18 +115,41 @@ class EmailInput extends React.Component {
 }
 
 EmailInput.propTypes = {
+  /** Accepts class */
   className: PropTypes.string,
+  /** Function for your custom validation input value. Function must return object with following parameters: `value`: string value of input, `isValid`: boolean result of validating, `errors`(optional): array of errors */
   customValidate: PropTypes.func,
+  /** { allowDomainPunycode: false, allowLocalPartPunycode: false, allowDomainIp: false, allowStrictLocalPart: true, allowSpaces: false, allowName: false, allowLocalDomainName: false } | Settings for validating email  */
   emailSettings: PropTypes.oneOfType([
     PropTypes.instanceOf(EmailSettings),
     PropTypes.objectOf(PropTypes.bool),
   ]),
+  /** Used in your custom validation  */
   hasError: PropTypes.bool,
+  /** Supported size of the input fields.  */
+  size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
+  /** Accepts id  */
   id: PropTypes.string,
+  /** Function for your custom handling changes in input */
   onChange: PropTypes.func,
+  /** Will be validate our value, return object with following parameters: `isValid`: boolean result of validating, `errors`: array of errors */
   onValidateInput: PropTypes.func,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Value of the input */
   value: PropTypes.string,
+  /** Used as HTML `autocomplete` property */
+  autoComplete: PropTypes.string,
+  /** Indicates that the field cannot be used (e.g not authorised, or changes not saved)  */
+  isDisabled: PropTypes.bool,
+  /** Indicates that the field is displaying read-only content */
+  isReadOnly: PropTypes.bool,
+  /** Used as HTML `name` property  */
+  name: PropTypes.string,
+  /** Placeholder text for the input  */
+  placeholder: PropTypes.string,
+  /** Indicates the input field has scale */
+  scale: PropTypes.bool,
 };
 
 EmailInput.defaultProps = {
@@ -134,6 +157,7 @@ EmailInput.defaultProps = {
   className: "",
   hasError: undefined,
   id: "",
+  /** kkkk;kk */
   isDisabled: false,
   isReadOnly: false,
   maxLength: 255,
@@ -143,8 +167,9 @@ EmailInput.defaultProps = {
   size: "base",
   title: "",
   value: "",
+  /** dfkasdfklasd;flkajs; */
   withBorder: true,
-
+  /** Some text */
   emailSettings: new EmailSettings(),
 };
 

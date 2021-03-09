@@ -111,16 +111,27 @@ class MainButton extends React.PureComponent {
 }
 
 MainButton.propTypes = {
+  /** Button text */
   text: PropTypes.string,
+  /** Tells when the button should present a disabled state */
   isDisabled: PropTypes.bool,
+  /** Select a state between two separate buttons or one with a drop-down list */
   isDropdown: PropTypes.bool,
+  /** What the main button will trigger when clicked  */
   clickAction: PropTypes.func,
+  /** What the secondary button will trigger when clicked  */
   clickActionSecondary: PropTypes.func,
+  /** Icon inside button */
   iconName: PropTypes.string,
+  /** Open DropDown */
   opened: PropTypes.bool, //TODO: Make us whole
+  /** DropDown component click action */
   onClick: PropTypes.func,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

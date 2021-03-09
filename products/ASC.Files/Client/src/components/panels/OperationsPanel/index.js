@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import { ThirdPartyMoveDialog } from "../../dialogs";

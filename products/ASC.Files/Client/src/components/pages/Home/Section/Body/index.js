@@ -1,54 +1,27 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { ReactSVG } from "react-svg";
 import { withTranslation, Trans } from "react-i18next";
-//import equal from "fast-deep-equal/react";
-//import copy from "copy-to-clipboard";
 import styled from "styled-components";
 import queryString from "query-string";
-//import Row from "@appserver/components/row";
-//import RowContainer from "@appserver/components/row-container";
 import Link from "@appserver/components/link";
 import IconButton from "@appserver/components/icon-button";
-//import DragAndDrop from "@appserver/components/drag-and-drop";
 import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
-//import { Consumer } from "@appserver/components/utils/context";
 import EmptyFolderContainer from "./EmptyFolderContainer";
-//import FilesRowContent from "./FilesRowContent";
-//import FilesTileContent from "./FilesTileContent";
-//import TileContainer from "./TileContainer";
-//import Tile from "./Tile";
 import FilesFilter from "@appserver/common/api/files/filter";
-import {
-  deleteFile,
-  getProgress,
-  deleteFolder,
-  //lockFile,
-  //finalizeVersion,
-  copyToFolder,
-  moveToFolder,
-} from "@appserver/common/api/files";
+import { getProgress, moveToFolder } from "@appserver/common/api/files";
 import { FileAction } from "@appserver/common/constants";
 import MediaViewer from "@appserver/common/components/MediaViewer";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import { loopTreeFolders } from "../../../../../helpers/files-helpers";
-//import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
 import { isMobile } from "react-device-detect";
-import {
-  DeleteThirdPartyDialog,
-  ConnectDialog,
-  ThirdPartyMoveDialog,
-} from "../../../../dialogs";
-import { observer, inject } from "mobx-react";
 
+import { observer, inject } from "mobx-react";
+import history from "@appserver/common/history";
 import FilesRowContainer from "./FilesRow/FilesRowContainer";
 import FilesTileContainer from "./FilesTile/FilesTileContainer";
-
-//import { getFilterByLocation } from "../../../../../helpers/converters";
-//import config from "../../../../../../package.json";
 
 const linkStyles = {
   isHovered: true,
@@ -88,69 +61,13 @@ const CustomTooltip = styled.div`
   }
 `;
 
-/*const SimpleFilesRow = styled(Row)`
-  margin-top: -2px;
-  ${(props) =>
-    !props.contextOptions &&
-    `
-    & > div:last-child {
-        width: 0px;
-      }
-  `}
-
-  .share-button-icon {
-    margin-right: 7px;
-    margin-top: -1px;
-  }
-
-  .share-button:hover,
-  .share-button-icon:hover {
-    cursor: pointer;
-    color: #657077;
-    path {
-      fill: #657077;
-    }
-  }
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-  @media (max-width: 1312px) {
-    .share-button {
-      padding-top: 3px;
-    }
-  }
-
-  .styled-element {
-    margin-right: 1px;
-    margin-bottom: 2px;
-  }
-`;*/
-
-const EncryptedFileIcon = styled.div`
-  background: url("images/security.svg") no-repeat 0 0 / 16px 16px transparent;
-  height: 16px;
-  position: absolute;
-  width: 16px;
-  margin-top: 14px;
-  margin-left: ${(props) => (props.isEdit ? "40px" : "12px")};
-`;
-
 class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      editingId: null,
-
-      //showMoveToPanel: false,
-      //showCopyPanel: false,
-      //showDeleteThirdPartyDialog: false,
-      //connectDialogVisible: false,
-      //showThirdPartyMoveDialog: false,
-
       isDrag: false,
       canDrag: true,
-      //removeItem: null,
-      //connectItem: null,
     };
 
     this.tooltipRef = React.createRef();
@@ -208,764 +125,6 @@ class SectionBodyContent extends React.Component {
       }
     }
   }
-
-  //   const {
-  //     showMoveToPanel,
-  //     showCopyPanel,
-  //     isDrag,
-  //     showDeleteThirdPartyDialog,
-  //     connectDialogVisible,
-  //     showThirdPartyMoveDialog,
-  //   } = this.state;
-  //   const { isVersionHistoryPanel } = this.props;
-
-  //   if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
-  //     return true;
-  //   }
-
-  //   if (this.state.showSharingPanel !== nextState.showSharingPanel) {
-  //     return true;
-  //   }
-
-  //   if (this.props.dragItem !== nextProps.dragItem) {
-  //     return false;
-  //   }
-
-  //   if (!equal(this.props, nextProps)) {
-  //     return true;
-  //   }
-
-  //   if (
-  //     showMoveToPanel !== nextState.showMoveToPanel ||
-  //     showCopyPanel !== nextState.showCopyPanel
-  //   ) {
-  //     return true;
-  //   }
-
-  //   if (isDrag !== nextState.isDrag) {
-  //     return true;
-  //   }
-
-  //   if (showDeleteThirdPartyDialog !== nextState.showDeleteThirdPartyDialog) {
-  //     return true;
-  //   }
-
-  //   if (connectDialogVisible !== nextState.connectDialogVisible) {
-  //     return true;
-  //   }
-
-  //   if (showThirdPartyMoveDialog !== nextState.showThirdPartyMoveDialog) {
-  //     return true;
-  //   }
-
-  //   if (isVersionHistoryPanel !== nextProps.isVersionHistoryPanel) {
-  //     return true;
-  //   }
-
-  //   return false;
-  // }
-
-  /*   onOpenLocation = () => {
-    const { filter, selection } = this.props;
-    const { folderId, checked, id, isFolder } = selection[0];
-    const item = selection[0];
-    const locationId = isFolder ? id : folderId;
-    const locationFilter = isFolder ? filter : null;
-
-    return this.props
-      .fetchFiles(locationId, locationFilter)
-      .then(() => (isFolder ? null : this.onContentRowSelect(!checked, item)));
-  }; */
-
-  /*   onClickFavorite = (e) => {
-    const {
-      markItemAsFavorite,
-      removeItemFromFavorite,
-      getFileInfo,
-      fetchFavoritesFolder,
-      isFavorites,
-      selectedFolderId,
-      setSelected,
-      //selection,
-      t,
-    } = this.props;
-    const { action, id } = e.currentTarget.dataset;
-    //let data = selection.map(item => item.id)
-    switch (action) {
-      case "mark":
-        return markItemAsFavorite([id])
-          .then(() => getFileInfo(id))
-          .then(() => toastr.success(t("MarkedAsFavorite")))
-          .catch((e) => toastr.error(e));
-      case "remove":
-        return removeItemFromFavorite([id])
-          .then(() => {
-            return isFavorites
-              ? fetchFavoritesFolder(selectedFolderId)
-              : getFileInfo(id);
-          })
-          .then(() => toastr.success(t("RemovedFromFavorites")))
-          .then(() => setSelected("close"))
-          .catch((e) => toastr.error(e));
-      default:
-        return;
-    }
-  }; */
-
-  /*   onClickRename = () => {
-    const { id, fileExst } = this.props.selection[0];
-
-    this.setState({ editingId: id }, () => {
-      this.props.setAction({
-        type: FileAction.Rename,
-        extension: fileExst,
-        id,
-      });
-    });
-  }; */
-
-  /*   onChangeThirdPartyInfo = (e) => {
-    const providerKey = e.currentTarget.dataset.providerKey;
-    const provider = this.props.providers.find(
-      (x) => x.provider_key === providerKey
-    );
-    const capabilityItem = this.props.capabilities.find(
-      (x) => x[0] === providerKey
-    );
-    const capability = {
-      title: capabilityItem ? capabilityItem[0] : provider.customer_title,
-      link: capabilityItem ? capabilityItem[1] : " ",
-    };
-
-    const connectItem = { ...provider, ...capability };
-    this.setState({ connectItem, connectDialogVisible: true });
-  }; */
-
-  onEditComplete = (id, isFolder) => {
-    const {
-      selectedFolderId,
-      fileActionType,
-      filter,
-      folders,
-      files,
-      treeFolders,
-      setTreeFolders,
-      setIsLoading,
-      fetchFiles,
-      setAction,
-      selection,
-    } = this.props;
-    const selectedItem = selection[0];
-    const items = [...folders, ...files];
-    const item = items.find((o) => o.id === id && !o.fileExst); //TODO maybe need files find and folders find, not at one function?
-    if (
-      fileActionType === FileAction.Create ||
-      fileActionType === FileAction.Rename
-    ) {
-      setIsLoading(true);
-      fetchFiles(selectedFolderId, filter)
-        .then((data) => {
-          const newItem = (item && item.id) === -1 ? null : item; //TODO not add new folders?
-          if (isFolder) {
-            const path = data.selectedFolder.pathParts;
-            const newTreeFolders = treeFolders;
-            const folders = data.selectedFolder.folders;
-            loopTreeFolders(path, newTreeFolders, folders, null, newItem);
-            setTreeFolders(newTreeFolders);
-          }
-        })
-        .finally(() => {
-          this.setState({ editingId: null }, () => {
-            setAction({ type: null, id: null, extension: null });
-            setIsLoading(false);
-          });
-          fileActionType === FileAction.Rename &&
-            this.onSelectItem(selectedItem);
-        });
-    }
-
-    //this.setState({ editingId: null }, () => {
-    //  setAction({type: null});
-    //});
-  };
-
-  /*   onClickDelete = (e) => {
-    const { isThirdParty, id, title } = e.currentTarget.dataset;
-    const splitItem = id.split("-");
-
-    if (isThirdParty === "true") {
-      this.setState({
-        showDeleteThirdPartyDialog: true,
-        removeItem: { id: splitItem[splitItem.length - 1], title },
-      });
-      return;
-    }
-
-    const item = this.props.selection[0];
-    item.fileExst
-      ? this.onDeleteFile(item.id, item.folderId)
-      : this.onDeleteFolder(item.id, item.parentId);
-  }; */
-
-  onDeleteFile = (fileId, currentFolderId) => {
-    const {
-      t,
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.props;
-    setSecondaryProgressBarData({
-      icon: "trash",
-      visible: true,
-      percent: 0,
-      label: t("DeleteOperation"),
-      alert: false,
-    });
-    deleteFile(fileId)
-      .then((res) => {
-        const id = res[0] && res[0].id ? res[0].id : null;
-        this.loopDeleteProgress(id, currentFolderId, false);
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        //toastr.error(err);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      });
-  };
-
-  loopDeleteProgress = (id, folderId, isFolder) => {
-    const {
-      filter,
-      treeFolders,
-      setTreeFolders,
-      isRecycleBin,
-      t,
-      setSecondaryProgressBarData,
-      fetchFiles,
-    } = this.props;
-    getProgress().then((res) => {
-      const deleteProgress = res.find((x) => x.id === id);
-      if (deleteProgress && deleteProgress.progress !== 100) {
-        setSecondaryProgressBarData({
-          icon: "trash",
-          visible: true,
-          percent: deleteProgress.progress,
-          label: t("DeleteOperation"),
-          alert: false,
-        });
-        setTimeout(() => this.loopDeleteProgress(id, folderId, isFolder), 1000);
-      } else {
-        setSecondaryProgressBarData({
-          icon: "trash",
-          visible: true,
-          percent: 100,
-          label: t("DeleteOperation"),
-          alert: false,
-        });
-        fetchFiles(folderId, filter)
-          .then((data) => {
-            if (!isRecycleBin && isFolder) {
-              const path = data.selectedFolder.pathParts.slice(0);
-              const newTreeFolders = treeFolders;
-              const folders = data.selectedFolder.folders;
-              const foldersCount = data.selectedFolder.foldersCount;
-              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              setTreeFolders(newTreeFolders);
-            }
-            isFolder
-              ? toastr.success(t("FolderRemoved"))
-              : toastr.success(t("FileRemoved"));
-          })
-          .catch((err) => {
-            setSecondaryProgressBarData({
-              visible: true,
-              alert: true,
-            });
-            //toastr.error(err);
-            setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
-          })
-          .finally(() =>
-            setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT)
-          );
-      }
-    });
-  };
-
-  onDeleteFolder = (folderId, currentFolderId) => {
-    const {
-      t,
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.props;
-    const progressLabel = t("DeleteOperation");
-    setSecondaryProgressBarData({
-      icon: "trash",
-      visible: true,
-      percent: 0,
-      label: progressLabel,
-      alert: false,
-    });
-    deleteFolder(folderId, currentFolderId)
-      .then((res) => {
-        const id = res[0] && res[0].id ? res[0].id : null;
-        this.loopDeleteProgress(id, currentFolderId, true);
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        //toastr.error(err);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      });
-  };
-
-  /*   onClickShare = () =>
-    this.props.setSharingPanelVisible(!this.props.sharingPanelVisible); */
-
-  /*   onOwnerChange = () => {
-    this.props.setChangeOwnerPanelVisible(true);
-  }; */
-
-  /*   onClickLinkForPortal = () => {
-    const { homepage, selection } = this.props;
-    const item = selection[0];
-    const isFile = !!item.fileExst;
-    const { t } = this.props;
-    copy(
-      isFile
-        ? item.canOpenPlayer
-          ? `${window.location.href}&preview=${item.id}`
-          : item.webUrl
-        : `${window.location.origin + homepage}/filter?folder=${item.id}`
-    );
-
-    toastr.success(t("LinkCopySuccess"));
-  }; */
-
-  /*   onClickDownload = () => {
-    return window.open(this.props.selection[0].viewUrl, "_blank");
-  }; */
-
-  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    if (providerKey) {
-      tab
-        ? (tab.location = url)
-        : window.open(`./doceditor?fileId=${id}`, "_blank");
-    } else {
-      return this.props
-        .addFileToRecentlyViewed(id, this.props.isPrivacy)
-        .then(() => console.log("Pushed to recently viewed"))
-        .catch((e) => console.error(e))
-        .finally(
-          tab
-            ? (tab.location = url)
-            : window.open(`./doceditor?fileId=${id}`, "_blank")
-        );
-    }
-  };
-
-  /*   onClickLinkEdit = (e) => {
-    const { id, providerKey } = e.currentTarget.dataset;
-    return this.openDocEditor(id, providerKey);
-  }; */
-
-  /*   showVersionHistory = (e) => {
-    const {
-      homepage,
-      history,
-      setIsLoading,
-      setIsVerHistoryPanel,
-      setVerHistoryFileId,
-      isTabletView,
-    } = this.props;
-
-    const fileId = e.currentTarget.dataset.id;
-
-    if (!isTabletView) {
-      setIsLoading(true);
-      setVerHistoryFileId(fileId);
-      setIsVerHistoryPanel(true);
-    } else {
-      history.push(`${homepage}/${fileId}/history`);
-    }
-  }; */
-
-  // onHistoryAction = () => {
-  //   const { isVersionHistoryPanel, setIsVerHistoryPanel } = this.props;
-
-  //   setIsVerHistoryPanel(!isVersionHistoryPanel);
-  // };
-
-  //  lockFile = (e) => {
-  //   const {
-  //     selection,
-  //     /*files,*/ selectedFolderId,
-  //     filter,
-  //     setIsLoading,
-  //     fetchFiles,
-  //   } = this.props;
-
-  //   let fileId, isLockedFile;
-  //   const file = selection[0];
-
-  //   if (file) {
-  //     fileId = file.id;
-  //     isLockedFile = !file.locked;
-  //   } else {
-  //     const { id, locked } = e.currentTarget.dataset;
-  //     fileId = Number(id);
-  //     isLockedFile = !Boolean(locked);
-  //   }
-
-  //   lockFile(fileId, isLockedFile).then((res) => {
-  //     /*const newFiles = files;
-  //       const indexOfFile = newFiles.findIndex(x => x.id === res.id);
-  //       newFiles[indexOfFile] = res;*/
-  //     setIsLoading(true);
-  //     fetchFiles(selectedFolderId, filter)
-  //       .catch((err) => toastr.error(err))
-  //       .finally(() => setIsLoading(false));
-  //   });
-  // };
-
-  /*   finalizeVersion = (e) => {
-    const { selectedFolderId, filter, setIsLoading, fetchFiles } = this.props;
-
-    const fileId = e.currentTarget.dataset.id;
-    //const version = (e.currentTarget.dataset.version)++;
-
-    setIsLoading(true);
-
-    finalizeVersion(fileId, 0, false)
-      .then((data) => {
-        //console.log("api.files.finalizeVersion", data);
-        return fetchFiles(selectedFolderId, filter).catch((err) =>
-          toastr.error(err)
-        );
-      })
-      .finally(() => setIsLoading(false));
-  }; */
-
-  // onMoveAction = () =>
-  //   this.setState({ showMoveToPanel: !this.state.showMoveToPanel });
-  // onCopyAction = () =>
-  //   this.setState({ showCopyPanel: !this.state.showCopyPanel });
-  /*   onShowDeleteThirdParty = () => {
-    this.setState({
-      showDeleteThirdPartyDialog: !this.state.showDeleteThirdPartyDialog,
-    });
-  }; */
-  /*   onDuplicate = () => {
-    const {
-      selection,
-      selectedFolderId,
-      setSecondaryProgressBarData,
-      t,
-    } = this.props;
-    const folderIds = [];
-    const fileIds = [];
-    selection[0].fileExst
-      ? fileIds.push(selection[0].id)
-      : folderIds.push(selection[0].id);
-    const conflictResolveType = 2; //Skip = 0, Overwrite = 1, Duplicate = 2
-    const deleteAfter = false;
-
-    setSecondaryProgressBarData({
-      icon: "duplicate",
-      visible: true,
-      percent: 0,
-      label: t("CopyOperation"),
-      alert: false,
-    });
-    this.copyTo(
-      selectedFolderId,
-      folderIds,
-      fileIds,
-      conflictResolveType,
-      deleteAfter
-    );
-  }; */
-
-  /*   onCloseConnectDialog = () => {
-    this.setState({
-      connectItem: null,
-      connectDialogVisible: !this.state.connectDialogVisible,
-    });
-  }; */
-
-  /*   onCloseThirdPartyMoveDialog = () => {
-    this.setState({
-      showThirdPartyMoveDialog: !this.state.showThirdPartyMoveDialog,
-    });
-  }; */
-
-  /*getFilesContextOptions = (options, item) => {
-    const { t, isRootFolder } = this.props;
-
-    const isSharable = item.access !== 1 && item.access !== 0;
-    const isThirdPartyFolder = item.providerKey && isRootFolder;
-
-    return options.map((option) => {
-      switch (option) {
-        case "open":
-          return {
-            key: option,
-            label: t("Open"),
-            icon: "images/catalog.folder.react.svg",
-            onClick: this.onOpenLocation,
-            disabled: false,
-          };
-        case "show-version-history":
-          return {
-            key: option,
-            label: t("ShowVersionHistory"),
-            icon: "images/history.react.svg",
-            onClick: this.showVersionHistory,
-            disabled: false,
-            "data-id": item.id,
-          };
-        case "finalize-version":
-          return {
-            key: option,
-            label: t("FinalizeVersion"),
-            icon: "images/history-finalized.react.svg",
-            onClick: this.finalizeVersion,
-            disabled: false,
-            "data-id": item.id,
-            "data-version": item.version,
-          };
-        case "separator0":
-        case "separator1":
-        case "separator2":
-        case "separator3":
-          return { key: option, isSeparator: true };
-        case "open-location":
-          return {
-            key: option,
-            label: t("OpenLocation"),
-            icon: "images/download-as.react.svg",
-            onClick: this.onOpenLocation,
-            disabled: false,
-          };
-        case "mark-as-favorite":
-          return {
-            key: option,
-            label: t("MarkAsFavorite"),
-            icon: "images/favorites.react.svg",
-            onClick: this.onClickFavorite,
-            disabled: false,
-            "data-action": "mark",
-            "data-id": item.id,
-            "data-title": item.title,
-          };
-        case "block-unblock-version":
-          return {
-            key: option,
-            label: t("UnblockVersion"),
-            icon: "images/lock.react.svg",
-            onClick: this.lockFile,
-            disabled: false,
-          };
-        case "sharing-settings":
-          return {
-            key: option,
-            label: t("SharingSettings"),
-            icon: "images/catalog.shared.react.svg",
-            onClick: this.onClickShare,
-            disabled: isSharable,
-          };
-        case "send-by-email":
-          return {
-            key: option,
-            label: t("SendByEmail"),
-            icon: "static/images/mail.react.svg",
-            disabled: true,
-          };
-        case "owner-change":
-          return {
-            key: option,
-            label: t("ChangeOwner"),
-            icon: "images/catalog.user.react.svg",
-            onClick: this.onOwnerChange,
-            disabled: false,
-          };
-        case "link-for-portal-users":
-          return {
-            key: option,
-            label: t("LinkForPortalUsers"),
-            icon: "static/images/invitation.link.react.svg",
-            onClick: this.onClickLinkForPortal,
-            disabled: false,
-          };
-        case "edit":
-          return {
-            key: option,
-            label: t("Edit"),
-            icon: "images/access.edit.react.svg",
-            onClick: this.onClickLinkEdit,
-            disabled: false,
-            "data-id": item.id,
-            "data-provider-key": item.providerKey,
-          };
-        case "preview":
-          return {
-            key: option,
-            label: t("Preview"),
-            icon: "/static/images/eye.react.svg",
-            onClick: this.onClickLinkEdit,
-            disabled: true,
-            "data-id": item.id,
-            "data-provider-key": item.providerKey,
-          };
-        case "view":
-          return {
-            key: option,
-            label: t("View"),
-            icon: "/static/images/eye.react.svg",
-            onClick: this.onMediaFileClick,
-            disabled: false,
-          };
-        case "download":
-          return {
-            key: option,
-            label: t("Download"),
-            icon: "images/download.react.svg",
-            onClick: this.onClickDownload,
-            disabled: false,
-          };
-        case "move":
-          return {
-            key: option,
-            label: t("MoveTo"),
-            icon: "images/move.react.svg",
-            onClick: this.onMoveAction,
-            disabled: false,
-          };
-        case "copy":
-          return {
-            key: option,
-            label: t("Copy"),
-            icon: "/static/images/copy.react.svg",
-            onClick: this.onCopyAction,
-            disabled: false,
-          };
-        case "duplicate":
-          return {
-            key: option,
-            label: t("Duplicate"),
-            icon: "/static/images/copy.react.svg",
-            onClick: this.onDuplicate,
-            disabled: false,
-          };
-        case "rename":
-          return {
-            key: option,
-            label: t("Rename"),
-            icon: "images/rename.react.svg",
-            onClick: this.onClickRename,
-            disabled: false,
-          };
-
-        case "change-thirdparty-info":
-          return {
-            key: option,
-            label: t("ThirdPartyInfo"),
-            icon: "images/access.edit.react.svg",
-            onClick: this.onChangeThirdPartyInfo,
-            disabled: false,
-            "data-provider-key": item.providerKey,
-          };
-
-        case "delete":
-          return {
-            key: option,
-            label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
-            icon: "/static/images/catalog.trash.react.svg",
-            onClick: this.onClickDelete,
-            disabled: false,
-            "data-is-third-party": isThirdPartyFolder ? true : false,
-            "data-id": item.id,
-            "data-title": item.title,
-          };
-        case "remove-from-favorites":
-          return {
-            key: option,
-            label: t("RemoveFromFavorites"),
-            icon: "images/favorites.react.svg",
-            onClick: this.onClickFavorite,
-            disabled: false,
-            "data-action": "remove",
-            "data-id": item.id,
-            "data-title": item.title,
-          };
-        default:
-          break;
-      }
-
-      return undefined;
-    });
-  };*/
-
-  /*needForUpdate = (currentProps, nextProps) => {
-    if (currentProps.widthProp !== nextProps.widthProp) {
-      return true;
-    }
-    if (currentProps.checked !== nextProps.checked) {
-      return true;
-    }
-    if (currentProps.editing !== nextProps.editing) {
-      return true;
-    }
-    if (currentProps.sectionWidth !== nextProps.sectionWidth) {
-      return true;
-    }
-    if (!equal(currentProps.data, nextProps.data)) {
-      return true;
-    }
-    if (currentProps.viewAs !== nextProps.viewAs) {
-      return true;
-    }
-    if (currentProps.isPrivacy !== nextProps.isPrivacy) {
-      return true;
-    }
-
-    return false;
-  };*/
-
-  onContentRowSelect = (checked, file) => {
-    if (!file) return;
-    const { selected, setSelected, selectFile, deselectFile } = this.props;
-
-    selected === "close" && setSelected("none");
-    if (checked) {
-      selectFile(file);
-    } else {
-      deselectFile(file);
-    }
-  };
-
-  svgLoader = () => <div style={{ width: "24px" }}></div>;
-
-  getItemIcon = (item, isEdit) => {
-    return (
-      <>
-        <ReactSVG
-          beforeInjection={(svg) => {
-            svg.setAttribute("style", "margin-top: 4px");
-            isEdit && svg.setAttribute("style", "margin: 4px 0 0 28px");
-          }}
-          src={item.icon}
-          loading={this.svgLoader}
-        />
-        {this.props.isPrivacy && item.fileExst && (
-          <EncryptedFileIcon isEdit={isEdit} />
-        )}
-      </>
-    );
-  };
 
   onCreate = (e) => {
     const format = e.currentTarget.dataset.format || null;
@@ -1280,6 +439,7 @@ class SectionBodyContent extends React.Component {
     const item = { visible: false, id: null };
     this.props.setMediaViewerData(item);
   };
+
   onMediaFileClick = (id) => {
     const itemId = typeof id !== "object" ? id : this.props.selection[0].id;
     const item = { visible: true, id: itemId };
@@ -1294,25 +454,23 @@ class SectionBodyContent extends React.Component {
   };
 
   onDeleteMediaFile = (id) => {
-    if (this.props.files.length > 0) {
-      let file = this.props.files.find((file) => file.id === id);
-      if (file) this.onDeleteFile(file.id, file.folderId);
+    const { files, deleteFileAction, t } = this.props;
+
+    const translations = {
+      deleteOperation: t("DeleteOperation"),
+      folderRemoved: t("FolderRemoved"),
+      fileRemoved: t("FileRemoved"),
+    };
+
+    if (files.length > 0) {
+      let file = files.find((file) => file.id === id);
+      if (file) deleteFileAction(file.id, file.folderId, translations);
     }
   };
 
   onDragStart = (e) => {
     if (e.dataTransfer.dropEffect === "none") {
       this.state.canDrag && this.setState({ canDrag: false });
-    }
-  };
-
-  onDrop = (item, items, e) => {
-    const { onDropZoneUpload, selectedFolderId } = this.props;
-
-    if (!item.fileExst) {
-      onDropZoneUpload(items, item.id);
-    } else {
-      onDropZoneUpload(items, selectedFolderId);
     }
   };
 
@@ -1491,6 +649,8 @@ class SectionBodyContent extends React.Component {
       isCommon,
       isAdmin,
       setSecondaryProgressBarData,
+      copyToAction,
+      moveToAction,
     } = this.props;
 
     const folderIds = [];
@@ -1516,7 +676,7 @@ class SectionBodyContent extends React.Component {
 
     if (isAdmin) {
       if (isShare) {
-        this.copyTo(
+        copyToAction(
           destFolderId,
           folderIds,
           fileIds,
@@ -1524,7 +684,7 @@ class SectionBodyContent extends React.Component {
           deleteAfter
         );
       } else {
-        this.moveTo(
+        moveToAction(
           destFolderId,
           folderIds,
           fileIds,
@@ -1534,7 +694,7 @@ class SectionBodyContent extends React.Component {
       }
     } else {
       if (isShare || isCommon) {
-        this.copyTo(
+        copyToAction(
           destFolderId,
           folderIds,
           fileIds,
@@ -1542,7 +702,7 @@ class SectionBodyContent extends React.Component {
           deleteAfter
         );
       } else {
-        this.moveTo(
+        moveToAction(
           destFolderId,
           folderIds,
           fileIds,
@@ -1553,76 +713,8 @@ class SectionBodyContent extends React.Component {
     }
   };
 
-  copyTo = (
-    destFolderId,
-    folderIds,
-    fileIds,
-    conflictResolveType,
-    deleteAfter
-  ) => {
-    const {
-      loopFilesOperations,
-      clearSecondaryProgressData,
-      setSecondaryProgressBarData,
-    } = this.props;
-
-    copyToFolder(
-      destFolderId,
-      folderIds,
-      fileIds,
-      conflictResolveType,
-      deleteAfter
-    )
-      .then((res) => {
-        const id = res[0] && res[0].id ? res[0].id : null;
-        loopFilesOperations(id, destFolderId, true);
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        //toastr.error(err);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      });
-  };
-
-  moveTo = (
-    destFolderId,
-    folderIds,
-    fileIds,
-    conflictResolveType,
-    deleteAfter
-  ) => {
-    const {
-      loopFilesOperations,
-      clearSecondaryProgressData,
-      setSecondaryProgressBarData,
-    } = this.props;
-
-    moveToFolder(
-      destFolderId,
-      folderIds,
-      fileIds,
-      conflictResolveType,
-      deleteAfter
-    )
-      .then((res) => {
-        const id = res[0] && res[0].id ? res[0].id : null;
-        loopFilesOperations(id, destFolderId, false);
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        //toastr.error(err);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      });
-  };
-
   removeQuery = (queryName) => {
-    const { location, history } = this.props;
+    const { location } = this.props;
     const queryParams = new URLSearchParams(location.search);
 
     if (queryParams.has(queryName)) {
@@ -1632,37 +724,6 @@ class SectionBodyContent extends React.Component {
       });
     }
   };
-
-  onSelectItem = (item) => {
-    const { selected, setSelected, setSelection } = this.props;
-    selected === "close" && setSelected("none");
-    setSelection([item]);
-  };
-
-  /*   getSharedButton = (shared) => {
-    const color = shared ? "#657077" : "#a3a9ae";
-    return (
-      <Text
-        className="share-button"
-        as="span"
-        title={this.props.t("Share")}
-        fontSize="12px"
-        fontWeight={600}
-        color={color}
-        display="inline-flex"
-        onClick={this.onClickShare}
-      >
-        <IconButton
-          className="share-button-icon"
-          color={color}
-          hoverColor="#657077"
-          size={18}
-          iconName="images/catalog.shared.react.svg"
-        />
-        {this.props.t("Share")}
-      </Text>
-    );
-  }; */
 
   renderFileMoveTooltip = () => {
     const { selection, iconOfDraggedFile } = this.props;
@@ -1697,12 +758,12 @@ class SectionBodyContent extends React.Component {
   };
 
   startMoveOperation = () => {
-    this.moveTo(this.props.dragItem);
+    this.props.moveToAction(this.props.dragItem);
     this.onCloseThirdPartyMoveDialog();
   };
 
   startCopyOperation = () => {
-    this.copyTo(this.props.dragItem);
+    this.props.copyToAction(this.props.dragItem);
     this.onCloseThirdPartyMoveDialog();
   };
 
@@ -1710,14 +771,9 @@ class SectionBodyContent extends React.Component {
     //console.log("Files Home SectionBodyContent render", this.props);
 
     const {
-      viewer,
       parentId,
-      //culture,
       selection,
-      fileActionType,
-      fileActionExtension,
       fileActionId,
-      isRecycleBin,
       isPrivacy,
       isEncryptionSupport,
       dragging,
@@ -1731,24 +787,9 @@ class SectionBodyContent extends React.Component {
       mediaViewerImageFormats,
       mediaViewerMediaFormats,
       tooltipValue,
-      isVersionHistoryPanel,
-      history,
       filter,
       isLoading,
     } = this.props;
-
-    //console.log("Section body", this.props);
-
-    // const {
-    //   editingId,
-    //   showMoveToPanel,
-    //   showCopyPanel,
-    //   showDeleteThirdPartyDialog,
-    //   removeItem,
-    //   connectDialogVisible,
-    //   connectItem,
-    //   showThirdPartyMoveDialog,
-    // } = this.state;
 
     let fileMoveTooltip;
     if (dragging) {
@@ -1796,54 +837,6 @@ class SectionBodyContent extends React.Component {
       <Loaders.Rows />
     ) : (
       <>
-        {/* showMoveToPanel && (
-          <OperationsPanel
-            visible={showMoveToPanel}
-            onClose={this.onMoveAction}
-          />
-        ) */}
-
-        {/* {showCopyPanel && (
-          <OperationsPanel
-            isCopy
-            visible={showCopyPanel}
-            onClose={this.onCopyAction}
-          />
-        )} */}
-
-        {/* showDeleteThirdPartyDialog && (
-          <DeleteThirdPartyDialog
-            onClose={this.onShowDeleteThirdParty}
-            visible={showDeleteThirdPartyDialog}
-            removeItem={removeItem}
-          />
-        ) */}
-
-        {/* connectDialogVisible && (
-          <ConnectDialog
-            visible={connectDialogVisible}
-            item={connectItem}
-            onClose={this.onCloseConnectDialog}
-          />
-        ) */}
-
-        {/* showThirdPartyMoveDialog && (
-          <ThirdPartyMoveDialog
-            visible={showThirdPartyMoveDialog}
-            onClose={this.onCloseThirdPartyMoveDialog}
-            startMoveOperation={this.startMoveOperation}
-            startCopyOperation={this.startCopyOperation}
-            provider={selection[0].providerKey}
-          />
-        ) */}
-
-        {/* isVersionHistoryPanel && (
-          <VersionHistoryPanel
-            visible={isVersionHistoryPanel}
-            onClose={this.onHistoryAction}
-            history={history}
-          />
-        ) */}
         <CustomTooltip ref={this.tooltipRef}>{fileMoveTooltip}</CustomTooltip>
 
         {viewAs === "tile" ? <FilesTileContainer /> : <FilesRowContainer />}
@@ -1872,32 +865,22 @@ class SectionBodyContent extends React.Component {
   }
 }
 
-SectionBodyContent.defaultProps = {
-  files: null,
-};
-
 export default inject(
   ({
     auth,
     initFilesStore,
     filesStore,
-    settingsStore,
     mediaViewerDataStore,
     formatsStore,
-    versionHistoryStore,
     uploadDataStore,
-    dialogsStore,
     treeFoldersStore,
     selectedFolderStore,
+    filesActionsStore,
   }) => {
-    //const { providers, capabilities } = settingsStore.thirdPartyStore;
-    const { mediaViewersFormatsStore, iconFormatsStore } = formatsStore;
-    const { secondaryProgressDataStore, loopFilesOperations } = uploadDataStore;
+    const { mediaViewersFormatsStore } = formatsStore;
+    const { secondaryProgressDataStore } = uploadDataStore;
     const {
-      //homepage,
-      //culture,
       isEncryptionSupport,
-      //isTabletView,
       organizationName,
       isDesktopClient,
     } = auth.settingsStore;
@@ -1907,40 +890,21 @@ export default inject(
       setIsLoading,
       viewAs,
       dragItem,
-      //setDragItem,
       privacyInstructions,
       tooltipValue,
     } = initFilesStore;
     const {
       files,
-      folders,
-      selected,
-      setSelected,
       firstLoad,
       filesList,
       fetchFiles,
-      setSelection,
       selection,
-      selectFile,
-      deselectFile,
       filter,
       fileActionStore,
-
-      addFileToRecentlyViewed,
-      //updateFile,
-      //currentFolderCount,
       iconOfDraggedFile,
-      //markItemAsFavorite,
-      //removeItemFromFavorite,
-      //fetchFavoritesFolder,
-      //getFileInfo,
     } = filesStore;
 
-    //const { getFileIcon, getFolderIcon } = iconFormatsStore;
-
     const {
-      treeFolders,
-      setTreeFolders,
       myFolderId,
       isMyFolder,
       isRecycleBinFolder,
@@ -1951,28 +915,8 @@ export default inject(
       isPrivacyFolder,
     } = treeFoldersStore;
 
-    const {
-      type: fileActionType,
-      extension: fileActionExtension,
-      id: fileActionId,
-      setAction,
-    } = fileActionStore;
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
-
-    // const {
-    //   sharingPanelVisible,
-    //   setChangeOwnerPanelVisible,
-    //   setSharingPanelVisible,
-    // } = dialogsStore;
-
-    // const {
-    //   isVisible: isVersionHistoryPanel,
-    //   setIsVerHistoryPanel,
-    //   setVerHistoryFileId,
-    // } = versionHistoryStore;
+    const { id: fileActionId, setAction } = fileActionStore;
+    const { setSecondaryProgressBarData } = secondaryProgressDataStore;
 
     const { images, media } = mediaViewersFormatsStore;
     const {
@@ -1983,27 +927,18 @@ export default inject(
 
     return {
       isAdmin: auth.isAdmin,
-      //homepage,
-      //culture,
       isEncryptionSupport,
-      //isTabletView,
-      viewer: auth.userStore.user,
       organizationName,
       isDesktop: isDesktopClient,
       dragging,
-      fileActionType,
-      fileActionExtension,
       fileActionId,
       files,
-      folders,
-      selected,
       firstLoad,
       filesList,
       title: selectedFolderStore.title,
       parentId: selectedFolderStore.parentId,
       selectedFolderId: selectedFolderStore.id,
       selection,
-      treeFolders,
       isRecycleBin: isRecycleBinFolder,
       myDocumentsId: myFolderId,
       isShare: isShareFolder,
@@ -2017,44 +952,21 @@ export default inject(
       dragItem,
       currentMediaFileId,
       mediaViewerVisible,
-      //sharingPanelVisible,
-      //isVersionHistoryPanel,
       privacyInstructions,
-      isRootFolder: selectedFolderStore.isRootFolder,
       mediaViewerImageFormats: images,
       mediaViewerMediaFormats: media,
-      //providers,
-      //capabilities,
-      //currentFolderCount,
       iconOfDraggedFile,
       tooltipValue,
 
       setDragging,
       setAction,
-      setSelected,
       setIsLoading,
-      setSelection,
       fetchFiles,
-      selectFile,
-      deselectFile,
-      setTreeFolders,
-      //setDragItem,
       setMediaViewerData,
       setSecondaryProgressBarData,
-      //setChangeOwnerPanelVisible,
-      //setSharingPanelVisible,
-      clearSecondaryProgressData,
-      //setIsVerHistoryPanel,
-      //setVerHistoryFileId,
-      addFileToRecentlyViewed,
-      //updateFile,
-      //markItemAsFavorite,
-      //removeItemFromFavorite,
-      //fetchFavoritesFolder,
-      //getFileInfo,
-      loopFilesOperations,
-      //getFileIcon,
-      //getFolderIcon,
+      copyToAction: filesActionsStore.copyToAction,
+      moveToAction: filesActionsStore.moveToAction,
+      deleteFileAction: filesActionsStore.deleteFileAction,
     };
   }
 )(withRouter(withTranslation("Home")(observer(SectionBodyContent))));

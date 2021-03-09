@@ -36,12 +36,19 @@ const Loader = (props) => {
 };
 
 Loader.propTypes = {
+  /** Font color */
   color: PropTypes.string,
+  /** Type loader */
   type: PropTypes.oneOf(["base", "oval", "dual-ring", "rombs"]),
+  /** Font size  */
   size: PropTypes.string,
+  /** Text label */
   label: PropTypes.string,
+  /** Class name */
   className: PropTypes.string,
+  /** Accepts id  */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

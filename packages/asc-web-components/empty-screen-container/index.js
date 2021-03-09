@@ -48,14 +48,23 @@ const EmptyScreenContainer = (props) => {
 };
 
 EmptyScreenContainer.propTypes = {
+  /** Image url source */
   imageSrc: PropTypes.string,
+  /** Alternative image text */
   imageAlt: PropTypes.string,
+  /** Header text */
   headerText: PropTypes.string,
+  /** Subheading text */
   subheadingText: PropTypes.string,
+  /** Description text */
   descriptionText: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  /** Content of EmptyContentButtonsContainer */
   buttons: PropTypes.any,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

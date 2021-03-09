@@ -1,34 +1,71 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import { BooleanValue } from "react-values";
-import { withKnobs, boolean, text } from "@storybook/addon-knobs/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
-import Checkbox from ".";
-import Section from "../../../.storybook/decorators/section";
 
-storiesOf("Components|Input", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("checkbox", () => (
-    <Section>
-      <BooleanValue>
-        {({ value, toggle }) => (
-          <Checkbox
-            id={text("id", "id")}
-            name={text("name", "name")}
-            value={text("value", "value")}
-            label={text("label", "label")}
-            isChecked={value}
-            isIndeterminate={boolean("isIndeterminate", false)}
-            isDisabled={boolean("isDisabled", false)}
-            onChange={(e) => {
-              action("onChange")(e);
-              toggle(e.target.checked);
-            }}
-          />
-        )}
-      </BooleanValue>
-    </Section>
-  ));
+import CheckboxComponent from "./";
+
+export default {
+  title: "Components/Checkbox",
+  component: CheckboxComponent,
+  parameters: {
+    docs: {
+      description: { component: "Custom checkbox input" },
+    },
+  },
+  argTypes: {
+    onChange: {
+      action: "onChange",
+    },
+  },
+};
+
+class Checkbox extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isChecked: false,
+    };
+  }
+
+  onChange = (e) => {
+    this.props.onChange(e);
+    this.setState({ isChecked: !this.state.isChecked });
+  };
+
+  render() {
+    return (
+      <CheckboxComponent
+        {...this.props}
+        isChecked={this.props.isChecked || this.state.isChecked}
+        onChange={this.onChange}
+      />
+    );
+  }
+}
+const Template = (args) => {
+  return <Checkbox {...args} />;
+};
+
+const AllCheckboxesTemplate = (args) => {
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat( auto-fill, minmax(120px, 1fr) )",
+        gridGap: "16px",
+        alignItems: "center",
+      }}
+    >
+      <Checkbox />
+      <Checkbox isChecked={true} />
+      <Checkbox isDisabled={true} />
+      <Checkbox isIndeterminate={true} />
+      <Checkbox label="Some label" />
+    </div>
+  );
+};
+
+export const Default = Template.bind({});
+Default.args = {
+  label: "Checkbox label",
+};
+export const AllCheckboxStates = AllCheckboxesTemplate.bind({});

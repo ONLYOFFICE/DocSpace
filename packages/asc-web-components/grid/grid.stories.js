@@ -1,10 +1,23 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
-import Grid from ".";
+
+import Grid from "./";
 import Box from "../box";
 import Text from "../text";
+
+export default {
+  title: "Components/Grid",
+  component: Grid,
+  subcomponents: { Box },
+  argTypes: {},
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "A container that lays out its contents in a 2-dimensional grid system. Use Box components to define rows and columns",
+      },
+    },
+  },
+};
 
 const gridProps = {
   marginProp: "0 0 20px 0",
@@ -17,11 +30,30 @@ const boxProps = {
   justifyContent: "center",
 };
 
-storiesOf("Components|Grid", module)
-  .addDecorator(withReadme(Readme))
-  .add("Columns", () => (
+const Template = (args) => {
+  return (
+    <Grid {...args} {...gridProps}>
+      <Box {...boxProps} backgroundProp="#F4991A">
+        <Text>200px</Text>
+      </Box>
+      <Box {...boxProps} backgroundProp="#F2EAD3">
+        <Text>minmax(100px,1fr)</Text>
+      </Box>
+      <Box {...boxProps} backgroundProp="#F9F5F0">
+        <Text>auto</Text>
+      </Box>
+    </Grid>
+  );
+};
+
+const TemplateColumns = (args) => {
+  return (
     <>
-      <Grid {...gridProps} columnsProp={["200px", ["100px", "1fr"], "auto"]}>
+      <Grid
+        {...args}
+        {...gridProps}
+        columnsProp={["200px", ["100px", "1fr"], "auto"]}
+      >
         <Box {...boxProps} backgroundProp="#F4991A">
           <Text>200px</Text>
         </Box>
@@ -33,7 +65,7 @@ storiesOf("Components|Grid", module)
         </Box>
       </Grid>
 
-      <Grid {...gridProps} columnsProp="25%">
+      <Grid {...args} {...gridProps} columnsProp="25%">
         <Box {...boxProps} backgroundProp="#F4991A">
           <Text>25%</Text>
         </Box>
@@ -45,7 +77,7 @@ storiesOf("Components|Grid", module)
         </Box>
       </Grid>
 
-      <Grid {...gridProps} columnsProp={{ count: 3, size: "100px" }}>
+      <Grid {...args} {...gridProps} columnsProp={{ count: 3, size: "100px" }}>
         <Box {...boxProps} backgroundProp="#F4991A">
           <Text>100px</Text>
         </Box>
@@ -57,7 +89,11 @@ storiesOf("Components|Grid", module)
         </Box>
       </Grid>
 
-      <Grid {...gridProps} columnsProp={{ count: 3, size: ["100px", "1fr"] }}>
+      <Grid
+        {...args}
+        {...gridProps}
+        columnsProp={{ count: 3, size: ["100px", "1fr"] }}
+      >
         <Box {...boxProps} backgroundProp="#F4991A">
           <Text>minmax(100px,1fr)</Text>
         </Box>
@@ -69,10 +105,17 @@ storiesOf("Components|Grid", module)
         </Box>
       </Grid>
     </>
-  ))
-  .add("Rows", () => (
+  );
+};
+
+const TemplateRows = (args) => {
+  return (
     <>
-      <Grid {...gridProps} rowsProp={["100px", ["100px", "1fr"], "auto"]}>
+      <Grid
+        {...args}
+        {...gridProps}
+        rowsProp={["100px", ["100px", "1fr"], "auto"]}
+      >
         <Box {...boxProps} backgroundProp="#F4991A">
           <Text>100px</Text>
         </Box>
@@ -84,7 +127,7 @@ storiesOf("Components|Grid", module)
         </Box>
       </Grid>
 
-      <Grid {...gridProps} rowsProp="50px">
+      <Grid {...args} {...gridProps} rowsProp="50px">
         <Box {...boxProps} backgroundProp="#F4991A">
           <Text>50px</Text>
         </Box>
@@ -96,9 +139,13 @@ storiesOf("Components|Grid", module)
         </Box>
       </Grid>
     </>
-  ))
-  .add("Layout", () => (
+  );
+};
+
+const TemplateLayout = (args) => {
+  return (
     <Grid
+      {...args}
       widthProp="100vw"
       heightProp="100vh"
       gridGap="10px"
@@ -128,4 +175,13 @@ storiesOf("Components|Grid", module)
         <Text>footer</Text>
       </Box>
     </Grid>
-  ));
+  );
+};
+
+export const Default = Template.bind({});
+Default.args = {
+  columnsProp: ["200px", ["100px", "1fr"], "auto"],
+};
+export const Columns = TemplateColumns.bind({});
+export const Rows = TemplateRows.bind({});
+export const Layout = TemplateLayout.bind({});

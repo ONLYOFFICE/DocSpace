@@ -173,23 +173,41 @@ class IconButton extends React.PureComponent {
 }
 
 IconButton.propTypes = {
+  /** Set component class */
   className: PropTypes.string,
+  /** Icon color */
   color: PropTypes.string,
+  /** Icon color on hover action */
   hoverColor: PropTypes.string,
+  /** Icon color on click action */
   clickColor: PropTypes.string,
+  /** Button height and width value */
   size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  /** Determines if icon fill is needed */
   isFill: PropTypes.bool,
+  /** Tells when the button should present a disabled state */
   isDisabled: PropTypes.bool,
+  /** Set cursor value */
   isClickable: PropTypes.bool,
+  /** Icon name */
   iconName: PropTypes.string.isRequired,
+  /** Icon name on hover action */
   iconHoverName: PropTypes.string,
+  /** Icon name on click action */
   iconClickName: PropTypes.string,
+  /** What the button will trigger when clicked  */
   onClick: PropTypes.func,
+  /** What the button will trigger when cursor enter */
   onMouseEnter: PropTypes.func,
+  /**  What the button will trigger when cursor down */
   onMouseDown: PropTypes.func,
+  /** What the button will trigger when cursor up */
   onMouseUp: PropTypes.func,
+  /** What the button will trigger when cursor leave icon */
   onMouseLeave: PropTypes.func,
+  /** Set component id */
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   dataTip: PropTypes.string,
 };

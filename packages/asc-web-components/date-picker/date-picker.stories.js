@@ -1,24 +1,5 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import {
-  withKnobs,
-  boolean,
-  color,
-  select,
-  date,
-  number,
-  text,
-} from "@storybook/addon-knobs/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
-import DatePicker from ".";
-import Section from "../../../.storybook/decorators/section";
-
-function myDateKnob(name, defaultValue) {
-  const stringTimestamp = date(name, defaultValue);
-  return new Date(stringTimestamp);
-}
+import DatePicker from "./";
 
 const locales = [
   "az",
@@ -48,33 +29,55 @@ const locales = [
   "vi",
 ];
 
-const displayType = ["dropdown", "aside", "auto"];
+export default {
+  title: "Components/DatePicker",
+  component: DatePicker,
 
-storiesOf("Components|DatePicker", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("base", () => (
-    <Section>
+  argTypes: {
+    themeColor: { control: "color" },
+    selectedDate: { control: "date" },
+    openToDate: { control: "date" },
+    minDate: { control: "date" },
+    maxDate: { control: "date" },
+    onChange: { action: "onChange" },
+    locale: { control: { type: "select", options: locales } },
+  },
+  parameters: {
+    docs: {
+      description: {
+        component: "Base DatePicker component",
+      },
+    },
+  },
+};
+
+const Template = (args) => {
+  console.log(args.locale);
+  return (
+    <div style={{ height: "380px" }}>
       <DatePicker
+        {...args}
         onChange={(date) => {
-          action("Selected date")(date);
+          args.onChange(date);
         }}
-        selectedDate={myDateKnob("selectedDate", new Date())}
-        minDate={myDateKnob("minDate", new Date("1970/01/01"))}
-        maxDate={myDateKnob(
-          "maxDate",
-          new Date(new Date().getFullYear() + 1 + "/01/01")
-        )}
-        isDisabled={boolean("isDisabled", false)}
-        isReadOnly={boolean("isReadOnly", false)}
-        hasError={boolean("hasError", false)}
-        isOpen={boolean("isOpen", false)}
-        themeColor={color("themeColor", "#ED7309")}
-        locale={select("locale", locales, "en")}
-        displayType={select("displayType", displayType, "auto")}
-        calendarSize={select("calendarSize", ["base", "big"], "base")}
-        zIndex={number("zIndex", 310)}
-        calendarHeaderContent={text("headerContent", "Select Date")}
+        selectedDate={new Date(args.selectedDate)}
+        minDate={new Date(args.minDate)}
+        maxDate={new Date(args.maxDate)}
+        openToDate={new Date(args.openToDate)}
       />
-    </Section>
-  ));
+    </div>
+  );
+};
+
+export const Default = Template.bind({});
+Default.args = {
+  isOpen: true,
+  calendarHeaderContent: "Select Date",
+  themeColor: "#ED7309",
+  minDate: new Date("1970/01/01"),
+  selectedDate: new Date(),
+  maxDate: new Date(new Date().getFullYear() + 1 + "/01/01"),
+  openToDate: new Date(),
+  calendarSize: "base",
+  locale: "en",
+};

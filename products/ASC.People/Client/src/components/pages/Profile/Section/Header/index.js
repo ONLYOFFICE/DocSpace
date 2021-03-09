@@ -3,7 +3,7 @@ import IconButton from "@appserver/components/icon-button";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import AvatarEditor from "@appserver/components/avatar-editor";
 import Headline from "@appserver/common/components/Headline";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
@@ -496,6 +496,7 @@ export default inject(({ auth, peopleStore }) => {
     viewer: auth.userStore.user,
     filter: peopleStore.filterStore.filter,
     setFilter: peopleStore.filterStore.setFilterParams,
+    setFilterUrl: peopleStore.filterStore.setFilterUrl,
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,

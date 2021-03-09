@@ -530,17 +530,28 @@ class Calendar extends Component {
 }
 
 Calendar.propTypes = {
-  onChange: PropTypes.func,
+  /** Color of the selected day */
   themeColor: PropTypes.string,
+  /** Selected date value */
   selectedDate: PropTypes.instanceOf(Date),
+  /** The beginning of a period that shall be displayed by default */
   openToDate: PropTypes.instanceOf(Date),
+  /** Minimum date that the user can select. */
   minDate: PropTypes.instanceOf(Date),
+  /** Maximum date that the user can select */
   maxDate: PropTypes.instanceOf(Date),
+  /** Browser locale */
   locale: PropTypes.string,
+  /** Calendar size */
   size: PropTypes.oneOf(["base", "big"]),
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Function called when the user select a day */
+  onChange: PropTypes.func,
 };
 
 Calendar.defaultProps = {

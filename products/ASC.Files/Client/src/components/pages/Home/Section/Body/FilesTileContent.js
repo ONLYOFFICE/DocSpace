@@ -7,7 +7,7 @@ import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import { markAsRead } from "@appserver/common/api/files";
 import { FileAction } from "@appserver/common/constants";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";

@@ -9,7 +9,7 @@ import history from "@appserver/common/history";
 
 import { withTranslation, Trans } from "react-i18next";
 import api from "@appserver/common/api";
-import toastr from "@appserver/common/components/Toast";
+import toastr from "studio/toastr";
 
 import ModalDialogContainer from "../ModalDialogContainer";
 

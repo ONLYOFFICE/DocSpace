@@ -1,5 +1,4 @@
 import { makeObservable, action, observable, computed } from "mobx";
-import FileActionStore from "./FileActionStore";
 
 class SelectedFolderStore {
   folders = null;
@@ -44,8 +43,6 @@ class SelectedFolderStore {
 
       setSelectedFolder: action,
     });
-
-    this.fileActionStore = new FileActionStore();
   }
 
   get isRootFolder() {

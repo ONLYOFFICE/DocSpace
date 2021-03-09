@@ -74,25 +74,40 @@ class FieldContainer extends React.Component {
 FieldContainer.displayName = "FieldContainer";
 
 FieldContainer.propTypes = {
+  /** Vertical or horizontal alignment */
   isVertical: PropTypes.bool,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Indicates that the field is required to fill */
   isRequired: PropTypes.bool,
+  /** Indicates that the field is incorrect */
   hasError: PropTypes.bool,
+  /** Sets visibility of field label section */
   labelVisible: PropTypes.bool,
+  /** Field label text */
   labelText: PropTypes.string,
   icon: PropTypes.string,
+  /** Children elements */
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
+  /** Tooltip content */
   tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   place: PropTypes.string,
+  /** Tooltip header content (tooltip opened in aside) */
   helpButtonHeaderContent: PropTypes.string,
+  /** Max label width in horizontal alignment */
   maxLabelWidth: PropTypes.string,
+  /** Error message text */
   errorMessage: PropTypes.string,
+  /** Error text color */
   errorColor: PropTypes.string,
+  /** Error text width */
   errorMessageWidth: PropTypes.string,
+  /** Accepts id  */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

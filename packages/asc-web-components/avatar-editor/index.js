@@ -223,30 +223,53 @@ class AvatarEditor extends React.Component {
 }
 
 AvatarEditor.propTypes = {
+  /** Display avatar editor */
   visible: PropTypes.bool,
+  /** Translation string for title */
   headerLabel: PropTypes.string,
+  /** Translation string for file selection */
   selectNewPhotoLabel: PropTypes.string,
+  /** Translation string for file dropping (concat with selectNewPhotoLabel prop) */
   orDropFileHereLabel: PropTypes.string,
-
+  /** Translation string for save button */
   saveButtonLabel: PropTypes.string,
+  /** Translation string for cancel button */
   cancelButtonLabel: PropTypes.string,
+  /** Tells when the button should show loader icon */
   saveButtonLoading: PropTypes.bool,
+  /** Translation string for size warning */
   maxSizeFileError: PropTypes.string,
+  /** Display avatar editor */
   image: PropTypes.string,
+  /** Max size of image */
   maxSize: PropTypes.number,
+  /** Accepted file types */
   accept: PropTypes.arrayOf(PropTypes.string),
+  /** Save event */
   onSave: PropTypes.func,
+  /** Closing event */
   onClose: PropTypes.func,
+  /** Image deletion event */
   onDeleteImage: PropTypes.func,
+  /** Image upload event */
   onLoadFile: PropTypes.func,
+  /** Image change event */
   onImageChange: PropTypes.func,
+  /** Translation string for load file warning */
   onLoadFileError: PropTypes.func,
+  /** Translation string for file type warning */
   unknownTypeError: PropTypes.string,
+  /** Translation string for warning */
   unknownError: PropTypes.string,
+  /** Display type */
   displayType: PropTypes.oneOf(["auto", "modal", "aside"]),
+  /** Accepts class" */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Use for the view of the modal dialog or not */
   useModalDialog: PropTypes.bool,
 };
 

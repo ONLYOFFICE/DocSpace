@@ -1,174 +1,146 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import {
-  withKnobs,
-  boolean,
-  select,
-  number,
-} from "@storybook/addon-knobs/react";
-import { optionsKnob as options } from "@storybook/addon-knobs";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
-import ComboBox from ".";
-import { Icons } from "../icons";
-import Button from "../button";
+
+import ComboBox from "./";
 import RadioButton from "../radio-button";
 import DropDownItem from "../drop-down-item";
-import Section from "../../../.storybook/decorators/section";
-import NavLogoIcon from "../../../../../public/images/nav.logo.react.svg";
-const iconNames = Object.keys(Icons);
-const sizeOptions = ["base", "middle", "big", "huge", "content"];
+import NavLogoIcon from "../../../public/images/nav.logo.opened.react.svg";
 
-iconNames.push("NONE");
+const comboOptions = [
+  {
+    key: 1,
+    icon: "static/images/catalog.employee.react.svg",
+    label: "Option 1",
+  },
+  {
+    key: 2,
+    icon: "static/images/catalog.guest.react.svg",
+    label: "Option 2",
+  },
+  {
+    key: 3,
+    disabled: true,
+    label: "Option 3",
+  },
+  {
+    key: 4,
+    label: "Option 4",
+  },
+  {
+    key: 5,
+    icon: "static/images/copy.react.svg",
+    label: "Option 5",
+  },
+  {
+    key: 6,
+    label: "Option 6",
+  },
+  {
+    key: 7,
+    label: "Option 7",
+  },
+];
 
-storiesOf("Components|Input", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("combo box", () => {
-    const comboOptions = [
-      {
-        key: 1,
-        icon: "static/images/catalog.employee.react.svg",
-        label: "Option 1",
-      },
-      {
-        key: 2,
-        icon: "CatalogGuestIcon",
-        label: "Option 2",
-      },
-      {
-        key: 3,
-        disabled: true,
-        label: "Option 3",
-      },
-      {
-        key: 4,
-        label: "Option 4",
-      },
-      {
-        key: 5,
-        icon: "static/images/copy.react.svg",
-        label: "Option 5",
-      },
-      {
-        key: 6,
-        label: "Option 6",
-      },
-      {
-        key: 7,
-        label: "Option 7",
-      },
-    ];
+let children = [];
 
-    const needScrollDropDown = boolean("Need scroll dropdown", false);
-    const dropDownMaxHeight = needScrollDropDown
-      ? number("dropDownMaxHeight", 200)
-      : null;
-    const optionsMultiSelect = options(
-      "children",
-      {
-        button: "button",
-        icon: "icon",
-      },
-      [],
-      {
-        display: "multi-select",
-      }
-    );
+const advancedOptions = (
+  <>
+    <DropDownItem key="1" noHover>
+      <RadioButton value="asc" name="first" label="A-Z" isChecked={true} />
+    </DropDownItem>
+    <DropDownItem key="2" noHover>
+      <RadioButton value="desc" name="first" label="Z-A" />
+    </DropDownItem>
+    <DropDownItem key="3" isSeparator />
+    <DropDownItem key="4" noHover>
+      <RadioButton value="first" name="second" label="First name" />
+    </DropDownItem>
+    <DropDownItem key="5" noHover>
+      <RadioButton
+        value="last"
+        name="second"
+        label="Last name"
+        isChecked={true}
+      />
+    </DropDownItem>
+  </>
+);
 
-    let children = [];
-    optionsMultiSelect.forEach(function (item, i) {
-      switch (item) {
-        case "button":
-          children.push(<Button label="button" key={i} />);
-          break;
-        case "icon":
-          children.push(<NavLogoIcon size="medium" key={i} />);
-          break;
-        default:
-          break;
-      }
-    });
+const Wrapper = (props) => (
+  <div style={{ height: "220px" }}>{props.children}</div>
+);
 
-    const advancedOptions = (
-      <>
-        <DropDownItem key="1" noHover>
-          <RadioButton value="asc" name="first" label="A-Z" isChecked={true} />
-        </DropDownItem>
-        <DropDownItem key="2" noHover>
-          <RadioButton value="desc" name="first" label="Z-A" />
-        </DropDownItem>
-        <DropDownItem key="3" isSeparator />
-        <DropDownItem key="4" noHover>
-          <RadioButton value="first" name="second" label="First name" />
-        </DropDownItem>
-        <DropDownItem key="5" noHover>
-          <RadioButton
-            value="last"
-            name="second"
-            label="Last name"
-            isChecked={true}
-          />
-        </DropDownItem>
-      </>
-    );
+const childrenItems = children.length > 0 ? children : null;
 
-    const childrenItems = children.length > 0 ? children : null;
+const Template = (args) => (
+  <Wrapper>
+    <ComboBox
+      {...args}
+      options={[
+        { key: 1, label: "Option 1" },
+        { key: 2, label: "Option 2" },
+      ]}
+      selectedOption={{
+        key: 0,
+        label: "Select",
+      }}
+    />
+  </Wrapper>
+);
 
-    return (
-      <Section>
-        <table
-          style={{ width: 584, borderCollapse: "separate", textAlign: "left" }}
-        >
-          <thead>
-            <tr>
-              <th>Default</th>
-              <th>Advanced</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ paddingBottom: 20 }}>
-                <ComboBox
-                  options={comboOptions}
-                  onSelect={(option) => action("Selected option")(option)}
-                  selectedOption={{
-                    key: 0,
-                    label: "Select",
-                    default: true,
-                  }}
-                  isDisabled={boolean("isDisabled", false)}
-                  noBorder={boolean("noBorder", false)}
-                  dropDownMaxHeight={dropDownMaxHeight}
-                  scaled={boolean("scaled", false)}
-                  scaledOptions={boolean("scaledOptions", false)}
-                  size={select("size", sizeOptions, "content")}
-                >
-                  {childrenItems}
-                </ComboBox>
-              </td>
-              <td style={{ paddingBottom: 20 }}>
-                <ComboBox
-                  options={[]}
-                  advancedOptions={advancedOptions}
-                  onSelect={(option) => action("Selected option")(option)}
-                  selectedOption={{
-                    key: 0,
-                    label: "Select",
-                    default: true,
-                  }}
-                  isDisabled={boolean("isDisabled", false)}
-                  scaled={false}
-                  size="content"
-                  directionX="right"
-                >
-                  <NavLogoIcon size="medium" key="comboIcon" />
-                </ComboBox>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </Section>
-    );
-  });
+const BaseOptionsTemplate = (args) => (
+  <Wrapper>
+    <ComboBox
+      {...args}
+      options={comboOptions}
+      onSelect={(option) => args.onSelect(option)}
+      selectedOption={{
+        key: 0,
+        label: "Select",
+        default: true,
+      }}
+    >
+      {childrenItems}
+    </ComboBox>
+  </Wrapper>
+);
+
+const AdvancedOptionsTemplate = (args) => (
+  <Wrapper>
+    <ComboBox
+      {...args}
+      options={[]}
+      advancedOptions={advancedOptions}
+      onSelect={(option) => args.onSelect(option)}
+      selectedOption={{
+        key: 0,
+        label: "Select",
+        default: true,
+      }}
+    >
+      <NavLogoIcon size="medium" key="comboIcon" />
+    </ComboBox>
+  </Wrapper>
+);
+
+export const basic = Template.bind({});
+basic.args = {
+  opened: true,
+  scaled: false,
+};
+export const baseOption = BaseOptionsTemplate.bind({});
+baseOption.args = {
+  scaledOptions: false,
+  scaled: false,
+  noBorder: false,
+  isDisabled: false,
+  opened: true,
+};
+export const advancedOption = AdvancedOptionsTemplate.bind({});
+advancedOption.args = {
+  opened: true,
+  isDisabled: false,
+  scaled: false,
+  size: "content",
+  directionX: "right",
+  directionY: "bottom",
+};

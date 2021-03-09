@@ -1,42 +1,46 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
-import { withKnobs, text } from "@storybook/addon-knobs/react";
-import { action } from "@storybook/addon-actions";
-import EmptyScreenContainer from ".";
+import EmptyScreenContainer from "./";
 import Link from "../link";
-import CrossIcon from "../../../../../public/images/cross.react.svg"
-storiesOf("Components| EmptyScreenContainer", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("base", () => (
+import CrossIcon from "../../../public/images/cross.react.svg";
+
+export default {
+  title: "Components/EmptyScreenContainer",
+  component: EmptyScreenContainer,
+  argTypes: {
+    onClick: { action: "Reset filter clicked", table: { disable: true } },
+  },
+  parameters: {
+    docs: {
+      description: {
+        component: "Used to display empty screen page",
+      },
+    },
+  },
+};
+
+const Template = (args) => {
+  return (
     <EmptyScreenContainer
-      imageSrc={text("imageSrc", "empty_screen_filter.png")}
-      imageAlt={text("imageAlt", "Empty Screen Filter image")}
-      headerText={text(
-        "headerText",
-        "No results matching your search could be found"
-      )}
-      subheadingText={text(
-        "subheaderText",
-        "No files to be displayed in this section"
-      )}
-      descriptionText={text(
-        "descriptionText",
-        "No people matching your filter can be displayed in this section. Please select other filter options or clear filter to view all the people in this section."
-      )}
+      {...args}
       buttons={
         <>
           <CrossIcon size="small" style={{ marginRight: "4px" }} />
-          <Link
-            type="action"
-            isHovered={true}
-            onClick={(e) => action("Reset filter clicked")(e)}
-          >
+          <Link type="action" isHovered={true} onClick={(e) => args.onClick(e)}>
             Reset filter
           </Link>
         </>
       }
     />
-  ));
+  );
+};
+
+export const Default = Template.bind({});
+
+Default.args = {
+  imageSrc: "/static/images/empty_screen_filter.png",
+  imageAlt: "Empty Screen Filter image",
+  headerText: "No results matching your search could be found",
+  subheadingText: "No files to be displayed in this section",
+  descriptionText:
+    "No people matching your filter can be displayed in this section. Please select other filter options or clear filter to view all the people in this section.",
+};

@@ -1,6 +1,5 @@
-import React, { Component, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
-import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import Box from "@appserver/components/box";
@@ -8,19 +7,20 @@ import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import TextInput from "@appserver/components/text-input";
 import Link from "@appserver/components/link";
-import toastr from "@appserver/components/toast/toastr";
 import Checkbox from "@appserver/components/checkbox";
-//import HelpButton from "@appserver/components/help-button";
+import Toast from "@appserver/components/toast";
+import HelpButton from "@appserver/components/help-button";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
 import PageLayout from "@appserver/common/components/PageLayout";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
 import { checkPwd } from "@appserver/common/desktop";
-import { sendInstructionsToChangePassword } from "@appserver/common/api/people";
 import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
-import "./i18n";
+import i18n from "./i18n";
+import { I18nextProvider, useTranslation } from "react-i18next";
+import throttle from "lodash/throttle";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -28,6 +28,11 @@ const LoginContainer = styled.div`
   align-items: center;
   margin: 120px auto 0 auto;
   max-width: 960px;
+
+  .login-tooltip {
+    padding-left: 4px;
+    display: inline-block;
+  }
 
   @media (max-width: 768px) {
     padding: 0 16px;
@@ -115,108 +120,128 @@ const LoginFormWrapper = styled.div`
   height: calc(100vh-56px);
 `;
 
-class Form extends Component {
-  constructor(props) {
-    super(props);
+const settings = {
+  minLength: 6,
+  upperCase: false,
+  digits: false,
+  specSymbols: false,
+};
 
-    this.state = {
-      identifierValid: true,
-      identifier: "",
-      isLoading: false,
-      isDisabled: false,
-      passwordValid: true,
-      password: "",
-      isChecked: false,
-      openDialog: false,
-      email: "",
-      emailError: false,
-      errorText: "",
-      socialButtons: [],
-    };
-  }
+const Form = (props) => {
+  const inputRef = React.useRef(null);
 
-  onChangeLogin = (event) => {
-    this.setState({ identifier: event.target.value });
-    !this.state.identifierValid && this.setState({ identifierValid: true });
-    this.state.errorText && this.setState({ errorText: "" });
-  };
+  const [identifierValid, setIdentifierValid] = useState(true);
+  const [identifier, setIdentifier] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
-  onChangePassword = (event) => {
-    this.setState({ password: event.target.value });
-    !this.state.passwordValid && this.setState({ passwordValid: true });
-    this.state.errorText && this.setState({ errorText: "" });
-  };
+  const [passwordValid, setPasswordValid] = useState(true);
+  const [password, setPassword] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
 
-  onChangeEmail = (event) => {
-    this.setState({ email: event.target.value, emailError: false });
-  };
+  const [errorText, setErrorText] = useState("");
+  const [socialButtons, setSocialButtons] = useState([]);
 
-  onChangeCheckbox = () => this.setState({ isChecked: !this.state.isChecked });
+  const { t } = useTranslation("Login");
 
-  onClick = () => {
-    this.setState({
-      openDialog: true,
-      isDisabled: true,
-      email: this.state.identifier,
-    });
-  };
+  const {
+    login,
+    hashSettings,
+    isDesktop,
+    defaultPage,
+    match,
+    organizationName,
+    greetingTitle,
+  } = props;
 
-  onKeyPress = (event) => {
-    if (event.key === "Enter") {
-      !this.state.isDisabled
-        ? this.onSubmit()
-        : this.onSendPasswordInstructions();
+  const { error, confirmedEmail } = match.params;
+
+  const onKeyDown = (e) => {
+    console.log("onKeyDown", e.key);
+    if (e.key === "Enter") {
+      onClearErrors(e);
+      !isDisabled && onSubmit(e);
+      e.preventDefault();
     }
   };
 
-  onSendPasswordInstructions = () => {
-    if (!this.state.email.trim()) {
-      this.setState({ emailError: true });
-    } else {
-      this.setState({ isLoading: true });
-      sendInstructionsToChangePassword(this.state.email)
-        .then(
-          (res) => toastr.success(res),
-          (message) => toastr.error(message)
-        )
-        .finally(this.onDialogClose());
+  const onClearErrors = (e) => {
+    console.log("onClearErrors", e);
+    !identifierValid && setIdentifierValid(true);
+    !passwordValid && setPasswordValid(true);
+    errorText && setErrorText("");
+  };
+
+  //const throttledKeyPress = throttle(onKeyPress, 500);
+
+  useEffect(() => {
+    document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
+
+    error && setErrorText(error);
+    confirmedEmail && setIdentifier(confirmedEmail);
+
+    focusInput();
+
+    //window.addEventListener("keyup", throttledKeyPress, false);
+
+    /*return () => {
+      window.removeEventListener("keyup", throttledKeyPress, false);
+    };*/
+  }, []);
+
+  const focusInput = () => {
+    if (inputRef) {
+      inputRef.current.focus();
     }
   };
 
-  onDialogClose = () => {
-    this.setState({
-      openDialog: false,
-      isDisabled: false,
-      isLoading: false,
-      email: "",
-      emailError: false,
-    });
+  const onChangeLogin = (e) => {
+    console.log("onChangeLogin", e.target.value);
+    setIdentifier(e.target.value);
+    onClearErrors(e);
   };
 
-  onSubmit = () => {
-    const { errorText, identifier, password } = this.state;
-    const { login, hashSettings, isDesktop, defaultPage } = this.props;
+  const onChangePassword = (e) => {
+    console.log("onChangePassword", e.target.value);
+    setPassword(e.target.value);
+    onClearErrors(e);
+  };
 
-    errorText && this.setState({ errorText: "" });
+  const onChangeCheckbox = () => setIsChecked(!isChecked);
+
+  const onClick = () => {
+    setIsDialogVisible(true);
+    setIsDisabled(true);
+  };
+
+  const onDialogClose = () => {
+    setIsDialogVisible(false);
+    setIsDisabled(false);
+    setIsLoading(false);
+  };
+
+  const onSubmit = () => {
+    errorText && setErrorText("");
     let hasError = false;
 
     const userName = identifier.trim();
 
     if (!userName) {
       hasError = true;
-      this.setState({ identifierValid: !hasError });
+      setIdentifierValid(false);
     }
 
     const pass = password.trim();
 
     if (!pass) {
       hasError = true;
-      this.setState({ passwordValid: !hasError });
+      setPasswordValid(false);
     }
 
     if (hasError) return false;
 
-    this.setState({ isLoading: true });
+    setIsLoading(true);
     const hash = createPasswordHash(pass, hashSettings);
 
     isDesktop && checkPwd();
@@ -224,203 +249,151 @@ class Form extends Component {
     login(userName, hash)
       .then(() => tryRedirectTo(defaultPage))
       .catch((error) => {
-        this.setState({
-          errorText: error,
-          identifierValid: !error,
-          passwordValid: !error,
-          isLoading: false,
-        });
+        setErrorText(error);
+        setIdentifierValid(!error);
+        setPasswordValid(!error);
+        setIsLoading(false);
+        focusInput();
       });
   };
 
-  componentDidMount() {
-    const { match, t, organizationName } = this.props;
-    const { error, confirmedEmail } = match.params;
+  //console.log("Login render");
 
-    document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
+  return (
+    <LoginContainer>
+      <Text
+        fontSize="32px"
+        fontWeight={600}
+        textAlign="center"
+        className="greeting-title"
+      >
+        {greetingTitle}
+      </Text>
 
-    error && this.setState({ errorText: error });
-    confirmedEmail && this.setState({ identifier: confirmedEmail });
-    window.addEventListener("keyup", this.onKeyPress);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("keyup", this.onKeyPress);
-  }
-
-  settings = {
-    minLength: 6,
-    upperCase: false,
-    digits: false,
-    specSymbols: false,
-  };
-
-  render() {
-    const { greetingTitle, match, t } = this.props;
-
-    const {
-      identifierValid,
-      identifier,
-      isLoading,
-      passwordValid,
-      password,
-      isChecked,
-      openDialog,
-      email,
-      emailError,
-      errorText,
-      socialButtons,
-    } = this.state;
-    const { confirmedEmail } = match.params;
-
-    //console.log("Login render");
-
-    return (
-      <>
-        <LoginContainer>
-          <Text
-            fontSize="32px"
-            fontWeight={600}
-            textAlign="center"
-            className="greeting-title"
-          >
-            {greetingTitle}
-          </Text>
-
-          <form className="auth-form-container">
-            <FieldContainer
-              isVertical={true}
-              labelVisible={false}
-              hasError={!identifierValid}
-              errorMessage={errorText ? errorText : t("RequiredFieldMessage")} //TODO: Add wrong login server error
-            >
-              <TextInput
-                id="login"
-                name="login"
-                hasError={!identifierValid}
-                value={identifier}
-                placeholder={t("RegistrationEmailWatermark")}
-                size="large"
-                scale={true}
-                isAutoFocussed={true}
-                tabIndex={1}
-                isDisabled={isLoading}
-                autoComplete="username"
-                onChange={this.onChangeLogin}
-                onKeyDown={this.onKeyPress}
-              />
-            </FieldContainer>
-            <FieldContainer
-              isVertical={true}
-              labelVisible={false}
-              hasError={!passwordValid}
-              errorMessage={errorText ? "" : t("RequiredFieldMessage")} //TODO: Add wrong password server error
-            >
-              <PasswordInput
-                simpleView={true}
-                passwordSettings={this.settings}
-                id="password"
-                inputName="password"
-                placeholder={t("Password")}
-                type="password"
-                hasError={!passwordValid}
-                inputValue={password}
-                size="large"
-                scale={true}
-                tabIndex={1}
-                isDisabled={isLoading}
-                autoComplete="current-password"
-                onChange={this.onChangePassword}
-                onKeyDown={this.onKeyPress}
-              />
-            </FieldContainer>
-            <div className="login-forgot-wrapper">
-              <div className="login-checkbox-wrapper">
-                <Checkbox
-                  className="login-checkbox"
-                  isChecked={isChecked}
-                  onChange={this.onChangeCheckbox}
-                  label={<Text fontSize="13px">{t("Remember")}</Text>}
-                />
-                {/*<HelpButton
-                  className="login-tooltip"
-                  helpButtonHeaderContent={t("CookieSettingsTitle")}
-                  tooltipContent={
-                    <Text fontSize="12px">{t("RememberHelper")}</Text>
-                  }
-                />*/}
-                <Link
-                  fontSize="13px"
-                  color="#316DAA"
-                  className="login-link"
-                  type="page"
-                  isHovered={false}
-                  onClick={this.onClick}
-                >
-                  {t("ForgotPassword")}
-                </Link>
-              </div>
-            </div>
-
-            {openDialog && (
-              <ForgotPasswordModalDialog
-                openDialog={openDialog}
-                isLoading={isLoading}
-                email={email}
-                emailError={emailError}
-                onChangeEmail={this.onChangeEmail}
-                onSendPasswordInstructions={this.onSendPasswordInstructions}
-                onDialogClose={this.onDialogClose}
-                t={t}
-              />
-            )}
-
-            <Button
-              id="button"
-              className="login-button"
-              primary
-              size="large"
-              scale={true}
-              label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
-              tabIndex={1}
-              isDisabled={isLoading}
-              isLoading={isLoading}
-              onClick={this.onSubmit}
+      <form className="auth-form-container">
+        <FieldContainer
+          isVertical={true}
+          labelVisible={false}
+          hasError={!identifierValid}
+          errorMessage={errorText ? errorText : t("RequiredFieldMessage")} //TODO: Add wrong login server error
+        >
+          <TextInput
+            id="login"
+            name="login"
+            type="email"
+            hasError={!identifierValid}
+            value={identifier}
+            placeholder={t("RegistrationEmailWatermark")}
+            size="large"
+            scale={true}
+            isAutoFocussed={true}
+            tabIndex={1}
+            isDisabled={isLoading}
+            autoComplete="username"
+            onChange={onChangeLogin}
+            onKeyDown={onKeyDown}
+            forwardedRef={inputRef}
+          />
+        </FieldContainer>
+        <FieldContainer
+          isVertical={true}
+          labelVisible={false}
+          hasError={!passwordValid}
+          errorMessage={errorText ? "" : t("RequiredFieldMessage")} //TODO: Add wrong password server error
+        >
+          <PasswordInput
+            simpleView={true}
+            passwordSettings={settings}
+            id="password"
+            inputName="password"
+            placeholder={t("Password")}
+            type="password"
+            hasError={!passwordValid}
+            inputValue={password}
+            size="large"
+            scale={true}
+            tabIndex={1}
+            isDisabled={isLoading}
+            autoComplete="current-password"
+            onChange={onChangePassword}
+            onKeyDown={onKeyDown}
+          />
+        </FieldContainer>
+        <div className="login-forgot-wrapper">
+          <div className="login-checkbox-wrapper">
+            <Checkbox
+              className="login-checkbox"
+              isChecked={isChecked}
+              onChange={onChangeCheckbox}
+              label={<Text fontSize="13px">{t("Remember")}</Text>}
             />
+            <HelpButton
+              className="login-tooltip"
+              helpButtonHeaderContent={t("CookieSettingsTitle")}
+              tooltipContent={
+                <Text fontSize="12px">{t("RememberHelper")}</Text>
+              }
+            />
+            <Link
+              fontSize="13px"
+              color="#316DAA"
+              className="login-link"
+              type="page"
+              isHovered={false}
+              onClick={onClick}
+            >
+              {t("ForgotPassword")}
+            </Link>
+          </div>
+        </div>
 
-            {confirmedEmail && (
-              <Text isBold={true} fontSize="16px">
-                {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
-              </Text>
-            )}
-            {/* TODO: old error indication
-            
-            <Text fontSize="14px" color="#c30">
-              {errorText}
-            </Text> */}
+        {isDialogVisible && (
+          <ForgotPasswordModalDialog
+            visible={isDialogVisible}
+            email={identifier}
+            onDialogClose={onDialogClose}
+          />
+        )}
 
-            {socialButtons.length ? (
-              <Box displayProp="flex" alignItems="center">
-                <div className="login-bottom-border"></div>
-                <Text className="login-bottom-text" color="#A3A9AE">
-                  {t("Or")}
-                </Text>
-                <div className="login-bottom-border"></div>
-              </Box>
-            ) : null}
-          </form>
-        </LoginContainer>
-      </>
-    );
-  }
-}
+        <Button
+          id="submit"
+          className="login-button"
+          primary
+          size="large"
+          scale={true}
+          label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
+          tabIndex={1}
+          isDisabled={isLoading}
+          isLoading={isLoading}
+          onClick={onSubmit}
+        />
+
+        {confirmedEmail && (
+          <Text isBold={true} fontSize="16px">
+            {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+          </Text>
+        )}
+
+        {socialButtons.length ? (
+          <Box displayProp="flex" alignItems="center">
+            <div className="login-bottom-border"></div>
+            <Text className="login-bottom-text" color="#A3A9AE">
+              {t("Or")}
+            </Text>
+            <div className="login-bottom-border"></div>
+          </Box>
+        ) : null}
+      </form>
+      <Toast />
+    </LoginContainer>
+  );
+};
 
 Form.propTypes = {
   login: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   hashSettings: PropTypes.object,
   greetingTitle: PropTypes.string.isRequired,
-  t: PropTypes.func.isRequired,
   socialButtons: PropTypes.array,
   organizationName: PropTypes.string,
   homepage: PropTypes.string,
@@ -434,10 +407,6 @@ Form.defaultProps = {
   email: "",
 };
 
-const FormWrapper = withTranslation()(Form);
-
-//const RegisterWrapper = withTranslation()(Register);
-
 const LoginForm = (props) => {
   const { enabledJoin, isDesktop } = props;
 
@@ -445,7 +414,7 @@ const LoginForm = (props) => {
     <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktop}>
       <PageLayout>
         <PageLayout.SectionBody>
-          <FormWrapper {...props} />
+          <Form {...props} />
         </PageLayout.SectionBody>
       </PageLayout>
       <Register />
@@ -459,7 +428,7 @@ LoginForm.propTypes = {
   isDesktop: PropTypes.bool.isRequired,
 };
 
-export default inject(({ auth }) => {
+const Login = inject(({ auth }) => {
   const { settingsStore, isAuthenticated, isLoaded, login } = auth;
   const {
     greetingSettings: greetingTitle,
@@ -482,3 +451,9 @@ export default inject(({ auth }) => {
     login,
   };
 })(withRouter(observer(LoginForm)));
+
+export default (props) => (
+  <I18nextProvider i18n={i18n}>
+    <Login {...props} />
+  </I18nextProvider>
+);

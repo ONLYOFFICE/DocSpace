@@ -44,6 +44,7 @@ class InputBlock extends React.Component {
       maxLength,
       onBlur,
       onFocus,
+      onKeyDown,
       isReadOnly,
       isAutoFocussed,
       autoComplete,
@@ -112,11 +113,13 @@ class InputBlock extends React.Component {
           size={size}
           scale={scale}
           onChange={this.onChange}
+          onKeyDown={onKeyDown}
           withBorder={false}
           mask={mask}
           keepCharPositions={keepCharPositions}
         />
-        {//iconNames.includes(iconName) && (
+        {
+          //iconNames.includes(iconName) && (
           <div className="append">
             <StyledIconBlock
               isDisabled={isDisabled}
@@ -142,42 +145,65 @@ class InputBlock extends React.Component {
 }
 
 InputBlock.propTypes = {
+  /** Used as HTML `id` property */
   id: PropTypes.string,
+  /** Used as HTML `name` property */
   name: PropTypes.string,
+  /** Supported type of the input fields.  */
   type: PropTypes.oneOf(["text", "password"]),
+  /** Define max length of value */
   maxLength: PropTypes.number,
+  /** Placeholder text for the input */
   placeholder: PropTypes.string,
+  /** Accepts css tab-index */
   tabIndex: PropTypes.number,
+  /** input text mask */
   mask: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
   keepCharPositions: PropTypes.bool,
-
+  /** Supported size of the input fields. */
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
+  /** Indicates the input field has scale */
   scale: PropTypes.bool,
-
+  /** Called with the new value. Required when input is not read only. Parent should pass it back as `value` */
   onChange: PropTypes.func,
+  /** Called when field is blurred  */
   onBlur: PropTypes.func,
+  /** Called when field is focused  */
   onFocus: PropTypes.func,
-
+  /** Focus the input field on initial render */
   isAutoFocussed: PropTypes.bool,
+  /** Indicates that the field cannot be used (e.g not authorised, or changes not saved) */
   isDisabled: PropTypes.bool,
+  /** Indicates that the field is displaying read-only content  */
   isReadOnly: PropTypes.bool,
+  /** Indicates the input field has an error */
   hasError: PropTypes.bool,
+  /** Indicates the input field has a warning */
   hasWarning: PropTypes.bool,
+  /** Used as HTML `autocomplete` */
   autoComplete: PropTypes.string,
+  /** Value of the input */
   value: PropTypes.string,
+  /** Path to icon */
   iconName: PropTypes.string,
+  /** Specifies the icon color  */
   iconColor: PropTypes.string,
+  /** Icon color on hover action */
   hoverColor: PropTypes.string,
+  /** Size icon */
   iconSize: PropTypes.number,
+  /** Determines if icon fill is needed */
   isIconFill: PropTypes.bool,
+  /**Will be triggered whenever an icon is clicked */
   onIconClick: PropTypes.func,
 
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
-
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

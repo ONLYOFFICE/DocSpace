@@ -1,16 +1,28 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import { withKnobs, text, select } from "@storybook/addon-knobs/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
-import AvatarEditor from ".";
+import AvatarEditorComponent from "./";
 import Avatar from "../avatar";
-import Section from "../../../.storybook/decorators/section";
-import { boolean } from "@storybook/addon-knobs";
 
-const displayType = ["auto", "modal", "aside"];
-class AvatarEditorStory extends React.Component {
+export default {
+  title: "Components/AvatarEditor",
+  component: AvatarEditorComponent,
+  argTypes: {
+    openEditor: { action: "onOpen", table: { disable: true } },
+    closeEditor: { action: "onClose", table: { disable: true } },
+    onSave: { action: "onSave", table: { disable: true } },
+    onLoadFile: { action: "onLoadFile", table: { disable: true } },
+    onImageChange: { action: "onImageChange", table: { disable: true } },
+    onDeleteImage: { action: "onDeleteImage", table: { disable: true } },
+  },
+  parameters: {
+    docs: {
+      description: {
+        component: "Used to display user avatar editor on page.",
+      },
+    },
+  },
+};
+
+class AvatarEditor extends React.Component {
   constructor(props) {
     super(props);
 
@@ -25,40 +37,47 @@ class AvatarEditorStory extends React.Component {
     this.onLoadFile = this.onLoadFile.bind(this);
     this.onImageChange = this.onImageChange.bind(this);
     this.onDeleteImage = this.onDeleteImage.bind(this);
-    this.onLoadFile = this.onLoadFile.bind(this);
   }
+
   onDeleteImage() {
-    action("onDeleteImage");
+    this.props.onDeleteImage();
   }
   onImageChange(img) {
-    action("onLoadFile");
+    this.props.onImageChange(img);
     this.setState({
       userImage: img,
     });
   }
   onLoadFile(file) {
-    action("onLoadFile")(file);
+    this.props.onLoadFile(file);
   }
   onSave(isUpdate, data) {
-    action("onSave")(isUpdate, data);
+    this.props.onSave(isUpdate, data);
     this.setState({
       isOpen: false,
     });
   }
-  openEditor() {
+  openEditor(e) {
+    this.props.openEditor(e);
     this.setState({
       isOpen: true,
     });
   }
   onClose() {
-    action("onClose");
+    this.props.closeEditor();
     this.setState({
       isOpen: false,
     });
   }
   render() {
+    const {
+      unknownError,
+      unknownTypeError,
+      saveButtonLoading,
+      maxSizeFileError,
+    } = this.props;
     return (
-      <div>
+      <>
         <Avatar
           size="max"
           role="user"
@@ -66,44 +85,27 @@ class AvatarEditorStory extends React.Component {
           editing={true}
           editAction={this.openEditor}
         />
-        <AvatarEditor
-          visible={this.state.isOpen}
+        {this.props.children}
+        <AvatarEditorComponent
+          {...this.props}
+          visible={this.state.isOpen || this.props.visible}
           onClose={this.onClose}
           onSave={this.onSave}
           onDeleteImage={this.onDeleteImage}
           onImageChange={this.onImageChange}
           onLoadFile={this.onLoadFile}
-          headerLabel={text("headerLabel", "Edit Photo")}
-          chooseFileLabel={text(
-            "chooseFileLabel",
-            "Drop files here, or click to select files"
-          )}
-          chooseMobileFileLabel={text(
-            "chooseMobileFileLabel",
-            "Click to select files"
-          )}
-          saveButtonLabel={text("saveButtonLabel", "Save")}
-          saveButtonLoading={boolean("saveButtonLoading", false)}
-          maxSizeFileError={text(
-            "maxSizeFileError",
-            "Maximum file size exceeded"
-          )}
-          unknownTypeError={text("unknownTypeError", "Unknown image file type")}
-          unknownError={text("unknownError", "Error")}
-          displayType={select("displayType", displayType, "auto")}
+          chooseFileLabel={"Drop files here, or click to select files"}
+          chooseMobileFileLabel={"Click to select files"}
+          saveButtonLoading={saveButtonLoading}
+          maxSizeFileError={maxSizeFileError || "Maximum file size exceeded"}
+          unknownTypeError={unknownTypeError || "Unknown image file type"}
+          unknownError={unknownError || "Error"}
         />
-      </div>
+      </>
     );
   }
 }
-
-storiesOf("Components|AvatarEditor", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("base", () => {
-    return (
-      <Section>
-        <AvatarEditorStory />
-      </Section>
-    );
-  });
+const Template = (args) => {
+  return <AvatarEditor {...args} />;
+};
+export const Default = Template.bind({});

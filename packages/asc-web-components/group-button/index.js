@@ -166,25 +166,43 @@ class GroupButton extends React.Component {
 
 GroupButton.propTypes = {
   activated: PropTypes.bool,
+  /** Initial value of checkbox */
   checked: PropTypes.bool,
+  /** Children elements */
   children: PropTypes.any,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Tells when the button should present a disabled state */
   disabled: PropTypes.bool,
+  /** Selected height value of DropDown */
   dropDownMaxHeight: PropTypes.number,
+  /** Value of font weight */
   fontWeight: PropTypes.string,
   hovered: PropTypes.bool,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Tells when the button should present a dropdown state */
   isDropdown: PropTypes.bool,
+  /** Initial value of Indeterminate checkbox */
   isIndeterminate: PropTypes.bool,
   isSelect: PropTypes.bool,
+  /** Tells when the button should contain separator */
   isSeparator: PropTypes.bool,
+  /** Value of the group button */
   label: PropTypes.string,
+  /** Called when checkbox is checked */
   onChange: PropTypes.func,
+  /** Property for onClick action */
   onClick: PropTypes.func,
+  /** Called when value is selected in selector */
   onSelect: PropTypes.func,
+  /** Tells when the button should be opened by default */
   opened: PropTypes.bool,
+  /** Selected value label */
   selected: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Value of tab index */
   tabIndex: PropTypes.number,
 };
 

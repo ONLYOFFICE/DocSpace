@@ -1,40 +1,45 @@
-import React from "react";
-import { storiesOf } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import { BooleanValue } from "react-values";
-import withReadme from "storybook-readme/with-readme";
-import { withKnobs, number } from "@storybook/addon-knobs/react";
-import Readme from "./README.md";
-import Section from "../../../.storybook/decorators/section";
-import Backdrop from ".";
+import React, { useState } from "react";
+
+import Backdrop from "./";
 import Button from "../button";
 
-storiesOf("Components|Backdrop", module)
-  .addDecorator(withReadme(Readme))
-  .addDecorator(withKnobs)
-  .add("base", () => (
-    <Section>
-      <BooleanValue>
-        {({ value, toggle }) => (
-          <div>
-            <Button
-              label="Show Backdrop"
-              primary={true}
-              onClick={(e) => {
-                action("onShow")(e);
-                toggle(true);
-              }}
-            />
-            <Backdrop
-              visible={value}
-              zIndex={number("zIndex", 1)}
-              onClick={(e) => {
-                action("onHide")(e);
-                toggle(false);
-              }}
-            />
-          </div>
-        )}
-      </BooleanValue>
-    </Section>
-  ));
+export default {
+  title: "Components/Backdrop",
+  component: Backdrop,
+  subcomponents: { Button },
+  argTypes: {
+    onClick: { action: "On Hide", table: { disable: true } },
+  },
+  parameters: {
+    docs: {
+      description: {
+        component: "Backdrop for displaying modal dialogs or other components",
+      },
+    },
+  },
+};
+
+const Template = (args) => {
+  const [isVisible, setIsVisible] = useState(args.visible);
+  const toggleVisible = () => setIsVisible(!isVisible);
+  return (
+    <>
+      <Button
+        label="Show Backdrop"
+        primary
+        size="medium"
+        onClick={toggleVisible}
+      />
+      <Backdrop
+        {...args}
+        visible={isVisible}
+        onClick={(e) => {
+          args.onClick(e);
+          toggleVisible(false);
+        }}
+      />
+    </>
+  );
+};
+
+export const Default = Template.bind({});

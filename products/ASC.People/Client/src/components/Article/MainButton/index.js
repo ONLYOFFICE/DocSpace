@@ -1,12 +1,11 @@
 import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-
 import MainButton from "@appserver/components/main-button";
 import DropDownItem from "@appserver/components/drop-down-item";
 import InviteDialog from "./../../dialogs/InviteDialog/index";
 import { withTranslation } from "react-i18next";
-import toastr from "@appserver/common/components/Toast/toastr";
+import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
@@ -67,17 +66,18 @@ class PureArticleMainButtonContent extends React.Component {
         <>
           <MainButton isDisabled={false} isDropdown={true} text={t("Actions")}>
             <DropDownItem
-              icon="images/add.employee.react.svg"
+              icon={`${homepage}/images/add.employee.react.svg`}
               label={userCaption}
               onClick={this.goToEmployeeCreate}
             />
+
             <DropDownItem
-              icon="images/add.guest.react.svg"
+              icon={`${homepage}/images/add.guest.react.svg`}
               label={guestCaption}
               onClick={this.goToGuestCreate}
             />
             <DropDownItem
-              icon="images/add.department.react.svg"
+              icon={`${homepage}/images/add.department.react.svg`}
               label={groupCaption}
               onClick={this.goToGroupCreate}
             />
@@ -94,7 +94,7 @@ class PureArticleMainButtonContent extends React.Component {
             /> */}
             {false && (
               <DropDownItem
-                icon="images/import.react.svg"
+                icon={`${homepage}/images/import.react.svg`}
                 label={t("ImportPeople")}
                 onClick={this.onDropDownItemClick.bind(
                   this,

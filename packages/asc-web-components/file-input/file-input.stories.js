@@ -1,49 +1,46 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import { text, boolean, withKnobs, select } from "@storybook/addon-knobs/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
-import FileInput from ".";
-import Section from "../../../.storybook/decorators/section";
-import { action } from "@storybook/addon-actions";
+import FileInput from "./";
 
-const sizeInput = ["base", "middle", "big", "huge", "large"];
+export default {
+  title: "Components/FileInput",
+  component: FileInput,
+  argTypes: {
+    onInput: { action: "onInput" },
+  },
+  parameters: {
+    docs: {
+      description: {
+        component: "File entry field",
+      },
+    },
+  },
+};
 
-storiesOf("Components|Input", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("file input", () => {
-    const placeholder = text("placeholder", "Input file");
-    const size = select("size", sizeInput, "base");
-    const scale = boolean("scale", false);
-    const isDisabled = boolean("isDisabled", false);
-    const id = text("id", "fileInputId");
-    const name = text("name", "demoFileInputName");
-    const hasError = boolean("hasError", false);
-    const hasWarning = boolean("hasWarning", false);
-    const accept = text("accept", ".doc, .docx");
+const Template = (args) => {
+  return (
+    <FileInput
+      {...args}
+      onInput={(file) => {
+        args.onInput(
+          `File: ${file},
+          name: ${file.name},
+          lastModified: ${file.lastModifiedDate},
+          size: ${file.size}`
+        );
+      }}
+    />
+  );
+};
 
-    return (
-      <Section>
-        <FileInput
-          id={id}
-          name={name}
-          placeholder={placeholder}
-          size={size}
-          scale={scale}
-          isDisabled={isDisabled}
-          hasError={hasError}
-          hasWarning={hasWarning}
-          accept={accept}
-          onInput={(file) => {
-            action("onInput")(file);
-            console.log(
-              `name: ${file.name}`,
-              `lastModified: ${file.lastModifiedDate}`,
-              `size: ${file.size}`
-            );
-          }}
-        />
-      </Section>
-    );
-  });
+export const Default = Template.bind({});
+Default.args = {
+  placeholder: "Input file",
+  size: "base",
+  scale: false,
+  isDisabled: false,
+  id: "file-input-id",
+  name: "demoFileInputName",
+  hasError: false,
+  hasWarning: false,
+  accept: ".doc, .docx",
+};

@@ -197,16 +197,25 @@ class GroupButtonsMenu extends React.Component {
 }
 
 GroupButtonsMenu.propTypes = {
+  /** onClick action on GroupButton's */
   onClick: PropTypes.func,
+  /** onClose action if menu closing */
   onClose: PropTypes.func,
+  /** onChange action on use selecting */
   onChange: PropTypes.func,
   onSelect: PropTypes.func,
+  /** Button collection */
   menuItems: PropTypes.array,
+  /** Sets initial value of checkbox */
   checked: PropTypes.bool,
   isIndeterminate: PropTypes.bool,
+  /** Selected header value */
   selected: PropTypes.string,
+  /** Sets menu visibility */
   visible: PropTypes.bool,
+  /** Label for more button */
   moreLabel: PropTypes.string,
+  /** Title for close menu button */
   closeTitle: PropTypes.string,
   sectionWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
