@@ -781,7 +781,6 @@ class FilesStore {
     if (this.filesList) {
       this.filesList.forEach((file) => {
         if (file.canOpenPlayer) {
-          debugger;
           playlist.push({
             id: id,
             fileId: file.id,

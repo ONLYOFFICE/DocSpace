@@ -10,7 +10,7 @@ import Row from "@appserver/components/row";
 import RowContainer from "@appserver/components/row-container";
 
 import { withTranslation } from "react-i18next";
-import EmptyFolderContainer from "../../../Home/Section/Body/EmptyFolderContainer";
+import EmptyFolderContainer from "../../../Home/Section/Body/EmptyContainer/EmptyContainer";
 import { Trans } from "react-i18next";
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
 import BoxIcon from "../../../../../../public/images/icon_box.react.svg";
