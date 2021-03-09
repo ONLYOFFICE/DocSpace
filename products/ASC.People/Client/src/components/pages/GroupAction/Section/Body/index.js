@@ -241,9 +241,10 @@ class SectionBodyContent extends React.Component {
   };
 
   onCancel = () => {
-    const { resetGroup, filter, setFilter } = this.props;
+    const { resetGroup, filter, setFilter, history } = this.props;
 
     resetGroup();
+    history.goBack();
     setFilter(filter);
   };
 

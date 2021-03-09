@@ -311,7 +311,8 @@ class CreateUserForm extends React.Component {
   };
 
   onCancel = () => {
-    const { filter, setFilter } = this.props;
+    const { filter, setFilter, history } = this.props;
+    history.goBack();
     setFilter(filter);
   };
 

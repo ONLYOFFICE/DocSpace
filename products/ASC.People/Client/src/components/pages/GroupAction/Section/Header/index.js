@@ -35,9 +35,10 @@ class SectionHeaderContent extends React.Component {
     };
   }
   onClickBack = () => {
-    const { filter, resetGroup, setFilter } = this.props;
+    const { filter, resetGroup, setFilter, history } = this.props;
 
     resetGroup();
+    history.goBack();
     setFilter(filter);
   };
 
