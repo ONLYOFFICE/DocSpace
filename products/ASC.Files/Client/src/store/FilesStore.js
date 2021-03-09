@@ -676,7 +676,7 @@ class FilesStore {
         webUrl,
         providerKey,
         //draggable,
-        //canOpenPlayer,
+        canOpenPlayer,
         //canWebEdit: isCanWebEdit,
         //canShare,
       };
@@ -772,6 +772,27 @@ class FilesStore {
   get selectionTitle() {
     if (this.selection.length === 0) return null;
     return this.selection.find((el) => el.title).title;
+  }
+
+  get playlist() {
+    const playlist = [];
+    let id = 0;
+
+    if (this.filesList) {
+      this.filesList.forEach((file) => {
+        if (file.canOpenPlayer) {
+          debugger;
+          playlist.push({
+            id: id,
+            fileId: file.id,
+            src: file.viewUrl,
+            title: file.title,
+          });
+          id++;
+        }
+      });
+    }
+    return playlist;
   }
 
   getOptions = (selection, externalAccess = false) => {

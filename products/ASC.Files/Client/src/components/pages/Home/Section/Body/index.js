@@ -2,24 +2,17 @@ import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
-import queryString from "query-string";
 import Link from "@appserver/components/link";
 import IconButton from "@appserver/components/icon-button";
 import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesFilter from "@appserver/common/api/files/filter";
-import { getProgress, moveToFolder } from "@appserver/common/api/files";
 import { FileAction } from "@appserver/common/constants";
-import MediaViewer from "@appserver/common/components/MediaViewer";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
-import { TIMEOUT } from "../../../../../helpers/constants";
-import { loopTreeFolders } from "../../../../../helpers/files-helpers";
 import { isMobile } from "react-device-detect";
-
 import { observer, inject } from "mobx-react";
-import history from "@appserver/common/history";
 import FilesRowContainer from "./FilesRow/FilesRowContainer";
 import FilesTileContainer from "./FilesTile/FilesTileContainer";
 
@@ -78,13 +71,6 @@ class SectionBodyContent extends React.Component {
     this.customScrollElm = document.querySelector(
       "#customScrollBar > .scroll-body"
     );
-
-    let previewId = queryString.parse(this.props.location.search).preview;
-
-    if (previewId) {
-      this.removeQuery("preview");
-      this.onMediaFileClick(+previewId);
-    }
 
     window.addEventListener("mouseup", this.onMouseUp);
 
@@ -435,39 +421,6 @@ class SectionBodyContent extends React.Component {
     );
   };
 
-  onMediaViewerClose = () => {
-    const item = { visible: false, id: null };
-    this.props.setMediaViewerData(item);
-  };
-
-  onMediaFileClick = (id) => {
-    const itemId = typeof id !== "object" ? id : this.props.selection[0].id;
-    const item = { visible: true, id: itemId };
-    this.props.setMediaViewerData(item);
-  };
-
-  onDownloadMediaFile = (id) => {
-    if (this.props.files.length > 0) {
-      let viewUrlFile = this.props.files.find((file) => file.id === id).viewUrl;
-      return window.open(viewUrlFile, "_blank");
-    }
-  };
-
-  onDeleteMediaFile = (id) => {
-    const { files, deleteFileAction, t } = this.props;
-
-    const translations = {
-      deleteOperation: t("DeleteOperation"),
-      folderRemoved: t("FolderRemoved"),
-      fileRemoved: t("FileRemoved"),
-    };
-
-    if (files.length > 0) {
-      let file = files.find((file) => file.id === id);
-      if (file) deleteFileAction(file.id, file.folderId, translations);
-    }
-  };
-
   onDragStart = (e) => {
     if (e.dataTransfer.dropEffect === "none") {
       this.state.canDrag && this.setState({ canDrag: false });
@@ -713,18 +666,6 @@ class SectionBodyContent extends React.Component {
     }
   };
 
-  removeQuery = (queryName) => {
-    const { location } = this.props;
-    const queryParams = new URLSearchParams(location.search);
-
-    if (queryParams.has(queryName)) {
-      queryParams.delete(queryName);
-      history.replace({
-        search: queryParams.toString(),
-      });
-    }
-  };
-
   renderFileMoveTooltip = () => {
     const { selection, iconOfDraggedFile } = this.props;
     const { title } = selection[0];
@@ -777,18 +718,14 @@ class SectionBodyContent extends React.Component {
       isPrivacy,
       isEncryptionSupport,
       dragging,
-      mediaViewerVisible,
-      currentMediaFileId,
       viewAs,
       t,
       isMobile,
       firstLoad,
-      filesList,
-      mediaViewerImageFormats,
-      mediaViewerMediaFormats,
       tooltipValue,
       filter,
       isLoading,
+      isEmptyFilesList,
     } = this.props;
 
     let fileMoveTooltip;
@@ -801,29 +738,10 @@ class SectionBodyContent extends React.Component {
         : "";
     }
 
-    const items = filesList;
-
-    var playlist = [];
-    let id = 0;
-
-    if (items) {
-      items.forEach(function (file, i, files) {
-        if (file.canOpenPlayer) {
-          playlist.push({
-            id: id,
-            fileId: file.id,
-            src: file.viewUrl,
-            title: file.title,
-          });
-          id++;
-        }
-      });
-    }
-
     const { authorType, search, withSubfolders, filterType } = filter;
     const isFiltered = authorType || search || !withSubfolders || filterType;
 
-    return (!fileActionId && items.length === 0) || null ? (
+    return (!fileActionId && isEmptyFilesList) || null ? (
       firstLoad ? (
         <Loaders.Rows />
       ) : isFiltered ? (
@@ -838,28 +756,7 @@ class SectionBodyContent extends React.Component {
     ) : (
       <>
         <CustomTooltip ref={this.tooltipRef}>{fileMoveTooltip}</CustomTooltip>
-
         {viewAs === "tile" ? <FilesTileContainer /> : <FilesRowContainer />}
-        {playlist.length > 0 && mediaViewerVisible && (
-          <MediaViewer
-            currentFileId={currentMediaFileId}
-            allowConvert={true} //TODO
-            canDelete={(fileId) => {
-              return true;
-            }} //TODO
-            canDownload={(fileId) => {
-              return true;
-            }} //TODO
-            visible={mediaViewerVisible}
-            playlist={playlist}
-            onDelete={this.onDeleteMediaFile}
-            onDownload={this.onDownloadMediaFile}
-            onClose={this.onMediaViewerClose}
-            onEmptyPlaylistError={this.onMediaViewerClose}
-            extsMediaPreviewed={mediaViewerMediaFormats} //TODO
-            extsImagePreviewed={mediaViewerImageFormats} //TODO
-          />
-        )}
       </>
     );
   }
@@ -870,14 +767,11 @@ export default inject(
     auth,
     initFilesStore,
     filesStore,
-    mediaViewerDataStore,
-    formatsStore,
     uploadDataStore,
     treeFoldersStore,
     selectedFolderStore,
     filesActionsStore,
   }) => {
-    const { mediaViewersFormatsStore } = formatsStore;
     const { secondaryProgressDataStore } = uploadDataStore;
     const {
       isEncryptionSupport,
@@ -887,6 +781,7 @@ export default inject(
     const {
       dragging,
       setDragging,
+      isLoading,
       setIsLoading,
       viewAs,
       dragItem,
@@ -894,14 +789,13 @@ export default inject(
       tooltipValue,
     } = initFilesStore;
     const {
-      files,
       firstLoad,
-      filesList,
       fetchFiles,
       selection,
       filter,
       fileActionStore,
       iconOfDraggedFile,
+      filesList,
     } = filesStore;
 
     const {
@@ -918,13 +812,6 @@ export default inject(
     const { id: fileActionId, setAction } = fileActionStore;
     const { setSecondaryProgressBarData } = secondaryProgressDataStore;
 
-    const { images, media } = mediaViewersFormatsStore;
-    const {
-      id: currentMediaFileId,
-      visible: mediaViewerVisible,
-      setMediaViewerData,
-    } = mediaViewerDataStore;
-
     return {
       isAdmin: auth.isAdmin,
       isEncryptionSupport,
@@ -932,9 +819,7 @@ export default inject(
       isDesktop: isDesktopClient,
       dragging,
       fileActionId,
-      files,
       firstLoad,
-      filesList,
       title: selectedFolderStore.title,
       parentId: selectedFolderStore.parentId,
       selectedFolderId: selectedFolderStore.id,
@@ -950,23 +835,19 @@ export default inject(
       filter,
       viewAs,
       dragItem,
-      currentMediaFileId,
-      mediaViewerVisible,
       privacyInstructions,
-      mediaViewerImageFormats: images,
-      mediaViewerMediaFormats: media,
       iconOfDraggedFile,
       tooltipValue,
+      isLoading,
+      isEmptyFilesList: filesList.length <= 0,
 
       setDragging,
       setAction,
       setIsLoading,
       fetchFiles,
-      setMediaViewerData,
       setSecondaryProgressBarData,
       copyToAction: filesActionsStore.copyToAction,
       moveToAction: filesActionsStore.moveToAction,
-      deleteFileAction: filesActionsStore.deleteFileAction,
     };
   }
 )(withRouter(withTranslation("Home")(observer(SectionBodyContent))));
