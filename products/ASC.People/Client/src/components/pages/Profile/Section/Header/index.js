@@ -384,9 +384,9 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   onClickBack = () => {
-    const { filter, setFilter } = this.props;
+    const { filter, setFilter, history } = this.props;
+    history.goBack();
     setFilter(filter);
-    //history.push(settings.homepage);
   };
 
   render() {
