@@ -66,28 +66,27 @@ const Register = (props) => {
     }
   };
 
-  return (
-    enabledJoin &&
-    !isAuthenticated && (
-      <>
-        <StyledRegister onClick={onRegisterClick}>
-          <Text color="#316DAA">{t("Register")}</Text>
-        </StyledRegister>
+  return enabledJoin && !isAuthenticated ? (
+    <>
+      <StyledRegister onClick={onRegisterClick}>
+        <Text color="#316DAA">{t("Register")}</Text>
+      </StyledRegister>
 
-        {visible && (
-          <RegisterModalDialog
-            visible={visible}
-            loading={loading}
-            email={email}
-            emailErr={emailErr}
-            t={t}
-            onChangeEmail={onChangeEmail}
-            onRegisterModalClose={onRegisterModalClose}
-            onSendRegisterRequest={onSendRegisterRequest}
-          />
-        )}
-      </>
-    )
+      {visible && (
+        <RegisterModalDialog
+          visible={visible}
+          loading={loading}
+          email={email}
+          emailErr={emailErr}
+          t={t}
+          onChangeEmail={onChangeEmail}
+          onRegisterModalClose={onRegisterModalClose}
+          onSendRegisterRequest={onSendRegisterRequest}
+        />
+      )}
+    </>
+  ) : (
+    <></>
   );
 };
 
