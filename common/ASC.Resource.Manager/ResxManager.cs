@@ -148,10 +148,31 @@ namespace ASC.Resource.Manager
                 }
                 else
                 {
+                    if (File.Exists(zipFileName))
+                    {
+                        using var resXResourceReader = new ResXResourceReader(zipFileName);
+                        resXResourceReader.BasePath = Path.GetDirectoryName(zipFileName);
+                        resXResourceReader.UseResXDataNodes = true;
+
+                        foreach (var v in resXResourceReader.OfType<DictionaryEntry>())
+                        {
+                            var k = v.Key.ToString();
+                            var val = v.Value as ResXDataNode;
+
+                            if (val.FileRef != null)
+                            {
+                                var fileRef = new ResXFileRef(Path.GetFileName(val.FileRef.FileName), val.FileRef.TypeName);
+                                toAddFiles.Add(k, fileRef);
+                            }
+                        }
+                    }
+
                     toAdd.AddRange(fileWords.Where(word => !wordsDictionary.ContainsKey(word.Title)));
                 }
 
-                using var resXResourceWriter = new ResXResourceWriter(zipFileName);
+
+
+                        using var resXResourceWriter = new ResXResourceWriter(zipFileName);
 
                 foreach (var word in toAdd.Where(r => r != null && (!string.IsNullOrEmpty(r.ValueTo) || language == "Neutral")).OrderBy(x => x.Title))
                 {
