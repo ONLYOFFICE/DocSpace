@@ -8,7 +8,6 @@ import toastr from "studio/toastr";
 import { EmployeeStatus } from "@appserver/common/constants";
 import { resendUserInvites } from "@appserver/common/api/people"; //TODO: Move to store action
 import { withRouter } from "react-router";
-// import { getUserContextOptions } from "./ContextMenu";
 
 const SimpleUserRow = ({
   person,
@@ -27,7 +26,6 @@ const SimpleUserRow = ({
   setDialogData,
   closeDialogs,
   updateUserStatus,
-  contextMenu,
   history,
 }) => {
   const { t } = useTranslation("Home");
@@ -46,13 +44,8 @@ const SimpleUserRow = ({
     currentUserId,
   } = person;
 
-  const onContentRowSelect = (checked, user) => {
-    if (checked) {
-      selectUser(user);
-    } else {
-      deselectUser(user);
-    }
-  };
+  const onContentRowSelect = (checked, user) =>
+    checked ? selectUser(user) : deselectUser(user);
 
   const onEmailSentClick = () => {
     window.open("mailto:" + email);
@@ -148,7 +141,7 @@ const SimpleUserRow = ({
   };
 
   const getUserContextOptions = (options, id) => {
-    return options.map((option) => {
+    const contextMenu = options.map((option) => {
       switch (option) {
         case "send-email":
           return {
@@ -242,6 +235,8 @@ const SimpleUserRow = ({
 
       return undefined;
     });
+
+    return contextMenu;
   };
 
   const showContextMenu = options && options.length > 0;
@@ -255,7 +250,6 @@ const SimpleUserRow = ({
     (isAdmin && showContextMenu) || (showContextMenu && id === currentUserId)
       ? {
           contextOptions: getUserContextOptions(options, id),
-          // contextOptions: contextMenu,
         }
       : {};
 
@@ -284,10 +278,7 @@ const SimpleUserRow = ({
 };
 
 export default inject(({ auth, peopleStore }, { person }) => {
-  // const { t } = useTranslation("Home");
-
   return {
-    // contextMenu: getUserContextOptions(person, t),
     homepage: auth.settingsStore.homepage,
     isAdmin: auth.isAdmin,
     currentUserId: auth.userStore.user.id,
@@ -297,22 +288,16 @@ export default inject(({ auth, peopleStore }, { person }) => {
     selectUser: peopleStore.selectionStore.selectUser,
     deselectUser: peopleStore.selectionStore.deselectUser,
     selectGroup: peopleStore.selectedGroupStore.selectGroup,
-
     setChangeEmailDialogVisible:
       peopleStore.dialogStore.setChangeEmailDialogVisible,
-
     setChangePasswordDialogVisible:
       peopleStore.dialogStore.setChangePasswordDialogVisible,
-
     setDeleteSelfProfileDialogVisible:
       peopleStore.dialogStore.setDeleteSelfProfileDialogVisible,
-
     setDeleteProfileDialogVisible:
       peopleStore.dialogStore.setDeleteProfileDialogVisible,
-
     setDialogData: peopleStore.dialogStore.setDialogData,
     closeDialogs: peopleStore.dialogStore.closeDialogs,
-
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
   };
 })(withRouter(observer(SimpleUserRow)));
