@@ -61,6 +61,7 @@ const SectionHeaderContent = (props) => {
   const setFilterAndReset = useCallback(
     (filter) => {
       props.resetProfile();
+      history.goBack();
       setFilter(filter);
     },
     [props, setFilter]
