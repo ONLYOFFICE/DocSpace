@@ -193,23 +193,23 @@ namespace ASC.Web.CRM.Classes
         }
 
         [DataMember(Name = "ChangeContactStatusGroupAuto")]
-        public string ChangeContactStatusGroupAutoWrapper { get; set; }
+        public string ChangeContactStatusGroupAutoDto { get; set; }
 
         [IgnoreDataMember]
         public Boolean? ChangeContactStatusGroupAuto
         {
-            get { return string.IsNullOrEmpty(ChangeContactStatusGroupAutoWrapper) ? null : (bool?)bool.Parse(ChangeContactStatusGroupAutoWrapper); }
-            set { ChangeContactStatusGroupAutoWrapper = value.HasValue ? value.Value.ToString().ToLowerInvariant() : null; }
+            get { return string.IsNullOrEmpty(ChangeContactStatusGroupAutoDto) ? null : (bool?)bool.Parse(ChangeContactStatusGroupAutoDto); }
+            set { ChangeContactStatusGroupAutoDto = value.HasValue ? value.Value.ToString().ToLowerInvariant() : null; }
         }
 
         [DataMember(Name = "AddTagToContactGroupAuto")]
-        public string AddTagToContactGroupAutoWrapper { get; set; }
+        public string AddTagToContactGroupAutoDto { get; set; }
 
         [IgnoreDataMember]
         public Boolean? AddTagToContactGroupAuto
         {
-            get { return string.IsNullOrEmpty(AddTagToContactGroupAutoWrapper) ? null : (bool?)bool.Parse(AddTagToContactGroupAutoWrapper); }
-            set { AddTagToContactGroupAutoWrapper = value.HasValue ? value.Value.ToString().ToLowerInvariant() : null; }
+            get { return string.IsNullOrEmpty(AddTagToContactGroupAutoDto) ? null : (bool?)bool.Parse(AddTagToContactGroupAutoDto); }
+            set { AddTagToContactGroupAutoDto = value.HasValue ? value.Value.ToString().ToLowerInvariant() : null; }
         }
 
         [DataMember(Name = "WriteMailToHistoryAuto")]

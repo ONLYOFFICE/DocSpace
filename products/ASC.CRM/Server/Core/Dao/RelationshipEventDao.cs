@@ -375,8 +375,8 @@ namespace ASC.CRM.Core.Dao
 //                if (msg == null)
                     throw new ArgumentException("Mail message cannot be found");
 
-                //var msgResponseWrapper = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(msg)));
-                //var msgRequestObj = msgResponseWrapper.Value<JObject>("response");
+                //var msgResponseDto = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(msg)));
+                //var msgRequestObj = msgResponseDto.Value<JObject>("response");
                 //string messageUrl;
 
                 //htmlBody = msgRequestObj.Value<String>("htmlBody");

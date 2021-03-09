@@ -37,7 +37,7 @@ namespace ASC.Web.CRM.Core.Search
     {
         public BundleSearch(FactoryIndexerContact factoryIndexerContact,
                             FactoryIndexerContactInfo factoryIndexerContactInfo,
-                            FactoryIndexerFieldValue fieldsWrapperFactoryIndexer,
+                            FactoryIndexerFieldValue factoryIndexerFieldValue,
                             FactoryIndexerEvents factoryIndexerEvents,
                             FactoryIndexerDeal factoryIndexerDeal,
                             FactoryIndexerTask factoryIndexerTask,
@@ -46,7 +46,7 @@ namespace ASC.Web.CRM.Core.Search
         {
             FactoryIndexerContact = factoryIndexerContact;
             FactoryIndexerContactInfo = factoryIndexerContactInfo;
-            FactoryIndexerFieldValue = fieldsWrapperFactoryIndexer;
+            FactoryIndexerFieldValue = factoryIndexerFieldValue;
             FactoryIndexerEvents = factoryIndexerEvents;
             FactoryIndexerDeal = factoryIndexerDeal;
             FactoryIndexerTask = factoryIndexerTask;

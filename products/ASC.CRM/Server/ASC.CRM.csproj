@@ -23,20 +23,20 @@
     <Compile Remove="Classes\SocialMedia\SocialMediaUI.cs" />
     <Compile Remove="Classes\SocialMedia\TwitterApiHelper.cs" />
     <Compile Remove="Configuration\SearchHandler.cs" />
-    <Compile Remove="Controllers\CRMApi.Cases.cs" />
-    <Compile Remove="Controllers\CRMApi.cs" />
-    <Compile Remove="Controllers\CRMApi.CurrencyRates.cs" />
-    <Compile Remove="Controllers\CRMApi.CustomFields.cs" />
-    <Compile Remove="Controllers\CRMApi.Deals.cs" />
-    <Compile Remove="Controllers\CRMApi.Invoices.cs" />
-    <Compile Remove="Controllers\CRMApi.ListItem.cs" />
-    <Compile Remove="Controllers\CRMApi.RelationshipEvent.cs" />
-    <Compile Remove="Controllers\CRMApi.Reports.cs" />
-    <Compile Remove="Controllers\CRMApi.Tag.cs" />
-    <Compile Remove="Controllers\CRMApi.TaskTemplate.cs" />
-    <Compile Remove="Controllers\CRMApi.Utils.cs" />
-    <Compile Remove="Controllers\CRMApiBase.cs" />
-    <Compile Remove="Controllers\CRMBootstrap.cs" />
+    <Compile Remove="Api\CRMApi.Cases.cs" />
+    <Compile Remove="Api\CRMApi.cs" />
+    <Compile Remove="Api\CRMApi.CurrencyRates.cs" />
+    <Compile Remove="Api\CRMApi.CustomFields.cs" />
+    <Compile Remove="Api\CRMApi.Deals.cs" />
+    <Compile Remove="Api\CRMApi.Invoices.cs" />
+    <Compile Remove="Api\CRMApi.ListItem.cs" />
+    <Compile Remove="Api\CRMApi.RelationshipEvent.cs" />
+    <Compile Remove="Api\CRMApi.Reports.cs" />
+    <Compile Remove="Api\CRMApi.Tag.cs" />
+    <Compile Remove="Api\CRMApi.TaskTemplate.cs" />
+    <Compile Remove="Api\CRMApi.Utils.cs" />
+    <Compile Remove="Api\CRMApiBase.cs" />
+    <Compile Remove="Api\CRMBootstrap.cs" />
   </ItemGroup>
 
   <ItemGroup>

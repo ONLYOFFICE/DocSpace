@@ -66,8 +66,8 @@ namespace ASC.CRM.Core.Dao
                       CRMSecurity cRMSecurity,
                       TenantUtil tenantUtil,
                       PathProvider pathProvider,
-                      FactoryIndexerTask tasksWrapperIndexer,
-                      FactoryIndexerInvoice invoicesWrapperIndexer,
+                      FactoryIndexerTask tasksDtoIndexer,
+                      FactoryIndexerInvoice invoicesDtoIndexer,
                       IOptionsMonitor<ILog> logger,
                       ICache ascCache,
                       WebImageSupplier webImageSupplier,
@@ -79,8 +79,8 @@ namespace ASC.CRM.Core.Dao
                 logger,
                 ascCache)
         {
-            FactoryIndexerTask = tasksWrapperIndexer;
-            FactoryIndexerInvoice = invoicesWrapperIndexer;
+            FactoryIndexerTask = tasksDtoIndexer;
+            FactoryIndexerInvoice = invoicesDtoIndexer;
             CRMSecurity = cRMSecurity;
             TenantUtil = tenantUtil;
             PathProvider = pathProvider;
