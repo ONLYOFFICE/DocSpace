@@ -59,6 +59,10 @@ const config = {
   module: {
     rules: [
       {
+        test: /\.(png|jpe?g|gif|ico)$/i,
+        type: "asset/resource",
+      },
+      {
         test: /\.m?js/,
         type: "javascript/auto",
         resolve: {

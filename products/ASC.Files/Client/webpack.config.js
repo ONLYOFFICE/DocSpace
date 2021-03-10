@@ -62,7 +62,7 @@ var config = {
   module: {
     rules: [
       {
-        test: /\.(png|jpe?g|gif|ico|svg)$/i,
+        test: /\.(png|jpe?g|gif|ico)$/i,
         type: "asset/resource",
       },
       {
