@@ -1,27 +1,95 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import { text, boolean, withKnobs } from "@storybook/addon-knobs/react";
-import SelectedItem from ".";
-import Section from "../../../.storybook/decorators/section";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
+import styled from "styled-components";
+import SelectedItem from "./";
 
-function onClose(e) {
-  console.log("onClose", e);
-}
+export default {
+  title: "Components/SelectedItem",
+  component: SelectedItem,
+  argTypes: {
+    onClose: { action: "onClose" },
+  },
+};
+const Template = ({ onClose, ...args }) => {
+  return <SelectedItem {...args} onClose={(e) => onClose(e)} />;
+};
 
-storiesOf("Components|SelectedItem", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("base", () => {
-    return (
-      <Section>
+export const Default = Template.bind({});
+Default.args = {
+  text: "Selected item",
+  isInline: true,
+  isDisabled: false,
+};
+
+const StyledContainer = styled.div`
+  padding: 0;
+  display: grid;
+  grid-gap: 10px;
+`;
+
+const StyledContainerInline = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+
+  > * {
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+`;
+
+const AllTemplate = ({ onClose, ...args }) => {
+  const onCloseHandler = (e) => {
+    onClose(e);
+  };
+  return (
+    <>
+      <StyledContainerInline>
         <SelectedItem
-          text={text("text", "Selected item")}
-          isInline={boolean("isInline", true)}
-          onClose={onClose}
-          isDisabled={boolean("isDisabled", false)}
+          text="Selected item"
+          isInline={true}
+          onClose={onCloseHandler}
         />
-      </Section>
-    );
-  });
+        <SelectedItem
+          text="Selected item"
+          isInline={true}
+          onClose={onCloseHandler}
+        />
+        <SelectedItem
+          text="Selected item"
+          isInline={true}
+          onClose={onCloseHandler}
+        />
+        <SelectedItem
+          text="Selected item"
+          isInline={true}
+          onClose={onCloseHandler}
+        />
+      </StyledContainerInline>
+
+      <StyledContainer>
+        <SelectedItem
+          text="Selected item"
+          isInline={false}
+          onClose={onCloseHandler}
+        />
+        <SelectedItem
+          text="Selected item"
+          isInline={false}
+          onClose={onCloseHandler}
+        />
+        <SelectedItem
+          text="Selected item"
+          isInline={false}
+          onClose={onCloseHandler}
+        />
+        <SelectedItem
+          text="Selected item"
+          isInline={false}
+          onClose={onCloseHandler}
+        />
+      </StyledContainer>
+    </>
+  );
+};
+
+export const All = AllTemplate.bind({});

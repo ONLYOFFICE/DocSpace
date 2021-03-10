@@ -39,12 +39,19 @@ const SelectedItem = (props) => {
 };
 
 SelectedItem.propTypes = {
+  /** Selected item text */
   text: PropTypes.string,
+  /** Sets the 'display: inline-block' property */
   isInline: PropTypes.bool,
+  /** What the selected item will trigger when clicked */
   onClose: PropTypes.func.isRequired,
+  /** Tells when the button should present a disabled state */
   isDisabled: PropTypes.bool,
+  /** Accepts class  */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
