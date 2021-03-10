@@ -23,9 +23,9 @@ import {
 } from "./Section";
 
 import { ConvertDialog } from "../../dialogs";
-import { ChangeOwnerPanel } from "../../panels";
 import { getFilterByLocation } from "../../../helpers/converters";
 import Panels from "./Panels";
+import MediaViewer from "./MediaViewer";
 import { observer, inject } from "mobx-react";
 
 class PureHome extends React.Component {
@@ -228,6 +228,7 @@ class PureHome extends React.Component {
         )}
 
         <Panels />
+        <MediaViewer />
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
