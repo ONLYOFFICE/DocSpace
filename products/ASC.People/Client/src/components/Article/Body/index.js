@@ -132,15 +132,13 @@ class ArticleBodyContent extends React.Component {
     }
   };
   onSelect = (data) => {
-    const { setIsLoading } = this.props;
     return () => {
       const { selectGroup } = this.props;
       const groupId =
         data && data.length === 1 && data[0] !== "root" ? data[0] : null;
-      setIsLoading(true);
+
       this.changeTitleDocument(data);
       selectGroup(groupId);
-      setIsLoading(false);
     };
   };
   switcherIcon = (obj) => {
@@ -257,5 +255,6 @@ export default inject(({ auth, peopleStore }) => {
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     setIsLoading: peopleStore.setIsLoading,
+    isLoading: peopleStore.isLoading,
   };
 })(observer(BodyContent));
