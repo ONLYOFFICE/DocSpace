@@ -33,6 +33,11 @@ module.exports = {
     "../loader/*.stories.@(js|mdx)",
     "../main-button/*.stories.@(js|mdx)",
     "../modal-dialog/*.stories.@(js|mdx)",
+    "../paging/*.stories.@(js|mdx)",
+    "../password-input/*.stories.@(js|mdx)",
+    "../progress-bar/*.stories.@(js|mdx)",
+    "../radio-button/*.stories.@(js|mdx)",
+    "../radio-button-group/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",
