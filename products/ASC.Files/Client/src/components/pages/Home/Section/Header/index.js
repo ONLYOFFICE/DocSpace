@@ -6,7 +6,6 @@ import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import Headline from "@appserver/common/components/Headline";
 import { FilterType, FileAction } from "@appserver/common/constants";
-import { downloadFiles } from "@appserver/common/api/files";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import ContextMenuButton from "@appserver/components/context-menu-button";
@@ -15,7 +14,6 @@ import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
 import IconButton from "@appserver/components/icon-button";
 import { tablet, desktop } from "@appserver/components/utils/device";
 import { Consumer } from "@appserver/components/utils/context";
-import { TIMEOUT } from "../../../../../helpers/constants";
 import { inject, observer } from "mobx-react";
 
 const StyledContainer = styled.div`
@@ -217,55 +215,7 @@ class SectionHeaderContent extends React.Component {
 
   onMoveAction = () => this.props.setMoveToPanelVisible(true);
   onCopyAction = () => this.props.setCopyPanelVisible(true);
-
-  //TODO: move to actions?
-  downloadAction = () => {
-    const {
-      t,
-      selection,
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.props;
-    const fileIds = [];
-    const folderIds = [];
-    const items = [];
-
-    if (selection.length === 1) {
-      return window.open(selection[0].viewUrl, "_blank");
-    }
-
-    for (let item of selection) {
-      if (item.fileExst) {
-        fileIds.push(item.id);
-        items.push({ id: item.id, fileExst: item.fileExst });
-      } else {
-        folderIds.push(item.id);
-        items.push({ id: item.id });
-      }
-    }
-
-    setSecondaryProgressBarData({
-      icon: "file",
-      visible: true,
-      percent: 0,
-      label: t("ArchivingData"),
-      alert: false,
-    });
-
-    downloadFiles(fileIds, folderIds)
-      .then((res) => {
-        this.props.getDownloadProgress(res[0], t("ArchivingData"));
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        //toastr.error(err);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      });
-  };
-
+  downloadAction = () => this.props.downloadAction(t("ArchivingData"));
   downloadAsAction = () => this.props.setDownloadDialogVisible(true);
   renameAction = () => toastr.info("renameAction click");
   onOpenSharingPanel = () => this.props.setSharingPanelVisible(true);
@@ -370,7 +320,6 @@ class SectionHeaderContent extends React.Component {
       isRecycleBin,
       isThirdPartySelection,
       isPrivacy,
-      selection,
       isOnlyFoldersSelected,
     } = this.props;
 
@@ -430,7 +379,7 @@ class SectionHeaderContent extends React.Component {
         label: t("Share"),
         disabled:
           !isAccessedSelected ||
-          (isPrivacy && (isOnlyFoldersSelected || selection.length > 1)),
+          (isPrivacy && (isOnlyFoldersSelected || isItemsSelected)),
         onClick: this.onOpenSharingPanel,
       },
       {
@@ -634,10 +583,6 @@ export default inject(
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
     const { setAction } = fileActionStore;
     const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
-    const {
       setSharingPanelVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
@@ -646,7 +591,7 @@ export default inject(
       setDeleteDialogVisible,
     } = dialogsStore;
 
-    const { deleteAction, getDownloadProgress } = filesActionsStore;
+    const { deleteAction, downloadAction } = filesActionsStore;
 
     return {
       isDesktop: auth.settingsStore.isDesktopClient,
@@ -654,7 +599,6 @@ export default inject(
       title: selectedFolderStore.title,
       parentId: selectedFolderStore.parentId,
       currentFolderId: selectedFolderStore.id,
-      selection,
       isRecycleBin: isRecycleBinFolder,
       isPrivacy: isPrivacyFolder,
       filter,
@@ -675,16 +619,14 @@ export default inject(
       setAction,
       setIsLoading,
       fetchFiles,
-      setSecondaryProgressBarData,
       setSharingPanelVisible,
-      clearSecondaryProgressData,
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setEmptyTrashDialogVisible,
       deleteAction,
       setDeleteDialogVisible,
       setDownloadDialogVisible,
-      getDownloadProgress,
+      downloadAction,
     };
   }
 )(withTranslation("Home")(withRouter(observer(SectionHeaderContent))));

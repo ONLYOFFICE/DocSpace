@@ -90,13 +90,12 @@ class GroupAction extends React.Component {
   }
 }
 
-const GroupActionContainer = withTranslation("GroupAction")(
-  withRouter(GroupAction)
+const GroupActionContainer = withTranslation("GroupAction")(GroupAction);
+export default withRouter(
+  inject(({ auth, peopleStore }) => ({
+    setDocumentTitle: auth.setDocumentTitle,
+    fetchGroup: peopleStore.selectedGroupStore.setTargetedGroup,
+    group: peopleStore.selectedGroupStore.targetedGroup,
+    resetGroup: peopleStore.selectedGroupStore.resetGroup,
+  }))(observer(GroupActionContainer))
 );
-
-export default inject(({ auth, peopleStore }) => ({
-  setDocumentTitle: auth.setDocumentTitle,
-  fetchGroup: peopleStore.selectedGroupStore.setTargetedGroup,
-  group: peopleStore.selectedGroupStore.targetedGroup,
-  resetGroup: peopleStore.selectedGroupStore.resetGroup,
-}))(observer(GroupActionContainer));

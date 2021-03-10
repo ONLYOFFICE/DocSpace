@@ -162,8 +162,10 @@ SendInviteDialog.propTypes = {
   setSelected: PropTypes.func.isRequired,
 };
 
-export default inject(({ peopleStore }) => ({
-  selectedUsers: peopleStore.selectionStore.selection,
-  setSelected: peopleStore.selectionStore.setSelected,
-  userIds: peopleStore.selectionStore.getUsersToInviteIds,
-}))(observer(withRouter(SendInviteDialog)));
+export default withRouter(
+  inject(({ peopleStore }) => ({
+    selectedUsers: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
+    userIds: peopleStore.selectionStore.getUsersToInviteIds,
+  }))(observer(SendInviteDialog))
+);
