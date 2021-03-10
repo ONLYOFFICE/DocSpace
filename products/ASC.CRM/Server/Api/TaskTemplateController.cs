@@ -32,11 +32,30 @@ using ASC.Web.Api.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Api.CRM;
+using ASC.CRM.Core;
+using ASC.Api.Core;
+using ASC.CRM.Core.Dao;
+using ASC.Web.CRM.Services.NotifyService;
+using ASC.MessagingSystem;
+using ASC.Web.Api.Models;
 
-namespace ASC.Api.CRM
+namespace ASC.CRM.Api
 {
-    public partial class CRMController
+    public class TaskTemplateController : BaseApiController
     {
+        public TaskTemplateController(CRMSecurity cRMSecurity,
+             DaoFactory daoFactory,
+             EmployeeWraperHelper employeeWraperHelper)
+                        : base(daoFactory, cRMSecurity)
+
+        {
+            EmployeeWraperHelper = employeeWraperHelper;
+        }
+
+        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+     
+
         /// <summary>
         ///   Creates a new task template container with the type and title specified in the request
         /// </summary>
@@ -335,9 +354,10 @@ namespace ASC.Api.CRM
 
         protected TaskTemplateDto ToTaskTemplateDto(TaskTemplate taskTemplate)
         {
+            // TODO: set task template category
             return new TaskTemplateDto
             {
-                Category = GetTaskCategoryByID(taskTemplate.CategoryID),
+//                Category = GetTaskCategoryByID(taskTemplate.CategoryID),
                 ContainerID = taskTemplate.ContainerID,
                 DeadLineIsFixed = taskTemplate.DeadLineIsFixed,
                 Description = taskTemplate.Description,

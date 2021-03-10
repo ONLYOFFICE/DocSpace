@@ -24,25 +24,37 @@
 */
 
 
-using ASC.CRM.ApiModels;
-using ASC.Common.Web;
-using ASC.CRM.Core;
-using ASC.CRM.Core.Entities;
-using ASC.CRM.Core.Enums;
-using ASC.ElasticSearch;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Routing;
-using ASC.Web.CRM.Core.Search;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security;
 
-namespace ASC.Api.CRM
+using ASC.Api.CRM;
+using ASC.Common.Web;
+using ASC.CRM.ApiModels;
+using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.MessagingSystem;
+using ASC.Web.Api.Routing;
+
+namespace ASC.CRM.Api
 {
-    public partial class CRMController
+    public class CustomFieldsController : BaseApiController
     {
+        public CustomFieldsController(CRMSecurity cRMSecurity,
+                     DaoFactory daoFactory,
+                     MessageTarget messageTarget,
+                     MessageService messageService)
+            : base(daoFactory, cRMSecurity)
+        {
+            MessageTarget = messageTarget;
+            MessageService = messageService;
+        }
+
+        public MessageService MessageService { get; }
+        public MessageTarget MessageTarget { get; }
+
         /// <summary>
         ///    Returns the list of descriptions for all existing user fields
         /// </summary>

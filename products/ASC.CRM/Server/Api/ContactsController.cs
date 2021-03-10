@@ -24,20 +24,27 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Api.Collections;
 using ASC.Api.Core;
-using ASC.CRM.ApiModels;
-using ASC.Common.Threading.Progress;
+using ASC.Api.CRM;
 using ASC.Common.Web;
+using ASC.Core;
+using ASC.Core.Users;
+using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
-
 using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Classes;
+using ASC.Web.CRM.Services.NotifyService;
 using ASC.Web.Studio.Core;
 
 using Autofac;
@@ -45,19 +52,64 @@ using Autofac;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security;
-using System.Web;
-
 using Contact = ASC.CRM.Core.Entities.Contact;
 
-namespace ASC.Api.CRM
+namespace ASC.CRM.Api
 {
-    public partial class CRMController
+    public class ContactsController : BaseApiController
     {
+        public ContactsController(CRMSecurity cRMSecurity,
+                     DaoFactory daoFactory,
+                     ApiContext apiContext,
+                     MessageTarget messageTarget,
+                     MessageService messageService,
+                     NotifyClient notifyClient,
+                     TaskDtoHelper taskDtoHelper,
+                     ContactDtoHelper contactBaseDtoHelper,
+                     TaskCategoryDtoHelper taskCategoryDtoHelper,
+                     SecurityContext securityContext,
+                     OpportunityDtoHelper opportunityDtoHelper,
+                     SetupInfo setupInfo,
+                     UserFormatter userFormatter,
+                     EmployeeWraperHelper employeeWraperHelper,
+                     ContactPhotoManager contactPhotoManager,
+                     FileSizeComment fileSizeComment,
+                     ContactInfoDtoHelper contactInfoDtoHelper)
+            : base(daoFactory, cRMSecurity)
+        {
+            ApiContext = apiContext;
+            MessageTarget = messageTarget;
+            MessageService = messageService;
+            NotifyClient = notifyClient;
+            TaskDtoHelper = taskDtoHelper;
+            ContactDtoHelper = contactBaseDtoHelper;
+            TaskCategoryDtoHelper = taskCategoryDtoHelper;
+            SecurityContext = securityContext;
+            OpportunityDtoHelper = opportunityDtoHelper;
+            SetupInfo = setupInfo;
+            UserFormatter = userFormatter;
+            EmployeeWraperHelper = employeeWraperHelper;
+            ContactPhotoManager = contactPhotoManager;
+            FileSizeComment = fileSizeComment;
+            ContactInfoDtoHelper = contactInfoDtoHelper;
+        }
+
+        public ContactInfoDtoHelper ContactInfoDtoHelper { get; }
+        public FileSizeComment FileSizeComment { get; }
+        public ContactPhotoManager ContactPhotoManager { get; }
+        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        public UserFormatter UserFormatter { get; }
+        public SetupInfo SetupInfo { get; }
+        public SecurityContext SecurityContext { get; }
+        public TaskCategoryDtoHelper TaskCategoryDtoHelper { get; }
+        public ContactDtoHelper ContactDtoHelper { get; }
+        public TaskDtoHelper TaskDtoHelper { get; }
+        public NotifyClient NotifyClient { get; }
+        private ApiContext ApiContext { get; }
+        public MessageService MessageService { get; }
+        public MessageTarget MessageTarget { get; }
+        public OpportunityDtoHelper OpportunityDtoHelper { get; }
+
         /// <summary>
         ///    Returns the detailed information about the contact with the ID specified in the request
         /// </summary>
@@ -82,7 +134,7 @@ namespace ASC.Api.CRM
         {
             var contacts = DaoFactory.GetContactDao().GetContacts(contactid.ToArray()).Where(r => r != null && CRMSecurity.CanAccessTo(r));
 
-            return ToListContactDto(contacts.ToList());
+            return ContactDtoHelper.ToListContactDto(contacts.ToList());
 
         }
 
@@ -104,7 +156,7 @@ namespace ASC.Api.CRM
             if (projectid <= 0) throw new ArgumentException();
 
             var contacts = DaoFactory.GetContactDao().GetContactsByProjectID(projectid);
-            return ToListContactDto(contacts.ToList());
+            return ContactDtoHelper.ToListContactDto(contacts.ToList());
         }
 
         ///// <summary>
@@ -328,7 +380,7 @@ namespace ASC.Api.CRM
 
             if (contactsOrderBy != null)
             {
-                result = ToListContactDto(DaoFactory.GetContactDao().GetContacts(
+                result = ContactDtoHelper.ToListContactDto(DaoFactory.GetContactDao().GetContacts(
                     searchString,
                     tags,
                     contactStageInt,
@@ -347,7 +399,7 @@ namespace ASC.Api.CRM
             }
             else
             {
-                result = ToListContactDto(DaoFactory.GetContactDao().GetContacts(
+                result = ContactDtoHelper.ToListContactDto(DaoFactory.GetContactDao().GetContacts(
                     searchString,
                     tags,
                     contactStageInt,
@@ -612,7 +664,7 @@ namespace ASC.Api.CRM
             var company = DaoFactory.GetContactDao().GetByID(companyid);
             if (company == null || !CRMSecurity.CanAccessTo(company)) throw new ItemNotFoundException();
 
-            return ToListContactDto(DaoFactory.GetContactDao().GetMembers(companyid).Where(CRMSecurity.CanAccessTo).ToList());
+            return ContactDtoHelper.ToListContactDto(DaoFactory.GetContactDao().GetMembers(companyid).Where(CRMSecurity.CanAccessTo).ToList());
         }
 
         /// <summary>
@@ -1495,7 +1547,7 @@ namespace ASC.Api.CRM
 
                 result.Add(contact);
             }
-            return ToListContactDto(result);
+            return ContactDtoHelper.ToListContactDto(result);
         }
 
         /// <summary>
@@ -1728,7 +1780,7 @@ namespace ASC.Api.CRM
         //        return users;
         //    }
         //    catch (Exception ex) {
-        //        throw new SocialMediaUI(DaoFactory).ProcessError(ex, "ASC.Api.CRM.CRMApi.FindTwitterProfiles");
+        //        throw new SocialMediaUI(DaoFactory).ProcessError(ex, "ASC.CRM.Api.CRMApi.FindTwitterProfiles");
         //    }
         //}
 
@@ -2079,188 +2131,5 @@ namespace ASC.Api.CRM
 
             return result;
         }
-
-        private ContactDto ToContactDto(Contact contact)
-        {
-            return ToListContactDto(new List<Contact>
-            {
-                contact
-            }).Single();
-        }
-
-
-        private IEnumerable<ContactDto> ToListContactDto(IReadOnlyList<Contact> itemList)
-        {
-            if (itemList.Count == 0) return new List<ContactDto>();
-
-            var result = new List<ContactDto>();
-
-            var personsIDs = new List<int>();
-            var companyIDs = new List<int>();
-            var contactIDs = new int[itemList.Count];
-
-            var peopleCompanyIDs = new List<int>();
-            var peopleCompanyList = new Dictionary<int, ContactBaseDto>();
-
-
-            var contactDao = DaoFactory.GetContactDao();
-
-
-            for (var index = 0; index < itemList.Count; index++)
-            {
-                var contact = itemList[index];
-
-                if (contact is Company)
-                {
-                    companyIDs.Add(contact.ID);
-                }
-                else
-                {
-                    var person = contact as Person;
-                    if (person != null)
-                    {
-                        personsIDs.Add(person.ID);
-
-                        if (person.CompanyID > 0)
-                        {
-                            peopleCompanyIDs.Add(person.CompanyID);
-                        }
-                    }
-                }
-
-                contactIDs[index] = itemList[index].ID;
-            }
-
-            if (peopleCompanyIDs.Count > 0)
-            {
-                var tmpList = contactDao.GetContacts(peopleCompanyIDs.ToArray()).ConvertAll(item => ContactDtoHelper.GetContactBaseDtoQuick(item));
-                var tmpListCanDelete = contactDao.CanDelete(tmpList.Select(item => item.Id).ToArray());
-
-                foreach (var contactBaseDtoQuick in tmpList)
-                {
-                    contactBaseDtoQuick.CanDelete = contactBaseDtoQuick.CanEdit && tmpListCanDelete[contactBaseDtoQuick.Id];
-                    peopleCompanyList.Add(contactBaseDtoQuick.Id, contactBaseDtoQuick);
-                }
-            }
-
-            var companiesMembersCount = contactDao.GetMembersCount(companyIDs.Distinct().ToArray());
-
-            var contactStatusIDs = itemList.Select(item => item.StatusID).Distinct().ToArray();
-            var contactInfos = new Dictionary<int, List<ContactInfoDto>>();
-
-            var haveLateTask = DaoFactory.GetTaskDao().HaveLateTask(contactIDs);
-            var contactStatus = DaoFactory.GetListItemDao()
-                                          .GetItems(contactStatusIDs)
-                                          .ToDictionary(item => item.ID, item => new ContactStatusBaseDto(item));
-
-            var personsCustomFields = DaoFactory.GetCustomFieldDao().GetEnityFields(EntityType.Person, personsIDs.ToArray());
-            var companyCustomFields = DaoFactory.GetCustomFieldDao().GetEnityFields(EntityType.Company, companyIDs.ToArray());
-
-            var customFields = personsCustomFields.Union(companyCustomFields)
-                                                  .GroupBy(item => item.EntityID).ToDictionary(item => item.Key, item => item.Select(ToCustomFieldBaseDto));
-
-            var addresses = new Dictionary<int, List<Address>>();
-            var taskCount = DaoFactory.GetTaskDao().GetTasksCount(contactIDs);
-
-            var contactTags = DaoFactory.GetTagDao().GetEntitiesTags(EntityType.Contact);
-
-            DaoFactory.GetContactInfoDao().GetAll(contactIDs).ForEach(
-                item =>
-                    {
-                        if (item.InfoType == ContactInfoType.Address)
-                        {
-                            if (!addresses.ContainsKey(item.ContactID))
-                                addresses.Add(item.ContactID, new List<Address> { new Address(item) });
-                            else
-                                addresses[item.ContactID].Add(new Address(item));
-                        }
-                        else
-                        {
-                            if (!contactInfos.ContainsKey(item.ContactID))
-                                contactInfos.Add(item.ContactID, new List<ContactInfoDto> { ContactInfoDtoHelper.Get(item) });
-                            else
-                                contactInfos[item.ContactID].Add(ContactInfoDtoHelper.Get(item));
-                        }
-                    }
-                );
-
-
-            foreach (var contact in itemList)
-            {
-                ContactDto contactDto;
-
-                var person = contact as Person;
-                if (person != null)
-                {
-                    var people = person;
-
-                    var peopleDto = ContactDtoHelper.GetPersonDtoQuick(people);
-
-                    if (people.CompanyID > 0 && peopleCompanyList.ContainsKey(people.CompanyID))
-                    {
-                        peopleDto.Company = peopleCompanyList[people.CompanyID];
-                    }
-
-                    contactDto = peopleDto;
-                }
-                else
-                {
-                    var company = contact as Company;
-                    if (company != null)
-                    {
-                        contactDto = ContactDtoHelper.GetCompanyDtoQuick(company);
-
-                        if (companiesMembersCount.ContainsKey(contactDto.Id))
-                        {
-                            ((CompanyDto)contactDto).PersonsCount = companiesMembersCount[contactDto.Id];
-                        }
-                    }
-                    else
-                    {
-                        throw new ArgumentException();
-                    }
-                }
-
-                if (contactTags.ContainsKey(contact.ID))
-                {
-                    contactDto.Tags = contactTags[contact.ID].OrderBy(x => x);
-                }
-
-                if (addresses.ContainsKey(contact.ID))
-                {
-                    contactDto.Addresses = addresses[contact.ID];
-                }
-
-                contactDto.CommonData = contactInfos.ContainsKey(contact.ID) ? contactInfos[contact.ID] : new List<ContactInfoDto>();
-
-                if (contactStatus.ContainsKey(contact.StatusID))
-                {
-                    contactDto.ContactStatus = contactStatus[contact.StatusID];
-                }
-
-                contactDto.HaveLateTasks = haveLateTask.ContainsKey(contact.ID) && haveLateTask[contact.ID];
-
-                contactDto.CustomFields = customFields.ContainsKey(contact.ID) ? customFields[contact.ID] : new List<CustomFieldBaseDto>();
-
-                contactDto.TaskCount = taskCount.ContainsKey(contact.ID) ? taskCount[contact.ID] : 0;
-
-                result.Add(contactDto);
-            }
-
-            #region CanDelete for main contacts
-
-            if (result.Count > 0)
-            {
-                var resultListCanDelete = contactDao.CanDelete(result.Select(item => item.Id).ToArray());
-                foreach (var contactBaseDtoQuick in result)
-                {
-                    contactBaseDtoQuick.CanDelete = contactBaseDtoQuick.CanEdit && resultListCanDelete[contactBaseDtoQuick.Id];
-                }
-            }
-
-            #endregion
-
-            return result;
-        }
-    }
+       }
 }

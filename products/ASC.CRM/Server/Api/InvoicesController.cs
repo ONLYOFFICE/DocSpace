@@ -44,11 +44,88 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Api.CRM;
+using ASC.CRM.Core.Dao;
+using ASC.Web.CRM.Services.NotifyService;
+using ASC.Web.Core.Users;
+using ASC.Core.Common.Settings;
 
-namespace ASC.Api.CRM
+namespace ASC.CRM.Api
 {
-    public partial class CRMController
+    public class InvoicesController : BaseApiController
     {
+        public InvoicesController(CRMSecurity cRMSecurity,
+                     DaoFactory daoFactory,
+                     ApiContext apiContext,
+                     MessageTarget messageTarget,
+                     MessageService messageService,
+                     ContactDtoHelper contactBaseDtoHelper,
+                     InvoiceDtoHelper invoiceDtoHelper,
+                     ApiDateTimeHelper apiDateTimeHelper,
+                     SettingsManager settingsManager,
+                     FileWrapperHelper fileWrapperHelper,
+                     PdfCreator pdfCreator,
+                     CurrencyInfoDtoHelper currencyInfoDtoHelper,
+                     InvoiceBaseDtoHelper invoiceBaseDtoHelper,
+                     InvoiceItemDtoHelper invoiceItemDtoHelper,
+                     Global global,
+                     InvoiceLineDtoHelper invoiceLineDtoHelper,
+                     InvoiceTaxDtoHelper invoiceTaxDtoHelper)
+            : base(daoFactory, cRMSecurity)
+        {
+            ApiContext = apiContext;
+            MessageTarget = messageTarget;
+            MessageService = messageService;
+            ContactDtoHelper = contactBaseDtoHelper;
+            InvoiceDtoHelper = invoiceDtoHelper;
+            ApiDateTimeHelper = apiDateTimeHelper;
+            SettingsManager = settingsManager;
+            PdfCreator = pdfCreator;
+            FileWrapperHelper = fileWrapperHelper;
+            CurrencyInfoDtoHelper = currencyInfoDtoHelper;
+            InvoiceBaseDtoHelper = invoiceBaseDtoHelper;
+            InvoiceItemDtoHelper = invoiceItemDtoHelper;
+            Global = global;
+            InvoiceLineDtoHelper = invoiceLineDtoHelper;
+            InvoiceTaxDtoHelper = invoiceTaxDtoHelper;
+        }
+
+        public InvoiceTaxDtoHelper InvoiceTaxDtoHelper { get; }
+        public InvoiceLineDtoHelper InvoiceLineDtoHelper { get; }
+        public Global Global { get; }
+        public InvoiceItemDtoHelper InvoiceItemDtoHelper { get; }
+        public InvoiceBaseDtoHelper InvoiceBaseDtoHelper { get; }
+        public CurrencyInfoDtoHelper CurrencyInfoDtoHelper { get; }
+        public FileWrapperHelper FileWrapperHelper { get; }
+        public PdfCreator PdfCreator { get; }
+        public SettingsManager SettingsManager { get; }
+        public ApiDateTimeHelper ApiDateTimeHelper { get; }
+        public InvoiceDtoHelper InvoiceDtoHelper { get; }
+        public ContactDtoHelper ContactDtoHelper { get; }
+        private ApiContext ApiContext { get; }
+        public MessageService MessageService { get; }
+        public MessageTarget MessageTarget { get; }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         /// <summary>
         ///  Returns the detailed information about the invoice with the ID specified in the request
         /// </summary>
@@ -1507,5 +1584,43 @@ namespace ASC.Api.CRM
 
             return result;
         }
+
+        private EntityDto ToEntityDto(EntityType entityType, int entityID)
+        {
+            if (entityID == 0) return null;
+
+            var result = new EntityDto
+            {
+                EntityId = entityID
+            };
+
+            switch (entityType)
+            {
+                case EntityType.Case:
+                    var caseObj = DaoFactory.GetCasesDao().GetByID(entityID);
+                    if (caseObj == null)
+                        return null;
+
+                    result.EntityType = "case";
+                    result.EntityTitle = caseObj.Title;
+
+                    break;
+                case EntityType.Opportunity:
+                    var dealObj = DaoFactory.GetDealDao().GetByID(entityID);
+
+                    if (dealObj == null)
+                        return null;
+
+                    result.EntityType = "opportunity";
+                    result.EntityTitle = dealObj.Title;
+
+                    break;
+                default:
+                    return null;
+            }
+
+            return result;
+        }
+
     }
 }

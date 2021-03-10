@@ -1,7 +1,7 @@
 using System.Text;
 
 using ASC.Api.Core;
-using ASC.Api.CRM;
+using ASC.CRM.Api;
 using ASC.Common;
 
 using Microsoft.Extensions.Configuration;
@@ -23,8 +23,20 @@ namespace ASC.CRM
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            DIHelper.TryAdd<CRMController>();
-
+            DIHelper.TryAdd<CasesController>();
+            DIHelper.TryAdd<ContactInfosController>();
+            DIHelper.TryAdd<ContactsController>();
+            DIHelper.TryAdd<CurrencyRatesController>();
+            DIHelper.TryAdd<CustomFieldsController>();
+            DIHelper.TryAdd<TasksController>();
+            DIHelper.TryAdd<DealsController>();
+            DIHelper.TryAdd<InvoicesController>();
+            DIHelper.TryAdd<ListItemsController>();
+            DIHelper.TryAdd<RelationshipEventsController>();
+            DIHelper.TryAdd<TagsController>();
+            DIHelper.TryAdd<TasksController>();
+            DIHelper.TryAdd<TaskTemplateController>();
+            DIHelper.TryAdd<UtilsController>();
         }   
     }
 }

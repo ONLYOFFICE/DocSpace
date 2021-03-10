@@ -36,7 +36,7 @@
 //using System.Linq;
 //using System.Security;
 
-//namespace ASC.Api.CRM
+//namespace ASC.CRM.Api
 //{
 //    public partial class CRMController
 //    {

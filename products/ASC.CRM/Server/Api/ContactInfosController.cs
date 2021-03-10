@@ -41,11 +41,40 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Api.CRM;
+using ASC.CRM.Core.Dao;
+using ASC.Api.Core;
+using ASC.Web.CRM.Services.NotifyService;
+using ASC.Core;
+using ASC.Web.Core.Users;
 
-namespace ASC.Api.CRM
+namespace ASC.CRM.Api
 {
-    public partial class CRMController
+    public class ContactInfosController : BaseApiController
     {
+        public ContactInfosController(CRMSecurity cRMSecurity,
+                     DaoFactory daoFactory,
+                     ApiContext apiContext,
+                     MessageTarget messageTarget,
+                     MessageService messageService,
+                     NotifyClient notifyClient,
+                     ContactDtoHelper contactBaseDtoHelper,
+                     CasesDtoHelper casesDtoHelper,
+                     SecurityContext securityContext,
+                     DisplayUserSettingsHelper displayUserSettingsHelper,
+                     UserManager userManager,
+                     ContactInfoDtoHelper contactInfoDtoHelper)
+            : base(daoFactory, cRMSecurity)
+        {
+            MessageTarget = messageTarget;
+            MessageService = messageService;
+            ContactInfoDtoHelper = contactInfoDtoHelper;
+        }
+
+        public ContactInfoDtoHelper ContactInfoDtoHelper { get; }     
+        public MessageService MessageService { get; }
+        public MessageTarget MessageTarget { get; }
+     
         /// <summary>
         ///   Returns the list of all available contact categories
         /// </summary>

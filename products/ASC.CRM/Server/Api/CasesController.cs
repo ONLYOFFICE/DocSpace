@@ -41,11 +41,50 @@ using ASC.Web.Files.Services.WCFService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Api.CRM;
+using ASC.CRM.Core.Dao;
+using ASC.Api.Core;
+using ASC.Web.CRM.Services.NotifyService;
+using ASC.Web.Core.Users;
 
-namespace ASC.Api.CRM
+namespace ASC.CRM.Api
 {
-    public partial class CRMController
+    public class CasesController : BaseApiController
     {
+        public CasesController(CRMSecurity cRMSecurity,
+                     DaoFactory daoFactory,
+                     ApiContext apiContext,
+                     MessageTarget messageTarget,
+                     MessageService messageService,
+                     NotifyClient notifyClient,
+                     ContactDtoHelper contactBaseDtoHelper,
+                     CasesDtoHelper casesDtoHelper,
+                     SecurityContext securityContext,
+                     DisplayUserSettingsHelper displayUserSettingsHelper,
+                     UserManager userManager)
+            : base(daoFactory, cRMSecurity)
+        {
+            ApiContext = apiContext;
+            MessageTarget = messageTarget;
+            MessageService = messageService;
+            NotifyClient = notifyClient;
+            ContactDtoHelper = contactBaseDtoHelper;
+            CasesDtoHelper = casesDtoHelper;
+            SecurityContext = securityContext;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            UserManager = userManager;
+        }
+
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public SecurityContext SecurityContext { get; }
+        public CasesDtoHelper CasesDtoHelper { get; }
+        public ContactDtoHelper ContactDtoHelper { get; }
+        public NotifyClient NotifyClient { get; }
+        private ApiContext ApiContext { get; }
+        public MessageService MessageService { get; }
+        public MessageTarget MessageTarget { get; }
+        public UserManager UserManager { get; }
+
         /// <summary>
         ///   Close the case with the ID specified in the request
         /// </summary>
@@ -581,7 +620,7 @@ namespace ASC.Api.CRM
             var contactIDs = DaoFactory.GetCasesDao().GetMembers(caseid);
             return contactIDs == null
                        ? new ItemList<ContactDto>()
-                       : ToListContactDto(DaoFactory.GetContactDao().GetContacts(contactIDs));
+                       : ContactDtoHelper.ToListContactDto(DaoFactory.GetContactDao().GetContacts(contactIDs));
         }
 
         /// <summary>
@@ -612,7 +651,7 @@ namespace ASC.Api.CRM
             var messageAction = contact is Company ? MessageAction.CaseLinkedCompany : MessageAction.CaseLinkedPerson;
             MessageService.Send(messageAction, MessageTarget.Create(cases.ID), cases.Title, contact.GetTitle());
 
-            return ToContactDto(contact);
+            return ContactDtoHelper.ToContactDto(contact);
         }
 
         /// <summary>
@@ -638,7 +677,7 @@ namespace ASC.Api.CRM
             var contact = DaoFactory.GetContactDao().GetByID(contactid);
             if (contact == null || !CRMSecurity.CanAccessTo(contact)) throw new ItemNotFoundException();
 
-            var result = ToContactDto(contact);
+            var result = ContactDtoHelper.ToContactDto(contact);
 
             DaoFactory.GetCasesDao().RemoveMember(caseid, contactid);
 
@@ -703,7 +742,7 @@ namespace ASC.Api.CRM
             var customFields = DaoFactory.GetCustomFieldDao()
                                          .GetEnityFields(EntityType.Case, casesIDs)
                                          .GroupBy(item => item.EntityID)
-                                         .ToDictionary(item => item.Key, item => item.Select(ToCustomFieldBaseDto));
+                                         .ToDictionary(item => item.Key, item => item.Select(x => new CustomFieldBaseDto(x)));
 
             var casesMembers = DaoFactory.GetCasesDao().GetMembers(casesIDs);
 

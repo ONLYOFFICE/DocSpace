@@ -47,7 +47,7 @@
 //using System.Security;
 //using SecurityContext = ASC.Core.SecurityContext;
 
-//namespace ASC.Api.CRM
+//namespace ASC.CRM.Api
 //{
 //    public partial class CRMController
 //    {        

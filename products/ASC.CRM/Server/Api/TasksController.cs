@@ -1,6 +1,12 @@
-﻿using ASC.Api.Core;
-using ASC.CRM.ApiModels;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using ASC.Api.Core;
+using ASC.Api.CRM;
+using ASC.Common;
 using ASC.Common.Web;
+using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
@@ -10,15 +16,38 @@ using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Services.NotifyService;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace ASC.Api.CRM
+namespace ASC.CRM.Api
 {
-    public partial class CRMController
+    public class TasksController: BaseApiController
     {
+        public TasksController(CRMSecurity cRMSecurity,
+                     DaoFactory daoFactory,
+                     ApiContext apiContext,
+                     MessageTarget messageTarget,
+                     MessageService messageService,
+                     NotifyClient notifyClient,
+                     TaskDtoHelper taskDtoHelper,
+                     ContactDtoHelper contactBaseDtoHelper,
+                     TaskCategoryDtoHelper taskCategoryDtoHelper)
+            : base(daoFactory, cRMSecurity)
+        {
+            ApiContext = apiContext;
+            MessageTarget = messageTarget;
+            MessageService = messageService;
+            NotifyClient = notifyClient;
+            TaskDtoHelper = taskDtoHelper;
+            ContactDtoHelper = contactBaseDtoHelper;
+            TaskCategoryDtoHelper = taskCategoryDtoHelper;
+        }
 
+        public TaskCategoryDtoHelper TaskCategoryDtoHelper { get; }
+        public ContactDtoHelper ContactDtoHelper { get; }
+        public TaskDtoHelper TaskDtoHelper { get; }
+        public NotifyClient NotifyClient { get; }
+        private ApiContext ApiContext { get; }
+        public MessageService MessageService { get; }
+        public MessageTarget MessageTarget { get; }
+   
         /// <summary>
         ///  Returns the detailed information about the task with the ID specified in the request
         /// </summary>

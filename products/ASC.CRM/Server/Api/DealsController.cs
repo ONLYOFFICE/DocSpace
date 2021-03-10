@@ -24,30 +24,73 @@
 */
 
 
-using ASC.Api.Collections;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Api.Core;
-using ASC.CRM.ApiModels;
+using ASC.Api.CRM;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Users;
+using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
+using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
-using ASC.Web.Files.Services.WCFService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using ASC.CRM.Classes;
+using ASC.Web.CRM.Services.NotifyService;
 
-
-namespace ASC.Api.CRM
+namespace ASC.CRM.Api
 {
-    public partial class CRMController
+    public class DealsController : BaseApiController
     {
+        public DealsController(CRMSecurity cRMSecurity,
+                   DaoFactory daoFactory,
+                   ApiContext apiContext,
+                   MessageTarget messageTarget,
+                   MessageService messageService,
+                   NotifyClient notifyClient,
+                   ContactDtoHelper  contactDtoHelper,
+                   ContactInfoDtoHelper contactInfoDtoHelper,
+                   OpportunityDtoHelper opportunityDtoHelper,
+                   CurrencyProvider currencyProvider,
+                   CurrencyInfoDtoHelper currencyInfoDtoHelper,
+                   UserManager userManager,
+                   EmployeeWraperHelper employeeWraperHelper,
+                   DisplayUserSettingsHelper displayUserSettingsHelper)
+            : base(daoFactory, cRMSecurity)
+        {
+            ApiContext = apiContext;
+            MessageTarget = messageTarget;
+            MessageService = messageService;
+            NotifyClient = notifyClient;
+            OpportunityDtoHelper = opportunityDtoHelper;
+            CurrencyProvider = currencyProvider;
+            CurrencyInfoDtoHelper = currencyInfoDtoHelper;
+            UserManager = userManager;
+            EmployeeWraperHelper = employeeWraperHelper;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            ContactDtoHelper = contactDtoHelper;
+        }
+
+        public ContactDtoHelper ContactDtoHelper { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public NotifyClient NotifyClient { get; }
+        private ApiContext ApiContext { get; }
+        public MessageService MessageService { get; }
+        public MessageTarget MessageTarget { get; }
+        public OpportunityDtoHelper OpportunityDtoHelper { get; }
+        public SecurityContext SecurityContext { get; }
+        public CurrencyProvider CurrencyProvider { get; }
+        public CurrencyInfoDtoHelper CurrencyInfoDtoHelper { get; }
+        public UserManager UserManager { get; }
+        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+
         /// <summary>
         ///    Returns the detailed information about the opportunity with the ID specified in the request
         /// </summary>
@@ -149,7 +192,7 @@ namespace ASC.Api.CRM
 
                 if (isMessageServicSende)
                 {
-                    var users = GetUsersByIdList(accessListLocal);
+                    var users = UserManager.GetUsers().Where(x => accessListLocal.Contains(x.ID));
                     MessageService.Send(MessageAction.OpportunityRestrictedAccess, MessageTarget.Create(deal.ID), deal.Title, users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
                 }
             }
@@ -200,7 +243,7 @@ namespace ASC.Api.CRM
             var accessList = inDto.AccessList;
 
             var result = new List<Deal>();
-            
+
             var deals = DaoFactory.GetDealDao()
                                   .GetDeals(ApiContext.FilterValue,
                                             responsibleid,
@@ -210,7 +253,7 @@ namespace ASC.Api.CRM
                                             stageType,
                                             contactAlsoIsParticipant,
                                             fromDate, toDate, 0, 0, null);
-            
+
             if (!deals.Any()) return Enumerable.Empty<OpportunityDto>();
 
             foreach (var deal in deals)
@@ -220,9 +263,9 @@ namespace ASC.Api.CRM
                 if (!(CRMSecurity.IsAdmin || deal.CreateBy == SecurityContext.CurrentAccount.ID)) continue;
 
                 SetAccessToDeal(deal.ID, isPrivate, accessList);
-            
+
                 result.Add(deal);
-            
+
             }
 
             return ToListOpportunityDto(result);
@@ -622,7 +665,7 @@ namespace ASC.Api.CRM
             var accessList = inDto.AccessList;
             var customFieldList = inDto.CustomFieldList;
             var members = inDto.Members;
-            
+
             var deal = DaoFactory.GetDealDao().GetByID(opportunityid);
             if (deal == null) throw new ItemNotFoundException();
 
@@ -690,9 +733,10 @@ namespace ASC.Api.CRM
             if (opportunity == null || !CRMSecurity.CanAccessTo(opportunity)) throw new ItemNotFoundException();
 
             var contactIDs = DaoFactory.GetDealDao().GetMembers(opportunityid);
-            if (contactIDs == null) return new ItemList<ContactDto>();
+            
+            if (contactIDs == null) return new List<ContactDto>();
 
-            var result = ToListContactDto(DaoFactory.GetContactDao().GetContacts(contactIDs)).ToList();
+            var result = ContactDtoHelper.ToListContactDto(DaoFactory.GetContactDao().GetContacts(contactIDs)).ToList();
 
             result.ForEach(item => { if (item.Id == opportunity.ContactID) item.CanEdit = false; });
 
@@ -721,7 +765,7 @@ namespace ASC.Api.CRM
             var contact = DaoFactory.GetContactDao().GetByID(contactid);
             if (contact == null || !CRMSecurity.CanAccessTo(contact)) throw new ItemNotFoundException();
 
-            var result = ToContactDto(contact);
+            var result = ContactDtoHelper.ToContactDto(contact);
 
             DaoFactory.GetDealDao().AddMember(opportunityid, contactid);
 
@@ -754,7 +798,7 @@ namespace ASC.Api.CRM
             var contact = DaoFactory.GetContactDao().GetByID(contactid);
             if (contact == null || !CRMSecurity.CanAccessTo(contact)) throw new ItemNotFoundException();
 
-            var result = ToContactDto(contact);
+            var result = ContactDtoHelper.ToContactDto(contact);
 
             DaoFactory.GetDealDao().RemoveMember(opportunityid, contactid);
 
@@ -872,7 +916,7 @@ namespace ASC.Api.CRM
 
             var customFields = DaoFactory.GetCustomFieldDao().GetEnityFields(EntityType.Opportunity, dealIDs.ToArray())
                                          .GroupBy(item => item.EntityID)
-                                         .ToDictionary(item => item.Key, item => item.Select(ToCustomFieldBaseDto));
+                                         .ToDictionary(item => item.Key, item => item.Select(x=> new CustomFieldBaseDto(x)));
 
             var dealMilestones = DaoFactory.GetDealMilestoneDao().GetAll(dealMilestoneIDs.ToArray())
                                            .ToDictionary(item => item.ID, item => new DealMilestoneBaseDto(item));

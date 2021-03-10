@@ -24,24 +24,43 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Api.Core;
-using ASC.CRM.ApiModels;
+using ASC.Api.CRM;
 using ASC.Common.Web;
+using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
+using ASC.Web.CRM.Services.NotifyService;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace ASC.Api.CRM
+namespace ASC.CRM.Api
 {
-    public partial class CRMController
+    public class TagsController : BaseApiController
     {
+        public TagsController(CRMSecurity cRMSecurity,
+                     DaoFactory daoFactory,
+                     ApiContext apiContext,
+                     MessageTarget messageTarget,
+                     MessageService messageService)
+          : base(daoFactory, cRMSecurity)
+        {
+            ApiContext = apiContext;
+            MessageTarget = messageTarget;
+            MessageService = messageService;
+        }
+
+        private ApiContext ApiContext { get; }
+        public MessageService MessageService { get; }
+        public MessageTarget MessageTarget { get; }
+
         /// <summary>
         ///  Returns the list of all tags associated with the entity with the ID and type specified in the request
         /// </summary>

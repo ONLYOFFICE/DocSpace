@@ -38,7 +38,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace ASC.Api.CRM
+namespace ASC.CRM.Api
 {
     [Scope]
     public sealed class CRMCalendar : BaseCalendar

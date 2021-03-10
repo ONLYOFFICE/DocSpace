@@ -24,22 +24,50 @@
 */
 
 
+using ASC.Api.Core;
+using ASC.Api.CRM;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
+using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
+using ASC.Web.CRM.Services.NotifyService;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ASC.Api.CRM
+namespace ASC.CRM.Api
 {
-    public partial class CRMController
+    public class CurrencyRatesController : BaseApiController
     {
+        public CurrencyRatesController(CRMSecurity cRMSecurity,
+                     DaoFactory daoFactory,
+                     MessageService messageService,
+                     CurrencyRateDtoHelper currencyRateDtoHelper,
+                     SettingsManager settingsManager,
+                     Global global,
+                     CurrencyProvider currencyProvider)
+            : base(daoFactory, cRMSecurity)
+        {
+            MessageService = messageService;
+            CurrencyRateDtoHelper = currencyRateDtoHelper;
+            SettingsManager = settingsManager;
+            Global = global;
+            CurrencyProvider = currencyProvider;
+        }
+
+        public CurrencyProvider CurrencyProvider { get; }
+        public SettingsManager SettingsManager { get; }
+        public Global Global { get; }
+        public CurrencyRateDtoHelper CurrencyRateDtoHelper { get; }
+        public MessageService MessageService { get; }
+
         //TABLE `crm_currency_rate` column `rate` DECIMAL(10,2) NOT NULL
         public const decimal MaxRateValue = (decimal)99999999.99;
 

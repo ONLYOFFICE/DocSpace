@@ -24,9 +24,13 @@
 */
 
 
+using ASC.Api.Core;
+using ASC.Api.CRM;
 using ASC.Common.Threading.Progress;
+using ASC.Core.Common.Settings;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
@@ -34,16 +38,54 @@ using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Utility;
 using ASC.Web.CRM.Classes;
+using ASC.Web.CRM.Services.NotifyService;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 
-namespace ASC.Api.CRM
+namespace ASC.CRM.Api
 {
-    public partial class CRMController
+    public class UtilsController : BaseApiController
     {
+        public UtilsController(CRMSecurity cRMSecurity,
+                     DaoFactory daoFactory,
+                     MessageService messageService,
+                     SettingsManager settingsManager,
+                     CurrencyProvider currencyProvider,
+                     CurrencyInfoDtoHelper currencyInfoDtoHelper,
+                     CurrencyRateInfoDtoHelper currencyRateInfoDtoHelper,
+                     InvoiceSetting invoiceSetting,
+                     ImportFromCSVManager importFromCSVManager,
+                     OrganisationLogoManager organisationLogoManager,
+                     Global global,
+                     ImportFromCSV importFromCSV)
+            : base(daoFactory, cRMSecurity)
+        {
+            MessageService = messageService;
+            CurrencyInfoDtoHelper = currencyInfoDtoHelper;
+            CurrencyProvider = currencyProvider;
+            SettingsManager = settingsManager;
+            CurrencyRateInfoDtoHelper = currencyRateInfoDtoHelper;
+            InvoiceSetting = invoiceSetting;
+            ImportFromCSVManager = importFromCSVManager;
+            OrganisationLogoManager = organisationLogoManager;
+            Global = global;
+            ImportFromCSV = importFromCSV;
+        }
+
+        public ImportFromCSV ImportFromCSV { get; }
+        public Global Global { get; }
+        public OrganisationLogoManager OrganisationLogoManager { get; }
+        public ImportFromCSVManager ImportFromCSVManager { get; }
+        public InvoiceSetting InvoiceSetting { get; }
+        public CurrencyRateInfoDtoHelper CurrencyRateInfoDtoHelper { get; }
+        public SettingsManager SettingsManager { get; }
+        public CurrencyProvider CurrencyProvider { get; }
+        public CurrencyInfoDtoHelper CurrencyInfoDtoHelper { get; }
+        public MessageService MessageService { get; }
+      
         /// <summary>
         ///     Returns the list of all currencies currently available on the portal
         /// </summary>

@@ -33,27 +33,60 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
-using ASC.Web.CRM.Services.NotifyService;
-using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
 
-using Microsoft.AspNetCore.Http;
-
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
 using System.Text;
 using System.Text.RegularExpressions;
 
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
+using ASC.Api.CRM;
+using ASC.CRM.Core.Dao;
+using ASC.Web.CRM.Services.NotifyService;
+using ASC.Core;
+using ASC.Web.Core.Users;
 
-namespace ASC.Api.CRM
+namespace ASC.CRM.Api
 {
-    public partial class CRMController
+    public class RelationshipEventsController : BaseApiController
     {
+        public RelationshipEventsController(CRMSecurity cRMSecurity,
+                     DaoFactory daoFactory,
+                     ApiContext apiContext,
+                     MessageTarget messageTarget,
+                     MessageService messageService,
+                     ContactDtoHelper contactBaseDtoHelper,
+                     RelationshipEventDtoHelper relationshipEventDtoHelper,
+                     FileWrapperHelper fileWrapperHelper,
+                     ASC.Files.Core.Data.DaoFactory filesDaoFactory,
+                     FileUploader fileUploader,
+                     HistoryCategoryDtoHelper historyCategoryDtoHelper)
+            : base(daoFactory, cRMSecurity)
+        {
+            ApiContext = apiContext;
+            MessageTarget = messageTarget;
+            MessageService = messageService;
+            ContactDtoHelper = contactBaseDtoHelper;
+            RelationshipEventDtoHelper = relationshipEventDtoHelper;
+            FileWrapperHelper = fileWrapperHelper;
+            FilesDaoFactory = filesDaoFactory;
+            FileUploader = fileUploader;
+            HistoryCategoryDtoHelper = historyCategoryDtoHelper;
+        }
+
+        public HistoryCategoryDtoHelper HistoryCategoryDtoHelper { get; }
+        public FileUploader FileUploader { get; }
+        public ASC.Files.Core.Data.DaoFactory FilesDaoFactory { get; set; }
+        public FileWrapperHelper FileWrapperHelper { get; }
+        public RelationshipEventDtoHelper RelationshipEventDtoHelper { get; }
+        public ContactDtoHelper ContactDtoHelper { get; }
+        private ApiContext ApiContext { get; }
+        public MessageService MessageService { get; }
+        public MessageTarget MessageTarget { get; }
+    
         /// <summary>
         ///   Returns the list of all events matching the parameters specified in the request
         /// </summary>
@@ -696,43 +729,7 @@ namespace ASC.Api.CRM
             return result;
         }
 
-        private EntityDto ToEntityDto(EntityType entityType, int entityID)
-        {
-            if (entityID == 0) return null;
-
-            var result = new EntityDto
-            {
-                EntityId = entityID
-            };
-
-            switch (entityType)
-            {
-                case EntityType.Case:
-                    var caseObj = DaoFactory.GetCasesDao().GetByID(entityID);
-                    if (caseObj == null)
-                        return null;
-
-                    result.EntityType = "case";
-                    result.EntityTitle = caseObj.Title;
-
-                    break;
-                case EntityType.Opportunity:
-                    var dealObj = DaoFactory.GetDealDao().GetByID(entityID);
-
-                    if (dealObj == null)
-                        return null;
-
-                    result.EntityType = "opportunity";
-                    result.EntityTitle = dealObj.Title;
-
-                    break;
-                default:
-                    return null;
-            }
-
-            return result;
-        }
-
+  
 
         private MessageAction GetHistoryCreatedAction(EntityType entityType, int contactId)
         {

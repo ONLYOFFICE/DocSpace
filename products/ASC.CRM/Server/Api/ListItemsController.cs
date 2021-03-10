@@ -24,23 +24,43 @@
 */
 
 
-using ASC.CRM.ApiModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using ASC.Api.CRM;
 using ASC.Common.Web;
+using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-
-namespace ASC.Api.CRM
+namespace ASC.CRM.Api
 {
-    public partial class CRMController
+    public class ListItemsController : BaseApiController
     {
+        public ListItemsController(CRMSecurity cRMSecurity,
+                     DaoFactory daoFactory,
+                     MessageTarget messageTarget,
+                     MessageService messageService,                  
+                     TaskCategoryDtoHelper taskCategoryDtoHelper,
+                     HistoryCategoryDtoHelper historyCategoryDtoHelper)
+            : base(daoFactory, cRMSecurity)
+        {
+            MessageTarget = messageTarget;
+            MessageService = messageService;
+            TaskCategoryDtoHelper = taskCategoryDtoHelper;
+            HistoryCategoryDtoHelper = historyCategoryDtoHelper;
+        }
+
+        public MessageService MessageService { get; }
+        public MessageTarget MessageTarget { get; }
+        public TaskCategoryDtoHelper TaskCategoryDtoHelper { get; }
+        public HistoryCategoryDtoHelper HistoryCategoryDtoHelper { get; }
+
         /// <summary>
         ///   Creates an opportunity stage with the parameters (title, description, success probability, etc.) specified in the request
         /// </summary>
