@@ -38,6 +38,7 @@ module.exports = {
     "../progress-bar/*.stories.@(js|mdx)",
     "../radio-button/*.stories.@(js|mdx)",
     "../radio-button-group/*.stories.@(js|mdx)",
+    "../request-loader/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",
