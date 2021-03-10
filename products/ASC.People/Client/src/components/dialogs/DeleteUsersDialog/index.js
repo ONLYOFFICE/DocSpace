@@ -171,10 +171,12 @@ DeleteUsersDialog.propTypes = {
   removeUser: PropTypes.func.isRequired,
 };
 
-export default inject(({ peopleStore }) => ({
-  filter: peopleStore.filterStore.filter,
-  removeUser: peopleStore.usersStore.removeUser,
-  selectedUsers: peopleStore.selectionStore.selection,
-  setSelected: peopleStore.selectionStore.setSelected,
-  userIds: peopleStore.selectionStore.getUsersToRemoveIds,
-}))(observer(withRouter(DeleteUsersDialog)));
+export default withRouter(
+  inject(({ peopleStore }) => ({
+    filter: peopleStore.filterStore.filter,
+    removeUser: peopleStore.usersStore.removeUser,
+    selectedUsers: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
+    userIds: peopleStore.selectionStore.getUsersToRemoveIds,
+  }))(observer(DeleteUsersDialog))
+);

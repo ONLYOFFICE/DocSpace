@@ -61,6 +61,7 @@ const SectionHeaderContent = (props) => {
   const setFilterAndReset = useCallback(
     (filter) => {
       props.resetProfile();
+      history.goBack();
       setFilter(filter);
     },
     [props, setFilter]
@@ -103,15 +104,17 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-export default inject(({ auth, peopleStore }) => ({
-  settings: auth.settingsStore,
-  isEdit: peopleStore.editingFormStore.isEdit,
-  setIsVisibleDataLossDialog:
-    peopleStore.editingFormStore.setIsVisibleDataLossDialog,
-  filter: peopleStore.filterStore.filter,
-  setFilter: peopleStore.filterStore.setFilterParams,
-  toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
-  resetProfile: peopleStore.targetUserStore.resetTargetUser,
-  profile: peopleStore.targetUserStore.targetUser,
-  avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
-}))(observer(withRouter(SectionHeaderContent)));
+export default withRouter(
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
+    isEdit: peopleStore.editingFormStore.isEdit,
+    setIsVisibleDataLossDialog:
+      peopleStore.editingFormStore.setIsVisibleDataLossDialog,
+    filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
+    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+    resetProfile: peopleStore.targetUserStore.resetTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
+    avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
+  }))(observer(SectionHeaderContent))
+);

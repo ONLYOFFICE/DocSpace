@@ -170,13 +170,15 @@ ChangeUserTypeDialog.propTypes = {
   selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default inject(({ peopleStore }, ownProps) => ({
-  filter: peopleStore.filterStore.filter,
-  updateUserType: peopleStore.usersStore.updateUserType,
-  selectedUsers: peopleStore.selectionStore.selection,
-  setSelected: peopleStore.selectionStore.setSelected,
-  userIds:
-    ownProps.userType === EmployeeType.User
-      ? peopleStore.selectionStore.getUsersToMakeEmployeesIds
-      : peopleStore.selectionStore.getUsersToMakeGuestsIds,
-}))(observer(withRouter(ChangeUserTypeDialog)));
+export default withRouter(
+  inject(({ peopleStore }, ownProps) => ({
+    filter: peopleStore.filterStore.filter,
+    updateUserType: peopleStore.usersStore.updateUserType,
+    selectedUsers: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
+    userIds:
+      ownProps.userType === EmployeeType.User
+        ? peopleStore.selectionStore.getUsersToMakeEmployeesIds
+        : peopleStore.selectionStore.getUsersToMakeGuestsIds,
+  }))(observer(ChangeUserTypeDialog))
+);

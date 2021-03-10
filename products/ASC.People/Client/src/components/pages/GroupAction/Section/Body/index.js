@@ -231,8 +231,12 @@ class SectionBodyContent extends React.Component {
         );
       })
       .then(() => {
-        if (this.state.updateGroup) selectGroup(group.id);
-        else history.push(`${settings.homepage}/`);
+        if (this.state.updateGroup) {
+          history.goBack();
+          return selectGroup(group.id);
+        } else {
+          return history.push(`${settings.homepage}/`);
+        }
       })
       .catch((error) => {
         toastr.error(error);
@@ -241,9 +245,10 @@ class SectionBodyContent extends React.Component {
   };
 
   onCancel = () => {
-    const { resetGroup, filter, setFilter } = this.props;
+    const { resetGroup, filter, setFilter, history } = this.props;
 
     resetGroup();
+    history.goBack();
     setFilter(filter);
   };
 
@@ -493,25 +498,27 @@ const convertGroups = (groups) => {
     : [];
 };
 
-export default inject(({ auth, peopleStore }) => {
-  const groups = convertGroups(peopleStore.groupsStore.groups);
-  return {
-    settings: auth.settingsStore,
-    groupCaption: auth.settingsStore.customNames.groupCaption,
-    groupsCaption: auth.settingsStore.customNames.groupsCaption,
-    groupHeadCaption: auth.settingsStore.customNames.groupHeadCaption,
-    isLoaded: auth.isLoaded,
-    currentModuleName: auth.product.title,
-    me: auth.userStore.user,
-    groups,
-    filter: peopleStore.filterStore.filter,
-    setFilter: peopleStore.filterStore.setFilterParams,
-    selectGroup: peopleStore.selectedGroupStore.selectGroup,
-    updateGroup: peopleStore.groupsStore.updateGroup,
-    createGroup: peopleStore.groupsStore.createGroup,
-    group: peopleStore.selectedGroupStore.targetedGroup,
-    resetGroup: peopleStore.selectedGroupStore.resetGroup,
-    selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
-    setSelectGroup: peopleStore.selectedGroupStore.setSelectedGroup,
-  };
-})(observer(withRouter(withTranslation("GroupAction")(SectionBodyContent))));
+export default withRouter(
+  inject(({ auth, peopleStore }) => {
+    const groups = convertGroups(peopleStore.groupsStore.groups);
+    return {
+      settings: auth.settingsStore,
+      groupCaption: auth.settingsStore.customNames.groupCaption,
+      groupsCaption: auth.settingsStore.customNames.groupsCaption,
+      groupHeadCaption: auth.settingsStore.customNames.groupHeadCaption,
+      isLoaded: auth.isLoaded,
+      currentModuleName: auth.product.title,
+      me: auth.userStore.user,
+      groups,
+      filter: peopleStore.filterStore.filter,
+      setFilter: peopleStore.filterStore.setFilterParams,
+      selectGroup: peopleStore.selectedGroupStore.selectGroup,
+      updateGroup: peopleStore.groupsStore.updateGroup,
+      createGroup: peopleStore.groupsStore.createGroup,
+      group: peopleStore.selectedGroupStore.targetedGroup,
+      resetGroup: peopleStore.selectedGroupStore.resetGroup,
+      selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
+      setSelectGroup: peopleStore.selectedGroupStore.setSelectedGroup,
+    };
+  })(observer(withTranslation("GroupAction")(SectionBodyContent)))
+);

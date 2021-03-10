@@ -266,19 +266,26 @@ class UpdateUserForm extends React.Component {
 
   handleSubmit() {
     if (!this.validate()) return false;
-    const { setIsEditingForm } = this.props;
+
+    const {
+      setIsEditingForm,
+      updateProfile,
+      updateProfileInUsers,
+      history,
+      t,
+    } = this.props;
 
     this.setState({ isLoading: true });
 
-    this.props
-      .updateProfile(this.state.profile)
+    updateProfile(this.state.profile)
       .then((profile) => {
-        this.props.updateProfileInUsers(profile);
-        toastr.success(this.props.t("ChangesSavedSuccessfully"));
+        updateProfileInUsers(profile);
+        toastr.success(t("ChangesSavedSuccessfully"));
         setIsEditingForm(false);
-        this.props.history.push(
-          `${this.props.settings.homepage}/view/${profile.userName}`
-        );
+        // this.props.history.push(
+        //   `${this.props.settings.homepage}/view/${profile.userName}`
+        // );
+        history.goBack();
       })
       .catch((error) => {
         toastr.error(error);
@@ -898,23 +905,25 @@ class UpdateUserForm extends React.Component {
   }
 }
 
-export default inject(({ auth, peopleStore }) => ({
-  settings: auth.settingsStore,
-  isAdmin: auth.isAdmin,
-  groups: peopleStore.groupsStore.groups,
-  isEdit: peopleStore.editingFormStore.isEdit,
-  setIsVisibleDataLossDialog:
-    peopleStore.editingFormStore.setIsVisibleDataLossDialog,
-  setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
-  filter: peopleStore.filterStore.filter,
-  setFilter: peopleStore.filterStore.setFilterParams,
-  toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
-  profile: peopleStore.targetUserStore.targetUser,
-  fetchProfile: peopleStore.targetUserStore.getTargetUser,
-  avatarMax: peopleStore.avatarEditorStore.avatarMax,
-  setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
-  updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
-  updateProfile: peopleStore.targetUserStore.updateProfile,
-  getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
-  disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
-}))(observer(withRouter(withTranslation("ProfileAction")(UpdateUserForm))));
+export default withRouter(
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
+    isAdmin: auth.isAdmin,
+    groups: peopleStore.groupsStore.groups,
+    isEdit: peopleStore.editingFormStore.isEdit,
+    setIsVisibleDataLossDialog:
+      peopleStore.editingFormStore.setIsVisibleDataLossDialog,
+    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+    filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
+    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+    profile: peopleStore.targetUserStore.targetUser,
+    fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    avatarMax: peopleStore.avatarEditorStore.avatarMax,
+    setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
+    updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
+    updateProfile: peopleStore.targetUserStore.updateProfile,
+    getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+    disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
+  }))(observer(withTranslation("ProfileAction")(UpdateUserForm)))
+);

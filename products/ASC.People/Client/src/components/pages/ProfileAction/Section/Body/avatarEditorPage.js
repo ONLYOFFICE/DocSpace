@@ -310,13 +310,15 @@ class AvatarEditorPage extends React.PureComponent {
   }
 }
 
-export default inject(({ auth, peopleStore }) => ({
-  setDocumentTitle: auth.setDocumentTitle,
-  toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
-  fetchProfile: peopleStore.targetUserStore.getTargetUser,
-  profile: peopleStore.targetUserStore.targetUser,
-  avatarMax: peopleStore.avatarEditorStore.avatarMax,
-  setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
-  updateProfile: peopleStore.targetUserStore.updateProfile,
-  getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
-}))(observer(withRouter(withTranslation("ProfileAction")(AvatarEditorPage))));
+export default withRouter(
+  inject(({ auth, peopleStore }) => ({
+    setDocumentTitle: auth.setDocumentTitle,
+    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+    fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
+    avatarMax: peopleStore.avatarEditorStore.avatarMax,
+    setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
+    updateProfile: peopleStore.targetUserStore.updateProfile,
+    getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+  }))(observer(withTranslation("ProfileAction")(AvatarEditorPage)))
+);
