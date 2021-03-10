@@ -60,9 +60,13 @@ class RadioButtonGroup extends React.Component {
 }
 
 RadioButtonGroup.propTypes = {
+  /** Disabling all radiobutton in group */
   isDisabled: PropTypes.bool,
+  /** Used as HTML `name` property for `<input>` tag. Used for identification RadioButtonGroup */
   name: PropTypes.string.isRequired,
+  /** Allow you to handle clicking events on `<RadioButton />` component */
   onClick: PropTypes.func,
+  /** Array of objects, contains props for each `<RadioButton />` component */
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,
@@ -70,14 +74,24 @@ RadioButtonGroup.propTypes = {
       disabled: PropTypes.bool,
     })
   ).isRequired,
+  /** Value of the selected radiobutton */
   selected: PropTypes.string.isRequired,
+  /** Margin between radiobutton. If orientation `horizontal`, it is `margin-left`(apply for all radiobuttons,
+   * except first), if orientation `vertical`, it is `margin-bottom`(apply for all radiobuttons, except last) */
   spacing: PropTypes.string,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Position of radiobuttons  */
   orientation: PropTypes.oneOf(["horizontal", "vertical"]),
+  /** Width of RadioButtonGroup container */
   width: PropTypes.string,
+  /** Font size of link */
   fontSize: PropTypes.string,
+  /** Font weight of link  */
   fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 

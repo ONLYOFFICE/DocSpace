@@ -103,12 +103,19 @@ class RowContainer extends React.PureComponent {
 }
 
 RowContainer.propTypes = {
+  /** Height of one Row element. Required for scroll to work properly */
   itemHeight: PropTypes.number,
+  /** Allows you to set fixed block height for Row */
   manualHeight: PropTypes.string,
+  /** Child elements */
   children: PropTypes.any.isRequired,
+  /** Use react-window for efficiently rendering large lists */
   useReactWindow: PropTypes.bool,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

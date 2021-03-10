@@ -28,12 +28,19 @@ class SocialButton extends React.Component {
 }
 
 SocialButton.propTypes = {
+  /** Button text */
   label: PropTypes.string,
+  /** Icon of button */
   iconName: PropTypes.string,
+  /** Accepts tabindex prop*/
   tabIndex: PropTypes.number,
+  /** Tells when the button should present a disabled state */
   isDisabled: PropTypes.bool,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

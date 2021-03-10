@@ -107,20 +107,30 @@ class SearchInput extends React.Component {
 }
 
 SearchInput.propTypes = {
+  /** Used as HTML `id` property */
   id: PropTypes.string,
   name: PropTypes.string,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Supported size of the input fields. */
   size: PropTypes.oneOf(["base", "middle", "big", "huge"]),
+  /** Value of the input */
   value: PropTypes.string,
+  /** Indicates the input field has scale  */
   scale: PropTypes.bool,
+  /** Placeholder text for the input */
   placeholder: PropTypes.string,
+  /** Called with the new value. Required when input is not read only. Parent should pass it back as `value` */
   onChange: PropTypes.func,
   onClearSearch: PropTypes.func,
+  /** Indicates that the field cannot be used (e.g not authorized, or changes not saved) */
   isDisabled: PropTypes.bool,
   showClearButton: PropTypes.bool,
   refreshTimeout: PropTypes.number,
   autoRefresh: PropTypes.bool,
+  /** Child elements */
   children: PropTypes.any,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
