@@ -288,7 +288,6 @@ class FilesRowContent extends React.PureComponent {
       filter,
       parentFolder,
       setIsLoading,
-      onMediaFileClick,
       fetchFiles,
       isImage,
       isSound,
@@ -299,6 +298,7 @@ class FilesRowContent extends React.PureComponent {
       openDocEditor,
       expandedKeys,
       addExpandedKeys,
+      setMediaViewerData,
     } = this.props;
     const { id, fileExst, viewUrl, providerKey } = item;
 
@@ -323,7 +323,7 @@ class FilesRowContent extends React.PureComponent {
       }
 
       if (isImage || isSound || isVideo) {
-        onMediaFileClick(id);
+        setMediaViewerData({ visible: true, id });
         return;
       }
 
@@ -766,6 +766,7 @@ export default inject(
       treeFoldersStore,
       selectedFolderStore,
       filesActionsStore,
+      mediaViewerDataStore,
     },
     { item }
   ) => {
@@ -817,6 +818,8 @@ export default inject(
     const isImage = iconFormatsStore.isImage(item.fileExst);
     const isSound = iconFormatsStore.isSound(item.fileExst);
 
+    const { setMediaViewerData } = mediaViewerDataStore;
+
     return {
       isDesktop: isDesktopClient,
       homepage,
@@ -857,6 +860,7 @@ export default inject(
       addExpandedKeys,
       openDocEditor,
       editCompleteAction: filesActionsStore.editCompleteAction,
+      setMediaViewerData,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesRowContent))));

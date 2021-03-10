@@ -384,10 +384,9 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   onClickBack = () => {
-    const { filter, setFilter, history } = this.props;
-    const { location } = window;
+    const { filter, setFilter, history, settings } = this.props;
+    history.push(settings.homepage);
     setFilter(filter);
-    history.push(`${location.pathname}${location.search}`); //TODO: Maybe can do better
   };
 
   render() {
@@ -488,22 +487,23 @@ class SectionHeaderContent extends React.PureComponent {
   }
 }
 
-export default inject(({ auth, peopleStore }) => {
-  console.log(peopleStore.targetUserStore);
-  return {
-    settings: auth.settingsStore,
-    isAdmin: auth.isAdmin,
-    isLoaded: auth.isLoaded,
-    viewer: auth.userStore.user,
-    filter: peopleStore.filterStore.filter,
-    setFilter: peopleStore.filterStore.setFilterParams,
-    setFilterUrl: peopleStore.filterStore.setFilterUrl,
-    updateUserStatus: peopleStore.usersStore.updateUserStatus,
-    resetProfile: peopleStore.targetUserStore.resetTargetUser,
-    fetchProfile: peopleStore.targetUserStore.getTargetUser,
-    profile: peopleStore.targetUserStore.targetUser,
-    isMe: peopleStore.targetUserStore.isMe,
-    updateProfile: peopleStore.targetUserStore.updateProfile,
-    getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
-  };
-})(observer(withRouter(withTranslation("Profile")(SectionHeaderContent))));
+export default withRouter(
+  inject(({ auth, peopleStore }) => {
+    return {
+      settings: auth.settingsStore,
+      isAdmin: auth.isAdmin,
+      isLoaded: auth.isLoaded,
+      viewer: auth.userStore.user,
+      filter: peopleStore.filterStore.filter,
+      setFilter: peopleStore.filterStore.setFilterParams,
+      setFilterUrl: peopleStore.filterStore.setFilterUrl,
+      updateUserStatus: peopleStore.usersStore.updateUserStatus,
+      resetProfile: peopleStore.targetUserStore.resetTargetUser,
+      fetchProfile: peopleStore.targetUserStore.getTargetUser,
+      profile: peopleStore.targetUserStore.targetUser,
+      isMe: peopleStore.targetUserStore.isMe,
+      updateProfile: peopleStore.targetUserStore.updateProfile,
+      getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+    };
+  })(observer(withTranslation("Profile")(SectionHeaderContent)))
+);

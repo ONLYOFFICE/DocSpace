@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { ReactSVG } from "react-svg";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
@@ -81,6 +81,7 @@ const SimpleFilesRow = (props) => {
     homepage,
     isTabletView,
     actionId,
+    selectedFolderId,
 
     setSharingPanelVisible,
     setChangeOwnerPanelVisible,
@@ -103,6 +104,8 @@ const SimpleFilesRow = (props) => {
     selectRowAction,
     setThirdpartyInfo,
     setMediaViewerData,
+    setDragging,
+    startUpload,
   } = props;
 
   const {
@@ -111,7 +114,6 @@ const SimpleFilesRow = (props) => {
     fileExst,
     shared,
     access,
-    value,
     contextOptions,
     icon,
     providerKey,
@@ -121,6 +123,9 @@ const SimpleFilesRow = (props) => {
     canOpenPlayer,
     locked,
   } = item;
+
+  let value = fileExst ? `file_${id}` : `folder_${id}`;
+  value += draggable ? "_draggable" : "";
 
   const isThirdPartyFolder = providerKey && isRootFolder;
 
@@ -254,10 +259,10 @@ const SimpleFilesRow = (props) => {
       : deleteFolderAction(item.id, item.parentId, translations);
   };
 
-  const getFilesContextOptions = (options, item) => {
+  const getFilesContextOptions = useCallback(() => {
     const isSharable = item.access !== 1 && item.access !== 0;
 
-    return options.map((option) => {
+    return contextOptions.map((option) => {
       switch (option) {
         case "open":
           return {
@@ -439,6 +444,21 @@ const SimpleFilesRow = (props) => {
 
       return undefined;
     });
+  }, [contextOptions, item]);
+
+  const onDropZoneUpload = (files, uploadToFolder) => {
+    const folderId = uploadToFolder ? uploadToFolder : selectedFolderId;
+
+    dragging && setDragging(false);
+    startUpload(files, folderId, t);
+  };
+
+  const onDrop = (items) => {
+    if (!fileExst) {
+      onDropZoneUpload(items, item.id);
+    } else {
+      onDropZoneUpload(items, selectedFolderId);
+    }
   };
 
   // const onSelectItem = () => {
@@ -454,28 +474,25 @@ const SimpleFilesRow = (props) => {
   const contextOptionsProps =
     !isEdit && contextOptions && contextOptions.length > 0
       ? {
-          contextOptions: getFilesContextOptions(contextOptions, item),
+          contextOptions: getFilesContextOptions(),
         }
       : {};
 
   const checkedProps = isEdit || id <= 0 ? {} : { checked };
-
   const element = getItemIcon(isEdit || id <= 0);
+  const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
+  let className = isFolder && access < 2 && !isRecycleBin ? " dropable" : "";
+  if (draggable) className += " draggable";
 
   const sharedButton =
     !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
       ? null
       : getSharedButton(shared);
 
-  const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
-
-  let className = isFolder && access < 2 && !isRecycleBin ? " dropable" : "";
-  if (draggable) className += " draggable";
-
   return (
     <DragAndDrop
       className={className}
-      //onDrop={this.onDrop.bind(this, item)}
+      onDrop={onDrop}
       //onMouseDown={this.onMouseDown}
       dragging={dragging && isFolder && access < 2}
       {...contextOptionsProps}
@@ -514,11 +531,12 @@ export default inject(
       versionHistoryStore,
       filesActionsStore,
       mediaViewerDataStore,
+      uploadDataStore,
     },
     { item }
   ) => {
     const { homepage, isTabletView } = auth.settingsStore;
-    const { dragging, setIsLoading } = initFilesStore;
+    const { dragging, setDragging, setIsLoading } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
@@ -541,7 +559,7 @@ export default inject(
       fileActionStore,
     } = filesStore;
 
-    const { isRootFolder } = selectedFolderStore;
+    const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
     const { setIsVerHistoryPanel, setVerHistoryFileId } = versionHistoryStore;
     const { setAction } = fileActionStore;
 
@@ -551,7 +569,7 @@ export default inject(
 
     const isFolder = selectedItem ? false : item.fileExst ? false : true;
     const draggable =
-      selectedItem && isRecycleBinFolder && selectedItem.id !== id;
+      !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
 
     const {
       deleteFileAction,
@@ -566,6 +584,7 @@ export default inject(
     } = filesActionsStore;
 
     const { setMediaViewerData } = mediaViewerDataStore;
+    const { startUpload } = uploadDataStore;
 
     return {
       dragging,
@@ -581,6 +600,7 @@ export default inject(
       checked: selection.some((el) => el.id === item.id),
       isFolder,
       draggable,
+      isItemsSelected: !!selection.length,
       homepage,
       isTabletView,
       actionId: fileActionStore.id,
@@ -605,16 +625,9 @@ export default inject(
       selectRowAction,
       setThirdpartyInfo,
       setMediaViewerData,
+      selectedFolderId,
+      setDragging,
+      startUpload,
     };
   }
 )(withTranslation("Home")(observer(SimpleFilesRow)));
-
-// onDrop = (item, items, e) => {
-//   const { onDropZoneUpload, selectedFolderId } = this.props;
-
-//   if (!item.fileExst) {
-//     onDropZoneUpload(items, item.id);
-//   } else {
-//     onDropZoneUpload(items, selectedFolderId);
-//   }
-// };

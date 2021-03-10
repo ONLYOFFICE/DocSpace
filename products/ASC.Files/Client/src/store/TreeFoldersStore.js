@@ -15,9 +15,6 @@ class TreeFoldersStore {
       expandedKeys: observable,
 
       myFolderId: computed,
-      //shareFolderId: computed,
-      //favoritesFolderId: computed,
-      //recentFolderId: computed,
       commonFolderId: computed,
 
       myFolder: computed,

@@ -167,8 +167,8 @@ const StyledArrowIcon = styled.div`
 
   width: ${(props) =>
     props.needDisplay ? props.theme.comboBox.arrow.width : "0px"};
-  flex: 0 0
-    ${(props) => (props.needDisplay ? props.theme.comboBox.arrow.flex : "0px")};
+  flex: ${(props) =>
+    props.needDisplay ? props.theme.comboBox.arrow.flex : "0px"};
   margin-top: ${(props) =>
     props.noBorder
       ? props.theme.comboBox.arrow.marginTopWithBorder

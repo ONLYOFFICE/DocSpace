@@ -16,6 +16,7 @@ import {
   moveToFolder,
   finalizeVersion,
   lockFile,
+  downloadFiles,
 } from "@appserver/common/api/files";
 import { FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
@@ -162,6 +163,48 @@ class FilesActionStore {
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           return (window.location.href = url);
         }
+      })
+      .catch((err) => {
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      });
+  };
+
+  downloadAction = (label) => {
+    const { selection } = filesStore;
+    const fileIds = [];
+    const folderIds = [];
+    const items = [];
+
+    if (selection.length === 1) {
+      return window.open(selection[0].viewUrl, "_blank");
+    }
+
+    for (let item of selection) {
+      if (item.fileExst) {
+        fileIds.push(item.id);
+        items.push({ id: item.id, fileExst: item.fileExst });
+      } else {
+        folderIds.push(item.id);
+        items.push({ id: item.id });
+      }
+    }
+
+    setSecondaryProgressBarData({
+      icon: "file",
+      visible: true,
+      percent: 0,
+      label,
+      alert: false,
+    });
+
+    downloadFiles(fileIds, folderIds)
+      .then((res) => {
+        this.getDownloadProgress(res[0], label);
       })
       .catch((err) => {
         setSecondaryProgressBarData({
@@ -387,10 +430,7 @@ class FilesActionStore {
 
     finalizeVersion(id, 0, false)
       .then(() => {
-        return fetchFiles(
-          selectedFolderStore.id,
-          filesStore.filter
-        )//.catch((err) => toastr.error(err));
+        return fetchFiles(selectedFolderStore.id, filesStore.filter); //.catch((err) => toastr.error(err));
       })
       .finally(() => setIsLoading(false));
   };

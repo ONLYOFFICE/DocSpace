@@ -175,12 +175,14 @@ ChangeUserStatusDialog.propTypes = {
   selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default inject(({ peopleStore }, ownProps) => ({
-  updateUserStatus: peopleStore.usersStore.updateUserStatus,
-  selectedUsers: peopleStore.selectionStore.selection,
-  setSelected: peopleStore.selectionStore.setSelected,
-  userIds:
-    ownProps.userStatus === EmployeeStatus.Active
-      ? peopleStore.selectionStore.getUsersToActivateIds
-      : peopleStore.selectionStore.getUsersToDisableIds,
-}))(observer(withRouter(ChangeUserStatusDialog)));
+export default withRouter(
+  inject(({ peopleStore }, ownProps) => ({
+    updateUserStatus: peopleStore.usersStore.updateUserStatus,
+    selectedUsers: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
+    userIds:
+      ownProps.userStatus === EmployeeStatus.Active
+        ? peopleStore.selectionStore.getUsersToActivateIds
+        : peopleStore.selectionStore.getUsersToDisableIds,
+  }))(observer(ChangeUserStatusDialog))
+);

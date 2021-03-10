@@ -23,9 +23,9 @@ import {
 } from "./Section";
 
 import { ConvertDialog } from "../../dialogs";
-import { ChangeOwnerPanel } from "../../panels";
 import { getFilterByLocation } from "../../../helpers/converters";
 import Panels from "./Panels";
+import MediaViewer from "./MediaViewer";
 import { observer, inject } from "mobx-react";
 
 class PureHome extends React.Component {
@@ -228,6 +228,7 @@ class PureHome extends React.Component {
         )}
 
         <Panels />
+        <MediaViewer />
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -273,11 +274,7 @@ class PureHome extends React.Component {
           </PageLayout.SectionFilter>
 
           <PageLayout.SectionBody>
-            <SectionBodyContent
-              isMobile={isMobile}
-              onChange={this.onRowChange}
-              onDropZoneUpload={this.onDrop}
-            />
+            <SectionBodyContent />
           </PageLayout.SectionBody>
 
           <PageLayout.SectionPaging>
@@ -318,7 +315,6 @@ export default inject(
       filter,
       fileActionStore,
       selection,
-
       setSelections,
     } = filesStore;
 

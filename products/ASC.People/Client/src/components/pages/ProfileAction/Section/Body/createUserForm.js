@@ -311,7 +311,8 @@ class CreateUserForm extends React.Component {
   };
 
   onCancel = () => {
-    const { filter, setFilter } = this.props;
+    const { filter, setFilter, history } = this.props;
+    history.goBack();
     setFilter(filter);
   };
 
@@ -639,22 +640,24 @@ class CreateUserForm extends React.Component {
   }
 }
 
-export default inject(({ auth, peopleStore }) => ({
-  settings: auth.settingsStore,
-  isEdit: peopleStore.editingFormStore.isEdit,
-  groups: peopleStore.groupsStore.groups,
-  setIsVisibleDataLossDialog:
-    peopleStore.editingFormStore.setIsVisibleDataLossDialog,
-  setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
-  filter: peopleStore.filterStore.filter,
-  setFilter: peopleStore.filterStore.setFilterParams,
-  toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
-  resetProfile: peopleStore.targetUserStore.resetTargetUser,
-  createProfile: peopleStore.usersStore.createUser,
-  createdAvatar: peopleStore.avatarEditorStore.createdAvatar,
-  setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
-  croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
-  setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
-  updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
-  updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
-}))(observer(withRouter(withTranslation("ProfileAction")(CreateUserForm))));
+export default withRouter(
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
+    isEdit: peopleStore.editingFormStore.isEdit,
+    groups: peopleStore.groupsStore.groups,
+    setIsVisibleDataLossDialog:
+      peopleStore.editingFormStore.setIsVisibleDataLossDialog,
+    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+    filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
+    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+    resetProfile: peopleStore.targetUserStore.resetTargetUser,
+    createProfile: peopleStore.usersStore.createUser,
+    createdAvatar: peopleStore.avatarEditorStore.createdAvatar,
+    setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
+    croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
+    setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
+    updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
+    updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
+  }))(observer(withTranslation("ProfileAction")(CreateUserForm)))
+);

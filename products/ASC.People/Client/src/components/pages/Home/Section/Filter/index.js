@@ -254,20 +254,18 @@ class SectionFilterContent extends React.Component {
   }
 }
 
-export default inject(({ auth, peopleStore }) => {
-  return {
-    customNames: auth.settingsStore.customNames,
-    isLoaded: auth.isLoaded,
-    isAdmin: auth.isAdmin,
-    language: auth.language,
-    user: auth.userStore.user,
-    groups: peopleStore.groupsStore.groups,
-    fetchPeople: peopleStore.usersStore.getUsersList,
-    filter: peopleStore.filterStore.filter,
-    setIsLoading: peopleStore.setIsLoading,
-  };
-})(
-  observer(
-    withRouter(withLayoutSize(withTranslation("Home")(SectionFilterContent)))
-  )
+export default withRouter(
+  inject(({ auth, peopleStore }) => {
+    return {
+      customNames: auth.settingsStore.customNames,
+      isLoaded: auth.isLoaded,
+      isAdmin: auth.isAdmin,
+      language: auth.language,
+      user: auth.userStore.user,
+      groups: peopleStore.groupsStore.groups,
+      fetchPeople: peopleStore.usersStore.getUsersList,
+      filter: peopleStore.filterStore.filter,
+      setIsLoading: peopleStore.setIsLoading,
+    };
+  })(observer(withLayoutSize(withTranslation("Home")(SectionFilterContent))))
 );

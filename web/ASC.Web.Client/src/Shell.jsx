@@ -12,7 +12,9 @@ import Layout from "./components/Layout";
 import ScrollToTop from "./components/Layout/ScrollToTop";
 import history from "@appserver/common/history";
 import toastr from "studio/toastr";
-import RectangleLoader from "@appserver/common/components/Loaders/RectangleLoader";
+import Loader from "@appserver/components/loader";
+import Grid from "@appserver/components/grid";
+import PageLayout from "@appserver/common/components/PageLayout";
 import { updateTempContent } from "@appserver/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@appserver/components/theme-provider";
@@ -33,14 +35,12 @@ const About = React.lazy(() => import("./components/pages/About"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
 
-const LoadingBody = styled.div`
-  width: 100vw;
-  padding: 20px;
-`;
 const LoadingShell = () => (
-  <LoadingBody>
-    <RectangleLoader height="100%" width="100%" />
-  </LoadingBody>
+  <PageLayout>
+    <PageLayout.SectionBody>
+      <Loader className="pageLoader" type="rombs" size="40px" />
+    </PageLayout.SectionBody>
+  </PageLayout>
 );
 
 const SettingsRoute = (props) => (

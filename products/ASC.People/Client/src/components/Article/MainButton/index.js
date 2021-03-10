@@ -120,11 +120,13 @@ const ArticleMainButtonContent = withTranslation("Article")(
   PureArticleMainButtonContent
 );
 
-export default inject(({ auth }) => ({
-  isAdmin: auth.isAdmin,
-  homepage: auth.settingsStore.homepage || config.homepage,
-  userCaption: auth.settingsStore.customNames.userCaption,
-  guestCaption: auth.settingsStore.customNames.guestCaption,
-  groupCaption: auth.settingsStore.customNames.groupCaption,
-  isLoaded: auth.isLoaded,
-}))(observer(withRouter(ArticleMainButtonContent)));
+export default withRouter(
+  inject(({ auth }) => ({
+    isAdmin: auth.isAdmin,
+    homepage: auth.settingsStore.homepage || config.homepage,
+    userCaption: auth.settingsStore.customNames.userCaption,
+    guestCaption: auth.settingsStore.customNames.guestCaption,
+    groupCaption: auth.settingsStore.customNames.groupCaption,
+    isLoaded: auth.isLoaded,
+  }))(observer(ArticleMainButtonContent))
+);

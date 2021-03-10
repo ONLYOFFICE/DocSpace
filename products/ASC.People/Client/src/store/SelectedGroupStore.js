@@ -23,11 +23,13 @@ class SelectedGroupStore {
     const { filter } = this.peopleStore.filterStore;
     const { clearSelection } = this.peopleStore.selectionStore;
     const { getUsersList } = this.peopleStore.usersStore;
-    let newFilter = filter.clone();
+    const { setIsLoading } = this.peopleStore;
 
+    setIsLoading(true);
+    let newFilter = filter.clone();
     newFilter.group = groupId;
     clearSelection();
-    getUsersList(newFilter);
+    getUsersList(newFilter).finally(() => setIsLoading(false));
   };
 
   setSelectedGroup = (groupId) => {

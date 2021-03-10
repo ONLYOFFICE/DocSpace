@@ -2,12 +2,12 @@ import React from "react";
 import Row from "@appserver/components/row";
 import Avatar from "@appserver/components/avatar";
 import UserContent from "./userContent";
-import history from "@appserver/common/history";
 import { inject, observer } from "mobx-react";
 import { Trans, useTranslation } from "react-i18next";
 import toastr from "studio/toastr";
 import { EmployeeStatus } from "@appserver/common/constants";
 import { resendUserInvites } from "@appserver/common/api/people"; //TODO: Move to store action
+import { withRouter } from "react-router";
 
 const SimpleUserRow = ({
   person,
@@ -26,6 +26,7 @@ const SimpleUserRow = ({
   setDialogData,
   closeDialogs,
   updateUserStatus,
+  history,
 }) => {
   const { t } = useTranslation("Home");
   const isRefetchPeople = true;
@@ -43,13 +44,8 @@ const SimpleUserRow = ({
     currentUserId,
   } = person;
 
-  const onContentRowSelect = (checked, user) => {
-    if (checked) {
-      selectUser(user);
-    } else {
-      deselectUser(user);
-    }
-  };
+  const onContentRowSelect = (checked, user) =>
+    checked ? selectUser(user) : deselectUser(user);
 
   const onEmailSentClick = () => {
     window.open("mailto:" + email);
@@ -145,7 +141,7 @@ const SimpleUserRow = ({
   };
 
   const getUserContextOptions = (options, id) => {
-    return options.map((option) => {
+    const contextMenu = options.map((option) => {
       switch (option) {
         case "send-email":
           return {
@@ -239,6 +235,8 @@ const SimpleUserRow = ({
 
       return undefined;
     });
+
+    return contextMenu;
   };
 
   const showContextMenu = options && options.length > 0;
@@ -279,33 +277,29 @@ const SimpleUserRow = ({
   );
 };
 
-export default inject(({ auth, peopleStore }, { person }) => {
-  return {
-    homepage: auth.settingsStore.homepage,
-    isAdmin: auth.isAdmin,
-    currentUserId: auth.userStore.user.id,
-    checked: peopleStore.selectionStore.selection.some(
-      (el) => el.id === person.id
-    ),
-    selectUser: peopleStore.selectionStore.selectUser,
-    deselectUser: peopleStore.selectionStore.deselectUser,
-    selectGroup: peopleStore.selectedGroupStore.selectGroup,
-
-    setChangeEmailDialogVisible:
-      peopleStore.dialogStore.setChangeEmailDialogVisible,
-
-    setChangePasswordDialogVisible:
-      peopleStore.dialogStore.setChangePasswordDialogVisible,
-
-    setDeleteSelfProfileDialogVisible:
-      peopleStore.dialogStore.setDeleteSelfProfileDialogVisible,
-
-    setDeleteProfileDialogVisible:
-      peopleStore.dialogStore.setDeleteProfileDialogVisible,
-
-    setDialogData: peopleStore.dialogStore.setDialogData,
-    closeDialogs: peopleStore.dialogStore.closeDialogs,
-
-    updateUserStatus: peopleStore.usersStore.updateUserStatus,
-  };
-})(observer(SimpleUserRow));
+export default withRouter(
+  inject(({ auth, peopleStore }, { person }) => {
+    return {
+      homepage: auth.settingsStore.homepage,
+      isAdmin: auth.isAdmin,
+      currentUserId: auth.userStore.user.id,
+      checked: peopleStore.selectionStore.selection.some(
+        (el) => el.id === person.id
+      ),
+      selectUser: peopleStore.selectionStore.selectUser,
+      deselectUser: peopleStore.selectionStore.deselectUser,
+      selectGroup: peopleStore.selectedGroupStore.selectGroup,
+      setChangeEmailDialogVisible:
+        peopleStore.dialogStore.setChangeEmailDialogVisible,
+      setChangePasswordDialogVisible:
+        peopleStore.dialogStore.setChangePasswordDialogVisible,
+      setDeleteSelfProfileDialogVisible:
+        peopleStore.dialogStore.setDeleteSelfProfileDialogVisible,
+      setDeleteProfileDialogVisible:
+        peopleStore.dialogStore.setDeleteProfileDialogVisible,
+      setDialogData: peopleStore.dialogStore.setDialogData,
+      closeDialogs: peopleStore.dialogStore.closeDialogs,
+      updateUserStatus: peopleStore.usersStore.updateUserStatus,
+    };
+  })(observer(SimpleUserRow))
+);

@@ -21,6 +21,8 @@ const SectionUserBody = ({ avatarEditorIsOpen, match }) => {
   );
 };
 
-export default inject(({ peopleStore }) => ({
-  avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
-}))(withRouter(observer(SectionUserBody)));
+export default withRouter(
+  inject(({ peopleStore }) => ({
+    avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
+  }))(observer(SectionUserBody))
+);

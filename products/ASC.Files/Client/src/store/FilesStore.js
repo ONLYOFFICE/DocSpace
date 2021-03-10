@@ -636,9 +636,6 @@ class FilesStore {
 
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
-      //let value = fileExst ? `file_${id}` : `folder_${id}`;
-      //value += draggable ? "_draggable" : "";
-
       //const isCanWebEdit = canWebEdit(item.fileExst);
       const icon = getIcon(24, fileExst, providerKey);
 
@@ -669,14 +666,12 @@ class FilesStore {
         title,
         updated,
         updatedBy,
-        //value,
         version,
         versionGroup,
         viewUrl,
         webUrl,
         providerKey,
-        //draggable,
-        //canOpenPlayer,
+        canOpenPlayer,
         //canWebEdit: isCanWebEdit,
         //canShare,
       };
@@ -774,6 +769,26 @@ class FilesStore {
     return this.selection.find((el) => el.title).title;
   }
 
+  get playlist() {
+    const playlist = [];
+    let id = 0;
+
+    if (this.filesList) {
+      this.filesList.forEach((file) => {
+        if (file.canOpenPlayer) {
+          playlist.push({
+            id: id,
+            fileId: file.id,
+            src: file.viewUrl,
+            title: file.title,
+          });
+          id++;
+        }
+      });
+    }
+    return playlist;
+  }
+
   getOptions = (selection, externalAccess = false) => {
     const webEdit = selection.find((x) => canWebEdit(x.fileExst));
     const webComment = selection.find((x) => canWebComment(x.fileExst));
@@ -816,6 +831,7 @@ class FilesStore {
   };
 
   setSelections = (items) => {
+    if (!items.length) return;
     if (this.selection.length > items.length) {
       //Delete selection
       const newSelection = [];

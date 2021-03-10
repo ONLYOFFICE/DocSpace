@@ -109,11 +109,13 @@ Profile.propTypes = {
   language: PropTypes.string,
 };
 
-export default inject(({ auth, peopleStore }) => ({
-  setDocumentTitle: auth.setDocumentTitle,
-  isAdmin: auth.isAdmin,
-  language: auth.language,
-  resetProfile: peopleStore.targetUserStore.resetTargetUser,
-  fetchProfile: peopleStore.targetUserStore.getTargetUser,
-  profile: peopleStore.targetUserStore.targetUser,
-}))(observer(withRouter(withTranslation("Profile")(Profile))));
+export default withRouter(
+  inject(({ auth, peopleStore }) => ({
+    setDocumentTitle: auth.setDocumentTitle,
+    isAdmin: auth.isAdmin,
+    language: auth.language,
+    resetProfile: peopleStore.targetUserStore.resetTargetUser,
+    fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
+  }))(observer(withTranslation("Profile")(Profile)))
+);
