@@ -7,6 +7,7 @@ import {
   StyledAlertIcon,
   StyledCircleWrap,
   StyledCircle,
+  IconBox,
 } from "./StyledFloatingButton";
 
 import ButtonUploadIcon from "../../../../public/images/button.upload.react.svg";
@@ -40,18 +41,19 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
         </div>
 
         <StyledFloatingButton>
-          {icon == "upload" ? (
-            <ButtonUploadIcon />
-          ) : icon == "file" ? (
-            <ButtonFileIcon />
-          ) : icon == "trash" ? (
-            <ButtonTrashIcon />
-          ) : icon == "move" ? (
-            <ButtonMoveIcon />
-          ) : (
-            <ButtonDuplicateIcon />
-          )}
-
+          <IconBox>
+            {icon == "upload" ? (
+              <ButtonUploadIcon />
+            ) : icon == "file" ? (
+              <ButtonFileIcon />
+            ) : icon == "trash" ? (
+              <ButtonTrashIcon />
+            ) : icon == "move" ? (
+              <ButtonMoveIcon />
+            ) : (
+              <ButtonDuplicateIcon />
+            )}
+          </IconBox>
           <StyledAlertIcon>
             {alert ? <StyledButtonAlertIcon size="medium" /> : <></>}
           </StyledAlertIcon>

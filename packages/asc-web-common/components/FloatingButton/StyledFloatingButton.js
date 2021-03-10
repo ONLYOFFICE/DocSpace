@@ -55,10 +55,13 @@ const StyledFloatingButton = styled.div`
   border-radius: 50%;
   background: #fff;
   box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-  line-height: 46px;
   text-align: center;
   margin: 3px;
   position: absolute;
+`;
+
+const IconBox = styled.div`
+  padding-top: 12px;
 `;
 
 const StyledAlertIcon = styled.div`
@@ -74,4 +77,5 @@ export {
   StyledCircle,
   StyledFloatingButton,
   StyledAlertIcon,
+  IconBox,
 };
