@@ -46,6 +46,8 @@ module.exports = {
     "../scrollbar/*.stories.@(js|mdx)",
     "../search-input/*.stories.@(js|mdx)",
     "../selected-item/*.stories.@(js|mdx)",
+    "../selector-add-button/*.stories.@(js|mdx)",
+    "../social-button/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",
