@@ -43,6 +43,7 @@ module.exports = {
     "../row-container/*.stories.@(js|mdx)",
     "../row-content/*.stories.@(js|mdx)",
     "../save-cancel-buttons/*.stories.@(js|mdx)",
+    "../scrollbar/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",
