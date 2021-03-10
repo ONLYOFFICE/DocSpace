@@ -275,21 +275,21 @@ class CreateAvatarEditorPage extends React.PureComponent {
   }
 }
 
-export default inject(({ auth, peopleStore }) => ({
-  setDocumentTitle: auth.setDocumentTitle,
-  setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
-  toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
-  resetProfile: peopleStore.targetUserStore.resetTargetUser,
-  fetchProfile: peopleStore.targetUserStore.getTargetUser,
-  profile: peopleStore.targetUserStore.targetUser,
-  setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
-  setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
-  updateProfile: peopleStore.targetUserStore.updateProfile,
-  updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
-  getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
-  createdAvatar: peopleStore.avatarEditorStore.createdAvatar,
-  avatarMax: peopleStore.avatarEditorStore.avatarMax,
-  croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
-}))(
-  observer(withRouter(withTranslation("ProfileAction")(CreateAvatarEditorPage)))
+export default withRouter(
+  inject(({ auth, peopleStore }) => ({
+    setDocumentTitle: auth.setDocumentTitle,
+    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+    resetProfile: peopleStore.targetUserStore.resetTargetUser,
+    fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
+    setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
+    setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
+    updateProfile: peopleStore.targetUserStore.updateProfile,
+    updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
+    getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+    createdAvatar: peopleStore.avatarEditorStore.createdAvatar,
+    avatarMax: peopleStore.avatarEditorStore.avatarMax,
+    croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
+  }))(observer(withTranslation("ProfileAction")(CreateAvatarEditorPage)))
 );

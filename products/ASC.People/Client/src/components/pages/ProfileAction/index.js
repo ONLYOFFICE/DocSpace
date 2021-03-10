@@ -116,10 +116,12 @@ ProfileAction.propTypes = {
   match: PropTypes.object.isRequired,
 };
 
-export default inject(({ auth, peopleStore }) => ({
-  setDocumentTitle: auth.setDocumentTitle,
-  isEdit: peopleStore.editingFormStore.isEdit,
-  setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
-  fetchProfile: peopleStore.targetUserStore.getTargetUser,
-  profile: peopleStore.targetUserStore.targetUser,
-}))(withTranslation("ProfileAction")(withRouter(observer(ProfileAction))));
+export default withRouter(
+  inject(({ auth, peopleStore }) => ({
+    setDocumentTitle: auth.setDocumentTitle,
+    isEdit: peopleStore.editingFormStore.isEdit,
+    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+    fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
+  }))(withTranslation("ProfileAction")(observer(ProfileAction)))
+);

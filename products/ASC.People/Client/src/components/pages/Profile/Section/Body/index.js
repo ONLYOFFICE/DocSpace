@@ -192,15 +192,17 @@ class SectionBodyContent extends React.PureComponent {
   }
 }
 
-export default inject(({ auth, peopleStore }) => ({
-  settings: auth.settingsStore,
-  homepage: auth.settingsStore.homepage,
-  cultures: auth.settingsStore.cultures,
-  culture: auth.settingsStore.culture,
-  getPortalCultures: auth.settingsStore.getPortalCultures,
-  isAdmin: auth.isAdmin,
-  profile: peopleStore.targetUserStore.targetUser,
-  viewer: auth.userStore.user,
-  isTabletView: auth.settingsStore.isTabletView,
-  isSelf: peopleStore.targetUserStore.isMe,
-}))(observer(withRouter(withTranslation("Profile")(SectionBodyContent))));
+export default withRouter(
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
+    homepage: auth.settingsStore.homepage,
+    cultures: auth.settingsStore.cultures,
+    culture: auth.settingsStore.culture,
+    getPortalCultures: auth.settingsStore.getPortalCultures,
+    isAdmin: auth.isAdmin,
+    profile: peopleStore.targetUserStore.targetUser,
+    viewer: auth.userStore.user,
+    isTabletView: auth.settingsStore.isTabletView,
+    isSelf: peopleStore.targetUserStore.isMe,
+  }))(observer(withTranslation("Profile")(SectionBodyContent)))
+);

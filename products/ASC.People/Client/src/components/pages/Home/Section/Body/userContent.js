@@ -177,6 +177,8 @@ const UserContent = ({
   );
 };
 
-export default inject(({ auth }) => ({
-  homepage: auth.settingsStore.homepage,
-}))(observer(withRouter(UserContent)));
+export default withRouter(
+  inject(({ auth }) => ({
+    homepage: auth.settingsStore.homepage,
+  }))(observer(UserContent))
+);

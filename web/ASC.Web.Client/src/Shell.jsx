@@ -38,9 +38,7 @@ const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
 const LoadingShell = () => (
   <PageLayout>
     <PageLayout.SectionBody>
-      <Box displayProp="flex" alignItems="center" justifyContent="center">
-        <Loader type="rombs" size="40px" />
-      </Box>
+      <Loader className="pageLoader" type="rombs" size="40px" />
     </PageLayout.SectionBody>
   </PageLayout>
 );

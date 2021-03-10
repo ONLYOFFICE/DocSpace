@@ -89,29 +89,37 @@ const Paging = (props) => {
 };
 
 Paging.propTypes = {
+  /** Label for previous button */
   previousLabel: PropTypes.string,
+  /** Label for next button */
   nextLabel: PropTypes.string,
-
+  /** Action for previous button */
   previousAction: PropTypes.func,
+  /** Action for next button */
   nextAction: PropTypes.func,
-
+  /** Set previous button disabled */
   disablePrevious: PropTypes.bool,
+  /** Set next button disabled */
   disableNext: PropTypes.bool,
   disableHover: PropTypes.bool,
-
+  /** Initial value for pageItems */
   selectedPageItem: PropTypes.object,
+  /** Initial value for countItems */
   selectedCountItem: PropTypes.object,
 
   onSelectPage: PropTypes.func,
   onSelectCount: PropTypes.func,
-
+  /** Paging combo box items */
   pageItems: PropTypes.array,
+  /** Items per page combo box items */
   countItems: PropTypes.array,
-
+  /** Indicates opening direction of combo box */
   openDirection: PropTypes.oneOf(["bottom", "top"]),
-
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
   showCountItem: PropTypes.bool.isRequired,

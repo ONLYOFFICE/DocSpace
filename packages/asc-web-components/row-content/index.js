@@ -113,12 +113,18 @@ const RowContent = (props) => {
 };
 
 RowContent.propTypes = {
+  /** Components displayed inside RowContent */
   children: PropTypes.node.isRequired,
+  /** Accepts class */
   className: PropTypes.string,
+  /** If you do not need SideElements */
   disableSideInfo: PropTypes.bool,
+  /** Accepts id */
   id: PropTypes.string,
   onClick: PropTypes.func,
+  /** Need for change side information color */
   sideColor: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   isMobile: PropTypes.bool,

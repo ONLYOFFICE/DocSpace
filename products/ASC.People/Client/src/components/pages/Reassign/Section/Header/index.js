@@ -54,6 +54,8 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-export default inject(({ auth }) => ({
-  settings: auth.settingsStore,
-}))(observer(withRouter(SectionHeaderContent)));
+export default withRouter(
+  inject(({ auth }) => ({
+    settings: auth.settingsStore,
+  }))(observer(SectionHeaderContent))
+);

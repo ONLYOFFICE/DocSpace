@@ -35,9 +35,10 @@ class SectionHeaderContent extends React.Component {
     };
   }
   onClickBack = () => {
-    const { filter, resetGroup, setFilter } = this.props;
+    const { filter, resetGroup, setFilter, history } = this.props;
 
     resetGroup();
+    history.goBack();
     setFilter(filter);
   };
 
@@ -71,10 +72,12 @@ SectionHeaderContent.defaultProps = {
   group: null,
 };
 
-export default inject(({ auth, peopleStore }) => ({
-  groupCaption: auth.settingsStore.customNames.groupCaption,
-  filter: peopleStore.filterStore.filter,
-  setFilter: peopleStore.filterStore.setFilterParams,
-  group: peopleStore.selectedGroupStore.targetedGroup,
-  resetGroup: peopleStore.selectedGroupStore.resetGroup,
-}))(observer(withRouter(withTranslation("GroupAction")(SectionHeaderContent))));
+export default withRouter(
+  inject(({ auth, peopleStore }) => ({
+    groupCaption: auth.settingsStore.customNames.groupCaption,
+    filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
+    group: peopleStore.selectedGroupStore.targetedGroup,
+    resetGroup: peopleStore.selectedGroupStore.resetGroup,
+  }))(observer(withTranslation("GroupAction")(SectionHeaderContent)))
+);
