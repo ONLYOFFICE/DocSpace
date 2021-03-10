@@ -3,10 +3,14 @@ const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
+const TerserPlugin = require("terser-webpack-plugin");
+//const CompressionPlugin = require("compression-webpack-plugin");
+
 const path = require("path");
 const pkg = require("./package.json");
 const deps = pkg.dependencies;
 const homepage = pkg.homepage;
+const title = pkg.title;
 
 var config = {
   mode: "development",
@@ -15,7 +19,7 @@ var config = {
   devServer: {
     publicPath: homepage,
 
-    contentBase: [path.join(__dirname, "public")],
+    contentBase: [path.join(__dirname, "dist")],
     contentBasePublicPath: homepage,
     port: 5002,
     historyApiFallback: {
@@ -41,9 +45,11 @@ var config = {
   },
 
   output: {
-    publicPath: "auto", //homepage
-    chunkFilename: "[id].[contenthash].js",
+    publicPath: "auto",
+    chunkFilename: "js/[id].[contenthash].js",
+    assetModuleFilename: "assets/[hash][ext][query]",
     path: path.resolve(process.cwd(), "dist"),
+    filename: "[name].[contenthash].bundle.js",
   },
 
   resolve: {
@@ -55,6 +61,10 @@ var config = {
 
   module: {
     rules: [
+      {
+        test: /\.(png|jpe?g|gif|ico|svg)$/i,
+        type: "asset/resource",
+      },
       {
         test: /\.m?js/,
         type: "javascript/auto",
@@ -140,6 +150,7 @@ var config = {
     new HtmlWebpackPlugin({
       template: "./public/index.html",
       publicPath: homepage,
+      title: title,
       //base: `${homepage}/`,
     }),
     new CopyPlugin({
@@ -160,6 +171,21 @@ var config = {
 module.exports = (env, argv) => {
   if (argv.mode === "production") {
     config.mode = "production";
+    config.optimization = {
+      splitChunks: { chunks: "all" },
+      minimize: true,
+      minimizer: [new TerserPlugin()],
+    };
+    // config.plugins.push(
+    //   new CompressionPlugin({
+    //     filename: "[path][base].gz[query]",
+    //     algorithm: "gzip",
+    //     test: /\.js(\?.*)?$/i,
+    //     threshold: 10240,
+    //     minRatio: 0.8,
+    //     deleteOriginalAssets: true,
+    //   })
+    // );
   } else {
     config.devtool = "cheap-module-source-map";
   }
