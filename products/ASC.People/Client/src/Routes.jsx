@@ -1,5 +1,4 @@
 import React from "react";
-..import { connect } from "react-redux";
 import { Router, Switch, Redirect } from "react-router-dom";
 import history from "@appserver/common/history";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
@@ -11,8 +10,8 @@ import Home from "./components/pages/Home";
 //import GroupAction from "./components/pages/GroupAction";
 //import Reassign from "./components/pages/Reassign";
 
-import { getFilterByLocation } from "./helpers/converters";
-import { fetchGroups, fetchPeople } from "./store/people/actions";
+// import { getFilterByLocation } from "./helpers/converters";
+// import { fetchGroups, fetchPeople } from "./store/people/actions";
 
 import config from "../package.json";
 const { homepage } = config;
