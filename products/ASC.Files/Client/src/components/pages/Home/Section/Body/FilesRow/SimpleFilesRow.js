@@ -9,7 +9,7 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
 import history from "@appserver/common/history";
-import toastr from "@appserver/components/toast";
+import toastr from "studio/toastr";
 import { FileAction } from "@appserver/common/constants";
 
 const StyledSimpleFilesRow = styled(Row)`
@@ -196,14 +196,22 @@ const SimpleFilesRow = (props) => {
     }
   };
 
-  const finalizeVersion = () => finalizeVersionAction(id);
+  const finalizeVersion = () =>
+    finalizeVersionAction(id).catch((err) => toastr.error(err));
 
   const onClickFavorite = (e) => {
     const { action } = e.currentTarget.dataset;
-    setFavoriteAction(action, id);
+    setFavoriteAction(action, id)
+      .then(() =>
+        action === "mark"
+          ? toastr.success(t("MarkedAsFavorite"))
+          : toastr.success(t("RemovedFromFavorites"))
+      )
+      .catch((err) => toastr.error(err));
   };
 
-  const lockFile = () => lockFileAction(id, locked);
+  const lockFile = () =>
+    lockFileAction(id, locked).catch((err) => toastr.error(err));
 
   const onClickLinkForPortal = () => {
     const isFile = !!fileExst;
@@ -223,7 +231,8 @@ const SimpleFilesRow = (props) => {
 
   const onClickDownload = () => window.open(viewUrl, "_blank");
 
-  const onDuplicate = () => duplicateAction(item, t("CopyOperation"));
+  const onDuplicate = () =>
+    duplicateAction(item, t("CopyOperation")).catch((err) => toastr.error(err));
 
   const onClickRename = () => {
     setAction({
@@ -250,13 +259,15 @@ const SimpleFilesRow = (props) => {
 
     const translations = {
       deleteOperation: t("DeleteOperation"),
-      folderRemoved: t("FolderRemoved"),
-      fileRemoved: t("FileRemoved"),
     };
 
     item.fileExst
       ? deleteFileAction(item.id, item.folderId, translations)
-      : deleteFolderAction(item.id, item.parentId, translations);
+          .then(() => toastr.success(t("FileRemoved")))
+          .catch((err) => toastr.error(err))
+      : deleteFolderAction(item.id, item.parentId, translations)
+          .then(() => toastr.success(t("FolderRemoved")))
+          .catch((err) => toastr.error(err));
   };
 
   const getFilesContextOptions = useCallback(() => {
