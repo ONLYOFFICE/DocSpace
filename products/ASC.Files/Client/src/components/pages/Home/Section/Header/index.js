@@ -555,7 +555,6 @@ export default inject(
     auth,
     initFilesStore,
     filesStore,
-    uploadDataStore,
     dialogsStore,
     treeFoldersStore,
     selectedFolderStore,
@@ -563,7 +562,6 @@ export default inject(
     settingsStore,
   }) => {
     const { setIsLoading } = initFilesStore;
-    const { secondaryProgressDataStore } = uploadDataStore;
     const {
       setSelected,
       fileActionStore,

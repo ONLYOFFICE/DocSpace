@@ -81,6 +81,7 @@ const SimpleFilesRow = (props) => {
     homepage,
     isTabletView,
     actionId,
+    selectedFolderId,
 
     setSharingPanelVisible,
     setChangeOwnerPanelVisible,
@@ -103,6 +104,8 @@ const SimpleFilesRow = (props) => {
     selectRowAction,
     setThirdpartyInfo,
     setMediaViewerData,
+    setDragging,
+    startUpload,
   } = props;
 
   const {
@@ -111,7 +114,6 @@ const SimpleFilesRow = (props) => {
     fileExst,
     shared,
     access,
-    value,
     contextOptions,
     icon,
     providerKey,
@@ -121,6 +123,9 @@ const SimpleFilesRow = (props) => {
     canOpenPlayer,
     locked,
   } = item;
+
+  let value = fileExst ? `file_${id}` : `folder_${id}`;
+  value += draggable ? "_draggable" : "";
 
   const isThirdPartyFolder = providerKey && isRootFolder;
 
@@ -254,195 +259,207 @@ const SimpleFilesRow = (props) => {
       : deleteFolderAction(item.id, item.parentId, translations);
   };
 
-  const getFilesContextOptions = useCallback(
-    (options, item) => {
-      const isSharable = item.access !== 1 && item.access !== 0;
+  const getFilesContextOptions = useCallback(() => {
+    const isSharable = item.access !== 1 && item.access !== 0;
 
-      return options.map((option) => {
-        switch (option) {
-          case "open":
-            return {
-              key: option,
-              label: t("Open"),
-              icon: "CatalogFolderIcon",
-              onClick: onOpenLocation,
-              disabled: false,
-            };
-          case "show-version-history":
-            return {
-              key: option,
-              label: t("ShowVersionHistory"),
-              icon: "HistoryIcon",
-              onClick: showVersionHistory,
-              disabled: false,
-            };
-          case "finalize-version":
-            return {
-              key: option,
-              label: t("FinalizeVersion"),
-              icon: "HistoryFinalizedIcon",
-              onClick: finalizeVersion,
-              disabled: false,
-            };
-          case "separator0":
-          case "separator1":
-          case "separator2":
-          case "separator3":
-            return { key: option, isSeparator: true };
-          case "open-location":
-            return {
-              key: option,
-              label: t("OpenLocation"),
-              icon: "DownloadAsIcon",
-              onClick: onOpenLocation,
-              disabled: false,
-            };
-          case "mark-as-favorite":
-            return {
-              key: option,
-              label: t("MarkAsFavorite"),
-              icon: "FavoritesIcon",
-              onClick: onClickFavorite,
-              disabled: false,
-              "data-action": "mark",
-            };
-          case "block-unblock-version":
-            return {
-              key: option,
-              label: t("UnblockVersion"),
-              icon: "LockIcon",
-              onClick: lockFile,
-              disabled: false,
-            };
-          case "sharing-settings":
-            return {
-              key: option,
-              label: t("SharingSettings"),
-              icon: "CatalogSharedIcon",
-              onClick: onClickShare,
-              disabled: isSharable,
-            };
-          case "send-by-email":
-            return {
-              key: option,
-              label: t("SendByEmail"),
-              icon: "MailIcon",
-              disabled: true,
-            };
-          case "owner-change":
-            return {
-              key: option,
-              label: t("ChangeOwner"),
-              icon: "CatalogUserIcon",
-              onClick: onOwnerChange,
-              disabled: false,
-            };
-          case "link-for-portal-users":
-            return {
-              key: option,
-              label: t("LinkForPortalUsers"),
-              icon: "InvitationLinkIcon",
-              onClick: onClickLinkForPortal,
-              disabled: false,
-            };
-          case "edit":
-            return {
-              key: option,
-              label: t("Edit"),
-              icon: "AccessEditIcon",
-              onClick: onClickLinkEdit,
-              disabled: false,
-            };
-          case "preview":
-            return {
-              key: option,
-              label: t("Preview"),
-              icon: "EyeIcon",
-              onClick: onClickLinkEdit,
-              disabled: true,
-            };
-          case "view":
-            return {
-              key: option,
-              label: t("View"),
-              icon: "EyeIcon",
-              onClick: onMediaFileClick,
-              disabled: false,
-            };
-          case "download":
-            return {
-              key: option,
-              label: t("Download"),
-              icon: "DownloadIcon",
-              onClick: onClickDownload,
-              disabled: false,
-            };
-          case "move":
-            return {
-              key: option,
-              label: t("MoveTo"),
-              icon: "MoveToIcon",
-              onClick: onMoveAction,
-              disabled: false,
-            };
-          case "copy":
-            return {
-              key: option,
-              label: t("Copy"),
-              icon: "CopyIcon",
-              onClick: onCopyAction,
-              disabled: false,
-            };
-          case "duplicate":
-            return {
-              key: option,
-              label: t("Duplicate"),
-              icon: "CopyIcon",
-              onClick: onDuplicate,
-              disabled: false,
-            };
-          case "rename":
-            return {
-              key: option,
-              label: t("Rename"),
-              icon: "RenameIcon",
-              onClick: onClickRename,
-              disabled: false,
-            };
-          case "change-thirdparty-info":
-            return {
-              key: option,
-              label: t("ThirdPartyInfo"),
-              icon: "AccessEditIcon",
-              onClick: onChangeThirdPartyInfo,
-              disabled: false,
-            };
-          case "delete":
-            return {
-              key: option,
-              label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
-              icon: "CatalogTrashIcon",
-              onClick: onClickDelete,
-              disabled: false,
-            };
-          case "remove-from-favorites":
-            return {
-              key: option,
-              label: t("RemoveFromFavorites"),
-              icon: "FavoritesIcon",
-              onClick: onClickFavorite,
-              disabled: false,
-              "data-action": "remove",
-            };
-          default:
-            break;
-        }
+    return contextOptions.map((option) => {
+      switch (option) {
+        case "open":
+          return {
+            key: option,
+            label: t("Open"),
+            icon: "CatalogFolderIcon",
+            onClick: onOpenLocation,
+            disabled: false,
+          };
+        case "show-version-history":
+          return {
+            key: option,
+            label: t("ShowVersionHistory"),
+            icon: "HistoryIcon",
+            onClick: showVersionHistory,
+            disabled: false,
+          };
+        case "finalize-version":
+          return {
+            key: option,
+            label: t("FinalizeVersion"),
+            icon: "HistoryFinalizedIcon",
+            onClick: finalizeVersion,
+            disabled: false,
+          };
+        case "separator0":
+        case "separator1":
+        case "separator2":
+        case "separator3":
+          return { key: option, isSeparator: true };
+        case "open-location":
+          return {
+            key: option,
+            label: t("OpenLocation"),
+            icon: "DownloadAsIcon",
+            onClick: onOpenLocation,
+            disabled: false,
+          };
+        case "mark-as-favorite":
+          return {
+            key: option,
+            label: t("MarkAsFavorite"),
+            icon: "FavoritesIcon",
+            onClick: onClickFavorite,
+            disabled: false,
+            "data-action": "mark",
+          };
+        case "block-unblock-version":
+          return {
+            key: option,
+            label: t("UnblockVersion"),
+            icon: "LockIcon",
+            onClick: lockFile,
+            disabled: false,
+          };
+        case "sharing-settings":
+          return {
+            key: option,
+            label: t("SharingSettings"),
+            icon: "CatalogSharedIcon",
+            onClick: onClickShare,
+            disabled: isSharable,
+          };
+        case "send-by-email":
+          return {
+            key: option,
+            label: t("SendByEmail"),
+            icon: "MailIcon",
+            disabled: true,
+          };
+        case "owner-change":
+          return {
+            key: option,
+            label: t("ChangeOwner"),
+            icon: "CatalogUserIcon",
+            onClick: onOwnerChange,
+            disabled: false,
+          };
+        case "link-for-portal-users":
+          return {
+            key: option,
+            label: t("LinkForPortalUsers"),
+            icon: "InvitationLinkIcon",
+            onClick: onClickLinkForPortal,
+            disabled: false,
+          };
+        case "edit":
+          return {
+            key: option,
+            label: t("Edit"),
+            icon: "AccessEditIcon",
+            onClick: onClickLinkEdit,
+            disabled: false,
+          };
+        case "preview":
+          return {
+            key: option,
+            label: t("Preview"),
+            icon: "EyeIcon",
+            onClick: onClickLinkEdit,
+            disabled: true,
+          };
+        case "view":
+          return {
+            key: option,
+            label: t("View"),
+            icon: "EyeIcon",
+            onClick: onMediaFileClick,
+            disabled: false,
+          };
+        case "download":
+          return {
+            key: option,
+            label: t("Download"),
+            icon: "DownloadIcon",
+            onClick: onClickDownload,
+            disabled: false,
+          };
+        case "move":
+          return {
+            key: option,
+            label: t("MoveTo"),
+            icon: "MoveToIcon",
+            onClick: onMoveAction,
+            disabled: false,
+          };
+        case "copy":
+          return {
+            key: option,
+            label: t("Copy"),
+            icon: "CopyIcon",
+            onClick: onCopyAction,
+            disabled: false,
+          };
+        case "duplicate":
+          return {
+            key: option,
+            label: t("Duplicate"),
+            icon: "CopyIcon",
+            onClick: onDuplicate,
+            disabled: false,
+          };
+        case "rename":
+          return {
+            key: option,
+            label: t("Rename"),
+            icon: "RenameIcon",
+            onClick: onClickRename,
+            disabled: false,
+          };
+        case "change-thirdparty-info":
+          return {
+            key: option,
+            label: t("ThirdPartyInfo"),
+            icon: "AccessEditIcon",
+            onClick: onChangeThirdPartyInfo,
+            disabled: false,
+          };
+        case "delete":
+          return {
+            key: option,
+            label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
+            icon: "CatalogTrashIcon",
+            onClick: onClickDelete,
+            disabled: false,
+          };
+        case "remove-from-favorites":
+          return {
+            key: option,
+            label: t("RemoveFromFavorites"),
+            icon: "FavoritesIcon",
+            onClick: onClickFavorite,
+            disabled: false,
+            "data-action": "remove",
+          };
+        default:
+          break;
+      }
 
-        return undefined;
-      });
-    },
-    [contextOptions, item]
-  );
+      return undefined;
+    });
+  }, [contextOptions, item]);
+
+  const onDropZoneUpload = (files, uploadToFolder) => {
+    const folderId = uploadToFolder ? uploadToFolder : selectedFolderId;
+
+    dragging && setDragging(false);
+    startUpload(files, folderId, t);
+  };
+
+  const onDrop = (items) => {
+    if (!fileExst) {
+      onDropZoneUpload(items, item.id);
+    } else {
+      onDropZoneUpload(items, selectedFolderId);
+    }
+  };
 
   // const onSelectItem = () => {
   //   selected === "close" && setSelected("none");
@@ -457,28 +474,25 @@ const SimpleFilesRow = (props) => {
   const contextOptionsProps =
     !isEdit && contextOptions && contextOptions.length > 0
       ? {
-          contextOptions: getFilesContextOptions(contextOptions, item),
+          contextOptions: getFilesContextOptions(),
         }
       : {};
 
   const checkedProps = isEdit || id <= 0 ? {} : { checked };
-
   const element = getItemIcon(isEdit || id <= 0);
+  const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
+  let className = isFolder && access < 2 && !isRecycleBin ? " dropable" : "";
+  if (draggable) className += " draggable";
 
   const sharedButton =
     !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
       ? null
       : getSharedButton(shared);
 
-  const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
-
-  let className = isFolder && access < 2 && !isRecycleBin ? " dropable" : "";
-  if (draggable) className += " draggable";
-
   return (
     <DragAndDrop
       className={className}
-      //onDrop={this.onDrop.bind(this, item)}
+      onDrop={onDrop}
       //onMouseDown={this.onMouseDown}
       dragging={dragging && isFolder && access < 2}
       {...contextOptionsProps}
@@ -517,11 +531,12 @@ export default inject(
       versionHistoryStore,
       filesActionsStore,
       mediaViewerDataStore,
+      uploadDataStore,
     },
     { item }
   ) => {
     const { homepage, isTabletView } = auth.settingsStore;
-    const { dragging, setIsLoading } = initFilesStore;
+    const { dragging, setDragging, setIsLoading } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
@@ -544,7 +559,7 @@ export default inject(
       fileActionStore,
     } = filesStore;
 
-    const { isRootFolder } = selectedFolderStore;
+    const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
     const { setIsVerHistoryPanel, setVerHistoryFileId } = versionHistoryStore;
     const { setAction } = fileActionStore;
 
@@ -554,7 +569,7 @@ export default inject(
 
     const isFolder = selectedItem ? false : item.fileExst ? false : true;
     const draggable =
-      selectedItem && isRecycleBinFolder && selectedItem.id !== id;
+      !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
 
     const {
       deleteFileAction,
@@ -569,6 +584,7 @@ export default inject(
     } = filesActionsStore;
 
     const { setMediaViewerData } = mediaViewerDataStore;
+    const { startUpload } = uploadDataStore;
 
     return {
       dragging,
@@ -584,6 +600,7 @@ export default inject(
       checked: selection.some((el) => el.id === item.id),
       isFolder,
       draggable,
+      isItemsSelected: !!selection.length,
       homepage,
       isTabletView,
       actionId: fileActionStore.id,
@@ -608,16 +625,9 @@ export default inject(
       selectRowAction,
       setThirdpartyInfo,
       setMediaViewerData,
+      selectedFolderId,
+      setDragging,
+      startUpload,
     };
   }
 )(withTranslation("Home")(observer(SimpleFilesRow)));
-
-// onDrop = (item, items, e) => {
-//   const { onDropZoneUpload, selectedFolderId } = this.props;
-
-//   if (!item.fileExst) {
-//     onDropZoneUpload(items, item.id);
-//   } else {
-//     onDropZoneUpload(items, selectedFolderId);
-//   }
-// };
