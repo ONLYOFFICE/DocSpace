@@ -1,73 +1,134 @@
-import React from "react";
-import { storiesOf } from "@storybook/react";
-import {
-  withKnobs,
-  text,
-  boolean,
-  select,
-  number,
-} from "@storybook/addon-knobs/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
-import Paging from ".";
-import Section from "../../../.storybook/decorators/section";
+import React, { useState, useEffect } from "react";
+import Paging from "./";
 
-storiesOf("Components|Paging", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("base", () => {
-    const createPageItems = (count) => {
-      let pageItems = [];
-      for (let i = 1; i <= count; i++) {
-        pageItems.push({
-          key: i,
-          label: i + " of " + count,
-        });
-      }
-      return pageItems;
-    };
-
-    const countItems = [
-      {
-        key: 25,
-        label: "25 per page",
+export default {
+  title: "Components/Paging",
+  component: Paging,
+  parameters: {
+    docs: {
+      description: {
+        component: "Paging is used to navigate med content pages",
       },
-      {
-        key: 50,
-        label: "50 per page",
-      },
-      {
-        key: 100,
-        label: "100 per page",
-      },
-    ];
+    },
+  },
+  argTypes: {
+    onSelectPage: { action: "onSelectPage" },
+    onSelectCount: { action: "onSelectCount" },
+    previousAction: { action: "onPrevious" },
+    nextAction: { action: "onNext" },
+    selectedCount: {
+      control: { type: "select", options: [25, 50, 100] },
+      description: "Property for story",
+    },
+    pageCount: { description: "Property for story" },
+    displayItems: { description: "Property for story" },
+    displayCount: { description: "Property for story" },
+  },
+};
 
-    const displayItems = boolean("Display pageItems", true);
-    const displayCount = boolean("Display countItems", true);
-    const selectedCount = select("selectedCount", [25, 50, 100], 100);
-    const pageCount = number("Count of pages", 10);
-    const pageItems = createPageItems(pageCount);
-    const selectedPageItem = pageItems[0];
-    const selectedCountItem = countItems[0];
+const createPageItems = (count) => {
+  let pageItems = [];
+  for (let i = 1; i <= count; i++) {
+    pageItems.push({
+      key: i,
+      label: i + " of " + count,
+    });
+  }
+  return pageItems;
+};
 
-    return (
-      <Section>
-        <Paging
-          previousLabel={text("previousLabel", "Previous")}
-          nextLabel={text("nextLabel", "Next")}
-          pageItems={displayItems ? pageItems : undefined}
-          selectedPageItem={selectedPageItem}
-          selectedCountItem={selectedCountItem}
-          countItems={displayCount ? countItems : undefined}
-          disablePrevious={boolean("disablePrevious", false)}
-          disableNext={boolean("disableNext", false)}
-          previousAction={() => console.log("Prev")}
-          nextAction={() => console.log("Next")}
-          openDirection="bottom"
-          selectedCount={selectedCount}
-          onSelectPage={(a) => console.log(a)}
-          onSelectCount={(a) => console.log(a)}
-        />
-      </Section>
-    );
+const countItems = [
+  {
+    key: 25,
+    label: "25 per page",
+  },
+  {
+    key: 50,
+    label: "50 per page",
+  },
+  {
+    key: 100,
+    label: "100 per page",
+  },
+];
+
+const selectedCountPageHandler = (count) => {
+  return countItems.filter((item) => {
+    if (item.key === count) {
+      return item;
+    }
   });
+};
+
+const Template = ({
+  pageCount,
+  displayItems,
+  displayCount,
+  nextAction,
+  previousAction,
+  onSelectPage,
+  onSelectCount,
+  selectedCount,
+  ...args
+}) => {
+  const pageItems = createPageItems(pageCount);
+  const [selectedPageItem, setSelectedPageItems] = useState(pageItems[0]);
+
+  useEffect(() => {
+    setSelectedPageItems(pageItems[0]);
+  }, [pageCount]);
+
+  const onSelectPageNextHandler = () => {
+    const currentPage = pageItems.filter(
+      (item) => item.key === selectedPageItem.key + 1
+    );
+    if (currentPage[0]) setSelectedPageItems(currentPage[0]);
+  };
+
+  const onSelectPagePrevHandler = () => {
+    const currentPage = pageItems.filter(
+      (item) => item.key === selectedPageItem.key - 1
+    );
+    if (currentPage[0]) setSelectedPageItems(currentPage[0]);
+  };
+
+  return (
+    <div style={{ height: "100px" }}>
+      <Paging
+        {...args}
+        pageItems={displayItems ? pageItems : null}
+        countItems={displayCount ? countItems : null}
+        previousAction={() => {
+          previousAction("Prev");
+          onSelectPagePrevHandler();
+        }}
+        nextAction={() => {
+          onSelectPageNextHandler();
+          nextAction("Next");
+        }}
+        onSelectPage={(a) => onSelectPage(a)}
+        onSelectCount={(a) => onSelectCount(a)}
+        selectedPageItem={selectedPageItem}
+        selectedCountItem={selectedCountPageHandler(selectedCount)[0]}
+      />
+    </div>
+  );
+};
+
+export const Default = Template.bind({});
+Default.args = {
+  previousLabel: "Previous",
+  nextLabel: "Next",
+  displayItems: true,
+  displayCount: true,
+  disablePrevious: false,
+  disableNext: false,
+  openDirection: "bottom",
+  selectedCount: 100,
+  pageCount: 10,
+  selectedCountItem: {
+    key: 100,
+    label: "100 per page",
+  },
+  selectedPageItem: { key: 1, label: "1 of 10" },
+};
