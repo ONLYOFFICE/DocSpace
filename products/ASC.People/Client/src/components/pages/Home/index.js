@@ -62,6 +62,8 @@ Home.propTypes = {
   isLoading: PropTypes.bool,
 };
 
-export default inject(({ peopleStore }) => ({
-  isLoading: peopleStore.isLoading,
-}))(observer(withRouter(Home)));
+export default withRouter(
+  inject(({ peopleStore }) => ({
+    isLoading: peopleStore.isLoading,
+  }))(observer(Home))
+);

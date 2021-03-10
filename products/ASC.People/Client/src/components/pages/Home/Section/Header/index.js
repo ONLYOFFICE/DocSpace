@@ -28,10 +28,12 @@ const StyledContainer = styled.div`
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
-    ${isMobile &&
-    css`
-      position: sticky;
-    `}
+    ${
+      isMobile &&
+      css`
+        position: sticky;
+      `
+    }
     ${(props) =>
       !props.isTabletView
         ? props.width &&
@@ -47,10 +49,12 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       padding-bottom: 0;
-      ${!isMobile &&
-      css`
-        height: 56px;
-      `}
+      ${
+        !isMobile &&
+        css`
+          height: 56px;
+        `
+      }
       & > div:first-child {
         ${(props) =>
           !isMobile &&
@@ -502,30 +506,32 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-export default inject(({ auth, peopleStore }) => ({
-  customNames: auth.settingsStore.customNames,
-  homepage: auth.settingsStore.homepage,
-  isLoaded: auth.isLoaded,
-  isAdmin: auth.isAdmin,
-  fetchPeople: peopleStore.usersStore.getUsersList,
-  selection: peopleStore.selectionStore.selection,
-  setSelected: peopleStore.selectionStore.setSelected,
-  selectByStatus: peopleStore.selectionStore.selectByStatus,
-  isHeaderVisible: peopleStore.headerMenuStore.isHeaderVisible,
-  isHeaderIndeterminate: peopleStore.headerMenuStore.isHeaderIndeterminate,
-  isHeaderChecked: peopleStore.headerMenuStore.isHeaderChecked,
-  clearSelection: peopleStore.selectionStore.clearSelection,
-  selectAll: peopleStore.selectionStore.selectAll,
-  hasAnybodySelected: peopleStore.selectionStore.hasAnybodySelected,
-  hasUsersToMakeEmployees: peopleStore.selectionStore.hasUsersToMakeEmployees,
-  hasUsersToMakeGuests: peopleStore.selectionStore.hasUsersToMakeGuests,
-  hasUsersToActivate: peopleStore.selectionStore.hasUsersToActivate,
-  hasUsersToDisable: peopleStore.selectionStore.hasUsersToDisable,
-  hasUsersToInvite: peopleStore.selectionStore.hasUsersToInvite,
-  hasUsersToRemove: peopleStore.selectionStore.hasUsersToRemove,
-  deleteGroup: peopleStore.groupsStore.deleteGroup,
-  removeUser: peopleStore.usersStore.removeUser,
-  updateUserStatus: peopleStore.usersStore.updateUserStatus,
-  group: peopleStore.selectedGroupStore.group,
-  isTabletView: auth.settingsStore.isTabletView,
-}))(observer(withTranslation("Home")(withRouter(SectionHeaderContent))));
+export default withRouter(
+  inject(({ auth, peopleStore }) => ({
+    customNames: auth.settingsStore.customNames,
+    homepage: auth.settingsStore.homepage,
+    isLoaded: auth.isLoaded,
+    isAdmin: auth.isAdmin,
+    fetchPeople: peopleStore.usersStore.getUsersList,
+    selection: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
+    selectByStatus: peopleStore.selectionStore.selectByStatus,
+    isHeaderVisible: peopleStore.headerMenuStore.isHeaderVisible,
+    isHeaderIndeterminate: peopleStore.headerMenuStore.isHeaderIndeterminate,
+    isHeaderChecked: peopleStore.headerMenuStore.isHeaderChecked,
+    clearSelection: peopleStore.selectionStore.clearSelection,
+    selectAll: peopleStore.selectionStore.selectAll,
+    hasAnybodySelected: peopleStore.selectionStore.hasAnybodySelected,
+    hasUsersToMakeEmployees: peopleStore.selectionStore.hasUsersToMakeEmployees,
+    hasUsersToMakeGuests: peopleStore.selectionStore.hasUsersToMakeGuests,
+    hasUsersToActivate: peopleStore.selectionStore.hasUsersToActivate,
+    hasUsersToDisable: peopleStore.selectionStore.hasUsersToDisable,
+    hasUsersToInvite: peopleStore.selectionStore.hasUsersToInvite,
+    hasUsersToRemove: peopleStore.selectionStore.hasUsersToRemove,
+    deleteGroup: peopleStore.groupsStore.deleteGroup,
+    removeUser: peopleStore.usersStore.removeUser,
+    updateUserStatus: peopleStore.usersStore.updateUserStatus,
+    group: peopleStore.selectedGroupStore.group,
+    isTabletView: auth.settingsStore.isTabletView,
+  }))(observer(withTranslation("Home")(SectionHeaderContent)))
+);

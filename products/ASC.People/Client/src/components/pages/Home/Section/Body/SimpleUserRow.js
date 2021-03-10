@@ -277,27 +277,29 @@ const SimpleUserRow = ({
   );
 };
 
-export default inject(({ auth, peopleStore }, { person }) => {
-  return {
-    homepage: auth.settingsStore.homepage,
-    isAdmin: auth.isAdmin,
-    currentUserId: auth.userStore.user.id,
-    checked: peopleStore.selectionStore.selection.some(
-      (el) => el.id === person.id
-    ),
-    selectUser: peopleStore.selectionStore.selectUser,
-    deselectUser: peopleStore.selectionStore.deselectUser,
-    selectGroup: peopleStore.selectedGroupStore.selectGroup,
-    setChangeEmailDialogVisible:
-      peopleStore.dialogStore.setChangeEmailDialogVisible,
-    setChangePasswordDialogVisible:
-      peopleStore.dialogStore.setChangePasswordDialogVisible,
-    setDeleteSelfProfileDialogVisible:
-      peopleStore.dialogStore.setDeleteSelfProfileDialogVisible,
-    setDeleteProfileDialogVisible:
-      peopleStore.dialogStore.setDeleteProfileDialogVisible,
-    setDialogData: peopleStore.dialogStore.setDialogData,
-    closeDialogs: peopleStore.dialogStore.closeDialogs,
-    updateUserStatus: peopleStore.usersStore.updateUserStatus,
-  };
-})(withRouter(observer(SimpleUserRow)));
+export default withRouter(
+  inject(({ auth, peopleStore }, { person }) => {
+    return {
+      homepage: auth.settingsStore.homepage,
+      isAdmin: auth.isAdmin,
+      currentUserId: auth.userStore.user.id,
+      checked: peopleStore.selectionStore.selection.some(
+        (el) => el.id === person.id
+      ),
+      selectUser: peopleStore.selectionStore.selectUser,
+      deselectUser: peopleStore.selectionStore.deselectUser,
+      selectGroup: peopleStore.selectedGroupStore.selectGroup,
+      setChangeEmailDialogVisible:
+        peopleStore.dialogStore.setChangeEmailDialogVisible,
+      setChangePasswordDialogVisible:
+        peopleStore.dialogStore.setChangePasswordDialogVisible,
+      setDeleteSelfProfileDialogVisible:
+        peopleStore.dialogStore.setDeleteSelfProfileDialogVisible,
+      setDeleteProfileDialogVisible:
+        peopleStore.dialogStore.setDeleteProfileDialogVisible,
+      setDialogData: peopleStore.dialogStore.setDialogData,
+      closeDialogs: peopleStore.dialogStore.closeDialogs,
+      updateUserStatus: peopleStore.usersStore.updateUserStatus,
+    };
+  })(observer(SimpleUserRow))
+);
