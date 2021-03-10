@@ -41,6 +41,7 @@ module.exports = {
     "../request-loader/*.stories.@(js|mdx)",
     "../row/*.stories.@(js|mdx)",
     "../row-container/*.stories.@(js|mdx)",
+    "../row-content/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",
