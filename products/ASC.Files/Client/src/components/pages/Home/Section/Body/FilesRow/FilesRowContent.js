@@ -648,15 +648,6 @@ class FilesRowContent extends React.PureComponent {
                     size="small"
                   />
                 )}
-                {locked && (
-                  <StyledFileActionsLockedIcon
-                    className="badge lock-file"
-                    size="small"
-                    data-id={item.id}
-                    data-locked={true}
-                    onClick={this.props.onClickLock}
-                  />
-                )}
                 {versionGroup > 1 && (
                   <Badge
                     className="badge-version"
