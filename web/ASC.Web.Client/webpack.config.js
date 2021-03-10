@@ -113,7 +113,7 @@ const config = {
       filename: "remoteEntry.js",
       remotes: {
         studio: `studio@${homepage}/remoteEntry.js`,
-        people: `people@${homepage}/products/people//remoteEntry.js`,
+        people: `people@${homepage}/products/people/remoteEntry.js`,
         files: `files@${homepage}/products/files/remoteEntry.js`,
         login: `login@${homepage}/login/remoteEntry.js`,
       },
