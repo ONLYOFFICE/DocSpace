@@ -39,6 +39,7 @@ module.exports = {
     "../radio-button/*.stories.@(js|mdx)",
     "../radio-button-group/*.stories.@(js|mdx)",
     "../request-loader/*.stories.@(js|mdx)",
+    "../row/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",
