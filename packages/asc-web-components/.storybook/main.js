@@ -55,6 +55,7 @@ module.exports = {
     "../theme-provider/*.stories.@(js|mdx)",
     "../toast/*.stories.@(js|mdx)",
     "../toggle-button/*.stories.@(js|mdx)",
+    "../toggle-content/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",
