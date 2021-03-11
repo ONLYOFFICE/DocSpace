@@ -21,6 +21,9 @@ const StyledContainer = styled.div`
       ? `${props.contentHeight}px`
       : "100vh"};
 
+  #customScrollBar {
+    z-index: 0;
+  }
   #articleScrollBar {
     > .scroll-body {
       position: ${(props) =>
