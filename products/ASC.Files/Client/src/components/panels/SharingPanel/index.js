@@ -21,7 +21,6 @@ import {
 } from "../StyledPanels";
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
 import SharingRow from "./SharingRow";
-//import { setEncryptionAccess } from "../../../helpers/desktop";
 import { inject, observer } from "mobx-react";
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
@@ -604,7 +603,7 @@ export default inject(
       setShareFiles,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
-    const { setSharingPanelVisible } = dialogsStore;
+    const { setSharingPanelVisible, shareItem } = dialogsStore;
     const {
       uploadSelection,
       selectUploadedFile,
@@ -618,7 +617,11 @@ export default inject(
       homepage,
       files,
       folders,
-      selection: uploadPanelVisible ? uploadSelection : selection,
+      selection: uploadPanelVisible
+        ? uploadSelection
+        : shareItem
+        ? [shareItem]
+        : selection,
       isLoading,
       isPrivacy: isPrivacyFolder,
       uploadSelection,
