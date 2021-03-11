@@ -17,7 +17,7 @@ import Button from "@appserver/components/button";
 import RequestLoader from "@appserver/components/request-loader";
 import Loader from "@appserver/components/loader";
 import EmptyScreenContainer from "@appserver/components/empty-screen-container";
-
+import { showLoader, hideLoader } from "@appserver/common/utils";
 import FilterInput from "@appserver/common/components/FilterInput";
 import PeopleSelector from "studio/PeopleSelector";
 
@@ -87,7 +87,7 @@ class PureAdminsSettings extends Component {
 
   componentDidMount() {
     const { admins, fetchPeople } = this.props;
-
+    showLoader();
     if (isEmpty(admins, true)) {
       const newFilter = this.onAdminsFilter();
       fetchPeople(newFilter)
@@ -102,6 +102,7 @@ class PureAdminsSettings extends Component {
     } else {
       this.setState({ showLoader: false });
     }
+    hideLoader();
   }
 
   onChangeAdmin = (userIds, isAdmin, productId) => {

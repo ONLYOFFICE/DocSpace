@@ -7,6 +7,7 @@ import toastr from "@appserver/components/toast/toastr";
 import TextInput from "@appserver/components/text-input";
 import Link from "@appserver/components/link";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject, observer } from "mobx-react";
@@ -64,7 +65,7 @@ class CustomTitles extends React.Component {
 
   componentDidMount() {
     const { showReminder } = this.state;
-
+    showLoader();
     if (greetingTitleFromSessionStorage && !showReminder) {
       this.setState({
         showReminder: true,
@@ -73,6 +74,7 @@ class CustomTitles extends React.Component {
     this.setState({
       isLoadedData: true,
     });
+    hideLoader();
   }
 
   componentDidUpdate(prevProps, prevState) {

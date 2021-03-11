@@ -8,6 +8,7 @@ import Link from "@appserver/components/link";
 import ArrowRightIcon from "../../../../../../public/images/arrow.right.react.svg";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 
 const mapCulturesToArray = (cultures, t) => {
@@ -129,7 +130,7 @@ class Customization extends React.Component {
       getPortalTimezones,
     } = this.props;
     const { timezones, languages } = this.state;
-
+    showLoader();
     if (!timezones.length && !languages.length) {
       let languages;
       getPortalCultures()
@@ -147,6 +148,7 @@ class Customization extends React.Component {
           this.setState({ languages, language, timezones, timezone });
         });
     }
+    hideLoader();
   }
 
   componentDidUpdate(prevProps) {

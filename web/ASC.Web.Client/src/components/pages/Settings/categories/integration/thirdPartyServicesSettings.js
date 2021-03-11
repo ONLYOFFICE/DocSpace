@@ -7,7 +7,7 @@ import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
 import { tablet, mobile } from "@appserver/components/utils/device";
-
+import { showLoader, hideLoader } from "@appserver/common/utils";
 import ConsumerItem from "./sub-components/consumerItem";
 import ConsumerModalDialog from "./sub-components/consumerModalDialog";
 import { inject, observer } from "mobx-react";
@@ -58,7 +58,8 @@ class ThirdPartyServices extends React.Component {
 
   componentDidMount() {
     const { getConsumers } = this.props;
-    getConsumers();
+    showLoader();
+    getConsumers().finally(() => hideLoader());
   }
 
   onChangeLoading = (status) => {
@@ -115,6 +116,7 @@ class ThirdPartyServices extends React.Component {
         isFill && this.onChangeLoading(false);
         toastr.error(error);
       })
+
       .finally(isFill && this.onModalClose());
   };
 
