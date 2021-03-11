@@ -9,7 +9,7 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
 import history from "@appserver/common/history";
-import toastr from "@appserver/components/toast";
+import toastr from "studio/toastr";
 import { FileAction } from "@appserver/common/constants";
 
 const StyledSimpleFilesRow = styled(Row)`
@@ -81,6 +81,7 @@ const SimpleFilesRow = (props) => {
     homepage,
     isTabletView,
     actionId,
+    selectedFolderId,
 
     setSharingPanelVisible,
     setChangeOwnerPanelVisible,
@@ -103,6 +104,9 @@ const SimpleFilesRow = (props) => {
     selectRowAction,
     setThirdpartyInfo,
     setMediaViewerData,
+    setDragging,
+    startUpload,
+    setShareItem,
   } = props;
 
   const {
@@ -111,7 +115,6 @@ const SimpleFilesRow = (props) => {
     fileExst,
     shared,
     access,
-    value,
     contextOptions,
     icon,
     providerKey,
@@ -122,6 +125,9 @@ const SimpleFilesRow = (props) => {
     locked,
   } = item;
 
+  let value = fileExst ? `file_${id}` : `folder_${id}`;
+  value += draggable ? "_draggable" : "";
+
   const isThirdPartyFolder = providerKey && isRootFolder;
 
   const onContentRowSelect = (checked, file) => {
@@ -130,7 +136,10 @@ const SimpleFilesRow = (props) => {
     selectRowAction(checked, file);
   };
 
-  const onClickShare = () => setSharingPanelVisible(true);
+  const onClickShare = () => {
+    setSharingPanelVisible(true);
+    setShareItem(item);
+  };
   const onOwnerChange = () => setChangeOwnerPanelVisible(true);
   const onMoveAction = () => setMoveToPanelVisible(true);
   const onCopyAction = () => setCopyPanelVisible(true);
@@ -191,14 +200,22 @@ const SimpleFilesRow = (props) => {
     }
   };
 
-  const finalizeVersion = () => finalizeVersionAction(id);
+  const finalizeVersion = () =>
+    finalizeVersionAction(id).catch((err) => toastr.error(err));
 
   const onClickFavorite = (e) => {
     const { action } = e.currentTarget.dataset;
-    setFavoriteAction(action, id);
+    setFavoriteAction(action, id)
+      .then(() =>
+        action === "mark"
+          ? toastr.success(t("MarkedAsFavorite"))
+          : toastr.success(t("RemovedFromFavorites"))
+      )
+      .catch((err) => toastr.error(err));
   };
 
-  const lockFile = () => lockFileAction(id, locked);
+  const lockFile = () =>
+    lockFileAction(id, !locked).catch((err) => toastr.error(err));
 
   const onClickLinkForPortal = () => {
     const isFile = !!fileExst;
@@ -218,7 +235,8 @@ const SimpleFilesRow = (props) => {
 
   const onClickDownload = () => window.open(viewUrl, "_blank");
 
-  const onDuplicate = () => duplicateAction(item, t("CopyOperation"));
+  const onDuplicate = () =>
+    duplicateAction(item, t("CopyOperation")).catch((err) => toastr.error(err));
 
   const onClickRename = () => {
     setAction({
@@ -245,204 +263,218 @@ const SimpleFilesRow = (props) => {
 
     const translations = {
       deleteOperation: t("DeleteOperation"),
-      folderRemoved: t("FolderRemoved"),
-      fileRemoved: t("FileRemoved"),
     };
 
     item.fileExst
       ? deleteFileAction(item.id, item.folderId, translations)
-      : deleteFolderAction(item.id, item.parentId, translations);
+          .then(() => toastr.success(t("FileRemoved")))
+          .catch((err) => toastr.error(err))
+      : deleteFolderAction(item.id, item.parentId, translations)
+          .then(() => toastr.success(t("FolderRemoved")))
+          .catch((err) => toastr.error(err));
   };
 
-  const getFilesContextOptions = useCallback(
-    (options, item) => {
-      const isSharable = item.access !== 1 && item.access !== 0;
+  const getFilesContextOptions = useCallback(() => {
+    const isSharable = item.access !== 1 && item.access !== 0;
 
-      return options.map((option) => {
-        switch (option) {
-          case "open":
-            return {
-              key: option,
-              label: t("Open"),
-              icon: "CatalogFolderIcon",
-              onClick: onOpenLocation,
-              disabled: false,
-            };
-          case "show-version-history":
-            return {
-              key: option,
-              label: t("ShowVersionHistory"),
-              icon: "HistoryIcon",
-              onClick: showVersionHistory,
-              disabled: false,
-            };
-          case "finalize-version":
-            return {
-              key: option,
-              label: t("FinalizeVersion"),
-              icon: "HistoryFinalizedIcon",
-              onClick: finalizeVersion,
-              disabled: false,
-            };
-          case "separator0":
-          case "separator1":
-          case "separator2":
-          case "separator3":
-            return { key: option, isSeparator: true };
-          case "open-location":
-            return {
-              key: option,
-              label: t("OpenLocation"),
-              icon: "DownloadAsIcon",
-              onClick: onOpenLocation,
-              disabled: false,
-            };
-          case "mark-as-favorite":
-            return {
-              key: option,
-              label: t("MarkAsFavorite"),
-              icon: "FavoritesIcon",
-              onClick: onClickFavorite,
-              disabled: false,
-              "data-action": "mark",
-            };
-          case "block-unblock-version":
-            return {
-              key: option,
-              label: t("UnblockVersion"),
-              icon: "LockIcon",
-              onClick: lockFile,
-              disabled: false,
-            };
-          case "sharing-settings":
-            return {
-              key: option,
-              label: t("SharingSettings"),
-              icon: "CatalogSharedIcon",
-              onClick: onClickShare,
-              disabled: isSharable,
-            };
-          case "send-by-email":
-            return {
-              key: option,
-              label: t("SendByEmail"),
-              icon: "MailIcon",
-              disabled: true,
-            };
-          case "owner-change":
-            return {
-              key: option,
-              label: t("ChangeOwner"),
-              icon: "CatalogUserIcon",
-              onClick: onOwnerChange,
-              disabled: false,
-            };
-          case "link-for-portal-users":
-            return {
-              key: option,
-              label: t("LinkForPortalUsers"),
-              icon: "InvitationLinkIcon",
-              onClick: onClickLinkForPortal,
-              disabled: false,
-            };
-          case "edit":
-            return {
-              key: option,
-              label: t("Edit"),
-              icon: "AccessEditIcon",
-              onClick: onClickLinkEdit,
-              disabled: false,
-            };
-          case "preview":
-            return {
-              key: option,
-              label: t("Preview"),
-              icon: "EyeIcon",
-              onClick: onClickLinkEdit,
-              disabled: true,
-            };
-          case "view":
-            return {
-              key: option,
-              label: t("View"),
-              icon: "EyeIcon",
-              onClick: onMediaFileClick,
-              disabled: false,
-            };
-          case "download":
-            return {
-              key: option,
-              label: t("Download"),
-              icon: "DownloadIcon",
-              onClick: onClickDownload,
-              disabled: false,
-            };
-          case "move":
-            return {
-              key: option,
-              label: t("MoveTo"),
-              icon: "MoveToIcon",
-              onClick: onMoveAction,
-              disabled: false,
-            };
-          case "copy":
-            return {
-              key: option,
-              label: t("Copy"),
-              icon: "CopyIcon",
-              onClick: onCopyAction,
-              disabled: false,
-            };
-          case "duplicate":
-            return {
-              key: option,
-              label: t("Duplicate"),
-              icon: "CopyIcon",
-              onClick: onDuplicate,
-              disabled: false,
-            };
-          case "rename":
-            return {
-              key: option,
-              label: t("Rename"),
-              icon: "RenameIcon",
-              onClick: onClickRename,
-              disabled: false,
-            };
-          case "change-thirdparty-info":
-            return {
-              key: option,
-              label: t("ThirdPartyInfo"),
-              icon: "AccessEditIcon",
-              onClick: onChangeThirdPartyInfo,
-              disabled: false,
-            };
-          case "delete":
-            return {
-              key: option,
-              label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
-              icon: "CatalogTrashIcon",
-              onClick: onClickDelete,
-              disabled: false,
-            };
-          case "remove-from-favorites":
-            return {
-              key: option,
-              label: t("RemoveFromFavorites"),
-              icon: "FavoritesIcon",
-              onClick: onClickFavorite,
-              disabled: false,
-              "data-action": "remove",
-            };
-          default:
-            break;
-        }
+    return contextOptions.map((option) => {
+      switch (option) {
+        case "open":
+          return {
+            key: option,
+            label: t("Open"),
+            icon: "images/catalog.folder.react.svg",
+            onClick: onOpenLocation,
+            disabled: false,
+          };
+        case "show-version-history":
+          return {
+            key: option,
+            label: t("ShowVersionHistory"),
+            icon: "images/history.react.svg",
+            onClick: showVersionHistory,
+            disabled: false,
+          };
+        case "finalize-version":
+          return {
+            key: option,
+            label: t("FinalizeVersion"),
+            icon: "images/history-finalized.react.svg",
+            onClick: finalizeVersion,
+            disabled: false,
+          };
+        case "separator0":
+        case "separator1":
+        case "separator2":
+        case "separator3":
+          return { key: option, isSeparator: true };
+        case "open-location":
+          return {
+            key: option,
+            label: t("OpenLocation"),
+            icon: "images/download-as.react.svg",
+            onClick: onOpenLocation,
+            disabled: false,
+          };
+        case "mark-as-favorite":
+          return {
+            key: option,
+            label: t("MarkAsFavorite"),
+            icon: "images/favorites.react.svg",
+            onClick: onClickFavorite,
+            disabled: false,
+            "data-action": "mark",
+          };
+        case "block-unblock-version":
+          return {
+            key: option,
+            label: t("UnblockVersion"),
+            icon: "images/lock.react.svg",
+            onClick: lockFile,
+            disabled: false,
+          };
+        case "sharing-settings":
+          return {
+            key: option,
+            label: t("SharingSettings"),
+            icon: "images/catalog.shared.react.svg",
+            onClick: onClickShare,
+            disabled: isSharable,
+          };
+        case "send-by-email":
+          return {
+            key: option,
+            label: t("SendByEmail"),
+            icon: "/static/images/mail.react.svg",
+            disabled: true,
+          };
+        case "owner-change":
+          return {
+            key: option,
+            label: t("ChangeOwner"),
+            icon: "images/catalog.user.react.svg",
+            onClick: onOwnerChange,
+            disabled: false,
+          };
+        case "link-for-portal-users":
+          return {
+            key: option,
+            label: t("LinkForPortalUsers"),
+            icon: "/static/images/invitation.link.react.svg",
+            onClick: onClickLinkForPortal,
+            disabled: false,
+          };
+        case "edit":
+          return {
+            key: option,
+            label: t("Edit"),
+            icon: "images/access.edit.react.svg",
+            onClick: onClickLinkEdit,
+            disabled: false,
+          };
+        case "preview":
+          return {
+            key: option,
+            label: t("Preview"),
+            icon: "EyeIcon",
+            onClick: onClickLinkEdit,
+            disabled: true,
+          };
+        case "view":
+          return {
+            key: option,
+            label: t("View"),
+            icon: "/static/images/eye.react.svg",
+            onClick: onMediaFileClick,
+            disabled: false,
+          };
+        case "download":
+          return {
+            key: option,
+            label: t("Download"),
+            icon: "images/download.react.svg",
+            onClick: onClickDownload,
+            disabled: false,
+          };
+        case "move":
+          return {
+            key: option,
+            label: t("MoveTo"),
+            icon: "images/move.react.svg",
+            onClick: onMoveAction,
+            disabled: false,
+          };
+        case "copy":
+          return {
+            key: option,
+            label: t("Copy"),
+            icon: "/static/images/copy.react.svg",
+            onClick: onCopyAction,
+            disabled: false,
+          };
+        case "duplicate":
+          return {
+            key: option,
+            label: t("Duplicate"),
+            icon: "/static/images/copy.react.svg",
+            onClick: onDuplicate,
+            disabled: false,
+          };
+        case "rename":
+          return {
+            key: option,
+            label: t("Rename"),
+            icon: "images/rename.react.svg",
+            onClick: onClickRename,
+            disabled: false,
+          };
+        case "change-thirdparty-info":
+          return {
+            key: option,
+            label: t("ThirdPartyInfo"),
+            icon: "images/access.edit.react.svg",
+            onClick: onChangeThirdPartyInfo,
+            disabled: false,
+          };
+        case "delete":
+          return {
+            key: option,
+            label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
+            icon: "/static/images/catalog.trash.react.svg",
+            onClick: onClickDelete,
+            disabled: false,
+          };
+        case "remove-from-favorites":
+          return {
+            key: option,
+            label: t("RemoveFromFavorites"),
+            icon: "images/favorites.react.svg",
+            onClick: onClickFavorite,
+            disabled: false,
+            "data-action": "remove",
+          };
+        default:
+          break;
+      }
 
-        return undefined;
-      });
-    },
-    [contextOptions, item]
-  );
+      return undefined;
+    });
+  }, [contextOptions, item]);
+
+  const onDropZoneUpload = (files, uploadToFolder) => {
+    const folderId = uploadToFolder ? uploadToFolder : selectedFolderId;
+
+    dragging && setDragging(false);
+    startUpload(files, folderId, t);
+  };
+
+  const onDrop = (items) => {
+    if (!fileExst) {
+      onDropZoneUpload(items, item.id);
+    } else {
+      onDropZoneUpload(items, selectedFolderId);
+    }
+  };
 
   // const onSelectItem = () => {
   //   selected === "close" && setSelected("none");
@@ -457,28 +489,25 @@ const SimpleFilesRow = (props) => {
   const contextOptionsProps =
     !isEdit && contextOptions && contextOptions.length > 0
       ? {
-          contextOptions: getFilesContextOptions(contextOptions, item),
+          contextOptions: getFilesContextOptions(),
         }
       : {};
 
   const checkedProps = isEdit || id <= 0 ? {} : { checked };
-
   const element = getItemIcon(isEdit || id <= 0);
+  const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
+  let className = isFolder && access < 2 && !isRecycleBin ? " dropable" : "";
+  if (draggable) className += " draggable";
 
   const sharedButton =
     !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
       ? null
       : getSharedButton(shared);
 
-  const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
-
-  let className = isFolder && access < 2 && !isRecycleBin ? " dropable" : "";
-  if (draggable) className += " draggable";
-
   return (
     <DragAndDrop
       className={className}
-      //onDrop={this.onDrop.bind(this, item)}
+      onDrop={onDrop}
       //onMouseDown={this.onMouseDown}
       dragging={dragging && isFolder && access < 2}
       {...contextOptionsProps}
@@ -517,11 +546,12 @@ export default inject(
       versionHistoryStore,
       filesActionsStore,
       mediaViewerDataStore,
+      uploadDataStore,
     },
     { item }
   ) => {
     const { homepage, isTabletView } = auth.settingsStore;
-    const { dragging, setIsLoading } = initFilesStore;
+    const { dragging, setDragging, setIsLoading } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
@@ -532,6 +562,7 @@ export default inject(
       showDeleteThirdPartyDialog,
       setMoveToPanelVisible,
       setCopyPanelVisible,
+      setShareItem,
     } = dialogsStore;
 
     const {
@@ -544,7 +575,7 @@ export default inject(
       fileActionStore,
     } = filesStore;
 
-    const { isRootFolder } = selectedFolderStore;
+    const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
     const { setIsVerHistoryPanel, setVerHistoryFileId } = versionHistoryStore;
     const { setAction } = fileActionStore;
 
@@ -554,7 +585,7 @@ export default inject(
 
     const isFolder = selectedItem ? false : item.fileExst ? false : true;
     const draggable =
-      selectedItem && isRecycleBinFolder && selectedItem.id !== id;
+      !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
 
     const {
       deleteFileAction,
@@ -569,6 +600,7 @@ export default inject(
     } = filesActionsStore;
 
     const { setMediaViewerData } = mediaViewerDataStore;
+    const { startUpload } = uploadDataStore;
 
     return {
       dragging,
@@ -584,10 +616,12 @@ export default inject(
       checked: selection.some((el) => el.id === item.id),
       isFolder,
       draggable,
+      isItemsSelected: !!selection.length,
       homepage,
       isTabletView,
       actionId: fileActionStore.id,
       setSharingPanelVisible,
+      setShareItem,
       setChangeOwnerPanelVisible,
       setRemoveItem,
       showDeleteThirdPartyDialog,
@@ -608,16 +642,9 @@ export default inject(
       selectRowAction,
       setThirdpartyInfo,
       setMediaViewerData,
+      selectedFolderId,
+      setDragging,
+      startUpload,
     };
   }
 )(withTranslation("Home")(observer(SimpleFilesRow)));
-
-// onDrop = (item, items, e) => {
-//   const { onDropZoneUpload, selectedFolderId } = this.props;
-
-//   if (!item.fileExst) {
-//     onDropZoneUpload(items, item.id);
-//   } else {
-//     onDropZoneUpload(items, selectedFolderId);
-//   }
-// };

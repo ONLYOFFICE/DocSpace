@@ -48,11 +48,13 @@ class PasswordInput extends React.Component {
   };
 
   onBlur = (e) => {
+    e.persist();
     this.hideTooltip();
     if (this.props.onBlur) this.props.onBlur(e);
   };
 
   onKeyDown = (e) => {
+    e.persist();
     if (this.props.onKeyDown) this.props.onKeyDown(e);
   };
 
@@ -469,52 +471,73 @@ class PasswordInput extends React.Component {
 }
 
 PasswordInput.propTypes = {
+  /** Allows you to set the component id  */
   id: PropTypes.string,
+  /** Allows you to set the component auto-complete  */
   autoComplete: PropTypes.string,
+  /** It is necessary for correct display of values ​​inside input */
   inputType: PropTypes.oneOf(["text", "password"]),
+  /** Input name */
   inputName: PropTypes.string,
+  /** Required to associate password field with email field */
   emailInputName: PropTypes.string,
+  /** Input value */
   inputValue: PropTypes.string,
+  /** Will be triggered whenever an PasswordInput typing  */
   onChange: PropTypes.func,
   onKeyDown: PropTypes.func,
   onBlur: PropTypes.func,
+  /** If you need to set input width manually */
   inputWidth: PropTypes.string,
   hasError: PropTypes.bool,
   hasWarning: PropTypes.bool,
   placeholder: PropTypes.string,
   tabIndex: PropTypes.number,
   maxLength: PropTypes.number,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-
+  /** Set input disabled */
   isDisabled: PropTypes.bool,
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
   scale: PropTypes.bool,
-
+  /** Allows to hide NewPasswordButton */
   hideNewPasswordButton: PropTypes.bool,
+  /** Allows to hide Tooltip */
   isDisableTooltip: PropTypes.bool,
+  /** Allows to show text Tooltip */
   isTextTooltipVisible: PropTypes.bool,
-
+  /** Translation of text for copying email data and password  */
   clipActionResource: PropTypes.string,
+  /** Text translation email to copy */
   clipEmailResource: PropTypes.string,
+  /** Text translation password to copy */
   clipPasswordResource: PropTypes.string,
+  /** Text translation copy action to copy */
   clipCopiedResource: PropTypes.string,
-
+  /** Text translation tooltip */
   tooltipPasswordTitle: PropTypes.string,
+  /** Password text translation is long tooltip  */
   tooltipPasswordLength: PropTypes.string,
+  /** Digit text translation tooltip */
   tooltipPasswordDigits: PropTypes.string,
+  /** Capital text translation tooltip */
   tooltipPasswordCapital: PropTypes.string,
+  /** Special text translation tooltip */
   tooltipPasswordSpecial: PropTypes.string,
-
+  /** Set of special characters for password generator and validator */
   generatorSpecial: PropTypes.string,
   NewPasswordButtonVisible: PropTypes.bool,
+  /** Set of settings for password generator and validator */
   passwordSettings: PropTypes.object.isRequired,
-
+  /** Will be triggered whenever an PasswordInput typing, return bool value */
   onValidateInput: PropTypes.func,
+  /** Will be triggered if you press copy button, return formatted value */
   onCopyToClipboard: PropTypes.func,
 
   tooltipOffsetLeft: PropTypes.number,
-
+  /** Set simple view of password input (without tooltips, password progress bar and several additional buttons (copy and generate password) */
   simpleView: PropTypes.bool,
 };
 

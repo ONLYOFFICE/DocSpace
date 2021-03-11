@@ -636,9 +636,6 @@ class FilesStore {
 
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
-      //let value = fileExst ? `file_${id}` : `folder_${id}`;
-      //value += draggable ? "_draggable" : "";
-
       //const isCanWebEdit = canWebEdit(item.fileExst);
       const icon = getIcon(24, fileExst, providerKey);
 
@@ -669,13 +666,11 @@ class FilesStore {
         title,
         updated,
         updatedBy,
-        //value,
         version,
         versionGroup,
         viewUrl,
         webUrl,
         providerKey,
-        //draggable,
         canOpenPlayer,
         //canWebEdit: isCanWebEdit,
         //canShare,
@@ -836,6 +831,7 @@ class FilesStore {
   };
 
   setSelections = (items) => {
+    if (!items.length) return;
     if (this.selection.length > items.length) {
       //Delete selection
       const newSelection = [];

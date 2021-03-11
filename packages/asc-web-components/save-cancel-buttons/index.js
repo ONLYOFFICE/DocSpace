@@ -72,13 +72,21 @@ class SaveCancelButtons extends React.Component {
 }
 
 SaveCancelButtons.propTypes = {
+  /** Accepts css id */
   id: PropTypes.string,
+  /** Accepts css class */
   className: PropTypes.string,
+  /** Text reminding of unsaved changes */
   reminderTest: PropTypes.string,
+  /** Save button label */
   saveButtonLabel: PropTypes.string,
+  /** Cancel button label  */
   cancelButtonLabel: PropTypes.string,
+  /** What the save button will trigger when clicked */
   onSaveClick: PropTypes.func,
+  /** What the cancel button will trigger when clicked */
   onCancelClick: PropTypes.func,
+  /** Show message about unsaved changes (Only shown on desktops) */
   showReminder: PropTypes.bool,
 };
 

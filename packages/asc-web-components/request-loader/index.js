@@ -24,15 +24,25 @@ const RequestLoader = (props) => {
 };
 
 RequestLoader.propTypes = {
+  /** Visibility */
   visible: PropTypes.bool,
+  /** CSS z-index */
   zIndex: PropTypes.number,
+  /** Svg height and width value */
   loaderSize: PropTypes.string,
+  /** Svg color */
   loaderColor: PropTypes.string,
+  /** Svg aria-label and text label */
   label: PropTypes.string,
+  /** Text label font size */
   fontSize: PropTypes.string,
+  /** Text label font color */
   fontColor: PropTypes.string,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

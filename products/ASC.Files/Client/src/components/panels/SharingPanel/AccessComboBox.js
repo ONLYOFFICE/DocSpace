@@ -81,7 +81,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("ReadOnly") && (
         <DropDownItem
           label={t("ReadOnly")}
-          icon="static/images/eye.react.svg"
+          icon="/static/images/eye.react.svg"
           data-id={itemId}
           data-access={ReadOnly}
           onClick={onAccessChange}

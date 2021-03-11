@@ -3,8 +3,7 @@ import PropTypes from "prop-types";
 
 import DropDown from "../drop-down";
 import Link from "./link";
-import StyledProgressBar from "./styled-progress-bar"
-
+import StyledProgressBar from "./styled-progress-bar";
 
 const ProgressBar = (props) => {
   const { percent, label, dropDownContent, ...rest } = props;
@@ -62,8 +61,11 @@ const ProgressBar = (props) => {
 };
 
 ProgressBar.propTypes = {
+  /** Progress value. */
   percent: PropTypes.number.isRequired,
+  /** Text in progress-bar. */
   label: PropTypes.string,
+  /** Drop-down content. */
   dropDownContent: PropTypes.any,
 };
 

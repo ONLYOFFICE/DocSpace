@@ -103,9 +103,13 @@ const Scrollbar = React.forwardRef((props, ref) => {
 });
 
 Scrollbar.propTypes = {
+  /** Scrollbar style type */
   stype: PropTypes.string,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id  */
   id: PropTypes.string,
+  /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

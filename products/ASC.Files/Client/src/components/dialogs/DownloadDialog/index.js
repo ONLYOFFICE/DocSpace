@@ -135,6 +135,7 @@ class DownloadDialogComponent extends React.Component {
     const {
       //onDownloadProgress,
       t,
+      getDownloadProgress,
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.props;
@@ -154,7 +155,8 @@ class DownloadDialogComponent extends React.Component {
       downloadFormatFiles(fileConvertIds, folderIds)
         .then((res) => {
           this.onClose();
-          this.props.getDownloadProgress(res[0], t("ArchivingData"));
+          getDownloadProgress(res[0], t("ArchivingData"))
+            .catch((err) => toastr.error(err));
         })
         .catch((err) => {
           setSecondaryProgressBarData({

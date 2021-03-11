@@ -125,19 +125,32 @@ class Row extends React.Component {
 }
 
 Row.propTypes = {
+  /** Required to host the Checkbox component. Its location is fixed and it is always the first.
+   * If there is no value, the occupied space is distributed among the other child elements. */
   checked: PropTypes.bool,
   children: PropTypes.element,
+  /** Accepts class */
   className: PropTypes.string,
   contentElement: PropTypes.any,
+  /** Required for the width task of the ContextMenuButton component. */
   contextButtonSpacerWidth: PropTypes.string,
+  /** Required to host the ContextMenuButton component. It is always located near the right border of the container,
+   * regardless of the contents of the child elements. If there is no value, the occupied space is distributed among the other child elements. */
   contextOptions: PropTypes.array,
+  /** Current row item information. */
   data: PropTypes.object,
+  /** Required to host some component. It has a fixed order of location, if the Checkbox component is specified,
+   * then it follows, otherwise it occupies the first position. If there is no value, the occupied space is distributed among the other child elements. */
   element: PropTypes.element,
+  /** Accepts id  */
   id: PropTypes.string,
   indeterminate: PropTypes.bool,
+  /** shouldComponentUpdate function  */
   needForUpdate: PropTypes.func,
+  /** when selecting row element. Returns data value. */
   onSelect: PropTypes.func,
   selectItem: PropTypes.func,
+  /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };

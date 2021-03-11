@@ -11,6 +11,7 @@ import Box from "@appserver/components/box";
 import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
 import ModalDialogContainer from "./modalDialogContainer";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 
 class ConsumerModalDialog extends React.Component {
   constructor(props) {
@@ -44,7 +45,7 @@ class ConsumerModalDialog extends React.Component {
     const { state } = this;
 
     onChangeLoading(true);
-
+    showLoader();
     const prop = [];
 
     let i = 0;
@@ -62,10 +63,12 @@ class ConsumerModalDialog extends React.Component {
     updateConsumerProps(data)
       .then(() => {
         onChangeLoading(false);
+        hideLoader();
         toastr.success(t("ThirdPartyPropsActivated"));
       })
       .catch((error) => {
         onChangeLoading(false);
+        hideLoader();
         toastr.error(error);
       })
       .finally(onModalClose());

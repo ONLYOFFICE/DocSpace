@@ -490,6 +490,19 @@ class FilesRowContent extends React.PureComponent {
     );
   };
 
+  onClickLock = () => {
+    const { item } = this.props;
+    const { locked, id } = item;
+    this.props.lockFileAction(id, !locked).catch((err) => toastr.error(err));
+  };
+
+  onClickFavorite = () => {
+    const { t, item } = this.props;
+    this.props
+      .setFavoriteAction("remove", item.id)
+      .then(() => toastr.success(t("RemovedFromFavorites")))
+      .catch((err) => toastr.error(err));
+  };
   render() {
     const {
       t,
@@ -629,7 +642,7 @@ class FilesRowContent extends React.PureComponent {
                     size="small"
                     data-id={item.id}
                     data-locked={true}
-                    onClick={this.props.onClickLock}
+                    onClick={this.onClickLock}
                   />
                 )}
                 {fileStatus === 32 && !isTrashFolder && (
@@ -639,22 +652,13 @@ class FilesRowContent extends React.PureComponent {
                     data-action="remove"
                     data-id={item.id}
                     data-title={item.title}
-                    onClick={this.props.onClickFavorite}
+                    onClick={this.onClickFavorite}
                   />
                 )}
                 {fileStatus === 1 && (
                   <StyledFileActionsConvertEditDocIcon
                     className="badge"
                     size="small"
-                  />
-                )}
-                {locked && (
-                  <StyledFileActionsLockedIcon
-                    className="badge lock-file"
-                    size="small"
-                    data-id={item.id}
-                    data-locked={true}
-                    onClick={this.props.onClickLock}
                   />
                 )}
                 {versionGroup > 1 && (
@@ -860,6 +864,8 @@ export default inject(
       addExpandedKeys,
       openDocEditor,
       editCompleteAction: filesActionsStore.editCompleteAction,
+      lockFileAction: filesActionsStore.lockFileAction,
+      setFavoriteAction: filesActionsStore.setFavoriteAction,
       setMediaViewerData,
     };
   }
