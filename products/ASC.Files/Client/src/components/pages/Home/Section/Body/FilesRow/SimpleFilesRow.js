@@ -211,7 +211,7 @@ const SimpleFilesRow = (props) => {
   };
 
   const lockFile = () =>
-    lockFileAction(id, locked).catch((err) => toastr.error(err));
+    lockFileAction(id, !locked).catch((err) => toastr.error(err));
 
   const onClickLinkForPortal = () => {
     const isFile = !!fileExst;

@@ -490,6 +490,12 @@ class FilesRowContent extends React.PureComponent {
     );
   };
 
+  onClickLock = () => {
+    const { item } = this.props;
+    const { locked, id } = item;
+    this.props.lockFileAction(id, !locked).catch((err) => toastr.error(err));
+  };
+
   render() {
     const {
       t,
@@ -629,7 +635,7 @@ class FilesRowContent extends React.PureComponent {
                     size="small"
                     data-id={item.id}
                     data-locked={true}
-                    onClick={this.props.onClickLock}
+                    onClick={this.onClickLock}
                   />
                 )}
                 {fileStatus === 32 && !isTrashFolder && (
@@ -851,6 +857,7 @@ export default inject(
       addExpandedKeys,
       openDocEditor,
       editCompleteAction: filesActionsStore.editCompleteAction,
+      lockFileAction: filesActionsStore.lockFileAction,
       setMediaViewerData,
     };
   }
