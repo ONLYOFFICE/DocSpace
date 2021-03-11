@@ -10,6 +10,9 @@ import TabContainer from "./";
       code: stories.basic,
     },
   }}
+  argTypes={{
+    onSelect: { action: "onSelect. Selected items: " },
+  }}
 />
 
 # TabContainer
@@ -84,4 +87,8 @@ const array_items = [
     ),
   },
 ];
+```
+
+```jsx
+<TabContainer elements={array_items} />
 ```
