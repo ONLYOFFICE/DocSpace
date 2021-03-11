@@ -194,7 +194,7 @@ class EmbeddingPanelComponent extends React.Component {
                   <IconButton
                     className="embedding-panel_copy-icon"
                     size="16"
-                    iconName="static/images/copy.react.svg"
+                    iconName="/static/images/copy.react.svg"
                     color="#333"
                     onClick={this.onCopyLink}
                   />

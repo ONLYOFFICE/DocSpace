@@ -140,6 +140,7 @@ const SectionHeaderContent = (props) => {
     isTabletView,
     //selectAll,
     setSelected,
+    resetFilter,
     //selectByStatus,
   } = props;
 
@@ -295,9 +296,9 @@ const SectionHeaderContent = (props) => {
   );
 
   const onDeleteGroup = useCallback(() => {
-    deleteGroup(group.id).then(() =>
-      toastr.success(t("SuccessfullyRemovedGroup"))
-    );
+    deleteGroup(group.id)
+      .then(() => toastr.success(t("SuccessfullyRemovedGroup")))
+      .then(() => resetFilter());
   }, [deleteGroup, group, t]);
 
   const getContextOptionsGroup = useCallback(() => {
@@ -508,6 +509,7 @@ const SectionHeaderContent = (props) => {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
+    resetFilter: peopleStore.resetFilter,
     customNames: auth.settingsStore.customNames,
     homepage: auth.settingsStore.homepage,
     isLoaded: auth.isLoaded,
