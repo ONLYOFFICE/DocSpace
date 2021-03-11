@@ -52,6 +52,7 @@ module.exports = {
     "../text/*.stories.@(js|mdx)",
     "../text-input/*.stories.@(js|mdx)",
     "../textarea/*.stories.@(js|mdx)",
+    "../theme-provider/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",
