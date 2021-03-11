@@ -1,40 +1,44 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import {
-  text,
-  boolean,
-  withKnobs,
-  color,
-  select,
-} from "@storybook/addon-knobs/react";
-import Text from ".";
-import Section from "../../../.storybook/decorators/section";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
+import Text from "./";
 
 const textTags = ["p", "span", "div"];
 
-storiesOf("Components|Text", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("base", () => (
-    <Section>
-      <div style={{ width: "100%" }}>
-        <Text
-          title={text("title", "")}
-          as={select("as", textTags, "p")}
-          fontSize={text("fontSize", "13px")}
-          fontWeight={text("fontWeight", "400")}
-          truncate={boolean("truncate", false)}
-          color={color("color", "#333333")}
-          backgroundColor={color("backgroundColor", "")}
-          isBold={boolean("isBold", false)}
-          isItalic={boolean("isItalic", false)}
-          isInline={boolean("isInline", false)}
-          display={text("display")}
-        >
-          {text("Text", "Sample text")}
-        </Text>
-      </div>
-    </Section>
-  ));
+export default {
+  title: "Components/Text",
+  component: Text,
+  parameters: {
+    docs: {
+      description: {
+        component: "Component that displays plain text",
+      },
+    },
+  },
+  argTypes: {
+    color: { control: "color" },
+    backgroundColor: { control: "color" },
+    exampleText: { control: "text" },
+  },
+};
+
+const Template = ({ exampleText, ...args }) => {
+  return (
+    <div style={{ width: "100%" }}>
+      <Text {...args}>{exampleText}</Text>
+    </div>
+  );
+};
+
+export const Default = Template.bind({});
+Default.args = {
+  title: "",
+  as: "p",
+  fontSize: "13px",
+  fontWeight: "400",
+  truncate: false,
+  color: "#333333",
+  backgroundColor: "",
+  isBold: false,
+  isItalic: false,
+  isInline: false,
+  exampleText: "Sample text",
+};

@@ -49,6 +49,8 @@ module.exports = {
     "../selector-add-button/*.stories.@(js|mdx)",
     "../social-button/*.stories.@(js|mdx)",
     "../tabs-container/*.stories.@(js|mdx)",
+    "../text/*.stories.@(js|mdx)",
+    "../text-input/*.stories.@(js|mdx)",
   ],
   addons: [
     "@storybook/addon-links",
