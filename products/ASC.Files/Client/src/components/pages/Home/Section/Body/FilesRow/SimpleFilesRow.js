@@ -169,10 +169,7 @@ const SimpleFilesRow = (props) => {
     return (
       <>
         <ReactSVG
-          beforeInjection={(svg) => {
-            svg.setAttribute("style", "margin-top: 4px");
-            isEdit && svg.setAttribute("style", "margin: 4px 0 0 28px");
-          }}
+          className={`react-svg-icon${isEdit ? " is-edit" : ""}`}
           src={icon}
           loading={svgLoader}
         />
