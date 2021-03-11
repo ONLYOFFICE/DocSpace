@@ -1,9 +1,7 @@
 import React from "react";
 import IconButton from "@appserver/components/icon-button";
-import ComboBox from "@appserver/components/combobox";
 import Row from "@appserver/components/row";
 import Text from "@appserver/components/text";
-import DropDownItem from "@appserver/components/drop-down-item";
 import toastr from "studio/toastr";
 import copy from "copy-to-clipboard";
 import LinkRow from "./linkRow";
@@ -27,17 +25,6 @@ class SharingRow extends React.Component {
       this.setState({ access });
     }
   }
-
-  // shouldComponentUpdate(nextProps) {
-  //   if (!equal(this.props, nextProps)) {
-  //     return true;
-  //   }
-  //   if (this.state.access !== this.props.item.access) {
-  //     return true;
-  //   }
-
-  //   return true;
-  // }
 
   onCopyInternalLink = () => {
     const { internalLink, t } = this.props;
