@@ -13,6 +13,7 @@ import Loader from "@appserver/components/loader";
 import PeopleSelector from "studio/PeopleSelector";
 import isEmpty from "lodash/isEmpty";
 import { inject } from "mobx-react";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 
 const OwnerContainer = styled.div`
   .link_style {
@@ -83,7 +84,7 @@ class PureOwnerSettings extends Component {
 
   componentDidMount() {
     const { owner, getPortalOwner } = this.props;
-
+    showLoader();
     if (isEmpty(owner, true)) {
       getPortalOwner()
         .catch((error) => {
@@ -92,6 +93,7 @@ class PureOwnerSettings extends Component {
         .finally(() => this.setState({ showLoader: false }));
     }
     this.setState({ showLoader: false });
+    hideLoader();
   }
 
   onChangeOwner = () => {
