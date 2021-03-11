@@ -22,8 +22,6 @@ import { FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
 
-//import toastr from "@appserver/components/toast";
-
 const {
   fetchFiles,
   markItemAsFavorite,
@@ -77,7 +75,7 @@ class FilesActionStore {
         alert: false,
       });
 
-      removeFiles(folderIds, fileIds, deleteAfter, immediately)
+      return removeFiles(folderIds, fileIds, deleteAfter, immediately)
         .then((res) => {
           const id = res[0] && res[0].id ? res[0].id : null;
           this.loopDeleteOperation(id, translations);
@@ -87,7 +85,6 @@ class FilesActionStore {
             visible: true,
             alert: true,
           });
-          //toastr.error(err);
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
     }
@@ -130,7 +127,6 @@ class FilesActionStore {
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
               setTreeFolders(newTreeFolders);
             }
-            //toastr.success(successMessage);
           });
         }
       })
@@ -139,7 +135,6 @@ class FilesActionStore {
           visible: true,
           alert: true,
         });
-        //toastr.error(err);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
@@ -147,7 +142,7 @@ class FilesActionStore {
   getDownloadProgress = (data, label) => {
     const url = data.url;
 
-    getProgress()
+    return getProgress()
       .then((res) => {
         const currentItem = res.find((x) => x.id === data.id);
         if (!url) {
@@ -169,7 +164,6 @@ class FilesActionStore {
           visible: true,
           alert: true,
         });
-        //toastr.error(err);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
@@ -180,8 +174,9 @@ class FilesActionStore {
     const folderIds = [];
     const items = [];
 
-    if (selection.length === 1) {
-      return window.open(selection[0].viewUrl, "_blank");
+    if (selection.length === 1 && selection[0].fileExst) {
+      window.open(selection[0].viewUrl, "_blank");
+      return Promise.resolve();
     }
 
     for (let item of selection) {
@@ -202,7 +197,7 @@ class FilesActionStore {
       alert: false,
     });
 
-    downloadFiles(fileIds, folderIds)
+    return downloadFiles(fileIds, folderIds)
       .then((res) => {
         this.getDownloadProgress(res[0], label);
       })
@@ -211,7 +206,6 @@ class FilesActionStore {
           visible: true,
           alert: true,
         });
-        //toastr.error(err);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
@@ -263,7 +257,7 @@ class FilesActionStore {
     conflictResolveType,
     deleteAfter
   ) => {
-    copyToFolder(
+    return copyToFolder(
       destFolderId,
       folderIds,
       fileIds,
@@ -320,7 +314,7 @@ class FilesActionStore {
       label: translations.deleteOperation,
       alert: false,
     });
-    deleteFile(fileId)
+    return deleteFile(fileId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, false, translations);
@@ -330,7 +324,6 @@ class FilesActionStore {
           visible: true,
           alert: true,
         });
-        //toastr.error(err);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
@@ -343,7 +336,7 @@ class FilesActionStore {
       label: translations.deleteOperation,
       alert: false,
     });
-    deleteFolder(folderId, currentFolderId)
+    return deleteFolder(folderId, currentFolderId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, true, translations);
@@ -353,7 +346,6 @@ class FilesActionStore {
           visible: true,
           alert: true,
         });
-        //toastr.error(err);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
@@ -394,16 +386,12 @@ class FilesActionStore {
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
               setTreeFolders(newTreeFolders);
             }
-            //isFolder
-            //  ? toastr.success(translations.folderRemoved)
-            //  : toastr.success(translations.fileRemoved);
           })
           .catch((err) => {
             setSecondaryProgressBarData({
               visible: true,
               alert: true,
             });
-            //toastr.error(err);
             setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           })
           .finally(() =>
@@ -415,22 +403,22 @@ class FilesActionStore {
 
   lockFileAction = (id, locked) => {
     setIsLoading(true);
-    lockFile(id, locked).then((res) => {
+    return lockFile(id, locked).then((res) => {
       /*const newFiles = files;
         const indexOfFile = newFiles.findIndex(x => x.id === res.id);
         newFiles[indexOfFile] = res;*/
-      fetchFiles(selectedFolderStore.id, filesStore.filter)
-        //.catch((err) => toastr.error(err))
-        .finally(() => setIsLoading(false));
+      fetchFiles(selectedFolderStore.id, filesStore.filter).finally(() =>
+        setIsLoading(false)
+      );
     });
   };
 
   finalizeVersionAction = (id) => {
     setIsLoading(true);
 
-    finalizeVersion(id, 0, false)
+    return finalizeVersion(id, 0, false)
       .then(() => {
-        return fetchFiles(selectedFolderStore.id, filesStore.filter); //.catch((err) => toastr.error(err));
+        fetchFiles(selectedFolderStore.id, filesStore.filter);
       })
       .finally(() => setIsLoading(false));
   };
@@ -450,8 +438,8 @@ class FilesActionStore {
       alert: false,
     });
 
-    this.copyToAction(
-      selectedFolderId,
+    return this.copyToAction(
+      selectedFolderStore.id,
       folderIds,
       fileIds,
       conflictResolveType,
@@ -464,20 +452,15 @@ class FilesActionStore {
     switch (action) {
       case "mark":
         return markItemAsFavorite([id]).then(() => getFileInfo(id));
-      //.then(() => toastr.success(t("MarkedAsFavorite")))
-      //.catch((e) => toastr.error(e));
+
       case "remove":
-        return (
-          removeItemFromFavorite([id])
-            .then(() => {
-              return treeFoldersStore.isFavoritesFolder
-                ? fetchFavoritesFolder(selectedFolderId)
-                : getFileInfo(id);
-            })
-            //.then(() => toastr.success(t("RemovedFromFavorites")))
-            .then(() => setSelected("close"))
-        );
-      //.catch((e) => toastr.error(e));
+        return removeItemFromFavorite([id])
+          .then(() => {
+            return treeFoldersStore.isFavoritesFolder
+              ? fetchFavoritesFolder(selectedFolderStore.id)
+              : getFileInfo(id);
+          })
+          .then(() => setSelected("close"));
       default:
         return;
     }

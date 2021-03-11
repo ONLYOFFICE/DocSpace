@@ -274,11 +274,7 @@ class PureHome extends React.Component {
           </PageLayout.SectionFilter>
 
           <PageLayout.SectionBody>
-            <SectionBodyContent
-              isMobile={isMobile}
-              onChange={this.onRowChange}
-              onDropZoneUpload={this.onDrop}
-            />
+            <SectionBodyContent />
           </PageLayout.SectionBody>
 
           <PageLayout.SectionPaging>
@@ -319,7 +315,6 @@ export default inject(
       filter,
       fileActionStore,
       selection,
-
       setSelections,
     } = filesStore;
 

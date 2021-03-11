@@ -1,17 +1,23 @@
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
+const TerserPlugin = require("terser-webpack-plugin");
+//const CompressionPlugin = require("compression-webpack-plugin");
+
 const path = require("path");
 const pkg = require("./package.json");
 const deps = pkg.dependencies;
 const homepage = pkg.homepage;
+const title = pkg.title;
 
 const config = {
   entry: "./src/index",
   mode: "development",
 
   devServer: {
-    contentBase: path.join(__dirname, "public"),
+    contentBase: [path.join(__dirname, "dist")],
     port: 5001,
     historyApiFallback: {
       // Paths with dots should still use the history fallback.
@@ -44,12 +50,18 @@ const config = {
 
   output: {
     publicPath: "auto",
-    chunkFilename: "[id].[contenthash].js",
+    chunkFilename: "js/[id].[contenthash].js",
+    assetModuleFilename: "assets/[hash][ext][query]",
     path: path.resolve(process.cwd(), "dist"),
+    filename: "[name].[contenthash].bundle.js",
   },
 
   module: {
     rules: [
+      {
+        test: /\.(png|jpe?g|gif|ico)$/i,
+        type: "asset/resource",
+      },
       {
         test: /\.m?js/,
         type: "javascript/auto",
@@ -108,12 +120,13 @@ const config = {
   },
 
   plugins: [
+    new CleanWebpackPlugin(),
     new ModuleFederationPlugin({
       name: "studio",
       filename: "remoteEntry.js",
       remotes: {
         studio: `studio@${homepage}/remoteEntry.js`,
-        people: `people@${homepage}/products/people//remoteEntry.js`,
+        people: `people@${homepage}/products/people/remoteEntry.js`,
         files: `files@${homepage}/products/files/remoteEntry.js`,
         login: `login@${homepage}/login/remoteEntry.js`,
       },
@@ -147,6 +160,19 @@ const config = {
     new HtmlWebpackPlugin({
       template: "./public/index.html",
       publicPath: homepage,
+      title: title,
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "public",
+          globOptions: {
+            dot: true,
+            gitignore: true,
+            ignore: ["**/index.html"],
+          },
+        },
+      ],
     }),
   ],
 };
@@ -154,6 +180,21 @@ const config = {
 module.exports = (env, argv) => {
   if (argv.mode === "production") {
     config.mode = "production";
+    config.optimization = {
+      splitChunks: { chunks: "all" },
+      minimize: true,
+      minimizer: [new TerserPlugin()],
+    };
+    // config.plugins.push(
+    //   new CompressionPlugin({
+    //     filename: "[path][base].gz[query]",
+    //     algorithm: "gzip",
+    //     test: /\.js(\?.*)?$/i,
+    //     threshold: 10240,
+    //     minRatio: 0.8,
+    //     deleteOriginalAssets: true,
+    //   })
+    // );
   } else {
     config.devtool = "cheap-module-source-map";
   }

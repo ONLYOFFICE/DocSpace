@@ -1,20 +1,28 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
-import Section from "../../../.storybook/decorators/section";
 import RowContainer from ".";
 import Row from "../row";
 import RowContent from "../row-content";
 import Avatar from "../avatar";
 import Link from "../link";
-import SendClockIcon from "../../../../../public/images/send.clock.react.svg";
-import CatalogSpamIcon from "../../../../../public/images/catalog.spam.react.svg";
+import SendClockIcon from "../public/static/images/send.clock.react.svg";
+import CatalogSpamIcon from "../public/static/images/catalog.spam.react.svg";
+
+export default {
+  title: "Components/RowContainer",
+  component: RowContainer,
+  subcomponents: { Row, RowContent },
+  parameters: {
+    docs: { description: { component: "Container for Row component" } },
+  },
+};
+
 const getRndString = (n) =>
   Math.random()
     .toString(36)
     .substring(2, n + 2);
+
 const getRndNumber = (a, b) => Math.floor(Math.random() * (b - a)) + a;
+
 const getRndBool = () => Math.random() >= 0.5;
 
 const fillFakeData = (n) => {
@@ -56,104 +64,93 @@ const fillFakeData = (n) => {
 
 const fakeData = fillFakeData(20);
 
-storiesOf("Components|RowContainer", module)
-  .addDecorator(withReadme(Readme))
-  .add("base", () => {
-    return (
-      <Section>
-        <RowContainer manualHeight="500px">
-          {fakeData.map((user) => {
-            const element = (
-              <Avatar
-                size="min"
-                role={user.role}
-                userName={user.userName}
-                source={user.avatar}
-              />
-            );
-            const nameColor = user.status === "pending" ? "#A3A9AE" : "#333333";
-            const sideInfoColor =
-              user.status === "pending" ? "#D0D5DA" : "#A3A9AE";
+const Template = (args) => {
+  return (
+    <RowContainer {...args} manualHeight="500px">
+      {fakeData.map((user) => {
+        const element = (
+          <Avatar
+            size="min"
+            role={user.role}
+            userName={user.userName}
+            source={user.avatar}
+          />
+        );
+        const nameColor = user.status === "pending" ? "#A3A9AE" : "#333333";
+        const sideInfoColor = user.status === "pending" ? "#D0D5DA" : "#A3A9AE";
 
-            return (
-              <Row
-                key={user.id}
-                status={user.status}
-                checked={false}
-                data={user}
-                element={element}
-                contextOptions={user.contextOptions}
+        return (
+          <Row
+            key={user.id}
+            status={user.status}
+            checked={false}
+            data={user}
+            element={element}
+            contextOptions={user.contextOptions}
+          >
+            <RowContent>
+              <Link
+                type="page"
+                title={user.userName}
+                isBold={true}
+                fontSize="15px"
+                color={nameColor}
               >
-                <RowContent>
-                  <Link
-                    type="page"
-                    title={user.userName}
-                    isBold={true}
-                    fontSize="15px"
-                    color={nameColor}
-                  >
-                    {user.userName}
-                  </Link>
-                  <>
-                    {user.status === "pending" && (
-                      <SendClockIcon
-                        size="small"
-                        isfill={true}
-                        color="#3B72A7"
-                      />
-                    )}
-                    {user.status === "disabled" && (
-                      <CatalogSpamIcon
-                        size="small"
-                        isfill={true}
-                        color="#3B72A7"
-                      />
-                    )}
-                  </>
-                  {user.isHead ? (
-                    <Link
-                      containerWidth="120px"
-                      type="page"
-                      title="Head of department"
-                      fontSize="12px"
-                      color={sideInfoColor}
-                    >
-                      Head of department
-                    </Link>
-                  ) : (
-                    <div></div>
-                  )}
-                  <Link
-                    containerWidth="160px"
-                    type="action"
-                    title={user.department}
-                    fontSize="12px"
-                    color={sideInfoColor}
-                  >
-                    {user.department}
-                  </Link>
-                  <Link
-                    type="page"
-                    title={user.mobilePhone}
-                    fontSize="12px"
-                    color={sideInfoColor}
-                  >
-                    {user.mobilePhone}
-                  </Link>
-                  <Link
-                    containerWidth="180px"
-                    type="page"
-                    title={user.email}
-                    fontSize="12px"
-                    color={sideInfoColor}
-                  >
-                    {user.email}
-                  </Link>
-                </RowContent>
-              </Row>
-            );
-          })}
-        </RowContainer>
-      </Section>
-    );
-  });
+                {user.userName}
+              </Link>
+              <>
+                {user.status === "pending" && (
+                  <SendClockIcon size="small" isfill={true} color="#3B72A7" />
+                )}
+                {user.status === "disabled" && (
+                  <CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
+                )}
+              </>
+              {user.isHead ? (
+                <Link
+                  containerWidth="120px"
+                  type="page"
+                  title="Head of department"
+                  fontSize="12px"
+                  color={sideInfoColor}
+                >
+                  Head of department
+                </Link>
+              ) : (
+                <div></div>
+              )}
+              <Link
+                containerWidth="160px"
+                type="action"
+                title={user.department}
+                fontSize="12px"
+                color={sideInfoColor}
+              >
+                {user.department}
+              </Link>
+              <Link
+                type="page"
+                title={user.mobilePhone}
+                fontSize="12px"
+                color={sideInfoColor}
+              >
+                {user.mobilePhone}
+              </Link>
+              <Link
+                containerWidth="180px"
+                type="page"
+                title={user.email}
+                fontSize="12px"
+                color={sideInfoColor}
+              >
+                {user.email}
+              </Link>
+            </RowContent>
+          </Row>
+        );
+      })}
+    </RowContainer>
+  );
+};
+
+export const Default = Template.bind({});

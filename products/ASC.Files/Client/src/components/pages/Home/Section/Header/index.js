@@ -215,7 +215,11 @@ class SectionHeaderContent extends React.Component {
 
   onMoveAction = () => this.props.setMoveToPanelVisible(true);
   onCopyAction = () => this.props.setCopyPanelVisible(true);
-  downloadAction = () => this.props.downloadAction(t("ArchivingData"));
+  downloadAction = () =>
+    this.props
+      .downloadAction(this.props.t("ArchivingData"))
+      .catch((err) => toastr.error(err));
+
   downloadAsAction = () => this.props.setDownloadDialogVisible(true);
   renameAction = () => toastr.info("renameAction click");
   onOpenSharingPanel = () => this.props.setSharingPanelVisible(true);
@@ -237,7 +241,7 @@ class SectionHeaderContent extends React.Component {
         deleteSelectedElem: t("DeleteSelectedElem"),
       };
 
-      deleteAction(translations);
+      deleteAction(translations).catch((err) => toastr.error(err));
     }
   };
 
@@ -555,7 +559,6 @@ export default inject(
     auth,
     initFilesStore,
     filesStore,
-    uploadDataStore,
     dialogsStore,
     treeFoldersStore,
     selectedFolderStore,
@@ -563,7 +566,6 @@ export default inject(
     settingsStore,
   }) => {
     const { setIsLoading } = initFilesStore;
-    const { secondaryProgressDataStore } = uploadDataStore;
     const {
       setSelected,
       fileActionStore,

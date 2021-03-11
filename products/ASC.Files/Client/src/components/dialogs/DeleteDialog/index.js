@@ -52,7 +52,8 @@ class DeleteDialogComponent extends React.Component {
       deleteSelectedElem: t("DeleteSelectedElem"),
     };
 
-    deleteAction(translations);
+    deleteAction(translations)
+      .catch((err) => toastr.error(err));
   };
 
   onChange = (event) => {
