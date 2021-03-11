@@ -283,7 +283,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("Open"),
-            icon: "CatalogFolderIcon",
+            icon: "images/catalog.folder.react.svg",
             onClick: onOpenLocation,
             disabled: false,
           };
@@ -291,7 +291,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("ShowVersionHistory"),
-            icon: "HistoryIcon",
+            icon: "images/history.react.svg",
             onClick: showVersionHistory,
             disabled: false,
           };
@@ -299,7 +299,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("FinalizeVersion"),
-            icon: "HistoryFinalizedIcon",
+            icon: "images/history-finalized.react.svg",
             onClick: finalizeVersion,
             disabled: false,
           };
@@ -312,7 +312,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("OpenLocation"),
-            icon: "DownloadAsIcon",
+            icon: "images/download-as.react.svg",
             onClick: onOpenLocation,
             disabled: false,
           };
@@ -320,7 +320,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("MarkAsFavorite"),
-            icon: "FavoritesIcon",
+            icon: "images/favorites.react.svg",
             onClick: onClickFavorite,
             disabled: false,
             "data-action": "mark",
@@ -329,7 +329,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("UnblockVersion"),
-            icon: "LockIcon",
+            icon: "images/lock.react.svg",
             onClick: lockFile,
             disabled: false,
           };
@@ -337,7 +337,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("SharingSettings"),
-            icon: "CatalogSharedIcon",
+            icon: "images/catalog.shared.react.svg",
             onClick: onClickShare,
             disabled: isSharable,
           };
@@ -345,14 +345,14 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("SendByEmail"),
-            icon: "MailIcon",
+            icon: "/static/images/mail.react.svg",
             disabled: true,
           };
         case "owner-change":
           return {
             key: option,
             label: t("ChangeOwner"),
-            icon: "CatalogUserIcon",
+            icon: "images/catalog.user.react.svg",
             onClick: onOwnerChange,
             disabled: false,
           };
@@ -360,7 +360,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("LinkForPortalUsers"),
-            icon: "InvitationLinkIcon",
+            icon: "/static/images/invitation.link.react.svg",
             onClick: onClickLinkForPortal,
             disabled: false,
           };
@@ -368,7 +368,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("Edit"),
-            icon: "AccessEditIcon",
+            icon: "images/access.edit.react.svg",
             onClick: onClickLinkEdit,
             disabled: false,
           };
@@ -384,7 +384,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("View"),
-            icon: "EyeIcon",
+            icon: "/static/images/eye.react.svg",
             onClick: onMediaFileClick,
             disabled: false,
           };
@@ -392,7 +392,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("Download"),
-            icon: "DownloadIcon",
+            icon: "images/download.react.svg",
             onClick: onClickDownload,
             disabled: false,
           };
@@ -400,7 +400,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("MoveTo"),
-            icon: "MoveToIcon",
+            icon: "images/move.react.svg",
             onClick: onMoveAction,
             disabled: false,
           };
@@ -408,7 +408,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("Copy"),
-            icon: "CopyIcon",
+            icon: "/static/images/copy.react.svg",
             onClick: onCopyAction,
             disabled: false,
           };
@@ -416,7 +416,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("Duplicate"),
-            icon: "CopyIcon",
+            icon: "/static/images/copy.react.svg",
             onClick: onDuplicate,
             disabled: false,
           };
@@ -424,7 +424,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("Rename"),
-            icon: "RenameIcon",
+            icon: "images/rename.react.svg",
             onClick: onClickRename,
             disabled: false,
           };
@@ -432,7 +432,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("ThirdPartyInfo"),
-            icon: "AccessEditIcon",
+            icon: "images/access.edit.react.svg",
             onClick: onChangeThirdPartyInfo,
             disabled: false,
           };
@@ -440,7 +440,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
-            icon: "CatalogTrashIcon",
+            icon: "/static/images/catalog.trash.react.svg",
             onClick: onClickDelete,
             disabled: false,
           };
@@ -448,7 +448,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("RemoveFromFavorites"),
-            icon: "FavoritesIcon",
+            icon: "images/favorites.react.svg",
             onClick: onClickFavorite,
             disabled: false,
             "data-action": "remove",
