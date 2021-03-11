@@ -181,9 +181,13 @@ class TabContainer extends Component {
 }
 
 TabContainer.propTypes = {
+  /** Child elements */
   children: PropTypes.PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  /** Disable the TabContainer  */
   isDisabled: PropTypes.bool,
+  /** Triggered when a title is selected */
   onSelect: PropTypes.func,
+  /** Selected title of tabs container */
   selectedItem: PropTypes.number,
 };
 
