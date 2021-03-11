@@ -496,6 +496,13 @@ class FilesRowContent extends React.PureComponent {
     this.props.lockFileAction(id, !locked).catch((err) => toastr.error(err));
   };
 
+  onClickFavorite = () => {
+    const { t, item } = this.props;
+    this.props
+      .setFavoriteAction("remove", item.id)
+      .then(() => toastr.success(t("RemovedFromFavorites")))
+      .catch((err) => toastr.error(err));
+  };
   render() {
     const {
       t,
@@ -645,7 +652,7 @@ class FilesRowContent extends React.PureComponent {
                     data-action="remove"
                     data-id={item.id}
                     data-title={item.title}
-                    onClick={this.props.onClickFavorite}
+                    onClick={this.onClickFavorite}
                   />
                 )}
                 {fileStatus === 1 && (
@@ -858,6 +865,7 @@ export default inject(
       openDocEditor,
       editCompleteAction: filesActionsStore.editCompleteAction,
       lockFileAction: filesActionsStore.lockFileAction,
+      setFavoriteAction: filesActionsStore.setFavoriteAction,
       setMediaViewerData,
     };
   }
