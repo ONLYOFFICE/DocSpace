@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
-import { Icons } from "../icons";
 import { handleAnyClick } from "../utils/event";
 import Text from "../text";
 import {
@@ -16,7 +15,6 @@ class MainButton extends React.PureComponent {
     super(props);
 
     this.ref = React.createRef();
-    this.iconNames = Object.keys(Icons);
 
     this.state = {
       isOpen: props.opened,
@@ -96,13 +94,7 @@ class MainButton extends React.PureComponent {
             {...this.props}
             onClick={this.onSecondaryButtonClick}
           >
-            {this.iconNames.includes(this.props.iconName) && (
-              // React.createElement(Icons[this.props.iconName], {
-              //   size: "medium",
-              //   color: "#ffffff",
-              // })}
-              <ReactSVG src={this.props.iconName} />
-            )}
+            {this.props.iconName && <ReactSVG src={this.props.iconName} />}
           </StyledSecondaryButton>
         )}
       </GroupMainButton>

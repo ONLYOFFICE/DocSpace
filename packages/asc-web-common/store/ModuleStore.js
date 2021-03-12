@@ -56,69 +56,84 @@ class ModuleStore {
     iconName = null,
     iconUrl = null
   ) => {
-    switch (item.id) {
-      case "6743007c-6f95-4d20-8c88-a8601ce5e76d":
-        item.iconName = "CrmIcon";
-        item.iconUrl = "/static/images/crm.react.svg";
-        item.imageUrl = "/images/crm.svg";
-        item.helpUrl = "https://helpcenter.onlyoffice.com/userguides/crm.aspx";
-        break;
-      case "1e044602-43b5-4d79-82f3-fd6208a11960":
-        item.iconName = "ProjectsIcon";
-        item.iconUrl = "/static/images/projects.react.svg";
-        item.imageUrl = "/images/projects.svg";
-        item.helpUrl =
-          "https://helpcenter.onlyoffice.com/userguides/projects.aspx";
-        break;
-      case "2A923037-8B2D-487b-9A22-5AC0918ACF3F":
-        item.iconName = "MailIcon";
-        item.iconUrl = "/static/images/mail.react.svg";
-        item.imageUrl = "/images/mail.svg";
-        break;
-      case "32D24CB5-7ECE-4606-9C94-19216BA42086":
-        item.iconName = "CalendarCheckedIcon";
-        item.iconUrl = "/static/images/calendar.checked.react.svg";
-        item.imageUrl = "/images/calendar.svg";
-        break;
-      case "BF88953E-3C43-4850-A3FB-B1E43AD53A3E":
-        item.iconName = "ChatIcon";
-        item.iconUrl = "/static/images/chat.react.svg";
-        item.imageUrl = "/images/talk.svg";
-        item.isolateMode = true;
-        break;
-      default:
-        break;
-    }
+    const id =
+      item.id && typeof item.id === "string" ? item.id.toLowerCase() : null;
 
-    const actions = noAction
-      ? null
-      : {
-          onClick: (e) => {
-            if (e) {
-              window.open(item.link, "_self");
-              e.preventDefault();
-            }
-          },
-          onBadgeClick: (e) => console.log(iconName + " Badge Clicked", e),
-        };
-
-    const description = noAction ? { description: item.description } : null;
-
-    return {
-      id: item.id,
+    const result = {
+      id,
+      appName: "none",
       title: item.title,
       link: item.link,
       originUrl: item.originUrl,
       helpUrl: item.helpUrl,
+      notifications: 0,
       iconName: item.iconName || iconName || "/static/images/people.react.svg", //TODO: Change to URL
       iconUrl: item.iconUrl || iconUrl,
       imageUrl: item.imageUrl,
-      notifications: 0,
       isolateMode: item.isolateMode,
       isPrimary: item.isPrimary,
-      ...description,
-      ...actions,
     };
+
+    switch (id) {
+      case "6743007c-6f95-4d20-8c88-a8601ce5e76d":
+        result.appName = "crm";
+        result.iconName = "CrmIcon";
+        result.iconUrl = "/static/images/crm.react.svg";
+        result.imageUrl = "/images/crm.svg";
+        result.helpUrl =
+          "https://helpcenter.onlyoffice.com/userguides/crm.aspx";
+        break;
+      case "1e044602-43b5-4d79-82f3-fd6208a11960":
+        result.appName = "projects";
+        result.iconName = "ProjectsIcon";
+        result.iconUrl = "/static/images/projects.react.svg";
+        result.imageUrl = "/images/projects.svg";
+        result.helpUrl =
+          "https://helpcenter.onlyoffice.com/userguides/projects.aspx";
+        break;
+      case "2a923037-8b2d-487b-9a22-5ac0918acf3f":
+        result.appName = "mail";
+        result.iconName = "MailIcon";
+        result.iconUrl = "/static/images/mail.react.svg";
+        result.imageUrl = "/images/mail.svg";
+        break;
+      case "32d24cb5-7ece-4606-9c94-19216ba42086":
+        result.appName = "calendar";
+        result.iconName = "CalendarCheckedIcon";
+        result.iconUrl = "/static/images/calendar.checked.react.svg";
+        result.imageUrl = "/images/calendar.svg";
+        break;
+      case "bf88953e-3c43-4850-a3fb-b1e43ad53a3e":
+        result.appName = "chat";
+        result.iconName = "ChatIcon";
+        result.iconUrl = "/static/images/chat.react.svg";
+        result.imageUrl = "/images/talk.svg";
+        result.isolateMode = true;
+        break;
+      case "e67be73d-f9ae-4ce1-8fec-1880cb518cb4":
+        result.appName = "files";
+        break;
+      case "f4d98afd-d336-4332-8778-3c6945c81ea0":
+        result.appName = "people";
+        break;
+      default:
+        result.appName = "none";
+        break;
+    }
+
+    if (!noAction) {
+      result.onClick = (e) => {
+        if (e) {
+          window.open(item.link, "_self");
+          e.preventDefault();
+        }
+      };
+      result.onBadgeClick = (e) => console.log(iconName + " Badge Clicked", e);
+    } else {
+      result.description = item.description;
+    }
+
+    return result;
   };
 
   get totalNotificationsCount() {
