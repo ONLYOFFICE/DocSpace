@@ -109,8 +109,6 @@ class InviteDialogComponent extends React.Component {
       getPortalInviteLinks().then(() => {
         this.setState({
           visible: true,
-          userInvitationLink: this.props.userInvitationLink,
-          guestInvitationLink: this.props.guestInvitationLink,
         });
       });
     } else {
