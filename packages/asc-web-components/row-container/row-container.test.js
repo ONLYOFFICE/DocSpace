@@ -17,6 +17,33 @@ describe("<RowContainer />", () => {
     expect(wrapper).toExist();
   });
 
+  it("stop event on context click", () => {
+    const wrapper = shallow(
+      <RowContainer>
+        <span>Demo</span>
+      </RowContainer>
+    );
+
+    const event = { preventDefault: () => {} };
+
+    jest.spyOn(event, "preventDefault");
+
+    wrapper.simulate("contextmenu", event);
+
+    expect(event.preventDefault).not.toBeCalled();
+  });
+
+  it("renders like list", () => {
+    const wrapper = mount(
+      <RowContainer useReactWindow={false}>
+        <span>Demo</span>
+      </RowContainer>
+    );
+
+    expect(wrapper).toExist();
+    expect(wrapper.getDOMNode().style).toHaveProperty("height", "");
+  });
+
   it("renders without manualHeight", () => {
     const wrapper = mount(
       <RowContainer>
@@ -25,45 +52,6 @@ describe("<RowContainer />", () => {
     );
 
     expect(wrapper).toExist();
-  });
-
-  it("call onRowContextClick() with normal options", () => {
-    const options = [
-      {
-        key: "1",
-        label: "test",
-      },
-    ];
-
-    const wrapper = mount(
-      <RowContainer>
-        <span>Demo</span>
-      </RowContainer>
-    );
-
-    const instance = wrapper.instance();
-
-    instance.onRowContextClick(options);
-
-    expect(wrapper.state("contextOptions")).toEqual(options);
-  });
-
-  it("call onRowContextClick() with wrong options", () => {
-    const options = {
-      key: "1",
-      label: "test",
-    };
-    const wrapper = mount(
-      <RowContainer>
-        <span>Demo</span>
-      </RowContainer>
-    );
-
-    const instance = wrapper.instance();
-
-    instance.onRowContextClick(options);
-
-    expect(wrapper.state("contextOptions")).toEqual([]);
   });
 
   it("componentWillUnmount() props lifecycle test", () => {
