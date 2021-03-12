@@ -63,12 +63,19 @@ class ToggleButton extends Component {
 }
 
 ToggleButton.propTypes = {
+  /** The checked property sets the checked state of a ToggleButton. */
   isChecked: PropTypes.bool.isRequired,
+  /** Disables the ToggleButton */
   isDisabled: PropTypes.bool,
-  onChange: PropTypes.func,
+  /** Will be triggered whenever an ToggleButton is clicked */
+  onChange: PropTypes.func.isRequired,
+  /** Label of the input  */
   label: PropTypes.string,
+  /** Set component id */
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /** Class name */
   className: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

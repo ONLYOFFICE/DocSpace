@@ -91,8 +91,9 @@ class PureOwnerSettings extends Component {
           toastr.error(error);
         })
         .finally(() => this.setState({ showLoader: false }));
+    } else {
+      this.setState({ showLoader: false });
     }
-    this.setState({ showLoader: false });
     hideLoader();
   }
 

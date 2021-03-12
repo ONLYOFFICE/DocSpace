@@ -70,6 +70,10 @@ class ContextMenuButton extends React.Component {
       this.toggle(this.props.opened);
     }
 
+    if (this.props.manualX !== prevProps.manualX) {
+      this.onIconButtonClick();
+    }
+
     if (this.props.opened && this.state.displayType === "aside") {
       window.addEventListener("popstate", this.popstate, false);
     }
@@ -101,7 +105,7 @@ class ContextMenuButton extends React.Component {
   clickOutsideAction = (e) => {
     const path = e.path || (e.composedPath && e.composedPath());
     const dropDownItem = path ? path.find((x) => x === this.ref.current) : null;
-    if (!dropDownItem) return;
+    if (dropDownItem) return;
 
     this.onIconButtonClick();
   };
@@ -124,7 +128,7 @@ class ContextMenuButton extends React.Component {
   }
 
   render() {
-    //console.log("ContextMenuButton render");
+    //console.log("ContextMenuButton render", this.props);
     const {
       className,
       clickColor,
@@ -147,6 +151,8 @@ class ContextMenuButton extends React.Component {
       style,
       isFill, // eslint-disable-line react/prop-types
       asideHeader, // eslint-disable-line react/prop-types
+      manualX,
+      manualY,
     } = this.props;
 
     const { isOpen, displayType } = this.state;
@@ -171,6 +177,8 @@ class ContextMenuButton extends React.Component {
         />
         {displayType === "dropdown" ? (
           <DropDown
+            manualX={manualX}
+            manualY={manualY}
             directionX={directionX}
             directionY={directionY}
             open={isOpen}
@@ -272,6 +280,10 @@ ContextMenuButton.propTypes = {
   directionX: PropTypes.string,
   /** Direction Y */
   directionY: PropTypes.string,
+  /** Manual X padding */
+  manualX: PropTypes.string,
+  /** Manual Y padding */
+  manualY: PropTypes.string,
   /** Accepts class */
   className: PropTypes.string,
   /** Accepts id */

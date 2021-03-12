@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import React from "react";
-import equal from "fast-deep-equal/react";
 
 import Checkbox from "../checkbox";
 import ContextMenuButton from "../context-menu-button";
@@ -17,29 +16,30 @@ class Row extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = { contextX: "0px", contextY: "0px", contextOpened: false };
+
     this.rowRef = React.createRef();
   }
 
-  // shouldComponentUpdate(nextProps) {
-  //   if (this.props.needForUpdate) {
-  //     return this.props.needForUpdate(this.props, nextProps);
-  //   }
-  //   return !equal(this.props, nextProps);
-  // }
-
   componentDidMount() {
-    if (this.props.selectItem) {
-      this.container = this.rowRef.current;
-      this.container.addEventListener("contextmenu", this.onSelectItem);
-    }
+    this.container = this.rowRef.current;
+    this.container.addEventListener("contextmenu", this.onContextMenu);
   }
 
   componentWillUnmount() {
-    this.props.selectItem &&
-      this.container.removeEventListener("contextmenu", this.onSelectItem);
+    this.container.removeEventListener("contextmenu", this.onContextMenu);
   }
 
-  onSelectItem = () => this.props.selectItem && this.props.selectItem();
+  onContextMenu = (e) => {
+    const cursorX = -(window.innerWidth - e.pageX) + "px";
+    const cursorY = "-3px";
+
+    this.setState({
+      contextX: cursorX,
+      contextY: cursorY,
+      contextOpened: !this.state.contextOpened,
+    });
+  };
 
   render() {
     //console.log("Row render");
@@ -53,7 +53,6 @@ class Row extends React.Component {
       element,
       indeterminate,
       onSelect,
-      selectItem,
       sectionWidth,
     } = this.props;
 
@@ -101,18 +100,16 @@ class Row extends React.Component {
           spacerWidth={contextButtonSpacerWidth}
         >
           {renderContentElement && (
-            <StyledContentElement onClick={selectItem}>
-              {contentElement}
-            </StyledContentElement>
+            <StyledContentElement>{contentElement}</StyledContentElement>
           )}
           {renderContext ? (
             <ContextMenuButton
-              isFill
+              opened={this.state.contextOpened}
               color="#A3A9AE"
               hoverColor="#657077"
-              onClick={selectItem}
               className="expandButton"
-              directionX="right"
+              manualX={this.state.contextX}
+              manualY={this.state.contextY}
               getData={getOptions}
             />
           ) : (

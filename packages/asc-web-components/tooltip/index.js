@@ -70,22 +70,33 @@ class Tooltip extends Component {
 }
 
 Tooltip.propTypes = {
+  /** Used as HTML id property  */
   id: PropTypes.string,
+  /** Behavior of tooltip */
   effect: PropTypes.oneOf(["float", "solid"]),
+  /** Global tooltip placement */
   place: PropTypes.oneOf(["top", "right", "bottom", "left"]),
+  /** Generate the tip content dynamically */
   getContent: PropTypes.func,
   afterHide: PropTypes.func,
   afterShow: PropTypes.func,
+  /** Offset top all tooltips on page */
   offsetTop: PropTypes.number,
+  /** Offset right all tooltips on page */
   offsetRight: PropTypes.number,
+  /** Offset bottom all tooltips on page */
   offsetBottom: PropTypes.number,
+  /** Offset left all tooltips on page */
   offsetLeft: PropTypes.number,
+  /** Child elements */
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   reference: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.shape({ current: PropTypes.any }),
   ]),
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

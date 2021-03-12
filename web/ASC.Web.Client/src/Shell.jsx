@@ -18,7 +18,8 @@ import { Base } from "@appserver/components/themes";
 import store from "studio/store";
 import config from "../package.json";
 import "./custom.scss";
-import "./i18n";
+import { I18nextProvider } from "react-i18next";
+import i18n from "./i18n";
 import AppLoader from "./components/AppLoader";
 import System from "./components/System";
 
@@ -246,7 +247,9 @@ const ShellWrapper = inject(({ auth }) => {
 export default () => (
   <ThemeProvider theme={Base}>
     <MobxProvider {...store}>
+      <I18nextProvider i18n={i18n}>
       <ShellWrapper />
+      </I18nextProvider>
     </MobxProvider>
   </ThemeProvider>
 );

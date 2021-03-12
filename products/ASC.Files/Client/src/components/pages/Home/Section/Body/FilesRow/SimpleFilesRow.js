@@ -90,7 +90,6 @@ const SimpleFilesRow = (props) => {
     setMoveToPanelVisible,
     setCopyPanelVisible,
     openDocEditor,
-    setIsLoading,
     setIsVerHistoryPanel,
     setVerHistoryFileId,
     setAction,
@@ -189,8 +188,7 @@ const SimpleFilesRow = (props) => {
 
   const showVersionHistory = () => {
     if (!isTabletView) {
-      setIsLoading(true);
-      setVerHistoryFileId(id);
+      setVerHistoryFileId(id + "");
       setIsVerHistoryPanel(true);
     } else {
       history.push(`${homepage}/${id}/history`);
@@ -473,11 +471,6 @@ const SimpleFilesRow = (props) => {
     }
   };
 
-  // const onSelectItem = () => {
-  //   selected === "close" && setSelected("none");
-  //   setSelection([item]);
-  // };
-
   const isMobile = sectionWidth < 500;
 
   const isEdit =
@@ -509,7 +502,6 @@ const SimpleFilesRow = (props) => {
       dragging={dragging && isFolder && access < 2}
       {...contextOptionsProps}
       value={value}
-      //{...props}
     >
       <StyledSimpleFilesRow
         sectionWidth={sectionWidth}
@@ -521,8 +513,6 @@ const SimpleFilesRow = (props) => {
         isPrivacy={isPrivacy}
         {...checkedProps}
         {...contextOptionsProps}
-        //needForUpdate={this.needForUpdate}
-        //selectItem={onSelectItem}
         contextButtonSpacerWidth={displayShareButton}
       >
         <FilesRowContent item={item} sectionWidth={sectionWidth} />
@@ -548,7 +538,7 @@ export default inject(
     { item }
   ) => {
     const { homepage, isTabletView } = auth.settingsStore;
-    const { dragging, setDragging, setIsLoading } = initFilesStore;
+    const { dragging, setDragging } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
@@ -625,7 +615,6 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       openDocEditor,
-      setIsLoading,
       setIsVerHistoryPanel,
       setVerHistoryFileId,
       setAction,

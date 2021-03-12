@@ -11,7 +11,7 @@ import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import copy from "copy-to-clipboard";
-import { getShortenedLink } from "@appserver/common/api/portal";
+// import { getShortenedLink } from "@appserver/common/api/portal";
 import { inject, observer } from "mobx-react";
 
 const textAreaName = "link-textarea";
@@ -20,11 +20,11 @@ class InviteDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { userInvitationLink, guestInvitationLink } = props;
+    // const { userInvitationLink, guestInvitationLink } = props;
     this.state = {
       isGuest: false,
-      userInvitationLink,
-      guestInvitationLink,
+      // userInvitationLink: null,
+      // guestInvitationLink: null,
       isLoading: false,
       isLinkShort: false,
       visible: false,
@@ -37,8 +37,8 @@ class InviteDialogComponent extends React.Component {
     // console.log("COPY", this.props);
     copy(
       this.state.isGuest
-        ? this.state.guestInvitationLink
-        : this.state.userInvitationLink
+        ? this.props.guestInvitationLink
+        : this.props.userInvitationLink
     );
 
     this.ShowCopySuccessText();
@@ -72,19 +72,23 @@ class InviteDialogComponent extends React.Component {
 
   onGetShortenedLink = () => {
     this.setState({ isLoading: true });
-    const { userInvitationLink, guestInvitationLink } = this.props;
+    const {
+      getShortenedLink,
+      userInvitationLink,
+      guestInvitationLink,
+    } = this.props;
 
-    getShortenedLink(userInvitationLink)
-      .then((link) => this.setState({ userInvitationLink: link }))
+    getShortenedLink(userInvitationLink, true)
+      //.then((link) => this.setState({ userInvitationLink: link }))
       .catch((e) => {
         console.error("getShortInvitationLink error", e);
         this.setState({ isLoading: false });
       });
 
     getShortenedLink(guestInvitationLink)
-      .then((link) =>
+      .then(() =>
         this.setState({
-          guestInvitationLink: link,
+          // guestInvitationLink: link,
           isLoading: false,
           isLinkShort: true,
         })
@@ -105,8 +109,6 @@ class InviteDialogComponent extends React.Component {
       getPortalInviteLinks().then(() => {
         this.setState({
           visible: true,
-          userInvitationLink: this.props.userInvitationLink,
-          guestInvitationLink: this.props.guestInvitationLink,
         });
       });
     } else {
@@ -172,8 +174,8 @@ class InviteDialogComponent extends React.Component {
                 name={textAreaName}
                 value={
                   this.state.isGuest
-                    ? this.state.guestInvitationLink
-                    : this.state.userInvitationLink
+                    ? this.props.guestInvitationLink
+                    : this.props.userInvitationLink
                 }
               />
             </ModalDialog.Body>
@@ -210,6 +212,7 @@ export default inject(({ auth, peopleStore }) => ({
   settings: auth.settingsStore,
   guestsCaption: auth.settingsStore.customNames.guestsCaption,
   getPortalInviteLinks: peopleStore.inviteLinksStore.getPortalInviteLinks,
-  userInvitationLink: peopleStore.inviteLinksStore.inviteLinks.userLink,
-  guestInvitationLink: peopleStore.inviteLinksStore.inviteLinks.guestLink,
+  getShortenedLink: peopleStore.inviteLinksStore.getShortenedLink,
+  userInvitationLink: peopleStore.inviteLinksStore.userLink,
+  guestInvitationLink: peopleStore.inviteLinksStore.guestLink,
 }))(observer(InviteDialog));

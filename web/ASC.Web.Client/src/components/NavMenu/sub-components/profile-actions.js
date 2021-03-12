@@ -50,7 +50,7 @@ class ProfileActions extends React.PureComponent {
   onClose = (e) => {
     const path = e.path || (e.composedPath && e.composedPath());
     const dropDownItem = path ? path.find((x) => x === this.ref.current) : null;
-    if (!dropDownItem) return;
+    if (dropDownItem) return;
 
     this.setOpened(!this.state.opened);
   };

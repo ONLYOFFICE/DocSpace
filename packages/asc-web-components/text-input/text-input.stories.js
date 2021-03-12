@@ -1,57 +1,54 @@
-import React from "react";
-import { storiesOf } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import { StringValue } from "react-values";
-import {
-  withKnobs,
-  boolean,
-  text,
-  select,
-  number,
-} from "@storybook/addon-knobs/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
-import TextInput from ".";
+import React, { useState } from "react";
+import TextInput from "./";
 
-import Section from "../../../.storybook/decorators/section";
+export default {
+  title: "Components/TextInput",
+  component: TextInput,
+  parameters: {
+    docs: {
+      description: {
+        component: "Input field for single-line strings",
+      },
+    },
+  },
+  argTypes: {
+    onBlur: { action: "onBlur" },
+    onFocus: { action: "onFocus" },
+    onChange: { action: "onChange" },
+  },
+};
 
-const sizeOptions = ["base", "middle", "big", "huge", "large"];
+const Template = ({ onChange, value, ...args }) => {
+  const [val, setValue] = useState(value);
 
-storiesOf("Components|Input", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("text", () => (
-    <StringValue
+  return (
+    <TextInput
+      {...args}
+      value={val}
       onChange={(e) => {
-        action("onChange")(e);
+        setValue(e.target.value);
+        onChange(e.target.value);
       }}
-    >
-      {({ value, set }) => (
-        <Section>
-          <TextInput
-            id={text("id", "")}
-            name={text("name", "")}
-            placeholder={text("placeholder", "This is placeholder")}
-            maxLength={number("maxLength", 255)}
-            size={select("size", sizeOptions, "base")}
-            onBlur={action("onBlur")}
-            onFocus={action("onFocus")}
-            isAutoFocussed={boolean("isAutoFocussed", false)}
-            isDisabled={boolean("isDisabled", false)}
-            isReadOnly={boolean("isReadOnly", false)}
-            hasError={boolean("hasError", false)}
-            hasWarning={boolean("hasWarning", false)}
-            scale={boolean("scale", false)}
-            autoComplete={text("autoComplete", "off")}
-            tabIndex={number("tabIndex", 1)}
-            withBorder={boolean("withBorder", true)}
-            mask={text("mask", null)}
-            value={value}
-            onChange={(e) => {
-              set(e.target.value);
-            }}
-          />
-        </Section>
-      )}
-    </StringValue>
-  ));
+    />
+  );
+};
+
+export const Default = Template.bind({});
+Default.args = {
+  id: "",
+  name: "",
+  placeholder: "This is placeholder",
+  maxLength: 255,
+  size: "base",
+  isAutoFocussed: false,
+  isDisabled: false,
+  isReadOnly: false,
+  hasError: false,
+  hasWarning: false,
+  scale: false,
+  autoComplete: "off",
+  tabIndex: 1,
+  withBorder: true,
+  mask: null,
+  value: "",
+};
