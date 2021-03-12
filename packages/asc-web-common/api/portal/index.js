@@ -46,11 +46,11 @@ export function getInvitationLink(isGuest) {
 export function getInvitationLinks() {
   const isGuest = true;
   return Promise.all([getInvitationLink(), getInvitationLink(isGuest)]).then(
-    axios.spread((userInvitationLinkResp, guestInvitationLinkResp) => {
+    ([userInvitationLinkResp, guestInvitationLinkResp]) => {
       return Promise.resolve({
         userLink: userInvitationLinkResp,
         guestLink: guestInvitationLinkResp,
       });
-    })
+    }
   );
 }

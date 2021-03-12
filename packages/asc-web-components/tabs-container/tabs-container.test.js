@@ -63,8 +63,8 @@ const array_items = [
 describe("<TabContainer />", () => {
   it("renders without error", () => {
     const wrapper = mount(
-      <TabContainer>
-        {[
+      <TabContainer
+        elements={[
           {
             key: "0",
             title: "Title1",
@@ -83,15 +83,13 @@ describe("<TabContainer />", () => {
             ),
           },
         ]}
-      </TabContainer>
+      />
     );
     expect(wrapper).toExist();
   });
 
   it("TabsContainer not re-render test", () => {
-    const wrapper = mount(
-      <TabContainer>{array_items}</TabContainer>
-    ).instance();
+    const wrapper = mount(<TabContainer elements={array_items} />).instance();
     const shouldUpdate = wrapper.shouldComponentUpdate(
       wrapper.props,
       wrapper.state
@@ -100,9 +98,7 @@ describe("<TabContainer />", () => {
   });
 
   it("TabsContainer not re-render test", () => {
-    const wrapper = mount(
-      <TabContainer>{array_items}</TabContainer>
-    ).instance();
+    const wrapper = mount(<TabContainer elements={array_items} />).instance();
     const shouldUpdate = wrapper.shouldComponentUpdate(wrapper.props, {
       ...wrapper.state,
       activeTab: 3,

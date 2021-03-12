@@ -178,11 +178,14 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     // setModuleInfo(page, "e67be73d-f9ae-4ce1-8fec-1880cb518cb4");
   }, [page]);
 
+  const pathname = window.location.pathname.toLowerCase();
+  const isEditor = pathname.indexOf("doceditor") !== -1;
+
   return (
     <Layout>
       <Router history={history}>
         <Box>
-          <NavMenu />
+          {isEditor ? <></> : <NavMenu />}
           <ScrollToTop />
           <Main>
             <Switch>

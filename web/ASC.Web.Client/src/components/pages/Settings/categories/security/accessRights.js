@@ -87,8 +87,7 @@ class PureAccessRights extends Component {
           selectedItem={selectedTab}
           isDisabled={isLoading}
           onSelect={this.onSelectPage}
-        >
-          {[
+          elements={[
             {
               key: "0",
               title: t("OwnerSettings"),
@@ -105,7 +104,7 @@ class PureAccessRights extends Component {
             //   content: <ModulesSettings />
             // }
           ]}
-        </TabContainer>
+        />
       </MainContainer>
     );
   }
