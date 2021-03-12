@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect } from "react";
 import { Provider as PeopleProvider, inject, observer } from "mobx-react";
-import { Switch } from "react-router";
+import { Router, Switch } from "react-router-dom";
 import PeopleStore from "./store/PeopleStore";
 import Home from "./components/pages/Home";
 import Loader from "@appserver/components/loader";
@@ -17,6 +17,7 @@ import config from "../package.json";
 import "./custom.scss";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
+import history from "@appserver/common/history";
 
 const Error404 = React.lazy(() => import("studio/Error404"));
 
@@ -40,37 +41,42 @@ const PeopleContent = (props) => {
     <Suspense
       fallback={<Loader className="pageLoader" type="rombs" size="40px" />}
     >
-      <Switch>
-        <PrivateRoute
-          exact
-          path={`${homepage}/view/:userId`}
-          component={Profile}
-        />
-        <PrivateRoute
-          path={`${homepage}/edit/:userId`}
-          restricted
-          allowForMe
-          component={ProfileAction}
-        />
-        <PrivateRoute
-          path={`${homepage}/create/:type`}
-          restricted
-          component={ProfileAction}
-        />
-        <PrivateRoute
-          path={[`${homepage}/group/edit/:groupId`, `${homepage}/group/create`]}
-          restricted
-          component={GroupAction}
-        />
-        <PrivateRoute
-          path={`${homepage}/reassign/:userId`}
-          restricted
-          component={Reassign}
-        />
-        <PrivateRoute exact path={homepage} component={Home} />
-        <PrivateRoute path={`${homepage}/filter`} component={Home} />
-        <PrivateRoute component={Error404} />
-      </Switch>
+      <Router history={history}>
+        <Switch>
+          <PrivateRoute
+            exact
+            path={`${homepage}/view/:userId`}
+            component={Profile}
+          />
+          <PrivateRoute
+            path={`${homepage}/edit/:userId`}
+            restricted
+            allowForMe
+            component={ProfileAction}
+          />
+          <PrivateRoute
+            path={`${homepage}/create/:type`}
+            restricted
+            component={ProfileAction}
+          />
+          <PrivateRoute
+            path={[
+              `${homepage}/group/edit/:groupId`,
+              `${homepage}/group/create`,
+            ]}
+            restricted
+            component={GroupAction}
+          />
+          <PrivateRoute
+            path={`${homepage}/reassign/:userId`}
+            restricted
+            component={Reassign}
+          />
+          <PrivateRoute exact path={homepage} component={Home} />
+          <PrivateRoute path={`${homepage}/filter`} component={Home} />
+          <PrivateRoute component={Error404} />
+        </Switch>
+      </Router>
     </Suspense>
   );
 };
@@ -90,7 +96,7 @@ const peopleStore = new PeopleStore();
 export default (props) => (
   <PeopleProvider peopleStore={peopleStore}>
     <I18nextProvider i18n={i18n}>
-      <People {...props}/>
+      <People {...props} />
     </I18nextProvider>
   </PeopleProvider>
 );
