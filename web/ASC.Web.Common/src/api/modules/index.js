@@ -1,5 +1,6 @@
 import { request } from "../client";
 import axios from "axios";
+import config from "../../../package.json";
 
 export function getModulesList() {
   return request({
@@ -13,7 +14,10 @@ export function getModulesList() {
           modules.map((m) =>
             request({
               method: "get",
-              url: `${window.location.origin}/${m}`,
+              url: `${window.location.origin}/${m.replace(
+                "api/2.0",
+                config.api.url
+              )}`,
             }).catch((err) => {
               return Promise.resolve(err);
             })
