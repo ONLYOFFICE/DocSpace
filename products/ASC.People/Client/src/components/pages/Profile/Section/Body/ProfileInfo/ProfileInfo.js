@@ -143,6 +143,7 @@ class ProfileInfo extends React.PureComponent {
         console.log("changeLanguage to", language.key);
         i18n && i18n.changeLanguage(language.key);
       })
+      .then(() => document.location.reload())
       .catch((error) =>
         toastr.error(error && error.message ? error.message : error)
       );
