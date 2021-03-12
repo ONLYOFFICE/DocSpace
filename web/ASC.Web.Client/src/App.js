@@ -34,7 +34,7 @@ const App = (props) => {
   //this.isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
   //}
 
-  const { isLoaded, loadBaseInfo, isThirdPartyResponse } = props;
+  const { isLoaded, loadBaseInfo, isThirdPartyResponse, homepage } = props;
 
   useEffect(() => {
     try {
@@ -82,6 +82,7 @@ const App = (props) => {
   //     setIsLoaded();
   //   });
 
+  console.log("Client App render", props);
   return navigator.onLine ? (
     <Layout>
       <Router history={history}>
@@ -89,41 +90,42 @@ const App = (props) => {
         <Main>
           <Suspense fallback={null}>
             <Switch>
-              <Route exact path="/wizard" component={Wizard} />
+              <Route exact path={`${homepage}/wizard`} component={Wizard} />
               <PublicRoute
                 exact
                 path={[
-                  "/login",
-                  "/login/error=:error",
-                  "/login/confirmed-email=:confirmedEmail",
+                  `${homepage}/login`,
+                  `${homepage}/login/error=:error`,
+                  `${homepage}/login/confirmed-email=:confirmedEmail`,
                 ]}
                 component={Login}
               />
-              <Route path="/confirm" component={Confirm} />
+              <Route path={`${homepage}/confirm`} component={Confirm} />
               <PrivateRoute
-                path={`/thirdparty/:provider`}
+                path={`${homepage}/thirdparty/:provider`}
                 component={ThirdPartyResponse}
               />
               <PrivateRoute
                 exact
-                path={["/", "/error=:error"]}
+                path={[`${homepage}/`, `${homepage}/error=:error`]}
                 component={Home}
               />
-              <PrivateRoute exact path="/about" component={About} />
-              <PrivateRoute restricted path="/settings" component={Settings} />
               <PrivateRoute
                 exact
                 path={[
-                  "/coming-soon",
-                  "/products/mail",
-                  "/products/projects",
-                  "/products/crm",
-                  "/products/calendar",
-                  "/products/talk/",
+                  `${homepage}/coming-soon`,
+                  `${homepage}/products/mail`,
+                  `${homepage}/products/projects`,
+                  `${homepage}/products/crm`,
+                  `${homepage}/products/calendar`,
+                  `${homepage}/products/talk/`,
                 ]}
                 component={ComingSoon}
               />
-              <PrivateRoute path="/payments" component={Payments} />
+              <PrivateRoute
+                path={`${homepage}/payments`}
+                component={Payments}
+              />
               <PrivateRoute component={Error404} />
             </Switch>
           </Suspense>
@@ -148,5 +150,6 @@ export default inject(({ auth }) => {
     },
     isThirdPartyResponse,
     isLoaded,
+    homepage: auth.settingsStore.homepage || config.homepage,
   };
 })(observer(App));
