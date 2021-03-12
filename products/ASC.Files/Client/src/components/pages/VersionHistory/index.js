@@ -90,12 +90,7 @@ export default inject(
   ({ auth, initFilesStore, filesStore, versionHistoryStore }) => {
     const { isLoading } = initFilesStore;
     const { filter, setFilesFilter } = filesStore;
-
-    const {
-      setIsVerHistoryPanel,
-      setVerHistoryFileId,
-      versions,
-    } = versionHistoryStore;
+    const { setIsVerHistoryPanel, versions } = versionHistoryStore;
 
     return {
       isTabletView: auth.settingsStore.isTabletView,
@@ -105,7 +100,6 @@ export default inject(
 
       setFilesFilter,
       setIsVerHistoryPanel,
-      setVerHistoryFileId,
     };
   }
 )(withRouter(observer(VersionHistory)));
