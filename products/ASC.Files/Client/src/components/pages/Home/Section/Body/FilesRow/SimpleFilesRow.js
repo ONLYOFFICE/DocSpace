@@ -90,7 +90,6 @@ const SimpleFilesRow = (props) => {
     setMoveToPanelVisible,
     setCopyPanelVisible,
     openDocEditor,
-    setIsLoading,
     setIsVerHistoryPanel,
     setVerHistoryFileId,
     setAction,
@@ -189,8 +188,7 @@ const SimpleFilesRow = (props) => {
 
   const showVersionHistory = () => {
     if (!isTabletView) {
-      setIsLoading(true);
-      setVerHistoryFileId(id);
+      setVerHistoryFileId(id + "");
       setIsVerHistoryPanel(true);
     } else {
       history.push(`${homepage}/${id}/history`);
@@ -548,7 +546,7 @@ export default inject(
     { item }
   ) => {
     const { homepage, isTabletView } = auth.settingsStore;
-    const { dragging, setDragging, setIsLoading } = initFilesStore;
+    const { dragging, setDragging } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
@@ -625,7 +623,6 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       openDocEditor,
-      setIsLoading,
       setIsVerHistoryPanel,
       setVerHistoryFileId,
       setAction,

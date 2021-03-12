@@ -1,11 +1,5 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import { withKnobs, boolean } from "@storybook/addon-knobs/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
-import TabContainer from ".";
-import Section from "../../../.storybook/decorators/section";
-import { action } from "@storybook/addon-actions";
+import TabContainer from "./";
 
 const arrayItems = [
   {
@@ -393,44 +387,45 @@ const tabsItems = [
   },
 ];
 
-storiesOf("Components|TabContainer", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("base", () => {
-    return (
-      <Section>
-        <h5 style={{ marginBottom: 20 }}>Base TabsContainer:</h5>
+const Template = ({ onSelect, ...args }) => {
+  return (
+    <div>
+      <h5 style={{ marginBottom: 20 }}>Base TabsContainer:</h5>
+      <TabContainer
+        {...args}
+        onSelect={(index) => onSelect(index)}
+        selectedItem={arrayItems.indexOf(arrayItems[0])}
+        elements={arrayItems}
+      />
+
+      <div style={{ marginTop: 32, maxWidth: 430 }}>
+        <h5 style={{ marginTop: 100, marginBottom: 20 }}>
+          Autoscrolling with different tab widths:
+        </h5>
         <TabContainer
-          onSelect={(index) => action("Selected item")(index)}
-          isDisabled={boolean("isDisabled", false)}
-          selectedItem={arrayItems.indexOf(arrayItems[0])}
-        >
-          {arrayItems}
-        </TabContainer>
+          {...args}
+          selectedItem={3}
+          elements={scrollArrayItems}
+          onSelect={(index) => onSelect(index)}
+        />
+      </div>
 
-        <div style={{ marginTop: 32, maxWidth: 430 }}>
-          <h5 style={{ marginTop: 100, marginBottom: 20 }}>
-            Autoscrolling with different tab widths:
-          </h5>
-          <TabContainer
-            isDisabled={boolean("isDisabled", false)}
-            selectedItem={3}
-          >
-            {scrollArrayItems}
-          </TabContainer>
-        </div>
+      <div style={{ marginTop: 32, maxWidth: 430 }}>
+        <h5 style={{ marginTop: 100, marginBottom: 20 }}>
+          Autoscrolling with the same tabs width:
+        </h5>
+        <TabContainer
+          {...args}
+          selectedItem={5}
+          elements={tabsItems}
+          onSelect={(index) => onSelect(index)}
+        />
+      </div>
+    </div>
+  );
+};
 
-        <div style={{ marginTop: 32, maxWidth: 430 }}>
-          <h5 style={{ marginTop: 100, marginBottom: 20 }}>
-            Autoscrolling with the same tabs width:
-          </h5>
-          <TabContainer
-            isDisabled={boolean("isDisabled", false)}
-            selectedItem={5}
-          >
-            {tabsItems}
-          </TabContainer>
-        </div>
-      </Section>
-    );
-  });
+export const basic = Template.bind({});
+basic.args = {
+  isDisabled: false,
+};

@@ -9,7 +9,7 @@ class TabContainer extends Component {
     super(props);
 
     this.arrayRefs = [];
-    const countElements = props.children.length;
+    const countElements = props.elements.length;
 
     let item = countElements;
     while (item !== 0) {
@@ -140,7 +140,7 @@ class TabContainer extends Component {
   render() {
     //console.log("Tabs container render");
 
-    const { isDisabled, children } = this.props;
+    const { isDisabled, elements } = this.props;
     const { activeTab, onScrollHide } = this.state;
 
     return (
@@ -152,7 +152,7 @@ class TabContainer extends Component {
           ref={this.scrollRef}
         >
           <NavItem className="className_items">
-            {children.map((item, index) => (
+            {elements.map((item, index) => (
               <Label
                 onMouseMove={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
@@ -174,16 +174,20 @@ class TabContainer extends Component {
             ))}
           </NavItem>
         </StyledScrollbar>
-        <div>{children[activeTab].content}</div>
+        <div>{elements[activeTab].content}</div>
       </>
     );
   }
 }
 
 TabContainer.propTypes = {
-  children: PropTypes.PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  /** Child elements */
+  elements: PropTypes.PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  /** Disable the TabContainer  */
   isDisabled: PropTypes.bool,
+  /** Triggered when a title is selected */
   onSelect: PropTypes.func,
+  /** Selected title of tabs container */
   selectedItem: PropTypes.number,
 };
 

@@ -95,7 +95,6 @@ export default inject(({ auth, initFilesStore, versionHistoryStore }) => {
     fileId,
     versions,
     setIsVerHistoryPanel,
-    setVerHistoryFileId,
     isVisible: visible,
   } = versionHistoryStore;
 
@@ -108,6 +107,5 @@ export default inject(({ auth, initFilesStore, versionHistoryStore }) => {
     visible,
 
     setIsVerHistoryPanel,
-    setVerHistoryFileId,
   };
 })(observer(VersionHistoryPanel));
