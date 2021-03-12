@@ -26,7 +26,7 @@ class MainButton extends React.PureComponent {
   }
 
   handleClick = (e) => {
-    if (!this.state.isOpen && this.ref.current.contains(e.target)) return;
+    if (this.state.isOpen && this.ref.current.contains(e.target)) return;
     this.toggle(false);
   };
 
