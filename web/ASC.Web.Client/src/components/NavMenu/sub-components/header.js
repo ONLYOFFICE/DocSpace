@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
 import { desktop } from "@appserver/components/utils/device";
+import i18n from "../i18n";
 
 const backgroundColor = "#0F4071";
 
@@ -166,6 +167,7 @@ const HeaderComponent = ({
     );
   };
   const isMainPage = pathname === "/";
+
   return (
     <>
       <Header
@@ -239,7 +241,7 @@ const HeaderComponent = ({
                 url={link}
                 dashed={dashed}
               >
-                {title}
+                {id === "settings" ? i18n.t(title) : title}
               </NavItem>
             )
           )}
