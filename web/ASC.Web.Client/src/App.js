@@ -16,6 +16,7 @@ import {
   toastr,
 } from "asc-web-common";
 import Home from "./components/pages/Home";
+import config from "../package.json";
 
 const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
@@ -29,6 +30,7 @@ const {
   getPortalSettings,
   getModules,
   getIsAuthenticated,
+  setCurrentProductHomePage,
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
@@ -40,12 +42,15 @@ class App extends React.Component {
   }
   componentDidMount() {
     const {
+      setModuleInfo,
       getPortalSettings,
       getUser,
       getModules,
       setIsLoaded,
       getIsAuthenticated,
     } = this.props;
+
+    setModuleInfo();
 
     getIsAuthenticated()
       .then((isAuthenticated) => {
@@ -80,40 +85,53 @@ class App extends React.Component {
   }
 
   render() {
+    const { homepage } = this.props;
+    console.log("Client App render", this.props);
     return navigator.onLine ? (
       <Router history={history}>
         {!this.isThirdPartyResponse && <NavMenu />}
         <Main>
           <Suspense fallback={null}>
             <Switch>
-              <Route exact path="/wizard" component={Wizard} />
+              <Route exact path={`${homepage}/wizard`} component={Wizard} />
               <PublicRoute
                 exact
                 path={[
-                  "/login",
-                  "/login/error=:error",
-                  "/login/confirmed-email=:confirmedEmail",
+                  `${homepage}/login`,
+                  `${homepage}/login/error=:error`,
+                  `${homepage}/login/confirmed-email=:confirmedEmail`,
                 ]}
                 component={Login}
               />
-              <Route path="/confirm" component={Confirm} />
+              <Route path={`${homepage}/confirm`} component={Confirm} />
               <PrivateRoute
-                path={`/thirdparty/:provider`}
+                path={`${homepage}/thirdparty/:provider`}
                 component={ThirdPartyResponse}
               />
               <PrivateRoute
                 exact
-                path={["/", "/error=:error"]}
+                path={[`${homepage}/`, `${homepage}/error=:error`]}
                 component={Home}
               />
-              <PrivateRoute exact path="/about" component={About} />
-              <PrivateRoute restricted path="/settings" component={Settings} />
               <PrivateRoute
                 exact
-                path={["/coming-soon"]}
+                path={`${homepage}/about`}
+                component={About}
+              />
+              <PrivateRoute
+                restricted
+                path={`${homepage}/settings`}
+                component={Settings}
+              />
+              <PrivateRoute
+                exact
+                path={[`${homepage}/coming-soon`]}
                 component={ComingSoon}
               />
-              <PrivateRoute path="/payments" component={Payments} />
+              <PrivateRoute
+                path={`${homepage}/payments`}
+                component={Payments}
+              />
               <PrivateRoute component={Error404} />
             </Switch>
           </Suspense>
@@ -127,17 +145,19 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
   const { modules, isLoaded, settings } = state.auth;
-  const { organizationName } = settings;
+  const { organizationName, homepage } = settings;
   return {
     modules,
     isLoaded,
     organizationName,
+    homepage: homepage || config.homepage,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     getIsAuthenticated: () => getIsAuthenticated(dispatch),
+    setModuleInfo: () => dispatch(setCurrentProductHomePage(config.homepage)),
     getPortalSettings: () => getPortalSettings(dispatch),
     getUser: () => getUser(dispatch),
     getModules: () => getModules(dispatch),

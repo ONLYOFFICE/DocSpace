@@ -1,5 +1,6 @@
 import i18n from "i18next";
 import Backend from "i18next-xhr-backend";
+import config from "../../package.json";
 import { constants } from "asc-web-common";
 const { i18nBaseSettings } = constants;
 
@@ -16,7 +17,7 @@ export const createI18N = function (options) {
     newInstance.use(Backend).init({
       ...i18nBaseSettings,
       backend: {
-        loadPath: `/locales/${page}/{{lng}}/{{ns}}.json`,
+        loadPath: `${config.homepage}/locales/${page}/{{lng}}/{{ns}}.json`,
       },
     });
   } else if (process.env.NODE_ENV === "development") {
