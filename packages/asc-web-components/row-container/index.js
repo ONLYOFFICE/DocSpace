@@ -1,29 +1,15 @@
 /* eslint-disable react/display-name */
 import React, { memo } from "react";
-
 import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import ContextMenu from "../context-menu";
 import StyledRowContainer from "./styled-row-container";
 
 class RowContainer extends React.PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      contextOptions: [],
-    };
-  }
-
-  onRowContextClick = (options) => {
-    if (Array.isArray(options)) {
-      this.setState({
-        contextOptions: options,
-      });
-    }
-  };
+  renderRow = memo(({ data, index, style }) => {
+    return <div style={style}>{data[index]}</div>;
+  }, areEqual);
 
   componentDidMount() {
     window.addEventListener("contextmenu", this.onRowContextClick);
@@ -33,20 +19,7 @@ class RowContainer extends React.PureComponent {
     window.removeEventListener("contextmenu", this.onRowContextClick);
   }
 
-  // eslint-disable-next-line react/prop-types
-  renderRow = memo(({ data, index, style }) => {
-    // eslint-disable-next-line react/prop-types
-    const options = data[index].props.contextOptions;
-
-    return (
-      <div
-        onContextMenu={this.onRowContextClick.bind(this, options)}
-        style={style}
-      >
-        {data[index]}
-      </div>
-    );
-  }, areEqual);
+  onRowContextClick = (e) => e.preventDefault(); //stop calling default context menu
 
   render() {
     const {
@@ -81,22 +54,7 @@ class RowContainer extends React.PureComponent {
         manualHeight={manualHeight}
         useReactWindow={useReactWindow}
       >
-        {useReactWindow ? (
-          <AutoSizer>{renderList}</AutoSizer>
-        ) : (
-          children.map((item, index) => (
-            <div
-              key={index}
-              onContextMenu={this.onRowContextClick.bind(
-                this,
-                item.props.contextOptions
-              )}
-            >
-              {item}
-            </div>
-          ))
-        )}
-        <ContextMenu targetAreaId={id} options={this.state.contextOptions} />
+        {useReactWindow ? <AutoSizer>{renderList}</AutoSizer> : children}
       </StyledRowContainer>
     );
   }

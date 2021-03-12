@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import React from "react";
-import equal from "fast-deep-equal/react";
 
 import Checkbox from "../checkbox";
 import ContextMenuButton from "../context-menu-button";
@@ -21,13 +20,6 @@ class Row extends React.Component {
 
     this.rowRef = React.createRef();
   }
-
-  // shouldComponentUpdate(nextProps) {
-  //   if (this.props.needForUpdate) {
-  //     return this.props.needForUpdate(this.props, nextProps);
-  //   }
-  //   return !equal(this.props, nextProps);
-  // }
 
   componentDidMount() {
     this.container = this.rowRef.current;
@@ -61,7 +53,6 @@ class Row extends React.Component {
       element,
       indeterminate,
       onSelect,
-      //selectItem,
       sectionWidth,
     } = this.props;
 
@@ -109,16 +100,13 @@ class Row extends React.Component {
           spacerWidth={contextButtonSpacerWidth}
         >
           {renderContentElement && (
-            <StyledContentElement /*onClick={selectItem}*/>
-              {contentElement}
-            </StyledContentElement>
+            <StyledContentElement>{contentElement}</StyledContentElement>
           )}
           {renderContext ? (
             <ContextMenuButton
               opened={this.state.contextOpened}
               color="#A3A9AE"
               hoverColor="#657077"
-              //onClick={this.onContextMenu}
               className="expandButton"
               manualX={this.state.contextX}
               manualY={this.state.contextY}
