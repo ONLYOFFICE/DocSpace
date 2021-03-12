@@ -372,11 +372,21 @@ class FilesRowContent extends React.PureComponent {
     }
   };
 
-  onShowVersionHistory = (e) => {
-    const { homepage } = this.props;
-    const fileId = e.currentTarget.dataset.id;
+  onShowVersionHistory = () => {
+    const {
+      homepage,
+      isTabletView,
+      item,
+      setVerHistoryFileId,
+      setIsVerHistoryPanel,
+    } = this.props;
 
-    history.push(`${homepage}/${fileId}/history`);
+    if (!isTabletView) {
+      setVerHistoryFileId(item.id + "");
+      setIsVerHistoryPanel(true);
+    } else {
+      history.push(`${homepage}/${item.id}/history`);
+    }
   };
 
   onBadgeClick = () => {
@@ -771,13 +781,20 @@ export default inject(
       selectedFolderStore,
       filesActionsStore,
       mediaViewerDataStore,
+      versionHistoryStore,
     },
     { item }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
-    const { homepage, culture, isDesktopClient } = auth.settingsStore;
+    const {
+      homepage,
+      culture,
+      isDesktopClient,
+      isTabletView,
+    } = auth.settingsStore;
     const { setIsLoading, isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
+    const { setIsVerHistoryPanel, setVerHistoryFileId } = versionHistoryStore;
     const {
       iconFormatsStore,
       mediaViewersFormatsStore,
@@ -826,6 +843,7 @@ export default inject(
 
     return {
       isDesktop: isDesktopClient,
+      isTabletView,
       homepage,
       viewer: auth.userStore.user,
       culture,
@@ -867,6 +885,8 @@ export default inject(
       lockFileAction: filesActionsStore.lockFileAction,
       setFavoriteAction: filesActionsStore.setFavoriteAction,
       setMediaViewerData,
+      setIsVerHistoryPanel,
+      setVerHistoryFileId,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesRowContent))));

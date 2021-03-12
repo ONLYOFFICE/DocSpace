@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from "react-router";
-
 import RowContainer from "@appserver/components/row-container";
 import Loaders from "@appserver/common/components/Loaders";
 import VersionRow from "./VersionRow";
@@ -9,7 +8,7 @@ import { inject, observer } from "mobx-react";
 class SectionBodyContent extends React.Component {
   componentDidMount() {
     const { match, setFirstLoad } = this.props;
-    const { fileId } = match.params;
+    const fileId = match.params.fileId || this.props.fileId;
 
     if (fileId) {
       this.getFileVersions(fileId);
@@ -60,12 +59,13 @@ export default inject(
   ({ auth, initFilesStore, filesStore, versionHistoryStore }) => {
     const { setIsLoading, isLoading } = initFilesStore;
     const { setFirstLoad } = filesStore;
-    const { versions, fetchFileVersions } = versionHistoryStore;
+    const { versions, fetchFileVersions, fileId } = versionHistoryStore;
 
     return {
       culture: auth.settingsStore.culture,
       isLoading,
       versions,
+      fileId,
 
       setFirstLoad,
       setIsLoading,

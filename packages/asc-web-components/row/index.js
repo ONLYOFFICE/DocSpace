@@ -17,6 +17,8 @@ class Row extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = { contextX: "0px", contextY: "0px", contextOpened: false };
+
     this.rowRef = React.createRef();
   }
 
@@ -28,18 +30,24 @@ class Row extends React.Component {
   // }
 
   componentDidMount() {
-    if (this.props.selectItem) {
-      this.container = this.rowRef.current;
-      this.container.addEventListener("contextmenu", this.onSelectItem);
-    }
+    this.container = this.rowRef.current;
+    this.container.addEventListener("contextmenu", this.onContextMenu);
   }
 
   componentWillUnmount() {
-    this.props.selectItem &&
-      this.container.removeEventListener("contextmenu", this.onSelectItem);
+    this.container.removeEventListener("contextmenu", this.onContextMenu);
   }
 
-  onSelectItem = () => this.props.selectItem && this.props.selectItem();
+  onContextMenu = (e) => {
+    const cursorX = -(window.innerWidth - e.pageX) + "px";
+    const cursorY = "-3px";
+
+    this.setState({
+      contextX: cursorX,
+      contextY: cursorY,
+      contextOpened: !this.state.contextOpened,
+    });
+  };
 
   render() {
     //console.log("Row render");
@@ -53,7 +61,7 @@ class Row extends React.Component {
       element,
       indeterminate,
       onSelect,
-      selectItem,
+      //selectItem,
       sectionWidth,
     } = this.props;
 
@@ -101,18 +109,19 @@ class Row extends React.Component {
           spacerWidth={contextButtonSpacerWidth}
         >
           {renderContentElement && (
-            <StyledContentElement onClick={selectItem}>
+            <StyledContentElement /*onClick={selectItem}*/>
               {contentElement}
             </StyledContentElement>
           )}
           {renderContext ? (
             <ContextMenuButton
-              isFill
+              opened={this.state.contextOpened}
               color="#A3A9AE"
               hoverColor="#657077"
-              onClick={selectItem}
+              //onClick={this.onContextMenu}
               className="expandButton"
-              directionX="right"
+              manualX={this.state.contextX}
+              manualY={this.state.contextY}
               getData={getOptions}
             />
           ) : (

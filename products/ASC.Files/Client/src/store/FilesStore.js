@@ -285,6 +285,7 @@ class FilesStore {
       );
       this.setFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files);
       if (clearFilter) {
+        this.fileActionStore.setAction({ type: null });
         this.setSelected("close");
       }
 
