@@ -67,11 +67,16 @@ class ToggleContent extends React.Component {
 
 ToggleContent.propTypes = {
   children: PropTypes.any,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id  */
   id: PropTypes.string,
+  /** State of component */
   isOpen: PropTypes.bool,
+  /** Define label for header */
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

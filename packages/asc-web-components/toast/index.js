@@ -37,11 +37,16 @@ const Toast = (props) => {
 
 Toast.propTypes = {
   autoClosed: PropTypes.bool,
+  /** Accepts class  */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   text: PropTypes.string,
+  /** Title inside a toast */
   title: PropTypes.string,
+  /** Define color and icon of toast */
   type: PropTypes.oneOf(["success", "error", "warning", "info"]).isRequired,
 };
 

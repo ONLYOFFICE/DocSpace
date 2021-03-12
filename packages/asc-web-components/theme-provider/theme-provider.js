@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { ThemeProvider as Provider } from "styled-components";
 import GlobalStyle from "../utils/globalStyles";
 
-const ThemeProvider = props => {
+const ThemeProvider = (props) => {
   const { theme, children } = props;
 
   return (
@@ -15,8 +15,10 @@ const ThemeProvider = props => {
 };
 
 ThemeProvider.propTypes = {
+  /** Child elements */
   children: PropTypes.any,
-  theme: PropTypes.object
+  /** Applies a theme to all children components */
+  theme: PropTypes.object.isRequired,
 };
 
 export default ThemeProvider;
