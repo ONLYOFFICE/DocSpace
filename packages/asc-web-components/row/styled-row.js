@@ -44,6 +44,13 @@ const StyledElement = styled.div`
   margin-right: ${(props) => props.theme.row.element.marginRight};
   margin-left: ${(props) => props.theme.row.element.marginLeft};
   user-select: none;
+
+  .react-svg-icon svg {
+    margin-top: 4px;
+  }
+  .react-svg-icon.is-edit svg {
+    margin: 4px 0 0 28px;
+  }
 `;
 StyledElement.defaultProps = { theme: Base };
 
