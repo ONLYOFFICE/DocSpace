@@ -1,5 +1,5 @@
 import React from "react";
-import PageLayout from "@appserver/common/components/PageLayout";
+import PageLayout from "../PageLayout";
 import Loader from "@appserver/components/loader";
 
 const AppLoader = () => (

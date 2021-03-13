@@ -20,10 +20,10 @@ import config from "../package.json";
 import "./custom.scss";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
-import AppLoader from "./components/AppLoader";
+import AppLoader from "@appserver/common/components/AppLoader";
 import System from "./components/System";
 
-const virtualPath = config.virtualPath;
+const homepage = config.homepage;
 
 const Payments = React.lazy(() => import("./components/pages/Payments"));
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -155,13 +155,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   //     .catch((err) => toastr.error(err.message));
   // }, []);
 
-  const {
-    isLoaded,
-    loadBaseInfo,
-    isThirdPartyResponse,
-    modules,
-    homepage,
-  } = rest;
+  const { isLoaded, loadBaseInfo, isThirdPartyResponse, modules } = rest;
 
   useEffect(() => {
     try {
@@ -194,7 +188,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       return (
         <PrivateRoute
           key={m.id}
-          path={`${virtualPath}${m.link}`}
+          path={`${homepage}${m.link}`}
           component={System}
           system={system}
         />
@@ -211,7 +205,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
             <Switch>
               <PrivateRoute
                 exact
-                path={[`${virtualPath}/`, `${virtualPath}/error=:error`]}
+                path={[`${homepage}/`, `${homepage}/error=:error`]}
                 component={HomeRoute}
               />
               {/* <Route
@@ -219,42 +213,39 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path={`${homepage}/wizard`}
                 component={WizardRoute}
               /> */}
-              <PrivateRoute
-                path={`${virtualPath}/about`}
-                component={AboutRoute}
-              />
+              <PrivateRoute path={`${homepage}/about`} component={AboutRoute} />
               <PublicRoute
                 exact
                 path={[
-                  `${virtualPath}/login`,
-                  `${virtualPath}/login/error=:error`,
-                  `${virtualPath}/login/confirmed-email=:confirmedEmail`,
+                  `${homepage}/login`,
+                  `${homepage}/login/error=:error`,
+                  `${homepage}/login/confirmed-email=:confirmedEmail`,
                 ]}
                 component={LoginRoute}
               />
               <PrivateRoute
                 path={[
-                  `${virtualPath}/coming-soon`,
-                  `${virtualPath}/products/mail`,
-                  `${virtualPath}/products/projects`,
-                  `${virtualPath}/products/crm`,
-                  `${virtualPath}/products/calendar`,
-                  `${virtualPath}/products/talk/`,
+                  `${homepage}/coming-soon`,
+                  `${homepage}/products/mail`,
+                  `${homepage}/products/projects`,
+                  `${homepage}/products/crm`,
+                  `${homepage}/products/calendar`,
+                  `${homepage}/products/talk/`,
                 ]}
                 component={ComingSoonRoute}
               />
               <PrivateRoute
-                path={`${virtualPath}/payments`}
+                path={`${homepage}/payments`}
                 component={PaymentsRoute}
               />
               <PrivateRoute
                 restricted
-                path={`${virtualPath}/settings`}
+                path={`${homepage}/settings`}
                 component={SettingsRoute}
               />
               {dynamicRoutes}
               <PrivateRoute
-                path={`${virtualPath}/error401`}
+                path={`${homepage}/error401`}
                 component={Error401Route}
               />
               <PrivateRoute component={Error404Route} />
@@ -280,7 +271,6 @@ const ShellWrapper = inject(({ auth }) => {
     isThirdPartyResponse,
     isLoaded,
     modules: auth.moduleStore.modules,
-    homepage: auth.settingsStore.homepage || config.homepage,
   };
 })(observer(Shell));
 

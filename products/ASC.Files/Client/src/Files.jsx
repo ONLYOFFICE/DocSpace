@@ -1,14 +1,12 @@
 import React from "react";
 import { Provider as FilesProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
-import { Switch, Route, Router } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import Home from "./components/pages/Home";
-import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
 import VersionHistory from "./components/pages/VersionHistory";
 import config from "../package.json";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
-import history from "@appserver/common/history";
 import toastr from "studio/toastr";
 import { updateTempContent } from "@appserver/common/utils";
 import initFilesStore from "./store/InitFilesStore";
@@ -80,28 +78,21 @@ class FilesContent extends React.Component {
     const { homepage /*, isDesktop*/ } = this.props;
 
     return (
-      <Router history={history}>
-        <Switch>
-          <PrivateRoute
-            exact
-            path={`${homepage}/settings/:setting`}
-            component={Settings}
-          />
-          <Route
-            exact
-            path={[`${homepage}/doceditor`, `/Products/Files/DocEditor.aspx`]}
-            component={DocEditor}
-          />
-          <PrivateRoute
-            exact
-            path={[`${homepage}/:fileId/history`]}
-            component={VersionHistory}
-          />
-          <PrivateRoute exact path={homepage} component={Home} />
-          <PrivateRoute path={`${homepage}/filter`} component={Home} />
-          <PrivateRoute component={Error404} />
-        </Switch>
-      </Router>
+      <Switch>
+        <PrivateRoute
+          exact
+          path={`${homepage}/settings/:setting`}
+          component={Settings}
+        />
+        <PrivateRoute
+          exact
+          path={[`${homepage}/:fileId/history`]}
+          component={VersionHistory}
+        />
+        <PrivateRoute exact path={homepage} component={Home} />
+        <PrivateRoute path={`${homepage}/filter`} component={Home} />
+        <PrivateRoute component={Error404} />
+      </Switch>
     );
   }
 }
