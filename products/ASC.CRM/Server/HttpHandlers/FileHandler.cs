@@ -28,6 +28,8 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.CRM.Resources;
 using ASC.Web.CRM.Classes;
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
@@ -36,28 +38,21 @@ using System.Threading.Tasks;
 
 namespace ASC.Web.CRM.HttpHandlers
 {
-    [Transient]
-    public class FileHandler
+    public class FileHandlerMiddleware
     {
-        public FileHandler(RequestDelegate next,
-                           Global global,
-                           ContactPhotoManager contactPhotoManager,
-                           IOptionsMonitor<ILog> logger)
-        {
-            _next = next;
-            Global = global;
-            ContactPhotoManager = contactPhotoManager;
-            Logger = logger.Get("ASC");
-        }
-
-        public ILog Logger { get; }
-        public ContactPhotoManager ContactPhotoManager { get; }
-        public Global Global { get; }
-
         private readonly RequestDelegate _next;
 
-        public async Task InvokeAsync(HttpContext context)
+        public FileHandlerMiddleware(RequestDelegate next)
         {
+            _next = next;
+        }
+         
+        public async Task Invoke(HttpContext context,
+                                Global global,
+                                ContactPhotoManager contactPhotoManager)
+        {            
+            context.Request.EnableBuffering();
+
             var action = context.Request.Query["action"];
 
             switch (action)
@@ -68,18 +63,18 @@ namespace ASC.Web.CRM.HttpHandlers
                         var isCompany = Convert.ToBoolean(context.Request.Query["isc"]);
                         var photoSize = Convert.ToInt32(context.Request.Query["ps"]);
 
-                        string photoUrl = string.Empty;
+                    string photoUrl;
 
-                        switch (photoSize)
+                    switch (photoSize)
                         {
                             case 1:
-                                photoUrl = ContactPhotoManager.GetSmallSizePhoto(contactId, isCompany);
+                                photoUrl = contactPhotoManager.GetSmallSizePhoto(contactId, isCompany);
                                 break;
                             case 2:
-                                photoUrl = ContactPhotoManager.GetMediumSizePhoto(contactId, isCompany);
+                                photoUrl = contactPhotoManager.GetMediumSizePhoto(contactId, isCompany);
                                 break;
                             case 3:
-                                photoUrl = ContactPhotoManager.GetBigSizePhoto(contactId, isCompany);
+                                photoUrl = contactPhotoManager.GetBigSizePhoto(contactId, isCompany);
                                 break;
                             default:
                                 throw new Exception(CRMErrorsResource.ContactPhotoSizeUnknown);
@@ -98,7 +93,7 @@ namespace ASC.Web.CRM.HttpHandlers
 
                         string messageContent = string.Empty;
 
-                        using (var streamReader = new StreamReader(Global.GetStore().GetReadStream("mail_messages", filePath)))
+                        using (var streamReader = new StreamReader(global.GetStore().GetReadStream("mail_messages", filePath)))
                         {
                             messageContent = streamReader.ReadToEnd();
                         }
@@ -113,4 +108,12 @@ namespace ASC.Web.CRM.HttpHandlers
             }
         }
     }
-} 
+
+    public static class FileHandlerMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseFileHandler(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<FileHandlerMiddleware>();
+        }
+    }
+}

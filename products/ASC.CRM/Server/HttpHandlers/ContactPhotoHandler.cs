@@ -24,6 +24,10 @@
 */
 
 
+
+using System;
+using System.Text.Json;
+
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
@@ -31,16 +35,15 @@ using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Core;
 using ASC.Web.Core.Files;
+using ASC.Web.Core.Utility;
+using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Configuration;
 using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-using System;
-using System.Threading.Tasks;
-
-namespace ASC.Web.CRM.Classes
+namespace ASC.Web.CRM.HttpHandlers
 {
     public class ContactPhotoHandlerMiddleware
     {
@@ -51,66 +54,72 @@ namespace ASC.Web.CRM.Classes
 
         private readonly RequestDelegate _next;
 
-        public async Task Invoke(HttpContext context,
+        public async System.Threading.Tasks.Task Invoke(HttpContext context,
                                  SetupInfo setupInfo,
                                  CRMSecurity cRMSecurity,
                                  FileSizeComment fileSizeComment,
                                  WebItemSecurity webItemSecurity,
                                  MessageTarget messageTarget,
                                  MessageService messageService,
-                                 DaoFactory daoFactory)
+                                 DaoFactory daoFactory,
+                                 ContactPhotoManager contactPhotoManager)
         {
 
-            if (!webItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))
-                throw cRMSecurity.CreateSecurityException();
+            //if (!webItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))
+            //    throw cRMSecurity.CreateSecurityException();
 
             context.Request.EnableBuffering();
-
-
-            var contactId = Convert.ToInt32(context.Request["contactID"]);
             
+            var contactId = Convert.ToInt32(context.Request.Form["contactID"]);
+           
             Contact contact = null;
 
             if (contactId != 0)
             {
                 contact = daoFactory.GetContactDao().GetByID(contactId);
 
-                if (!cRMSecurity.CanEdit(contact))
-                    throw cRMSecurity.CreateSecurityException();
+                //if (!cRMSecurity.CanEdit(contact))
+                //    throw cRMSecurity.CreateSecurityException();
             }
 
             var fileUploadResult = new FileUploadResult();
 
-            if (!FileToUpload.HasFilesToUpload(context)) return fileUploadResult;
+            if (context.Request.Form.Files.Count == 0)
+            {
+                await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
+            }
 
-            var file = new FileToUpload(context);
+            var fileName = context.Request.Form.Files[0].FileName;
+            var contentLength = context.Request.Form.Files[0].Length;
 
-            if (String.IsNullOrEmpty(file.FileName) || file.ContentLength == 0)
+            if (String.IsNullOrEmpty(fileName) || contentLength == 0)
                 throw new InvalidOperationException(CRMErrorsResource.InvalidFile);
 
-            if (0 < setupInfo.MaxImageUploadSize && setupInfo.MaxImageUploadSize < file.ContentLength)
+            if (0 < setupInfo.MaxImageUploadSize && setupInfo.MaxImageUploadSize < contentLength)
             {
                 fileUploadResult.Success = false;
                 fileUploadResult.Message = fileSizeComment.GetFileImageSizeNote(CRMCommonResource.ErrorMessage_UploadFileSize, false).HtmlEncode();
-                return fileUploadResult;
+
+                await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
             }
 
-            if (FileUtility.GetFileTypeByFileName(file.FileName) != FileType.Image)
+            if (FileUtility.GetFileTypeByFileName(fileName) != FileType.Image)
             {
                 fileUploadResult.Success = false;
                 fileUploadResult.Message = CRMJSResource.ErrorMessage_NotImageSupportFormat.HtmlEncode();
-                return fileUploadResult;
+
+                await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
             }
 
-            var uploadOnly = Convert.ToBoolean(context.Request["uploadOnly"]);
-            var tmpDirName = Convert.ToString(context.Request["tmpDirName"]);
+            var uploadOnly = Convert.ToBoolean(context.Request.Form["uploadOnly"]);
+            var tmpDirName = Convert.ToString(context.Request.Form["tmpDirName"]);
 
             try
             {
                 ContactPhotoManager.PhotoData photoData;
                 if (contactId != 0)
                 {
-                    photoData = ContactPhotoManager.UploadPhoto(file.InputStream, contactId, uploadOnly);
+                    photoData = contactPhotoManager.UploadPhoto(context.Request.Form.Files[0].OpenReadStream(), contactId, uploadOnly);
                 }
                 else
                 {
@@ -118,7 +127,7 @@ namespace ASC.Web.CRM.Classes
                     {
                         tmpDirName = Guid.NewGuid().ToString();
                     }
-                    photoData = ContactPhotoManager.UploadPhotoToTemp(file.InputStream, tmpDirName);
+                    photoData = contactPhotoManager.UploadPhotoToTemp(context.Request.Form.Files[0].OpenReadStream(), tmpDirName);
                 }
 
                 fileUploadResult.Success = true;
@@ -128,7 +137,8 @@ namespace ASC.Web.CRM.Classes
             {
                 fileUploadResult.Success = false;
                 fileUploadResult.Message = e.Message.HtmlEncode();
-                return fileUploadResult;
+
+                await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
             }
 
             if (contact != null)
@@ -139,7 +149,15 @@ namespace ASC.Web.CRM.Classes
             
             }
 
-            return fileUploadResult;
+            await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
+        }
+    }
+
+    public static class ContactPhotoHandlerMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseContactPhotoHandler(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<ContactPhotoHandlerMiddleware>();
         }
     }
 }

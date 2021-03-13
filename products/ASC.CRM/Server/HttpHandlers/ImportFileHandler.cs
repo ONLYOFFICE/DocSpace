@@ -27,55 +27,67 @@
 using ASC.CRM.Core;
 using ASC.Web.Core;
 using ASC.Web.Core.Utility;
+using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Configuration;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
 using System;
+using System.Text.Json;
+using System.Threading.Tasks;
 
-
-namespace ASC.Web.CRM.Classes
+namespace ASC.Web.CRM.HttpHandlers
 {
-    public class ImportFileHandler
+    public class ImportFileHandlerMiddleware
     {
-        public ImportFileHandler(WebItemSecurity webItemSecurity,
-                                CRMSecurity cRMSecurity,
-                                Global global)
+        private readonly RequestDelegate _next;
+
+        public ImportFileHandlerMiddleware(
+                                RequestDelegate next)
         {
-            CRMSecurity = cRMSecurity;
-            WebItemSecurity = webItemSecurity;
-            Global = global;
+            _next = next;
         }
 
-        public Global Global { get; }
-        public CRMSecurity CRMSecurity { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-
-        public FileUploadResult ProcessUpload(HttpContext context)
+        public async Task Invoke(HttpContext context, 
+                                WebItemSecurity webItemSecurity,
+                                CRMSecurity cRMSecurity,
+                                Global global,
+                                ImportFromCSV importFromCSV)
         {
-            if (!WebItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))
-                throw CRMSecurity.CreateSecurityException();
+            if (!webItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))
+                throw cRMSecurity.CreateSecurityException();
 
             var fileUploadResult = new FileUploadResult();
 
-            if (!FileToUpload.HasFilesToUpload(context)) return fileUploadResult;
+            if (context.Request.Form.Files.Count == 0)
+            {
+                await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
+            }
 
-            var file = new FileToUpload(context);
-
+            var fileName = context.Request.Form.Files[0].FileName;
+            var contentLength = context.Request.Form.Files[0].Length;
+            
             String assignedPath;
 
-            Global.GetStore().SaveTemp("temp", out assignedPath, file.InputStream);
-
-            file.InputStream.Position = 0;
-
-            var jObject = ImportFromCSV.GetInfo(file.InputStream, context.Request["importSettings"]);
+            global.GetStore().SaveTemp("temp", out assignedPath, context.Request.Form.Files[0].OpenReadStream());
+          
+            var jObject = importFromCSV.GetInfo(context.Request.Form.Files[0].OpenReadStream(), context.Request.Form["importSettings"]);
 
             jObject.Add("assignedPath", assignedPath);
 
             fileUploadResult.Success = true;
             fileUploadResult.Data = Global.EncodeTo64(jObject.ToString());
 
-            return fileUploadResult;
+            await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
+        }
+    }
+
+    public static class ImportFileHandlerMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseImportFileHandlerHandler(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<ImportFileHandlerMiddleware>();
         }
     }
 }

@@ -14,7 +14,10 @@
       "launchBrowser": true,
       "launchUrl": "weatherforecast",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "$STORAGE_ROOT": "../../../Data",
+        "log__name": "crm",
+        "log__dir": "../../../Logs"
       }
     },
     "Kestrel WebServer": {
@@ -22,7 +25,10 @@
       "launchBrowser": true,
       "launchUrl": "api/2.0/crm/task/10",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "$STORAGE_ROOT": "../../../Data",
+        "log__name": "crm",
+        "log__dir": "../../../Logs"
       },
       "applicationUrl": "http://localhost:5000"
     }

@@ -29,76 +29,96 @@ using ASC.CRM.Core;
 using ASC.CRM.Resources;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Utility;
+using ASC.Web.CRM.Classes;
 using ASC.Web.Studio.Core;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
 using System;
 using System.IO;
+using System.Text.Json;
 
-namespace ASC.Web.CRM.Classes
+namespace ASC.Web.CRM.HttpHandlers
 {
-    public class OrganisationLogoHandler
+    public class OrganisationLogoHandlerMiddleware
     {
-        public OrganisationLogoHandler(CRMSecurity cRMSecurity,
-            SetupInfo setupInfo,
-            FileSizeComment fileSizeComment)
+        private readonly RequestDelegate _next;
+
+        public OrganisationLogoHandlerMiddleware(
+            RequestDelegate next
+            )
         {
-            CRMSecurity = cRMSecurity;
-            SetupInfo = setupInfo;
-            FileSizeComment = fileSizeComment;
+            _next = next;
         }
 
-        public OrganisationLogoManager OrganisationLogoManager { get; }
-        public ContactPhotoManager ContactPhotoManager { get; }
-        public FileSizeComment FileSizeComment { get; }
-        public SetupInfo SetupInfo { get; }
-        public CRMSecurity CRMSecurity { get; }
-
-        public FileUploadResult ProcessUpload(HttpContext context)
+        public async System.Threading.Tasks.Task Invoke(HttpContext context,
+            CRMSecurity cRMSecurity,
+            SetupInfo setupInfo,
+            FileSizeComment fileSizeComment,
+            ContactPhotoManager contactPhotoManager,
+            OrganisationLogoManager organisationLogoManager)
         {
-            if (!CRMSecurity.IsAdmin)
-                throw CRMSecurity.CreateSecurityException();
+            context.Request.EnableBuffering();
+
+            if (!cRMSecurity.IsAdmin)
+                throw cRMSecurity.CreateSecurityException();
 
             var fileUploadResult = new FileUploadResult();
 
-            if (!FileToUpload.HasFilesToUpload(context)) return fileUploadResult;
-
-            var file = new FileToUpload(context);
-
-            if (String.IsNullOrEmpty(file.FileName) || file.ContentLength == 0)
-                throw new InvalidOperationException(CRMErrorsResource.InvalidFile);
-
-            if (0 < SetupInfo.MaxImageUploadSize && SetupInfo.MaxImageUploadSize < file.ContentLength)
+            if (context.Request.Form.Files.Count == 0)
             {
-                fileUploadResult.Success = false;
-                fileUploadResult.Message = FileSizeComment.GetFileImageSizeNote(CRMCommonResource.ErrorMessage_UploadFileSize, false).HtmlEncode();
-                return fileUploadResult;
+                await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
             }
 
-            if (FileUtility.GetFileTypeByFileName(file.FileName) != FileType.Image)
+            var fileName = context.Request.Form.Files[0].FileName;
+            var contentLength = context.Request.Form.Files[0].Length;
+
+            if (String.IsNullOrEmpty(fileName) || contentLength == 0)
+                throw new InvalidOperationException(CRMErrorsResource.InvalidFile);
+
+            if (0 < setupInfo.MaxImageUploadSize && setupInfo.MaxImageUploadSize < contentLength)
+            {
+                fileUploadResult.Success = false;
+                fileUploadResult.Message = fileSizeComment.GetFileImageSizeNote(CRMCommonResource.ErrorMessage_UploadFileSize, false).HtmlEncode();
+
+                await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
+            }
+
+            if (FileUtility.GetFileTypeByFileName(fileName) != FileType.Image)
             {
                 fileUploadResult.Success = false;
                 fileUploadResult.Message = CRMJSResource.ErrorMessage_NotImageSupportFormat.HtmlEncode();
-                return fileUploadResult;
+
+                await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
             }
 
             try
             {
-                var imageData = Global.ToByteArray(file.InputStream);
-                var imageFormat = ContactPhotoManager.CheckImgFormat(imageData);
-                var photoUri = OrganisationLogoManager.UploadLogo(imageData, imageFormat);
+                var imageData = Global.ToByteArray(context.Request.Form.Files[0].OpenReadStream());
+                var imageFormat = contactPhotoManager.CheckImgFormat(imageData);
+                var photoUri = organisationLogoManager.UploadLogo(imageData, imageFormat);
 
                 fileUploadResult.Success = true;
                 fileUploadResult.Data = photoUri;
-                return fileUploadResult;
+
+                await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
             }
             catch (Exception exception)
             {
                 fileUploadResult.Success = false;
                 fileUploadResult.Message = exception.Message.HtmlEncode();
-                return fileUploadResult;
+
+                await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
             }
+        }
+    }
+
+    public static class OrganisationLogoHandlerMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseOrganisationLogoHandler(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<OrganisationLogoHandlerMiddleware>();
         }
     }
 }

@@ -638,8 +638,11 @@ namespace ASC.CRM.ApiModels
             ContactDto result;
 
             var person = contact as Person;
+           
             if (person != null)
             {
+
+                var temp = (ContactDto)GetContactBaseDto(contact);
                 var peopleDto = (PersonDto)GetContactBaseDto(contact);
 
                 peopleDto.FirstName = person.FirstName;

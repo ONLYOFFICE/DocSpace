@@ -34,67 +34,72 @@ using Microsoft.AspNetCore.Http;
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using ASC.Web.Core.Utility;
+using Microsoft.AspNetCore.Builder;
+using System.Threading.Tasks;
+using System.Text.Json;
 
-namespace ASC.Web.CRM.Classes
+namespace ASC.Web.CRM.HttpHandlers
 {
-    public class FileUploaderHandler
+    public class FileUploaderHandlerMiddleware
     {
-        public FileUploaderHandler(SetupInfo setupInfo,
+        private readonly RequestDelegate _next;
+
+        public FileUploaderHandlerMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+        public async Task InvokeAsync(HttpContext context,
+                                   SetupInfo setupInfo,
                                    DaoFactory daoFactory,
                                    FileSizeComment fileSizeComment,
                                    IServiceProvider serviceProvider,
                                    TenantExtra tenantExtra,
                                    TenantStatisticsProvider tenantStatisticsProvider)
         {
-            SetupInfo = setupInfo;
-            DaoFactory = daoFactory;
-            FileSizeComment = fileSizeComment;
-            ServiceProvider = serviceProvider;
-            TenantExtra = tenantExtra;
-            TenantStatisticsProvider = tenantStatisticsProvider;
-        }
+            context.Request.EnableBuffering();
 
-        public TenantExtra TenantExtra { get; }
-        public TenantStatisticsProvider TenantStatisticsProvider { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public FileSizeComment FileSizeComment { get; }
-        public DaoFactory DaoFactory { get; }
-        public SetupInfo SetupInfo { get; }
-
-        public FileUploadResult ProcessUpload(HttpContext context)
-        {
             var fileUploadResult = new FileUploadResult();
 
-            if (!FileToUpload.HasFilesToUpload(context)) return fileUploadResult;
+            if (context.Request.Form.Files.Count == 0)
+            {
+                await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
+            }
 
-            var file = new FileToUpload(context);
-
-            if (String.IsNullOrEmpty(file.FileName) || file.ContentLength == 0)
+            var fileName = context.Request.Form.Files[0].FileName;
+            var contentLength = context.Request.Form.Files[0].Length;
+            
+            if (String.IsNullOrEmpty(fileName) || contentLength == 0)
                 throw new InvalidOperationException(CRMErrorsResource.InvalidFile);
 
-            if (0 < SetupInfo.MaxUploadSize(TenantExtra, TenantStatisticsProvider) && SetupInfo.MaxUploadSize(TenantExtra, TenantStatisticsProvider) < file.ContentLength)
-                throw FileSizeComment.FileSizeException;
+            if (0 < setupInfo.MaxUploadSize(tenantExtra, tenantStatisticsProvider) && setupInfo.MaxUploadSize(tenantExtra, tenantStatisticsProvider) < contentLength)
+                throw fileSizeComment.FileSizeException;
 
-            var fileName = file.FileName.LastIndexOf('\\') != -1
-                ? file.FileName.Substring(file.FileName.LastIndexOf('\\') + 1)
-                : file.FileName;
+             fileName = fileName.LastIndexOf('\\') != -1
+                ? fileName.Substring(fileName.LastIndexOf('\\') + 1)
+                : fileName;
 
-            var document = ServiceProvider.GetService<File<int>>();
+            var document = serviceProvider.GetService<File<int>>();
 
             document.Title = fileName;
-            document.FolderID = DaoFactory.GetFileDao().GetRoot();
-            document.ContentLength = file.ContentLength;
+            document.FolderID = daoFactory.GetFileDao().GetRoot();
+            document.ContentLength = contentLength;
 
-            document = DaoFactory.GetFileDao().SaveFile(document, file.InputStream);
+            document = daoFactory.GetFileDao().SaveFile(document, context.Request.Form.Files[0].OpenReadStream());
 
             fileUploadResult.Data = document.ID;
             fileUploadResult.FileName = document.Title;
             fileUploadResult.FileURL = document.DownloadUrl;
             fileUploadResult.Success = true;
 
+            await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
+        }
+    }
 
-            return fileUploadResult;
-
+    public static class FileUploaderHandlerMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseFileUploaderHandler(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<FileUploaderHandlerMiddleware>();
         }
     }
 }

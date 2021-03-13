@@ -48,7 +48,7 @@ using System.Text;
 
 namespace ASC.Web.CRM.Classes
 {
-    [Transient]
+    [Scope]
     public class Global
     {
         public Global(StorageFactory storageFactory,

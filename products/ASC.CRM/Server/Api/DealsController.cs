@@ -56,7 +56,6 @@ namespace ASC.CRM.Api
                    MessageService messageService,
                    NotifyClient notifyClient,
                    ContactDtoHelper  contactDtoHelper,
-                   ContactInfoDtoHelper contactInfoDtoHelper,
                    OpportunityDtoHelper opportunityDtoHelper,
                    CurrencyProvider currencyProvider,
                    CurrencyInfoDtoHelper currencyInfoDtoHelper,

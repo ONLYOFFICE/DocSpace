@@ -5,13 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="HttpHandlers\**" />
-    <Content Remove="HttpHandlers\**" />
-    <EmbeddedResource Remove="HttpHandlers\**" />
-    <None Remove="HttpHandlers\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="ContactPhotoManagerCacheItem.proto" />
   </ItemGroup>
 
@@ -193,7 +186,6 @@
   <ItemGroup>
     <Protobuf Include="proto\ContactPhotoManagerCacheItem.proto" />
   </ItemGroup>
-
 
   <ItemGroup>
     <Folder Include="Classes\SocialMedia\" />

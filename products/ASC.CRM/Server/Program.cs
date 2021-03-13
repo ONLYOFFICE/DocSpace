@@ -1,15 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
+using ASC.Common.DependencyInjection;
+
+using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace ASC.CRM
 {
@@ -50,6 +49,10 @@ namespace ASC.CRM
                     {
                                         {"pathToConf", path}
                     });
+                })
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath, false, false);
                 });
         }
     }
