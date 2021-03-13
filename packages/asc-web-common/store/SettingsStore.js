@@ -202,8 +202,19 @@ class SettingsStore {
   };
 
   setModuleInfo = (homepage, productId) => {
+    if (this.homepage == homepage) return;
     this.homepage = homepage;
     this.setCurrentProductId(productId);
+    const baseElm = document.getElementsByTagName("base");
+    if (baseElm && baseElm.length === 1) {
+      const baseUrl = homepage
+        ? homepage[homepage.length - 1] === "/"
+          ? homepage
+          : `${homepage}/`
+        : "/";
+      console.log("SET base URL", baseUrl);
+      baseElm[0].setAttribute("href", baseUrl);
+    }
   };
 
   setCurrentProductId = (currentProductId) => {
