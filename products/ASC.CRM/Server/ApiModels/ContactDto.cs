@@ -61,10 +61,10 @@ namespace ASC.CRM.ApiModels
         [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public String LastName { get; set; }
 
-        
+
         public ContactBaseDto Company { get; set; }
 
-        
+
         public String Title { get; set; }
 
         public new static PersonDto GetSample()
@@ -176,43 +176,21 @@ namespace ASC.CRM.ApiModels
         //    Industry = contact.Industry;
         //}
 
-        
+
         public IEnumerable<Address> Addresses { get; set; }
-
-
-        
         public EmployeeWraper CreateBy { get; set; }
-
-        
         public ApiDateTime Created { get; set; }
-
-        
         public String About { get; set; }
-
-        
         public String Industry { get; set; }
-
-        
         public ContactStatusBaseDto ContactStatus { get; set; }
-
-        
         public ContactTypeBaseDto ContactType { get; set; }
-
-        
         public IEnumerable<ContactInfoDto> CommonData { get; set; }
-
-        
         public IEnumerable<CustomFieldBaseDto> CustomFields { get; set; }
-
-        
         public IEnumerable<String> Tags { get; set; }
-
-        
         public int TaskCount { get; set; }
 
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public bool HaveLateTasks { get; set; }
-
         public new static ContactDto GetSample()
         {
             return new PersonDto
@@ -241,7 +219,6 @@ namespace ASC.CRM.ApiModels
     [DataContract(Name = "contactBase", Namespace = "")]
     public class ContactBaseWithEmailDto : ContactBaseDto
     {
-        
         public ContactInfoDto Email { get; set; }
     }
 
@@ -249,7 +226,6 @@ namespace ASC.CRM.ApiModels
     [DataContract(Name = "contactBase", Namespace = "")]
     public class ContactBaseWithPhoneDto : ContactBaseDto
     {
-        
         public ContactInfoDto Phone { get; set; }
     }
 
@@ -306,10 +282,10 @@ namespace ASC.CRM.ApiModels
         [DataMember(Name = "id")]
         public int Id { get; set; }
 
-        
+
         public String SmallFotoUrl { get; set; }
 
-        
+
         public String MediumFotoUrl { get; set; }
 
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
@@ -318,7 +294,7 @@ namespace ASC.CRM.ApiModels
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public bool IsCompany { get; set; }
 
-        
+
         public IEnumerable<EmployeeWraper> AccessList { get; set; }
 
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
@@ -330,7 +306,7 @@ namespace ASC.CRM.ApiModels
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public ShareType ShareType { get; set; }
 
-        [DataMember]
+        
         public CurrencyInfoDto Currency { get; set; }
 
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
@@ -355,10 +331,10 @@ namespace ASC.CRM.ApiModels
     [DataContract(Name = "contact_task", Namespace = "")]
     public class ContactWithTaskDto
     {
-        
+
         public TaskBaseDto Task { get; set; }
 
-        
+
         public ContactDto Contact { get; set; }
     }
 
@@ -395,21 +371,25 @@ namespace ASC.CRM.ApiModels
 
         public ContactBaseDto GetContactBaseDtoQuick(Contact contact)
         {
-            var result = new ContactBaseDto
-            {
-                Id = contact.ID,
-                DisplayName = contact.GetTitle(),
-                IsPrivate = CRMSecurity.IsPrivate(contact),
-                IsShared = contact.ShareType == ShareType.ReadWrite || contact.ShareType == ShareType.Read,
-                ShareType = contact.ShareType,
-                Currency = !String.IsNullOrEmpty(contact.Currency) ?
-                CurrencyInfoDtoHelper.Get(CurrencyProvider.Get(contact.Currency)) : null,
-                SmallFotoUrl = String.Format("{0}HttpHandlers/filehandler.ashx?action=contactphotoulr&cid={1}&isc={2}&ps=1", PathProvider.BaseAbsolutePath, contact.ID, contact is Company).ToLower(),
-                MediumFotoUrl = String.Format("{0}HttpHandlers/filehandler.ashx?action=contactphotoulr&cid={1}&isc={2}&ps=2", PathProvider.BaseAbsolutePath, contact.ID, contact is Company).ToLower(),
-                IsCompany = contact is Company,
-                CanEdit = CRMSecurity.CanEdit(contact),
-                //        CanDelete = CRMSecurity.CanDelete(contact),
-            };
+            ContactBaseDto result;
+
+            if (contact is Company)
+                result = new CompanyDto();
+            else
+                result = new PersonDto();
+
+            result.Id = contact.ID;
+            result.DisplayName = contact.GetTitle();
+            result.IsPrivate = CRMSecurity.IsPrivate(contact);
+            result.IsShared = contact.ShareType == ShareType.ReadWrite || contact.ShareType == ShareType.Read;
+            result.ShareType = contact.ShareType;
+            result.Currency = !String.IsNullOrEmpty(contact.Currency) ?
+                                CurrencyInfoDtoHelper.Get(CurrencyProvider.Get(contact.Currency)) : null;
+            result.SmallFotoUrl = String.Format("{0}HttpHandlers/filehandler.ashx?action=contactphotoulr&cid={1}&isc={2}&ps=1", PathProvider.BaseAbsolutePath, contact.ID, contact is Company).ToLower();
+            result.MediumFotoUrl = String.Format("{0}HttpHandlers/filehandler.ashx?action=contactphotoulr&cid={1}&isc={2}&ps=2", PathProvider.BaseAbsolutePath, contact.ID, contact is Company).ToLower();
+            result.IsCompany = contact is Company;
+            result.CanEdit = CRMSecurity.CanEdit(contact);
+            //        CanDelete = CRMSecurity.CanDelete(contact),
 
             if (result.IsPrivate)
             {
@@ -638,11 +618,9 @@ namespace ASC.CRM.ApiModels
             ContactDto result;
 
             var person = contact as Person;
-           
+
             if (person != null)
             {
-
-                var temp = (ContactDto)GetContactBaseDto(contact);
                 var peopleDto = (PersonDto)GetContactBaseDto(contact);
 
                 peopleDto.FirstName = person.FirstName;

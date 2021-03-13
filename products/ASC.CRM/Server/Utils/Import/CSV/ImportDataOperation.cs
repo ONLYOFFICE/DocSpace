@@ -113,13 +113,28 @@ namespace ASC.Web.CRM.Classes
         }
     }
 
+    [Transient]
     public partial class ImportDataOperation : IProgressItem
     {
-        public ImportDataOperation(EntityType entityType,
-                                   string CSVFileURI,
-                                   string importSettingsJSON,
-                                   SecurityContext securityContext,
-                                   Global global,
+        private readonly ILog _log;
+
+        private readonly IDataStore _dataStore;
+
+        private readonly IAccount _author;
+
+        private readonly int _tenantID;
+
+        private string _CSVFileURI;
+
+        private ImportCSVSettings _importSettings;
+
+        private EntityType _entityType;
+
+        private string[] _columns;
+
+        private bool _IsConfigure;
+
+        public ImportDataOperation(Global global,
                                    TenantManager tenantManager,
                                    IOptionsMonitor<ILog> logger,
                                    UserManager userManager,
@@ -128,17 +143,14 @@ namespace ASC.Web.CRM.Classes
                                    NotifyClient notifyClient,
                                    SettingsManager settingsManager,
                                    CurrencyProvider currencyProvider,
-                                   DaoFactory daoFactory
-                                   )
+                                   DaoFactory daoFactory,
+                                   SecurityContext securityContext
+                                 )
         {
             ImportDataCache = importDataCache;
 
-            _entityType = entityType;
-            _CSVFileURI = CSVFileURI;
             UserManager = userManager;
 
-            if (!String.IsNullOrEmpty(importSettingsJSON))
-                _importSettings = new ImportCSVSettings(importSettingsJSON);
 
             SecurityContext = securityContext;
             _dataStore = global.GetStore();
@@ -156,6 +168,20 @@ namespace ASC.Web.CRM.Classes
             SettingsManager = settingsManager;
             CurrencyProvider = currencyProvider;
             DaoFactory = daoFactory;
+        }
+
+        public void Configure(EntityType entityType,
+                              string CSVFileURI,
+                              string importSettingsJSON)
+        {
+
+            _entityType = entityType;
+            _CSVFileURI = CSVFileURI;
+
+            if (!String.IsNullOrEmpty(importSettingsJSON))
+                _importSettings = new ImportCSVSettings(importSettingsJSON);
+
+            _IsConfigure = true;
         }
 
         public CurrencyProvider CurrencyProvider { get; }
@@ -178,21 +204,6 @@ namespace ASC.Web.CRM.Classes
 
         public ILog LogManager { get; }
 
-        private readonly ILog _log;
-
-        private readonly IDataStore _dataStore;
-
-        private readonly IAccount _author;
-
-        private readonly int _tenantID;
-
-        private readonly string _CSVFileURI;
-
-        private readonly ImportCSVSettings _importSettings;
-
-        private readonly EntityType _entityType;
-
-        private string[] _columns;
 
         public override bool Equals(object obj)
         {
@@ -255,6 +266,9 @@ namespace ASC.Web.CRM.Classes
         {
             try
             {
+                if (!_IsConfigure)
+                    throw new Exception("Is not configure. Please, call configure method.");
+
                 TenantManager.SetCurrentTenant(_tenantID);
                 SecurityContext.AuthenticateMe(_author);
                 

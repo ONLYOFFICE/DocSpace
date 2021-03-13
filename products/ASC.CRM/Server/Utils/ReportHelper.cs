@@ -39,34 +39,46 @@ using System.Collections.Generic;
 using System.Net;
 using Microsoft.Extensions.DependencyInjection;
 using ASC.Common;
+using ASC.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.CRM.Classes
 {
     [Scope]
     public class ReportHelper
     {
-        public ReportHelper(TenantUtil tenantUtil,
+        public ReportHelper(TenantManager tenantManager,
+                            TenantUtil tenantUtil,
                             Global global,
-        //                    DocbuilderReportsUtilityHelper docbuilderReportsUtilityHelper,
+                            DocbuilderReportsUtilityHelper docbuilderReportsUtilityHelper,
                             SettingsManager settingsManager,
                             DaoFactory daoFactory,
-                            IServiceProvider serviceProvider
+                            SecurityContext securityContext,
+                            IServiceProvider serviceProvider,
+                            IHttpContextAccessor httpContextAccessor
                           )
         {
+            TenantManager = tenantManager;
             TenantUtil = tenantUtil;
             Global = global;
             SettingsManager = settingsManager;
             ServiceProvider = serviceProvider;
             DaoFactory = daoFactory;
+            DocbuilderReportsUtilityHelper = docbuilderReportsUtilityHelper;
+            SecurityContext = securityContext;
+            HttpContext = httpContextAccessor;
         }
 
+        public IHttpContextAccessor HttpContext { get; }
+        public SecurityContext SecurityContext { get; }
+        public DocbuilderReportsUtilityHelper DocbuilderReportsUtilityHelper { get; }
         public DaoFactory DaoFactory { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public Global Global { get; }
         public SettingsManager SettingsManager { get; }
         public TenantUtil TenantUtil { get; }
-
+        public TenantManager TenantManager { get; }
         private string GetFileName(ReportType reportType)
         {
             string reportName;
@@ -233,17 +245,26 @@ namespace ASC.Web.CRM.Classes
             var tmpFileName = DocbuilderReportsUtility.TmpFileName;
 
             var script = GetReportScript(reportData, reportType, tmpFileName);
+
             if (string.IsNullOrEmpty(script))
                 throw new Exception(CRMReportResource.ErrorNullReportScript);
 
-            //   ServiceProvider.GetService<ReportState>()
+            var reportStateData = new ReportStateData(
+                GetFileName(reportType),
+                tmpFileName,
+                script,
+                (int)reportType,
+                ReportOrigin.CRM,
+                SaveReportFile,
+                null,
+                TenantManager.GetCurrentTenant().TenantId,
+                SecurityContext.CurrentAccount.ID);
 
-            //   var state = new ReportState(GetFileName(reportType), tmpFileName, script, (int)reportType, ReportOrigin.CRM, SaveReportFile, null);
+            var state = new ReportState(ServiceProvider, reportStateData, HttpContext);
 
-            // DocbuilderReportsUtility.Enqueue(state);
+            DocbuilderReportsUtilityHelper.Enqueue(state);
 
-            // return state;
-            throw new NotImplementedException();
+            return state;
         }
     }
 }

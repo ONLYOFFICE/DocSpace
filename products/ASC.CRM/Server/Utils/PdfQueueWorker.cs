@@ -34,25 +34,43 @@ using ASC.Core;
 using Microsoft.AspNetCore.Http;
 using ASC.CRM.Core.Enums;
 using log4net;
+using ASC.Common;
 
 namespace ASC.Web.CRM.Classes
-{
+{  
+    [Transient]
     public class PdfQueueWorker
     {
-        private static readonly ProgressQueue<PdfProgressItem> Queue = new ProgressQueue<PdfProgressItem>();
+        private readonly ProgressQueue<PdfProgressItem> Queue;
+        private readonly int tenantId;
+        private readonly Guid userId;
 
-        public static string GetTaskId(int tenantId, int invoiceId)
+        public PdfQueueWorker(ProgressQueueOptionsManager<PdfProgressItem> progressQueueOptionsManager,
+                              PdfProgressItem pdfProgressItem,
+                              TenantManager tenantProvider,
+                              SecurityContext securityContext)
+        {
+            Queue = progressQueueOptionsManager.Value;
+            PdfProgressItem = pdfProgressItem;
+            tenantId = tenantProvider.GetCurrentTenant().TenantId;
+            userId = securityContext.CurrentAccount.ID;
+        }
+
+        public PdfProgressItem PdfProgressItem { get; }
+
+        public string GetTaskId(int tenantId, int invoiceId)
         {
             return string.Format("{0}_{1}", tenantId, invoiceId);
         }
 
-        public static PdfProgressItem GetTaskStatus(int tenantId, int invoiceId)
+        public PdfProgressItem GetTaskStatus(int tenantId, int invoiceId)
         {
             var id = GetTaskId(tenantId, invoiceId);
+
             return Queue.GetStatus(id) as PdfProgressItem;
         }
 
-        public static void TerminateTask(int tenantId, int invoiceId)
+        public void TerminateTask(int invoiceId)
         {
             var item = GetTaskStatus(tenantId, invoiceId);
 
@@ -60,39 +78,42 @@ namespace ASC.Web.CRM.Classes
                 Queue.Remove(item);
         }
 
-        public static PdfProgressItem StartTask(HttpContext context, int tenantId, Guid userId, int invoiceId)
+        public PdfProgressItem StartTask(int invoiceId)
         {
-            throw new Exception();
-            //lock (Queue.SynchRoot)
-            //{
-            //    var task = GetTaskStatus(tenantId, invoiceId);
+            lock (Queue.SynchRoot)
+            {
+                var task = GetTaskStatus(tenantId, invoiceId);
 
-            //    if (task != null && task.IsCompleted)
-            //    {
-            //        Queue.Remove(task);
-            //        task = null;
-            //    }
+                if (task != null && task.IsCompleted)
+                {
+                    Queue.Remove(task);
+                    task = null;
+                }
 
-            //    if (task == null)
-            //    {
-            //        task = new PdfProgressItem(context, tenantId, userId, invoiceId);
-            //        Queue.Add(task);
-            //    }
+                if (task == null)
+                {
 
-            //    if (!Queue.IsStarted)
-            //        Queue.Start(x => x.RunJob());
+                    PdfProgressItem.Configure(GetTaskId(tenantId, invoiceId), tenantId, userId, invoiceId);
 
-            //    return task;
-            //}
+                    Queue.Add(PdfProgressItem);
+                
+                }
+
+                if (!Queue.IsStarted)
+                    Queue.Start(x => x.RunJob());
+
+                return task;
+            }
         }
     }
 
+    [Transient]
     public class PdfProgressItem : IProgressItem
     {
         private readonly string _contextUrl;
-        private readonly int _tenantId;
-        private readonly int _invoiceId;
-        private readonly Guid _userId;
+        private int _tenantId;
+        private int _invoiceId;
+        private Guid _userId;
 
         public object Id { get; set; }
         public object Status { get; set; }
@@ -103,23 +124,25 @@ namespace ASC.Web.CRM.Classes
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
 
-        public PdfProgressItem(IHttpContextAccessor httpContextAccessor,
-                               int tenantId,
-                               Guid userId,
-                               int invoiceId)
-        {
-
-           
+        public PdfProgressItem(IHttpContextAccessor httpContextAccessor)
+        {           
             _contextUrl = httpContextAccessor.HttpContext != null ? httpContextAccessor.HttpContext.Request.GetUrlRewriter().ToString() : null;
-            _tenantId = tenantId;
-            _invoiceId = invoiceId;
-            _userId = userId;
-
-            Id = PdfQueueWorker.GetTaskId(tenantId, invoiceId);
+        
             Status = ProgressStatus.Queued;
             Error = null;
             Percentage = 0;
             IsCompleted = false;
+        }
+
+        public void Configure(object id,
+                                int tenantId,
+                               Guid userId,
+                               int invoiceId)
+        {
+            Id = id;
+            _tenantId = tenantId;
+            _invoiceId = invoiceId;
+            _userId = userId;
         }
 
         public void RunJob()

@@ -82,13 +82,14 @@ namespace ASC.Web.CRM.Classes
                                    WebImageSupplier webImageSupplier,
                                    IOptionsMonitor<ILog> logger,
                                    ICache cache,
-                                   ICacheNotify<ContactPhotoManagerCacheItem> cacheNotify)
+                                   ICacheNotify<ContactPhotoManagerCacheItem> cacheNotify,
+                                   WorkerQueueOptionsManager<ResizeWorkerItem> workerQueueOptionsManager )
         {
             Global = global;
             WebImageSupplier = webImageSupplier;
             CacheNotify = cacheNotify;
             Cache = cache;
-
+            ResizeQueue = workerQueueOptionsManager.Value;
             Logger = logger.Get("ASC.CRM");
 
             CacheNotify.Subscribe((x) =>
@@ -109,7 +110,7 @@ namespace ASC.Web.CRM.Classes
         private const string PhotosBaseDirName = "photos";
         private const string PhotosDefaultTmpDirName = "temp";
 
-        private readonly WorkerQueue<ResizeWorkerItem> ResizeQueue = new WorkerQueue<ResizeWorkerItem>();
+        private readonly WorkerQueue<ResizeWorkerItem> ResizeQueue;
         private readonly ICacheNotify<ContactPhotoManagerCacheItem> CacheNotify;
         private readonly ICache Cache;
 

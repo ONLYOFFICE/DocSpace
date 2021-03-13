@@ -14,13 +14,9 @@ namespace ASC.CRM.ApiModels
     public class CreateOrUpdateContactInDto
     {
         public string About { get; set; }
-
         public ShareType ShareType { get; set; }
-
         public IEnumerable<Guid> ManagerList { get; set; }
-
         public IEnumerable<ItemKeyValuePair<int, string>> CustomFieldList { get; set; }
-
         public IEnumerable<IFormFile> Photos { get; set; }
     }
 
@@ -37,11 +33,8 @@ namespace ASC.CRM.ApiModels
     public class CreateOrUpdatePersonInDto : CreateOrUpdateContactInDto
     {
         public String FirstName { get; set; }
-
         public String LastName { get; set; }
-
         public String JobTitle { get; set; }
-
         public int CompanyId { get; set; }
     }
 }

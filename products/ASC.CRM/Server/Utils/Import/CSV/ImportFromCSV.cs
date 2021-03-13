@@ -40,11 +40,17 @@ namespace ASC.Web.CRM.Classes
     public class ImportFromCSV
     {
         public ImportFromCSV(TenantManager tenantProvider,
-                             ImportDataCache importDataCache)
+                             ImportDataCache importDataCache,
+                             ProgressQueueOptionsManager<ImportDataOperation> progressQueueOptionsManager,
+                             ImportDataOperation importDataOperation)
         {
             TenantId = tenantProvider.GetCurrentTenant().TenantId;
             ImportDataCache = importDataCache;
+            _importQueue = progressQueueOptionsManager.Value;
+            ImportDataOperation = importDataOperation;
         }
+
+        public ImportDataOperation ImportDataOperation { get; }
 
         public ImportDataCache ImportDataCache { get; }
 
@@ -52,9 +58,8 @@ namespace ASC.Web.CRM.Classes
 
         private readonly object _syncObj = new object();
 
-        private readonly ProgressQueue<ImportDataOperation> _importQueue = new ProgressQueue<ImportDataOperation>();
-           // 3, TimeSpan.FromSeconds(15), true);
-
+        private readonly ProgressQueue<ImportDataOperation> _importQueue;
+        
         public readonly int MaxRoxCount = 10000;
 
         public int GetQuotas()
@@ -137,9 +142,9 @@ namespace ASC.Web.CRM.Classes
                     if (fromCache != null)
                         return fromCache;
 
-                  //   operation = new ImportDataOperation(entityType, CSVFileURI, importSettingsJSON);
+                    ImportDataOperation.Configure(entityType, CSVFileURI, importSettingsJSON);
 
-                 //   _importQueue.Add(operation);
+                    _importQueue.Add(ImportDataOperation);
                 }
 
                 if (!_importQueue.IsStarted)

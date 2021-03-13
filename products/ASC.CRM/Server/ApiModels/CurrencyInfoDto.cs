@@ -43,24 +43,13 @@ namespace ASC.CRM.ApiModels
 
         }
 
-        [DataMember]
-        public String Title { get; set; }
-
-        [DataMember]
-        public String Symbol { get; set; }
-
-        [DataMember]
-        public String Abbreviation { get; set; }
-
-        [DataMember]
-        public String CultureName { get; set; }
-
-        [DataMember]
-        public bool IsConvertable { get; set; }
-
-        [DataMember]
+        
+        public String Title { get; set; }        
+        public String Symbol { get; set; }        
+        public String Abbreviation { get; set; }        
+        public String CultureName { get; set; }        
+        public bool IsConvertable { get; set; }        
         public bool IsBasic { get; set; }
-
         public static CurrencyInfoDto GetSample()
         {
             return new CurrencyInfoDto
@@ -115,7 +104,7 @@ namespace ASC.CRM.ApiModels
         //    Rate = rate;
         //}
 
-        [DataMember]
+        
         public decimal Rate { get; set; }
     }
 

@@ -60,7 +60,8 @@ namespace ASC.CRM.Api
                      ImportFromCSVManager importFromCSVManager,
                      OrganisationLogoManager organisationLogoManager,
                      Global global,
-                     ImportFromCSV importFromCSV)
+                     ImportFromCSV importFromCSV,
+                     ExportToCsv exportToCsv)
             : base(daoFactory, cRMSecurity)
         {
             MessageService = messageService;
@@ -73,8 +74,10 @@ namespace ASC.CRM.Api
             OrganisationLogoManager = organisationLogoManager;
             Global = global;
             ImportFromCSV = importFromCSV;
+            ExportToCsv = exportToCsv;
         }
 
+        public ExportToCsv ExportToCsv { get; }
         public ImportFromCSV ImportFromCSV { get; }
         public Global Global { get; }
         public OrganisationLogoManager OrganisationLogoManager { get; }
@@ -492,117 +495,117 @@ namespace ASC.CRM.Api
             return ImportFromCSV.GetStatus(entityTypeObj);
         }
 
-        ///// <visible>false</visible>
-        //[Read(@"import/samplerow")]
-        //public String GetImportFromCSVSampleRow(string csvFileURI, int indexRow, string jsonSettings)
-        //{
-        //    if (String.IsNullOrEmpty(csvFileURI) || indexRow < 0) throw new ArgumentException();
+        /// <visible>false</visible>
+        [Read(@"import/samplerow")]
+        public String GetImportFromCSVSampleRow(string csvFileURI, int indexRow, string jsonSettings)
+        {
+            if (String.IsNullOrEmpty(csvFileURI) || indexRow < 0) throw new ArgumentException();
 
-        //    if (!Global.GetStore().IsFile("temp", csvFileURI)) throw new ArgumentException();
+            if (!Global.GetStore().IsFile("temp", csvFileURI)) throw new ArgumentException();
 
-        //    var CSVFileStream = Global.GetStore().GetReadStream("temp", csvFileURI);
+            var CSVFileStream = Global.GetStore().GetReadStream("temp", csvFileURI);
 
-        //    return ImportFromCSV.GetRow(CSVFileStream, indexRow, jsonSettings);
-        //}
+            return ImportFromCSV.GetRow(CSVFileStream, indexRow, jsonSettings);
+        }
 
-        ///// <visible>false</visible>
-        //[Create(@"import/uploadfake")]
-        //public FileUploadResult ProcessUploadFake(string csvFileURI, string jsonSettings)
-        //{
-        //    return ImportFromCSVManager.ProcessUploadFake(csvFileURI, jsonSettings);
-        //}
+        /// <visible>false</visible>
+        [Create(@"import/uploadfake")]
+        public FileUploadResult ProcessUploadFake(string csvFileURI, string jsonSettings)
+        {
+            return ImportFromCSVManager.ProcessUploadFake(csvFileURI, jsonSettings);
+        }
 
-        ///// <visible>false</visible>
-        //[Read(@"export/status")]
-        //public IProgressItem GetExportStatus()
-        //{
-        //    if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+        /// <visible>false</visible>
+        [Read(@"export/status")]
+        public IProgressItem GetExportStatus()
+        {
+            if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
 
-        //    return ExportToCsv.GetStatus(false);
+            return ExportToCsv.GetStatus(false);
 
-        //}
+        }
 
-        ///// <visible>false</visible>
-        //[Update(@"export/cancel")]
-        //public IProgressItem CancelExport()
-        //{
-        //    if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+        /// <visible>false</visible>
+        [Update(@"export/cancel")]
+        public IProgressItem CancelExport()
+        {
+            if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
 
-        //    ExportToCsv.Cancel(false);
+            ExportToCsv.Cancel(false);
 
-        //    return ExportToCsv.GetStatus(false);
+            return ExportToCsv.GetStatus(false);
 
-        //}
+        }
 
-        ///// <visible>false</visible>
-        //[Create(@"export/start")]
-        //public IProgressItem StartExport()
-        //{
-        //    if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+        /// <visible>false</visible>
+        [Create(@"export/start")]
+        public IProgressItem StartExport()
+        {
+            if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
 
-        //    MessageService.Send( MessageAction.CrmAllDataExported);
+            MessageService.Send(MessageAction.CrmAllDataExported);
 
-        //    return ExportToCsv.Start(null, CRMSettingResource.Export + ".zip");
-        //}
+            return ExportToCsv.Start(null, CRMSettingResource.Export + ".zip");
+        }
 
-        ///// <visible>false</visible>
-        //[Read(@"export/partial/status")]
-        //public IProgressItem GetPartialExportStatus()
-        //{
-        //    return ExportToCsv.GetStatus(true);
-        //}
+        /// <visible>false</visible>
+        [Read(@"export/partial/status")]
+        public IProgressItem GetPartialExportStatus()
+        {
+            return ExportToCsv.GetStatus(true);
+        }
 
-        ///// <visible>false</visible>
-        //[Update(@"export/partial/cancel")]
-        //public IProgressItem CancelPartialExport()
-        //{
+        /// <visible>false</visible>
+        [Update(@"export/partial/cancel")]
+        public IProgressItem CancelPartialExport()
+        {
 
-        //    ExportToCsv.Cancel(true);
+            ExportToCsv.Cancel(true);
 
-        //    return ExportToCsv.GetStatus(true);
+            return ExportToCsv.GetStatus(true);
 
-        //}
+        }
 
-        ///// <visible>false</visible>
-        //[Create(@"export/partial/{entityType:(contact|opportunity|case|task|invoiceitem)}/start")]
-        //public IProgressItem StartPartialExport(string entityType, string base64FilterString)
-        //{
-        //    if (string.IsNullOrEmpty(base64FilterString)) throw new ArgumentException();
+        /// <visible>false</visible>
+        [Create(@"export/partial/{entityType:regex(contact|opportunity|case|task|invoiceitem)}/start")]
+        public IProgressItem StartPartialExport(string entityType, string base64FilterString)
+        {
+            if (string.IsNullOrEmpty(base64FilterString)) throw new ArgumentException();
 
-        //    FilterObject filterObject;
-        //    String fileName;
+            FilterObject filterObject;
+            String fileName;
 
-        //    switch (entityType.ToLower())
-        //    {
-        //        case "contact":
-        //            filterObject = new ContactFilterObject(base64FilterString);
-        //            fileName = CRMContactResource.Contacts + ".csv";
-        //            MessageService.Send( MessageAction.ContactsExportedToCsv);
-        //            break;
-        //        case "opportunity":
-        //            filterObject = new DealFilterObject(base64FilterString);
-        //            fileName = CRMCommonResource.DealModuleName + ".csv";
-        //            MessageService.Send( MessageAction.OpportunitiesExportedToCsv);
-        //            break;
-        //        case "case":
-        //            filterObject = new CasesFilterObject(base64FilterString);
-        //            fileName = CRMCommonResource.CasesModuleName + ".csv";
-        //            MessageService.Send( MessageAction.CasesExportedToCsv);
-        //            break;
-        //        case "task":
-        //            filterObject = new TaskFilterObject(base64FilterString);
-        //            fileName = CRMCommonResource.TaskModuleName + ".csv";
-        //            MessageService.Send( MessageAction.CrmTasksExportedToCsv);
-        //            break;
-        //        case "invoiceitem":
-        //            fileName = CRMCommonResource.ProductsAndServices + ".csv";
-        //            filterObject = new InvoiceItemFilterObject(base64FilterString);
-        //            break;
-        //        default:
-        //            throw new ArgumentException();
-        //    }
+            switch (entityType.ToLower())
+            {
+                case "contact":
+                    filterObject = new ContactFilterObject(base64FilterString);
+                    fileName = CRMContactResource.Contacts + ".csv";
+                    MessageService.Send(MessageAction.ContactsExportedToCsv);
+                    break;
+                case "opportunity":
+                    filterObject = new DealFilterObject(base64FilterString);
+                    fileName = CRMCommonResource.DealModuleName + ".csv";
+                    MessageService.Send(MessageAction.OpportunitiesExportedToCsv);
+                    break;
+                case "case":
+                    filterObject = new CasesFilterObject(base64FilterString);
+                    fileName = CRMCommonResource.CasesModuleName + ".csv";
+                    MessageService.Send(MessageAction.CasesExportedToCsv);
+                    break;
+                case "task":
+                    filterObject = new TaskFilterObject(base64FilterString);
+                    fileName = CRMCommonResource.TaskModuleName + ".csv";
+                    MessageService.Send(MessageAction.CrmTasksExportedToCsv);
+                    break;
+                case "invoiceitem":
+                    fileName = CRMCommonResource.ProductsAndServices + ".csv";
+                    filterObject = new InvoiceItemFilterObject(base64FilterString);
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
 
-        //    return ExportToCsv.Start(filterObject, fileName);
-        //}
+            return ExportToCsv.Start(filterObject, fileName);
+        }
     }
 }

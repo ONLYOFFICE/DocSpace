@@ -53,7 +53,7 @@ namespace ASC.CRM.ApiModels
         [DataMember(Name = "id")]
         public int Id { get; set; }
 
-        [DataMember]
+        
         public String ImagePath { get; set; }
 
         public static HistoryCategoryBaseDto GetSample()
@@ -137,10 +137,10 @@ namespace ASC.CRM.ApiModels
             Title = dealMilestone.Title;
         }
 
-        [DataMember]
+        
         public int SuccessProbability { get; set; }
 
-        [DataMember]
+        
         public DealMilestoneStatus StageType { get; set; }
 
         public static DealMilestoneBaseDto GetSample()
@@ -438,18 +438,10 @@ namespace ASC.CRM.ApiModels
         }
 
         [DataMember(Name = "id")]
-        public int Id { get; set; }
-
-        
-        public String Title { get; set; }
-
-        
-        public String Description { get; set; }
-
-        
-        public String Color { get; set; }
-
-        
+        public int Id { get; set; }        
+        public String Title { get; set; }        
+        public String Description { get; set; }        
+        public String Color { get; set; }        
         public int SortOrder { get; set; }
     }
 }

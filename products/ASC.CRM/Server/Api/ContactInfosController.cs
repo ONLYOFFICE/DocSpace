@@ -54,15 +54,8 @@ namespace ASC.CRM.Api
     {
         public ContactInfosController(CRMSecurity cRMSecurity,
                      DaoFactory daoFactory,
-                     ApiContext apiContext,
                      MessageTarget messageTarget,
                      MessageService messageService,
-                     NotifyClient notifyClient,
-                     ContactDtoHelper contactBaseDtoHelper,
-                     CasesDtoHelper casesDtoHelper,
-                     SecurityContext securityContext,
-                     DisplayUserSettingsHelper displayUserSettingsHelper,
-                     UserManager userManager,
                      ContactInfoDtoHelper contactInfoDtoHelper)
             : base(daoFactory, cRMSecurity)
         {

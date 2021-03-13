@@ -1,387 +1,406 @@
-///*
-// *
-// * (c) Copyright Ascensio System Limited 2010-2018
-// *
-// * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
-// * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
-// * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
-// * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
-// *
-// * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
-// * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
-// *
-// * You can contact Ascensio System SIA by email at sales@onlyoffice.com
-// *
-// * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
-// * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
-// *
-// * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
-// * relevant author attributions when distributing the software. If the display of the logo in its graphic 
-// * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
-// * in every copy of the program you distribute. 
-// * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
-// *
-//*/
-
-
-//#region Import
-
-//using ASC.Common.Caching;
-//using ASC.Common.Logging;
-//using ASC.Common.Threading.Progress;
-//using ASC.Core;
-//using ASC.Core.Common.Settings;
-//using ASC.Core.Tenants;
-//using ASC.CRM.Classes;
-//using ASC.CRM.Core;
-//using ASC.CRM.Core.Dao;
-//using ASC.CRM.Core.Entities;
-//using ASC.CRM.Core.Enums;
-//using ASC.CRM.Resources;
-//using ASC.Web.CRM.Core;
-//using ASC.Web.Files.Api;
-//using Autofac;
-//using MailKit;
-//using MailKit.Net.Smtp;
-//using MailKit.Security;
-//using Microsoft.Extensions.Configuration;
-//using Microsoft.Extensions.Options;
-//using MimeKit;
-//using Newtonsoft.Json.Linq;
-//using System;
-//using System.Collections.Generic;
-//using System.IO;
-//using System.Linq;
-//using System.Net.Sockets;
-//using System.Runtime.Serialization;
-//using System.Text;
-//using System.Text.RegularExpressions;
-//using System.Threading;
-//using File = System.IO.File;
-//using SmtpClient = MailKit.Net.Smtp.SmtpClient;
-
-//#endregion
-
-//namespace ASC.Web.CRM.Classes
-//{
-//    public class SendBatchEmailsOperation : IProgressItem, IDisposable
-//    {
-//        private readonly bool _storeInHistory;
-//        private readonly ILog _log;
-//        private readonly SMTPServerSetting _smtpSetting;
-//        private readonly Guid _currUser;
-//        private readonly int _tenantID;
-//        private readonly List<int> _contactID;
-//        private readonly String _subject;
-//        private readonly String _bodyTempate;
-//        private readonly List<int> _fileID;
-//        private int historyCategory;
-//        private double _exactPercentageValue = 0;
-
-//        public object Id { get; set; }
-//        public object Status { get; set; }
-//        public object Error { get; set; }
-//        public double Percentage { get; set; }
-//        public bool IsCompleted { get; set; }
-
-//        private SendBatchEmailsOperation()
-//        {
-//        }
-
-//        public SendBatchEmailsOperation(
-//              List<int> fileID,
-//              List<int> contactID,
-//              String subject,
-//              String bodyTempate,
-//              bool storeInHistory,
-//              TenantUtil tenantUtil,
-//              IOptionsMonitor<ILog> logger,
-//              Global global,
-//              SecurityContext securityContext,
-//              TenantManager tenantManager,
-//              UserManager userManager,
-//              AuthManager authManager,
-//              SettingsManager settingsManager,
-//              MailSenderDataCache mailSenderDataCache
-//             )
-//        {
-//            TenantUtil = tenantUtil;
-//            SecurityContext = securityContext;
-
-//            Percentage = 0;
-
-//            _fileID = fileID;
-//            _contactID = contactID;
-//            _subject = subject;
-//            _bodyTempate = bodyTempate;
-
-//            _log = logger.Get("ASC.CRM.MailSender");
-
-//            _tenantID = tenantManager.GetCurrentTenant().TenantId;
-//            _smtpSetting = settingsManager.Load<CRMSettings>().SMTPServerSetting;
-//            _currUser = SecurityContext.CurrentAccount.ID;
-//            _storeInHistory = storeInHistory;
-
-//            Status = new
-//            {
-//                RecipientCount = _contactID.Count,
-//                EstimatedTime = 0,
-//                DeliveryCount = 0
-//            };
-
-//            AuthManager = authManager;
-//            UserManager = userManager;
-//            MailSenderDataCache = mailSenderDataCache;
-//        }
-
-//        public FilesIntegration FilesIntegration { get; }
-
-//        public MailSenderDataCache MailSenderDataCache { get; }
-//        public AuthManager AuthManager { get; }
-
-//        public UserManager UserManager { get; }
-
-//        public TenantManager TenantManager { get; }
-
-//        public SecurityContext SecurityContext { get; }
-
-//        public TenantUtil TenantUtil { get; }
-
-//        private void AddToHistory(int contactID, String content, DaoFactory _daoFactory)
-//        {
-//            if (contactID == 0 || String.IsNullOrEmpty(content)) return;
-
-//            var historyEvent = new RelationshipEvent()
-//            {
-//                ContactID = contactID,
-//                Content = content,
-//                CreateBy = _currUser,
-//                CreateOn = TenantUtil.DateTimeNow(),
-//            };
-//            if (historyCategory == 0)
-//            {
-//                var listItemDao = _daoFactory.GetListItemDao();
-
-//                // HACK
-//                var listItem = listItemDao.GetItems(ListType.HistoryCategory).Find(item => item.AdditionalParams == "event_category_email.png");
-//                if (listItem == null)
-//                {
-//                    listItemDao.CreateItem(
-//                        ListType.HistoryCategory,
-//                        new ListItem { AdditionalParams = "event_category_email.png", Title = CRMCommonResource.HistoryCategory_Note });
-//                }
-//                historyCategory = listItem.ID;
-//            }
-
-//            historyEvent.CategoryID = historyCategory;
-
-//            var relationshipEventDao = _daoFactory.GetRelationshipEventDao();
-
-//            historyEvent = relationshipEventDao.CreateItem(historyEvent);
-
-//            if (historyEvent.ID > 0 && _fileID != null && _fileID.Count > 0)
-//            {
-//                relationshipEventDao.AttachFiles(historyEvent.ID, _fileID.ToArray());
-//            }
-//        }
-
-//        public void RunJob()
-//        {
-//            SmtpClient smtpClient = null;
-//            try
-//            {
-//                TenantManager.SetCurrentTenant(_tenantID);
-//                SecurityContext.AuthenticateMe(AuthManager.GetAccountByID(_tenantID, _currUser));
-
-//                smtpClient = GetSmtpClient();
-
-//                var userCulture = UserManager.GetUsers(_currUser).GetCulture();
-
-//                Thread.CurrentThread.CurrentCulture = userCulture;
-//                Thread.CurrentThread.CurrentUICulture = userCulture;
-
-//                var contactCount = _contactID.Count;
+/*
+ *
+ * (c) Copyright Ascensio System Limited 2010-2018
+ *
+ * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
+ * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
+ * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
+ * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
+ * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
+ *
+ * You can contact Ascensio System SIA by email at sales@onlyoffice.com
+ *
+ * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
+ * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
+ *
+ * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+ * relevant author attributions when distributing the software. If the display of the logo in its graphic 
+ * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
+ * in every copy of the program you distribute. 
+ * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ *
+*/
+
+
+#region Import
+
+using ASC.Common;
+using ASC.Common.Caching;
+using ASC.Common.Logging;
+using ASC.Common.Threading.Progress;
+using ASC.Core;
+using ASC.Core.Common.Settings;
+using ASC.Core.Tenants;
+using ASC.CRM.Classes;
+using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
+using ASC.Web.CRM.Core;
+using ASC.Web.Files.Api;
+
+using Autofac;
+
+using MailKit;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+
+using MimeKit;
+
+using Newtonsoft.Json.Linq;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+
+using File = System.IO.File;
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
+
+#endregion
+
+namespace ASC.Web.CRM.Classes
+{
+    [Transient]
+    public class SendBatchEmailsOperation : IProgressItem, IDisposable
+    {
+        private bool _storeInHistory;
+        private readonly ILog _log;
+        private readonly SMTPServerSetting _smtpSetting;
+        private readonly Guid _currUser;
+        private readonly int _tenantID;
+        private List<int> _contactID;
+        private String _subject;
+        private String _bodyTempate;
+        private List<int> _fileID;
+        private int historyCategory;
+        private double _exactPercentageValue = 0;
+
+        public object Id { get; set; }
+        public object Status { get; set; }
+        public object Error { get; set; }
+        public double Percentage { get; set; }
+        public bool IsCompleted { get; set; }
+
+        private SendBatchEmailsOperation()
+        {
+        }
+
+        public SendBatchEmailsOperation(
+              TenantUtil tenantUtil,
+              IOptionsMonitor<ILog> logger,
+              Global global,
+              SecurityContext securityContext,
+              TenantManager tenantManager,
+              UserManager userManager,
+              AuthManager authManager,
+              SettingsManager settingsManager,
+              MailSenderDataCache mailSenderDataCache,
+              DaoFactory daoFactory
+             )
+        {
+            TenantUtil = tenantUtil;
+            SecurityContext = securityContext;
+
+            Percentage = 0;
+
+            _log = logger.Get("ASC.CRM.MailSender");
+
+            _tenantID = tenantManager.GetCurrentTenant().TenantId;
+            _smtpSetting = settingsManager.Load<CRMSettings>().SMTPServerSetting;
+            _currUser = SecurityContext.CurrentAccount.ID;
+
+            Status = new
+            {
+                RecipientCount = _contactID.Count,
+                EstimatedTime = 0,
+                DeliveryCount = 0
+            };
+
+            AuthManager = authManager;
+            UserManager = userManager;
+            MailSenderDataCache = mailSenderDataCache;
+            DaoFactory = daoFactory;
+        }
+
+        public DaoFactory DaoFactory { get; }
+        public FilesIntegration FilesIntegration { get; }
+        public MailSenderDataCache MailSenderDataCache { get; }
+        public AuthManager AuthManager { get; }
+        public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
+        public SecurityContext SecurityContext { get; }
+        public TenantUtil TenantUtil { get; }
+
+        public void Configure(List<int> fileID,
+              List<int> contactID,
+              String subject,
+              String bodyTempate,
+              bool storeInHistory)
+        {
+            _fileID = fileID ?? new List<int>();
+            _contactID = contactID ?? new List<int>();
+            _subject = subject;
+            _bodyTempate = bodyTempate;
+            _storeInHistory = storeInHistory;
+        }
+
+        private void AddToHistory(int contactID, String content, DaoFactory _daoFactory)
+        {
+            if (contactID == 0 || String.IsNullOrEmpty(content)) return;
+
+            var historyEvent = new RelationshipEvent()
+            {
+                ContactID = contactID,
+                Content = content,
+                CreateBy = _currUser,
+                CreateOn = TenantUtil.DateTimeNow(),
+            };
+            if (historyCategory == 0)
+            {
+                var listItemDao = _daoFactory.GetListItemDao();
+
+                // HACK
+                var listItem = listItemDao.GetItems(ListType.HistoryCategory).Find(item => item.AdditionalParams == "event_category_email.png");
+                if (listItem == null)
+                {
+                    listItemDao.CreateItem(
+                        ListType.HistoryCategory,
+                        new ListItem { AdditionalParams = "event_category_email.png", Title = CRMCommonResource.HistoryCategory_Note });
+                }
+                historyCategory = listItem.ID;
+            }
+
+            historyEvent.CategoryID = historyCategory;
+
+            var relationshipEventDao = _daoFactory.GetRelationshipEventDao();
+
+            historyEvent = relationshipEventDao.CreateItem(historyEvent);
+
+            if (historyEvent.ID > 0 && _fileID != null && _fileID.Count > 0)
+            {
+                relationshipEventDao.AttachFiles(historyEvent.ID, _fileID.ToArray());
+            }
+        }
+
+        public void RunJob()
+        {
+            SmtpClient smtpClient = null;
+            try
+            {
+                TenantManager.SetCurrentTenant(_tenantID);
+                SecurityContext.AuthenticateMe(AuthManager.GetAccountByID(_tenantID, _currUser));
+
+                smtpClient = GetSmtpClient();
+
+                var userCulture = UserManager.GetUsers(_currUser).GetCulture();
+
+                Thread.CurrentThread.CurrentCulture = userCulture;
+                Thread.CurrentThread.CurrentUICulture = userCulture;
+
+                var contactCount = _contactID.Count;
+
+                if (contactCount == 0)
+                {
+                    Complete();
+                    return;
+                }
+
+                MailSenderDataCache.Insert((SendBatchEmailsOperation)Clone());
+
+                var from = new MailboxAddress(_smtpSetting.SenderDisplayName, _smtpSetting.SenderEmailAddress);
+                var filePaths = new List<string>();
+                var fileDao = FilesIntegration.DaoFactory.GetFileDao<int>();
+
+                foreach (var fileID in _fileID)
+                {
+                    var fileObj = fileDao.GetFile(fileID);
+                    if (fileObj == null) continue;
+                    using (var fileStream = fileDao.GetFileStream(fileObj))
+                    {
+                        var directoryPath = Path.Combine(Path.GetTempPath(), "teamlab", _tenantID.ToString(),
+                            "crm/files/mailsender/");
+
+                        if (!Directory.Exists(directoryPath))
+                        {
+                            Directory.CreateDirectory(directoryPath);
+                        }
+
+                        var filePath = Path.Combine(directoryPath, fileObj.Title);
+
+                        using (var newFileStream = File.Create(filePath))
+                        {
+                            fileStream.CopyTo(newFileStream);
+                        }
+
+                        filePaths.Add(filePath);
+
+                    }
+                }
+
+                var templateManager = new MailTemplateManager(DaoFactory);
+                var deliveryCount = 0;
+
+                try
+                {
+                    Error = string.Empty;
+                    foreach (var contactID in _contactID)
+                    {
+                        _exactPercentageValue += 100.0 / contactCount;
+                        Percentage = Math.Round(_exactPercentageValue);
+
+                        if (IsCompleted) break; // User selected cancel
+
+                        var contactInfoDao = DaoFactory.GetContactInfoDao();
+
+                        var startDate = DateTime.Now;
+
+                        var contactEmails = contactInfoDao.GetList(contactID, ContactInfoType.Email, null, true);
+                        if (contactEmails.Count == 0)
+                        {
+                            continue;
+                        }
+
+                        var recipientEmail = contactEmails[0].Data;
+
+                        if (!recipientEmail.TestEmailRegex())
+                        {
+                            Error += string.Format(CRMCommonResource.MailSender_InvalidEmail, recipientEmail) +
+                                     "<br/>";
+                            continue;
+                        }
+
+                        var to = new MailboxAddress(recipientEmail);
+
+                        var mimeMessage = new MimeMessage
+                        {
+                            Subject = _subject
+                        };
+
+                        mimeMessage.From.Add(from);
+                        mimeMessage.To.Add(to);
+
+                        var bodyBuilder = new BodyBuilder
+                        {
+                            HtmlBody = templateManager.Apply(_bodyTempate, contactID)
+                        };
+
+                        foreach (var filePath in filePaths)
+                        {
+                            bodyBuilder.Attachments.Add(filePath);
+                        }
+
+                        mimeMessage.Body = bodyBuilder.ToMessageBody();
+
+                        mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
+
+                        _log.Debug(GetLoggerRow(mimeMessage));
 
-//                if (contactCount == 0)
-//                {
-//                    Complete();
-//                    return;
-//                }
-
-//                MailSenderDataCache.Insert((SendBatchEmailsOperation)Clone());
-
-//                var from = new MailboxAddress(_smtpSetting.SenderDisplayName, _smtpSetting.SenderEmailAddress);
-//                var filePaths = new List<string>();
-//                var fileDao = FilesIntegration.DaoFactory.GetFileDao<int>();
+                        var success = false;
 
-//                foreach (var fileID in _fileID)
-//                {
-//                    var fileObj = fileDao.GetFile(fileID);
-//                    if (fileObj == null) continue;
-//                    using (var fileStream = fileDao.GetFileStream(fileObj))
-//                    {
-//                        var directoryPath = Path.Combine(Path.GetTempPath(), "teamlab", _tenantID.ToString(),
-//                            "crm/files/mailsender/");
-
-//                        if (!Directory.Exists(directoryPath))
-//                        {
-//                            Directory.CreateDirectory(directoryPath);
-//                        }
-
-//                        var filePath = Path.Combine(directoryPath, fileObj.Title);
+                        try
+                        {
+                            smtpClient.Send(mimeMessage);
 
-//                        using (var newFileStream = File.Create(filePath))
-//                        {
-//                            fileStream.StreamCopyTo(newFileStream);
-//                        }
-
-//                        filePaths.Add(filePath);
-
-//                    }
-//                }
-
-//                var templateManager = new MailTemplateManager(DaoFactory);
-//                var deliveryCount = 0;
-
-//                try
-//                {
-//                    Error = string.Empty;
-//                    foreach (var contactID in _contactID)
-//                    {
-//                        _exactPercentageValue += 100.0 / contactCount;
-//                        Percentage = Math.Round(_exactPercentageValue);
+                            success = true;
+                        }
+                        catch (SmtpCommandException ex)
+                        {
+                            _log.Error(Error, ex);
 
-//                        if (IsCompleted) break; // User selected cancel
-
-//                        var contactInfoDao = DaoFactory.GetContactInfoDao();
+                            Error += string.Format(CRMCommonResource.MailSender_FailedDeliverException, recipientEmail) + "<br/>";
+                        }
 
-//                        var startDate = DateTime.Now;
+                        if (success)
+                        {
+                            if (_storeInHistory)
+                            {
+                                AddToHistory(contactID, string.Format(CRMCommonResource.MailHistoryEventTemplate, mimeMessage.Subject), DaoFactory);
+                            }
 
-//                        var contactEmails = contactInfoDao.GetList(contactID, ContactInfoType.Email, null, true);
-//                        if (contactEmails.Count == 0)
-//                        {
-//                            continue;
-//                        }
+                            var endDate = DateTime.Now;
+                            var waitInterval = endDate.Subtract(startDate);
 
-//                        var recipientEmail = contactEmails[0].Data;
-
-//                        if (!recipientEmail.TestEmailRegex())
-//                        {
-//                            Error += string.Format(CRMCommonResource.MailSender_InvalidEmail, recipientEmail) +
-//                                     "<br/>";
-//                            continue;
-//                        }
-
-//                        var to = new MailboxAddress(recipientEmail);
-
-//                        var mimeMessage = new MimeMessage
-//                        {
-//                            Subject = _subject
-//                        };
-
-//                        mimeMessage.From.Add(from);
-//                        mimeMessage.To.Add(to);
-
-//                        var bodyBuilder = new BodyBuilder
-//                        {
-//                            HtmlBody = templateManager.Apply(_bodyTempate, contactID)
-//                        };
-
-//                        foreach (var filePath in filePaths)
-//                        {
-//                            bodyBuilder.Attachments.Add(filePath);
-//                        }
+                            deliveryCount++;
 
-//                        mimeMessage.Body = bodyBuilder.ToMessageBody();
+                            var estimatedTime =
+                                TimeSpan.FromTicks(waitInterval.Ticks * (_contactID.Count - deliveryCount));
 
-//                        mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
+                            Status = new
+                            {
+                                RecipientCount = _contactID.Count,
+                                EstimatedTime = estimatedTime.ToString(),
+                                DeliveryCount = deliveryCount
+                            };
+                        }
 
-//                        _log.Debug(GetLoggerRow(mimeMessage));
+                        if (MailSenderDataCache.CheckCancelFlag())
+                        {
+                            MailSenderDataCache.ResetAll();
 
-//                        var success = false;
+                            throw new OperationCanceledException();
+                        }
 
-//                        try
-//                        {
-//                            smtpClient.Send(mimeMessage);
+                        MailSenderDataCache.Insert((SendBatchEmailsOperation)Clone());
 
-//                            success = true;
-//                        }
-//                        catch (SmtpCommandException ex)
-//                        {
-//                            _log.Error(Error, ex);
+                        if (Percentage > 100)
+                        {
+                            Percentage = 100;
 
-//                            Error += string.Format(CRMCommonResource.MailSender_FailedDeliverException, recipientEmail) + "<br/>";
-//                        }
+                            if (MailSenderDataCache.CheckCancelFlag())
+                            {
+                                MailSenderDataCache.ResetAll();
 
-//                        if (success)
-//                        {
-//                            if (_storeInHistory)
-//                            {
-//                                AddToHistory(contactID, string.Format(CRMCommonResource.MailHistoryEventTemplate, mimeMessage.Subject), DaoFactory);
-//                            }
+                                throw new OperationCanceledException();
+                            }
 
-//                            var endDate = DateTime.Now;
-//                            var waitInterval = endDate.Subtract(startDate);
+                            MailSenderDataCache.Insert((SendBatchEmailsOperation)Clone());
 
-//                            deliveryCount++;
+                        }
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    _log.Debug("cancel mail sender");
+                }
+                finally
+                {
+                    foreach (var filePath in filePaths)
+                    {
+                        if (File.Exists(filePath))
+                        {
+                            File.Delete(filePath);
+                        }
+                    }
+                }
 
-//                            var estimatedTime =
-//                                TimeSpan.FromTicks(waitInterval.Ticks * (_contactID.Count - deliveryCount));
+                Status = new
+                {
+                    RecipientCount = _contactID.Count,
+                    EstimatedTime = TimeSpan.Zero.ToString(),
+                    DeliveryCount = deliveryCount
+                };
 
-//                            Status = new
-//                            {
-//                                RecipientCount = _contactID.Count,
-//                                EstimatedTime = estimatedTime.ToString(),
-//                                DeliveryCount = deliveryCount
-//                            };
-//                        }
 
-//                        if (MailSenderDataCache.CheckCancelFlag())
-//                        {
-//                            MailSenderDataCache.ResetAll();
 
-//                            throw new OperationCanceledException();
-//                        }
 
-//                        MailSenderDataCache.Insert((SendBatchEmailsOperation)Clone());
 
-//                        if (Percentage > 100)
-//                        {
-//                            Percentage = 100;
 
-//                            if (MailSenderDataCache.CheckCancelFlag())
-//                            {
-//                                MailSenderDataCache.ResetAll();
 
-//                                throw new OperationCanceledException();
-//                            }
 
-//                            MailSenderDataCache.Insert((SendBatchEmailsOperation)Clone());
 
-//                        }
-//                    }
-//                }
-//                catch (OperationCanceledException)
-//                {
-//                    _log.Debug("cancel mail sender");
-//                }
-//                finally
-//                {
-//                    foreach (var filePath in filePaths)
-//                    {
-//                        if (File.Exists(filePath))
-//                        {
-//                            File.Delete(filePath);
-//                        }
-//                    }
-//                }
 
-//                Status = new
-//                {
-//                    RecipientCount = _contactID.Count,
-//                    EstimatedTime = TimeSpan.Zero.ToString(),
-//                    DeliveryCount = deliveryCount
-//                };
 
 
 
@@ -408,678 +427,676 @@
 
 
 
+            }
+            catch (SocketException e)
+            {
+                Error = e.Message;
+                _log.Error(Error);
+            }
+            finally
+            {
+                if (smtpClient != null)
+                {
+                    smtpClient.Dispose();
+                }
+                Complete();
+            }
+        }
 
+        public string GetLoggerRow(MimeMessage mailMessage)
+        {
+            if (mailMessage == null)
+                return String.Empty;
 
+            var result = new StringBuilder();
 
+            result.AppendLine("From:" + mailMessage.From);
+            result.AppendLine("To:" + mailMessage.To[0]);
+            result.AppendLine("Subject:" + mailMessage.Subject);
+            result.AppendLine("Body:" + mailMessage.Body);
+            result.AppendLine("TenantID:" + _tenantID);
 
+            foreach (var attachment in mailMessage.Attachments)
+            {
+                result.AppendLine("Attachment: " + attachment.ContentDisposition.FileName);
+            }
 
+            return result.ToString();
+        }
 
+        public object Clone()
+        {
+            var cloneObj = new SendBatchEmailsOperation();
 
+            cloneObj.Error = Error;
+            cloneObj.Id = Id;
+            cloneObj.IsCompleted = IsCompleted;
+            cloneObj.Percentage = Percentage;
+            cloneObj.Status = Status;
 
+            return cloneObj;
+        }
 
+        private void DeleteFiles()
+        {
+            if (_fileID == null || _fileID.Count == 0) return;
 
-//            }
-//            catch (SocketException e)
-//            {
-//                Error = e.Message;
-//                _log.Error(Error);
-//            }
-//            finally
-//            {
-//                if (smtpClient != null)
-//                {
-//                    smtpClient.Dispose();
-//                }
-//                Complete();
-//            }
-//        }
+            var fileDao = FilesIntegration.DaoFactory.GetFileDao<int>();
 
-//        public string GetLoggerRow(MimeMessage mailMessage)
-//        {
-//            if (mailMessage == null)
-//                return String.Empty;
+            foreach (var fileID in _fileID)
+            {
+                var fileObj = fileDao.GetFile(fileID);
+                if (fileObj == null) continue;
 
-//            var result = new StringBuilder();
+                fileDao.DeleteFile(fileObj.ID);
+            }
 
-//            result.AppendLine("From:" + mailMessage.From);
-//            result.AppendLine("To:" + mailMessage.To[0]);
-//            result.AppendLine("Subject:" + mailMessage.Subject);
-//            result.AppendLine("Body:" + mailMessage.Body);
-//            result.AppendLine("TenantID:" + _tenantID);
+        }
 
-//            foreach (var attachment in mailMessage.Attachments)
-//            {
-//                result.AppendLine("Attachment: " + attachment.ContentDisposition.FileName);
-//            }
+        private SmtpClient GetSmtpClient()
+        {
+            var client = new SmtpClient
+            {
+                ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
+                    WorkContext.IsMono || MailKit.MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
+                Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
+            };
 
-//            return result.ToString();
-//        }
+            client.Connect(_smtpSetting.Host, _smtpSetting.Port,
+                    _smtpSetting.EnableSSL ? SecureSocketOptions.Auto : SecureSocketOptions.None);
 
-//        public object Clone()
-//        {
-//            var cloneObj = new SendBatchEmailsOperation();
+            if (_smtpSetting.RequiredHostAuthentication)
+            {
+                client.Authenticate(_smtpSetting.HostLogin, _smtpSetting.HostPassword);
+            }
 
-//            cloneObj.Error = Error;
-//            cloneObj.Id = Id;
-//            cloneObj.IsCompleted = IsCompleted;
-//            cloneObj.Percentage = Percentage;
-//            cloneObj.Status = Status;
+            return client;
+        }
 
-//            return cloneObj;
-//        }
+        private void Complete()
+        {
+            IsCompleted = true;
+            Percentage = 100;
+            _log.Debug("Completed");
 
-//        private void DeleteFiles()
-//        {
-//            if (_fileID == null || _fileID.Count == 0) return;
+            MailSenderDataCache.Insert((SendBatchEmailsOperation)Clone());
 
-//            var fileDao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            Thread.Sleep(10000);
+            MailSenderDataCache.ResetAll();
+        }
 
-//            foreach (var fileID in _fileID)
-//            {
-//                var fileObj = fileDao.GetFile(fileID);
-//                if (fileObj == null) continue;
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is SendBatchEmailsOperation)) return false;
 
-//                fileDao.DeleteFile(fileObj.ID);
-//            }
+            var curOperation = (SendBatchEmailsOperation)obj;
+            return (curOperation.Id == Id) && (curOperation._tenantID == _tenantID);
+        }
 
-//        }
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode() ^ _tenantID.GetHashCode();
+        }
 
-//        private SmtpClient GetSmtpClient()
-//        {
-//            var client = new SmtpClient
-//            {
-//                ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
-//                    WorkContext.IsMono || MailKit.MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
-//                Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
-//            };
+        public void Dispose()
+        {
+            DeleteFiles();
+        }
+    }
 
-//            client.Connect(_smtpSetting.Host, _smtpSetting.Port,
-//                    _smtpSetting.EnableSSL ? SecureSocketOptions.Auto : SecureSocketOptions.None);
+    public class MailSenderDataCache
+    {
+        public MailSenderDataCache(TenantManager tenantManager,
+                                   ICache cache )
+        {
+            TenantID = tenantManager.GetCurrentTenant().TenantId;
+            Cache = cache;
+        }
 
-//            if (_smtpSetting.RequiredHostAuthentication)
-//            {
-//                client.Authenticate(_smtpSetting.HostLogin, _smtpSetting.HostPassword);
-//            }
+        public int TenantID { get; }
 
-//            return client;
-//        }
+        public readonly ICache Cache;
 
-//        private void Complete()
-//        {
-//            IsCompleted = true;
-//            Percentage = 100;
-//            _log.Debug("Completed");
+        public string GetStateCacheKey()
+        {
+            return string.Format("{0}:crm:queue:sendbatchemails", TenantID);
+        }
 
-//            MailSenderDataCache.Insert((SendBatchEmailsOperation)Clone());
+        public string GetCancelCacheKey()
+        {
+            return string.Format("{0}:crm:queue:sendbatchemails:cancel", TenantID);
+        }
 
-//            Thread.Sleep(10000);
-//            MailSenderDataCache.ResetAll();
-//        }
+        public SendBatchEmailsOperation Get()
+        {
+            return Cache.Get<SendBatchEmailsOperation>(GetStateCacheKey());
+        }
 
-//        public override bool Equals(object obj)
-//        {
-//            if (obj == null || !(obj is SendBatchEmailsOperation)) return false;
+        public void Insert(SendBatchEmailsOperation data)
+        {
+            Cache.Insert(GetStateCacheKey(), data, TimeSpan.FromMinutes(1));
+        }
 
-//            var curOperation = (SendBatchEmailsOperation)obj;
-//            return (curOperation.Id == Id) && (curOperation._tenantID == _tenantID);
-//        }
+        public bool CheckCancelFlag()
+        {
+            var fromCache = Cache.Get<String>(GetCancelCacheKey());
 
-//        public override int GetHashCode()
-//        {
-//            return Id.GetHashCode() ^ _tenantID.GetHashCode();
-//        }
+            if (!String.IsNullOrEmpty(fromCache))
+                return true;
 
-//        public void Dispose()
-//        {
-//            DeleteFiles();
-//        }
-//    }
+            return false;
 
-//    public class MailSenderDataCache
-//    {
-//        public MailSenderDataCache(TenantManager tenantManager)
-//        {
-//            TenantID = tenantManager.GetCurrentTenant().TenantId;
-//        }
+        }
 
-//        public int TenantID { get; }
+        public void SetCancelFlag()
+        {
+            Cache.Insert(GetCancelCacheKey(), "true", TimeSpan.FromMinutes(1));
+        }
 
-//        public readonly ICache Cache = ICache.Memory;
+        public void ResetAll()
+        {
+            Cache.Remove(GetStateCacheKey());
+            Cache.Remove(GetCancelCacheKey());
+        }
+    }
 
-//        public string GetStateCacheKey()
-//        {
-//            return string.Format("{0}:crm:queue:sendbatchemails", TenantID);
-//        }
+    [Scope]
+    public class MailSender
+    {
+        private readonly Object _syncObj = new Object();
+        private readonly ProgressQueue<SendBatchEmailsOperation> _mailQueue;
+        private readonly int quotas = 50;
 
-//        public string GetCancelCacheKey()
-//        {
-//            return string.Format("{0}:crm:queue:sendbatchemails:cancel", TenantID);
-//        }
+        public MailSender(
+                          IConfiguration configuration,
+                          TenantManager tenantManager,
+                          SettingsManager settingsManager,
+                          MailSenderDataCache mailSenderDataCache,
+                          ProgressQueueOptionsManager<SendBatchEmailsOperation> progressQueueOptionsManager,
+                          SendBatchEmailsOperation sendBatchEmailsOperation
+                        )
+        {
+            SendBatchEmailsOperation = sendBatchEmailsOperation;
+            TenantID = tenantManager.GetCurrentTenant().TenantId;
+            MailSenderDataCache = mailSenderDataCache;
+            _mailQueue = progressQueueOptionsManager.Value;
 
-//        public SendBatchEmailsOperation Get()
-//        {
-//            return Cache.Get<SendBatchEmailsOperation>(GetStateCacheKey());
-//        }
+            int parsed;
 
-//        public void Insert(SendBatchEmailsOperation data)
-//        {
-//            Cache.Insert(GetStateCacheKey(), data, TimeSpan.FromMinutes(1));
-//        }
+            if (int.TryParse(configuration["crm:mailsender:quotas"], out parsed))
+            {
+                quotas = parsed;
+            }
 
-//        public bool CheckCancelFlag()
-//        {
-//            var fromCache = Cache.Get<String>(GetCancelCacheKey());
+            TenantManager = tenantManager;
+            SettingsManager = settingsManager;
 
-//            if (!String.IsNullOrEmpty(fromCache))
-//                return true;
+            //            LogManager = logger.Get();
+        }
 
-//            return false;
+        public TenantManager TenantManager { get; }
+        public SettingsManager SettingsManager { get; }
+        public SendBatchEmailsOperation SendBatchEmailsOperation { get; }
+        public MailSenderDataCache MailSenderDataCache { get; }
+        public int TenantID { get; }
 
-//        }
+        public IOptionsMonitor<ILog> LogManager { get; }
 
-//        public void SetCancelFlag()
-//        {
-//            Cache.Insert(GetCancelCacheKey(), "true", TimeSpan.FromMinutes(1));
-//        }
+        public int GetQuotas()
+        {
+            return quotas;
+        }
 
-//        public void ResetAll()
-//        {
-//            Cache.Remove(GetStateCacheKey());
-//            Cache.Remove(GetCancelCacheKey());
-//        }
-//    }
+        public IProgressItem Start(List<int> fileID, List<int> contactID, String subject, String bodyTemplate, bool storeInHistory)
+        {
+            lock (_syncObj)
+            {
+                var operation = _mailQueue.GetStatus(TenantID);
 
-//    public class MailSender
-//    {
-//        private readonly Object _syncObj = new Object();
-//        private readonly ProgressQueue _mailQueue = new ProgressQueue(2, TimeSpan.FromSeconds(60), true);
-//        private readonly int quotas = 50;
+                if (operation == null)
+                {
+                    var mailSender = MailSenderDataCache.Get();
 
-//        public MailSender(
-//                          IConfiguration configuration,
-//                          TenantManager tenantManager,
-//                          SettingsManager settingsManager,
-//                          MailSenderDataCache mailSenderDataCache
-//                        )
-//        {
-//            TenantID = tenantManager.GetCurrentTenant().TenantId;
-//            MailSenderDataCache = mailSenderDataCache;
+                    if (mailSender != null)
+                        return mailSender;
+                }
 
-//            int parsed;
+                if (operation == null)
+                {
+                    if (fileID == null)
+                    {
+                        fileID = new List<int>();
+                    }
+                    if (contactID == null || contactID.Count == 0 ||
+                        String.IsNullOrEmpty(subject) || String.IsNullOrEmpty(bodyTemplate))
+                    {
+                        return null;
+                    }
 
-//            if (int.TryParse(configuration["crm:mailsender:quotas"], out parsed))
-//            {
-//                quotas = parsed;
-//            }
+                    if (contactID.Count > GetQuotas())
+                    {
+                        contactID = contactID.Take(GetQuotas()).ToList();
+                    }
 
-//            TenantManager = tenantManager;
-//            SettingsManager = settingsManager;
+                    SendBatchEmailsOperation.Configure(fileID, contactID, subject, bodyTemplate, storeInHistory);
 
-//            //            LogManager = logger.Get();
-//        }
+                    _mailQueue.Add(operation);
+                }
 
-//        public TenantManager TenantManager { get; }
-//        public SettingsManager SettingsManager { get; }
+                if (!_mailQueue.IsStarted)
+                {
+                    _mailQueue.Start(x => x.RunJob());
+                }
+                return operation;
+            }
+        }
 
-//        public MailSenderDataCache MailSenderDataCache { get; }
-//        public int TenantID { get; }
+        private SmtpClient GetSmtpClient(SMTPServerSetting smtpSetting)
+        {
+            var client = new SmtpClient
+            {
+                ServerCertificateValidationCallback = (sender, certificate, chain, errors) => MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
+                Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
+            };
 
-//        public IOptionsMonitor<ILog> LogManager { get; }
+            client.Connect(smtpSetting.Host, smtpSetting.Port,
+                    smtpSetting.EnableSSL ? SecureSocketOptions.Auto : SecureSocketOptions.None);
 
-//        public int GetQuotas()
-//        {
-//            return quotas;
-//        }
+            if (smtpSetting.RequiredHostAuthentication)
+            {
+                client.Authenticate(smtpSetting.HostLogin, smtpSetting.HostPassword);
+            }
 
-//        public IProgressItem Start(List<int> fileID, List<int> contactID, String subject, String bodyTemplate, bool storeInHistory)
-//        {
-//            lock (_syncObj)
-//            {
-//                var operation = _mailQueue.GetStatus(TenantID);
+            return client;
+        }
 
-//                if (operation == null)
-//                {
-//                    var mailSender = MailSenderDataCache.Get();
+        public void StartSendTestMail(string recipientEmail, string mailSubj, string mailBody)
+        {
+            var log = LogManager.Get("ASC.CRM.MailSender");
 
-//                    if (mailSender != null)
-//                        return mailSender;
-//                }
+            if (!recipientEmail.TestEmailRegex())
+            {
+                throw new Exception(string.Format(CRMCommonResource.MailSender_InvalidEmail, recipientEmail));
+            }
 
-//                if (operation == null)
-//                {
-//                    if (fileID == null)
-//                    {
-//                        fileID = new List<int>();
-//                    }
-//                    if (contactID == null || contactID.Count == 0 ||
-//                        String.IsNullOrEmpty(subject) || String.IsNullOrEmpty(bodyTemplate))
-//                    {
-//                        return null;
-//                    }
+            TenantManager.SetCurrentTenant(TenantID);
+            var smtpSetting = SettingsManager.Load<CRMSettings>().SMTPServerSetting;
 
-//                    if (contactID.Count > GetQuotas())
-//                    {
-//                        contactID = contactID.Take(GetQuotas()).ToList();
-//                    }
+            ThreadPool.QueueUserWorkItem(_ =>
+            {
+                try
+                {
+                    var toAddress = new MailboxAddress(recipientEmail);
+                    var fromAddress = new MailboxAddress(smtpSetting.SenderDisplayName, smtpSetting.SenderEmailAddress);
 
-//                    operation = new SendBatchEmailsOperation(fileID, contactID, subject, bodyTemplate, storeInHistory);
-//                    _mailQueue.Add(operation);
-//                }
+                    var mimeMessage = new MimeMessage
+                    {
+                        Subject = mailSubj
+                    };
 
-//                if (!_mailQueue.IsStarted)
-//                {
-//                    _mailQueue.Start(x => x.RunJob());
-//                }
-//                return operation;
-//            }
-//        }
+                    mimeMessage.From.Add(fromAddress);
 
-//        private SmtpClient GetSmtpClient(SMTPServerSetting smtpSetting)
-//        {
-//            var client = new SmtpClient
-//            {
-//                ServerCertificateValidationCallback = (sender, certificate, chain, errors) => MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
-//                Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
-//            };
+                    mimeMessage.To.Add(toAddress);
 
-//            client.Connect(smtpSetting.Host, smtpSetting.Port,
-//                    smtpSetting.EnableSSL ? SecureSocketOptions.Auto : SecureSocketOptions.None);
+                    var bodyBuilder = new BodyBuilder
+                    {
+                        TextBody = mailBody
+                    };
 
-//            if (smtpSetting.RequiredHostAuthentication)
-//            {
-//                client.Authenticate(smtpSetting.HostLogin, smtpSetting.HostPassword);
-//            }
+                    mimeMessage.Body = bodyBuilder.ToMessageBody();
 
-//            return client;
-//        }
+                    mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
 
-//        public void StartSendTestMail(string recipientEmail, string mailSubj, string mailBody)
-//        {
-//            var log = LogManager.Get("ASC.CRM.MailSender");
+                    using (var smtpClient = GetSmtpClient(smtpSetting))
+                    {
+                        smtpClient.Send(FormatOptions.Default, mimeMessage, CancellationToken.None);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error(ex);
+                }
+            });
+        }
 
-//            if (!recipientEmail.TestEmailRegex())
-//            {
-//                throw new Exception(string.Format(CRMCommonResource.MailSender_InvalidEmail, recipientEmail));
-//            }
+        public IProgressItem GetStatus()
+        {
+            var result = _mailQueue.GetStatus(TenantID);
 
-//            TenantManager.SetCurrentTenant(TenantID);
-//            var smtpSetting = SettingsManager.Load<CRMSettings>().SMTPServerSetting;
+            if (result == null)
+                return MailSenderDataCache.Get();
 
-//            ThreadPool.QueueUserWorkItem(_ =>
-//            {
-//                try
-//                {
-//                    var toAddress = new MailboxAddress(recipientEmail);
-//                    var fromAddress = new MailboxAddress(smtpSetting.SenderDisplayName, smtpSetting.SenderEmailAddress);
+            return result;
+        }
 
-//                    var mimeMessage = new MimeMessage
-//                    {
-//                        Subject = mailSubj
-//                    };
+        public void Cancel()
+        {
+            lock (_syncObj)
+            {
+                var findedItem = _mailQueue.GetItems().Where(elem => (int)elem.Id == TenantID);
 
-//                    mimeMessage.From.Add(fromAddress);
+                if (findedItem.Any())
+                {
+                    _mailQueue.Remove(findedItem.ElementAt(0));
 
-//                    mimeMessage.To.Add(toAddress);
+                    MailSenderDataCache.ResetAll();
+                }
+                else
+                {
+                    MailSenderDataCache.SetCancelFlag();
+                }
+            }
+        }
+    }
 
-//                    var bodyBuilder = new BodyBuilder
-//                    {
-//                        TextBody = mailBody
-//                    };
+    [Serializable]
+    [DataContract]
+    public class MailTemplateTag
+    {
+        [DataMember(Name = "sysname")]
+        public String SysName { get; set; }
 
-//                    mimeMessage.Body = bodyBuilder.ToMessageBody();
+        [DataMember(Name = "display_name")]
+        public String DisplayName { get; set; }
 
-//                    mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
+        [DataMember(Name = "category")]
+        public String Category { get; set; }
 
-//                    using (var smtpClient = GetSmtpClient(smtpSetting))
-//                    {
-//                        smtpClient.Send(FormatOptions.Default, mimeMessage, CancellationToken.None);
-//                    }
-//                }
-//                catch (Exception ex)
-//                {
-//                    log.Error(ex);
-//                }
-//            });
-//        }
+        [DataMember(Name = "is_company")]
+        public bool isCompany { get; set; }
 
-//        public IProgressItem GetStatus()
-//        {
-//            var result = _mailQueue.GetStatus(TenantID);
+        [DataMember(Name = "name")]
+        public String Name { get; set; }
+    }
 
-//            if (result == null)
-//                return MailSenderDataCache.Get();
+    public class MailTemplateManager
+    {
+        private readonly Dictionary<String, IEnumerable<MailTemplateTag>> _templateTagsCache = new Dictionary<String, IEnumerable<MailTemplateTag>>();
 
-//            return result;
-//        }
+        private readonly DaoFactory _daoFactory;
 
-//        public void Cancel()
-//        {
-//            lock (_syncObj)
-//            {
-//                var findedItem = _mailQueue.GetItems().Where(elem => (int)elem.Id == TenantID);
+        public MailTemplateManager(DaoFactory daoFactory)
+        {
+            _daoFactory = daoFactory;
+        }
 
-//                if (findedItem.Any())
-//                {
-//                    _mailQueue.Remove(findedItem.ElementAt(0));
+        private IEnumerable<MailTemplateTag> GetTagsFrom(String template)
+        {
+            if (_templateTagsCache.ContainsKey(template)) return _templateTagsCache[template];
 
-//                    MailSenderDataCache.ResetAll();
-//                }
-//                else
-//                {
-//                    MailSenderDataCache.SetCancelFlag();
-//                }
-//            }
-//        }
-//    }
+            var tags = GetAllTags();
 
-//    [Serializable]
-//    [DataContract]
-//    public class MailTemplateTag
-//    {
-//        [DataMember(Name = "sysname")]
-//        public String SysName { get; set; }
+            var result = new List<MailTemplateTag>();
 
-//        [DataMember(Name = "display_name")]
-//        public String DisplayName { get; set; }
+            var _regex = new Regex("\\$\\((Person|Company)\\.[^<>\\)]*\\)");
 
-//        [DataMember(Name = "category")]
-//        public String Category { get; set; }
 
-//        [DataMember(Name = "is_company")]
-//        public bool isCompany { get; set; }
+            if (!_regex.IsMatch(template))
+                return new List<MailTemplateTag>();
 
-//        [DataMember(Name = "name")]
-//        public String Name { get; set; }
-//    }
+            foreach (Match match in _regex.Matches(template))
+            {
+                var findedTag = tags.Find(item => String.Compare(item.Name, match.Value) == 0);
 
-//    public class MailTemplateManager
-//    {
-//        private readonly Dictionary<String, IEnumerable<MailTemplateTag>> _templateTagsCache = new Dictionary<String, IEnumerable<MailTemplateTag>>();
+                if (findedTag == null) continue;
 
-//        private readonly DaoFactory _daoFactory;
+                if (!result.Contains(findedTag))
+                    result.Add(findedTag);
+            }
 
-//        public MailTemplateManager(DaoFactory daoFactory)
-//        {
-//            _daoFactory = daoFactory;
-//        }
+            _templateTagsCache.Add(template, result);
 
-//        private IEnumerable<MailTemplateTag> GetTagsFrom(String template)
-//        {
-//            if (_templateTagsCache.ContainsKey(template)) return _templateTagsCache[template];
+            return result;
+        }
 
-//            var tags = GetAllTags();
+        private String Apply(String template, IEnumerable<MailTemplateTag> templateTags, int contactID)
+        {
+            var result = template;
 
-//            var result = new List<MailTemplateTag>();
 
-//            var _regex = new Regex("\\$\\((Person|Company)\\.[^<>\\)]*\\)");
+            var contactDao = _daoFactory.GetContactDao();
+            var contactInfoDao = _daoFactory.GetContactInfoDao();
+            var customFieldDao = _daoFactory.GetCustomFieldDao();
 
+            var contact = contactDao.GetByID(contactID);
 
-//            if (!_regex.IsMatch(template))
-//                return new List<MailTemplateTag>();
+            if (contact == null)
+                throw new ArgumentException(CRMErrorsResource.ContactNotFound);
 
-//            foreach (Match match in _regex.Matches(template))
-//            {
-//                var findedTag = tags.Find(item => String.Compare(item.Name, match.Value) == 0);
+            foreach (var tag in templateTags)
+            {
+                var tagParts = tag.SysName.Split(new[] { '_' });
 
-//                if (findedTag == null) continue;
+                var source = tagParts[0];
 
-//                if (!result.Contains(findedTag))
-//                    result.Add(findedTag);
-//            }
+                var tagValue = String.Empty;
 
-//            _templateTagsCache.Add(template, result);
+                switch (source)
+                {
+                    case "common":
 
-//            return result;
-//        }
+                        if (contact is Person)
+                        {
 
-//        private String Apply(String template, IEnumerable<MailTemplateTag> templateTags, int contactID)
-//        {
-//            var result = template;
+                            var person = (Person)contact;
 
+                            switch (tagParts[1])
+                            {
 
-//            var contactDao = _daoFactory.GetContactDao();
-//            var contactInfoDao = _daoFactory.GetContactInfoDao();
-//            var customFieldDao = _daoFactory.GetCustomFieldDao();
+                                case "firstName":
+                                    tagValue = person.FirstName;
 
-//            var contact = contactDao.GetByID(contactID);
+                                    break;
+                                case "lastName":
+                                    tagValue = person.LastName;
 
-//            if (contact == null)
-//                throw new ArgumentException(CRMErrorsResource.ContactNotFound);
+                                    break;
+                                case "jobTitle":
+                                    tagValue = person.JobTitle;
+                                    break;
+                                case "companyName":
+                                    var relativeCompany = contactDao.GetByID(((Person)contact).CompanyID);
 
-//            foreach (var tag in templateTags)
-//            {
-//                var tagParts = tag.SysName.Split(new[] { '_' });
+                                    if (relativeCompany != null)
+                                        tagValue = relativeCompany.GetTitle();
 
-//                var source = tagParts[0];
 
-//                var tagValue = String.Empty;
+                                    break;
+                                default:
+                                    tagValue = String.Empty;
+                                    break;
 
-//                switch (source)
-//                {
-//                    case "common":
+                            }
 
-//                        if (contact is Person)
-//                        {
+                        }
+                        else
+                        {
 
-//                            var person = (Person)contact;
+                            var company = (Company)contact;
 
-//                            switch (tagParts[1])
-//                            {
+                            switch (tagParts[1])
+                            {
+                                case "companyName":
+                                    tagValue = company.CompanyName;
+                                    break;
+                                default:
+                                    tagValue = String.Empty;
+                                    break;
+                            }
+                        }
 
-//                                case "firstName":
-//                                    tagValue = person.FirstName;
+                        break;
+                    case "customField":
+                        var tagID = Convert.ToInt32(tagParts[tagParts.Length - 1]);
 
-//                                    break;
-//                                case "lastName":
-//                                    tagValue = person.LastName;
+                        var entityType = contact is Company ? EntityType.Company : EntityType.Person;
 
-//                                    break;
-//                                case "jobTitle":
-//                                    tagValue = person.JobTitle;
-//                                    break;
-//                                case "companyName":
-//                                    var relativeCompany = contactDao.GetByID(((Person)contact).CompanyID);
+                        tagValue = customFieldDao.GetValue(entityType, contactID, tagID);
 
-//                                    if (relativeCompany != null)
-//                                        tagValue = relativeCompany.GetTitle();
+                        break;
+                    case "contactInfo":
+                        var contactInfoType = (ContactInfoType)Enum.Parse(typeof(ContactInfoType), tagParts[1]);
+                        var category = Convert.ToInt32(tagParts[2]);
+                        var contactInfos = contactInfoDao.GetList(contactID, contactInfoType, category, true);
 
+                        if (contactInfos == null || contactInfos.Count == 0) break;
 
-//                                    break;
-//                                default:
-//                                    tagValue = String.Empty;
-//                                    break;
+                        var contactInfo = contactInfos[0];
 
-//                            }
+                        if (contactInfoType == ContactInfoType.Address)
+                        {
+                            var addressPart = (AddressPart)Enum.Parse(typeof(AddressPart), tagParts[3]);
 
-//                        }
-//                        else
-//                        {
+                            tagValue = JObject.Parse(contactInfo.Data)[addressPart.ToString().ToLower()].Value<String>();
 
-//                            var company = (Company)contact;
+                        }
+                        else
+                            tagValue = contactInfo.Data;
 
-//                            switch (tagParts[1])
-//                            {
-//                                case "companyName":
-//                                    tagValue = company.CompanyName;
-//                                    break;
-//                                default:
-//                                    tagValue = String.Empty;
-//                                    break;
-//                            }
-//                        }
+                        break;
+                    default:
+                        throw new ArgumentException(tag.SysName);
+                }
 
-//                        break;
-//                    case "customField":
-//                        var tagID = Convert.ToInt32(tagParts[tagParts.Length - 1]);
+                result = result.Replace(tag.Name, tagValue);
+            }
 
-//                        var entityType = contact is Company ? EntityType.Company : EntityType.Person;
+            return result;
+        }
+
+        public String Apply(String template, int contactID)
+        {
+            return Apply(template, GetTagsFrom(template), contactID);
+        }
 
-//                        tagValue = customFieldDao.GetValue(entityType, contactID, tagID);
+        private String ToTagName(String value, bool isCompany)
+        {
+            return String.Format("$({0}.{1})", isCompany ? "Company" : "Person", value);
+        }
 
-//                        break;
-//                    case "contactInfo":
-//                        var contactInfoType = (ContactInfoType)Enum.Parse(typeof(ContactInfoType), tagParts[1]);
-//                        var category = Convert.ToInt32(tagParts[2]);
-//                        var contactInfos = contactInfoDao.GetList(contactID, contactInfoType, category, true);
+        private List<MailTemplateTag> GetAllTags()
+        {
+            return GetTags(true).Union(GetTags(false)).ToList();
+        }
 
-//                        if (contactInfos == null || contactInfos.Count == 0) break;
+        public List<MailTemplateTag> GetTags(bool isCompany)
+        {
+            var result = new List<MailTemplateTag>();
 
-//                        var contactInfo = contactInfos[0];
+            if (isCompany)
+            {
 
-//                        if (contactInfoType == ContactInfoType.Address)
-//                        {
-//                            var addressPart = (AddressPart)Enum.Parse(typeof(AddressPart), tagParts[3]);
+                result.Add(new MailTemplateTag
+                {
+                    DisplayName = CRMContactResource.CompanyName,
+                    SysName = "common_companyName",
+                    Category = CRMContactResource.GeneralInformation,
+                    isCompany = isCompany,
+                    Name = ToTagName("Company Name", isCompany)
+                });
 
-//                            tagValue = JObject.Parse(contactInfo.Data)[addressPart.ToString().ToLower()].Value<String>();
+            }
+            else
+            {
+                result.Add(new MailTemplateTag
+                {
+                    DisplayName = CRMContactResource.FirstName,
+                    SysName = "common_firstName",
+                    Category = CRMContactResource.GeneralInformation,
+                    isCompany = false,
+                    Name = ToTagName("First Name", isCompany)
+                });
 
-//                        }
-//                        else
-//                            tagValue = contactInfo.Data;
+                result.Add(new MailTemplateTag
+                {
+                    DisplayName = CRMContactResource.LastName,
+                    SysName = "common_lastName",
+                    Category = CRMContactResource.GeneralInformation,
+                    isCompany = false,
+                    Name = ToTagName("Last Name", isCompany)
+                });
 
-//                        break;
-//                    default:
-//                        throw new ArgumentException(tag.SysName);
-//                }
+                result.Add(new MailTemplateTag
+                {
+                    DisplayName = CRMContactResource.JobTitle,
+                    SysName = "common_jobTitle",
+                    Category = CRMContactResource.GeneralInformation,
+                    isCompany = false,
+                    Name = ToTagName("Job Title", isCompany)
+                });
 
-//                result = result.Replace(tag.Name, tagValue);
-//            }
 
-//            return result;
-//        }
+                result.Add(new MailTemplateTag
+                {
+                    DisplayName = CRMContactResource.CompanyName,
+                    SysName = "common_companyName",
+                    Category = CRMContactResource.GeneralInformation,
+                    isCompany = false,
+                    Name = ToTagName("Company Name", isCompany)
+                });
 
-//        public String Apply(String template, int contactID)
-//        {
-//            return Apply(template, GetTagsFrom(template), contactID);
-//        }
+            }
 
-//        private String ToTagName(String value, bool isCompany)
-//        {
-//            return String.Format("$({0}.{1})", isCompany ? "Company" : "Person", value);
-//        }
+            foreach (ContactInfoType infoTypeEnum in Enum.GetValues(typeof(ContactInfoType)))
+            {
 
-//        private List<MailTemplateTag> GetAllTags()
-//        {
-//            return GetTags(true).Union(GetTags(false)).ToList();
-//        }
+                var localName = String.Format("contactInfo_{0}_{1}", infoTypeEnum, ContactInfo.GetDefaultCategory(infoTypeEnum));
+                var localTitle = infoTypeEnum.ToLocalizedString();
 
-//        public List<MailTemplateTag> GetTags(bool isCompany)
-//        {
-//            var result = new List<MailTemplateTag>();
+                if (infoTypeEnum == ContactInfoType.Address)
+                    foreach (AddressPart addressPartEnum in Enum.GetValues(typeof(AddressPart)))
+                        result.Add(new MailTemplateTag
+                        {
+                            SysName = String.Format(localName + "_{0}_{1}", addressPartEnum, (int)AddressCategory.Work),
+                            DisplayName = String.Format(localTitle + " {0}", addressPartEnum.ToLocalizedString()),
+                            Category = CRMContactResource.GeneralInformation,
+                            isCompany = isCompany,
+                            Name = ToTagName(String.Format("{0} {1}", infoTypeEnum.ToString(), addressPartEnum.ToString()), isCompany)
+                        });
+                else
+                    result.Add(new MailTemplateTag
+                    {
+                        SysName = localName,
+                        DisplayName = localTitle,
+                        Category = CRMContactResource.GeneralInformation,
+                        isCompany = isCompany,
+                        Name = ToTagName(infoTypeEnum.ToString(), isCompany)
+                    });
+            }
 
-//            if (isCompany)
-//            {
+            var entityType = isCompany ? EntityType.Company : EntityType.Person;
 
-//                result.Add(new MailTemplateTag
-//                {
-//                    DisplayName = CRMContactResource.CompanyName,
-//                    SysName = "common_companyName",
-//                    Category = CRMContactResource.GeneralInformation,
-//                    isCompany = isCompany,
-//                    Name = ToTagName("Company Name", isCompany)
-//                });
+            var customFieldsDao = _daoFactory.GetCustomFieldDao();
 
-//            }
-//            else
-//            {
-//                result.Add(new MailTemplateTag
-//                {
-//                    DisplayName = CRMContactResource.FirstName,
-//                    SysName = "common_firstName",
-//                    Category = CRMContactResource.GeneralInformation,
-//                    isCompany = false,
-//                    Name = ToTagName("First Name", isCompany)
-//                });
+            var customFields = customFieldsDao.GetFieldsDescription(entityType);
 
-//                result.Add(new MailTemplateTag
-//                {
-//                    DisplayName = CRMContactResource.LastName,
-//                    SysName = "common_lastName",
-//                    Category = CRMContactResource.GeneralInformation,
-//                    isCompany = false,
-//                    Name = ToTagName("Last Name", isCompany)
-//                });
+            var category = CRMContactResource.GeneralInformation;
 
-//                result.Add(new MailTemplateTag
-//                {
-//                    DisplayName = CRMContactResource.JobTitle,
-//                    SysName = "common_jobTitle",
-//                    Category = CRMContactResource.GeneralInformation,
-//                    isCompany = false,
-//                    Name = ToTagName("Job Title", isCompany)
-//                });
+            foreach (var customField in customFields)
+            {
+                if (customField.FieldType == CustomFieldType.SelectBox) continue;
+                if (customField.FieldType == CustomFieldType.CheckBox) continue;
 
+                if (customField.FieldType == CustomFieldType.Heading)
+                {
+                    if (!String.IsNullOrEmpty(customField.Label))
+                        category = customField.Label;
 
-//                result.Add(new MailTemplateTag
-//                {
-//                    DisplayName = CRMContactResource.CompanyName,
-//                    SysName = "common_companyName",
-//                    Category = CRMContactResource.GeneralInformation,
-//                    isCompany = false,
-//                    Name = ToTagName("Company Name", isCompany)
-//                });
+                    continue;
+                }
 
-//            }
+                result.Add(new MailTemplateTag
+                {
+                    SysName = "customField_" + customField.ID,
+                    DisplayName = customField.Label.HtmlEncode(),
+                    Category = category,
+                    isCompany = isCompany,
+                    Name = ToTagName(customField.Label, isCompany)
+                });
+            }
 
-//            foreach (ContactInfoType infoTypeEnum in Enum.GetValues(typeof(ContactInfoType)))
-//            {
+            return result;
+        }
 
-//                var localName = String.Format("contactInfo_{0}_{1}", infoTypeEnum, ContactInfo.GetDefaultCategory(infoTypeEnum));
-//                var localTitle = infoTypeEnum.ToLocalizedString();
-
-//                if (infoTypeEnum == ContactInfoType.Address)
-//                    foreach (AddressPart addressPartEnum in Enum.GetValues(typeof(AddressPart)))
-//                        result.Add(new MailTemplateTag
-//                        {
-//                            SysName = String.Format(localName + "_{0}_{1}", addressPartEnum, (int)AddressCategory.Work),
-//                            DisplayName = String.Format(localTitle + " {0}", addressPartEnum.ToLocalizedString()),
-//                            Category = CRMContactResource.GeneralInformation,
-//                            isCompany = isCompany,
-//                            Name = ToTagName(String.Format("{0} {1}", infoTypeEnum.ToString(), addressPartEnum.ToString()), isCompany)
-//                        });
-//                else
-//                    result.Add(new MailTemplateTag
-//                    {
-//                        SysName = localName,
-//                        DisplayName = localTitle,
-//                        Category = CRMContactResource.GeneralInformation,
-//                        isCompany = isCompany,
-//                        Name = ToTagName(infoTypeEnum.ToString(), isCompany)
-//                    });
-//            }
-
-//            var entityType = isCompany ? EntityType.Company : EntityType.Person;
-
-//            var customFieldsDao = _daoFactory.GetCustomFieldDao();
-
-//            var customFields = customFieldsDao.GetFieldsDescription(entityType);
-
-//            var category = CRMContactResource.GeneralInformation;
-
-//            foreach (var customField in customFields)
-//            {
-//                if (customField.FieldType == CustomFieldType.SelectBox) continue;
-//                if (customField.FieldType == CustomFieldType.CheckBox) continue;
-
-//                if (customField.FieldType == CustomFieldType.Heading)
-//                {
-//                    if (!String.IsNullOrEmpty(customField.Label))
-//                        category = customField.Label;
-
-//                    continue;
-//                }
-
-//                result.Add(new MailTemplateTag
-//                {
-//                    SysName = "customField_" + customField.ID,
-//                    DisplayName = customField.Label.HtmlEncode(),
-//                    Category = category,
-//                    isCompany = isCompany,
-//                    Name = ToTagName(customField.Label, isCompany)
-//                });
-//            }
-
-//            return result;
-//        }
-
-//    }
-//}
+    }
+}

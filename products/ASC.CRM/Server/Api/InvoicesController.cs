@@ -70,7 +70,8 @@ namespace ASC.CRM.Api
                      InvoiceItemDtoHelper invoiceItemDtoHelper,
                      Global global,
                      InvoiceLineDtoHelper invoiceLineDtoHelper,
-                     InvoiceTaxDtoHelper invoiceTaxDtoHelper)
+                     InvoiceTaxDtoHelper invoiceTaxDtoHelper,
+                     PdfQueueWorker pdfQueueWorker)
             : base(daoFactory, cRMSecurity)
         {
             ApiContext = apiContext;
@@ -88,8 +89,10 @@ namespace ASC.CRM.Api
             Global = global;
             InvoiceLineDtoHelper = invoiceLineDtoHelper;
             InvoiceTaxDtoHelper = invoiceTaxDtoHelper;
+            PdfQueueWorker = pdfQueueWorker;
         }
 
+        public PdfQueueWorker PdfQueueWorker { get; }
         public InvoiceTaxDtoHelper InvoiceTaxDtoHelper { get; }
         public InvoiceLineDtoHelper InvoiceLineDtoHelper { get; }
         public Global Global { get; }
@@ -106,26 +109,6 @@ namespace ASC.CRM.Api
         public MessageService MessageService { get; }
         public MessageTarget MessageTarget { get; }
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         /// <summary>
         ///  Returns the detailed information about the invoice with the ID specified in the request
         /// </summary>
@@ -762,7 +745,7 @@ namespace ASC.CRM.Api
 
             if (Global.CanDownloadInvoices)
             {
-                //          PdfQueueWorker.StartTask(HttpContext.Current, TenantManager.GetCurrentTenant().TenantId, SecurityContext.CurrentAccount.ID, invoice.ID);
+                PdfQueueWorker.StartTask(invoice.ID);
             }
 
             return InvoiceDtoHelper.Get(invoice);
@@ -1062,9 +1045,10 @@ namespace ASC.CRM.Api
             invoiceLine.ID = DaoFactory.GetInvoiceLineDao().SaveOrUpdateInvoiceLine(invoiceLine);
 
             DaoFactory.GetInvoiceDao().UpdateInvoiceJsonDataAfterLinesUpdated(invoice);
+            
             if (Global.CanDownloadInvoices)
             {
-                //            PdfQueueWorker.StartTask(HttpContext.Current, TenantManager.GetCurrentTenant().TenantId, SecurityContext.CurrentAccount.ID, invoice.ID);
+                PdfQueueWorker.StartTask(invoice.ID);
             }
 
             return InvoiceLineDtoHelper.Get(invoiceLine);
@@ -1128,7 +1112,7 @@ namespace ASC.CRM.Api
 
             if (Global.CanDownloadInvoices)
             {
-                //                PdfQueueWorker.StartTask(HttpContext.Current, TenantManager.GetCurrentTenant().TenantId, SecurityContext.CurrentAccount.ID, invoice.ID);
+                PdfQueueWorker.StartTask(invoice.ID);
             }
 
             return InvoiceLineDtoHelper.Get(invoiceLine);
@@ -1158,7 +1142,7 @@ namespace ASC.CRM.Api
 
             if (Global.CanDownloadInvoices)
             {
-                //              PdfQueueWorker.StartTask(HttpContext.Current, TenantManager.GetCurrentTenant().TenantId, SecurityContext.CurrentAccount.ID, invoice.ID);
+                PdfQueueWorker.StartTask(invoice.ID);
             }
 
             return id;

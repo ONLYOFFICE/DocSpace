@@ -55,58 +55,24 @@ namespace ASC.CRM.ApiModels
         [DataMember(Name = "id")]
         public int Id { get; set; }
 
-        [DataMember]
-        public InvoiceStatusDto Status { get; set; }
-
-        [DataMember]
-        public string Number { get; set; }
-
-        [DataMember]
-        public ApiDateTime IssueDate { get; set; }
-
-        [DataMember]
-        public InvoiceTemplateType TemplateType { get; set; }
-
-        [DataMember]
-        public ContactBaseWithEmailDto Contact { get; set; }
-
-        [DataMember]
-        public ContactBaseWithEmailDto Consignee { get; set; }
-
-        [DataMember]
-        public EntityDto Entity { get; set; }
-
-        [DataMember]
-        public ApiDateTime DueDate { get; set; }
-
-        [DataMember]
-        public string Language { get; set; }
-
-        [DataMember]
-        public CurrencyInfoDto Currency { get; set; }
-
-        [DataMember]
-        public decimal ExchangeRate { get; set; }
-
-        [DataMember]
-        public string PurchaseOrderNumber { get; set; }
-
-        [DataMember]
-        public string Terms { get; set; }
-
-        [DataMember]
-        public string Description { get; set; }
-
-        [DataMember]
-        public int FileID { get; set; }
-
-        [DataMember]
-        public ApiDateTime CreateOn { get; set; }
-
-        [DataMember]
-        public EmployeeWraper CreateBy { get; set; }
-
-        [DataMember]
+        
+        public InvoiceStatusDto Status { get; set; }        
+        public string Number { get; set; }        
+        public ApiDateTime IssueDate { get; set; }        
+        public InvoiceTemplateType TemplateType { get; set; }        
+        public ContactBaseWithEmailDto Contact { get; set; }       
+        public ContactBaseWithEmailDto Consignee { get; set; }        
+        public EntityDto Entity { get; set; }        
+        public ApiDateTime DueDate { get; set; }        
+        public string Language { get; set; }        
+        public CurrencyInfoDto Currency { get; set; }        
+        public decimal ExchangeRate { get; set; }        
+        public string PurchaseOrderNumber { get; set; }        
+        public string Terms { get; set; }        
+        public string Description { get; set; }       
+        public int FileID { get; set; }        
+        public ApiDateTime CreateOn { get; set; }        
+        public EmployeeWraper CreateBy { get; set; }       
         public decimal Cost { get; set; }
 
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
@@ -211,7 +177,7 @@ namespace ASC.CRM.ApiModels
         {
         }
 
-        [DataMember]
+        
         public List<InvoiceLineDto> InvoiceLines { get; set; }
 
         public static InvoiceDto GetSample()
@@ -341,37 +307,37 @@ namespace ASC.CRM.ApiModels
         {
         }
 
-        [DataMember]
+        
         public string Title { get; set; }
 
-        [DataMember]
+        
         public string StockKeepingUnit { get; set; }
 
-        [DataMember]
+        
         public string Description { get; set; }
 
-        [DataMember]
+        
         public decimal Price { get; set; }
 
-        [DataMember]
+        
         public CurrencyInfoDto Currency { get; set; }
 
-        [DataMember]
+        
         public decimal StockQuantity { get; set; }
 
-        [DataMember]
+        
         public bool TrackInvenory { get; set; }
 
-        [DataMember]
+        
         public InvoiceTaxDto InvoiceTax1 { get; set; }
 
-        [DataMember]
+        
         public InvoiceTaxDto InvoiceTax2 { get; set; }
 
-        [DataMember]
+        
         public ApiDateTime CreateOn { get; set; }
 
-        [DataMember]
+        
         public EmployeeWraper CreateBy { get; set; }
 
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
@@ -474,19 +440,19 @@ namespace ASC.CRM.ApiModels
         [DataMember(Name = "id")]
         public int Id { get; set; }
 
-        [DataMember]
+        
         public string Name { get; set; }
 
-        [DataMember]
+        
         public string Description { get; set; }
 
-        [DataMember]
+        
         public decimal Rate { get; set; }
 
-        [DataMember]
+        
         public ApiDateTime CreateOn { get; set; }
 
-        [DataMember]
+        
         public EmployeeWraper CreateBy { get; set; }
 
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
@@ -542,31 +508,31 @@ namespace ASC.CRM.ApiModels
         [DataMember(Name = "id")]
         public int Id { get; set; }
 
-        [DataMember]
+        
         public int InvoiceID { get; set; }
 
-        [DataMember]
+        
         public int InvoiceItemID { get; set; }
 
-        [DataMember]
+        
         public int InvoiceTax1ID { get; set; }
 
-        [DataMember]
+        
         public int InvoiceTax2ID { get; set; }
 
-        [DataMember]
+        
         public int SortOrder { get; set; }
 
-        [DataMember]
+        
         public string Description { get; set; }
 
-        [DataMember]
+        
         public decimal Quantity { get; set; }
 
-        [DataMember]
+        
         public decimal Price { get; set; }
 
-        [DataMember]
+        
         public decimal Discount { get; set; }
 
         public static InvoiceLineDto GetSample()
@@ -624,7 +590,7 @@ namespace ASC.CRM.ApiModels
         [DataMember(Name = "id")]
         public int Id { get; set; }
 
-        [DataMember]
+        
         public string Title { get; set; }
 
         public static InvoiceStatusDto GetSample()

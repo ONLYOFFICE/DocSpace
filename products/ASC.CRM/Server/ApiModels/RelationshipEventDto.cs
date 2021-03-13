@@ -40,16 +40,10 @@ namespace ASC.CRM.ApiModels
 {
     [DataContract(Name = "entity", Namespace = "")]
     public class EntityDto
-    {
-        [DataMember]
-        public String EntityType { get; set; }
-
-        [DataMember]
-        public int EntityId { get; set; }
-
-        [DataMember]
+    {       
+        public String EntityType { get; set; }        
+        public int EntityId { get; set; }        
         public String EntityTitle { get; set; }
-
         public static EntityDto GetSample()
         {
             return new EntityDto
@@ -134,7 +128,7 @@ namespace ASC.CRM.ApiModels
         
         public ContactBaseDto Contact { get; set; }
 
-        [DataMember]
+        
         public EntityDto Entity { get; set; }
 
         

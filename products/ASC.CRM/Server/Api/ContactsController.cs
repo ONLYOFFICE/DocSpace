@@ -31,6 +31,7 @@ using System.Linq;
 using ASC.Api.Collections;
 using ASC.Api.Core;
 using ASC.Api.CRM;
+using ASC.Common.Threading.Progress;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Users;
@@ -74,7 +75,8 @@ namespace ASC.CRM.Api
                      EmployeeWraperHelper employeeWraperHelper,
                      ContactPhotoManager contactPhotoManager,
                      FileSizeComment fileSizeComment,
-                     ContactInfoDtoHelper contactInfoDtoHelper)
+                     ContactInfoDtoHelper contactInfoDtoHelper,
+                     MailSender mailSender)
             : base(daoFactory, cRMSecurity)
         {
             ApiContext = apiContext;
@@ -92,8 +94,10 @@ namespace ASC.CRM.Api
             ContactPhotoManager = contactPhotoManager;
             FileSizeComment = fileSizeComment;
             ContactInfoDtoHelper = contactInfoDtoHelper;
+            MailSender = mailSender;
         }
 
+        public MailSender MailSender { get; }
         public ContactInfoDtoHelper ContactInfoDtoHelper { get; }
         public FileSizeComment FileSizeComment { get; }
         public ContactPhotoManager ContactPhotoManager { get; }
@@ -1168,7 +1172,7 @@ namespace ASC.CRM.Api
         /// </returns>
         [Update(@"contact/company/{companyid:int}")]
         public CompanyDto UpdateCompany(
-            [FromQuery]int companyid,
+            [FromQuery] int companyid,
             [FromForm] CreateOrUpdateCompanyInDto intDto)
         {
             string companyName = intDto.CompanyName;
@@ -1469,7 +1473,7 @@ namespace ASC.CRM.Api
         /// </returns>
         [Update(@"contact/access")]
         public IEnumerable<ContactDto> SetAccessToBatchContact(
-            [FromBody]SetAccessToBatchContactInDto inDto)
+            [FromBody] SetAccessToBatchContactInDto inDto)
         {
             var contactid = inDto.ContactID;
             var isShared = inDto.isShared;
@@ -1888,44 +1892,55 @@ namespace ASC.CRM.Api
         //    return null;
         //}
 
-        ///// <visible>false</visible>
-        //[Create(@"contact/mailsmtp/send")]
-        //public IProgressItem SendMailSMTPToContacts(List<int> fileIDs, List<int> contactIds, String subject, String body, bool storeInHistory)
-        //{
-        //    if (contactIds == null || contactIds.Count == 0 || String.IsNullOrEmpty(body)) throw new ArgumentException();
+        /// <visible>false</visible>
+        [Create(@"contact/mailsmtp/send")]
+        public IProgressItem SendMailSMTPToContacts(
+            SendMailSMTPToContactsInDto inDto)
+        {
+            List<int> fileIDs = inDto.FileIDs;
+            List<int> contactIds = inDto.ContactIds;
+            String subject = inDto.Subject;
+            String body = inDto.body;
+            bool storeInHistory = inDto.StoreInHistory;
 
-        //    var contacts = DaoFactory.GetContactDao().GetContacts(contactIds.ToArray());
-        //    MessageService.Send(MessageAction.CrmSmtpMailSent, MessageTarget.Create(contactIds), contacts.Select(c => c.GetTitle()));
+            if (contactIds == null || contactIds.Count == 0 || String.IsNullOrEmpty(body)) throw new ArgumentException();
 
-        //    return MailSender.Start(fileIDs, contactIds, subject, body, storeInHistory);
-        //}
+            var contacts = DaoFactory.GetContactDao().GetContacts(contactIds.ToArray());
 
-        ///// <visible>false</visible>
-        //[Create(@"contact/mailsmtp/preview")]
-        //public string GetMailSMTPToContactsPreview(string template, int contactId)
-        //{
-        //    if (contactId == 0 || String.IsNullOrEmpty(template)) throw new ArgumentException();
+            MessageService.Send(MessageAction.CrmSmtpMailSent, MessageTarget.Create(contactIds), contacts.Select(c => c.GetTitle()));
 
-        //    var manager = new MailTemplateManager(DaoFactory);
+            return MailSender.Start(fileIDs, contactIds, subject, body, storeInHistory);
+        }
 
-        //    return manager.Apply(template, contactId);
-        //}
+        /// <visible>false</visible>
+        [Create(@"contact/mailsmtp/preview")]
+        public string GetMailSMTPToContactsPreview(string template, int contactId)
+        {
+            if (contactId == 0 || String.IsNullOrEmpty(template)) throw new ArgumentException();
 
-        ///// <visible>false</visible>
-        //[Read(@"contact/mailsmtp/status")]
-        //public IProgressItem GetMailSMTPToContactsStatus()
-        //{
-        //    return MailSender.GetStatus();
-        //}
+            var manager = new MailTemplateManager(DaoFactory);
 
-        ///// <visible>false</visible>
-        //[Update(@"contact/mailsmtp/cancel")]
-        //public IProgressItem CancelMailSMTPToContacts()
-        //{
-        //    var progressItem = MailSender.GetStatus();
-        //    MailSender.Cancel();
-        //    return progressItem;
-        //}
+            return manager.Apply(template, contactId);
+        }
+
+        /// <visible>false</visible>
+        [Read(@"contact/mailsmtp/status")]
+        public IProgressItem GetMailSMTPToContactsStatus()
+        {
+            return MailSender.GetStatus();
+        }
+
+        /// <visible>false</visible>
+        [Update(@"contact/mailsmtp/cancel")]
+        public IProgressItem CancelMailSMTPToContacts()
+        {
+            var progressItem = MailSender.GetStatus();
+
+            MailSender.Cancel();
+
+            return progressItem;
+
+        }
 
         /// <visible>false</visible>
         [Update(@"contact/{contactid:int}/creationdate")]
@@ -2131,5 +2146,5 @@ namespace ASC.CRM.Api
 
             return result;
         }
-       }
+    }
 }

@@ -43,11 +43,7 @@ namespace ASC.CRM.ApiModels
         public CustomFieldDto(CustomField customField)
             : base(customField)
         {
-        }
-
-
-
-        [DataMember]
+        }        
         public int RelativeItemsCount { get; set; }
 
         public new static CustomFieldDto GetSample()
@@ -86,26 +82,13 @@ namespace ASC.CRM.ApiModels
         }
 
         [DataMember(Name = "id")]
-        public int Id { get; set; }
-
-        [DataMember]
-        public int EntityId { get; set; }
-
-        [DataMember]
-        public String Label { get; set; }
-
-        [DataMember]
-        public String FieldValue { get; set; }
-
-        [DataMember]
-        public CustomFieldType FieldType { get; set; }
-
-        [DataMember]
-        public int Position { get; set; }
-
-        [DataMember]
+        public int Id { get; set; }        
+        public int EntityId { get; set; }        
+        public String Label { get; set; }        
+        public String FieldValue { get; set; }        
+        public CustomFieldType FieldType { get; set; }        
+        public int Position { get; set; }        
         public String Mask { get; set; }
-
         public static CustomFieldBaseDto GetSample()
         {
             return new CustomFieldBaseDto(0)

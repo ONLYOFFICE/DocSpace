@@ -657,37 +657,37 @@ namespace ASC.CRM.Core.Dao
         [DataContract]
         internal class CrmHistoryContent
         {
-            [DataMember]
+            
             public string to;
 
-            [DataMember]
+            
             public string from;
 
-            [DataMember]
+            
             public string cc;
 
-            [DataMember]
+            
             public string bcc;
 
-            [DataMember]
+            
             public string subject;
 
-            [DataMember]
+            
             public bool important;
 
-            [DataMember]
+            
             public string chain_id;
 
-            [DataMember]
+            
             public bool is_sended;
 
-            [DataMember]
+            
             public string date_created;
 
-            [DataMember]
+            
             public string introduction;
 
-            [DataMember]
+            
             public long message_id;
 
         }

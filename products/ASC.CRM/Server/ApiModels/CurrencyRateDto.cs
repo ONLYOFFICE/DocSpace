@@ -44,17 +44,10 @@ namespace ASC.CRM.ApiModels
 
 
         [DataMember(Name = "id")]
-        public int Id { get; set; }
-
-        [DataMember]
-        public String FromCurrency { get; set; }
-
-        [DataMember]
-        public String ToCurrency { get; set; }
-
-        [DataMember]
+        public int Id { get; set; }        
+        public String FromCurrency { get; set; }        
+        public String ToCurrency { get; set; }        
         public decimal Rate { get; set; }
-
         public static CurrencyRateDto GetSample()
         {
             return new CurrencyRateDto
