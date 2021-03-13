@@ -1,21 +1,9 @@
 import React, { useState } from "react";
-import { storiesOf } from "@storybook/react";
-import {
-  withKnobs,
-  boolean,
-  text,
-  select,
-  number,
-} from "@storybook/addon-knobs/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
 import TreeMenu from ".";
 import TreeNode from "./sub-components/tree-node";
-import { Icons } from "../icons";
-import { action } from "@storybook/addon-actions";
-import ExpanderDownIcon from "../../../../../public/images/expander-down.react.svg";
-import ExpanderRightIcon from "../../../../../public/images/expander-right.react.svg";
-const iconNames = Object.keys(Icons);
+import ExpanderDownIcon from "../public/static/images/expander-down.react.svg";
+import ExpanderRightIcon from "../public/static/images/expander-right.react.svg";
+import CatalogFolderIcon from "../public/static/images/catalog.folder.react.svg";
 
 const treeData = [
   {
@@ -24,13 +12,19 @@ const treeData = [
   },
 ];
 
-const TreeMenuStory = (props) => {
-  // eslint-disable-next-line react/prop-types
-  const { data } = props;
-
+const Template = ({
+  data,
+  title,
+  newItems,
+  showBadge,
+  onSelect,
+  onLoad,
+  onCheck,
+  onRightClick,
+  ...args
+}) => {
   const [gData, setGData] = useState(data);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
-
   const [expandedKeys, setExpandedKeys] = useState([
     "0-0-key",
     "0-0-0-key",
@@ -107,6 +101,7 @@ const TreeMenuStory = (props) => {
     }
     setGData(treeData);
   };
+
   const onExpand = (expandedKeys) => {
     setExpandedKeys(expandedKeys);
     setAutoExpandParent(false);
@@ -117,15 +112,18 @@ const TreeMenuStory = (props) => {
       if (item.children && item.children.length) {
         return (
           <TreeNode
-            title={text("title", "Title")}
+            title={title}
             key={item.key}
-            icon={React.createElement(
-              Icons[select("icon", iconNames, "CatalogFolderIcon")],
-              { size: "scale", isfill: true, color: "dimgray" }
-            )}
+            icon={
+              <CatalogFolderIcon
+                size="scale"
+                //isfill=true,
+                color="dimgray"
+              />
+            }
             onBadgeClick={onBadgeClick}
-            newItems={number("newItems", 0)}
-            showBadge={boolean("showBadge", false)}
+            newItems={newItems}
+            showBadge={showBadge}
           >
             {getTreeNodes(item.children)}
           </TreeNode>
@@ -134,11 +132,12 @@ const TreeMenuStory = (props) => {
       return (
         <TreeNode
           key={item.key}
-          title={text("title", "Title")}
-          icon={React.createElement(
-            Icons[select("icon", iconNames, "CatalogFolderIcon")],
-            { size: "scale", isfill: true, color: "dimgray" }
-          )}
+          title={title}
+          icon={React.createElement(CatalogFolderIcon, {
+            size: "scale",
+            //isfill: true,
+            color: "dimgray",
+          })}
         ></TreeNode>
       );
     });
@@ -149,33 +148,16 @@ const TreeMenuStory = (props) => {
       return null;
     }
     if (obj.expanded) {
-      return <ExpanderDownIcon size="scale" isfill={true} color="dimgray" />;
+      return <ExpanderDownIcon width="8px" color="dimgray" />;
     } else {
-      return (
-        <ExpanderRightIcon
-          size="scale"
-          isfill={true}
-          color="dimgray"
-        ></ExpanderRightIcon>
-      );
+      return <ExpanderRightIcon width="8px" color="dimgray" />;
     }
   };
 
   return (
     <div style={{ width: "250px", margin: "20px" }}>
       <TreeMenu
-        checkable={boolean("checkable", false)}
-        draggable={boolean("draggable", false)}
-        disabled={boolean("disabled", false)}
-        badgeLabel={number("badgeLabel")}
-        multiple={boolean("multiple", false)}
-        showIcon={boolean("showIcon", true)}
-        isFullFillSelection={boolean("isFullFillSelection", true)}
-        gapBetweenNodes={text("gapBetweenNodes")}
-        gapBetweenNodesTablet={text("gapBetweenNodesTablet")}
-        isEmptyRootNode={boolean("isEmptyRootNode", false)}
-        defaultExpandAll={boolean("defaultExpandAll", false)}
-        defaultExpandParent={boolean("defaultExpandParent", true)}
+        {...args}
         onExpand={onExpand}
         autoExpandParent={autoExpandParent}
         expandedKeys={expandedKeys}
@@ -183,10 +165,10 @@ const TreeMenuStory = (props) => {
         onDrop={(info) => onDrop(info)}
         onDragEnter={onDragEnter}
         switcherIcon={switcherIcon}
-        onSelect={action("select")}
-        onLoad={action("load")}
-        onCheck={action("check")}
-        onRightClick={action("rightClick")}
+        onSelect={() => onSelect("select")}
+        onLoad={() => onLoad("load")}
+        onCheck={() => onCheck("check")}
+        onRightClick={() => onRightClick("rightClick")}
       >
         {getTreeNodes(gData)}
       </TreeMenu>
@@ -194,7 +176,19 @@ const TreeMenuStory = (props) => {
   );
 };
 
-storiesOf("Components|Tree", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("base", () => <TreeMenuStory data={treeData} />);
+export const basic = Template.bind({});
+basic.args = {
+  checkable: false,
+  draggable: false,
+  disabled: false,
+  multiple: false,
+  showIcon: true,
+  isFullFillSelection: true,
+  isEmptyRootNode: false,
+  defaultExpandAll: false,
+  defaultExpandParent: true,
+  data: treeData,
+  title: "Title",
+  newItems: 0,
+  showBadge: false,
+};

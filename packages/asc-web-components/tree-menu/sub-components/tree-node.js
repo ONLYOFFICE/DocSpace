@@ -359,8 +359,11 @@ const TreeNodeMenu = styled(TreeNode)`
 `;
 
 TreeNodeMenu.propTypes = {
+  /** The number of new elements in the node */
   newItems: PropTypes.number,
+  /** to display the badge */
   showBadge: PropTypes.bool,
+  /** call when click on badge */
   onBadgeClick: PropTypes.func,
 };
 TreeNodeMenu.defaultProps = { theme: Base };
