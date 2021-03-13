@@ -11,16 +11,14 @@ import config from "../package.json";
 import "./custom.scss";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
-import Home from "./components/pages/Home";
+import Home from "./pages/Home";
 
 const homepage = config.homepage;
 
-const Profile = React.lazy(() => import("./components/pages/Profile"));
-const ProfileAction = React.lazy(() =>
-  import("./components/pages/ProfileAction")
-);
-const GroupAction = React.lazy(() => import("./components/pages/GroupAction"));
-const Reassign = React.lazy(() => import("./components/pages/Reassign"));
+const Profile = React.lazy(() => import("./pages/Profile"));
+const ProfileAction = React.lazy(() => import("./pages/ProfileAction"));
+const GroupAction = React.lazy(() => import("./pages/GroupAction"));
+const Reassign = React.lazy(() => import("./pages/Reassign"));
 const Error404 = React.lazy(() => import("studio/Error404"));
 
 const ProfileRoute = (props) => (
