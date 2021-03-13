@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Router, Switch } from "react-router-dom";
+import { Router, Switch /*, Route*/ } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
 import Main from "./components/Main";
@@ -23,12 +23,15 @@ import i18n from "./i18n";
 import AppLoader from "./components/AppLoader";
 import System from "./components/System";
 
+const virtualPath = config.virtualPath;
+
 const Payments = React.lazy(() => import("./components/pages/Payments"));
 const Error404 = React.lazy(() => import("studio/Error404"));
 const Error401 = React.lazy(() => import("studio/Error401"));
 const Home = React.lazy(() => import("./components/pages/Home"));
 const Login = React.lazy(() => import("login/app"));
 const About = React.lazy(() => import("./components/pages/About"));
+//const Wizard = React.lazy(() => import("./components/pages/Wizard"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
 
@@ -86,6 +89,14 @@ const AboutRoute = (props) => (
   </React.Suspense>
 );
 
+// const WizardRoute = (props) => (
+//   <React.Suspense fallback={<AppLoader />}>
+//     <ErrorBoundary>
+//       <Wizard {...props} />
+//     </ErrorBoundary>
+//   </React.Suspense>
+// );
+
 const ComingSoonRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -94,20 +105,20 @@ const ComingSoonRoute = (props) => (
   </React.Suspense>
 );
 
-const DynamicAppRoute = ({ link, appName, ...rest }) => {
-  const system = {
-    url: `${window.location.origin}${link}remoteEntry.js`,
-    scope: appName,
-    module: "./app",
-  };
-  return (
-    <React.Suspense fallback={<AppLoader />}>
-      <ErrorBoundary>
-        <System system={system} {...rest} />
-      </ErrorBoundary>
-    </React.Suspense>
-  );
-};
+// const DynamicAppRoute = ({ link, appName, ...rest }) => {
+//   const system = {
+//     url: `${window.location.origin}${link}remoteEntry.js`,
+//     scope: appName,
+//     module: "./app",
+//   };
+//   return (
+//     <React.Suspense fallback={<AppLoader />}>
+//       <ErrorBoundary>
+//         <System system={system} {...rest} />
+//       </ErrorBoundary>
+//     </React.Suspense>
+//   );
+// };
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   // useEffect(() => {
@@ -144,7 +155,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   //     .catch((err) => toastr.error(err.message));
   // }, []);
 
-  const { isLoaded, loadBaseInfo, isThirdPartyResponse, modules } = rest;
+  const {
+    isLoaded,
+    loadBaseInfo,
+    isThirdPartyResponse,
+    modules,
+    homepage,
+  } = rest;
 
   useEffect(() => {
     try {
@@ -166,15 +183,23 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
 
-  const dynamicRoutes = modules.map((m) => (
-    <PrivateRoute
-      key={m.id}
-      path={m.link}
-      component={DynamicAppRoute}
-      link={m.link}
-      appName={m.appName}
-    />
-  ));
+  const dynamicRoutes = modules
+    .filter((m) => m.ready)
+    .map((m) => {
+      const system = {
+        url: `${window.location.origin}${m.link}remoteEntry.js`,
+        scope: m.appName,
+        module: "./app",
+      };
+      return (
+        <PrivateRoute
+          key={m.id}
+          path={`${virtualPath}${m.link}`}
+          component={System}
+          system={system}
+        />
+      );
+    });
 
   return (
     <Layout>
@@ -186,39 +211,52 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
             <Switch>
               <PrivateRoute
                 exact
-                path={["/", "/error=:error"]}
+                path={[`${virtualPath}/`, `${virtualPath}/error=:error`]}
                 component={HomeRoute}
               />
-              <PrivateRoute path={["/about"]} component={AboutRoute} />
+              {/* <Route
+                exact
+                path={`${homepage}/wizard`}
+                component={WizardRoute}
+              /> */}
+              <PrivateRoute
+                path={`${virtualPath}/about`}
+                component={AboutRoute}
+              />
               <PublicRoute
                 exact
                 path={[
-                  "/login",
-                  "/login/error=:error",
-                  "/login/confirmed-email=:confirmedEmail",
+                  `${virtualPath}/login`,
+                  `${virtualPath}/login/error=:error`,
+                  `${virtualPath}/login/confirmed-email=:confirmedEmail`,
                 ]}
                 component={LoginRoute}
               />
               <PrivateRoute
-                exact
                 path={[
-                  "/coming-soon",
-                  "/products/mail",
-                  "/products/projects",
-                  "/products/crm",
-                  "/products/calendar",
-                  "/products/talk/",
+                  `${virtualPath}/coming-soon`,
+                  `${virtualPath}/products/mail`,
+                  `${virtualPath}/products/projects`,
+                  `${virtualPath}/products/crm`,
+                  `${virtualPath}/products/calendar`,
+                  `${virtualPath}/products/talk/`,
                 ]}
                 component={ComingSoonRoute}
               />
-              <PrivateRoute path="/payments" component={PaymentsRoute} />
+              <PrivateRoute
+                path={`${virtualPath}/payments`}
+                component={PaymentsRoute}
+              />
               <PrivateRoute
                 restricted
-                path="/settings"
+                path={`${virtualPath}/settings`}
                 component={SettingsRoute}
               />
               {dynamicRoutes}
-              <PrivateRoute path="/error401" component={Error401Route} />
+              <PrivateRoute
+                path={`${virtualPath}/error401`}
+                component={Error401Route}
+              />
               <PrivateRoute component={Error404Route} />
             </Switch>
           </Main>
@@ -236,11 +274,13 @@ const ShellWrapper = inject(({ auth }) => {
   return {
     loadBaseInfo: () => {
       init();
+      auth.settingsStore.setModuleInfo(config.homepage, "home");
       auth.setProductVersion(config.version);
     },
     isThirdPartyResponse,
     isLoaded,
     modules: auth.moduleStore.modules,
+    homepage: auth.settingsStore.homepage || config.homepage,
   };
 })(observer(Shell));
 
@@ -248,7 +288,7 @@ export default () => (
   <ThemeProvider theme={Base}>
     <MobxProvider {...store}>
       <I18nextProvider i18n={i18n}>
-      <ShellWrapper />
+        <ShellWrapper />
       </I18nextProvider>
     </MobxProvider>
   </ThemeProvider>

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": "true",
   "homepage": "",
+  "virtualPath": "",
   "title": "ONLYOFFICE",
   "scripts": {
     "start": "webpack-cli serve",
