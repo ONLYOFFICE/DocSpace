@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Provider as PeopleProvider, inject, observer } from "mobx-react";
-import { Router, Switch } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import PeopleStore from "./store/PeopleStore";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import toastr from "studio/toastr";
@@ -11,6 +11,9 @@ import config from "../package.json";
 import "./custom.scss";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
+import Home from "./components/pages/Home";
+
+const homepage = config.homepage;
 
 const Profile = React.lazy(() => import("./components/pages/Profile"));
 const ProfileAction = React.lazy(() =>
@@ -19,7 +22,6 @@ const ProfileAction = React.lazy(() =>
 const GroupAction = React.lazy(() => import("./components/pages/GroupAction"));
 const Reassign = React.lazy(() => import("./components/pages/Reassign"));
 const Error404 = React.lazy(() => import("studio/Error404"));
-const Home = React.lazy(() => import("./components/pages/Home"));
 
 const ProfileRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -53,14 +55,6 @@ const ReassignRoute = (props) => (
   </React.Suspense>
 );
 
-const HomeRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Home {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
 const Error404Route = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -70,7 +64,7 @@ const Error404Route = (props) => (
 );
 
 const PeopleContent = (props) => {
-  const { homepage, isLoaded, loadBaseInfo } = props;
+  const { isLoaded, loadBaseInfo } = props;
 
   useEffect(() => {
     loadBaseInfo()
@@ -113,15 +107,14 @@ const PeopleContent = (props) => {
         restricted
         component={ReassignRoute}
       />
-      <PrivateRoute exact path={homepage} component={HomeRoute} />
-      <PrivateRoute path={`${homepage}/filter`} component={HomeRoute} />
+      <PrivateRoute exact path={homepage} component={Home} />
+      <PrivateRoute path={`${homepage}/filter`} component={Home} />
       <PrivateRoute component={Error404Route} />
     </Switch>
   );
 };
 
 const People = inject(({ auth, peopleStore }) => ({
-  homepage: config.homepage, // auth.settingsStore.homepage
   loadBaseInfo: async () => {
     //auth.init();
     await peopleStore.init();
