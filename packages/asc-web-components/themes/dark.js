@@ -43,7 +43,9 @@ const {
   grayMaxLight,
   cyanBlueDarkShade,
   lightCumulus,
-  lightMediumGoldenrod
+  lightMediumGoldenrod,
+
+  blueLightMid,
 } = globalColors;
 
 const Dark = {
@@ -722,6 +724,32 @@ const Dark = {
       margin: "auto",
       opacity: "0",
       transform: "scale(1, -1)",
+    },
+  },
+  //TODO: need props for dark theme
+  tabsContainer: {
+    scrollbar: {
+      width: "100%",
+      height: "50px",
+    },
+
+    label: {
+      height: " 32px",
+      borderRadius: "16px",
+      minWidth: "fit-content",
+      marginRight: "8px",
+      width: "fit-content",
+
+      backgroundColor: blueLightMid,
+      hoverBackgroundColor: grayLight,
+      disableBackgroundColor: grayLightMid,
+
+      title: {
+        margin: "7px 15px 7px 15px",
+        overflow: "hidden",
+        color: white,
+        disableColor: grayMid,
+      },
     },
   },
 

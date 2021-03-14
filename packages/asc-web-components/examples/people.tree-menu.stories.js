@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import { storiesOf } from "@storybook/react";
 import TreeMenu from "../tree-menu";
 import TreeNode from "../tree-menu/sub-components/tree-node";
-import CatalogDepartmentsIcon from "../../../../../public/images/catalog.departments.react.svg";
-import CatalogFolderIcon from "../../../../../public/images/catalog.folder.react.svg";
-import ExpanderDownIcon from "../../../../../public/images/expander-down.react.svg";
-import ExpanderRightIcon from "../../../../../public/images/expander-right.react.svg";
+import CatalogDepartmentsIcon from "../public/static/images/catalog.departments.react.svg";
+import CatalogFolderIcon from "../public/static/images/catalog.folder.react.svg";
+import ExpanderDownIcon from "../public/static/images/expander-down.react.svg";
+import ExpanderRightIcon from "../public/static/images/expander-right.react.svg";
+
+export default {
+  title: "Examples/Tree",
+  component: TreeMenu,
+  subcomponents: { TreeNode },
+  parameters: { docs: { description: { component: "Example" } } },
+  argTypes: { data: { table: { disable: true } } },
+};
 
 const treeData = [
   {
@@ -23,9 +30,9 @@ const treeData = [
   },
 ];
 
-const TreeMenuStory = (props) => {
+const Template = (args) => {
   // eslint-disable-next-line react/prop-types
-  const { data } = props;
+  const { data } = args;
 
   const [gData, setGData] = useState(data);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
@@ -151,9 +158,9 @@ const TreeMenuStory = (props) => {
       return null;
     }
     if (obj.expanded) {
-      return <ExpanderDownIcon size="scale" isfill={true} color="dimgray" />;
+      return <ExpanderDownIcon width="8px" isfill={true} color="dimgray" />;
     } else {
-      return <ExpanderRightIcon size="scale" isfill={true} color="dimgray" />;
+      return <ExpanderRightIcon width="8px" isfill={true} color="dimgray" />;
     }
   };
 
@@ -182,6 +189,8 @@ const TreeMenuStory = (props) => {
     </div>
   );
 };
-storiesOf("EXAMPLES|Tree.", module).add("people tree menu", () => (
-  <TreeMenuStory data={treeData} />
-));
+
+export const peopleTreeMenu = Template.bind({});
+peopleTreeMenu.args = {
+  data: treeData,
+};
