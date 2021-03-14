@@ -1,13 +1,19 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
+
 import Row from "../row";
 import Avatar from "../avatar";
 import Link from "../link";
 import RowContent from "../row-content";
-import { Icons } from "../icons";
-import Section from "../../../.storybook/decorators/section";
-import SendClockIcon from "../../../../../public/images/send.clock.react.svg";
-import CatalogSpamIcon from "../../../../../public/images/catalog.spam.react.svg";
+import SendClockIcon from "../public/static/images/send.clock.react.svg";
+import CatalogSpamIcon from "../public/static/images/catalog.spam.react.svg";
+
+export default {
+  title: "Examples/Row",
+  component: Row,
+  subcomponents: { Avatar, Link, RowContent },
+  parameters: { docs: { description: { component: "Example" } } },
+};
+
 const fakeUsers = [
   {
     id: "1",
@@ -216,9 +222,9 @@ const fakeUsers = [
   },
 ];
 
-storiesOf("EXAMPLES|Row", module).add("people", () => {
+const Template = (args) => {
   return (
-    <Section>
+    <>
       {fakeUsers.map((user) => {
         const element = (
           <Avatar
@@ -305,6 +311,8 @@ storiesOf("EXAMPLES|Row", module).add("people", () => {
           </Row>
         );
       })}
-    </Section>
+    </>
   );
-});
+};
+
+export const people = Template.bind({});
