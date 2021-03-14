@@ -1,5 +1,6 @@
 module.exports = {
   stories: [
+    "../all/*.stories.@(js|mdx)",
     "../backdrop/*.stories.@(js|jsx|ts|tsx)",
     "../button/*.stories.@(js|jsx|ts|tsx)",
     "../avatar/*.stories.@(js)",
