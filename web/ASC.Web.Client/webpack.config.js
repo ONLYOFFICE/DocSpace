@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const TerserPlugin = require("terser-webpack-plugin");
+const { InjectManifest } = require("workbox-webpack-plugin");
 //const CompressionPlugin = require("compression-webpack-plugin");
 
 const path = require("path");
@@ -25,6 +26,7 @@ const config = {
       disableDotRule: true,
       index: homepage,
     },
+    writeToDisk: true,
     // proxy: [
     //   {
     //     context: "/api",
@@ -184,6 +186,7 @@ module.exports = (env, argv) => {
       minimize: true,
       minimizer: [new TerserPlugin()],
     };
+
     // config.plugins.push(
     //   new CompressionPlugin({
     //     filename: "[path][base].gz[query]",
@@ -197,6 +200,25 @@ module.exports = (env, argv) => {
   } else {
     config.devtool = "cheap-module-source-map";
   }
+
+  config.plugins.push(
+    new InjectManifest({
+      mode: argv.mode === "production" ? "production" : "development",
+      swSrc: "./src/sw-template.js", // this is your sw template file
+      swDest: "service-worker.js", // this will be created in the build step
+      //globDirectory: "dist",
+      // globPatterns: [
+      //   "**/!(service-worker|precache-manifest.*).{js,css,html,png,svg}",
+      // ],
+      exclude: [
+        /\.map$/,
+        /manifest$/,
+        /\.htaccess$/,
+        /serviceWorker\.js$/,
+        /sw\.js$/,
+      ],
+    })
+  );
 
   return config;
 };
