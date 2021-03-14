@@ -1,11 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASC.Core.Common.EF.Model.Resource
 {
-    [Table("res_data")]
     public class ResData
     {
         public int Id { get; set; }

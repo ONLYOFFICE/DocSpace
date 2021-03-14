@@ -27,7 +27,8 @@ class Row extends React.Component {
   }
 
   componentWillUnmount() {
-    this.container.removeEventListener("contextmenu", this.onContextMenu);
+    this.container &&
+      this.container.removeEventListener("contextmenu", this.onContextMenu);
   }
 
   onContextMenu = (e) => {
@@ -141,12 +142,10 @@ Row.propTypes = {
   element: PropTypes.element,
   /** Accepts id  */
   id: PropTypes.string,
+  /** If true, this state is shown as a rectangle in the checkbox */
   indeterminate: PropTypes.bool,
-  /** shouldComponentUpdate function  */
-  needForUpdate: PropTypes.func,
   /** when selecting row element. Returns data value. */
   onSelect: PropTypes.func,
-  selectItem: PropTypes.func,
   /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

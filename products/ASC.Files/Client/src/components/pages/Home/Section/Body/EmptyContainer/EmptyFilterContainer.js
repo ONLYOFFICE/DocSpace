@@ -17,7 +17,7 @@ const EmptyFilterContainer = ({
   const subheadingText = t("EmptyFilterSubheadingText");
   const descriptionText = t("EmptyFilterDescriptionText");
 
-  onResetFilter = () => {
+  const onResetFilter = () => {
     setIsLoading(true);
     const newFilter = FilesFilter.getDefault();
     fetchFiles(selectedFolderId, newFilter)

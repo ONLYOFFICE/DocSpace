@@ -8,14 +8,13 @@ import Headline from "@appserver/common/components/Headline";
 import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
 import Link from "@appserver/components/link";
-import Loaders from "@appserver/common/components/Loaders";
 import history from "@appserver/common/history";
-import { ReactSVG } from "react-svg";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
 import { desktop } from "@appserver/components/utils/device";
+import i18n from "../i18n";
 
 const backgroundColor = "#0F4071";
 
@@ -166,6 +165,7 @@ const HeaderComponent = ({
     );
   };
   const isMainPage = pathname === "/";
+
   return (
     <>
       <Header
@@ -181,20 +181,7 @@ const HeaderComponent = ({
         />
 
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
-          <ReactSVG
-            className="header-logo-icon"
-            loading={() => (
-              <Loaders.Rectangle
-                width="168"
-                height="24"
-                backgroundColor="#fff"
-                foregroundColor="#fff"
-                backgroundOpacity={0.25}
-                foregroundOpacity={0.2}
-              />
-            )}
-            src={props.logoUrl}
-          />
+          <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
         </LinkWithoutRedirect>
         <Headline className="header-module-title" type="header" color="#FFF">
           {currentProductName}
@@ -239,7 +226,7 @@ const HeaderComponent = ({
                 url={link}
                 dashed={dashed}
               >
-                {title}
+                {id === "settings" ? i18n.t(title) : title}
               </NavItem>
             )
           )}

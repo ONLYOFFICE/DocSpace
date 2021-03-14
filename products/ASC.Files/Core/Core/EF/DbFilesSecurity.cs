@@ -1,26 +1,16 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.Files.Core.Security;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
 {
-    [Table("files_security")]
     public class DbFilesSecurity : BaseEntity, IDbFile
     {
-        [Column("tenant_id")]
         public int TenantId { get; set; }
-
-        [Column("entry_id")]
         public string EntryId { get; set; }
-
-        [Column("entry_type")]
         public FileEntryType EntryType { get; set; }
-
         public Guid Subject { get; set; }
         public Guid Owner { get; set; }
         public FileShare Security { get; set; }
