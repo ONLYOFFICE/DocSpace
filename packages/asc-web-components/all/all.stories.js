@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
 import React from "react";
-//import { storiesOf } from "@storybook/react";
 import { BooleanValue, StringValue } from "react-values";
 import Avatar from "../avatar";
 import Button from "../button";
@@ -162,7 +161,9 @@ while (rowCount != 0) {
 
 export default {
   title: "Components/All",
-  parameters: { docs: { description: { component: "All components" } } },
+  parameters: {
+    docs: { description: { component: "All components" } },
+  },
 };
 const Template = (args) => (
   <>
