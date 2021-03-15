@@ -1,11 +1,18 @@
-import React from "react";
-import { storiesOf } from "@storybook/react";
-import { withKnobs, text } from "@storybook/addon-knobs/react";
-import { BooleanValue } from "react-values";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 import GroupButtonsMenu from "../group-buttons-menu";
 import DropDownItem from "../drop-down-item";
 import Button from "../button";
+
+export default {
+  title: "Examples/GroupButtonsMenu",
+  component: GroupButtonsMenu,
+  subcomponents: { DropDownItem, Button },
+  parameters: { docs: { description: { component: "Example" } } },
+  argTypes: {
+    closeAction: { action: "close action", table: { disable: true } },
+  },
+};
 
 const GroupButtonsMenuContainer = styled.div`
   height: 2000px;
@@ -55,35 +62,35 @@ const peopleItems = [
   },
 ];
 
-storiesOf("EXAMPLES|GroupButtonsMenu", module)
-  .addDecorator(withKnobs)
-  .add("people", () => (
-    <BooleanValue>
-      {({ value: visible, toggle }) => (
-        <>
-          <Button
-            label="Show menu"
-            onClick={() => {
-              toggle(visible);
-            }}
-          />
-          <GroupButtonsMenuContainer>
-            <BooleanValue>
-              {({ value: checked, toggle }) => (
-                <GroupButtonsMenu
-                  checked={checked}
-                  menuItems={peopleItems}
-                  visible={visible}
-                  moreLabel={text("moreLabel", "More")}
-                  closeTitle={text("closeTitle", "Close")}
-                  onClose={() => console.log("Close action")}
-                  onChange={() => toggle(checked)}
-                  selected={peopleItems[0].label}
-                />
-              )}
-            </BooleanValue>
-          </GroupButtonsMenuContainer>
-        </>
-      )}
-    </BooleanValue>
-  ));
+const Template = ({ closeAction, closeTitle, moreLabel, ...args }) => {
+  const [visible, setVisible] = useState(false);
+  const [checked, setChecked] = useState(false);
+  return (
+    <>
+      <Button
+        label="Show menu"
+        onClick={() => {
+          setVisible(!visible);
+        }}
+      />
+      <GroupButtonsMenuContainer>
+        <GroupButtonsMenu
+          checked={checked}
+          menuItems={peopleItems}
+          visible={visible}
+          moreLabel={moreLabel}
+          closeTitle={closeTitle}
+          onClose={closeAction}
+          onChange={() => setChecked(!checked)}
+          selected={peopleItems[0].label}
+        />
+      </GroupButtonsMenuContainer>
+    </>
+  );
+};
+
+export const people = Template.bind({});
+people.args = {
+  closeTitle: "Close",
+  moreLabel: "More",
+};

@@ -77,6 +77,7 @@ class ModuleStore {
     switch (id) {
       case "6743007c-6f95-4d20-8c88-a8601ce5e76d":
         result.appName = "crm";
+        result.ready = false;
         result.iconName = "CrmIcon";
         result.iconUrl = "/static/images/crm.react.svg";
         result.imageUrl = "/images/crm.svg";
@@ -85,6 +86,7 @@ class ModuleStore {
         break;
       case "1e044602-43b5-4d79-82f3-fd6208a11960":
         result.appName = "projects";
+        result.ready = false;
         result.iconName = "ProjectsIcon";
         result.iconUrl = "/static/images/projects.react.svg";
         result.imageUrl = "/images/projects.svg";
@@ -93,18 +95,21 @@ class ModuleStore {
         break;
       case "2a923037-8b2d-487b-9a22-5ac0918acf3f":
         result.appName = "mail";
+        result.ready = false;
         result.iconName = "MailIcon";
         result.iconUrl = "/static/images/mail.react.svg";
         result.imageUrl = "/images/mail.svg";
         break;
       case "32d24cb5-7ece-4606-9c94-19216ba42086":
         result.appName = "calendar";
+        result.ready = false;
         result.iconName = "CalendarCheckedIcon";
         result.iconUrl = "/static/images/calendar.checked.react.svg";
         result.imageUrl = "/images/calendar.svg";
         break;
       case "bf88953e-3c43-4850-a3fb-b1e43ad53a3e":
         result.appName = "chat";
+        result.ready = false;
         result.iconName = "ChatIcon";
         result.iconUrl = "/static/images/chat.react.svg";
         result.imageUrl = "/images/talk.svg";
@@ -112,12 +117,15 @@ class ModuleStore {
         break;
       case "e67be73d-f9ae-4ce1-8fec-1880cb518cb4":
         result.appName = "files";
+        result.ready = true;
         break;
       case "f4d98afd-d336-4332-8778-3c6945c81ea0":
         result.appName = "people";
+        result.ready = true;
         break;
       default:
         result.appName = "none";
+        result.ready = false;
         break;
     }
 

@@ -1,5 +1,5 @@
 import React from "react";
-import AppLoader from "../AppLoader";
+import AppLoader from "@appserver/common/components/AppLoader";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Error520 from "studio/Error520";
 import Error404 from "studio/Error404";

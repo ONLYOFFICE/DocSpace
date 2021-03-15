@@ -70,7 +70,7 @@ class TargetUserStore {
     const res = await api.people.updateUserCulture(id, culture);
     authStore.userStore.setUser(res);
     this.setTargetUser(res);
-    caches.delete("api-cache");
+    //caches.delete("api-cache");
     await authStore.settingsStore.init();
   };
 
