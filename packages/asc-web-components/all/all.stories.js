@@ -1,8 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import React from "react";
-import { storiesOf } from "@storybook/react";
 import { BooleanValue, StringValue } from "react-values";
-import Section from "../../../.storybook/decorators/section";
 import Avatar from "../avatar";
 import Button from "../button";
 //import HelpButton from "../help-button";
@@ -29,8 +27,8 @@ import Toast from "../toast";
 import toastr from "../toast/toastr";
 import ToggleContent from "../toggle-content";
 import Tooltip from "../tooltip";
-import SettingsIcon from "../../../../../public/images/settings.react.svg";
-import CatalogFolderIcon from "../../../../../public/images/catalog.folder.react.svg";
+import SettingsIcon from "../public/static/images/settings.react.svg";
+import CatalogFolderIcon from "../public/static/images/catalog.folder.react.svg";
 const array_items = [
   {
     key: "0",
@@ -161,109 +159,109 @@ while (rowCount != 0) {
   rowCount--;
 }
 
-storiesOf("Components|All", module)
-  .addParameters({ options: { showAddonPanel: false } })
-  .add("all", () => (
-    <Section>
-      <div
-        style={{
-          display: "grid",
-          gridGap: 15,
-          //gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))"
-          gridTemplateColumns: "repeat(auto-fill, 300px)",
-        }}
-      >
-        <div style={{ justifySelf: "center" }}>
-          <div style={{ padding: "8px 0" }}>
-            <Heading level={1} title="Some title">
-              Heading text
-            </Heading>
-          </div>
-          <div style={{ padding: "8px 0" }}>
-            <Text as="p" title="Some title">
-              Text as "p"
-            </Text>
-          </div>
+export default {
+  title: "Components/All",
+  parameters: {
+    docs: { description: { component: "All components" } },
+  },
+};
+const Template = (args) => (
+  <>
+    <div
+      style={{
+        display: "grid",
+        gridGap: 15,
+        //gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))"
+        gridTemplateColumns: "repeat(auto-fill, 300px)",
+      }}
+    >
+      <div style={{ justifySelf: "center" }}>
+        <div style={{ padding: "8px 0" }}>
+          <Heading level={1} title="Some title">
+            Heading text
+          </Heading>
+        </div>
+        <div style={{ padding: "8px 0" }}>
+          <Text as="p" title="Some title">
+            Text as "p"
+          </Text>
+        </div>
 
-          <div style={{ padding: "8px 0" }}>
-            <Link type="page" href="https://github.com">
-              Black page link
-            </Link>
-            <br />
-            <Link type="page" href="https://github.com" isHovered={true}>
-              Black hovered page link
-            </Link>
-            <br />
-            <Link type="action">Black action link</Link>
-            <br />
-            <Link type="action" isHovered={true}>
-              Black hovered action link
-            </Link>
-          </div>
-          <div style={{ padding: "24px 0 8px 0" }}>
-            <Link data-for="group" data-tip={0}>
-              Bob
-            </Link>
-            <br />
-            <Link data-for="group" data-tip={1}>
-              John
-            </Link>
-            <br />
-            <Link data-for="group" data-tip={2}>
-              Kevin
-            </Link>
-            <Tooltip
-              id="group"
-              offsetRight={90}
-              getContent={(dataTip) =>
-                dataTip ? (
-                  <div>
-                    <Text isBold={true} fontSize="16px">
-                      {arrayUsers[dataTip].name}
-                    </Text>
-                    <Text color="#A3A9AE" fontSize="13px">
-                      {arrayUsers[dataTip].email}
-                    </Text>
-                    <Text fontSize="13px">{arrayUsers[dataTip].position}</Text>
-                  </div>
-                ) : null
-              }
-            />
-          </div>
-          <div style={{ padding: "8px 0" }}>
-            <div style={{ display: "flex" }}>
-              <div style={{ marginRight: 16 }}>
-                <Button
-                  size="big"
-                  isDisabled={false}
-                  onClick={() => {}}
-                  label="Button"
-                  primary
-                />
-              </div>
-
+        <div style={{ padding: "8px 0" }}>
+          <Link type="page" href="https://github.com">
+            Black page link
+          </Link>
+          <br />
+          <Link type="page" href="https://github.com" isHovered={true}>
+            Black hovered page link
+          </Link>
+          <br />
+          <Link type="action">Black action link</Link>
+          <br />
+          <Link type="action" isHovered={true}>
+            Black hovered action link
+          </Link>
+        </div>
+        <div style={{ padding: "24px 0 8px 0" }}>
+          <Link data-for="group" data-tip={0}>
+            Bob
+          </Link>
+          <br />
+          <Link data-for="group" data-tip={1}>
+            John
+          </Link>
+          <br />
+          <Link data-for="group" data-tip={2}>
+            Kevin
+          </Link>
+          <Tooltip
+            id="group"
+            offsetRight={90}
+            getContent={(dataTip) =>
+              dataTip ? (
+                <div>
+                  <Text isBold={true} fontSize="16px">
+                    {arrayUsers[dataTip].name}
+                  </Text>
+                  <Text color="#A3A9AE" fontSize="13px">
+                    {arrayUsers[dataTip].email}
+                  </Text>
+                  <Text fontSize="13px">{arrayUsers[dataTip].position}</Text>
+                </div>
+              ) : null
+            }
+          />
+        </div>
+        <div style={{ padding: "8px 0" }}>
+          <div style={{ display: "flex" }}>
+            <div style={{ marginRight: 16 }}>
               <Button
                 size="big"
                 isDisabled={false}
                 onClick={() => {}}
                 label="Button"
+                primary
               />
             </div>
-          </div>
-          <div style={{ padding: "8px 0" }}>
-            <Toast />
+
             <Button
-              label="Show toastr"
-              onClick={() =>
-                toastr.success(
-                  "Some text for toast",
-                  "Some text for title",
-                  true
-                )
-              }
+              size="big"
+              isDisabled={false}
+              onClick={() => {}}
+              label="Button"
             />
           </div>
-          {/*
+        </div>
+        <div style={{ padding: "8px 0" }}>
+          <Toast />
+          <Button
+            label="Show toastr"
+            onClick={() =>
+              toastr.success("Some text for toast", "Some text for title", true)
+            }
+          />
+        </div>
+        {/*
             <div style={{ padding: "8px 0" }}>
             <ContextMenuButton
               iconName="static/images/vertical-dots.react.svg"
@@ -281,7 +279,7 @@ storiesOf("Components|All", module)
             />
           </div>
           */}
-          {/*<div style={{ padding: "8px 0" }}>
+        {/*<div style={{ padding: "8px 0" }}>
             <div style={{ display: "flex" }}>
               <div style={{ marginRight: 16 }}>
                 <IconButton
@@ -297,232 +295,229 @@ storiesOf("Components|All", module)
             </div>
           </div>
           */}
+      </div>
+      <div style={{ justifySelf: "center" }}>
+        <div style={{ padding: "8px 0" }}>
+          <ComboBox
+            options={options}
+            isDisabled={false}
+            selectedOption={{
+              key: 0,
+              label: "Select",
+            }}
+            dropDownMaxHeight={200}
+            noBorder={false}
+            scaledOptions={true}
+            size="content"
+            onSelect={(option) => console.log("selected", option)}
+          />
         </div>
-        <div style={{ justifySelf: "center" }}>
-          <div style={{ padding: "8px 0" }}>
-            <ComboBox
-              options={options}
-              isDisabled={false}
-              selectedOption={{
-                key: 0,
-                label: "Select",
-              }}
-              dropDownMaxHeight={200}
-              noBorder={false}
-              scaledOptions={true}
-              size="content"
-              onSelect={(option) => console.log("selected", option)}
-            />
-          </div>
 
-          <div style={{ padding: "8px 0" }}>
-            <StringValue>
-              {({ value, set }) => (
+        <div style={{ padding: "8px 0" }}>
+          <StringValue>
+            {({ value, set }) => (
+              <TextInput
+                placeholder="Add input text"
+                value={value}
+                onChange={(e) => set(e.target.value)}
+              />
+            )}
+          </StringValue>
+        </div>
+
+        <div style={{ padding: "8px 0" }}>
+          <StringValue>
+            {({ value, set }) => (
+              <InputBlock
+                placeholder="Add input text"
+                iconName={"static/images/search.react.svg"}
+                onIconClick={() => {}}
+                onChange={(e) => set(e.target.value)}
+                value={value}
+              >
+                <SettingsIcon size="medium" />
+              </InputBlock>
+            )}
+          </StringValue>
+        </div>
+
+        <div style={{ padding: "8px 0" }}>
+          <DatePicker
+            onChange={(date) => {
+              console.log("Selected date", date);
+            }}
+            selectedDate={new Date()}
+            minDate={new Date("1970/01/01")}
+            maxDate={new Date(new Date().getFullYear() + 1 + "/01/01")}
+            isDisabled={false}
+            isReadOnly={false}
+            hasError={false}
+            isOpen={false}
+            themeColor="#ED7309"
+            locale="en"
+          />
+        </div>
+
+        <div style={{ padding: "8px 0" }}>
+          <StringValue>
+            {({ value, set }) => (
+              <Textarea
+                placeholder="Add comment"
+                onChange={(event) => set(event.target.value)}
+                value={value}
+              />
+            )}
+          </StringValue>
+        </div>
+        <div style={{ padding: "8px 0" }}>
+          <StringValue>
+            {({ value, set }) => (
+              <FieldContainer
+                place="top"
+                isRequired
+                tooltipContent="Paste you tooltip content here"
+                labelText="Name:"
+              >
                 <TextInput
-                  placeholder="Add input text"
                   value={value}
                   onChange={(e) => set(e.target.value)}
                 />
-              )}
-            </StringValue>
-          </div>
-
-          <div style={{ padding: "8px 0" }}>
-            <StringValue>
-              {({ value, set }) => (
-                <InputBlock
-                  placeholder="Add input text"
-                  iconName={"static/images/search.react.svg"}
-                  onIconClick={() => {}}
-                  onChange={(e) => set(e.target.value)}
-                  value={value}
-                >
-                  <SettingsIcon size="medium" />
-                </InputBlock>
-              )}
-            </StringValue>
-          </div>
-
-          <div style={{ padding: "8px 0" }}>
-            <DatePicker
-              onChange={(date) => {
-                console.log("Selected date", date);
-              }}
-              selectedDate={new Date()}
-              minDate={new Date("1970/01/01")}
-              maxDate={new Date(new Date().getFullYear() + 1 + "/01/01")}
-              isDisabled={false}
-              isReadOnly={false}
-              hasError={false}
-              isOpen={false}
-              themeColor="#ED7309"
-              locale="en"
-            />
-          </div>
-
-          <div style={{ padding: "8px 0" }}>
-            <StringValue>
-              {({ value, set }) => (
-                <Textarea
-                  placeholder="Add comment"
-                  onChange={(event) => set(event.target.value)}
-                  value={value}
-                />
-              )}
-            </StringValue>
-          </div>
-          <div style={{ padding: "8px 0" }}>
-            <StringValue>
-              {({ value, set }) => (
-                <FieldContainer
-                  place="top"
-                  isRequired
-                  tooltipContent="Paste you tooltip content here"
-                  labelText="Name:"
-                >
-                  <TextInput
-                    value={value}
-                    onChange={(e) => set(e.target.value)}
-                  />
-                </FieldContainer>
-              )}
-            </StringValue>
-          </div>
-          <div style={{ padding: "8px 0" }}>
-            <RadioButtonGroup
-              name="fruits"
-              selected="banana"
-              options={[
-                { value: "apple", label: "Sweet apple" },
-                { value: "banana", label: "Banana" },
-                { value: "Mandarin" },
-              ]}
-            />
-          </div>
-          <div style={{ padding: "8px 0" }}>
-            <BooleanValue>
-              {({ value, toggle }) => (
-                <div style={{ display: "flex" }}>
-                  <div style={{ marginRight: 24 }}>
-                    <Checkbox
-                      id="id"
-                      name="name"
-                      value="value"
-                      label="Checkbox"
-                      isChecked={value}
-                      isIndeterminate={false}
-                      isDisabled={false}
-                      onChange={(e) => toggle(e.target.checked)}
-                    />
-                  </div>
+              </FieldContainer>
+            )}
+          </StringValue>
+        </div>
+        <div style={{ padding: "8px 0" }}>
+          <RadioButtonGroup
+            name="fruits"
+            selected="banana"
+            options={[
+              { value: "apple", label: "Sweet apple" },
+              { value: "banana", label: "Banana" },
+              { value: "Mandarin" },
+            ]}
+          />
+        </div>
+        <div style={{ padding: "8px 0" }}>
+          <BooleanValue>
+            {({ value, toggle }) => (
+              <div style={{ display: "flex" }}>
+                <div style={{ marginRight: 24 }}>
                   <Checkbox
                     id="id"
                     name="name"
                     value="value"
-                    label="Checkbox indeterminate"
-                    isIndeterminate={true}
+                    label="Checkbox"
+                    isChecked={value}
+                    isIndeterminate={false}
                     isDisabled={false}
-                    onChange={() => {}}
+                    onChange={(e) => toggle(e.target.checked)}
                   />
                 </div>
-              )}
-            </BooleanValue>
-          </div>
-
-          <div style={{ padding: "8px 0 24px 0" }}>
-            <BooleanValue>
-              {({ value, toggle }) => (
-                <ToggleButton
-                  label="Toggle button"
-                  onChange={(e) => toggle(e.target.checked)}
-                  isChecked={value}
+                <Checkbox
+                  id="id"
+                  name="name"
+                  value="value"
+                  label="Checkbox indeterminate"
+                  isIndeterminate={true}
+                  isDisabled={false}
+                  onChange={() => {}}
                 />
-              )}
-            </BooleanValue>
-          </div>
-        </div>
-        <div style={{ justifySelf: "center" }}>
-          <div style={{ padding: "8px 0" }}>
-            <Calendar
-              onChange={() => {}}
-              disabled={false}
-              themeColor="#ED7309"
-              selectedDate={new Date()}
-              openToDate={new Date()}
-              minDate={new Date("1970/01/01")}
-              maxDate={new Date("3000/01/01")}
-              locale="ru"
-            />
-          </div>
-        </div>
-        <div style={{ justifySelf: "center" }}>
-          <div style={{ padding: "8px 0" }}>
-            {rowArray[0]}
-            {rowArray.map((item, index) => {
-              return <div key={index}>{item}</div>;
-            })}
-          </div>
+              </div>
+            )}
+          </BooleanValue>
         </div>
 
-        <div style={{ justifySelf: "center" }}>
-          <div style={{ padding: "8px 0" }}>
-            <Avatar
-              size="max"
-              role="admin"
-              source=""
-              userName=""
-              editing={false}
-            />
-          </div>
-        </div>
-        <div style={{ justifySelf: "center" }}>
-          <div style={{ padding: "8px 0" }}>
-            <Loader type="base" color="black" size="30px" label="Loading..." />
-          </div>
-          <div style={{ padding: "8px 0", marginLeft: 45 }}>
-            <Loader type="oval" color="black" size="30px" label="Loading" />
-          </div>
-          <div style={{ padding: "8px 0", marginLeft: 45 }}>
-            <Loader
-              type="dual-ring"
-              color="black"
-              size="30px"
-              label="Loading"
-            />
-          </div>
-        </div>
-        <div style={{ justifySelf: "center" }}>
-          <div style={{ padding: "8px 0" }}>
-            <Scrollbar stype="mediumBlack" style={{ width: 300, height: 200 }}>
-              ================================================================
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-              ================================================================
-            </Scrollbar>
-          </div>
-        </div>
-        <div>
-          <div style={{ padding: "8px 0" }}>
-            <TabContainer>{array_items}</TabContainer>
-          </div>
-          <div style={{ padding: "16px 0" }}>
-            <ToggleContent label="ToggleContent">
-              <span>Toggle content text</span>
-            </ToggleContent>
-          </div>
+        <div style={{ padding: "8px 0 24px 0" }}>
+          <BooleanValue>
+            {({ value, toggle }) => (
+              <ToggleButton
+                label="Toggle button"
+                onChange={(e) => toggle(e.target.checked)}
+                isChecked={value}
+              />
+            )}
+          </BooleanValue>
         </div>
       </div>
-    </Section>
-  ));
+      <div style={{ justifySelf: "center" }}>
+        <div style={{ padding: "8px 0" }}>
+          <Calendar
+            onChange={() => {}}
+            disabled={false}
+            themeColor="#ED7309"
+            selectedDate={new Date()}
+            openToDate={new Date()}
+            minDate={new Date("1970/01/01")}
+            maxDate={new Date("3000/01/01")}
+            locale="ru"
+          />
+        </div>
+      </div>
+      <div style={{ justifySelf: "center" }}>
+        <div style={{ padding: "8px 0" }}>
+          {rowArray[0]}
+          {rowArray.map((item, index) => {
+            return <div key={index}>{item}</div>;
+          })}
+        </div>
+      </div>
+
+      <div style={{ justifySelf: "center" }}>
+        <div style={{ padding: "8px 0" }}>
+          <Avatar
+            size="max"
+            role="admin"
+            source=""
+            userName=""
+            editing={false}
+          />
+        </div>
+      </div>
+      <div style={{ justifySelf: "center" }}>
+        <div style={{ padding: "8px 0" }}>
+          <Loader type="base" color="black" size="30px" label="Loading..." />
+        </div>
+        <div style={{ padding: "8px 0", marginLeft: 45 }}>
+          <Loader type="oval" color="black" size="30px" label="Loading" />
+        </div>
+        <div style={{ padding: "8px 0", marginLeft: 45 }}>
+          <Loader type="dual-ring" color="black" size="30px" label="Loading" />
+        </div>
+      </div>
+      <div style={{ justifySelf: "center" }}>
+        <div style={{ padding: "8px 0" }}>
+          <Scrollbar stype="mediumBlack" style={{ width: 300, height: 200 }}>
+            ================================================================
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+            culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum
+            dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat. Duis aute irure dolor in reprehenderit in
+            voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+            officia deserunt mollit anim id est laborum.
+            ================================================================
+          </Scrollbar>
+        </div>
+      </div>
+      <div>
+        <div style={{ padding: "8px 0" }}>
+          <TabContainer elements={array_items} />
+        </div>
+        <div style={{ padding: "16px 0" }}>
+          <ToggleContent label="ToggleContent">
+            <span>Toggle content text</span>
+          </ToggleContent>
+        </div>
+      </div>
+    </div>
+  </>
+);
+
+export const All = Template.bind({});

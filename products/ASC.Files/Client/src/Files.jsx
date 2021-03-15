@@ -1,14 +1,10 @@
 import React from "react";
 import { Provider as FilesProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
-import { Switch, Route, Router } from "react-router-dom";
-import Home from "./components/pages/Home";
-import DocEditor from "./components/pages/DocEditor";
-import Settings from "./components/pages/Settings";
-import VersionHistory from "./components/pages/VersionHistory";
+import { Switch } from "react-router-dom";
 import config from "../package.json";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
-import history from "@appserver/common/history";
+import AppLoader from "@appserver/common/components/AppLoader";
 import toastr from "studio/toastr";
 import { updateTempContent } from "@appserver/common/utils";
 import initFilesStore from "./store/InitFilesStore";
@@ -26,8 +22,21 @@ import "./custom.scss";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 //import { regDesktop } from "@appserver/common/src/desktop";
+import Home from "./components/pages/Home";
+import Settings from "./components/pages/Settings";
+import VersionHistory from "./components/pages/VersionHistory";
+
+const homepage = config.homepage;
 
 const Error404 = React.lazy(() => import("studio/Error404"));
+
+const Error404Route = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <Error404 {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
 
 class FilesContent extends React.Component {
   constructor(props) {
@@ -77,31 +86,24 @@ class FilesContent extends React.Component {
   //   }
 
   render() {
-    const { homepage /*, isDesktop*/ } = this.props;
+    //const { /*, isDesktop*/ } = this.props;
 
     return (
-      <Router history={history}>
-        <Switch>
-          <PrivateRoute
-            exact
-            path={`${homepage}/settings/:setting`}
-            component={Settings}
-          />
-          <Route
-            exact
-            path={[`${homepage}/doceditor`, `/Products/Files/DocEditor.aspx`]}
-            component={DocEditor}
-          />
-          <PrivateRoute
-            exact
-            path={[`${homepage}/:fileId/history`]}
-            component={VersionHistory}
-          />
-          <PrivateRoute exact path={homepage} component={Home} />
-          <PrivateRoute path={`${homepage}/filter`} component={Home} />
-          <PrivateRoute component={Error404} />
-        </Switch>
-      </Router>
+      <Switch>
+        <PrivateRoute
+          exact
+          path={`${homepage}/settings/:setting`}
+          component={Settings}
+        />
+        <PrivateRoute
+          exact
+          path={[`${homepage}/:fileId/history`]}
+          component={VersionHistory}
+        />
+        <PrivateRoute exact path={homepage} component={Home} />
+        <PrivateRoute path={`${homepage}/filter`} component={Home} />
+        <PrivateRoute component={Error404Route} />
+      </Switch>
     );
   }
 }
@@ -111,7 +113,6 @@ const Files = inject(({ auth, initFilesStore }) => {
     //isDesktop: auth.settingsStore.isDesktopClient,
     user: auth.userStore.user,
     isAuthenticated: auth.isAuthenticated,
-    homepage: config.homepage, // auth.settingsStore.homepage
     encryptionKeys: auth.settingsStore.encryptionKeys,
     isEncryption: auth.settingsStore.isEncryptionSupport,
     isLoaded: auth.isLoaded && initFilesStore.isLoaded,

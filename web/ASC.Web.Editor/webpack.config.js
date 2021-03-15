@@ -29,12 +29,12 @@ const config = {
       disableDotRule: true,
       index: homepage,
     },
-    proxy: [
-      {
-        context: "/api",
-        target: "http://localhost:8092",
-      },
-    ],
+    // proxy: [
+    //   {
+    //     context: "/api",
+    //     target: "http://localhost:8092",
+    //   },
+    // ],
     hot: false,
     hotOnly: false,
     headers: {
@@ -148,7 +148,7 @@ const config = {
       template: "./public/index.html",
       publicPath: homepage,
       title: title,
-      //base: `${homepage}/`,
+      base: `${homepage}/`,
     }),
     new CopyPlugin({
       patterns: [

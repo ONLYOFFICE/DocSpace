@@ -23,6 +23,7 @@
     "@emotion/babel-preset-css-prop": "^10.2.1",
     "@emotion/styled": "^10.0.27",
     "@storybook/addon-actions": "^6.1.20",
+    "@storybook/addon-contexts": "^5.3.21",
     "@storybook/addon-controls": "^6.1.20",
     "@storybook/addon-docs": "^6.1.20",
     "@storybook/addon-essentials": "^6.1.20",
@@ -57,7 +58,6 @@
     "react-dom": "^17.0.1",
     "react-json-pretty": "^2.2.0",
     "react-values": "^0.3.3",
-    "storybook-readme": "^5.0.9",
     "styled-components": "^5.2.1",
     "svg-inline-loader": "^0.8.2"
   },

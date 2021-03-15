@@ -275,33 +275,70 @@ const TreeMenu = React.forwardRef((props, ref) => {
 });
 
 TreeMenu.propTypes = {
+  /** Whether support checked  */
   checkable: PropTypes.bool,
+  /** Whether can drag treeNode */
   draggable: PropTypes.bool,
+  /** Whether disabled the tree */
   disabled: PropTypes.bool,
+  /** Whether multiple select */
   multiple: PropTypes.bool,
+  /** Whether show icon  */
   showIcon: PropTypes.bool,
+  /** Whether show line */
   showLine: PropTypes.bool,
+  /** Expand all treeNodes */
   defaultExpandAll: PropTypes.bool,
+  /** Auto expand parent treeNodes when init  */
   defaultExpandParent: PropTypes.bool,
 
   icon: PropTypes.func,
+  /** it execs when fire the tree's dragend event */
+  onDragEnd: PropTypes.func,
+  /** it execs when fire the tree's dragenter event  */
+  onDragEnter: PropTypes.func,
+  /** it execs when fire the tree's dragleave event */
+  onDragLeave: PropTypes.func,
+  /** it execs when fire the tree's dragover event  */
+  onDragOver: PropTypes.func,
+  /** it execs when fire the tree's dragstart event */
   onDragStart: PropTypes.func,
+  /** it execs when fire the tree's drop event  */
   onDrop: PropTypes.func,
+  /** fire on treeNode expand or not */
+  onExpand: PropTypes.func,
+  /** Trigger when a node is loaded. If you set the loadedKeys, you must handle onLoad to avoid infinity loop */
+  onLoad: PropTypes.func,
+  /** call when mouse enter a treeNode */
+  onMouseEnter: PropTypes.func,
+  /** call when mouse leave a treeNode */
+  onMouseLeave: PropTypes.func,
+  /** select current treeNode and show customized contextmenu */
+  onRightClick: PropTypes.func,
+  /** click the treeNode to fire  */
+  onSelect: PropTypes.func,
+  /** load data asynchronously and the return value should be a promise  */
   loadData: PropTypes.func,
-
+  /** child elements */
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
   disableSwitch: PropTypes.bool,
-
+  /** to select the selection style of the active node */
   isFullFillSelection: PropTypes.bool,
+  /** for setting the spacing between nodes */
   gapBetweenNodes: PropTypes.string,
+  /** to set spacing between nodes on tablets and phones (if necessary) */
   gapBetweenNodesTablet: PropTypes.string,
+  /** swipe the root node to the left if there are no nested elements */
   isEmptyRootNode: PropTypes.bool,
 };
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
 
 using ASC.Common;
@@ -11,8 +10,6 @@ using ASC.ElasticSearch;
 using Microsoft.EntityFrameworkCore;
 
 using Nest;
-
-using ColumnAttribute = System.ComponentModel.DataAnnotations.Schema.ColumnAttribute;
 
 namespace ASC.Files.Core.EF
 {
@@ -25,49 +22,24 @@ namespace ASC.Files.Core.EF
 
     [Transient]
     [ElasticsearchType(RelationName = Tables.File)]
-    [Table("files_file")]
     public class DbFile : BaseEntity, IDbFile, IDbSearch, ISearchItemDocument
     {
         public int Id { get; set; }
         public int Version { get; set; }
-
-        [Column("version_group")]
         public int VersionGroup { get; set; }
-
-        [Column("current_version")]
         public bool CurrentVersion { get; set; }
-
-        [Column("folder_id")]
         public int FolderId { get; set; }
 
         [Text(Analyzer = "whitespacecustom")]
         public string Title { get; set; }
-
-        [Column("content_length")]
         public long ContentLength { get; set; }
-
-        [Column("file_status")]
         public int FileStatus { get; set; }
-
-        [Column("category")]
         public int Category { get; set; }
-
-        [Column("create_by")]
         public Guid CreateBy { get; set; }
-
-        [Column("create_on")]
         public DateTime CreateOn { get; set; }
-
-        [Column("modified_by")]
         public Guid ModifiedBy { get; set; }
-
-        [Column("modified_on")]
         public DateTime ModifiedOn { get; set; }
-
-        [Column("tenant_id")]
         public int TenantId { get; set; }
-
-        [Column("converted_type")]
         public string ConvertedType { get; set; }
         public string Comment { get; set; }
         public string Changes { get; set; }
@@ -76,17 +48,14 @@ namespace ASC.Files.Core.EF
 
 
         [Nested]
-        [NotMapped]
         public List<DbFolderTree> Folders { get; set; }
 
-        [NotMapped]
         [Ignore]
         public string IndexName
         {
             get => Tables.File;
         }
 
-        [NotMapped]
         public Document Document { get; set; }
 
         [Ignore]
@@ -114,6 +83,10 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder.Entity<DbFile>(entity =>
             {
+                entity.Ignore(r => r.Folders);
+                entity.Ignore(r => r.IndexName);
+                entity.Ignore(r => r.Document);
+
                 entity.HasKey(e => new { e.TenantId, e.Id, e.Version })
                     .HasName("PRIMARY");
 
@@ -205,6 +178,10 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder.Entity<DbFile>(entity =>
             {
+                entity.Ignore(r => r.Folders);
+                entity.Ignore(r => r.IndexName);
+                entity.Ignore(r => r.Document);
+
                 entity.HasKey(e => new { e.Id, e.TenantId, e.Version })
                     .HasName("files_file_pkey");
 

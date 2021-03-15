@@ -239,7 +239,7 @@ DropDownContainer.propTypes = {
 DropDownContainer.defaultProps = {
   directionX: "left",
   directionY: "bottom",
-  withBackdrop: false,
+  withBackdrop: true,
   showDisabledItems: false,
 };
 
