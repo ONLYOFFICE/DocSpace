@@ -3,9 +3,8 @@ import { useTranslation } from "react-i18next";
 import { getObjectByLocation } from "@appserver/common/utils";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import PageLayout from "@appserver/common/components/PageLayout";
+import Loaders from "@appserver/common/components/Loaders";
 import { setDocumentTitle } from "../../../helpers/utils";
-
-const { getObjectByLocation } = utils;
 
 const ThirdPartyResponsePage = ({ match }) => {
   const { params } = match;
