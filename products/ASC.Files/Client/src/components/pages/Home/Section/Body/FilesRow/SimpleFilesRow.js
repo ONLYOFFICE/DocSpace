@@ -85,7 +85,7 @@ const SimpleFilesRow = (props) => {
 
     setSharingPanelVisible,
     setChangeOwnerPanelVisible,
-    showDeleteThirdPartyDialog,
+    setDeleteThirdPartyDialogVisible,
     setRemoveItem,
     setMoveToPanelVisible,
     setCopyPanelVisible,
@@ -252,7 +252,7 @@ const SimpleFilesRow = (props) => {
     if (isThirdPartyFolder) {
       const splitItem = id.split("-");
       setRemoveItem({ id: splitItem[splitItem.length - 1], title });
-      showDeleteThirdPartyDialog(true);
+      setDeleteThirdPartyDialogVisible(true);
       return;
     }
 
@@ -546,7 +546,7 @@ export default inject(
       setSharingPanelVisible,
       setChangeOwnerPanelVisible,
       setRemoveItem,
-      showDeleteThirdPartyDialog,
+      setDeleteThirdPartyDialogVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setShareItem,
@@ -611,7 +611,7 @@ export default inject(
       setShareItem,
       setChangeOwnerPanelVisible,
       setRemoveItem,
-      showDeleteThirdPartyDialog,
+      setDeleteThirdPartyDialogVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
       openDocEditor,
