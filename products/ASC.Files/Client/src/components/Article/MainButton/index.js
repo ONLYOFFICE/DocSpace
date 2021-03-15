@@ -12,7 +12,7 @@ import { inject, observer } from "mobx-react";
 
 class PureArticleMainButtonContent extends React.Component {
   onCreate = (e) => {
-    this.goToHomePage();
+    // this.goToHomePage();
     const format = e.currentTarget.dataset.format || null;
     this.props.setAction({
       type: FileAction.Create,
