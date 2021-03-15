@@ -116,10 +116,8 @@ const PureConnectDialogContainer = (props) => {
     )
       .then((folderData) => {
         fetchTreeFolders().then((data) => {
-          const commonFolder = data.treeFolders.find(
-            (x) => x.id === commonFolderId
-          );
-          const myFolder = data.treeFolders.find((x) => x.id === myFolderId);
+          const commonFolder = data.find((x) => x.id === commonFolderId);
+          const myFolder = data.find((x) => x.id === myFolderId);
 
           const newTreeFolders = treeFolders;
 
@@ -201,6 +199,10 @@ const PureConnectDialogContainer = (props) => {
     window.addEventListener("keyup", onKeyUpHandler);
     return () => window.removeEventListener("keyup", onKeyUpHandler);
   }, [onKeyUpHandler]);
+
+  useEffect(() => {
+    return setToken(token);
+  }, [setToken, token]);
 
   return (
     <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
