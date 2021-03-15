@@ -5,7 +5,6 @@ import styled from "styled-components";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import Checkbox from "../checkbox";
-import { isArrayEqual } from "../utils/array";
 import {
   StyledCheckbox,
   Separator,
@@ -53,10 +52,6 @@ class GroupButton extends React.Component {
     }
 
     if (this.props.selected !== prevProps.selected) {
-      this.setSelected(this.props.selected);
-    }
-
-    if (!isArrayEqual(this.props.children, prevProps.children)) {
       this.setSelected(this.props.selected);
     }
   }

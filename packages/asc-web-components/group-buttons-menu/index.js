@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import GroupButton from "../group-button";
 import DropDownItem from "../drop-down-item";
 import throttle from "lodash/throttle";
-import { isArrayEqual } from "../utils/array";
 import {
   StyledGroupButtonsMenu,
   CloseButton,
@@ -66,10 +65,6 @@ class GroupButtonsMenu extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.props.visible !== prevProps.visible) {
       this.setState({ visible: this.props.visible });
-    }
-
-    if (!isArrayEqual(this.props.menuItems, prevProps.menuItems)) {
-      this.setState({ priorityItems: this.props.menuItems });
     }
 
     if (
