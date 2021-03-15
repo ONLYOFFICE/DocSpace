@@ -85,8 +85,18 @@ const DeleteThirdPartyDialog = withTranslation("DeleteThirdPartyDialog")(
 );
 
 export default inject(
-  ({ filesStore, thirdParty, treeFoldersStore, selectedFolderStore }) => {
-    const { providers, setThirdPartyProviders, deleteThirdParty } = thirdParty;
+  ({
+    filesStore,
+    settingsStore,
+    dialogsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
+    const {
+      providers,
+      setThirdPartyProviders,
+      deleteThirdParty,
+    } = settingsStore.thirdPartyStore;
     const { fetchFiles } = filesStore;
 
     const {
