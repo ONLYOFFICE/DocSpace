@@ -31,7 +31,7 @@ const EmptyFilterContainer = ({
         className="empty-folder_container-icon"
         size="12"
         onClick={onResetFilter}
-        iconName="static/images/cross.react.svg"
+        iconName="/static/images/cross.react.svg"
         isFill
         color="#657077"
       />

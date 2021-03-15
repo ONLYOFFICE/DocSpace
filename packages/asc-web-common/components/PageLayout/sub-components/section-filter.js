@@ -3,7 +3,7 @@ import styled from "styled-components";
 import equal from "fast-deep-equal/react";
 
 const StyledSectionFilter = styled.div`
-  margin: 16px 24px 9px 0;
+  margin: 16px 4px 9px 0;
 `;
 
 class SectionFilter extends React.Component {
