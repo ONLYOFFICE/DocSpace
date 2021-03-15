@@ -17,7 +17,7 @@ namespace ASC.CRM.ApiModels
 
     public class SetAccessToBatchCasesInDto
     {
-        public IEnumerable<int> Casesid { get; set; }
+        public IEnumerable<int> CasesId { get; set; }
         public bool isPrivate { get; set; }
         public IEnumerable<Guid> AccessList { get; set; }
     }

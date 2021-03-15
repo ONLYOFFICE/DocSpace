@@ -54,6 +54,24 @@ namespace ASC.CRM
                 {
                     builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath, false, false);
                 });
+
+
+            //if (!FilesIntegration.IsRegisteredFileSecurityProvider("crm", "crm_common"))
+            //{
+            //    FilesIntegration.RegisterFileSecurityProvider("crm", "crm_common", new FileSecurityProvider());
+            //}
+
+            ////Register prodjects' calendar events
+            //CalendarManager.Instance.RegistryCalendarProvider(userid =>
+            //{
+            //    if (WebItemSecurity.IsAvailableForUser(WebItemManager.CRMProductID, userid))
+            //    {
+            //        return new List<BaseCalendar> { new CRMCalendar(userid) };
+            //    }
+            //    return new List<BaseCalendar>();
+            //});
+
+
         }
     }
 }

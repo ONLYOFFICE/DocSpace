@@ -10,7 +10,7 @@ namespace ASC.CRM.ApiModels
         public List<int> FileIDs { get; set; }
         public List<int> ContactIds { get; set; }
         public String Subject { get; set; }
-        public String body { get; set; }
+        public String Body { get; set; }
         public bool StoreInHistory { get; set; }
     }
 }

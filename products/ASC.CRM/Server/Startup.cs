@@ -38,10 +38,12 @@ namespace ASC.CRM
             DIHelper.TryAdd<InvoicesController>();
             DIHelper.TryAdd<ListItemsController>();
             DIHelper.TryAdd<RelationshipEventsController>();
+            DIHelper.TryAdd<ReportsController>();
             DIHelper.TryAdd<TagsController>();
             DIHelper.TryAdd<TasksController>();
             DIHelper.TryAdd<TaskTemplateController>();
             DIHelper.TryAdd<UtilsController>();
+            DIHelper.TryAdd<VoIPController>();
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

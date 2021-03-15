@@ -278,14 +278,9 @@ namespace ASC.CRM.ApiModels
 
         }
 
-
         [DataMember(Name = "id")]
         public int Id { get; set; }
-
-
         public String SmallFotoUrl { get; set; }
-
-
         public String MediumFotoUrl { get; set; }
 
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
@@ -293,8 +288,6 @@ namespace ASC.CRM.ApiModels
 
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
         public bool IsCompany { get; set; }
-
-
         public IEnumerable<EmployeeWraper> AccessList { get; set; }
 
         [DataMember(IsRequired = false, EmitDefaultValue = true)]

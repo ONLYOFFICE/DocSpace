@@ -47,6 +47,7 @@ using ASC.Api.Core;
 using ASC.Web.CRM.Services.NotifyService;
 using ASC.Core;
 using ASC.Web.Core.Users;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.CRM.Api
 {
@@ -330,7 +331,7 @@ namespace ASC.CRM.Api
         ///   Contact information
         /// </returns>
         [Update(@"contact/{contactid:int}/data/{id:int}")]
-        public ContactInfoDto UpdateContactInfo(int id, int contactid, ContactInfoType? infoType, string data, bool? isPrimary, string category)
+        public ContactInfoDto UpdateContactInfo([FromQuery] int id, [FromQuery] int contactid, ContactInfoType? infoType, string data, bool? isPrimary, string category)
         {
             if (id <= 0 || string.IsNullOrEmpty(data) || contactid <= 0) throw new ArgumentException();
 

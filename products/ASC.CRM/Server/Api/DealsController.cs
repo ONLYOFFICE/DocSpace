@@ -45,6 +45,8 @@ using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Services.NotifyService;
 
+using Microsoft.AspNetCore.Mvc;
+
 namespace ASC.CRM.Api
 {
     public class DealsController : BaseApiController
@@ -228,7 +230,7 @@ namespace ASC.CRM.Api
         ///   Opportunity list
         /// </returns>
         [Update(@"opportunity/filter/access")]
-        public IEnumerable<OpportunityDto> SetAccessToBatchDeal(SetAccessToBatchDealByFilterInDto inDto)
+        public IEnumerable<OpportunityDto> SetAccessToBatchDeal([FromForm] SetAccessToBatchDealByFilterInDto inDto)
         {
             var responsibleid = inDto.Responsibleid;
             var opportunityStagesid = inDto.OpportunityStagesid;

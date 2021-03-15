@@ -124,7 +124,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         [Read(@"contact/{contactid:int}")]
-        public ContactDto GetContactByID(int contactid)
+        public ContactDto GetContactByID([FromQuery] int contactid)
         {
             if (contactid <= 0) throw new ArgumentException();
 
@@ -155,7 +155,7 @@ namespace ASC.CRM.Api
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
         [Read(@"contact/project/{projectid:int}")]
-        public IEnumerable<ContactDto> GetContactsByProjectID(int projectid)
+        public IEnumerable<ContactDto> GetContactsByProjectID([FromQuery] int projectid)
         {
             if (projectid <= 0) throw new ArgumentException();
 
@@ -283,7 +283,7 @@ namespace ASC.CRM.Api
         ///    Opportunity
         /// </returns>
         [Create(@"contact/{contactid:int}/opportunity/{opportunityid:int}")]
-        public OpportunityDto AddDealToContact(int contactid, int opportunityid)
+        public OpportunityDto AddDealToContact([FromQuery] int contactid, [FromQuery] int opportunityid)
         {
             if ((opportunityid <= 0) || (contactid <= 0)) throw new ArgumentException();
 
@@ -313,7 +313,7 @@ namespace ASC.CRM.Api
         ///    Opportunity
         /// </returns>
         [Delete(@"contact/{contactid:int}/opportunity/{opportunityid:int}")]
-        public OpportunityDto DeleteDealFromContact(int contactid, int opportunityid)
+        public OpportunityDto DeleteDealFromContact([FromQuery] int contactid, [FromQuery] int opportunityid)
         {
             if ((opportunityid <= 0) || (contactid <= 0)) throw new ArgumentException();
 
@@ -996,8 +996,7 @@ namespace ASC.CRM.Api
         /// <returns>Company</returns>
         /// <exception cref="ArgumentException"></exception>
         [Create(@"contact/company")]
-        public CompanyDto CreateCompany(
-            [FromForm] CreateOrUpdateCompanyInDto inDto)
+        public CompanyDto CreateCompany([FromForm] CreateOrUpdateCompanyInDto inDto)
         {
             var personList = inDto.PersonList;
             string companyName = inDto.CompanyName;
@@ -1900,7 +1899,7 @@ namespace ASC.CRM.Api
             List<int> fileIDs = inDto.FileIDs;
             List<int> contactIds = inDto.ContactIds;
             String subject = inDto.Subject;
-            String body = inDto.body;
+            String body = inDto.Body;
             bool storeInHistory = inDto.StoreInHistory;
 
             if (contactIds == null || contactIds.Count == 0 || String.IsNullOrEmpty(body)) throw new ArgumentException();

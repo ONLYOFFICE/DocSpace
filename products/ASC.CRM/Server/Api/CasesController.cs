@@ -46,6 +46,7 @@ using ASC.CRM.Core.Dao;
 using ASC.Api.Core;
 using ASC.Web.CRM.Services.NotifyService;
 using ASC.Web.Core.Users;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.CRM.Api
 {
@@ -97,7 +98,7 @@ namespace ASC.CRM.Api
         ///   Case
         /// </returns>
         [Update(@"case/{caseid:int}/close")]
-        public CasesDto CloseCases(int caseid)
+        public CasesDto CloseCases([FromQuery] int caseid)
         {
             if (caseid <= 0) throw new ArgumentException();
 
@@ -121,7 +122,7 @@ namespace ASC.CRM.Api
         ///   Case
         /// </returns>
         [Update(@"case/{caseid:int}/reopen")]
-        public CasesDto ReOpenCases(int caseid)
+        public CasesDto ReOpenCases([FromQuery] int caseid)
         {
             if (caseid <= 0) throw new ArgumentException();
 
@@ -160,8 +161,7 @@ namespace ASC.CRM.Api
         /// ]]>
         /// </example>
         [Create(@"case")]
-        public CasesDto CreateCases(
-            CreateOrUpdateCasesInDto inDto)
+        public CasesDto CreateCases([FromForm] CreateOrUpdateCasesInDto inDto)
         {
 
             var title = inDto.Title;
@@ -236,9 +236,7 @@ namespace ASC.CRM.Api
         /// ]]>
         /// </example>
         [Update(@"case/{caseid:int}")]
-        public CasesDto UpdateCases(
-            int caseid,
-            CreateOrUpdateCasesInDto inDto)
+        public CasesDto UpdateCases([FromQuery] int caseid, [FromForm] CreateOrUpdateCasesInDto inDto)
         {
             var title = inDto.Title;
             var isPrivate = inDto.isPrivate;
@@ -296,7 +294,7 @@ namespace ASC.CRM.Api
         ///   Case 
         /// </returns>
         [Update(@"case/{caseid:int}/access")]
-        public CasesDto SetAccessToCases(int caseid, bool isPrivate, IEnumerable<Guid> accessList)
+        public CasesDto SetAccessToCases([FromQuery] int caseid, bool isPrivate, IEnumerable<Guid> accessList)
         {
             if (caseid <= 0) throw new ArgumentException();
 
@@ -357,10 +355,9 @@ namespace ASC.CRM.Api
         ///   Case list
         /// </returns>
         [Update(@"case/access")]
-        public IEnumerable<CasesDto> SetAccessToBatchCases(
-            SetAccessToBatchCasesInDto inDto)
+        public IEnumerable<CasesDto> SetAccessToBatchCases([FromForm] SetAccessToBatchCasesInDto inDto)
         {
-            var casesid = inDto.Casesid;
+            var casesid = inDto.CasesId;
             var isPrivate = inDto.isPrivate;
             var accessList = inDto.AccessList;
 
@@ -399,9 +396,7 @@ namespace ASC.CRM.Api
         ///   Case list
         /// </returns>
         [Update(@"case/filter/access")]
-        public IEnumerable<CasesDto> SetAccessToBatchCases(
-           SetAccessToBatchCasesByFilterInDto inDto
-            )
+        public IEnumerable<CasesDto> SetAccessToBatchCases([FromForm] SetAccessToBatchCasesByFilterInDto inDto)
         {
             int contactid = inDto.Contactid;
             bool? isClosed = inDto.isClosed;
@@ -437,7 +432,7 @@ namespace ASC.CRM.Api
         ///<exception cref="ArgumentException"></exception>
         ///<exception cref="ItemNotFoundException"></exception>
         [Read(@"case/{caseid:int}")]
-        public CasesDto GetCaseByID(int caseid)
+        public CasesDto GetCaseByID([FromQuery] int caseid)
         {
             if (caseid <= 0) throw new ItemNotFoundException();
 
@@ -541,7 +536,7 @@ namespace ASC.CRM.Api
         ///    Case
         /// </returns>
         [Delete(@"case/{caseid:int}")]
-        public CasesDto DeleteCase(int caseid)
+        public CasesDto DeleteCase([FromQuery] int caseid)
         {
             if (caseid <= 0) throw new ArgumentException();
 
@@ -566,7 +561,7 @@ namespace ASC.CRM.Api
         ///   Case list
         /// </returns>
         [Update(@"case")]
-        public IEnumerable<CasesDto> DeleteBatchCases(IEnumerable<int> casesids)
+        public IEnumerable<CasesDto> DeleteBatchCases([FromForm] IEnumerable<int> casesids)
         {
             if (casesids == null) throw new ArgumentException();
 

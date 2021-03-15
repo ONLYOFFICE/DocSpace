@@ -28,6 +28,7 @@ using ASC.Api.Core;
 using ASC.Common;
 using ASC.VoipService;
 using ASC.Web.Api.Models;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -37,40 +38,17 @@ namespace ASC.CRM.ApiModels
     [DataContract(Name = "voipCall", Namespace = "")]
     public class VoipCallDto
     {
-        [DataMember(Order = 1)]
         public string Id { get; set; }
-
-        [DataMember(Order = 2)]
         public string From { get; set; }
-
-        [DataMember(Order = 3)]
         public string To { get; set; }
-
-        [DataMember(Order = 4)]
         public VoipCallStatus? Status { get; set; }
-
-        [DataMember(Order = 5)]
         public EmployeeWraper AnsweredBy { get; set; }
-
-        [DataMember(Order = 6)]
         public ApiDateTime DialDate { get; set; }
-
-        [DataMember(Order = 7)]
         public int DialDuration { get; set; }
-
-        [DataMember(Order = 10)]
         public decimal Cost { get; set; }
-
-        [DataMember(Order = 11)]
         public ContactDto Contact { get; set; }
-
-        [DataMember(Order = 11, EmitDefaultValue = false)]
         public IEnumerable<VoipCallDto> Calls { get; set; }
-
-        [DataMember(Order = 13)]
         public string RecordUrl { get; set; }
-
-        [DataMember(Order = 14)]
         public int RecordDuration { get; set; }
 
     }
@@ -87,7 +65,6 @@ namespace ASC.CRM.ApiModels
 
         public ApiDateTimeHelper ApiDateTimeHelper { get; }
         public EmployeeWraperHelper EmployeeWraperHelper { get; }
-
         public VoipCallDto Get(VoipCall call, ContactDto contact = null)
         {
             var result = new VoipCallDto
@@ -97,7 +74,7 @@ namespace ASC.CRM.ApiModels
                 To = call.To,
                 Status = call.Status,
                 AnsweredBy = EmployeeWraperHelper.Get(call.AnsweredBy),
-                DialDate =  ApiDateTimeHelper.Get(call.DialDate),
+                DialDate = ApiDateTimeHelper.Get(call.DialDate),
                 DialDuration = call.DialDuration,
                 Cost = call.Price + call.ChildCalls.Sum(r => r.Price) + call.VoipRecord.Price,
                 Contact = contact,

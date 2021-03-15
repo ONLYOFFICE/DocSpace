@@ -59,48 +59,24 @@ namespace ASC.CRM.ApiModels
         public ContactBaseDto Contact { get; set; }
 
         [DataMember(IsRequired = true, EmitDefaultValue = false)]
-        public String Title { get; set; }
-
-        
-        public String Description { get; set; }
-
-        
-        public EmployeeWraper Responsible { get; set; }
-
-        
-        public BidType BidType { get; set; }
-
-        
-        public decimal BidValue { get; set; }
-
-        
-        public CurrencyInfoDto BidCurrency { get; set; }
-
-        
-        public int PerPeriodValue { get; set; }
-
-        
-        public DealMilestoneBaseDto Stage { get; set; }
-
-        
-        public int SuccessProbability { get; set; }
-
-        
-        public ApiDateTime ActualCloseDate { get; set; }
-
-        
+        public String Title { get; set; }        
+        public String Description { get; set; }        
+        public EmployeeWraper Responsible { get; set; }        
+        public BidType BidType { get; set; }        
+        public decimal BidValue { get; set; }        
+        public CurrencyInfoDto BidCurrency { get; set; }        
+        public int PerPeriodValue { get; set; }        
+        public DealMilestoneBaseDto Stage { get; set; }        
+        public int SuccessProbability { get; set; }        
+        public ApiDateTime ActualCloseDate { get; set; }        
         public ApiDateTime ExpectedCloseDate { get; set; }
 
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
-        public bool IsPrivate { get; set; }
-
-        
+        public bool IsPrivate { get; set; }        
         public IEnumerable<EmployeeWraper> AccessList { get; set; }
 
         [DataMember(IsRequired = false, EmitDefaultValue = true)]
-        public bool CanEdit { get; set; }
-
-        
+        public bool CanEdit { get; set; }        
         public IEnumerable<CustomFieldBaseDto> CustomFields { get; set; }
 
         public static OpportunityDto GetSample()

@@ -76,32 +76,19 @@ namespace ASC.Web.CRM.Configuration
         private static bool registered;
         
         public FileSecurityProvider FileSecurityProvider { get; }
-
-
         public CoreConfiguration CoreConfiguration { get; }
-
         public ILog Logger { get; }
-
-        public SettingsManager SettingsManager { get; }
-
- 
+        public SettingsManager SettingsManager { get; } 
         public FilesIntegration FilesIntegration { get;  }
-
         public DaoFactory DaoFactory { get; }
-
         public PathProvider PathProvider { get; }
-
-        public SecurityContext SecurityContext { get; }
-        
+        public SecurityContext SecurityContext { get; }        
         public UserManager UserManager { get; }
 
         // TODO: CRM: Реализовать проперти ApiURL 
         public override string ApiURL => throw new NotImplementedException();
-
         public override Guid ProductID { get { return ID; } }
-
         public override string Name { get { return CRMCommonResource.ProductName; } }
-
         public override string Description
         {
             get
@@ -116,15 +103,10 @@ namespace ASC.Web.CRM.Configuration
         }
 
         public override string StartURL { get { return PathProvider.StartURL(); } }
-
         public override string HelpURL { get { return string.Concat(PathProvider.BaseVirtualPath, "help.aspx"); } }
-
         public override string ProductClassName { get { return "crm"; } }
-
         public override bool Visible { get { return true; } }
-
         public override ProductContext Context { get { return context; } }
-
         public string ModuleSysName { get; set; }
 
         public override void Init()
