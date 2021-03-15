@@ -84,8 +84,8 @@ const ThirdPartyDialog = (props) => {
   };
 
   const showOAuthModal = (token, serviceData) => {
-    this.props.setConnectDialogVisible(true);
-    this.props.setConnectItem({
+    setConnectDialogVisible(true);
+    setConnectItem({
       title: serviceData.title,
       provider_key: serviceData.title,
       link: serviceData.link,
