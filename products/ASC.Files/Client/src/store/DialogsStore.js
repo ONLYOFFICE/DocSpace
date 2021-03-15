@@ -11,9 +11,10 @@ class DialogsStore {
   deleteDialogVisible = false;
   downloadDialogVisible = false;
   emptyTrashDialogVisible = false;
+  thirdPartyDialogVisible = false;
 
-  connectItem = null;
   removeItem = null;
+  connectItem = null;
   shareItem = null;
 
   constructor() {
@@ -39,11 +40,8 @@ class DialogsStore {
 
   setConnectDialogVisible = (connectDialogVisible) => {
     if (!connectDialogVisible) this.setConnectItem(null);
-    this.connectDialogVisible = connectDialogVisible;
-  };
 
-  setConnectItem = (connectItem) => {
-    this.connectItem = connectItem;
+    this.connectDialogVisible = connectDialogVisible;
   };
 
   setRemoveItem = (removeItem) => {
@@ -72,6 +70,14 @@ class DialogsStore {
 
   setShareItem = (shareItem) => {
     this.shareItem = shareItem;
+  };
+
+  setConnectItem = (connectItem) => {
+    this.connectItem = connectItem;
+  };
+
+  setThirdPartyDialogVisible = (thirdPartyDialogVisible) => {
+    this.thirdPartyDialogVisible = thirdPartyDialogVisible;
   };
 }
 

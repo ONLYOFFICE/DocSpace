@@ -317,7 +317,13 @@ const ConnectDialog = withTranslation("ConnectDialog")(
 );
 
 export default inject(
-  ({ filesStore, settingsStore, treeFoldersStore, selectedFolderStore }) => {
+  ({
+    filesStore,
+    settingsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    dialogsStore,
+  }) => {
     const {
       providers,
       getOAuthToken,
@@ -336,7 +342,7 @@ export default inject(
     } = treeFoldersStore;
     const { id, folders } = selectedFolderStore;
     const {
-      connectDialogVisible,
+      connectDialogVisible: visible,
       setConnectDialogVisible,
       connectItem: item,
     } = dialogsStore;
@@ -348,7 +354,7 @@ export default inject(
       myFolderId,
       commonFolderId,
       providers,
-      visible: connectDialogVisible,
+      visible,
       item,
 
       fetchFiles,

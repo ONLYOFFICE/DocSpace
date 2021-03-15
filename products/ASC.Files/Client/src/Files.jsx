@@ -25,6 +25,7 @@ import filesActionsStore from "./store/FilesActionsStore";
 import "./custom.scss";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
+import Panels from "./components/FilesPanels";
 //import { regDesktop } from "@appserver/common/src/desktop";
 
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -81,6 +82,7 @@ class FilesContent extends React.Component {
 
     return (
       <Router history={history}>
+        <Panels />
         <Switch>
           <PrivateRoute
             exact

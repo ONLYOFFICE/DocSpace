@@ -24,7 +24,6 @@ import {
 
 import { ConvertDialog } from "../../dialogs";
 import { getFilterByLocation } from "../../../helpers/converters";
-import Panels from "./Panels";
 import MediaViewer from "./MediaViewer";
 import { observer, inject } from "mobx-react";
 
@@ -227,7 +226,6 @@ class PureHome extends React.Component {
           <ConvertDialog visible={convertDialogVisible} />
         )}
 
-        <Panels />
         <MediaViewer />
         <PageLayout
           withBodyScroll
