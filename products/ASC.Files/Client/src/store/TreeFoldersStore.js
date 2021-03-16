@@ -42,11 +42,12 @@ class TreeFoldersStore {
 
   fetchTreeFolders = async () => {
     const treeFolders = await getFoldersTree();
-    return this.setTreeFolders(treeFolders);
+    this.setTreeFolders(treeFolders);
+    return treeFolders;
   };
 
   setTreeFolders = (treeFolders) => {
-    return (this.treeFolders = treeFolders);
+    this.treeFolders = treeFolders;
   };
 
   setSelectedNode = (node) => {
