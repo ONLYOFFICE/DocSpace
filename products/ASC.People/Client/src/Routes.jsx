@@ -1,10 +1,10 @@
-import React from "react";
-import { Router, Switch, Redirect } from "react-router-dom";
-import history from "@appserver/common/history";
-import PrivateRoute from "@appserver/common/components/PrivateRoute";
-import Error404 from "studio/Error404";
+// import React from "react";
+// import { Router, Switch, Redirect } from "react-router-dom";
+// import history from "@appserver/common/history";
+// import PrivateRoute from "@appserver/common/components/PrivateRoute";
+// import Error404 from "studio/Error404";
 
-import Home from "./components/pages/Home";
+// import Home from "./components/pages/Home";
 //import Profile from "./components/pages/Profile";
 //import ProfileAction from "./components/pages/ProfileAction";
 //import GroupAction from "./components/pages/GroupAction";
@@ -13,15 +13,16 @@ import Home from "./components/pages/Home";
 // import { getFilterByLocation } from "./helpers/converters";
 // import { fetchGroups, fetchPeople } from "./store/people/actions";
 
-import config from "../package.json";
-const { homepage } = config;
+// import config from "../package.json";
+// const { homepage } = config;
 
-const Routes = () => {
-  return (
-    <Router history={history}>
-      <Switch>
-        <Redirect exact from="/" to={`${homepage}`} />
-        {/* <PrivateRoute
+// const Routes = () => {
+//   return (
+//     <Router history={history}>
+//       <Switch>
+//         <Redirect exact from="/" to={`${homepage}`} />
+{
+  /* <PrivateRoute
           exact
           path={`${homepage}/view/:userId`}
           component={Profile}
@@ -46,8 +47,10 @@ const Routes = () => {
           path={`${homepage}/reassign/:userId`}
           restricted
           component={Reassign}
-        /> */}
-        <PrivateRoute exact path={homepage} component={Home} />
+        /> */
+}
+{
+  /* <PrivateRoute exact path={homepage} component={Home} />
         <PrivateRoute path={`${homepage}/filter`} component={Home} />
         <PrivateRoute component={Error404} />
       </Switch>
@@ -55,7 +58,8 @@ const Routes = () => {
   );
 };
 
-export default Routes;
+export default Routes; */
+}
 
 // const mapStateToProps = (state) => {
 //   const { settings } = state.auth;
