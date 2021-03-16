@@ -30,6 +30,7 @@ const StyledContent = styled.div`
     white-space: nowrap;
     overflow: ${(props) => props.theme.row.overflow};
     text-overflow: ${(props) => props.theme.row.textOverflow};
+    height: ${(props) => props.theme.rowContent.height};
   }
 `;
 StyledContent.defaultProps = { theme: Base };

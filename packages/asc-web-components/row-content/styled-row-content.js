@@ -81,10 +81,10 @@ const MainContainerWrapper = styled.div`
     props.isMobile
       ? `${mainWrapperTabletStyle}`
       : `
-    @media ${tablet} {
-      ${mainWrapperTabletStyle}
-    }
   `}
+  @media ${tablet} {
+    ${mainWrapperTabletStyle}
+  }
 `;
 MainContainerWrapper.defaultProps = { theme: Base };
 
