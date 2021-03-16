@@ -377,12 +377,12 @@ class FilesRowContent extends React.PureComponent {
       homepage,
       isTabletView,
       item,
-      setVerHistoryFileId,
       setIsVerHistoryPanel,
+      fetchFileVersions,
     } = this.props;
 
     if (!isTabletView) {
-      setVerHistoryFileId(item.id + "");
+      fetchFileVersions(item.id + "");
       setIsVerHistoryPanel(true);
     } else {
       history.push(`${homepage}/${item.id}/history`);
@@ -794,7 +794,7 @@ export default inject(
     } = auth.settingsStore;
     const { setIsLoading, isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
-    const { setIsVerHistoryPanel, setVerHistoryFileId } = versionHistoryStore;
+    const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
     const {
       iconFormatsStore,
       mediaViewersFormatsStore,
@@ -886,7 +886,7 @@ export default inject(
       setFavoriteAction: filesActionsStore.setFavoriteAction,
       setMediaViewerData,
       setIsVerHistoryPanel,
-      setVerHistoryFileId,
+      fetchFileVersions,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesRowContent))));
