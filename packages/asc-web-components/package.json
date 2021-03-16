@@ -5,11 +5,13 @@
   "scripts": {
     "build": "echo 'skip it'",
     "start": "echo 'skip it'",
+    "start-prod": "echo 'skip it'",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "clean": "echo 'skip it'"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",

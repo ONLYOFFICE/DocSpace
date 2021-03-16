@@ -14,7 +14,10 @@
     "wipe": "rimraf node_modules yarn.lock web/**/node_modules products/**/node_modules",
     "build": "yarn workspaces run build",
     "start": "concurrently \"wsrun --parallel start\"",
+    "start-prod": "concurrently \"wsrun --parallel start-prod\"",
+    "serve": "concurrently \"wsrun --parallel serve\"",
     "test": "yarn workspace @appserver/components test",
+    "clean": "concurrently \"wsrun --parallel clean\"",
     "sb-components": "yarn workspace @appserver/components storybook"
   },
   "devDependencies": {

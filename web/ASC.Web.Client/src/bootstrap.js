@@ -7,7 +7,7 @@ import { Workbox, messageSW } from "workbox-window";
 ReactDOM.render(<App />, document.getElementById("root"));
 
 if ("serviceWorker" in navigator) {
-  const wb = new Workbox(`${config.homepage}/service-worker.js`);
+  const wb = new Workbox(`${config.homepage}/sw.js`);
 
   //TODO: watch https://developers.google.com/web/tools/workbox/guides/advanced-recipes and https://github.com/webmaxru/prog-web-news/blob/5ff94b45c9d317409c21c0fbb7d76e92f064471b/src/app/app-shell/app-shell.component.ts
 

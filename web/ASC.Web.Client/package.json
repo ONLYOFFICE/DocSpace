@@ -6,6 +6,7 @@
   "title": "ONLYOFFICE",
   "scripts": {
     "start": "webpack-cli serve",
+    "start-prod": "webpack --mode production && serve dist -p 5001",
     "build": "webpack --mode production",
     "serve": "serve dist -p 5001",
     "clean": "rm -rf dist"
