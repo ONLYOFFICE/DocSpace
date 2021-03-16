@@ -183,8 +183,16 @@ const StyledContent = styled.div`
   }
 
   .sharing-access-combo-box-icon {
+    height: 16px;
     path {
       fill: ${(props) => (props.isDisabled ? "#D0D5DA" : "#A3A9AE")};
+    }
+
+    svg {
+      width: 16px;
+      min-width: 16px;
+      height: 16px;
+      min-height: 16px;
     }
   }
 `;

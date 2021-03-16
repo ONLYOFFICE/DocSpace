@@ -54,19 +54,6 @@ describe("<RowContainer />", () => {
     expect(wrapper).toExist();
   });
 
-  it("componentWillUnmount() props lifecycle test", () => {
-    const wrapper = shallow(
-      <RowContainer>
-        <span>Demo</span>
-      </RowContainer>
-    );
-    const instance = wrapper.instance();
-
-    instance.componentWillUnmount();
-
-    expect(wrapper).toExist(false);
-  });
-
   it("render with normal rows", () => {
     const wrapper = mount(
       <RowContainer {...baseProps}>

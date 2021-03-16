@@ -11,16 +11,6 @@ class RowContainer extends React.PureComponent {
     return <div style={style}>{data[index]}</div>;
   }, areEqual);
 
-  componentDidMount() {
-    window.addEventListener("contextmenu", this.onRowContextClick);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("contextmenu", this.onRowContextClick);
-  }
-
-  onRowContextClick = (e) => e.preventDefault(); //stop calling default context menu
-
   render() {
     const {
       manualHeight,

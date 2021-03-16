@@ -9,7 +9,7 @@ import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
 import HeaderUnAuth from "./sub-components/header-unauth";
 import { I18nextProvider, withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+// import { withRouter } from "react-router";
 
 import Loaders from "@appserver/common/components/Loaders";
 import { LayoutContextConsumer } from "../Layout/context";
@@ -137,7 +137,7 @@ class NavMenu extends React.Component {
       isDesktop,
     } = this.state;
 
-    const { isAuthenticated, isLoaded, asideContent, history } = this.props;
+    const { isAuthenticated, isLoaded, asideContent /*history*/ } = this.props;
 
     const isAsideAvailable = !!asideContent;
 
@@ -158,7 +158,7 @@ class NavMenu extends React.Component {
             {!isDesktop &&
               (isLoaded && isAuthenticated ? (
                 <>
-                  <HeaderNav history={history} />
+                  <HeaderNav /*history={history}*/ />
                   <Header
                     isNavOpened={isNavOpened}
                     onClick={this.showNav}
@@ -200,7 +200,7 @@ NavMenu.propTypes = {
   isAuthenticated: PropTypes.bool,
   isLoaded: PropTypes.bool,
 
-  history: PropTypes.object,
+  // history: PropTypes.object,
 };
 
 NavMenu.defaultProps = {
@@ -220,7 +220,7 @@ const NavMenuWrapper = inject(({ auth }) => {
     isDesktop,
     language,
   };
-})(withRouter(observer(withTranslation("NavMenu")(NavMenu))));
+})(observer(withTranslation("NavMenu")(NavMenu)));
 
 export default () => (
   <I18nextProvider i18n={i18n}>

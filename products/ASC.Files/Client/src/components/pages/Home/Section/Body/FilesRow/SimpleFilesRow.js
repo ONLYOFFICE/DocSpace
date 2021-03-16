@@ -45,7 +45,6 @@ const StyledSimpleFilesRow = styled(Row)`
 
   .styled-element {
     margin-right: 7px;
-    margin-bottom: 2px;
   }
 `;
 
@@ -91,7 +90,7 @@ const SimpleFilesRow = (props) => {
     setCopyPanelVisible,
     openDocEditor,
     setIsVerHistoryPanel,
-    setVerHistoryFileId,
+    fetchFileVersions,
     setAction,
     deleteFileAction,
     deleteFolderAction,
@@ -188,7 +187,7 @@ const SimpleFilesRow = (props) => {
 
   const showVersionHistory = () => {
     if (!isTabletView) {
-      setVerHistoryFileId(id + "");
+      fetchFileVersions(id + "");
       setIsVerHistoryPanel(true);
     } else {
       history.push(`${homepage}/${id}/history`);
@@ -563,7 +562,7 @@ export default inject(
     } = filesStore;
 
     const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
-    const { setIsVerHistoryPanel, setVerHistoryFileId } = versionHistoryStore;
+    const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
     const { setAction } = fileActionStore;
 
     const selectedItem = selection.find(
@@ -616,7 +615,7 @@ export default inject(
       setCopyPanelVisible,
       openDocEditor,
       setIsVerHistoryPanel,
-      setVerHistoryFileId,
+      fetchFileVersions,
       setAction,
       deleteFileAction,
       deleteFolderAction,
