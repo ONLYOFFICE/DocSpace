@@ -32,6 +32,8 @@ class Row extends React.Component {
   }
 
   onContextMenu = (e) => {
+    e.preventDefault();
+
     const cursorX = -(window.innerWidth - e.pageX) + "px";
     const cursorY = "-3px";
 
