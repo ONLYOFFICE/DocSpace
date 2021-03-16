@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const TerserPlugin = require("terser-webpack-plugin");
+const { InjectManifest } = require("workbox-webpack-plugin");
 //const CompressionPlugin = require("compression-webpack-plugin");
 
 const path = require("path");
@@ -46,10 +47,10 @@ var config = {
 
   output: {
     publicPath: "auto",
-    chunkFilename: "js/[id].[contenthash].js",
-    assetModuleFilename: "assets/[hash][ext][query]",
+    chunkFilename: "static/js/[id].[contenthash].js",
+    //assetModuleFilename: "static/images/[hash][ext][query]",
     path: path.resolve(process.cwd(), "dist"),
-    filename: "[name].[contenthash].bundle.js",
+    filename: "static/js/[name].[contenthash].bundle.js",
   },
 
   resolve: {
@@ -64,6 +65,9 @@ var config = {
       {
         test: /\.(png|jpe?g|gif|ico)$/i,
         type: "asset/resource",
+        generator: {
+          filename: "static/images/[hash][ext][query]",
+        },
       },
       {
         test: /\.m?js/,
@@ -170,6 +174,14 @@ module.exports = (env, argv) => {
       minimize: true,
       minimizer: [new TerserPlugin()],
     };
+    config.plugins.push(
+      new InjectManifest({
+        mode: "production", //"development",
+        swSrc: "./src/sw-template.js", // this is your sw template file
+        swDest: "sw.js", // this will be created in the build step
+        exclude: [/\.map$/, /manifest$/, /service-worker\.js$/],
+      })
+    );
     // config.plugins.push(
     //   new CompressionPlugin({
     //     filename: "[path][base].gz[query]",

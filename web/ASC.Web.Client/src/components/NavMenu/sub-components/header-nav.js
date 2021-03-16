@@ -8,6 +8,8 @@ import ProfileActions from "./profile-actions";
 import { useTranslation } from "react-i18next";
 import { tablet } from "@appserver/components/utils/device";
 import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router";
+
 const StyledNav = styled.nav`
   display: flex;
   padding: 0 24px 0 16px;
@@ -127,26 +129,28 @@ HeaderNav.propTypes = {
   isLoaded: PropTypes.bool,
 };
 
-export default inject(({ auth }) => {
-  const {
-    settingsStore,
-    userStore,
-    isAuthenticated,
-    isLoaded,
-    language,
-    logout,
-  } = auth;
-  const { homepage, defaultPage } = settingsStore;
-  const { user } = userStore;
+export default withRouter(
+  inject(({ auth }) => {
+    const {
+      settingsStore,
+      userStore,
+      isAuthenticated,
+      isLoaded,
+      language,
+      logout,
+    } = auth;
+    const { homepage, defaultPage } = settingsStore;
+    const { user } = userStore;
 
-  return {
-    user,
-    homepage,
-    isAuthenticated,
-    isLoaded,
-    language,
-    defaultPage: defaultPage || "/",
-    modules: auth.availableModules,
-    logout,
-  };
-})(observer(HeaderNav));
+    return {
+      user,
+      homepage,
+      isAuthenticated,
+      isLoaded,
+      language,
+      defaultPage: defaultPage || "/",
+      modules: auth.availableModules,
+      logout,
+    };
+  })(observer(HeaderNav))
+);

@@ -6,6 +6,7 @@
   "title": "ONLYOFFICE",
   "scripts": {
     "start": "webpack-cli serve",
+    "start-prod": "webpack --mode production && serve dist -p 5013",
     "build": "webpack --mode production",
     "serve": "serve dist -p 5013",
     "clean": "rm -rf dist"
@@ -30,7 +31,8 @@
     "style-loader": "1.2.1",
     "webpack": "5.14.0",
     "webpack-cli": "4.5.0",
-    "webpack-dev-server": "3.11.2"
+    "webpack-dev-server": "3.11.2",
+    "workbox-webpack-plugin": "^6.1.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.13.9",
@@ -42,6 +44,7 @@
     "react-dom": "^17.0.1",
     "react-i18next": "^11.8.8",
     "react-toastify": "^6.2.0",
-    "styled-components": "^5.2.1"
+    "styled-components": "^5.2.1",
+    "workbox-window": "^6.1.1"
   }
 }
