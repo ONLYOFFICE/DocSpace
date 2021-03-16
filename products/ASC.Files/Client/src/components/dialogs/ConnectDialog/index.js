@@ -116,10 +116,8 @@ const PureConnectDialogContainer = (props) => {
     )
       .then((folderData) => {
         fetchTreeFolders().then((data) => {
-          const commonFolder = data.treeFolders.find(
-            (x) => x.id === commonFolderId
-          );
-          const myFolder = data.treeFolders.find((x) => x.id === myFolderId);
+          const commonFolder = data.find((x) => x.id === commonFolderId);
+          const myFolder = data.find((x) => x.id === myFolderId);
 
           const newTreeFolders = treeFolders;
 
@@ -201,6 +199,10 @@ const PureConnectDialogContainer = (props) => {
     window.addEventListener("keyup", onKeyUpHandler);
     return () => window.removeEventListener("keyup", onKeyUpHandler);
   }, [onKeyUpHandler]);
+
+  useEffect(() => {
+    return setToken(token);
+  }, [setToken, token]);
 
   return (
     <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
@@ -317,7 +319,13 @@ const ConnectDialog = withTranslation("ConnectDialog")(
 );
 
 export default inject(
-  ({ filesStore, settingsStore, treeFoldersStore, selectedFolderStore }) => {
+  ({
+    filesStore,
+    settingsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    dialogsStore,
+  }) => {
     const {
       providers,
       getOAuthToken,
@@ -336,7 +344,7 @@ export default inject(
     } = treeFoldersStore;
     const { id, folders } = selectedFolderStore;
     const {
-      connectDialogVisible,
+      connectDialogVisible: visible,
       setConnectDialogVisible,
       connectItem: item,
     } = dialogsStore;
@@ -348,7 +356,7 @@ export default inject(
       myFolderId,
       commonFolderId,
       providers,
-      visible: connectDialogVisible,
+      visible,
       item,
 
       fetchFiles,

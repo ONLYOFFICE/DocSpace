@@ -57,10 +57,13 @@ const StyledSection = styled.section`
     padding: 0 0 0 16px;
     ${tabletProps};
   }
-  ${isMobile &&
-  css`
-    min-width: 100px;
-  `}
+  ${
+    isMobile &&
+    css`
+      ${tabletProps};
+      min-width: 100px;
+    `
+  }
 `;
 
 class Section extends React.Component {

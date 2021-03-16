@@ -64,6 +64,7 @@ StyledRowContent.defaultProps = { theme: Base };
 
 const MainContainerWrapper = styled.div`
   ${commonCss};
+  margin-left: 0;
 
   display: flex;
   align-self: center;

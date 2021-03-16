@@ -25,6 +25,7 @@ import { I18nextProvider } from "react-i18next";
 import Home from "./components/pages/Home";
 import Settings from "./components/pages/Settings";
 import VersionHistory from "./components/pages/VersionHistory";
+import Panels from "./components/FilesPanels";
 
 const homepage = config.homepage;
 
@@ -89,21 +90,24 @@ class FilesContent extends React.Component {
     //const { /*, isDesktop*/ } = this.props;
 
     return (
-      <Switch>
-        <PrivateRoute
-          exact
-          path={`${homepage}/settings/:setting`}
-          component={Settings}
-        />
-        <PrivateRoute
-          exact
-          path={[`${homepage}/:fileId/history`]}
-          component={VersionHistory}
-        />
-        <PrivateRoute exact path={homepage} component={Home} />
-        <PrivateRoute path={`${homepage}/filter`} component={Home} />
-        <PrivateRoute component={Error404Route} />
-      </Switch>
+      <>
+        <Panels />
+        <Switch>
+          <PrivateRoute
+            exact
+            path={`${homepage}/settings/:setting`}
+            component={Settings}
+          />
+          <PrivateRoute
+            exact
+            path={[`${homepage}/:fileId/history`]}
+            component={VersionHistory}
+          />
+          <PrivateRoute exact path={homepage} component={Home} />
+          <PrivateRoute path={`${homepage}/filter`} component={Home} />
+          <PrivateRoute component={Error404Route} />
+        </Switch>
+      </>
     );
   }
 }

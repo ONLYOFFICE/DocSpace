@@ -95,7 +95,7 @@ const PureThirdPartyListContainer = ({
   nextCloudConnectItem,
   webDavConnectItem,
   setConnectItem,
-  setShowThirdPartyPanel,
+  setThirdPartyDialogVisible,
   setSelectedNode,
   setSelectedFolder,
   getOAuthToken,
@@ -134,11 +134,12 @@ const PureThirdPartyListContainer = ({
       setConnectItem(data);
     }
 
-    redirectAction();
+    onShowConnectPanel();
   };
 
   const onShowConnectPanel = () => {
-    setShowThirdPartyPanel((prev) => !prev);
+    //setThirdPartyDialogVisible((prev) => !prev); TODO:
+    setThirdPartyDialogVisible(true);
     redirectAction();
   };
 
@@ -208,13 +209,12 @@ export default inject(
     settingsStore,
     treeFoldersStore,
     selectedFolderStore,
+    dialogsStore,
   }) => {
     const { setIsLoading } = initFilesStore;
     const { setSelectedFolder } = selectedFolderStore;
     const { setSelectedNode } = treeFoldersStore;
     const {
-      setConnectItem,
-      setShowThirdPartyPanel,
       googleConnectItem,
       boxConnectItem,
       dropboxConnectItem,
@@ -224,6 +224,8 @@ export default inject(
       getOAuthToken,
       openConnectWindow,
     } = settingsStore.thirdPartyStore;
+
+    const { setConnectItem, setThirdPartyDialogVisible } = dialogsStore;
 
     return {
       googleConnectItem,
@@ -237,7 +239,7 @@ export default inject(
       setSelectedFolder,
       setSelectedNode,
       setConnectItem,
-      setShowThirdPartyPanel,
+      setThirdPartyDialogVisible,
       getOAuthToken,
       openConnectWindow,
     };

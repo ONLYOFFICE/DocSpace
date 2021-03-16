@@ -15,7 +15,6 @@ import { inject, observer } from "mobx-react";
 
 const PureSettings = ({
   match,
-  //history,
   t,
   isLoading,
   isLoadedSettingsTree,

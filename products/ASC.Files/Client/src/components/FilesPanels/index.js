@@ -5,7 +5,7 @@ import {
   UploadPanel,
   OperationsPanel,
   VersionHistoryPanel,
-} from "../../../panels";
+} from "../panels";
 import {
   ThirdPartyMoveDialog,
   ConnectDialog,
@@ -13,7 +13,8 @@ import {
   EmptyTrashDialog,
   DeleteDialog,
   DownloadDialog,
-} from "../../../dialogs";
+  ThirdPartyDialog,
+} from "../dialogs";
 
 const Panels = (props) => {
   const {
@@ -29,6 +30,7 @@ const Panels = (props) => {
     deleteDialogVisible,
     downloadDialogVisible,
     emptyTrashDialogVisible,
+    thirdPartyDialogVisible,
   } = props;
 
   return [
@@ -60,6 +62,7 @@ const Panels = (props) => {
     deleteDialogVisible && <DeleteDialog key="delete-dialog" />,
     emptyTrashDialogVisible && <EmptyTrashDialog key="empty-trash-dialog" />,
     downloadDialogVisible && <DownloadDialog key="download-dialog" />,
+    thirdPartyDialogVisible && <ThirdPartyDialog key="thirdparty-dialog" />,
   ];
 };
 
@@ -76,6 +79,9 @@ export default inject(
       deleteDialogVisible,
       downloadDialogVisible,
       emptyTrashDialogVisible,
+      thirdPartyDialogVisible,
+
+      connectItem, //TODO:
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
@@ -88,12 +94,14 @@ export default inject(
       copyPanelVisible,
       moveToPanelVisible,
       thirdPartyMoveDialogVisible,
-      connectDialogVisible,
+      //connectDialogVisible,
+      connectDialogVisible: connectDialogVisible || !!connectItem, //TODO:
       deleteThirdPartyDialogVisible,
       versionHistoryPanelVisible,
       deleteDialogVisible,
       downloadDialogVisible,
       emptyTrashDialogVisible,
+      thirdPartyDialogVisible,
     };
   }
 )(observer(Panels));
