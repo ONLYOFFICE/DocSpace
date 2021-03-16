@@ -183,6 +183,7 @@ const StyledContent = styled.div`
   }
 
   .sharing-access-combo-box-icon {
+    height: 16px;
     path {
       fill: ${(props) => (props.isDisabled ? "#D0D5DA" : "#A3A9AE")};
     }
