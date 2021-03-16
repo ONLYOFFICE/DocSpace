@@ -44,8 +44,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .styled-element {
-    margin-right: 1px;
-    margin-bottom: 2px;
+    margin-right: 7px;
   }
 `;
 

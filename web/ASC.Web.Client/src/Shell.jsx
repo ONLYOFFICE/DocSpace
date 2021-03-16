@@ -34,6 +34,9 @@ const About = React.lazy(() => import("./components/pages/About"));
 //const Wizard = React.lazy(() => import("./components/pages/Wizard"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
+const ThirdPartyResponse = React.lazy(() =>
+  import("./components/pages/ThirdParty")
+);
 
 const SettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -101,6 +104,14 @@ const ComingSoonRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
       <ComingSoon {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
+const ThirdPartyResponseRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <ThirdPartyResponse {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
@@ -233,6 +244,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                   `${homepage}/products/talk/`,
                 ]}
                 component={ComingSoonRoute}
+              />
+              <PrivateRoute
+                path={`${homepage}/thirdparty/:provider`}
+                component={ThirdPartyResponseRoute}
               />
               <PrivateRoute
                 path={`${homepage}/payments`}

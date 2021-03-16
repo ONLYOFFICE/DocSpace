@@ -430,7 +430,7 @@ const Base = {
     textOverflow: "ellipsis",
 
     element: {
-      marginRight: "8px",
+      marginRight: "14px",
       marginLeft: "2px",
     },
 

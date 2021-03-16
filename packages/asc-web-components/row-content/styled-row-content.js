@@ -64,6 +64,7 @@ StyledRowContent.defaultProps = { theme: Base };
 
 const MainContainerWrapper = styled.div`
   ${commonCss};
+  margin-left: 0;
 
   display: flex;
   align-self: center;
@@ -80,10 +81,10 @@ const MainContainerWrapper = styled.div`
     props.isMobile
       ? `${mainWrapperTabletStyle}`
       : `
-    @media ${tablet} {
-      ${mainWrapperTabletStyle}
-    }
   `}
+  @media ${tablet} {
+    ${mainWrapperTabletStyle}
+  }
 `;
 MainContainerWrapper.defaultProps = { theme: Base };
 

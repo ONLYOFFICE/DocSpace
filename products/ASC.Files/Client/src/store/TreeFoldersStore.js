@@ -43,6 +43,7 @@ class TreeFoldersStore {
   fetchTreeFolders = async () => {
     const treeFolders = await getFoldersTree();
     this.setTreeFolders(treeFolders);
+    return treeFolders;
   };
 
   setTreeFolders = (treeFolders) => {

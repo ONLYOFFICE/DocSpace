@@ -384,8 +384,6 @@ class SectionBodyContent extends React.Component {
   // };
 
   render() {
-    //console.log("Files Home SectionBodyContent render", this.props);
-
     const {
       selection,
       fileActionId,
@@ -398,6 +396,8 @@ class SectionBodyContent extends React.Component {
       isLoading,
       isEmptyFilesList,
     } = this.props;
+
+    //console.log("Files Home SectionBodyContent render", this.props);
 
     let fileMoveTooltip;
     if (dragging) {
@@ -432,6 +432,7 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     filesActionsStore,
+    selectedFolderStore,
   }) => {
     const {
       dragging,
@@ -475,6 +476,7 @@ export default inject(
       setSecondaryProgressBarData,
       copyToAction,
       moveToAction,
+      folderId: selectedFolderStore.id,
     };
   }
 )(withRouter(withTranslation("Home")(observer(SectionBodyContent))));
