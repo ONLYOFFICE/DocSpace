@@ -14,18 +14,7 @@ import selectedFolderStore from "./SelectedFolderStore";
 import formatsStore from "./FormatsStore";
 import treeFoldersStore from "./TreeFoldersStore";
 import { createTreeFolders } from "../helpers/files-helpers";
-import {
-  AUTHOR_TYPE,
-  FILTER_TYPE,
-  PAGE_COUNT,
-  PAGE,
-  SEARCH_TYPE,
-  SEARCH,
-  SORT_BY,
-  SORT_ORDER,
-  FOLDER,
-  PREVIEW,
-} from "../helpers/constants";
+import { PREVIEW } from "../helpers/constants";
 import config from "../../package.json";
 
 const { FilesFilter } = api;
@@ -200,42 +189,18 @@ class FilesStore {
   };
 
   setFilterUrl = (filter) => {
-    const defaultFilter = FilesFilter.getDefault();
     const params = [];
     const URLParams = queryString.parse(window.location.href);
 
-    if (filter.filterType) {
-      params.push(`${FILTER_TYPE}=${filter.filterType}`);
-    }
-
-    if (filter.withSubfolders === "false") {
-      params.push(`${SEARCH_TYPE}=${filter.withSubfolders}`);
-    }
-
-    if (filter.search) {
-      params.push(`${SEARCH}=${filter.search.trim()}`);
-    }
-    if (filter.authorType) {
-      params.push(`${AUTHOR_TYPE}=${filter.authorType}`);
-    }
-    if (filter.folder) {
-      params.push(`${FOLDER}=${filter.folder}`);
-    }
-
-    if (filter.pageCount !== defaultFilter.pageCount) {
-      params.push(`${PAGE_COUNT}=${filter.pageCount}`);
-    }
-
     if (URLParams.preview) {
+      //TODO: Move this to Filter
       params.push(`${PREVIEW}=${URLParams.preview}`);
     }
 
-    params.push(`${PAGE}=${filter.page + 1}`);
-    params.push(`${SORT_BY}=${filter.sortBy}`);
-    params.push(`${SORT_ORDER}=${filter.sortOrder}`);
-
     //console.log("window", window.location);
-    history.push(`${config.homepage}/filter?${params.join("&")}`);
+
+    const urlFilter = filter.toUrlParams();
+    history.push(`${config.homepage}/filter?${urlFilter}${params.join("&")}`);
   };
 
   fetchFiles = (folderId, filter, clearFilter = true) => {

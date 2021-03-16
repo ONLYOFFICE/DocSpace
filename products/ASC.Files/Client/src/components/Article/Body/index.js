@@ -1,5 +1,5 @@
 import React from "react";
-
+import { withRouter } from "react-router-dom";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import TreeFolders from "./TreeFolders";
@@ -38,27 +38,31 @@ class ArticleBodyContent extends React.Component {
       setIsLoading,
       selectedTreeNode,
       setSelectedNode,
-      fetchFiles,
+      //fetchFiles,
+      history,
+      homepage,
     } = this.props;
 
-    if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
-      setSelectedNode(data);
-      setIsLoading(true);
-      const newFilter = filter.clone();
-      newFilter.page = 0;
-      newFilter.startIndex = 0;
+    const folderId = data[0];
+    if (selectedTreeNode && selectedTreeNode[0] === folderId) return;
 
-      const selectedFolderTitle =
-        (e.node && e.node.props && e.node.props.title) || null;
+    setSelectedNode(data);
+    setIsLoading(true);
 
-      selectedFolderTitle
-        ? setDocumentTitle(selectedFolderTitle)
-        : setDocumentTitle();
+    const newFilter = filter.clone();
+    newFilter.folder = folderId;
+    newFilter.page = 0;
+    newFilter.startIndex = 0;
 
-      fetchFiles(data[0], newFilter)
-        .catch((err) => toastr.error(err))
-        .finally(() => setIsLoading(false));
-    }
+    const selectedFolderTitle =
+      (e.node && e.node.props && e.node.props.title) || null;
+
+    selectedFolderTitle
+      ? setDocumentTitle(selectedFolderTitle)
+      : setDocumentTitle();
+
+    const urlFilter = newFilter.toUrlParams();
+    history.push(`${homepage}/filter?${urlFilter}`);
   };
 
   onShowNewFilesPanel = (folderId) => {
@@ -113,7 +117,15 @@ class ArticleBodyContent extends React.Component {
 }
 
 export default inject(
-  ({ initFilesStore, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  ({
+    auth,
+    initFilesStore,
+    filesStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
+    const { settingsStore } = auth;
+    const { homepage } = settingsStore;
     const { setIsLoading } = initFilesStore;
     const { fetchFiles, filter } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
@@ -129,6 +141,8 @@ export default inject(
       fetchFiles,
       setSelectedNode,
       setTreeFolders,
+
+      homepage,
     };
   }
-)(observer(ArticleBodyContent));
+)(observer(withRouter(ArticleBodyContent)));

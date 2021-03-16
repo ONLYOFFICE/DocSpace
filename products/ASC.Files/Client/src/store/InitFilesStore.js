@@ -88,6 +88,8 @@ class InitFilesStore {
   }
 
   initFiles = () => {
+    if (this.isLoaded) return;
+
     const isAuthenticated = auth.isAuthenticated;
     const {
       getPortalCultures,

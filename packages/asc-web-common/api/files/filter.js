@@ -86,7 +86,7 @@ class FilesFilter {
         : null;
 
     const dtoFilter = {
-      count: pageCount,
+      folder,
       startIndex: this.getStartIndex(),
       page: page,
       sortby: sortBy,
@@ -96,6 +96,10 @@ class FilesFilter {
       withSubfolders: isFilterSet,
       userIdOrGroupId,
     };
+
+    if (pageCount !== DEFAULT_PAGE) {
+      dtoFilter.count = pageCount;
+    }
 
     return dtoFilter;
   };
