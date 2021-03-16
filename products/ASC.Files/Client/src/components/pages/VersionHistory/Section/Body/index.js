@@ -23,7 +23,7 @@ class SectionBodyContent extends React.Component {
   };
   render() {
     const { versions, culture, isLoading } = this.props;
-    console.log("VersionHistory SectionBodyContent render()", versions);
+    //console.log("VersionHistory SectionBodyContent render()", versions);
 
     let itemVersion = null;
 
@@ -41,7 +41,7 @@ class SectionBodyContent extends React.Component {
             <VersionRow
               getFileVersions={this.getFileVersions}
               isVersion={isVersion}
-              key={info.id}
+              key={`${info.id}-${index}`}
               info={info}
               index={index}
               culture={culture}
