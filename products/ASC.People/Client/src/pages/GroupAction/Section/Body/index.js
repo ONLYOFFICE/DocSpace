@@ -8,7 +8,8 @@ import { tablet } from "@appserver/components/utils/device";
 
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
-import PeopleSelector from "studio/PeopleSelector";
+//import PeopleSelector from "people/PeopleSelector";
+import PeopleSelector from "../../../../components/PeopleSelector";
 import { GUID_EMPTY } from "../../../../helpers/constants";
 import PropTypes from "prop-types";
 import React from "react";

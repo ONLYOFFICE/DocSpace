@@ -132,6 +132,7 @@ const config = {
       remotes: {
         studio: `studio@${homepage}/remoteEntry.js`,
         login: `login@${homepage}/login/remoteEntry.js`,
+        people: "people@/products/people/remoteEntry.js",
       },
       exposes: {
         "./shell": "./src/Shell",
@@ -143,9 +144,6 @@ const config = {
         "./Layout": "./src/components/Layout",
         "./Layout/context": "./src/components/Layout/context.js",
         "./Main": "./src/components/Main",
-        "./PeopleSelector": "./src/components/PeopleSelector",
-        "./PeopleSelector/UserTooltip":
-          "./src/components/PeopleSelector/sub-components/UserTooltip.js",
         "./toastr": "./src/helpers/toastr",
       },
       shared: {
