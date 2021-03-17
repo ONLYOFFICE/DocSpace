@@ -93,11 +93,11 @@ class PureAccessRights extends Component {
               title: t("OwnerSettings"),
               content: <OwnerSettings />,
             },
-            {
-              key: "1",
-              title: t("AdminsSettings"),
-              content: <AdminsSettings />,
-            },
+            // {
+            //   key: "1",
+            //   title: t("AdminsSettings"),
+            //   content: <AdminsSettings />,
+            // },
             // {
             //   key: "2",
             //   title: "Portals settings",

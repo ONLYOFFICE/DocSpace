@@ -104,6 +104,7 @@ const HeaderComponent = ({
   version,
   isAuthenticated,
   isAdmin,
+  backdropClick,
   ...props
 }) => {
   const { t } = useTranslation();
@@ -132,6 +133,7 @@ const HeaderComponent = ({
     if (!e) return;
     const link = e.currentTarget.dataset.link;
     history.push(link);
+    backdropClick();
     e.preventDefault();
   };
 
