@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -24,53 +24,51 @@
 */
 
 
-using System;
-using System.Runtime.Serialization;
-using ASC.Common.Security;
-using ASC.CRM.Core.EF;
-using ASC.CRM.Mapping;
+using ASC.Api.Core;
+using ASC.Common;
+using ASC.VoipService;
+using ASC.Web.Api.Models;
 
-using AutoMapper;
+using System.Linq;
 
-namespace ASC.CRM.Core.Entities
+namespace ASC.CRM.ApiModels
 {
-    [DataContract]
-    public class InvoiceTax : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceTax>
+    [Scope]
+    public class VoipCallDtoHelper
     {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
+        private ApiDateTimeHelper _apiDateTimeHelper;
+        private EmployeeWraperHelper _employeeWraperHelper;
 
-        [DataMember(Name = "description")]
-        public string Description { get; set; }
-
-        [DataMember(Name = "rate")]
-        public decimal Rate { get; set; }
-        
-        
-        [DataMember(Name = "createOn")]
-        public DateTime CreateOn { get; set; }
-
-        [DataMember(Name = "createBy")]
-        public Guid CreateBy { get; set; }
-
-        [DataMember(Name = "lastModifedOn")]
-        public DateTime? LastModifedOn { get; set; }
-        
-        [DataMember(Name = "lastModifedBy")]
-        public Guid? LastModifedBy { get; set; }
-
-        public object SecurityId
+        public VoipCallDtoHelper(EmployeeWraperHelper employeeWraper,
+                                     ApiDateTimeHelper apiDateTimeHelper)
         {
-            get { return ID; }
+            _employeeWraperHelper = employeeWraper;
+            _apiDateTimeHelper = apiDateTimeHelper;
         }
 
-        public Type ObjectType
+        public VoipCallDto Get(VoipCall call, ContactDto contact = null)
         {
-            get { return GetType(); }
-        }
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<DbInvoiceTax, InvoiceTax>();
+            var result = new VoipCallDto
+            {
+                Id = call.Id,
+                From = call.From,
+                To = call.To,
+                Status = call.Status,
+                AnsweredBy = _employeeWraperHelper.Get(call.AnsweredBy),
+                DialDate = _apiDateTimeHelper.Get(call.DialDate),
+                DialDuration = call.DialDuration,
+                Cost = call.Price + call.ChildCalls.Sum(r => r.Price) + call.VoipRecord.Price,
+                Contact = contact,
+                RecordUrl = call.VoipRecord.Uri,
+                RecordDuration = call.VoipRecord.Duration
+            };
+
+            if (call.ChildCalls.Any())
+            {
+                result.Calls = call.ChildCalls.Select(childCall => Get(childCall));
+            }
+
+            return result;
         }
     }
 }

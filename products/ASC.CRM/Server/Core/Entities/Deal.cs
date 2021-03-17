@@ -27,12 +27,16 @@
 using System;
 using System.Runtime.Serialization;
 using ASC.Common.Security;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
+
+using AutoMapper;
 
 namespace ASC.CRM.Core.Entities
 {
     [DataContract]
-    public class Deal : DomainObject, ISecurityObjectId
+    public class Deal : DomainObject, ISecurityObjectId, IMapFrom<DbDeal>
     {
         public Guid CreateBy { get; set; }
 
@@ -111,5 +115,10 @@ namespace ASC.CRM.Core.Entities
         {
             get { return GetType(); }
         }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<DbDeal, Deal>();
+        }   
     }
 }

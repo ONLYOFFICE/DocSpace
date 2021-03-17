@@ -27,54 +27,49 @@
 #region Usings
 
 using System;
+
 using ASC.Common.Security;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
+
+using AutoMapper;
 
 #endregion
 
 namespace ASC.CRM.Core.Entities
 {
-    public class Task : DomainObject, ISecurityObjectId
+    public class Task : DomainObject, ISecurityObjectId, IMapFrom<DbTask>
     {
-
         public Guid CreateBy { get; set; }
-
         public DateTime CreateOn { get; set; }
-
         public Guid? LastModifedBy { get; set; }
-
         public DateTime? LastModifedOn { get; set; }
-
         public int ContactID { get; set; }
-
         public Contact Contact { get; set; }
-
         public string Title { get; set; }
-
         public string Description { get; set; }
-
         public DateTime DeadLine { get; set; }
-
         public Guid ResponsibleID { get; set; }
-      
         public bool IsClosed { get; set; }
-
         public int CategoryID { get; set; }
-
         public EntityType EntityType { get; set; }
-
         public int EntityID { get; set; }
-
         public int AlertValue { get; set; }
-
         public object SecurityId
         {
             get { return ID; }
         }
-
         public Type ObjectType
         {
             get { return GetType(); }
+        }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<DbTask, Task>();
+//                .ForMember(x => x.CreateOn, x => x.ConvertUsing<DateTimeFromUtcValueConverter, DateTime>())
+//               .ForMember(x => x.LastModifedOn, x => x.ConvertUsing<DateTimeFromUtcValueConverter, DateTime?>());
         }
     }
 }

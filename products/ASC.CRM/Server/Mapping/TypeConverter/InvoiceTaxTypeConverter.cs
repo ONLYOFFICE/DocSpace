@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -23,54 +23,51 @@
  *
 */
 
-
 using System;
-using System.Runtime.Serialization;
-using ASC.Common.Security;
-using ASC.CRM.Core.EF;
-using ASC.CRM.Mapping;
+
+using ASC.Api.Core;
+using ASC.Common;
+using ASC.CRM.ApiModels;
+using ASC.CRM.Core;
+using ASC.CRM.Core.Entities;
+using ASC.Web.Api.Models;
 
 using AutoMapper;
 
-namespace ASC.CRM.Core.Entities
+namespace ASC.CRM.Mapping
 {
-    [DataContract]
-    public class InvoiceTax : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceTax>
+    public class InvoiceTaxTypeConverter : ITypeConverter<InvoiceTax, InvoiceTaxDto>
     {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
+        private ApiDateTimeHelper _apiDateTimeHelper;
+        private EmployeeWraperHelper _employeeWraperHelper;
+        private CRMSecurity _CRMSecurity;
 
-        [DataMember(Name = "description")]
-        public string Description { get; set; }
-
-        [DataMember(Name = "rate")]
-        public decimal Rate { get; set; }
-        
-        
-        [DataMember(Name = "createOn")]
-        public DateTime CreateOn { get; set; }
-
-        [DataMember(Name = "createBy")]
-        public Guid CreateBy { get; set; }
-
-        [DataMember(Name = "lastModifedOn")]
-        public DateTime? LastModifedOn { get; set; }
-        
-        [DataMember(Name = "lastModifedBy")]
-        public Guid? LastModifedBy { get; set; }
-
-        public object SecurityId
+        public InvoiceTaxTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
+                                      EmployeeWraperHelper employeeWraperHelper,
+                                      CRMSecurity cRMSecurity)
         {
-            get { return ID; }
+            _apiDateTimeHelper = apiDateTimeHelper;
+            _employeeWraperHelper = employeeWraperHelper;
+            _CRMSecurity = cRMSecurity;
         }
 
-        public Type ObjectType
+        public InvoiceTaxDto Convert(InvoiceTax source, InvoiceTaxDto destination, ResolutionContext context)
         {
-            get { return GetType(); }
-        }
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<DbInvoiceTax, InvoiceTax>();
+            if (destination != null)
+                throw new NotImplementedException();
+
+            var result = new InvoiceTaxDto();
+
+            result.Id = source.ID;
+            result.Name = source.Name;
+            result.Description = source.Description;
+            result.Rate = source.Rate;
+            result.CreateOn = _apiDateTimeHelper.Get(source.CreateOn);
+            result.CreateBy = _employeeWraperHelper.Get(source.CreateBy);
+            result.CanEdit = _CRMSecurity.CanEdit(source);
+            result.CanDelete = _CRMSecurity.CanDelete(source);
+
+            return result;
         }
     }
 }

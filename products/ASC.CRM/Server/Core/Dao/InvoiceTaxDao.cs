@@ -33,6 +33,9 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
+
+using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
@@ -48,16 +51,20 @@ namespace ASC.CRM.Core.Dao
 
         public CachedInvoiceTaxDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
+            TenantUtil tenantUtil,
             SecurityContext securityContext,
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> logger,
-            ICache ascCache
+            ICache ascCache,
+            IMapper mapper
             )
             : base(dbContextManager,
                  tenantManager,
+                 tenantUtil,
                  securityContext,
                  logger,
-                 ascCache)
+                 ascCache,
+                 mapper)
 
         {
             _invoiceTaxCache = new HttpRequestDictionary<InvoiceTax>(httpContextAccessor?.HttpContext, "crm_invoice_tax");
@@ -97,12 +104,16 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class InvoiceTaxDao : AbstractDao
     {
+        private readonly IMapper _mapper;
+
         public InvoiceTaxDao(
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
+            TenantUtil tenantUtil,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
-            ICache ascCache
+            ICache ascCache,
+            IMapper mapper
             )
             : base(dbContextManager,
                  tenantManager,
@@ -110,7 +121,8 @@ namespace ASC.CRM.Core.Dao
                  logger,
                  ascCache)
         {
-
+            TenantUtil = tenantUtil;
+            _mapper = mapper;
         }
 
         public TenantUtil TenantUtil { get; }
@@ -136,9 +148,7 @@ namespace ASC.CRM.Core.Dao
 
         public virtual List<InvoiceTax> GetAll()
         {
-            return Query(CRMDbContext.InvoiceTax)
-                    .ToList()
-                    .ConvertAll(ToInvoiceTax);
+            return _mapper.Map<List<DbInvoiceTax>,List<InvoiceTax>>(Query(CRMDbContext.InvoiceTax).ToList());
         }
 
         public DateTime GetMaxLastModified()
@@ -152,15 +162,18 @@ namespace ASC.CRM.Core.Dao
 
         public virtual List<InvoiceTax> GetByID(int[] ids)
         {
-            return Query(CRMDbContext.InvoiceTax)
+            var result = Query(CRMDbContext.InvoiceTax)
                     .Where(x => ids.Contains(x.Id))
-                    .ToList()
-                    .ConvertAll(ToInvoiceTax);
+                    .ToList();
+
+            return _mapper.Map<List<DbInvoiceTax>, List<InvoiceTax>>(result);
         }
 
         public virtual InvoiceTax GetByID(int id)
         {
-            return ToInvoiceTax(CRMDbContext.InvoiceTax.FirstOrDefault(x => x.Id == id));
+            var invoiceTax = CRMDbContext.InvoiceTax.FirstOrDefault(x => x.Id == id);
+
+            return _mapper.Map<InvoiceTax>(invoiceTax);
         }
 
         public virtual InvoiceTax SaveOrUpdateInvoiceTax(InvoiceTax invoiceTax)
@@ -247,28 +260,7 @@ namespace ASC.CRM.Core.Dao
             /* _cache.Remove(_invoiceItemCacheKey);
              _cache.Insert(_invoiceTaxCacheKey, String.Empty);*/
             return invoiceTax;
-        }
-
-        private InvoiceTax ToInvoiceTax(DbInvoiceTax dbInvoiceTax)
-        {
-            if (dbInvoiceTax == null) return null;
-
-            var result = new InvoiceTax
-            {
-                ID = dbInvoiceTax.Id,
-                Name = dbInvoiceTax.Name,
-                Description = dbInvoiceTax.Description,
-                Rate = dbInvoiceTax.Rate,
-                CreateOn = TenantUtil.DateTimeFromUtc(dbInvoiceTax.CreateOn),
-                CreateBy = dbInvoiceTax.CreateBy,
-                LastModifedBy = dbInvoiceTax.LastModifedBy
-            };
-
-            if (dbInvoiceTax.LastModifedOn.HasValue)
-                result.LastModifedOn = TenantUtil.DateTimeFromUtc(result.LastModifedOn.Value);
-
-            return result;
-        }
+        }        
     }
 
 }

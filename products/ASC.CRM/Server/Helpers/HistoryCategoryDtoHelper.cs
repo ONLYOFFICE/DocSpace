@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -24,53 +24,29 @@
 */
 
 
-using System;
-using System.Runtime.Serialization;
-using ASC.Common.Security;
-using ASC.CRM.Core.EF;
-using ASC.CRM.Mapping;
+using ASC.Common;
+using ASC.CRM.Core.Entities;
+using ASC.Web.Core.Utility.Skins;
+using ASC.Web.CRM.Configuration;
 
-using AutoMapper;
-
-namespace ASC.CRM.Core.Entities
+namespace ASC.CRM.ApiModels
 {
-    [DataContract]
-    public class InvoiceTax : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceTax>
+    [Scope]
+    public sealed class HistoryCategoryDtoHelper
     {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
-
-        [DataMember(Name = "description")]
-        public string Description { get; set; }
-
-        [DataMember(Name = "rate")]
-        public decimal Rate { get; set; }
-        
-        
-        [DataMember(Name = "createOn")]
-        public DateTime CreateOn { get; set; }
-
-        [DataMember(Name = "createBy")]
-        public Guid CreateBy { get; set; }
-
-        [DataMember(Name = "lastModifedOn")]
-        public DateTime? LastModifedOn { get; set; }
-        
-        [DataMember(Name = "lastModifedBy")]
-        public Guid? LastModifedBy { get; set; }
-
-        public object SecurityId
+        public HistoryCategoryDtoHelper(WebImageSupplier webImageSupplier)
         {
-            get { return ID; }
+            WebImageSupplier = webImageSupplier;
         }
 
-        public Type ObjectType
+        public WebImageSupplier WebImageSupplier;
+
+        public HistoryCategoryBaseDto Get(ListItem listItem)
         {
-            get { return GetType(); }
-        }
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<DbInvoiceTax, InvoiceTax>();
+            return new HistoryCategoryBaseDto(listItem)
+            {
+                ImagePath = WebImageSupplier.GetAbsoluteWebPath(listItem.AdditionalParams, ProductEntryPoint.ID)
+            };
         }
     }
 }

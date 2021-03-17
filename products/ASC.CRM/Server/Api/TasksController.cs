@@ -16,37 +16,39 @@ using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Services.NotifyService;
 
+using AutoMapper;
+
 namespace ASC.CRM.Api
 {
     public class TasksController: BaseApiController
     {
+        private readonly IMapper _mapper;
+        private readonly TaskCategoryDtoHelper _taskCategoryDtoHelper;
+        private readonly ContactDtoHelper _contactDtoHelper;
+        private readonly NotifyClient _notifyClient;
+        private readonly ApiContext _apiContext;
+        private readonly MessageService _messageService;
+        private readonly MessageTarget _messageTarget;
+
         public TasksController(CRMSecurity cRMSecurity,
                      DaoFactory daoFactory,
                      ApiContext apiContext,
                      MessageTarget messageTarget,
                      MessageService messageService,
                      NotifyClient notifyClient,
-                     TaskDtoHelper taskDtoHelper,
                      ContactDtoHelper contactBaseDtoHelper,
-                     TaskCategoryDtoHelper taskCategoryDtoHelper)
+                     TaskCategoryDtoHelper taskCategoryDtoHelper,
+                     IMapper mapper)
             : base(daoFactory, cRMSecurity)
         {
-            ApiContext = apiContext;
-            MessageTarget = messageTarget;
-            MessageService = messageService;
-            NotifyClient = notifyClient;
-            TaskDtoHelper = taskDtoHelper;
-            ContactDtoHelper = contactBaseDtoHelper;
-            TaskCategoryDtoHelper = taskCategoryDtoHelper;
+            _apiContext = apiContext;
+            _messageTarget = messageTarget;
+            _messageService = messageService;
+            _notifyClient = notifyClient;
+            _contactDtoHelper = contactBaseDtoHelper;
+            _taskCategoryDtoHelper = taskCategoryDtoHelper;
+            _mapper = mapper;
         }
-
-        public TaskCategoryDtoHelper TaskCategoryDtoHelper { get; }
-        public ContactDtoHelper ContactDtoHelper { get; }
-        public TaskDtoHelper TaskDtoHelper { get; }
-        public NotifyClient NotifyClient { get; }
-        private ApiContext ApiContext { get; }
-        public MessageService MessageService { get; }
-        public MessageTarget MessageTarget { get; }
    
         /// <summary>
         ///  Returns the detailed information about the task with the ID specified in the request
@@ -70,7 +72,7 @@ namespace ASC.CRM.Api
                 throw CRMSecurity.CreateSecurityException();
             }
 
-            return TaskDtoHelper.GetTaskDto(task);
+            return _mapper.Map<TaskDto>(task);
         }
 
         /// <summary>
@@ -109,17 +111,17 @@ namespace ASC.CRM.Api
                 )
                 throw new ArgumentException();
 
-            var searchText = ApiContext.FilterValue;
+            var searchText = _apiContext.FilterValue;
 
             IEnumerable<TaskDto> result;
 
             OrderBy taskOrderBy;
 
-            if (ASC.CRM.Classes.EnumExtension.TryParse(ApiContext.SortBy, true, out taskSortedByType))
+            if (ASC.CRM.Classes.EnumExtension.TryParse(_apiContext.SortBy, true, out taskSortedByType))
             {
-                taskOrderBy = new OrderBy(taskSortedByType, !ApiContext.SortDescending);
+                taskOrderBy = new OrderBy(taskSortedByType, !_apiContext.SortDescending);
             }
-            else if (string.IsNullOrEmpty(ApiContext.SortBy))
+            else if (string.IsNullOrEmpty(_apiContext.SortBy))
             {
                 taskOrderBy = new OrderBy(TaskSortedByType.DeadLine, true);
             }
@@ -128,8 +130,8 @@ namespace ASC.CRM.Api
                 taskOrderBy = null;
             }
 
-            var fromIndex = (int)ApiContext.StartIndex;
-            var count = (int)ApiContext.Count;
+            var fromIndex = (int)_apiContext.StartIndex;
+            var count = (int)_apiContext.Count;
 
             if (taskOrderBy != null)
             {
@@ -148,9 +150,9 @@ namespace ASC.CRM.Api
                             count,
                             taskOrderBy)).ToList();
 
-                ApiContext.SetDataPaginated();
-                ApiContext.SetDataFiltered();
-                ApiContext.SetDataSorted();
+                _apiContext.SetDataPaginated();
+                _apiContext.SetDataFiltered();
+                _apiContext.SetDataSorted();
             }
             else
                 result = ToTaskListDto(
@@ -190,7 +192,7 @@ namespace ASC.CRM.Api
                         entityid);
             }
 
-            ApiContext.SetTotalCount(totalCount);
+            _apiContext.SetTotalCount(totalCount);
 
             return result;
         }
@@ -214,10 +216,9 @@ namespace ASC.CRM.Api
 
             var task = DaoFactory.GetTaskDao().GetByID(taskid);
 
-            MessageService.Send(MessageAction.CrmTaskOpened, MessageTarget.Create(task.ID), task.Title);
+            _messageService.Send(MessageAction.CrmTaskOpened, _messageTarget.Create(task.ID), task.Title);
 
-            return TaskDtoHelper.GetTaskDto(task);
-
+            return _mapper.Map<TaskDto>(task);
         }
 
         /// <summary>
@@ -238,9 +239,9 @@ namespace ASC.CRM.Api
             DaoFactory.GetTaskDao().CloseTask(taskid);
 
             var task = DaoFactory.GetTaskDao().GetByID(taskid);
-            MessageService.Send(MessageAction.CrmTaskClosed, MessageTarget.Create(task.ID), task.Title);
+            _messageService.Send(MessageAction.CrmTaskClosed, _messageTarget.Create(task.ID), task.Title);
 
-            return TaskDtoHelper.GetTaskDto(task);
+            return _mapper.Map<TaskDto>(task);
 
         }
 
@@ -264,9 +265,9 @@ namespace ASC.CRM.Api
             if (task == null) throw new ItemNotFoundException();
 
             DaoFactory.GetTaskDao().DeleteTask(taskid);
-            MessageService.Send(MessageAction.CrmTaskDeleted, MessageTarget.Create(task.ID), task.Title);
+            _messageService.Send(MessageAction.CrmTaskDeleted, _messageTarget.Create(task.ID), task.Title);
 
-            return TaskDtoHelper.GetTaskDto(task);
+            return _mapper.Map<TaskDto>(task);
 
         }
 
@@ -352,12 +353,12 @@ namespace ASC.CRM.Api
                     }
                 }
 
-                NotifyClient.SendAboutResponsibleByTask(task, listItem.Title, taskContact, taskCase, taskDeal, null);
+                _notifyClient.SendAboutResponsibleByTask(task, listItem.Title, taskContact, taskCase, taskDeal, null);
             }
 
-            MessageService.Send(MessageAction.CrmTaskCreated, MessageTarget.Create(task.ID), task.Title);
+            _messageService.Send(MessageAction.CrmTaskCreated, _messageTarget.Create(task.ID), task.Title);
 
-            return TaskDtoHelper.GetTaskDto(task);
+            return _mapper.Map<TaskDto>(task);
         }
 
         /// <summary>
@@ -457,14 +458,14 @@ namespace ASC.CRM.Api
                     }
                 }
 
-                NotifyClient.SendAboutResponsibleByTask(tasks[i], taskCategory, taskContact, taskCase, taskDeal, null);
+                _notifyClient.SendAboutResponsibleByTask(tasks[i], taskCategory, taskContact, taskCase, taskDeal, null);
             }
 
             if (tasks.Any())
             {
                 var contacts = DaoFactory.GetContactDao().GetContacts(contactId);
                 var task = tasks.First();
-                MessageService.Send(MessageAction.ContactsCreatedCrmTasks, MessageTarget.Create(tasks.Select(x => x.ID)), contacts.Select(x => x.GetTitle()), task.Title);
+                _messageService.Send(MessageAction.ContactsCreatedCrmTasks, _messageTarget.Create(tasks.Select(x => x.ID)), contacts.Select(x => x.GetTitle()), task.Title);
             }
 
             return ToTaskListDto(tasks);
@@ -552,12 +553,12 @@ namespace ASC.CRM.Api
                     }
                 }
 
-                NotifyClient.SendAboutResponsibleByTask(task, listItem.Title, taskContact, taskCase, taskDeal, null);
+                _notifyClient.SendAboutResponsibleByTask(task, listItem.Title, taskContact, taskCase, taskDeal, null);
             }
 
-            MessageService.Send(MessageAction.CrmTaskUpdated, MessageTarget.Create(task.ID), task.Title);
+            _messageService.Send(MessageAction.CrmTaskUpdated, _messageTarget.Create(task.ID), task.Title);
 
-            return TaskDtoHelper.GetTaskDto(task);
+            return _mapper.Map<TaskDto>(task);
         }
 
         /// <visible>false</visible>
@@ -668,13 +669,14 @@ namespace ASC.CRM.Api
                 }
             }
 
-            var categories = DaoFactory.GetListItemDao().GetItems(categoryIDs.ToArray()).ToDictionary(x => x.ID, x => TaskCategoryDtoHelper.Get(x));
-            var contacts = DaoFactory.GetContactDao().GetContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, x => ContactDtoHelper.GetContactBaseWithEmailDto(x));
-            var restrictedContacts = DaoFactory.GetContactDao().GetRestrictedContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, x => ContactDtoHelper.GetContactBaseWithEmailDto(x));
+            var categories = DaoFactory.GetListItemDao().GetItems(categoryIDs.ToArray()).ToDictionary(x => x.ID, x => _taskCategoryDtoHelper.Get(x));
+            var contacts = DaoFactory.GetContactDao().GetContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, x => _contactDtoHelper.GetContactBaseWithEmailDto(x));
+            var restrictedContacts = DaoFactory.GetContactDao().GetRestrictedContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, x => _contactDtoHelper.GetContactBaseWithEmailDto(x));
 
             foreach (var item in itemList)
             {
-                var taskDto = TaskDtoHelper.GetTaskDto(item);
+                var taskDto = _mapper.Map<TaskDto>(item); 
+
                 taskDto.CanEdit = CRMSecurity.CanEdit(item);
 
                 if (contacts.ContainsKey(item.ContactID))
@@ -711,8 +713,6 @@ namespace ASC.CRM.Api
 
             return result;
         }
-
-
     }
 
 }

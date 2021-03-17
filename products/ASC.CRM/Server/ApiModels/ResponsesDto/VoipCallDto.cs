@@ -24,53 +24,31 @@
 */
 
 
-using System;
+using ASC.Api.Core;
+using ASC.VoipService;
+using ASC.Web.Api.Models;
+
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
-using ASC.Common.Security;
-using ASC.CRM.Core.EF;
-using ASC.CRM.Mapping;
 
-using AutoMapper;
-
-namespace ASC.CRM.Core.Entities
+namespace ASC.CRM.ApiModels
 {
-    [DataContract]
-    public class InvoiceTax : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceTax>
+    [DataContract(Name = "voipCall", Namespace = "")]
+    public class VoipCallDto
     {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
+        public string Id { get; set; }
+        public string From { get; set; }
+        public string To { get; set; }
+        public VoipCallStatus? Status { get; set; }
+        public EmployeeWraper AnsweredBy { get; set; }
+        public ApiDateTime DialDate { get; set; }
+        public int DialDuration { get; set; }
+        public decimal Cost { get; set; }
+        public ContactDto Contact { get; set; }
+        public IEnumerable<VoipCallDto> Calls { get; set; }
+        public string RecordUrl { get; set; }
+        public int RecordDuration { get; set; }
 
-        [DataMember(Name = "description")]
-        public string Description { get; set; }
-
-        [DataMember(Name = "rate")]
-        public decimal Rate { get; set; }
-        
-        
-        [DataMember(Name = "createOn")]
-        public DateTime CreateOn { get; set; }
-
-        [DataMember(Name = "createBy")]
-        public Guid CreateBy { get; set; }
-
-        [DataMember(Name = "lastModifedOn")]
-        public DateTime? LastModifedOn { get; set; }
-        
-        [DataMember(Name = "lastModifedBy")]
-        public Guid? LastModifedBy { get; set; }
-
-        public object SecurityId
-        {
-            get { return ID; }
-        }
-
-        public Type ObjectType
-        {
-            get { return GetType(); }
-        }
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<DbInvoiceTax, InvoiceTax>();
-        }
     }
 }

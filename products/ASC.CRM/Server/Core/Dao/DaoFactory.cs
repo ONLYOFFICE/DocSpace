@@ -177,6 +177,12 @@ namespace ASC.CRM.Core.Dao
             services.TryAdd<ReportDao>();
             services.TryAdd<CurrencyInfoDao>();
             services.TryAdd<ContactInfoDao>();
+
+
+            services.TryAdd<InvoiceDao>();
+            services.TryAdd<InvoiceItemDao>();
+            services.TryAdd<InvoiceTaxDao>();
+            services.TryAdd<InvoiceLineDao>();
         }
     }
 

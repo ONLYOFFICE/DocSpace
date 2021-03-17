@@ -38,6 +38,9 @@ using ASC.ElasticSearch;
 using ASC.Files.Core;
 using ASC.Web.CRM.Core.Search;
 using ASC.Web.Files.Api;
+
+using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -63,6 +66,7 @@ namespace ASC.CRM.Core.Dao
                        IHttpContextAccessor httpContextAccessor,
                        IOptionsMonitor<ILog> logger,
                        ICache ascCache,
+                       IMapper mapper,
                        BundleSearch bundleSearch)
             : base(dbContextManager,
                  tenantManager,
@@ -72,6 +76,7 @@ namespace ASC.CRM.Core.Dao
                  filesIntegration,
                  logger,
                  ascCache,
+                 mapper,
                  bundleSearch)
         {
             _dealCache = new HttpRequestDictionary<Deal>(httpContextAccessor?.HttpContext, "crm_deal");
@@ -115,6 +120,8 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class DealDao : AbstractDao
     {
+        private readonly IMapper _mapper;
+
         public DealDao(DbContextManager<CRMDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
@@ -123,6 +130,7 @@ namespace ASC.CRM.Core.Dao
                        FilesIntegration filesIntegration,
                        IOptionsMonitor<ILog> logger,
                        ICache ascCache,
+                       IMapper mapper,
                        BundleSearch bundleSearch) :
             base(dbContextManager,
                  tenantManager,
@@ -134,6 +142,7 @@ namespace ASC.CRM.Core.Dao
             FactoryIndexer = factoryIndexer;
             FilesIntegration = filesIntegration;
             BundleSearch = bundleSearch;
+            _mapper = mapper;
         }
 
         public BundleSearch BundleSearch { get; }
@@ -176,9 +185,9 @@ namespace ASC.CRM.Core.Dao
         {
             if (id == null || !id.Any()) return new List<Deal>();
 
-            return Query(CRMDbContext.Deals).Where(x => id.Contains(x.Id))
+            return _mapper.ProjectTo<Deal>(Query(CRMDbContext.Deals)
+                                           .Where(x => id.Contains(x.Id)))
                                              .ToList()
-                                             .ConvertAll(ToDeal)
                                              .FindAll(CRMSecurity.CanAccessTo);
         }
 
@@ -737,7 +746,7 @@ namespace ASC.CRM.Core.Dao
             }
 
 
-            return sqlQuery.ToList().ConvertAll(ToDeal);
+            return _mapper.ProjectTo<Deal>(sqlQuery).ToList();
         }
 
         public List<Deal> GetDealsByContactID(int contactID)
@@ -786,7 +795,7 @@ namespace ASC.CRM.Core.Dao
 
             sqlQuery = sqlQuery.OrderBy(x => x.Title);
 
-            return sqlQuery.ToList().ConvertAll(ToDeal).FindAll(CRMSecurity.CanAccessTo);
+            return  _mapper.ProjectTo<Deal>(sqlQuery).ToList().FindAll(CRMSecurity.CanAccessTo);
         }
 
         public virtual Deal DeleteDeal(int dealID)
@@ -876,30 +885,6 @@ namespace ASC.CRM.Core.Dao
                 filedao.DeleteFile(Convert.ToInt32(filesID));
             }
 
-        }
-
-        private Deal ToDeal(DbDeal dbDeal)
-        {
-            if (dbDeal == null) return null;
-
-            return new Deal
-            {
-                ID = dbDeal.Id,
-                Title = dbDeal.Title,
-                Description = dbDeal.Description,
-                ResponsibleID = dbDeal.ResponsibleId,
-                ContactID = dbDeal.ContactId,
-                BidCurrency = dbDeal.BidCurrency,
-                BidValue = dbDeal.BidValue,
-                BidType = dbDeal.BidType,
-                DealMilestoneID = dbDeal.DealMilestoneId,
-                ExpectedCloseDate = dbDeal.ExpectedCloseDate,
-                PerPeriodValue = dbDeal.PerPeriodValue,
-                DealMilestoneProbability = dbDeal.DealMilestoneProbability,
-                CreateOn = TenantUtil.DateTimeFromUtc(dbDeal.CreateOn),
-                CreateBy = dbDeal.CreateBy,
-                ActualCloseDate = Convert.ToDateTime(dbDeal.ActualCloseDate) == DateTime.MinValue ? DateTime.MinValue : TenantUtil.DateTimeFromUtc(Convert.ToDateTime(dbDeal.ActualCloseDate))
-            };
         }
 
         public void ReassignDealsResponsible(Guid fromUserId, Guid toUserId)

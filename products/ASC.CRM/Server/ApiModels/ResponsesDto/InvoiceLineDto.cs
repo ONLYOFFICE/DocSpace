@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -23,54 +23,39 @@
  *
 */
 
-
-using System;
 using System.Runtime.Serialization;
-using ASC.Common.Security;
-using ASC.CRM.Core.EF;
-using ASC.CRM.Mapping;
 
-using AutoMapper;
-
-namespace ASC.CRM.Core.Entities
+namespace ASC.CRM.ApiModels
 {
-    [DataContract]
-    public class InvoiceTax : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceTax>
+    /// <summary>
+    ///  Invoice Line
+    /// </summary>
+    [DataContract(Name = "invoiceLine", Namespace = "")]
+    public class InvoiceLineDto
     {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
-
-        [DataMember(Name = "description")]
-        public string Description { get; set; }
-
-        [DataMember(Name = "rate")]
-        public decimal Rate { get; set; }
-        
-        
-        [DataMember(Name = "createOn")]
-        public DateTime CreateOn { get; set; }
-
-        [DataMember(Name = "createBy")]
-        public Guid CreateBy { get; set; }
-
-        [DataMember(Name = "lastModifedOn")]
-        public DateTime? LastModifedOn { get; set; }
-        
-        [DataMember(Name = "lastModifedBy")]
-        public Guid? LastModifedBy { get; set; }
-
-        public object SecurityId
+        public int Id { get; set; }        
+        public int InvoiceID { get; set; }        
+        public int InvoiceItemID { get; set; }        
+        public int InvoiceTax1ID { get; set; }        
+        public int InvoiceTax2ID { get; set; }        
+        public int SortOrder { get; set; }        
+        public string Description { get; set; }        
+        public decimal Quantity { get; set; }        
+        public decimal Price { get; set; }        
+        public decimal Discount { get; set; }
+        public static InvoiceLineDto GetSample()
         {
-            get { return ID; }
-        }
-
-        public Type ObjectType
-        {
-            get { return GetType(); }
-        }
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<DbInvoiceTax, InvoiceTax>();
+            return new InvoiceLineDto
+            {
+                Description = string.Empty,
+                Discount = (decimal)0.00,
+                InvoiceID = 0,
+                InvoiceItemID = 0,
+                InvoiceTax1ID = 0,
+                InvoiceTax2ID = 0,
+                Price = (decimal)0.00,
+                Quantity = 0
+            };
         }
     }
 }

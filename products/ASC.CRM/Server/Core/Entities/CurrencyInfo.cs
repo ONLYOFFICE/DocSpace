@@ -49,19 +49,10 @@ namespace ASC.CRM.Core
             }
         }
 
-        [DataMember(Name = "symbol")]
         public string Symbol { get; set; }
-
-        [DataMember(Name = "abbreviation")]
         public string Abbreviation { get; set; }
-
-        [DataMember(Name = "cultureName")]
         public string CultureName { get; set; }
-
-        [DataMember(Name = "isConvertable")]
         public bool IsConvertable { get; set; }
-
-        [DataMember(Name = "isBasic")]
         public bool IsBasic { get; set; }
 
         public CurrencyInfo(string resourceKey, string abbreviation, string symbol, string cultureName, bool isConvertable, bool isBasic)

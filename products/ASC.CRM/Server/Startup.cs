@@ -1,8 +1,11 @@
+using System.Reflection;
 using System.Text;
 
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.CRM.Api;
+using ASC.CRM.Core;
+using ASC.CRM.Mapping;
 using ASC.Web.CRM.HttpHandlers;
 
 using Microsoft.AspNetCore.Builder;
@@ -44,6 +47,8 @@ namespace ASC.CRM
             DIHelper.TryAdd<TaskTemplateController>();
             DIHelper.TryAdd<UtilsController>();
             DIHelper.TryAdd<VoIPController>();
+
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

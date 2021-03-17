@@ -36,9 +36,13 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
 using ASC.Web.CRM.Core.Search;
+
+using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -62,7 +66,8 @@ namespace ASC.CRM.Core.Dao
                       ICache ascCache,
                       IHttpContextAccessor httpContextAccessor,
                       DbContextManager<UserDbContext> userDbContext,
-                      DbContextManager<CoreDbContext> coreDbContext
+                      DbContextManager<CoreDbContext> coreDbContext,
+                      IMapper mapper
                       ) :
            base(dbContextManager,
                 tenantManager,
@@ -73,7 +78,8 @@ namespace ASC.CRM.Core.Dao
                 logger,
                 ascCache,
                 userDbContext,
-                coreDbContext
+                coreDbContext,
+                mapper
                 )
         {
             _contactCache = new HttpRequestDictionary<Task>(httpContextAccessor?.HttpContext, "crm_task");
@@ -119,6 +125,7 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class TaskDao : AbstractDao
     {
+        private readonly IMapper _mapper;
         public TaskDao(DbContextManager<CRMDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
@@ -128,8 +135,8 @@ namespace ASC.CRM.Core.Dao
                        IOptionsMonitor<ILog> logger,
                        ICache ascCache,
                        DbContextManager<UserDbContext> userDbContext,
-                       DbContextManager<CoreDbContext> coreDbContext
-                       ) :
+                       DbContextManager<CoreDbContext> coreDbContext,
+                       IMapper mapper) :
             base(dbContextManager,
                  tenantManager,
                  securityContext,
@@ -141,6 +148,7 @@ namespace ASC.CRM.Core.Dao
             FactoryIndexer = factoryIndexer;
             UserDbContext = userDbContext.Value;
             CoreDbContext = coreDbContext.Value;
+            _mapper = mapper;
         }
 
         public CoreDbContext CoreDbContext { get; }
@@ -195,11 +203,11 @@ namespace ASC.CRM.Core.Dao
 
         public virtual Task GetByID(int taskID)
         {
-            var crmTask = CRMDbContext.Tasks.Where(x => x.Id == taskID).SingleOrDefault();
+            var dbTask = CRMDbContext.Tasks.Where(x => x.Id == taskID).SingleOrDefault();
 
-            if (crmTask == default(DbTask)) return null;
+            if (dbTask == default(DbTask)) return null;
 
-            return ToTask(crmTask);
+            return _mapper.Map<Task>(dbTask);
         }
 
         public List<Task> GetTasks(EntityType entityType, int entityID, bool? onlyActiveTask)
@@ -214,11 +222,10 @@ namespace ASC.CRM.Core.Dao
 
         public List<Task> GetAllTasks()
         {
-            return Query(CRMDbContext.Tasks)
+            return _mapper.ProjectTo<Task>(Query(CRMDbContext.Tasks)
                  .OrderBy(x => x.Deadline)
-                 .OrderBy(x => x.Title)
+                 .OrderBy(x => x.Title))
                  .ToList()
-                 .ConvertAll(ToTask)
                  .FindAll(CRMSecurity.CanAccessTo);
         }
 
@@ -373,7 +380,7 @@ namespace ASC.CRM.Core.Dao
                 }
             }
 
-            return sqlQuery.ToList().ConvertAll(ToTask);
+            return _mapper.ProjectTo<Task>(sqlQuery).ToList();
         }
 
         public int GetTasksCount(
@@ -469,7 +476,7 @@ namespace ASC.CRM.Core.Dao
                     //                    (x, y) => new { x, y })
                     //                    .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x.x, y })
                     //                    .Where(x => 
-                                                    
+
                     //                                x.y == null ||
                     //                                x.y.IsShared == null ||
                     //                                x.y.IsShared.Value == ShareType.Read ||
@@ -507,7 +514,7 @@ namespace ASC.CRM.Core.Dao
                     //                               idsFromAcl.Contains(x.y.Id))
                     //                   .Select(x => x.x.Id)
                     //                   .ToList());
-                                  
+
                     //Logger.DebugFormat("End GetTasksCount: {0}. count tasks with entityId and only close contacts", DateTime.Now.ToString());
 
 
@@ -665,82 +672,82 @@ namespace ASC.CRM.Core.Dao
                 switch ((TaskSortedByType)orderBy.SortedBy)
                 {
                     case TaskSortedByType.Title:
-                        {
-                            if (orderBy.IsAsc)
-                                sqlQuery = sqlQuery.OrderBy(x => x.Title)
-                                                   .ThenBy(x => x.Deadline);
-                            else
-                                sqlQuery = sqlQuery.OrderByDescending(x => x.Title)
-                                                   .ThenBy(x => x.Deadline);
-                        }
+                    {
+                        if (orderBy.IsAsc)
+                            sqlQuery = sqlQuery.OrderBy(x => x.Title)
+                                               .ThenBy(x => x.Deadline);
+                        else
+                            sqlQuery = sqlQuery.OrderByDescending(x => x.Title)
+                                               .ThenBy(x => x.Deadline);
+                    }
 
-                        break;
+                    break;
                     case TaskSortedByType.DeadLine:
-                        {
-                            if (orderBy.IsAsc)
-                                sqlQuery = sqlQuery.OrderBy(x => x.Deadline)
-                                                   .ThenBy(x => x.Title);
-                            else
-                                sqlQuery = sqlQuery.OrderByDescending(x => x.Deadline)
-                                                   .ThenBy(x => x.Title);
-                        }
-                        break;
+                    {
+                        if (orderBy.IsAsc)
+                            sqlQuery = sqlQuery.OrderBy(x => x.Deadline)
+                                               .ThenBy(x => x.Title);
+                        else
+                            sqlQuery = sqlQuery.OrderByDescending(x => x.Deadline)
+                                               .ThenBy(x => x.Title);
+                    }
+                    break;
                     case TaskSortedByType.Category:
-                        {
-                            if (orderBy.IsAsc)
-                                sqlQuery = sqlQuery.OrderBy(x => x.CategoryId)
-                                                   .ThenBy(x => x.Deadline)
-                                                   .ThenBy(x => x.Title);
-                            else
-                                sqlQuery = sqlQuery.OrderByDescending(x => x.CategoryId)
-                                                   .ThenBy(x => x.Deadline)
-                                                   .ThenBy(x => x.Title);
-                        }
+                    {
+                        if (orderBy.IsAsc)
+                            sqlQuery = sqlQuery.OrderBy(x => x.CategoryId)
+                                               .ThenBy(x => x.Deadline)
+                                               .ThenBy(x => x.Title);
+                        else
+                            sqlQuery = sqlQuery.OrderByDescending(x => x.CategoryId)
+                                               .ThenBy(x => x.Deadline)
+                                               .ThenBy(x => x.Title);
+                    }
 
-                        break;
+                    break;
                     case TaskSortedByType.ContactManager:
+                    {
+                        sqlQuery = sqlQuery.GroupJoin(UserDbContext.Users.Where(x => x.Tenant == TenantID),
+                              x => x.ResponsibleId,
+                              y => y.Id,
+                              (x, y) => new { x, y }
+                            )
+                         .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x.x, y })
+                         .OrderBy("x.y.LastName", orderBy.IsAsc)
+                         .OrderBy("x.y.FirstName", orderBy.IsAsc)
+                         .OrderBy(x => x.x.Deadline)
+                         .OrderBy(x => x.x.Title)
+                         .Select(x => x.x);
+                    }
+
+                    break;
+                    case TaskSortedByType.Contact:
+                    {
+                        var subSqlQuery = sqlQuery.GroupJoin(CRMDbContext.Contacts,
+                                                      x => x.ContactId,
+                                                      y => y.Id,
+                                                      (x, y) => new { x, y }
+                                                    )
+                                            .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x.x, y });
+
+                        if (orderBy.IsAsc)
                         {
-                            sqlQuery =  sqlQuery.GroupJoin(UserDbContext.Users.Where(x => x.Tenant == TenantID),
-                                  x => x.ResponsibleId,
-                                  y => y.Id,
-                                  (x, y) => new { x, y }
-                                )
-                             .SelectMany(x => x.y.DefaultIfEmpty(), (x,y) => new { x.x,y })
-                             .OrderBy("x.y.LastName", orderBy.IsAsc)
-                             .OrderBy("x.y.FirstName", orderBy.IsAsc)
-                             .OrderBy(x => x.x.Deadline)
-                             .OrderBy(x => x.x.Title)
-                             .Select(x => x.x);
+                            subSqlQuery = subSqlQuery.OrderBy(x => x.y != null ? x.y.DisplayName : "")
+                                .ThenBy(x => x.x.Deadline)
+                                .ThenBy(x => x.x.Title);
                         }
+                        else
+                        {
+                            subSqlQuery = subSqlQuery.OrderByDescending(x => x.y != null ? x.y.DisplayName : "")
+                                  .ThenBy(x => x.x.Deadline)
+                                  .ThenBy(x => x.x.Title);
+
+                        }
+
+                        sqlQuery = subSqlQuery.Select(x => x.x);
 
                         break;
-                    case TaskSortedByType.Contact:
-                        {
-                            var subSqlQuery = sqlQuery.GroupJoin(CRMDbContext.Contacts,
-                                                          x => x.ContactId,
-                                                          y => y.Id,
-                                                          (x, y) => new { x, y }
-                                                        )
-                                                .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x.x, y });
-
-                            if (orderBy.IsAsc)
-                            {
-                                subSqlQuery = subSqlQuery.OrderBy(x => x.y != null ? x.y.DisplayName : "")
-                                    .ThenBy(x => x.x.Deadline)
-                                    .ThenBy(x => x.x.Title);
-                            }
-                            else
-                            {
-                                subSqlQuery = subSqlQuery.OrderByDescending(x => x.y != null ? x.y.DisplayName : "")
-                                      .ThenBy(x => x.x.Deadline)
-                                      .ThenBy(x => x.x.Title);
-
-                            }
-
-                            sqlQuery = subSqlQuery.Select(x => x.x);
-
-                            break;
-                        }
+                    }
                 }
             }
             else
@@ -758,7 +765,7 @@ namespace ASC.CRM.Core.Dao
             return Query(CRMDbContext.Tasks)
                         .Where(x => contactID.Contains(x.ContactId) && !x.IsClosed)
                         .GroupBy(x => x.ContactId)
-                        .ToDictionary(x => x.Key, y => ToTask(y.Single(x => x.Id == y.Min(x => x.Id))));
+                        .ToDictionary(x => x.Key, y => _mapper.Map<Task>(y.Single(x => x.Id == y.Min(x => x.Id))));
         }
 
         public IEnumerable<Guid> GetResponsibles(int categoryID)
@@ -865,7 +872,7 @@ namespace ASC.CRM.Core.Dao
 
                 var itemToUpdate = Query(CRMDbContext.Tasks).FirstOrDefault(x => x.Id == newTask.ID);
 
-                var oldTask = ToTask(itemToUpdate);
+                var oldTask = _mapper.Map<Task>(itemToUpdate);
 
                 CRMSecurity.DemandEdit(oldTask);
 
@@ -895,7 +902,7 @@ namespace ASC.CRM.Core.Dao
 
                 newTask.IsClosed = oldTask.IsClosed;
             }
-            
+
             FactoryIndexer.Index(Query(CRMDbContext.Tasks).Where(x => x.Id == newTask.ID).Single());
 
             return newTask;
@@ -1155,31 +1162,5 @@ namespace ASC.CRM.Core.Dao
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
         }
-
-        public Task ToTask(DbTask dbTask)
-        {
-            if (dbTask == null) return null;
-
-            return new Task
-            {
-                ID = dbTask.Id,
-                AlertValue = dbTask.AlertValue,
-                CategoryID = dbTask.CategoryId,
-                ContactID = dbTask.ContactId,
-                CreateBy = dbTask.CreateBy,
-                CreateOn = TenantUtil.DateTimeFromUtc(dbTask.CreateOn),
-                DeadLine = TenantUtil.DateTimeFromUtc(dbTask.Deadline),
-                Description = dbTask.Description,
-                IsClosed = dbTask.IsClosed,
-                EntityID = dbTask.EntityId,
-                EntityType = dbTask.EntityType,
-                LastModifedBy = dbTask.LastModifedBy,
-                LastModifedOn = dbTask.LastModifedOn,
-                ResponsibleID = dbTask.ResponsibleId,
-                Title = dbTask.Title
-            };
-
-        }
     }
-
 }

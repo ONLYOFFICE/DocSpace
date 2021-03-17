@@ -26,51 +26,59 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Common.Security;
-using ASC.CRM.Core.EF;
-using ASC.CRM.Mapping;
 
-using AutoMapper;
+using ASC.Common;
 
-namespace ASC.CRM.Core.Entities
+namespace ASC.CRM.ApiModels
 {
-    [DataContract]
-    public class InvoiceTax : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceTax>
+    /// <summary>
+    ///  Currency information
+    /// </summary>
+    [DataContract(Name = "currencyInfo", Namespace = "")]
+    public class CurrencyInfoDto
     {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
+        public CurrencyInfoDto()
+        {
 
-        [DataMember(Name = "description")]
-        public string Description { get; set; }
 
-        [DataMember(Name = "rate")]
+        }       
+        public String Title { get; set; }        
+        public String Symbol { get; set; }        
+        public String Abbreviation { get; set; }        
+        public String CultureName { get; set; }        
+        public bool IsConvertable { get; set; }        
+        public bool IsBasic { get; set; }
+        public static CurrencyInfoDto GetSample()
+        {
+            return new CurrencyInfoDto
+            {
+                Title = "Chinese Yuan",
+                Abbreviation = "CNY",
+                Symbol = "¥",
+                CultureName = "CN",
+                IsConvertable = true,
+                IsBasic = false
+            };
+        }
+    }
+      
+    /// <summary>
+    ///  Currency rate information
+    /// </summary>
+    [DataContract(Name = "currencyRateInfo", Namespace = "")]
+    public class CurrencyRateInfoDto : CurrencyInfoDto
+    {
+        public CurrencyRateInfoDto()
+        {
+        }
+
+        //public CurrencyRateInfoDto(CurrencyInfo currencyInfo, Decimal rate)
+        //    : base(currencyInfo)
+        //{
+        //    Rate = rate;
+        //}
+
+        
         public decimal Rate { get; set; }
-        
-        
-        [DataMember(Name = "createOn")]
-        public DateTime CreateOn { get; set; }
-
-        [DataMember(Name = "createBy")]
-        public Guid CreateBy { get; set; }
-
-        [DataMember(Name = "lastModifedOn")]
-        public DateTime? LastModifedOn { get; set; }
-        
-        [DataMember(Name = "lastModifedBy")]
-        public Guid? LastModifedBy { get; set; }
-
-        public object SecurityId
-        {
-            get { return ID; }
-        }
-
-        public Type ObjectType
-        {
-            get { return GetType(); }
-        }
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<DbInvoiceTax, InvoiceTax>();
-        }
     }
 }

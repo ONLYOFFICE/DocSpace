@@ -50,6 +50,8 @@ using ASC.Web.Studio.Core;
 
 using Autofac;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -59,13 +61,15 @@ namespace ASC.CRM.Api
 {
     public class ContactsController : BaseApiController
     {
+
+        private readonly IMapper _mapper;
+
         public ContactsController(CRMSecurity cRMSecurity,
                      DaoFactory daoFactory,
                      ApiContext apiContext,
                      MessageTarget messageTarget,
                      MessageService messageService,
                      NotifyClient notifyClient,
-                     TaskDtoHelper taskDtoHelper,
                      ContactDtoHelper contactBaseDtoHelper,
                      TaskCategoryDtoHelper taskCategoryDtoHelper,
                      SecurityContext securityContext,
@@ -76,14 +80,14 @@ namespace ASC.CRM.Api
                      ContactPhotoManager contactPhotoManager,
                      FileSizeComment fileSizeComment,
                      ContactInfoDtoHelper contactInfoDtoHelper,
-                     MailSender mailSender)
+                     MailSender mailSender,
+                     IMapper mapper)
             : base(daoFactory, cRMSecurity)
         {
             ApiContext = apiContext;
             MessageTarget = messageTarget;
             MessageService = messageService;
             NotifyClient = notifyClient;
-            TaskDtoHelper = taskDtoHelper;
             ContactDtoHelper = contactBaseDtoHelper;
             TaskCategoryDtoHelper = taskCategoryDtoHelper;
             SecurityContext = securityContext;
@@ -95,6 +99,7 @@ namespace ASC.CRM.Api
             FileSizeComment = fileSizeComment;
             ContactInfoDtoHelper = contactInfoDtoHelper;
             MailSender = mailSender;
+            _mapper = mapper;
         }
 
         public MailSender MailSender { get; }
@@ -107,7 +112,6 @@ namespace ASC.CRM.Api
         public SecurityContext SecurityContext { get; }
         public TaskCategoryDtoHelper TaskCategoryDtoHelper { get; }
         public ContactDtoHelper ContactDtoHelper { get; }
-        public TaskDtoHelper TaskDtoHelper { get; }
         public NotifyClient NotifyClient { get; }
         private ApiContext ApiContext { get; }
         public MessageService MessageService { get; }
@@ -745,7 +749,7 @@ namespace ASC.CRM.Api
         /// <returns>Person</returns>
         /// <exception cref="ArgumentException"></exception>
         [Create(@"contact/person")]
-        public PersonDto CreatePerson([FromForm] CreateOrUpdatePersonInDto intDto)
+        public PersonDto CreatePerson([FromForm] CreateOrUpdatePersonRequestDto intDto)
         {
             string firstName = intDto.FirstName;
             string lastName = intDto.LastName;
@@ -922,7 +926,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         [Update(@"contact/person/{personid:int}")]
-        public PersonDto UpdatePerson([FromQuery] int personid, [FromForm] CreateOrUpdatePersonInDto inDto)
+        public PersonDto UpdatePerson([FromQuery] int personid, [FromForm] CreateOrUpdatePersonRequestDto inDto)
         {
             string firstName = inDto.FirstName;
             string lastName = inDto.LastName;
@@ -996,7 +1000,7 @@ namespace ASC.CRM.Api
         /// <returns>Company</returns>
         /// <exception cref="ArgumentException"></exception>
         [Create(@"contact/company")]
-        public CompanyDto CreateCompany([FromForm] CreateOrUpdateCompanyInDto inDto)
+        public CompanyDto CreateCompany([FromForm] CreateOrUpdateCompanyRequestDto inDto)
         {
             var personList = inDto.PersonList;
             string companyName = inDto.CompanyName;
@@ -1172,7 +1176,7 @@ namespace ASC.CRM.Api
         [Update(@"contact/company/{companyid:int}")]
         public CompanyDto UpdateCompany(
             [FromQuery] int companyid,
-            [FromForm] CreateOrUpdateCompanyInDto intDto)
+            [FromForm] CreateOrUpdateCompanyRequestDto intDto)
         {
             string companyName = intDto.CompanyName;
             string about = intDto.About;
@@ -1472,7 +1476,7 @@ namespace ASC.CRM.Api
         /// </returns>
         [Update(@"contact/access")]
         public IEnumerable<ContactDto> SetAccessToBatchContact(
-            [FromBody] SetAccessToBatchContactInDto inDto)
+            [FromBody] SetAccessToBatchContactRequestDto inDto)
         {
             var contactid = inDto.ContactID;
             var isShared = inDto.isShared;
@@ -1511,7 +1515,7 @@ namespace ASC.CRM.Api
         /// </returns>
         [Update(@"contact/filter/access")]
         public IEnumerable<ContactDto> SetAccessToBatchContact(
-         [FromForm] SetAccessToBatchContactByFilterInDto inDto)
+         [FromForm] SetAccessToBatchContactByFilterRequestDto inDto)
         {
             IEnumerable<String> tags = inDto.Tags;
             int? contactStage = inDto.ContactStage;
@@ -1894,7 +1898,7 @@ namespace ASC.CRM.Api
         /// <visible>false</visible>
         [Create(@"contact/mailsmtp/send")]
         public IProgressItem SendMailSMTPToContacts(
-            SendMailSMTPToContactsInDto inDto)
+            SendMailSMTPToContactsRequestDto inDto)
         {
             List<int> fileIDs = inDto.FileIDs;
             List<int> contactIds = inDto.ContactIds;
@@ -2114,7 +2118,7 @@ namespace ASC.CRM.Api
                 {
                     var task = nearestTasks[contactDto.Id];
 
-                    taskDto = TaskDtoHelper.GetTaskBaseDto(task);
+                    taskDto = _mapper.Map<TaskBaseDto>(task);
 
                     if (task.CategoryID > 0)
                     {

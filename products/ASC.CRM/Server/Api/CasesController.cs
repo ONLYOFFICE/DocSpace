@@ -47,11 +47,14 @@ using ASC.Api.Core;
 using ASC.Web.CRM.Services.NotifyService;
 using ASC.Web.Core.Users;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace ASC.CRM.Api
 {
     public class CasesController : BaseApiController
     {
+        private IMapper _mapper;
+
         public CasesController(CRMSecurity cRMSecurity,
                      DaoFactory daoFactory,
                      ApiContext apiContext,
@@ -59,10 +62,10 @@ namespace ASC.CRM.Api
                      MessageService messageService,
                      NotifyClient notifyClient,
                      ContactDtoHelper contactBaseDtoHelper,
-                     CasesDtoHelper casesDtoHelper,
                      SecurityContext securityContext,
                      DisplayUserSettingsHelper displayUserSettingsHelper,
-                     UserManager userManager)
+                     UserManager userManager,
+                     IMapper mapper)
             : base(daoFactory, cRMSecurity)
         {
             ApiContext = apiContext;
@@ -70,15 +73,14 @@ namespace ASC.CRM.Api
             MessageService = messageService;
             NotifyClient = notifyClient;
             ContactDtoHelper = contactBaseDtoHelper;
-            CasesDtoHelper = casesDtoHelper;
             SecurityContext = securityContext;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             UserManager = userManager;
+            _mapper = mapper;
         }
 
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public SecurityContext SecurityContext { get; }
-        public CasesDtoHelper CasesDtoHelper { get; }
         public ContactDtoHelper ContactDtoHelper { get; }
         public NotifyClient NotifyClient { get; }
         private ApiContext ApiContext { get; }
@@ -106,8 +108,9 @@ namespace ASC.CRM.Api
             if (cases == null) throw new ItemNotFoundException();
 
             MessageService.Send(MessageAction.CaseClosed, MessageTarget.Create(cases.ID), cases.Title);
+            
 
-            return CasesDtoHelper.Get(cases);
+            return _mapper.Map<CasesDto>(cases);
         }
 
         /// <summary>
@@ -130,8 +133,8 @@ namespace ASC.CRM.Api
             if (cases == null) throw new ItemNotFoundException();
 
             MessageService.Send(MessageAction.CaseOpened, MessageTarget.Create(cases.ID), cases.Title);
-
-            return CasesDtoHelper.Get(cases);
+            
+            return _mapper.Map<CasesDto>(cases);
         }
 
         /// <summary>
@@ -161,7 +164,7 @@ namespace ASC.CRM.Api
         /// ]]>
         /// </example>
         [Create(@"case")]
-        public CasesDto CreateCases([FromForm] CreateOrUpdateCasesInDto inDto)
+        public CasesDto CreateCases([FromForm] CreateOrUpdateCasesRequestDto inDto)
         {
 
             var title = inDto.Title;
@@ -203,7 +206,9 @@ namespace ASC.CRM.Api
                 }
             }
 
-            return CasesDtoHelper.Get(DaoFactory.GetCasesDao().GetByID(casesID));
+            var casesToResult = DaoFactory.GetCasesDao().GetByID(casesID);
+
+            return _mapper.Map<CasesDto>(casesToResult);
         }
 
         /// <summary>
@@ -236,7 +241,7 @@ namespace ASC.CRM.Api
         /// ]]>
         /// </example>
         [Update(@"case/{caseid:int}")]
-        public CasesDto UpdateCases([FromQuery] int caseid, [FromForm] CreateOrUpdateCasesInDto inDto)
+        public CasesDto UpdateCases([FromQuery] int caseid, [FromForm] CreateOrUpdateCasesRequestDto inDto)
         {
             var title = inDto.Title;
             var isPrivate = inDto.isPrivate;
@@ -277,7 +282,7 @@ namespace ASC.CRM.Api
                 }
             }
 
-            return CasesDtoHelper.Get(cases);
+            return _mapper.Map<CasesDto>(cases);
         }
 
         /// <summary>
@@ -338,7 +343,7 @@ namespace ASC.CRM.Api
                 }
             }
 
-            return CasesDtoHelper.Get(cases);
+            return _mapper.Map<CasesDto>(cases);
         }
 
         /// <summary>
@@ -355,7 +360,7 @@ namespace ASC.CRM.Api
         ///   Case list
         /// </returns>
         [Update(@"case/access")]
-        public IEnumerable<CasesDto> SetAccessToBatchCases([FromForm] SetAccessToBatchCasesInDto inDto)
+        public IEnumerable<CasesDto> SetAccessToBatchCases([FromForm] SetAccessToBatchCasesRequestDto inDto)
         {
             var casesid = inDto.CasesId;
             var isPrivate = inDto.isPrivate;
@@ -439,7 +444,7 @@ namespace ASC.CRM.Api
             var cases = DaoFactory.GetCasesDao().GetByID(caseid);
             if (cases == null || !CRMSecurity.CanAccessTo(cases)) throw new ItemNotFoundException();
 
-            return CasesDtoHelper.Get(cases);
+            return _mapper.Map<CasesDto>(cases);
         }
 
         /// <summary>
@@ -546,7 +551,7 @@ namespace ASC.CRM.Api
 
             MessageService.Send(MessageAction.CaseDeleted, MessageTarget.Create(cases.ID), cases.Title);
 
-            return CasesDtoHelper.Get(cases);
+            return _mapper.Map<CasesDto>(cases);
         }
 
         /// <summary>
@@ -705,7 +710,7 @@ namespace ASC.CRM.Api
                 {
                     if (item.Title.IndexOf(prefix, StringComparison.Ordinal) != -1)
                     {
-                        result.Add(CasesDtoHelper.Get(item));
+                        result.Add(_mapper.Map<CasesDto>(item));
                     }
                 }
 
@@ -718,7 +723,7 @@ namespace ASC.CRM.Api
 
                 foreach (var item in findedCases)
                 {
-                    result.Add(CasesDtoHelper.Get(item));
+                    result.Add(_mapper.Map<CasesDto>(item));
                 }
             }
 
@@ -753,7 +758,7 @@ namespace ASC.CRM.Api
 
             foreach (var cases in items)
             {
-                var casesDto = CasesDtoHelper.Get(cases);
+                var casesDto = _mapper.Map<CasesDto>(cases);
 
                 casesDto.CustomFields = customFields.ContainsKey(cases.ID)
                                    ? customFields[cases.ID]

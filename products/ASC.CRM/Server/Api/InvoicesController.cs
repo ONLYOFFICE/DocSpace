@@ -24,36 +24,35 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Api.Core;
-using ASC.CRM.ApiModels;
+using ASC.Api.CRM;
 using ASC.Api.Documents;
 using ASC.Common.Web;
-using ASC.Core;
+using ASC.Core.Common.Settings;
+using ASC.CRM.ApiModels;
 using ASC.CRM.Classes;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
-
 using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Classes;
 
-using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using ASC.Api.CRM;
-using ASC.CRM.Core.Dao;
-using ASC.Web.CRM.Services.NotifyService;
-using ASC.Web.Core.Users;
-using ASC.Core.Common.Settings;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.CRM.Api
 {
     public class InvoicesController : BaseApiController
     {
+        private readonly IMapper _mapper;
         public InvoicesController(CRMSecurity cRMSecurity,
                      DaoFactory daoFactory,
                      ApiContext apiContext,
@@ -67,11 +66,10 @@ namespace ASC.CRM.Api
                      PdfCreator pdfCreator,
                      CurrencyInfoDtoHelper currencyInfoDtoHelper,
                      InvoiceBaseDtoHelper invoiceBaseDtoHelper,
-                     InvoiceItemDtoHelper invoiceItemDtoHelper,
                      Global global,
                      InvoiceLineDtoHelper invoiceLineDtoHelper,
-                     InvoiceTaxDtoHelper invoiceTaxDtoHelper,
-                     PdfQueueWorker pdfQueueWorker)
+                     PdfQueueWorker pdfQueueWorker,
+                     IMapper mapper)
             : base(daoFactory, cRMSecurity)
         {
             ApiContext = apiContext;
@@ -85,18 +83,15 @@ namespace ASC.CRM.Api
             FileWrapperHelper = fileWrapperHelper;
             CurrencyInfoDtoHelper = currencyInfoDtoHelper;
             InvoiceBaseDtoHelper = invoiceBaseDtoHelper;
-            InvoiceItemDtoHelper = invoiceItemDtoHelper;
             Global = global;
             InvoiceLineDtoHelper = invoiceLineDtoHelper;
-            InvoiceTaxDtoHelper = invoiceTaxDtoHelper;
             PdfQueueWorker = pdfQueueWorker;
+            _mapper = mapper;
         }
 
         public PdfQueueWorker PdfQueueWorker { get; }
-        public InvoiceTaxDtoHelper InvoiceTaxDtoHelper { get; }
         public InvoiceLineDtoHelper InvoiceLineDtoHelper { get; }
         public Global Global { get; }
-        public InvoiceItemDtoHelper InvoiceItemDtoHelper { get; }
         public InvoiceBaseDtoHelper InvoiceBaseDtoHelper { get; }
         public CurrencyInfoDtoHelper CurrencyInfoDtoHelper { get; }
         public FileWrapperHelper FileWrapperHelper { get; }
@@ -393,12 +388,16 @@ namespace ASC.CRM.Api
                                     if (item != null)
                                     {
                                         item.StockQuantity += line.Quantity;
+                                        
                                         DaoFactory.GetInvoiceItemDao().SaveOrUpdateInvoiceItem(item);
+                                        
                                         var oldItem = invoiceItemsUpdated.Find(i => i.ID == item.ID);
+                                        
                                         if (oldItem != null)
                                         {
                                             invoiceItemsUpdated.Remove(oldItem);
                                         }
+                                        
                                         invoiceItemsUpdated.Add(item);
                                     }
                                 }
@@ -410,7 +409,9 @@ namespace ASC.CRM.Api
 
             var listInvoiceBaseDtos = ToListInvoiceBaseDtos(updatedInvoices);
 
-            return new KeyValuePair<IEnumerable<InvoiceBaseDto>, IEnumerable<InvoiceItemDto>>(listInvoiceBaseDtos, invoiceItemsUpdated.ConvertAll(i => InvoiceItemDtoHelper.Get(i)));
+            return new KeyValuePair<IEnumerable<InvoiceBaseDto>, IEnumerable<InvoiceItemDto>>(
+                listInvoiceBaseDtos,
+                _mapper.Map<List<InvoiceItem>, List<InvoiceItemDto>>(invoiceItemsUpdated));
         }
 
         /// <summary>
@@ -426,6 +427,7 @@ namespace ASC.CRM.Api
             if (invoiceid <= 0) throw new ArgumentException();
 
             var invoice = DaoFactory.GetInvoiceDao().DeleteInvoice(invoiceid);
+
             if (invoice == null) throw new ItemNotFoundException();
 
             MessageService.Send(MessageAction.InvoiceDeleted, MessageTarget.Create(invoice.ID), invoice.Number);
@@ -507,7 +509,7 @@ namespace ASC.CRM.Api
         /// </example>
         [Create(@"invoice")]
         public InvoiceDto CreateInvoice(
-            CreateOrUpdateInvoiceInDto inDto
+            CreateOrUpdateInvoiceRequestDto inDto
             )
         {
             string number = inDto.Number;
@@ -679,7 +681,7 @@ namespace ASC.CRM.Api
         [Update(@"invoice/{id:int}")]
         public InvoiceDto UpdateInvoice(
             int id,
-            CreateOrUpdateInvoiceInDto inDto)
+            CreateOrUpdateInvoiceRequestDto inDto)
       
         {
             ApiDateTime issueDate = inDto.IssueDate;
@@ -932,27 +934,30 @@ namespace ASC.CRM.Api
 
             if (invoiceOrderBy != null)
             {
-                result = DaoFactory.GetInvoiceItemDao().GetInvoiceItems(
+                var resultFromDao = DaoFactory.GetInvoiceItemDao().GetInvoiceItems(
                     searchString,
                     status,
                     inventoryStock,
                     fromIndex, count,
-                    invoiceOrderBy)
-                                   .ConvertAll(x => InvoiceItemDtoHelper.Get(x));
+                    invoiceOrderBy);
 
+                result = _mapper.Map<List<InvoiceItem>, List<InvoiceItemDto>>(resultFromDao); 
+                    
                 ApiContext.SetDataPaginated();
                 ApiContext.SetDataFiltered();
                 ApiContext.SetDataSorted();
             }
             else
             {
-                result = DaoFactory.GetInvoiceItemDao().GetInvoiceItems(
+               var resultFromDao = DaoFactory.GetInvoiceItemDao().GetInvoiceItems(
                     searchString,
                     status,
                     inventoryStock,
                     0, 0,
-                    null)
-                                   .ConvertAll(x => InvoiceItemDtoHelper.Get(x));
+                    null);
+
+                result = _mapper.Map<List<InvoiceItem>, List<InvoiceItemDto>>(resultFromDao);
+
             }
 
             int totalCount;
@@ -989,7 +994,7 @@ namespace ASC.CRM.Api
             var invoiceItem = DaoFactory.GetInvoiceItemDao().GetByID(invoiceitemid);
             if (invoiceItem == null) throw new ItemNotFoundException();
 
-            return InvoiceItemDtoHelper.Get(invoiceItem);
+            return _mapper.Map<InvoiceItemDto>(invoiceItem);
         }
 
         /// <summary>
@@ -1009,7 +1014,7 @@ namespace ASC.CRM.Api
         /// <returns>InvoiceLine</returns>
         [Create(@"invoiceline")]
         public InvoiceLineDto CreateInvoiceLine(
-            CreateOrUpdateInvoiceLineInDto inDto
+            CreateOrUpdateInvoiceLineRequestDto inDto
             )
         {
             int invoiceId = inDto.InvoiceId;
@@ -1073,7 +1078,7 @@ namespace ASC.CRM.Api
         [Update(@"invoiceline/{id:int}")]
         public InvoiceLineDto UpdateInvoiceLine(
             int id,
-            CreateOrUpdateInvoiceLineInDto inDto
+            CreateOrUpdateInvoiceLineRequestDto inDto
             )
         {
             int invoiceId = inDto.InvoiceId;
@@ -1165,7 +1170,7 @@ namespace ASC.CRM.Api
         /// <returns>InvoiceItem</returns>
         [Create(@"invoiceitem")]
         public InvoiceItemDto CreateInvoiceItem(
-            CreateOrUpdateInvoiceItemInDto inDto
+            CreateOrUpdateInvoiceItemRequestDto inDto
             )
         {
             string title = inDto.Title;
@@ -1201,7 +1206,7 @@ namespace ASC.CRM.Api
 
             MessageService.Send(MessageAction.InvoiceItemCreated, MessageTarget.Create(invoiceItem.ID), invoiceItem.Title);
 
-            return InvoiceItemDtoHelper.Get(invoiceItem);
+            return _mapper.Map<InvoiceItemDto>(invoiceItem);
         }
 
         /// <summary>
@@ -1222,7 +1227,7 @@ namespace ASC.CRM.Api
         /// <returns>InvoiceItem</returns>
         [Update(@"invoiceitem/{id:int}")]
         public InvoiceItemDto UpdateInvoiceItem(int id,
-         CreateOrUpdateInvoiceItemInDto inDto
+         CreateOrUpdateInvoiceItemRequestDto inDto
             )
         {
             string title = inDto.Title;
@@ -1260,7 +1265,7 @@ namespace ASC.CRM.Api
             invoiceItem = DaoFactory.GetInvoiceItemDao().SaveOrUpdateInvoiceItem(invoiceItem);
             MessageService.Send(MessageAction.InvoiceItemUpdated, MessageTarget.Create(invoiceItem.ID), invoiceItem.Title);
 
-            return InvoiceItemDtoHelper.Get(invoiceItem);
+            return _mapper.Map<InvoiceItemDto>(invoiceItem);
         }
 
         /// <summary>
@@ -1285,7 +1290,7 @@ namespace ASC.CRM.Api
 
             MessageService.Send(MessageAction.InvoiceItemDeleted, MessageTarget.Create(invoiceItem.ID), invoiceItem.Title);
 
-            return InvoiceItemDtoHelper.Get(invoiceItem);
+            return _mapper.Map<InvoiceItemDto>(invoiceItem);
 
         }
 
@@ -1308,9 +1313,10 @@ namespace ASC.CRM.Api
             ids = ids.Distinct();
 
             var items = DaoFactory.GetInvoiceItemDao().DeleteBatchInvoiceItems(ids.ToArray());
+           
             MessageService.Send(MessageAction.InvoiceItemsDeleted, MessageTarget.Create(ids), items.Select(x => x.Title));
 
-            return items.ConvertAll(x => InvoiceItemDtoHelper.Get(x));
+            return _mapper.Map<List<InvoiceItem>, List<InvoiceItemDto>>(items);
         }
 
         /// <summary>
@@ -1322,7 +1328,9 @@ namespace ASC.CRM.Api
         [Read(@"invoice/tax")]
         public IEnumerable<InvoiceTaxDto> GetInvoiceTaxes()
         {
-            return DaoFactory.GetInvoiceTaxDao().GetAll().ConvertAll(x => InvoiceTaxDtoHelper.Get(x));
+            var responceFromDao = DaoFactory.GetInvoiceTaxDao().GetAll();
+
+            return _mapper.Map<List<InvoiceTax>, List<InvoiceTaxDto>>(responceFromDao);
         }
 
         /// <summary>
@@ -1336,7 +1344,7 @@ namespace ASC.CRM.Api
         /// <returns>InvoiceTax</returns>
         [Create(@"invoice/tax")]
         public InvoiceTaxDto CreateInvoiceTax(
-         [FromBody] CreateOrUpdateInvoiceTax inDto)
+         [FromBody] CreateOrUpdateInvoiceTaxRequestDto inDto)
         {
             string name = inDto.Name;
             string description = inDto.Description;
@@ -1360,7 +1368,7 @@ namespace ASC.CRM.Api
             invoiceTax = DaoFactory.GetInvoiceTaxDao().SaveOrUpdateInvoiceTax(invoiceTax);
             MessageService.Send(MessageAction.InvoiceTaxCreated, MessageTarget.Create(invoiceTax.ID), invoiceTax.Name);
 
-            return InvoiceTaxDtoHelper.Get(invoiceTax);
+            return _mapper.Map<InvoiceTaxDto>(invoiceTax);
         }
 
         /// <summary>
@@ -1376,7 +1384,7 @@ namespace ASC.CRM.Api
         [Update(@"invoice/tax/{id:int}")]
         public InvoiceTaxDto UpdateInvoiceTax(
             int id,
-            CreateOrUpdateInvoiceTax inDto)
+            CreateOrUpdateInvoiceTaxRequestDto inDto)
         {
             string name = inDto.Name;
             string description = inDto.Description;
@@ -1402,7 +1410,7 @@ namespace ASC.CRM.Api
             invoiceTax = DaoFactory.GetInvoiceTaxDao().SaveOrUpdateInvoiceTax(invoiceTax);
             MessageService.Send(MessageAction.InvoiceTaxUpdated, MessageTarget.Create(invoiceTax.ID), invoiceTax.Name);
 
-            return InvoiceTaxDtoHelper.Get(invoiceTax);
+            return _mapper.Map<InvoiceTaxDto>(invoiceTax);
         }
 
         /// <summary>
@@ -1427,7 +1435,7 @@ namespace ASC.CRM.Api
 
             MessageService.Send(MessageAction.InvoiceTaxDeleted, MessageTarget.Create(invoiceTax.ID), invoiceTax.Name);
 
-            return InvoiceTaxDtoHelper.Get(invoiceTax);
+            return _mapper.Map<InvoiceTaxDto>(invoiceTax);
         }
 
         /// <summary>
@@ -1453,7 +1461,7 @@ namespace ASC.CRM.Api
         /// <returns>InvoiceSetting</returns>
         [Update(@"invoice/settings/name")]
         public InvoiceSetting SaveNumberSettings(
-           SaveNumberSettingsInDto inDto
+           SaveNumberSettingsRequestDto inDto
             )
         {
             var autogenerated = inDto.AutoGenerated;

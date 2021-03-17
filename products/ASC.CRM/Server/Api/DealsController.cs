@@ -230,7 +230,7 @@ namespace ASC.CRM.Api
         ///   Opportunity list
         /// </returns>
         [Update(@"opportunity/filter/access")]
-        public IEnumerable<OpportunityDto> SetAccessToBatchDeal([FromForm] SetAccessToBatchDealByFilterInDto inDto)
+        public IEnumerable<OpportunityDto> SetAccessToBatchDeal([FromForm] SetAccessToBatchDealByFilterRequestDto inDto)
         {
             var responsibleid = inDto.Responsibleid;
             var opportunityStagesid = inDto.OpportunityStagesid;
@@ -286,7 +286,7 @@ namespace ASC.CRM.Api
         ///   Opportunity list
         /// </returns>
         [Update(@"opportunity/access")]
-        public IEnumerable<OpportunityDto> SetAccessToBatchDeal(SetAccessToBatchDealInDto inDto)
+        public IEnumerable<OpportunityDto> SetAccessToBatchDeal(SetAccessToBatchDealRequestDto inDto)
         {
             var opportunityid = inDto.Opportunityid;
             var isPrivate = inDto.isPrivate;
@@ -546,7 +546,7 @@ namespace ASC.CRM.Api
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
         [Create(@"opportunity")]
-        public OpportunityDto CreateDeal(CreateOrUpdateDealInDto inDto)
+        public OpportunityDto CreateDeal(CreateOrUpdateDealRequestDto inDto)
         {
 
             var title = inDto.Title;
@@ -646,7 +646,7 @@ namespace ASC.CRM.Api
         ///<exception cref="ArgumentException"></exception>
         [Update(@"opportunity/{opportunityid:int}")]
         public OpportunityDto UpdateDeal(
-            int opportunityid, CreateOrUpdateDealInDto inDto)
+            int opportunityid, CreateOrUpdateDealRequestDto inDto)
         {
 
             var title = inDto.Title;

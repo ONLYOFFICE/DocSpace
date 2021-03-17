@@ -24,53 +24,57 @@
 */
 
 
-using System;
-using System.Runtime.Serialization;
-using ASC.Common.Security;
-using ASC.CRM.Core.EF;
+using ASC.Api.Core;
+using ASC.CRM.Core.Entities;
 using ASC.CRM.Mapping;
+using ASC.Web.Api.Models;
 
 using AutoMapper;
 
-namespace ASC.CRM.Core.Entities
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace ASC.CRM.ApiModels
 {
-    [DataContract]
-    public class InvoiceTax : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceTax>
+    [DataContract(Name = "case", Namespace = "")]
+    public class CasesDto : IMapFrom<Cases>
     {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
-
-        [DataMember(Name = "description")]
-        public string Description { get; set; }
-
-        [DataMember(Name = "rate")]
-        public decimal Rate { get; set; }
-        
-        
-        [DataMember(Name = "createOn")]
-        public DateTime CreateOn { get; set; }
-
-        [DataMember(Name = "createBy")]
-        public Guid CreateBy { get; set; }
-
-        [DataMember(Name = "lastModifedOn")]
-        public DateTime? LastModifedOn { get; set; }
-        
-        [DataMember(Name = "lastModifedBy")]
-        public Guid? LastModifedBy { get; set; }
-
-        public object SecurityId
+        public CasesDto()
         {
-            get { return ID; }
         }
 
-        public Type ObjectType
+
+        [DataMember(Name = "id")]
+        public int Id { get; set; }                
+        public IEnumerable<ContactBaseDto> Members { get; set; }        
+        public EmployeeWraper CreateBy { get; set; }        
+        public ApiDateTime Created { get; set; }        
+        public String Title { get; set; }        
+        public bool IsClosed { get; set; }        
+        public bool IsPrivate { get; set; }                
+        public IEnumerable<EmployeeWraper> AccessList { get; set; }        
+        public bool CanEdit { get; set; }        
+        public IEnumerable<CustomFieldBaseDto> CustomFields { get; set; }
+        public static CasesDto GetSample()
         {
-            get { return GetType(); }
+            return new CasesDto
+            {
+                IsClosed = false,
+                Title = "Exhibition organization",
+                Created = ApiDateTime.GetSample(),
+                CreateBy = EmployeeWraper.GetSample(),
+                IsPrivate = false,
+                CustomFields = new[] { CustomFieldBaseDto.GetSample() },
+                CanEdit = true
+            };
         }
+
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<DbInvoiceTax, InvoiceTax>();
+            profile.CreateMap<Cases, CasesDto>().ConvertUsing<CasesDtoTypeConverter>();
         }
     }
 }
+
+

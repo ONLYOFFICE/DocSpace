@@ -87,7 +87,7 @@ namespace ASC.CRM.Core.EF
             }
         }
     }
-
+        
     public static class DbTaskExtension
     {
         public static ModelBuilderWrapper AddDbTask(this ModelBuilderWrapper modelBuilder)

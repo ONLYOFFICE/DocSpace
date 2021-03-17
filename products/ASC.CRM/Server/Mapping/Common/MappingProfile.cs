@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -23,54 +23,38 @@
  *
 */
 
-
 using System;
-using System.Runtime.Serialization;
-using ASC.Common.Security;
-using ASC.CRM.Core.EF;
-using ASC.CRM.Mapping;
+using System.Linq;
+using System.Reflection;
 
 using AutoMapper;
 
-namespace ASC.CRM.Core.Entities
+namespace ASC.CRM.Mapping
 {
-    [DataContract]
-    public class InvoiceTax : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceTax>
+    public class MappingProfile : Profile
     {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
-
-        [DataMember(Name = "description")]
-        public string Description { get; set; }
-
-        [DataMember(Name = "rate")]
-        public decimal Rate { get; set; }
-        
-        
-        [DataMember(Name = "createOn")]
-        public DateTime CreateOn { get; set; }
-
-        [DataMember(Name = "createBy")]
-        public Guid CreateBy { get; set; }
-
-        [DataMember(Name = "lastModifedOn")]
-        public DateTime? LastModifedOn { get; set; }
-        
-        [DataMember(Name = "lastModifedBy")]
-        public Guid? LastModifedBy { get; set; }
-
-        public object SecurityId
+        public MappingProfile()
         {
-            get { return ID; }
+            ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
-        public Type ObjectType
+        private void ApplyMappingsFromAssembly(Assembly assembly)
         {
-            get { return GetType(); }
-        }
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<DbInvoiceTax, InvoiceTax>();
+            var types = assembly.GetExportedTypes()
+                .Where(t => t.GetInterfaces().Any(i => 
+                    i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapFrom<>)))
+                .ToList();
+
+            foreach (var type in types)
+            {
+                var instance = Activator.CreateInstance(type);
+
+                var methodInfo = type.GetMethod("Mapping") 
+                    ?? type.GetInterface("IMapFrom`1").GetMethod("Mapping");
+                
+                methodInfo?.Invoke(instance, new object[] { this });
+
+            }
         }
     }
 }

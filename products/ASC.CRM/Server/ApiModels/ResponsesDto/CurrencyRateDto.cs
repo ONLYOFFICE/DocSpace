@@ -26,51 +26,36 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Common.Security;
-using ASC.CRM.Core.EF;
-using ASC.CRM.Mapping;
 
-using AutoMapper;
+using ASC.Common;
 
-namespace ASC.CRM.Core.Entities
+namespace ASC.CRM.ApiModels
 {
-    [DataContract]
-    public class InvoiceTax : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceTax>
+    /// <summary>
+    ///  Currency rate
+    /// </summary>
+    [DataContract(Name = "currencyRate", Namespace = "")]
+    public class CurrencyRateDto
     {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
+        public CurrencyRateDto()
+        {
+        }
 
-        [DataMember(Name = "description")]
-        public string Description { get; set; }
 
-        [DataMember(Name = "rate")]
+        [DataMember(Name = "id")]
+        public int Id { get; set; }        
+        public String FromCurrency { get; set; }        
+        public String ToCurrency { get; set; }        
         public decimal Rate { get; set; }
-        
-        
-        [DataMember(Name = "createOn")]
-        public DateTime CreateOn { get; set; }
-
-        [DataMember(Name = "createBy")]
-        public Guid CreateBy { get; set; }
-
-        [DataMember(Name = "lastModifedOn")]
-        public DateTime? LastModifedOn { get; set; }
-        
-        [DataMember(Name = "lastModifedBy")]
-        public Guid? LastModifedBy { get; set; }
-
-        public object SecurityId
+        public static CurrencyRateDto GetSample()
         {
-            get { return ID; }
-        }
-
-        public Type ObjectType
-        {
-            get { return GetType(); }
-        }
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<DbInvoiceTax, InvoiceTax>();
+            return new CurrencyRateDto
+            {
+                Id = 1,
+                FromCurrency = "EUR",
+                ToCurrency = "USD",
+                Rate = (decimal)1.1
+            };
         }
     }
 }

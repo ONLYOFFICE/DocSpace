@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -24,53 +24,32 @@
 */
 
 
-using System;
-using System.Runtime.Serialization;
-using ASC.Common.Security;
-using ASC.CRM.Core.EF;
-using ASC.CRM.Mapping;
+using ASC.Common;
+using ASC.CRM.Core;
 
-using AutoMapper;
-
-namespace ASC.CRM.Core.Entities
+namespace ASC.CRM.ApiModels
 {
-    [DataContract]
-    public class InvoiceTax : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceTax>
+    [Scope]
+    public class ContactInfoDtoHelper
     {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
-
-        [DataMember(Name = "description")]
-        public string Description { get; set; }
-
-        [DataMember(Name = "rate")]
-        public decimal Rate { get; set; }
-        
-        
-        [DataMember(Name = "createOn")]
-        public DateTime CreateOn { get; set; }
-
-        [DataMember(Name = "createBy")]
-        public Guid CreateBy { get; set; }
-
-        [DataMember(Name = "lastModifedOn")]
-        public DateTime? LastModifedOn { get; set; }
-        
-        [DataMember(Name = "lastModifedBy")]
-        public Guid? LastModifedBy { get; set; }
-
-        public object SecurityId
+        public ContactInfoDtoHelper()
         {
-            get { return ID; }
         }
 
-        public Type ObjectType
+        public ContactInfoDto Get(ContactInfo contactInfo)
         {
-            get { return GetType(); }
+            if (contactInfo == null) return null;
+
+            return new ContactInfoDto
+            {
+                InfoType = contactInfo.InfoType,
+                Category = contactInfo.Category,
+                CategoryName = contactInfo.CategoryToString(),
+                Data = contactInfo.Data,
+                IsPrimary = contactInfo.IsPrimary,
+                Id = contactInfo.ID
+            };
         }
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<DbInvoiceTax, InvoiceTax>();
-        }
+
     }
 }

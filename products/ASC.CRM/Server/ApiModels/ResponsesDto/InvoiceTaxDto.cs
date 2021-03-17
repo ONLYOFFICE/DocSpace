@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -23,54 +23,50 @@
  *
 */
 
-
-using System;
-using System.Runtime.Serialization;
-using ASC.Common.Security;
-using ASC.CRM.Core.EF;
+using ASC.Api.Core;
+using ASC.CRM.Core.Entities;
 using ASC.CRM.Mapping;
+using ASC.Web.Api.Models;
 
 using AutoMapper;
 
-namespace ASC.CRM.Core.Entities
+using System.Runtime.Serialization;
+
+namespace ASC.CRM.ApiModels
 {
-    [DataContract]
-    public class InvoiceTax : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceTax>
+    //public static class InvoiceItemDtoHelperExtension
+    //{
+    //    public static DIHelper AddInvoiceItemDtoHelperService(this DIHelper services)
+    //    {
+    //        services.TryAddTransient<InvoiceDtoHelper>();
+    //        return services.AddCurrencyProviderService()
+    //                       .AddSettingsManagerService()
+    //                       .AddApiDateTimeHelper()
+    //                       .AddEmployeeWraper()
+    //                       .AddCRMSecurityService();
+    //    }
+    //}
+
+    /// <summary>
+    ///  Invoice Tax
+    /// </summary>
+    [DataContract(Name = "invoiceTax", Namespace = "")]
+    public class InvoiceTaxDto: IMapFrom<InvoiceTax>
     {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
+        public int Id { get; set; }        
+        public string Name { get; set; }        
+        public string Description { get; set; }        
+        public decimal Rate { get; set; }       
+        public ApiDateTime CreateOn { get; set; }        
+        public EmployeeWraper CreateBy { get; set; }        
+        public bool CanEdit { get; set; }        
+        public bool CanDelete { get; set; }
 
-        [DataMember(Name = "description")]
-        public string Description { get; set; }
-
-        [DataMember(Name = "rate")]
-        public decimal Rate { get; set; }
-        
-        
-        [DataMember(Name = "createOn")]
-        public DateTime CreateOn { get; set; }
-
-        [DataMember(Name = "createBy")]
-        public Guid CreateBy { get; set; }
-
-        [DataMember(Name = "lastModifedOn")]
-        public DateTime? LastModifedOn { get; set; }
-        
-        [DataMember(Name = "lastModifedBy")]
-        public Guid? LastModifedBy { get; set; }
-
-        public object SecurityId
-        {
-            get { return ID; }
-        }
-
-        public Type ObjectType
-        {
-            get { return GetType(); }
-        }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<DbInvoiceTax, InvoiceTax>();
+            profile.CreateMap<InvoiceTax, InvoiceTaxDto>().ConvertUsing<InvoiceTaxTypeConverter>();
         }
+
+
     }
 }
