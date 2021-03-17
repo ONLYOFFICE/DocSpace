@@ -234,8 +234,11 @@ class Confirm extends React.PureComponent {
   };
 
   render() {
-    console.log("createUser render");
-    const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
+    const { settings, t, greetingTitle } = this.props;
+    const { isConfirmLoaded } = this.state;
+
+    console.log("createUser render", this.props);
+
     return !isConfirmLoaded ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
