@@ -96,6 +96,7 @@ class SettingsStore {
       ownerId: observable,
       nameSchemaId: observable,
       wizardCompleted: observable,
+      passwordSettings: observable,
       getSettings: action,
       getCurrentCustomSchema: action,
       getPortalSettings: action,
