@@ -138,6 +138,9 @@ var config = {
       exposes: {
         "./app": "./src/People.jsx",
         "./GroupSelector": "./src/components/GroupSelector",
+        "./PeopleSelector": "./src/components/PeopleSelector",
+        "./PeopleSelector/UserTooltip":
+          "./src/components/PeopleSelector/sub-components/UserTooltip.js",
       },
       shared: {
         ...deps,
