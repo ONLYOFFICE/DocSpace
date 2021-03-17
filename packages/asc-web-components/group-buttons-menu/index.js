@@ -70,7 +70,8 @@ class GroupButtonsMenu extends React.Component {
     if (
       this.props.sectionWidth !== prevProps.sectionWidth ||
       this.state.priorityItems.length !== prevState.priorityItems.length ||
-      this.state.moreItems.length !== prevState.moreItems.length
+      this.state.moreItems.length !== prevState.moreItems.length ||
+      this.props.menuItems !== prevProps.menuItems
     ) {
       this.updateMenu();
     }
