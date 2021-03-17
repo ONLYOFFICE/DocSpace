@@ -158,7 +158,7 @@ const Form = (props) => {
   const { error, confirmedEmail } = match.params;
 
   const onKeyDown = (e) => {
-    console.log("onKeyDown", e.key);
+    //console.log("onKeyDown", e.key);
     if (e.key === "Enter") {
       onClearErrors(e);
       !isDisabled && onSubmit(e);
@@ -167,7 +167,7 @@ const Form = (props) => {
   };
 
   const onClearErrors = (e) => {
-    console.log("onClearErrors", e);
+    //console.log("onClearErrors", e);
     !identifierValid && setIdentifierValid(true);
     !passwordValid && setPasswordValid(true);
     errorText && setErrorText("");
@@ -197,13 +197,13 @@ const Form = (props) => {
   };
 
   const onChangeLogin = (e) => {
-    console.log("onChangeLogin", e.target.value);
+    //console.log("onChangeLogin", e.target.value);
     setIdentifier(e.target.value);
     onClearErrors(e);
   };
 
   const onChangePassword = (e) => {
-    console.log("onChangePassword", e.target.value);
+    //console.log("onChangePassword", e.target.value);
     setPassword(e.target.value);
     onClearErrors(e);
   };
