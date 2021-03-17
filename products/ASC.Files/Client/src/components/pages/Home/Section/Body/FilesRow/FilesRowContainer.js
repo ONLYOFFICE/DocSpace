@@ -3,9 +3,14 @@ import { inject, observer } from "mobx-react";
 import RowContainer from "@appserver/components/row-container";
 import { Consumer } from "@appserver/components/utils/context";
 import SimpleFilesRow from "./SimpleFilesRow";
+import Loaders from "@appserver/common/components/Loaders";
+import { isMobile } from "react-device-detect";
 
 const FilesRowContainer = (props) => {
-  return (
+  const { isLoaded, isLoading } = props;
+  return !isLoaded || (isMobile && isLoading) ? (
+    <Loaders.Rows />
+  ) : (
     <Consumer>
       {(context) => (
         <RowContainer
@@ -28,10 +33,13 @@ const FilesRowContainer = (props) => {
   );
 };
 
-export default inject(({ filesStore }) => {
+export default inject(({ auth, initFilesStore, filesStore }) => {
   const { filesList } = filesStore;
+  const { isLoading } = initFilesStore;
 
   return {
     filesList,
+    isLoading,
+    isLoaded: auth.isLoaded,
   };
 })(observer(FilesRowContainer));
