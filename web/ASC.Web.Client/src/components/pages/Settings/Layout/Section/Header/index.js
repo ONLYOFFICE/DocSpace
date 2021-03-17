@@ -109,7 +109,7 @@ class SectionHeaderContent extends React.Component {
       <HeaderContainer>
         {!isCategoryOrHeader && arrayOfParams[0] && (
           <IconButton
-            iconName="static/images/arrow.path.react.svg"
+            iconName="/static/images/arrow.path.react.svg"
             size="17"
             color="#A3A9AE"
             hoverColor="#657077"

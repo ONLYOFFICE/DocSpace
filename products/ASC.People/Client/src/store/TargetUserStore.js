@@ -1,6 +1,8 @@
 import api from "@appserver/common/api";
+import { LANGUAGE } from "@appserver/common/constants";
 import { makeAutoObservable } from "mobx";
 import store from "studio/store";
+
 const { auth: authStore } = store;
 
 class TargetUserStore {
@@ -68,10 +70,14 @@ class TargetUserStore {
 
   updateProfileCulture = async (id, culture) => {
     const res = await api.people.updateUserCulture(id, culture);
+
     authStore.userStore.setUser(res);
+
     this.setTargetUser(res);
     //caches.delete("api-cache");
-    await authStore.settingsStore.init();
+    //await authStore.settingsStore.init();
+    localStorage.setItem(LANGUAGE, culture);
+    location.reload();
   };
 
   getUserPhoto = async (id) => {

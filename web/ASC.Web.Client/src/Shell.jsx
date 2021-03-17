@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Router, Switch /*, Route*/ } from "react-router-dom";
+import { Router, Switch, Route } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
 import Main from "./components/Main";
@@ -37,6 +37,7 @@ const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
 const ThirdPartyResponse = React.lazy(() =>
   import("./components/pages/ThirdParty")
 );
+const Confirm = React.lazy(() => import("./components/pages/Confirm"));
 
 const SettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -72,6 +73,14 @@ const HomeRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
       <Home {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
+const ConfirmRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <Confirm {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
@@ -234,6 +243,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 ]}
                 component={LoginRoute}
               />
+              <Route path={`${homepage}/confirm`} component={ConfirmRoute} />
               <PrivateRoute
                 path={[
                   `${homepage}/coming-soon`,
