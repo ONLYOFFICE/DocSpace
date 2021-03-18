@@ -22,6 +22,17 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
       );
     }
 
+    if (!wizardCompleted && props.location.pathname !== "/wizard") {
+      return (
+        <Redirect
+          to={{
+            pathname: "/wizard",
+            state: { from: props.location },
+          }}
+        />
+      );
+    }
+
     return <Component {...props} {...rest} />;
   };
   return <Route {...rest} render={renderComponent} />;
