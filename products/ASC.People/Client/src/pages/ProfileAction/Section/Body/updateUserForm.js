@@ -303,11 +303,12 @@ class UpdateUserForm extends React.Component {
   }
 
   onCancel() {
-    const { filter, setFilter } = this.props;
+    const { filter, setFilter, history, settings } = this.props;
 
     if (document.referrer) {
-      this.props.history.goBack();
+      history.goBack();
     } else {
+      history.push(settings.homepage);
       setFilter(filter);
     }
   }
