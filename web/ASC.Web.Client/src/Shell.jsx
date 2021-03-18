@@ -31,7 +31,7 @@ const Error401 = React.lazy(() => import("studio/Error401"));
 const Home = React.lazy(() => import("./components/pages/Home"));
 const Login = React.lazy(() => import("login/app"));
 const About = React.lazy(() => import("./components/pages/About"));
-//const Wizard = React.lazy(() => import("./components/pages/Wizard"));
+const Wizard = React.lazy(() => import("./components/pages/Wizard"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
 const ThirdPartyResponse = React.lazy(() =>
@@ -101,13 +101,13 @@ const AboutRoute = (props) => (
   </React.Suspense>
 );
 
-// const WizardRoute = (props) => (
-//   <React.Suspense fallback={<AppLoader />}>
-//     <ErrorBoundary>
-//       <Wizard {...props} />
-//     </ErrorBoundary>
-//   </React.Suspense>
-// );
+const WizardRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <Wizard {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
 
 const ComingSoonRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -124,21 +124,6 @@ const ThirdPartyResponseRoute = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
-
-// const DynamicAppRoute = ({ link, appName, ...rest }) => {
-//   const system = {
-//     url: `${window.location.origin}${link}remoteEntry.js`,
-//     scope: appName,
-//     module: "./app",
-//   };
-//   return (
-//     <React.Suspense fallback={<AppLoader />}>
-//       <ErrorBoundary>
-//         <System system={system} {...rest} />
-//       </ErrorBoundary>
-//     </React.Suspense>
-//   );
-// };
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   // useEffect(() => {
@@ -228,11 +213,11 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path={[`${homepage}/`, `${homepage}/error=:error`]}
                 component={HomeRoute}
               />
-              {/* <Route
+              <PublicRoute
                 exact
                 path={`${homepage}/wizard`}
                 component={WizardRoute}
-              /> */}
+              />
               <PrivateRoute path={`${homepage}/about`} component={AboutRoute} />
               <PublicRoute
                 exact

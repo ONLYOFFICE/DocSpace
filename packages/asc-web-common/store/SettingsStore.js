@@ -58,7 +58,7 @@ class SettingsStore {
   ownerId = null;
   nameSchemaId = null;
   owner = {};
-  wizardCompleted = true;
+  wizardToken = null;
   passwordSettings = null;
 
   constructor() {
@@ -95,7 +95,8 @@ class SettingsStore {
       hashSettings: observable,
       ownerId: observable,
       nameSchemaId: observable,
-      wizardCompleted: observable,
+      wizardToken: observable,
+      wizardCompleted: computed,
       passwordSettings: observable,
       getSettings: action,
       getCurrentCustomSchema: action,
@@ -130,9 +131,14 @@ class SettingsStore {
     return `https://helpcenter.onlyoffice.com/${lang}/installation/groups-authorization-keys.aspx`;
   }
 
+  get wizardCompleted() {
+    return this.isLoaded && !this.wizardToken;
+  }
+
   setValue = (key, value) => {
     this[key] = value;
   };
+
   getSettings = async () => {
     const newSettings = await api.settings.getSettings();
 
@@ -229,7 +235,7 @@ class SettingsStore {
   };
 
   setWizardComplete = () => {
-    this.setWizardComplete = true;
+    this.wizardToken = null;
   };
 
   setPasswordSettings = (passwordSettings) => {
