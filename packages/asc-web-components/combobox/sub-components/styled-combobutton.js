@@ -130,7 +130,7 @@ const StyledOptionalItem = styled.div`
 StyledOptionalItem.defaultProps = { theme: Base };
 
 const StyledIcon = styled.div`
-  margin: ${(props) => props.theme.comboBox.childrenButton.margin};
+  margin-right: ${(props) => props.theme.comboBox.childrenButton.marginRight};
   width: ${(props) => props.theme.comboBox.childrenButton.width};
   height: ${(props) => props.theme.comboBox.childrenButton.height};
 
