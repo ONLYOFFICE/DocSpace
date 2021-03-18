@@ -29,6 +29,8 @@ class ContextMenuButton extends React.Component {
       isOpen: props.opened,
       data: props.data,
       displayType,
+      offsetX: props.manualX,
+      offsetY: props.manualY,
     };
     this.throttledResize = throttle(this.resize, 300);
   }
@@ -71,7 +73,7 @@ class ContextMenuButton extends React.Component {
     }
 
     if (this.props.manualX !== prevProps.manualX) {
-      this.onIconButtonClick();
+      this.onContextClick();
     }
 
     if (this.props.opened && this.state.displayType === "aside") {
@@ -83,6 +85,20 @@ class ContextMenuButton extends React.Component {
     }
   }
 
+  onContextClick = () => {
+    if (this.props.isDisabled) {
+      this.stopAction;
+      return;
+    }
+
+    this.setState({
+      data: this.props.getData(),
+      isOpen: !this.state.isOpen,
+      offsetX: this.props.manualX,
+      offsetY: this.props.manualY,
+    });
+  };
+
   onIconButtonClick = () => {
     if (this.props.isDisabled) {
       this.stopAction;
@@ -93,6 +109,8 @@ class ContextMenuButton extends React.Component {
       {
         data: this.props.getData(),
         isOpen: !this.state.isOpen,
+        offsetX: "0px",
+        offsetY: "100%",
       },
       () =>
         !this.props.isDisabled &&
@@ -107,7 +125,7 @@ class ContextMenuButton extends React.Component {
     const dropDownItem = path ? path.find((x) => x === this.ref.current) : null;
     if (dropDownItem) return;
 
-    this.onIconButtonClick();
+    this.onClose();
   };
 
   onDropDownItemClick = (item, e) => {
@@ -151,11 +169,9 @@ class ContextMenuButton extends React.Component {
       style,
       isFill, // eslint-disable-line react/prop-types
       asideHeader, // eslint-disable-line react/prop-types
-      manualX,
-      manualY,
     } = this.props;
 
-    const { isOpen, displayType } = this.state;
+    const { isOpen, displayType, offsetX, offsetY } = this.state;
     const iconButtonName = isOpen && iconOpenName ? iconOpenName : iconName;
     return (
       <StyledOuter ref={this.ref} className={className} id={id} style={style}>
@@ -177,8 +193,9 @@ class ContextMenuButton extends React.Component {
         />
         {displayType === "dropdown" ? (
           <DropDown
-            manualX={manualX}
-            manualY={manualY}
+            id="contextMenu"
+            manualX={offsetX}
+            manualY={offsetY}
             directionX={directionX}
             directionY={directionY}
             open={isOpen}
