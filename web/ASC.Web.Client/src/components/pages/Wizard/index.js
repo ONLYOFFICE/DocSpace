@@ -44,15 +44,12 @@ const WizardContainer = styled.div`
 
   @media (max-width: 520px) {
     width: calc(100% - 32px);
-    margin-top: 12px;
   }
 `;
 
 class Body extends Component {
   constructor(props) {
     super(props);
-
-    const { t } = props;
 
     this.state = {
       password: "",
@@ -80,8 +77,6 @@ class Body extends Component {
 
       checkingMessages: [],
     };
-
-    setDocumentTitle(t("WizardTitle"));
   }
 
   async componentDidMount() {
@@ -134,7 +129,10 @@ class Body extends Component {
             });
           }),
         ])
-        .then(() => setIsWizardLoaded(true))
+        .then(() => {
+          setIsWizardLoaded(true);
+          setDocumentTitle(t("WizardTitle"));
+        })
         .catch((e) => {
           this.setState({
             errorInitWizard: e,
