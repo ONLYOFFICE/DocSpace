@@ -16,13 +16,13 @@ import CatalogSpamIcon from "../../../../../public/images/catalog.spam.react.svg
 const StyledSendClockIcon = styled(SendClockIcon)`
   ${commonIconsStyles}
   path {
-    fill: "#3B72A7";
+    fill: #3b72a7;
   }
 `;
 const StyledCatalogSpamIcon = styled(CatalogSpamIcon)`
   ${commonIconsStyles}
   path {
-    fill: "#3B72A7";
+    fill: #3b72a7;
   }
 `;
 const getFormattedGroups = (user, selectGroup) => {

@@ -10,10 +10,8 @@ import PasswordInput from "@appserver/components/password-input";
 import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
 import Heading from "@appserver/components/heading";
-
 import PageLayout from "@appserver/common/components/PageLayout";
 import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
-
 import { inject, observer } from "mobx-react";
 
 const BodyStyle = styled.form`
@@ -34,6 +32,12 @@ const BodyStyle = styled.form`
   }
   .password-button {
     margin-top: 20px;
+  }
+
+  .password-input {
+    .password-field-wrapper {
+      width: 100%;
+    }
   }
 `;
 
@@ -67,7 +71,6 @@ class Form extends React.PureComponent {
   };
 
   onSubmit = (e) => {
-    debugger;
     this.setState({ isLoading: true }, function () {
       const { userId, password, key } = this.state;
       const {
@@ -149,6 +152,7 @@ class Form extends React.PureComponent {
         </Text>
         <PasswordInput
           id="password"
+          className="password-input"
           name="password"
           inputName="password"
           inputValue={password}
