@@ -77,7 +77,6 @@ class TargetUserStore {
     //caches.delete("api-cache");
     //await authStore.settingsStore.init();
     localStorage.setItem(LANGUAGE, culture);
-    location.reload();
   };
 
   getUserPhoto = async (id) => {
