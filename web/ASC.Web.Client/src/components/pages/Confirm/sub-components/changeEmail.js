@@ -14,13 +14,11 @@ class ChangeEmail extends React.PureComponent {
       changeEmail(userId, email, key)
         .then((res) => {
           console.log("change client email success", res);
-          tryRedirectTo(
-            `${window.location.origin}/products/people/view/@self?email_change=success`
-          );
+          tryRedirectTo(`/products/people/view/@self?email_change=success`);
         })
         .catch((e) => {
           console.log("change client email error", e);
-          tryRedirectTo(`${window.location.origin}/error=${e}`);
+          tryRedirectTo(`/error=${e}`);
         });
     }
   }
@@ -32,13 +30,9 @@ class ChangeEmail extends React.PureComponent {
       changeEmail(userId, email, key)
         .then((res) => {
           console.log("change client email success", res);
-          tryRedirectTo(
-            `${window.location.origin}/products/people/view/@self?email_change=success`
-          );
+          tryRedirectTo(`/products/people/view/@self?email_change=success`);
         })
-        .catch((e) => {
-          console.log("change client email error", e);
-        });
+        .catch((e) => console.log("change client email error", e));
     } else {
       tryRedirectTo(defaultPage);
     }
