@@ -43,7 +43,6 @@ class Form extends React.PureComponent {
     const { linkData } = props;
 
     this.state = {
-      isConfirmLoaded: false,
       password: "",
       passwordValid: true,
       // isValidConfirmLink: false,
@@ -68,9 +67,16 @@ class Form extends React.PureComponent {
   };
 
   onSubmit = (e) => {
+    debugger;
     this.setState({ isLoading: true }, function () {
       const { userId, password, key } = this.state;
-      const { hashSettings, defaultPage } = this.props;
+      const {
+        t,
+        hashSettings,
+        defaultPage,
+        logout,
+        changePassword,
+      } = this.props;
       let hasError = false;
 
       if (!this.state.passwordValid) {
@@ -86,15 +92,14 @@ class Form extends React.PureComponent {
       }
       const hash = createPasswordHash(password, hashSettings);
 
-      api.people
-        .changePassword(userId, hash, key)
-        .then(() => this.props.logout())
+      changePassword(userId, hash, key)
+        .then(() => logout())
         .then(() => {
-          toastr.success(this.props.t("ChangePasswordSuccess"));
+          toastr.success(t("ChangePasswordSuccess"));
           tryRedirectTo(defaultPage);
         })
         .catch((error) => {
-          toastr.error(this.props.t(`${error}`));
+          toastr.error(t(`${error}`));
           this.setState({ isLoading: false });
         });
     });
@@ -105,16 +110,10 @@ class Form extends React.PureComponent {
 
     const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
 
-    axios
-      .all(requests)
-      .then(() => {
-        this.setState({ isConfirmLoaded: true });
-        console.log("get settings success");
-      })
-      .catch((error) => {
-        toastr.error(this.props.t(`${error}`));
-        tryRedirectTo(defaultPage);
-      });
+    axios.all(requests).catch((error) => {
+      toastr.error(this.props.t(`${error}`));
+      tryRedirectTo(defaultPage);
+    });
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -128,10 +127,10 @@ class Form extends React.PureComponent {
   validatePassword = (value) => this.setState({ passwordValid: value });
 
   render() {
-    const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
+    const { settings, t, greetingTitle } = this.props;
     const { isLoading, password, passwordEmpty } = this.state;
 
-    return !isConfirmLoaded ? (
+    return !settings ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <BodyStyle>
@@ -196,7 +195,6 @@ class Form extends React.PureComponent {
 
 Form.propTypes = {
   history: PropTypes.object.isRequired,
-  changePassword: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   linkData: PropTypes.object.isRequired,
 };
@@ -213,7 +211,7 @@ const ChangePasswordForm = (props) => (
   </PageLayout>
 );
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const { settingsStore, logout, isAuthenticated } = auth;
   const {
     greetingSettings,
@@ -223,6 +221,8 @@ export default inject(({ auth }) => {
     getSettings,
     getPortalPasswordSettings,
   } = settingsStore;
+  const { changePassword } = setup;
+
   return {
     settings: passwordSettings,
     hashSettings,
@@ -232,5 +232,6 @@ export default inject(({ auth }) => {
     isAuthenticated,
     getSettings,
     getPortalPasswordSettings,
+    changePassword,
   };
 })(withRouter(withTranslation("Confirm")(observer(ChangePasswordForm))));

@@ -10,6 +10,7 @@ import { resendUserInvites } from "@appserver/common/api/people";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -86,6 +87,12 @@ class ProfileInfo extends React.PureComponent {
     };
   }
 
+  componentDidUpdate() {
+    const { isLoading } = this.props;
+
+    isLoading ? showLoader() : hideLoader();
+  }
+
   onGroupClick = (e) => {
     const group = e.currentTarget.dataset.id;
     const { filter, setIsLoading, fetchPeople } = this.props;
@@ -134,19 +141,27 @@ class ProfileInfo extends React.PureComponent {
 
   onLanguageSelect = (language) => {
     console.log("onLanguageSelect", language);
-    const { profile, updateProfileCulture, i18n } = this.props;
+    const {
+      profile,
+      updateProfileCulture,
+      //i18n,
+      setIsLoading,
+    } = this.props;
 
     if (profile.cultureName === language.key) return;
 
+    setIsLoading(true);
     updateProfileCulture(profile.id, language.key)
-      .then(() => {
-        console.log("changeLanguage to", language.key);
-        i18n && i18n.changeLanguage(language.key);
-      })
-      .then(() => document.location.reload())
-      .catch((error) =>
-        toastr.error(error && error.message ? error.message : error)
-      );
+      // .then(() => {
+      //   console.log("changeLanguage to", language.key);
+      //   i18n && i18n.changeLanguage(language.key);
+      // })
+      .then(() => setIsLoading(false))
+      .then(() => location.reload())
+      .catch((error) => {
+        toastr.error(error && error.message ? error.message : error);
+        setIsLoading(false);
+      });
   };
 
   getLanguages = () => {
@@ -215,6 +230,7 @@ class ProfileInfo extends React.PureComponent {
         </Link>
       </Text>
     );
+
     return (
       <InfoContainer>
         <InfoItem>
@@ -340,5 +356,6 @@ export default inject(({ auth, peopleStore }) => ({
   fetchPeople: peopleStore.usersStore.getUsersList,
   filter: peopleStore.filterStore.filter,
   setIsLoading: peopleStore.setIsLoading,
+  isLoading: peopleStore.isLoading,
   updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
 }))(observer(withTranslation("Profile")(ProfileInfo)));

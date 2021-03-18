@@ -119,7 +119,7 @@ class LanguageAndTimeZone extends React.Component {
       });
     }
 
-    if (!timezones.length && !languages.length) {
+    if (!timezones.length || !languages.length) {
       let languages;
       getPortalCultures()
         .then(() => {
@@ -177,6 +177,7 @@ class LanguageAndTimeZone extends React.Component {
       languageDefault,
     } = this.state;
     const { i18n, language, nameSchemaId, getCurrentCustomSchema } = this.props;
+
     if (timezones.length && languages.length && !prevState.isLoadedData) {
       this.setState({ isLoadedData: true });
     }

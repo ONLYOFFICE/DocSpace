@@ -165,6 +165,10 @@ class SettingsSetupStore {
     console.log("updateConsumerProps", res);
     await this.getConsumers();
   };
+
+  changePassword = (userId, hash, key) => {
+    return api.people.changePassword(userId, hash, key);
+  };
 }
 
 export default SettingsSetupStore;

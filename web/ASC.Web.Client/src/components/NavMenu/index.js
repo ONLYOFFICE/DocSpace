@@ -165,6 +165,7 @@ class NavMenu extends React.Component {
                     onNavMouseEnter={this.handleNavMouseEnter}
                     onNavMouseLeave={this.handleNavMouseLeave}
                     toggleAside={this.toggleAside}
+                    backdropClick={this.backdropClick}
                   />
                 </>
               ) : !isLoaded && isAuthenticated ? (

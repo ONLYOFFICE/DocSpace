@@ -60,7 +60,6 @@ class Confirm extends React.PureComponent {
     super(props);
 
     this.state = {
-      isConfirmLoaded: false,
       email: "",
       emailValid: true,
       firstName: "",
@@ -184,16 +183,10 @@ class Confirm extends React.PureComponent {
 
     const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
 
-    axios
-      .all(requests)
-      .then(() => {
-        this.setState({ isConfirmLoaded: true });
-        console.log("get settings success");
-      })
-      .catch((e) => {
-        console.error("get settings error", e);
-        history.push(`/login/error=${e}`);
-      });
+    axios.all(requests).catch((e) => {
+      console.error("get settings error", e);
+      history.push(`/login/error=${e}`);
+    });
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -234,9 +227,11 @@ class Confirm extends React.PureComponent {
   };
 
   render() {
-    console.log("createUser render");
-    const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
-    return !isConfirmLoaded ? (
+    const { settings, t, greetingTitle } = this.props;
+
+    //console.log("createUser render");
+
+    return !settings ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <ConfirmContainer>
