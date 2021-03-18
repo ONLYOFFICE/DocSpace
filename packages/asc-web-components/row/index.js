@@ -16,7 +16,11 @@ class Row extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { contextX: "0px", contextY: "0px", contextOpened: false };
+    this.state = {
+      contextX: "0px",
+      contextY: "100%",
+      contextOpened: false,
+    };
 
     this.rowRef = React.createRef();
   }
@@ -34,13 +38,31 @@ class Row extends React.Component {
   onContextMenu = (e) => {
     e.preventDefault();
 
-    const cursorX = -(window.innerWidth - e.pageX) + "px";
-    const cursorY = "-3px";
+    const menu = document.getElementById("contextMenu");
+
+    const containerBounds =
+      this.container !== document && this.container.getBoundingClientRect();
+
+    const clickX = containerBounds.right - e.clientX;
+    const clickY = e.clientY - containerBounds.top;
+    const containerWidth = this.container.offsetWidth;
+    const containerHeight = this.container.offsetHeight;
+    const menuWidth = (menu && menu.offsetWidth) || 180;
+    const menuHeight = menu && menu.offsetHeight;
+
+    const left = containerWidth - clickX > menuWidth && clickX < menuWidth;
+    const bottom = containerHeight - clickY < menuHeight && clickY > menuHeight;
+
+    let newTop = `0px`;
+    let newRight = `0px`;
+
+    newRight = !left ? `${clickX - menuWidth - 8}px` : `${clickX + 8}px`;
+    newTop = bottom ? `${clickY - menuHeight}px` : `${clickY}px`;
 
     this.setState({
-      contextX: cursorX,
-      contextY: cursorY,
       contextOpened: !this.state.contextOpened,
+      contextX: newRight,
+      contextY: newTop,
     });
   };
 
@@ -58,6 +80,8 @@ class Row extends React.Component {
       onSelect,
       sectionWidth,
     } = this.props;
+
+    const { contextOpened, contextX, contextY } = this.state;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -107,13 +131,14 @@ class Row extends React.Component {
           )}
           {renderContext ? (
             <ContextMenuButton
-              opened={this.state.contextOpened}
+              manualX={contextX}
+              manualY={contextY}
+              opened={contextOpened}
               color="#A3A9AE"
               hoverColor="#657077"
               className="expandButton"
-              manualX={this.state.contextX}
-              manualY={this.state.contextY}
               getData={getOptions}
+              directionX="right"
             />
           ) : (
             <div className="expandButton"> </div>
