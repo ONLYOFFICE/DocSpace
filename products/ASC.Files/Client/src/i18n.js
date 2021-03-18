@@ -32,7 +32,7 @@ newInstance.use(Backend).init({
   },
 
   react: {
-    useSuspense: true,
+    useSuspense: false,
   },
 });
 
