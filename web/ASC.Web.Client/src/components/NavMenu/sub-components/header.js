@@ -33,6 +33,7 @@ const Header = styled.header`
     display: block;
     font-size: 21px;
     line-height: 0;
+    margin-top: -5px;
 
     @media ${desktop} {
       display: none;
