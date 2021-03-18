@@ -59,14 +59,14 @@ const StyledFileActionsConvertEditDocIcon = styled(
 )`
   ${commonIconsStyles}
   path {
-    fill: "#3B72A7";
+    fill: #3b72a7;
   }
 `;
 
 const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
   ${commonIconsStyles}
   path {
-    fill: "#3B72A7";
+    fill: #3b72a7;
   }
 `;
 const SimpleFilesRowContent = styled(RowContent)`
