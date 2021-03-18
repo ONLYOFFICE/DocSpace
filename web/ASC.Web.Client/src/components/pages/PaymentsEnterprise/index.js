@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
@@ -12,6 +12,7 @@ import ButtonContainer from "./sub-components/buttonContainer";
 import ContactContainer from "./sub-components/contactContainer";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
+import { isMobile } from "react-device-detect";
 
 const StyledBody = styled.div`
   margin: 0 auto;
@@ -21,13 +22,22 @@ const StyledBody = styled.div`
   grid-template-rows: repeat(4, min-content);
   overflow-wrap: anywhere;
   margin-top: 40px;
+
+  ${
+    isMobile &&
+    `
+      margin-top: 56px;
+    `
+  }
+
   @media ${tablet} {
     max-width: ${size.smallTablet}px;
   }
   @media (max-width: 632px) {
     min-width: 343px;
-    margin-top: 0;
+    ${!isMobile && `margin-top: 0;`}
   }
+
 `;
 
 class Body extends React.Component {

@@ -33,20 +33,20 @@ const sideColor = "#A3A9AE";
 const StyledCheckIcon = styled(CheckIcon)`
   ${commonIconsStyles}
   path {
-    fill: "#A3A9AE";
+    fill: #a3a9ae;
   }
   :hover {
-    fill: "#657077";
+    fill: #657077;
   }
 `;
 
 const StyledCrossIcon = styled(CrossIcon)`
   ${commonIconsStyles}
   path {
-    fill: "#A3A9AE";
+    fill: #a3a9ae;
   }
   :hover {
-    fill: "#657077";
+    fill: #657077;
   }
 `;
 
@@ -59,14 +59,14 @@ const StyledFileActionsConvertEditDocIcon = styled(
 )`
   ${commonIconsStyles}
   path {
-    fill: "#3B72A7";
+    fill: #3b72a7;
   }
 `;
 
 const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
   ${commonIconsStyles}
   path {
-    fill: "#3B72A7";
+    fill: #3b72a7;
   }
 `;
 const SimpleFilesRowContent = styled(RowContent)`
