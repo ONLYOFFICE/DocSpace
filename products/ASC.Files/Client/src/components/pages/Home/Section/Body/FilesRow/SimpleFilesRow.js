@@ -8,7 +8,7 @@ import Text from "@appserver/components/text";
 import DragAndDrop from "@appserver/components/drag-and-drop";
 import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
-import history from "@appserver/common/history";
+import { withRouter } from "react-router-dom";
 import toastr from "studio/toastr";
 import { FileAction } from "@appserver/common/constants";
 
@@ -105,6 +105,7 @@ const SimpleFilesRow = (props) => {
     setDragging,
     startUpload,
     setShareItem,
+    history,
   } = props;
 
   const {
@@ -632,4 +633,4 @@ export default inject(
       startUpload,
     };
   }
-)(withTranslation("Home")(observer(SimpleFilesRow)));
+)(withTranslation("Home")(observer(withRouter(SimpleFilesRow))));

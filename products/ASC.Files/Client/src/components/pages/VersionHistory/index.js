@@ -36,8 +36,8 @@ class PureVersionHistory extends React.Component {
   };
 
   redirectToHomepage = () => {
-    const { setFilesFilter, filter } = this.props;
-    setFilesFilter(filter);
+    const { history } = this.props;
+    history.goBack();
   };
 
   render() {

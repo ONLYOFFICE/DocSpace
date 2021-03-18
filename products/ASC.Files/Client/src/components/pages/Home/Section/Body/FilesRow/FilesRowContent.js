@@ -13,7 +13,6 @@ import {
   markAsRead,
   getFileConversationProgress,
 } from "@appserver/common/api/files";
-import history from "@appserver/common/history";
 import { FileAction, ShareAccessRights } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 import FavoriteIcon from "../../../../../../../public/images/favorite.react.svg";
@@ -376,6 +375,7 @@ class FilesRowContent extends React.PureComponent {
       item,
       setIsVerHistoryPanel,
       fetchFileVersions,
+      history,
     } = this.props;
 
     if (!isTabletView) {
