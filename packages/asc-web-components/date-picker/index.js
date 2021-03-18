@@ -333,6 +333,8 @@ class DatePicker extends Component {
           isReadOnly={isReadOnly}
           hasError={hasError}
           iconName="/static/images/calendar.react.svg"
+          iconColor="#A3A9AE"
+          hoverColor="#A3A9AE"
           onIconClick={this.onClick}
           value={value}
           onChange={this.handleChange}

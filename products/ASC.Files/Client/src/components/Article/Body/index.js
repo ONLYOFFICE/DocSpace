@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import TreeFolders from "./TreeFolders";
@@ -9,6 +9,7 @@ import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
 import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router-dom";
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -38,31 +39,35 @@ class ArticleBodyContent extends React.Component {
       setIsLoading,
       selectedTreeNode,
       setSelectedNode,
-      //fetchFiles,
-      history,
+      fetchFiles,
       homepage,
+      history,
     } = this.props;
 
-    const folderId = data[0];
-    if (selectedTreeNode && selectedTreeNode[0] === folderId) return;
+    if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
+      setSelectedNode(data);
+      setIsLoading(true);
+      const newFilter = filter.clone();
+      newFilter.page = 0;
+      newFilter.startIndex = 0;
 
-    setSelectedNode(data);
-    setIsLoading(true);
+      const selectedFolderTitle =
+        (e.node && e.node.props && e.node.props.title) || null;
 
-    const newFilter = filter.clone();
-    newFilter.folder = folderId;
-    newFilter.page = 0;
-    newFilter.startIndex = 0;
+      selectedFolderTitle
+        ? setDocumentTitle(selectedFolderTitle)
+        : setDocumentTitle();
 
-    const selectedFolderTitle =
-      (e.node && e.node.props && e.node.props.title) || null;
-
-    selectedFolderTitle
-      ? setDocumentTitle(selectedFolderTitle)
-      : setDocumentTitle();
-
-    const urlFilter = newFilter.toUrlParams();
-    history.push(`${homepage}/filter?${urlFilter}`);
+      if (history.location.pathname.indexOf("/files/filter") > 0) {
+        fetchFiles(data[0], newFilter)
+          .catch((err) => toastr.error(err))
+          .finally(() => setIsLoading(false));
+      } else {
+        newFilter.startIndex = 0;
+        const urlFilter = newFilter.toUrlParams();
+        history.push(`${homepage}/filter?${urlFilter}`);
+      }
+    }
   };
 
   onShowNewFilesPanel = (folderId) => {
