@@ -17,9 +17,8 @@ import PasswordInput from "@appserver/components/password-input";
 import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
 import PageLayout from "@appserver/common/components/PageLayout";
-import constants from "@appserver/common/constants";
+import { EmployeeActivationStatus } from "@appserver/common/constants";
 import { createPasswordHash } from "@appserver/common/utils";
-const { EmployeeActivationStatus } = constants;
 
 const inputWidth = "400px";
 
@@ -65,7 +64,6 @@ class Confirm extends React.PureComponent {
     super(props);
 
     this.state = {
-      isConfirmLoaded: false,
       email: props.linkData.email,
       firstName: props.linkData.firstname,
       firstNameValid: true,
@@ -192,16 +190,10 @@ class Confirm extends React.PureComponent {
     const { getSettings, getPortalPasswordSettings, history } = this.props;
     const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
 
-    axios
-      .all(requests)
-      .then(() => {
-        this.setState({ isConfirmLoaded: true });
-        console.log("get settings success");
-      })
-      .catch((e) => {
-        console.error("get settings error", e);
-        history.push(`/login/error=${e}`);
-      });
+    axios.all(requests).catch((e) => {
+      console.error("get settings error", e);
+      history.push(`/login/error=${e}`);
+    });
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -235,8 +227,8 @@ class Confirm extends React.PureComponent {
 
   render() {
     console.log("ActivateUser render");
-    const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
-    return !isConfirmLoaded ? (
+    const { settings, t, greetingTitle } = this.props;
+    return !settings ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <ConfirmContainer>
@@ -364,8 +356,6 @@ class Confirm extends React.PureComponent {
 }
 
 Confirm.propTypes = {
-  getConfirmationInfo: PropTypes.func.isRequired,
-  activateConfirmUser: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
