@@ -6,6 +6,7 @@ import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
 import { tablet } from "@appserver/components/utils/device";
 import toastr from "@appserver/components/toast/toastr";
+import { withRouter } from "react-router";
 
 const StyledButtonContainer = styled.div`
   background: #edf2f7;
