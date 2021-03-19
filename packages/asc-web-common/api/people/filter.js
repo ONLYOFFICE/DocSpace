@@ -71,23 +71,10 @@ class Filter {
       sortorder: sortOrder,
       employeestatus: employeeStatus,
       activationstatus: activationStatus,
-      filtervalue: (search ?? "").trim(),
+      search: (search ?? "").trim(),
       groupId: group,
+      role,
     };
-
-    switch (role) {
-      case "admin":
-        dtoFilter.isadministrator = true;
-        break;
-      case "user":
-        dtoFilter.employeeType = 1;
-        break;
-      case "guest":
-        dtoFilter.employeeType = 2;
-        break;
-      default:
-        break;
-    }
 
     if (!forUrl) {
       dtoFilter.fields =
