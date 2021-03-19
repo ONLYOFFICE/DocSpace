@@ -16,11 +16,17 @@ class SettingsStore {
   storeOriginalFiles = null;
   updateIfExist = null;
 
+  settingsIsLoaded = false;
+
   constructor() {
     makeAutoObservable(this);
 
     this.thirdPartyStore = new ThirdPartyStore();
   }
+
+  setIsLoaded = (isLoaded) => {
+    this.settingsIsLoaded = isLoaded;
+  };
 
   get isLoadedSettingsTree() {
     return (
@@ -55,6 +61,7 @@ class SettingsStore {
         .then((settings) => {
           this.setFilesSettings(settings);
           if (settings.enableThirdParty) {
+            this.setIsLoaded(true);
             return axios
               .all([
                 api.files.getThirdPartyCapabilities(),
@@ -68,6 +75,7 @@ class SettingsStore {
                 this.thirdPartyStore.setThirdPartyProviders(providers);
               });
           }
+          return this.setIsLoaded(true);
         })
         .catch(() => this.setIsErrorSettings(true));
     } else {

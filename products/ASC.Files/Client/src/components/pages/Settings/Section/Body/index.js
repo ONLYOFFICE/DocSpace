@@ -43,7 +43,7 @@ const SectionBodyContent = ({
   isAdmin,
   isErrorSettings,
   isLoadedSettingsTree,
-
+  settingsIsLoaded,
   t,
 }) => {
   const onChangeStoreForceSave = () => {
@@ -150,7 +150,8 @@ const SectionBodyContent = ({
   if (setting === "common") content = renderCommonSettings();
   if (setting === "thirdParty" && enableThirdParty) content = <ConnectClouds />;
 
-  return isLoading ? null : (!enableThirdParty && setting === "thirdParty") ||
+  return !settingsIsLoaded ? null : (!enableThirdParty &&
+      setting === "thirdParty") ||
     (!isAdmin && setting === "admin") ? (
     <Error403 />
   ) : isErrorSettings ? (
@@ -178,6 +179,7 @@ export default inject(
       setConfirmDelete,
       setStoreForceSave,
       setForceSave,
+      settingsIsLoaded,
     } = settingsStore;
 
     return {
@@ -198,6 +200,7 @@ export default inject(
       setConfirmDelete,
       setStoreForceSave,
       setForceSave,
+      settingsIsLoaded,
     };
   }
 )(observer(SectionBodyContent));
