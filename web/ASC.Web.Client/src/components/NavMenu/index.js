@@ -50,6 +50,19 @@ const StyledContainer = styled.header`
 
           width: 100%;
         `}
+
+  #ipl-progress-indicator {
+    position: fixed;
+    z-index: 9999999;
+    top: 56px;
+    left: -6px;
+    width: 0%;
+    height: 3px;
+    background-color: #eb835f;
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    border-radius: 1px;
+  }
 `;
 
 class NavMenu extends React.Component {
@@ -179,6 +192,11 @@ class NavMenu extends React.Component {
                 {asideContent}
               </Aside>
             )}
+
+            <div
+              className="ipl-progress-indicator"
+              id="ipl-progress-indicator"
+            ></div>
           </StyledContainer>
         )}
       </LayoutContextConsumer>

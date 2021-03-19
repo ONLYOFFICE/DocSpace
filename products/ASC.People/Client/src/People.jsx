@@ -12,38 +12,14 @@ import "./custom.scss";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import ProfileAction from "./pages/ProfileAction";
+import GroupAction from "./pages/GroupAction";
 
 const homepage = config.homepage;
 
-const Profile = React.lazy(() => import("./pages/Profile"));
-const ProfileAction = React.lazy(() => import("./pages/ProfileAction"));
-const GroupAction = React.lazy(() => import("./pages/GroupAction"));
 const Reassign = React.lazy(() => import("./pages/Reassign"));
 const Error404 = React.lazy(() => import("studio/Error404"));
-
-const ProfileRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Profile {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const ProfileActionRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <ProfileAction {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const GroupActionRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <GroupAction {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
 
 const ReassignRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -82,23 +58,23 @@ const PeopleContent = (props) => {
       <PrivateRoute
         exact
         path={`${homepage}/view/:userId`}
-        component={ProfileRoute}
+        component={Profile}
       />
       <PrivateRoute
         path={`${homepage}/edit/:userId`}
         restricted
         allowForMe
-        component={ProfileActionRoute}
+        component={ProfileAction}
       />
       <PrivateRoute
         path={`${homepage}/create/:type`}
         restricted
-        component={ProfileActionRoute}
+        component={ProfileAction}
       />
       <PrivateRoute
         path={[`${homepage}/group/edit/:groupId`, `${homepage}/group/create`]}
         restricted
-        component={GroupActionRoute}
+        component={GroupAction}
       />
       <PrivateRoute
         path={`${homepage}/reassign/:userId`}
@@ -114,7 +90,6 @@ const PeopleContent = (props) => {
 
 const People = inject(({ auth, peopleStore }) => ({
   loadBaseInfo: async () => {
-    //auth.init();
     await peopleStore.init();
     auth.setProductVersion(config.version);
   },

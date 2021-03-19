@@ -1,6 +1,8 @@
 import i18n from "i18next";
 import Backend from "i18next-http-backend";
 import { LANGUAGE } from "@appserver/common/constants";
+import config from "../../../package.json";
+const homepage = config.homepage;
 
 //import LanguageDetector from "i18next-browser-languagedetector";
 // not like to use this?
@@ -28,7 +30,7 @@ newInstance.use(Backend).init({
   },
 
   backend: {
-    loadPath: `/products/people/locales/{{lng}}/GroupSelector.json`,
+    loadPath: `${homepage}/locales/{{lng}}/GroupSelector.json`,
   },
 
   react: {
