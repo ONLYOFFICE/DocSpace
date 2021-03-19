@@ -60,6 +60,7 @@ class SettingsStore {
   owner = {};
   wizardToken = null;
   passwordSettings = null;
+  hasShortenService = false;
 
   constructor() {
     makeObservable(this, {
@@ -98,6 +99,7 @@ class SettingsStore {
       wizardToken: observable,
       wizardCompleted: computed,
       passwordSettings: observable,
+      hasShortenService: observable,
       getSettings: action,
       getCurrentCustomSchema: action,
       getPortalSettings: action,

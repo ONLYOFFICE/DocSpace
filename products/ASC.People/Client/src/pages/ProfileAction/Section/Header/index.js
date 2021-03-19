@@ -28,7 +28,7 @@ const SectionHeaderContent = (props) => {
     profile,
     history,
     match,
-    settings,
+    customNames,
     filter,
     isEdit,
     setFilter,
@@ -36,7 +36,7 @@ const SectionHeaderContent = (props) => {
     toggleAvatarEditor,
     avatarEditorIsOpen,
   } = props;
-  const { userCaption, guestCaption } = settings.customNames;
+  const { userCaption, guestCaption } = customNames;
   const { type } = match.params;
   const { t } = useTranslation("ProfileAction");
 
@@ -95,7 +95,7 @@ const SectionHeaderContent = (props) => {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
-    settings: auth.settingsStore,
+    customNames: auth.settingsStore.customNames,
     isEdit: peopleStore.editingFormStore.isEdit,
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,

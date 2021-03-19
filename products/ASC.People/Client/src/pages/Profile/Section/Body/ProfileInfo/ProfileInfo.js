@@ -352,7 +352,6 @@ class ProfileInfo extends React.PureComponent {
 }
 
 export default inject(({ auth, peopleStore }) => ({
-  settings: auth.settingsStore,
   groupCaption: auth.settingsStore.customNames.groupCaption,
   regDateCaption: auth.settingsStore.customNames.regDateCaption,
   userPostCaption: auth.settingsStore.customNames.userPostCaption,
