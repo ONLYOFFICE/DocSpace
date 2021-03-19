@@ -16,6 +16,7 @@ import {
   getUserContacts,
   getUserRole,
 } from "../../../../helpers/people-helpers";
+import config from "../../../../../package.json";
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -195,7 +196,7 @@ class SectionBodyContent extends React.PureComponent {
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
     settings: auth.settingsStore,
-    homepage: auth.settingsStore.homepage,
+    homepage: config.homepage,
     cultures: auth.settingsStore.cultures,
     culture: auth.settingsStore.culture,
     getPortalCultures: auth.settingsStore.getPortalCultures,

@@ -10,10 +10,9 @@ import history from "@appserver/common/history";
 import { withTranslation, Trans } from "react-i18next";
 import api from "@appserver/common/api";
 import toastr from "studio/toastr";
-
 import ModalDialogContainer from "../ModalDialogContainer";
-
 import { inject, observer } from "mobx-react";
+import config from "../../../../package.json";
 
 const { deleteUser } = api.people; //TODO: Move to action
 const { Filter } = api;
@@ -107,7 +106,7 @@ DeleteProfileEverDialog.propTypes = {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
-    homepage: auth.settingsStore.homepage,
+    homepage: config.homepage,
     userCaption: auth.settingsStore.customNames.userCaption,
     fetchPeople: peopleStore.usersStore.getUsersList,
     filter: peopleStore.filterStore.filter,

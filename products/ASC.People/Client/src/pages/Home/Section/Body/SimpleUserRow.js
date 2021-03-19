@@ -8,6 +8,7 @@ import toastr from "studio/toastr";
 import { EmployeeStatus } from "@appserver/common/constants";
 import { resendUserInvites } from "@appserver/common/api/people"; //TODO: Move to store action
 import { withRouter } from "react-router";
+import config from "../../../../../package.json";
 
 const SimpleUserRow = ({
   person,
@@ -280,7 +281,7 @@ const SimpleUserRow = ({
 export default withRouter(
   inject(({ auth, peopleStore }, { person }) => {
     return {
-      homepage: auth.settingsStore.homepage,
+      homepage: config.homepage,
       isAdmin: auth.isAdmin,
       currentUserId: auth.userStore.user.id,
       checked: peopleStore.selectionStore.selection.some(

@@ -10,6 +10,7 @@ import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
+import config from "../../../../package.json";
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -122,15 +123,7 @@ class ArticleBodyContent extends React.Component {
 }
 
 export default inject(
-  ({
-    auth,
-    initFilesStore,
-    filesStore,
-    treeFoldersStore,
-    selectedFolderStore,
-  }) => {
-    const { settingsStore } = auth;
-    const { homepage } = settingsStore;
+  ({ initFilesStore, filesStore, treeFoldersStore, selectedFolderStore }) => {
     const { setIsLoading } = initFilesStore;
     const { fetchFiles, filter } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
@@ -147,7 +140,7 @@ export default inject(
       setSelectedNode,
       setTreeFolders,
 
-      homepage,
+      homepage: config.homepage,
     };
   }
 )(observer(withRouter(ArticleBodyContent)));
