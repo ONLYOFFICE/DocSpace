@@ -258,6 +258,24 @@ class SectionFilterContent extends React.Component {
     return selectedFilterData;
   };
 
+  isTranslationsLoaded = () => {
+    const { t, i18n } = this.props;
+
+    const { store, services, language } = i18n;
+
+    let translationIsLoaded = false;
+    try {
+      translationIsLoaded = store.hasResourceBundle(
+        services.languageUtils.getLanguagePartFromCode(language),
+        "Home"
+      );
+    } catch {
+      translationIsLoaded = t("UserStatus") !== "UserStatus";
+    }
+
+    return translationIsLoaded;
+  };
+
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
@@ -265,7 +283,7 @@ class SectionFilterContent extends React.Component {
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
 
-    return firstLoad ? (
+    return firstLoad && !this.isTranslationsLoaded() ? (
       <Loaders.Filter />
     ) : (
       <FilterInput
