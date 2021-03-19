@@ -30,6 +30,7 @@ class PeopleStore {
 
   isLoading = false;
   isLoaded = false;
+  isRefresh = false;
   isInit = false;
 
   constructor() {
@@ -48,6 +49,8 @@ class PeopleStore {
     makeObservable(this, {
       isLoading: observable,
       isLoaded: observable,
+      isRefresh: observable,
+      setIsRefresh: action,
       setIsLoading: action,
       setIsLoaded: action,
       init: action,
@@ -67,18 +70,10 @@ class PeopleStore {
     if (this.isInit) return;
     this.isInit = true;
 
-    const re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
-    const match = window.location.pathname.match(re);
-
     authStore.settingsStore.setModuleInfo(
       config.homepage,
       "f4d98afd-d336-4332-8778-3c6945c81ea0"
     );
-
-    if (match && match.length > 0) {
-      const newFilter = getFilterByLocation(window.location);
-      await this.usersStore.getUsersList(newFilter);
-    }
 
     await this.groupsStore.getGroupList();
     await authStore.settingsStore.getPortalPasswordSettings();
@@ -92,6 +87,10 @@ class PeopleStore {
 
   setIsLoaded = (isLoaded) => {
     this.isLoaded = isLoaded;
+  };
+
+  setIsRefresh = (isRefresh) => {
+    this.isRefresh = isRefresh;
   };
 
   resetFilter = (withoutGroup = false) => {

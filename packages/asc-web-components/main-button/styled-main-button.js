@@ -58,6 +58,9 @@ const GroupMainButton = styled.div`
 const StyledDropDown = styled(DropDown)`
   width: ${(props) => props.theme.mainButton.dropDown.width};
   top: ${(props) => props.theme.mainButton.dropDown.top};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 StyledDropDown.defaultProps = { theme: Base };
 
