@@ -604,7 +604,7 @@ export default inject(
       setShareFiles,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
-    const { setSharingPanelVisible, shareItem } = dialogsStore;
+    const { setSharingPanelVisible } = dialogsStore;
     const {
       uploadSelection,
       selectUploadedFile,
@@ -618,11 +618,7 @@ export default inject(
       homepage: config.homepage,
       files,
       folders,
-      selection: uploadPanelVisible
-        ? uploadSelection
-        : shareItem
-        ? [shareItem]
-        : selection,
+      selection: uploadPanelVisible ? uploadSelection : selection,
       isLoading,
       isPrivacy: isPrivacyFolder,
       uploadSelection,

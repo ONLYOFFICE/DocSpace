@@ -103,7 +103,6 @@ const SimpleFilesRow = (props) => {
     setMediaViewerData,
     setDragging,
     startUpload,
-    setShareItem,
     onSelectItem,
     history,
   } = props;
@@ -136,8 +135,8 @@ const SimpleFilesRow = (props) => {
   };
 
   const onClickShare = () => {
+    onSelectItem(item);
     setSharingPanelVisible(true);
-    setShareItem(item);
   };
   const onOwnerChange = () => setChangeOwnerPanelVisible(true);
   const onMoveAction = () => setMoveToPanelVisible(true);
@@ -553,7 +552,6 @@ export default inject(
       setDeleteThirdPartyDialogVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
-      setShareItem,
     } = dialogsStore;
 
     const { selection, canShare, openDocEditor, fileActionStore } = filesStore;
@@ -602,7 +600,6 @@ export default inject(
       isTabletView,
       actionId: fileActionStore.id,
       setSharingPanelVisible,
-      setShareItem,
       setChangeOwnerPanelVisible,
       setRemoveItem,
       setDeleteThirdPartyDialogVisible,
