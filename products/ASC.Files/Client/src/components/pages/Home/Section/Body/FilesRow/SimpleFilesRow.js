@@ -11,6 +11,7 @@ import FilesRowContent from "./FilesRowContent";
 import { withRouter } from "react-router-dom";
 import toastr from "studio/toastr";
 import { FileAction } from "@appserver/common/constants";
+import copy from "copy-to-clipboard";
 
 const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
@@ -214,7 +215,6 @@ const SimpleFilesRow = (props) => {
 
   const onClickLinkForPortal = () => {
     const isFile = !!fileExst;
-    const { t } = this.props;
     copy(
       isFile
         ? canOpenPlayer
