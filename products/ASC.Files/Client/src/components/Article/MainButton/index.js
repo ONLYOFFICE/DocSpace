@@ -9,7 +9,7 @@ import Loaders from "@appserver/common/components/Loaders";
 import { FileAction } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { inject, observer } from "mobx-react";
-
+import config from "../../../../package.json";
 class PureArticleMainButtonContent extends React.Component {
   onCreate = (e) => {
     // this.goToHomePage();
@@ -161,7 +161,7 @@ export default inject(
     const { startUpload } = uploadDataStore;
 
     return {
-      homepage: auth.settingsStore.homepage,
+      homepage: config.homepage,
       firstLoad,
       selectedFolderId: id,
       isPrivacy: isPrivacyFolder,

@@ -25,7 +25,7 @@ import {
   getUserStatus,
   toEmployeeWrapper,
 } from "../../../../helpers/people-helpers";
-import Loaders from "@appserver/common/components/Loaders";
+import config from "../../../../../package.json";
 
 const StyledContainer = styled.div`
   position: relative;
@@ -222,8 +222,8 @@ class SectionHeaderContent extends React.PureComponent {
     });
 
   onEditClick = () => {
-    const { history, settings } = this.props;
-    history.push(`${settings.homepage}/edit/${this.state.profile.userName}`);
+    const { history } = this.props;
+    history.push(`${config.homepage}/edit/${this.state.profile.userName}`);
   };
 
   onUpdateUserStatus = (status, userId) => {
@@ -243,8 +243,8 @@ class SectionHeaderContent extends React.PureComponent {
     this.onUpdateUserStatus(EmployeeStatus.Active, this.state.profile.id);
 
   onReassignDataClick = (user) => {
-    const { history, settings } = this.props;
-    history.push(`${settings.homepage}/reassign/${user.userName}`);
+    const { history } = this.props;
+    history.push(`${config.homepage}/reassign/${user.userName}`);
   };
 
   onDeletePersonalDataClick = () => {
@@ -384,22 +384,14 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   onClickBack = () => {
-    const { filter, setFilter, history, settings } = this.props;
-    history.push(settings.homepage);
+    const { filter, setFilter, history, resetProfile } = this.props;
+    resetProfile();
+    history.push(config.homepage);
     setFilter(filter);
   };
 
   render() {
-    const {
-      profile,
-      isAdmin,
-      viewer,
-      t,
-      filter,
-      settings,
-      history,
-      isMe,
-    } = this.props;
+    const { profile, isAdmin, viewer, t, filter, history, isMe } = this.props;
     const { avatar, visibleAvatarEditor, dialogsVisible } = this.state;
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
 
@@ -478,7 +470,6 @@ class SectionHeaderContent extends React.PureComponent {
             onClose={this.toggleDeleteProfileEverDialog}
             user={this.state.profile}
             filter={filter}
-            settings={settings}
             history={history}
           />
         )}
@@ -490,7 +481,6 @@ class SectionHeaderContent extends React.PureComponent {
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     return {
-      settings: auth.settingsStore,
       isAdmin: auth.isAdmin,
       isLoaded: auth.isLoaded,
       viewer: auth.userStore.user,

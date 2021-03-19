@@ -14,6 +14,7 @@ import {
 } from "../StyledPanels";
 import { SectionBodyContent } from "../../pages/VersionHistory/Section/";
 import { inject, observer } from "mobx-react";
+import config from "../../../../package.json";
 
 class PureVersionHistoryPanel extends React.Component {
   componentDidUpdate(preProps) {
@@ -89,7 +90,7 @@ VersionHistoryPanel.propTypes = {
 };
 
 export default inject(({ auth, initFilesStore, versionHistoryStore }) => {
-  const { isTabletView, homepage } = auth.settingsStore;
+  const { isTabletView } = auth.settingsStore;
   const { isLoading } = initFilesStore;
   const {
     fileId,
@@ -100,7 +101,7 @@ export default inject(({ auth, initFilesStore, versionHistoryStore }) => {
 
   return {
     isTabletView,
-    homepage,
+    homepage: config.homepage,
     isLoading,
     fileId,
     versions,

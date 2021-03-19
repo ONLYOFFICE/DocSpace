@@ -39,6 +39,7 @@ import {
   mapGroupSelectorOptionsToGroups,
   filterGroupSelectorOptions,
 } from "../../../../helpers/people-helpers";
+import config from "../../../../../package.json";
 
 class CreateUserForm extends React.Component {
   constructor(props) {
@@ -61,9 +62,7 @@ class CreateUserForm extends React.Component {
         this.props.updateCreatedAvatar(res);
         this.props.updateProfileInUsers();
         toastr.success(this.props.t("ChangesSavedSuccessfully"));
-        this.props.history.push(
-          `${this.props.settings.homepage}/view/${userName}`
-        );
+        this.props.history.push(`${this.props.homepage}/view/${userName}`);
       })
       .catch((error) => toastr.error(error));
   }
@@ -278,7 +277,7 @@ class CreateUserForm extends React.Component {
 
   handleSubmit = () => {
     if (!this.validate()) return false;
-    const { setIsEditingForm, settings } = this.props;
+    const { setIsEditingForm, homepage } = this.props;
 
     this.setState({ isLoading: true });
     this.props
@@ -288,9 +287,7 @@ class CreateUserForm extends React.Component {
           this.createAvatar(profile.id, profile.userName);
         } else {
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
-          this.props.history.push(
-            `${settings.homepage}/view/${profile.userName}`
-          );
+          this.props.history.push(`${homepage}/view/${profile.userName}`);
         }
         setIsEditingForm(false);
       })
@@ -404,12 +401,14 @@ class CreateUserForm extends React.Component {
 
   render() {
     const { isLoading, errors, profile, selector, isMobile } = this.state;
-    const { t, settings, createdAvatar, croppedAvatar } = this.props;
     const {
-      regDateCaption,
-      userPostCaption,
-      groupCaption,
-    } = settings.customNames;
+      t,
+      customNames,
+      createdAvatar,
+      croppedAvatar,
+      passwordSettings,
+    } = this.props;
+    const { regDateCaption, userPostCaption, groupCaption } = customNames;
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
@@ -512,7 +511,7 @@ class CreateUserForm extends React.Component {
               inputOnChange={this.onInputChange}
               copyLinkText={t("CopyEmailAndPassword")}
               inputTabIndex={4}
-              passwordSettings={settings.passwordSettings}
+              passwordSettings={passwordSettings}
               t={t}
             />
             <DateField
@@ -642,7 +641,9 @@ class CreateUserForm extends React.Component {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
-    settings: auth.settingsStore,
+    passwordSettings: auth.settingsStore.passwordSettings,
+    customNames: auth.settingsStore.customNames,
+    homepage: config.homepage,
     isEdit: peopleStore.editingFormStore.isEdit,
     groups: peopleStore.groupsStore.groups,
     setIsVisibleDataLossDialog:

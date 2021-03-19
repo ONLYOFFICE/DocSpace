@@ -8,10 +8,10 @@ import LinkWithDropdown from "@appserver/components/link-with-dropdown";
 import Text from "@appserver/components/text";
 import Box from "@appserver/components/box";
 
-import { inject, observer } from "mobx-react";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import SendClockIcon from "../../../../../public/images/send.clock.react.svg";
 import CatalogSpamIcon from "../../../../../public/images/catalog.spam.react.svg";
+import config from "../../../../../package.json";
 
 const StyledSendClockIcon = styled(SendClockIcon)`
   ${commonIconsStyles}
@@ -78,7 +78,6 @@ const getFormattedGroups = (user, selectGroup) => {
 const UserContent = ({
   user,
   history,
-  homepage,
   selectGroup,
   //widthProp,
   isMobile,
@@ -90,9 +89,9 @@ const UserContent = ({
   const onUserNameClick = useCallback(
     (e) => {
       e.preventDefault();
-      history.push(`${homepage}/view/${userName}`);
+      history.push(`${config.homepage}/view/${userName}`);
     },
-    [history, homepage, userName]
+    [history, userName]
   );
 
   const onPhoneClick = useCallback(() => window.open(`sms:${mobilePhone}`), [
@@ -177,8 +176,4 @@ const UserContent = ({
   );
 };
 
-export default withRouter(
-  inject(({ auth }) => ({
-    homepage: auth.settingsStore.homepage,
-  }))(observer(UserContent))
-);
+export default withRouter(UserContent);

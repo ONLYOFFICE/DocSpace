@@ -22,6 +22,7 @@ import {
 } from "../../../../components/dialogs";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import config from "../../../../../package.json";
 
 const StyledContainer = styled.div`
   .group-button-menu-container {
@@ -484,7 +485,8 @@ const SectionHeaderContent = (props) => {
                         title={t("Actions")}
                         iconName="/static/images/actions.header.touch.react.svg"
                         size={17}
-                        color="#657077"
+                        color="#A3A9AE"
+                        hoverColor="#657077"
                         getData={getContextOptionsPlus}
                         isDisabled={false}
                       />
@@ -511,7 +513,7 @@ export default withRouter(
   inject(({ auth, peopleStore }) => ({
     resetFilter: peopleStore.resetFilter,
     customNames: auth.settingsStore.customNames,
-    homepage: auth.settingsStore.homepage,
+    homepage: config.homepage,
     isLoaded: auth.isLoaded,
     isAdmin: auth.isAdmin,
     fetchPeople: peopleStore.usersStore.getUsersList,

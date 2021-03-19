@@ -123,7 +123,7 @@ const ArticleMainButtonContent = withTranslation("Article")(
 export default withRouter(
   inject(({ auth }) => ({
     isAdmin: auth.isAdmin,
-    homepage: auth.settingsStore.homepage || config.homepage,
+    homepage: config.homepage,
     userCaption: auth.settingsStore.customNames.userCaption,
     guestCaption: auth.settingsStore.customNames.guestCaption,
     groupCaption: auth.settingsStore.customNames.groupCaption,
