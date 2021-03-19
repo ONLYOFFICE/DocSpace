@@ -12,6 +12,7 @@ import { withRouter } from "react-router-dom";
 import toastr from "studio/toastr";
 import { FileAction } from "@appserver/common/constants";
 import copy from "copy-to-clipboard";
+import config from "../../../../../../../package.json";
 
 const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
@@ -539,7 +540,7 @@ export default inject(
     },
     { item }
   ) => {
-    const { homepage, isTabletView } = auth.settingsStore;
+    const { isTabletView } = auth.settingsStore;
     const { dragging, setDragging } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -595,7 +596,7 @@ export default inject(
       isFolder,
       draggable,
       isItemsSelected: !!selection.length,
-      homepage,
+      homepage: config.homepage,
       isTabletView,
       actionId: fileActionStore.id,
       setSharingPanelVisible,

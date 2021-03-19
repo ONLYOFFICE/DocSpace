@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
+//import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 import axios from "axios";
@@ -26,6 +26,7 @@ import { ConvertDialog } from "../../dialogs";
 import { getFilterByLocation } from "../../../helpers/converters";
 import MediaViewer from "./MediaViewer";
 import { observer, inject } from "mobx-react";
+import config from "../../../../package.json";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -343,7 +344,7 @@ export default inject(
       : null;
 
     return {
-      homepage: auth.settingsStore.homepage,
+      homepage: config.homepage,
       firstLoad,
       dragging,
       fileActionId: id,

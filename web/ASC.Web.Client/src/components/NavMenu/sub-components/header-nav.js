@@ -38,14 +38,7 @@ const StyledNav = styled.nav`
     padding: 0 16px;
   }
 `;
-const HeaderNav = ({
-  history,
-  homepage,
-  modules,
-  user,
-  logout,
-  isAuthenticated,
-}) => {
+const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
   const { t } = useTranslation("NavMenu");
   const onProfileClick = useCallback(() => {
     history.push("/products/people/view/@self");
@@ -121,7 +114,6 @@ HeaderNav.displayName = "HeaderNav";
 
 HeaderNav.propTypes = {
   history: PropTypes.object,
-  homepage: PropTypes.string,
   modules: PropTypes.array,
   user: PropTypes.object,
   logout: PropTypes.func,
@@ -139,12 +131,11 @@ export default withRouter(
       language,
       logout,
     } = auth;
-    const { homepage, defaultPage } = settingsStore;
+    const { defaultPage } = settingsStore;
     const { user } = userStore;
 
     return {
       user,
-      homepage,
       isAuthenticated,
       isLoaded,
       language,

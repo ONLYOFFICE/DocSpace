@@ -19,6 +19,7 @@ import { withTranslation } from "react-i18next";
 import CatalogGuestIcon from "../../../../../public/images/catalog.guest.react.svg";
 import { ID_NO_GROUP_MANAGER } from "../../../../helpers/constants";
 import { inject, observer } from "mobx-react";
+import config from "../../../../../package.json";
 
 const MainContainer = styled.div`
   display: flex;
@@ -206,7 +207,7 @@ class SectionBodyContent extends React.Component {
       t,
       groupCaption,
       history,
-      settings,
+      homepage,
       selectGroup,
     } = this.props;
     const { groupName, groupManager, groupMembers } = this.state;
@@ -236,7 +237,7 @@ class SectionBodyContent extends React.Component {
           history.goBack();
           return selectGroup(group.id);
         } else {
-          return history.push(`${settings.homepage}/`);
+          return history.push(`${homepage}/`);
         }
       })
       .catch((error) => {
@@ -503,7 +504,7 @@ export default withRouter(
   inject(({ auth, peopleStore }) => {
     const groups = convertGroups(peopleStore.groupsStore.groups);
     return {
-      settings: auth.settingsStore,
+      settings: config.homepage,
       groupCaption: auth.settingsStore.customNames.groupCaption,
       groupsCaption: auth.settingsStore.customNames.groupsCaption,
       groupHeadCaption: auth.settingsStore.customNames.groupHeadCaption,
