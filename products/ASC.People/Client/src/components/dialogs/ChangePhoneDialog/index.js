@@ -2,15 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils, toastr } from "asc-web-common";
-
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "ChangePhoneDialog",
-  localesPath: "dialogs/ChangePhoneDialog",
-});
-
-const { changeLanguage } = utils;
+import { toastr } from "asc-web-common";
 
 class ChangePhoneDialogComponent extends React.Component {
   constructor(props) {
@@ -19,8 +11,6 @@ class ChangePhoneDialogComponent extends React.Component {
     this.state = {
       isRequestRunning: false,
     };
-
-    changeLanguage(i18n);
   }
 
   // TODO: add real api request for executing change phone
@@ -58,12 +48,8 @@ class ChangePhoneDialogComponent extends React.Component {
   }
 }
 
-const ChangePhoneDialogTranslated = withTranslation()(
+const ChangePhoneDialog = withTranslation("ChangePhoneDialog")(
   ChangePhoneDialogComponent
-);
-
-const ChangePhoneDialog = (props) => (
-  <ChangePhoneDialogTranslated i18n={i18n} {...props} />
 );
 
 ChangePhoneDialog.propTypes = {

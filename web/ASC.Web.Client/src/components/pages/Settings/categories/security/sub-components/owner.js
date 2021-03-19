@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
-//import i18n from "../../../i18n";
-import { I18nextProvider, withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { getPortalOwner } from "../../../../../../store/settings/actions";
 import {
   Text,
   Avatar,
@@ -17,12 +14,7 @@ import {
 } from "asc-web-components";
 import { PeopleSelector } from "asc-web-common";
 import isEmpty from "lodash/isEmpty";
-
-import { createI18N } from "../../../../../../helpers/i18n";
-const i18n = createI18N({
-  page: "Settings",
-  localesPath: "pages/Settings",
-});
+import { inject } from "mobx-react";
 
 const OwnerContainer = styled.div`
   .link_style {
@@ -92,10 +84,10 @@ class PureOwnerSettings extends Component {
   }
 
   componentDidMount() {
-    const { owner, getPortalOwner, ownerId } = this.props;
+    const { owner, getPortalOwner } = this.props;
 
     if (isEmpty(owner, true)) {
-      getPortalOwner(ownerId)
+      getPortalOwner()
         .catch((error) => {
           toastr.error(error);
         })
@@ -233,26 +225,7 @@ class PureOwnerSettings extends Component {
   }
 }
 
-const AccessRightsContainer = withTranslation()(PureOwnerSettings);
-
-const OwnerSettings = (props) => (
-  <I18nextProvider i18n={i18n}>
-    <AccessRightsContainer {...props} />
-  </I18nextProvider>
-);
-
-function mapStateToProps(state) {
-  const { owner } = state.settings.security.accessRight;
-  const { user: me } = state.auth;
-  const groupsCaption = state.auth.settings.customNames.groupsCaption;
-
-  return {
-    ownerId: state.auth.settings.ownerId,
-    owner,
-    me,
-    groupsCaption,
-  };
-}
+const OwnerSettings = withTranslation("Settings")(PureOwnerSettings);
 
 OwnerSettings.defaultProps = {
   owner: {},
@@ -262,6 +235,12 @@ OwnerSettings.propTypes = {
   owner: PropTypes.object,
 };
 
-export default connect(mapStateToProps, { getPortalOwner })(
-  withRouter(OwnerSettings)
-);
+export default inject(({ auth }) => {
+  const { customNames, getPortalOwner, owner } = auth.settingsStore;
+  return {
+    groupsCaption: customNames.groupsCaption,
+    getPortalOwner,
+    owner,
+    me: auth.userStore.user,
+  };
+})(withRouter(OwnerSettings));

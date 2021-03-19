@@ -1,30 +1,13 @@
-import React, { useCallback, useEffect } from "react";
-import { connect } from "react-redux";
+import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { api, utils, toastr } from "asc-web-common";
-import {
-  fetchFiles,
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-} from "../../../store/files/actions";
+import { api, toastr } from "asc-web-common";
 import { TIMEOUT } from "../../../helpers/constants";
-import {
-  getSelectedFolderId,
-  getFilter,
-  getIsLoading,
-} from "../../../store/files/selectors";
-import { createI18N } from "../../../helpers/i18n";
-
-const i18n = createI18N({
-  page: "EmptyTrashDialog",
-  localesPath: "dialogs/EmptyTrashDialog",
-});
+import { inject, observer } from "mobx-react";
 
 const { files } = api;
-const { changeLanguage } = utils;
 
 const EmptyTrashDialogComponent = (props) => {
   const {
@@ -39,13 +22,9 @@ const EmptyTrashDialogComponent = (props) => {
     fetchFiles,
   } = props;
 
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-
   const loopEmptyTrash = useCallback(
     (id) => {
-      const successMessage = "Success empty recycle bin";
+      const successMessage = t("SuccessEmptyTrash");
       api.files
         .getProgress()
         .then((res) => {
@@ -165,24 +144,28 @@ const EmptyTrashDialogComponent = (props) => {
   );
 };
 
-const ModalDialogContainerTranslated = withTranslation()(
+const EmptyTrashDialog = withTranslation("EmptyTrashDialog")(
   EmptyTrashDialogComponent
 );
 
-const EmptyTrashDialog = (props) => (
-  <ModalDialogContainerTranslated i18n={i18n} {...props} />
-);
+export default inject(
+  ({ initFilesStore, filesStore, uploadDataStore, selectedFolderStore }) => {
+    const { isLoading } = initFilesStore;
+    const { secondaryProgressDataStore } = uploadDataStore;
+    const { fetchFiles, filter } = filesStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
 
-const mapStateToProps = (state) => {
-  return {
-    currentFolderId: getSelectedFolderId(state),
-    filter: getFilter(state),
-    isLoading: getIsLoading(state),
-  };
-};
+    return {
+      currentFolderId: selectedFolderStore.id,
+      isLoading,
+      filter,
 
-export default connect(mapStateToProps, {
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-  fetchFiles,
-})(withRouter(EmptyTrashDialog));
+      fetchFiles,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    };
+  }
+)(withRouter(observer(EmptyTrashDialog)));

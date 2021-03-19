@@ -1,13 +1,13 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Button, Text } from "asc-web-components";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
-import { store, api, PageLayout } from "asc-web-common";
-const { logout } = store.auth.actions;
-const { deleteSelf } = api.people;
+import { api, PageLayout } from "asc-web-common";
+import { inject, observer } from "mobx-react";
+
+const { deleteSelf } = api.people; //TODO: Move inside UserStore
 
 const ProfileRemoveContainer = styled.div`
   display: flex;
@@ -117,12 +117,7 @@ const ProfileRemoveForm = (props) => (
   </PageLayout>
 );
 
-function mapStateToProps(state) {
-  return {
-    greetingTitle: state.auth.settings.greetingSettings,
-  };
-}
-
-export default connect(mapStateToProps, { logout })(
-  withRouter(withTranslation()(ProfileRemoveForm))
-);
+export default inject(({ auth }) => ({
+  greetingTitle: auth.settingsStore.greetingSettings,
+  logout: auth.logout,
+}))(withRouter(withTranslation("Confirm")(observer(ProfileRemoveForm))));

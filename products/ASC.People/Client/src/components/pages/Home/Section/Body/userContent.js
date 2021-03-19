@@ -8,7 +8,7 @@ import {
   Text,
   Box,
 } from "asc-web-components";
-import { connect } from "react-redux";
+import { inject, observer } from "mobx-react";
 
 const getFormattedGroups = (user, selectGroup) => {
   let temp = [];
@@ -63,7 +63,7 @@ const getFormattedGroups = (user, selectGroup) => {
 const UserContent = ({
   user,
   history,
-  settings,
+  homepage,
   selectGroup,
   widthProp,
   isMobile,
@@ -75,9 +75,9 @@ const UserContent = ({
   const onUserNameClick = useCallback(
     (e) => {
       e.preventDefault();
-      history.push(`${settings.homepage}/view/${userName}`);
+      history.push(`${homepage}/view/${userName}`);
     },
-    [history, settings.homepage, userName]
+    [history, homepage, userName]
   );
 
   const onPhoneClick = useCallback(() => window.open(`sms:${mobilePhone}`), [
@@ -166,10 +166,6 @@ const UserContent = ({
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    settings: state.auth.settings,
-  };
-}
-
-export default connect(mapStateToProps)(withRouter(UserContent));
+export default inject(({ auth }) => ({
+  homepage: auth.settingsStore.homepage,
+}))(observer(withRouter(UserContent)));

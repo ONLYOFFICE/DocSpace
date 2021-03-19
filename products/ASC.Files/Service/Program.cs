@@ -58,6 +58,8 @@ namespace ASC.Files.Service
                     var diHelper = new DIHelper(services);
 
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+                    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                     services.AddHostedService<ServiceLauncher>();
                     diHelper.TryAdd<ServiceLauncher>();
 
@@ -71,7 +73,7 @@ namespace ASC.Files.Service
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
-                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath, true, false, "search.json", "feed.json");
+                    builder.Register(context.Configuration,  true, false, "search.json", "feed.json");
                 })
                 .UseConsoleLifetime()
                 .Build();

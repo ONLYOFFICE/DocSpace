@@ -1,19 +1,12 @@
-import React, { useEffect, createRef } from "react";
+import React, { createRef } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Button, utils as Utils, toastr } from "asc-web-components";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import { createI18N } from "../../../../helpers/i18n";
-import { utils } from "asc-web-common";
-import { setPaymentsLicense } from "../../../../store/payments/actions";
-const { changeLanguage } = utils;
+import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
+
 const { tablet } = Utils.device;
-const i18n = createI18N({
-  page: "PaymentsEnterprise",
-  localesPath: "pages/PaymentsEnterprise",
-});
 
 const StyledButtonContainer = styled.div`
   background: #edf2f7;
@@ -98,28 +91,16 @@ class Body extends React.PureComponent {
   }
 }
 
-const ButtonWrapper = withTranslation()(Body);
-const ButtonContainer = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ButtonWrapper {...props} />
-    </I18nextProvider>
-  );
-};
+const ButtonContainer = withTranslation("PaymentsEnterprise")(Body);
 
 ButtonContainer.propTypes = {
   buyUrl: PropTypes.string,
 };
-function mapStateToProps(state) {
-  const { buyUrl } = state.payments;
+
+export default inject(({ payments }) => {
+  const { buyUrl, setPaymentsLicense } = payments;
   return {
     buyUrl,
+    setPaymentsLicense,
   };
-}
-export default connect(mapStateToProps, { setPaymentsLicense })(
-  ButtonContainer
-);
+})(withRouter(observer(ButtonContainer)));

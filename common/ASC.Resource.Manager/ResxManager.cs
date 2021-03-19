@@ -27,6 +27,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using System.Resources;
@@ -37,7 +38,7 @@ namespace ASC.Resource.Manager
 {
     public class ResxManager
     {
-        public static void Export(IServiceProvider serviceProvider, string project, string module, string fName, string language, string exportPath, string key = null)
+        public static bool Export(IServiceProvider serviceProvider, string project, string module, string fName, string language, string exportPath, string key = null)
         {
             var filter = new ResCurrent
             {
@@ -53,8 +54,8 @@ namespace ASC.Resource.Manager
 
             if (!words.Any())
             {
-                Console.WriteLine("Error!!! Can't find appropriate project and module. Possibly wrong names!");
-                return;
+                Console.WriteLine($"db empty file:{fName}, lang:{language}");
+                return false;
             }
 
             foreach (var fileWords in words)
@@ -73,6 +74,7 @@ namespace ASC.Resource.Manager
                 }
 
                 var toAdd = new List<ResWord>();
+                var toAddFiles = new Dictionary<string,ResXFileRef>();
 
                 if (!string.IsNullOrEmpty(key))
                 {
@@ -81,9 +83,54 @@ namespace ASC.Resource.Manager
                     if (File.Exists(zipFileName))
                     {
                         using var resXResourceReader = new ResXResourceReader(zipFileName);
-                        foreach (var v in resXResourceReader.Cast<DictionaryEntry>())
+                        resXResourceReader.BasePath = Path.GetDirectoryName(zipFileName);
+                        resXResourceReader.UseResXDataNodes = true;
+
+                        foreach (var v in resXResourceReader.OfType<DictionaryEntry>())
                         {
-                            toAdd.Add(new ResWord { Title = v.Key.ToString(), ValueTo = v.Value?.ToString() });
+                            var k = v.Key.ToString();
+                            var val = v.Value as ResXDataNode;
+
+                            if (keys.Any())
+                            {
+                                if (val.FileRef != null)
+                                {
+                                    var fileRef = new ResXFileRef(Path.GetFileName(val.FileRef.FileName), val.FileRef.TypeName);
+                                    toAddFiles.Add(k, fileRef);
+                                }
+                                else
+                                {
+                                    if (!keys.Any(r=> r.EndsWith("*") && k.StartsWith(r.Replace("*", ""))) && (!k.Contains("_") || k.StartsWith("subject_") || k.StartsWith("pattern_")))
+                                    {
+                                        k = keys.FirstOrDefault(r => r == k);
+                                    }
+
+                                    if (k != null)
+                                    {
+                                        var word = fileWords.FirstOrDefault(r => r.Title == k);
+                                        if (word != null)
+                                        {
+                                            toAdd.Add(word);
+                                        }
+                                        else
+                                        {
+                                            toAdd.Add(new ResWord() { Title = k, ValueTo = val.GetValue((ITypeResolutionService)null)?.ToString() });
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (val.FileRef != null)
+                                {
+                                    var fileRef = new ResXFileRef(Path.GetFileName(val.FileRef.FileName), val.FileRef.TypeName);
+                                    toAddFiles.Add(k, fileRef);
+                                }
+                                else
+                                {
+                                    toAdd.Add(new ResWord { Title = k, ValueTo = val.GetValue((ITypeResolutionService)null)?.ToString() });
+                                }
+                            }
                         }
                     }
 
@@ -101,19 +148,47 @@ namespace ASC.Resource.Manager
                 }
                 else
                 {
+                    if (File.Exists(zipFileName))
+                    {
+                        using var resXResourceReader = new ResXResourceReader(zipFileName);
+                        resXResourceReader.BasePath = Path.GetDirectoryName(zipFileName);
+                        resXResourceReader.UseResXDataNodes = true;
+
+                        foreach (var v in resXResourceReader.OfType<DictionaryEntry>())
+                        {
+                            var k = v.Key.ToString();
+                            var val = v.Value as ResXDataNode;
+
+                            if (val.FileRef != null)
+                            {
+                                var fileRef = new ResXFileRef(Path.GetFileName(val.FileRef.FileName), val.FileRef.TypeName);
+                                toAddFiles.Add(k, fileRef);
+                            }
+                        }
+                    }
+
                     toAdd.AddRange(fileWords.Where(word => !wordsDictionary.ContainsKey(word.Title)));
                 }
 
-                using var resXResourceWriter = new ResXResourceWriter(zipFileName);
+
+
+                        using var resXResourceWriter = new ResXResourceWriter(zipFileName);
 
                 foreach (var word in toAdd.Where(r => r != null && (!string.IsNullOrEmpty(r.ValueTo) || language == "Neutral")).OrderBy(x => x.Title))
                 {
                     resXResourceWriter.AddResource(word.Title, word.ValueTo);
                 }
 
+                foreach(var f in toAddFiles)
+                {
+                    resXResourceWriter.AddResource(new ResXDataNode(f.Key, f.Value));
+                }
+
                 resXResourceWriter.Generate();
                 resXResourceWriter.Close();
             }
+
+            return true;
         }
     }
 }

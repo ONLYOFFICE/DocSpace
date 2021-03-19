@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import {
   IconButton,
   ContextMenuButton,
@@ -7,34 +6,22 @@ import {
 } from "asc-web-components";
 import { Headline, toastr } from "asc-web-common";
 import { withRouter } from "react-router";
-import {
-  getUserStatus,
-  toEmployeeWrapper,
-} from "../../../../../store/people/selectors";
 import { withTranslation, Trans } from "react-i18next";
-import {
-  updateUserStatus,
-  setFilter,
-} from "../../../../../store/people/actions";
-import { updateProfile } from "../../../../../store/profile/actions";
-import {
-  fetchProfile,
-  getUserPhoto,
-} from "../../../../../store/profile/actions";
 import styled from "styled-components";
-import { store, api, constants } from "asc-web-common";
+import { utils, api, constants } from "asc-web-common";
 import {
   DeleteSelfProfileDialog,
   ChangePasswordDialog,
   ChangeEmailDialog,
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
-import { createI18N } from "../../../../../helpers/i18n";
-const i18n = createI18N({
-  page: "Profile",
-  localesPath: "pages/Profile",
-});
-const { isAdmin, isMe } = store.auth.selectors;
+import { inject, observer } from "mobx-react";
+import {
+  getUserStatus,
+  toEmployeeWrapper,
+} from "../../../../../helpers/people-helpers";
+
+const { isMe } = utils;
 const {
   resendUserInvites,
   createThumbnailsAvatar,
@@ -119,7 +106,7 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   openAvatarEditor = () => {
-    getUserPhoto(this.state.profile.id).then((userPhotoData) => {
+    this.props.getUserPhoto(this.state.profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -290,7 +277,7 @@ class SectionHeaderContent extends React.PureComponent {
         toastr.success(
           <Trans
             i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
-            i18n={i18n}
+            ns="Profile"
           >
             The email activation instructions have been sent to the
             <strong>{{ email: this.state.profile.email }}</strong> email address
@@ -302,7 +289,7 @@ class SectionHeaderContent extends React.PureComponent {
 
   getUserContextOptions = (user, viewer) => {
     let status = "";
-    const { t } = this.props;
+    const { t, isAdmin } = this.props;
 
     if (isAdmin || (!isAdmin && isMe(user, viewer.userName))) {
       status = getUserStatus(user);
@@ -503,19 +490,16 @@ class SectionHeaderContent extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    settings: state.auth.settings,
-    profile: state.profile.targetUser,
-    viewer: state.auth.user,
-    isAdmin: isAdmin(state),
-    filter: state.people.filter,
-  };
-};
-
-export default connect(mapStateToProps, {
-  updateUserStatus,
-  fetchProfile,
-  updateProfile,
-  setFilter,
-})(withRouter(withTranslation()(SectionHeaderContent)));
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  isAdmin: auth.isAdmin,
+  viewer: auth.userStore.user,
+  filter: peopleStore.filterStore.filter,
+  setFilter: peopleStore.filterStore.setFilterParams,
+  updateUserStatus: peopleStore.usersStore.updateUserStatus,
+  resetProfile: peopleStore.targetUserStore.resetTargetUser,
+  fetchProfile: peopleStore.targetUserStore.getTargetUser,
+  profile: peopleStore.targetUserStore.targetUser,
+  updateProfile: peopleStore.targetUserStore.updateProfile,
+  getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+}))(observer(withRouter(withTranslation("Profile")(SectionHeaderContent))));

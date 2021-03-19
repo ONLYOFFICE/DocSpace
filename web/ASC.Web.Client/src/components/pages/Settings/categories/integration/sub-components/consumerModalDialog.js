@@ -11,14 +11,8 @@ import {
 } from "asc-web-components";
 import ModalDialogContainer from "./modalDialogContainer";
 import { Trans } from "react-i18next";
-import { connect } from "react-redux";
-import {
-  getSelectedConsumer,
-  getConsumerInstruction,
-} from "../../../../../../store/settings/selectors";
-import { store as commonStore } from "asc-web-common";
-
-const { getUrlSupport, getUrlAuthKeys } = commonStore.auth.selectors;
+import { inject, observer } from "mobx-react";
+import { format } from "react-string-format";
 
 class ConsumerModalDialog extends React.Component {
   constructor(props) {
@@ -88,15 +82,19 @@ class ConsumerModalDialog extends React.Component {
     this.mapTokenNameToState();
   }
 
+  consumerInstruction =
+    this.props.selectedConsumer.instruction &&
+    format(this.props.selectedConsumer.instruction, <Box marginProp="4px 0" />);
+
   bodyDescription = (
-    <Box marginProp={`${this.props.consumerInstruction ? "44px" : 0} 0 16px 0`}>
+    <Box marginProp={`${this.consumerInstruction ? "44px" : 0} 0 16px 0`}>
       <Box marginProp="0 0 16px 0">
         <Text as="div" isBold fontSize="15px">
           {this.props.t("ThirdPartyHowItWorks")}
         </Text>
       </Box>
       <Text as="div">
-        <Trans i18nKey="ThirdPartyBodyDescription" i18n={this.i18n}>
+        <Trans i18nKey="ThirdPartyBodyDescription" ns="Settings">
           For more detailed instructions about connecting this service, please
           refer to our{" "}
           <Link
@@ -114,7 +112,7 @@ class ConsumerModalDialog extends React.Component {
   );
 
   bottomDescription = (
-    <Trans i18nKey="ThirdPartyBottomDescription" i18n={this.i18n}>
+    <Trans i18nKey="ThirdPartyBottomDescription" ns="Settings">
       If you still have some questions on how to connect this service or need
       technical assistance, please feel free to contact our{" "}
       <Link
@@ -131,7 +129,6 @@ class ConsumerModalDialog extends React.Component {
   render() {
     const {
       selectedConsumer,
-      consumerInstruction,
       onModalClose,
       dialogVisible,
       isLoading,
@@ -141,6 +138,7 @@ class ConsumerModalDialog extends React.Component {
       state,
       onChangeHandler,
       updateConsumerValues,
+      consumerInstruction,
       bodyDescription,
       bottomDescription,
     } = this;
@@ -215,13 +213,15 @@ ConsumerModalDialog.propTypes = {
   urlSupport: PropTypes.string,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    selectedConsumer: getSelectedConsumer(state),
-    consumerInstruction: getConsumerInstruction(state),
-    urlSupport: getUrlSupport(state),
-    urlAuthKeys: getUrlAuthKeys(state),
-  };
-};
+export default inject(({ setup, auth }) => {
+  const { settingsStore } = auth;
+  const { urlAuthKeys, urlSupport } = settingsStore;
+  const { integration } = setup;
+  const { selectedConsumer } = integration;
 
-export default connect(mapStateToProps, null)(ConsumerModalDialog);
+  return {
+    selectedConsumer,
+    urlSupport,
+    urlAuthKeys,
+  };
+})(observer(ConsumerModalDialog));

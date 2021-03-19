@@ -1,20 +1,8 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
-//import i18n from "../../../i18n";
-import { I18nextProvider, withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Text, ToggleContent, RadioButtonGroup } from "asc-web-components";
-//import { utils } from "asc-web-common";
-
-import { createI18N } from "../../../../../../helpers/i18n";
-
-const i18n = createI18N({
-  page: "Settings",
-  localesPath: "pages/Settings",
-});
-
-//const { changeLanguage } = utils;
 
 const ProjectsContainer = styled.div`
   display: flex;
@@ -127,12 +115,4 @@ class PureModulesSettings extends Component {
   }
 }
 
-const AccessRightsContainer = withTranslation()(PureModulesSettings);
-
-const ModulesSettings = (props) => (
-  <I18nextProvider i18n={i18n}>
-    <AccessRightsContainer {...props} />
-  </I18nextProvider>
-);
-
-export default connect(null, {})(withRouter(ModulesSettings));
+export default withTranslation("Settings")(withRouter(PureModulesSettings));

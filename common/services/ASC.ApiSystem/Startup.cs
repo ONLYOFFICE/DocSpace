@@ -121,7 +121,7 @@ namespace ASC.ApiSystem
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            builder.Register(Configuration, HostEnvironment.ContentRootPath, false);
+            builder.Register(Configuration, false);
         }
     }
 }

@@ -158,7 +158,7 @@ namespace ASC.Api.Documents
         public Module GetModule()
         {
             ProductEntryPoint.Init();
-            return new Module(ProductEntryPoint, true);
+            return new Module(ProductEntryPoint);
         }
 
         [Read("@root")]
@@ -590,29 +590,17 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Update("file/{fileId}/saveediting", DisableFormat = true)]
-        public FileWrapper<string> SaveEditingFromBody(string fileId, [FromBody]SaveEditingModel model)
-        {
-            return FilesControllerHelperString.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
-        }
-
-        [Update("file/{fileId}/saveediting", DisableFormat = true)]
-        [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<string> SaveEditingFromForm(string fileId, [FromForm]SaveEditingModel model)
         {
-            return FilesControllerHelperString.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
+            using var stream = model.Stream.OpenReadStream();
+            return FilesControllerHelperString.SaveEditing(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
         }
 
         [Update("file/{fileId:int}/saveediting")]
-        public FileWrapper<int> SaveEditingFromBody(int fileId, [FromBody]SaveEditingModel model)
-        {
-            return FilesControllerHelperInt.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
-        }
-
-        [Update("file/{fileId:int}/saveediting")]
-        [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<int> SaveEditingFromForm(int fileId, [FromForm]SaveEditingModel model)
         {
-            return FilesControllerHelperInt.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
+            using var stream = model.Stream.OpenReadStream();
+            return FilesControllerHelperInt.SaveEditing(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
         }
 
         /// <summary>
@@ -1174,15 +1162,15 @@ namespace ASC.Api.Documents
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
         [Delete("file/{fileId}", DisableFormat = true)]
-        public IEnumerable<FileOperationWraper> DeleteFile(string fileId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper> DeleteFile(string fileId, [FromBody] DeleteModel model)
         {
-            return FilesControllerHelperString.DeleteFile(fileId, deleteAfter, immediately);
+            return FilesControllerHelperString.DeleteFile(fileId, model.DeleteAfter, model.Immediately);
         }
 
         [Delete("file/{fileId:int}")]
-        public IEnumerable<FileOperationWraper> DeleteFile(int fileId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper> DeleteFile(int fileId, [FromBody] DeleteModel model)
         {
-            return FilesControllerHelperInt.DeleteFile(fileId, deleteAfter, immediately);
+            return FilesControllerHelperInt.DeleteFile(fileId, model.DeleteAfter, model.Immediately);
         }
 
         /// <summary>

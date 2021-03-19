@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import {
@@ -13,31 +12,17 @@ import {
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import { utils, toastr, constants } from "asc-web-common";
+import { toastr, constants } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { updateUserStatus, setSelected } from "../../../store/people/actions";
-
-import { createI18N } from "../../../helpers/i18n";
-import {
-  getUsersToActivateIds,
-  getUsersToDisableIds,
-} from "../../../store/people/selectors";
-const i18n = createI18N({
-  page: "ChangeUserStatusDialog",
-  localesPath: "dialogs/ChangeUserStatusDialog",
-});
+import { inject, observer } from "mobx-react";
 
 const { EmployeeStatus } = constants;
-
-const { changeLanguage } = utils;
 
 class ChangeUserStatusDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
     const { userIds, selectedUsers } = props;
-
-    changeLanguage(i18n);
 
     const listUsers = selectedUsers.map((item, index) => {
       const disabled = userIds.find((x) => x === item.id);
@@ -179,12 +164,8 @@ class ChangeUserStatusDialogComponent extends React.Component {
   }
 }
 
-const ChangeUserStatusDialogTranslated = withTranslation()(
+const ChangeUserStatusDialog = withTranslation("ChangeUserStatusDialog")(
   ChangeUserStatusDialogComponent
-);
-
-const ChangeUserStatusDialog = (props) => (
-  <ChangeUserStatusDialogTranslated i18n={i18n} {...props} />
 );
 
 ChangeUserStatusDialog.propTypes = {
@@ -195,19 +176,12 @@ ChangeUserStatusDialog.propTypes = {
   selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-const mapStateToProps = (state, ownProps) => {
-  const { selection } = state.people;
-  const { userStatus } = ownProps;
-
-  return {
-    userIds:
-      userStatus === EmployeeStatus.Active
-        ? getUsersToActivateIds(state)
-        : getUsersToDisableIds(state),
-    selectedUsers: selection,
-  };
-};
-
-export default connect(mapStateToProps, { updateUserStatus, setSelected })(
-  withRouter(ChangeUserStatusDialog)
-);
+export default inject(({ peopleStore }, ownProps) => ({
+  updateUserStatus: peopleStore.usersStore.updateUserStatus,
+  selectedUsers: peopleStore.selectionStore.selection,
+  setSelected: peopleStore.selectionStore.setSelected,
+  userIds:
+    ownProps.userStatus === EmployeeStatus.Active
+      ? peopleStore.selectionStore.getUsersToActivateIds
+      : peopleStore.selectionStore.getUsersToDisableIds,
+}))(observer(withRouter(ChangeUserStatusDialog)));

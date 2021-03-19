@@ -17,6 +17,16 @@ const StyledNav = styled.nav`
   width: ${(props) => (props.opened ? "240px" : "0")};
   z-index: 200;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  .version-box {
+    position: inherit;
+    left: 16px;
+    bottom: 16px;
+    white-space: nowrap;
+    a:focus {
+      outline: 0;
+    }
+  }
 `;
 
 const StyledScrollbar = styled(Scrollbar)`

@@ -1,19 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-using ASC.Core.Common.EF;
+﻿using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
 {
-    [Table("files_thirdparty_id_mapping")]
     public class DbFilesThirdpartyIdMapping : BaseEntity, IDbFile
     {
-        [Column("tenant_id")]
         public int TenantId { get; set; }
-
-        [Column("hash_id")]
         public string HashId { get; set; }
         public string Id { get; set; }
 

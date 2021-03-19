@@ -5,7 +5,10 @@ using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+
+using Autofac;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -75,6 +78,8 @@ namespace ASC.Api.Core
 
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
+            DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
+
             var builder = services.AddMvcCore(config =>
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
@@ -128,6 +133,11 @@ namespace ASC.Api.Core
                 endpoints.MapControllers();
                 endpoints.MapCustom();
             });
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration);
         }
     }
 }

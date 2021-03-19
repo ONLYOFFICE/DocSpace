@@ -1,6 +1,8 @@
 import { setGroups, fetchPeople } from "../people/actions";
 import { api } from "asc-web-common";
 
+import { getGroups } from "../people/selectors";
+
 export const SET_GROUP = "SET_GROUP";
 export const CLEAN_GROUP = "CLEAN_GROUP";
 
@@ -18,10 +20,17 @@ export function resetGroup() {
 }
 
 export function fetchGroup(groupId) {
-  return (dispatch) => {
-    api.groups
-      .getGroup(groupId)
-      .then((group) => dispatch(setGroup(group || null)));
+  return (dispatch, getState) => {
+    const state = getState();
+    const groups = getGroups(state);
+
+    let targetGroup;
+
+    groups.filter((group) => {
+      if (group.id === groupId) targetGroup = group;
+    });
+
+    dispatch(setGroup(targetGroup || null));
   };
 }
 

@@ -8,32 +8,15 @@ import {
   TextInput,
   utils,
 } from "asc-web-components";
-import {
-  PeopleSelector,
-  store as initStore,
-  toastr,
-  Loaders,
-} from "asc-web-common";
-import {
-  createGroup,
-  resetGroup,
-  updateGroup,
-} from "../../../../../store/group/actions";
-import { selectGroup, setFilter } from "../../../../../store/people/actions";
-
+import { PeopleSelector, toastr, Loaders } from "asc-web-common";
 import { GUID_EMPTY } from "../../../../../helpers/constants";
 import PropTypes from "prop-types";
 import React from "react";
-import { connect } from "react-redux";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-
-const {
-  getCurrentProductName,
-  getSettings,
-  getCurrentUser,
-} = initStore.auth.selectors;
+import { ID_NO_GROUP_MANAGER } from "../../../../../helpers/constants";
+import { inject, observer } from "mobx-react";
 
 const MainContainer = styled.div`
   display: flex;
@@ -91,6 +74,16 @@ class SectionBodyContent extends React.Component {
     this.state = this.mapPropsToState();
   }
 
+  componentDidMount() {
+    const { selectedGroup, group, setSelectGroup } = this.props;
+    if (group) {
+      const { id } = group;
+      if (id && (!selectedGroup || selectedGroup !== id)) {
+        setSelectGroup(id);
+      }
+    }
+  }
+
   mapPropsToState = () => {
     const { group, users, groups, t } = this.props;
     const buttonLabel = group ? t("SaveButton") : t("AddButton");
@@ -129,7 +122,8 @@ class SectionBodyContent extends React.Component {
           ? {
               key: group.manager.id,
               label:
-                group.manager.displayName === "profile removed"
+                group.manager.displayName === "profile removed" ||
+                group.manager.id === ID_NO_GROUP_MANAGER
                   ? t("LblSelect")
                   : group.manager.displayName,
             }
@@ -288,7 +282,14 @@ class SectionBodyContent extends React.Component {
   };
 
   render() {
-    const { t, groupHeadCaption, groupsCaption, me, isLoaded } = this.props;
+    const {
+      t,
+      groupHeadCaption,
+      groupsCaption,
+      me,
+      isLoaded,
+      groups,
+    } = this.props;
     const {
       groupName,
       groupMembers,
@@ -358,6 +359,7 @@ class SectionBodyContent extends React.Component {
                 defaultOption={me}
                 defaultOptionLabel={t("MeLabel")}
                 employeeStatus={1}
+                groupList={groups}
               />
             </FieldContainer>
             <FieldContainer
@@ -396,6 +398,7 @@ class SectionBodyContent extends React.Component {
                 defaultOptionLabel={t("MeLabel")}
                 selectedOptions={groupMembers}
                 employeeStatus={1}
+                groupList={groups}
               />
             </FieldContainer>
             {groupMembers && groupMembers.length > 0 && (
@@ -465,17 +468,17 @@ SectionBodyContent.defaultProps = {
   group: null,
 };
 
-const convertUsers = (users) => {
-  return users
-    ? users.map((u) => {
-        return {
-          key: u.id,
-          groups: u.groups || [],
-          label: u.displayName,
-        };
-      })
-    : [];
-};
+// const convertUsers = (users) => {
+//   return users
+//     ? users.map((u) => {
+//         return {
+//           key: u.id,
+//           groups: u.groups || [],
+//           label: u.displayName,
+//         };
+//       })
+//     : [];
+// };
 
 const convertGroups = (groups) => {
   return groups
@@ -489,35 +492,25 @@ const convertGroups = (groups) => {
     : [];
 };
 
-function mapStateToProps(state) {
-  const currentModuleName = getCurrentProductName(state);
-  const settings = getSettings(state);
-  const {
-    groupHeadCaption,
-    groupsCaption,
-    groupCaption,
-  } = settings.customNames;
-  const { isLoaded } = state.auth;
-
+export default inject(({ auth, peopleStore }) => {
+  const groups = convertGroups(peopleStore.groupsStore.groups);
   return {
-    settings,
-    group: state.group.targetGroup,
-    groups: convertGroups(state.people.groups),
-    users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
-    groupHeadCaption,
-    groupsCaption,
-    groupCaption,
-    me: getCurrentUser(state),
-    currentModuleName,
-    filter: state.people.filter,
-    isLoaded,
+    settings: auth.settingsStore,
+    groupCaption: auth.settingsStore.customNames.groupCaption,
+    groupsCaption: auth.settingsStore.customNames.groupsCaption,
+    groupHeadCaption: auth.settingsStore.customNames.groupHeadCaption,
+    isLoaded: auth.isLoaded,
+    currentModuleName: auth.product.title,
+    me: auth.userStore.user,
+    groups,
+    filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
+    selectGroup: peopleStore.selectedGroupStore.selectGroup,
+    updateGroup: peopleStore.groupsStore.updateGroup,
+    createGroup: peopleStore.groupsStore.createGroup,
+    group: peopleStore.selectedGroupStore.targetedGroup,
+    resetGroup: peopleStore.selectedGroupStore.resetGroup,
+    selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
+    setSelectGroup: peopleStore.selectedGroupStore.setSelectedGroup
   };
-}
-
-export default connect(mapStateToProps, {
-  resetGroup,
-  createGroup,
-  updateGroup,
-  selectGroup,
-  setFilter,
-})(withRouter(withTranslation()(SectionBodyContent)));
+})(observer(withRouter(withTranslation("GroupAction")(SectionBodyContent))));

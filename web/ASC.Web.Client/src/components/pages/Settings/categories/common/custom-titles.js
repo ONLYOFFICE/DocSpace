@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
   FieldContainer,
@@ -10,12 +9,9 @@ import {
   SaveCancelButtons,
 } from "asc-web-components";
 import styled from "styled-components";
-import {
-  setGreetingTitle,
-  restoreGreetingTitle,
-} from "../../../../../store/settings/actions";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
+import { inject, observer } from "mobx-react";
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -50,7 +46,7 @@ class CustomTitles extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, greetingSettings, organizationName } = props;
+    const { t, greetingSettings /*, organizationName*/ } = props;
 
     greetingTitleFromSessionStorage = getFromSessionStorage("greetingTitle");
 
@@ -248,15 +244,13 @@ class CustomTitles extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { greetingSettings, organizationName } = state.auth.settings;
+export default inject(({ auth, setup }) => {
+  const { greetingSettings, organizationName } = auth.settingsStore;
+  const { setGreetingTitle, restoreGreetingTitle } = setup;
   return {
     greetingSettings,
     organizationName,
+    setGreetingTitle,
+    restoreGreetingTitle,
   };
-}
-
-export default connect(mapStateToProps, {
-  setGreetingTitle,
-  restoreGreetingTitle,
-})(withTranslation()(CustomTitles));
+})(withTranslation("Settings")(observer(CustomTitles)));

@@ -57,6 +57,17 @@ namespace ASC.Employee.Core.Controllers
             return result.Select(x => new GroupWrapperSummary(x, UserManager));
         }
 
+        [Read("full")]
+        public IEnumerable<GroupWrapperFull> GetAllWithMembers()
+        {
+            var result = UserManager.GetDepartments().Select(r => r);
+            if (!string.IsNullOrEmpty(ApiContext.FilterValue))
+            {
+                result = result.Where(r => r.Name.Contains(ApiContext.FilterValue, StringComparison.InvariantCultureIgnoreCase));
+            }
+            return result.Select(r=> GroupWraperFullHelper.Get(r, true));
+        }
+
         [Read("{groupid}")]
         public GroupWrapperFull GetById(Guid groupid)
         {

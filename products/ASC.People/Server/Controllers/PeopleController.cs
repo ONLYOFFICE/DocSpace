@@ -162,7 +162,7 @@ namespace ASC.Employee.Core.Controllers
         {
             var product = new PeopleProduct();
             product.Init();
-            return new Module(product, true);
+            return new Module(product);
         }
 
         [Read]

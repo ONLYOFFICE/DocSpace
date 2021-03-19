@@ -174,6 +174,13 @@ export function setIsEditingForm(isEdit) {
   };
 }
 
+export function setSelectGroup(groupId) {
+  return {
+    type: SELECT_GROUP,
+    groupId,
+  };
+}
+
 export function fetchSelectorUsers() {
   return (dispatch) => {
     api.people.getSelectorUserList().then((data) => {
@@ -184,7 +191,7 @@ export function fetchSelectorUsers() {
 }
 
 export function fetchGroups(dispatchFunc = null) {
-  return api.groups.getGroupList().then((groups) => {
+  return api.groups.getGroupListFull().then((groups) => {
     return dispatchFunc
       ? dispatchFunc(setGroups(groups))
       : Promise.resolve((dispatch) => dispatch(setGroups(groups)));
@@ -235,10 +242,7 @@ function fetchPeopleByFilter(dispatch, filter) {
   return api.people.getUserList(filterData).then((data) => {
     filterData.total = data.total;
     dispatch(setFilter(filterData));
-    dispatch({
-      type: SELECT_GROUP,
-      groupId: filterData.group,
-    });
+    dispatch(setSelectGroup(filterData.group));
     return dispatch(setUsers(data.items));
   });
 }
@@ -265,13 +269,18 @@ export function updateUserType(type, userIds) {
   };
 }
 
-export function resetFilter() {
+export function resetFilter(withoutGroup = false) {
   return (dispatch, getState) => {
     const { people } = getState();
     const { filter } = people;
+    let newFilter;
 
-    const newFilter = filter.clone(true);
-
+    if (withoutGroup) {
+      const { group } = filter;
+      newFilter = filter.reset(group);
+    } else {
+      newFilter = filter.clone(true);
+    }
     return fetchPeople(newFilter, dispatch);
   };
 }

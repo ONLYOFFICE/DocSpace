@@ -1,11 +1,9 @@
 import React from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Avatar, DropDownItem, Link } from "asc-web-components";
 import ProfileMenu from "../../ProfileMenu";
-import store from "../../../store";
+import { inject, observer } from "mobx-react";
 
-const { getHeaderVisible, getIsTabletView } = store.auth.selectors;
 class ProfileActions extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -112,6 +110,9 @@ ProfileActions.propTypes = {
   opened: PropTypes.bool,
   user: PropTypes.object,
   userActions: PropTypes.array,
+  isHeaderVisible: PropTypes.bool,
+  isTabletView: PropTypes.bool,
+  isOpenProfileMenu: PropTypes.func,
 };
 
 ProfileActions.defaultProps = {
@@ -119,10 +120,10 @@ ProfileActions.defaultProps = {
   user: {},
   userActions: [],
 };
-function mapStateToProps(state) {
+
+export default inject(({ auth }) => {
   return {
-    isHeaderVisible: getHeaderVisible(state),
-    isTabletView: getIsTabletView(state),
+    isHeaderVisible: auth.settingsStore.isHeaderVisible,
+    isTabletView: auth.settingsStore.isTabletView,
   };
-}
-export default connect(mapStateToProps)(ProfileActions);
+})(observer(ProfileActions));

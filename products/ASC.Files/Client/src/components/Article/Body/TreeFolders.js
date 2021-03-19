@@ -1,31 +1,10 @@
 import React from "react";
 import { TreeMenu, TreeNode, Icons } from "asc-web-components";
 import styled from "styled-components";
-import equal from "fast-deep-equal/react";
-import { api, constants, toastr, store as initStore } from "asc-web-common";
-import { connect } from "react-redux";
-import {
-  setFilter,
-  setTreeFolders,
-  setDragItem,
-  setDragging,
-  setIsLoading,
-  setUpdateTree,
-} from "../../../store/files/actions";
-import {
-  getTreeFolders,
-  getFilter,
-  getDragging,
-  getUpdateTree,
-  getSelectedFolderId,
-  getMyFolderId,
-  getShareFolderId,
-  getRootFolderId,
-  getDraggableItems,
-  getIsPrivacyFolder,
-} from "../../../store/files/selectors";
+//import equal from "fast-deep-equal/react";
+import { api, constants, toastr } from "asc-web-common";
 import { onConvertFiles } from "../../../helpers/files-converter";
-const { isAdmin, isDesktopClient } = initStore.auth.selectors;
+import { observer, inject } from "mobx-react";
 
 const { files } = api;
 const { FolderType, ShareAccessRights } = constants;
@@ -57,29 +36,7 @@ class TreeFolders extends React.Component {
   constructor(props) {
     super(props);
 
-    const { data, expandedKeys } = props;
-    this.state = { treeData: data, expandedKeys, isExpand: false };
-  }
-
-  componentDidUpdate(prevProps) {
-    const { expandedKeys, data, needUpdate } = this.props;
-    if (
-      needUpdate &&
-      expandedKeys &&
-      this.state.expandedKeys.length !== expandedKeys.length
-    ) {
-      this.setState({ expandedKeys });
-    }
-
-    if (!equal(prevProps.data, data)) {
-      //!utils.array.isArrayEqual(prevProps.data, data)) {
-      this.setState({ treeData: data });
-    }
-
-    if (this.props.updateTree) {
-      this.props.setUpdateTree(false);
-      this.forceUpdate();
-    }
+    this.state = { isExpand: false };
   }
 
   onBadgeClick = (e) => {
@@ -375,10 +332,11 @@ class TreeFolders extends React.Component {
         const listIds = data.listIds;
         listIds.push(itemId);
 
-        const treeData = [...this.state.treeData];
+        const treeData = [...this.props.treeFolders];
+
         this.getNewTreeData(treeData, listIds, data.folders, 10);
         this.props.needUpdate && this.props.setTreeFolders(treeData);
-        this.setState({ treeData });
+        //this.setState({ treeData });
       })
       .catch((err) => toastr.error(err))
       .finally(() => {
@@ -394,12 +352,9 @@ class TreeFolders extends React.Component {
       }
     }
     if (this.props.needUpdate) {
-      const newFilter = this.props.filter.clone();
-      newFilter.treeFolders = data;
-      this.props.setFilter(newFilter);
+      const expandedKeys = data;
+      this.props.setExpandedKeys(expandedKeys);
     }
-
-    this.setState({ expandedKeys: data });
   };
 
   onMouseEnter = (data) => {
@@ -455,8 +410,14 @@ class TreeFolders extends React.Component {
   };
 
   render() {
-    const { selectedKeys, isLoading, onSelect, dragging } = this.props;
-    const { treeData, expandedKeys } = this.state;
+    const {
+      selectedKeys,
+      isLoading,
+      onSelect,
+      dragging,
+      expandedKeys,
+      treeFolders,
+    } = this.props;
     //const loadProp = needUpdate ? { loadData: this.onLoadData } : {};
 
     return (
@@ -484,7 +445,7 @@ class TreeFolders extends React.Component {
         gapBetweenNodesTablet="26"
         isFullFillSelection={false}
       >
-        {this.getItems(treeData)}
+        {this.getItems(treeFolders)}
       </StyledTreeMenu>
     );
   }
@@ -495,32 +456,48 @@ TreeFolders.defaultProps = {
   needUpdate: true,
 };
 
-function mapStateToProps(state) {
-  return {
-    treeFolders: getTreeFolders(state),
-    filter: getFilter(state),
-    myId: getMyFolderId(state),
-    commonId: getShareFolderId(state),
-    currentId: getSelectedFolderId(state),
-    isAdmin: isAdmin(state),
-    dragging: getDragging(state),
-    updateTree: getUpdateTree(state),
-    rootFolderId: getRootFolderId(state),
-    draggableItems: getDraggableItems(state),
-    isDesktop: isDesktopClient(state),
-    isPrivacy: getIsPrivacyFolder(state),
-  };
-}
+export default inject(
+  ({
+    auth,
+    initFilesStore,
+    filesStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
+    const { setIsLoading, dragging, setDragging, setDragItem } = initFilesStore;
+    const { filter, setFilter, selection } = filesStore;
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setFilter: (filter) => dispatch(setFilter(filter)),
-    setTreeFolders: (treeFolders) => dispatch(setTreeFolders(treeFolders)),
-    setDragItem: (dragItem) => dispatch(setDragItem(dragItem)),
-    setDragging: (dragging) => dispatch(setDragging(dragging)),
-    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-    setUpdateTree: (updateTree) => dispatch(setUpdateTree(updateTree)),
-  };
-};
+    const {
+      treeFolders,
+      setTreeFolders,
+      myFolderId,
+      commonFolderId,
+      isPrivacyFolder,
+      expandedKeys,
+      setExpandedKeys,
+    } = treeFoldersStore;
+    const { pathParts, id } = selectedFolderStore;
 
-export default connect(mapStateToProps, mapDispatchToProps)(TreeFolders);
+    return {
+      isAdmin: auth.isAdmin,
+      isDesktop: auth.settingsStore.isDesktopClient,
+      dragging,
+      rootFolderId: pathParts,
+      currentId: id,
+      myId: myFolderId,
+      commonId: commonFolderId,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      draggableItems: dragging ? selection : false,
+      expandedKeys,
+      treeFolders,
+
+      setDragging,
+      setIsLoading,
+      setTreeFolders,
+      setFilter,
+      setDragItem,
+      setExpandedKeys,
+    };
+  }
+)(observer(TreeFolders));

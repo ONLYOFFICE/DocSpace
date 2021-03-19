@@ -1,10 +1,10 @@
 import React, { useCallback } from "react";
-import { connect } from "react-redux";
 import { IconButton } from "asc-web-components";
 import { Headline } from "asc-web-common";
 import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import { inject, observer } from "mobx-react";
 
 const Wrapper = styled.div`
   display: grid;
@@ -25,7 +25,7 @@ const textStyle = {
 
 const SectionHeaderContent = (props) => {
   const { history, settings } = props;
-  const { t } = useTranslation();
+  const { t } = useTranslation("Reassign");
 
   const onClickBack = useCallback(() => {
     history.push(settings.homepage);
@@ -54,11 +54,6 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    profile: state.profile.targetUser,
-    settings: state.auth.settings,
-  };
-}
-
-export default connect(mapStateToProps)(withRouter(SectionHeaderContent));
+export default inject(({ auth }) => ({
+  settings: auth.settingsStore,
+}))(observer(withRouter(SectionHeaderContent)));

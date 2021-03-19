@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import {
@@ -13,25 +12,15 @@ import {
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import { api, utils, toastr } from "asc-web-common";
-import { removeUser, setSelected } from "../../../store/people/actions";
+import { api, toastr } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { createI18N } from "../../../helpers/i18n";
-import { getUsersToRemoveIds } from "../../../store/people/selectors";
-const i18n = createI18N({
-  page: "DeleteUsersDialog",
-  localesPath: "dialogs/DeleteUsersDialog",
-});
+import { inject, observer } from "mobx-react";
 
 const { Filter } = api;
-const { changeLanguage } = utils;
 
 class DeleteGroupUsersDialogComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
-
     const { selectedUsers, userIds } = props;
 
     const listUsers = selectedUsers.map((item, index) => {
@@ -167,12 +156,8 @@ class DeleteGroupUsersDialogComponent extends React.Component {
   }
 }
 
-const DeleteGroupUsersDialogTranslated = withTranslation()(
+const DeleteUsersDialog = withTranslation("DeleteUsersDialog")(
   DeleteGroupUsersDialogComponent
-);
-
-const DeleteUsersDialog = (props) => (
-  <DeleteGroupUsersDialogTranslated i18n={i18n} {...props} />
 );
 
 DeleteUsersDialog.propTypes = {
@@ -187,18 +172,10 @@ DeleteUsersDialog.propTypes = {
   removeUser: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  const { filter, selection } = state.people;
-
-  const usersToRemoveIds = getUsersToRemoveIds(state);
-
-  return {
-    filter,
-    userIds: usersToRemoveIds,
-    selectedUsers: selection,
-  };
-};
-
-export default connect(mapStateToProps, { removeUser, setSelected })(
-  withRouter(DeleteUsersDialog)
-);
+export default inject(({ peopleStore }) => ({
+  filter: peopleStore.filterStore.filter,
+  removeUser: peopleStore.usersStore.removeUser,
+  selectedUsers: peopleStore.selectionStore.selection,
+  setSelected: peopleStore.selectionStore.setSelected,
+  userIds: peopleStore.selectionStore.getUsersToRemoveIds,
+}))(observer(withRouter(DeleteUsersDialog)));
