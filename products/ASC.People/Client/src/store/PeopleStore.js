@@ -30,6 +30,7 @@ class PeopleStore {
 
   isLoading = false;
   isLoaded = false;
+  isInit = false;
 
   constructor() {
     this.groupsStore = new GroupsStore(this);
@@ -63,6 +64,9 @@ class PeopleStore {
   }
 
   init = async () => {
+    if (this.isInit) return;
+    this.isInit = true;
+
     const re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
     const match = window.location.pathname.match(re);
 
