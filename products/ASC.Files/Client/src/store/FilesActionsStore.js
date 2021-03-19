@@ -31,6 +31,7 @@ const {
   setSelected,
   selectFile,
   deselectFile,
+  setSelection,
 } = filesStore;
 const { setTreeFolders } = treeFoldersStore;
 const { setIsLoading } = initFilesStore;
@@ -210,7 +211,7 @@ class FilesActionStore {
       });
   };
 
-  editCompleteAction = (id, isFolder /* selectedItem */) => {
+  editCompleteAction = (id, selectedItem) => {
     const { filter, folders, files, fileActionStore } = filesStore;
     const { type, setAction } = fileActionStore;
     const { treeFolders } = treeFoldersStore;
@@ -222,7 +223,7 @@ class FilesActionStore {
       fetchFiles(selectedFolderStore.id, filter)
         .then((data) => {
           const newItem = (item && item.id) === -1 ? null : item; //TODO: not add new folders?
-          if (isFolder) {
+          if (!selectedItem.fileExst) {
             const path = data.selectedFolder.pathParts;
             const newTreeFolders = treeFolders;
             const folders = data.selectedFolder.folders;
@@ -233,21 +234,14 @@ class FilesActionStore {
         .finally(() => {
           setAction({ type: null, id: null, extension: null });
           setIsLoading(false);
-
-          //uncomment if need to select item
-          //type === FileAction.Rename && this.onSelectItem(selectedItem);
-
-          // onSelectItem = (item) => {
-          //   const { selected, setSelected, setSelection } = this.props;
-          //   selected === "close" && setSelected("none");
-          //   setSelection([item]);
-          // };
+          type === FileAction.Rename && this.onSelectItem(selectedItem);
         });
     }
+  };
 
-    //this.setState({ editingId: null }, () => {
-    //  setAction({type: null});
-    //});
+  onSelectItem = (item) => {
+    filesStore.selected === "close" && setSelected("none");
+    setSelection([item]);
   };
 
   copyToAction = (

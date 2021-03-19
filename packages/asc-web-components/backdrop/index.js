@@ -74,8 +74,8 @@ class Backdrop extends React.Component {
   };
 
   onTouchHandler = (e) => {
-    const { isAside } = this.props;
-    isAside && e.preventDefault();
+    const { isModalDialog } = this.props;
+    !isModalDialog && e.preventDefault();
     this.backdropRef.current.click();
   };
 
@@ -122,6 +122,7 @@ Backdrop.defaultProps = {
   zIndex: 200,
   withBackground: false,
   isAside: false,
+  isModalDialog: false,
 };
 
 export default Backdrop;
