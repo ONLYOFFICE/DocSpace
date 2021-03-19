@@ -222,18 +222,29 @@ class SectionFilterContent extends React.Component {
     return selectedFilterData;
   };
 
-  needForUpdate = (currentProps, nextProps) => {
-    if (currentProps.language !== nextProps.language) {
-      return true;
+  isTranslationsLoaded = () => {
+    const { t, i18n } = this.props;
+
+    const { store, services, language } = i18n;
+
+    let translationIsLoaded = false;
+    try {
+      translationIsLoaded = store.hasResourceBundle(
+        services.languageUtils.getLanguagePartFromCode(language),
+        "Home"
+      );
+    } catch {
+      translationIsLoaded = t("UserStatus") !== "UserStatus";
     }
-    return false;
+
+    return translationIsLoaded;
   };
 
   render() {
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, language, isLoaded, sectionWidth } = this.props;
+    const { t, isLoaded, sectionWidth } = this.props;
 
-    return isLoaded ? (
+    return isLoaded && this.isTranslationsLoaded() ? (
       <FilterInput
         sectionWidth={sectionWidth}
         getFilterData={this.getData}
@@ -243,8 +254,6 @@ class SectionFilterContent extends React.Component {
         directionAscLabel={t("DirectionAscLabel")}
         directionDescLabel={t("DirectionDescLabel")}
         placeholder={t("Search")}
-        needForUpdate={this.needForUpdate}
-        language={language}
         contextMenuHeader={t("AddFilter")}
         isMobile={isMobileOnly}
       />
@@ -260,7 +269,6 @@ export default withRouter(
       customNames: auth.settingsStore.customNames,
       isLoaded: auth.isLoaded,
       isAdmin: auth.isAdmin,
-      language: auth.language,
       user: auth.userStore.user,
       groups: peopleStore.groupsStore.groups,
       fetchPeople: peopleStore.usersStore.getUsersList,
