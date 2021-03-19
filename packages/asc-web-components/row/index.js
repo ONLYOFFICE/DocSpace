@@ -78,6 +78,7 @@ class Row extends React.Component {
       element,
       indeterminate,
       onSelect,
+      onRowContextClick,
       sectionWidth,
     } = this.props;
 
@@ -105,7 +106,10 @@ class Row extends React.Component {
       onSelect && onSelect(e.target.checked, data);
     };
 
-    const getOptions = () => contextOptions;
+    const getOptions = () => {
+      onRowContextClick && onRowContextClick();
+      return contextOptions;
+    };
 
     return (
       <StyledRow ref={this.rowRef} {...this.props}>
@@ -173,6 +177,7 @@ Row.propTypes = {
   indeterminate: PropTypes.bool,
   /** when selecting row element. Returns data value. */
   onSelect: PropTypes.func,
+  onRowContextClick: PropTypes.func,
   /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
