@@ -63,10 +63,10 @@ class DeleteProfileEverDialogComponent extends React.Component {
               </Trans>
             </Text>
             <Text>{t("NotBeUndone")}</Text>
-            <Text color="#c30" fontSize="18px" className="warning-text">
+            {/* <Text color="#c30" fontSize="18px" className="warning-text">
               {t("Warning")}
             </Text>
-            <Text>{t("DeleteUserDataConfirmation")}</Text>
+            <Text>{t("DeleteUserDataConfirmation")}</Text> */}
           </ModalDialog.Body>
           <ModalDialog.Footer>
             <Button
@@ -77,14 +77,14 @@ class DeleteProfileEverDialogComponent extends React.Component {
               onClick={this.onDeleteProfileEver}
               isLoading={isRequestRunning}
             />
-            <Button
+            {/* <Button
               className="button-dialog"
               key="ReassignBtn"
               label={t("ReassignData")}
               size="medium"
               onClick={this.onReassignDataClick}
               isDisabled={isRequestRunning}
-            />
+            /> */}
           </ModalDialog.Footer>
         </ModalDialog>
       </ModalDialogContainer>

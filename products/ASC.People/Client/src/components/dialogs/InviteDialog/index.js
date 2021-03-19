@@ -122,7 +122,7 @@ class InviteDialogComponent extends React.Component {
 
   render() {
     console.log("InviteDialog render");
-    const { t, visible, settings, guestsCaption } = this.props;
+    const { t, visible, hasShortenService, guestsCaption } = this.props;
     const { LinkCopySuccess, ChangeTextAnim } = this.state;
 
     return (
@@ -149,7 +149,7 @@ class InviteDialogComponent extends React.Component {
                     ? t("LinkCopySuccess")
                     : t("CopyToClipboard")}
                 </Link>
-                {settings && !this.state.isLinkShort && (
+                {hasShortenService && !this.state.isLinkShort && (
                   <Link
                     type="action"
                     isHovered={true}
@@ -207,7 +207,7 @@ InviteDialog.propTypes = {
 };
 
 export default inject(({ auth, peopleStore }) => ({
-  settings: auth.settingsStore,
+  hasShortenService: auth.settingsStore.hasShortenService,
   guestsCaption: auth.settingsStore.customNames.guestsCaption,
   getPortalInviteLinks: peopleStore.inviteLinksStore.getPortalInviteLinks,
   getShortenedLink: peopleStore.inviteLinksStore.getShortenedLink,

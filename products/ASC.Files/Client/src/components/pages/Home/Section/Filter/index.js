@@ -258,31 +258,32 @@ class SectionFilterContent extends React.Component {
     return selectedFilterData;
   };
 
-  needForUpdate = (currentProps, nextProps) => {
-    if (currentProps.language !== nextProps.language) {
-      return true;
-    }
-    return false;
-  };
+  isTranslationsLoaded = () => {
+    const { t, i18n } = this.props;
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return (
-  //     !equal(this.props.filter, nextProps.filter) ||
-  //     this.props.selectedFolderId !== nextProps.selectedFolderId ||
-  //     this.state.isReady !== nextState.isReady ||
-  //     this.props.viewAs !== nextProps.viewAs ||
-  //     this.props.firstLoad !== nextProps.firstLoad ||
-  //     this.props.sectionWidth !== nextProps.sectionWidth
-  //   );
-  // }
+    const { store, services, language } = i18n;
+
+    let translationIsLoaded = false;
+    try {
+      translationIsLoaded = store.hasResourceBundle(
+        services.languageUtils.getLanguagePartFromCode(language),
+        "Home"
+      );
+    } catch {
+      translationIsLoaded = t("UserStatus") !== "UserStatus";
+    }
+
+    return translationIsLoaded;
+  };
 
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, language, firstLoad, sectionWidth } = this.props;
+    const { t, firstLoad, sectionWidth } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
-    return firstLoad ? (
+
+    return firstLoad && !this.isTranslationsLoaded() ? (
       <Loaders.Filter />
     ) : (
       <FilterInput
@@ -296,8 +297,6 @@ class SectionFilterContent extends React.Component {
         directionAscLabel={t("DirectionAscLabel")}
         directionDescLabel={t("DirectionDescLabel")}
         placeholder={t("Search")}
-        needForUpdate={this.needForUpdate}
-        language={language}
         isReady={this.state.isReady}
         {...filterColumnCount}
         contextMenuHeader={t("AddFilter")}
@@ -314,12 +313,10 @@ export default inject(
 
     const { user } = auth.userStore;
     const { customNames, culture } = auth.settingsStore;
-    const language = (user && user.cultureName) || culture || "en-US";
 
     return {
       customNames,
       user,
-      language,
       firstLoad,
       selectedFolderId: selectedFolderStore.id,
       selectedItem: filter.selectedItem,

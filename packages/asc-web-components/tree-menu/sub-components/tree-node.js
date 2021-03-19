@@ -204,6 +204,10 @@ const TreeNodeMenu = styled(TreeNode)`
     background-color: transparent;
     background-repeat: no-repeat;
     background-attachment: scroll;
+
+    svg {
+      height: 16px;
+    }
   }
   span.rc-tree-iconEle {
     display: ${(props) => (props.icon ? "inline-block" : "none")};
@@ -222,6 +226,7 @@ const TreeNodeMenu = styled(TreeNode)`
   }
   span.rc-tree-switcher {
     margin: 0px 4px;
+    vertical-align: 1px;
     height: 24px;
     width: 8px;
   }
