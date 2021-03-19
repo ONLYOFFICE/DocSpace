@@ -98,7 +98,8 @@ class UsersStore {
       updatedProfile = this.peopleStore.targetUserStore.targetUser;
     }
     const { userName } = updatedProfile;
-    const oldProfile = this.users.filter((u) => u.userName === userName);
+    const oldProfileArr = this.users.filter((u) => u.userName === userName);
+    const oldProfile = oldProfileArr[0];
     const newProfile = {};
 
     for (let key in oldProfile) {

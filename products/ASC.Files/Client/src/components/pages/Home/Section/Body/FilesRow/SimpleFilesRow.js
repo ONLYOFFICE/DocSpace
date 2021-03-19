@@ -12,6 +12,7 @@ import { withRouter } from "react-router-dom";
 import toastr from "studio/toastr";
 import { FileAction } from "@appserver/common/constants";
 import copy from "copy-to-clipboard";
+import config from "../../../../../../../package.json";
 
 const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
@@ -102,7 +103,6 @@ const SimpleFilesRow = (props) => {
     setMediaViewerData,
     setDragging,
     startUpload,
-    setShareItem,
     onSelectItem,
     history,
   } = props;
@@ -135,8 +135,8 @@ const SimpleFilesRow = (props) => {
   };
 
   const onClickShare = () => {
+    onSelectItem(item);
     setSharingPanelVisible(true);
-    setShareItem(item);
   };
   const onOwnerChange = () => setChangeOwnerPanelVisible(true);
   const onMoveAction = () => setMoveToPanelVisible(true);
@@ -540,7 +540,7 @@ export default inject(
     },
     { item }
   ) => {
-    const { homepage, isTabletView } = auth.settingsStore;
+    const { isTabletView } = auth.settingsStore;
     const { dragging, setDragging } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -552,7 +552,6 @@ export default inject(
       setDeleteThirdPartyDialogVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
-      setShareItem,
     } = dialogsStore;
 
     const { selection, canShare, openDocEditor, fileActionStore } = filesStore;
@@ -597,11 +596,10 @@ export default inject(
       isFolder,
       draggable,
       isItemsSelected: !!selection.length,
-      homepage,
+      homepage: config.homepage,
       isTabletView,
       actionId: fileActionStore.id,
       setSharingPanelVisible,
-      setShareItem,
       setChangeOwnerPanelVisible,
       setRemoveItem,
       setDeleteThirdPartyDialogVisible,

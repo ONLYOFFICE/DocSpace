@@ -27,6 +27,7 @@ import { ConvertDialog } from "../../../../../dialogs";
 import EditingWrapperComponent from "../EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
 import { observer, inject } from "mobx-react";
+import config from "../../../../../../../package.json";
 
 const sideColor = "#A3A9AE";
 const StyledCheckIcon = styled(CheckIcon)`
@@ -782,12 +783,7 @@ export default inject(
     { item }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
-    const {
-      homepage,
-      culture,
-      isDesktopClient,
-      isTabletView,
-    } = auth.settingsStore;
+    const { culture, isDesktopClient, isTabletView } = auth.settingsStore;
     const { setIsLoading, isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
     const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
@@ -840,7 +836,7 @@ export default inject(
     return {
       isDesktop: isDesktopClient,
       isTabletView,
-      homepage,
+      homepage: config.homepage,
       viewer: auth.userStore.user,
       culture,
       fileActionId,

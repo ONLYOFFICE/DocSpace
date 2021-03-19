@@ -32,12 +32,12 @@ class TargetUserStore {
   }
 
   getTargetUser = async (userName) => {
-    if (authStore.userStore.user.userName === userName) {
+    /*if (authStore.userStore.user.userName === userName) {
       return this.setTargetUser(authStore.userStore.user);
-    } else {
-      const user = await api.people.getUser(userName);
-      return this.setTargetUser(user);
-    }
+    } else {*/
+    const user = await api.people.getUser(userName);
+    return this.setTargetUser(user);
+    //}
   };
 
   setTargetUser = (user) => {

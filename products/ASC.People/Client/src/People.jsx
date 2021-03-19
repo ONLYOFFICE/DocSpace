@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Provider as PeopleProvider, inject, observer } from "mobx-react";
-import { Switch } from "react-router-dom";
+import { Redirect, Switch } from "react-router-dom";
 import PeopleStore from "./store/PeopleStore";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import toastr from "studio/toastr";
@@ -15,6 +15,7 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import ProfileAction from "./pages/ProfileAction";
 import GroupAction from "./pages/GroupAction";
+import Filter from "@appserver/common/api/people/filter";
 
 const homepage = config.homepage;
 
@@ -36,6 +37,12 @@ const Error404Route = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
+
+const HomeRedirectToFilter = (props) => {
+  const filter = Filter.getDefault();
+  const urlFilter = filter.toUrlParams();
+  return <Redirect to={`${config.homepage}/filter?${urlFilter}`} />;
+};
 
 const PeopleContent = (props) => {
   const { isLoaded, loadBaseInfo } = props;
@@ -81,7 +88,7 @@ const PeopleContent = (props) => {
         restricted
         component={ReassignRoute}
       />
-      <PrivateRoute exact path={homepage} component={Home} />
+      <PrivateRoute exact path={homepage} component={HomeRedirectToFilter} />
       <PrivateRoute path={`${homepage}/filter`} component={Home} />
       <PrivateRoute component={Error404Route} />
     </Switch>
