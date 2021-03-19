@@ -27,19 +27,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
 {
     [Scope]
     public class CurrencyInfoDao : AbstractDao
-    {               
+    {
         public CurrencyInfoDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
@@ -51,15 +53,15 @@ namespace ASC.CRM.Core.Dao
                                 logger,
                                 ascCache)
         {
-            
-                        
+
+
         }
 
         public virtual List<CurrencyInfo> GetAll()
         {
             return CRMDbContext.CurrencyInfo.ToList().ConvertAll(ToCurrencyInfo);
         }
-        
+
         public virtual CurrencyInfo GetByAbbreviation(string abbreviation)
         {
             return ToCurrencyInfo(CRMDbContext.CurrencyInfo
@@ -81,7 +83,7 @@ namespace ASC.CRM.Core.Dao
                                             .ToList()
                                             .ConvertAll(ToCurrencyInfo);
         }
-                
+
         private static CurrencyInfo ToCurrencyInfo(DbCurrencyInfo dbCurrencyInfo)
         {
             return new CurrencyInfo(
@@ -90,7 +92,7 @@ namespace ASC.CRM.Core.Dao
                     dbCurrencyInfo.Abbreviation,
                     dbCurrencyInfo.CultureName,
                     dbCurrencyInfo.IsConvertable,
-                    dbCurrencyInfo.IsBasic               
+                    dbCurrencyInfo.IsBasic
                 );
         }
     }

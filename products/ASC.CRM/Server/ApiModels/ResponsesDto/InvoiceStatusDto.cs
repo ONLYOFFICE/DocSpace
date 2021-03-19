@@ -23,10 +23,13 @@
  *
 */
 
+using System.Runtime.Serialization;
+
 using ASC.CRM.Classes;
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
 
-using System.Runtime.Serialization;
+using AutoMapper;
 
 namespace ASC.CRM.ApiModels
 {
@@ -34,9 +37,9 @@ namespace ASC.CRM.ApiModels
     ///  Invoice Status
     /// </summary>
     [DataContract(Name = "invoiceStatus", Namespace = "")]
-    public class InvoiceStatusDto
+    public class InvoiceStatusDto : IMapFrom<InvoiceStatus>
     {
-        public int Id { get; set; }        
+        public int Id { get; set; }
         public string Title { get; set; }
         public static InvoiceStatusDto GetSample()
         {
@@ -47,5 +50,11 @@ namespace ASC.CRM.ApiModels
             };
         }
 
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<InvoiceStatus, InvoiceStatusDto>()
+                    .ForMember(x => x.Title, x => x.MapFrom(y => y.ToLocalizedString()));
+
+        }
     }
 }

@@ -24,6 +24,10 @@
 */
 
 
+using System;
+using System.Globalization;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -36,13 +40,9 @@ using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Data.Storage;
-using ASC.Web.CRM.Core;
 using ASC.Web.CRM.Services.NotifyService;
-using Autofac;
+
 using Microsoft.Extensions.Options;
-using System;
-using System.Globalization;
-using System.Linq;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -271,7 +271,7 @@ namespace ASC.Web.CRM.Classes
 
                 TenantManager.SetCurrentTenant(_tenantID);
                 SecurityContext.AuthenticateMe(_author);
-                
+
                 var userCulture = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).GetCulture();
 
                 System.Threading.Thread.CurrentThread.CurrentCulture = userCulture;

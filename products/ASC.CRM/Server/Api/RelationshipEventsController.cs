@@ -24,17 +24,6 @@
 */
 
 
-using ASC.Api.Core;
-using ASC.CRM.ApiModels;
-using ASC.Api.Documents;
-using ASC.Common.Web;
-using ASC.CRM.Core;
-using ASC.CRM.Core.Entities;
-using ASC.CRM.Core.Enums;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Routing;
-using ASC.Web.Files.Utils;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -42,12 +31,22 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using OrderBy = ASC.CRM.Core.Entities.OrderBy;
+using ASC.Api.Core;
 using ASC.Api.CRM;
+using ASC.Api.Documents;
+using ASC.Common.Web;
+using ASC.CRM.ApiModels;
+using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
-using ASC.Web.CRM.Services.NotifyService;
-using ASC.Core;
-using ASC.Web.Core.Users;
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.MessagingSystem;
+using ASC.Web.Api.Routing;
+using ASC.Web.Files.Utils;
+
+using AutoMapper;
+
+using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
 namespace ASC.CRM.Api
 {
@@ -58,19 +57,16 @@ namespace ASC.CRM.Api
                      ApiContext apiContext,
                      MessageTarget messageTarget,
                      MessageService messageService,
-                     ContactDtoHelper contactBaseDtoHelper,
-                     RelationshipEventDtoHelper relationshipEventDtoHelper,
                      FileWrapperHelper fileWrapperHelper,
                      ASC.Files.Core.Data.DaoFactory filesDaoFactory,
                      FileUploader fileUploader,
-                     HistoryCategoryDtoHelper historyCategoryDtoHelper)
-            : base(daoFactory, cRMSecurity)
+                     HistoryCategoryDtoHelper historyCategoryDtoHelper,
+                     IMapper mapper)
+            : base(daoFactory, cRMSecurity, mapper)
         {
             ApiContext = apiContext;
             MessageTarget = messageTarget;
             MessageService = messageService;
-            ContactDtoHelper = contactBaseDtoHelper;
-            RelationshipEventDtoHelper = relationshipEventDtoHelper;
             FileWrapperHelper = fileWrapperHelper;
             FilesDaoFactory = filesDaoFactory;
             FileUploader = fileUploader;
@@ -81,12 +77,10 @@ namespace ASC.CRM.Api
         public FileUploader FileUploader { get; }
         public ASC.Files.Core.Data.DaoFactory FilesDaoFactory { get; set; }
         public FileWrapperHelper FileWrapperHelper { get; }
-        public RelationshipEventDtoHelper RelationshipEventDtoHelper { get; }
-        public ContactDtoHelper ContactDtoHelper { get; }
         private ApiContext ApiContext { get; }
         public MessageService MessageService { get; }
         public MessageTarget MessageTarget { get; }
-    
+
         /// <summary>
         ///   Returns the list of all events matching the parameters specified in the request
         /// </summary>
@@ -117,18 +111,18 @@ namespace ASC.CRM.Api
             switch (entityTypeObj)
             {
                 case EntityType.Contact:
-                    var contact = DaoFactory.GetContactDao().GetByID(entityId);
-                    if (contact == null || !CRMSecurity.CanAccessTo(contact))
+                    var contact = _daoFactory.GetContactDao().GetByID(entityId);
+                    if (contact == null || !_crmSecurity.CanAccessTo(contact))
                         throw new ItemNotFoundException();
                     break;
                 case EntityType.Case:
-                    var cases = DaoFactory.GetCasesDao().GetByID(entityId);
-                    if (cases == null || !CRMSecurity.CanAccessTo(cases))
+                    var cases = _daoFactory.GetCasesDao().GetByID(entityId);
+                    if (cases == null || !_crmSecurity.CanAccessTo(cases))
                         throw new ItemNotFoundException();
                     break;
                 case EntityType.Opportunity:
-                    var deal = DaoFactory.GetDealDao().GetByID(entityId);
-                    if (deal == null || !CRMSecurity.CanAccessTo(deal))
+                    var deal = _daoFactory.GetDealDao().GetByID(entityId);
+                    if (deal == null || !_crmSecurity.CanAccessTo(deal))
                         throw new ItemNotFoundException();
                     break;
                 default:
@@ -160,7 +154,7 @@ namespace ASC.CRM.Api
 
             if (eventOrderBy != null)
             {
-                result = ToListRelationshipEventDto(DaoFactory.GetRelationshipEventDao().GetItems(
+                result = ToListRelationshipEventDto(_daoFactory.GetRelationshipEventDao().GetItems(
                     ApiContext.FilterValue,
                     entityTypeObj,
                     entityId,
@@ -178,7 +172,7 @@ namespace ASC.CRM.Api
             }
             else
             {
-                result = ToListRelationshipEventDto(DaoFactory.GetRelationshipEventDao().GetItems(
+                result = ToListRelationshipEventDto(_daoFactory.GetRelationshipEventDao().GetItems(
                     ApiContext.FilterValue,
                     entityTypeObj,
                     entityId,
@@ -212,11 +206,11 @@ namespace ASC.CRM.Api
         {
             if (id <= 0) throw new ArgumentException();
 
-            var item = DaoFactory.GetRelationshipEventDao().GetByID(id);
+            var item = _daoFactory.GetRelationshipEventDao().GetByID(id);
             if (item == null) throw new ItemNotFoundException();
-            var wrapper = RelationshipEventDtoHelper.Get(item);
+            var wrapper = _mapper.Map<RelationshipEventDto>(item);
 
-            DaoFactory.GetRelationshipEventDao().DeleteItem(id);
+            _daoFactory.GetRelationshipEventDao().DeleteItem(id);
 
             var messageAction = GetHistoryDeletedAction(item.EntityType, item.ContactID);
             var entityTitle = wrapper.Contact == null ? wrapper.Entity.EntityTitle : wrapper.Contact.DisplayName;
@@ -506,18 +500,18 @@ namespace ASC.CRM.Api
             switch (entityTypeObj)
             {
                 case EntityType.Contact:
-                    var relationshipEvent1 = DaoFactory.GetRelationshipEventDao().AttachFiles(entityid, EntityType.Any, 0, fileids.ToArray());
+                    var relationshipEvent1 = _daoFactory.GetRelationshipEventDao().AttachFiles(entityid, EntityType.Any, 0, fileids.ToArray());
                     var messageAction = entityObj is Company ? MessageAction.CompanyAttachedFiles : MessageAction.PersonAttachedFiles;
                     MessageService.Send(messageAction, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
-                    return RelationshipEventDtoHelper.Get(relationshipEvent1);
+                    return _mapper.Map<RelationshipEventDto>(relationshipEvent1);
                 case EntityType.Opportunity:
-                    var relationshipEvent2 = DaoFactory.GetRelationshipEventDao().AttachFiles(0, entityTypeObj, entityid, fileids.ToArray());
+                    var relationshipEvent2 = _daoFactory.GetRelationshipEventDao().AttachFiles(0, entityTypeObj, entityid, fileids.ToArray());
                     MessageService.Send(MessageAction.OpportunityAttachedFiles, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
-                    return RelationshipEventDtoHelper.Get(relationshipEvent2);
+                    return _mapper.Map<RelationshipEventDto>(relationshipEvent2);
                 case EntityType.Case:
-                    var relationshipEvent3 = DaoFactory.GetRelationshipEventDao().AttachFiles(0, entityTypeObj, entityid, fileids.ToArray());
+                    var relationshipEvent3 = _daoFactory.GetRelationshipEventDao().AttachFiles(0, entityTypeObj, entityid, fileids.ToArray());
                     MessageService.Send(MessageAction.CaseAttachedFiles, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
-                    return RelationshipEventDtoHelper.Get(relationshipEvent3);
+                    return _mapper.Map<RelationshipEventDto>(relationshipEvent3);
                 default:
                     throw new ArgumentException();
             }
@@ -534,7 +528,7 @@ namespace ASC.CRM.Api
         [Read(@"files/root")]
         public int GetRootFolderID()
         {
-            return DaoFactory.GetFileDao().GetRoot();
+            return _daoFactory.GetFileDao().GetRoot();
         }
 
         /// <summary>
@@ -557,10 +551,10 @@ namespace ASC.CRM.Api
             switch (entityTypeObj)
             {
                 case EntityType.Contact:
-                    return DaoFactory.GetRelationshipEventDao().GetAllFiles(new[] { entityid }, EntityType.Any, 0).ConvertAll(file => FileWrapperHelper.Get<int>(file));
+                    return _daoFactory.GetRelationshipEventDao().GetAllFiles(new[] { entityid }, EntityType.Any, 0).ConvertAll(file => FileWrapperHelper.Get<int>(file));
                 case EntityType.Opportunity:
                 case EntityType.Case:
-                    return DaoFactory.GetRelationshipEventDao().GetAllFiles(null, entityTypeObj, entityid).ConvertAll(file => FileWrapperHelper.Get<int>(file));
+                    return _daoFactory.GetRelationshipEventDao().GetAllFiles(null, entityTypeObj, entityid).ConvertAll(file => FileWrapperHelper.Get<int>(file));
                 default:
                     throw new ArgumentException();
             }
@@ -586,7 +580,7 @@ namespace ASC.CRM.Api
             if (file == null) throw new ItemNotFoundException();
             var result = FileWrapperHelper.Get<int>(file);
 
-            var _eventsDao = DaoFactory.GetRelationshipEventDao();
+            var _eventsDao = _daoFactory.GetRelationshipEventDao();
             var eventIDs = _eventsDao.RemoveFile(file);
             var events = new List<RelationshipEvent>();
 
@@ -654,7 +648,7 @@ namespace ASC.CRM.Api
                 switch (entityType)
                 {
                     case EntityType.Opportunity:
-                        DaoFactory.GetDealDao().GetDeals(entityDtosIDs[entityType].Distinct().ToArray())
+                        _daoFactory.GetDealDao().GetDeals(entityDtosIDs[entityType].Distinct().ToArray())
                                   .ForEach(item =>
                                       {
                                           if (item == null) return;
@@ -670,7 +664,7 @@ namespace ASC.CRM.Api
                                       });
                         break;
                     case EntityType.Case:
-                        DaoFactory.GetCasesDao().GetByID(entityDtosIDs[entityType].ToArray())
+                        _daoFactory.GetCasesDao().GetByID(entityDtosIDs[entityType].ToArray())
                                   .ForEach(item =>
                                       {
                                           if (item == null) return;
@@ -690,15 +684,15 @@ namespace ASC.CRM.Api
                 }
             }
 
-            var categories = DaoFactory.GetListItemDao().GetItems(categoryIDs.ToArray()).ToDictionary(x => x.ID, x => HistoryCategoryDtoHelper.Get(x));
+            var categories = _daoFactory.GetListItemDao().GetItems(categoryIDs.ToArray()).ToDictionary(x => x.ID, x => HistoryCategoryDtoHelper.Get(x));
 
-            var files = DaoFactory.GetRelationshipEventDao().GetFiles(eventIDs.ToArray());
+            var files = _daoFactory.GetRelationshipEventDao().GetFiles(eventIDs.ToArray());
 
-            var contacts = DaoFactory.GetContactDao().GetContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, x => ContactDtoHelper.GetContactBaseDto(x));
+            var contacts = _daoFactory.GetContactDao().GetContacts(contactIDs.ToArray()).ToDictionary(item => item.ID, x => _mapper.Map<ContactBaseDto>(x));
 
             foreach (var item in itemList)
             {
-                var eventObjWrap = RelationshipEventDtoHelper.Get(item);
+                var eventObjWrap = _mapper.Map<RelationshipEventDto>(item);
 
                 if (contacts.ContainsKey(item.ContactID))
                 {
@@ -729,13 +723,13 @@ namespace ASC.CRM.Api
             return result;
         }
 
-  
+
 
         private MessageAction GetHistoryCreatedAction(EntityType entityType, int contactId)
         {
             if (contactId > 0)
             {
-                var contact = DaoFactory.GetContactDao().GetByID(contactId);
+                var contact = _daoFactory.GetContactDao().GetByID(contactId);
                 return contact is Company ? MessageAction.CompanyCreatedHistoryEvent : MessageAction.PersonCreatedHistoryEvent;
             }
 
@@ -746,7 +740,7 @@ namespace ASC.CRM.Api
                 case EntityType.Case:
                     return MessageAction.CaseCreatedHistoryEvent;
                 case EntityType.Any:
-                    var contact = DaoFactory.GetContactDao().GetByID(contactId);
+                    var contact = _daoFactory.GetContactDao().GetByID(contactId);
                     return contact is Company ? MessageAction.CompanyCreatedHistoryEvent : MessageAction.PersonCreatedHistoryEvent;
                 default:
                     throw new ArgumentException("Invalid entityType: " + entityType);
@@ -757,7 +751,7 @@ namespace ASC.CRM.Api
         {
             if (contactId > 0)
             {
-                var contact = DaoFactory.GetContactDao().GetByID(contactId);
+                var contact = _daoFactory.GetContactDao().GetByID(contactId);
                 return contact is Company ? MessageAction.CompanyDeletedHistoryEvent : MessageAction.PersonDeletedHistoryEvent;
             }
 
@@ -768,7 +762,7 @@ namespace ASC.CRM.Api
                 case EntityType.Case:
                     return MessageAction.CaseDeletedHistoryEvent;
                 case EntityType.Any:
-                    var contact = DaoFactory.GetContactDao().GetByID(contactId);
+                    var contact = _daoFactory.GetContactDao().GetByID(contactId);
                     return contact is Company ? MessageAction.CompanyDeletedHistoryEvent : MessageAction.PersonDeletedHistoryEvent;
                 default:
                     throw new ArgumentException("Invalid entityType: " + entityType);
@@ -779,7 +773,7 @@ namespace ASC.CRM.Api
         {
             if (contactId > 0)
             {
-                var contact = DaoFactory.GetContactDao().GetByID(contactId);
+                var contact = _daoFactory.GetContactDao().GetByID(contactId);
                 return contact is Company ? MessageAction.CompanyAttachedFiles : MessageAction.PersonAttachedFiles;
             }
 
@@ -790,7 +784,7 @@ namespace ASC.CRM.Api
                 case EntityType.Case:
                     return MessageAction.CaseAttachedFiles;
                 case EntityType.Any:
-                    var contact = DaoFactory.GetContactDao().GetByID(contactId);
+                    var contact = _daoFactory.GetContactDao().GetByID(contactId);
                     return contact is Company ? MessageAction.CompanyAttachedFiles : MessageAction.PersonAttachedFiles;
                 default:
                     throw new ArgumentException("Invalid entityType: " + entityType);
@@ -801,7 +795,7 @@ namespace ASC.CRM.Api
         {
             if (contactId > 0)
             {
-                var contact = DaoFactory.GetContactDao().GetByID(contactId);
+                var contact = _daoFactory.GetContactDao().GetByID(contactId);
                 return contact is Company ? MessageAction.CompanyDetachedFile : MessageAction.PersonDetachedFile;
             }
 
@@ -812,7 +806,7 @@ namespace ASC.CRM.Api
                 case EntityType.Case:
                     return MessageAction.CaseDetachedFile;
                 case EntityType.Any:
-                    var contact = DaoFactory.GetContactDao().GetByID(contactId);
+                    var contact = _daoFactory.GetContactDao().GetByID(contactId);
                     return contact is Company ? MessageAction.CompanyDetachedFile : MessageAction.PersonAttachedFiles;
                 default:
                     throw new ArgumentException("Invalid entityType: " + entityType);

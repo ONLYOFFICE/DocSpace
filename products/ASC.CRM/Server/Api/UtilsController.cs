@@ -24,7 +24,11 @@
 */
 
 
-using ASC.Api.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security;
+
 using ASC.Api.CRM;
 using ASC.Common.Threading.Progress;
 using ASC.Core.Common.Settings;
@@ -38,12 +42,8 @@ using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Utility;
 using ASC.Web.CRM.Classes;
-using ASC.Web.CRM.Services.NotifyService;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
+using AutoMapper;
 
 namespace ASC.CRM.Api
 {
@@ -54,18 +54,17 @@ namespace ASC.CRM.Api
                      MessageService messageService,
                      SettingsManager settingsManager,
                      CurrencyProvider currencyProvider,
-                     CurrencyInfoDtoHelper currencyInfoDtoHelper,
                      CurrencyRateInfoDtoHelper currencyRateInfoDtoHelper,
                      InvoiceSetting invoiceSetting,
                      ImportFromCSVManager importFromCSVManager,
                      OrganisationLogoManager organisationLogoManager,
                      Global global,
                      ImportFromCSV importFromCSV,
-                     ExportToCsv exportToCsv)
-            : base(daoFactory, cRMSecurity)
+                     ExportToCsv exportToCsv,
+                     IMapper mapper)
+            : base(daoFactory, cRMSecurity, mapper)
         {
             MessageService = messageService;
-            CurrencyInfoDtoHelper = currencyInfoDtoHelper;
             CurrencyProvider = currencyProvider;
             SettingsManager = settingsManager;
             CurrencyRateInfoDtoHelper = currencyRateInfoDtoHelper;
@@ -86,9 +85,8 @@ namespace ASC.CRM.Api
         public CurrencyRateInfoDtoHelper CurrencyRateInfoDtoHelper { get; }
         public SettingsManager SettingsManager { get; }
         public CurrencyProvider CurrencyProvider { get; }
-        public CurrencyInfoDtoHelper CurrencyInfoDtoHelper { get; }
         public MessageService MessageService { get; }
-      
+
         /// <summary>
         ///     Returns the list of all currencies currently available on the portal
         /// </summary>
@@ -100,7 +98,7 @@ namespace ASC.CRM.Api
         [Read(@"settings/currency")]
         public IEnumerable<CurrencyInfoDto> GetAvaliableCurrency()
         {
-            return CurrencyProvider.GetAll().ConvertAll(item => CurrencyInfoDtoHelper.Get(item));
+            return CurrencyProvider.GetAll().ConvertAll(item => _mapper.Map<CurrencyInfoDto>(item));
         }
 
         /// <summary>
@@ -141,10 +139,13 @@ namespace ASC.CRM.Api
             }
 
             var cur = CurrencyProvider.Get(currency.ToUpper());
+
             if (cur == null) throw new ArgumentException();
 
             var table = CurrencyProvider.MoneyConvert(cur);
+
             table.ToList().ForEach(tableItem => result.Add(CurrencyRateInfoDtoHelper.Get(tableItem.Key, tableItem.Value)));
+
             return result;
         }
 
@@ -230,7 +231,7 @@ namespace ASC.CRM.Api
         [Update(@"settings")]
         public Boolean SetIsPortalConfigured(Boolean? configured, Guid? webFormKey)
         {
-            if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+            if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
             var tenantSettings = SettingsManager.Load<CRMSettings>();
 
@@ -253,7 +254,7 @@ namespace ASC.CRM.Api
         [Update(@"settings/organisation/base")]
         public String UpdateOrganisationSettingsCompanyName(String companyName)
         {
-            if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+            if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
             var tenantSettings = SettingsManager.Load<CRMSettings>();
 
@@ -285,7 +286,7 @@ namespace ASC.CRM.Api
         [Update(@"settings/organisation/address")]
         public String UpdateOrganisationSettingsCompanyAddress(String street, String city, String state, String zip, String country)
         {
-            if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+            if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
             var tenantSettings = SettingsManager.Load<CRMSettings>();
 
@@ -325,13 +326,13 @@ namespace ASC.CRM.Api
         [Update(@"settings/organisation/logo")]
         public Int32 UpdateOrganisationSettingsLogo(bool reset)
         {
-            if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+            if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
             int companyLogoID;
 
             if (!reset)
             {
-                companyLogoID = OrganisationLogoManager.TryUploadOrganisationLogoFromTmp(DaoFactory);
+                companyLogoID = OrganisationLogoManager.TryUploadOrganisationLogoFromTmp(_daoFactory);
                 if (companyLogoID == 0)
                 {
                     throw new Exception("Downloaded image not found");
@@ -395,7 +396,7 @@ namespace ASC.CRM.Api
         [Update(@"settings/webformkey/change")]
         public string ChangeWebToLeadFormKey()
         {
-            if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+            if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
             var tenantSettings = SettingsManager.Load<CRMSettings>();
 
@@ -420,7 +421,7 @@ namespace ASC.CRM.Api
         [Update(@"settings/currency")]
         public CurrencyInfoDto UpdateCRMCurrency(String currency)
         {
-            if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+            if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
             if (string.IsNullOrEmpty(currency))
             {
@@ -433,7 +434,7 @@ namespace ASC.CRM.Api
             Global.SaveDefaultCurrencySettings(cur);
             MessageService.Send(MessageAction.CrmDefaultCurrencyUpdated);
 
-            return CurrencyInfoDtoHelper.Get(cur);
+            return _mapper.Map<CurrencyInfoDto>(cur);
         }
 
         /// <visible>false</visible>
@@ -519,7 +520,7 @@ namespace ASC.CRM.Api
         [Read(@"export/status")]
         public IProgressItem GetExportStatus()
         {
-            if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+            if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
             return ExportToCsv.GetStatus(false);
 
@@ -529,7 +530,7 @@ namespace ASC.CRM.Api
         [Update(@"export/cancel")]
         public IProgressItem CancelExport()
         {
-            if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+            if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
             ExportToCsv.Cancel(false);
 
@@ -541,7 +542,7 @@ namespace ASC.CRM.Api
         [Create(@"export/start")]
         public IProgressItem StartExport()
         {
-            if (!CRMSecurity.IsAdmin) throw CRMSecurity.CreateSecurityException();
+            if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
             MessageService.Send(MessageAction.CrmAllDataExported);
 

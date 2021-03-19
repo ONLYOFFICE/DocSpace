@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+
 using ASC.Core.Notify.Signalr;
 using ASC.VoipService;
 
@@ -41,9 +42,9 @@ namespace ASC.Web.CRM.Classes
             SignalrServiceClient signalrServiceClient)
         {
             SignalrServiceClient = signalrServiceClient;
-            this.numberId = numberId.TrimStart('+');        
+            this.numberId = numberId.TrimStart('+');
         }
-       
+
         public void Enqueue(string call, string agent)
         {
             SignalrServiceClient.EnqueueCall(numberId, call, agent);

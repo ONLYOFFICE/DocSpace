@@ -27,13 +27,8 @@
 #region Import
 
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using ASC.Common.Security;
-using ASC.Common.Security.Authorizing;
+
 using ASC.CRM.Core.Enums;
 
 #endregion

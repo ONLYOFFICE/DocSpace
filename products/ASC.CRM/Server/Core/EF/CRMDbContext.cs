@@ -1,10 +1,8 @@
-﻿using System;
-using ASC.Common;
+﻿using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ASC.CRM.Core.EF
 {
@@ -50,7 +48,7 @@ namespace ASC.CRM.Core.EF
                                .AddDbTask();
 
 
-       
+
 
 
             modelBuilder.Entity<DbCurrencyInfo>(entity =>
@@ -100,7 +98,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-;
+            ;
 
             modelBuilder.Entity<DbDealMilestone>(entity =>
             {
@@ -153,7 +151,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-    
+
             modelBuilder.Entity<DbInvoice>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)

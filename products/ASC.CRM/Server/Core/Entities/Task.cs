@@ -68,8 +68,8 @@ namespace ASC.CRM.Core.Entities
         public void Mapping(Profile profile)
         {
             profile.CreateMap<DbTask, Task>();
-//                .ForMember(x => x.CreateOn, x => x.ConvertUsing<DateTimeFromUtcValueConverter, DateTime>())
-//               .ForMember(x => x.LastModifedOn, x => x.ConvertUsing<DateTimeFromUtcValueConverter, DateTime?>());
+            //                .ForMember(x => x.CreateOn, x => x.ConvertUsing<DateTimeFromUtcValueConverter, DateTime>())
+            //               .ForMember(x => x.LastModifedOn, x => x.ConvertUsing<DateTimeFromUtcValueConverter, DateTime?>());
         }
     }
 }

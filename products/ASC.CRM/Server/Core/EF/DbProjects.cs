@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASC.CRM.Core.EF
@@ -14,7 +13,7 @@ namespace ASC.CRM.Core.EF
         [Key]
         [Column("contact_id", TypeName = "int(10)")]
         public int ContactId { get; set; }
-      
+
         [Key]
         [Column("tenant_id", TypeName = "int(10)")]
         public int TenantId { get; set; }

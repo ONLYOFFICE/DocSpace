@@ -43,7 +43,6 @@ namespace ASC.CRM.Mapping
 {
     public class CasesDtoTypeConverter : ITypeConverter<Cases, CasesDto>
     {
-        private readonly ContactDtoHelper _contactBaseDtoHelper;
         private readonly DaoFactory _daoFactory;
         private readonly CRMSecurity _CRMSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
@@ -52,14 +51,12 @@ namespace ASC.CRM.Mapping
         public CasesDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
                            CRMSecurity cRMSecurity,
-                           DaoFactory daoFactory,
-                           ContactDtoHelper contactBaseDtoHelper)
+                           DaoFactory daoFactory)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
             _employeeWraperHelper = employeeWraperHelper;
             _CRMSecurity = cRMSecurity;
             _daoFactory = daoFactory;
-            _contactBaseDtoHelper = contactBaseDtoHelper;
         }
 
         public CasesDto Convert(Cases source, CasesDto destination, ResolutionContext context)
@@ -99,7 +96,7 @@ namespace ASC.CRM.Mapping
             {
                 if (member == null) continue;
 
-                membersDtoList.Add(_contactBaseDtoHelper.GetContactBaseDto(member));
+                membersDtoList.Add(context.Mapper.Map<ContactBaseDto>(member));
             }
 
             result.Members = membersDtoList;

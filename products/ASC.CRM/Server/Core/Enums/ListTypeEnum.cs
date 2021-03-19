@@ -26,8 +26,9 @@
 
 #region Import
 
-using ASC.CRM.Classes;
 using System.ComponentModel;
+
+using ASC.CRM.Classes;
 
 #endregion
 

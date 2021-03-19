@@ -24,11 +24,14 @@
 */
 
 
-using ASC.CRM.Core.Entities;
-using ASC.CRM.Core.Enums;
-
 using System;
 using System.Runtime.Serialization;
+
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
+
+using AutoMapper;
 
 namespace ASC.CRM.ApiModels
 {
@@ -51,19 +54,19 @@ namespace ASC.CRM.ApiModels
         [DataMember(Name = "id")]
         public int Id { get; set; }
 
-        
+
         public String ImagePath { get; set; }
 
         public static HistoryCategoryBaseDto GetSample()
         {
             return new HistoryCategoryBaseDto
-                {
-                    Title = "Lunch",
-                    SortOrder = 10,
-                    Color = String.Empty,
-                    Description = "",
-                    ImagePath = "path to image"
-                };
+            {
+                Title = "Lunch",
+                SortOrder = 10,
+                Color = String.Empty,
+                Description = "",
+                ImagePath = "path to image"
+            };
         }
     }
 
@@ -79,20 +82,20 @@ namespace ASC.CRM.ApiModels
         {
         }
 
-        
+
         public int RelativeItemsCount { get; set; }
 
         public new static HistoryCategoryDto GetSample()
         {
             return new HistoryCategoryDto
-                {
-                    Title = "Lunch",
-                    SortOrder = 10,
-                    Color = String.Empty,
-                    Description = "",
-                    ImagePath = "path to image",
-                    RelativeItemsCount = 1
-                };
+            {
+                Title = "Lunch",
+                SortOrder = 10,
+                Color = String.Empty,
+                Description = "",
+                ImagePath = "path to image",
+                RelativeItemsCount = 1
+            };
         }
     }
 
@@ -116,23 +119,23 @@ namespace ASC.CRM.ApiModels
             Title = dealMilestone.Title;
         }
 
-        
+
         public int SuccessProbability { get; set; }
 
-        
+
         public DealMilestoneStatus StageType { get; set; }
 
         public static DealMilestoneBaseDto GetSample()
         {
             return new DealMilestoneBaseDto
-                {
-                    Title = "Discussion",
-                    SortOrder = 2,
-                    Color = "#B9AFD3",
-                    Description = "The potential buyer showed his/her interest and sees how your offering meets his/her goal",
-                    StageType = DealMilestoneStatus.Open,
-                    SuccessProbability = 20
-                };
+            {
+                Title = "Discussion",
+                SortOrder = 2,
+                Color = "#B9AFD3",
+                Description = "The potential buyer showed his/her interest and sees how your offering meets his/her goal",
+                StageType = DealMilestoneStatus.Open,
+                SuccessProbability = 20
+            };
         }
     }
 
@@ -148,21 +151,21 @@ namespace ASC.CRM.ApiModels
         {
         }
 
-        
+
         public int RelativeItemsCount { get; set; }
 
         public new static DealMilestoneDto GetSample()
         {
             return new DealMilestoneDto
-                {
-                    Title = "Discussion",
-                    SortOrder = 2,
-                    Color = "#B9AFD3",
-                    Description = "The potential buyer showed his/her interest and sees how your offering meets his/her goal",
-                    StageType = DealMilestoneStatus.Open,
-                    SuccessProbability = 20,
-                    RelativeItemsCount = 1
-                };
+            {
+                Title = "Discussion",
+                SortOrder = 2,
+                Color = "#B9AFD3",
+                Description = "The potential buyer showed his/her interest and sees how your offering meets his/her goal",
+                StageType = DealMilestoneStatus.Open,
+                SuccessProbability = 20,
+                RelativeItemsCount = 1
+            };
         }
     }
 
@@ -171,7 +174,7 @@ namespace ASC.CRM.ApiModels
     #region Task Category
 
     [DataContract(Name = "taskCategoryBase", Namespace = "")]
-    public class TaskCategoryBaseDto : ListItemDto
+    public class TaskCategoryBaseDto : ListItemDto, IMapFrom<ListItem>
     {
         public TaskCategoryBaseDto()
         {
@@ -182,19 +185,26 @@ namespace ASC.CRM.ApiModels
 
         }
 
-        
+
         public String ImagePath { get; set; }
 
         public static TaskCategoryBaseDto GetSample()
         {
             return new TaskCategoryBaseDto
-                {
-                    Title = "Appointment",
-                    SortOrder = 2,
-                    Description = "",
-                    ImagePath = "path to image"
-                };
+            {
+                Title = "Appointment",
+                SortOrder = 2,
+                Description = "",
+                ImagePath = "path to image"
+            };
         }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<ListItem, TaskCategoryBaseDto>().ConvertUsing<TaskCategoryDtoTypeConverter>();
+        }
+
+
     }
 
     [DataContract(Name = "taskCategory", Namespace = "")]
@@ -204,25 +214,25 @@ namespace ASC.CRM.ApiModels
         {
         }
 
-        public TaskCategoryDto(ListItem listItem): base(listItem)
+        public TaskCategoryDto(ListItem listItem) : base(listItem)
         {
         }
 
 
-        
+
         public int RelativeItemsCount { get; set; }
 
         public new static TaskCategoryDto GetSample()
         {
             return new TaskCategoryDto
-                {
-                    Id = 30,
-                    Title = "Appointment",
-                    SortOrder = 2,
-                    Description = "",
-                    ImagePath = "path to image",
-                    RelativeItemsCount = 1
-                };
+            {
+                Id = 30,
+                Title = "Appointment",
+                SortOrder = 2,
+                Description = "",
+                ImagePath = "path to image",
+                RelativeItemsCount = 1
+            };
         }
     }
 
@@ -239,7 +249,7 @@ namespace ASC.CRM.ApiModels
     [DataContract(Name = "contactStatusBase", Namespace = "")]
     public class ContactStatusBaseDto : ListItemDto
     {
-        public ContactStatusBaseDto() 
+        public ContactStatusBaseDto()
         {
         }
 
@@ -251,11 +261,11 @@ namespace ASC.CRM.ApiModels
         public static ContactStatusBaseDto GetSample()
         {
             return new ContactStatusBaseDto
-                {
-                    Title = "Cold",
-                    SortOrder = 2,
-                    Description = ""
-                };
+            {
+                Title = "Cold",
+                SortOrder = 2,
+                Description = ""
+            };
         }
     }
 
@@ -271,18 +281,18 @@ namespace ASC.CRM.ApiModels
         {
         }
 
-        
+
         public int RelativeItemsCount { get; set; }
 
         public new static ContactStatusDto GetSample()
         {
             return new ContactStatusDto
-                {
-                    Title = "Cold",
-                    SortOrder = 2,
-                    Description = "",
-                    RelativeItemsCount = 1
-                };
+            {
+                Title = "Cold",
+                SortOrder = 2,
+                Description = "",
+                RelativeItemsCount = 1
+            };
         }
     }
 
@@ -306,12 +316,12 @@ namespace ASC.CRM.ApiModels
         public static ContactTypeBaseDto GetSample()
         {
             return new ContactTypeBaseDto
-                {
-                    Id = 30,
-                    Title = "Client",
-                    SortOrder = 2,
-                    Description = ""
-                };
+            {
+                Id = 30,
+                Title = "Client",
+                SortOrder = 2,
+                Description = ""
+            };
         }
     }
 
@@ -327,19 +337,19 @@ namespace ASC.CRM.ApiModels
         {
         }
 
-        
+
         public int RelativeItemsCount { get; set; }
 
         public new static ContactTypeDto GetSample()
         {
             return new ContactTypeDto
-                {
-                    Id= 30,
-                    Title = "Client",
-                    SortOrder = 2,
-                    Description = "",
-                    RelativeItemsCount = 1
-                };
+            {
+                Id = 30,
+                Title = "Client",
+                SortOrder = 2,
+                Description = "",
+                RelativeItemsCount = 1
+            };
         }
     }
 
@@ -365,23 +375,23 @@ namespace ASC.CRM.ApiModels
         [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public String Title { get; set; }
 
-        
+
         public int RelativeItemsCount { get; set; }
 
         public static TagDto GetSample()
         {
             return new TagDto
-                {
-                    Title = "Tag",
-                    RelativeItemsCount = 1
-                };
+            {
+                Title = "Tag",
+                RelativeItemsCount = 1
+            };
         }
     }
 
     #endregion
 
     [DataContract(Name = "listItem", Namespace = "")]
-    public abstract class ListItemDto 
+    public class ListItemDto
     {
         protected ListItemDto()
         {
@@ -397,10 +407,10 @@ namespace ASC.CRM.ApiModels
         }
 
         [DataMember(Name = "id")]
-        public int Id { get; set; }        
-        public String Title { get; set; }        
-        public String Description { get; set; }        
-        public String Color { get; set; }        
+        public int Id { get; set; }
+        public String Title { get; set; }
+        public String Description { get; set; }
+        public String Color { get; set; }
         public int SortOrder { get; set; }
     }
 }

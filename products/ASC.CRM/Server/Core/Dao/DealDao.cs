@@ -24,6 +24,12 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+
 using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
@@ -44,11 +50,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
+
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
 namespace ASC.CRM.Core.Dao
@@ -205,7 +207,7 @@ namespace ASC.CRM.Core.Dao
             var result = CreateNewDealInDb(deal);
 
             deal.ID = result;
-            
+
             FactoryIndexer.Index(Query(CRMDbContext.Deals).Where(x => x.Id == deal.ID).FirstOrDefault());
 
             return result;
@@ -234,9 +236,9 @@ namespace ASC.CRM.Core.Dao
                 ActualCloseDate = deal.ActualCloseDate,
                 PerPeriodValue = deal.PerPeriodValue,
                 CreateOn = TenantUtil.DateTimeToUtc(deal.CreateOn == DateTime.MinValue ? TenantUtil.DateTimeNow() : deal.CreateOn),
-                CreateBy = SecurityContext.CurrentAccount.ID,
+                CreateBy = _securityContext.CurrentAccount.ID,
                 LastModifedOn = TenantUtil.DateTimeToUtc(deal.CreateOn == DateTime.MinValue ? TenantUtil.DateTimeNow() : deal.CreateOn),
-                LastModifedBy = SecurityContext.CurrentAccount.ID,
+                LastModifedBy = _securityContext.CurrentAccount.ID,
                 TenantId = TenantID
             };
 
@@ -258,7 +260,7 @@ namespace ASC.CRM.Core.Dao
             var result = items.Select(item => CreateNewDealInDb(item)).ToArray();
 
             tx.Commit();
-                                    
+
             foreach (var deal in Query(CRMDbContext.Deals).Where(x => result.Contains(x.Id)))
             {
                 FactoryIndexer.Index(deal);
@@ -294,7 +296,7 @@ namespace ASC.CRM.Core.Dao
 
             itemToUpdate.ActualCloseDate = TenantUtil.DateTimeToUtc(deal.ActualCloseDate);
             itemToUpdate.LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
-            itemToUpdate.LastModifedBy = SecurityContext.CurrentAccount.ID;
+            itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
 
             CRMDbContext.Update(itemToUpdate);
             CRMDbContext.SaveChanges();
@@ -444,71 +446,71 @@ namespace ASC.CRM.Core.Dao
                 switch ((DealSortedByType)orderBy.SortedBy)
                 {
                     case DealSortedByType.Title:
-                        {
-                            sqlQuery = sqlQuery.OrderBy("x.x.Title", orderBy.IsAsc);
+                    {
+                        sqlQuery = sqlQuery.OrderBy("x.x.Title", orderBy.IsAsc);
 
-                            break;
-                        }
+                        break;
+                    }
                     case DealSortedByType.BidValue:
-                        {
-                            sqlQuery = sqlQuery.OrderBy("x.x.BidValue", orderBy.IsAsc);
+                    {
+                        sqlQuery = sqlQuery.OrderBy("x.x.BidValue", orderBy.IsAsc);
 
-                            break;
-                        }
+                        break;
+                    }
                     case DealSortedByType.Responsible:
+                    {
+                        if (orderBy.IsAsc)
                         {
-                            if (orderBy.IsAsc)
-                            {
-                                sqlQuery = sqlQuery.OrderBy(x => x.x.ResponsibleId)
-                                                         .ThenBy(x => x.y.SortOrder)
-                                                         .ThenBy(x => x.x.ContactId)
-                                                         .ThenByDescending(x => x.x.ActualCloseDate)
-                                                         .ThenBy(x => x.x.ExpectedCloseDate)
-                                                         .ThenBy(x => x.x.Title);
-                            }
-                            else
-                            {
-                                sqlQuery = sqlQuery.OrderByDescending(x => x.x.ResponsibleId)
-                                                    .OrderByDescending(x => x.y.SortOrder)
-                                                    .ThenBy(x => x.x.ContactId)
-                                                    .ThenByDescending(x => x.x.ActualCloseDate)
-                                                    .ThenBy(x => x.x.ExpectedCloseDate)
-                                                    .ThenBy(x => x.x.Title);
-
-                            }
-
-                            break;
+                            sqlQuery = sqlQuery.OrderBy(x => x.x.ResponsibleId)
+                                                     .ThenBy(x => x.y.SortOrder)
+                                                     .ThenBy(x => x.x.ContactId)
+                                                     .ThenByDescending(x => x.x.ActualCloseDate)
+                                                     .ThenBy(x => x.x.ExpectedCloseDate)
+                                                     .ThenBy(x => x.x.Title);
                         }
+                        else
+                        {
+                            sqlQuery = sqlQuery.OrderByDescending(x => x.x.ResponsibleId)
+                                                .OrderByDescending(x => x.y.SortOrder)
+                                                .ThenBy(x => x.x.ContactId)
+                                                .ThenByDescending(x => x.x.ActualCloseDate)
+                                                .ThenBy(x => x.x.ExpectedCloseDate)
+                                                .ThenBy(x => x.x.Title);
+
+                        }
+
+                        break;
+                    }
                     case DealSortedByType.Stage:
+                    {
+                        if (orderBy.IsAsc)
                         {
-                            if (orderBy.IsAsc)
-                            {
-                                sqlQuery = sqlQuery.OrderBy(x => x.y.SortOrder)
-                                                   .ThenBy(x => x.x.ContactId)
-                                                   .ThenByDescending(x => x.x.ActualCloseDate)
-                                                   .ThenBy(x => x.x.ExpectedCloseDate)
-                                                   .ThenBy(x => x.x.Title);
-                            }
-                            else
-                            {
-                                sqlQuery = sqlQuery.OrderByDescending(x => x.y.SortOrder)
-                                                   .ThenBy(x => x.x.ContactId)
-                                                   .ThenByDescending(x => x.x.ActualCloseDate)
-                                                   .ThenBy(x => x.x.ExpectedCloseDate)
-                                                   .ThenBy(x => x.x.Title);
-
-                            }
-
-                            break;
+                            sqlQuery = sqlQuery.OrderBy(x => x.y.SortOrder)
+                                               .ThenBy(x => x.x.ContactId)
+                                               .ThenByDescending(x => x.x.ActualCloseDate)
+                                               .ThenBy(x => x.x.ExpectedCloseDate)
+                                               .ThenBy(x => x.x.Title);
+                        }
+                        else
+                        {
+                            sqlQuery = sqlQuery.OrderByDescending(x => x.y.SortOrder)
+                                               .ThenBy(x => x.x.ContactId)
+                                               .ThenByDescending(x => x.x.ActualCloseDate)
+                                               .ThenBy(x => x.x.ExpectedCloseDate)
+                                               .ThenBy(x => x.x.Title);
 
                         }
+
+                        break;
+
+                    }
                     case DealSortedByType.DateAndTime:
-                        {
-                            sqlQuery.OrderBy("x.x.close_date", orderBy.IsAsc);
+                    {
+                        sqlQuery.OrderBy("x.x.close_date", orderBy.IsAsc);
 
-                            break;
+                        break;
 
-                        }
+                    }
                     default:
                         throw new ArgumentException();
                 }
@@ -534,7 +536,7 @@ namespace ASC.CRM.Core.Dao
         {
             var cacheKey = TenantID.ToString(CultureInfo.InvariantCulture) +
                         "deals" +
-                        SecurityContext.CurrentAccount.ID.ToString() +
+                        _securityContext.CurrentAccount.ID.ToString() +
                         searchText +
                         responsibleID +
                         milestoneID +
@@ -597,7 +599,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    Logger.Error("Private deals count more than all deals");
+                    _logger.Error("Private deals count more than all deals");
 
                     privateCount = 0;
                 }
@@ -795,7 +797,7 @@ namespace ASC.CRM.Core.Dao
 
             sqlQuery = sqlQuery.OrderBy(x => x.Title);
 
-            return  _mapper.ProjectTo<Deal>(sqlQuery).ToList().FindAll(CRMSecurity.CanAccessTo);
+            return _mapper.ProjectTo<Deal>(sqlQuery).ToList().FindAll(CRMSecurity.CanAccessTo);
         }
 
         public virtual Deal DeleteDeal(int dealID)
@@ -963,5 +965,5 @@ namespace ASC.CRM.Core.Dao
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
 
         }
-    }  
+    }
 }

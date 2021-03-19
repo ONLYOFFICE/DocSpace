@@ -24,6 +24,12 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+
 using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
@@ -38,16 +44,12 @@ using ASC.ElasticSearch;
 using ASC.Files.Core;
 using ASC.Web.CRM.Core.Search;
 using ASC.Web.Files.Api;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
-using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
+using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 namespace ASC.CRM.Core.Dao
 {
     public class CachedContactDao : ContactDao
@@ -66,7 +68,7 @@ namespace ASC.CRM.Core.Dao
             FactoryIndexerContact factoryIndexerContact,
             FactoryIndexerContactInfo factoryIndexerContactInfo,
             IOptionsMonitor<ILog> logger,
-            ICache ascCache, 
+            ICache ascCache,
             DbContextManager<CoreDbContext> coreDbContext,
             BundleSearch bundleSearch) :
                  base(dbContextManager,
@@ -212,7 +214,7 @@ namespace ASC.CRM.Core.Dao
             {
                 var idsFromAcl = CoreDbContext.Acl.Where(x => x.Tenant == TenantID &&
                                                      x.Action == CRMSecurity._actionRead.ID &&
-                                                     x.Subject == SecurityContext.CurrentAccount.ID &&
+                                                     x.Subject == _securityContext.CurrentAccount.ID &&
                                                      (Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Object, typeof(Company).FullName + "%") ||
                                                      Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Object, typeof(Person).FullName + "%")))
                                        .Select(x => Convert.ToInt32(x.Object.Split('|', StringSplitOptions.None)[1]))
@@ -253,7 +255,7 @@ namespace ASC.CRM.Core.Dao
 
             var cacheKey = TenantID.ToString(CultureInfo.InvariantCulture) +
                            "contacts" +
-                           SecurityContext.CurrentAccount.ID +
+                           _securityContext.CurrentAccount.ID +
                            searchText +
                            contactStage +
                            contactType +
@@ -294,38 +296,38 @@ namespace ASC.CRM.Core.Dao
                 switch (contactListView)
                 {
                     case ContactListViewType.Person:
-                        {
+                    {
 
-                            excludedContactIDs = CRMSecurity.GetPrivateItems(typeof(Person))
-                                                .Except(Query(CRMDbContext.Contacts).Where(x => x.IsShared.HasValue ?
-                                                                    sharedTypes.Contains(x.IsShared.Value) :
-                                                                    true && !x.IsCompany).Select(x => x.Id))
-                                                .ToList();
+                        excludedContactIDs = CRMSecurity.GetPrivateItems(typeof(Person))
+                                            .Except(Query(CRMDbContext.Contacts).Where(x => x.IsShared.HasValue ?
+                                                                sharedTypes.Contains(x.IsShared.Value) :
+                                                                true && !x.IsCompany).Select(x => x.Id))
+                                            .ToList();
 
-                            break;
+                        break;
 
-                        }
+                    }
                     case ContactListViewType.Company:
-                        {
-                            excludedContactIDs = CRMSecurity.GetPrivateItems(typeof(Person))
-                                                .Except(Query(CRMDbContext.Contacts).Where(x => x.IsShared.HasValue ?
-                                                                    sharedTypes.Contains(x.IsShared.Value) :
-                                                                    true && x.IsCompany).Select(x => x.Id))
-                                                .ToList();
+                    {
+                        excludedContactIDs = CRMSecurity.GetPrivateItems(typeof(Person))
+                                            .Except(Query(CRMDbContext.Contacts).Where(x => x.IsShared.HasValue ?
+                                                                sharedTypes.Contains(x.IsShared.Value) :
+                                                                true && x.IsCompany).Select(x => x.Id))
+                                            .ToList();
 
-                            break;
-                        }
+                        break;
+                    }
                     default:
-                        {
-                            excludedContactIDs = CRMSecurity.GetPrivateItems(typeof(Company))
-                                                .Union(CRMSecurity.GetPrivateItems(typeof(Person)))
-                                                .Except(Query(CRMDbContext.Contacts).Where(x => x.IsShared.HasValue ?
-                                                                    sharedTypes.Contains(x.IsShared.Value) :
-                                                                    true && x.IsCompany).Select(x => x.Id))
-                                                .ToList();
+                    {
+                        excludedContactIDs = CRMSecurity.GetPrivateItems(typeof(Company))
+                                            .Union(CRMSecurity.GetPrivateItems(typeof(Person)))
+                                            .Except(Query(CRMDbContext.Contacts).Where(x => x.IsShared.HasValue ?
+                                                                sharedTypes.Contains(x.IsShared.Value) :
+                                                                true && x.IsCompany).Select(x => x.Id))
+                                            .ToList();
 
-                            break;
-                        }
+                        break;
+                    }
                 }
 
                 var dbContactsByFilters = GetDbContactsByFilters(excludedContactIDs,
@@ -393,7 +395,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    Logger.Error("Private contacts count more than all contacts");
+                    _logger.Error("Private contacts count more than all contacts");
 
                     privateCount = 0;
                 }
@@ -708,7 +710,7 @@ namespace ASC.CRM.Core.Dao
                 List<int> contactsIds;
                 if (!BundleSearch.TrySelectContact(searchText, out contactsIds))
                 {
-                    Logger.Debug("FullTextSearch.SupportModule('CRM.Contacts') = false");
+                    _logger.Debug("FullTextSearch.SupportModule('CRM.Contacts') = false");
 
                     foreach (var k in keywords)
                     {
@@ -717,8 +719,8 @@ namespace ASC.CRM.Core.Dao
                 }
                 else
                 {
-                    Logger.Debug("FullTextSearch.SupportModule('CRM.Contacts') = true");
-                    Logger.DebugFormat("FullTextSearch.Search: searchText = {0}", searchText);
+                    _logger.Debug("FullTextSearch.SupportModule('CRM.Contacts') = true");
+                    _logger.DebugFormat("FullTextSearch.Search: searchText = {0}", searchText);
 
                     var full_text_ids = contactsIds;
 
@@ -752,17 +754,17 @@ namespace ASC.CRM.Core.Dao
             switch (contactListView)
             {
                 case ContactListViewType.Company:
-                    {
-                        sqlQuery = sqlQuery.Where(x => x.IsCompany);
+                {
+                    sqlQuery = sqlQuery.Where(x => x.IsCompany);
 
-                        break;
-                    }
+                    break;
+                }
                 case ContactListViewType.Person:
-                    {
-                        sqlQuery = sqlQuery.Where(x => !x.IsCompany);
+                {
+                    sqlQuery = sqlQuery.Where(x => !x.IsCompany);
 
-                        break;
-                    }
+                    break;
+                }
                 case ContactListViewType.WithOpportunity:
                     if (ids.Count > 0)
                     {
@@ -913,38 +915,38 @@ namespace ASC.CRM.Core.Dao
 
                         break;
                     case ContactSortedByType.FirstName:
-                        {
-                            dbContactsQuery = dbContactsQuery.OrderBy("FirstName", orderBy.IsAsc);
-                            dbContactsQuery = dbContactsQuery.OrderBy("LastName", orderBy.IsAsc);
-                        }
+                    {
+                        dbContactsQuery = dbContactsQuery.OrderBy("FirstName", orderBy.IsAsc);
+                        dbContactsQuery = dbContactsQuery.OrderBy("LastName", orderBy.IsAsc);
+                    }
 
-                        break;
+                    break;
                     case ContactSortedByType.LastName:
-                        {
-                            dbContactsQuery = dbContactsQuery.OrderBy("LastName", orderBy.IsAsc);
-                            dbContactsQuery = dbContactsQuery.OrderBy("FirstName", orderBy.IsAsc);
-                        }
-                        break;
+                    {
+                        dbContactsQuery = dbContactsQuery.OrderBy("LastName", orderBy.IsAsc);
+                        dbContactsQuery = dbContactsQuery.OrderBy("FirstName", orderBy.IsAsc);
+                    }
+                    break;
                     case ContactSortedByType.History:
-                        {
-                            dbContactsQuery = dbContactsQuery.GroupJoin(Query(CRMDbContext.RelationshipEvent),
-                                                                          x => x.Id,
-                                                                          y => y.ContactId,
-                                                                          (x, y) => new { x, y })
-                                                              .OrderBy(x => x.y.Max(x => x.LastModifedOn))
-                                                              .ThenBy(x => x.x.CreateOn)
-                                                              .Select(x => x.x);
+                    {
+                        dbContactsQuery = dbContactsQuery.GroupJoin(Query(CRMDbContext.RelationshipEvent),
+                                                                      x => x.Id,
+                                                                      y => y.ContactId,
+                                                                      (x, y) => new { x, y })
+                                                          .OrderBy(x => x.y.Max(x => x.LastModifedOn))
+                                                          .ThenBy(x => x.x.CreateOn)
+                                                          .Select(x => x.x);
 
 
-                        }
+                    }
 
-                        break;
+                    break;
                     default:
-                        {
-                            dbContactsQuery = dbContactsQuery.OrderBy("DisplayName", orderBy.IsAsc);
-                        }
+                    {
+                        dbContactsQuery = dbContactsQuery.OrderBy("DisplayName", orderBy.IsAsc);
+                    }
 
-                        break;
+                    break;
                 }
             }
 
@@ -1271,7 +1273,7 @@ namespace ASC.CRM.Core.Dao
             itemToUpdate.StatusId = contact.StatusID;
             itemToUpdate.CompanyId = companyID;
             itemToUpdate.LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
-            itemToUpdate.LastModifedBy = SecurityContext.CurrentAccount.ID;
+            itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
             itemToUpdate.DisplayName = displayName;
             itemToUpdate.IsShared = contact.ShareType;
             itemToUpdate.ContactTypeId = contact.ContactTypeID;
@@ -1481,10 +1483,10 @@ namespace ASC.CRM.Core.Dao
                 Industry = contact.Industry,
                 StatusId = contact.StatusID,
                 CompanyId = companyID,
-                CreateBy = SecurityContext.CurrentAccount.ID,
+                CreateBy = _securityContext.CurrentAccount.ID,
                 CreateOn = TenantUtil.DateTimeToUtc(contact.CreateOn == DateTime.MinValue ? TenantUtil.DateTimeNow() : contact.CreateOn),
                 LastModifedOn = TenantUtil.DateTimeToUtc(contact.CreateOn == DateTime.MinValue ? TenantUtil.DateTimeNow() : contact.CreateOn),
-                LastModifedBy = SecurityContext.CurrentAccount.ID,
+                LastModifedBy = _securityContext.CurrentAccount.ID,
                 DisplayName = displayName,
                 IsShared = contact.ShareType,
                 ContactTypeId = contact.ContactTypeID,
@@ -2085,5 +2087,5 @@ namespace ASC.CRM.Core.Dao
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
         }
-    }  
+    }
 }

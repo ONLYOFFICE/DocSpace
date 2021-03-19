@@ -26,6 +26,10 @@
 
 #region Import
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
@@ -34,13 +38,10 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
-using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 

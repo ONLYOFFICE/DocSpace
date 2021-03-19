@@ -24,19 +24,21 @@
 */
 
 
+using System;
+using System.Text.Json;
+using System.Threading.Tasks;
+
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Resources;
 using ASC.Files.Core;
+using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
-using Microsoft.AspNetCore.Http;
-using System;
-using Microsoft.Extensions.DependencyInjection;
-using ASC.Web.Core.Utility;
+
 using Microsoft.AspNetCore.Builder;
-using System.Threading.Tasks;
-using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.CRM.HttpHandlers
 {
@@ -67,16 +69,16 @@ namespace ASC.Web.CRM.HttpHandlers
 
             var fileName = context.Request.Form.Files[0].FileName;
             var contentLength = context.Request.Form.Files[0].Length;
-            
+
             if (String.IsNullOrEmpty(fileName) || contentLength == 0)
                 throw new InvalidOperationException(CRMErrorsResource.InvalidFile);
 
             if (0 < setupInfo.MaxUploadSize(tenantExtra, tenantStatisticsProvider) && setupInfo.MaxUploadSize(tenantExtra, tenantStatisticsProvider) < contentLength)
                 throw fileSizeComment.FileSizeException;
 
-             fileName = fileName.LastIndexOf('\\') != -1
-                ? fileName.Substring(fileName.LastIndexOf('\\') + 1)
-                : fileName;
+            fileName = fileName.LastIndexOf('\\') != -1
+               ? fileName.Substring(fileName.LastIndexOf('\\') + 1)
+               : fileName;
 
             var document = serviceProvider.GetService<File<int>>();
 

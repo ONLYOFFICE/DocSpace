@@ -24,10 +24,10 @@
 */
 
 
-using ASC.Common.Security;
-using ASC.CRM.Classes;
-using ASC.CRM.Core.Enums;
 using System;
+
+using ASC.Common.Security;
+using ASC.CRM.Core.Enums;
 
 namespace ASC.CRM.Core.Entities
 {

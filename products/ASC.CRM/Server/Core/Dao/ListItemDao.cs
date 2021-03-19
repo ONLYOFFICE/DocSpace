@@ -23,6 +23,11 @@
  *
 */
 
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+
 using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
@@ -34,13 +39,10 @@ using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -319,47 +321,34 @@ namespace ASC.CRM.Core.Dao
             switch (listType)
             {
                 case ListType.ContactStatus:
-                    {
-                        result = Query(CRMDbContext.ListItem)
-                                .GroupJoin(Query(CRMDbContext.Contacts),
-                                           x => x.Id,
-                                           y => y.StatusId,
-                                           (x, y) => new { Column1 = x, Column2 = y.Count() })
-                                .Where(x => x.Column1.ListType == listType)
-                                .OrderBy(x => x.Column1.SortOrder)
-                                .ToDictionary(x => x.Column1.Id, x => x.Column2);
+                {
+                    result = Query(CRMDbContext.ListItem)
+                            .GroupJoin(Query(CRMDbContext.Contacts),
+                                       x => x.Id,
+                                       y => y.StatusId,
+                                       (x, y) => new { Column1 = x, Column2 = y.Count() })
+                            .Where(x => x.Column1.ListType == listType)
+                            .OrderBy(x => x.Column1.SortOrder)
+                            .ToDictionary(x => x.Column1.Id, x => x.Column2);
 
-                        break;
-                    }
+                    break;
+                }
                 case ListType.ContactType:
-                    {
-                        result = Query(CRMDbContext.ListItem)
-                                .GroupJoin(Query(CRMDbContext.Contacts),
-                                           x => x.Id,
-                                           y => y.ContactTypeId,
-                                           (x, y) => new { Column1 = x, Column2 = y.Count() })
-                                .Where(x => x.Column1.ListType == listType)
-                                .OrderBy(x => x.Column1.SortOrder)
-                                .ToDictionary(x => x.Column1.Id, x => x.Column2);
-                        break;
-                    }
+                {
+                    result = Query(CRMDbContext.ListItem)
+                            .GroupJoin(Query(CRMDbContext.Contacts),
+                                       x => x.Id,
+                                       y => y.ContactTypeId,
+                                       (x, y) => new { Column1 = x, Column2 = y.Count() })
+                            .Where(x => x.Column1.ListType == listType)
+                            .OrderBy(x => x.Column1.SortOrder)
+                            .ToDictionary(x => x.Column1.Id, x => x.Column2);
+                    break;
+                }
                 case ListType.TaskCategory:
-                    {
-                        result = Query(CRMDbContext.ListItem)
-                                .GroupJoin(Query(CRMDbContext.Tasks),
-                                           x => x.Id,
-                                           y => y.CategoryId,
-                                           (x, y) => new { Column1 = x, Column2 = y.Count() })
-                                .Where(x => x.Column1.ListType == listType)
-                                .OrderBy(x => x.Column1.SortOrder)
-                                .ToDictionary(x => x.Column1.Id, x => x.Column2);
-
-                        break;
-                    }
-                case ListType.HistoryCategory:
-                    {
-                        result = Query(CRMDbContext.ListItem)
-                            .GroupJoin(Query(CRMDbContext.RelationshipEvent),
+                {
+                    result = Query(CRMDbContext.ListItem)
+                            .GroupJoin(Query(CRMDbContext.Tasks),
                                        x => x.Id,
                                        y => y.CategoryId,
                                        (x, y) => new { Column1 = x, Column2 = y.Count() })
@@ -367,8 +356,21 @@ namespace ASC.CRM.Core.Dao
                             .OrderBy(x => x.Column1.SortOrder)
                             .ToDictionary(x => x.Column1.Id, x => x.Column2);
 
-                        break;
-                    }
+                    break;
+                }
+                case ListType.HistoryCategory:
+                {
+                    result = Query(CRMDbContext.ListItem)
+                        .GroupJoin(Query(CRMDbContext.RelationshipEvent),
+                                   x => x.Id,
+                                   y => y.CategoryId,
+                                   (x, y) => new { Column1 = x, Column2 = y.Count() })
+                        .Where(x => x.Column1.ListType == listType)
+                        .OrderBy(x => x.Column1.SortOrder)
+                        .ToDictionary(x => x.Column1.Id, x => x.Column2);
+
+                    break;
+                }
                 default:
                     throw new ArgumentException();
             }
@@ -497,39 +499,39 @@ namespace ASC.CRM.Core.Dao
             switch (listType)
             {
                 case ListType.ContactStatus:
-                    {
-                        var itemToUpdate = Query(CRMDbContext.Contacts).Single(x => x.StatusId == fromItemID);
+                {
+                    var itemToUpdate = Query(CRMDbContext.Contacts).Single(x => x.StatusId == fromItemID);
 
-                        itemToUpdate.StatusId = toItemID;
+                    itemToUpdate.StatusId = toItemID;
 
-                        CRMDbContext.Update(itemToUpdate);
-                    }
-                    break;
+                    CRMDbContext.Update(itemToUpdate);
+                }
+                break;
                 case ListType.ContactType:
-                    {
-                        var itemToUpdate = Query(CRMDbContext.Contacts).Single(x => x.ContactTypeId == fromItemID);
+                {
+                    var itemToUpdate = Query(CRMDbContext.Contacts).Single(x => x.ContactTypeId == fromItemID);
 
-                        itemToUpdate.ContactTypeId = toItemID;
+                    itemToUpdate.ContactTypeId = toItemID;
 
-                        CRMDbContext.Update(itemToUpdate);
-                    }
-                    break;
+                    CRMDbContext.Update(itemToUpdate);
+                }
+                break;
                 case ListType.TaskCategory:
-                    {
-                        var itemToUpdate = Query(CRMDbContext.Tasks).Single(x => x.CategoryId == fromItemID);
-                        itemToUpdate.CategoryId = toItemID;
+                {
+                    var itemToUpdate = Query(CRMDbContext.Tasks).Single(x => x.CategoryId == fromItemID);
+                    itemToUpdate.CategoryId = toItemID;
 
-                        CRMDbContext.Update(itemToUpdate);
-                    }
-                    break;
+                    CRMDbContext.Update(itemToUpdate);
+                }
+                break;
                 case ListType.HistoryCategory:
-                    {
-                        var itemToUpdate = Query(CRMDbContext.RelationshipEvent).Single(x => x.CategoryId == fromItemID);
-                        itemToUpdate.CategoryId = toItemID;
+                {
+                    var itemToUpdate = Query(CRMDbContext.RelationshipEvent).Single(x => x.CategoryId == fromItemID);
+                    itemToUpdate.CategoryId = toItemID;
 
-                        CRMDbContext.Update(itemToUpdate);
-                    }
-                    break;
+                    CRMDbContext.Update(itemToUpdate);
+                }
+                break;
                 default:
                     throw new ArgumentException();
             }

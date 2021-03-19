@@ -24,6 +24,10 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+
 using ASC.Common;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -33,10 +37,6 @@ using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Web.Core;
 using ASC.Web.Core.Calendars;
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 
 namespace ASC.CRM.Api
 {

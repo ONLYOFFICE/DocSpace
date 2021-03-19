@@ -37,7 +37,6 @@ using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Utility;
 using ASC.Web.CRM.Classes;
-using ASC.Web.CRM.Configuration;
 using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Builder;
@@ -69,9 +68,9 @@ namespace ASC.Web.CRM.HttpHandlers
             //    throw cRMSecurity.CreateSecurityException();
 
             context.Request.EnableBuffering();
-            
+
             var contactId = Convert.ToInt32(context.Request.Form["contactID"]);
-           
+
             Contact contact = null;
 
             if (contactId != 0)
@@ -144,9 +143,9 @@ namespace ASC.Web.CRM.HttpHandlers
             if (contact != null)
             {
                 var messageAction = contact is Company ? MessageAction.CompanyUpdatedPhoto : MessageAction.PersonUpdatedPhoto;
-                
+
                 messageService.Send(messageAction, messageTarget.Create(contact.ID), contact.GetTitle());
-            
+
             }
 
             await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));

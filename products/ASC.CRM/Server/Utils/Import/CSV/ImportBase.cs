@@ -24,7 +24,6 @@
 */
 
 
-using ASC.Web.CRM.Classes;
 using System;
 
 namespace LumenWorks.Framework.IO.Csv

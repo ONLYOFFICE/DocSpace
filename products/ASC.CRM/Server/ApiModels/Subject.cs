@@ -34,4 +34,4 @@ namespace ASC.CRM.ApiModels
         Case,
         Opportunity
     }
-  }
+}

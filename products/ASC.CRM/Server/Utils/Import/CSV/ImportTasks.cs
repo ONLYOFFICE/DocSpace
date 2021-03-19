@@ -26,6 +26,10 @@
 
 #region Import
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -34,10 +38,8 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Web.Core.Users;
+
 using LumenWorks.Framework.IO.Csv;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -45,8 +47,8 @@ namespace ASC.Web.CRM.Classes
 {
     public partial class ImportDataOperation
     {
-        public ImportDataOperation(TenantUtil tenantUtil, 
-                                   ImportFromCSV importFromCSV, 
+        public ImportDataOperation(TenantUtil tenantUtil,
+                                   ImportFromCSV importFromCSV,
                                    DisplayUserSettingsHelper displayUserSettingsHelper)
         {
             TenantUtil = tenantUtil;
@@ -56,7 +58,7 @@ namespace ASC.Web.CRM.Classes
 
         public ImportFromCSV ImportFromCSV { get; }
         public TenantUtil TenantUtil { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get;}
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
         private void ImportTaskData(DaoFactory _daoFactory)
         {

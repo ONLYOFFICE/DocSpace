@@ -24,17 +24,15 @@
 */
 
 
-using ASC.Common;
-using ASC.Common.Logging;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+
 using ASC.CRM.Resources;
 using ASC.Web.CRM.Classes;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace ASC.Web.CRM.HttpHandlers
 {
@@ -46,11 +44,11 @@ namespace ASC.Web.CRM.HttpHandlers
         {
             _next = next;
         }
-         
+
         public async Task Invoke(HttpContext context,
                                 Global global,
                                 ContactPhotoManager contactPhotoManager)
-        {            
+        {
             context.Request.EnableBuffering();
 
             var action = context.Request.Query["action"];
@@ -58,51 +56,51 @@ namespace ASC.Web.CRM.HttpHandlers
             switch (action)
             {
                 case "contactphotoulr":
-                    {
-                        var contactId = Convert.ToInt32(context.Request.Query["cid"]);
-                        var isCompany = Convert.ToBoolean(context.Request.Query["isc"]);
-                        var photoSize = Convert.ToInt32(context.Request.Query["ps"]);
+                {
+                    var contactId = Convert.ToInt32(context.Request.Query["cid"]);
+                    var isCompany = Convert.ToBoolean(context.Request.Query["isc"]);
+                    var photoSize = Convert.ToInt32(context.Request.Query["ps"]);
 
                     string photoUrl;
 
                     switch (photoSize)
-                        {
-                            case 1:
-                                photoUrl = contactPhotoManager.GetSmallSizePhoto(contactId, isCompany);
-                                break;
-                            case 2:
-                                photoUrl = contactPhotoManager.GetMediumSizePhoto(contactId, isCompany);
-                                break;
-                            case 3:
-                                photoUrl = contactPhotoManager.GetBigSizePhoto(contactId, isCompany);
-                                break;
-                            default:
-                                throw new Exception(CRMErrorsResource.ContactPhotoSizeUnknown);
-                        }
-
-                        context.Response.Clear();
-
-                        await context.Response.WriteAsync(photoUrl);                       
-                    }
-                    break;
-                case "mailmessage":
                     {
-                        var messageId = Convert.ToInt32(context.Request.Query["message_id"]);
-
-                        var filePath = String.Format("folder_{0}/message_{1}.html", (messageId / 1000 + 1) * 1000, messageId);
-
-                        string messageContent = string.Empty;
-
-                        using (var streamReader = new StreamReader(global.GetStore().GetReadStream("mail_messages", filePath)))
-                        {
-                            messageContent = streamReader.ReadToEnd();
-                        }
-
-                        context.Response.Clear();
-
-                        await context.Response.WriteAsync(messageContent);
+                        case 1:
+                            photoUrl = contactPhotoManager.GetSmallSizePhoto(contactId, isCompany);
+                            break;
+                        case 2:
+                            photoUrl = contactPhotoManager.GetMediumSizePhoto(contactId, isCompany);
+                            break;
+                        case 3:
+                            photoUrl = contactPhotoManager.GetBigSizePhoto(contactId, isCompany);
+                            break;
+                        default:
+                            throw new Exception(CRMErrorsResource.ContactPhotoSizeUnknown);
                     }
-                    break;
+
+                    context.Response.Clear();
+
+                    await context.Response.WriteAsync(photoUrl);
+                }
+                break;
+                case "mailmessage":
+                {
+                    var messageId = Convert.ToInt32(context.Request.Query["message_id"]);
+
+                    var filePath = String.Format("folder_{0}/message_{1}.html", (messageId / 1000 + 1) * 1000, messageId);
+
+                    string messageContent = string.Empty;
+
+                    using (var streamReader = new StreamReader(global.GetStore().GetReadStream("mail_messages", filePath)))
+                    {
+                        messageContent = streamReader.ReadToEnd();
+                    }
+
+                    context.Response.Clear();
+
+                    await context.Response.WriteAsync(messageContent);
+                }
+                break;
                 default:
                     throw new ArgumentException(String.Format("action='{0}' is not defined", action));
             }

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Threading.Tasks;
 
 using ASC.Api.Collections;
 using ASC.CRM.Core.Enums;
@@ -10,7 +7,7 @@ using ASC.CRM.Core.Enums;
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.CRM.ApiModels
-{   
+{
     public class CreateOrUpdateContactRequestDto
     {
         public string About { get; set; }
@@ -21,7 +18,7 @@ namespace ASC.CRM.ApiModels
     }
 
     public class CreateOrUpdateCompanyRequestDto : CreateOrUpdateContactRequestDto
-    {        
+    {
         public String CompanyName { get; set; }
 
         public IEnumerable<int> PersonList { get; set; }

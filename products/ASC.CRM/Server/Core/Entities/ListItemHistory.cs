@@ -24,12 +24,13 @@
 */
 
 
-using ASC.CRM.Core.Enums;
 using System;
+
+using ASC.CRM.Core.Enums;
 
 namespace ASC.CRM.Core.Entities
 {
-    public class ListItemHistory: DomainObject
+    public class ListItemHistory : DomainObject
     {
         public int EntityID { get; set; }
 

@@ -23,6 +23,10 @@
  *
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -36,12 +40,11 @@ using ASC.CRM.Resources;
 using ASC.ElasticSearch;
 using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Core.Search;
+
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -117,7 +120,7 @@ namespace ASC.CRM.Core.Dao
                     FieldId = fieldID,
                     EntityType = entityType,
                     LastModifedOn = lastModifiedOn,
-                    LastModifedBy = SecurityContext.CurrentAccount.ID,
+                    LastModifedBy = _securityContext.CurrentAccount.ID,
                     TenantId = TenantID
                 };
 
@@ -215,7 +218,7 @@ namespace ASC.CRM.Core.Dao
                 }
                 if (customFieldType == CustomFieldType.SelectBox)
                 {
-                    Logger.Error(ex);
+                    _logger.Error(ex);
 
                     throw ex;
                 }
@@ -358,7 +361,7 @@ namespace ASC.CRM.Core.Dao
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(ex);
+                    _logger.Error(ex);
 
                     throw ex;
                 }
@@ -501,8 +504,9 @@ namespace ASC.CRM.Core.Dao
             }
 
             if (!includeEmptyFields)
-                sqlQuery = sqlQuery.Where(x => x.y != null && x.x.Type == CustomFieldType.Heading);
+                sqlQuery = sqlQuery.Where(x => x.y != null || x.x.Type == CustomFieldType.Heading);
 
+      
             return sqlQuery.ToList().ConvertAll(x => ToCustomField(x.x, x.y));
         }
 
@@ -569,10 +573,10 @@ namespace ASC.CRM.Core.Dao
 
             };
 
-            if (dbFieldValue != null)
+            if (customField != null)
             {
-                dbFieldValue.Value = dbFieldValue.Value;
-                dbFieldValue.EntityId = dbFieldValue.EntityId;
+                customField.Value = dbFieldValue.Value;
+                customField.EntityID = dbFieldValue.EntityId;
             }
 
             return customField;

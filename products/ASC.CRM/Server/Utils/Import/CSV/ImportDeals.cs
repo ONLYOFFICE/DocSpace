@@ -26,17 +26,20 @@
 
 #region Import
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Core.Users;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
+
 using LumenWorks.Framework.IO.Csv;
+
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -109,7 +112,7 @@ namespace ASC.Web.CRM.Classes
 
                     var bidValueStr = GetPropertyValue("bid_amount");
 
-                    if (Decimal.TryParse(bidValueStr, out  bidValue))
+                    if (Decimal.TryParse(bidValueStr, out bidValue))
                         obj.BidValue = bidValue;
                     else
                         obj.BidValue = 0;
@@ -265,7 +268,7 @@ namespace ASC.Web.CRM.Classes
                         throw new OperationCanceledException();
                     }
 
-                    ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());  
+                    ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());
 
                     findedDeals.Add(obj);
 
@@ -284,8 +287,8 @@ namespace ASC.Web.CRM.Classes
                     throw new OperationCanceledException();
                 }
 
-                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());               
-                
+                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());
+
                 var newDealIDs = dealDao.SaveDealList(findedDeals);
                 findedDeals.ForEach(d => d.ID = newDealIDs[d.ID]);
 
@@ -298,7 +301,7 @@ namespace ASC.Web.CRM.Classes
                     throw new OperationCanceledException();
                 }
 
-                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());               
+                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());
 
                 findedCustomField.ForEach(item => item.EntityID = newDealIDs[item.EntityID]);
 
@@ -313,7 +316,7 @@ namespace ASC.Web.CRM.Classes
                     throw new OperationCanceledException();
                 }
 
-                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());               
+                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());
 
                 foreach (var findedDealMemberKey in findedDealMembers.Keys)
                 {
@@ -329,7 +332,7 @@ namespace ASC.Web.CRM.Classes
                     throw new OperationCanceledException();
                 }
 
-                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());               
+                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());
 
                 foreach (var findedTagKey in findedTags.Keys)
                 {
@@ -348,8 +351,8 @@ namespace ASC.Web.CRM.Classes
                     throw new OperationCanceledException();
                 }
 
-                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());               
-                
+                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());
+
             }
 
             Complete();

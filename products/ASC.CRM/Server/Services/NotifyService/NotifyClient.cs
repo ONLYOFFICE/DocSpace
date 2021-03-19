@@ -23,11 +23,17 @@
  *
 */
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Globalization;
+using System.Linq;
+using System.Web;
+
 using ASC.Common;
 using ASC.Core;
-using ASC.Core.Billing;
 using ASC.Core.Tenants;
-using ASC.Core.Users;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
@@ -35,17 +41,8 @@ using ASC.CRM.Resources;
 using ASC.Notify;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
-using ASC.Web.CRM.Core;
-using Autofac;
+
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Web;
 
 namespace ASC.Web.CRM.Services.NotifyService
 {
@@ -116,26 +113,26 @@ namespace ASC.Web.CRM.Services.NotifyService
                 case EntityType.Person:
                 case EntityType.Company:
                 case EntityType.Contact:
-                    {
-                        var contact = daoFactory.GetContactDao().GetByID(entityID);
-                        title = contact != null ? contact.GetTitle() : string.Empty;
-                        relativeURL = "default.aspx?id=" + entityID;
-                        break;
-                    }
+                {
+                    var contact = daoFactory.GetContactDao().GetByID(entityID);
+                    title = contact != null ? contact.GetTitle() : string.Empty;
+                    relativeURL = "default.aspx?id=" + entityID;
+                    break;
+                }
                 case EntityType.Opportunity:
-                    {
-                        var deal = daoFactory.GetDealDao().GetByID(entityID);
-                        title = deal != null ? deal.Title : string.Empty;
-                        relativeURL = "deals.aspx?id=" + entityID;
-                        break;
-                    }
+                {
+                    var deal = daoFactory.GetDealDao().GetByID(entityID);
+                    title = deal != null ? deal.Title : string.Empty;
+                    relativeURL = "deals.aspx?id=" + entityID;
+                    break;
+                }
                 case EntityType.Case:
-                    {
-                        var cases = daoFactory.GetCasesDao().GetByID(entityID);
-                        title = cases != null ? cases.Title : string.Empty;
-                        relativeURL = "cases.aspx?id=" + entityID;
-                        break;
-                    }
+                {
+                    var cases = daoFactory.GetCasesDao().GetByID(entityID);
+                    title = cases != null ? cases.Title : string.Empty;
+                    relativeURL = "cases.aspx?id=" + entityID;
+                    break;
+                }
 
                 default:
                     throw new ArgumentException();

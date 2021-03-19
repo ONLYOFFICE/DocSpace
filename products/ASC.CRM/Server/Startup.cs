@@ -4,7 +4,6 @@ using System.Text;
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.CRM.Api;
-using ASC.CRM.Core;
 using ASC.CRM.Mapping;
 using ASC.Web.CRM.HttpHandlers;
 
@@ -47,6 +46,17 @@ namespace ASC.CRM
             DIHelper.TryAdd<TaskTemplateController>();
             DIHelper.TryAdd<UtilsController>();
             DIHelper.TryAdd<VoIPController>();
+
+            DIHelper.TryAdd<CasesDtoTypeConverter>();
+            DIHelper.TryAdd<ContactDtoTypeConverter>();
+            DIHelper.TryAdd<InvoiceBaseDtoTypeConverter>();
+            DIHelper.TryAdd<InvoiceDtoTypeConverter>();
+            DIHelper.TryAdd<InvoiceItemDtoTypeConverter>();
+            DIHelper.TryAdd<InvoiceTaxTypeConverter>();
+            DIHelper.TryAdd<OpportunityDtoTypeConverter>();
+            DIHelper.TryAdd<RelationshipEventDtoTypeConverter>();
+            DIHelper.TryAdd<TaskCategoryDtoTypeConverter>();
+            DIHelper.TryAdd<TaskDtoTypeConverter>();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }

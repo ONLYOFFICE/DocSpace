@@ -24,6 +24,10 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -32,12 +36,11 @@ using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
+
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -93,7 +96,7 @@ namespace ASC.CRM.Core.Dao
         {
             return Query(CRMDbContext.Tags)
                 .OrderBy(x => x.Title)
-                .Select(x => new KeyValuePair<EntityType, string> (x.EntityType, x.Title)).ToList();            
+                .Select(x => new KeyValuePair<EntityType, string>(x.EntityType, x.Title)).ToList();
         }
 
         public String GetTagsLinkCountJSON(EntityType entityType)
@@ -117,13 +120,15 @@ namespace ASC.CRM.Core.Dao
 
         public Dictionary<int, List<String>> GetEntitiesTags(EntityType entityType)
         {
-           return CRMDbContext.EntityTags.Join(Query(CRMDbContext.Tags),
-                             x => x.TagId,
-                             y => y.Id,
-                             (x, y) => new { x, y })
-                        .Where(x => x.x.EntityType == entityType)
-                        .GroupBy(x => x.x.EntityId)
-                        .ToDictionary(x => x.Key, x => x.ToList().ConvertAll(x => x.y.Title));         
+            return CRMDbContext.EntityTags.Join(Query(CRMDbContext.Tags),
+                              x => x.TagId,
+                              y => y.Id,
+                              (x, y) => new { x, y })
+                         .Where(x => x.x.EntityType == entityType)
+                         .Select(x => new { EntityId = x.x.EntityId, Title = x.y.Title })
+                         .ToList()
+                         .GroupBy(x => x.EntityId)
+                         .ToDictionary(x => x.Key, x => x.ToList().ConvertAll(t => t.Title));
         }
 
         public String[] GetEntityTags(EntityType entityType, int entityID)
@@ -134,13 +139,14 @@ namespace ASC.CRM.Core.Dao
                             y => y.TagId,
                             (x, y) => new
                             {
-                                x, y
+                                x,
+                                y
 
                             })
                     .Where(x => x.y.EntityId == entityID && x.y.EntityType == entityType)
                     .Select(x => x.x.Title).ToArray();
         }
-                
+
         public string[] GetUnusedTags(EntityType entityType)
         {
             return Query(CRMDbContext.Tags)
@@ -171,7 +177,7 @@ namespace ASC.CRM.Core.Dao
             var tagID = Query(CRMDbContext.Tags)
                         .Where(x => String.Compare(x.Title, tagName, true) == 0 && x.EntityType == entityType)
                         .Select(x => x.Id).SingleOrDefault();
-            
+
             if (tagID == 0) return;
 
             var itemsToRemove = CRMDbContext.EntityTags.Where(x => x.EntityType == entityType && x.TagId == tagID);
@@ -192,7 +198,7 @@ namespace ASC.CRM.Core.Dao
             if (entityID <= 0) return;
 
             var itemsToRemove = CRMDbContext.EntityTags.Where(x => x.EntityType == entityType && x.EntityId == entityID);
-            
+
             CRMDbContext.EntityTags.RemoveRange(itemsToRemove);
 
             CRMDbContext.SaveChanges();
@@ -202,15 +208,15 @@ namespace ASC.CRM.Core.Dao
         {
             if (!_supportedEntityType.Contains(entityType))
                 throw new ArgumentException();
-              
+
             var itemToDelete = Query(CRMDbContext.Tags).GroupJoin(CRMDbContext.EntityTags,
                                                                       x => x.Id,
                                                                       y => y.TagId,
                                                                       (x, y) => new { x, y }
                                                                 ).Where(x => x.x.EntityType == entityType && x.y == null).Select(x => x.x).ToList();
-                        
+
             CRMDbContext.RemoveRange(itemToDelete);
-                        
+
             CRMDbContext.SaveChanges();
         }
 
@@ -252,14 +258,14 @@ namespace ASC.CRM.Core.Dao
         public Dictionary<string, int> GetAndAddTags(EntityType entityType, String[] tags)
         {
             tags = tags.Select(CorrectTag).Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
-                      
+
             using var tx = CRMDbContext.Database.BeginTransaction();
 
-            var tagNamesAndIds =  Query(CRMDbContext.Tags)
+            var tagNamesAndIds = Query(CRMDbContext.Tags)
                 .Where(x => tags.Contains(x.Title) && x.EntityType == entityType)
                 .Select(x => new { x.Id, x.Title })
                 .ToDictionary(x => x.Title, x => x.Id);
-          
+
             var tagsForCreate = tags.Where(t => !tagNamesAndIds.ContainsKey(t));
 
             foreach (var tagName in tagsForCreate)
@@ -271,7 +277,7 @@ namespace ASC.CRM.Core.Dao
 
             return tagNamesAndIds;
         }
-        
+
         private int AddTagToEntityInDb(EntityType entityType, int entityID, String tagName)
         {
             tagName = CorrectTag(tagName);
@@ -353,12 +359,12 @@ namespace ASC.CRM.Core.Dao
 
             var itemsToRemove = CRMDbContext
                                         .EntityTags
-                                        .Where(x => x.EntityType == EntityType.Contact && 
-                                                    x.TagId == tagID && 
+                                        .Where(x => x.EntityType == EntityType.Contact &&
+                                                    x.TagId == tagID &&
                                                     contactID.Contains(x.EntityId));
-            
+
             CRMDbContext.EntityTags.RemoveRange(itemsToRemove);
-            
+
             CRMDbContext.SaveChanges();
 
             tx.Commit();
@@ -369,7 +375,7 @@ namespace ASC.CRM.Core.Dao
         public void SetTagToEntity(EntityType entityType, int entityID, String[] tags)
         {
             using var tx = CRMDbContext.Database.BeginTransaction();
-            
+
             var itemsToDelete = CRMDbContext.EntityTags.Where(x => x.EntityId == entityID && x.EntityType == entityType);
 
             CRMDbContext.EntityTags.RemoveRange(itemsToDelete);
@@ -422,4 +428,4 @@ namespace ASC.CRM.Core.Dao
 
     }
 
-}     
+}

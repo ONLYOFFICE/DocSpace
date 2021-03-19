@@ -26,7 +26,6 @@
 using System;
 
 using ASC.Api.Core;
-using ASC.Common;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Entities;
@@ -38,9 +37,9 @@ namespace ASC.CRM.Mapping
 {
     public class InvoiceTaxTypeConverter : ITypeConverter<InvoiceTax, InvoiceTaxDto>
     {
-        private ApiDateTimeHelper _apiDateTimeHelper;
-        private EmployeeWraperHelper _employeeWraperHelper;
-        private CRMSecurity _CRMSecurity;
+        private readonly ApiDateTimeHelper _apiDateTimeHelper;
+        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly CRMSecurity _CRMSecurity;
 
         public InvoiceTaxTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
                                       EmployeeWraperHelper employeeWraperHelper,

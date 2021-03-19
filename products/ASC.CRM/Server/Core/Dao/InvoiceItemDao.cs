@@ -24,6 +24,11 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+
 using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
@@ -35,13 +40,10 @@ using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Web.CRM.Classes;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -206,11 +208,11 @@ namespace ASC.CRM.Core.Dao
                         sqlQuery = sqlQuery.OrderBy("Price", orderBy.IsAsc);
                         break;
                     case InvoiceItemSortedByType.Quantity:
-                        {
-                            sqlQuery = sqlQuery.OrderBy("StockQuantity", orderBy.IsAsc)
-                                               .OrderBy("Title", true);
-                            break;
-                        }
+                    {
+                        sqlQuery = sqlQuery.OrderBy("StockQuantity", orderBy.IsAsc)
+                                           .OrderBy("Title", true);
+                        break;
+                    }
                     case InvoiceItemSortedByType.Created:
                         sqlQuery = sqlQuery.OrderBy("CreateOn", orderBy.IsAsc);
                         break;
@@ -240,7 +242,7 @@ namespace ASC.CRM.Core.Dao
         {
             var cacheKey = TenantID.ToString(CultureInfo.InvariantCulture) +
                            "invoiceItem" +
-                           SecurityContext.CurrentAccount.ID.ToString() +
+                           _securityContext.CurrentAccount.ID.ToString() +
                            searchText;
 
             var fromCache = _cache.Get<string>(cacheKey);
@@ -248,7 +250,7 @@ namespace ASC.CRM.Core.Dao
             if (fromCache != null) return Convert.ToInt32(fromCache);
 
             var exceptIDs = CRMSecurity.GetPrivateItems(typeof(InvoiceItem)).ToList();
-            
+
             int result;
 
             var withParams = !(String.IsNullOrEmpty(searchText) || status != 0 || inventoryStock.HasValue);
@@ -265,9 +267,9 @@ namespace ASC.CRM.Core.Dao
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    Logger.ErrorFormat(@"Private invoice items count more than all cases. Tenant: {0}. CurrentAccount: {1}",
+                    _logger.ErrorFormat(@"Private invoice items count more than all cases. Tenant: {0}. CurrentAccount: {1}",
                                                             TenantID,
-                                                            SecurityContext.CurrentAccount.ID);
+                                                            _securityContext.CurrentAccount.ID);
 
                     privateCount = 0;
                 }
@@ -323,9 +325,9 @@ namespace ASC.CRM.Core.Dao
                     InvoiceTax2Id = invoiceItem.InvoiceTax2ID,
                     Currency = String.Empty,
                     CreateOn = DateTime.UtcNow,
-                    CreateBy = SecurityContext.CurrentAccount.ID,
+                    CreateBy = _securityContext.CurrentAccount.ID,
                     LastModifedOn = DateTime.Now,
-                    LastModifedBy = SecurityContext.CurrentAccount.ID,
+                    LastModifedBy = _securityContext.CurrentAccount.ID,
                     TenantId = TenantID
                 };
 
@@ -356,7 +358,7 @@ namespace ASC.CRM.Core.Dao
 
                 itemToUpdate.Currency = invoiceItem.Currency;
                 itemToUpdate.LastModifedOn = invoiceItem.LastModifedOn;
-                itemToUpdate.LastModifedBy = SecurityContext.CurrentAccount.ID;
+                itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
 
                 CRMDbContext.Add(itemToUpdate);
                 CRMDbContext.SaveChanges();
@@ -492,4 +494,4 @@ namespace ASC.CRM.Core.Dao
             return sqlQuery;
         }
     }
-}        
+}

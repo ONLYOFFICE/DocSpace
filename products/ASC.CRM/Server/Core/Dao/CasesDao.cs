@@ -24,7 +24,16 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+
 using ASC.Collections;
+using ASC.Common;
+using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -34,19 +43,13 @@ using ASC.CRM.Core.Enums;
 using ASC.Files.Core;
 using ASC.Web.CRM.Core.Search;
 using ASC.Web.Files.Api;
+
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
-using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 using Microsoft.EntityFrameworkCore;
-using SortedByType = ASC.CRM.Core.Enums.SortedByType;
 using Microsoft.Extensions.Options;
-using ASC.Common.Logging;
-using ASC.Common;
-using ASC.Common.Caching;
+
+using OrderBy = ASC.CRM.Core.Entities.OrderBy;
+using SortedByType = ASC.CRM.Core.Enums.SortedByType;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -265,9 +268,9 @@ namespace ASC.CRM.Core.Dao
                 Title = title,
                 IsClosed = false,
                 CreateOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
-                CreateBy = SecurityContext.CurrentAccount.ID,
+                CreateBy = _securityContext.CurrentAccount.ID,
                 LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
-                LastModifedBy = SecurityContext.CurrentAccount.ID,
+                LastModifedBy = _securityContext.CurrentAccount.ID,
                 TenantId = TenantID
             };
 
@@ -292,7 +295,7 @@ namespace ASC.CRM.Core.Dao
                 Title = cases.Title,
                 IsClosed = cases.IsClosed,
                 LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
-                LastModifedBy = SecurityContext.CurrentAccount.ID,
+                LastModifedBy = _securityContext.CurrentAccount.ID,
                 TenantId = TenantID,
                 CreateBy = cases.CreateBy,
                 CreateOn = cases.CreateOn
@@ -416,7 +419,7 @@ namespace ASC.CRM.Core.Dao
 
             var cacheKey = TenantID.ToString(CultureInfo.InvariantCulture) +
                            "cases" +
-                           SecurityContext.CurrentAccount.ID.ToString() +
+                           _securityContext.CurrentAccount.ID.ToString() +
                            searchText +
                            contactID;
 
@@ -457,9 +460,9 @@ namespace ASC.CRM.Core.Dao
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    Logger.ErrorFormat(@"Private cases count more than all cases. Tenant: {0}. CurrentAccount: {1}",
+                    _logger.ErrorFormat(@"Private cases count more than all cases. Tenant: {0}. CurrentAccount: {1}",
                                                             TenantID,
-                                                            SecurityContext.CurrentAccount.ID);
+                                                            _securityContext.CurrentAccount.ID);
                     privateCount = 0;
                 }
 

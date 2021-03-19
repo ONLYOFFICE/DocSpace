@@ -23,19 +23,18 @@
  *
 */
 
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
+
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using Nest;
-
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq.Expressions;
 
 namespace ASC.CRM.Core.EF
 {

@@ -24,13 +24,13 @@
 */
 
 
-using ASC.Api.Core;
-using ASC.CRM.Core.Enums;
-using ASC.Web.Api.Models;
-
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+
+using ASC.Api.Core;
+using ASC.CRM.Core.Enums;
+using ASC.Web.Api.Models;
 
 namespace ASC.CRM.ApiModels
 {
@@ -40,37 +40,37 @@ namespace ASC.CRM.ApiModels
     [DataContract(Name = "opportunity", Namespace = "")]
     public class OpportunityDto
     {
-   
+
         public OpportunityDto()
         {
         }
 
         [DataMember(Name = "id")]
-        public int Id { get; set; }        
-        public EmployeeWraper CreateBy { get; set; }        
-        public ApiDateTime Created { get; set; }        
-        public IEnumerable<ContactBaseDto> Members { get; set; }        
+        public int Id { get; set; }
+        public EmployeeWraper CreateBy { get; set; }
+        public ApiDateTime Created { get; set; }
+        public IEnumerable<ContactBaseDto> Members { get; set; }
         public ContactBaseDto Contact { get; set; }
 
         [DataMember(IsRequired = true, EmitDefaultValue = false)]
-        public String Title { get; set; }        
-        public String Description { get; set; }        
-        public EmployeeWraper Responsible { get; set; }        
-        public BidType BidType { get; set; }        
-        public decimal BidValue { get; set; }        
-        public CurrencyInfoDto BidCurrency { get; set; }        
-        public int PerPeriodValue { get; set; }        
-        public DealMilestoneBaseDto Stage { get; set; }        
-        public int SuccessProbability { get; set; }        
-        public ApiDateTime ActualCloseDate { get; set; }        
+        public String Title { get; set; }
+        public String Description { get; set; }
+        public EmployeeWraper Responsible { get; set; }
+        public BidType BidType { get; set; }
+        public decimal BidValue { get; set; }
+        public CurrencyInfoDto BidCurrency { get; set; }
+        public int PerPeriodValue { get; set; }
+        public DealMilestoneBaseDto Stage { get; set; }
+        public int SuccessProbability { get; set; }
+        public ApiDateTime ActualCloseDate { get; set; }
         public ApiDateTime ExpectedCloseDate { get; set; }
 
-        
-        public bool IsPrivate { get; set; }        
+
+        public bool IsPrivate { get; set; }
         public IEnumerable<EmployeeWraper> AccessList { get; set; }
 
-        
-        public bool CanEdit { get; set; }        
+
+        public bool CanEdit { get; set; }
         public IEnumerable<CustomFieldBaseDto> CustomFields { get; set; }
 
         public static OpportunityDto GetSample()

@@ -24,11 +24,12 @@
 */
 
 
+using System;
+using System.Runtime.Serialization;
+
 using ASC.Api.Core;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
-using System;
-using System.Runtime.Serialization;
 
 namespace ASC.CRM.ApiModels
 {
@@ -43,21 +44,21 @@ namespace ASC.CRM.ApiModels
         public CustomFieldDto(CustomField customField)
             : base(customField)
         {
-        }        
+        }
         public int RelativeItemsCount { get; set; }
 
         public new static CustomFieldDto GetSample()
         {
             return new CustomFieldDto(0)
-                {
-                    Position = 10,
-                    EntityId = 14523423,
-                    FieldType = CustomFieldType.Date,
-                    FieldValue = ApiDateTime.GetSample().ToString(),
-                    Label = "Birthdate",
-                    Mask = "",
-                    RelativeItemsCount = 0
-                };
+            {
+                Position = 10,
+                EntityId = 14523423,
+                FieldType = CustomFieldType.Date,
+                FieldValue = ApiDateTime.GetSample().ToString(),
+                Label = "Birthdate",
+                Mask = "",
+                RelativeItemsCount = 0
+            };
         }
     }
 
@@ -65,7 +66,7 @@ namespace ASC.CRM.ApiModels
     ///  User custom fields
     /// </summary>
     [DataContract(Name = "customField", Namespace = "")]
-    public class CustomFieldBaseDto 
+    public class CustomFieldBaseDto
     {
         public CustomFieldBaseDto(int id)
         {
@@ -82,24 +83,24 @@ namespace ASC.CRM.ApiModels
         }
 
         [DataMember(Name = "id")]
-        public int Id { get; set; }        
-        public int EntityId { get; set; }        
-        public String Label { get; set; }        
-        public String FieldValue { get; set; }        
-        public CustomFieldType FieldType { get; set; }        
-        public int Position { get; set; }        
+        public int Id { get; set; }
+        public int EntityId { get; set; }
+        public String Label { get; set; }
+        public String FieldValue { get; set; }
+        public CustomFieldType FieldType { get; set; }
+        public int Position { get; set; }
         public String Mask { get; set; }
         public static CustomFieldBaseDto GetSample()
         {
             return new CustomFieldBaseDto(0)
-                {
-                    Position = 10,
-                    EntityId = 14523423,
-                    FieldType = CustomFieldType.Date,
-                    FieldValue = ApiDateTime.GetSample().ToString(),
-                    Label = "Birthdate",
-                    Mask = ""
-                };
+            {
+                Position = 10,
+                EntityId = 14523423,
+                FieldType = CustomFieldType.Date,
+                FieldValue = ApiDateTime.GetSample().ToString(),
+                Label = "Birthdate",
+                Mask = ""
+            };
         }
     }
 }

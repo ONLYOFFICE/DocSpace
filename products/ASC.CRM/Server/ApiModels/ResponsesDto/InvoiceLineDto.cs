@@ -25,23 +25,26 @@
 
 using System.Runtime.Serialization;
 
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Mapping;
+
 namespace ASC.CRM.ApiModels
 {
     /// <summary>
     ///  Invoice Line
     /// </summary>
     [DataContract(Name = "invoiceLine", Namespace = "")]
-    public class InvoiceLineDto
+    public class InvoiceLineDto : IMapFrom<InvoiceLine>
     {
-        public int Id { get; set; }        
-        public int InvoiceID { get; set; }        
-        public int InvoiceItemID { get; set; }        
-        public int InvoiceTax1ID { get; set; }        
-        public int InvoiceTax2ID { get; set; }        
-        public int SortOrder { get; set; }        
-        public string Description { get; set; }        
-        public decimal Quantity { get; set; }        
-        public decimal Price { get; set; }        
+        public int Id { get; set; }
+        public int InvoiceID { get; set; }
+        public int InvoiceItemID { get; set; }
+        public int InvoiceTax1ID { get; set; }
+        public int InvoiceTax2ID { get; set; }
+        public int SortOrder { get; set; }
+        public string Description { get; set; }
+        public decimal Quantity { get; set; }
+        public decimal Price { get; set; }
         public decimal Discount { get; set; }
         public static InvoiceLineDto GetSample()
         {

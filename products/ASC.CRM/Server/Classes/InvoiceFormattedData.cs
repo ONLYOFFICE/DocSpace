@@ -24,16 +24,18 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+
 using ASC.Common;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
+
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -681,5 +683,5 @@ namespace ASC.Web.CRM.Classes
             return data;
         }
 
-    } 
+    }
 }

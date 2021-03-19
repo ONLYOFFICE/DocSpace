@@ -1,7 +1,8 @@
 ﻿
-using ASC.CRM.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
+using ASC.CRM.Core.Enums;
 
 namespace ASC.CRM.Core.EF
 {
@@ -11,14 +12,14 @@ namespace ASC.CRM.Core.EF
         [Key]
         [Column("entity_id", TypeName = "int(11)")]
         public int EntityId { get; set; }
-        
+
         [Key]
         [Column("entity_type", TypeName = "int(11)")]
         public EntityType EntityType { get; set; }
-        
+
         [Key]
         [Column("contact_id", TypeName = "int(11)")]
-        public int ContactId { get; set; }     
+        public int ContactId { get; set; }
     }
-       
+
 }

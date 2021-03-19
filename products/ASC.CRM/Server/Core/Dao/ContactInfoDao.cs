@@ -23,6 +23,10 @@
  *
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
@@ -33,14 +37,10 @@ using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
-using ASC.ElasticSearch;
 using ASC.Web.CRM.Core.Search;
+
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -62,7 +62,7 @@ namespace ASC.CRM.Core.Dao
             : base(
                 dbContextManager,
                 tenantManager,
-                securityContext, 
+                securityContext,
                 tenantUtil,
                 logger,
                 ascCache,
@@ -113,7 +113,7 @@ namespace ASC.CRM.Core.Dao
 
     [Scope]
     public class ContactInfoDao : AbstractDao
-    {     
+    {
         public ContactInfoDao(
              DbContextManager<CRMDbContext> dbContextManager,
              TenantManager tenantManager,
@@ -154,22 +154,22 @@ namespace ASC.CRM.Core.Dao
             CRMDbContext.ContactsInfo.Remove(itemToDelete);
             CRMDbContext.SaveChanges();
 
-            FactoryIndexerContactInfo.Delete(r => r.Where(a => a.Id, id));        
+            FactoryIndexerContactInfo.Delete(r => r.Where(a => a.Id, id));
         }
 
         public virtual void DeleteByContact(int contactID)
         {
             if (contactID <= 0) return;
-                        
+
             CRMDbContext.RemoveRange(Query(CRMDbContext.ContactsInfo)
                                         .Where(x => x.ContactId == contactID));
 
             CRMDbContext.SaveChanges();
 
-            FactoryIndexerContactInfo.Delete(r => r.Where(a => a.ContactId, contactID));       
+            FactoryIndexerContactInfo.Delete(r => r.Where(a => a.ContactId, contactID));
         }
 
-        public virtual int Update(ContactInfo contactInfo) 
+        public virtual int Update(ContactInfo contactInfo)
         {
             var result = UpdateInDb(contactInfo);
 
@@ -193,14 +193,14 @@ namespace ASC.CRM.Core.Dao
                 ContactId = contactInfo.ContactID,
                 Type = contactInfo.InfoType,
                 LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
-                LastModifedBy = SecurityContext.CurrentAccount.ID,
-                TenantId = TenantID                
+                LastModifedBy = _securityContext.CurrentAccount.ID,
+                TenantId = TenantID
             };
 
             CRMDbContext.ContactsInfo.Update(itemToUpdate);
 
             CRMDbContext.SaveChanges();
-                                                      
+
             return contactInfo.ID;
         }
 
@@ -224,19 +224,19 @@ namespace ASC.CRM.Core.Dao
         {
             var itemToInsert = new DbContactInfo
             {
-                 Data = contactInfo.Data,
-                 Category = contactInfo.Category,
-                 IsPrimary = contactInfo.IsPrimary,
-                 ContactId = contactInfo.ContactID,
-                 Type = contactInfo.InfoType,
-                 LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
-                 LastModifedBy = SecurityContext.CurrentAccount.ID,
-                 TenantId = TenantID
+                Data = contactInfo.Data,
+                Category = contactInfo.Category,
+                IsPrimary = contactInfo.IsPrimary,
+                ContactId = contactInfo.ContactID,
+                Type = contactInfo.InfoType,
+                LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
+                LastModifedBy = _securityContext.CurrentAccount.ID,
+                TenantId = TenantID
 
             };
 
             CRMDbContext.Add(itemToInsert);
-                                   
+
             CRMDbContext.SaveChanges();
 
             return itemToInsert.Id;
@@ -259,7 +259,7 @@ namespace ASC.CRM.Core.Dao
 
             return Query(CRMDbContext.ContactsInfo)
                 .Where(x => contactID.Contains(x.ContactId))
-                .ToList().ConvertAll(ToContactInfo);         
+                .ToList().ConvertAll(ToContactInfo);
         }
 
         public virtual List<ContactInfo> GetList(int contactID, ContactInfoType? infoType, int? categoryID, bool? isPrimary)
@@ -270,10 +270,10 @@ namespace ASC.CRM.Core.Dao
                 items = items.Where(x => x.ContactId == contactID);
 
             if (infoType.HasValue)
-                items =  items.Where(x => x.Type == infoType.Value);
+                items = items.Where(x => x.Type == infoType.Value);
 
             if (categoryID.HasValue)
-                items =  items.Where(x => x.Category == categoryID.Value);
+                items = items.Where(x => x.Category == categoryID.Value);
 
             if (isPrimary.HasValue)
                 items = items.Where(x => x.IsPrimary == isPrimary.Value);
@@ -291,16 +291,16 @@ namespace ASC.CRM.Core.Dao
             var result = new List<int>();
 
             var tx = CRMDbContext.Database.BeginTransaction();
-            
+
             foreach (var contactInfo in items)
                 result.Add(UpdateInDb(contactInfo));
-            
+
             tx.Commit();
-            
+
             if (contact != null)
             {
                 var itemIDs = items.Select(y => y.ID);
-                
+
                 var dbContactInfos = Query(CRMDbContext.ContactsInfo)
                             .Where(x => itemIDs.Contains(x.Id));
 
@@ -318,7 +318,7 @@ namespace ASC.CRM.Core.Dao
             if (items == null || items.Count == 0) return null;
 
             var result = new List<int>();
-                       
+
             var tx = CRMDbContext.Database.BeginTransaction();
 
             foreach (var contactInfo in items)
@@ -329,7 +329,7 @@ namespace ASC.CRM.Core.Dao
             }
 
             tx.Commit();
-            
+
             if (contact != null)
             {
                 var itemIDs = items.Select(y => y.ID);
@@ -351,14 +351,14 @@ namespace ASC.CRM.Core.Dao
             if (dbContactInfo == null) return null;
 
             return new ContactInfo
-                       {
-                             ID = dbContactInfo.Id,
-                             Category = dbContactInfo.Category,
-                             ContactID = dbContactInfo.ContactId,
-                             Data = dbContactInfo.Data,
-                             InfoType = dbContactInfo.Type,
-                             IsPrimary = dbContactInfo.IsPrimary                              
-                       };
+            {
+                ID = dbContactInfo.Id,
+                Category = dbContactInfo.Category,
+                ContactID = dbContactInfo.ContactId,
+                Data = dbContactInfo.Data,
+                InfoType = dbContactInfo.Type,
+                IsPrimary = dbContactInfo.IsPrimary
+            };
         }
     }
 }

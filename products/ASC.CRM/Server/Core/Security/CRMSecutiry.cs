@@ -24,13 +24,17 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security;
+
 using ASC.Common;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.CRM.Core.Dao;
-using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
@@ -40,12 +44,9 @@ using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Configuration;
-using ASC.Web.CRM.Core;
+
 using Autofac;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
+
 using Action = ASC.Common.Security.Authorizing.Action;
 using Constants = ASC.Core.Users.Constants;
 using SecurityContext = ASC.Core.SecurityContext;
@@ -778,56 +779,56 @@ namespace ASC.CRM.Core
                 .Distinct()
                 .ToList();
 
-                if (contactIDs.Any())
-                {
-                    contactIDs = DaoFactory.GetContactDao()
-                        .GetContacts(contactIDs.ToArray())
-                        .Select(x => x.ID)
-                        .ToList();
+            if (contactIDs.Any())
+            {
+                contactIDs = DaoFactory.GetContactDao()
+                    .GetContacts(contactIDs.ToArray())
+                    .Select(x => x.ID)
+                    .ToList();
 
-                    result = result.Where(x => x.ContactID == 0 || contactIDs.Contains(x.ContactID) || x.ResponsibleID == SecurityContext.CurrentAccount.ID).ToList();
+                result = result.Where(x => x.ContactID == 0 || contactIDs.Contains(x.ContactID) || x.ResponsibleID == SecurityContext.CurrentAccount.ID).ToList();
 
-                    if (!result.Any()) return Enumerable.Empty<Task>();
-                }
+                if (!result.Any()) return Enumerable.Empty<Task>();
+            }
 
-                var casesIds = result.Where(x => x.EntityType == EntityType.Case && x.ResponsibleID != SecurityContext.CurrentAccount.ID)
-                        .Select(x => x.EntityID)
-                        .Distinct()
-                        .ToList();
+            var casesIds = result.Where(x => x.EntityType == EntityType.Case && x.ResponsibleID != SecurityContext.CurrentAccount.ID)
+                    .Select(x => x.EntityID)
+                    .Distinct()
+                    .ToList();
 
-                if (casesIds.Any())
-                {
-                    casesIds = DaoFactory.GetCasesDao()
-                        .GetCases(casesIds.ToArray())
-                        .Select(x => x.ID)
-                        .ToList();
+            if (casesIds.Any())
+            {
+                casesIds = DaoFactory.GetCasesDao()
+                    .GetCases(casesIds.ToArray())
+                    .Select(x => x.ID)
+                    .ToList();
 
-                    result = result.Where(x => x.EntityID == 0 || casesIds.Contains(x.EntityID) || x.ResponsibleID == SecurityContext.CurrentAccount.ID).ToList();
+                result = result.Where(x => x.EntityID == 0 || casesIds.Contains(x.EntityID) || x.ResponsibleID == SecurityContext.CurrentAccount.ID).ToList();
 
-                    if (!result.Any()) return Enumerable.Empty<Task>();
-                }
+                if (!result.Any()) return Enumerable.Empty<Task>();
+            }
 
-                var dealsIds = result.Where(x => x.EntityType == EntityType.Opportunity && x.ResponsibleID != SecurityContext.CurrentAccount.ID)
-                        .Select(x => x.EntityID)
-                        .Distinct()
-                        .ToList();
+            var dealsIds = result.Where(x => x.EntityType == EntityType.Opportunity && x.ResponsibleID != SecurityContext.CurrentAccount.ID)
+                    .Select(x => x.EntityID)
+                    .Distinct()
+                    .ToList();
 
-                if (dealsIds.Any())
-                {
-                    dealsIds = DaoFactory.GetDealDao()
-                        .GetDeals(dealsIds.ToArray())
-                        .Select(x => x.ID)
-                        .ToList();
+            if (dealsIds.Any())
+            {
+                dealsIds = DaoFactory.GetDealDao()
+                    .GetDeals(dealsIds.ToArray())
+                    .Select(x => x.ID)
+                    .ToList();
 
-                    result = result
-                        .Where(x => x.EntityID == 0 || dealsIds.Contains(x.EntityID) || x.ResponsibleID == SecurityContext.CurrentAccount.ID)
-                        .ToList();
+                result = result
+                    .Where(x => x.EntityID == 0 || dealsIds.Contains(x.EntityID) || x.ResponsibleID == SecurityContext.CurrentAccount.ID)
+                    .ToList();
 
-                    if (!result.Any()) return Enumerable.Empty<Task>();
-                }
+                if (!result.Any()) return Enumerable.Empty<Task>();
+            }
 
-                return result;
-            
+            return result;
+
 
         }
 
@@ -859,5 +860,5 @@ namespace ASC.CRM.Core
         {
             return IsAdmin || task.ResponsibleID == SecurityContext.CurrentAccount.ID || task.CreateBy == SecurityContext.CurrentAccount.ID;
         }
-    }  
+    }
 }

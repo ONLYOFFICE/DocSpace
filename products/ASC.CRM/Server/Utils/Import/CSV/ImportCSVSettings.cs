@@ -24,12 +24,14 @@
 */
 
 
-using ASC.CRM.Core.Enums;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using ASC.CRM.Core.Enums;
+
+using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.CRM.Classes
 {

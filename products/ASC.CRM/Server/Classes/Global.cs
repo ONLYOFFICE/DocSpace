@@ -24,27 +24,26 @@
 */
 
 
+using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
+
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.CRM.Core;
-using ASC.CRM.Core.Dao;
-using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Data.Storage;
 using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
+
 using Microsoft.Extensions.Configuration;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Globalization;
-using System.IO;
-using System.Text;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -87,7 +86,7 @@ namespace ASC.Web.CRM.Classes
         public static readonly int DefaultCustomFieldCols = 40;
 
         public static readonly int MaxHistoryEventCharacters = 65000;
-        public static readonly decimal MaxInvoiceItemPrice = (decimal) 99999999.99;
+        public static readonly decimal MaxInvoiceItemPrice = (decimal)99999999.99;
 
         protected int TenantID { get; private set; }
 
@@ -99,7 +98,7 @@ namespace ASC.Web.CRM.Classes
         public StorageFactory StorageFactory { get; }
 
         public CRMSecurity CRMSecurity { get; }
-               
+
         public IDataStore GetStore()
         {
             return StorageFactory.GetStorage(TenantID.ToString(), "crm");
@@ -140,7 +139,7 @@ namespace ASC.Web.CRM.Classes
                 return canCreateProject;
 
             }
-            catch 
+            catch
             {
                 return false;
             }
@@ -176,11 +175,11 @@ namespace ASC.Web.CRM.Classes
         public void SaveDefaultCurrencySettings(CurrencyInfo currency)
         {
             var tenantSettings = SettingsManager.Load<CRMSettings>();
-            tenantSettings.DefaultCurrency = currency;            
+            tenantSettings.DefaultCurrency = currency;
             SettingsManager.Save<CRMSettings>(tenantSettings);
         }
 
-       
+
         /// <summary>
         /// The method to Decode your Base64 strings.
         /// </summary>
@@ -217,7 +216,7 @@ namespace ASC.Web.CRM.Classes
             br.Close();
             return br.ToArray();
         }
-                
+
         public static string GetImgFormatName(ImageFormat format)
         {
             if (format.Equals(ImageFormat.Bmp)) return "bmp";
@@ -238,7 +237,7 @@ namespace ASC.Web.CRM.Classes
         {
             return CommonPhotoManager.SaveToBytes(img, GetImgFormatName(img.RawFormat));
         }
-                
+
         private static readonly string[] Formats = new[]
                                                        {
                                                            "o",
@@ -268,6 +267,6 @@ namespace ASC.Web.CRM.Classes
                           );
             reader.DateParseHandling = DateParseHandling.None;
             return JObject.Load(reader);
-        }               
+        }
     }
 }

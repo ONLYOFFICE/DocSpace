@@ -24,17 +24,18 @@
 */
 
 
-using ASC.Api.Core;
-using ASC.CRM.Api;
-using ASC.Common;
-using ASC.CRM.Classes;
-using ASC.CRM.Core.Entities;
-using ASC.CRM.Core.Enums;
-using ASC.Web.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Contact = ASC.CRM.Core.Entities.Contact;
+
+using ASC.Api.Core;
+using ASC.Common;
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
+using ASC.Web.Api.Models;
+
+using AutoMapper;
 
 namespace ASC.CRM.ApiModels
 {
@@ -44,23 +45,10 @@ namespace ASC.CRM.ApiModels
     [DataContract(Name = "person", Namespace = "")]
     public class PersonDto : ContactDto
     {
-        public PersonDto()
-        {
-
-        }
-
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public String FirstName { get; set; }
-
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public String LastName { get; set; }
-
-
         public ContactBaseDto Company { get; set; }
-
-
         public String Title { get; set; }
-
         public new static PersonDto GetSample()
         {
             return new PersonDto
@@ -82,11 +70,7 @@ namespace ASC.CRM.ApiModels
 
     [Scope]
     public class PersonDtoHelper
-    {
-        public PersonDtoHelper()
-        {
-        }
-
+    {     
         public PersonDto Get(Person person)
         {
             return new PersonDto
@@ -113,30 +97,10 @@ namespace ASC.CRM.ApiModels
     /// </summary>
     [DataContract(Name = "company", Namespace = "")]
     public class CompanyDto : ContactDto
-    {
-        public CompanyDto()
-        {
-        }
-
-        //public CompanyDto(Company company)
-        //    : base(company)
-        //{
-        //    CompanyName = company.CompanyName;
-        //    //  PersonsCount = Global.DaoFactory.ContactDao.GetMembersCount(company.ID);
-        //}
-
-
-
-
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
+    {    
         public String CompanyName { get; set; }
-
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public IEnumerable<ContactBaseDto> Persons { get; set; }
-
-        [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public int PersonsCount { get; set; }
-
         public new static CompanyDto GetSample()
         {
             return new CompanyDto
@@ -154,7 +118,7 @@ namespace ASC.CRM.ApiModels
     [DataContract(Name = "contact", Namespace = "")]
     [KnownType(typeof(PersonDto))]
     [KnownType(typeof(CompanyDto))]
-    public abstract class ContactDto : ContactBaseDto
+    public class ContactDto : ContactBaseDto, IMapFrom<ASC.CRM.Core.Entities.Contact>
     {
         public ContactDto()
         {
@@ -182,8 +146,6 @@ namespace ASC.CRM.ApiModels
         public IEnumerable<CustomFieldBaseDto> CustomFields { get; set; }
         public IEnumerable<String> Tags { get; set; }
         public int TaskCount { get; set; }
-
-        
         public bool HaveLateTasks { get; set; }
         public new static ContactDto GetSample()
         {
@@ -207,6 +169,18 @@ namespace ASC.CRM.ApiModels
                 TaskCount = 0,
                 HaveLateTasks = false
             };
+        }
+
+        public void Mapping(Profile profile) {
+
+            profile.CreateMap<Core.Entities.Contact, ContactDto>().ConvertUsing<ContactDtoTypeConverter>();
+            profile.CreateMap<List<Core.Entities.Contact>, List<ContactDto>>().ConvertUsing<ContactDtoTypeConverter>();
+            profile.CreateMap<Core.Entities.Contact, ContactBaseDto>().ConvertUsing<ContactDtoTypeConverter>();
+            profile.CreateMap<Core.Entities.Person, PersonDto>().ConvertUsing<ContactDtoTypeConverter>();
+            profile.CreateMap<Core.Entities.Company, CompanyDto>().ConvertUsing<ContactDtoTypeConverter>();
+            profile.CreateMap<Core.Entities.Company, ContactBaseWithPhoneDto>().ConvertUsing<ContactDtoTypeConverter>();
+            profile.CreateMap<Core.Entities.Company, ContactBaseWithEmailDto>().ConvertUsing<ContactDtoTypeConverter>();
+
         }
     }
 
@@ -275,15 +249,15 @@ namespace ASC.CRM.ApiModels
         [DataMember(Name = "id")]
         public int Id { get; set; }
         public String SmallFotoUrl { get; set; }
-        public String MediumFotoUrl { get; set; }        
-        public String DisplayName { get; set; }        
+        public String MediumFotoUrl { get; set; }
+        public String DisplayName { get; set; }
         public bool IsCompany { get; set; }
-        public IEnumerable<EmployeeWraper> AccessList { get; set; }        
-        public bool IsPrivate { get; set; }        
-        public bool IsShared { get; set; }        
-        public ShareType ShareType { get; set; }        
-        public CurrencyInfoDto Currency { get; set; }        
-        public bool CanEdit { get; set; }        
+        public IEnumerable<EmployeeWraper> AccessList { get; set; }
+        public bool IsPrivate { get; set; }
+        public bool IsShared { get; set; }
+        public ShareType ShareType { get; set; }
+        public CurrencyInfoDto Currency { get; set; }
+        public bool CanEdit { get; set; }
         public bool CanDelete { get; set; }
         public static ContactBaseDto GetSample()
         {

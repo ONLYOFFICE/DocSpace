@@ -24,20 +24,20 @@
 */
 
 
+using System.Linq;
+
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.VoipService;
 using ASC.Web.Api.Models;
-
-using System.Linq;
 
 namespace ASC.CRM.ApiModels
 {
     [Scope]
     public class VoipCallDtoHelper
     {
-        private ApiDateTimeHelper _apiDateTimeHelper;
-        private EmployeeWraperHelper _employeeWraperHelper;
+        private readonly ApiDateTimeHelper _apiDateTimeHelper;
+        private readonly EmployeeWraperHelper _employeeWraperHelper;
 
         public VoipCallDtoHelper(EmployeeWraperHelper employeeWraper,
                                      ApiDateTimeHelper apiDateTimeHelper)

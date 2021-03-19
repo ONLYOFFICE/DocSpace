@@ -24,6 +24,13 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.Text;
+
 using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
@@ -35,22 +42,18 @@ using ASC.CRM.Classes;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
-using ASC.ElasticSearch;
 using ASC.Files.Core;
 using ASC.Web.CRM;
 using ASC.Web.CRM.Core.Search;
 using ASC.Web.Files.Api;
 using ASC.Web.Studio.Core;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.Text;
+
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
 namespace ASC.CRM.Core.Dao
@@ -214,7 +217,7 @@ namespace ASC.CRM.Core.Dao
             return tagdao.GetTags(tagNames.ToArray(), TagType.System)
                .Where(t => t.EntryType == FileEntryType.File)
                .Select(t => Convert.ToInt32(t.EntryId)).ToArray();
-             
+
         }
 
         public List<File<int>> GetAllFiles(int[] contactID, EntityType entityType, int entityID)
@@ -309,7 +312,8 @@ namespace ASC.CRM.Core.Dao
             {
                 if (GetFiles(eventID).Count == 0)
                 {
-                    var dbRelationshipEvent = new DbRelationshipEvent { 
+                    var dbRelationshipEvent = new DbRelationshipEvent
+                    {
                         Id = eventID,
                         HaveFiles = false,
                         TenantId = TenantID
@@ -359,8 +363,8 @@ namespace ASC.CRM.Core.Dao
             if (item.CreateOn == DateTime.MinValue)
                 item.CreateOn = TenantUtil.DateTimeNow();
 
-            item.CreateBy = SecurityContext.CurrentAccount.ID;
-            item.LastModifedBy = SecurityContext.CurrentAccount.ID;
+            item.CreateBy = _securityContext.CurrentAccount.ID;
+            item.LastModifedBy = _securityContext.CurrentAccount.ID;
 
             if (item.CategoryID == (int)HistoryCategorySystem.MailMessage)
             {
@@ -372,8 +376,8 @@ namespace ASC.CRM.Core.Dao
                 //    String.Format("{0}mail/messages/{1}.json?id={1}&loadImages=true&needSanitize=true", SetupInfo.WebApiBaseUrl, messageId), "GET");
 
                 String msg = null;
-//                if (msg == null)
-                    throw new ArgumentException("Mail message cannot be found");
+                //                if (msg == null)
+                throw new ArgumentException("Mail message cannot be found");
 
                 //var msgResponseDto = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(msg)));
                 //var msgRequestObj = msgResponseDto.Value<JObject>("response");
@@ -649,7 +653,7 @@ namespace ASC.CRM.Core.Dao
             FactoryIndexer.DeleteAsync(itemToDelete);
 
             CRMDbContext.RelationshipEvent.Remove(itemToDelete);
-            
+
             CRMDbContext.SaveChanges();
 
         }
@@ -657,37 +661,37 @@ namespace ASC.CRM.Core.Dao
         [DataContract]
         internal class CrmHistoryContent
         {
-            
+
             public string to;
 
-            
+
             public string from;
 
-            
+
             public string cc;
 
-            
+
             public string bcc;
 
-            
+
             public string subject;
 
-            
+
             public bool important;
 
-            
+
             public string chain_id;
 
-            
+
             public bool is_sended;
 
-            
+
             public string date_created;
 
-            
+
             public string introduction;
 
-            
+
             public long message_id;
 
         }
@@ -718,4 +722,4 @@ namespace ASC.CRM.Core.Dao
             }
         }
     }
-}   
+}

@@ -24,10 +24,11 @@
 */
 
 
-using ASC.CRM.Classes;
-using ASC.CRM.Core.Enums;
 using System;
 using System.Runtime.Serialization;
+
+using ASC.CRM.Classes;
+using ASC.CRM.Core.Enums;
 
 namespace ASC.CRM.Core
 {

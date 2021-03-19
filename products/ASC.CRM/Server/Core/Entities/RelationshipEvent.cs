@@ -27,46 +27,24 @@
 #region Import
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
+
 using ASC.Common.Security;
-using ASC.Common.Security.Authorizing;
-using ASC.Core.Users;
 using ASC.CRM.Core.Enums;
 #endregion
 
 namespace ASC.CRM.Core.Entities
 {
-    [DataContract]
     public class RelationshipEvent : DomainObject, ISecurityObjectId
     {
-        [DataMember(Name = "createBy")]
         public Guid CreateBy { get; set; }
-
-        [DataMember(Name = "createOn")]
         public DateTime CreateOn { get; set; }
-
-        [DataMember(Name = "lastModifedBy")]
         public Guid? LastModifedBy { get; set; }
-
-        [DataMember(Name = "lastModifedOn")]
         public DateTime? LastModifedOn { get; set; }
-
-        [DataMember(Name = "content")]
         public String Content { get; set; }
-
-        [DataMember(Name = "contactID")]
         public int ContactID { get; set; }
-
-        [DataMember(Name = "entityType")]
         public EntityType EntityType { get; set; }
-
-        [DataMember(Name = "entityID")]
         public int EntityID { get; set; }
-
-        [DataMember(Name = "categoryID")]
         public int CategoryID { get; set; }
 
         public object SecurityId

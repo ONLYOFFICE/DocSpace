@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.CRM.Core.Entities
 {
     public class InvoiceLine : DomainObject

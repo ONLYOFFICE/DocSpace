@@ -24,9 +24,9 @@
 */
 
 
-using ASC.CRM.Core.Enums;
-using System;
 using System.Runtime.Serialization;
+
+using ASC.CRM.Core.Enums;
 
 namespace ASC.CRM.Core.Entities
 {

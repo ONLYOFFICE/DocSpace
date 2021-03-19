@@ -24,6 +24,12 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+
 using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
@@ -42,12 +48,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -380,6 +380,7 @@ namespace ASC.CRM.Core.Dao
                 }
             }
 
+
             return _mapper.ProjectTo<Task>(sqlQuery).ToList();
         }
 
@@ -396,11 +397,11 @@ namespace ASC.CRM.Core.Dao
 
             int result = 0;
 
-            Logger.DebugFormat("Starting GetTasksCount: {0}", DateTime.Now.ToString());
+            _logger.DebugFormat("Starting GetTasksCount: {0}", DateTime.Now.ToString());
 
             var cacheKey = TenantID.ToString(CultureInfo.InvariantCulture) +
                            "tasks" +
-                           SecurityContext.CurrentAccount.ID.ToString() +
+                           _securityContext.CurrentAccount.ID.ToString() +
                            searchText +
                            responsibleId +
                            categoryId +
@@ -411,7 +412,7 @@ namespace ASC.CRM.Core.Dao
 
             if (!String.IsNullOrEmpty(_cache.Get<String>(cacheKey)))
             {
-                Logger.DebugFormat("End GetTasksCount: {0}. From cache", DateTime.Now.ToString());
+                _logger.DebugFormat("End GetTasksCount: {0}. From cache", DateTime.Now.ToString());
 
                 return Convert.ToInt32(_cache.Get<String>(cacheKey));
             }
@@ -783,7 +784,8 @@ namespace ASC.CRM.Core.Dao
             return Query(CRMDbContext.Tasks)
                 .Where(x => contactID.Contains(x.ContactId))
                 .GroupBy(x => x.ContactId)
-                .ToDictionary(x => x.Key, x => x.Count());
+                .Select(x => new { Key = x.Key, Value = x.Count() })
+                .ToDictionary(x => x.Key, x => x.Value);
         }
 
         public int GetTasksCount(int contactID)
@@ -800,7 +802,8 @@ namespace ASC.CRM.Core.Dao
             return Query(CRMDbContext.Tasks)
                     .Where(x => contactID.Contains(x.ContactId) && !x.IsClosed && x.Deadline <= DateTime.UtcNow)
                     .GroupBy(x => x.ContactId)
-                    .ToDictionary(x => x.Key, x => x.Any());
+                    .Select(x => new { Key = x.Key, Value = x.Count() })
+                    .ToDictionary(x => x.Key, x => x.Value > 0);
         }
 
         public bool HaveLateTask(int contactID)
@@ -815,17 +818,21 @@ namespace ASC.CRM.Core.Dao
         public virtual Task SaveOrUpdateTask(Task newTask)
         {
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
+            
             return SaveOrUpdateTaskInDb(newTask);
         }
 
         public virtual Task[] SaveOrUpdateTaskList(List<Task> newTasks)
         {
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
+  
             var result = new List<Task>();
+            
             foreach (var newTask in newTasks)
             {
                 result.Add(SaveOrUpdateTaskInDb(newTask));
             }
+            
             return result.ToArray();
         }
 
@@ -838,10 +845,10 @@ namespace ASC.CRM.Core.Dao
             if (newTask.ID == 0 || Query(CRMDbContext.Tasks).Where(x => x.Id == newTask.ID).Count() == 0)
             {
                 newTask.CreateOn = DateTime.UtcNow;
-                newTask.CreateBy = SecurityContext.CurrentAccount.ID;
+                newTask.CreateBy = _securityContext.CurrentAccount.ID;
 
                 newTask.LastModifedOn = DateTime.UtcNow;
-                newTask.LastModifedBy = SecurityContext.CurrentAccount.ID;
+                newTask.LastModifedBy = _securityContext.CurrentAccount.ID;
 
                 var itemToInsert = new DbTask
                 {
@@ -898,7 +905,7 @@ namespace ASC.CRM.Core.Dao
                 newTask.CreateBy = oldTask.CreateBy;
 
                 newTask.LastModifedOn = DateTime.UtcNow;
-                newTask.LastModifedBy = SecurityContext.CurrentAccount.ID;
+                newTask.LastModifedBy = _securityContext.CurrentAccount.ID;
 
                 newTask.IsClosed = oldTask.IsClosed;
             }
@@ -932,9 +939,9 @@ namespace ASC.CRM.Core.Dao
                 IsClosed = newTask.IsClosed,
                 CategoryId = newTask.CategoryID,
                 CreateOn = newTask.CreateOn == DateTime.MinValue ? DateTime.UtcNow : newTask.CreateOn,
-                CreateBy = SecurityContext.CurrentAccount.ID,
+                CreateBy = _securityContext.CurrentAccount.ID,
                 LastModifedOn = newTask.CreateOn == DateTime.MinValue ? DateTime.UtcNow : newTask.CreateOn,
-                LastModifedBy = SecurityContext.CurrentAccount.ID,
+                LastModifedBy = _securityContext.CurrentAccount.ID,
                 AlertValue = newTask.AlertValue,
                 TenantId = TenantID
             };

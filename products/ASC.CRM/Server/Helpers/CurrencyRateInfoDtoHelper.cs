@@ -27,21 +27,23 @@
 using ASC.Common;
 using ASC.CRM.Core;
 
+using AutoMapper;
+
 namespace ASC.CRM.ApiModels
 {
     [Scope]
     public class CurrencyRateInfoDtoHelper
     {
-        public CurrencyRateInfoDtoHelper(CurrencyInfoDtoHelper currencyInfoDtoHelper)
-        {
-            CurrencyInfoDtoHelper = currencyInfoDtoHelper;
-        }
+        private IMapper _mapper;
 
-        public CurrencyInfoDtoHelper CurrencyInfoDtoHelper;
+        public CurrencyRateInfoDtoHelper(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
 
         public CurrencyRateInfoDto Get(CurrencyInfo currencyInfo, decimal rate)
         {
-            var currencyInfoDto = CurrencyInfoDtoHelper.Get(currencyInfo);
+            var currencyInfoDto = _mapper.Map<CurrencyInfoDto>(currencyInfo);
 
             return new CurrencyRateInfoDto
             {

@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+
 using ASC.Common.Security;
 
 namespace ASC.CRM.Core.Entities

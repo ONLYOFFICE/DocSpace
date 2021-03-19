@@ -24,15 +24,6 @@
 */
 
 
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.Settings;
-using ASC.CRM.Core;
-using ASC.CRM.Core.Dao;
-using ASC.Web.CRM.Core;
-using Autofac;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -40,6 +31,17 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+
+using ASC.Common;
+using ASC.Common.Logging;
+using ASC.Core.Common.Settings;
+using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
+
+using Autofac;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -178,7 +180,7 @@ namespace ASC.Web.CRM.Classes
             return Path.Combine(Path.GetTempPath(), Path.Combine("onlyoffice", "exchanges"));
         }
 
-        private Regex CurRateRegex = new Regex("<td id=\"(?<Currency>[a-zA-Z]{3})\">(?<Rate>[\\d\\.]+)</td>");
+        private readonly Regex CurRateRegex = new Regex("<td id=\"(?<Currency>[a-zA-Z]{3})\">(?<Rate>[\\d\\.]+)</td>");
 
         private Dictionary<String, Decimal> GetExchangeRates()
         {

@@ -24,6 +24,10 @@
 */
 
 
+using System;
+using System.Text.Json;
+using System.Threading.Tasks;
+
 using ASC.CRM.Core;
 using ASC.Web.Core;
 using ASC.Web.Core.Utility;
@@ -32,10 +36,6 @@ using ASC.Web.CRM.Configuration;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-
-using System;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace ASC.Web.CRM.HttpHandlers
 {
@@ -49,7 +49,7 @@ namespace ASC.Web.CRM.HttpHandlers
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, 
+        public async Task Invoke(HttpContext context,
                                 WebItemSecurity webItemSecurity,
                                 CRMSecurity cRMSecurity,
                                 Global global,
@@ -67,11 +67,11 @@ namespace ASC.Web.CRM.HttpHandlers
 
             var fileName = context.Request.Form.Files[0].FileName;
             var contentLength = context.Request.Form.Files[0].Length;
-            
+
             String assignedPath;
 
             global.GetStore().SaveTemp("temp", out assignedPath, context.Request.Form.Files[0].OpenReadStream());
-          
+
             var jObject = importFromCSV.GetInfo(context.Request.Form.Files[0].OpenReadStream(), context.Request.Form["importSettings"]);
 
             jObject.Add("assignedPath", assignedPath);

@@ -24,6 +24,12 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+
 using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
@@ -32,14 +38,11 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -92,7 +95,7 @@ namespace ASC.CRM.Core.Dao
             _invoiceLineCache.Reset(invoiceLineID.ToString(CultureInfo.InvariantCulture));
         }
     }
-    
+
     [Scope]
     public class InvoiceLineDao : AbstractDao
     {
@@ -111,7 +114,8 @@ namespace ASC.CRM.Core.Dao
         }
 
 
-        public static string GetJson(InvoiceItem invoiceItem) {
+        public static string GetJson(InvoiceItem invoiceItem)
+        {
             return invoiceItem == null ?
                     string.Empty :
                     JsonConvert.SerializeObject(new
@@ -121,7 +125,8 @@ namespace ASC.CRM.Core.Dao
                         description = invoiceItem.Description
                     });
         }
-        public static string GetJson(InvoiceTax invoiceTax) {
+        public static string GetJson(InvoiceTax invoiceTax)
+        {
             return invoiceTax == null ?
                     string.Empty :
                     JsonConvert.SerializeObject(new
@@ -132,7 +137,7 @@ namespace ASC.CRM.Core.Dao
                         description = invoiceTax.Description
                     });
         }
-            
+
         public virtual List<InvoiceLine> GetAll()
         {
             return Query(CRMDbContext.InvoiceLine)
@@ -150,7 +155,7 @@ namespace ASC.CRM.Core.Dao
         {
             return ToInvoiceLine(Query(CRMDbContext.InvoiceLine).FirstOrDefault(x => x.Id == id));
         }
-        
+
         public List<InvoiceLine> GetInvoiceLines(int invoiceID)
         {
             return GetInvoiceLinesInDb(invoiceID);
@@ -164,7 +169,7 @@ namespace ASC.CRM.Core.Dao
                 .ToList()
                 .ConvertAll(ToInvoiceLine);
         }
-                
+
         public virtual int SaveOrUpdateInvoiceLine(InvoiceLine invoiceLine)
         {
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
@@ -227,7 +232,7 @@ namespace ASC.CRM.Core.Dao
 
             return invoiceLine.ID;
         }
-                
+
         public virtual void DeleteInvoiceLine(int invoiceLineID)
         {
             var invoiceLine = GetByID(invoiceLineID);
@@ -239,7 +244,7 @@ namespace ASC.CRM.Core.Dao
             CRMDbContext.Attach(itemToDelete);
             CRMDbContext.Remove(itemToDelete);
             CRMDbContext.SaveChanges();
-                       
+
             /*_cache.Remove(_invoiceItemCacheKey);
             _cache.Insert(_invoiceLineCacheKey, String.Empty);*/
         }
@@ -250,7 +255,7 @@ namespace ASC.CRM.Core.Dao
 
             CRMDbContext.RemoveRange(itemToDelete);
             CRMDbContext.SaveChanges();
-            
+
             /*_cache.Remove(_invoiceItemCacheKey);
             _cache.Insert(_invoiceLineCacheKey, String.Empty);*/
         }
@@ -268,7 +273,7 @@ namespace ASC.CRM.Core.Dao
 
             if (!invoiceID.Any()) return false;
 
-            return Query(CRMDbContext.InvoiceLine).Where(x => x.InvoiceId == invoiceLineID).Any();            
+            return Query(CRMDbContext.InvoiceLine).Where(x => x.InvoiceId == invoiceLineID).Any();
         }
 
         private InvoiceLine ToInvoiceLine(DbInvoiceLine dbInvoiceLine)

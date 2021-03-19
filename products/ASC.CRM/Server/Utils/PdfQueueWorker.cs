@@ -26,18 +26,18 @@
 
 using System;
 using System.Web;
-using ASC.Common.Logging;
-using ASC.CRM.Core;
-using ASC.Common.Threading.Progress;
-using ASC.Common.Web;
-using ASC.Core;
-using Microsoft.AspNetCore.Http;
-using ASC.CRM.Core.Enums;
-using log4net;
+
 using ASC.Common;
+using ASC.Common.Threading.Progress;
+using ASC.Core;
+using ASC.CRM.Core.Enums;
+
+using log4net;
+
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.CRM.Classes
-{  
+{
     [Transient]
     public class PdfQueueWorker
     {
@@ -96,7 +96,7 @@ namespace ASC.Web.CRM.Classes
                     PdfProgressItem.Configure(GetTaskId(tenantId, invoiceId), tenantId, userId, invoiceId);
 
                     Queue.Add(PdfProgressItem);
-                
+
                 }
 
                 if (!Queue.IsStarted)
@@ -125,9 +125,9 @@ namespace ASC.Web.CRM.Classes
         public TenantManager TenantManager { get; }
 
         public PdfProgressItem(IHttpContextAccessor httpContextAccessor)
-        {           
+        {
             _contextUrl = httpContextAccessor.HttpContext != null ? httpContextAccessor.HttpContext.Request.GetUrlRewriter().ToString() : null;
-        
+
             Status = ProgressStatus.Queued;
             Error = null;
             Percentage = 0;

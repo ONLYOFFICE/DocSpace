@@ -179,7 +179,7 @@ namespace ASC.Web.CRM.Classes
         private static Dictionary<Type, Dictionary<Type, Type>> typeMap = null;
 
         // Locker object to build the singleton typeMap in a typesafe manner
-        private static object locker = new object();
+        private static readonly object locker = new object();
 
         /// <summary>
         /// Build the singleton type map in a typesafe manner.

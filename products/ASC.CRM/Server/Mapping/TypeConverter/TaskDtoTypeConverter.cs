@@ -38,10 +38,10 @@ using AutoMapper;
 
 namespace ASC.CRM.Mapping
 {
+    [Scope]
     public class TaskDtoTypeConverter : ITypeConverter<Task, TaskDto>,
                                               ITypeConverter<Task, TaskBaseDto>
     {
-        private readonly ContactDtoHelper _contactBaseDtoHelper;
         private readonly CRMSecurity _CRMSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
         private readonly EmployeeWraperHelper _employeeWraperHelper;
@@ -50,18 +50,15 @@ namespace ASC.CRM.Mapping
 
         public TaskDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
                                  EmployeeWraperHelper employeeWraperHelper,
-                                 CRMSecurity cRMSecurity,
+                                 CRMSecurity crmSecurity,
                                  DaoFactory daoFactory,
-                                 ContactDtoHelper contactBaseDtoHelper,
                                  EntityDtoHelper entityDtoHelper)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
             _employeeWraperHelper = employeeWraperHelper;
-            _CRMSecurity = cRMSecurity;
+            _CRMSecurity = crmSecurity;
             _daoFactory = daoFactory;
-            _contactBaseDtoHelper = contactBaseDtoHelper;
             _entityDtoHelper = entityDtoHelper;
-
         }
 
         public TaskDto Convert(Task source, TaskDto destination, ResolutionContext context)
@@ -90,7 +87,7 @@ namespace ASC.CRM.Mapping
 
             if (source.ContactID > 0)
             {
-                result.Contact = _contactBaseDtoHelper.GetContactBaseWithEmailDto(_daoFactory.GetContactDao().GetByID(source.ContactID));
+                result.Contact = context.Mapper.Map<ContactBaseWithEmailDto>(_daoFactory.GetContactDao().GetByID(source.ContactID));
             }
 
             if (source.EntityID > 0)

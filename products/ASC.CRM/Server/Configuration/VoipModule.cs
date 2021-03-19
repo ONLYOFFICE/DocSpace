@@ -24,12 +24,12 @@
 */
 
 
+using System;
+
 using ASC.CRM.Resources;
-using ASC.Data.Storage;
 using ASC.Web.Core;
 using ASC.Web.Core.WebZones;
 using ASC.Web.Studio.Core;
-using System;
 
 namespace ASC.Web.CRM.Configuration
 {
@@ -80,11 +80,11 @@ namespace ASC.Web.CRM.Configuration
         public void Init()
         {
             Context = new AddonContext
-                      {
-                          DefaultSortOrder = 90,
-                          IconFileName = "voip_logo.png",
-                          CanNotBeDisabled = true
-                      };
+            {
+                DefaultSortOrder = 90,
+                IconFileName = "voip_logo.png",
+                CanNotBeDisabled = true
+            };
         }
 
         public void Shutdown()

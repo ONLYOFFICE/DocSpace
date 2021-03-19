@@ -24,6 +24,7 @@
 */
 
 using System;
+using System.Linq;
 
 using ASC.Api.Core;
 using ASC.Core.Common.Settings;
@@ -38,7 +39,7 @@ using AutoMapper;
 
 namespace ASC.CRM.Mapping
 {
-    public class InvoiceItemDtoTypeConverter : ITypeConverter<InvoiceItem, InvoiceItemDto>
+    public class InvoiceDtoTypeConverter : ITypeConverter<Invoice, InvoiceDto>
     {
         private readonly DaoFactory _daoFactory;
         private readonly CurrencyProvider _currencyProvider;
@@ -46,13 +47,15 @@ namespace ASC.CRM.Mapping
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
         private readonly EmployeeWraperHelper _employeeWraperHelper;
         private readonly CRMSecurity _crmSecurity;
+        private readonly EntityDtoHelper _entityDtoHelper;
 
-        public InvoiceItemDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
+        public InvoiceDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
                                     EmployeeWraperHelper employeeWraperHelper,
-                                   CRMSecurity crmSecurity,
-                                   SettingsManager settingsManager,
-                                   CurrencyProvider currencyProvider,
-                                   DaoFactory daoFactory)
+                                    CRMSecurity crmSecurity,
+                                    SettingsManager settingsManager,
+                                    CurrencyProvider currencyProvider,
+                                    DaoFactory daoFactory,
+                                    EntityDtoHelper entityDtoHelper)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
             _employeeWraperHelper = employeeWraperHelper;
@@ -60,44 +63,53 @@ namespace ASC.CRM.Mapping
             _settingsManager = settingsManager;
             _currencyProvider = currencyProvider;
             _daoFactory = daoFactory;
+            _entityDtoHelper = entityDtoHelper;
         }
 
-        public InvoiceItemDto Convert(InvoiceItem source, InvoiceItemDto destination, ResolutionContext context)
+
+        public InvoiceDto Convert(Invoice source, InvoiceDto destination, ResolutionContext context)
         {
-            if (destination != null)
-                throw new NotImplementedException();
-
-            var result = new InvoiceItemDto
+            var result = new InvoiceDto
             {
-
-                Title = source.Title,
-                StockKeepingUnit = source.StockKeepingUnit,
-                Description = source.Description,
-                Price = source.Price,
-                StockQuantity = source.StockQuantity,
-                TrackInvenory = source.TrackInventory,
-                CreateOn = _apiDateTimeHelper.Get(source.CreateOn),
-                CreateBy = _employeeWraperHelper.Get(source.CreateBy),
+                Id = source.ID,
+                Status = context.Mapper.Map<InvoiceStatusDto>(source.Status),
+                Number = source.Number,
+                IssueDate = _apiDateTimeHelper.Get(source.IssueDate),
+                TemplateType = source.TemplateType,
+                DueDate = _apiDateTimeHelper.Get(source.DueDate),
                 Currency = !String.IsNullOrEmpty(source.Currency) ?
                 context.Mapper.Map<CurrencyInfoDto>(_currencyProvider.Get(source.Currency)) :
                 context.Mapper.Map<CurrencyInfoDto>(_settingsManager.Load<CRMSettings>().DefaultCurrency),
+                ExchangeRate = source.ExchangeRate,
+                Language = source.Language,
+                PurchaseOrderNumber = source.PurchaseOrderNumber,
+                Terms = source.Terms,
+                Description = source.Description,
+                FileID = source.FileID,
+                CreateOn = _apiDateTimeHelper.Get(source.CreateOn),
+                CreateBy = _employeeWraperHelper.Get(source.CreateBy),
                 CanEdit = _crmSecurity.CanEdit(source),
-                CanDelete = _crmSecurity.CanDelete(source)
+                CanDelete = _crmSecurity.CanDelete(source),
             };
 
-            if (source.InvoiceTax1ID > 0)
+            if (source.ContactID > 0)
             {
-                var invoiceTax1ID = _daoFactory.GetInvoiceTaxDao().GetByID(source.InvoiceTax1ID);
-
-                result.InvoiceTax1 = context.Mapper.Map<InvoiceTaxDto>(invoiceTax1ID);
+                result.Contact = context.Mapper.Map<ContactBaseWithEmailDto>(_daoFactory.GetContactDao().GetByID(source.ContactID));
             }
 
-            if (source.InvoiceTax2ID > 0)
+            if (source.ConsigneeID > 0)
             {
-                var invoiceTax2ID = _daoFactory.GetInvoiceTaxDao().GetByID(source.InvoiceTax2ID);
-
-                result.InvoiceTax2 = context.Mapper.Map<InvoiceTaxDto>(invoiceTax2ID);
+                result.Consignee = context.Mapper.Map<ContactBaseWithEmailDto>(_daoFactory.GetContactDao().GetByID(source.ConsigneeID));
             }
+
+            if (source.EntityID > 0)
+            {
+                result.Entity = _entityDtoHelper.Get(source.EntityType, source.EntityID);
+            }
+
+            result.Cost = source.GetInvoiceCost(_daoFactory);
+
+            result.InvoiceLines = source.GetInvoiceLines(_daoFactory).Select(x => context.Mapper.Map<InvoiceLineDto>(x)).ToList();
 
             return result;
         }

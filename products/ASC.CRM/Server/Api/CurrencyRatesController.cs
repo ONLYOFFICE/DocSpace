@@ -24,9 +24,11 @@
 */
 
 
-using ASC.Api.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Api.CRM;
-using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
@@ -34,29 +36,24 @@ using ASC.CRM.Core.Dao;
 using ASC.CRM.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
-using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
-using ASC.Web.CRM.Services.NotifyService;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using AutoMapper;
 
 namespace ASC.CRM.Api
 {
     public class CurrencyRatesController : BaseApiController
     {
-        public CurrencyRatesController(CRMSecurity cRMSecurity,
+        public CurrencyRatesController(CRMSecurity crmSecurity,
                      DaoFactory daoFactory,
                      MessageService messageService,
-                     CurrencyRateDtoHelper currencyRateDtoHelper,
                      SettingsManager settingsManager,
                      Global global,
-                     CurrencyProvider currencyProvider)
-            : base(daoFactory, cRMSecurity)
+                     CurrencyProvider currencyProvider,
+                     IMapper mapper)
+            : base(daoFactory, crmSecurity, mapper)
         {
             MessageService = messageService;
-            CurrencyRateDtoHelper = currencyRateDtoHelper;
             SettingsManager = settingsManager;
             Global = global;
             CurrencyProvider = currencyProvider;
@@ -65,7 +62,6 @@ namespace ASC.CRM.Api
         public CurrencyProvider CurrencyProvider { get; }
         public SettingsManager SettingsManager { get; }
         public Global Global { get; }
-        public CurrencyRateDtoHelper CurrencyRateDtoHelper { get; }
         public MessageService MessageService { get; }
 
         //TABLE `crm_currency_rate` column `rate` DECIMAL(10,2) NOT NULL
@@ -82,7 +78,7 @@ namespace ASC.CRM.Api
         [Read(@"currency/rates")]
         public IEnumerable<CurrencyRateDto> GetCurrencyRates()
         {
-            return DaoFactory.GetCurrencyRateDao().GetAll().ConvertAll(x => CurrencyRateDtoHelper.Get(x));
+            return _daoFactory.GetCurrencyRateDao().GetAll().ConvertAll(x => _mapper.Map<CurrencyRateDto>(x));
         }
 
         /// <summary>
@@ -99,9 +95,9 @@ namespace ASC.CRM.Api
         {
             if (id <= 0) throw new ArgumentException();
 
-            var currencyRate = DaoFactory.GetCurrencyRateDao().GetByID(id);
+            var currencyRate = _daoFactory.GetCurrencyRateDao().GetByID(id);
 
-            return CurrencyRateDtoHelper.Get(currencyRate);
+            return _mapper.Map<CurrencyRateDto>(currencyRate);
         }
 
         /// <summary>
@@ -119,9 +115,9 @@ namespace ASC.CRM.Api
             if (string.IsNullOrEmpty(fromCurrency) || string.IsNullOrEmpty(toCurrency))
                 throw new ArgumentException();
 
-            var currencyRate = DaoFactory.GetCurrencyRateDao().GetByCurrencies(fromCurrency, toCurrency);
+            var currencyRate = _daoFactory.GetCurrencyRateDao().GetByCurrencies(fromCurrency, toCurrency);
 
-            return CurrencyRateDtoHelper.Get(currencyRate);
+            return _mapper.Map<CurrencyRateDto>(currencyRate);
         }
 
         /// <summary>
@@ -144,10 +140,10 @@ namespace ASC.CRM.Api
                 Rate = rate
             };
 
-            currencyRate.ID = DaoFactory.GetCurrencyRateDao().SaveOrUpdate(currencyRate);
+            currencyRate.ID = _daoFactory.GetCurrencyRateDao().SaveOrUpdate(currencyRate);
             MessageService.Send(MessageAction.CurrencyRateUpdated, fromCurrency, toCurrency);
 
-            return CurrencyRateDtoHelper.Get(currencyRate);
+            return _mapper.Map<CurrencyRateDto>(currencyRate);
         }
 
         /// <summary>
@@ -166,7 +162,7 @@ namespace ASC.CRM.Api
 
             ValidateCurrencies(new[] { fromCurrency, toCurrency });
 
-            var currencyRate = DaoFactory.GetCurrencyRateDao().GetByID(id);
+            var currencyRate = _daoFactory.GetCurrencyRateDao().GetByID(id);
 
             if (currencyRate == null)
                 throw new ArgumentException();
@@ -175,10 +171,10 @@ namespace ASC.CRM.Api
             currencyRate.ToCurrency = toCurrency;
             currencyRate.Rate = rate;
 
-            currencyRate.ID = DaoFactory.GetCurrencyRateDao().SaveOrUpdate(currencyRate);
+            currencyRate.ID = _daoFactory.GetCurrencyRateDao().SaveOrUpdate(currencyRate);
             MessageService.Send(MessageAction.CurrencyRateUpdated, fromCurrency, toCurrency);
 
-            return CurrencyRateDtoHelper.Get(currencyRate);
+            return _mapper.Map<CurrencyRateDto>(currencyRate);
         }
 
         /// <summary>
@@ -190,8 +186,8 @@ namespace ASC.CRM.Api
         [Create(@"currency/setrates")]
         public List<CurrencyRateDto> SetCurrencyRates(String currency, List<CurrencyRate> rates)
         {
-            if (!CRMSecurity.IsAdmin)
-                throw CRMSecurity.CreateSecurityException();
+            if (!_crmSecurity.IsAdmin)
+                throw _crmSecurity.CreateSecurityException();
 
             if (string.IsNullOrEmpty(currency))
                 throw new ArgumentException();
@@ -212,14 +208,14 @@ namespace ASC.CRM.Api
                 MessageService.Send(MessageAction.CrmDefaultCurrencyUpdated);
             }
 
-            rates = DaoFactory.GetCurrencyRateDao().SetCurrencyRates(rates);
+            rates = _daoFactory.GetCurrencyRateDao().SetCurrencyRates(rates);
 
             foreach (var rate in rates)
             {
                 MessageService.Send(MessageAction.CurrencyRateUpdated, rate.FromCurrency, rate.ToCurrency);
             }
 
-            return rates.Select(x => CurrencyRateDtoHelper.Get(x)).ToList();
+            return rates.Select(x => _mapper.Map<CurrencyRateDto>(x)).ToList();
         }
 
         /// <summary>
@@ -231,12 +227,12 @@ namespace ASC.CRM.Api
         [Create(@"currency/addrates")]
         public List<CurrencyRateDto> AddCurrencyRates(List<CurrencyRate> rates)
         {
-            if (!CRMSecurity.IsAdmin)
-                throw CRMSecurity.CreateSecurityException();
+            if (!_crmSecurity.IsAdmin)
+                throw _crmSecurity.CreateSecurityException();
 
             ValidateCurrencyRates(rates);
 
-            var existingRates = DaoFactory.GetCurrencyRateDao().GetAll();
+            var existingRates = _daoFactory.GetCurrencyRateDao().GetAll();
 
             foreach (var rate in rates)
             {
@@ -248,7 +244,7 @@ namespace ASC.CRM.Api
                         continue;
 
                     existingRate.Rate = rate.Rate;
-                    DaoFactory.GetCurrencyRateDao().SaveOrUpdate(existingRate);
+                    _daoFactory.GetCurrencyRateDao().SaveOrUpdate(existingRate);
                     MessageService.Send(MessageAction.CurrencyRateUpdated, rate.FromCurrency, rate.ToCurrency);
                     exist = true;
                     break;
@@ -256,12 +252,12 @@ namespace ASC.CRM.Api
 
                 if (exist) continue;
 
-                rate.ID = DaoFactory.GetCurrencyRateDao().SaveOrUpdate(rate);
+                rate.ID = _daoFactory.GetCurrencyRateDao().SaveOrUpdate(rate);
                 MessageService.Send(MessageAction.CurrencyRateUpdated, rate.FromCurrency, rate.ToCurrency);
                 existingRates.Add(rate);
             }
 
-            return existingRates.Select(x => CurrencyRateDtoHelper.Get(x)).ToList();
+            return existingRates.Select(x => _mapper.Map<CurrencyRateDto>(x)).ToList();
         }
 
         /// <summary>
@@ -276,14 +272,14 @@ namespace ASC.CRM.Api
             if (id <= 0)
                 throw new ArgumentException();
 
-            var currencyRate = DaoFactory.GetCurrencyRateDao().GetByID(id);
+            var currencyRate = _daoFactory.GetCurrencyRateDao().GetByID(id);
 
             if (currencyRate == null)
                 throw new ArgumentException();
 
-            DaoFactory.GetCurrencyRateDao().Delete(id);
+            _daoFactory.GetCurrencyRateDao().Delete(id);
 
-            return CurrencyRateDtoHelper.Get(currencyRate);
+            return _mapper.Map<CurrencyRateDto>(currencyRate);
         }
 
         private void ValidateCurrencyRates(IEnumerable<CurrencyRate> rates)

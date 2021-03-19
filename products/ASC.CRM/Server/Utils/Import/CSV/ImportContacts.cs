@@ -26,15 +26,18 @@
 
 #region Import
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
+
 using LumenWorks.Framework.IO.Csv;
+
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -45,7 +48,7 @@ namespace ASC.Web.CRM.Classes
         private Int32 DaoIterationStep = 200;
 
 
-        
+
 
         private void ImportContactsData(DaoFactory _daoFactory)
         {
@@ -619,80 +622,80 @@ namespace ASC.Web.CRM.Classes
             switch (_importSettings.DuplicateRecordRule)
             {
                 case 1:  // Skip  
+                {
+                    var emails = findedContactInfos.Where(item => item.InfoType == ContactInfoType.Email).ToList();
+
+                    if (emails.Count == 0) break;
+
+                    var index = 0;
+                    while (index < emails.Count)
                     {
-                        var emails = findedContactInfos.Where(item => item.InfoType == ContactInfoType.Email).ToList();
+                        var emailsIteration = emails.Skip(index).Take(DaoIterationStep).ToList();// Get next step
 
-                        if (emails.Count == 0) break;
+                        var duplicateContactsID = contactDao.FindDuplicateByEmail(emailsIteration, false)
+                                                    .Distinct()
+                                                    .ToList();
 
-                        var index = 0;
-                        while (index < emails.Count)
+                        if (duplicateContactsID.Count != 0)
                         {
-                            var emailsIteration = emails.Skip(index).Take(DaoIterationStep).ToList();// Get next step
+                            findedContacts = findedContacts.Where(item => !duplicateContactsID.Contains(item.Key)).ToDictionary(x => x.Key, y => y.Value);
 
-                            var duplicateContactsID = contactDao.FindDuplicateByEmail(emailsIteration, false)
-                                                        .Distinct()
-                                                        .ToList();
+                            personFakeIdCompanyNameHash = personFakeIdCompanyNameHash.Where(item => !duplicateContactsID.Contains(item.Key)).ToDictionary(x => x.Key, y => y.Value);
 
-                            if (duplicateContactsID.Count != 0)
+                            if (findedContacts.Count == 0)
                             {
-                                findedContacts = findedContacts.Where(item => !duplicateContactsID.Contains(item.Key)).ToDictionary(x => x.Key, y => y.Value);
-
-                                personFakeIdCompanyNameHash = personFakeIdCompanyNameHash.Where(item => !duplicateContactsID.Contains(item.Key)).ToDictionary(x => x.Key, y => y.Value);
-
-                                if (findedContacts.Count == 0)
-                                {
-                                    Complete();
-                                    return;
-                                }
-
-                                findedContactInfos = findedContactInfos.Where(item => !duplicateContactsID.Contains(item.ContactID)).ToList();
-                                findedCustomField = findedCustomField.Where(item => !duplicateContactsID.Contains(item.EntityID)).ToList();
-
-                                foreach (var exceptID in duplicateContactsID)
-                                {
-                                    if (findedTags.ContainsKey(exceptID)) findedTags.Remove(exceptID);
-                                }
+                                Complete();
+                                return;
                             }
 
-                            index += DaoIterationStep;
-                            if (index > emails.Count)
+                            findedContactInfos = findedContactInfos.Where(item => !duplicateContactsID.Contains(item.ContactID)).ToList();
+                            findedCustomField = findedCustomField.Where(item => !duplicateContactsID.Contains(item.EntityID)).ToList();
+
+                            foreach (var exceptID in duplicateContactsID)
                             {
-                                index = emails.Count;
+                                if (findedTags.ContainsKey(exceptID)) findedTags.Remove(exceptID);
                             }
                         }
+
+                        index += DaoIterationStep;
+                        if (index > emails.Count)
+                        {
+                            index = emails.Count;
+                        }
                     }
-                    break;
+                }
+                break;
                 case 2:  // Overwrite  
+                {
+                    var emailContactInfos = findedContactInfos.Where(item => item.InfoType == ContactInfoType.Email).ToList();
+                    if (emailContactInfos.Count == 0) break;
+
+                    _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. Start. All emeails count = {0}", emailContactInfos.Count);
+
+                    var index = 0;
+                    while (index < emailContactInfos.Count)
                     {
-                        var emailContactInfos = findedContactInfos.Where(item => item.InfoType == ContactInfoType.Email).ToList();
-                        if (emailContactInfos.Count == 0) break;
+                        var emailsIteration = emailContactInfos.Skip(index).Take(DaoIterationStep).ToList();// Get next step
 
-                        _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. Start. All emeails count = {0}", emailContactInfos.Count);
+                        _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. Portion from index = {0}. count = {1}", index, emailsIteration.Count);
+                        var duplicateContactsID = contactDao.FindDuplicateByEmail(emailsIteration, true)
+                                                    .Distinct()
+                                                    .ToArray();
 
-                        var index = 0;
-                        while (index < emailContactInfos.Count)
+                        _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. FindDuplicateByEmail result count = {0}", duplicateContactsID.Length);
+                        var deleted = contactDao.DeleteBatchContact(duplicateContactsID);
+
+                        _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. DeleteBatchContact. Was deleted {0} contacts", deleted != null ? deleted.Count : 0);
+
+                        index += DaoIterationStep;
+                        if (index > emailContactInfos.Count)
                         {
-                            var emailsIteration = emailContactInfos.Skip(index).Take(DaoIterationStep).ToList();// Get next step
-
-                            _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. Portion from index = {0}. count = {1}", index, emailsIteration.Count);
-                            var duplicateContactsID = contactDao.FindDuplicateByEmail(emailsIteration, true)
-                                                        .Distinct()
-                                                        .ToArray();
-
-                            _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. FindDuplicateByEmail result count = {0}", duplicateContactsID.Length);
-                            var deleted = contactDao.DeleteBatchContact(duplicateContactsID);
-
-                            _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. DeleteBatchContact. Was deleted {0} contacts", deleted != null ? deleted.Count : 0);
-
-                            index += DaoIterationStep;
-                            if (index > emailContactInfos.Count)
-                            {
-                                index = emailContactInfos.Count;
-                            }
+                            index = emailContactInfos.Count;
                         }
-
-                        break;
                     }
+
+                    break;
+                }
                 case 3: // Clone
                     break;
                 default:

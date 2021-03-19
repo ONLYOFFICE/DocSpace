@@ -24,12 +24,13 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+
 using ASC.Common.Security;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Enums;
 using ASC.Files.Core;
-using System;
-using System.Collections.Generic;
 
 
 namespace ASC.CRM.Core.Entities
@@ -76,7 +77,7 @@ namespace ASC.CRM.Core.Entities
         public Guid CreateBy { get; set; }
 
         public DateTime? LastModifedOn { get; set; }
-        
+
         public Guid? LastModifedBy { get; set; }
 
 
@@ -120,7 +121,7 @@ namespace ASC.CRM.Core.Entities
                     if (tax1 != null)
                     {
                         lineTax1 = Math.Round(linePrice * tax1.Rate / 100, 2);
-                    } 
+                    }
                 }
 
                 decimal lineTax2 = 0;

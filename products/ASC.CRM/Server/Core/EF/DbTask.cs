@@ -1,4 +1,9 @@
-﻿using ASC.Core.Common.EF;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq.Expressions;
+
+using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
@@ -7,19 +12,14 @@ using Microsoft.EntityFrameworkCore;
 
 using Nest;
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq.Expressions;
-
 namespace ASC.CRM.Core.EF
 {
     [ElasticsearchType(RelationName = "crm_task")]
     [Table("crm_task")]
-    public partial class DbTask: IDbCrm, ISearchItem
+    public partial class DbTask : IDbCrm, ISearchItem
     {
         public int Id { get; set; }
-        
+
         [Required]
         [Text(Analyzer = "whitespacecustom")]
         public string Title { get; set; }
@@ -87,7 +87,7 @@ namespace ASC.CRM.Core.EF
             }
         }
     }
-        
+
     public static class DbTaskExtension
     {
         public static ModelBuilderWrapper AddDbTask(this ModelBuilderWrapper modelBuilder)

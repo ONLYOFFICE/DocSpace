@@ -27,11 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.CRM.Core.Dao;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
-using ASC.Web.CRM.Core;
 using ASC.Web.Files.Api;
+
 using Autofac;
 
 namespace ASC.CRM.Core
@@ -76,8 +77,8 @@ namespace ASC.CRM.Core
         public bool CanDelete<T>(FileEntry<T> entry, Guid userId)
         {
             return CanEdit(entry, userId);
-        }        
-        
+        }
+
         public bool CanEdit<T>(FileEntry<T> entry, Guid userId)
         {
             return

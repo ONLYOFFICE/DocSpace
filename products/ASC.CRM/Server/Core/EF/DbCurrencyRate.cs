@@ -14,11 +14,11 @@ namespace ASC.CRM.Core.EF
         [Required]
         [Column("from_currency", TypeName = "varchar(255)")]
         public string FromCurrency { get; set; }
-        
+
         [Required]
         [Column("to_currency", TypeName = "varchar(255)")]
         public string ToCurrency { get; set; }
-        
+
         [Column("rate", TypeName = "decimal(10,2)")]
         public decimal Rate { get; set; }
         [Required]

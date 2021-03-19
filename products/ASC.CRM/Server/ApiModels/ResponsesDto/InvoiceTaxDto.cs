@@ -23,14 +23,14 @@
  *
 */
 
+using System.Runtime.Serialization;
+
 using ASC.Api.Core;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Mapping;
 using ASC.Web.Api.Models;
 
 using AutoMapper;
-
-using System.Runtime.Serialization;
 
 namespace ASC.CRM.ApiModels
 {
@@ -51,15 +51,15 @@ namespace ASC.CRM.ApiModels
     ///  Invoice Tax
     /// </summary>
     [DataContract(Name = "invoiceTax", Namespace = "")]
-    public class InvoiceTaxDto: IMapFrom<InvoiceTax>
+    public class InvoiceTaxDto : IMapFrom<InvoiceTax>
     {
-        public int Id { get; set; }        
-        public string Name { get; set; }        
-        public string Description { get; set; }        
-        public decimal Rate { get; set; }       
-        public ApiDateTime CreateOn { get; set; }        
-        public EmployeeWraper CreateBy { get; set; }        
-        public bool CanEdit { get; set; }        
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal Rate { get; set; }
+        public ApiDateTime CreateOn { get; set; }
+        public EmployeeWraper CreateBy { get; set; }
+        public bool CanEdit { get; set; }
         public bool CanDelete { get; set; }
 
         public void Mapping(Profile profile)

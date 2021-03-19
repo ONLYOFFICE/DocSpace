@@ -84,7 +84,7 @@ namespace ASC.Web.CRM.Core.Search
             }
 
             IReadOnlyCollection<DbRelationshipEvent> events;
-            
+
             if (!FactoryIndexerEvents.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 7).Gt(r => r.EntityId, 0), out events))
             {
                 result.AddRange(events.Select(r => r.EntityId).ToList());
@@ -140,7 +140,7 @@ namespace ASC.Web.CRM.Core.Search
             result = new List<int>();
 
             List<int> dealsId;
-           
+
             if (FactoryIndexerDeal.TrySelectIds(s => s.MatchAll(text), out dealsId))
             {
                 result.AddRange(dealsId);
@@ -148,7 +148,7 @@ namespace ASC.Web.CRM.Core.Search
             }
 
             IReadOnlyCollection<DbFieldValue> casesCustom;
-            
+
             if (FactoryIndexerFieldValue.TrySelect(s => s.MatchAll(text).Where(r => (int)r.EntityType, 1), out casesCustom))
             {
                 result.AddRange(casesCustom.Select(r => r.EntityId).ToList());

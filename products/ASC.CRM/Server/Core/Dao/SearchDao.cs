@@ -24,6 +24,10 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -35,17 +39,14 @@ using ASC.CRM.Classes;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
-using ASC.ElasticSearch;
 using ASC.Web.Core.ModuleManagement.Common;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.CRM;
 using ASC.Web.CRM.Configuration;
 using ASC.Web.CRM.Core.Search;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -55,7 +56,7 @@ namespace ASC.CRM.Core.Dao
         private Dictionary<EntityType, IEnumerable<int>> _findedIDs;
 
         //TODO: setting _fullTextSearchEnable field
-        private bool _fullTextSearchEnable;
+        private readonly bool _fullTextSearchEnable;
 
 
         private DaoFactory DaoFactory { get; set; }
@@ -88,7 +89,7 @@ namespace ASC.CRM.Core.Dao
             BundleSearch = bundleSearch;
         }
 
-        
+
         public BundleSearch BundleSearch { get; }
 
         public WebImageSupplier WebImageSupplier { get; }
@@ -105,7 +106,7 @@ namespace ASC.CRM.Core.Dao
                .ToArray();
 
             if (keywords.Length == 0) return new List<SearchResultItem>().ToArray();
-            
+
             if (_fullTextSearchEnable)
             {
                 _findedIDs = new Dictionary<EntityType, IEnumerable<int>>();
@@ -200,7 +201,7 @@ namespace ASC.CRM.Core.Dao
 
             return new Dictionary<EntityType, IEnumerable<int>> { { EntityType.Contact, sqlQuery.Select(x => x.ContactId).Distinct() } };
         }
-          
+
         private bool IncludeToSearch(EntityType entityType)
         {
             return _findedIDs.ContainsKey(entityType);

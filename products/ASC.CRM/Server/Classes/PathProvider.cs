@@ -27,11 +27,11 @@
 #region Import
 
 using System;
-using System.Web;
+
 using ASC.Common;
-using ASC.Common.Web;
 using ASC.Data.Storage;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.AspNetCore.Http;
 
 #endregion
@@ -41,9 +41,9 @@ namespace ASC.Web.CRM
     [Scope]
     public class PathProvider
     {
-        public PathProvider(IHttpContextAccessor httpContextAccessor,                           
+        public PathProvider(IHttpContextAccessor httpContextAccessor,
                             CommonLinkUtility commonLinkUtility)
-        {            
+        {
             CommonLinkUtility = commonLinkUtility;
             HttpContext = httpContextAccessor.HttpContext;
 
@@ -106,6 +106,6 @@ namespace ASC.Web.CRM
         //    return fileName;
         //}
 
-    }  
+    }
 
 }

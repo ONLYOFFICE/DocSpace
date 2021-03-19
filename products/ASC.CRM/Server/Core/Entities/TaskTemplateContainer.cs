@@ -27,11 +27,7 @@
 #region Import
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using ASC.Common.Security;
+
 using ASC.CRM.Core.Enums;
 
 #endregion
@@ -67,7 +63,7 @@ namespace ASC.CRM.Core.Entities
 
         public Guid CreateBy { get; set; }
 
-        public DateTime CreateOn { get; set; }    
+        public DateTime CreateOn { get; set; }
 
     }
 }

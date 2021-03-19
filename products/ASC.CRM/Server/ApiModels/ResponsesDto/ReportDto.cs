@@ -32,10 +32,10 @@ namespace ASC.CRM.ApiModels
 {
     [DataContract]
     public class ReportDto
-    {        
-        public String ReportTitle { get; set; }        
-        public String ReportDescription { get; set; }        
-        public IEnumerable<String> Lables { get; set; }               
+    {
+        public String ReportTitle { get; set; }
+        public String ReportDescription { get; set; }
+        public IEnumerable<String> Lables { get; set; }
         public Object Data { get; set; }
     }
 }

@@ -24,16 +24,17 @@
 */
 
 
-using ASC.CRM.Resources;
 using System;
 using System.Runtime.Serialization;
+
+using ASC.CRM.Resources;
 
 namespace ASC.CRM.Core
 {
     [DataContract]
     public class CurrencyInfo
     {
-        private String _resourceKey;
+        private readonly String _resourceKey;
 
         [DataMember(Name = "title")]
         public String Title

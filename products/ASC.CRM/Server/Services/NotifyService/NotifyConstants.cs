@@ -42,7 +42,7 @@ namespace ASC.Web.CRM.Services.NotifyService
         public static readonly INotifyAction Event_TaskReminder = new NotifyAction("TaskReminder", "auto reminder about task");
 
         public static readonly INotifyAction Event_ResponsibleForOpportunity = new NotifyAction("ResponsibleForOpportunity", "responsible for opportunity");
-       
+
         public static readonly INotifyAction Event_AddRelationshipEvent = new NotifyAction("AddRelationshipEvent", "add relationship event");
 
         public static readonly INotifyAction Event_ExportCompleted = new NotifyAction("ExportCompleted", "export is completed");

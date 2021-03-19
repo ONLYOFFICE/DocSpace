@@ -23,12 +23,14 @@
  *
 */
 
+using System;
+
 using ASC.Core;
 using ASC.CRM.Services.NotifyService;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
-using System;
+
 using NotifySourceBase = ASC.Core.Notify.NotifySource;
 
 namespace ASC.Web.CRM.Services.NotifyService

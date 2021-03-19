@@ -9,7 +9,7 @@ namespace ASC.CRM.Core.EF
         [Key]
         [Column("task_id", TypeName = "int(10)")]
         public int TaskId { get; set; }
-        
+
         [Key]
         [Column("task_template_id", TypeName = "int(10)")]
         public int TaskTemplateId { get; set; }

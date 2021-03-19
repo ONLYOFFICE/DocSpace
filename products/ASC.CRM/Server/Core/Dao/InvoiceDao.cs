@@ -24,6 +24,12 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+
 using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
@@ -38,16 +44,13 @@ using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
 using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Core.Search;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
+
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.CRM.Core.Dao
@@ -148,7 +151,7 @@ namespace ASC.CRM.Core.Dao
         public InvoiceSetting InvoiceSetting { get; }
 
         public InvoiceFormattedData InvoiceFormattedData { get; }
-        public  SettingsManager SettingsManager { get; }
+        public SettingsManager SettingsManager { get; }
 
         public FactoryIndexerInvoice FactoryIndexer { get; }
 
@@ -312,9 +315,9 @@ namespace ASC.CRM.Core.Dao
                                 int from,
                                 int count,
                                 OrderBy orderBy)
-        {        
+        {
             var withParams = hasParams(searchText, status, issueDateFrom, issueDateTo, dueDateFrom, dueDateTo, entityType, entityID, currency);
-                      
+
             var sqlQuery = GetDbInvoceByFilters(new List<int>(), searchText, status, issueDateFrom, issueDateTo, dueDateFrom, dueDateTo, entityType, entityID, currency);
 
             if (withParams && sqlQuery == null)
@@ -400,7 +403,7 @@ namespace ASC.CRM.Core.Dao
         {
             var cacheKey = TenantID.ToString(CultureInfo.InvariantCulture) +
                            "invoice" +
-                           SecurityContext.CurrentAccount.ID.ToString() +
+                           _securityContext.CurrentAccount.ID.ToString() +
                            searchText;
 
             var fromCache = _cache.Get<string>(cacheKey);
@@ -416,7 +419,7 @@ namespace ASC.CRM.Core.Dao
             if (withParams)
             {
                 var sqlQuery = GetDbInvoceByFilters(exceptIDs, searchText, status, issueDateFrom, issueDateTo, dueDateFrom, dueDateTo, entityType, entityID, currency);
-                
+
                 result = sqlQuery != null ? sqlQuery.Count() : 0;
 
             }
@@ -428,9 +431,9 @@ namespace ASC.CRM.Core.Dao
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    Logger.ErrorFormat(@"Private invoice count more than all cases. Tenant: {0}. CurrentAccount: {1}",
+                    _logger.ErrorFormat(@"Private invoice count more than all cases. Tenant: {0}. CurrentAccount: {1}",
                                                             TenantID,
-                                                            SecurityContext.CurrentAccount.ID);
+                                                            _securityContext.CurrentAccount.ID);
 
                     privateCount = 0;
                 }
@@ -576,9 +579,9 @@ namespace ASC.CRM.Core.Dao
                     JsonData = invoice.JsonData,
                     FileId = invoice.FileID,
                     CreateOn = invoice.CreateOn == DateTime.MinValue ? DateTime.UtcNow : invoice.CreateOn,
-                    CreateBy = SecurityContext.CurrentAccount.ID,
+                    CreateBy = _securityContext.CurrentAccount.ID,
                     LastModifedOn = invoice.CreateOn == DateTime.MinValue ? DateTime.UtcNow : invoice.CreateOn,
-                    LastModifedBy = SecurityContext.CurrentAccount.ID,
+                    LastModifedBy = _securityContext.CurrentAccount.ID,
                     TenantId = TenantID
                 };
 
@@ -613,7 +616,7 @@ namespace ASC.CRM.Core.Dao
                 itemToUpdate.JsonData = null;
                 itemToUpdate.FileId = 0;
                 itemToUpdate.LastModifedOn = DateTime.UtcNow;
-                itemToUpdate.LastModifedBy = SecurityContext.CurrentAccount.ID;
+                itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
                 itemToUpdate.TenantId = TenantID;
 
                 CRMDbContext.SaveChanges();
@@ -652,7 +655,7 @@ namespace ASC.CRM.Core.Dao
             var invoice = GetByIDFromDb(invoiceid);
             if (invoice == null)
             {
-                Logger.Error("Invoice not found");
+                _logger.Error("Invoice not found");
 
                 return null;
             }
@@ -660,8 +663,8 @@ namespace ASC.CRM.Core.Dao
 
             if (!invoiceStatusMap.Contains(new KeyValuePair<InvoiceStatus, InvoiceStatus>(invoice.Status, status)))
             {
-                Logger.ErrorFormat("Status for invoice with ID={0} can't be changed. Return without changes", invoiceid);
-                
+                _logger.ErrorFormat("Status for invoice with ID={0} can't be changed. Return without changes", invoiceid);
+
                 return invoice;
             }
 
@@ -669,7 +672,7 @@ namespace ASC.CRM.Core.Dao
 
             itemToUpdate.Status = status;
             itemToUpdate.LastModifedOn = DateTime.UtcNow;
-            itemToUpdate.LastModifedBy = SecurityContext.CurrentAccount.ID;
+            itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
 
             CRMDbContext.Update(itemToUpdate);
 
@@ -692,7 +695,7 @@ namespace ASC.CRM.Core.Dao
 
             itemToUpdate.JsonData = jsonData;
             itemToUpdate.LastModifedOn = DateTime.UtcNow;
-            itemToUpdate.LastModifedBy = SecurityContext.CurrentAccount.ID;
+            itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
 
             CRMDbContext.Update(itemToUpdate);
             CRMDbContext.SaveChanges();
@@ -733,7 +736,7 @@ namespace ASC.CRM.Core.Dao
 
             sqlToUpdate.FileId = fileId;
             sqlToUpdate.LastModifedOn = DateTime.UtcNow;
-            sqlToUpdate.LastModifedBy = SecurityContext.CurrentAccount.ID;
+            sqlToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
 
             CRMDbContext.Update(sqlToUpdate);
             CRMDbContext.SaveChanges();
@@ -743,9 +746,9 @@ namespace ASC.CRM.Core.Dao
 
         public InvoiceSetting SaveInvoiceSettings(InvoiceSetting invoiceSetting)
         {
-            var tenantSettings = SettingsManager.Load<CRMSettings>(); 
+            var tenantSettings = SettingsManager.Load<CRMSettings>();
             tenantSettings.InvoiceSetting = invoiceSetting;
-       
+
             SettingsManager.Save<CRMSettings>(tenantSettings);
 
             return tenantSettings.InvoiceSetting;

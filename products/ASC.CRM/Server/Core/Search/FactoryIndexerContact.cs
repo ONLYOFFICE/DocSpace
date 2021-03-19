@@ -34,11 +34,9 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.EF;
-using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.CRM.Core.Search

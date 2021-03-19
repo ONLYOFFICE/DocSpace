@@ -24,6 +24,11 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+
 using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
@@ -38,10 +43,6 @@ using AutoMapper;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -148,7 +149,7 @@ namespace ASC.CRM.Core.Dao
 
         public virtual List<InvoiceTax> GetAll()
         {
-            return _mapper.Map<List<DbInvoiceTax>,List<InvoiceTax>>(Query(CRMDbContext.InvoiceTax).ToList());
+            return _mapper.Map<List<DbInvoiceTax>, List<InvoiceTax>>(Query(CRMDbContext.InvoiceTax).ToList());
         }
 
         public DateTime GetMaxLastModified()
@@ -189,13 +190,13 @@ namespace ASC.CRM.Core.Dao
             if (String.IsNullOrEmpty(invoiceTax.Name))
                 throw new ArgumentException();
 
-            invoiceTax.LastModifedBy = SecurityContext.CurrentAccount.ID;
+            invoiceTax.LastModifedBy = _securityContext.CurrentAccount.ID;
             invoiceTax.LastModifedOn = DateTime.UtcNow;
 
             if (!Query(CRMDbContext.InvoiceTax).Where(x => x.Id == invoiceTax.ID).Any())
             {
                 invoiceTax.CreateOn = DateTime.UtcNow;
-                invoiceTax.CreateBy = SecurityContext.CurrentAccount.ID;
+                invoiceTax.CreateBy = _securityContext.CurrentAccount.ID;
 
                 var itemToInsert = new DbInvoiceTax
                 {
@@ -203,7 +204,7 @@ namespace ASC.CRM.Core.Dao
                     Description = invoiceTax.Description,
                     Rate = invoiceTax.Rate,
                     CreateOn = invoiceTax.CreateOn,
-                    CreateBy = SecurityContext.CurrentAccount.ID,
+                    CreateBy = _securityContext.CurrentAccount.ID,
                     LastModifedBy = invoiceTax.LastModifedBy,
                     LastModifedOn = invoiceTax.LastModifedOn,
                     TenantId = TenantID
@@ -220,7 +221,7 @@ namespace ASC.CRM.Core.Dao
                 var oldInvoiceTax = GetByID(invoiceTax.ID);
 
                 CRMSecurity.DemandEdit(oldInvoiceTax);
-                                
+
                 var itemToUpdate = Query(CRMDbContext.InvoiceTax)
                                     .FirstOrDefault(x => x.Id == invoiceTax.ID);
 
@@ -260,7 +261,7 @@ namespace ASC.CRM.Core.Dao
             /* _cache.Remove(_invoiceItemCacheKey);
              _cache.Insert(_invoiceTaxCacheKey, String.Empty);*/
             return invoiceTax;
-        }        
+        }
     }
 
 }

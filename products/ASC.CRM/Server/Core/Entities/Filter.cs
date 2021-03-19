@@ -31,11 +31,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Enums;
 using ASC.Web.CRM.Classes;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 using EnumExtension = ASC.CRM.Classes.EnumExtension;
 
 #endregion
@@ -72,8 +75,8 @@ namespace ASC.CRM.Core.Entities
 
         public CasesFilterObject(string base64String)
         {
-            if(string.IsNullOrEmpty(base64String)) return;
-            
+            if (string.IsNullOrEmpty(base64String)) return;
+
             var json = Encoding.UTF8.GetString(Convert.FromBase64String(base64String));
 
             var jsonArray = json.Split(';');
@@ -387,7 +390,7 @@ namespace ASC.CRM.Core.Entities
         {
             ContactStage = -1;
             ContactType = -1;
-            
+
             if (string.IsNullOrEmpty(base64String)) return;
 
             var json = Encoding.UTF8.GetString(Convert.FromBase64String(base64String));
@@ -515,7 +518,7 @@ namespace ASC.CRM.Core.Entities
 
                 var paramString = filterObj.Value<string>("params");
 
-                if(string.IsNullOrEmpty(paramString)) continue;
+                if (string.IsNullOrEmpty(paramString)) continue;
 
                 var filterParam = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(paramString)));
 

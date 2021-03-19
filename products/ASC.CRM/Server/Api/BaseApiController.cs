@@ -24,18 +24,17 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using ASC.Api.Core.Convention;
 using ASC.Common;
 using ASC.Common.Web;
-using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Web.Api.Routing;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,14 +46,19 @@ namespace ASC.Api.CRM
     [ControllerName("crm")]
     public abstract class BaseApiController : ControllerBase
     {
-        public BaseApiController(DaoFactory daoFactory, CRMSecurity cRMSecurity)
+        protected IMapper _mapper;
+        protected DaoFactory _daoFactory;
+        protected CRMSecurity _crmSecurity;
+
+        public BaseApiController(DaoFactory daoFactory,
+                                 CRMSecurity cRMSecurity,
+                                 IMapper mapper)
         {
-            DaoFactory = daoFactory;
-            CRMSecurity = cRMSecurity;
+            _daoFactory = daoFactory;
+            _crmSecurity = cRMSecurity;
+            _mapper = mapper;
         }
 
-        protected DaoFactory DaoFactory  { get;  }
-        protected CRMSecurity CRMSecurity { get; }
 
         protected static EntityType ToEntityType(string entityTypeStr)
         {
@@ -86,7 +90,7 @@ namespace ASC.Api.CRM
 
             return entityType;
         }
-            
+
         protected string GetEntityTitle(EntityType entityType, int entityId, bool checkAccess, out DomainObject entity)
         {
             switch (entityType)
@@ -94,18 +98,18 @@ namespace ASC.Api.CRM
                 case EntityType.Contact:
                 case EntityType.Company:
                 case EntityType.Person:
-                    var contact = (entity = DaoFactory.GetContactDao().GetByID(entityId)) as ASC.CRM.Core.Entities.Contact;
-                    if (contact == null || (checkAccess && !CRMSecurity.CanAccessTo(contact)))
+                    var contact = (entity = _daoFactory.GetContactDao().GetByID(entityId)) as ASC.CRM.Core.Entities.Contact;
+                    if (contact == null || (checkAccess && !_crmSecurity.CanAccessTo(contact)))
                         throw new ItemNotFoundException();
                     return contact.GetTitle();
                 case EntityType.Opportunity:
-                    var deal = (entity = DaoFactory.GetDealDao().GetByID(entityId)) as Deal;
-                    if (deal == null || (checkAccess && !CRMSecurity.CanAccessTo(deal)))
+                    var deal = (entity = _daoFactory.GetDealDao().GetByID(entityId)) as Deal;
+                    if (deal == null || (checkAccess && !_crmSecurity.CanAccessTo(deal)))
                         throw new ItemNotFoundException();
                     return deal.Title;
                 case EntityType.Case:
-                    var cases = (entity = DaoFactory.GetCasesDao().GetByID(entityId)) as Cases;
-                    if (cases == null || (checkAccess && !CRMSecurity.CanAccessTo(cases)))
+                    var cases = (entity = _daoFactory.GetCasesDao().GetByID(entityId)) as Cases;
+                    if (cases == null || (checkAccess && !_crmSecurity.CanAccessTo(cases)))
                         throw new ItemNotFoundException();
                     return cases.Title;
                 default:

@@ -24,8 +24,9 @@
 */
 
 
-using ASC.CRM.Classes;
 using System.ComponentModel;
+
+using ASC.CRM.Classes;
 
 namespace ASC.CRM.Core.Enums
 {

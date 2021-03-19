@@ -23,14 +23,14 @@
  *
 */
 
+using System.Runtime.Serialization;
+
 using ASC.Api.Core;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Mapping;
 using ASC.Web.Api.Models;
 
 using AutoMapper;
-
-using System.Runtime.Serialization;
 
 namespace ASC.CRM.ApiModels
 {
@@ -39,19 +39,19 @@ namespace ASC.CRM.ApiModels
     /// </summary>
     [DataContract(Name = "invoiceItem", Namespace = "")]
     public class InvoiceItemDto : IMapFrom<InvoiceItem>
-    {         
-        public string Title { get; set; }        
-        public string StockKeepingUnit { get; set; }        
-        public string Description { get; set; }        
-        public decimal Price { get; set; }        
-        public CurrencyInfoDto Currency { get; set; }        
-        public decimal StockQuantity { get; set; }        
-        public bool TrackInvenory { get; set; }        
-        public InvoiceTaxDto InvoiceTax1 { get; set; }        
-        public InvoiceTaxDto InvoiceTax2 { get; set; }        
-        public ApiDateTime CreateOn { get; set; }        
-        public EmployeeWraper CreateBy { get; set; }        
-        public bool CanEdit { get; set; }        
+    {
+        public string Title { get; set; }
+        public string StockKeepingUnit { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public CurrencyInfoDto Currency { get; set; }
+        public decimal StockQuantity { get; set; }
+        public bool TrackInvenory { get; set; }
+        public InvoiceTaxDto InvoiceTax1 { get; set; }
+        public InvoiceTaxDto InvoiceTax2 { get; set; }
+        public ApiDateTime CreateOn { get; set; }
+        public EmployeeWraper CreateBy { get; set; }
+        public bool CanEdit { get; set; }
         public bool CanDelete { get; set; }
 
         public void Mapping(Profile profile)

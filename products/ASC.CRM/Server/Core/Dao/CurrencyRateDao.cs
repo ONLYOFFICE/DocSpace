@@ -26,12 +26,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
@@ -48,7 +50,7 @@ namespace ASC.CRM.Core.Dao
               base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 logger, 
+                 logger,
                  ascCache)
         {
 
@@ -66,8 +68,8 @@ namespace ASC.CRM.Core.Dao
 
         public CurrencyRate GetByCurrencies(string fromCurrency, string toCurrency)
         {
-           return ToCurrencyRate(CRMDbContext.CurrencyRate.FirstOrDefault(x => x.TenantId == TenantID && String.Compare(x.FromCurrency, fromCurrency, true) == 0 &&
-                                                String.Compare(x.ToCurrency, toCurrency, true) == 0));
+            return ToCurrencyRate(CRMDbContext.CurrencyRate.FirstOrDefault(x => x.TenantId == TenantID && String.Compare(x.FromCurrency, fromCurrency, true) == 0 &&
+                                                 String.Compare(x.ToCurrency, toCurrency, true) == 0));
         }
 
         public int SaveOrUpdate(CurrencyRate currencyRate)
@@ -77,7 +79,7 @@ namespace ASC.CRM.Core.Dao
 
             if (currencyRate.ID > 0 && currencyRate.Rate == 0)
                 return Delete(currencyRate.ID);
-            
+
             if (CRMDbContext.CurrencyRate.Where(x => x.Id == currencyRate.ID).Any())
             {
                 var itemToInsert = new DbCurrencyRate
@@ -85,9 +87,9 @@ namespace ASC.CRM.Core.Dao
                     FromCurrency = currencyRate.FromCurrency.ToUpper(),
                     ToCurrency = currencyRate.ToCurrency.ToUpper(),
                     Rate = currencyRate.Rate,
-                    CreateBy = SecurityContext.CurrentAccount.ID,
+                    CreateBy = _securityContext.CurrentAccount.ID,
                     CreateOn = DateTime.UtcNow,
-                    LastModifedBy = SecurityContext.CurrentAccount.ID,
+                    LastModifedBy = _securityContext.CurrentAccount.ID,
                     LastModifedOn = DateTime.UtcNow,
                     TenantId = TenantID
                 };
@@ -104,12 +106,12 @@ namespace ASC.CRM.Core.Dao
                 itemToUpdate.FromCurrency = currencyRate.FromCurrency.ToUpper();
                 itemToUpdate.ToCurrency = currencyRate.ToCurrency.ToUpper();
                 itemToUpdate.Rate = currencyRate.Rate;
-                itemToUpdate.LastModifedBy = SecurityContext.CurrentAccount.ID;
+                itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
                 itemToUpdate.LastModifedOn = DateTime.UtcNow;
                 itemToUpdate.TenantId = TenantID;
-                
+
                 CRMDbContext.Update(itemToUpdate);
-                CRMDbContext.SaveChanges();                
+                CRMDbContext.SaveChanges();
             }
 
             return currencyRate.ID;
@@ -135,16 +137,17 @@ namespace ASC.CRM.Core.Dao
             var items = CRMDbContext.CurrencyRate.Where(x => x.TenantId == TenantID);
 
             CRMDbContext.RemoveRange(items);
-            
+
             foreach (var rate in rates)
             {
-                var itemToInsert = new DbCurrencyRate {
+                var itemToInsert = new DbCurrencyRate
+                {
                     FromCurrency = rate.FromCurrency.ToUpper(),
                     ToCurrency = rate.ToCurrency.ToUpper(),
                     Rate = rate.Rate,
-                    CreateBy = SecurityContext.CurrentAccount.ID,
+                    CreateBy = _securityContext.CurrentAccount.ID,
                     CreateOn = DateTime.UtcNow,
-                    LastModifedBy = SecurityContext.CurrentAccount.ID,
+                    LastModifedBy = _securityContext.CurrentAccount.ID,
                     LastModifedOn = DateTime.UtcNow,
                     TenantId = TenantID
                 };
@@ -160,7 +163,7 @@ namespace ASC.CRM.Core.Dao
 
             return rates;
         }
-                
+
         private static CurrencyRate ToCurrencyRate(DbCurrencyRate dbCurrencyRate)
         {
             if (dbCurrencyRate == null) return null;

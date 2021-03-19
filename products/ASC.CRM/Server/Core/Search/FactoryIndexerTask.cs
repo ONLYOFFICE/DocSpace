@@ -65,7 +65,7 @@ namespace ASC.Web.CRM.Core.Search
             var taskDao = DaoFactory.GetTaskDao();
 
             (int, int, int) getCount(DateTime lastIndexed)
-            {           
+            {
                 var q = taskDao.CRMDbContext.Tasks
                         .Where(r => r.LastModifedOn >= lastIndexed);
 
@@ -82,7 +82,7 @@ namespace ASC.Web.CRM.Core.Search
                     .Where(r => r.Id >= i && r.Id <= i + step)
                     .Select(r => r)
                     .ToList();
-            
+
             try
             {
                 foreach (var data in Indexer.IndexAll(getCount, getData))

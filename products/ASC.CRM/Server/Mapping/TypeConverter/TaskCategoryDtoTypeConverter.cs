@@ -23,32 +23,30 @@
  *
 */
 
-using ASC.Common;
-using ASC.CRM.Core.Entities;
 
-namespace ASC.CRM.ApiModels
+using ASC.CRM.ApiModels;
+using ASC.CRM.Core.Entities;
+using ASC.Web.Core.Utility.Skins;
+using ASC.Web.CRM.Configuration;
+
+using AutoMapper;
+
+namespace ASC.CRM.Mapping
 {
-    [Singletone]
-    public class InvoiceLineDtoHelper
+    public sealed class TaskCategoryDtoTypeConverter : ITypeConverter<ListItem, TaskCategoryBaseDto>
     {
-        public InvoiceLineDtoHelper()
+        private readonly WebImageSupplier _webImageSupplier;
+
+        public TaskCategoryDtoTypeConverter(WebImageSupplier webImageSupplier)
         {
+            _webImageSupplier = webImageSupplier;
         }
 
-        public InvoiceLineDto Get(InvoiceLine invoiceLine)
+        public TaskCategoryBaseDto Convert(ListItem source, TaskCategoryBaseDto destination, ResolutionContext context)
         {
-            return new InvoiceLineDto
+            return new TaskCategoryBaseDto(source)
             {
-                Id = invoiceLine.ID,
-                InvoiceID = invoiceLine.InvoiceID,
-                InvoiceItemID = invoiceLine.InvoiceItemID,
-                InvoiceTax1ID = invoiceLine.InvoiceTax1ID,
-                InvoiceTax2ID = invoiceLine.InvoiceTax2ID,
-                SortOrder = invoiceLine.SortOrder,
-                Description = invoiceLine.Description,
-                Quantity = invoiceLine.Quantity,
-                Price = invoiceLine.Price,
-                Discount = invoiceLine.Discount
+                ImagePath = _webImageSupplier.GetAbsoluteWebPath(source.AdditionalParams, ProductEntryPoint.ID)
             };
         }
     }

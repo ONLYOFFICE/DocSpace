@@ -24,10 +24,11 @@
 */
 
 
-using ASC.Web.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+
+using ASC.Web.Api.Models;
 
 namespace ASC.CRM.ApiModels
 {
@@ -48,27 +49,27 @@ namespace ASC.CRM.ApiModels
         [DataMember(IsRequired = true, EmitDefaultValue = true)]
         public String EntityType { get; set; }
 
-        
+
         public IEnumerable<TaskTemplateDto> Items { get; set; }
 
         public static TaskTemplateContainerDto GetSample()
         {
             return new TaskTemplateContainerDto
-                {
-                    EntityType = "contact",
-                    Title = "Birthday greetings",
-                    Items = new List<TaskTemplateDto>
+            {
+                EntityType = "contact",
+                Title = "Birthday greetings",
+                Items = new List<TaskTemplateDto>
                         {
                             TaskTemplateDto.GetSample()
                         }
-                };
+            };
         }
     }
 
     [DataContract(Namespace = "taskTemplate")]
-    public class TaskTemplateDto 
+    public class TaskTemplateDto
     {
-        public TaskTemplateDto() 
+        public TaskTemplateDto()
         {
 
         }
@@ -82,7 +83,7 @@ namespace ASC.CRM.ApiModels
         [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public String Title { get; set; }
 
-        
+
         public String Description { get; set; }
 
         [DataMember(IsRequired = true, EmitDefaultValue = false)]
@@ -91,28 +92,28 @@ namespace ASC.CRM.ApiModels
         [DataMember(IsRequired = true, EmitDefaultValue = false)]
         public TaskCategoryDto Category { get; set; }
 
-        
+
         public bool isNotify { get; set; }
 
-        
+
         public long OffsetTicks { get; set; }
 
-        
+
         public bool DeadLineIsFixed { get; set; }
 
         public static TaskTemplateDto GetSample()
         {
             return new TaskTemplateDto
-                {
-                    Title = "Send an Email",
-                    Category = TaskCategoryDto.GetSample(),
-                    isNotify = true,
-                    Responsible = EmployeeWraper.GetSample(),
-                    ContainerID = 12,
-                    DeadLineIsFixed = false,
-                    OffsetTicks = TimeSpan.FromDays(10).Ticks,
-                    Description = ""
-                };
+            {
+                Title = "Send an Email",
+                Category = TaskCategoryDto.GetSample(),
+                isNotify = true,
+                Responsible = EmployeeWraper.GetSample(),
+                ContainerID = 12,
+                DeadLineIsFixed = false,
+                OffsetTicks = TimeSpan.FromDays(10).Ticks,
+                Description = ""
+            };
         }
     }
 }

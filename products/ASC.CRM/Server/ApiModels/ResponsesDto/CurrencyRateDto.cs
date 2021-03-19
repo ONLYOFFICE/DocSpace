@@ -27,7 +27,10 @@
 using System;
 using System.Runtime.Serialization;
 
-using ASC.Common;
+using ASC.CRM.Core;
+using ASC.CRM.Mapping;
+
+using AutoMapper;
 
 namespace ASC.CRM.ApiModels
 {
@@ -35,7 +38,7 @@ namespace ASC.CRM.ApiModels
     ///  Currency rate
     /// </summary>
     [DataContract(Name = "currencyRate", Namespace = "")]
-    public class CurrencyRateDto
+    public class CurrencyRateDto : IMapFrom<CurrencyRate>
     {
         public CurrencyRateDto()
         {
@@ -43,9 +46,9 @@ namespace ASC.CRM.ApiModels
 
 
         [DataMember(Name = "id")]
-        public int Id { get; set; }        
-        public String FromCurrency { get; set; }        
-        public String ToCurrency { get; set; }        
+        public int Id { get; set; }
+        public String FromCurrency { get; set; }
+        public String ToCurrency { get; set; }
         public decimal Rate { get; set; }
         public static CurrencyRateDto GetSample()
         {
@@ -57,5 +60,11 @@ namespace ASC.CRM.ApiModels
                 Rate = (decimal)1.1
             };
         }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<CurrencyRate, CurrencyRateDto>();
+        }
+
     }
 }

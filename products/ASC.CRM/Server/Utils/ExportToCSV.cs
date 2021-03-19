@@ -24,6 +24,15 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Data;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -45,22 +54,12 @@ using ASC.Web.CRM.Services.NotifyService;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
-using ASC.Web.Core.Calendars;
 
 using ICSharpCode.SharpZipLib.Zip;
 
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
-
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Data;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -1437,7 +1436,7 @@ namespace ASC.Web.CRM.Classes
                 if (operation == null)
                 {
 
-                    ExportDataOperation.Configure(key,filterObject, fileName);
+                    ExportDataOperation.Configure(key, filterObject, fileName);
 
                     Queue.Add(ExportDataOperation);
                 }

@@ -23,14 +23,16 @@
  *
 */
 
-using ASC.Api.Core;
-using ASC.Common;
-using ASC.CRM.Classes;
-using ASC.CRM.Core.Enums;
-using ASC.Web.Api.Models;
-
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+
+using ASC.Api.Core;
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
+using ASC.Web.Api.Models;
+
+using AutoMapper;
 
 namespace ASC.CRM.ApiModels
 {
@@ -38,29 +40,34 @@ namespace ASC.CRM.ApiModels
     ///  Invoice
     /// </summary>
     [DataContract(Name = "invoiceBase", Namespace = "")]
-    public class InvoiceBaseDto
+    public class InvoiceBaseDto : IMapFrom<Invoice>
     {
-        public int Id { get; set; }        
-        public InvoiceStatusDto Status { get; set; }        
-        public string Number { get; set; }        
-        public ApiDateTime IssueDate { get; set; }        
-        public InvoiceTemplateType TemplateType { get; set; }        
-        public ContactBaseWithEmailDto Contact { get; set; }       
-        public ContactBaseWithEmailDto Consignee { get; set; }        
-        public EntityDto Entity { get; set; }        
-        public ApiDateTime DueDate { get; set; }        
-        public string Language { get; set; }        
-        public CurrencyInfoDto Currency { get; set; }        
-        public decimal ExchangeRate { get; set; }        
-        public string PurchaseOrderNumber { get; set; }        
-        public string Terms { get; set; }        
-        public string Description { get; set; }       
-        public int FileID { get; set; }        
-        public ApiDateTime CreateOn { get; set; }        
-        public EmployeeWraper CreateBy { get; set; }       
-        public decimal Cost { get; set; }        
-        public bool CanEdit { get; set; }        
+        public int Id { get; set; }
+        public InvoiceStatusDto Status { get; set; }
+        public string Number { get; set; }
+        public ApiDateTime IssueDate { get; set; }
+        public InvoiceTemplateType TemplateType { get; set; }
+        public ContactBaseWithEmailDto Contact { get; set; }
+        public ContactBaseWithEmailDto Consignee { get; set; }
+        public EntityDto Entity { get; set; }
+        public ApiDateTime DueDate { get; set; }
+        public string Language { get; set; }
+        public CurrencyInfoDto Currency { get; set; }
+        public decimal ExchangeRate { get; set; }
+        public string PurchaseOrderNumber { get; set; }
+        public string Terms { get; set; }
+        public string Description { get; set; }
+        public int FileID { get; set; }
+        public ApiDateTime CreateOn { get; set; }
+        public EmployeeWraper CreateBy { get; set; }
+        public decimal Cost { get; set; }
+        public bool CanEdit { get; set; }
         public bool CanDelete { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Invoice, InvoiceBaseDto>().ConvertUsing<InvoiceBaseDtoTypeConverter>();
+        }
     }
 
     /// <summary>
@@ -68,7 +75,7 @@ namespace ASC.CRM.ApiModels
     /// </summary>
     [DataContract(Name = "invoice", Namespace = "")]
     public class InvoiceDto : InvoiceBaseDto
-    {        
+    {
         public List<InvoiceLineDto> InvoiceLines { get; set; }
 
         public static InvoiceDto GetSample()

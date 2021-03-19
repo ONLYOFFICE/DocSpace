@@ -26,14 +26,14 @@
 
 #region Import
 
+using System;
+using System.Collections.Generic;
+
 using ASC.Core;
 using ASC.CRM.Resources;
 using ASC.Notify.Model;
 using ASC.Web.Core.Subscriptions;
 using ASC.Web.CRM.Services.NotifyService;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 
 #endregion
 
@@ -58,7 +58,7 @@ namespace ASC.Web.CRM
         public CoreBaseSettings CoreBaseSettings { get; }
 
         public List<SubscriptionObject> GetSubscriptionObjects(Guid subItem)
-        { 
+        {
             return new List<SubscriptionObject>();
         }
 
@@ -137,7 +137,7 @@ namespace ASC.Web.CRM
 
         public List<SubscriptionGroup> GetSubscriptionGroups()
         {
-            return  new List<SubscriptionGroup>();
+            return new List<SubscriptionGroup>();
         }
     }
 

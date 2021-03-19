@@ -24,16 +24,16 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
 using ASC.Api.Core;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Mapping;
 using ASC.Web.Api.Models;
 
 using AutoMapper;
-
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace ASC.CRM.ApiModels
 {
@@ -46,15 +46,15 @@ namespace ASC.CRM.ApiModels
 
 
         [DataMember(Name = "id")]
-        public int Id { get; set; }                
-        public IEnumerable<ContactBaseDto> Members { get; set; }        
-        public EmployeeWraper CreateBy { get; set; }        
-        public ApiDateTime Created { get; set; }        
-        public String Title { get; set; }        
-        public bool IsClosed { get; set; }        
-        public bool IsPrivate { get; set; }                
-        public IEnumerable<EmployeeWraper> AccessList { get; set; }        
-        public bool CanEdit { get; set; }        
+        public int Id { get; set; }
+        public IEnumerable<ContactBaseDto> Members { get; set; }
+        public EmployeeWraper CreateBy { get; set; }
+        public ApiDateTime Created { get; set; }
+        public String Title { get; set; }
+        public bool IsClosed { get; set; }
+        public bool IsPrivate { get; set; }
+        public IEnumerable<EmployeeWraper> AccessList { get; set; }
+        public bool CanEdit { get; set; }
         public IEnumerable<CustomFieldBaseDto> CustomFields { get; set; }
         public static CasesDto GetSample()
         {

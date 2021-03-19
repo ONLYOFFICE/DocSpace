@@ -26,6 +26,16 @@
 
 #region Import
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -39,7 +49,6 @@ using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
-using ASC.Web.CRM.Core;
 using ASC.Web.Files.Api;
 
 using Autofac;
@@ -54,16 +63,6 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 
 using Newtonsoft.Json.Linq;
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 
 using File = System.IO.File;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
@@ -121,12 +120,7 @@ namespace ASC.Web.CRM.Classes
             _smtpSetting = settingsManager.Load<CRMSettings>().SMTPServerSetting;
             _currUser = SecurityContext.CurrentAccount.ID;
 
-            Status = new
-            {
-                RecipientCount = _contactID.Count,
-                EstimatedTime = 0,
-                DeliveryCount = 0
-            };
+
 
             AuthManager = authManager;
             UserManager = userManager;
@@ -154,6 +148,13 @@ namespace ASC.Web.CRM.Classes
             _subject = subject;
             _bodyTempate = bodyTempate;
             _storeInHistory = storeInHistory;
+
+            Status = new
+            {
+                RecipientCount = _contactID.Count,
+                EstimatedTime = 0,
+                DeliveryCount = 0
+            };
         }
 
         private void AddToHistory(int contactID, String content, DaoFactory _daoFactory)
@@ -544,10 +545,11 @@ namespace ASC.Web.CRM.Classes
         }
     }
 
+    [Scope]
     public class MailSenderDataCache
     {
         public MailSenderDataCache(TenantManager tenantManager,
-                                   ICache cache )
+                                   ICache cache)
         {
             TenantID = tenantManager.GetCurrentTenant().TenantId;
             Cache = cache;

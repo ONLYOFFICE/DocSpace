@@ -24,15 +24,18 @@
 */
 
 
+using System;
+using System.IO;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.CRM.Core.Enums;
+
 using LumenWorks.Framework.IO.Csv;
+
 using Newtonsoft.Json.Linq;
-using System;
-using System.IO;
-using System.Linq;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -59,7 +62,7 @@ namespace ASC.Web.CRM.Classes
         private readonly object _syncObj = new object();
 
         private readonly ProgressQueue<ImportDataOperation> _importQueue;
-        
+
         public readonly int MaxRoxCount = 10000;
 
         public int GetQuotas()

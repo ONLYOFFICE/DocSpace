@@ -58,7 +58,7 @@ namespace ASC.CRM.Core.Enums
         DisplayName,
         ContactType,
         Created,
-        FirstName, 
+        FirstName,
         LastName,
         History
     }

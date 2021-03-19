@@ -30,14 +30,14 @@ namespace ASC.CRM.Core.Entities
 {
     public class OrderBy
     {
-      
+
         public bool IsAsc
         {
             get;
             set;
         }
 
-        
+
         public Enum SortedBy
         {
             get;

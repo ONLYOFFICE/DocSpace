@@ -26,29 +26,27 @@
 
 #region Import
 
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.CRM.Classes;
-using ASC.CRM.Core.EF;
-using ASC.CRM.Core.Entities;
-using ASC.CRM.Core.Enums;
-using ASC.CRM.Resources;
-using ASC.VoipService;
-using ASC.Web.CRM.Classes;
-using ASC.Web.Files.Api;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
+
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Common.Logging;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.Settings;
+using ASC.Core.Tenants;
+using ASC.CRM.Core.EF;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
+using ASC.Web.CRM.Classes;
+using ASC.Web.Files.Api;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 
 #endregion
@@ -270,7 +268,7 @@ namespace ASC.CRM.Core.Dao
 
             if (storeTemplate == null) return result;
 
-            var culture = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).GetCulture() ??
+            var culture = UserManager.GetUsers(_securityContext.CurrentAccount.ID).GetCulture() ??
                           TenantManager.GetCurrentTenant().GetCulture();
 
             var path = culture + "/";
@@ -306,7 +304,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<Files.Core.File<int>> GetFiles()
         {
-            return GetFiles(SecurityContext.CurrentAccount.ID);
+            return GetFiles(_securityContext.CurrentAccount.ID);
         }
 
         public List<Files.Core.File<int>> GetFiles(Guid userId)
@@ -327,7 +325,7 @@ namespace ASC.CRM.Core.Dao
 
         public Files.Core.File<int> GetFile(int fileid)
         {
-            return GetFile(fileid, SecurityContext.CurrentAccount.ID);
+            return GetFile(fileid, _securityContext.CurrentAccount.ID);
         }
 
         public Files.Core.File<int> GetFile(int fileid, Guid userId)
@@ -343,7 +341,7 @@ namespace ASC.CRM.Core.Dao
 
         public void DeleteFile(int fileid)
         {
-            var itemToDelete = Query(CRMDbContext.ReportFile).Where(x => x.FileId == fileid && x.CreateBy == SecurityContext.CurrentAccount.ID);
+            var itemToDelete = Query(CRMDbContext.ReportFile).Where(x => x.FileId == fileid && x.CreateBy == _securityContext.CurrentAccount.ID);
 
             CRMDbContext.Remove(itemToDelete);
             CRMDbContext.SaveChanges();
@@ -357,7 +355,7 @@ namespace ASC.CRM.Core.Dao
         {
             var fileIds = GetFileIds(userId);
 
-            var itemToDelete = Query(CRMDbContext.ReportFile).Where(x => x.CreateBy == SecurityContext.CurrentAccount.ID);
+            var itemToDelete = Query(CRMDbContext.ReportFile).Where(x => x.CreateBy == _securityContext.CurrentAccount.ID);
 
             CRMDbContext.Remove(itemToDelete);
             CRMDbContext.SaveChanges();
@@ -379,7 +377,7 @@ namespace ASC.CRM.Core.Dao
                 FileId = fileId,
                 ReportType = (ReportType)reportType,
                 CreateOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
-                CreateBy = SecurityContext.CurrentAccount.ID,
+                CreateBy = _securityContext.CurrentAccount.ID,
                 TenantId = TenantID
             };
 

@@ -27,10 +27,7 @@
 #region Import
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 
 #endregion
 
@@ -40,7 +37,7 @@ namespace ASC.CRM.Core
     [Serializable]
     public class DomainObject
     {
-     
+
         [DataMember(Name = "id")]
         public virtual int ID
         {
@@ -65,6 +62,6 @@ namespace ASC.CRM.Core
         {
             return ID.Equals(default(int));
         }
-        
+
     }
 }

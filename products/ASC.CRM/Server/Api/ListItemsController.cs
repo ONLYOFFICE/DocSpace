@@ -38,6 +38,8 @@ using ASC.CRM.Core.Enums;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 
+using AutoMapper;
+
 namespace ASC.CRM.Api
 {
     public class ListItemsController : BaseApiController
@@ -45,20 +47,18 @@ namespace ASC.CRM.Api
         public ListItemsController(CRMSecurity cRMSecurity,
                      DaoFactory daoFactory,
                      MessageTarget messageTarget,
-                     MessageService messageService,                  
-                     TaskCategoryDtoHelper taskCategoryDtoHelper,
-                     HistoryCategoryDtoHelper historyCategoryDtoHelper)
-            : base(daoFactory, cRMSecurity)
+                     MessageService messageService,
+                     HistoryCategoryDtoHelper historyCategoryDtoHelper,
+                     IMapper mapper)
+            : base(daoFactory, cRMSecurity, mapper)
         {
             MessageTarget = messageTarget;
             MessageService = messageService;
-            TaskCategoryDtoHelper = taskCategoryDtoHelper;
             HistoryCategoryDtoHelper = historyCategoryDtoHelper;
         }
 
         public MessageService MessageService { get; }
         public MessageTarget MessageTarget { get; }
-        public TaskCategoryDtoHelper TaskCategoryDtoHelper { get; }
         public HistoryCategoryDtoHelper HistoryCategoryDtoHelper { get; }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace ASC.CRM.Api
             int successProbability,
             DealMilestoneStatus stageType)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (string.IsNullOrEmpty(title)) throw new ArgumentException();
 
@@ -98,7 +98,7 @@ namespace ASC.CRM.Api
                 Status = stageType
             };
 
-            dealMilestone.ID = DaoFactory.GetDealMilestoneDao().Create(dealMilestone);
+            dealMilestone.ID = _daoFactory.GetDealMilestoneDao().Create(dealMilestone);
             MessageService.Send(MessageAction.OpportunityStageCreated, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
 
             return ToDealMilestoneDto(dealMilestone);
@@ -129,13 +129,13 @@ namespace ASC.CRM.Api
             int successProbability,
             DealMilestoneStatus stageType)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0 || string.IsNullOrEmpty(title)) throw new ArgumentException();
 
             if (successProbability < 0) successProbability = 0;
 
-            var curDealMilestoneExist = DaoFactory.GetDealMilestoneDao().IsExist(id);
+            var curDealMilestoneExist = _daoFactory.GetDealMilestoneDao().IsExist(id);
             if (!curDealMilestoneExist) throw new ItemNotFoundException();
 
             var dealMilestone = new DealMilestone
@@ -148,7 +148,7 @@ namespace ASC.CRM.Api
                 ID = id
             };
 
-            DaoFactory.GetDealMilestoneDao().Edit(dealMilestone);
+            _daoFactory.GetDealMilestoneDao().Edit(dealMilestone);
             MessageService.Send(MessageAction.OpportunityStageUpdated, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
 
             return ToDealMilestoneDto(dealMilestone);
@@ -169,16 +169,16 @@ namespace ASC.CRM.Api
         [Update(@"opportunity/stage/{id:int}/color")]
         public DealMilestoneDto UpdateDealMilestoneColor(int id, string color)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0) throw new ArgumentException();
 
-            var dealMilestone = DaoFactory.GetDealMilestoneDao().GetByID(id);
+            var dealMilestone = _daoFactory.GetDealMilestoneDao().GetByID(id);
             if (dealMilestone == null) throw new ItemNotFoundException();
 
             dealMilestone.Color = color;
 
-            DaoFactory.GetDealMilestoneDao().ChangeColor(id, color);
+            _daoFactory.GetDealMilestoneDao().ChangeColor(id, color);
             MessageService.Send(MessageAction.OpportunityStageUpdatedColor, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
 
             return ToDealMilestoneDto(dealMilestone);
@@ -201,15 +201,15 @@ namespace ASC.CRM.Api
         [Update(@"opportunity/stage/reorder")]
         public IEnumerable<DealMilestoneDto> UpdateDealMilestonesOrder(IEnumerable<int> ids)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (ids == null) throw new ArgumentException();
 
             var idsList = ids.ToList();
 
-            var result = idsList.Select(id => DaoFactory.GetDealMilestoneDao().GetByID(id)).ToList();
+            var result = idsList.Select(id => _daoFactory.GetDealMilestoneDao().GetByID(id)).ToList();
 
-            DaoFactory.GetDealMilestoneDao().Reorder(idsList.ToArray());
+            _daoFactory.GetDealMilestoneDao().Reorder(idsList.ToArray());
             MessageService.Send(MessageAction.OpportunityStagesUpdatedOrder, MessageTarget.Create(idsList), result.Select(x => x.Title));
 
             return result.Select(ToDealMilestoneDto);
@@ -229,16 +229,16 @@ namespace ASC.CRM.Api
         [Delete(@"opportunity/stage/{id:int}")]
         public DealMilestoneDto DeleteDealMilestone(int id)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0) throw new ArgumentException();
 
-            var dealMilestone = DaoFactory.GetDealMilestoneDao().GetByID(id);
+            var dealMilestone = _daoFactory.GetDealMilestoneDao().GetByID(id);
             if (dealMilestone == null) throw new ItemNotFoundException();
 
             var result = ToDealMilestoneDto(dealMilestone);
 
-            DaoFactory.GetDealMilestoneDao().Delete(id);
+            _daoFactory.GetDealMilestoneDao().Delete(id);
             MessageService.Send(MessageAction.OpportunityStageDeleted, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
 
             return result;
@@ -258,7 +258,7 @@ namespace ASC.CRM.Api
         [Create(@"history/category")]
         public HistoryCategoryDto CreateHistoryCategory(string title, string description, string imageName, int sortOrder)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (string.IsNullOrEmpty(title)) throw new ArgumentException();
 
@@ -270,7 +270,7 @@ namespace ASC.CRM.Api
                 AdditionalParams = imageName
             };
 
-            listItem.ID = DaoFactory.GetListItemDao().CreateItem(ListType.HistoryCategory, listItem);
+            listItem.ID = _daoFactory.GetListItemDao().CreateItem(ListType.HistoryCategory, listItem);
             MessageService.Send(MessageAction.HistoryEventCategoryCreated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToHistoryCategoryDto(listItem);
@@ -292,11 +292,11 @@ namespace ASC.CRM.Api
         [Update(@"history/category/{id:int}")]
         public HistoryCategoryDto UpdateHistoryCategory(int id, string title, string description, string imageName, int sortOrder)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0 || string.IsNullOrEmpty(title)) throw new ArgumentException();
 
-            var curHistoryCategoryExist = DaoFactory.GetListItemDao().IsExist(id);
+            var curHistoryCategoryExist = _daoFactory.GetListItemDao().IsExist(id);
             if (!curHistoryCategoryExist) throw new ItemNotFoundException();
 
             var listItem = new ListItem
@@ -308,7 +308,7 @@ namespace ASC.CRM.Api
                 ID = id
             };
 
-            DaoFactory.GetListItemDao().EditItem(ListType.HistoryCategory, listItem);
+            _daoFactory.GetListItemDao().EditItem(ListType.HistoryCategory, listItem);
             MessageService.Send(MessageAction.HistoryEventCategoryUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToHistoryCategoryDto(listItem);
@@ -329,16 +329,16 @@ namespace ASC.CRM.Api
         [Update(@"history/category/{id:int}/icon")]
         public HistoryCategoryDto UpdateHistoryCategoryIcon(int id, string imageName)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0) throw new ArgumentException();
 
-            var historyCategory = DaoFactory.GetListItemDao().GetByID(id);
+            var historyCategory = _daoFactory.GetListItemDao().GetByID(id);
             if (historyCategory == null) throw new ItemNotFoundException();
 
             historyCategory.AdditionalParams = imageName;
 
-            DaoFactory.GetListItemDao().ChangePicture(id, imageName);
+            _daoFactory.GetListItemDao().ChangePicture(id, imageName);
             MessageService.Send(MessageAction.HistoryEventCategoryUpdatedIcon, MessageTarget.Create(historyCategory.ID), historyCategory.Title);
 
             return ToHistoryCategoryDto(historyCategory);
@@ -361,13 +361,13 @@ namespace ASC.CRM.Api
         [Update(@"history/category/reorder")]
         public IEnumerable<HistoryCategoryDto> UpdateHistoryCategoriesOrder(IEnumerable<string> titles)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (titles == null) throw new ArgumentException();
 
-            var result = titles.Select(title => DaoFactory.GetListItemDao().GetByTitle(ListType.HistoryCategory, title)).ToList();
+            var result = titles.Select(title => _daoFactory.GetListItemDao().GetByTitle(ListType.HistoryCategory, title)).ToList();
 
-            DaoFactory.GetListItemDao().ReorderItems(ListType.HistoryCategory, titles.ToArray());
+            _daoFactory.GetListItemDao().ReorderItems(ListType.HistoryCategory, titles.ToArray());
             MessageService.Send(MessageAction.HistoryEventCategoriesUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
 
             return result.ConvertAll(ToHistoryCategoryDto);
@@ -386,11 +386,11 @@ namespace ASC.CRM.Api
         [Delete(@"history/category/{id:int}")]
         public HistoryCategoryDto DeleteHistoryCategory(int id)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0) throw new ArgumentException();
 
-            var dao = DaoFactory.GetListItemDao();
+            var dao = _daoFactory.GetListItemDao();
             var listItem = dao.GetByID(id);
             if (listItem == null) throw new ItemNotFoundException();
 
@@ -424,7 +424,7 @@ namespace ASC.CRM.Api
         [Create(@"task/category")]
         public TaskCategoryDto CreateTaskCategory(string title, string description, string imageName, int sortOrder)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             var listItem = new ListItem
             {
@@ -434,7 +434,7 @@ namespace ASC.CRM.Api
                 AdditionalParams = imageName
             };
 
-            listItem.ID = DaoFactory.GetListItemDao().CreateItem(ListType.TaskCategory, listItem);
+            listItem.ID = _daoFactory.GetListItemDao().CreateItem(ListType.TaskCategory, listItem);
             MessageService.Send(MessageAction.CrmTaskCategoryCreated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToTaskCategoryDto(listItem);
@@ -460,11 +460,11 @@ namespace ASC.CRM.Api
         [Update(@"task/category/{id:int}")]
         public TaskCategoryDto UpdateTaskCategory(int id, string title, string description, string imageName, int sortOrder)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0 || string.IsNullOrEmpty(title)) throw new ArgumentException();
 
-            var curTaskCategoryExist = DaoFactory.GetListItemDao().IsExist(id);
+            var curTaskCategoryExist = _daoFactory.GetListItemDao().IsExist(id);
             if (!curTaskCategoryExist) throw new ItemNotFoundException();
 
             var listItem = new ListItem
@@ -476,7 +476,7 @@ namespace ASC.CRM.Api
                 ID = id
             };
 
-            DaoFactory.GetListItemDao().EditItem(ListType.TaskCategory, listItem);
+            _daoFactory.GetListItemDao().EditItem(ListType.TaskCategory, listItem);
             MessageService.Send(MessageAction.CrmTaskCategoryUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToTaskCategoryDto(listItem);
@@ -497,16 +497,16 @@ namespace ASC.CRM.Api
         [Update(@"task/category/{id:int}/icon")]
         public TaskCategoryDto UpdateTaskCategoryIcon(int id, string imageName)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0) throw new ArgumentException();
 
-            var taskCategory = DaoFactory.GetListItemDao().GetByID(id);
+            var taskCategory = _daoFactory.GetListItemDao().GetByID(id);
             if (taskCategory == null) throw new ItemNotFoundException();
 
             taskCategory.AdditionalParams = imageName;
 
-            DaoFactory.GetListItemDao().ChangePicture(id, imageName);
+            _daoFactory.GetListItemDao().ChangePicture(id, imageName);
             MessageService.Send(MessageAction.CrmTaskCategoryUpdatedIcon, MessageTarget.Create(taskCategory.ID), taskCategory.Title);
 
             return ToTaskCategoryDto(taskCategory);
@@ -529,13 +529,13 @@ namespace ASC.CRM.Api
         [Update(@"task/category/reorder")]
         public IEnumerable<TaskCategoryDto> UpdateTaskCategoriesOrder(IEnumerable<string> titles)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (titles == null) throw new ArgumentException();
 
-            var result = titles.Select(title => DaoFactory.GetListItemDao().GetByTitle(ListType.TaskCategory, title)).ToList();
+            var result = titles.Select(title => _daoFactory.GetListItemDao().GetByTitle(ListType.TaskCategory, title)).ToList();
 
-            DaoFactory.GetListItemDao().ReorderItems(ListType.TaskCategory, titles.ToArray());
+            _daoFactory.GetListItemDao().ReorderItems(ListType.TaskCategory, titles.ToArray());
             MessageService.Send(MessageAction.CrmTaskCategoriesUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
 
             return result.ConvertAll(ToTaskCategoryDto);
@@ -554,11 +554,11 @@ namespace ASC.CRM.Api
         [Delete(@"task/category/{categoryid:int}")]
         public TaskCategoryDto DeleteTaskCategory(int categoryid, int newcategoryid)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (categoryid <= 0 || newcategoryid < 0) throw new ArgumentException();
 
-            var dao = DaoFactory.GetListItemDao();
+            var dao = _daoFactory.GetListItemDao();
             var listItem = dao.GetByID(categoryid);
             if (listItem == null) throw new ItemNotFoundException();
 
@@ -590,7 +590,7 @@ namespace ASC.CRM.Api
         [Create(@"contact/status")]
         public ContactStatusDto CreateContactStatus(string title, string description, string color, int sortOrder)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             var listItem = new ListItem
             {
@@ -600,7 +600,7 @@ namespace ASC.CRM.Api
                 SortOrder = sortOrder
             };
 
-            listItem.ID = DaoFactory.GetListItemDao().CreateItem(ListType.ContactStatus, listItem);
+            listItem.ID = _daoFactory.GetListItemDao().CreateItem(ListType.ContactStatus, listItem);
             MessageService.Send(MessageAction.ContactTemperatureLevelCreated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToContactStatusDto(listItem);
@@ -626,11 +626,11 @@ namespace ASC.CRM.Api
         [Update(@"contact/status/{id:int}")]
         public ContactStatusDto UpdateContactStatus(int id, string title, string description, string color, int sortOrder)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0 || string.IsNullOrEmpty(title)) throw new ArgumentException();
 
-            var curListItemExist = DaoFactory.GetListItemDao().IsExist(id);
+            var curListItemExist = _daoFactory.GetListItemDao().IsExist(id);
             if (!curListItemExist) throw new ItemNotFoundException();
 
             var listItem = new ListItem
@@ -642,7 +642,7 @@ namespace ASC.CRM.Api
                 SortOrder = sortOrder
             };
 
-            DaoFactory.GetListItemDao().EditItem(ListType.ContactStatus, listItem);
+            _daoFactory.GetListItemDao().EditItem(ListType.ContactStatus, listItem);
             MessageService.Send(MessageAction.ContactTemperatureLevelUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToContactStatusDto(listItem);
@@ -663,16 +663,16 @@ namespace ASC.CRM.Api
         [Update(@"contact/status/{id:int}/color")]
         public ContactStatusDto UpdateContactStatusColor(int id, string color)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0) throw new ArgumentException();
 
-            var contactStatus = DaoFactory.GetListItemDao().GetByID(id);
+            var contactStatus = _daoFactory.GetListItemDao().GetByID(id);
             if (contactStatus == null) throw new ItemNotFoundException();
 
             contactStatus.Color = color;
 
-            DaoFactory.GetListItemDao().ChangeColor(id, color);
+            _daoFactory.GetListItemDao().ChangeColor(id, color);
             MessageService.Send(MessageAction.ContactTemperatureLevelUpdatedColor, MessageTarget.Create(contactStatus.ID), contactStatus.Title);
 
             return ToContactStatusDto(contactStatus);
@@ -695,13 +695,13 @@ namespace ASC.CRM.Api
         [Update(@"contact/status/reorder")]
         public IEnumerable<ContactStatusDto> UpdateContactStatusesOrder(IEnumerable<string> titles)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (titles == null) throw new ArgumentException();
 
-            var result = titles.Select(title => DaoFactory.GetListItemDao().GetByTitle(ListType.ContactStatus, title)).ToList();
+            var result = titles.Select(title => _daoFactory.GetListItemDao().GetByTitle(ListType.ContactStatus, title)).ToList();
 
-            DaoFactory.GetListItemDao().ReorderItems(ListType.ContactStatus, titles.ToArray());
+            _daoFactory.GetListItemDao().ReorderItems(ListType.ContactStatus, titles.ToArray());
             MessageService.Send(MessageAction.ContactTemperatureLevelsUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
 
             return result.ConvertAll(ToContactStatusDto);
@@ -722,11 +722,11 @@ namespace ASC.CRM.Api
         [Delete(@"contact/status/{contactStatusid:int}")]
         public ContactStatusDto DeleteContactStatus(int contactStatusid)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (contactStatusid <= 0) throw new ArgumentException();
 
-            var dao = DaoFactory.GetListItemDao();
+            var dao = _daoFactory.GetListItemDao();
             var listItem = dao.GetByID(contactStatusid);
             if (listItem == null) throw new ItemNotFoundException();
 
@@ -757,7 +757,7 @@ namespace ASC.CRM.Api
         {
             if (contactStatusid <= 0) throw new ArgumentException();
 
-            var listItem = DaoFactory.GetListItemDao().GetByID(contactStatusid);
+            var listItem = _daoFactory.GetListItemDao().GetByID(contactStatusid);
             if (listItem == null) throw new ItemNotFoundException();
 
             return ToContactStatusDto(listItem);
@@ -778,7 +778,7 @@ namespace ASC.CRM.Api
         [Create(@"contact/type")]
         public ContactTypeDto CreateContactType(string title, int sortOrder)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             var listItem = new ListItem
             {
@@ -787,7 +787,7 @@ namespace ASC.CRM.Api
                 SortOrder = sortOrder
             };
 
-            listItem.ID = DaoFactory.GetListItemDao().CreateItem(ListType.ContactType, listItem);
+            listItem.ID = _daoFactory.GetListItemDao().CreateItem(ListType.ContactType, listItem);
             MessageService.Send(MessageAction.ContactTypeCreated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToContactTypeDto(listItem);
@@ -811,11 +811,11 @@ namespace ASC.CRM.Api
         [Update(@"contact/type/{id:int}")]
         public ContactTypeDto UpdateContactType(int id, string title, int sortOrder)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (id <= 0 || string.IsNullOrEmpty(title)) throw new ArgumentException();
 
-            var curListItemExist = DaoFactory.GetListItemDao().IsExist(id);
+            var curListItemExist = _daoFactory.GetListItemDao().IsExist(id);
             if (!curListItemExist) throw new ItemNotFoundException();
 
             var listItem = new ListItem
@@ -825,7 +825,7 @@ namespace ASC.CRM.Api
                 SortOrder = sortOrder
             };
 
-            DaoFactory.GetListItemDao().EditItem(ListType.ContactType, listItem);
+            _daoFactory.GetListItemDao().EditItem(ListType.ContactType, listItem);
             MessageService.Send(MessageAction.ContactTypeUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
 
             return ToContactTypeDto(listItem);
@@ -848,13 +848,13 @@ namespace ASC.CRM.Api
         [Update(@"contact/type/reorder")]
         public IEnumerable<ContactTypeDto> UpdateContactTypesOrder(IEnumerable<string> titles)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (titles == null) throw new ArgumentException();
 
-            var result = titles.Select(title => DaoFactory.GetListItemDao().GetByTitle(ListType.ContactType, title)).ToList();
+            var result = titles.Select(title => _daoFactory.GetListItemDao().GetByTitle(ListType.ContactType, title)).ToList();
 
-            DaoFactory.GetListItemDao().ReorderItems(ListType.ContactType, titles.ToArray());
+            _daoFactory.GetListItemDao().ReorderItems(ListType.ContactType, titles.ToArray());
             MessageService.Send(MessageAction.ContactTypesUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
 
             return result.ConvertAll(ToContactTypeDto);
@@ -875,10 +875,10 @@ namespace ASC.CRM.Api
         [Delete(@"contact/type/{contactTypeid:int}")]
         public ContactTypeDto DeleteContactType(int contactTypeid)
         {
-            if (!(CRMSecurity.IsAdmin)) throw CRMSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
             if (contactTypeid <= 0) throw new ArgumentException();
-            var dao = DaoFactory.GetListItemDao();
+            var dao = _daoFactory.GetListItemDao();
 
             var listItem = dao.GetByID(contactTypeid);
             if (listItem == null) throw new ItemNotFoundException();
@@ -910,7 +910,7 @@ namespace ASC.CRM.Api
         {
             if (contactTypeid <= 0) throw new ArgumentException();
 
-            var listItem = DaoFactory.GetListItemDao().GetByID(contactTypeid);
+            var listItem = _daoFactory.GetListItemDao().GetByID(contactTypeid);
             if (listItem == null) throw new ItemNotFoundException();
 
             return ToContactTypeDto(listItem);
@@ -930,7 +930,7 @@ namespace ASC.CRM.Api
         {
             if (stageid <= 0) throw new ArgumentException();
 
-            var dealMilestone = DaoFactory.GetDealMilestoneDao().GetByID(stageid);
+            var dealMilestone = _daoFactory.GetDealMilestoneDao().GetByID(stageid);
             if (dealMilestone == null) throw new ItemNotFoundException();
 
             return ToDealMilestoneDto(dealMilestone);
@@ -950,7 +950,7 @@ namespace ASC.CRM.Api
         {
             if (categoryid <= 0) throw new ArgumentException();
 
-            var listItem = DaoFactory.GetListItemDao().GetByID(categoryid);
+            var listItem = _daoFactory.GetListItemDao().GetByID(categoryid);
             if (listItem == null) throw new ItemNotFoundException();
 
             return ToTaskCategoryDto(listItem);
@@ -967,9 +967,9 @@ namespace ASC.CRM.Api
         [Read(@"history/category")]
         public IEnumerable<HistoryCategoryDto> GetHistoryCategoryDto()
         {
-            var result = DaoFactory.GetListItemDao().GetItems(ListType.HistoryCategory).ConvertAll(item => new HistoryCategoryDto(item));
+            var result = _daoFactory.GetListItemDao().GetItems(ListType.HistoryCategory).ConvertAll(item => new HistoryCategoryDto(item));
 
-            var relativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.HistoryCategory);
+            var relativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.HistoryCategory);
 
             result.ForEach(x =>
                 {
@@ -990,9 +990,9 @@ namespace ASC.CRM.Api
         [Read(@"task/category")]
         public IEnumerable<TaskCategoryDto> GetTaskCategories()
         {
-            var result = DaoFactory.GetListItemDao().GetItems(ListType.TaskCategory).ConvertAll(item => (TaskCategoryDto)TaskCategoryDtoHelper.Get(item));
+            var result = _daoFactory.GetListItemDao().GetItems(ListType.TaskCategory).ConvertAll(item => (TaskCategoryDto)_mapper.Map<TaskCategoryDto>(item));
 
-            var relativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.TaskCategory);
+            var relativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.TaskCategory);
 
             result.ForEach(x =>
                 {
@@ -1013,9 +1013,9 @@ namespace ASC.CRM.Api
         [Read(@"contact/status")]
         public IEnumerable<ContactStatusDto> GetContactStatuses()
         {
-            var result = DaoFactory.GetListItemDao().GetItems(ListType.ContactStatus).ConvertAll(item => new ContactStatusDto(item));
+            var result = _daoFactory.GetListItemDao().GetItems(ListType.ContactStatus).ConvertAll(item => new ContactStatusDto(item));
 
-            var relativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactStatus);
+            var relativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactStatus);
 
             result.ForEach(x =>
                 {
@@ -1036,9 +1036,9 @@ namespace ASC.CRM.Api
         [Read(@"contact/type")]
         public IEnumerable<ContactTypeDto> GetContactTypes()
         {
-            var result = DaoFactory.GetListItemDao().GetItems(ListType.ContactType).ConvertAll(item => new ContactTypeDto(item));
+            var result = _daoFactory.GetListItemDao().GetItems(ListType.ContactType).ConvertAll(item => new ContactTypeDto(item));
 
-            var relativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactType);
+            var relativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactType);
 
             result.ForEach(x =>
                 {
@@ -1060,9 +1060,9 @@ namespace ASC.CRM.Api
         [Read(@"opportunity/stage")]
         public IEnumerable<DealMilestoneDto> GetDealMilestones()
         {
-            var result = DaoFactory.GetDealMilestoneDao().GetAll().ConvertAll(item => new DealMilestoneDto(item));
+            var result = _daoFactory.GetDealMilestoneDao().GetAll().ConvertAll(item => new DealMilestoneDto(item));
 
-            var relativeItemsCount = DaoFactory.GetDealMilestoneDao().GetRelativeItemsCount();
+            var relativeItemsCount = _daoFactory.GetDealMilestoneDao().GetRelativeItemsCount();
 
             result.ForEach(x =>
                 {
@@ -1077,7 +1077,7 @@ namespace ASC.CRM.Api
         {
             var result = new ContactStatusDto(listItem)
             {
-                RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactStatus, listItem.ID)
+                RelativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactStatus, listItem.ID)
             };
 
             return result;
@@ -1087,7 +1087,7 @@ namespace ASC.CRM.Api
         {
             var result = new ContactTypeDto(listItem)
             {
-                RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactType, listItem.ID)
+                RelativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactType, listItem.ID)
             };
 
             return result;
@@ -1097,16 +1097,16 @@ namespace ASC.CRM.Api
         {
             var result = (HistoryCategoryDto)HistoryCategoryDtoHelper.Get(listItem);
 
-            result.RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.HistoryCategory, listItem.ID);
+            result.RelativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.HistoryCategory, listItem.ID);
 
             return result;
         }
 
         public TaskCategoryDto ToTaskCategoryDto(ListItem listItem)
         {
-            var result = (TaskCategoryDto)TaskCategoryDtoHelper.Get(listItem);
+            var result = (TaskCategoryDto)_mapper.Map<TaskCategoryDto>(listItem);
 
-            result.RelativeItemsCount = DaoFactory.GetListItemDao().GetRelativeItemsCount(ListType.TaskCategory, listItem.ID);
+            result.RelativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.TaskCategory, listItem.ID);
 
             return result;
         }
@@ -1115,7 +1115,7 @@ namespace ASC.CRM.Api
         {
             var result = new DealMilestoneDto(dealMilestone)
             {
-                RelativeItemsCount = DaoFactory.GetDealMilestoneDao().GetRelativeItemsCount(dealMilestone.ID)
+                RelativeItemsCount = _daoFactory.GetDealMilestoneDao().GetRelativeItemsCount(dealMilestone.ID)
             };
             return result;
         }

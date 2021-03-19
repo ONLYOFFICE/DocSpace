@@ -23,6 +23,10 @@
  *
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -31,11 +35,9 @@ using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -66,16 +68,16 @@ namespace ASC.CRM.Core.Dao
                 Title = item.Title,
                 EntityType = item.EntityType,
                 CreateOn = DateTime.UtcNow,
-                CreateBy = SecurityContext.CurrentAccount.ID,
+                CreateBy = _securityContext.CurrentAccount.ID,
                 LastModifedOn = DateTime.UtcNow,
-                LastModifedBy = SecurityContext.CurrentAccount.ID,
+                LastModifedBy = _securityContext.CurrentAccount.ID,
                 TenantId = TenantID
             };
 
             if (item.ID == 0 && Query(CRMDbContext.TaskTemplateContainer).Where(x => x.Id == item.ID).Any())
             {
                 CRMDbContext.TaskTemplateContainer.Add(dbTaskTemplateContainer);
-             
+
                 CRMDbContext.SaveChanges();
 
                 item.ID = dbTaskTemplateContainer.Id;
@@ -123,7 +125,7 @@ namespace ASC.CRM.Core.Dao
                 .ToList()
                 .ConvertAll(ToObject);
         }
-            
+
         protected TaskTemplateContainer ToObject(DbTaskTemplateContainer dbTaskTemplateContainer)
         {
             if (dbTaskTemplateContainer == null) return null;
@@ -147,8 +149,8 @@ namespace ASC.CRM.Core.Dao
             ICache cache)
             : base(dbContextManager,
                  tenantManager,
-                 securityContext, 
-                 logger, 
+                 securityContext,
+                 logger,
                  cache)
         {
 
@@ -175,8 +177,8 @@ namespace ASC.CRM.Core.Dao
             if (item.ID == 0)
             {
                 itemToInsert.CreateOn = DateTime.UtcNow;
-                itemToInsert.CreateBy = SecurityContext.CurrentAccount.ID;
-                            
+                itemToInsert.CreateBy = _securityContext.CurrentAccount.ID;
+
                 CRMDbContext.TaskTemplates.Add(itemToInsert);
                 CRMDbContext.SaveChanges();
             }
@@ -184,7 +186,7 @@ namespace ASC.CRM.Core.Dao
             {
 
                 itemToInsert.LastModifedOn = DateTime.UtcNow;
-                itemToInsert.LastModifedBy = SecurityContext.CurrentAccount.ID;
+                itemToInsert.LastModifedBy = _securityContext.CurrentAccount.ID;
 
                 CRMDbContext.TaskTemplates.Attach(itemToInsert);
                 CRMDbContext.TaskTemplates.Update(itemToInsert);
@@ -211,7 +213,7 @@ namespace ASC.CRM.Core.Dao
             if (sqlResult == null) return null;
 
             var result = ToObject(Query(CRMDbContext.TaskTemplates)
-                                       .FirstOrDefault(x => x.ContainerId == sqlResult.ContainerId && 
+                                       .FirstOrDefault(x => x.ContainerId == sqlResult.ContainerId &&
                                                             x.SortOrder > sqlResult.SortOrder && !x.DeadLineIsFixed));
 
             CRMDbContext.Remove(new DbTaskTemplateTask
@@ -222,7 +224,7 @@ namespace ASC.CRM.Core.Dao
 
             tx.Commit();
 
-            return result;        
+            return result;
         }
 
         public List<TaskTemplate> GetAll()
@@ -240,7 +242,7 @@ namespace ASC.CRM.Core.Dao
 
             return Query(CRMDbContext.TaskTemplates)
                 .Where(x => x.ContainerId == containerID)
-                .OrderBy(x=> x.SortOrder)
+                .OrderBy(x => x.SortOrder)
                 .ToList()
                 .ConvertAll(ToObject);
         }
@@ -285,7 +287,7 @@ namespace ASC.CRM.Core.Dao
                 CreateOn = dbTaskTemplate.CreateOn,
                 CreateBy = dbTaskTemplate.CreateBy
             };
-        }     
+        }
     }
-     
+
 }

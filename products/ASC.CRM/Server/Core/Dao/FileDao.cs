@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -35,6 +36,7 @@ using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 using ASC.Files.Core;
 using ASC.Web.Files.Api;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
@@ -82,7 +84,7 @@ namespace ASC.CRM.Core.Dao
 
         public int GetMy()
         {
-            return FilesIntegration.RegisterBunch<int>("files", "my", SecurityContext.CurrentAccount.ID.ToString());
+            return FilesIntegration.RegisterBunch<int>("files", "my", _securityContext.CurrentAccount.ID.ToString());
         }
 
         public File<int> SaveFile(File<int> file, System.IO.Stream stream)
@@ -97,7 +99,7 @@ namespace ASC.CRM.Core.Dao
             var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
 
             var tags = tagdao.GetTags(id, FileEntryType.File, TagType.System).ToList().FindAll(tag => tag.TagName.StartsWith("RelationshipEvent_"));
-            
+
             return tags.Select(item => Convert.ToInt32(item.TagName.Split(new[] { '_' })[1])).ToList();
         }
 

@@ -28,12 +28,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -42,12 +44,10 @@ namespace ASC.CRM.Core.Dao
     public class AbstractDao
     {
         protected readonly List<EntityType> _supportedEntityType = new List<EntityType>();
-    
         public CRMDbContext CRMDbContext { get; }
-        public SecurityContext SecurityContext { get; }
-
+        protected SecurityContext _securityContext;
         protected readonly ICache _cache;
-        public ILog Logger { get; }
+        protected ILog _logger;
 
         public AbstractDao(
             DbContextManager<CRMDbContext> dbContextManager,
@@ -58,12 +58,12 @@ namespace ASC.CRM.Core.Dao
             )
         {
 
-            Logger = logger.Get("ASC.CRM");
+            _logger = logger.Get("ASC.CRM");
 
             _cache = ascCache;
             CRMDbContext = dbContextManager.Get(CRMConstants.DatabaseId);
             TenantID = tenantManager.GetCurrentTenant().TenantId;
-            SecurityContext = securityContext;
+            _securityContext = securityContext;
 
             _supportedEntityType.Add(EntityType.Company);
             _supportedEntityType.Add(EntityType.Person);
@@ -108,18 +108,19 @@ namespace ASC.CRM.Core.Dao
 
             var tagIDs = new List<int>();
 
-            foreach (var tag in tags) {
+            foreach (var tag in tags)
+            {
                 tagIDs.Add(CRMDbContext
                     .Tags
                     .Where(x => x.EntityType == entityType && String.Compare(x.Title, tag.Trim(), true) == 0)
                     .Select(x => x.Id).Single());
             }
-            
+
             var sqlQuery = CRMDbContext.EntityTags.Where(x => x.EntityType == entityType && tagIDs.Contains(x.TagId));
 
             if (exceptIDs != null && exceptIDs.Length > 0)
                 sqlQuery = sqlQuery.Where(x => exceptIDs.Contains(x.EntityId));
-                        
+
             return sqlQuery.GroupBy(x => x.EntityId)
                            .Where(x => x.Count() == tags.Count())
                            .Select(x => x.Key)
@@ -134,10 +135,10 @@ namespace ASC.CRM.Core.Dao
                 exp = x => x.EntityType == entityType && contactID.Contains(x.ContactId);
             else if (entityID != null && entityID.Length > 0 && (contactID == null || contactID.Length == 0))
                 exp = x => x.EntityType == entityType && entityID.Contains(x.EntityId);
-            
+
             return CRMDbContext.EntityContact.Where(exp).GroupBy(x => x.EntityId).ToDictionary(
                     x => x.Key,
-                    x => x.Select(x => Convert.ToInt32(x.ContactId)).ToArray());         
+                    x => x.Select(x => Convert.ToInt32(x.ContactId)).ToArray());
         }
 
         protected int[] GetRelativeToEntity(int? contactID, EntityType entityType, int? entityID)
@@ -239,12 +240,12 @@ namespace ASC.CRM.Core.Dao
 
 
         public int SaveOrganisationLogo(byte[] bytes)
-        {            
+        {
             var entity = new DbOrganisationLogo
             {
                 Content = Convert.ToBase64String(bytes),
                 CreateOn = DateTime.UtcNow,
-                CreateBy = SecurityContext.CurrentAccount.ID.ToString()
+                CreateBy = _securityContext.CurrentAccount.ID.ToString()
             };
 
             CRMDbContext.OrganisationLogo.Add(entity);
@@ -255,9 +256,9 @@ namespace ASC.CRM.Core.Dao
         }
 
         public string GetOrganisationLogoBase64(int logo_id)
-        {           
+        {
             if (logo_id <= 0) throw new ArgumentException();
-            
+
             return Query(CRMDbContext.OrganisationLogo)
                                 .Where(x => x.Id == logo_id)
                                 .Select(x => x.Content)
@@ -276,21 +277,21 @@ namespace ASC.CRM.Core.Dao
         {
             return set.Where(r => r.TenantId == TenantID);
         }
-        
+
         protected string GetTenantColumnName(string table)
         {
             var tenant = "tenant_id";
-            
+
             if (!table.Contains(" ")) return tenant;
-        
-            return table.Substring(table.IndexOf(" ")).Trim() + "." + tenant;        
+
+            return table.Substring(table.IndexOf(" ")).Trim() + "." + tenant;
         }
 
         protected static Guid ToGuid(object guid)
         {
             var str = guid as string;
-            
-            return !string.IsNullOrEmpty(str) ? new Guid(str) : Guid.Empty;        
+
+            return !string.IsNullOrEmpty(str) ? new Guid(str) : Guid.Empty;
         }
     }
 }

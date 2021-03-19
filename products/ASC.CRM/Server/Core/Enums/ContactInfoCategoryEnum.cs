@@ -25,11 +25,12 @@
 
 
 using System.ComponentModel;
+
 using ASC.CRM.Classes;
 
 namespace ASC.CRM.Core.Enums
 {
-    [TypeConverter(typeof (LocalizedEnumConverter))]
+    [TypeConverter(typeof(LocalizedEnumConverter))]
     public enum ContactInfoBaseCategory
     {
         Home,
@@ -37,7 +38,7 @@ namespace ASC.CRM.Core.Enums
         Other
     }
 
-    [TypeConverter(typeof (LocalizedEnumConverter))]
+    [TypeConverter(typeof(LocalizedEnumConverter))]
     public enum PhoneCategory
     {
         Home,
@@ -58,14 +59,14 @@ namespace ASC.CRM.Core.Enums
         Country
     }
 
-    [TypeConverter(typeof (LocalizedEnumConverter))]
+    [TypeConverter(typeof(LocalizedEnumConverter))]
     public enum AddressCategory
     {
         Home,
         Postal,
         Office,
         Billing,
-        Other, 
+        Other,
         Work
     }
 }

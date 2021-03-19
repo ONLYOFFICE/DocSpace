@@ -60,8 +60,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Data;
+using System.IO;
 using System.Text;
 
 namespace ASC.Web.CRM.Classes
@@ -81,7 +81,7 @@ namespace ASC.Web.CRM.Classes
         /// <summary>
         /// This reader will read all of the CSV data
         /// </summary>
-        private BinaryReader reader;
+        private readonly BinaryReader reader;
 
         /// <summary>
         /// The number of rows to scan for types when building a DataTable (0 to scan the whole file)

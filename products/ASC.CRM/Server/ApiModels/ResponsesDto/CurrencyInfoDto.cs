@@ -27,7 +27,10 @@
 using System;
 using System.Runtime.Serialization;
 
-using ASC.Common;
+using ASC.CRM.Core;
+using ASC.CRM.Mapping;
+
+using AutoMapper;
 
 namespace ASC.CRM.ApiModels
 {
@@ -35,18 +38,18 @@ namespace ASC.CRM.ApiModels
     ///  Currency information
     /// </summary>
     [DataContract(Name = "currencyInfo", Namespace = "")]
-    public class CurrencyInfoDto
+    public class CurrencyInfoDto : IMapFrom<CurrencyInfo>
     {
         public CurrencyInfoDto()
         {
 
 
-        }       
-        public String Title { get; set; }        
-        public String Symbol { get; set; }        
-        public String Abbreviation { get; set; }        
-        public String CultureName { get; set; }        
-        public bool IsConvertable { get; set; }        
+        }
+        public String Title { get; set; }
+        public String Symbol { get; set; }
+        public String Abbreviation { get; set; }
+        public String CultureName { get; set; }
+        public bool IsConvertable { get; set; }
         public bool IsBasic { get; set; }
         public static CurrencyInfoDto GetSample()
         {
@@ -60,13 +63,18 @@ namespace ASC.CRM.ApiModels
                 IsBasic = false
             };
         }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<CurrencyInfo, CurrencyInfoDto>();
+        }
     }
-      
+
     /// <summary>
     ///  Currency rate information
     /// </summary>
     [DataContract(Name = "currencyRateInfo", Namespace = "")]
-    public class CurrencyRateInfoDto : CurrencyInfoDto
+    public class CurrencyRateInfoDto : CurrencyInfoDto, IMapFrom<CurrencyInfo>
     {
         public CurrencyRateInfoDto()
         {
@@ -78,7 +86,6 @@ namespace ASC.CRM.ApiModels
         //    Rate = rate;
         //}
 
-        
         public decimal Rate { get; set; }
     }
 }

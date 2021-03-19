@@ -26,15 +26,18 @@
 
 #region Import
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
+
 using LumenWorks.Framework.IO.Csv;
+
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -159,7 +162,7 @@ namespace ASC.Web.CRM.Classes
                 }
 
                 ImportDataCache.Insert(EntityType.Case, (ImportDataOperation)Clone());
-                              
+
                 var newIDs = casesDao.SaveCasesList(findedCases);
                 findedCases.ForEach(d => d.ID = newIDs[d.ID]);
 
@@ -176,7 +179,7 @@ namespace ASC.Web.CRM.Classes
                     throw new OperationCanceledException();
                 }
 
-                ImportDataCache.Insert(EntityType.Case, (ImportDataOperation)Clone());               
+                ImportDataCache.Insert(EntityType.Case, (ImportDataOperation)Clone());
 
                 foreach (var findedCasesMemberKey in findedCasesMembers.Keys)
                 {
@@ -192,7 +195,7 @@ namespace ASC.Web.CRM.Classes
                     throw new OperationCanceledException();
                 }
 
-                ImportDataCache.Insert(EntityType.Case, (ImportDataOperation)Clone());               
+                ImportDataCache.Insert(EntityType.Case, (ImportDataOperation)Clone());
 
 
                 foreach (var findedTagKey in findedTags.Keys)
@@ -213,7 +216,7 @@ namespace ASC.Web.CRM.Classes
                     throw new OperationCanceledException();
                 }
 
-                ImportDataCache.Insert(EntityType.Case,(ImportDataOperation)Clone());               
+                ImportDataCache.Insert(EntityType.Case, (ImportDataOperation)Clone());
 
             }
 

@@ -24,13 +24,12 @@
 */
 
 
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
 using ASC.Api.Core;
 using ASC.VoipService;
 using ASC.Web.Api.Models;
-
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 
 namespace ASC.CRM.ApiModels
 {

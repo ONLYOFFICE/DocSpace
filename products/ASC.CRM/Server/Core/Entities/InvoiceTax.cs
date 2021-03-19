@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+
 using ASC.Common.Security;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Mapping;
@@ -45,8 +46,8 @@ namespace ASC.CRM.Core.Entities
 
         [DataMember(Name = "rate")]
         public decimal Rate { get; set; }
-        
-        
+
+
         [DataMember(Name = "createOn")]
         public DateTime CreateOn { get; set; }
 
@@ -55,7 +56,7 @@ namespace ASC.CRM.Core.Entities
 
         [DataMember(Name = "lastModifedOn")]
         public DateTime? LastModifedOn { get; set; }
-        
+
         [DataMember(Name = "lastModifedBy")]
         public Guid? LastModifedBy { get; set; }
 

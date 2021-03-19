@@ -24,19 +24,15 @@
 */
 
 
+using System;
+using System.Runtime.Serialization;
+
 using ASC.Api.Core;
-using ASC.Common;
-using ASC.CRM.Core;
-using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
-using ASC.CRM.Core.Enums;
 using ASC.CRM.Mapping;
 using ASC.Web.Api.Models;
 
 using AutoMapper;
-
-using System;
-using System.Runtime.Serialization;
 
 namespace ASC.CRM.ApiModels
 {
@@ -46,18 +42,18 @@ namespace ASC.CRM.ApiModels
     [DataContract(Name = "task", Namespace = "")]
     public class TaskDto : IMapFrom<Task>
     {
-        public int Id { get; set; }        
-        public EmployeeWraper CreateBy { get; set; }        
-        public ApiDateTime Created { get; set; }        
-        public ContactBaseWithEmailDto Contact { get; set; }        
-        public string Title { get; set; }        
-        public string Description { get; set; }        
-        public ApiDateTime DeadLine { get; set; }        
-        public int AlertValue { get; set; }        
-        public EmployeeWraper Responsible { get; set; }        
-        public bool IsClosed { get; set; }        
-        public TaskCategoryBaseDto Category { get; set; }        
-        public EntityDto Entity { get; set; }       
+        public int Id { get; set; }
+        public EmployeeWraper CreateBy { get; set; }
+        public ApiDateTime Created { get; set; }
+        public ContactBaseWithEmailDto Contact { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public ApiDateTime DeadLine { get; set; }
+        public int AlertValue { get; set; }
+        public EmployeeWraper Responsible { get; set; }
+        public bool IsClosed { get; set; }
+        public TaskCategoryBaseDto Category { get; set; }
+        public EntityDto Entity { get; set; }
         public bool CanEdit { get; set; }
         public static TaskDto GetSample()
         {
@@ -84,14 +80,14 @@ namespace ASC.CRM.ApiModels
     public class TaskBaseDto
     {
         public int Id { get; set; }
-        public String Title { get; set; }        
-        public String Description { get; set; }        
-        public ApiDateTime DeadLine { get; set; }        
-        public int AlertValue { get; set; }        
-        public EmployeeWraper Responsible { get; set; }        
-        public bool IsClosed { get; set; }        
-        public TaskCategoryBaseDto Category { get; set; }        
-        public EntityDto Entity { get; set; }        
+        public String Title { get; set; }
+        public String Description { get; set; }
+        public ApiDateTime DeadLine { get; set; }
+        public int AlertValue { get; set; }
+        public EmployeeWraper Responsible { get; set; }
+        public bool IsClosed { get; set; }
+        public TaskCategoryBaseDto Category { get; set; }
+        public EntityDto Entity { get; set; }
         public bool CanEdit { get; set; }
         public static TaskBaseDto GetSample()
         {

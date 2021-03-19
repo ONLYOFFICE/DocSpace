@@ -24,6 +24,14 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Net;
+
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -35,14 +43,6 @@ using ASC.Web.Core.Utility.Skins;
 using ASC.Web.CRM.Configuration;
 
 using Microsoft.Extensions.Options;
-
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Net;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -83,7 +83,7 @@ namespace ASC.Web.CRM.Classes
                                    IOptionsMonitor<ILog> logger,
                                    ICache cache,
                                    ICacheNotify<ContactPhotoManagerCacheItem> cacheNotify,
-                                   WorkerQueueOptionsManager<ResizeWorkerItem> workerQueueOptionsManager )
+                                   WorkerQueueOptionsManager<ResizeWorkerItem> workerQueueOptionsManager)
         {
             Global = global;
             WebImageSupplier = webImageSupplier;

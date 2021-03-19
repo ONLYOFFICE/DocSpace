@@ -24,16 +24,17 @@
 */
 
 
-using ASC.Api.Core;
-using ASC.CRM.ApiModels;
-using ASC.Common;
+using System;
+using System.Runtime.Serialization;
+
 using ASC.CRM.Classes;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Enums;
-using ASC.Web.Api.Models;
+using ASC.CRM.Mapping;
+
+using AutoMapper;
+
 using Newtonsoft.Json.Linq;
-using System;
-using System.Runtime.Serialization;
 
 namespace ASC.CRM.ApiModels
 {
@@ -128,7 +129,7 @@ namespace ASC.CRM.ApiModels
     ///   Contact information
     /// </summary>
     [DataContract(Name = "commonDataItem", Namespace = "")]
-    public class ContactInfoDto
+    public class ContactInfoDto : IMapFrom<ContactInfo>
     {
         public ContactInfoDto()
         {
@@ -162,6 +163,11 @@ namespace ASC.CRM.ApiModels
                 Data = "support@onlyoffice.com",
                 InfoType = ContactInfoType.Email
             };
+        }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<ContactInfo, ContactInfoDto>();
         }
     }
 }

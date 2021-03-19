@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+
 using ASC.Common.Security;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
@@ -69,7 +70,7 @@ namespace ASC.CRM.Core.Entities
 
         [DataMember(Name = "bid_currency")]
         public string BidCurrency { get; set; }
-        
+
         [DataMember(Name = "per_period_value")]
         public int PerPeriodValue { get; set; }
 
@@ -92,7 +93,7 @@ namespace ASC.CRM.Core.Entities
         //    set { ; }
         //}
 
-        
+
         public DateTime ExpectedCloseDate { get; set; }
 
         [DataMember(Name = "expected_close_date")]
@@ -105,7 +106,7 @@ namespace ASC.CRM.Core.Entities
         //    }
         //    set { ; }
         //}
-        
+
         public object SecurityId
         {
             get { return ID; }
@@ -119,6 +120,6 @@ namespace ASC.CRM.Core.Entities
         public void Mapping(Profile profile)
         {
             profile.CreateMap<DbDeal, Deal>();
-        }   
+        }
     }
 }

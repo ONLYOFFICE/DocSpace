@@ -24,18 +24,19 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Common;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Resources;
-using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Web.Core;
+
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASC.Web.CRM.Configuration
 {

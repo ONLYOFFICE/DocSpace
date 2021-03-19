@@ -24,29 +24,25 @@
 */
 
 
+using System;
+using System.Globalization;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Xml;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Resources;
 using ASC.Files.Core;
-using ASC.Web.Core.Files;
-using ASC.Web.CRM.Core;
 using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Utils;
-using Autofac;
-using Microsoft.Extensions.Options;
-using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Xml;
+
+using ICSharpCode.SharpZipLib.Zip;
 
 using Microsoft.Extensions.DependencyInjection;
-using ASC.Common;
-using ASC.Web.Files.Classes;
-using ICSharpCode.SharpZipLib.Zip;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -295,8 +291,8 @@ namespace ASC.Web.CRM.Classes
             using (var zipInputStream = new ZipInputStream(Template))
             {
                 ZipEntry zipEntry;
-               
-                while((zipEntry = zipInputStream.GetNextEntry()) != null)
+
+                while ((zipEntry = zipInputStream.GetNextEntry()) != null)
                 {
                     zipOutputStream.PutNextEntry(new ZipEntry(zipEntry.Name));
 
@@ -311,7 +307,7 @@ namespace ASC.Web.CRM.Classes
                         var document = new XmlDocument();
 
                         document.Load(documentXmlStream);
-                        
+
                         var documentStr = GenerateDocumentXml(document, invoiceData, logo);
 
                         var documentStrAsStream = new MemoryStream(Encoding.UTF8.GetBytes(documentStr));
@@ -789,7 +785,7 @@ namespace ASC.Web.CRM.Classes
         public int FileId { get; set; }
     }
 
-    class CustomStaticDataSource: IStaticDataSource
+    class CustomStaticDataSource : IStaticDataSource
     {
         private Stream _stream;
         // Implement method from IStaticDataSource

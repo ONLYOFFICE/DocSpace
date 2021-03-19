@@ -26,13 +26,13 @@
 
 #region Import
 
-using ASC.CRM.Resources;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
+
+using ASC.CRM.Resources;
 
 #endregion
 
@@ -52,7 +52,7 @@ namespace ASC.CRM.Classes
             return TryParse<T>(value, false, out result);
         }
 
-        public static bool TryParse<T>(string value,  bool ignoreCase, out T result)
+        public static bool TryParse<T>(string value, bool ignoreCase, out T result)
            where T : struct // error CS0702: Constraint cannot be special class 'System.Enum'
         {
             if (value == null)
@@ -69,16 +69,16 @@ namespace ASC.CRM.Classes
             return false;
         }
 
-   
+
     }
 
     public class LocalizedEnumConverter : EnumConverter
     {
         private class LookupTable : Dictionary<string, object> { }
-        private Dictionary<CultureInfo, LookupTable> _lookupTables = new Dictionary<CultureInfo, LookupTable>();
-        private System.Resources.ResourceManager _resourceManager;
-        private bool _isFlagEnum = false;
-        private Array _flagValues;
+        private readonly Dictionary<CultureInfo, LookupTable> _lookupTables = new Dictionary<CultureInfo, LookupTable>();
+        private readonly System.Resources.ResourceManager _resourceManager;
+        private readonly bool _isFlagEnum = false;
+        private readonly Array _flagValues;
 
         /// <summary>
         /// GetList the lookup table for the given culture (creating if necessary)
@@ -195,7 +195,7 @@ namespace ASC.CRM.Classes
             lookupTable.TryGetValue(text, out result);
             return result;
         }
-        
+
         private object GetFlagValue(CultureInfo culture, string text)
         {
             LookupTable lookupTable = GetLookupTable(culture);
@@ -238,7 +238,7 @@ namespace ASC.CRM.Classes
                 }
                 return result;
             }
-            
+
             return base.ConvertFrom(context, culture, value);
 
         }
@@ -284,7 +284,7 @@ namespace ASC.CRM.Classes
         {
             var converter = TypeDescriptor.GetConverter(enumType);
 
-            return (from Enum value in Enum.GetValues(enumType) 
+            return (from Enum value in Enum.GetValues(enumType)
                     select converter.ConvertToString(null, CultureInfo.CurrentUICulture, value)).ToList();
 
         }

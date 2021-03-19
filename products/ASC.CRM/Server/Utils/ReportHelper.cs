@@ -24,23 +24,24 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Net;
+
+using ASC.Common;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Files.Core;
-using ASC.Web.CRM.Core;
 using ASC.Web.Files.Services.DocumentService;
-using Autofac;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using Microsoft.Extensions.DependencyInjection;
-using ASC.Common;
-using ASC.Core;
+
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+
+using Newtonsoft.Json;
 
 namespace ASC.Web.CRM.Classes
 {

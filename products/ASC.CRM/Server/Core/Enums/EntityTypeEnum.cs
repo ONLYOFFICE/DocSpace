@@ -24,15 +24,16 @@
 */
 
 
-using ASC.CRM.Classes;
 using System.ComponentModel;
+
+using ASC.CRM.Classes;
 
 namespace ASC.CRM.Core.Enums
 {
     [TypeConverter(typeof(LocalizedEnumConverter))]
     public enum EntityType
     {
-        Any  = -1,
+        Any = -1,
         Contact = 0,
         Opportunity = 1,
         RelationshipEvent = 2,

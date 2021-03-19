@@ -24,39 +24,37 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using ASC.Api.CRM;
 using ASC.Api.Documents;
 using ASC.Common.Web;
-using ASC.Core;
 using ASC.Core.Common.Settings;
-using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Enums;
-using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Classes;
 using ASC.Web.Files.Services.DocumentService;
 
-using Microsoft.AspNetCore.Http;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using AutoMapper;
 
 namespace ASC.CRM.Api
 {
     public class ReportsController : BaseApiController
     {
-        public ReportsController(CRMSecurity cRMSecurity,
+        public ReportsController(CRMSecurity crmSecurity,
                      DaoFactory daoFactory,
                      SettingsManager settingsManager,
                      Global global,
                      ReportHelper reportHelper,
                      FileWrapperHelper fileWrapperHelper,
-                     DocbuilderReportsUtilityHelper docbuilderReportsUtilityHelper
+                     DocbuilderReportsUtilityHelper docbuilderReportsUtilityHelper,
+                     IMapper mapper
                      )
-            : base(daoFactory, cRMSecurity)
+            : base(daoFactory, crmSecurity, mapper)
         {
             SettingsManager = settingsManager;
             Global = global;
@@ -66,7 +64,7 @@ namespace ASC.CRM.Api
         }
 
         public DocbuilderReportsUtilityHelper DocbuilderReportsUtilityHelper { get; }
-   
+
         public FileWrapperHelper FileWrapperHelper { get; }
         public ReportHelper ReportHelper { get; }
         public Global Global { get; }
@@ -81,9 +79,9 @@ namespace ASC.CRM.Api
         public IEnumerable<FileWrapper<int>> GetFiles()
         {
             if (!Global.CanCreateReports)
-                throw CRMSecurity.CreateSecurityException();
+                throw _crmSecurity.CreateSecurityException();
 
-            var reportDao = DaoFactory.GetReportDao();
+            var reportDao = _daoFactory.GetReportDao();
 
             var files = reportDao.GetFiles();
 
@@ -115,15 +113,15 @@ namespace ASC.CRM.Api
         public void DeleteFile(int fileid)
         {
             if (!Global.CanCreateReports)
-                throw CRMSecurity.CreateSecurityException();
+                throw _crmSecurity.CreateSecurityException();
 
             if (fileid < 0) throw new ArgumentException();
 
-            var file = DaoFactory.GetReportDao().GetFile(fileid);
+            var file = _daoFactory.GetReportDao().GetFile(fileid);
 
             if (file == null) throw new ItemNotFoundException("File not found");
 
-            DaoFactory.GetReportDao().DeleteFile(fileid);
+            _daoFactory.GetReportDao().DeleteFile(fileid);
         }
 
         /// <summary>Get the state of the report generation task</summary>
@@ -135,7 +133,7 @@ namespace ASC.CRM.Api
         public ReportState GetStatus()
         {
             if (!Global.CanCreateReports)
-                throw CRMSecurity.CreateSecurityException();
+                throw _crmSecurity.CreateSecurityException();
 
             return DocbuilderReportsUtilityHelper.Status(ReportOrigin.CRM);
 
@@ -149,7 +147,7 @@ namespace ASC.CRM.Api
         public void Terminate()
         {
             if (!Global.CanCreateReports)
-                throw CRMSecurity.CreateSecurityException();
+                throw _crmSecurity.CreateSecurityException();
 
             DocbuilderReportsUtilityHelper.Terminate(ReportOrigin.CRM);
         }
@@ -166,7 +164,7 @@ namespace ASC.CRM.Api
         public object CheckReportData(ReportType type, ReportTimePeriod timePeriod, Guid[] managers)
         {
             if (!Global.CanCreateReports)
-                throw CRMSecurity.CreateSecurityException();
+                throw _crmSecurity.CreateSecurityException();
 
             return new
             {
@@ -187,7 +185,7 @@ namespace ASC.CRM.Api
         public ReportState GenerateReport(ReportType type, ReportTimePeriod timePeriod, Guid[] managers)
         {
             if (!Global.CanCreateReports)
-                throw CRMSecurity.CreateSecurityException();
+                throw _crmSecurity.CreateSecurityException();
 
             return ReportHelper.RunGenareteReport(type, timePeriod, managers);
         }

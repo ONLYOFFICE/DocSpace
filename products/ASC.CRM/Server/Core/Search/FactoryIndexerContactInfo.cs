@@ -25,23 +25,19 @@
 
 
 using System;
-using System.Text;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.CRM.Core;
-using ASC.CRM.Core.Enums;
-using ASC.ElasticSearch;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
-
-using Microsoft.Extensions.DependencyInjection;
-using ASC.Common;
-using ASC.CRM.Core.EF;
-using ASC.ElasticSearch.Core;
-using ASC.Common.Caching;
-using ASC.CRM.Core.Dao;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
+using ASC.Common.Caching;
+using ASC.Common.Logging;
+using ASC.Core;
+using ASC.CRM.Core.Dao;
+using ASC.CRM.Core.EF;
+using ASC.ElasticSearch;
+using ASC.ElasticSearch.Core;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.CRM.Core.Search
 {
