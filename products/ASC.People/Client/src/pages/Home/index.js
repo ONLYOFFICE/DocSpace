@@ -17,9 +17,31 @@ import {
 } from "./Section";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
+import { getFilterByLocation } from "../../helpers/converters";
 
-const Home = ({ isLoading }) => {
-  //console.log("People Home render");
+const Home = ({
+  isLoading,
+  history,
+  getUsersList,
+  setIsLoading,
+  setIsRefresh,
+}) => {
+  const { location } = history;
+  const { pathname } = location;
+  console.log("People Home render");
+
+  useEffect(() => {
+    if (pathname.indexOf("/people/filter") > -1) {
+      setIsLoading(true);
+      setIsRefresh(true);
+      const newFilter = getFilterByLocation(location);
+      console.log("PEOPLE URL changed", pathname, newFilter);
+      getUsersList(newFilter).finally(() => {
+        setIsLoading(false);
+        setIsRefresh(false);
+      });
+    }
+  }, [pathname, location]);
 
   useEffect(() => {
     isLoading ? showLoader() : hideLoader();
@@ -62,8 +84,9 @@ Home.propTypes = {
   isLoading: PropTypes.bool,
 };
 
-export default withRouter(
-  inject(({ peopleStore }) => ({
-    isLoading: peopleStore.isLoading,
-  }))(observer(Home))
-);
+export default inject(({ peopleStore }) => ({
+  isLoading: peopleStore.isLoading,
+  getUsersList: peopleStore.usersStore.getUsersList,
+  setIsLoading: peopleStore.setIsLoading,
+  setIsRefresh: peopleStore.setIsRefresh,
+}))(observer(withRouter(Home)));

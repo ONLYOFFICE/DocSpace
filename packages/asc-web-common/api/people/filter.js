@@ -53,7 +53,7 @@ class Filter {
     return this.page > 0;
   };
 
-  toDto = () => {
+  toDto = (forUrl = false) => {
     const {
       pageCount,
       sortBy,
@@ -67,15 +67,12 @@ class Filter {
 
     let dtoFilter = {
       StartIndex: this.getStartIndex(),
-      Count: pageCount,
       sortby: sortBy,
       sortorder: sortOrder,
       employeestatus: employeeStatus,
       activationstatus: activationStatus,
       filtervalue: (search ?? "").trim(),
       groupId: group,
-      fields:
-        "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups",
     };
 
     switch (role) {
@@ -92,11 +89,22 @@ class Filter {
         break;
     }
 
+    if (!forUrl) {
+      dtoFilter.fields =
+        "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups";
+      dtoFilter.Count = pageCount;
+    } else {
+      if (pageCount !== DEFAULT_PAGE_COUNT) {
+        dtoFilter.Count = pageCount;
+      }
+    }
+
     return dtoFilter;
   };
 
   toUrlParams = () => {
-    const dtoFilter = this.toDto();
+    const dtoFilter = this.toDto(true);
+
     const str = toUrlParams(dtoFilter, true);
     return str;
   };

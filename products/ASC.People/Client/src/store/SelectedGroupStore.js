@@ -26,8 +26,10 @@ class SelectedGroupStore {
     const { setIsLoading } = this.peopleStore;
 
     setIsLoading(true);
+
     let newFilter = filter.clone();
     newFilter.group = groupId;
+
     clearSelection();
     getUsersList(newFilter).finally(() => setIsLoading(false));
   };

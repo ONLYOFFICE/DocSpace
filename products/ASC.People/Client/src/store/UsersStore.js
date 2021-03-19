@@ -34,13 +34,18 @@ class UsersStore {
       filterData.employeeStatus = EmployeeStatus.Active;
     }
 
+    if (filterData.group && filterData.group === "root")
+      filterData.group = undefined;
+
     const res = await api.people.getUserList(filterData);
     filterData.total = res.total;
 
     this.peopleStore.filterStore.setFilterParams(filterData);
-    this.peopleStore.selectedGroupStore.setSelectedGroup(filterData.group);
+    this.peopleStore.selectedGroupStore.setSelectedGroup(
+      filterData.group || "root"
+    );
 
-    this.users = res.items;
+    this.setUsers(res.items);
   };
 
   setUsers = (users) => {
