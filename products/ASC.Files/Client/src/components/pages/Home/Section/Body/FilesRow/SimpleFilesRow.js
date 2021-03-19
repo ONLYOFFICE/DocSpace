@@ -70,14 +70,11 @@ const SimpleFilesRow = (props) => {
     isPrivacy,
     isRecycleBin,
     dragging,
-    //selected,
-    //setSelected,
     checked,
     canShare,
     isFolder,
     draggable,
     isRootFolder,
-    //setSelection,
     homepage,
     isTabletView,
     actionId,
@@ -106,6 +103,7 @@ const SimpleFilesRow = (props) => {
     setDragging,
     startUpload,
     setShareItem,
+    onSelectItem,
     history,
   } = props;
 
@@ -267,6 +265,10 @@ const SimpleFilesRow = (props) => {
       : deleteFolderAction(item.id, item.parentId, translations)
           .then(() => toastr.success(t("FolderRemoved")))
           .catch((err) => toastr.error(err));
+  };
+
+  const rowContextClick = () => {
+    onSelectItem(item);
   };
 
   const getFilesContextOptions = useCallback(() => {
@@ -510,6 +512,7 @@ const SimpleFilesRow = (props) => {
         element={element}
         contentElement={sharedButton}
         onSelect={onContentRowSelect}
+        rowContextClick={rowContextClick}
         isPrivacy={isPrivacy}
         {...checkedProps}
         {...contextOptionsProps}
@@ -552,15 +555,7 @@ export default inject(
       setShareItem,
     } = dialogsStore;
 
-    const {
-      //selected,
-      //setSelected,
-      selection,
-      canShare,
-      //setSelection,
-      openDocEditor,
-      fileActionStore,
-    } = filesStore;
+    const { selection, canShare, openDocEditor, fileActionStore } = filesStore;
 
     const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
     const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
@@ -584,6 +579,7 @@ export default inject(
       openLocationAction,
       selectRowAction,
       setThirdpartyInfo,
+      onSelectItem,
     } = filesActionsStore;
 
     const { setMediaViewerData } = mediaViewerDataStore;
@@ -597,9 +593,6 @@ export default inject(
       isRecycleBin: isRecycleBinFolder,
       isRootFolder,
       canShare,
-      //selected,
-      //setSelected,
-      //setSelection,
       checked: selection.some((el) => el.id === item.id),
       isFolder,
       draggable,
@@ -631,6 +624,7 @@ export default inject(
       selectedFolderId,
       setDragging,
       startUpload,
+      onSelectItem,
     };
   }
 )(withTranslation("Home")(observer(withRouter(SimpleFilesRow))));

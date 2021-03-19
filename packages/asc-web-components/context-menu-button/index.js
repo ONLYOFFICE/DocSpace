@@ -10,6 +10,7 @@ import Aside from "../aside";
 import Heading from "../heading";
 import Link from "../link";
 import { desktop } from "../utils/device";
+import { isMobile } from "react-device-detect";
 import {
   StyledBodyContent,
   StyledHeaderContent,
@@ -201,6 +202,7 @@ class ContextMenuButton extends React.Component {
             open={isOpen}
             clickOutsideAction={this.clickOutsideAction}
             columnCount={columnCount}
+            withBackdrop={isMobile}
           >
             {this.state.data.map(
               (item, index) =>
