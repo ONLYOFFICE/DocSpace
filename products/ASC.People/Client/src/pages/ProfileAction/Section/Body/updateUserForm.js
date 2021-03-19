@@ -47,6 +47,7 @@ import {
   mapGroupsToGroupSelectorOptions,
   toEmployeeWrapper,
 } from "../../../../helpers/people-helpers";
+import { getUserList } from "@appserver/common/api/people/fake";
 
 const dialogsDataset = {
   changeEmail: "changeEmail",
@@ -265,6 +266,7 @@ class UpdateUserForm extends React.Component {
   }
 
   handleSubmit() {
+    const { getUsersList, filter } = this.props;
     if (!this.validate()) return false;
 
     const {
@@ -926,5 +928,6 @@ export default withRouter(
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
+    getUsersList: peopleStore.usersStore.getUsersList,
   }))(observer(withTranslation("ProfileAction")(UpdateUserForm)))
 );
