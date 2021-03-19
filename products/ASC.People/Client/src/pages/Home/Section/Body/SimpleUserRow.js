@@ -19,7 +19,6 @@ const SimpleUserRow = ({
   selectUser,
   selectGroup,
   deselectUser,
-  homepage,
   setChangeEmailDialogVisible,
   setChangePasswordDialogVisible,
   setDeleteProfileDialogVisible,
@@ -57,7 +56,7 @@ const SimpleUserRow = ({
   };
 
   const onEditClick = () => {
-    history.push(`${homepage}/edit/${userName}`);
+    history.push(`${config.homepage}/edit/${userName}`);
   };
 
   const toggleChangeEmailDialog = () => {
@@ -116,7 +115,7 @@ const SimpleUserRow = ({
   };
 
   const onReassignDataClick = (e) => {
-    history.push(`${homepage}/reassign/${userName}`);
+    history.push(`${config.homepage}/reassign/${userName}`);
   };
 
   const onDeletePersonalDataClick = (e) => {
@@ -281,7 +280,6 @@ const SimpleUserRow = ({
 export default withRouter(
   inject(({ auth, peopleStore }, { person }) => {
     return {
-      homepage: config.homepage,
       isAdmin: auth.isAdmin,
       currentUserId: auth.userStore.user.id,
       checked: peopleStore.selectionStore.selection.some(

@@ -99,7 +99,7 @@ class SectionBodyContent extends React.PureComponent {
 
   onEditProfileClick = () =>
     this.props.history.push(
-      `${this.props.settings.homepage}/edit/${this.props.profile.userName}`
+      `${config.homepage}/edit/${this.props.profile.userName}`
     );
 
   render() {
@@ -195,8 +195,6 @@ class SectionBodyContent extends React.PureComponent {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
-    settings: auth.settingsStore,
-    homepage: config.homepage,
     cultures: auth.settingsStore.cultures,
     culture: auth.settingsStore.culture,
     getPortalCultures: auth.settingsStore.getPortalCultures,
