@@ -65,6 +65,10 @@ const InfoItemValue = styled.div`
       margin-left: -8px;
     }
   }
+
+  .email-link {
+    vertical-align: 4px;
+  }
 `;
 
 const IconButtonWrapper = styled.div`
@@ -253,6 +257,7 @@ class ProfileInfo extends React.PureComponent {
                   </IconButtonWrapper>
                 )}
                 <Link
+                  className="email-link"
                   type="page"
                   fontSize="13px"
                   isHovered={true}

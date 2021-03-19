@@ -10,8 +10,8 @@ import {
   StyledFilterItemContent,
   StyledCloseButtonBlock,
 } from "../StyledFilterInput";
-//import GroupSelector from "people/GroupSelector"; //TODO: Move out GroupSelector  of FilterItem
-//import PeopleSelector from "people/PeopleSelector"; //TODO: Move out PeopleSelector  of FilterItem
+import GroupSelector from "people/GroupSelector"; //TODO: Move out GroupSelector  of FilterItem
+import PeopleSelector from "people/PeopleSelector"; //TODO: Move out PeopleSelector  of FilterItem
 
 class FilterItem extends React.Component {
   constructor(props) {
@@ -181,13 +181,13 @@ class FilterItem extends React.Component {
                 directionX="left"
                 dropDownMaxHeight={200}
               ></ComboBox>
-              {/* <GroupSelector
+              <GroupSelector
                 isOpen={isOpenSelector}
                 isMultiSelect={false}
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
                 displayType={asideView ? "aside" : "auto"}
-              /> */}
+              />
             </>
           )}
           {typeSelector === "user" && (
@@ -207,7 +207,7 @@ class FilterItem extends React.Component {
                 directionX="left"
                 dropDownMaxHeight={200}
               ></ComboBox>
-              {/* <PeopleSelector
+              <PeopleSelector
                 isOpen={isOpenSelector}
                 groupsCaption={groupsCaption}
                 defaultOption={defaultOption}
@@ -215,7 +215,7 @@ class FilterItem extends React.Component {
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
                 displayType={asideView ? "aside" : "auto"}
-              /> */}
+              />
             </>
           )}
           {!typeSelector && (

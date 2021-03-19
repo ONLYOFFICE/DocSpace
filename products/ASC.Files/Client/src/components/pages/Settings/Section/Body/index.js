@@ -9,7 +9,7 @@ import { inject, observer } from "mobx-react";
 
 const StyledSettings = styled.div`
   display: grid;
-  grid-gap: 12px;
+  grid-gap: 19px;
 
   .toggle-btn {
     position: relative;
@@ -20,8 +20,8 @@ const StyledSettings = styled.div`
     margin-top: 26px;
   }
 
-  .toggle-btn:first-child {
-    margin-top: -3px;
+  .toggle-button-text {
+    margin-top: -1px;
   }
 `;
 
