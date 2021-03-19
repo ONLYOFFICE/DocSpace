@@ -47,7 +47,7 @@ import {
   mapGroupsToGroupSelectorOptions,
   toEmployeeWrapper,
 } from "../../../../helpers/people-helpers";
-import { getUserList } from "@appserver/common/api/people/fake";
+import config from "../../../../../package.json";
 
 const dialogsDataset = {
   changeEmail: "changeEmail",
@@ -266,7 +266,7 @@ class UpdateUserForm extends React.Component {
   }
 
   handleSubmit() {
-    const { getUsersList, filter } = this.props;
+ 
     if (!this.validate()) return false;
 
     const {
@@ -284,9 +284,6 @@ class UpdateUserForm extends React.Component {
         updateProfileInUsers(profile);
         toastr.success(t("ChangesSavedSuccessfully"));
         setIsEditingForm(false);
-        // this.props.history.push(
-        //   `${this.props.settings.homepage}/view/${profile.userName}`
-        // );
         history.goBack();
       })
       .catch((error) => {
@@ -305,12 +302,12 @@ class UpdateUserForm extends React.Component {
   }
 
   onCancel() {
-    const { filter, setFilter, history, settings } = this.props;
+    const { filter, setFilter, history } = this.props;
 
     if (document.referrer) {
       history.goBack();
     } else {
-      history.push(settings.homepage);
+      history.push(config.homepage);
       setFilter(filter);
     }
   }
@@ -546,7 +543,7 @@ class UpdateUserForm extends React.Component {
     } = this.state;
     const {
       t,
-      settings,
+      customNames,
       //avatarMax,
       disableProfileType,
       isAdmin,
@@ -557,7 +554,7 @@ class UpdateUserForm extends React.Component {
       regDateCaption,
       userPostCaption,
       groupCaption,
-    } = settings.customNames;
+    } = customNames;
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
@@ -910,7 +907,7 @@ class UpdateUserForm extends React.Component {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
-    settings: auth.settingsStore,
+    customNames: auth.settingsStore.customNames,
     isAdmin: auth.isAdmin,
     groups: peopleStore.groupsStore.groups,
     isEdit: peopleStore.editingFormStore.isEdit,
@@ -928,6 +925,5 @@ export default withRouter(
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
-    getUsersList: peopleStore.usersStore.getUsersList,
   }))(observer(withTranslation("ProfileAction")(UpdateUserForm)))
 );

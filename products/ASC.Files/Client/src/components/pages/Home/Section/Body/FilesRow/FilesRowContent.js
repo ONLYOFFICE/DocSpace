@@ -27,6 +27,7 @@ import { ConvertDialog } from "../../../../../dialogs";
 import EditingWrapperComponent from "../EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
 import { observer, inject } from "mobx-react";
+import config from "../../../../../../../package.json";
 
 const sideColor = "#A3A9AE";
 const StyledCheckIcon = styled(CheckIcon)`
@@ -129,8 +130,7 @@ class FilesRowContent extends React.PureComponent {
   }
 
   completeAction = (id) => {
-    const { item } = this.props;
-    this.props.editCompleteAction(id, !item.fileExst /* item */);
+    this.props.editCompleteAction(id, this.props.item);
   };
 
   updateItem = () => {
@@ -783,12 +783,7 @@ export default inject(
     { item }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
-    const {
-      homepage,
-      culture,
-      isDesktopClient,
-      isTabletView,
-    } = auth.settingsStore;
+    const { culture, isDesktopClient, isTabletView } = auth.settingsStore;
     const { setIsLoading, isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
     const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
@@ -841,7 +836,7 @@ export default inject(
     return {
       isDesktop: isDesktopClient,
       isTabletView,
-      homepage,
+      homepage: config.homepage,
       viewer: auth.userStore.user,
       culture,
       fileActionId,

@@ -213,6 +213,7 @@ class ConnectClouds extends React.Component {
                       flexDirection="row"
                       alignItems="baseline"
                       alignSelf="baseline"
+                      marginProp="auto 0"
                     >
                       <Text
                         style={{ width: 100 }}

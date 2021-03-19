@@ -16,6 +16,7 @@ import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import CheckIcon from "../../../../../../public/images/check.react.svg";
 import CrossIcon from "../../../../../../../../../public/images/cross.react.svg";
+import config from "../../../../../../package.json";
 
 const SimpleFilesTileContent = styled(TileContent)`
   .rowMainContainer {
@@ -431,7 +432,7 @@ export default inject(
     },
     { item }
   ) => {
-    const { homepage, culture } = auth.settingsStore;
+    const { culture } = auth.settingsStore;
     const { setIsLoading, isLoading, dragging } = initFilesStore;
     const {
       iconFormatsStore,
@@ -468,7 +469,7 @@ export default inject(
 
     return {
       culture,
-      homepage,
+      homepage: config.homepage,
       fileAction,
       folders,
       rootFolderId: selectedFolderStore.pathParts,

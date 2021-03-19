@@ -20,7 +20,7 @@ const StyledArticle = styled.article`
     background: #f8f9f9;
     min-width: 265px;
     height: 100% !important;
-    max-width: ${(props) => (props.isLoaded ? "calc(100vw - 368px)" : "265px")};
+    max-width: 265px;
     box-sizing: border-box;
     overflow: hidden auto;
     display: flex;
@@ -30,15 +30,17 @@ const StyledArticle = styled.article`
         cursor: ew-resize !important;
       }
     }
-    ${isMobile &&
-    css`
-      margin-top: 56px;
-      height: calc(100% - 56px) !important;
-      width: 240px !important;
-      @media ${tablet} {
-        margin-top: ${(props) => (props.pinned ? "56px;" : "0;")};
-      }
-    `}
+    ${
+      isMobile &&
+      css`
+        margin-top: 56px;
+        height: calc(100% - 56px) !important;
+        width: 240px !important;
+        @media ${tablet} {
+          margin-top: ${(props) => (props.pinned ? "56px;" : "0;")};
+        }
+      `
+    }
     @media ${tablet} {
       padding: 0 16px;
       ${(props) =>

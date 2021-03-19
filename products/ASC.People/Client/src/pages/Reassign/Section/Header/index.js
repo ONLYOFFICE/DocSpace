@@ -5,6 +5,7 @@ import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
+import config from "../../../../../package.json";
 
 const Wrapper = styled.div`
   display: grid;
@@ -24,12 +25,12 @@ const textStyle = {
 };
 
 const SectionHeaderContent = (props) => {
-  const { history, settings } = props;
+  const { history } = props;
   const { t } = useTranslation("Reassign");
 
   const onClickBack = useCallback(() => {
-    history.push(settings.homepage);
-  }, [history, settings]);
+    history.push(config.homepage);
+  }, [history]);
 
   return (
     <Wrapper>
@@ -54,8 +55,4 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-export default withRouter(
-  inject(({ auth }) => ({
-    settings: auth.settingsStore,
-  }))(observer(SectionHeaderContent))
-);
+export default withRouter(SectionHeaderContent);

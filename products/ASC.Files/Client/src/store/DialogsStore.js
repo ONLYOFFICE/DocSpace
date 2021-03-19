@@ -15,7 +15,6 @@ class DialogsStore {
 
   removeItem = null;
   connectItem = null;
-  shareItem = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -23,7 +22,6 @@ class DialogsStore {
 
   setSharingPanelVisible = (sharingPanelVisible) => {
     this.sharingPanelVisible = sharingPanelVisible;
-    !sharingPanelVisible && this.setShareItem(null);
   };
 
   setChangeOwnerPanelVisible = (ownerPanelVisible) => {
@@ -66,10 +64,6 @@ class DialogsStore {
 
   setEmptyTrashDialogVisible = (emptyTrashDialogVisible) => {
     this.emptyTrashDialogVisible = emptyTrashDialogVisible;
-  };
-
-  setShareItem = (shareItem) => {
-    this.shareItem = shareItem;
   };
 
   setConnectItem = (connectItem) => {

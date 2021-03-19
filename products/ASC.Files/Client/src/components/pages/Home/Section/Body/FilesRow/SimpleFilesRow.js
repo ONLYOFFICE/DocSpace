@@ -12,6 +12,7 @@ import { withRouter } from "react-router-dom";
 import toastr from "studio/toastr";
 import { FileAction } from "@appserver/common/constants";
 import copy from "copy-to-clipboard";
+import config from "../../../../../../../package.json";
 
 const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
@@ -70,14 +71,11 @@ const SimpleFilesRow = (props) => {
     isPrivacy,
     isRecycleBin,
     dragging,
-    //selected,
-    //setSelected,
     checked,
     canShare,
     isFolder,
     draggable,
     isRootFolder,
-    //setSelection,
     homepage,
     isTabletView,
     actionId,
@@ -105,7 +103,7 @@ const SimpleFilesRow = (props) => {
     setMediaViewerData,
     setDragging,
     startUpload,
-    setShareItem,
+    onSelectItem,
     history,
   } = props;
 
@@ -137,8 +135,8 @@ const SimpleFilesRow = (props) => {
   };
 
   const onClickShare = () => {
+    onSelectItem(item);
     setSharingPanelVisible(true);
-    setShareItem(item);
   };
   const onOwnerChange = () => setChangeOwnerPanelVisible(true);
   const onMoveAction = () => setMoveToPanelVisible(true);
@@ -267,6 +265,10 @@ const SimpleFilesRow = (props) => {
       : deleteFolderAction(item.id, item.parentId, translations)
           .then(() => toastr.success(t("FolderRemoved")))
           .catch((err) => toastr.error(err));
+  };
+
+  const rowContextClick = () => {
+    onSelectItem(item);
   };
 
   const getFilesContextOptions = useCallback(() => {
@@ -510,6 +512,7 @@ const SimpleFilesRow = (props) => {
         element={element}
         contentElement={sharedButton}
         onSelect={onContentRowSelect}
+        rowContextClick={rowContextClick}
         isPrivacy={isPrivacy}
         {...checkedProps}
         {...contextOptionsProps}
@@ -537,7 +540,7 @@ export default inject(
     },
     { item }
   ) => {
-    const { homepage, isTabletView } = auth.settingsStore;
+    const { isTabletView } = auth.settingsStore;
     const { dragging, setDragging } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -549,18 +552,9 @@ export default inject(
       setDeleteThirdPartyDialogVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
-      setShareItem,
     } = dialogsStore;
 
-    const {
-      //selected,
-      //setSelected,
-      selection,
-      canShare,
-      //setSelection,
-      openDocEditor,
-      fileActionStore,
-    } = filesStore;
+    const { selection, canShare, openDocEditor, fileActionStore } = filesStore;
 
     const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
     const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
@@ -584,6 +578,7 @@ export default inject(
       openLocationAction,
       selectRowAction,
       setThirdpartyInfo,
+      onSelectItem,
     } = filesActionsStore;
 
     const { setMediaViewerData } = mediaViewerDataStore;
@@ -597,18 +592,14 @@ export default inject(
       isRecycleBin: isRecycleBinFolder,
       isRootFolder,
       canShare,
-      //selected,
-      //setSelected,
-      //setSelection,
       checked: selection.some((el) => el.id === item.id),
       isFolder,
       draggable,
       isItemsSelected: !!selection.length,
-      homepage,
+      homepage: config.homepage,
       isTabletView,
       actionId: fileActionStore.id,
       setSharingPanelVisible,
-      setShareItem,
       setChangeOwnerPanelVisible,
       setRemoveItem,
       setDeleteThirdPartyDialogVisible,
@@ -631,6 +622,7 @@ export default inject(
       selectedFolderId,
       setDragging,
       startUpload,
+      onSelectItem,
     };
   }
 )(withTranslation("Home")(observer(withRouter(SimpleFilesRow))));

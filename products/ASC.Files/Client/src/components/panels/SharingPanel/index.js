@@ -22,6 +22,7 @@ import {
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
 import SharingRow from "./SharingRow";
 import { inject, observer } from "mobx-react";
+import config from "../../../../package.json";
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -588,7 +589,7 @@ export default inject(
     { uploadPanelVisible }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
-    const { customNames, isDesktopClient, homepage } = auth.settingsStore;
+    const { customNames, isDesktopClient } = auth.settingsStore;
     const { setIsLoading, isLoading } = initFilesStore;
     const {
       files,
@@ -603,7 +604,7 @@ export default inject(
       setShareFiles,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
-    const { setSharingPanelVisible, shareItem } = dialogsStore;
+    const { setSharingPanelVisible } = dialogsStore;
     const {
       uploadSelection,
       selectUploadedFile,
@@ -614,14 +615,10 @@ export default inject(
       isMyId: auth.userStore.user.id,
       groupsCaption: customNames.groupsCaption,
       isDesktop: isDesktopClient,
-      homepage,
+      homepage: config.homepage,
       files,
       folders,
-      selection: uploadPanelVisible
-        ? uploadSelection
-        : shareItem
-        ? [shareItem]
-        : selection,
+      selection: uploadPanelVisible ? uploadSelection : selection,
       isLoading,
       isPrivacy: isPrivacyFolder,
       uploadSelection,

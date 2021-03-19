@@ -128,7 +128,12 @@ class ModalDialog extends React.Component {
     });
 
     return this.state.displayType === "modal" ? (
-      <Backdrop visible={visible} zIndex={zIndex} withBackground={true}>
+      <Backdrop
+        visible={visible}
+        zIndex={zIndex}
+        withBackground={true}
+        isModalDialog
+      >
         <Dialog className={className} id={id} style={style}>
           <Content contentHeight={contentHeight} contentWidth={contentWidth}>
             <StyledHeader>
