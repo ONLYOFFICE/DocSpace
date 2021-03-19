@@ -78,7 +78,7 @@ class Row extends React.Component {
       element,
       indeterminate,
       onSelect,
-      onRowContextClick,
+      rowContextClick,
       sectionWidth,
     } = this.props;
 
@@ -107,7 +107,7 @@ class Row extends React.Component {
     };
 
     const getOptions = () => {
-      onRowContextClick && onRowContextClick();
+      rowContextClick && rowContextClick();
       return contextOptions;
     };
 
@@ -177,7 +177,7 @@ Row.propTypes = {
   indeterminate: PropTypes.bool,
   /** when selecting row element. Returns data value. */
   onSelect: PropTypes.func,
-  onRowContextClick: PropTypes.func,
+  rowContextClick: PropTypes.func,
   /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
