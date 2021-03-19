@@ -69,23 +69,12 @@ const SectionHeaderContent = (props) => {
 
   const goBackAndReset = useCallback(() => {
     props.resetProfile();
-    history.goBack();
+    history.push(`/products/people/view/${profile.userName}`);
   }, [history, props]);
 
   const onClickBack = useCallback(() => {
-    avatarEditorIsOpen
-      ? toggleAvatarEditor(false)
-      : !profile || !document.referrer
-      ? setFilterAndReset(filter)
-      : goBackAndReset();
-  }, [
-    avatarEditorIsOpen,
-    toggleAvatarEditor,
-    profile,
-    setFilterAndReset,
-    filter,
-    goBackAndReset,
-  ]);
+    avatarEditorIsOpen ? toggleAvatarEditor(false) : goBackAndReset();
+  }, [avatarEditorIsOpen, toggleAvatarEditor, profile, filter, goBackAndReset]);
   return (
     <Wrapper>
       <IconButton
