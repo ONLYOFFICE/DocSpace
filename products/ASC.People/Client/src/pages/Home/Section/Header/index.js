@@ -484,7 +484,8 @@ const SectionHeaderContent = (props) => {
                         title={t("Actions")}
                         iconName="/static/images/actions.header.touch.react.svg"
                         size={17}
-                        color="#657077"
+                        color="#A3A9AE"
+                        hoverColor="#657077"
                         getData={getContextOptionsPlus}
                         isDisabled={false}
                       />
