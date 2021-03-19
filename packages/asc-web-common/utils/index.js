@@ -6,7 +6,11 @@ import TopLoaderService from "@appserver/components/top-loading-indicator";
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
   for (var key in obj) {
-    if (skipNull && !obj[key]) continue;
+    if (
+      (skipNull && !obj[key] && key !== "withSubfolders") ||
+      (key === "withSubfolders" && obj[key] !== "false")
+    )
+      continue;
 
     if (str !== "") {
       str += "&";
