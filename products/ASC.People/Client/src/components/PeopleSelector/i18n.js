@@ -28,7 +28,7 @@ newInstance.use(Backend).init({
   },
 
   backend: {
-    loadPath: `/locales/{{lng}}/PeopleSelector.json`,
+    loadPath: `/products/people/locales/{{lng}}/PeopleSelector.json`,
   },
 
   react: {
