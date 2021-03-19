@@ -135,31 +135,29 @@ class InviteDialogComponent extends React.Component {
               <Text className="text-dialog" as="p">
                 {t("InviteLinkValidInterval", { count: 7 })}
               </Text>
-              <div className="flex">
-                <div>
+              <div className="invite-link-dialog-wrapper">
+                <Link
+                  className="link-dialog"
+                  type="action"
+                  isHovered={LinkCopySuccess ? false : true}
+                  noHover={LinkCopySuccess}
+                  onClick={
+                    LinkCopySuccess ? undefined : this.onCopyLinkToClipboard
+                  }
+                >
+                  {LinkCopySuccess
+                    ? t("LinkCopySuccess")
+                    : t("CopyToClipboard")}
+                </Link>
+                {settings && !this.state.isLinkShort && (
                   <Link
-                    className="link-dialog"
                     type="action"
-                    isHovered={LinkCopySuccess ? false : true}
-                    noHover={LinkCopySuccess}
-                    onClick={
-                      LinkCopySuccess ? undefined : this.onCopyLinkToClipboard
-                    }
+                    isHovered={true}
+                    onClick={this.onGetShortenedLink}
                   >
-                    {LinkCopySuccess
-                      ? t("LinkCopySuccess")
-                      : t("CopyToClipboard")}
+                    {t("GetShortenLink")}
                   </Link>
-                  {settings && !this.state.isLinkShort && (
-                    <Link
-                      type="action"
-                      isHovered={true}
-                      onClick={this.onGetShortenedLink}
-                    >
-                      {t("GetShortenLink")}
-                    </Link>
-                  )}
-                </div>
+                )}
                 <Checkbox
                   label={t("InviteUsersAsCollaborators", { guestsCaption })}
                   isChecked={this.state.isGuest}
