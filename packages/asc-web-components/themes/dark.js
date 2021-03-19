@@ -593,7 +593,7 @@ const Dark = {
 
     progress: {
       borderRadius: "2px",
-      marginTop: "-1px",
+      marginTop: "-2px",
     },
 
     newPassword: {

@@ -18,6 +18,10 @@ const StyledContainer = styled(Box)`
   grid-template-columns: 1fr;
   grid-row-gap: 16px;
 
+  .password-field-wrapper {
+    width: 100%;
+  }
+
   .generate-pass-link {
     margin-bottom: 11px;
   }
@@ -28,7 +32,7 @@ const StyledContainer = styled(Box)`
 
   .wizard-checkbox span {
     margin-right: 0.3em;
-    vertical-align: middle;
+    vertical-align: 2px;
   }
 
   .wizard-checkbox svg {
@@ -36,8 +40,7 @@ const StyledContainer = styled(Box)`
   }
 
   .link {
-    vertical-align: -2px;
-    margin-top: 2px;
+    vertical-align: 2px;
   }
 
   @media ${tablet} {
