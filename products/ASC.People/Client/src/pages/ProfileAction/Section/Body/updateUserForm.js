@@ -266,6 +266,7 @@ class UpdateUserForm extends React.Component {
   }
 
   handleSubmit() {
+ 
     if (!this.validate()) return false;
 
     const {
