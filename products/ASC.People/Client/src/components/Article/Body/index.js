@@ -170,7 +170,7 @@ class ArticleBodyContent extends React.Component {
 
     this.changeTitleDocument(groupId);
 
-    if (history.location.pathname.indexOf("/people/filter") > 0) {
+    if (window.location.pathname.indexOf("/people/filter") > 0) {
       selectGroup(groupId);
     } else {
       const { filter } = this.props;
