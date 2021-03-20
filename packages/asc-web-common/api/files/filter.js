@@ -76,14 +76,15 @@ class FilesFilter {
       withSubfolders,
     } = this;
 
-    const isFilterSet =
-      filterType || (search ?? "").trim() || authorType
-        ? withSubfolders
-        : false;
-    const userIdOrGroupId =
-      authorType && authorType.includes("_")
-        ? authorType.slice(authorType.indexOf("_") + 1)
-        : null;
+    // const isFilterSet =
+    //   filterType || (search ?? "").trim() || authorType
+    //     ? withSubfolders
+    //     : false;
+
+    // const userIdOrGroupId =
+    //   authorType && authorType.includes("_")
+    //     ? authorType.slice(authorType.indexOf("_") + 1)
+    //     : null;
 
     const dtoFilter = {
       folder,
@@ -92,9 +93,9 @@ class FilesFilter {
       sortby: sortBy,
       sortOrder: sortOrder,
       filterType: filterType,
-      filterValue: (search ?? "").trim(),
-      withSubfolders: isFilterSet,
-      userIdOrGroupId,
+      search: (search ?? "").trim(),
+      withSubfolders,
+      authorType,
     };
 
     if (pageCount !== DEFAULT_PAGE) {
