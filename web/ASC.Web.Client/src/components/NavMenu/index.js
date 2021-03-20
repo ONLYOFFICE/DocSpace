@@ -53,7 +53,7 @@ const StyledContainer = styled.header`
 
   #ipl-progress-indicator {
     position: fixed;
-    z-index: 9999999;
+    z-index: 190;
     top: 56px;
     left: -6px;
     width: 0%;
@@ -193,10 +193,7 @@ class NavMenu extends React.Component {
               </Aside>
             )}
 
-            <div
-              className="ipl-progress-indicator"
-              id="ipl-progress-indicator"
-            ></div>
+            <div id="ipl-progress-indicator"></div>
           </StyledContainer>
         )}
       </LayoutContextConsumer>
