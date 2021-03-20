@@ -218,6 +218,8 @@ class PureHome extends React.Component {
       secondaryProgressDataStorePercent,
       secondaryProgressDataStoreIcon,
       secondaryProgressDataStoreAlert,
+
+      isLoading,
     } = this.props;
 
     return (
@@ -251,6 +253,7 @@ class PureHome extends React.Component {
           isLoaded={!firstLoad}
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
+          isLoading={isLoading}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
