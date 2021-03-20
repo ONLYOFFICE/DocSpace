@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-//import RequestLoader from "@appserver/components/request-loader";
+import Filter from "@appserver/common/api/people/filter";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import {
@@ -17,7 +17,6 @@ import {
 } from "./Section";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
-import { getFilterByLocation } from "../../helpers/converters";
 
 const Home = ({
   isLoading,
@@ -34,7 +33,7 @@ const Home = ({
     if (pathname.indexOf("/people/filter") > -1) {
       setIsLoading(true);
       setIsRefresh(true);
-      const newFilter = getFilterByLocation(location);
+      const newFilter = Filter.getFilter(location);
       console.log("PEOPLE URL changed", pathname, newFilter);
       getUsersList(newFilter).finally(() => {
         setIsLoading(false);

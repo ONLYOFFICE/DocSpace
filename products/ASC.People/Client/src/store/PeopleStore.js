@@ -1,7 +1,6 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import GroupsStore from "./GroupsStore";
 import UsersStore from "./UsersStore";
-import { getFilterByLocation } from "../helpers/converters";
 import config from "../../package.json";
 import TargetUserStore from "./TargetUserStore";
 import SelectedGroupStore from "./SelectedGroupStore";

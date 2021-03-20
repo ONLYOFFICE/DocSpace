@@ -1,19 +1,6 @@
 import { action, makeObservable, observable } from "mobx";
-//import { getFilterByLocation } from "../helpers/converters";
 import Filter from "@appserver/common/api/people/filter";
-import history from "@appserver/common/history";
 import config from "../../package.json";
-import {
-  EMPLOYEE_STATUS,
-  ACTIVATION_STATUS,
-  ROLE,
-  GROUP,
-  SEARCH,
-  SORT_BY,
-  SORT_ORDER,
-  PAGE,
-  PAGE_COUNT,
-} from "../helpers/constants";
 
 class FilterStore {
   filter = Filter.getDefault();

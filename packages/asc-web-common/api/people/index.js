@@ -10,7 +10,9 @@ export function getUserList(filter = Filter.getDefault(), fake = false) {
 
   const params =
     filter && filter instanceof Filter
-      ? `/filter.json?${filter.toUrlParams()}`
+      ? `/filter.json?${filter.toApiUrlParams(
+          "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups"
+        )}`
       : "";
 
   return request({
@@ -99,12 +101,13 @@ export function sendInstructionsToChangePassword(email) {
 }
 
 export function getListAdmins(filter = Filter.getDefault()) {
-  const filterParams = filter.toUrlParams();
-  const params =
-    "fields=id,displayName,groups,name,avatar,avatarSmall,isOwner,isAdmin,profileUrl,listAdminModules";
+  const filterParams = filter.toApiUrlParams(
+    "fields=id,displayName,groups,name,avatar,avatarSmall,isOwner,isAdmin,profileUrl,listAdminModules"
+  );
+
   return request({
     method: "get",
-    url: `/people/filter.json?${filterParams}&${params}`,
+    url: `/people/filter.json?${filterParams}`,
   });
 }
 
