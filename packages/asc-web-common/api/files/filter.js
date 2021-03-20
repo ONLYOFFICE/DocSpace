@@ -175,11 +175,7 @@ class FilesFilter {
       withSubfolders,
     } = this;
 
-    const dtoFilter = {
-      page: page + 1,
-      sortby: sortBy,
-      sortorder: sortOrder,
-    };
+    const dtoFilter = {};
 
     const URLParams = queryString.parse(window.location.href);
 
@@ -208,6 +204,10 @@ class FilesFilter {
     if (URLParams.preview) {
       dtoFilter[PREVIEW] = URLParams.preview;
     }
+
+    dtoFilter[PAGE] = page + 1;
+    dtoFilter[SORT_BY] = sortBy;
+    dtoFilter[SORT_ORDER] = sortOrder;
 
     const str = toUrlParams(dtoFilter, true);
     return str;
