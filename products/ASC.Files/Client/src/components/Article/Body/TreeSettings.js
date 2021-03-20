@@ -9,6 +9,7 @@ import SettingsIcon from "../../../../../../../public/images/settings.react.svg"
 import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
 import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
   @media (max-width: 1024px) {
@@ -188,7 +189,7 @@ const PureTreeSettings = ({
   );
 };
 
-const TreeSettings = withTranslation("Settings")(PureTreeSettings);
+const TreeSettings = withTranslation("Settings")(withRouter(PureTreeSettings));
 
 export default inject(
   ({
@@ -222,4 +223,4 @@ export default inject(
       setExpandSettingsTree,
     };
   }
-)(withRouter(observer(TreeSettings)));
+)(observer(TreeSettings));

@@ -1,11 +1,11 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import Link from "@appserver/components/link";
-import history from "@appserver/common/history";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 
 import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
@@ -100,6 +100,7 @@ const PureThirdPartyListContainer = ({
   setSelectedFolder,
   getOAuthToken,
   openConnectWindow,
+  history,
 }) => {
   const redirectAction = () => {
     const thirdPartyUrl = "/products/files/settings/thirdParty";
@@ -201,7 +202,9 @@ const PureThirdPartyListContainer = ({
   );
 };
 
-const ThirdPartyList = withTranslation("Article")(PureThirdPartyListContainer);
+const ThirdPartyList = withTranslation("Article")(
+  withRouter(PureThirdPartyListContainer)
+);
 
 export default inject(
   ({
