@@ -177,6 +177,7 @@ class PageLayout extends React.Component {
       onOpenUploadPanel,
       isTabletView,
       firstLoad,
+      isLoading,
     } = this.props;
 
     let articleHeaderContent = null;
@@ -255,6 +256,7 @@ class PageLayout extends React.Component {
             pinned={this.state.isArticlePinned}
             isLoaded={isLoaded}
             firstLoad={firstLoad}
+            isLoading={!isLoading}
           >
             {isArticleHeaderAvailable && (
               <SubArticleHeader>
@@ -428,6 +430,7 @@ PageLayout.propTypes = {
   isTabletView: PropTypes.bool,
   isHeaderVisible: PropTypes.bool,
   firstLoad: PropTypes.bool,
+  isLoading: PropTypes.bool,
 };
 
 PageLayout.defaultProps = {

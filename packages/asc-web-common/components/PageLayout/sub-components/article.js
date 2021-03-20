@@ -20,7 +20,8 @@ const StyledArticle = styled.article`
     background: #f8f9f9;
     min-width: 265px;
     height: 100% !important;
-    max-width: 265px;
+    max-width: ${(props) =>
+      props.isLoading ? "calc(100vw - 368px)" : "265px"};
     box-sizing: border-box;
     overflow: hidden auto;
     display: flex;
