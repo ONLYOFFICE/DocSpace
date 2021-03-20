@@ -23,7 +23,6 @@ import {
 } from "./Section";
 
 import { ConvertDialog } from "../../dialogs";
-import { getFilterByLocation } from "../../../helpers/converters";
 import MediaViewer from "./MediaViewer";
 import { observer, inject } from "mobx-react";
 import config from "../../../../package.json";
@@ -37,7 +36,7 @@ class PureHome extends React.Component {
     let filterObj = null;
 
     if (match && match.length > 0) {
-      filterObj = getFilterByLocation(window.location);
+      filterObj = FilesFilter.getFilter(window.location);
 
       if (!filterObj) {
         filterObj = FilesFilter.getDefault();

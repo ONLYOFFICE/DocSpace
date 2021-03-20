@@ -36,7 +36,7 @@ export function getFolderPath(folderId) {
 export function getFolder(folderId, filter) {
   const params =
     filter && filter instanceof FilesFilter
-      ? `${folderId}?${filter.toUrlParams()}`
+      ? `${folderId}?${filter.toApiUrlParams()}`
       : folderId;
 
   const options = {
@@ -419,7 +419,7 @@ export function setShareFiles(
 
 export function setFileOwner(folderIds, fileIds, userId) {
   const data = { folderIds, fileIds, userId };
-    return request({
+  return request({
     method: "post",
     url: "/files/owner",
     data,

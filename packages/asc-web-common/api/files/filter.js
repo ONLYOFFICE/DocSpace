@@ -1,4 +1,5 @@
-import { toUrlParams } from "../../utils";
+import { getObjectByLocation, toUrlParams } from "../../utils";
+import queryString from "query-string";
 
 const DEFAULT_PAGE = 0;
 const DEFAULT_PAGE_COUNT = 25;
@@ -13,6 +14,18 @@ const DEFAULT_AUTHOR_TYPE = null;
 const DEFAULT_SELECTED_ITEM = {};
 const DEFAULT_FOLDER = "@my";
 
+const SEARCH_TYPE = "withSubfolders";
+const AUTHOR_TYPE = "authorType";
+const FILTER_TYPE = "filterType";
+const SEARCH = "search";
+const SORT_BY = "sortby";
+const SORT_ORDER = "sortorder";
+const VIEW_AS = "viewas";
+const PAGE = "page";
+const PAGE_COUNT = "count";
+const FOLDER = "folder";
+const PREVIEW = "preview";
+
 // TODO: add next params
 // subjectGroup bool
 // subjectID
@@ -21,6 +34,55 @@ const DEFAULT_FOLDER = "@my";
 class FilesFilter {
   static getDefault(total = DEFAULT_TOTAL) {
     return new FilesFilter(DEFAULT_PAGE, DEFAULT_PAGE_COUNT, total);
+  }
+
+  static getFilter(location) {
+    if (!location) return this.getDefault();
+
+    const urlFilter = getObjectByLocation(location);
+
+    if (!urlFilter) return null;
+
+    const defaultFilter = FilesFilter.getDefault();
+
+    const filterType =
+      (urlFilter[FILTER_TYPE] && +urlFilter[FILTER_TYPE]) ||
+      defaultFilter.filterType;
+    const authorType =
+      (urlFilter[AUTHOR_TYPE] &&
+        urlFilter[AUTHOR_TYPE].includes("_") &&
+        urlFilter[AUTHOR_TYPE]) ||
+      defaultFilter.authorType;
+    const withSubfolders =
+      (urlFilter[SEARCH_TYPE] && urlFilter[SEARCH_TYPE]) ||
+      defaultFilter.withSubfolders;
+    const search = urlFilter[SEARCH] || defaultFilter.search;
+    const sortBy = urlFilter[SORT_BY] || defaultFilter.sortBy;
+    const viewAs = urlFilter[VIEW_AS] || defaultFilter.viewAs;
+    const sortOrder = urlFilter[SORT_ORDER] || defaultFilter.sortOrder;
+    const page =
+      (urlFilter[PAGE] && +urlFilter[PAGE] - 1) || defaultFilter.page;
+    const pageCount =
+      (urlFilter[PAGE_COUNT] && +urlFilter[PAGE_COUNT]) ||
+      defaultFilter.pageCount;
+    const folder = urlFilter[FOLDER] || defaultFilter.folder;
+
+    const newFilter = new FilesFilter(
+      page,
+      pageCount,
+      defaultFilter.total,
+      sortBy,
+      sortOrder,
+      viewAs,
+      filterType,
+      withSubfolders,
+      search,
+      authorType,
+      defaultFilter.selectedItem,
+      folder
+    );
+
+    return newFilter;
   }
 
   constructor(
@@ -63,7 +125,44 @@ class FilesFilter {
     return this.page > 0;
   };
 
-  toDto = () => {
+  toApiUrlParams = () => {
+    const {
+      authorType,
+      filterType,
+      page,
+      pageCount,
+      search,
+      sortBy,
+      sortOrder,
+      withSubfolders,
+    } = this;
+
+    const isFilterSet =
+      filterType || (search ?? "").trim() || authorType
+        ? withSubfolders
+        : false;
+    const userIdOrGroupId =
+      authorType && authorType.includes("_")
+        ? authorType.slice(authorType.indexOf("_") + 1)
+        : null;
+
+    const dtoFilter = {
+      count: pageCount,
+      startIndex: this.getStartIndex(),
+      page: page,
+      sortby: sortBy,
+      sortOrder: sortOrder,
+      filterType: filterType,
+      filterValue: (search ?? "").trim(),
+      withSubfolders: isFilterSet,
+      userIdOrGroupId,
+    };
+
+    const str = toUrlParams(dtoFilter, true);
+    return str;
+  };
+
+  toUrlParams = () => {
     const {
       authorType,
       filterType,
@@ -76,37 +175,40 @@ class FilesFilter {
       withSubfolders,
     } = this;
 
-    // const isFilterSet =
-    //   filterType || (search ?? "").trim() || authorType
-    //     ? withSubfolders
-    //     : false;
-
-    // const userIdOrGroupId =
-    //   authorType && authorType.includes("_")
-    //     ? authorType.slice(authorType.indexOf("_") + 1)
-    //     : null;
-
     const dtoFilter = {
-      folder,
-      startIndex: this.getStartIndex(),
-      page: page,
+      page: page + 1,
       sortby: sortBy,
-      sortOrder: sortOrder,
-      filterType: filterType,
-      search: (search ?? "").trim(),
-      withSubfolders,
-      authorType,
+      sortorder: sortOrder,
     };
 
-    if (pageCount !== DEFAULT_PAGE) {
-      dtoFilter.count = pageCount;
+    const URLParams = queryString.parse(window.location.href);
+
+    if (filterType) {
+      dtoFilter[FILTER_TYPE] = filterType;
     }
 
-    return dtoFilter;
-  };
+    if (withSubfolders === "false") {
+      dtoFilter[SEARCH_TYPE] = withSubfolders;
+    }
 
-  toUrlParams = () => {
-    const dtoFilter = this.toDto();
+    if (search) {
+      dtoFilter[SEARCH] = search.trim();
+    }
+    if (authorType) {
+      dtoFilter[AUTHOR_TYPE] = authorType;
+    }
+    if (folder) {
+      dtoFilter[FOLDER] = folder;
+    }
+
+    if (pageCount !== DEFAULT_PAGE_COUNT) {
+      dtoFilter[PAGE_COUNT] = pageCount;
+    }
+
+    if (URLParams.preview) {
+      dtoFilter[PREVIEW] = URLParams.preview;
+    }
+
     const str = toUrlParams(dtoFilter, true);
     return str;
   };

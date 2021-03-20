@@ -8,20 +8,17 @@ import {
   FileAction,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
-import queryString from "query-string";
 import FileActionStore from "./FileActionStore";
 import selectedFolderStore from "./SelectedFolderStore";
 import formatsStore from "./FormatsStore";
 import treeFoldersStore from "./TreeFoldersStore";
 import { createTreeFolders } from "../helpers/files-helpers";
-import { PREVIEW } from "../helpers/constants";
 import config from "../../package.json";
 
 const { FilesFilter } = api;
-//const { FolderType, FilterType, FileType, FileAction } = constants;
+
 const { settingsStore, userStore, isAdmin } = store.auth;
 const { isEncryptionSupport, isDesktopClient } = settingsStore;
-
 const {
   iconFormatsStore,
   mediaViewersFormatsStore,
@@ -189,18 +186,8 @@ class FilesStore {
   };
 
   setFilterUrl = (filter) => {
-    const params = [];
-    const URLParams = queryString.parse(window.location.href);
-
-    if (URLParams.preview) {
-      //TODO: Move this to Filter
-      params.push(`${PREVIEW}=${URLParams.preview}`);
-    }
-
-    //console.log("window", window.location);
-
     const urlFilter = filter.toUrlParams();
-    history.push(`${config.homepage}/filter?${urlFilter}${params.join("&")}`);
+    history.push(`${config.homepage}/filter?${urlFilter}`);
   };
 
   fetchFiles = (folderId, filter, clearFilter = true) => {
