@@ -7,12 +7,14 @@ let percentage = 0;
 let increasePercentage = 0.75;
 let moreIncreasePercentage = 3;
 
-const elem = document.getElementById("ipl-progress-indicator");
+let elem = document.getElementById("ipl-progress-indicator");
 
 const startInterval = () => {
-  if (!timerId) {
-    timerId = setInterval(animatingWidth, intervalTimeout);
-  }
+  if (timerId) return;
+
+  if (!elem) elem = document.getElementById("ipl-progress-indicator");
+
+  timerId = setInterval(animatingWidth, intervalTimeout);
 };
 
 const animatingWidth = () => {
