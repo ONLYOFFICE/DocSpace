@@ -6,8 +6,10 @@ import ModuleStore from "./ModuleStore";
 import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
-import { isAdmin } from "../utils";
+import { combineUrl, isAdmin } from "../utils";
 import isEmpty from "lodash/isEmpty";
+import { AppServerConfig } from "../constants";
+const { proxyURL } = AppServerConfig;
 
 class AuthStore {
   userStore = null;
@@ -81,32 +83,36 @@ class AuthStore {
 
   get availableModules() {
     const { user } = this.userStore;
-    const { modules, toModuleWrapper } = this.moduleStore;
+    const { modules } = this.moduleStore;
     if (isEmpty(modules) || isEmpty(this.userStore.user)) {
       return [];
     }
 
     const isUserAdmin = user.isAdmin;
-    const customModules = this.getCustomModules(isUserAdmin);
-
-    const newModules = JSON.parse(JSON.stringify(modules));
-    const products = newModules.map((m) => toModuleWrapper(m, false));
-    const primaryProducts = products.filter((m) => m.isPrimary === true);
-    const dummyProducts = products.filter((m) => m.isPrimary === false);
+    const customProducts = this.getCustomModules(isUserAdmin);
+    const readyProducts = [];
+    const inProgressProducts = [];
+    modules.forEach((p) => {
+      if (p.appName === "people" || p.appName === "files") {
+        readyProducts.push(p);
+      } else {
+        inProgressProducts.push(p);
+      }
+    });
 
     return [
       {
         separator: true,
         id: "nav-products-separator",
       },
-      ...primaryProducts,
-      ...customModules,
+      ...readyProducts,
+      ...customProducts,
       {
         separator: true,
         dashed: true,
         id: "nav-dummy-products-separator",
       },
-      ...dummyProducts,
+      ...inProgressProducts,
     ];
   }
 
@@ -114,16 +120,15 @@ class AuthStore {
     if (!isAdmin) {
       return [];
     }
-    const settingsModuleWrapper = this.moduleStore.toModuleWrapper(
-      {
-        id: "settings",
-        title: "Settings",
-        link: "/settings",
-      },
-      false,
-      "SettingsIcon",
-      "/static/images/settings.react.svg"
-    );
+    const settingsModuleWrapper = this.moduleStore.toModuleWrapper({
+      id: "settings",
+      title: "Settings",
+      link: "/settings",
+      iconUrl: "/static/images/settings.react.svg",
+    });
+
+    settingsModuleWrapper.onClick = this.onClick;
+    settingsModuleWrapper.onBadgeClick = this.onBadgeClick;
 
     return [settingsModuleWrapper];
   };
@@ -171,7 +176,7 @@ class AuthStore {
     this.init();
 
     if (!withoutRedirect) {
-      history.push("/login");
+      history.push(combineUrl(proxyURL, "/login"));
     }
   };
 

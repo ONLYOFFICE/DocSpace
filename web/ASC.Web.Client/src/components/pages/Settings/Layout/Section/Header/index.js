@@ -12,6 +12,8 @@ import {
   getTKeyByKey,
   checkPropertyByLink,
 } from "../../../utils";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const HeaderContainer = styled.div`
   position: relative;
@@ -86,7 +88,7 @@ class SectionHeaderContent extends React.Component {
     let newArrayOfParams = this.getArrayOfParams();
     newArrayOfParams.splice(-1, 1);
     const newPath = "/settings/" + newArrayOfParams.join("/");
-    this.props.history.push(newPath);
+    this.props.history.push(combineUrl(AppServerConfig.proxyURL, newPath));
   };
 
   getArrayOfParams = () => {

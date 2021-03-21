@@ -1,4 +1,7 @@
 import { request } from "../client";
+import { combineUrl } from "../../utils";
+import { AppServerConfig } from "../../constants";
+const { proxyURL } = AppServerConfig;
 
 export function getModulesList() {
   return request({
@@ -11,8 +14,8 @@ export function getModulesList() {
     const newModules = workingModules.map((m) => {
       return {
         ...m,
-        iconUrl: m.link + "images/icon.svg",
-        imageUrl: m.link + m.imageUrl,
+        iconUrl: combineUrl(proxyURL, m.link, m.iconUrl),
+        imageUrl: combineUrl(proxyURL, m.link, m.imageUrl),
       };
     });
 

@@ -3,12 +3,23 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
-//import history from "@appserver/common/history";
-
 import { useTranslation } from "react-i18next";
 import { tablet } from "@appserver/components/utils/device";
+import { combineUrl } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../../../package.json";
+
+const { proxyURL } = AppServerConfig;
+const homepage = config.homepage;
+
+const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
+const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
+const PROFILE_URL = combineUrl(
+  PROXY_HOMEPAGE_URL,
+  "/products/people/view/@self"
+);
 
 const StyledNav = styled.nav`
   display: flex;
@@ -41,10 +52,10 @@ const StyledNav = styled.nav`
 const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
   const { t } = useTranslation("NavMenu");
   const onProfileClick = useCallback(() => {
-    history.push("/products/people/view/@self");
+    history.push(PROFILE_URL);
   }, []);
 
-  const onAboutClick = useCallback(() => history.push("/about"), []);
+  const onAboutClick = useCallback(() => history.push(ABOUT_URL), []);
 
   const onLogoutClick = useCallback(() => logout && logout(), [logout]);
 
@@ -54,13 +65,13 @@ const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
         key: "ProfileBtn",
         label: t("Profile"),
         onClick: onProfileClick,
-        url: "/products/people/view/@self",
+        url: PROFILE_URL,
       },
       {
         key: "AboutBtn",
         label: t("AboutCompanyTitle"),
         onClick: onAboutClick,
-        url: "/about",
+        url: ABOUT_URL,
       },
       {
         key: "LogoutBtn",

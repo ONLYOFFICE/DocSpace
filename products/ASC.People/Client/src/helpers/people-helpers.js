@@ -4,6 +4,7 @@ import {
   EmployeeStatus,
 } from "@appserver/common/constants";
 import { isAdmin } from "@appserver/common/utils";
+import { id } from "../../package.json";
 //const { isAdmin } = utils;
 
 export const getUserStatus = (user) => {
@@ -26,7 +27,7 @@ export const getUserStatus = (user) => {
 
 export const getUserRole = (user) => {
   if (user.isOwner) return "owner";
-  else if (isAdmin(user, "f4d98afd-d336-4332-8778-3c6945c81ea0"))
+  else if (isAdmin(user, id))
     //TODO: Change to People Product Id const
     return "admin";
   //TODO: Need refactoring

@@ -11,7 +11,7 @@ import Layout from "./components/Layout";
 import ScrollToTop from "./components/Layout/ScrollToTop";
 import history from "@appserver/common/history";
 import toastr from "studio/toastr";
-import { updateTempContent } from "@appserver/common/utils";
+import { combineUrl, updateTempContent } from "@appserver/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@appserver/components/theme-provider";
 import { Base } from "@appserver/components/themes";
@@ -22,8 +22,56 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import AppLoader from "@appserver/common/components/AppLoader";
 import System from "./components/System";
+import { AppServerConfig } from "@appserver/common/constants";
 
+const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
+
+const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
+const HOME_URLS = [
+  combineUrl(PROXY_HOMEPAGE_URL, "/") || "/",
+  combineUrl(PROXY_HOMEPAGE_URL, "/error=:error"),
+];
+const WIZARD_URL = combineUrl(PROXY_HOMEPAGE_URL, "/wizard");
+const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
+const LOGIN_URLS = [
+  combineUrl(PROXY_HOMEPAGE_URL, "/login"),
+  combineUrl(PROXY_HOMEPAGE_URL, "/login/error=:error"),
+  combineUrl(PROXY_HOMEPAGE_URL, "/login/confirmed-email=:confirmedEmail"),
+];
+const CONFIRM_URL = combineUrl(PROXY_HOMEPAGE_URL, "/confirm");
+const COMING_SOON_URLS = [
+  combineUrl(PROXY_HOMEPAGE_URL, "/coming-soon"),
+  //combineUrl(PROXY_HOMEPAGE_URL, "/products/mail"),
+  //combineUrl(PROXY_HOMEPAGE_URL, "/products/projects"),
+  //combineUrl(PROXY_HOMEPAGE_URL, "/products/crm"),
+  //combineUrl(PROXY_HOMEPAGE_URL, "/products/calendar"),
+  //combineUrl(PROXY_HOMEPAGE_URL, "/products/talk/"),
+];
+const THIRD_PARTY_RESPONSE_URL = combineUrl(
+  PROXY_HOMEPAGE_URL,
+  "/thirdparty/:provider"
+);
+const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
+const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings");
+const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
+
+if (!window.AppServer) {
+  window.AppServer = {};
+}
+
+window.AppServer.studio = {
+  HOME_URLS,
+  WIZARD_URL,
+  ABOUT_URL,
+  LOGIN_URLS,
+  CONFIRM_URL,
+  COMING_SOON_URLS,
+  THIRD_PARTY_RESPONSE_URL,
+  PAYMENTS_URL,
+  SETTINGS_URL,
+  ERROR_401_URL,
+};
 
 const Payments = React.lazy(() => import("./components/pages/Payments"));
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -126,40 +174,6 @@ const ThirdPartyResponseRoute = (props) => (
 );
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
-  // useEffect(() => {
-  //   //utils.removeTempContent();
-
-  //   const {
-  //     getPortalSettings,
-  //     getUser,
-  //     getModules,
-  //     setIsLoaded,
-  //     getIsAuthenticated,
-  //   } = rest;
-
-  //   getIsAuthenticated()
-  //     .then((isAuthenticated) => {
-  //       if (isAuthenticated) updateTempContent(isAuthenticated);
-
-  //       const requests = [];
-  //       if (!isAuthenticated) {
-  //         requests.push(getPortalSettings());
-  //       } else if (
-  //         !window.location.pathname.includes("confirm/EmailActivation")
-  //       ) {
-  //         requests.push(getUser());
-  //         requests.push(getPortalSettings());
-  //         requests.push(getModules());
-  //       }
-
-  //       return Promise.all(requests).finally(() => {
-  //         updateTempContent();
-  //         setIsLoaded();
-  //       });
-  //     })
-  //     .catch((err) => toastr.error(err.message));
-  // }, []);
-
   const { isLoaded, loadBaseInfo, isThirdPartyResponse, modules } = rest;
 
   useEffect(() => {
@@ -176,29 +190,45 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   useEffect(() => {
     console.log("Current page ", page);
-    // setModuleInfo(page, "e67be73d-f9ae-4ce1-8fec-1880cb518cb4");
   }, [page]);
 
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
 
-  const dynamicRoutes = modules
-    .filter((m) => m.ready)
-    .map((m) => {
-      const system = {
-        url: `${window.location.origin}${m.link}remoteEntry.js`,
-        scope: m.appName,
-        module: "./app",
-      };
-      return (
-        <PrivateRoute
-          key={m.id}
-          path={`${homepage}${m.link}`}
-          component={System}
-          system={system}
-        />
-      );
-    });
+  if (!window.AppServer.studio) {
+    window.AppServer.studio = {};
+  }
+
+  window.AppServer.studio.modules = {};
+
+  const dynamicRoutes = modules.map((m) => {
+    const appURL = m.link;
+    const remoteEntryURL = combineUrl(
+      window.location.origin,
+      appURL,
+      "remoteEntry.js"
+    );
+
+    const system = {
+      url: remoteEntryURL,
+      scope: m.appName,
+      module: "./app",
+    };
+
+    window.AppServer.studio.modules[m.appName] = {
+      appURL,
+      remoteEntryURL,
+    };
+
+    return (
+      <PrivateRoute
+        key={m.id}
+        path={appURL}
+        component={System}
+        system={system}
+      />
+    );
+  });
 
   return (
     <Layout>
@@ -208,56 +238,27 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
           <ScrollToTop />
           <Main>
             <Switch>
+              <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
+              <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
+              <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
+              <PublicRoute exact path={LOGIN_URLS} component={LoginRoute} />
+              <Route path={CONFIRM_URL} component={ConfirmRoute} />
               <PrivateRoute
-                exact
-                path={[`${homepage}/`, `${homepage}/error=:error`]}
-                component={HomeRoute}
-              />
-              <PublicRoute
-                exact
-                path={`${homepage}/wizard`}
-                component={WizardRoute}
-              />
-              <PrivateRoute path={`${homepage}/about`} component={AboutRoute} />
-              <PublicRoute
-                exact
-                path={[
-                  `${homepage}/login`,
-                  `${homepage}/login/error=:error`,
-                  `${homepage}/login/confirmed-email=:confirmedEmail`,
-                ]}
-                component={LoginRoute}
-              />
-              <Route path={`${homepage}/confirm`} component={ConfirmRoute} />
-              <PrivateRoute
-                path={[
-                  `${homepage}/coming-soon`,
-                  `${homepage}/products/mail`,
-                  `${homepage}/products/projects`,
-                  `${homepage}/products/crm`,
-                  `${homepage}/products/calendar`,
-                  `${homepage}/products/talk/`,
-                ]}
+                path={COMING_SOON_URLS}
                 component={ComingSoonRoute}
               />
               <PrivateRoute
-                path={`${homepage}/thirdparty/:provider`}
+                path={THIRD_PARTY_RESPONSE_URL}
                 component={ThirdPartyResponseRoute}
               />
-              <PrivateRoute
-                path={`${homepage}/payments`}
-                component={PaymentsRoute}
-              />
+              <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
               <PrivateRoute
                 restricted
-                path={`${homepage}/settings`}
+                path={SETTINGS_URL}
                 component={SettingsRoute}
               />
               {dynamicRoutes}
-              <PrivateRoute
-                path={`${homepage}/error401`}
-                component={Error401Route}
-              />
+              <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
               <PrivateRoute component={Error404Route} />
             </Switch>
           </Main>

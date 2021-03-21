@@ -1,6 +1,9 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import api from "../api";
 import { ARTICLE_PINNED_KEY, LANGUAGE } from "../constants";
+import { combineUrl } from "../utils";
+import { AppServerConfig } from "../constants";
+const { proxyURL } = AppServerConfig;
 
 class SettingsStore {
   isLoading = false;
@@ -15,8 +18,8 @@ class SettingsStore {
   timezones = [];
   utcOffset = "00:00:00";
   utcHoursOffset = 0;
-  defaultPage = "/"; //"/products/files";
-  homepage = ""; //config.homepage;
+  defaultPage = combineUrl(proxyURL, "/");
+  homepage = "";
   datePattern = "M/d/yyyy";
   datePatternJQ = "00/00/0000";
   dateTimePattern = "dddd, MMMM d, yyyy h:mm:ss tt";
@@ -146,7 +149,12 @@ class SettingsStore {
 
     Object.keys(newSettings).map((key) => {
       if (key in this) {
-        this.setValue(key, newSettings[key]);
+        this.setValue(
+          key,
+          key === "defaultPage"
+            ? combineUrl(proxyURL, newSettings[key])
+            : newSettings[key]
+        );
 
         if (key === "culture" && !localStorage.getItem(LANGUAGE)) {
           localStorage.setItem(LANGUAGE, newSettings[key]);

@@ -8,8 +8,9 @@ import Link from "@appserver/components/link";
 import ArrowRightIcon from "../../../../../../public/images/arrow.right.react.svg";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import { showLoader, hideLoader } from "@appserver/common/utils";
+import { showLoader, hideLoader, combineUrl } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const mapCulturesToArray = (cultures, t) => {
   return cultures.map((culture) => {
@@ -213,7 +214,10 @@ class Customization extends React.Component {
               className="inherit-title-link header"
               onClick={this.onClickLink}
               truncate={true}
-              href="/settings/common/customization/language-and-time-zone"
+              href={combineUrl(
+                AppServerConfig.proxyURL,
+                "/settings/common/customization/language-and-time-zone"
+              )}
             >
               {t("StudioTimeLanguageSettings")}
             </Link>
@@ -234,7 +238,10 @@ class Customization extends React.Component {
               truncate={true}
               className="inherit-title-link header"
               onClick={this.onClickLink}
-              href="/settings/common/customization/custom-titles"
+              href={combineUrl(
+                AppServerConfig.proxyURL,
+                "/settings/common/customization/custom-titles"
+              )}
             >
               {t("CustomTitles")}
             </Link>

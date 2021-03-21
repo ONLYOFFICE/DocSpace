@@ -1,16 +1,30 @@
 import axios from "axios";
-import config from "../package.json";
-//import history from "../history";
+import { AppServerConfig } from "../constants";
+import { combineUrl } from "../utils";
 
-const baseURL = `${window.location.origin}/${config.api.url}`;
-const apiTimeout = config.api.timeout;
+const { proxyURL, apiPrefixURL, apiTimeout } = AppServerConfig;
+const origin = window.location.origin;
+
+const apiBaseURL = combineUrl(origin, proxyURL, apiPrefixURL);
+const loginURL = combineUrl(proxyURL, "/login");
+const paymentsURL = combineUrl(proxyURL, "/payments");
+
+window.AppServer = {
+  origin,
+  proxyURL,
+  apiPrefixURL,
+  apiBaseURL,
+  apiTimeout,
+  loginURL,
+  paymentsURL,
+};
 
 /**
  * @description axios instance for ajax requests
  */
 
 const client = axios.create({
-  baseURL: baseURL,
+  baseURL: apiBaseURL,
   responseType: "json",
   timeout: apiTimeout, // default is `0` (no timeout)
 });
@@ -25,11 +39,11 @@ client.interceptors.response.use(
     switch (true) {
       case error.response.status === 401:
         setWithCredentialsStatus(false);
-        window.location.href = "/login";
+        window.location.href = loginURL;
         break;
       case error.response.status === 402:
         if (!window.location.pathname.includes("payments")) {
-          window.location.href = "/payments";
+          window.location.href = paymentsURL;
         }
         break;
       default:

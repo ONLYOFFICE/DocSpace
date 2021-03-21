@@ -14,7 +14,8 @@ import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
 import EmailInput from "@appserver/components/email-input";
 import PageLayout from "@appserver/common/components/PageLayout";
-import { createPasswordHash } from "@appserver/common/utils";
+import { combineUrl, createPasswordHash } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const inputWidth = "400px";
 
@@ -185,7 +186,7 @@ class Confirm extends React.PureComponent {
 
     axios.all(requests).catch((e) => {
       console.error("get settings error", e);
-      history.push(`/login/error=${e}`);
+      history.push(combineUrl(AppServerConfig.proxyURL, `/login/error=${e}`));
     });
 
     window.addEventListener("keydown", this.onKeyPress);

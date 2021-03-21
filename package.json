@@ -8,7 +8,9 @@
     "web/ASC.Web.Client",
     "web/ASC.Web.Editor",
     "products/ASC.People/Client",
-    "products/ASC.Files/Client"
+    "products/ASC.Files/Client",
+    "products/ASC.CRM/Client",
+    "products/ASC.Projects/Client"
   ],
   "scripts": {
     "wipe": "rimraf node_modules yarn.lock web/**/node_modules products/**/node_modules",

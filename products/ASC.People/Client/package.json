@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": "true",
   "homepage": "/products/people",
+  "id": "f4d98afd-d336-4332-8778-3c6945c81ea0",
   "title": "ONLYOFFICE",
   "scripts": {
     "start": "webpack-cli serve",

@@ -5,8 +5,9 @@ import { withRouter } from "react-router";
 import Loader from "@appserver/components/loader";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { checkConfirmLink } from "@appserver/common/api/user"; //TODO: Move AuthStore
-import { getObjectByLocation } from "@appserver/common/utils";
+import { combineUrl, getObjectByLocation } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class ConfirmRoute extends React.Component {
   constructor(props) {
@@ -55,18 +56,26 @@ class ConfirmRoute extends React.Component {
             });
             break;
           case ValidationResult.Invalid:
-            history.push(`${path}/error=Invalid link`);
+            history.push(
+              combineUrl(AppServerConfig.proxyURL, path, "/error=Invalid link")
+            );
             break;
           case ValidationResult.Expired:
-            history.push(`${path}/error=Expired link`);
+            history.push(
+              combineUrl(AppServerConfig.proxyURL, path, "/error=Expired link")
+            );
             break;
           default:
-            history.push(`${path}/error=Unknown error`);
+            history.push(
+              combineUrl(AppServerConfig.proxyURL, path, "/error=Unknown error")
+            );
             break;
         }
       })
       .catch((error) => {
-        history.push(`${path}/error=${error}`);
+        history.push(
+          combineUrl(AppServerConfig.proxyURL, path, `/error=${error}`)
+        );
       });
   }
 

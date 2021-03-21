@@ -9,7 +9,10 @@
     "clean": "echo 'skip it'"
   },
   "api": {
-    "url": "api/2.0",
+    "url": "/api/2.0",
     "timeout": "30000"
+  },
+  "proxy": {
+    "url": ""
   }
 }

@@ -69,10 +69,7 @@ class PeopleStore {
     if (this.isInit) return;
     this.isInit = true;
 
-    authStore.settingsStore.setModuleInfo(
-      config.homepage,
-      "f4d98afd-d336-4332-8778-3c6945c81ea0"
-    );
+    authStore.settingsStore.setModuleInfo(config.homepage, config.id);
 
     await this.groupsStore.getGroupList();
     await authStore.settingsStore.getPortalPasswordSettings();

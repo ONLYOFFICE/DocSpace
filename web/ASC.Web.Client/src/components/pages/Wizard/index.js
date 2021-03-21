@@ -8,7 +8,7 @@ import axios from "axios";
 import PageLayout from "@appserver/common/components/PageLayout";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import history from "@appserver/common/history";
-import { createPasswordHash } from "@appserver/common/utils";
+import { combineUrl, createPasswordHash } from "@appserver/common/utils";
 import Loader from "@appserver/components/loader";
 import { tablet } from "@appserver/components/utils/device";
 import { EmailSettings } from "@appserver/components/utils/email";
@@ -21,6 +21,7 @@ import ModalContainer from "./sub-components/modal-dialog-container";
 
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const emailSettings = new EmailSettings();
 emailSettings.allowDomainPunycode = true;
@@ -95,7 +96,7 @@ class Body extends Component {
     window.addEventListener("keyup", this.onKeyPressHandler);
 
     if (!wizardToken) {
-      history.push("/");
+      history.push(combineUrl(AppServerConfig.proxyURL, "/"));
     } else {
       await axios
         .all([
@@ -236,7 +237,9 @@ class Body extends Component {
           setWizardComplete();
           getPortalSettings();
         })
-        .then(() => history.push("/login"))
+        .then(() =>
+          history.push(combineUrl(AppServerConfig.proxyURL, "/login"))
+        )
         .catch((e) =>
           this.setState({
             errorLoading: true,

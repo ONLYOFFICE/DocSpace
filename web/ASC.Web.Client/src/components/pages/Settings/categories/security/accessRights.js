@@ -10,6 +10,8 @@ import AdminsSettings from "./sub-components/admins";
 
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject } from "mobx-react";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const MainContainer = styled.div`
   padding-bottom: 16px;
@@ -51,13 +53,23 @@ class PureAccessRights extends Component {
 
     switch (page.key) {
       case "0":
-        history.push("/settings/security/accessrights/owner");
+        history.push(
+          combineUrl(
+            AppServerConfig.proxyURL,
+            "/settings/security/accessrights/owner"
+          )
+        );
         break;
       case "1":
-        history.push("/settings/security/accessrights/admins");
+        history.push(
+          combineUrl(
+            AppServerConfig.proxyURL,
+            "/settings/security/accessrights/admins"
+          )
+        );
         break;
       // case "2":
-      //   history.push("/settings/security/accessrights/modules");
+      //   history.push(combineUrl(AppServerConfig.proxyURL, "/settings/security/accessrights/modules"));
       //   break;
       default:
         break;

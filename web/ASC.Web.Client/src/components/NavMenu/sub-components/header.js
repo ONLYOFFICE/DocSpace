@@ -15,6 +15,9 @@ import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
 import { desktop } from "@appserver/components/utils/device";
 import i18n from "../i18n";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+const { proxyURL } = AppServerConfig;
 
 const backgroundColor = "#0F4071";
 
@@ -115,10 +118,7 @@ const HeaderComponent = ({
 
   const onLogoClick = () => {
     history.push(defaultPage);
-  };
-
-  const onLinkClick = () => {
-    history.push("/about");
+    backdropClick();
   };
 
   const onBadgeClick = (e) => {
@@ -139,34 +139,34 @@ const HeaderComponent = ({
   };
 
   //TODO: getCustomModules
-  const getCustomModules = () => {
-    if (!isAdmin) {
-      return [];
-    } // Temporarily hiding the settings module
+  // const getCustomModules = () => {
+  //   if (!isAdmin) {
+  //     return [];
+  //   } // Temporarily hiding the settings module
 
-    return (
-      <>
-        <NavItem
-          separator={true}
-          key={"nav-modules-separator"}
-          data-id={"nav-modules-separator"}
-        />
-        <NavItem
-          separator={false}
-          key={"settings"}
-          data-id={"settings"}
-          data-link="/settings"
-          opened={isNavOpened}
-          active={"settings" == currentProductId}
-          iconName={"SettingsIcon"}
-          onClick={onItemClick}
-          url="/settings"
-        >
-          {t("Settings")}
-        </NavItem>
-      </>
-    );
-  };
+  //   return (
+  //     <>
+  //       <NavItem
+  //         separator={true}
+  //         key={"nav-modules-separator"}
+  //         data-id={"nav-modules-separator"}
+  //       />
+  //       <NavItem
+  //         separator={false}
+  //         key={"settings"}
+  //         data-id={"settings"}
+  //         data-link="/settings"
+  //         opened={isNavOpened}
+  //         active={"settings" == currentProductId}
+  //         iconName={"SettingsIcon"}
+  //         onClick={onItemClick}
+  //         url="/settings"
+  //       >
+  //         {t("Settings")}
+  //       </NavItem>
+  //     </>
+  //   );
+  // };
   const isMainPage = pathname === "/";
 
   return (
@@ -206,8 +206,7 @@ const HeaderComponent = ({
           {mainModules.map(
             ({
               id,
-              separator,
-              iconName,
+              separator, //iconName,
               iconUrl,
               notifications,
               link,
@@ -221,7 +220,7 @@ const HeaderComponent = ({
                 data-link={link}
                 opened={isNavOpened}
                 active={isMainPage ? false : id == currentProductId}
-                iconName={iconName}
+                //iconName={iconName}
                 iconUrl={iconUrl}
                 badgeNumber={notifications}
                 onClick={onItemClick}
@@ -248,7 +247,10 @@ const HeaderComponent = ({
               -{" "}
             </Text>
             <StyledLink>
-              <LinkWithoutRedirect to="/about" className="nav-menu-header_link">
+              <LinkWithoutRedirect
+                to={combineUrl(proxyURL, "/about")}
+                className="nav-menu-header_link"
+              >
                 {t("AboutShort")}
               </LinkWithoutRedirect>
             </StyledLink>
@@ -293,13 +295,13 @@ export default inject(({ auth }) => {
   const { logoUrl, defaultPage, currentProductId } = settingsStore;
   const { totalNotifications } = moduleStore;
 
-  const mainModules = availableModules.filter((m) => !m.isolateMode);
+  //TODO: restore when chat will complete -> const mainModules = availableModules.filter((m) => !m.isolateMode);
 
   return {
     isAdmin,
     defaultPage,
     logoUrl,
-    mainModules,
+    mainModules: availableModules,
     totalNotifications,
     isLoaded,
     version,

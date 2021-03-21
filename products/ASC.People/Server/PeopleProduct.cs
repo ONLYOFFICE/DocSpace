@@ -67,14 +67,14 @@ namespace ASC.People
             }
         }
 
-        public override bool IsPrimary { get => true; }
+        public override bool IsPrimary { get => false; }
 
         public override void Init()
         {
             _context = new ProductContext
             {
                 DisabledIconFileName = "product_disabled_logo.png",
-                IconFileName = "product_logo.png",
+                IconFileName = "images/people.menu.svg",
                 LargeIconFileName = "images/people.svg",
                 DefaultSortOrder = 50,
                 AdminOpportunities = () => PeopleResource.ProductAdminOpportunities.Split('|').ToList(),

@@ -122,8 +122,8 @@ namespace ASC.Projects.Configuration
             {
                 //MasterPageFile = String.Concat(PathProvider.BaseVirtualPath, "Masters/BasicTemplate.Master"),
                 DisabledIconFileName = "product_disabled_logo.png",
-                IconFileName = "product_logo.png",
-                LargeIconFileName = "product_logolarge.svg",
+                IconFileName = "images/projects.menu.svg",
+                LargeIconFileName = "images/projects.svg",
                 //SubscriptionManager = new ProductSubscriptionManager(),
                 DefaultSortOrder = 20,
                 //SpaceUsageStatManager = new ProjectsSpaceUsageStatManager(),
