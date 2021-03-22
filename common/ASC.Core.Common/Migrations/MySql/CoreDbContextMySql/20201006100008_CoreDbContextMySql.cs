@@ -105,9 +105,6 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                     tenant = table.Column<int>(nullable: false),
                     tariff = table.Column<int>(nullable: false),
                     stamp = table.Column<DateTime>(type: "datetime", nullable: false),
-                    tariff_key = table.Column<string>(type: "varchar(64)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8")
-                        .Annotation("MySql:Collation", "utf8_general_ci"),
                     comment = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8")
                         .Annotation("MySql:Collation", "utf8_general_ci"),
