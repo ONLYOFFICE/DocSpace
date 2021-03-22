@@ -57,23 +57,6 @@ const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
 const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings");
 const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
 
-if (!window.AppServer) {
-  window.AppServer = {};
-}
-
-window.AppServer.studio = {
-  HOME_URLS,
-  WIZARD_URL,
-  ABOUT_URL,
-  LOGIN_URLS,
-  CONFIRM_URL,
-  COMING_SOON_URLS,
-  THIRD_PARTY_RESPONSE_URL,
-  PAYMENTS_URL,
-  SETTINGS_URL,
-  ERROR_401_URL,
-};
-
 const Payments = React.lazy(() => import("./components/pages/Payments"));
 const Error404 = React.lazy(() => import("studio/Error404"));
 const Error401 = React.lazy(() => import("studio/Error401"));
@@ -179,6 +162,24 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   useEffect(() => {
     try {
+      if (!window.AppServer) {
+        window.AppServer = {};
+      }
+
+      //TEMP object, will be removed!!!
+      window.AppServer.studio = {
+        HOME_URLS,
+        WIZARD_URL,
+        ABOUT_URL,
+        LOGIN_URLS,
+        CONFIRM_URL,
+        COMING_SOON_URLS,
+        THIRD_PARTY_RESPONSE_URL,
+        PAYMENTS_URL,
+        SETTINGS_URL,
+        ERROR_401_URL,
+      };
+
       loadBaseInfo();
     } catch (err) {
       toastr.error(err);
@@ -230,6 +231,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       />
     );
   });
+
+  //console.log("Shell ", history);
 
   return (
     <Layout>

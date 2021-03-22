@@ -20,7 +20,6 @@ import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
 import { I18nextProvider, useTranslation } from "react-i18next";
-import throttle from "lodash/throttle";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -153,6 +152,7 @@ const Form = (props) => {
     match,
     organizationName,
     greetingTitle,
+    history,
   } = props;
 
   const { error, confirmedEmail } = match.params;
@@ -247,7 +247,7 @@ const Form = (props) => {
     isDesktop && checkPwd();
 
     login(userName, hash)
-      .then(() => tryRedirectTo(defaultPage))
+      .then(() => history.push(defaultPage))
       .catch((error) => {
         setErrorText(error);
         setIdentifierValid(!error);
