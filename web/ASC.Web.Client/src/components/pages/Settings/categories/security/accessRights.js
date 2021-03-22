@@ -14,8 +14,11 @@ import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 
 const MainContainer = styled.div`
-  padding-bottom: 16px;
   width: 100%;
+
+  .settings_tabs {
+    padding-bottom: 16px;
+  }
 
   .page_loader {
     position: fixed;
@@ -95,7 +98,9 @@ class PureAccessRights extends Component {
 
     return (
       <MainContainer>
-        <TabContainer
+        <OwnerSettings />
+        {/* <TabContainer
+          classNem="settings_tabs"
           selectedItem={selectedTab}
           isDisabled={isLoading}
           onSelect={this.onSelectPage}
@@ -105,18 +110,19 @@ class PureAccessRights extends Component {
               title: t("OwnerSettings"),
               content: <OwnerSettings />,
             },
-            // {
-            //   key: "1",
-            //   title: t("AdminsSettings"),
-            //   content: <AdminsSettings />,
-            // },
-            // {
-            //   key: "2",
-            //   title: "Portals settings",
-            //   content: <ModulesSettings />
-            // }
+            {
+              key: "1",
+              title: t("AdminsSettings"),
+              content: <AdminsSettings />,
+              dis
+            },
+            {
+              key: "2",
+              title: "Portals settings",
+              content: <ModulesSettings />
+            }
           ]}
-        />
+        /> */}
       </MainContainer>
     );
   }
