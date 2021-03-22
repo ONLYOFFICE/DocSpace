@@ -11,7 +11,6 @@ import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import copy from "copy-to-clipboard";
-// import { getShortenedLink } from "@appserver/common/api/portal";
 import { inject, observer } from "mobx-react";
 
 const textAreaName = "link-textarea";
@@ -78,24 +77,19 @@ class InviteDialogComponent extends React.Component {
       guestInvitationLink,
     } = this.props;
 
-    getShortenedLink(userInvitationLink, true)
-      //.then((link) => this.setState({ userInvitationLink: link }))
-      .catch((e) => {
-        console.error("getShortInvitationLink error", e);
-        this.setState({ isLoading: false });
-      });
+    const { isGuest } = this.state;
+    const link = isGuest ? guestInvitationLink : userInvitationLink;
 
-    getShortenedLink(guestInvitationLink)
-      .then(() =>
-        this.setState({
-          // guestInvitationLink: link,
-          isLoading: false,
-          isLinkShort: true,
-        })
-      )
-      .catch((e) => {
-        console.error("getShortInvitationLink error", e);
-      });
+    getShortenedLink(link, !isGuest)
+      .then((link) => {
+        if (!isGuest) {
+          this.setState({ userInvitationLink: link, isLinkShort: true });
+        } else {
+          this.setState({ guestInvitationLink: link, isLinkShort: true });
+        }
+      })
+      .catch((e) => console.error("getShortInvitationLink error", e)) // TODO: add translation
+      .finally(() => this.setState({ isLoading: false }));
   };
 
   componentDidMount() {
