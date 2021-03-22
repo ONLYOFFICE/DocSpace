@@ -228,7 +228,9 @@ class UsersStore {
       } = user;
       const statusType = this.getStatusType(user);
       const role = this.getUserRole(user);
-      const isMySelf = user.userName === authStore.userStore.user.userName;
+      const isMySelf =
+        authStore.userStore.user &&
+        user.userName === authStore.userStore.user.userName;
       const isViewerAdmin = authStore.isAdmin;
 
       const options = this.getUserContextOptions(
