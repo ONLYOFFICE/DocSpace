@@ -25,15 +25,8 @@ const Wrapper = styled.div`
 class SectionHeaderContent extends React.Component {
   constructor(props) {
     super(props);
-    const { group, t, groupCaption } = props;
-    const headerText = group
-      ? group.name
-      : t("CustomNewDepartment", { groupCaption });
-
-    this.state = {
-      headerText,
-    };
   }
+
   onClickBack = () => {
     const { filter, resetGroup, setFilter, history } = this.props;
 
@@ -43,7 +36,11 @@ class SectionHeaderContent extends React.Component {
   };
 
   render() {
-    const { headerText } = this.state;
+    const { group, t, groupCaption } = this.props;
+    const headerText = group
+      ? group.name
+      : t("CustomNewDepartment", { groupCaption });
+
     return (
       <Wrapper>
         <IconButton

@@ -749,11 +749,6 @@ namespace ASC.Core.Common.Migrations.MySql.CoreDbContextMySql
                         .HasColumnName("tariff")
                         .HasColumnType("int");
 
-                    b.Property<string>("TariffKey")
-                        .HasColumnName("tariff_key")
-                        .HasColumnType("varchar(64)")
-                        .HasAnnotation("MySql:CharSet", "utf8")
-                        .HasAnnotation("MySql:Collation", "utf8_general_ci");
 
                     b.Property<int>("Tenant")
                         .HasColumnName("tenant")

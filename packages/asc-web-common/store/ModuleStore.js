@@ -28,20 +28,17 @@ class ModuleStore {
     const link = item.link
       ? combineUrl(proxyURL, item.link.toLowerCase())
       : null;
-    const iconUrl = item.iconUrl
-      ? combineUrl(proxyURL, item.iconUrl.toLowerCase())
-      : null;
-    const imageUrl = item.imageUrl
-      ? combineUrl(proxyURL, item.imageUrl.toLowerCase())
-      : null;
+    //const iconUrl = combineUrl(proxyURL, item.iconUrl.toLowerCase());
+    //const imageUrl = combineUrl(proxyURL, item.imageUrl.toLowerCase());
 
     const result = {
       ...item,
       id,
       link,
+      origLink: item.link && item.link.toLowerCase(),
       notifications: 0,
-      iconUrl,
-      imageUrl,
+      iconUrl: item.iconUrl && item.iconUrl.toLowerCase(),
+      imageUrl: item.imageUrl && item.imageUrl.toLowerCase(),
     };
 
     return result;

@@ -97,7 +97,6 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                     tenant = table.Column<int>(nullable: false),
                     tariff = table.Column<int>(nullable: false),
                     stamp = table.Column<DateTime>(nullable: false),
-                    tariff_key = table.Column<string>(maxLength: 64, nullable: true, defaultValueSql: "NULL"),
                     comment = table.Column<string>(maxLength: 255, nullable: true, defaultValueSql: "NULL"),
                     create_on = table.Column<DateTime>(nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },

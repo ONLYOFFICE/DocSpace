@@ -1,6 +1,8 @@
-﻿using ASC.Core.Common.EF.Model;
+﻿using System;
+
+using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace ASC.Core.Common.EF
 {
@@ -10,7 +12,6 @@ namespace ASC.Core.Common.EF
         public int Tenant { get; set; }
         public int Tariff { get; set; }
         public DateTime Stamp { get; set; }
-        public string TariffKey { get; set; }
         public string Comment { get; set; }
         public DateTime CreateOn { get; set; }
     }
@@ -52,12 +53,6 @@ namespace ASC.Core.Common.EF
 
                 entity.Property(e => e.Tariff).HasColumnName("tariff");
 
-                entity.Property(e => e.TariffKey)
-                    .HasColumnName("tariff_key")
-                    .HasColumnType("varchar(64)")
-                    .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
-
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
@@ -84,11 +79,6 @@ namespace ASC.Core.Common.EF
                 entity.Property(e => e.Stamp).HasColumnName("stamp");
 
                 entity.Property(e => e.Tariff).HasColumnName("tariff");
-
-                entity.Property(e => e.TariffKey)
-                    .HasColumnName("tariff_key")
-                    .HasMaxLength(64)
-                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });

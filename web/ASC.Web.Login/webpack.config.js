@@ -6,11 +6,14 @@ const ModuleFederationPlugin = require("webpack").container
 const TerserPlugin = require("terser-webpack-plugin");
 const { InjectManifest } = require("workbox-webpack-plugin");
 //const CompressionPlugin = require("compression-webpack-plugin");
+const combineUrl = require("@appserver/common/utils/combineUrl");
+const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
+const { proxyURL } = AppServerConfig;
 
 const path = require("path");
 const pkg = require("./package.json");
 const deps = pkg.dependencies;
-const homepage = pkg.homepage;
+const homepage = pkg.homepage; // combineUrl(proxyURL, pkg.homepage);
 const title = pkg.title;
 
 var config = {
@@ -128,7 +131,7 @@ var config = {
       name: "login",
       filename: "remoteEntry.js",
       remotes: {
-        studio: "studio@/remoteEntry.js",
+        studio: `studio@${combineUrl(proxyURL, "/remoteEntry.js")}`,
       },
       exposes: {
         "./app": "./src/Login.jsx",
@@ -149,6 +152,9 @@ var config = {
       template: "./public/index.html",
       publicPath: homepage,
       title: title,
+      templateParameters: {
+        proxyURL: proxyURL,
+      },
       base: `${homepage}/`,
     }),
     new CopyPlugin({
@@ -158,7 +164,7 @@ var config = {
           globOptions: {
             dot: true,
             gitignore: true,
-            ignore: ["**/index.html"],
+            ignore: ["**/index.ejs"],
           },
         },
       ],

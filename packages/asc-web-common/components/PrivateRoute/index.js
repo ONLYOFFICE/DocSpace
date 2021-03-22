@@ -8,6 +8,8 @@ import PageLayout from "../PageLayout";
 import AppLoader from "../AppLoader";
 import { inject, observer } from "mobx-react";
 import { isMe } from "../../utils";
+import combineUrl from "../../utils/combineUrl";
+import { AppServerConfig } from "../../constants";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -32,7 +34,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       return (
         <Redirect
           to={{
-            pathname: wizardCompleted ? "/login" : "/wizard",
+            pathname: combineUrl(
+              AppServerConfig.proxyURL,
+              wizardCompleted ? "/login" : "/wizard"
+            ),
             state: { from: props.location },
           }}
         />
@@ -108,7 +113,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     if (currentModule && homepage !== computedMatch.path) {
       const { id } = currentModule;
 
-      setModuleInfo(computedMatch.path, id);
+      setModuleInfo(currentModule.origLink || currentModule.link, id);
     }
   }, [computedMatch.path]);
 

@@ -1,6 +1,8 @@
 import { action, makeObservable, observable } from "mobx";
 import Filter from "@appserver/common/api/people/filter";
 import config from "../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class FilterStore {
   filter = Filter.getDefault();
@@ -20,7 +22,11 @@ class FilterStore {
     window.history.replaceState(
       "",
       "",
-      `${config.homepage}/filter?${urlFilter}`
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/filter?${urlFilter}`
+      )
     );
   };
 
