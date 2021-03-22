@@ -3,8 +3,9 @@ import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import Loader from "@appserver/components/loader";
 import PageLayout from "@appserver/common/components/PageLayout";
-import { tryRedirectTo } from "@appserver/common/utils";
+import { combineUrl, tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class ActivateEmail extends React.PureComponent {
   componentDidMount() {
@@ -17,11 +18,18 @@ class ActivateEmail extends React.PureComponent {
     logout();
     changeEmail(uid, email, key)
       .then((res) => {
-        tryRedirectTo(`/login/confirmed-email=${email}`);
+        tryRedirectTo(
+          combineUrl(
+            AppServerConfig.proxyURL,
+            `/login/confirmed-email=${email}`
+          )
+        );
       })
       .catch((e) => {
         // console.log('activate email error', e);
-        tryRedirectTo(`/login/error=${e}`);
+        tryRedirectTo(
+          combineUrl(AppServerConfig.proxyURL, `/login/error=${e}`)
+        );
       });
   }
 
