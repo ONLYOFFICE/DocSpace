@@ -89,14 +89,12 @@ class SectionBodyContent extends React.Component {
 
   mapPropsToState = () => {
     const { group, users, groups, t } = this.props;
-    const buttonLabel = group ? t("SaveButton") : t("AddButton");
 
     const newState = {
       id: group ? group.id : "",
       groupName: group ? group.name : "",
       searchValue: "",
       error: null,
-      buttonLabel,
       inLoading: false,
       isHeadSelectorOpen: false,
       isUsersSelectorOpen: false,
@@ -297,6 +295,7 @@ class SectionBodyContent extends React.Component {
       me,
       isLoaded,
       groups,
+      group,
     } = this.props;
     const {
       groupName,
@@ -307,9 +306,10 @@ class SectionBodyContent extends React.Component {
       error,
       searchValue,
       groupManager,
-      buttonLabel,
       nameError,
     } = this.state;
+
+    const buttonLabel = group ? t("SaveButton") : t("AddButton");
 
     return (
       <MainContainer>
