@@ -266,7 +266,6 @@ class UpdateUserForm extends React.Component {
   }
 
   handleSubmit() {
- 
     if (!this.validate()) return false;
 
     const {
@@ -710,7 +709,8 @@ class UpdateUserForm extends React.Component {
               buttonTabIndex={2}
               dataDialog={dialogsDataset.changePassword}
             />
-            <TextChangeField
+            {/*TODO: uncomment this after added phone form */}
+            {/* <TextChangeField
               labelText={`${t("Phone")}:`}
               inputName="phone"
               inputValue={profile.mobilePhone}
@@ -719,7 +719,7 @@ class UpdateUserForm extends React.Component {
               buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={3}
               dataDialog={dialogsDataset.changePhone}
-            />
+            /> */}
             <TextField
               isRequired={true}
               hasError={errors.firstName}
