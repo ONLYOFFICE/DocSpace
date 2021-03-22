@@ -394,14 +394,14 @@ namespace ASC.CRM.Api
         /// </returns>
         [Read(@"opportunity/filter")]
         public IEnumerable<OpportunityDto> GetDeals(
-            Guid responsibleid,
-            int opportunityStagesid,
-            IEnumerable<string> tags,
-            int contactid,
-            DealMilestoneStatus? stageType,
-            bool? contactAlsoIsParticipant,
-            ApiDateTime fromDate,
-            ApiDateTime toDate)
+          [FromQuery] Guid responsibleid,
+           [FromQuery] int opportunityStagesid,
+           [FromQuery] IEnumerable<string> tags,
+           [FromQuery] int contactid,
+           [FromQuery] DealMilestoneStatus? stageType,
+           [FromQuery] bool? contactAlsoIsParticipant,
+           [FromQuery] ApiDateTime fromDate,
+           [FromQuery] ApiDateTime toDate)
         {
             DealSortedByType dealSortedByType;
 

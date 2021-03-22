@@ -323,51 +323,57 @@ namespace ASC.CRM.Core.Dao
                 case ListType.ContactStatus:
                 {
                     result = Query(CRMDbContext.ListItem)
-                            .GroupJoin(Query(CRMDbContext.Contacts),
+                            .Join(Query(CRMDbContext.Contacts),
                                        x => x.Id,
                                        y => y.StatusId,
-                                       (x, y) => new { Column1 = x, Column2 = y.Count() })
-                            .Where(x => x.Column1.ListType == listType)
-                            .OrderBy(x => x.Column1.SortOrder)
-                            .ToDictionary(x => x.Column1.Id, x => x.Column2);
+                                       (x, y) => new { x, y })
+                            .Where(x => x.x.ListType == listType)
+                            .GroupBy(x => x.x.Id)
+                            .Select(x => new { Id = x.Key, Count = x.Count() })
+                            .ToDictionary(x => x.Id, x => x.Count);
 
                     break;
                 }
                 case ListType.ContactType:
                 {
                     result = Query(CRMDbContext.ListItem)
-                            .GroupJoin(Query(CRMDbContext.Contacts),
+                            .Join(Query(CRMDbContext.Contacts),
                                        x => x.Id,
                                        y => y.ContactTypeId,
-                                       (x, y) => new { Column1 = x, Column2 = y.Count() })
-                            .Where(x => x.Column1.ListType == listType)
-                            .OrderBy(x => x.Column1.SortOrder)
-                            .ToDictionary(x => x.Column1.Id, x => x.Column2);
+                                       (x, y) => new { x, y })
+                            .Where(x => x.x.ListType == listType)
+                            .GroupBy(x => x.x.Id)
+                            .Select(x => new { Id = x.Key, Count = x.Count() })
+                            .ToDictionary(x => x.Id, x => x.Count);
+
                     break;
                 }
                 case ListType.TaskCategory:
                 {
                     result = Query(CRMDbContext.ListItem)
-                            .GroupJoin(Query(CRMDbContext.Tasks),
+                            .Join(Query(CRMDbContext.Tasks),
                                        x => x.Id,
                                        y => y.CategoryId,
-                                       (x, y) => new { Column1 = x, Column2 = y.Count() })
-                            .Where(x => x.Column1.ListType == listType)
-                            .OrderBy(x => x.Column1.SortOrder)
-                            .ToDictionary(x => x.Column1.Id, x => x.Column2);
+                                       (x, y) => new { x, y })
+                            .Where(x => x.x.ListType == listType)
+                            .GroupBy(x => x.x.Id)
+                            .Select(x => new { Id = x.Key, Count = x.Count() })
+                            .ToDictionary(x => x.Id, x => x.Count);
 
                     break;
                 }
                 case ListType.HistoryCategory:
                 {
+
                     result = Query(CRMDbContext.ListItem)
-                        .GroupJoin(Query(CRMDbContext.RelationshipEvent),
-                                   x => x.Id,
-                                   y => y.CategoryId,
-                                   (x, y) => new { Column1 = x, Column2 = y.Count() })
-                        .Where(x => x.Column1.ListType == listType)
-                        .OrderBy(x => x.Column1.SortOrder)
-                        .ToDictionary(x => x.Column1.Id, x => x.Column2);
+                            .Join(Query(CRMDbContext.RelationshipEvent),
+                                       x => x.Id,
+                                       y => y.CategoryId,
+                                       (x, y) => new { x, y })
+                            .Where(x => x.x.ListType == listType)
+                            .GroupBy(x => x.x.Id)
+                            .Select(x => new { Id = x.Key, Count = x.Count() })
+                            .ToDictionary(x => x.Id, x => x.Count);
 
                     break;
                 }

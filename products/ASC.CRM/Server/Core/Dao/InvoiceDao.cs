@@ -68,7 +68,9 @@ namespace ASC.CRM.Core.Dao
             ICache ascCache,
             SettingsManager settingsManager,
             InvoiceSetting invoiceSetting,
-            InvoiceFormattedData invoiceFormattedData)
+            InvoiceFormattedData invoiceFormattedData,
+            CRMSecurity crmSecurity,
+            TenantUtil tenantUtil)
               : base(dbContextManager,
                  tenantManager,
                  securityContext,
@@ -77,7 +79,9 @@ namespace ASC.CRM.Core.Dao
                  ascCache,
                  settingsManager,
                  invoiceSetting,
-                 invoiceFormattedData
+                 invoiceFormattedData,
+                 crmSecurity,
+                 tenantUtil
                  )
         {
             _invoiceCache = new HttpRequestDictionary<Invoice>(httpContextAccessor?.HttpContext, "crm_invoice");
@@ -126,38 +130,41 @@ namespace ASC.CRM.Core.Dao
             new KeyValuePair<InvoiceStatus, InvoiceStatus>(InvoiceStatus.Paid, InvoiceStatus.Sent)//Bug 23450
         };
 
+        private InvoiceSetting _invoiceSetting;
+        private InvoiceFormattedData _invoiceFormattedData;
+        private SettingsManager _settingsManager;
+        private FactoryIndexerInvoice _factoryIndexer;
+        private TenantUtil _tenantUtil;
+        private CRMSecurity _crmSecurity;
+
         public InvoiceDao(
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
+           
             SecurityContext securityContext,
             FactoryIndexerInvoice factoryIndexer,
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
             SettingsManager settingsManager,
             InvoiceSetting invoiceSetting,
-            InvoiceFormattedData invoiceFormattedData)
+            InvoiceFormattedData invoiceFormattedData,
+            CRMSecurity crmSecurity,
+            TenantUtil tenantUtil)
               : base(dbContextManager,
                  tenantManager,
                  securityContext,
                  logger,
                  ascCache)
         {
-            FactoryIndexer = factoryIndexer;
-            SettingsManager = settingsManager;
-            InvoiceSetting = invoiceSetting;
-            InvoiceFormattedData = invoiceFormattedData;
+            _factoryIndexer = factoryIndexer;
+            _settingsManager = settingsManager;
+            _invoiceSetting = invoiceSetting;
+            _invoiceFormattedData = invoiceFormattedData;
+            _crmSecurity = crmSecurity;
+            _tenantUtil = tenantUtil;
         }
 
-        public InvoiceSetting InvoiceSetting { get; }
-
-        public InvoiceFormattedData InvoiceFormattedData { get; }
-        public SettingsManager SettingsManager { get; }
-
-        public FactoryIndexerInvoice FactoryIndexer { get; }
-
-        public TenantUtil TenantUtil { get; }
-        public CRMSecurity CRMSecurity { get; }
-
+        
         public Boolean IsExist(int invoiceID)
         {
             return IsExistFromDb(invoiceID);
@@ -231,7 +238,7 @@ namespace ASC.CRM.Core.Dao
                                     OrderBy orderBy)
         {
 
-            if (CRMSecurity.IsAdmin)
+            if (_crmSecurity.IsAdmin)
                 return GetCrudeInvoices(
                     searchText,
                     status,
@@ -263,9 +270,9 @@ namespace ASC.CRM.Core.Dao
 
             if (crudeInvoices.Count == 0) return crudeInvoices;
 
-            if (crudeInvoices.Count < from + count) return CRMSecurity.FilterRead(crudeInvoices).Skip(from).ToList();
+            if (crudeInvoices.Count < from + count) return _crmSecurity.FilterRead(crudeInvoices).Skip(from).ToList();
 
-            var result = CRMSecurity.FilterRead(crudeInvoices).ToList();
+            var result = _crmSecurity.FilterRead(crudeInvoices).ToList();
 
             if (result.Count == crudeInvoices.Count) return result.Skip(from).ToList();
 
@@ -290,7 +297,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (crudeInvoices.Count == 0) break;
 
-                result.AddRange(CRMSecurity.FilterRead(crudeInvoices));
+                result.AddRange(_crmSecurity.FilterRead(crudeInvoices));
 
                 if ((result.Count >= count + from) || (crudeInvoices.Count < localCount)) break;
 
@@ -412,7 +419,7 @@ namespace ASC.CRM.Core.Dao
 
             var withParams = hasParams(searchText, status, issueDateFrom, issueDateTo, dueDateFrom, dueDateTo, entityType, entityID, currency);
 
-            var exceptIDs = CRMSecurity.GetPrivateItems(typeof(Invoice)).ToList();
+            var exceptIDs = _crmSecurity.GetPrivateItems(typeof(Invoice)).ToList();
 
             int result;
 
@@ -456,7 +463,7 @@ namespace ASC.CRM.Core.Dao
                 .Where(x => ids.Contains(x.Id))
                 .ToList()
                 .ConvertAll(ToInvoice)
-                .FindAll(CRMSecurity.CanAccessTo);
+                .FindAll(_crmSecurity.CanAccessTo);
         }
 
         public List<Invoice> GetEntityInvoices(EntityType entityType, int entityID)
@@ -470,7 +477,7 @@ namespace ASC.CRM.Core.Dao
                 return Query(CRMDbContext.Invoices).Where(x => x.EntityId == entityID && x.EntityType == entityType)
                     .ToList()
                     .ConvertAll(ToInvoice)
-                    .FindAll(CRMSecurity.CanAccessTo);
+                    .FindAll(_crmSecurity.CanAccessTo);
             }
 
             if (entityType == EntityType.Contact || entityType == EntityType.Person || entityType == EntityType.Company)
@@ -489,7 +496,7 @@ namespace ASC.CRM.Core.Dao
             return Query(CRMDbContext.Invoices).Where(x => x.ContactId == contactID)
                     .ToList()
                     .ConvertAll(ToInvoice)
-                    .FindAll(CRMSecurity.CanAccessTo);
+                    .FindAll(_crmSecurity.CanAccessTo);
         }
 
         public string GetNewInvoicesNumber()
@@ -524,9 +531,9 @@ namespace ASC.CRM.Core.Dao
 
         public InvoiceSetting GetSettings()
         {
-            var tenantSettings = SettingsManager.Load<CRMSettings>();
+            var tenantSettings = _settingsManager.Load<CRMSettings>();
 
-            return tenantSettings.InvoiceSetting ?? InvoiceSetting.DefaultSettings;
+            return tenantSettings.InvoiceSetting ?? _invoiceSetting.DefaultSettings;
         }
 
         public virtual int SaveOrUpdateInvoice(Invoice invoice)
@@ -535,7 +542,7 @@ namespace ASC.CRM.Core.Dao
 
             var result = SaveOrUpdateInvoiceInDb(invoice);
 
-            FactoryIndexer.Index(Query(CRMDbContext.Invoices).Where(x => x.Id == invoice.ID).Single());
+            _factoryIndexer.Index(Query(CRMDbContext.Invoices).Where(x => x.Id == invoice.ID).Single());
 
             return result;
         }
@@ -563,13 +570,13 @@ namespace ASC.CRM.Core.Dao
                 {
                     Status = invoice.Status,
                     Number = invoice.Number,
-                    IssueDate = TenantUtil.DateTimeToUtc(invoice.IssueDate),
+                    IssueDate = _tenantUtil.DateTimeToUtc(invoice.IssueDate),
                     TemplateType = invoice.TemplateType,
                     ContactId = invoice.ContactID,
                     ConsigneeId = invoice.ConsigneeID,
                     EntityType = invoice.EntityType,
                     EntityId = invoice.EntityID,
-                    DueDate = TenantUtil.DateTimeToUtc(invoice.DueDate),
+                    DueDate = _tenantUtil.DateTimeToUtc(invoice.DueDate),
                     Language = invoice.Language,
                     Currency = invoice.Currency,
                     ExchangeRate = invoice.ExchangeRate,
@@ -598,16 +605,16 @@ namespace ASC.CRM.Core.Dao
 
                 var oldInvoice = ToInvoice(itemToUpdate);
 
-                CRMSecurity.DemandEdit(oldInvoice);
+                _crmSecurity.DemandEdit(oldInvoice);
 
                 itemToUpdate.Status = invoice.Status;
-                itemToUpdate.IssueDate = TenantUtil.DateTimeToUtc(invoice.IssueDate);
+                itemToUpdate.IssueDate = _tenantUtil.DateTimeToUtc(invoice.IssueDate);
                 itemToUpdate.TemplateType = invoice.TemplateType;
                 itemToUpdate.ContactId = invoice.ContactID;
                 itemToUpdate.ConsigneeId = invoice.ConsigneeID;
                 itemToUpdate.EntityType = invoice.EntityType;
                 itemToUpdate.EntityId = invoice.EntityID;
-                itemToUpdate.DueDate = TenantUtil.DateTimeToUtc(invoice.DueDate);
+                itemToUpdate.DueDate = _tenantUtil.DateTimeToUtc(invoice.DueDate);
                 itemToUpdate.Language = invoice.Language;
                 itemToUpdate.Currency = invoice.Currency;
                 itemToUpdate.ExchangeRate = invoice.ExchangeRate;
@@ -659,7 +666,7 @@ namespace ASC.CRM.Core.Dao
 
                 return null;
             }
-            CRMSecurity.DemandAccessTo(invoice);
+            _crmSecurity.DemandAccessTo(invoice);
 
             if (!invoiceStatusMap.Contains(new KeyValuePair<InvoiceStatus, InvoiceStatus>(invoice.Status, status)))
             {
@@ -705,7 +712,7 @@ namespace ASC.CRM.Core.Dao
 
         public void UpdateInvoiceJsonData(Invoice invoice, int billingAddressID, int deliveryAddressID)
         {
-            var jsonData = InvoiceFormattedData.GetData(invoice, billingAddressID, deliveryAddressID);
+            var jsonData = _invoiceFormattedData.GetData(invoice, billingAddressID, deliveryAddressID);
             if (jsonData.LogoBase64Id != 0)
             {
                 jsonData.LogoBase64 = null;
@@ -716,7 +723,7 @@ namespace ASC.CRM.Core.Dao
 
         public void UpdateInvoiceJsonDataAfterLinesUpdated(Invoice invoice)
         {
-            var jsonData = InvoiceFormattedData.GetDataAfterLinesUpdated(invoice);
+            var jsonData = _invoiceFormattedData.GetDataAfterLinesUpdated(invoice);
             if (jsonData.LogoBase64Id != 0)
             {
                 jsonData.LogoBase64 = null;
@@ -746,10 +753,10 @@ namespace ASC.CRM.Core.Dao
 
         public InvoiceSetting SaveInvoiceSettings(InvoiceSetting invoiceSetting)
         {
-            var tenantSettings = SettingsManager.Load<CRMSettings>();
+            var tenantSettings = _settingsManager.Load<CRMSettings>();
             tenantSettings.InvoiceSetting = invoiceSetting;
 
-            SettingsManager.Save<CRMSettings>(tenantSettings);
+            _settingsManager.Save<CRMSettings>(tenantSettings);
 
             return tenantSettings.InvoiceSetting;
         }
@@ -761,7 +768,7 @@ namespace ASC.CRM.Core.Dao
             var invoice = GetByID(invoiceID);
             if (invoice == null) return null;
 
-            CRMSecurity.DemandDelete(invoice);
+            _crmSecurity.DemandDelete(invoice);
 
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
@@ -773,7 +780,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<Invoice> DeleteBatchInvoices(int[] invoiceID)
         {
-            var invoices = GetInvoices(invoiceID).Where(CRMSecurity.CanDelete).ToList();
+            var invoices = GetInvoices(invoiceID).Where(_crmSecurity.CanDelete).ToList();
             if (!invoices.Any()) return invoices;
 
             // Delete relative  keys
@@ -799,7 +806,7 @@ namespace ASC.CRM.Core.Dao
 
             tx.Commit();
 
-            dbInvoicesQuery.ToList().ForEach(invoice => FactoryIndexer.Delete(invoice));
+            dbInvoicesQuery.ToList().ForEach(invoice => _factoryIndexer.Delete(invoice));
 
         }
 
@@ -812,13 +819,13 @@ namespace ASC.CRM.Core.Dao
                 ID = dbInvoice.Id,
                 Status = dbInvoice.Status,
                 Number = dbInvoice.Number,
-                IssueDate = TenantUtil.DateTimeFromUtc(dbInvoice.IssueDate),
+                IssueDate = _tenantUtil.DateTimeFromUtc(dbInvoice.IssueDate),
                 TemplateType = dbInvoice.TemplateType,
                 ContactID = dbInvoice.ContactId,
                 ConsigneeID = dbInvoice.ConsigneeId,
                 EntityType = dbInvoice.EntityType,
                 EntityID = dbInvoice.EntityId,
-                DueDate = TenantUtil.DateTimeFromUtc(dbInvoice.DueDate),
+                DueDate = _tenantUtil.DateTimeFromUtc(dbInvoice.DueDate),
                 Language = dbInvoice.Language,
                 Currency = dbInvoice.Currency,
                 ExchangeRate = dbInvoice.ExchangeRate,
@@ -827,14 +834,14 @@ namespace ASC.CRM.Core.Dao
                 Description = dbInvoice.Description,
                 JsonData = dbInvoice.JsonData,
                 FileID = dbInvoice.FileId,
-                CreateOn = TenantUtil.DateTimeFromUtc(dbInvoice.CreateOn),
+                CreateOn = _tenantUtil.DateTimeFromUtc(dbInvoice.CreateOn),
                 CreateBy = dbInvoice.CreateBy,
                 LastModifedBy = dbInvoice.LastModifedBy
             };
 
             if (dbInvoice.LastModifedOn.HasValue)
             {
-                result.LastModifedOn = TenantUtil.DateTimeFromUtc(dbInvoice.LastModifedOn.Value);
+                result.LastModifedOn = _tenantUtil.DateTimeFromUtc(dbInvoice.LastModifedOn.Value);
             }
 
             return result;
@@ -887,7 +894,7 @@ namespace ASC.CRM.Core.Dao
                 if (keywords.Length > 0)
                 {
                     List<int> invoicesIds;
-                    if (!FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out invoicesIds))
+                    if (!_factoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out invoicesIds))
                     {
                         foreach (var k in keywords)
                         {
@@ -909,28 +916,28 @@ namespace ASC.CRM.Core.Dao
 
             if (issueDateFrom != DateTime.MinValue && issueDateTo != DateTime.MinValue)
             {
-                sqlQuery = sqlQuery.Where(x => x.IssueDate >= TenantUtil.DateTimeToUtc(issueDateFrom) && x.DueDate <= TenantUtil.DateTimeToUtc(issueDateTo.AddDays(1).AddMinutes(-1)));
+                sqlQuery = sqlQuery.Where(x => x.IssueDate >= _tenantUtil.DateTimeToUtc(issueDateFrom) && x.DueDate <= _tenantUtil.DateTimeToUtc(issueDateTo.AddDays(1).AddMinutes(-1)));
             }
             else if (issueDateFrom != DateTime.MinValue)
             {
-                sqlQuery = sqlQuery.Where(x => x.IssueDate > TenantUtil.DateTimeToUtc(issueDateFrom));
+                sqlQuery = sqlQuery.Where(x => x.IssueDate > _tenantUtil.DateTimeToUtc(issueDateFrom));
             }
             else if (issueDateTo != DateTime.MinValue)
             {
-                sqlQuery = sqlQuery.Where(x => x.IssueDate < TenantUtil.DateTimeToUtc(issueDateTo.AddDays(1).AddMinutes(-1)));
+                sqlQuery = sqlQuery.Where(x => x.IssueDate < _tenantUtil.DateTimeToUtc(issueDateTo.AddDays(1).AddMinutes(-1)));
             }
 
             if (dueDateFrom != DateTime.MinValue && dueDateTo != DateTime.MinValue)
             {
-                sqlQuery = sqlQuery.Where(x => x.DueDate >= TenantUtil.DateTimeToUtc(dueDateFrom) && x.DueDate <= TenantUtil.DateTimeToUtc(dueDateTo.AddDays(1).AddMinutes(-1)));
+                sqlQuery = sqlQuery.Where(x => x.DueDate >= _tenantUtil.DateTimeToUtc(dueDateFrom) && x.DueDate <= _tenantUtil.DateTimeToUtc(dueDateTo.AddDays(1).AddMinutes(-1)));
             }
             else if (dueDateFrom != DateTime.MinValue)
             {
-                sqlQuery = sqlQuery.Where(x => x.DueDate > TenantUtil.DateTimeToUtc(dueDateFrom));
+                sqlQuery = sqlQuery.Where(x => x.DueDate > _tenantUtil.DateTimeToUtc(dueDateFrom));
             }
             else if (dueDateTo != DateTime.MinValue)
             {
-                sqlQuery = sqlQuery.Where(x => x.DueDate < TenantUtil.DateTimeToUtc(dueDateTo.AddDays(1).AddMinutes(-1)));
+                sqlQuery = sqlQuery.Where(x => x.DueDate < _tenantUtil.DateTimeToUtc(dueDateTo.AddDays(1).AddMinutes(-1)));
             }
 
             if (!String.IsNullOrEmpty(currency))
@@ -967,7 +974,7 @@ namespace ASC.CRM.Core.Dao
         {
             var itemToUpdate = Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceId);
 
-            itemToUpdate.CreateOn = TenantUtil.DateTimeToUtc(creationDate);
+            itemToUpdate.CreateOn = _tenantUtil.DateTimeToUtc(creationDate);
 
             CRMDbContext.Invoices.Update(itemToUpdate);
             CRMDbContext.SaveChanges();
@@ -985,7 +992,7 @@ namespace ASC.CRM.Core.Dao
         {
             var itemToUpdate = Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceId);
 
-            itemToUpdate.LastModifedOn = TenantUtil.DateTimeToUtc(lastModifedDate);
+            itemToUpdate.LastModifedOn = _tenantUtil.DateTimeToUtc(lastModifedDate);
 
             CRMDbContext.Invoices.Update(itemToUpdate);
 

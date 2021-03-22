@@ -44,7 +44,7 @@ namespace ASC.CRM.Mapping
 
         public TaskCategoryBaseDto Convert(ListItem source, TaskCategoryBaseDto destination, ResolutionContext context)
         {
-            return new TaskCategoryBaseDto(source)
+            return new TaskCategoryDto(source)
             {
                 ImagePath = _webImageSupplier.GetAbsoluteWebPath(source.AdditionalParams, ProductEntryPoint.ID)
             };

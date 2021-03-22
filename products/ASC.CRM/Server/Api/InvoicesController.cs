@@ -1536,7 +1536,6 @@ namespace ASC.CRM.Api
             var contacts = _daoFactory.GetContactDao().GetContacts(contactIDs.Distinct().ToArray())
                                      .ToDictionary(item => item.ID, x => _mapper.Map<ContactBaseWithEmailDto>(x));
 
-
             foreach (var invoice in items)
             {
                 var invoiceDto = _mapper.Map<InvoiceBaseDto>(invoice);

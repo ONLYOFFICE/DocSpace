@@ -128,17 +128,19 @@ namespace ASC.CRM.Core.Dao
         }
 
         protected Dictionary<int, int[]> GetRelativeToEntity(int[] contactID, EntityType entityType, int[] entityID)
-        {
-            Expression<Func<DbEntityContact, bool>> exp = null;
+        { Expression<Func<DbEntityContact, bool>> exp = null;
 
             if (contactID != null && contactID.Length > 0 && (entityID == null || entityID.Length == 0))
                 exp = x => x.EntityType == entityType && contactID.Contains(x.ContactId);
             else if (entityID != null && entityID.Length > 0 && (contactID == null || contactID.Length == 0))
                 exp = x => x.EntityType == entityType && entityID.Contains(x.EntityId);
 
-            return CRMDbContext.EntityContact.Where(exp).GroupBy(x => x.EntityId).ToDictionary(
-                    x => x.Key,
-                    x => x.Select(x => Convert.ToInt32(x.ContactId)).ToArray());
+            return CRMDbContext.EntityContact
+                .Where(exp)
+                .Select(x => new { EntityId = x.EntityId, ContactId = x.ContactId })
+                .ToList()
+                .GroupBy(x=> x.EntityId)
+                .ToDictionary(x=>x.Key, y=> y.Select(c => c.ContactId).ToArray());
         }
 
         protected int[] GetRelativeToEntity(int? contactID, EntityType entityType, int? entityID)

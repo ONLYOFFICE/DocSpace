@@ -222,10 +222,11 @@ namespace ASC.CRM.Core.Dao
 
         public List<Task> GetAllTasks()
         {
-            return _mapper.ProjectTo<Task>(Query(CRMDbContext.Tasks)
+            var dbTasks = Query(CRMDbContext.Tasks)
                  .OrderBy(x => x.Deadline)
-                 .OrderBy(x => x.Title))
-                 .ToList()
+                 .OrderBy(x => x.Title).ToList();
+
+            return _mapper.Map<List<DbTask>, List<Task>>(dbTasks)
                  .FindAll(CRMSecurity.CanAccessTo);
         }
 
@@ -380,8 +381,7 @@ namespace ASC.CRM.Core.Dao
                 }
             }
 
-
-            return _mapper.ProjectTo<Task>(sqlQuery).ToList();
+            return _mapper.Map<List<DbTask>, List<Task>>(sqlQuery.ToList());
         }
 
         public int GetTasksCount(

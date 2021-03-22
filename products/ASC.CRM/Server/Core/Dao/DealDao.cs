@@ -187,10 +187,9 @@ namespace ASC.CRM.Core.Dao
         {
             if (id == null || !id.Any()) return new List<Deal>();
 
-            return _mapper.ProjectTo<Deal>(Query(CRMDbContext.Deals)
-                                           .Where(x => id.Contains(x.Id)))
-                                             .ToList()
-                                             .FindAll(CRMSecurity.CanAccessTo);
+            var dbDeals = Query(CRMDbContext.Deals).Where(x => id.Contains(x.Id)).ToList();
+
+            return _mapper.Map<List<DbDeal>, List<Deal>>(dbDeals);
         }
 
         public virtual Deal GetByID(int dealID)
@@ -747,8 +746,7 @@ namespace ASC.CRM.Core.Dao
                 sqlQuery = sqlQuery.Take(count);
             }
 
-
-            return _mapper.ProjectTo<Deal>(sqlQuery).ToList();
+            return _mapper.Map<List<DbDeal>, List<Deal>>(sqlQuery.ToList());
         }
 
         public List<Deal> GetDealsByContactID(int contactID)
@@ -797,7 +795,9 @@ namespace ASC.CRM.Core.Dao
 
             sqlQuery = sqlQuery.OrderBy(x => x.Title);
 
-            return _mapper.ProjectTo<Deal>(sqlQuery).ToList().FindAll(CRMSecurity.CanAccessTo);
+            var dbDeals = sqlQuery.ToList();
+
+            return _mapper.Map<List<DbDeal>, List<Deal>>(dbDeals).FindAll(CRMSecurity.CanAccessTo);
         }
 
         public virtual Deal DeleteDeal(int dealID)

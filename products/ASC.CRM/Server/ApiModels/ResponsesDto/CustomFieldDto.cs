@@ -74,6 +74,8 @@ namespace ASC.CRM.ApiModels
 
         public CustomFieldBaseDto(CustomField customField)
         {
+            if (customField != null)
+
             EntityId = customField.EntityID;
             Label = customField.Label;
             FieldValue = customField.Value;

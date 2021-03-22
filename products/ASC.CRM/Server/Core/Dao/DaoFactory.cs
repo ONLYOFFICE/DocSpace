@@ -167,6 +167,7 @@ namespace ASC.CRM.Core.Dao
             services.TryAdd<ListItemDao>();
             services.TryAdd<ContactDao>();
             services.TryAdd<CustomFieldDao>();
+            services.TryAdd<DealDao>();
             services.TryAdd<DealMilestoneDao>();
             services.TryAdd<TagDao>();
             services.TryAdd<SearchDao>();
@@ -177,6 +178,8 @@ namespace ASC.CRM.Core.Dao
             services.TryAdd<TaskTemplateDao>();
 
             services.TryAdd<ReportDao>();
+            services.TryAdd<CurrencyRateDao>();
+
             services.TryAdd<CurrencyInfoDao>();
             services.TryAdd<ContactInfoDao>();
 

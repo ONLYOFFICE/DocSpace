@@ -218,7 +218,25 @@ namespace ASC.CRM.Mapping
         {
             if (source == null) return null;
 
-            var result = (ContactBaseWithPhoneDto)context.Mapper.Map<ContactBaseDto>(source);
+            if (source == null) return null;
+
+            var contactBaseDto = context.Mapper.Map<ContactBaseDto>(source);
+
+            var result = new ContactBaseWithPhoneDto
+            {
+                AccessList = contactBaseDto.AccessList,
+                CanDelete = contactBaseDto.CanDelete,
+                CanEdit = contactBaseDto.CanEdit,
+                Currency = contactBaseDto.Currency,
+                DisplayName = contactBaseDto.DisplayName,
+                Id = contactBaseDto.Id,
+                IsCompany = contactBaseDto.IsCompany,
+                IsPrivate = contactBaseDto.IsPrivate,
+                IsShared = contactBaseDto.IsShared,
+                MediumFotoUrl = contactBaseDto.MediumFotoUrl,
+                ShareType = contactBaseDto.ShareType,
+                SmallFotoUrl = contactBaseDto.SmallFotoUrl
+            };
 
             var phone = _daoFactory.GetContactInfoDao().GetList(source.ID, ContactInfoType.Phone, null, true).FirstOrDefault();
 
@@ -231,7 +249,24 @@ namespace ASC.CRM.Mapping
         {
             if (source == null) return null;
 
-            var result = (ContactBaseWithEmailDto)context.Mapper.Map<ContactBaseDto>(source);
+            var contactBaseDto = context.Mapper.Map<ContactBaseDto>(source);
+
+            var result = new ContactBaseWithEmailDto
+            {
+                AccessList = contactBaseDto.AccessList,
+                CanDelete = contactBaseDto.CanDelete,
+                CanEdit = contactBaseDto.CanEdit,
+                Currency = contactBaseDto.Currency,
+                DisplayName = contactBaseDto.DisplayName,
+                Id = contactBaseDto.Id,
+                IsCompany = contactBaseDto.IsCompany,
+                IsPrivate = contactBaseDto.IsPrivate,
+                IsShared = contactBaseDto.IsShared,
+                MediumFotoUrl = contactBaseDto.MediumFotoUrl,
+                ShareType = contactBaseDto.ShareType,
+                SmallFotoUrl = contactBaseDto.SmallFotoUrl
+            };
+
             var email = _daoFactory.GetContactInfoDao().GetList(source.ID, ContactInfoType.Email, null, true).FirstOrDefault();
 
             result.Email = context.Mapper.Map<ContactInfoDto>(email);

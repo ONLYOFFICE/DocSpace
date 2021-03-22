@@ -29,8 +29,12 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 using ASC.Api.Core;
+using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
 using ASC.Web.Api.Models;
+
+using AutoMapper;
 
 namespace ASC.CRM.ApiModels
 {
@@ -38,7 +42,7 @@ namespace ASC.CRM.ApiModels
     ///  Opportunity
     /// </summary>
     [DataContract(Name = "opportunity", Namespace = "")]
-    public class OpportunityDto
+    public class OpportunityDto : IMapFrom<Deal>
     {
 
         public OpportunityDto()
@@ -65,11 +69,8 @@ namespace ASC.CRM.ApiModels
         public ApiDateTime ActualCloseDate { get; set; }
         public ApiDateTime ExpectedCloseDate { get; set; }
 
-
         public bool IsPrivate { get; set; }
         public IEnumerable<EmployeeWraper> AccessList { get; set; }
-
-
         public bool CanEdit { get; set; }
         public IEnumerable<CustomFieldBaseDto> CustomFields { get; set; }
 
@@ -89,6 +90,12 @@ namespace ASC.CRM.ApiModels
                 BidType = BidType.FixedBid,
                 Stage = DealMilestoneBaseDto.GetSample()
             };
+        }
+
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Deal, OpportunityDto>().ConvertUsing<OpportunityDtoTypeConverter>();
         }
     }
 }

@@ -80,6 +80,7 @@ namespace ASC.CRM.Core.Entities
         [DataMember(Name = "deal_milestone_probability")]
         public int DealMilestoneProbability { get; set; }
 
+        [DataMember(Name = "actual_close_date")]
         public DateTime ActualCloseDate { get; set; }
 
         //[DataMember(Name = "actual_close_date")]
@@ -93,10 +94,9 @@ namespace ASC.CRM.Core.Entities
         //    set { ; }
         //}
 
-
+        [DataMember(Name = "expected_close_date")]
         public DateTime ExpectedCloseDate { get; set; }
 
-        [DataMember(Name = "expected_close_date")]
         //private String ExpectedCloseDateStr
         //{
         //    get

@@ -178,9 +178,9 @@ namespace ASC.CRM.ApiModels
             profile.CreateMap<Core.Entities.Contact, ContactBaseDto>().ConvertUsing<ContactDtoTypeConverter>();
             profile.CreateMap<Core.Entities.Person, PersonDto>().ConvertUsing<ContactDtoTypeConverter>();
             profile.CreateMap<Core.Entities.Company, CompanyDto>().ConvertUsing<ContactDtoTypeConverter>();
-            profile.CreateMap<Core.Entities.Company, ContactBaseWithPhoneDto>().ConvertUsing<ContactDtoTypeConverter>();
-            profile.CreateMap<Core.Entities.Company, ContactBaseWithEmailDto>().ConvertUsing<ContactDtoTypeConverter>();
 
+            profile.CreateMap<Core.Entities.Contact, ContactBaseWithPhoneDto>().ConvertUsing<ContactDtoTypeConverter>();
+            profile.CreateMap<Core.Entities.Contact, ContactBaseWithEmailDto>().ConvertUsing<ContactDtoTypeConverter>();          
         }
     }
 

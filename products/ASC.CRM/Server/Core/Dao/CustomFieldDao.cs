@@ -440,10 +440,10 @@ namespace ASC.CRM.Core.Dao
             if (!_supportedEntityType.Contains(entityType))
                 throw new ArgumentException();
 
-            var sqlQuery = Query(CRMDbContext.FieldDescription).GroupJoin(Query(CRMDbContext.FieldValue),
+            var sqlQuery = Query(CRMDbContext.FieldDescription).Join(Query(CRMDbContext.FieldValue),
                           x => x.Id,
                           y => y.FieldId,
-                          (x, y) => new { x = x, count = y.Count() }
+                          (x, y) => new { x, y }
                          );
 
             if (entityType == EntityType.Company || entityType == EntityType.Person)
@@ -456,9 +456,9 @@ namespace ASC.CRM.Core.Dao
             }
 
             sqlQuery = sqlQuery.Where(x => x.x.Id == entityID);
-            sqlQuery = sqlQuery.OrderBy(x => x.x.SortOrder);
 
-            return sqlQuery.Single().count;
+            return sqlQuery.GroupBy(x => x.x.Id)
+                           .Select(x => x.Count()).SingleOrDefault();
         }
 
         public List<CustomField> GetEnityFields(EntityType entityType, int entityID, bool includeEmptyFields)
@@ -560,7 +560,7 @@ namespace ASC.CRM.Core.Dao
         public CustomField ToCustomField(DbFieldDescription dbFieldDescription,
                                                 DbFieldValue dbFieldValue = null)
         {
-            if (dbFieldDescription == null || dbFieldValue == null) return null;
+            if (dbFieldDescription == null) return null;
 
             var customField = new CustomField
             {
@@ -573,7 +573,7 @@ namespace ASC.CRM.Core.Dao
 
             };
 
-            if (customField != null)
+            if (dbFieldValue != null)
             {
                 customField.Value = dbFieldValue.Value;
                 customField.EntityID = dbFieldValue.EntityId;
