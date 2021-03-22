@@ -1,6 +1,3 @@
-import config from "../package.json";
-const { api, proxy } = config;
-
 export const LANGUAGE = "language";
 export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
 
@@ -139,8 +136,6 @@ export const LoaderStyle = {
   animate: true,
 };
 
-export const AppServerConfig = {
-  proxyURL: (proxy && proxy.url) || "",
-  apiPrefixURL: (api && api.url) || "/api/2.0",
-  apiTimeout: (api && api.timeout) || 30000,
-};
+import config from "./AppServerConfig";
+
+export const AppServerConfig = config;

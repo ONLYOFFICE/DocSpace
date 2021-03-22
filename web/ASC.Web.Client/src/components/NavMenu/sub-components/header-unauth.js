@@ -5,6 +5,8 @@ import Box from "@appserver/components/box";
 import RecoverAccess from "./recover-access-container";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const backgroundColor = "#0F4071";
 
@@ -69,11 +71,17 @@ const HeaderUnAuth = ({
             <a className="header-logo-wrapper" href="/">
               <img
                 className="header-logo-min_icon"
-                src="/static/images/nav.logo.react.svg"
+                src={combineUrl(
+                  AppServerConfig.proxyURL,
+                  "/static/images/nav.logo.react.svg"
+                )}
               />
               <img
                 className="header-logo-icon"
-                src="/static/images/nav.logo.opened.react.svg"
+                src={combineUrl(
+                  AppServerConfig.proxyURL,
+                  "/static/images/nav.logo.opened.react.svg"
+                )}
               />
             </a>
           </div>

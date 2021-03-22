@@ -29,7 +29,8 @@ const homepage = config.homepage;
 
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 const HOME_URLS = [
-  combineUrl(PROXY_HOMEPAGE_URL, "/") || "/",
+  combineUrl(PROXY_HOMEPAGE_URL),
+  combineUrl(PROXY_HOMEPAGE_URL, "/"),
   combineUrl(PROXY_HOMEPAGE_URL, "/error=:error"),
 ];
 const WIZARD_URL = combineUrl(PROXY_HOMEPAGE_URL, "/wizard");

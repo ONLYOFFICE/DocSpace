@@ -6,11 +6,13 @@ const ModuleFederationPlugin = require("webpack").container
 const TerserPlugin = require("terser-webpack-plugin");
 const { InjectManifest } = require("workbox-webpack-plugin");
 //const CompressionPlugin = require("compression-webpack-plugin");
+const combineUrl = require("@appserver/common/utils/combineUrl");
+const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 
 const path = require("path");
 const pkg = require("./package.json");
 const deps = pkg.dependencies;
-const homepage = pkg.homepage;
+const homepage = pkg.homepage; //combineUrl(AppServerConfig.proxyURL, pkg.homepage);
 const title = pkg.title;
 
 const config = {
@@ -130,9 +132,18 @@ const config = {
       name: "studio",
       filename: "remoteEntry.js",
       remotes: {
-        studio: `studio@${homepage}/remoteEntry.js`,
-        login: `login@${homepage}/login/remoteEntry.js`,
-        people: "people@/products/people/remoteEntry.js",
+        studio: `studio@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/remoteEntry.js"
+        )}`,
+        login: `login@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/login/remoteEntry.js"
+        )}`,
+        people: `people@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/products/people/remoteEntry.js"
+        )}`,
       },
       exposes: {
         "./shell": "./src/Shell",

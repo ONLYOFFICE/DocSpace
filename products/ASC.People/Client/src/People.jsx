@@ -6,7 +6,7 @@ import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import toastr from "studio/toastr";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
 import AppLoader from "@appserver/common/components/AppLoader";
-import { updateTempContent } from "@appserver/common/utils";
+import { combineUrl, updateTempContent } from "@appserver/common/utils";
 import config from "../package.json";
 import "./custom.scss";
 import i18n from "./i18n";
@@ -16,8 +16,23 @@ import Profile from "./pages/Profile";
 import ProfileAction from "./pages/ProfileAction";
 import GroupAction from "./pages/GroupAction";
 import Filter from "@appserver/common/api/people/filter";
+import { AppServerConfig } from "@appserver/common/constants";
 
+const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
+
+const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
+
+const HOME_URL = combineUrl(PROXY_HOMEPAGE_URL, "/") || "/";
+const HOME_FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
+const PROFILE_URL = combineUrl(PROXY_HOMEPAGE_URL, "/view/:userId");
+const PROFILE_EDIT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/edit/:userId");
+const PROFILE_CREATE_URL = combineUrl(PROXY_HOMEPAGE_URL, "/create/:type");
+const GROUP_URLS = [
+  combineUrl(PROXY_HOMEPAGE_URL, "/group/edit/:groupId"),
+  combineUrl(PROXY_HOMEPAGE_URL, "/group/create"),
+];
+const REASSIGN_URL = combineUrl(PROXY_HOMEPAGE_URL, "/reassign/:userId");
 
 const Reassign = React.lazy(() => import("./pages/Reassign"));
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -41,7 +56,9 @@ const Error404Route = (props) => (
 const HomeRedirectToFilter = (props) => {
   const filter = Filter.getDefault();
   const urlFilter = filter.toUrlParams();
-  return <Redirect to={`${config.homepage}/filter?${urlFilter}`} />;
+  return (
+    <Redirect to={combineUrl(PROXY_HOMEPAGE_URL, `/filter?${urlFilter}`)} />
+  );
 };
 
 const PeopleContent = (props) => {
@@ -62,34 +79,22 @@ const PeopleContent = (props) => {
 
   return (
     <Switch>
+      <PrivateRoute exact path={PROFILE_URL} component={Profile} />
       <PrivateRoute
-        exact
-        path={`${homepage}/view/:userId`}
-        component={Profile}
-      />
-      <PrivateRoute
-        path={`${homepage}/edit/:userId`}
+        path={PROFILE_EDIT_URL}
         restricted
         allowForMe
         component={ProfileAction}
       />
       <PrivateRoute
-        path={`${homepage}/create/:type`}
+        path={PROFILE_CREATE_URL}
         restricted
         component={ProfileAction}
       />
-      <PrivateRoute
-        path={[`${homepage}/group/edit/:groupId`, `${homepage}/group/create`]}
-        restricted
-        component={GroupAction}
-      />
-      <PrivateRoute
-        path={`${homepage}/reassign/:userId`}
-        restricted
-        component={ReassignRoute}
-      />
-      <PrivateRoute exact path={homepage} component={HomeRedirectToFilter} />
-      <PrivateRoute path={`${homepage}/filter`} component={Home} />
+      <PrivateRoute path={GROUP_URLS} restricted component={GroupAction} />
+      <PrivateRoute path={REASSIGN_URL} restricted component={ReassignRoute} />
+      <PrivateRoute exact path={HOME_URL} component={HomeRedirectToFilter} />
+      <PrivateRoute path={HOME_FILTER_URL} component={Home} />
       <PrivateRoute component={Error404Route} />
     </Switch>
   );

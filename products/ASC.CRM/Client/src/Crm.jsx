@@ -6,14 +6,18 @@ import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import toastr from "studio/toastr";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
 import AppLoader from "@appserver/common/components/AppLoader";
-import { updateTempContent } from "@appserver/common/utils";
+import { combineUrl, updateTempContent } from "@appserver/common/utils";
 import config from "../package.json";
 import "./custom.scss";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 import Home from "./pages/Home";
+import { AppServerConfig } from "@appserver/common/constants";
 
+const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
+const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
+
 const Error404 = React.lazy(() => import("studio/Error404"));
 
 const Error404Route = (props) => (
@@ -42,7 +46,7 @@ const CrmContent = (props) => {
 
   return (
     <Switch>
-      <PrivateRoute exact path={homepage} component={Home} />
+      <PrivateRoute exact path={PROXY_HOMEPAGE_URL} component={Home} />
       <PrivateRoute component={Error404Route} />
     </Switch>
   );
