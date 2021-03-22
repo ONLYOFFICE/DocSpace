@@ -15,9 +15,9 @@ namespace ASC.Files.Core.EF
 {
     public static class Tables
     {
-        public const string File = "file";
-        public const string Tree = "tree";
-        public const string Folder = "folder";
+        public const string File = "files_file";
+        public const string Tree = "files_folder_tree";
+        public const string Folder = "files_folder";
     }
 
     [Transient]
