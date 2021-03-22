@@ -741,7 +741,7 @@ namespace ASC.CRM.Api
             var customFields = _daoFactory.GetCustomFieldDao()
                                          .GetEnityFields(EntityType.Case, casesIDs)
                                          .GroupBy(item => item.EntityID)
-                                         .ToDictionary(item => item.Key, item => item.Select(x => new CustomFieldBaseDto(x)));
+                                         .ToDictionary(item => item.Key, item => item.Select(x => _mapper.Map<CustomFieldBaseDto>(x)));
 
             var casesMembers = _daoFactory.GetCasesDao().GetMembers(casesIDs);
 

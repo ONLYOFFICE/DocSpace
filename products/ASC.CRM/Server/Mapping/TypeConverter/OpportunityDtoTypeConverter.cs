@@ -102,7 +102,7 @@ namespace ASC.CRM.Mapping
             if (!string.IsNullOrEmpty(source.BidCurrency))
                 dealDto.BidCurrency = context.Mapper.Map<CurrencyInfoDto>(_currencyProvider.Get(source.BidCurrency));
 
-            dealDto.CustomFields = _daoFactory.GetCustomFieldDao().GetEnityFields(EntityType.Opportunity, source.ID, false).ConvertAll(item => new CustomFieldBaseDto(item));
+            dealDto.CustomFields = _daoFactory.GetCustomFieldDao().GetEnityFields(EntityType.Opportunity, source.ID, false).ConvertAll(item => context.Mapper.Map<CustomFieldBaseDto>(item));
 
             dealDto.Members = new List<ContactBaseDto>();
 

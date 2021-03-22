@@ -147,7 +147,7 @@ namespace ASC.CRM.Mapping
 
             result.CustomFields = _daoFactory.GetCustomFieldDao()
                                             .GetEnityFields(source is Person ? EntityType.Person : EntityType.Company, source.ID, false)
-                                            .ConvertAll(item => new CustomFieldBaseDto(item));
+                                            .ConvertAll(item => context.Mapper.Map<CustomFieldBaseDto>(item));
             return result;
         }
 
@@ -342,7 +342,7 @@ namespace ASC.CRM.Mapping
             var companyCustomFields = _daoFactory.GetCustomFieldDao().GetEnityFields(EntityType.Company, companyIDs.ToArray());
 
             var customFields = personsCustomFields.Union(companyCustomFields)
-                                                  .GroupBy(item => item.EntityID).ToDictionary(item => item.Key, item => item.Select(x => new CustomFieldBaseDto(x)));
+                                                  .GroupBy(item => item.EntityID).ToDictionary(item => item.Key, item => item.Select(x => context.Mapper.Map<CustomFieldBaseDto>(x)));
 
             var addresses = new Dictionary<int, List<Address>>();
             var taskCount = _daoFactory.GetTaskDao().GetTasksCount(contactIDs);

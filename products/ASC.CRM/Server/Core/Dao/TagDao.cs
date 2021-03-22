@@ -108,13 +108,13 @@ namespace ASC.CRM.Core.Dao
         public IEnumerable<int> GetTagsLinkCount(EntityType entityType)
         {
             return Query(CRMDbContext.Tags)
-                       .GroupJoin(CRMDbContext.EntityTags,
+                       .Join(CRMDbContext.EntityTags,
                                    x => x.Id,
                                    y => y.TagId,
-                                   (x, y) => new { x = x, count = y.Count() })
+                                   (x, y) => new { x, y })
                        .Where(x => x.x.EntityType == entityType)
-                       .OrderBy(x => x.x.Title)
-                       .Select(x => x.count).ToList();
+                       .GroupBy(x => x.x.Id)
+                       .Select(x => x.Count());
         }
 
 
@@ -150,7 +150,7 @@ namespace ASC.CRM.Core.Dao
         public string[] GetUnusedTags(EntityType entityType)
         {
             return Query(CRMDbContext.Tags)
-                    .GroupJoin(CRMDbContext.EntityTags.DefaultIfEmpty(),
+                    .Join(CRMDbContext.EntityTags.DefaultIfEmpty(),
                                x => x.Id,
                                y => y.TagId,
                                (x, y) => new { x, y })
@@ -209,11 +209,12 @@ namespace ASC.CRM.Core.Dao
             if (!_supportedEntityType.Contains(entityType))
                 throw new ArgumentException();
 
-            var itemToDelete = Query(CRMDbContext.Tags).GroupJoin(CRMDbContext.EntityTags,
-                                                                      x => x.Id,
-                                                                      y => y.TagId,
-                                                                      (x, y) => new { x, y }
-                                                                ).Where(x => x.x.EntityType == entityType && x.y == null).Select(x => x.x).ToList();
+            var itemToDelete = Query(CRMDbContext.Tags)
+                                    .Join(CRMDbContext.EntityTags.DefaultIfEmpty(),
+                                        x => x.Id,
+                                        y => y.TagId,
+                                        (x, y) => new { x, y })
+                                    .Where(x => x.x.EntityType == entityType && x.y == null).Select(x => x.x).ToList();
 
             CRMDbContext.RemoveRange(itemToDelete);
 

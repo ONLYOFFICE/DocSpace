@@ -44,20 +44,11 @@ namespace ASC.CRM.ApiModels
 
         }
 
-        public CustomFieldDto(int id)
-            : base(id)
-        {
-        }
-
-        public CustomFieldDto(CustomField customField)
-            : base(customField)
-        {
-        }
         public int RelativeItemsCount { get; set; }
 
         public new static CustomFieldDto GetSample()
         {
-            return new CustomFieldDto(0)
+            return new CustomFieldDto
             {
                 Position = 10,
                 EntityId = 14523423,
@@ -86,23 +77,7 @@ namespace ASC.CRM.ApiModels
         {
                 
         }
-
-        public CustomFieldBaseDto(int id)
-        {
-        }
-
-        public CustomFieldBaseDto(CustomField customField)
-        {
-            if (customField != null)
-
-            EntityId = customField.EntityID;
-            Label = customField.Label;
-            FieldValue = customField.Value;
-            FieldType = customField.FieldType;
-            Position = customField.Position;
-            Mask = customField.Mask;
-        }
-
+               
         [DataMember(Name = "id")]
         public int Id { get; set; }
         public int EntityId { get; set; }
@@ -113,7 +88,7 @@ namespace ASC.CRM.ApiModels
         public String Mask { get; set; }
         public static CustomFieldBaseDto GetSample()
         {
-            return new CustomFieldBaseDto(0)
+            return new CustomFieldBaseDto
             {
                 Position = 10,
                 EntityId = 14523423,

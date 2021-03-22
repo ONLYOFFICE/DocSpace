@@ -913,7 +913,7 @@ namespace ASC.CRM.Api
 
             var customFields = _daoFactory.GetCustomFieldDao().GetEnityFields(EntityType.Opportunity, dealIDs.ToArray())
                                          .GroupBy(item => item.EntityID)
-                                         .ToDictionary(item => item.Key, item => item.Select(x => new CustomFieldBaseDto(x)));
+                                         .ToDictionary(item => item.Key, item => item.Select(x => _mapper.Map<CustomFieldBaseDto>(x)));
 
             var dealMilestones = _daoFactory.GetDealMilestoneDao().GetAll(dealMilestoneIDs.ToArray())
                                            .ToDictionary(item => item.ID, item => new DealMilestoneBaseDto(item));

@@ -415,11 +415,11 @@ namespace ASC.CRM.Core.Dao
             if (!_supportedEntityType.Contains(entityType))
                 throw new ArgumentException();
 
-            var sqlQuery = Query(CRMDbContext.FieldDescription).GroupJoin(Query(CRMDbContext.FieldValue),
-                                      x => x.Id,
-                                      y => y.FieldId,
-                                      (x, y) => new { x = x, count = y.Count() }
-                                     );
+            var sqlQuery = Query(CRMDbContext.FieldDescription).Join(Query(CRMDbContext.FieldValue),
+                          x => x.Id,
+                          y => y.FieldId,
+                          (x, y) => new { x, y }
+                         );
 
             if (entityType == EntityType.Company || entityType == EntityType.Person)
             {
@@ -429,10 +429,9 @@ namespace ASC.CRM.Core.Dao
             {
                 sqlQuery = sqlQuery.Where(x => x.x.EntityType == entityType);
             }
-
-            sqlQuery = sqlQuery.OrderBy(x => x.x.SortOrder);
-
-            return JsonConvert.SerializeObject(sqlQuery.Select(x => x.count).ToList());
+                        
+            return JsonConvert.SerializeObject(sqlQuery.GroupBy(x => x.x.Id)
+                                                       .Select(x => x.Count()).ToList());
         }
 
         public int GetContactLinkCount(EntityType entityType, int entityID)

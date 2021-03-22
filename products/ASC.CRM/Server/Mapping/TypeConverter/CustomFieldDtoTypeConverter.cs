@@ -26,8 +26,15 @@ namespace ASC.CRM.Mapping
             if (destination != null)
                 throw new NotImplementedException();
 
-            var result = new CustomFieldDto(source)
+            var result = new CustomFieldDto
             {
+                Id = source.ID,
+                EntityId = source.EntityID,
+                FieldType = source.FieldType,
+                FieldValue = source.Value,
+                Label = source.Label,
+                Mask = source.Mask,
+                Position = source.Position,
                 RelativeItemsCount = _daoFactory.GetCustomFieldDao().GetContactLinkCount(source.EntityType, source.ID)
             };
 

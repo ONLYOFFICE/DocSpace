@@ -162,12 +162,14 @@ namespace ASC.CRM.Core.Dao
 
         public Dictionary<int, int> GetRelativeItemsCount()
         {
-            return Query(CRMDbContext.DealMilestones).GroupJoin(CRMDbContext.Deals,
-                                 x => x.Id,
-                                 x => x.DealMilestoneId,
-                                 (x, y) => new { x = x, count = y.Count() })
-                            .OrderBy(x => x.x.SortOrder)
-                            .ToDictionary(x => x.x.Id, y => y.count);
+            return Query(CRMDbContext.DealMilestones)
+                    .Join(CRMDbContext.Deals,
+                           x => x.Id,
+                           x => x.DealMilestoneId,
+                           (x, y) => new { x = x, y = y })
+                    .GroupBy(x => x.x.Id)
+                    .Select(x => new { Id = x.Key, Count = x.Count() })
+                    .ToDictionary(x => x.Id, y => y.Count);
         }
 
         public int GetRelativeItemsCount(int id)

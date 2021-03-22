@@ -83,7 +83,7 @@ namespace ASC.CRM.Mapping
             result.CustomFields = _daoFactory
             .GetCustomFieldDao()
             .GetEnityFields(EntityType.Case, source.ID, false)
-            .ConvertAll(item => new CustomFieldBaseDto(item));
+            .ConvertAll(item => context.Mapper.Map<CustomFieldBaseDto>(item));
 
             result.Members = new List<ContactBaseDto>();
 
