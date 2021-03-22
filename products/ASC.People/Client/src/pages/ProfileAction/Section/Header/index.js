@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
 import config from "../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 const homepage = config.homepage;
 
 const Wrapper = styled.div`
@@ -72,7 +74,13 @@ const SectionHeaderContent = (props) => {
   const goBackAndReset = useCallback(() => {
     if (!profile || !document.referrer) setFilterAndReset(filter);
     else props.resetProfile();
-    history.push(`${homepage}/view/${profile.userName}`);
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        homepage,
+        `/view/${profile.userName}`
+      )
+    );
   }, [history, props]);
 
   const onClickBack = useCallback(() => {

@@ -40,6 +40,8 @@ import {
   filterGroupSelectorOptions,
 } from "../../../../helpers/people-helpers";
 import config from "../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class CreateUserForm extends React.Component {
   constructor(props) {
@@ -62,7 +64,13 @@ class CreateUserForm extends React.Component {
         this.props.updateCreatedAvatar(res);
         this.props.updateProfileInUsers();
         toastr.success(this.props.t("ChangesSavedSuccessfully"));
-        this.props.history.push(`${this.props.homepage}/view/${userName}`);
+        this.props.history.push(
+          combineUrl(
+            AppServerConfig.proxyURL,
+            this.props.homepage,
+            `/view/${userName}`
+          )
+        );
       })
       .catch((error) => toastr.error(error));
   }
@@ -287,7 +295,13 @@ class CreateUserForm extends React.Component {
           this.createAvatar(profile.id, profile.userName);
         } else {
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
-          this.props.history.push(`${homepage}/view/${profile.userName}`);
+          this.props.history.push(
+            combineUrl(
+              AppServerConfig.proxyURL,
+              homepage,
+              `/view/${profile.userName}`
+            )
+          );
         }
         setIsEditingForm(false);
       })

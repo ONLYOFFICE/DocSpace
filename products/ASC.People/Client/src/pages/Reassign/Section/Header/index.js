@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import config from "../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const Wrapper = styled.div`
   display: grid;
@@ -29,7 +31,7 @@ const SectionHeaderContent = (props) => {
   const { t } = useTranslation("Reassign");
 
   const onClickBack = useCallback(() => {
-    history.push(config.homepage);
+    history.push(combineUrl(AppServerConfig.proxyURL, config.homepage));
   }, [history]);
 
   return (

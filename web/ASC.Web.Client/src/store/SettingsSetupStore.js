@@ -146,8 +146,7 @@ class SettingsSetupStore {
 
   setGreetingTitle = async (greetingTitle) => {
     const res = await api.settings.setGreetingSettings(greetingTitle);
-    console.log("setGreetingTitle", res);
-    this.setGreetingSettings(greetingTitle);
+    if (res) this.setGreetingSettings(greetingTitle);
   };
 
   restoreGreetingTitle = async () => {
