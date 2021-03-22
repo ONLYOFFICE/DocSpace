@@ -27,12 +27,12 @@ class ArticleBodyContent extends React.Component {
     };
   }
 
-  componentDidMount() {
+  /*componentDidMount() {
     if (this.props.currentId) {
       const currentId = [this.props.currentId + ""];
       this.props.setSelectedNode(currentId);
     }
-  }
+  }*/
 
   onSelect = (data, e) => {
     const {
@@ -127,7 +127,10 @@ export default inject(
     const { setIsLoading } = initFilesStore;
     const { fetchFiles, filter } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
-    const selectedTreeNode = [selectedFolderStore.id + ""];
+    const selectedTreeNode =
+      treeFoldersStore.selectedTreeNode.length > 0
+        ? treeFoldersStore.selectedTreeNode
+        : [selectedFolderStore.id + ""];
 
     return {
       selectedFolderTitle: selectedFolderStore.title,

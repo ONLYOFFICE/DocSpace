@@ -141,7 +141,7 @@ class SettingsSetupStore {
   setLanguageAndTime = async (lng, timeZoneID) => {
     const res = await api.settings.setLanguageAndTime(lng, timeZoneID);
     console.log("setLanguageAndTime", res);
-    this.setPortalLanguageAndTime({ lng, timeZoneID });
+    if (res) this.setLanguageAndTime({ lng, timeZoneID });
   };
 
   setGreetingTitle = async (greetingTitle) => {
