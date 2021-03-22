@@ -30,12 +30,20 @@ using System.Runtime.Serialization;
 using ASC.Api.Core;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
+
+using AutoMapper;
 
 namespace ASC.CRM.ApiModels
 {
     [DataContract(Name = "customField", Namespace = "")]
-    public class CustomFieldDto : CustomFieldBaseDto
+    public class CustomFieldDto : CustomFieldBaseDto, IMapFrom<CustomField>
     {
+        public CustomFieldDto()
+        {
+
+        }
+
         public CustomFieldDto(int id)
             : base(id)
         {
@@ -60,14 +68,25 @@ namespace ASC.CRM.ApiModels
                 RelativeItemsCount = 0
             };
         }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<CustomField, CustomFieldDto>()
+                   .ConvertUsing<CustomFieldDtoTypeConverter>();
+        }
     }
 
     /// <summary>
     ///  User custom fields
     /// </summary>
     [DataContract(Name = "customField", Namespace = "")]
-    public class CustomFieldBaseDto
+    public class CustomFieldBaseDto : IMapFrom<CustomField>
     {
+        public CustomFieldBaseDto()
+        {
+                
+        }
+
         public CustomFieldBaseDto(int id)
         {
         }

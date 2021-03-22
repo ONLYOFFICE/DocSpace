@@ -72,7 +72,7 @@ namespace ASC.CRM.Api
         [Read(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/definitions")]
         public IEnumerable<CustomFieldDto> GetCustomFieldDefinitions(string entityType)
         {
-            return _daoFactory.GetCustomFieldDao().GetFieldsDescription(ToEntityType(entityType)).ConvertAll(ToCustomFieldDto);
+            return  _mapper.Map<List<CustomField>,List<CustomFieldDto>>(_daoFactory.GetCustomFieldDao().GetFieldsDescription(ToEntityType(entityType)));
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace ASC.CRM.Api
         [Read(@"{entityType:regex(contact|person|company|opportunity|case)}/{entityid:int}/customfield")]
         public IEnumerable<CustomFieldBaseDto> GetCustomFieldForSubject(string entityType, int entityid)
         {
-            return _daoFactory.GetCustomFieldDao().GetEnityFields(ToEntityType(entityType), entityid, false).ConvertAll(ToCustomFieldBaseDto);
+            return _mapper.Map<List<CustomField>, List<CustomFieldDto>>(_daoFactory.GetCustomFieldDao().GetEnityFields(ToEntityType(entityType), entityid, false));
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace ASC.CRM.Api
 
             _daoFactory.GetCustomFieldDao().SetFieldValue(entityTypeStr, entityid, fieldid, fieldValue);
 
-            return ToCustomFieldBaseDto(customField);
+            return _mapper.Map<CustomFieldBaseDto>(customField);
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace ASC.CRM.Api
             var messageAction = GetCustomFieldCreatedAction(entityTypeObj);
             _messageService.Send(messageAction, _messageTarget.Create(wrapper.ID), wrapper.Label);
 
-            return ToCustomFieldDto(_daoFactory.GetCustomFieldDao().GetFieldDescription(fieldID));
+            return _mapper.Map<CustomFieldDto>(_daoFactory.GetCustomFieldDao().GetFieldDescription(fieldID));
         }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace ASC.CRM.Api
             var messageAction = GetCustomFieldUpdatedAction(entityTypeObj);
             _messageService.Send(messageAction, _messageTarget.Create(customField.ID), customField.Label);
 
-            return ToCustomFieldDto(customField);
+            return _mapper.Map<CustomFieldDto>(customField);
         }
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace ASC.CRM.Api
             var customField = _daoFactory.GetCustomFieldDao().GetFieldDescription(fieldid);
             if (customField == null) throw new ItemNotFoundException();
 
-            var result = ToCustomFieldDto(customField);
+            var result = _mapper.Map<CustomFieldDto>(customField);
 
             _daoFactory.GetCustomFieldDao().DeleteField(fieldid);
 
@@ -335,23 +335,9 @@ namespace ASC.CRM.Api
             var messageAction = GetCustomFieldsUpdatedOrderAction(ToEntityType(entityType));
             _messageService.Send(messageAction, _messageTarget.Create(fieldids), customFields.Select(x => x.Label));
 
-            return customFields.Select(ToCustomFieldBaseDto);
+            return _mapper.Map<List<CustomField>, List<CustomFieldDto>>(customFields);
         }
-
-        private static CustomFieldBaseDto ToCustomFieldBaseDto(CustomField customField)
-        {
-            return new CustomFieldBaseDto(customField);
-        }
-
-        private CustomFieldDto ToCustomFieldDto(CustomField customField)
-        {
-            var result = new CustomFieldDto(customField)
-            {
-                RelativeItemsCount = _daoFactory.GetCustomFieldDao().GetContactLinkCount(customField.EntityType, customField.ID)
-            };
-            return result;
-        }
-
+             
         private static MessageAction GetCustomFieldCreatedAction(EntityType entityType)
         {
             switch (entityType)

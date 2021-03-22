@@ -57,7 +57,8 @@ namespace ASC.CRM
             DIHelper.TryAdd<RelationshipEventDtoTypeConverter>();
             DIHelper.TryAdd<TaskCategoryDtoTypeConverter>();
             DIHelper.TryAdd<TaskDtoTypeConverter>();
-
+            DIHelper.TryAdd<CustomFieldDtoTypeConverter>();
+            
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
 
