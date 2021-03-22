@@ -6,10 +6,12 @@ import DropDownItem from "@appserver/components/drop-down-item";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import Loaders from "@appserver/common/components/Loaders";
-import { FileAction } from "@appserver/common/constants";
+import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+
 class PureArticleMainButtonContent extends React.Component {
   onCreate = (e) => {
     // this.goToHomePage();
@@ -39,7 +41,9 @@ class PureArticleMainButtonContent extends React.Component {
   goToHomePage = () => {
     const { homepage, history, filter } = this.props;
     const urlFilter = filter.toUrlParams();
-    history.push(`${homepage}/filter?${urlFilter}`);
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+    );
   };
 
   onFileChange = (e) => {

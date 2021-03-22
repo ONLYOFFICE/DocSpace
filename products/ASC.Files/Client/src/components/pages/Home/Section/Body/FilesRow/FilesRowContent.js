@@ -393,7 +393,9 @@ class FilesRowContent extends React.PureComponent {
       fetchFileVersions(item.id + "");
       setIsVerHistoryPanel(true);
     } else {
-      history.push(`${homepage}/${item.id}/history`);
+      history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/${item.id}/history`)
+      );
     }
   };
 
