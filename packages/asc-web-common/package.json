@@ -13,6 +13,6 @@
     "timeout": "30000"
   },
   "proxy": {
-    "url": "/appserver"
+    "url": ""
   }
 }

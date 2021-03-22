@@ -21,7 +21,9 @@ import {
   StyledFooter,
 } from "../StyledPanels";
 import { inject, observer } from "mobx-react";
-
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../../../package.json";
 class NewFilesPanelComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -122,7 +124,16 @@ class NewFilesPanelComponent extends React.Component {
         return addFileToRecentlyViewed(id)
           .then(() => console.log("Pushed to recently viewed"))
           .catch((e) => console.error(e))
-          .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
+          .finally(
+            window.open(
+              combineUrl(
+                AppServerConfig.proxyURL,
+                config.homepage,
+                `/doceditor?fileId=${id}`
+              ),
+              "_blank"
+            )
+          );
       }
 
       if (isMedia) {

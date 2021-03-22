@@ -11,6 +11,8 @@ import ThirdPartyList from "./ThirdPartyList";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -51,6 +53,7 @@ class ArticleBodyContent extends React.Component {
       const newFilter = filter.clone();
       newFilter.page = 0;
       newFilter.startIndex = 0;
+      newFilter.folder = data[0];
 
       const selectedFolderTitle =
         (e.node && e.node.props && e.node.props.title) || null;
@@ -59,14 +62,16 @@ class ArticleBodyContent extends React.Component {
         ? setDocumentTitle(selectedFolderTitle)
         : setDocumentTitle();
 
-      if (window.location.pathname.indexOf("/files/filter") > 0) {
+      if (window.location.pathname.indexOf("/filter") > 0) {
         fetchFiles(data[0], newFilter)
           .catch((err) => toastr.error(err))
           .finally(() => setIsLoading(false));
       } else {
         newFilter.startIndex = 0;
         const urlFilter = newFilter.toUrlParams();
-        history.push(`${homepage}/filter?${urlFilter}`);
+        history.push(
+          combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+        );
       }
     }
   };

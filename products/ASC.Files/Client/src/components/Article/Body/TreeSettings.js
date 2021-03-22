@@ -9,6 +9,9 @@ import SettingsIcon from "../../../../../../../public/images/settings.react.svg"
 import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
 import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
@@ -115,12 +118,24 @@ const PureTreeSettings = ({
       setSelectedNode(["common"]);
       if (!expandedSetting || expandedSetting[0] !== "settings")
         setExpandSettingsTree(section);
-      return history.push("/products/files/settings/common");
+      return history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          "/settings/common"
+        )
+      );
     }
 
     if (selectedTreeNode[0] !== path) {
       setSelectedNode(section);
-      return history.push(`/products/files/settings/${path}`);
+      return history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          `/settings/${path}`
+        )
+      );
     }
   };
 
