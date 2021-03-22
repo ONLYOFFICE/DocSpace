@@ -28,7 +28,7 @@ const StyledNav = styled.nav`
   position: absolute;
   right: 0;
   height: 56px;
-  z-index: ${(props) => (props.isOpen ? "191" : "190")} !important;
+  z-index: 190 !important;
 
   .profile-menu {
     right: 12px;
@@ -83,13 +83,9 @@ const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
     return currentUserActions;
   }, [onProfileClick, onAboutClick, onLogoutClick]);
 
-  const [isOpen, setIsOpen] = useState(false); //TODO: Need to refactoring
-  const isOpenProfileMenu = (value) => {
-    setIsOpen(value);
-  };
   //console.log("HeaderNav render");
   return (
-    <StyledNav isOpen={isOpen} className="profileMenuIcon hidingHeader">
+    <StyledNav className="profileMenuIcon hidingHeader">
       {modules
         .filter((m) => m.isolateMode)
         .map((m) => (
@@ -109,11 +105,7 @@ const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
         ))}
 
       {isAuthenticated && user ? (
-        <ProfileActions
-          userActions={getCurrentUserActions()}
-          user={user}
-          isOpenProfileMenu={isOpenProfileMenu}
-        />
+        <ProfileActions userActions={getCurrentUserActions()} user={user} />
       ) : (
         <></>
       )}

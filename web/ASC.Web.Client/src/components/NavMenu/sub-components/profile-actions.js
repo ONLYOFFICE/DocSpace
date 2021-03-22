@@ -4,7 +4,6 @@ import Avatar from "@appserver/components/avatar";
 import DropDownItem from "@appserver/components/drop-down-item";
 import Link from "@appserver/components/link";
 import ProfileMenu from "./profile-menu";
-import { inject, observer } from "mobx-react";
 
 class ProfileActions extends React.PureComponent {
   constructor(props) {
@@ -23,18 +22,12 @@ class ProfileActions extends React.PureComponent {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { isHeaderVisible, isTabletView } = this.props;
     if (this.props.user !== prevProps.user) {
       this.setState({ user: this.props.user });
     }
 
     if (this.props.opened !== prevProps.opened) {
       this.setOpened(this.props.opened);
-    }
-    if (this.state.opened !== prevState.opened) {
-      isTabletView &&
-        isHeaderVisible &&
-        this.props.isOpenProfileMenu(this.state.opened);
     }
   }
 
@@ -112,9 +105,6 @@ ProfileActions.propTypes = {
   opened: PropTypes.bool,
   user: PropTypes.object,
   userActions: PropTypes.array,
-  isHeaderVisible: PropTypes.bool,
-  isTabletView: PropTypes.bool,
-  isOpenProfileMenu: PropTypes.func,
 };
 
 ProfileActions.defaultProps = {
@@ -123,9 +113,4 @@ ProfileActions.defaultProps = {
   userActions: [],
 };
 
-export default inject(({ auth }) => {
-  return {
-    isHeaderVisible: auth.settingsStore.isHeaderVisible,
-    isTabletView: auth.settingsStore.isTabletView,
-  };
-})(observer(ProfileActions));
+export default ProfileActions;

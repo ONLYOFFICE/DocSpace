@@ -2,7 +2,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { useLocation, Link as LinkWithoutRedirect } from "react-router-dom";
+import { Link as LinkWithoutRedirect } from "react-router-dom";
 import NavItem from "./nav-item";
 import Headline from "@appserver/common/components/Headline";
 import Nav from "./nav";
@@ -112,7 +112,6 @@ const HeaderComponent = ({
   ...props
 }) => {
   const { t } = useTranslation();
-  const { pathname } = useLocation();
 
   const isNavAvailable = mainModules.length > 0;
 
@@ -167,7 +166,6 @@ const HeaderComponent = ({
   //     </>
   //   );
   // };
-  const isMainPage = pathname === "/";
 
   return (
     <>
@@ -219,7 +217,7 @@ const HeaderComponent = ({
                 data-id={id}
                 data-link={link}
                 opened={isNavOpened}
-                active={isMainPage ? false : id == currentProductId}
+                active={id == currentProductId}
                 //iconName={iconName}
                 iconUrl={iconUrl}
                 badgeNumber={notifications}

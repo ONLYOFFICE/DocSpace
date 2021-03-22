@@ -217,7 +217,10 @@ class NewFilesPanelComponent extends React.Component {
                   const element = this.getItemIcon(file);
                   return (
                     <Row key={file.id} element={element}>
-                      <Box onClick={this.onNewFilesClick.bind(this, file)}>
+                      <Box
+                        onClick={this.onNewFilesClick.bind(this, file)}
+                        marginProp="auto 0"
+                      >
                         <Link
                           containerWidth="100%"
                           type="page"
