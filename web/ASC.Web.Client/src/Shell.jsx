@@ -158,7 +158,7 @@ const ThirdPartyResponseRoute = (props) => (
 );
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
-  const { isLoaded, loadBaseInfo, isThirdPartyResponse, modules } = rest;
+  const { isLoaded, loadBaseInfo, modules } = rest;
 
   useEffect(() => {
     try {
@@ -275,7 +275,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 const ShellWrapper = inject(({ auth }) => {
   const { init, isLoaded } = auth;
   const pathname = window.location.pathname.toLowerCase();
-  const isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
+  //const isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
 
   return {
     loadBaseInfo: () => {
@@ -283,7 +283,7 @@ const ShellWrapper = inject(({ auth }) => {
       auth.settingsStore.setModuleInfo(config.homepage, "home");
       auth.setProductVersion(config.version);
     },
-    isThirdPartyResponse,
+    //isThirdPartyResponse,
     isLoaded,
     modules: auth.moduleStore.modules,
   };
