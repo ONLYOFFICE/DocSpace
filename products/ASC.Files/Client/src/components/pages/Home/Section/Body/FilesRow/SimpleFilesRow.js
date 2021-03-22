@@ -10,9 +10,10 @@ import Row from "@appserver/components/row";
 import FilesRowContent from "./FilesRowContent";
 import { withRouter } from "react-router-dom";
 import toastr from "studio/toastr";
-import { FileAction } from "@appserver/common/constants";
+import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import copy from "copy-to-clipboard";
 import config from "../../../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
 
 const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
@@ -190,7 +191,9 @@ const SimpleFilesRow = (props) => {
       fetchFileVersions(id + "");
       setIsVerHistoryPanel(true);
     } else {
-      history.push(`${homepage}/${id}/history`);
+      history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/${id}/history`)
+      );
     }
   };
 

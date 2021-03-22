@@ -1,8 +1,6 @@
-import React, { Suspense, lazy } from "react";
+import React, { lazy } from "react";
 import { Route, Switch } from "react-router-dom";
 import ConfirmRoute from "../../../helpers/confirmRoute";
-import { Error404, PageLayout, Loaders } from "@appserver/common";
-import { inject, observer } from "mobx-react";
 
 const ActivateUserForm = lazy(() => import("./sub-components/activateUser"));
 const CreateUserForm = lazy(() => import("./sub-components/createUser"));
@@ -15,7 +13,7 @@ const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
 const ProfileRemoveForm = lazy(() => import("./sub-components/profileRemove"));
 const ChangeOwnerForm = lazy(() => import("./sub-components/changeOwner"));
 
-const Confirm = ({ match, isLoaded }) => {
+const Confirm = ({ match }) => {
   //console.log("Confirm render");
   return (
     <Switch>
@@ -39,7 +37,7 @@ const Confirm = ({ match, isLoaded }) => {
         path={`${match.path}/EmailChange`}
         component={ChangeEmailForm}
       />
-      <ConfirmRoute
+      <Route
         forUnauthorized
         path={`${match.path}/PasswordChange`}
         component={ChangePasswordForm}
@@ -54,9 +52,9 @@ const Confirm = ({ match, isLoaded }) => {
         path={`${match.path}/PhoneActivation`}
         component={ChangePhoneForm}
       />
-      <Route
+      <ConfirmRoute
         exact
-        path={`${match.path}/ownerchange`}
+        path={`${match.path}/PortalOwnerChange`}
         component={ChangeOwnerForm}
       />
       {/* <Route component={Error404} /> */}
@@ -64,9 +62,4 @@ const Confirm = ({ match, isLoaded }) => {
   );
 };
 
-export default inject(({ auth }) => {
-  const { isLoaded } = auth;
-  return {
-    isLoaded,
-  };
-})(observer(Confirm));
+export default Confirm;

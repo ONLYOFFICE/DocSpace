@@ -98,8 +98,12 @@ class PureOwnerSettings extends Component {
   }
 
   onChangeOwner = () => {
-    const { t, owner } = this.props;
-    toastr.success(t("DnsChangeMsg", { email: owner.email }));
+    const { t, owner, sendOwnerChange } = this.props;
+    debugger;
+    const { selectedOwner } = this.state;
+    sendOwnerChange(selectedOwner.id)
+      .then((res) => toastr.success(res.message)) //toastr.success(t("DnsChangeMsg", { email: owner.email })))
+      .catch((err) => toastr.error(err));
   };
 
   onLoading = (status) => this.setState({ isLoading: status });
@@ -236,12 +240,14 @@ OwnerSettings.propTypes = {
   owner: PropTypes.object,
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const { customNames, getPortalOwner, owner } = auth.settingsStore;
+  const { sendOwnerChange } = setup;
   return {
     groupsCaption: customNames.groupsCaption,
     getPortalOwner,
     owner,
     me: auth.userStore.user,
+    sendOwnerChange,
   };
 })(withRouter(OwnerSettings));
