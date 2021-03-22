@@ -10,7 +10,6 @@ import Badge from "@appserver/components/badge";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import {
   convertFile,
-  markAsRead,
   getFileConversationProgress,
 } from "@appserver/common/api/files";
 import { FileAction, ShareAccessRights } from "@appserver/common/constants";
@@ -395,6 +394,7 @@ class FilesRowContent extends React.PureComponent {
       selectedFolderPathParts,
       newItems,
       setNewRowItems,
+      markAsRead,
     } = this.props;
     if (item.fileExst) {
       markAsRead([], [item.id])
@@ -832,6 +832,12 @@ export default inject(
     const isSound = iconFormatsStore.isSound(item.fileExst);
 
     const { setMediaViewerData } = mediaViewerDataStore;
+    const {
+      editCompleteAction,
+      lockFileAction,
+      setFavoriteAction,
+      markAsRead,
+    } = filesActionsStore;
 
     return {
       isDesktop: isDesktopClient,
@@ -873,12 +879,13 @@ export default inject(
       setEncryptionAccess,
       addExpandedKeys,
       openDocEditor,
-      editCompleteAction: filesActionsStore.editCompleteAction,
-      lockFileAction: filesActionsStore.lockFileAction,
-      setFavoriteAction: filesActionsStore.setFavoriteAction,
+      editCompleteAction,
+      lockFileAction,
+      setFavoriteAction,
       setMediaViewerData,
       setIsVerHistoryPanel,
       fetchFileVersions,
+      markAsRead,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesRowContent))));

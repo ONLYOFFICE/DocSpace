@@ -83,15 +83,14 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   onNewFilesClick = (item) => {
-    const { onClose, /*setIsLoading,*/ folderId } = this.props;
+    const { onClose, /*setIsLoading,*/ folderId, markAsRead } = this.props;
     const folderIds = [];
     const fileId = [];
     const isFile = item.fileExst;
 
     isFile ? fileId.push(item.id) : folderIds.push(item.id);
 
-    api.files
-      .markAsRead(folderIds, fileId)
+    markAsRead(folderIds, fileId)
       .then(() => {
         this.setNewFilesCount(folderId, false, item);
         this.onFilesClick(item);
@@ -103,6 +102,8 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   onFilesClick = (item) => {
+    console.log("ITEM", item);
+    return;
     const { id, fileExst, viewUrl, fileType, providerKey } = item;
     const {
       filter,
@@ -125,8 +126,8 @@ class NewFilesPanelComponent extends React.Component {
       }
 
       if (isMedia) {
-        const mediaItem = { visible: true, id };
-        setMediaViewerData(mediaItem);
+        //const mediaItem = { visible: true, id };
+        //setMediaViewerData(mediaItem);
         return;
       }
 
@@ -275,6 +276,7 @@ export default inject(
     mediaViewerDataStore,
     treeFoldersStore,
     formatsStore,
+    filesActionsStore,
   }) => {
     const { setIsLoading } = initFilesStore;
     const {
@@ -288,6 +290,7 @@ export default inject(
     const { treeFolders, setTreeFolders } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;
     const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+    const { markAsRead } = filesActionsStore;
 
     return {
       files,
@@ -303,6 +306,7 @@ export default inject(
       setNewRowItems,
       getFileIcon,
       getFolderIcon,
+      markAsRead,
     };
   }
 )(withRouter(observer(NewFilesPanel)));
