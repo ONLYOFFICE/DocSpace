@@ -229,11 +229,12 @@ class LanguageAndTimeZone extends React.Component {
   };
 
   onSaveLngTZSettings = () => {
-    const { setLanguageAndTime, i18n } = this.props;
+    const { t, setLanguageAndTime, i18n } = this.props;
+    const { language, timezone } = this.state;
     this.setState({ isLoading: true }, function () {
-      setLanguageAndTime(this.state.language.key, this.state.timezone.key)
-        .then(() => i18n.changeLanguage(this.state.language.key))
-        .then((t) => toastr.success(t("SuccessfullySaveSettingsMessage")))
+      setLanguageAndTime(language.key, timezone.key)
+        .then(() => i18n.changeLanguage(language.key))
+        .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
         .catch((error) => toastr.error(error))
         .finally(() => this.setState({ isLoading: false }));
     });
