@@ -208,7 +208,8 @@ namespace ASC.Api.Documents
                 result.Add(GlobalFolderHelper.FolderTemplates);
             }
 
-            if (!withoutTrash)
+            if (!IsVisitor
+               && !withoutTrash)
             {
                 result.Add((int)GlobalFolderHelper.FolderTrash);
             }
