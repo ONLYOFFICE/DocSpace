@@ -6,6 +6,7 @@ import {
   FilterType,
   FileType,
   FileAction,
+  AppServerConfig,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
 import FileActionStore from "./FileActionStore";
@@ -14,6 +15,7 @@ import formatsStore from "./FormatsStore";
 import treeFoldersStore from "./TreeFoldersStore";
 import { createTreeFolders } from "../helpers/files-helpers";
 import config from "../../package.json";
+import { combineUrl } from "@appserver/common/utils";
 
 const { FilesFilter } = api;
 
@@ -187,7 +189,13 @@ class FilesStore {
 
   setFilterUrl = (filter) => {
     const urlFilter = filter.toUrlParams();
-    history.push(`${config.homepage}/filter?${urlFilter}`);
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/filter?${urlFilter}`
+      )
+    );
   };
 
   fetchFiles = (folderId, filter, clearFilter = true) => {
@@ -958,7 +966,14 @@ class FilesStore {
     if (providerKey) {
       tab
         ? (tab.location = url)
-        : window.open(`./doceditor?fileId=${id}`, "_blank");
+        : window.open(
+            combineUrl(
+              AppServerConfig.proxyURL,
+              config.homepage,
+              `/doceditor?fileId=${id}`
+            ),
+            "_blank"
+          );
     } else {
       return this.addFileToRecentlyViewed(id)
         .then(() => console.log("Pushed to recently viewed"))
@@ -966,7 +981,14 @@ class FilesStore {
         .finally(
           tab
             ? (tab.location = url)
-            : window.open(`./doceditor?fileId=${id}`, "_blank")
+            : window.open(
+                combineUrl(
+                  AppServerConfig.proxyURL,
+                  config.homepage,
+                  `/doceditor?fileId=${id}`
+                ),
+                "_blank"
+              )
         );
     }
   };

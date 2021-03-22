@@ -104,7 +104,7 @@ const PureThirdPartyListContainer = ({
 }) => {
   const redirectAction = () => {
     const thirdPartyUrl = "/products/files/settings/thirdParty";
-    if (history.location.pathname !== thirdPartyUrl) {
+    if (history.location.pathname.indexOf(thirdPartyUrl) === -1) {
       setSelectedNode(["thirdParty"]);
       setSelectedFolder(null);
       return history.push(thirdPartyUrl);

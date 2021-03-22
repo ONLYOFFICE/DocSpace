@@ -13,7 +13,11 @@ import {
   markAsRead,
   getFileConversationProgress,
 } from "@appserver/common/api/files";
-import { FileAction, ShareAccessRights } from "@appserver/common/constants";
+import {
+  AppServerConfig,
+  FileAction,
+  ShareAccessRights,
+} from "@appserver/common/constants";
 import toastr from "studio/toastr";
 import FavoriteIcon from "../../../../../../../public/images/favorite.react.svg";
 import FileActionsConvertEditDocIcon from "../../../../../../../public/images/file.actions.convert.edit.doc.react.svg";
@@ -28,6 +32,7 @@ import EditingWrapperComponent from "../EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
 import { observer, inject } from "mobx-react";
 import config from "../../../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
 
 const sideColor = "#A3A9AE";
 const StyledCheckIcon = styled(CheckIcon)`
@@ -188,7 +193,14 @@ class FilesRowContent extends React.PureComponent {
 
     let tab =
       !isDesktop && item.fileExst
-        ? window.open("/products/files/doceditor", "_blank")
+        ? window.open(
+            combineUrl(
+              AppServerConfig.proxyURL,
+              config.homepage,
+              "/products/files/doceditor"
+            ),
+            "_blank"
+          )
         : null;
 
     !item.fileExst
