@@ -504,7 +504,7 @@ export default withRouter(
   inject(({ auth, peopleStore }) => {
     const groups = convertGroups(peopleStore.groupsStore.groups);
     return {
-      settings: config.homepage,
+      homepage: config.homepage,
       groupCaption: auth.settingsStore.customNames.groupCaption,
       groupsCaption: auth.settingsStore.customNames.groupsCaption,
       groupHeadCaption: auth.settingsStore.customNames.groupHeadCaption,
