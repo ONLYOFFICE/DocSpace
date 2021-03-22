@@ -33,7 +33,7 @@ const OwnerContainer = styled.div`
   }
 `;
 const HeaderContainer = styled.div`
-  margin: 40px 0 16px 0;
+  margin: 0 0 16px 0;
 `;
 
 const BodyContainer = styled.div`
