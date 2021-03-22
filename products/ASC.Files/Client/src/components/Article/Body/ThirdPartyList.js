@@ -6,6 +6,9 @@ import { isMobile } from "react-device-detect";
 
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../../../package.json";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
@@ -103,11 +106,13 @@ const PureThirdPartyListContainer = ({
   history,
 }) => {
   const redirectAction = () => {
-    const thirdPartyUrl = "/products/files/settings/thirdParty";
+    const thirdPartyUrl = "/settings/thirdParty";
     if (history.location.pathname.indexOf(thirdPartyUrl) === -1) {
       setSelectedNode(["thirdParty"]);
       setSelectedFolder(null);
-      return history.push(thirdPartyUrl);
+      return history.push(
+        combineUrl(AppServerConfig.proxyURL, config.homepage, thirdPartyUrl)
+      );
     }
   };
 
