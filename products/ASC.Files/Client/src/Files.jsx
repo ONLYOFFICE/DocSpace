@@ -25,6 +25,7 @@ import { I18nextProvider } from "react-i18next";
 import Home from "./components/pages/Home";
 import Settings from "./components/pages/Settings";
 import VersionHistory from "./components/pages/VersionHistory";
+import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Panels from "./components/FilesPanels";
 import { AppServerConfig } from "@appserver/common/constants";
 
