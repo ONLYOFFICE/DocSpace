@@ -53,6 +53,7 @@ class ArticleBodyContent extends React.Component {
       const newFilter = filter.clone();
       newFilter.page = 0;
       newFilter.startIndex = 0;
+      newFilter.folder = data[0];
 
       const selectedFolderTitle =
         (e.node && e.node.props && e.node.props.title) || null;
