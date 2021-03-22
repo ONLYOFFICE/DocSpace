@@ -227,7 +227,8 @@ class SectionHeaderContent extends React.PureComponent {
     history.push(
       combineUrl(
         AppServerConfig.proxyURL,
-        config.homepage`/edit/${this.state.profile.userName}`
+        config.homepage,
+        `/edit/${this.state.profile.userName}`
       )
     );
   };

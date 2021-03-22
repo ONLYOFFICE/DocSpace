@@ -104,6 +104,15 @@ export function sendRegisterRequest(email) {
   });
 }
 
+export function sendOwnerChange(ownerId) {
+  const data = { ownerId };
+  return request({
+    method: "post",
+    url: `/settings/owner.json`,
+    data,
+  });
+}
+
 export function getMachineName(confirmKey = null) {
   const options = {
     method: "get",

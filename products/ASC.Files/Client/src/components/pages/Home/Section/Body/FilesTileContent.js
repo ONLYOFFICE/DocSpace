@@ -6,7 +6,7 @@ import Badge from "@appserver/components/badge";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import { markAsRead } from "@appserver/common/api/files";
-import { FileAction } from "@appserver/common/constants";
+import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../panels";
@@ -17,6 +17,7 @@ import { inject, observer } from "mobx-react";
 import CheckIcon from "../../../../../../public/images/check.react.svg";
 import CrossIcon from "../../../../../../../../../public/images/cross.react.svg";
 import config from "../../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
 
 const SimpleFilesTileContent = styled(TileContent)`
   .rowMainContainer {
@@ -282,7 +283,9 @@ class FilesTileContent extends React.PureComponent {
     const { homepage, history } = this.props;
     const fileId = e.currentTarget.dataset.id;
 
-    history.push(`${homepage}/${fileId}/history`);
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, `/${fileId}/history`)
+    );
   };
 
   onBadgeClick = () => {

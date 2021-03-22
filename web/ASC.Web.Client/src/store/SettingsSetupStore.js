@@ -168,6 +168,10 @@ class SettingsSetupStore {
   changePassword = (userId, hash, key) => {
     return api.people.changePassword(userId, hash, key);
   };
+
+  sendOwnerChange = (id) => {
+    return api.settings.sendOwnerChange(id);
+  };
 }
 
 export default SettingsSetupStore;
