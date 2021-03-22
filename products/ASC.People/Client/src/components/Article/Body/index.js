@@ -16,6 +16,8 @@ import { getSelectedGroup } from "../../../helpers/people-helpers";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { withRouter } from "react-router";
 import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const StyledTreeMenu = styled(TreeMenu)`
   ${(props) =>
@@ -179,7 +181,12 @@ class ArticleBodyContent extends React.Component {
       if (!isRoot) newFilter.group = groupId;
 
       const urlFilter = newFilter.toUrlParams();
-      history.push(`${config.homepage}/filter?${urlFilter}`);
+      const url = combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/filter?${urlFilter}`
+      );
+      history.push(url);
     }
   };
 

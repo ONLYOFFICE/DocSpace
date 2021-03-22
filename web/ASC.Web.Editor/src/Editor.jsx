@@ -5,6 +5,7 @@ import Box from "@appserver/components/box";
 import { regDesktop } from "@appserver/common/desktop";
 import Loaders from "@appserver/common/components/Loaders";
 import {
+  combineUrl,
   getObjectByLocation,
   //showLoader,
   //hideLoader,
@@ -22,6 +23,7 @@ import throttle from "lodash/throttle";
 import { isIOS, deviceType } from "react-device-detect";
 import { homepage } from "../package.json";
 import "./custom.scss";
+import { AppServerConfig } from "@appserver/common/constants";
 
 let documentIsReady = false;
 
@@ -65,7 +67,7 @@ const Editor = () => {
         const success = await checkIsAuthenticated();
 
         if (!success) {
-          return tryRedirectTo("/login");
+          return tryRedirectTo(combineUrl(AppServerConfig.proxyURL, "/login"));
         } else {
           setIsAuthenticated(success);
         }

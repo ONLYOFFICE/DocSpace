@@ -11,7 +11,11 @@ import { Consumer } from "@appserver/components/utils/context";
 import Headline from "@appserver/common/components/Headline";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
-import { EmployeeType, EmployeeStatus } from "@appserver/common/constants";
+import {
+  EmployeeType,
+  EmployeeStatus,
+  AppServerConfig,
+} from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
 import {
   InviteDialog,
@@ -23,6 +27,7 @@ import {
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import config from "../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
 
 const StyledContainer = styled.div`
   .group-button-menu-container {
@@ -292,7 +297,14 @@ const SectionHeaderContent = (props) => {
   );
 
   const onEditGroup = useCallback(
-    () => history.push(`${homepage}/group/edit/${group.id}`),
+    () =>
+      history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          homepage,
+          `/group/edit/${group.id}`
+        )
+      ),
     [history, homepage, group]
   );
 
@@ -318,15 +330,21 @@ const SectionHeaderContent = (props) => {
   }, [t, onEditGroup, onDeleteGroup]);
 
   const goToEmployeeCreate = useCallback(() => {
-    history.push(`${homepage}/create/user`);
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "/create/user")
+    );
   }, [history, homepage]);
 
   const goToGuestCreate = useCallback(() => {
-    history.push(`${homepage}/create/guest`);
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "/create/guest")
+    );
   }, [history, homepage]);
 
   const goToGroupCreate = useCallback(() => {
-    history.push(`${homepage}/group/create`);
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "/group/create")
+    );
   }, [history, homepage]);
 
   const onInvitationDialogClick = useCallback(

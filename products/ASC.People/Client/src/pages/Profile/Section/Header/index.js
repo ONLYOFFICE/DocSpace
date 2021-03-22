@@ -13,7 +13,7 @@ import {
   loadAvatar,
   deleteAvatar,
 } from "@appserver/common/api/people";
-import { EmployeeStatus } from "@appserver/common/constants";
+import { AppServerConfig, EmployeeStatus } from "@appserver/common/constants";
 import {
   DeleteSelfProfileDialog,
   ChangePasswordDialog,
@@ -26,6 +26,7 @@ import {
   toEmployeeWrapper,
 } from "../../../../helpers/people-helpers";
 import config from "../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
 
 const StyledContainer = styled.div`
   position: relative;
@@ -223,7 +224,12 @@ class SectionHeaderContent extends React.PureComponent {
 
   onEditClick = () => {
     const { history } = this.props;
-    history.push(`${config.homepage}/edit/${this.state.profile.userName}`);
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage`/edit/${this.state.profile.userName}`
+      )
+    );
   };
 
   onUpdateUserStatus = (status, userId) => {
@@ -244,7 +250,13 @@ class SectionHeaderContent extends React.PureComponent {
 
   onReassignDataClick = (user) => {
     const { history } = this.props;
-    history.push(`${config.homepage}/reassign/${user.userName}`);
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/reassign/${user.userName}`
+      )
+    );
   };
 
   onDeletePersonalDataClick = () => {
@@ -386,7 +398,7 @@ class SectionHeaderContent extends React.PureComponent {
   onClickBack = () => {
     const { filter, setFilter, history, resetProfile } = this.props;
     resetProfile();
-    history.push(config.homepage);
+    history.push(combineUrl(AppServerConfig.proxyURL, config.homepage));
     setFilter(filter);
   };
 
