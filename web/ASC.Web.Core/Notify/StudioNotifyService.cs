@@ -270,8 +270,7 @@ namespace ASC.Web.Studio.Core.Notify
                     : Actions.MailboxCreated,
                 null,
                 StudioNotifyHelper.RecipientFromEmail(toEmails, false),
-                new[] { EMailSenderName },
-                null);
+                new[] { EMailSenderName });
         }
 
         public void SendMailboxPasswordChanged(List<string> toEmails, string username, string address)
@@ -281,7 +280,6 @@ namespace ASC.Web.Studio.Core.Notify
                 null,
                 StudioNotifyHelper.RecipientFromEmail(toEmails, false),
                 new[] { EMailSenderName },
-                null,
                 new TagValue(Tags.UserName, username ?? string.Empty),
                 new TagValue(Tags.Address, address ?? string.Empty));
         }
@@ -547,7 +545,6 @@ namespace ASC.Web.Studio.Core.Notify
                             null,
                             new IRecipient[] { admin },
                             new[] { EMailSenderName },
-                            null,
                             new TagValue(Tags.FromUserName, user.DisplayUserName(DisplayUserSettingsHelper)),
                             new TagValue(Tags.FromUserLink, GetUserProfileLink(user)));
                     }
@@ -737,7 +734,6 @@ namespace ASC.Web.Studio.Core.Notify
                 null,
                 new IRecipient[] { owner },
                 new[] { EMailSenderName },
-                null,
                 TagValues.GreenButton(greenButtonText, confirmOwnerUpdateUrl),
                 new TagValue(Tags.UserName, newOwner.DisplayUserName(DisplayUserSettingsHelper)),
                 new TagValue(Tags.OwnerName, owner.DisplayUserName(DisplayUserSettingsHelper)));
@@ -907,7 +903,6 @@ namespace ASC.Web.Studio.Core.Notify
                     null,
                     new IRecipient[] { recipient },
                     new[] { EMailSenderName },
-                    null,
                     new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                     new TagValue(Tags.UserLastName, u.LastName.HtmlEncode()),
                     new TagValue(Tags.UserEmail, u.Email.HtmlEncode()),
@@ -969,7 +964,6 @@ namespace ASC.Web.Studio.Core.Notify
                     null,
                     new[] { StudioNotifyHelper.ToRecipient(u.ID) },
                     new[] { EMailSenderName },
-                    null,
                     new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                     new TagValue(Tags.PortalUrl, serverRootPath),
                     new TagValue(Tags.ControlPanelUrl, GetControlPanelUrl(serverRootPath)));
