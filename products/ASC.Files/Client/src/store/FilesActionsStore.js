@@ -17,6 +17,7 @@ import {
   finalizeVersion,
   lockFile,
   downloadFiles,
+  markAsRead
 } from "@appserver/common/api/files";
 import { FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
@@ -490,6 +491,10 @@ class FilesActionStore {
     setConnectDialogVisible(true);
     setConnectItem({ ...provider, ...capability });
   };
+
+  markAsRead = (folderIds, fileId) => {
+    return markAsRead(folderIds, fileId)
+  }
 }
 
 export default new FilesActionStore();

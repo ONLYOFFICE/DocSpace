@@ -96,11 +96,12 @@ const FilesMediaViewer = (props) => {
 
 export default inject(
   ({ filesStore, mediaViewerDataStore, filesActionsStore, formatsStore }) => {
-    const { files, playlist } = filesStore;
+    const { files } = filesStore;
     const {
       visible,
       id: currentMediaFileId,
       setMediaViewerData,
+      playlist,
     } = mediaViewerDataStore;
     const { deleteFileAction } = filesActionsStore;
     const { media, images } = formatsStore.mediaViewersFormatsStore;

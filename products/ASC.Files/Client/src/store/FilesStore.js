@@ -730,26 +730,6 @@ class FilesStore {
     return this.selection.find((el) => el.title).title;
   }
 
-  get playlist() {
-    const playlist = [];
-    let id = 0;
-
-    if (this.filesList) {
-      this.filesList.forEach((file) => {
-        if (file.canOpenPlayer) {
-          playlist.push({
-            id: id,
-            fileId: file.id,
-            src: file.viewUrl,
-            title: file.title,
-          });
-          id++;
-        }
-      });
-    }
-    return playlist;
-  }
-
   getOptions = (selection, externalAccess = false) => {
     const webEdit = selection.find((x) => canWebEdit(x.fileExst));
     const webComment = selection.find((x) => canWebComment(x.fileExst));
