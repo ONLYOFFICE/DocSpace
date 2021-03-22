@@ -5,10 +5,11 @@ import UserContent from "./userContent";
 import { inject, observer } from "mobx-react";
 import { Trans, useTranslation } from "react-i18next";
 import toastr from "studio/toastr";
-import { EmployeeStatus } from "@appserver/common/constants";
+import { AppServerConfig, EmployeeStatus } from "@appserver/common/constants";
 import { resendUserInvites } from "@appserver/common/api/people"; //TODO: Move to store action
 import { withRouter } from "react-router";
 import config from "../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
 
 const SimpleUserRow = ({
   person,
@@ -56,7 +57,9 @@ const SimpleUserRow = ({
   };
 
   const onEditClick = () => {
-    history.push(`${config.homepage}/edit/${userName}`);
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, config.homepage, `/edit/${userName}`)
+    );
   };
 
   const toggleChangeEmailDialog = () => {
@@ -115,7 +118,13 @@ const SimpleUserRow = ({
   };
 
   const onReassignDataClick = (e) => {
-    history.push(`${config.homepage}/reassign/${userName}`);
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/reassign/${userName}`
+      )
+    );
   };
 
   const onDeletePersonalDataClick = (e) => {
