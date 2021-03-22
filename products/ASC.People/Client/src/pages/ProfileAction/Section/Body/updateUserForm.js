@@ -48,6 +48,8 @@ import {
   toEmployeeWrapper,
 } from "../../../../helpers/people-helpers";
 import config from "../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const dialogsDataset = {
   changeEmail: "changeEmail",
@@ -266,7 +268,6 @@ class UpdateUserForm extends React.Component {
   }
 
   handleSubmit() {
- 
     if (!this.validate()) return false;
 
     const {
@@ -307,7 +308,7 @@ class UpdateUserForm extends React.Component {
     if (document.referrer) {
       history.goBack();
     } else {
-      history.push(config.homepage);
+      history.push(combineUrl(AppServerConfig.proxyURL, config.homepage));
       setFilter(filter);
     }
   }
@@ -710,7 +711,8 @@ class UpdateUserForm extends React.Component {
               buttonTabIndex={2}
               dataDialog={dialogsDataset.changePassword}
             />
-            <TextChangeField
+            {/*TODO: uncomment this after added phone form */}
+            {/* <TextChangeField
               labelText={`${t("Phone")}:`}
               inputName="phone"
               inputValue={profile.mobilePhone}
@@ -719,7 +721,7 @@ class UpdateUserForm extends React.Component {
               buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={3}
               dataDialog={dialogsDataset.changePhone}
-            />
+            /> */}
             <TextField
               isRequired={true}
               hasError={errors.firstName}

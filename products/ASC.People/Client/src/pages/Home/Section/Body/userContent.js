@@ -12,6 +12,8 @@ import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import SendClockIcon from "../../../../../public/images/send.clock.react.svg";
 import CatalogSpamIcon from "../../../../../public/images/catalog.spam.react.svg";
 import config from "../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const StyledSendClockIcon = styled(SendClockIcon)`
   ${commonIconsStyles}
@@ -89,7 +91,13 @@ const UserContent = ({
   const onUserNameClick = useCallback(
     (e) => {
       e.preventDefault();
-      history.push(`${config.homepage}/view/${userName}`);
+      history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          `/view/${userName}`
+        )
+      );
     },
     [history, userName]
   );

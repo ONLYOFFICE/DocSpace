@@ -96,8 +96,17 @@ const Body = ({ modules, match, isLoaded }) => {
   );
 };
 
-const Home = (props) => {
-  const { defaultPage } = props;
+const Home = ({
+  defaultPage,
+  currentProductId,
+  setCurrentProductId,
+  ...props
+}) => {
+  useEffect(() => {
+    console.log("SET setCurrentProductId");
+    currentProductId !== "homePage" && setCurrentProductId("homePage");
+  }, [currentProductId, setCurrentProductId]);
+
   return tryRedirectTo(defaultPage) ? (
     <></>
   ) : (
@@ -117,11 +126,12 @@ Home.propTypes = {
 
 export default inject(({ auth }) => {
   const { isLoaded, settingsStore, moduleStore } = auth;
-  const { defaultPage } = settingsStore;
+  const { defaultPage, setCurrentProductId } = settingsStore;
   const { modules } = moduleStore;
   return {
     defaultPage,
     modules,
     isLoaded,
+    setCurrentProductId,
   };
 })(withRouter(observer(Home)));

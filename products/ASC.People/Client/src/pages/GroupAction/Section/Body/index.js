@@ -20,6 +20,8 @@ import CatalogGuestIcon from "../../../../../public/images/catalog.guest.react.s
 import { ID_NO_GROUP_MANAGER } from "../../../../helpers/constants";
 import { inject, observer } from "mobx-react";
 import config from "../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const MainContainer = styled.div`
   display: flex;
@@ -237,7 +239,9 @@ class SectionBodyContent extends React.Component {
           history.goBack();
           return selectGroup(group.id);
         } else {
-          return history.push(`${homepage}/`);
+          return history.push(
+            combineUrl(AppServerConfig.proxyURL, homepage, "/")
+          );
         }
       })
       .catch((error) => {
@@ -504,7 +508,7 @@ export default withRouter(
   inject(({ auth, peopleStore }) => {
     const groups = convertGroups(peopleStore.groupsStore.groups);
     return {
-      settings: config.homepage,
+      homepage: config.homepage,
       groupCaption: auth.settingsStore.customNames.groupCaption,
       groupsCaption: auth.settingsStore.customNames.groupsCaption,
       groupHeadCaption: auth.settingsStore.customNames.groupHeadCaption,

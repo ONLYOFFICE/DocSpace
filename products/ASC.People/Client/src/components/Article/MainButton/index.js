@@ -9,6 +9,8 @@ import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class PureArticleMainButtonContent extends React.Component {
   constructor(props) {
@@ -18,23 +20,32 @@ class PureArticleMainButtonContent extends React.Component {
     };
   }
 
-  onDropDownItemClick = (link) => {
-    this.props.history.push(link);
+  onImportClick = () => {
+    const { history, homepage } = this.props;
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "${homepage}/import")
+    );
   };
 
   goToEmployeeCreate = () => {
     const { history, homepage } = this.props;
-    history.push(`${homepage}/create/user`);
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "/create/user")
+    );
   };
 
   goToGuestCreate = () => {
     const { history, homepage } = this.props;
-    history.push(`${homepage}/create/guest`);
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "/create/guest")
+    );
   };
 
   goToGroupCreate = () => {
     const { history, homepage } = this.props;
-    history.push(`${homepage}/group/create`);
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "/group/create")
+    );
   };
 
   onNotImplementedClick = (text) => {
@@ -66,24 +77,39 @@ class PureArticleMainButtonContent extends React.Component {
         <>
           <MainButton isDisabled={false} isDropdown={true} text={t("Actions")}>
             <DropDownItem
-              icon={`${homepage}/images/add.employee.react.svg`}
+              icon={combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                "/images/add.employee.react.svg"
+              )}
               label={userCaption}
               onClick={this.goToEmployeeCreate}
             />
 
             <DropDownItem
-              icon={`${homepage}/images/add.guest.react.svg`}
+              icon={combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                "/images/add.guest.react.svg"
+              )}
               label={guestCaption}
               onClick={this.goToGuestCreate}
             />
             <DropDownItem
-              icon={`${homepage}/images/add.department.react.svg`}
+              icon={combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                "/images/add.department.react.svg"
+              )}
               label={groupCaption}
               onClick={this.goToGroupCreate}
             />
             <DropDownItem isSeparator />
             <DropDownItem
-              icon="/static/images/invitation.link.react.svg"
+              icon={combineUrl(
+                AppServerConfig.proxyURL,
+                "/static/images/invitation.link.react.svg"
+              )}
               label={t("InviteLinkTitle")}
               onClick={this.onInvitationDialogClick}
             />
@@ -94,12 +120,13 @@ class PureArticleMainButtonContent extends React.Component {
             /> */}
             {false && (
               <DropDownItem
-                icon={`${homepage}/images/import.react.svg`}
-                label={t("ImportPeople")}
-                onClick={this.onDropDownItemClick.bind(
-                  this,
-                  `${homepage}/import`
+                icon={combineUrl(
+                  AppServerConfig.proxyURL,
+                  homepage,
+                  "/images/import.react.svg"
                 )}
+                label={t("ImportPeople")}
+                onClick={this.onImportClick}
               />
             )}
           </MainButton>

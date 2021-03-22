@@ -97,7 +97,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
   useEffect(() => {
     const currentModule = modules.find((m) => {
-      if (m.link.indexOf(computedMatch.path) !== -1) {
+      if (
+        computedMatch.path !== "/" &&
+        m.link.indexOf(computedMatch.path) !== -1
+      ) {
         return true;
       }
     });

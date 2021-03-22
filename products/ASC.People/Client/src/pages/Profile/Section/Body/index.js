@@ -6,7 +6,7 @@ import ToggleContent from "@appserver/components/toggle-content";
 import Link from "@appserver/components/link";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import React from "react";
-import { isMe } from "@appserver/common/utils";
+import { combineUrl, isMe } from "@appserver/common/utils";
 import styled from "styled-components";
 
 import { withRouter } from "react-router";
@@ -17,6 +17,7 @@ import {
   getUserRole,
 } from "../../../../helpers/people-helpers";
 import config from "../../../../../package.json";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -99,7 +100,11 @@ class SectionBodyContent extends React.PureComponent {
 
   onEditProfileClick = () =>
     this.props.history.push(
-      `${config.homepage}/edit/${this.props.profile.userName}`
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/edit/${this.props.profile.userName}`
+      )
     );
 
   render() {
