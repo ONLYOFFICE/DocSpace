@@ -348,12 +348,8 @@ namespace ASC.CRM.Api
            [FromQuery] ApiDateTime toDate)
         {
             IEnumerable<ContactDto> result;
-
             OrderBy contactsOrderBy;
-
             ContactSortedByType sortBy;
-
-            
             
             var searchString = _apiContext.FilterValue;
 

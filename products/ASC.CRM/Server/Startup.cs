@@ -1,9 +1,16 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.CRM.Api;
+using ASC.CRM.ApiModels;
 using ASC.CRM.Mapping;
 using ASC.Web.CRM.HttpHandlers;
 
@@ -58,7 +65,7 @@ namespace ASC.CRM
             DIHelper.TryAdd<TaskCategoryDtoTypeConverter>();
             DIHelper.TryAdd<TaskDtoTypeConverter>();
             DIHelper.TryAdd<CustomFieldDtoTypeConverter>();
-            
+
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
 
@@ -110,5 +117,21 @@ namespace ASC.CRM
               });
 
         }
+
+        public override JsonConverter[] Converters
+        {
+            get
+            {
+                var jsonConverters = new List<JsonConverter>
+                {
+                    new ContactDtoJsonConverter()
+                };
+
+                return jsonConverters.ToArray();
+            }
+        }
+
     }
 }
+
+

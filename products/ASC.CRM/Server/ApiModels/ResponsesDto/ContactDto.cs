@@ -26,7 +26,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using ASC.Api.Core;
 using ASC.Common;
@@ -116,24 +119,12 @@ namespace ASC.CRM.ApiModels
     }
 
     [DataContract(Name = "contact", Namespace = "")]
-    [KnownType(typeof(PersonDto))]
-    [KnownType(typeof(CompanyDto))]
     public class ContactDto : ContactBaseDto, IMapFrom<ASC.CRM.Core.Entities.Contact>
     {
         public ContactDto()
         {
 
         }
-
-        //protected ContactDto(Contact contact)
-        //    : base(contact)
-        //{
-        //    CreateBy = EmployeeWraper.Get(contact.CreateBy);
-        //    Created = (ApiDateTime)contact.CreateOn;
-        //    About = contact.About;
-        //    Industry = contact.Industry;
-        //}
-
 
         public IEnumerable<Address> Addresses { get; set; }
         public EmployeeWraper CreateBy { get; set; }
@@ -190,50 +181,45 @@ namespace ASC.CRM.ApiModels
         public ContactInfoDto Email { get; set; }
     }
 
-
     [DataContract(Name = "contactBase", Namespace = "")]
     public class ContactBaseWithPhoneDto : ContactBaseDto
     {
         public ContactInfoDto Phone { get; set; }
     }
 
+    public class ContactDtoJsonConverter : JsonConverter<ContactDto>
+    {
+        public override ContactDto Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
 
+        public override void Write(Utf8JsonWriter writer, ContactDto value, JsonSerializerOptions options)
+        {            
+            if (value is PersonDto)
+            {
+                JsonSerializer.Serialize(writer, (PersonDto)value!, options);
 
+                return;
+            }
 
+            if (value is CompanyDto)
+            {
+                JsonSerializer.Serialize(writer, (CompanyDto)value!, options);
 
+                return;
+            }
 
+            if (value is ContactDto)
+            {
+                JsonSerializer.Serialize(writer, value!, options);
 
+                return;
+            }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            throw new NotImplementedException();
+        }
+    }
 
     /// <summary>
     ///  Contact base information
@@ -275,11 +261,7 @@ namespace ASC.CRM.ApiModels
     [DataContract(Name = "contact_task", Namespace = "")]
     public class ContactWithTaskDto
     {
-
         public TaskBaseDto Task { get; set; }
-
-
         public ContactDto Contact { get; set; }
     }
-
 }
