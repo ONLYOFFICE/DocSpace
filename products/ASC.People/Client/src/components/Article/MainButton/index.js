@@ -66,18 +66,18 @@ class PureArticleMainButtonContent extends React.Component {
         <>
           <MainButton isDisabled={false} isDropdown={true} text={t("Actions")}>
             <DropDownItem
-              icon={`${homepage}/images/add.employee.react.svg`}
+              icon={`images/add.employee.react.svg`}
               label={userCaption}
               onClick={this.goToEmployeeCreate}
             />
 
             <DropDownItem
-              icon={`${homepage}/images/add.guest.react.svg`}
+              icon={`images/add.guest.react.svg`}
               label={guestCaption}
               onClick={this.goToGuestCreate}
             />
             <DropDownItem
-              icon={`${homepage}/images/add.department.react.svg`}
+              icon={`images/add.department.react.svg`}
               label={groupCaption}
               onClick={this.goToGroupCreate}
             />
@@ -94,7 +94,7 @@ class PureArticleMainButtonContent extends React.Component {
             /> */}
             {false && (
               <DropDownItem
-                icon={`${homepage}/images/import.react.svg`}
+                icon={`/images/import.react.svg`}
                 label={t("ImportPeople")}
                 onClick={this.onDropDownItemClick.bind(
                   this,
