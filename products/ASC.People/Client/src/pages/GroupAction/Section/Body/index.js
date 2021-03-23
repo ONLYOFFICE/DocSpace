@@ -12,7 +12,7 @@ import Loaders from "@appserver/common/components/Loaders";
 import PeopleSelector from "../../../../components/PeopleSelector";
 import { GUID_EMPTY } from "../../../../helpers/constants";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
@@ -22,6 +22,7 @@ import { inject, observer } from "mobx-react";
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import { useTranslation } from "react-i18next";
 
 const MainContainer = styled.div`
   display: flex;
@@ -73,201 +74,139 @@ const MainContainer = styled.div`
   }
 `;
 
-class SectionBodyContent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = this.mapPropsToState();
-  }
+const SectionBodyContent = ({
+  id,
+  name,
+  groupManager,
+  groupMembers,
+  me,
+  groups,
+  createGroup,
+  updateGroup,
+  selectGroup,
+  groupCaption,
+  groupsCaption,
+  groupHeadCaption,
+  history,
+  resetGroup,
+  filter,
+  setFilter,
+  isLoaded,
+}) => {
+  const { t, i18n } = useTranslation("GroupAction");
 
-  componentDidMount() {
-    const { selectedGroup, group, setSelectGroup } = this.props;
-    if (group) {
-      const { id } = group;
-      if (id && (!selectedGroup || selectedGroup !== id)) {
-        setSelectGroup(id);
-      }
-    }
-  }
+  const [inLoading, setInLoading] = useState(false);
+  const [isHeadSelectorOpen, setIsHeadSelectorOpen] = useState(false);
+  const [isUsersSelectorOpen, setIsUsersSelectorOpen] = useState(false);
 
-  mapPropsToState = () => {
-    const { group, users, groups, t } = this.props;
+  const [groupName, setGroupName] = useState(name || "");
+  const [newGroupManager, setNewGroupManager] = useState(groupManager);
+  const [newGroupMembers, setNewGroupMembers] = useState(groupMembers);
 
-    const newState = {
-      id: group ? group.id : "",
-      groupName: group ? group.name : "",
-      searchValue: "",
-      error: null,
-      inLoading: false,
-      isHeadSelectorOpen: false,
-      isUsersSelectorOpen: false,
-      users: users,
-      groups: groups,
-      header: group
-        ? {
-            key: 0,
-            label: "{SELECTED HEADER NAME}", //group.head
-          }
-        : {
-            key: 0,
-            label: t("LblSelect"),
-          },
-      groupMembers:
-        group && group.members
-          ? group.members.map((m) => {
-              return {
-                key: m.id,
-                label: m.displayName,
-              };
-            })
-          : [],
-      groupManager:
-        group && group.manager
-          ? {
-              key: group.manager.id,
-              label:
-                group.manager.displayName === "profile removed" ||
-                group.manager.id === ID_NO_GROUP_MANAGER
-                  ? t("LblSelect")
-                  : group.manager.displayName,
-            }
-          : {
-              key: GUID_EMPTY,
-              label: t("LblSelect"),
-              default: true,
-            },
-      nameError: null,
-      updateGroup: false,
-    };
+  const [searchValue, setSearchValue] = useState("");
+  const [nameError, setNameError] = useState("");
 
-    return newState;
+  const onGroupChange = (e) => {
+    setGroupName(e.target.value);
   };
 
-  onGroupChange = (e) => {
-    this.setState({
-      groupName: e.target.value,
-    });
+  const onSearchChange = (value) => {
+    setSearchValue(value);
   };
 
-  onSearchChange = (value) => {
-    this.setState({
-      searchValue: value,
-    });
-  };
-
-  onHeadSelectorSelect = (options) => {
+  const onGroupManagerSelect = (options) => {
     if (!options || !options.length) return;
 
     const option = options[0];
-    this.setState({
-      groupManager: {
-        key: option.key,
-        label: option.label,
-      },
-      isHeadSelectorOpen: !this.state.isHeadSelectorOpen,
+
+    setNewGroupManager({
+      key: option.key,
+      label: option.label,
     });
+
+    setIsHeadSelectorOpen(!isHeadSelectorOpen);
   };
 
-  onHeadSelectorClick = () => {
-    this.setState({
-      isHeadSelectorOpen: !this.state.isHeadSelectorOpen,
-    });
+  const onHeadSelectorClick = () => {
+    setIsHeadSelectorOpen(!isHeadSelectorOpen);
   };
 
-  onUsersSelectorSelect = (selectedOptions) => {
-    //console.log("onSelect", selectedOptions);
-    //this.onUsersSelectorClick();
-    this.setState({
-      groupMembers: selectedOptions.map((option) => {
+  const onUsersSelectorSelect = (selectedOptions) => {
+    setNewGroupMembers(
+      selectedOptions.map((option) => {
         return {
           key: option.key,
           label: option.label,
         };
-      }),
-      isUsersSelectorOpen: !this.state.isUsersSelectorOpen,
-    });
+      })
+    );
+
+    onUsersSelectorClick();
   };
 
-  onUsersSelectorClick = () => {
-    this.setState({
-      isUsersSelectorOpen: !this.state.isUsersSelectorOpen,
-    });
+  const onUsersSelectorClick = () => {
+    setIsUsersSelectorOpen(!isUsersSelectorOpen);
   };
 
-  save = (group) => {
-    const { createGroup, updateGroup } = this.props;
-    if (group.id) this.setState({ updateGroup: true });
-    return group.id
+  const save = (group) => {
+    return id
       ? updateGroup(group.id, group.name, group.managerKey, group.members)
       : createGroup(group.name, group.managerKey, group.members);
   };
 
-  onSave = () => {
-    const {
-      group,
-      t,
-      groupCaption,
-      history,
-      homepage,
-      selectGroup,
-    } = this.props;
-    const { groupName, groupManager, groupMembers } = this.state;
-
+  const onSave = () => {
     if (!groupName || !groupName.trim().length) {
-      this.setState({ nameError: t("EmptyFieldError") });
+      setNameError(t("EmptyFieldError"));
       return false;
     }
 
-    this.setState({ inLoading: true });
+    setInLoading(true);
 
     const newGroup = {
-      name: groupName,
-      managerKey: groupManager.key,
-      members: groupMembers.map((u) => u.key),
+      name: groupName.trim(),
+      managerKey: newGroupManager.key,
+      members: newGroupMembers.map((u) => u.key),
     };
 
-    if (group && group.id) newGroup.id = group.id;
-    this.save(newGroup)
+    if (id) newGroup.id = id;
+
+    save(newGroup)
       .then((group) => {
         toastr.success(
           t("SuccessSaveGroup", { groupCaption, groupName: group.name })
         );
-      })
-      .then(() => {
-        if (this.state.updateGroup) {
+
+        if (id) {
           history.goBack();
           return selectGroup(group.id);
         } else {
           return history.push(
-            combineUrl(AppServerConfig.proxyURL, homepage, "/")
+            combineUrl(AppServerConfig.proxyURL, config.homepage, "/")
           );
         }
       })
       .catch((error) => {
         toastr.error(error);
-        this.setState({ inLoading: false });
+        setInLoading(false);
       });
   };
 
-  onCancel = () => {
-    const { resetGroup, filter, setFilter, history } = this.props;
-
+  const onCancel = () => {
     resetGroup();
     history.goBack();
     setFilter(filter);
   };
 
-  onSelectedItemClose = (member) => {
-    this.setState({
-      groupMembers: this.state.groupMembers.filter((g) => g.key !== member.key),
-    });
+  const onSelectedItemClose = (member) => {
+    setNewGroupMembers(newGroupMembers.filter((g) => g.key !== member.key));
   };
 
-  onCancelSelector = (e) => {
+  const onCancelSelector = (e) => {
     if (
-      (this.state.isHeadSelectorOpen &&
+      (isHeadSelectorOpen &&
         (e.target.id === "head-selector_button" ||
           e.target.closest("#head-selector_button"))) ||
-      (this.state.isUsersSelectorOpen &&
+      (isUsersSelectorOpen &&
         (e.target.id === "users-selector_button" ||
           e.target.closest("#users-selector_button")))
     ) {
@@ -275,256 +214,276 @@ class SectionBodyContent extends React.Component {
       return;
     }
 
-    this.setState({
-      isHeadSelectorOpen: false,
-      isUsersSelectorOpen: false,
-    });
+    setIsHeadSelectorOpen(false);
+    setIsUsersSelectorOpen(false);
   };
 
-  onKeyPress = (event) => {
+  const onKeyPress = (event) => {
     if (event.key === "Enter") {
-      this.onSave();
+      onSave();
     }
   };
 
-  onFocusName = () => {
-    if (this.state.nameError) this.setState({ nameError: null });
+  const onFocusName = () => {
+    if (nameError) setNameError(null);
   };
 
-  render() {
-    const {
-      t,
-      groupHeadCaption,
-      groupsCaption,
-      me,
-      isLoaded,
-      groups,
-      group,
-    } = this.props;
-    const {
-      groupName,
-      groupMembers,
-      isHeadSelectorOpen,
-      isUsersSelectorOpen,
-      inLoading,
-      error,
-      searchValue,
-      groupManager,
-      nameError,
-    } = this.state;
+  const buttonLabel = id ? t("SaveButton") : t("AddButton");
 
-    const buttonLabel = group ? t("SaveButton") : t("AddButton");
+  const isTranslationsLoaded = () => {
+    const { store, services, language } = i18n;
 
-    return (
-      <MainContainer>
-        {isLoaded ? (
-          <>
-            <FieldContainer
-              className="group-name_container"
-              isRequired={true}
+    let translationIsLoaded = false;
+    try {
+      translationIsLoaded = store.hasResourceBundle(
+        services.languageUtils.getLanguagePartFromCode(language),
+        "GroupAction"
+      );
+    } catch {
+      translationIsLoaded = t("LblSelect") !== "LblSelect";
+    }
+
+    return translationIsLoaded;
+  };
+
+  return (
+    <MainContainer>
+      {isLoaded && isTranslationsLoaded() ? (
+        <>
+          <FieldContainer
+            className="group-name_container"
+            isRequired={true}
+            hasError={!!nameError}
+            errorMessage={nameError}
+            isVertical={true}
+            labelText={t("Name")}
+          >
+            <TextInput
+              id="group-name"
+              name="group-name"
+              scale={true}
+              isAutoFocussed={true}
+              isBold={true}
+              tabIndex={1}
+              value={groupName}
               hasError={!!nameError}
-              errorMessage={nameError}
-              isVertical={true}
-              labelText={t("Name")}
+              onChange={onGroupChange}
+              isDisabled={inLoading}
+              onKeyUp={onKeyPress}
+              onFocus={onFocusName}
+            />
+          </FieldContainer>
+          <FieldContainer
+            className="head_container"
+            isRequired={false}
+            hasError={false}
+            isVertical={true}
+            labelText={groupHeadCaption}
+          >
+            <ComboBox
+              id="head-selector_button"
+              tabIndex={2}
+              options={[]}
+              opened={isHeadSelectorOpen}
+              selectedOption={
+                newGroupManager.default ||
+                newGroupManager.id === ID_NO_GROUP_MANAGER ||
+                newGroupManager.displayName === "profile removed"
+                  ? { ...newGroupManager, label: t("LblSelect") }
+                  : newGroupManager
+              }
+              scaled={true}
+              isDisabled={inLoading}
+              size="content"
+              toggleAction={onHeadSelectorClick}
+              displayType="toggle"
             >
-              <TextInput
-                id="group-name"
-                name="group-name"
-                scale={true}
-                isAutoFocussed={true}
-                isBold={true}
-                tabIndex={1}
-                value={groupName}
-                hasError={!!nameError}
-                onChange={this.onGroupChange}
-                isDisabled={inLoading}
-                onKeyUp={this.onKeyPress}
-                onFocus={this.onFocusName}
-              />
-            </FieldContainer>
-            <FieldContainer
-              className="head_container"
-              isRequired={false}
-              hasError={false}
-              isVertical={true}
-              labelText={groupHeadCaption}
+              <CatalogGuestIcon size="medium" />
+            </ComboBox>
+            <PeopleSelector
+              isOpen={isHeadSelectorOpen}
+              onSelect={onGroupManagerSelect}
+              onCancel={onCancelSelector}
+              groupsCaption={groupsCaption}
+              defaultOption={me}
+              defaultOptionLabel={t("MeLabel")}
+              employeeStatus={1}
+              groupList={groups}
+            />
+          </FieldContainer>
+          <FieldContainer
+            className="members_container"
+            isRequired={false}
+            hasError={false}
+            isVertical={true}
+            labelText={t("Members")}
+          >
+            <ComboBox
+              id="users-selector_button"
+              tabIndex={3}
+              options={[]}
+              opened={isUsersSelectorOpen}
+              isDisabled={inLoading}
+              selectedOption={{
+                key: 0,
+                label: t("AddMembers"),
+                default: true,
+              }}
+              scaled={true}
+              size="content"
+              toggleAction={onUsersSelectorClick}
+              displayType="toggle"
             >
-              <ComboBox
-                id="head-selector_button"
-                tabIndex={2}
-                options={[]}
-                opened={isHeadSelectorOpen}
-                selectedOption={groupManager}
-                scaled={true}
-                isDisabled={inLoading}
-                size="content"
-                toggleAction={this.onHeadSelectorClick}
-                displayType="toggle"
-              >
-                <CatalogGuestIcon size="medium" />
-              </ComboBox>
-              <PeopleSelector
-                isOpen={isHeadSelectorOpen}
-                onSelect={this.onHeadSelectorSelect}
-                onCancel={this.onCancelSelector}
-                groupsCaption={groupsCaption}
-                defaultOption={me}
-                defaultOptionLabel={t("MeLabel")}
-                employeeStatus={1}
-                groupList={groups}
-              />
-            </FieldContainer>
-            <FieldContainer
-              className="members_container"
-              isRequired={false}
-              hasError={false}
-              isVertical={true}
-              labelText={t("Members")}
-            >
-              <ComboBox
-                id="users-selector_button"
-                tabIndex={3}
-                options={[]}
-                opened={isUsersSelectorOpen}
-                isDisabled={inLoading}
-                selectedOption={{
-                  key: 0,
-                  label: t("AddMembers"),
-                  default: true,
-                }}
-                scaled={true}
-                size="content"
-                toggleAction={this.onUsersSelectorClick}
-                displayType="toggle"
-              >
-                <CatalogGuestIcon size="medium" />
-              </ComboBox>
-              <PeopleSelector
-                isOpen={isUsersSelectorOpen}
-                isMultiSelect={true}
-                onSelect={this.onUsersSelectorSelect}
-                onCancel={this.onCancelSelector}
-                searchPlaceHolderLabel={t("SearchAddedMembers")}
-                groupsCaption={groupsCaption}
-                defaultOption={me}
-                defaultOptionLabel={t("MeLabel")}
-                selectedOptions={groupMembers}
-                employeeStatus={1}
-                groupList={groups}
-              />
-            </FieldContainer>
-            {groupMembers && groupMembers.length > 0 && (
-              <>
-                <div className="search_container">
-                  <SearchInput
-                    id="member-search"
-                    isDisabled={inLoading}
-                    scale={true}
-                    placeholder={t("SearchAddedMembers")}
-                    value={searchValue}
-                    onChange={this.onSearchChange}
-                  />
-                </div>
-                <div className="selected-members_container">
-                  {groupMembers.map((member) => (
-                    <SelectedItem
-                      key={member.key}
-                      text={member.label}
-                      onClose={this.onSelectedItemClose.bind(this, member)}
-                      isInline={false}
-                      className="selected-item"
-                      isDisabled={inLoading}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-            {error && (
-              <div>
-                <strong>{error}</strong>
+              <CatalogGuestIcon size="medium" />
+            </ComboBox>
+            <PeopleSelector
+              isOpen={isUsersSelectorOpen}
+              isMultiSelect={true}
+              onSelect={onUsersSelectorSelect}
+              onCancel={onCancelSelector}
+              searchPlaceHolderLabel={t("SearchAddedMembers")}
+              groupsCaption={groupsCaption}
+              defaultOption={me}
+              defaultOptionLabel={t("MeLabel")}
+              selectedOptions={newGroupMembers}
+              employeeStatus={1}
+              groupList={groups}
+            />
+          </FieldContainer>
+          {newGroupMembers && newGroupMembers.length > 0 && (
+            <>
+              <div className="search_container">
+                <SearchInput
+                  id="member-search"
+                  isDisabled={inLoading}
+                  scale={true}
+                  placeholder={t("SearchAddedMembers")}
+                  value={searchValue}
+                  onChange={onSearchChange}
+                />
               </div>
-            )}
-            <div className="buttons_container">
-              <Button
-                label={buttonLabel}
-                primary
-                type="submit"
-                isLoading={inLoading}
-                size="big"
-                tabIndex={4}
-                onClick={this.onSave}
-              />
-              <Button
-                label={t("CancelButton")}
-                className="cancel-button"
-                size="big"
-                isDisabled={inLoading}
-                onClick={this.onCancel}
-                tabIndex={5}
-              />
-            </div>
-          </>
-        ) : (
-          <Loaders.Group />
-        )}
-      </MainContainer>
-    );
-  }
-}
+              <div className="selected-members_container">
+                {newGroupMembers.map((member) => (
+                  <SelectedItem
+                    key={member.key}
+                    text={member.label}
+                    onClose={onSelectedItemClose.bind(this, member)}
+                    isInline={false}
+                    className="selected-item"
+                    isDisabled={inLoading}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+          <div className="buttons_container">
+            <Button
+              label={buttonLabel}
+              primary
+              type="submit"
+              isLoading={inLoading}
+              size="big"
+              tabIndex={4}
+              onClick={onSave}
+            />
+            <Button
+              label={t("CancelButton")}
+              className="cancel-button"
+              size="big"
+              isDisabled={inLoading}
+              onClick={onCancel}
+              tabIndex={5}
+            />
+          </div>
+        </>
+      ) : (
+        <Loaders.Group />
+      )}
+    </MainContainer>
+  );
+};
 
 SectionBodyContent.propTypes = {
   group: PropTypes.object,
 };
 
-SectionBodyContent.defaultProps = {
-  group: null,
-};
-
-// const convertUsers = (users) => {
-//   return users
-//     ? users.map((u) => {
-//         return {
-//           key: u.id,
-//           groups: u.groups || [],
-//           label: u.displayName,
-//         };
-//       })
-//     : [];
-// };
-
-const convertGroups = (groups) => {
-  return groups
-    ? groups.map((g) => {
-        return {
-          key: g.id,
-          label: g.name,
-          total: 0,
-        };
-      })
-    : [];
-};
-
 export default withRouter(
   inject(({ auth, peopleStore }) => {
-    const groups = convertGroups(peopleStore.groupsStore.groups);
-    return {
-      homepage: config.homepage,
-      groupCaption: auth.settingsStore.customNames.groupCaption,
-      groupsCaption: auth.settingsStore.customNames.groupsCaption,
-      groupHeadCaption: auth.settingsStore.customNames.groupHeadCaption,
-      isLoaded: auth.isLoaded,
-      currentModuleName: auth.product.title,
-      me: auth.userStore.user,
-      groups,
-      filter: peopleStore.filterStore.filter,
-      setFilter: peopleStore.filterStore.setFilterParams,
-      selectGroup: peopleStore.selectedGroupStore.selectGroup,
-      updateGroup: peopleStore.groupsStore.updateGroup,
-      createGroup: peopleStore.groupsStore.createGroup,
-      group: peopleStore.selectedGroupStore.targetedGroup,
-      resetGroup: peopleStore.selectedGroupStore.resetGroup,
-      selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
-      setSelectGroup: peopleStore.selectedGroupStore.setSelectedGroup,
+    const { settingsStore, isLoaded, userStore } = auth;
+    const { user: me } = userStore;
+    const { customNames } = settingsStore;
+    const { groupCaption, groupsCaption, groupHeadCaption } = customNames;
+
+    const { filterStore, selectedGroupStore, groupsStore } = peopleStore;
+    const { updateGroup, createGroup, groups: loadedGroups } = groupsStore;
+
+    const groups = loadedGroups
+      ? loadedGroups.map((g) => {
+          return {
+            key: g.id,
+            label: g.name,
+            total: 0,
+          };
+        })
+      : [];
+
+    const { filter, setFilterParams } = filterStore;
+    const {
+      targetedGroup,
+      resetGroup,
+      selectedGroup,
+      setSelectedGroup,
+      selectGroup,
+    } = selectedGroupStore;
+
+    const target = targetedGroup || {
+      id: null,
+      name: "",
+      members: [],
+      manager: null,
     };
-  })(observer(withTranslation("GroupAction")(SectionBodyContent)))
+
+    const { id, name, members, manager } = target;
+
+    const groupMembers = members.map((m) => {
+      return {
+        key: m.id,
+        label: m.displayName,
+      };
+    });
+
+    const groupManager = manager
+      ? {
+          key: manager.id,
+          label: manager.displayName,
+        }
+      : {
+          key: GUID_EMPTY,
+          label: "",
+          default: true,
+        };
+
+    return {
+      groupCaption,
+      groupsCaption,
+      groupHeadCaption,
+      isLoaded,
+
+      me,
+      groups,
+      id,
+      name,
+      groupManager,
+      groupMembers,
+      filter,
+      setFilter: setFilterParams,
+      selectGroup,
+      updateGroup,
+      createGroup,
+
+      resetGroup: resetGroup,
+      selectedGroup: selectedGroup,
+      setSelectGroup: setSelectedGroup,
+    };
+  })(observer(SectionBodyContent))
 );
