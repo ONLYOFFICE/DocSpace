@@ -99,9 +99,8 @@ class PureOwnerSettings extends Component {
 
   onChangeOwner = () => {
     const { t, owner, sendOwnerChange } = this.props;
-    debugger;
     const { selectedOwner } = this.state;
-    sendOwnerChange(selectedOwner.id)
+    sendOwnerChange(selectedOwner.key)
       .then((res) => toastr.success(res.message)) //toastr.success(t("DnsChangeMsg", { email: owner.email })))
       .catch((err) => toastr.error(err));
   };
