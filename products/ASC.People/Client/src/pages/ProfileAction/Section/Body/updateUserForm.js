@@ -6,6 +6,7 @@ import Button from "@appserver/components/button";
 import Textarea from "@appserver/components/textarea";
 import Text from "@appserver/components/text";
 import AvatarEditor from "@appserver/components/avatar-editor";
+import SocialButton from "@appserver/components/social-button";
 import Link from "@appserver/components/link";
 import { isTablet } from "@appserver/components/utils/device";
 
@@ -51,6 +52,9 @@ import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 
+const facebookIconOptions = { isfill: true, color: "#4469B0" };
+const twitterIconOptions = { isfill: true, color: "#2AA3EF" };
+
 const dialogsDataset = {
   changeEmail: "changeEmail",
   changePassword: "changePassword",
@@ -68,6 +72,13 @@ const Th = styled.th`
 `;
 
 const Td = styled.td``;
+
+const StyledWrapper = styled.div`
+  align-items: center;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-gap: 16px 22px;
+`;
 
 class UpdateUserForm extends React.Component {
   constructor(props) {
@@ -533,6 +544,19 @@ class UpdateUserForm extends React.Component {
     this.setIsEdit();
   }
 
+  onClickGoogleConnect = () => {
+    console.log("Connect to Google");
+  };
+  onClickFacebookConnect = () => {
+    console.log("Connect to Facebook");
+  };
+  onClickTwitterConnect = () => {
+    console.log("Connect to Twitter");
+  };
+  onClickLinkedInConnect = () => {
+    console.log("Connect to LinkedIn");
+  };
+
   render() {
     const {
       isLoading,
@@ -826,6 +850,72 @@ class UpdateUserForm extends React.Component {
             />
           </MainFieldsContainer>
         </MainContainer>
+        <InfoFieldContainer headerText={t("LoginSettings")}>
+          <StyledWrapper>
+            <SocialButton
+              iconName={"images/share.google.svg"}
+              label={t("SignInWithGoogle")}
+              className="socialButton"
+            />
+
+            <Link
+              type="action"
+              color="A3A9AE"
+              onClick={this.onClickGoogleConnect}
+              isHovered={true}
+            >
+              {t("Connect")}
+            </Link>
+            <div>
+              <SocialButton
+                iconName={"images/share.facebook.react.svg"}
+                label={t("SignInWithFacebook")}
+                className="socialButton"
+                iconOptions={facebookIconOptions}
+              />
+            </div>
+
+            <Link
+              type="action"
+              color="A3A9AE"
+              onClick={this.onClickFacebookConnect}
+              isHovered={true}
+            >
+              {t("Connect")}
+            </Link>
+            <div>
+              <SocialButton
+                iconName={"images/share.twitter.react.svg"}
+                label={t("SignInWithTwitter")}
+                className="socialButton"
+                iconOptions={twitterIconOptions}
+              />
+            </div>
+            <Link
+              type="action"
+              color="A3A9AE"
+              onClick={this.onClickTwitterConnect}
+              isHovered={true}
+            >
+              {t("Connect")}
+            </Link>
+            <div>
+              <SocialButton
+                iconName={"images/share.linkedin.svg"}
+                label={t("SignInWithLinkedIn")}
+                className="socialButton"
+              />
+            </div>
+            <Link
+              type="action"
+              color="A3A9AE"
+              onClick={this.onClickLinkedInConnect}
+              isHovered={true}
+            >
+              {t("Connect")}
+            </Link>
+          </StyledWrapper>
+        </InfoFieldContainer>
         <InfoFieldContainer headerText={t("Comments")}>
           <Textarea
             placeholder={t("WriteComment")}

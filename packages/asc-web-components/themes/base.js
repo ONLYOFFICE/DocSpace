@@ -213,10 +213,8 @@ const Base = {
   socialButton: {
     fontWeight: "600",
     textDecoration: "none",
-    margin: "20px 0 0 20px",
     padding: "0",
     borderRadius: "2px",
-    width: "201px",
     height: "40px",
     textAlign: "left",
     stroke: " none",
@@ -238,14 +236,15 @@ const Base = {
     text: {
       width: "142px",
       height: "16px",
-      margin: "12px 9px 12px 10px",
-      fontWeight: "500",
+      margin: "0 11px",
+      fontWeight: "600",
       fontSize: "14px",
       lineHeight: "16px",
       letterSpacing: "0.21875px",
       overflow: "hidden",
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
+      color: "#757575",
     },
 
     svg: {

@@ -1,3 +1,4 @@
+import React from "react";
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import PropTypes from "prop-types";
@@ -20,7 +21,8 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
 }))`
   font-family: ${(props) => props.theme.fontFamily};
   border: none;
-  display: inline-block;
+  display: flex;
+  align-items: center;
 
   font-weight: ${(props) => props.theme.socialButton.fontWeight};
   text-decoration: ${(props) => props.theme.socialButton.textDecoration};
@@ -76,7 +78,7 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
         `};
 
   .social_button_text {
-    position: absolute;
+    position: relative;
 
     width: ${(props) => props.theme.socialButton.text.width};
     height: ${(props) => props.theme.socialButton.text.height};
