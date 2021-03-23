@@ -6,24 +6,14 @@ pipeline {
 				stage('Unix') {
 					agent { label 'net-core' }
 					stages {
-						stage('Components') {
+						stage('Backend') {
 							steps {
-								sh 'sh ./build/scripts/components.sh'
+								sh 'yarn install && yarn build'
 							}
 						}
-						stage('Common') {
+						stage('Frontend') {
 							steps {
-								sh 'sh ./build/scripts/common.sh'
-							}
-						}
-						stage('Client') {
-							steps {
-								sh 'sh ./build/scripts/client.sh'
-							}
-						}
-						stage('People') {
-							steps {
-								sh 'sh ./build/scripts/people.sh'
+								sh 'dotnet build ASC.Web.sln  --configfile .nuget/NuGet.Config'
 							}
 						}
 					}
@@ -31,24 +21,14 @@ pipeline {
 				stage('Windows') {
 					agent { label 'win-core' }
 					stages {
-						stage('Components') {
+						stage('Backend') {
 							steps {
-								bat 'sh build\\scripts\\components.sh'
+								bat 'yarn install && yarn build'
 							}
 						}
-						stage('Common') {
+						stage('Frontend') {
 							steps {
-								bat 'sh build\\scripts\\common.sh'
-							}
-						}		
-						stage('Client') {
-							steps {
-								bat 'sh build\\scripts\\client.sh'
-							}
-						}
-						stage('People') {
-							steps {
-								bat 'sh build\\scripts\\people.sh'
+								bat 'dotnet build ASC.Web.sln  --configfile .nuget\\NuGet.Config'
 							}
 						}
 					}
@@ -63,7 +43,7 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
-								sh "sh ./build/scripts/components.sh && cd ${env.WORKSPACE}/web/ASC.Web.Components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
+								sh "yarn build && yarn test --ci --reporters=default --reporters=jest-junit || true"
 							}
 							post {
 								success {
@@ -92,7 +72,7 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
-								bat "sh build\\scripts\\components.sh && cd ${env.WORKSPACE}\\web\\ASC.Web.Components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
+								bat "yarn build && yarn test --ci --reporters=default --reporters=jest-junit || true"
 							}
 							post {
 								success {
