@@ -45,6 +45,12 @@ namespace ASC.CRM.Api
 {
     public class ReportsController : BaseApiController
     {
+        private readonly DocbuilderReportsUtilityHelper _docbuilderReportsUtilityHelper;
+        private readonly FileWrapperHelper _fileWrapperHelper;
+        private readonly ReportHelper _reportHelper;
+        private readonly Global _global;
+        private readonly SettingsManager _settingsManager;
+
         public ReportsController(CRMSecurity crmSecurity,
                      DaoFactory daoFactory,
                      SettingsManager settingsManager,
@@ -56,19 +62,13 @@ namespace ASC.CRM.Api
                      )
             : base(daoFactory, crmSecurity, mapper)
         {
-            SettingsManager = settingsManager;
-            Global = global;
-            ReportHelper = reportHelper;
-            FileWrapperHelper = fileWrapperHelper;
-            DocbuilderReportsUtilityHelper = docbuilderReportsUtilityHelper;
+            _settingsManager = settingsManager;
+            _global = global;
+            _reportHelper = reportHelper;
+            _fileWrapperHelper = fileWrapperHelper;
+            _docbuilderReportsUtilityHelper = docbuilderReportsUtilityHelper;
         }
 
-        public DocbuilderReportsUtilityHelper DocbuilderReportsUtilityHelper { get; }
-
-        public FileWrapperHelper FileWrapperHelper { get; }
-        public ReportHelper ReportHelper { get; }
-        public Global Global { get; }
-        public SettingsManager SettingsManager { get; }
 
         /// <summary>Returns a list of all user report files</summary>
         /// <short>Get report files</short>
@@ -78,7 +78,7 @@ namespace ASC.CRM.Api
         [Read(@"report/files")]
         public IEnumerable<FileWrapper<int>> GetFiles()
         {
-            if (!Global.CanCreateReports)
+            if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
 
             var reportDao = _daoFactory.GetReportDao();
@@ -87,7 +87,7 @@ namespace ASC.CRM.Api
 
             if (!files.Any())
             {
-                var settings = SettingsManager.Load<CRMReportSampleSettings>();
+                var settings = _settingsManager.Load<CRMReportSampleSettings>();
 
                 if (settings.NeedToGenerate)
                 {
@@ -95,11 +95,11 @@ namespace ASC.CRM.Api
 
                     settings.NeedToGenerate = false;
 
-                    SettingsManager.Save<CRMReportSampleSettings>(settings);
+                    _settingsManager.Save<CRMReportSampleSettings>(settings);
                 }
             }
 
-            return files.ConvertAll(file => FileWrapperHelper.Get<int>(file)).OrderByDescending(file => file.Id);
+            return files.ConvertAll(file => _fileWrapperHelper.Get<int>(file)).OrderByDescending(file => file.Id);
         }
 
         /// <summary>Delete the report file with the ID specified in the request</summary>
@@ -112,7 +112,7 @@ namespace ASC.CRM.Api
         [Delete(@"report/file/{fileid:int}")]
         public void DeleteFile(int fileid)
         {
-            if (!Global.CanCreateReports)
+            if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
 
             if (fileid < 0) throw new ArgumentException();
@@ -132,10 +132,10 @@ namespace ASC.CRM.Api
         [Read(@"report/status")]
         public ReportState GetStatus()
         {
-            if (!Global.CanCreateReports)
+            if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
 
-            return DocbuilderReportsUtilityHelper.Status(ReportOrigin.CRM);
+            return _docbuilderReportsUtilityHelper.Status(ReportOrigin.CRM);
 
         }
 
@@ -146,10 +146,10 @@ namespace ASC.CRM.Api
         [Read(@"report/terminate")]
         public void Terminate()
         {
-            if (!Global.CanCreateReports)
+            if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
 
-            DocbuilderReportsUtilityHelper.Terminate(ReportOrigin.CRM);
+            _docbuilderReportsUtilityHelper.Terminate(ReportOrigin.CRM);
         }
 
         /// <summary>Check data availability for a report</summary>
@@ -163,13 +163,13 @@ namespace ASC.CRM.Api
         [Create(@"report/check")]
         public object CheckReportData(ReportType type, ReportTimePeriod timePeriod, Guid[] managers)
         {
-            if (!Global.CanCreateReports)
+            if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
 
             return new
             {
-                hasData = ReportHelper.CheckReportData(type, timePeriod, managers),
-                missingRates = ReportHelper.GetMissingRates(type)
+                hasData = _reportHelper.CheckReportData(type, timePeriod, managers),
+                missingRates = _reportHelper.GetMissingRates(type)
             };
         }
 
@@ -184,10 +184,10 @@ namespace ASC.CRM.Api
         [Create(@"report/generate")]
         public ReportState GenerateReport(ReportType type, ReportTimePeriod timePeriod, Guid[] managers)
         {
-            if (!Global.CanCreateReports)
+            if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
 
-            return ReportHelper.RunGenareteReport(type, timePeriod, managers);
+            return _reportHelper.RunGenareteReport(type, timePeriod, managers);
         }
     }
 }

@@ -44,8 +44,8 @@ namespace ASC.CRM.Api
 {
     public class CustomFieldsController : BaseApiController
     {
-        private MessageService _messageService;
-        private MessageTarget _messageTarget;
+        private readonly MessageService _messageService;
+        private readonly MessageTarget _messageTarget;
 
         public CustomFieldsController(CRMSecurity crmSecurity,
                      DaoFactory daoFactory,
@@ -72,7 +72,7 @@ namespace ASC.CRM.Api
         [Read(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield/definitions")]
         public IEnumerable<CustomFieldDto> GetCustomFieldDefinitions(string entityType)
         {
-            return  _mapper.Map<List<CustomField>,List<CustomFieldDto>>(_daoFactory.GetCustomFieldDao().GetFieldsDescription(ToEntityType(entityType)));
+            return _mapper.Map<List<CustomField>, List<CustomFieldDto>>(_daoFactory.GetCustomFieldDao().GetFieldsDescription(ToEntityType(entityType)));
         }
 
         /// <summary>
@@ -337,7 +337,7 @@ namespace ASC.CRM.Api
 
             return _mapper.Map<List<CustomField>, List<CustomFieldDto>>(customFields);
         }
-             
+
         private static MessageAction GetCustomFieldCreatedAction(EntityType entityType)
         {
             switch (entityType)

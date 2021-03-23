@@ -130,17 +130,17 @@ namespace ASC.CRM.Core.Dao
             new KeyValuePair<InvoiceStatus, InvoiceStatus>(InvoiceStatus.Paid, InvoiceStatus.Sent)//Bug 23450
         };
 
-        private InvoiceSetting _invoiceSetting;
-        private InvoiceFormattedData _invoiceFormattedData;
-        private SettingsManager _settingsManager;
-        private FactoryIndexerInvoice _factoryIndexer;
-        private TenantUtil _tenantUtil;
-        private CRMSecurity _crmSecurity;
+        private readonly InvoiceSetting _invoiceSetting;
+        private readonly InvoiceFormattedData _invoiceFormattedData;
+        private readonly SettingsManager _settingsManager;
+        private readonly FactoryIndexerInvoice _factoryIndexer;
+        private readonly TenantUtil _tenantUtil;
+        private readonly CRMSecurity _crmSecurity;
 
         public InvoiceDao(
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
-           
+
             SecurityContext securityContext,
             FactoryIndexerInvoice factoryIndexer,
             IOptionsMonitor<ILog> logger,
@@ -164,7 +164,7 @@ namespace ASC.CRM.Core.Dao
             _tenantUtil = tenantUtil;
         }
 
-        
+
         public Boolean IsExist(int invoiceID)
         {
             return IsExistFromDb(invoiceID);

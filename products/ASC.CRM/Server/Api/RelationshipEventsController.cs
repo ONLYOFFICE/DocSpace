@@ -52,6 +52,14 @@ namespace ASC.CRM.Api
 {
     public class RelationshipEventsController : BaseApiController
     {
+        private readonly HistoryCategoryDto _historyCategoryDtoHelper;
+        private readonly FileUploader _fileUploader;
+        private readonly ASC.Files.Core.Data.DaoFactory _filesDaoFactory;
+        private readonly FileWrapperHelper _fileWrapperHelper;
+        private readonly ApiContext _apiContext;
+        private readonly MessageService _messageService;
+        private readonly MessageTarget _messageTarget;
+
         public RelationshipEventsController(CRMSecurity cRMSecurity,
                      DaoFactory daoFactory,
                      ApiContext apiContext,
@@ -60,26 +68,19 @@ namespace ASC.CRM.Api
                      FileWrapperHelper fileWrapperHelper,
                      ASC.Files.Core.Data.DaoFactory filesDaoFactory,
                      FileUploader fileUploader,
-                     HistoryCategoryDtoHelper historyCategoryDtoHelper,
+                     HistoryCategoryDto historyCategoryDtoHelper,
                      IMapper mapper)
             : base(daoFactory, cRMSecurity, mapper)
         {
-            ApiContext = apiContext;
-            MessageTarget = messageTarget;
-            MessageService = messageService;
-            FileWrapperHelper = fileWrapperHelper;
-            FilesDaoFactory = filesDaoFactory;
-            FileUploader = fileUploader;
-            HistoryCategoryDtoHelper = historyCategoryDtoHelper;
+            _apiContext = apiContext;
+            _messageTarget = messageTarget;
+            _messageService = messageService;
+            _fileWrapperHelper = fileWrapperHelper;
+            _filesDaoFactory = filesDaoFactory;
+            _fileUploader = fileUploader;
+            _historyCategoryDtoHelper = historyCategoryDtoHelper;
         }
 
-        public HistoryCategoryDtoHelper HistoryCategoryDtoHelper { get; }
-        public FileUploader FileUploader { get; }
-        public ASC.Files.Core.Data.DaoFactory FilesDaoFactory { get; set; }
-        public FileWrapperHelper FileWrapperHelper { get; }
-        private ApiContext ApiContext { get; }
-        public MessageService MessageService { get; }
-        public MessageTarget MessageTarget { get; }
 
         /// <summary>
         ///   Returns the list of all events matching the parameters specified in the request
@@ -139,11 +140,11 @@ namespace ASC.CRM.Api
 
             OrderBy eventOrderBy;
 
-            if (ASC.CRM.Classes.EnumExtension.TryParse(ApiContext.SortBy, true, out eventByType))
+            if (ASC.CRM.Classes.EnumExtension.TryParse(_apiContext.SortBy, true, out eventByType))
             {
-                eventOrderBy = new OrderBy(eventByType, !ApiContext.SortDescending);
+                eventOrderBy = new OrderBy(eventByType, !_apiContext.SortDescending);
             }
-            else if (string.IsNullOrEmpty(ApiContext.SortBy))
+            else if (string.IsNullOrEmpty(_apiContext.SortBy))
             {
                 eventOrderBy = new OrderBy(RelationshipEventByType.Created, false);
             }
@@ -155,25 +156,25 @@ namespace ASC.CRM.Api
             if (eventOrderBy != null)
             {
                 result = ToListRelationshipEventDto(_daoFactory.GetRelationshipEventDao().GetItems(
-                    ApiContext.FilterValue,
+                    _apiContext.FilterValue,
                     entityTypeObj,
                     entityId,
                     createBy,
                     categoryId,
                     fromDate,
                     toDate,
-                    (int)ApiContext.StartIndex,
-                    (int)ApiContext.Count,
+                    (int)_apiContext.StartIndex,
+                    (int)_apiContext.Count,
                     eventOrderBy));
 
-                ApiContext.SetDataPaginated();
-                ApiContext.SetDataFiltered();
-                ApiContext.SetDataSorted();
+                _apiContext.SetDataPaginated();
+                _apiContext.SetDataFiltered();
+                _apiContext.SetDataSorted();
             }
             else
             {
                 result = ToListRelationshipEventDto(_daoFactory.GetRelationshipEventDao().GetItems(
-                    ApiContext.FilterValue,
+                    _apiContext.FilterValue,
                     entityTypeObj,
                     entityId,
                     createBy,
@@ -214,7 +215,7 @@ namespace ASC.CRM.Api
 
             var messageAction = GetHistoryDeletedAction(item.EntityType, item.ContactID);
             var entityTitle = wrapper.Contact == null ? wrapper.Entity.EntityTitle : wrapper.Contact.DisplayName;
-            MessageService.Send(messageAction, MessageTarget.Create(item.ID), entityTitle, wrapper.Category.Title);
+            _messageService.Send(messageAction, _messageTarget.Create(item.ID), entityTitle, wrapper.Category.Title);
 
             return wrapper;
         }
@@ -323,9 +324,9 @@ namespace ASC.CRM.Api
 
         private FileWrapper<int> SaveFile(int folderid, Stream file, string fileName)
         {
-            var resultFile = FileUploader.Exec<int>(folderid, fileName, file.Length, file);
+            var resultFile = _fileUploader.Exec<int>(folderid, fileName, file.Length, file);
 
-            return FileWrapperHelper.Get<int>(resultFile);
+            return _fileWrapperHelper.Get<int>(resultFile);
         }
 
         /// <summary>
@@ -484,7 +485,7 @@ namespace ASC.CRM.Api
         {
             if (entityid <= 0 || fileids == null) throw new ArgumentException();
 
-            var files = FilesDaoFactory.GetFileDao<int>().GetFiles(fileids.ToArray());
+            var files = _filesDaoFactory.GetFileDao<int>().GetFiles(fileids.ToArray());
 
             var folderid = GetRootFolderID();
 
@@ -502,15 +503,15 @@ namespace ASC.CRM.Api
                 case EntityType.Contact:
                     var relationshipEvent1 = _daoFactory.GetRelationshipEventDao().AttachFiles(entityid, EntityType.Any, 0, fileids.ToArray());
                     var messageAction = entityObj is Company ? MessageAction.CompanyAttachedFiles : MessageAction.PersonAttachedFiles;
-                    MessageService.Send(messageAction, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
+                    _messageService.Send(messageAction, _messageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
                     return _mapper.Map<RelationshipEventDto>(relationshipEvent1);
                 case EntityType.Opportunity:
                     var relationshipEvent2 = _daoFactory.GetRelationshipEventDao().AttachFiles(0, entityTypeObj, entityid, fileids.ToArray());
-                    MessageService.Send(MessageAction.OpportunityAttachedFiles, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
+                    _messageService.Send(MessageAction.OpportunityAttachedFiles, _messageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
                     return _mapper.Map<RelationshipEventDto>(relationshipEvent2);
                 case EntityType.Case:
                     var relationshipEvent3 = _daoFactory.GetRelationshipEventDao().AttachFiles(0, entityTypeObj, entityid, fileids.ToArray());
-                    MessageService.Send(MessageAction.CaseAttachedFiles, MessageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
+                    _messageService.Send(MessageAction.CaseAttachedFiles, _messageTarget.Create(entityid), entityTitle, files.Select(x => x.Title));
                     return _mapper.Map<RelationshipEventDto>(relationshipEvent3);
                 default:
                     throw new ArgumentException();
@@ -551,10 +552,10 @@ namespace ASC.CRM.Api
             switch (entityTypeObj)
             {
                 case EntityType.Contact:
-                    return _daoFactory.GetRelationshipEventDao().GetAllFiles(new[] { entityid }, EntityType.Any, 0).ConvertAll(file => FileWrapperHelper.Get<int>(file));
+                    return _daoFactory.GetRelationshipEventDao().GetAllFiles(new[] { entityid }, EntityType.Any, 0).ConvertAll(file => _fileWrapperHelper.Get<int>(file));
                 case EntityType.Opportunity:
                 case EntityType.Case:
-                    return _daoFactory.GetRelationshipEventDao().GetAllFiles(null, entityTypeObj, entityid).ConvertAll(file => FileWrapperHelper.Get<int>(file));
+                    return _daoFactory.GetRelationshipEventDao().GetAllFiles(null, entityTypeObj, entityid).ConvertAll(file => _fileWrapperHelper.Get<int>(file));
                 default:
                     throw new ArgumentException();
             }
@@ -576,9 +577,9 @@ namespace ASC.CRM.Api
         {
             if (fileid < 0) throw new ArgumentException();
 
-            var file = FilesDaoFactory.GetFileDao<int>().GetFile(fileid);
+            var file = _filesDaoFactory.GetFileDao<int>().GetFile(fileid);
             if (file == null) throw new ItemNotFoundException();
-            var result = FileWrapperHelper.Get<int>(file);
+            var result = _fileWrapperHelper.Get<int>(file);
 
             var _eventsDao = _daoFactory.GetRelationshipEventDao();
             var eventIDs = _eventsDao.RemoveFile(file);
@@ -594,7 +595,7 @@ namespace ASC.CRM.Api
                                   : GetEntityTitle(evt.EntityType, evt.EntityID, false, out entityObj);
                 var messageAction = GetFilesDetachAction(evt.EntityType, evt.ContactID);
 
-                MessageService.Send(messageAction, MessageTarget.Create(file.ID), entityTitle, file.Title);
+                _messageService.Send(messageAction, _messageTarget.Create(file.ID), entityTitle, file.Title);
             }
 
             return result;
@@ -684,7 +685,7 @@ namespace ASC.CRM.Api
                 }
             }
 
-            var categories = _daoFactory.GetListItemDao().GetItems(categoryIDs.ToArray()).ToDictionary(x => x.ID, x => HistoryCategoryDtoHelper.Get(x));
+            var categories = _daoFactory.GetListItemDao().GetItems(categoryIDs.ToArray()).ToDictionary(x => x.ID, x => _mapper.Map<HistoryCategoryDto>(x));
 
             var files = _daoFactory.GetRelationshipEventDao().GetFiles(eventIDs.ToArray());
 
@@ -710,7 +711,7 @@ namespace ASC.CRM.Api
                 }
 
                 eventObjWrap.Files = files.ContainsKey(item.ID) ? files[item.ID].ConvertAll(file =>
-                FileWrapperHelper.Get<int>(file)) : new List<FileWrapper<int>>();
+                _fileWrapperHelper.Get<int>(file)) : new List<FileWrapper<int>>();
 
                 if (categories.ContainsKey(item.CategoryID))
                 {

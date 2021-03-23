@@ -51,10 +51,6 @@ namespace ASC.CRM.ApiModels
         {
         }
 
-        [DataMember(Name = "id")]
-        public int Id { get; set; }
-
-
         public String ImagePath { get; set; }
 
         public static HistoryCategoryBaseDto GetSample()
@@ -119,12 +115,8 @@ namespace ASC.CRM.ApiModels
             Title = dealMilestone.Title;
         }
 
-
         public int SuccessProbability { get; set; }
-
-
         public DealMilestoneStatus StageType { get; set; }
-
         public static DealMilestoneBaseDto GetSample()
         {
             return new DealMilestoneBaseDto
@@ -150,8 +142,6 @@ namespace ASC.CRM.ApiModels
             : base(dealMilestone)
         {
         }
-
-
         public int RelativeItemsCount { get; set; }
 
         public new static DealMilestoneDto GetSample()
@@ -174,7 +164,7 @@ namespace ASC.CRM.ApiModels
     #region Task Category
 
     [DataContract(Name = "taskCategoryBase", Namespace = "")]
-    public class TaskCategoryBaseDto : ListItemDto, IMapFrom<ListItem>
+    public class TaskCategoryBaseDto : ListItemDto
     {
         public TaskCategoryBaseDto()
         {
@@ -184,7 +174,6 @@ namespace ASC.CRM.ApiModels
         {
 
         }
-
 
         public String ImagePath { get; set; }
 
@@ -199,10 +188,6 @@ namespace ASC.CRM.ApiModels
             };
         }
 
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<ListItem, TaskCategoryBaseDto>().ConvertUsing<TaskCategoryDtoTypeConverter>();
-        }
 
 
     }
@@ -391,9 +376,9 @@ namespace ASC.CRM.ApiModels
     #endregion
 
     [DataContract(Name = "listItem", Namespace = "")]
-    public class ListItemDto
+    public class ListItemDto : IMapFrom<ListItem>
     {
-        protected ListItemDto()
+        public ListItemDto()
         {
 
         }
@@ -412,5 +397,11 @@ namespace ASC.CRM.ApiModels
         public String Description { get; set; }
         public String Color { get; set; }
         public int SortOrder { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<ListItem, TaskCategoryBaseDto>().ConvertUsing<ListItemDtoTypeConverter>();
+            profile.CreateMap<ListItem, HistoryCategoryDto>().ConvertUsing<ListItemDtoTypeConverter>();
+        }
     }
 }

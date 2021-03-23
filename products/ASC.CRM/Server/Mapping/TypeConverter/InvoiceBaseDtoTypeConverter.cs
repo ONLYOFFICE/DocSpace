@@ -69,6 +69,9 @@ namespace ASC.CRM.Mapping
 
         public InvoiceBaseDto Convert(Invoice source, InvoiceBaseDto destination, ResolutionContext context)
         {
+            var crmSettings = _settingsManager.Load<CRMSettings>();
+            var defaultCurrency = _currencyProvider.Get(crmSettings.DefaultCurrency);
+
             var result = new InvoiceBaseDto
             {
                 Id = source.ID,
@@ -79,7 +82,7 @@ namespace ASC.CRM.Mapping
                 DueDate = _apiDateTimeHelper.Get(source.DueDate),
                 Currency = !String.IsNullOrEmpty(source.Currency) ?
                             context.Mapper.Map<CurrencyInfoDto>(_currencyProvider.Get(source.Currency)) :
-                            context.Mapper.Map<CurrencyInfoDto>(_settingsManager.Load<CRMSettings>().DefaultCurrency),
+                            context.Mapper.Map<CurrencyInfoDto>(defaultCurrency),
                 ExchangeRate = source.ExchangeRate,
                 Language = source.Language,
                 PurchaseOrderNumber = source.PurchaseOrderNumber,

@@ -49,6 +49,17 @@ namespace ASC.CRM.Api
 {
     public class UtilsController : BaseApiController
     {
+        private readonly ExportToCsv _exportToCsv;
+        private readonly ImportFromCSV _importFromCSV;
+        private readonly Global _global;
+        private readonly OrganisationLogoManager _organisationLogoManager;
+        private readonly ImportFromCSVManager _importFromCSVManager;
+        private readonly InvoiceSetting _invoiceSetting;
+        private readonly CurrencyRateInfoDtoHelper _currencyRateInfoDtoHelper;
+        private readonly SettingsManager _settingsManager;
+        private readonly CurrencyProvider _currencyProvider;
+        private readonly MessageService _messageService;
+
         public UtilsController(CRMSecurity cRMSecurity,
                      DaoFactory daoFactory,
                      MessageService messageService,
@@ -64,28 +75,17 @@ namespace ASC.CRM.Api
                      IMapper mapper)
             : base(daoFactory, cRMSecurity, mapper)
         {
-            MessageService = messageService;
-            CurrencyProvider = currencyProvider;
-            SettingsManager = settingsManager;
-            CurrencyRateInfoDtoHelper = currencyRateInfoDtoHelper;
-            InvoiceSetting = invoiceSetting;
-            ImportFromCSVManager = importFromCSVManager;
-            OrganisationLogoManager = organisationLogoManager;
-            Global = global;
-            ImportFromCSV = importFromCSV;
-            ExportToCsv = exportToCsv;
+            _messageService = messageService;
+            _currencyProvider = currencyProvider;
+            _settingsManager = settingsManager;
+            _currencyRateInfoDtoHelper = currencyRateInfoDtoHelper;
+            _invoiceSetting = invoiceSetting;
+            _importFromCSVManager = importFromCSVManager;
+            _organisationLogoManager = organisationLogoManager;
+            _global = global;
+            _importFromCSV = importFromCSV;
+            _exportToCsv = exportToCsv;
         }
-
-        public ExportToCsv ExportToCsv { get; }
-        public ImportFromCSV ImportFromCSV { get; }
-        public Global Global { get; }
-        public OrganisationLogoManager OrganisationLogoManager { get; }
-        public ImportFromCSVManager ImportFromCSVManager { get; }
-        public InvoiceSetting InvoiceSetting { get; }
-        public CurrencyRateInfoDtoHelper CurrencyRateInfoDtoHelper { get; }
-        public SettingsManager SettingsManager { get; }
-        public CurrencyProvider CurrencyProvider { get; }
-        public MessageService MessageService { get; }
 
         /// <summary>
         ///     Returns the list of all currencies currently available on the portal
@@ -98,7 +98,7 @@ namespace ASC.CRM.Api
         [Read(@"settings/currency")]
         public IEnumerable<CurrencyInfoDto> GetAvaliableCurrency()
         {
-            return CurrencyProvider.GetAll().ConvertAll(item => _mapper.Map<CurrencyInfoDto>(item));
+            return _currencyProvider.GetAll().ConvertAll(item => _mapper.Map<CurrencyInfoDto>(item));
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace ASC.CRM.Api
         [Read(@"settings/currency/convert")]
         public Decimal ConvertAmount(Decimal amount, String fromcurrency, String tocurrency)
         {
-            return CurrencyProvider.MoneyConvert(amount, fromcurrency, tocurrency);
+            return _currencyProvider.MoneyConvert(amount, fromcurrency, tocurrency);
         }
 
         /// <summary>
@@ -138,13 +138,13 @@ namespace ASC.CRM.Api
                 throw new ArgumentException();
             }
 
-            var cur = CurrencyProvider.Get(currency.ToUpper());
+            var cur = _currencyProvider.Get(currency.ToUpper());
 
             if (cur == null) throw new ArgumentException();
 
-            var table = CurrencyProvider.MoneyConvert(cur);
+            var table = _currencyProvider.MoneyConvert(cur);
 
-            table.ToList().ForEach(tableItem => result.Add(CurrencyRateInfoDtoHelper.Get(tableItem.Key, tableItem.Value)));
+            table.ToList().ForEach(tableItem => result.Add(_currencyRateInfoDtoHelper.Get(tableItem.Key, tableItem.Value)));
 
             return result;
         }
@@ -162,13 +162,13 @@ namespace ASC.CRM.Api
         [Update(@"contact/status/settings")]
         public Boolean? UpdateCRMContactStatusSettings(Boolean? changeContactStatusGroupAuto)
         {
-            var tenantSettings = SettingsManager.Load<CRMSettings>();
+            var tenantSettings = _settingsManager.Load<CRMSettings>();
 
             tenantSettings.ChangeContactStatusGroupAuto = changeContactStatusGroupAuto;
 
-            SettingsManager.Save<CRMSettings>(tenantSettings);
+            _settingsManager.Save<CRMSettings>(tenantSettings);
 
-            MessageService.Send(MessageAction.ContactTemperatureLevelSettingsUpdated);
+            _messageService.Send(MessageAction.ContactTemperatureLevelSettingsUpdated);
 
             return changeContactStatusGroupAuto;
         }
@@ -186,11 +186,11 @@ namespace ASC.CRM.Api
         [Update(@"contact/mailtohistory/settings")]
         public Boolean UpdateCRMWriteMailToHistorySettings(Boolean writeMailToHistoryAuto)
         {
-            var tenantSettings = SettingsManager.Load<CRMSettings>();
+            var tenantSettings = _settingsManager.Load<CRMSettings>();
 
             tenantSettings.WriteMailToHistoryAuto = writeMailToHistoryAuto;
 
-            SettingsManager.Save<CRMSettings>(tenantSettings);
+            _settingsManager.Save<CRMSettings>(tenantSettings);
             //MessageService.Send( MessageAction.ContactTemperatureLevelSettingsUpdated);
 
             return writeMailToHistoryAuto;
@@ -209,12 +209,12 @@ namespace ASC.CRM.Api
         [Update(@"contact/tag/settings")]
         public Boolean? UpdateCRMContactTagSettings(Boolean? addTagToContactGroupAuto)
         {
-            var tenantSettings = SettingsManager.Load<CRMSettings>();
+            var tenantSettings = _settingsManager.Load<CRMSettings>();
             tenantSettings.AddTagToContactGroupAuto = addTagToContactGroupAuto;
 
-            SettingsManager.Save<CRMSettings>(tenantSettings);
+            _settingsManager.Save<CRMSettings>(tenantSettings);
 
-            MessageService.Send(MessageAction.ContactsTagSettingsUpdated);
+            _messageService.Send(MessageAction.ContactsTagSettingsUpdated);
 
             return addTagToContactGroupAuto;
         }
@@ -233,12 +233,12 @@ namespace ASC.CRM.Api
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
-            var tenantSettings = SettingsManager.Load<CRMSettings>();
+            var tenantSettings = _settingsManager.Load<CRMSettings>();
 
             tenantSettings.IsConfiguredPortal = configured ?? true;
             tenantSettings.WebFormKey = webFormKey ?? Guid.NewGuid();
 
-            SettingsManager.Save<CRMSettings>(tenantSettings);
+            _settingsManager.Save<CRMSettings>(tenantSettings);
 
             return tenantSettings.IsConfiguredPortal;
         }
@@ -256,17 +256,17 @@ namespace ASC.CRM.Api
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
-            var tenantSettings = SettingsManager.Load<CRMSettings>();
+            var tenantSettings = _settingsManager.Load<CRMSettings>();
 
             if (tenantSettings.InvoiceSetting == null)
             {
-                tenantSettings.InvoiceSetting = InvoiceSetting.DefaultSettings;
+                tenantSettings.InvoiceSetting = _invoiceSetting.DefaultSettings;
             }
             tenantSettings.InvoiceSetting.CompanyName = companyName;
 
-            SettingsManager.Save<CRMSettings>(tenantSettings);
+            _settingsManager.Save<CRMSettings>(tenantSettings);
 
-            MessageService.Send(MessageAction.OrganizationProfileUpdatedCompanyName, companyName);
+            _messageService.Send(MessageAction.OrganizationProfileUpdatedCompanyName, companyName);
 
             return companyName;
         }
@@ -288,11 +288,11 @@ namespace ASC.CRM.Api
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
-            var tenantSettings = SettingsManager.Load<CRMSettings>();
+            var tenantSettings = _settingsManager.Load<CRMSettings>();
 
             if (tenantSettings.InvoiceSetting == null)
             {
-                tenantSettings.InvoiceSetting = InvoiceSetting.DefaultSettings;
+                tenantSettings.InvoiceSetting = _invoiceSetting.DefaultSettings;
             }
 
             var companyAddress = Newtonsoft.Json.JsonConvert.SerializeObject(new
@@ -307,9 +307,9 @@ namespace ASC.CRM.Api
 
             tenantSettings.InvoiceSetting.CompanyAddress = companyAddress;
 
-            SettingsManager.Save<CRMSettings>(tenantSettings);
+            _settingsManager.Save<CRMSettings>(tenantSettings);
 
-            MessageService.Send(MessageAction.OrganizationProfileUpdatedAddress);
+            _messageService.Send(MessageAction.OrganizationProfileUpdatedAddress);
 
             return companyAddress;
         }
@@ -332,7 +332,7 @@ namespace ASC.CRM.Api
 
             if (!reset)
             {
-                companyLogoID = OrganisationLogoManager.TryUploadOrganisationLogoFromTmp(_daoFactory);
+                companyLogoID = _organisationLogoManager.TryUploadOrganisationLogoFromTmp(_daoFactory);
                 if (companyLogoID == 0)
                 {
                     throw new Exception("Downloaded image not found");
@@ -343,17 +343,17 @@ namespace ASC.CRM.Api
                 companyLogoID = 0;
             }
 
-            var tenantSettings = SettingsManager.Load<CRMSettings>();
+            var tenantSettings = _settingsManager.Load<CRMSettings>();
 
             if (tenantSettings.InvoiceSetting == null)
             {
-                tenantSettings.InvoiceSetting = InvoiceSetting.DefaultSettings;
+                tenantSettings.InvoiceSetting = _invoiceSetting.DefaultSettings;
             }
             tenantSettings.InvoiceSetting.CompanyLogoID = companyLogoID;
 
-            SettingsManager.Save<CRMSettings>(tenantSettings);
+            _settingsManager.Save<CRMSettings>(tenantSettings);
 
-            MessageService.Send(MessageAction.OrganizationProfileUpdatedInvoiceLogo);
+            _messageService.Send(MessageAction.OrganizationProfileUpdatedInvoiceLogo);
 
             return companyLogoID;
         }
@@ -371,18 +371,18 @@ namespace ASC.CRM.Api
         {
             if (id != 0)
             {
-                return OrganisationLogoManager.GetOrganisationLogoBase64(id);
+                return _organisationLogoManager.GetOrganisationLogoBase64(id);
             }
             else
             {
-                var tenantSettings = SettingsManager.Load<CRMSettings>();
+                var tenantSettings = _settingsManager.Load<CRMSettings>();
 
                 if (tenantSettings.InvoiceSetting == null)
                 {
                     return string.Empty;
                 }
 
-                return OrganisationLogoManager.GetOrganisationLogoBase64(tenantSettings.InvoiceSetting.CompanyLogoID);
+                return _organisationLogoManager.GetOrganisationLogoBase64(tenantSettings.InvoiceSetting.CompanyLogoID);
             }
         }
 
@@ -398,13 +398,13 @@ namespace ASC.CRM.Api
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
-            var tenantSettings = SettingsManager.Load<CRMSettings>();
+            var tenantSettings = _settingsManager.Load<CRMSettings>();
 
             tenantSettings.WebFormKey = Guid.NewGuid();
 
-            SettingsManager.Save<CRMSettings>(tenantSettings);
+            _settingsManager.Save<CRMSettings>(tenantSettings);
 
-            MessageService.Send(MessageAction.WebsiteContactFormUpdatedKey);
+            _messageService.Send(MessageAction.WebsiteContactFormUpdatedKey);
 
             return tenantSettings.WebFormKey.ToString();
         }
@@ -428,11 +428,11 @@ namespace ASC.CRM.Api
                 throw new ArgumentException();
             }
             currency = currency.ToUpper();
-            var cur = CurrencyProvider.Get(currency);
+            var cur = _currencyProvider.Get(currency);
             if (cur == null) throw new ArgumentException();
 
-            Global.SaveDefaultCurrencySettings(cur);
-            MessageService.Send(MessageAction.CrmDefaultCurrencyUpdated);
+            _global.SaveDefaultCurrencySettings(cur);
+            _messageService.Send(MessageAction.CrmDefaultCurrencyUpdated);
 
             return _mapper.Map<CurrencyInfoDto>(cur);
         }
@@ -462,7 +462,7 @@ namespace ASC.CRM.Api
                     throw new ArgumentException();
             }
 
-            ImportFromCSVManager.StartImport(entityTypeObj, csvFileURI, jsonSettings);
+            _importFromCSVManager.StartImport(entityTypeObj, csvFileURI, jsonSettings);
 
             return "";
 
@@ -493,7 +493,7 @@ namespace ASC.CRM.Api
                     throw new ArgumentException();
             }
 
-            return ImportFromCSV.GetStatus(entityTypeObj);
+            return _importFromCSV.GetStatus(entityTypeObj);
         }
 
         /// <visible>false</visible>
@@ -502,18 +502,18 @@ namespace ASC.CRM.Api
         {
             if (String.IsNullOrEmpty(csvFileURI) || indexRow < 0) throw new ArgumentException();
 
-            if (!Global.GetStore().IsFile("temp", csvFileURI)) throw new ArgumentException();
+            if (!_global.GetStore().IsFile("temp", csvFileURI)) throw new ArgumentException();
 
-            var CSVFileStream = Global.GetStore().GetReadStream("temp", csvFileURI);
+            var CSVFileStream = _global.GetStore().GetReadStream("temp", csvFileURI);
 
-            return ImportFromCSV.GetRow(CSVFileStream, indexRow, jsonSettings);
+            return _importFromCSV.GetRow(CSVFileStream, indexRow, jsonSettings);
         }
 
         /// <visible>false</visible>
         [Create(@"import/uploadfake")]
         public FileUploadResult ProcessUploadFake(string csvFileURI, string jsonSettings)
         {
-            return ImportFromCSVManager.ProcessUploadFake(csvFileURI, jsonSettings);
+            return _importFromCSVManager.ProcessUploadFake(csvFileURI, jsonSettings);
         }
 
         /// <visible>false</visible>
@@ -522,7 +522,7 @@ namespace ASC.CRM.Api
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
-            return ExportToCsv.GetStatus(false);
+            return _exportToCsv.GetStatus(false);
 
         }
 
@@ -532,9 +532,9 @@ namespace ASC.CRM.Api
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
-            ExportToCsv.Cancel(false);
+            _exportToCsv.Cancel(false);
 
-            return ExportToCsv.GetStatus(false);
+            return _exportToCsv.GetStatus(false);
 
         }
 
@@ -544,16 +544,16 @@ namespace ASC.CRM.Api
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
-            MessageService.Send(MessageAction.CrmAllDataExported);
+            _messageService.Send(MessageAction.CrmAllDataExported);
 
-            return ExportToCsv.Start(null, CRMSettingResource.Export + ".zip");
+            return _exportToCsv.Start(null, CRMSettingResource.Export + ".zip");
         }
 
         /// <visible>false</visible>
         [Read(@"export/partial/status")]
         public IProgressItem GetPartialExportStatus()
         {
-            return ExportToCsv.GetStatus(true);
+            return _exportToCsv.GetStatus(true);
         }
 
         /// <visible>false</visible>
@@ -561,9 +561,9 @@ namespace ASC.CRM.Api
         public IProgressItem CancelPartialExport()
         {
 
-            ExportToCsv.Cancel(true);
+            _exportToCsv.Cancel(true);
 
-            return ExportToCsv.GetStatus(true);
+            return _exportToCsv.GetStatus(true);
 
         }
 
@@ -581,22 +581,22 @@ namespace ASC.CRM.Api
                 case "contact":
                     filterObject = new ContactFilterObject(base64FilterString);
                     fileName = CRMContactResource.Contacts + ".csv";
-                    MessageService.Send(MessageAction.ContactsExportedToCsv);
+                    _messageService.Send(MessageAction.ContactsExportedToCsv);
                     break;
                 case "opportunity":
                     filterObject = new DealFilterObject(base64FilterString);
                     fileName = CRMCommonResource.DealModuleName + ".csv";
-                    MessageService.Send(MessageAction.OpportunitiesExportedToCsv);
+                    _messageService.Send(MessageAction.OpportunitiesExportedToCsv);
                     break;
                 case "case":
                     filterObject = new CasesFilterObject(base64FilterString);
                     fileName = CRMCommonResource.CasesModuleName + ".csv";
-                    MessageService.Send(MessageAction.CasesExportedToCsv);
+                    _messageService.Send(MessageAction.CasesExportedToCsv);
                     break;
                 case "task":
                     filterObject = new TaskFilterObject(base64FilterString);
                     fileName = CRMCommonResource.TaskModuleName + ".csv";
-                    MessageService.Send(MessageAction.CrmTasksExportedToCsv);
+                    _messageService.Send(MessageAction.CrmTasksExportedToCsv);
                     break;
                 case "invoiceitem":
                     fileName = CRMCommonResource.ProductsAndServices + ".csv";
@@ -606,7 +606,7 @@ namespace ASC.CRM.Api
                     throw new ArgumentException();
             }
 
-            return ExportToCsv.Start(filterObject, fileName);
+            return _exportToCsv.Start(filterObject, fileName);
         }
     }
 }

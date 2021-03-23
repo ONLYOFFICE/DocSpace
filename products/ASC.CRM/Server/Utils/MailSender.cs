@@ -106,7 +106,8 @@ namespace ASC.Web.CRM.Classes
               AuthManager authManager,
               SettingsManager settingsManager,
               MailSenderDataCache mailSenderDataCache,
-              DaoFactory daoFactory
+              DaoFactory daoFactory,
+              CoreConfiguration coreConfiguration
              )
         {
             TenantUtil = tenantUtil;
@@ -117,7 +118,10 @@ namespace ASC.Web.CRM.Classes
             _log = logger.Get("ASC.CRM.MailSender");
 
             _tenantID = tenantManager.GetCurrentTenant().TenantId;
-            _smtpSetting = settingsManager.Load<CRMSettings>().SMTPServerSetting;
+
+            var _crmSettings = settingsManager.Load<CRMSettings>();
+
+            _smtpSetting = new SMTPServerSetting(coreConfiguration.SmtpSettings);
             _currUser = SecurityContext.CurrentAccount.ID;
 
 
@@ -615,13 +619,15 @@ namespace ASC.Web.CRM.Classes
                           SettingsManager settingsManager,
                           MailSenderDataCache mailSenderDataCache,
                           ProgressQueueOptionsManager<SendBatchEmailsOperation> progressQueueOptionsManager,
-                          SendBatchEmailsOperation sendBatchEmailsOperation
+                          SendBatchEmailsOperation sendBatchEmailsOperation,
+                          CoreConfiguration coreConfiguration
                         )
         {
             SendBatchEmailsOperation = sendBatchEmailsOperation;
             TenantID = tenantManager.GetCurrentTenant().TenantId;
             MailSenderDataCache = mailSenderDataCache;
             _mailQueue = progressQueueOptionsManager.Value;
+            CoreConfiguration = coreConfiguration;
 
             int parsed;
 
@@ -641,7 +647,7 @@ namespace ASC.Web.CRM.Classes
         public SendBatchEmailsOperation SendBatchEmailsOperation { get; }
         public MailSenderDataCache MailSenderDataCache { get; }
         public int TenantID { get; }
-
+        public CoreConfiguration CoreConfiguration { get; }
         public IOptionsMonitor<ILog> LogManager { get; }
 
         public int GetQuotas()
@@ -722,7 +728,7 @@ namespace ASC.Web.CRM.Classes
             }
 
             TenantManager.SetCurrentTenant(TenantID);
-            var smtpSetting = SettingsManager.Load<CRMSettings>().SMTPServerSetting;
+            var smtpSetting = new SMTPServerSetting(CoreConfiguration.SmtpSettings);
 
             ThreadPool.QueueUserWorkItem(_ =>
             {

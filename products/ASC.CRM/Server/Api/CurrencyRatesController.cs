@@ -44,6 +44,11 @@ namespace ASC.CRM.Api
 {
     public class CurrencyRatesController : BaseApiController
     {
+        private readonly CurrencyProvider _currencyProvider;
+        private readonly SettingsManager _settingsManager;
+        private readonly Global _global;
+        private readonly MessageService _messageService;
+
         public CurrencyRatesController(CRMSecurity crmSecurity,
                      DaoFactory daoFactory,
                      MessageService messageService,
@@ -53,16 +58,12 @@ namespace ASC.CRM.Api
                      IMapper mapper)
             : base(daoFactory, crmSecurity, mapper)
         {
-            MessageService = messageService;
-            SettingsManager = settingsManager;
-            Global = global;
-            CurrencyProvider = currencyProvider;
+            _messageService = messageService;
+            _settingsManager = settingsManager;
+            _global = global;
+            _currencyProvider = currencyProvider;
         }
 
-        public CurrencyProvider CurrencyProvider { get; }
-        public SettingsManager SettingsManager { get; }
-        public Global Global { get; }
-        public MessageService MessageService { get; }
 
         //TABLE `crm_currency_rate` column `rate` DECIMAL(10,2) NOT NULL
         public const decimal MaxRateValue = (decimal)99999999.99;
@@ -141,7 +142,7 @@ namespace ASC.CRM.Api
             };
 
             currencyRate.ID = _daoFactory.GetCurrencyRateDao().SaveOrUpdate(currencyRate);
-            MessageService.Send(MessageAction.CurrencyRateUpdated, fromCurrency, toCurrency);
+            _messageService.Send(MessageAction.CurrencyRateUpdated, fromCurrency, toCurrency);
 
             return _mapper.Map<CurrencyRateDto>(currencyRate);
         }
@@ -172,7 +173,7 @@ namespace ASC.CRM.Api
             currencyRate.Rate = rate;
 
             currencyRate.ID = _daoFactory.GetCurrencyRateDao().SaveOrUpdate(currencyRate);
-            MessageService.Send(MessageAction.CurrencyRateUpdated, fromCurrency, toCurrency);
+            _messageService.Send(MessageAction.CurrencyRateUpdated, fromCurrency, toCurrency);
 
             return _mapper.Map<CurrencyRateDto>(currencyRate);
         }
@@ -196,23 +197,26 @@ namespace ASC.CRM.Api
 
             currency = currency.ToUpper();
 
-            if (SettingsManager.Load<CRMSettings>().DefaultCurrency.Abbreviation != currency)
+            var crmSettings = _settingsManager.Load<CRMSettings>();
+            var defaultCurrency = _currencyProvider.Get(_settingsManager.Load<CRMSettings>().DefaultCurrency);
+
+            if (defaultCurrency.Abbreviation != currency)
             {
-                var cur = CurrencyProvider.Get(currency);
+                var cur = _currencyProvider.Get(currency);
 
                 if (cur == null)
                     throw new ArgumentException();
 
-                Global.SaveDefaultCurrencySettings(cur);
+                _global.SaveDefaultCurrencySettings(cur);
 
-                MessageService.Send(MessageAction.CrmDefaultCurrencyUpdated);
+                _messageService.Send(MessageAction.CrmDefaultCurrencyUpdated);
             }
 
             rates = _daoFactory.GetCurrencyRateDao().SetCurrencyRates(rates);
 
             foreach (var rate in rates)
             {
-                MessageService.Send(MessageAction.CurrencyRateUpdated, rate.FromCurrency, rate.ToCurrency);
+                _messageService.Send(MessageAction.CurrencyRateUpdated, rate.FromCurrency, rate.ToCurrency);
             }
 
             return rates.Select(x => _mapper.Map<CurrencyRateDto>(x)).ToList();
@@ -245,7 +249,7 @@ namespace ASC.CRM.Api
 
                     existingRate.Rate = rate.Rate;
                     _daoFactory.GetCurrencyRateDao().SaveOrUpdate(existingRate);
-                    MessageService.Send(MessageAction.CurrencyRateUpdated, rate.FromCurrency, rate.ToCurrency);
+                    _messageService.Send(MessageAction.CurrencyRateUpdated, rate.FromCurrency, rate.ToCurrency);
                     exist = true;
                     break;
                 }
@@ -253,7 +257,7 @@ namespace ASC.CRM.Api
                 if (exist) continue;
 
                 rate.ID = _daoFactory.GetCurrencyRateDao().SaveOrUpdate(rate);
-                MessageService.Send(MessageAction.CurrencyRateUpdated, rate.FromCurrency, rate.ToCurrency);
+                _messageService.Send(MessageAction.CurrencyRateUpdated, rate.FromCurrency, rate.ToCurrency);
                 existingRates.Add(rate);
             }
 
@@ -301,7 +305,7 @@ namespace ASC.CRM.Api
             if (currencies.Any(string.IsNullOrEmpty))
                 throw new ArgumentException();
 
-            var available = CurrencyProvider.GetAll().Select(x => x.Abbreviation);
+            var available = _currencyProvider.GetAll().Select(x => x.Abbreviation);
 
             var unknown = currencies.Where(x => !available.Contains(x)).ToArray();
 

@@ -62,6 +62,7 @@ namespace ASC.CRM.Api
         private readonly ApiContext _apiContext;
         private readonly MessageService _messageService;
         private readonly MessageTarget _messageTarget;
+        private readonly CurrencyProvider _currencyProvider;
 
         public InvoicesController(CRMSecurity crmSecurity,
                      DaoFactory daoFactory,
@@ -74,6 +75,7 @@ namespace ASC.CRM.Api
                      PdfCreator pdfCreator,
                      Global global,
                      PdfQueueWorker pdfQueueWorker,
+                     CurrencyProvider currencyProvider,
                      IMapper mapper)
             : base(daoFactory, crmSecurity, mapper)
         {
@@ -87,6 +89,7 @@ namespace ASC.CRM.Api
             _global = global;
             _pdfQueueWorker = pdfQueueWorker;
             _mapper = mapper;
+            _currencyProvider = currencyProvider;
         }
 
 
@@ -122,7 +125,8 @@ namespace ASC.CRM.Api
         [Read(@"invoice/sample")]
         public InvoiceDto GetInvoiceSample()
         {
-            var defaultCurrency = _settingsManager.Load<CRMSettings>().DefaultCurrency;
+            var crmSettings = _settingsManager.Load<CRMSettings>();
+            var defaultCurrency = _currencyProvider.Get(crmSettings.DefaultCurrency);
 
             var sample = InvoiceDto.GetSample();
 

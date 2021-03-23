@@ -40,6 +40,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
+using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Web.CRM.Classes;
@@ -59,7 +60,14 @@ namespace ASC.CRM.Core.Dao
         const string TimeFormat = "[h]:mm:ss;@";
         const string ShortDateFormat = "M/d/yyyy";
 
-        private DaoFactory DaoFactory { get; set; }
+        private IServiceProvider _serviceProvider;
+        private TenantManager _tenantManager;
+        private UserManager _userManager;
+        private Global _global;
+        private FilesIntegration _filesIntegration;
+        private CRMSettings _crmSettings;
+        private TenantUtil _tenantUtil;
+        private DaoFactory _daoFactory;
 
         #region Constructor
 
@@ -80,35 +88,26 @@ namespace ASC.CRM.Core.Dao
                  logger,
                  ascCache)
         {
-            TenantUtil = tenantUtil;
+            _tenantUtil = tenantUtil;
 
-            FilesIntegration = filesIntegration;
-            CRMSettings = settingsManager.Load<CRMSettings>();
-            Global = global;
-            UserManager = userManager;
-            TenantManager = tenantManager;
-            ServiceProvider = serviceProvider;
+            _filesIntegration = filesIntegration;
+            _crmSettings = settingsManager.Load<CRMSettings>();
+            _global = global;
+            _userManager = userManager;
+            _tenantManager = tenantManager;
+            _serviceProvider = serviceProvider;
         }
 
 
         #endregion
 
-        public IServiceProvider ServiceProvider { get; }
-        public TenantManager TenantManager { get; }
-
-        public UserManager UserManager { get; }
-        public Global Global { get; }
-        public FilesIntegration FilesIntegration { get; }
-
-        public CRMSettings CRMSettings { get; }
-
-        public TenantUtil TenantUtil { get; }
+   
 
         #region Common Methods
 
         private void GetTimePeriod(ReportTimePeriod timePeriod, out DateTime fromDate, out DateTime toDate)
         {
-            var now = TenantUtil.DateTimeNow().Date;
+            var now = _tenantUtil.DateTimeNow().Date;
 
             var diff = (int)now.DayOfWeek - (int)CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
             if (diff < 0)
@@ -257,19 +256,18 @@ namespace ASC.CRM.Core.Dao
 
         #endregion
 
-
         #region Report Files
 
         public List<Files.Core.File<int>> SaveSampleReportFiles()
         {
             var result = new List<Files.Core.File<int>>();
 
-            var storeTemplate = Global.GetStoreTemplate();
+            var storeTemplate = _global.GetStoreTemplate();
 
             if (storeTemplate == null) return result;
 
-            var culture = UserManager.GetUsers(_securityContext.CurrentAccount.ID).GetCulture() ??
-                          TenantManager.GetCurrentTenant().GetCulture();
+            var culture = _userManager.GetUsers(_securityContext.CurrentAccount.ID).GetCulture() ??
+                          _tenantManager.GetCurrentTenant().GetCulture();
 
             var path = culture + "/";
 
@@ -284,14 +282,14 @@ namespace ASC.CRM.Core.Dao
                 using (var stream = storeTemplate.GetReadStream("", filePath))
                 {
 
-                    var document = ServiceProvider.GetService<Files.Core.File<int>>();
+                    var document = _serviceProvider.GetService<Files.Core.File<int>>();
 
                     document.Title = Path.GetFileName(filePath);
-                    document.FolderID = DaoFactory.GetFileDao().GetRoot();
+                    document.FolderID = _daoFactory.GetFileDao().GetRoot();
                     document.ContentLength = stream.Length;
 
 
-                    var file = DaoFactory.GetFileDao().SaveFile(document, stream);
+                    var file = _daoFactory.GetFileDao().SaveFile(document, stream);
 
                     SaveFile((int)file.ID, -1);
 
@@ -309,7 +307,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<Files.Core.File<int>> GetFiles(Guid userId)
         {
-            var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             var fileIds = Query(CRMDbContext.ReportFile).Where(x => x.CreateBy == userId).Select(x => x.FileId).ToArray();
 
@@ -333,7 +331,7 @@ namespace ASC.CRM.Core.Dao
             var exist = Query(CRMDbContext.ReportFile)
                         .Any(x => x.CreateBy == userId && x.FileId == fileid);
 
-            var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             return exist ? filedao.GetFile(fileid) : null;
 
@@ -346,7 +344,7 @@ namespace ASC.CRM.Core.Dao
             CRMDbContext.Remove(itemToDelete);
             CRMDbContext.SaveChanges();
 
-            var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             filedao.DeleteFile(fileid);
         }
@@ -360,7 +358,7 @@ namespace ASC.CRM.Core.Dao
             CRMDbContext.Remove(itemToDelete);
             CRMDbContext.SaveChanges();
 
-            var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             foreach (var fileId in fileIds)
             {
@@ -376,7 +374,7 @@ namespace ASC.CRM.Core.Dao
             {
                 FileId = fileId,
                 ReportType = (ReportType)reportType,
-                CreateOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
+                CreateOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()),
                 CreateBy = _securityContext.CurrentAccount.ID,
                 TenantId = TenantID
             };
@@ -1239,152 +1237,154 @@ namespace ASC.CRM.Core.Dao
         //#endregion
 
 
-        //#region WorkloadByTasksReport
+        #region WorkloadByTasksReport
 
-        //public bool CheckWorkloadByTasksReportData(ReportTimePeriod timePeriod, Guid[] managers)
-        //{
-        //    DateTime fromDate;
-        //    DateTime toDate;
+        public bool CheckWorkloadByTasksReportData(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            DateTime fromDate;
+            DateTime toDate;
 
-        //    GetTimePeriod(timePeriod, out fromDate, out toDate);
+            GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-        //    var sqlNewTasksQuery = Query(CRMDbContext.Tasks)
-        //                                .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
-        //                                .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= TenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= TenantUtil.DateTimeToUtc(toDate))
-        //                                .Any();
+            var sqlNewTasksQuery = Query(CRMDbContext.Tasks)
+                                        .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
+                                        .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                                        .Any();
 
-        //    var sqlClosedTasksQuery = Query(CRMDbContext.Tasks)
-        //                                .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
-        //                                .Where(x => x.IsClosed)
-        //                                .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= TenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= TenantUtil.DateTimeToUtc(toDate))
-        //                                .Any();
+            var sqlClosedTasksQuery = Query(CRMDbContext.Tasks)
+                                        .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
+                                        .Where(x => x.IsClosed)
+                                        .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))
+                                        .Any();
 
 
 
-        //    var sqlOverdueTasksQuery = Query(CRMDbContext.Tasks)
-        //                                .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
-        //                                .Where(x => x.IsClosed)
-        //                                .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Deadline >= TenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= TenantUtil.DateTimeToUtc(toDate))
-        //                                .Where(x =>  (!x.IsClosed && x.Deadline < TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow())) ||
-        //                                             (x.IsClosed && x.LastModifedOn > x.Deadline))
-        //                                .Any();
+            var sqlOverdueTasksQuery = Query(CRMDbContext.Tasks)
+                                        .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
+                                        .Where(x => x.IsClosed)
+                                        .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Deadline >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))
+                                        .Where(x => (!x.IsClosed && x.Deadline < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) ||
+                                                     (x.IsClosed && x.LastModifedOn > x.Deadline))
+                                        .Any();
 
-        //    return sqlNewTasksQuery ||
-        //           sqlClosedTasksQuery ||
-        //           sqlOverdueTasksQuery;
-        //}
+            return sqlNewTasksQuery ||
+                   sqlClosedTasksQuery ||
+                   sqlOverdueTasksQuery;
+        }
 
-        //public object GetWorkloadByTasksReportData(ReportTimePeriod timePeriod, Guid[] managers)
-        //{
-        //    var reportData = BuildWorkloadByTasksReport(timePeriod, managers);
+        public object GetWorkloadByTasksReportData(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            var reportData = BuildWorkloadByTasksReport(timePeriod, managers);
 
-        //    if (reportData == null || !reportData.Any()) return null;
+            if (reportData == null || !reportData.Any()) return null;
 
-        //    var hasData = reportData.Any(item => item.Value.Count > 0);
+            var hasData = reportData.Any(item => item.Value.Count > 0);
 
-        //    return hasData ? GenerateReportData(timePeriod, reportData) : null;
-        //}
+            return hasData ? GenerateReportData(timePeriod, reportData) : null;
+        }
 
-        //private Dictionary<string, List<WorkloadByTasks>> BuildWorkloadByTasksReport(ReportTimePeriod timePeriod, Guid[] managers)
-        //{
-        //    DateTime fromDate;
-        //    DateTime toDate;
+        private Dictionary<string, List<WorkloadByTasks>> BuildWorkloadByTasksReport(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            throw new NotImplementedException();
 
-        //    GetTimePeriod(timePeriod, out fromDate, out toDate);
+            //DateTime fromDate;
+            //DateTime toDate;
 
-        //    var sqlNewTasksQuery = Query("crm_task t")
-        //        .Select("i.id",
-        //                "i.title",
-        //                "t.responsible_id",
-        //                "concat(u.firstname, ' ', u.lastname) as full_name",
-        //                "count(t.id) as count")
-        //        .LeftOuterJoin("crm_list_item i", Exp.EqColumns("i.tenant_id", "t.tenant_id") & Exp.EqColumns("i.id", "t.category_id") & Exp.Eq("i.list_type", (int)ListType.TaskCategory))
-        //        .LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "t.tenant_id") & Exp.EqColumns("u.id", "t.responsible_id"))
-        //        .Where(managers != null && managers.Any() ? Exp.In("t.responsible_id", managers) : Exp.Empty)
-        //        .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("t.create_on", TenantUtil.DateTimeToUtc(fromDate), TenantUtil.DateTimeToUtc(toDate)))
-        //        .GroupBy("i.id", "t.responsible_id")
-        //        .OrderBy("i.sort_order", true);
+            //GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-        //    var sqlClosedTasksQuery = Query("crm_task t")
-        //        .Select("i.id",
-        //                "i.title",
-        //                "t.responsible_id",
-        //                "concat(u.firstname, ' ', u.lastname) as full_name",
-        //                "count(t.id) as count")
-        //        .LeftOuterJoin("crm_list_item i", Exp.EqColumns("i.tenant_id", "t.tenant_id") & Exp.EqColumns("i.id", "t.category_id") & Exp.Eq("i.list_type", (int)ListType.TaskCategory))
-        //        .LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "t.tenant_id") & Exp.EqColumns("u.id", "t.responsible_id"))
-        //        .Where(managers != null && managers.Any() ? Exp.In("t.responsible_id", managers) : Exp.Empty)
-        //        .Where(Exp.Eq("t.is_closed", 1))
-        //        .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("t.last_modifed_on", TenantUtil.DateTimeToUtc(fromDate), TenantUtil.DateTimeToUtc(toDate)))
-        //        .GroupBy("i.id", "t.responsible_id")
-        //        .OrderBy("i.sort_order", true);
+            //var sqlNewTasksQuery = Query("crm_task t")
+            //    .Select("i.id",
+            //            "i.title",
+            //            "t.responsible_id",
+            //            "concat(u.firstname, ' ', u.lastname) as full_name",
+            //            "count(t.id) as count")
+            //    .LeftOuterJoin("crm_list_item i", Exp.EqColumns("i.tenant_id", "t.tenant_id") & Exp.EqColumns("i.id", "t.category_id") & Exp.Eq("i.list_type", (int)ListType.TaskCategory))
+            //    .LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "t.tenant_id") & Exp.EqColumns("u.id", "t.responsible_id"))
+            //    .Where(managers != null && managers.Any() ? Exp.In("t.responsible_id", managers) : Exp.Empty)
+            //    .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("t.create_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
+            //    .GroupBy("i.id", "t.responsible_id")
+            //    .OrderBy("i.sort_order", true);
 
-        //    var sqlOverdueTasksQuery = Query("crm_task t")
-        //        .Select("i.id",
-        //                "i.title",
-        //                "t.responsible_id",
-        //                "concat(u.firstname, ' ', u.lastname) as full_name",
-        //                "count(t.id) as count")
-        //        .LeftOuterJoin("crm_list_item i", Exp.EqColumns("i.tenant_id", "t.tenant_id") & Exp.EqColumns("i.id", "t.category_id") & Exp.Eq("i.list_type", (int)ListType.TaskCategory))
-        //        .LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "t.tenant_id") & Exp.EqColumns("u.id", "t.responsible_id"))
-        //        .Where(managers != null && managers.Any() ? Exp.In("t.responsible_id", managers) : Exp.Empty)
-        //        .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("t.deadline", TenantUtil.DateTimeToUtc(fromDate), TenantUtil.DateTimeToUtc(toDate)))
-        //        .Where(Exp.Or(Exp.Eq("t.is_closed", 0) & Exp.Lt("t.deadline", TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow())), (Exp.Eq("t.is_closed", 1) & Exp.Sql("t.last_modifed_on > t.deadline"))))
-        //        .GroupBy("i.id", "t.responsible_id")
-        //        .OrderBy("i.sort_order", true);
+            //var sqlClosedTasksQuery = Query("crm_task t")
+            //    .Select("i.id",
+            //            "i.title",
+            //            "t.responsible_id",
+            //            "concat(u.firstname, ' ', u.lastname) as full_name",
+            //            "count(t.id) as count")
+            //    .LeftOuterJoin("crm_list_item i", Exp.EqColumns("i.tenant_id", "t.tenant_id") & Exp.EqColumns("i.id", "t.category_id") & Exp.Eq("i.list_type", (int)ListType.TaskCategory))
+            //    .LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "t.tenant_id") & Exp.EqColumns("u.id", "t.responsible_id"))
+            //    .Where(managers != null && managers.Any() ? Exp.In("t.responsible_id", managers) : Exp.Empty)
+            //    .Where(Exp.Eq("t.is_closed", 1))
+            //    .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("t.last_modifed_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
+            //    .GroupBy("i.id", "t.responsible_id")
+            //    .OrderBy("i.sort_order", true);
 
-        //    Dictionary<string, List<WorkloadByTasks>> res;
+            //var sqlOverdueTasksQuery = Query("crm_task t")
+            //    .Select("i.id",
+            //            "i.title",
+            //            "t.responsible_id",
+            //            "concat(u.firstname, ' ', u.lastname) as full_name",
+            //            "count(t.id) as count")
+            //    .LeftOuterJoin("crm_list_item i", Exp.EqColumns("i.tenant_id", "t.tenant_id") & Exp.EqColumns("i.id", "t.category_id") & Exp.Eq("i.list_type", (int)ListType.TaskCategory))
+            //    .LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "t.tenant_id") & Exp.EqColumns("u.id", "t.responsible_id"))
+            //    .Where(managers != null && managers.Any() ? Exp.In("t.responsible_id", managers) : Exp.Empty)
+            //    .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("t.deadline", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
+            //    .Where(Exp.Or(Exp.Eq("t.is_closed", 0) & Exp.Lt("t.deadline", _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())), (Exp.Eq("t.is_closed", 1) & Exp.Sql("t.last_modifed_on > t.deadline"))))
+            //    .GroupBy("i.id", "t.responsible_id")
+            //    .OrderBy("i.sort_order", true);
 
-        //    using (var tx = Db.BeginTransaction())
-        //    {
-        //        res = new Dictionary<string, List<WorkloadByTasks>>
-        //            {
-        //                {"Created", Db.ExecuteList(sqlNewTasksQuery).ConvertAll(ToWorkloadByTasks)},
-        //                {"Closed", Db.ExecuteList(sqlClosedTasksQuery).ConvertAll(ToWorkloadByTasks)},
-        //                {"Overdue", Db.ExecuteList(sqlOverdueTasksQuery).ConvertAll(ToWorkloadByTasks)}
-        //            };
+            //Dictionary<string, List<WorkloadByTasks>> res;
 
-        //        tx.Commit();
-        //    }
+            //using (var tx = Db.BeginTransaction())
+            //{
+            //    res = new Dictionary<string, List<WorkloadByTasks>>
+            //        {
+            //            {"Created", Db.ExecuteList(sqlNewTasksQuery).ConvertAll(ToWorkloadByTasks)},
+            //            {"Closed", Db.ExecuteList(sqlClosedTasksQuery).ConvertAll(ToWorkloadByTasks)},
+            //            {"Overdue", Db.ExecuteList(sqlOverdueTasksQuery).ConvertAll(ToWorkloadByTasks)}
+            //        };
 
-        //    return res;
-        //}
+            //    tx.Commit();
+            //}
 
-        //private WorkloadByTasks ToWorkloadByTasks(object[] row)
-        //{
-        //    return new WorkloadByTasks
-        //    {
-        //        CategoryId = Convert.ToInt32(row[0]),
-        //        CategoryName = Convert.ToString(row[1]),
-        //        UserId = string.IsNullOrEmpty(Convert.ToString(row[2])) ? Guid.Empty : new Guid(Convert.ToString(row[2])),
-        //        UserName = Convert.ToString(row[3]),
-        //        Count = Convert.ToInt32(row[4])
-        //    };
-        //}
+            //return res;
+        }
 
-        //private object GenerateReportData(ReportTimePeriod timePeriod, Dictionary<string, List<WorkloadByTasks>> reportData)
-        //{
-        //    return new
-        //    {
-        //        resource = new
-        //        {
-        //            header = CRMReportResource.WorkloadByTasksReport,
-        //            sheetName = CRMReportResource.WorkloadByTasksReport,
-        //            dateRangeLabel = CRMReportResource.TimePeriod + ":",
-        //            dateRangeValue = GetTimePeriodText(timePeriod),
+        private WorkloadByTasks ToWorkloadByTasks(object[] row)
+        {
+            return new WorkloadByTasks
+            {
+                CategoryId = Convert.ToInt32(row[0]),
+                CategoryName = Convert.ToString(row[1]),
+                UserId = string.IsNullOrEmpty(Convert.ToString(row[2])) ? Guid.Empty : new Guid(Convert.ToString(row[2])),
+                UserName = Convert.ToString(row[3]),
+                Count = Convert.ToInt32(row[4])
+            };
+        }
 
-        //            header1 = CRMReportResource.ClosedTasks,
-        //            header2 = CRMReportResource.NewTasks,
-        //            header3 = CRMReportResource.OverdueTasks,
+        private object GenerateReportData(ReportTimePeriod timePeriod, Dictionary<string, List<WorkloadByTasks>> reportData)
+        {
+            return new
+            {
+                resource = new
+                {
+                    header = CRMReportResource.WorkloadByTasksReport,
+                    sheetName = CRMReportResource.WorkloadByTasksReport,
+                    dateRangeLabel = CRMReportResource.TimePeriod + ":",
+                    dateRangeValue = GetTimePeriodText(timePeriod),
 
-        //            manager = CRMReportResource.Manager,
-        //            total = CRMReportResource.Total
-        //        },
-        //        data = reportData
-        //    };
-        //}
+                    header1 = CRMReportResource.ClosedTasks,
+                    header2 = CRMReportResource.NewTasks,
+                    header3 = CRMReportResource.OverdueTasks,
 
-        //#endregion
+                    manager = CRMReportResource.Manager,
+                    total = CRMReportResource.Total
+                },
+                data = reportData
+            };
+        }
+
+        #endregion
 
 
         //#region WorkloadByDealsReport

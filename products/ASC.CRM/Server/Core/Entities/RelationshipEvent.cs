@@ -27,7 +27,6 @@
 #region Import
 
 using System;
-using System.Runtime.Serialization;
 
 using ASC.Common.Security;
 using ASC.CRM.Core.Enums;

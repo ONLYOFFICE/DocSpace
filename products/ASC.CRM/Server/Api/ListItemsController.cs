@@ -44,22 +44,20 @@ namespace ASC.CRM.Api
 {
     public class ListItemsController : BaseApiController
     {
+        private readonly MessageService _messageService;
+        private readonly MessageTarget _messageTarget;
+
         public ListItemsController(CRMSecurity cRMSecurity,
                      DaoFactory daoFactory,
                      MessageTarget messageTarget,
                      MessageService messageService,
-                     HistoryCategoryDtoHelper historyCategoryDtoHelper,
                      IMapper mapper)
             : base(daoFactory, cRMSecurity, mapper)
         {
-            MessageTarget = messageTarget;
-            MessageService = messageService;
-            HistoryCategoryDtoHelper = historyCategoryDtoHelper;
+            _messageTarget = messageTarget;
+            _messageService = messageService;
         }
 
-        public MessageService MessageService { get; }
-        public MessageTarget MessageTarget { get; }
-        public HistoryCategoryDtoHelper HistoryCategoryDtoHelper { get; }
 
         /// <summary>
         ///   Creates an opportunity stage with the parameters (title, description, success probability, etc.) specified in the request
@@ -99,7 +97,7 @@ namespace ASC.CRM.Api
             };
 
             dealMilestone.ID = _daoFactory.GetDealMilestoneDao().Create(dealMilestone);
-            MessageService.Send(MessageAction.OpportunityStageCreated, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
+            _messageService.Send(MessageAction.OpportunityStageCreated, _messageTarget.Create(dealMilestone.ID), dealMilestone.Title);
 
             return ToDealMilestoneDto(dealMilestone);
         }
@@ -149,7 +147,7 @@ namespace ASC.CRM.Api
             };
 
             _daoFactory.GetDealMilestoneDao().Edit(dealMilestone);
-            MessageService.Send(MessageAction.OpportunityStageUpdated, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
+            _messageService.Send(MessageAction.OpportunityStageUpdated, _messageTarget.Create(dealMilestone.ID), dealMilestone.Title);
 
             return ToDealMilestoneDto(dealMilestone);
         }
@@ -179,7 +177,7 @@ namespace ASC.CRM.Api
             dealMilestone.Color = color;
 
             _daoFactory.GetDealMilestoneDao().ChangeColor(id, color);
-            MessageService.Send(MessageAction.OpportunityStageUpdatedColor, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
+            _messageService.Send(MessageAction.OpportunityStageUpdatedColor, _messageTarget.Create(dealMilestone.ID), dealMilestone.Title);
 
             return ToDealMilestoneDto(dealMilestone);
         }
@@ -210,7 +208,7 @@ namespace ASC.CRM.Api
             var result = idsList.Select(id => _daoFactory.GetDealMilestoneDao().GetByID(id)).ToList();
 
             _daoFactory.GetDealMilestoneDao().Reorder(idsList.ToArray());
-            MessageService.Send(MessageAction.OpportunityStagesUpdatedOrder, MessageTarget.Create(idsList), result.Select(x => x.Title));
+            _messageService.Send(MessageAction.OpportunityStagesUpdatedOrder, _messageTarget.Create(idsList), result.Select(x => x.Title));
 
             return result.Select(ToDealMilestoneDto);
         }
@@ -239,7 +237,7 @@ namespace ASC.CRM.Api
             var result = ToDealMilestoneDto(dealMilestone);
 
             _daoFactory.GetDealMilestoneDao().Delete(id);
-            MessageService.Send(MessageAction.OpportunityStageDeleted, MessageTarget.Create(dealMilestone.ID), dealMilestone.Title);
+            _messageService.Send(MessageAction.OpportunityStageDeleted, _messageTarget.Create(dealMilestone.ID), dealMilestone.Title);
 
             return result;
         }
@@ -271,9 +269,9 @@ namespace ASC.CRM.Api
             };
 
             listItem.ID = _daoFactory.GetListItemDao().CreateItem(ListType.HistoryCategory, listItem);
-            MessageService.Send(MessageAction.HistoryEventCategoryCreated, MessageTarget.Create(listItem.ID), listItem.Title);
+            _messageService.Send(MessageAction.HistoryEventCategoryCreated, _messageTarget.Create(listItem.ID), listItem.Title);
 
-            return ToHistoryCategoryDto(listItem);
+            return _mapper.Map<HistoryCategoryDto>(listItem);
         }
 
         /// <summary>
@@ -309,9 +307,9 @@ namespace ASC.CRM.Api
             };
 
             _daoFactory.GetListItemDao().EditItem(ListType.HistoryCategory, listItem);
-            MessageService.Send(MessageAction.HistoryEventCategoryUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
+            _messageService.Send(MessageAction.HistoryEventCategoryUpdated, _messageTarget.Create(listItem.ID), listItem.Title);
 
-            return ToHistoryCategoryDto(listItem);
+            return _mapper.Map<HistoryCategoryDto>(listItem);
         }
 
         /// <summary>
@@ -339,9 +337,9 @@ namespace ASC.CRM.Api
             historyCategory.AdditionalParams = imageName;
 
             _daoFactory.GetListItemDao().ChangePicture(id, imageName);
-            MessageService.Send(MessageAction.HistoryEventCategoryUpdatedIcon, MessageTarget.Create(historyCategory.ID), historyCategory.Title);
+            _messageService.Send(MessageAction.HistoryEventCategoryUpdatedIcon, _messageTarget.Create(historyCategory.ID), historyCategory.Title);
 
-            return ToHistoryCategoryDto(historyCategory);
+            return _mapper.Map<HistoryCategoryDto>(historyCategory);
         }
 
         /// <summary>
@@ -368,9 +366,9 @@ namespace ASC.CRM.Api
             var result = titles.Select(title => _daoFactory.GetListItemDao().GetByTitle(ListType.HistoryCategory, title)).ToList();
 
             _daoFactory.GetListItemDao().ReorderItems(ListType.HistoryCategory, titles.ToArray());
-            MessageService.Send(MessageAction.HistoryEventCategoriesUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
+            _messageService.Send(MessageAction.HistoryEventCategoriesUpdatedOrder, _messageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
 
-            return result.ConvertAll(ToHistoryCategoryDto);
+            return _mapper.Map<List<ListItem>, List<HistoryCategoryDto>>(result);
         }
 
         /// <summary>
@@ -399,10 +397,11 @@ namespace ASC.CRM.Api
                 throw new ArgumentException("The last history category cannot be deleted");
             }
 
-            var result = ToHistoryCategoryDto(listItem);
+            var result = _mapper.Map<HistoryCategoryDto>(listItem);
 
             dao.DeleteItem(ListType.HistoryCategory, id, 0);
-            MessageService.Send(MessageAction.HistoryEventCategoryDeleted, MessageTarget.Create(listItem.ID), listItem.Title);
+
+            _messageService.Send(MessageAction.HistoryEventCategoryDeleted, _messageTarget.Create(listItem.ID), listItem.Title);
 
             return result;
         }
@@ -435,7 +434,7 @@ namespace ASC.CRM.Api
             };
 
             listItem.ID = _daoFactory.GetListItemDao().CreateItem(ListType.TaskCategory, listItem);
-            MessageService.Send(MessageAction.CrmTaskCategoryCreated, MessageTarget.Create(listItem.ID), listItem.Title);
+            _messageService.Send(MessageAction.CrmTaskCategoryCreated, _messageTarget.Create(listItem.ID), listItem.Title);
 
             return ToTaskCategoryDto(listItem);
         }
@@ -477,7 +476,7 @@ namespace ASC.CRM.Api
             };
 
             _daoFactory.GetListItemDao().EditItem(ListType.TaskCategory, listItem);
-            MessageService.Send(MessageAction.CrmTaskCategoryUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
+            _messageService.Send(MessageAction.CrmTaskCategoryUpdated, _messageTarget.Create(listItem.ID), listItem.Title);
 
             return ToTaskCategoryDto(listItem);
         }
@@ -507,7 +506,7 @@ namespace ASC.CRM.Api
             taskCategory.AdditionalParams = imageName;
 
             _daoFactory.GetListItemDao().ChangePicture(id, imageName);
-            MessageService.Send(MessageAction.CrmTaskCategoryUpdatedIcon, MessageTarget.Create(taskCategory.ID), taskCategory.Title);
+            _messageService.Send(MessageAction.CrmTaskCategoryUpdatedIcon, _messageTarget.Create(taskCategory.ID), taskCategory.Title);
 
             return ToTaskCategoryDto(taskCategory);
         }
@@ -536,7 +535,7 @@ namespace ASC.CRM.Api
             var result = titles.Select(title => _daoFactory.GetListItemDao().GetByTitle(ListType.TaskCategory, title)).ToList();
 
             _daoFactory.GetListItemDao().ReorderItems(ListType.TaskCategory, titles.ToArray());
-            MessageService.Send(MessageAction.CrmTaskCategoriesUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
+            _messageService.Send(MessageAction.CrmTaskCategoriesUpdatedOrder, _messageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
 
             return result.ConvertAll(ToTaskCategoryDto);
         }
@@ -568,7 +567,7 @@ namespace ASC.CRM.Api
             }
 
             dao.DeleteItem(ListType.TaskCategory, categoryid, newcategoryid);
-            MessageService.Send(MessageAction.CrmTaskCategoryDeleted, MessageTarget.Create(listItem.ID), listItem.Title);
+            _messageService.Send(MessageAction.CrmTaskCategoryDeleted, _messageTarget.Create(listItem.ID), listItem.Title);
 
             return ToTaskCategoryDto(listItem);
         }
@@ -601,7 +600,7 @@ namespace ASC.CRM.Api
             };
 
             listItem.ID = _daoFactory.GetListItemDao().CreateItem(ListType.ContactStatus, listItem);
-            MessageService.Send(MessageAction.ContactTemperatureLevelCreated, MessageTarget.Create(listItem.ID), listItem.Title);
+            _messageService.Send(MessageAction.ContactTemperatureLevelCreated, _messageTarget.Create(listItem.ID), listItem.Title);
 
             return ToContactStatusDto(listItem);
         }
@@ -643,7 +642,7 @@ namespace ASC.CRM.Api
             };
 
             _daoFactory.GetListItemDao().EditItem(ListType.ContactStatus, listItem);
-            MessageService.Send(MessageAction.ContactTemperatureLevelUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
+            _messageService.Send(MessageAction.ContactTemperatureLevelUpdated, _messageTarget.Create(listItem.ID), listItem.Title);
 
             return ToContactStatusDto(listItem);
         }
@@ -673,7 +672,7 @@ namespace ASC.CRM.Api
             contactStatus.Color = color;
 
             _daoFactory.GetListItemDao().ChangeColor(id, color);
-            MessageService.Send(MessageAction.ContactTemperatureLevelUpdatedColor, MessageTarget.Create(contactStatus.ID), contactStatus.Title);
+            _messageService.Send(MessageAction.ContactTemperatureLevelUpdatedColor, _messageTarget.Create(contactStatus.ID), contactStatus.Title);
 
             return ToContactStatusDto(contactStatus);
         }
@@ -702,7 +701,7 @@ namespace ASC.CRM.Api
             var result = titles.Select(title => _daoFactory.GetListItemDao().GetByTitle(ListType.ContactStatus, title)).ToList();
 
             _daoFactory.GetListItemDao().ReorderItems(ListType.ContactStatus, titles.ToArray());
-            MessageService.Send(MessageAction.ContactTemperatureLevelsUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
+            _messageService.Send(MessageAction.ContactTemperatureLevelsUpdatedOrder, _messageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
 
             return result.ConvertAll(ToContactStatusDto);
         }
@@ -738,7 +737,7 @@ namespace ASC.CRM.Api
             var contactStatus = ToContactStatusDto(listItem);
 
             dao.DeleteItem(ListType.ContactStatus, contactStatusid, 0);
-            MessageService.Send(MessageAction.ContactTemperatureLevelDeleted, MessageTarget.Create(contactStatus.Id), contactStatus.Title);
+            _messageService.Send(MessageAction.ContactTemperatureLevelDeleted, _messageTarget.Create(contactStatus.Id), contactStatus.Title);
 
             return contactStatus;
         }
@@ -788,7 +787,7 @@ namespace ASC.CRM.Api
             };
 
             listItem.ID = _daoFactory.GetListItemDao().CreateItem(ListType.ContactType, listItem);
-            MessageService.Send(MessageAction.ContactTypeCreated, MessageTarget.Create(listItem.ID), listItem.Title);
+            _messageService.Send(MessageAction.ContactTypeCreated, _messageTarget.Create(listItem.ID), listItem.Title);
 
             return ToContactTypeDto(listItem);
         }
@@ -826,7 +825,7 @@ namespace ASC.CRM.Api
             };
 
             _daoFactory.GetListItemDao().EditItem(ListType.ContactType, listItem);
-            MessageService.Send(MessageAction.ContactTypeUpdated, MessageTarget.Create(listItem.ID), listItem.Title);
+            _messageService.Send(MessageAction.ContactTypeUpdated, _messageTarget.Create(listItem.ID), listItem.Title);
 
             return ToContactTypeDto(listItem);
         }
@@ -855,7 +854,7 @@ namespace ASC.CRM.Api
             var result = titles.Select(title => _daoFactory.GetListItemDao().GetByTitle(ListType.ContactType, title)).ToList();
 
             _daoFactory.GetListItemDao().ReorderItems(ListType.ContactType, titles.ToArray());
-            MessageService.Send(MessageAction.ContactTypesUpdatedOrder, MessageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
+            _messageService.Send(MessageAction.ContactTypesUpdatedOrder, _messageTarget.Create(result.Select(x => x.ID)), result.Select(x => x.Title));
 
             return result.ConvertAll(ToContactTypeDto);
         }
@@ -891,7 +890,7 @@ namespace ASC.CRM.Api
             var contactType = ToContactTypeDto(listItem);
 
             dao.DeleteItem(ListType.ContactType, contactTypeid, 0);
-            MessageService.Send(MessageAction.ContactTypeDeleted, MessageTarget.Create(listItem.ID), listItem.Title);
+            _messageService.Send(MessageAction.ContactTypeDeleted, _messageTarget.Create(listItem.ID), listItem.Title);
 
             return contactType;
         }
@@ -1089,15 +1088,6 @@ namespace ASC.CRM.Api
             {
                 RelativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactType, listItem.ID)
             };
-
-            return result;
-        }
-
-        public HistoryCategoryDto ToHistoryCategoryDto(ListItem listItem)
-        {
-            var result = (HistoryCategoryDto)HistoryCategoryDtoHelper.Get(listItem);
-
-            result.RelativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.HistoryCategory, listItem.ID);
 
             return result;
         }

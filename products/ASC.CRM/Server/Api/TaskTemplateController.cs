@@ -43,6 +43,8 @@ namespace ASC.CRM.Api
 {
     public class TaskTemplateController : BaseApiController
     {
+        private readonly EmployeeWraperHelper _employeeWraperHelper;
+
         public TaskTemplateController(CRMSecurity crmSecurity,
                                     DaoFactory daoFactory,
                                     EmployeeWraperHelper employeeWraperHelper,
@@ -50,10 +52,9 @@ namespace ASC.CRM.Api
                         : base(daoFactory, crmSecurity, mapper)
 
         {
-            EmployeeWraperHelper = employeeWraperHelper;
+            _employeeWraperHelper = employeeWraperHelper;
         }
 
-        public EmployeeWraperHelper EmployeeWraperHelper { get; }
 
 
         /// <summary>
@@ -365,7 +366,7 @@ namespace ASC.CRM.Api
                 isNotify = taskTemplate.isNotify,
                 Title = taskTemplate.Title,
                 OffsetTicks = taskTemplate.Offset.Ticks,
-                Responsible = EmployeeWraperHelper.Get(taskTemplate.ResponsibleID)
+                Responsible = _employeeWraperHelper.Get(taskTemplate.ResponsibleID)
             };
         }
 

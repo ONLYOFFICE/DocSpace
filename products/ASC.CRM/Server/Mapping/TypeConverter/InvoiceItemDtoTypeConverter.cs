@@ -67,6 +67,9 @@ namespace ASC.CRM.Mapping
             if (destination != null)
                 throw new NotImplementedException();
 
+            var crmSettings = _settingsManager.Load<CRMSettings>();
+            var defaultCurrency = _currencyProvider.Get(crmSettings.DefaultCurrency);
+
             var result = new InvoiceItemDto
             {
 
@@ -80,7 +83,7 @@ namespace ASC.CRM.Mapping
                 CreateBy = _employeeWraperHelper.Get(source.CreateBy),
                 Currency = !String.IsNullOrEmpty(source.Currency) ?
                 context.Mapper.Map<CurrencyInfoDto>(_currencyProvider.Get(source.Currency)) :
-                context.Mapper.Map<CurrencyInfoDto>(_settingsManager.Load<CRMSettings>().DefaultCurrency),
+                context.Mapper.Map<CurrencyInfoDto>(defaultCurrency),
                 CanEdit = _crmSecurity.CanEdit(source),
                 CanDelete = _crmSecurity.CanDelete(source)
             };

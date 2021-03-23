@@ -45,7 +45,7 @@ namespace ASC.Web.CRM.Classes
 {
     public partial class ImportDataOperation
     {
-        private Int32 DaoIterationStep = 200;
+        private readonly Int32 DaoIterationStep = 200;
 
 
 

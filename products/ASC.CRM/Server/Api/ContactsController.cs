@@ -350,7 +350,7 @@ namespace ASC.CRM.Api
             IEnumerable<ContactDto> result;
             OrderBy contactsOrderBy;
             ContactSortedByType sortBy;
-            
+
             var searchString = _apiContext.FilterValue;
 
             if (ASC.CRM.Classes.EnumExtension.TryParse(_apiContext.SortBy, true, out sortBy))

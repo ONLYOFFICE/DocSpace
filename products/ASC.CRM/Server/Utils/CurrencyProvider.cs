@@ -167,7 +167,11 @@ namespace ASC.Web.CRM.Classes
 
         public decimal MoneyConvertToDefaultCurrency(decimal amount, string from)
         {
-            return MoneyConvert(amount, from, SettingsManager.Load<CRMSettings>().DefaultCurrency.Abbreviation);
+
+            var crmSettings = SettingsManager.Load<CRMSettings>();
+            var defaultCurrency = Get(crmSettings.DefaultCurrency);
+
+            return MoneyConvert(amount, from, defaultCurrency.Abbreviation);
         }
 
         private bool ObsoleteData()

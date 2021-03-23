@@ -75,9 +75,9 @@ namespace ASC.CRM.ApiModels
     {
         public CustomFieldBaseDto()
         {
-                
+
         }
-               
+
         [DataMember(Name = "id")]
         public int Id { get; set; }
         public int EntityId { get; set; }

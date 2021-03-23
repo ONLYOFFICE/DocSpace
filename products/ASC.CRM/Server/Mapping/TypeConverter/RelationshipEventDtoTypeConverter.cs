@@ -42,13 +42,13 @@ namespace ASC.CRM.Mapping
     [Scope]
     public class RelationshipEventDtoTypeConverter : ITypeConverter<RelationshipEvent, RelationshipEventDto>
     {
-        private HistoryCategoryDtoHelper _historyCategoryDtoHelper;
-        private FileWrapperHelper _fileWrapperHelper;
-        private DaoFactory _daoFactory;
-        private CRMSecurity _crmSecurity;
-        private ApiDateTimeHelper _apiDateTimeHelper;
-        private EmployeeWraperHelper _employeeWraperHelper;
-        private EntityDtoHelper _entityDtoHelper;
+        private readonly HistoryCategoryDto _historyCategoryDtoHelper;
+        private readonly FileWrapperHelper _fileWrapperHelper;
+        private readonly DaoFactory _daoFactory;
+        private readonly CRMSecurity _crmSecurity;
+        private readonly ApiDateTimeHelper _apiDateTimeHelper;
+        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly EntityDtoHelper _entityDtoHelper;
 
         public RelationshipEventDtoTypeConverter(
                            ApiDateTimeHelper apiDateTimeHelper,
@@ -56,8 +56,7 @@ namespace ASC.CRM.Mapping
                            FileWrapperHelper fileWrapperHelper,
                            CRMSecurity cRMSecurity,
                            DaoFactory daoFactory,
-                           EntityDtoHelper entityDtoHelper,
-                           HistoryCategoryDtoHelper historyCategoryDtoHelper)
+                           EntityDtoHelper entityDtoHelper)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
             _employeeWraperHelper = employeeWraperHelper;
@@ -65,7 +64,6 @@ namespace ASC.CRM.Mapping
             _daoFactory = daoFactory;
             _fileWrapperHelper = fileWrapperHelper;
             _entityDtoHelper = entityDtoHelper;
-            _historyCategoryDtoHelper = historyCategoryDtoHelper;
         }
 
         public RelationshipEventDto Convert(RelationshipEvent source, RelationshipEventDto destination, ResolutionContext context)
@@ -85,7 +83,7 @@ namespace ASC.CRM.Mapping
 
             if (historyCategory != null)
             {
-                result.Category = _historyCategoryDtoHelper.Get(historyCategory);
+                result.Category = (HistoryCategoryBaseDto)context.Mapper.Map<HistoryCategoryDto>(historyCategory);
             }
 
             if (source.EntityID > 0)
@@ -98,10 +96,10 @@ namespace ASC.CRM.Mapping
             if (source.ContactID > 0)
             {
                 var relativeContact = _daoFactory.GetContactDao().GetByID(source.ContactID);
-                
+
                 if (relativeContact != null)
                 {
-                    result.Contact =  context.Mapper.Map<ContactBaseDto>(relativeContact);
+                    result.Contact = context.Mapper.Map<ContactBaseDto>(relativeContact);
                 }
             }
 

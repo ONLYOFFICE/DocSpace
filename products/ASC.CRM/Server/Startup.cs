@@ -1,10 +1,6 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using ASC.Api.Core;
@@ -62,7 +58,7 @@ namespace ASC.CRM
             DIHelper.TryAdd<InvoiceTaxTypeConverter>();
             DIHelper.TryAdd<OpportunityDtoTypeConverter>();
             DIHelper.TryAdd<RelationshipEventDtoTypeConverter>();
-            DIHelper.TryAdd<TaskCategoryDtoTypeConverter>();
+            DIHelper.TryAdd<ListItemDtoTypeConverter>();
             DIHelper.TryAdd<TaskDtoTypeConverter>();
             DIHelper.TryAdd<CustomFieldDtoTypeConverter>();
 

@@ -24,8 +24,12 @@
 */
 
 
+using System;
+
 using ASC.CRM.ApiModels;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.CRM.Configuration;
 
@@ -33,21 +37,42 @@ using AutoMapper;
 
 namespace ASC.CRM.Mapping
 {
-    public sealed class TaskCategoryDtoTypeConverter : ITypeConverter<ListItem, TaskCategoryBaseDto>
+    public sealed class ListItemDtoTypeConverter : ITypeConverter<ListItem, TaskCategoryBaseDto>,
+                                                   ITypeConverter<ListItem, HistoryCategoryDto>
     {
         private readonly WebImageSupplier _webImageSupplier;
+        private readonly DaoFactory _daoFactory;
 
-        public TaskCategoryDtoTypeConverter(WebImageSupplier webImageSupplier)
+        public ListItemDtoTypeConverter(WebImageSupplier webImageSupplier,
+                                        DaoFactory daoFactory)
         {
             _webImageSupplier = webImageSupplier;
+            _daoFactory = daoFactory;
         }
 
         public TaskCategoryBaseDto Convert(ListItem source, TaskCategoryBaseDto destination, ResolutionContext context)
         {
+            if (destination != null)
+                throw new NotImplementedException();
+
             return new TaskCategoryDto(source)
             {
                 ImagePath = _webImageSupplier.GetAbsoluteWebPath(source.AdditionalParams, ProductEntryPoint.ID)
             };
         }
+
+        public HistoryCategoryDto Convert(ListItem source, HistoryCategoryDto destination, ResolutionContext context)
+        {
+            if (destination != null)
+                throw new NotImplementedException();
+
+            var result = new HistoryCategoryDto(source);
+
+            result.RelativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.HistoryCategory, source.ID);
+
+
+            throw new System.NotImplementedException();
+        }
     }
 }
+

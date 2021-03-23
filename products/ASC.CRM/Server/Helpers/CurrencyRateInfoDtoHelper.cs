@@ -34,7 +34,7 @@ namespace ASC.CRM.ApiModels
     [Scope]
     public class CurrencyRateInfoDtoHelper
     {
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
 
         public CurrencyRateInfoDtoHelper(IMapper mapper)
         {

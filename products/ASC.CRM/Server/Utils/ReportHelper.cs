@@ -56,7 +56,8 @@ namespace ASC.Web.CRM.Classes
                             DaoFactory daoFactory,
                             SecurityContext securityContext,
                             IServiceProvider serviceProvider,
-                            IHttpContextAccessor httpContextAccessor
+                            IHttpContextAccessor httpContextAccessor,
+                            CurrencyProvider currencyProvider
                           )
         {
             TenantManager = tenantManager;
@@ -68,8 +69,10 @@ namespace ASC.Web.CRM.Classes
             DocbuilderReportsUtilityHelper = docbuilderReportsUtilityHelper;
             SecurityContext = securityContext;
             HttpContext = httpContextAccessor;
+            CurrencyProvider = currencyProvider;
         }
 
+        private CurrencyProvider CurrencyProvider { get; }
         public IHttpContextAccessor HttpContext { get; }
         public SecurityContext SecurityContext { get; }
         public DocbuilderReportsUtilityHelper DocbuilderReportsUtilityHelper { get; }
@@ -167,13 +170,18 @@ namespace ASC.Web.CRM.Classes
             if (reportType == ReportType.WorkloadByTasks || reportType == ReportType.WorkloadByInvoices ||
                 reportType == ReportType.WorkloadByContacts || reportType == ReportType.WorkloadByVoip) return null;
 
-            return reportDao.GetMissingRates(SettingsManager.Load<CRMSettings>().DefaultCurrency.Abbreviation);
+            var crmSettings = SettingsManager.Load<CRMSettings>();
+            var defaultCurrency = CurrencyProvider.Get(crmSettings.DefaultCurrency);
+
+            return reportDao.GetMissingRates(defaultCurrency.Abbreviation);
         }
 
         private object GetReportData(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
         {
+            var crmSettings = SettingsManager.Load<CRMSettings>();
+
             var reportDao = DaoFactory.GetReportDao();
-            var defaultCurrency = SettingsManager.Load<CRMSettings>().DefaultCurrency.Abbreviation;
+            var defaultCurrency = CurrencyProvider.Get(crmSettings.DefaultCurrency);
 
             throw new NotImplementedException();
 

@@ -429,7 +429,7 @@ namespace ASC.CRM.Core.Dao
             {
                 sqlQuery = sqlQuery.Where(x => x.x.EntityType == entityType);
             }
-                        
+
             return JsonConvert.SerializeObject(sqlQuery.GroupBy(x => x.x.Id)
                                                        .Select(x => x.Count()).ToList());
         }
@@ -505,7 +505,7 @@ namespace ASC.CRM.Core.Dao
             if (!includeEmptyFields)
                 sqlQuery = sqlQuery.Where(x => x.y != null || x.x.Type == CustomFieldType.Heading);
 
-      
+
             return sqlQuery.ToList().ConvertAll(x => ToCustomField(x.x, x.y));
         }
 

@@ -818,21 +818,21 @@ namespace ASC.CRM.Core.Dao
         public virtual Task SaveOrUpdateTask(Task newTask)
         {
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
-            
+
             return SaveOrUpdateTaskInDb(newTask);
         }
 
         public virtual Task[] SaveOrUpdateTaskList(List<Task> newTasks)
         {
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
-  
+
             var result = new List<Task>();
-            
+
             foreach (var newTask in newTasks)
             {
                 result.Add(SaveOrUpdateTaskInDb(newTask));
             }
-            
+
             return result.ToArray();
         }
 

@@ -53,7 +53,17 @@ namespace ASC.CRM.Api
 {
     public class DealsController : BaseApiController
     {
-        public DealsController(CRMSecurity cRMSecurity,
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+        private readonly NotifyClient _notifyClient;
+        private readonly ApiContext _apiContext;
+        private readonly MessageService _messageService;
+        private readonly MessageTarget _messageTarget;
+        private readonly SecurityContext _securityContext;
+        private readonly CurrencyProvider _currencyProvider;
+        private readonly UserManager _userManager;
+        private readonly EmployeeWraperHelper _employeeWraperHelper;
+
+        public DealsController(CRMSecurity crmSecurity,
                    DaoFactory daoFactory,
                    ApiContext apiContext,
                    MessageTarget messageTarget,
@@ -63,28 +73,21 @@ namespace ASC.CRM.Api
                    UserManager userManager,
                    EmployeeWraperHelper employeeWraperHelper,
                    DisplayUserSettingsHelper displayUserSettingsHelper,
+                   SecurityContext securityContext,
                    IMapper mapper)
-            : base(daoFactory, cRMSecurity, mapper)
+            : base(daoFactory, crmSecurity, mapper)
         {
-            ApiContext = apiContext;
-            MessageTarget = messageTarget;
-            MessageService = messageService;
-            NotifyClient = notifyClient;
-            CurrencyProvider = currencyProvider;
-            UserManager = userManager;
-            EmployeeWraperHelper = employeeWraperHelper;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            _apiContext = apiContext;
+            _messageTarget = messageTarget;
+            _messageService = messageService;
+            _notifyClient = notifyClient;
+            _currencyProvider = currencyProvider;
+            _userManager = userManager;
+            _employeeWraperHelper = employeeWraperHelper;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
+            _securityContext = securityContext;
         }
 
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public NotifyClient NotifyClient { get; }
-        private ApiContext ApiContext { get; }
-        public MessageService MessageService { get; }
-        public MessageTarget MessageTarget { get; }
-        public SecurityContext SecurityContext { get; }
-        public CurrencyProvider CurrencyProvider { get; }
-        public UserManager UserManager { get; }
-        public EmployeeWraperHelper EmployeeWraperHelper { get; }
 
         /// <summary>
         ///    Returns the detailed information about the opportunity with the ID specified in the request
@@ -136,7 +139,7 @@ namespace ASC.CRM.Api
 
             deal.ActualCloseDate = stage.Status != DealMilestoneStatus.Open ? DateTime.UtcNow : DateTime.MinValue;
             _daoFactory.GetDealDao().EditDeal(deal);
-            MessageService.Send(MessageAction.OpportunityUpdatedStage, MessageTarget.Create(deal.ID), deal.Title);
+            _messageService.Send(MessageAction.OpportunityUpdatedStage, _messageTarget.Create(deal.ID), deal.Title);
 
             return _mapper.Map<OpportunityDto>(deal);
         }
@@ -162,7 +165,7 @@ namespace ASC.CRM.Api
             var deal = _daoFactory.GetDealDao().GetByID(opportunityid);
             if (deal == null) throw new ItemNotFoundException();
 
-            if (!(_crmSecurity.IsAdmin || deal.CreateBy == SecurityContext.CurrentAccount.ID)) throw _crmSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin || deal.CreateBy == _securityContext.CurrentAccount.ID)) throw _crmSecurity.CreateSecurityException();
             return SetAccessToDeal(deal, isPrivate, accessList, false, true);
         }
 
@@ -174,21 +177,21 @@ namespace ASC.CRM.Api
 
                 if (isNotify)
                 {
-                    accessListLocal = accessListLocal.Where(u => u != SecurityContext.CurrentAccount.ID).ToList();
-                    NotifyClient.SendAboutSetAccess(EntityType.Opportunity, deal.ID, _daoFactory, accessListLocal.ToArray());
+                    accessListLocal = accessListLocal.Where(u => u != _securityContext.CurrentAccount.ID).ToList();
+                    _notifyClient.SendAboutSetAccess(EntityType.Opportunity, deal.ID, _daoFactory, accessListLocal.ToArray());
                 }
 
-                if (!accessListLocal.Contains(SecurityContext.CurrentAccount.ID))
+                if (!accessListLocal.Contains(_securityContext.CurrentAccount.ID))
                 {
-                    accessListLocal.Add(SecurityContext.CurrentAccount.ID);
+                    accessListLocal.Add(_securityContext.CurrentAccount.ID);
                 }
 
                 _crmSecurity.SetAccessTo(deal, accessListLocal);
 
                 if (isMessageServicSende)
                 {
-                    var users = UserManager.GetUsers().Where(x => accessListLocal.Contains(x.ID));
-                    MessageService.Send(MessageAction.OpportunityRestrictedAccess, MessageTarget.Create(deal.ID), deal.Title, users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
+                    var users = _userManager.GetUsers().Where(x => accessListLocal.Contains(x.ID));
+                    _messageService.Send(MessageAction.OpportunityRestrictedAccess, _messageTarget.Create(deal.ID), deal.Title, users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
                 }
             }
             else
@@ -196,7 +199,7 @@ namespace ASC.CRM.Api
                 _crmSecurity.MakePublic(deal);
                 if (isMessageServicSende)
                 {
-                    MessageService.Send(MessageAction.OpportunityOpenedAccess, MessageTarget.Create(deal.ID), deal.Title);
+                    _messageService.Send(MessageAction.OpportunityOpenedAccess, _messageTarget.Create(deal.ID), deal.Title);
                 }
             }
 
@@ -240,7 +243,7 @@ namespace ASC.CRM.Api
             var result = new List<Deal>();
 
             var deals = _daoFactory.GetDealDao()
-                                  .GetDeals(ApiContext.FilterValue,
+                                  .GetDeals(_apiContext.FilterValue,
                                             responsibleid,
                                             opportunityStagesid,
                                             tags,
@@ -255,7 +258,7 @@ namespace ASC.CRM.Api
             {
                 if (deal == null) throw new ItemNotFoundException();
 
-                if (!(_crmSecurity.IsAdmin || deal.CreateBy == SecurityContext.CurrentAccount.ID)) continue;
+                if (!(_crmSecurity.IsAdmin || deal.CreateBy == _securityContext.CurrentAccount.ID)) continue;
 
                 SetAccessToDeal(deal.ID, isPrivate, accessList);
 
@@ -298,7 +301,7 @@ namespace ASC.CRM.Api
             {
                 if (d == null) throw new ItemNotFoundException();
 
-                if (!(_crmSecurity.IsAdmin || d.CreateBy == SecurityContext.CurrentAccount.ID)) continue;
+                if (!(_crmSecurity.IsAdmin || d.CreateBy == _securityContext.CurrentAccount.ID)) continue;
 
                 SetAccessToDeal(d, isPrivate, accessList, false, true);
                 result.Add(d);
@@ -325,7 +328,7 @@ namespace ASC.CRM.Api
             if (opportunityids == null || !opportunityids.Any()) throw new ArgumentException();
 
             var opportunities = _daoFactory.GetDealDao().DeleteBatchDeals(opportunityids.ToArray());
-            MessageService.Send(MessageAction.OpportunitiesDeleted, MessageTarget.Create(opportunityids), opportunities.Select(o => o.Title));
+            _messageService.Send(MessageAction.OpportunitiesDeleted, _messageTarget.Create(opportunityids), opportunities.Select(o => o.Title));
 
             return ToListOpportunityDto(opportunities);
         }
@@ -359,7 +362,7 @@ namespace ASC.CRM.Api
             ApiDateTime fromDate,
             ApiDateTime toDate)
         {
-            var deals = _daoFactory.GetDealDao().GetDeals(ApiContext.FilterValue,
+            var deals = _daoFactory.GetDealDao().GetDeals(_apiContext.FilterValue,
                                                          responsibleid,
                                                          opportunityStagesid,
                                                          tags,
@@ -371,7 +374,7 @@ namespace ASC.CRM.Api
             if (!deals.Any()) return Enumerable.Empty<OpportunityDto>();
 
             deals = _daoFactory.GetDealDao().DeleteBatchDeals(deals);
-            MessageService.Send(MessageAction.OpportunitiesDeleted, MessageTarget.Create(deals.Select(x => x.ID)), deals.Select(d => d.Title));
+            _messageService.Send(MessageAction.OpportunitiesDeleted, _messageTarget.Create(deals.Select(x => x.ID)), deals.Select(d => d.Title));
 
             return ToListOpportunityDto(deals);
         }
@@ -407,15 +410,15 @@ namespace ASC.CRM.Api
 
             IEnumerable<OpportunityDto> result;
 
-            var searchString = ApiContext.FilterValue;
+            var searchString = _apiContext.FilterValue;
 
             OrderBy dealsOrderBy;
 
-            if (ASC.CRM.Classes.EnumExtension.TryParse(ApiContext.SortBy, true, out dealSortedByType))
+            if (ASC.CRM.Classes.EnumExtension.TryParse(_apiContext.SortBy, true, out dealSortedByType))
             {
-                dealsOrderBy = new OrderBy(dealSortedByType, !ApiContext.SortDescending);
+                dealsOrderBy = new OrderBy(dealSortedByType, !_apiContext.SortDescending);
             }
-            else if (string.IsNullOrEmpty(ApiContext.SortBy))
+            else if (string.IsNullOrEmpty(_apiContext.SortBy))
             {
                 dealsOrderBy = new OrderBy(DealSortedByType.Stage, true);
             }
@@ -424,8 +427,8 @@ namespace ASC.CRM.Api
                 dealsOrderBy = null;
             }
 
-            var fromIndex = (int)ApiContext.StartIndex;
-            var count = (int)ApiContext.Count;
+            var fromIndex = (int)_apiContext.StartIndex;
+            var count = (int)_apiContext.Count;
 
             if (dealsOrderBy != null)
             {
@@ -443,9 +446,9 @@ namespace ASC.CRM.Api
                     count,
                     dealsOrderBy)).ToList();
 
-                ApiContext.SetDataPaginated();
-                ApiContext.SetDataFiltered();
-                ApiContext.SetDataSorted();
+                _apiContext.SetDataPaginated();
+                _apiContext.SetDataFiltered();
+                _apiContext.SetDataSorted();
             }
             else
             {
@@ -484,7 +487,7 @@ namespace ASC.CRM.Api
                                    toDate);
             }
 
-            ApiContext.SetTotalCount(totalCount);
+            _apiContext.SetTotalCount(totalCount);
 
             return result;
         }
@@ -508,7 +511,7 @@ namespace ASC.CRM.Api
             var deal = _daoFactory.GetDealDao().DeleteDeal(opportunityid);
             if (deal == null) throw new ItemNotFoundException();
 
-            MessageService.Send(MessageAction.OpportunityDeleted, MessageTarget.Create(deal.ID), deal.Title);
+            _messageService.Send(MessageAction.OpportunityDeleted, _messageTarget.Create(deal.ID), deal.Title);
 
             return _mapper.Map<OpportunityDto>(deal);
         }
@@ -581,7 +584,7 @@ namespace ASC.CRM.Api
 
             deal.ID = _daoFactory.GetDealDao().CreateNewDeal(deal);
 
-            deal.CreateBy = SecurityContext.CurrentAccount.ID;
+            deal.CreateBy = _securityContext.CurrentAccount.ID;
             deal.CreateOn = DateTime.UtcNow;
 
             SetAccessToDeal(deal, isPrivate, accessList, isNotify, false);
@@ -693,7 +696,7 @@ namespace ASC.CRM.Api
             }
 
 
-            if (_crmSecurity.IsAdmin || deal.CreateBy == SecurityContext.CurrentAccount.ID)
+            if (_crmSecurity.IsAdmin || deal.CreateBy == _securityContext.CurrentAccount.ID)
             {
                 SetAccessToDeal(deal, isPrivate, accessList, isNotify, false);
             }
@@ -730,8 +733,8 @@ namespace ASC.CRM.Api
             var contactIDs = _daoFactory.GetDealDao().GetMembers(opportunityid);
 
             if (contactIDs == null) return new List<ContactDto>();
-           
-            var contacts  = _daoFactory.GetContactDao().GetContacts(contactIDs);
+
+            var contacts = _daoFactory.GetContactDao().GetContacts(contactIDs);
 
             var result = _mapper.Map<List<Core.Entities.Contact>, List<ContactDto>>(contacts);
 
@@ -767,7 +770,7 @@ namespace ASC.CRM.Api
             _daoFactory.GetDealDao().AddMember(opportunityid, contactid);
 
             var messageAction = contact is Company ? MessageAction.OpportunityLinkedCompany : MessageAction.OpportunityLinkedPerson;
-            MessageService.Send(messageAction, MessageTarget.Create(opportunity.ID), opportunity.Title, contact.GetTitle());
+            _messageService.Send(messageAction, _messageTarget.Create(opportunity.ID), opportunity.Title, contact.GetTitle());
 
             return result;
         }
@@ -800,7 +803,7 @@ namespace ASC.CRM.Api
             _daoFactory.GetDealDao().RemoveMember(opportunityid, contactid);
 
             var messageAction = contact is Company ? MessageAction.OpportunityUnlinkedCompany : MessageAction.OpportunityUnlinkedPerson;
-            MessageService.Send(messageAction, MessageTarget.Create(opportunity.ID), opportunity.Title, contact.GetTitle());
+            _messageService.Send(messageAction, _messageTarget.Create(opportunity.ID), opportunity.Title, contact.GetTitle());
 
             return result;
         }
@@ -832,7 +835,7 @@ namespace ASC.CRM.Api
                     }
                 }
 
-                ApiContext.SetTotalCount(result.Count);
+                _apiContext.SetTotalCount(result.Count);
             }
             else
             {
@@ -963,12 +966,12 @@ namespace ASC.CRM.Api
 
                 if (dealDto.IsPrivate)
                 {
-                    dealDto.AccessList = _crmSecurity.GetAccessSubjectTo(deal).Select(item => EmployeeWraperHelper.Get(item.Key));
+                    dealDto.AccessList = _crmSecurity.GetAccessSubjectTo(deal).Select(item => _employeeWraperHelper.Get(item.Key));
                 }
 
                 if (!string.IsNullOrEmpty(deal.BidCurrency))
                 {
-                    dealDto.BidCurrency = _mapper.Map<CurrencyInfoDto>(CurrencyProvider.Get(deal.BidCurrency));
+                    dealDto.BidCurrency = _mapper.Map<CurrencyInfoDto>(_currencyProvider.Get(deal.BidCurrency));
                 }
 
                 result.Add(dealDto);

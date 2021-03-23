@@ -46,6 +46,10 @@ namespace ASC.CRM.Api
 {
     public class TagsController : BaseApiController
     {
+        private readonly ApiContext _apiContext;
+        private readonly MessageService _messageService;
+        private readonly MessageTarget _messageTarget;
+
         public TagsController(CRMSecurity cRMSecurity,
                      DaoFactory daoFactory,
                      ApiContext apiContext,
@@ -54,14 +58,12 @@ namespace ASC.CRM.Api
                      IMapper mapper)
           : base(daoFactory, cRMSecurity, mapper)
         {
-            ApiContext = apiContext;
-            MessageTarget = messageTarget;
-            MessageService = messageService;
+            _apiContext = apiContext;
+            _messageTarget = messageTarget;
+            _messageService = messageService;
         }
 
-        private ApiContext ApiContext { get; }
-        public MessageService MessageService { get; }
-        public MessageTarget MessageTarget { get; }
+
 
         /// <summary>
         ///  Returns the list of all tags associated with the entity with the ID and type specified in the request
@@ -146,7 +148,7 @@ namespace ASC.CRM.Api
             var messageAction = GetEntityTagCreatedAction(entityTypeObj);
             _daoFactory.GetTagDao().AddTag(entityTypeObj, tagName);
 
-            MessageService.Send(messageAction, tagName);
+            _messageService.Send(messageAction, tagName);
 
             return tagName;
         }
@@ -232,7 +234,7 @@ namespace ASC.CRM.Api
         {
             var contacts = _daoFactory
                 .GetContactDao()
-                .GetContacts(ApiContext.FilterValue,
+                .GetContacts(_apiContext.FilterValue,
                              tags,
                              contactStage,
                              contactType,
@@ -284,7 +286,7 @@ namespace ASC.CRM.Api
             var deals = _daoFactory
                 .GetDealDao()
                 .GetDeals(
-                    ApiContext.FilterValue,
+                    _apiContext.FilterValue,
                     responsibleid,
                     opportunityStagesid,
                     tags,
@@ -316,7 +318,7 @@ namespace ASC.CRM.Api
         [Create(@"case/filter/taglist")]
         public string AddTagToBatchCases(int contactid, bool? isClosed, IEnumerable<string> tags, string tagName)
         {
-            var caseses = _daoFactory.GetCasesDao().GetCases(ApiContext.FilterValue, contactid, isClosed, tags, 0, 0, null)
+            var caseses = _daoFactory.GetCasesDao().GetCases(_apiContext.FilterValue, contactid, isClosed, tags, 0, 0, null)
                 .Where(_crmSecurity.CanAccessTo).ToList();
 
             if (!caseses.Any()) return tagName;
@@ -376,7 +378,7 @@ namespace ASC.CRM.Api
             _daoFactory.GetTagDao().AddTagToEntity(entityTypeObj, entityid, tagName);
 
             var messageAction = GetTagCreatedAction(entityTypeObj, entityid);
-            MessageService.Send(messageAction, MessageTarget.Create(entityid), entityTitle, tagName);
+            _messageService.Send(messageAction, _messageTarget.Create(entityid), entityTitle, tagName);
 
             return tagName;
         }
@@ -465,7 +467,7 @@ namespace ASC.CRM.Api
             var messageActions = GetTagCreatedGroupAction(entityTypeObj);
             foreach (var messageAction in messageActions)
             {
-                MessageService.Send(messageAction, MessageTarget.Create(contactInst.ID), entityTitle, tagName);
+                _messageService.Send(messageAction, _messageTarget.Create(contactInst.ID), entityTitle, tagName);
             }
 
             return tagName;
@@ -496,7 +498,7 @@ namespace ASC.CRM.Api
             _daoFactory.GetTagDao().DeleteTag(entityTypeObj, tagName);
 
             var messageAction = GetEntityTagDeletedAction(entityTypeObj);
-            MessageService.Send(messageAction, tagName);
+            _messageService.Send(messageAction, tagName);
 
             return tagName;
         }
@@ -530,7 +532,7 @@ namespace ASC.CRM.Api
 
             var messageAction = GetTagDeletedAction(entityTypeObj, entityid);
 
-            MessageService.Send(messageAction, MessageTarget.Create(entityid), entityTitle, tagName);
+            _messageService.Send(messageAction, _messageTarget.Create(entityid), entityTitle, tagName);
 
             return tagName;
         }

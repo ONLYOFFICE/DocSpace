@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -73,7 +72,7 @@ namespace ASC.CRM.ApiModels
 
     [Scope]
     public class PersonDtoHelper
-    {     
+    {
         public PersonDto Get(Person person)
         {
             return new PersonDto
@@ -100,7 +99,7 @@ namespace ASC.CRM.ApiModels
     /// </summary>
     [DataContract(Name = "company", Namespace = "")]
     public class CompanyDto : ContactDto
-    {    
+    {
         public String CompanyName { get; set; }
         public IEnumerable<ContactBaseDto> Persons { get; set; }
         public int PersonsCount { get; set; }
@@ -162,7 +161,8 @@ namespace ASC.CRM.ApiModels
             };
         }
 
-        public void Mapping(Profile profile) {
+        public void Mapping(Profile profile)
+        {
 
             profile.CreateMap<Core.Entities.Contact, ContactDto>().ConvertUsing<ContactDtoTypeConverter>();
             profile.CreateMap<List<Core.Entities.Contact>, List<ContactDto>>().ConvertUsing<ContactDtoTypeConverter>();
@@ -171,7 +171,7 @@ namespace ASC.CRM.ApiModels
             profile.CreateMap<Core.Entities.Company, CompanyDto>().ConvertUsing<ContactDtoTypeConverter>();
 
             profile.CreateMap<Core.Entities.Contact, ContactBaseWithPhoneDto>().ConvertUsing<ContactDtoTypeConverter>();
-            profile.CreateMap<Core.Entities.Contact, ContactBaseWithEmailDto>().ConvertUsing<ContactDtoTypeConverter>();          
+            profile.CreateMap<Core.Entities.Contact, ContactBaseWithEmailDto>().ConvertUsing<ContactDtoTypeConverter>();
         }
     }
 
@@ -195,7 +195,7 @@ namespace ASC.CRM.ApiModels
         }
 
         public override void Write(Utf8JsonWriter writer, ContactDto value, JsonSerializerOptions options)
-        {            
+        {
             if (value is PersonDto)
             {
                 JsonSerializer.Serialize(writer, (PersonDto)value!, options);

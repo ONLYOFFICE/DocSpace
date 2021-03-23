@@ -53,6 +53,13 @@ namespace ASC.CRM.Api
 {
     public class CasesController : BaseApiController
     {
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+        private readonly SecurityContext _securityContext;
+        private readonly NotifyClient _notifyClient;
+        private readonly ApiContext _apiContext;
+        private readonly MessageService _messageService;
+        private readonly MessageTarget _messageTarget;
+        private readonly UserManager _userManager;
 
         public CasesController(CRMSecurity crmSecurity,
                      DaoFactory daoFactory,
@@ -66,23 +73,16 @@ namespace ASC.CRM.Api
                      IMapper mapper)
             : base(daoFactory, crmSecurity, mapper)
         {
-            ApiContext = apiContext;
-            MessageTarget = messageTarget;
-            MessageService = messageService;
-            NotifyClient = notifyClient;
-            SecurityContext = securityContext;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-            UserManager = userManager;
+            _apiContext = apiContext;
+            _messageTarget = messageTarget;
+            _messageService = messageService;
+            _notifyClient = notifyClient;
+            _securityContext = securityContext;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
+            _userManager = userManager;
             _mapper = mapper;
         }
 
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public SecurityContext SecurityContext { get; }
-        public NotifyClient NotifyClient { get; }
-        private ApiContext ApiContext { get; }
-        public MessageService MessageService { get; }
-        public MessageTarget MessageTarget { get; }
-        public UserManager UserManager { get; }
 
         /// <summary>
         ///   Close the case with the ID specified in the request
@@ -103,7 +103,7 @@ namespace ASC.CRM.Api
             var cases = _daoFactory.GetCasesDao().CloseCases(caseid);
             if (cases == null) throw new ItemNotFoundException();
 
-            MessageService.Send(MessageAction.CaseClosed, MessageTarget.Create(cases.ID), cases.Title);
+            _messageService.Send(MessageAction.CaseClosed, _messageTarget.Create(cases.ID), cases.Title);
 
 
             return _mapper.Map<CasesDto>(cases);
@@ -128,7 +128,7 @@ namespace ASC.CRM.Api
             var cases = _daoFactory.GetCasesDao().ReOpenCases(caseid);
             if (cases == null) throw new ItemNotFoundException();
 
-            MessageService.Send(MessageAction.CaseOpened, MessageTarget.Create(cases.ID), cases.Title);
+            _messageService.Send(MessageAction.CaseOpened, _messageTarget.Create(cases.ID), cases.Title);
 
             return _mapper.Map<CasesDto>(cases);
         }
@@ -178,7 +178,7 @@ namespace ASC.CRM.Api
             {
                 ID = casesID,
                 Title = title,
-                CreateBy = SecurityContext.CurrentAccount.ID,
+                CreateBy = _securityContext.CurrentAccount.ID,
                 CreateOn = DateTime.UtcNow
             };
 
@@ -255,7 +255,7 @@ namespace ASC.CRM.Api
 
             _daoFactory.GetCasesDao().UpdateCases(cases);
 
-            if (_crmSecurity.IsAdmin || cases.CreateBy == SecurityContext.CurrentAccount.ID)
+            if (_crmSecurity.IsAdmin || cases.CreateBy == _securityContext.CurrentAccount.ID)
             {
                 SetAccessToCases(cases, isPrivate, accessList, isNotify, false);
             }
@@ -302,7 +302,7 @@ namespace ASC.CRM.Api
             var cases = _daoFactory.GetCasesDao().GetByID(caseid);
             if (cases == null) throw new ItemNotFoundException();
 
-            if (!(_crmSecurity.IsAdmin || cases.CreateBy == SecurityContext.CurrentAccount.ID)) throw _crmSecurity.CreateSecurityException();
+            if (!(_crmSecurity.IsAdmin || cases.CreateBy == _securityContext.CurrentAccount.ID)) throw _crmSecurity.CreateSecurityException();
 
             return SetAccessToCases(cases, isPrivate, accessList, false, true);
         }
@@ -314,20 +314,20 @@ namespace ASC.CRM.Api
             {
                 if (isNotify)
                 {
-                    accessListLocal = accessListLocal.Where(u => u != SecurityContext.CurrentAccount.ID).ToList();
-                    NotifyClient.SendAboutSetAccess(EntityType.Case, cases.ID, _daoFactory, accessListLocal.ToArray());
+                    accessListLocal = accessListLocal.Where(u => u != _securityContext.CurrentAccount.ID).ToList();
+                    _notifyClient.SendAboutSetAccess(EntityType.Case, cases.ID, _daoFactory, accessListLocal.ToArray());
                 }
 
-                if (!accessListLocal.Contains(SecurityContext.CurrentAccount.ID))
+                if (!accessListLocal.Contains(_securityContext.CurrentAccount.ID))
                 {
-                    accessListLocal.Add(SecurityContext.CurrentAccount.ID);
+                    accessListLocal.Add(_securityContext.CurrentAccount.ID);
                 }
 
                 _crmSecurity.SetAccessTo(cases, accessListLocal);
                 if (isMessageServicSende)
                 {
                     var users = GetUsersByIdList(accessListLocal);
-                    MessageService.Send(MessageAction.CaseRestrictedAccess, MessageTarget.Create(cases.ID), cases.Title, users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
+                    _messageService.Send(MessageAction.CaseRestrictedAccess, _messageTarget.Create(cases.ID), cases.Title, users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
                 }
             }
             else
@@ -335,7 +335,7 @@ namespace ASC.CRM.Api
                 _crmSecurity.MakePublic(cases);
                 if (isMessageServicSende)
                 {
-                    MessageService.Send(MessageAction.CaseOpenedAccess, MessageTarget.Create(cases.ID), cases.Title);
+                    _messageService.Send(MessageAction.CaseOpenedAccess, _messageTarget.Create(cases.ID), cases.Title);
                 }
             }
 
@@ -372,7 +372,7 @@ namespace ASC.CRM.Api
             {
                 if (c == null) throw new ItemNotFoundException();
 
-                if (!(_crmSecurity.IsAdmin || c.CreateBy == SecurityContext.CurrentAccount.ID)) continue;
+                if (!(_crmSecurity.IsAdmin || c.CreateBy == _securityContext.CurrentAccount.ID)) continue;
 
                 SetAccessToCases(c, isPrivate, accessList, false, true);
                 result.Add(c);
@@ -407,7 +407,7 @@ namespace ASC.CRM.Api
 
             var result = new List<Cases>();
 
-            var caseses = _daoFactory.GetCasesDao().GetCases(ApiContext.FilterValue, contactid, isClosed, tags, 0, 0, null);
+            var caseses = _daoFactory.GetCasesDao().GetCases(_apiContext.FilterValue, contactid, isClosed, tags, 0, 0, null);
 
             if (!caseses.Any()) return new List<CasesDto>();
 
@@ -415,7 +415,7 @@ namespace ASC.CRM.Api
             {
                 if (casese == null) throw new ItemNotFoundException();
 
-                if (!(_crmSecurity.IsAdmin || casese.CreateBy == SecurityContext.CurrentAccount.ID)) continue;
+                if (!(_crmSecurity.IsAdmin || casese.CreateBy == _securityContext.CurrentAccount.ID)) continue;
 
                 SetAccessToCases(casese, isPrivate, accessList, false, true);
                 result.Add(casese);
@@ -461,13 +461,13 @@ namespace ASC.CRM.Api
             SortedByType sortBy;
             OrderBy casesOrderBy;
 
-            var searchString = ApiContext.FilterValue;
+            var searchString = _apiContext.FilterValue;
 
-            if (ASC.CRM.Classes.EnumExtension.TryParse(ApiContext.SortBy, true, out sortBy))
+            if (ASC.CRM.Classes.EnumExtension.TryParse(_apiContext.SortBy, true, out sortBy))
             {
-                casesOrderBy = new OrderBy(sortBy, !ApiContext.SortDescending);
+                casesOrderBy = new OrderBy(sortBy, !_apiContext.SortDescending);
             }
-            else if (string.IsNullOrEmpty(ApiContext.SortBy))
+            else if (string.IsNullOrEmpty(_apiContext.SortBy))
             {
                 casesOrderBy = new OrderBy(SortedByType.Title, true);
             }
@@ -476,8 +476,8 @@ namespace ASC.CRM.Api
                 casesOrderBy = null;
             }
 
-            var fromIndex = (int)ApiContext.StartIndex;
-            var count = (int)ApiContext.Count;
+            var fromIndex = (int)_apiContext.StartIndex;
+            var count = (int)_apiContext.Count;
 
             if (casesOrderBy != null)
             {
@@ -493,9 +493,9 @@ namespace ASC.CRM.Api
                             count,
                             casesOrderBy)).ToList();
 
-                ApiContext.SetDataPaginated();
-                ApiContext.SetDataFiltered();
-                ApiContext.SetDataSorted();
+                _apiContext.SetDataPaginated();
+                _apiContext.SetDataFiltered();
+                _apiContext.SetDataSorted();
             }
             else
             {
@@ -521,7 +521,7 @@ namespace ASC.CRM.Api
                 totalCount = _daoFactory.GetCasesDao().GetCasesCount(searchString, contactid, isClosed, tags);
             }
 
-            ApiContext.SetTotalCount(totalCount);
+            _apiContext.SetTotalCount(totalCount);
             return result;
         }
 
@@ -545,7 +545,7 @@ namespace ASC.CRM.Api
 
             if (cases == null) throw new ItemNotFoundException();
 
-            MessageService.Send(MessageAction.CaseDeleted, MessageTarget.Create(cases.ID), cases.Title);
+            _messageService.Send(MessageAction.CaseDeleted, _messageTarget.Create(cases.ID), cases.Title);
 
             return _mapper.Map<CasesDto>(cases);
         }
@@ -571,7 +571,7 @@ namespace ASC.CRM.Api
 
             if (caseses == null || !caseses.Any()) return new List<CasesDto>();
 
-            MessageService.Send(MessageAction.CasesDeleted, MessageTarget.Create(casesids), caseses.Select(c => c.Title));
+            _messageService.Send(MessageAction.CasesDeleted, _messageTarget.Create(casesids), caseses.Select(c => c.Title));
 
             return ToListCasesDtos(caseses);
         }
@@ -592,12 +592,12 @@ namespace ASC.CRM.Api
         [Delete(@"case/filter")]
         public IEnumerable<CasesDto> DeleteBatchCases(int contactid, bool? isClosed, IEnumerable<string> tags)
         {
-            var caseses = _daoFactory.GetCasesDao().GetCases(ApiContext.FilterValue, contactid, isClosed, tags, 0, 0, null);
+            var caseses = _daoFactory.GetCasesDao().GetCases(_apiContext.FilterValue, contactid, isClosed, tags, 0, 0, null);
             if (!caseses.Any()) return new List<CasesDto>();
 
             caseses = _daoFactory.GetCasesDao().DeleteBatchCases(caseses);
 
-            MessageService.Send(MessageAction.CasesDeleted, MessageTarget.Create(caseses.Select(c => c.ID)), caseses.Select(c => c.Title));
+            _messageService.Send(MessageAction.CasesDeleted, _messageTarget.Create(caseses.Select(c => c.ID)), caseses.Select(c => c.Title));
 
             return ToListCasesDtos(caseses);
         }
@@ -647,7 +647,7 @@ namespace ASC.CRM.Api
             _daoFactory.GetCasesDao().AddMember(caseid, contactid);
 
             var messageAction = contact is Company ? MessageAction.CaseLinkedCompany : MessageAction.CaseLinkedPerson;
-            MessageService.Send(messageAction, MessageTarget.Create(cases.ID), cases.Title, contact.GetTitle());
+            _messageService.Send(messageAction, _messageTarget.Create(cases.ID), cases.Title, contact.GetTitle());
 
             return _mapper.Map<ContactDto>(contact);
         }
@@ -681,7 +681,7 @@ namespace ASC.CRM.Api
 
             var messageAction = contact is Company ? MessageAction.CaseUnlinkedCompany : MessageAction.CaseUnlinkedPerson;
 
-            MessageService.Send(messageAction, MessageTarget.Create(cases.ID), cases.Title, contact.GetTitle());
+            _messageService.Send(messageAction, _messageTarget.Create(cases.ID), cases.Title, contact.GetTitle());
 
             return result;
         }
@@ -713,7 +713,7 @@ namespace ASC.CRM.Api
                     }
                 }
 
-                ApiContext.SetTotalCount(findedCases.Count);
+                _apiContext.SetTotalCount(findedCases.Count);
             }
             else
             {
@@ -775,7 +775,7 @@ namespace ASC.CRM.Api
 
         private IEnumerable<UserInfo> GetUsersByIdList(IEnumerable<Guid> ids)
         {
-            return UserManager.GetUsers().Where(x => ids.Contains(x.ID));
+            return _userManager.GetUsers().Where(x => ids.Contains(x.ID));
         }
     }
 }
