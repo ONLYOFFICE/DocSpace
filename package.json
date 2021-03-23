@@ -20,7 +20,8 @@
     "serve": "concurrently \"wsrun --parallel serve\"",
     "test": "yarn workspace @appserver/components test",
     "clean": "concurrently \"wsrun --parallel clean\"",
-    "sb-components": "yarn workspace @appserver/components storybook"
+    "storybook": "yarn workspace @appserver/components storybook",
+    "storybook-build": "yarn workspace @appserver/components run build-storybook"
   },
   "devDependencies": {
     "lerna": "^3.22.1",
