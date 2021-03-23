@@ -15,6 +15,7 @@ class InitFilesStore {
   dragging = false;
   dragItem = null;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
+  isInit = false;
 
   constructor() {
     const pathname = window.location.pathname.toLowerCase();
@@ -88,7 +89,8 @@ class InitFilesStore {
   }
 
   initFiles = () => {
-    if (this.isLoaded) return;
+    if (this.isInit) return;
+    this.isInit = true;
 
     const isAuthenticated = auth.isAuthenticated;
     const {
