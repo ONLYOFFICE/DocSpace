@@ -47,7 +47,11 @@ const Home = ({
   }, [isLoading]);
 
   return (
-    <PageLayout withBodyScroll withBodyAutoFocus={!isMobile}>
+    <PageLayout
+      withBodyScroll
+      withBodyAutoFocus={!isMobile}
+      isLoading={isLoading}
+    >
       <PageLayout.ArticleHeader>
         <ArticleHeaderContent />
       </PageLayout.ArticleHeader>
