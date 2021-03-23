@@ -57,11 +57,11 @@ const useDynamicScript = (args) => {
 
     document.head.appendChild(element);
 
-    //TODO: Uncomment if you need to remove loaded remoteEntry
-    // return () => {
-    //   console.log(`Dynamic Script Removed: ${args.url}`);
-    //   document.head.removeChild(element);
-    // };
+    //TODO: Comment if you don't want to remove loaded remoteEntry
+    return () => {
+      console.log(`Dynamic Script Removed: ${args.url}`);
+      document.head.removeChild(element);
+    };
   }, [args.url]);
 
   return {
