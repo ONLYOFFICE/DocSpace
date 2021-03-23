@@ -1,22 +1,21 @@
 import React, { memo } from "react";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import {
-  ModalDialog,
-  Button,
-  Text,
-  ToggleContent,
-  Checkbox,
-  CustomScrollbarsVirtualList,
-} from "asc-web-components";
+
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import ToggleContent from "@appserver/components/toggle-content";
+import Checkbox from "@appserver/components/checkbox";
+import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
+
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import { toastr, constants } from "asc-web-common";
+import toastr from "studio/toastr";
+import { EmployeeStatus } from "@appserver/common/constants";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
-
-const { EmployeeStatus } = constants;
 
 class ChangeUserStatusDialogComponent extends React.Component {
   constructor(props) {
@@ -176,12 +175,14 @@ ChangeUserStatusDialog.propTypes = {
   selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default inject(({ peopleStore }, ownProps) => ({
-  updateUserStatus: peopleStore.usersStore.updateUserStatus,
-  selectedUsers: peopleStore.selectionStore.selection,
-  setSelected: peopleStore.selectionStore.setSelected,
-  userIds:
-    ownProps.userStatus === EmployeeStatus.Active
-      ? peopleStore.selectionStore.getUsersToActivateIds
-      : peopleStore.selectionStore.getUsersToDisableIds,
-}))(observer(withRouter(ChangeUserStatusDialog)));
+export default withRouter(
+  inject(({ peopleStore }, ownProps) => ({
+    updateUserStatus: peopleStore.usersStore.updateUserStatus,
+    selectedUsers: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
+    userIds:
+      ownProps.userStatus === EmployeeStatus.Active
+        ? peopleStore.selectionStore.getUsersToActivateIds
+        : peopleStore.selectionStore.getUsersToDisableIds,
+  }))(observer(ChangeUserStatusDialog))
+);

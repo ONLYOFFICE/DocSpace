@@ -1,12 +1,12 @@
 import React, { createRef } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router";
-import { Button, utils as Utils, toastr } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-
-const { tablet } = Utils.device;
+import Button from "@appserver/components/button";
+import { tablet } from "@appserver/components/utils/device";
+import toastr from "@appserver/components/toast/toastr";
+import { withRouter } from "react-router";
 
 const StyledButtonContainer = styled.div`
   background: #edf2f7;

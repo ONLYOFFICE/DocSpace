@@ -1,8 +1,11 @@
 import { find, cloneDeep } from "lodash";
-import { constants, utils } from "asc-web-common";
-const { isAdmin } = utils;
-
-const { EmployeeActivationStatus, EmployeeStatus } = constants;
+import {
+  EmployeeActivationStatus,
+  EmployeeStatus,
+} from "@appserver/common/constants";
+import { isAdmin } from "@appserver/common/utils";
+import { id } from "../../package.json";
+//const { isAdmin } = utils;
 
 export const getUserStatus = (user) => {
   if (
@@ -24,7 +27,7 @@ export const getUserStatus = (user) => {
 
 export const getUserRole = (user) => {
   if (user.isOwner) return "owner";
-  else if (isAdmin(user, "f4d98afd-d336-4332-8778-3c6945c81ea0"))
+  else if (isAdmin(user, id))
     //TODO: Change to People Product Id const
     return "admin";
   //TODO: Need refactoring
@@ -35,39 +38,71 @@ export const getUserRole = (user) => {
 export const getUserContactsPattern = () => {
   return {
     contact: [
-      { type: "mail", icon: "MailIcon", link: "mailto:{0}" },
-      { type: "phone", icon: "PhoneIcon", link: "tel:{0}" },
-      { type: "mobphone", icon: "MobileIcon", link: "tel:{0}" },
-      { type: "gmail", icon: "GmailIcon", link: "mailto:{0}" },
-      { type: "skype", icon: "SkypeIcon", link: "skype:{0}?userinfo" },
-      { type: "msn", icon: "WindowsMsnIcon" },
-      { type: "icq", icon: "IcqIcon", link: "https://www.icq.com/people/{0}" },
-      { type: "jabber", icon: "JabberIcon" },
-      { type: "aim", icon: "AimIcon" },
+      {
+        type: "mail",
+        icon: "/static/images/mail.react.svg",
+        link: "mailto:{0}",
+      },
+      {
+        type: "phone",
+        icon: "/products/people/images/phone.react.svg",
+        link: "tel:{0}",
+      },
+      {
+        type: "mobphone",
+        icon: "/products/people/images/mobile.react.svg",
+        link: "tel:{0}",
+      },
+      {
+        type: "gmail",
+        icon: "/products/people/images/gmail.react.svg",
+        link: "mailto:{0}",
+      },
+      {
+        type: "skype",
+        icon: "/products/people/images/skype.react.svg",
+        link: "skype:{0}?userinfo",
+      },
+      { type: "msn", icon: "/products/people/images/windows.msn.react.svg" },
+      {
+        type: "icq",
+        icon: "/products/people/images/icq.react.svg",
+        link: "https://www.icq.com/people/{0}",
+      },
+      { type: "jabber", icon: "/products/people/images/jabber.react.svg" },
+      { type: "aim", icon: "/products/people/images/aim.react.svg" },
     ],
     social: [
       {
         type: "facebook",
-        icon: "ShareFacebookIcon",
+        icon: "/products/people/images/share.facebook.react.svg",
         link: "https://facebook.com/{0}",
       },
       {
         type: "livejournal",
-        icon: "LivejournalIcon",
+        icon: "/products/people/images/livejournal.react.svg",
         link: "https://{0}.livejournal.com",
       },
-      { type: "myspace", icon: "MyspaceIcon", link: "https://myspace.com/{0}" },
+      {
+        type: "myspace",
+        icon: "/products/people/images/myspace.react.svg",
+        link: "https://myspace.com/{0}",
+      },
       {
         type: "twitter",
-        icon: "ShareTwitterIcon",
+        icon: "/products/people/images/share.twitter.react.svg",
         link: "https://twitter.com/{0}",
       },
       {
         type: "blogger",
-        icon: "BloggerIcon",
+        icon: "/products/people/images/blogger.react.svg",
         link: "https://{0}.blogspot.com",
       },
-      { type: "yahoo", icon: "YahooIcon", link: "mailto:{0}@yahoo.com" },
+      {
+        type: "yahoo",
+        icon: "/products/people/images/yahoo.react.svg",
+        link: "mailto:{0}@yahoo.com",
+      },
     ],
   };
 };

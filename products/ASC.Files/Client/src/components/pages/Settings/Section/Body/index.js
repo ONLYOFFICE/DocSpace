@@ -1,13 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-import { Heading, ToggleButton } from "asc-web-components";
-import { Error403, Error520 } from "asc-web-common";
+import Heading from "@appserver/components/heading";
+import ToggleButton from "@appserver/components/toggle-button";
+import Error403 from "studio/Error403";
+import Error520 from "studio/Error520";
 import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 
 const StyledSettings = styled.div`
   display: grid;
-  grid-gap: 12px;
+  grid-gap: 19px;
 
   .toggle-btn {
     position: relative;
@@ -18,8 +20,8 @@ const StyledSettings = styled.div`
     margin-top: 26px;
   }
 
-  .toggle-btn:first-child {
-    margin-top: -3px;
+  .toggle-button-text {
+    margin-top: -1px;
   }
 `;
 
@@ -40,8 +42,8 @@ const SectionBodyContent = ({
   setForceSave,
   isAdmin,
   isErrorSettings,
-  settingsTree,
-
+  isLoadedSettingsTree,
+  settingsIsLoaded,
   t,
 }) => {
   const onChangeStoreForceSave = () => {
@@ -53,7 +55,7 @@ const SectionBodyContent = ({
   };
 
   const renderAdminSettings = () => {
-    return Object.keys(settingsTree).length === 0 || isLoading ? null : (
+    return !isLoadedSettingsTree || isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -88,7 +90,7 @@ const SectionBodyContent = ({
   };
 
   const renderCommonSettings = () => {
-    return Object.keys(settingsTree).length === 0 || isLoading ? null : (
+    return !isLoadedSettingsTree || isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -148,7 +150,8 @@ const SectionBodyContent = ({
   if (setting === "common") content = renderCommonSettings();
   if (setting === "thirdParty" && enableThirdParty) content = <ConnectClouds />;
 
-  return isLoading ? null : (!enableThirdParty && setting === "thirdParty") ||
+  return !settingsIsLoaded ? null : (!enableThirdParty &&
+      setting === "thirdParty") ||
     (!isAdmin && setting === "admin") ? (
     <Error403 />
   ) : isErrorSettings ? (
@@ -163,7 +166,7 @@ export default inject(
     const { isLoading } = initFilesStore;
     const { selectedTreeNode } = treeFoldersStore;
     const {
-      settingsTree: settings,
+      isLoadedSettingsTree,
       storeOriginalFiles,
       confirmDelete,
       updateIfExist,
@@ -176,15 +179,14 @@ export default inject(
       setConfirmDelete,
       setStoreForceSave,
       setForceSave,
+      settingsIsLoaded,
     } = settingsStore;
-
-    const settingsTree = Object.keys(settings).length !== 0 ? settings : {};
 
     return {
       isAdmin: auth.isAdmin,
       isLoading,
       selectedTreeNode,
-      settingsTree,
+      isLoadedSettingsTree,
       storeOriginalFiles,
       confirmDelete,
       updateIfExist,
@@ -198,6 +200,7 @@ export default inject(
       setConfirmDelete,
       setStoreForceSave,
       setForceSave,
+      settingsIsLoaded,
     };
   }
 )(observer(SectionBodyContent));

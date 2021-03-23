@@ -1,9 +1,9 @@
 import React from "react";
-import { ComboBox, Icons, DropDownItem } from "asc-web-components";
-import { constants } from "asc-web-common";
+import ComboBox from "@appserver/components/combobox";
+import { ShareAccessRights } from "@appserver/common/constants";
+import DropDownItem from "@appserver/components/drop-down-item";
 import { getAccessIcon } from "../../../helpers/files-helpers";
-
-const { ShareAccessRights } = constants;
+import { ReactSVG } from "react-svg";
 
 const AccessComboBox = (props) => {
   const {
@@ -31,7 +31,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("FullAccess") && (
         <DropDownItem
           label={t("FullAccess")}
-          icon="AccessEditIcon"
+          icon="images/access.edit.react.svg"
           data-id={itemId}
           data-access={FullAccess}
           onClick={onAccessChange}
@@ -41,7 +41,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("FilterEditing") && (
         <DropDownItem
           label={t("CustomFilter")}
-          icon="CustomFilterIcon"
+          icon="images/custom.filter.react.svg"
           data-id={itemId}
           data-access={CustomFilter}
           onClick={onAccessChange}
@@ -51,7 +51,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("Review") && (
         <DropDownItem
           label={t("Review")}
-          icon="AccessReviewIcon"
+          icon="images/access.review.react.svg"
           data-id={itemId}
           data-access={Review}
           onClick={onAccessChange}
@@ -61,7 +61,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("FormFilling") && (
         <DropDownItem
           label={t("FormFilling")}
-          icon="AccessFormIcon"
+          icon="images/access.form.react.svg"
           data-id={itemId}
           data-access={FormFilling}
           onClick={onAccessChange}
@@ -71,7 +71,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("Comment") && (
         <DropDownItem
           label={t("Comment")}
-          icon="AccessCommentIcon"
+          icon="images/access.comment.react.svg"
           data-id={itemId}
           data-access={Comment}
           onClick={onAccessChange}
@@ -81,7 +81,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("ReadOnly") && (
         <DropDownItem
           label={t("ReadOnly")}
-          icon="EyeIcon"
+          icon="/static/images/eye.react.svg"
           data-id={itemId}
           data-access={ReadOnly}
           onClick={onAccessChange}
@@ -91,7 +91,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("DenyAccess") && (
         <DropDownItem
           label={t("DenyAccess")}
-          icon="AccessNoneIcon"
+          icon="images/access.none.react.svg"
           data-id={itemId}
           data-access={DenyAccess}
           onClick={onAccessChange}
@@ -100,7 +100,7 @@ const AccessComboBox = (props) => {
     </>
   );
 
-  const accessIcon = getAccessIcon(access);
+  const accessIconUrl = getAccessIcon(access);
   const selectedOption = arrowIconColor
     ? { key: 0, arrowIconColor }
     : { key: 0 };
@@ -117,10 +117,7 @@ const AccessComboBox = (props) => {
       disableIconClick={false}
       isDisabled={isDisabled}
     >
-      {React.createElement(Icons[accessIcon], {
-        size: "medium",
-        className: "sharing-access-combo-box-icon",
-      })}
+      <ReactSVG src={accessIconUrl} className="sharing-access-combo-box-icon" />
     </ComboBox>
   );
 };

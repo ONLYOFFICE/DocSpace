@@ -1,11 +1,14 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { Link } from "asc-web-components";
-import { history } from "asc-web-common";
+import Link from "@appserver/components/link";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 
 import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../../../package.json";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
@@ -95,18 +98,21 @@ const PureThirdPartyListContainer = ({
   nextCloudConnectItem,
   webDavConnectItem,
   setConnectItem,
-  setShowThirdPartyPanel,
+  setThirdPartyDialogVisible,
   setSelectedNode,
   setSelectedFolder,
   getOAuthToken,
   openConnectWindow,
+  history,
 }) => {
   const redirectAction = () => {
-    const thirdPartyUrl = "/products/files/settings/thirdParty";
-    if (history.location.pathname !== thirdPartyUrl) {
+    const thirdPartyUrl = "/settings/thirdParty";
+    if (history.location.pathname.indexOf(thirdPartyUrl) === -1) {
       setSelectedNode(["thirdParty"]);
-      setSelectedFolder({});
-      return history.push(thirdPartyUrl);
+      setSelectedFolder(null);
+      return history.push(
+        combineUrl(AppServerConfig.proxyURL, config.homepage, thirdPartyUrl)
+      );
     }
   };
 
@@ -134,11 +140,12 @@ const PureThirdPartyListContainer = ({
       setConnectItem(data);
     }
 
-    redirectAction();
+    onShowConnectPanel();
   };
 
   const onShowConnectPanel = () => {
-    setShowThirdPartyPanel((prev) => !prev);
+    //setThirdPartyDialogVisible((prev) => !prev); TODO:
+    setThirdPartyDialogVisible(true);
     redirectAction();
   };
 
@@ -200,7 +207,9 @@ const PureThirdPartyListContainer = ({
   );
 };
 
-const ThirdPartyList = withTranslation("Article")(PureThirdPartyListContainer);
+const ThirdPartyList = withTranslation("Article")(
+  withRouter(PureThirdPartyListContainer)
+);
 
 export default inject(
   ({
@@ -208,13 +217,12 @@ export default inject(
     settingsStore,
     treeFoldersStore,
     selectedFolderStore,
+    dialogsStore,
   }) => {
     const { setIsLoading } = initFilesStore;
     const { setSelectedFolder } = selectedFolderStore;
     const { setSelectedNode } = treeFoldersStore;
     const {
-      setConnectItem,
-      setShowThirdPartyPanel,
       googleConnectItem,
       boxConnectItem,
       dropboxConnectItem,
@@ -224,6 +232,8 @@ export default inject(
       getOAuthToken,
       openConnectWindow,
     } = settingsStore.thirdPartyStore;
+
+    const { setConnectItem, setThirdPartyDialogVisible } = dialogsStore;
 
     return {
       googleConnectItem,
@@ -237,7 +247,7 @@ export default inject(
       setSelectedFolder,
       setSelectedNode,
       setConnectItem,
-      setShowThirdPartyPanel,
+      setThirdPartyDialogVisible,
       getOAuthToken,
       openConnectWindow,
     };

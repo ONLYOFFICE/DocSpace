@@ -1,4 +1,8 @@
-import { api } from "asc-web-common";
+import {
+  getPaymentSettings,
+  setLicense,
+  acceptLicense,
+} from "@appserver/common/api/settings";
 import { makeAutoObservable } from "mobx";
 
 class PaymentStore {
@@ -17,7 +21,7 @@ class PaymentStore {
   }
 
   getSettingsPayment = async () => {
-    const newSettings = await api.settings.getPaymentSettings();
+    const newSettings = await getPaymentSettings();
     const {
       buyUrl,
       salesEmail,
@@ -42,7 +46,7 @@ class PaymentStore {
   };
 
   setPaymentsLicense = async (confirmKey, data) => {
-    const response = await api.settings.setLicense(confirmKey, data);
+    const response = await setLicense(confirmKey, data);
 
     this.acceptPaymentsLicense();
     this.getSettingsPayment();
@@ -51,9 +55,7 @@ class PaymentStore {
   };
 
   acceptPaymentsLicense = async () => {
-    const response = await api.settings
-      .acceptLicense()
-      .then((res) => console.log(res));
+    const response = await acceptLicense().then((res) => console.log(res));
 
     return response;
   };

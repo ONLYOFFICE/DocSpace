@@ -1,10 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ModalDialog, Button, Link, Text } from "asc-web-components";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
 import { withTranslation, Trans } from "react-i18next";
-import { api, toastr } from "asc-web-common";
-
-const { sendInstructionsToChangePassword } = api.people;
+import { sendInstructionsToChangePassword } from "@appserver/common/api/people";
+import toastr from "studio/toastr";
 
 class ChangePasswordDialogComponent extends React.Component {
   constructor() {

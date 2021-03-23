@@ -1,20 +1,25 @@
 import React, { useState } from "react";
-import {
-  Link,
-  Text,
-  Box,
-  Textarea,
-  Button,
-  ModalDialog,
-  Icons,
-} from "asc-web-components";
+import styled from "styled-components";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import Box from "@appserver/components/box";
+import Textarea from "@appserver/components/textarea";
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { toastr } from "asc-web-common";
 import VersionBadge from "./VersionBadge";
 import StyledVersionRow from "./StyledVersionRow";
+import ExternalLinkIcon from "../../../../../../public/images/external.link.react.svg";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 
+const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: "#333333";
+  }
+`;
 const VersionRow = (props) => {
   const {
     info,
@@ -105,7 +110,7 @@ const VersionRow = (props) => {
             {title}
           </Link>
           <Link className="icon-link" onClick={onOpenFile}>
-            <Icons.ExternalLinkIcon color="#333333" size="scale" />
+            <StyledExternalLinkIcon size="scale" />
           </Link>
           <Text
             className="version_content-length"

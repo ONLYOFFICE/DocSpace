@@ -1,18 +1,18 @@
-import React from "react";
-import { PageLayout } from "asc-web-common";
-import { Loader, utils as Utils } from "asc-web-components";
-import styled from "styled-components";
+import React, { useEffect } from "react";
+import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
+import PageLayout from "@appserver/common/components/PageLayout";
+import Loader from "@appserver/components/loader";
+import { tablet, size } from "@appserver/components/utils/device";
 import HeaderContainer from "./sub-components/headerContainer";
 import AdvantagesContainer from "./sub-components/advantagesContainer";
 import ButtonContainer from "./sub-components/buttonContainer";
 import ContactContainer from "./sub-components/contactContainer";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
-
-const { tablet, size } = Utils.device;
+import { isMobile } from "react-device-detect";
 
 const StyledBody = styled.div`
   margin: 0 auto;
@@ -22,13 +22,22 @@ const StyledBody = styled.div`
   grid-template-rows: repeat(4, min-content);
   overflow-wrap: anywhere;
   margin-top: 40px;
+
+  ${
+    isMobile &&
+    `
+      margin-top: 56px;
+    `
+  }
+
   @media ${tablet} {
     max-width: ${size.smallTablet}px;
   }
   @media (max-width: 632px) {
     min-width: 343px;
-    margin-top: 0;
+    ${!isMobile && `margin-top: 0;`}
   }
+
 `;
 
 class Body extends React.Component {

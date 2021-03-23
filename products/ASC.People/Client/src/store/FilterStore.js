@@ -1,20 +1,8 @@
 import { action, makeObservable, observable } from "mobx";
-//import { getFilterByLocation } from "../helpers/converters";
-import { api, history } from "asc-web-common";
+import Filter from "@appserver/common/api/people/filter";
 import config from "../../package.json";
-import {
-  EMPLOYEE_STATUS,
-  ACTIVATION_STATUS,
-  ROLE,
-  GROUP,
-  SEARCH,
-  SORT_BY,
-  SORT_ORDER,
-  PAGE,
-  PAGE_COUNT,
-} from "../helpers/constants";
-
-const { Filter } = api;
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class FilterStore {
   filter = Filter.getDefault();
@@ -30,41 +18,16 @@ class FilterStore {
   }
 
   setFilterUrl = (filter) => {
-    const defaultFilter = Filter.getDefault();
-    const params = [];
-
-    if (filter.employeeStatus) {
-      params.push(`${EMPLOYEE_STATUS}=${filter.employeeStatus}`);
-    }
-
-    if (filter.activationStatus) {
-      params.push(`${ACTIVATION_STATUS}=${filter.activationStatus}`);
-    }
-
-    if (filter.role) {
-      params.push(`${ROLE}=${filter.role}`);
-    }
-
-    if (filter.group) {
-      params.push(`${GROUP}=${filter.group}`);
-    }
-
-    if (filter.search) {
-      params.push(`${SEARCH}=${filter.search.trim()}`);
-    }
-
-    if (filter.pageCount !== defaultFilter.pageCount) {
-      params.push(`${PAGE_COUNT}=${filter.pageCount}`);
-    }
-
-    params.push(`${PAGE}=${filter.page + 1}`);
-    params.push(`${SORT_BY}=${filter.sortBy}`);
-    params.push(`${SORT_ORDER}=${filter.sortOrder}`);
-
-    //const isProfileView = history.location.pathname.includes('/people/view') || history.location.pathname.includes('/people/edit');
-    //if (params.length > 0 && !isProfileView) {
-    history.push(`${config.homepage}/filter?${params.join("&")}`);
-    //}
+    const urlFilter = filter.toUrlParams();
+    window.history.replaceState(
+      "",
+      "",
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/filter?${urlFilter}`
+      )
+    );
   };
 
   setFilterParams = (data) => {

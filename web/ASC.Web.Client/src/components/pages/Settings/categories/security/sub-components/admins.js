@@ -3,22 +3,24 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import {
-  Text,
-  Avatar,
-  Row,
-  RowContent,
-  RowContainer,
-  Link,
-  Paging,
-  IconButton,
-  toastr,
-  Button,
-  RequestLoader,
-  Loader,
-  EmptyScreenContainer,
-} from "asc-web-components";
-import { FilterInput, PeopleSelector } from "asc-web-common";
+
+import Text from "@appserver/components/text";
+import Avatar from "@appserver/components/avatar";
+import Row from "@appserver/components/row";
+import RowContent from "@appserver/components/row-content";
+import RowContainer from "@appserver/components/row-container";
+import Link from "@appserver/components/link";
+import Paging from "@appserver/components/paging";
+import IconButton from "@appserver/components/icon-button";
+import toastr from "@appserver/components/toast/toastr";
+import Button from "@appserver/components/button";
+import RequestLoader from "@appserver/components/request-loader";
+import Loader from "@appserver/components/loader";
+import EmptyScreenContainer from "@appserver/components/empty-screen-container";
+import { showLoader, hideLoader } from "@appserver/common/utils";
+import FilterInput from "@appserver/common/components/FilterInput";
+import PeopleSelector from "people/PeopleSelector";
+
 import isEmpty from "lodash/isEmpty";
 import { inject, observer } from "mobx-react";
 
@@ -85,7 +87,7 @@ class PureAdminsSettings extends Component {
 
   componentDidMount() {
     const { admins, fetchPeople } = this.props;
-
+    showLoader();
     if (isEmpty(admins, true)) {
       const newFilter = this.onAdminsFilter();
       fetchPeople(newFilter)
@@ -100,6 +102,7 @@ class PureAdminsSettings extends Component {
     } else {
       this.setState({ showLoader: false });
     }
+    hideLoader();
   }
 
   onChangeAdmin = (userIds, isAdmin, productId) => {
@@ -483,7 +486,9 @@ class PureAdminsSettings extends Component {
                                     false,
                                     "00000000-0000-0000-0000-000000000000"
                                   )}
-                                  iconName={"CatalogTrashIcon"}
+                                  iconName={
+                                    "static/images/catalog.trash.react.svg"
+                                  }
                                   isFill={true}
                                   isClickable={false}
                                 />
@@ -527,7 +532,7 @@ class PureAdminsSettings extends Component {
                         className="cross_icon"
                         size="12"
                         onClick={this.onResetFilter}
-                        iconName="CrossIcon"
+                        iconName="/static/images/cross.react.svg"
                         isFill
                         color="#657077"
                       />

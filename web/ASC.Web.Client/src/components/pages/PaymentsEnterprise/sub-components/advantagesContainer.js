@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { Text, utils as Utils, Box } from "asc-web-components";
+
+import Text from "@appserver/components/text";
+import Box from "@appserver/components/box";
+import { tablet } from "@appserver/components/utils/device";
 import { useTranslation, Trans } from "react-i18next";
 import { inject } from "mobx-react";
-
-const { tablet } = Utils.device;
 
 const StyledBodyAdvantages = styled.div`
   display: grid;

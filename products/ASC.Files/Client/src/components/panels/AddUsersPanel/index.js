@@ -1,7 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
-import { PeopleSelector, constants } from "asc-web-common";
+import Backdrop from "@appserver/components/backdrop";
+import Heading from "@appserver/components/heading";
+import Aside from "@appserver/components/aside";
+import IconButton from "@appserver/components/icon-button";
+import { ShareAccessRights } from "@appserver/common/constants";
+import PeopleSelector from "people/PeopleSelector";
 import { withTranslation } from "react-i18next";
 import {
   StyledAddUsersPanelPanel,
@@ -10,7 +14,6 @@ import {
   StyledBody,
 } from "../StyledPanels";
 import AccessComboBox from "../SharingPanel/AccessComboBox";
-const { ShareAccessRights } = constants;
 
 class AddUsersPanelComponent extends React.Component {
   constructor(props) {
@@ -151,7 +154,7 @@ class AddUsersPanelComponent extends React.Component {
             <StyledHeaderContent>
               <IconButton
                 size="16"
-                iconName="ArrowPathIcon"
+                iconName="/static/images/arrow.path.react.svg"
                 onClick={this.onArrowClick}
                 color="#A3A9AE"
               />

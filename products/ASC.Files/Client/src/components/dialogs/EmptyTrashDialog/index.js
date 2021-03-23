@@ -1,17 +1,17 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { ModalDialog, Button, Text } from "asc-web-components";
+import Text from "@appserver/components/text";
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-import { api, toastr } from "asc-web-common";
+import { getProgress, emptyTrash } from "@appserver/common/api/files";
+import toastr from "studio/toastr";
 import { TIMEOUT } from "../../../helpers/constants";
 import { inject, observer } from "mobx-react";
 
-const { files } = api;
-
 const EmptyTrashDialogComponent = (props) => {
   const {
-    onClose,
     visible,
     t,
     filter,
@@ -20,13 +20,15 @@ const EmptyTrashDialogComponent = (props) => {
     isLoading,
     clearSecondaryProgressData,
     fetchFiles,
+    setEmptyTrashDialogVisible,
   } = props;
+
+  const onClose = () => setEmptyTrashDialogVisible(false);
 
   const loopEmptyTrash = useCallback(
     (id) => {
       const successMessage = t("SuccessEmptyTrash");
-      api.files
-        .getProgress()
+      getProgress()
         .then((res) => {
           const currentProcess = res.find((x) => x.id === id);
           if (currentProcess && currentProcess.progress !== 100) {
@@ -91,8 +93,7 @@ const EmptyTrashDialogComponent = (props) => {
     };
     setSecondaryProgressBarData(newProgressData);
     onClose();
-    files
-      .emptyTrash()
+    emptyTrash()
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         loopEmptyTrash(id);
@@ -149,7 +150,13 @@ const EmptyTrashDialog = withTranslation("EmptyTrashDialog")(
 );
 
 export default inject(
-  ({ initFilesStore, filesStore, uploadDataStore, selectedFolderStore }) => {
+  ({
+    initFilesStore,
+    filesStore,
+    uploadDataStore,
+    selectedFolderStore,
+    dialogsStore,
+  }) => {
     const { isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
     const { fetchFiles, filter } = filesStore;
@@ -158,14 +165,21 @@ export default inject(
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
 
+    const {
+      emptyTrashDialogVisible: visible,
+      setEmptyTrashDialogVisible,
+    } = dialogsStore;
+
     return {
       currentFolderId: selectedFolderStore.id,
       isLoading,
       filter,
+      visible,
 
       fetchFiles,
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
+      setEmptyTrashDialogVisible,
     };
   }
 )(withRouter(observer(EmptyTrashDialog)));

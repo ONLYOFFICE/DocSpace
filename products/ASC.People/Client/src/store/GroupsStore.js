@@ -1,5 +1,5 @@
 import { action, makeObservable, observable } from "mobx";
-import { api } from "asc-web-common";
+import api from "@appserver/common/api";
 
 class GroupsStore {
   groups = [];
@@ -16,7 +16,7 @@ class GroupsStore {
   }
 
   getGroupList = async () => {
-    const res = await api.groups.getGroupList();
+    const res = await api.groups.getGroupListFull();
     this.groups = res;
   };
 

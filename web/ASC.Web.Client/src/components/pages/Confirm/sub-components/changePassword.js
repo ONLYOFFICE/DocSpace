@@ -1,22 +1,18 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
+import axios from "axios";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import {
-  Button,
-  Text,
-  PasswordInput,
-  Loader,
-  toastr,
-  Heading,
-} from "asc-web-components";
-import { PageLayout } from "asc-web-common";
-import { utils as commonUtils, api } from "asc-web-common";
-
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import PasswordInput from "@appserver/components/password-input";
+import Loader from "@appserver/components/loader";
+import toastr from "@appserver/components/toast/toastr";
+import Heading from "@appserver/components/heading";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
-
-const { createPasswordHash, tryRedirectTo } = commonUtils;
 
 const BodyStyle = styled.form`
   margin: 70px auto 0 auto;
@@ -37,6 +33,12 @@ const BodyStyle = styled.form`
   .password-button {
     margin-top: 20px;
   }
+
+  .password-input {
+    .password-field-wrapper {
+      width: 100%;
+    }
+  }
 `;
 
 class Form extends React.PureComponent {
@@ -45,7 +47,6 @@ class Form extends React.PureComponent {
     const { linkData } = props;
 
     this.state = {
-      isConfirmLoaded: false,
       password: "",
       passwordValid: true,
       // isValidConfirmLink: false,
@@ -72,7 +73,13 @@ class Form extends React.PureComponent {
   onSubmit = (e) => {
     this.setState({ isLoading: true }, function () {
       const { userId, password, key } = this.state;
-      const { hashSettings, defaultPage } = this.props;
+      const {
+        t,
+        hashSettings,
+        defaultPage,
+        logout,
+        changePassword,
+      } = this.props;
       let hasError = false;
 
       if (!this.state.passwordValid) {
@@ -88,15 +95,14 @@ class Form extends React.PureComponent {
       }
       const hash = createPasswordHash(password, hashSettings);
 
-      api.people
-        .changePassword(userId, hash, key)
-        .then(() => this.props.logout())
+      changePassword(userId, hash, key)
+        .then(() => logout())
         .then(() => {
-          toastr.success(this.props.t("ChangePasswordSuccess"));
+          toastr.success(t("ChangePasswordSuccess"));
           tryRedirectTo(defaultPage);
         })
         .catch((error) => {
-          toastr.error(this.props.t(`${error}`));
+          toastr.error(t(`${error}`));
           this.setState({ isLoading: false });
         });
     });
@@ -107,15 +113,10 @@ class Form extends React.PureComponent {
 
     const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
 
-    Promise.all(requests)
-      .then(() => {
-        this.setState({ isConfirmLoaded: true });
-        console.log("get settings success");
-      })
-      .catch((error) => {
-        toastr.error(this.props.t(`${error}`));
-        tryRedirectTo(defaultPage);
-      });
+    axios.all(requests).catch((error) => {
+      toastr.error(this.props.t(`${error}`));
+      tryRedirectTo(defaultPage);
+    });
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -129,10 +130,10 @@ class Form extends React.PureComponent {
   validatePassword = (value) => this.setState({ passwordValid: value });
 
   render() {
-    const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
+    const { settings, t, greetingTitle } = this.props;
     const { isLoading, password, passwordEmpty } = this.state;
 
-    return !isConfirmLoaded ? (
+    return !settings ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <BodyStyle>
@@ -151,6 +152,7 @@ class Form extends React.PureComponent {
         </Text>
         <PasswordInput
           id="password"
+          className="password-input"
           name="password"
           inputName="password"
           inputValue={password}
@@ -197,7 +199,6 @@ class Form extends React.PureComponent {
 
 Form.propTypes = {
   history: PropTypes.object.isRequired,
-  changePassword: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   linkData: PropTypes.object.isRequired,
 };
@@ -214,7 +215,7 @@ const ChangePasswordForm = (props) => (
   </PageLayout>
 );
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const { settingsStore, logout, isAuthenticated } = auth;
   const {
     greetingSettings,
@@ -224,6 +225,8 @@ export default inject(({ auth }) => {
     getSettings,
     getPortalPasswordSettings,
   } = settingsStore;
+  const { changePassword } = setup;
+
   return {
     settings: passwordSettings,
     hashSettings,
@@ -233,5 +236,6 @@ export default inject(({ auth }) => {
     isAuthenticated,
     getSettings,
     getPortalPasswordSettings,
+    changePassword,
   };
 })(withRouter(withTranslation("Confirm")(observer(ChangePasswordForm))));

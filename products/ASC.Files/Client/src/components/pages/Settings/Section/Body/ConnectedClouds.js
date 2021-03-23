@@ -1,69 +1,64 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  Box,
-  Text,
-  Link,
-  ModalDialog,
-  Button,
-  RowContainer,
-  Row,
-  Icons,
-} from "asc-web-components";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import Box from "@appserver/components/box";
+import Row from "@appserver/components/row";
+import RowContainer from "@appserver/components/row-container";
 import { withTranslation } from "react-i18next";
-import EmptyFolderContainer from "../../../Home/Section/Body/EmptyFolderContainer";
-import { Trans } from "react-i18next";
-import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
+import EmptyFolderContainer from "../../../Home/Section/Body/EmptyContainer/EmptyContainer";
+import BoxIcon from "../../../../../../public/images/icon_box.react.svg";
+import DropBoxIcon from "../../../../../../public/images/icon_dropbox.react.svg";
+import GoogleDriveIcon from "../../../../../../public/images/icon_google_drive.react.svg";
+import KDriveIcon from "../../../../../../public/images/icon_kdrive.react.svg";
+import NextCloudIcon from "../../../../../../public/images/icon_nextcloud.react.svg";
+import OneDriveIcon from "../../../../../../public/images/icon_onedrive.react.svg";
+import OwnCloudIcon from "../../../../../../public/images/icon_owncloud.react.svg";
+import SharePointIcon from "../../../../../../public/images/icon_sharepoint.react.svg";
+import WebDavIcon from "../../../../../../public/images/icon_webdav.react.svg";
+import YandexDiskIcon from "../../../../../../public/images/icon_yandex_disk.react.svg";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 
-const StyledServicesBlock = styled.div`
-  display: grid;
-  column-gap: 55px;
-  row-gap: 20px;
-  justify-content: center;
-  align-items: center;
-  grid-template-columns: repeat(auto-fill, 158px);
-  padding-top: 24px;
-
-  .service-item {
-    border: 1px solid #d1d1d1;
-    width: 158px;
-    height: 40px;
-
-    :hover {
-      cursor: pointer;
-    }
-  }
-
-  img {
-    border: 1px solid #d1d1d1;
-    width: 158px;
-    height: 40px;
-
-    :hover {
-      cursor: pointer;
-    }
-  }
-
-  .service-text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+const StyledBoxIcon = styled(BoxIcon)`
+  ${commonIconsStyles}
+`;
+const StyledDropBoxIcon = styled(DropBoxIcon)`
+  ${commonIconsStyles}
+`;
+const StyledGoogleDriveIcon = styled(GoogleDriveIcon)`
+  ${commonIconsStyles}
+`;
+const StyledKDriveIcon = styled(KDriveIcon)`
+  ${commonIconsStyles}
+`;
+const StyledNextCloudIcon = styled(NextCloudIcon)`
+  ${commonIconsStyles}
+`;
+const StyledOneDriveIcon = styled(OneDriveIcon)`
+  ${commonIconsStyles}
+`;
+const StyledOwnCloudIcon = styled(OwnCloudIcon)`
+  ${commonIconsStyles}
+`;
+const StyledSharePointIcon = styled(SharePointIcon)`
+  ${commonIconsStyles}
+`;
+const StyledWebDavIcon = styled(WebDavIcon)`
+  ${commonIconsStyles}
+`;
+const StyledYandexDiskIcon = styled(YandexDiskIcon)`
+  ${commonIconsStyles}
 `;
 
-const ServiceItem = (props) => {
-  const { capability, t, ...rest } = props;
-
-  const capabilityName = capability[0];
-  const capabilityLink = capability[1] ? capability[1] : "";
-
-  const dataProps = {
-    "data-link": capabilityLink,
-    "data-title": capabilityName,
-  };
-
-  return <img {...dataProps} {...rest} alt="" />;
+const linkStyles = {
+  isHovered: true,
+  type: "action",
+  fontWeight: "600",
+  color: "#555f65",
+  className: "empty-folder_link",
+  display: "flex",
 };
 
 class ConnectClouds extends React.Component {
@@ -71,106 +66,20 @@ class ConnectClouds extends React.Component {
     super(props);
 
     this.state = {
-      showThirdPartyDialog: props.showThirdPartyPanel,
-      showAccountSettingDialog: !!props.connectItem,
-      showDeleteDialog: false,
       loginValue: "",
       passwordValue: "",
       folderNameValue: "",
-      selectedServiceData: props.connectItem,
-      removeItem: null,
     };
   }
 
-  componentDidUpdate(prevProps) {
-    const visible = !!this.props.connectItem;
-    const prevVisible = !!prevProps.connectItem;
-
-    if (this.props.showThirdPartyPanel !== prevProps.showThirdPartyPanel) {
-      this.props.showThirdPartyPanel &&
-        this.setState({
-          showThirdPartyDialog: true,
-        });
-    }
-
-    if (visible !== prevVisible) {
-      visible &&
-        this.setState({
-          showAccountSettingDialog: true,
-          selectedServiceData: this.props.connectItem,
-        });
-    }
-  }
-
-  showOAuthModal = (token, serviceData) => {
-    this.setState({
-      showAccountSettingDialog: true,
-      selectedServiceData: {
-        title: serviceData.title,
-        provider_key: serviceData.title,
-        link: serviceData.link,
-        token,
-      },
-    });
-  };
-
-  onShowService = (e) => {
-    console.log("onShowService", e.currentTarget.dataset);
-    const selectedServiceData = e.currentTarget.dataset;
-    const showAccountSettingDialog = !e.currentTarget.dataset.link;
-    if (!showAccountSettingDialog) {
-      let authModal = window.open(
-        "",
-        "Authorization",
-        "height=600, width=1020"
-      );
-      this.props
-        .openConnectWindow(selectedServiceData.title, authModal)
-        .then((modal) =>
-          this.props
-            .getOAuthToken(modal)
-            .then((token) => this.showOAuthModal(token, selectedServiceData))
-        );
-    }
-
-    this.setState({
-      showThirdPartyDialog: !this.state.showThirdPartyDialog,
-      showAccountSettingDialog,
-      selectedServiceData,
-    });
-  };
-
   onShowThirdPartyDialog = () => {
-    this.setState(
-      { showThirdPartyDialog: !this.state.showThirdPartyDialog },
-      () =>
-        this.props.showThirdPartyPanel &&
-        this.props.setShowThirdPartyPanel(false)
-    );
-  };
-
-  onShowAccountSettingDialog = () => {
-    this.setState(
-      {
-        showAccountSettingDialog: !this.state.showAccountSettingDialog,
-        selectedServiceData: null,
-      },
-      () => this.props.connectItem && this.props.setConnectItem(null)
-    );
+    this.props.setThirdPartyDialogVisible(true);
   };
 
   onDeleteThirdParty = (e) => {
     const { id, title } = e.currentTarget.dataset;
-    const removeItem = { id, title };
-
-    this.setState({
-      showDeleteDialog: !this.state.showDeleteDialog,
-      removeItem,
-    });
-  };
-
-  onShowDeleteDialog = () => {
-    this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
+    this.props.setDeleteThirdPartyDialogVisible(true);
+    this.props.setRemoveItem({ id, title });
   };
 
   onChangeThirdPartyInfo = (e) => {
@@ -182,41 +91,42 @@ class ConnectClouds extends React.Component {
 
     const { corporate, provider_id, customer_title } = providerItem;
 
-    const selectedServiceData = {
+    const item = {
       title: capabilitiesItem ? capabilitiesItem[0] : customer_title,
       link: capabilitiesItem ? capabilitiesItem[1] : " ",
       corporate: corporate,
       provider_id: provider_id,
       provider_key: key,
     };
-    this.setState({ selectedServiceData, showAccountSettingDialog: true });
+
+    this.props.setConnectItem(item);
+    this.props.setConnectDialogVisible(true);
   };
 
   getThirdPartyIcon = (iconName) => {
     switch (iconName) {
       case "Box":
-        return <Icons.BoxIcon size="big" />;
+        return <StyledBoxIcon size="big" />;
       case "DropboxV2":
-        return <Icons.DropBoxIcon size="big" />;
+        return <StyledDropBoxIcon size="big" />;
       case "GoogleDrive":
-        return <Icons.GoogleDriveIcon size="big" />;
+        return <StyledGoogleDriveIcon size="big" />;
       case "OneDrive":
-        return <Icons.OneDriveIcon size="big" />;
+        return <StyledOneDriveIcon size="big" />;
       case "SharePoint":
-        return <Icons.SharePointIcon size="big" />;
+        return <StyledSharePointIcon size="big" />;
       case "kDrive":
-        return <Icons.KDriveIcon size="big" />;
+        return <StyledKDriveIcon size="big" />;
       case "Yandex":
-        return <Icons.YandexDiskIcon size="big" />;
-      /*--------------------------------------------*/
+        return <StyledYandexDiskIcon size="big" />;
       case "OwnCloud":
-        return <Icons.OwnCloudIcon size="big" />;
+        return <StyledOwnCloudIcon size="big" />;
       case "NextCloud":
-        return <Icons.NextCloudIcon size="big" />;
+        return <StyledNextCloudIcon size="big" />;
       case "OneDriveForBusiness":
-        return <Icons.OneDriveIcon size="big" />;
+        return <StyledOneDriveIcon size="big" />;
       case "WebDav":
-        return <Icons.WebDavIcon size="big" />;
+        return <StyledWebDavIcon size="big" />;
 
       default:
         return;
@@ -245,37 +155,7 @@ class ConnectClouds extends React.Component {
   };
 
   render() {
-    const {
-      showThirdPartyDialog,
-      showAccountSettingDialog,
-      showDeleteDialog,
-      selectedServiceData,
-      removeItem,
-    } = this.state;
-    const {
-      t,
-      providers,
-      isAdmin,
-      googleConnectItem,
-      boxConnectItem,
-      dropboxConnectItem,
-      sharePointConnectItem,
-      oneDriveConnectItem,
-      nextCloudConnectItem,
-      ownCloudConnectItem,
-      kDriveConnectItem,
-      yandexConnectItem,
-      webDavConnectItem,
-    } = this.props;
-
-    const linkStyles = {
-      isHovered: true,
-      type: "action",
-      fontWeight: "600",
-      color: "#555f65",
-      className: "empty-folder_link",
-      display: "flex",
-    };
+    const { t, providers } = this.props;
 
     const buttons = (
       <div className="empty-folder_container-links empty-connect_container-links">
@@ -333,6 +213,7 @@ class ConnectClouds extends React.Component {
                       flexDirection="row"
                       alignItems="baseline"
                       alignSelf="baseline"
+                      marginProp="auto 0"
                     >
                       <Text
                         style={{ width: 100 }}
@@ -371,192 +252,38 @@ class ConnectClouds extends React.Component {
             buttons={buttons}
           />
         )}
-
-        {showThirdPartyDialog && (
-          <ModalDialog
-            visible={showThirdPartyDialog}
-            scale={false}
-            displayType="auto"
-            zIndex={310}
-            onClose={this.onShowThirdPartyDialog}
-          >
-            <ModalDialog.Header>{t("ConnectingAccount")}</ModalDialog.Header>
-            <ModalDialog.Body>
-              <Text as="div">
-                {t("ConnectDescription")}
-                {isAdmin && (
-                  <Trans i18nKey="ConnectAdminDescription" ns="Settings">
-                    For successful connection enter the necessary data at
-                    <Link
-                      isHovered
-                      href="/settings/integration/third-party-services"
-                    >
-                      this page
-                    </Link>
-                  </Trans>
-                )}
-              </Text>
-              <StyledServicesBlock>
-                {googleConnectItem && (
-                  <ServiceItem
-                    capability={googleConnectItem}
-                    onClick={this.onShowService}
-                    src="images/services/logo_google-drive.svg"
-                  />
-                )}
-
-                {boxConnectItem && (
-                  <ServiceItem
-                    capability={boxConnectItem}
-                    onClick={this.onShowService}
-                    src="images/services/logo_box.svg"
-                  />
-                )}
-
-                {dropboxConnectItem && (
-                  <ServiceItem
-                    capability={dropboxConnectItem}
-                    onClick={this.onShowService}
-                    src="images/services/logo_dropbox.svg"
-                  />
-                )}
-
-                {sharePointConnectItem && (
-                  <ServiceItem
-                    capability={sharePointConnectItem}
-                    onClick={this.onShowService}
-                    src="images/services/logo_sharepoint.svg"
-                  />
-                )}
-
-                {oneDriveConnectItem && (
-                  <ServiceItem
-                    capability={oneDriveConnectItem}
-                    onClick={this.onShowService}
-                    src="images/services/logo_onedrive.svg"
-                  />
-                )}
-
-                {sharePointConnectItem && (
-                  <ServiceItem
-                    capability={sharePointConnectItem}
-                    onClick={this.onShowService}
-                    src="images/services/logo_onedrive-for-business.svg"
-                  />
-                )}
-
-                {nextCloudConnectItem && (
-                  <ServiceItem
-                    capability={webDavConnectItem}
-                    onClick={this.onShowService}
-                    src="images/services/logo_nextcloud.svg"
-                  />
-                )}
-
-                {ownCloudConnectItem && (
-                  <ServiceItem
-                    capability={webDavConnectItem}
-                    onClick={this.onShowService}
-                    src="images/services/logo_owncloud.svg"
-                  />
-                )}
-
-                {kDriveConnectItem && (
-                  <ServiceItem
-                    capability={kDriveConnectItem}
-                    onClick={this.onShowService}
-                    src="images/services/logo_kdrive.svg"
-                  />
-                )}
-                {yandexConnectItem && (
-                  <ServiceItem
-                    capability={yandexConnectItem}
-                    onClick={this.onShowService}
-                    src="images/services/logo_yandex_ru.svg"
-                  />
-                )}
-                {webDavConnectItem && (
-                  <Text
-                    onClick={this.onShowService}
-                    className="service-item service-text"
-                    data-title={webDavConnectItem[0]}
-                  >
-                    {t("ConnextOtherAccount")}
-                  </Text>
-                )}
-              </StyledServicesBlock>
-            </ModalDialog.Body>
-          </ModalDialog>
-        )}
-        {showAccountSettingDialog && (
-          <ConnectDialog
-            visible={showAccountSettingDialog}
-            onClose={this.onShowAccountSettingDialog}
-            item={selectedServiceData}
-          />
-        )}
-
-        {showDeleteDialog && (
-          <DeleteThirdPartyDialog
-            onClose={this.onShowDeleteDialog}
-            visible={showDeleteDialog}
-            removeItem={removeItem}
-          />
-        )}
       </>
     );
   }
 }
 
 export default inject(
-  ({ auth, filesStore, settingsStore, treeFoldersStore }) => {
-    const {
-      providers,
-      connectItem,
-      capabilities,
-      setConnectItem,
-      showThirdPartyPanel,
-      setShowThirdPartyPanel,
-      googleConnectItem,
-      boxConnectItem,
-      dropboxConnectItem,
-      oneDriveConnectItem,
-      nextCloudConnectItem,
-      kDriveConnectItem,
-      yandexConnectItem,
-      ownCloudConnectItem,
-      webDavConnectItem,
-      getOAuthToken,
-      openConnectWindow,
-    } = settingsStore.thirdPartyStore;
+  ({ filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
+    const { providers, capabilities } = settingsStore.thirdPartyStore;
     const { fetchFiles, filter } = filesStore;
     const { setSelectedNode, myFolder, commonFolder } = treeFoldersStore;
+    const {
+      setConnectItem,
+      setThirdPartyDialogVisible,
+      setDeleteThirdPartyDialogVisible,
+      setRemoveItem,
+      setConnectDialogVisible,
+    } = dialogsStore;
 
     return {
-      isAdmin: auth.isAdmin,
       filter,
       providers,
-      showThirdPartyPanel,
-      connectItem,
       capabilities,
-      googleConnectItem,
-      boxConnectItem,
-      dropboxConnectItem,
-      oneDriveConnectItem,
-      nextCloudConnectItem,
-      kDriveConnectItem,
-      yandexConnectItem,
-      ownCloudConnectItem,
-      webDavConnectItem,
       myDirectoryFolders: myFolder && myFolder.folders,
       commonDirectoryFolders: commonFolder && commonFolder.folders,
 
       fetchFiles,
       setSelectedNode,
+      setThirdPartyDialogVisible,
+      setConnectDialogVisible,
       setConnectItem,
-      setShowThirdPartyPanel,
-      getOAuthToken,
-      openConnectWindow,
+      setDeleteThirdPartyDialogVisible,
+      setRemoveItem,
     };
   }
 )(withTranslation("Settings")(observer(ConnectClouds)));

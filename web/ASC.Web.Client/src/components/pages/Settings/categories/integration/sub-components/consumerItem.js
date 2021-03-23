@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Box, Text } from "asc-web-components";
+import Box from "@appserver/components/box";
+import Text from "@appserver/components/text";
 import ConsumerToggle from "./consumerToggle";
 
 class ConsumerItem extends React.Component {

@@ -3,18 +3,17 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import {
-  Text,
-  Avatar,
-  Link,
-  toastr,
-  Button,
-  RequestLoader,
-  Loader,
-} from "asc-web-components";
-import { PeopleSelector } from "asc-web-common";
+import Text from "@appserver/components/text";
+import Avatar from "@appserver/components/avatar";
+import Link from "@appserver/components/link";
+import toastr from "@appserver/components/toast/toastr";
+import Button from "@appserver/components/button";
+import RequestLoader from "@appserver/components/request-loader";
+import Loader from "@appserver/components/loader";
+import PeopleSelector from "people/PeopleSelector";
 import isEmpty from "lodash/isEmpty";
 import { inject } from "mobx-react";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 
 const OwnerContainer = styled.div`
   .link_style {
@@ -34,7 +33,7 @@ const OwnerContainer = styled.div`
   }
 `;
 const HeaderContainer = styled.div`
-  margin: 40px 0 16px 0;
+  margin: 0 0 16px 0;
 `;
 
 const BodyContainer = styled.div`
@@ -85,20 +84,25 @@ class PureOwnerSettings extends Component {
 
   componentDidMount() {
     const { owner, getPortalOwner } = this.props;
-
+    showLoader();
     if (isEmpty(owner, true)) {
       getPortalOwner()
         .catch((error) => {
           toastr.error(error);
         })
         .finally(() => this.setState({ showLoader: false }));
+    } else {
+      this.setState({ showLoader: false });
     }
-    this.setState({ showLoader: false });
+    hideLoader();
   }
 
   onChangeOwner = () => {
-    const { t, owner } = this.props;
-    toastr.success(t("DnsChangeMsg", { email: owner.email }));
+    const { t, owner, sendOwnerChange } = this.props;
+    const { selectedOwner } = this.state;
+    sendOwnerChange(selectedOwner.key)
+      .then((res) => toastr.success(res.message)) //toastr.success(t("DnsChangeMsg", { email: owner.email })))
+      .catch((err) => toastr.error(err));
   };
 
   onLoading = (status) => this.setState({ isLoading: status });
@@ -235,12 +239,14 @@ OwnerSettings.propTypes = {
   owner: PropTypes.object,
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const { customNames, getPortalOwner, owner } = auth.settingsStore;
+  const { sendOwnerChange } = setup;
   return {
     groupsCaption: customNames.groupsCaption,
     getPortalOwner,
     owner,
     me: auth.userStore.user,
+    sendOwnerChange,
   };
 })(withRouter(OwnerSettings));

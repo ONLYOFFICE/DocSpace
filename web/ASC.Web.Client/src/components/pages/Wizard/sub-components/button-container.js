@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { Box, Button, utils } from "asc-web-components";
-
-const { tablet } = utils.device;
+import Box from "@appserver/components/box";
+import Button from "@appserver/components/button";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledContainer = styled(Box)`
   width: 311px;

@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
-import { PageLayout } from "asc-web-common";
 import { ArticleHeaderContent, ArticleBodyContent } from "./Article";
 import { SectionHeaderContent } from "./Section";
 import { inject, observer } from "mobx-react";
-
+import PageLayout from "@appserver/common/components/PageLayout";
 const Layout = ({
   currentProductId,
   setCurrentProductId,

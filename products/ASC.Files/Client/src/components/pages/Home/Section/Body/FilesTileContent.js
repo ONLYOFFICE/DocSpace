@@ -2,16 +2,22 @@ import React from "react";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Link, Text, Icons, Badge } from "asc-web-components";
-import { constants, api, toastr } from "asc-web-common";
+import Badge from "@appserver/components/badge";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import { markAsRead } from "@appserver/common/api/files";
+import { FileAction, AppServerConfig } from "@appserver/common/constants";
+import toastr from "studio/toastr";
 import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import TileContent from "./TileContent";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-
-const { FileAction } = constants;
+import CheckIcon from "../../../../../../public/images/check.react.svg";
+import CrossIcon from "../../../../../../../../../public/images/cross.react.svg";
+import config from "../../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
 
 const SimpleFilesTileContent = styled(TileContent)`
   .rowMainContainer {
@@ -58,7 +64,7 @@ const SimpleFilesTileContent = styled(TileContent)`
 `;
 
 const okIcon = (
-  <Icons.CheckIcon
+  <CheckIcon
     className="edit-ok-icon"
     size="scale"
     isfill={true}
@@ -67,7 +73,7 @@ const okIcon = (
 );
 
 const cancelIcon = (
-  <Icons.CrossIcon
+  <CrossIcon
     className="edit-cancel-icon"
     size="scale"
     isfill={true}
@@ -277,7 +283,9 @@ class FilesTileContent extends React.PureComponent {
     const { homepage, history } = this.props;
     const fileId = e.currentTarget.dataset.id;
 
-    history.push(`${homepage}/${fileId}/history`);
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, `/${fileId}/history`)
+    );
   };
 
   onBadgeClick = () => {
@@ -292,8 +300,7 @@ class FilesTileContent extends React.PureComponent {
       fetchFiles,
     } = this.props;
     if (item.fileExst) {
-      api.files
-        .markAsRead([], [item.id])
+      markAsRead([], [item.id])
         .then(() => {
           const data = treeFolders;
           const dataItem = data.find((x) => x.id === rootFolderId);
@@ -428,7 +435,7 @@ export default inject(
     },
     { item }
   ) => {
-    const { homepage, culture } = auth.settingsStore;
+    const { culture } = auth.settingsStore;
     const { setIsLoading, isLoading, dragging } = initFilesStore;
     const {
       iconFormatsStore,
@@ -465,7 +472,7 @@ export default inject(
 
     return {
       culture,
-      homepage,
+      homepage: config.homepage,
       fileAction,
       folders,
       rootFolderId: selectedFolderStore.pathParts,

@@ -1,10 +1,20 @@
 import React from "react";
-import { Row, LinkWithDropdown, ToggleButton, Icons } from "asc-web-components";
+import styled from "styled-components";
+import Row from "@appserver/components/row";
+import LinkWithDropdown from "@appserver/components/link-with-dropdown";
+import ToggleButton from "@appserver/components/toggle-button";
 import { StyledLinkRow } from "../StyledPanels";
 import AccessComboBox from "./AccessComboBox";
-import { constants } from "asc-web-common";
+import { ShareAccessRights } from "@appserver/common/constants";
+import AccessEditIcon from "../../../../public/images/access.edit.react.svg";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
-const { ShareAccessRights } = constants;
+const StyledAccessEditIcon = styled(AccessEditIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: "#A3A9AE";
+  }
+`;
 
 class LinkRow extends React.Component {
   onToggleButtonChange = () => {
@@ -47,11 +57,9 @@ class LinkRow extends React.Component {
                 isDisabled={isDisabled}
               />
             ) : (
-              <Icons.InvitationLinkIcon
+              <StyledAccessEditIcon
                 size="medium"
                 className="sharing_panel-owner-icon"
-                isfill={true}
-                color="#A3A9AE"
               />
             )
           }

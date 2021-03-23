@@ -1,7 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { ModalDialog, Text, Button } from "asc-web-components";
+
 import { withTranslation } from "react-i18next";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Text from "@appserver/components/text";
+import Button from "@appserver/components/button";
+import { inject, observer } from "mobx-react";
 
 const StyledOperationDialog = styled.div`
   .operation-button {
@@ -11,13 +15,15 @@ const StyledOperationDialog = styled.div`
 
 const PureThirdPartyMoveContainer = ({
   t,
-  onClose,
   visible,
   startMoveOperation,
   startCopyOperation,
   provider,
+  setThirdPartyMoveDialogVisible,
 }) => {
   const zIndex = 310;
+
+  const onClose = () => setThirdPartyMoveDialogVisible(false);
 
   return (
     <StyledOperationDialog>
@@ -55,6 +61,18 @@ const PureThirdPartyMoveContainer = ({
   );
 };
 
-export default withTranslation("ThirdPartyMoveDialog")(
-  PureThirdPartyMoveContainer
+export default inject(({ filesStore, dialogsStore }) => {
+  const {
+    thirdPartyMoveDialogVisible: visible,
+    setThirdPartyMoveDialogVisible,
+  } = dialogsStore;
+  const { selection } = filesStore;
+
+  return {
+    visible,
+    setThirdPartyMoveDialogVisible,
+    provider: selection[0].providerKey,
+  };
+})(
+  withTranslation("ThirdPartyMoveDialog")(observer(PureThirdPartyMoveContainer))
 );

@@ -1,16 +1,14 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import {
-  FieldContainer,
-  Text,
-  ComboBox,
-  Loader,
-  toastr,
-  Link,
-  SaveCancelButtons,
-} from "asc-web-components";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
+import FieldContainer from "@appserver/components/field-container";
+import Text from "@appserver/components/text";
+import ComboBox from "@appserver/components/combobox";
+import Loader from "@appserver/components/loader";
+import toastr from "@appserver/components/toast/toastr";
+import Link from "@appserver/components/link";
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject, observer } from "mobx-react";
@@ -121,7 +119,7 @@ class LanguageAndTimeZone extends React.Component {
       });
     }
 
-    if (!timezones.length && !languages.length) {
+    if (!timezones.length || !languages.length) {
       let languages;
       getPortalCultures()
         .then(() => {
@@ -179,6 +177,7 @@ class LanguageAndTimeZone extends React.Component {
       languageDefault,
     } = this.state;
     const { i18n, language, nameSchemaId, getCurrentCustomSchema } = this.props;
+
     if (timezones.length && languages.length && !prevState.isLoadedData) {
       this.setState({ isLoadedData: true });
     }
@@ -230,11 +229,12 @@ class LanguageAndTimeZone extends React.Component {
   };
 
   onSaveLngTZSettings = () => {
-    const { setLanguageAndTime, i18n } = this.props;
+    const { t, setLanguageAndTime, i18n } = this.props;
+    const { language, timezone } = this.state;
     this.setState({ isLoading: true }, function () {
-      setLanguageAndTime(this.state.language.key, this.state.timezone.key)
-        .then(() => i18n.changeLanguage(this.state.language.key))
-        .then((t) => toastr.success(t("SuccessfullySaveSettingsMessage")))
+      setLanguageAndTime(language.key, timezone.key)
+        .then(() => i18n.changeLanguage(language.key))
+        .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
         .catch((error) => toastr.error(error))
         .finally(() => this.setState({ isLoading: false }));
     });

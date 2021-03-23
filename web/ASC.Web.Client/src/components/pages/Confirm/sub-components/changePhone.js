@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Button, TextInput, Text } from "asc-web-components";
-import { PageLayout } from "asc-web-common";
+import Button from "@appserver/components/button";
+import TextInput from "@appserver/components/text-input";
+import Text from "@appserver/components/text";
+import PageLayout from "@appserver/common/components/PageLayout";
 import { inject, observer } from "mobx-react";
 
 const BodyStyle = styled.div`

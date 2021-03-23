@@ -1,23 +1,22 @@
 import React, { memo } from "react";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import {
-  ModalDialog,
-  Button,
-  Text,
-  ToggleContent,
-  Checkbox,
-  CustomScrollbarsVirtualList,
-} from "asc-web-components";
+
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Text from "@appserver/components/text";
+import ToggleContent from "@appserver/components/toggle-content";
+import Checkbox from "@appserver/components/checkbox";
+import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
+
 import { withTranslation } from "react-i18next";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { toastr, constants } from "asc-web-common";
+import toastr from "studio/toastr";
+import { EmployeeType } from "@appserver/common/constants";
 import ModalDialogContainer from "../ModalDialogContainer";
 
 import { inject, observer } from "mobx-react";
-
-const { EmployeeType } = constants;
 
 class ChangeUserTypeDialogComponent extends React.Component {
   constructor(props) {
@@ -171,13 +170,15 @@ ChangeUserTypeDialog.propTypes = {
   selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default inject(({ peopleStore }, ownProps) => ({
-  filter: peopleStore.filterStore.filter,
-  updateUserType: peopleStore.usersStore.updateUserType,
-  selectedUsers: peopleStore.selectionStore.selection,
-  setSelected: peopleStore.selectionStore.setSelected,
-  userIds:
-    ownProps.userType === EmployeeType.User
-      ? peopleStore.selectionStore.getUsersToMakeEmployeesIds
-      : peopleStore.selectionStore.getUsersToMakeGuestsIds,
-}))(observer(withRouter(ChangeUserTypeDialog)));
+export default withRouter(
+  inject(({ peopleStore }, ownProps) => ({
+    filter: peopleStore.filterStore.filter,
+    updateUserType: peopleStore.usersStore.updateUserType,
+    selectedUsers: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
+    userIds:
+      ownProps.userType === EmployeeType.User
+        ? peopleStore.selectionStore.getUsersToMakeEmployeesIds
+        : peopleStore.selectionStore.getUsersToMakeGuestsIds,
+  }))(observer(ChangeUserTypeDialog))
+);

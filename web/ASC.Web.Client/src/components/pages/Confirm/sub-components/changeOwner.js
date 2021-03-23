@@ -2,10 +2,12 @@ import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Button, Text, toastr } from "asc-web-components";
-import { PageLayout, utils as commonUtils } from "asc-web-common";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import toastr from "@appserver/components/toast/toastr";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
-const { tryRedirectTo } = commonUtils;
 
 const BodyStyle = styled.div`
   margin-top: 70px;

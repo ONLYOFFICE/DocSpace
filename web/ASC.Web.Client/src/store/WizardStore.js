@@ -1,4 +1,9 @@
-import { api } from "asc-web-common";
+import {
+  getMachineName,
+  setPortalOwner,
+  getIsLicenseRequired,
+  setLicense,
+} from "@appserver/common/api/settings";
 import { makeAutoObservable } from "mobx";
 
 class WizardStore {
@@ -32,7 +37,7 @@ class WizardStore {
   };
 
   getMachineName = async (token) => {
-    const machineName = await api.settings.getMachineName(token);
+    const machineName = await getMachineName(token);
     this.machineName = machineName;
   };
 
@@ -44,7 +49,7 @@ class WizardStore {
     confirmKey,
     analytics
   ) => {
-    const response = await api.settings.setPortalOwner(
+    const response = await setPortalOwner(
       email,
       hash,
       lng,
@@ -59,13 +64,13 @@ class WizardStore {
   };
 
   getIsRequiredLicense = async () => {
-    const isRequired = await api.settings.getIsLicenseRequired();
+    const isRequired = await getIsLicenseRequired();
 
     this.setIsRequiredLicense(isRequired);
   };
 
   setLicense = async (confirmKey, data) => {
-    const message = await api.settings.setLicense(confirmKey, data);
+    const message = await setLicense(confirmKey, data);
 
     this.setLicenseUpload(message);
   };

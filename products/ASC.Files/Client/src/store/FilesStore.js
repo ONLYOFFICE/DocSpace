@@ -1,32 +1,26 @@
 import { makeObservable, action, observable, computed } from "mobx";
-import { api, constants, store, history } from "asc-web-common";
-import axios from "axios";
-import queryString from "query-string";
+import store from "studio/store";
+import api from "@appserver/common/api";
+import {
+  FolderType,
+  FilterType,
+  FileType,
+  FileAction,
+  AppServerConfig,
+} from "@appserver/common/constants";
+import history from "@appserver/common/history";
 import FileActionStore from "./FileActionStore";
 import selectedFolderStore from "./SelectedFolderStore";
 import formatsStore from "./FormatsStore";
 import treeFoldersStore from "./TreeFoldersStore";
 import { createTreeFolders } from "../helpers/files-helpers";
-import {
-  AUTHOR_TYPE,
-  FILTER_TYPE,
-  PAGE_COUNT,
-  PAGE,
-  SEARCH_TYPE,
-  SEARCH,
-  SORT_BY,
-  SORT_ORDER,
-  FOLDER,
-  PREVIEW,
-} from "../helpers/constants";
 import config from "../../package.json";
+import { combineUrl } from "@appserver/common/utils";
 
 const { FilesFilter } = api;
-const { FolderType, FilterType, FileType, FileAction } = constants;
-const { authStore } = store;
-const { settingsStore, userStore, isAdmin } = authStore;
-const { isEncryptionSupport, isDesktopClient } = settingsStore;
 
+const { settingsStore, userStore, isAdmin } = store.auth;
+const { isEncryptionSupport, isDesktopClient } = settingsStore;
 const {
   iconFormatsStore,
   mediaViewersFormatsStore,
@@ -37,8 +31,8 @@ const {
   isPresentation,
   getFileIcon,
   getFolderIcon,
+  getIcon,
 } = iconFormatsStore;
-const { getIcon } = iconFormatsStore;
 const {
   canWebEdit,
   canWebComment,
@@ -84,6 +78,8 @@ class FilesStore {
       canShareOwnerChange: computed,
       selectionTitle: computed,
       currentFilesCount: computed,
+
+      canShare: computed,
 
       setFirstLoad: action,
       setFiles: action,
@@ -192,41 +188,14 @@ class FilesStore {
   };
 
   setFilterUrl = (filter) => {
-    const defaultFilter = FilesFilter.getDefault();
-    const params = [];
-    const URLParams = queryString.parse(window.location.href);
-
-    if (filter.filterType) {
-      params.push(`${FILTER_TYPE}=${filter.filterType}`);
-    }
-
-    if (filter.withSubfolders === "false") {
-      params.push(`${SEARCH_TYPE}=${filter.withSubfolders}`);
-    }
-
-    if (filter.search) {
-      params.push(`${SEARCH}=${filter.search.trim()}`);
-    }
-    if (filter.authorType) {
-      params.push(`${AUTHOR_TYPE}=${filter.authorType}`);
-    }
-    if (filter.folder) {
-      params.push(`${FOLDER}=${filter.folder}`);
-    }
-
-    if (filter.pageCount !== defaultFilter.pageCount) {
-      params.push(`${PAGE_COUNT}=${filter.pageCount}`);
-    }
-
-    if (URLParams.preview) {
-      params.push(`${PREVIEW}=${URLParams.preview}`);
-    }
-
-    params.push(`${PAGE}=${filter.page + 1}`);
-    params.push(`${SORT_BY}=${filter.sortBy}`);
-    params.push(`${SORT_ORDER}=${filter.sortOrder}`);
-
-    history.push(`${config.homepage}/filter?${params.join("&")}`);
+    const urlFilter = filter.toUrlParams();
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/filter?${urlFilter}`
+      )
+    );
   };
 
   fetchFiles = (folderId, filter, clearFilter = true) => {
@@ -276,6 +245,7 @@ class FilesStore {
       );
       this.setFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files);
       if (clearFilter) {
+        this.fileActionStore.setAction({ type: null });
         this.setSelected("close");
       }
 
@@ -314,35 +284,7 @@ class FilesStore {
       this.selection = this.selection.filter((x) => x.id !== id);
   };
 
-  isCanShare = () => {
-    const folderType = selectedFolderStore.rootFolderType;
-    const isVisitor = (userStore.user && userStore.user.isVisitor) || false;
-
-    if (isVisitor) {
-      return false;
-    }
-
-    switch (folderType) {
-      case FolderType.USER:
-        return true;
-      case FolderType.SHARE:
-        return false;
-      case FolderType.COMMON:
-        return isAdmin;
-      case FolderType.TRASH:
-        return false;
-      case FolderType.Favorites:
-        return false;
-      case FolderType.Recent:
-        return false;
-      case FolderType.Privacy:
-        return true;
-      default:
-        return false;
-    }
-  };
-
-  getFilesContextOptions = (item, canOpenPlayer, canShare) => {
+  getFilesContextOptions = (item, canOpenPlayer) => {
     const options = [];
     const isVisitor = (userStore.user && userStore.user.isVisitor) || false;
 
@@ -354,9 +296,11 @@ class FilesStore {
 
     if (item.id <= 0) return [];
 
-    const isRecycleBinFolder = treeFoldersStore.isRecycleBinFolder;
-    const isPrivacyFolder = treeFoldersStore.isPrivacyFolder;
-    const isRecentFolder = treeFoldersStore.isRecentFolder;
+    const {
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      isRecentFolder,
+    } = treeFoldersStore;
 
     if (isRecycleBinFolder) {
       options.push("download");
@@ -384,7 +328,8 @@ class FilesStore {
 
       //TODO: use canShare selector
       if (
-        /*!(isRecentFolder || isFavoritesFolder || isVisitor) && */ canShare
+        /*!(isRecentFolder || isFavoritesFolder || isVisitor) && */ this
+          .canShare
       ) {
         options.push("sharing-settings");
       }
@@ -393,7 +338,7 @@ class FilesStore {
         options.push("send-by-email");
       }
 
-      this.canShareOwnerChange && options.push("owner-change");
+      //this.canShareOwnerChange && options.push("owner-change");
       options.push("link-for-portal-users");
 
       if (!isVisitor) {
@@ -455,8 +400,8 @@ class FilesStore {
     return options;
   };
 
-  addFileToRecentlyViewed = (fileId, isPrivacy) => {
-    if (isPrivacy) return Promise.resolve();
+  addFileToRecentlyViewed = (fileId) => {
+    if (treeFoldersStore.isPrivacyFolder) return Promise.resolve();
     return api.files.addFileToRecentlyViewed(fileId);
   };
 
@@ -470,13 +415,11 @@ class FilesStore {
     return api.files.createFolder(parentFolderId, title);
   }
 
-  //TODO: action?
   setFile = (file) => {
     const fileIndex = this.files.findIndex((f) => f.id === file.id);
     if (fileIndex !== -1) this.files[fileIndex] = file;
   };
 
-  //TODO: action?
   setFolder = (folder) => {
     const folderIndex = this.folders.findIndex((f) => f.id === folder.id);
     if (folderIndex !== -1) this.folders[folderIndex] = folder;
@@ -504,6 +447,34 @@ class FilesStore {
     const foldersLength = this.folders ? this.folders.length : 0;
     return filesLength + foldersLength;
   };
+
+  get canShare() {
+    const folderType = selectedFolderStore.rootFolderType;
+    const isVisitor = (userStore.user && userStore.user.isVisitor) || false;
+
+    if (isVisitor) {
+      return false;
+    }
+
+    switch (folderType) {
+      case FolderType.USER:
+        return true;
+      case FolderType.SHARE:
+        return false;
+      case FolderType.COMMON:
+        return isAdmin;
+      case FolderType.TRASH:
+        return false;
+      case FolderType.Favorites:
+        return false;
+      case FolderType.Recent:
+        return false;
+      case FolderType.Privacy:
+        return true;
+      default:
+        return false;
+    }
+  }
 
   get currentFilesCount() {
     const serviceFilesCount = this.getServiceFilesCount();
@@ -588,15 +559,9 @@ class FilesStore {
   };
 
   get filesList() {
-    const items =
-      this.folders && this.files
-        ? [...this.folders, ...this.files]
-        : this.folders
-        ? this.folders
-        : this.files
-        ? this.files
-        : [];
+    //return [...this.folders, ...this.files];
 
+    const items = [...this.folders, ...this.files];
     const newItem = items.map((item) => {
       const {
         access,
@@ -630,36 +595,14 @@ class FilesStore {
         item.fileExst
       );
 
-      const canShare = this.isCanShare();
+      const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
-      const contextOptions = this.getFilesContextOptions(
-        item,
-        canOpenPlayer,
-        canShare
-      );
-      const checked = this.isFileSelected(this.selection, id, parentId);
-
-      const selectedItem = this.selection.find(
-        (x) => x.id === id && x.fileExst === fileExst
-      );
-
-      const isFolder = selectedItem ? false : fileExst ? false : true;
-      const isRecycleBinFolder = treeFoldersStore.isRecycleBinFolder;
-
-      const draggable =
-        selectedItem &&
-        isRecycleBinFolder &&
-        selectedItem.id !== this.fileActionStore.id;
-
-      let value = fileExst ? `file_${id}` : `folder_${id}`;
-      value += draggable ? "_draggable" : "";
-
-      const isCanWebEdit = canWebEdit(item.fileExst);
+      //const isCanWebEdit = canWebEdit(item.fileExst);
       const icon = getIcon(24, fileExst, providerKey);
 
       return {
         access,
-        checked,
+        //checked,
         comment,
         contentLength,
         contextOptions,
@@ -673,27 +616,25 @@ class FilesStore {
         foldersCount,
         icon,
         id,
-        isFolder,
+        //isFolder,
         locked,
         new: item.new,
         parentId,
         pureContentLength,
         rootFolderType,
-        selectedItem,
+        //selectedItem,
         shared,
         title,
         updated,
         updatedBy,
-        value,
         version,
         versionGroup,
         viewUrl,
         webUrl,
         providerKey,
-        draggable,
         canOpenPlayer,
-        canWebEdit: isCanWebEdit,
-        canShare,
+        //canWebEdit: isCanWebEdit,
+        //canShare,
       };
     });
 
@@ -767,7 +708,7 @@ class FilesStore {
   }
 
   get isOnlyFoldersSelected() {
-    return this.selection.every((selected) => selected.isFolder === true);
+    return this.selection.every((selected) => selected.fileExst !== undefined);
   }
 
   get isThirdPartySelection() {
@@ -831,6 +772,7 @@ class FilesStore {
   };
 
   setSelections = (items) => {
+    if (!items.length) return;
     if (this.selection.length > items.length) {
       //Delete selection
       const newSelection = [];
@@ -976,7 +918,7 @@ class FilesStore {
       ...externalAccessRequest,
     ];
 
-    return axios.all(requests);
+    return Promise.all(requests);
   };
 
   markItemAsFavorite = (id) => api.files.markAsFavorite(id);
@@ -998,6 +940,37 @@ class FilesStore {
   getFileInfo = async (id) => {
     const fileInfo = await api.files.getFileInfo(id);
     this.setFile(fileInfo);
+  };
+
+  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    if (providerKey) {
+      tab
+        ? (tab.location = url)
+        : window.open(
+            combineUrl(
+              AppServerConfig.proxyURL,
+              config.homepage,
+              `/doceditor?fileId=${id}`
+            ),
+            "_blank"
+          );
+    } else {
+      return this.addFileToRecentlyViewed(id)
+        .then(() => console.log("Pushed to recently viewed"))
+        .catch((e) => console.error(e))
+        .finally(
+          tab
+            ? (tab.location = url)
+            : window.open(
+                combineUrl(
+                  AppServerConfig.proxyURL,
+                  config.homepage,
+                  `/doceditor?fileId=${id}`
+                ),
+                "_blank"
+              )
+        );
+    }
   };
 }
 

@@ -1,18 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { MainButton, DropDownItem } from "asc-web-components";
+import MainButton from "@appserver/components/main-button";
+import DropDownItem from "@appserver/components/drop-down-item";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import { constants, Loaders } from "asc-web-common";
+import Loaders from "@appserver/common/components/Loaders";
+import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { inject, observer } from "mobx-react";
-
-const { FileAction } = constants;
+import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
 
 class PureArticleMainButtonContent extends React.Component {
   onCreate = (e) => {
-    this.goToHomePage();
+    // this.goToHomePage();
     const format = e.currentTarget.dataset.format || null;
     this.props.setAction({
       type: FileAction.Create,
@@ -39,7 +41,9 @@ class PureArticleMainButtonContent extends React.Component {
   goToHomePage = () => {
     const { homepage, history, filter } = this.props;
     const urlFilter = filter.toUrlParams();
-    history.push(`${homepage}/filter?${urlFilter}`);
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+    );
   };
 
   onFileChange = (e) => {
@@ -72,42 +76,42 @@ class PureArticleMainButtonContent extends React.Component {
       >
         <DropDownItem
           className="main-button_drop-down"
-          icon="ActionsDocumentsIcon"
+          icon="images/actions.documents.react.svg"
           label={t("NewDocument")}
           onClick={this.onCreate}
           data-format="docx"
         />
         <DropDownItem
           className="main-button_drop-down"
-          icon="SpreadsheetIcon"
+          icon="images/spreadsheet.react.svg"
           label={t("NewSpreadsheet")}
           onClick={this.onCreate}
           data-format="xlsx"
         />
         <DropDownItem
           className="main-button_drop-down"
-          icon="ActionsPresentationIcon"
+          icon="images/actions.presentation.react.svg"
           label={t("NewPresentation")}
           onClick={this.onCreate}
           data-format="pptx"
         />
         <DropDownItem
           className="main-button_drop-down"
-          icon="CatalogFolderIcon"
+          icon="images/catalog.folder.react.svg"
           label={t("NewFolder")}
           onClick={this.onCreate}
         />
         <DropDownItem isSeparator />
         <DropDownItem
           className="main-button_drop-down"
-          icon="ActionsUploadIcon"
+          icon="images/actions.upload.react.svg"
           label={t("UploadFiles")}
           onClick={this.onUploadFileClick}
         />
         {!isMobile && (
           <DropDownItem
             className="main-button_drop-down"
-            icon="ActionsUploadIcon"
+            icon="images/actions.upload.react.svg"
             label={t("UploadFolder")}
             disabled={isPrivacy}
             onClick={this.onUploadFolderClick}
@@ -161,7 +165,7 @@ export default inject(
     const { startUpload } = uploadDataStore;
 
     return {
-      homepage: auth.settingsStore.homepage,
+      homepage: config.homepage,
       firstLoad,
       selectedFolderId: id,
       isPrivacy: isPrivacyFolder,

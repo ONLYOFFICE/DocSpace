@@ -1,26 +1,44 @@
-import { action, makeObservable, observable } from "mobx";
-import { api, store } from "asc-web-common";
+import { makeAutoObservable } from "mobx";
+import {
+  getInvitationLinks,
+  getShortenedLink,
+} from "@appserver/common/api/portal";
+import store from "studio/store";
 
-const { authStore } = store;
-
+const { auth: authStore } = store;
 class InviteLinksStore {
-  inviteLinks = {};
+  userLink = null;
+  guestLink = null;
 
   constructor() {
-    makeObservable(this, {
-      inviteLinks: observable,
-      getPortalInviteLinks: action,
-    });
+    makeAutoObservable(this);
   }
+
+  setUserLink = (link) => {
+    this.userLink = link;
+  };
+  setGuestLink = (link) => {
+    this.guestLink = link;
+  };
 
   getPortalInviteLinks = async () => {
     const isViewerAdmin = authStore.isAdmin;
 
     if (!isViewerAdmin) return Promise.resolve();
 
-    const res = await api.portal.getInvitationLinks();
-    this.inviteLinks.userLink = res.userLink;
-    this.inviteLinks.guestLink = res.guestLink;
+    const links = await getInvitationLinks();
+    this.setUserLink(links.userLink);
+    this.setGuestLink(links.guestLink);
+  };
+
+  getShortenedLink = async (link, forUser = false) => {
+    if (forUser) {
+      const userLink = await getShortenedLink(link);
+      this.setUserLink(userLink);
+    } else {
+      const guestLink = await getShortenedLink(link);
+      this.setGuestLink(guestLink);
+    }
   };
 }
 

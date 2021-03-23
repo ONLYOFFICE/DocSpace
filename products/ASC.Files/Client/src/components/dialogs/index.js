@@ -5,6 +5,7 @@ import ConvertDialog from "./ConvertDialog";
 import DeleteThirdPartyDialog from "./DeleteThirdPartyDialog";
 import ConnectDialog from "./ConnectDialog";
 import ThirdPartyMoveDialog from "./ThirdPartyMoveDialog";
+import ThirdPartyDialog from "./ThirdPartyDialog";
 
 export {
   EmptyTrashDialog,
@@ -14,4 +15,5 @@ export {
   DeleteThirdPartyDialog,
   ConnectDialog,
   ThirdPartyMoveDialog,
+  ThirdPartyDialog,
 };

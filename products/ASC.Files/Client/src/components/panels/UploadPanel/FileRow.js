@@ -1,9 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { Row, Text, Icons, Tooltip, Link } from "asc-web-components";
-
+import Tooltip from "@appserver/components/tooltip";
+import Row from "@appserver/components/row";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 import LoadingButton from "./LoadingButton";
 import ShareButton from "./ShareButton";
+import LoadErrorIcon from "../../../../public/images/load.error.react.svg";
 import { inject, observer } from "mobx-react";
 
 const StyledFileRow = styled(Row)`
@@ -129,7 +132,7 @@ const FileRow = (props) => {
           ) : item.error || (!item.fileId && uploaded) ? (
             <div className="upload_panel-icon">
               {" "}
-              <Icons.LoadErrorIcon
+              <LoadErrorIcon
                 size="medium"
                 data-for="errorTooltip"
                 data-tip={item.error || t("UnknownError")}

@@ -1,11 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { Text } from "asc-web-components";
-import { toastr, ModuleTile, PageLayout, utils, store } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-
+import Text from "@appserver/components/text";
+import toastr from "studio/toastr";
+import PageLayout from "@appserver/common/components/PageLayout";
+import history from "@appserver/common/history";
+import ModuleTile from "./ModuleTile";
+import { tryRedirectTo } from "@appserver/common/utils";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
 
@@ -46,18 +49,17 @@ const HomeContainer = styled.div`
 
 const Tiles = ({ modules, isPrimary }) => {
   let index = 0;
-
   const mapped = modules.filter(
     (m) => m.isPrimary === isPrimary && m.isolateMode !== true
   );
 
-  console.log("Tiles", mapped, isPrimary);
+  //console.log("Tiles", mapped, isPrimary);
 
   return mapped.length > 0 ? (
     <div className="home-modules">
       {mapped.map((m) => (
         <div className="home-module" key={++index}>
-          <ModuleTile {...m} onClick={() => window.open(m.link, "_self")} />
+          <ModuleTile {...m} onClick={() => history.push(m.link)} />
         </div>
       ))}
     </div>
@@ -72,7 +74,7 @@ Tiles.propTypes = {
 };
 
 const Body = ({ modules, match, isLoaded }) => {
-  const { t } = useTranslation("Home");
+  const { t } = useTranslation();
   const { error } = match.params;
   setDocumentTitle();
 
@@ -94,8 +96,20 @@ const Body = ({ modules, match, isLoaded }) => {
   );
 };
 
-const Home = (props) => {
-  return (
+const Home = ({
+  defaultPage,
+  currentProductId,
+  setCurrentProductId,
+  ...props
+}) => {
+  useEffect(() => {
+    console.log("SET setCurrentProductId");
+    currentProductId !== "homePage" && setCurrentProductId("homePage");
+  }, [currentProductId, setCurrentProductId]);
+
+  return tryRedirectTo(defaultPage) ? (
+    <></>
+  ) : (
     <PageLayout>
       <PageLayout.SectionBody>
         <Body {...props} />
@@ -112,11 +126,12 @@ Home.propTypes = {
 
 export default inject(({ auth }) => {
   const { isLoaded, settingsStore, moduleStore } = auth;
-  const { defaultPage } = settingsStore;
+  const { defaultPage, setCurrentProductId } = settingsStore;
   const { modules } = moduleStore;
   return {
     defaultPage,
     modules,
     isLoaded,
+    setCurrentProductId,
   };
 })(withRouter(observer(Home)));

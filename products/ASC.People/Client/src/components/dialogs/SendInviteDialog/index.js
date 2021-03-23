@@ -1,22 +1,21 @@
 import React, { memo } from "react";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import {
-  ModalDialog,
-  Button,
-  Text,
-  ToggleContent,
-  Checkbox,
-  CustomScrollbarsVirtualList,
-} from "asc-web-components";
+
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import ToggleContent from "@appserver/components/toggle-content";
+import Checkbox from "@appserver/components/checkbox";
+import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
+
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import { api, toastr } from "asc-web-common";
+import { resendUserInvites } from "@appserver/common/api/people";
+import toastr from "studio/toastr";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
-
-const { resendUserInvites } = api.people;
 
 class SendInviteDialogComponent extends React.Component {
   constructor(props) {
@@ -163,8 +162,10 @@ SendInviteDialog.propTypes = {
   setSelected: PropTypes.func.isRequired,
 };
 
-export default inject(({ peopleStore }) => ({
-  selectedUsers: peopleStore.selectionStore.selection,
-  setSelected: peopleStore.selectionStore.setSelected,
-  userIds: peopleStore.selectionStore.getUsersToInviteIds,
-}))(observer(withRouter(SendInviteDialog)));
+export default withRouter(
+  inject(({ peopleStore }) => ({
+    selectedUsers: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
+    userIds: peopleStore.selectionStore.getUsersToInviteIds,
+  }))(observer(SendInviteDialog))
+);

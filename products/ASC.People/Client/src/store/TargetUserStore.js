@@ -1,24 +1,16 @@
-import { api, store } from "asc-web-common";
-import { action, computed, makeObservable, observable } from "mobx";
+import api from "@appserver/common/api";
+import { LANGUAGE } from "@appserver/common/constants";
+import { makeAutoObservable } from "mobx";
+import store from "studio/store";
 
-const { authStore } = store;
+const { auth: authStore } = store;
 
 class TargetUserStore {
   targetUser = null;
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
-    makeObservable(this, {
-      targetUser: observable,
-      getTargetUser: action,
-      setTargetUser: action,
-      resetTargetUser: action,
-      updateProfile: action,
-      updateCreatedAvatar: action,
-      updateProfileCulture: action,
-      getUserPhoto: action,
-      getDisableProfileType: computed,
-    });
+    makeAutoObservable(this);
   }
 
   get getDisableProfileType() {
@@ -32,17 +24,24 @@ class TargetUserStore {
     return res;
   }
 
+  get isMe() {
+    return (
+      this.targetUser &&
+      this.targetUser.userName === authStore.userStore.user.userName
+    );
+  }
+
   getTargetUser = async (userName) => {
-    if (authStore.userStore.user.userName === userName) {
-      return (this.targetUser = authStore.userStore.user);
-    } else {
-      const user = await api.people.getUser(userName);
-      return (this.targetUser = user);
-    }
+    /*if (authStore.userStore.user.userName === userName) {
+      return this.setTargetUser(authStore.userStore.user);
+    } else {*/
+    const user = await api.people.getUser(userName);
+    return this.setTargetUser(user);
+    //}
   };
 
   setTargetUser = (user) => {
-    return (this.targetUser = user);
+    this.targetUser = user;
   };
 
   resetTargetUser = () => {
@@ -71,10 +70,13 @@ class TargetUserStore {
 
   updateProfileCulture = async (id, culture) => {
     const res = await api.people.updateUserCulture(id, culture);
+
     authStore.userStore.setUser(res);
+
     this.setTargetUser(res);
-    caches.delete("api-cache");
-    await authStore.settingsStore.init();
+    //caches.delete("api-cache");
+    //await authStore.settingsStore.init();
+    localStorage.setItem(LANGUAGE, culture);
   };
 
   getUserPhoto = async (id) => {

@@ -1,4 +1,5 @@
-import { Checkbox, ContextMenuButton } from "asc-web-components";
+import Checkbox from "@appserver/components/checkbox";
+import ContextMenuButton from "@appserver/components/context-menu-button";
 import PropTypes from "prop-types";
 import React from "react";
 //import equal from "fast-deep-equal/react";

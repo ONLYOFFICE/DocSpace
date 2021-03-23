@@ -1,19 +1,21 @@
 import { makeObservable, action, observable, computed } from "mobx";
-import { store, utils } from "asc-web-common";
+import store from "studio/store";
+import { updateTempContent } from "@appserver/common/utils";
 import filesStore from "./FilesStore";
 import treeFoldersStore from "./TreeFoldersStore";
 import config from "../../package.json";
 
-const { authStore } = store;
-const { isAdmin } = authStore;
+const { auth } = store;
+const { isAdmin } = auth;
 
-class MainFilesStore {
+class InitFilesStore {
   isLoaded = false;
   isLoading = false;
   viewAs = "row";
   dragging = false;
   dragItem = null;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
+  isInit = false;
 
   constructor() {
     const pathname = window.location.pathname.toLowerCase();
@@ -87,24 +89,27 @@ class MainFilesStore {
   }
 
   initFiles = () => {
-    const isAuthenticated = authStore.isAuthenticated;
+    if (this.isInit) return;
+    this.isInit = true;
+
+    const isAuthenticated = auth.isAuthenticated;
     const {
       getPortalCultures,
       isDesktopClient,
       getIsEncryptionSupport,
       getEncryptionKeys,
       setModuleInfo,
-    } = authStore.settingsStore;
+    } = auth.settingsStore;
 
-    setModuleInfo(config.homepage, "e67be73d-f9ae-4ce1-8fec-1880cb518cb4");
+    setModuleInfo(config.homepage, config.id);
 
     const requests = [];
 
-    utils.updateTempContent();
+    updateTempContent();
     if (!isAuthenticated) {
       return this.setIsLoaded(true);
     } else {
-      utils.updateTempContent(isAuthenticated);
+      updateTempContent(isAuthenticated);
     }
 
     if (!this.isEditor) {
@@ -119,4 +124,4 @@ class MainFilesStore {
   };
 }
 
-export default new MainFilesStore();
+export default new InitFilesStore();

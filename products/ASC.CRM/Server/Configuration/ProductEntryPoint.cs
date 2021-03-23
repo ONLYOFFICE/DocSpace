@@ -95,8 +95,8 @@ namespace ASC.CRM.Configuration
             {
                 //MasterPageFile = String.Concat(PathProvider.BaseVirtualPath, "Masters/BasicTemplate.Master"),
                 DisabledIconFileName = "product_disabled_logo.png",
-                IconFileName = "product_logo.png",
-                LargeIconFileName = "product_logolarge.svg",
+                IconFileName = "images/crm.menu.svg",
+                LargeIconFileName = "images/crm.svg",
                 DefaultSortOrder = 30,
                 //SubscriptionManager = new ProductSubscriptionManager(),
                 //SpaceUsageStatManager = new CRMSpaceUsageStatManager(),

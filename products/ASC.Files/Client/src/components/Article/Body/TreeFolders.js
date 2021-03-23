@@ -1,13 +1,19 @@
 import React from "react";
-import { TreeMenu, TreeNode, Icons } from "asc-web-components";
+import TreeMenu from "@appserver/components/tree-menu";
+import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import styled from "styled-components";
 //import equal from "fast-deep-equal/react";
-import { api, constants, toastr } from "asc-web-common";
-import { onConvertFiles } from "../../../helpers/files-converter";
-import { observer, inject } from "mobx-react";
+import { getFolder } from "@appserver/common/api/files";
+import { FolderType, ShareAccessRights } from "@appserver/common/constants";
+import toastr from "studio/toastr";
 
-const { files } = api;
-const { FolderType, ShareAccessRights } = constants;
+import { onConvertFiles } from "../../../helpers/files-converter";
+import { ReactSVG } from "react-svg";
+import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
+import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+
+import { observer, inject } from "mobx-react";
 
 const backgroundDragColor = "#EFEFB2";
 const backgroundDragEnterColor = "#F8F7BF";
@@ -31,7 +37,27 @@ const StyledTreeMenu = styled(TreeMenu)`
     margin-left: 4px;
   }*/
 `;
+const StyledFolderSVG = styled.div`
+  svg {
+    width: 100%;
 
+    path {
+      fill: #657077;
+    }
+  }
+`;
+const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
+const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
 class TreeFolders extends React.Component {
   constructor(props) {
     super(props);
@@ -45,76 +71,76 @@ class TreeFolders extends React.Component {
   };
 
   getFolderIcon = (item) => {
-    let iconName = "CatalogFolderIcon";
+    let iconUrl = "images/catalog.folder.react.svg";
 
     switch (item.rootFolderType) {
       case FolderType.USER:
-        iconName = "CatalogUserIcon";
+        iconUrl = "images/catalog.user.react.svg";
         break;
       case FolderType.SHARE:
-        iconName = "CatalogSharedIcon";
+        iconUrl = "images/catalog.shared.react.svg";
         break;
       case FolderType.COMMON:
-        iconName = "CatalogPortfolioIcon";
+        iconUrl = "images/catalog.portfolio.react.svg";
         break;
       case FolderType.Favorites:
-        iconName = "CatalogFavoritesIcon";
+        iconUrl = "images/catalog.favorites.react.svg";
         break;
       case FolderType.Recent:
-        iconName = "CatalogRecentIcon";
+        iconUrl = "images/catalog.recent.react.svg";
         break;
       case FolderType.Privacy:
-        iconName = "CatalogPrivateRoomIcon";
+        iconUrl = "images/catalog.private.react.svg";
         break;
       case FolderType.TRASH:
-        iconName = "CatalogTrashIcon";
+        iconUrl = "/static/images/catalog.trash.react.svg";
         break;
       default:
         break;
     }
 
-    if (item.parentId !== 0) iconName = "CatalogFolderIcon";
+    if (item.parentId !== 0) iconUrl = "images/catalog.folder.react.svg";
 
     switch (item.providerKey) {
       case "GoogleDrive":
-        iconName = "CloudServicesGoogleDriveIcon";
+        iconUrl = "images/cloud.services.google.drive.react.svg";
         break;
       case "Box":
-        iconName = "CloudServicesBoxIcon";
+        iconUrl = "images/cloud.services.box.react.svg";
         break;
       case "DropboxV2":
-        iconName = "CloudServicesDropboxIcon";
+        iconUrl = "images/cloud.services.dropbox.react.svg";
         break;
       case "OneDrive":
-        iconName = "CloudServicesOneDriveIcon";
+        iconUrl = "images/cloud.services.onedrive.react.svg";
         break;
       case "SharePoint":
-        iconName = "CloudServicesOneDriveIcon";
+        iconUrl = "images/cloud.services.onedrive.react.svg";
         break;
       case "kDrive":
-        iconName = "CatalogFolderIcon";
+        iconUrl = "images/catalog.folder.react.svg";
         break;
       case "Yandex":
-        iconName = "CatalogFolderIcon";
+        iconUrl = "images/catalog.folder.react.svg";
         break;
       case "NextCloud":
-        iconName = "CloudServicesNextcloudIcon";
+        iconUrl = "images/cloud.services.nextcloud.react.svg";
         break;
       case "OwnCloud":
-        iconName = "CatalogFolderIcon";
+        iconUrl = "images/catalog.folder.react.svg";
         break;
       case "WebDav":
-        iconName = "CatalogFolderIcon";
+        iconUrl = "images/catalog.folder.react.svg";
         break;
       default:
         break;
     }
 
-    return React.createElement(Icons[iconName], {
-      size: "scale",
-      isfill: true,
-      color: "#657077",
-    });
+    return (
+      <StyledFolderSVG>
+        <ReactSVG src={iconUrl} />
+      </StyledFolderSVG>
+    );
   };
 
   showDragItems = (item) => {
@@ -235,9 +261,9 @@ class TreeFolders extends React.Component {
       return null;
     }
     if (obj.expanded) {
-      return <Icons.ExpanderDownIcon size="scale" isfill color="dimgray" />;
+      return <StyledExpanderDownIcon size="scale" />;
     } else {
-      return <Icons.ExpanderRightIcon size="scale" isfill color="dimgray" />;
+      return <StyledExpanderRightIcon size="scale" />;
     }
   };
 
@@ -295,8 +321,7 @@ class TreeFolders extends React.Component {
     newFilter.withSubfolders = null;
     newFilter.authorType = null;
 
-    return files
-      .getFolder(folderId, newFilter)
+    return getFolder(folderId, newFilter)
       .then((data) => {
         arrayFolders = data.folders;
 

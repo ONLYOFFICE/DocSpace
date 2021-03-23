@@ -1,15 +1,13 @@
 import React from "react";
 import { withRouter } from "react-router";
-import {
-  Button,
-  Heading,
-  Link,
-  Text,
-  Backdrop,
-  Aside,
-} from "asc-web-components";
+import Backdrop from "@appserver/components/backdrop";
+import Heading from "@appserver/components/heading";
+import Aside from "@appserver/components/aside";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 import { withTranslation } from "react-i18next";
-import { toastr } from "asc-web-common";
+import toastr from "studio/toastr";
 import OwnerSelector from "./OwnerSelector";
 import {
   StyledAsidePanel,

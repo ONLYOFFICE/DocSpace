@@ -1,11 +1,23 @@
 import React from "react";
-import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
-import { withTranslation } from "react-i18next";
-import { history, Loaders } from "asc-web-common";
-
 import styled, { css } from "styled-components";
+import { withTranslation } from "react-i18next";
+import Filter from "@appserver/common/api/people/filter";
+import TreeMenu from "@appserver/components/tree-menu";
+import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
+import Link from "@appserver/components/link";
+
+import Loaders from "@appserver/common/components/Loaders";
+import CatalogFolderIcon from "../../../../../../../public/images/catalog.folder.react.svg";
+import DepartmentsGroupIcon from "../../../../public/images/departments.group.react.svg";
+import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
+import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
 import { inject, observer } from "mobx-react";
 import { getSelectedGroup } from "../../../helpers/people-helpers";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { withRouter } from "react-router";
+import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const StyledTreeMenu = styled(TreeMenu)`
   ${(props) =>
@@ -15,6 +27,30 @@ const StyledTreeMenu = styled(TreeMenu)`
     `}
 `;
 
+const StyledCatalogFolderIcon = styled(CatalogFolderIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+const StyledDepartmentsGroupIcon = styled(DepartmentsGroupIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
 const getItems = (data) => {
   return data.map((item) => {
     if (item.children) {
@@ -25,12 +61,16 @@ const getItems = (data) => {
           key={item.key}
           icon={
             item.root ? (
-              <Icons.DepartmentsGroupIcon
+              <StyledDepartmentsGroupIcon
                 size="scale"
-                isfill={true}
-                color="#657077"
-              />
+                color="#657077" /* isfill={true} */
+              /> // TODO: Add isFill prop if need
             ) : (
+              // <DepartmentsGroupIcon
+              //   size="scale"
+              //   isfill={true}
+              //   color="#657077"
+              // />
               ""
             )
           }
@@ -44,9 +84,7 @@ const getItems = (data) => {
         className="inner-folder"
         key={item.key}
         title={item.title}
-        icon={
-          <Icons.CatalogFolderIcon size="scale" isfill={true} color="#657077" />
-        }
+        icon={<StyledCatalogFolderIcon size="scale" color="#657077" />}
       />
     );
   });
@@ -57,168 +95,187 @@ class ArticleBodyContent extends React.Component {
     this.changeTitleDocument();
   }
 
+  getTreeGroups = (groups, departments) => {
+    const linkProps = { fontSize: "14px", fontWeight: 600, noHover: true };
+    const { history } = this.props;
+    const link = history.location.search.slice(1);
+    let newLink = link.split("&");
+    const index = newLink.findIndex((x) => x.includes("group"));
+    index && newLink.splice(1, 1);
+    newLink = newLink.join("&");
+
+    const treeData = [
+      {
+        key: "root",
+        title: (
+          <Link {...linkProps} href={`${history.location.pathname}`}>
+            {departments}
+          </Link>
+        ),
+        root: true,
+        children:
+          (groups &&
+            groups.map((g) => {
+              return {
+                key: g.id,
+                title: (
+                  <Link
+                    {...linkProps}
+                    data-id={g.id}
+                    href={`${history.location.pathname}?group=${g.id}&${newLink}`}
+                  >
+                    {g.name}
+                  </Link>
+                ),
+                root: false,
+              };
+            })) ||
+          [],
+      },
+    ];
+
+    return treeData;
+  };
+
   componentDidUpdate(prevProps) {
     if (prevProps.selectedKeys[0] !== this.props.selectedKeys[0]) {
       this.changeTitleDocument();
     }
   }
 
-  changeTitleDocument(data = null) {
+  changeTitleDocument(id) {
     const { groups, selectedKeys, setDocumentTitle } = this.props;
 
     const currentGroup = getSelectedGroup(
       groups,
-      data ? data[0] : selectedKeys[0]
+      id === "root" ? selectedKeys[0] : id
     );
     currentGroup ? setDocumentTitle(currentGroup.name) : setDocumentTitle();
   }
-  shouldComponentUpdate(nextProps) {
-    if (
-      !utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)
-    ) {
-      return true;
-    }
 
-    if (!utils.array.isArrayEqual(nextProps.data, this.props.data)) {
-      return true;
-    }
-
-    return false;
-  }
   onSelectHandler = (data) => {
     const { isEdit, setIsVisibleDataLossDialog } = this.props;
 
     if (isEdit) {
-      setIsVisibleDataLossDialog(true, this.onSelect(data));
+      setIsVisibleDataLossDialog(true, () => this.onSelect(data));
     } else {
-      this.onSelect(data)();
+      this.onSelect(data);
     }
   };
   onSelect = (data) => {
-    const { setIsLoading } = this.props;
-    return () => {
-      const { selectGroup } = this.props;
-      const groupId =
-        data && data.length === 1 && data[0] !== "root" ? data[0] : null;
-      setIsLoading(true);
-      this.changeTitleDocument(data);
+    //const { selectGroup } = this.props;
+    const groupId = data[0];
+    const isRoot = groupId === "root";
+    //data && data.length === 1 && data[0] !== "root" ? data[0] : null;
+
+    const { history, selectGroup } = this.props;
+
+    this.changeTitleDocument(groupId);
+
+    if (window.location.pathname.indexOf("/people/filter") > 0) {
       selectGroup(groupId);
-      setIsLoading(false);
-    };
+    } else {
+      const { filter } = this.props;
+      const newFilter = isRoot ? Filter.getDefault() : filter.clone();
+
+      if (!isRoot) newFilter.group = groupId;
+
+      const urlFilter = newFilter.toUrlParams();
+      const url = combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/filter?${urlFilter}`
+      );
+      history.push(url);
+    }
   };
+
   switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
     }
     if (obj.expanded) {
-      return (
-        <Icons.ExpanderDownIcon size="scale" isfill={true} color="dimgray" />
-      );
+      return <StyledExpanderDownIcon size="scale" color="dimgray" />;
     } else {
-      return (
-        <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray" />
-      );
+      return <StyledExpanderRightIcon size="scale" color="dimgray" />;
     }
   };
 
   render() {
-    const { isLoaded, data, selectedKeys, isAdmin } = this.props;
+    const {
+      isLoaded,
+      groups,
+      groupsCaption,
+      selectedKeys,
+      isAdmin,
+      isVisitor,
+    } = this.props;
+
+    const data = this.getTreeGroups(groups, groupsCaption);
 
     //console.log("PeopleTreeMenu", this.props);
-    return !isLoaded ? (
-      <Loaders.TreeFolders />
-    ) : (
-      <StyledTreeMenu
-        className="people-tree-menu"
-        checkable={false}
-        draggable={false}
-        disabled={false}
-        multiple={false}
-        showIcon={true}
-        defaultExpandAll={true}
-        switcherIcon={this.switcherIcon}
-        onSelect={this.onSelectHandler}
-        selectedKeys={selectedKeys}
-        isFullFillSelection={false}
-        gapBetweenNodes="22"
-        gapBetweenNodesTablet="26"
-        isEmptyRootNode={getItems(data).length > 0}
-        isAdmin={isAdmin}
-      >
-        {getItems(data)}
-      </StyledTreeMenu>
+    return (
+      !isVisitor &&
+      (!isLoaded ? (
+        <Loaders.TreeFolders />
+      ) : (
+        <StyledTreeMenu
+          className="people-tree-menu"
+          checkable={false}
+          draggable={false}
+          disabled={false}
+          multiple={false}
+          showIcon={true}
+          defaultExpandAll={true}
+          switcherIcon={this.switcherIcon}
+          onSelect={this.onSelectHandler}
+          selectedKeys={selectedKeys}
+          isFullFillSelection={false}
+          gapBetweenNodes="22"
+          gapBetweenNodesTablet="26"
+          isEmptyRootNode={getItems(data).length > 0}
+          isAdmin={isAdmin}
+        >
+          {getItems(data)}
+        </StyledTreeMenu>
+      ))
     );
   }
 }
 
-const getTreeGroups = (groups, departments) => {
-  const linkProps = { fontSize: "14px", fontWeight: 600, noHover: true };
-  const link = history.location.search.slice(1);
-  let newLink = link.split("&");
-  const index = newLink.findIndex((x) => x.includes("group"));
-  index && newLink.splice(1, 1);
-  newLink = newLink.join("&");
-
-  const onTitleClick = () => {
-    history.push("/products/people/");
-  };
-
-  const treeData = [
-    {
-      key: "root",
-      title: (
-        <Link
-          {...linkProps}
-          onClick={onTitleClick}
-          href={`${history.location.pathname}`}
-        >
-          {departments}
-        </Link>
-      ),
-      root: true,
-      children:
-        (groups &&
-          groups.map((g) => {
-            return {
-              key: g.id,
-              title: (
-                <Link
-                  {...linkProps}
-                  href={`${history.location.pathname}?group=${g.id}&${newLink}`}
-                >
-                  {g.name}
-                </Link>
-              ),
-              root: false,
-            };
-          })) ||
-        [],
-    },
-  ];
-
-  return treeData;
-};
-
-const BodyContent = withTranslation("Article")(ArticleBodyContent);
+const BodyContent = withTranslation("Article")(withRouter(ArticleBodyContent));
 
 export default inject(({ auth, peopleStore }) => {
-  const groups = peopleStore.groupsStore.groups;
-  const { groupsCaption } = auth.settingsStore.customNames;
-  const data = getTreeGroups(groups, groupsCaption);
-  const selectedKeys = peopleStore.selectedGroupStore.selectedGroup
-    ? [peopleStore.selectedGroupStore.selectedGroup]
-    : ["root"];
+  const { settingsStore, isLoaded, setDocumentTitle, isAdmin } = auth;
+  const { customNames } = settingsStore;
+  const {
+    groupsStore,
+    selectedGroupStore,
+    editingFormStore,
+    setIsLoading,
+    isLoading,
+    filterStore,
+  } = peopleStore;
+  const { filter } = filterStore;
+  const { groups } = groupsStore;
+  const { groupsCaption } = customNames;
+  const { isEdit, setIsVisibleDataLossDialog } = editingFormStore;
+  const { selectedGroup, selectGroup } = selectedGroupStore;
+  const selectedKeys = selectedGroup ? [selectedGroup] : ["root"];
   return {
-    setDocumentTitle: auth.setDocumentTitle,
-    isLoaded: auth.isLoaded,
-    isAdmin: auth.isAdmin,
+    setDocumentTitle,
+    isLoaded,
+    isVisitor: auth.userStore.user.isVisitor,
+    isAdmin,
     groups,
-    data,
+    groups,
+    groupsCaption,
     selectedKeys,
-    selectGroup: peopleStore.selectedGroupStore.selectGroup,
-    isEdit: peopleStore.editingFormStore.isEdit,
-    setIsVisibleDataLossDialog:
-      peopleStore.editingFormStore.setIsVisibleDataLossDialog,
-    setIsLoading: peopleStore.setIsLoading,
+    selectGroup,
+    isEdit,
+    setIsVisibleDataLossDialog,
+    setIsLoading,
+    isLoading,
+    filter,
   };
 })(observer(BodyContent));

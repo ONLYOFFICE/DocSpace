@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { TabContainer } from "asc-web-components";
+import TabContainer from "@appserver/components/tabs-container";
 
 import OwnerSettings from "./sub-components/owner";
 import AdminsSettings from "./sub-components/admins";
@@ -10,10 +10,15 @@ import AdminsSettings from "./sub-components/admins";
 
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject } from "mobx-react";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const MainContainer = styled.div`
-  padding-bottom: 16px;
   width: 100%;
+
+  .settings_tabs {
+    padding-bottom: 16px;
+  }
 
   .page_loader {
     position: fixed;
@@ -51,13 +56,23 @@ class PureAccessRights extends Component {
 
     switch (page.key) {
       case "0":
-        history.push("/settings/security/accessrights/owner");
+        history.push(
+          combineUrl(
+            AppServerConfig.proxyURL,
+            "/settings/security/accessrights/owner"
+          )
+        );
         break;
       case "1":
-        history.push("/settings/security/accessrights/admins");
+        history.push(
+          combineUrl(
+            AppServerConfig.proxyURL,
+            "/settings/security/accessrights/admins"
+          )
+        );
         break;
       // case "2":
-      //   history.push("/settings/security/accessrights/modules");
+      //   history.push(combineUrl(AppServerConfig.proxyURL, "/settings/security/accessrights/modules"));
       //   break;
       default:
         break;
@@ -83,12 +98,13 @@ class PureAccessRights extends Component {
 
     return (
       <MainContainer>
-        <TabContainer
+        <OwnerSettings />
+        {/* <TabContainer
+          classNem="settings_tabs"
           selectedItem={selectedTab}
           isDisabled={isLoading}
           onSelect={this.onSelectPage}
-        >
-          {[
+          elements={[
             {
               key: "0",
               title: t("OwnerSettings"),
@@ -98,14 +114,15 @@ class PureAccessRights extends Component {
               key: "1",
               title: t("AdminsSettings"),
               content: <AdminsSettings />,
+              dis
             },
-            // {
-            //   key: "2",
-            //   title: "Portals settings",
-            //   content: <ModulesSettings />
-            // }
+            {
+              key: "2",
+              title: "Portals settings",
+              content: <ModulesSettings />
+            }
           ]}
-        </TabContainer>
+        /> */}
       </MainContainer>
     );
   }

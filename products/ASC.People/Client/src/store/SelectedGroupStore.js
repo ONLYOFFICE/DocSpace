@@ -1,5 +1,5 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { api } from "asc-web-common";
+import { getGroup } from "@appserver/common/api/groups";
 
 class SelectedGroupStore {
   selectedGroup = null;
@@ -23,11 +23,15 @@ class SelectedGroupStore {
     const { filter } = this.peopleStore.filterStore;
     const { clearSelection } = this.peopleStore.selectionStore;
     const { getUsersList } = this.peopleStore.usersStore;
-    let newFilter = filter.clone();
+    const { setIsLoading } = this.peopleStore;
 
+    setIsLoading(true);
+
+    let newFilter = filter.clone();
     newFilter.group = groupId;
+
     clearSelection();
-    getUsersList(newFilter);
+    getUsersList(newFilter).finally(() => setIsLoading(false));
   };
 
   setSelectedGroup = (groupId) => {
@@ -35,7 +39,7 @@ class SelectedGroupStore {
   };
 
   setTargetedGroup = async (groupId) => {
-    const res = await api.groups.getGroup(groupId);
+    const res = await getGroup(groupId);
     this.targetedGroup = res;
   };
 

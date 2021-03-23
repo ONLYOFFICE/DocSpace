@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  ModalDialog,
-  TextInput,
-  PasswordInput,
-  Button,
-  Checkbox,
-  FieldContainer,
-  toastr,
-} from "asc-web-components";
+import toastr from "@appserver/components/toast";
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Checkbox from "@appserver/components/checkbox";
+import TextInput from "@appserver/components/text-input";
+import PasswordInput from "@appserver/components/password-input";
+import FieldContainer from "@appserver/components/field-container";
+
 import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
@@ -30,6 +29,7 @@ const PureConnectDialogContainer = (props) => {
     getOAuthToken,
     saveThirdParty,
     openConnectWindow,
+    setConnectDialogVisible,
   } = props;
   const { corporate, title, link, token, provider_id, provider_key } = item;
 
@@ -72,10 +72,10 @@ const PureConnectDialogContainer = (props) => {
     setCustomerTitleValue(e.target.value);
   };
   const onChangeMakeShared = () => setMakeShared(!isCorporate);
-  const onClose = useCallback(() => !isLoading && props.onClose(), [
-    isLoading,
-    props,
-  ]);
+
+  const onClose = useCallback(() => {
+    !isLoading && setConnectDialogVisible(false);
+  }, [isLoading, setConnectDialogVisible]);
 
   const onSave = useCallback(() => {
     const isTitleValid = !!customerTitle.trim();
@@ -116,10 +116,8 @@ const PureConnectDialogContainer = (props) => {
     )
       .then((folderData) => {
         fetchTreeFolders().then((data) => {
-          const commonFolder = data.treeFolders.find(
-            (x) => x.id === commonFolderId
-          );
-          const myFolder = data.treeFolders.find((x) => x.id === myFolderId);
+          const commonFolder = data.find((x) => x.id === commonFolderId);
+          const myFolder = data.find((x) => x.id === myFolderId);
 
           const newTreeFolders = treeFolders;
 
@@ -201,6 +199,10 @@ const PureConnectDialogContainer = (props) => {
     window.addEventListener("keyup", onKeyUpHandler);
     return () => window.removeEventListener("keyup", onKeyUpHandler);
   }, [onKeyUpHandler]);
+
+  useEffect(() => {
+    return setToken(token);
+  }, [setToken, token]);
 
   return (
     <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
@@ -317,7 +319,13 @@ const ConnectDialog = withTranslation("ConnectDialog")(
 );
 
 export default inject(
-  ({ filesStore, settingsStore, treeFoldersStore, selectedFolderStore }) => {
+  ({
+    filesStore,
+    settingsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    dialogsStore,
+  }) => {
     const {
       providers,
       getOAuthToken,
@@ -335,6 +343,11 @@ export default inject(
       fetchTreeFolders,
     } = treeFoldersStore;
     const { id, folders } = selectedFolderStore;
+    const {
+      connectDialogVisible: visible,
+      setConnectDialogVisible,
+      connectItem: item,
+    } = dialogsStore;
 
     return {
       selectedFolderId: id,
@@ -343,6 +356,8 @@ export default inject(
       myFolderId,
       commonFolderId,
       providers,
+      visible,
+      item,
 
       fetchFiles,
       setTreeFolders,
@@ -351,6 +366,7 @@ export default inject(
       openConnectWindow,
       fetchThirdPartyProviders,
       fetchTreeFolders,
+      setConnectDialogVisible,
     };
   }
 )(observer(ConnectDialog));

@@ -1,16 +1,15 @@
 import React from "react";
 
 import { withTranslation, Trans } from "react-i18next";
-import {
-  FieldContainer,
-  Text,
-  Loader,
-  Button,
-  toastr,
-  Link,
-  TextInput,
-} from "asc-web-components";
 import styled from "styled-components";
+import FieldContainer from "@appserver/components/field-container";
+import Text from "@appserver/components/text";
+import Loader from "@appserver/components/loader";
+import Button from "@appserver/components/button";
+import toastr from "@appserver/components/toast/toastr";
+import Link from "@appserver/components/link";
+import TextInput from "@appserver/components/text-input";
+
 import { inject, observer } from "mobx-react";
 
 const StyledComponent = styled.div`

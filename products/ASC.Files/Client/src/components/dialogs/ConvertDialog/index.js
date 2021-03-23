@@ -1,7 +1,10 @@
 import React from "react";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { ModalDialog, Button, Text, Checkbox } from "asc-web-components";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import Checkbox from "@appserver/components/checkbox";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 

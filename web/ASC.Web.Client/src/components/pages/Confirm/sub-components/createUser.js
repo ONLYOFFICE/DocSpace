@@ -1,22 +1,22 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import {
-  Button,
-  TextInput,
-  Text,
-  PasswordInput,
-  toastr,
-  Loader,
-  EmailInput,
-} from "asc-web-components";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { api, PageLayout, utils as commonUtils } from "asc-web-common";
-
+import axios from "axios";
+import { createUser } from "@appserver/common/api/people";
 import { inject, observer } from "mobx-react";
+import Button from "@appserver/components/button";
+import TextInput from "@appserver/components/text-input";
+import Text from "@appserver/components/text";
+import PasswordInput from "@appserver/components/password-input";
+import toastr from "@appserver/components/toast/toastr";
+import Loader from "@appserver/components/loader";
+import EmailInput from "@appserver/components/email-input";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { combineUrl, createPasswordHash } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
-const { createPasswordHash } = commonUtils;
 const inputWidth = "400px";
 
 const ConfirmContainer = styled.div`
@@ -61,7 +61,6 @@ class Confirm extends React.PureComponent {
     super(props);
 
     this.state = {
-      isConfirmLoaded: false,
       email: "",
       emailValid: true,
       firstName: "",
@@ -156,7 +155,7 @@ class Confirm extends React.PureComponent {
       loginData
     );
 
-    const user = await api.people.createUser(data, key);
+    const user = await createUser(data, key);
 
     console.log("Created user", user);
 
@@ -185,15 +184,10 @@ class Confirm extends React.PureComponent {
 
     const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
 
-    Promise.all(requests)
-      .then(() => {
-        this.setState({ isConfirmLoaded: true });
-        console.log("get settings success");
-      })
-      .catch((e) => {
-        console.error("get settings error", e);
-        history.push(`/login/error=${e}`);
-      });
+    axios.all(requests).catch((e) => {
+      console.error("get settings error", e);
+      history.push(combineUrl(AppServerConfig.proxyURL, `/login/error=${e}`));
+    });
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -234,9 +228,11 @@ class Confirm extends React.PureComponent {
   };
 
   render() {
-    console.log("createUser render");
-    const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
-    return !isConfirmLoaded ? (
+    const { settings, t, greetingTitle } = this.props;
+
+    //console.log("createUser render");
+
+    return !settings ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <ConfirmContainer>

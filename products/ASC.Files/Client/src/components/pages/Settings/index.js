@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
-import { PageLayout, utils, Loaders } from "asc-web-common";
+import PageLayout from "@appserver/common/components/PageLayout";
+import Loaders from "@appserver/common/components/Loaders";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
@@ -13,10 +15,9 @@ import { inject, observer } from "mobx-react";
 
 const PureSettings = ({
   match,
-  //history,
   t,
   isLoading,
-  settingsTree,
+  isLoadedSettingsTree,
   setFirstLoad,
 }) => {
   const [title, setTitle] = useState("");
@@ -45,9 +46,9 @@ const PureSettings = ({
 
   useEffect(() => {
     if (isLoading) {
-      utils.showLoader();
+      showLoader();
     } else {
-      utils.hideLoader();
+      hideLoader();
     }
   }, [isLoading]);
 
@@ -73,8 +74,7 @@ const PureSettings = ({
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          {(Object.keys(settingsTree).length === 0 && isLoading) ||
-          isLoading ? (
+          {(!isLoadedSettingsTree && isLoading) || isLoading ? (
             <Loaders.SectionHeader />
           ) : (
             <SectionHeaderContent title={t(`${title}`)} />
@@ -82,8 +82,7 @@ const PureSettings = ({
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {(Object.keys(settingsTree).length === 0 && isLoading) ||
-          isLoading ? (
+          {(!isLoadedSettingsTree && isLoading) || isLoading ? (
             setting === "thirdParty" ? (
               <Loaders.Rows />
             ) : (
@@ -105,13 +104,11 @@ export default inject(
     const { isLoading } = initFilesStore;
     const { setFirstLoad } = filesStore;
     const { setSelectedNode } = treeFoldersStore;
-    const { getFilesSettings, settingsTree: settings } = settingsStore;
-
-    const settingsTree = Object.keys(settings).length !== 0 ? settings : {};
+    const { getFilesSettings, isLoadedSettingsTree } = settingsStore;
 
     return {
       isLoading,
-      settingsTree,
+      isLoadedSettingsTree,
 
       setFirstLoad,
       setSelectedNode,

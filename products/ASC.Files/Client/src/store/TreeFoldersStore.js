@@ -1,8 +1,8 @@
 import { makeObservable, observable, computed, action } from "mobx";
-import { api, constants } from "asc-web-common";
+import { getFoldersTree } from "@appserver/common/api/files";
+import { FolderType } from "@appserver/common/constants";
 import selectedFolderStore from "./SelectedFolderStore";
 
-const { FolderType } = constants;
 class TreeFoldersStore {
   treeFolders = [];
   selectedTreeNode = [];
@@ -15,9 +15,6 @@ class TreeFoldersStore {
       expandedKeys: observable,
 
       myFolderId: computed,
-      //shareFolderId: computed,
-      //favoritesFolderId: computed,
-      //recentFolderId: computed,
       commonFolderId: computed,
 
       myFolder: computed,
@@ -39,12 +36,14 @@ class TreeFoldersStore {
       fetchTreeFolders: action,
       setTreeFolders: action,
       setExpandedKeys: action,
+      setSelectedNode: action,
     });
   }
 
   fetchTreeFolders = async () => {
-    const treeFolders = await api.files.getFoldersTree();
+    const treeFolders = await getFoldersTree();
     this.setTreeFolders(treeFolders);
+    return treeFolders;
   };
 
   setTreeFolders = (treeFolders) => {
@@ -64,8 +63,6 @@ class TreeFoldersStore {
   addExpandedKeys = (item) => {
     this.expandedKeys.push(item);
   };
-
-  /////////////////////////////////////TODO: FOLDER
 
   get myFolder() {
     return this.treeFolders.find((x) => x.rootFolderName === "@my");
@@ -97,30 +94,13 @@ class TreeFoldersStore {
     return this.treeFolders.find((x) => x.rootFolderName === "@trash");
   }
 
-  /////////////////////////////////////TODO: ID
-
   get myFolderId() {
     return this.myFolder ? this.myFolder.id : null;
   }
 
-  // get shareFolderId() {
-  //   return this.shareFolder ?this.shareFolder.id : null;
-  // }
-
-  // get favoritesFolderId() {
-  //   return this.favoritesFolder ? this.favoritesFolder.id : null;
-  // }
-
-  // get recentFolderId() {
-
-  //   return this.recentFolder ? this.recentFolder.id : null;
-  // }
-
   get commonFolderId() {
     return this.commonFolder ? this.commonFolder.id : null;
   }
-
-  /////////////////////////////////////TODO: IS
 
   get isMyFolder() {
     return this.myFolder && this.myFolder.id === selectedFolderStore.id;

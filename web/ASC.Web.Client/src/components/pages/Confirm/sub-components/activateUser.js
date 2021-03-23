@@ -1,22 +1,27 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import {
-  Button,
-  TextInput,
-  Text,
-  PasswordInput,
-  toastr,
-  Loader,
-} from "asc-web-components";
-import { PageLayout } from "asc-web-common";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { constants, utils as commonUtils, api } from "asc-web-common";
+import axios from "axios";
+import {
+  changePassword,
+  updateActivationStatus,
+  updateUser,
+} from "@appserver/common/api/people";
 import { inject, observer } from "mobx-react";
-
-const { EmployeeActivationStatus } = constants;
-const { createPasswordHash } = commonUtils;
+import Button from "@appserver/components/button";
+import TextInput from "@appserver/components/text-input";
+import Text from "@appserver/components/text";
+import PasswordInput from "@appserver/components/password-input";
+import toastr from "@appserver/components/toast/toastr";
+import Loader from "@appserver/components/loader";
+import PageLayout from "@appserver/common/components/PageLayout";
+import {
+  AppServerConfig,
+  EmployeeActivationStatus,
+} from "@appserver/common/constants";
+import { combineUrl, createPasswordHash } from "@appserver/common/utils";
 
 const inputWidth = "400px";
 
@@ -62,7 +67,6 @@ class Confirm extends React.PureComponent {
     super(props);
 
     this.state = {
-      isConfirmLoaded: false,
       email: props.linkData.email,
       firstName: props.linkData.firstname,
       firstNameValid: true,
@@ -155,19 +159,11 @@ class Confirm extends React.PureComponent {
       LastName: personalData.lastname,
     };
 
-    const res1 = await api.people.changePassword(
-      userId,
-      loginData.passwordHash,
-      key
-    );
+    const res1 = await changePassword(userId, loginData.passwordHash, key);
 
     console.log("changePassword", res1);
 
-    const res2 = await api.people.updateActivationStatus(
-      activationStatus,
-      userId,
-      key
-    );
+    const res2 = await updateActivationStatus(activationStatus, userId, key);
 
     console.log("updateActivationStatus", res2);
 
@@ -178,7 +174,7 @@ class Confirm extends React.PureComponent {
 
     console.log("Login", res3);
 
-    const res4 = await api.people.updateUser(changedData);
+    const res4 = await updateUser(changedData);
 
     console.log("updateUser", res4);
   };
@@ -197,15 +193,10 @@ class Confirm extends React.PureComponent {
     const { getSettings, getPortalPasswordSettings, history } = this.props;
     const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
 
-    Promise.all(requests)
-      .then(() => {
-        this.setState({ isConfirmLoaded: true });
-        console.log("get settings success");
-      })
-      .catch((e) => {
-        console.error("get settings error", e);
-        history.push(`/login/error=${e}`);
-      });
+    axios.all(requests).catch((e) => {
+      console.error("get settings error", e);
+      history.push(combineUrl(AppServerConfig.proxyURL, `/login/error=${e}`));
+    });
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -239,8 +230,8 @@ class Confirm extends React.PureComponent {
 
   render() {
     console.log("ActivateUser render");
-    const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
-    return !isConfirmLoaded ? (
+    const { settings, t, greetingTitle } = this.props;
+    return !settings ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <ConfirmContainer>
@@ -368,8 +359,6 @@ class Confirm extends React.PureComponent {
 }
 
 Confirm.propTypes = {
-  getConfirmationInfo: PropTypes.func.isRequired,
-  activateConfirmUser: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
@@ -398,5 +387,6 @@ export default inject(({ auth }) => {
     defaultPage,
     getSettings,
     getPortalPasswordSettings,
+    login: auth.login,
   };
 })(withRouter(withTranslation("Confirm")(observer(ActivateUserForm))));

@@ -1,20 +1,17 @@
 import React from "react";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
-import {
-  ModalDialog,
-  Button,
-  Text,
-  Checkbox,
-  Scrollbar,
-} from "asc-web-components";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import Checkbox from "@appserver/components/checkbox";
+import Scrollbar from "@appserver/components/scrollbar";
 import { withTranslation } from "react-i18next";
-import { api, toastr } from "asc-web-common";
+import { getProgress, removeFiles } from "@appserver/common/api/files";
+import toastr from "studio/toastr";
 import { TIMEOUT } from "../../../helpers/constants";
 import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { inject, observer } from "mobx-react";
-
-const { files } = api;
 
 class DeleteDialogComponent extends React.Component {
   constructor(props) {
@@ -46,118 +43,17 @@ class DeleteDialogComponent extends React.Component {
     this.state = { foldersList, filesList, selection };
   }
 
-  loopDeleteOperation = (id) => {
-    const {
-      currentFolderId,
-      filter,
-      treeFolders,
-      setTreeFolders,
-      isRecycleBinFolder,
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-      t,
-      fetchFiles,
-    } = this.props;
-    const successMessage = isRecycleBinFolder
-      ? t("DeleteFromTrash")
-      : t("DeleteSelectedElem");
-    api.files
-      .getProgress()
-      .then((res) => {
-        const currentProcess = res.find((x) => x.id === id);
-        if (currentProcess && currentProcess.progress !== 100) {
-          setSecondaryProgressBarData({
-            icon: "trash",
-            percent: currentProcess.progress,
-            label: t("DeleteOperation"),
-            visible: true,
-            alert: false,
-          });
-          setTimeout(() => this.loopDeleteOperation(id), 1000);
-        } else {
-          setSecondaryProgressBarData({
-            icon: "trash",
-            percent: 100,
-            label: t("DeleteOperation"),
-            visible: true,
-            alert: false,
-          });
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          fetchFiles(currentFolderId, filter).then((data) => {
-            if (!isRecycleBinFolder && !!this.state.foldersList.length) {
-              const path = data.selectedFolder.pathParts.slice(0);
-              const newTreeFolders = treeFolders;
-              const folders = data.selectedFolder.folders;
-              const foldersCount = data.selectedFolder.foldersCount;
-              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              setTreeFolders(newTreeFolders);
-            }
-            toastr.success(successMessage);
-          });
-        }
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        //toastr.error(err);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      });
-  };
-
   onDelete = () => {
-    const {
-      isRecycleBinFolder,
-      isPrivacy,
-      onClose,
-      t,
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.props;
-    const { selection } = this.state;
+    this.onClose();
+    const { t, deleteAction } = this.props;
+    const translations = {
+      deleteOperation: t("DeleteOperation"),
+      deleteFromTrash: t("DeleteFromTrash"),
+      deleteSelectedElem: t("DeleteSelectedElem"),
+    };
 
-    const deleteAfter = true; //Delete after finished
-    const immediately = isRecycleBinFolder || isPrivacy ? true : false; //Don't move to the Recycle Bin
-
-    const folderIds = [];
-    const fileIds = [];
-
-    let i = 0;
-    while (selection.length !== i) {
-      if (selection[i].fileExst && selection[i].checked) {
-        fileIds.push(selection[i].id);
-      } else if (selection[i].checked) {
-        folderIds.push(selection[i].id);
-      }
-      i++;
-    }
-
-    onClose();
-    if (folderIds.length || fileIds.length) {
-      setSecondaryProgressBarData({
-        icon: "trash",
-        visible: true,
-        label: t("DeleteOperation"),
-        percent: 0,
-        alert: false,
-      });
-
-      files
-        .removeFiles(folderIds, fileIds, deleteAfter, immediately)
-        .then((res) => {
-          const id = res[0] && res[0].id ? res[0].id : null;
-          this.loopDeleteOperation(id);
-        })
-        .catch((err) => {
-          setSecondaryProgressBarData({
-            visible: true,
-            alert: true,
-          });
-          //toastr.error(err);
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-        });
-    }
+    deleteAction(translations)
+      .catch((err) => toastr.error(err));
   };
 
   onChange = (event) => {
@@ -178,8 +74,10 @@ class DeleteDialogComponent extends React.Component {
     }
   };
 
+  onClose = () => this.props.setDeleteDialogVisible(false);
+
   render() {
-    const { onClose, visible, t, isLoading } = this.props;
+    const { visible, t, isLoading } = this.props;
     const { filesList, foldersList, selection } = this.state;
 
     const checkedSelections = selection.filter((x) => x.checked === true);
@@ -205,7 +103,7 @@ class DeleteDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
+        <ModalDialog visible={visible} onClose={this.onClose}>
           <ModalDialog.Header>{t("ConfirmationTitle")}</ModalDialog.Header>
           <ModalDialog.Body>
             <div className="modal-dialog-content">
@@ -262,7 +160,7 @@ class DeleteDialogComponent extends React.Component {
               key="CancelButton"
               label={t("CancelButton")}
               size="medium"
-              onClick={onClose}
+              onClick={this.onClose}
               isLoading={isLoading}
             />
           </ModalDialog.Footer>
@@ -281,10 +179,13 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     selectedFolderStore,
+    dialogsStore,
+    filesActionsStore,
   }) => {
     const { isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
     const { fetchFiles, selection, filter } = filesStore;
+    const { deleteAction } = filesActionsStore;
 
     const {
       treeFolders,
@@ -298,6 +199,11 @@ export default inject(
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
 
+    const {
+      deleteDialogVisible: visible,
+      setDeleteDialogVisible,
+    } = dialogsStore;
+
     return {
       currentFolderId: selectedFolderStore.id,
       selection,
@@ -307,11 +213,14 @@ export default inject(
       isPrivacy: isPrivacyFolder,
       filter,
       isRootFolder: selectedFolderStore.isRootFolder,
+      visible,
 
       fetchFiles,
       setTreeFolders,
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
+      setDeleteDialogVisible,
+      deleteAction,
     };
   }
 )(withRouter(observer(DeleteDialog)));

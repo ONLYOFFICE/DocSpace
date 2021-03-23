@@ -1,6 +1,4 @@
-import { store as commonStore } from "asc-web-common";
-
-const { authStore } = commonStore;
+import authStore from "@appserver/common/store/AuthStore";
 
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;

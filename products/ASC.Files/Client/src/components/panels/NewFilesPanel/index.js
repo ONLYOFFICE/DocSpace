@@ -1,18 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import {
-  Backdrop,
-  Heading,
-  Aside,
-  Row,
-  Box,
-  RowContainer,
-  Link,
-  Button,
-} from "asc-web-components";
+import Backdrop from "@appserver/components/backdrop";
+import Link from "@appserver/components/link";
+import Heading from "@appserver/components/heading";
+import Aside from "@appserver/components/aside";
+import Row from "@appserver/components/row";
+import Box from "@appserver/components/box";
+import RowContainer from "@appserver/components/row-container";
+import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
-import { api, toastr } from "asc-web-common";
+import { getNewFiles, markAsRead } from "@appserver/common/api/files";
+import toastr from "studio/toastr";
 import { ReactSVG } from "react-svg";
 import {
   StyledAsidePanel,
@@ -22,7 +21,9 @@ import {
   StyledFooter,
 } from "../StyledPanels";
 import { inject, observer } from "mobx-react";
-
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../../../package.json";
 class NewFilesPanelComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -33,8 +34,7 @@ class NewFilesPanelComponent extends React.Component {
   componentDidMount() {
     const { folderId, setIsLoading } = this.props;
     setIsLoading(true);
-    api.files
-      .getNewFiles(folderId[folderId.length - 1])
+    getNewFiles(folderId[folderId.length - 1])
       .then((files) => this.setState({ files }))
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
@@ -75,8 +75,7 @@ class NewFilesPanelComponent extends React.Component {
       }
     }
 
-    api.files
-      .markAsRead(folderIds, fileIds)
+    markAsRead(folderIds, fileIds)
       .then(() => {
         this.setNewFilesCount(folderId, markAsReadFiles);
         this.props.setNewRowItems(itemsIds);
@@ -86,15 +85,14 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   onNewFilesClick = (item) => {
-    const { onClose, /*setIsLoading,*/ folderId } = this.props;
+    const { onClose, /*setIsLoading,*/ folderId, markAsRead } = this.props;
     const folderIds = [];
     const fileId = [];
     const isFile = item.fileExst;
 
     isFile ? fileId.push(item.id) : folderIds.push(item.id);
 
-    api.files
-      .markAsRead(folderIds, fileId)
+    markAsRead(folderIds, fileId)
       .then(() => {
         this.setNewFilesCount(folderId, false, item);
         this.onFilesClick(item);
@@ -106,13 +104,14 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   onFilesClick = (item) => {
+    console.log("ITEM", item);
+    return;
     const { id, fileExst, viewUrl, fileType, providerKey } = item;
     const {
       filter,
       setMediaViewerData,
       fetchFiles,
       addFileToRecentlyViewed,
-      isPrivacy,
     } = this.props;
 
     if (!fileExst) {
@@ -122,15 +121,24 @@ class NewFilesPanelComponent extends React.Component {
       const isMedia = [2, 3, 4].includes(fileType);
 
       if (canEdit && providerKey) {
-        return addFileToRecentlyViewed(id, isPrivacy)
+        return addFileToRecentlyViewed(id)
           .then(() => console.log("Pushed to recently viewed"))
           .catch((e) => console.error(e))
-          .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
+          .finally(
+            window.open(
+              combineUrl(
+                AppServerConfig.proxyURL,
+                config.homepage,
+                `/doceditor?fileId=${id}`
+              ),
+              "_blank"
+            )
+          );
       }
 
       if (isMedia) {
-        const mediaItem = { visible: true, id };
-        setMediaViewerData(mediaItem);
+        //const mediaItem = { visible: true, id };
+        //setMediaViewerData(mediaItem);
         return;
       }
 
@@ -221,7 +229,10 @@ class NewFilesPanelComponent extends React.Component {
                   const element = this.getItemIcon(file);
                   return (
                     <Row key={file.id} element={element}>
-                      <Box onClick={this.onNewFilesClick.bind(this, file)}>
+                      <Box
+                        onClick={this.onNewFilesClick.bind(this, file)}
+                        marginProp="auto 0"
+                      >
                         <Link
                           containerWidth="100%"
                           type="page"
@@ -276,6 +287,7 @@ export default inject(
     mediaViewerDataStore,
     treeFoldersStore,
     formatsStore,
+    filesActionsStore,
   }) => {
     const { setIsLoading } = initFilesStore;
     const {
@@ -286,15 +298,15 @@ export default inject(
       addFileToRecentlyViewed,
       setNewRowItems,
     } = filesStore;
-    const { treeFolders, setTreeFolders, isPrivacyFolder } = treeFoldersStore;
+    const { treeFolders, setTreeFolders } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;
     const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+    const { markAsRead } = filesActionsStore;
 
     return {
       files,
       folders,
       treeFolders,
-      isPrivacy: isPrivacyFolder,
       filter,
 
       setIsLoading,
@@ -305,6 +317,7 @@ export default inject(
       setNewRowItems,
       getFileIcon,
       getFolderIcon,
+      markAsRead,
     };
   }
 )(withRouter(observer(NewFilesPanel)));

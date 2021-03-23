@@ -1,17 +1,14 @@
 import { makeObservable, action, observable, computed } from "mobx";
-import { api } from "asc-web-common";
+import api from "@appserver/common/api";
 
 class ThirdPartyStore {
   capabilities = [];
   providers = [];
-  connectItem = null;
-  showThirdPartyPanel = false; //TODO: move to panel?
 
   constructor() {
     makeObservable(this, {
       capabilities: observable,
       providers: observable,
-      connectItem: observable,
 
       googleConnectItem: computed,
       boxConnectItem: computed,
@@ -28,8 +25,6 @@ class ThirdPartyStore {
       setThirdPartyCapabilities: action,
       fetchThirdPartyProviders: action,
       deleteThirdParty: action,
-      setConnectItem: action,
-      setShowThirdPartyPanel: action,
       getOAuthToken: action,
       openConnectWindow: action,
     });
@@ -44,14 +39,6 @@ class ThirdPartyStore {
   };
 
   deleteThirdParty = (id) => api.files.deleteThirdParty(id);
-
-  setConnectItem = (connectItem) => {
-    this.connectItem = connectItem;
-  };
-
-  setShowThirdPartyPanel = (showThirdPartyPanel) => {
-    this.showThirdPartyPanel = showThirdPartyPanel;
-  };
 
   fetchThirdPartyProviders = async () => {
     this.providers = await api.files.getThirdPartyList();

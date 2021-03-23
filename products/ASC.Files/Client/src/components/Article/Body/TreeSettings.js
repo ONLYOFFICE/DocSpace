@@ -1,10 +1,17 @@
 import React, { useEffect } from "react";
 import { withRouter } from "react-router";
-import { TreeMenu, TreeNode, Icons } from "asc-web-components";
+import TreeMenu from "@appserver/components/tree-menu";
+import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import styled from "styled-components";
-import { history } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import SettingsIcon from "../../../../../../../public/images/settings.react.svg";
+import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
+import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
@@ -41,7 +48,24 @@ const StyledTreeMenu = styled(TreeMenu)`
     }
   }
 `;
-
+const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
+const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
+const StyledSettingsIcon = styled(SettingsIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
 const PureTreeSettings = ({
   match,
   enableThirdParty,
@@ -54,6 +78,7 @@ const PureTreeSettings = ({
   getFilesSettings,
   setSelectedFolder,
   //selectedFolder,
+  history,
   setIsLoading,
   t,
 }) => {
@@ -77,9 +102,9 @@ const PureTreeSettings = ({
       return null;
     }
     if (obj.expanded) {
-      return <Icons.ExpanderDownIcon size="scale" isfill color="dimgray" />;
+      return <StyledExpanderDownIcon size="scale" />;
     } else {
-      return <Icons.ExpanderRightIcon size="scale" isfill color="dimgray" />;
+      return <StyledExpanderRightIcon size="scale" />;
     }
   };
 
@@ -87,18 +112,30 @@ const PureTreeSettings = ({
     const path = section[0];
 
     //if (selectedFolder) setSelectedFolder({});
-    setSelectedFolder({}); //getSelectedTreeNode
+    setSelectedFolder(null); //getSelectedTreeNode
 
     if (path === "settings") {
       setSelectedNode(["common"]);
       if (!expandedSetting || expandedSetting[0] !== "settings")
         setExpandSettingsTree(section);
-      return history.push("/products/files/settings/common");
+      return history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          "/settings/common"
+        )
+      );
     }
 
     if (selectedTreeNode[0] !== path) {
       setSelectedNode(section);
-      return history.push(`/products/files/settings/${path}`);
+      return history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          `/settings/${path}`
+        )
+      );
     }
   };
 
@@ -113,7 +150,7 @@ const PureTreeSettings = ({
         key="settings"
         title={t("TreeSettingsMenuTitle")}
         isLeaf={false}
-        icon={<Icons.SettingsIcon size="scale" isfill color="dimgray" />}
+        icon={<StyledSettingsIcon size="scale" />}
       >
         <TreeNode
           className="settings-node"
@@ -167,7 +204,7 @@ const PureTreeSettings = ({
   );
 };
 
-const TreeSettings = withTranslation("Settings")(PureTreeSettings);
+const TreeSettings = withTranslation("Settings")(withRouter(PureTreeSettings));
 
 export default inject(
   ({
@@ -201,4 +238,4 @@ export default inject(
       setExpandSettingsTree,
     };
   }
-)(withRouter(observer(TreeSettings)));
+)(observer(TreeSettings));

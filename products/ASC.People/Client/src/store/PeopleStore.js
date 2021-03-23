@@ -1,9 +1,6 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { store } from "asc-web-common";
-
 import GroupsStore from "./GroupsStore";
 import UsersStore from "./UsersStore";
-import { getFilterByLocation } from "../helpers/converters";
 import config from "../../package.json";
 import TargetUserStore from "./TargetUserStore";
 import SelectedGroupStore from "./SelectedGroupStore";
@@ -13,8 +10,9 @@ import SelectionStore from "./SelectionStore";
 import HeaderMenuStore from "./HeaderMenuStore";
 import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
-
-const { authStore } = store;
+import store from "studio/store";
+import DialogStore from "./DialogStore";
+const { auth: authStore } = store;
 
 class PeopleStore {
   groupsStore = null;
@@ -27,8 +25,12 @@ class PeopleStore {
   headerMenuStore = null;
   avatarEditorStore = null;
   inviteLinksStore = null;
+  dialogStore = null;
 
   isLoading = false;
+  isLoaded = false;
+  isRefresh = false;
+  isInit = false;
 
   constructor() {
     this.groupsStore = new GroupsStore(this);
@@ -41,10 +43,15 @@ class PeopleStore {
     this.headerMenuStore = new HeaderMenuStore(this);
     this.avatarEditorStore = new AvatarEditorStore(this);
     this.inviteLinksStore = new InviteLinksStore(this);
+    this.dialogStore = new DialogStore();
 
     makeObservable(this, {
       isLoading: observable,
+      isLoaded: observable,
+      isRefresh: observable,
+      setIsRefresh: action,
       setIsLoading: action,
+      setIsLoaded: action,
       init: action,
       isPeoplesAdmin: computed,
       resetFilter: action,
@@ -59,25 +66,27 @@ class PeopleStore {
   }
 
   init = async () => {
-    const re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
-    const match = window.location.pathname.match(re);
+    if (this.isInit) return;
+    this.isInit = true;
 
-    authStore.settingsStore.setModuleInfo(
-      config.homepage,
-      "f4d98afd-d336-4332-8778-3c6945c81ea0"
-    );
-
-    if (match && match.length > 0) {
-      const newFilter = getFilterByLocation(window.location);
-      await this.usersStore.getUsersList(newFilter);
-    }
+    authStore.settingsStore.setModuleInfo(config.homepage, config.id);
 
     await this.groupsStore.getGroupList();
     await authStore.settingsStore.getPortalPasswordSettings();
+
+    this.setIsLoaded(true);
   };
 
   setIsLoading = (loading) => {
     this.isLoading = loading;
+  };
+
+  setIsLoaded = (isLoaded) => {
+    this.isLoaded = isLoaded;
+  };
+
+  setIsRefresh = (isRefresh) => {
+    this.isRefresh = isRefresh;
   };
 
   resetFilter = (withoutGroup = false) => {

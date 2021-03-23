@@ -1,10 +1,11 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { Loader } from "asc-web-components";
-import { PageLayout, utils as commonUtils } from "asc-web-common";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
-const { tryRedirectTo } = commonUtils;
+import Loader from "@appserver/components/loader";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { combineUrl, tryRedirectTo } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class ChangeEmail extends React.PureComponent {
   componentDidMount() {
@@ -15,12 +16,15 @@ class ChangeEmail extends React.PureComponent {
         .then((res) => {
           console.log("change client email success", res);
           tryRedirectTo(
-            `${window.location.origin}/products/people/view/@self?email_change=success`
+            combineUrl(
+              AppServerConfig.proxyURL,
+              `/products/people/view/@self?email_change=success`
+            )
           );
         })
         .catch((e) => {
           console.log("change client email error", e);
-          tryRedirectTo(`${window.location.origin}/error=${e}`);
+          tryRedirectTo(combineUrl(AppServerConfig.proxyURL, `/error=${e}`));
         });
     }
   }
@@ -33,12 +37,13 @@ class ChangeEmail extends React.PureComponent {
         .then((res) => {
           console.log("change client email success", res);
           tryRedirectTo(
-            `${window.location.origin}/products/people/view/@self?email_change=success`
+            combineUrl(
+              AppServerConfig.proxyURL,
+              `/products/people/view/@self?email_change=success`
+            )
           );
         })
-        .catch((e) => {
-          console.log("change client email error", e);
-        });
+        .catch((e) => console.log("change client email error", e));
     } else {
       tryRedirectTo(defaultPage);
     }

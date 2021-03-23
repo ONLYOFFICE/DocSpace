@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { PageLayout, Loaders } from "asc-web-common";
+import PageLayout from "@appserver/common/components/PageLayout";
+import Loaders from "@appserver/common/components/Loaders";
 import { withTranslation } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -35,8 +36,8 @@ class PureVersionHistory extends React.Component {
   };
 
   redirectToHomepage = () => {
-    const { setFilesFilter, filter } = this.props;
-    setFilesFilter(filter);
+    const { history } = this.props;
+    history.goBack();
   };
 
   render() {
@@ -89,12 +90,7 @@ export default inject(
   ({ auth, initFilesStore, filesStore, versionHistoryStore }) => {
     const { isLoading } = initFilesStore;
     const { filter, setFilesFilter } = filesStore;
-
-    const {
-      setIsVerHistoryPanel,
-      setVerHistoryFileId,
-      versions,
-    } = versionHistoryStore;
+    const { setIsVerHistoryPanel, versions } = versionHistoryStore;
 
     return {
       isTabletView: auth.settingsStore.isTabletView,
@@ -104,7 +100,6 @@ export default inject(
 
       setFilesFilter,
       setIsVerHistoryPanel,
-      setVerHistoryFileId,
     };
   }
 )(withRouter(observer(VersionHistory)));

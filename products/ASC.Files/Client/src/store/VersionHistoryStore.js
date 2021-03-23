@@ -1,5 +1,5 @@
 import { makeObservable, action, observable } from "mobx";
-import { api } from "asc-web-common";
+import api from "@appserver/common/api";
 
 class VersionHistoryStore {
   isVisible = false;
@@ -23,6 +23,7 @@ class VersionHistoryStore {
 
   setIsVerHistoryPanel = (isVisible) => {
     this.isVisible = isVisible;
+    !isVisible && this.setVerHistoryFileId(null);
   };
 
   setVerHistoryFileId = (fileId) => {
@@ -35,7 +36,7 @@ class VersionHistoryStore {
   };
 
   fetchFileVersions = (fileId) => {
-    if (this.fileId !== fileId) {
+    if (this.fileId !== fileId || !this.versions) {
       this.setVerHistoryFileId(fileId);
       return api.files
         .getFileVersionInfo(fileId)

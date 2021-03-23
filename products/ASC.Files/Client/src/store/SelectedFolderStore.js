@@ -1,5 +1,4 @@
 import { makeObservable, action, observable, computed } from "mobx";
-import FileActionStore from "./FileActionStore";
 
 class SelectedFolderStore {
   folders = null;
@@ -17,7 +16,7 @@ class SelectedFolderStore {
   updated = null;
   updatedBy = null;
   rootFolderType = null;
-  pathParts = [];
+  pathParts = null;
   providerItem = null;
 
   constructor() {
@@ -44,8 +43,6 @@ class SelectedFolderStore {
 
       setSelectedFolder: action,
     });
-
-    this.fileActionStore = new FileActionStore();
   }
 
   get isRootFolder() {
@@ -53,10 +50,22 @@ class SelectedFolderStore {
   }
 
   setSelectedFolder = (selectedFolder) => {
-    const selectedFolderItems = Object.keys(selectedFolder);
-    for (let key of selectedFolderItems) {
-      if (key in this) {
-        this[key] = selectedFolder[key];
+    if (!selectedFolder) {
+      const newStore = new SelectedFolderStore();
+
+      const selectedFolderItems = Object.keys(newStore);
+      for (let key of selectedFolderItems) {
+        if (key in this) {
+          this[key] = newStore[key];
+        }
+      }
+    } else {
+      const selectedFolderItems = Object.keys(selectedFolder);
+
+      for (let key of selectedFolderItems) {
+        if (key in this) {
+          this[key] = selectedFolder[key];
+        }
       }
     }
   };

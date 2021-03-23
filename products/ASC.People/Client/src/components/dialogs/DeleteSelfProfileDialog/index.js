@@ -1,10 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ModalDialog, Button, Link, Text } from "asc-web-components";
+
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { api, toastr } from "asc-web-common";
-const { sendInstructionsToDelete } = api.people;
+import { sendInstructionsToDelete } from "@appserver/common/api/people";
+import toastr from "studio/toastr";
 
 class DeleteSelfProfileDialogComponent extends React.Component {
   constructor(props) {

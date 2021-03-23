@@ -2,9 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { withRouter } from "react-router";
-import { Text, Link } from "asc-web-components";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 
 const StyledContactContainer = styled.div`
   display: grid;

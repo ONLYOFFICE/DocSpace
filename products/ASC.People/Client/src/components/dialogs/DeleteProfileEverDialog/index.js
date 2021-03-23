@@ -1,12 +1,20 @@
 import React from "react";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import { ModalDialog, Button, Text } from "asc-web-components";
-import { withTranslation, Trans } from "react-i18next";
-import { api, toastr } from "asc-web-common";
 
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Text from "@appserver/components/text";
+import history from "@appserver/common/history";
+
+import { withTranslation, Trans } from "react-i18next";
+import api from "@appserver/common/api";
+import toastr from "studio/toastr";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
+import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const { deleteUser } = api.people; //TODO: Move to action
 const { Filter } = api;
@@ -33,8 +41,14 @@ class DeleteProfileEverDialogComponent extends React.Component {
   };
 
   onReassignDataClick = () => {
-    const { history, settings, user } = this.props;
-    history.push(`${settings.homepage}/reassign/${user.userName}`);
+    const { homepage, user } = this.props;
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        homepage,
+        `/reassign/${user.userName}`
+      )
+    );
   };
 
   render() {
@@ -57,10 +71,10 @@ class DeleteProfileEverDialogComponent extends React.Component {
               </Trans>
             </Text>
             <Text>{t("NotBeUndone")}</Text>
-            <Text color="#c30" fontSize="18px" className="warning-text">
+            {/* <Text color="#c30" fontSize="18px" className="warning-text">
               {t("Warning")}
             </Text>
-            <Text>{t("DeleteUserDataConfirmation")}</Text>
+            <Text>{t("DeleteUserDataConfirmation")}</Text> */}
           </ModalDialog.Body>
           <ModalDialog.Footer>
             <Button
@@ -71,14 +85,14 @@ class DeleteProfileEverDialogComponent extends React.Component {
               onClick={this.onDeleteProfileEver}
               isLoading={isRequestRunning}
             />
-            <Button
+            {/* <Button
               className="button-dialog"
               key="ReassignBtn"
               label={t("ReassignData")}
               size="medium"
               onClick={this.onReassignDataClick}
               isDisabled={isRequestRunning}
-            />
+            /> */}
           </ModalDialog.Footer>
         </ModalDialog>
       </ModalDialogContainer>
@@ -96,11 +110,13 @@ DeleteProfileEverDialog.propTypes = {
   user: PropTypes.object.isRequired,
   filter: PropTypes.instanceOf(Filter).isRequired,
   fetchPeople: PropTypes.func.isRequired,
-  settings: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
 };
 
-export default inject(({ auth, peopleStore }) => ({
-  userCaption: auth.settingsStore.customNames.userCaption,
-  fetchPeople: peopleStore.usersStore.getUsersList,
-}))(observer(withRouter(DeleteProfileEverDialog)));
+export default withRouter(
+  inject(({ auth, peopleStore }) => ({
+    homepage: config.homepage,
+    userCaption: auth.settingsStore.customNames.userCaption,
+    fetchPeople: peopleStore.usersStore.getUsersList,
+    filter: peopleStore.filterStore.filter,
+  }))(observer(DeleteProfileEverDialog))
+);

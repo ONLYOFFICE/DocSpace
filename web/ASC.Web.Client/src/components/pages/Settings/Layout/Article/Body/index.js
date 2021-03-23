@@ -1,15 +1,14 @@
 import React from "react";
-import {
-  TreeMenu,
-  TreeNode,
-  Icons,
-  Link,
-  Text,
-  utils,
-} from "asc-web-components";
 import { withRouter } from "react-router";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
+import TreeMenu from "@appserver/components/tree-menu";
+import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
+import ExpanderDownIcon from "../../../../../../../../../public/images/expander-down.react.svg";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import { isArrayEqual } from "@appserver/components/utils/array";
+import ExpanderRightIcon from "../../../../../../../../../public/images/expander-right.react.svg";
 import {
   //getKeyByLink,
   settingsTree,
@@ -17,7 +16,8 @@ import {
   //selectKeyOfTreeElement,
   getCurrentSettingsCategory,
 } from "../../../utils";
-
+import { ReactSVG } from "react-svg";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
     font-size: inherit;
@@ -34,8 +34,34 @@ const StyledTreeMenu = styled(TreeMenu)`
   .rc-tree-node-content-wrapper-open {
     pointer-events: none;
   }
+
+  .tree_icon {
+    display: inline;
+    path {
+      fill: dimgray;
+    }
+  }
+  svg {
+    &:not(:root) {
+      width: 100%;
+      height: 100%;
+    }
+  }
 `;
 
+const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+
+const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
 const getTreeItems = (data, path, t) => {
   return data.map((item) => {
     if (item.children && item.children.length && !item.isCategory) {
@@ -45,14 +71,7 @@ const getTreeItems = (data, path, t) => {
             <Text className="inherit-title-link header">{t(item.tKey)}</Text>
           }
           key={item.key}
-          icon={
-            item.icon &&
-            React.createElement(Icons[item.icon], {
-              size: "scale",
-              isfill: true,
-              color: "dimgray",
-            })
-          }
+          icon={item.icon && <ReactSVG className="tree_icon" src={item.icon} />}
           disableSwitch={true}
         >
           {getTreeItems(item.children, path, t)}
@@ -68,14 +87,7 @@ const getTreeItems = (data, path, t) => {
             {t(item.tKey)}
           </Link>
         }
-        icon={
-          item.icon &&
-          React.createElement(Icons[item.icon], {
-            size: "scale",
-            isfill: true,
-            color: "dimgray",
-          })
-        }
+        icon={item.icon && <ReactSVG src={item.icon} className="tree_icon" />}
         disableSwitch={true}
       />
     );
@@ -119,9 +131,7 @@ class ArticleBodyContent extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (
-      !utils.array.isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)
-    ) {
+    if (!isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)) {
       const { selectedKeys } = this.state;
       const { match, history } = this.props;
       const settingsPath = getSelectedLinkByKey(selectedKeys[0], settingsTree);
@@ -133,7 +143,7 @@ class ArticleBodyContent extends React.Component {
   onSelect = (value) => {
     const { selectedKeys } = this.state;
 
-    if (utils.array.isArrayEqual(value, selectedKeys)) {
+    if (isArrayEqual(value, selectedKeys)) {
       return;
     }
 
@@ -145,13 +155,9 @@ class ArticleBodyContent extends React.Component {
       return null;
     }
     if (obj.expanded) {
-      return (
-        <Icons.ExpanderDownIcon size="scale" isfill={true} color="dimgray" />
-      );
+      return <StyledExpanderDownIcon size="scale" color="dimgray" />;
     } else {
-      return (
-        <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray" />
-      );
+      return <StyledExpanderRightIcon size="scale" color="dimgray" />;
     }
   };
 

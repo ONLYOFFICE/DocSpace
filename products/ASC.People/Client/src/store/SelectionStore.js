@@ -1,9 +1,11 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { constants, store } from "asc-web-common";
+import {
+  EmployeeStatus,
+  EmployeeActivationStatus,
+} from "@appserver/common/constants";
 import { getUserStatus } from "../helpers/people-helpers";
-
-const { EmployeeStatus, EmployeeActivationStatus } = constants;
-const { authStore } = store;
+import store from "studio/store";
+const { auth: authStore } = store;
 
 class SelectionStore {
   selection = [];

@@ -1,4 +1,4 @@
-import { api } from "asc-web-common";
+import api from "@appserver/common/api";
 import { makeAutoObservable } from "mobx";
 const { Filter } = api;
 
@@ -141,13 +141,12 @@ class SettingsSetupStore {
   setLanguageAndTime = async (lng, timeZoneID) => {
     const res = await api.settings.setLanguageAndTime(lng, timeZoneID);
     console.log("setLanguageAndTime", res);
-    this.setPortalLanguageAndTime({ lng, timeZoneID });
+    if (res) this.setLanguageAndTime({ lng, timeZoneID });
   };
 
   setGreetingTitle = async (greetingTitle) => {
     const res = await api.settings.setGreetingSettings(greetingTitle);
-    console.log("setGreetingTitle", res);
-    this.setGreetingSettings(greetingTitle);
+    if (res) this.setGreetingSettings(greetingTitle);
   };
 
   restoreGreetingTitle = async () => {
@@ -164,6 +163,14 @@ class SettingsSetupStore {
     const res = await api.settings.updateConsumerProps(newProps);
     console.log("updateConsumerProps", res);
     await this.getConsumers();
+  };
+
+  changePassword = (userId, hash, key) => {
+    return api.people.changePassword(userId, hash, key);
+  };
+
+  sendOwnerChange = (id) => {
+    return api.settings.sendOwnerChange(id);
   };
 }
 

@@ -1,5 +1,8 @@
 import React from "react";
-import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
+import IconButton from "@appserver/components/icon-button";
+import Backdrop from "@appserver/components/backdrop";
+import Heading from "@appserver/components/heading";
+import Aside from "@appserver/components/aside";
 import { withTranslation } from "react-i18next";
 import SharingPanel from "../SharingPanel";
 import {
@@ -53,7 +56,11 @@ class UploadPanelComponent extends React.Component {
 
   render() {
     //console.log("UploadPanel render");
-    const { t, uploadPanelVisible, sharingPanelVisible, uploaded } = this.props;
+    const {
+      t,
+      uploadPanelVisible,
+      /* sharingPanelVisible, */ uploaded,
+    } = this.props;
 
     const visible = uploadPanelVisible;
     const zIndex = 310;
@@ -77,7 +84,7 @@ class UploadPanelComponent extends React.Component {
                   {uploaded ? (
                     <IconButton
                       size="20"
-                      iconName="ClearActiveIcon"
+                      iconName="images/clear.active.react.svg"
                       color="#A3A9AE"
                       isClickable={true}
                       onClick={this.clearUploadPanel}
@@ -85,7 +92,7 @@ class UploadPanelComponent extends React.Component {
                   ) : (
                     <IconButton
                       size="20"
-                      iconName="ButtonCancelIcon"
+                      iconName="images/button.cancel.react.svg"
                       color="#A3A9AE"
                       isClickable={true}
                       onClick={this.props.cancelUpload}
@@ -95,7 +102,7 @@ class UploadPanelComponent extends React.Component {
                 {/*<div className="upload_panel-vertical-dots-icon">
                   <IconButton
                     size="20"
-                    iconName="VerticalDotsIcon"
+                    iconName="static/images/vertical-dots.react.svg"
                     color="#A3A9AE"
                   />
                   </div>*/}
@@ -110,7 +117,7 @@ class UploadPanelComponent extends React.Component {
             </StyledBody>
           </StyledContent>
         </Aside>
-        {sharingPanelVisible && <SharingPanel />}
+        {/* sharingPanelVisible && <SharingPanel /> */}
       </StyledAsidePanel>
     );
   }
@@ -119,7 +126,7 @@ class UploadPanelComponent extends React.Component {
 const UploadPanel = withTranslation("UploadPanel")(UploadPanelComponent);
 
 export default inject(({ dialogsStore, uploadDataStore }) => {
-  const { sharingPanelVisible } = dialogsStore;
+  //const { sharingPanelVisible } = dialogsStore;
 
   const {
     uploaded,
@@ -130,7 +137,7 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
   } = uploadDataStore;
 
   return {
-    sharingPanelVisible,
+    //sharingPanelVisible,
     uploadPanelVisible,
     uploaded,
 

@@ -1,10 +1,13 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { api, constants, store } from "asc-web-common";
+import api from "@appserver/common/api";
+import {
+  EmployeeStatus,
+  EmployeeActivationStatus,
+} from "@appserver/common/constants";
 import { isMobileOnly } from "react-device-detect";
-
 const { Filter } = api;
-const { EmployeeStatus, EmployeeActivationStatus } = constants;
-const { authStore } = store;
+import store from "studio/store";
+const { auth: authStore } = store;
 class UsersStore {
   users = [];
 
@@ -31,13 +34,18 @@ class UsersStore {
       filterData.employeeStatus = EmployeeStatus.Active;
     }
 
+    if (filterData.group && filterData.group === "root")
+      filterData.group = undefined;
+
     const res = await api.people.getUserList(filterData);
     filterData.total = res.total;
 
     this.peopleStore.filterStore.setFilterParams(filterData);
-    this.peopleStore.selectedGroupStore.setSelectedGroup(filterData.group);
+    this.peopleStore.selectedGroupStore.setSelectedGroup(
+      filterData.group || "root"
+    );
 
-    this.users = res.items;
+    this.setUsers(res.items);
   };
 
   setUsers = (users) => {
@@ -90,7 +98,8 @@ class UsersStore {
       updatedProfile = this.peopleStore.targetUserStore.targetUser;
     }
     const { userName } = updatedProfile;
-    const oldProfile = this.users.filter((u) => u.userName === userName);
+    const oldProfileArr = this.users.filter((u) => u.userName === userName);
+    const oldProfile = oldProfileArr[0];
     const newProfile = {};
 
     for (let key in oldProfile) {
@@ -219,7 +228,9 @@ class UsersStore {
       } = user;
       const statusType = this.getStatusType(user);
       const role = this.getUserRole(user);
-      const isMySelf = user.userName === authStore.userStore.user.userName;
+      const isMySelf =
+        authStore.userStore.user &&
+        user.userName === authStore.userStore.user.userName;
       const isViewerAdmin = authStore.isAdmin;
 
       const options = this.getUserContextOptions(
@@ -232,7 +243,6 @@ class UsersStore {
 
       return {
         id,
-        checked: isViewerAdmin ? this.isUserSelected(user.id) : undefined,
         status,
         activationStatus,
         statusType,

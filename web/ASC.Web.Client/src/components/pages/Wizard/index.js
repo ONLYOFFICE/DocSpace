@@ -3,14 +3,15 @@ import { withRouter } from "react-router";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
+import axios from "axios";
 
-import {
-  PageLayout,
-  ErrorContainer,
-  history,
-  utils as commonUtils,
-} from "asc-web-common";
-import { Loader, utils } from "asc-web-components";
+import PageLayout from "@appserver/common/components/PageLayout";
+import ErrorContainer from "@appserver/common/components/ErrorContainer";
+import history from "@appserver/common/history";
+import { combineUrl, createPasswordHash } from "@appserver/common/utils";
+import Loader from "@appserver/components/loader";
+import { tablet } from "@appserver/components/utils/device";
+import { EmailSettings } from "@appserver/components/utils/email";
 
 import HeaderContainer from "./sub-components/header-container";
 import ButtonContainer from "./sub-components/button-container";
@@ -20,11 +21,8 @@ import ModalContainer from "./sub-components/modal-dialog-container";
 
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
+import { AppServerConfig } from "@appserver/common/constants";
 
-const { tablet } = utils.device;
-const { createPasswordHash } = commonUtils;
-
-const { EmailSettings } = utils.email;
 const emailSettings = new EmailSettings();
 emailSettings.allowDomainPunycode = true;
 
@@ -47,15 +45,12 @@ const WizardContainer = styled.div`
 
   @media (max-width: 520px) {
     width: calc(100% - 32px);
-    margin-top: 12px;
   }
 `;
 
 class Body extends Component {
   constructor(props) {
     super(props);
-
-    const { t } = props;
 
     this.state = {
       password: "",
@@ -83,8 +78,6 @@ class Body extends Component {
 
       checkingMessages: [],
     };
-
-    setDocumentTitle(t("WizardTitle"));
   }
 
   async componentDidMount() {
@@ -103,40 +96,44 @@ class Body extends Component {
     window.addEventListener("keyup", this.onKeyPressHandler);
 
     if (!wizardToken) {
-      history.push("/");
+      history.push(combineUrl(AppServerConfig.proxyURL, "/"));
     } else {
-      await Promise.all([
-        getPortalPasswordSettings(wizardToken),
-        getMachineName(wizardToken),
-        getIsRequiredLicense(),
-        getPortalTimezones(wizardToken).then(() => {
-          const { timezones, timezone } = this.props;
-          const zones = this.mapTimezonesToArray(timezones);
-          const select = zones.filter((zone) => zone.key === timezone);
-          this.setState({
-            timezones: zones,
-            selectTimezone: {
-              key: select[0].key,
-              label: select[0].label,
-            },
-          });
-        }),
-        getPortalCultures().then(() => {
-          const { cultures, culture } = this.props;
-          const languages = this.mapCulturesToArray(cultures, t);
-          let select = languages.filter((lang) => lang.key === culture);
-          if (!select.length)
-            select = languages.filter((lang) => lang.key === "en-US");
-          this.setState({
-            languages: languages,
-            selectLanguage: {
-              key: select[0].key,
-              label: select[0].label,
-            },
-          });
-        }),
-      ])
-        .then(() => setIsWizardLoaded(true))
+      await axios
+        .all([
+          getPortalPasswordSettings(wizardToken),
+          getMachineName(wizardToken),
+          getIsRequiredLicense(),
+          getPortalTimezones(wizardToken).then(() => {
+            const { timezones, timezone } = this.props;
+            const zones = this.mapTimezonesToArray(timezones);
+            const select = zones.filter((zone) => zone.key === timezone);
+            this.setState({
+              timezones: zones,
+              selectTimezone: {
+                key: select[0].key,
+                label: select[0].label,
+              },
+            });
+          }),
+          getPortalCultures().then(() => {
+            const { cultures, culture } = this.props;
+            const languages = this.mapCulturesToArray(cultures, t);
+            let select = languages.filter((lang) => lang.key === culture);
+            if (!select.length)
+              select = languages.filter((lang) => lang.key === "en-US");
+            this.setState({
+              languages: languages,
+              selectLanguage: {
+                key: select[0].key,
+                label: select[0].label,
+              },
+            });
+          }),
+        ])
+        .then(() => {
+          setIsWizardLoaded(true);
+          setDocumentTitle(t("WizardTitle"));
+        })
         .catch((e) => {
           this.setState({
             errorInitWizard: e,
@@ -240,7 +237,9 @@ class Body extends Component {
           setWizardComplete();
           getPortalSettings();
         })
-        .then(() => history.push("/login"))
+        .then(() =>
+          history.push(combineUrl(AppServerConfig.proxyURL, "/login"))
+        )
         .catch((e) =>
           this.setState({
             errorLoading: true,

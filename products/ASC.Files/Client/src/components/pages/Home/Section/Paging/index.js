@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { isMobile } from "react-device-detect";
-import { Paging } from "asc-web-components";
+import Paging from "@appserver/components/paging";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 

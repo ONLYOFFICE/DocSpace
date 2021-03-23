@@ -1,5 +1,7 @@
 import React from "react";
-import { toastr, Loaders } from "asc-web-common";
+
+import toastr from "studio/toastr";
+import Loaders from "@appserver/common/components/Loaders";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
@@ -7,6 +9,10 @@ import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
 import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router-dom";
+import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -23,12 +29,12 @@ class ArticleBodyContent extends React.Component {
     };
   }
 
-  componentDidMount() {
+  /*componentDidMount() {
     if (this.props.currentId) {
       const currentId = [this.props.currentId + ""];
       this.props.setSelectedNode(currentId);
     }
-  }
+  }*/
 
   onSelect = (data, e) => {
     const {
@@ -37,6 +43,8 @@ class ArticleBodyContent extends React.Component {
       selectedTreeNode,
       setSelectedNode,
       fetchFiles,
+      homepage,
+      history,
     } = this.props;
 
     if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
@@ -45,6 +53,7 @@ class ArticleBodyContent extends React.Component {
       const newFilter = filter.clone();
       newFilter.page = 0;
       newFilter.startIndex = 0;
+      newFilter.folder = data[0];
 
       const selectedFolderTitle =
         (e.node && e.node.props && e.node.props.title) || null;
@@ -53,9 +62,17 @@ class ArticleBodyContent extends React.Component {
         ? setDocumentTitle(selectedFolderTitle)
         : setDocumentTitle();
 
-      fetchFiles(data[0], newFilter)
-        .catch((err) => toastr.error(err))
-        .finally(() => setIsLoading(false));
+      if (window.location.pathname.indexOf("/filter") > 0) {
+        fetchFiles(data[0], newFilter)
+          .catch((err) => toastr.error(err))
+          .finally(() => setIsLoading(false));
+      } else {
+        newFilter.startIndex = 0;
+        const urlFilter = newFilter.toUrlParams();
+        history.push(
+          combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+        );
+      }
     }
   };
 
@@ -115,7 +132,10 @@ export default inject(
     const { setIsLoading } = initFilesStore;
     const { fetchFiles, filter } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
-    const selectedTreeNode = [selectedFolderStore.id + ""];
+    const selectedTreeNode =
+      treeFoldersStore.selectedTreeNode.length > 0
+        ? treeFoldersStore.selectedTreeNode
+        : [selectedFolderStore.id + ""];
 
     return {
       selectedFolderTitle: selectedFolderStore.title,
@@ -127,6 +147,8 @@ export default inject(
       fetchFiles,
       setSelectedNode,
       setTreeFolders,
+
+      homepage: config.homepage,
     };
   }
-)(observer(ArticleBodyContent));
+)(observer(withRouter(ArticleBodyContent)));
