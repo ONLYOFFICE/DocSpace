@@ -53,6 +53,8 @@ using ASC.Web.Studio.Utility;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Mvc;
+
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.CRM.Api
@@ -156,7 +158,7 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/numbers")]
-        public VoipPhone BuyNumber(string number)
+        public VoipPhone BuyNumber([FromForm] string number)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
@@ -177,7 +179,7 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/numbers/link")]
-        public VoipPhone LinkNumber(string id)
+        public VoipPhone LinkNumber([FromForm] string id)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
@@ -644,7 +646,7 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/call")]
-        public VoipCallDto MakeCall(string to, string contactId)
+        public VoipCallDto MakeCall([FromForm] string to, [FromForm] string contactId)
         {
             var number = _daoFactory.GetVoipDao().GetCurrentNumber().NotFoundIfNull();
 
@@ -686,7 +688,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         [Create(@"voip/call/{callId:regex(\w+)}/answer")]
-        public VoipCallDto AnswerCall(string callId)
+        public VoipCallDto AnswerCall([FromRoute] string callId)
         {
             var dao = _daoFactory.GetVoipDao();
             var call = dao.GetCall(callId).NotFoundIfNull();
@@ -705,7 +707,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         [Create(@"voip/call/{callId:regex(\w+)}/reject")]
-        public VoipCallDto RejectCall(string callId)
+        public VoipCallDto RejectCall([FromRoute] string callId)
         {
             var dao = _daoFactory.GetVoipDao();
             var call = dao.GetCall(callId).NotFoundIfNull();
@@ -723,7 +725,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         [Create(@"voip/call/{callId:regex(\w+)}/redirect")]
-        public VoipCallDto ReditectCall(string callId, string to)
+        public VoipCallDto ReditectCall([FromRoute] string callId, [FromForm] string to)
         {
             var dao = _daoFactory.GetVoipDao();
             var call = dao.GetCall(callId).NotFoundIfNull();
@@ -752,7 +754,14 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         [Create(@"voip/call/{callId:regex(\w+)}")]
-        public VoipCallDto SaveCall(string callId, string from, string to, Guid answeredBy, VoipCallStatus? status, string contactId, decimal? price)
+        public VoipCallDto SaveCall(
+            [FromRoute] string callId, 
+            [FromForm] string from,
+            [FromForm] string to,
+            [FromForm] Guid answeredBy,
+            [FromForm] VoipCallStatus? status,
+            [FromForm] string contactId,
+            [FromForm] decimal? price)
         {
             var dao = _daoFactory.GetVoipDao();
 
@@ -840,7 +849,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         [Create(@"voip/price/{callId:regex(\w+)}")]
-        public void SavePrice(string callId)
+        public void SavePrice([FromRoute] string callId)
         {
             _voipEngine.SaveAdditionalInfo(callId);
         }

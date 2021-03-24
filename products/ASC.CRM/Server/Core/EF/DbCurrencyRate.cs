@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_currency_rate")]
-    public partial class DbCurrencyRate
+    public partial class DbCurrencyRate : IDbCrm
     {
         [Key]
         [Column("id", TypeName = "int(11)")]

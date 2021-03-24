@@ -41,6 +41,8 @@ using ASC.Web.Files.Services.DocumentService;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Mvc;
+
 namespace ASC.CRM.Api
 {
     public class ReportsController : BaseApiController
@@ -161,7 +163,10 @@ namespace ASC.CRM.Api
         /// <returns>Object</returns>
         /// <exception cref="SecurityException">if user can't create reports</exception>
         [Create(@"report/check")]
-        public object CheckReportData(ReportType type, ReportTimePeriod timePeriod, Guid[] managers)
+        public object CheckReportData(
+            [FromForm] ReportType type,
+            [FromForm] ReportTimePeriod timePeriod,
+            [FromForm] Guid[] managers)
         {
             if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
@@ -182,10 +187,10 @@ namespace ASC.CRM.Api
         /// <returns>Report state</returns>
         /// <exception cref="SecurityException">if user can't create reports</exception>
         [Create(@"report/generate")]
-        public ReportState GenerateReport(ReportType type, ReportTimePeriod timePeriod, Guid[] managers)
+        public ReportState GenerateReport([FromForm] ReportType type, [FromForm] ReportTimePeriod timePeriod, [FromForm] Guid[] managers)
         {
-            if (!_global.CanCreateReports)
-                throw _crmSecurity.CreateSecurityException();
+//            if (!_global.CanCreateReports)
+ //               throw _crmSecurity.CreateSecurityException();
 
             return _reportHelper.RunGenareteReport(type, timePeriod, managers);
         }

@@ -274,7 +274,7 @@ namespace ASC.CRM.Api
         ///    Opportunity
         /// </returns>
         [Create(@"contact/{contactid:int}/opportunity/{opportunityid:int}")]
-        public OpportunityDto AddDealToContact(int contactid, [FromQuery] int opportunityid)
+        public OpportunityDto AddDealToContact([FromRoute] int contactid, [FromRoute] int opportunityid)
         {
             if ((opportunityid <= 0) || (contactid <= 0)) throw new ArgumentException();
 
@@ -676,7 +676,7 @@ namespace ASC.CRM.Api
         ///    Person
         /// </returns>
         [Create(@"contact/company/{companyid:int}/person")]
-        public PersonDto AddPeopleToCompany(int companyid, int personid)
+        public PersonDto AddPeopleToCompany([FromRoute] int companyid, [FromForm] int personid)
         {
             if ((companyid <= 0) || (personid <= 0)) throw new ArgumentException();
 
@@ -1060,7 +1060,7 @@ namespace ASC.CRM.Api
         /// <returns>Contact list</returns>
         /// <exception cref="ArgumentException"></exception>
         [Create(@"contact/company/quick")]
-        public IEnumerable<ContactBaseDto> CreateCompany(IEnumerable<string> companyName)
+        public IEnumerable<ContactBaseDto> CreateCompany([FromForm] IEnumerable<string> companyName)
         {
             if (companyName == null) throw new ArgumentException();
 
@@ -1110,7 +1110,7 @@ namespace ASC.CRM.Api
         /// <returns>Contact list</returns>
         /// <exception cref="ArgumentException"></exception>
         [Create(@"contact/person/quick")]
-        public IEnumerable<ContactBaseDto> CreatePerson(IEnumerable<ItemKeyValuePair<string, string>> data)
+        public IEnumerable<ContactBaseDto> CreatePerson([FromForm] IEnumerable<ItemKeyValuePair<string, string>> data)
         {
             if (data == null) return null;
 
@@ -1906,7 +1906,7 @@ namespace ASC.CRM.Api
 
         /// <visible>false</visible>
         [Create(@"contact/mailsmtp/preview")]
-        public string GetMailSMTPToContactsPreview(string template, int contactId)
+        public string GetMailSMTPToContactsPreview([FromForm] string template, [FromForm] int contactId)
         {
             if (contactId == 0 || String.IsNullOrEmpty(template)) throw new ArgumentException();
 

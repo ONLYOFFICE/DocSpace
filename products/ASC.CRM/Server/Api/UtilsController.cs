@@ -45,6 +45,8 @@ using ASC.Web.CRM.Classes;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Mvc;
+
 namespace ASC.CRM.Api
 {
     public class UtilsController : BaseApiController
@@ -439,7 +441,7 @@ namespace ASC.CRM.Api
 
         /// <visible>false</visible>
         [Create(@"{entityType:regex(contact|opportunity|case|task)}/import/start")]
-        public string StartImportFromCSV(string entityType, string csvFileURI, string jsonSettings)
+        public string StartImportFromCSV([FromRoute] string entityType, [FromForm] string csvFileURI, [FromForm] string jsonSettings)
         {
             EntityType entityTypeObj;
 
@@ -511,7 +513,7 @@ namespace ASC.CRM.Api
 
         /// <visible>false</visible>
         [Create(@"import/uploadfake")]
-        public FileUploadResult ProcessUploadFake(string csvFileURI, string jsonSettings)
+        public FileUploadResult ProcessUploadFake( [FromForm] string csvFileURI, [FromForm] string jsonSettings)
         {
             return _importFromCSVManager.ProcessUploadFake(csvFileURI, jsonSettings);
         }
@@ -569,7 +571,7 @@ namespace ASC.CRM.Api
 
         /// <visible>false</visible>
         [Create(@"export/partial/{entityType:regex(contact|opportunity|case|task|invoiceitem)}/start")]
-        public IProgressItem StartPartialExport(string entityType, string base64FilterString)
+        public IProgressItem StartPartialExport([FromRoute] string entityType, [FromForm] string base64FilterString)
         {
             if (string.IsNullOrEmpty(base64FilterString)) throw new ArgumentException();
 

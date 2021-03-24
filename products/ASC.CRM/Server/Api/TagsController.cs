@@ -42,6 +42,8 @@ using ASC.Web.Api.Routing;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Mvc;
+
 namespace ASC.CRM.Api
 {
     public class TagsController : BaseApiController
@@ -139,7 +141,7 @@ namespace ASC.CRM.Api
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
         [Create(@"{entityType:regex(contact|opportunity|case)}/tag")]
-        public string CreateTag(string entityType, string tagName)
+        public string CreateTag([FromRoute] string entityType, [FromForm] string tagName)
         {
             if (string.IsNullOrEmpty(tagName)) throw new ArgumentException();
 
@@ -194,7 +196,7 @@ namespace ASC.CRM.Api
         ///    Tag
         /// </returns> 
         [Create(@"{entityType:regex(contact|opportunity|case)}/taglist")]
-        public string AddTagToBatch(string entityType, IEnumerable<int> entityid, string tagName)
+        public string AddTagToBatch([FromRoute] string entityType, [FromForm] IEnumerable<int> entityid, [FromForm] string tagName)
         {
             var ids = entityid.ToList();
             if (entityid == null || !ids.Any()) throw new ArgumentException();
@@ -224,13 +226,13 @@ namespace ASC.CRM.Api
         /// </returns> 
         [Create(@"contact/filter/taglist")]
         public string AddTagToBatchContacts(
-            IEnumerable<string> tags,
-            int contactStage,
-            int contactType,
-            ContactListViewType contactListView,
-            ApiDateTime fromDate,
-            ApiDateTime toDate,
-            string tagName)
+           [FromForm] IEnumerable<string> tags,
+           [FromForm] int contactStage,
+           [FromForm] int contactType,
+           [FromForm] ContactListViewType contactListView,
+           [FromForm] ApiDateTime fromDate,
+           [FromForm] ApiDateTime toDate,
+           [FromForm] string tagName)
         {
             var contacts = _daoFactory
                 .GetContactDao()
@@ -273,15 +275,15 @@ namespace ASC.CRM.Api
         /// </returns> 
         [Create(@"opportunity/filter/taglist")]
         public string AddTagToBatchDeals(
-            Guid responsibleid,
-            int opportunityStagesid,
-            IEnumerable<string> tags,
-            int contactid,
-            DealMilestoneStatus? stageType,
-            bool? contactAlsoIsParticipant,
-            ApiDateTime fromDate,
-            ApiDateTime toDate,
-            string tagName)
+            [FromForm] Guid responsibleid,
+            [FromForm] int opportunityStagesid,
+            [FromForm] IEnumerable<string> tags,
+            [FromForm] int contactid,
+            [FromForm] DealMilestoneStatus? stageType,
+            [FromForm] bool? contactAlsoIsParticipant,
+            [FromForm] ApiDateTime fromDate,
+            [FromForm] ApiDateTime toDate,
+            [FromForm] string tagName)
         {
             var deals = _daoFactory
                 .GetDealDao()
@@ -316,7 +318,11 @@ namespace ASC.CRM.Api
         ///    Tag
         /// </returns> 
         [Create(@"case/filter/taglist")]
-        public string AddTagToBatchCases(int contactid, bool? isClosed, IEnumerable<string> tags, string tagName)
+        public string AddTagToBatchCases(
+            [FromForm] int contactid,
+            [FromForm] bool? isClosed,
+            [FromForm] IEnumerable<string> tags,
+            [FromForm] string tagName)
         {
             var caseses = _daoFactory.GetCasesDao().GetCases(_apiContext.FilterValue, contactid, isClosed, tags, 0, 0, null)
                 .Where(_crmSecurity.CanAccessTo).ToList();
@@ -365,7 +371,7 @@ namespace ASC.CRM.Api
         ///   Tag
         /// </returns> 
         [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/tag")]
-        public string AddTagTo(string entityType, int entityid, string tagName)
+        public string AddTagTo([FromRoute] string entityType, [FromRoute] int entityid, [FromForm] string tagName)
         {
             if (entityid <= 0 || string.IsNullOrEmpty(tagName)) throw new ArgumentException();
 
@@ -398,7 +404,7 @@ namespace ASC.CRM.Api
         ///   Tag
         /// </returns>
         [Create(@"{entityType:regex(company|person)}/{entityid:int}/tag/group")]
-        public string AddContactTagToGroup(string entityType, int entityid, string tagName)
+        public string AddContactTagToGroup([FromRoute] string entityType, [FromRoute] int entityid, [FromForm] string tagName)
         {
             if (entityid <= 0 || string.IsNullOrEmpty(tagName)) throw new ArgumentException();
 

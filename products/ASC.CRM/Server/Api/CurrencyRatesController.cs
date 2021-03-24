@@ -40,6 +40,8 @@ using ASC.Web.CRM.Classes;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Mvc;
+
 namespace ASC.CRM.Api
 {
     public class CurrencyRatesController : BaseApiController
@@ -128,7 +130,10 @@ namespace ASC.CRM.Api
         /// <category>Common</category>
         /// <returns></returns>
         [Create(@"currency/rates")]
-        public CurrencyRateDto CreateCurrencyRate(string fromCurrency, string toCurrency, decimal rate)
+        public CurrencyRateDto CreateCurrencyRate(
+             [FromForm] string fromCurrency,
+             [FromForm] string toCurrency,
+             [FromForm] decimal rate)
         {
             ValidateRate(rate);
 
@@ -185,7 +190,9 @@ namespace ASC.CRM.Api
         /// <category>Common</category>
         /// <returns></returns>
         [Create(@"currency/setrates")]
-        public List<CurrencyRateDto> SetCurrencyRates(String currency, List<CurrencyRate> rates)
+        public List<CurrencyRateDto> SetCurrencyRates(
+             [FromForm] String currency,
+             [FromForm] List<CurrencyRate> rates)
         {
             if (!_crmSecurity.IsAdmin)
                 throw _crmSecurity.CreateSecurityException();
@@ -229,7 +236,7 @@ namespace ASC.CRM.Api
         /// <category>Common</category>
         /// <returns></returns>
         [Create(@"currency/addrates")]
-        public List<CurrencyRateDto> AddCurrencyRates(List<CurrencyRate> rates)
+        public List<CurrencyRateDto> AddCurrencyRates([FromForm] List<CurrencyRate> rates)
         {
             if (!_crmSecurity.IsAdmin)
                 throw _crmSecurity.CreateSecurityException();

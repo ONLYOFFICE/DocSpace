@@ -39,6 +39,8 @@ using ASC.Web.Api.Routing;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Mvc;
+
 namespace ASC.CRM.Api
 {
     public class TaskTemplateController : BaseApiController
@@ -70,7 +72,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <visible>false</visible>
         [Create(@"{entityType:regex(contact|person|company|opportunity|case)}/tasktemplatecontainer")]
-        public TaskTemplateContainerDto CreateTaskTemplateContainer(string entityType, string title)
+        public TaskTemplateContainerDto CreateTaskTemplateContainer([FromRoute] string entityType, [FromForm] string title)
         {
             if (string.IsNullOrEmpty(title)) throw new ArgumentException();
 
@@ -218,14 +220,14 @@ namespace ASC.CRM.Api
         /// <visible>false</visible>
         [Create(@"tasktemplatecontainer/{containerid:int}/tasktemplate")]
         public TaskTemplateDto CreateTaskTemplate(
-            int containerid,
-            string title,
-            string description,
-            Guid responsibleid,
-            int categoryid,
-            bool isNotify,
-            long offsetTicks,
-            bool deadLineIsFixed
+            [FromRoute] int containerid,
+            [FromForm] string title,
+            [FromForm] string description,
+            [FromForm] Guid responsibleid,
+            [FromForm] int categoryid,
+            [FromForm] bool isNotify,
+            [FromForm] long offsetTicks,
+            [FromForm] bool deadLineIsFixed
             )
         {
             if (containerid <= 0 || string.IsNullOrEmpty(title) || categoryid <= 0) throw new ArgumentException();

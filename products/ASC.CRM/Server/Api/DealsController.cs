@@ -755,7 +755,7 @@ namespace ASC.CRM.Api
         ///    Participant
         /// </returns>
         [Create(@"opportunity/{opportunityid:int}/contact/{contactid:int}")]
-        public ContactDto AddMemberToDeal(int opportunityid, int contactid)
+        public ContactDto AddMemberToDeal([FromRoute] int opportunityid, [FromRoute] int contactid)
         {
             if (opportunityid <= 0 || contactid <= 0) throw new ArgumentException();
 

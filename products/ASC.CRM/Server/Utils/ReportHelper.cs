@@ -181,35 +181,33 @@ namespace ASC.Web.CRM.Classes
             var crmSettings = SettingsManager.Load<CRMSettings>();
 
             var reportDao = DaoFactory.GetReportDao();
-            var defaultCurrency = CurrencyProvider.Get(crmSettings.DefaultCurrency);
+            var defaultCurrency = CurrencyProvider.Get(crmSettings.DefaultCurrency).Abbreviation;
 
-            throw new NotImplementedException();
-
-            //switch (reportType)
-            //{
-            //    case ReportType.SalesByManagers:
-            //        return reportDao.GetSalesByManagersReportData(timePeriod, managers, defaultCurrency);
-            //    case ReportType.SalesForecast:
-            //        return reportDao.GetSalesForecastReportData(timePeriod, managers, defaultCurrency);
-            //    case ReportType.SalesFunnel:
-            //        return reportDao.GetSalesFunnelReportData(timePeriod, managers, defaultCurrency);
-            //    case ReportType.WorkloadByContacts:
-            //        return reportDao.GetWorkloadByContactsReportData(timePeriod, managers);
-            //    case ReportType.WorkloadByTasks:
-            //        return reportDao.GetWorkloadByTasksReportData(timePeriod, managers);
-            //    case ReportType.WorkloadByDeals:
-            //        return reportDao.GetWorkloadByDealsReportData(timePeriod, managers, defaultCurrency);
-            //    case ReportType.WorkloadByInvoices:
-            //        return reportDao.GetWorkloadByInvoicesReportData(timePeriod, managers);
-            //    case ReportType.WorkloadByVoip:
-            //        return reportDao.GetWorkloadByViopReportData(timePeriod, managers);
-            //    case ReportType.SummaryForThePeriod:
-            //        return reportDao.GetSummaryForThePeriodReportData(timePeriod, managers, defaultCurrency);
-            //    case ReportType.SummaryAtThisMoment:
-            //        return reportDao.GetSummaryAtThisMomentReportData(timePeriod, managers, defaultCurrency);
-            //    default:
-            //        return null;
-            //}
+            switch (reportType)
+            {
+                case ReportType.SalesByManagers:
+                    return reportDao.GetSalesByManagersReportData(timePeriod, managers, defaultCurrency);
+                case ReportType.SalesForecast:
+                    return reportDao.GetSalesForecastReportData(timePeriod, managers, defaultCurrency);
+                //case ReportType.SalesFunnel:
+                //    return reportDao.GetSalesFunnelReportData(timePeriod, managers, defaultCurrency);
+                //case ReportType.WorkloadByContacts:
+                //    return reportDao.GetWorkloadByContactsReportData(timePeriod, managers);
+                //case ReportType.WorkloadByTasks:
+                //    return reportDao.GetWorkloadByTasksReportData(timePeriod, managers);
+                //case ReportType.WorkloadByDeals:
+                //    return reportDao.GetWorkloadByDealsReportData(timePeriod, managers, defaultCurrency);
+                //case ReportType.WorkloadByInvoices:
+                //    return reportDao.GetWorkloadByInvoicesReportData(timePeriod, managers);
+                //case ReportType.WorkloadByVoip:
+                //    return reportDao.GetWorkloadByViopReportData(timePeriod, managers);
+                case ReportType.SummaryForThePeriod:
+                    return reportDao.GetSummaryForThePeriodReportData(timePeriod, managers, defaultCurrency);
+                case ReportType.SummaryAtThisMoment:
+                    return reportDao.GetSummaryAtThisMomentReportData(timePeriod, managers, defaultCurrency);
+                default:
+                    return null;
+            }
         }
 
         private string GetReportScript(object data, ReportType type, string fileName)
@@ -248,6 +246,7 @@ namespace ASC.Web.CRM.Classes
         public ReportState RunGenareteReport(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
         {
             var reportData = GetReportData(reportType, timePeriod, managers);
+   
             if (reportData == null)
                 throw new Exception(CRMReportResource.ErrorNullReportData);
 

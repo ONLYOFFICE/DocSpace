@@ -17,6 +17,8 @@ using ASC.Web.CRM.Services.NotifyService;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Mvc;
+
 namespace ASC.CRM.Api
 {
     public class TasksController : BaseApiController
@@ -282,16 +284,16 @@ namespace ASC.CRM.Api
         /// <returns>Task</returns>
         [Create(@"task")]
         public TaskDto CreateTask(
-            string title,
-            string description,
-            ApiDateTime deadline,
-            Guid responsibleId,
-            int categoryId,
-            int contactId,
-            string entityType,
-            int entityId,
-            bool isNotify,
-            int alertValue
+            [FromForm] string title,
+            [FromForm] string description,
+            [FromForm] ApiDateTime deadline,
+            [FromForm] Guid responsibleId,
+            [FromForm] int categoryId,
+            [FromForm] int contactId,
+            [FromForm] string entityType,
+            [FromForm] int entityId,
+            [FromForm] bool isNotify,
+            [FromForm] int alertValue
             )
         {
             if (!string.IsNullOrEmpty(entityType) &&
@@ -373,16 +375,16 @@ namespace ASC.CRM.Api
         /// <visible>false</visible>
         [Create(@"contact/task/group")]
         public IEnumerable<TaskDto> CreateTaskGroup(
-            string title,
-            string description,
-            ApiDateTime deadline,
-            Guid responsibleId,
-            int categoryId,
-            int[] contactId,
-            string entityType,
-            int entityId,
-            bool isNotify,
-            int alertValue)
+            [FromForm] string title,
+            [FromForm] string description,
+            [FromForm] ApiDateTime deadline,
+            [FromForm] Guid responsibleId,
+            [FromForm] int categoryId,
+            [FromForm] int[] contactId,
+            [FromForm] string entityType,
+            [FromForm] int entityId,
+            [FromForm] bool isNotify,
+            [FromForm] int alertValue)
         {
             var tasks = new List<Task>();
 

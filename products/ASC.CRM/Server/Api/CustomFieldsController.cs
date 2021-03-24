@@ -40,6 +40,8 @@ using ASC.Web.Api.Routing;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Mvc;
+
 namespace ASC.CRM.Api
 {
     public class CustomFieldsController : BaseApiController
@@ -102,7 +104,11 @@ namespace ASC.CRM.Api
         ///    User field
         /// </returns>
         [Create(@"{entityType:regex(contact|person|company|opportunity|case)}/{entityid:int}/customfield/{fieldid:int}")]
-        public CustomFieldBaseDto SetEntityCustomFieldValue(string entityType, int entityid, int fieldid, string fieldValue)
+        public CustomFieldBaseDto SetEntityCustomFieldValue(
+            [FromRoute] string entityType, 
+            [FromRoute] int entityid, 
+            [FromRoute] int fieldid,
+            [FromForm] string fieldValue)
         {
             var customField = _daoFactory.GetCustomFieldDao().GetFieldDescription(fieldid);
 
@@ -209,7 +215,12 @@ namespace ASC.CRM.Api
         /// ]]>
         /// </example>
         [Create(@"{entityType:regex(contact|person|company|opportunity|case)}/customfield")]
-        public CustomFieldDto CreateCustomFieldValue(string entityType, string label, int fieldType, int position, string mask)
+        public CustomFieldDto CreateCustomFieldValue(
+            [FromRoute] string entityType,
+            [FromForm] string label, 
+            [FromForm] int fieldType,
+            [FromForm] int position, 
+            [FromForm] string mask)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
             var entityTypeObj = ToEntityType(entityType);

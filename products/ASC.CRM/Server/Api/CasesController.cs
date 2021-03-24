@@ -634,7 +634,7 @@ namespace ASC.CRM.Api
         ///    Participant
         /// </returns>
         [Create(@"case/{caseid:int}/contact")]
-        public ContactDto AddMemberToCases(int caseid, int contactid)
+        public ContactDto AddMemberToCases([FromRoute] int caseid,[FromForm] int contactid)
         {
             if ((caseid <= 0) || (contactid <= 0)) throw new ArgumentException();
 

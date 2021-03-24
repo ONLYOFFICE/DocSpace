@@ -41,6 +41,8 @@ using ASC.Web.Api.Routing;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Mvc;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -158,7 +160,12 @@ namespace ASC.CRM.Api
         /// </returns> 
         ///<exception cref="ArgumentException"></exception>
         [Create(@"contact/{contactid:int}/data")]
-        public ContactInfoDto CreateContactInfo(int contactid, ContactInfoType infoType, string data, bool isPrimary, string category)
+        public ContactInfoDto CreateContactInfo(
+            [FromRoute] int contactid, 
+            [FromForm] ContactInfoType infoType, 
+            [FromForm] string data, 
+            [FromForm] bool isPrimary, 
+            [FromForm] string category)
         {
             if (string.IsNullOrEmpty(data) || contactid <= 0) throw new ArgumentException();
             var contact = _daoFactory.GetContactDao().GetByID(contactid);
@@ -220,7 +227,7 @@ namespace ASC.CRM.Api
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         [Create(@"contact/{contactid:int}/addressdata")]
-        public ContactInfoDto CreateContactInfoAddress(int contactid, Address address)
+        public ContactInfoDto CreateContactInfoAddress([FromRoute] int contactid, Address address)
         {
             if (contactid <= 0) throw new ArgumentException("Invalid value", "contactid");
 
@@ -279,7 +286,7 @@ namespace ASC.CRM.Api
         /// </returns>
         /// <visible>false</visible>
         [Create(@"contact/{contactid:int}/batch")]
-        public IEnumerable<ContactInfoDto> CreateBatchContactInfo(int contactid, IEnumerable<ContactInfoDto> items)
+        public IEnumerable<ContactInfoDto> CreateBatchContactInfo([FromRoute] int contactid, [FromForm] IEnumerable<ContactInfoDto> items)
         {
             if (contactid <= 0) throw new ArgumentException();
 

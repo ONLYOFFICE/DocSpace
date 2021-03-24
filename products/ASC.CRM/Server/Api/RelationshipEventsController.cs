@@ -46,6 +46,8 @@ using ASC.Web.Files.Utils;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Mvc;
+
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
 namespace ASC.CRM.Api
@@ -233,7 +235,11 @@ namespace ASC.CRM.Api
         ///     File info
         /// </returns>
         [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files/text")]
-        public FileWrapper<int> CreateTextFile(string entityType, int entityid, string title, string content)
+        public FileWrapper<int> CreateTextFile(
+            [FromRoute] string entityType,
+            [FromRoute] int entityid,
+            [FromForm] string title,
+            [FromForm] string content)
         {
             if (title == null) throw new ArgumentNullException("title");
             if (content == null) throw new ArgumentNullException("content");
@@ -481,7 +487,10 @@ namespace ASC.CRM.Api
         /// <category>Files</category>
         /// <returns>Entity with the file attached</returns>
         [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files")]
-        public RelationshipEventDto AttachFiles(string entityType, int entityid, IEnumerable<int> fileids)
+        public RelationshipEventDto AttachFiles(
+            [FromRoute] string entityType, 
+            [FromRoute] int entityid,
+            [FromForm] IEnumerable<int> fileids)
         {
             if (entityid <= 0 || fileids == null) throw new ArgumentException();
 

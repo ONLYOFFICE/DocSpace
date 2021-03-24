@@ -40,6 +40,8 @@ using ASC.Web.Api.Routing;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Mvc;
+
 namespace ASC.CRM.Api
 {
     public class ListItemsController : BaseApiController
@@ -75,11 +77,11 @@ namespace ASC.CRM.Api
         /// </returns>
         [Create(@"opportunity/stage")]
         public DealMilestoneDto CreateDealMilestone(
-            string title,
-            string description,
-            string color,
-            int successProbability,
-            DealMilestoneStatus stageType)
+            [FromForm] string title,
+            [FromForm] string description,
+            [FromForm] string color,
+            [FromForm] int successProbability,
+            [FromForm] DealMilestoneStatus stageType)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
@@ -254,7 +256,11 @@ namespace ASC.CRM.Api
         ///<returns>History category</returns>
         ///<exception cref="ArgumentException"></exception>
         [Create(@"history/category")]
-        public HistoryCategoryDto CreateHistoryCategory(string title, string description, string imageName, int sortOrder)
+        public HistoryCategoryDto CreateHistoryCategory(
+            [FromForm] string title, 
+            [FromForm] string description, 
+            [FromForm] string imageName,
+            [FromForm] int sortOrder)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
@@ -421,7 +427,11 @@ namespace ASC.CRM.Api
         ///    Task category
         ///</returns>
         [Create(@"task/category")]
-        public TaskCategoryDto CreateTaskCategory(string title, string description, string imageName, int sortOrder)
+        public TaskCategoryDto CreateTaskCategory(
+            [FromForm] string title,
+            [FromForm] string description, 
+            [FromForm] string imageName,
+            [FromForm] int sortOrder)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
@@ -587,7 +597,11 @@ namespace ASC.CRM.Api
         ///    Contact status
         /// </returns>
         [Create(@"contact/status")]
-        public ContactStatusDto CreateContactStatus(string title, string description, string color, int sortOrder)
+        public ContactStatusDto CreateContactStatus(
+            [FromForm] string title, 
+            [FromForm] string description, 
+            [FromForm] string color,
+            [FromForm] int sortOrder)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 
@@ -775,7 +789,7 @@ namespace ASC.CRM.Api
         ///    Contact type
         /// </returns>
         [Create(@"contact/type")]
-        public ContactTypeDto CreateContactType(string title, int sortOrder)
+        public ContactTypeDto CreateContactType([FromForm] string title, [FromForm] int sortOrder)
         {
             if (!(_crmSecurity.IsAdmin)) throw _crmSecurity.CreateSecurityException();
 

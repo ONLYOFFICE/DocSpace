@@ -800,7 +800,10 @@ namespace ASC.CRM.Api
         /// <category>Invoices</category>
         /// <returns>ConverterData</returns>
         [Create(@"invoice/converter/data")]
-        public ConverterData GetInvoiceConverterData(int invoiceId, string storageUrl, string revisionId)
+        public ConverterData GetInvoiceConverterData(
+            [FromForm] int invoiceId,
+            [FromForm] string storageUrl,
+            [FromForm] string revisionId)
         {
             if (invoiceId <= 0) throw new ArgumentException();
 
