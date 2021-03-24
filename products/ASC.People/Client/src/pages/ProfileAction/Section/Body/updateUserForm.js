@@ -30,6 +30,7 @@ import {
   createThumbnailsAvatar,
   loadAvatar,
   deleteAvatar,
+  thirdPartyUnlinkAccount,
 } from "@appserver/common/api/people";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import toastr from "studio/toastr";
@@ -578,6 +579,12 @@ class UpdateUserForm extends React.Component {
     this.linkAccount(providers.linkedIn, e);
   };
 
+  onClickUnlink = (e) => {
+    thirdPartyUnlinkAccount("Google").then(() => {
+      console.log("Unlink account");
+    });
+  };
+
   linkAccount = (providerName, e) => {
     const link = e.target.href;
 
@@ -921,6 +928,14 @@ class UpdateUserForm extends React.Component {
               href="/login.ashx?auth=Google&mode=popup&callback=loginCallback"
             >
               {t("Connect")}
+            </Link>
+            <Link
+              type="action"
+              color="A3A9AE"
+              onClick={this.onClickUnlink}
+              isHovered={true}
+            >
+              {t("Disconnect")}
             </Link>
             <div>
               <SocialButton
