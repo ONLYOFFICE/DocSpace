@@ -5,7 +5,6 @@ const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const TerserPlugin = require("terser-webpack-plugin");
 const { InjectManifest } = require("workbox-webpack-plugin");
-//const CompressionPlugin = require("compression-webpack-plugin");
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 
@@ -186,21 +185,11 @@ module.exports = (env, argv) => {
     config.plugins.push(
       new InjectManifest({
         mode: "production", //"development",
-        swSrc: "./src/sw-template.js", // this is your sw template file
+        swSrc: "@appserver/common/utils/sw-template.js", // this is your sw template file
         swDest: "sw.js", // this will be created in the build step
         exclude: [/\.map$/, /manifest$/, /service-worker\.js$/],
       })
     );
-    // config.plugins.push(
-    //   new CompressionPlugin({
-    //     filename: "[path][base].gz[query]",
-    //     algorithm: "gzip",
-    //     test: /\.js(\?.*)?$/i,
-    //     threshold: 10240,
-    //     minRatio: 0.8,
-    //     deleteOriginalAssets: true,
-    //   })
-    // );
   } else {
     config.devtool = "cheap-module-source-map";
   }

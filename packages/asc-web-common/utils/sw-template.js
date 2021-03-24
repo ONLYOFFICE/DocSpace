@@ -12,7 +12,7 @@ import {
   //NetworkFirst,
   StaleWhileRevalidate,
 } from "workbox-strategies";
-import { ExpirationPlugin } from "workbox-expiration";
+//import { ExpirationPlugin } from "workbox-expiration";
 //import { BroadcastUpdatePlugin } from "workbox-broadcast-update";
 
 // SETTINGS
@@ -47,22 +47,6 @@ cleanupOutdatedCaches();
 
 googleFontsCache({ cachePrefix: "wb6-gfonts" });
 
-// API ROUTING
-
-registerRoute(
-  // Cache API Request
-  new RegExp("/api/2.0/(modules|people/@self|(.*)/info(.json|$))"),
-  new StaleWhileRevalidate({
-    cacheName: "wb6-api",
-    plugins: [
-      new ExpirationPlugin({
-        maxEntries: 100,
-        maxAgeSeconds: 30 * 60, // 30 Minutes
-      }),
-    ],
-  })
-);
-
 // TRANSLATIONS
 
 registerRoute(
@@ -90,8 +74,8 @@ addEventListener("message", (event) => {
 
 offlineFallback({
   pageFallback: "/static/offline/offline.html",
-        imageFallback: "/static/offline/offline.svg",
-        fontFallback: false,
+  imageFallback: "/static/offline/offline.svg",
+  fontFallback: false,
 });
 
 // ALL OTHER EVENTS
