@@ -12,6 +12,7 @@ import Toast from "@appserver/components/toast";
 import HelpButton from "@appserver/components/help-button";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
+import SocialButton from "@appserver/components/social-button";
 import PageLayout from "@appserver/common/components/PageLayout";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
@@ -153,6 +154,7 @@ const Form = (props) => {
     organizationName,
     greetingTitle,
     history,
+    thirdPartyLogin,
   } = props;
 
   const { error, confirmedEmail } = match.params;
@@ -245,9 +247,10 @@ const Form = (props) => {
     const hash = createPasswordHash(pass, hashSettings);
 
     isDesktop && checkPwd();
-
     login(userName, hash)
-      .then(() => history.push(defaultPage))
+      .then(() => {
+        history.push(defaultPage);
+      })
       .catch((error) => {
         setErrorText(error);
         setIdentifierValid(!error);
@@ -256,6 +259,50 @@ const Form = (props) => {
         focusInput();
       });
   };
+
+  const signInWithGoogle = () => {
+    const { getSerializedProfile, getOAuthToken } = props;
+    try {
+      window.open(
+        "/login.ashx?auth=Google&mode=popup&callback=authCallback",
+        "login",
+        "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+      );
+      getOAuthToken().then((code) => {
+        const token = window.btoa(
+          JSON.stringify({
+            auth: "Google",
+            mode: "popup",
+            callback: "authCallback",
+          })
+        );
+
+        window.open(
+          `/login.ashx?p=${token}&code=${code}`,
+          "login",
+          "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+        );
+
+        getSerializedProfile().then((profile) => {
+          console.log(profile);
+        });
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const authCallback = (profile) => {
+    thirdPartyLogin(profile.Serialized).then(() => {
+      setIsLoading(true);
+      history.push(defaultPage);
+    });
+  };
+
+  useEffect(() => {
+    console.log("One time");
+    window.authCallback = authCallback;
+  }, []);
 
   //console.log("Login render");
 
@@ -374,6 +421,17 @@ const Form = (props) => {
           </Text>
         )}
 
+        <Box displayProp="flex" alignItems="center" justify-content="center">
+          <SocialButton
+            onClick={signInWithGoogle}
+            iconName={"images/share.google.svg"}
+            label={"Google"}
+          />
+          <SocialButton iconName={"images/share.facebook.react.svg"} />
+          <SocialButton iconName={"images/share.twitter.react.svg"} />
+          <SocialButton iconName={"images/share.linkedin.svg"} />
+        </Box>
+
         {socialButtons.length ? (
           <Box displayProp="flex" alignItems="center">
             <div className="login-bottom-border"></div>
@@ -429,7 +487,13 @@ LoginForm.propTypes = {
 };
 
 const Login = inject(({ auth }) => {
-  const { settingsStore, isAuthenticated, isLoaded, login } = auth;
+  const {
+    settingsStore,
+    isAuthenticated,
+    isLoaded,
+    login,
+    thirdPartyLogin,
+  } = auth;
   const {
     greetingSettings: greetingTitle,
     organizationName,
@@ -437,6 +501,8 @@ const Login = inject(({ auth }) => {
     enabledJoin,
     defaultPage,
     isDesktopClient: isDesktop,
+    getSerializedProfile,
+    getOAuthToken,
   } = settingsStore;
 
   return {
@@ -449,6 +515,9 @@ const Login = inject(({ auth }) => {
     defaultPage,
     isDesktop,
     login,
+    thirdPartyLogin,
+    getSerializedProfile,
+    getOAuthToken,
   };
 })(withRouter(observer(LoginForm)));
 

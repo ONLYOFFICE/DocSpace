@@ -251,7 +251,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path={COMING_SOON_URLS}
                 component={ComingSoonRoute}
               />
-              <PrivateRoute
+              <Route
                 path={THIRD_PARTY_RESPONSE_URL}
                 component={ThirdPartyResponseRoute}
               />
