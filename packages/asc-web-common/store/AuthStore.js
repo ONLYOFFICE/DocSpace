@@ -154,6 +154,22 @@ class AuthStore {
     }
   };
 
+  thirdPartyLogin = async (SerializedProfile) => {
+    try {
+      const response = await api.user.thirdPartyLogin(SerializedProfile);
+
+      if (!response || !response.token) throw "Empty API response";
+
+      setWithCredentialsStatus(true);
+
+      await this.init();
+
+      return Promise.resolve(true);
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
   reset = () => {
     this.userStore = new UserStore();
     this.moduleStore = new ModuleStore();

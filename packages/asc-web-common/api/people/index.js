@@ -205,6 +205,13 @@ export function thirdPartyLinkAccount(SerializedProfile) {
   });
 }
 
+export function thirdPartyUnlinkAccount(provider) {
+  return request({
+    method: "delete",
+    url: `people/thirdparty/unlinkaccount.json?provider=${provider}`,
+  });
+}
+
 export function sendInstructionsToDelete() {
   return request({
     method: "put",
