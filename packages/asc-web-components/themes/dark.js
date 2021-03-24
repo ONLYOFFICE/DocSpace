@@ -1348,6 +1348,17 @@ const Dark = {
     background: lightCumulus,
   },
 
+  switchButton: {
+    fillColor: white,
+    checkedFillColor: gray,
+
+    fillColorDisabled: grayLight,
+    disabledFillColor: grayLightMid,
+    disabledFillColorInner: grayMid,
+
+    hoverBorderColor: gray,
+  },
+
   // phoneInput: {
   //   width: "304px",
   //   height: "44px",
