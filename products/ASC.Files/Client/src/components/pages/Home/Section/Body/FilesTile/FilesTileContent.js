@@ -8,15 +8,15 @@ import Text from "@appserver/components/text";
 import { markAsRead } from "@appserver/common/api/files";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import toastr from "studio/toastr";
-import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
-import { NewFilesPanel } from "../../../../panels";
+import { getTitleWithoutExst } from "../../../../../../helpers/files-helpers";
+import { NewFilesPanel } from "../../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import TileContent from "./TileContent";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-import CheckIcon from "../../../../../../public/images/check.react.svg";
-import CrossIcon from "../../../../../../../../../public/images/cross.react.svg";
-import config from "../../../../../../package.json";
+import CheckIcon from "../../../../../../../public/images/check.react.svg";
+import CrossIcon from "../../../../../../../public/images/cross.react.svg";
+import config from "../../../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 
 const SimpleFilesTileContent = styled(TileContent)`

@@ -27,7 +27,7 @@ import { TIMEOUT } from "../../../../../../helpers/constants";
 import { getTitleWithoutExst } from "../../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../../panels";
 import { ConvertDialog } from "../../../../../dialogs";
-import EditingWrapperComponent from "../EditingWrapperComponent";
+import EditingWrapperComponent from "../FilesTile/EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
 import { observer, inject } from "mobx-react";
 import config from "../../../../../../../package.json";

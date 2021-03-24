@@ -293,7 +293,7 @@ class SectionFilterContent extends React.Component {
         selectedFilterData={selectedFilterData}
         onFilter={this.onFilter}
         onChangeViewAs={this.onChangeViewAs}
-        viewAs={false} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
+        viewAs={true} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
         directionAscLabel={t("DirectionAscLabel")}
         directionDescLabel={t("DirectionDescLabel")}
         placeholder={t("Search")}
