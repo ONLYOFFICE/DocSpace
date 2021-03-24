@@ -190,6 +190,18 @@ export function getConsumersList() {
   });
 }
 
+export function getAuthProviders(
+  inviteView,
+  settingsView,
+  clientCallback,
+  fromOnly
+) {
+  return request({
+    method: "get",
+    url: `/settings/authproviders`,
+  });
+}
+
 export function updateConsumerProps(newProps) {
   const options = {
     method: "post",

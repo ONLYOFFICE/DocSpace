@@ -197,6 +197,14 @@ export function updateUserType(type, userIds) {
   });
 }
 
+export function thirdPartyLinkAccount(SerializedProfile) {
+  return request({
+    method: "put",
+    url: "people/thirdparty/linkaccount.json",
+    data: { SerializedProfile },
+  });
+}
+
 export function sendInstructionsToDelete() {
   return request({
     method: "put",
