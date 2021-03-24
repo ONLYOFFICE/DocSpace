@@ -22,6 +22,7 @@ class UsersStore {
       updateUserStatus: action,
       updateUserType: action,
       updateProfileInUsers: action,
+      getSerializedProfile: action,
       peopleList: computed,
     });
   }
@@ -88,6 +89,25 @@ class UsersStore {
   updateUserType = async (type, userIds, filter) => {
     await api.people.updateUserType(type, userIds);
     await this.getUsersList(filter);
+  };
+
+  getSerializedProfile = () => {
+    return new Promise((resolve) => {
+      localStorage.removeItem("profile");
+      const interval = setInterval(() => {
+        try {
+          const profile = localStorage.getItem("profile");
+
+          if (profile) {
+            localStorage.removeItem("profile");
+            clearInterval(interval);
+            resolve(profile);
+          }
+        } catch {
+          return;
+        }
+      }, 500);
+    });
   };
 
   updateProfileInUsers = async (updatedProfile) => {

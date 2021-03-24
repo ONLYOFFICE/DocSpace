@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import PageLayout from "@appserver/common/components/PageLayout";
 import Loaders from "@appserver/common/components/Loaders";
+import thirdPartyLinkAccount from "@appserver/common/api/people";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -19,6 +20,13 @@ import { withTranslation } from "react-i18next";
 
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
+
+const loginCallback = (profile) => {
+  console.log(profile);
+  thirdPartyLinkAccount(profile.Serialized).then((resp) => {
+    console.log(resp);
+  });
+};
 
 class ProfileAction extends React.Component {
   componentDidMount() {
@@ -46,6 +54,8 @@ class ProfileAction extends React.Component {
         this.documentElement[i].style.transition = "none";
       }
     }
+
+    window.loginCallback = loginCallback;
   }
 
   componentDidUpdate(prevProps) {

@@ -31,6 +31,7 @@ import {
   loadAvatar,
   deleteAvatar,
 } from "@appserver/common/api/people";
+import { getAuthProviders } from "@appserver/common/api/settings";
 import toastr from "studio/toastr";
 import {
   ChangeEmailDialog,
@@ -80,6 +81,13 @@ const StyledWrapper = styled.div`
   grid-gap: 16px 22px;
 `;
 
+const providers = Object.freeze({
+  google: "Google",
+  facebook: "Facebook",
+  twitter: "Twitter",
+  linkedIn: "LinkedIn",
+});
+
 class UpdateUserForm extends React.Component {
   constructor(props) {
     super(props);
@@ -113,6 +121,12 @@ class UpdateUserForm extends React.Component {
     this.onRemoveGroup = this.onRemoveGroup.bind(this);
 
     this.mainFieldsContainerRef = React.createRef();
+  }
+
+  componentDidMount() {
+    getAuthProviders(true, true, "loginCallback").then((providers) => {
+      console.log(providers);
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -544,17 +558,58 @@ class UpdateUserForm extends React.Component {
     this.setIsEdit();
   }
 
-  onClickGoogleConnect = () => {
-    console.log("Connect to Google");
+  onClickGoogle = (e) => {
+    e.preventDefault();
+    this.linkAccount(providers.google, e);
   };
-  onClickFacebookConnect = () => {
-    console.log("Connect to Facebook");
+
+  onClickFacebook = (e) => {
+    e.preventDefault();
+    this.linkAccount(providers.facebook, e);
   };
-  onClickTwitterConnect = () => {
-    console.log("Connect to Twitter");
+
+  onClickTwitter = (e) => {
+    e.preventDefault();
+    this.linkAccount(providers.twitter, e);
   };
-  onClickLinkedInConnect = () => {
-    console.log("Connect to LinkedIn");
+
+  onClickLinkedIn = (e) => {
+    e.preventDefault();
+    this.linkAccount(providers.linkedIn, e);
+  };
+
+  linkAccount = (providerName, e) => {
+    const link = e.target.href;
+
+    try {
+      window.open(
+        link,
+        "login",
+        "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+      );
+
+      getOAuthToken().then((code) => {
+        const token = window.btoa(
+          JSON.stringify({
+            auth: providerName,
+            mode: "popup",
+            callback: "loginCallback",
+          })
+        );
+
+        window.open(
+          `/login.ashx?p=${token}&code=${code}`,
+          "login",
+          "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+        );
+
+        getSerializedProfile().then((profile) => {
+          console.log(profile);
+        });
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   render() {
@@ -861,8 +916,9 @@ class UpdateUserForm extends React.Component {
             <Link
               type="action"
               color="A3A9AE"
-              onClick={this.onClickGoogleConnect}
+              onClick={this.onClickGoogle}
               isHovered={true}
+              href="/login.ashx?auth=Google&mode=popup&callback=loginCallback"
             >
               {t("Connect")}
             </Link>
@@ -878,8 +934,9 @@ class UpdateUserForm extends React.Component {
             <Link
               type="action"
               color="A3A9AE"
-              onClick={this.onClickFacebookConnect}
+              onClick={this.onClickFacebook}
               isHovered={true}
+              href="/login.ashx?auth=Facebook&mode=popup&callback=loginCallback"
             >
               {t("Connect")}
             </Link>
@@ -894,8 +951,9 @@ class UpdateUserForm extends React.Component {
             <Link
               type="action"
               color="A3A9AE"
-              onClick={this.onClickTwitterConnect}
+              onClick={this.onClickTwitter}
               isHovered={true}
+              href="/login.ashx?auth=Twitter&mode=popup&callback=loginCallback"
             >
               {t("Connect")}
             </Link>
@@ -909,8 +967,9 @@ class UpdateUserForm extends React.Component {
             <Link
               type="action"
               color="A3A9AE"
-              onClick={this.onClickLinkedInConnect}
+              onClick={this.onClickLinkedIn}
               isHovered={true}
+              href="/login.ashx?auth=LinkedIn&mode=popup&callback=loginCallback"
             >
               {t("Connect")}
             </Link>
@@ -999,6 +1058,7 @@ class UpdateUserForm extends React.Component {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
+    getOAuthToken: auth.settingsStore.thirdPartyStore,
     customNames: auth.settingsStore.customNames,
     isAdmin: auth.isAdmin,
     groups: peopleStore.groupsStore.groups,
@@ -1014,6 +1074,7 @@ export default withRouter(
     avatarMax: peopleStore.avatarEditorStore.avatarMax,
     setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
+    getSerializedProfile: peopleStore.usersStore.getSerializedProfile,
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
