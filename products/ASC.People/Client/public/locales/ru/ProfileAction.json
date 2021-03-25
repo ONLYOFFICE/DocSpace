@@ -59,5 +59,13 @@
   "CalendarSelectDate": "Выберите дату",
   "Calendar": "Календарь",
   "ViewAccess": "Просмотр",
-  "ProfileAction": "Работа с профилем"
+  "ProfileAction": "Работа с профилем",
+
+  "LoginSettings": "Вход через социальные сети",
+  "SignInWithGoogle": "Вход через Google",
+  "SignInWithFacebook": "Вход через Facebook",
+  "SignInWithTwitter": "Вход через Twitter",
+  "SignInWithLinkedIn": "Вход через LinkedIn",
+  "Connect": "Подключить",
+  "Disconnect": "Отключить"
 }

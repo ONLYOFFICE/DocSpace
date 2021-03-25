@@ -60,5 +60,13 @@
   "CalendarSelectDate": "Select date",
   "Calendar": "Calendar",
   "ViewAccess": "View",
-  "ProfileAction": "Profile action"
+  "ProfileAction": "Profile action",
+
+  "LoginSettings": "Login settings",
+  "SignInWithGoogle": "Sign in with Google",
+  "SignInWithFacebook": "Sign in with Facebook",
+  "SignInWithTwitter": "Sign in with Twitter",
+  "SignInWithLinkedIn": "Sign in with LinkedIn",
+  "Connect": "Connect",
+  "Disconnect": "Disconnect"
 }
