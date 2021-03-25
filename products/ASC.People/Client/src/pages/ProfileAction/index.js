@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import PageLayout from "@appserver/common/components/PageLayout";
 import Loaders from "@appserver/common/components/Loaders";
-import thirdPartyLinkAccount from "@appserver/common/api/people";
+import { thirdPartyLinkAccount } from "@appserver/common/api/people";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,

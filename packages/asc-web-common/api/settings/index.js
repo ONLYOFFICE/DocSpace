@@ -190,12 +190,7 @@ export function getConsumersList() {
   });
 }
 
-export function getAuthProviders(
-  inviteView,
-  settingsView,
-  clientCallback,
-  fromOnly
-) {
+export function getAuthProviders() {
   return request({
     method: "get",
     url: `/settings/authproviders`,

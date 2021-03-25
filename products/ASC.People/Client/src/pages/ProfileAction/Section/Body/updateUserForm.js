@@ -82,11 +82,23 @@ const StyledWrapper = styled.div`
   grid-gap: 16px 22px;
 `;
 
-const providers = Object.freeze({
-  google: "Google",
-  facebook: "Facebook",
-  twitter: "Twitter",
-  linkedIn: "LinkedIn",
+const providersData = Object.freeze({
+  Google: {
+    label: "SignInWithGoogle",
+    icon: "images/share.google.svg",
+  },
+  Facebook: {
+    label: "SignInWithFacebook",
+    icon: "images/share.facebook.react.svg",
+  },
+  Twitter: {
+    label: "SignInWithTwitter",
+    icon: "images/share.twitter.react.svg",
+  },
+  LinkedIn: {
+    label: "SignInWithLinkedIn",
+    icon: "images/share.linkedin.svg",
+  },
 });
 
 class UpdateUserForm extends React.Component {
@@ -124,10 +136,15 @@ class UpdateUserForm extends React.Component {
     this.mainFieldsContainerRef = React.createRef();
   }
 
-  componentDidMount() {
-    getAuthProviders(true, true, "loginCallback").then((providers) => {
-      console.log(providers);
-    });
+  async componentDidMount() {
+    const { setProviders } = this.props;
+    try {
+      await getAuthProviders().then((providers) => {
+        setProviders(providers);
+      });
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -559,34 +576,18 @@ class UpdateUserForm extends React.Component {
     this.setIsEdit();
   }
 
-  onClickGoogle = (e) => {
-    e.preventDefault();
-    this.linkAccount(providers.google, e);
-  };
-
-  onClickFacebook = (e) => {
-    e.preventDefault();
-    this.linkAccount(providers.facebook, e);
-  };
-
-  onClickTwitter = (e) => {
-    e.preventDefault();
-    this.linkAccount(providers.twitter, e);
-  };
-
-  onClickLinkedIn = (e) => {
-    e.preventDefault();
-    this.linkAccount(providers.linkedIn, e);
-  };
-
-  onClickUnlink = (e) => {
-    thirdPartyUnlinkAccount("Google").then(() => {
-      console.log("Unlink account");
+  unlinkAccount = (providerName) => {
+    const { setProviders } = this.props;
+    thirdPartyUnlinkAccount(providerName).then(() => {
+      getAuthProviders().then((providers) => {
+        setProviders(providers);
+      });
     });
   };
 
-  linkAccount = (providerName, e) => {
-    const link = e.target.href;
+  linkAccount = (providerName, link, e) => {
+    const { getOAuthToken, getSerializedProfile } = this.props;
+    e.preventDefault();
 
     try {
       window.open(
@@ -617,6 +618,56 @@ class UpdateUserForm extends React.Component {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  providerButtons = () => {
+    const { t, providers } = this.props;
+
+    console.log("providers: ", providers);
+
+    const providerButtons =
+      providers &&
+      providers.map((item) => {
+        const { icon, label } = providersData[item.provider];
+
+        if (!icon || !label) return <></>;
+        return (
+          <React.Fragment key={`${item.provider}ProviderItem`}>
+            <div>
+              <SocialButton
+                iconName={icon}
+                label={t(label)}
+                className="socialButton"
+              />
+            </div>
+            {item.linked ? (
+              <div>
+                <Link
+                  type="action"
+                  color="A3A9AE"
+                  onClick={(e) => this.unlinkAccount(item.provider, e)}
+                  isHovered={true}
+                >
+                  {t("Disconnect")}
+                </Link>
+              </div>
+            ) : (
+              <div>
+                <Link
+                  type="action"
+                  color="A3A9AE"
+                  onClick={(e) => this.linkAccount(item.provider, item.url, e)}
+                  isHovered={true}
+                >
+                  {t("Connect")}
+                </Link>
+              </div>
+            )}
+          </React.Fragment>
+        );
+      });
+
+    return providerButtons;
   };
 
   render() {
@@ -913,82 +964,7 @@ class UpdateUserForm extends React.Component {
           </MainFieldsContainer>
         </MainContainer>
         <InfoFieldContainer headerText={t("LoginSettings")}>
-          <StyledWrapper>
-            <SocialButton
-              iconName={"images/share.google.svg"}
-              label={t("SignInWithGoogle")}
-              className="socialButton"
-            />
-
-            <Link
-              type="action"
-              color="A3A9AE"
-              onClick={this.onClickGoogle}
-              isHovered={true}
-              href="/login.ashx?auth=Google&mode=popup&callback=loginCallback"
-            >
-              {t("Connect")}
-            </Link>
-            <Link
-              type="action"
-              color="A3A9AE"
-              onClick={this.onClickUnlink}
-              isHovered={true}
-            >
-              {t("Disconnect")}
-            </Link>
-            <div>
-              <SocialButton
-                iconName={"images/share.facebook.react.svg"}
-                label={t("SignInWithFacebook")}
-                className="socialButton"
-                iconOptions={facebookIconOptions}
-              />
-            </div>
-
-            <Link
-              type="action"
-              color="A3A9AE"
-              onClick={this.onClickFacebook}
-              isHovered={true}
-              href="/login.ashx?auth=Facebook&mode=popup&callback=loginCallback"
-            >
-              {t("Connect")}
-            </Link>
-            <div>
-              <SocialButton
-                iconName={"images/share.twitter.react.svg"}
-                label={t("SignInWithTwitter")}
-                className="socialButton"
-                iconOptions={twitterIconOptions}
-              />
-            </div>
-            <Link
-              type="action"
-              color="A3A9AE"
-              onClick={this.onClickTwitter}
-              isHovered={true}
-              href="/login.ashx?auth=Twitter&mode=popup&callback=loginCallback"
-            >
-              {t("Connect")}
-            </Link>
-            <div>
-              <SocialButton
-                iconName={"images/share.linkedin.svg"}
-                label={t("SignInWithLinkedIn")}
-                className="socialButton"
-              />
-            </div>
-            <Link
-              type="action"
-              color="A3A9AE"
-              onClick={this.onClickLinkedIn}
-              isHovered={true}
-              href="/login.ashx?auth=LinkedIn&mode=popup&callback=loginCallback"
-            >
-              {t("Connect")}
-            </Link>
-          </StyledWrapper>
+          <StyledWrapper>{this.providerButtons()}</StyledWrapper>
         </InfoFieldContainer>
         <InfoFieldContainer headerText={t("Comments")}>
           <Textarea
@@ -1073,7 +1049,7 @@ class UpdateUserForm extends React.Component {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
-    getOAuthToken: auth.settingsStore.thirdPartyStore,
+    getOAuthToken: auth.settingsStore.getOAuthToken,
     customNames: auth.settingsStore.customNames,
     isAdmin: auth.isAdmin,
     groups: peopleStore.groupsStore.groups,
@@ -1089,6 +1065,8 @@ export default withRouter(
     avatarMax: peopleStore.avatarEditorStore.avatarMax,
     setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
+    setProviders: peopleStore.usersStore.setProviders,
+    providers: peopleStore.usersStore.providers,
     getSerializedProfile: peopleStore.usersStore.getSerializedProfile,
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
