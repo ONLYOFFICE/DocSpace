@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Resource
 {
-    [Table("res_reserve")]
     public class ResReserve
     {
         public int Id { get; set; }

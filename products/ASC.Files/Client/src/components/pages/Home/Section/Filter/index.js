@@ -1,33 +1,15 @@
 import React from "react";
-import { connect } from "react-redux";
-import {
-  fetchFiles,
-  setViewAs,
-  setIsLoading,
-} from "../../../../../store/files/actions";
-import {
-  getFilter,
-  getSelectedFolderId,
-  getViewAs,
-  getFilterSelectedItem,
-  getFirstLoad,
-} from "../../../../../store/files/selectors";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { constants, FilterInput, store, Loaders, utils } from "asc-web-common";
-import equal from "fast-deep-equal/react";
+import { FilterType } from "@appserver/common/constants";
+import Loaders from "@appserver/common/components/Loaders";
+import FilterInput from "@appserver/common/components/FilterInput";
+import { withLayoutSize } from "@appserver/common/utils";
+//import equal from "fast-deep-equal/react";
 import { isMobileOnly } from "react-device-detect";
-
-const { withLayoutSize } = utils;
-
-const {
-  getCurrentUser,
-  getSettingsCustomNames,
-  getLanguage,
-} = store.auth.selectors;
-const { FilterType } = constants;
+import { inject, observer } from "mobx-react";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -79,7 +61,7 @@ class SectionFilterContent extends React.Component {
     const { setIsLoading, filter, selectedFolderId, fetchFiles } = this.props;
 
     const filterType = getFilterType(data.filterValues) || null;
-    const search = data.inputValue || null;
+    const search = data.inputValue || "";
     const sortBy = data.sortId;
     const sortOrder =
       data.sortDirection === "desc" ? "descending" : "ascending";
@@ -276,31 +258,32 @@ class SectionFilterContent extends React.Component {
     return selectedFilterData;
   };
 
-  needForUpdate = (currentProps, nextProps) => {
-    if (currentProps.language !== nextProps.language) {
-      return true;
-    }
-    return false;
-  };
+  isTranslationsLoaded = () => {
+    const { t, i18n } = this.props;
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return (
-      !equal(this.props.filter, nextProps.filter) ||
-      this.props.selectedFolderId !== nextProps.selectedFolderId ||
-      this.state.isReady !== nextState.isReady ||
-      this.props.viewAs !== nextProps.viewAs ||
-      this.props.firstLoad !== nextProps.firstLoad ||
-      this.props.sectionWidth !== nextProps.sectionWidth
-    );
-  }
+    const { store, services, language } = i18n;
+
+    let translationIsLoaded = false;
+    try {
+      translationIsLoaded = store.hasResourceBundle(
+        services.languageUtils.getLanguagePartFromCode(language),
+        "Home"
+      );
+    } catch {
+      translationIsLoaded = t("UserStatus") !== "UserStatus";
+    }
+
+    return translationIsLoaded;
+  };
 
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, language, firstLoad, sectionWidth } = this.props;
+    const { t, firstLoad, sectionWidth } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
-    return firstLoad ? (
+
+    return firstLoad && !this.isTranslationsLoaded() ? (
       <Loaders.Filter />
     ) : (
       <FilterInput
@@ -314,8 +297,6 @@ class SectionFilterContent extends React.Component {
         directionAscLabel={t("DirectionAscLabel")}
         directionDescLabel={t("DirectionDescLabel")}
         placeholder={t("Search")}
-        needForUpdate={this.needForUpdate}
-        language={language}
         isReady={this.state.isReady}
         {...filterColumnCount}
         contextMenuHeader={t("AddFilter")}
@@ -325,21 +306,30 @@ class SectionFilterContent extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    user: getCurrentUser(state),
-    customNames: getSettingsCustomNames(state),
-    language: getLanguage(state),
-    firstLoad: getFirstLoad(state),
-    filter: getFilter(state),
-    selectedFolderId: getSelectedFolderId(state),
-    selectedItem: getFilterSelectedItem(state),
-    viewAs: getViewAs(state),
-  };
-}
+export default inject(
+  ({ auth, initFilesStore, filesStore, selectedFolderStore }) => {
+    const { setIsLoading, setViewAs, viewAs } = initFilesStore;
+    const { firstLoad, fetchFiles, filter } = filesStore;
 
-export default connect(mapStateToProps, {
-  fetchFiles,
-  setViewAs,
-  setIsLoading,
-})(withRouter(withLayoutSize(withTranslation()(SectionFilterContent))));
+    const { user } = auth.userStore;
+    const { customNames, culture } = auth.settingsStore;
+
+    return {
+      customNames,
+      user,
+      firstLoad,
+      selectedFolderId: selectedFolderStore.id,
+      selectedItem: filter.selectedItem,
+      filter,
+      viewAs,
+
+      setIsLoading,
+      fetchFiles,
+      setViewAs,
+    };
+  }
+)(
+  withRouter(
+    withLayoutSize(withTranslation("Home")(observer(SectionFilterContent)))
+  )
+);

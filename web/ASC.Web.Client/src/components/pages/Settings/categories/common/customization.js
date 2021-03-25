@@ -1,22 +1,16 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
-import { Text, Loader, toastr, Link, Icons } from "asc-web-components";
 import styled from "styled-components";
-import { store, utils } from "asc-web-common";
-import {
-  setLanguageAndTime,
-  getPortalTimezones,
-} from "../../../../../store/settings/actions";
-import { default as clientStore } from "../../../../../store/store";
+import Text from "@appserver/components/text";
+import Loader from "@appserver/components/loader";
+import toastr from "@appserver/components/toast/toastr";
+import Link from "@appserver/components/link";
+import ArrowRightIcon from "../../../../../../public/images/arrow.right.react.svg";
 import { setDocumentTitle } from "../../../../../helpers/utils";
-const { getLanguage } = store.auth.selectors;
-const { changeLanguage } = utils;
-const {
-  getPortalCultures,
-  getModules,
-  getCurrentCustomSchema,
-} = store.auth.actions;
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { showLoader, hideLoader, combineUrl } from "@appserver/common/utils";
+import { inject, observer } from "mobx-react";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const mapCulturesToArray = (cultures, t) => {
   return cultures.map((culture) => {
@@ -33,6 +27,13 @@ const mapTimezonesToArray = (timezones) => {
 const findSelectedItemByKey = (items, selectedItemKey) => {
   return items.find((item) => item.key === selectedItemKey);
 };
+
+const StyledArrowRightIcon = styled(ArrowRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -96,7 +97,7 @@ class Customization extends React.Component {
       portalTimeZoneId,
       rawCultures,
       rawTimezones,
-      organizationName,
+      /*organizationName,*/
       t,
     } = props;
     const languages = mapCulturesToArray(rawCultures, t);
@@ -105,7 +106,6 @@ class Customization extends React.Component {
     setDocumentTitle(t("Customization"));
 
     this.state = {
-      isLoadedData: false,
       isLoading: false,
       timezones,
       timezone: findSelectedItemByKey(
@@ -130,8 +130,8 @@ class Customization extends React.Component {
       t,
       getPortalTimezones,
     } = this.props;
-    const { timezones, languages, isLoadedData } = this.state;
-
+    const { timezones, languages } = this.state;
+    showLoader();
     if (!timezones.length && !languages.length) {
       let languages;
       getPortalCultures()
@@ -149,19 +149,12 @@ class Customization extends React.Component {
           this.setState({ languages, language, timezones, timezone });
         });
     }
-
-    if (timezones.length && languages.length && !isLoadedData) {
-      this.setState({ isLoadedData: true });
-    }
+    hideLoader();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { timezones, languages } = this.state;
-    const { i18n, language, nameSchemaId } = this.props;
+  componentDidUpdate(prevProps) {
+    const { i18n, language, nameSchemaId, getCurrentCustomSchema } = this.props;
 
-    if (timezones.length && languages.length && !prevState.isLoadedData) {
-      this.setState({ isLoadedData: true });
-    }
     if (language !== prevProps.language) {
       changeLanguage(i18n)
         .then((t) => {
@@ -180,8 +173,8 @@ class Customization extends React.Component {
             language: newLocaleSelectedLanguage,
           });
         })
-        .then(() => getModules(clientStore.dispatch))
-        .then(() => getCurrentCustomSchema(clientStore.dispatch, nameSchemaId));
+        //.then(() => getModules(clientStore.dispatch))
+        .then(() => getCurrentCustomSchema(nameSchemaId));
     }
   }
 
@@ -212,64 +205,58 @@ class Customization extends React.Component {
 
   render() {
     const { t } = this.props;
-    const { isLoadedData, language, timezone } = this.state;
-    return !isLoadedData ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
-    ) : (
-      <>
-        <StyledComponent>
-          <div className="category-item-wrapper">
-            <div className="category-item-heading">
-              <Link
-                className="inherit-title-link header"
-                onClick={this.onClickLink}
-                truncate={true}
-                href="/settings/common/customization/language-and-time-zone"
-              >
-                {t("StudioTimeLanguageSettings")}
-              </Link>
-              <Icons.ArrowRightIcon
-                size="small"
-                isfill={true}
-                color="#333333"
-              />
-            </div>
-            {language && language.label && timezone && timezone.label && (
-              <Text className="category-item-subheader" truncate={true}>
-                {`${language.label} / ${timezone.label}`}
-              </Text>
-            )}
-            <Text className="category-item-description">
-              {t("LanguageAndTimeZoneSettingsDescription")}
-            </Text>
+    const { language, timezone } = this.state;
+    return (
+      <StyledComponent>
+        <div className="category-item-wrapper">
+          <div className="category-item-heading">
+            <Link
+              className="inherit-title-link header"
+              onClick={this.onClickLink}
+              truncate={true}
+              href={combineUrl(
+                AppServerConfig.proxyURL,
+                "/settings/common/customization/language-and-time-zone"
+              )}
+            >
+              {t("StudioTimeLanguageSettings")}
+            </Link>
+            <StyledArrowRightIcon size="small" color="#333333" />
           </div>
-          <div className="category-item-wrapper">
-            <div className="category-item-heading">
-              <Link
-                truncate={true}
-                className="inherit-title-link header"
-                onClick={this.onClickLink}
-                href="/settings/common/customization/custom-titles"
-              >
-                {t("CustomTitles")}
-              </Link>
-              <Icons.ArrowRightIcon
-                size="small"
-                isfill={true}
-                color="#333333"
-              />
-            </div>
-            <Text className="category-item-description">
-              {t("CustomTitlesSettingsDescription")}
+          {language && language.label && timezone && timezone.label && (
+            <Text className="category-item-subheader" truncate={true}>
+              {`${language.label} / ${timezone.label}`}
             </Text>
+          )}
+          <Text className="category-item-description">
+            {t("LanguageAndTimeZoneSettingsDescription")}
+          </Text>
+        </div>
+        <div className="category-item-wrapper">
+          <div className="category-item-heading">
+            <Link
+              truncate={true}
+              className="inherit-title-link header"
+              onClick={this.onClickLink}
+              href={combineUrl(
+                AppServerConfig.proxyURL,
+                "/settings/common/customization/custom-titles"
+              )}
+            >
+              {t("CustomTitles")}
+            </Link>
+            <StyledArrowRightIcon size="small" color="#333333" />
           </div>
-        </StyledComponent>
-      </>
+          <Text className="category-item-description">
+            {t("CustomTitlesSettingsDescription")}
+          </Text>
+        </div>
+      </StyledComponent>
     );
   }
 }
 
-function mapStateToProps(state) {
+export default inject(({ auth, setup }) => {
   const {
     culture,
     timezone,
@@ -277,20 +264,24 @@ function mapStateToProps(state) {
     cultures,
     nameSchemaId,
     organizationName,
-  } = state.auth.settings;
+    getPortalCultures,
+    getCurrentCustomSchema,
+    getPortalTimezones,
+  } = auth.settingsStore;
+
+  const { setLanguageAndTime } = setup;
+
   return {
     portalLanguage: culture,
+    language: culture,
     portalTimeZoneId: timezone,
-    language: getLanguage(state),
     rawTimezones: timezones,
     rawCultures: cultures,
-    nameSchemaId: nameSchemaId,
+    nameSchemaId,
     organizationName,
+    getPortalCultures,
+    setLanguageAndTime,
+    getPortalTimezones,
+    getCurrentCustomSchema,
   };
-}
-
-export default connect(mapStateToProps, {
-  getPortalCultures,
-  setLanguageAndTime,
-  getPortalTimezones,
-})(withTranslation()(Customization));
+})(withTranslation("Settings")(observer(Customization)));

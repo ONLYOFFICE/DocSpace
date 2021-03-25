@@ -1,64 +1,35 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
-import { ModalDialog, Button } from "asc-web-components";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
-import { utils, toastr, api } from "asc-web-common";
-import {
-  deleteThirdParty,
-  setThirdPartyProviders,
-  fetchFiles,
-  setUpdateTree,
-  setTreeFolders,
-} from "../../../store/files/actions";
-import {
-  getThirdPartyProviders,
-  getSelectedFolderId,
-  loopTreeFolders,
-  getTreeFolders,
-  getCommonFolderId,
-  getMyFolderId,
-} from "../../../store/files/selectors";
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "DeleteThirdPartyDialog",
-  localesPath: "dialogs/DeleteThirdPartyDialog",
-});
-
-const { changeLanguage } = utils;
+import { getFolder } from "@appserver/common/api/files";
+import toastr from "studio/toastr";
+import { loopTreeFolders } from "../../../helpers/files-helpers";
+import { inject, observer } from "mobx-react";
 
 class DeleteThirdPartyDialogComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    changeLanguage(i18n);
-  }
-
   updateTree = (path, folders) => {
-    const {
-      t,
-      treeFolders,
-      removeItem,
-      setTreeFolders,
-      setUpdateTree,
-    } = this.props;
+    const { t, treeFolders, removeItem, setTreeFolders } = this.props;
 
     const newTreeFolders = treeFolders;
     loopTreeFolders(path, newTreeFolders, folders, null);
     setTreeFolders(newTreeFolders);
-    setUpdateTree(true);
     toastr.success(t("SuccessDeleteThirdParty", { service: removeItem.title }));
   };
+
+  onClose = () => this.props.setDeleteThirdPartyDialogVisible(false);
 
   onDeleteThirdParty = () => {
     const {
       setThirdPartyProviders,
       removeItem,
       providers,
-      onClose,
       fetchFiles,
       currentFolderId,
       commonId,
       myId,
+      deleteThirdParty,
     } = this.props;
 
     const providerItem = providers.find((x) => x.provider_id === removeItem.id);
@@ -77,21 +48,21 @@ class DeleteThirdPartyDialogComponent extends React.Component {
           });
         } else {
           const folderId = providerItem.corporate ? commonId : myId;
-          api.files.getFolder(folderId).then((data) => {
+          getFolder(folderId).then((data) => {
             const path = [folderId];
             this.updateTree(path, data.folders);
           });
         }
       })
       .catch((err) => toastr.error(err))
-      .finally(() => onClose());
+      .finally(() => this.onClose());
   };
 
   render() {
-    const { onClose, visible, t, removeItem } = this.props;
+    const { visible, t, removeItem } = this.props;
 
     return (
-      <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
+      <ModalDialog visible={visible} zIndex={310} onClose={this.onClose}>
         <ModalDialog.Header>{t("DeleteThirdParty")}</ModalDialog.Header>
         <ModalDialog.Body>
           {t("DeleteThirdPartyAlert", { service: removeItem.title })}
@@ -109,27 +80,52 @@ class DeleteThirdPartyDialogComponent extends React.Component {
   }
 }
 
-const ModalDialogContainerTranslated = withTranslation()(
+const DeleteThirdPartyDialog = withTranslation("DeleteThirdPartyDialog")(
   DeleteThirdPartyDialogComponent
 );
 
-const DeleteThirdPartyDialog = (props) => (
-  <ModalDialogContainerTranslated i18n={i18n} {...props} />
-);
+export default inject(
+  ({
+    filesStore,
+    settingsStore,
+    dialogsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
+    const {
+      providers,
+      setThirdPartyProviders,
+      deleteThirdParty,
+    } = settingsStore.thirdPartyStore;
+    const { fetchFiles } = filesStore;
 
-const mapStateToProps = (state) => {
-  return {
-    providers: getThirdPartyProviders(state),
-    currentFolderId: getSelectedFolderId(state),
-    treeFolders: getTreeFolders(state),
-    commonId: getCommonFolderId(state),
-    myId: getMyFolderId(state),
-  };
-};
+    const {
+      treeFolders,
+      setTreeFolders,
+      myFolderId,
+      commonFolderId,
+    } = treeFoldersStore;
 
-export default connect(mapStateToProps, {
-  setThirdPartyProviders,
-  fetchFiles,
-  setUpdateTree,
-  setTreeFolders,
-})(withRouter(DeleteThirdPartyDialog));
+    const {
+      deleteThirdPartyDialogVisible: visible,
+      setDeleteThirdPartyDialogVisible,
+      removeItem,
+    } = dialogsStore;
+
+    return {
+      currentFolderId: selectedFolderStore.id,
+      treeFolders,
+      myId: myFolderId,
+      commonId: commonFolderId,
+      providers,
+      visible,
+      removeItem,
+
+      fetchFiles,
+      setTreeFolders,
+      setThirdPartyProviders,
+      deleteThirdParty,
+      setDeleteThirdPartyDialogVisible,
+    };
+  }
+)(withRouter(observer(DeleteThirdPartyDialog)));

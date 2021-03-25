@@ -90,7 +90,7 @@
 			"boxClientSecret": ""
 		  },
 		  "additional": {
-			"boxRedirectUrl" : ""
+			"boxRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     }, 
@@ -149,7 +149,7 @@
 			"docuSignHost": ""
 		  },
 		  "additional": {
-			"docuSignRedirectUrl" : ""
+			"docuSignRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -213,7 +213,7 @@
 			"facebookClientSecret": ""
 		  },
 		  "additional": {
-			"facebookRedirectUrl" : ""
+			"facebookRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -274,7 +274,7 @@
 			"googleClientSecret": ""
 		  },
 		  "additional": {
-			"googleRedirectUrl" : ""
+			"googleRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -305,7 +305,7 @@
 			"linkedInSecret": ""
 		  },
 		  "additional": {
-			"linkedInRedirectUrl" : ""
+			"linkedInRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -336,7 +336,7 @@
 			"mailRuClientSecret": ""
 		  },
 		  "additional": {
-			"mailRuRedirectUrl" : ""
+			"mailRuRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -367,7 +367,7 @@
 			"skydriveappsecret": ""
 		  },
 		  "additional": {
-			"skydriveRedirectUrl" : ""
+			"skydriveRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -459,7 +459,7 @@
 			"yahooClientSecret": ""
 		  },
 		  "additional": {
-			"yahooRedirectUrl" : ""
+			"yahooRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -490,7 +490,7 @@
 			"vkClientSecret": ""
 		  },
 		  "additional": {
-			"vkRedirectUrl" : ""
+			"vkRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -521,7 +521,7 @@
 			"wpClientSecret": ""
 		  },
 		  "additional": {
-			"wpRedirectUrl" : ""
+			"wpRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -552,7 +552,7 @@
 			"yandexClientSecret": ""
 		  },
 		  "additional": {
-			"yandexRedirectUrl" : ""
+			"yandexRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },

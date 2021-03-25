@@ -3,23 +3,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
-
 using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Files.Core.EF
 {
-    [Table("files_tag")]
     public class DbFilesTag : IDbFile
     {
-        [Column("tenant_id")]
         public int TenantId { get; set; }
-
         public int Id { get; set; }
-
         public string Name { get; set; }
-
         public Guid Owner { get; set; }
-
         public TagType Flag { get; set; }
     }
     public static class DbFilesTagExtension

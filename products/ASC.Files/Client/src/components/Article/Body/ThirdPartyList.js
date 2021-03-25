@@ -1,37 +1,21 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { Link } from "asc-web-components";
-import { history, utils } from "asc-web-common";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import { createI18N } from "../../../helpers/i18n";
-import {
-  getGoogleConnect,
-  getBoxConnect,
-  getDropboxConnect,
-  getOneDriveConnect,
-  getNextCloudConnect,
-  getWebDavConnect,
-} from "../../../store/files/selectors";
-import {
-  getOAuthToken,
-  openConnectWindow,
-  setConnectItem,
-  setSelectedFolder,
-  setSelectedNode,
-  setShowThirdPartyPanel,
-} from "../../../store/files/actions";
+import React from "react";
+import styled, { css } from "styled-components";
+import Link from "@appserver/components/link";
+import { withTranslation } from "react-i18next";
+import { isMobile } from "react-device-detect";
 
-const { changeLanguage } = utils;
-
-const i18n = createI18N({
-  page: "Article",
-  localesPath: "Article",
-});
+import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../../../package.json";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
-
+  ${isMobile &&
+  css`
+    margin-bottom: 64px;
+  `}
   .tree-thirdparty-list {
     padding-top: 3px;
     display: flex;
@@ -114,16 +98,21 @@ const PureThirdPartyListContainer = ({
   nextCloudConnectItem,
   webDavConnectItem,
   setConnectItem,
-  setShowThirdPartyPanel,
+  setThirdPartyDialogVisible,
   setSelectedNode,
   setSelectedFolder,
+  getOAuthToken,
+  openConnectWindow,
+  history,
 }) => {
   const redirectAction = () => {
-    const thirdPartyUrl = "/products/files/settings/thirdParty";
-    if (history.location.pathname !== thirdPartyUrl) {
+    const thirdPartyUrl = "/settings/thirdParty";
+    if (history.location.pathname.indexOf(thirdPartyUrl) === -1) {
       setSelectedNode(["thirdParty"]);
-      setSelectedFolder({});
-      return history.push(thirdPartyUrl);
+      setSelectedFolder(null);
+      return history.push(
+        combineUrl(AppServerConfig.proxyURL, config.homepage, thirdPartyUrl)
+      );
     }
   };
 
@@ -151,11 +140,12 @@ const PureThirdPartyListContainer = ({
       setConnectItem(data);
     }
 
-    redirectAction();
+    onShowConnectPanel();
   };
 
   const onShowConnectPanel = () => {
-    setShowThirdPartyPanel((prev) => !prev);
+    //setThirdPartyDialogVisible((prev) => !prev); TODO:
+    setThirdPartyDialogVisible(true);
     redirectAction();
   };
 
@@ -217,33 +207,49 @@ const PureThirdPartyListContainer = ({
   );
 };
 
-const ThirdPartyListContainer = withTranslation()(PureThirdPartyListContainer);
+const ThirdPartyList = withTranslation("Article")(
+  withRouter(PureThirdPartyListContainer)
+);
 
-const ThirdPartyList = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ThirdPartyListContainer {...props} />
-    </I18nextProvider>
-  );
-};
+export default inject(
+  ({
+    initFilesStore,
+    settingsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    dialogsStore,
+  }) => {
+    const { setIsLoading } = initFilesStore;
+    const { setSelectedFolder } = selectedFolderStore;
+    const { setSelectedNode } = treeFoldersStore;
+    const {
+      googleConnectItem,
+      boxConnectItem,
+      dropboxConnectItem,
+      oneDriveConnectItem,
+      nextCloudConnectItem,
+      webDavConnectItem,
+      getOAuthToken,
+      openConnectWindow,
+    } = settingsStore.thirdPartyStore;
 
-function mapStateToProps(state) {
-  return {
-    googleConnectItem: getGoogleConnect(state),
-    boxConnectItem: getBoxConnect(state),
-    dropboxConnectItem: getDropboxConnect(state),
-    oneDriveConnectItem: getOneDriveConnect(state),
-    nextCloudConnectItem: getNextCloudConnect(state),
-    webDavConnectItem: getWebDavConnect(state),
-  };
-}
+    const { setConnectItem, setThirdPartyDialogVisible } = dialogsStore;
 
-export default connect(mapStateToProps, {
-  setConnectItem,
-  setSelectedNode,
-  setSelectedFolder,
-  setShowThirdPartyPanel,
-})(ThirdPartyList);
+    return {
+      googleConnectItem,
+      boxConnectItem,
+      dropboxConnectItem,
+      oneDriveConnectItem,
+      nextCloudConnectItem,
+      webDavConnectItem,
+
+      setIsLoading,
+      setSelectedFolder,
+      setSelectedNode,
+      setConnectItem,
+      setThirdPartyDialogVisible,
+      getOAuthToken,
+      openConnectWindow,
+    };
+  }
+)(observer(ThirdPartyList));

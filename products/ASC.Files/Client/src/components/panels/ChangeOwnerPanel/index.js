@@ -1,34 +1,14 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
-import {
-  Button,
-  Heading,
-  Link,
-  Text,
-  Backdrop,
-  Aside,
-} from "asc-web-components";
+import Backdrop from "@appserver/components/backdrop";
+import Heading from "@appserver/components/heading";
+import Aside from "@appserver/components/aside";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 import { withTranslation } from "react-i18next";
-import { utils, store, toastr } from "asc-web-common";
-import {
-  setIsLoading,
-  setFilesOwner,
-  setFiles,
-  setFolders,
-  setChangeOwnerPanelVisible,
-} from "../../../store/files/actions";
-import {
-  getSelection,
-  getIsLoading,
-  getFiles,
-  getFolders,
-  getShowOwnerChangePanel,
-} from "../../../store/files/selectors";
-import { createI18N } from "../../../helpers/i18n";
-
+import toastr from "studio/toastr";
 import OwnerSelector from "./OwnerSelector";
-
 import {
   StyledAsidePanel,
   StyledContent,
@@ -36,19 +16,11 @@ import {
   StyledHeaderContent,
   StyledBody,
 } from "../StyledPanels";
-
-const i18n = createI18N({
-  page: "ChangeOwnerPanel",
-  localesPath: "panels/ChangeOwnerPanel",
-});
-const { changeLanguage } = utils;
-const { getSettingsCustomNamesGroupsCaption } = store.auth.selectors;
+import { inject, observer } from "mobx-react";
 
 class ChangeOwnerComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
 
     const owner = props.selection[0].createdBy;
     this.state = { showPeopleSelector: false, owner };
@@ -84,6 +56,7 @@ class ChangeOwnerComponent extends React.Component {
       setFolders,
       setFiles,
       setIsLoading,
+      setFilesOwner,
     } = this.props;
     const folderIds = [];
     const fileIds = [];
@@ -194,26 +167,34 @@ class ChangeOwnerComponent extends React.Component {
   }
 }
 
-const ModalDialogContainerTranslated = withTranslation()(ChangeOwnerComponent);
-
-const ChangeOwnerPanel = (props) => (
-  <ModalDialogContainerTranslated i18n={i18n} {...props} />
+const ChangeOwnerPanel = withTranslation("ChangeOwnerPanel")(
+  ChangeOwnerComponent
 );
 
-const mapStateToProps = (state) => {
-  return {
-    selection: getSelection(state),
-    groupsCaption: getSettingsCustomNamesGroupsCaption(state),
-    isLoading: getIsLoading(state),
-    files: getFiles(state),
-    folders: getFolders(state),
-    visible: getShowOwnerChangePanel(state),
-  };
-};
+export default inject(({ auth, initFilesStore, filesStore, dialogsStore }) => {
+  const { setIsLoading, isLoading } = initFilesStore;
+  const {
+    files,
+    folders,
+    selection,
+    setFiles,
+    setFolders,
+    setFilesOwner,
+  } = filesStore;
+  const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
-export default connect(mapStateToProps, {
-  setIsLoading,
-  setFiles,
-  setFolders,
-  setChangeOwnerPanelVisible,
-})(withRouter(ChangeOwnerPanel));
+  return {
+    groupsCaption: auth.settingsStore.customNames.groupsCaption,
+    files,
+    folders,
+    selection,
+    isLoading,
+    visible: ownerPanelVisible,
+
+    setFiles,
+    setFolders,
+    setIsLoading,
+    setChangeOwnerPanelVisible,
+    setFilesOwner,
+  };
+})(withRouter(observer(ChangeOwnerPanel)));

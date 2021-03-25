@@ -1,17 +1,19 @@
 import React from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router";
-import { Headline } from "asc-web-common";
-import { IconButton, utils } from "asc-web-components";
 import { withTranslation } from "react-i18next";
+import Headline from "@appserver/common/components/Headline";
+import IconButton from "@appserver/components/icon-button";
+import { tablet } from "@appserver/components/utils/device";
+
 import {
   getKeyByLink,
   settingsTree,
   getTKeyByKey,
   checkPropertyByLink,
 } from "../../../utils";
-
-const { tablet } = utils.device;
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const HeaderContainer = styled.div`
   position: relative;
@@ -86,7 +88,7 @@ class SectionHeaderContent extends React.Component {
     let newArrayOfParams = this.getArrayOfParams();
     newArrayOfParams.splice(-1, 1);
     const newPath = "/settings/" + newArrayOfParams.join("/");
-    this.props.history.push(newPath);
+    this.props.history.push(combineUrl(AppServerConfig.proxyURL, newPath));
   };
 
   getArrayOfParams = () => {
@@ -109,7 +111,7 @@ class SectionHeaderContent extends React.Component {
       <HeaderContainer>
         {!isCategoryOrHeader && arrayOfParams[0] && (
           <IconButton
-            iconName="ArrowPathIcon"
+            iconName="/static/images/arrow.path.react.svg"
             size="17"
             color="#A3A9AE"
             hoverColor="#657077"
@@ -126,4 +128,4 @@ class SectionHeaderContent extends React.Component {
   }
 }
 
-export default withRouter(withTranslation()(SectionHeaderContent));
+export default withRouter(withTranslation("Settings")(SectionHeaderContent));

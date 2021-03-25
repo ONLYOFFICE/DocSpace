@@ -62,7 +62,6 @@ namespace ASC.Web.Files.Configuration
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
             UserManager userManager,
-            IServiceProvider serviceProvider,
             NotifyConfiguration notifyConfiguration
             //            SubscriptionManager subscriptionManager
             )
@@ -81,6 +80,8 @@ namespace ASC.Web.Files.Configuration
 
         public override bool Visible { get { return true; } }
 
+        public override bool IsPrimary { get => true; }
+
         public override void Init()
         {
             List<string> adminOpportunities() => (CoreBaseSettings.CustomMode
@@ -95,7 +96,7 @@ namespace ASC.Web.Files.Configuration
                 new ProductContext
                 {
                     DisabledIconFileName = "product_disabled_logo.png",
-                    IconFileName = "product_logo.png",
+                    IconFileName = "images/files.menu.svg",
                     LargeIconFileName = "images/files.svg",
                     DefaultSortOrder = 10,
                     //SubscriptionManager = SubscriptionManager,
@@ -164,7 +165,7 @@ namespace ASC.Web.Files.Configuration
 
         public override string ProductClassName
         {
-            get { return "documents"; }
+            get { return "files"; }
         }
 
         public override ProductContext Context

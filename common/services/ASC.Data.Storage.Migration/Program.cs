@@ -55,12 +55,14 @@ namespace ASC.Data.Storage.Migration
                     LogNLogExtension.ConfigureLog(diHelper, "ASC.Data.Storage.Migration", "ASC.Migration");
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
+                    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+
                     diHelper.TryAdd<MigrationServiceLauncher>();
                     services.AddHostedService<MigrationServiceLauncher>();
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
-                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath);
+                    builder.Register(context.Configuration);
                 })
                 .UseConsoleLifetime()
                 .Build()

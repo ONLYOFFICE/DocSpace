@@ -1,10 +1,11 @@
 /**
  * Array for generation current settings tree.
  */
+
 export const settingsTree = [
   {
     key: "0",
-    icon: "SettingsIcon",
+    icon: "/static/images/settings.react.svg",
     link: "common",
     tKey: "ManagementCategoryCommon",
     isHeader: true,
@@ -40,7 +41,7 @@ export const settingsTree = [
   },
   {
     key: "1",
-    icon: "SecurityIcon",
+    icon: "/images/security.react.svg",
     link: "security",
     tKey: "ManagementCategorySecurity",
     isHeader: true,
@@ -56,7 +57,7 @@ export const settingsTree = [
   },
   {
     key: "3",
-    icon: "IntegrationIcon",
+    icon: "/images/integration.react.svg",
     link: "integration",
     tKey: "ManagementCategoryIntegration",
     isHeader: true,
@@ -69,7 +70,8 @@ export const settingsTree = [
         isCategory: true,
       },
     ],
-  },];
+  },
+];
 
 /**
 * Array for generation full settings tree, old structure.
@@ -80,7 +82,7 @@ export const settingsTreeFull = [
   {
     title: "Common",
     key: "0",
-    icon: "SettingsIcon",
+    icon: "/static/images/settings.react.svg",
     link: "common",
     children: [
       {
@@ -106,7 +108,7 @@ export const settingsTreeFull = [
   {
     title: "Security",
     key: "1",
-    icon: "SettingsIcon",
+    icon: "/static/images/settings.react.svg",
     link: "security",
     children: [
       {
@@ -138,7 +140,7 @@ export const settingsTreeFull = [
   {
     title: "Data Management",
     key: "2",
-    icon: "SettingsIcon",
+    icon: "/static/images/settings.react.svg",
     link: "data-management",
     children: [
       {
@@ -164,7 +166,7 @@ export const settingsTreeFull = [
   {
     title: "Integration",
     key: "3",
-    icon: "SettingsIcon",
+    icon: "/static/images/settings.react.svg",
     link: "integration",
     children: [
       {
@@ -184,7 +186,7 @@ export const settingsTreeFull = [
   {
     title: "Statistics",
     key: "4",
-    icon: "SettingsIcon",
+    icon: "/static/images/settings.react.svg",
     link: "statistics",
   },
 ];

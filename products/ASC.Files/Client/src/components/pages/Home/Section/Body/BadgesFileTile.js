@@ -1,9 +1,13 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import styled from "styled-components";
-import { Icons, Badge } from "asc-web-components";
-import { canWebEdit, canConvert } from "../../../../../store/files/selectors";
+import Badge from "@appserver/components/badge";
+import { inject, observer } from "mobx-react";
+import FileActionsConvertEditDocIcon from "../../../../../../public/images/file.actions.convert.edit.doc.react.svg";
+import FileActionsLockedIcon from "../../../../../../public/images/file.actions.locked.react.svg";
+import AccessEditIcon from "../../../../../../public/images/access.edit.react.svg";
+import FileActionsConvertIcon from "../../../../../../public/images/access.edit.react.svg";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const StyledBadgesFileTile = styled.div`
   display: flex;
@@ -17,7 +21,32 @@ const StyledBadgesFileTile = styled.div`
     margin: 5px;
   }
 `;
-
+const StyledFileActionsConvertEditDocIcon = styled(
+  FileActionsConvertEditDocIcon
+)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+const StyledAccessEditIcon = styled(AccessEditIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
+const StyledFileActionsConvertIcon = styled(FileActionsConvertIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: ${(props) => props.color};
+  }
+`;
 class BadgesFileTile extends React.PureComponent {
   render() {
     const { item, canConvert, canWebEdit } = this.props;
@@ -26,34 +55,30 @@ class BadgesFileTile extends React.PureComponent {
     return (
       <StyledBadgesFileTile>
         {canConvert && (
-          <Icons.FileActionsConvertIcon
+          <StyledFileActionsConvertIcon
             className="badge"
             size="small"
-            isfill={true}
             color="#A3A9AE"
           />
         )}
         {canWebEdit && (
-          <Icons.AccessEditIcon
+          <StyledAccessEditIcon
             className="badge"
             size="small"
-            isfill={true}
             color="#A3A9AE"
           />
         )}
         {fileStatus === 1 && (
-          <Icons.FileActionsConvertEditDocIcon
+          <StyledFileActionsConvertEditDocIcon
             className="badge"
             size="small"
-            isfill={true}
             color="#3B72A7"
           />
         )}
         {false && (
-          <Icons.FileActionsLockedIcon
+          <StyledFileActionsLockedIcon
             className="badge"
             size="small"
-            isfill={true}
             color="#3B72A7"
           />
         )}
@@ -92,11 +117,14 @@ class BadgesFileTile extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state, props) => {
-  return {
-    canWebEdit: canWebEdit(props.item.fileExst)(state),
-    canConvert: canConvert(props.item.fileExst)(state),
-  };
-};
+export default inject(({ formatsStore }, { item }) => {
+  const { docserviceStore } = formatsStore;
 
-export default connect(mapStateToProps, {})(withRouter(BadgesFileTile));
+  const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
+  const canConvert = docserviceStore.canConvert(item.fileExst);
+
+  return {
+    canWebEdit,
+    canConvert,
+  };
+})(withRouter(observer(BadgesFileTile)));

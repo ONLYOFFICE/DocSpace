@@ -1,76 +1,55 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { ModalDialog } from "asc-web-components";
+import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, toastr } from "asc-web-common";
+import toastr from "studio/toastr";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
-import {
-  setSecondaryProgressBarData,
-  itemOperationToFolder,
-} from "../../../store/files/actions";
-import {
-  getFilter,
-  getSelection,
-  getPathParts,
-  getSelectedFolderId,
-  getIsRecycleBinFolder,
-  getOperationsFolders,
-} from "../../../store/files/selectors";
 import { ThirdPartyMoveDialog } from "../../dialogs";
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "OperationsPanel",
-  localesPath: "panels/OperationsPanel",
-});
 
-const { changeLanguage } = commonUtils;
+import { inject, observer } from "mobx-react";
 
 class OperationsPanelComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    changeLanguage(i18n);
-
     this.state = {
       showProviderDialog: false,
-      operationPanelVisible: props.visible,
       providerKey: "",
       destFolderId: null,
     };
   }
 
+  onClose = () => {
+    const { isCopy, setMoveToPanelVisible, setCopyPanelVisible } = this.props;
+    isCopy ? setCopyPanelVisible(false) : setMoveToPanelVisible(false);
+  };
+
   onSelect = (folder, treeNode) => {
-    const { currentFolderId, onClose, selection, isCopy } = this.props;
+    const { currentFolderId, selection, isCopy } = this.props;
     const destFolderId = isNaN(+folder[0]) ? folder[0] : +folder[0];
 
     const provider = selection.find((x) => x.providerKey);
     const isProviderFolder = selection.find((x) => !x.providerKey);
 
     if (currentFolderId === destFolderId) {
-      return onClose();
+      return this.onClose();
     } else {
       provider &&
       !isProviderFolder &&
       !isCopy &&
       treeNode.node.props.providerKey !== provider.providerKey
-        ? this.setState({
-            providerKey: provider.providerKey,
-            operationPanelVisible: false,
-            showProviderDialog: true,
-            destFolderId,
-          })
+        ? this.setState(
+            {
+              providerKey: provider.providerKey,
+              showProviderDialog: true,
+              destFolderId,
+            },
+            () => this.onClose()
+          )
         : this.startOperation(isCopy, destFolderId);
     }
   };
-
-  componentDidUpdate(prevProps) {
-    if (this.props.visible !== prevProps.visible) {
-      this.setState({ operationPanelVisible: this.props.visible });
-    }
-  }
 
   startMoveOperation = () => {
     this.startOperation(false);
@@ -87,7 +66,6 @@ class OperationsPanelComponent extends React.Component {
       selection,
       setSecondaryProgressBarData,
       currentFolderId,
-      onClose,
     } = this.props;
 
     const destFolderId = folderId ? folderId : this.state.destFolderId;
@@ -97,7 +75,7 @@ class OperationsPanelComponent extends React.Component {
     const fileIds = [];
 
     if (currentFolderId === destFolderId) {
-      return onClose();
+      return this.onClose();
     } else {
       const isProviderFolder = selection.find((x) => !x.providerKey);
       const items =
@@ -114,7 +92,7 @@ class OperationsPanelComponent extends React.Component {
           folderIds.push(item.id);
         }
       }
-      onClose();
+      this.onClose();
       setSecondaryProgressBarData({
         icon: isCopy ? "duplicate" : "move",
         visible: true,
@@ -132,7 +110,7 @@ class OperationsPanelComponent extends React.Component {
       );
     }
 
-    onClose();
+    this.onClose();
   };
 
   render() {
@@ -143,13 +121,9 @@ class OperationsPanelComponent extends React.Component {
       isCopy,
       isRecycleBin,
       operationsFolders,
-      onClose,
+      visible,
     } = this.props;
-    const {
-      showProviderDialog,
-      operationPanelVisible,
-      providerKey,
-    } = this.state;
+    const { showProviderDialog, providerKey } = this.state;
 
     const zIndex = 310;
     const expandedKeys = this.props.expandedKeys.map((item) => item.toString());
@@ -159,19 +133,19 @@ class OperationsPanelComponent extends React.Component {
         {showProviderDialog && (
           <ThirdPartyMoveDialog
             visible={showProviderDialog}
-            onClose={onClose}
+            onClose={this.onClose}
             startMoveOperation={this.startMoveOperation}
             startCopyOperation={this.startCopyOperation}
             provider={providerKey}
           />
         )}
 
-        <StyledAsidePanel visible={operationPanelVisible}>
+        <StyledAsidePanel visible={visible}>
           <ModalDialog
-            visible={operationPanelVisible}
+            visible={visible}
             displayType="aside"
             zIndex={zIndex}
-            onClose={onClose}
+            onClose={this.onClose}
           >
             <ModalDialog.Header>
               {isRecycleBin ? t("Restore") : isCopy ? t("Copy") : t("Move")}
@@ -192,31 +166,46 @@ class OperationsPanelComponent extends React.Component {
   }
 }
 
-OperationsPanelComponent.propTypes = {
-  onClose: PropTypes.func,
-  visible: PropTypes.bool,
-};
-
-const OperationsPanelContainerTranslated = withTranslation()(
+const OperationsPanel = withTranslation("OperationsPanel")(
   OperationsPanelComponent
 );
 
-const OperationsPanel = (props) => (
-  <OperationsPanelContainerTranslated i18n={i18n} {...props} />
-);
+export default inject(
+  ({
+    filesStore,
+    uploadDataStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    dialogsStore,
+  }) => {
+    const {
+      secondaryProgressDataStore,
+      itemOperationToFolder,
+    } = uploadDataStore;
+    const { selection, filter } = filesStore;
+    const { isRecycleBinFolder, operationsFolders } = treeFoldersStore;
+    const { setSecondaryProgressBarData } = secondaryProgressDataStore;
 
-const mapStateToProps = (state) => {
-  return {
-    filter: getFilter(state),
-    selection: getSelection(state),
-    expandedKeys: getPathParts(state),
-    currentFolderId: getSelectedFolderId(state),
-    isRecycleBin: getIsRecycleBinFolder(state),
-    operationsFolders: getOperationsFolders(state),
-  };
-};
+    const {
+      moveToPanelVisible,
+      copyPanelVisible,
+      setCopyPanelVisible,
+      setMoveToPanelVisible,
+    } = dialogsStore;
 
-export default connect(mapStateToProps, {
-  setSecondaryProgressBarData,
-  itemOperationToFolder,
-})(withRouter(OperationsPanel));
+    return {
+      expandedKeys: selectedFolderStore.pathParts,
+      currentFolderId: selectedFolderStore.id,
+      selection,
+      isRecycleBin: isRecycleBinFolder,
+      filter,
+      operationsFolders,
+      visible: copyPanelVisible || moveToPanelVisible,
+
+      setSecondaryProgressBarData,
+      itemOperationToFolder,
+      setCopyPanelVisible,
+      setMoveToPanelVisible,
+    };
+  }
+)(withRouter(observer(OperationsPanel)));

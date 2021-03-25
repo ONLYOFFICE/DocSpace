@@ -4,11 +4,9 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import {
-  ContextMenu,
-  CustomScrollbarsVirtualList,
-  Heading,
-} from "asc-web-components";
+import Heading from "@appserver/components/heading";
+import ContextMenu from "@appserver/components/context-menu";
+import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
 
 const StyledGridWrapper = styled.div`
   display: grid;

@@ -1,14 +1,11 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import { Loader } from "asc-web-components";
-import { PageLayout } from "asc-web-common";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { store, utils as commonUtils } from "asc-web-common";
-import { changeEmail } from "../../../../store/confirm/actions";
-const { logout } = store.auth.actions;
-const { tryRedirectTo } = commonUtils;
+import Loader from "@appserver/components/loader";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { combineUrl, tryRedirectTo } from "@appserver/common/utils";
+import { inject, observer } from "mobx-react";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class ActivateEmail extends React.PureComponent {
   componentDidMount() {
@@ -21,11 +18,18 @@ class ActivateEmail extends React.PureComponent {
     logout();
     changeEmail(uid, email, key)
       .then((res) => {
-        tryRedirectTo(`/login/confirmed-email=${email}`);
+        tryRedirectTo(
+          combineUrl(
+            AppServerConfig.proxyURL,
+            `/login/confirmed-email=${email}`
+          )
+        );
       })
       .catch((e) => {
         // console.log('activate email error', e);
-        tryRedirectTo(`/login/error=${e}`);
+        tryRedirectTo(
+          combineUrl(AppServerConfig.proxyURL, `/login/error=${e}`)
+        );
       });
   }
 
@@ -47,7 +51,10 @@ const ActivateEmailForm = (props) => (
   </PageLayout>
 );
 
-export default connect(null, {
-  logout,
-  changeEmail,
-})(withRouter(withTranslation()(ActivateEmailForm)));
+export default inject(({ auth }) => {
+  const { logout, userStore } = auth;
+  return {
+    logout,
+    changeEmail: userStore.changeEmail,
+  };
+})(withRouter(observer(ActivateEmailForm)));

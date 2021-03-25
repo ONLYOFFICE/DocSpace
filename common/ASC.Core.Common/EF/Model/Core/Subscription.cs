@@ -1,12 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-using ASC.Core.Common.EF.Model;
-
+﻿using ASC.Core.Common.EF.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    [Table("core_subscription")]
     public class Subscription : BaseEntity
     {
         public int Tenant { get; set; }

@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import { Row, utils } from "asc-web-components";
-
-const { tablet } = utils.device;
+import Row from "@appserver/components/row";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledVersionRow = styled(Row)`
   min-height: 70px;
@@ -42,7 +41,7 @@ const StyledVersionRow = styled(Row)`
     width: 10px;
     height: 10px;
     margin-left: 9px;
-
+    margin-right: 16px;
     @media ${tablet} {
       margin-top: -1px;
     }

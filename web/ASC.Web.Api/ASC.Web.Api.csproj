@@ -39,4 +39,34 @@
     <ProjectReference Include="..\ASC.Web.Core\ASC.Web.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Core\AuditResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AuditResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Core\AuditResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AuditResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\AuditResource.ru.resx">
+      <DependentUpon>AuditResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\AuditResource.de.resx">
+      <DependentUpon>AuditResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\AuditResource.es.resx">
+      <DependentUpon>AuditResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\AuditResource.fr.resx">
+      <DependentUpon>AuditResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\AuditResource.it.resx">
+      <DependentUpon>AuditResource.resx</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  
 </Project>

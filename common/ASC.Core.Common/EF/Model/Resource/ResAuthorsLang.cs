@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Resource
 {
-    [Table("res_authorslang")]
     public class ResAuthorsLang
     {
         public string AuthorLogin { get; set; }

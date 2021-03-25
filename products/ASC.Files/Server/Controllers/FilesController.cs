@@ -158,7 +158,7 @@ namespace ASC.Api.Documents
         public Module GetModule()
         {
             ProductEntryPoint.Init();
-            return new Module(ProductEntryPoint, true);
+            return new Module(ProductEntryPoint);
         }
 
         [Read("@root")]
@@ -208,7 +208,8 @@ namespace ASC.Api.Documents
                 result.Add(GlobalFolderHelper.FolderTemplates);
             }
 
-            if (!withoutTrash)
+            if (!IsVisitor
+               && !withoutTrash)
             {
                 result.Add((int)GlobalFolderHelper.FolderTrash);
             }
@@ -509,14 +510,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@my/insert")]
-        public FileWrapper<int> InsertFileToMyFromBody([FromBody]InsertFileModel model)
-        {
-            return InsertFile(GlobalFolderHelper.FolderMy, model);
-        }
-
-        [Create("@my/insert")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public FileWrapper<int> InsertFileToMyFromForm([FromForm]InsertFileModel model)
+        public FileWrapper<int> InsertFileToMyFromBody([FromForm] InsertFileModel model)
         {
             return InsertFile(GlobalFolderHelper.FolderMy, model);
         }
@@ -531,14 +525,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@common/insert")]
-        public FileWrapper<int> InsertFileToCommonFromBody([FromBody]InsertFileModel model)
-        {
-            return InsertFile(GlobalFolderHelper.FolderCommon, model);
-        }
-
-        [Create("@common/insert")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public FileWrapper<int> InsertFileToCommonFromForm([FromForm]InsertFileModel model)
+        public FileWrapper<int> InsertFileToCommonFromBody([FromForm] InsertFileModel model)
         {
             return InsertFile(GlobalFolderHelper.FolderCommon, model);
         }
@@ -554,31 +541,12 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("{folderId}/insert", order: int.MaxValue, DisableFormat = true)]
-        public FileWrapper<string> InsertFileFromBody(string folderId, [FromBody]InsertFileModel model)
+        public FileWrapper<string> InsertFile(string folderId, [FromForm] InsertFileModel model)
         {
-            return InsertFile(folderId, model);
-        }
-
-        [Create("{folderId}/insert", order: int.MaxValue, DisableFormat = true)]
-        [Consumes("application/x-www-form-urlencoded")]
-        public FileWrapper<string> InsertFileFromForm(string folderId, [FromForm]InsertFileModel model)
-        {
-            return InsertFile(folderId, model);
-        }
-
-        private FileWrapper<string> InsertFile(string folderId, InsertFileModel model)
-        {
-            return FilesControllerHelperString.InsertFile(folderId, model.File, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
+            return FilesControllerHelperString.InsertFile(folderId, model.File.OpenReadStream(), model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
         [Create("{folderId:int}/insert", order: int.MaxValue - 1)]
-        public FileWrapper<int> InsertFileFromBody(int folderId, [FromBody]InsertFileModel model)
-        {
-            return InsertFile(folderId, model);
-        }
-
-        [Create("{folderId:int}/insert", order: int.MaxValue - 1)]
-        [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<int> InsertFileFromForm(int folderId, [FromForm]InsertFileModel model)
         {
             return InsertFile(folderId, model);
@@ -586,7 +554,7 @@ namespace ASC.Api.Documents
 
         private FileWrapper<int> InsertFile(int folderId, InsertFileModel model)
         {
-            return FilesControllerHelperInt.InsertFile(folderId, model.File, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
+            return FilesControllerHelperInt.InsertFile(folderId, model.File.OpenReadStream(), model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
         /// <summary>
@@ -623,29 +591,17 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Update("file/{fileId}/saveediting", DisableFormat = true)]
-        public FileWrapper<string> SaveEditingFromBody(string fileId, [FromBody]SaveEditingModel model)
-        {
-            return FilesControllerHelperString.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
-        }
-
-        [Update("file/{fileId}/saveediting", DisableFormat = true)]
-        [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<string> SaveEditingFromForm(string fileId, [FromForm]SaveEditingModel model)
         {
-            return FilesControllerHelperString.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
+            using var stream = model.Stream.OpenReadStream();
+            return FilesControllerHelperString.SaveEditing(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
         }
 
         [Update("file/{fileId:int}/saveediting")]
-        public FileWrapper<int> SaveEditingFromBody(int fileId, [FromBody]SaveEditingModel model)
-        {
-            return FilesControllerHelperInt.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
-        }
-
-        [Update("file/{fileId:int}/saveediting")]
-        [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<int> SaveEditingFromForm(int fileId, [FromForm]SaveEditingModel model)
         {
-            return FilesControllerHelperInt.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
+            using var stream = model.Stream.OpenReadStream();
+            return FilesControllerHelperInt.SaveEditing(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
         }
 
         /// <summary>
@@ -861,6 +817,7 @@ namespace ASC.Api.Documents
         }
 
         [Create("{folderId:int}/text")]
+        [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<int> CreateTextFileFromForm(int folderId, [FromForm]CreateTextOrHtmlFileModel model)
         {
             return CreateTextFile(folderId, model);
@@ -1206,15 +1163,15 @@ namespace ASC.Api.Documents
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
         [Delete("file/{fileId}", DisableFormat = true)]
-        public IEnumerable<FileOperationWraper> DeleteFile(string fileId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper> DeleteFile(string fileId, [FromBody] DeleteModel model)
         {
-            return FilesControllerHelperString.DeleteFile(fileId, deleteAfter, immediately);
+            return FilesControllerHelperString.DeleteFile(fileId, model.DeleteAfter, model.Immediately);
         }
 
         [Delete("file/{fileId:int}")]
-        public IEnumerable<FileOperationWraper> DeleteFile(int fileId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper> DeleteFile(int fileId, [FromBody] DeleteModel model)
         {
-            return FilesControllerHelperInt.DeleteFile(fileId, deleteAfter, immediately);
+            return FilesControllerHelperInt.DeleteFile(fileId, model.DeleteAfter, model.Immediately);
         }
 
         /// <summary>

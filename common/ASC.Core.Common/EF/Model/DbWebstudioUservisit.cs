@@ -1,11 +1,8 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
-    [Table("webstudio_uservisit")]
     public class DbWebstudioUserVisit
     {
         public int TenantId { get; set; }

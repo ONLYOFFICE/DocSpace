@@ -1,11 +1,9 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Resource
 {
-    [Table("res_files")]
     public class ResFiles
     {
         public int Id { get; set; }

@@ -1,41 +1,26 @@
 import React, { memo } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import {
-  ModalDialog,
-  Button,
-  Text,
-  ToggleContent,
-  Checkbox,
-  CustomScrollbarsVirtualList,
-} from "asc-web-components";
+
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Text from "@appserver/components/text";
+import ToggleContent from "@appserver/components/toggle-content";
+import Checkbox from "@appserver/components/checkbox";
+import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
+
 import { withTranslation } from "react-i18next";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { utils, toastr, constants } from "asc-web-common";
+import toastr from "studio/toastr";
+import { EmployeeType } from "@appserver/common/constants";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { updateUserType, setSelected } from "../../../store/people/actions";
-import { createI18N } from "../../../helpers/i18n";
-import {
-  getUsersToMakeEmployeesIds,
-  getUsersToMakeGuestsIds,
-} from "../../../store/people/selectors";
 
-const i18n = createI18N({
-  page: "ChangeUserTypeDialog",
-  localesPath: "dialogs/ChangeUserTypeDialog",
-});
-
-const { EmployeeType } = constants;
-
-const { changeLanguage } = utils;
+import { inject, observer } from "mobx-react";
 
 class ChangeUserTypeDialogComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    changeLanguage(i18n);
 
     const { selectedUsers, userIds } = props;
 
@@ -68,10 +53,17 @@ class ChangeUserTypeDialogComponent extends React.Component {
   };
 
   onChangeUserType = () => {
-    const { onClose, setSelected, t, userType, updateUserType } = this.props;
+    const {
+      onClose,
+      setSelected,
+      t,
+      userType,
+      updateUserType,
+      filter,
+    } = this.props;
     const { userIds } = this.state;
     this.setState({ isRequestRunning: true }, () => {
-      updateUserType(userType, userIds)
+      updateUserType(userType, userIds, filter)
         .then(() => toastr.success(t("SuccessChangeUserType")))
         .catch((error) => toastr.error(error))
         .finally(() => {
@@ -166,12 +158,8 @@ class ChangeUserTypeDialogComponent extends React.Component {
   }
 }
 
-const ChangeUserTypeDialogTranslated = withTranslation()(
+const ChangeUserTypeDialog = withTranslation("ChangeUserTypeDialog")(
   ChangeUserTypeDialogComponent
-);
-
-const ChangeUserTypeDialog = (props) => (
-  <ChangeUserTypeDialogTranslated i18n={i18n} {...props} />
 );
 
 ChangeUserTypeDialog.propTypes = {
@@ -182,19 +170,15 @@ ChangeUserTypeDialog.propTypes = {
   selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-const mapStateToProps = (state, ownProps) => {
-  const { selection } = state.people;
-  const { userType } = ownProps;
-
-  return {
+export default withRouter(
+  inject(({ peopleStore }, ownProps) => ({
+    filter: peopleStore.filterStore.filter,
+    updateUserType: peopleStore.usersStore.updateUserType,
+    selectedUsers: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
     userIds:
-      userType === EmployeeType.User
-        ? getUsersToMakeEmployeesIds(state)
-        : getUsersToMakeGuestsIds(state),
-    selectedUsers: selection,
-  };
-};
-
-export default connect(mapStateToProps, { updateUserType, setSelected })(
-  withRouter(ChangeUserTypeDialog)
+      ownProps.userType === EmployeeType.User
+        ? peopleStore.selectionStore.getUsersToMakeEmployeesIds
+        : peopleStore.selectionStore.getUsersToMakeGuestsIds,
+  }))(observer(ChangeUserTypeDialog))
 );

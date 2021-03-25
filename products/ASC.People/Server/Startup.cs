@@ -1,10 +1,7 @@
 ﻿
 using ASC.Api.Core;
 using ASC.Common;
-using ASC.Common.DependencyInjection;
 using ASC.Employee.Core.Controllers;
-
-using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,11 +24,6 @@ namespace ASC.People
 
             DIHelper.TryAdd<PeopleController>();
             DIHelper.TryAdd<GroupController>();
-        }
-
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
-            builder.Register(Configuration, HostEnvironment.ContentRootPath);
         }
     }
 }

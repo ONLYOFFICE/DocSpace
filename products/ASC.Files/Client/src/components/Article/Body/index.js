@@ -1,63 +1,40 @@
 import React from "react";
-import { connect } from "react-redux";
-import { utils } from "asc-web-components";
-import { toastr, Loaders } from "asc-web-common";
+
+import toastr from "studio/toastr";
+import Loaders from "@appserver/common/components/Loaders";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
-import {
-  fetchFiles,
-  setIsLoading,
-  setSelectedNode,
-} from "../../../store/files/actions";
-import {
-  getTreeFolders,
-  getFilter,
-  getSelectedFolderTitle,
-  getSelectedTreeNode,
-} from "../../../store/files/selectors";
 import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
+import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router-dom";
+import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { selectedFolderTitle, filter, treeFolders } = props;
+    const { selectedFolderTitle } = props;
 
     selectedFolderTitle
       ? setDocumentTitle(selectedFolderTitle)
       : setDocumentTitle();
 
     this.state = {
-      expandedKeys: filter.treeFolders,
-      data: treeFolders,
       showNewFilesPanel: false,
     };
   }
 
-  componentDidUpdate(prevProps) {
-    const { filter, treeFolders } = this.props;
-
-    if (
-      filter.treeFolders.length !== prevProps.filter.treeFolders.length ||
-      this.state.expandedKeys.length !== filter.treeFolders.length
-    ) {
-      this.setState({ expandedKeys: filter.treeFolders });
-    }
-
-    if (!utils.array.isArrayEqual(prevProps.treeFolders, treeFolders)) {
-      this.setState({ data: treeFolders });
-    }
-  }
-
-  componentDidMount() {
+  /*componentDidMount() {
     if (this.props.currentId) {
       const currentId = [this.props.currentId + ""];
       this.props.setSelectedNode(currentId);
     }
-  }
+  }*/
 
   onSelect = (data, e) => {
     const {
@@ -66,6 +43,8 @@ class ArticleBodyContent extends React.Component {
       selectedTreeNode,
       setSelectedNode,
       fetchFiles,
+      homepage,
+      history,
     } = this.props;
 
     if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
@@ -74,6 +53,7 @@ class ArticleBodyContent extends React.Component {
       const newFilter = filter.clone();
       newFilter.page = 0;
       newFilter.startIndex = 0;
+      newFilter.folder = data[0];
 
       const selectedFolderTitle =
         (e.node && e.node.props && e.node.props.title) || null;
@@ -82,9 +62,17 @@ class ArticleBodyContent extends React.Component {
         ? setDocumentTitle(selectedFolderTitle)
         : setDocumentTitle();
 
-      fetchFiles(data[0], newFilter)
-        .catch((err) => toastr.error(err))
-        .finally(() => setIsLoading(false));
+      if (window.location.pathname.indexOf("/filter") > 0) {
+        fetchFiles(data[0], newFilter)
+          .catch((err) => toastr.error(err))
+          .finally(() => setIsLoading(false));
+      } else {
+        newFilter.startIndex = 0;
+        const urlFilter = newFilter.toUrlParams();
+        history.push(
+          combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+        );
+      }
     }
   };
 
@@ -97,17 +85,17 @@ class ArticleBodyContent extends React.Component {
   };
 
   setNewFilesCount = (folderPath, filesCount) => {
-    const data = this.state.data;
+    const data = this.props.treeFolders;
     const dataItem = data.find((x) => x.id === folderPath[0]);
     dataItem.newItems = filesCount ? filesCount : dataItem.newItems - 1;
-    this.setState({ data });
+
+    this.props.setTreeFolders(data);
   };
 
   render() {
-    const { treeFolders, filter, onTreeDrop, selectedTreeNode } = this.props;
-    const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
+    const { treeFolders, onTreeDrop, selectedTreeNode } = this.props;
+    const { showNewFilesPanel, newFolderId } = this.state;
 
-    //console.log("Article Body render");
     return (
       <>
         {showNewFilesPanel && (
@@ -127,8 +115,6 @@ class ArticleBodyContent extends React.Component {
               selectedKeys={selectedTreeNode}
               onSelect={this.onSelect}
               data={treeFolders}
-              filter={filter}
-              expandedKeys={expandedKeys}
               onBadgeClick={this.onShowNewFilesPanel}
               onTreeDrop={onTreeDrop}
             />
@@ -141,21 +127,28 @@ class ArticleBodyContent extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    treeFolders: getTreeFolders(state),
-    filter: getFilter(state),
-    selectedTreeNode: getSelectedTreeNode(state),
-    selectedFolderTitle: getSelectedFolderTitle(state),
-  };
-}
+export default inject(
+  ({ initFilesStore, filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const { setIsLoading } = initFilesStore;
+    const { fetchFiles, filter } = filesStore;
+    const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
+    const selectedTreeNode =
+      treeFoldersStore.selectedTreeNode.length > 0
+        ? treeFoldersStore.selectedTreeNode
+        : [selectedFolderStore.id + ""];
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-    setSelectedNode: (node) => dispatch(setSelectedNode(node)),
-    fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
-  };
-};
+    return {
+      selectedFolderTitle: selectedFolderStore.title,
+      treeFolders,
+      selectedTreeNode,
+      filter,
 
-export default connect(mapStateToProps, mapDispatchToProps)(ArticleBodyContent);
+      setIsLoading,
+      fetchFiles,
+      setSelectedNode,
+      setTreeFolders,
+
+      homepage: config.homepage,
+    };
+  }
+)(observer(withRouter(ArticleBodyContent)));

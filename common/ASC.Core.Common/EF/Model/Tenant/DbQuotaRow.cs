@@ -1,23 +1,16 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using ASC.Core.Common.EF.Model;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    [Table("tenants_quotarow")]
     public class DbQuotaRow : BaseEntity
     {
         public int Tenant { get; set; }
         public string Path { get; set; }
         public long Counter { get; set; }
         public string Tag { get; set; }
-
-        [Column("last_modified")]
         public DateTime LastModified { get; set; }
-
         public override object[] GetKeys()
         {
             return new object[] { Tenant, Path };

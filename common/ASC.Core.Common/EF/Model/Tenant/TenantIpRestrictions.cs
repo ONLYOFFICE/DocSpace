@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
-    [Table("tenants_iprestrictions")]
     public class TenantIpRestrictions
     {
         public int Id { get; set; }

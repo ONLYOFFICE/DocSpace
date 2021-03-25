@@ -14,6 +14,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="callback.htm" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="callback.htm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DotNetOpenAuth.Ultimate" Version="4.3.4.13329" />
     <PackageReference Include="Grpc.Tools" Version="2.32.0">
       <PrivateAssets>all</PrivateAssets>

@@ -1,25 +1,28 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import {
-  Button,
-  TextInput,
-  Text,
-  PasswordInput,
-  toastr,
-  Loader,
-} from "asc-web-components";
-import { PageLayout } from "asc-web-common";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { constants, utils as commonUtils } from "asc-web-common";
+import axios from "axios";
 import {
-  getConfirmationInfo,
-  activateConfirmUser,
-} from "../../../../store/confirm/actions";
-const { EmployeeActivationStatus } = constants;
-const { createPasswordHash, tryRedirectTo } = commonUtils;
+  changePassword,
+  updateActivationStatus,
+  updateUser,
+} from "@appserver/common/api/people";
+import { inject, observer } from "mobx-react";
+import Button from "@appserver/components/button";
+import TextInput from "@appserver/components/text-input";
+import Text from "@appserver/components/text";
+import PasswordInput from "@appserver/components/password-input";
+import toastr from "@appserver/components/toast/toastr";
+import Loader from "@appserver/components/loader";
+import PageLayout from "@appserver/common/components/PageLayout";
+import {
+  AppServerConfig,
+  EmployeeActivationStatus,
+} from "@appserver/common/constants";
+import { combineUrl, createPasswordHash } from "@appserver/common/utils";
+
 const inputWidth = "400px";
 
 const ConfirmContainer = styled.div`
@@ -82,7 +85,7 @@ class Confirm extends React.PureComponent {
 
   onSubmit = (e) => {
     this.setState({ isLoading: true }, function () {
-      const { activateConfirmUser, hashSettings, defaultPage } = this.props;
+      const { hashSettings, defaultPage } = this.props;
 
       this.setState({ errorText: "" });
 
@@ -124,14 +127,15 @@ class Confirm extends React.PureComponent {
         firstname: this.state.firstName,
         lastname: this.state.lastName,
       };
-      activateConfirmUser(
+
+      this.activateConfirmUser(
         personalData,
         loginData,
         this.state.key,
         this.state.userId,
         EmployeeActivationStatus.Activated
       )
-        .then(() => tryRedirectTo(defaultPage))
+        .then(() => window.location.replace(defaultPage))
         .catch((error) => {
           console.error("activate error", error);
           this.setState({
@@ -140,6 +144,39 @@ class Confirm extends React.PureComponent {
           });
         });
     });
+  };
+
+  activateConfirmUser = async (
+    personalData,
+    loginData,
+    key,
+    userId,
+    activationStatus
+  ) => {
+    const changedData = {
+      id: userId,
+      FirstName: personalData.firstname,
+      LastName: personalData.lastname,
+    };
+
+    const res1 = await changePassword(userId, loginData.passwordHash, key);
+
+    console.log("changePassword", res1);
+
+    const res2 = await updateActivationStatus(activationStatus, userId, key);
+
+    console.log("updateActivationStatus", res2);
+
+    const { login } = this.props;
+    const { userName, passwordHash } = loginData;
+
+    const res3 = await login(userName, passwordHash);
+
+    console.log("Login", res3);
+
+    const res4 = await updateUser(changedData);
+
+    console.log("updateUser", res4);
   };
 
   onKeyPress = (event) => {
@@ -153,16 +190,13 @@ class Confirm extends React.PureComponent {
   validatePassword = (value) => this.setState({ passwordValid: value });
 
   componentDidMount() {
-    const { getConfirmationInfo, history } = this.props;
+    const { getSettings, getPortalPasswordSettings, history } = this.props;
+    const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
 
-    getConfirmationInfo(this.state.key)
-      .then(function () {
-        console.log("get settings success");
-      })
-      .catch((e) => {
-        console.error("get settings error", e);
-        history.push(`/login/error=${e}`);
-      });
+    axios.all(requests).catch((e) => {
+      console.error("get settings error", e);
+      history.push(combineUrl(AppServerConfig.proxyURL, `/login/error=${e}`));
+    });
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -196,8 +230,8 @@ class Confirm extends React.PureComponent {
 
   render() {
     console.log("ActivateUser render");
-    const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
-    return !isConfirmLoaded ? (
+    const { settings, t, greetingTitle } = this.props;
+    return !settings ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <ConfirmContainer>
@@ -325,8 +359,6 @@ class Confirm extends React.PureComponent {
 }
 
 Confirm.propTypes = {
-  getConfirmationInfo: PropTypes.func.isRequired,
-  activateConfirmUser: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
@@ -338,17 +370,23 @@ const ActivateUserForm = (props) => (
   </PageLayout>
 );
 
-function mapStateToProps(state) {
-  return {
-    isConfirmLoaded: state.confirm.isConfirmLoaded,
-    settings: state.auth.settings.passwordSettings,
-    greetingTitle: state.auth.settings.greetingSettings,
-    hashSettings: state.auth.settings.hashSettings,
-    defaultPage: state.auth.settings.defaultPage,
-  };
-}
+export default inject(({ auth }) => {
+  const {
+    greetingSettings,
+    hashSettings,
+    defaultPage,
+    passwordSettings,
+    getSettings,
+    getPortalPasswordSettings,
+  } = auth.settingsStore;
 
-export default connect(mapStateToProps, {
-  getConfirmationInfo,
-  activateConfirmUser,
-})(withRouter(withTranslation()(ActivateUserForm)));
+  return {
+    settings: passwordSettings,
+    greetingTitle: greetingSettings,
+    hashSettings,
+    defaultPage,
+    getSettings,
+    getPortalPasswordSettings,
+    login: auth.login,
+  };
+})(withRouter(withTranslation("Confirm")(observer(ActivateUserForm))));

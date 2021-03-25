@@ -1,11 +1,14 @@
 import React from "react";
-import { IconButton, Row, Text, Icons, Link } from "asc-web-components";
-import { toastr } from "asc-web-common";
+import IconButton from "@appserver/components/icon-button";
+import Row from "@appserver/components/row";
+import Text from "@appserver/components/text";
+import toastr from "studio/toastr";
 import copy from "copy-to-clipboard";
 import LinkRow from "./linkRow";
 import AccessComboBox from "./AccessComboBox";
-import equal from "fast-deep-equal/react";
-import { getAccessIcon } from "../../../store/files/selectors";
+//import equal from "fast-deep-equal/react";
+import { getAccessIcon } from "../../../helpers/files-helpers";
+import { ReactSVG } from "react-svg";
 
 class SharingRow extends React.Component {
   constructor(props) {
@@ -21,17 +24,6 @@ class SharingRow extends React.Component {
     if (this.state.access !== access) {
       this.setState({ access });
     }
-  }
-
-  shouldComponentUpdate(nextProps) {
-    if (!equal(this.props, nextProps)) {
-      return true;
-    }
-    if (this.state.access !== this.props.item.access) {
-      return true;
-    }
-
-    return true;
   }
 
   onCopyInternalLink = () => {
@@ -127,25 +119,20 @@ class SharingRow extends React.Component {
       },
       {
         key: "linkItem_3",
-        label: `${t("ShareVia")} Google Plus`,
-        onClick: () => toastr.warning("Share via Google Plus"),
-      },
-      {
-        key: "linkItem_4",
         label: `${t("ShareVia")} Facebook`,
         onClick: this.onShareFacebook,
       },
       {
-        key: "linkItem_5",
+        key: "linkItem_4",
         label: `${t("ShareVia")} Twitter`,
         onClick: this.onShareTwitter,
       },
       {
-        key: "linkItem_6",
+        key: "linkItem_5",
         isSeparator: true,
       },
       {
-        key: "linkItem_7",
+        key: "linkItem_6",
         label: t("Embedding"),
         onClick: () => onShowEmbeddingPanel(shareLink),
       },
@@ -156,7 +143,7 @@ class SharingRow extends React.Component {
       ? { onClick: onShowChangeOwnerPanel }
       : {};
 
-    const accessIcon = getAccessIcon(access);
+    const accessIconUrl = getAccessIcon(access);
 
     return (
       <>
@@ -184,12 +171,22 @@ class SharingRow extends React.Component {
             key={`internal-link-key_${id}`}
             element={
               isOwner || isLocked ? (
-                React.createElement(Icons[accessIcon], {
-                  size: "medium",
-                  className: "sharing_panel-owner-icon",
-                  isfill: true,
-                  color: isLoading ? "#D0D5DA" : "#a3a9ae",
-                })
+                <ReactSVG
+                  src={accessIconUrl}
+                  className="sharing_panel-owner-icon"
+                  beforeInjection={(svg) => {
+                    svg
+                      .querySelector("path")
+                      .setAttribute("fill", isLoading ? "#D0D5DA" : "#a3a9ae");
+                    svg.setAttribute(
+                      "style",
+                      `width:16px;
+                  min-width:16px;
+                  height:16px;
+                  min-height:16px;`
+                    );
+                  }}
+                />
               ) : (
                 <AccessComboBox
                   t={t}
@@ -230,7 +227,7 @@ class SharingRow extends React.Component {
                 !shareLink &&
                 !isLocked && (
                   <IconButton
-                    iconName="RemoveIcon"
+                    iconName="images/remove.react.svg"
                     id={id}
                     {...onRemoveUserProp}
                     className="sharing_panel-remove-icon"

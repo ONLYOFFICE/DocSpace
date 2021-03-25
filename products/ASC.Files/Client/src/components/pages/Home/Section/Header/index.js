@@ -2,65 +2,19 @@ import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import {
-  constants,
-  Headline,
-  store,
-  api,
-  toastr,
-  Loaders,
-} from "asc-web-common";
-import { connect } from "react-redux";
+import toastr from "studio/toastr";
+import Loaders from "@appserver/common/components/Loaders";
+import Headline from "@appserver/common/components/Headline";
+import { FilterType, FileAction } from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
-import {
-  ContextMenuButton,
-  DropDownItem,
-  GroupButtonsMenu,
-  IconButton,
-  utils,
-} from "asc-web-components";
-import {
-  fetchFiles,
-  setAction,
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-  setIsLoading,
-  setSelected,
-  setSharingPanelVisible,
-} from "../../../../../store/files/actions";
-import { TIMEOUT } from "../../../../../helpers/constants";
-import {
-  EmptyTrashDialog,
-  DeleteDialog,
-  DownloadDialog,
-} from "../../../../dialogs";
-import { OperationsPanel } from "../../../../panels";
-import {
-  getUserAccess,
-  getWebEditSelected,
-  getIsRecycleBinFolder,
-  canCreate,
-  getSelectedFolderTitle,
-  getFilter,
-  getSelectedFolderId,
-  getSelection,
-  getSelectedFolderParentId,
-  getIsRootFolder,
-  getHeaderVisible,
-  getHeaderIndeterminate,
-  getHeaderChecked,
-  getAccessedSelected,
-  getSelectionLength,
-  getSharePanelVisible,
-  getIsThirdPartySelection,
-  getIsPrivacyFolder,
-  getOnlyFoldersSelected,
-} from "../../../../../store/files/selectors";
-
-const { isAdmin, isDesktopClient } = store.auth.selectors;
-const { FilterType, FileAction } = constants;
-const { tablet, desktop } = utils.device;
-const { Consumer } = utils.context;
+import { isMobile } from "react-device-detect";
+import ContextMenuButton from "@appserver/components/context-menu-button";
+import DropDownItem from "@appserver/components/drop-down-item";
+import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
+import IconButton from "@appserver/components/icon-button";
+import { tablet, desktop } from "@appserver/components/utils/device";
+import { Consumer } from "@appserver/components/utils/context";
+import { inject, observer } from "mobx-react";
 
 const StyledContainer = styled.div`
   .header-container {
@@ -139,13 +93,42 @@ const StyledContainer = styled.div`
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
 
+    ${
+      isMobile &&
+      css`
+        position: sticky;
+      `
+    }
+
+    ${(props) =>
+      !props.isTabletView
+        ? props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 40 + "px"};
+          `
+        : props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 32 + "px"};
+          `}
+
     @media ${tablet} {
+      padding-bottom: 0;
+      ${
+        !isMobile &&
+        css`
+          height: 56px;
+        `
+      }
       & > div:first-child {
         ${(props) =>
+          !isMobile &&
           props.width &&
           css`
             width: ${props.width + 16 + "px"};
           `}
+
         position: absolute;
         ${(props) =>
           !props.isDesktop &&
@@ -165,14 +148,6 @@ const StyledContainer = styled.div`
 class SectionHeaderContent extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      showDeleteDialog: false,
-      showDownloadDialog: false,
-      showEmptyTrashDialog: false,
-      showMoveToPanel: false,
-      showCopyPanel: false,
-    };
   }
 
   onCreate = (format) => {
@@ -238,103 +213,39 @@ class SectionHeaderContent extends React.Component {
     toastr.success(t("LinkCopySuccess"));
   };
 
-  onMoveAction = () =>
-    this.setState({ showMoveToPanel: !this.state.showMoveToPanel });
+  onMoveAction = () => this.props.setMoveToPanelVisible(true);
+  onCopyAction = () => this.props.setCopyPanelVisible(true);
+  downloadAction = () =>
+    this.props
+      .downloadAction(this.props.t("ArchivingData"))
+      .catch((err) => toastr.error(err));
 
-  onCopyAction = () =>
-    this.setState({ showCopyPanel: !this.state.showCopyPanel });
+  downloadAsAction = () => this.props.setDownloadDialogVisible(true);
+  renameAction = () => toastr.info("renameAction click");
+  onOpenSharingPanel = () => this.props.setSharingPanelVisible(true);
 
-  loop = (data) => {
-    const url = data.url;
-    api.files
-      .getProgress()
-      .then((res) => {
-        const currentItem = res.find((x) => x.id === data.id);
-        if (!url) {
-          this.props.setSecondaryProgressBarData({
-            icon: "file",
-            visible: true,
-            percent: currentItem.progress,
-            label: this.props.t("ArchivingData"),
-            alert: false,
-          });
-          setTimeout(() => this.loop(currentItem), 1000);
-        } else {
-          setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
-          return (window.location.href = url);
-        }
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        //toastr.error(err);
-        setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
-      });
-  };
-
-  downloadAction = () => {
+  onDeleteAction = () => {
     const {
       t,
-      selection,
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
+      deleteAction,
+      confirmDelete,
+      setDeleteDialogVisible,
     } = this.props;
-    const fileIds = [];
-    const folderIds = [];
-    const items = [];
 
-    if (selection.length === 1) {
-      return window.open(selection[0].viewUrl, "_blank");
+    if (confirmDelete) {
+      setDeleteDialogVisible(true);
+    } else {
+      const translations = {
+        deleteOperation: t("DeleteOperation"),
+        deleteFromTrash: t("DeleteFromTrash"),
+        deleteSelectedElem: t("DeleteSelectedElem"),
+      };
+
+      deleteAction(translations).catch((err) => toastr.error(err));
     }
-
-    for (let item of selection) {
-      if (item.fileExst) {
-        fileIds.push(item.id);
-        items.push({ id: item.id, fileExst: item.fileExst });
-      } else {
-        folderIds.push(item.id);
-        items.push({ id: item.id });
-      }
-    }
-
-    setSecondaryProgressBarData({
-      icon: "file",
-      visible: true,
-      percent: 0,
-      label: t("ArchivingData"),
-      alert: false,
-    });
-
-    api.files
-      .downloadFiles(fileIds, folderIds)
-      .then((res) => {
-        this.loop(res[0]);
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        //toastr.error(err);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      });
   };
 
-  downloadAsAction = () =>
-    this.setState({ showDownloadDialog: !this.state.showDownloadDialog });
-
-  renameAction = () => toastr.info("renameAction click");
-
-  onOpenSharingPanel = () =>
-    this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
-
-  onDeleteAction = () =>
-    this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
-
-  onEmptyTrashAction = () =>
-    this.setState({ showEmptyTrashDialog: !this.state.showEmptyTrashDialog });
+  onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
 
   getContextOptionsFolder = () => {
     const { t } = this.props;
@@ -413,7 +324,6 @@ class SectionHeaderContent extends React.Component {
       isRecycleBin,
       isThirdPartySelection,
       isPrivacy,
-      selection,
       isOnlyFoldersSelected,
     } = this.props;
 
@@ -473,7 +383,7 @@ class SectionHeaderContent extends React.Component {
         label: t("Share"),
         disabled:
           !isAccessedSelected ||
-          (isPrivacy && (isOnlyFoldersSelected || selection.length > 1)),
+          (isPrivacy && (isOnlyFoldersSelected || isItemsSelected)),
         onClick: this.onOpenSharingPanel,
       },
       {
@@ -531,24 +441,15 @@ class SectionHeaderContent extends React.Component {
 
     const {
       t,
-      selection,
       isHeaderVisible,
-      isRecycleBin,
       isHeaderChecked,
       isHeaderIndeterminate,
       isRootFolder,
       title,
       canCreate,
       isDesktop,
+      isTabletView,
     } = this.props;
-
-    const {
-      showDeleteDialog,
-      showEmptyTrashDialog,
-      showDownloadDialog,
-      showMoveToPanel,
-      showCopyPanel,
-    } = this.state;
 
     const menuItems = this.getMenuItems();
 
@@ -561,6 +462,7 @@ class SectionHeaderContent extends React.Component {
             canCreate={canCreate}
             title={title}
             isDesktop={isDesktop}
+            isTabletView={isTabletView}
           >
             {isHeaderVisible ? (
               <div className="group-button-menu-container">
@@ -585,7 +487,7 @@ class SectionHeaderContent extends React.Component {
                   <>
                     {!isRootFolder && (
                       <IconButton
-                        iconName="ArrowPathIcon"
+                        iconName="/static/images/arrow.path.react.svg"
                         size="17"
                         color="#A3A9AE"
                         hoverColor="#657077"
@@ -606,7 +508,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="PlusIcon"
+                          iconName="images/actions.header.touch.react.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -617,7 +519,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="option-button"
                           directionX="right"
-                          iconName="VerticalDotsIcon"
+                          iconName="images/vertical-dots.react.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -631,7 +533,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="PlusIcon"
+                          iconName="images/actions.header.touch.react.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -645,46 +547,6 @@ class SectionHeaderContent extends React.Component {
                 )}
               </div>
             )}
-
-            {showDeleteDialog && (
-              <DeleteDialog
-                isRecycleBin={isRecycleBin}
-                visible={showDeleteDialog}
-                onClose={this.onDeleteAction}
-                selection={selection}
-              />
-            )}
-
-            {showEmptyTrashDialog && (
-              <EmptyTrashDialog
-                visible={showEmptyTrashDialog}
-                onClose={this.onEmptyTrashAction}
-              />
-            )}
-
-            {showMoveToPanel && (
-              <OperationsPanel
-                isCopy={false}
-                visible={showMoveToPanel}
-                onClose={this.onMoveAction}
-              />
-            )}
-
-            {showCopyPanel && (
-              <OperationsPanel
-                isCopy={true}
-                visible={showCopyPanel}
-                onClose={this.onCopyAction}
-              />
-            )}
-
-            {showDownloadDialog && (
-              <DownloadDialog
-                visible={showDownloadDialog}
-                onClose={this.downloadAsAction}
-                onDownloadProgress={this.loop}
-              />
-            )}
           </StyledContainer>
         )}
       </Consumer>
@@ -692,38 +554,81 @@ class SectionHeaderContent extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isRootFolder: getIsRootFolder(state),
-    isAdmin: isAdmin(state),
-    isRecycleBin: getIsRecycleBinFolder(state),
-    isPrivacy: getIsPrivacyFolder(state),
-    isDesktop: isDesktopClient(state),
-    parentId: getSelectedFolderParentId(state),
-    selection: getSelection(state),
-    title: getSelectedFolderTitle(state),
-    filter: getFilter(state),
-    deleteDialogVisible: getUserAccess(state),
-    currentFolderId: getSelectedFolderId(state),
-    canCreate: canCreate(state),
-    isWebEditSelected: getWebEditSelected(state),
-    isHeaderVisible: getHeaderVisible(state),
-    isHeaderIndeterminate: getHeaderIndeterminate(state),
-    isHeaderChecked: getHeaderChecked(state),
-    isAccessedSelected: getAccessedSelected(state),
-    isItemsSelected: getSelectionLength(state),
-    sharingPanelVisible: getSharePanelVisible(state),
-    isThirdPartySelection: getIsThirdPartySelection(state),
-    isOnlyFoldersSelected: getOnlyFoldersSelected(state),
-  };
-};
+export default inject(
+  ({
+    auth,
+    initFilesStore,
+    filesStore,
+    dialogsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    filesActionsStore,
+    settingsStore,
+  }) => {
+    const { setIsLoading } = initFilesStore;
+    const {
+      setSelected,
+      fileActionStore,
+      fetchFiles,
+      selection,
+      filter,
+      canCreate,
+      isHeaderVisible,
+      isHeaderIndeterminate,
+      isHeaderChecked,
+      userAccess,
+      isAccessedSelected,
+      isOnlyFoldersSelected,
+      isThirdPartySelection,
+      isWebEditSelected,
+    } = filesStore;
+    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+    const { setAction } = fileActionStore;
+    const {
+      setSharingPanelVisible,
+      setMoveToPanelVisible,
+      setCopyPanelVisible,
+      setEmptyTrashDialogVisible,
+      setDownloadDialogVisible,
+      setDeleteDialogVisible,
+    } = dialogsStore;
 
-export default connect(mapStateToProps, {
-  setAction,
-  setSecondaryProgressBarData,
-  setIsLoading,
-  clearSecondaryProgressData,
-  fetchFiles,
-  setSelected,
-  setSharingPanelVisible,
-})(withTranslation()(withRouter(SectionHeaderContent)));
+    const { deleteAction, downloadAction } = filesActionsStore;
+
+    return {
+      isDesktop: auth.settingsStore.isDesktopClient,
+      isRootFolder: selectedFolderStore.parentId === 0,
+      title: selectedFolderStore.title,
+      parentId: selectedFolderStore.parentId,
+      currentFolderId: selectedFolderStore.id,
+      isRecycleBin: isRecycleBinFolder,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      canCreate,
+      isItemsSelected: !!selection.length,
+      isHeaderVisible,
+      isHeaderIndeterminate,
+      isHeaderChecked,
+      deleteDialogVisible: userAccess,
+      isAccessedSelected,
+      isOnlyFoldersSelected,
+      isThirdPartySelection,
+      isWebEditSelected,
+      isTabletView: auth.settingsStore.isTabletView,
+      confirmDelete: settingsStore.confirmDelete,
+
+      setSelected,
+      setAction,
+      setIsLoading,
+      fetchFiles,
+      setSharingPanelVisible,
+      setMoveToPanelVisible,
+      setCopyPanelVisible,
+      setEmptyTrashDialogVisible,
+      deleteAction,
+      setDeleteDialogVisible,
+      setDownloadDialogVisible,
+      downloadAction,
+    };
+  }
+)(withTranslation("Home")(withRouter(observer(SectionHeaderContent))));

@@ -1,102 +1,116 @@
-if ("function" === typeof importScripts) {
-  importScripts(
-    "https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js"
-  );
-  /* global workbox */
-  if (workbox) {
-    console.log("Workbox is loaded");
+import {
+  precacheAndRoute,
+  cleanupOutdatedCaches,
+  //createHandlerBoundToURL,
+} from "workbox-precaching";
+import { setCacheNameDetails } from "workbox-core";
+import { clientsClaim } from "workbox-core";
+import { /*NavigationRoute,*/ registerRoute } from "workbox-routing";
+import { googleFontsCache, imageCache, offlineFallback } from "workbox-recipes";
+import {
+  //CacheFirst,
+  //NetworkFirst,
+  StaleWhileRevalidate,
+} from "workbox-strategies";
+import { ExpirationPlugin } from "workbox-expiration";
+//import { BroadcastUpdatePlugin } from "workbox-broadcast-update";
 
-    // Force development builds -> { debug: true } or production builds { debug: false }
-    workbox.setConfig({ debug: false });
+// SETTINGS
 
-    // Updating SW lifecycle to update the app after user triggered refresh
-    workbox.core.skipWaiting();
-    workbox.core.clientsClaim();
+// Claiming control to start runtime caching asap
+clientsClaim();
 
-    /* injection point for manifest files.  */
-    workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
+// Use to update the app after user triggered refresh (without prompt)
+//self.skipWaiting();
 
-    // Image caching
-    workbox.routing.registerRoute(
-      // Cache image files.
-      ({ request }) => request.destination === "image",
-      // Use the cache if it's available.
-      new workbox.strategies.CacheFirst({
-        // Use a custom cache name.
-        cacheName: "image-cache",
-        plugins: [
-          new workbox.expiration.ExpirationPlugin({
-            // Cache only 60 images.
-            maxEntries: 60,
-            // Cache for a maximum of a month.
-            maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
-          }),
-        ],
-      })
-    );
+// PRECACHING
 
-    // Font caching
-    workbox.routing.registerRoute(
-      new RegExp("https://fonts.(?:.googlepis|gstatic).com/(.*)"),
-      new workbox.strategies.CacheFirst({
-        cacheName: "googleapis",
-        plugins: [
-          new workbox.expiration.ExpirationPlugin({
-            // Cache only 60 images.
-            maxEntries: 60,
-            // Cache for a maximum of a month.
-            maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
-          }),
-        ],
-      })
-    );
+// Setting custom cache name
+setCacheNameDetails({ precache: "wb6-precache", runtime: "wb6-runtime" });
 
-    // CSS caching
-    workbox.routing.registerRoute(
-      // Cache style resources, i.e. CSS files.
-      ({ request }) => request.destination === "style",
-      // Use cache but update in the background.
-      new workbox.strategies.StaleWhileRevalidate({
-        // Use a custom cache name.
-        cacheName: "css-cache",
-      })
-    );
+// We inject manifest here using "workbox-build" in workbox-inject.js
+precacheAndRoute(self.__WB_MANIFEST);
 
-    // scripts caching
-    workbox.routing.registerRoute(
-      // Cache style resources, i.e. CSS files.
-      ({ request }) => request.destination === "script",
-      // Use cache but update in the background.
-      new workbox.strategies.StaleWhileRevalidate({
-        // Use a custom cache name.
-        cacheName: "script-cache",
-      })
-    );
+// Remove cache from the previous WB versions
+cleanupOutdatedCaches();
 
-    // translations caching
-    workbox.routing.registerRoute(
-      ({ url }) => url.pathname.endsWith("/translation.json"),
-      // Use cache but update in the background.
-      new workbox.strategies.StaleWhileRevalidate({
-        // Use a custom cache name.
-        cacheName: "translation-cache",
-      })
-    );
+// NAVIGATION ROUTING
 
-    workbox.routing.registerRoute(
-      // Cache API Request
-      new RegExp("/api/2.0/(modules|people/@self|(.*)/info(.json|$))"),
-      new workbox.strategies.StaleWhileRevalidate({
-        cacheName: "api-cache",
-        plugins: [
-          new workbox.expiration.ExpirationPlugin({
-            maxEntries: 100,
-            maxAgeSeconds: 30 * 60, // 30 Minutes
-          }),
-        ],
-      })
-    );
-  } else {
-    console.log("Workbox could not be loaded. No Offline support");
+// This assumes /index.html has been precached.
+// const navHandler = createHandlerBoundToURL("/index.html");
+// const navigationRoute = new NavigationRoute(navHandler, {
+//   denylist: [new RegExp("/out-of-spa/")], // Also might be specified explicitly via allowlist
+// });
+// registerRoute(navigationRoute);
+
+// STATIC RESOURCES
+
+googleFontsCache({ cachePrefix: "wb6-gfonts" });
+
+// API ROUTING
+
+registerRoute(
+  // Cache API Request
+  new RegExp("/api/2.0/(modules|people/@self|(.*)/info(.json|$))"),
+  new StaleWhileRevalidate({
+    cacheName: "wb6-api",
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 30 * 60, // 30 Minutes
+      }),
+    ],
+  })
+);
+
+// TRANSLATIONS
+
+registerRoute(
+  ({ url }) => url.pathname.indexOf("/locales/") !== -1,
+  // Use cache but update in the background.
+  new StaleWhileRevalidate({
+    // Use a custom cache name.
+    cacheName: "wb6-content-translation",
+  })
+);
+
+// CONTENT
+
+imageCache({ cacheName: "wb6-content-images", maxEntries: 60 });
+
+// APP SHELL UPDATE FLOW
+
+addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
   }
-}
+});
+
+// FALLBACK
+
+offlineFallback({
+  pageFallback: "/static/offline/offline.html",
+        imageFallback: "/static/offline/offline.svg",
+        fontFallback: false,
+});
+
+// ALL OTHER EVENTS
+
+// Receive push and show a notification
+self.addEventListener("push", function (event) {
+  console.log("[Service Worker]: Received push event", event);
+
+  var notificationData = {};
+
+  if (event.data.json()) {
+    notificationData = event.data.json();
+  } else {
+    notificationData = {
+      title: "Something Has Happened",
+      message: "Something you might want to check out",
+      icon: "/assets/img/pwa-logo.png",
+    };
+  }
+
+  self.registration.showNotification(notificationData.title, notificationData);
+});
