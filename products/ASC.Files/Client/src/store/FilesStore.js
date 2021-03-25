@@ -40,6 +40,7 @@ const {
   canFormFillingDocs,
   canWebFilterEditing,
 } = docserviceStore;
+const { setExpandedKeys, setSelectedNode } = treeFoldersStore;
 
 class FilesStore {
   fileActionStore = null;
@@ -201,7 +202,8 @@ class FilesStore {
   fetchFiles = (folderId, filter, clearFilter = true) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
-    const { privacyFolder, expandedKeys, setExpandedKeys } = treeFoldersStore;
+    const { privacyFolder, expandedKeys } = treeFoldersStore;
+    setSelectedNode([folderId + ""]);
 
     if (privacyFolder && privacyFolder.id === +folderId) {
       if (!isEncryptionSupport) {
@@ -233,11 +235,8 @@ class FilesStore {
       const isPrivacyFolder =
         data.current.rootFolderType === FolderType.Privacy;
 
-      const newExpandedKeys = createTreeFolders(
-        data.pathParts,
-        treeFoldersStore.expandedKeys
-      );
-      treeFoldersStore.setExpandedKeys(newExpandedKeys);
+      const newExpandedKeys = createTreeFolders(data.pathParts, expandedKeys);
+      setExpandedKeys(newExpandedKeys);
       filterData.total = data.total;
       this.setFilesFilter(filterData); //TODO: FILTER
       this.setFolders(
