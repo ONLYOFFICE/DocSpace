@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import IconButton from "@appserver/components/icon-button";
+import SwitchButton from "@appserver/components/switch-button";
 import { StyledViewSelector } from "../StyledFilterInput";
 
 class ViewSelector extends React.Component {
@@ -13,40 +14,23 @@ class ViewSelector extends React.Component {
   }
 
   onClickViewSelector = (item) => {
-    this.props.onClickViewSelector && this.props.onClickViewSelector(item);
+    this.props.onClickViewSelector &&
+      this.props.onClickViewSelector(item.target.checked);
+
+    //this.props.onClickViewSelector && this.props.onClickViewSelector(item);
   };
 
   render() {
     const { isDisabled, viewAs } = this.props;
 
+    const isChecked = viewAs === "tile" || false;
+
     return (
       <StyledViewSelector isDisabled={isDisabled}>
-        <IconButton
-          className={`view-selector-button ${viewAs === "row" ? "active" : ""}`}
-          color={viewAs === "row" ? "#ffffff" : "#A3A9AE"}
-          hoverColor={"#ffffff"}
-          clickColor={"#ffffff"}
-          iconName={"/static/images/filter.view.selector.row.react.svg"}
-          isDisabled={isDisabled}
-          isFill={true}
-          onClick={this.onClickViewSelector}
-          size={16}
-          id="rowSelectorButton"
-        />
-
-        <IconButton
-          className={`view-selector-button ${
-            viewAs === "tile" ? "active" : ""
-          }`}
-          color={viewAs === "tile" ? "#ffffff" : "#A3A9AE"}
-          hoverColor={"#ffffff"}
-          clickColor={"#ffffff"}
-          iconName={"/static/images/filter.view.selector.tile.react.svg"}
-          isDisabled={isDisabled}
-          isFill={true}
-          onClick={this.onClickViewSelector}
-          size={16}
-          id="tileSelectorButton"
+        <SwitchButton
+          disabled={isDisabled}
+          onChange={this.onClickViewSelector}
+          checked={isChecked}
         />
       </StyledViewSelector>
     );

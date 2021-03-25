@@ -279,10 +279,15 @@ class FilterInput extends React.Component {
     );
     this.setState({ sortDirection: !!key });
   };
-  onClickViewSelector = (item) => {
+  onClickViewSelector = (checked) => {
+    const viewAs = checked ? "tile" : "row";
+    this.props.onChangeViewAs(viewAs);
+    /*
     const itemId = (item.target && item.target.dataset.for) || item;
+    console.log(item, item.target.dataset.for);
     const viewAs = itemId.indexOf("row") === -1 ? "tile" : "row";
     this.props.onChangeViewAs(viewAs);
+    */
   };
 
   onClickSortItem = (key) => {
