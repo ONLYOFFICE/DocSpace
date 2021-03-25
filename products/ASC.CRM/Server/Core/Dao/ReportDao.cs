@@ -1841,10 +1841,11 @@ namespace ASC.CRM.Core.Dao
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
             var newDealsSqlQuery = Query(CRMDbContext.Deals)
-                                           .Join(Query(CRMDbContext.CurrencyRate),
+                                           .GroupJoin(Query(CRMDbContext.CurrencyRate),
                                                    x => x.BidCurrency,
                                                    y => y.FromCurrency,
-                                                   (x, y) => new { Deal = x, CurrencyRate = y })
+                                                   (x, y) => new { x, y })
+                                           .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
                                            .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
                                            .Where(x => x.Deal.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                                            .GroupBy(x => x.Deal.Id)
@@ -1852,18 +1853,20 @@ namespace ASC.CRM.Core.Dao
                                            {
                                                count = x.Count(),
                                                deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
-                                                                                   x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : x.Deal.PerPeriodValue) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
+                                                                                   x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
                                            }).ToList();
 
             var wonDealsSqlQuery = Query(CRMDbContext.Deals)
-                                           .Join(Query(CRMDbContext.CurrencyRate),
-                                                 x => x.BidCurrency,
-                                                 y => y.FromCurrency,
-                                                 (x, y) => new { Deal = x, CurrencyRate = y })
-                                           .Join(Query(CRMDbContext.DealMilestones),
+                                           .GroupJoin(Query(CRMDbContext.CurrencyRate),
+                                                   x => x.BidCurrency,
+                                                   y => y.FromCurrency,
+                                                   (x, y) => new { x, y })
+                                           .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
+                                           .GroupJoin(Query(CRMDbContext.DealMilestones),
                                                  x => x.Deal.DealMilestoneId,
                                                  y => y.Id,
-                                                 (x, y) => new { Deal = x.Deal, CurrencyRate = x.CurrencyRate, DealMilestone = y })
+                                                 (x, y) => new { x,y })
+                                          .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, CurrencyRate = x.x.CurrencyRate, DealMilestone = y })                                     
                                           .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
                                           .Where(x => x.Deal.ActualCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.ActualCloseDate <= _tenantUtil.DateTimeToUtc(toDate))
                                           .Where(x => x.DealMilestone.Status == DealMilestoneStatus.ClosedAndWon)
@@ -1872,51 +1875,54 @@ namespace ASC.CRM.Core.Dao
                                           {
                                               count = x.Count(),
                                               deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
-                                                                                  x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : x.Deal.PerPeriodValue) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
+                                                                                  x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
                                           }).ToList();
 
             var lostDealsSqlQuery = Query(CRMDbContext.Deals)
-                               .Join(Query(CRMDbContext.CurrencyRate),
-                                     x => x.BidCurrency,
-                                     y => y.FromCurrency,
-                                     (x, y) => new { Deal = x, CurrencyRate = y })
-                               .Join(Query(CRMDbContext.DealMilestones),
-                                     x => x.Deal.DealMilestoneId,
-                                     y => y.Id,
-                                     (x, y) => new { Deal = x.Deal, CurrencyRate = x.CurrencyRate, DealMilestone = y })
-                              .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
-                              .Where(x => x.Deal.ActualCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.ActualCloseDate <= _tenantUtil.DateTimeToUtc(toDate))
-                              .Where(x => x.DealMilestone.Status == DealMilestoneStatus.ClosedAndLost)
-                              .GroupBy(x => x.Deal.Id)
-                              .Select(x => new
-                              {
-                                  count = x.Count(),
-                                  deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
-                                                                      x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : x.Deal.PerPeriodValue) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
-                              }).ToList();
+                                           .GroupJoin(Query(CRMDbContext.CurrencyRate),
+                                                   x => x.BidCurrency,
+                                                   y => y.FromCurrency,
+                                                   (x, y) => new { x, y })
+                                           .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
+                                           .GroupJoin(Query(CRMDbContext.DealMilestones),
+                                                 x => x.Deal.DealMilestoneId,
+                                                 y => y.Id,
+                                                 (x, y) => new { x, y })
+                                          .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, CurrencyRate = x.x.CurrencyRate, DealMilestone = y })
+                                         .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
+                                         .Where(x => x.Deal.ActualCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.ActualCloseDate <= _tenantUtil.DateTimeToUtc(toDate))
+                                         .Where(x => x.DealMilestone.Status == DealMilestoneStatus.ClosedAndLost)
+                                         .GroupBy(x => x.Deal.Id)
+                                         .Select(x => new
+                                         {
+                                             count = x.Count(),
+                                             deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
+                                                                                 x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
+                                         }).ToList();
 
 
             var overdueDealsSqlQuery = Query(CRMDbContext.Deals)
-                               .Join(Query(CRMDbContext.CurrencyRate),
-                                     x => x.BidCurrency,
-                                     y => y.FromCurrency,
-                                     (x, y) => new { Deal = x, CurrencyRate = y })
-                               .Join(Query(CRMDbContext.DealMilestones),
-                                     x => x.Deal.DealMilestoneId,
-                                     y => y.Id,
-                                     (x, y) => new { Deal = x.Deal, CurrencyRate = x.CurrencyRate, DealMilestone = y })
-                              .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
-                              .Where(x => x.Deal.ExpectedCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.ExpectedCloseDate <= _tenantUtil.DateTimeToUtc(toDate))
-
-                              .Where(x => (x.DealMilestone.Status == DealMilestoneStatus.Open && x.Deal.ExpectedCloseDate < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) ||
-                                          (x.DealMilestone.Status == DealMilestoneStatus.ClosedAndWon && x.Deal.ActualCloseDate > x.Deal.ExpectedCloseDate))
-                              .GroupBy(x => x.Deal.Id)
-                              .Select(x => new
-                              {
-                                  count = x.Count(),
-                                  deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
-                                                                      x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : x.Deal.PerPeriodValue) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
-                              }).ToList();
+                                           .GroupJoin(Query(CRMDbContext.CurrencyRate),
+                                                   x => x.BidCurrency,
+                                                   y => y.FromCurrency,
+                                                   (x, y) => new { x, y })
+                                           .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
+                                           .GroupJoin(Query(CRMDbContext.DealMilestones),
+                                                 x => x.Deal.DealMilestoneId,
+                                                 y => y.Id,
+                                                 (x, y) => new { x, y })
+                                          .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, CurrencyRate = x.x.CurrencyRate, DealMilestone = y })
+                                        .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
+                                        .Where(x => x.Deal.ExpectedCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.ExpectedCloseDate <= _tenantUtil.DateTimeToUtc(toDate))
+                                        .Where(x => (x.DealMilestone.Status == DealMilestoneStatus.Open && x.Deal.ExpectedCloseDate < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) ||
+                                                    (x.DealMilestone.Status == DealMilestoneStatus.ClosedAndWon && x.Deal.ActualCloseDate > x.Deal.ExpectedCloseDate))
+                                        .GroupBy(x => x.Deal.Id)
+                                        .Select(x => new
+                                        {
+                                            count = x.Count(),
+                                            deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
+                                                                                x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : x.Deal.PerPeriodValue) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
+                                        }).ToList();
 
             var invoicesSqlQuery = Query(CRMDbContext.Invoices)
                                   .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
@@ -1932,10 +1938,11 @@ namespace ASC.CRM.Core.Dao
                                   }).ToList();
 
             var contactsSqlQuery = Query(CRMDbContext.Contacts)
-                                  .Join(Query(CRMDbContext.ListItem).DefaultIfEmpty(),
+                                  .GroupJoin(Query(CRMDbContext.ListItem),
                                       x => x.ContactTypeId,
                                       y => y.Id,
-                                      (x, y) => new { Contact = x, ListItem = y })
+                                      (x, y) => new { x, y })
+                                  .SelectMany(x => x.y.DefaultIfEmpty(), (x,y) => new { Contact = x.x, ListItem = y })
                                   .Where(x => x.ListItem.ListType == ListType.ContactType)
                                   .Where(x => managers != null && managers.Any() ? managers.Contains(x.Contact.CreateBy) : true)
                                   .Where(x => x.Contact.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Contact.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
@@ -1948,15 +1955,12 @@ namespace ASC.CRM.Core.Dao
                                   .OrderBy(x => x.title)
                                   .ToList();
 
-
-
-
-
             var tasksSqlQuery = Query(CRMDbContext.Tasks)
-                                .Join(Query(CRMDbContext.ListItem).DefaultIfEmpty(), 
+                                .GroupJoin(Query(CRMDbContext.ListItem), 
                                       x => x.CategoryId,
                                       y => y.Id,
-                                      (x,y) => new { Task = x, ListItem = y })
+                                      (x,y) => new { x,y })
+                              .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Task = x.x, ListItem = y })
                               .Where(x => x.ListItem.ListType == ListType.TaskCategory)
                               .Where(x => managers != null && managers.Any() ? managers.Contains(x.Task.ResponsibleId) : true)
                               .Where(x => x.Task.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Task.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
@@ -1973,9 +1977,6 @@ namespace ASC.CRM.Core.Dao
                               .ToList();
 //                .OrderBy("i.sort_order, i.title", true);
 
-
-
-
             var voipSqlQuery = Query(CRMDbContext.VoipCalls)
                                 .Where(x => String.IsNullOrEmpty(x.ParentCallId))
                                 .Where(x => managers != null && managers.Any() ? managers.Contains(x.AnsweredBy) : true)
@@ -1987,30 +1988,20 @@ namespace ASC.CRM.Core.Dao
                                     duration = x.Sum(x => x.DialDuration)
                                 })
                                 .ToList();
-
-            object res;
-                              
-            using (var tx = CRMDbContext.Database.BeginTransaction())
+            return new
             {
-                res = new
+                DealsInfo = new
                 {
-                    DealsInfo = new
-                    {
-                        Created = newDealsSqlQuery,
-                        Won = wonDealsSqlQuery,
-                        Lost = lostDealsSqlQuery,
-                        Overdue = overdueDealsSqlQuery
-                    },
-                    InvoicesInfo = invoicesSqlQuery,
-                    ContactsInfo = contactsSqlQuery,
-                    TasksInfo = tasksSqlQuery,
-                    VoipInfo = voipSqlQuery
-                };
-
-                tx.Commit();
-            }
-
-            return res;
+                    Created = newDealsSqlQuery,
+                    Won = wonDealsSqlQuery,
+                    Lost = lostDealsSqlQuery,
+                    Overdue = overdueDealsSqlQuery
+                },
+                InvoicesInfo = invoicesSqlQuery,
+                ContactsInfo = contactsSqlQuery,
+                TasksInfo = tasksSqlQuery,
+                VoipInfo = voipSqlQuery
+            };
         }
 
         private object GenerateSummaryForThePeriodReportData(ReportTimePeriod timePeriod, object reportData)
@@ -2122,149 +2113,183 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            throw new NotImplementedException();
+            var openDealsSqlQuery = Query(CRMDbContext.Deals)
+                                           .GroupJoin(Query(CRMDbContext.CurrencyRate),
+                                                   x => x.BidCurrency,
+                                                   y => y.FromCurrency,
+                                                   (x, y) => new { x, y })
+                                           .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
+                                           .GroupJoin(Query(CRMDbContext.DealMilestones),
+                                                 x => x.Deal.DealMilestoneId,
+                                                 y => y.Id,
+                                                 (x, y) => new { x, y })
+                                          .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, CurrencyRate = x.x.CurrencyRate, DealMilestone = y })
+                                          .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
+                                          .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Deal.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                                          .Where(x => x.DealMilestone.Status == DealMilestoneStatus.Open)
+                                          .GroupBy(x => x.Deal.Id)
+                                          .Select(x => new
+                                          {
+                                              count = x.Count(),
+                                              deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
+                                                                                  x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
+                                          }).ToList();
 
-            //var openDealsSqlQuery = Query("crm_deal d")
-            //    .Select("count(d.id) as count",
-            //            string.Format(@"sum(case d.bid_type
-            //                            when 0 then
-            //                                d.bid_value * (if(d.bid_currency = '{0}', 1, r.rate))
-            //                            else
-            //                                d.bid_value * (if(d.per_period_value = 0, 1, d.per_period_value)) * (if(d.bid_currency = '{0}', 1, r.rate))
-            //                            end) as deals_value", defaultCurrency))
-            //    .LeftOuterJoin("crm_currency_rate r",
-            //                   Exp.EqColumns("r.tenant_id", "d.tenant_id") &
-            //                   Exp.EqColumns("r.from_currency", "d.bid_currency"))
-            //    .LeftOuterJoin("crm_deal_milestone m",
-            //                   Exp.EqColumns("m.tenant_id", "d.tenant_id") &
-            //                   Exp.EqColumns("m.id", "d.deal_milestone_id"))
-            //    .Where(managers != null && managers.Any() ? Exp.In("d.responsible_id", managers) : Exp.Empty)
-            //    .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("d.create_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-            //    .Where("m.status", (int)DealMilestoneStatus.Open);
+            var overdueDealsSqlQuery = Query(CRMDbContext.Deals)
+                               .GroupJoin(Query(CRMDbContext.CurrencyRate),
+                                       x => x.BidCurrency,
+                                       y => y.FromCurrency,
+                                       (x, y) => new { x, y })
+                               .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
+                               .GroupJoin(Query(CRMDbContext.DealMilestones),
+                                     x => x.Deal.DealMilestoneId,
+                                     y => y.Id,
+                                     (x, y) => new { x, y })
+                              .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, CurrencyRate = x.x.CurrencyRate, DealMilestone = y })
+                              .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
+                              .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Deal.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                              .Where(x => x.DealMilestone.Status == DealMilestoneStatus.Open)
+                              .Where(x => x.Deal.ExpectedCloseDate < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()))
+                              .GroupBy(x => x.Deal.Id)
+                              .Select(x => new
+                              {
+                                  count = x.Count(),
+                                  deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
+                                                                      x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
+                              }).ToList();
 
-            //var overdueDealsSqlQuery = Query("crm_deal d")
-            //    .Select("count(d.id) as count",
-            //            string.Format(@"sum(case d.bid_type
-            //                            when 0 then
-            //                                d.bid_value * (if(d.bid_currency = '{0}', 1, r.rate))
-            //                            else
-            //                                d.bid_value * (if(d.per_period_value = 0, 1, d.per_period_value)) * (if(d.bid_currency = '{0}', 1, r.rate))
-            //                            end) as deals_value", defaultCurrency))
-            //    .LeftOuterJoin("crm_currency_rate r",
-            //                   Exp.EqColumns("r.tenant_id", "d.tenant_id") &
-            //                   Exp.EqColumns("r.from_currency", "d.bid_currency"))
-            //    .LeftOuterJoin("crm_deal_milestone m",
-            //                   Exp.EqColumns("m.tenant_id", "d.tenant_id") &
-            //                   Exp.EqColumns("m.id", "d.deal_milestone_id"))
-            //    .Where(managers != null && managers.Any() ? Exp.In("d.responsible_id", managers) : Exp.Empty)
-            //    .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("d.create_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-            //    .Where("m.status", (int)DealMilestoneStatus.Open)
-            //    .Where(Exp.Lt("d.expected_close_date", _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())));
 
-            //var nearDealsSqlQuery = Query("crm_deal d")
-            //    .Select("count(d.id) as count",
-            //            string.Format(@"sum(case d.bid_type
-            //                            when 0 then
-            //                                d.bid_value * (if(d.bid_currency = '{0}', 1, r.rate))
-            //                            else
-            //                                d.bid_value * (if(d.per_period_value = 0, 1, d.per_period_value)) * (if(d.bid_currency = '{0}', 1, r.rate))
-            //                            end) as deals_value", defaultCurrency))
-            //    .LeftOuterJoin("crm_currency_rate r",
-            //                   Exp.EqColumns("r.tenant_id", "d.tenant_id") &
-            //                   Exp.EqColumns("r.from_currency", "d.bid_currency"))
-            //    .LeftOuterJoin("crm_deal_milestone m",
-            //                   Exp.EqColumns("m.tenant_id", "d.tenant_id") &
-            //                   Exp.EqColumns("m.id", "d.deal_milestone_id"))
-            //    .Where(managers != null && managers.Any() ? Exp.In("d.responsible_id", managers) : Exp.Empty)
-            //    .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("d.create_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-            //    .Where("m.status", (int)DealMilestoneStatus.Open)
-            //    .Where(Exp.Between("d.expected_close_date", _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()), _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow().AddDays(30))));
+            var nearDealsSqlQuery = Query(CRMDbContext.Deals)
+                   .GroupJoin(Query(CRMDbContext.CurrencyRate),
+                           x => x.BidCurrency,
+                           y => y.FromCurrency,
+                           (x, y) => new { x, y })
+                   .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
+                   .GroupJoin(Query(CRMDbContext.DealMilestones),
+                         x => x.Deal.DealMilestoneId,
+                         y => y.Id,
+                         (x, y) => new { x, y })
+                  .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, CurrencyRate = x.x.CurrencyRate, DealMilestone = y })
+                  .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
+                  .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Deal.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                  .Where(x => x.DealMilestone.Status == DealMilestoneStatus.Open)
+                  .Where(x => x.Deal.ExpectedCloseDate >= _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()) && x.Deal.ExpectedCloseDate <= _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow().AddDays(30)))
+                  .GroupBy(x => x.Deal.Id)
+                  .Select(x => new
+                  {
+                      count = x.Count(),
+                      deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
+                                                          x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
+                  }).ToList();
 
-            //var dealsByStageSqlQuery = Query("crm_deal_milestone m")
-            //    .Select("m.title",
-            //            "count(d.id) as deals_count",
-            //            string.Format(@"sum(case d.bid_type
-            //            when 0 then
-            //                d.bid_value * (if(d.bid_currency = '{0}', 1, r.rate))
-            //            else
-            //                d.bid_value * (if(d.per_period_value = 0, 1, d.per_period_value)) * (if(d.bid_currency = '{0}', 1, r.rate))
-            //            end) as deals_value", defaultCurrency))
-            //    .LeftOuterJoin("crm_deal d", Exp.EqColumns("d.tenant_id", "m.tenant_id") &
-            //        Exp.EqColumns("d.deal_milestone_id", "m.id") &
-            //        (managers != null && managers.Any() ? Exp.In("d.responsible_id", managers) : Exp.Empty) &
-            //        (timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("d.create_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate))))
-            //    .LeftOuterJoin("crm_currency_rate r", Exp.EqColumns("r.tenant_id", "m.tenant_id") & Exp.EqColumns("r.from_currency", "d.bid_currency"))
-            //    .Where("m.status", (int)DealMilestoneStatus.Open)
-            //    .GroupBy("m.id")
-            //    .OrderBy("m.sort_order, m.title", true);
+            var dealsByStageSqlQuery = Query(CRMDbContext.DealMilestones)
+                                            .GroupJoin(Query(CRMDbContext.Deals),
+                                                   x => x.Id,
+                                                   y => y.DealMilestoneId,
+                                                   (x, y) => new { x, y })
+                                            .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = y, DealMilestone = x.x })
+                                            .GroupJoin(Query(CRMDbContext.CurrencyRate),
+                                                    x => x.Deal.BidCurrency,
+                                                    y => y.FromCurrency,
+                                                    (x, y) => new { x, y })
+                                            .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, DealMilestone = x.x.DealMilestone, CurrencyRate = y })
+                                          .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
+                                          .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Deal.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                                          .Where(x => x.DealMilestone.Status == DealMilestoneStatus.Open)
+                                          .GroupBy(x => new { x.DealMilestone.Id, x.DealMilestone.Title })
+                                          .Select(x => new
+                                          {
+                                              title = x.Key.Title,
+                                              deals_count = x.Count(),
+                                              deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
+                                                                                  x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
+                                          }).ToList();
 
-            //var contactsByTypeSqlQuery = Query("crm_contact c")
-            //    .Select("i.title",
-            //            "count(c.id) as count")
-            //    .LeftOuterJoin("crm_list_item i", Exp.EqColumns("i.tenant_id", "c.tenant_id") &
-            //                                      Exp.EqColumns("i.id", "c.contact_type_id") &
-            //                                      Exp.Eq("i.list_type", (int)ListType.ContactType))
-            //    .Where(managers != null && managers.Any() ? Exp.In("c.create_by", managers) : Exp.Empty)
-            //    .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("c.create_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-            //    .GroupBy("i.id")
-            //    .OrderBy("i.sort_order, i.title", true);
+            var contactsByTypeSqlQuery = Query(CRMDbContext.Contacts)
+                                        .GroupJoin(Query(CRMDbContext.ListItem),
+                                            x => x.ContactTypeId,
+                                            y => y.Id,
+                                            (x, y) => new { x, y })
+                                        .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Contact = x.x, ListItem = y })
+                                        .Where(x => x.ListItem.ListType == ListType.ContactType)
+                                        .Where(x => managers != null && managers.Any() ? managers.Contains(x.Contact.CreateBy) : true)
+                                        .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Contact.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Contact.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                                        .GroupBy(x => new { x.ListItem.Title })
+                                        .Select(x => new
+                                        {
+                                            title = x.Key.Title,
+                                            count = x.Count()
+                                        })
+                                        .OrderBy(x => x.title)
+                                        .ToList();
 
-            //var contactsByStageSqlQuery = Query("crm_contact c")
-            //    .Select("i.title",
-            //            "count(c.id) as count")
-            //    .LeftOuterJoin("crm_list_item i", Exp.EqColumns("i.tenant_id", "c.tenant_id") &
-            //                                      Exp.EqColumns("i.id", "c.status_id") &
-            //                                      Exp.Eq("i.list_type", (int)ListType.ContactStatus))
-            //    .Where(managers != null && managers.Any() ? Exp.In("c.create_by", managers) : Exp.Empty)
-            //    .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("c.create_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-            //    .GroupBy("i.id")
-            //    .OrderBy("i.sort_order, i.title", true);
+            var contactsByStageSqlQuery = Query(CRMDbContext.Contacts)
+                                  .GroupJoin(Query(CRMDbContext.ListItem),
+                                      x => x.StatusId,
+                                      y => y.Id,
+                                      (x, y) => new { x, y })
+                                  .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Contact = x.x, ListItem = y })
+                                  .Where(x => x.ListItem.ListType == ListType.ContactStatus)
+                                  .Where(x => managers != null && managers.Any() ? managers.Contains(x.Contact.CreateBy) : true)
+                                  .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Contact.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Contact.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                                  .GroupBy(x => new { x.ListItem.Title })
+                                  .Select(x => new
+                                  {
+                                      title = x.Key.Title,
+                                      count = x.Count()
+                                  })
+                                  .OrderBy(x => x.title)
+                                  .ToList();
 
-            //var tasksSqlQuery = Query("crm_task t")
-            //    .Select("i.title")
-            //    .Select(Exp.Sum(Exp.If(Exp.Eq("t.is_closed", 0), 1, 0)))
-            //    .Select(Exp.Sum(Exp.If(Exp.Eq("t.is_closed", 0) & Exp.Lt("t.deadline", _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())), 1, 0)))
-            //    .LeftOuterJoin("crm_list_item i", Exp.EqColumns("i.tenant_id", "t.tenant_id") & Exp.EqColumns("i.id", "t.category_id") & Exp.Eq("i.list_type", (int)ListType.TaskCategory))
-            //    .Where(managers != null && managers.Any() ? Exp.In("t.responsible_id", managers) : Exp.Empty)
-            //    .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("t.create_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-            //    .GroupBy("i.id")
-            //    .OrderBy("i.sort_order, i.title", true);
+            var tasksSqlQuery = Query(CRMDbContext.Tasks)
+                    .GroupJoin(Query(CRMDbContext.ListItem),
+                          x => x.CategoryId,
+                          y => y.Id,
+                          (x, y) => new { x, y })
+                  .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Task = x.x, ListItem = y })
+                  .Where(x => x.ListItem.ListType == ListType.TaskCategory)
+                  .Where(x => managers != null && managers.Any() ? managers.Contains(x.Task.ResponsibleId) : true)
+                  .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Task.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Task.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                  .GroupBy(x => new { x.ListItem.Title })
+                  .Select(x => new
+                  {
 
-            //var sent = Exp.Sum(Exp.If(Exp.Eq("i.status", (int)InvoiceStatus.Sent), 1, 0));
-            //var overdue = Exp.Sum(Exp.If(Exp.Eq("i.status", (int)InvoiceStatus.Sent) & Exp.Lt("i.due_date", _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())), 1, 0));
+                      title = x.Key.Title,
+                      sum1 = x.Sum(x => !x.Task.IsClosed ? 1 : 0),
+                      sum2 = x.Sum(x => (!x.Task.IsClosed && x.Task.Deadline < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) ? 1 : 0),
+                      count = x.Count()
+                  })
+                  .OrderBy(x => x.title)
+                  .ToList();
 
-            //var invoicesSqlQuery = Query("crm_invoice i")
-            //    .Select(sent)
-            //    .Select(overdue)
-            //    .Where(managers != null && managers.Any() ? Exp.In("i.create_by", managers) : Exp.Empty)
-            //    .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("i.create_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)));
 
-            //object res;
+            var invoicesSqlQuery = Query(CRMDbContext.Invoices)
+                      .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
+                      .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                      .GroupBy(x => x.Status)
+                      .Select(x => new {
+                          sent = x.Sum(x => x.Status == InvoiceStatus.Sent ? 1 : 0),
+                          overdue = x.Sum(x => (x.Status == InvoiceStatus.Sent && x.DueDate < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) ? 1 : 0)
+                      }).ToList();
 
-            //using (var tx = Db.BeginTransaction())
-            //{
-            //    res = new
-            //    {
-            //        DealsInfo = new
-            //        {
-            //            Open = Db.ExecuteList(openDealsSqlQuery),
-            //            Overdue = Db.ExecuteList(overdueDealsSqlQuery),
-            //            Near = Db.ExecuteList(nearDealsSqlQuery),
-            //            ByStage = Db.ExecuteList(dealsByStageSqlQuery)
-            //        },
-            //        ContactsInfo = new
-            //        {
-            //            ByType = Db.ExecuteList(contactsByTypeSqlQuery),
-            //            ByStage = Db.ExecuteList(contactsByStageSqlQuery)
-            //        },
-            //        TasksInfo = Db.ExecuteList(tasksSqlQuery),
-            //        InvoicesInfo = Db.ExecuteList(invoicesSqlQuery),
-            //    };
 
-            //    tx.Commit();
-            //}
-
-            //return res;
+            return new
+            {
+                DealsInfo = new
+                {
+                    Open = openDealsSqlQuery,
+                    Overdue = overdueDealsSqlQuery,
+                    Near = nearDealsSqlQuery,
+                    ByStage = dealsByStageSqlQuery
+                },
+                ContactsInfo = new
+                {
+                    ByType = contactsByTypeSqlQuery,
+                    ByStage = contactsByStageSqlQuery
+                },
+                TasksInfo = tasksSqlQuery,
+                InvoicesInfo = invoicesSqlQuery
+            };
         }
 
         private object GenerateSummaryAtThisMomentReportData(ReportTimePeriod timePeriod, object reportData)
