@@ -54,8 +54,8 @@ import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 
-const facebookIconOptions = { isfill: true, color: "#4469B0" };
-const twitterIconOptions = { isfill: true, color: "#2AA3EF" };
+const facebookIconOptions = { color: "#4469B0" };
+const twitterIconOptions = { color: "#2AA3EF" };
 
 const dialogsDataset = {
   changeEmail: "changeEmail",
@@ -90,10 +90,12 @@ const providersData = Object.freeze({
   Facebook: {
     label: "SignInWithFacebook",
     icon: "images/share.facebook.react.svg",
+    iconOptions: facebookIconOptions,
   },
   Twitter: {
     label: "SignInWithTwitter",
     icon: "images/share.twitter.react.svg",
+    iconOptions: twitterIconOptions,
   },
   LinkedIn: {
     label: "SignInWithLinkedIn",
@@ -628,7 +630,7 @@ class UpdateUserForm extends React.Component {
     const providerButtons =
       providers &&
       providers.map((item) => {
-        const { icon, label } = providersData[item.provider];
+        const { icon, label, iconOptions } = providersData[item.provider];
 
         if (!icon || !label) return <></>;
         return (
@@ -638,6 +640,7 @@ class UpdateUserForm extends React.Component {
                 iconName={icon}
                 label={t(label)}
                 className="socialButton"
+                iconOptions={iconOptions}
               />
             </div>
             {item.linked ? (

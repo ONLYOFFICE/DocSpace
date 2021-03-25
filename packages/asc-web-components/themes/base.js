@@ -234,12 +234,12 @@ const Base = {
     disableColor: "rgba(0, 0, 0, 0.4)",
 
     text: {
-      width: "142px",
+      width: "100%",
       height: "16px",
       margin: "0 11px",
       fontWeight: "600",
       fontSize: "14px",
-      lineHeight: "16px",
+      lineHeight: "14px",
       letterSpacing: "0.21875px",
       overflow: "hidden",
       textOverflow: "ellipsis",

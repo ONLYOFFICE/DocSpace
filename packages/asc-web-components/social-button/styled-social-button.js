@@ -45,6 +45,15 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   }
 
   ${(props) =>
+    props.iconOptions &&
+    props.iconOptions.color &&
+    css`
+      svg path {
+        fill: ${props.iconOptions.color};
+      }
+    `}
+
+  ${(props) =>
     !props.isDisabled
       ? css`
           background: ${(props) => props.theme.socialButton.background};
@@ -76,6 +85,10 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
             fill: ${(props) => props.theme.socialButton.disableColor};
           }
         `};
+
+  .iconWrapper {
+    display: flex;
+  }
 
   .social_button_text {
     position: relative;
