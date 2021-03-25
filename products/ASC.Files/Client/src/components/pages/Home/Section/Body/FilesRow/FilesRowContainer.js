@@ -7,7 +7,7 @@ import Loaders from "@appserver/common/components/Loaders";
 import { isMobile } from "react-device-detect";
 
 const FilesRowContainer = (props) => {
-  const { isLoaded, isLoading } = props;
+  const { isLoaded, isLoading, getFilesContextOptions } = props;
   return !isLoaded || (isMobile && isLoading) ? (
     <Loaders.Rows />
   ) : (
@@ -24,6 +24,7 @@ const FilesRowContainer = (props) => {
                 key={item.id}
                 item={item}
                 sectionWidth={context.sectionWidth}
+                getFilesContextOptions={getFilesContextOptions}
               />
             );
           })}

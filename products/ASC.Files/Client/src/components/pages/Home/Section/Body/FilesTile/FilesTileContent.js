@@ -15,7 +15,7 @@ import TileContent from "./TileContent";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import CheckIcon from "../../../../../../../public/images/check.react.svg";
-import CrossIcon from "../../../../../../../public/images/cross.react.svg";
+import CrossIcon from "../../../../../../../../../../public/images/cross.react.svg";
 import config from "../../../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 

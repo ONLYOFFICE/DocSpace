@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -8,6 +8,13 @@ import { observer, inject } from "mobx-react";
 import FilesRowContainer from "./FilesRow/FilesRowContainer";
 import FilesTileContainer from "./FilesTile/FilesTileContainer";
 import EmptyContainer from "./EmptyContainer";
+
+import { AppServerConfig, FileAction } from "@appserver/common/constants";
+import config from "../../../../../../package.json";
+import toastr from "studio/toastr";
+import copy from "copy-to-clipboard";
+import { combineUrl } from "@appserver/common/utils";
+import { ReactSVG } from "react-svg";
 
 const backgroundDragColor = "#EFEFB2";
 
@@ -383,6 +390,365 @@ class SectionBodyContent extends React.Component {
   //   this.onCloseThirdPartyMoveDialog();
   // };
 
+  getFilesContextOptions = (item, isFolder = null) => {
+    const {
+      t,
+      isTabletView,
+      setIsVerHistoryPanel,
+      fetchFileVersions,
+      history,
+      homepage,
+      setFavoriteAction,
+      finalizeVersionAction,
+      lockFileAction,
+      onSelectItem,
+      setSharingPanelVisible,
+      setChangeOwnerPanelVisible,
+      openDocEditor,
+      setMediaViewerData,
+      setMoveToPanelVisible,
+      setCopyPanelVisible,
+      duplicateAction,
+      setAction,
+      setThirdpartyInfo,
+      isRootFolder,
+      setRemoveItem,
+      setDeleteThirdPartyDialogVisible,
+      deleteFileAction,
+      openLocationAction,
+    } = this.props;
+
+    const {
+      contextOptions,
+      id,
+      folderId,
+      locked,
+      fileExst,
+      canOpenPlayer,
+      providerKey,
+      viewUrl,
+      title,
+      parentId,
+      webUrl,
+    } = item;
+
+    const isSharable = item.access !== 1 && item.access !== 0;
+    const isThirdPartyFolder = providerKey && isRootFolder;
+
+    const onOpenLocation = () => {
+      const locationId = isFolder ? id : folderId;
+      openLocationAction(locationId, isFolder);
+    };
+
+    const showVersionHistory = () => {
+      if (!isTabletView) {
+        fetchFileVersions(id + "");
+        setIsVerHistoryPanel(true);
+      } else {
+        history.push(
+          combineUrl(AppServerConfig.proxyURL, homepage, `/${id}/history`)
+        );
+      }
+    };
+
+    const onClickFavorite = (e) => {
+      const { action } = e.currentTarget.dataset;
+      setFavoriteAction(action, id)
+        .then(() =>
+          action === "mark"
+            ? toastr.success(t("MarkedAsFavorite"))
+            : toastr.success(t("RemovedFromFavorites"))
+        )
+        .catch((err) => toastr.error(err));
+    };
+
+    const finalizeVersion = () =>
+      finalizeVersionAction(id).catch((err) => toastr.error(err));
+
+    const lockFile = () =>
+      lockFileAction(id, !locked).catch((err) => toastr.error(err));
+
+    const onClickShare = () => {
+      onSelectItem(item);
+      setSharingPanelVisible(true);
+    };
+
+    const onOwnerChange = () => setChangeOwnerPanelVisible(true);
+
+    const onClickLinkForPortal = () => {
+      const isFile = !!fileExst;
+      copy(
+        isFile
+          ? canOpenPlayer
+            ? `${window.location.href}&preview=${id}`
+            : webUrl
+          : `${window.location.origin + homepage}/filter?folder=${id}`
+      );
+
+      toastr.success(t("LinkCopySuccess"));
+    };
+
+    const onClickLinkEdit = () => openDocEditor(id, providerKey);
+
+    const onMediaFileClick = (fileId) => {
+      const itemId = typeof fileId !== "object" ? fileId : id;
+      setMediaViewerData({ visible: true, id: itemId });
+    };
+
+    const onClickDownload = () => window.open(viewUrl, "_blank");
+    const onMoveAction = () => setMoveToPanelVisible(true);
+    const onCopyAction = () => setCopyPanelVisible(true);
+    const onDuplicate = () =>
+      duplicateAction(item, t("CopyOperation")).catch((err) =>
+        toastr.error(err)
+      );
+
+    const onClickRename = () => {
+      setAction({
+        type: FileAction.Rename,
+        extension: fileExst,
+        id,
+      });
+    };
+
+    const onChangeThirdPartyInfo = () => setThirdpartyInfo();
+
+    const onClickDelete = () => {
+      if (isThirdPartyFolder) {
+        const splitItem = id.split("-");
+        setRemoveItem({ id: splitItem[splitItem.length - 1], title });
+        setDeleteThirdPartyDialogVisible(true);
+        return;
+      }
+
+      const translations = {
+        deleteOperation: t("DeleteOperation"),
+      };
+
+      fileExst
+        ? deleteFileAction(id, folderId, translations)
+            .then(() => toastr.success(t("FileRemoved")))
+            .catch((err) => toastr.error(err))
+        : deleteFolderAction(id, parentId, translations)
+            .then(() => toastr.success(t("FolderRemoved")))
+            .catch((err) => toastr.error(err));
+    };
+
+    return contextOptions.map((option) => {
+      switch (option) {
+        case "open":
+          return {
+            key: option,
+            label: t("Open"),
+            icon: "images/catalog.folder.react.svg",
+            onClick: onOpenLocation,
+            disabled: false,
+          };
+        case "show-version-history":
+          return {
+            key: option,
+            label: t("ShowVersionHistory"),
+            icon: "images/history.react.svg",
+            onClick: showVersionHistory,
+            disabled: false,
+          };
+        case "finalize-version":
+          return {
+            key: option,
+            label: t("FinalizeVersion"),
+            icon: "images/history-finalized.react.svg",
+            onClick: finalizeVersion,
+            disabled: false,
+          };
+        case "separator0":
+        case "separator1":
+        case "separator2":
+        case "separator3":
+          return { key: option, isSeparator: true };
+        case "open-location":
+          return {
+            key: option,
+            label: t("OpenLocation"),
+            icon: "images/download-as.react.svg",
+            onClick: onOpenLocation,
+            disabled: false,
+          };
+        case "mark-as-favorite":
+          return {
+            key: option,
+            label: t("MarkAsFavorite"),
+            icon: "images/favorites.react.svg",
+            onClick: onClickFavorite,
+            disabled: false,
+            "data-action": "mark",
+          };
+        //
+        case "block-unblock-version":
+          return {
+            key: option,
+            label: t("UnblockVersion"),
+            icon: "images/lock.react.svg",
+            onClick: lockFile,
+            disabled: false,
+          };
+        //
+        case "sharing-settings":
+          return {
+            key: option,
+            label: t("SharingSettings"),
+            icon: "images/catalog.shared.react.svg",
+            onClick: onClickShare,
+            disabled: isSharable,
+          };
+        //
+        case "send-by-email":
+          return {
+            key: option,
+            label: t("SendByEmail"),
+            icon: "/static/images/mail.react.svg",
+            disabled: true,
+          };
+        //
+        case "owner-change":
+          return {
+            key: option,
+            label: t("ChangeOwner"),
+            icon: "images/catalog.user.react.svg",
+            onClick: onOwnerChange,
+            disabled: false,
+          };
+        //
+        case "link-for-portal-users":
+          return {
+            key: option,
+            label: t("LinkForPortalUsers"),
+            icon: "/static/images/invitation.link.react.svg",
+            onClick: onClickLinkForPortal,
+            disabled: false,
+          };
+        //
+        case "edit":
+          return {
+            key: option,
+            label: t("Edit"),
+            icon: "images/access.edit.react.svg",
+            onClick: onClickLinkEdit,
+            disabled: false,
+          };
+        //
+        case "preview":
+          return {
+            key: option,
+            label: t("Preview"),
+            icon: "EyeIcon",
+            onClick: onClickLinkEdit,
+            disabled: true,
+          };
+        //
+        case "view":
+          return {
+            key: option,
+            label: t("View"),
+            icon: "/static/images/eye.react.svg",
+            onClick: onMediaFileClick,
+            disabled: false,
+          };
+        //
+        case "download":
+          return {
+            key: option,
+            label: t("Download"),
+            icon: "images/download.react.svg",
+            onClick: onClickDownload,
+            disabled: false,
+          };
+        //
+        case "move":
+          return {
+            key: option,
+            label: t("MoveTo"),
+            icon: "images/move.react.svg",
+            onClick: onMoveAction,
+            disabled: false,
+          };
+        //
+        case "copy":
+          return {
+            key: option,
+            label: t("Copy"),
+            icon: "/static/images/copy.react.svg",
+            onClick: onCopyAction,
+            disabled: false,
+          };
+        //
+        case "duplicate":
+          return {
+            key: option,
+            label: t("Duplicate"),
+            icon: "/static/images/copy.react.svg",
+            onClick: onDuplicate,
+            disabled: false,
+          };
+        //
+        case "rename":
+          return {
+            key: option,
+            label: t("Rename"),
+            icon: "images/rename.react.svg",
+            onClick: onClickRename,
+            disabled: false,
+          };
+        //
+        case "change-thirdparty-info":
+          return {
+            key: option,
+            label: t("ThirdPartyInfo"),
+            icon: "images/access.edit.react.svg",
+            onClick: onChangeThirdPartyInfo,
+            disabled: false,
+          };
+        //
+        case "delete":
+          return {
+            key: option,
+            label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
+            icon: "/static/images/catalog.trash.react.svg",
+            onClick: onClickDelete,
+            disabled: false,
+          };
+        //
+        case "remove-from-favorites":
+          return {
+            key: option,
+            label: t("RemoveFromFavorites"),
+            icon: "images/favorites.react.svg",
+            onClick: onClickFavorite,
+            disabled: false,
+            "data-action": "remove",
+          };
+        default:
+          break;
+      }
+
+      return undefined;
+    });
+  };
+
+  getItemIcon = (isEdit, icon, fileExst) => {
+    const { isPrivacyFolder } = this.props;
+    const svgLoader = () => <div style={{ width: "24px" }}></div>;
+    return (
+      <>
+        <ReactSVG
+          className={`react-svg-icon${isEdit ? " is-edit" : ""}`}
+          src={icon}
+          loading={svgLoader}
+        />
+        {isPrivacyFolder && fileExst && <EncryptedFileIcon isEdit={isEdit} />}
+      </>
+    );
+  };
+
   render() {
     const {
       selection,
@@ -418,7 +784,17 @@ class SectionBodyContent extends React.Component {
     ) : (
       <>
         <CustomTooltip ref={this.tooltipRef}>{fileMoveTooltip}</CustomTooltip>
-        {viewAs === "tile" ? <FilesTileContainer /> : <FilesRowContainer />}
+        {viewAs === "tile" ? (
+          <FilesTileContainer
+            t={t}
+            getFilesContextOptions={this.getFilesContextOptions}
+            getItemIcon={this.getItemIcon}
+          />
+        ) : (
+          <FilesRowContainer
+            getFilesContextOptions={this.getFilesContextOptions}
+          />
+        )}
       </>
     );
   }
@@ -433,6 +809,9 @@ export default inject(
     treeFoldersStore,
     filesActionsStore,
     selectedFolderStore,
+    versionHistoryStore,
+    dialogsStore,
+    mediaViewerDataStore,
   }) => {
     const {
       dragging,
@@ -448,17 +827,41 @@ export default inject(
       fileActionStore,
       iconOfDraggedFile,
       filesList,
+      openDocEditor,
     } = filesStore;
+    const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
+    const { setMediaViewerData } = mediaViewerDataStore;
 
-    const { isShareFolder, isCommonFolder } = treeFoldersStore;
-    const { id: fileActionId } = fileActionStore;
+    const {
+      setSharingPanelVisible,
+      setChangeOwnerPanelVisible,
+      setMoveToPanelVisible,
+      setCopyPanelVisible,
+      setRemoveItem,
+      setDeleteThirdPartyDialogVisible,
+    } = dialogsStore;
+
+    const { isShareFolder, isCommonFolder, isPrivacyFolder } = treeFoldersStore;
+    const { id: fileActionId, setAction } = fileActionStore;
     const {
       setSecondaryProgressBarData,
     } = uploadDataStore.secondaryProgressDataStore;
-    const { copyToAction, moveToAction } = filesActionsStore;
+    const {
+      copyToAction,
+      moveToAction,
+      setFavoriteAction,
+      finalizeVersionAction,
+      lockFileAction,
+      onSelectItem,
+      duplicateAction,
+      setThirdpartyInfo,
+      deleteFileAction,
+      openLocationAction,
+    } = filesActionsStore;
 
     return {
       isAdmin: auth.isAdmin,
+      isTabletView: auth.settingsStore,
       dragging,
       fileActionId,
       firstLoad,
@@ -471,12 +874,34 @@ export default inject(
       tooltipValue,
       isLoading,
       isEmptyFilesList: filesList.length <= 0,
+      homepage: config.homepage,
 
       setDragging,
       setSecondaryProgressBarData,
       copyToAction,
       moveToAction,
       folderId: selectedFolderStore.id,
+      setIsVerHistoryPanel,
+      fetchFileVersions,
+      setFavoriteAction,
+      finalizeVersionAction,
+      lockFileAction,
+      onSelectItem,
+      setSharingPanelVisible,
+      setChangeOwnerPanelVisible,
+      openDocEditor,
+      setMediaViewerData,
+      setMoveToPanelVisible,
+      setCopyPanelVisible,
+      duplicateAction,
+      setAction,
+      setThirdpartyInfo,
+      isRootFolder: selectedFolderStore.isRootFolder,
+      setRemoveItem,
+      setDeleteThirdPartyDialogVisible,
+      deleteFileAction,
+      openLocationAction,
+      isPrivacyFolder,
     };
   }
 )(withRouter(withTranslation("Home")(observer(SectionBodyContent))));

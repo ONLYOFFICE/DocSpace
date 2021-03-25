@@ -484,7 +484,7 @@ const SimpleFilesRow = (props) => {
   const contextOptionsProps =
     !isEdit && contextOptions && contextOptions.length > 0
       ? {
-          contextOptions: getFilesContextOptions(),
+          contextOptions: props.getFilesContextOptions(item, isFolder),
         }
       : {};
 

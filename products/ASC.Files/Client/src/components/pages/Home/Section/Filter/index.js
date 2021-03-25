@@ -93,7 +93,9 @@ class SectionFilterContent extends React.Component {
   };
 
   onChangeViewAs = (view) => {
-    this.props.setViewAs(view);
+    const { viewAs, setViewAs } = this.props;
+    console.log(view, "-----");
+    setViewAs(view);
   };
 
   getData = () => {
@@ -279,7 +281,7 @@ class SectionFilterContent extends React.Component {
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, firstLoad, sectionWidth } = this.props;
+    const { t, firstLoad, sectionWidth, viewAs } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
 
@@ -293,7 +295,7 @@ class SectionFilterContent extends React.Component {
         selectedFilterData={selectedFilterData}
         onFilter={this.onFilter}
         onChangeViewAs={this.onChangeViewAs}
-        viewAs={true} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
+        viewAs={viewAs} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
         directionAscLabel={t("DirectionAscLabel")}
         directionDescLabel={t("DirectionDescLabel")}
         placeholder={t("Search")}
