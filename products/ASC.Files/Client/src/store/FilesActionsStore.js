@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import store from "studio/store";
 import uploadDataStore from "./UploadDataStore";
 import treeFoldersStore from "./TreeFoldersStore";
 import filesStore from "./FilesStore";
@@ -17,11 +18,13 @@ import {
   finalizeVersion,
   lockFile,
   downloadFiles,
-  markAsRead
+  markAsRead,
 } from "@appserver/common/api/files";
 import { FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
+
+const { auth } = store;
 
 const {
   fetchFiles,
@@ -493,8 +496,72 @@ class FilesActionStore {
   };
 
   markAsRead = (folderIds, fileId) => {
-    return markAsRead(folderIds, fileId)
-  }
+    return markAsRead(folderIds, fileId);
+  };
+
+  moveDragItems = (destFolderId, label) => {
+    const folderIds = [];
+    const fileIds = [];
+    const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2 TODO: get from settings
+    const deleteAfter = true;
+
+    const { selection } = filesStore;
+    const { isShareFolder, isCommonFolder } = treeFoldersStore;
+
+    setSecondaryProgressBarData({
+      icon: "move",
+      visible: true,
+      percent: 0,
+      label,
+      alert: false,
+    });
+
+    for (let item of selection) {
+      if (item.fileExst) {
+        fileIds.push(item.id);
+      } else {
+        folderIds.push(item.id);
+      }
+    }
+
+    if (auth.isAdmin) {
+      if (isShareFolder) {
+        this.copyToAction(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+      } else {
+        this.moveToAction(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+      }
+    } else {
+      if (isShareFolder || isCommonFolder) {
+        this.copyToAction(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+      } else {
+        this.moveToAction(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+      }
+    }
+  };
 }
 
 export default new FilesActionStore();

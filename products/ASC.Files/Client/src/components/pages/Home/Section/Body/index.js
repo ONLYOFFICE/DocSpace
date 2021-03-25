@@ -44,13 +44,7 @@ class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
-    // this.state = {
-    //   isDrag: false,
-    //   canDrag: true,
-    // };
-
     // this.tooltipRef = React.createRef();
-    // this.currentDroppable = null;
   }
 
   componentDidMount() {
@@ -58,20 +52,18 @@ class SectionBodyContent extends React.Component {
       "#customScrollBar > .scroll-body"
     );
 
-    // window.addEventListener("mouseup", this.onMouseUp);
     // document.addEventListener("dragstart", this.onDragStart);
     // document.addEventListener("dragover", this.onDragOver);
     // document.addEventListener("dragleave", this.onDragLeaveDoc);
     // document.addEventListener("drop", this.onDropEvent);
   }
 
-  // componentWillUnmount() {
-  //   window.removeEventListener("mouseup", this.onMouseUp);
-  //   document.addEventListener("dragstart", this.onDragStart);
-  //   document.removeEventListener("dragover", this.onDragOver);
-  //   document.removeEventListener("dragleave", this.onDragLeaveDoc);
-  //   document.removeEventListener("drop", this.onDropEvent);
-  // }
+  componentWillUnmount() {
+    // document.removeEventListener("dragstart", this.onDragStart);
+    // document.removeEventListener("dragover", this.onDragOver);
+    // document.removeEventListener("dragleave", this.onDragLeaveDoc);
+    // document.removeEventListener("drop", this.onDropEvent);
+  }
 
   componentDidUpdate(prevProps, prevState) {
     Object.entries(this.props).forEach(
@@ -96,169 +88,31 @@ class SectionBodyContent extends React.Component {
     }
   }
 
-  // onDragStart = (e) => {
-  //   if (e.dataTransfer.dropEffect === "none") {
-  //     this.state.canDrag && this.setState({ canDrag: false });
-  //   }
-  // };
+  onDragStart = (e) => {
+    if (e.dataTransfer.dropEffect === "none") {
+      this.props.canDrag && setCanDrag(false);
+    }
+  };
 
-  // onDropEvent = () => {
-  //   this.props.dragging && this.props.setDragging(false);
-  // };
+  onDropEvent = () => {
+    this.props.dragging && this.props.setDragging(false);
+  };
 
-  // onDragOver = (e) => {
-  //   e.preventDefault();
-  //   const { dragging, setDragging } = this.props;
-  //   if (e.dataTransfer.items.length > 0 && !dragging && this.state.canDrag) {
-  //     setDragging(true);
-  //   }
-  // };
+  onDragOver = (e) => {
+    e.preventDefault();
+    const { dragging, setDragging, canDrag } = this.props;
+    if (e.dataTransfer.items.length > 0 && !dragging && canDrag) {
+      setDragging(true);
+    }
+  };
 
-  // onDragLeaveDoc = (e) => {
-  //   e.preventDefault();
-  //   const { dragging, setDragging } = this.props;
-  //   if (dragging && !e.relatedTarget) {
-  //     setDragging(false);
-  //   }
-  // };
-
-  // onMouseDown = (e) => {
-  //   if (
-  //     window.innerWidth < 1025 ||
-  //     e.target.tagName === "rect" ||
-  //     e.target.tagName === "path"
-  //   ) {
-  //     return;
-  //   }
-  //   const mouseButton = e.which
-  //     ? e.which !== 1
-  //     : e.button
-  //     ? e.button !== 0
-  //     : false;
-  //   const label = e.currentTarget.getAttribute("label");
-  //   if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
-  //     return;
-  //   }
-  //   document.addEventListener("mousemove", this.onMouseMove);
-  //   this.setTooltipPosition(e);
-  //   const { selection } = this.props;
-
-  //   const elem = e.currentTarget.closest(".draggable");
-  //   if (!elem) {
-  //     return;
-  //   }
-  //   const value = elem.getAttribute("value");
-  //   if (!value) {
-  //     return;
-  //   }
-  //   let splitValue = value.split("_");
-  //   let item = null;
-  //   if (splitValue[0] === "folder") {
-  //     splitValue.splice(0, 1);
-  //     if (splitValue[splitValue.length - 1] === "draggable") {
-  //       splitValue.splice(-1, 1);
-  //     }
-  //     splitValue = splitValue.join("_");
-
-  //     item = selection.find((x) => x.id + "" === splitValue && !x.fileExst);
-  //   } else {
-  //     splitValue.splice(0, 1);
-  //     if (splitValue[splitValue.length - 1] === "draggable") {
-  //       splitValue.splice(-1, 1);
-  //     }
-  //     splitValue = splitValue.join("_");
-
-  //     item = selection.find((x) => x.id + "" === splitValue && x.fileExst);
-  //   }
-  //   if (item) {
-  //     this.setState({ isDrag: true });
-  //   }
-  // };
-
-  // onMouseUp = (e) => {
-  //   const { selection, dragging, setDragging, dragItem } = this.props;
-
-  //   document.body.classList.remove("drag-cursor");
-
-  //   if (this.state.isDrag || !this.state.canDrag) {
-  //     this.setState({ isDrag: false, canDrag: true });
-  //   }
-  //   const mouseButton = e.which
-  //     ? e.which !== 1
-  //     : e.button
-  //     ? e.button !== 0
-  //     : false;
-  //   if (mouseButton || !this.tooltipRef.current || !dragging) {
-  //     return;
-  //   }
-  //   document.removeEventListener("mousemove", this.onMouseMove);
-  //   this.tooltipRef.current.style.display = "none";
-
-  //   const elem = e.target.closest(".dropable");
-  //   if (elem && selection.length && dragging) {
-  //     const value = elem.getAttribute("value");
-  //     if (!value) {
-  //       setDragging(false);
-  //       return;
-  //     }
-  //     let splitValue = value.split("_");
-  //     let item = null;
-  //     if (splitValue[0] === "folder") {
-  //       splitValue.splice(0, 1);
-  //       if (splitValue[splitValue.length - 1] === "draggable") {
-  //         splitValue.splice(-1, 1);
-  //       }
-  //       splitValue = splitValue.join("_");
-
-  //       item = selection.find((x) => x.id + "" === splitValue && !x.fileExst);
-  //     } else {
-  //       return;
-  //     }
-  //     if (item) {
-  //       setDragging(false);
-  //       return;
-  //     } else {
-  //       setDragging(false);
-  //       this.onMoveTo(splitValue);
-  //       return;
-  //     }
-  //   } else {
-  //     setDragging(false);
-  //     if (dragItem) {
-  //       this.onMoveTo(dragItem);
-  //       return;
-  //     }
-  //     return;
-  //   }
-  // };
-
-  // onMouseMove = (e) => {
-  //   if (this.state.isDrag) {
-  //     document.body.classList.add("drag-cursor");
-  //     !this.props.dragging && this.props.setDragging(true);
-  //     const tooltip = this.tooltipRef.current;
-  //     tooltip.style.display = "block";
-  //     this.setTooltipPosition(e);
-
-  //     const wrapperElement = document.elementFromPoint(e.clientX, e.clientY);
-  //     if (!wrapperElement) {
-  //       return;
-  //     }
-  //     const droppable = wrapperElement.closest(".dropable");
-
-  //     if (this.currentDroppable !== droppable) {
-  //       if (this.currentDroppable) {
-  //         this.currentDroppable.style.background = backgroundDragEnterColor;
-  //       }
-  //       this.currentDroppable = droppable;
-
-  //       if (this.currentDroppable) {
-  //         droppable.style.background = backgroundDragColor;
-  //         this.currentDroppable = droppable;
-  //       }
-  //     }
-  //   }
-  // };
+  onDragLeaveDoc = (e) => {
+    e.preventDefault();
+    const { dragging, setDragging } = this.props;
+    if (dragging && !e.relatedTarget) {
+      setDragging(false);
+    }
+  };
 
   // setTooltipPosition = (e) => {
   //   const tooltip = this.tooltipRef.current;
@@ -266,78 +120,6 @@ class SectionBodyContent extends React.Component {
   //     const margin = 8;
   //     tooltip.style.left = e.pageX + margin + "px";
   //     tooltip.style.top = e.pageY + margin + "px";
-  //   }
-  // };
-
-  // onMoveTo = (destFolderId) => {
-  //   const {
-  //     selection,
-  //     t,
-  //     isShare,
-  //     isCommon,
-  //     isAdmin,
-  //     setSecondaryProgressBarData,
-  //     copyToAction,
-  //     moveToAction,
-  //   } = this.props;
-
-  //   const folderIds = [];
-  //   const fileIds = [];
-  //   const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
-  //   const deleteAfter = true;
-
-  //   setSecondaryProgressBarData({
-  //     icon: "move",
-  //     visible: true,
-  //     percent: 0,
-  //     label: t("MoveToOperation"),
-  //     alert: false,
-  //   });
-
-  //   for (let item of selection) {
-  //     if (item.fileExst) {
-  //       fileIds.push(item.id);
-  //     } else {
-  //       folderIds.push(item.id);
-  //     }
-  //   }
-
-  //   if (isAdmin) {
-  //     if (isShare) {
-  //       copyToAction(
-  //         destFolderId,
-  //         folderIds,
-  //         fileIds,
-  //         conflictResolveType,
-  //         deleteAfter
-  //       );
-  //     } else {
-  //       moveToAction(
-  //         destFolderId,
-  //         folderIds,
-  //         fileIds,
-  //         conflictResolveType,
-  //         deleteAfter
-  //       );
-  //     }
-  //   } else {
-  //     if (isShare || isCommon) {
-  //       copyToAction(
-  //         destFolderId,
-  //         folderIds,
-  //         fileIds,
-  //         conflictResolveType,
-  //         deleteAfter
-  //       );
-  //     } else {
-  //       moveToAction(
-  //         destFolderId,
-  //         folderIds,
-  //         fileIds,
-  //         conflictResolveType,
-  //         deleteAfter
-  //       );
-  //     }
   //   }
   // };
 
@@ -429,9 +211,7 @@ export default inject(
     auth,
     initFilesStore,
     filesStore,
-    uploadDataStore,
-    treeFoldersStore,
-    filesActionsStore,
+    //filesActionsStore,
     selectedFolderStore,
   }) => {
     const {
@@ -441,6 +221,8 @@ export default inject(
       viewAs,
       dragItem,
       tooltipValue,
+      canDrag,
+      setCanDrag,
     } = initFilesStore;
     const {
       firstLoad,
@@ -450,12 +232,8 @@ export default inject(
       filesList,
     } = filesStore;
 
-    const { isShareFolder, isCommonFolder } = treeFoldersStore;
     const { id: fileActionId } = fileActionStore;
-    const {
-      setSecondaryProgressBarData,
-    } = uploadDataStore.secondaryProgressDataStore;
-    const { copyToAction, moveToAction } = filesActionsStore;
+    //const { copyToAction, moveToAction } = filesActionsStore;
 
     return {
       isAdmin: auth.isAdmin,
@@ -463,19 +241,18 @@ export default inject(
       fileActionId,
       firstLoad,
       selection,
-      isShare: isShareFolder,
-      isCommon: isCommonFolder,
       viewAs,
       dragItem,
       iconOfDraggedFile,
       tooltipValue,
       isLoading,
       isEmptyFilesList: filesList.length <= 0,
+      canDrag,
 
+      setCanDrag,
       setDragging,
-      setSecondaryProgressBarData,
-      copyToAction,
-      moveToAction,
+      //copyToAction,
+      //moveToAction,
       folderId: selectedFolderStore.id,
     };
   }

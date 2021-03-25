@@ -17,6 +17,9 @@ class InitFilesStore {
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
 
+  isDrag = false;
+  canDrag = true;
+
   constructor() {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
@@ -28,6 +31,8 @@ class InitFilesStore {
       dragging: observable,
       dragItem: observable,
       privacyInstructions: observable,
+      isDrag: observable,
+      canDrag: observable,
 
       tooltipValue: computed,
 
@@ -37,6 +42,8 @@ class InitFilesStore {
       setViewAs: action,
       setDragging: action,
       setDragItem: action,
+      setIsDrag: action,
+      setCanDrag: action,
     });
   }
 
@@ -58,6 +65,14 @@ class InitFilesStore {
 
   setDragItem = (dragItem) => {
     this.dragItem = dragItem;
+  };
+
+  setIsDrag = (isDrag) => {
+    this.isDrag = isDrag;
+  };
+
+  setCanDrag = (canDrag) => {
+    this.canDrag = canDrag;
   };
 
   get tooltipValue() {

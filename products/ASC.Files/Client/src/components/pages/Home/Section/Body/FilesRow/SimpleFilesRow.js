@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { ReactSVG } from "react-svg";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
@@ -106,6 +106,11 @@ const SimpleFilesRow = (props) => {
     startUpload,
     onSelectItem,
     history,
+    isDrag,
+    setIsDrag,
+    canDrag,
+    setCanDrag,
+    moveDragItems,
   } = props;
 
   const {
@@ -122,12 +127,21 @@ const SimpleFilesRow = (props) => {
     webUrl,
     canOpenPlayer,
     locked,
+    parentId,
   } = item;
 
-  let value = fileExst ? `file_${id}` : `folder_${id}`;
-  value += draggable ? "_draggable" : "";
+  //this.currentDroppable = null;
 
   const isThirdPartyFolder = providerKey && isRootFolder;
+
+  useEffect(() => {
+    isDrag && window.addEventListener("mouseup", onMouseUp);
+    isDrag && document.addEventListener("mousemove", onMouseMove);
+    return () => {
+      window.removeEventListener("mouseup", onMouseUp);
+      document.removeEventListener("mousemove", onMouseMove);
+    };
+  }, [onMouseUp, onMouseMove, isDrag]);
 
   const onContentRowSelect = (checked, file) => {
     if (!file) return;
@@ -261,11 +275,11 @@ const SimpleFilesRow = (props) => {
       deleteOperation: t("DeleteOperation"),
     };
 
-    item.fileExst
-      ? deleteFileAction(item.id, item.folderId, translations)
+    fileExst
+      ? deleteFileAction(id, folderId, translations)
           .then(() => toastr.success(t("FileRemoved")))
           .catch((err) => toastr.error(err))
-      : deleteFolderAction(item.id, item.parentId, translations)
+      : deleteFolderAction(id, parentId, translations)
           .then(() => toastr.success(t("FolderRemoved")))
           .catch((err) => toastr.error(err));
   };
@@ -275,7 +289,7 @@ const SimpleFilesRow = (props) => {
   };
 
   const getFilesContextOptions = useCallback(() => {
-    const isSharable = item.access !== 1 && item.access !== 0;
+    const isSharable = access !== 1 && access !== 0;
 
     return contextOptions.map((option) => {
       switch (option) {
@@ -470,17 +484,115 @@ const SimpleFilesRow = (props) => {
 
   const onDrop = (items) => {
     if (!fileExst) {
-      onDropZoneUpload(items, item.id);
+      onDropZoneUpload(items, id);
     } else {
       onDropZoneUpload(items, selectedFolderId);
     }
   };
 
-  const isMobile = sectionWidth < 500;
+  const onMouseDown = (e) => {
+    if (!draggable) {
+      return;
+    }
 
+    if (
+      window.innerWidth < 1025 ||
+      e.target.tagName === "rect" ||
+      e.target.tagName === "path"
+    ) {
+      return;
+    }
+    const mouseButton = e.which
+      ? e.which !== 1
+      : e.button
+      ? e.button !== 0
+      : false;
+    const label = e.currentTarget.getAttribute("label");
+    if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
+      return;
+    }
+
+    //this.setTooltipPosition(e);
+    setIsDrag(true);
+  };
+
+  const onMouseMove = (e) => {
+    document.body.classList.add("drag-cursor");
+    !dragging && setDragging(true);
+
+    //const tooltip = this.tooltipRef.current;
+    //tooltip.style.display = "block";
+    //this.setTooltipPosition(e);
+
+    const wrapperElement = document.elementFromPoint(e.clientX, e.clientY);
+    if (!wrapperElement) {
+      return;
+    }
+    // const droppable = wrapperElement.closest(".dropable");
+
+    // if (this.currentDroppable !== droppable) {
+    //   if (this.currentDroppable) {
+    //     this.currentDroppable.style.background = backgroundDragEnterColor;
+    //   }
+    //   this.currentDroppable = droppable;
+
+    //   if (this.currentDroppable) {
+    //     droppable.style.background = backgroundDragColor;
+    //     this.currentDroppable = droppable;
+    //   }
+    // }
+  };
+
+  const onMouseUp = (e) => {
+    document.body.classList.remove("drag-cursor");
+
+    const elem = e.target.closest(".dropable");
+    const value = elem && elem.getAttribute("value");
+    if (!value) {
+      return onClose();
+    }
+
+    let splitValue = value.split("_");
+    console.log("splitValue", splitValue);
+
+    if (isDrag || !canDrag) {
+      setIsDrag(false);
+      setCanDrag(true);
+    }
+    const mouseButton = e.which
+      ? e.which !== 1
+      : e.button
+      ? e.button !== 0
+      : false;
+
+    const dropable = isFolder && access < 2 && !isRecycleBin;
+    if (
+      //mouseButton ||
+      //!this.tooltipRef.current ||
+      !dropable
+    ) {
+      return onClose();
+    }
+
+    //this.tooltipRef.current.style.display = "none";
+    onClose();
+    onMoveTo(splitValue[1]);
+    return;
+  };
+
+  const onClose = () => {
+    setIsDrag(false);
+    setDragging(false);
+  };
+
+  const onMoveTo = (destFolderId) => {
+    const id = providerKey ? destFolderId : +destFolderId;
+    moveDragItems(id, t("MoveToOperation")); //TODO: then catch
+  };
+
+  const isMobile = sectionWidth < 500;
   const isEdit =
     !!actionType && actionId === id && fileExst === actionExtension;
-
   const contextOptionsProps =
     !isEdit && contextOptions && contextOptions.length > 0
       ? {
@@ -493,6 +605,8 @@ const SimpleFilesRow = (props) => {
   const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
   let className = isFolder && access < 2 && !isRecycleBin ? " dropable" : "";
   if (draggable) className += " draggable";
+  let value = fileExst ? `file_${id}` : `folder_${id}`;
+  value += draggable ? "_draggable" : "";
 
   const sharedButton =
     !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
@@ -501,18 +615,18 @@ const SimpleFilesRow = (props) => {
 
   return (
     <DragAndDrop
+      value={value}
       className={className}
       onDrop={onDrop}
-      //onMouseDown={this.onMouseDown}
+      onMouseDown={onMouseDown}
       dragging={dragging && isFolder && access < 2}
       {...contextOptionsProps}
-      value={value}
     >
       <StyledSimpleFilesRow
-        sectionWidth={sectionWidth}
         key={id}
         data={item}
         element={element}
+        sectionWidth={sectionWidth}
         contentElement={sharedButton}
         onSelect={onContentRowSelect}
         rowContextClick={rowContextClick}
@@ -544,7 +658,14 @@ export default inject(
     { item }
   ) => {
     const { isTabletView } = auth.settingsStore;
-    const { dragging, setDragging } = initFilesStore;
+    const {
+      dragging,
+      setDragging,
+      isDrag,
+      setIsDrag,
+      canDrag,
+      setCanDrag,
+    } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
@@ -582,6 +703,7 @@ export default inject(
       selectRowAction,
       setThirdpartyInfo,
       onSelectItem,
+      moveDragItems,
     } = filesActionsStore;
 
     const { setMediaViewerData } = mediaViewerDataStore;
@@ -626,6 +748,11 @@ export default inject(
       setDragging,
       startUpload,
       onSelectItem,
+      isDrag,
+      setIsDrag,
+      canDrag,
+      setCanDrag,
+      moveDragItems,
     };
   }
 )(withTranslation("Home")(observer(withRouter(SimpleFilesRow))));
