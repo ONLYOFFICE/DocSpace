@@ -16,14 +16,25 @@ const StyledOperationDialog = styled.div`
 const PureThirdPartyMoveContainer = ({
   t,
   visible,
-  startMoveOperation,
-  startCopyOperation,
   provider,
+  dragItem,
+  copyToAction,
+  moveToAction,
   setThirdPartyMoveDialogVisible,
 }) => {
   const zIndex = 310;
 
   const onClose = () => setThirdPartyMoveDialogVisible(false);
+
+  const startMoveOperation = () => {
+    moveToAction(dragItem);
+    this.onClose();
+  };
+
+  const startCopyOperation = () => {
+    copyToAction(dragItem);
+    this.onClose();
+  };
 
   return (
     <StyledOperationDialog>
@@ -61,18 +72,24 @@ const PureThirdPartyMoveContainer = ({
   );
 };
 
-export default inject(({ filesStore, dialogsStore }) => {
-  const {
-    thirdPartyMoveDialogVisible: visible,
-    setThirdPartyMoveDialogVisible,
-  } = dialogsStore;
-  const { selection } = filesStore;
+export default inject(
+  ({ initFilesStore, filesStore, dialogsStore, filesActionsStore }) => {
+    const {
+      thirdPartyMoveDialogVisible: visible,
+      setThirdPartyMoveDialogVisible,
+    } = dialogsStore;
+    const { selection } = filesStore;
+    const { copyToAction, moveToAction } = filesActionsStore;
 
-  return {
-    visible,
-    setThirdPartyMoveDialogVisible,
-    provider: selection[0].providerKey,
-  };
-})(
+    return {
+      visible,
+      setThirdPartyMoveDialogVisible,
+      provider: selection[0].providerKey,
+      dragItem: initFilesStore.dragItem,
+      copyToAction,
+      moveToAction,
+    };
+  }
+)(
   withTranslation("ThirdPartyMoveDialog")(observer(PureThirdPartyMoveContainer))
 );

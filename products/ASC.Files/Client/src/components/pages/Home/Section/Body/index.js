@@ -155,16 +155,6 @@ class SectionBodyContent extends React.Component {
     );
   };
 
-  // startMoveOperation = () => {
-  //   this.props.moveToAction(this.props.dragItem);
-  //   this.onCloseThirdPartyMoveDialog();
-  // };
-
-  // startCopyOperation = () => {
-  //   this.props.copyToAction(this.props.dragItem);
-  //   this.onCloseThirdPartyMoveDialog();
-  // };
-
   render() {
     const {
       selection,
@@ -206,54 +196,39 @@ class SectionBodyContent extends React.Component {
   }
 }
 
-export default inject(
-  ({
-    auth,
-    initFilesStore,
-    filesStore,
-    //filesActionsStore,
-    selectedFolderStore,
-  }) => {
-    const {
-      dragging,
-      setDragging,
-      isLoading,
-      viewAs,
-      dragItem,
-      tooltipValue,
-      canDrag,
-      setCanDrag,
-    } = initFilesStore;
-    const {
-      firstLoad,
-      selection,
-      fileActionStore,
-      iconOfDraggedFile,
-      filesList,
-    } = filesStore;
+export default inject(({ initFilesStore, filesStore, selectedFolderStore }) => {
+  const {
+    dragging,
+    setDragging,
+    isLoading,
+    viewAs,
+    tooltipValue,
+    canDrag,
+    setCanDrag,
+  } = initFilesStore;
+  const {
+    firstLoad,
+    selection,
+    fileActionStore,
+    iconOfDraggedFile,
+    filesList,
+  } = filesStore;
 
-    const { id: fileActionId } = fileActionStore;
-    //const { copyToAction, moveToAction } = filesActionsStore;
+  const { id: fileActionId } = fileActionStore;
 
-    return {
-      isAdmin: auth.isAdmin,
-      dragging,
-      fileActionId,
-      firstLoad,
-      selection,
-      viewAs,
-      dragItem,
-      iconOfDraggedFile,
-      tooltipValue,
-      isLoading,
-      isEmptyFilesList: filesList.length <= 0,
-      canDrag,
-
-      setCanDrag,
-      setDragging,
-      //copyToAction,
-      //moveToAction,
-      folderId: selectedFolderStore.id,
-    };
-  }
-)(withRouter(withTranslation("Home")(observer(SectionBodyContent))));
+  return {
+    dragging,
+    fileActionId,
+    firstLoad,
+    selection,
+    viewAs,
+    iconOfDraggedFile,
+    tooltipValue,
+    isLoading,
+    isEmptyFilesList: filesList.length <= 0,
+    canDrag,
+    setCanDrag,
+    setDragging,
+    folderId: selectedFolderStore.id,
+  };
+})(withRouter(withTranslation("Home")(observer(SectionBodyContent))));
