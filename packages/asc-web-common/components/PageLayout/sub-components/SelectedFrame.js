@@ -125,9 +125,8 @@ class SelectedFrame extends React.Component {
       for (let childItem in this.container.childNodes) {
         if (this.container.childNodes[childItem].nodeType === 1) {
           const item = this.container.childNodes[childItem];
-          const currentItem = item.childNodes[0];
-          if (!currentItem) return;
-          const itemHeight = currentItem.offsetHeight;
+          if (!item) return;
+          const itemHeight = item.offsetHeight;
           const itemOffsetTop = item.offsetTop;
 
           //const topStart = top - itemHeight - this.props.scrollRef.current.view.offsetParent.offsetTop - offset - 16;
@@ -141,7 +140,7 @@ class SelectedFrame extends React.Component {
             itemOffsetTop - offsetScroll >= topStart &&
             itemOffsetTop - offsetScroll <= topEnd
           ) {
-            const value = currentItem.getAttribute("value");
+            const value = item.getAttribute("value");
             const splitValue = value && value.split("_");
             if (value && splitValue[splitValue.length - 1] === "draggable") {
               needUpdate = false;
@@ -279,9 +278,8 @@ class SelectedFrame extends React.Component {
         for (let childItem in this.container.childNodes) {
           if (this.container.childNodes[childItem].nodeType === 1) {
             const item = this.container.childNodes[childItem];
-            const currentItem = item;
 
-            const itemHeight = currentItem.offsetHeight;
+            const itemHeight = item.offsetHeight;
             const itemOffsetTop = item.offsetTop || 0;
 
             const topStartUp =
@@ -295,7 +293,7 @@ class SelectedFrame extends React.Component {
               (itemOffsetTop >= topStartUp && itemOffsetTop <= topEndUp) ||
               (itemOffsetTop <= topStartDown && itemOffsetTop >= topEndDown)
             ) {
-              const value = currentItem.getAttribute("value");
+              const value = item.getAttribute("value");
               selectedItems.push(value);
             }
           }
