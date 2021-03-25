@@ -24,6 +24,7 @@ import {
 
 import { ConvertDialog } from "../../dialogs";
 import MediaViewer from "./MediaViewer";
+import DragTooltip from "../../DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../../package.json";
 
@@ -229,6 +230,7 @@ class PureHome extends React.Component {
         )}
 
         <MediaViewer />
+        <DragTooltip />
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}

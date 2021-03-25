@@ -1,4 +1,4 @@
-import { makeObservable, action, observable, computed } from "mobx";
+import { makeAutoObservable } from "mobx";
 import store from "studio/store";
 import { updateTempContent } from "@appserver/common/utils";
 import filesStore from "./FilesStore";
@@ -20,31 +20,14 @@ class InitFilesStore {
   isDrag = false;
   canDrag = true;
 
+  tooltipPageX = 0;
+  tooltipPageY = 0;
+
   constructor() {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
 
-    makeObservable(this, {
-      isLoaded: observable,
-      isLoading: observable,
-      viewAs: observable,
-      dragging: observable,
-      dragItem: observable,
-      privacyInstructions: observable,
-      isDrag: observable,
-      canDrag: observable,
-
-      tooltipValue: computed,
-
-      initFiles: action,
-      setIsLoaded: action,
-      setIsLoading: action,
-      setViewAs: action,
-      setDragging: action,
-      setDragItem: action,
-      setIsDrag: action,
-      setCanDrag: action,
-    });
+    makeAutoObservable(this);
   }
 
   setIsLoaded = (isLoaded) => {
@@ -73,6 +56,11 @@ class InitFilesStore {
 
   setCanDrag = (canDrag) => {
     this.canDrag = canDrag;
+  };
+
+  setTooltipPosition = (tooltipPageX, tooltipPageY) => {
+    this.tooltipPageX = tooltipPageX;
+    this.tooltipPageY = tooltipPageY;
   };
 
   get tooltipValue() {

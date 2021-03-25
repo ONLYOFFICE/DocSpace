@@ -62,6 +62,8 @@ const EncryptedFileIcon = styled.div`
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 
+let currentDroppable = null;
+
 const SimpleFilesRow = (props) => {
   const {
     t,
@@ -111,6 +113,7 @@ const SimpleFilesRow = (props) => {
     canDrag,
     setCanDrag,
     moveDragItems,
+    setTooltipPosition,
   } = props;
 
   const {
@@ -129,8 +132,6 @@ const SimpleFilesRow = (props) => {
     locked,
     parentId,
   } = item;
-
-  //this.currentDroppable = null;
 
   const isThirdPartyFolder = providerKey && isRootFolder;
 
@@ -512,48 +513,47 @@ const SimpleFilesRow = (props) => {
       return;
     }
 
-    //this.setTooltipPosition(e);
+    setTooltipPosition(e.pageX, e.pageY);
+    document.body.classList.add("drag-cursor");
     setIsDrag(true);
   };
 
   const onMouseMove = (e) => {
-    document.body.classList.add("drag-cursor");
     !dragging && setDragging(true);
 
     //const tooltip = this.tooltipRef.current;
     //tooltip.style.display = "block";
-    //this.setTooltipPosition(e);
+    setTooltipPosition(e.pageX, e.pageY);
 
     const wrapperElement = document.elementFromPoint(e.clientX, e.clientY);
     if (!wrapperElement) {
       return;
     }
-    // const droppable = wrapperElement.closest(".dropable");
+    const droppable = wrapperElement.closest(".droppable");
 
-    // if (this.currentDroppable !== droppable) {
-    //   if (this.currentDroppable) {
-    //     this.currentDroppable.style.background = backgroundDragEnterColor;
-    //   }
-    //   this.currentDroppable = droppable;
+    if (currentDroppable !== droppable) {
+      if (currentDroppable) {
+        currentDroppable.classList.remove("droppable-hover");
+      }
+      currentDroppable = droppable;
 
-    //   if (this.currentDroppable) {
-    //     droppable.style.background = backgroundDragColor;
-    //     this.currentDroppable = droppable;
-    //   }
-    // }
+      if (currentDroppable) {
+        currentDroppable.classList.add("droppable-hover");
+        currentDroppable = droppable;
+      }
+    }
   };
 
   const onMouseUp = (e) => {
     document.body.classList.remove("drag-cursor");
 
-    const elem = e.target.closest(".dropable");
+    const elem = e.target.closest(".droppable");
     const value = elem && elem.getAttribute("value");
     if (!value) {
       return onClose();
     }
 
     let splitValue = value.split("_");
-    console.log("splitValue", splitValue);
 
     if (isDrag || !canDrag) {
       setIsDrag(false);
@@ -565,11 +565,11 @@ const SimpleFilesRow = (props) => {
       ? e.button !== 0
       : false;
 
-    const dropable = isFolder && access < 2 && !isRecycleBin;
+    const droppable = isFolder && access < 2 && !isRecycleBin;
     if (
       //mouseButton ||
       //!this.tooltipRef.current ||
-      !dropable
+      !droppable
     ) {
       return onClose();
     }
@@ -603,7 +603,7 @@ const SimpleFilesRow = (props) => {
   const checkedProps = isEdit || id <= 0 ? {} : { checked };
   const element = getItemIcon(isEdit || id <= 0);
   const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
-  let className = isFolder && access < 2 && !isRecycleBin ? " dropable" : "";
+  let className = isFolder && access < 2 && !isRecycleBin ? " droppable" : "";
   if (draggable) className += " draggable";
   let value = fileExst ? `file_${id}` : `folder_${id}`;
   value += draggable ? "_draggable" : "";
@@ -665,6 +665,7 @@ export default inject(
       setIsDrag,
       canDrag,
       setCanDrag,
+      setTooltipPosition,
     } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -753,6 +754,7 @@ export default inject(
       canDrag,
       setCanDrag,
       moveDragItems,
+      setTooltipPosition,
     };
   }
 )(withTranslation("Home")(observer(withRouter(SimpleFilesRow))));
