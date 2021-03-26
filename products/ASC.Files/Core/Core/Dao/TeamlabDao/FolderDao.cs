@@ -1058,7 +1058,6 @@ namespace ASC.Files.Core.Data
                                 CreateBy = r.folder.CreateBy,
                                 Id = r.folder.Id
                             })
-                            .Take(1)
                             .FirstOrDefault(),
                     Shared = FilesDbContext.Security
                             .Any(x => x.TenantId == TenantID && x.EntryType == FileEntryType.Folder && x.EntryId == r.Id.ToString())
@@ -1082,7 +1081,6 @@ namespace ASC.Files.Core.Data
                                 CreateBy = r.folder.CreateBy,
                                 Id = r.folder.Id
                             })
-                            .Take(1)
                             .FirstOrDefault(),
                     Shared = true
                 });
