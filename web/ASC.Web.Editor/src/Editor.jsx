@@ -64,11 +64,55 @@ const Editor = ({
     () => changeTitle(docSaved, docTitle),
     500
   );
-  let firstSharing = [];
+
   useEffect(() => {
-    //debugger;
     init();
   }, []);
+
+  const getShareUsersList = (isInit) => {
+    let sharingSettings = [];
+    const folderId = [];
+
+    getShareUsers(folderId, [+fileId]).then((result) => {
+      for (let i = 1; i < result.length; i++) {
+        let resultAccess =
+          result[i].access === 1
+            ? i18n.t("FullAccess")
+            : result[i].access === 2
+            ? i18n.t("ReadOnly")
+            : result[i].access === 3
+            ? i18n.t("DenyAccess")
+            : result[i].access === 4
+            ? i18n.t("CustomFilter")
+            : result[i].access === 5
+            ? i18n.t("Review")
+            : result[i].access === 6
+            ? i18n.t("Comment")
+            : result[i].access === 7
+            ? i18n.t("FormFilling")
+            : "";
+
+        let obj = {
+          user: result[i].sharedTo.displayName || result[i].sharedTo.name,
+          permissions: resultAccess,
+        };
+        sharingSettings.push(obj);
+      }
+
+      isInit
+        ? (config.document.info = {
+            ...config.document.info,
+            sharingSettings,
+          })
+        : docEditor.setSharingSettings({
+            sharingSettings,
+          });
+    });
+  };
+
+  const refreshRightsList = () => {
+    if (docEditor) getShareUsersList(false);
+  };
 
   const init = async () => {
     try {
@@ -130,6 +174,10 @@ const Editor = ({
               });
           }
         );
+      }
+
+      if (config) {
+        getShareUsersList(true);
       }
 
       setIsLoading(false);
@@ -302,42 +350,6 @@ const Editor = ({
     }
   };
 
-  const refreshRightsList = () => {
-    let sharingSettings = [];
-    const folderId = [];
-    //debugger;
-
-    getShareUsers(folderId, [+fileId]).then((result) => {
-      for (let i = 1; i < result.length; i++) {
-        let resultAccess =
-          result[i].access === 1
-            ? i18n.t("FullAccess")
-            : result[i].access === 2
-            ? i18n.t("ReadOnly")
-            : result[i].access === 3
-            ? i18n.t("DenyAccess")
-            : result[i].access === 4
-            ? i18n.t("CustomFilter")
-            : result[i].access === 5
-            ? i18n.t("Review")
-            : result[i].access === 6
-            ? i18n.t("Comment")
-            : result[i].access === 7
-            ? i18n.t("FormFilling")
-            : "";
-
-        let obj = {
-          user: result[i].sharedTo.displayName || result[i].sharedTo.name,
-          permissions: resultAccess,
-        };
-        sharingSettings.push(obj);
-      }
-
-      docEditor.setSharingSettings({
-        sharingSettings,
-      });
-    });
-  };
   //debugger;
   return (
     <Box
