@@ -43,6 +43,7 @@ class SharingRow extends React.Component {
   onShareEmail = () => {
     const { selection, item, t } = this.props;
     const { shareLink } = item.sharedTo;
+
     const itemName = selection.title ? selection.title : selection[0].title;
     const subject = t("ShareEmailSubject", { itemName });
     const body = t("ShareEmailBody", { itemName, shareLink });
@@ -79,6 +80,7 @@ class SharingRow extends React.Component {
       onShowChangeOwnerPanel,
       isLoading,
       internalLink,
+      isEditor,
     } = this.props;
     const { access } = this.state;
 
@@ -90,8 +92,9 @@ class SharingRow extends React.Component {
         : name
       : "";
 
-    const externalLinkVisible =
-      selection && selection.length === 1 && shareLink;
+    const externalLinkVisible = isEditor
+      ? shareLink
+      : selection && selection.length === 1 && shareLink;
     const internalLinkVisible = index === 0 && internalLink;
 
     const internalLinkData = [
@@ -227,7 +230,7 @@ class SharingRow extends React.Component {
                 !shareLink &&
                 !isLocked && (
                   <IconButton
-                    iconName="images/remove.react.svg"
+                    iconName="/static/images/remove.react.svg"
                     id={id}
                     {...onRemoveUserProp}
                     className="sharing_panel-remove-icon"

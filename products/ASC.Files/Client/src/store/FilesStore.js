@@ -497,7 +497,7 @@ class FilesStore {
 
   get canShareOwnerChange() {
     const pathParts = selectedFolderStore.pathParts;
-    const userId = userStore.user.id;
+    const userId = userStore.user && userStore.user.id;
     const commonFolder = treeFoldersStore.commonFolder;
     return (
       (isAdmin ||
@@ -731,6 +731,7 @@ class FilesStore {
   }
 
   getOptions = (selection, externalAccess = false) => {
+    //debugger;
     const webEdit = selection.find((x) => canWebEdit(x.fileExst));
     const webComment = selection.find((x) => canWebComment(x.fileExst));
     const webReview = selection.find((x) => canWebReview(x.fileExst));
@@ -738,7 +739,7 @@ class FilesStore {
       canFormFillingDocs(x.fileExst)
     );
     const webFilter = selection.find((x) => canWebFilterEditing(x.fileExst));
-
+    console.log("webComment", webComment);
     let AccessOptions = [];
 
     if (webEdit || !externalAccess) AccessOptions.push("FullAccess");

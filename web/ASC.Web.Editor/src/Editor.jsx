@@ -24,15 +24,31 @@ import { isIOS, deviceType } from "react-device-detect";
 import { homepage } from "../package.json";
 import "./custom.scss";
 import { AppServerConfig } from "@appserver/common/constants";
+import SharingPanel from "files/SharingPanel";
+import { inject, observer } from "mobx-react";
+
+import { Provider as MobxProvider } from "mobx-react";
+
+import store from "studio/store";
+import initFilesStore from "files/InitFilesStore";
+import filesStore from "files/FilesStore";
+import uploadDataStore from "files/UploadDataStore";
+import dialogsStore from "files/DialogsStore";
+import treeFoldersStore from "files/TreeFoldersStore";
 
 let documentIsReady = false;
 
 let docTitle = null;
 let fileType = null;
-
+let config;
 let docSaved = null;
+let docEditor;
 
-const Editor = () => {
+const Editor = ({
+  uploadPanelVisible,
+  sharingPanelVisible,
+  setSharingPanelVisible,
+}) => {
   const urlParams = getObjectByLocation(window.location);
   const fileId = urlParams
     ? urlParams.fileId || urlParams.fileid || null
@@ -47,6 +63,10 @@ const Editor = () => {
     () => changeTitle(docSaved, docTitle),
     500
   );
+
+  useEffect(() => {
+    init();
+  }, []);
 
   const init = async () => {
     try {
@@ -73,7 +93,7 @@ const Editor = () => {
         }
       }
 
-      const config = await openEdit(fileId, doc);
+      config = await openEdit(fileId, doc);
 
       if (isDesktop) {
         const isEncryption =
@@ -123,10 +143,6 @@ const Editor = () => {
       );
     }
   };
-
-  useEffect(() => {
-    init();
-  }, []);
 
   const isIPad = () => {
     return isIOS && deviceType === "tablet";
@@ -195,6 +211,7 @@ const Editor = () => {
 
   const onLoad = (config) => {
     console.log("Editor config: ", config);
+
     try {
       console.log(config);
 
@@ -217,6 +234,7 @@ const Editor = () => {
           onInfo: onSDKInfo,
           onWarning: onSDKWarning,
           onError: onSDKError,
+          onRequestSharingSettings: onSDKRequestSharingSettings,
         },
       };
 
@@ -224,9 +242,7 @@ const Editor = () => {
 
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
-      //hideLoader();
-
-      window.DocsAPI.DocEditor("editor", newConfig);
+      docEditor = window.DocsAPI.DocEditor("editor", newConfig);
     } catch (error) {
       console.log(error);
       toastr.error(error.message, null, 0, true);
@@ -234,13 +250,17 @@ const Editor = () => {
   };
 
   const onSDKAppReady = () => {
-    console.log("ONLYOFFICE Document Editor is ready");
+    console.log("ONLYOFFICE Document Editor is ready", docEditor);
   };
 
   const onSDKInfo = (event) => {
     console.log(
       "ONLYOFFICE Document Editor is opened in mode " + event.data.mode
     );
+  };
+
+  const onSDKRequestSharingSettings = () => {
+    setSharingPanelVisible(true);
   };
 
   const onSDKWarning = (event) => {
@@ -280,6 +300,7 @@ const Editor = () => {
     }
   };
 
+  //console.log("docEditor", docEditor);
   return (
     <Box
       widthProp="100vw"
@@ -287,6 +308,12 @@ const Editor = () => {
     >
       <Toast />
 
+      <SharingPanel
+        key="sharing-panel"
+        uploadPanelVisible={uploadPanelVisible}
+        isSharingPanelVisible={sharingPanelVisible}
+        openFileId={fileId}
+      />
       {!isLoading ? (
         <div id="editor"></div>
       ) : (
@@ -298,4 +325,27 @@ const Editor = () => {
   );
 };
 
-export default Editor;
+//export default Editor;
+
+const EditorWrapper = inject(({ uploadDataStore, dialogsStore }) => {
+  const { uploadPanelVisible } = uploadDataStore;
+  const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
+  return {
+    uploadPanelVisible,
+    sharingPanelVisible,
+    setSharingPanelVisible,
+  };
+})(observer(Editor));
+
+export default () => (
+  <MobxProvider
+    {...store}
+    initFilesStore={initFilesStore}
+    filesStore={filesStore}
+    uploadDataStore={uploadDataStore}
+    dialogsStore={dialogsStore}
+    treeFoldersStore={treeFoldersStore}
+  >
+    <EditorWrapper />
+  </MobxProvider>
+);
