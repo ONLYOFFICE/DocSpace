@@ -368,7 +368,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("Edit"),
-            icon: "images/access.edit.react.svg",
+            icon: "/static/images/access.edit.react.svg",
             onClick: onClickLinkEdit,
             disabled: false,
           };
@@ -432,7 +432,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("ThirdPartyInfo"),
-            icon: "images/access.edit.react.svg",
+            icon: "/static/images/access.edit.react.svg",
             onClick: onChangeThirdPartyInfo,
             disabled: false,
           };
