@@ -625,8 +625,6 @@ class UpdateUserForm extends React.Component {
   providerButtons = () => {
     const { t, providers } = this.props;
 
-    console.log("providers: ", providers);
-
     const providerButtons =
       providers &&
       providers.map((item) => {

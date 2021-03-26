@@ -20,6 +20,8 @@ class AuthStore {
   isAuthenticated = false;
   version = null;
 
+  providers = [];
+
   constructor() {
     this.userStore = new UserStore();
     this.moduleStore = new ModuleStore();
@@ -265,6 +267,10 @@ class AuthStore {
 
   setProductVersion = (version) => {
     this.version = version;
+  };
+
+  setProviders = (providers) => {
+    this.providers = providers;
   };
 }
 

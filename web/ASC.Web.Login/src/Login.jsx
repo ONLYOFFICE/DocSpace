@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
@@ -16,11 +16,36 @@ import SocialButton from "@appserver/components/social-button";
 import PageLayout from "@appserver/common/components/PageLayout";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
+import { getAuthProviders } from "@appserver/common/api/settings";
 import { checkPwd } from "@appserver/common/desktop";
 import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
 import { I18nextProvider, useTranslation } from "react-i18next";
+
+const facebookIconOptions = { color: "#4469B0" };
+const twitterIconOptions = { color: "#2AA3EF" };
+
+const providersData = Object.freeze({
+  Google: {
+    label: "Google",
+    icon: "static/images/share.google.react.svg",
+  },
+  Facebook: {
+    label: "",
+    icon: "static/images/share.facebook.react.svg",
+    iconOptions: facebookIconOptions,
+  },
+  Twitter: {
+    label: "",
+    icon: "static/images/share.twitter.react.svg",
+    iconOptions: twitterIconOptions,
+  },
+  LinkedIn: {
+    label: "",
+    icon: "static/images/share.linkedin.react.svg",
+  },
+});
 
 const LoginContainer = styled.div`
   display: flex;
@@ -32,6 +57,17 @@ const LoginContainer = styled.div`
   .login-tooltip {
     padding-left: 4px;
     display: inline-block;
+  }
+
+  .socialButton {
+    margin: 0 6px;
+  }
+
+  .line {
+    height: 1px;
+    background-color: #eceef1;
+    flex-basis: 100%;
+    margin: 0 8px;
   }
 
   @media (max-width: 768px) {
@@ -141,7 +177,6 @@ const Form = (props) => {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
 
   const [errorText, setErrorText] = useState("");
-  const [socialButtons, setSocialButtons] = useState([]);
 
   const { t } = useTranslation("Login");
 
@@ -155,6 +190,7 @@ const Form = (props) => {
     greetingTitle,
     history,
     thirdPartyLogin,
+    providers,
   } = props;
 
   const { error, confirmedEmail } = match.params;
@@ -177,7 +213,26 @@ const Form = (props) => {
 
   //const throttledKeyPress = throttle(onKeyPress, 500);
 
-  useEffect(() => {
+  const authCallback = (profile) => {
+    thirdPartyLogin(profile.Serialized).then(() => {
+      setIsLoading(true);
+      history.push(defaultPage);
+    });
+  };
+
+  const setProviders = async () => {
+    const { setProviders } = props;
+
+    try {
+      await getAuthProviders().then((providers) => {
+        setProviders(providers);
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(async () => {
     document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
 
     error && setErrorText(error);
@@ -185,6 +240,9 @@ const Form = (props) => {
 
     focusInput();
 
+    window.authCallback = authCallback;
+
+    await setProviders();
     //window.addEventListener("keyup", throttledKeyPress, false);
 
     /*return () => {
@@ -260,18 +318,21 @@ const Form = (props) => {
       });
   };
 
-  const signInWithGoogle = () => {
+  const onSocialButtonClick = useCallback((e) => {
+    const providerName = e.target.dataset.providername;
+    const url = e.target.dataset.url;
+
     const { getSerializedProfile, getOAuthToken } = props;
     try {
       window.open(
-        "/login.ashx?auth=Google&mode=popup&callback=authCallback",
+        url,
         "login",
         "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
       );
       getOAuthToken().then((code) => {
         const token = window.btoa(
           JSON.stringify({
-            auth: "Google",
+            auth: providerName,
             mode: "popup",
             callback: "authCallback",
           })
@@ -290,19 +351,32 @@ const Form = (props) => {
     } catch (err) {
       console.log(err);
     }
-  };
-
-  const authCallback = (profile) => {
-    thirdPartyLogin(profile.Serialized).then(() => {
-      setIsLoading(true);
-      history.push(defaultPage);
-    });
-  };
-
-  useEffect(() => {
-    console.log("One time");
-    window.authCallback = authCallback;
   }, []);
+
+  const providerButtons = () => {
+    const providerButtons =
+      providers &&
+      providers.map((item) => {
+        const { icon, label, iconOptions } = providersData[item.provider];
+
+        if (!icon) return <></>;
+        return (
+          <React.Fragment key={`${item.provider}ProviderItem`}>
+            <SocialButton
+              iconName={icon}
+              label={t(label)}
+              className="socialButton"
+              iconOptions={iconOptions}
+              data-url={item.url}
+              data-providername={item.provider}
+              onClick={onSocialButtonClick}
+            />
+          </React.Fragment>
+        );
+      });
+
+    return providerButtons;
+  };
 
   //console.log("Login render");
 
@@ -421,26 +495,26 @@ const Form = (props) => {
           </Text>
         )}
 
-        <Box displayProp="flex" alignItems="center" justify-content="center">
-          <SocialButton
-            onClick={signInWithGoogle}
-            iconName={"images/share.google.svg"}
-            label={"Google"}
-          />
-          <SocialButton iconName={"images/share.facebook.react.svg"} />
-          <SocialButton iconName={"images/share.twitter.react.svg"} />
-          <SocialButton iconName={"images/share.linkedin.svg"} />
-        </Box>
+        {providers && providers.length > 0 && (
+          <>
+            <Box displayProp="flex" alignItems="center" marginProp="0 0 16px 0">
+              <div className="login-bottom-border"></div>
+              <Text className="login-bottom-text" color="#A3A9AE">
+                {t("Or")}
+              </Text>
+              <div className="login-bottom-border"></div>
+            </Box>
 
-        {socialButtons.length ? (
-          <Box displayProp="flex" alignItems="center">
-            <div className="login-bottom-border"></div>
-            <Text className="login-bottom-text" color="#A3A9AE">
-              {t("Or")}
-            </Text>
-            <div className="login-bottom-border"></div>
-          </Box>
-        ) : null}
+            <Box
+              displayProp="flex"
+              alignItems="center"
+              justifyContent="center"
+              marginProp="0 -6px"
+            >
+              {providerButtons()}
+            </Box>
+          </>
+        )}
       </form>
       <Toast />
     </LoginContainer>
@@ -452,7 +526,6 @@ Form.propTypes = {
   match: PropTypes.object.isRequired,
   hashSettings: PropTypes.object,
   greetingTitle: PropTypes.string.isRequired,
-  socialButtons: PropTypes.array,
   organizationName: PropTypes.string,
   homepage: PropTypes.string,
   defaultPage: PropTypes.string,
@@ -493,6 +566,8 @@ const Login = inject(({ auth }) => {
     isLoaded,
     login,
     thirdPartyLogin,
+    setProviders,
+    providers,
   } = auth;
   const {
     greetingSettings: greetingTitle,
@@ -518,6 +593,8 @@ const Login = inject(({ auth }) => {
     thirdPartyLogin,
     getSerializedProfile,
     getOAuthToken,
+    setProviders,
+    providers,
   };
 })(withRouter(observer(LoginForm)));
 
