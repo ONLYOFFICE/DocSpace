@@ -78,7 +78,6 @@ const SectionBodyContent = (props) => {
   };
 
   const onMouseUp = (e) => {
-    debugger;
     document.body.classList.remove("drag-cursor");
 
     const treeElem = e.target.closest(".tree-drag");
