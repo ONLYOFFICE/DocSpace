@@ -83,9 +83,16 @@ const SectionBodyContent = (props) => {
     const treeElem = e.target.closest(".tree-drag");
     const treeClassList = treeElem && treeElem.classList;
     const isDragging = treeElem && treeClassList.contains("dragging");
-    const treeValue = isDragging
-      ? treeClassList[treeClassList.length - 2].split("_")[1]
-      : null;
+
+    let index = null;
+    for (let i in treeClassList) {
+      if (treeClassList[i] === "dragging") {
+        index = i - 1;
+        break;
+      }
+    }
+
+    const treeValue = isDragging ? treeClassList[index].split("_")[1] : null;
 
     const elem = e.target.closest(".droppable");
     const value = elem && elem.getAttribute("value");
@@ -106,21 +113,17 @@ const SectionBodyContent = (props) => {
   };
 
   const onDropEvent = () => {
-    console.log("!!! onDropEvent");
     dragging && setDragging(false);
   };
 
   const onDragOver = (e) => {
-    console.log("!!! onDragOver");
     e.preventDefault();
     if (e.dataTransfer.items.length > 0 && !dragging) {
-      console.log("!!! setDragging(true)");
       setDragging(true);
     }
   };
 
   const onDragLeaveDoc = (e) => {
-    console.log("!!! onDragLeaveDoc", e.relatedTarget);
     e.preventDefault();
     if (dragging && !e.relatedTarget) {
       setDragging(false);

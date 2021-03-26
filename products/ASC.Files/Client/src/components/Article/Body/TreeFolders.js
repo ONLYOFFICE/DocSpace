@@ -387,7 +387,6 @@ class TreeFolders extends React.Component {
   };
 
   onDragOver = (data) => {
-    console.log("onDragOver");
 
     const parentElement = data.event.target.parentElement;
     const existElement = parentElement.classList.contains(
@@ -503,7 +502,7 @@ export default inject(
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
       filter,
-      draggableItems: dragging ? selection : false,
+      draggableItems: dragging ? selection : [],
       expandedKeys,
       treeFolders,
 
