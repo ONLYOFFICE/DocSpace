@@ -35,8 +35,8 @@ newInstance
       crossDomain: false,
     },
 
-    ns: ["Login"],
-    defaultNS: "Login",
+    ns: ["Editor"],
+    defaultNS: "Editor",
 
     react: {
       useSuspense: true,
