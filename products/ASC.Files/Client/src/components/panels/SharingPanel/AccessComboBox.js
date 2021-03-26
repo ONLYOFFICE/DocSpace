@@ -31,7 +31,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("FullAccess") && (
         <DropDownItem
           label={t("FullAccess")}
-          icon="images/access.edit.react.svg"
+          icon="/static/images/access.edit.react.svg"
           data-id={itemId}
           data-access={FullAccess}
           onClick={onAccessChange}
@@ -91,7 +91,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("DenyAccess") && (
         <DropDownItem
           label={t("DenyAccess")}
-          icon="images/access.none.react.svg"
+          icon="/static/images/access.none.react.svg"
           data-id={itemId}
           data-access={DenyAccess}
           onClick={onAccessChange}
