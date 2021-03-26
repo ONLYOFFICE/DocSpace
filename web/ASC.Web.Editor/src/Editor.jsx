@@ -252,7 +252,7 @@ const Editor = ({
   };
 
   const onSDKAppReady = () => {
-    console.log("ONLYOFFICE Document Editor is ready", docEditor);
+    console.log("ONLYOFFICE Document Editor is ready");
   };
 
   const onSDKInfo = (event) => {
@@ -307,7 +307,7 @@ const Editor = ({
     const folderId = [];
     //debugger;
 
-    getShareUsers(folderId, [Number(fileId)]).then((result) => {
+    getShareUsers(folderId, [+fileId]).then((result) => {
       for (let i = 1; i < result.length; i++) {
         let resultAccess =
           result[i].access === 1
