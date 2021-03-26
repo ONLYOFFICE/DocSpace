@@ -57,6 +57,7 @@ dotnet add ASC.Files.Service.csproj reference ${SRC_PATH}/products/ASC.People/Se
 dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.Files/service && echo -e "Done"
 
 echo "== Publish ASC.Data.Storage.Migration.csproj project =="
+cd ${SRC_PATH}/common/services/ASC.Data.Storage.Migration
 dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/storage.migration && echo -e "Done"
 
 echo "== Publish ASC.Notify.csproj project =="
@@ -68,6 +69,7 @@ cd ${SRC_PATH}/products/ASC.People/Server
 dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.People/server && echo -e "Done"
 
 echo "== Publish ASC.Projects.csproj project =="
+cd ${SRC_PATH}/products/ASC.Projects/Server
 dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.Projects/server && echo -e "Done"
 
 echo "== Publish ASC.Socket.csproj project =="
