@@ -88,10 +88,12 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
 
   .iconWrapper {
     display: flex;
+    pointer-events: none;
   }
 
   .social_button_text {
     position: relative;
+    pointer-events: none;
 
     width: ${(props) => props.theme.socialButton.text.width};
     height: ${(props) => props.theme.socialButton.text.height};
