@@ -118,6 +118,7 @@ class SharingPanelComponent extends React.Component {
       setEncryptionAccess,
       setShareFiles,
       openFileId,
+      refreshRightsList,
     } = this.props;
 
     let folderIds = [];
@@ -215,6 +216,7 @@ class SharingPanelComponent extends React.Component {
         }
         return Promise.resolve();
       })
+      .then(() => isEditor && refreshRightsList())
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
   };
@@ -300,6 +302,8 @@ class SharingPanelComponent extends React.Component {
         .then((shareDataItems) => {
           const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
           const accessOptions = getAccessOption(selection);
+          console.log("accessOptions", accessOptions);
+          console.log("shareDataItems", shareDataItems);
           const externalAccessOptions = getExternalAccessOption(selection);
           const filesOwner = shareDataItems.find((x) => x.isOwner);
           const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;

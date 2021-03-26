@@ -35,7 +35,7 @@ import filesStore from "files/FilesStore";
 import uploadDataStore from "files/UploadDataStore";
 import dialogsStore from "files/DialogsStore";
 import treeFoldersStore from "files/TreeFoldersStore";
-
+import i18n from "./i18n";
 let documentIsReady = false;
 
 let docTitle = null;
@@ -43,11 +43,12 @@ let fileType = null;
 let config;
 let docSaved = null;
 let docEditor;
-
+let accessOptions = [];
 const Editor = ({
   uploadPanelVisible,
   sharingPanelVisible,
   setSharingPanelVisible,
+  getShareUsers,
 }) => {
   const urlParams = getObjectByLocation(window.location);
   const fileId = urlParams
@@ -63,9 +64,10 @@ const Editor = ({
     () => changeTitle(docSaved, docTitle),
     500
   );
-
+  let firstSharing = [];
   useEffect(() => {
     init();
+    //debugger;
   }, []);
 
   const init = async () => {
@@ -300,6 +302,35 @@ const Editor = ({
     }
   };
 
+  const refreshRightsList = () => {
+    let sharingSettings = [];
+    const folderId = [];
+    //debugger;
+    getShareUsers(folderId, [Number(fileId)]).then((result) => {
+      for (let i = 1; i < result.length; i++) {
+        let resultAccess =
+          result[i].access === 1
+            ? i18n.t("FullAccess")
+            : result[i].access === 2
+            ? i18n.t("ReadOnly")
+            : result[i].access === 3
+            ? i18n.t("DenyAccess")
+            : "";
+
+        let obj = {
+          user: result[i].sharedTo.displayName || result[i].sharedTo.name,
+          permissions: resultAccess,
+        };
+        sharingSettings.push(obj);
+        //console.log("res", accessOptions);
+      }
+
+      docEditor.setSharingSettings({
+        sharingSettings,
+      });
+    });
+  };
+
   //console.log("docEditor", docEditor);
   return (
     <Box
@@ -313,6 +344,7 @@ const Editor = ({
         uploadPanelVisible={uploadPanelVisible}
         isSharingPanelVisible={sharingPanelVisible}
         openFileId={fileId}
+        refreshRightsList={refreshRightsList}
       />
       {!isLoading ? (
         <div id="editor"></div>
@@ -327,15 +359,19 @@ const Editor = ({
 
 //export default Editor;
 
-const EditorWrapper = inject(({ uploadDataStore, dialogsStore }) => {
-  const { uploadPanelVisible } = uploadDataStore;
-  const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
-  return {
-    uploadPanelVisible,
-    sharingPanelVisible,
-    setSharingPanelVisible,
-  };
-})(observer(Editor));
+const EditorWrapper = inject(
+  ({ uploadDataStore, dialogsStore, filesStore }) => {
+    const { uploadPanelVisible } = uploadDataStore;
+    const { getShareUsers } = filesStore;
+    const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
+    return {
+      uploadPanelVisible,
+      sharingPanelVisible,
+      setSharingPanelVisible,
+      getShareUsers,
+    };
+  }
+)(observer(Editor));
 
 export default () => (
   <MobxProvider
