@@ -26,5 +26,7 @@
   "CookieSettingsTitle": "Время жизни сессии",
   "Authorization": "Авторизация",
   "Or": "ИЛИ",
-  "Register": "Регистрация"
+  "Register": "Регистрация",
+
+  "Google": "Google"
 }

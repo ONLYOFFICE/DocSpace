@@ -26,5 +26,7 @@
   "CookieSettingsTitle": "Session Lifetime",
   "Authorization": "Authorization",
   "Or": "OR",
-  "Register": "Register"
+  "Register": "Register",
+
+  "Google": "Google"
 }
