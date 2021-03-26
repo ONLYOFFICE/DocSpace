@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using ASC.VoipService;
+
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_voip_calls")]
@@ -22,7 +24,7 @@ namespace ASC.CRM.Core.EF
         [Column("number_to", TypeName = "varchar(50)")]
         public string NumberTo { get; set; }
         [Column("status", TypeName = "int(10)")]
-        public int? Status { get; set; }
+        public VoipCallStatus Status { get; set; }
         [Required]
         [Column("answered_by", TypeName = "varchar(50)")]
         public Guid AnsweredBy { get; set; }

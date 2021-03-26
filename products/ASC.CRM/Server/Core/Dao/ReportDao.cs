@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -39,10 +40,13 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
+using ASC.CRM.Classes;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
+using ASC.VoipService;
+using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
 using ASC.Web.Files.Api;
 
@@ -68,10 +72,13 @@ namespace ASC.CRM.Core.Dao
         private CurrencyInfo _defaultCurrency;
         private TenantUtil _tenantUtil;
         private DaoFactory _daoFactory;
+        private UserDbContext _userDbContext;
+        private DisplayUserSettingsHelper _displayUserSettings;
 
         #region Constructor
 
         public ReportDao(DbContextManager<CRMDbContext> dbContextManager,
+                        DbContextManager<UserDbContext> dbUserContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
                        FilesIntegration filesIntegration,
@@ -83,7 +90,8 @@ namespace ASC.CRM.Core.Dao
                        UserManager userManager,
                        IServiceProvider serviceProvider,
                        CurrencyProvider currencyProvider,
-                       DaoFactory daoFactory) :
+                       DaoFactory daoFactory,
+                       DisplayUserSettingsHelper displayUserSettingsHelper) :
             base(dbContextManager,
                  tenantManager,
                  securityContext,
@@ -98,9 +106,15 @@ namespace ASC.CRM.Core.Dao
             _tenantManager = tenantManager;
             _serviceProvider = serviceProvider;
             _daoFactory = daoFactory;
+
             var crmSettings = settingsManager.Load<CRMSettings>();
 
-            _defaultCurrency  = currencyProvider.Get(crmSettings.DefaultCurrency);
+            _userDbContext = dbUserContextManager.Get(CRMConstants.DatabaseId);
+
+            _defaultCurrency = currencyProvider.Get(crmSettings.DefaultCurrency);
+
+            _displayUserSettings = displayUserSettingsHelper;
+
         }
 
 
@@ -425,63 +439,66 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            throw new NotImplementedException();
+            Func<DateTime?, DateTime> exp;
 
-            //string dateSelector;
-
-            //switch (timePeriod)
-            //{
-            //    case ReportTimePeriod.Today:
-            //    case ReportTimePeriod.Yesterday:
-            //        dateSelector = "date_add(date(d.actual_close_date), interval extract(hour from d.actual_close_date) hour) as close_date";
-            //        break;
-            //    case ReportTimePeriod.CurrentWeek:
-            //    case ReportTimePeriod.PreviousWeek:
-            //    case ReportTimePeriod.CurrentMonth:
-            //    case ReportTimePeriod.PreviousMonth:
-            //        dateSelector = "date(d.actual_close_date) as close_date";
-            //        break;
-            //    case ReportTimePeriod.CurrentQuarter:
-            //    case ReportTimePeriod.PreviousQuarter:
-            //    case ReportTimePeriod.CurrentYear:
-            //    case ReportTimePeriod.PreviousYear:
-            //        dateSelector = "date_sub(date(d.actual_close_date), interval (extract(day from d.actual_close_date) - 1) day) as close_date";
-            //        break;
-            //    default:
-            //        return null;
-            //}
-
-            //var sqlQuery = Query("crm_deal d")
-            //    .Select("d.responsible_id",
-            //            "concat(u.firstname, ' ', u.lastname) as full_name",
-            //            string.Format(@"sum((case d.bid_type
-            //            when 0 then
-            //                d.bid_value * (if(d.bid_currency = '{0}', 1, r.rate))
-            //            else
-            //                d.bid_value * (if(d.per_period_value = 0, 1, d.per_period_value)) * (if(d.bid_currency = '{0}', 1, r.rate))
-            //            end)) as bid_value", defaultCurrency),
-            //            dateSelector)
-            //    .LeftOuterJoin("crm_deal_milestone m", Exp.EqColumns("m.id", "d.deal_milestone_id") & Exp.EqColumns("m.tenant_id", "d.tenant_id"))
-            //    .LeftOuterJoin("crm_currency_rate r", Exp.EqColumns("r.tenant_id", "d.tenant_id") & Exp.EqColumns("r.from_currency", "d.bid_currency"))
-            //    .LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "d.tenant_id") & Exp.EqColumns("u.id", "d.responsible_id"))
-            //    .Where("m.status", (int)DealMilestoneStatus.ClosedAndWon)
-            //    .Where(managers != null && managers.Any() ? Exp.In("d.responsible_id", managers) : Exp.Empty)
-            //    .Where(Exp.Between("d.actual_close_date", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-            //    .GroupBy("responsible_id", "close_date");
-
-
-            //return Db.ExecuteList(sqlQuery).ConvertAll(ToSalesByManagers);
-        }
-
-        private SalesByManager ToSalesByManagers(object[] row)
-        {
-            return new SalesByManager
+            switch (timePeriod)
             {
-                UserId = string.IsNullOrEmpty(Convert.ToString(row[0])) ? Guid.Empty : new Guid(Convert.ToString(row[0])),
-                UserName = Convert.ToString(row[1]),
-                Value = Convert.ToDecimal(row[2]),
-                Date = Convert.ToDateTime(row[3]) == DateTime.MinValue ? DateTime.MinValue : _tenantUtil.DateTimeFromUtc(Convert.ToDateTime(row[3]))
-            };
+                case ReportTimePeriod.Today:
+                case ReportTimePeriod.Yesterday:
+                    exp = x => x ?? x.Value.Date.AddHours(x.Value.Hour);
+           
+                    break;
+                case ReportTimePeriod.CurrentWeek:
+                case ReportTimePeriod.PreviousWeek:
+                case ReportTimePeriod.CurrentMonth:
+                case ReportTimePeriod.PreviousMonth:
+                    exp = x => x??x.Value.Date;
+                    
+                    break;
+                case ReportTimePeriod.CurrentQuarter:
+                case ReportTimePeriod.PreviousQuarter:
+                case ReportTimePeriod.CurrentYear:
+                case ReportTimePeriod.PreviousYear:
+                    exp = x => x??x.Value.Date.AddDays(-(x.Value.Day - 1));
+
+                    break;
+                default:
+                    return null;
+            }
+
+            var result = Query(CRMDbContext.Deals)
+                               .GroupJoin(Query(CRMDbContext.CurrencyRate),
+                                       x => x.BidCurrency,
+                                       y => y.FromCurrency,
+                                       (x, y) => new { x, y })
+                               .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
+                               .GroupJoin(Query(CRMDbContext.DealMilestones),
+                                     x => x.Deal.DealMilestoneId,
+                                     y => y.Id,
+                                     (x, y) => new { x, y })
+                              .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, CurrencyRate = x.x.CurrencyRate, DealMilestone = y })
+                             .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
+                             .Where(x => x.Deal.ActualCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.ActualCloseDate <= _tenantUtil.DateTimeToUtc(toDate))
+                             .Where(x => x.DealMilestone.Status ==  DealMilestoneStatus.ClosedAndWon)
+                             .GroupBy(x => new { x.Deal.ResponsibleId, x.Deal.ActualCloseDate, x.DealMilestone.Status })
+                             .Select(x => new
+                             {
+                                 responsible_id = x.Key.ResponsibleId,
+                                 status = x.Key.Status,
+                                 count = x.Count(),
+                                 deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
+                                                                     x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate)),
+                                 close_date = exp.Invoke(x.Key.ActualCloseDate)
+                             }).ToList()
+                             .ConvertAll(x => new SalesByManager
+                             {
+                                 UserId = x.responsible_id,
+                                 UserName = _displayUserSettings.GetFullUserName(x.responsible_id),
+                                 Value = x.deals_value,
+                                 Date = x.close_date == DateTime.MinValue ? DateTime.MinValue : _tenantUtil.DateTimeFromUtc(x.close_date)
+                             });
+
+            return result;
         }
 
         private object GenerateReportData(ReportTimePeriod timePeriod, List<SalesByManager> data)
@@ -799,50 +816,59 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            throw new NotImplementedException();
+            Func<DateTime, DateTime> exp;
 
-            //string dateSelector;
+            switch (timePeriod)
+            {
+                case ReportTimePeriod.CurrentWeek:
+                case ReportTimePeriod.NextWeek:
+                case ReportTimePeriod.CurrentMonth:
+                case ReportTimePeriod.NextMonth:
+                    exp = x => x.Date;
+                    break;
+                case ReportTimePeriod.CurrentQuarter:
+                case ReportTimePeriod.NextQuarter:
+                case ReportTimePeriod.CurrentYear:
+                case ReportTimePeriod.NextYear:
+                    exp = x => x.Date.AddDays(-(x.Day - 1));
+                    break;
+                default:
+                    return null;
+            }
 
-            //switch (timePeriod)
-            //{
-            //    case ReportTimePeriod.CurrentWeek:
-            //    case ReportTimePeriod.NextWeek:
-            //    case ReportTimePeriod.CurrentMonth:
-            //    case ReportTimePeriod.NextMonth:
-            //        dateSelector = "d.expected_close_date as close_date";
-            //        break;
-            //    case ReportTimePeriod.CurrentQuarter:
-            //    case ReportTimePeriod.NextQuarter:
-            //    case ReportTimePeriod.CurrentYear:
-            //    case ReportTimePeriod.NextYear:
-            //        dateSelector = "date_sub(date(d.expected_close_date), interval (extract(day from d.expected_close_date) - 1) day) as close_date";
-            //        break;
-            //    default:
-            //        return null;
-            //}
+            var result = Query(CRMDbContext.Deals)
+                               .GroupJoin(Query(CRMDbContext.CurrencyRate),
+                                       x => x.BidCurrency,
+                                       y => y.FromCurrency,
+                                       (x, y) => new { x, y })
+                               .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
+                               .GroupJoin(Query(CRMDbContext.DealMilestones),
+                                     x => x.Deal.DealMilestoneId,
+                                     y => y.Id,
+                                     (x, y) => new { x, y })
+                              .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, CurrencyRate = x.x.CurrencyRate, DealMilestone = y })
+                             .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
+                             .Where(x => x.Deal.ExpectedCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.ExpectedCloseDate <= _tenantUtil.DateTimeToUtc(toDate))
+                             .Where(x => x.DealMilestone.Status == DealMilestoneStatus.ClosedAndWon)
+                             .GroupBy(x => new { x.Deal.ExpectedCloseDate })
+                             .Select(x => new
+                             {
+                                 deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
+                                                                     x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate)),
 
-            //var sqlQuery = Query("crm_deal d")
-            //    .Select(string.Format(@"sum(case d.bid_type
-            //            when 0 then
-            //                d.bid_value * (if(d.bid_currency = '{0}', 1, r.rate))
-            //            else
-            //                d.bid_value * (if(d.per_period_value = 0, 1, d.per_period_value)) * (if(d.bid_currency = '{0}', 1, r.rate))
-            //            end) as value", defaultCurrency),
-            //            string.Format(@"sum(case d.bid_type
-            //            when 0 then
-            //                d.bid_value * (if(d.bid_currency = '{0}', 1, r.rate)) * d.deal_milestone_probability / 100
-            //            else
-            //                d.bid_value * (if(d.per_period_value = 0, 1, d.per_period_value)) * (if(d.bid_currency = '{0}', 1, r.rate)) * d.deal_milestone_probability / 100
-            //            end) as value_with_probability", defaultCurrency),
-            //            dateSelector)
-            //    .LeftOuterJoin("crm_deal_milestone m", Exp.EqColumns("m.tenant_id", "d.tenant_id") & Exp.EqColumns("m.id", "d.deal_milestone_id"))
-            //    .LeftOuterJoin("crm_currency_rate r", Exp.EqColumns("r.tenant_id", "d.tenant_id") & Exp.EqColumns("r.from_currency", "d.bid_currency"))
-            //    .Where("m.status", (int)DealMilestoneStatus.Open)
-            //    .Where(managers != null && managers.Any() ? Exp.In("d.responsible_id", managers) : Exp.Empty)
-            //    .Where(Exp.Between("d.expected_close_date", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-            //    .GroupBy("close_date");
+                                 value_with_probability = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) * x.Deal.DealMilestoneProbability/100.0m :
+                                                                     x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) * x.Deal.DealMilestoneProbability / 100.0m),
+                                 close_date = exp.Invoke(x.Key.ExpectedCloseDate)
+                             }).ToList()
+                             .ConvertAll(x => new SalesForecast
+                             {
+                                 Value = x.deals_value,
+                                 ValueWithProbability = x.value_with_probability,
+                                 Date = x.close_date == DateTime.MinValue ? DateTime.MinValue : _tenantUtil.DateTimeFromUtc(x.close_date)
+                             });
 
-            //return Db.ExecuteList(sqlQuery).ConvertAll(ToSalesForecast);
+
+            return result;
         }
 
         private SalesForecast ToSalesForecast(object[] row)
@@ -1032,679 +1058,658 @@ namespace ASC.CRM.Core.Dao
                         .Any();
         }
 
-        //public object GetSalesFunnelReportData(ReportTimePeriod timePeriod, Guid[] managers, string defaultCurrency)
-        //{
-        //    var reportData = BuildSalesFunnelReport(timePeriod, managers, defaultCurrency);
-
-        //    return reportData == null || !reportData.Any() ? null : GenerateReportData(timePeriod, reportData);
-        //}
-
-    //    private List<SalesFunnel> BuildSalesFunnelReport(ReportTimePeriod timePeriod, Guid[] managers, string defaultCurrency)
-    //    {
-    //        DateTime fromDate;
-    //        DateTime toDate;
-
-    //        GetTimePeriod(timePeriod, out fromDate, out toDate);
-
-    //        var sqlQuery = Query("crm_deal_milestone m")
-    //            .Select("m.status", "m.title",
-    //                    "count(d.id) as deals_count",
-    //                    string.Format(@"sum(case d.bid_type
-    //                    when 0 then
-    //                        d.bid_value * (if(d.bid_currency = '{0}', 1, r.rate))
-    //                    else
-    //                        d.bid_value * (if(d.per_period_value = 0, 1, d.per_period_value)) * (if(d.bid_currency = '{0}', 1, r.rate))
-    //                    end) as deals_value", defaultCurrency),
-    //                    "avg(if(m.status = 1, datediff(d.actual_close_date, d.create_on), 0)) as deals_duration")
-    //            .LeftOuterJoin("crm_deal d", Exp.EqColumns("d.tenant_id", "m.tenant_id") &
-    //                                         Exp.EqColumns("d.deal_milestone_id", "m.id") &
-    //                                         (managers != null && managers.Any() ? Exp.In("d.responsible_id", managers) : Exp.Empty) &
-    //                                         Exp.Between("d.create_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-    //            .LeftOuterJoin("crm_currency_rate r",
-    //                           Exp.EqColumns("r.tenant_id", "m.tenant_id") &
-    //                           Exp.EqColumns("r.from_currency", "d.bid_currency"))
-    //            .GroupBy("m.id")
-    //            .OrderBy("m.sort_order", true);
-
-
-    //        return Db.ExecuteList(sqlQuery).ConvertAll(ToSalesFunnel);
-    //    }
-
-    //    private SalesFunnel ToSalesFunnel(object[] row)
-    //    {
-    //        return new SalesFunnel
-    //        {
-    //            Status = (DealMilestoneStatus)Convert.ToInt32(row[0]),
-    //            Title = Convert.ToString(row[1]),
-    //            Count = Convert.ToInt32(row[2]),
-    //            Value = Convert.ToDecimal(row[3]),
-    //            Duration = Convert.ToInt32(row[4])
-    //        };
-    //    }
-
-    //    private object GenerateReportData(ReportTimePeriod timePeriod, List<SalesFunnel> data)
-    //    {
-    //        var totalCount = data.Sum(x => x.Count);
-
-    //        if (totalCount == 0) return null;
-
-    //        var totalBudget = data.Sum(x => x.Value);
-
-    //        var closed = data.Where(x => x.Status == DealMilestoneStatus.ClosedAndWon).ToList();
-
-    //        var reportData = data.Select(item => new List<object>
-    //            {
-    //                item.Title,
-    //                item.Status,
-    //                item.Count,
-    //                item.Value
-    //            }).ToList();
-
-    //        return new
-    //        {
-    //            resource = new
-    //            {
-    //                header = CRMReportResource.SalesFunnelReport,
-    //                sheetName = CRMReportResource.SalesFunnelReport,
-    //                dateRangeLabel = CRMReportResource.TimePeriod + ":",
-    //                dateRangeValue = GetTimePeriodText(timePeriod),
-
-    //                chartName = CRMReportResource.SalesFunnelByCount,
-    //                chartName1 = CRMReportResource.SalesFunnelByBudget + ", " + _defaultCurrency.Symbol,
-    //                chartName2 = CRMReportResource.DealsCount,
-    //                chartName3 = CRMReportResource.DealsBudget + ", " + _defaultCurrency.Symbol,
-
-    //                totalCountLabel = CRMReportResource.TotalDealsCount,
-    //                totalCountValue = totalCount,
-
-    //                totalBudgetLabel = CRMReportResource.TotalDealsBudget + ", " + _defaultCurrency.Symbol,
-    //                totalBudgetValue = totalBudget,
-
-    //                averageBidLabel = CRMReportResource.AverageDealsBudget + ", " + _defaultCurrency.Symbol,
-    //                averageBidValue = totalBudget / totalCount,
-
-    //                averageDurationLabel = CRMReportResource.AverageDealsDuration,
-    //                averageDurationValue = closed.Sum(x => x.Duration) / closed.Count,
-
-    //                header1 = CRMReportResource.ByCount,
-    //                header2 = CRMReportResource.ByBudget + ", " + _defaultCurrency.Symbol,
-
-    //                stage = CRMReportResource.Stage,
-    //                count = CRMReportResource.Count,
-    //                budget = CRMReportResource.Budget,
-    //                conversion = CRMReportResource.Conversion,
-
-    //                deals = CRMDealResource.Deals,
-    //                status0 = DealMilestoneStatus.Open.ToLocalizedString(),
-    //                status1 = DealMilestoneStatus.ClosedAndWon.ToLocalizedString(),
-    //                status2 = DealMilestoneStatus.ClosedAndLost.ToLocalizedString()
-    //            },
-    //            data = reportData
-    //        };
-    //    }
-
-    //    #endregion
-
-
-    //    #region WorkloadByContactsReport
-
-    //    public bool CheckWorkloadByContactsReportData(ReportTimePeriod timePeriod, Guid[] managers)
-    //    {
-    //        DateTime fromDate;
-    //        DateTime toDate;
-
-    //        GetTimePeriod(timePeriod, out fromDate, out toDate);
-
-    //        return Query(CRMDbContext.Contacts)
-    //                   .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
-    //                   .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
-    //                   .Any();
-    //    }
-
-    //    public object GetWorkloadByContactsReportData(ReportTimePeriod timePeriod, Guid[] managers)
-    //    {
-    //        var reportData = BuildWorkloadByContactsReport(timePeriod, managers);
-
-    //        return reportData == null || !reportData.Any() ? null : GenerateReportData(timePeriod, reportData);
-    //    }
-
-    //    private List<WorkloadByContacts> BuildWorkloadByContactsReport(ReportTimePeriod timePeriod, Guid[] managers)
-    //    {
-    //        DateTime fromDate;
-    //        DateTime toDate;
-
-    //        GetTimePeriod(timePeriod, out fromDate, out toDate);
-
-    //        var sqlQuery = Query(CRMDbContext.Contacts)
-    //                        .GroupJoin(Query(CRMDbContext.ListItem),
-    //                                   x => x.ContactTypeId,
-    //                                   y => y.Id,
-    //                                   (x, y) => new { x, y })
-    //                        .GroupJoin(Query(CRMDbContext.Deals),
-    //                                   x => x.x.Id,
-    //                                   y => y.Id,
-    //                                   (x, y) => new { x, y })
-
-
-
-    //        var sqlQuery = Query("crm_contact c")
-    //            .Select("c.create_by",
-    //                    "concat(u.firstname, ' ', u.lastname) as full_name",
-    //                    "i.id",
-    //                    "i.title",
-    //                    "count(c.id) as total",
-    //                    "count(d.id) as `with deals`")
-    //            .LeftOuterJoin("crm_list_item i", Exp.EqColumns("i.tenant_id", "c.tenant_id") & Exp.EqColumns("i.id", "c.contact_type_id") & Exp.Eq("i.list_type", (int)ListType.ContactType))
-    //            .LeftOuterJoin("crm_deal d", Exp.EqColumns("d.tenant_id", "c.tenant_id") & Exp.EqColumns("d.contact_id", "c.id"))
-    //            .LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "c.tenant_id") & Exp.EqColumns("u.id", "c.create_by"))
-    //            .Where(managers != null && managers.Any() ? Exp.In("c.create_by", managers) : Exp.Empty)
-    //            .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("c.create_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-    //            .GroupBy("c.create_by", "i.id")
-    //            .OrderBy("i.sort_order, i.title", true);
-
-    //        return Db.ExecuteList(sqlQuery).ConvertAll(ToWorkloadByContacts);
-    //    }
-
-    //    private WorkloadByContacts ToWorkloadByContacts(object[] row)
-    //    {
-    //        return new WorkloadByContacts
-    //        {
-    //            UserId = string.IsNullOrEmpty(Convert.ToString(row[0])) ? Guid.Empty : new Guid(Convert.ToString(row[0])),
-    //            UserName = Convert.ToString(row[1]),
-    //            CategoryId = Convert.ToInt32(row[2]),
-    //            CategoryName = Convert.ToString(row[3]),
-    //            Count = Convert.ToInt32(row[4]),
-    //            WithDeals = Convert.ToInt32(row[5])
-    //        };
-    //    }
-
-    //    private object GenerateReportData(ReportTimePeriod timePeriod, List<WorkloadByContacts> reportData)
-    //    {
-    //        return new
-    //        {
-    //            resource = new
-    //            {
-    //                header = CRMReportResource.WorkloadByContactsReport,
-    //                sheetName = CRMReportResource.WorkloadByContactsReport,
-    //                dateRangeLabel = CRMReportResource.TimePeriod + ":",
-    //                dateRangeValue = GetTimePeriodText(timePeriod),
-
-    //                header1 = CRMReportResource.NewContacts,
-    //                header2 = CRMReportResource.NewContactsWithAndWithoutDeals,
-
-    //                manager = CRMReportResource.Manager,
-    //                total = CRMReportResource.Total,
-
-    //                noSet = CRMCommonResource.NoSet,
-    //                withDeals = CRMReportResource.ContactsWithDeals,
-    //                withouthDeals = CRMReportResource.ContactsWithoutDeals,
-    //            },
-    //            data = reportData
-    //        };
-    //    }
-
-    //    #endregion
-
-
-    //    #region WorkloadByTasksReport
-
-    //    public bool CheckWorkloadByTasksReportData(ReportTimePeriod timePeriod, Guid[] managers)
-    //    {
-    //        DateTime fromDate;
-    //        DateTime toDate;
-
-    //        GetTimePeriod(timePeriod, out fromDate, out toDate);
-
-    //        var sqlNewTasksQuery = Query(CRMDbContext.Tasks)
-    //                                    .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
-    //                                    .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
-    //                                    .Any();
-
-    //        var sqlClosedTasksQuery = Query(CRMDbContext.Tasks)
-    //                                    .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
-    //                                    .Where(x => x.IsClosed)
-    //                                    .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))
-    //                                    .Any();
-
-
-
-    //        var sqlOverdueTasksQuery = Query(CRMDbContext.Tasks)
-    //                                    .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
-    //                                    .Where(x => x.IsClosed)
-    //                                    .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Deadline >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))
-    //                                    .Where(x => (!x.IsClosed && x.Deadline < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) ||
-    //                                                 (x.IsClosed && x.LastModifedOn > x.Deadline))
-    //                                    .Any();
-
-    //        return sqlNewTasksQuery ||
-    //               sqlClosedTasksQuery ||
-    //               sqlOverdueTasksQuery;
-    //    }
-
-    //    public object GetWorkloadByTasksReportData(ReportTimePeriod timePeriod, Guid[] managers)
-    //    {
-    //        var reportData = BuildWorkloadByTasksReport(timePeriod, managers);
-
-    //        if (reportData == null || !reportData.Any()) return null;
-
-    //        var hasData = reportData.Any(item => item.Value.Count > 0);
-
-    //        return hasData ? GenerateReportData(timePeriod, reportData) : null;
-    //    }
-
-    //    private Dictionary<string, List<WorkloadByTasks>> BuildWorkloadByTasksReport(ReportTimePeriod timePeriod, Guid[] managers)
-    //    {
-    //        DateTime fromDate;
-    //        DateTime toDate;
-
-    //        GetTimePeriod(timePeriod, out fromDate, out toDate);
-
-    //        var sqlNewTasksQuery = Query(CRMDbContext.Tasks)
-    //                               .Join(Query(CRMDbContext.ListItem).DefaultIfEmpty(),
-    //                                     x => x.CategoryId,
-    //                                     y => y.Id,
-    //                                     (x, y) => new { Task = x, ListItem = y })
-    //                               .Join(_userDbContext.Users.DefaultIfEmpty(),
-    //                                     x => x.Task.ResponsibleId,
-    //                                     y => y.Id,
-    //                                     (x, y) => new { Task = x.Task, ListItem = x.ListItem, User = y }
-    //                                     )
-    //                               .Where(x => managers != null && managers.Any() ? managers.Contains(x.Task.ResponsibleId) : true)
-    //                               .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Task.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Task.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
-    //                               .OrderBy(x => x.ListItem.SortOrder)
-    //                               .Select(x => new
-    //                               {
-    //                                   x.ListItem.Id,
-    //                                   x.ListItem.Title,
-    //                                   x.Task.ResponsibleId,
-    //                                   x.User
-    //                               });
-
-    //        var sqlNewTasksQuery = Query(CRMDbContext.Tasks)
-    //                               .Join(Query(CRMDbContext.ListItem).DefaultIfEmpty(),
-    //                                     x => x.CategoryId,
-    //                                     y => y.Id,
-    //                                     (x, y) => new { Task = x, ListItem = y })
-    //                               .Where(x => managers != null && managers.Any() ? managers.Contains(x.Task.ResponsibleId) : true)
-    //                               .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Task.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Task.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
-    //                               .OrderBy(x => x.ListItem.SortOrder)
-    //                               .GroupBy(x => new { x.ListItem.Id, x.ListItem.Title, x.Task.ResponsibleId })
-    //                               .Select(x => new
-    //                               {
-    //                                   Id = x.Key.Id,
-    //                                   Title = x.Key.Title,
-    //                                   ResponsibleId = x.Key.ResponsibleId,
-    //                                   Count = x.Count()
-    //                               });
-
-    //        throw new NotImplementedException();
-
-
-    //        var sqlNewTasksQuery = Query("crm_task t")
-    //.Select("i.id",
-    //        "i.title",
-    //        "t.responsible_id",
-    //        "concat(u.firstname, ' ', u.lastname) as full_name",
-    //        "count(t.id) as count")
-    //.LeftOuterJoin("crm_list_item i", Exp.EqColumns("i.tenant_id", "t.tenant_id") & Exp.EqColumns("i.id", "t.category_id") & Exp.Eq("i.list_type", (int)ListType.TaskCategory))
-    //.LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "t.tenant_id") & Exp.EqColumns("u.id", "t.responsible_id"))
-    //.Where(managers != null && managers.Any() ? Exp.In("t.responsible_id", managers) : Exp.Empty)
-    //.Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("t.create_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-    //.GroupBy("i.id", "t.responsible_id")
-    //.OrderBy("i.sort_order", true);
-
-    //        var sqlClosedTasksQuery = Query("crm_task t")
-    //            .Select("i.id",
-    //                    "i.title",
-    //                    "t.responsible_id",
-    //                    "concat(u.firstname, ' ', u.lastname) as full_name",
-    //                    "count(t.id) as count")
-    //            .LeftOuterJoin("crm_list_item i", Exp.EqColumns("i.tenant_id", "t.tenant_id") & Exp.EqColumns("i.id", "t.category_id") & Exp.Eq("i.list_type", (int)ListType.TaskCategory))
-    //            .LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "t.tenant_id") & Exp.EqColumns("u.id", "t.responsible_id"))
-    //            .Where(managers != null && managers.Any() ? Exp.In("t.responsible_id", managers) : Exp.Empty)
-    //            .Where(Exp.Eq("t.is_closed", 1))
-    //            .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("t.last_modifed_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-    //            .GroupBy("i.id", "t.responsible_id")
-    //            .OrderBy("i.sort_order", true);
-
-    //        var sqlOverdueTasksQuery = Query("crm_task t")
-    //            .Select("i.id",
-    //                    "i.title",
-    //                    "t.responsible_id",
-    //                    "concat(u.firstname, ' ', u.lastname) as full_name",
-    //                    "count(t.id) as count")
-    //            .LeftOuterJoin("crm_list_item i", Exp.EqColumns("i.tenant_id", "t.tenant_id") & Exp.EqColumns("i.id", "t.category_id") & Exp.Eq("i.list_type", (int)ListType.TaskCategory))
-    //            .LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "t.tenant_id") & Exp.EqColumns("u.id", "t.responsible_id"))
-    //            .Where(managers != null && managers.Any() ? Exp.In("t.responsible_id", managers) : Exp.Empty)
-    //            .Where(timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("t.deadline", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-    //            .Where(Exp.Or(Exp.Eq("t.is_closed", 0) & Exp.Lt("t.deadline", _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())), (Exp.Eq("t.is_closed", 1) & Exp.Sql("t.last_modifed_on > t.deadline"))))
-    //            .GroupBy("i.id", "t.responsible_id")
-    //            .OrderBy("i.sort_order", true);
-
-    //        Dictionary<string, List<WorkloadByTasks>> res;
-
-    //        using (var tx = Db.BeginTransaction())
-    //        {
-    //            res = new Dictionary<string, List<WorkloadByTasks>>
-    //                {
-    //                    {"Created", Db.ExecuteList(sqlNewTasksQuery).ConvertAll(ToWorkloadByTasks)},
-    //                    {"Closed", Db.ExecuteList(sqlClosedTasksQuery).ConvertAll(ToWorkloadByTasks)},
-    //                    {"Overdue", Db.ExecuteList(sqlOverdueTasksQuery).ConvertAll(ToWorkloadByTasks)}
-    //                };
-
-    //            tx.Commit();
-    //        }
-
-    //        return res;
-    //    }
-
-    //    private WorkloadByTasks ToWorkloadByTasks(object[] row)
-    //    {
-    //        return new WorkloadByTasks
-    //        {
-    //            CategoryId = Convert.ToInt32(row[0]),
-    //            CategoryName = Convert.ToString(row[1]),
-    //            UserId = string.IsNullOrEmpty(Convert.ToString(row[2])) ? Guid.Empty : new Guid(Convert.ToString(row[2])),
-    //            UserName = Convert.ToString(row[3]),
-    //            Count = Convert.ToInt32(row[4])
-    //        };
-    //    }
-
-    //    private object GenerateReportData(ReportTimePeriod timePeriod, Dictionary<string, List<WorkloadByTasks>> reportData)
-    //    {
-    //        return new
-    //        {
-    //            resource = new
-    //            {
-    //                header = CRMReportResource.WorkloadByTasksReport,
-    //                sheetName = CRMReportResource.WorkloadByTasksReport,
-    //                dateRangeLabel = CRMReportResource.TimePeriod + ":",
-    //                dateRangeValue = GetTimePeriodText(timePeriod),
-
-    //                header1 = CRMReportResource.ClosedTasks,
-    //                header2 = CRMReportResource.NewTasks,
-    //                header3 = CRMReportResource.OverdueTasks,
-
-    //                manager = CRMReportResource.Manager,
-    //                total = CRMReportResource.Total
-    //            },
-    //            data = reportData
-    //        };
-    //    }
-
-    //    #endregion
-
-
-    //    #region WorkloadByDealsReport
-
-    //    public bool CheckWorkloadByDealsReportData(ReportTimePeriod timePeriod, Guid[] managers)
-    //    {
-    //        DateTime fromDate;
-    //        DateTime toDate;
-
-    //        GetTimePeriod(timePeriod, out fromDate, out toDate);
-
-    //        return Query(CRMDbContext.Deals)
-    //               .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
-    //               .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : (x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate)) ||
-    //                                                                                  (x.ActualCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.ActualCloseDate <= _tenantUtil.DateTimeToUtc(toDate)))
-    //               .Any();
-    //    }
-
-    //    public object GetWorkloadByDealsReportData(ReportTimePeriod timePeriod, Guid[] managers, string defaultCurrency)
-    //    {
-    //        var reportData = BuildWorkloadByDealsReport(timePeriod, managers, defaultCurrency);
-
-    //        return reportData == null || !reportData.Any() ? null : GenerateReportData(timePeriod, reportData);
-    //    }
-
-    //    private List<WorkloadByDeals> BuildWorkloadByDealsReport(ReportTimePeriod timePeriod, Guid[] managers, string defaultCurrency)
-    //    {
-    //        DateTime fromDate;
-    //        DateTime toDate;
-
-    //        GetTimePeriod(timePeriod, out fromDate, out toDate);
-
-    //        var sqlQuery = Query("crm_deal d")
-    //            .Select("d.responsible_id",
-    //                    "concat(u.firstname, ' ', u.lastname) as full_name",
-    //                    "m.status",
-    //                    "count(d.id) as deals_count",
-    //                    string.Format(@"sum(case d.bid_type
-    //                    when 0 then
-    //                        d.bid_value * (if(d.bid_currency = '{0}', 1, r.rate))
-    //                    else
-    //                        d.bid_value * (if(d.per_period_value = 0, 1, d.per_period_value)) * (if(d.bid_currency = '{0}', 1, r.rate))
-    //                    end) as deals_value", defaultCurrency))
-    //            .LeftOuterJoin("crm_deal_milestone m", Exp.EqColumns("m.tenant_id", "d.tenant_id") & Exp.EqColumns("m.id", "d.deal_milestone_id"))
-    //            .LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "d.tenant_id") & Exp.EqColumns("u.id", "d.responsible_id"))
-    //            .LeftOuterJoin("crm_currency_rate r", Exp.EqColumns("r.tenant_id", "d.tenant_id") & Exp.EqColumns("r.from_currency", "d.bid_currency"))
-    //            .Where(managers != null && managers.Any() ? Exp.In("d.responsible_id", managers) : Exp.Empty)
-    //            .Where(timePeriod == ReportTimePeriod.DuringAllTime ?
-    //                    Exp.Empty :
-    //                    Exp.Or(Exp.Between("d.create_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)),
-    //                            Exp.Between("d.actual_close_date", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate))))
-    //            .GroupBy("d.responsible_id", "m.status");
-
-
-    //        return Db.ExecuteList(sqlQuery).ConvertAll(ToWorkloadByDeals);
-    //    }
-
-    //    private WorkloadByDeals ToWorkloadByDeals(object[] row)
-    //    {
-    //        return new WorkloadByDeals
-    //        {
-    //            UserId = string.IsNullOrEmpty(Convert.ToString(row[0])) ? Guid.Empty : new Guid(Convert.ToString(row[0])),
-    //            UserName = Convert.ToString(row[1]),
-    //            Status = (DealMilestoneStatus)Convert.ToInt32(row[2]),
-    //            Count = Convert.ToInt32(row[3]),
-    //            Value = Convert.ToDecimal(row[4])
-    //        };
-    //    }
-
-    //    private object GenerateReportData(ReportTimePeriod timePeriod, List<WorkloadByDeals> data)
-    //    {
-    //        var reportData = data.Select(item => new List<object>
-    //            {
-    //                item.UserId,
-    //                item.UserName,
-    //                (int)item.Status,
-    //                item.Count,
-    //                item.Value
-    //            }).ToList();
-
-    //        return new
-    //        {
-    //            resource = new
-    //            {
-    //                header = CRMReportResource.WorkloadByDealsReport,
-    //                sheetName = CRMReportResource.WorkloadByDealsReport,
-    //                dateRangeLabel = CRMReportResource.TimePeriod + ":",
-    //                dateRangeValue = GetTimePeriodText(timePeriod),
-
-    //                chartName = CRMReportResource.DealsCount,
-    //                chartName1 = CRMReportResource.DealsBudget + ", " + _defaultCurrency.Symbol,
-
-    //                header1 = CRMReportResource.ByCount,
-    //                header2 = CRMReportResource.ByBudget + ", " + _defaultCurrency.Symbol,
-
-    //                manager = CRMReportResource.Manager,
-    //                total = CRMReportResource.Total,
-
-    //                status0 = CRMReportResource.New,
-    //                status1 = CRMReportResource.Won,
-    //                status2 = CRMReportResource.Lost
-    //            },
-    //            data = reportData
-    //        };
-    //    }
-
-    //    #endregion
-
-
-    //    #region WorkloadByInvoicesReport
-
-    //    public bool CheckWorkloadByInvoicesReportData(ReportTimePeriod timePeriod, Guid[] managers)
-    //    {
-    //        DateTime fromDate;
-    //        DateTime toDate;
-
-    //        GetTimePeriod(timePeriod, out fromDate, out toDate);
-
-    //        return Query(CRMDbContext.Invoices)
-    //                    .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
-    //                    .Where(x => (x.Status != InvoiceStatus.Draft && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.IssueDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.IssueDate <= _tenantUtil.DateTimeToUtc(toDate))) ||
-    //                                (x.Status == InvoiceStatus.Paid && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))) ||
-    //                                (x.Status == InvoiceStatus.Rejected && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))) ||
-    //                                ((timePeriod == ReportTimePeriod.DuringAllTime ? true : x.DueDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DueDate <= _tenantUtil.DateTimeToUtc(toDate))) &&
-    //                                (x.Status == InvoiceStatus.Sent && x.DueDate < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()) || x.Status == InvoiceStatus.Paid && x.LastModifedOn > x.DueDate))
-    //                    .Any();
-    //    }
-
-    //    public object GetWorkloadByInvoicesReportData(ReportTimePeriod timePeriod, Guid[] managers)
-    //    {
-    //        var reportData = BuildWorkloadByInvoicesReport(timePeriod, managers);
-
-    //        if (reportData == null || !reportData.Any()) return null;
-
-    //        var hasData = reportData.Any(item => item.SentCount > 0 || item.PaidCount > 0 || item.RejectedCount > 0 || item.OverdueCount > 0);
-
-    //        return hasData ? GenerateReportData(timePeriod, reportData) : null;
-    //    }
-
-    //    private List<WorkloadByInvoices> BuildWorkloadByInvoicesReport(ReportTimePeriod timePeriod, Guid[] managers)
-    //    {
-    //        DateTime fromDate;
-    //        DateTime toDate;
-
-    //        GetTimePeriod(timePeriod, out fromDate, out toDate);
-
-    //        throw new NotImplementedException();
-
-    //        var sent = Exp.Sum(Exp.If(!Exp.Eq("i.status", (int)InvoiceStatus.Draft) & (timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("i.issue_date", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate))), 1, 0));
-    //        var paid = Exp.Sum(Exp.If(Exp.Eq("i.status", (int)InvoiceStatus.Paid) & (timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("i.last_modifed_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate))), 1, 0));
-    //        var rejected = Exp.Sum(Exp.If(Exp.Eq("i.status", (int)InvoiceStatus.Rejected) & (timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("i.last_modifed_on", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate))), 1, 0));
-    //        var overdue = Exp.Sum(Exp.If((timePeriod == ReportTimePeriod.DuringAllTime ? Exp.Empty : Exp.Between("i.due_date", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate))) & Exp.Or(Exp.Eq("i.status", (int)InvoiceStatus.Sent) & Exp.Lt("i.due_date", _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())), Exp.Eq("i.status", (int)InvoiceStatus.Paid) & Exp.Sql("i.last_modifed_on > i.due_date")), 1, 0));
-
-    //        var sqlQuery = Query("crm_invoice i")
-    //            .Select("i.create_by", "concat(u.firstname, ' ', u.lastname) as full_name")
-    //            .Select(sent)
-    //            .Select(paid)
-    //            .Select(rejected)
-    //            .Select(overdue)
-    //            .LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "i.tenant_id") & Exp.EqColumns("u.id", "i.create_by"))
-    //            .Where(managers != null && managers.Any() ? Exp.In("i.create_by", managers) : Exp.Empty)
-    //            .GroupBy("i.create_by");
-
-
-    //        return Db.ExecuteList(sqlQuery).ConvertAll(ToWorkloadByInvoices);
-    //    }
-
-    //    private WorkloadByInvoices ToWorkloadByInvoices(object[] row)
-    //    {
-    //        return new WorkloadByInvoices
-    //        {
-    //            UserId = string.IsNullOrEmpty(Convert.ToString(row[0])) ? Guid.Empty : new Guid(Convert.ToString(row[0])),
-    //            UserName = Convert.ToString(row[1]),
-    //            SentCount = Convert.ToInt32(row[2]),
-    //            PaidCount = Convert.ToInt32(row[3]),
-    //            RejectedCount = Convert.ToInt32(row[4]),
-    //            OverdueCount = Convert.ToInt32(row[5])
-    //        };
-    //    }
-
-    //    private object GenerateReportData(ReportTimePeriod timePeriod, List<WorkloadByInvoices> reportData)
-    //    {
-    //        return new
-    //        {
-    //            resource = new
-    //            {
-    //                header = CRMReportResource.WorkloadByInvoicesReport,
-    //                sheetName = CRMReportResource.WorkloadByInvoicesReport,
-    //                dateRangeLabel = CRMReportResource.TimePeriod + ":",
-    //                dateRangeValue = GetTimePeriodText(timePeriod),
-
-    //                chartName = CRMReportResource.BilledInvoices,
-    //                chartName1 = CRMInvoiceResource.Invoices,
-
-    //                header1 = CRMInvoiceResource.Invoices,
-
-    //                manager = CRMReportResource.Manager,
-    //                total = CRMReportResource.Total,
-
-    //                billed = CRMReportResource.Billed,
-    //                paid = CRMReportResource.Paid,
-    //                rejected = CRMReportResource.Rejected,
-    //                overdue = CRMReportResource.Overdue
-    //            },
-    //            data = reportData
-    //        };
-    //    }
-
-    //    #endregion
-
-
-    //    #region GetWorkloadByViopReport
-
-    //    public bool CheckWorkloadByViopReportData(ReportTimePeriod timePeriod, Guid[] managers)
-    //    {
-    //        DateTime fromDate;
-    //        DateTime toDate;
-
-    //        GetTimePeriod(timePeriod, out fromDate, out toDate);
-
-    //        return Query(CRMDbContext.VoipCalls)
-    //                    .Where(x => x.ParentCallId == "")
-    //                    .Where(x => managers != null && managers.Any() ? managers.ToList().Contains(x.AnsweredBy) : true)
-    //                    .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ?
-    //                                true :
-    //                                x.DialDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DialDate <= _tenantUtil.DateTimeToUtc(toDate))
-    //                    .Any();
-    //    }
-
-    //    public object GetWorkloadByViopReportData(ReportTimePeriod timePeriod, Guid[] managers)
-    //    {
-    //        var reportData = BuildWorkloadByViopReport(timePeriod, managers);
-
-    //        return reportData == null || !reportData.Any() ? null : GenerateReportData(timePeriod, reportData);
-    //    }
-
-    //    private List<WorkloadByViop> BuildWorkloadByViopReport(ReportTimePeriod timePeriod, Guid[] managers)
-    //    {
-    //        DateTime fromDate;
-    //        DateTime toDate;
-
-    //        GetTimePeriod(timePeriod, out fromDate, out toDate);
-
-    //        var sqlQuery = Query("crm_voip_calls c")
-    //            .Select("c.answered_by",
-    //                    "concat(u.firstname, ' ', u.lastname) as full_name",
-    //                    "c.status",
-    //                    "count(c.id) as calls_count",
-    //                    "sum(c.dial_duration) as duration")
-    //            .LeftOuterJoin("core_user u", Exp.EqColumns("u.tenant", "c.tenant_id") & Exp.EqColumns("u.id", "c.answered_by"))
-    //            .Where(Exp.EqColumns("c.parent_call_id", "''"))
-    //            .Where(managers != null && managers.Any() ? Exp.In("c.answered_by", managers) : Exp.Empty)
-    //            .Where(timePeriod == ReportTimePeriod.DuringAllTime ?
-    //                    Exp.Empty :
-    //                    Exp.Between("c.dial_date", _tenantUtil.DateTimeToUtc(fromDate), _tenantUtil.DateTimeToUtc(toDate)))
-    //            .GroupBy("c.answered_by", "c.status");
-
-
-    //        return Db.ExecuteList(sqlQuery).ConvertAll(ToWorkloadByViop);
-    //    }
-
-    //    private WorkloadByViop ToWorkloadByViop(object[] row)
-    //    {
-    //        return new WorkloadByViop
-    //        {
-    //            UserId = string.IsNullOrEmpty(Convert.ToString(row[0])) ? Guid.Empty : new Guid(Convert.ToString(row[0])),
-    //            UserName = Convert.ToString(row[1] ?? string.Empty),
-    //            Status = (VoipCallStatus)Convert.ToInt32(row[2] ?? 0),
-    //            Count = Convert.ToInt32(row[3]),
-    //            Duration = Convert.ToInt32(row[4])
-    //        };
-    //    }
+        public object GetSalesFunnelReportData(ReportTimePeriod timePeriod, Guid[] managers, string defaultCurrency)
+        {
+            var reportData = BuildSalesFunnelReport(timePeriod, managers, defaultCurrency);
+
+            return reportData == null || !reportData.Any() ? null : GenerateReportData(timePeriod, reportData);
+        }
+
+        private List<SalesFunnel> BuildSalesFunnelReport(ReportTimePeriod timePeriod, Guid[] managers, string defaultCurrency)
+        {
+            DateTime fromDate;
+            DateTime toDate;
+
+            GetTimePeriod(timePeriod, out fromDate, out toDate);
+
+            var result = Query(CRMDbContext.DealMilestones)
+                                            .GroupJoin(Query(CRMDbContext.Deals),
+                                                   x => x.Id,
+                                                   y => y.DealMilestoneId,
+                                                   (x, y) => new { x, y })
+                                            .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = y, DealMilestone = x.x })
+                                            .GroupJoin(Query(CRMDbContext.CurrencyRate),
+                                                    x => x.Deal.BidCurrency,
+                                                    y => y.FromCurrency,
+                                                    (x, y) => new { x, y })
+                                            .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, DealMilestone = x.x.DealMilestone, CurrencyRate = y })
+                                          .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
+                                          .Where(x => x.Deal.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                                          .Where(x => x.DealMilestone.Status == DealMilestoneStatus.Open)
+                                          .GroupBy(x => new { x.DealMilestone.Id, x.DealMilestone.Title, x.DealMilestone.Status })
+                                          .Select(x => new
+                                          {
+                                              status = x.Key.Status,
+                                              title = x.Key.Title,
+                                              deals_count = x.Count(),
+                                              deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
+                                                                                  x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate)),
+                                              deals_duration = x.Average(x => x.DealMilestone.Status == DealMilestoneStatus.ClosedAndWon ? (x.Deal.ActualCloseDate - x.Deal.CreateOn).Value.Days : 0)
+                                          })
+                                          .ToList()
+                                          .ConvertAll(x =>
+                                          new SalesFunnel
+                                          {
+                                              Status = x.status,
+                                              Title = x.title,
+                                              Count = x.deals_count,
+                                              Value = x.deals_value,
+                                              Duration = Convert.ToInt32(x.deals_duration)
+                                          });
+
+            return result;        
+        }
+
+        private object GenerateReportData(ReportTimePeriod timePeriod, List<SalesFunnel> data)
+        {
+            var totalCount = data.Sum(x => x.Count);
+
+            if (totalCount == 0) return null;
+
+            var totalBudget = data.Sum(x => x.Value);
+
+            var closed = data.Where(x => x.Status == DealMilestoneStatus.ClosedAndWon).ToList();
+
+            var reportData = data.Select(item => new List<object>
+                    {
+                        item.Title,
+                        item.Status,
+                        item.Count,
+                        item.Value
+                    }).ToList();
+
+            return new
+            {
+                resource = new
+                {
+                    header = CRMReportResource.SalesFunnelReport,
+                    sheetName = CRMReportResource.SalesFunnelReport,
+                    dateRangeLabel = CRMReportResource.TimePeriod + ":",
+                    dateRangeValue = GetTimePeriodText(timePeriod),
+
+                    chartName = CRMReportResource.SalesFunnelByCount,
+                    chartName1 = CRMReportResource.SalesFunnelByBudget + ", " + _defaultCurrency.Symbol,
+                    chartName2 = CRMReportResource.DealsCount,
+                    chartName3 = CRMReportResource.DealsBudget + ", " + _defaultCurrency.Symbol,
+
+                    totalCountLabel = CRMReportResource.TotalDealsCount,
+                    totalCountValue = totalCount,
+
+                    totalBudgetLabel = CRMReportResource.TotalDealsBudget + ", " + _defaultCurrency.Symbol,
+                    totalBudgetValue = totalBudget,
+
+                    averageBidLabel = CRMReportResource.AverageDealsBudget + ", " + _defaultCurrency.Symbol,
+                    averageBidValue = totalBudget / totalCount,
+
+                    averageDurationLabel = CRMReportResource.AverageDealsDuration,
+                    averageDurationValue = closed.Sum(x => x.Duration) / closed.Count,
+
+                    header1 = CRMReportResource.ByCount,
+                    header2 = CRMReportResource.ByBudget + ", " + _defaultCurrency.Symbol,
+
+                    stage = CRMReportResource.Stage,
+                    count = CRMReportResource.Count,
+                    budget = CRMReportResource.Budget,
+                    conversion = CRMReportResource.Conversion,
+
+                    deals = CRMDealResource.Deals,
+                    status0 = DealMilestoneStatus.Open.ToLocalizedString(),
+                    status1 = DealMilestoneStatus.ClosedAndWon.ToLocalizedString(),
+                    status2 = DealMilestoneStatus.ClosedAndLost.ToLocalizedString()
+                },
+                data = reportData
+            };
+        }
+
+        #endregion
+
+
+        #region WorkloadByContactsReport
+
+        public bool CheckWorkloadByContactsReportData(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            DateTime fromDate;
+            DateTime toDate;
+
+            GetTimePeriod(timePeriod, out fromDate, out toDate);
+
+            return Query(CRMDbContext.Contacts)
+                       .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
+                       .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                       .Any();
+        }
+
+        public object GetWorkloadByContactsReportData(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            var reportData = BuildWorkloadByContactsReport(timePeriod, managers);
+
+            return reportData == null || !reportData.Any() ? null : GenerateReportData(timePeriod, reportData);
+        }
+
+        private List<WorkloadByContacts> BuildWorkloadByContactsReport(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            DateTime fromDate;
+            DateTime toDate;
+
+            GetTimePeriod(timePeriod, out fromDate, out toDate);
+
+            var result = Query(CRMDbContext.Contacts)
+                                           .GroupJoin(Query(CRMDbContext.ListItem),
+                                               x => x.ContactTypeId,
+                                               y => y.Id,
+                                               (x, y) => new { x, y })
+                                           .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Contact = x.x, ListItem = y })
+                                           .GroupJoin(Query(CRMDbContext.Deals),
+                                               x => x.Contact.Id,
+                                               y => y.ContactId,
+                                               (x, y) => new { x, y })
+                                           .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Contact = x.x.Contact, ListItem = x.x.ListItem, Deal = y })
+                                           .Where(x => x.ListItem.ListType == ListType.ContactType)
+                                           .Where(x => managers != null && managers.Any() ? managers.Contains(x.Contact.CreateBy) : true)
+                                           .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Contact.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Contact.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                                           .GroupBy(x => new { x.Contact.CreateBy, x.ListItem.Id, x.ListItem.Title })
+                                           .Select(x => new
+                                           {
+                                               create_by = x.Key.CreateBy,
+                                               id = x.Key.Id,
+                                               title = x.Key.Title,
+                                               total = x.Count(x => x.Contact.Id > 0),
+                                               with_deals = x.Count(x => x.Deal.Id > 0)
+                                           })
+                                           .OrderBy(x => x.title)
+                                           .ToList()
+                                           .ConvertAll(x => new WorkloadByContacts
+                                           {
+                                              UserId = x.create_by,
+                                              UserName = _displayUserSettings.GetFullUserName(x.create_by),
+                                              CategoryId = x.id,
+                                              CategoryName = x.title,
+                                              Count = x.total,
+                                              WithDeals = x.with_deals
+                                           });
+
+            //                    .OrderBy("i.sort_order, i.title", true);
+
+            return result;
+        }
+
+        private object GenerateReportData(ReportTimePeriod timePeriod, List<WorkloadByContacts> reportData)
+        {
+            return new
+            {
+                resource = new
+                {
+                    header = CRMReportResource.WorkloadByContactsReport,
+                    sheetName = CRMReportResource.WorkloadByContactsReport,
+                    dateRangeLabel = CRMReportResource.TimePeriod + ":",
+                    dateRangeValue = GetTimePeriodText(timePeriod),
+
+                    header1 = CRMReportResource.NewContacts,
+                    header2 = CRMReportResource.NewContactsWithAndWithoutDeals,
+
+                    manager = CRMReportResource.Manager,
+                    total = CRMReportResource.Total,
+
+                    noSet = CRMCommonResource.NoSet,
+                    withDeals = CRMReportResource.ContactsWithDeals,
+                    withouthDeals = CRMReportResource.ContactsWithoutDeals,
+                },
+                data = reportData
+            };
+        }
+
+        #endregion
+
+
+        #region WorkloadByTasksReport
+
+        public bool CheckWorkloadByTasksReportData(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            DateTime fromDate;
+            DateTime toDate;
+
+            GetTimePeriod(timePeriod, out fromDate, out toDate);
+
+            var sqlNewTasksQuery = Query(CRMDbContext.Tasks)
+                                        .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
+                                        .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                                        .Any();
+
+            var sqlClosedTasksQuery = Query(CRMDbContext.Tasks)
+                                        .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
+                                        .Where(x => x.IsClosed)
+                                        .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))
+                                        .Any();
+
+
+
+            var sqlOverdueTasksQuery = Query(CRMDbContext.Tasks)
+                                        .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
+                                        .Where(x => x.IsClosed)
+                                        .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Deadline >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))
+                                        .Where(x => (!x.IsClosed && x.Deadline < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) ||
+                                                     (x.IsClosed && x.LastModifedOn > x.Deadline))
+                                        .Any();
+
+            return sqlNewTasksQuery ||
+                   sqlClosedTasksQuery ||
+                   sqlOverdueTasksQuery;
+        }
+
+        public object GetWorkloadByTasksReportData(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            var reportData = BuildWorkloadByTasksReport(timePeriod, managers);
+
+            if (reportData == null || !reportData.Any()) return null;
+
+            var hasData = reportData.Any(item => item.Value.Count > 0);
+
+            return hasData ? GenerateReportData(timePeriod, reportData) : null;
+        }
+
+        private Dictionary<string, List<WorkloadByTasks>> BuildWorkloadByTasksReport(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            DateTime fromDate;
+            DateTime toDate;
+
+            GetTimePeriod(timePeriod, out fromDate, out toDate);
+
+            var sqlNewTasksQuery = Query(CRMDbContext.Tasks)
+                                   .GroupJoin(Query(CRMDbContext.ListItem),
+                                         x => x.CategoryId,
+                                         y => y.Id,
+                                         (x, y) => new { x, y })
+                                   .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Task = x.x, ListItem = y })
+                                   .Where(x => x.ListItem.ListType == ListType.TaskCategory)
+                                   .Where(x => managers != null && managers.Any() ? managers.Contains(x.Task.ResponsibleId) : true)
+                                   .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Task.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Task.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
+                                   .OrderBy(x => x.ListItem.SortOrder)
+                                   .GroupBy(x => new { x.ListItem.Id, x.ListItem.Title, x.Task.ResponsibleId })
+                                   .Select(x => new
+                                   {
+                                       id = x.Key.Id,
+                                       title = x.Key.Title,
+                                       responsibleId = x.Key.ResponsibleId,
+                                       count = x.Count()
+                                   })
+                                   .ToList()
+                                  .ConvertAll(x => new WorkloadByTasks
+                                  {
+                                      CategoryId = x.id,
+                                      CategoryName = x.title,
+                                      UserId = x.responsibleId,
+                                      UserName = _displayUserSettings.GetFullUserName(x.responsibleId),
+                                      Count = x.count
+                                  });
+
+            var sqlClosedTasksQuery = Query(CRMDbContext.Tasks)
+                       .GroupJoin(Query(CRMDbContext.ListItem),
+                             x => x.CategoryId,
+                             y => y.Id,
+                             (x, y) => new { x, y })
+                       .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Task = x.x, ListItem = y })
+                       .Where(x => x.ListItem.ListType == ListType.TaskCategory)
+                       .Where(x => managers != null && managers.Any() ? managers.Contains(x.Task.ResponsibleId) : true)
+                       .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Task.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Task.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))
+                       .Where(x => x.Task.IsClosed)
+                       .OrderBy(x => x.ListItem.SortOrder)
+                       .GroupBy(x => new { x.ListItem.Id, x.ListItem.Title, x.Task.ResponsibleId })
+                       .Select(x => new
+                       {
+                           id = x.Key.Id,
+                           title = x.Key.Title,
+                           responsibleId = x.Key.ResponsibleId,
+                           count = x.Count()
+                       })
+                       .ToList()
+                      .ConvertAll(x => new WorkloadByTasks
+                      {
+                          CategoryId = x.id,
+                          CategoryName = x.title,
+                          UserId = x.responsibleId,
+                          UserName = _displayUserSettings.GetFullUserName(x.responsibleId),
+                          Count = x.count
+                      });
+
+            var sqlOverdueTasksQuery = Query(CRMDbContext.Tasks)
+                                   .GroupJoin(Query(CRMDbContext.ListItem),
+                                         x => x.CategoryId,
+                                         y => y.Id,
+                                         (x, y) => new { x, y })
+                                   .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Task = x.x, ListItem = y })
+                                   .Where(x => x.ListItem.ListType == ListType.TaskCategory)
+                                   .Where(x => managers != null && managers.Any() ? managers.Contains(x.Task.ResponsibleId) : true)
+                                   .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Task.Deadline >= _tenantUtil.DateTimeToUtc(fromDate) && x.Task.Deadline <= _tenantUtil.DateTimeToUtc(toDate))
+                                   .Where(x => (!x.Task.IsClosed && x.Task.Deadline < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) || (x.Task.IsClosed && x.Task.LastModifedOn > x.Task.Deadline))
+                                   .OrderBy(x => x.ListItem.SortOrder)
+                                   .GroupBy(x => new { x.ListItem.Id, x.ListItem.Title, x.Task.ResponsibleId })
+                                   .Select(x => new
+                                   {
+                                       id = x.Key.Id,
+                                       title = x.Key.Title,
+                                       responsibleId = x.Key.ResponsibleId,
+                                       count = x.Count()
+                                   })
+                                   .ToList()
+                                   .ConvertAll(x => new WorkloadByTasks
+                                   {
+                                       CategoryId = x.id,
+                                       CategoryName = x.title,
+                                       UserId = x.responsibleId,
+                                       UserName = _displayUserSettings.GetFullUserName(x.responsibleId),
+                                       Count = x.count
+                                   });
+
+            return new Dictionary<string, List<WorkloadByTasks>> {
+                {"Created", sqlNewTasksQuery},
+                {"Closed", sqlClosedTasksQuery},
+                {"Overdue", sqlOverdueTasksQuery}
+            };
+        }
+
+        private object GenerateReportData(ReportTimePeriod timePeriod, Dictionary<string, List<WorkloadByTasks>> reportData)
+        {
+            return new
+            {
+                resource = new
+                {
+                    header = CRMReportResource.WorkloadByTasksReport,
+                    sheetName = CRMReportResource.WorkloadByTasksReport,
+                    dateRangeLabel = CRMReportResource.TimePeriod + ":",
+                    dateRangeValue = GetTimePeriodText(timePeriod),
+
+                    header1 = CRMReportResource.ClosedTasks,
+                    header2 = CRMReportResource.NewTasks,
+                    header3 = CRMReportResource.OverdueTasks,
+
+                    manager = CRMReportResource.Manager,
+                    total = CRMReportResource.Total
+                },
+                data = reportData
+            };
+        }
+
+        #endregion
+
+
+        #region WorkloadByDealsReport
+
+        public bool CheckWorkloadByDealsReportData(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            DateTime fromDate;
+            DateTime toDate;
+
+            GetTimePeriod(timePeriod, out fromDate, out toDate);
+
+            return Query(CRMDbContext.Deals)
+                   .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
+                   .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : (x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate)) ||
+                                                                                      (x.ActualCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.ActualCloseDate <= _tenantUtil.DateTimeToUtc(toDate)))
+                   .Any();
+        }
+
+        public object GetWorkloadByDealsReportData(ReportTimePeriod timePeriod, Guid[] managers, string defaultCurrency)
+        {
+            var reportData = BuildWorkloadByDealsReport(timePeriod, managers, defaultCurrency);
+
+            return reportData == null || !reportData.Any() ? null : GenerateReportData(timePeriod, reportData);
+        }
+
+        private List<WorkloadByDeals> BuildWorkloadByDealsReport(ReportTimePeriod timePeriod, Guid[] managers, string defaultCurrency)
+        {
+            DateTime fromDate;
+            DateTime toDate;
+
+            GetTimePeriod(timePeriod, out fromDate, out toDate);
+
+            var result = Query(CRMDbContext.Deals)
+                               .GroupJoin(Query(CRMDbContext.CurrencyRate),
+                                       x => x.BidCurrency,
+                                       y => y.FromCurrency,
+                                       (x, y) => new { x, y })
+                               .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
+                               .GroupJoin(Query(CRMDbContext.DealMilestones),
+                                     x => x.Deal.DealMilestoneId,
+                                     y => y.Id,
+                                     (x, y) => new { x, y })
+                              .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, CurrencyRate = x.x.CurrencyRate, DealMilestone = y })
+                             .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
+                             .Where(x => x.Deal.ActualCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.ActualCloseDate <= _tenantUtil.DateTimeToUtc(toDate))
+                             .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : (x.Deal.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.CreateOn <= _tenantUtil.DateTimeToUtc(toDate) ||
+                                                                                                x.Deal.ActualCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.ActualCloseDate <= _tenantUtil.DateTimeToUtc(toDate)))
+                             .GroupBy(x => new { x.Deal.ResponsibleId, x.DealMilestone.Status })
+                             .Select(x => new
+                             {
+                                 responsible_id = x.Key.ResponsibleId,
+                                 status = x.Key.Status,
+                                 count = x.Count(),
+                                 deals_value = x.Sum(x => x.Deal.BidType == 0 ? x.Deal.BidValue * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate) :
+                                                                     x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
+                             }).ToList()
+                             .ConvertAll(x => new WorkloadByDeals
+                             {
+                                 UserId = x.responsible_id,
+                                 UserName = _displayUserSettings.GetFullUserName(x.responsible_id),
+                                 Status = x.status,
+                                 Count = x.count,
+                                 Value = x.deals_value
+                             });
+
+            return result;
+        }
+
+        private object GenerateReportData(ReportTimePeriod timePeriod, List<WorkloadByDeals> data)
+        {
+            var reportData = data.Select(item => new List<object>
+                    {
+                        item.UserId,
+                        item.UserName,
+                        (int)item.Status,
+                        item.Count,
+                        item.Value
+                    }).ToList();
+
+            return new
+            {
+                resource = new
+                {
+                    header = CRMReportResource.WorkloadByDealsReport,
+                    sheetName = CRMReportResource.WorkloadByDealsReport,
+                    dateRangeLabel = CRMReportResource.TimePeriod + ":",
+                    dateRangeValue = GetTimePeriodText(timePeriod),
+
+                    chartName = CRMReportResource.DealsCount,
+                    chartName1 = CRMReportResource.DealsBudget + ", " + _defaultCurrency.Symbol,
+
+                    header1 = CRMReportResource.ByCount,
+                    header2 = CRMReportResource.ByBudget + ", " + _defaultCurrency.Symbol,
+
+                    manager = CRMReportResource.Manager,
+                    total = CRMReportResource.Total,
+
+                    status0 = CRMReportResource.New,
+                    status1 = CRMReportResource.Won,
+                    status2 = CRMReportResource.Lost
+                },
+                data = reportData
+            };
+        }
+
+        #endregion
+
+
+        #region WorkloadByInvoicesReport
+
+        public bool CheckWorkloadByInvoicesReportData(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            DateTime fromDate;
+            DateTime toDate;
+
+            GetTimePeriod(timePeriod, out fromDate, out toDate);
+
+            return Query(CRMDbContext.Invoices)
+                        .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
+                        .Where(x => (x.Status != InvoiceStatus.Draft && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.IssueDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.IssueDate <= _tenantUtil.DateTimeToUtc(toDate))) ||
+                                    (x.Status == InvoiceStatus.Paid && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))) ||
+                                    (x.Status == InvoiceStatus.Rejected && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))) ||
+                                    ((timePeriod == ReportTimePeriod.DuringAllTime ? true : x.DueDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DueDate <= _tenantUtil.DateTimeToUtc(toDate))) &&
+                                    (x.Status == InvoiceStatus.Sent && x.DueDate < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()) || x.Status == InvoiceStatus.Paid && x.LastModifedOn > x.DueDate))
+                        .Any();
+        }
+
+        public object GetWorkloadByInvoicesReportData(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            var reportData = BuildWorkloadByInvoicesReport(timePeriod, managers);
+
+            if (reportData == null || !reportData.Any()) return null;
+
+            var hasData = reportData.Any(item => item.SentCount > 0 || item.PaidCount > 0 || item.RejectedCount > 0 || item.OverdueCount > 0);
+
+            return hasData ? GenerateReportData(timePeriod, reportData) : null;
+        }
+
+        private List<WorkloadByInvoices> BuildWorkloadByInvoicesReport(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            DateTime fromDate;
+            DateTime toDate;
+
+            GetTimePeriod(timePeriod, out fromDate, out toDate);
+            
+            var result = Query(CRMDbContext.Invoices)
+                                .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
+                                .GroupBy(x => x.CreateBy)
+                                .Select(x => new
+                                {
+                                    createBy = x.Key, 
+                                    sent = x.Sum(x => x.Status != InvoiceStatus.Draft && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.IssueDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.IssueDate <= _tenantUtil.DateTimeToUtc(toDate)) ? 1 : 0),
+                                    paid = x.Sum(x => x.Status == InvoiceStatus.Paid && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate)) ? 1 : 0),
+                                    rejected = x.Sum(x => x.Status == InvoiceStatus.Rejected && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate)) ? 1 : 0),
+                                    overdue = x.Sum(x => (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.DueDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DueDate <= _tenantUtil.DateTimeToUtc(toDate)) && ((x.Status == InvoiceStatus.Sent && x.DueDate < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) || (x.Status == InvoiceStatus.Paid && x.LastModifedOn > x.DueDate)) ? 1 : 0)
+                                })
+                                .ToList()
+                                .ConvertAll(x => new WorkloadByInvoices
+                                {
+                                    UserId = x.createBy,
+                                    UserName = _displayUserSettings.GetFullUserName(x.createBy),
+                                    SentCount = x.sent,
+                                    PaidCount = x.paid,
+                                    RejectedCount = x.rejected,
+                                    OverdueCount = x.overdue                                     
+                                });
+
+            return result;
+        }
+
+
+        private object GenerateReportData(ReportTimePeriod timePeriod, List<WorkloadByInvoices> reportData)
+        {
+            return new
+            {
+                resource = new
+                {
+                    header = CRMReportResource.WorkloadByInvoicesReport,
+                    sheetName = CRMReportResource.WorkloadByInvoicesReport,
+                    dateRangeLabel = CRMReportResource.TimePeriod + ":",
+                    dateRangeValue = GetTimePeriodText(timePeriod),
+
+                    chartName = CRMReportResource.BilledInvoices,
+                    chartName1 = CRMInvoiceResource.Invoices,
+
+                    header1 = CRMInvoiceResource.Invoices,
+
+                    manager = CRMReportResource.Manager,
+                    total = CRMReportResource.Total,
+
+                    billed = CRMReportResource.Billed,
+                    paid = CRMReportResource.Paid,
+                    rejected = CRMReportResource.Rejected,
+                    overdue = CRMReportResource.Overdue
+                },
+                data = reportData
+            };
+        }
+
+        #endregion
+
+
+        #region GetWorkloadByViopReport
+
+        public bool CheckWorkloadByViopReportData(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            DateTime fromDate;
+            DateTime toDate;
+
+            GetTimePeriod(timePeriod, out fromDate, out toDate);
+
+            return Query(CRMDbContext.VoipCalls)
+                        .Where(x => x.ParentCallId == "")
+                        .Where(x => managers != null && managers.Any() ? managers.ToList().Contains(x.AnsweredBy) : true)
+                        .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ?
+                                    true :
+                                    x.DialDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DialDate <= _tenantUtil.DateTimeToUtc(toDate))
+                        .Any();
+        }
+
+        public object GetWorkloadByViopReportData(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            var reportData = BuildWorkloadByViopReport(timePeriod, managers);
+
+            return reportData == null || !reportData.Any() ? null : GenerateReportData(timePeriod, reportData);
+        }
+
+        private List<WorkloadByViop> BuildWorkloadByViopReport(ReportTimePeriod timePeriod, Guid[] managers)
+        {
+            DateTime fromDate;
+            DateTime toDate;
+
+            GetTimePeriod(timePeriod, out fromDate, out toDate);
+
+            var result = Query(CRMDbContext.VoipCalls)
+                            .Where(x => x.ParentCallId == "")
+                            .Where(x => managers != null && managers.Any() ? managers.Contains(x.AnsweredBy) : true)
+                            .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.DialDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DialDate <= _tenantUtil.DateTimeToUtc(toDate))
+                            .GroupBy(x => new { x.AnsweredBy, x.Status })
+                            .Select(x => new
+                            {
+                                answered_by = x.Key.AnsweredBy,
+                                status = x.Key.Status,
+                                calls_count = x.Count(),
+                                duration = x.Sum(x => x.DialDuration)
+                            })
+                            .ToList()
+                            .ConvertAll(x => new WorkloadByViop
+                            {
+                                UserId = x.answered_by,
+                                UserName = _displayUserSettings.GetFullUserName(x.answered_by),
+                                Status = x.status,
+                                Count = x.calls_count,
+                                Duration = x.duration ?? x.duration.Value
+                            });
+
+            return result;
+        }
+
+        private WorkloadByViop ToWorkloadByViop(object[] row)
+        {
+            return new WorkloadByViop
+            {
+                UserId = string.IsNullOrEmpty(Convert.ToString(row[0])) ? Guid.Empty : new Guid(Convert.ToString(row[0])),
+                UserName = Convert.ToString(row[1] ?? string.Empty),
+                Status = (VoipCallStatus)Convert.ToInt32(row[2] ?? 0),
+                Count = Convert.ToInt32(row[3]),
+                Duration = Convert.ToInt32(row[4])
+            };
+        }
 
         private object GenerateReportData(ReportTimePeriod timePeriod, List<WorkloadByViop> data)
         {
@@ -1865,8 +1870,8 @@ namespace ASC.CRM.Core.Dao
                                            .GroupJoin(Query(CRMDbContext.DealMilestones),
                                                  x => x.Deal.DealMilestoneId,
                                                  y => y.Id,
-                                                 (x, y) => new { x,y })
-                                          .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, CurrencyRate = x.x.CurrencyRate, DealMilestone = y })                                     
+                                                 (x, y) => new { x, y })
+                                          .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x.Deal, CurrencyRate = x.x.CurrencyRate, DealMilestone = y })
                                           .Where(x => managers != null && managers.Any() ? managers.Contains(x.Deal.ResponsibleId) : true)
                                           .Where(x => x.Deal.ActualCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deal.ActualCloseDate <= _tenantUtil.DateTimeToUtc(toDate))
                                           .Where(x => x.DealMilestone.Status == DealMilestoneStatus.ClosedAndWon)
@@ -1928,13 +1933,14 @@ namespace ASC.CRM.Core.Dao
                                   .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
                                   .Where(x => x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                                   .GroupBy(x => x.Status)
-                                  .Select(x => new {
-                                     sent = x.Sum(x => x.Status != InvoiceStatus.Draft ? 1 :0),
-                                     paid = x.Sum(x => x.Status == InvoiceStatus.Paid ? 1 : 0),
-                                     rejected = x.Sum(x => x.Status == InvoiceStatus.Rejected ? 1 : 0),
-                                     overdue = x.Sum(x => (x.Status == InvoiceStatus.Sent && x.DueDate < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) ||
-                                                          (x.Status ==  InvoiceStatus.Paid && x.LastModifedOn > x.DueDate)      
-                                     ? 1 : 0)
+                                  .Select(x => new
+                                  {
+                                      sent = x.Sum(x => x.Status != InvoiceStatus.Draft ? 1 : 0),
+                                      paid = x.Sum(x => x.Status == InvoiceStatus.Paid ? 1 : 0),
+                                      rejected = x.Sum(x => x.Status == InvoiceStatus.Rejected ? 1 : 0),
+                                      overdue = x.Sum(x => (x.Status == InvoiceStatus.Sent && x.DueDate < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) ||
+                                                           (x.Status == InvoiceStatus.Paid && x.LastModifedOn > x.DueDate)
+                                      ? 1 : 0)
                                   }).ToList();
 
             var contactsSqlQuery = Query(CRMDbContext.Contacts)
@@ -1942,7 +1948,7 @@ namespace ASC.CRM.Core.Dao
                                       x => x.ContactTypeId,
                                       y => y.Id,
                                       (x, y) => new { x, y })
-                                  .SelectMany(x => x.y.DefaultIfEmpty(), (x,y) => new { Contact = x.x, ListItem = y })
+                                  .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Contact = x.x, ListItem = y })
                                   .Where(x => x.ListItem.ListType == ListType.ContactType)
                                   .Where(x => managers != null && managers.Any() ? managers.Contains(x.Contact.CreateBy) : true)
                                   .Where(x => x.Contact.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Contact.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
@@ -1956,10 +1962,10 @@ namespace ASC.CRM.Core.Dao
                                   .ToList();
 
             var tasksSqlQuery = Query(CRMDbContext.Tasks)
-                                .GroupJoin(Query(CRMDbContext.ListItem), 
+                                .GroupJoin(Query(CRMDbContext.ListItem),
                                       x => x.CategoryId,
                                       y => y.Id,
-                                      (x,y) => new { x,y })
+                                      (x, y) => new { x, y })
                               .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Task = x.x, ListItem = y })
                               .Where(x => x.ListItem.ListType == ListType.TaskCategory)
                               .Where(x => managers != null && managers.Any() ? managers.Contains(x.Task.ResponsibleId) : true)
@@ -1970,19 +1976,20 @@ namespace ASC.CRM.Core.Dao
 
                                   title = x.Key.Title,
                                   sum1 = x.Sum(x => x.Task.IsClosed && x.Task.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.Task.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate) ? 1 : 0),
-                                  sum2 = x.Sum(x => (!x.Task.IsClosed && x.Task.Deadline < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) || (x.Task.IsClosed && x.Task.LastModifedOn > x.Task.Deadline) ? 1 :0),
+                                  sum2 = x.Sum(x => (!x.Task.IsClosed && x.Task.Deadline < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) || (x.Task.IsClosed && x.Task.LastModifedOn > x.Task.Deadline) ? 1 : 0),
                                   count = x.Count()
                               })
                               .OrderBy(x => x.title)
                               .ToList();
-//                .OrderBy("i.sort_order, i.title", true);
+                        //    .OrderBy("i.sort_order, i.title", true);
 
             var voipSqlQuery = Query(CRMDbContext.VoipCalls)
                                 .Where(x => String.IsNullOrEmpty(x.ParentCallId))
                                 .Where(x => managers != null && managers.Any() ? managers.Contains(x.AnsweredBy) : true)
                                 .Where(x => x.DialDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DialDate <= _tenantUtil.DateTimeToUtc(toDate))
                                 .GroupBy(x => x.Status)
-                                .Select(x => new {
+                                .Select(x => new
+                                {
                                     status = x.Key,
                                     calls_count = x.Count(),
                                     duration = x.Sum(x => x.DialDuration)
@@ -2267,7 +2274,8 @@ namespace ASC.CRM.Core.Dao
                       .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
                       .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                       .GroupBy(x => x.Status)
-                      .Select(x => new {
+                      .Select(x => new
+                      {
                           sent = x.Sum(x => x.Status == InvoiceStatus.Sent ? 1 : 0),
                           overdue = x.Sum(x => (x.Status == InvoiceStatus.Sent && x.DueDate < _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow())) ? 1 : 0)
                       }).ToList();

@@ -189,18 +189,18 @@ namespace ASC.Web.CRM.Classes
                     return reportDao.GetSalesByManagersReportData(timePeriod, managers, defaultCurrency);
                 case ReportType.SalesForecast:
                     return reportDao.GetSalesForecastReportData(timePeriod, managers, defaultCurrency);
-                //case ReportType.SalesFunnel:
-                //    return reportDao.GetSalesFunnelReportData(timePeriod, managers, defaultCurrency);
-                //case ReportType.WorkloadByContacts:
-                //    return reportDao.GetWorkloadByContactsReportData(timePeriod, managers);
-                //case ReportType.WorkloadByTasks:
-                //    return reportDao.GetWorkloadByTasksReportData(timePeriod, managers);
-                //case ReportType.WorkloadByDeals:
-                //    return reportDao.GetWorkloadByDealsReportData(timePeriod, managers, defaultCurrency);
-                //case ReportType.WorkloadByInvoices:
-                //    return reportDao.GetWorkloadByInvoicesReportData(timePeriod, managers);
-                //case ReportType.WorkloadByVoip:
-                //    return reportDao.GetWorkloadByViopReportData(timePeriod, managers);
+                case ReportType.SalesFunnel:
+                    return reportDao.GetSalesFunnelReportData(timePeriod, managers, defaultCurrency);
+                case ReportType.WorkloadByContacts:
+                    return reportDao.GetWorkloadByContactsReportData(timePeriod, managers);
+                case ReportType.WorkloadByTasks:
+                    return reportDao.GetWorkloadByTasksReportData(timePeriod, managers);
+                case ReportType.WorkloadByDeals:
+                    return reportDao.GetWorkloadByDealsReportData(timePeriod, managers, defaultCurrency);
+                case ReportType.WorkloadByInvoices:
+                    return reportDao.GetWorkloadByInvoicesReportData(timePeriod, managers);
+                case ReportType.WorkloadByVoip:
+                    return reportDao.GetWorkloadByViopReportData(timePeriod, managers);
                 case ReportType.SummaryForThePeriod:
                     return reportDao.GetSummaryForThePeriodReportData(timePeriod, managers, defaultCurrency);
                 case ReportType.SummaryAtThisMoment:
