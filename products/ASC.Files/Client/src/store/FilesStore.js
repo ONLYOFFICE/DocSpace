@@ -498,6 +498,7 @@ class FilesStore {
   get canShareOwnerChange() {
     const pathParts = selectedFolderStore.pathParts;
     const userId = userStore.user && userStore.user.id;
+
     const commonFolder = treeFoldersStore.commonFolder;
     return (
       (isAdmin ||
@@ -730,31 +731,44 @@ class FilesStore {
     return this.selection.find((el) => el.title).title;
   }
 
-  getOptions = (selection, externalAccess = false) => {
+  getOptions = (selection, editorAccessRights, externalAccess = false) => {
     //debugger;
-    const webEdit = selection.find((x) => canWebEdit(x.fileExst));
-    const webComment = selection.find((x) => canWebComment(x.fileExst));
-    const webReview = selection.find((x) => canWebReview(x.fileExst));
-    const formFillingDocs = selection.find((x) =>
-      canFormFillingDocs(x.fileExst)
-    );
-    const webFilter = selection.find((x) => canWebFilterEditing(x.fileExst));
-    console.log("webComment", webComment);
     let AccessOptions = [];
-
-    if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
-
     AccessOptions.push("ReadOnly", "DenyAccess");
 
-    if (webComment) AccessOptions.push("Comment");
-    if (webReview) AccessOptions.push("Review");
-    if (formFillingDocs) AccessOptions.push("FormFilling");
-    if (webFilter) AccessOptions.push("FilterEditing");
+    if (!editorAccessRights) {
+      const webEdit = selection.find((x) => canWebEdit(x.fileExst));
+      const webComment = selection.find((x) => canWebComment(x.fileExst));
+      const webReview = selection.find((x) => canWebReview(x.fileExst));
+      const formFillingDocs = selection.find((x) =>
+        canFormFillingDocs(x.fileExst)
+      );
+      const webFilter = selection.find((x) => canWebFilterEditing(x.fileExst));
+
+      if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
+
+      if (webComment) AccessOptions.push("Comment");
+      if (webReview) AccessOptions.push("Review");
+      if (formFillingDocs) AccessOptions.push("FormFilling");
+      if (webFilter) AccessOptions.push("FilterEditing");
+    } else {
+      const webEdit = editorAccessRights.edit;
+      const webComment = editorAccessRights.comment;
+      const webReview = editorAccessRights.review;
+      const formFillingDocs = editorAccessRights.fillForms;
+      //const webFilter = editorAccessRights.modifyFilter; //TODO: is it right?
+
+      if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
+      if (webComment) AccessOptions.push("Comment");
+      if (webReview) AccessOptions.push("Review");
+      if (formFillingDocs) AccessOptions.push("FormFilling");
+      //if (webFilter) AccessOptions.push("FilterEditing");
+    }
     return AccessOptions;
   };
 
-  getAccessOption = (selection) => {
-    return this.getOptions(selection);
+  getAccessOption = (selection, editorAccessRights) => {
+    return this.getOptions(selection, editorAccessRights);
   };
 
   getExternalAccessOption = (selection) => {

@@ -15,11 +15,11 @@ export const getAccessIcon = (access) => {
     case 4:
       return "images/catalog.question.react.svg";
     case 5:
-      return "images/access.review.react.svg";
+      return "/static/images/access.review.react.svg";
     case 6:
-      return "images/access.comment.react.svg";
+      return "/static/images/access.comment.react.svg";
     case 7:
-      return "images/access.form.react.svg";
+      return "/static/images/access.form.react.svg";
     case 8:
       return "images/custom.filter.react.svg";
     default:

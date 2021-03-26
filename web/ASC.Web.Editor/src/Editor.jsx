@@ -43,7 +43,7 @@ let fileType = null;
 let config;
 let docSaved = null;
 let docEditor;
-let accessOptions = [];
+
 const Editor = ({
   uploadPanelVisible,
   sharingPanelVisible,
@@ -66,8 +66,8 @@ const Editor = ({
   );
   let firstSharing = [];
   useEffect(() => {
-    init();
     //debugger;
+    init();
   }, []);
 
   const init = async () => {
@@ -306,6 +306,7 @@ const Editor = ({
     let sharingSettings = [];
     const folderId = [];
     //debugger;
+
     getShareUsers(folderId, [Number(fileId)]).then((result) => {
       for (let i = 1; i < result.length; i++) {
         let resultAccess =
@@ -315,6 +316,14 @@ const Editor = ({
             ? i18n.t("ReadOnly")
             : result[i].access === 3
             ? i18n.t("DenyAccess")
+            : result[i].access === 4
+            ? i18n.t("CustomFilter")
+            : result[i].access === 5
+            ? i18n.t("Review")
+            : result[i].access === 6
+            ? i18n.t("Comment")
+            : result[i].access === 7
+            ? i18n.t("FormFilling")
             : "";
 
         let obj = {
@@ -322,7 +331,6 @@ const Editor = ({
           permissions: resultAccess,
         };
         sharingSettings.push(obj);
-        //console.log("res", accessOptions);
       }
 
       docEditor.setSharingSettings({
@@ -330,8 +338,7 @@ const Editor = ({
       });
     });
   };
-
-  //console.log("docEditor", docEditor);
+  //debugger;
   return (
     <Box
       widthProp="100vw"
@@ -339,15 +346,20 @@ const Editor = ({
     >
       <Toast />
 
-      <SharingPanel
-        key="sharing-panel"
-        uploadPanelVisible={uploadPanelVisible}
-        isSharingPanelVisible={sharingPanelVisible}
-        openFileId={fileId}
-        refreshRightsList={refreshRightsList}
-      />
       {!isLoading ? (
-        <div id="editor"></div>
+        <>
+          <div id="editor"></div>
+          {sharingPanelVisible && (
+            <SharingPanel
+              key="sharing-panel"
+              uploadPanelVisible={uploadPanelVisible}
+              isSharingPanelVisible={sharingPanelVisible}
+              openFileId={fileId}
+              refreshRightsList={refreshRightsList}
+              editorAccessRights={config && config.document.permissions}
+            />
+          )}
+        </>
       ) : (
         <Box paddingProp="16px">
           <Loaders.Rectangle height="96vh" />
@@ -356,8 +368,6 @@ const Editor = ({
     </Box>
   );
 };
-
-//export default Editor;
 
 const EditorWrapper = inject(
   ({ uploadDataStore, dialogsStore, filesStore }) => {

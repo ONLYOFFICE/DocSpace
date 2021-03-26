@@ -51,7 +51,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("Review") && (
         <DropDownItem
           label={t("Review")}
-          icon="images/access.review.react.svg"
+          icon="/static/images/access.review.react.svg"
           data-id={itemId}
           data-access={Review}
           onClick={onAccessChange}
@@ -61,7 +61,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("FormFilling") && (
         <DropDownItem
           label={t("FormFilling")}
-          icon="images/access.form.react.svg"
+          icon="/static/images/access.form.react.svg"
           data-id={itemId}
           data-access={FormFilling}
           onClick={onAccessChange}
@@ -71,7 +71,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("Comment") && (
         <DropDownItem
           label={t("Comment")}
-          icon="images/access.comment.react.svg"
+          icon="/static/images/access.comment.react.svg"
           data-id={itemId}
           data-access={Comment}
           onClick={onAccessChange}
