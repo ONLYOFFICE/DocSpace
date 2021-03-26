@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Loaders from "@appserver/common/components/Loaders";
@@ -8,123 +8,170 @@ import FilesRowContainer from "./FilesRow/FilesRowContainer";
 import FilesTileContainer from "./FilesTile/FilesTileContainer";
 import EmptyContainer from "./EmptyContainer";
 
-class SectionBodyContent extends React.Component {
-  componentDidMount() {
-    this.customScrollElm = document.querySelector(
+let currentDroppable = null;
+
+const SectionBodyContent = (props) => {
+  const {
+    t,
+    fileActionId,
+    viewAs,
+    firstLoad,
+    isLoading,
+    isEmptyFilesList,
+    //folderId,
+    dragging,
+    setDragging,
+    setTooltipPosition,
+    isRecycleBinFolder,
+    moveDragItems,
+  } = props;
+
+  useEffect(() => {
+    const customScrollElm = document.querySelector(
       "#customScrollBar > .scroll-body"
     );
 
-    // document.addEventListener("dragstart", this.onDragStart);
-    // document.addEventListener("dragover", this.onDragOver);
-    // document.addEventListener("dragleave", this.onDragLeaveDoc);
-    // document.addEventListener("drop", this.onDropEvent);
-  }
-
-  componentWillUnmount() {
-    // document.removeEventListener("dragstart", this.onDragStart);
-    // document.removeEventListener("dragover", this.onDragOver);
-    // document.removeEventListener("dragleave", this.onDragLeaveDoc);
-    // document.removeEventListener("drop", this.onDropEvent);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    Object.entries(this.props).forEach(
-      ([key, val]) =>
-        prevProps[key] !== val && console.log(`Prop '${key}' changed`)
-    );
-    if (this.state) {
-      Object.entries(this.state).forEach(
-        ([key, val]) =>
-          prevState[key] !== val && console.log(`State '${key}' changed`)
-      );
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { folderId } = this.props;
-
     if (isMobile) {
-      if (folderId !== prevProps.folderId) {
-        this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
+      //if (folderId !== prevProps.folderId) {
+      customScrollElm && customScrollElm.scrollTo(0, 0);
+      //}
+    }
+
+    dragging && window.addEventListener("mouseup", onMouseUp);
+    dragging && document.addEventListener("mousemove", onMouseMove);
+
+    document.addEventListener("dragover", onDragOver);
+    document.addEventListener("dragleave", onDragLeaveDoc);
+    document.addEventListener("drop", onDropEvent);
+    return () => {
+      window.removeEventListener("mouseup", onMouseUp);
+      document.removeEventListener("mousemove", onMouseMove);
+
+      document.removeEventListener("dragover", onDragOver);
+      document.removeEventListener("dragleave", onDragLeaveDoc);
+      document.removeEventListener("drop", onDropEvent);
+    };
+  }, [onMouseUp, onMouseMove, dragging]);
+
+  const onMouseMove = (e) => {
+    !dragging && setDragging(true);
+
+    setTooltipPosition(e.pageX, e.pageY);
+
+    const wrapperElement = document.elementFromPoint(e.clientX, e.clientY);
+    if (!wrapperElement) {
+      return;
+    }
+    const droppable = wrapperElement.closest(".droppable");
+
+    if (currentDroppable !== droppable) {
+      if (currentDroppable) {
+        currentDroppable.classList.remove("droppable-hover");
+      }
+      currentDroppable = droppable;
+
+      if (currentDroppable) {
+        currentDroppable.classList.add("droppable-hover");
+        currentDroppable = droppable;
       }
     }
-  }
+  };
 
-  onDragStart = (e) => {
-    if (e.dataTransfer.dropEffect === "none") {
-      this.props.canDrag && setCanDrag(false);
+  const onMouseUp = (e) => {
+    debugger;
+    document.body.classList.remove("drag-cursor");
+
+    const treeElem = e.target.closest(".tree-drag");
+    const treeClassList = treeElem && treeElem.classList;
+    const isDragging = treeElem && treeClassList.contains("dragging");
+    const treeValue = isDragging
+      ? treeClassList[treeClassList.length - 2].split("_")[1]
+      : null;
+
+    const elem = e.target.closest(".droppable");
+    const value = elem && elem.getAttribute("value");
+    if ((!value && !treeValue) || isRecycleBinFolder) {
+      return setDragging(false);
     }
+
+    const folderId = value ? value.split("_")[1] : treeValue;
+
+    setDragging(false);
+    onMoveTo(folderId);
+    return;
   };
 
-  onDropEvent = () => {
-    this.props.dragging && this.props.setDragging(false);
+  const onMoveTo = (destFolderId) => {
+    const id = isNaN(+destFolderId) ? destFolderId : +destFolderId;
+    moveDragItems(id, t("MoveToOperation")); //TODO: then catch
   };
 
-  onDragOver = (e) => {
+  const onDropEvent = () => {
+    console.log("!!! onDropEvent");
+    dragging && setDragging(false);
+  };
+
+  const onDragOver = (e) => {
+    console.log("!!! onDragOver");
     e.preventDefault();
-    const { dragging, setDragging, canDrag } = this.props;
-    if (e.dataTransfer.items.length > 0 && !dragging && canDrag) {
+    if (e.dataTransfer.items.length > 0 && !dragging) {
+      console.log("!!! setDragging(true)");
       setDragging(true);
     }
   };
 
-  onDragLeaveDoc = (e) => {
+  const onDragLeaveDoc = (e) => {
+    console.log("!!! onDragLeaveDoc", e.relatedTarget);
     e.preventDefault();
-    const { dragging, setDragging } = this.props;
     if (dragging && !e.relatedTarget) {
       setDragging(false);
     }
   };
 
-  render() {
-    const {
-      fileActionId,
-      viewAs,
-      isMobile,
-      firstLoad,
-      isLoading,
-      isEmptyFilesList,
-    } = this.props;
+  //console.log("Files Home SectionBodyContent render", props);
 
-    //console.log("Files Home SectionBodyContent render", this.props);
-
-    return (!fileActionId && isEmptyFilesList) || null ? (
-      firstLoad || (isMobile && isLoading) ? (
-        <Loaders.Rows />
-      ) : (
-        <EmptyContainer />
-      )
-    ) : viewAs === "tile" ? (
-      <FilesTileContainer />
+  return (!fileActionId && isEmptyFilesList) || null ? (
+    firstLoad || (isMobile && isLoading) ? (
+      <Loaders.Rows />
     ) : (
-      <FilesRowContainer />
-    );
+      <EmptyContainer />
+    )
+  ) : viewAs === "tile" ? (
+    <FilesTileContainer />
+  ) : (
+    <FilesRowContainer />
+  );
+};
+
+export default inject(
+  ({
+    initFilesStore,
+    filesStore,
+    //selectedFolderStore,
+    treeFoldersStore,
+    filesActionsStore,
+  }) => {
+    const {
+      dragging,
+      setDragging,
+      isLoading,
+      viewAs,
+      setTooltipPosition,
+    } = initFilesStore;
+    const { firstLoad, fileActionStore, filesList } = filesStore;
+
+    return {
+      dragging,
+      fileActionId: fileActionStore.id,
+      firstLoad,
+      viewAs,
+      isLoading,
+      isEmptyFilesList: filesList.length <= 0,
+      setDragging,
+      //folderId: selectedFolderStore.id,
+      setTooltipPosition,
+      isRecycleBinFolder: treeFoldersStore.isRecycleBinFolder,
+      moveDragItems: filesActionsStore.moveDragItems,
+    };
   }
-}
-
-export default inject(({ initFilesStore, filesStore, selectedFolderStore }) => {
-  const {
-    dragging,
-    setDragging,
-    isLoading,
-    viewAs,
-    canDrag,
-    setCanDrag,
-  } = initFilesStore;
-  const { firstLoad, fileActionStore, filesList } = filesStore;
-
-  const { id: fileActionId } = fileActionStore;
-
-  return {
-    dragging,
-    fileActionId,
-    firstLoad,
-    viewAs,
-    isLoading,
-    isEmptyFilesList: filesList.length <= 0,
-    canDrag,
-    setCanDrag,
-    setDragging,
-    folderId: selectedFolderStore.id,
-  };
-})(withRouter(withTranslation("Home")(observer(SectionBodyContent))));
+)(withRouter(withTranslation("Home")(observer(SectionBodyContent))));

@@ -203,11 +203,14 @@ class TreeFolders extends React.Component {
         : false;
 
       const serviceFolder = !!item.providerKey;
+      let className = `tree-drag tree-id_${item.id}`;
+      if (dragging) className += " dragging";
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
           <TreeNode
             id={item.id}
             key={item.id}
+            className={className}
             title={item.title}
             needTopMargin={item.rootFolderType === FolderType.Privacy}
             icon={this.getFolderIcon(item)}
@@ -238,6 +241,7 @@ class TreeFolders extends React.Component {
         <TreeNode
           id={item.id}
           key={item.id}
+          className={className}
           title={item.title}
           needTopMargin={item.rootFolderType === FolderType.TRASH}
           dragging={dragging}
@@ -382,21 +386,9 @@ class TreeFolders extends React.Component {
     }
   };
 
-  onMouseEnter = (data) => {
-    if (this.props.dragging) {
-      if (data.node.props.dragging) {
-        this.props.setDragItem(data.node.props.id);
-      }
-    }
-  };
-
-  onMouseLeave = () => {
-    if (this.props.dragging) {
-      this.props.setDragItem(null);
-    }
-  };
-
   onDragOver = (data) => {
+    console.log("onDragOver");
+
     const parentElement = data.event.target.parentElement;
     const existElement = parentElement.classList.contains(
       "rc-tree-node-content-wrapper"
@@ -425,13 +417,13 @@ class TreeFolders extends React.Component {
   onDrop = (data) => {
     const { setDragging, onTreeDrop } = this.props;
     const { dragging, id } = data.node.props;
+    //if (dragging) {
     setDragging(false);
-    if (dragging) {
-      const promise = new Promise((resolve) =>
-        onConvertFiles(data.event, resolve)
-      );
-      promise.then((files) => onTreeDrop(files, id));
-    }
+    const promise = new Promise((resolve) =>
+      onConvertFiles(data.event, resolve)
+    );
+    promise.then((files) => onTreeDrop(files, id));
+    //}
   };
 
   render() {
@@ -460,8 +452,6 @@ class TreeFolders extends React.Component {
         loadData={this.onLoadData}
         expandedKeys={expandedKeys}
         onExpand={this.onExpand}
-        onMouseEnter={this.onMouseEnter}
-        onMouseLeave={this.onMouseLeave}
         onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
         onDrop={this.onDrop}
@@ -507,7 +497,7 @@ export default inject(
       isAdmin: auth.isAdmin,
       isDesktop: auth.settingsStore.isDesktopClient,
       dragging,
-      rootFolderId: pathParts,
+      rootFolderId: pathParts ? pathParts[0] : null,
       currentId: id,
       myId: myFolderId,
       commonId: commonFolderId,

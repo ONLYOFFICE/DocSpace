@@ -32,6 +32,7 @@ const StyledTooltip = styled.div`
 const DragTooltip = (props) => {
   const tooltipRef = useRef(null);
   const {
+    t,
     tooltipValue,
     iconOfDraggedFile,
     isSingleItem,

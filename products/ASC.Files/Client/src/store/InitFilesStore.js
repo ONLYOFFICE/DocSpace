@@ -17,9 +17,6 @@ class InitFilesStore {
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
 
-  isDrag = false;
-  canDrag = true;
-
   tooltipPageX = 0;
   tooltipPageY = 0;
 
@@ -48,14 +45,6 @@ class InitFilesStore {
 
   setDragItem = (dragItem) => {
     this.dragItem = dragItem;
-  };
-
-  setIsDrag = (isDrag) => {
-    this.isDrag = isDrag;
-  };
-
-  setCanDrag = (canDrag) => {
-    this.canDrag = canDrag;
   };
 
   setTooltipPosition = (tooltipPageX, tooltipPageY) => {

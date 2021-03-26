@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { ReactSVG } from "react-svg";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
@@ -62,8 +62,6 @@ const EncryptedFileIcon = styled.div`
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 
-let currentDroppable = null;
-
 const SimpleFilesRow = (props) => {
   const {
     t,
@@ -108,11 +106,6 @@ const SimpleFilesRow = (props) => {
     startUpload,
     onSelectItem,
     history,
-    isDrag,
-    setIsDrag,
-    canDrag,
-    setCanDrag,
-    moveDragItems,
     setTooltipPosition,
   } = props;
 
@@ -134,15 +127,6 @@ const SimpleFilesRow = (props) => {
   } = item;
 
   const isThirdPartyFolder = providerKey && isRootFolder;
-
-  useEffect(() => {
-    isDrag && window.addEventListener("mouseup", onMouseUp);
-    isDrag && document.addEventListener("mousemove", onMouseMove);
-    return () => {
-      window.removeEventListener("mouseup", onMouseUp);
-      document.removeEventListener("mousemove", onMouseMove);
-    };
-  }, [onMouseUp, onMouseMove, isDrag]);
 
   const onContentRowSelect = (checked, file) => {
     if (!file) return;
@@ -515,79 +499,7 @@ const SimpleFilesRow = (props) => {
 
     setTooltipPosition(e.pageX, e.pageY);
     document.body.classList.add("drag-cursor");
-    setIsDrag(true);
-  };
-
-  const onMouseMove = (e) => {
-    !dragging && setDragging(true);
-
-    //const tooltip = this.tooltipRef.current;
-    //tooltip.style.display = "block";
-    setTooltipPosition(e.pageX, e.pageY);
-
-    const wrapperElement = document.elementFromPoint(e.clientX, e.clientY);
-    if (!wrapperElement) {
-      return;
-    }
-    const droppable = wrapperElement.closest(".droppable");
-
-    if (currentDroppable !== droppable) {
-      if (currentDroppable) {
-        currentDroppable.classList.remove("droppable-hover");
-      }
-      currentDroppable = droppable;
-
-      if (currentDroppable) {
-        currentDroppable.classList.add("droppable-hover");
-        currentDroppable = droppable;
-      }
-    }
-  };
-
-  const onMouseUp = (e) => {
-    document.body.classList.remove("drag-cursor");
-
-    const elem = e.target.closest(".droppable");
-    const value = elem && elem.getAttribute("value");
-    if (!value) {
-      return onClose();
-    }
-
-    let splitValue = value.split("_");
-
-    if (isDrag || !canDrag) {
-      setIsDrag(false);
-      setCanDrag(true);
-    }
-    const mouseButton = e.which
-      ? e.which !== 1
-      : e.button
-      ? e.button !== 0
-      : false;
-
-    const droppable = isFolder && access < 2 && !isRecycleBin;
-    if (
-      //mouseButton ||
-      //!this.tooltipRef.current ||
-      !droppable
-    ) {
-      return onClose();
-    }
-
-    //this.tooltipRef.current.style.display = "none";
-    onClose();
-    onMoveTo(splitValue[1]);
-    return;
-  };
-
-  const onClose = () => {
-    setIsDrag(false);
-    setDragging(false);
-  };
-
-  const onMoveTo = (destFolderId) => {
-    const id = providerKey ? destFolderId : +destFolderId;
-    moveDragItems(id, t("MoveToOperation")); //TODO: then catch
+    setDragging(true);
   };
 
   const isMobile = sectionWidth < 500;
@@ -658,15 +570,7 @@ export default inject(
     { item }
   ) => {
     const { isTabletView } = auth.settingsStore;
-    const {
-      dragging,
-      setDragging,
-      isDrag,
-      setIsDrag,
-      canDrag,
-      setCanDrag,
-      setTooltipPosition,
-    } = initFilesStore;
+    const { dragging, setDragging, setTooltipPosition } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
@@ -704,7 +608,6 @@ export default inject(
       selectRowAction,
       setThirdpartyInfo,
       onSelectItem,
-      moveDragItems,
     } = filesActionsStore;
 
     const { setMediaViewerData } = mediaViewerDataStore;
@@ -749,11 +652,6 @@ export default inject(
       setDragging,
       startUpload,
       onSelectItem,
-      isDrag,
-      setIsDrag,
-      canDrag,
-      setCanDrag,
-      moveDragItems,
       setTooltipPosition,
     };
   }
