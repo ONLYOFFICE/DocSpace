@@ -1,134 +1,569 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
-import DropDownItem from "../drop-down-item";
-import DropDown from "../drop-down";
+import DomHelpers from "../utils/domHelpers";
+import ObjectUtils from "../utils/objectUtils";
+import { classNames } from "../utils/classNames";
+import { CSSTransition } from "react-transition-group";
+import Portal from "../portal";
+import StyledContextMenu from "./styled-context-menu";
 
-class ContextMenu extends React.PureComponent {
+class ContextMenuSub extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeItem: null,
+    };
+
+    this.onEnter = this.onEnter.bind(this);
+    this.submenuRef = React.createRef();
+  }
+
+  onItemMouseEnter(e, item) {
+    if (item.disabled) {
+      e.preventDefault();
+      return;
+    }
+
+    this.setState({
+      activeItem: item,
+    });
+  }
+
+  onItemClick(e, item) {
+    if (item.disabled) {
+      e.preventDefault();
+      return;
+    }
+
+    if (!item.url) {
+      e.preventDefault();
+    }
+
+    if (item.command) {
+      item.command({
+        originalEvent: e,
+        item: item,
+      });
+    }
+
+    if (!item.items) {
+      this.props.onLeafClick(e);
+    }
+  }
+
+  position() {
+    const parentItem = this.submenuRef.current.parentElement;
+    const containerOffset = DomHelpers.getOffset(
+      this.submenuRef.current.parentElement
+    );
+    const viewport = DomHelpers.getViewport();
+    const sublistWidth = this.submenuRef.current.offsetParent
+      ? this.submenuRef.current.offsetWidth
+      : DomHelpers.getHiddenElementOuterWidth(this.submenuRef.current);
+    const itemOuterWidth = DomHelpers.getOuterWidth(parentItem.children[0]);
+
+    this.submenuRef.current.style.top = "0px";
+
+    if (
+      parseInt(containerOffset.left, 10) + itemOuterWidth + sublistWidth >
+      viewport.width - DomHelpers.calculateScrollbarWidth()
+    ) {
+      this.submenuRef.current.style.left = -1 * sublistWidth + "px";
+    } else {
+      this.submenuRef.current.style.left = itemOuterWidth + "px";
+    }
+  }
+
+  onEnter() {
+    this.position();
+  }
+
+  isActive() {
+    return this.props.root || !this.props.resetMenu;
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.resetMenu === true) {
+      return {
+        activeItem: null,
+      };
+    }
+
+    return null;
+  }
+
+  componentDidUpdate() {
+    if (this.isActive()) {
+      this.position();
+    }
+  }
+
+  renderSeparator(index) {
+    return (
+      <li
+        key={"separator_" + index}
+        className="p-menu-separator"
+        role="separator"
+      ></li>
+    );
+  }
+
+  renderSubmenu(item) {
+    if (item.items) {
+      return (
+        <ContextMenuSub
+          model={item.items}
+          resetMenu={item !== this.state.activeItem}
+          onLeafClick={this.props.onLeafClick}
+        />
+      );
+    }
+
+    return null;
+  }
+
+  renderMenuitem(item, index) {
+    const active = this.state.activeItem === item;
+    const className = classNames(
+      "p-menuitem",
+      { "p-menuitem-active": active },
+      item.className
+    );
+    const linkClassName = classNames("p-menuitem-link", {
+      "p-disabled": item.disabled,
+    });
+    const iconClassName = classNames("p-menuitem-icon", item.icon);
+    const submenuIconClassName = "p-submenu-icon pi pi-angle-right";
+    const icon = item.icon && <span className={iconClassName}></span>;
+    const label = item.label && (
+      <span className="p-menuitem-text">{item.label}</span>
+    );
+    const submenuIcon = item.items && (
+      <span className={submenuIconClassName}></span>
+    );
+    const submenu = this.renderSubmenu(item);
+    let content = (
+      <a
+        href={item.url || "#"}
+        className={linkClassName}
+        target={item.target}
+        onClick={(event) => this.onItemClick(event, item, index)}
+        role="menuitem"
+        aria-haspopup={item.items != null}
+        aria-disabled={item.disabled}
+      >
+        {icon}
+        {label}
+        {submenuIcon}
+        {/*<Ripple />*/}
+      </a>
+    );
+
+    if (item.template) {
+      const defaultContentOptions = {
+        onClick: (event) => this.onItemClick(event, item, index),
+        className: linkClassName,
+        labelClassName: "p-menuitem-text",
+        iconClassName,
+        submenuIconClassName,
+        element: content,
+        props: this.props,
+        active,
+      };
+
+      content = ObjectUtils.getJSXElement(
+        item.template,
+        item,
+        defaultContentOptions
+      );
+    }
+
+    return (
+      <li
+        key={item.label + "_" + index}
+        role="none"
+        className={className}
+        style={item.style}
+        onMouseEnter={(event) => this.onItemMouseEnter(event, item)}
+      >
+        {content}
+        {submenu}
+      </li>
+    );
+  }
+
+  renderItem(item, index) {
+    if (item.separator) return this.renderSeparator(index);
+    else return this.renderMenuitem(item, index);
+  }
+
+  renderMenu() {
+    if (this.props.model) {
+      return this.props.model.map((item, index) => {
+        return this.renderItem(item, index);
+      });
+    }
+
+    return null;
+  }
+
+  render() {
+    const className = classNames({ "p-submenu-list": !this.props.root });
+    const submenu = this.renderMenu();
+    const isActive = this.isActive();
+
+    return (
+      <CSSTransition
+        nodeRef={this.submenuRef}
+        classNames="p-contextmenusub"
+        in={isActive}
+        timeout={{ enter: 0, exit: 0 }}
+        unmountOnExit
+        onEnter={this.onEnter}
+      >
+        <ul ref={this.submenuRef} className={className}>
+          {submenu}
+        </ul>
+      </CSSTransition>
+    );
+  }
+}
+
+ContextMenuSub.propTypes = {
+  model: PropTypes.any,
+  root: PropTypes.bool,
+  className: PropTypes.string,
+  resetMenu: PropTypes.bool,
+  onLeafClick: PropTypes.func,
+};
+
+ContextMenuSub.defaultProps = {
+  model: null,
+  root: false,
+  className: null,
+  resetMenu: false,
+  onLeafClick: null,
+};
+
+class ContextMenu extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       visible: false,
+      reshow: false,
+      resetMenu: false,
     };
+
+    this.onMenuClick = this.onMenuClick.bind(this);
+    this.onLeafClick = this.onLeafClick.bind(this);
+    this.onMenuMouseEnter = this.onMenuMouseEnter.bind(this);
+    this.onEnter = this.onEnter.bind(this);
+    this.onEntered = this.onEntered.bind(this);
+    this.onExit = this.onExit.bind(this);
+    this.onExited = this.onExited.bind(this);
+
+    this.menuRef = React.createRef();
+  }
+
+  onMenuClick() {
+    this.setState({
+      resetMenu: false,
+    });
+  }
+
+  onMenuMouseEnter() {
+    this.setState({
+      resetMenu: false,
+    });
+  }
+
+  show(e) {
+    if (!(e instanceof Event)) {
+      e.persist();
+    }
+
+    e.stopPropagation();
+    e.preventDefault();
+
+    this.currentEvent = e;
+
+    if (this.state.visible) {
+      this.setState({ reshow: true });
+    } else {
+      this.setState({ visible: true }, () => {
+        if (this.props.onShow) {
+          this.props.onShow(this.currentEvent);
+        }
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.visible && prevState.reshow !== this.state.reshow) {
+      let event = this.currentEvent;
+      this.setState(
+        {
+          visible: false,
+          reshow: false,
+          rePosition: false,
+          resetMenu: true,
+        },
+        () => this.show(event)
+      );
+    }
+  }
+
+  hide(e) {
+    if (!(e instanceof Event)) {
+      e.persist();
+    }
+
+    this.currentEvent = e;
+    this.setState({ visible: false, reshow: false }, () => {
+      if (this.props.onHide) {
+        this.props.onHide(this.currentEvent);
+      }
+    });
+  }
+
+  onEnter() {
+    if (this.props.autoZIndex) {
+      this.menuRef.current.style.zIndex = String(
+        this.props.baseZIndex + DomHelpers.generateZIndex()
+      );
+    }
+
+    this.position(this.currentEvent);
+  }
+
+  onEntered() {
+    this.bindDocumentListeners();
+  }
+
+  onExit() {
+    this.currentEvent = null;
+    this.unbindDocumentListeners();
+  }
+
+  onExited() {
+    DomHelpers.revertZIndex();
+  }
+
+  position(event) {
+    if (event) {
+      let left = event.pageX + 1;
+      let top = event.pageY + 1;
+      let width = this.menuRef.current.offsetParent
+        ? this.menuRef.current.offsetWidth
+        : DomHelpers.getHiddenElementOuterWidth(this.menuRef.current);
+      let height = this.menuRef.current.offsetParent
+        ? this.menuRef.current.offsetHeight
+        : DomHelpers.getHiddenElementOuterHeight(this.menuRef.current);
+      let viewport = DomHelpers.getViewport();
+
+      //flip
+      if (left + width - document.body.scrollLeft > viewport.width) {
+        left -= width;
+      }
+
+      //flip
+      if (top + height - document.body.scrollTop > viewport.height) {
+        top -= height;
+      }
+
+      //fit
+      if (left < document.body.scrollLeft) {
+        left = document.body.scrollLeft;
+      }
+
+      //fit
+      if (top < document.body.scrollTop) {
+        top = document.body.scrollTop;
+      }
+
+      this.menuRef.current.style.left = left + "px";
+      this.menuRef.current.style.top = top + "px";
+    }
+  }
+
+  onLeafClick(e) {
+    this.setState({
+      resetMenu: true,
+    });
+
+    this.hide(e);
+
+    e.stopPropagation();
+  }
+
+  isOutsideClicked(e) {
+    return (
+      this.menuRef &&
+      this.menuRef.current &&
+      !(
+        this.menuRef.current.isSameNode(e.target) ||
+        this.menuRef.current.contains(e.target)
+      )
+    );
+  }
+
+  bindDocumentListeners() {
+    this.bindDocumentResizeListener();
+    this.bindDocumentClickListener();
+  }
+
+  unbindDocumentListeners() {
+    this.unbindDocumentResizeListener();
+    this.unbindDocumentClickListener();
+  }
+
+  bindDocumentClickListener() {
+    if (!this.documentClickListener) {
+      this.documentClickListener = (e) => {
+        if (this.isOutsideClicked(e) && e.button !== 2) {
+          this.hide(e);
+
+          this.setState({
+            resetMenu: true,
+          });
+        }
+      };
+
+      document.addEventListener("click", this.documentClickListener);
+    }
+  }
+
+  bindDocumentContextMenuListener() {
+    if (!this.documentContextMenuListener) {
+      this.documentContextMenuListener = (e) => {
+        this.show(e);
+      };
+
+      document.addEventListener(
+        "contextmenu",
+        this.documentContextMenuListener
+      );
+    }
+  }
+
+  bindDocumentResizeListener() {
+    if (!this.documentResizeListener) {
+      this.documentResizeListener = (e) => {
+        if (this.state.visible) {
+          this.hide(e);
+        }
+      };
+
+      window.addEventListener("resize", this.documentResizeListener);
+    }
+  }
+
+  unbindDocumentClickListener() {
+    if (this.documentClickListener) {
+      document.removeEventListener("click", this.documentClickListener);
+      this.documentClickListener = null;
+    }
+  }
+
+  unbindDocumentContextMenuListener() {
+    if (this.documentContextMenuListener) {
+      document.removeEventListener(
+        "contextmenu",
+        this.documentContextMenuListener
+      );
+      this.documentContextMenuListener = null;
+    }
+  }
+
+  unbindDocumentResizeListener() {
+    if (this.documentResizeListener) {
+      window.removeEventListener("resize", this.documentResizeListener);
+      this.documentResizeListener = null;
+    }
   }
 
   componentDidMount() {
-    this.container =
-      document.getElementById(this.props.targetAreaId) || document;
-
-    this.container.addEventListener("contextmenu", this.handleContextMenu);
+    if (this.props.global) {
+      this.bindDocumentContextMenuListener();
+    }
   }
 
   componentWillUnmount() {
-    this.container.removeEventListener("contextmenu", this.handleContextMenu);
+    this.unbindDocumentListeners();
+    this.unbindDocumentContextMenuListener();
+
+    DomHelpers.revertZIndex();
   }
 
-  moveMenu = (e) => {
-    const menu = document.getElementById(this.props.id);
-
-    const bounds =
-      this.container !== document && this.container.getBoundingClientRect();
-    const clickX = e.clientX - bounds.left;
-    const clickY = e.clientY - bounds.top;
-    const containerWidth = this.container.offsetWidth;
-    const containerHeight = this.container.offsetHeight;
-    const menuWidth = (menu && menu.offsetWidth) || 180;
-    const menuHeight = menu && menu.offsetHeight;
-
-    const right = containerWidth - clickX < menuWidth && clickX > menuWidth;
-    const bottom = containerHeight - clickY < menuHeight && clickY > menuHeight;
-
-    let newTop = `0px`;
-    let newLeft = `0px`;
-
-    newLeft = right ? `${clickX - menuWidth - 8}px` : `${clickX + 8}px`;
-    newTop = bottom ? `${clickY - menuHeight}px` : `${clickY}px`;
-
-    if (menu) {
-      menu.style.top = newTop;
-      menu.style.left = newLeft;
-    }
-  };
-
-  handleContextMenu = (e) => {
-    if (e) {
-      e.preventDefault();
-      this.handleClick(e);
-    }
-
-    this.setState(
-      {
-        visible: true,
-      },
-      () => this.moveMenu(e)
+  renderContextMenu() {
+    const className = classNames(
+      "p-contextmenu p-component",
+      this.props.className
     );
-  };
-
-  handleClick = (e) => {
-    const { visible } = this.state;
-    const menu = document.getElementById(this.props.id);
-    const wasOutside = e.target ? !(e.target.contains === menu) : true;
-
-    if (wasOutside && visible) this.setState({ visible: false });
-  };
-
-  itemClick = (action, e) => {
-    action && action(e);
-
-    this.setState({ visible: false });
-  };
-
-  render() {
-    //console.log('ContextMenu render', this.props);
-    const { visible } = this.state;
-    const { options, id, className, style, withBackdrop } = this.props;
 
     return (
-      ((visible && options) || null) && (
-        <DropDown
-          id={id}
+      <CSSTransition
+        nodeRef={this.menuRef}
+        classNames="p-contextmenu"
+        in={this.state.visible}
+        timeout={{ enter: 250, exit: 0 }}
+        unmountOnExit
+        onEnter={this.onEnter}
+        onEntered={this.onEntered}
+        onExit={this.onExit}
+        onExited={this.onExited}
+      >
+        <div
+          ref={this.menuRef}
+          id={this.props.id}
           className={className}
-          style={style}
-          open={visible}
-          clickOutsideAction={this.handleClick}
-          withBackdrop={withBackdrop}
+          style={this.props.style}
+          onClick={this.onMenuClick}
+          onMouseEnter={this.onMenuMouseEnter}
         >
-          {options.map((item) => {
-            if (item && item.key !== undefined) {
-              return (
-                <DropDownItem
-                  key={item.key}
-                  {...item}
-                  onClick={this.itemClick.bind(this, item.onClick)}
-                />
-              );
-            }
-          })}
-        </DropDown>
-      )
+          <ContextMenuSub
+            model={this.props.model}
+            root
+            resetMenu={this.state.resetMenu}
+            onLeafClick={this.onLeafClick}
+          />
+        </div>
+      </CSSTransition>
     );
+  }
+
+  render() {
+    const element = this.renderContextMenu();
+
+    return <Portal element={element} appendTo={this.props.appendTo} />;
   }
 }
 
 ContextMenu.propTypes = {
-  /** DropDownItems collection */
-  options: PropTypes.array,
-  /** Id of container apply to */
-  targetAreaId: PropTypes.string,
-  /** Accepts class */
-  className: PropTypes.string,
-  /** Accepts id */
   id: PropTypes.string,
-  /** Accepts css style */
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** Used to display backdrop */
-  withBackdrop: PropTypes.bool,
+  model: PropTypes.array,
+  style: PropTypes.object,
+  className: PropTypes.string,
+  global: PropTypes.bool,
+  autoZIndex: PropTypes.bool,
+  baseZIndex: PropTypes.number,
+  appendTo: PropTypes.any,
+  onShow: PropTypes.func,
+  onHide: PropTypes.func,
 };
 
 ContextMenu.defaultProps = {
-  options: [],
-  id: "contextMenu",
-  withBackdrop: true,
+  id: null,
+  model: null,
+  style: null,
+  className: null,
+  global: false,
+  autoZIndex: true,
+  baseZIndex: 0,
+  appendTo: null,
+  onShow: null,
+  onHide: null,
 };
 
 export default ContextMenu;

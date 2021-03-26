@@ -1,14 +1,10 @@
-import React from "react";
+import React, { useRef } from "react";
 
-import RowContainer from "../row-container";
-import RowContent from "../row-content";
-import Row from "../row";
 import ContextMenu from "./index";
 
 export default {
   title: "Components/ContextMenu",
   component: ContextMenu,
-  subcomponents: { RowContainer, Row, RowContent },
   parameters: {
     docs: {
       description: {
@@ -24,37 +20,121 @@ In particular case, state is created containing options for particular Row eleme
   },
 };
 
-const getRndString = (n) =>
-  Math.random()
-    .toString(36)
-    .substring(2, n + 2);
+const Template = (args) => {
+  const cm = useRef(null);
+  const items = [
+    {
+      label: "File",
+      items: [
+        {
+          label: "New",
+          items: [
+            {
+              label: "Bookmark",
+            },
+            {
+              label: "Video",
+            },
+          ],
+        },
+        {
+          label: "Delete",
+        },
+        {
+          separator: true,
+        },
+        {
+          label: "Export",
+        },
+      ],
+    },
+    {
+      label: "Edit",
+      items: [
+        {
+          label: "Left",
+        },
+        {
+          label: "Right",
+        },
+        {
+          label: "Center",
+        },
+        {
+          label: "Justify",
+        },
+      ],
+    },
+    {
+      label: "Users",
+      items: [
+        {
+          label: "New",
+        },
+        {
+          label: "Delete",
+        },
+        {
+          label: "Search",
+          items: [
+            {
+              label: "Filter",
+              items: [
+                {
+                  label: "Print",
+                },
+              ],
+            },
+            {
+              label: "List",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Events",
+      items: [
+        {
+          label: "Edit",
+          items: [
+            {
+              label: "Save",
+            },
+            {
+              label: "Delete",
+            },
+          ],
+        },
+        {
+          label: "Archieve",
+          items: [
+            {
+              label: "Remove",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      separator: true,
+    },
+    {
+      label: "Quit",
+    },
+  ];
 
-const array = Array.from(Array(10).keys());
-const Template = (args) => (
-  <RowContainer {...args} manualHeight="300px">
-    {array.map((item, index) => {
-      return (
-        <Row
-          key={`${item + 1}`}
-          contextOptions={
-            index !== 3
-              ? [
-                  { key: 1, label: getRndString(5) },
-                  { key: 2, label: getRndString(5) },
-                  { key: 3, label: getRndString(5) },
-                  { key: 4, label: getRndString(5) },
-                ]
-              : []
-          }
-        >
-          <RowContent>
-            <span>{getRndString(5)}</span>
-            <></>
-          </RowContent>
-        </Row>
-      );
-    })}
-  </RowContainer>
-);
+  return (
+    <div>
+      <ContextMenu model={items} ref={cm}></ContextMenu>
+
+      <img
+        src="https://cdn2.thecatapi.com/images/ac8.jpg"
+        alt="Logo"
+        onContextMenu={(e) => cm.current.show(e)}
+      />
+    </div>
+  );
+};
 
 export const Default = Template.bind({});
