@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -68,28 +69,6 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                     table.PrimaryKey("PK_login_events", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "webstudio_settings",
-                columns: table => new
-                {
-                    TenantID = table.Column<int>(type: "int", nullable: false),
-                    ID = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    UserID = table.Column<string>(type: "varchar(64)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    Data = table.Column<string>(type: "mediumtext", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PRIMARY", x => new { x.TenantID, x.ID, x.UserID });
-                });
-
-            migrationBuilder.InsertData(
-                table: "webstudio_settings",
-                columns: new[] { "ID", "TenantID", "UserID", "Data" },
-                values: new object[] { "9a925891-1f92-4ed7-b277-d6f649739f06", 1, "00000000-0000-0000-0000-000000000000", "{'Completed':false}" });
-
             migrationBuilder.CreateIndex(
                 name: "date",
                 table: "audit_events",
@@ -104,11 +83,6 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                 name: "tenant_id",
                 table: "login_events",
                 columns: new[] { "tenant_id", "user_id" });
-
-            migrationBuilder.CreateIndex(
-                name: "ID",
-                table: "webstudio_settings",
-                column: "ID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -118,9 +92,6 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
 
             migrationBuilder.DropTable(
                 name: "login_events");
-
-            migrationBuilder.DropTable(
-                name: "webstudio_settings");
         }
     }
 }

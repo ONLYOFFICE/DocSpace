@@ -247,48 +247,6 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                         });
                 });
 
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioSettings", b =>
-                {
-                    b.Property<int>("TenantId")
-                        .HasColumnType("int")
-                        .HasColumnName("TenantID");
-
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(64)")
-                        .HasColumnName("ID")
-                        .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(64)")
-                        .HasColumnName("UserID")
-                        .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
-
-                    b.Property<string>("Data")
-                        .IsRequired()
-                        .HasColumnType("mediumtext")
-                        .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
-
-                    b.HasKey("TenantId", "Id", "UserId")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex("Id")
-                        .HasDatabaseName("ID");
-
-                    b.ToTable("webstudio_settings");
-
-                    b.HasData(
-                        new
-                        {
-                            TenantId = 1,
-                            Id = "9a925891-1f92-4ed7-b277-d6f649739f06",
-                            UserId = "00000000-0000-0000-0000-000000000000",
-                            Data = "{'Completed':false}"
-                        });
-                });
-
             modelBuilder.Entity("ASC.Core.Common.EF.Model.LoginEvents", b =>
                 {
                     b.Property<int>("Id")

@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
@@ -60,16 +61,6 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                 table: "webstudio_settings",
                 columns: new[] { "ID", "TenantID", "UserID", "Data" },
                 values: new object[] { "9a925891-1f92-4ed7-b277-d6f649739f06", 1, "00000000-0000-0000-0000-000000000000", "{'Completed':false}" });
-
-            migrationBuilder.InsertData(
-                table: "webstudio_uservisit",
-                columns: new[] { "productid", "tenantid", "userid", "visitdate", "firstvisittime", "lastvisittime", "visitcount" },
-                values: new object[,]
-                {
-                    { "00000000-0000-0000-0000-000000000000", 1, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 3, 9, 10, 3, 42, 561, DateTimeKind.Utc).AddTicks(7735), new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(1507), new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2187), 3 },
-                    { "00000000-0000-0000-0000-000000000000", 1, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2849), new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2872), new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2874), 2 },
-                    { "e67be73d-f9ae-4ce1-8fec-1880cb518cb4", 1, "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2876), new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2882), new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2883), 1 }
-                });
 
             migrationBuilder.CreateIndex(
                 name: "ID",

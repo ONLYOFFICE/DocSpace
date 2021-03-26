@@ -120,38 +120,6 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                         .HasDatabaseName("visitdate");
 
                     b.ToTable("webstudio_uservisit");
-
-                    b.HasData(
-                        new
-                        {
-                            TenantId = 1,
-                            VisitDate = new DateTime(2021, 3, 9, 10, 3, 42, 561, DateTimeKind.Utc).AddTicks(7735),
-                            ProductId = "00000000-0000-0000-0000-000000000000",
-                            UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            FirstVisitTime = new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(1507),
-                            LastVisitTime = new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2187),
-                            VisitCount = 3
-                        },
-                        new
-                        {
-                            TenantId = 1,
-                            VisitDate = new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2849),
-                            ProductId = "00000000-0000-0000-0000-000000000000",
-                            UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            FirstVisitTime = new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2872),
-                            LastVisitTime = new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2874),
-                            VisitCount = 2
-                        },
-                        new
-                        {
-                            TenantId = 1,
-                            VisitDate = new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2876),
-                            ProductId = "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
-                            UserId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            FirstVisitTime = new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2882),
-                            LastVisitTime = new DateTime(2021, 3, 9, 10, 3, 42, 562, DateTimeKind.Utc).AddTicks(2883),
-                            VisitCount = 1
-                        });
                 });
 #pragma warning restore 612, 618
         }
