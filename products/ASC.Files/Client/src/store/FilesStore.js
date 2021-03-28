@@ -753,7 +753,9 @@ class FilesStore {
       : selection.find((x) => canFormFillingDocs(x.fileExst));
 
     const webFilter = editorAccessRights
-      ? editorAccessRights.edit && !editorAccessRights.modifyFilter //TODO: is it always true ?
+      ? !editorAccessRights.changeHistory &&
+        editorAccessRights.modifyFilter &&
+        !editorAccessRights.fillForms //TODO: is it always true ?
       : selection.find((x) => canWebFilterEditing(x.fileExst));
 
     if (webEdit || !externalAccess) AccessOptions.push("FullAccess");

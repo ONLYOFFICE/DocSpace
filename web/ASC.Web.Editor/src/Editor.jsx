@@ -185,7 +185,11 @@ const Editor = ({
         );
       }
 
-      if (config) {
+      if (
+        config &&
+        config.document.permissions.edit &&
+        config.document.permissions.modifyFilter
+      ) {
         getShareUsersList(true);
       }
 
@@ -303,9 +307,10 @@ const Editor = ({
           onInfo: onSDKInfo,
           onWarning: onSDKWarning,
           onError: onSDKError,
-          ...(config.document.permissions.edit && {
-            onRequestSharingSettings: onSDKRequestSharingSettings,
-          }),
+          ...(config.document.permissions.edit &&
+            config.document.permissions.modifyFilter && {
+              onRequestSharingSettings: onSDKRequestSharingSettings,
+            }),
         },
       };
 
