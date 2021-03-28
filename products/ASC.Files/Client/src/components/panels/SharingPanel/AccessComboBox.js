@@ -41,7 +41,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("FilterEditing") && (
         <DropDownItem
           label={t("CustomFilter")}
-          icon="images/custom.filter.react.svg"
+          icon="/static/images/custom.filter.react.svg"
           data-id={itemId}
           data-access={CustomFilter}
           onClick={onAccessChange}
