@@ -22,6 +22,7 @@ import { getUser } from "@appserver/common/api/people";
 import throttle from "lodash/throttle";
 import { isIOS, deviceType } from "react-device-detect";
 import { homepage } from "../package.json";
+
 import "./custom.scss";
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingPanel from "files/SharingPanel";
@@ -43,6 +44,9 @@ let fileType = null;
 let config;
 let docSaved = null;
 let docEditor;
+
+const url = window.location.href;
+const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
 const Editor = ({
   uploadPanelVisible,
@@ -274,6 +278,16 @@ const Editor = ({
       if (window.innerWidth < 720) {
         config.type = "mobile";
       }
+
+      config.editorConfig.customization = {
+        ...config.editorConfig.customization,
+        goback: {
+          blank: true,
+          requestClose: false,
+          text: i18n.t("FileLocation"),
+          url: `${filesUrl}`,
+        },
+      };
 
       const events = {
         events: {
