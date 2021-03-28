@@ -423,6 +423,7 @@ class SharingPanelComponent extends React.Component {
       isLoading,
       uploadPanelVisible,
       isSharingPanelVisible,
+      documentTitle,
     } = this.props;
     const {
       showActionPanel,
@@ -534,6 +535,7 @@ class SharingPanelComponent extends React.Component {
                   onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
                   isLoading={isLoading}
                   isEditor={isEditor}
+                  documentTitle={documentTitle}
                 />
               ))}
               {isNotifyUsers && (

@@ -41,10 +41,14 @@ class SharingRow extends React.Component {
   };
 
   onShareEmail = () => {
-    const { selection, item, t } = this.props;
+    const { selection, item, t, documentTitle, isEditor } = this.props;
     const { shareLink } = item.sharedTo;
 
-    const itemName = selection.title ? selection.title : selection[0].title;
+    const itemName = isEditor
+      ? documentTitle
+      : selection.title
+      ? selection.title
+      : selection[0].title;
     const subject = t("ShareEmailSubject", { itemName });
     const body = t("ShareEmailBody", { itemName, shareLink });
 

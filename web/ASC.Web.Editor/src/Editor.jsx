@@ -385,6 +385,7 @@ const Editor = ({
               openFileId={fileId}
               refreshRightsList={refreshRightsList}
               editorAccessRights={config && config.document.permissions}
+              documentTitle={config && config.document.title}
             />
           )}
         </>
