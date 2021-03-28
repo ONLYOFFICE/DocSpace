@@ -298,7 +298,9 @@ const Editor = ({
           onInfo: onSDKInfo,
           onWarning: onSDKWarning,
           onError: onSDKError,
-          onRequestSharingSettings: onSDKRequestSharingSettings,
+          ...(config.document.permissions.edit && {
+            onRequestSharingSettings: onSDKRequestSharingSettings,
+          }),
         },
       };
 
