@@ -21,7 +21,7 @@ export const getAccessIcon = (access) => {
     case 7:
       return "/static/images/access.form.react.svg";
     case 8:
-      return "images/custom.filter.react.svg";
+      return "/static/images/custom.filter.react.svg";
     default:
       return;
   }

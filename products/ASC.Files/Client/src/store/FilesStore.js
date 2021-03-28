@@ -732,38 +732,37 @@ class FilesStore {
   }
 
   getOptions = (selection, editorAccessRights, externalAccess = false) => {
-    //debugger;
     let AccessOptions = [];
+
     AccessOptions.push("ReadOnly", "DenyAccess");
 
-    if (!editorAccessRights) {
-      const webEdit = selection.find((x) => canWebEdit(x.fileExst));
-      const webComment = selection.find((x) => canWebComment(x.fileExst));
-      const webReview = selection.find((x) => canWebReview(x.fileExst));
-      const formFillingDocs = selection.find((x) =>
-        canFormFillingDocs(x.fileExst)
-      );
-      const webFilter = selection.find((x) => canWebFilterEditing(x.fileExst));
+    const webEdit = editorAccessRights
+      ? editorAccessRights.edit
+      : selection.find((x) => canWebEdit(x.fileExst));
 
-      if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
+    const webComment = editorAccessRights
+      ? editorAccessRights.comment
+      : selection.find((x) => canWebComment(x.fileExst));
 
-      if (webComment) AccessOptions.push("Comment");
-      if (webReview) AccessOptions.push("Review");
-      if (formFillingDocs) AccessOptions.push("FormFilling");
-      if (webFilter) AccessOptions.push("FilterEditing");
-    } else {
-      const webEdit = editorAccessRights.edit;
-      const webComment = editorAccessRights.comment;
-      const webReview = editorAccessRights.review;
-      const formFillingDocs = editorAccessRights.fillForms;
-      //const webFilter = editorAccessRights.modifyFilter; //TODO: is it right?
+    const webReview = editorAccessRights
+      ? editorAccessRights.review
+      : selection.find((x) => canWebReview(x.fileExst));
 
-      if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
-      if (webComment) AccessOptions.push("Comment");
-      if (webReview) AccessOptions.push("Review");
-      if (formFillingDocs) AccessOptions.push("FormFilling");
-      //if (webFilter) AccessOptions.push("FilterEditing");
-    }
+    const formFillingDocs = editorAccessRights
+      ? editorAccessRights.fillForms
+      : selection.find((x) => canFormFillingDocs(x.fileExst));
+
+    const webFilter = editorAccessRights
+      ? editorAccessRights.edit && !editorAccessRights.modifyFilter //TODO: is it always true ?
+      : selection.find((x) => canWebFilterEditing(x.fileExst));
+
+    if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
+
+    if (webComment) AccessOptions.push("Comment");
+    if (webReview) AccessOptions.push("Review");
+    if (formFillingDocs) AccessOptions.push("FormFilling");
+    if (webFilter) AccessOptions.push("FilterEditing");
+
     return AccessOptions;
   };
 

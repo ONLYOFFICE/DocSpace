@@ -26,17 +26,20 @@ import { homepage } from "../package.json";
 import "./custom.scss";
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingPanel from "files/SharingPanel";
-import { inject, observer } from "mobx-react";
+
+import i18n from "./i18n";
 
 import { Provider as MobxProvider } from "mobx-react";
-
-import store from "studio/store";
+import { inject, observer } from "mobx-react";
 import initFilesStore from "files/InitFilesStore";
 import filesStore from "files/FilesStore";
 import uploadDataStore from "files/UploadDataStore";
 import dialogsStore from "files/DialogsStore";
 import treeFoldersStore from "files/TreeFoldersStore";
-import i18n from "./i18n";
+
+import store from "studio/store";
+const { auth: authStore } = store;
+
 let documentIsReady = false;
 
 let docTitle = null;
@@ -77,27 +80,29 @@ const Editor = ({
     let sharingSettings = [];
     const folderId = [];
 
-    getShareUsers(folderId, [+fileId]).then((result) => {
-      for (let i = 1; i < result.length; i++) {
+    getShareUsers(folderId, [+fileId]).then((shareDataItems) => {
+      for (let i = 1; i < shareDataItems.length; i++) {
         let resultAccess =
-          result[i].access === 1
+          shareDataItems[i].access === 1
             ? i18n.t("FullAccess")
-            : result[i].access === 2
+            : shareDataItems[i].access === 2
             ? i18n.t("ReadOnly")
-            : result[i].access === 3
+            : shareDataItems[i].access === 3
             ? i18n.t("DenyAccess")
-            : result[i].access === 4
-            ? i18n.t("CustomFilter")
-            : result[i].access === 5
+            : shareDataItems[i].access === 5
             ? i18n.t("Review")
-            : result[i].access === 6
+            : shareDataItems[i].access === 6
             ? i18n.t("Comment")
-            : result[i].access === 7
+            : shareDataItems[i].access === 7
             ? i18n.t("FormFilling")
+            : shareDataItems[i].access === 8
+            ? i18n.t("CustomFilter")
             : "";
 
         let obj = {
-          user: result[i].sharedTo.displayName || result[i].sharedTo.name,
+          user:
+            shareDataItems[i].sharedTo.displayName ||
+            shareDataItems[i].sharedTo.name,
           permissions: resultAccess,
         };
         sharingSettings.push(obj);
@@ -377,6 +382,7 @@ const Editor = ({
       {!isLoading ? (
         <>
           <div id="editor"></div>
+
           {sharingPanelVisible && (
             <SharingPanel
               key="sharing-panel"
@@ -414,7 +420,7 @@ const EditorWrapper = inject(
 
 export default () => (
   <MobxProvider
-    {...store}
+    auth={authStore}
     initFilesStore={initFilesStore}
     filesStore={filesStore}
     uploadDataStore={uploadDataStore}
