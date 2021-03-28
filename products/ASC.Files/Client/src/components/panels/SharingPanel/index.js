@@ -327,7 +327,8 @@ class SharingPanelComponent extends React.Component {
   };
 
   getInternalLink = () => {
-    const { homepage, selection, openFileId } = this.props;
+    const { homepage, selection } = this.props;
+
     if (!isEditor) {
       const item = selection[0];
       const isFile = !!item.fileExst;
@@ -339,8 +340,7 @@ class SharingPanelComponent extends React.Component {
           ? `${window.location.href}&preview=${item.id}`
           : item.webUrl
         : `${window.location.origin + homepage}/filter?folder=${item.id}`;
-    } else
-      return `${window.location.origin + homepage}/filter?folder=${openFileId}`;
+    } else return `${window.location.href}`;
   };
 
   onShowEmbeddingPanel = (link) =>
