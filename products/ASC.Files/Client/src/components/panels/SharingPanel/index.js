@@ -118,7 +118,7 @@ class SharingPanelComponent extends React.Component {
       setEncryptionAccess,
       setShareFiles,
       openFileId,
-      refreshRightsList,
+      updateUsersRightsList,
     } = this.props;
 
     let folderIds = [];
@@ -216,7 +216,7 @@ class SharingPanelComponent extends React.Component {
         }
         return Promise.resolve();
       })
-      .then(() => isEditor && refreshRightsList())
+      .then(() => isEditor && updateUsersRightsList())
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
   };
@@ -231,7 +231,6 @@ class SharingPanelComponent extends React.Component {
     });
 
   onChangeItemAccess = (e) => {
-    //debugger;
     const id = e.currentTarget.dataset.id;
     const access = e.currentTarget.dataset.access;
     const shareDataItems = this.state.shareDataItems;
@@ -240,7 +239,6 @@ class SharingPanelComponent extends React.Component {
     if (elem.access !== +access) {
       elem.access = +access;
       this.setState({ shareDataItems });
-      console.log("Shared", elem, elem.access);
     }
   };
 
@@ -284,18 +282,9 @@ class SharingPanelComponent extends React.Component {
       editorAccessRights,
     } = this.props;
 
-    let folderId = [];
-    let fileId = [];
-
-    if (isEditor) {
-      fileId = [Number(openFileId)];
-    } else {
-      const returnValue = this.getData();
-      folderId = returnValue[0];
-      fileId = returnValue[1];
-    }
-
-    //debugger;
+    const returnValue = isEditor ? null : this.getData();
+    const folderId = isEditor ? [] : returnValue[0];
+    const fileId = isEditor ? [+openFileId] : returnValue[1];
 
     if (folderId.length !== 0 || fileId.length !== 0) {
       setIsLoading(true);

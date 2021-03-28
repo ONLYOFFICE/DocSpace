@@ -114,7 +114,7 @@ const Editor = ({
     });
   };
 
-  const refreshRightsList = () => {
+  const updateUsersRightsList = () => {
     if (docEditor) getShareUsersList(false);
   };
 
@@ -383,7 +383,7 @@ const Editor = ({
               uploadPanelVisible={uploadPanelVisible}
               isSharingPanelVisible={sharingPanelVisible}
               openFileId={fileId}
-              refreshRightsList={refreshRightsList}
+              updateUsersRightsList={updateUsersRightsList}
               editorAccessRights={config && config.document.permissions}
               documentTitle={config && config.document.title}
             />
