@@ -166,6 +166,7 @@ class FilesStore {
   };
 
   setSelection = (selection) => {
+    console.log(selection);
     this.selection = selection;
   };
 
@@ -600,6 +601,11 @@ class FilesStore {
       //const isCanWebEdit = canWebEdit(item.fileExst);
       const icon = getIcon(24, fileExst, providerKey);
 
+      let isFolder = false;
+      this.folders.map((x) => {
+        if (x.id === item.id) isFolder = true;
+      });
+
       return {
         access,
         //checked,
@@ -616,7 +622,7 @@ class FilesStore {
         foldersCount,
         icon,
         id,
-        //isFolder,
+        isFolder,
         locked,
         new: item.new,
         parentId,

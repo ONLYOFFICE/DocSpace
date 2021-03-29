@@ -17,7 +17,7 @@ import {
   finalizeVersion,
   lockFile,
   downloadFiles,
-  markAsRead
+  markAsRead,
 } from "@appserver/common/api/files";
 import { FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
@@ -493,8 +493,8 @@ class FilesActionStore {
   };
 
   markAsRead = (folderIds, fileId) => {
-    return markAsRead(folderIds, fileId)
-  }
+    return markAsRead(folderIds, fileId);
+  };
 }
 
 export default new FilesActionStore();
