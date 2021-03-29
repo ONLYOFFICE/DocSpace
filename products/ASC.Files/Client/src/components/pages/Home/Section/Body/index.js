@@ -18,6 +18,7 @@ const SectionBodyContent = (props) => {
     firstLoad,
     isLoading,
     isEmptyFilesList,
+    folderId,
     dragging,
     setDragging,
     setTooltipPosition,
@@ -48,7 +49,7 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
     };
-  });
+  }, [onMouseUp, onMouseMove, dragging, folderId]);
 
   const onMouseMove = (e) => {
     !dragging && setDragging(true);
@@ -143,7 +144,13 @@ const SectionBodyContent = (props) => {
 };
 
 export default inject(
-  ({ initFilesStore, filesStore, treeFoldersStore, filesActionsStore }) => {
+  ({
+    initFilesStore,
+    filesStore,
+    selectedFolderStore,
+    treeFoldersStore,
+    filesActionsStore,
+  }) => {
     const {
       dragging,
       setDragging,
@@ -161,6 +168,7 @@ export default inject(
       isLoading,
       isEmptyFilesList: filesList.length <= 0,
       setDragging,
+      folderId: selectedFolderStore.id,
       setTooltipPosition,
       isRecycleBinFolder: treeFoldersStore.isRecycleBinFolder,
       moveDragItems: filesActionsStore.moveDragItems,
