@@ -145,20 +145,12 @@ class SectionBody extends React.Component {
             </Scrollbar>
           ) : (
             <LayoutContextConsumer>
-              {(ref) => (
-                <SelectedFrame
-                  viewAs={viewAs}
-                  scrollRef={ref.scrollRefLayout}
-                  setSelections={setSelections}
-                >
-                  <div className="section-wrapper">
-                    <div className="section-wrapper-content" {...focusProps}>
-                      {children}
-                      <StyledSpacer pinned={pinned} />
-                    </div>
-                  </div>
-                </SelectedFrame>
-              )}
+              <div className="section-wrapper">
+                <div className="section-wrapper-content" {...focusProps}>
+                  {children}
+                  <StyledSpacer pinned={pinned} />
+                </div>
+              </div>
             </LayoutContextConsumer>
           )
         ) : (
