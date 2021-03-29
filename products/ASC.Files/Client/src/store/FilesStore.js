@@ -731,32 +731,22 @@ class FilesStore {
     return this.selection.find((el) => el.title).title;
   }
 
-  getOptions = (selection, editorAccessRights, externalAccess = false) => {
+  getOptions = (selection, externalAccess = false) => {
     let AccessOptions = [];
 
     AccessOptions.push("ReadOnly", "DenyAccess");
 
-    const webEdit = editorAccessRights
-      ? editorAccessRights.edit
-      : selection.find((x) => canWebEdit(x.fileExst));
+    const webEdit = selection.find((x) => canWebEdit(x.fileExst));
 
-    const webComment = editorAccessRights
-      ? editorAccessRights.comment
-      : selection.find((x) => canWebComment(x.fileExst));
+    const webComment = selection.find((x) => canWebComment(x.fileExst));
 
-    const webReview = editorAccessRights
-      ? editorAccessRights.review
-      : selection.find((x) => canWebReview(x.fileExst));
+    const webReview = selection.find((x) => canWebReview(x.fileExst));
 
-    const formFillingDocs = editorAccessRights
-      ? editorAccessRights.fillForms
-      : selection.find((x) => canFormFillingDocs(x.fileExst));
+    const formFillingDocs = selection.find((x) =>
+      canFormFillingDocs(x.fileExst)
+    );
 
-    const webFilter = editorAccessRights
-      ? !editorAccessRights.changeHistory &&
-        editorAccessRights.modifyFilter &&
-        !editorAccessRights.fillForms //TODO: is it always true ?
-      : selection.find((x) => canWebFilterEditing(x.fileExst));
+    const webFilter = selection.find((x) => canWebFilterEditing(x.fileExst));
 
     if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
 
@@ -768,8 +758,8 @@ class FilesStore {
     return AccessOptions;
   };
 
-  getAccessOption = (selection, editorAccessRights) => {
-    return this.getOptions(selection, editorAccessRights);
+  getAccessOption = (selection) => {
+    return this.getOptions(selection);
   };
 
   getExternalAccessOption = (selection) => {
@@ -959,6 +949,7 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    //debugger;
     if (providerKey) {
       tab
         ? (tab.location = url)

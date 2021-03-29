@@ -33,7 +33,6 @@ const isEditor = pathname.indexOf("doceditor") !== -1;
 class SharingPanelComponent extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       showActionPanel: false,
       isNotifyUsers: false,
@@ -117,8 +116,7 @@ class SharingPanelComponent extends React.Component {
       isDesktop,
       setEncryptionAccess,
       setShareFiles,
-      openFileId,
-      updateUsersRightsList,
+      onSuccess,
     } = this.props;
 
     let folderIds = [];
@@ -158,16 +156,12 @@ class SharingPanelComponent extends React.Component {
       }
     }
 
-    if (!isEditor) {
-      for (let item of selection) {
-        if (item.fileExst) {
-          fileIds.push(item.id);
-        } else {
-          folderIds.push(item.id);
-        }
+    for (let item of selection) {
+      if (item.fileExst) {
+        fileIds.push(item.id);
+      } else {
+        folderIds.push(item.id);
       }
-    } else {
-      fileIds = [Number(openFileId)];
     }
 
     const owner = shareDataItems.find((x) => x.isOwner);
@@ -216,7 +210,7 @@ class SharingPanelComponent extends React.Component {
         }
         return Promise.resolve();
       })
-      .then(() => isEditor && updateUsersRightsList())
+      .then(() => onSuccess && onSuccess())
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
   };
@@ -278,20 +272,18 @@ class SharingPanelComponent extends React.Component {
       selection,
       setIsLoading,
       getShareUsers,
-      openFileId,
-      editorAccessRights,
     } = this.props;
 
-    const returnValue = isEditor ? null : this.getData();
-    const folderId = isEditor ? [] : returnValue[0];
-    const fileId = isEditor ? [+openFileId] : returnValue[1];
+    const returnValue = this.getData();
+    const folderId = returnValue[0];
+    const fileId = returnValue[1];
 
     if (folderId.length !== 0 || fileId.length !== 0) {
       setIsLoading(true);
       getShareUsers(folderId, fileId)
         .then((shareDataItems) => {
           const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
-          const accessOptions = getAccessOption(selection, editorAccessRights);
+          const accessOptions = getAccessOption(selection);
 
           const externalAccessOptions = getExternalAccessOption(selection);
           const filesOwner = shareDataItems.find((x) => x.isOwner);
@@ -302,7 +294,7 @@ class SharingPanelComponent extends React.Component {
             shareDataItems,
             accessOptions,
             externalAccessOptions,
-            showPanel: true,
+            //showPanel: true,
             filesOwnerId,
           });
         })
@@ -318,18 +310,16 @@ class SharingPanelComponent extends React.Component {
   getInternalLink = () => {
     const { homepage, selection } = this.props;
 
-    if (!isEditor) {
-      const item = selection[0];
-      const isFile = !!item.fileExst;
+    const item = selection[0];
+    const isFile = !!item.fileExst;
 
-      if (selection.length !== 1) return null;
-
-      return isFile
-        ? item.canOpenPlayer
-          ? `${window.location.href}&preview=${item.id}`
-          : item.webUrl
-        : `${window.location.origin + homepage}/filter?folder=${item.id}`;
-    } else return `${window.location.href}`;
+    if (selection.length !== 1) return null;
+    console.log("item.webUrl", selection[0]);
+    return isFile
+      ? item.canOpenPlayer
+        ? `${window.location.href}&preview=${item.id}`
+        : item.webUrl
+      : `${window.location.origin + homepage}/filter?folder=${item.id}`;
   };
 
   onShowEmbeddingPanel = (link) =>
@@ -413,6 +403,7 @@ class SharingPanelComponent extends React.Component {
       uploadPanelVisible,
       isSharingPanelVisible,
       documentTitle,
+      sharingPanelVisible,
     } = this.props;
     const {
       showActionPanel,
@@ -429,28 +420,23 @@ class SharingPanelComponent extends React.Component {
       externalAccessOptions,
     } = this.state;
 
-    const visible = showPanel;
+    const visible = sharingPanelVisible;
     const zIndex = 310;
     const onPlusClickProp = !isLoading ? { onClick: this.onPlusClick } : {};
-    const internalLink = isEditor
-      ? this.getInternalLink()
-      : selection.length === 1 && this.getInternalLink();
+    const internalLink = selection.length === 1 && this.getInternalLink();
     //debugger;
 
     console.log("visible", visible);
 
     return (
-      <StyledAsidePanel visible={isEditor ? isSharingPanelVisible : visible}>
+      <StyledAsidePanel visible={visible}>
         <Backdrop
           onClick={this.onClose}
-          visible={isEditor ? isSharingPanelVisible : visible}
+          visible={visible}
           zIndex={zIndex}
           isAside={true}
         />
-        <Aside
-          className="header_aside-panel"
-          visible={isEditor ? isSharingPanelVisible : visible}
-        >
+        <Aside className="header_aside-panel" visible={visible}>
           <StyledContent isDisabled={isLoading}>
             <StyledHeaderContent>
               {uploadPanelVisible && (
@@ -635,7 +621,7 @@ const SharingPanel = inject(
       setShareFiles,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
-    const { setSharingPanelVisible } = dialogsStore;
+    const { setSharingPanelVisible, sharingPanelVisible } = dialogsStore;
     const {
       uploadSelection,
       selectUploadedFile,
@@ -657,6 +643,7 @@ const SharingPanel = inject(
 
       setIsLoading,
       setSharingPanelVisible,
+      sharingPanelVisible,
       selectUploadedFile,
       updateUploadedItem,
       replaceFileStream,
@@ -671,8 +658,47 @@ const SharingPanel = inject(
   }
 )(observer(withTranslation("SharingPanel")(SharingPanelComponent)));
 
-export default (props) => (
-  <I18nextProvider i18n={i18n}>
-    <SharingPanel {...props} />
-  </I18nextProvider>
-);
+class Panel extends React.Component {
+  static convertSharingUsers = (shareDataItems) => {
+    //debugger;
+    const t = i18n.getFixedT(null, "SharingPanel");
+    let sharingSettings = [];
+    for (let i = 1; i < shareDataItems.length; i++) {
+      let resultAccess =
+        shareDataItems[i].access === 1
+          ? t("FullAccess")
+          : shareDataItems[i].access === 2
+          ? t("ReadOnly")
+          : shareDataItems[i].access === 3
+          ? t("DenyAccess")
+          : shareDataItems[i].access === 5
+          ? t("Review")
+          : shareDataItems[i].access === 6
+          ? t("Comment")
+          : shareDataItems[i].access === 7
+          ? t("FormFilling")
+          : shareDataItems[i].access === 8
+          ? t("CustomFilter")
+          : "";
+
+      let obj = {
+        user:
+          shareDataItems[i].sharedTo.displayName ||
+          shareDataItems[i].sharedTo.name,
+        permissions: resultAccess,
+      };
+      sharingSettings.push(obj);
+    }
+    return sharingSettings;
+  };
+
+  render() {
+    return (
+      <I18nextProvider i18n={i18n}>
+        <SharingPanel {...this.props} />
+      </I18nextProvider>
+    );
+  }
+}
+
+export default Panel;

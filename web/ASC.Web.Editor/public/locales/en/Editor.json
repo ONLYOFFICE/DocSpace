@@ -1,11 +1,3 @@
 {
-  "FileLocation": "Open file location",
-
-  "FullAccess": "Full access",
-  "ReadOnly": "Read only",
-  "Review": "Review",
-  "Comment": "Comment",
-  "FormFilling": "Form filling",
-  "DenyAccess": "Deny access",
-  "CustomFilter": "Custom filter"
+  "FileLocation": "Open file location"
 }

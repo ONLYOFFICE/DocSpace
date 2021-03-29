@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Toast from "@appserver/components/toast";
-import toastr from "@appserver/components/toast/toastr";
+import toastr from "studio/toastr";
 import Box from "@appserver/components/box";
 import { regDesktop } from "@appserver/common/desktop";
 import Loaders from "@appserver/common/components/Loaders";
@@ -16,9 +16,12 @@ import {
   openEdit,
   setEncryptionKeys,
   getEncryptionAccess,
+  getFileInfo,
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
+
+import FilesFilter from "@appserver/common/api/files/filter";
 import throttle from "lodash/throttle";
 import { isIOS, deviceType } from "react-device-detect";
 import { homepage } from "../package.json";
@@ -47,7 +50,7 @@ let fileType = null;
 let config;
 let docSaved = null;
 let docEditor;
-
+let fileInfo;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
@@ -77,46 +80,21 @@ const Editor = ({
   }, []);
 
   const getShareUsersList = (isInit) => {
-    let sharingSettings = [];
     const folderId = [];
 
-    getShareUsers(folderId, [+fileId]).then((shareDataItems) => {
-      for (let i = 1; i < shareDataItems.length; i++) {
-        let resultAccess =
-          shareDataItems[i].access === 1
-            ? i18n.t("FullAccess")
-            : shareDataItems[i].access === 2
-            ? i18n.t("ReadOnly")
-            : shareDataItems[i].access === 3
-            ? i18n.t("DenyAccess")
-            : shareDataItems[i].access === 5
-            ? i18n.t("Review")
-            : shareDataItems[i].access === 6
-            ? i18n.t("Comment")
-            : shareDataItems[i].access === 7
-            ? i18n.t("FormFilling")
-            : shareDataItems[i].access === 8
-            ? i18n.t("CustomFilter")
-            : "";
-
-        let obj = {
-          user:
-            shareDataItems[i].sharedTo.displayName ||
-            shareDataItems[i].sharedTo.name,
-          permissions: resultAccess,
-        };
-        sharingSettings.push(obj);
-      }
-
-      isInit
-        ? (config.document.info = {
-            ...config.document.info,
-            sharingSettings,
-          })
-        : docEditor.setSharingSettings({
-            sharingSettings,
-          });
-    });
+    getShareUsers(folderId, [+fileId])
+      .then((users) => SharingPanel.convertSharingUsers(users))
+      .then((sharingSettings) => {
+        console.log("sharingSettings", sharingSettings);
+        isInit
+          ? (config.document.info = {
+              ...config.document.info,
+              sharingSettings,
+            })
+          : docEditor.setSharingSettings({
+              sharingSettings,
+            });
+      });
   };
 
   const updateUsersRightsList = () => {
@@ -147,7 +125,8 @@ const Editor = ({
           setIsAuthenticated(success);
         }
       }
-
+      fileInfo = await getFileInfo(fileId);
+      console.log("info", fileInfo);
       config = await openEdit(fileId, doc);
 
       if (isDesktop) {
@@ -288,13 +267,16 @@ const Editor = ({
         config.type = "mobile";
       }
 
+      const filterObj = FilesFilter.getDefault();
+      filterObj.folder = fileInfo.folderId;
+      const urlFilter = filterObj.toUrlParams();
       config.editorConfig.customization = {
         ...config.editorConfig.customization,
         goback: {
           blank: true,
           requestClose: false,
           text: i18n.t("FileLocation"),
-          url: `${filesUrl}`,
+          url: `${combineUrl(filesUrl, `/filter?${urlFilter}`)}`,
         },
       };
 
@@ -383,7 +365,6 @@ const Editor = ({
       heightProp={isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
     >
       <Toast />
-
       {!isLoading ? (
         <>
           <div id="editor"></div>
@@ -393,8 +374,8 @@ const Editor = ({
               key="sharing-panel"
               uploadPanelVisible={uploadPanelVisible}
               isSharingPanelVisible={sharingPanelVisible}
-              openFileId={fileId}
-              updateUsersRightsList={updateUsersRightsList}
+              selection={fileInfo}
+              onSuccess={() => updateUsersRightsList()}
               editorAccessRights={config && config.document.permissions}
               documentTitle={config && config.document.title}
             />
