@@ -8,6 +8,7 @@ import { isMobile } from "react-device-detect";
 
 const FilesRowContainer = (props) => {
   const { isLoaded, isLoading, getFilesContextOptions } = props;
+  console.log("render container");
   return !isLoaded || (isMobile && isLoading) ? (
     <Loaders.Rows />
   ) : (

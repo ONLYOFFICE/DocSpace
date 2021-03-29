@@ -10,6 +10,7 @@ import FilesTileContainer from "./FilesTile/FilesTileContainer";
 import EmptyContainer from "./EmptyContainer";
 
 import { AppServerConfig, FileAction } from "@appserver/common/constants";
+//import copy from "copy-to-clipboard";
 import config from "../../../../../../package.json";
 import toastr from "studio/toastr";
 import copy from "copy-to-clipboard";
@@ -390,6 +391,21 @@ class SectionBodyContent extends React.Component {
   //   this.onCloseThirdPartyMoveDialog();
   // };
 
+  getItemIcon = (isEdit, icon, fileExst) => {
+    const { isPrivacyFolder } = this.props;
+    const svgLoader = () => <div style={{ width: "24px" }}></div>;
+    return (
+      <>
+        <ReactSVG
+          className={`react-svg-icon${isEdit ? " is-edit" : ""}`}
+          src={icon}
+          loading={svgLoader}
+        />
+        {isPrivacyFolder && fileExst && <EncryptedFileIcon isEdit={isEdit} />}
+      </>
+    );
+  };
+
   getFilesContextOptions = (item, isFolder = null) => {
     const {
       t,
@@ -416,6 +432,7 @@ class SectionBodyContent extends React.Component {
       setDeleteThirdPartyDialogVisible,
       deleteFileAction,
       openLocationAction,
+      deleteFolderAction,
     } = this.props;
 
     const {
@@ -432,13 +449,15 @@ class SectionBodyContent extends React.Component {
       webUrl,
     } = item;
 
-    const isSharable = item.access !== 1 && item.access !== 0;
-    const isThirdPartyFolder = providerKey && isRootFolder;
-
     const onOpenLocation = () => {
+      const { selection } = this.props;
+      const { id } = selection[0];
       const locationId = isFolder ? id : folderId;
       openLocationAction(locationId, isFolder);
     };
+
+    const isSharable = item.access !== 1 && item.access !== 0;
+    const isThirdPartyFolder = providerKey && isRootFolder;
 
     const showVersionHistory = () => {
       if (!isTabletView) {
@@ -582,7 +601,6 @@ class SectionBodyContent extends React.Component {
             disabled: false,
             "data-action": "mark",
           };
-        //
         case "block-unblock-version":
           return {
             key: option,
@@ -591,7 +609,6 @@ class SectionBodyContent extends React.Component {
             onClick: lockFile,
             disabled: false,
           };
-        //
         case "sharing-settings":
           return {
             key: option,
@@ -600,7 +617,6 @@ class SectionBodyContent extends React.Component {
             onClick: onClickShare,
             disabled: isSharable,
           };
-        //
         case "send-by-email":
           return {
             key: option,
@@ -608,7 +624,6 @@ class SectionBodyContent extends React.Component {
             icon: "/static/images/mail.react.svg",
             disabled: true,
           };
-        //
         case "owner-change":
           return {
             key: option,
@@ -617,7 +632,6 @@ class SectionBodyContent extends React.Component {
             onClick: onOwnerChange,
             disabled: false,
           };
-        //
         case "link-for-portal-users":
           return {
             key: option,
@@ -626,7 +640,6 @@ class SectionBodyContent extends React.Component {
             onClick: onClickLinkForPortal,
             disabled: false,
           };
-        //
         case "edit":
           return {
             key: option,
@@ -635,7 +648,6 @@ class SectionBodyContent extends React.Component {
             onClick: onClickLinkEdit,
             disabled: false,
           };
-        //
         case "preview":
           return {
             key: option,
@@ -644,7 +656,6 @@ class SectionBodyContent extends React.Component {
             onClick: onClickLinkEdit,
             disabled: true,
           };
-        //
         case "view":
           return {
             key: option,
@@ -653,7 +664,6 @@ class SectionBodyContent extends React.Component {
             onClick: onMediaFileClick,
             disabled: false,
           };
-        //
         case "download":
           return {
             key: option,
@@ -662,7 +672,6 @@ class SectionBodyContent extends React.Component {
             onClick: onClickDownload,
             disabled: false,
           };
-        //
         case "move":
           return {
             key: option,
@@ -671,7 +680,6 @@ class SectionBodyContent extends React.Component {
             onClick: onMoveAction,
             disabled: false,
           };
-        //
         case "copy":
           return {
             key: option,
@@ -680,7 +688,6 @@ class SectionBodyContent extends React.Component {
             onClick: onCopyAction,
             disabled: false,
           };
-        //
         case "duplicate":
           return {
             key: option,
@@ -689,7 +696,6 @@ class SectionBodyContent extends React.Component {
             onClick: onDuplicate,
             disabled: false,
           };
-        //
         case "rename":
           return {
             key: option,
@@ -698,7 +704,6 @@ class SectionBodyContent extends React.Component {
             onClick: onClickRename,
             disabled: false,
           };
-        //
         case "change-thirdparty-info":
           return {
             key: option,
@@ -707,7 +712,6 @@ class SectionBodyContent extends React.Component {
             onClick: onChangeThirdPartyInfo,
             disabled: false,
           };
-        //
         case "delete":
           return {
             key: option,
@@ -716,7 +720,6 @@ class SectionBodyContent extends React.Component {
             onClick: onClickDelete,
             disabled: false,
           };
-        //
         case "remove-from-favorites":
           return {
             key: option,
@@ -734,21 +737,6 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  getItemIcon = (isEdit, icon, fileExst) => {
-    const { isPrivacyFolder } = this.props;
-    const svgLoader = () => <div style={{ width: "24px" }}></div>;
-    return (
-      <>
-        <ReactSVG
-          className={`react-svg-icon${isEdit ? " is-edit" : ""}`}
-          src={icon}
-          loading={svgLoader}
-        />
-        {isPrivacyFolder && fileExst && <EncryptedFileIcon isEdit={isEdit} />}
-      </>
-    );
-  };
-
   render() {
     const {
       selection,
@@ -761,9 +749,11 @@ class SectionBodyContent extends React.Component {
       tooltipValue,
       isLoading,
       isEmptyFilesList,
+
+      folderId,
     } = this.props;
 
-    //console.log("Files Home SectionBodyContent render", this.props);
+    console.log("Files Home SectionBodyContent render", this.props);
 
     let fileMoveTooltip;
     if (dragging) {
@@ -787,12 +777,15 @@ class SectionBodyContent extends React.Component {
         {viewAs === "tile" ? (
           <FilesTileContainer
             t={t}
-            getFilesContextOptions={this.getFilesContextOptions}
+            folderId={folderId}
             getItemIcon={this.getItemIcon}
+            getFilesContextOptions={this.getFilesContextOptions}
           />
         ) : (
           <FilesRowContainer
-            getFilesContextOptions={this.getFilesContextOptions}
+            t={t}
+            //getFilesContextOptions={this.getFilesContextOptions}
+            folderId={folderId}
           />
         )}
       </>
@@ -857,11 +850,12 @@ export default inject(
       setThirdpartyInfo,
       deleteFileAction,
       openLocationAction,
+      deleteFolderAction,
     } = filesActionsStore;
 
     return {
       isAdmin: auth.isAdmin,
-      isTabletView: auth.settingsStore,
+
       dragging,
       fileActionId,
       firstLoad,
@@ -874,15 +868,20 @@ export default inject(
       tooltipValue,
       isLoading,
       isEmptyFilesList: filesList.length <= 0,
-      homepage: config.homepage,
 
       setDragging,
       setSecondaryProgressBarData,
       copyToAction,
       moveToAction,
       folderId: selectedFolderStore.id,
+
+      isPrivacyFolder,
+
+      openLocationAction,
+      isTabletView: auth.settingsStore,
       setIsVerHistoryPanel,
       fetchFileVersions,
+      homepage: config.homepage,
       setFavoriteAction,
       finalizeVersionAction,
       lockFileAction,
@@ -896,12 +895,11 @@ export default inject(
       duplicateAction,
       setAction,
       setThirdpartyInfo,
+      deleteFileAction,
       isRootFolder: selectedFolderStore.isRootFolder,
       setRemoveItem,
       setDeleteThirdPartyDialogVisible,
-      deleteFileAction,
-      openLocationAction,
-      isPrivacyFolder,
+      deleteFolderAction,
     };
   }
 )(withRouter(withTranslation("Home")(observer(SectionBodyContent))));
