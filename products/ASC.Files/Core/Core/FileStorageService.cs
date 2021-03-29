@@ -548,7 +548,7 @@ namespace ASC.Web.Files.Services.WCFService
             return new ItemList<File<T>>(result);
         }
 
-        public File<T> CreateNewFile(FileModel<T> fileWrapper)
+        public File<T> CreateNewFile(FileModel<T> fileWrapper, bool enableExternalExt = false)
         {
             if (string.IsNullOrEmpty(fileWrapper.Title) || fileWrapper.ParentId == null) throw new ArgumentException();
 
@@ -579,12 +579,21 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 fileWrapper.Title = UserControlsCommonResource.NewDocument + ".docx";
             }
+            
+            var externalExt = false;
 
             var fileExt = FileUtility.GetInternalExtension(fileWrapper.Title);
             if (!FileUtility.InternalExtension.Values.Contains(fileExt))
             {
-                fileExt = FileUtility.InternalExtension[FileType.Document];
-                file.Title = fileWrapper.Title + fileExt;
+                if (!enableExternalExt)
+                {
+                    fileExt = FileUtility.InternalExtension[FileType.Document];
+                    file.Title = fileWrapper.Title + fileExt;
+                }
+                else
+                {
+                    externalExt = true;
+                }
             }
             else
             {
@@ -606,9 +615,16 @@ namespace ASC.Web.Files.Services.WCFService
 
                 try
                 {
-                    using var stream = storeTemplate.GetReadStream("", path);
-                    file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(path);
-                    file = fileDao.SaveFile(file, stream);
+                    if (!externalExt)
+                    {
+                        using var stream = storeTemplate.GetReadStream("", path);
+                        file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(path);
+                        file = fileDao.SaveFile(file, stream);
+                    }
+                    else
+                    {
+                        file = fileDao.SaveFile(file, null);
+                    }
                 }
                 catch (Exception e)
                 {
