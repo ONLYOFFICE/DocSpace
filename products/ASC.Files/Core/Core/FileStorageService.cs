@@ -582,7 +582,7 @@ namespace ASC.Web.Files.Services.WCFService
             
             var externalExt = false;
 
-            var fileExt = FileUtility.GetInternalExtension(fileWrapper.Title);
+            var fileExt = !enableExternalExt ? FileUtility.GetInternalExtension(fileWrapper.Title) : FileUtility.GetFileExtension(fileWrapper.Title);
             if (!FileUtility.InternalExtension.Values.Contains(fileExt))
             {
                 if (!enableExternalExt)
@@ -593,6 +593,7 @@ namespace ASC.Web.Files.Services.WCFService
                 else
                 {
                     externalExt = true;
+                    file.Title = fileWrapper.Title;
                 }
             }
             else
