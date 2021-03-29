@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import IconButton from "@appserver/components/icon-button";
 import SwitchButton from "@appserver/components/switch-button";
 import { StyledViewSelector } from "../StyledFilterInput";
 

@@ -947,7 +947,7 @@ FilterInput.propTypes = {
   selectedFilterData: PropTypes.object,
   directionAscLabel: PropTypes.string,
   directionDescLabel: PropTypes.string,
-  viewAs: PropTypes.bool, // TODO: include viewSelector after adding method getThumbnail - PropTypes.string
+  viewAs: PropTypes.string, // TODO: include viewSelector after adding method getThumbnail - PropTypes.string
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
