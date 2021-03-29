@@ -36,6 +36,7 @@ const {
   selectFile,
   deselectFile,
   setSelection,
+  setFile,
 } = filesStore;
 const { setTreeFolders } = treeFoldersStore;
 const { setIsLoading } = initFilesStore;
@@ -48,7 +49,7 @@ const {
   setConnectDialogVisible,
   setConnectItem,
   setThirdPartyMoveDialogVisible,
-  setDestFolderId
+  setDestFolderId,
 } = dialogsStore;
 
 class FilesActionStore {
@@ -405,15 +406,7 @@ class FilesActionStore {
   };
 
   lockFileAction = (id, locked) => {
-    setIsLoading(true);
-    return lockFile(id, locked).then((res) => {
-      /*const newFiles = files;
-        const indexOfFile = newFiles.findIndex(x => x.id === res.id);
-        newFiles[indexOfFile] = res;*/
-      fetchFiles(selectedFolderStore.id, filesStore.filter).finally(() =>
-        setIsLoading(false)
-      );
-    });
+    return lockFile(id, locked).then((res) => setFile(res));
   };
 
   finalizeVersionAction = (id) => {
@@ -487,7 +480,7 @@ class FilesActionStore {
     );
   };
 
-  setThirdpartyInfo = () => {
+  setThirdpartyInfo = (providerKey) => {
     const { providers, capabilities } = settingsStore.thirdPartyStore;
     const provider = providers.find((x) => x.provider_key === providerKey);
     const capabilityItem = capabilities.find((x) => x[0] === providerKey);

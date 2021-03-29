@@ -5,6 +5,7 @@ import {
   UploadPanel,
   OperationsPanel,
   VersionHistoryPanel,
+  ChangeOwnerPanel,
 } from "../panels";
 import {
   ThirdPartyMoveDialog,

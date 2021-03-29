@@ -26,35 +26,14 @@ class ChangeOwnerComponent extends React.Component {
     this.state = { showPeopleSelector: false, owner };
   }
 
-  updateRowData = (newRowData) => {
-    const { files, folders, setFiles, setFolders } = this.props;
-
-    for (let item of newRowData) {
-      if (!item.fileExst && item.foldersCount) {
-        let folderIndex = folders.findIndex((x) => x.id === item.id);
-        if (folderIndex !== -1) {
-          folders[folderIndex] = item;
-        }
-      } else {
-        let fileIndex = files.findIndex((x) => x.id === item.id);
-        if (fileIndex !== -1) {
-          files[fileIndex] = item;
-        }
-      }
-    }
-
-    setFiles(files);
-    setFolders(folders);
-  };
-
   onOwnerChange = () => {
     const { owner } = this.state;
     const {
       files,
       folders,
       selection,
-      setFolders,
-      setFiles,
+      setFolder,
+      setFile,
       setIsLoading,
       setFilesOwner,
     } = this.props;
@@ -70,17 +49,13 @@ class ChangeOwnerComponent extends React.Component {
     setFilesOwner(folderIds, fileIds, ownerId)
       .then((res) => {
         if (isFolder) {
-          let folderIndex = folders.findIndex((x) => x.id === selectedItem.id);
-          if (folderIndex !== -1) {
-            folders[folderIndex] = res[0];
+          if (folders.findIndex((x) => x.id === selectedItem.id) !== -1) {
+            setFolder(res[0]);
           }
-          setFolders(folders);
         } else {
-          let fileIndex = files.findIndex((x) => x.id === selectedItem.id);
-          if (fileIndex !== -1) {
-            files[fileIndex] = res[0];
+          if (files.findIndex((x) => x.id === selectedItem.id) !== -1) {
+            setFile(res[0]);
           }
-          setFiles(files);
         }
       })
       .catch((err) => toastr.error(err))
@@ -177,8 +152,8 @@ export default inject(({ auth, initFilesStore, filesStore, dialogsStore }) => {
     files,
     folders,
     selection,
-    setFiles,
-    setFolders,
+    setFile,
+    setFolder,
     setFilesOwner,
   } = filesStore;
   const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
@@ -191,8 +166,8 @@ export default inject(({ auth, initFilesStore, filesStore, dialogsStore }) => {
     isLoading,
     visible: ownerPanelVisible,
 
-    setFiles,
-    setFolders,
+    setFile,
+    setFolder,
     setIsLoading,
     setChangeOwnerPanelVisible,
     setFilesOwner,

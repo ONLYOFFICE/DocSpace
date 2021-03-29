@@ -106,6 +106,8 @@ class FilesStore {
       removeItemFromFavorite: action,
       fetchFavoritesFolder: action,
       getFileInfo: action,
+      setFolder: action,
+      setFile: action,
     });
 
     this.fileActionStore = new FileActionStore();
@@ -121,6 +123,17 @@ class FilesStore {
 
   setFolders = (folders) => {
     this.folders = folders;
+  };
+
+  setFile = (file) => {
+    const index = this.files.findIndex((x) => x.id === file.id);
+    this.files[index] = file;
+  };
+
+  setFolder = (folder) => {
+    console.log("folder", folder);
+    const index = this.folders.findIndex((x) => x.id === folder.id);
+    this.folders[index] = folder;
   };
 
   getFilesChecked = (file, selected) => {
@@ -337,7 +350,7 @@ class FilesStore {
         options.push("send-by-email");
       }
 
-      //this.canShareOwnerChange && options.push("owner-change");
+      this.canShareOwnerChange && options.push("owner-change");
       options.push("link-for-portal-users");
 
       if (!isVisitor) {
@@ -495,18 +508,23 @@ class FilesStore {
   }
 
   get canShareOwnerChange() {
-    const pathParts = selectedFolderStore.pathParts;
     const userId = userStore.user.id;
-    const commonFolder = treeFoldersStore.commonFolder;
-    return (
-      (isAdmin ||
-        (this.selection.length && this.selection[0].createdBy.id === userId)) &&
-      pathParts &&
-      commonFolder &&
-      commonFolder.id === pathParts[0] &&
-      this.selection.length &&
-      !this.selection[0].providerKey
-    );
+    const isCommonFolder =
+      treeFoldersStore.commonFolder &&
+      selectedFolderStore.pathParts &&
+      treeFoldersStore.commonFolder.id === selectedFolderStore.pathParts[0];
+
+    const item = this.selection.length ? this.selection[0] : false;
+
+    if (!isCommonFolder) {
+      return false;
+    } else if (isAdmin && item ? !item.providerKey : true) {
+      return true;
+    } else if (item && item.createdBy.id === userId && !item.providerKey) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   get isHeaderVisible() {

@@ -241,7 +241,7 @@ const SimpleFilesRow = (props) => {
     });
   };
 
-  const onChangeThirdPartyInfo = () => setThirdpartyInfo();
+  const onChangeThirdPartyInfo = () => setThirdpartyInfo(providerKey);
 
   const onMediaFileClick = (fileId) => {
     const itemId = typeof fileId !== "object" ? fileId : id;
