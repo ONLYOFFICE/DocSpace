@@ -13,7 +13,6 @@ class InitFilesStore {
   isLoading = false;
   viewAs = "row";
   dragging = false;
-  dragItem = null;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
 
@@ -41,10 +40,6 @@ class InitFilesStore {
 
   setIsLoading = (isLoading) => {
     this.isLoading = isLoading;
-  };
-
-  setDragItem = (dragItem) => {
-    this.dragItem = dragItem;
   };
 
   setTooltipPosition = (tooltipPageX, tooltipPageY) => {

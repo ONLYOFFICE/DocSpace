@@ -387,7 +387,6 @@ class TreeFolders extends React.Component {
   };
 
   onDragOver = (data) => {
-
     const parentElement = data.event.target.parentElement;
     const existElement = parentElement.classList.contains(
       "rc-tree-node-content-wrapper"
@@ -478,7 +477,7 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
   }) => {
-    const { setIsLoading, dragging, setDragging, setDragItem } = initFilesStore;
+    const { setIsLoading, dragging, setDragging } = initFilesStore;
     const { filter, setFilter, selection } = filesStore;
 
     const {
@@ -510,7 +509,6 @@ export default inject(
       setIsLoading,
       setTreeFolders,
       setFilter,
-      setDragItem,
       setExpandedKeys,
     };
   }

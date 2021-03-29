@@ -44,7 +44,12 @@ const {
   setSecondaryProgressBarData,
   clearSecondaryProgressData,
 } = secondaryProgressDataStore;
-const { setConnectDialogVisible, setConnectItem } = dialogsStore;
+const {
+  setConnectDialogVisible,
+  setConnectItem,
+  setThirdPartyMoveDialogVisible,
+  setDestFolderId
+} = dialogsStore;
 
 class FilesActionStore {
   constructor() {
@@ -506,7 +511,24 @@ class FilesActionStore {
     const deleteAfter = true;
 
     const { selection } = filesStore;
+    const { isRootFolder } = selectedFolderStore;
     const { isShareFolder, isCommonFolder } = treeFoldersStore;
+
+    for (let item of selection) {
+      if (item.providerKey && !isRootFolder) {
+        setDestFolderId(destFolderId);
+        return setThirdPartyMoveDialogVisible(true);
+      }
+
+      if (item.fileExst) {
+        fileIds.push(item.id);
+      } else {
+        if (item.providerKey && isRootFolder) continue;
+        folderIds.push(item.id);
+      }
+    }
+
+    if (!folderIds.length && !fileIds.length) return;
 
     setSecondaryProgressBarData({
       icon: "move",
@@ -515,14 +537,6 @@ class FilesActionStore {
       label,
       alert: false,
     });
-
-    for (let item of selection) {
-      if (item.fileExst) {
-        fileIds.push(item.id);
-      } else {
-        folderIds.push(item.id);
-      }
-    }
 
     if (auth.isAdmin) {
       if (isShareFolder) {

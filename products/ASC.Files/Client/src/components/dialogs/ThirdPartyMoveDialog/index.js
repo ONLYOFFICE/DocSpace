@@ -17,23 +17,64 @@ const PureThirdPartyMoveContainer = ({
   t,
   visible,
   provider,
-  dragItem,
+  selection,
+  destFolderId,
   copyToAction,
   moveToAction,
+  setDestFolderId,
   setThirdPartyMoveDialogVisible,
 }) => {
   const zIndex = 310;
+  const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2 TODO: get from settings
+  const deleteAfter = true; // TODO: get from settings
 
-  const onClose = () => setThirdPartyMoveDialogVisible(false);
+  const onClose = () => {
+    setDestFolderId(false);
+    setThirdPartyMoveDialogVisible(false);
+  };
+
+  const getOperationItems = () => {
+    const folderIds = [];
+    const fileIds = [];
+
+    for (let item of selection) {
+      if (item.fileExst) {
+        fileIds.push(item.id);
+      } else {
+        folderIds.push(item.id);
+      }
+    }
+    return [folderIds, fileIds];
+  };
 
   const startMoveOperation = () => {
-    moveToAction(dragItem);
-    this.onClose();
+    const result = getOperationItems();
+    const folderIds = result[0];
+    const fileIds = result[1];
+
+    moveToAction(
+      destFolderId,
+      folderIds,
+      fileIds,
+      conflictResolveType,
+      deleteAfter
+    );
+    onClose();
   };
 
   const startCopyOperation = () => {
-    copyToAction(dragItem);
-    this.onClose();
+    const result = getOperationItems();
+    const folderIds = result[0];
+    const fileIds = result[1];
+
+    copyToAction(
+      destFolderId,
+      folderIds,
+      fileIds,
+      conflictResolveType,
+      deleteAfter
+    );
+    onClose();
   };
 
   return (
@@ -72,24 +113,26 @@ const PureThirdPartyMoveContainer = ({
   );
 };
 
-export default inject(
-  ({ initFilesStore, filesStore, dialogsStore, filesActionsStore }) => {
-    const {
-      thirdPartyMoveDialogVisible: visible,
-      setThirdPartyMoveDialogVisible,
-    } = dialogsStore;
-    const { selection } = filesStore;
-    const { copyToAction, moveToAction } = filesActionsStore;
+export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
+  const {
+    thirdPartyMoveDialogVisible: visible,
+    setThirdPartyMoveDialogVisible,
+    destFolderId,
+    setDestFolderId,
+  } = dialogsStore;
+  const { selection } = filesStore;
+  const { copyToAction, moveToAction } = filesActionsStore;
 
-    return {
-      visible,
-      setThirdPartyMoveDialogVisible,
-      provider: selection[0].providerKey,
-      dragItem: initFilesStore.dragItem,
-      copyToAction,
-      moveToAction,
-    };
-  }
-)(
+  return {
+    visible,
+    setThirdPartyMoveDialogVisible,
+    destFolderId,
+    setDestFolderId,
+    provider: selection[0].providerKey,
+    copyToAction,
+    moveToAction,
+    selection,
+  };
+})(
   withTranslation("ThirdPartyMoveDialog")(observer(PureThirdPartyMoveContainer))
 );
