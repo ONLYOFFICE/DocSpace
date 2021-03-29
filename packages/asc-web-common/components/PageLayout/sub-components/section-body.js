@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import equal from "fast-deep-equal/react";
-import { LayoutContextConsumer } from "studio/Layout/context";
+//import equal from "fast-deep-equal/react";
+//import { LayoutContextConsumer } from "studio/Layout/context";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
@@ -144,14 +144,12 @@ class SectionBody extends React.Component {
               </SelectedFrame>
             </Scrollbar>
           ) : (
-            <LayoutContextConsumer>
-              <div className="section-wrapper">
-                <div className="section-wrapper-content" {...focusProps}>
-                  {children}
-                  <StyledSpacer pinned={pinned} />
-                </div>
+            <div className="section-wrapper">
+              <div className="section-wrapper-content" {...focusProps}>
+                {children}
+                <StyledSpacer pinned={pinned} />
               </div>
-            </LayoutContextConsumer>
+            </div>
           )
         ) : (
           <SelectedFrame
