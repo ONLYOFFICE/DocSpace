@@ -20,7 +20,7 @@ import { combineUrl } from "@appserver/common/utils";
 const { FilesFilter } = api;
 
 const { settingsStore, userStore, isAdmin } = store.auth;
-const { isEncryptionSupport, isDesktopClient } = settingsStore;
+const { isDesktopClient } = settingsStore;
 const {
   iconFormatsStore,
   mediaViewersFormatsStore,
@@ -204,7 +204,7 @@ class FilesStore {
     const { privacyFolder, expandedKeys, setExpandedKeys } = treeFoldersStore;
 
     if (privacyFolder && privacyFolder.id === +folderId) {
-      if (!isEncryptionSupport) {
+      if (!store.auth.settingsStore.isEncryptionSupport) {
         const newExpandedKeys = createTreeFolders(
           privacyFolder.pathParts,
           expandedKeys
@@ -241,9 +241,15 @@ class FilesStore {
       filterData.total = data.total;
       this.setFilesFilter(filterData); //TODO: FILTER
       this.setFolders(
-        isPrivacyFolder && !isEncryptionSupport ? [] : data.folders
+        isPrivacyFolder && !store.auth.settingsStore.isEncryptionSupport
+          ? []
+          : data.folders
       );
-      this.setFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files);
+      this.setFiles(
+        isPrivacyFolder && !store.auth.settingsStore.isEncryptionSupport
+          ? []
+          : data.files
+      );
       if (clearFilter) {
         this.fileActionStore.setAction({ type: null });
         this.setSelected("close");
@@ -534,7 +540,7 @@ class FilesStore {
         const canCreateInSharedFolder = selectedFolderStore.access === 1;
         return !selectedFolderStore.isRootFolder && canCreateInSharedFolder;
       case FolderType.Privacy:
-        return isDesktopClient && isEncryptionSupport;
+        return isDesktopClient && store.auth.settingsStore.isEncryptionSupport;
       case FolderType.COMMON:
         return isAdmin;
       case FolderType.TRASH:
