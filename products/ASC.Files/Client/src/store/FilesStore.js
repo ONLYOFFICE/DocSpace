@@ -714,7 +714,7 @@ class FilesStore {
   }
 
   get isOnlyFoldersSelected() {
-    return this.selection.every((selected) => selected.fileExst !== undefined);
+    return this.selection.every((selected) => selected.fileExst === undefined);
   }
 
   get isThirdPartySelection() {
