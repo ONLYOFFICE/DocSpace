@@ -383,7 +383,7 @@ class SectionHeaderContent extends React.Component {
         label: t("Share"),
         disabled:
           !isAccessedSelected ||
-          (isPrivacy && (isOnlyFoldersSelected || isItemsSelected)),
+          (isPrivacy && (isOnlyFoldersSelected || isItemsSelected > 1)),
         onClick: this.onOpenSharingPanel,
       },
       {
@@ -605,7 +605,7 @@ export default inject(
       isPrivacy: isPrivacyFolder,
       filter,
       canCreate,
-      isItemsSelected: !!selection.length,
+      isItemsSelected: selection.length,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
