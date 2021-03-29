@@ -10,7 +10,9 @@ import selectedFolderStore from "./SelectedFolderStore";
 import config from "../../package.json";
 import history from "@appserver/common/history";
 import { combineUrl } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
+import { AppServerConfig, FileAction } from "@appserver/common/constants";
+
+import toastr from "studio/toastr";
 
 const { homepage } = config;
 
@@ -18,10 +20,8 @@ const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
 const { openDocEditor, fileActionStore } = filesStore;
 const { setAction } = fileActionStore;
 const { setMediaViewerData } = mediaViewerDataStore;
-const { isRootFolder } = selectedFolderStore; //      isRootFolder: selectedFolderStore.isRootFolder,
+const { isRootFolder } = selectedFolderStore;
 const {
-  //copyToAction,
-  //moveToAction,
   setFavoriteAction,
   finalizeVersionAction,
   lockFileAction,
@@ -65,29 +65,125 @@ class ContextOptionsStore {
       fetchFileVersions(id + "");
       setIsVerHistoryPanel(true);
     } else {
-      window.history.replaceState(
-        "",
-        "",
-        combineUrl(AppServerConfig.proxyURL, homepage, `/${id}/history`)
+      history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/${id}/history`) //TODO: something better
       );
     }
   };
 
-  getContextOptions = (item, t) => {
-    const {
-      contextOptions,
+  onClickFavorite = (e) => {
+    const { id } = filesStore.selection[0];
+    const { action } = e.currentTarget.dataset;
+    setFavoriteAction(action, id)
+      .then(() =>
+        action === "mark"
+          ? toastr.success(t("MarkedAsFavorite")) // TODO: t
+          : toastr.success(t("RemovedFromFavorites"))
+      )
+      .catch((err) => {
+        console.log(err);
+        toastr.error(err);
+      });
+  };
+
+  finalizeVersion = () => {
+    const { id } = filesStore.selection[0];
+    finalizeVersionAction(id).catch((err) => toastr.error(err));
+  };
+
+  lockFile = () => {
+    const { id } = filesStore.selection[0];
+    lockFileAction(id, !locked).catch((err) => toastr.error(err));
+  };
+
+  onClickShare = () => {
+    onSelectItem(filesStore.selection[0]);
+    setSharingPanelVisible(true);
+  };
+
+  onOwnerChange = () => setChangeOwnerPanelVisible(true);
+
+  onClickLinkForPortal = () => {
+    //const isFile = !!fileExst;
+    const { id, isFolder, canOpenPlayer } = filesStore.selection[0];
+    copy(
+      !isFolder
+        ? canOpenPlayer
+          ? `${window.location.href}&preview=${id}`
+          : webUrl
+        : `${window.location.origin + homepage}/filter?folder=${id}`
+    );
+
+    toastr.success(t("LinkCopySuccess"));
+  };
+
+  onClickLinkEdit = () => {
+    const { id, providerKey } = filesStore.selection[0];
+    openDocEditor(id, providerKey);
+  };
+
+  onMediaFileClick = (fileId) => {
+    const { id } = filesStore.selection[0];
+    const itemId = typeof fileId !== "object" ? fileId : id;
+    setMediaViewerData({ visible: true, id: itemId });
+  };
+
+  onClickDownload = () => {
+    const { viewUrl } = filesStore.selection[0];
+    window.open(viewUrl, "_blank");
+  };
+
+  onMoveAction = () => setMoveToPanelVisible(true);
+  onCopyAction = () => setCopyPanelVisible(true);
+
+  onDuplicate = () => {
+    duplicateAction(filesStore.selection[0], t("CopyOperation")).catch((err) =>
+      toastr.error(err)
+    );
+  };
+
+  onClickRename = () => {
+    const { fileExst, id } = filesStore.selection[0];
+    setAction({
+      type: FileAction.Rename,
+      extension: fileExst,
       id,
-      folderId,
-      locked,
+    });
+  };
+
+  onChangeThirdPartyInfo = () => setThirdpartyInfo();
+
+  onClickDelete = () => {
+    const {
+      id,
       fileExst,
-      canOpenPlayer,
-      providerKey,
-      viewUrl,
-      title,
+      folderId,
       parentId,
-      webUrl,
-      access,
-    } = item;
+      providerKey,
+    } = filesStore.selection[0];
+    const isThirdPartyFolder = providerKey && isRootFolder;
+    if (isThirdPartyFolder) {
+      const splitItem = id.split("-");
+      setRemoveItem({ id: splitItem[splitItem.length - 1], title });
+      setDeleteThirdPartyDialogVisible(true);
+      return;
+    }
+
+    const translations = {
+      deleteOperation: t("DeleteOperation"),
+    };
+
+    fileExst
+      ? deleteFileAction(id, folderId, translations)
+          .then(() => toastr.success(t("FileRemoved")))
+          .catch((err) => toastr.error(err))
+      : deleteFolderAction(id, parentId, translations)
+          .then(() => toastr.success(t("FolderRemoved")))
+          .catch((err) => toastr.error(err));
+  };
+
+  getContextOptions = (item, t) => {
+    const { contextOptions, providerKey, access } = item;
 
     const isSharable = access !== 1 && access !== 0;
     const isThirdPartyFolder = providerKey && isRootFolder;
@@ -115,7 +211,7 @@ class ContextOptionsStore {
             key: option,
             label: t("FinalizeVersion"),
             icon: "images/history-finalized.react.svg",
-            //onClick: finalizeVersion,
+            onClick: this.finalizeVersion,
             disabled: false,
           };
         case "separator0":
@@ -128,7 +224,7 @@ class ContextOptionsStore {
             key: option,
             label: t("OpenLocation"),
             icon: "images/download-as.react.svg",
-            //onClick: onOpenLocation,
+            onClick: this.onOpenLocation,
             disabled: false,
           };
         case "mark-as-favorite":
@@ -136,7 +232,7 @@ class ContextOptionsStore {
             key: option,
             label: t("MarkAsFavorite"),
             icon: "images/favorites.react.svg",
-            //onClick: onClickFavorite,
+            onClick: this.onClickFavorite,
             disabled: false,
             "data-action": "mark",
           };
@@ -145,7 +241,7 @@ class ContextOptionsStore {
             key: option,
             label: t("UnblockVersion"),
             icon: "images/lock.react.svg",
-            //onClick: lockFile,
+            onClick: this.lockFile,
             disabled: false,
           };
         case "sharing-settings":
@@ -153,7 +249,7 @@ class ContextOptionsStore {
             key: option,
             label: t("SharingSettings"),
             icon: "images/catalog.shared.react.svg",
-            //onClick: onClickShare,
+            onClick: this.onClickShare,
             disabled: isSharable,
           };
         case "send-by-email":
@@ -168,7 +264,7 @@ class ContextOptionsStore {
             key: option,
             label: t("ChangeOwner"),
             icon: "images/catalog.user.react.svg",
-            //onClick: onOwnerChange,
+            onClick: this.onOwnerChange,
             disabled: false,
           };
         case "link-for-portal-users":
@@ -176,7 +272,7 @@ class ContextOptionsStore {
             key: option,
             label: t("LinkForPortalUsers"),
             icon: "/static/images/invitation.link.react.svg",
-            //onClick: onClickLinkForPortal,
+            onClick: this.onClickLinkForPortal,
             disabled: false,
           };
         case "edit":
@@ -184,7 +280,7 @@ class ContextOptionsStore {
             key: option,
             label: t("Edit"),
             icon: "images/access.edit.react.svg",
-            //onClick: onClickLinkEdit,
+            onClick: this.onClickLinkEdit,
             disabled: false,
           };
         case "preview":
@@ -192,7 +288,7 @@ class ContextOptionsStore {
             key: option,
             label: t("Preview"),
             icon: "EyeIcon",
-            //onClick: onClickLinkEdit,
+            onClick: this.onClickLinkEdit,
             disabled: true,
           };
         case "view":
@@ -200,7 +296,7 @@ class ContextOptionsStore {
             key: option,
             label: t("View"),
             icon: "/static/images/eye.react.svg",
-            //onClick: onMediaFileClick,
+            onClick: this.onMediaFileClick,
             disabled: false,
           };
         case "download":
@@ -208,7 +304,7 @@ class ContextOptionsStore {
             key: option,
             label: t("Download"),
             icon: "images/download.react.svg",
-            //onClick: onClickDownload,
+            onClick: this.onClickDownload,
             disabled: false,
           };
         case "move":
@@ -216,7 +312,7 @@ class ContextOptionsStore {
             key: option,
             label: t("MoveTo"),
             icon: "images/move.react.svg",
-            //onClick: onMoveAction,
+            onClick: this.onMoveAction,
             disabled: false,
           };
         case "copy":
@@ -224,7 +320,7 @@ class ContextOptionsStore {
             key: option,
             label: t("Copy"),
             icon: "/static/images/copy.react.svg",
-            //onClick: onCopyAction,
+            onClick: this.onCopyAction,
             disabled: false,
           };
         case "duplicate":
@@ -232,7 +328,7 @@ class ContextOptionsStore {
             key: option,
             label: t("Duplicate"),
             icon: "/static/images/copy.react.svg",
-            //onClick: onDuplicate,
+            onClick: this.onDuplicate,
             disabled: false,
           };
         case "rename":
@@ -240,7 +336,7 @@ class ContextOptionsStore {
             key: option,
             label: t("Rename"),
             icon: "images/rename.react.svg",
-            //onClick: onClickRename,
+            onClick: this.onClickRename,
             disabled: false,
           };
         case "change-thirdparty-info":
@@ -248,7 +344,7 @@ class ContextOptionsStore {
             key: option,
             label: t("ThirdPartyInfo"),
             icon: "images/access.edit.react.svg",
-            //onClick: onChangeThirdPartyInfo,
+            onClick: this.onChangeThirdPartyInfo,
             disabled: false,
           };
         case "delete":
@@ -256,7 +352,7 @@ class ContextOptionsStore {
             key: option,
             label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
             icon: "/static/images/catalog.trash.react.svg",
-            //onClick: onClickDelete,
+            onClick: this.onClickDelete,
             disabled: false,
           };
         case "remove-from-favorites":
@@ -264,7 +360,7 @@ class ContextOptionsStore {
             key: option,
             label: t("RemoveFromFavorites"),
             icon: "images/favorites.react.svg",
-            //onClick: onClickFavorite,
+            onClick: this.onClickFavorite,
             disabled: false,
             "data-action": "remove",
           };
