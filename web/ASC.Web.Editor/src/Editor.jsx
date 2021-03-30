@@ -378,7 +378,7 @@ const Editor = ({
               uploadPanelVisible={uploadPanelVisible}
               isSharingPanelVisible={sharingPanelVisible}
               displayedInfo={[fileInfo]}
-              onSuccess={() => updateUsersRightsList()}
+              onSuccess={updateUsersRightsList}
             />
           )}
         </>
