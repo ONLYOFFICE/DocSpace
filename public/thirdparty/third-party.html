@@ -59,6 +59,38 @@
         text-decoration: none;
       }
     </style>
+    <script>
+      function getObjectByLocation(location) {
+        if (!location.search || !location.search.length) return null;
+
+        const searchUrl = location.search.substring(1);
+        const object = JSON.parse(
+          '{"' +
+            decodeURIComponent(searchUrl)
+              .replace(/"/g, '\\"')
+              .replace(/&/g, '","')
+              .replace(/=/g, '":"') +
+            '"}'
+        );
+
+        return object;
+      }
+
+      const urlParams = getObjectByLocation(window.location);
+      const code = urlParams ? urlParams.code || null : null;
+      const error = urlParams ? urlParams.error || null : null;
+
+      if (error) {
+        console.log(error);
+        localStorage.setItem("third-party-error", error);
+        window.close();
+      } else if (code) {
+        localStorage.setItem("code", code);
+        window.close();
+      } else {
+        window.close();
+      }
+    </script>
   </head>
   <body>
     <div class="offline-container">
