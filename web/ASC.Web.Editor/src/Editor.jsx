@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
+
 import Toast from "@appserver/components/toast";
 import toastr from "studio/toastr";
+import { toast } from "react-toastify";
+
 import Box from "@appserver/components/box";
 import { regDesktop } from "@appserver/common/desktop";
 import Loaders from "@appserver/common/components/Loaders";
@@ -20,8 +23,8 @@ import {
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
-
 import FilesFilter from "@appserver/common/api/files/filter";
+
 import throttle from "lodash/throttle";
 import { isIOS, deviceType } from "react-device-detect";
 import { homepage } from "../package.json";
@@ -53,6 +56,8 @@ let docEditor;
 let fileInfo;
 const url = window.location.href;
 const filesUrl = url.substring(0, url.indexOf("/doceditor"));
+
+toast.configure();
 
 const Editor = ({
   uploadPanelVisible,
@@ -364,10 +369,10 @@ const Editor = ({
       heightProp={isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
     >
       <Toast />
+
       {!isLoading ? (
         <>
           <div id="editor"></div>
-
           {sharingPanelVisible && (
             <SharingPanel
               key="sharing-panel"
