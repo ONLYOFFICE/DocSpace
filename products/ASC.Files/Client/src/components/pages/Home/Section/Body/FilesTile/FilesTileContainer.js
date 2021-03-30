@@ -1,5 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router-dom";
 import { ReactSVG } from "react-svg";
 import { Consumer } from "@appserver/components/utils/context";
 import { withTranslation } from "react-i18next";
@@ -8,7 +9,13 @@ import FilesTileContent from "./FilesTileContent";
 import Tile from "./Tile";
 import DragAndDrop from "@appserver/components/drag-and-drop";
 
-const FilesTileContainer = ({ t, filesList, fileActionType, ...props }) => {
+const FilesTileContainer = ({
+  t,
+  filesList,
+  fileActionType,
+  history,
+  ...props
+}) => {
   const getItemIcon = (isEdit, item) => {
     const svgLoader = () => <div style={{ width: "24px" }}></div>;
     console.log;
@@ -45,7 +52,7 @@ const FilesTileContainer = ({ t, filesList, fileActionType, ...props }) => {
             const contextOptionsProps =
               !isEdit && contextOptions && contextOptions.length > 0
                 ? {
-                    contextOptions: props.getContextOptions(item, t),
+                    contextOptions: props.getContextOptions(item, t, history),
                   }
                 : {};
             const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
@@ -114,4 +121,4 @@ export default inject(
       isRecycleBin: isRecycleBinFolder,
     };
   }
-)(withTranslation("Home")(observer(FilesTileContainer)));
+)(withTranslation("Home")(observer(withRouter(FilesTileContainer))));

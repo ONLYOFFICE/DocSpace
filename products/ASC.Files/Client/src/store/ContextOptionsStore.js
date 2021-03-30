@@ -8,11 +8,11 @@ import mediaViewerDataStore from "./MediaViewerDataStore";
 import selectedFolderStore from "./SelectedFolderStore";
 
 import config from "../../package.json";
-import history from "@appserver/common/history";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig, FileAction } from "@appserver/common/constants";
 
 import toastr from "studio/toastr";
+import copy from "copy-to-clipboard";
 
 const { homepage } = config;
 
@@ -43,6 +43,9 @@ const {
 } = dialogsStore;
 
 class ContextOptionsStore {
+  t = null;
+  history = null;
+
   constructor() {
     makeAutoObservable(this, {
       getFilesContextOptions: action,
@@ -59,13 +62,11 @@ class ContextOptionsStore {
     const { isTabletView } = store.auth.settingsStore;
     const { id } = filesStore.selection[0];
 
-    console.log(isTabletView);
-
     if (!isTabletView) {
       fetchFileVersions(id + "");
       setIsVerHistoryPanel(true);
     } else {
-      history.push(
+      this.history.push(
         combineUrl(AppServerConfig.proxyURL, homepage, `/${id}/history`) //TODO: something better
       );
     }
@@ -77,8 +78,8 @@ class ContextOptionsStore {
     setFavoriteAction(action, id)
       .then(() =>
         action === "mark"
-          ? toastr.success(t("MarkedAsFavorite")) // TODO: t
-          : toastr.success(t("RemovedFromFavorites"))
+          ? toastr.success(this.t("MarkedAsFavorite")) // TODO: t
+          : toastr.success(this.t("RemovedFromFavorites"))
       )
       .catch((err) => {
         console.log(err);
@@ -105,7 +106,7 @@ class ContextOptionsStore {
 
   onClickLinkForPortal = () => {
     //const isFile = !!fileExst;
-    const { id, isFolder, canOpenPlayer } = filesStore.selection[0];
+    const { id, isFolder, canOpenPlayer, webUrl } = filesStore.selection[0];
     copy(
       !isFolder
         ? canOpenPlayer
@@ -114,7 +115,7 @@ class ContextOptionsStore {
         : `${window.location.origin + homepage}/filter?folder=${id}`
     );
 
-    toastr.success(t("LinkCopySuccess"));
+    toastr.success(this.t("LinkCopySuccess"));
   };
 
   onClickLinkEdit = () => {
@@ -137,9 +138,10 @@ class ContextOptionsStore {
   onCopyAction = () => setCopyPanelVisible(true);
 
   onDuplicate = () => {
-    duplicateAction(filesStore.selection[0], t("CopyOperation")).catch((err) =>
-      toastr.error(err)
-    );
+    duplicateAction(
+      filesStore.selection[0],
+      this.t("CopyOperation")
+    ).catch((err) => toastr.error(err));
   };
 
   onClickRename = () => {
@@ -170,20 +172,23 @@ class ContextOptionsStore {
     }
 
     const translations = {
-      deleteOperation: t("DeleteOperation"),
+      deleteOperation: this.t("DeleteOperation"),
     };
 
     fileExst
       ? deleteFileAction(id, folderId, translations)
-          .then(() => toastr.success(t("FileRemoved")))
+          .then(() => toastr.success(this.t("FileRemoved")))
           .catch((err) => toastr.error(err))
       : deleteFolderAction(id, parentId, translations)
-          .then(() => toastr.success(t("FolderRemoved")))
+          .then(() => toastr.success(this.t("FolderRemoved")))
           .catch((err) => toastr.error(err));
   };
 
-  getContextOptions = (item, t) => {
+  getContextOptions = (item, t, history) => {
     const { contextOptions, providerKey, access } = item;
+
+    this.t = t;
+    this.history = history;
 
     const isSharable = access !== 1 && access !== 0;
     const isThirdPartyFolder = providerKey && isRootFolder;

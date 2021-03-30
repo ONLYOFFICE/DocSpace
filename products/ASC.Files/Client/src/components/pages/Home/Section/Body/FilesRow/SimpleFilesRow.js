@@ -82,6 +82,7 @@ const SimpleFilesRow = (props) => {
     setDragging,
     startUpload,
     onSelectItem,
+    history,
   } = props;
   console.log("render row");
   const {
@@ -109,9 +110,6 @@ const SimpleFilesRow = (props) => {
     onSelectItem(item);
     setSharingPanelVisible(true);
   };
-  const onOwnerChange = () => setChangeOwnerPanelVisible(true);
-  const onMoveAction = () => setMoveToPanelVisible(true);
-  const onCopyAction = () => setCopyPanelVisible(true);
 
   const getSharedButton = (shared) => {
     const color = shared ? "#657077" : "#a3a9ae";
@@ -174,11 +172,10 @@ const SimpleFilesRow = (props) => {
 
   const isEdit =
     !!actionType && actionId === id && fileExst === actionExtension;
-
   const contextOptionsProps =
     !isEdit && contextOptions && contextOptions.length > 0
       ? {
-          contextOptions: props.getContextOptions(item, t),
+          contextOptions: props.getContextOptions(item, t, history),
         }
       : {};
 
