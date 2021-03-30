@@ -73,17 +73,13 @@ class SharingPanelComponent extends React.Component {
   };
 
   updateRowData = (newRowData) => {
-    const { files, folders, setFile, setFolder } = this.props;
+    const { setFile, setFolder } = this.props;
 
     for (let item of newRowData) {
       if (!item.fileExst) {
-        if (folders.findIndex((x) => x.id === item.id) !== -1) {
-          setFolder(item);
-        }
+        setFolder(item);
       } else {
-        if (files.findIndex((x) => x.id === item.id) !== -1) {
-          setFile(item);
-        }
+        setFile(item);
       }
     }
   };
@@ -587,8 +583,6 @@ export default inject(
     const { customNames, isDesktopClient } = auth.settingsStore;
     const { setIsLoading, isLoading } = initFilesStore;
     const {
-      files,
-      folders,
       selection,
       canShareOwnerChange,
       getAccessOption,
@@ -611,8 +605,6 @@ export default inject(
       groupsCaption: customNames.groupsCaption,
       isDesktop: isDesktopClient,
       homepage: config.homepage,
-      files,
-      folders,
       selection: uploadPanelVisible ? uploadSelection : selection,
       isLoading,
       isPrivacy: isPrivacyFolder,

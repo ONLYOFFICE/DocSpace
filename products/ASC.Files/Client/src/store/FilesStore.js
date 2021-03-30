@@ -127,13 +127,12 @@ class FilesStore {
 
   setFile = (file) => {
     const index = this.files.findIndex((x) => x.id === file.id);
-    this.files[index] = file;
+    if (index !== -1) this.files[index] = file;
   };
 
   setFolder = (folder) => {
-    console.log("folder", folder);
     const index = this.folders.findIndex((x) => x.id === folder.id);
-    this.folders[index] = folder;
+    if (index !== -1) this.folders[index] = folder;
   };
 
   getFilesChecked = (file, selected) => {

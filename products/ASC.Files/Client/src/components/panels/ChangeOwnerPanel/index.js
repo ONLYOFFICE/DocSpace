@@ -29,8 +29,6 @@ class ChangeOwnerComponent extends React.Component {
   onOwnerChange = () => {
     const { owner } = this.state;
     const {
-      files,
-      folders,
       selection,
       setFolder,
       setFile,
@@ -49,13 +47,9 @@ class ChangeOwnerComponent extends React.Component {
     setFilesOwner(folderIds, fileIds, ownerId)
       .then((res) => {
         if (isFolder) {
-          if (folders.findIndex((x) => x.id === selectedItem.id) !== -1) {
-            setFolder(res[0]);
-          }
+          setFolder(res[0]);
         } else {
-          if (files.findIndex((x) => x.id === selectedItem.id) !== -1) {
-            setFile(res[0]);
-          }
+          setFile(res[0]);
         }
       })
       .catch((err) => toastr.error(err))
@@ -148,20 +142,11 @@ const ChangeOwnerPanel = withTranslation("ChangeOwnerPanel")(
 
 export default inject(({ auth, initFilesStore, filesStore, dialogsStore }) => {
   const { setIsLoading, isLoading } = initFilesStore;
-  const {
-    files,
-    folders,
-    selection,
-    setFile,
-    setFolder,
-    setFilesOwner,
-  } = filesStore;
+  const { selection, setFile, setFolder, setFilesOwner } = filesStore;
   const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
   return {
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
-    files,
-    folders,
     selection,
     isLoading,
     visible: ownerPanelVisible,
