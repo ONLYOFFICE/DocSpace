@@ -1068,7 +1068,7 @@ export default withRouter(
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
     setProviders: peopleStore.usersStore.setProviders,
     providers: peopleStore.usersStore.providers,
-    getSerializedProfile: peopleStore.usersStore.getSerializedProfile,
+    getSerializedProfile: auth.settingsStore.getSerializedProfile,
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
