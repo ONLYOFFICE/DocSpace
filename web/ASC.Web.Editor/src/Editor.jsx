@@ -85,7 +85,6 @@ const Editor = ({
     getShareUsers(folderId, [+fileId])
       .then((users) => SharingPanel.convertSharingUsers(users))
       .then((sharingSettings) => {
-        console.log("sharingSettings", sharingSettings);
         isInit
           ? (config.document.info = {
               ...config.document.info,
@@ -374,10 +373,8 @@ const Editor = ({
               key="sharing-panel"
               uploadPanelVisible={uploadPanelVisible}
               isSharingPanelVisible={sharingPanelVisible}
-              selection={fileInfo}
+              displayedInfo={[fileInfo]}
               onSuccess={() => updateUsersRightsList()}
-              editorAccessRights={config && config.document.permissions}
-              documentTitle={config && config.document.title}
             />
           )}
         </>

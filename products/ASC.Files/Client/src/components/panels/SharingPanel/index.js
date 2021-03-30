@@ -251,7 +251,7 @@ class SharingPanelComponent extends React.Component {
     const { selection } = this.props;
     const folderId = [];
     const fileId = [];
-
+    //debugger;
     for (let item of selection) {
       if (item.access === 1 || item.access === 0) {
         if (item.fileExst) {
@@ -401,7 +401,6 @@ class SharingPanelComponent extends React.Component {
       canShareOwnerChange,
       isLoading,
       uploadPanelVisible,
-      isSharingPanelVisible,
       documentTitle,
       sharingPanelVisible,
     } = this.props;
@@ -415,7 +414,7 @@ class SharingPanelComponent extends React.Component {
       showEmbeddingPanel,
       showChangeOwnerPanel,
       shareLink,
-      showPanel,
+      //showPanel,
       accessOptions,
       externalAccessOptions,
     } = this.state;
@@ -425,8 +424,6 @@ class SharingPanelComponent extends React.Component {
     const onPlusClickProp = !isLoading ? { onClick: this.onPlusClick } : {};
     const internalLink = selection.length === 1 && this.getInternalLink();
     //debugger;
-
-    console.log("visible", visible);
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -602,7 +599,7 @@ const SharingPanel = inject(
       dialogsStore,
       treeFoldersStore,
     },
-    { uploadPanelVisible }
+    { uploadPanelVisible, displayedInfo }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
     const { customNames, isDesktopClient } = auth.settingsStore;
@@ -627,7 +624,10 @@ const SharingPanel = inject(
       selectUploadedFile,
       updateUploadedItem,
     } = uploadDataStore;
+
     //debugger;
+    const selectionInfo = displayedInfo ? displayedInfo : selection;
+
     return {
       isMyId: auth.userStore.user && auth.userStore.user.id,
       groupsCaption: customNames.groupsCaption,
@@ -635,7 +635,7 @@ const SharingPanel = inject(
       homepage: config.homepage,
       files,
       folders,
-      selection: uploadPanelVisible ? uploadSelection : selection,
+      selection: uploadPanelVisible ? uploadSelection : selectionInfo,
       isLoading,
       isPrivacy: isPrivacyFolder,
       uploadSelection,
