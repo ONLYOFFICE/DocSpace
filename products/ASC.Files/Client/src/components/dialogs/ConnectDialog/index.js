@@ -320,6 +320,7 @@ const ConnectDialog = withTranslation("ConnectDialog")(
 
 export default inject(
   ({
+    auth,
     filesStore,
     settingsStore,
     treeFoldersStore,
@@ -328,12 +329,12 @@ export default inject(
   }) => {
     const {
       providers,
-      getOAuthToken,
       saveThirdParty,
       openConnectWindow,
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
     const { fetchFiles } = filesStore;
+    const { getOAuthToken } = auth.settingsStore;
 
     const {
       treeFolders,

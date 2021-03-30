@@ -25,7 +25,6 @@ class ThirdPartyStore {
       setThirdPartyCapabilities: action,
       fetchThirdPartyProviders: action,
       deleteThirdParty: action,
-      getOAuthToken: action,
       openConnectWindow: action,
     });
   }
@@ -64,25 +63,6 @@ class ThirdPartyStore {
       providerKey,
       providerId
     );
-  };
-
-  getOAuthToken = () => {
-    return new Promise((resolve) => {
-      localStorage.removeItem("code");
-      const interval = setInterval(() => {
-        try {
-          const code = localStorage.getItem("code");
-
-          if (code) {
-            localStorage.removeItem("code");
-            clearInterval(interval);
-            resolve(code);
-          }
-        } catch {
-          return;
-        }
-      }, 500);
-    });
   };
 
   convertServiceName = (serviceName) => {

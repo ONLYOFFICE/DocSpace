@@ -213,6 +213,7 @@ const ThirdPartyList = withTranslation("Article")(
 
 export default inject(
   ({
+    auth,
     initFilesStore,
     settingsStore,
     treeFoldersStore,
@@ -229,9 +230,10 @@ export default inject(
       oneDriveConnectItem,
       nextCloudConnectItem,
       webDavConnectItem,
-      getOAuthToken,
       openConnectWindow,
     } = settingsStore.thirdPartyStore;
+
+    const { getOAuthToken } = auth.settingsStore;
 
     const { setConnectItem, setThirdPartyDialogVisible } = dialogsStore;
 

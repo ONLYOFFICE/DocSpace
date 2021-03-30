@@ -239,7 +239,6 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     ownCloudConnectItem,
     webDavConnectItem,
     sharePointConnectItem,
-    getOAuthToken,
     openConnectWindow,
   } = settingsStore.thirdPartyStore;
   const {
@@ -248,6 +247,7 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     setConnectDialogVisible,
     setConnectItem,
   } = dialogsStore;
+  const { getOAuthToken } = auth.settingsStore;
 
   return {
     visible,
