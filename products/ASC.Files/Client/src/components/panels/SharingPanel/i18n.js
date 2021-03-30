@@ -33,6 +33,9 @@ newInstance.use(Backend).init({
     loadPath: `${homepage}/locales/{{lng}}/SharingPanel.json`,
   },
 
+  ns: ["SharingPanel"],
+  defaultNS: "SharingPanel",
+
   react: {
     useSuspense: false,
   },
