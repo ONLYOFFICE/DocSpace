@@ -8,6 +8,8 @@ import Button from "@appserver/components/button";
 import DropDown from "@appserver/components/drop-down";
 import DropDownItem from "@appserver/components/drop-down-item";
 import Textarea from "@appserver/components/textarea";
+import Loader from "@appserver/components/loader";
+import Text from "@appserver/components/text";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
 import toastr from "studio/toastr";
@@ -314,7 +316,7 @@ class SharingPanelComponent extends React.Component {
     const isFile = !!item.fileExst;
 
     if (selection.length !== 1) return null;
-    console.log("item.webUrl", selection[0]);
+
     return isFile
       ? item.canOpenPlayer
         ? `${window.location.href}&preview=${item.id}`
@@ -488,28 +490,39 @@ class SharingPanelComponent extends React.Component {
               stype="mediumBlack"
               style={SharingBodyStyle}
             >
-              {shareDataItems.map((item, index) => (
-                <SharingRow
-                  t={t}
-                  index={index}
-                  key={`${item.sharedTo.id}_${index}`}
-                  selection={selection}
-                  item={item}
-                  isMyId={isMyId}
-                  accessOptions={accessOptions}
-                  externalAccessOptions={externalAccessOptions}
-                  canShareOwnerChange={canShareOwnerChange}
-                  onChangeItemAccess={this.onChangeItemAccess}
-                  internalLink={internalLink}
-                  onRemoveUserClick={this.onRemoveUserItemClick}
-                  onShowEmbeddingPanel={this.onShowEmbeddingPanel}
-                  onToggleLink={this.onToggleLink}
-                  onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
-                  isLoading={isLoading}
-                  isEditor={isEditor}
-                  documentTitle={documentTitle}
-                />
-              ))}
+              {!isLoading ? (
+                shareDataItems.map((item, index) => (
+                  <SharingRow
+                    t={t}
+                    index={index}
+                    key={`${item.sharedTo.id}_${index}`}
+                    selection={selection}
+                    item={item}
+                    isMyId={isMyId}
+                    accessOptions={accessOptions}
+                    externalAccessOptions={externalAccessOptions}
+                    canShareOwnerChange={canShareOwnerChange}
+                    onChangeItemAccess={this.onChangeItemAccess}
+                    internalLink={internalLink}
+                    onRemoveUserClick={this.onRemoveUserItemClick}
+                    onShowEmbeddingPanel={this.onShowEmbeddingPanel}
+                    onToggleLink={this.onToggleLink}
+                    onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
+                    isLoading={isLoading}
+                    isEditor={isEditor}
+                    documentTitle={documentTitle}
+                  />
+                ))
+              ) : (
+                <div key="loader" className="sharing-panel-loader-wrapper">
+                  <Loader
+                    type="oval"
+                    size="16px"
+                    className="sharing-panel-loader"
+                  />
+                  <Text as="span">{t("LoadingLabel")}</Text>
+                </div>
+              )}
               {isNotifyUsers && (
                 <div className="sharing_panel-text-area">
                   <Textarea
