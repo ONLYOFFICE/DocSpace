@@ -18,7 +18,10 @@ class SettingsStore {
   timezones = [];
   utcOffset = "00:00:00";
   utcHoursOffset = 0;
-  defaultPage = combineUrl(proxyURL, "/");
+  defaultPage = combineUrl(
+    proxyURL,
+    this.isDesktopClient ? "/products/files/" : "/"
+  );
   homepage = "";
   datePattern = "M/d/yyyy";
   datePatternJQ = "00/00/0000";
