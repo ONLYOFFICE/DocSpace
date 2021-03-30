@@ -366,7 +366,7 @@ const Form = (props) => {
               iconName={icon}
               label={t(label)}
               className="socialButton"
-              iconOptions={iconOptions}
+              $iconOptions={iconOptions}
               data-url={item.url}
               data-providername={item.provider}
               onClick={onSocialButtonClick}

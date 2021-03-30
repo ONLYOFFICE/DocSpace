@@ -43,7 +43,7 @@ SocialButton.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   onClick: PropTypes.func,
-  iconOptions: PropTypes.object,
+  $iconOptions: PropTypes.object,
 };
 
 SocialButton.defaultProps = {
@@ -51,7 +51,7 @@ SocialButton.defaultProps = {
   iconName: "SocialButtonGoogleIcon",
   tabIndex: -1,
   isDisabled: false,
-  iconOptions: {},
+  $iconOptions: {},
 };
 
 export default SocialButton;

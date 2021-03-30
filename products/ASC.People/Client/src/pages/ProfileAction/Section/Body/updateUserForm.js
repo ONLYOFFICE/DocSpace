@@ -638,7 +638,7 @@ class UpdateUserForm extends React.Component {
                 iconName={icon}
                 label={t(label)}
                 className="socialButton"
-                iconOptions={iconOptions}
+                $iconOptions={iconOptions}
               />
             </div>
             {item.linked ? (

@@ -13,6 +13,7 @@ ButtonWrapper.propTypes = {
   tabIndex: PropTypes.number,
   isDisabled: PropTypes.bool,
   onClick: PropTypes.func,
+  $iconOptions: PropTypes.object,
 };
 
 const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
@@ -45,11 +46,11 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   }
 
   ${(props) =>
-    props.iconOptions &&
-    props.iconOptions.color &&
+    props.$iconOptions &&
+    props.$iconOptions.color &&
     css`
       svg path {
-        fill: ${props.iconOptions.color};
+        fill: ${props.$iconOptions.color};
       }
     `}
 
