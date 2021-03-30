@@ -362,7 +362,6 @@ const Editor = ({
     }
   };
 
-  //debugger;
   return (
     <Box
       widthProp="100vw"

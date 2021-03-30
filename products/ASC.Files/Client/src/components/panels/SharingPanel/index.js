@@ -253,7 +253,7 @@ class SharingPanelComponent extends React.Component {
     const { selection } = this.props;
     const folderId = [];
     const fileId = [];
-    //debugger;
+
     for (let item of selection) {
       if (item.access === 1 || item.access === 0) {
         if (item.fileExst) {
@@ -425,7 +425,6 @@ class SharingPanelComponent extends React.Component {
     const zIndex = 310;
     const onPlusClickProp = !isLoading ? { onClick: this.onPlusClick } : {};
     const internalLink = selection.length === 1 && this.getInternalLink();
-    //debugger;
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -638,7 +637,6 @@ const SharingPanel = inject(
       updateUploadedItem,
     } = uploadDataStore;
 
-    //debugger;
     const selectionInfo = displayedInfo ? displayedInfo : selection;
 
     return {
@@ -673,7 +671,6 @@ const SharingPanel = inject(
 
 class Panel extends React.Component {
   static convertSharingUsers = (shareDataItems) => {
-    //debugger;
     const t = i18n.getFixedT(null, "SharingPanel");
     let sharingSettings = [];
     for (let i = 1; i < shareDataItems.length; i++) {

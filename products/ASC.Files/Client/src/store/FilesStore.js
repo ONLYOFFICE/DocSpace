@@ -949,7 +949,6 @@ class FilesStore {
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
-    //debugger;
     if (providerKey) {
       tab
         ? (tab.location = url)
