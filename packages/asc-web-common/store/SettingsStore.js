@@ -20,7 +20,7 @@ class SettingsStore {
   utcHoursOffset = 0;
   defaultPage = combineUrl(
     proxyURL,
-    this.isDesktopClient ? "/products/files/" : "/"
+    window["AscDesktopEditor"] !== undefined ? "/products/files/" : "/"
   );
   homepage = "";
   datePattern = "M/d/yyyy";
