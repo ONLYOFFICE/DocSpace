@@ -76,7 +76,6 @@ class FilesStore {
       isOnlyFoldersSelected: computed,
       isThirdPartySelection: computed,
       isWebEditSelected: computed,
-      canShareOwnerChange: computed,
       selectionTitle: computed,
       currentFilesCount: computed,
 
@@ -349,7 +348,7 @@ class FilesStore {
         options.push("send-by-email");
       }
 
-      this.canShareOwnerChange && options.push("owner-change");
+      this.canShareOwnerChange(item) && options.push("owner-change");
       options.push("link-for-portal-users");
 
       if (!isVisitor) {
@@ -459,6 +458,24 @@ class FilesStore {
     return filesLength + foldersLength;
   };
 
+  canShareOwnerChange = (item) => {
+    const userId = userStore.user.id;
+    const isCommonFolder =
+      treeFoldersStore.commonFolder &&
+      selectedFolderStore.pathParts &&
+      treeFoldersStore.commonFolder.id === selectedFolderStore.pathParts[0];
+
+    if (item.providerKey || !isCommonFolder) {
+      return false;
+    } else if (isAdmin) {
+      return true;
+    } else if (item.createdBy.id === userId) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   get canShare() {
     const folderType = selectedFolderStore.rootFolderType;
     const isVisitor = (userStore.user && userStore.user.isVisitor) || false;
@@ -504,26 +521,6 @@ class FilesStore {
       return icon;
     }
     return null;
-  }
-
-  get canShareOwnerChange() {
-    const userId = userStore.user.id;
-    const isCommonFolder =
-      treeFoldersStore.commonFolder &&
-      selectedFolderStore.pathParts &&
-      treeFoldersStore.commonFolder.id === selectedFolderStore.pathParts[0];
-
-    const item = this.selection.length ? this.selection[0] : false;
-
-    if (!isCommonFolder) {
-      return false;
-    } else if (isAdmin && item ? !item.providerKey : true) {
-      return true;
-    } else if (item && item.createdBy.id === userId && !item.providerKey) {
-      return true;
-    } else {
-      return false;
-    }
   }
 
   get isHeaderVisible() {
