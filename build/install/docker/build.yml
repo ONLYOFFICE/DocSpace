@@ -120,13 +120,6 @@ services:
       target: studio
     image: "${REPO}/${STATUS}appserver-studio:${SRV_VERSION}"
     
-  onlyoffice-web-login:
-    build:
-      context: ./
-      dockerfile: Dockerfile-app
-      target: web_login
-    image: "${REPO}/${STATUS}appserver-web-login:${SRV_VERSION}" 
-    
   onlyoffice-proxy:
     build:
       context:  ./

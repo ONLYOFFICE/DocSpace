@@ -39,19 +39,22 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
                         dotnet-sdk-3.1 
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
-    git clone --depth 1 -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}/
+    echo ${GIT_BRANCH}  && \
+    git clone --depth 1 -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}
 
-COPY /home/sk81/projects/config/scripts/build-backend.sh ${SRC_PATH}/build/install/common/build-backend.sh
-COPY /home/sk81/projects/config/scripts/build-frontend.sh ${SRC_PATH}/build/install/common/build-frontend.sh
-COPY /home/sk81/projects/config/scripts/publish-backend.sh ${SRC_PATH}/build/install/common/publish-backend.sh
+COPY config/build-backend.sh ${SRC_PATH}/build/install/common/build-backend.sh
+COPY config/build-frontend.sh ${SRC_PATH}/build/install/common/build-frontend.sh
+COPY config/publish-backend.sh ${SRC_PATH}/build/install/common/publish-backend.sh
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
     cd ${SRC_PATH} && \
-    mkdir -p /var/www/public/ && cp -f public/* /var/www/public/ && \
+    mkdir -p /var/www/public/ && cp -rf public/* /var/www/public/ && \
     mkdir -p /app/onlyoffice/config/ && cp -rf config/* /app/onlyoffice/config/ && \
-    cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
+    mkdir -p /etc/nginx/conf.d && cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
     mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
     sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
+    #dotnet restore ASC.Web.sln -s https://api.nuget.org/v3/index.json --disable-parallel && \
+    dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config --disable-parallel  && \
     cd ${SRC_PATH}/build/install/common/ && \
     bash build-frontend.sh -sp ${SRC_PATH} && \
     bash build-backend.sh -sp ${SRC_PATH} && \
@@ -94,7 +97,9 @@ ENTRYPOINT ["./docker-entrypoint.sh"]
 ### STAGE 3: Run ###
 
 ## NGINX ##
-FROM nginx:stable-alpine AS web
+#FROM nginx:stable-alpine AS web
+FROM nginx AS web
+ARG SRC_PATH="/app/onlyoffice/src"
 
 # Remove default nginx website
 RUN rm -rf /usr/share/nginx/html/* 
@@ -103,13 +108,15 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=develop /etc/nginx/conf.d /etc/nginx/conf.d
 COPY --from=develop /etc/nginx/includes /etc/nginx/includes
 COPY --from=develop /var/www/public /var/www/public
-#COPY --from=develop /var/www/story /var/www/story
-#COPY --from=develop /var/www/studio/client /var/www/studio/client
-COPY --from=develop ${SRC_PATH}/web/ASC.Web.Client /var/www/studio/client
-COPY --from=develop ${SRC_PATH}/products/ASC.Files/Client /var/www/products/ASC.Files/client
-COPY --from=develop ${SRC_PATH}/products/ASC.People/Client /var/www/products/ASC.People/client
-COPY --from=develop ${SRC_PATH}/products/ASC.CRM/Client /var/www/products/ASC.CRM/client
-COPY --from=develop ${SRC_PATH}/products/ASC.Projects/Client /var/www/products/ASC.Projects/client
+COPY --from=develop ${SRC_PATH}/products/ASC.CRM/Client/dist /var/www/products/ASC.CRM/client
+COPY --from=develop ${SRC_PATH}/web/ASC.Web.Editor/dist /var/www/products/ASC.Files/editor
+COPY --from=develop ${SRC_PATH}/products/ASC.Files/Client/dist /var/www/products/ASC.Files/client
+COPY --from=develop ${SRC_PATH}/web/ASC.Web.Login/dist /var/www/studio/login
+COPY --from=develop ${SRC_PATH}/products/ASC.People/Client/dist /var/www/products/ASC.People/client
+COPY --from=develop ${SRC_PATH}/products/ASC.Projects/Client/dist /var/www/products/ASC.Projects/client
+COPY --from=develop ${SRC_PATH}/web/ASC.Web.Client/dist /var/www/studio/client
+
+
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 
 # add defualt user and group for no-root run
@@ -124,7 +131,6 @@ RUN chown nginx:nginx /etc/nginx/* -R &&\
     sed -i 's/localhost:5020/$service_projects_server/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5000/$service_api/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5003/$service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:5011/$service_web_login/' /etc/nginx/conf.d/onlyoffice.conf && \  
     sed -i 's/localhost:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf && \
     # configute the image nginx whith less privileged https://hub.docker.com/_/nginx
@@ -325,16 +331,3 @@ COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/se
 COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
 
 CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
-
-## ASC.Web.Login ##
-FROM node:12 AS web_login
-
-WORKDIR /var/www/web/login/
-
-COPY --from=develop --chown=onlyoffice:onlyoffice ${SRC_PATH}/web/ASC.Web.Login .
-
-RUN yarn build
-
-EXPOSE 5050
-
-CMD [ "yarn", "build:start" ]

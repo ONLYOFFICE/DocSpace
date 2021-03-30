@@ -85,11 +85,6 @@ map $SERVICE_STUDIO $service_studio {
     $SERVICE_STUDIO $SERVICE_STUDIO;
 }
 
-map $SERVICE_WEB_LOGIN $service_web_login {
-    volatile;
-    $SERVICE_WEB_LOGIN $SERVICE_WEB_LOGIN;
-}
-
 map $DOCUMENT_SERVER $document_server {
     volatile;
     $DOCUMENT_SERVER $DOCUMENT_SERVER;
