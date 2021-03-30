@@ -81,68 +81,95 @@ services:
     volumes:
     - kafka_data:/var/lib/kafka/data
 
+  onlyoffice-api-system:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-api-system:${SRV_VERSION}"
+    container_name: ${API_SYSTEM_HOST}
+  
+  onlyoffice-backup:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-backup:${SRV_VERSION}"
+    container_name: ${BACKUP_HOST}
+  
+  onlyoffice-crm:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-crm:${SRV_VERSION}"
+    container_name: ${CRM_HOST}
+  
+  onlyoffice-storage-encryption:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-storage-encryption:${SRV_VERSION}"
+    container_name: ${STORAGE_ENCRYPTION_HOST}
+  
+  onlyoffice-files:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-files:${SRV_VERSION}"
+    container_name: ${FILES_HOST}
+
+  onlyoffice-files-services:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-files-services:${SRV_VERSION}"
+    container_name: ${FILES_SERVICES_HOST}
+
+  onlyoffice-storage-migration:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-storage-migration:${SRV_VERSION}"
+    container_name: ${STORAGE_MIGRATION_HOST}
+  
+  onlyoffice-notify:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-notify:${SRV_VERSION}"
+    container_name: ${NOTIFY_HOST}  
+  
+  onlyoffice-people-server:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-people-server:${SRV_VERSION}"
+    container_name: ${PEOPLE_SERVER_HOST}
+
+  onlyoffice-projects-server:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-projects-server:${SRV_VERSION}"
+    container_name: ${PROJECTS_SERVER_HOST}
+
+  onlyoffice-socket:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-socket:${SRV_VERSION}"
+    container_name: ${SOCKET_HOST}
+  
+  onlyoffice-studio-notify:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-studio-notify:${SRV_VERSION}"
+    container_name: ${STUDIO_NOTIFY_HOST}
+
+  onlyoffice-telegram-service:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-telegram-service:${SRV_VERSION}"
+    container_name: ${TELEGRAM_SERVICE_HOST}
+
+  onlyoffice-thumbnails:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-thumbnails:${SRV_VERSION}"
+    container_name: ${THUMBNAILS_HOST}
+    
+  onlyoffice-urlshortener:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-urlshortener:${SRV_VERSION}"
+    container_name: ${URLSHORTENER_HOST}
+
   onlyoffice-api:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-api:${SRV_VERSION}"
     container_name: ${API_HOST}
 
-  onlyoffice-api_system:
-    <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-api_system:${SRV_VERSION}"
-    container_name: ${API_SYSTEM_HOST}
-     
-  onlyoffice-urlshortener:
-    <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-urlshortener:${SRV_VERSION}"
-    container_name: ${URLSHORTENER_HOST}
-    expose:
-      - "9999"
-      - ${SERVICE_PORT}
-
-  onlyoffice-studio.notify:
-    <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-studio.notify:${SRV_VERSION}"
-    container_name: ${STUDIO_NOTIFY_HOST}
-    
-  onlyoffice-notify:
-    <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-notify:${SRV_VERSION}"
-    container_name: ${NOTIFY_HOST}
-
-  onlyoffice-people.server:
-    <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-people.server:${SRV_VERSION}"
-    container_name: ${PEOPLE_SERVER_HOST}
-    
-  onlyoffice-files:
-    <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-files:${SRV_VERSION}"
-    container_name: ${FILES_HOST}
-    
-  onlyoffice-files_services:
-    <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-files_services:${SRV_VERSION}"
-    container_name: ${FILES_SERVICES_HOST}
-    
   onlyoffice-studio:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-studio:${SRV_VERSION}"
     container_name: ${STUDIO_HOST}
    
-  onlyoffice-backup:
+  onlyoffice-web-login:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-backup:${SRV_VERSION}"
-    container_name: ${BACKUP_HOST}
-    
-  onlyoffice-thumbnails:
-    <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-thumbnails:${SRV_VERSION}"
-    container_name: ${THUMBNAILS_HOST}
-  
-  onlyoffice-socket:
-    <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-socket:${SRV_VERSION}"
-    container_name: ${SOCKET_HOST}
+    image: "${REPO}/${STATUS}appserver-web-login:${SRV_VERSION}"
+    container_name: ${WEB_LOGIN_HOST}
 
   onlyoffice-proxy:
     image: "${REPO}/${STATUS}appserver-proxy:${SRV_VERSION}"
@@ -154,29 +181,43 @@ services:
     ports:
       - 8092:8092 
     depends_on:
-      - onlyoffice-api
-      - onlyoffice-api_system
-      - onlyoffice-urlshortener
-      - onlyoffice-studio.notify
-      - onlyoffice-notify
-      - onlyoffice-people.server
-      - onlyoffice-files
-      - onlyoffice-files_services
-      - onlyoffice-studio
+      - onlyoffice-api-system
       - onlyoffice-backup
+      - onlyoffice-crm
+      - onlyoffice-storage-encryption
+      - onlyoffice-files
+      - onlyoffice-files-services
+      - onlyoffice-storage-migration
+      - onlyoffice-notify
+      - onlyoffice-people-server
+      - onlyoffice-projects-server
+      - onlyoffice-socket
+      - onlyoffice-studio-notify
+      - onlyoffice-telegram-service
       - onlyoffice-thumbnails
+      - onlyoffice-urlshortener
+      - onlyoffice-api
+      - onlyoffice-studio
+      - onlyoffice-web-login
     environment:
-      - SERVICE_API=${SERVICE_API}
       - SERVICE_API_SYSTEM=${SERVICE_API_SYSTEM}
-      - SERVICE_URLSHORTENER=${SERVICE_URLSHORTENER}
-      - SERVICE_STUDIO_NOTIFY=${SERVICE_STUDIO_NOTIFY}
-      - SERVICE_PEOPLE_SERVER=${SERVICE_PEOPLE_SERVER}
+      - SERVICE_BACKUP=${SERVICE_BACKUP}
+      - SERVICE_CRM=${SERVICE_CRM}
+      - SERVICE_STORAGE_ENCRYPTION=${SERVICE_STORAGE_ENCRYPTION}
       - SERVICE_FILES=${SERVICE_FILES}
       - SERVICE_FILES_SERVICES=${SERVICE_FILES_SERVICES}
-      - SERVICE_STUDIO=${SERVICE_STUDIO}
-      - SERVICE_BACKUP=${SERVICE_BACKUP}
+      - SERVICE_STORAGE_MIGRATION=${SERVICE_STORAGE_MIGRATION}
+      - SERVICE_NOTIFY=${SERVICE_NOTIFY}
+      - SERVICE_PEOPLE_SERVER=${SERVICE_PEOPLE_SERVER}
+      - SERVICE_PROJECTS_SERVER=${SERVICE_PROJECTS_SERVER}
+      - SERVICE_SOCKET=${SERVICE_SOCKET}
+      - SERVICE_STUDIO_NOTIFY=${SERVICE_STUDIO_NOTIFY}
+      - SERVICE_TELEGRAM_SERVICE=${SERVICE_TELEGRAM_SERVICE}
       - SERVICE_THUMBNAILS=${SERVICE_THUMBNAILS}
-      - SERVICE_SH=${SERVICE_SH}
+      - SERVICE_URLSHORTENER=${SERVICE_URLSHORTENER}
+      - SERVICE_API=${SERVICE_API}
+      - SERVICE_STUDIO=${SERVICE_STUDIO}
+      - SERVICE_WEB_LOGIN=${SERVICE_WEB_LOGIN}
       - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:
