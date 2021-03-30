@@ -4,8 +4,10 @@ import DomHelpers from "../utils/domHelpers";
 import ObjectUtils from "../utils/objectUtils";
 import { classNames } from "../utils/classNames";
 import { CSSTransition } from "react-transition-group";
+import { ReactSVG } from "react-svg";
 import Portal from "../portal";
 import StyledContextMenu from "./styled-context-menu";
+import ArrowIcon from "./svg/arrow.right.react.svg";
 
 class ContextMenuSub extends Component {
   constructor(props) {
@@ -132,14 +134,22 @@ class ContextMenuSub extends Component {
     const linkClassName = classNames("p-menuitem-link", {
       "p-disabled": item.disabled,
     });
-    const iconClassName = classNames("p-menuitem-icon", item.icon);
-    const submenuIconClassName = "p-submenu-icon pi pi-angle-right";
-    const icon = item.icon && <span className={iconClassName}></span>;
+    const iconClassName = classNames("p-menuitem-icon", {
+      "p-disabled": item.disabled,
+    });
+    const submenuIconClassName = "p-submenu-icon";
+    const icon = item.icon && (
+      <ReactSVG
+        wrapper="span"
+        className={iconClassName}
+        src={item.icon}
+      ></ReactSVG>
+    );
     const label = item.label && (
       <span className="p-menuitem-text">{item.label}</span>
     );
     const submenuIcon = item.items && (
-      <span className={submenuIconClassName}></span>
+      <ArrowIcon className={submenuIconClassName} />
     );
     const submenu = this.renderSubmenu(item);
     let content = (
@@ -155,7 +165,6 @@ class ContextMenuSub extends Component {
         {icon}
         {label}
         {submenuIcon}
-        {/*<Ripple />*/}
       </a>
     );
 
@@ -503,33 +512,35 @@ class ContextMenu extends Component {
     );
 
     return (
-      <CSSTransition
-        nodeRef={this.menuRef}
-        classNames="p-contextmenu"
-        in={this.state.visible}
-        timeout={{ enter: 250, exit: 0 }}
-        unmountOnExit
-        onEnter={this.onEnter}
-        onEntered={this.onEntered}
-        onExit={this.onExit}
-        onExited={this.onExited}
-      >
-        <div
-          ref={this.menuRef}
-          id={this.props.id}
-          className={className}
-          style={this.props.style}
-          onClick={this.onMenuClick}
-          onMouseEnter={this.onMenuMouseEnter}
+      <StyledContextMenu>
+        <CSSTransition
+          nodeRef={this.menuRef}
+          classNames="p-contextmenu"
+          in={this.state.visible}
+          timeout={{ enter: 250, exit: 0 }}
+          unmountOnExit
+          onEnter={this.onEnter}
+          onEntered={this.onEntered}
+          onExit={this.onExit}
+          onExited={this.onExited}
         >
-          <ContextMenuSub
-            model={this.props.model}
-            root
-            resetMenu={this.state.resetMenu}
-            onLeafClick={this.onLeafClick}
-          />
-        </div>
-      </CSSTransition>
+          <div
+            ref={this.menuRef}
+            id={this.props.id}
+            className={className}
+            style={this.props.style}
+            onClick={this.onMenuClick}
+            onMouseEnter={this.onMenuMouseEnter}
+          >
+            <ContextMenuSub
+              model={this.props.model}
+              root
+              resetMenu={this.state.resetMenu}
+              onLeafClick={this.onLeafClick}
+            />
+          </div>
+        </CSSTransition>
+      </StyledContextMenu>
     );
   }
 

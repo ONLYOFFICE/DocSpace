@@ -24,95 +24,44 @@ const Template = (args) => {
   const cm = useRef(null);
   const items = [
     {
-      label: "File",
-      items: [
-        {
-          label: "New",
-          items: [
-            {
-              label: "Bookmark",
-            },
-            {
-              label: "Video",
-            },
-          ],
-        },
-        {
-          label: "Delete",
-        },
-        {
-          separator: true,
-        },
-        {
-          label: "Export",
-        },
-      ],
-    },
-    {
       label: "Edit",
-      items: [
-        {
-          label: "Left",
-        },
-        {
-          label: "Right",
-        },
-        {
-          label: "Center",
-        },
-        {
-          label: "Justify",
-        },
-      ],
+      icon: "/static/images/catalog.folder.react.svg",
     },
     {
-      label: "Users",
-      items: [
-        {
-          label: "New",
-        },
-        {
-          label: "Delete",
-        },
-        {
-          label: "Search",
-          items: [
-            {
-              label: "Filter",
-              items: [
-                {
-                  label: "Print",
-                },
-              ],
-            },
-            {
-              label: "List",
-            },
-          ],
-        },
-      ],
+      label: "Preview",
+      icon: "/static/images/catalog.folder.react.svg",
     },
     {
-      label: "Events",
+      separator: true,
+    },
+    {
+      label: "Sharing settings",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Link for portal users",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Copy external link",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Send by e-mail",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Version history",
+      icon: "/static/images/catalog.folder.react.svg",
       items: [
         {
-          label: "Edit",
-          items: [
-            {
-              label: "Save",
-            },
-            {
-              label: "Delete",
-            },
-          ],
+          label: "Show version history",
         },
         {
-          label: "Archieve",
-          items: [
-            {
-              label: "Remove",
-            },
-          ],
+          label: "Finalize version",
+        },
+        {
+          label: "Unblock / Check-in",
         },
       ],
     },
@@ -120,7 +69,43 @@ const Template = (args) => {
       separator: true,
     },
     {
+      label: "Make as favorite",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Download",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Download as",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Move or copy",
+      icon: "/static/images/catalog.folder.react.svg",
+      items: [
+        {
+          label: "Move to",
+        },
+        {
+          label: "Copy",
+        },
+        {
+          label: "Duplicate",
+        },
+      ],
+    },
+    {
+      label: "Rename",
+      icon: "/static/images/catalog.folder.react.svg",
+      disabled: true,
+    },
+    {
+      separator: true,
+    },
+    {
       label: "Quit",
+      icon: "/static/images/catalog.folder.react.svg",
     },
   ];
 
@@ -128,11 +113,17 @@ const Template = (args) => {
     <div>
       <ContextMenu model={items} ref={cm}></ContextMenu>
 
-      <img
-        src="https://cdn2.thecatapi.com/images/ac8.jpg"
-        alt="Logo"
+      <div
+        style={{
+          width: "200px",
+          height: "200px",
+          backgroundColor: "red",
+          display: "inline-block",
+        }}
         onContextMenu={(e) => cm.current.show(e)}
-      />
+      >
+        {""}
+      </div>
     </div>
   );
 };
