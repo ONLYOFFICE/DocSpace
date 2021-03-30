@@ -130,7 +130,7 @@ const Editor = ({
         }
       }
       fileInfo = await getFileInfo(fileId);
-      console.log("info", fileInfo);
+
       config = await openEdit(fileId, doc);
 
       if (isDesktop) {
