@@ -707,9 +707,9 @@ class FilesStore {
 
   get isAccessedSelected() {
     return (
-      this.selection.length &&
-      isAdmin &&
-      this.selection.every((x) => x.access === 1 || x.access === 0)
+      (this.selection.length &&
+        this.selection.every((x) => x.access === 1 || x.access === 0)) ||
+      isAdmin
     );
   }
 
