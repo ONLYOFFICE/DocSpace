@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import store from "studio/store";
 import uploadDataStore from "./UploadDataStore";
 import treeFoldersStore from "./TreeFoldersStore";
 import filesStore from "./FilesStore";
@@ -17,11 +18,13 @@ import {
   finalizeVersion,
   lockFile,
   downloadFiles,
-  markAsRead
+  markAsRead,
 } from "@appserver/common/api/files";
 import { FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
+
+const { auth } = store;
 
 const {
   fetchFiles,
@@ -33,6 +36,7 @@ const {
   selectFile,
   deselectFile,
   setSelection,
+  setFile,
 } = filesStore;
 const { setTreeFolders } = treeFoldersStore;
 const { setIsLoading } = initFilesStore;
@@ -41,7 +45,12 @@ const {
   setSecondaryProgressBarData,
   clearSecondaryProgressData,
 } = secondaryProgressDataStore;
-const { setConnectDialogVisible, setConnectItem } = dialogsStore;
+const {
+  setConnectDialogVisible,
+  setConnectItem,
+  setThirdPartyMoveDialogVisible,
+  setDestFolderId,
+} = dialogsStore;
 
 class FilesActionStore {
   constructor() {
@@ -397,15 +406,7 @@ class FilesActionStore {
   };
 
   lockFileAction = (id, locked) => {
-    setIsLoading(true);
-    return lockFile(id, locked).then((res) => {
-      /*const newFiles = files;
-        const indexOfFile = newFiles.findIndex(x => x.id === res.id);
-        newFiles[indexOfFile] = res;*/
-      fetchFiles(selectedFolderStore.id, filesStore.filter).finally(() =>
-        setIsLoading(false)
-      );
-    });
+    return lockFile(id, locked).then((res) => setFile(res));
   };
 
   finalizeVersionAction = (id) => {
@@ -479,7 +480,7 @@ class FilesActionStore {
     );
   };
 
-  setThirdpartyInfo = () => {
+  setThirdpartyInfo = (providerKey) => {
     const { providers, capabilities } = settingsStore.thirdPartyStore;
     const provider = providers.find((x) => x.provider_key === providerKey);
     const capabilityItem = capabilities.find((x) => x[0] === providerKey);
@@ -493,8 +494,81 @@ class FilesActionStore {
   };
 
   markAsRead = (folderIds, fileId) => {
-    return markAsRead(folderIds, fileId)
-  }
+    return markAsRead(folderIds, fileId);
+  };
+
+  moveDragItems = (destFolderId, label) => {
+    const folderIds = [];
+    const fileIds = [];
+    const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2 TODO: get from settings
+    const deleteAfter = true;
+
+    const { selection } = filesStore;
+    const { isRootFolder } = selectedFolderStore;
+    const { isShareFolder, isCommonFolder } = treeFoldersStore;
+
+    for (let item of selection) {
+      if (item.providerKey && !isRootFolder) {
+        setDestFolderId(destFolderId);
+        return setThirdPartyMoveDialogVisible(true);
+      }
+
+      if (item.fileExst) {
+        fileIds.push(item.id);
+      } else {
+        if (item.providerKey && isRootFolder) continue;
+        folderIds.push(item.id);
+      }
+    }
+
+    if (!folderIds.length && !fileIds.length) return;
+
+    setSecondaryProgressBarData({
+      icon: "move",
+      visible: true,
+      percent: 0,
+      label,
+      alert: false,
+    });
+
+    if (auth.isAdmin) {
+      if (isShareFolder) {
+        this.copyToAction(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+      } else {
+        this.moveToAction(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+      }
+    } else {
+      if (isShareFolder || isCommonFolder) {
+        this.copyToAction(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+      } else {
+        this.moveToAction(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+      }
+    }
+  };
 }
 
 export default new FilesActionStore();

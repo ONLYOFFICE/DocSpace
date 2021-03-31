@@ -1,4 +1,4 @@
-import { makeObservable, action, observable, computed } from "mobx";
+import { makeAutoObservable } from "mobx";
 import store from "studio/store";
 import { updateTempContent } from "@appserver/common/utils";
 import filesStore from "./FilesStore";
@@ -13,31 +13,17 @@ class InitFilesStore {
   isLoading = false;
   viewAs = "row";
   dragging = false;
-  dragItem = null;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
+
+  tooltipPageX = 0;
+  tooltipPageY = 0;
 
   constructor() {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
 
-    makeObservable(this, {
-      isLoaded: observable,
-      isLoading: observable,
-      viewAs: observable,
-      dragging: observable,
-      dragItem: observable,
-      privacyInstructions: observable,
-
-      tooltipValue: computed,
-
-      initFiles: action,
-      setIsLoaded: action,
-      setIsLoading: action,
-      setViewAs: action,
-      setDragging: action,
-      setDragItem: action,
-    });
+    makeAutoObservable(this);
   }
 
   setIsLoaded = (isLoaded) => {
@@ -56,8 +42,9 @@ class InitFilesStore {
     this.isLoading = isLoading;
   };
 
-  setDragItem = (dragItem) => {
-    this.dragItem = dragItem;
+  setTooltipPosition = (tooltipPageX, tooltipPageY) => {
+    this.tooltipPageX = tooltipPageX;
+    this.tooltipPageY = tooltipPageY;
   };
 
   get tooltipValue() {
