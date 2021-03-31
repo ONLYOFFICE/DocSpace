@@ -2,7 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import PageLayout from "@appserver/common/components/PageLayout";
 import Loaders from "@appserver/common/components/Loaders";
+import toastr from "studio/toastr";
 import { thirdPartyLinkAccount } from "@appserver/common/api/people";
+import { getAuthProviders } from "@appserver/common/api/settings";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -20,13 +22,6 @@ import { withTranslation } from "react-i18next";
 
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
-
-const loginCallback = (profile) => {
-  console.log(profile);
-  thirdPartyLinkAccount(profile.Serialized).then((resp) => {
-    console.log(resp);
-  });
-};
 
 class ProfileAction extends React.Component {
   componentDidMount() {
@@ -55,7 +50,7 @@ class ProfileAction extends React.Component {
       }
     }
 
-    window.loginCallback = loginCallback;
+    window.loginCallback = this.loginCallback;
   }
 
   componentDidUpdate(prevProps) {
@@ -73,6 +68,16 @@ class ProfileAction extends React.Component {
       }
     }
   }
+
+  loginCallback = (profile) => {
+    const { setProviders, t } = this.props;
+    thirdPartyLinkAccount(profile.Serialized).then((resp) => {
+      getAuthProviders().then((providers) => {
+        setProviders(providers);
+        toastr.success(t("ProviderSuccessfullyConnected"));
+      });
+    });
+  };
 
   render() {
     console.log("ProfileAction render");
@@ -128,6 +133,7 @@ ProfileAction.propTypes = {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
+    setProviders: peopleStore.usersStore.setProviders,
     setDocumentTitle: auth.setDocumentTitle,
     isEdit: peopleStore.editingFormStore.isEdit,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,

@@ -67,5 +67,8 @@
   "SignInWithTwitter": "Вход через Twitter",
   "SignInWithLinkedIn": "Вход через LinkedIn",
   "Connect": "Подключить",
-  "Disconnect": "Отключить"
+  "Disconnect": "Отключить",
+
+  "ProviderSuccessfullyConnected": "Провайдер успешно подключен",
+  "ProviderSuccessfullyDisconnected": "Провайдер успешно отключен"
 }

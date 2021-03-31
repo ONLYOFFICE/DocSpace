@@ -68,5 +68,8 @@
   "SignInWithTwitter": "Sign in with Twitter",
   "SignInWithLinkedIn": "Sign in with LinkedIn",
   "Connect": "Connect",
-  "Disconnect": "Disconnect"
+  "Disconnect": "Disconnect",
+
+  "ProviderSuccessfullyConnected": "Provider successfully connected",
+  "ProviderSuccessfullyDisconnected": "Provider successfully disconnected"
 }

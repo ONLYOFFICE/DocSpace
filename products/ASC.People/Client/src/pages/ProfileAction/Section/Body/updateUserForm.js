@@ -579,10 +579,11 @@ class UpdateUserForm extends React.Component {
   }
 
   unlinkAccount = (providerName) => {
-    const { setProviders } = this.props;
+    const { setProviders, t } = this.props;
     thirdPartyUnlinkAccount(providerName).then(() => {
       getAuthProviders().then((providers) => {
         setProviders(providers);
+        toastr.success(t("ProviderSuccessfullyDisconnected"));
       });
     });
   };
