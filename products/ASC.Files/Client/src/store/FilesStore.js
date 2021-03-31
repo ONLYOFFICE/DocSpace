@@ -20,7 +20,7 @@ import { combineUrl } from "@appserver/common/utils";
 const { FilesFilter } = api;
 
 const { settingsStore, userStore, isAdmin } = store.auth;
-const { isDesktopClient } = settingsStore;
+
 const {
   iconFormatsStore,
   mediaViewersFormatsStore,
@@ -540,7 +540,10 @@ class FilesStore {
         const canCreateInSharedFolder = selectedFolderStore.access === 1;
         return !selectedFolderStore.isRootFolder && canCreateInSharedFolder;
       case FolderType.Privacy:
-        return isDesktopClient && store.auth.settingsStore.isEncryptionSupport;
+        return (
+          store.auth.settingsStore.isDesktopClient &&
+          store.auth.settingsStore.isEncryptionSupport
+        );
       case FolderType.COMMON:
         return isAdmin;
       case FolderType.TRASH:
