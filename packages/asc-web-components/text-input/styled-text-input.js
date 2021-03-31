@@ -95,6 +95,9 @@ const StyledTextInput = styled(Input).attrs((props) => ({
     user-select: ${(props) => props.theme.userSelect};
   }
 
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+
   ${(props) => !props.withBorder && `border: none;`}
 `;
 
