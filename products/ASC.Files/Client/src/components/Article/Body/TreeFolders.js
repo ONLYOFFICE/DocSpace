@@ -148,7 +148,7 @@ class TreeFolders extends React.Component {
       isAdmin,
       myId,
       commonId,
-      rootFolderId,
+      rootFolderType,
       currentId,
       draggableItems,
     } = this.props;
@@ -158,9 +158,9 @@ class TreeFolders extends React.Component {
 
     if (draggableItems.find((x) => x.id === item.id)) return false;
 
-    const isMy = rootFolderId === FolderType.USER;
-    const isCommon = rootFolderId === FolderType.COMMON;
-    const isShare = rootFolderId === FolderType.SHARE;
+    const isMy = rootFolderType === FolderType.USER;
+    const isCommon = rootFolderType === FolderType.COMMON;
+    const isShare = rootFolderType === FolderType.SHARE;
 
     if (
       item.rootFolderType === FolderType.SHARE &&
@@ -489,13 +489,13 @@ export default inject(
       expandedKeys,
       setExpandedKeys,
     } = treeFoldersStore;
-    const { pathParts, id } = selectedFolderStore;
+    const { id, rootFolderType } = selectedFolderStore;
 
     return {
       isAdmin: auth.isAdmin,
       isDesktop: auth.settingsStore.isDesktopClient,
       dragging,
-      rootFolderId: pathParts ? pathParts[0] : null,
+      rootFolderType,
       currentId: id,
       myId: myFolderId,
       commonId: commonFolderId,
