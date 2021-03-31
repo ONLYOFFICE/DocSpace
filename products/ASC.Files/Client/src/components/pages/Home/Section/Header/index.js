@@ -317,7 +317,7 @@ class SectionHeaderContent extends React.Component {
   getMenuItems = () => {
     const {
       t,
-      isItemsSelected,
+      selectionCount,
       isAccessedSelected,
       isWebEditSelected,
       deleteDialogVisible,
@@ -383,33 +383,33 @@ class SectionHeaderContent extends React.Component {
         label: t("Share"),
         disabled:
           !isAccessedSelected ||
-          (isPrivacy && (isOnlyFoldersSelected || isItemsSelected)),
+          (isPrivacy && (isOnlyFoldersSelected || selectionCount > 1)),
         onClick: this.onOpenSharingPanel,
       },
       {
         label: t("Download"),
-        disabled: !isItemsSelected,
+        disabled: !selectionCount,
         onClick: this.downloadAction,
       },
       {
         label: t("DownloadAs"),
-        disabled: !isItemsSelected || !isWebEditSelected,
+        disabled: !selectionCount || !isWebEditSelected,
         onClick: this.downloadAsAction,
       },
       {
         label: t("MoveTo"),
-        disabled: !isItemsSelected || isThirdPartySelection,
+        disabled: !selectionCount || isThirdPartySelection,
         onClick: this.onMoveAction,
       },
       {
         label: t("Copy"),
-        disabled: !isItemsSelected,
+        disabled: !selectionCount,
         onClick: this.onCopyAction,
       },
       {
         label: t("Delete"),
         disabled:
-          !isItemsSelected || !deleteDialogVisible || isThirdPartySelection,
+          !selectionCount || !deleteDialogVisible || isThirdPartySelection,
         onClick: this.onDeleteAction,
       },
     ];
@@ -605,7 +605,7 @@ export default inject(
       isPrivacy: isPrivacyFolder,
       filter,
       canCreate,
-      isItemsSelected: !!selection.length,
+      selectionCount: selection.length,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,

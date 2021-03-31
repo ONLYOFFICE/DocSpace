@@ -26,35 +26,12 @@ class ChangeOwnerComponent extends React.Component {
     this.state = { showPeopleSelector: false, owner };
   }
 
-  updateRowData = (newRowData) => {
-    const { files, folders, setFiles, setFolders } = this.props;
-
-    for (let item of newRowData) {
-      if (!item.fileExst && item.foldersCount) {
-        let folderIndex = folders.findIndex((x) => x.id === item.id);
-        if (folderIndex !== -1) {
-          folders[folderIndex] = item;
-        }
-      } else {
-        let fileIndex = files.findIndex((x) => x.id === item.id);
-        if (fileIndex !== -1) {
-          files[fileIndex] = item;
-        }
-      }
-    }
-
-    setFiles(files);
-    setFolders(folders);
-  };
-
   onOwnerChange = () => {
     const { owner } = this.state;
     const {
-      files,
-      folders,
       selection,
-      setFolders,
-      setFiles,
+      setFolder,
+      setFile,
       setIsLoading,
       setFilesOwner,
     } = this.props;
@@ -70,17 +47,9 @@ class ChangeOwnerComponent extends React.Component {
     setFilesOwner(folderIds, fileIds, ownerId)
       .then((res) => {
         if (isFolder) {
-          let folderIndex = folders.findIndex((x) => x.id === selectedItem.id);
-          if (folderIndex !== -1) {
-            folders[folderIndex] = res[0];
-          }
-          setFolders(folders);
+          setFolder(res[0]);
         } else {
-          let fileIndex = files.findIndex((x) => x.id === selectedItem.id);
-          if (fileIndex !== -1) {
-            files[fileIndex] = res[0];
-          }
-          setFiles(files);
+          setFile(res[0]);
         }
       })
       .catch((err) => toastr.error(err))
@@ -173,26 +142,17 @@ const ChangeOwnerPanel = withTranslation("ChangeOwnerPanel")(
 
 export default inject(({ auth, initFilesStore, filesStore, dialogsStore }) => {
   const { setIsLoading, isLoading } = initFilesStore;
-  const {
-    files,
-    folders,
-    selection,
-    setFiles,
-    setFolders,
-    setFilesOwner,
-  } = filesStore;
+  const { selection, setFile, setFolder, setFilesOwner } = filesStore;
   const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
   return {
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
-    files,
-    folders,
     selection,
     isLoading,
     visible: ownerPanelVisible,
 
-    setFiles,
-    setFolders,
+    setFile,
+    setFolder,
     setIsLoading,
     setChangeOwnerPanelVisible,
     setFilesOwner,

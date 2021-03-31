@@ -27,6 +27,10 @@ user-select: none;*/
         ? props.theme.dragAndDrop.acceptBackground
         : props.theme.dragAndDrop.background
       : "none !important"};
+
+  .droppable-hover {
+    background: ${(props) => props.theme.dragAndDrop.acceptBackground};
+  }
 `;
 
 StyledDragAndDrop.defaultProps = { theme: Base };

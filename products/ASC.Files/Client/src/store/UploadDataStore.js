@@ -630,13 +630,25 @@ class UploadDataStore {
     fileIds,
     conflictResolveType,
     deleteAfter,
-    isCopy
+    isCopy,
+    translations
   ) => {
-    const { clearSecondaryProgressData } = this.secondaryProgressDataStore;
+    const {
+      clearSecondaryProgressData,
+      setSecondaryProgressBarData,
+    } = this.secondaryProgressDataStore;
     const {
       clearPrimaryProgressData,
       setPrimaryProgressBarData,
     } = this.primaryProgressDataStore;
+
+    setSecondaryProgressBarData({
+      icon: isCopy ? "duplicate" : "move",
+      visible: true,
+      percent: 0,
+      label: isCopy ? translations.copy : translations.move,
+      alert: false,
+    });
 
     this.selectItemOperation(
       destFolderId,

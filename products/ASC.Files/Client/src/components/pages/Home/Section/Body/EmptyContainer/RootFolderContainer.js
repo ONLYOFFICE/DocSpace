@@ -111,8 +111,8 @@ const RootFolderContainer = (props) => {
       {!isDesktop && (
         <Text fontSize="12px">
           <Trans i18nKey="PrivateRoomSupport" ns="Home">
-            Work in Private Room is available via {{ organizationName }}
-            desktop app.
+            Work in Private Room is available via {{ organizationName }} desktop
+            app.{" "}
             <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
               Instructions
             </Link>

@@ -1083,14 +1083,14 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/password")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,EmailActivation,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Administrators")]
         public EmployeeWraperFull ChangeUserPasswordFromBody(Guid userid, [FromBody]MemberModel memberModel)
         {
             return ChangeUserPassword(userid, memberModel);
         }
 
         [Update("{userid}/password")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,EmailActivation,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Administrators")]
         [Consumes("application/x-www-form-urlencoded")]
         public EmployeeWraperFull ChangeUserPasswordFromForm(Guid userid, [FromForm] MemberModel memberModel)
         {
