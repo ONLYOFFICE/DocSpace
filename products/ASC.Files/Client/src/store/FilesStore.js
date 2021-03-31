@@ -709,7 +709,7 @@ class FilesStore {
     return (
       (this.selection.length &&
         this.selection.every((x) => x.access === 1 || x.access === 0)) ||
-      isAdmin
+      (isAdmin && this.selection.length)
     );
   }
 
