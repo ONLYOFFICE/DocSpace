@@ -594,26 +594,11 @@ namespace ASC.Web.CRM.Classes
                         );
                 });
 
-            var customFieldEntity = new Dictionary<int, List<CustomField>>();
+            var customFieldEntity = (contacts.Where(x => x is Company).Any() ? customFieldDao.GetEnityFields(EntityType.Company, contacts.Where(x => x is Company).Select(x => x.ID).ToArray()) : new List<CustomField>())
+                        .Union(contacts.Where(x => x is Person).Any() ? customFieldDao.GetEnityFields(EntityType.Person, contacts.Where(x => x is Person).Select(x => x.ID).ToArray()) : new List<CustomField>())
+                        .GroupBy(x => x.EntityID)
+                        .ToDictionary(x => x.Key, x => x.ToList());
 
-            var entityFields = customFieldDao.GetEnityFields(EntityType.Company, 0, false);
-
-            customFieldDao.GetEnityFields(EntityType.Person, 0, false).ForEach(item =>
-                                                                                   {
-                                                                                       var alreadyContains = entityFields.Any(field => field.ID == item.ID && field.EntityID == item.EntityID);
-
-                                                                                       if (!alreadyContains)
-                                                                                           entityFields.Add(item);
-                                                                                   });
-
-            entityFields.ForEach(
-                item =>
-                {
-                    if (!customFieldEntity.ContainsKey(item.EntityID))
-                        customFieldEntity.Add(item.EntityID, new List<CustomField> { item });
-                    else
-                        customFieldEntity[item.EntityID].Add(item);
-                });
 
             var tags = tagDao.GetEntitiesTags(EntityType.Contact);
 
@@ -844,16 +829,10 @@ namespace ASC.Web.CRM.Classes
                     });
                 });
 
-            var customFieldEntity = new Dictionary<int, List<CustomField>>();
+            var customFieldEntity = customFieldDao.GetEnityFields(EntityType.Opportunity, deals.Select(x => x.ID).ToArray())
+                                                    .GroupBy(x => x.EntityID)
+                                                    .ToDictionary(x => x.Key, x => x.ToList());
 
-            customFieldDao.GetEnityFields(EntityType.Opportunity, 0, false).ForEach(
-                item =>
-                {
-                    if (!customFieldEntity.ContainsKey(item.EntityID))
-                        customFieldEntity.Add(item.EntityID, new List<CustomField> { item });
-                    else
-                        customFieldEntity[item.EntityID].Add(item);
-                });
 
             var tags = tagDao.GetEntitiesTags(EntityType.Opportunity);
 
@@ -969,16 +948,9 @@ namespace ASC.Web.CRM.Classes
                     });
                 });
 
-            var customFieldEntity = new Dictionary<int, List<CustomField>>();
-
-            customFieldDao.GetEnityFields(EntityType.Case, 0, false).ForEach(
-                item =>
-                {
-                    if (!customFieldEntity.ContainsKey(item.EntityID))
-                        customFieldEntity.Add(item.EntityID, new List<CustomField> { item });
-                    else
-                        customFieldEntity[item.EntityID].Add(item);
-                });
+            var customFieldEntity = customFieldDao.GetEnityFields(EntityType.Case, cases.Select(x => x.ID).ToArray())
+               .GroupBy(x => x.EntityID)
+               .ToDictionary(x => x.Key, x => x.ToList());
 
             var tags = tagDao.GetEntitiesTags(EntityType.Case);
 
