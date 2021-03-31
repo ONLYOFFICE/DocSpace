@@ -2,6 +2,7 @@ import styled from "styled-components";
 import commonInputStyles from "./common-input-styles";
 import Input from "./input";
 import Base from "../themes/base";
+import { isMobile } from "react-device-detect";
 
 /* eslint-enable react/prop-types, no-unused-vars */
 const StyledTextInput = styled(Input).attrs((props) => ({
@@ -95,8 +96,11 @@ const StyledTextInput = styled(Input).attrs((props) => ({
     user-select: ${(props) => props.theme.userSelect};
   }
 
+  ${!isMobile &&
+  `
   -webkit-touch-callout: none;
   -webkit-user-select: none;
+  `}
 
   ${(props) => !props.withBorder && `border: none;`}
 `;
