@@ -20,7 +20,7 @@ import { combineUrl } from "@appserver/common/utils";
 const { FilesFilter } = api;
 
 const { settingsStore, userStore, isAdmin } = store.auth;
-const { isEncryptionSupport, isDesktopClient } = settingsStore;
+
 const {
   iconFormatsStore,
   mediaViewersFormatsStore,
@@ -217,7 +217,7 @@ class FilesStore {
     setSelectedNode([folderId + ""]);
 
     if (privacyFolder && privacyFolder.id === +folderId) {
-      if (!isEncryptionSupport) {
+      if (!store.auth.settingsStore.isEncryptionSupport) {
         const newExpandedKeys = createTreeFolders(
           privacyFolder.pathParts,
           expandedKeys
@@ -251,9 +251,15 @@ class FilesStore {
       filterData.total = data.total;
       this.setFilesFilter(filterData); //TODO: FILTER
       this.setFolders(
-        isPrivacyFolder && !isEncryptionSupport ? [] : data.folders
+        isPrivacyFolder && !store.auth.settingsStore.isEncryptionSupport
+          ? []
+          : data.folders
       );
-      this.setFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files);
+      this.setFiles(
+        isPrivacyFolder && !store.auth.settingsStore.isEncryptionSupport
+          ? []
+          : data.files
+      );
       if (clearFilter) {
         this.fileActionStore.setAction({ type: null });
         this.setSelected("close");
@@ -547,7 +553,10 @@ class FilesStore {
         const canCreateInSharedFolder = selectedFolderStore.access === 1;
         return !selectedFolderStore.isRootFolder && canCreateInSharedFolder;
       case FolderType.Privacy:
-        return isDesktopClient && isEncryptionSupport;
+        return (
+          store.auth.settingsStore.isDesktopClient &&
+          store.auth.settingsStore.isEncryptionSupport
+        );
       case FolderType.COMMON:
         return isAdmin;
       case FolderType.TRASH:
@@ -714,14 +723,14 @@ class FilesStore {
 
   get isAccessedSelected() {
     return (
-      this.selection.length &&
-      isAdmin &&
-      this.selection.every((x) => x.access === 1 || x.access === 0)
+      (this.selection.length &&
+        this.selection.every((x) => x.access === 1 || x.access === 0)) ||
+      (isAdmin && this.selection.length)
     );
   }
 
   get isOnlyFoldersSelected() {
-    return this.selection.every((selected) => selected.fileExst !== undefined);
+    return this.selection.every((selected) => selected.fileExst === undefined);
   }
 
   get isThirdPartySelection() {
