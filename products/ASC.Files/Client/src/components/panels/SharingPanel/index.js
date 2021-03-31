@@ -119,6 +119,8 @@ class SharingPanelComponent extends React.Component {
       setEncryptionAccess,
       setShareFiles,
       onSuccess,
+      getNewShareUsers,
+      getShareUsers,
     } = this.props;
 
     let folderIds = [];
@@ -216,7 +218,6 @@ class SharingPanelComponent extends React.Component {
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
   };
-
   onNotifyUsersChange = () =>
     this.setState({ isNotifyUsers: !this.state.isNotifyUsers });
 
@@ -347,8 +348,11 @@ class SharingPanelComponent extends React.Component {
   setShareDataItems = (shareDataItems) => this.setState({ shareDataItems });
 
   onClose = () => {
-    this.props.setSharingPanelVisible(false);
-    this.props.selectUploadedFile([]);
+    const { onCancel, setSharingPanelVisible, selectUploadedFile } = this.props;
+
+    setSharingPanelVisible(false);
+    selectUploadedFile([]);
+    onCancel && onCancel();
   };
 
   componentDidMount() {
@@ -611,7 +615,7 @@ const SharingPanel = inject(
       dialogsStore,
       treeFoldersStore,
     },
-    { uploadPanelVisible, displayedInfo }
+    { uploadPanelVisible }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
     const { customNames, isDesktopClient } = auth.settingsStore;
@@ -637,8 +641,6 @@ const SharingPanel = inject(
       updateUploadedItem,
     } = uploadDataStore;
 
-    const selectionInfo = displayedInfo ? displayedInfo : selection;
-
     return {
       isMyId: auth.userStore.user && auth.userStore.user.id,
       groupsCaption: customNames.groupsCaption,
@@ -646,7 +648,7 @@ const SharingPanel = inject(
       homepage: config.homepage,
       files,
       folders,
-      selection: uploadPanelVisible ? uploadSelection : selectionInfo,
+      selection: uploadPanelVisible ? uploadSelection : selection,
       isLoading,
       isPrivacy: isPrivacyFolder,
       uploadSelection,

@@ -14,10 +14,10 @@ newInstance
   .use(initReactI18next)
   .use(Backend)
   .init({
-    lng: "ru",
+    lng: lng,
     supportedLngs: languages,
     //whitelist: languages,
-    fallbackLng: "ru",
+    fallbackLng: "en",
     load: "languageOnly",
     debug: true,
 

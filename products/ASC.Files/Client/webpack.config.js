@@ -144,12 +144,7 @@ var config = {
       },
       exposes: {
         "./app": "./src/Files.jsx",
-        "./InitFilesStore": "./src/store/InitFilesStore.js",
-        "./FilesStore": "./src/store/FilesStore.js",
-        "./UploadDataStore": "./src/store/UploadDataStore.js",
-        "./DialogsStore": "./src/store/DialogsStore.js",
-        "./TreeFoldersStore": "./src/store/TreeFoldersStore.js",
-        "./SharingPanel": "./src/components/panels/SharingPanel",
+        "./SharingDialog": "./src/components/panels/SharingDialog",
       },
       shared: {
         ...deps,

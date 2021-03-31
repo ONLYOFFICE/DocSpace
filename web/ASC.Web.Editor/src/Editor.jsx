@@ -31,20 +31,9 @@ import { homepage } from "../package.json";
 
 import "./custom.scss";
 import { AppServerConfig } from "@appserver/common/constants";
-import SharingPanel from "files/SharingPanel";
+import SharingDialog from "files/SharingDialog";
 
 import i18n from "./i18n";
-
-import { Provider as MobxProvider } from "mobx-react";
-import { inject, observer } from "mobx-react";
-import initFilesStore from "files/InitFilesStore";
-import filesStore from "files/FilesStore";
-import uploadDataStore from "files/UploadDataStore";
-import dialogsStore from "files/DialogsStore";
-import treeFoldersStore from "files/TreeFoldersStore";
-
-import store from "studio/store";
-const { auth: authStore } = store;
 
 let documentIsReady = false;
 
@@ -84,25 +73,12 @@ const Editor = ({
     init();
   }, []);
 
-  const getShareUsersList = (isInit) => {
-    const folderId = [];
-
-    getShareUsers(folderId, [+fileId])
-      .then((users) => SharingPanel.convertSharingUsers(users))
-      .then((sharingSettings) => {
-        isInit
-          ? (config.document.info = {
-              ...config.document.info,
-              sharingSettings,
-            })
-          : docEditor.setSharingSettings({
-              sharingSettings,
-            });
-      });
-  };
-
   const updateUsersRightsList = () => {
-    if (docEditor) getShareUsersList(false);
+    SharingDialog.getSharingSettings(fileId).then((sharingSettings) => {
+      docEditor.setSharingSettings({
+        sharingSettings,
+      });
+    });
   };
 
   const init = async () => {
@@ -173,7 +149,11 @@ const Editor = ({
         config.document.permissions.edit &&
         config.document.permissions.modifyFilter
       ) {
-        getShareUsersList(true);
+        const sharingSettings = await SharingDialog.getSharingSettings(fileId);
+        config.document.info = {
+          ...config.document.info,
+          sharingSettings,
+        };
       }
 
       setIsLoading(false);
@@ -274,6 +254,7 @@ const Editor = ({
       const filterObj = FilesFilter.getDefault();
       filterObj.folder = fileInfo.folderId;
       const urlFilter = filterObj.toUrlParams();
+
       config.editorConfig.customization = {
         ...config.editorConfig.customization,
         goback: {
@@ -321,8 +302,14 @@ const Editor = ({
     );
   };
 
+  const [isVisible, setIsVisible] = useState(false);
+
   const onSDKRequestSharingSettings = () => {
-    setSharingPanelVisible(true);
+    setIsVisible(true);
+  };
+
+  const onCancel = () => {
+    setIsVisible(false);
   };
 
   const onSDKWarning = (event) => {
@@ -372,15 +359,13 @@ const Editor = ({
       {!isLoading ? (
         <>
           <div id="editor"></div>
-          {sharingPanelVisible && (
-            <SharingPanel
-              key="sharing-panel"
-              uploadPanelVisible={uploadPanelVisible}
-              isSharingPanelVisible={sharingPanelVisible}
-              displayedInfo={[fileInfo]}
-              onSuccess={updateUsersRightsList}
-            />
-          )}
+
+          <SharingDialog
+            isVisible={isVisible}
+            sharingObject={fileInfo}
+            onCancel={onCancel}
+            onSuccess={updateUsersRightsList}
+          />
         </>
       ) : (
         <Box paddingProp="16px">
@@ -391,29 +376,4 @@ const Editor = ({
   );
 };
 
-const EditorWrapper = inject(
-  ({ uploadDataStore, dialogsStore, filesStore }) => {
-    const { uploadPanelVisible } = uploadDataStore;
-    const { getShareUsers } = filesStore;
-    const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
-    return {
-      uploadPanelVisible,
-      sharingPanelVisible,
-      setSharingPanelVisible,
-      getShareUsers,
-    };
-  }
-)(observer(Editor));
-
-export default () => (
-  <MobxProvider
-    auth={authStore}
-    initFilesStore={initFilesStore}
-    filesStore={filesStore}
-    uploadDataStore={uploadDataStore}
-    dialogsStore={dialogsStore}
-    treeFoldersStore={treeFoldersStore}
-  >
-    <EditorWrapper />
-  </MobxProvider>
-);
+export default Editor;
