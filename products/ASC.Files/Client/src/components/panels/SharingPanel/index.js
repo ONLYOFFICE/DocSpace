@@ -30,8 +30,6 @@ import { I18nextProvider } from "react-i18next";
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
-const pathname = window.location.pathname.toLowerCase();
-const isEditor = pathname.indexOf("doceditor") !== -1;
 class SharingPanelComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -501,7 +499,6 @@ class SharingPanelComponent extends React.Component {
                     onToggleLink={this.onToggleLink}
                     onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
                     isLoading={isLoading}
-                    isEditor={isEditor}
                     documentTitle={documentTitle}
                   />
                 ))
