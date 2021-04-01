@@ -1,5 +1,6 @@
 import React from "react";
 import IconButton from "@appserver/components/icon-button";
+import Link from "@appserver/components/link";
 import Row from "@appserver/components/row";
 import Text from "@appserver/components/text";
 import toastr from "studio/toastr";

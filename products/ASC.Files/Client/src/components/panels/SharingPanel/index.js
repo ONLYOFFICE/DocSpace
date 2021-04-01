@@ -78,24 +78,15 @@ class SharingPanelComponent extends React.Component {
   };
 
   updateRowData = (newRowData) => {
-    const { files, folders, setFiles, setFolders } = this.props;
+    const { setFile, setFolder } = this.props;
 
     for (let item of newRowData) {
-      if (!item.fileExst && item.foldersCount) {
-        let folderIndex = folders.findIndex((x) => x.id === item.id);
-        if (folderIndex !== -1) {
-          folders[folderIndex] = item;
-        }
+      if (!item.fileExst) {
+        setFolder(item);
       } else {
-        let fileIndex = files.findIndex((x) => x.id === item.id);
-        if (fileIndex !== -1) {
-          files[fileIndex] = item;
-        }
+        setFile(item);
       }
     }
-
-    setFiles(files);
-    setFolders(folders);
   };
 
   onSaveClick = () => {
@@ -622,14 +613,12 @@ const SharingPanel = inject(
 
     const { setIsLoading, isLoading } = initFilesStore;
     const {
-      files,
-      folders,
       selection,
       canShareOwnerChange,
       getAccessOption,
       getExternalAccessOption,
-      setFiles,
-      setFolders,
+      setFile,
+      setFolder,
       getShareUsers,
       setShareFiles,
     } = filesStore;
@@ -646,8 +635,6 @@ const SharingPanel = inject(
       groupsCaption: customNames.groupsCaption,
       isDesktop: isDesktopClient,
       homepage: config.homepage,
-      files,
-      folders,
       selection: uploadPanelVisible ? uploadSelection : selection,
       isLoading,
       isPrivacy: isPrivacyFolder,
@@ -663,8 +650,8 @@ const SharingPanel = inject(
       setEncryptionAccess,
       getAccessOption,
       getExternalAccessOption,
-      setFiles,
-      setFolders,
+      setFile,
+      setFolder,
       getShareUsers,
       setShareFiles,
     };

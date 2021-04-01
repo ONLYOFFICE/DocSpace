@@ -106,6 +106,7 @@ const SimpleFilesRow = (props) => {
     startUpload,
     onSelectItem,
     history,
+    setTooltipPosition,
   } = props;
 
   const {
@@ -122,10 +123,8 @@ const SimpleFilesRow = (props) => {
     webUrl,
     canOpenPlayer,
     locked,
+    parentId,
   } = item;
-
-  let value = fileExst ? `file_${id}` : `folder_${id}`;
-  value += draggable ? "_draggable" : "";
 
   const isThirdPartyFolder = providerKey && isRootFolder;
 
@@ -242,7 +241,7 @@ const SimpleFilesRow = (props) => {
     });
   };
 
-  const onChangeThirdPartyInfo = () => setThirdpartyInfo();
+  const onChangeThirdPartyInfo = () => setThirdpartyInfo(providerKey);
 
   const onMediaFileClick = (fileId) => {
     const itemId = typeof fileId !== "object" ? fileId : id;
@@ -261,11 +260,11 @@ const SimpleFilesRow = (props) => {
       deleteOperation: t("DeleteOperation"),
     };
 
-    item.fileExst
-      ? deleteFileAction(item.id, item.folderId, translations)
+    fileExst
+      ? deleteFileAction(id, folderId, translations)
           .then(() => toastr.success(t("FileRemoved")))
           .catch((err) => toastr.error(err))
-      : deleteFolderAction(item.id, item.parentId, translations)
+      : deleteFolderAction(id, parentId, translations)
           .then(() => toastr.success(t("FolderRemoved")))
           .catch((err) => toastr.error(err));
   };
@@ -275,7 +274,7 @@ const SimpleFilesRow = (props) => {
   };
 
   const getFilesContextOptions = useCallback(() => {
-    const isSharable = item.access !== 1 && item.access !== 0;
+    const isSharable = access !== 1 && access !== 0;
 
     return contextOptions.map((option) => {
       switch (option) {
@@ -470,17 +469,42 @@ const SimpleFilesRow = (props) => {
 
   const onDrop = (items) => {
     if (!fileExst) {
-      onDropZoneUpload(items, item.id);
+      onDropZoneUpload(items, id);
     } else {
       onDropZoneUpload(items, selectedFolderId);
     }
   };
 
-  const isMobile = sectionWidth < 500;
+  const onMouseDown = (e) => {
+    if (!draggable) {
+      return;
+    }
 
+    if (
+      window.innerWidth < 1025 ||
+      e.target.tagName === "rect" ||
+      e.target.tagName === "path"
+    ) {
+      return;
+    }
+    const mouseButton = e.which
+      ? e.which !== 1
+      : e.button
+      ? e.button !== 0
+      : false;
+    const label = e.currentTarget.getAttribute("label");
+    if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
+      return;
+    }
+
+    setTooltipPosition(e.pageX, e.pageY);
+    document.body.classList.add("drag-cursor");
+    setDragging(true);
+  };
+
+  const isMobile = sectionWidth < 500;
   const isEdit =
     !!actionType && actionId === id && fileExst === actionExtension;
-
   const contextOptionsProps =
     !isEdit && contextOptions && contextOptions.length > 0
       ? {
@@ -491,8 +515,10 @@ const SimpleFilesRow = (props) => {
   const checkedProps = isEdit || id <= 0 ? {} : { checked };
   const element = getItemIcon(isEdit || id <= 0);
   const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
-  let className = isFolder && access < 2 && !isRecycleBin ? " dropable" : "";
+  let className = isFolder && access < 2 && !isRecycleBin ? " droppable" : "";
   if (draggable) className += " draggable";
+  let value = fileExst ? `file_${id}` : `folder_${id}`;
+  value += draggable ? "_draggable" : "";
 
   const sharedButton =
     !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
@@ -501,18 +527,18 @@ const SimpleFilesRow = (props) => {
 
   return (
     <DragAndDrop
+      value={value}
       className={className}
       onDrop={onDrop}
-      //onMouseDown={this.onMouseDown}
+      onMouseDown={onMouseDown}
       dragging={dragging && isFolder && access < 2}
       {...contextOptionsProps}
-      value={value}
     >
       <StyledSimpleFilesRow
-        sectionWidth={sectionWidth}
         key={id}
         data={item}
         element={element}
+        sectionWidth={sectionWidth}
         contentElement={sharedButton}
         onSelect={onContentRowSelect}
         rowContextClick={rowContextClick}
@@ -544,7 +570,7 @@ export default inject(
     { item }
   ) => {
     const { isTabletView } = auth.settingsStore;
-    const { dragging, setDragging } = initFilesStore;
+    const { dragging, setDragging, setTooltipPosition } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
@@ -626,6 +652,7 @@ export default inject(
       setDragging,
       startUpload,
       onSelectItem,
+      setTooltipPosition,
     };
   }
 )(withTranslation("Home")(observer(withRouter(SimpleFilesRow))));
