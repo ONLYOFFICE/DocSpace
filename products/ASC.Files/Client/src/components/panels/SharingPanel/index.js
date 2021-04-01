@@ -431,7 +431,7 @@ class SharingPanelComponent extends React.Component {
               {uploadPanelVisible && (
                 <IconButton
                   size="16"
-                  iconName="ArrowPathIcon"
+                  iconName="/static/images/arrow.path.react.svg"
                   onClick={this.onClose}
                   color="A3A9AE"
                 />

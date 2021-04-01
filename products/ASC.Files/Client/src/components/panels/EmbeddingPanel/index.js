@@ -128,7 +128,7 @@ class EmbeddingPanelComponent extends React.Component {
             <StyledHeaderContent>
               <IconButton
                 size="16"
-                iconName="ArrowPathIcon"
+                iconName="/static/images/arrow.path.react.svg"
                 onClick={this.onArrowClick}
                 color="#A3A9AE"
               />
