@@ -5,8 +5,7 @@ import styled from "styled-components";
 import Loaders from "@appserver/common/components/Loaders";
 import { isMobile } from "react-device-detect";
 import { observer, inject } from "mobx-react";
-import FilesRowContainer from "./FilesRow/FilesRowContainer";
-import FilesTileContainer from "./FilesTile/FilesTileContainer";
+import FilesContainer from "./FilesContainer";
 import EmptyContainer from "./EmptyContainer";
 
 //import copy from "copy-to-clipboard";
@@ -422,7 +421,7 @@ class SectionBodyContent extends React.Component {
     ) : (
       <>
         <CustomTooltip ref={this.tooltipRef}>{fileMoveTooltip}</CustomTooltip>
-        {viewAs === "tile" ? <FilesTileContainer /> : <FilesRowContainer />}
+        <FilesContainer viewAs={viewAs} />
       </>
     );
   }
