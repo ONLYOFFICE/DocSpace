@@ -29,21 +29,19 @@ const FileItem = (props) => {
     selectRowAction,
     onSelectItem,
     sectionWidth,
-    isPrivacy, // take from item ?
+    isPrivacy,
     isRecycleBin,
     canShare,
-    //isFolder, //take from item
-    //draggable, // take from item ?
+    //isFolder, take from item
+    draggable,
     isRootFolder,
-    // actionId, // take from item ?
+    actionId,
     selectedFolderId,
     setSharingPanelVisible,
-    setChangeOwnerPanelVisible, // ??
-    setMoveToPanelVisible, // ??
-    setCopyPanelVisible, // ??
     setDragging,
     startUpload,
     viewAs,
+    setTooltipPosition,
   } = props;
 
   const {
@@ -55,16 +53,8 @@ const FileItem = (props) => {
     icon,
     providerKey,
     isFolder,
-    draggable,
-    //isPrivacy,
-    actionId,
   } = item;
   console.log("render item");
-
-  let value = fileExst ? `file_${id}` : `folder_${id}`;
-  value += draggable ? "_draggable" : "";
-
-  const isThirdPartyFolder = providerKey && isRootFolder;
 
   const getItemIcon = (isEdit) => {
     return (
@@ -134,6 +124,40 @@ const FileItem = (props) => {
     }
   };
 
+  const onMouseDown = (e) => {
+    console.log("here");
+    if (!draggable) {
+      console.log("here2");
+      return;
+    }
+
+    if (
+      window.innerWidth < 1025 ||
+      e.target.tagName === "rect" ||
+      e.target.tagName === "path"
+    ) {
+      return;
+    }
+    const mouseButton = e.which
+      ? e.which !== 1
+      : e.button
+      ? e.button !== 0
+      : false;
+    const label = e.currentTarget.getAttribute("label");
+    if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
+      return;
+    }
+
+    setTooltipPosition(e.pageX, e.pageY);
+    document.body.classList.add("drag-cursor");
+    setDragging(true);
+  };
+
+  let value = fileExst ? `file_${id}` : `folder_${id}`;
+  value += draggable ? "_draggable" : "";
+
+  const isThirdPartyFolder = providerKey && isRootFolder;
+
   const isMobile = sectionWidth < 500;
 
   const isEdit =
@@ -162,7 +186,7 @@ const FileItem = (props) => {
     <DragAndDrop
       className={className}
       onDrop={onDrop}
-      //onMouseDown={this.onMouseDown}
+      onMouseDown={onMouseDown}
       dragging={dragging && isFolder && access < 2}
       {...contextOptionsProps}
       value={value}
@@ -215,7 +239,7 @@ export default inject(
     },
     { item }
   ) => {
-    const { dragging, setDragging } = initFilesStore;
+    const { dragging, setDragging, setTooltipPosition } = initFilesStore;
 
     const {
       type: actionType,
@@ -275,6 +299,7 @@ export default inject(
       startUpload,
       onSelectItem,
       getContextOptions,
+      setTooltipPosition,
     };
   }
 )(withTranslation("Home")(observer(withRouter(FileItem))));

@@ -133,13 +133,12 @@ const SectionBodyContent = (props) => {
     firstLoad || (isMobile && isLoading) ? (
       <Loaders.Rows />
     ) : (
-      <>
-        <CustomTooltip ref={this.tooltipRef}>{fileMoveTooltip}</CustomTooltip>
-        <FilesContainer viewAs={viewAs} />
-      </>
-    );
-  }
-}
+      <EmptyContainer />
+    )
+  ) : (
+    <FilesContainer viewAs={viewAs} />
+  );
+};
 
 export default inject(
   ({
@@ -157,13 +156,6 @@ export default inject(
       setTooltipPosition,
     } = initFilesStore;
     const { firstLoad, fileActionStore, filesList } = filesStore;
-
-    const { isShareFolder, isCommonFolder, isPrivacyFolder } = treeFoldersStore;
-    const { id: fileActionId } = fileActionStore;
-    const {
-      setSecondaryProgressBarData,
-    } = uploadDataStore.secondaryProgressDataStore;
-    const { copyToAction, moveToAction } = filesActionsStore;
 
     return {
       dragging,
