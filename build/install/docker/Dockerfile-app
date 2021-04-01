@@ -1,5 +1,5 @@
 ### STAGE 1: Develop ######
-FROM ubuntu:18.04 AS develop
+FROM ubuntu:20.10 AS develop
 
 ARG RELEASE_DATE="2016-06-21"
 ARG VERSION="8.9.0.190"
@@ -29,14 +29,18 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get install -y nodejs && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list && \
-    wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
+    #wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
+    wget https://packages.microsoft.com/config/ubuntu/20.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
+    apt-get -y update && \
+    apt-get install -y apt-transport-https && \
+    apt-get install -y apt-utils &&\
     apt-get -y update && \
     cd ~ && \
     echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
     apt-get install -yq git \
                         yarn \
-                        dotnet-sdk-3.1 
+                        dotnet-sdk-5.0 
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     echo ${GIT_BRANCH}  && \
@@ -69,7 +73,7 @@ RUN rm -rf /var/lib/apt/lists/*
 
 ### STAGE 2: Build ###
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 as builder
+FROM mcr.microsoft.com/dotnet/aspnet:5.0.4-focal-amd64 as builder
 
 COPY --from=develop /app/onlyoffice/config/ /app/onlyoffice/config/
 
@@ -144,7 +148,6 @@ WORKDIR /var/www/services/apisystem/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/apisystem/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/studio/api /var/www/studio/api
 
 CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
 
