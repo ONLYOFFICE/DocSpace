@@ -87,7 +87,7 @@ const StyledContextMenu = styled.div`
     padding: 0px 16px;
     margin: 4px 16px 4px;
     border-bottom: 1px solid #eceef1;
-    width: 60%;
+    width: calc(90%-32px);
 
     &:hover {
       cursor: default;

@@ -30,8 +30,6 @@ class ContextMenuButton extends React.Component {
       isOpen: props.opened,
       data: props.data,
       displayType,
-      offsetX: props.manualX,
-      offsetY: props.manualY,
     };
     this.throttledResize = throttle(this.resize, 300);
   }
@@ -73,10 +71,6 @@ class ContextMenuButton extends React.Component {
       this.toggle(this.props.opened);
     }
 
-    if (this.props.manualX !== prevProps.manualX) {
-      this.onContextClick();
-    }
-
     if (this.props.opened && this.state.displayType === "aside") {
       window.addEventListener("popstate", this.popstate, false);
     }
@@ -85,20 +79,6 @@ class ContextMenuButton extends React.Component {
       this.setState({ displayType: this.getTypeByWidth() });
     }
   }
-
-  onContextClick = () => {
-    if (this.props.isDisabled) {
-      this.stopAction;
-      return;
-    }
-
-    this.setState({
-      data: this.props.getData(),
-      isOpen: !this.state.isOpen,
-      offsetX: this.props.manualX,
-      offsetY: this.props.manualY,
-    });
-  };
 
   onIconButtonClick = () => {
     if (this.props.isDisabled) {
@@ -110,8 +90,6 @@ class ContextMenuButton extends React.Component {
       {
         data: this.props.getData(),
         isOpen: !this.state.isOpen,
-        offsetX: "0px",
-        offsetY: "100%",
       },
       () =>
         !this.props.isDisabled &&
@@ -194,9 +172,6 @@ class ContextMenuButton extends React.Component {
         />
         {displayType === "dropdown" ? (
           <DropDown
-            id="contextMenu"
-            manualX={offsetX}
-            manualY={offsetY}
             directionX={directionX}
             directionY={directionY}
             open={isOpen}
@@ -299,10 +274,6 @@ ContextMenuButton.propTypes = {
   directionX: PropTypes.string,
   /** Direction Y */
   directionY: PropTypes.string,
-  /** Manual X padding */
-  manualX: PropTypes.string,
-  /** Manual Y padding */
-  manualY: PropTypes.string,
   /** Accepts class */
   className: PropTypes.string,
   /** Accepts id */

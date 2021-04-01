@@ -17,6 +17,7 @@ class ContextMenuSub extends Component {
     };
 
     this.onEnter = this.onEnter.bind(this);
+
     this.submenuRef = React.createRef();
   }
 
@@ -41,10 +42,9 @@ class ContextMenuSub extends Component {
       e.preventDefault();
     }
 
-    if (item.command) {
-      item.command({
+    if (item.onClick) {
+      item.onClick({
         originalEvent: e,
-        item: item,
       });
     }
 
@@ -159,8 +159,6 @@ class ContextMenuSub extends Component {
         target={item.target}
         onClick={(event) => this.onItemClick(event, item, index)}
         role="menuitem"
-        aria-haspopup={item.items != null}
-        aria-disabled={item.disabled}
       >
         {icon}
         {label}
@@ -202,7 +200,7 @@ class ContextMenuSub extends Component {
   }
 
   renderItem(item, index) {
-    if (item.separator) return this.renderSeparator(index);
+    if (item.isSeparator) return this.renderSeparator(index);
     else return this.renderMenuitem(item, index);
   }
 
@@ -227,7 +225,7 @@ class ContextMenuSub extends Component {
         classNames="p-contextmenusub"
         in={isActive}
         timeout={{ enter: 0, exit: 0 }}
-        unmountOnExit
+        unmountOnExit={true}
         onEnter={this.onEnter}
       >
         <ul ref={this.submenuRef} className={className}>
@@ -552,15 +550,25 @@ class ContextMenu extends Component {
 }
 
 ContextMenu.propTypes = {
+  /** Unique identifier of the element */
   id: PropTypes.string,
+  /** An array of menuitems */
   model: PropTypes.array,
+  /** Inline style of the component */
   style: PropTypes.object,
+  /** Style class of the component */
   className: PropTypes.string,
+  /** Attaches the menu to document instead of a particular item */
   global: PropTypes.bool,
+  /** Base zIndex value to use in layering */
   autoZIndex: PropTypes.bool,
+  /** Whether to automatically manage layering */
   baseZIndex: PropTypes.number,
+  /** DOM element instance where the menu should be mounted */
   appendTo: PropTypes.any,
+  /** Callback to invoke when a popup menu is shown */
   onShow: PropTypes.func,
+  /** Callback to invoke when a popup menu is hidden */
   onHide: PropTypes.func,
 };
 
