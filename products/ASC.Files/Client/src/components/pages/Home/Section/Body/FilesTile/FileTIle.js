@@ -21,6 +21,7 @@ const FileTile = (props) => {
     getContextOptions,
     checked,
     selectRowAction,
+    onSelectItem,
   } = props;
   const {
     id,
@@ -60,6 +61,10 @@ const FileTile = (props) => {
     if (!file) return;
 
     selectRowAction(checked, file);
+  };
+
+  const rowContextClick = () => {
+    onSelectItem(item);
   };
 
   let classNameProp =
@@ -103,6 +108,7 @@ const FileTile = (props) => {
         isFolder={isFolder}
         element={element}
         onSelect={onContentRowSelect}
+        rowContextClick={rowContextClick}
         //editing={editingId}
         //viewAs={viewAs}
         {...checkedProps}
@@ -135,7 +141,7 @@ export default inject(
     const { dragging, setDragging } = initFilesStore;
     const { getContextOptions } = contextOptionsStore;
 
-    const { selectRowAction } = filesActionsStore;
+    const { selectRowAction, onSelectItem } = filesActionsStore;
 
     const { selection } = filesStore;
 
@@ -147,6 +153,7 @@ export default inject(
       getContextOptions,
       checked: selection.some((el) => el.id === item.id),
       selectRowAction,
+      onSelectItem,
     };
   }
 )(withTranslation("Home")(observer(withRouter(FileTile))));

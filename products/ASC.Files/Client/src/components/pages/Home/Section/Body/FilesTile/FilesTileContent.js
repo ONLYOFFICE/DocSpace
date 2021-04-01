@@ -102,9 +102,9 @@ class FilesTileContent extends React.PureComponent {
     };
   }
 
-  completeAction = (e) => {
-    //this.setState({ loading: false }, () =>)
-    this.props.onEditComplete(e);
+  completeAction = (id) => {
+    console.log(id);
+    this.props.editCompleteAction(id, this.props.item);
   };
 
   updateItem = (e) => {
@@ -114,20 +114,21 @@ class FilesTileContent extends React.PureComponent {
       renameFolder,
       item,
       setIsLoading,
+      fileActionId,
     } = this.props;
 
     const { itemTitle } = this.state;
     const originalTitle = getTitleWithoutExst(item);
 
     setIsLoading(true);
-    if (originalTitle === itemTitle) return this.completeAction(e);
+    if (originalTitle === itemTitle) return this.completeAction(fileActionId);
 
     item.fileExst
       ? updateFile(fileAction.id, itemTitle)
-          .then(() => this.completeAction(e))
+          .then(() => this.completeAction(fileActionId))
           .finally(() => setIsLoading(false))
       : renameFolder(fileAction.id, itemTitle)
-          .then(() => this.completeAction(e))
+          .then(() => this.completeAction(fileActionId))
           .finally(() => setIsLoading(false));
   };
 
@@ -135,13 +136,15 @@ class FilesTileContent extends React.PureComponent {
     const { createFile, item, setIsLoading, createFolder } = this.props;
     const { itemTitle } = this.state;
 
+    const itemId = e.currentTarget.dataset.itemid;
+
     setIsLoading(true);
 
-    if (itemTitle.trim() === "") return this.completeAction();
+    if (itemTitle.trim() === "") return this.completeAction(itemId);
 
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
-          .then(() => this.completeAction(e))
+          .then(() => this.completeAction(itemId))
           .finally(() => {
             toastr.success(
               <Trans i18nKey="FolderCreated" ns="Home">
@@ -151,7 +154,7 @@ class FilesTileContent extends React.PureComponent {
             return setIsLoading(false);
           })
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
-          .then(() => this.completeAction(e))
+          .then(() => this.completeAction(itemId))
           .finally(() => {
             const exst = item.fileExst;
             toastr.success(
@@ -434,6 +437,7 @@ export default inject(
       formatsStore,
       treeFoldersStore,
       selectedFolderStore,
+      filesActionsStore,
     },
     { item }
   ) => {
@@ -472,6 +476,8 @@ export default inject(
     const isImage = iconFormatsStore.isImage(item.fileExst);
     const isSound = iconFormatsStore.isSound(item.fileExst);
 
+    const { editCompleteAction } = filesActionsStore;
+
     return {
       culture,
       homepage: config.homepage,
@@ -502,6 +508,8 @@ export default inject(
       updateFile,
       renameFolder,
       addExpandedKeys,
+
+      editCompleteAction,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesTileContent))));

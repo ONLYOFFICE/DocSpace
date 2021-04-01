@@ -127,6 +127,7 @@ class Tile extends React.Component {
       indeterminate,
       onSelect,
       isFolder,
+      rowContextClick,
     } = this.props;
 
     console.log(isFolder, "tile");
@@ -149,7 +150,10 @@ class Tile extends React.Component {
       onSelect && onSelect(e.target.checked, item);
     };
 
-    const getOptions = () => contextOptions;
+    const getOptions = () => {
+      rowContextClick && rowContextClick();
+      return contextOptions;
+    };
 
     return (
       <StyledTile {...this.props}>
@@ -243,6 +247,7 @@ Tile.propTypes = {
   onSelect: PropTypes.func,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   viewAs: PropTypes.string,
+  rowContextClick: PropTypes.func,
 };
 
 Tile.defaultProps = {
