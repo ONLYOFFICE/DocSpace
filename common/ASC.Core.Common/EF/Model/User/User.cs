@@ -76,13 +76,13 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_user");
 
                 entity.HasIndex(e => e.Email)
-                    .HasName("email");
+                    .HasDatabaseName("email");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified");
+                    .HasDatabaseName("last_modified");
 
                 entity.HasIndex(e => new { e.Tenant, e.UserName })
-                    .HasName("username");
+                    .HasDatabaseName("username");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -217,13 +217,13 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_user", "onlyoffice");
 
                 entity.HasIndex(e => e.Email)
-                    .HasName("email");
+                    .HasDatabaseName("email");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified_core_user");
+                    .HasDatabaseName("last_modified_core_user");
 
                 entity.HasIndex(e => new { e.UserName, e.Tenant })
-                    .HasName("username");
+                    .HasDatabaseName("username");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")

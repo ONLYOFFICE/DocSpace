@@ -1,6 +1,6 @@
 {
   "name": "@appserver/components",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "build": "echo 'skip it'",
@@ -9,8 +9,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook",
+    "storybook": "start-storybook -p 8082 -s public",
+    "storybook-build": "build-storybook",
+    "storybook-serve": "serve storybook-static -p 8082",
     "clean": "echo 'skip it'"
   },
   "devDependencies": {
@@ -45,6 +46,7 @@
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "babel-plugin-transform-rename-import": "^2.3.0",
     "babel-preset-react-app": "^9.1.2",
+    "copy-webpack-plugin": "6.4.0",
     "cross-env": "^6.0.3",
     "css-loader": "^3.6.0",
     "enzyme": "^3.11.0",

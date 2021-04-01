@@ -19,6 +19,7 @@ const EmptyContainer = ({
   setAction,
   isPrivacyFolder,
   parentId,
+  isEncryptionSupport,
 }) => {
   const onCreate = (e) => {
     const format = e.currentTarget.dataset.format || null;

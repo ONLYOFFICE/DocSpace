@@ -36,7 +36,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("account_links");
 
                 entity.HasIndex(e => e.UId)
-                    .HasName("uid");
+                    .HasDatabaseName("uid");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -78,7 +78,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("account_links", "onlyoffice");
 
                 entity.HasIndex(e => e.UId)
-                    .HasName("uid");
+                    .HasDatabaseName("uid");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")

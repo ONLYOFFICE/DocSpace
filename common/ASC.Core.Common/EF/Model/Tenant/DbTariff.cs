@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Core.Common.EF.Model;
 
@@ -31,7 +32,7 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("tenants_tariff");
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant");
+                    .HasDatabaseName("tenant");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -63,7 +64,7 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("tenants_tariff", "onlyoffice");
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant_tenants_tariff");
+                    .HasDatabaseName("tenant_tenants_tariff");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

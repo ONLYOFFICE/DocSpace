@@ -496,7 +496,7 @@ namespace ASC.Data.Backup.Service
             TenantId = request.TenantId;
             Notify = request.NotifyAfterCompletion;
             StoragePath = request.FilePathOrId;
-            StorageType = (BackupStorageType)request.StorageType;
+            StorageType = request.StorageType;
             TempFolder = tempFolder;
             UpgradesPath = upgradesPath;
             CurrentRegion = currentRegion;

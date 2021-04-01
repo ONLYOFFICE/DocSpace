@@ -22,7 +22,7 @@ import contextOptionsStore from "./store/ContextOptionsStore";
 import "./custom.scss";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
-//import { regDesktop } from "@appserver/common/src/desktop";
+import { regDesktop } from "@appserver/common/desktop";
 import Home from "./components/pages/Home";
 import Settings from "./components/pages/Settings";
 import VersionHistory from "./components/pages/VersionHistory";
@@ -80,33 +80,33 @@ class FilesContent extends React.Component {
       });
   }
 
-  //   componentDidUpdate(prevProps) {
-  //     const {
-  //       isAuthenticated,
-  //       user,
-  //       isEncryption,
-  //       encryptionKeys,
-  //       setEncryptionKeys,
-  //       isLoaded,
-  //     } = this.props;
-  //     //console.log("componentDidUpdate: ", this.props);
-  //     if (isAuthenticated && !this.isDesktopInit && isEncryption && isLoaded) {
-  //       this.isDesktopInit = true;
-  //       regDesktop(
-  //         user,
-  //         isEncryption,
-  //         encryptionKeys,
-  //         setEncryptionKeys,
-  //         this.isEditor
-  //       );
-  //       console.log(
-  //         "%c%s",
-  //         "color: green; font: 1.2em bold;",
-  //         "Current keys is: ",
-  //         encryptionKeys
-  //       );
-  //     }
-  //   }
+  componentDidUpdate(prevProps) {
+    const {
+      isAuthenticated,
+      user,
+      isEncryption,
+      encryptionKeys,
+      setEncryptionKeys,
+      isLoaded,
+    } = this.props;
+    //console.log("componentDidUpdate: ", this.props);
+    if (isAuthenticated && !this.isDesktopInit && isEncryption && isLoaded) {
+      this.isDesktopInit = true;
+      regDesktop(
+        user,
+        isEncryption,
+        encryptionKeys,
+        setEncryptionKeys,
+        this.isEditor
+      );
+      console.log(
+        "%c%s",
+        "color: green; font: 1.2em bold;",
+        "Current keys is: ",
+        encryptionKeys
+      );
+    }
+  }
 
   render() {
     //const { /*, isDesktop*/ } = this.props;
@@ -128,7 +128,7 @@ class FilesContent extends React.Component {
 
 const Files = inject(({ auth, initFilesStore }) => {
   return {
-    //isDesktop: auth.settingsStore.isDesktopClient,
+    isDesktop: auth.settingsStore.isDesktopClient,
     user: auth.userStore.user,
     isAuthenticated: auth.isAuthenticated,
     encryptionKeys: auth.settingsStore.encryptionKeys,

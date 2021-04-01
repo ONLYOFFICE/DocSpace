@@ -115,10 +115,6 @@ namespace ASC.Core.Common.Migrations.Npgsql.MessagesContextNpgsql
                 schema: "onlyoffice");
 
             migrationBuilder.DropTable(
-                name: "webstudio_settings",
-                schema: "onlyoffice");
-
-            migrationBuilder.DropTable(
                 name: "tenants_tenants",
                 schema: "onlyoffice");
         }

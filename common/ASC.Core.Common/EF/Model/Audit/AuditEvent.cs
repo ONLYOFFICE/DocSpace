@@ -23,7 +23,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("audit_events");
 
                 entity.HasIndex(e => new { e.TenantId, e.Date })
-                    .HasName("date");
+                    .HasDatabaseName("date");
 
                 entity
                 .Property(e => e.Id)
@@ -94,7 +94,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("audit_events", "onlyoffice");
 
                 entity.HasIndex(e => new { e.TenantId, e.Date })
-                    .HasName("date");
+                    .HasDatabaseName("date");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
