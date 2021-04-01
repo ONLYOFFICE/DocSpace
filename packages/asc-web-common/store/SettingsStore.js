@@ -1,4 +1,10 @@
-import { action, computed, makeObservable, observable } from "mobx";
+import {
+  action,
+  computed,
+  makeObservable,
+  observable,
+  makeAutoObservable,
+} from "mobx";
 import api from "../api";
 import { ARTICLE_PINNED_KEY, LANGUAGE } from "../constants";
 import { combineUrl } from "../utils";
@@ -69,68 +75,69 @@ class SettingsStore {
   hasShortenService = false;
 
   constructor() {
-    makeObservable(this, {
-      currentProductId: observable,
-      culture: observable,
-      cultures: observable,
-      trustedDomains: observable,
-      trustedDomainsType: observable,
-      timezone: observable,
-      timezones: observable,
-      utcOffset: observable,
-      utcHoursOffset: observable,
-      defaultPage: observable,
-      homepage: observable,
-      datePattern: observable,
-      datePatternJQ: observable,
-      dateTimePattern: observable,
-      datepicker: observable,
-      organizationName: observable,
-      greetingSettings: observable,
-      enableAdmMess: observable,
-      urlLicense: observable,
-      urlSupport: observable,
-      urlAuthKeys: computed,
-      logoUrl: observable,
-      customNames: observable,
-      isDesktopClient: observable,
-      isEncryptionSupport: observable,
-      encryptionKeys: observable,
-      isHeaderVisible: observable,
-      isTabletView: observable,
-      isArticlePinned: observable,
-      hashSettings: observable,
-      ownerId: observable,
-      nameSchemaId: observable,
-      wizardToken: observable,
-      wizardCompleted: computed,
-      passwordSettings: observable,
-      hasShortenService: observable,
-      getSettings: action,
-      getCurrentCustomSchema: action,
-      getPortalSettings: action,
-      init: action,
-      isLoaded: observable,
-      isLoading: observable,
-      setIsLoading: action,
-      setIsLoaded: action,
-      getPortalCultures: action,
-      getIsEncryptionSupport: action,
-      updateEncryptionKeys: action,
-      setEncryptionKeys: action,
-      getEncryptionKeys: action,
-      setModuleInfo: action,
-      setCurrentProductId: action,
-      setWizardComplete: action,
-      setPasswordSettings: action,
-      getPortalPasswordSettings: action,
-      setTimezones: action,
-      getPortalTimezones: action,
-      setHeaderVisible: action,
-      setIsTabletView: action,
-      setValue: action,
-      setArticlePinned: action,
-    });
+    makeAutoObservable(this);
+    // makeObservable(this, {
+    //   currentProductId: observable,
+    //   culture: observable,
+    //   cultures: observable,
+    //   trustedDomains: observable,
+    //   trustedDomainsType: observable,
+    //   timezone: observable,
+    //   timezones: observable,
+    //   utcOffset: observable,
+    //   utcHoursOffset: observable,
+    //   defaultPage: observable,
+    //   homepage: observable,
+    //   datePattern: observable,
+    //   datePatternJQ: observable,
+    //   dateTimePattern: observable,
+    //   datepicker: observable,
+    //   organizationName: observable,
+    //   greetingSettings: observable,
+    //   enableAdmMess: observable,
+    //   urlLicense: observable,
+    //   urlSupport: observable,
+    //   urlAuthKeys: computed,
+    //   logoUrl: observable,
+    //   customNames: observable,
+    //   isDesktopClient: observable,
+    //   isEncryptionSupport: observable,
+    //   encryptionKeys: observable,
+    //   isHeaderVisible: observable,
+    //   isTabletView: observable,
+    //   isArticlePinned: observable,
+    //   hashSettings: observable,
+    //   ownerId: observable,
+    //   nameSchemaId: observable,
+    //   wizardToken: observable,
+    //   wizardCompleted: computed,
+    //   passwordSettings: observable,
+    //   hasShortenService: observable,
+    //   getSettings: action,
+    //   getCurrentCustomSchema: action,
+    //   getPortalSettings: action,
+    //   init: action,
+    //   isLoaded: observable,
+    //   isLoading: observable,
+    //   setIsLoading: action,
+    //   setIsLoaded: action,
+    //   getPortalCultures: action,
+    //   getIsEncryptionSupport: action,
+    //   updateEncryptionKeys: action,
+    //   setEncryptionKeys: action,
+    //   getEncryptionKeys: action,
+    //   setModuleInfo: action,
+    //   setCurrentProductId: action,
+    //   setWizardComplete: action,
+    //   setPasswordSettings: action,
+    //   getPortalPasswordSettings: action,
+    //   setTimezones: action,
+    //   getPortalTimezones: action,
+    //   setHeaderVisible: action,
+    //   setIsTabletView: action,
+    //   setValue: action,
+    //   setArticlePinned: action,
+    // });
   }
 
   get urlAuthKeys() {
@@ -203,8 +210,13 @@ class SettingsStore {
     this.cultures = await api.settings.getPortalCultures();
   };
 
+  setIsEncryptionSupport = (isEncryptionSupport) => {
+    this.isEncryptionSupport = isEncryptionSupport;
+  };
+
   getIsEncryptionSupport = async () => {
-    this.isEncryptionSupport = await api.files.getIsEncryptionSupport();
+    const isEncryptionSupport = await api.files.getIsEncryptionSupport();
+    this.setIsEncryptionSupport(isEncryptionSupport);
   };
 
   updateEncryptionKeys = (encryptionKeys) => {
