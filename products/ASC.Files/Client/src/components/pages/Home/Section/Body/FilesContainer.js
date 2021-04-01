@@ -7,9 +7,8 @@ import { Consumer } from "@appserver/components/utils/context";
 import Loaders from "@appserver/common/components/Loaders";
 import RowContainer from "@appserver/components/row-container";
 
-import SimpleFilesRow from "./FilesRow/SimpleFilesRow";
-import FileTile from "./FilesTile/FileTile";
 import TileContainer from "./FilesTile/sub-components/TileContainer";
+import FileItem from "./FIleItem";
 
 const FilesContainer = (props) => {
   const { isLoaded, isLoading, filesList, viewAs, t } = props;
@@ -21,14 +20,14 @@ const FilesContainer = (props) => {
       {(context) =>
         viewAs === "tile" ? (
           <TileContainer
-            className="tileContainer"
+            className="tile-container"
             draggable
             useReactWindow={false}
             headingFolders={t("Folders")}
             headingFiles={t("Files")}
           >
             {filesList.map((item) => {
-              return <FileTile key={item.id} item={item} />;
+              return <FileItem key={item.id} item={item} viewAs={viewAs} />;
             })}
           </TileContainer>
         ) : (
@@ -39,10 +38,11 @@ const FilesContainer = (props) => {
           >
             {filesList.map((item) => {
               return (
-                <SimpleFilesRow
+                <FileItem
                   key={item.id}
                   item={item}
                   sectionWidth={context.sectionWidth}
+                  viewAs={viewAs}
                 />
               );
             })}
