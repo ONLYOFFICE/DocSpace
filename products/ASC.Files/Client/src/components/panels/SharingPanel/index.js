@@ -620,7 +620,7 @@ const SharingPanel = inject(
     const { isPrivacyFolder } = treeFoldersStore;
     const { setSharingPanelVisible, sharingPanelVisible } = dialogsStore;
     const {
-      uploadSelection,
+      selectedUploadFile,
       selectUploadedFile,
       updateUploadedItem,
     } = uploadDataStore;
@@ -630,10 +630,10 @@ const SharingPanel = inject(
       groupsCaption: customNames.groupsCaption,
       isDesktop: isDesktopClient,
       homepage: config.homepage,
-      selection: uploadPanelVisible ? uploadSelection : selection,
+      selection: uploadPanelVisible ? selectedUploadFile : selection,
       isLoading,
       isPrivacy: isPrivacyFolder,
-      uploadSelection,
+      selectedUploadFile,
       canShareOwnerChange,
 
       setIsLoading,
