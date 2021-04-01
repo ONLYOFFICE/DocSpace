@@ -2,6 +2,7 @@ import FilesStore from "./FilesStore";
 import fileActionStore from "./FileActionStore";
 import selectedFolderStore from "./SelectedFolderStore";
 import treeFoldersStore from "./TreeFoldersStore";
+import InitFilesStore from "./InitFilesStore";
 
 import settingsStore from "./SettingsStore";
 import mediaViewerDataStore from "./MediaViewerDataStore";
@@ -11,7 +12,7 @@ import uploadDataStore from "./UploadDataStore";
 import dialogsStore from "./DialogsStore";
 
 import filesActionsStore from "./FilesActionsStore";
-import initFilesStore from "./InitFilesStore";
+
 import store from "studio/store";
 
 const filesStore = new FilesStore(
@@ -20,6 +21,13 @@ const filesStore = new FilesStore(
   store.auth.userStore,
   fileActionStore,
   selectedFolderStore,
+  treeFoldersStore
+);
+
+const initFilesStore = new InitFilesStore(
+  store.auth,
+  store.auth.settingsStore,
+  filesStore,
   treeFoldersStore
 );
 

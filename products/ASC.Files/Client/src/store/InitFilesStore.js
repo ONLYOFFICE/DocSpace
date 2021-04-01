@@ -1,14 +1,13 @@
 import { makeAutoObservable } from "mobx";
-import store from "studio/store";
 import { updateTempContent } from "@appserver/common/utils";
-import filesStore from "./FilesStore";
-import treeFoldersStore from "./TreeFoldersStore";
 import config from "../../package.json";
 
-const { auth } = store;
-const { isAdmin } = auth;
-
 class InitFilesStore {
+  authStore;
+  settingsStore;
+  filesStore;
+  treeFoldersStore;
+
   isLoaded = false;
   isLoading = false;
   viewAs = "row";
@@ -19,11 +18,15 @@ class InitFilesStore {
   tooltipPageX = 0;
   tooltipPageY = 0;
 
-  constructor() {
+  constructor(authStore, settingsStore, filesStore, treeFoldersStore) {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
 
     makeAutoObservable(this);
+    this.authStore = authStore;
+    this.settingsStore = settingsStore;
+    this.filesStore = filesStore;
+    this.treeFoldersStore = treeFoldersStore;
   }
 
   setIsLoaded = (isLoaded) => {
@@ -50,17 +53,17 @@ class InitFilesStore {
   get tooltipValue() {
     if (!this.dragging) return null;
 
-    const selectionLength = filesStore.selection.length;
-    const elementTitle = selectionLength && filesStore.selection[0].title;
+    const selectionLength = this.filesStore.selection.length;
+    const elementTitle = selectionLength && this.filesStore.selection[0].title;
     const singleElement = selectionLength === 1;
     const filesCount = singleElement ? elementTitle : selectionLength;
-    const { isShareFolder, isCommonFolder } = treeFoldersStore;
+    const { isShareFolder, isCommonFolder } = this.treeFoldersStore;
 
     let operationName;
 
-    if (isAdmin && isShareFolder) {
+    if (this.authStore.isAdmin && isShareFolder) {
       operationName = "copy";
-    } else if (!isAdmin && (isShareFolder || isCommonFolder)) {
+    } else if (!this.authStore.isAdmin && (isShareFolder || isCommonFolder)) {
       operationName = "copy";
     } else {
       operationName = "move";
@@ -79,14 +82,14 @@ class InitFilesStore {
     if (this.isInit) return;
     this.isInit = true;
 
-    const isAuthenticated = auth.isAuthenticated;
+    const { isAuthenticated } = this.authStore;
     const {
       getPortalCultures,
       isDesktopClient,
       getIsEncryptionSupport,
       getEncryptionKeys,
       setModuleInfo,
-    } = auth.settingsStore;
+    } = this.settingsStore;
 
     setModuleInfo(config.homepage, config.id);
 
@@ -100,7 +103,10 @@ class InitFilesStore {
     }
 
     if (!this.isEditor) {
-      requests.push(getPortalCultures(), treeFoldersStore.fetchTreeFolders());
+      requests.push(
+        getPortalCultures(),
+        this.treeFoldersStore.fetchTreeFolders()
+      );
 
       if (isDesktopClient) {
         requests.push(getIsEncryptionSupport(), getEncryptionKeys());
@@ -111,4 +117,4 @@ class InitFilesStore {
   };
 }
 
-export default new InitFilesStore();
+export default InitFilesStore;
