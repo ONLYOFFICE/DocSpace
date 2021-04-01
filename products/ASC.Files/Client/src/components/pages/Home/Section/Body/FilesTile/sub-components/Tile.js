@@ -129,6 +129,8 @@ class Tile extends React.Component {
       isFolder,
     } = this.props;
 
+    console.log(isFolder, "tile");
+
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
       this.props,
       "checked"

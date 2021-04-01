@@ -10,8 +10,8 @@ import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 import { getTitleWithoutExst } from "../../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../../panels";
-import EditingWrapperComponent from "./EditingWrapperComponent";
-import TileContent from "./TileContent";
+import EditingWrapperComponent from "../sub-components/EditingWrapperComponent";
+import TileContent from "./sub-components/TileContent";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import CheckIcon from "../../../../../../../public/images/check.react.svg";
@@ -89,6 +89,8 @@ class FilesTileContent extends React.PureComponent {
     if (props.fileAction.id === -1) {
       titleWithoutExt = this.getDefaultName(props.fileAction.extension);
     }
+
+    console.log(props.item);
 
     this.state = {
       itemTitle: titleWithoutExt,

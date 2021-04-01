@@ -93,7 +93,7 @@ class ContextOptionsStore {
   };
 
   lockFile = () => {
-    const { id } = filesStore.selection[0];
+    const { id, locked } = filesStore.selection[0];
     lockFileAction(id, !locked).catch((err) => toastr.error(err));
   };
 
