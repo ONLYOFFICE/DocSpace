@@ -573,10 +573,10 @@ namespace ASC.Employee.Core.Controllers
                     {
                         UserManager.SaveUserInfo(user);
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         user.CultureName = curLng;
-                        throw ex;
+                        throw;
                     }
 
                     MessageService.Send(MessageAction.UserUpdatedLanguage, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));

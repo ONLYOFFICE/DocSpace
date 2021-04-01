@@ -1,7 +1,9 @@
-﻿using ASC.Core.Common.EF.Model;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
+using ASC.Core.Common.EF.Model;
+using Microsoft.EntityFrameworkCore;
 namespace ASC.Core.Common.EF
 {
     public class UserPhoto : BaseEntity
@@ -33,7 +35,7 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_userphoto");
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant");
+                    .HasDatabaseName("tenant");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("userid")
@@ -59,7 +61,7 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_userphoto", "onlyoffice");
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant_core_userphoto");
+                    .HasDatabaseName("tenant_core_userphoto");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("userid")

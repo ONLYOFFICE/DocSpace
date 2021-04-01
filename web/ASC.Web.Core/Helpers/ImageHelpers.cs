@@ -292,7 +292,7 @@ namespace ASC.Web.Studio.Helpers
 
                 return;
             }
-            else if ((double)realHeight / (double)_heightPreview > (double)realWidth / (double)_widthPreview)
+            else if (realHeight / (double)_heightPreview > realWidth / (double)_widthPreview)
             {
                 if (heightPreview > _heightPreview)
                 {
