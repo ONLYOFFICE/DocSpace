@@ -110,8 +110,6 @@ class SharingPanelComponent extends React.Component {
       setEncryptionAccess,
       setShareFiles,
       onSuccess,
-      getNewShareUsers,
-      getShareUsers,
     } = this.props;
 
     let folderIds = [];
