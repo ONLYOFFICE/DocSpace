@@ -3,8 +3,9 @@ import fileActionStore from "./FileActionStore";
 import selectedFolderStore from "./SelectedFolderStore";
 import treeFoldersStore from "./TreeFoldersStore";
 import InitFilesStore from "./InitFilesStore";
+import thirdPartyStore from "./ThirdPartyStore";
 
-import settingsStore from "./SettingsStore";
+import SettingsStore from "./SettingsStore";
 import mediaViewerDataStore from "./MediaViewerDataStore";
 import formatsStore from "./FormatsStore";
 import versionHistoryStore from "./VersionHistoryStore";
@@ -30,6 +31,8 @@ const initFilesStore = new InitFilesStore(
   filesStore,
   treeFoldersStore
 );
+
+const settingsStore = new SettingsStore(thirdPartyStore);
 
 const stores = {
   initFilesStore,
