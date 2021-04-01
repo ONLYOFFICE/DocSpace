@@ -145,8 +145,6 @@ WORKDIR /var/www/services/apisystem/
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/apisystem/ .
 COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/studio/api /var/www/studio/api
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/socket/client /var/www/services/ASC.Socket.IO
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ /var/www/products/ASC.Files/server/
 
 CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
 
@@ -323,7 +321,7 @@ CMD ["ASC.TelegramService.dll", "ASC.TelegramService"]
 ## ASC.Thumbnails.Svc ##
 FROM builder AS thumbnails
 
-WORKDIR /var/www/services/thumb/
+WORKDIR /var/www/services/thumb/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/thumb/service/ .
@@ -334,7 +332,7 @@ CMD ["ASC.Thumbnails.Svc.dll", "ASC.Thumbnails.Svc"]
 ## ASC.UrlShortener.Svc ##
 FROM builder AS urlshortener
 
-WORKDIR /var/www/services/urlshortener/
+WORKDIR /var/www/services/urlshortener/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/urlshortener/service/ .

@@ -135,6 +135,9 @@ services:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-socket:${SRV_VERSION}"
     container_name: ${SOCKET_HOST}
+    expose:
+    - ${SERVICE_PORT}
+    - "9999"
   
   onlyoffice-studio-notify:
     <<: *x-service-base
@@ -150,11 +153,17 @@ services:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-thumbnails:${SRV_VERSION}"
     container_name: ${THUMBNAILS_HOST}
+    expose:
+    - ${SERVICE_PORT}
+    - "9800"
     
   onlyoffice-urlshortener:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-urlshortener:${SRV_VERSION}"
     container_name: ${URLSHORTENER_HOST}
+    expose:
+    - ${SERVICE_PORT}
+    - "9999"
 
   onlyoffice-api:
     <<: *x-service-base
