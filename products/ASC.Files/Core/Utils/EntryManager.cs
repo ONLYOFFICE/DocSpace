@@ -884,7 +884,7 @@ namespace ASC.Web.Files.Utils
                     path += "new" + FileUtility.GetInternalExtension(file.Title);
 
                     //todo: think about the criteria for saving after creation
-                    if (file.ContentLength != storeTemplate.GetFileSize("", path))
+                    if (!storeTemplate.IsFile(path) || file.ContentLength != storeTemplate.GetFileSize("", path))
                     {
                         file.VersionGroup++;
                     }
