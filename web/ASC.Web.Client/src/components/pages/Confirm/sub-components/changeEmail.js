@@ -1,12 +1,11 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import { Loader } from "asc-web-components";
-import { PageLayout, utils as commonUtils } from "asc-web-common";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { changeEmail } from "../../../../store/confirm/actions";
-const { tryRedirectTo } = commonUtils;
+import { inject, observer } from "mobx-react";
+import Loader from "@appserver/components/loader";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { combineUrl, tryRedirectTo } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class ChangeEmail extends React.PureComponent {
   componentDidMount() {
@@ -17,12 +16,15 @@ class ChangeEmail extends React.PureComponent {
         .then((res) => {
           console.log("change client email success", res);
           tryRedirectTo(
-            `${window.location.origin}/products/people/view/@self?email_change=success`
+            combineUrl(
+              AppServerConfig.proxyURL,
+              `/products/people/view/@self?email_change=success`
+            )
           );
         })
         .catch((e) => {
           console.log("change client email error", e);
-          tryRedirectTo(`${window.location.origin}/error=${e}`);
+          tryRedirectTo(combineUrl(AppServerConfig.proxyURL, `/error=${e}`));
         });
     }
   }
@@ -35,12 +37,13 @@ class ChangeEmail extends React.PureComponent {
         .then((res) => {
           console.log("change client email success", res);
           tryRedirectTo(
-            `${window.location.origin}/products/people/view/@self?email_change=success`
+            combineUrl(
+              AppServerConfig.proxyURL,
+              `/products/people/view/@self?email_change=success`
+            )
           );
         })
-        .catch((e) => {
-          console.log("change client email error", e);
-        });
+        .catch((e) => console.log("change client email error", e));
     } else {
       tryRedirectTo(defaultPage);
     }
@@ -64,14 +67,13 @@ const ChangeEmailForm = (props) => (
   </PageLayout>
 );
 
-function mapStateToProps(state) {
+export default inject(({ auth }) => {
+  const { logout, userStore, settingsStore, isLoaded } = auth;
   return {
-    isLoaded: state.auth.isLoaded,
-    userId: state.auth.user.id,
-    defaultPage: state.auth.settings.defaultPage,
+    isLoaded,
+    userId: userStore.user.id,
+    logout,
+    changeEmail: userStore.changeEmail,
+    defaultPage: settingsStore.defaultPage,
   };
-}
-
-export default connect(mapStateToProps, { changeEmail })(
-  withRouter(withTranslation()(ChangeEmailForm))
-);
+})(observer(withRouter(ChangeEmailForm)));

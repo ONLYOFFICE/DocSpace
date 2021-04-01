@@ -1,27 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Mail
 {
-    [Table("mail_server_server")]
     public class ServerServer
     {
         public int Id { get; set; }
-
-        [Column("mx_record")]
         public string MxRecord { get; set; }
-
-        [Column("connection_string")]
         public string ConnectionString { get; set; }
-
-        [Column("server_type")]
         public int ServerType { get; set; }
-
-        [Column("smtp_settings_id")]
         public int SmtpSettingsId { get; set; }
-
-        [Column("imap_settings_id")]
         public int ImapSettingsId { get; set; }
     }
     public static class ServerServerExtension
@@ -40,7 +29,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.ToTable("mail_server_server");
 
                 entity.HasIndex(e => e.ServerType)
-                    .HasName("mail_server_server_type_server_type_fk_id");
+                    .HasDatabaseName("mail_server_server_type_server_type_fk_id");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -73,7 +62,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.ToTable("mail_server_server", "onlyoffice");
 
                 entity.HasIndex(e => e.ServerType)
-                    .HasName("mail_server_server_type_server_type_fk_id");
+                    .HasDatabaseName("mail_server_server_type_server_type_fk_id");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

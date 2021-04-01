@@ -1,21 +1,16 @@
 import React from "react";
-import { connect } from "react-redux";
+
 import { withTranslation, Trans } from "react-i18next";
-import {
-  FieldContainer,
-  Text,
-  Loader,
-  Button,
-  toastr,
-  Link,
-  TextInput,
-} from "asc-web-components";
-import {
-  getWhiteLabelLogoText,
-  getWhiteLabelLogoSizes,
-  getWhiteLabelLogoUrls,
-} from "../../../../../store/settings/actions";
 import styled from "styled-components";
+import FieldContainer from "@appserver/components/field-container";
+import Text from "@appserver/components/text";
+import Loader from "@appserver/components/loader";
+import Button from "@appserver/components/button";
+import toastr from "@appserver/components/toast/toastr";
+import Link from "@appserver/components/link";
+import TextInput from "@appserver/components/text-input";
+
+import { inject, observer } from "mobx-react";
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -242,7 +237,7 @@ class WhiteLabel extends React.Component {
           <div className="settings-block">
             <Text fontSize="16px">{t("LogoSettings")}</Text>
             <Text className="margin-top" fontSize="14px">
-              <Trans i18nKey="LogoUploadRecommendation">
+              <Trans i18nKey="LogoUploadRecommendation" ns="Settings">
                 We recommended that you use images in <strong>PNG</strong>{" "}
                 format with transparent background
               </Trans>
@@ -469,16 +464,22 @@ class WhiteLabel extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    logoText: state.settings.common.whiteLabel.logoText,
-    rawSizes: state.settings.common.whiteLabel.logoSizes,
-    logoUrls: state.settings.common.whiteLabel.logoUrls,
-  };
-}
+export default inject(({ setup }) => {
+  const {
+    common,
+    getWhiteLabelLogoText,
+    getWhiteLabelLogoSizes,
+    getWhiteLabelLogoUrls,
+  } = setup;
 
-export default connect(mapStateToProps, {
-  getWhiteLabelLogoText,
-  getWhiteLabelLogoSizes,
-  getWhiteLabelLogoUrls,
-})(withTranslation()(WhiteLabel));
+  const { logoText, logoSizes: rawSizes, logoUrls } = common.whiteLabel;
+
+  return {
+    logoText,
+    rawSizes,
+    logoUrls,
+    getWhiteLabelLogoText,
+    getWhiteLabelLogoSizes,
+    getWhiteLabelLogoUrls,
+  };
+})(withTranslation("Settings")(observer(WhiteLabel)));

@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { Scrollbar } from "asc-web-components";
+import Scrollbar from "@appserver/components/scrollbar";
 
 const PanelStyles = css`
   .panel_combo-box {
@@ -7,14 +7,7 @@ const PanelStyles = css`
 
     .optionalBlock {
       margin-right: 4px;
-    }
-
-    &.add-groups {
-      .combo-buttons_arrow-icon {
-        flex: 0 0 5px;
-        width: 5px;
-        margin-top: 16px;
-      }
+      display: flex;
     }
 
     .combo-button {
@@ -23,6 +16,19 @@ const PanelStyles = css`
 
     .combo-button-label {
       margin: 0;
+    }
+  }
+
+  .groupSelector,
+  .peopleSelector {
+    .combo-buttons_arrow-icon {
+      flex: 0 0 6px;
+      width: 6px;
+      margin-top: auto;
+      margin-bottom: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 
@@ -41,6 +47,20 @@ const StyledAsidePanel = styled.div`
     font-weight: 700;
     margin: 14px 0;
     padding-right: 10px;
+  }
+  .upload_panel-header {
+    font-weight: 700;
+    padding: 19px auto 19px 17px;
+  }
+  .upload-panel_header-content {
+    z-index: 320;
+    position: fixed;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+  }
+  .upload-panel_body {
+    padding: 64px 0;
   }
   .modal-dialog-aside {
     padding: 0;
@@ -163,8 +183,16 @@ const StyledContent = styled.div`
   }
 
   .sharing-access-combo-box-icon {
+    height: 16px;
     path {
       fill: ${(props) => (props.isDisabled ? "#D0D5DA" : "#A3A9AE")};
+    }
+
+    svg {
+      width: 16px;
+      min-width: 16px;
+      height: 16px;
+      min-height: 16px;
     }
   }
 `;
@@ -174,15 +202,9 @@ const StyledHeaderContent = styled.div`
   align-items: center;
   padding: 0 16px;
 
-  display: flex;
-  align-items: center;
-
-  padding: 0 16px;
-
   .sharing_panel-icons-container {
     display: flex;
     margin-left: auto;
-
     .sharing_panel-drop-down-wrapper {
       position: relative;
 
@@ -195,10 +217,21 @@ const StyledHeaderContent = styled.div`
     }
   }
 
+  .upload_panel-icons-container {
+    display: flex;
+    margin-left: auto;
+    .upload_panel-vertical-dots-icon {
+    }
+    .upload_panel-remove-icon {
+      padding-right: 8px;
+    }
+  }
+
   .files-operations-header,
   .sharing_panel-header {
     font-weight: 700;
     margin: 14px 0;
+    margin-left: 16px;
   }
 `;
 
@@ -208,10 +241,6 @@ const StyledBody = styled.div`
     box-sizing: border-box;
     width: 100%;
     height: calc(100vh - 125px);
-
-    .files-new-link {
-      padding-left: 8px;
-    }
 
     .styled-element {
       margin-left: -2px;
@@ -315,6 +344,7 @@ const StyledSharingBody = styled(Scrollbar)`
   padding: 16px 0;
   .row_content {
     overflow: visible;
+    height: auto;
   }
 
   .sharing-row {

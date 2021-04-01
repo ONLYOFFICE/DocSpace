@@ -1,27 +1,16 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using ASC.Core.Common.EF.Model;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    [Table("core_usersecurity")]
     public class UserSecurity : BaseEntity
     {
         public int Tenant { get; set; }
-
-        [Key]
         public Guid UserId { get; set; }
-
         public string PwdHash { get; set; }
-
         public string PwdHashSha512 { get; set; }
-
         public DateTime? LastModified { get; set; }
-
         public override object[] GetKeys()
         {
             return new object[] { UserId };
@@ -57,10 +46,10 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_usersecurity");
 
                 entity.HasIndex(e => e.PwdHash)
-                    .HasName("pwdhash");
+                    .HasDatabaseName("pwdhash");
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant");
+                    .HasDatabaseName("tenant");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("userid")
@@ -98,10 +87,10 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_usersecurity", "onlyoffice");
 
                 entity.HasIndex(e => e.PwdHash)
-                    .HasName("pwdhash");
+                    .HasDatabaseName("pwdhash");
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant_core_usersecurity");
+                    .HasDatabaseName("tenant_core_usersecurity");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("userid")

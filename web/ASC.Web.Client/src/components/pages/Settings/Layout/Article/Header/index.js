@@ -1,9 +1,9 @@
 import React from "react";
-import { Headline } from "asc-web-common";
+import Headline from "@appserver/common/components/Headline";
 import { useTranslation } from "react-i18next";
 
 const ArticleHeaderContent = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("Settings");
   return <Headline type="menu">{t("Settings")}</Headline>;
 };
 

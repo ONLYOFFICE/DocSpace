@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
 
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
-    [Table("feed_aggregate")]
     public class FeedAggregate : BaseEntity
     {
         public string Id { get; set; }
@@ -13,20 +11,10 @@ namespace ASC.Core.Common.EF.Model
         public string Product { get; set; }
         public string Module { get; set; }
         public Guid Author { get; set; }
-
-        [Column("modified_by")]
         public Guid ModifiedBy { get; set; }
-
-        [Column("created_date")]
         public DateTime CreatedDate { get; set; }
-
-        [Column("modified_date")]
         public DateTime ModifiedDate { get; set; }
-
-        [Column("group_id")]
         public string GroupId { get; set; }
-
-        [Column("aggregated_date")]
         public DateTime AggregateDate { get; set; }
         public string Json { get; set; }
         public string Keywords { get; set; }
@@ -52,13 +40,13 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("feed_aggregate");
 
                 entity.HasIndex(e => new { e.Tenant, e.AggregateDate })
-                    .HasName("aggregated_date");
+                    .HasDatabaseName("aggregated_date");
 
                 entity.HasIndex(e => new { e.Tenant, e.ModifiedDate })
-                    .HasName("modified_date");
+                    .HasDatabaseName("modified_date");
 
                 entity.HasIndex(e => new { e.Tenant, e.Product })
-                    .HasName("product");
+                    .HasDatabaseName("product");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -135,13 +123,13 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("feed_aggregate", "onlyoffice");
 
                 entity.HasIndex(e => new { e.Tenant, e.AggregateDate })
-                    .HasName("aggregated_date");
+                    .HasDatabaseName("aggregated_date");
 
                 entity.HasIndex(e => new { e.Tenant, e.ModifiedDate })
-                    .HasName("modified_date");
+                    .HasDatabaseName("modified_date");
 
                 entity.HasIndex(e => new { e.Tenant, e.Product })
-                    .HasName("product");
+                    .HasDatabaseName("product");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")

@@ -1,22 +1,16 @@
 ﻿import React, { useEffect } from "react";
-import { Text, Link } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
-import { useTranslation } from "react-i18next";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { I18nextProvider, useTranslation, Trans } from "react-i18next";
 import version from "../../../../package.json";
 import styled from "styled-components";
-import { Trans } from "react-i18next";
-import { createI18N } from "../../../helpers/i18n";
+import { isMobile } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
-
-const i18n = createI18N({
-  page: "About",
-  localesPath: "pages/About",
-});
-
-const { changeLanguage } = utils;
+import i18n from "./i18n";
 
 const BodyStyle = styled.div`
-  margin-top: 24px;
+  margin-top: ${isMobile ? "80px" : "24px"};
 
   .avatar {
     text-align: center;
@@ -82,10 +76,9 @@ const VersionStyle = styled.div`
 `;
 
 const Body = () => {
-  const { t } = useTranslation("translation", { i18n });
+  const { t } = useTranslation("About");
 
   useEffect(() => {
-    changeLanguage(i18n);
     setDocumentTitle(t("AboutTitle")); //TODO: implement the ability to read the current module in redux to implement the template `${t("AboutTitle")} – ${t("People")}`
   }, [t]);
 
@@ -98,7 +91,7 @@ const Body = () => {
     "20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050";
   const licenseContent = (
     <Text as="div" className="text_style" fontSize="12px">
-      <Trans i18nKey="LicensedUnder" i18n={i18n}>
+      <Trans i18nKey="LicensedUnder" ns="About">
         "This software is licensed under:"
         <Link
           href="https://www.gnu.org/licenses/gpl-3.0.html"
@@ -135,7 +128,7 @@ const Body = () => {
       </Text>
 
       <Text as="div" className="text_style" fontSize="16px" isBold={true}>
-        <Trans i18nKey="AllRightsReservedCustomMode" i18n={i18n}>
+        <Trans i18nKey="AllRightsReservedCustomMode" ns="About">
           Ascensio System SIA
           <p className="hidden-text">All rights reserved.</p>
         </Trans>
@@ -199,11 +192,13 @@ const Body = () => {
 };
 
 const About = ({ language }) => (
-  <PageLayout>
-    <PageLayout.SectionBody>
-      <Body language={language} />
-    </PageLayout.SectionBody>
-  </PageLayout>
+  <I18nextProvider i18n={i18n}>
+    <PageLayout>
+      <PageLayout.SectionBody>
+        <Body language={language} />
+      </PageLayout.SectionBody>
+    </PageLayout>
+  </I18nextProvider>
 );
 
 export default About;

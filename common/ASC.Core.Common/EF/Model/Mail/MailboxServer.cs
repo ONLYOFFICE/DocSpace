@@ -1,26 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Mail
 {
-    [Table("mail_mailbox_server")]
     public class MailboxServer
     {
         public int Id { get; set; }
-
-        [Column("id_provider")]
         public int IdProvider { get; set; }
         public string Type { get; set; }
         public string Hostname { get; set; }
         public int Port { get; set; }
-
-        [Column("socket_type")]
         public string SocketType { get; set; }
         public string UserName { get; set; }
         public string Authentication { get; set; }
-
-        [Column("is_user_data")]
         public bool IsUserData { get; set; }
     }
     public static class MailboxServerExtension
@@ -546,7 +537,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.ToTable("mail_mailbox_server");
 
                 entity.HasIndex(e => e.IdProvider)
-                    .HasName("id_provider");
+                    .HasDatabaseName("id_provider");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -600,7 +591,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.ToTable("mail_mailbox_server", "onlyoffice");
 
                 entity.HasIndex(e => e.IdProvider)
-                    .HasName("id_provider_mail_mailbox_server");
+                    .HasDatabaseName("id_provider_mail_mailbox_server");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

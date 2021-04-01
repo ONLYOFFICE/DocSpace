@@ -1,18 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
-    [Table("crm_voip_number")]
     public class VoipNumber
     {
         public string Id { get; set; }
         public string Number { get; set; }
         public string Alias { get; set; }
         public string Settings { get; set; }
-
-        [Column("tenant_id")]
         public int TenantId { get; set; }
     }
     public static class VoipNumberExtension
@@ -31,7 +28,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("crm_voip_number");
 
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -68,7 +65,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("crm_voip_number", "onlyoffice");
 
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id_crm_voip_number");
+                    .HasDatabaseName("tenant_id_crm_voip_number");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")

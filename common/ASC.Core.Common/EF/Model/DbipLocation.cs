@@ -1,46 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
-    [Table("dbip_location")]
     public class DbipLocation
     {
         public int Id { get; set; }
-
-        [Column("addr_type")]
         public string AddrType { get; set; }
-
-        [Column("ip_start")]
         public string IPStart { get; set; }
-
-        [Column("ip_end")]
         public string IPEnd { get; set; }
-
         public string Country { get; set; }
-
         public string StateProv { get; set; }
-
         public string District { get; set; }
-
         public string City { get; set; }
-
         public string ZipCode { get; set; }
-
         public long Latitude { get; set; }
-
         public long Longitude { get; set; }
-
-        [Column("geoname_id")]
         public int GeonameId { get; set; }
-
-        [Column("timezone_offset")]
         public double TimezoneOffset { get; set; }
-
-        [Column("timezone_name")]
         public string TimezoneName { get; set; }
-
         public int Processed { get; set; }
     }
     public static class DbipLocationExtension
@@ -59,7 +38,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("dbip_location");
 
                 entity.HasIndex(e => e.IPStart)
-                    .HasName("ip_start");
+                    .HasDatabaseName("ip_start");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -145,7 +124,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("dbip_location", "onlyoffice");
 
                 entity.HasIndex(e => e.IPStart)
-                    .HasName("ip_start");
+                    .HasDatabaseName("ip_start");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

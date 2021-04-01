@@ -1,16 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  Backdrop,
-  Heading,
-  Aside,
-  IconButton,
-  Text,
-  Link,
-  TextInput,
-  Textarea,
-} from "asc-web-components";
-import { utils, toastr } from "asc-web-common";
+import Backdrop from "@appserver/components/backdrop";
+import Heading from "@appserver/components/heading";
+import Aside from "@appserver/components/aside";
+import IconButton from "@appserver/components/icon-button";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import TextInput from "@appserver/components/text-input";
+import Textarea from "@appserver/components/textarea";
+import toastr from "studio/toastr";
 import { withTranslation } from "react-i18next";
 import {
   StyledEmbeddingPanel,
@@ -19,13 +17,6 @@ import {
   StyledBody,
 } from "../StyledPanels";
 import copy from "copy-to-clipboard";
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "EmbeddingPanel",
-  localesPath: "panels/EmbeddingPanel",
-});
-
-const { changeLanguage } = utils;
 
 class EmbeddingPanelComponent extends React.Component {
   constructor(props) {
@@ -37,8 +28,6 @@ class EmbeddingPanelComponent extends React.Component {
       heightValue: "100%",
       link: `<iframe src="${props.embeddingLink}" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency> </iframe>`,
     };
-
-    changeLanguage(i18n);
   }
 
   onArrowClick = () => this.props.onClose();
@@ -74,36 +63,36 @@ class EmbeddingPanelComponent extends React.Component {
     toastr.success(this.props.t("CodeCopySuccess"));
   };
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const { size, widthValue, heightValue, link } = this.state;
-    const { visible, embeddingLink } = this.props;
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   const { size, widthValue, heightValue, link } = this.state;
+  //   const { visible, embeddingLink } = this.props;
 
-    if (size !== nextState.size) {
-      return true;
-    }
+  //   if (size !== nextState.size) {
+  //     return true;
+  //   }
 
-    if (widthValue !== nextState.widthValue) {
-      return true;
-    }
+  //   if (widthValue !== nextState.widthValue) {
+  //     return true;
+  //   }
 
-    if (heightValue !== nextState.heightValue) {
-      return true;
-    }
+  //   if (heightValue !== nextState.heightValue) {
+  //     return true;
+  //   }
 
-    if (visible !== nextProps.visible) {
-      return true;
-    }
+  //   if (visible !== nextProps.visible) {
+  //     return true;
+  //   }
 
-    if (embeddingLink !== nextProps.embeddingLink) {
-      return true;
-    }
+  //   if (embeddingLink !== nextProps.embeddingLink) {
+  //     return true;
+  //   }
 
-    if (link !== nextState.link) {
-      return true;
-    }
+  //   if (link !== nextState.link) {
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
   componentDidUpdate(prevProps, prevState) {
     const { embeddingLink } = this.props;
@@ -205,7 +194,7 @@ class EmbeddingPanelComponent extends React.Component {
                   <IconButton
                     className="embedding-panel_copy-icon"
                     size="16"
-                    iconName="CopyIcon"
+                    iconName="/static/images/copy.react.svg"
                     color="#333"
                     onClick={this.onCopyLink}
                   />
@@ -226,12 +215,4 @@ EmbeddingPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-const EmbeddingPanelContainerTranslated = withTranslation()(
-  EmbeddingPanelComponent
-);
-
-const EmbeddingPanel = (props) => (
-  <EmbeddingPanelContainerTranslated i18n={i18n} {...props} />
-);
-
-export default EmbeddingPanel;
+export default withTranslation("EmbeddingPanel")(EmbeddingPanelComponent);

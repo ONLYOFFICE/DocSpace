@@ -1,26 +1,16 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.Files.Core.Security;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
 {
-    [Table("files_security")]
     public class DbFilesSecurity : BaseEntity, IDbFile
     {
-        [Column("tenant_id")]
         public int TenantId { get; set; }
-
-        [Column("entry_id")]
         public string EntryId { get; set; }
-
-        [Column("entry_type")]
         public FileEntryType EntryType { get; set; }
-
         public Guid Subject { get; set; }
         public Guid Owner { get; set; }
         public FileShare Security { get; set; }
@@ -51,10 +41,10 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_security");
 
                 entity.HasIndex(e => e.Owner)
-                    .HasName("owner");
+                    .HasDatabaseName("owner");
 
                 entity.HasIndex(e => new { e.TenantId, e.EntryType, e.EntryId, e.Owner })
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
@@ -98,10 +88,10 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_security", "onlyoffice");
 
                 entity.HasIndex(e => e.Owner)
-                    .HasName("owner");
+                    .HasDatabaseName("owner");
 
                 entity.HasIndex(e => new { e.EntryId, e.TenantId, e.EntryType, e.Owner })
-                    .HasName("tenant_id_files_security");
+                    .HasDatabaseName("tenant_id_files_security");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 

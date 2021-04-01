@@ -26,6 +26,7 @@
 using System;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -44,6 +45,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.CRM.Configuration
 {
+    [Scope]
     public class ProductEntryPoint : Product
     {
         public ProductEntryPoint(SecurityContext securityContext,

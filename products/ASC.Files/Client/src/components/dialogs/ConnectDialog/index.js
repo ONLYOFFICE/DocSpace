@@ -1,42 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  ModalDialog,
-  TextInput,
-  PasswordInput,
-  Button,
-  Checkbox,
-  FieldContainer,
-  toastr,
-} from "asc-web-components";
-import { utils as commonUtils } from "asc-web-common";
-import {
-  fetchThirdPartyProviders,
-  fetchTreeFolders,
-  getOAuthToken,
-  openConnectWindow,
-  saveThirdParty,
-  setTreeFolders,
-  setUpdateTree,
-  fetchFiles,
-} from "../../../store/files/actions";
-import {
-  getTreeFolders,
-  loopTreeFolders,
-  getMyFolderId,
-  getCommonFolderId,
-  getThirdPartyProviders,
-  getSelectedFolder,
-} from "../../../store/files/selectors";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import { connect } from "react-redux";
-import { createI18N } from "../../../helpers/i18n";
+import toastr from "@appserver/components/toast";
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Checkbox from "@appserver/components/checkbox";
+import TextInput from "@appserver/components/text-input";
+import PasswordInput from "@appserver/components/password-input";
+import FieldContainer from "@appserver/components/field-container";
 
-const i18n = createI18N({
-  page: "ConnectDialog",
-  localesPath: "dialogs/ConnectDialog",
-});
-
-const { changeLanguage } = commonUtils;
+import { loopTreeFolders } from "../../../helpers/files-helpers";
+import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 
 const PureConnectDialogContainer = (props) => {
   const {
@@ -44,15 +17,19 @@ const PureConnectDialogContainer = (props) => {
     t,
     item,
     treeFolders,
-    setUpdateTree,
     setTreeFolders,
     fetchThirdPartyProviders,
     fetchTreeFolders,
     myFolderId,
     commonFolderId,
     providers,
-    selectedFolder,
+    selectedFolderId,
+    selectedFolderFolders,
     fetchFiles,
+    getOAuthToken,
+    saveThirdParty,
+    openConnectWindow,
+    setConnectDialogVisible,
   } = props;
   const { corporate, title, link, token, provider_id, provider_key } = item;
 
@@ -95,10 +72,10 @@ const PureConnectDialogContainer = (props) => {
     setCustomerTitleValue(e.target.value);
   };
   const onChangeMakeShared = () => setMakeShared(!isCorporate);
-  const onClose = useCallback(() => !isLoading && props.onClose(), [
-    isLoading,
-    props,
-  ]);
+
+  const onClose = useCallback(() => {
+    !isLoading && setConnectDialogVisible(false);
+  }, [isLoading, setConnectDialogVisible]);
 
   const onSave = useCallback(() => {
     const isTitleValid = !!customerTitle.trim();
@@ -139,10 +116,8 @@ const PureConnectDialogContainer = (props) => {
     )
       .then((folderData) => {
         fetchTreeFolders().then((data) => {
-          const commonFolder = data.treeFolders.find(
-            (x) => x.id === commonFolderId
-          );
-          const myFolder = data.treeFolders.find((x) => x.id === myFolderId);
+          const commonFolder = data.find((x) => x.id === commonFolderId);
+          const myFolder = data.find((x) => x.id === myFolderId);
 
           const newTreeFolders = treeFolders;
 
@@ -162,14 +137,13 @@ const PureConnectDialogContainer = (props) => {
             isCorporate ? folderData : null
           );
           setTreeFolders(newTreeFolders);
-          setUpdateTree(true);
           fetchThirdPartyProviders();
 
           const newFolder =
-            selectedFolder.folders &&
-            selectedFolder.folders.find((x) => x.id === folderData.id);
+            selectedFolderFolders &&
+            selectedFolderFolders.find((x) => x.id === folderData.id);
           if (newFolder)
-            fetchFiles(selectedFolder.id).then(() => {
+            fetchFiles(selectedFolderId).then(() => {
               onClose();
               setIsLoading(false);
             });
@@ -198,13 +172,13 @@ const PureConnectDialogContainer = (props) => {
     passwordValue,
     provider_id,
     provider_key,
-    selectedFolder.folders,
-    selectedFolder.id,
+    selectedFolderFolders,
+    selectedFolderId,
     setTreeFolders,
-    setUpdateTree,
     showUrlField,
     treeFolders,
     urlValue,
+    saveThirdParty,
   ]);
 
   const onReconnect = () => {
@@ -225,6 +199,10 @@ const PureConnectDialogContainer = (props) => {
     window.addEventListener("keyup", onKeyUpHandler);
     return () => window.removeEventListener("keyup", onKeyUpHandler);
   }, [onKeyUpHandler]);
+
+  useEffect(() => {
+    return setToken(token);
+  }, [setToken, token]);
 
   return (
     <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
@@ -336,33 +314,59 @@ const PureConnectDialogContainer = (props) => {
   );
 };
 
-const ConnectDialogContainer = withTranslation()(PureConnectDialogContainer);
+const ConnectDialog = withTranslation("ConnectDialog")(
+  PureConnectDialogContainer
+);
 
-const ConnectDialog = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ConnectDialogContainer {...props} />
-    </I18nextProvider>
-  );
-};
+export default inject(
+  ({
+    filesStore,
+    settingsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    dialogsStore,
+  }) => {
+    const {
+      providers,
+      getOAuthToken,
+      saveThirdParty,
+      openConnectWindow,
+      fetchThirdPartyProviders,
+    } = settingsStore.thirdPartyStore;
+    const { fetchFiles } = filesStore;
 
-const mapStateToProps = (state) => {
-  return {
-    treeFolders: getTreeFolders(state),
-    myFolderId: getMyFolderId(state),
-    commonFolderId: getCommonFolderId(state),
-    providers: getThirdPartyProviders(state),
-    selectedFolder: getSelectedFolder(state),
-  };
-};
+    const {
+      treeFolders,
+      setTreeFolders,
+      myFolderId,
+      commonFolderId,
+      fetchTreeFolders,
+    } = treeFoldersStore;
+    const { id, folders } = selectedFolderStore;
+    const {
+      connectDialogVisible: visible,
+      setConnectDialogVisible,
+      connectItem: item,
+    } = dialogsStore;
 
-export default connect(mapStateToProps, {
-  setUpdateTree,
-  setTreeFolders,
-  fetchThirdPartyProviders,
-  fetchTreeFolders,
-  fetchFiles,
-})(ConnectDialog);
+    return {
+      selectedFolderId: id,
+      selectedFolderFolders: folders,
+      treeFolders,
+      myFolderId,
+      commonFolderId,
+      providers,
+      visible,
+      item,
+
+      fetchFiles,
+      setTreeFolders,
+      getOAuthToken,
+      saveThirdParty,
+      openConnectWindow,
+      fetchThirdPartyProviders,
+      fetchTreeFolders,
+      setConnectDialogVisible,
+    };
+  }
+)(observer(ConnectDialog));

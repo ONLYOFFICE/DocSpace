@@ -217,6 +217,7 @@ namespace ASC.FederatedLogin
 
             var accountLink = accountLinkQuery.FirstOrDefault();
             AccountLinks.Remove(accountLink);
+            AccountLinkContext.SaveChanges();
 
             tr.Commit();
             AccountLinkerStorage.RemoveFromCache(obj);
