@@ -48,12 +48,7 @@ const filesUrl = url.substring(0, url.indexOf("/doceditor"));
 
 toast.configure();
 
-const Editor = ({
-  uploadPanelVisible,
-  sharingPanelVisible,
-  setSharingPanelVisible,
-  getShareUsers,
-}) => {
+const Editor = () => {
   const urlParams = getObjectByLocation(window.location);
   const fileId = urlParams
     ? urlParams.fileId || urlParams.fileid || null
