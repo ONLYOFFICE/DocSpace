@@ -753,24 +753,29 @@ class FilesStore {
   }
 
   getOptions = (selection, externalAccess = false) => {
+    let AccessOptions = [];
+
+    AccessOptions.push("ReadOnly", "DenyAccess");
+
     const webEdit = selection.find((x) => canWebEdit(x.fileExst));
+
     const webComment = selection.find((x) => canWebComment(x.fileExst));
+
     const webReview = selection.find((x) => canWebReview(x.fileExst));
+
     const formFillingDocs = selection.find((x) =>
       canFormFillingDocs(x.fileExst)
     );
+
     const webFilter = selection.find((x) => canWebFilterEditing(x.fileExst));
 
-    let AccessOptions = [];
-
     if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
-
-    AccessOptions.push("ReadOnly", "DenyAccess");
 
     if (webComment) AccessOptions.push("Comment");
     if (webReview) AccessOptions.push("Review");
     if (formFillingDocs) AccessOptions.push("FormFilling");
     if (webFilter) AccessOptions.push("FilterEditing");
+
     return AccessOptions;
   };
 

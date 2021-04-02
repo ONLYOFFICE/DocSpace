@@ -14,10 +14,10 @@ newInstance
   .use(initReactI18next)
   .use(Backend)
   .init({
-    lng: "ru",
+    lng: lng,
     supportedLngs: languages,
     //whitelist: languages,
-    fallbackLng: "ru",
+    fallbackLng: "en",
     load: "languageOnly",
     debug: true,
 
@@ -35,8 +35,8 @@ newInstance
       crossDomain: false,
     },
 
-    ns: ["Login"],
-    defaultNS: "Login",
+    ns: ["Editor"],
+    defaultNS: "Editor",
 
     react: {
       useSuspense: true,
