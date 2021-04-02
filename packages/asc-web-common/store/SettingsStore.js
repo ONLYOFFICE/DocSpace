@@ -1,10 +1,4 @@
-import {
-  action,
-  computed,
-  makeObservable,
-  observable,
-  makeAutoObservable,
-} from "mobx";
+import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { ARTICLE_PINNED_KEY, LANGUAGE } from "../constants";
 import { combineUrl } from "../utils";
