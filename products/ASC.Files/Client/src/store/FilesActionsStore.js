@@ -1,13 +1,5 @@
 import { makeAutoObservable } from "mobx";
 
-// import uploadDataStore from "./UploadDataStore";
-// import treeFoldersStore from "./TreeFoldersStore";
-// import filesStore from "./FilesStore";
-// import selectedFolderStore from "./SelectedFolderStore";
-// import initFilesStore from "./InitFilesStore";
-// import settingsStore from "./SettingsStore";
-// import dialogsStore from "./DialogsStore";
-
 import {
   removeFiles,
   getProgress,
@@ -23,32 +15,6 @@ import {
 import { FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
-
-// const {
-// fetchFiles,
-// markItemAsFavorite,
-// removeItemFromFavorite,
-// fetchFavoritesFolder,
-// getFileInfo,
-// setSelected,
-// selectFile,
-// deselectFile,
-// setSelection,
-// setFile,
-// } = filesStore;
-// const { setTreeFolders } = treeFoldersStore;
-// const { setIsLoading } = initFilesStore;
-// const { secondaryProgressDataStore, loopFilesOperations } = uploadDataStore;
-// const {
-//   setSecondaryProgressBarData,
-//   clearSecondaryProgressData,
-// } = secondaryProgressDataStore;
-// const {
-// setConnectDialogVisible,
-// setConnectItem,
-// setThirdPartyMoveDialogVisible,
-//   setDestFolderId,
-// } = dialogsStore;
 
 class FilesActionStore {
   authStore;

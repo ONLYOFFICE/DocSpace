@@ -1,7 +1,4 @@
 import { makeAutoObservable } from "mobx";
-// import IconFormatsStore from "./IconFormatsStore";
-// import MediaViewersFormatsStore from "./MediaViewersFormatsStore";
-// import DocserviceStore from "./DocserviceStore";
 
 class FormatsStore {
   iconFormatsStore;

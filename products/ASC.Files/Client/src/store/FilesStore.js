@@ -8,34 +8,11 @@ import {
   AppServerConfig,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
-
-// import formatsStore from "./FormatsStore";
-
 import { createTreeFolders } from "../helpers/files-helpers";
 import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 
 const { FilesFilter } = api;
-
-// const {
-// iconFormatsStore,
-// mediaViewersFormatsStore,
-// docserviceStore,
-// } = formatsStore;
-// const {
-// isSpreadsheet,
-// isPresentation,
-// getFileIcon,
-// getFolderIcon,
-//   getIcon,
-// } = this.formatsStore.iconFormatsStore;
-// const {
-// canWebEdit,
-// canWebComment,
-// canWebReview,
-// canFormFillingDocs,
-// canWebFilterEditing,
-// } = docserviceStore;
 
 class FilesStore {
   authStore;

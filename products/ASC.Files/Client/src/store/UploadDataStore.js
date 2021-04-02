@@ -2,20 +2,9 @@ import { makeAutoObservable } from "mobx";
 import api from "@appserver/common/api";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
-// import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
-// import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
-// import formatsStore from "./FormatsStore";
-// import treeFoldersStore from "./TreeFoldersStore";
-// import selectedFolderStore from "./SelectedFolderStore";
-// import filesStore from "./FilesStore";
 import uniqueid from "lodash/uniqueId";
 import throttle from "lodash/throttle";
 import sumBy from "lodash/sumBy";
-
-// const { docserviceStore } = formatsStore;
-// const { canConvert } = docserviceStore;
-// const { setTreeFolders } = treeFoldersStore;
-// const { fetchFiles } = filesStore;
 
 const chunkSize = 1024 * 1023; //~0.999mb
 
