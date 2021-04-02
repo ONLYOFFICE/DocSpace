@@ -1335,7 +1335,6 @@ namespace ASC.Files.Core.Data
                             CreateBy = r.folder.CreateBy,
                             Id = r.folder.Id
                         })
-                        .Take(1)
                         .FirstOrDefault(),
                     Shared =
                      FilesDbContext.Security
@@ -1362,7 +1361,6 @@ namespace ASC.Files.Core.Data
                                 CreateBy = r.folder.CreateBy,
                                 Id = r.folder.Id
                             })
-                            .Take(1)
                             .FirstOrDefault(),
                     Shared = true
                 });

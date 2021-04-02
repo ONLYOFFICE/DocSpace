@@ -35,7 +35,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_thirdparty_id_mapping");
 
                 entity.HasIndex(e => new { e.TenantId, e.HashId })
-                    .HasName("index_1");
+                    .HasDatabaseName("index_1");
 
                 entity.Property(e => e.HashId)
                     .HasColumnName("hash_id")
@@ -63,7 +63,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_thirdparty_id_mapping", "onlyoffice");
 
                 entity.HasIndex(e => new { e.TenantId, e.HashId })
-                    .HasName("index_1");
+                    .HasDatabaseName("index_1");
 
                 entity.Property(e => e.HashId)
                     .HasColumnName("hash_id")

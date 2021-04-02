@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
@@ -39,10 +40,10 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("crm_voip_calls");
 
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.HasIndex(e => new { e.ParentCallId, e.TenantId })
-                    .HasName("parent_call_id");
+                    .HasDatabaseName("parent_call_id");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -121,10 +122,10 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("crm_voip_calls", "onlyoffice");
 
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id_crm_voip_calls");
+                    .HasDatabaseName("tenant_id_crm_voip_calls");
 
                 entity.HasIndex(e => new { e.ParentCallId, e.TenantId })
-                    .HasName("parent_call_id");
+                    .HasDatabaseName("parent_call_id");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
