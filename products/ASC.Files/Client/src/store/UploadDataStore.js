@@ -1,27 +1,31 @@
-import { makeObservable, action, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 import api from "@appserver/common/api";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
-import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
-import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
-import formatsStore from "./FormatsStore";
-import treeFoldersStore from "./TreeFoldersStore";
-import selectedFolderStore from "./SelectedFolderStore";
-import filesStore from "./FilesStore";
+// import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
+// import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
+// import formatsStore from "./FormatsStore";
+// import treeFoldersStore from "./TreeFoldersStore";
+// import selectedFolderStore from "./SelectedFolderStore";
+// import filesStore from "./FilesStore";
 import uniqueid from "lodash/uniqueId";
 import throttle from "lodash/throttle";
 import sumBy from "lodash/sumBy";
 
-const { docserviceStore } = formatsStore;
-const { canConvert } = docserviceStore;
-const { setTreeFolders } = treeFoldersStore;
-const { fetchFiles } = filesStore;
+// const { docserviceStore } = formatsStore;
+// const { canConvert } = docserviceStore;
+// const { setTreeFolders } = treeFoldersStore;
+// const { fetchFiles } = filesStore;
 
 const chunkSize = 1024 * 1023; //~0.999mb
 
 class UploadDataStore {
-  secondaryProgressDataStore = null;
-  primaryProgressDataStore = null;
+  formatsStore;
+  treeFoldersStore;
+  selectedFolderStore;
+  filesStore;
+  secondaryProgressDataStore;
+  primaryProgressDataStore;
 
   files = [];
   filesSize = 0;
@@ -38,37 +42,21 @@ class UploadDataStore {
 
   selectedUploadFile = [];
 
-  constructor() {
-    makeObservable(this, {
-      secondaryProgressDataStore: observable,
-      primaryProgressDataStore: observable,
-
-      files: observable,
-      filesSize: observable,
-      convertFiles: observable,
-      convertFilesSize: observable,
-      uploadStatus: observable,
-      uploadToFolder: observable,
-      uploadedFiles: observable,
-      percent: observable,
-      uploaded: observable,
-      selectedUploadFile: observable,
-      uploadPanelVisible: observable,
-      convertDialogVisible: observable,
-
-      selectUploadedFile: action,
-      setUploadPanelVisible: action,
-      clearUploadData: action,
-      cancelUpload: action,
-      setUploadData: action,
-      updateUploadedItem: action,
-      setConvertDialogVisible: action,
-      startUpload: action,
-      itemOperationToFolder: action,
-    });
-
-    this.secondaryProgressDataStore = new SecondaryProgressDataStore();
-    this.primaryProgressDataStore = new PrimaryProgressDataStore();
+  constructor(
+    formatsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    filesStore,
+    secondaryProgressDataStore,
+    primaryProgressDataStore
+  ) {
+    makeAutoObservable(this);
+    this.formatsStore = formatsStore;
+    this.treeFoldersStore = treeFoldersStore;
+    this.selectedFolderStore = selectedFolderStore;
+    this.filesStore = filesStore;
+    this.secondaryProgressDataStore = secondaryProgressDataStore;
+    this.primaryProgressDataStore = primaryProgressDataStore;
   }
 
   selectUploadedFile = (file) => {
@@ -306,6 +294,8 @@ class UploadDataStore {
   };
 
   startUpload = (uploadFiles, folderId, t) => {
+    const { canConvert } = this.formatsStore.docserviceStore;
+
     let newFiles = this.files;
     let filesSize = 0;
 
@@ -347,28 +337,31 @@ class UploadDataStore {
   };
 
   refreshFiles = (folderId) => {
+    const { setTreeFolders } = this.treeFoldersStore;
     if (
-      selectedFolderStore.id === folderId &&
+      this.selectedFolderStore.id === folderId &&
       window.location.pathname.indexOf("/history") === -1
     ) {
-      return fetchFiles(
-        selectedFolderStore.id,
-        filesStore.filter.clone(),
-        false
-      ).then((data) => {
-        const path = data.selectedFolder.pathParts;
-        const newTreeFolders = treeFoldersStore.treeFolders;
-        const folders = data.selectedFolder.folders;
-        const foldersCount = data.selectedFolder.foldersCount;
-        loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-        setTreeFolders(newTreeFolders);
-      });
+      return this.filesStore
+        .fetchFiles(
+          this.selectedFolderStore.id,
+          this.filesStore.filter.clone(),
+          false
+        )
+        .then((data) => {
+          const path = data.selectedFolder.pathParts;
+          const newTreeFolders = this.treeFoldersStore.treeFolders;
+          const folders = data.selectedFolder.folders;
+          const foldersCount = data.selectedFolder.foldersCount;
+          loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+          setTreeFolders(newTreeFolders);
+        });
     } else {
       return api.files
-        .getFolder(folderId, filesStore.filter.clone())
+        .getFolder(folderId, this.filesStore.filter.clone())
         .then((data) => {
           const path = data.pathParts;
-          const newTreeFolders = treeFoldersStore.treeFolders;
+          const newTreeFolders = this.treeFoldersStore.treeFolders;
           const folders = data.folders;
           const foldersCount = data.count;
           loopTreeFolders(path, newTreeFolders, folders, foldersCount);
@@ -675,7 +668,7 @@ class UploadDataStore {
 
   loopFilesOperations = (id, destFolderId, isCopy) => {
     const label = this.secondaryProgressDataStore.label;
-    const treeFolders = treeFoldersStore.treeFolders;
+    const treeFolders = this.treeFoldersStore.treeFolders;
 
     const {
       clearSecondaryProgressData,
@@ -713,10 +706,14 @@ class UploadDataStore {
               let foldersCount = data.current.foldersCount;
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
 
-              if (!isCopy || destFolderId === selectedFolderStore.id) {
-                fetchFiles(selectedFolderStore.id, filesStore.filter)
+              if (!isCopy || destFolderId === this.selectedFolderStore.id) {
+                this.filesStore
+                  .fetchFiles(
+                    this.selectedFolderStore.id,
+                    this.filesStore.filter
+                  )
                   .then((data) => {
-                    if (!treeFoldersStore.isRecycleBinFolder) {
+                    if (!this.treeFoldersStore.isRecycleBinFolder) {
                       newTreeFolders = treeFolders;
                       path = data.selectedFolder.pathParts.slice(0);
                       folders = data.selectedFolder.folders;
@@ -727,7 +724,7 @@ class UploadDataStore {
                         folders,
                         foldersCount
                       );
-                      setTreeFolders(newTreeFolders);
+                      this.treeFoldersStore.setTreeFolders(newTreeFolders);
                     }
                   })
                   .finally(() => {
@@ -751,7 +748,7 @@ class UploadDataStore {
                     this.secondaryProgressDataStore.clearSecondaryProgressData(),
                   TIMEOUT
                 );
-                setTreeFolders(newTreeFolders);
+                this.treeFoldersStore.setTreeFolders(newTreeFolders);
               }
             });
           }
@@ -770,4 +767,4 @@ class UploadDataStore {
   };
 }
 
-export default new UploadDataStore();
+export default UploadDataStore;

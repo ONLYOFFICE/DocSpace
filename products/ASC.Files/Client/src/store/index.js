@@ -11,13 +11,20 @@ import iconFormatsStore from "./IconFormatsStore";
 import mediaViewersFormatsStore from "./MediaViewersFormatsStore";
 import docserviceStore from "./DocserviceStore";
 import MediaViewerDataStore from "./MediaViewerDataStore";
+import UploadDataStore from "./UploadDataStore";
+import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
+import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 
 import versionHistoryStore from "./VersionHistoryStore";
-import uploadDataStore from "./UploadDataStore";
 import dialogsStore from "./DialogsStore";
 
 import store from "studio/store";
 
+const formatsStore = new FormatsStore(
+  iconFormatsStore,
+  mediaViewersFormatsStore,
+  docserviceStore
+);
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
 const filesStore = new FilesStore(
   store.auth,
@@ -25,7 +32,8 @@ const filesStore = new FilesStore(
   store.auth.userStore,
   fileActionStore,
   selectedFolderStore,
-  treeFoldersStore
+  treeFoldersStore,
+  formatsStore
 );
 const initFilesStore = new InitFilesStore(
   store.auth,
@@ -44,13 +52,18 @@ const filesActionsStore = new FilesActionsStore(
   settingsStore,
   dialogsStore
 );
-const formatsStore = new FormatsStore(
-  iconFormatsStore,
-  mediaViewersFormatsStore,
-  docserviceStore
-);
-const mediaViewerDataStore = new MediaViewerDataStore(filesStore);
 
+const mediaViewerDataStore = new MediaViewerDataStore(filesStore);
+const secondaryProgressDataStore = new SecondaryProgressDataStore();
+const primaryProgressDataStore = new PrimaryProgressDataStore();
+const uploadDataStore = new UploadDataStore(
+  formatsStore,
+  treeFoldersStore,
+  selectedFolderStore,
+  filesStore,
+  secondaryProgressDataStore,
+  primaryProgressDataStore
+);
 const stores = {
   initFilesStore,
   filesStore,
