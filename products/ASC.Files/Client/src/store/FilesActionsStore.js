@@ -50,6 +50,10 @@ class FilesActionStore {
   deleteAction = (translations) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
     const { selection } = this.filesStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
 
     const deleteAfter = true; //Delete after finished TODO: get from settings
     const immediately = isRecycleBinFolder || isPrivacyFolder ? true : false; //Don't move to the Recycle Bin
@@ -68,15 +72,13 @@ class FilesActionStore {
     }
 
     if (folderIds.length || fileIds.length) {
-      this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-        {
-          icon: "trash",
-          visible: true,
-          label: translations.deleteOperation,
-          percent: 0,
-          alert: false,
-        }
-      );
+      setSecondaryProgressBarData({
+        icon: "trash",
+        visible: true,
+        label: translations.deleteOperation,
+        percent: 0,
+        alert: false,
+      });
 
       return removeFiles(folderIds, fileIds, deleteAfter, immediately)
         .then((res) => {
@@ -84,17 +86,11 @@ class FilesActionStore {
           this.loopDeleteOperation(id, translations);
         })
         .catch((err) => {
-          this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-            {
-              visible: true,
-              alert: true,
-            }
-          );
-          setTimeout(
-            () =>
-              this.uploadDataStore.secondaryProgressDataStore.clearSecondaryProgressData(),
-            TIMEOUT
-          );
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
     }
   };
@@ -102,6 +98,11 @@ class FilesActionStore {
   loopDeleteOperation = (id, translations) => {
     const { filter, fetchFiles } = this.filesStore;
     const { isRecycleBinFolder, setTreeFolders } = this.treeFoldersStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
     const successMessage = isRecycleBinFolder
       ? translations.deleteFromTrash
       : translations.deleteSelectedElem;
@@ -110,31 +111,23 @@ class FilesActionStore {
       .then((res) => {
         const currentProcess = res.find((x) => x.id === id);
         if (currentProcess && currentProcess.progress !== 100) {
-          this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-            {
-              icon: "trash",
-              percent: currentProcess.progress,
-              label: translations.deleteOperation,
-              visible: true,
-              alert: false,
-            }
-          );
+          setSecondaryProgressBarData({
+            icon: "trash",
+            percent: currentProcess.progress,
+            label: translations.deleteOperation,
+            visible: true,
+            alert: false,
+          });
           setTimeout(() => this.loopDeleteOperation(id, translations), 1000);
         } else {
-          this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-            {
-              icon: "trash",
-              percent: 100,
-              label: translations.deleteOperation,
-              visible: true,
-              alert: false,
-            }
-          );
-          setTimeout(
-            () =>
-              this.uploadDataStore.secondaryProgressDataStore.clearSecondaryProgressData(),
-            TIMEOUT
-          );
+          setSecondaryProgressBarData({
+            icon: "trash",
+            percent: 100,
+            label: translations.deleteOperation,
+            visible: true,
+            alert: false,
+          });
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           fetchFiles(this.selectedFolderStore.id, filter).then((data) => {
             if (!isRecycleBinFolder) {
               const path = data.selectedFolder.pathParts.slice(0);
@@ -148,62 +141,55 @@ class FilesActionStore {
         }
       })
       .catch((err) => {
-        this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-          {
-            visible: true,
-            alert: true,
-          }
-        );
-        setTimeout(
-          () =>
-            this.uploadDataStore.secondaryProgressDataStore.clearSecondaryProgressData(),
-          TIMEOUT
-        );
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
   getDownloadProgress = (data, label) => {
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
     const url = data.url;
 
     return getProgress()
       .then((res) => {
         const currentItem = res.find((x) => x.id === data.id);
         if (!url) {
-          this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-            {
-              icon: "file",
-              visible: true,
-              percent: currentItem.progress,
-              label,
-              alert: false,
-            }
-          );
+          setSecondaryProgressBarData({
+            icon: "file",
+            visible: true,
+            percent: currentItem.progress,
+            label,
+            alert: false,
+          });
           setTimeout(() => this.getDownloadProgress(currentItem, label), 1000);
         } else {
-          setTimeout(
-            () =>
-              this.uploadDataStore.secondaryProgressDataStore.clearSecondaryProgressData(),
-            TIMEOUT
-          );
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           return (window.location.href = url);
         }
       })
       .catch((err) => {
-        this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-          {
-            visible: true,
-            alert: true,
-          }
-        );
+        secondaryProgressDataStore.setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
         setTimeout(
-          () =>
-            this.uploadDataStore.secondaryProgressDataStore.clearSecondaryProgressData(),
+          () => secondaryProgressDataStore.clearSecondaryProgressData(),
           TIMEOUT
         );
       });
   };
 
   downloadAction = (label) => {
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
     const { selection } = this.filesStore;
     const fileIds = [];
     const folderIds = [];
@@ -224,32 +210,24 @@ class FilesActionStore {
       }
     }
 
-    this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-      {
-        icon: "file",
-        visible: true,
-        percent: 0,
-        label,
-        alert: false,
-      }
-    );
+    setSecondaryProgressBarData({
+      icon: "file",
+      visible: true,
+      percent: 0,
+      label,
+      alert: false,
+    });
 
     return downloadFiles(fileIds, folderIds)
       .then((res) => {
         this.getDownloadProgress(res[0], label);
       })
       .catch((err) => {
-        this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-          {
-            visible: true,
-            alert: true,
-          }
-        );
-        setTimeout(
-          () =>
-            this.uploadDataStore.secondaryProgressDataStore.clearSecondaryProgressData(),
-          TIMEOUT
-        );
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
@@ -301,6 +279,12 @@ class FilesActionStore {
     conflictResolveType,
     deleteAfter
   ) => {
+    const { loopFilesOperations } = this.uploadDataStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
     return copyToFolder(
       destFolderId,
       folderIds,
@@ -310,21 +294,15 @@ class FilesActionStore {
     )
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
-        this.uploadDataStore.loopFilesOperations(id, destFolderId, true);
+        loopFilesOperations(id, destFolderId, true);
       })
       .catch((err) => {
-        this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-          {
-            visible: true,
-            alert: true,
-          }
-        );
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
         //toastr.error(err);
-        setTimeout(
-          () =>
-            this.uploadDataStore.secondaryProgressDataStore.clearSecondaryProgressData(),
-          TIMEOUT
-        );
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
@@ -335,7 +313,13 @@ class FilesActionStore {
     conflictResolveType,
     deleteAfter
   ) => {
-    moveToFolder(
+    const { loopFilesOperations } = this.uploadDataStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
+    return moveToFolder(
       destFolderId,
       folderIds,
       fileIds,
@@ -344,81 +328,69 @@ class FilesActionStore {
     )
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
-        this.uploadDataStore.loopFilesOperations(id, destFolderId, false);
+        loopFilesOperations(id, destFolderId, false);
       })
       .catch((err) => {
-        this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-          {
-            visible: true,
-            alert: true,
-          }
-        );
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
         //toastr.error(err);
-        setTimeout(
-          () =>
-            this.uploadDataStore.secondaryProgressDataStore.clearSecondaryProgressData(),
-          TIMEOUT
-        );
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
   deleteFileAction = (fileId, currentFolderId, translations) => {
-    this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-      {
-        icon: "trash",
-        visible: true,
-        percent: 0,
-        label: translations.deleteOperation,
-        alert: false,
-      }
-    );
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
+    setSecondaryProgressBarData({
+      icon: "trash",
+      visible: true,
+      percent: 0,
+      label: translations.deleteOperation,
+      alert: false,
+    });
     return deleteFile(fileId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, false, translations);
       })
       .catch((err) => {
-        this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-          {
-            visible: true,
-            alert: true,
-          }
-        );
-        setTimeout(
-          () =>
-            this.uploadDataStore.secondaryProgressDataStore.clearSecondaryProgressData(),
-          TIMEOUT
-        );
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
   deleteFolderAction = (folderId, currentFolderId, translations) => {
-    this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-      {
-        icon: "trash",
-        visible: true,
-        percent: 0,
-        label: translations.deleteOperation,
-        alert: false,
-      }
-    );
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
+    setSecondaryProgressBarData({
+      icon: "trash",
+      visible: true,
+      percent: 0,
+      label: translations.deleteOperation,
+      alert: false,
+    });
     return deleteFolder(folderId, currentFolderId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, true, translations);
       })
       .catch((err) => {
-        this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-          {
-            visible: true,
-            alert: true,
-          }
-        );
-        setTimeout(
-          () =>
-            this.uploadDataStore.secondaryProgressDataStore.clearSecondaryProgressData(),
-          TIMEOUT
-        );
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
@@ -429,33 +401,33 @@ class FilesActionStore {
       isRecycleBinFolder,
       setTreeFolders,
     } = this.treeFoldersStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
 
     getProgress().then((res) => {
       const deleteProgress = res.find((x) => x.id === id);
       if (deleteProgress && deleteProgress.progress !== 100) {
-        this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-          {
-            icon: "trash",
-            visible: true,
-            percent: deleteProgress.progress,
-            label: translations.deleteOperation,
-            alert: false,
-          }
-        );
+        setSecondaryProgressBarData({
+          icon: "trash",
+          visible: true,
+          percent: deleteProgress.progress,
+          label: translations.deleteOperation,
+          alert: false,
+        });
         setTimeout(
           () => this.loopDeleteProgress(id, folderId, isFolder, translations),
           1000
         );
       } else {
-        this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-          {
-            icon: "trash",
-            visible: true,
-            percent: 100,
-            label: translations.deleteOperation,
-            alert: false,
-          }
-        );
+        setSecondaryProgressBarData({
+          icon: "trash",
+          visible: true,
+          percent: 100,
+          label: translations.deleteOperation,
+          alert: false,
+        });
         fetchFiles(folderId, filter)
           .then((data) => {
             if (!isRecycleBinFolder && isFolder) {
@@ -468,24 +440,14 @@ class FilesActionStore {
             }
           })
           .catch((err) => {
-            this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-              {
-                visible: true,
-                alert: true,
-              }
-            );
-            setTimeout(
-              () =>
-                this.uploadDataStore.secondaryProgressDataStore.clearSecondaryProgressData(),
-              TIMEOUT
-            );
+            setSecondaryProgressBarData({
+              visible: true,
+              alert: true,
+            });
+            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           })
           .finally(() =>
-            setTimeout(
-              () =>
-                this.uploadDataStore.secondaryProgressDataStore.clearSecondaryProgressData(),
-              TIMEOUT
-            )
+            setTimeout(() => clearSecondaryProgressData(), TIMEOUT)
           );
       }
     });
@@ -510,21 +472,24 @@ class FilesActionStore {
   };
 
   duplicateAction = (item, label) => {
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
     const folderIds = [];
     const fileIds = [];
     item.fileExst ? fileIds.push(item.id) : folderIds.push(item.id);
     const conflictResolveType = 2; //Skip = 0, Overwrite = 1, Duplicate = 2 //TODO: get from settings
     const deleteAfter = false; //TODO: get from settings
 
-    this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-      {
-        icon: "duplicate",
-        visible: true,
-        percent: 0,
-        label,
-        alert: false,
-      }
-    );
+    setSecondaryProgressBarData({
+      icon: "duplicate",
+      visible: true,
+      percent: 0,
+      label,
+      alert: false,
+    });
 
     return this.copyToAction(
       this.selectedFolderStore.id,
@@ -612,6 +577,11 @@ class FilesActionStore {
       setDestFolderId,
     } = this.dialogsStore;
 
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
     for (let item of selection) {
       if (item.providerKey && !isRootFolder) {
         setDestFolderId(destFolderId);
@@ -628,15 +598,13 @@ class FilesActionStore {
 
     if (!folderIds.length && !fileIds.length) return;
 
-    this.uploadDataStore.secondaryProgressDataStore.setSecondaryProgressBarData(
-      {
-        icon: "move",
-        visible: true,
-        percent: 0,
-        label,
-        alert: false,
-      }
-    );
+    setSecondaryProgressBarData({
+      icon: "move",
+      visible: true,
+      percent: 0,
+      label,
+      alert: false,
+    });
 
     if (this.authStore.isAdmin) {
       if (isShareFolder) {
