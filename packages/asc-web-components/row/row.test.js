@@ -87,13 +87,4 @@ describe("<Row />", () => {
 
     expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
   });
-
-  it("componentWillUnmount() props lifecycle test", () => {
-    const wrapper = shallow(<Row {...baseProps} />);
-    const instance = wrapper.instance();
-
-    instance.componentWillUnmount();
-
-    expect(wrapper).toExist(false);
-  });
 });
