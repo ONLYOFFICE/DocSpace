@@ -18,6 +18,7 @@ class InitFilesStore {
 
   tooltipPageX = 0;
   tooltipPageY = 0;
+  startDrag = false;
 
   constructor() {
     const pathname = window.location.pathname.toLowerCase();
@@ -40,6 +41,10 @@ class InitFilesStore {
 
   setIsLoading = (isLoading) => {
     this.isLoading = isLoading;
+  };
+
+  setStartDrag = (startDrag) => {
+    this.startDrag = startDrag;
   };
 
   setTooltipPosition = (tooltipPageX, tooltipPageY) => {
