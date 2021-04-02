@@ -2,6 +2,9 @@ import React, { memo, useState } from "react";
 import styled from "styled-components";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import CheckIcon from "../../../../../../../public/images/check.react.svg";
+import CrossIcon from "../../../../../../../../../../public/images/cross.react.svg";
 
 const EditingWrapper = styled.div`
   width: 100%;
@@ -45,12 +48,38 @@ const EditingWrapper = styled.div`
   }
 `;
 
+const StyledCheckIcon = styled(CheckIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: #a3a9ae;
+  }
+  :hover {
+    fill: #657077;
+  }
+`;
+
+const StyledCrossIcon = styled(CrossIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: #a3a9ae;
+  }
+  :hover {
+    fill: #657077;
+  }
+`;
+
+const OkIcon = <StyledCheckIcon className="edit-ok-icon" size="scale" />;
+
+const CancelIcon = (
+  <StyledCrossIcon className="edit-cancel-icon" size="scale" />
+);
+
 const EditingWrapperComponent = (props) => {
   const {
     itemTitle,
     itemId,
-    okIcon,
-    cancelIcon,
+    //okIcon,
+    //cancelIcon,
     renameTitle,
     onClickUpdateItem,
     cancelUpdateItem,
@@ -103,7 +132,7 @@ const EditingWrapperComponent = (props) => {
         size="medium"
         isDisabled={isLoading}
         onClick={onClickUpdateItem}
-        icon={okIcon}
+        icon={OkIcon}
         data-itemid={itemId}
         onMouseEnter={setIsHoveredOkHandler}
         onMouseLeave={setIsHoveredOkHandler}
@@ -114,7 +143,7 @@ const EditingWrapperComponent = (props) => {
         size="medium"
         isDisabled={isLoading}
         onClick={cancelUpdateItem}
-        icon={cancelIcon}
+        icon={CancelIcon}
         data-itemid={itemId}
         onMouseEnter={setIsHoveredCancelHandler}
         onMouseLeave={setIsHoveredCancelHandler}
