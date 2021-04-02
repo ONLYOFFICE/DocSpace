@@ -33,6 +33,7 @@ class FilesStore {
 
   tooltipPageX = 0;
   tooltipPageY = 0;
+  startDrag = false;
 
   firstLoad = true;
   files = [];
@@ -83,6 +84,10 @@ class FilesStore {
   setTooltipPosition = (tooltipPageX, tooltipPageY) => {
     this.tooltipPageX = tooltipPageX;
     this.tooltipPageY = tooltipPageY;
+  };
+
+  setStartDrag = (startDrag) => {
+    this.startDrag = startDrag;
   };
 
   get tooltipValue() {
