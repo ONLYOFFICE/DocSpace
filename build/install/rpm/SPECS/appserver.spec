@@ -16,19 +16,23 @@ BuildRequires:  nodejs >= 12.0
 BuildRequires:  yarn
 BuildRequires:  libgdiplus
 BuildRequires:  dotnet-sdk-3.1
-Requires:       %name-backup
-Requires:       %name-files_services
-Requires:       %name-notify
-Requires:       %name-files
-Requires:       %name-api_system
-Requires:       %name-proxy
-Requires:       %name-people.server
-Requires:       %name-urlshortener
-Requires:       %name-thumbnails
-Requires:       %name-studio
-Requires:       %name-studio.notify
-Requires:       %name-socket
-Requires:       %name-api
+Requires:       %name-ASC.ApiSystem
+Requires:       %name-ASC.CRM
+Requires:       %name-ASC.Data.Backup
+Requires:       %name-ASC.Data.Storage.Encryption
+Requires:       %name-ASC.Files
+Requires:       %name-ASC.Files.Service
+Requires:       %name-ASC.Notify
+Requires:       %name-ASC.People
+Requires:       %name-ASC.Projects
+Requires:       %name-ASC.Socket
+Requires:       %name-ASC.Studio.Notify
+Requires:       %name-ASC.TelegramService
+Requires:       %name-ASC.Thumbnails.Svc
+Requires:       %name-ASC.UrlShortener.Svc
+Requires:       %name-ASC.Web.Api
+Requires:       %name-ASC.Web.Studio
+Requires:       %name-Proxy
 AutoReqProv:    no
 %description
 App Server is a platform for building your own online office by connecting ONLYOFFICE modules packed as separate apps.
@@ -48,7 +52,7 @@ rm -rf %{_rpmdir}/%{_arch}/%{name}-*
 
 %pre
 
-%pre common
+%pre Common
 
 getent group onlyoffice >/dev/null || groupadd -r onlyoffice
 getent passwd onlyoffice >/dev/null || useradd -r -g onlyoffice -s /sbin/nologin onlyoffice
