@@ -125,6 +125,7 @@ class ContextMenuSub extends Component {
   }
 
   renderMenuitem(item, index) {
+    if (item.disabled) return; //TODO: Not render disabled items
     const active = this.state.activeItem === item;
     const className = classNames(
       "p-menuitem",
