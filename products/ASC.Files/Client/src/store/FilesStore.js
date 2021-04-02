@@ -9,7 +9,7 @@ import {
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
 
-import formatsStore from "./FormatsStore";
+// import formatsStore from "./FormatsStore";
 
 import { createTreeFolders } from "../helpers/files-helpers";
 import config from "../../package.json";
@@ -17,25 +17,25 @@ import { combineUrl } from "@appserver/common/utils";
 
 const { FilesFilter } = api;
 
-const {
-  iconFormatsStore,
-  mediaViewersFormatsStore,
-  docserviceStore,
-} = formatsStore;
-const {
-  isSpreadsheet,
-  isPresentation,
-  getFileIcon,
-  getFolderIcon,
-  getIcon,
-} = iconFormatsStore;
-const {
-  canWebEdit,
-  canWebComment,
-  canWebReview,
-  canFormFillingDocs,
-  canWebFilterEditing,
-} = docserviceStore;
+// const {
+// iconFormatsStore,
+// mediaViewersFormatsStore,
+// docserviceStore,
+// } = formatsStore;
+// const {
+// isSpreadsheet,
+// isPresentation,
+// getFileIcon,
+// getFolderIcon,
+//   getIcon,
+// } = this.formatsStore.iconFormatsStore;
+// const {
+// canWebEdit,
+// canWebComment,
+// canWebReview,
+// canFormFillingDocs,
+// canWebFilterEditing,
+// } = docserviceStore;
 
 class FilesStore {
   authStore;
@@ -44,6 +44,7 @@ class FilesStore {
   fileActionStore;
   selectedFolderStore;
   treeFoldersStore;
+  formatsStore;
 
   firstLoad = true;
   files = [];
@@ -59,7 +60,8 @@ class FilesStore {
     userStore,
     fileActionStore,
     selectedFolderStore,
-    treeFoldersStore
+    treeFoldersStore,
+    formatsStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -68,6 +70,7 @@ class FilesStore {
     this.fileActionStore = fileActionStore;
     this.selectedFolderStore = selectedFolderStore;
     this.treeFoldersStore = treeFoldersStore;
+    this.formatsStore = formatsStore;
   }
 
   setFirstLoad = (firstLoad) => {
@@ -485,6 +488,8 @@ class FilesStore {
   }
 
   get iconOfDraggedFile() {
+    const { getIcon } = this.formatsStore.iconFormatsStore;
+
     if (this.selection.length === 1) {
       const icon = getIcon(
         24,
@@ -536,6 +541,8 @@ class FilesStore {
   }
 
   onCreateAddTempItem = (items) => {
+    const { getFileIcon, getFolderIcon } = this.formatsStore.iconFormatsStore;
+
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
     const icon = this.fileActionStore.extension
       ? getFileIcon(`.${this.fileActionStore.extension}`, 24)
@@ -551,6 +558,8 @@ class FilesStore {
   };
 
   get filesList() {
+    const { mediaViewersFormatsStore, iconFormatsStore } = this.formatsStore;
+    const { getIcon } = iconFormatsStore;
     //return [...this.folders, ...this.files];
 
     const items = [...this.folders, ...this.files];
@@ -638,6 +647,12 @@ class FilesStore {
   }
 
   get sortedFiles() {
+    const {
+      isSpreadsheet,
+      isPresentation,
+    } = this.formatsStore.iconFormatsStore;
+    const { canWebEdit } = this.formatsStore.docserviceStore;
+
     const formatKeys = Object.freeze({
       OriginalFormat: 0,
     });
@@ -709,11 +724,11 @@ class FilesStore {
   }
 
   get isWebEditSelected() {
+    const { editedDocs } = this.formatsStore.docserviceStore;
+
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      return docserviceStore.editedDocs.find(
-        (format) => selected.fileExst === format
-      );
+      return editedDocs.find((format) => selected.fileExst === format);
     });
   }
 
@@ -723,6 +738,14 @@ class FilesStore {
   }
 
   getOptions = (selection, externalAccess = false) => {
+    const {
+      canWebEdit,
+      canWebComment,
+      canWebReview,
+      canFormFillingDocs,
+      canWebFilterEditing,
+    } = this.formatsStore.docserviceStore;
+
     const webEdit = selection.find((x) => canWebEdit(x.fileExst));
     const webComment = selection.find((x) => canWebComment(x.fileExst));
     const webReview = selection.find((x) => canWebReview(x.fileExst));
