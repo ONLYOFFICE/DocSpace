@@ -2,119 +2,71 @@ import React from "react";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
+import { isMobile } from "react-device-detect";
+import { inject, observer } from "mobx-react";
+
+import Badge from "@appserver/components/badge";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
-import RowContent from "@appserver/components/row-content";
 import IconButton from "@appserver/components/icon-button";
-import Badge from "@appserver/components/badge";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import {
   convertFile,
   getFileConversationProgress,
-} from "@appserver/common/api/files";
+} from "@appserver/common/api/files"; // move to store ?
+import { combineUrl } from "@appserver/common/utils";
 import {
-  AppServerConfig,
   FileAction,
+  AppServerConfig,
   ShareAccessRights,
 } from "@appserver/common/constants";
 import toastr from "studio/toastr";
-import FavoriteIcon from "../../../../../../../public/images/favorite.react.svg";
-import FileActionsConvertEditDocIcon from "../../../../../../../public/images/file.actions.convert.edit.doc.react.svg";
-import FileActionsLockedIcon from "../../../../../../../public/images/file.actions.locked.react.svg";
-import CheckIcon from "../../../../../../../public/images/check.react.svg";
-import CrossIcon from "../../../../../../../../../../public/images/cross.react.svg";
-import { TIMEOUT } from "../../../../../../helpers/constants";
-import { getTitleWithoutExst } from "../../../../../../helpers/files-helpers";
-import { NewFilesPanel } from "../../../../../panels";
-import { ConvertDialog } from "../../../../../dialogs";
-import EditingWrapperComponent from "../sub-components/EditingWrapperComponent";
-import { isMobile } from "react-device-detect";
-import { observer, inject } from "mobx-react";
-import config from "../../../../../../../package.json";
-import { combineUrl } from "@appserver/common/utils";
+
+import config from "../../../../../../package.json";
+import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
+import { TIMEOUT } from "../../../../../helpers/constants";
+import { NewFilesPanel } from "../../../../panels";
+import { ConvertDialog } from "../../../../dialogs";
+import EditingWrapperComponent from "./sub-components/EditingWrapperComponent";
+
+import { SimpleTileContent } from "./FilesTile/SimpleTileContent";
+import { SimpleRowContent } from "./FilesRow/SimpleRowContent";
+
+import {
+  StyledFavoriteIcon,
+  StyledFileActionsConvertEditDocIcon,
+  StyledFileActionsLockedIcon,
+} from "./sub-components/Icons";
 
 const sideColor = "#A3A9AE";
-const StyledCheckIcon = styled(CheckIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: #a3a9ae;
-  }
-  :hover {
-    fill: #657077;
-  }
-`;
 
-const StyledCrossIcon = styled(CrossIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: #a3a9ae;
-  }
-  :hover {
-    fill: #657077;
-  }
-`;
+const Content = ({
+  viewAs,
+  sectionWidth,
+  fileExst,
+  onMobileRowClick,
+  ...props
+}) => {
+  return viewAs === "tile" ? (
+    <SimpleTileContent
+      sideColor={sideColor}
+      isFile={fileExst}
+      onClick={onMobileRowClick}
+      disableSideInfo
+      {...props}
+    />
+  ) : (
+    <SimpleRowContent
+      sectionWidth={sectionWidth}
+      isMobile={isMobile}
+      sideColor={sideColor}
+      isFile={fileExst}
+      onClick={onMobileRowClick}
+      {...props}
+    />
+  );
+};
 
-const StyledFavoriteIcon = styled(FavoriteIcon)`
-  ${commonIconsStyles}
-`;
-
-const StyledFileActionsConvertEditDocIcon = styled(
-  FileActionsConvertEditDocIcon
-)`
-  ${commonIconsStyles}
-  path {
-    fill: #3b72a7;
-  }
-`;
-
-const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: #3b72a7;
-  }
-`;
-const SimpleFilesRowContent = styled(RowContent)`
-  .badge-ext {
-    margin-left: -8px;
-    margin-right: 8px;
-  }
-
-  .badge {
-    height: 14px;
-    width: 14px;
-    margin-right: 6px;
-  }
-  .lock-file {
-    cursor: pointer;
-  }
-  .badges {
-    display: flex;
-    align-items: center;
-  }
-
-  .favorite {
-    cursor: pointer;
-    margin-right: 6px;
-  }
-
-  .share-icon {
-    margin-top: -4px;
-    padding-right: 8px;
-  }
-
-  .row_update-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-`;
-
-const okIcon = <StyledCheckIcon className="edit-ok-icon" size="scale" />;
-
-const cancelIcon = (
-  <StyledCrossIcon className="edit-cancel-icon" size="scale" />
-);
-
-class FilesRowContent extends React.PureComponent {
+class FilesContent extends React.Component {
   constructor(props) {
     super(props);
     let titleWithoutExt = getTitleWithoutExst(props.item);
@@ -248,24 +200,6 @@ class FilesRowContent extends React.PureComponent {
             return setIsLoading(false);
           });
   };
-
-  // componentDidUpdate(prevProps) {
-  //   const { item, newRowItems, setNewRowItems } = this.props;
-  //   const itemId = item.id.toString();
-
-  //   if (newRowItems.length && newRowItems.includes(itemId)) {
-  //     const rowItems = newRowItems.filter((x) => x !== itemId);
-  //     if (this.state.newItems !== 0) {
-  //       this.setState({ newItems: 0 }, () => setNewRowItems(rowItems));
-  //     }
-  //   }
-
-  //   if (fileAction) {
-  //     if (fileActionId !== prevProps.fileActionId) {
-  //       this.setState({ editingId: fileActionId });
-  //     }
-  //   }
-  // }
 
   renameTitle = (e) => {
     let title = e.target.value;
@@ -524,62 +458,73 @@ class FilesRowContent extends React.PureComponent {
       .then(() => toastr.success(t("RemovedFromFavorites")))
       .catch((err) => toastr.error(err));
   };
+
   render() {
     const {
+      itemTitle,
+      showConvertDialog,
+      showNewFilesPanel,
+      newFolderId,
+      newItems,
+    } = this.state;
+
+    const {
       t,
+      viewAs,
       item,
-      isTrashFolder,
       isLoading,
-      isMobile,
       canWebEdit,
-      /* canConvert,*/
-      sectionWidth,
+      isTrashFolder,
       fileActionId,
       fileActionExt,
+      sectionWidth,
     } = this.props;
+
     const {
-      itemTitle,
-      showNewFilesPanel,
-      newItems,
-      newFolderId,
-      showConvertDialog,
-    } = this.state;
-    const {
-      contentLength,
-      updated,
-      createdBy,
+      id,
       fileExst,
+      access,
+      locked,
+      fileStatus,
+      title,
+      versionGroup,
+      createdBy,
+      updated,
+      providerKey,
+      contentLength,
       filesCount,
       foldersCount,
-      fileStatus,
-      id,
-      versionGroup,
-      locked,
-      providerKey,
     } = item;
+
     const titleWithoutExt = getTitleWithoutExst(item);
+
+    //const Content = this.renderContent(fileExst);
+
+    const accessToEdit =
+      access === ShareAccessRights.FullAccess ||
+      access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
+
+    const showNew = !!newItems; // in tile const showNew = item.new && item.new > 0;
+
     const fileOwner =
       createdBy &&
       ((this.props.viewer.id === createdBy.id && t("AuthorMe")) ||
         createdBy.displayName);
+    console.log(fileOwner);
     const updatedDate = updated && this.getStatusByDate();
 
-    const accessToEdit =
-      item.access === ShareAccessRights.FullAccess ||
-      item.access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
     const isEdit = id === fileActionId && fileExst === fileActionExt;
 
     const linkStyles =
-      isTrashFolder || window.innerWidth <= 1024
+      isTrashFolder || window.innerWidth <= 1024 // in tile simple isTrashFOlder
         ? { noHover: true }
         : { onClick: this.onFilesClick };
-    const showNew = !!newItems;
+
+    console.log(viewAs);
 
     return isEdit ? (
       <EditingWrapperComponent
         itemTitle={itemTitle}
-        okIcon={okIcon}
-        cancelIcon={cancelIcon}
         renameTitle={this.renameTitle}
         onClickUpdateItem={this.onClickUpdateItem}
         cancelUpdateItem={this.cancelUpdateItem}
@@ -602,15 +547,14 @@ class FilesRowContent extends React.PureComponent {
             folderId={newFolderId}
           />
         )}
-        <SimpleFilesRowContent
+        <Content
+          viewAs={viewAs}
           sectionWidth={sectionWidth}
-          isMobile={isMobile}
-          sideColor={sideColor}
-          isFile={fileExst}
-          onClick={this.onMobileRowClick}
+          fileExst={fileExst}
+          onMobileRowClick={this.onMobileRowClick}
         >
           <Link
-            containerWidth="55%"
+            containerWidth={viewAs === "row" ? "55%" : "100%"}
             type="page"
             title={titleWithoutExt}
             fontWeight="600"
@@ -657,11 +601,12 @@ class FilesRowContent extends React.PureComponent {
                     hoverColor="#3B72A7"
                   />
                 )}
+
                 {locked && (
                   <StyledFileActionsLockedIcon
                     className="badge lock-file"
                     size="small"
-                    data-id={item.id}
+                    data-id={id}
                     data-locked={true}
                     onClick={this.onClickLock}
                   />
@@ -671,8 +616,8 @@ class FilesRowContent extends React.PureComponent {
                     className="favorite"
                     size="small"
                     data-action="remove"
-                    data-id={item.id}
-                    data-title={item.title}
+                    data-id={id}
+                    data-title={title}
                     onClick={this.onClickFavorite}
                   />
                 )}
@@ -717,7 +662,7 @@ class FilesRowContent extends React.PureComponent {
               <div className="badges">
                 {showNew && (
                   <Badge
-                    className="badge-version"
+                    className="new-items"
                     backgroundColor="#ED7309"
                     borderRadius="11px"
                     color="#FFFFFF"
@@ -742,6 +687,7 @@ class FilesRowContent extends React.PureComponent {
             fontWeight={400}
             title={fileOwner}
             truncate={true}
+            className="item-about"
           >
             {fileOwner}
           </Text>
@@ -753,6 +699,7 @@ class FilesRowContent extends React.PureComponent {
             fontWeight={400}
             color={sideColor}
             className="row_update-text"
+            className="item-about"
           >
             {(fileExst || !providerKey) && updatedDate && updatedDate}
           </Text>
@@ -765,6 +712,7 @@ class FilesRowContent extends React.PureComponent {
             fontWeight={400}
             title=""
             truncate={true}
+            className="item-about"
           >
             {fileExst
               ? contentLength
@@ -774,7 +722,7 @@ class FilesRowContent extends React.PureComponent {
                 )}: ${foldersCount}`
               : ""}
           </Text>
-        </SimpleFilesRowContent>
+        </Content>
       </>
     );
   }
@@ -797,15 +745,34 @@ export default inject(
     { item }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
-    const { culture, isDesktopClient, isTabletView } = auth.settingsStore;
+    const {
+      culture,
+      isDesktopClient: isDesktop,
+      isTabletView,
+    } = auth.settingsStore;
     const { setIsLoading, isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
     const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
+
     const {
       iconFormatsStore,
       mediaViewersFormatsStore,
       docserviceStore,
     } = formatsStore;
+
+    const {
+      treeFolders,
+      setTreeFolders,
+      isRecycleBinFolder: isTrashFolder,
+      isPrivacyFolder: isPrivacy,
+      expandedKeys,
+      addExpandedKeys,
+    } = treeFoldersStore;
+
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
 
     const {
       fetchFiles,
@@ -820,32 +787,13 @@ export default inject(
     } = filesStore;
 
     const {
-      treeFolders,
-      setTreeFolders,
-      isRecycleBinFolder,
-      isPrivacyFolder,
-      expandedKeys,
-      addExpandedKeys,
-    } = treeFoldersStore;
-
-    const {
       type: fileActionType,
       extension: fileActionExt,
       id: fileActionId,
     } = filesStore.fileActionStore;
 
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
-
-    const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
-    const canConvert = docserviceStore.canConvert(item.fileExst);
-    const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
-    const isImage = iconFormatsStore.isImage(item.fileExst);
-    const isSound = iconFormatsStore.isSound(item.fileExst);
-
     const { setMediaViewerData } = mediaViewerDataStore;
+
     const {
       editCompleteAction,
       lockFileAction,
@@ -853,53 +801,59 @@ export default inject(
       markAsRead,
     } = filesActionsStore;
 
+    const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
+    const canConvert = docserviceStore.canConvert(item.fileExst);
+    const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
+    const isImage = iconFormatsStore.isImage(item.fileExst);
+    const isSound = iconFormatsStore.isSound(item.fileExst);
+
     return {
-      isDesktop: isDesktopClient,
-      isTabletView,
-      homepage: config.homepage,
-      viewer: auth.userStore.user,
-      culture,
-      fileActionId,
-      fileActionType,
-      fileActionExt,
-      selectedFolderId: selectedFolderStore.id,
-      selectedFolderPathParts: selectedFolderStore.pathParts,
-      newItems: selectedFolderStore.new,
-      parentFolder: selectedFolderStore.parentId,
       isLoading,
-      treeFolders,
-      isTrashFolder: isRecycleBinFolder,
-      isPrivacy: isPrivacyFolder,
-      filter,
+      setIsLoading,
       canWebEdit,
       canConvert,
       isVideo,
       isImage,
       isSound,
-      newRowItems,
-      expandedKeys,
-
-      setIsLoading,
-      fetchFiles,
-      setTreeFolders,
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-      setNewRowItems,
-      createFile,
-      createFolder,
-      updateFile,
-      renameFolder,
+      isTrashFolder,
+      viewer: auth.userStore.user,
       replaceFileStream,
       setEncryptionAccess,
-      addExpandedKeys,
+      culture,
+      isDesktop,
+      isTabletView,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+      setIsVerHistoryPanel,
+      fetchFileVersions,
+      fetchFiles,
+      filter,
+      setNewRowItems,
+      newRowItems,
+      createFile,
+      updateFile,
+      renameFolder,
+      createFolder,
       openDocEditor,
+      treeFolders,
+      setTreeFolders,
+      isTrashFolder,
+      isPrivacy,
+      expandedKeys,
+      addExpandedKeys,
+      fileActionType,
+      fileActionExt,
+      fileActionId,
+      setMediaViewerData,
       editCompleteAction,
       lockFileAction,
       setFavoriteAction,
-      setMediaViewerData,
-      setIsVerHistoryPanel,
-      fetchFileVersions,
       markAsRead,
+      selectedFolderPathParts: selectedFolderStore.pathParts,
+      homepage: config.homepage,
+      selectedFolderId: selectedFolderStore.id,
+      newItems: selectedFolderStore.new,
+      parentFolder: selectedFolderStore.parentId,
     };
   }
-)(withRouter(withTranslation("Home")(observer(FilesRowContent))));
+)(withRouter(withTranslation("Home")(observer(FilesContent))));

@@ -7,11 +7,11 @@ import { withRouter } from "react-router-dom";
 import DragAndDrop from "@appserver/components/drag-and-drop";
 import IconButton from "@appserver/components/icon-button";
 import Text from "@appserver/components/text";
-//import Row from "@appserver/components/row";
 
 import Tile from "./FilesTile/sub-components/Tile";
-import FilesTileContent from "./FilesTile/FilesTileContent";
-import FilesRowContent from "./FilesRow/FilesRowContent";
+//import FilesTileContent from "./FilesTile/FilesTileContent";
+//import FilesRowContent from "./FilesRow/FilesRowContent";
+import FilesContent from "./FilesContent";
 import { SimpleFilesRow, EncryptedFileIcon } from "./FilesRow/SimpleFilesRow";
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
@@ -202,7 +202,7 @@ const FileItem = (props) => {
           {...checkedProps}
           {...contextOptionsProps}
         >
-          <FilesTileContent item={item} />
+          <FilesContent item={item} viewAs={viewAs} />
         </Tile>
       ) : (
         <SimpleFilesRow
@@ -218,7 +218,11 @@ const FileItem = (props) => {
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
         >
-          <FilesRowContent item={item} sectionWidth={sectionWidth} />
+          <FilesContent
+            item={item}
+            sectionWidth={sectionWidth}
+            viewAs={viewAs}
+          />
         </SimpleFilesRow>
       )}
     </DragAndDrop>
