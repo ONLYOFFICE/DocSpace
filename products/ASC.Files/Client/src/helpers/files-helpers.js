@@ -7,21 +7,21 @@ export const presentInArray = (array, search, caseInsensitive = false) => {
 export const getAccessIcon = (access) => {
   switch (access) {
     case 1:
-      return "images/access.edit.react.svg";
+      return "/static/images/access.edit.react.svg";
     case 2:
       return "/static/images/eye.react.svg";
     case 3:
-      return "images/access.none.react.svg";
+      return "/static/images/access.none.react.svg";
     case 4:
       return "images/catalog.question.react.svg";
     case 5:
-      return "images/access.review.react.svg";
+      return "/static/images/access.review.react.svg";
     case 6:
-      return "images/access.comment.react.svg";
+      return "/static/images/access.comment.react.svg";
     case 7:
-      return "images/access.form.react.svg";
+      return "/static/images/access.form.react.svg";
     case 8:
-      return "images/custom.filter.react.svg";
+      return "/static/images/custom.filter.react.svg";
     default:
       return;
   }

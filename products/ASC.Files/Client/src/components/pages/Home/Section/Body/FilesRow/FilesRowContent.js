@@ -649,7 +649,7 @@ class FilesRowContent extends React.PureComponent {
                 {canWebEdit && !isTrashFolder && accessToEdit && (
                   <IconButton
                     onClick={this.onFilesClick}
-                    iconName="images/access.edit.react.svg"
+                    iconName="/static/images/access.edit.react.svg"
                     className="badge"
                     size="small"
                     isfill={true}

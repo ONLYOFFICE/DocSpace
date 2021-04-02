@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
+
 import Toast from "@appserver/components/toast";
-import toastr from "@appserver/components/toast/toastr";
+import toastr from "studio/toastr";
+import { toast } from "react-toastify";
+
 import Box from "@appserver/components/box";
 import { regDesktop } from "@appserver/common/desktop";
 import Loaders from "@appserver/common/components/Loaders";
@@ -16,21 +19,34 @@ import {
   openEdit,
   setEncryptionKeys,
   getEncryptionAccess,
+  getFileInfo,
 } from "@appserver/common/api/files";
 import { checkIsAuthenticated } from "@appserver/common/api/user";
 import { getUser } from "@appserver/common/api/people";
+import FilesFilter from "@appserver/common/api/files/filter";
+
 import throttle from "lodash/throttle";
 import { isIOS, deviceType } from "react-device-detect";
 import { homepage } from "../package.json";
+
 import "./custom.scss";
 import { AppServerConfig } from "@appserver/common/constants";
+import SharingDialog from "files/SharingDialog";
+
+import i18n from "./i18n";
 
 let documentIsReady = false;
 
 let docTitle = null;
 let fileType = null;
-
+let config;
 let docSaved = null;
+let docEditor;
+let fileInfo;
+const url = window.location.href;
+const filesUrl = url.substring(0, url.indexOf("/doceditor"));
+
+toast.configure();
 
 const Editor = () => {
   const urlParams = getObjectByLocation(window.location);
@@ -47,6 +63,18 @@ const Editor = () => {
     () => changeTitle(docSaved, docTitle),
     500
   );
+
+  useEffect(() => {
+    init();
+  }, []);
+
+  const updateUsersRightsList = () => {
+    SharingDialog.getSharingSettings(fileId).then((sharingSettings) => {
+      docEditor.setSharingSettings({
+        sharingSettings,
+      });
+    });
+  };
 
   const init = async () => {
     try {
@@ -72,8 +100,9 @@ const Editor = () => {
           setIsAuthenticated(success);
         }
       }
+      fileInfo = await getFileInfo(fileId);
 
-      const config = await openEdit(fileId, doc);
+      config = await openEdit(fileId, doc);
 
       if (isDesktop) {
         const isEncryption =
@@ -110,6 +139,18 @@ const Editor = () => {
         );
       }
 
+      if (
+        config &&
+        config.document.permissions.edit &&
+        config.document.permissions.modifyFilter
+      ) {
+        const sharingSettings = await SharingDialog.getSharingSettings(fileId);
+        config.document.info = {
+          ...config.document.info,
+          sharingSettings,
+        };
+      }
+
       setIsLoading(false);
 
       loadDocApi(docApiUrl, () => onLoad(config));
@@ -123,10 +164,6 @@ const Editor = () => {
       );
     }
   };
-
-  useEffect(() => {
-    init();
-  }, []);
 
   const isIPad = () => {
     return isIOS && deviceType === "tablet";
@@ -195,6 +232,7 @@ const Editor = () => {
 
   const onLoad = (config) => {
     console.log("Editor config: ", config);
+
     try {
       console.log(config);
 
@@ -208,6 +246,20 @@ const Editor = () => {
         config.type = "mobile";
       }
 
+      const filterObj = FilesFilter.getDefault();
+      filterObj.folder = fileInfo.folderId;
+      const urlFilter = filterObj.toUrlParams();
+
+      config.editorConfig.customization = {
+        ...config.editorConfig.customization,
+        goback: {
+          blank: true,
+          requestClose: false,
+          text: i18n.t("FileLocation"),
+          url: `${combineUrl(filesUrl, `/filter?${urlFilter}`)}`,
+        },
+      };
+
       const events = {
         events: {
           onAppReady: onSDKAppReady,
@@ -217,6 +269,10 @@ const Editor = () => {
           onInfo: onSDKInfo,
           onWarning: onSDKWarning,
           onError: onSDKError,
+          ...(config.document.permissions.edit &&
+            config.document.permissions.modifyFilter && {
+              onRequestSharingSettings: onSDKRequestSharingSettings,
+            }),
         },
       };
 
@@ -224,9 +280,7 @@ const Editor = () => {
 
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
-      //hideLoader();
-
-      window.DocsAPI.DocEditor("editor", newConfig);
+      docEditor = window.DocsAPI.DocEditor("editor", newConfig);
     } catch (error) {
       console.log(error);
       toastr.error(error.message, null, 0, true);
@@ -241,6 +295,16 @@ const Editor = () => {
     console.log(
       "ONLYOFFICE Document Editor is opened in mode " + event.data.mode
     );
+  };
+
+  const [isVisible, setIsVisible] = useState(false);
+
+  const onSDKRequestSharingSettings = () => {
+    setIsVisible(true);
+  };
+
+  const onCancel = () => {
+    setIsVisible(false);
   };
 
   const onSDKWarning = (event) => {
@@ -288,7 +352,16 @@ const Editor = () => {
       <Toast />
 
       {!isLoading ? (
-        <div id="editor"></div>
+        <>
+          <div id="editor"></div>
+
+          <SharingDialog
+            isVisible={isVisible}
+            sharingObject={fileInfo}
+            onCancel={onCancel}
+            onSuccess={updateUsersRightsList}
+          />
+        </>
       ) : (
         <Box paddingProp="16px">
           <Loaders.Rectangle height="96vh" />

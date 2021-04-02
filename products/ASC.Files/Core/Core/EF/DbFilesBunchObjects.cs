@@ -35,7 +35,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_bunch_objects");
 
                 entity.HasIndex(e => e.LeftNode)
-                    .HasName("left_node");
+                    .HasDatabaseName("left_node");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
@@ -63,7 +63,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_bunch_objects", "onlyoffice");
 
                 entity.HasIndex(e => e.LeftNode)
-                    .HasName("left_node");
+                    .HasDatabaseName("left_node");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
