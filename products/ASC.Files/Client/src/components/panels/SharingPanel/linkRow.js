@@ -6,7 +6,7 @@ import ToggleButton from "@appserver/components/toggle-button";
 import { StyledLinkRow } from "../StyledPanels";
 import AccessComboBox from "./AccessComboBox";
 import { ShareAccessRights } from "@appserver/common/constants";
-import AccessEditIcon from "../../../../public/images/access.edit.react.svg";
+import AccessEditIcon from "../../../../../../../public/images/access.edit.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const StyledAccessEditIcon = styled(AccessEditIcon)`
