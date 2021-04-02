@@ -19,6 +19,8 @@ const SectionBodyContent = (props) => {
     isEmptyFilesList,
     folderId,
     dragging,
+    startDrag,
+    setStartDrag,
     setDragging,
     setTooltipPosition,
     isRecycleBinFolder,
@@ -34,8 +36,8 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
-    dragging && window.addEventListener("mouseup", onMouseUp);
-    dragging && document.addEventListener("mousemove", onMouseMove);
+    startDrag && window.addEventListener("mouseup", onMouseUp);
+    startDrag && document.addEventListener("mousemove", onMouseMove);
 
     document.addEventListener("dragover", onDragOver);
     document.addEventListener("dragleave", onDragLeaveDoc);
@@ -48,10 +50,13 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
     };
-  }, [onMouseUp, onMouseMove, dragging, folderId]);
+  }, [onMouseUp, onMouseMove, startDrag, folderId]);
 
   const onMouseMove = (e) => {
-    !dragging && setDragging(true);
+    if (!dragging) {
+      setDragging(true);
+      document.body.classList.add("drag-cursor");
+    }
 
     setTooltipPosition(e.pageX, e.pageY);
 
@@ -94,12 +99,15 @@ const SectionBodyContent = (props) => {
     const elem = e.target.closest(".droppable");
     const value = elem && elem.getAttribute("value");
     if ((!value && !treeValue) || isRecycleBinFolder) {
-      return setDragging(false);
+      setDragging(false);
+      setStartDrag(false);
+      return;
     }
 
     const folderId = value ? value.split("_")[1] : treeValue;
 
     setDragging(false);
+    setStartDrag(false);
     onMoveTo(folderId);
     return;
   };
@@ -154,11 +162,15 @@ export default inject(
       isLoading,
       viewAs,
       setTooltipPosition,
+      startDrag,
+      setStartDrag,
     } = initFilesStore;
     const { firstLoad, fileActionStore, filesList } = filesStore;
 
     return {
       dragging,
+      startDrag,
+      setStartDrag,
       fileActionId: fileActionStore.id,
       firstLoad,
       viewAs,

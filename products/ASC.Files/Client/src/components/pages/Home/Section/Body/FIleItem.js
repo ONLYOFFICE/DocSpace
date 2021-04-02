@@ -39,6 +39,7 @@ const FileItem = (props) => {
     selectedFolderId,
     setSharingPanelVisible,
     setDragging,
+    setStartDrag,
     startUpload,
     viewAs,
     setTooltipPosition,
@@ -149,8 +150,7 @@ const FileItem = (props) => {
     }
 
     setTooltipPosition(e.pageX, e.pageY);
-    document.body.classList.add("drag-cursor");
-    setDragging(true);
+    setStartDrag(true);
   };
 
   let value = fileExst ? `file_${id}` : `folder_${id}`;
@@ -243,7 +243,12 @@ export default inject(
     },
     { item }
   ) => {
-    const { dragging, setDragging, setTooltipPosition } = initFilesStore;
+    const {
+      dragging,
+      setDragging,
+      setStartDrag,
+      setTooltipPosition,
+    } = initFilesStore;
 
     const {
       type: actionType,
@@ -300,6 +305,7 @@ export default inject(
       selectRowAction,
       selectedFolderId,
       setDragging,
+      setStartDrag,
       startUpload,
       onSelectItem,
       getContextOptions,
