@@ -21,6 +21,8 @@ const SectionBodyContent = (props) => {
     folderId,
     dragging,
     setDragging,
+    startDrag,
+    setStartDrag,
     setTooltipPosition,
     isRecycleBinFolder,
     moveDragItems,
@@ -35,8 +37,8 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
-    dragging && window.addEventListener("mouseup", onMouseUp);
-    dragging && document.addEventListener("mousemove", onMouseMove);
+    startDrag && window.addEventListener("mouseup", onMouseUp);
+    startDrag && document.addEventListener("mousemove", onMouseMove);
 
     document.addEventListener("dragover", onDragOver);
     document.addEventListener("dragleave", onDragLeaveDoc);
@@ -49,10 +51,13 @@ const SectionBodyContent = (props) => {
       document.removeEventListener("dragleave", onDragLeaveDoc);
       document.removeEventListener("drop", onDropEvent);
     };
-  }, [onMouseUp, onMouseMove, dragging, folderId]);
+  }, [onMouseUp, onMouseMove, startDrag, folderId]);
 
   const onMouseMove = (e) => {
-    !dragging && setDragging(true);
+    if (!dragging) {
+      document.body.classList.add("drag-cursor");
+      setDragging(true);
+    }
 
     setTooltipPosition(e.pageX, e.pageY);
 
@@ -95,11 +100,14 @@ const SectionBodyContent = (props) => {
     const elem = e.target.closest(".droppable");
     const value = elem && elem.getAttribute("value");
     if ((!value && !treeValue) || isRecycleBinFolder) {
-      return setDragging(false);
+      setDragging(false);
+      setStartDrag(false);
+      return;
     }
 
     const folderId = value ? value.split("_")[1] : treeValue;
 
+    setStartDrag(false);
     setDragging(false);
     onMoveTo(folderId);
     return;
@@ -156,6 +164,8 @@ export default inject(
       filesList,
       dragging,
       setDragging,
+      startDrag,
+      setStartDrag,
       isLoading,
       viewAs,
       setTooltipPosition,
@@ -169,6 +179,8 @@ export default inject(
       isLoading,
       isEmptyFilesList: filesList.length <= 0,
       setDragging,
+      startDrag,
+      setStartDrag,
       folderId: selectedFolderStore.id,
       setTooltipPosition,
       isRecycleBinFolder: treeFoldersStore.isRecycleBinFolder,

@@ -103,6 +103,7 @@ const SimpleFilesRow = (props) => {
     setThirdpartyInfo,
     setMediaViewerData,
     setDragging,
+    setStartDrag,
     startUpload,
     onSelectItem,
     history,
@@ -498,8 +499,7 @@ const SimpleFilesRow = (props) => {
     }
 
     setTooltipPosition(e.pageX, e.pageY);
-    document.body.classList.add("drag-cursor");
-    setDragging(true);
+    setStartDrag(true);
   };
 
   const isMobile = sectionWidth < 500;
@@ -588,6 +588,7 @@ export default inject(
       fileActionStore,
       dragging,
       setDragging,
+      setStartDrag,
       setTooltipPosition,
     } = filesStore;
 
@@ -656,6 +657,7 @@ export default inject(
       setMediaViewerData,
       selectedFolderId,
       setDragging,
+      setStartDrag,
       startUpload,
       onSelectItem,
       setTooltipPosition,
