@@ -1,7 +1,7 @@
 import FilesStore from "./FilesStore";
 import fileActionStore from "./FileActionStore";
 import selectedFolderStore from "./SelectedFolderStore";
-import treeFoldersStore from "./TreeFoldersStore";
+import TreeFoldersStore from "./TreeFoldersStore";
 import InitFilesStore from "./InitFilesStore";
 import thirdPartyStore from "./ThirdPartyStore";
 import SettingsStore from "./SettingsStore";
@@ -18,6 +18,7 @@ import dialogsStore from "./DialogsStore";
 
 import store from "studio/store";
 
+const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
 const filesStore = new FilesStore(
   store.auth,
   store.auth.settingsStore,
