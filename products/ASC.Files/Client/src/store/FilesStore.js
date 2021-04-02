@@ -158,7 +158,7 @@ class FilesStore {
       setSelectedNode,
     } = this.treeFoldersStore;
     setSelectedNode([folderId + ""]);
-    console.log(this.settingsStore.isEncryptionSupport);
+
     if (privacyFolder && privacyFolder.id === +folderId) {
       if (!this.settingsStore.isEncryptionSupport) {
         const newExpandedKeys = createTreeFolders(
