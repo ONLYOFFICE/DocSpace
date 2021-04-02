@@ -28,5 +28,7 @@
   "Or": "ИЛИ",
   "Register": "Регистрация",
 
-  "Google": "Google"
+  "Google": "Google",
+  "ProviderLoginError": "Ошибка авторизации",
+  "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту"
 }

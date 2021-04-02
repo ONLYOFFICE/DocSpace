@@ -28,5 +28,7 @@
   "Or": "OR",
   "Register": "Register",
 
-  "Google": "Google"
+  "Google": "Google",
+  "ProviderLoginError": "Authorization error",
+  "ProviderNotConnected": "Provider is not connected to your account"
 }

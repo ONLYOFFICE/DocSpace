@@ -22,6 +22,7 @@ import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
 import { I18nextProvider, useTranslation } from "react-i18next";
+import toastr from "@appserver/components/toast/toastr";
 
 const facebookIconOptions = { color: "#4469B0" };
 const twitterIconOptions = { color: "#2AA3EF" };
@@ -214,10 +215,14 @@ const Form = (props) => {
   //const throttledKeyPress = throttle(onKeyPress, 500);
 
   const authCallback = (profile) => {
-    thirdPartyLogin(profile.Serialized).then(() => {
-      setIsLoading(true);
-      history.push(defaultPage);
-    });
+    thirdPartyLogin(profile.Serialized)
+      .then(() => {
+        setIsLoading(true);
+        history.push(defaultPage);
+      })
+      .catch(() => {
+        toastr.error(t("ProviderNotConnected"), t("ProviderLoginError"));
+      });
   };
 
   const setProviders = async () => {
