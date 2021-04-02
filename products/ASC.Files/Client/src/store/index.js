@@ -6,9 +6,12 @@ import InitFilesStore from "./InitFilesStore";
 import thirdPartyStore from "./ThirdPartyStore";
 import SettingsStore from "./SettingsStore";
 import FilesActionsStore from "./FilesActionsStore";
+import FormatsStore from "./FormatsStore";
+import iconFormatsStore from "./IconFormatsStore";
+import mediaViewersFormatsStore from "./MediaViewersFormatsStore";
+import docserviceStore from "./DocserviceStore";
 
 import mediaViewerDataStore from "./MediaViewerDataStore";
-import formatsStore from "./FormatsStore";
 import versionHistoryStore from "./VersionHistoryStore";
 import uploadDataStore from "./UploadDataStore";
 import dialogsStore from "./DialogsStore";
@@ -39,6 +42,11 @@ const filesActionsStore = new FilesActionsStore(
   initFilesStore,
   settingsStore,
   dialogsStore
+);
+const formatsStore = new FormatsStore(
+  iconFormatsStore,
+  mediaViewersFormatsStore,
+  docserviceStore
 );
 
 const stores = {

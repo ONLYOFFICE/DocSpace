@@ -1,24 +1,19 @@
-import { makeObservable, observable } from "mobx";
-import IconFormatsStore from "./IconFormatsStore";
-import MediaViewersFormatsStore from "./MediaViewersFormatsStore";
-import DocserviceStore from "./DocserviceStore";
+import { makeAutoObservable } from "mobx";
+// import IconFormatsStore from "./IconFormatsStore";
+// import MediaViewersFormatsStore from "./MediaViewersFormatsStore";
+// import DocserviceStore from "./DocserviceStore";
 
 class FormatsStore {
-  iconFormatsStore = null;
-  mediaViewersFormatsStore = null;
-  docserviceStore = null;
+  iconFormatsStore;
+  mediaViewersFormatsStore;
+  docserviceStore;
 
-  constructor() {
-    makeObservable(this, {
-      iconFormatsStore: observable,
-      mediaViewersFormatsStore: observable,
-      docserviceStore: observable,
-    });
-
-    this.iconFormatsStore = new IconFormatsStore();
-    this.mediaViewersFormatsStore = new MediaViewersFormatsStore();
-    this.docserviceStore = new DocserviceStore();
+  constructor(iconFormatsStore, mediaViewersFormatsStore, docserviceStore) {
+    makeAutoObservable(this);
+    this.iconFormatsStore = iconFormatsStore;
+    this.mediaViewersFormatsStore = mediaViewersFormatsStore;
+    this.docserviceStore = docserviceStore;
   }
 }
 
-export default new FormatsStore();
+export default FormatsStore;
