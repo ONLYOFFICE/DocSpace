@@ -174,14 +174,11 @@ class FilesActionStore {
         }
       })
       .catch((err) => {
-        secondaryProgressDataStore.setSecondaryProgressBarData({
+        setSecondaryProgressBarData({
           visible: true,
           alert: true,
         });
-        setTimeout(
-          () => secondaryProgressDataStore.clearSecondaryProgressData(),
-          TIMEOUT
-        );
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
