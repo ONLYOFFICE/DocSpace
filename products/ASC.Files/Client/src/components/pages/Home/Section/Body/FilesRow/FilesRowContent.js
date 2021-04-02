@@ -784,7 +784,6 @@ export default inject(
   (
     {
       auth,
-      initFilesStore,
       filesStore,
       formatsStore,
       uploadDataStore,
@@ -798,7 +797,6 @@ export default inject(
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
     const { culture, isDesktopClient, isTabletView } = auth.settingsStore;
-    const { setIsLoading, isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
     const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
     const {
@@ -817,6 +815,8 @@ export default inject(
       renameFolder,
       createFolder,
       openDocEditor,
+      setIsLoading,
+      isLoading,
     } = filesStore;
 
     const {

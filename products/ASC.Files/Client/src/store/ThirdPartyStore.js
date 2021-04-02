@@ -167,4 +167,4 @@ class ThirdPartyStore {
   }
 }
 
-export default ThirdPartyStore;
+export default new ThirdPartyStore();

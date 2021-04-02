@@ -52,8 +52,7 @@ class DeleteDialogComponent extends React.Component {
       deleteSelectedElem: t("DeleteSelectedElem"),
     };
 
-    deleteAction(translations)
-      .catch((err) => toastr.error(err));
+    deleteAction(translations).catch((err) => toastr.error(err));
   };
 
   onChange = (event) => {
@@ -174,7 +173,6 @@ const DeleteDialog = withTranslation("DeleteDialog")(DeleteDialogComponent);
 
 export default inject(
   ({
-    initFilesStore,
     filesStore,
     uploadDataStore,
     treeFoldersStore,
@@ -182,9 +180,8 @@ export default inject(
     dialogsStore,
     filesActionsStore,
   }) => {
-    const { isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
-    const { fetchFiles, selection, filter } = filesStore;
+    const { fetchFiles, selection, filter, isLoading } = filesStore;
     const { deleteAction } = filesActionsStore;
 
     const {

@@ -94,9 +94,14 @@ const DragTooltip = (props) => {
   return <StyledTooltip ref={tooltipRef}>{tooltipLabel}</StyledTooltip>;
 };
 
-export default inject(({ initFilesStore, filesStore }) => {
-  const { tooltipValue, tooltipPageX, tooltipPageY } = initFilesStore;
-  const { selection, iconOfDraggedFile } = filesStore;
+export default inject(({ filesStore }) => {
+  const {
+    selection,
+    iconOfDraggedFile,
+    tooltipValue,
+    tooltipPageX,
+    tooltipPageY,
+  } = filesStore;
 
   const isSingleItem = selection.length === 1;
 

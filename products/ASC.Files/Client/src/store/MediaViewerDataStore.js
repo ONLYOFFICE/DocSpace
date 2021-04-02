@@ -1,12 +1,14 @@
 import { makeAutoObservable } from "mobx";
-import filesStore from "./FilesStore";
 
 class MediaViewerDataStore {
+  filesStore;
+
   id = null;
   visible = false;
 
-  constructor() {
+  constructor(filesStore) {
     makeAutoObservable(this);
+    this.filesStore = filesStore;
   }
 
   setMediaViewerData = (mediaData) => {
@@ -18,8 +20,8 @@ class MediaViewerDataStore {
     const playlist = [];
     let id = 0;
 
-    if (filesStore.filesList) {
-      filesStore.filesList.forEach((file) => {
+    if (this.filesStore.filesList) {
+      this.filesStore.filesList.forEach((file) => {
         if (file.canOpenPlayer) {
           playlist.push({
             id: id,
@@ -35,4 +37,4 @@ class MediaViewerDataStore {
   }
 }
 
-export default new MediaViewerDataStore();
+export default MediaViewerDataStore;

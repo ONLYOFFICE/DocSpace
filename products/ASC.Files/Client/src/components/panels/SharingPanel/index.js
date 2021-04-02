@@ -593,20 +593,12 @@ class SharingPanelComponent extends React.Component {
 
 const SharingPanel = inject(
   (
-    {
-      auth,
-      initFilesStore,
-      filesStore,
-      uploadDataStore,
-      dialogsStore,
-      treeFoldersStore,
-    },
+    { auth, filesStore, uploadDataStore, dialogsStore, treeFoldersStore },
     { uploadPanelVisible }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
     const { customNames, isDesktopClient } = auth.settingsStore;
 
-    const { setIsLoading, isLoading } = initFilesStore;
     const {
       selection,
       canShareOwnerChange,
@@ -616,6 +608,8 @@ const SharingPanel = inject(
       setFolder,
       getShareUsers,
       setShareFiles,
+      setIsLoading,
+      isLoading,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
     const { setSharingPanelVisible, sharingPanelVisible } = dialogsStore;
