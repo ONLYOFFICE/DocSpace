@@ -306,29 +306,33 @@ class SectionFilterContent extends React.Component {
   }
 }
 
-export default inject(
-  ({ auth, initFilesStore, filesStore, selectedFolderStore }) => {
-    const { setIsLoading, setViewAs, viewAs } = initFilesStore;
-    const { firstLoad, fetchFiles, filter } = filesStore;
+export default inject(({ auth, filesStore, selectedFolderStore }) => {
+  const {
+    firstLoad,
+    fetchFiles,
+    filter,
+    setIsLoading,
+    setViewAs,
+    viewAs,
+  } = filesStore;
 
-    const { user } = auth.userStore;
-    const { customNames, culture } = auth.settingsStore;
+  const { user } = auth.userStore;
+  const { customNames, culture } = auth.settingsStore;
 
-    return {
-      customNames,
-      user,
-      firstLoad,
-      selectedFolderId: selectedFolderStore.id,
-      selectedItem: filter.selectedItem,
-      filter,
-      viewAs,
+  return {
+    customNames,
+    user,
+    firstLoad,
+    selectedFolderId: selectedFolderStore.id,
+    selectedItem: filter.selectedItem,
+    filter,
+    viewAs,
 
-      setIsLoading,
-      fetchFiles,
-      setViewAs,
-    };
-  }
-)(
+    setIsLoading,
+    fetchFiles,
+    setViewAs,
+  };
+})(
   withRouter(
     withLayoutSize(withTranslation("Home")(observer(SectionFilterContent)))
   )

@@ -162,8 +162,8 @@ const SectionBodyContent = ({
 };
 
 export default inject(
-  ({ auth, initFilesStore, settingsStore, treeFoldersStore }) => {
-    const { isLoading } = initFilesStore;
+  ({ auth, filesStore, settingsStore, treeFoldersStore }) => {
+    const { isLoading } = filesStore;
     const { selectedTreeNode } = treeFoldersStore;
     const {
       isLoadedSettingsTree,

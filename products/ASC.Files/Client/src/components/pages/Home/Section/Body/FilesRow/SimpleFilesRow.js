@@ -557,7 +557,6 @@ export default inject(
   (
     {
       auth,
-      initFilesStore,
       filesStore,
       treeFoldersStore,
       selectedFolderStore,
@@ -570,7 +569,6 @@ export default inject(
     { item }
   ) => {
     const { isTabletView } = auth.settingsStore;
-    const { dragging, setDragging, setTooltipPosition } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
@@ -583,7 +581,15 @@ export default inject(
       setCopyPanelVisible,
     } = dialogsStore;
 
-    const { selection, canShare, openDocEditor, fileActionStore } = filesStore;
+    const {
+      selection,
+      canShare,
+      openDocEditor,
+      fileActionStore,
+      dragging,
+      setDragging,
+      setTooltipPosition,
+    } = filesStore;
 
     const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
     const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;

@@ -209,12 +209,12 @@ const TreeSettings = withTranslation("Settings")(withRouter(PureTreeSettings));
 export default inject(
   ({
     auth,
-    initFilesStore,
+    filesStore,
     settingsStore,
     treeFoldersStore,
     selectedFolderStore,
   }) => {
-    const { setIsLoading, isLoading } = initFilesStore;
+    const { setIsLoading, isLoading } = filesStore;
     const { setSelectedFolder } = selectedFolderStore;
     const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
     const {

@@ -86,20 +86,17 @@ VersionHistory.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default inject(
-  ({ auth, initFilesStore, filesStore, versionHistoryStore }) => {
-    const { isLoading } = initFilesStore;
-    const { filter, setFilesFilter } = filesStore;
-    const { setIsVerHistoryPanel, versions } = versionHistoryStore;
+export default inject(({ auth, filesStore, versionHistoryStore }) => {
+  const { filter, setFilesFilter, isLoading } = filesStore;
+  const { setIsVerHistoryPanel, versions } = versionHistoryStore;
 
-    return {
-      isTabletView: auth.settingsStore.isTabletView,
-      isLoading,
-      filter,
-      versions,
+  return {
+    isTabletView: auth.settingsStore.isTabletView,
+    isLoading,
+    filter,
+    versions,
 
-      setFilesFilter,
-      setIsVerHistoryPanel,
-    };
-  }
-)(withRouter(observer(VersionHistory)));
+    setFilesFilter,
+    setIsVerHistoryPanel,
+  };
+})(withRouter(observer(VersionHistory)));

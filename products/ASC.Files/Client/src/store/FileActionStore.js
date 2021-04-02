@@ -25,4 +25,4 @@ class FileActionStore {
   };
 }
 
-export default FileActionStore;
+export default new FileActionStore();

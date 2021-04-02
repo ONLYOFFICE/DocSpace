@@ -33,9 +33,8 @@ const FilesRowContainer = (props) => {
   );
 };
 
-export default inject(({ auth, initFilesStore, filesStore }) => {
-  const { filesList } = filesStore;
-  const { isLoading } = initFilesStore;
+export default inject(({ auth, filesStore }) => {
+  const { filesList, isLoading } = filesStore;
 
   return {
     filesList,

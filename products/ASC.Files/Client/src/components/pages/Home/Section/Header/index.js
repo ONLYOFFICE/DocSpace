@@ -93,12 +93,10 @@ const StyledContainer = styled.div`
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
 
-    ${
-      isMobile &&
-      css`
-        position: sticky;
-      `
-    }
+    ${isMobile &&
+    css`
+      position: sticky;
+    `}
 
     ${(props) =>
       !props.isTabletView
@@ -115,12 +113,10 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       padding-bottom: 0;
-      ${
-        !isMobile &&
-        css`
-          height: 56px;
-        `
-      }
+      ${!isMobile &&
+      css`
+        height: 56px;
+      `}
       & > div:first-child {
         ${(props) =>
           !isMobile &&
@@ -557,7 +553,6 @@ class SectionHeaderContent extends React.Component {
 export default inject(
   ({
     auth,
-    initFilesStore,
     filesStore,
     dialogsStore,
     treeFoldersStore,
@@ -565,7 +560,6 @@ export default inject(
     filesActionsStore,
     settingsStore,
   }) => {
-    const { setIsLoading } = initFilesStore;
     const {
       setSelected,
       fileActionStore,
@@ -581,6 +575,7 @@ export default inject(
       isOnlyFoldersSelected,
       isThirdPartySelection,
       isWebEditSelected,
+      setIsLoading,
     } = filesStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
     const { setAction } = fileActionStore;

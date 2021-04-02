@@ -99,20 +99,17 @@ const PureSettings = ({
 
 const Settings = withTranslation("Settings")(PureSettings);
 
-export default inject(
-  ({ initFilesStore, filesStore, settingsStore, treeFoldersStore }) => {
-    const { isLoading } = initFilesStore;
-    const { setFirstLoad } = filesStore;
-    const { setSelectedNode } = treeFoldersStore;
-    const { getFilesSettings, isLoadedSettingsTree } = settingsStore;
+export default inject(({ filesStore, settingsStore, treeFoldersStore }) => {
+  const { setFirstLoad, isLoading } = filesStore;
+  const { setSelectedNode } = treeFoldersStore;
+  const { getFilesSettings, isLoadedSettingsTree } = settingsStore;
 
-    return {
-      isLoading,
-      isLoadedSettingsTree,
+  return {
+    isLoading,
+    isLoadedSettingsTree,
 
-      setFirstLoad,
-      setSelectedNode,
-      getFilesSettings,
-    };
-  }
-)(withRouter(observer(Settings)));
+    setFirstLoad,
+    setSelectedNode,
+    getFilesSettings,
+  };
+})(withRouter(observer(Settings)));
