@@ -115,19 +115,19 @@ class FilesContent extends React.Component {
   }
 }
 
-const Files = inject(({ auth, initFilesStore }) => {
+const Files = inject(({ auth, filesStore }) => {
   return {
     isDesktop: auth.settingsStore.isDesktopClient,
     user: auth.userStore.user,
     isAuthenticated: auth.isAuthenticated,
     encryptionKeys: auth.settingsStore.encryptionKeys,
     isEncryption: auth.settingsStore.isEncryptionSupport,
-    isLoaded: auth.isLoaded && initFilesStore.isLoaded,
-    setIsLoaded: initFilesStore.setIsLoaded,
+    isLoaded: auth.isLoaded && filesStore.isLoaded,
+    setIsLoaded: filesStore.setIsLoaded,
     setEncryptionKeys: auth.settingsStore.setEncryptionKeys,
     loadFilesInfo: async () => {
       //await auth.init();
-      await initFilesStore.initFiles();
+      await filesStore.initFiles();
       auth.setProductVersion(config.version);
     },
   };

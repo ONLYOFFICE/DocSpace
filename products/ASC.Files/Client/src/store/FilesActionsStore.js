@@ -22,7 +22,6 @@ class FilesActionStore {
   treeFoldersStore;
   filesStore;
   selectedFolderStore;
-  initFilesStore;
   settingsStore;
   dialogsStore;
 
@@ -32,7 +31,6 @@ class FilesActionStore {
     treeFoldersStore,
     filesStore,
     selectedFolderStore,
-    initFilesStore,
     settingsStore,
     dialogsStore
   ) {
@@ -42,7 +40,6 @@ class FilesActionStore {
     this.treeFoldersStore = treeFoldersStore;
     this.filesStore = filesStore;
     this.selectedFolderStore = selectedFolderStore;
-    this.initFilesStore = initFilesStore;
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
   }
@@ -235,10 +232,10 @@ class FilesActionStore {
       files,
       fileActionStore,
       fetchFiles,
+      setIsLoading,
     } = this.filesStore;
     const { type, setAction } = fileActionStore;
     const { treeFolders, setTreeFolders } = this.treeFoldersStore;
-    const { setIsLoading } = this.initFilesStore;
 
     const items = [...folders, ...files];
     const item = items.find((o) => o.id === id && !o.fileExst); //TODO: maybe need files find and folders find, not at one function?
@@ -456,8 +453,7 @@ class FilesActionStore {
   };
 
   finalizeVersionAction = (id) => {
-    const { setIsLoading } = this.initFilesStore;
-    const { fetchFiles } = this.filesStore;
+    const { fetchFiles, setIsLoading } = this.filesStore;
 
     setIsLoading(true);
 

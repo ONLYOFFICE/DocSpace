@@ -4,7 +4,6 @@ import { inject, observer } from "mobx-react";
 import { getShareFiles } from "@appserver/common/api/files";
 import SharingPanel from "../SharingPanel";
 
-import initFilesStore from "../../../store/InitFilesStore";
 import filesStore from "../../../store/FilesStore";
 import uploadDataStore from "../../../store/UploadDataStore";
 import dialogsStore from "../../../store/DialogsStore";
@@ -65,7 +64,6 @@ class SharingModal extends React.Component {
     return (
       <MobxProvider
         auth={authStore}
-        initFilesStore={initFilesStore}
         filesStore={filesStore}
         dialogsStore={dialogsStore}
         treeFoldersStore={treeFoldersStore}

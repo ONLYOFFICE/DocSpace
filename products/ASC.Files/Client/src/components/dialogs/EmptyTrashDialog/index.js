@@ -150,16 +150,9 @@ const EmptyTrashDialog = withTranslation("EmptyTrashDialog")(
 );
 
 export default inject(
-  ({
-    initFilesStore,
-    filesStore,
-    uploadDataStore,
-    selectedFolderStore,
-    dialogsStore,
-  }) => {
-    const { isLoading } = initFilesStore;
+  ({ filesStore, uploadDataStore, selectedFolderStore, dialogsStore }) => {
     const { secondaryProgressDataStore } = uploadDataStore;
-    const { fetchFiles, filter } = filesStore;
+    const { fetchFiles, filter, isLoading } = filesStore;
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,

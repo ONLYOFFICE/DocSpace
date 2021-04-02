@@ -294,19 +294,11 @@ const Home = withTranslation("Home")(PureHome);
 export default inject(
   ({
     auth,
-    initFilesStore,
     filesStore,
     uploadDataStore,
     dialogsStore,
     selectedFolderStore,
   }) => {
-    const {
-      dragging,
-      setDragging,
-      setIsLoading,
-      isLoading,
-      viewAs,
-    } = initFilesStore;
     const {
       secondaryProgressDataStore,
       primaryProgressDataStore,
@@ -319,6 +311,11 @@ export default inject(
       fileActionStore,
       selection,
       setSelections,
+      dragging,
+      setDragging,
+      setIsLoading,
+      isLoading,
+      viewAs,
     } = filesStore;
 
     const { id } = fileActionStore;

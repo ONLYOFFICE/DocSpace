@@ -425,18 +425,10 @@ class FilesTileContent extends React.PureComponent {
 
 export default inject(
   (
-    {
-      auth,
-      initFilesStore,
-      filesStore,
-      formatsStore,
-      treeFoldersStore,
-      selectedFolderStore,
-    },
+    { auth, filesStore, formatsStore, treeFoldersStore, selectedFolderStore },
     { item }
   ) => {
     const { culture } = auth.settingsStore;
-    const { setIsLoading, isLoading, dragging } = initFilesStore;
     const {
       iconFormatsStore,
       mediaViewersFormatsStore,
@@ -451,6 +443,9 @@ export default inject(
       updateFile,
       renameFolder,
       createFolder,
+      setIsLoading,
+      isLoading,
+      dragging,
     } = filesStore;
 
     const {

@@ -145,20 +145,21 @@ const SectionBodyContent = (props) => {
 
 export default inject(
   ({
-    initFilesStore,
     filesStore,
     selectedFolderStore,
     treeFoldersStore,
     filesActionsStore,
   }) => {
     const {
+      firstLoad,
+      fileActionStore,
+      filesList,
       dragging,
       setDragging,
       isLoading,
       viewAs,
       setTooltipPosition,
-    } = initFilesStore;
-    const { firstLoad, fileActionStore, filesList } = filesStore;
+    } = filesStore;
 
     return {
       dragging,
