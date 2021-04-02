@@ -139,7 +139,8 @@ class UpdateUserForm extends React.Component {
   }
 
   async componentDidMount() {
-    const { setProviders } = this.props;
+    const { setProviders, isSelf } = this.props;
+    if (!isSelf) return;
     try {
       await getAuthProviders().then((providers) => {
         setProviders(providers);
@@ -687,6 +688,8 @@ class UpdateUserForm extends React.Component {
       //avatarMax,
       disableProfileType,
       isAdmin,
+      providers,
+      isSelf,
     } = this.props;
     const {
       guestCaption,
@@ -965,9 +968,11 @@ class UpdateUserForm extends React.Component {
             />
           </MainFieldsContainer>
         </MainContainer>
-        <InfoFieldContainer headerText={t("LoginSettings")}>
-          <StyledWrapper>{this.providerButtons()}</StyledWrapper>
-        </InfoFieldContainer>
+        {providers && providers.length > 0 && isSelf && (
+          <InfoFieldContainer headerText={t("LoginSettings")}>
+            <StyledWrapper>{this.providerButtons()}</StyledWrapper>
+          </InfoFieldContainer>
+        )}
         <InfoFieldContainer headerText={t("Comments")}>
           <Textarea
             placeholder={t("WriteComment")}
@@ -1073,5 +1078,6 @@ export default withRouter(
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
+    isSelf: peopleStore.targetUserStore.isMe,
   }))(observer(withTranslation("ProfileAction")(UpdateUserForm)))
 );
