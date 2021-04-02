@@ -4,10 +4,10 @@ import { inject, observer } from "mobx-react";
 import { getShareFiles } from "@appserver/common/api/files";
 import SharingPanel from "../SharingPanel";
 
-import filesStore from "../../../store/FilesStore";
-import uploadDataStore from "../../../store/UploadDataStore";
+import FilesStore from "../../../store/FilesStore";
+import UploadDataStore from "../../../store/UploadDataStore";
 import dialogsStore from "../../../store/DialogsStore";
-import treeFoldersStore from "../../../store/TreeFoldersStore";
+import TreeFoldersStore from "../../../store/TreeFoldersStore";
 import store from "studio/store";
 
 const { auth: authStore } = store;
@@ -64,10 +64,10 @@ class SharingModal extends React.Component {
     return (
       <MobxProvider
         auth={authStore}
-        filesStore={filesStore}
+        filesStore={new FilesStore()}
         dialogsStore={dialogsStore}
-        treeFoldersStore={treeFoldersStore}
-        uploadDataStore={uploadDataStore}
+        treeFoldersStore={new TreeFoldersStore()}
+        uploadDataStore={new UploadDataStore()}
       >
         <SharingDialogWrapper {...this.props} />
       </MobxProvider>
