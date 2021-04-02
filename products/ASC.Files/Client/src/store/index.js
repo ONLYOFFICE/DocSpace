@@ -10,8 +10,8 @@ import FormatsStore from "./FormatsStore";
 import iconFormatsStore from "./IconFormatsStore";
 import mediaViewersFormatsStore from "./MediaViewersFormatsStore";
 import docserviceStore from "./DocserviceStore";
+import MediaViewerDataStore from "./MediaViewerDataStore";
 
-import mediaViewerDataStore from "./MediaViewerDataStore";
 import versionHistoryStore from "./VersionHistoryStore";
 import uploadDataStore from "./UploadDataStore";
 import dialogsStore from "./DialogsStore";
@@ -48,6 +48,7 @@ const formatsStore = new FormatsStore(
   mediaViewersFormatsStore,
   docserviceStore
 );
+const mediaViewerDataStore = new MediaViewerDataStore(filesStore);
 
 const stores = {
   initFilesStore,
