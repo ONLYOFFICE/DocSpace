@@ -62,7 +62,7 @@ namespace ASC.CRM.Core.Entities
 
         public override int GetHashCode()
         {
-            return string.Format("{0}|{1}|{2}", GetType().FullName, Label, (int)FieldType).GetHashCode();
+            return string.Format("{0}|{1}|{2}|{3}|{4}", GetType().FullName, ID, EntityID, Label, (int)FieldType).GetHashCode();
         }
     }
 }
