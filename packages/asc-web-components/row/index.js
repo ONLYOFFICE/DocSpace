@@ -17,14 +17,8 @@ class Row extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      contextX: "0px",
-      contextY: "100%",
-      contextOpened: false,
-    };
-
-    this.rowRef = React.createRef();
     this.cm = React.createRef();
+    this.row = React.createRef();
   }
 
   render() {
@@ -71,15 +65,14 @@ class Row extends React.Component {
 
     const onContextMenu = (e) => {
       rowContextClick && rowContextClick();
+      if (!this.cm.current.menuRef.current) {
+        this.row.current.click(e); //TODO: need fix context menu to global
+      }
       this.cm.current.show(e);
     };
 
     return (
-      <StyledRow
-        ref={this.rowRef}
-        {...this.props}
-        onContextMenu={onContextMenu}
-      >
+      <StyledRow ref={this.row} {...this.props} onContextMenu={onContextMenu}>
         {renderCheckbox && (
           <StyledCheckbox>
             <Checkbox
