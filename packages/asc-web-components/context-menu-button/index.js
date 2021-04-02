@@ -177,7 +177,7 @@ class ContextMenuButton extends React.Component {
             open={isOpen}
             clickOutsideAction={this.clickOutsideAction}
             columnCount={columnCount}
-            withBackdrop={isMobile}
+            withBackdrop={!!isMobile}
           >
             {this.state.data.map(
               (item, index) =>
