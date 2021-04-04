@@ -238,10 +238,12 @@ class SettingsStore {
     });
   };
 
-  getOAuthToken = () => {
-    return new Promise((resolve) => {
+  getOAuthToken = (tokenGetterWin) => {
+    return new Promise((resolve, reject) => {
       localStorage.removeItem("code");
-      const interval = setInterval(() => {
+      let interval = null;
+      interval = setInterval(() => {
+        console.log("INTERVAL");
         try {
           const code = localStorage.getItem("code");
 
@@ -249,6 +251,9 @@ class SettingsStore {
             localStorage.removeItem("code");
             clearInterval(interval);
             resolve(code);
+          } else if (tokenGetterWin && tokenGetterWin.closed) {
+            clearInterval(interval);
+            reject();
           }
         } catch {
           return;

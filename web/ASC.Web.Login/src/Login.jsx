@@ -328,13 +328,15 @@ const Form = (props) => {
     const url = e.target.dataset.url;
 
     const { getOAuthToken } = props;
+
     try {
-      window.open(
+      const tokenGetterWin = window.open(
         url,
         "login",
         "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
       );
-      getOAuthToken().then((code) => {
+
+      getOAuthToken(tokenGetterWin).then((code) => {
         const token = window.btoa(
           JSON.stringify({
             auth: providerName,
