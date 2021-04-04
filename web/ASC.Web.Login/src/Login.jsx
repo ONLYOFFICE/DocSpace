@@ -327,7 +327,7 @@ const Form = (props) => {
     const providerName = e.target.dataset.providername;
     const url = e.target.dataset.url;
 
-    const { getSerializedProfile, getOAuthToken } = props;
+    const { getOAuthToken } = props;
     try {
       window.open(
         url,
@@ -348,10 +348,6 @@ const Form = (props) => {
           "login",
           "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
         );
-
-        getSerializedProfile().then((profile) => {
-          console.log(profile);
-        });
       });
     } catch (err) {
       console.log(err);
@@ -581,7 +577,6 @@ const Login = inject(({ auth }) => {
     enabledJoin,
     defaultPage,
     isDesktopClient: isDesktop,
-    getSerializedProfile,
     getOAuthToken,
   } = settingsStore;
 
@@ -596,7 +591,6 @@ const Login = inject(({ auth }) => {
     isDesktop,
     login,
     thirdPartyLogin,
-    getSerializedProfile,
     getOAuthToken,
     setProviders,
     providers,
