@@ -594,13 +594,13 @@ class UpdateUserForm extends React.Component {
     e.preventDefault();
 
     try {
-      window.open(
+      const tokenGetterWin = window.open(
         link,
         "login",
         "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
       );
 
-      getOAuthToken().then((code) => {
+      getOAuthToken(tokenGetterWin).then((code) => {
         const token = window.btoa(
           JSON.stringify({
             auth: providerName,

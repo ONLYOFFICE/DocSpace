@@ -243,7 +243,6 @@ class SettingsStore {
       localStorage.removeItem("code");
       let interval = null;
       interval = setInterval(() => {
-        console.log("INTERVAL");
         try {
           const code = localStorage.getItem("code");
 
