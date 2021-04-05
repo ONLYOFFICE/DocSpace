@@ -232,7 +232,7 @@ class ProfileInfo extends React.PureComponent {
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage = (
       <Text fontSize="13px">
-        <Trans i18nKey="NotFoundLanguage" ns="Profile">
+        <Trans t={t} i18nKey="NotFoundLanguage" ns="Profile">
           "In case you cannot find your language in the list of the available
           ones, feel free to write to us at
           <Link href={`mailto:${supportEmail}`} isHovered={true}>

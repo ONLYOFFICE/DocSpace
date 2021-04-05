@@ -136,30 +136,31 @@ class PureHome extends React.Component {
   };
 
   showOperationToast = (type, qty, title) => {
+    const { t } = this.props;
     switch (type) {
       case "move":
         if (qty > 1) {
           return toastr.success(
-            <Trans i18nKey="MoveItems" ns="Home">
+            <Trans t={t} i18nKey="MoveItems" ns="Home">
               {{ qty }} elements has been moved
             </Trans>
           );
         }
         return toastr.success(
-          <Trans i18nKey="MoveItem" ns="Home">
+          <Trans t={t} i18nKey="MoveItem" ns="Home">
             {{ title }} moved
           </Trans>
         );
       case "duplicate":
         if (qty > 1) {
           return toastr.success(
-            <Trans i18nKey="CopyItems" ns="Home">
+            <Trans t={t} i18nKey="CopyItems" ns="Home">
               {{ qty }} elements copied
             </Trans>
           );
         }
         return toastr.success(
-          <Trans i18nKey="CopyItem" ns="Home">
+          <Trans t={t} i18nKey="CopyItem" ns="Home">
             {{ title }} copied
           </Trans>
         );

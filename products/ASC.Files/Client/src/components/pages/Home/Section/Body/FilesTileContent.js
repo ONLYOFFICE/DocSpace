@@ -130,7 +130,7 @@ class FilesTileContent extends React.PureComponent {
   };
 
   createItem = (e) => {
-    const { createFile, item, setIsLoading, createFolder } = this.props;
+    const { createFile, item, setIsLoading, createFolder, t } = this.props;
     const { itemTitle } = this.state;
 
     setIsLoading(true);
@@ -142,7 +142,7 @@ class FilesTileContent extends React.PureComponent {
           .then(() => this.completeAction(e))
           .finally(() => {
             toastr.success(
-              <Trans i18nKey="FolderCreated" ns="Home">
+              <Trans t={t} i18nKey="FolderCreated" ns="Home">
                 New folder {{ itemTitle }} is created
               </Trans>
             );
@@ -153,7 +153,7 @@ class FilesTileContent extends React.PureComponent {
           .finally(() => {
             const exst = item.fileExst;
             toastr.success(
-              <Trans i18nKey="FileCreated" ns="Home">
+              <Trans t={t} i18nKey="FileCreated" ns="Home">
                 New file {{ itemTitle }}.{{ exst }} is created
               </Trans>
             );

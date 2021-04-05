@@ -213,7 +213,7 @@ class FilesRowContent extends React.PureComponent {
           .then(() => this.completeAction(itemId))
           .then(() =>
             toastr.success(
-              <Trans i18nKey="FolderCreated" ns="Home">
+              <Trans t={t} i18nKey="FolderCreated" ns="Home">
                 New folder {{ itemTitle }} is created
               </Trans>
             )
