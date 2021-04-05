@@ -108,6 +108,7 @@ const SimpleFilesRow = (props) => {
     onSelectItem,
     history,
     setTooltipPosition,
+    setDownloadDialogVisible,
   } = props;
 
   const {
@@ -232,6 +233,8 @@ const SimpleFilesRow = (props) => {
   const onClickLinkEdit = () => openDocEditor(id, providerKey);
 
   const onClickDownload = () => window.open(viewUrl, "_blank");
+
+  const onClickDownloadAs = () => setDownloadDialogVisible(true);
 
   const onDuplicate = () =>
     duplicateAction(item, t("CopyOperation")).catch((err) => toastr.error(err));
@@ -399,10 +402,26 @@ const SimpleFilesRow = (props) => {
             onClick: onClickDownload,
             disabled: false,
           };
+        case "download-as":
+          return {
+            key: option,
+            label: t("DownloadAs"),
+            icon: "images/download-as.react.svg",
+            onClick: onClickDownloadAs,
+            disabled: false,
+          };
         case "move":
           return {
             key: option,
             label: t("MoveTo"),
+            icon: "images/move.react.svg",
+            onClick: onMoveAction,
+            disabled: false,
+          };
+        case "restore":
+          return {
+            key: option,
+            label: t("Restore"),
             icon: "images/move.react.svg",
             onClick: onMoveAction,
             disabled: false,
@@ -583,6 +602,7 @@ export default inject(
       setDeleteThirdPartyDialogVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
+      setDownloadDialogVisible,
     } = dialogsStore;
 
     const {
@@ -645,6 +665,7 @@ export default inject(
       setDeleteThirdPartyDialogVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
+      setDownloadDialogVisible,
       openDocEditor,
       setIsVerHistoryPanel,
       fetchFileVersions,

@@ -370,7 +370,7 @@ class FilesStore {
 
     if (isRecycleBinFolder) {
       options.push("download");
-      options.push("download-as");
+      isFile && options.push("download-as");
       options.push("restore");
       options.push("separator0");
       options.push("delete");

@@ -400,8 +400,15 @@ class SectionHeaderContent extends React.PureComponent {
   onClickBack = () => {
     const { filter, setFilter, history, resetProfile } = this.props;
     resetProfile();
-    const backUrl = combineUrl(AppServerConfig.proxyURL, config.homepage);
-    history.push(backUrl);
+
+    const url = filter.toUrlParams();
+    const backUrl = combineUrl(
+      AppServerConfig.proxyURL,
+      config.homepage,
+      `filter?/${url}`
+    );
+
+    history.push(backUrl, url);
     setFilter(filter);
   };
 
