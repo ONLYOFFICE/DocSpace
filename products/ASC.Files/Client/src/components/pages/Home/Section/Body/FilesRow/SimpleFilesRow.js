@@ -201,7 +201,9 @@ const SimpleFilesRow = (props) => {
     finalizeVersionAction(id).catch((err) => toastr.error(err));
 
   const onClickFavorite = (e) => {
-    const { action } = e.currentTarget.dataset;
+    const data = (e.currentTarget && e.currentTarget.dataset) || e;
+    const { action } = data;
+
     setFavoriteAction(action, id)
       .then(() =>
         action === "mark"
@@ -324,6 +326,7 @@ const SimpleFilesRow = (props) => {
             onClick: onClickFavorite,
             disabled: false,
             "data-action": "mark",
+            action: "mark",
           };
         case "block-unblock-version":
           return {
@@ -452,6 +455,7 @@ const SimpleFilesRow = (props) => {
             onClick: onClickFavorite,
             disabled: false,
             "data-action": "remove",
+            action: "remove",
           };
         default:
           break;
