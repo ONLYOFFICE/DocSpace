@@ -80,11 +80,7 @@
       const code = urlParams ? urlParams.code || null : null;
       const error = urlParams ? urlParams.error || null : null;
 
-      if (error) {
-        console.log(error);
-        localStorage.setItem("third-party-error", error);
-        window.close();
-      } else if (code) {
+      if (code) {
         localStorage.setItem("code", code);
         window.close();
       } else {

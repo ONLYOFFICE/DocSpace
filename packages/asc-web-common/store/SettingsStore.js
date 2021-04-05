@@ -127,7 +127,6 @@ class SettingsStore {
       setIsTabletView: action,
       setValue: action,
       setArticlePinned: action,
-      getSerializedProfile: action,
     });
   }
 
@@ -217,25 +216,6 @@ class SettingsStore {
   getEncryptionKeys = async () => {
     const encryptionKeys = await api.files.getEncryptionKeys();
     this.updateEncryptionKeys(encryptionKeys);
-  };
-
-  getSerializedProfile = () => {
-    return new Promise((resolve) => {
-      localStorage.removeItem("profile");
-      const interval = setInterval(() => {
-        try {
-          const profile = localStorage.getItem("profile");
-
-          if (profile) {
-            localStorage.removeItem("profile");
-            clearInterval(interval);
-            resolve(profile);
-          }
-        } catch {
-          return;
-        }
-      }, 500);
-    });
   };
 
   getOAuthToken = (tokenGetterWin) => {

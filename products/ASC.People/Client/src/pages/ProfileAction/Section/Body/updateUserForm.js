@@ -590,7 +590,7 @@ class UpdateUserForm extends React.Component {
   };
 
   linkAccount = (providerName, link, e) => {
-    const { getOAuthToken, getSerializedProfile } = this.props;
+    const { getOAuthToken } = this.props;
     e.preventDefault();
 
     try {
@@ -614,10 +614,6 @@ class UpdateUserForm extends React.Component {
           "login",
           "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
         );
-
-        getSerializedProfile().then((profile) => {
-          console.log(profile);
-        });
       });
     } catch (err) {
       console.log(err);
@@ -1074,7 +1070,6 @@ export default withRouter(
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
     setProviders: peopleStore.usersStore.setProviders,
     providers: peopleStore.usersStore.providers,
-    getSerializedProfile: auth.settingsStore.getSerializedProfile,
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
