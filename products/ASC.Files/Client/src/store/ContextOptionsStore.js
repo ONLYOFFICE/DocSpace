@@ -1,70 +1,59 @@
-import { makeAutoObservable, action } from "mobx";
-import store from "studio/store";
-import versionHistoryStore from "./VersionHistoryStore";
-import filesActionsStore from "./FilesActionsStore";
-import dialogsStore from "./DialogsStore";
-import filesStore from "./FilesStore";
-import mediaViewerDataStore from "./MediaViewerDataStore";
-import selectedFolderStore from "./SelectedFolderStore";
+import { makeAutoObservable } from "mobx";
+import copy from "copy-to-clipboard";
 
-import config from "../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig, FileAction } from "@appserver/common/constants";
 
+import store from "studio/store";
 import toastr from "studio/toastr";
-import copy from "copy-to-clipboard";
+import config from "../../package.json";
 
 const { homepage } = config;
-
-const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
-const { openDocEditor, fileActionStore } = filesStore;
-const { setAction } = fileActionStore;
-const { setMediaViewerData } = mediaViewerDataStore;
-const { isRootFolder } = selectedFolderStore;
-const {
-  setFavoriteAction,
-  finalizeVersionAction,
-  lockFileAction,
-  onSelectItem,
-  duplicateAction,
-  setThirdpartyInfo,
-  deleteFileAction,
-  openLocationAction,
-  deleteFolderAction,
-} = filesActionsStore;
-
-const {
-  setSharingPanelVisible,
-  setChangeOwnerPanelVisible,
-  setMoveToPanelVisible,
-  setCopyPanelVisible,
-  setRemoveItem,
-  setDeleteThirdPartyDialogVisible,
-} = dialogsStore;
 
 class ContextOptionsStore {
   t = null;
   history = null;
+  filesStore;
+  fileActionStore;
+  selectedFolderStore;
+  filesActionsStore;
+  dialogsStore;
+  versionHistoryStore;
+  mediaViewerDataStore;
 
-  constructor() {
-    makeAutoObservable(this, {
-      getFilesContextOptions: action,
-    });
+  constructor(
+    filesStore,
+    fileActionStore,
+    selectedFolderStore,
+    filesActionsStore,
+    dialogsStore,
+    versionHistoryStore,
+    mediaViewerDataStore
+  ) {
+    makeAutoObservable(this);
+    this.filesStore = filesStore;
+    this.fileActionStore = fileActionStore;
+    this.selectedFolderStore = selectedFolderStore;
+    this.filesActionsStore = filesActionsStore;
+    this.dialogsStore = dialogsStore;
+    this.versionHistoryStore = versionHistoryStore;
+    this.mediaViewerDataStore = mediaViewerDataStore;
+    //getFilesContextOptions: action,
   }
 
   onOpenLocation = () => {
-    const { id, folderId, isFolder } = filesStore.selection[0];
+    const { id, folderId, isFolder } = this.filesStore.selection[0];
     const locationId = isFolder ? id : folderId;
-    openLocationAction(locationId, isFolder);
+    this.filesActionsStore.openLocationAction(locationId, isFolder);
   };
 
   showVersionHistory = () => {
     const { isTabletView } = store.auth.settingsStore;
-    const { id } = filesStore.selection[0];
+    const { id } = this.filesStore.selection[0];
 
     if (!isTabletView) {
-      fetchFileVersions(id + "");
-      setIsVerHistoryPanel(true);
+      this.versionHistoryStore.fetchFileVersions(id + "");
+      this.versionHistoryStore.setIsVerHistoryPanel(true);
     } else {
       this.history.push(
         combineUrl(AppServerConfig.proxyURL, homepage, `/${id}/history`) //TODO: something better
@@ -73,9 +62,10 @@ class ContextOptionsStore {
   };
 
   onClickFavorite = (e) => {
-    const { id } = filesStore.selection[0];
+    const { id } = this.filesStore.selection[0];
     const { action } = e.currentTarget.dataset;
-    setFavoriteAction(action, id)
+    this.filesActionsStore
+      .setFavoriteAction(action, id)
       .then(() =>
         action === "mark"
           ? toastr.success(this.t("MarkedAsFavorite")) // TODO: t
@@ -88,25 +78,34 @@ class ContextOptionsStore {
   };
 
   finalizeVersion = () => {
-    const { id } = filesStore.selection[0];
-    finalizeVersionAction(id).catch((err) => toastr.error(err));
+    const { id } = this.filesStore.selection[0];
+    this.filesActionsStore
+      .finalizeVersionAction(id)
+      .catch((err) => toastr.error(err));
   };
 
   lockFile = () => {
-    const { id, locked } = filesStore.selection[0];
-    lockFileAction(id, !locked).catch((err) => toastr.error(err));
+    const { id, locked } = this.filesStore.selection[0];
+    this.filesActionsStore
+      .lockFileAction(id, !locked)
+      .catch((err) => toastr.error(err));
   };
 
   onClickShare = () => {
-    onSelectItem(filesStore.selection[0]);
-    setSharingPanelVisible(true);
+    this.filesActionsStore.onSelectItem(this.filesStore.selection[0]);
+    this.dialogsStore.setSharingPanelVisible(true);
   };
 
-  onOwnerChange = () => setChangeOwnerPanelVisible(true);
+  onOwnerChange = () => this.dialogsStore.setChangeOwnerPanelVisible(true);
 
   onClickLinkForPortal = () => {
     //const isFile = !!fileExst;
-    const { id, isFolder, canOpenPlayer, webUrl } = filesStore.selection[0];
+    const {
+      id,
+      isFolder,
+      canOpenPlayer,
+      webUrl,
+    } = this.filesStore.selection[0];
     copy(
       !isFolder
         ? canOpenPlayer
@@ -119,41 +118,40 @@ class ContextOptionsStore {
   };
 
   onClickLinkEdit = () => {
-    const { id, providerKey } = filesStore.selection[0];
-    openDocEditor(id, providerKey);
+    const { id, providerKey } = this.filesStore.selection[0];
+    this.filesStore.openDocEditor(id, providerKey);
   };
 
   onMediaFileClick = (fileId) => {
-    const { id } = filesStore.selection[0];
+    const { id } = this.filesStore.selection[0];
     const itemId = typeof fileId !== "object" ? fileId : id;
-    setMediaViewerData({ visible: true, id: itemId });
+    this.mediaViewerDataStore.setMediaViewerData({ visible: true, id: itemId });
   };
 
   onClickDownload = () => {
-    const { viewUrl } = filesStore.selection[0];
+    const { viewUrl } = this.filesStore.selection[0];
     window.open(viewUrl, "_blank");
   };
 
-  onMoveAction = () => setMoveToPanelVisible(true);
-  onCopyAction = () => setCopyPanelVisible(true);
+  onMoveAction = () => this.dialogsStore.setMoveToPanelVisible(true);
+  onCopyAction = () => this.dialogsStore.setCopyPanelVisible(true);
 
   onDuplicate = () => {
-    duplicateAction(
-      filesStore.selection[0],
-      this.t("CopyOperation")
-    ).catch((err) => toastr.error(err));
+    this.filesActionsStore
+      .duplicateAction(this.filesStore.selection[0], this.t("CopyOperation"))
+      .catch((err) => toastr.error(err));
   };
 
   onClickRename = () => {
-    const { fileExst, id } = filesStore.selection[0];
-    setAction({
+    const { fileExst, id } = this.filesStore.selection[0];
+    this.fileActionStore.setAction({
       type: FileAction.Rename,
       extension: fileExst,
       id,
     });
   };
 
-  onChangeThirdPartyInfo = () => setThirdpartyInfo();
+  onChangeThirdPartyInfo = () => this.filesActionsStore.setThirdpartyInfo();
 
   onClickDelete = () => {
     const {
@@ -162,12 +160,16 @@ class ContextOptionsStore {
       folderId,
       parentId,
       providerKey,
-    } = filesStore.selection[0];
-    const isThirdPartyFolder = providerKey && isRootFolder;
+    } = this.filesStore.selection[0];
+    const isThirdPartyFolder =
+      providerKey && this.selectedFolderStore.isRootFolder;
     if (isThirdPartyFolder) {
       const splitItem = id.split("-");
-      setRemoveItem({ id: splitItem[splitItem.length - 1], title });
-      setDeleteThirdPartyDialogVisible(true);
+      this.dialogsStore.setRemoveItem({
+        id: splitItem[splitItem.length - 1],
+        title,
+      });
+      this.dialogsStore.setDeleteThirdPartyDialogVisible(true);
       return;
     }
 
@@ -176,10 +178,12 @@ class ContextOptionsStore {
     };
 
     fileExst
-      ? deleteFileAction(id, folderId, translations)
+      ? this.filesActionsStore
+          .deleteFileAction(id, folderId, translations)
           .then(() => toastr.success(this.t("FileRemoved")))
           .catch((err) => toastr.error(err))
-      : deleteFolderAction(id, parentId, translations)
+      : this.filesActionsStore
+          .deleteFolderAction(id, parentId, translations)
           .then(() => toastr.success(this.t("FolderRemoved")))
           .catch((err) => toastr.error(err));
   };
@@ -191,7 +195,8 @@ class ContextOptionsStore {
     this.history = history;
 
     const isSharable = access !== 1 && access !== 0;
-    const isThirdPartyFolder = providerKey && isRootFolder;
+    const isThirdPartyFolder =
+      providerKey && this.selectedFolderStore.isRootFolder;
 
     return contextOptions.map((option) => {
       switch (option) {
@@ -378,4 +383,4 @@ class ContextOptionsStore {
   };
 }
 
-export default new ContextOptionsStore();
+export default ContextOptionsStore;
