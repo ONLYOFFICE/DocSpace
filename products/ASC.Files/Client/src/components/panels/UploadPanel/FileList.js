@@ -17,7 +17,7 @@ const FileList = ({ uploadDataFiles }) => {
           width={width}
           itemData={uploadDataFiles}
           itemCount={uploadDataFiles.length}
-          itemSize={46}
+          itemSize={56}
           outerElementType={CustomScrollbarsVirtualList}
         >
           {RowWrapper}
