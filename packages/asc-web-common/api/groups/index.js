@@ -44,9 +44,9 @@ export function deleteGroup(id) {
   });
 }
 
-export function getGroupListFull() {
+/*export function getGroupListFull() {
   return request({
     method: "get",
     url: "/group/full",
   });
-}
+}*/ //TODO: use after fixing problems on the server

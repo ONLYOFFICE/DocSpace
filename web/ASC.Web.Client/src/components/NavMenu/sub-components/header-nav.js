@@ -5,7 +5,7 @@ import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
 import { useTranslation } from "react-i18next";
 import { tablet } from "@appserver/components/utils/device";
-import { combineUrl } from "@appserver/common/utils";
+import { combineUrl, deleteCookie } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { AppServerConfig } from "@appserver/common/constants";
@@ -51,11 +51,22 @@ const StyledNav = styled.nav`
 `;
 const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
   const { t } = useTranslation("NavMenu");
+
   const onProfileClick = useCallback(() => {
     history.push(PROFILE_URL);
   }, []);
 
   const onAboutClick = useCallback(() => history.push(ABOUT_URL), []);
+
+  const onSwitchToDesktopClick = useCallback(() => {
+    deleteCookie("desktop_view");
+    window.open(
+      `${window.location.origin}?desktop_view=true`,
+      "_self",
+      "",
+      true
+    );
+  }, []);
 
   const onLogoutClick = useCallback(() => logout && logout(), [logout]);
 
@@ -66,6 +77,13 @@ const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
         label: t("Profile"),
         onClick: onProfileClick,
         url: PROFILE_URL,
+      },
+      {
+        key: "SwitchToBtn",
+        label: t("TurnOnDesktopVersion"),
+        onClick: onSwitchToDesktopClick,
+        url: `${window.location.origin}?desktop_view=true`,
+        target: "_self",
       },
       {
         key: "AboutBtn",
