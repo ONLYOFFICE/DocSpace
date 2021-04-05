@@ -52,10 +52,8 @@ const EmptyFilterContainer = ({
   );
 };
 
-export default inject(
-  ({ initFilesStore, filesStore, selectedFolderStore }) => ({
-    fetchFiles: filesStore.fetchFiles,
-    selectedFolderId: selectedFolderStore.id,
-    setIsLoading: initFilesStore.setIsLoading,
-  })
-)(withTranslation("Home")(observer(EmptyFilterContainer)));
+export default inject(({ filesStore, selectedFolderStore }) => ({
+  fetchFiles: filesStore.fetchFiles,
+  selectedFolderId: selectedFolderStore.id,
+  setIsLoading: filesStore.setIsLoading,
+}))(withTranslation("Home")(observer(EmptyFilterContainer)));

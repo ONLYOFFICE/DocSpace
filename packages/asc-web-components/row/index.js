@@ -3,6 +3,7 @@ import React from "react";
 
 import Checkbox from "../checkbox";
 import ContextMenuButton from "../context-menu-button";
+import ContextMenu from "../context-menu";
 import {
   StyledOptionButton,
   StyledContentElement,
@@ -16,58 +17,11 @@ class Row extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      contextX: "0px",
-      contextY: "100%",
-      contextOpened: false,
-    };
-
-    this.rowRef = React.createRef();
+    this.cm = React.createRef();
+    this.row = React.createRef();
   }
-
-  componentDidMount() {
-    this.container = this.rowRef.current;
-    this.container.addEventListener("contextmenu", this.onContextMenu);
-  }
-
-  componentWillUnmount() {
-    this.container &&
-      this.container.removeEventListener("contextmenu", this.onContextMenu);
-  }
-
-  onContextMenu = (e) => {
-    e.preventDefault();
-
-    const menu = document.getElementById("contextMenu");
-
-    const containerBounds =
-      this.container !== document && this.container.getBoundingClientRect();
-
-    const clickX = containerBounds.right - e.clientX;
-    const clickY = e.clientY - containerBounds.top;
-    const containerWidth = this.container.offsetWidth;
-    const containerHeight = this.container.offsetHeight;
-    const menuWidth = (menu && menu.offsetWidth) || 180;
-    const menuHeight = menu && menu.offsetHeight;
-
-    const left = containerWidth - clickX > menuWidth && clickX < menuWidth;
-    const bottom = containerHeight - clickY < menuHeight && clickY > menuHeight;
-
-    let newTop = `0px`;
-    let newRight = `0px`;
-
-    newRight = !left ? `${clickX - menuWidth - 8}px` : `${clickX + 8}px`;
-    newTop = bottom ? `${clickY - menuHeight}px` : `${clickY}px`;
-
-    this.setState({
-      contextOpened: !this.state.contextOpened,
-      contextX: newRight,
-      contextY: newTop,
-    });
-  };
 
   render() {
-    //console.log("Row render");
     const {
       checked,
       children,
@@ -81,8 +35,6 @@ class Row extends React.Component {
       rowContextClick,
       sectionWidth,
     } = this.props;
-
-    const { contextOpened, contextX, contextY } = this.state;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -111,8 +63,16 @@ class Row extends React.Component {
       return contextOptions;
     };
 
+    const onContextMenu = (e) => {
+      rowContextClick && rowContextClick();
+      if (!this.cm.current.menuRef.current) {
+        this.row.current.click(e); //TODO: need fix context menu to global
+      }
+      this.cm.current.show(e);
+    };
+
     return (
-      <StyledRow ref={this.rowRef} {...this.props}>
+      <StyledRow ref={this.row} {...this.props} onContextMenu={onContextMenu}>
         {renderCheckbox && (
           <StyledCheckbox>
             <Checkbox
@@ -135,9 +95,6 @@ class Row extends React.Component {
           )}
           {renderContext ? (
             <ContextMenuButton
-              manualX={contextX}
-              manualY={contextY}
-              opened={contextOpened}
               color="#A3A9AE"
               hoverColor="#657077"
               className="expandButton"
@@ -147,6 +104,7 @@ class Row extends React.Component {
           ) : (
             <div className="expandButton"> </div>
           )}
+          <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
         </StyledOptionButton>
       </StyledRow>
     );

@@ -593,7 +593,7 @@ class FilesContent extends React.Component {
                 {canWebEdit && !isTrashFolder && accessToEdit && (
                   <IconButton
                     onClick={this.onFilesClick}
-                    iconName="images/access.edit.react.svg"
+                    iconName="/static/images/access.edit.react.svg"
                     className="badge"
                     size="small"
                     isfill={true}
@@ -732,7 +732,6 @@ export default inject(
   (
     {
       auth,
-      initFilesStore,
       filesStore,
       formatsStore,
       uploadDataStore,
@@ -750,7 +749,6 @@ export default inject(
       isDesktopClient: isDesktop,
       isTabletView,
     } = auth.settingsStore;
-    const { setIsLoading, isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
     const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
 
@@ -784,6 +782,8 @@ export default inject(
       renameFolder,
       createFolder,
       openDocEditor,
+      setIsLoading,
+      isLoading,
     } = filesStore;
 
     const {

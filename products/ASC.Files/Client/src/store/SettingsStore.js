@@ -1,10 +1,9 @@
 import { makeAutoObservable } from "mobx";
 import api from "@appserver/common/api";
 import axios from "axios";
-import ThirdPartyStore from "./ThirdPartyStore";
 
 class SettingsStore {
-  thirdPartyStore = null;
+  thirdPartyStore;
 
   isErrorSettings = null;
   expandedSetting = null;
@@ -18,10 +17,10 @@ class SettingsStore {
 
   settingsIsLoaded = false;
 
-  constructor() {
+  constructor(thirdPartyStore) {
     makeAutoObservable(this);
 
-    this.thirdPartyStore = new ThirdPartyStore();
+    this.thirdPartyStore = thirdPartyStore;
   }
 
   setIsLoaded = (isLoaded) => {
@@ -116,4 +115,4 @@ class SettingsStore {
     api.files.forceSave(data).then((res) => this.setFilesSetting(setting, res));
 }
 
-export default new SettingsStore();
+export default SettingsStore;

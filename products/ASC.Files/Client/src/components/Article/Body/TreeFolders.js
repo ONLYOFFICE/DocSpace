@@ -470,15 +470,15 @@ TreeFolders.defaultProps = {
 };
 
 export default inject(
-  ({
-    auth,
-    initFilesStore,
-    filesStore,
-    treeFoldersStore,
-    selectedFolderStore,
-  }) => {
-    const { setIsLoading, dragging, setDragging } = initFilesStore;
-    const { filter, setFilter, selection } = filesStore;
+  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const {
+      filter,
+      setFilter,
+      selection,
+      setIsLoading,
+      dragging,
+      setDragging,
+    } = filesStore;
 
     const {
       treeFolders,

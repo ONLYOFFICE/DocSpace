@@ -79,13 +79,13 @@ const EmptyFolderContainer = ({
   );
 };
 
-export default inject(({ initFilesStore, filesStore, selectedFolderStore }) => {
+export default inject(({ filesStore, selectedFolderStore }) => {
   const { filter, fetchFiles } = filesStore;
 
   return {
     filter,
     fetchFiles,
-    setIsLoading: initFilesStore.setIsLoading,
+    setIsLoading: filesStore.setIsLoading,
     parentId: selectedFolderStore.parentId,
   };
 })(withTranslation("Home")(observer(EmptyFolderContainer)));

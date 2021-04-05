@@ -395,4 +395,4 @@ class IconFormatsStore {
   };
 }
 
-export default IconFormatsStore;
+export default new IconFormatsStore();

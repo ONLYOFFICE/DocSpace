@@ -22,6 +22,8 @@ const SectionBodyContent = (props) => {
     startDrag,
     setStartDrag,
     setDragging,
+    startDrag,
+    setStartDrag,
     setTooltipPosition,
     isRecycleBinFolder,
     moveDragItems,
@@ -54,8 +56,8 @@ const SectionBodyContent = (props) => {
 
   const onMouseMove = (e) => {
     if (!dragging) {
-      setDragging(true);
       document.body.classList.add("drag-cursor");
+      setDragging(true);
     }
 
     setTooltipPosition(e.pageX, e.pageY);
@@ -106,6 +108,7 @@ const SectionBodyContent = (props) => {
 
     const folderId = value ? value.split("_")[1] : treeValue;
 
+    setStartDrag(false);
     setDragging(false);
     setStartDrag(false);
     onMoveTo(folderId);
@@ -150,15 +153,19 @@ const SectionBodyContent = (props) => {
 
 export default inject(
   ({
-    initFilesStore,
     filesStore,
     selectedFolderStore,
     treeFoldersStore,
     filesActionsStore,
   }) => {
     const {
+      firstLoad,
+      fileActionStore,
+      filesList,
       dragging,
       setDragging,
+      startDrag,
+      setStartDrag,
       isLoading,
       viewAs,
       setTooltipPosition,
@@ -177,6 +184,8 @@ export default inject(
       isLoading,
       isEmptyFilesList: filesList.length <= 0,
       setDragging,
+      startDrag,
+      setStartDrag,
       folderId: selectedFolderStore.id,
       setTooltipPosition,
       isRecycleBinFolder: treeFoldersStore.isRecycleBinFolder,
