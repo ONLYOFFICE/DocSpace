@@ -216,6 +216,9 @@ const mobileStyles = css`
             props.theme.avatarEditorBody.container.button.height};
           border-radius: ${(props) =>
             props.theme.avatarEditorBody.container.button.borderRadius};
+
+          display: flex;
+          align-items: center;
         }
       }
 
@@ -224,6 +227,10 @@ const mobileStyles = css`
           props.theme.avatarEditorBody.container.zoom.mobileHeight};
         margin-top: ${(props) =>
           props.theme.avatarEditorBody.container.zoom.marginTop};
+        .zoom-container-svg_zoom-minus,
+        .zoom-container-svg_zoom-plus {
+          margin: auto 0;
+        }
       }
     }
   }
@@ -299,6 +306,9 @@ const StyledAvatarContainer = styled.div`
         background: ${(props) =>
           props.theme.avatarEditorBody.container.buttons.background};
         justify-items: center;
+        .editor-button {
+          margin: auto 0;
+        }
       }
 
       .zoom-container {
@@ -307,6 +317,10 @@ const StyledAvatarContainer = styled.div`
         display: grid;
         grid-template-columns: min-content 1fr min-content;
         grid-column-gap: 12px;
+        .zoom-container-svg_zoom-minus,
+        .zoom-container-svg_zoom-plus {
+          margin: auto 0;
+        }
       }
     }
   }

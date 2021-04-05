@@ -45,6 +45,7 @@ class ContextMenuSub extends Component {
     if (item.onClick) {
       item.onClick({
         originalEvent: e,
+        action: item.action,
       });
     }
 
