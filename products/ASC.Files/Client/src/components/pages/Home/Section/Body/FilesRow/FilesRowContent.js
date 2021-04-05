@@ -134,7 +134,10 @@ class FilesRowContent extends React.PureComponent {
   }
 
   completeAction = (id) => {
-    this.props.editCompleteAction(id, this.props.item);
+    const isCancel =
+      (id.currentTarget && id.currentTarget.dataset.action === "cancel") ||
+      id.keyCode === 27;
+    this.props.editCompleteAction(id, this.props.item, isCancel);
   };
 
   updateItem = () => {
@@ -144,17 +147,20 @@ class FilesRowContent extends React.PureComponent {
       item,
       setIsLoading,
       fileActionId,
+      editCompleteAction,
     } = this.props;
 
     const { itemTitle } = this.state;
     const originalTitle = getTitleWithoutExst(item);
 
     setIsLoading(true);
-    if (originalTitle === itemTitle || itemTitle.trim() === "") {
+    const isSameTitle =
+      originalTitle.trim() === itemTitle.trim() || itemTitle.trim() === "";
+    if (isSameTitle) {
       this.setState({
         itemTitle: originalTitle,
       });
-      return this.completeAction(fileActionId);
+      return editCompleteAction(fileActionId, item, isSameTitle);
     }
 
     item.fileExst
