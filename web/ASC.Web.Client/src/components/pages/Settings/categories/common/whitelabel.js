@@ -237,7 +237,7 @@ class WhiteLabel extends React.Component {
           <div className="settings-block">
             <Text fontSize="16px">{t("LogoSettings")}</Text>
             <Text className="margin-top" fontSize="14px">
-              <Trans i18nKey="LogoUploadRecommendation" ns="Settings">
+              <Trans t={t} i18nKey="LogoUploadRecommendation" ns="Settings">
                 We recommended that you use images in <strong>PNG</strong>{" "}
                 format with transparent background
               </Trans>

@@ -187,7 +187,11 @@ class SharingPanelComponent extends React.Component {
               return replaceFileStream(item.id, encryptedFile, true, true).then(
                 () =>
                   toastr.success(
-                    <Trans i18nKey="EncryptedFileSharing" ns="SharingPanel">
+                    <Trans
+                      t={t}
+                      i18nKey="EncryptedFileSharing"
+                      ns="SharingPanel"
+                    >
                       File {{ title }} successfully shared
                     </Trans>
                   )
