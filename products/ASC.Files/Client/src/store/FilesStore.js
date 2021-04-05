@@ -444,9 +444,9 @@ class FilesStore {
         !isThirdPartyFolder && this.userAccess && options.push("move");
         options.push("copy");
 
-        if (isFile) {
-          options.push("duplicate");
-        }
+        // if (isFile) {
+        //   options.push("duplicate");
+        // }
 
         this.userAccess && options.push("rename");
         isThirdPartyFolder &&
