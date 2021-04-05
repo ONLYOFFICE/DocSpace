@@ -16,6 +16,7 @@ import EmailInput from "@appserver/components/email-input";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { combineUrl, createPasswordHash } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import { isMobile } from "react-device-detect";
 
 const inputWidth = "400px";
 
@@ -31,6 +32,7 @@ const ConfirmContainer = styled.div`
 
   .start-basis {
     align-items: flex-start;
+    ${isMobile && `margin-top: 56px;`}
   }
 
   .margin-left {
