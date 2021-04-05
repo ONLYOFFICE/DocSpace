@@ -1,12 +1,10 @@
-using ASC.Api.Core.Auth;
-using ASC.Common;
-using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
-using ASC.Data.Storage;
-using ASC.Data.Storage.Configuration;
-using ASC.Data.Storage.DiscStorage;
 
-using Microsoft.AspNetCore.Authentication;
+using ASC.Api.Core;
+using ASC.Data.Storage;
+using ASC.Data.Storage.DiscStorage;
+using ASC.FederatedLogin;
+using ASC.FederatedLogin.LoginProviders;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -16,50 +14,33 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.Web.Studio
 {
-    public class Startup
+    public class Startup : BaseStartup
     {
-        public IConfiguration Configuration { get; }
+        public override string[] LogParams { get => new string[] { "ASC.Web" }; }
 
-        public IHostEnvironment HostEnvironment { get; }
+        public override bool AddControllers { get => false; }
 
-        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
         {
-            Configuration = configuration;
-            HostEnvironment = hostEnvironment;
         }
 
-        public void ConfigureServices(IServiceCollection services)
+        public override void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpContextAccessor();
-
             services.AddCors();
 
-            services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
+            base.ConfigureServices(services);
 
-            var diHelper = new DIHelper(services);
-
-            diHelper.AddNLogManager("ASC.Api", "ASC.Web");
-
-            diHelper
-                .AddCookieAuthHandler()
-                .AddStorage()
-                .AddPathUtilsService()
-                .AddStorageHandlerService();
-
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
+            services.AddMemoryCache();
+            DIHelper.TryAdd<Login>();
+            DIHelper.TryAdd<PathUtils>();
+            DIHelper.TryAdd<StorageHandlerScope>();
+            DIHelper.TryAdd<GoogleLoginProvider>();
+            DIHelper.TryAdd<FacebookLoginProvider>();
+            DIHelper.TryAdd<LinkedInLoginProvider>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-            }
-
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -79,6 +60,13 @@ namespace ASC.Web.Studio
             {
                 endpoints.InitializeHttpHandlers();
             });
+
+            app.MapWhen(
+               context => context.Request.Path.ToString().EndsWith("login.ashx"),
+               appBranch =>
+               {
+                   appBranch.UseLoginHandler();
+               });
         }
     }
 }

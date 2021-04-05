@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Runtime.Serialization;
 
 namespace ASC.Api.Core.Middleware
 {
-    [DataContract]
     public abstract class CommonApiResponse
     {
-        [DataMember(Order = 1)]
         public int Status { get; set; }
 
-        [DataMember(Order = 2)]
         public HttpStatusCode StatusCode { get; set; }
 
         protected CommonApiResponse(HttpStatusCode statusCode)
@@ -32,10 +27,8 @@ namespace ASC.Api.Core.Middleware
         }
     }
 
-    [DataContract]
     public class ErrorApiResponse : CommonApiResponse
     {
-        [DataMember(EmitDefaultValue = false, Order = 3)]
         public CommonApiError Error { get; set; }
 
         protected internal ErrorApiResponse(HttpStatusCode statusCode, Exception error) : base(statusCode)
@@ -45,16 +38,12 @@ namespace ASC.Api.Core.Middleware
         }
     }
 
-    [DataContract]
     public class SuccessApiResponse : CommonApiResponse
     {
-        [DataMember(EmitDefaultValue = false, Order = 0)]
         public int? Count { get; set; }
 
-        [DataMember(EmitDefaultValue = false, Order = 1)]
         public long? Total { get; set; }
 
-        [DataMember(EmitDefaultValue = false, Order = 3)]
         public object Response { get; set; }
 
         protected internal SuccessApiResponse(HttpStatusCode statusCode, object response, long? total = null, int? count = null) : base(statusCode)
@@ -89,33 +78,24 @@ namespace ASC.Api.Core.Middleware
         }
     }
 
-    [DataContract]
     public class CommonApiError
     {
-        [DataMember]
         public string Message { get; set; }
 
-        [DataMember]
-        public Type Type { get; set; }
+        public string Type { get; set; }
 
-        [DataMember]
         public string Stack { get; set; }
 
-        [DataMember]
         public int Hresult { get; set; }
-
-        [DataMember]
-        public IDictionary Data { get; set; }
 
         public static CommonApiError FromException(Exception exception)
         {
             return new CommonApiError()
             {
                 Message = exception.Message,
-                Type = exception.GetType(),
+                Type = exception.GetType().ToString(),
                 Stack = exception.StackTrace,
-                Hresult = exception.HResult,
-                Data = exception.Data
+                Hresult = exception.HResult
             };
         }
     }

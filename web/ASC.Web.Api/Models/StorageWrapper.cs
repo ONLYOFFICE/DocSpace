@@ -59,7 +59,7 @@ namespace ASC.Api.Settings
         private void StorageWrapperInit<T>(DataStoreConsumer consumer, BaseStorageSettings<T> current) where T : class, ISettings, new()
         {
             Id = consumer.Name;
-            Title = consumer.GetResourceString(consumer.Name) ?? consumer.Name;
+            Title = ConsumerExtension.GetResourceString(consumer.Name) ?? consumer.Name;
             Current = consumer.Name == current.Module;
             IsSet = consumer.IsSet;
 
@@ -72,7 +72,7 @@ namespace ASC.Api.Settings
                 {
                     Name = r.Key,
                     Value = r.Value,
-                    Title = consumer.GetResourceString(consumer.Name + r.Key) ?? r.Key
+                    Title = ConsumerExtension.GetResourceString(consumer.Name + r.Key) ?? r.Key
                 }).ToList();
         }
     }

@@ -31,17 +31,15 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+
 using ASC.Common.Web;
 using ASC.Core;
-using JWT;
-using Newtonsoft.Json;
+
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ASC.Web.Core.Files
 {
@@ -145,16 +143,15 @@ namespace ASC.Web.Core.Files
                     {
                         { "payload", body }
                     };
-                JsonWebToken.JsonSerializer = new JwtSerializer();
-                var token = JsonWebToken.Encode(payload, signatureSecret, JwtHashAlgorithm.HS256);
+                var token = JsonWebToken.Encode(payload, signatureSecret);
                 //todo: remove old scheme
                 request.Headers.Add(fileUtility.SignatureHeader, "Bearer " + token);
 
-                token = JsonWebToken.Encode(body, signatureSecret, JwtHashAlgorithm.HS256);
+                token = JsonWebToken.Encode(body, signatureSecret);
                 body.Token = token;
             }
 
-            var bodyString = JsonConvert.SerializeObject(body);
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
@@ -252,19 +249,19 @@ namespace ASC.Web.Core.Files
             if (!string.IsNullOrEmpty(signatureSecret))
             {
                 var payload = new Dictionary<string, object>
-                    {
-                        { "payload", body }
-                    };
-                JsonWebToken.JsonSerializer = new JwtSerializer();
-                var token = JsonWebToken.Encode(payload, signatureSecret, JwtHashAlgorithm.HS256);
+                {
+                    { "payload", body }
+                };
+
+                var token = JsonWebToken.Encode(payload, signatureSecret);
                 //todo: remove old scheme
                 request.Headers.Add(fileUtility.SignatureHeader, "Bearer " + token);
 
-                token = JsonWebToken.Encode(body, signatureSecret, JwtHashAlgorithm.HS256);
+                token = JsonWebToken.Encode(body, signatureSecret);
                 body.Token = token;
             }
 
-            var bodyString = JsonConvert.SerializeObject(body);
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
@@ -303,7 +300,8 @@ namespace ASC.Web.Core.Files
             return (CommandResultTypes)jResponse.Value<int>("error");
         }
 
-        public static string DocbuilderRequest(FileUtility fileUtility,
+        public static string DocbuilderRequest(
+            FileUtility fileUtility,
             string docbuilderUrl,
             string requestKey,
             string scriptUrl,
@@ -336,16 +334,15 @@ namespace ASC.Web.Core.Files
                         { "payload", body }
                     };
 
-                JsonWebToken.JsonSerializer = new JwtSerializer();
-                var token = JsonWebToken.Encode(payload, signatureSecret, JwtHashAlgorithm.HS256);
+                var token = JsonWebToken.Encode(payload, signatureSecret);
                 //todo: remove old scheme
                 request.Headers.Add(fileUtility.SignatureHeader, "Bearer " + token);
 
-                token = JsonWebToken.Encode(body, signatureSecret, JwtHashAlgorithm.HS256);
+                token = JsonWebToken.Encode(body, signatureSecret);
                 body.Token = token;
             }
 
-            var bodyString = JsonConvert.SerializeObject(body);
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
@@ -377,7 +374,10 @@ namespace ASC.Web.Core.Files
             if (responseFromService == null) throw new Exception("Invalid answer format");
 
             var errorElement = responseFromService.Value<string>("error");
-            if (!string.IsNullOrEmpty(errorElement)) DocumentServiceException.ProcessResponseError(errorElement);
+            if (!string.IsNullOrEmpty(errorElement))
+            {
+                DocumentServiceException.ProcessResponseError(errorElement);
+            }
 
             var isEnd = responseFromService.Value<bool>("end");
 
@@ -434,107 +434,103 @@ namespace ASC.Web.Core.Files
         }
 
         [Serializable]
-        [DataContract(Name = "Command", Namespace = "")]
         [DebuggerDisplay("{Command} ({Key})")]
         private class CommandBody
         {
+            [System.Text.Json.Serialization.JsonIgnore]
             public CommandMethod Command { get; set; }
 
-            [DataMember(Name = "c", IsRequired = true)]
+            [JsonPropertyName("c")]
             public string C
             {
                 get { return Command.ToString().ToLower(CultureInfo.InvariantCulture); }
             }
 
-            [DataMember(Name = "callback", IsRequired = false, EmitDefaultValue = false)]
+            [JsonPropertyName("callback")]
             public string Callback { get; set; }
 
-            [DataMember(Name = "key", IsRequired = true)]
+            [JsonPropertyName("key")]
             public string Key { get; set; }
 
-            [DataMember(Name = "meta", IsRequired = false, EmitDefaultValue = false)]
+            [JsonPropertyName("meta")]
             public MetaData Meta { get; set; }
 
-            [DataMember(Name = "users", IsRequired = false, EmitDefaultValue = false)]
+            [JsonPropertyName("users")]
             public string[] Users { get; set; }
 
-            [DataMember(Name = "token", EmitDefaultValue = false)]
+            [JsonPropertyName("token")]
             public string Token { get; set; }
 
             //not used
-            [DataMember(Name = "userdata", IsRequired = false, EmitDefaultValue = false)]
+            [JsonPropertyName("userdata")]
             public string UserData { get; set; }
         }
 
         [Serializable]
-        [DataContract(Name = "meta", Namespace = "")]
         [DebuggerDisplay("{Title}")]
         public class MetaData
         {
-            [DataMember(Name = "title")]
-            public string Title;
+            [JsonPropertyName("title")]
+            public string Title { get; set; }
         }
 
         [Serializable]
-        [DataContract(Name = "Converion", Namespace = "")]
         [DebuggerDisplay("{Title} from {FileType} to {OutputType} ({Key})")]
         private class ConvertionBody
         {
-            [DataMember(Name = "async")]
+            [JsonPropertyName("async")]
             public bool Async { get; set; }
 
-            [DataMember(Name = "filetype", IsRequired = true)]
+            [JsonPropertyName("filetype")]
             public string FileType { get; set; }
 
-            [DataMember(Name = "key", IsRequired = true)]
+            [JsonPropertyName("key")]
             public string Key { get; set; }
 
-            [DataMember(Name = "outputtype", IsRequired = true)]
+            [JsonPropertyName("outputtype")]
             public string OutputType { get; set; }
 
-            [DataMember(Name = "password", EmitDefaultValue = false)]
+            [JsonPropertyName("password")]
             public string Password { get; set; }
 
-            [DataMember(Name = "title")]
+            [JsonPropertyName("title")]
             public string Title { get; set; }
 
-            [DataMember(Name = "url", IsRequired = true)]
+            [JsonPropertyName("url")]
             public string Url { get; set; }
 
-            [DataMember(Name = "token", EmitDefaultValue = false)]
+            [JsonPropertyName("token")]
             public string Token { get; set; }
         }
 
         [Serializable]
-        [DataContract(Name = "Builder", Namespace = "")]
         [DebuggerDisplay("{Key}")]
         private class BuilderBody
         {
-            [DataMember(Name = "async")]
+            [JsonPropertyName("async")]
             public bool Async { get; set; }
 
-            [DataMember(Name = "key", IsRequired = true)]
+            [JsonPropertyName("key")]
             public string Key { get; set; }
 
-            [DataMember(Name = "url", IsRequired = true)]
+            [JsonPropertyName("url")]
             public string Url { get; set; }
 
-            [DataMember(Name = "token", EmitDefaultValue = false)]
+            [JsonPropertyName("token")]
             public string Token { get; set; }
         }
 
         [Serializable]
-        [DataContract(Name = "file", Namespace = "")]
         public class FileLink
         {
-            [DataMember(Name = "fileType")]
-            public string FileType;
+            [JsonPropertyName("filetype")]
+            public string FileType { get; set; }
 
-            [DataMember(Name = "token", EmitDefaultValue = false)]
-            public string Token;
+            [JsonPropertyName("token")]
+            public string Token { get; set; }
 
-            [DataMember(Name = "url")]
-            public string Url;
+            [JsonPropertyName("url")]
+            public string Url { get; set; }
         }
 
         public class DocumentServiceException : Exception
@@ -624,44 +620,6 @@ namespace ASC.Web.Core.Files
             }
 
             return resultPercent;
-        }
-
-
-        public class JwtSerializer : IJsonSerializer
-        {
-            private class CamelCaseExceptDictionaryKeysResolver : CamelCasePropertyNamesContractResolver
-            {
-                protected override JsonDictionaryContract CreateDictionaryContract(Type objectType)
-                {
-                    var contract = base.CreateDictionaryContract(objectType);
-
-                    contract.DictionaryKeyResolver = propertyName => propertyName;
-
-                    return contract;
-                }
-            }
-
-            public string Serialize(object obj)
-            {
-                var settings = new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
-                    NullValueHandling = NullValueHandling.Ignore,
-                };
-
-                return JsonConvert.SerializeObject(obj, Formatting.Indented, settings);
-            }
-
-            public T Deserialize<T>(string json)
-            {
-                var settings = new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
-                    NullValueHandling = NullValueHandling.Ignore,
-                };
-
-                return JsonConvert.DeserializeObject<T>(json, settings);
-            }
         }
     }
 }

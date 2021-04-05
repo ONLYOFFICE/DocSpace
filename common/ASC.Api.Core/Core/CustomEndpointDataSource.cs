@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Web.Api.Routing;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Patterns;
@@ -16,7 +19,14 @@ namespace ASC.Api.Core.Core
         {
             Source = source;
             var endpoints = Source.Endpoints.Cast<RouteEndpoint>();
-            Endpoints = endpoints.Select(r => new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".{format}"), r.Order, r.Metadata, r.DisplayName)).ToList();
+            Endpoints = endpoints
+                .Where(r =>
+                {
+                    var attr = r.Metadata.OfType<CustomHttpMethodAttribute>().FirstOrDefault();
+                    return attr == null || !attr.DisableFormat;
+                })
+                .Select(r => new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".{format}"), r.Order, r.Metadata, r.DisplayName))
+                .ToList();
         }
 
         public override IChangeToken GetChangeToken()

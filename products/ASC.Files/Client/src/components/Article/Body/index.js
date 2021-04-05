@@ -1,135 +1,154 @@
-import React from 'react';
-import { utils } from 'asc-web-components';
-import { connect } from 'react-redux';
-import {
-  TreeMenu,
-  TreeNode,
-  Icons
-} from "asc-web-components";
-import { selectFolder } from '../../../store/files/actions';
+import React from "react";
 
-const getItems = data => {
-  return data.map(item => {
-    if (item.children && item.children.length) {
-      return (
-        <TreeNode
-          title={item.title}
-          key={item.key}
-          icon={
-            item.root ? (
-              <Icons.CatalogFolderIcon
-                size="scale"
-                isfill={true}
-                color="#657077"
-              />
-            ) : (
-                ""
-              )
-          }
-        >
-          {getItems(item.children)}
-        </TreeNode>
-      );
-    }
-    return (
-      <TreeNode
-        key={item.key}
-        title={item.title}
-        icon={
-          !item.root ? (
-            <Icons.CatalogFolderIcon
-              size="scale"
-              isfill={true}
-              color="#657077"
-            />
-          ) : (
-              ""
-            )
-        }
-      />
-    );
-  });
-};
+import toastr from "studio/toastr";
+import Loaders from "@appserver/common/components/Loaders";
+import TreeFolders from "./TreeFolders";
+import TreeSettings from "./TreeSettings";
+import isEmpty from "lodash/isEmpty";
+import { NewFilesPanel } from "../../panels";
+import { setDocumentTitle } from "../../../helpers/utils";
+import ThirdPartyList from "./ThirdPartyList";
+import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router-dom";
+import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class ArticleBodyContent extends React.Component {
+  constructor(props) {
+    super(props);
 
-  shouldComponentUpdate(nextProps) {
-    if(!utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)) {
-      return true;
-    }
+    const { selectedFolderTitle } = props;
 
-    if(!utils.array.isArrayEqual(nextProps.data, this.props.data)) {
-      return true;
-    }
+    selectedFolderTitle
+      ? setDocumentTitle(selectedFolderTitle)
+      : setDocumentTitle();
 
-    return false;
+    this.state = {
+      showNewFilesPanel: false,
+    };
   }
 
-  onSelect = data => {
-    this.props.selectFolder(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
+  /*componentDidMount() {
+    if (this.props.currentId) {
+      const currentId = [this.props.currentId + ""];
+      this.props.setSelectedNode(currentId);
+    }
+  }*/
+
+  onSelect = (data, e) => {
+    const {
+      filter,
+      setIsLoading,
+      selectedTreeNode,
+      setSelectedNode,
+      fetchFiles,
+      homepage,
+      history,
+    } = this.props;
+
+    if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
+      setSelectedNode(data);
+      setIsLoading(true);
+      const newFilter = filter.clone();
+      newFilter.page = 0;
+      newFilter.startIndex = 0;
+      newFilter.folder = data[0];
+
+      const selectedFolderTitle =
+        (e.node && e.node.props && e.node.props.title) || null;
+
+      selectedFolderTitle
+        ? setDocumentTitle(selectedFolderTitle)
+        : setDocumentTitle();
+
+      if (window.location.pathname.indexOf("/filter") > 0) {
+        fetchFiles(data[0], newFilter)
+          .catch((err) => toastr.error(err))
+          .finally(() => setIsLoading(false));
+      } else {
+        newFilter.startIndex = 0;
+        const urlFilter = newFilter.toUrlParams();
+        history.push(
+          combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+        );
+      }
+    }
   };
 
-  switcherIcon = obj => {
-    if (obj.isLeaf) {
-      return null;
-    }
-    if (obj.expanded) {
-      return (
-        <Icons.ExpanderDownIcon size="scale" isfill={true} color="dimgray" />
-      );
-    } else {
-      return (
-        <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray" />
-      );
-    }
+  onShowNewFilesPanel = (folderId) => {
+    const { showNewFilesPanel } = this.state;
+    this.setState({
+      showNewFilesPanel: !showNewFilesPanel,
+      newFolderId: [folderId],
+    });
+  };
+
+  setNewFilesCount = (folderPath, filesCount) => {
+    const data = this.props.treeFolders;
+    const dataItem = data.find((x) => x.id === folderPath[0]);
+    dataItem.newItems = filesCount ? filesCount : dataItem.newItems - 1;
+
+    this.props.setTreeFolders(data);
   };
 
   render() {
-    const { data, selectedKeys } = this.props;
-
-    //console.log("FilesTreeMenu", this.props);
+    const { treeFolders, onTreeDrop, selectedTreeNode } = this.props;
+    const { showNewFilesPanel, newFolderId } = this.state;
 
     return (
-      <TreeMenu
-        className="files-tree-menu"
-        checkable={false}
-        draggable={false}
-        disabled={false}
-        multiple={false}
-        showIcon={true}
-        defaultExpandAll={true}
-        switcherIcon={this.switcherIcon}
-        onSelect={this.onSelect}
-        selectedKeys={selectedKeys}
-      >
-        {getItems(data)}
-      </TreeMenu>
+      <>
+        {showNewFilesPanel && (
+          <NewFilesPanel
+            visible={showNewFilesPanel}
+            onClose={this.onShowNewFilesPanel}
+            setNewFilesCount={this.setNewFilesCount}
+            folderId={newFolderId}
+            treeFolders={treeFolders}
+          />
+        )}
+        {isEmpty(treeFolders) ? (
+          <Loaders.TreeFolders />
+        ) : (
+          <>
+            <TreeFolders
+              selectedKeys={selectedTreeNode}
+              onSelect={this.onSelect}
+              data={treeFolders}
+              onBadgeClick={this.onShowNewFilesPanel}
+              onTreeDrop={onTreeDrop}
+            />
+            <TreeSettings />
+            <ThirdPartyList />
+          </>
+        )}
+      </>
     );
-  };
-};
-
-const getTreeGroups = (groups, departments) => {
-  const treeData = [
-      {
-          key: "root",
-          title: departments,
-          root: true,
-          children: groups.map(g => {
-              return {
-                  key: g.id, title: g.name, root: false
-              };
-          }) || []
-      }
-  ];
-
-  return treeData;
-};
-
-function mapStateToProps(state) {
-  return {
-    data: getTreeGroups(state.files.folders, state.auth.settings.customNames.groupsCaption),
-    selectedKeys: state.files.selectedFolder ? [state.files.selectedFolder] : ["root"]
-  };
+  }
 }
 
-export default connect(mapStateToProps, { selectFolder })(ArticleBodyContent);
+export default inject(
+  ({ initFilesStore, filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const { setIsLoading } = initFilesStore;
+    const { fetchFiles, filter } = filesStore;
+    const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
+    const selectedTreeNode =
+      treeFoldersStore.selectedTreeNode.length > 0
+        ? treeFoldersStore.selectedTreeNode
+        : [selectedFolderStore.id + ""];
+
+    return {
+      selectedFolderTitle: selectedFolderStore.title,
+      treeFolders,
+      selectedTreeNode,
+      filter,
+
+      setIsLoading,
+      fetchFiles,
+      setSelectedNode,
+      setTreeFolders,
+
+      homepage: config.homepage,
+    };
+  }
+)(observer(withRouter(ArticleBodyContent)));

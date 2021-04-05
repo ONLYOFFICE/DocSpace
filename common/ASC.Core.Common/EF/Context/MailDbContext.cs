@@ -1,10 +1,16 @@
-﻿using ASC.Common;
+﻿using System;
+using System.Collections.Generic;
+
+using ASC.Common;
+using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.EF.Model.Mail;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
+    public class MySqlMailDbContext : MailDbContext { }
+    public class PostgreSqlMailDbContext : MailDbContext { }
     public class MailDbContext : BaseDbContext
     {
         public DbSet<MailboxServer> MailboxServer { get; set; }
@@ -15,9 +21,25 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<GreyListingWhiteList> GreyListingWhiteList { get; set; }
 
         public MailDbContext() { }
-        public MailDbContext(DbContextOptions<MailDbContext> options)
-            : base(options)
+        public MailDbContext(DbContextOptions options) : base(options) { }
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlMailDbContext() } ,
+                    { Provider.Postgre, () => new PostgreSqlMailDbContext() } ,
+                };
+            }
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            ModelBuilderWrapper
+                .From(modelBuilder, Provider)
+                .AddMailbox()
+                .AddMailboxProvider()
+                .AddServerServer();
         }
     }
     public static class MailDbExtension

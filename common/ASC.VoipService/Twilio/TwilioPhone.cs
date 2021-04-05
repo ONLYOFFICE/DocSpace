@@ -26,9 +26,11 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Tenants;
+
 using Twilio.Clients;
 using Twilio.Http;
 using Twilio.Rest.Api.V2010.Account;
@@ -42,11 +44,11 @@ namespace ASC.VoipService.Twilio
         private readonly TwilioRestClient twilio;
 
         public TwilioPhone(
-            TwilioRestClient twilio, 
-            AuthContext authContext, 
-            TenantUtil tenantUtil, 
-            SecurityContext securityContext, 
-            BaseCommonLinkUtility baseCommonLinkUtility) : 
+            TwilioRestClient twilio,
+            AuthContext authContext,
+            TenantUtil tenantUtil,
+            SecurityContext securityContext,
+            BaseCommonLinkUtility baseCommonLinkUtility) :
             base(authContext, tenantUtil, securityContext, baseCommonLinkUtility)
         {
             this.twilio = twilio;

@@ -40,6 +40,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Studio.Core
 {
+    [Singletone]
     public class SetupInfo
     {
         private static string web_autotest_secret_email;
@@ -73,8 +74,8 @@ namespace ASC.Web.Studio.Core
         public string TeamlabSiteRedirect { get; private set; }
         public long ChunkUploadSize { get; private set; }
         public bool ThirdPartyAuthEnabled { get; private set; }
+        public bool ThirdPartyBannerEnabled { get; private set; }
         public string NoTenantRedirectURL { get; private set; }
-        public string[] CustomScripts { get; private set; }
         public string NotifyAddress { get; private set; }
         public string TipsAddress { get; private set; }
         public string UserForum { get; private set; }
@@ -85,10 +86,12 @@ namespace ASC.Web.Studio.Core
         public string SalesEmail { get; private set; }
         public static bool IsSecretEmail(string email)
         {
-            var s = web_autotest_secret_email;
-            //the point is not needed in gmail.com
-            email = Regex.Replace(email ?? "", "\\.*(?=\\S*(@gmail.com$))", "");
-            return !string.IsNullOrEmpty(s) && s.Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries).Contains(email, StringComparer.CurrentCultureIgnoreCase);
+            email = Regex.Replace(email ?? "", "\\.*(?=\\S*(@gmail.com$))", "").ToLower();
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(web_autotest_secret_email))
+                return false;
+
+            var regex = new Regex(web_autotest_secret_email, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+            return regex.IsMatch(email);
         }
 
         public static bool DisplayMobappBanner(string product)
@@ -96,12 +99,11 @@ namespace ASC.Web.Studio.Core
             return web_display_mobapps_banner.Contains(product, StringComparer.InvariantCultureIgnoreCase);
         }
 
-        public bool DisplayPersonalBanners { get; private set; }
         public string ShareTwitterUrl { get; private set; }
         public string ShareFacebookUrl { get; private set; }
         public string ControlPanelUrl { get; private set; }
         public string FontOpenSansUrl { get; private set; }
-        public string VoipEnabled { get; private set; }
+        public bool VoipEnabled { get; private set; }
         public string StartProductList { get; private set; }
         public string SsoSamlLoginUrl { get; private set; }
         public string DownloadForDesktopUrl { get; private set; }
@@ -114,13 +116,12 @@ namespace ASC.Web.Studio.Core
         public int TfaAppBackupCodeLength { get; private set; }
         public int TfaAppBackupCodeCount { get; private set; }
         public string TfaAppSender { get; private set; }
-        public string NotifyAnalyticsUrl { get; private set; }
         public string RecaptchaPublicKey { get; private set; }
         public string RecaptchaPrivateKey { get; private set; }
         public string RecaptchaVerifyUrl { get; private set; }
         public int LoginThreshold { get; private set; }
         public string AmiMetaUrl { get; private set; }
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public SetupInfo(IConfiguration configuration)
         {
@@ -154,8 +155,8 @@ namespace ASC.Web.Studio.Core
             TeamlabSiteRedirect = GetAppSettings("web.teamlab-site", string.Empty);
             ChunkUploadSize = GetAppSettings("files.uploader.chunk-size", 5 * 1024 * 1024);
             ThirdPartyAuthEnabled = string.Equals(GetAppSettings("web.thirdparty-auth", "true"), "true");
+            ThirdPartyBannerEnabled = string.Equals(GetAppSettings("web.thirdparty-banner", "false"), "true");
             NoTenantRedirectURL = GetAppSettings("web.notenant-url", "");
-            CustomScripts = GetAppSettings("web.custom-scripts", string.Empty).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
             NotifyAddress = GetAppSettings("web.promo-url", string.Empty);
             TipsAddress = GetAppSettings("web.promo-tips-url", string.Empty);
@@ -170,17 +171,16 @@ namespace ASC.Web.Studio.Core
 
             RecaptchaPublicKey = GetAppSettings("web.recaptcha.public-key", "");
             RecaptchaPrivateKey = GetAppSettings("web.recaptcha.private-key", "");
-            RecaptchaVerifyUrl = GetAppSettings("web.recaptcha.verify-url", "https://www.google.com/recaptcha/api/siteverify");
+            RecaptchaVerifyUrl = GetAppSettings("web.recaptcha.verify-url", "https://www.recaptcha.net/recaptcha/api/siteverify");
             LoginThreshold = Convert.ToInt32(GetAppSettings("web.login.threshold", "0"));
             if (LoginThreshold < 1) LoginThreshold = 5;
 
             web_display_mobapps_banner = (configuration["web.display.mobapps.banner"] ?? "").Trim().Split(new char[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            DisplayPersonalBanners = GetAppSettings("web.display.personal.banners", false);
             ShareTwitterUrl = GetAppSettings("web.share.twitter", "https://twitter.com/intent/tweet?text={0}");
             ShareFacebookUrl = GetAppSettings("web.share.facebook", "");
-            ControlPanelUrl = GetAppSettings("web.controlpanel.url", "");
+            ControlPanelUrl = GetAppSettings("web:controlpanel:url", "");
             FontOpenSansUrl = GetAppSettings("web.font.opensans.url", "");
-            VoipEnabled = GetAppSettings("voip.enabled", "false");
+            VoipEnabled = GetAppSettings("voip.enabled", true);
             StartProductList = GetAppSettings("web.start.product.list", "");
             SsoSamlLoginUrl = GetAppSettings("web.sso.saml.login.url", "");
             SsoSamlLogoutUrl = GetAppSettings("web.sso.saml.logout.url", "");
@@ -195,7 +195,6 @@ namespace ASC.Web.Studio.Core
             TfaAppBackupCodeCount = GetAppSettings("web.tfaapp.backup.count", 5);
             TfaAppSender = GetAppSettings("web.tfaapp.backup.title", "ONLYOFFICE");
 
-            NotifyAnalyticsUrl = GetAppSettings("core.notify.analytics.url", "");
             AmiMetaUrl = GetAppSettings("web:ami:meta", "");
         }
 
@@ -247,16 +246,6 @@ namespace ASC.Web.Studio.Core
                 }
             }
             return defaultValue;
-        }
-    }
-
-    public static class SetupInfoExtension
-    {
-        public static DIHelper AddSetupInfo(this DIHelper services)
-        {
-            services.TryAddSingleton<SetupInfo>();
-
-            return services;
         }
     }
 }

@@ -25,7 +25,7 @@
 
 
 using System;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 using ASC.Common;
 using ASC.Core.Common.Settings;
@@ -33,13 +33,13 @@ using ASC.Core.Common.Settings;
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
-    [DataContract]
     public class PersonalSettings : ISettings
     {
-        [DataMember(Name = "IsNewUser")]
+
+        [JsonPropertyName("IsNewUser")]
         public bool IsNewUserSetting { get; set; }
 
-        [DataMember(Name = "IsNotActivated")]
+        [JsonPropertyName("IsNotActivated")]
         public bool IsNotActivatedSetting { get; set; }
 
         public Guid ID
@@ -56,6 +56,8 @@ namespace ASC.Web.Studio.Core
             };
         }
     }
+
+    [Scope]
     public class PersonalSettingsHelper
     {
         public PersonalSettingsHelper(SettingsManager settingsManager)
@@ -85,15 +87,6 @@ namespace ASC.Web.Studio.Core
             }
         }
 
-        public SettingsManager SettingsManager { get; }
-    }
-
-    public static class PersonalSettingsExtention
-    {
-        public static DIHelper AddTenantCookieSettingsService(this DIHelper services)
-        {
-            services.TryAddScoped<PersonalSettingsHelper>();
-            return services.AddSettingsManagerService();
-        }
+        private SettingsManager SettingsManager { get; }
     }
 }

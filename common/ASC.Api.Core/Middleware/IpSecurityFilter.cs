@@ -3,7 +3,6 @@
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Common.Settings;
 using ASC.IPSecurity;
 
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
+    [Scope]
     public class IpSecurityFilter : IResourceFilter
     {
         private readonly ILog log;
@@ -26,9 +26,9 @@ namespace ASC.Api.Core.Middleware
             this.IPSecurity = IPSecurity;
         }
 
-        public AuthContext AuthContext { get; }
+        private AuthContext AuthContext { get; }
         public IPRestrictionsSettings IPRestrictionsSettings { get; }
-        public IPSecurity.IPSecurity IPSecurity { get; }
+        private IPSecurity.IPSecurity IPSecurity { get; }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {
@@ -42,17 +42,6 @@ namespace ASC.Api.Core.Middleware
                 log.WarnFormat("IPSecurity: user {0}", AuthContext.CurrentAccount.ID);
                 return;
             }
-        }
-    }
-
-    public static class IpSecurityFilterExtension
-    {
-        public static DIHelper AddIpSecurityFilter(this DIHelper services)
-        {
-            return services
-                .AddSettingsManagerService()
-                .AddAuthContextService()
-                .AddIPSecurityService();
         }
     }
 }

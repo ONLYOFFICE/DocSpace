@@ -42,14 +42,15 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
+    [Scope]
     class ConfigureTenantManager : IConfigureNamedOptions<TenantManager>
     {
-        public IOptionsSnapshot<CachedTenantService> TenantService { get; }
-        public IOptionsSnapshot<CachedQuotaService> QuotaService { get; }
-        public IOptionsSnapshot<TariffService> TariffService { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public CoreSettings CoreSettings { get; }
+        private IOptionsSnapshot<CachedTenantService> TenantService { get; }
+        private IOptionsSnapshot<CachedQuotaService> QuotaService { get; }
+        private IOptionsSnapshot<TariffService> TariffService { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private CoreSettings CoreSettings { get; }
 
         public ConfigureTenantManager(
             IOptionsSnapshot<CachedTenantService> tenantService,
@@ -79,7 +80,7 @@ namespace ASC.Core
 
         public void Configure(TenantManager options)
         {
-            options.HttpContext = HttpContextAccessor?.HttpContext;
+            options.HttpContextAccessor = HttpContextAccessor;
             options.CoreBaseSettings = CoreBaseSettings;
             options.CoreSettings = CoreSettings;
 
@@ -89,20 +90,21 @@ namespace ASC.Core
         }
     }
 
+    [Scope(typeof(ConfigureTenantManager))]
     public class TenantManager
     {
+        private Tenant CurrentTenant { get; set; }
+
         public const string CURRENT_TENANT = "CURRENT_TENANT";
         internal ITenantService TenantService { get; set; }
         internal IQuotaService QuotaService { get; set; }
         internal ITariffService TariffService { get; set; }
 
-        private static List<string> thisCompAddresses = new List<string>();
+        private static readonly List<string> thisCompAddresses = new List<string>();
 
-        internal HttpContext HttpContext { get; set; }
+        internal IHttpContextAccessor HttpContextAccessor { get; set; }
         internal CoreBaseSettings CoreBaseSettings { get; set; }
         internal CoreSettings CoreSettings { get; set; }
-
-        public Tenant CurrentTenant { get; set; }
 
         static TenantManager()
         {
@@ -128,7 +130,6 @@ namespace ASC.Core
             ITenantService tenantService,
             IQuotaService quotaService,
             ITariffService tariffService,
-            IHttpContextAccessor httpContextAccessor,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings)
         {
@@ -137,7 +138,17 @@ namespace ASC.Core
             TariffService = tariffService;
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
-            HttpContext = httpContextAccessor?.HttpContext;
+        }
+
+        public TenantManager(
+            ITenantService tenantService,
+            IQuotaService quotaService,
+            ITariffService tariffService,
+            IHttpContextAccessor httpContextAccessor,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings) : this(tenantService, quotaService, tariffService, coreBaseSettings, coreSettings)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
 
@@ -216,11 +227,12 @@ namespace ASC.Core
 
         public Tenant GetCurrentTenant(bool throwIfNotFound, HttpContext context)
         {
-            Tenant tenant = null;
             if (CurrentTenant != null)
             {
                 return CurrentTenant;
             }
+
+            Tenant tenant = null;
 
             if (context != null)
             {
@@ -231,14 +243,14 @@ namespace ASC.Core
                     context.Items[CURRENT_TENANT] = tenant;
                 }
             }
-            if (tenant == null)
-            {
-                tenant = CallContext.GetData(CURRENT_TENANT) as Tenant;
-            }
+
             if (tenant == null && throwIfNotFound)
             {
                 throw new Exception("Could not resolve current tenant :-(.");
             }
+
+            CurrentTenant = tenant;
+
             return tenant;
         }
 
@@ -249,7 +261,7 @@ namespace ASC.Core
 
         public Tenant GetCurrentTenant(bool throwIfNotFound)
         {
-            return GetCurrentTenant(throwIfNotFound, HttpContext);
+            return GetCurrentTenant(throwIfNotFound, HttpContextAccessor?.HttpContext);
         }
 
         public void SetCurrentTenant(Tenant tenant)
@@ -257,9 +269,9 @@ namespace ASC.Core
             if (tenant != null)
             {
                 CurrentTenant = tenant;
-                if (HttpContext != null)
+                if (HttpContextAccessor?.HttpContext != null)
                 {
-                    HttpContext.Items[CURRENT_TENANT] = tenant;
+                    HttpContextAccessor.HttpContext.Items[CURRENT_TENANT] = tenant;
                 }
                 Thread.CurrentThread.CurrentCulture = tenant.GetCulture();
                 Thread.CurrentThread.CurrentUICulture = tenant.GetCulture();
@@ -337,25 +349,9 @@ namespace ASC.Core
             QuotaService.SetTenantQuotaRow(row, exchange);
         }
 
-        public List<TenantQuotaRow> FindTenantQuotaRows(TenantQuotaRowQuery query)
+        public List<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
         {
-            return QuotaService.FindTenantQuotaRows(query).ToList();
-        }
-    }
-
-    public static class TenantManagerConfigExtension
-    {
-        public static DIHelper AddTenantManagerService(this DIHelper services)
-        {
-            services.TryAddScoped<TenantManager>();
-            services.TryAddScoped<IConfigureOptions<TenantManager>, ConfigureTenantManager>();
-
-            return services
-                .AddTenantService()
-                .AddQuotaService()
-                .AddTariffService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService();
+            return QuotaService.FindTenantQuotaRows(tenantId).ToList();
         }
     }
 }

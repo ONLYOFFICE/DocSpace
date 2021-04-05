@@ -1,45 +1,43 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { connect } from "react-redux";
+import axios from "axios";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import {
-  Button,
-  Text,
-  PasswordInput,
-  Loader,
-  toastr,
-  Heading
-} from "asc-web-components";
-import { PageLayout } from "asc-web-common";
-import { store } from "asc-web-common";
-import { getConfirmationInfo, changePassword } from '../../../../store/confirm/actions';
-const { logout } = store.auth.actions;
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import PasswordInput from "@appserver/components/password-input";
+import Loader from "@appserver/components/loader";
+import toastr from "@appserver/components/toast/toastr";
+import Heading from "@appserver/components/heading";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
+import { inject, observer } from "mobx-react";
 
 const BodyStyle = styled.form`
   margin: 70px auto 0 auto;
   max-width: 500px;
-
   .password-header {
     margin-bottom: 24px;
-
     .password-logo {
       max-width: 216px;
       max-height: 35px;
     }
-
     .password-title {
       margin: 8px 0;
     }
   }
-
   .password-text {
     margin-bottom: 5px;
   }
-
   .password-button {
     margin-top: 20px;
+  }
+
+  .password-input {
+    .password-field-wrapper {
+      width: 100%;
+    }
   }
 `;
 
@@ -51,31 +49,37 @@ class Form extends React.PureComponent {
     this.state = {
       password: "",
       passwordValid: true,
-      isValidConfirmLink: false,
+      // isValidConfirmLink: false,
       isLoading: false,
       passwordEmpty: false,
       key: linkData.confirmHeader,
-      userId: linkData.uid
+      userId: linkData.uid,
     };
   }
 
-  onKeyPress = target => {
+  onKeyPress = (target) => {
     if (target.key === "Enter") {
       this.onSubmit();
     }
   };
 
-  onChange = event => {
+  onChange = (event) => {
     this.setState({ password: event.target.value });
     !this.state.passwordValid && this.setState({ passwordValid: true });
     event.target.value.trim() && this.setState({ passwordEmpty: false });
     this.onKeyPress(event);
   };
 
-  onSubmit = e => {
-    this.setState({ isLoading: true }, function() {
+  onSubmit = (e) => {
+    this.setState({ isLoading: true }, function () {
       const { userId, password, key } = this.state;
-      const { history, changePassword } = this.props;
+      const {
+        t,
+        hashSettings,
+        defaultPage,
+        logout,
+        changePassword,
+      } = this.props;
       let hasError = false;
 
       if (!this.state.passwordValid) {
@@ -89,25 +93,29 @@ class Form extends React.PureComponent {
         this.setState({ isLoading: false });
         return false;
       }
+      const hash = createPasswordHash(password, hashSettings);
 
-      changePassword(userId, password, key)
-        .then(() => this.props.logout())
+      changePassword(userId, hash, key)
+        .then(() => logout())
         .then(() => {
-          history.push("/");
-          toastr.success(this.props.t("ChangePasswordSuccess"));
+          toastr.success(t("ChangePasswordSuccess"));
+          tryRedirectTo(defaultPage);
         })
-        .catch(error => {
-          toastr.error(this.props.t(`${error}`));
+        .catch((error) => {
+          toastr.error(t(`${error}`));
           this.setState({ isLoading: false });
         });
     });
   };
 
   componentDidMount() {
-    const { getConfirmationInfo, history } = this.props;
-    getConfirmationInfo(this.state.key).catch(error => {
+    const { defaultPage, getSettings, getPortalPasswordSettings } = this.props;
+
+    const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
+
+    axios.all(requests).catch((error) => {
       toastr.error(this.props.t(`${error}`));
-      history.push("/");
+      tryRedirectTo(defaultPage);
     });
 
     window.addEventListener("keydown", this.onKeyPress);
@@ -119,14 +127,14 @@ class Form extends React.PureComponent {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  validatePassword = value => this.setState({ passwordValid: value });
+  validatePassword = (value) => this.setState({ passwordValid: value });
 
   render() {
-    const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
+    const { settings, t, greetingTitle } = this.props;
     const { isLoading, password, passwordEmpty } = this.state;
 
-    return !isConfirmLoaded ? (
-      <Loader className="pageLoader" type="rombs" size='40px' />
+    return !settings ? (
+      <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <BodyStyle>
         <div className="password-header">
@@ -139,11 +147,12 @@ class Form extends React.PureComponent {
             {greetingTitle}
           </Heading>
         </div>
-        <Text className="password-text" fontSize='14px'>
+        <Text className="password-text" fontSize="14px">
           {t("PassworResetTitle")}
         </Text>
         <PasswordInput
           id="password"
+          className="password-input"
           name="password"
           inputName="password"
           inputValue={password}
@@ -161,8 +170,8 @@ class Form extends React.PureComponent {
           passwordSettings={settings}
           tooltipPasswordTitle="Password must contain:"
           tooltipPasswordLength={`${t("ErrorPasswordLength", {
-            fromNumber: 6,
-            toNumber: 30
+            fromNumber: settings.minLength,
+            toNumber: 30,
           })}:`}
           placeholder={t("PasswordCustomMode")}
           maxLength={30}
@@ -190,31 +199,43 @@ class Form extends React.PureComponent {
 
 Form.propTypes = {
   history: PropTypes.object.isRequired,
-  changePassword: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
-  linkData: PropTypes.object.isRequired
+  linkData: PropTypes.object.isRequired,
 };
 
 Form.defaultProps = {
-  password: ""
+  password: "",
 };
 
-const ChangePasswordForm = props => (
-  <PageLayout sectionBodyContent={<Form {...props} />} />
+const ChangePasswordForm = (props) => (
+  <PageLayout>
+    <PageLayout.SectionBody>
+      <Form {...props} />
+    </PageLayout.SectionBody>
+  </PageLayout>
 );
 
-function mapStateToProps(state) {
-  return {
-    isValidConfirmLink: state.auth.isValidConfirmLink,
-    isConfirmLoaded: state.confirm.isConfirmLoaded,
-    settings: state.auth.settings.passwordSettings,
-    isAuthenticated: state.auth.isAuthenticated,
-    greetingTitle: state.auth.settings.greetingSettings
-  };
-}
+export default inject(({ auth, setup }) => {
+  const { settingsStore, logout, isAuthenticated } = auth;
+  const {
+    greetingSettings,
+    hashSettings,
+    defaultPage,
+    passwordSettings,
+    getSettings,
+    getPortalPasswordSettings,
+  } = settingsStore;
+  const { changePassword } = setup;
 
-export default connect(mapStateToProps, {
-  changePassword,
-  getConfirmationInfo,
-  logout
-})(withRouter(withTranslation()(ChangePasswordForm)));
+  return {
+    settings: passwordSettings,
+    hashSettings,
+    greetingTitle: greetingSettings,
+    defaultPage,
+    logout,
+    isAuthenticated,
+    getSettings,
+    getPortalPasswordSettings,
+    changePassword,
+  };
+})(withRouter(withTranslation("Confirm")(observer(ChangePasswordForm))));

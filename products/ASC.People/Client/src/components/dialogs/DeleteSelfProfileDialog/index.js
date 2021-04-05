@@ -1,28 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  toastr,
-  ModalDialog,
-  Button,
-  Link,
-  Text
-} from "asc-web-components";
+
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
-import ModalDialogContainer from '../ModalDialogContainer';
-import { api, utils } from "asc-web-common";
-const { sendInstructionsToDelete } = api.people;
-const { changeLanguage } = utils;
+import ModalDialogContainer from "../ModalDialogContainer";
+import { sendInstructionsToDelete } from "@appserver/common/api/people";
+import toastr from "studio/toastr";
 
 class DeleteSelfProfileDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isRequestRunning: false
+      isRequestRunning: false,
     };
-
-    changeLanguage(i18n);
   }
   onDeleteSelfProfileInstructions = () => {
     const { onClose } = this.props;
@@ -35,8 +30,8 @@ class DeleteSelfProfileDialogComponent extends React.Component {
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => onClose());
         });
-    })
-  }
+    });
+  };
 
   render() {
     console.log("DeleteSelfProfileDialog render");
@@ -45,48 +40,48 @@ class DeleteSelfProfileDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t('DeleteProfileTitle')}
-          bodyContent={
-            <Text fontSize='13px'>
-              {t('DeleteProfileInfo')} <Link type="page" href={`mailto:${email}`} noHover color='#316DAA' title={email}>
+        <ModalDialog visible={visible} onClose={onClose}>
+          <ModalDialog.Header>{t("DeleteProfileTitle")}</ModalDialog.Header>
+          <ModalDialog.Body>
+            <Text fontSize="13px">
+              {t("DeleteProfileInfo")}{" "}
+              <Link
+                type="page"
+                href={`mailto:${email}`}
+                noHover
+                color="#316DAA"
+                title={email}
+              >
                 {email}
               </Link>
             </Text>
-          }
-          footerContent={
-            <>
-              <Button
-                key="SendBtn"
-                label={t('SendButton')}
-                size="medium"
-                primary={true}
-                onClick={this.onDeleteSelfProfileInstructions}
-                isLoading={isRequestRunning}
-              />
-              <Button
-                className='button-dialog'
-                key="CloseBtn"
-                label={t('CloseButton')}
-                size="medium"
-                onClick={onClose}
-                isDisabled={isRequestRunning}
-              />
-            </>
-          }
-        />
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
+            <Button
+              key="SendBtn"
+              label={t("SendButton")}
+              size="medium"
+              primary={true}
+              onClick={this.onDeleteSelfProfileInstructions}
+              isLoading={isRequestRunning}
+            />
+            <Button
+              className="button-dialog"
+              key="CloseBtn"
+              label={t("CloseButton")}
+              size="medium"
+              onClick={onClose}
+              isDisabled={isRequestRunning}
+            />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }
 }
 
-
-const DeleteSelfProfileDialogTranslated = withTranslation()(DeleteSelfProfileDialogComponent);
-
-const DeleteSelfProfileDialog = props => (
-  <DeleteSelfProfileDialogTranslated i18n={i18n} {...props} />
+const DeleteSelfProfileDialog = withTranslation("DeleteSelfProfileDialog")(
+  DeleteSelfProfileDialogComponent
 );
 
 DeleteSelfProfileDialog.propTypes = {

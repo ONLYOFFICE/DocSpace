@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
+    [Scope]
     public class TenantStatusFilter : IResourceFilter
     {
         private readonly ILog log;
@@ -21,7 +22,7 @@ namespace ASC.Api.Core.Middleware
             TenantManager = tenantManager;
         }
 
-        public TenantManager TenantManager { get; }
+        private TenantManager TenantManager { get; }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {
@@ -43,15 +44,6 @@ namespace ASC.Api.Core.Middleware
                 log.WarnFormat("Tenant {0} is not removed or suspended", tenant.TenantId);
                 return;
             }
-        }
-    }
-
-    public static class TenantStatusFilterExtension
-    {
-        public static DIHelper AddTenantStatusFilter(this DIHelper services)
-        {
-            return services
-                .AddTenantManagerService();
         }
     }
 }

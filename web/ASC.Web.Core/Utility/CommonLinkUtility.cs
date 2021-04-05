@@ -68,9 +68,11 @@ namespace ASC.Web.Studio.Utility
         FullTextSearch = 18,
         WhiteLabel = 19,
         MailService = 20,
-        Storage = 21
+        Storage = 21,
+        PrivacyRoom = 22
     }
 
+    [Scope]
     public class CommonLinkUtility : BaseCommonLinkUtility
     {
         private static readonly Regex RegFilePathTrim = new Regex("/[^/]*\\.aspx", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -87,7 +89,7 @@ namespace ASC.Web.Studio.Utility
             WebItemManager webItemManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings) :
+            CommonLinkUtilitySettings settings) :
             this(null, coreBaseSettings, coreSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider, options, settings)
         {
         }
@@ -102,7 +104,7 @@ namespace ASC.Web.Studio.Utility
             WebItemManager webItemManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings) :
+            CommonLinkUtilitySettings settings) :
             base(httpContextAccessor, coreBaseSettings, coreSettings, tenantManager, options, settings) =>
             (UserManager, WebItemManagerSecurity, WebItemManager, EmailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);
 
@@ -111,10 +113,10 @@ namespace ASC.Web.Studio.Utility
             get { return ToAbsolute("~/auth.aspx") + "?t=logout"; }
         }
 
-        public UserManager UserManager { get; }
-        public WebItemManagerSecurity WebItemManagerSecurity { get; }
-        public WebItemManager WebItemManager { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        private UserManager UserManager { get; }
+        private WebItemManagerSecurity WebItemManagerSecurity { get; }
+        private WebItemManager WebItemManager { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
 
         public string GetDefault()
         {
@@ -215,7 +217,7 @@ namespace ASC.Web.Studio.Utility
         {
             var productID = Guid.Empty;
 
-            if (HttpContext != null)
+            if (HttpContextAccessor?.HttpContext != null)
             {
                 GetLocationByRequest(out var product, out _);
                 if (product != null) productID = product.ID;
@@ -228,9 +230,9 @@ namespace ASC.Web.Studio.Utility
         {
             var addonID = Guid.Empty;
 
-            if (HttpContext != null)
+            if (HttpContextAccessor?.HttpContext != null)
             {
-                var addonName = GetAddonNameFromUrl(HttpContext.Request.Url().AbsoluteUri);
+                var addonName = GetAddonNameFromUrl(HttpContextAccessor.HttpContext.Request.Url().AbsoluteUri);
 
                 switch (addonName)
                 {
@@ -254,9 +256,9 @@ namespace ASC.Web.Studio.Utility
         public void GetLocationByRequest(out IProduct currentProduct, out IModule currentModule)
         {
             var currentURL = string.Empty;
-            if (HttpContext?.Request != null)
+            if (HttpContextAccessor?.HttpContext?.Request != null)
             {
-                currentURL = HttpContext.Request.GetUrlRewriter().AbsoluteUri;
+                currentURL = HttpContextAccessor.HttpContext.Request.GetUrlRewriter().AbsoluteUri;
 
                 //TODO ?
                 // http://[hostname]/[virtualpath]/[AjaxPro.Utility.HandlerPath]/[assembly],[classname].ashx
@@ -392,7 +394,7 @@ namespace ASC.Web.Studio.Utility
                 name = GetProductNameFromUrl(url);
                 if (string.IsNullOrEmpty(name))
                 {
-                    return GetAddonNameFromUrl(name);
+                    return GetAddonNameFromUrl(url);
                 }
 
             }
@@ -461,7 +463,7 @@ namespace ASC.Web.Studio.Utility
             if (!string.IsNullOrEmpty(sysName))
                 foreach (var product in WebItemManager.GetItemsAll<IProduct>())
                 {
-                    if (string.CompareOrdinal(sysName, WebItemExtension.GetSysName(product as IWebItem)) == 0)
+                    if (string.CompareOrdinal(sysName, WebItemExtension.GetSysName(product)) == 0)
                     {
                         result = product;
                         break;
@@ -488,7 +490,7 @@ namespace ASC.Web.Studio.Utility
 
         public string GetHelpLink(SettingsManager settingsManager, AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper, bool inCurrentCulture = true)
         {
-            if (!AdditionalWhiteLabelSettings.Instance(settingsManager).HelpCenterEnabled)
+            if (!settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().HelpCenterEnabled)
                 return string.Empty;
 
             var url = additionalWhiteLabelSettingsHelper.DefaultHelpCenterUrl;
@@ -522,9 +524,14 @@ namespace ASC.Web.Studio.Utility
 
         public string GetConfirmationUrlRelative(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
         {
+            return $"confirm/{confirmType}?{GetToken(email, confirmType, postfix, userId)}";
+        }
+
+        public string GetToken(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
+        {
             var validationKey = EmailValidationKeyProvider.GetEmailKey(email + confirmType + (postfix ?? ""));
 
-            var link = $"confirm/{confirmType}?key={validationKey}";
+            var link = $"type={confirmType}&key={validationKey}";
 
             if (!string.IsNullOrEmpty(email))
             {
@@ -536,30 +543,10 @@ namespace ASC.Web.Studio.Utility
                 link += $"&uid={userId}";
             }
 
-            if (postfix != null)
-            {
-                link += "&p=1";
-            }
-
             return link;
         }
 
         #endregion
 
-    }
-
-    public static class CommonLinkUtilityExtension
-    {
-        public static DIHelper AddCommonLinkUtilityService(this DIHelper services)
-        {
-            services.TryAddScoped<CommonLinkUtility>();
-
-            return services
-                .AddUserManagerService()
-                .AddBaseCommonLinkUtilityService()
-                .AddWebItemManagerSecurity()
-                .AddWebItemManager()
-                .AddEmailValidationKeyProviderService();
-        }
     }
 }

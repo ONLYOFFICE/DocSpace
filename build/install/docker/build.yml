@@ -1,0 +1,93 @@
+version: "3.6"
+
+services: 
+  onlyoffice-api:
+    build:
+      context: ./
+      dockerfile: Dockerfile-app
+      target: api
+    image: "${REPO}/${STATUS}appserver-api:${SRV_VERSION}"
+
+  onlyoffice-api_system:
+    build:
+      context: ./
+      dockerfile: Dockerfile-app
+      target: api_system
+    image: "${REPO}/${STATUS}appserver-api_system:${SRV_VERSION}"
+     
+  onlyoffice-urlshortener:
+    build:
+      context: ./
+      dockerfile: Dockerfile-app
+      target: urlshortener
+    image: "${REPO}/${STATUS}appserver-urlshortener:${SRV_VERSION}"
+   
+  onlyoffice-studio.notify:
+    build:
+      context: ./
+      dockerfile: Dockerfile-app
+      target: studio.notify
+    image: "${REPO}/${STATUS}appserver-studio.notify:${SRV_VERSION}"
+    
+  onlyoffice-notify:
+    build:
+      context: ./
+      dockerfile: Dockerfile-app
+      target: notify
+    image: "${REPO}/${STATUS}appserver-notify:${SRV_VERSION}"
+
+  onlyoffice-people.server:
+    build:
+      context: ./
+      dockerfile: Dockerfile-app
+      target: people.server
+    image: "${REPO}/${STATUS}appserver-people.server:${SRV_VERSION}"
+    
+  onlyoffice-files:
+    build:
+      context: ./
+      dockerfile: Dockerfile-app
+      target: files
+    image: "${REPO}/${STATUS}appserver-files:${SRV_VERSION}"
+    
+  onlyoffice-files_services:
+    build:
+      context: ./
+      dockerfile: Dockerfile-app
+      target: files_services
+    image: "${REPO}/${STATUS}appserver-files_services:${SRV_VERSION}"
+    
+  onlyoffice-studio:
+    build:
+      context: ./
+      dockerfile: Dockerfile-app
+      target: studio
+    image: "${REPO}/${STATUS}appserver-studio:${SRV_VERSION}"
+   
+  onlyoffice-backup:
+    build:
+      context: ./
+      dockerfile: Dockerfile-app
+      target: backup
+    image: "${REPO}/${STATUS}appserver-backup:${SRV_VERSION}"
+
+  onlyoffice-thumbnails:
+    build:
+      context: ./
+      dockerfile: Dockerfile-app
+      target: thumbnails
+    image: "${REPO}/${STATUS}appserver-thumbnails:${SRV_VERSION}"
+    
+  onlyoffice-proxy:
+    build:
+      context:  ./
+      dockerfile: Dockerfile-app
+      target: web
+    image: "${REPO}/${STATUS}appserver-proxy:${SRV_VERSION}"
+
+  onlyoffice-socket:
+    build:
+      context:  ./
+      dockerfile: Dockerfile-app
+      target: socket
+    image: "${REPO}/${STATUS}appserver-socket:${SRV_VERSION}"

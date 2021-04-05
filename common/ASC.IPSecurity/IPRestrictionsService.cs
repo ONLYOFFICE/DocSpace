@@ -32,16 +32,17 @@ using ASC.Common.Caching;
 
 namespace ASC.IPSecurity
 {
+    [Singletone]
     public class IPRestrictionsServiceCache
     {
         private const string cacheKey = "iprestrictions";
         public ICache Cache { get; set; }
 
-        public ICacheNotify<IPRestrictionItem> Notify { get; }
+        internal ICacheNotify<IPRestrictionItem> Notify { get; }
 
-        public IPRestrictionsServiceCache(ICacheNotify<IPRestrictionItem> notify)
+        public IPRestrictionsServiceCache(ICacheNotify<IPRestrictionItem> notify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             notify.Subscribe((r) => Cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
             Notify = notify;
         }
@@ -51,13 +52,15 @@ namespace ASC.IPSecurity
             return cacheKey + tenant;
         }
     }
+
+    [Scope]
     public class IPRestrictionsService
     {
         private readonly ICache cache;
         private readonly ICacheNotify<IPRestrictionItem> notify;
         private static readonly TimeSpan timeout = TimeSpan.FromMinutes(5);
 
-        public IPRestrictionsRepository IPRestrictionsRepository { get; }
+        private IPRestrictionsRepository IPRestrictionsRepository { get; }
 
         public IPRestrictionsService(
             IPRestrictionsRepository iPRestrictionsRepository,
@@ -84,17 +87,6 @@ namespace ASC.IPSecurity
             var restrictions = IPRestrictionsRepository.Save(ips, tenant);
             notify.Publish(new IPRestrictionItem { TenantId = tenant }, CacheNotifyAction.InsertOrUpdate);
             return restrictions;
-        }
-    }
-
-    public static class IPRestrictionsServiceExtension
-    {
-        public static DIHelper AddIPRestrictionsService(this DIHelper services)
-        {
-            services.TryAddScoped<IPRestrictionsService>();
-            services.TryAddSingleton<IPRestrictionsServiceCache>();
-
-            return services.AddIPRestrictionsRepositoryService();
         }
     }
 }

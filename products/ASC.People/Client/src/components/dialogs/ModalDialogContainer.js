@@ -1,9 +1,15 @@
 import styled from "styled-components";
+import { tablet } from "@appserver/components/utils/device";
 
 const ModalDialogContainer = styled.div`
-  .flex {
+  .invite-link-dialog-wrapper {
     display: flex;
-    justify-content: space-between;
+
+    @media ${tablet} {
+      display: grid;
+      grid-gap: 8px;
+      grid-template-columns: auto;
+    }
   }
 
   .text-dialog {
@@ -27,7 +33,9 @@ const ModalDialogContainer = styled.div`
   }
 
   .link-dialog {
+    transition: opacity 0.2s;
     margin-right: 12px;
+    opacity: ${(props) => (props.ChangeTextAnim ? 0 : 1)};
   }
 
   .error-label {

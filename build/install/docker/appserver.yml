@@ -1,0 +1,196 @@
+version: "3.6"
+x-service: 
+    &x-service-base
+    container_name: base
+    restart: always
+    expose:
+    - ${SERVICE_PORT}
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      APP_DOTNET_ENV: ${APP_DOTNET_ENV}
+      APP_CORE_BASE_DOMAIN: ${APP_CORE_BASE_DOMAIN}
+      APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY}
+      DOCUMENT_SERVER_JWT_SECRET: ${DOCUMENT_SERVER_JWT_SECRET}
+      DOCUMENT_SERVER_JWT_HEADER: ${DOCUMENT_SERVER_JWT_HEADER}
+      DOCUMENT_SERVER_URL_PUBLIC: ${DOCUMENT_SERVER_URL_PUBLIC}
+      DOCUMENT_SERVER_URL_INTERNAL: ${DOCUMENT_SERVER_URL_INTERNAL}
+      DOCUMENT_SERVER_URL_CONVERTER: ${DOCUMENT_SERVER_URL_CONVERTER}
+      KAFKA_HOST: ${KAFKA_HOST}
+      ELK_HOST: ${ELK_HOST}
+      PROXY_HOST: ${PROXY_HOST}
+    volumes:
+    #- /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data
+    - app_data:/app/onlyoffice/data
+
+services: 
+  onlyoffice-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
+    container_name: ${ELK_HOST}
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65535
+        hard: 65535
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    expose:
+      - "9200"
+      - "9300"
+
+  onlyoffice-zookeeper:
+    image: zookeeper:latest
+    container_name: ${ZOO_HOST}
+    restart: always
+    expose:
+      - "2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_PORT: ${ZOO_PORT:-2181}
+      ZOO_SERVER: ${ZOO_SERVER}
+    volumes:
+    - zoo_data:/data
+    - zoo_log:/datalog
+
+  onlyoffice-kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: ${KAFKA_HOST}
+    restart: always
+    expose:
+      - "9092"
+    depends_on:
+    - onlyoffice-zookeeper
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: ${KAFKA_ADVERTISED_LISTENERS}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
+      KAFKA_INTER_BROKER_LISTENER_NAME: ${KAFKA_INTER_BROKER_LISTENER_NAME}
+      KAFKA_ZOOKEEPER_CONNECT: ${KAFKA_ZOOKEEPER_CONNECT}
+      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID}
+      KAFKA_LOG4J_LOGGERS: ${KAFKA_LOG4J_LOGGERS}
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
+    volumes:
+    - kafka_data:/var/lib/kafka/data
+
+  onlyoffice-api:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-api:${SRV_VERSION}"
+    container_name: ${API_HOST}
+
+  onlyoffice-api_system:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-api_system:${SRV_VERSION}"
+    container_name: ${API_SYSTEM_HOST}
+     
+  onlyoffice-urlshortener:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-urlshortener:${SRV_VERSION}"
+    container_name: ${URLSHORTENER_HOST}
+    expose:
+      - "9999"
+      - ${SERVICE_PORT}
+
+  onlyoffice-studio.notify:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-studio.notify:${SRV_VERSION}"
+    container_name: ${STUDIO_NOTIFY_HOST}
+    
+  onlyoffice-notify:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-notify:${SRV_VERSION}"
+    container_name: ${NOTIFY_HOST}
+
+  onlyoffice-people.server:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-people.server:${SRV_VERSION}"
+    container_name: ${PEOPLE_SERVER_HOST}
+    
+  onlyoffice-files:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-files:${SRV_VERSION}"
+    container_name: ${FILES_HOST}
+    
+  onlyoffice-files_services:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-files_services:${SRV_VERSION}"
+    container_name: ${FILES_SERVICES_HOST}
+    
+  onlyoffice-studio:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-studio:${SRV_VERSION}"
+    container_name: ${STUDIO_HOST}
+   
+  onlyoffice-backup:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-backup:${SRV_VERSION}"
+    container_name: ${BACKUP_HOST}
+    
+  onlyoffice-thumbnails:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-thumbnails:${SRV_VERSION}"
+    container_name: ${THUMBNAILS_HOST}
+  
+  onlyoffice-socket:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-socket:${SRV_VERSION}"
+    container_name: ${SOCKET_HOST}
+
+  onlyoffice-proxy:
+    image: "${REPO}/${STATUS}appserver-proxy:${SRV_VERSION}"
+    container_name: ${PROXY_HOST}
+    restart: always
+    expose:
+      - "8081"
+      - "8099"
+    ports:
+      - 8092:8092 
+    depends_on:
+      - onlyoffice-api
+      - onlyoffice-api_system
+      - onlyoffice-urlshortener
+      - onlyoffice-studio.notify
+      - onlyoffice-notify
+      - onlyoffice-people.server
+      - onlyoffice-files
+      - onlyoffice-files_services
+      - onlyoffice-studio
+      - onlyoffice-backup
+      - onlyoffice-thumbnails
+    environment:
+      - SERVICE_API=${SERVICE_API}
+      - SERVICE_API_SYSTEM=${SERVICE_API_SYSTEM}
+      - SERVICE_URLSHORTENER=${SERVICE_URLSHORTENER}
+      - SERVICE_STUDIO_NOTIFY=${SERVICE_STUDIO_NOTIFY}
+      - SERVICE_PEOPLE_SERVER=${SERVICE_PEOPLE_SERVER}
+      - SERVICE_FILES=${SERVICE_FILES}
+      - SERVICE_FILES_SERVICES=${SERVICE_FILES_SERVICES}
+      - SERVICE_STUDIO=${SERVICE_STUDIO}
+      - SERVICE_BACKUP=${SERVICE_BACKUP}
+      - SERVICE_THUMBNAILS=${SERVICE_THUMBNAILS}
+      - SERVICE_SH=${SERVICE_SH}
+      - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
+      - SERVICE_PORT=${SERVICE_PORT}
+    volumes:
+      - proxy_log:/var/log/nginx
+
+networks:
+  default:
+    external:
+      name: ${NETWORK_NAME}
+
+volumes:
+  kafka_data:
+  zoo_data:
+  zoo_log:
+  proxy_log:
+  app_data:
+  es_data:

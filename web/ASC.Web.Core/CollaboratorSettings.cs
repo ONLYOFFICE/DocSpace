@@ -25,16 +25,14 @@
 
 
 using System;
-using System.Runtime.Serialization;
+
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
-    [DataContract]
     public class CollaboratorSettings : ISettings
     {
-        [DataMember(Name = "FirstVisit")]
         public bool FirstVisit { get; set; }
 
         public Guid ID

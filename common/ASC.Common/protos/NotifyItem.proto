@@ -11,6 +11,7 @@ message NotifyItem {
     bool CheckSubsciption = 6;
     int32 TenantId = 7;
     string UserId = 8;
+    string BaseUrl = 9;
 }
 
 message NotifyActionItem {

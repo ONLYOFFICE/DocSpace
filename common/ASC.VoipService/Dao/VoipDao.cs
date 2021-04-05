@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
@@ -39,17 +40,18 @@ using ASC.VoipService.Twilio;
 
 namespace ASC.VoipService.Dao
 {
+    [Scope(typeof(CachedVoipDao))]
     public class VoipDao : AbstractDao
     {
         public VoipDao(
-            int tenantID,
+            TenantManager tenantManager,
             DbContextManager<VoipDbContext> dbOptions,
             AuthContext authContext,
             TenantUtil tenantUtil,
             SecurityContext securityContext,
             BaseCommonLinkUtility baseCommonLinkUtility,
             ConsumerFactory consumerFactory)
-            : base(dbOptions, tenantID)
+            : base(dbOptions, tenantManager)
         {
             AuthContext = authContext;
             TenantUtil = tenantUtil;
@@ -85,6 +87,14 @@ namespace ASC.VoipService.Dao
             var number = VoipDbContext.VoipNumbers.Where(r => r.Id == phoneId && r.TenantId == TenantID).FirstOrDefault();
             VoipDbContext.VoipNumbers.Remove(number);
             VoipDbContext.SaveChanges();
+        }
+
+        public virtual IEnumerable<VoipPhone> GetAllNumbers()
+        {
+            return VoipDbContext.VoipNumbers
+                .Where(r => r.TenantId == TenantID)
+                .ToList()
+                .ConvertAll(ToPhone);
         }
 
         public virtual IEnumerable<VoipPhone> GetNumbers(params string[] ids)
@@ -358,11 +368,11 @@ namespace ASC.VoipService.Dao
             }
         }
 
-        public AuthContext AuthContext { get; }
-        public TenantUtil TenantUtil { get; }
-        public SecurityContext SecurityContext { get; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        public ConsumerFactory ConsumerFactory { get; }
+        private AuthContext AuthContext { get; }
+        private TenantUtil TenantUtil { get; }
+        private SecurityContext SecurityContext { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private ConsumerFactory ConsumerFactory { get; }
 
         #endregion
     }

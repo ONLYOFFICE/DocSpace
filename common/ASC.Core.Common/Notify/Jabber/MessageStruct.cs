@@ -25,6 +25,7 @@
 
 
 using System;
+
 using Newtonsoft.Json;
 
 namespace ASC.Core.Common.Notify.Jabber

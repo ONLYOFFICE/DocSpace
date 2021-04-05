@@ -38,6 +38,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.WhiteLabel
 {
+    [Scope]
     public class TenantLogoManager
     {
         private string CacheKey
@@ -51,8 +52,8 @@ namespace ASC.Web.Core.WhiteLabel
             private set;
         }
 
-        public ICache Cache { get; }
-        public ICacheNotify<TenantLogoCacheItem> CacheNotify { get; }
+        private ICache Cache { get; }
+        private ICacheNotify<TenantLogoCacheItem> CacheNotify { get; }
 
         public TenantLogoManager(
             TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
@@ -61,7 +62,8 @@ namespace ASC.Web.Core.WhiteLabel
             TenantManager tenantManager,
             AuthContext authContext,
             IConfiguration configuration,
-            ICacheNotify<TenantLogoCacheItem> cacheNotify)
+            ICacheNotify<TenantLogoCacheItem> cacheNotify, 
+            ICache cache)
         {
             TenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
             SettingsManager = settingsManager;
@@ -71,7 +73,7 @@ namespace ASC.Web.Core.WhiteLabel
             Configuration = configuration;
             var hideSettings = (Configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
             WhiteLabelEnabled = !hideSettings.Contains("WhiteLabel", StringComparer.CurrentCultureIgnoreCase);
-            Cache = AscCache.Memory;
+            Cache = cache;
             CacheNotify = cacheNotify;
         }
 
@@ -166,12 +168,12 @@ namespace ASC.Web.Core.WhiteLabel
             }
         }
 
-        public TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
-        public SettingsManager SettingsManager { get; }
-        public TenantInfoSettingsHelper TenantInfoSettingsHelper { get; }
-        public TenantManager TenantManager { get; }
-        public AuthContext AuthContext { get; }
-        public IConfiguration Configuration { get; }
+        private TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
+        private SettingsManager SettingsManager { get; }
+        private TenantInfoSettingsHelper TenantInfoSettingsHelper { get; }
+        private TenantManager TenantManager { get; }
+        private AuthContext AuthContext { get; }
+        private IConfiguration Configuration { get; }
 
         /// <summary>
         /// Get logo stream or null in case of default logo
@@ -203,19 +205,6 @@ namespace ASC.Web.Core.WhiteLabel
         public void RemoveMailLogoDataFromCache()
         {
             CacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, CacheNotifyAction.Remove);
-        }
-    }
-
-    public static class TenantLogoManagerExtension
-    {
-        public static DIHelper AddTenantLogoManagerService(this DIHelper services)
-        {
-            services.TryAddScoped<TenantLogoManager>();
-
-            return services
-                .AddTenantWhiteLabelSettingsService()
-                .AddTenantInfoSettingsService()
-                .AddTenantManagerService();
         }
     }
 }

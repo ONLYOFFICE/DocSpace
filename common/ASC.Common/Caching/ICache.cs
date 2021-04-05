@@ -25,11 +25,12 @@
 
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 
 namespace ASC.Common.Caching
 {
+    [Singletone(typeof(AscCache))]
     public interface ICache
     {
         T Get<T>(string key) where T : class;
@@ -43,7 +44,7 @@ namespace ASC.Common.Caching
         void Remove(Regex pattern);
 
 
-        IDictionary<string, T> HashGetAll<T>(string key);
+        ConcurrentDictionary<string, T> HashGetAll<T>(string key);
 
         T HashGet<T>(string key, string field);
 

@@ -35,12 +35,13 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem
 {
+    [Singletone]
     public class MessageTarget
     {
         private IEnumerable<string> _items;
 
         public ILog Log { get; set; }
-        public IOptionsMonitor<ILog> Option { get; }
+        private IOptionsMonitor<ILog> Option { get; }
 
         public MessageTarget(IOptionsMonitor<ILog> option)
         {
@@ -76,6 +77,22 @@ namespace ASC.MessagingSystem
 
         }
 
+        public MessageTarget Create(IEnumerable<string> value)
+        {
+            try
+            {
+                return new MessageTarget(Option)
+                {
+                    _items = value.Distinct()
+                };
+            }
+            catch (Exception e)
+            {
+                Log.Error("EventMessageTarget exception", e);
+                return null;
+            }
+        }
+
         public MessageTarget Parse(string value)
         {
             if (string.IsNullOrEmpty(value)) return null;
@@ -93,16 +110,6 @@ namespace ASC.MessagingSystem
         public override string ToString()
         {
             return string.Join(",", _items);
-        }
-    }
-
-    public static class MessageTargetExtension
-    {
-        public static DIHelper AddMessageTargetService(this DIHelper services)
-        {
-            services.TryAddSingleton<MessageTarget>();
-
-            return services;
         }
     }
 }

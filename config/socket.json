@@ -1,0 +1,6 @@
+{
+	"socket": {
+		"path": "../../ASC.Socket.IO",
+		"port": "9899",
+	}
+}

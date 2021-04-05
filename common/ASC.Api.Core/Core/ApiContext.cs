@@ -36,25 +36,27 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.Api.Core
 {
+    [Scope]
     public class ApiContext : ICloneable
     {
-        public HttpContext HttpContext { get; set; }
-        private Tenant tenant;
-        public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant(HttpContext)); } }
+        private static int MaxCount = 1000;
+        public IHttpContextAccessor HttpContextAccessor { get; set; }
+        public Tenant tenant;
+        public Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext); } }
 
         public ApiContext(IHttpContextAccessor httpContextAccessor, SecurityContext securityContext, TenantManager tenantManager)
         {
             if (httpContextAccessor == null || httpContextAccessor.HttpContext == null) return;
-            HttpContext = httpContextAccessor.HttpContext;
+            HttpContextAccessor = httpContextAccessor;
 
-            Count = 0;
-            var query = HttpContext.Request.Query;
+            Count = MaxCount;
+            var query = HttpContextAccessor.HttpContext.Request.Query;
             //Try parse values
             var count = query.GetRequestValue("count");
             if (!string.IsNullOrEmpty(count) && ulong.TryParse(count, out var countParsed))
             {
                 //Count specified and valid
-                Count = (long)countParsed;
+                Count = Math.Min((long)countParsed, MaxCount);
             }
 
             var startIndex = query.GetRequestValue("startIndex");
@@ -188,23 +190,23 @@ namespace ASC.Api.Core
         {
             set
             {
-                if (HttpContext.Items.ContainsKey(nameof(TotalCount)))
+                if (HttpContextAccessor.HttpContext.Items.ContainsKey(nameof(TotalCount)))
                 {
-                    HttpContext.Items[nameof(TotalCount)] = value;
+                    HttpContextAccessor.HttpContext.Items[nameof(TotalCount)] = value;
                 }
                 else
                 {
-                    HttpContext.Items.Add(nameof(TotalCount), value);
+                    HttpContextAccessor.HttpContext.Items.Add(nameof(TotalCount), value);
                 }
             }
         }
 
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
 
         public ApiContext SetCount(int count)
         {
-            HttpContext.Items[nameof(Count)] = count;
+            HttpContextAccessor.HttpContext.Items[nameof(Count)] = count;
             return this;
         }
 
@@ -221,10 +223,10 @@ namespace ASC.Api.Core
 
         public void AuthByClaim()
         {
-            var id = HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
+            var id = HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
             if (Guid.TryParse(id?.Value, out var userId))
             {
-                _ = SecurityContext.AuthenticateMe(userId);
+                SecurityContext.AuthenticateMe(userId);
             }
         }
     }
@@ -265,19 +267,7 @@ namespace ASC.Api.Core
     {
         public static bool Check(this ApiContext context, string field)
         {
-            return context == null || context.Fields == null || (context.Fields != null && context.Fields.Contains(field));
-        }
-    }
-
-    public static class ApiContextConfigExtension
-    {
-        public static DIHelper AddApiContextService(this DIHelper services)
-        {
-            services.TryAddScoped<ApiContext>();
-
-            return services
-                .AddTenantManagerService()
-                .AddSecurityContextService();
+            return context?.Fields == null || (context.Fields != null && context.Fields.Contains(field, StringComparer.InvariantCultureIgnoreCase));
         }
     }
 }

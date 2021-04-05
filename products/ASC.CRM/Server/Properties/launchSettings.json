@@ -1,0 +1,31 @@
+﻿{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:5021",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "environmentVariables": {
+        "$STORAGE_ROOT": "../../../Data",
+        "log__dir": "../../../Logs",
+        "log__name": "crm",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "ASC.CRM": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "$STORAGE_ROOT": "../../../Data",
+        "log__dir": "../../../Logs",
+        "log__name": "crm",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:5021"
+    }
+  }
+}

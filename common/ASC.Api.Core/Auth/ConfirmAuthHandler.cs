@@ -9,14 +9,15 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Core;
 using ASC.Security.Cryptography;
-using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Auth
 {
+    [Scope(Additional = typeof(ConfirmAuthHandlerExtension))]
     public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         public ConfirmAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
@@ -28,34 +29,22 @@ namespace ASC.Api.Core.Auth
             UrlEncoder encoder,
             ISystemClock clock,
             SecurityContext securityContext,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            SetupInfo setupInfo,
-            TenantManager tenantManager,
-            UserManager userManager,
-            AuthManager authManager,
-            AuthContext authContext) :
+            IServiceProvider serviceProvider) :
             base(options, logger, encoder, clock)
         {
             SecurityContext = securityContext;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
-            SetupInfo = setupInfo;
-            TenantManager = tenantManager;
-            UserManager = userManager;
-            AuthManager = authManager;
-            AuthContext = authContext;
+            ServiceProvider = serviceProvider;
         }
 
-        public SecurityContext SecurityContext { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public SetupInfo SetupInfo { get; }
-        public TenantManager TenantManager { get; }
-        public UserManager UserManager { get; }
-        public AuthManager AuthManager { get; }
-        public AuthContext AuthContext { get; }
+        private SecurityContext SecurityContext { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var emailValidationKeyModel = EmailValidationKeyModel.FromRequest(Context.Request);
+            using var scope = ServiceProvider.CreateScope();
+
+            var emailValidationKeyHelper = scope.ServiceProvider.GetService<EmailValidationKeyModelHelper>();
+            var emailValidationKeyModel = emailValidationKeyHelper.GetModel();
 
             if (!emailValidationKeyModel.Type.HasValue)
             {
@@ -67,7 +56,7 @@ namespace ASC.Api.Core.Auth
             EmailValidationKeyProvider.ValidationResult checkKeyResult;
             try
             {
-                checkKeyResult = emailValidationKeyModel.Validate(EmailValidationKeyProvider, AuthContext, TenantManager, UserManager, AuthManager);
+                checkKeyResult = emailValidationKeyHelper.Validate(emailValidationKeyModel);
             }
             catch (ArgumentNullException)
             {
@@ -108,18 +97,11 @@ namespace ASC.Api.Core.Auth
         }
     }
 
-    public static class ConfirmAuthHandlerExtension
+    public class ConfirmAuthHandlerExtension
     {
-        public static DIHelper AddConfirmAuthHandler(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            return services
-                .AddSecurityContextService()
-                .AddEmailValidationKeyProviderService()
-                .AddSetupInfo()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddAuthManager()
-                .AddAuthContextService();
+            services.TryAdd<EmailValidationKeyModelHelper>();
         }
     }
 }

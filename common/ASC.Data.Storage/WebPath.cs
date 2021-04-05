@@ -43,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
+    [Singletone]
     public class WebPathSettings
     {
         private readonly IEnumerable<Appender> Appenders;
@@ -141,18 +142,37 @@ namespace ASC.Data.Storage
         }
     }
 
+    [Scope]
     public class WebPath
     {
         private static readonly IDictionary<string, bool> Existing = new ConcurrentDictionary<string, bool>();
 
-        public WebPathSettings WebPathSettings { get; }
-        public StaticUploader StaticUploader { get; }
-        public SettingsManager SettingsManager { get; }
-        public StorageSettingsHelper StorageSettingsHelper { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private WebPathSettings WebPathSettings { get; }
+        private StaticUploader StaticUploader { get; }
+        private SettingsManager SettingsManager { get; }
+        private StorageSettingsHelper StorageSettingsHelper { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
         public IHostEnvironment HostEnvironment { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IOptionsMonitor<ILog> Options { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+
+        public WebPath(
+            WebPathSettings webPathSettings,
+            StaticUploader staticUploader,
+            SettingsManager settingsManager,
+            StorageSettingsHelper storageSettingsHelper,
+            IHostEnvironment hostEnvironment,
+            CoreBaseSettings coreBaseSettings,
+            IOptionsMonitor<ILog> options)
+        {
+            WebPathSettings = webPathSettings;
+            StaticUploader = staticUploader;
+            SettingsManager = settingsManager;
+            StorageSettingsHelper = storageSettingsHelper;
+            HostEnvironment = hostEnvironment;
+            CoreBaseSettings = coreBaseSettings;
+            Options = options;
+        }
 
         public WebPath(
             WebPathSettings webPathSettings,
@@ -163,15 +183,9 @@ namespace ASC.Data.Storage
             IHostEnvironment hostEnvironment,
             CoreBaseSettings coreBaseSettings,
             IOptionsMonitor<ILog> options)
+            : this(webPathSettings, staticUploader, settingsManager, storageSettingsHelper, hostEnvironment, coreBaseSettings, options)
         {
-            WebPathSettings = webPathSettings;
-            StaticUploader = staticUploader;
-            SettingsManager = settingsManager;
-            StorageSettingsHelper = storageSettingsHelper;
             HttpContextAccessor = httpContextAccessor;
-            HostEnvironment = hostEnvironment;
-            CoreBaseSettings = coreBaseSettings;
-            Options = options;
         }
 
         public string GetPath(string relativePath)
@@ -194,7 +208,7 @@ namespace ASC.Data.Storage
                 }
             }
 
-            return WebPathSettings.GetPath(HttpContextAccessor.HttpContext, Options, relativePath);
+            return WebPathSettings.GetPath(HttpContextAccessor?.HttpContext, Options, relativePath);
         }
 
         public bool Exists(string relativePath)
@@ -229,26 +243,6 @@ namespace ASC.Data.Storage
             {
                 return false;
             }
-        }
-    }
-
-    public static class WebPathExtension
-    {
-        public static DIHelper AddWebPathService(this DIHelper services)
-        {
-            services.TryAddScoped<WebPath>();
-
-            return services
-                .AddStaticUploaderService()
-                .AddCdnStorageSettingsService()
-                .AddWebPathSettingsService()
-                .AddCoreBaseSettingsService();
-        }
-        public static DIHelper AddWebPathSettingsService(this DIHelper services)
-        {
-            services.TryAddSingleton<WebPathSettings>();
-
-            return services.AddStorage();
         }
     }
 }

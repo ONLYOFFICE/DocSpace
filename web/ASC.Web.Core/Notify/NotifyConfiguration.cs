@@ -58,28 +58,34 @@ using MimeKit.Utils;
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    public static class NotifyConfiguration
+    [Singletone(Additional = typeof(WorkContextExtension))]
+    public class NotifyConfiguration
     {
         private static bool configured;
         private static readonly object locker = new object();
         private static readonly Regex urlReplacer = new Regex(@"(<a [^>]*href=(('(?<url>[^>']*)')|(""(?<url>[^>""]*)""))[^>]*>)|(<img [^>]*src=(('(?<url>(?![data:|cid:])[^>']*)')|(""(?<url>(?![data:|cid:])[^>""]*)""))[^/>]*/?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex textileLinkReplacer = new Regex(@"""(?<text>[\w\W]+?)"":""(?<link>[^""]+)""", RegexOptions.Singleline | RegexOptions.Compiled);
-        private static IServiceProvider ServiceProvider { get; set; }
-        public static void Configure(IServiceProvider serviceProvider)
+
+        private IServiceProvider ServiceProvider { get; }
+
+        public NotifyConfiguration(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
+
+        public void Configure()
         {
             lock (locker)
             {
                 if (!configured)
                 {
                     configured = true;
-                    ServiceProvider = serviceProvider;
-                    WorkContext.NotifyStartUp(serviceProvider);
+                    WorkContext.NotifyStartUp(ServiceProvider);
                     WorkContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
                     WorkContext.NotifyContext.NotifyEngine.BeforeTransferRequest += BeforeTransferRequest;
                 }
             }
         }
-
 
         private static void NotifyClientRegisterCallback(Context context, INotifyClient client)
         {
@@ -131,63 +137,65 @@ namespace ASC.Web.Studio.Core.Notify
                  InterceptorLifetime.Global,
                  (r, p, scope) =>
                  {
+                     var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
+                     var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
+                     var (tenantManager, webItemSecurity, userManager, options, _, _, _, _, _, _, _, _, _, _, _) = scopeClass;
                      try
                      {
-                         //fix
-                         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                         var webItemSecurity = scope.ServiceProvider.GetService<WebItemSecurity>();
-                         var userManager = scope.ServiceProvider.GetService<UserManager>();
                          // culture
                          var u = Constants.LostUser;
-                         var tenant = tenantManager.GetCurrentTenant();
-
-                         if (32 <= r.Recipient.ID.Length)
+                         if (!(coreBaseSettings.Personal && r.NotifyAction.ID == Actions.PersonalConfirmation.ID))
                          {
-                             var guid = default(Guid);
-                             try
+                             var tenant = tenantManager.GetCurrentTenant();
+
+                             if (32 <= r.Recipient.ID.Length)
                              {
-                                 guid = new Guid(r.Recipient.ID);
+                                 var guid = default(Guid);
+                                 try
+                                 {
+                                     guid = new Guid(r.Recipient.ID);
+                                 }
+                                 catch (FormatException) { }
+                                 catch (OverflowException) { }
+
+                                 if (guid != default)
+                                 {
+                                     u = userManager.GetUsers(guid);
+                                 }
                              }
-                             catch (FormatException) { }
-                             catch (OverflowException) { }
 
-                             if (guid != default)
+                             if (Constants.LostUser.Equals(u))
                              {
-                                 u = userManager.GetUsers(guid);
+                                 u = userManager.GetUserByEmail(r.Recipient.ID);
                              }
-                         }
 
-                         if (Constants.LostUser.Equals(u))
-                         {
-                             u = userManager.GetUserByEmail(r.Recipient.ID);
-                         }
-
-                         if (Constants.LostUser.Equals(u))
-                         {
-                             u = userManager.GetUserByUserName(r.Recipient.ID);
-                         }
-
-                         if (!Constants.LostUser.Equals(u))
-                         {
-                             var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
-                             Thread.CurrentThread.CurrentCulture = culture;
-                             Thread.CurrentThread.CurrentUICulture = culture;
-
-                             // security
-                             var tag = r.Arguments.Find(a => a.Tag == CommonTags.ModuleID);
-                             var productId = tag != null ? (Guid)tag.Value : Guid.Empty;
-                             if (productId == Guid.Empty)
+                             if (Constants.LostUser.Equals(u))
                              {
-                                 tag = r.Arguments.Find(a => a.Tag == CommonTags.ProductID);
-                                 productId = tag != null ? (Guid)tag.Value : Guid.Empty;
+                                 u = userManager.GetUserByUserName(r.Recipient.ID);
                              }
-                             if (productId == Guid.Empty)
+
+                             if (!Constants.LostUser.Equals(u))
                              {
-                                 productId = (Guid)(CallContext.GetData("asc.web.product_id") ?? Guid.Empty);
-                             }
-                             if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
-                             {
-                                 return !webItemSecurity.IsAvailableForUser(productId, u.ID);
+                                 var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
+                                 Thread.CurrentThread.CurrentCulture = culture;
+                                 Thread.CurrentThread.CurrentUICulture = culture;
+
+                                 // security
+                                 var tag = r.Arguments.Find(a => a.Tag == CommonTags.ModuleID);
+                                 var productId = tag != null ? (Guid)tag.Value : Guid.Empty;
+                                 if (productId == Guid.Empty)
+                                 {
+                                     tag = r.Arguments.Find(a => a.Tag == CommonTags.ProductID);
+                                     productId = tag != null ? (Guid)tag.Value : Guid.Empty;
+                                 }
+                                 if (productId == Guid.Empty)
+                                 {
+                                     productId = (Guid)(CallContext.GetData("asc.web.product_id") ?? Guid.Empty);
+                                 }
+                                 if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
+                                 {
+                                     return !webItemSecurity.IsAvailableForUser(productId, u.ID);
+                                 }
                              }
                          }
 
@@ -201,7 +209,7 @@ namespace ASC.Web.Studio.Core.Notify
                      }
                      catch (Exception error)
                      {
-                         scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue.Error(error);
+                         options.CurrentValue.Error(error);
                      }
                      return false;
                  });
@@ -241,15 +249,14 @@ namespace ASC.Web.Studio.Core.Notify
             #endregion
         }
 
-
-        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
+        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
         {
             var aid = Guid.Empty;
             var aname = string.Empty;
-            var tenant = serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant();
-            var authContext = serviceScope.ServiceProvider.GetService<AuthContext>();
-            var userManager = serviceScope.ServiceProvider.GetService<UserManager>();
-            var displayUserSettingsHelper = serviceScope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
+            var tenant = scope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant();
+            var authContext = scope.ServiceProvider.GetService<AuthContext>();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
 
             if (authContext.IsAuthenticated)
             {
@@ -262,19 +269,9 @@ namespace ASC.Web.Studio.Core.Notify
                         .Replace("<", "&#60");
                 }
             }
-            using var scope = ServiceProvider.CreateScope();
-            var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
-            var webItemManagerSecurity = scope.ServiceProvider.GetService<WebItemManagerSecurity>();
-            var webItemManager = scope.ServiceProvider.GetService<WebItemManager>();
-            var configuration = scope.ServiceProvider.GetService<IConfiguration>();
-            var tenantLogoManager = scope.ServiceProvider.GetService<TenantLogoManager>();
-            var additionalWhiteLabelSettingsHelper = scope.ServiceProvider.GetService<AdditionalWhiteLabelSettingsHelper>();
-            var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
-            var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-            var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
-            var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
-            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-            var log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+            var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
+            var (_, _, _, options, tenantExtra, _, webItemManager, configuration, tenantLogoManager, additionalWhiteLabelSettingsHelper, tenantUtil, coreBaseSettings, commonLinkUtility, settingsManager, studioNotifyHelper) = scopeClass;
+            var log = options.CurrentValue;
 
             commonLinkUtility.GetLocationByRequest(out var product, out var module);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)
@@ -370,27 +367,101 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
-    public static class NotifyConfigurationExtension
+    [Scope]
+    public class NotifyConfigurationScope
     {
-        public static DIHelper AddNotifyConfiguration(this DIHelper services)
+        private TenantManager TenantManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private UserManager UserManager { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+        private TenantExtra TenantExtra { get; }
+        private WebItemManagerSecurity WebItemManagerSecurity { get; }
+        private WebItemManager WebItemManager { get; }
+        private IConfiguration Configuration { get; }
+        private TenantLogoManager TenantLogoManager { get; }
+        private AdditionalWhiteLabelSettingsHelper AdditionalWhiteLabelSettingsHelper { get; }
+        private TenantUtil TenantUtil { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private SettingsManager SettingsManager { get; }
+        private StudioNotifyHelper StudioNotifyHelper { get; }
+
+        public NotifyConfigurationScope(TenantManager tenantManager,
+            WebItemSecurity webItemSecurity,
+            UserManager userManager,
+            IOptionsMonitor<ILog> options,
+            TenantExtra tenantExtra,
+            WebItemManagerSecurity webItemManagerSecurity,
+            WebItemManager webItemManager,
+            IConfiguration configuration,
+            TenantLogoManager tenantLogoManager,
+            AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+            TenantUtil tenantUtil,
+            CoreBaseSettings coreBaseSettings,
+            CommonLinkUtility commonLinkUtility,
+            SettingsManager settingsManager,
+            StudioNotifyHelper studioNotifyHelper
+            )
         {
-            return services
-                .AddJabberStylerService()
-                .AddTextileStylerService()
-                .AddPushStylerService()
-                .AddTenantManagerService()
-                .AddAuthContextService()
-                .AddUserManagerService()
-                .AddDisplayUserSettingsService()
-                .AddTenantExtraService()
-                .AddWebItemManagerSecurity()
-                .AddWebItemManager()
-                .AddTenantLogoManagerService()
-                .AddTenantUtilService()
-                .AddCoreBaseSettingsService()
-                .AddAdditionalWhiteLabelSettingsService()
-                .AddCommonLinkUtilityService()
-                .AddMailWhiteLabelSettingsService();
+            TenantManager = tenantManager;
+            WebItemSecurity = webItemSecurity;
+            UserManager = userManager;
+            Options = options;
+            TenantExtra = tenantExtra;
+            WebItemManagerSecurity = webItemManagerSecurity;
+            WebItemManager = webItemManager;
+            Configuration = configuration;
+            TenantLogoManager = tenantLogoManager;
+            AdditionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+            TenantUtil = tenantUtil;
+            CoreBaseSettings = coreBaseSettings;
+            CommonLinkUtility = commonLinkUtility;
+            SettingsManager = settingsManager;
+            StudioNotifyHelper = studioNotifyHelper;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager,
+            out WebItemSecurity webItemSecurity,
+            out UserManager userManager,
+            out IOptionsMonitor<ILog> optionsMonitor,
+            out TenantExtra tenantExtra,
+            out WebItemManagerSecurity webItemManagerSecurity,
+            out WebItemManager webItemManager,
+            out IConfiguration configuration,
+            out TenantLogoManager tenantLogoManager,
+            out AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+            out TenantUtil tenantUtil,
+            out CoreBaseSettings coreBaseSettings,
+            out CommonLinkUtility commonLinkUtility,
+            out SettingsManager settingsManager,
+            out StudioNotifyHelper studioNotifyHelper)
+        {
+            tenantManager = TenantManager;
+            webItemSecurity = WebItemSecurity;
+            userManager = UserManager;
+            optionsMonitor = Options;
+            tenantExtra = TenantExtra;
+            webItemManagerSecurity = WebItemManagerSecurity;
+            webItemManager = WebItemManager;
+            configuration = Configuration;
+            tenantLogoManager = TenantLogoManager;
+            additionalWhiteLabelSettingsHelper = AdditionalWhiteLabelSettingsHelper;
+            tenantUtil = TenantUtil;
+            coreBaseSettings = CoreBaseSettings;
+            commonLinkUtility = CommonLinkUtility;
+            settingsManager = SettingsManager;
+            studioNotifyHelper = StudioNotifyHelper;
+        }
+    }
+
+    public class NotifyConfigurationExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<NotifyConfigurationScope>();
+            services.TryAdd<TextileStyler>();
+            services.TryAdd<JabberStyler>();
+            services.TryAdd<PushStyler>();
         }
     }
 }

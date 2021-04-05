@@ -33,6 +33,7 @@ using System.Text;
 using System.Threading;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -40,8 +41,7 @@ using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
-
-using JWT;
+using ASC.Web.Core.Files;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
@@ -51,6 +51,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class GosUslugiLoginProvider : BaseLoginProvider<GosUslugiLoginProvider>
     {
         public string BaseDomain
@@ -98,16 +99,17 @@ namespace ASC.FederatedLogin.LoginProviders
         }
 
         public GosUslugiLoginProvider(
+            OAuth20TokenHelper oAuth20TokenHelper,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, signature, instanceCrypto, name, order, props, additional)
+            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
         {
         }
 
@@ -116,7 +118,12 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             try
             {
-                var token = Auth(context, Scopes);
+                var token = Auth(context, Scopes, out var redirect);
+
+                if (redirect)
+                {
+                    return null;
+                }
 
                 if (token == null)
                 {
@@ -135,7 +142,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
         }
 
-        protected override OAuth20Token Auth(HttpContext context, string scopes, Dictionary<string, string> additionalArgs = null)
+        protected override OAuth20Token Auth(HttpContext context, string scopes, out bool redirect, Dictionary<string, string> additionalArgs = null)
         {
             var error = context.Request.Query["error"];
             if (!string.IsNullOrEmpty(error))
@@ -151,8 +158,11 @@ namespace ASC.FederatedLogin.LoginProviders
             if (string.IsNullOrEmpty(code))
             {
                 RequestCode(context, scopes);
+                redirect = true;
                 return null;
             }
+
+            redirect = false;
             var state = context.Request.Query["state"];
             return GetAccessToken(state, code);
         }
@@ -213,7 +223,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {
-            var tokenPayloadString = JsonWebToken.Decode(accessToken, string.Empty, false);
+            var tokenPayloadString = JsonWebToken.Decode(accessToken, string.Empty, false, true);
             var tokenPayload = JObject.Parse(tokenPayloadString);
             if (tokenPayload == null)
             {

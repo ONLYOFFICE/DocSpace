@@ -25,7 +25,7 @@
 
 
 using System;
-using System.Runtime.Serialization;
+
 
 using ASC.Api.Core;
 using ASC.Common;
@@ -36,22 +36,16 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Api.Models
 {
-    [DataContract(Name = "person", Namespace = "")]
     public class EmployeeWraper
     {
-        [DataMember(Order = 1)]
         public Guid Id { get; set; }
 
-        [DataMember(Order = 10)]
         public string DisplayName { get; set; }
 
-        [DataMember(Order = 11, EmitDefaultValue = false)]
         public string Title { get; set; }
 
-        [DataMember(Order = 20)]
         public string AvatarSmall { get; set; }
 
-        [DataMember(Order = 30)]
         public string ProfileUrl { get; set; }
 
         public static EmployeeWraper GetSample()
@@ -66,6 +60,7 @@ namespace ASC.Web.Api.Models
         }
     }
 
+    [Scope]
     public class EmployeeWraperHelper
     {
         private ApiContext HttpContext { get; }
@@ -128,20 +123,6 @@ namespace ASC.Web.Api.Models
             }
 
             return result;
-        }
-    }
-
-    public static class EmployeeWraperExtension
-    {
-        public static DIHelper AddEmployeeWraper(this DIHelper services)
-        {
-            services.TryAddScoped<EmployeeWraperHelper>();
-
-            return services
-                .AddApiContextService()
-                .AddDisplayUserSettingsService()
-                .AddUserPhotoManagerService()
-                .AddCommonLinkUtilityService();
         }
     }
 }

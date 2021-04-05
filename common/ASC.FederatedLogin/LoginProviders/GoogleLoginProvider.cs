@@ -44,6 +44,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class GoogleLoginProvider : BaseLoginProvider<GoogleLoginProvider>
     {
         public const string GoogleScopeContacts = "https://www.googleapis.com/auth/contacts.readonly";
@@ -69,16 +70,18 @@ namespace ASC.FederatedLogin.LoginProviders
         public override string Scopes { get { return "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"; } }
 
         public GoogleLoginProvider() { }
-        public GoogleLoginProvider(TenantManager tenantManager,
+        public GoogleLoginProvider(
+            OAuth20TokenHelper oAuth20TokenHelper,
+            TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, signature, instanceCrypto, name, order, props, additional) { }
+            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {
@@ -90,7 +93,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public OAuth20Token Auth(HttpContext context)
         {
-            return Auth(context, GoogleScopeContacts, (context.Request.Query["access_type"].ToString() ?? "") == "offline"
+            return Auth(context, GoogleScopeContacts, out var _, (context.Request.Query["access_type"].ToString() ?? "") == "offline"
                                                           ? new Dictionary<string, string>
                                                               {
                                                                   { "access_type", "offline" },
@@ -179,22 +182,6 @@ namespace ASC.FederatedLogin.LoginProviders
         private class GoogleMetadata
         {
             public bool primary = false;
-        }
-    }
-
-    public static class GoogleLoginProviderExtension
-    {
-        public static DIHelper AddGoogleLoginProviderService(this DIHelper services)
-        {
-            services.TryAddScoped<GoogleLoginProvider>();
-            return services
-                .AddConsumerFactoryService()
-                .AddKafkaService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService()
-                .AddSignatureService()
-                .AddInstanceCryptoService();
         }
     }
 }

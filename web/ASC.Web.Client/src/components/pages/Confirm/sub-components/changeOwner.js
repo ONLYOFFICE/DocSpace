@@ -1,10 +1,13 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { connect } from "react-redux";
 import styled from "styled-components";
-import { Button, Text, toastr } from "asc-web-components";
-import { PageLayout } from "asc-web-common";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import toastr from "@appserver/components/toast/toastr";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { tryRedirectTo } from "@appserver/common/utils";
+import { inject, observer } from "mobx-react";
 
 const BodyStyle = styled.div`
   margin-top: 70px;
@@ -58,11 +61,11 @@ class Form extends React.PureComponent {
   };
 
   onRedirect = () => {
-    this.props.history.push("/");
+    tryRedirectTo(this.props.defaultPage);
   };
 
   onCancelClick = () => {
-    this.props.history.push("/");
+    tryRedirectTo(this.props.defaultPage);
   };
 
   render() {
@@ -78,7 +81,7 @@ class Form extends React.PureComponent {
               alt="Logo"
             />
             <Text className="owner-title">{greetingTitle}</Text>
-            <Text className="owner-confirm_text" fontSize='18px'>
+            <Text className="owner-confirm_text" fontSize="18px">
               {t("ConfirmOwnerPortalTitle", { newOwner: "NEW OWNER" })}
             </Text>
             {this.state.showButtons ? (
@@ -102,7 +105,7 @@ class Form extends React.PureComponent {
                 />
               </>
             ) : (
-              <Text className="owner-confirm-message" fontSize='12px'>
+              <Text className="owner-confirm-message" fontSize="12px">
                 {t("ConfirmOwnerPortalSuccessMessage")}
               </Text>
             )}
@@ -117,15 +120,15 @@ Form.propTypes = {};
 
 Form.defaultProps = {};
 
-const ChangePasswordForm = props => (
-  <PageLayout sectionBodyContent={<Form {...props} />} />
+const ChangeOwnerForm = (props) => (
+  <PageLayout>
+    <PageLayout.SectionBody>
+      <Form {...props} />
+    </PageLayout.SectionBody>
+  </PageLayout>
 );
 
-function mapStateToProps(state) {
-  return { greetingTitle: state.auth.settings.greetingSettings };
-}
-
-export default connect(
-  mapStateToProps,
-  {}
-)(withRouter(withTranslation()(ChangePasswordForm)));
+export default inject(({ auth }) => ({
+  greetingTitle: auth.settingsStore.greetingSettings,
+  defaultPage: auth.settingsStore.defaultPage,
+}))(withRouter(withTranslation("Confirm")(observer(ChangeOwnerForm))));

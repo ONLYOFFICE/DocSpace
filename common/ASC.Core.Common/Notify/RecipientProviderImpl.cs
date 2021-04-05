@@ -28,17 +28,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.Common;
 using ASC.Core.Users;
 using ASC.Notify.Recipients;
-
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Notify
 {
     public class RecipientProviderImpl : IRecipientProvider
     {
-        public UserManager UserManager { get; }
+        private UserManager UserManager { get; }
 
         public RecipientProviderImpl(UserManager userManager) =>
             (UserManager) = (userManager);
@@ -112,6 +109,7 @@ namespace ASC.Core.Notify
                     if (senderName == ASC.Core.Configuration.Constants.NotifyEMailSenderSysName) return new[] { user.Email };
                     if (senderName == ASC.Core.Configuration.Constants.NotifyMessengerSenderSysName) return new[] { user.UserName };
                     if (senderName == ASC.Core.Configuration.Constants.NotifyPushSenderSysName) return new[] { user.UserName };
+                    if (senderName == ASC.Core.Configuration.Constants.NotifyTelegramSenderSysName) return new[] { user.ID.ToString() };
                 }
             }
             return new string[0];
@@ -157,17 +155,6 @@ namespace ASC.Core.Notify
                 catch (OverflowException) { }
             }
             return false;
-        }
-    }
-
-    public static class RecipientProviderImplExtension
-    {
-        public static DIHelper AddRecipientProviderImplService(this DIHelper services)
-        {
-            services.TryAddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl));
-
-            return services
-                .AddUserManagerService();
         }
     }
 }

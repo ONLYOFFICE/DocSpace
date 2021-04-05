@@ -1,10 +1,15 @@
 ﻿
-using ASC.Common;
+using System;
+using System.Collections.Generic;
+
+using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
+    public class MySqlCoreDbContext : CoreDbContext { }
+    public class PostgreSqlCoreDbContext : CoreDbContext { }
     public class CoreDbContext : BaseDbContext
     {
         public DbSet<DbTariff> Tariffs { get; set; }
@@ -12,28 +17,26 @@ namespace ASC.Core.Common.EF
         public DbSet<Acl> Acl { get; set; }
         public DbSet<DbQuota> Quotas { get; set; }
         public DbSet<DbQuotaRow> QuotaRows { get; set; }
-
-        public CoreDbContext() { }
-        public CoreDbContext(DbContextOptions<CoreDbContext> options)
-            : base(options)
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlCoreDbContext() } ,
+                    { Provider.Postgre, () => new PostgreSqlCoreDbContext() } ,
+                };
+            }
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
+            ModelBuilderWrapper
+                  .From(modelBuilder, Provider)
                 .AddAcl()
                 .AddDbButton()
-                .AddDbQuotaRow();
-        }
-    }
-
-
-    public static class CoreDbExtension
-    {
-        public static DIHelper AddCoreDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<CoreDbContext>();
+                  .AddDbQuotaRow()
+                  .AddDbQuota()
+                  .AddDbTariff();
         }
     }
 }

@@ -34,9 +34,11 @@ using ASC.MessagingSystem.DbSender;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace ASC.MessagingSystem
 {
+    [Scope]
     public class MessageService
     {
         private readonly ILog log;
@@ -48,7 +50,6 @@ namespace ASC.MessagingSystem
 
         public MessageService(
             IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor,
             MessageFactory messageFactory,
             DbMessageSender sender,
             MessagePolicy messagePolicy,
@@ -61,9 +62,20 @@ namespace ASC.MessagingSystem
 
             this.sender = sender;
             MessagePolicy = messagePolicy;
-            request = httpContextAccessor?.HttpContext?.Request;
             MessageFactory = messageFactory;
             log = options.CurrentValue;
+        }
+
+        public MessageService(
+            IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor,
+            MessageFactory messageFactory,
+            DbMessageSender sender,
+            MessagePolicy messagePolicy,
+            IOptionsMonitor<ILog> options)
+            : this(configuration, messageFactory, sender, messagePolicy, options)
+        {
+            request = httpContextAccessor?.HttpContext?.Request;
         }
 
         #region HttpRequest
@@ -202,27 +214,27 @@ namespace ASC.MessagingSystem
 
         #region HttpHeaders
 
-        public void Send(MessageUserData userData, Dictionary<string, string> httpHeaders, MessageAction action)
+        public void Send(MessageUserData userData, IDictionary<string, StringValues> httpHeaders, MessageAction action)
         {
             SendHeadersMessage(userData, httpHeaders, action, null);
         }
 
-        public void Send(Dictionary<string, string> httpHeaders, MessageAction action)
+        public void Send(IDictionary<string, StringValues> httpHeaders, MessageAction action)
         {
             SendHeadersMessage(null, httpHeaders, action, null);
         }
 
-        public void Send(Dictionary<string, string> httpHeaders, MessageAction action, string d1)
+        public void Send(IDictionary<string, StringValues> httpHeaders, MessageAction action, string d1)
         {
             SendHeadersMessage(null, httpHeaders, action, null, d1);
         }
 
-        public void Send(Dictionary<string, string> httpHeaders, MessageAction action, IEnumerable<string> d1)
+        public void Send(IDictionary<string, StringValues> httpHeaders, MessageAction action, IEnumerable<string> d1)
         {
             SendHeadersMessage(null, httpHeaders, action, null, d1?.ToArray());
         }
 
-        public void Send(MessageUserData userData, Dictionary<string, string> httpHeaders, MessageAction action, MessageTarget target)
+        public void Send(MessageUserData userData, IDictionary<string, StringValues> httpHeaders, MessageAction action, MessageTarget target)
         {
             SendHeadersMessage(userData, httpHeaders, action, target);
         }
@@ -231,24 +243,24 @@ namespace ASC.MessagingSystem
 
         #region HttpHeaders & Target
 
-        public void Send(Dictionary<string, string> httpHeaders, MessageAction action, MessageTarget target)
+        public void Send(IDictionary<string, StringValues> httpHeaders, MessageAction action, MessageTarget target)
         {
             SendHeadersMessage(null, httpHeaders, action, target);
         }
 
-        public void Send(Dictionary<string, string> httpHeaders, MessageAction action, MessageTarget target, string d1)
+        public void Send(IDictionary<string, StringValues> httpHeaders, MessageAction action, MessageTarget target, string d1)
         {
             SendHeadersMessage(null, httpHeaders, action, target, d1);
         }
 
-        public void Send(Dictionary<string, string> httpHeaders, MessageAction action, MessageTarget target, IEnumerable<string> d1)
+        public void Send(IDictionary<string, StringValues> httpHeaders, MessageAction action, MessageTarget target, IEnumerable<string> d1)
         {
             SendHeadersMessage(null, httpHeaders, action, target, d1?.ToArray());
         }
 
         #endregion
 
-        private void SendHeadersMessage(MessageUserData userData, Dictionary<string, string> httpHeaders, MessageAction action, MessageTarget target, params string[] description)
+        private void SendHeadersMessage(MessageUserData userData, IDictionary<string, StringValues> httpHeaders, MessageAction action, MessageTarget target, params string[] description)
         {
             if (sender == null) return;
 
@@ -284,19 +296,6 @@ namespace ASC.MessagingSystem
             if (!MessagePolicy.Check(message)) return;
 
             sender.Send(message);
-        }
-    }
-
-    public static class MessageServiceExtension
-    {
-        public static DIHelper AddMessageServiceService(this DIHelper services)
-        {
-            services.TryAddScoped<MessageService>();
-
-            return services
-                .AddMessagePolicyService()
-                .AddDbMessageSenderService()
-                .AddMessageFactoryService();
         }
     }
 }

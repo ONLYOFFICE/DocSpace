@@ -1,27 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  toastr,
-  ModalDialog,
-  Button,
-  Link,
-  Text
-} from "asc-web-components";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
 import { withTranslation, Trans } from "react-i18next";
-import i18n from "./i18n";
-import { api, utils } from "asc-web-common";
-const { sendInstructionsToChangePassword } = api.people;
-const { changeLanguage } = utils;
+import { sendInstructionsToChangePassword } from "@appserver/common/api/people";
+import toastr from "studio/toastr";
 
 class ChangePasswordDialogComponent extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      isRequestRunning: false
+      isRequestRunning: false,
     };
-
-    changeLanguage(i18n);
   }
   onSendPasswordChangeInstructions = () => {
     const { email, onClose } = this.props;
@@ -34,10 +27,8 @@ class ChangePasswordDialogComponent extends React.Component {
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => onClose());
         });
-    })
-
-  }
-
+    });
+  };
 
   render() {
     console.log("ChangePasswordDialog render");
@@ -45,41 +36,45 @@ class ChangePasswordDialogComponent extends React.Component {
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialog
-        visible={visible}
-        onClose={onClose}
-        headerContent={t('PasswordChangeTitle')}
-        bodyContent={
-          <Text fontSize='13px'>
-            <Trans i18nKey="MessageSendPasswordChangeInstructionsOnEmail" i18n={i18n}>
+      <ModalDialog visible={visible} onClose={onClose}>
+        <ModalDialog.Header>{t("PasswordChangeTitle")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text fontSize="13px">
+            <Trans
+              i18nKey="MessageSendPasswordChangeInstructionsOnEmail"
+              ns="ChangePasswordDialog"
+            >
               Send the password change instructions to the
-              <Link type="page" href={`mailto:${email}`} noHover color='#316DAA' title={email}>
+              <Link
+                type="page"
+                href={`mailto:${email}`}
+                noHover
+                color="#316DAA"
+                title={email}
+              >
                 {{ email }}
               </Link>
               email address
-          </Trans>
+            </Trans>
           </Text>
-
-        }
-        footerContent={
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
           <Button
             key="SendBtn"
-            label={t('SendButton')}
+            label={t("SendButton")}
             size="medium"
             primary={true}
             onClick={this.onSendPasswordChangeInstructions}
             isLoading={isRequestRunning}
           />
-        }
-      />
+        </ModalDialog.Footer>
+      </ModalDialog>
     );
   }
 }
 
-const ChangePasswordDialogTranslated = withTranslation()(ChangePasswordDialogComponent);
-
-const ChangePasswordDialog = props => (
-  <ChangePasswordDialogTranslated i18n={i18n} {...props} />
+const ChangePasswordDialog = withTranslation("ChangePasswordDialog")(
+  ChangePasswordDialogComponent
 );
 
 ChangePasswordDialog.propTypes = {

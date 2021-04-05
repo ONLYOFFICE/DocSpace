@@ -25,12 +25,11 @@
 
 
 using System;
-using System.Runtime.Serialization;
+
 using ASC.Web.Core.Users;
 
 namespace ASC.Web.Api.Models
 {
-    [DataContract]
     public class ThumbnailsDataWrapper
     {
         public ThumbnailsDataWrapper(Guid userId, UserPhotoManager userPhotoManager)
@@ -47,22 +46,16 @@ namespace ASC.Web.Api.Models
         {
         }
 
-        [DataMember]
         public string Original { get; set; }
 
-        [DataMember]
         public string Retina { get; set; }
 
-        [DataMember]
         public string Max { get; set; }
 
-        [DataMember]
         public string Big { get; set; }
 
-        [DataMember]
         public string Medium { get; set; }
 
-        [DataMember]
         public string Small { get; set; }
 
 

@@ -35,16 +35,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class BoxLoginProvider : Consumer, IOAuthProvider
     {
-        public BoxLoginProvider Instance
-        {
-            get
-            {
-                return ConsumerFactory.Get<BoxLoginProvider>();
-            }
-        }
-
         public string Scopes { get { return ""; } }
         public string CodeUrl { get { return "https://app.box.com/api/oauth2/authorize"; } }
         public string AccessTokenUrl { get { return "https://app.box.com/api/oauth2/token"; } }
@@ -68,26 +61,12 @@ namespace ASC.FederatedLogin.LoginProviders
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
-        }
-    }
-
-    public static class BoxLoginProviderExtension
-    {
-        public static DIHelper AddBoxLoginProviderService(this DIHelper services)
-        {
-            services.TryAddScoped<BoxLoginProvider>();
-            return services
-                .AddConsumerFactoryService()
-                .AddKafkaService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService();
         }
     }
 }

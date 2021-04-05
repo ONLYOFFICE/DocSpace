@@ -26,15 +26,25 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
+using ASC.Core.Data;
+
 namespace ASC.Core
 {
+    [Scope(typeof(DbSubscriptionService))]
     public interface ISubscriptionService
     {
+        string[] GetRecipients(int tenant, string sourceID, string actionID, string objectID);
+
         IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId);
 
         IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, string objectId);
 
+        string[] GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe);
+
         SubscriptionRecord GetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId);
+
+        bool IsUnsubscribe(int tenant, string sourceId, string actionId, string recipientId, string objectId);
 
         void SaveSubscription(SubscriptionRecord s);
 

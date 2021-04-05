@@ -6,12 +6,11 @@
 *-lock.json
 **/node_modules/
 **/storybook-static/
-/web/ASC.Web.Components/dist
-/web/ASC.Web.Common/dist
+**/dist
 /build/deploy
 *.log
-/packages/asc-web-components
-/packages/asc-web-common
 /products/ASC.People/Data/
 Data/
 Logs/
+**/.DS_Store
+.eslintcache

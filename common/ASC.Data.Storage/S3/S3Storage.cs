@@ -41,6 +41,7 @@ using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Amazon.Util;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
@@ -53,6 +54,7 @@ using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Data.Storage.S3
 {
+    [Scope]
     public class S3Storage : BaseStorage
     {
         private readonly List<string> _domains = new List<string>();
@@ -63,12 +65,26 @@ namespace ASC.Data.Storage.S3
         private string _recycleDir = "";
         private Uri _bucketRoot;
         private Uri _bucketSSlRoot;
-        private string _region;
+        private string _region = string.Empty;
+        private string _serviceurl;
+        private bool _forcepathstyle;
         private string _secretAccessKeyId = "";
+        private ServerSideEncryptionMethod _sse = ServerSideEncryptionMethod.AES256;
+        private bool _useHttp = true;
+
         private bool _lowerCasing = true;
         private bool _revalidateCloudFront;
         private string _distributionId = string.Empty;
         private string _subDir = string.Empty;
+
+        public S3Storage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<ILog> options)
+            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+        {
+        }
 
         public S3Storage(
             TenantManager tenantManager,
@@ -185,7 +201,7 @@ namespace ASC.Data.Storage.S3
         {
             var contentDisposition = string.Format("attachment; filename={0};",
                                                    HttpUtility.UrlPathEncode(attachmentFileName));
-            if (attachmentFileName.Any(c => (int)c >= 0 && (int)c <= 127))
+            if (attachmentFileName.Any(c => c >= 0 && c <= 127))
             {
                 contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
                                                    HttpUtility.UrlPathEncode(attachmentFileName));
@@ -219,7 +235,7 @@ namespace ASC.Data.Storage.S3
                 BucketName = _bucket,
                 Key = MakePath(domain, path),
                 ContentType = mime,
-                ServerSideEncryptionMethod = ServerSideEncryptionMethod.AES256,
+                ServerSideEncryptionMethod = _sse,
                 InputStream = buffered,
                 AutoCloseStream = false,
                 Headers =
@@ -312,7 +328,7 @@ namespace ASC.Data.Storage.S3
             {
                 BucketName = _bucket,
                 Key = MakePath(domain, path),
-                ServerSideEncryptionMethod = ServerSideEncryptionMethod.AES256
+                ServerSideEncryptionMethod = _sse
             };
 
             using var s3 = GetClient();
@@ -544,7 +560,7 @@ namespace ASC.Data.Storage.S3
                     DestinationBucket = _bucket,
                     DestinationKey = s3Object.Key.Replace(srckey, dstkey),
                     CannedACL = GetDomainACL(newdomain),
-                    ServerSideEncryptionMethod = ServerSideEncryptionMethod.AES256
+                    ServerSideEncryptionMethod = _sse
                 })
                     .Wait();
 
@@ -571,7 +587,7 @@ namespace ASC.Data.Storage.S3
                 DestinationKey = dstKey,
                 CannedACL = GetDomainACL(newdomain),
                 MetadataDirective = S3MetadataDirective.REPLACE,
-                ServerSideEncryptionMethod = ServerSideEncryptionMethod.AES256
+                ServerSideEncryptionMethod = _sse
             };
 
             client.CopyObjectAsync(request).Wait();
@@ -600,6 +616,7 @@ namespace ASC.Data.Storage.S3
         public override string SavePrivate(string domain, string path, Stream stream, DateTime expires)
         {
             using var client = GetClient();
+            using var uploader = new TransferUtility(client);
             var objectKey = MakePath(domain, path);
             var buffered = stream.GetBuffered();
             var request = new TransferUtilityUploadRequest
@@ -620,7 +637,7 @@ namespace ASC.Data.Storage.S3
 
             request.Metadata.Add("private-expire", expires.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture));
 
-            new TransferUtility(client).Upload(request);
+            uploader.Upload(request);
 
             //Get presigned url                
             var pUrlRequest = new GetPreSignedUrlRequest
@@ -907,7 +924,7 @@ namespace ASC.Data.Storage.S3
                 DestinationKey = dstKey,
                 CannedACL = GetDomainACL(newdomain),
                 MetadataDirective = S3MetadataDirective.REPLACE,
-                ServerSideEncryptionMethod = ServerSideEncryptionMethod.AES256
+                ServerSideEncryptionMethod = _sse
             };
 
             client.CopyObjectAsync(request).Wait();
@@ -935,7 +952,7 @@ namespace ASC.Data.Storage.S3
                     DestinationBucket = _bucket,
                     DestinationKey = s3Object.Key.Replace(srckey, dstkey),
                     CannedACL = GetDomainACL(newdomain),
-                    ServerSideEncryptionMethod = ServerSideEncryptionMethod.AES256
+                    ServerSideEncryptionMethod = _sse
                 }).Wait();
 
                 QuotaUsedAdd(newdomain, s3Object.Size);
@@ -1011,7 +1028,42 @@ namespace ASC.Data.Storage.S3
                 _recycleDir = props["recycleDir"];
             }
 
-            _region = props["region"];
+            if (props.ContainsKey("region") && !string.IsNullOrEmpty(props["region"]))
+            {
+                _region = props["region"];
+            }
+
+            if (props.ContainsKey("serviceurl") && !string.IsNullOrEmpty(props["serviceurl"]))
+            {
+                _serviceurl = props["serviceurl"];
+            }
+
+            if (props.ContainsKey("forcepathstyle"))
+            {
+                if (bool.TryParse(props["forcepathstyle"], out var fps))
+                {
+                    _forcepathstyle = fps;
+                }
+            }
+
+            if (props.ContainsKey("usehttp"))
+            {
+                if (bool.TryParse(props["usehttp"], out var uh))
+                {
+                    _useHttp = uh;
+                }
+            }
+
+            if (props.ContainsKey("sse") && !string.IsNullOrEmpty(props["sse"]))
+            {
+                _sse = (props["sse"].ToLower()) switch
+                {
+                    "none" => ServerSideEncryptionMethod.None,
+                    "aes256" => ServerSideEncryptionMethod.AES256,
+                    "awskms" => ServerSideEncryptionMethod.AWSKMS,
+                    _ => ServerSideEncryptionMethod.None,
+                };
+            }
 
             _bucketRoot = props.ContainsKey("cname") && Uri.IsWellFormedUriString(props["cname"], UriKind.Absolute)
                               ? new Uri(props["cname"], UriKind.Absolute)
@@ -1088,7 +1140,7 @@ namespace ASC.Data.Storage.S3
                 DestinationKey = GetRecyclePath(key),
                 CannedACL = GetDomainACL(domain),
                 MetadataDirective = S3MetadataDirective.REPLACE,
-                ServerSideEncryptionMethod = ServerSideEncryptionMethod.AES256,
+                ServerSideEncryptionMethod = _sse,
                 StorageClass = S3StorageClass.Glacier
             };
 
@@ -1103,13 +1155,22 @@ namespace ASC.Data.Storage.S3
 
         private IAmazonS3 GetClient()
         {
-            var cfg = new AmazonS3Config { UseHttp = true, MaxErrorRetry = 3, RegionEndpoint = RegionEndpoint.GetBySystemName(_region) };
-            return new AmazonS3Client(_accessKeyId, _secretAccessKeyId, cfg);
-        }
+            var cfg = new AmazonS3Config { MaxErrorRetry = 3 };
 
-        public Stream GetWriteStream(string domain, string path)
-        {
-            throw new NotSupportedException();
+            if (!string.IsNullOrEmpty(_serviceurl))
+            {
+                cfg.ServiceURL = _serviceurl;
+
+                cfg.ForcePathStyle = _forcepathstyle;
+            }
+            else
+            {
+                cfg.RegionEndpoint = RegionEndpoint.GetBySystemName(_region);
+            }
+
+            cfg.UseHttp = _useHttp;
+
+            return new AmazonS3Client(_accessKeyId, _secretAccessKeyId, cfg);
         }
 
 

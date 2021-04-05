@@ -34,11 +34,12 @@ using ASC.Core.Common.EF.Model;
 
 namespace ASC.IPSecurity
 {
+    [Scope]
     public class IPRestrictionsRepository
     {
         private const string dbId = "core";
 
-        public TenantDbContext TenantDbContext { get; }
+        private TenantDbContext TenantDbContext { get; }
 
         public IPRestrictionsRepository(DbContextManager<TenantDbContext> dbContextManager)
         {
@@ -75,15 +76,6 @@ namespace ASC.IPSecurity
 
             tx.Commit();
             return ips.ToList();
-        }
-    }
-    public static class IPRestrictionsRepositoryExtension
-    {
-        public static DIHelper AddIPRestrictionsRepositoryService(this DIHelper services)
-        {
-            services.TryAddScoped<IPRestrictionsRepository>();
-
-            return services.AddTenantDbContextService();
         }
     }
 }

@@ -26,6 +26,7 @@
 
 using System;
 using System.Security.Principal;
+
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
 
@@ -38,6 +39,8 @@ namespace ASC.Core.Configuration
         public static readonly string NotifyMessengerSenderSysName = "messanger.sender";
 
         public static readonly string NotifyPushSenderSysName = "push.sender";
+
+        public static readonly string NotifyTelegramSenderSysName = "telegram.sender";
 
         public static readonly ISystemAccount CoreSystem = new SystemAccount(new Guid("A37EE56E-3302-4a7b-B67E-DDBEA64CD032"), "asc system", true);
 

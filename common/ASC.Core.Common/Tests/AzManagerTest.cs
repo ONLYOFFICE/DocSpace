@@ -26,8 +26,10 @@
 
 #if DEBUG
 using System.Collections.Generic;
+
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
+
 using NUnit.Framework;
 
 namespace ASC.Common.Tests.Security.Authorizing

@@ -1,0 +1,24 @@
+﻿{
+	"backup":
+		{
+			"TempFolder":"..\\Data\\Backup\\",
+			"UpgradesPath":"../../Sql",
+			"Limit":100000,
+			"Service":
+			{
+				"WorkerCount":4
+			},
+			"Scheduler":
+			{
+				"Period":"00:15:00","WorkerCount":1
+			},
+			"Cleaner":
+			{
+				"Period":"00:15:00"
+			},
+			"WebConfigs":
+			{
+				"CurrentRegion":"localhost","Elements":[]
+			}
+		}
+}

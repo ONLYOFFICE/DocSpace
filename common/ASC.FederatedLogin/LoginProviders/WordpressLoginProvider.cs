@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -40,6 +41,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class WordpressLoginProvider : BaseLoginProvider<WordpressLoginProvider>
     {
         public const string WordpressMeInfoUrl = "https://public-api.wordpress.com/rest/v1/me";
@@ -49,16 +51,18 @@ namespace ASC.FederatedLogin.LoginProviders
         {
         }
 
-        public WordpressLoginProvider(TenantManager tenantManager,
+        public WordpressLoginProvider(
+            OAuth20TokenHelper oAuth20TokenHelper,
+            TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, signature, instanceCrypto, name, order, props, additional)
+            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
         {
         }
 

@@ -1,41 +1,44 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
-import store from "./store/store";
-import "./custom.scss";
-import App from "./App";
-import * as serviceWorker from "./serviceWorker";
-import { store as commonStore, constants, history, ErrorBoundary} from "asc-web-common";
-const {
-  getUserInfo,
-  getPortalSettings,
-  setIsLoaded
-} = commonStore.auth.actions;
-const { AUTH_KEY } = constants;
+import("./bootstrap");
+//import React from "react";
+//import ReactDOM from "react-dom";
+//import "./custom.scss";
+//import App from "./App";
+//import * as serviceWorker from "./serviceWorker";
+//import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
+//import commonStore from '@appserver/common/store';
+// import { Provider as MobxProvider } from "mobx-react";
+// const { authStore } = commonStore;
+// const paymentStore = new PaymentStore();
+// const wizardStore = new WizardStore();
+// const setupStore = new SettingsSetupStore();
 
-const token = localStorage.getItem(AUTH_KEY);
+// ReactDOM.render(
+//   <MobxProvider
+//     auth={authStore}
+//     payments={paymentStore}
+//     wizard={wizardStore}
+//     setup={setupStore}
+//   >
+//     <ErrorBoundary>
+//       <App />
+//     </ErrorBoundary>
+//   </MobxProvider>,
+//   document.getElementById("root")
+// );
 
-if (!token) {
-  getPortalSettings(store.dispatch)
-    .then(() => store.dispatch(setIsLoaded(true)))
-    .catch(e => history.push(`/login/error=${e}`));
-} else if (!window.location.pathname.includes("confirm/EmailActivation")) {
-  getUserInfo(store.dispatch)
-    .then(() => store.dispatch(setIsLoaded(true)))
-    .catch(e => history.push(`/login/error=${e}`));
-}
+// redirectToDefaultPage();
 
-ReactDOM.render(
-  <Provider store={store}>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </Provider>,
-  document.getElementById("root")
-);
+// ReactDOM.render(
+//   <Provider store={store}>
+//     <ErrorBoundary>
+//       <App />
+//     </ErrorBoundary>
+//   </Provider>,
+//   document.getElementById("root")
+// );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
+// // If you want your app to work offline and load faster, you can change
+// // unregister() to register() below. Note this comes with some pitfalls.
+// // Learn more about service workers: https://bit.ly/CRA-PWA
 
-serviceWorker.register();
+// serviceWorker.register();

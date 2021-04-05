@@ -24,7 +24,8 @@
 */
 
 
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+
 
 using ASC.Common;
 
@@ -32,18 +33,19 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Api.Settings
 {
-    [DataContract(Name = "buildversion", Namespace = "")]
+    [Singletone]
     public class BuildVersion
     {
-        [DataMember]
         public string CommunityServer { get; set; }
 
-        [DataMember(EmitDefaultValue = false)]
         public string DocumentServer { get; set; }
 
-        [DataMember(EmitDefaultValue = false)]
         public string MailServer { get; set; }
-        public IConfiguration Configuration { get; }
+
+        public string XmppServer { get; set; }
+
+        [JsonIgnore]
+        private IConfiguration Configuration { get; }
 
         public BuildVersion(IConfiguration configuration)
         {
@@ -55,6 +57,8 @@ namespace ASC.Api.Settings
             CommunityServer = GetCommunityVersion();
             DocumentServer = GetDocumentVersion();
             MailServer = GetMailServerVersion();
+            XmppServer = GetXmppServerVersion();
+
             return this;
         }
 
@@ -96,15 +100,22 @@ namespace ASC.Api.Settings
 
             return null;*/
         }
-    }
 
-    public static class BuildVersionExtension
-    {
-        public static DIHelper AddBuildVersionService(this DIHelper services)
+        private static string GetXmppServerVersion()
         {
-            services.TryAddSingleton<BuildVersion>();
+            //try
+            //{
+            //    if (ConfigurationManagerExtension.AppSettings["web.talk"] != "true")
+            //        return null;
 
-            return services;
+            //    return new JabberServiceClient().GetVersion();
+            //}
+            //catch (Exception e)
+            //{
+            //    LogManager.GetLogger("ASC").Warn(e.Message, e);
+            //}
+
+            return null;
         }
     }
 }

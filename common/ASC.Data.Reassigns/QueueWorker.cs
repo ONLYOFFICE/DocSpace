@@ -26,31 +26,29 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Threading.Progress;
 using ASC.Core.Users;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Reassigns
 {
     public class QueueWorker
     {
-        public static Dictionary<string, string> GetHttpHeaders(HttpRequest httpRequest)
+        public static IDictionary<string, StringValues> GetHttpHeaders(HttpRequest httpRequest)
         {
-            return httpRequest?.Headers.Keys.ToDictionary(key => key, key => httpRequest.Headers[key].ToString());
+            return httpRequest?.Headers;
         }
     }
     public class QueueWorker<T> where T : class, IProgressItem
     {
         protected readonly ProgressQueue<T> Queue;
 
-        public IHttpContextAccessor HttpContextAccessor { get; }
-        public IServiceProvider ServiceProvider { get; }
+        protected IHttpContextAccessor HttpContextAccessor { get; }
+        protected IServiceProvider ServiceProvider { get; }
 
         public QueueWorker(
             IHttpContextAccessor httpContextAccessor,
@@ -70,7 +68,7 @@ namespace ASC.Data.Reassigns
         public T GetProgressItemStatus(int tenantId, Guid userId)
         {
             var id = GetProgressItemId(tenantId, userId);
-            return Queue.GetStatus(id) as T;
+            return Queue.GetStatus(id);
         }
 
         public void Terminate(int tenantId, Guid userId)
@@ -107,9 +105,10 @@ namespace ASC.Data.Reassigns
         }
     }
 
+    [Scope(Additional = typeof(ReassignProgressItemExtension))]
     public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
     {
-        public QueueWorkerRemove QueueWorkerRemove { get; }
+        private QueueWorkerRemove QueueWorkerRemove { get; }
         public QueueWorkerReassign(
             IHttpContextAccessor httpContextAccessor,
             IServiceProvider serviceProvider,
@@ -125,6 +124,8 @@ namespace ASC.Data.Reassigns
             return Start(tenantId, fromUserId, () => new ReassignProgressItem(ServiceProvider, HttpContextAccessor.HttpContext, this, QueueWorkerRemove, tenantId, fromUserId, toUserId, currentUserId, deleteProfile)) as ReassignProgressItem;
         }
     }
+
+    [Scope(Additional = typeof(RemoveProgressItemExtension))]
     public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
     {
         public QueueWorkerRemove(
@@ -138,29 +139,6 @@ namespace ASC.Data.Reassigns
         public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
             return Start(tenantId, user.ID, () => new RemoveProgressItem(ServiceProvider, HttpContextAccessor.HttpContext, this, tenantId, user, currentUserId, notify)) as RemoveProgressItem;
-        }
-    }
-
-    public static class QueueExtension
-    {
-        public static DIHelper AddQueueWorkerRemoveService(this DIHelper services)
-        {
-            services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
-            services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
-            services.AddSingleton<IConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
-            services.TryAddScoped<QueueWorkerRemove>();
-
-            return services;
-        }
-        public static DIHelper AddQueueWorkerReassignService(this DIHelper services)
-        {
-            services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
-            services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-            services.AddSingleton<IConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
-            services.TryAddScoped<QueueWorkerReassign>();
-
-            return services
-                .AddQueueWorkerRemoveService();
         }
     }
 }

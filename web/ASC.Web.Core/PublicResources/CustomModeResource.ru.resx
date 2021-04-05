@@ -129,6 +129,32 @@ h3.Возможности тестового облака Р7-Офис:
 С уважением,
 Команда Р7-Офис</value>
   </data>
+  <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
+    <value>$PersonalHeaderStart Подключите свое облачное хранилище к ONLYOFFICE $PersonalHeaderEnd
+
+Прошла неделя с тех пор, как вы создали свой облачный офис, и мы хотели бы рассказать вам о некоторых полезных возможностях, которые вы могли не заметить.
+
+Подключите *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud*, *kDrive* или *Yandex.Disk* к ONLYOFFICE, чтобы создать единое пространство для управления всеми документами. Вы сможете редактировать сторонние файлы в ONLYOFFICE и сохранять их в том хранилище, где ведете документацию. Инструкции по подключению файловых хранилищ к ONLYOFFICE можно найти "здесь":"${__HelpLink}/tipstricks/add-resource.aspx".
+
+Вы также можете интегрировать редакторы ONLYOFFICE в Google Drive с помощью нашего "коннектора":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
+
+Еще больше возможностей для управления документами
+
+h3.Попробуйте бизнес-решения ONLYOFFICE "в облаке":"https://www.onlyoffice.com/cloud-office.aspx" или "на собственном сервере":"https://www.onlyoffice.com/server-solutions.aspx". Они бесплатны в течение 30 дней пробного периода и наряду с набором инструментов для бизнеса включают в себя расширенные возможности управления документами:
+
+- Управление проектной документацией;
+
+- Интеграция с CRM и электронной почтой;
+
+- Индивидуальные и групповые права доступа;
+
+- Оптимизация рабочего процесса с помощью инструментов для взаимодействия с командой.
+
+Узнайте больше о возможностях "бизнес-версий ONLYOFFICE":"http://www.onlyoffice.com/document-management.aspx".
+
+С уважением,
+команда ONLYOFFICE</value>
+  </data>
   <data name="pattern_personal_custom_mode_change_email" xml:space="preserve">
     <value>Вы запросили смену адреса электронной почты, служащего для доступа к порталу Р7-Офис.
 
@@ -194,6 +220,16 @@ $GreenButton
 
 ^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
   </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Зарегистрирован новый портал
+
+# URL-адрес портала: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Имя: $UserName
+# Фамилия: $UserLastName
+# Email: $UserEmail
+# Телефон: $Phone
+# Дата создания: $Date</value>
+  </data>
   <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
     <value>Делать то же самое, что и пользователь|Настраивать права доступа к документам и папкам в разделе 'Общие документы'</value>
   </data>
@@ -220,5 +256,8 @@ $GreenButton
   </data>
   <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
     <value>${LetterLogoText}. Завершено удаление данных пользователя</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Зарегистрирован новый портал</value>
   </data>
 </root>

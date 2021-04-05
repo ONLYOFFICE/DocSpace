@@ -44,10 +44,10 @@ namespace ASC.Common.Security.Authorizing
             currObjIdAsProvider = false;
             CurrentObjectId = objectId ?? throw new ArgumentNullException(nameof(objectId));
             currSecObjProvider = secObjProvider;
-            if (currSecObjProvider == null && CurrentObjectId is ISecurityObjectProvider)
+            if (currSecObjProvider == null && CurrentObjectId is ISecurityObjectProvider securityObjectProvider)
             {
                 currObjIdAsProvider = true;
-                currSecObjProvider = (ISecurityObjectProvider)CurrentObjectId;
+                currSecObjProvider = securityObjectProvider;
             }
             callContext = new SecurityCallContext();
         }

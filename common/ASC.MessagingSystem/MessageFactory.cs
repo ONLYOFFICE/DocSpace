@@ -35,9 +35,11 @@ using ASC.Core;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace ASC.MessagingSystem
 {
+    [Scope]
     public class MessageFactory
     {
         private readonly ILog log;
@@ -46,8 +48,8 @@ namespace ASC.MessagingSystem
         private const string hostHeader = "Host";
         private const string refererHeader = "Referer";
 
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
 
         public MessageFactory(AuthContext authContext, TenantManager tenantManager, IOptionsMonitor<ILog> options)
         {
@@ -81,7 +83,7 @@ namespace ASC.MessagingSystem
             }
         }
 
-        public EventMessage Create(MessageUserData userData, Dictionary<string, string> headers, MessageAction action, MessageTarget target, params string[] description)
+        public EventMessage Create(MessageUserData userData, IDictionary<string, StringValues> headers, MessageAction action, MessageTarget target, params string[] description)
         {
             try
             {
@@ -97,10 +99,10 @@ namespace ASC.MessagingSystem
 
                 if (headers != null)
                 {
-                    var userAgent = headers.ContainsKey(userAgentHeader) ? headers[userAgentHeader] : null;
-                    var forwarded = headers.ContainsKey(forwardedHeader) ? headers[forwardedHeader] : null;
-                    var host = headers.ContainsKey(hostHeader) ? headers[hostHeader] : null;
-                    var referer = headers.ContainsKey(refererHeader) ? headers[refererHeader] : null;
+                    var userAgent = headers.ContainsKey(userAgentHeader) ? headers[userAgentHeader].ToString() : null;
+                    var forwarded = headers.ContainsKey(forwardedHeader) ? headers[forwardedHeader].ToString() : null;
+                    var host = headers.ContainsKey(hostHeader) ? headers[hostHeader].ToString() : null;
+                    var referer = headers.ContainsKey(refererHeader) ? headers[refererHeader].ToString() : null;
 
                     message.IP = forwarded ?? host;
                     message.UAHeader = userAgent;
@@ -135,16 +137,6 @@ namespace ASC.MessagingSystem
                 log.Error(string.Format("Error while parse Initiator Message for \"{0}\" type of event: {1}", action, ex));
                 return null;
             }
-        }
-    }
-    public static class MessageFactoryExtension
-    {
-        public static DIHelper AddMessageFactoryService(this DIHelper services)
-        {
-            services.TryAddScoped<MessageFactory>();
-            return services
-                .AddAuthContextService()
-                .AddTenantManagerService();
         }
     }
 }

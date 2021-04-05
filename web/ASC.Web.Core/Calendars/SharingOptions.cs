@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+
 using ASC.Core;
 using ASC.Core.Users;
 
@@ -34,7 +34,6 @@ namespace ASC.Web.Core.Calendars
 {
     public class SharingOptions : ICloneable
     {
-        [DataContract(Name = "PublicItem")]
         public class PublicItem
         {
             public Guid Id { get; set; }

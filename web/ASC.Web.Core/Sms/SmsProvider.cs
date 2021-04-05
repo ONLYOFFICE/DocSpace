@@ -38,8 +38,6 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.VoipService.Dao;
@@ -53,10 +51,11 @@ using Twilio.Types;
 
 namespace ASC.Web.Core.Sms
 {
+    [Scope(Additional = typeof(TwilioProviderExtention))]
     public class SmsProviderManager
     {
         public SmscProvider SmscProvider { get => ConsumerFactory.Get<SmscProvider>(); }
-        public ConsumerFactory ConsumerFactory { get; }
+        private ConsumerFactory ConsumerFactory { get; }
 
         public ClickatellProvider ClickatellProvider { get => ConsumerFactory.Get<ClickatellProvider>(); }
         public TwilioProvider TwilioProvider { get => ConsumerFactory.Get<TwilioProvider>(); }
@@ -116,19 +115,11 @@ namespace ASC.Web.Core.Sms
             return provider.SendMessage(number, message);
         }
     }
-    public static class SmsProviderManagerExtension
-    {
-        public static DIHelper AddSmsProviderManagerService(this DIHelper services)
-        {
-            services.TryAddScoped<SmsProviderManager>();
-            return services.AddConsumerFactoryService();
-        }
-    }
 
     public abstract class SmsProvider : Consumer
     {
         protected readonly ILog Log;
-        protected static readonly ICache Cache = AscCache.Memory;
+        protected ICache MemoryCache { get; set; }
 
         protected virtual string SendMessageUrlFormat { get; set; }
         protected virtual string GetBalanceUrlFormat { get; set; }
@@ -144,13 +135,15 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
+            MemoryCache = memCache;
             Log = options.CurrentValue;
         }
 
@@ -206,12 +199,13 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props, additional)
         {
         }
 
@@ -254,9 +248,9 @@ namespace ASC.Web.Core.Sms
             var tenantCache = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
             var key = "sms/smsc/" + tenantCache;
-            if (eraseCache) Cache.Remove(key);
+            if (eraseCache) MemoryCache.Remove(key);
 
-            var balance = Cache.Get<string>(key);
+            var balance = MemoryCache.Get<string>(key);
 
             if (string.IsNullOrEmpty(balance))
             {
@@ -285,7 +279,7 @@ namespace ASC.Web.Core.Sms
                     balance = string.Empty;
                 }
 
-                Cache.Insert(key, balance, TimeSpan.FromMinutes(1));
+                MemoryCache.Insert(key, balance, TimeSpan.FromMinutes(1));
             }
 
             return balance;
@@ -304,9 +298,9 @@ namespace ASC.Web.Core.Sms
             return !string.IsNullOrEmpty(smsCis) && Regex.IsMatch(number, smsCis);
         }
 
-        public bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
+        public bool ValidateKeys()
         {
-            return double.TryParse(GetBalance(tenantManager.GetCurrentTenant(false), true), NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
+            return double.TryParse(GetBalance(TenantManager.GetCurrentTenant(false), true), NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
         }
     }
 
@@ -343,12 +337,13 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props, additional)
         {
         }
     }
@@ -363,16 +358,18 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            ICache memCache,
             string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, null, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, null, additional)
         {
         }
     }
 
+    [Scope]
     public class TwilioProvider : SmsProvider, IValidateKeysProvider
     {
         protected override string Key
@@ -392,6 +389,12 @@ namespace ASC.Web.Core.Sms
             get { return this["twiliosender"]; }
             set { }
         }
+
+        public AuthContext AuthContext { get; }
+        public TenantUtil TenantUtil { get; }
+        public SecurityContext SecurityContext { get; }
+        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        public TwilioProviderCleaner TwilioProviderCleaner { get; }
 
         public override bool Enable()
         {
@@ -429,24 +432,35 @@ namespace ASC.Web.Core.Sms
         }
 
         public TwilioProvider(
+            AuthContext authContext,
+            TenantUtil tenantUtil,
+            SecurityContext securityContext,
+            BaseCommonLinkUtility baseCommonLinkUtility,
+            TwilioProviderCleaner twilioProviderCleaner,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
-            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, props, additional)
+            ICache memCache,
+            string name, int order, Dictionary<string, string> props)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache ,name, order, props)
         {
+            AuthContext = authContext;
+            TenantUtil = tenantUtil;
+            SecurityContext = securityContext;
+            BaseCommonLinkUtility = baseCommonLinkUtility;
+            TwilioProviderCleaner = twilioProviderCleaner;
         }
 
 
-        public bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
+        public bool ValidateKeys()
         {
             try
             {
-                new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, baseCommonLinkUtility).GetExistingPhoneNumbers();
+                new VoipService.Twilio.TwilioProvider(Key, Secret, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility).GetExistingPhoneNumbers();
                 return true;
             }
             catch (Exception)
@@ -455,22 +469,13 @@ namespace ASC.Web.Core.Sms
             }
         }
 
-        public void ClearOldNumbers(DbContextManager<VoipDbContext> dbOptions, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility, VoipDaoCache voipDaoCache)
+        public void ClearOldNumbers()
         {
-            if (string.IsNullOrEmpty(Key) || string.IsNullOrEmpty(Secret)) return;
-
-            var provider = new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, baseCommonLinkUtility);
-
-            var dao = new CachedVoipDao(tenantManager.GetCurrentTenant().TenantId, dbOptions, authContext, tenantUtil, securityContext, baseCommonLinkUtility, ConsumerFactory, voipDaoCache);
-            var numbers = dao.GetNumbers();
-            foreach (var number in numbers)
-            {
-                provider.DisablePhone(number);
-                dao.DeleteNumber(number.Id);
-            }
+            TwilioProviderCleaner.ClearOldNumbers(Key, Secret);
         }
     }
 
+    [Scope]
     public class TwilioSaaSProvider : TwilioProvider
     {
         public TwilioSaaSProvider()
@@ -478,16 +483,63 @@ namespace ASC.Web.Core.Sms
         }
 
         public TwilioSaaSProvider(
+            AuthContext authContext,
+            TenantUtil tenantUtil,
+            SecurityContext securityContext,
+            BaseCommonLinkUtility baseCommonLinkUtility,
+            TwilioProviderCleaner twilioProviderCleaner,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
-            string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, null, additional)
+            ICache memCache,
+            string name, int order)
+            : base(authContext, tenantUtil, securityContext, baseCommonLinkUtility, twilioProviderCleaner, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, null)
         {
+        }
+    }
+
+    [Scope]
+    public class TwilioProviderCleaner
+    {
+        private VoipDao VoipDao { get; }
+        private AuthContext AuthContext { get; }
+        private TenantUtil TenantUtil { get; }
+        private SecurityContext SecurityContext { get; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+
+        public TwilioProviderCleaner(VoipDao voipDao, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
+        {
+            VoipDao = voipDao;
+            AuthContext = authContext;
+            TenantUtil = tenantUtil;
+            SecurityContext = securityContext;
+            BaseCommonLinkUtility = baseCommonLinkUtility;
+        }
+
+        public void ClearOldNumbers(string key, string secret)
+        {
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(secret)) return;
+
+            var provider = new VoipService.Twilio.TwilioProvider(key, secret, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility);
+
+            var numbers = VoipDao.GetNumbers();
+            foreach (var number in numbers)
+            {
+                provider.DisablePhone(number);
+                VoipDao.DeleteNumber(number.Id);
+            }
+        }
+    }
+
+    public static class TwilioProviderExtention
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<TwilioSaaSProvider>();
         }
     }
 }

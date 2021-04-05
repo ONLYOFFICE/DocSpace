@@ -32,6 +32,6 @@ namespace ASC.Notify
     {
         void SendNotifyMessage(NotifyMessage notifyMessage);
 
-        void InvokeSendMethod(string service, string method, int tenant, params object[] parameters);
+        void InvokeSendMethod(NotifyInvoke notifyInvoke);
     }
 }

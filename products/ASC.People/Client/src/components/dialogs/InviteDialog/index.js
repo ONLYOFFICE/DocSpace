@@ -1,49 +1,70 @@
 import React from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import {
-  toastr,
-  ModalDialog,
-  Link,
-  Checkbox,
-  Button,
-  Textarea,
-  Text
-} from "asc-web-components";
+
+import Link from "@appserver/components/link";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Checkbox from "@appserver/components/checkbox";
+import Button from "@appserver/components/button";
+import Textarea from "@appserver/components/textarea";
+import Text from "@appserver/components/text";
+
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
-import ModalDialogContainer from '../ModalDialogContainer';
+import ModalDialogContainer from "../ModalDialogContainer";
 import copy from "copy-to-clipboard";
-import { api, utils } from "asc-web-common";
-const { getShortenedLink } = api.portal;
-const { changeLanguage } = utils;
+import { inject, observer } from "mobx-react";
+
 const textAreaName = "link-textarea";
 
 class InviteDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { userInvitationLink, guestInvitationLink } = props;
+    // const { userInvitationLink, guestInvitationLink } = props;
     this.state = {
       isGuest: false,
-      userInvitationLink,
-      guestInvitationLink,
+      // userInvitationLink: null,
+      // guestInvitationLink: null,
       isLoading: false,
       isLinkShort: false,
       visible: false,
+      LinkCopySuccess: false,
+      ChangeTextAnim: false,
     };
   }
 
   onCopyLinkToClipboard = () => {
     // console.log("COPY", this.props);
-    const { t } = this.props;
     copy(
       this.state.isGuest
-        ? this.state.guestInvitationLink
-        : this.state.userInvitationLink
+        ? this.props.guestInvitationLink
+        : this.props.userInvitationLink
     );
 
-    toastr.success(t("LinkCopySuccess"));
+    this.ShowCopySuccessText();
+  };
+
+  ShowCopySuccessText = async () => {
+    await this.StartChangeTextAnimation();
+
+    this.setState({
+      LinkCopySuccess: true,
+    });
+
+    setTimeout(async () => {
+      await this.StartChangeTextAnimation();
+      this.setState({ LinkCopySuccess: false });
+    }, 1500);
+  };
+
+  StartChangeTextAnimation = () => {
+    this.setState({ ChangeTextAnim: true });
+
+    return new Promise((resolve) =>
+      setTimeout(() => {
+        this.setState({ ChangeTextAnim: false });
+        resolve(true);
+      }, 200)
+    );
   };
 
   onCheckedGuest = () => this.setState({ isGuest: !this.state.isGuest });
@@ -51,37 +72,42 @@ class InviteDialogComponent extends React.Component {
   onGetShortenedLink = () => {
     this.setState({ isLoading: true });
     const {
+      getShortenedLink,
       userInvitationLink,
-      guestInvitationLink
+      guestInvitationLink,
     } = this.props;
 
-    getShortenedLink(userInvitationLink)
-      .then(link => this.setState({ userInvitationLink: link }))
-      .catch(e => {
-        console.error("getShortInvitationLink error", e);
-        this.setState({ isLoading: false });
-      });
+    const { isGuest } = this.state;
+    const link = isGuest ? guestInvitationLink : userInvitationLink;
 
-    getShortenedLink(guestInvitationLink)
-      .then(link =>
-        this.setState({
-          guestInvitationLink: link,
-          isLoading: false,
-          isLinkShort: true
-        })
-      )
-      .catch(e => {
-        console.error("getShortInvitationLink error", e);
-      });
+    getShortenedLink(link, !isGuest)
+      .then((link) => {
+        if (!isGuest) {
+          this.setState({ userInvitationLink: link, isLinkShort: true });
+        } else {
+          this.setState({ guestInvitationLink: link, isLinkShort: true });
+        }
+      })
+      .catch((e) => console.error("getShortInvitationLink error", e)) // TODO: add translation
+      .finally(() => this.setState({ isLoading: false }));
   };
 
   componentDidMount() {
-    const { t } = this.props;
-    copy(this.state.userInvitationLink);
+    const {
+      getPortalInviteLinks,
+      userInvitationLink,
+      guestInvitationLink,
+    } = this.props;
 
-    changeLanguage(i18n)
-    .then(()=>  this.setState({visible: true}))
-    .then(()=>  toastr.success(t("LinkCopySuccess")));
+    if (!userInvitationLink || !guestInvitationLink) {
+      getPortalInviteLinks().then(() => {
+        this.setState({
+          visible: true,
+        });
+      });
+    } else {
+      this.setState({ visible: true });
+    }
   }
 
   onClickToCloseButton = () =>
@@ -90,43 +116,42 @@ class InviteDialogComponent extends React.Component {
 
   render() {
     console.log("InviteDialog render");
-    const { t, visible, settings, guestsCaption } = this.props;
+    const { t, visible, hasShortenService, guestsCaption } = this.props;
+    const { LinkCopySuccess, ChangeTextAnim } = this.state;
 
     return (
-      this.state.visible &&
-      <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={this.onClose}
-          headerContent={t("InviteLinkTitle")}
-          bodyContent={
-            <>
-              <Text as="p">
-                {t("HelpAnswerLinkInviteSettings")}
-              </Text>
+      this.state.visible && (
+        <ModalDialogContainer ChangeTextAnim={ChangeTextAnim}>
+          <ModalDialog visible={visible} onClose={this.onClose}>
+            <ModalDialog.Header>{t("InviteLinkTitle")}</ModalDialog.Header>
+            <ModalDialog.Body>
+              <Text as="p">{t("HelpAnswerLinkInviteSettings")}</Text>
               <Text className="text-dialog" as="p">
                 {t("InviteLinkValidInterval", { count: 7 })}
               </Text>
-              <div className="flex">
-                <div>
+              <div className="invite-link-dialog-wrapper">
+                <Link
+                  className="link-dialog"
+                  type="action"
+                  isHovered={LinkCopySuccess ? false : true}
+                  noHover={LinkCopySuccess}
+                  onClick={
+                    LinkCopySuccess ? undefined : this.onCopyLinkToClipboard
+                  }
+                >
+                  {LinkCopySuccess
+                    ? t("LinkCopySuccess")
+                    : t("CopyToClipboard")}
+                </Link>
+                {hasShortenService && !this.state.isLinkShort && (
                   <Link
-                    className="link-dialog"
                     type="action"
                     isHovered={true}
-                    onClick={this.onCopyLinkToClipboard}
+                    onClick={this.onGetShortenedLink}
                   >
-                    {t("CopyToClipboard")}
+                    {t("GetShortenLink")}
                   </Link>
-                  {settings && !this.state.isLinkShort && (
-                    <Link
-                      type="action"
-                      isHovered={true}
-                      onClick={this.onGetShortenedLink}
-                    >
-                      {t("GetShortenLink")}
-                    </Link>
-                  )}
-                </div>
+                )}
                 <Checkbox
                   label={t("InviteUsersAsCollaborators", { guestsCaption })}
                   isChecked={this.state.isGuest}
@@ -141,14 +166,12 @@ class InviteDialogComponent extends React.Component {
                 name={textAreaName}
                 value={
                   this.state.isGuest
-                    ? this.state.guestInvitationLink
-                    : this.state.userInvitationLink
+                    ? this.props.guestInvitationLink
+                    : this.props.userInvitationLink
                 }
               />
-            </>
-          }
-          footerContent={
-            <>
+            </ModalDialog.Body>
+            <ModalDialog.Footer>
               <Button
                 key="CloseBtn"
                 label={
@@ -161,33 +184,27 @@ class InviteDialogComponent extends React.Component {
                 onClick={this.onClickToCloseButton}
                 isLoading={this.state.isLoading}
               />
-            </>
-          }
-        />
-      </ModalDialogContainer>
+            </ModalDialog.Footer>
+          </ModalDialog>
+        </ModalDialogContainer>
+      )
     );
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    settings: state.auth.settings.hasShortenService,
-    userInvitationLink: state.portal.inviteLinks.userLink,
-    guestInvitationLink: state.portal.inviteLinks.guestLink,
-    guestsCaption: state.auth.settings.customNames.guestsCaption
-  };
-};
-
-const InviteDialogTranslated = withTranslation()(InviteDialogComponent);
-
-const InviteDialog = props => (
-  <InviteDialogTranslated i18n={i18n} {...props} />
-);
+const InviteDialog = withTranslation("InviteDialog")(InviteDialogComponent);
 
 InviteDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onCloseButton: PropTypes.func.isRequired
+  onCloseButton: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps)(InviteDialog);
+export default inject(({ auth, peopleStore }) => ({
+  hasShortenService: auth.settingsStore.hasShortenService,
+  guestsCaption: auth.settingsStore.customNames.guestsCaption,
+  getPortalInviteLinks: peopleStore.inviteLinksStore.getPortalInviteLinks,
+  getShortenedLink: peopleStore.inviteLinksStore.getShortenedLink,
+  userInvitationLink: peopleStore.inviteLinksStore.userLink,
+  guestInvitationLink: peopleStore.inviteLinksStore.guestLink,
+}))(observer(InviteDialog));

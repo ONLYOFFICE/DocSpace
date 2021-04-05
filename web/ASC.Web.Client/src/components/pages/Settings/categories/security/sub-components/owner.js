@@ -1,24 +1,19 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import i18n from "../../../i18n";
-import { I18nextProvider, withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import {
-  getPortalOwner
-} from "../../../../../../store/settings/actions";
-import {
-  Text,
-  Avatar,
-  Link,
-  toastr,
-  Button,
-  RequestLoader,
-  Loader
-} from "asc-web-components";
-import { PeopleSelector } from "asc-web-common";
+import Text from "@appserver/components/text";
+import Avatar from "@appserver/components/avatar";
+import Link from "@appserver/components/link";
+import toastr from "@appserver/components/toast/toastr";
+import Button from "@appserver/components/button";
+import RequestLoader from "@appserver/components/request-loader";
+import Loader from "@appserver/components/loader";
+import PeopleSelector from "people/PeopleSelector";
 import isEmpty from "lodash/isEmpty";
+import { inject } from "mobx-react";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 
 const OwnerContainer = styled.div`
   .link_style {
@@ -38,7 +33,7 @@ const OwnerContainer = styled.div`
   }
 `;
 const HeaderContainer = styled.div`
-  margin: 40px 0 16px 0;
+  margin: 0 0 16px 0;
 `;
 
 const BodyContainer = styled.div`
@@ -83,57 +78,53 @@ class PureOwnerSettings extends Component {
       isLoading: false,
       showSelector: false,
       showLoader: true,
-      selectedOwner: null
+      selectedOwner: null,
     };
   }
 
   componentDidMount() {
-    const {
-      owner,
-      getPortalOwner,
-      ownerId
-    } = this.props;
-
+    const { owner, getPortalOwner } = this.props;
+    showLoader();
     if (isEmpty(owner, true)) {
-      getPortalOwner(ownerId)
-        .catch(error => {
+      getPortalOwner()
+        .catch((error) => {
           toastr.error(error);
         })
         .finally(() => this.setState({ showLoader: false }));
+    } else {
+      this.setState({ showLoader: false });
     }
-    this.setState({ showLoader: false });
+    hideLoader();
   }
 
   onChangeOwner = () => {
-    const { t, owner } = this.props;
-    toastr.success(t("DnsChangeMsg", { email: owner.email }));
+    const { t, owner, sendOwnerChange } = this.props;
+    const { selectedOwner } = this.state;
+    sendOwnerChange(selectedOwner.key)
+      .then((res) => toastr.success(res.message)) //toastr.success(t("DnsChangeMsg", { email: owner.email })))
+      .catch((err) => toastr.error(err));
   };
 
-  onLoading = status => this.setState({ isLoading: status });
+  onLoading = (status) => this.setState({ isLoading: status });
 
-  onShowSelector = status => {
+  onShowSelector = (status) => {
     this.setState({
-      showSelector: status
+      showSelector: status,
     });
   };
 
   onCancelSelector = () => {
     this.onShowSelector(false);
-  }
+  };
 
-  onSelect = items => {
+  onSelect = (items) => {
     this.onShowSelector(false);
     this.setState({ selectedOwner: items[0] });
   };
 
   render() {
     const { t, owner, me, groupsCaption } = this.props;
-    const {
-      isLoading,
-      showLoader,
-      showSelector,
-      selectedOwner
-    } = this.state;
+    const { isLoading, showLoader, showSelector, selectedOwner } = this.state;
 
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
 
@@ -142,21 +133,21 @@ class PureOwnerSettings extends Component {
     return (
       <>
         {showLoader ? (
-          <Loader className="pageLoader" type="rombs" size='40px' />
+          <Loader className="pageLoader" type="rombs" size="40px" />
         ) : (
           <OwnerContainer>
             <RequestLoader
               visible={isLoading}
               zIndex={256}
-              loaderSize='16px'
+              loaderSize="16px"
               loaderColor={"#999"}
               label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-              fontSize='12px'
+              fontSize="12px"
               fontColor={"#999"}
               className="page_loader"
             />
             <HeaderContainer>
-              <Text fontSize='18px'>{t("PortalOwner")}</Text>
+              <Text fontSize="18px">{t("PortalOwner")}</Text>
             </HeaderContainer>
 
             <BodyContainer>
@@ -169,17 +160,13 @@ class PureOwnerSettings extends Component {
                   source={owner.avatar}
                 />
                 <div className="avatar_body">
-                  <Text
-                    className="avatar_text"
-                    fontSize='16px'
-                    isBold={true}
-                  >
+                  <Text className="avatar_text" fontSize="16px" isBold={true}>
                     {owner.displayName}
                   </Text>
                   {owner.groups &&
-                    owner.groups.map(group => (
+                    owner.groups.map((group) => (
                       <Link
-                        fontSize='12px'
+                        fontSize="12px"
                         key={group.id}
                         href={owner.profileUrl}
                       >
@@ -189,10 +176,10 @@ class PureOwnerSettings extends Component {
                 </div>
               </AvatarContainer>
               <ProjectsBody>
-                <Text className="portal_owner" fontSize='12px'>
+                <Text className="portal_owner" fontSize="12px">
                   {t("AccessRightsOwnerCan")}:
                 </Text>
-                <Text fontSize='12px'>
+                <Text fontSize="12px">
                   {OwnerOpportunities.map((item, key) => (
                     <li key={key}>{item};</li>
                   ))}
@@ -200,7 +187,7 @@ class PureOwnerSettings extends Component {
               </ProjectsBody>
             </BodyContainer>
 
-            <Text fontSize='12px' className="text-body_wrapper">
+            <Text fontSize="12px" className="text-body_wrapper">
               {t("AccessRightsChangeOwnerText")}
             </Text>
 
@@ -216,26 +203,22 @@ class PureOwnerSettings extends Component {
               className="button_offset"
               size="medium"
               primary={true}
-              label={t('AccessRightsChangeOwnerButtonText')}
+              label={t("AccessRightsChangeOwnerButtonText")}
               isDisabled={!isLoading ? selectedOwner === null : false}
               onClick={this.onChangeOwner}
             />
-            <Text
-              className="text-body_inline"
-              fontSize='12px'
-              color="#A3A9AE"
-            >
+            <Text className="text-body_inline" fontSize="12px" color="#A3A9AE">
               {t("AccessRightsChangeOwnerConfirmText")}
             </Text>
 
             <div className="advanced-selector">
-              <PeopleSelector 
+              <PeopleSelector
                 isOpen={showSelector}
                 size={"compact"}
                 onSelect={this.onSelect}
                 onCancel={this.onCancelSelector}
                 defaultOption={me}
-                defaultOptionLabel={t('MeLabel')}
+                defaultOptionLabel={t("MeLabel")}
                 groupsCaption={groupsCaption}
               />
             </div>
@@ -246,35 +229,24 @@ class PureOwnerSettings extends Component {
   }
 }
 
-const AccessRightsContainer = withTranslation()(PureOwnerSettings);
-
-const OwnerSettings = props => (
-  <I18nextProvider i18n={i18n}>
-    <AccessRightsContainer {...props} />
-  </I18nextProvider>
-);
-
-function mapStateToProps(state) {
-  const { owner } = state.settings.security.accessRight;
-  const { user: me } = state.auth;
-  const groupsCaption = state.auth.settings.customNames.groupsCaption;
-
-  return {
-    ownerId: state.auth.settings.ownerId,
-    owner,
-    me,
-    groupsCaption
-  };
-}
+const OwnerSettings = withTranslation("Settings")(PureOwnerSettings);
 
 OwnerSettings.defaultProps = {
-  owner: {}
+  owner: {},
 };
 
 OwnerSettings.propTypes = {
-  owner: PropTypes.object
+  owner: PropTypes.object,
 };
 
-export default connect(mapStateToProps, { getPortalOwner })(
-  withRouter(OwnerSettings)
-);
+export default inject(({ auth, setup }) => {
+  const { customNames, getPortalOwner, owner } = auth.settingsStore;
+  const { sendOwnerChange } = setup;
+  return {
+    groupsCaption: customNames.groupsCaption,
+    getPortalOwner,
+    owner,
+    me: auth.userStore.user,
+    sendOwnerChange,
+  };
+})(withRouter(OwnerSettings));

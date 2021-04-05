@@ -23,30 +23,20 @@
  *
 */
 
-
-using System.Runtime.Serialization;
-
 namespace ASC.Api.Settings.Smtp
 {
-    [DataContract]
     public class SmtpOperationStatus
     {
-        [DataMember]
         public bool Completed { get; set; }
 
-        [DataMember]
         public string Id { get; set; }
 
-        [DataMember]
         public string Status { get; set; }
 
-        [DataMember]
         public string Error { get; set; }
 
-        [DataMember]
         public int Percents { get; set; }
 
-        [DataMember]
         public string Source { get; set; }
 
         public static SmtpOperationStatus GetSample()

@@ -1,20 +1,24 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
-import i18n from "../../i18n";
-import { I18nextProvider, withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { TabContainer } from "asc-web-components";
-import { utils } from "asc-web-common";
+import TabContainer from "@appserver/components/tabs-container";
 
 import OwnerSettings from "./sub-components/owner";
 import AdminsSettings from "./sub-components/admins";
 // import ModulesSettings from "./sub-components/modules";
 
-const { changeLanguage } = utils;
+import { setDocumentTitle } from "../../../../../helpers/utils";
+import { inject } from "mobx-react";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const MainContainer = styled.div`
-  padding-bottom: 16px;
   width: 100%;
+
+  .settings_tabs {
+    padding-bottom: 16px;
+  }
 
   .page_loader {
     position: fixed;
@@ -26,9 +30,9 @@ class PureAccessRights extends Component {
   constructor(props) {
     super(props);
 
-    document.title = `${props.t(
-      "ManagementCategorySecurity"
-    )} – ${props.t("OrganizationName")}`;
+    const { t } = props;
+
+    setDocumentTitle(t("ManagementCategorySecurity"));
 
     const url = props.history.location.pathname;
     const newUrl = url.split("/");
@@ -43,22 +47,32 @@ class PureAccessRights extends Component {
     // }
 
     this.state = {
-      selectedTab
+      selectedTab,
     };
   }
 
-  onSelectPage = page => {
+  onSelectPage = (page) => {
     const { history } = this.props;
 
     switch (page.key) {
       case "0":
-        history.push("/settings/security/accessrights/owner");
+        history.push(
+          combineUrl(
+            AppServerConfig.proxyURL,
+            "/settings/security/accessrights/owner"
+          )
+        );
         break;
       case "1":
-        history.push("/settings/security/accessrights/admins");
+        history.push(
+          combineUrl(
+            AppServerConfig.proxyURL,
+            "/settings/security/accessrights/admins"
+          )
+        );
         break;
       // case "2":
-      //   history.push("/settings/security/accessrights/modules");
+      //   history.push(combineUrl(AppServerConfig.proxyURL, "/settings/security/accessrights/modules"));
       //   break;
       default:
         break;
@@ -84,44 +98,36 @@ class PureAccessRights extends Component {
 
     return (
       <MainContainer>
-        <TabContainer
+        <OwnerSettings />
+        {/* <TabContainer
+          classNem="settings_tabs"
           selectedItem={selectedTab}
           isDisabled={isLoading}
           onSelect={this.onSelectPage}
-        >
-          {[
+          elements={[
             {
               key: "0",
               title: t("OwnerSettings"),
-              content: <OwnerSettings />
+              content: <OwnerSettings />,
             },
             {
               key: "1",
               title: t("AdminsSettings"),
-              content: <AdminsSettings />
+              content: <AdminsSettings />,
+              dis
+            },
+            {
+              key: "2",
+              title: "Portals settings",
+              content: <ModulesSettings />
             }
-            // {
-            //   key: "2",
-            //   title: "Portals settings",
-            //   content: <ModulesSettings />
-            // }
           ]}
-        </TabContainer>
+        /> */}
       </MainContainer>
     );
   }
 }
 
-const AccessRightsContainer = withTranslation()(PureAccessRights);
-
-const AccessRights = props => {
-  changeLanguage(i18n);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <AccessRightsContainer {...props} />
-    </I18nextProvider>
-  );
-};
-
-export default withRouter(AccessRights);
+export default inject(({ auth }) => ({
+  organizationName: auth.settingsStore.organizationName,
+}))(withTranslation("Settings")(withRouter(PureAccessRights)));

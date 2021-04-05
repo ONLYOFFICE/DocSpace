@@ -1,49 +1,44 @@
 import React, { memo } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import {
-  toastr,
-  ModalDialog,
-  Button,
-  Text,
-  ToggleContent,
-  Checkbox,
-  CustomScrollbarsVirtualList
-} from "asc-web-components";
+
+import Button from "@appserver/components/button";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Text from "@appserver/components/text";
+import ToggleContent from "@appserver/components/toggle-content";
+import Checkbox from "@appserver/components/checkbox";
+import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
+
 import { withTranslation } from "react-i18next";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import i18n from "./i18n";
-import { utils } from "asc-web-common";
+import toastr from "studio/toastr";
+import { EmployeeType } from "@appserver/common/constants";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { updateUserType } from "../../../store/people/actions";
 
-const { changeLanguage } = utils;
+import { inject, observer } from "mobx-react";
 
 class ChangeUserTypeDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    changeLanguage(i18n);
-
     const { selectedUsers, userIds } = props;
 
     const listUsers = selectedUsers.map((item, index) => {
-      const disabled = userIds.find(x => x === item.id);
+      const disabled = userIds.find((x) => x === item.id);
       return (selectedUsers[index] = {
         ...selectedUsers[index],
         checked: disabled ? true : false,
-        disabled: disabled ? false : true
+        disabled: disabled ? false : true,
       });
     });
 
     this.state = { isRequestRunning: false, userIds, listUsers };
   }
 
-  onChange = e => {
+  onChange = (e) => {
     const { listUsers } = this.state;
-    const userIndex = listUsers.findIndex(x => x.id === e.target.value);
+    const userIndex = listUsers.findIndex((x) => x.id === e.target.value);
     const newUsersList = listUsers;
     newUsersList[userIndex].checked = !newUsersList[userIndex].checked;
 
@@ -58,12 +53,19 @@ class ChangeUserTypeDialogComponent extends React.Component {
   };
 
   onChangeUserType = () => {
-    const { onClose, setSelected, t, userType, updateUserType } = this.props;
+    const {
+      onClose,
+      setSelected,
+      t,
+      userType,
+      updateUserType,
+      filter,
+    } = this.props;
     const { userIds } = this.state;
     this.setState({ isRequestRunning: true }, () => {
-      updateUserType(userType, userIds)
+      updateUserType(userType, userIds, filter)
         .then(() => toastr.success(t("SuccessChangeUserType")))
-        .catch(error => toastr.error(error))
+        .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
             setSelected("close");
@@ -113,61 +115,51 @@ class ChangeUserTypeDialogComponent extends React.Component {
     const secondType = userType === 1 ? t("UserCol") : t("GuestCaption");
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t("ChangeUserTypeHeader")}
-          bodyContent={
-            <>
-              <Text>
-                {t("ChangeUserTypeMessage", {
-                  firstType: firstType,
-                  secondType: secondType
-                })}
-              </Text>
-              <Text>{t("ChangeUserTypeMessageWarning")}</Text>
+        <ModalDialog visible={visible} onClose={onClose}>
+          <ModalDialog.Header>{t("ChangeUserTypeHeader")}</ModalDialog.Header>
+          <ModalDialog.Body>
+            <Text>
+              {t("ChangeUserTypeMessage", {
+                firstType: firstType,
+                secondType: secondType,
+              })}
+            </Text>
+            <Text>{t("ChangeUserTypeMessageWarning")}</Text>
 
-              <ToggleContent
-                className="toggle-content-dialog"
-                label={t("ShowUsersList")}
-              >
-                <div style={containerStyles} className="modal-dialog-content">
-                  <AutoSizer>{renderList}</AutoSizer>
-                </div>
-              </ToggleContent>
-            </>
-          }
-          footerContent={
-            <>
-              <Button
-                label={t("ChangeUserTypeButton")}
-                size="medium"
-                primary
-                onClick={this.onChangeUserType}
-                isLoading={isRequestRunning}
-                isDisabled={!userIds.length}
-              />
-              <Button
-                className="button-dialog"
-                label={t("CancelButton")}
-                size="medium"
-                onClick={onClose}
-                isDisabled={isRequestRunning}
-              />
-            </>
-          }
-        />
+            <ToggleContent
+              className="toggle-content-dialog"
+              label={t("ShowUsersList")}
+            >
+              <div style={containerStyles} className="modal-dialog-content">
+                <AutoSizer>{renderList}</AutoSizer>
+              </div>
+            </ToggleContent>
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
+            <Button
+              label={t("ChangeUserTypeButton")}
+              size="medium"
+              primary
+              onClick={this.onChangeUserType}
+              isLoading={isRequestRunning}
+              isDisabled={!userIds.length}
+            />
+            <Button
+              className="button-dialog"
+              label={t("CancelButton")}
+              size="medium"
+              onClick={onClose}
+              isDisabled={isRequestRunning}
+            />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }
 }
 
-const ChangeUserTypeDialogTranslated = withTranslation()(
+const ChangeUserTypeDialog = withTranslation("ChangeUserTypeDialog")(
   ChangeUserTypeDialogComponent
-);
-
-const ChangeUserTypeDialog = props => (
-  <ChangeUserTypeDialogTranslated i18n={i18n} {...props} />
 );
 
 ChangeUserTypeDialog.propTypes = {
@@ -175,9 +167,18 @@ ChangeUserTypeDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   setSelected: PropTypes.func.isRequired,
   userIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired
+  selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default connect(null, { updateUserType })(
-  withRouter(ChangeUserTypeDialog)
+export default withRouter(
+  inject(({ peopleStore }, ownProps) => ({
+    filter: peopleStore.filterStore.filter,
+    updateUserType: peopleStore.usersStore.updateUserType,
+    selectedUsers: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
+    userIds:
+      ownProps.userType === EmployeeType.User
+        ? peopleStore.selectionStore.getUsersToMakeEmployeesIds
+        : peopleStore.selectionStore.getUsersToMakeGuestsIds,
+  }))(observer(ChangeUserTypeDialog))
 );

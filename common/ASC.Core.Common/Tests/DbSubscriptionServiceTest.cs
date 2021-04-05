@@ -28,7 +28,9 @@
 namespace ASC.Core.Common.Tests
 {
     using System.Linq;
+
     using ASC.Core.Data;
+
     using NUnit.Framework;
 
     [TestFixture]

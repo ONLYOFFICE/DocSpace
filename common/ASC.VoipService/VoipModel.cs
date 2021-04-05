@@ -120,13 +120,7 @@ namespace ASC.VoipService
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = Enabled.GetHashCode();
-                hashCode = (hashCode * 397) ^ From.GetHashCode();
-                hashCode = (hashCode * 397) ^ To.GetHashCode();
-                return hashCode;
-            }
+            return HashCode.Combine(Enabled, From, To);
         }
     }
 

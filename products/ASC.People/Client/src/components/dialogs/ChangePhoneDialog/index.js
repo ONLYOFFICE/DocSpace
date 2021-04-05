@@ -1,25 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  toastr,
-  ModalDialog,
-  Button,
-  Text
-} from "asc-web-components";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
-import { api, utils } from "asc-web-common";
-const { changeLanguage } = utils;
+import toastr from "studio/toastr";
 
 class ChangePhoneDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isRequestRunning: false
+      isRequestRunning: false,
     };
-
-    changeLanguage(i18n);
   }
 
   // TODO: add real api request for executing change phone
@@ -31,42 +24,34 @@ class ChangePhoneDialogComponent extends React.Component {
     });
   };
 
-
-
   render() {
     console.log("ChangePhoneDialog render");
     const { t, visible, onClose } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialog
-        visible={visible}
-        onClose={onClose}
-        headerContent={t('MobilePhoneChangeTitle')}
-        bodyContent={
-          <Text>
-            {t('MobilePhoneEraseDescription')}
-          </Text>
-        }
-        footerContent={
+      <ModalDialog visible={visible} onClose={onClose}>
+        <ModalDialog.Header>{t("MobilePhoneChangeTitle")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text>{t("MobilePhoneEraseDescription")}</Text>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
           <Button
             key="SendBtn"
-            label={t('SendButton')}
+            label={t("SendButton")}
             size="medium"
             primary={true}
             onClick={this.onChangePhone}
             isLoading={isRequestRunning}
           />
-        }
-      />
+        </ModalDialog.Footer>
+      </ModalDialog>
     );
   }
 }
 
-const ChangePhoneDialogTranslated = withTranslation()(ChangePhoneDialogComponent);
-
-const ChangePhoneDialog = props => (
-  <ChangePhoneDialogTranslated i18n={i18n} {...props} />
+const ChangePhoneDialog = withTranslation("ChangePhoneDialog")(
+  ChangePhoneDialogComponent
 );
 
 ChangePhoneDialog.propTypes = {

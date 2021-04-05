@@ -27,10 +27,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+
+using ASC.Common;
+using ASC.Core.Caching;
+using ASC.Core.Common.EF;
+using ASC.Core.Data;
 using ASC.Core.Users;
 
 namespace ASC.Core
 {
+    [Scope(typeof(ConfigureEFUserService), typeof(ConfigureCachedUserService))]
     public interface IUserService
     {
         IDictionary<Guid, UserInfo> GetUsers(int tenant, DateTime from);
@@ -50,7 +57,11 @@ namespace ASC.Core
 
         UserInfo GetUser(int tenant, Guid id);
 
-        UserInfo GetUser(int tenant, string login, string passwordHash);
+        UserInfo GetUser(int tenant, string email);
+
+        UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp);
+
+        UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash);
 
         UserInfo SaveUser(int tenant, UserInfo user);
 
@@ -60,9 +71,9 @@ namespace ASC.Core
 
         void SetUserPhoto(int tenant, Guid id, byte[] photo);
 
-        string GetUserPassword(int tenant, Guid id);
+        DateTime GetUserPasswordStamp(int tenant, Guid id);
 
-        void SetUserPassword(int tenant, Guid id, string password);
+        void SetUserPasswordHash(int tenant, Guid id, string passwordHash);
 
 
         IDictionary<Guid, Group> GetGroups(int tenant, DateTime from);

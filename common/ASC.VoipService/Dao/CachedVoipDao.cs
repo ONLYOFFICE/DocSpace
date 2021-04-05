@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common;
@@ -39,14 +40,15 @@ using ASC.Core.Tenants;
 
 namespace ASC.VoipService.Dao
 {
+    [Singletone]
     public class VoipDaoCache
     {
-        public ICache Cache { get; }
-        public ICacheNotify<CachedVoipItem> Notify { get; }
+        internal ICache Cache { get; }
+        private ICacheNotify<CachedVoipItem> Notify { get; }
 
-        public VoipDaoCache(ICacheNotify<CachedVoipItem> notify)
+        public VoipDaoCache(ICacheNotify<CachedVoipItem> notify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             Notify = notify;
             Notify.Subscribe((c) => Cache.Remove(CachedVoipDao.GetCacheKey(c.Tenant)), CacheNotifyAction.Any);
         }
@@ -57,15 +59,16 @@ namespace ASC.VoipService.Dao
         }
     }
 
+    [Scope]
     public class CachedVoipDao : VoipDao
     {
         private readonly ICache cache;
         private static readonly TimeSpan timeout = TimeSpan.FromDays(1);
 
-        public VoipDaoCache VoipDaoCache { get; }
+        private VoipDaoCache VoipDaoCache { get; }
 
         public CachedVoipDao(
-            int tenantID,
+            TenantManager tenantManager,
             DbContextManager<VoipDbContext> dbOptions,
             AuthContext authContext,
             TenantUtil tenantUtil,
@@ -73,7 +76,7 @@ namespace ASC.VoipService.Dao
             BaseCommonLinkUtility baseCommonLinkUtility,
             ConsumerFactory consumerFactory,
             VoipDaoCache voipDaoCache)
-            : base(tenantID, dbOptions, authContext, tenantUtil, securityContext, baseCommonLinkUtility, consumerFactory)
+            : base(tenantManager, dbOptions, authContext, tenantUtil, securityContext, baseCommonLinkUtility, consumerFactory)
         {
             cache = voipDaoCache.Cache;
             VoipDaoCache = voipDaoCache;
@@ -97,7 +100,7 @@ namespace ASC.VoipService.Dao
             var numbers = cache.Get<List<VoipPhone>>(GetCacheKey(TenantID));
             if (numbers == null)
             {
-                numbers = new List<VoipPhone>(base.GetNumbers());
+                numbers = new List<VoipPhone>(base.GetAllNumbers());
                 cache.Insert(GetCacheKey(TenantID), numbers, DateTime.UtcNow.Add(timeout));
             }
 

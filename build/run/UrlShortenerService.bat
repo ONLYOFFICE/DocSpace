@@ -1,0 +1,2 @@
+echo "RUN ASC.UrlShortener.Svc"
+call dotnet run --project ..\..\common\services\ASC.UrlShortener.Svc\ASC.UrlShortener.Svc.csproj --no-build --$STORAGE_ROOT=..\..\..\Data --log__dir=..\..\..\Logs --log__name=urlshortener

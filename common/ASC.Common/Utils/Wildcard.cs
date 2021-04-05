@@ -52,56 +52,53 @@ namespace ASC.Common.Utils
             var offsetInput = 0;
             var isAsterix = false;
             int i;
-            while (true)
+            for (i = 0; i < pattern.Length;)
             {
-                for (i = 0; i < pattern.Length;)
+                switch (pattern[i])
                 {
-                    switch (pattern[i])
-                    {
-                        case '?':
-                            isAsterix = false;
-                            offsetInput++;
-                            break;
-                        case '*':
-                            isAsterix = true;
-                            while (i < pattern.Length &&
-                                   pattern[i] == '*')
-                            {
-                                i++;
-                            }
-                            if (i >= pattern.Length)
-                                return true;
-                            continue;
-                        default:
-                            if (offsetInput >= input.Length)
+                    case '?':
+                        isAsterix = false;
+                        offsetInput++;
+                        break;
+                    case '*':
+                        isAsterix = true;
+                        while (i < pattern.Length &&
+                                pattern[i] == '*')
+                        {
+                            i++;
+                        }
+                        if (i >= pattern.Length)
+                            return true;
+                        continue;
+                    default:
+                        if (offsetInput >= input.Length)
+                            return false;
+                        if ((ignoreCase
+                                    ? char.ToLower(input[offsetInput])
+                                    : input[offsetInput])
+                            !=
+                            (ignoreCase
+                                    ? char.ToLower(pattern[i])
+                                    : pattern[i]))
+                        {
+                            if (!isAsterix)
                                 return false;
-                            if ((ignoreCase
-                                     ? char.ToLower(input[offsetInput])
-                                     : input[offsetInput])
-                                !=
-                                (ignoreCase
-                                     ? char.ToLower(pattern[i])
-                                     : pattern[i]))
-                            {
-                                if (!isAsterix)
-                                    return false;
-                                offsetInput++;
-                                continue;
-                            }
                             offsetInput++;
-                            break;
-                    }
-                    i++;
+                            continue;
+                        }
+                        offsetInput++;
+                        break;
                 }
-
-                if (i > input.Length)
-                    return false;
-
-                while (i < pattern.Length && pattern[i] == '*')
-                    ++i;
-
-                return (offsetInput == input.Length);
+                i++;
             }
+
+            if (i > input.Length)
+                return false;
+
+            while (i < pattern.Length && pattern[i] == '*')
+                ++i;
+
+            return (offsetInput == input.Length);
         }
     }
 }

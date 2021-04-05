@@ -39,17 +39,18 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Files
 {
+    [Scope]
     public class FilesLinkUtility
     {
         public const string FilesBaseVirtualPath = "~/products/files/";
-        public const string EditorPage = "doceditor.aspx";
+        public const string EditorPage = "doceditor";
         private readonly string FilesUploaderURL;
-        public CommonLinkUtility CommonLinkUtility { get; set; }
-        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        public CoreBaseSettings CoreBaseSettings { get; set; }
-        public CoreSettings CoreSettings { get; set; }
-        public IConfiguration Configuration { get; }
-        public InstanceCrypto InstanceCrypto { get; }
+        private CommonLinkUtility CommonLinkUtility { get; set; }
+        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private CoreBaseSettings CoreBaseSettings { get; set; }
+        private CoreSettings CoreSettings { get; set; }
+        private IConfiguration Configuration { get; }
+        private InstanceCrypto InstanceCrypto { get; }
 
         public FilesLinkUtility(
             CommonLinkUtility commonLinkUtility,
@@ -65,7 +66,7 @@ namespace ASC.Web.Core.Files
             CoreSettings = coreSettings;
             Configuration = configuration;
             InstanceCrypto = instanceCrypto;
-            FilesUploaderURL = Configuration["files.uploader.url"] ?? "~";
+            FilesUploaderURL = Configuration["files:uploader:url"] ?? "~";
         }
 
         public string FilesBaseAbsolutePath
@@ -73,7 +74,7 @@ namespace ASC.Web.Core.Files
             get { return BaseCommonLinkUtility.ToAbsolute(FilesBaseVirtualPath); }
         }
 
-        public const string FileId = "fileid";
+        public const string FileId = "fileId";
         public const string FolderId = "folderid";
         public const string Version = "version";
         public const string FileUri = "fileuri";
@@ -409,7 +410,7 @@ namespace ASC.Web.Core.Files
             }
             if (string.IsNullOrEmpty(value))
             {
-                value = Configuration["files.docservice.url." + (appSettingsKey ?? key)];
+                value = Configuration["files:docservice:url:" + (appSettingsKey ?? key)];
             }
             return value;
         }
@@ -429,20 +430,6 @@ namespace ASC.Web.Core.Files
         private string GetSettingsKey(string key)
         {
             return "DocKey_" + key;
-        }
-    }
-    public static class FilesLinkUtilityExtention
-    {
-        public static DIHelper AddFilesLinkUtilityService(this DIHelper services)
-        {
-            services.TryAddScoped<FilesLinkUtility>();
-
-            return services
-                .AddCommonLinkUtilityService()
-                .AddBaseCommonLinkUtilityService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService()
-                .AddInstanceCryptoService();
         }
     }
 }
