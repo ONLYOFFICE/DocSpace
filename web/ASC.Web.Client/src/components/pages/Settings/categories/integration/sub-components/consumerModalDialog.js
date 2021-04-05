@@ -96,7 +96,7 @@ class ConsumerModalDialog extends React.Component {
       </Box>
       <Text as="div">
         <Trans
-          t={this.pros.t}
+          t={this.props.t}
           i18nKey="ThirdPartyBodyDescription"
           ns="Settings"
         >
@@ -117,7 +117,7 @@ class ConsumerModalDialog extends React.Component {
   );
 
   bottomDescription = (
-    <Trans t={this.pros.t} i18nKey="ThirdPartyBottomDescription" ns="Settings">
+    <Trans t={this.props.t} i18nKey="ThirdPartyBottomDescription" ns="Settings">
       If you still have some questions on how to connect this service or need
       technical assistance, please feel free to contact our{" "}
       <Link
