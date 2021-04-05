@@ -170,6 +170,10 @@ class PureHome extends React.Component {
 
   showUploadPanel = () => {
     this.props.setUploadPanelVisible(!this.props.uploadPanelVisible);
+
+    this.props.primaryProgressDataVisible &&
+      this.props.uploaded &&
+      this.props.clearPrimaryProgressData();
   };
   componentDidUpdate(prevProps) {
     const {
@@ -325,6 +329,7 @@ export default inject(
       percent: primaryProgressDataPercent,
       icon: primaryProgressDataIcon,
       alert: primaryProgressDataAlert,
+      clearPrimaryProgressData,
     } = primaryProgressDataStore;
 
     const {
@@ -337,7 +342,7 @@ export default inject(
 
     const { convertDialogVisible } = dialogsStore;
 
-    const { setUploadPanelVisible, startUpload } = uploadDataStore;
+    const { setUploadPanelVisible, startUpload, uploaded } = uploadDataStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
     const selectionTitle = isProgressFinished
@@ -353,11 +358,13 @@ export default inject(
       isLoading,
       filter,
       viewAs,
+      uploaded,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
       primaryProgressDataIcon,
       primaryProgressDataAlert,
+      clearPrimaryProgressData,
 
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,
