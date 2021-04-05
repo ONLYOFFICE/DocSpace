@@ -515,7 +515,7 @@ class FilesStore {
   };
 
   canShareOwnerChange = (item) => {
-    const userId = this.userStore.user.id;
+    const userId = this.userStore.user && this.userStore.user.id;
     const isCommonFolder =
       this.treeFoldersStore.commonFolder &&
       this.selectedFolderStore.pathParts &&
