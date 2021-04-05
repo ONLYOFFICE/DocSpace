@@ -288,6 +288,7 @@ class SectionHeaderContent extends React.PureComponent {
           <Trans
             i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
             ns="Profile"
+            t={this.props.t}
           >
             The email activation instructions have been sent to the
             <strong>{{ email: this.state.profile.email }}</strong> email address

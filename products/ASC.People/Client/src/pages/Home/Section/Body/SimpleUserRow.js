@@ -139,6 +139,7 @@ const SimpleUserRow = ({
           <Trans
             i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
             ns="Home"
+            t={t}
           >
             The email activation instructions have been sent to the
             <strong>{{ email: email }}</strong> email address

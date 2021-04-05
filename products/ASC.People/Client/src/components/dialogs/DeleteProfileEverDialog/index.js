@@ -65,6 +65,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
               <Trans
                 i18nKey="DeleteUserConfirmation"
                 ns="DeleteProfileEverDialog"
+                t={t}
               >
                 {{ userCaption }} <strong>{{ user: user.displayName }}</strong>{" "}
                 will be deleted.
