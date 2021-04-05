@@ -53,9 +53,8 @@ const FilesContainer = (props) => {
   );
 };
 
-export default inject(({ auth, initFilesStore, filesStore }) => {
-  const { filesList } = filesStore;
-  const { isLoading } = initFilesStore;
+export default inject(({ auth, filesStore }) => {
+  const { filesList, isLoading } = filesStore;
   const { isLoaded } = auth;
 
   return {

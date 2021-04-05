@@ -19,8 +19,6 @@ const SectionBodyContent = (props) => {
     isEmptyFilesList,
     folderId,
     dragging,
-    startDrag,
-    setStartDrag,
     setDragging,
     startDrag,
     setStartDrag,
@@ -164,15 +162,12 @@ export default inject(
       filesList,
       dragging,
       setDragging,
-      startDrag,
-      setStartDrag,
       isLoading,
       viewAs,
       setTooltipPosition,
       startDrag,
       setStartDrag,
-    } = initFilesStore;
-    const { firstLoad, fileActionStore, filesList } = filesStore;
+    } = filesStore;
 
     return {
       dragging,

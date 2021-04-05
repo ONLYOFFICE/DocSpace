@@ -1,7 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
-import styled from "styled-components";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 

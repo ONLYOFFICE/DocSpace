@@ -232,7 +232,6 @@ const FileItem = (props) => {
 export default inject(
   (
     {
-      initFilesStore,
       filesStore,
       treeFoldersStore,
       selectedFolderStore,
@@ -243,13 +242,6 @@ export default inject(
     },
     { item }
   ) => {
-    const {
-      dragging,
-      setDragging,
-      setStartDrag,
-      setTooltipPosition,
-    } = initFilesStore;
-
     const {
       type: actionType,
       extension: actionExtension,
@@ -265,7 +257,15 @@ export default inject(
       setCopyPanelVisible,
     } = dialogsStore;
 
-    const { selection, canShare, fileActionStore } = filesStore;
+    const {
+      selection,
+      canShare,
+      fileActionStore,
+      dragging,
+      setDragging,
+      setStartDrag,
+      setTooltipPosition,
+    } = filesStore;
 
     const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
 
