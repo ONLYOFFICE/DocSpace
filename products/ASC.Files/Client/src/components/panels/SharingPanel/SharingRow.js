@@ -1,5 +1,6 @@
 import React from "react";
 import IconButton from "@appserver/components/icon-button";
+import Link from "@appserver/components/link";
 import Row from "@appserver/components/row";
 import Text from "@appserver/components/text";
 import toastr from "studio/toastr";
@@ -43,6 +44,7 @@ class SharingRow extends React.Component {
   onShareEmail = () => {
     const { selection, item, t } = this.props;
     const { shareLink } = item.sharedTo;
+
     const itemName = selection.title ? selection.title : selection[0].title;
     const subject = t("ShareEmailSubject", { itemName });
     const body = t("ShareEmailBody", { itemName, shareLink });
@@ -227,7 +229,7 @@ class SharingRow extends React.Component {
                 !shareLink &&
                 !isLocked && (
                   <IconButton
-                    iconName="images/remove.react.svg"
+                    iconName="/static/images/remove.react.svg"
                     id={id}
                     {...onRemoveUserProp}
                     className="sharing_panel-remove-icon"

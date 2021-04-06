@@ -21,7 +21,7 @@
     "test": "yarn workspace @appserver/components test",
     "clean": "concurrently \"wsrun --parallel clean\"",
     "storybook": "yarn workspace @appserver/components storybook",
-    "storybook-build": "yarn workspace @appserver/components run build-storybook"
+    "storybook-build": "yarn workspace @appserver/components run storybook-build"
   },
   "devDependencies": {
     "lerna": "^3.22.1",

@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Mail
 {
@@ -54,19 +55,19 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.ToTable("mail_mailbox");
 
                 entity.HasIndex(e => e.Address)
-                    .HasName("address_index");
+                    .HasDatabaseName("address_index");
 
                 entity.HasIndex(e => e.IdInServer)
-                    .HasName("main_mailbox_id_in_server_mail_mailbox_server_id");
+                    .HasDatabaseName("main_mailbox_id_in_server_mail_mailbox_server_id");
 
                 entity.HasIndex(e => e.IdSmtpServer)
-                    .HasName("main_mailbox_id_smtp_server_mail_mailbox_server_id");
+                    .HasDatabaseName("main_mailbox_id_smtp_server_mail_mailbox_server_id");
 
                 entity.HasIndex(e => new { e.DateChecked, e.DateLoginDelayExpires })
-                    .HasName("date_login_delay_expires");
+                    .HasDatabaseName("date_login_delay_expires");
 
                 entity.HasIndex(e => new { e.Tenant, e.IdUser })
-                    .HasName("user_id_index");
+                    .HasDatabaseName("user_id_index");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -195,19 +196,19 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.ToTable("mail_mailbox", "onlyoffice");
 
                 entity.HasIndex(e => e.Address)
-                    .HasName("address_index");
+                    .HasDatabaseName("address_index");
 
                 entity.HasIndex(e => e.IdInServer)
-                    .HasName("main_mailbox_id_in_server_mail_mailbox_server_id");
+                    .HasDatabaseName("main_mailbox_id_in_server_mail_mailbox_server_id");
 
                 entity.HasIndex(e => e.IdSmtpServer)
-                    .HasName("main_mailbox_id_smtp_server_mail_mailbox_server_id");
+                    .HasDatabaseName("main_mailbox_id_smtp_server_mail_mailbox_server_id");
 
                 entity.HasIndex(e => new { e.DateChecked, e.DateLoginDelayExpires })
-                    .HasName("date_login_delay_expires");
+                    .HasDatabaseName("date_login_delay_expires");
 
                 entity.HasIndex(e => new { e.Tenant, e.IdUser })
-                    .HasName("user_id_index");
+                    .HasDatabaseName("user_id_index");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

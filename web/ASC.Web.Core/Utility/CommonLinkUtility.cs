@@ -463,7 +463,7 @@ namespace ASC.Web.Studio.Utility
             if (!string.IsNullOrEmpty(sysName))
                 foreach (var product in WebItemManager.GetItemsAll<IProduct>())
                 {
-                    if (string.CompareOrdinal(sysName, WebItemExtension.GetSysName(product as IWebItem)) == 0)
+                    if (string.CompareOrdinal(sysName, WebItemExtension.GetSysName(product)) == 0)
                     {
                         result = product;
                         break;

@@ -1,8 +1,9 @@
-﻿using ASC.Core.Common.EF;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
+using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using Microsoft.EntityFrameworkCore;
-using System;
-
 namespace ASC.Files.Core.EF
 {
     public class DbFilesTag : IDbFile
@@ -29,7 +30,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_tag");
 
                 entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Flag })
-                    .HasName("name");
+                    .HasDatabaseName("name");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -59,7 +60,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_tag", "onlyoffice");
 
                 entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Flag })
-                    .HasName("name_files_tag");
+                    .HasDatabaseName("name_files_tag");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

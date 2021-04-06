@@ -52,7 +52,7 @@ const AdvantagesContainer = ({ organizationName }) => {
         />
         <Box className="wrapper" marginProp="0 0 0 8px">
           <Text isBold={true}>
-            <Trans i18nKey="AdvantageEditor" ns="PaymentsEnterprise">
+            <Trans t={t} i18nKey="AdvantageEditor" ns="PaymentsEnterprise">
               {{ organizationName }}
             </Trans>
           </Text>

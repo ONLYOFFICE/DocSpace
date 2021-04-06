@@ -34,8 +34,6 @@ using ASC.Core.Tenants;
 using ASC.Data.Backup.EF.Context;
 using ASC.Data.Backup.EF.Model;
 
-using Microsoft.EntityFrameworkCore.Internal;
-
 namespace ASC.Data.Backup.Storage
 {
     [Scope]

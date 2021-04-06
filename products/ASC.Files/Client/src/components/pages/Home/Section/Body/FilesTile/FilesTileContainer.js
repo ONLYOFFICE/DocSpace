@@ -30,7 +30,7 @@ const FilesTileContainer = (props) => {
 
         let classNameProp =
           isFolder && item.access < 2 && !isRecycleBin
-            ? { className: " dropable" }
+            ? { className: " droppable" }
             : {};
 
         if (item.draggable) classNameProp.className += " draggable";

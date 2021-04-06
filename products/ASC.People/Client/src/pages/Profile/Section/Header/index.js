@@ -288,6 +288,7 @@ class SectionHeaderContent extends React.PureComponent {
           <Trans
             i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
             ns="Profile"
+            t={this.props.t}
           >
             The email activation instructions have been sent to the
             <strong>{{ email: this.state.profile.email }}</strong> email address
@@ -399,8 +400,15 @@ class SectionHeaderContent extends React.PureComponent {
   onClickBack = () => {
     const { filter, setFilter, history, resetProfile } = this.props;
     resetProfile();
-    const backUrl = combineUrl(AppServerConfig.proxyURL, config.homepage);
-    history.push(backUrl);
+
+    const url = filter.toUrlParams();
+    const backUrl = combineUrl(
+      AppServerConfig.proxyURL,
+      config.homepage,
+      `filter?/${url}`
+    );
+
+    history.push(backUrl, url);
     setFilter(filter);
   };
 

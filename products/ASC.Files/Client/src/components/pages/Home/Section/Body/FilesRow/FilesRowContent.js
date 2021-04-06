@@ -134,7 +134,10 @@ class FilesRowContent extends React.PureComponent {
   }
 
   completeAction = (id) => {
-    this.props.editCompleteAction(id, this.props.item);
+    const isCancel =
+      (id.currentTarget && id.currentTarget.dataset.action === "cancel") ||
+      id.keyCode === 27;
+    this.props.editCompleteAction(id, this.props.item, isCancel);
   };
 
   updateItem = () => {
@@ -144,17 +147,20 @@ class FilesRowContent extends React.PureComponent {
       item,
       setIsLoading,
       fileActionId,
+      editCompleteAction,
     } = this.props;
 
     const { itemTitle } = this.state;
     const originalTitle = getTitleWithoutExst(item);
 
     setIsLoading(true);
-    if (originalTitle === itemTitle || itemTitle.trim() === "") {
+    const isSameTitle =
+      originalTitle.trim() === itemTitle.trim() || itemTitle.trim() === "";
+    if (isSameTitle) {
       this.setState({
         itemTitle: originalTitle,
       });
-      return this.completeAction(fileActionId);
+      return editCompleteAction(fileActionId, item, isSameTitle);
     }
 
     item.fileExst
@@ -207,7 +213,7 @@ class FilesRowContent extends React.PureComponent {
           .then(() => this.completeAction(itemId))
           .then(() =>
             toastr.success(
-              <Trans i18nKey="FolderCreated" ns="Home">
+              <Trans t={t} i18nKey="FolderCreated" ns="Home">
                 New folder {{ itemTitle }} is created
               </Trans>
             )
@@ -649,7 +655,7 @@ class FilesRowContent extends React.PureComponent {
                 {canWebEdit && !isTrashFolder && accessToEdit && (
                   <IconButton
                     onClick={this.onFilesClick}
-                    iconName="images/access.edit.react.svg"
+                    iconName="/static/images/access.edit.react.svg"
                     className="badge"
                     size="small"
                     isfill={true}
@@ -784,7 +790,6 @@ export default inject(
   (
     {
       auth,
-      initFilesStore,
       filesStore,
       formatsStore,
       uploadDataStore,
@@ -798,7 +803,6 @@ export default inject(
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
     const { culture, isDesktopClient, isTabletView } = auth.settingsStore;
-    const { setIsLoading, isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
     const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
     const {
@@ -817,6 +821,8 @@ export default inject(
       renameFolder,
       createFolder,
       openDocEditor,
+      setIsLoading,
+      isLoading,
     } = filesStore;
 
     const {

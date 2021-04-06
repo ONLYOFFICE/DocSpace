@@ -110,9 +110,9 @@ const RootFolderContainer = (props) => {
       </Text>
       {!isDesktop && (
         <Text fontSize="12px">
-          <Trans i18nKey="PrivateRoomSupport" ns="Home">
-            Work in Private Room is available via {{ organizationName }}
-            desktop app.
+          <Trans t={t} i18nKey="PrivateRoomSupport" ns="Home">
+            Work in Private Room is available via {{ organizationName }} desktop
+            app.{" "}
             <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
               Instructions
             </Link>
@@ -188,21 +188,19 @@ const RootFolderContainer = (props) => {
 };
 
 export default inject(
-  ({
-    auth,
-    initFilesStore,
-    filesStore,
-    treeFoldersStore,
-    selectedFolderStore,
-  }) => {
+  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
     const {
       isDesktopClient,
       isEncryptionSupport,
       organizationName,
     } = auth.settingsStore;
 
-    const { privacyInstructions, setIsLoading } = initFilesStore;
-    const { filter, fetchFiles } = filesStore;
+    const {
+      filter,
+      fetchFiles,
+      privacyInstructions,
+      setIsLoading,
+    } = filesStore;
     const { title, rootFolderType } = selectedFolderStore;
     const { isPrivacyFolder, myFolderId } = treeFoldersStore;
 
