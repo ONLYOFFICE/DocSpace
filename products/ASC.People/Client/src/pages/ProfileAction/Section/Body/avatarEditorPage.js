@@ -180,7 +180,7 @@ class AvatarEditorPage extends React.PureComponent {
         })
         .then(() => this.props.fetchProfile(profile.id))
         .then((res) => {
-          this.props.setUser(res);
+          this.props.isMe && this.props.setUser(res);
           return toggleAvatarEditor(false);
         });
     } else {
@@ -198,7 +198,7 @@ class AvatarEditorPage extends React.PureComponent {
         })
         .then(() => this.props.fetchProfile(profile.id))
         .then((res) => {
-          this.props.setUser(res);
+          this.props.isMe && this.props.setUser(res);
           return toggleAvatarEditor(false);
         });
     }
@@ -319,6 +319,7 @@ export default withRouter(
     toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
+    isMe: peopleStore.targetUserStore.isMe,
     avatarMax: peopleStore.avatarEditorStore.avatarMax,
     setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
     updateProfile: peopleStore.targetUserStore.updateProfile,
