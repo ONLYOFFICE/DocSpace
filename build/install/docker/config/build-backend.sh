@@ -33,10 +33,8 @@ done
 echo "== BACK-END-BUILD =="
 echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null
 cd ${SRC_PATH}
-#dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config
-#dotnet build -r linux-x64 ASC.Web.sln
 
-dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config
+dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config --disable-parallel
 dotnet build ASC.Web.sln  /fl1 /flp1:LogFile=build/ASC.Web.log;Verbosity=Normal
 
 echo "== Build ASC.Thumbnails =="

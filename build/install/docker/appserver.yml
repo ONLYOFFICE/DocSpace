@@ -25,6 +25,10 @@ x-service:
     volumes:
     #- /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data
     - app_data:/app/onlyoffice/data
+    - files_data:/var/www/products/ASC.Files/server/
+    - people_data:/var/www/products/ASC.People/server/
+    - crm_data:/var/www/products/ASC.CRM/server/
+    - project_data:/var/www/products/ASC.Projects/server/
 
 services: 
   onlyoffice-elasticsearch:
@@ -182,6 +186,7 @@ services:
     expose:
       - "8081"
       - "8099"
+      - "8092"
     ports:
       - 8092:8092 
     depends_on:
@@ -232,8 +237,12 @@ networks:
 
 volumes:
   kafka_data:
+  es_data:
   zoo_data:
   zoo_log:
   proxy_log:
   app_data:
-  es_data:
+  files_data:
+  people_data:
+  crm_data:
+  project_data:

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SRC_PATH="~/projects/testProjects/AppServer"
+SRC_PATH="/AppServer"
 
 while [ "$1" != "" ]; do
     case $1 in
