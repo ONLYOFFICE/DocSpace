@@ -77,12 +77,13 @@ class SharingRow extends React.Component {
       onShowEmbeddingPanel,
       onToggleLink,
       externalLinkData,
-      canShareOwnerChange,
       onShowChangeOwnerPanel,
       isLoading,
       internalLink,
     } = this.props;
     const { access } = this.state;
+
+    const canShareOwnerChange = this.props.canShareOwnerChange(item);
 
     const { isOwner, isLocked } = item;
     const { label, displayName, name, shareLink, id } = item.sharedTo;

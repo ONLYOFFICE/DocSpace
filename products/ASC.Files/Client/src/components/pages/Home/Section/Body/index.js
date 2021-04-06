@@ -124,14 +124,14 @@ const SectionBodyContent = (props) => {
 
   const onDragOver = (e) => {
     e.preventDefault();
-    if (e.dataTransfer.items.length > 0 && !dragging) {
+    if (e.dataTransfer.items.length > 0) {
       setDragging(true);
     }
   };
 
   const onDragLeaveDoc = (e) => {
     e.preventDefault();
-    if (dragging && !e.relatedTarget) {
+    if (!e.relatedTarget || !e.dataTransfer.items.length) {
       setDragging(false);
     }
   };

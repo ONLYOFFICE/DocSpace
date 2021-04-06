@@ -536,10 +536,11 @@ const SimpleFilesRow = (props) => {
         }
       : {};
 
+  const isDragging = isFolder && access < 2 && !isRecycleBin;
   const checkedProps = isEdit || id <= 0 ? {} : { checked };
   const element = getItemIcon(isEdit || id <= 0);
   const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
-  let className = isFolder && access < 2 && !isRecycleBin ? " droppable" : "";
+  let className = isDragging ? " droppable" : "";
   if (draggable) className += " draggable";
   let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
   value += draggable ? "_draggable" : "";
@@ -555,7 +556,7 @@ const SimpleFilesRow = (props) => {
       className={className}
       onDrop={onDrop}
       onMouseDown={onMouseDown}
-      dragging={dragging && isFolder && access < 2}
+      dragging={dragging && isDragging}
       {...contextOptionsProps}
     >
       <StyledSimpleFilesRow
