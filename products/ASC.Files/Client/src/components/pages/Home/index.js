@@ -214,6 +214,7 @@ class PureHome extends React.Component {
       fileActionId,
       firstLoad,
       isHeaderVisible,
+      isRecycleBinFolder,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -240,7 +241,7 @@ class PureHome extends React.Component {
           withBodyScroll
           withBodyAutoFocus={!isMobile}
           uploadFiles
-          onDrop={this.onDrop}
+          onDrop={isRecycleBinFolder ? null : this.onDrop}
           setSelections={this.props.setSelections}
           onMouseMove={this.onMouseMove}
           showPrimaryProgressBar={primaryProgressDataVisible}
@@ -303,6 +304,7 @@ export default inject(
     uploadDataStore,
     dialogsStore,
     selectedFolderStore,
+    treeFoldersStore,
   }) => {
     const {
       secondaryProgressDataStore,
@@ -324,6 +326,7 @@ export default inject(
     } = filesStore;
 
     const { id } = fileActionStore;
+    const { isRecycleBinFolder } = treeFoldersStore;
 
     const {
       visible: primaryProgressDataVisible,
@@ -360,6 +363,7 @@ export default inject(
       filter,
       viewAs,
       uploaded,
+      isRecycleBinFolder,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
