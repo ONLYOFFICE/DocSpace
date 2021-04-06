@@ -393,7 +393,9 @@ class FilesRowContent extends React.PureComponent {
       setIsVerHistoryPanel,
       fetchFileVersions,
       history,
+      isTrashFolder,
     } = this.props;
+    if (isTrashFolder) return;
 
     if (!isTabletView) {
       fetchFileVersions(item.id + "");
