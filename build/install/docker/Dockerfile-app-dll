@@ -45,10 +45,6 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     echo ${GIT_BRANCH}  && \
     git clone --depth 1 -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}
 
-COPY config/build-backend.sh ${SRC_PATH}/build/install/common/build-backend.sh
-COPY config/build-frontend.sh ${SRC_PATH}/build/install/common/build-frontend.sh
-COPY config/publish-backend.sh ${SRC_PATH}/build/install/common/publish-backend.sh
-
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
     cd ${SRC_PATH} && \
     mkdir -p /var/www/public/ && cp -rf public/* /var/www/public/ && \
@@ -56,11 +52,11 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     mkdir -p /etc/nginx/conf.d && cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
     mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
     sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
-    #dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config --disable-parallel  && \
     cd ${SRC_PATH}/build/install/common/ && \
     bash build-frontend.sh -sp ${SRC_PATH} && \
+    cd ${SRC_PATH} && yarn build && cd ${SRC_PATH}/build/install/common/ && \
     bash build-backend.sh -sp ${SRC_PATH} && \
-    bash publish-backend.sh -sp ${SRC_PATH}
+    bash publish-backend.sh -sp ${SRC_PATH} -bp ${BUILD_PATH} -ar "--disable-parallel"
    
 COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 COPY config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
