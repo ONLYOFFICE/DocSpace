@@ -14,7 +14,7 @@ import UploadDataStore from "./UploadDataStore";
 import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
 import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 
-import versionHistoryStore from "./VersionHistoryStore";
+import VersionHistoryStore from "./VersionHistoryStore";
 import dialogsStore from "./DialogsStore";
 
 import store from "studio/store";
@@ -56,7 +56,7 @@ const filesActionsStore = new FilesActionsStore(
 );
 
 const mediaViewerDataStore = new MediaViewerDataStore(filesStore);
-
+const versionHistoryStore = new VersionHistoryStore(filesStore);
 const stores = {
   filesStore,
   settingsStore,
