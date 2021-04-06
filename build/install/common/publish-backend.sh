@@ -64,9 +64,10 @@ while [ "$1" != "" ]; do
 done
 
 # Array of names server in directory products
-servers_products_name_backend=(
-    ASC.CRM ASC.Files ASC.People ASC.Projects
-)
+servers_products_name_backend=(ASC.CRM)
+servers_products_name_backend+=(ASC.Files)
+servers_products_name_backend+=(ASC.People)
+servers_products_name_backend+=(ASC.Projects)
 
 # Publish server backend products
 for i in ${!servers_products_name_backend[@]}; do
@@ -77,9 +78,19 @@ for i in ${!servers_products_name_backend[@]}; do
 done
 
 # Array of names backend services
-services_name_backend=(
-    ASC.ApiSystem ASC.Data.Backup ASC.Data.Storage.Encryption ASC.Files.Service ASC.Data.Storage.Migration ASC.Notify ASC.Socket.IO.Svc ASC.Studio.Notify ASC.TelegramService ASC.Thumbnails.Svc ASC.UrlShortener.Svc ASC.Web.Api ASC.Web.Studio
-)
+services_name_backend=(ASC.ApiSystem)
+services_name_backend+=(ASC.Data.Backup)
+services_name_backend+=(ASC.Data.Storage.Encryption)
+services_name_backend+=(ASC.Files.Service)
+services_name_backend+=(ASC.Data.Storage.Migration)
+services_name_backend+=(ASC.Notify)
+services_name_backend+=(ASC.Socket.IO.Svc)
+services_name_backend+=(ASC.Studio.Notify)
+services_name_backend+=(ASC.TelegramService)
+services_name_backend+=(ASC.Thumbnails.Svc)
+services_name_backend+=(ASC.UrlShortener.Svc)
+services_name_backend+=(ASC.Web.Api)
+services_name_backend+=(ASC.Web.Studio)
 
 # Publish backend services
 for i in ${!services_name_backend[@]}; do
@@ -90,9 +101,9 @@ for i in ${!services_name_backend[@]}; do
 done
 
 # Array of names backend services in directory common (Nodejs)  
-services_name_frontend=(
-    ASC.Thumbnails ASC.UrlShortener ASC.Socket.IO
-)
+services_name_frontend=(ASC.Thumbnails)
+services_name_frontend+=(ASC.UrlShortener)
+services_name_frontend+=(ASC.Socket.IO)
 
 # Publish backend services (Nodejs) 
 for i in ${!services_name_frontend[@]}; do
