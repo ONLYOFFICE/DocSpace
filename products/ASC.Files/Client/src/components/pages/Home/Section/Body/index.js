@@ -124,7 +124,10 @@ const SectionBodyContent = (props) => {
 
   const onDragOver = (e) => {
     e.preventDefault();
-    if (e.dataTransfer.items.length > 0) {
+    if (
+      e.dataTransfer.items.length > 0 &&
+      e.dataTransfer.dropEffect !== "none"
+    ) {
       setDragging(true);
     }
   };
