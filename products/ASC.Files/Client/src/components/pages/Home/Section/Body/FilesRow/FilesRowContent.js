@@ -163,7 +163,7 @@ class FilesRowContent extends React.PureComponent {
       return editCompleteAction(fileActionId, item, isSameTitle);
     }
 
-    item.fileExst
+    item.fileExst || item.contentLength
       ? updateFile(fileActionId, itemTitle)
           .then(() => this.completeAction(fileActionId))
           .finally(() => setIsLoading(false))
@@ -208,7 +208,7 @@ class FilesRowContent extends React.PureComponent {
           )
         : null;
 
-    !item.fileExst
+    !item.fileExst && !item.contentLength
       ? createFolder(item.parentId, itemTitle)
           .then(() => this.completeAction(itemId))
           .then(() =>
@@ -316,11 +316,11 @@ class FilesRowContent extends React.PureComponent {
       addExpandedKeys,
       setMediaViewerData,
     } = this.props;
-    const { id, fileExst, viewUrl, providerKey } = item;
+    const { id, fileExst, viewUrl, providerKey, contentLength } = item;
 
     if (isTrashFolder) return;
 
-    if (!fileExst) {
+    if (!fileExst && !contentLength) {
       setIsLoading(true);
 
       if (!expandedKeys.includes(parentFolder + "")) {
@@ -612,7 +612,7 @@ class FilesRowContent extends React.PureComponent {
           sectionWidth={sectionWidth}
           isMobile={isMobile}
           sideColor={sideColor}
-          isFile={fileExst}
+          isFile={fileExst || contentLength}
           onClick={this.onMobileRowClick}
         >
           <Link
@@ -760,7 +760,9 @@ class FilesRowContent extends React.PureComponent {
             color={sideColor}
             className="row_update-text"
           >
-            {(fileExst || !providerKey) && updatedDate && updatedDate}
+            {(fileExst || contentLength || !providerKey) &&
+              updatedDate &&
+              updatedDate}
           </Text>
           <Text
             containerMinWidth="90px"
@@ -772,7 +774,7 @@ class FilesRowContent extends React.PureComponent {
             title=""
             truncate={true}
           >
-            {fileExst
+            {fileExst || contentLength
               ? contentLength
               : !providerKey
               ? `${t("TitleDocuments")}: ${filesCount} | ${t(

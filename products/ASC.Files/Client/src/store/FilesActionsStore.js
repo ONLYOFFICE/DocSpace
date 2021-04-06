@@ -60,7 +60,7 @@ class FilesActionStore {
 
     let i = 0;
     while (selection.length !== i) {
-      if (selection[i].fileExst) {
+      if (selection[i].fileExst || selection[i].contentLength) {
         fileIds.push(selection[i].id);
       } else {
         folderIds.push(selection[i].id);
@@ -245,7 +245,7 @@ class FilesActionStore {
       if (!isCancelled) {
         const data = await fetchFiles(this.selectedFolderStore.id, filter);
         const newItem = (item && item.id) === -1 ? null : item; //TODO: not add new folders?
-        if (!selectedItem.fileExst) {
+        if (!selectedItem.fileExst && !selectedItem.contentLength) {
           const path = data.selectedFolder.pathParts;
           const newTreeFolders = treeFolders;
           const folders = data.selectedFolder.folders;

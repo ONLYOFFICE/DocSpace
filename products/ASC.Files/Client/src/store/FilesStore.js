@@ -354,7 +354,7 @@ class FilesStore {
     const isVisitor =
       (this.userStore.user && this.userStore.user.isVisitor) || false;
 
-    const isFile = !!item.fileExst;
+    const isFile = !!item.fileExst || item.contentLength;
     const isFavorite = item.fileStatus === 32;
     const isFullAccess = item.access < 2;
     const isThirdPartyFolder =
@@ -682,7 +682,7 @@ class FilesStore {
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
-      const icon = getIcon(24, fileExst, providerKey);
+      const icon = getIcon(24, fileExst, providerKey, contentLength);
 
       return {
         access,

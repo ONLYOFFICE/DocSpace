@@ -115,6 +115,7 @@ const SimpleFilesRow = (props) => {
     id,
     title,
     fileExst,
+    contentLength,
     shared,
     access,
     contextOptions,
@@ -266,7 +267,7 @@ const SimpleFilesRow = (props) => {
       deleteOperation: t("DeleteOperation"),
     };
 
-    fileExst
+    fileExst || contentLength
       ? deleteFileAction(id, folderId, translations)
           .then(() => toastr.success(t("FileRemoved")))
           .catch((err) => toastr.error(err))
@@ -540,7 +541,7 @@ const SimpleFilesRow = (props) => {
   const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
   let className = isFolder && access < 2 && !isRecycleBin ? " droppable" : "";
   if (draggable) className += " draggable";
-  let value = fileExst ? `file_${id}` : `folder_${id}`;
+  let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
   value += draggable ? "_draggable" : "";
 
   const sharedButton =
@@ -624,7 +625,12 @@ export default inject(
       (x) => x.id === item.id && x.fileExst === item.fileExst
     );
 
-    const isFolder = selectedItem ? false : item.fileExst ? false : true;
+    const isFolder = selectedItem
+      ? false
+      : item.fileExst || item.contentLength
+      ? false
+      : true;
+
     const draggable =
       !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
 

@@ -176,8 +176,10 @@ class NewFilesPanelComponent extends React.Component {
       dataItem = data.find((x) => x.id === +folderPath[0]);
       dataItem.newItems = markAsReadAll ? 0 : dataItem.newItems - 1;
 
-      if (item && item.fileExst) {
-        const fileItem = files.find((x) => x.id === item.id && x.fileExst);
+      if (item && (item.fileExst || item.contentLength)) {
+        const fileItem = files.find(
+          (x) => x.id === item.id && (x.fileExst || item.contentLength)
+        );
         if (fileItem) {
           fileItem.new = markAsReadAll ? 0 : fileItem.new - 1;
         } else {
