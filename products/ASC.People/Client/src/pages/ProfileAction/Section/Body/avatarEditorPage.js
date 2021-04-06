@@ -178,11 +178,10 @@ class AvatarEditorPage extends React.PureComponent {
         .then(() => {
           this.setState(this.mapPropsToState(this.props));
         })
-        .then(() => {
-          this.props.fetchProfile(profile.id);
-        })
-        .then(() => {
-          toggleAvatarEditor(false);
+        .then(() => this.props.fetchProfile(profile.id))
+        .then((res) => {
+          this.props.setUser(res);
+          return toggleAvatarEditor(false);
         });
     } else {
       deleteAvatar(profile.id)
@@ -198,7 +197,10 @@ class AvatarEditorPage extends React.PureComponent {
           this.setState(this.mapPropsToState(this.props));
         })
         .then(() => this.props.fetchProfile(profile.id))
-        .then(() => toggleAvatarEditor(false));
+        .then((res) => {
+          this.props.setUser(res);
+          return toggleAvatarEditor(false);
+        });
     }
   };
 
@@ -313,6 +315,7 @@ class AvatarEditorPage extends React.PureComponent {
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
     setDocumentTitle: auth.setDocumentTitle,
+    setUser: auth.userStore.setUser,
     toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
