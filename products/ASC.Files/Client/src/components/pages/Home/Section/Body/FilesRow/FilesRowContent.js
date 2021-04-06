@@ -698,7 +698,9 @@ class FilesRowContent extends React.PureComponent {
                     color="#FFFFFF"
                     fontSize="10px"
                     fontWeight={800}
-                    label={`Ver.${versionGroup}`}
+                    label={t("Version", {
+                      version: versionGroup,
+                    })}
                     maxWidth="50px"
                     onClick={this.onShowVersionHistory}
                     padding="0 5px"
@@ -713,7 +715,7 @@ class FilesRowContent extends React.PureComponent {
                     color="#FFFFFF"
                     fontSize="10px"
                     fontWeight={800}
-                    label={`New`}
+                    label={t("New")}
                     maxWidth="50px"
                     onClick={this.onBadgeClick}
                     padding="0 5px"
