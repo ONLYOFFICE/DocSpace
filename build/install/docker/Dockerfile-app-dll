@@ -91,7 +91,7 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get install -yq nodejs &&\
     apt-get install -yq libgdiplus
     
-#USER onlyoffice    
+#USER onlyoffice
 EXPOSE 5050
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
@@ -103,14 +103,14 @@ ENTRYPOINT ["./docker-entrypoint.sh"]
 FROM nginx AS web
 ARG SRC_PATH="/app/onlyoffice/src"
 
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get install -yq vim &&\
+    apt-get install -yq vim && \
     # Remove default nginx website
-    rm -rf /usr/share/nginx/html/* 
+    rm -rf /usr/share/nginx/html/*
 
-# copy static services files and config values 
+# copy static services files and config values
 COPY --from=develop /etc/nginx/conf.d /etc/nginx/conf.d
 COPY --from=develop /etc/nginx/includes /etc/nginx/includes
 COPY --from=develop /var/www/public /var/www/public
@@ -121,7 +121,6 @@ COPY --from=develop ${SRC_PATH}/web/ASC.Web.Login/dist /var/www/studio/login
 COPY --from=develop ${SRC_PATH}/products/ASC.People/Client/dist /var/www/products/ASC.People/client
 COPY --from=develop ${SRC_PATH}/products/ASC.Projects/Client/dist /var/www/products/ASC.Projects/client
 COPY --from=develop ${SRC_PATH}/web/ASC.Web.Client/dist /var/www/studio/client
-
 
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 

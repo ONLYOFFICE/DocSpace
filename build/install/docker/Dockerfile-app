@@ -42,16 +42,11 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
     apt-get install -yq git \
                         yarn \
-                        dotnet-sdk-5.0 
+                        dotnet-sdk-5.0
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     echo ${GIT_BRANCH}  && \
     git clone --depth 1 -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}
-
-COPY config/build-backend.sh ${SRC_PATH}/build/install/common/build-backend.sh
-COPY config/build-frontend.sh ${SRC_PATH}/build/install/common/build-frontend.sh
-#COPY config/publish-backend.sh ${SRC_PATH}/build/install/common/publish-backend.sh
-COPY config/publish_backend-copy.sh ${SRC_PATH}/build/install/common/publish_backend-copy.sh
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
     cd ${SRC_PATH} && \
@@ -63,8 +58,7 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     cd ${SRC_PATH}/build/install/common/ && \
     bash build-frontend.sh -sp ${SRC_PATH} && \
     bash build-backend.sh -sp ${SRC_PATH} && \
-    #bash publish-backend.sh -sp ${SRC_PATH}
-    bash publish_backend-copy.sh -sp ${SRC_PATH} -bp ${BUILD_PATH}
+    bash publish-backend.sh -sp ${SRC_PATH} -bp ${BUILD_PATH}
    
 COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 COPY config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -87,16 +81,16 @@ RUN mkdir -p /var/log/onlyoffice && \
     adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
     chown onlyoffice:onlyoffice /app/onlyoffice -R && \
     chown onlyoffice:onlyoffice /var/log -R  && \
-    chown onlyoffice:onlyoffice /var/www -R 
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
+    chown onlyoffice:onlyoffice /var/www -R
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get install -yq nano &&\
-    apt-get install -yq jq &&\
-    apt-get install -yq nodejs &&\
+    apt-get install -yq nano && \
+    apt-get install -yq jq && \
+    apt-get install -yq nodejs && \
     apt-get install -yq libgdiplus
     
-#USER onlyoffice    
+#USER onlyoffice
 EXPOSE 5050
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
@@ -111,7 +105,7 @@ ARG BUILD_PATH
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
     apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get install -yq vim &&\
+    apt-get install -yq vim && \
     # Remove default nginx website
     rm -rf /usr/share/nginx/html/* 
 
@@ -127,12 +121,11 @@ COPY --from=develop ${SRC_PATH}/products/ASC.People/Client/dist ${BUILD_PATH}/pr
 COPY --from=develop ${SRC_PATH}/products/ASC.Projects/Client/dist ${BUILD_PATH}/products/ASC.Projects/client
 COPY --from=develop ${SRC_PATH}/web/ASC.Web.Client/dist ${BUILD_PATH}/studio/client
 
-
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 
 # add defualt user and group for no-root run
-RUN chown nginx:nginx /etc/nginx/* -R &&\
-    chown nginx:nginx /docker-entrypoint.d/* &&\
+RUN chown nginx:nginx /etc/nginx/* -R && \
+    chown nginx:nginx /docker-entrypoint.d/* && \
     # changes for upstream configure
     sed -i 's/localhost:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5012/$service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
