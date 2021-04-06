@@ -273,7 +273,7 @@ class PageLayout extends React.Component {
               </SubArticleMainButton>
             )}
             {isArticleBodyAvailable && (
-              <SubArticleBody>
+              <SubArticleBody pinned={this.state.isArticlePinned}>
                 {articleBodyContent ? articleBodyContent.props.children : null}
               </SubArticleBody>
             )}
