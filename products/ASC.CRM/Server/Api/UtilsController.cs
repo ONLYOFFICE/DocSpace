@@ -62,7 +62,7 @@ namespace ASC.CRM.Api
         private readonly CurrencyProvider _currencyProvider;
         private readonly MessageService _messageService;
 
-        public UtilsController(CRMSecurity cRMSecurity,
+        public UtilsController(CRMSecurity crmSecurity,
                      DaoFactory daoFactory,
                      MessageService messageService,
                      SettingsManager settingsManager,
@@ -75,7 +75,7 @@ namespace ASC.CRM.Api
                      ImportFromCSV importFromCSV,
                      ExportToCsv exportToCsv,
                      IMapper mapper)
-            : base(daoFactory, cRMSecurity, mapper)
+            : base(daoFactory, crmSecurity, mapper)
         {
             _messageService = messageService;
             _currencyProvider = currencyProvider;

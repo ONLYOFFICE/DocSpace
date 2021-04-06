@@ -23,50 +23,35 @@
  *
 */
 
+
 using System;
 
-using ASC.Api.Core;
 using ASC.CRM.ApiModels;
-using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
-using ASC.Web.Api.Models;
 
 using AutoMapper;
 
 namespace ASC.CRM.Mapping
 {
-    public class InvoiceTaxTypeConverter : ITypeConverter<InvoiceTax, InvoiceTaxDto>
+    public sealed class DealMilestoneDtoTypeConverter : ITypeConverter<DealMilestone, DealMilestoneDto>
     {
-        private readonly ApiDateTimeHelper _apiDateTimeHelper;
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
-        private readonly CRMSecurity _CRMSecurity;
+        private readonly DaoFactory _daoFactory;
 
-        public InvoiceTaxTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
-                                      EmployeeWraperHelper employeeWraperHelper,
-                                      CRMSecurity cRMSecurity)
+        public DealMilestoneDtoTypeConverter(DaoFactory daoFactory)
         {
-            _apiDateTimeHelper = apiDateTimeHelper;
-            _employeeWraperHelper = employeeWraperHelper;
-            _CRMSecurity = cRMSecurity;
+            _daoFactory = daoFactory;
         }
 
-        public InvoiceTaxDto Convert(InvoiceTax source, InvoiceTaxDto destination, ResolutionContext context)
+        public DealMilestoneDto Convert(DealMilestone source, DealMilestoneDto destination, ResolutionContext context)
         {
             if (destination != null)
                 throw new NotImplementedException();
 
-            var result = new InvoiceTaxDto();
-
-            result.Id = source.ID;
-            result.Name = source.Name;
-            result.Description = source.Description;
-            result.Rate = source.Rate;
-            result.CreateOn = _apiDateTimeHelper.Get(source.CreateOn);
-            result.CreateBy = _employeeWraperHelper.Get(source.CreateBy);
-            result.CanEdit = _CRMSecurity.CanEdit(source);
-            result.CanDelete = _CRMSecurity.CanDelete(source);
-
-            return result;
+            return new DealMilestoneDto(source)
+            {
+                RelativeItemsCount = _daoFactory.GetDealMilestoneDao().GetRelativeItemsCount(source.ID)
+            };
         }
     }
 }

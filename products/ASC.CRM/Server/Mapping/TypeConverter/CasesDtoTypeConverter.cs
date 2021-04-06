@@ -50,12 +50,12 @@ namespace ASC.CRM.Mapping
 
         public CasesDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
-                           CRMSecurity cRMSecurity,
+                           CRMSecurity crmSecurity,
                            DaoFactory daoFactory)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
             _employeeWraperHelper = employeeWraperHelper;
-            _CRMSecurity = cRMSecurity;
+            _CRMSecurity = crmSecurity;
             _daoFactory = daoFactory;
         }
 

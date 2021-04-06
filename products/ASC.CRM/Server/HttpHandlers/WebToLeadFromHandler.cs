@@ -106,7 +106,7 @@ namespace ASC.Web.CRM.HttpHandlers
         public async System.Threading.Tasks.Task Invoke(HttpContext context,
                         WebItemSecurity webItemSecurity,
             SecurityContext securityContext,
-            CRMSecurity cRMSecurity,
+            CRMSecurity crmSecurity,
             MessageTarget messageTarget,
             MessageService messageService,
             Global global,
@@ -119,7 +119,7 @@ namespace ASC.Web.CRM.HttpHandlers
             {
                 WebItemSecurity = webItemSecurity;
                 SecurityContext = securityContext;
-                CRMSecurity = cRMSecurity;
+                CRMSecurity = crmSecurity;
                 MessageTarget = messageTarget;
                 MessageService = messageService;
                 Global = global;

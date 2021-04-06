@@ -25,9 +25,11 @@
 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -35,6 +37,7 @@ using ASC.Api.Core;
 using ASC.Api.CRM;
 using ASC.Api.Documents;
 using ASC.Common.Web;
+using ASC.Core;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
@@ -42,10 +45,13 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
+using ASC.Web.CRM.Services.NotifyService;
+using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
@@ -54,15 +60,18 @@ namespace ASC.CRM.Api
 {
     public class RelationshipEventsController : BaseApiController
     {
-        private readonly HistoryCategoryDto _historyCategoryDtoHelper;
         private readonly FileUploader _fileUploader;
         private readonly ASC.Files.Core.Data.DaoFactory _filesDaoFactory;
         private readonly FileWrapperHelper _fileWrapperHelper;
+        private readonly FilesSettingsHelper _filesSettingsHelper;
         private readonly ApiContext _apiContext;
         private readonly MessageService _messageService;
         private readonly MessageTarget _messageTarget;
+        private readonly SecurityContext _securityContext;
+        private readonly NotifyClient _notifyClient;
 
-        public RelationshipEventsController(CRMSecurity cRMSecurity,
+        public RelationshipEventsController(
+                     CRMSecurity crmSecurity,
                      DaoFactory daoFactory,
                      ApiContext apiContext,
                      MessageTarget messageTarget,
@@ -70,9 +79,11 @@ namespace ASC.CRM.Api
                      FileWrapperHelper fileWrapperHelper,
                      ASC.Files.Core.Data.DaoFactory filesDaoFactory,
                      FileUploader fileUploader,
-                     HistoryCategoryDto historyCategoryDtoHelper,
+                     SecurityContext securityContext,
+                     NotifyClient notifyClient,
+                     FilesSettingsHelper filesSettingsHelper,
                      IMapper mapper)
-            : base(daoFactory, cRMSecurity, mapper)
+            : base(daoFactory, crmSecurity, mapper)
         {
             _apiContext = apiContext;
             _messageTarget = messageTarget;
@@ -80,7 +91,9 @@ namespace ASC.CRM.Api
             _fileWrapperHelper = fileWrapperHelper;
             _filesDaoFactory = filesDaoFactory;
             _fileUploader = fileUploader;
-            _historyCategoryDtoHelper = historyCategoryDtoHelper;
+            _securityContext = securityContext;
+            _notifyClient = notifyClient;
+            _filesSettingsHelper = filesSettingsHelper;
         }
 
 
@@ -291,42 +304,42 @@ namespace ASC.CRM.Api
         /// <returns>
         /// File info
         /// </returns>
-        //[Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files/upload")]
-        //public FileWrapper<int> UploadFileInCRM(
-        //    string entityType,
-        //    int entityid,
-        //    Stream file,
-        //    ContentType contentType,
-        //    ContentDisposition contentDisposition,
-        //    IEnumerable<IFormFile> files,
-        //    bool storeOriginalFileFlag
-        //    )
-        //{
-        //    FilesSettings.StoreOriginalFilesSetting = storeOriginalFileFlag;
+        [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files/upload")]
+        public FileWrapper<int> UploadFileInCRM([FromForm] UploadFileInCRMRequestDto inDto)
+        {
+            string entityType = inDto.EntityType;
+            int entityid = inDto.Entityid;
+            Stream file = inDto.File;
+            ContentType contentType = inDto.ContentType;
+            ContentDisposition contentDisposition = inDto.ContentDisposition;
+            IEnumerable<IFormFile> files = inDto.Files;
+            bool storeOriginalFileFlag = inDto.StoreOriginalFileFlag;
 
-        //    var folderid = GetRootFolderID();
+            _filesSettingsHelper.StoreOriginalFiles = storeOriginalFileFlag;
 
-        //    var fileNames = new List<string>();
+            var folderid = GetRootFolderID();
 
-        //    FileWrapper<int> uploadedFile = null;
-        //    if (files != null && files.Any())
-        //    {
-        //        //For case with multiple files
-        //        foreach (var postedFile in files)
-        //        {
-        //            using var fileStream = postedFile.OpenReadStream();
-        //            uploadedFile = SaveFile(folderid, fileStream, postedFile.FileName);
-        //            fileNames.Add(uploadedFile.Title);
-        //        }
-        //    }
-        //    else if (file != null)
-        //    {
-        //        uploadedFile = SaveFile(folderid, file, contentDisposition.FileName);
-        //        fileNames.Add(uploadedFile.Title);
-        //    }
+            var fileNames = new List<string>();
 
-        //    return uploadedFile;
-        //}
+            FileWrapper<int> uploadedFile = null;
+            if (files != null && files.Any())
+            {
+                //For case with multiple files
+                foreach (var postedFile in files)
+                {
+                    using var fileStream = postedFile.OpenReadStream();
+                    uploadedFile = SaveFile(folderid, fileStream, postedFile.FileName);
+                    fileNames.Add(uploadedFile.Title);
+                }
+            }
+            else if (file != null)
+            {
+                uploadedFile = SaveFile(folderid, file, contentDisposition.FileName);
+                fileNames.Add(uploadedFile.Title);
+            }
+
+            return uploadedFile;
+        }
 
         private FileWrapper<int> SaveFile(int folderid, Stream file, string fileName)
         {
@@ -358,122 +371,125 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Created event
         /// </returns>
-        //[Create(@"history")]
-        //public RelationshipEventDto AddHistoryTo(
-        //    string entityType,
-        //    int entityId,
-        //    int contactId,
-        //    string content,
-        //    int categoryId,
-        //    ApiDateTime created,
-        //    IEnumerable<int> fileId,
-        //    IEnumerable<Guid> notifyUserList)
-        //{
-        //    if (!string.IsNullOrEmpty(entityType) &&
-        //        !(
-        //             string.Compare(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) == 0 ||
-        //             string.Compare(entityType, "case", StringComparison.OrdinalIgnoreCase) == 0)
-        //        )
-        //        throw new ArgumentException();
+        [Create(@"history")]
+        public RelationshipEventDto AddHistoryTo([FromForm] AddHistoryToRequestDto inDto)
+        {
+            string entityType = inDto.EntityType;
+            int entityId = inDto.EntityId;
+            int contactId = inDto.ContactId;
+            string content = inDto.Content;
+            int categoryId = inDto.CategoryId;
+            ApiDateTime created = inDto.Created;
+            IEnumerable<int> fileId = inDto.FileId;
+            IEnumerable<Guid> notifyUserList = inDto.NotifyUserList;
 
-        //    var entityTypeObj = ToEntityType(entityType);
+            if (!string.IsNullOrEmpty(entityType) &&
+                !(
+                     string.Compare(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) == 0 ||
+                     string.Compare(entityType, "case", StringComparison.OrdinalIgnoreCase) == 0)
+                )
+                throw new ArgumentException();
 
-        //    var entityTitle = "";
-        //    if (contactId > 0) {
-        //        var contact = DaoFactory.GetContactDao().GetByID(contactId);
-        //        if (contact == null || !CRMSecurity.CanAccessTo(contact))
-        //            throw new ArgumentException();
-        //        entityTitle = contact.GetTitle();
-        //    }
+            var entityTypeObj = ToEntityType(entityType);
 
-        //    if (entityTypeObj == EntityType.Case) {
-        //        var cases = DaoFactory.GetCasesDao().GetByID(entityId);
-        //        if (cases == null || !CRMSecurity.CanAccessTo(cases))
-        //            throw new ArgumentException();
-        //        if (contactId <= 0)
-        //        {
-        //            entityTitle = cases.Title;
-        //        }
-        //    }
-        //    if (entityTypeObj == EntityType.Opportunity)
-        //    {
-        //        var deal = DaoFactory.GetDealDao().GetByID(entityId);
-        //        if (deal == null || !CRMSecurity.CanAccessTo(deal))
-        //            throw new ArgumentException();
-        //        if (contactId <= 0)
-        //        {
-        //            entityTitle = deal.Title;
-        //        }
-        //    }
+            var entityTitle = "";
+            if (contactId > 0)
+            {
+                var contact = _daoFactory.GetContactDao().GetByID(contactId);
+                if (contact == null || !_crmSecurity.CanAccessTo(contact))
+                    throw new ArgumentException();
+                entityTitle = contact.GetTitle();
+            }
 
-        //    var relationshipEvent = new RelationshipEvent
-        //        {
-        //            CategoryID = categoryId,
-        //            EntityType = entityTypeObj,
-        //            EntityID = entityId,
-        //            Content = content,
-        //            ContactID = contactId,
-        //            CreateOn = created,
-        //            CreateBy = SecurityContext.CurrentAccount.ID
-        //        };
+            if (entityTypeObj == EntityType.Case)
+            {
+                var cases = _daoFactory.GetCasesDao().GetByID(entityId);
+                if (cases == null || !_crmSecurity.CanAccessTo(cases))
+                    throw new ArgumentException();
+                if (contactId <= 0)
+                {
+                    entityTitle = cases.Title;
+                }
+            }
+            if (entityTypeObj == EntityType.Opportunity)
+            {
+                var deal = _daoFactory.GetDealDao().GetByID(entityId);
+                if (deal == null || !_crmSecurity.CanAccessTo(deal))
+                    throw new ArgumentException();
+                if (contactId <= 0)
+                {
+                    entityTitle = deal.Title;
+                }
+            }
 
-        //    var category = DaoFactory.GetListItemDao().GetByID(categoryId);
-        //    if (category == null) throw new ArgumentException();
+            var relationshipEvent = new RelationshipEvent
+            {
+                CategoryID = categoryId,
+                EntityType = entityTypeObj,
+                EntityID = entityId,
+                Content = content,
+                ContactID = contactId,
+                CreateOn = created,
+                CreateBy = _securityContext.CurrentAccount.ID
+            };
 
-        //    var item = DaoFactory.GetRelationshipEventDao().CreateItem(relationshipEvent);
+            var category = _daoFactory.GetListItemDao().GetByID(categoryId);
+            if (category == null) throw new ArgumentException();
+
+            var item = _daoFactory.GetRelationshipEventDao().CreateItem(relationshipEvent);
 
 
-        //    notifyUserList = notifyUserList != null ? notifyUserList.ToList() : new List<Guid>();
-        //    var needNotify = notifyUserList.Any();
+            notifyUserList = notifyUserList != null ? notifyUserList.ToList() : new List<Guid>();
+            var needNotify = notifyUserList.Any();
 
-        //    var fileListInfoHashtable = new Hashtable();
+            var fileListInfoHashtable = new Hashtable();
 
-        //    if (fileId != null)
-        //    {
-        //        var fileIds = fileId.ToList();
-        //        var files = FilesDaoFactory.GetFileDao<int>().GetFiles(fileIds.ToArray());
+            if (fileId != null)
+            {
+                var fileIds = fileId.ToList();
+                var files = _filesDaoFactory.GetFileDao<int>().GetFiles(fileIds.ToArray());
 
-        //        if (needNotify)
-        //        {
-        //            foreach (var file in files)
-        //            {
-        //                var extension = Path.GetExtension(file.Title);
-        //                if (extension == null) continue;
+                if (needNotify)
+                {
+                    foreach (var file in files)
+                    {
+                        var extension = Path.GetExtension(file.Title);
+                        if (extension == null) continue;
 
-        //                var fileInfo = string.Format("{0} ({1})", file.Title, extension.ToUpper());
-        //                if (!fileListInfoHashtable.ContainsKey(fileInfo))
-        //                {
-        //                    fileListInfoHashtable.Add(fileInfo, file.DownloadUrl);
-        //                }
-        //                else
-        //                {
-        //                    fileInfo = string.Format("{0} ({1}, {2})", file.Title, extension.ToUpper(), file.UniqID);
-        //                    fileListInfoHashtable.Add(fileInfo, file.DownloadUrl);
-        //                }
-        //            }
-        //        }
+                        var fileInfo = string.Format("{0} ({1})", file.Title, extension.ToUpper());
+                        if (!fileListInfoHashtable.ContainsKey(fileInfo))
+                        {
+                            fileListInfoHashtable.Add(fileInfo, file.DownloadUrl);
+                        }
+                        else
+                        {
+                            fileInfo = string.Format("{0} ({1}, {2})", file.Title, extension.ToUpper(), file.UniqID);
+                            fileListInfoHashtable.Add(fileInfo, file.DownloadUrl);
+                        }
+                    }
+                }
 
-        //        DaoFactory.GetRelationshipEventDao().AttachFiles(item.ID, fileIds.ToArray());
+                _daoFactory.GetRelationshipEventDao().AttachFiles(item.ID, fileIds.ToArray());
 
-        //        if (files.Any())
-        //        {
-        //            var fileAttachAction = GetFilesAttachAction(entityTypeObj, contactId);
-        //            MessageService.Send( fileAttachAction, MessageTarget.Create(item.ID), entityTitle, files.Select(x => x.Title));
-        //        }
-        //    }
+                if (files.Any())
+                {
+                    var fileAttachAction = GetFilesAttachAction(entityTypeObj, contactId);
+                    
+                    _messageService.Send(fileAttachAction, _messageTarget.Create(item.ID), entityTitle, files.Select(x => x.Title));
+                }
+            }
 
-        //    if (needNotify)
-        //    {
-        //        NotifyClient.SendAboutAddRelationshipEventAdd(item, fileListInfoHashtable, DaoFactory, notifyUserList.ToArray());
-        //    }
+            if (needNotify)
+            {
+                _notifyClient.SendAboutAddRelationshipEventAdd(item, fileListInfoHashtable, _daoFactory, notifyUserList.ToArray());
+            }
+                      
+            var historyCreatedAction = GetHistoryCreatedAction(entityTypeObj, contactId);
 
-        //    var wrapper = RelationshipEventDtoHelper.Get(item);
+            _messageService.Send(historyCreatedAction, _messageTarget.Create(item.ID), entityTitle, category.Title);
 
-        //    var historyCreatedAction = GetHistoryCreatedAction(entityTypeObj, contactId);
-        //    MessageService.Send( historyCreatedAction, MessageTarget.Create(item.ID), entityTitle, category.Title);
-
-        //    return wrapper;
-        //}
+            return _mapper.Map<RelationshipEventDto>(item);
+        }
 
         /// <summary>
         ///     Associates the selected file(s) with the entity with the ID or type specified in the request

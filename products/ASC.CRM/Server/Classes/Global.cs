@@ -54,7 +54,7 @@ namespace ASC.Web.CRM.Classes
                       SecurityContext securityContext,
                       SetupInfo setupInfo,
                       FilesLinkUtility filesLinkUtility,
-                      CRMSecurity cRMSecurity,
+                      CRMSecurity crmSecurity,
                       TenantManager tenantManager,
                       SettingsManager settingsManager,
                       IConfiguration configuration
@@ -64,7 +64,7 @@ namespace ASC.Web.CRM.Classes
             FilesLinkUtility = filesLinkUtility;
             SetupInfo = setupInfo;
             SecurityContext = securityContext;
-            CRMSecurity = cRMSecurity;
+            CRMSecurity = crmSecurity;
             TenantID = tenantManager.GetCurrentTenant().TenantId;
             SettingsManager = settingsManager;
             Configuration = configuration;

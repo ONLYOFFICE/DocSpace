@@ -59,7 +59,7 @@ namespace ASC.CRM.Core.Dao
         public CachedTaskDao(DbContextManager<CRMDbContext> dbContextManager,
                       TenantManager tenantManager,
                       SecurityContext securityContext,
-                      CRMSecurity cRMSecurity,
+                      CRMSecurity crmSecurity,
                       TenantUtil tenantUtil,
                       FactoryIndexerTask factoryIndexer,
                       IOptionsMonitor<ILog> logger,
@@ -72,7 +72,7 @@ namespace ASC.CRM.Core.Dao
            base(dbContextManager,
                 tenantManager,
                 securityContext,
-                cRMSecurity,
+                crmSecurity,
                 tenantUtil,
                 factoryIndexer,
                 logger,
@@ -129,7 +129,7 @@ namespace ASC.CRM.Core.Dao
         public TaskDao(DbContextManager<CRMDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
-                       CRMSecurity cRMSecurity,
+                       CRMSecurity crmSecurity,
                        TenantUtil tenantUtil,
                        FactoryIndexerTask factoryIndexer,
                        IOptionsMonitor<ILog> logger,
@@ -143,7 +143,7 @@ namespace ASC.CRM.Core.Dao
                  logger,
                  ascCache)
         {
-            CRMSecurity = cRMSecurity;
+            CRMSecurity = crmSecurity;
             TenantUtil = tenantUtil;
             FactoryIndexer = factoryIndexer;
             UserDbContext = userDbContext.Value;

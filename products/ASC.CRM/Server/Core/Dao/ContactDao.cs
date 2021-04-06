@@ -60,7 +60,7 @@ namespace ASC.CRM.Core.Dao
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            CRMSecurity cRMSecurity,
+            CRMSecurity crmSecurity,
             IHttpContextAccessor httpContextAccessor,
             TenantUtil tenantUtil,
             AuthorizationManager authorizationManager,
@@ -74,7 +74,7 @@ namespace ASC.CRM.Core.Dao
                  base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 cRMSecurity,
+                 crmSecurity,
                  tenantUtil,
                  authorizationManager,
                  filesIntegration,
@@ -138,7 +138,7 @@ namespace ASC.CRM.Core.Dao
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            CRMSecurity cRMSecurity,
+            CRMSecurity crmSecurity,
             TenantUtil tenantUtil,
             AuthorizationManager authorizationManager,
             FilesIntegration filesIntegration,
@@ -155,7 +155,7 @@ namespace ASC.CRM.Core.Dao
                  logger,
                  ascCache)
         {
-            CRMSecurity = cRMSecurity;
+            CRMSecurity = crmSecurity;
             TenantUtil = tenantUtil;
             AuthorizationManager = authorizationManager;
             FilesIntegration = filesIntegration;

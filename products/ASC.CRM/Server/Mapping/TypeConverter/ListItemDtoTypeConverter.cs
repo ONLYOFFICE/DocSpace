@@ -37,8 +37,13 @@ using AutoMapper;
 
 namespace ASC.CRM.Mapping
 {
+
     public sealed class ListItemDtoTypeConverter : ITypeConverter<ListItem, TaskCategoryBaseDto>,
-                                                   ITypeConverter<ListItem, HistoryCategoryDto>
+                                                   ITypeConverter<ListItem, TaskCategoryDto>,
+                                                   ITypeConverter<ListItem, HistoryCategoryDto>,
+                                                   ITypeConverter<ListItem, ContactStatusDto>,
+                                                   ITypeConverter<ListItem, ContactTypeDto>
+
     {
         private readonly WebImageSupplier _webImageSupplier;
         private readonly DaoFactory _daoFactory;
@@ -70,9 +75,45 @@ namespace ASC.CRM.Mapping
 
             result.RelativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.HistoryCategory, source.ID);
 
+            return result;
+        }
 
-            throw new System.NotImplementedException();
+        public TaskCategoryDto Convert(ListItem source, TaskCategoryDto destination, ResolutionContext context)
+        {
+            if (destination != null)
+                throw new NotImplementedException();
+
+            var result = new TaskCategoryDto(source);
+
+            result.RelativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.TaskCategory, source.ID);
+
+            return result;
+        }
+
+        public ContactStatusDto Convert(ListItem source, ContactStatusDto destination, ResolutionContext context)
+        {
+            if (destination != null)
+                throw new NotImplementedException();
+
+            var result = new ContactStatusDto(source);
+
+            result.RelativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactStatus, source.ID);
+
+            return result;
+
+        }
+
+        public ContactTypeDto Convert(ListItem source, ContactTypeDto destination, ResolutionContext context)
+        {
+            if (destination != null)
+                throw new NotImplementedException();
+
+            var result = new ContactTypeDto(source);
+
+            result.RelativeItemsCount = _daoFactory.GetListItemDao().GetRelativeItemsCount(ListType.ContactType, source.ID);
+
+            return result;
+
         }
     }
 }
-

@@ -51,7 +51,7 @@ namespace ASC.Web.CRM.HttpHandlers
         }
 
         public async System.Threading.Tasks.Task Invoke(HttpContext context,
-            CRMSecurity cRMSecurity,
+            CRMSecurity crmSecurity,
             SetupInfo setupInfo,
             FileSizeComment fileSizeComment,
             ContactPhotoManager contactPhotoManager,
@@ -59,8 +59,8 @@ namespace ASC.Web.CRM.HttpHandlers
         {
             context.Request.EnableBuffering();
 
-            if (!cRMSecurity.IsAdmin)
-                throw cRMSecurity.CreateSecurityException();
+            if (!crmSecurity.IsAdmin)
+                throw crmSecurity.CreateSecurityException();
 
             var fileUploadResult = new FileUploadResult();
 

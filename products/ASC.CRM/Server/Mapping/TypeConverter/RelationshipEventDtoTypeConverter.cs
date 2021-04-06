@@ -42,7 +42,6 @@ namespace ASC.CRM.Mapping
     [Scope]
     public class RelationshipEventDtoTypeConverter : ITypeConverter<RelationshipEvent, RelationshipEventDto>
     {
-        private readonly HistoryCategoryDto _historyCategoryDtoHelper;
         private readonly FileWrapperHelper _fileWrapperHelper;
         private readonly DaoFactory _daoFactory;
         private readonly CRMSecurity _crmSecurity;
@@ -54,13 +53,13 @@ namespace ASC.CRM.Mapping
                            ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
                            FileWrapperHelper fileWrapperHelper,
-                           CRMSecurity cRMSecurity,
+                           CRMSecurity crmSecurity,
                            DaoFactory daoFactory,
                            EntityDtoHelper entityDtoHelper)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
             _employeeWraperHelper = employeeWraperHelper;
-            _crmSecurity = cRMSecurity;
+            _crmSecurity = crmSecurity;
             _daoFactory = daoFactory;
             _fileWrapperHelper = fileWrapperHelper;
             _entityDtoHelper = entityDtoHelper;

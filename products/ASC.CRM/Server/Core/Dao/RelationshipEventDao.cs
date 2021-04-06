@@ -66,7 +66,7 @@ namespace ASC.CRM.Core.Dao
             TenantManager tenantManager,
             SecurityContext securityContext,
             FilesIntegration filesIntegration,
-            CRMSecurity cRMSecurity,
+            CRMSecurity crmSecurity,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
             PathProvider pathProvider,
@@ -78,7 +78,7 @@ namespace ASC.CRM.Core.Dao
                             tenantManager,
                             securityContext,
                             filesIntegration,
-                            cRMSecurity,
+                            crmSecurity,
                             tenantUtil,
                             setupInfo,
                             pathProvider,
@@ -112,7 +112,7 @@ namespace ASC.CRM.Core.Dao
             TenantManager tenantManager,
             SecurityContext securityContext,
             FilesIntegration filesIntegration,
-            CRMSecurity cRMSecurity,
+            CRMSecurity crmSecurity,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
             PathProvider pathProvider,
@@ -127,7 +127,7 @@ namespace ASC.CRM.Core.Dao
         {
             FilesIntegration = filesIntegration;
             TenantUtil = tenantUtil;
-            CRMSecurity = cRMSecurity;
+            CRMSecurity = crmSecurity;
             SetupInfo = setupInfo;
             PathProvider = pathProvider;
         }

@@ -40,11 +40,11 @@ namespace ASC.CRM.Core
     public class FileSecurity : IFileSecurity
     {
         public FileSecurity(FilesIntegration filesIntegration,
-                            CRMSecurity cRMSecurity,
+                            CRMSecurity crmSecurity,
                             DaoFactory daoFactory)
         {
             FilesIntegration = filesIntegration;
-            CRMSecurity = cRMSecurity;
+            CRMSecurity = crmSecurity;
             DaoFactory = daoFactory;
         }
 
@@ -128,11 +128,11 @@ namespace ASC.CRM.Core
     public class FileSecurityProvider : IFileSecurityProvider
     {
         public FileSecurityProvider(FilesIntegration filesIntegration,
-                                    CRMSecurity cRMSecurity,
+                                    CRMSecurity crmSecurity,
                                     DaoFactory daoFactory)
         {
             FilesIntegration = filesIntegration;
-            CRMSecurity = cRMSecurity;
+            CRMSecurity = crmSecurity;
             DaoFactory = daoFactory;
         }
 

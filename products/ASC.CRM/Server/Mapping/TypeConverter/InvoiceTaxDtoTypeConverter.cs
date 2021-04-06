@@ -23,50 +23,50 @@
  *
 */
 
-using System.Runtime.Serialization;
+using System;
 
 using ASC.Api.Core;
+using ASC.CRM.ApiModels;
+using ASC.CRM.Core;
 using ASC.CRM.Core.Entities;
-using ASC.CRM.Mapping;
 using ASC.Web.Api.Models;
 
 using AutoMapper;
 
-namespace ASC.CRM.ApiModels
+namespace ASC.CRM.Mapping
 {
-    //public static class InvoiceItemDtoHelperExtension
-    //{
-    //    public static DIHelper AddInvoiceItemDtoHelperService(this DIHelper services)
-    //    {
-    //        services.TryAddTransient<InvoiceDtoHelper>();
-    //        return services.AddCurrencyProviderService()
-    //                       .AddSettingsManagerService()
-    //                       .AddApiDateTimeHelper()
-    //                       .AddEmployeeWraper()
-    //                       .AddCRMSecurityService();
-    //    }
-    //}
-
-    /// <summary>
-    ///  Invoice Tax
-    /// </summary>
-    [DataContract(Name = "invoiceTax", Namespace = "")]
-    public class InvoiceTaxDto : IMapFrom<InvoiceTax>
+    public class InvoiceTaxDtoTypeConverter : ITypeConverter<InvoiceTax, InvoiceTaxDto>
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public decimal Rate { get; set; }
-        public ApiDateTime CreateOn { get; set; }
-        public EmployeeWraper CreateBy { get; set; }
-        public bool CanEdit { get; set; }
-        public bool CanDelete { get; set; }
+        private readonly ApiDateTimeHelper _apiDateTimeHelper;
+        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly CRMSecurity _crmSecurity;
 
-        public void Mapping(Profile profile)
+        public InvoiceTaxDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
+                                      EmployeeWraperHelper employeeWraperHelper,
+                                      CRMSecurity crmSecurity)
         {
-            profile.CreateMap<InvoiceTax, InvoiceTaxDto>().ConvertUsing<InvoiceTaxDtoTypeConverter>();
+            _apiDateTimeHelper = apiDateTimeHelper;
+            _employeeWraperHelper = employeeWraperHelper;
+            _crmSecurity = crmSecurity;
         }
 
+        public InvoiceTaxDto Convert(InvoiceTax source, InvoiceTaxDto destination, ResolutionContext context)
+        {
+            if (destination != null)
+                throw new NotImplementedException();
 
+            var result = new InvoiceTaxDto();
+
+            result.Id = source.ID;
+            result.Name = source.Name;
+            result.Description = source.Description;
+            result.Rate = source.Rate;
+            result.CreateOn = _apiDateTimeHelper.Get(source.CreateOn);
+            result.CreateBy = _employeeWraperHelper.Get(source.CreateBy);
+            result.CanEdit = _crmSecurity.CanEdit(source);
+            result.CanDelete = _crmSecurity.CanDelete(source);
+
+            return result;
+        }
     }
 }

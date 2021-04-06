@@ -51,12 +51,12 @@ namespace ASC.Web.CRM.HttpHandlers
 
         public async Task Invoke(HttpContext context,
                                 WebItemSecurity webItemSecurity,
-                                CRMSecurity cRMSecurity,
+                                CRMSecurity crmSecurity,
                                 Global global,
                                 ImportFromCSV importFromCSV)
         {
             if (!webItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))
-                throw cRMSecurity.CreateSecurityException();
+                throw crmSecurity.CreateSecurityException();
 
             var fileUploadResult = new FileUploadResult();
 

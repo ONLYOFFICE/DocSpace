@@ -40,7 +40,7 @@ namespace ASC.CRM.Mapping
 {
     [Scope]
     public class TaskDtoTypeConverter : ITypeConverter<Task, TaskDto>,
-                                              ITypeConverter<Task, TaskBaseDto>
+                                        ITypeConverter<Task, TaskBaseDto>
     {
         private readonly CRMSecurity _CRMSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;

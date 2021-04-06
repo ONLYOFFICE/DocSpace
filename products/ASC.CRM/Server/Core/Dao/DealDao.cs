@@ -62,7 +62,7 @@ namespace ASC.CRM.Core.Dao
         public CachedDealDao(DbContextManager<CRMDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
-                       CRMSecurity cRMSecurity,
+                       CRMSecurity crmSecurity,
                        FactoryIndexerDeal factoryIndexer,
                        FilesIntegration filesIntegration,
                        IHttpContextAccessor httpContextAccessor,
@@ -73,7 +73,7 @@ namespace ASC.CRM.Core.Dao
             : base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 cRMSecurity,
+                 crmSecurity,
                  factoryIndexer,
                  filesIntegration,
                  logger,
@@ -127,7 +127,7 @@ namespace ASC.CRM.Core.Dao
         public DealDao(DbContextManager<CRMDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
-                       CRMSecurity cRMSecurity,
+                       CRMSecurity crmSecurity,
                        FactoryIndexerDeal factoryIndexer,
                        FilesIntegration filesIntegration,
                        IOptionsMonitor<ILog> logger,
@@ -140,7 +140,7 @@ namespace ASC.CRM.Core.Dao
                  logger,
                  ascCache)
         {
-            CRMSecurity = cRMSecurity;
+            CRMSecurity = crmSecurity;
             FactoryIndexer = factoryIndexer;
             FilesIntegration = filesIntegration;
             BundleSearch = bundleSearch;

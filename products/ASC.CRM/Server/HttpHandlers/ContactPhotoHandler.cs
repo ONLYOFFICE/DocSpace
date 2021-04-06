@@ -55,7 +55,7 @@ namespace ASC.Web.CRM.HttpHandlers
 
         public async System.Threading.Tasks.Task Invoke(HttpContext context,
                                  SetupInfo setupInfo,
-                                 CRMSecurity cRMSecurity,
+                                 CRMSecurity crmSecurity,
                                  FileSizeComment fileSizeComment,
                                  WebItemSecurity webItemSecurity,
                                  MessageTarget messageTarget,
@@ -65,7 +65,7 @@ namespace ASC.Web.CRM.HttpHandlers
         {
 
             //if (!webItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))
-            //    throw cRMSecurity.CreateSecurityException();
+            //    throw crmSecurity.CreateSecurityException();
 
             context.Request.EnableBuffering();
 
@@ -77,8 +77,8 @@ namespace ASC.Web.CRM.HttpHandlers
             {
                 contact = daoFactory.GetContactDao().GetByID(contactId);
 
-                //if (!cRMSecurity.CanEdit(contact))
-                //    throw cRMSecurity.CreateSecurityException();
+                //if (!crmSecurity.CanEdit(contact))
+                //    throw crmSecurity.CreateSecurityException();
             }
 
             var fileUploadResult = new FileUploadResult();

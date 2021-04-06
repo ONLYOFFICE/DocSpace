@@ -189,8 +189,8 @@ namespace ASC.CRM.Api
         [Create(@"report/generate")]
         public ReportState GenerateReport([FromForm] ReportType type, [FromForm] ReportTimePeriod timePeriod, [FromForm] Guid[] managers)
         {
-//            if (!_global.CanCreateReports)
- //               throw _crmSecurity.CreateSecurityException();
+            if (!_global.CanCreateReports)
+               throw _crmSecurity.CreateSecurityException();
 
             return _reportHelper.RunGenareteReport(type, timePeriod, managers);
         }

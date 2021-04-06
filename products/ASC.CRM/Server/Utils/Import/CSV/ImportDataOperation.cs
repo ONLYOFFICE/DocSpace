@@ -139,7 +139,7 @@ namespace ASC.Web.CRM.Classes
                                    IOptionsMonitor<ILog> logger,
                                    UserManager userManager,
                                    ImportDataCache importDataCache,
-                                   CRMSecurity cRMSecurity,
+                                   CRMSecurity crmSecurity,
                                    NotifyClient notifyClient,
                                    SettingsManager settingsManager,
                                    CurrencyProvider currencyProvider,
@@ -164,7 +164,7 @@ namespace ASC.Web.CRM.Classes
 
             _log = logger.Get("ASC.CRM");
 
-            CRMSecurity = cRMSecurity;
+            CRMSecurity = crmSecurity;
             SettingsManager = settingsManager;
             CurrencyProvider = currencyProvider;
             DaoFactory = daoFactory;

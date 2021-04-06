@@ -52,7 +52,7 @@ namespace ASC.CRM.Mapping
 
         public InvoiceBaseDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
-                           CRMSecurity cRMSecurity,
+                           CRMSecurity crmSecurity,
                            SettingsManager settingsManager,
                            CurrencyProvider currencyProvider,
                            DaoFactory daoFactory,
@@ -60,7 +60,7 @@ namespace ASC.CRM.Mapping
         {
             _apiDateTimeHelper = apiDateTimeHelper;
             _employeeWraperHelper = employeeWraperHelper;
-            _crmSecurity = cRMSecurity;
+            _crmSecurity = crmSecurity;
             _settingsManager = settingsManager;
             _currencyProvider = currencyProvider;
             _daoFactory = daoFactory;

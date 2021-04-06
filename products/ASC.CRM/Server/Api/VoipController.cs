@@ -72,7 +72,7 @@ namespace ASC.CRM.Api
         private readonly ContactPhotoManager _contactPhotoManager;
         private readonly Global _global;
 
-        public VoIPController(CRMSecurity cRMSecurity,
+        public VoIPController(CRMSecurity crmSecurity,
              DaoFactory daoFactory,
              Global global,
              ContactPhotoManager contactPhotoManager,
@@ -85,7 +85,7 @@ namespace ASC.CRM.Api
              ApiContext apiContext,
              SignalrServiceClient signalrServiceClient,
              IMapper mapper)
-    : base(daoFactory, cRMSecurity, mapper)
+    : base(daoFactory, crmSecurity, mapper)
         {
             _global = global;
             _contactPhotoManager = contactPhotoManager;

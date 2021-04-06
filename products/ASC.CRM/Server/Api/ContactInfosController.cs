@@ -53,12 +53,12 @@ namespace ASC.CRM.Api
         private readonly MessageService _messageService;
         private readonly MessageTarget _messageTarget;
 
-        public ContactInfosController(CRMSecurity cRMSecurity,
+        public ContactInfosController(CRMSecurity crmSecurity,
                      DaoFactory daoFactory,
                      MessageTarget messageTarget,
                      MessageService messageService,
                      IMapper mapper)
-            : base(daoFactory, cRMSecurity, mapper)
+            : base(daoFactory, crmSecurity, mapper)
         {
             _messageTarget = messageTarget;
             _messageService = messageService;

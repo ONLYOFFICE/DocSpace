@@ -51,13 +51,13 @@ namespace ASC.CRM.Mapping
 
         public OpportunityDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
-                           CRMSecurity cRMSecurity,
+                           CRMSecurity crmSecurity,
                            DaoFactory daoFactory,
                            CurrencyProvider currencyProvider)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
             _employeeWraperHelper = employeeWraperHelper;
-            _cRMSecurity = cRMSecurity;
+            _cRMSecurity = crmSecurity;
             _daoFactory = daoFactory;
             _currencyProvider = currencyProvider;
         }

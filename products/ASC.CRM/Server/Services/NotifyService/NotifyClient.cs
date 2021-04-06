@@ -29,11 +29,15 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Web;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Billing;
 using ASC.Core.Tenants;
+using ASC.Core.Users;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
@@ -43,6 +47,7 @@ using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.CRM.Services.NotifyService
 {
@@ -275,99 +280,102 @@ namespace ASC.Web.CRM.Services.NotifyService
                 new TagValue(NotifyConstants.Tag_EntityListTitle, entitiyListTitle));
         }
 
-        //public void SendAutoReminderAboutTask(DateTime scheduleDate)
-        //{
-        //    using (var scope = DIHelper.Resolve(-1))
-        //    {
-        //        var defaultDao = scope.Resolve<DaoFactory>();
+        public void SendAutoReminderAboutTask(DateTime scheduleDate)
+        {
+            using var scope = ServiceProvider.CreateScope();
 
-        //        var execAlert = new List<int>();
+            var defaultDao = scope.ServiceProvider.GetService<DaoFactory>();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
+            var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.CRM");
+            var coreSettings = scope.ServiceProvider.GetService<CoreSettings>();
 
-        //        foreach (var row in defaultDao.GetTaskDao()
-        //            .GetInfoForReminder(scheduleDate))
-        //        {
+            var execAlert = new List<int>();
 
-        //            var tenantId = Convert.ToInt32(row[0]);
-        //            var taskId = Convert.ToInt32(row[1]);
-        //            var deadline = Convert.ToDateTime(row[2]);
-        //            var alertValue = Convert.ToInt32(row[3]);
-        //            var responsibleID = !string.IsNullOrEmpty(Convert.ToString(row[4]))
-        //                ? new Guid(Convert.ToString(row[4]))
-        //                : Guid.Empty;
+            foreach (var row in defaultDao.GetTaskDao()
+                .GetInfoForReminder(scheduleDate))
+            {
 
-        //            var deadlineReminderDate = deadline.AddMinutes(-alertValue);
+                var tenantId = Convert.ToInt32(row[0]);
+                var taskId = Convert.ToInt32(row[1]);
+                var deadline = Convert.ToDateTime(row[2]);
+                var alertValue = Convert.ToInt32(row[3]);
+                var responsibleID = !string.IsNullOrEmpty(Convert.ToString(row[4]))
+                    ? new Guid(Convert.ToString(row[4]))
+                    : Guid.Empty;
 
-        //            if (deadlineReminderDate.Subtract(scheduleDate).Minutes > 1) continue;
+                var deadlineReminderDate = deadline.AddMinutes(-alertValue);
 
-        //            execAlert.Add(taskId);
+                if (deadlineReminderDate.Subtract(scheduleDate).Minutes > 1) continue;
 
-        //            var tenant = TenantManager.GetTenant(tenantId);
-        //            if (tenant == null ||
-        //                tenant.Status != TenantStatus.Active ||
-        //                TariffState.NotPaid <= PaymentManager.GetTariff(tenant.TenantId).State)
-        //            {
-        //                continue;
-        //            }
+                execAlert.Add(taskId);
 
-        //            try
-        //            {
-        //                TenantManager.SetCurrentTenant(tenant);
-        //                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                var tenant = tenantManager.GetTenant(tenantId);
+                if (tenant == null ||
+                    tenant.Status != TenantStatus.Active ||
+                    TariffState.NotPaid <= paymentManager.GetTariff(tenant.TenantId).State)
+                {
+                    continue;
+                }
 
-        //                var user = UserManager.GetUsers(responsibleID);
+                try
+                {
+                    tenantManager.SetCurrentTenant(tenant);
+                    securityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
 
-        //                if (!(!Constants.LostUser.Equals(user) && user.Status == EmployeeStatus.Active)) continue;
+                    var user = userManager.GetUsers(responsibleID);
 
-        //                SecurityContext.AuthenticateMe(user.ID);
+                    if (!(!Constants.LostUser.Equals(user) && user.Status == EmployeeStatus.Active)) continue;
 
-        //                Thread.CurrentThread.CurrentCulture = user.GetCulture();
-        //                Thread.CurrentThread.CurrentUICulture = user.GetCulture();
+                    securityContext.AuthenticateMe(user.ID);
 
-        //                using (var innerScope = DIHelper.Resolve(tenantId))
-        //                {
-        //                    var dao = innerScope.Resolve<DaoFactory>();
-        //                    var task = dao.GetTaskDao().GetByID(taskId);
+                    Thread.CurrentThread.CurrentCulture = user.GetCulture();
+                    Thread.CurrentThread.CurrentUICulture = user.GetCulture();
 
-        //                    if (task == null) continue;
+                    var dao = defaultDao;
+                    var task = dao.GetTaskDao().GetByID(taskId);
 
-        //                    ASC.CRM.Core.Entities.Contact taskContact = null;
-        //                    ASC.CRM.Core.Entities.Cases taskCase = null;
-        //                    ASC.CRM.Core.Entities.Deal taskDeal = null;
+                    if (task == null) continue;
 
-        //                    if (task.ContactID > 0)
-        //                    {
-        //                        taskContact = dao.GetContactDao().GetByID(task.ContactID);
-        //                    }
+                    ASC.CRM.Core.Entities.Contact taskContact = null;
+                    ASC.CRM.Core.Entities.Cases taskCase = null;
+                    ASC.CRM.Core.Entities.Deal taskDeal = null;
 
-        //                    if (task.EntityID > 0)
-        //                    {
-        //                        switch (task.EntityType)
-        //                        {
-        //                            case EntityType.Case:
-        //                                taskCase = dao.GetCasesDao().GetByID(task.EntityID);
-        //                                break;
-        //                            case EntityType.Opportunity:
-        //                                taskDeal = dao.GetDealDao().GetByID(task.EntityID);
-        //                                break;
-        //                        }
-        //                    }
+                    if (task.ContactID > 0)
+                    {
+                        taskContact = dao.GetContactDao().GetByID(task.ContactID);
+                    }
 
-        //                    var listItem = dao.GetListItemDao().GetByID(task.CategoryID);
+                    if (task.EntityID > 0)
+                    {
+                        switch (task.EntityType)
+                        {
+                            case EntityType.Case:
+                                taskCase = dao.GetCasesDao().GetByID(task.EntityID);
+                                break;
+                            case EntityType.Opportunity:
+                                taskDeal = dao.GetDealDao().GetByID(task.EntityID);
+                                break;
+                        }
+                    }
 
-        //                    NotifyClient.SendTaskReminder(task,
-        //                        listItem != null ? listItem.Title : string.Empty,
-        //                        taskContact, taskCase, taskDeal);
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                Logger.Error("SendAutoReminderAboutTask, tenant: " + tenant.TenantDomain, ex);
-        //            }
-        //        }
+                    var listItem = dao.GetListItemDao().GetByID(task.CategoryID);
 
-        //        defaultDao.GetTaskDao().ExecAlert(execAlert);
-        //    }
-        //}
+                    SendTaskReminder(task,
+                        listItem != null ? listItem.Title : string.Empty,
+                        taskContact, taskCase, taskDeal);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("SendAutoReminderAboutTask, tenant: " + tenant.GetTenantDomain(coreSettings), ex);
+                }
+            }
+
+            defaultDao.GetTaskDao().ExecAlert(execAlert);
+
+        }
 
         public void SendTaskReminder(Task task, String taskCategoryTitle, Contact taskContact, ASC.CRM.Core.Entities.Cases taskCase, ASC.CRM.Core.Entities.Deal taskDeal)
         {

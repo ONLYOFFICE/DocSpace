@@ -132,7 +132,7 @@ namespace ASC.CRM.ApiModels
     }
 
     [DataContract(Name = "opportunityStages", Namespace = "")]
-    public class DealMilestoneDto : DealMilestoneBaseDto
+    public class DealMilestoneDto : DealMilestoneBaseDto, IMapFrom<DealMilestone>
     {
         public DealMilestoneDto()
         {
@@ -156,6 +156,11 @@ namespace ASC.CRM.ApiModels
                 SuccessProbability = 20,
                 RelativeItemsCount = 1
             };
+        }
+
+        public override void Mapping(Profile profile)
+        {
+            profile.CreateMap<DealMilestone, DealMilestoneDto>().ConvertUsing<DealMilestoneDtoTypeConverter>();
         }
     }
 
@@ -398,10 +403,13 @@ namespace ASC.CRM.ApiModels
         public String Color { get; set; }
         public int SortOrder { get; set; }
 
-        public void Mapping(Profile profile)
+        public virtual void Mapping(Profile profile)
         {
             profile.CreateMap<ListItem, TaskCategoryBaseDto>().ConvertUsing<ListItemDtoTypeConverter>();
+            profile.CreateMap<ListItem, TaskCategoryDto>().ConvertUsing<ListItemDtoTypeConverter>();
             profile.CreateMap<ListItem, HistoryCategoryDto>().ConvertUsing<ListItemDtoTypeConverter>();
+            profile.CreateMap<ListItem, ContactStatusDto>().ConvertUsing<ListItemDtoTypeConverter>();
+            profile.CreateMap<ListItem, ContactTypeDto>().ConvertUsing<ListItemDtoTypeConverter>();
         }
-    }
+    }   
 }

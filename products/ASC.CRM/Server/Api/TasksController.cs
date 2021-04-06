@@ -28,14 +28,14 @@ namespace ASC.CRM.Api
         private readonly MessageService _messageService;
         private readonly MessageTarget _messageTarget;
 
-        public TasksController(CRMSecurity cRMSecurity,
+        public TasksController(CRMSecurity crmSecurity,
                      DaoFactory daoFactory,
                      ApiContext apiContext,
                      MessageTarget messageTarget,
                      MessageService messageService,
                      NotifyClient notifyClient,
                      IMapper mapper)
-            : base(daoFactory, cRMSecurity, mapper)
+            : base(daoFactory, crmSecurity, mapper)
         {
             _apiContext = apiContext;
             _messageTarget = messageTarget;

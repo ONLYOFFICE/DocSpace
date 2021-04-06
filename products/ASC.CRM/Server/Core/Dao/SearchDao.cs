@@ -64,7 +64,7 @@ namespace ASC.CRM.Core.Dao
         public SearchDao(DbContextManager<CRMDbContext> dbContextManager,
                       TenantManager tenantManager,
                       SecurityContext securityContext,
-                      CRMSecurity cRMSecurity,
+                      CRMSecurity crmSecurity,
                       TenantUtil tenantUtil,
                       PathProvider pathProvider,
                       FactoryIndexerTask tasksDtoIndexer,
@@ -82,7 +82,7 @@ namespace ASC.CRM.Core.Dao
         {
             FactoryIndexerTask = tasksDtoIndexer;
             FactoryIndexerInvoice = invoicesDtoIndexer;
-            CRMSecurity = cRMSecurity;
+            CRMSecurity = crmSecurity;
             TenantUtil = tenantUtil;
             PathProvider = pathProvider;
             WebImageSupplier = webImageSupplier;

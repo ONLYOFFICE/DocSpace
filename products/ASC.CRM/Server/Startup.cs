@@ -55,7 +55,7 @@ namespace ASC.CRM
             DIHelper.TryAdd<InvoiceBaseDtoTypeConverter>();
             DIHelper.TryAdd<InvoiceDtoTypeConverter>();
             DIHelper.TryAdd<InvoiceItemDtoTypeConverter>();
-            DIHelper.TryAdd<InvoiceTaxTypeConverter>();
+            DIHelper.TryAdd<InvoiceTaxDtoTypeConverter>();
             DIHelper.TryAdd<OpportunityDtoTypeConverter>();
             DIHelper.TryAdd<RelationshipEventDtoTypeConverter>();
             DIHelper.TryAdd<ListItemDtoTypeConverter>();

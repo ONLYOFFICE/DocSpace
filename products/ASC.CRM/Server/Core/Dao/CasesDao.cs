@@ -60,7 +60,7 @@ namespace ASC.CRM.Core.Dao
         public CachedCasesDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            CRMSecurity cRMSecurity,
+            CRMSecurity crmSecurity,
             TenantUtil tenantUtil,
             FilesIntegration filesIntegration,
             AuthorizationManager authorizationManager,
@@ -72,7 +72,7 @@ namespace ASC.CRM.Core.Dao
                  base(dbContextManager,
                  tenantManager,
                  securityContext,
-                 cRMSecurity,
+                 crmSecurity,
                  tenantUtil,
                  filesIntegration,
                  authorizationManager,
@@ -122,7 +122,7 @@ namespace ASC.CRM.Core.Dao
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            CRMSecurity cRMSecurity,
+            CRMSecurity crmSecurity,
             TenantUtil tenantUtil,
             FilesIntegration filesIntegration,
             AuthorizationManager authorizationManager,
@@ -136,7 +136,7 @@ namespace ASC.CRM.Core.Dao
                  logger,
                  ascCache)
         {
-            CRMSecurity = cRMSecurity;
+            CRMSecurity = crmSecurity;
             TenantUtil = tenantUtil;
             FilesIntegration = filesIntegration;
             AuthorizationManager = authorizationManager;
