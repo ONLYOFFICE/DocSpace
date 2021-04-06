@@ -202,6 +202,7 @@ class ContextMenuSub extends Component {
   }
 
   renderItem(item, index) {
+    if (!item) return null;
     if (item.isSeparator) return this.renderSeparator(index);
     else return this.renderMenuitem(item, index);
   }

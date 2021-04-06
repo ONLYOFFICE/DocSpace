@@ -108,12 +108,14 @@ const SimpleFilesRow = (props) => {
     onSelectItem,
     history,
     setTooltipPosition,
+    setDownloadDialogVisible,
   } = props;
 
   const {
     id,
     title,
     fileExst,
+    contentLength,
     shared,
     access,
     contextOptions,
@@ -233,6 +235,8 @@ const SimpleFilesRow = (props) => {
 
   const onClickDownload = () => window.open(viewUrl, "_blank");
 
+  const onClickDownloadAs = () => setDownloadDialogVisible(true);
+
   const onDuplicate = () =>
     duplicateAction(item, t("CopyOperation")).catch((err) => toastr.error(err));
 
@@ -263,7 +267,7 @@ const SimpleFilesRow = (props) => {
       deleteOperation: t("DeleteOperation"),
     };
 
-    fileExst
+    fileExst || contentLength
       ? deleteFileAction(id, folderId, translations)
           .then(() => toastr.success(t("FileRemoved")))
           .catch((err) => toastr.error(err))
@@ -399,10 +403,26 @@ const SimpleFilesRow = (props) => {
             onClick: onClickDownload,
             disabled: false,
           };
+        case "download-as":
+          return {
+            key: option,
+            label: t("DownloadAs"),
+            icon: "images/download-as.react.svg",
+            onClick: onClickDownloadAs,
+            disabled: false,
+          };
         case "move":
           return {
             key: option,
             label: t("MoveTo"),
+            icon: "images/move.react.svg",
+            onClick: onMoveAction,
+            disabled: false,
+          };
+        case "restore":
+          return {
+            key: option,
+            label: t("Restore"),
             icon: "images/move.react.svg",
             onClick: onMoveAction,
             disabled: false,
@@ -521,7 +541,7 @@ const SimpleFilesRow = (props) => {
   const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
   let className = isFolder && access < 2 && !isRecycleBin ? " droppable" : "";
   if (draggable) className += " draggable";
-  let value = fileExst ? `file_${id}` : `folder_${id}`;
+  let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
   value += draggable ? "_draggable" : "";
 
   const sharedButton =
@@ -583,6 +603,7 @@ export default inject(
       setDeleteThirdPartyDialogVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
+      setDownloadDialogVisible,
     } = dialogsStore;
 
     const {
@@ -604,7 +625,12 @@ export default inject(
       (x) => x.id === item.id && x.fileExst === item.fileExst
     );
 
-    const isFolder = selectedItem ? false : item.fileExst ? false : true;
+    const isFolder = selectedItem
+      ? false
+      : item.fileExst || item.contentLength
+      ? false
+      : true;
+
     const draggable =
       !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
 
@@ -645,6 +671,7 @@ export default inject(
       setDeleteThirdPartyDialogVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
+      setDownloadDialogVisible,
       openDocEditor,
       setIsVerHistoryPanel,
       fetchFileVersions,

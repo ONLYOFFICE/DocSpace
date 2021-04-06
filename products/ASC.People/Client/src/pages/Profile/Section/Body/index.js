@@ -98,7 +98,9 @@ class SectionBodyContent extends React.PureComponent {
 
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
 
-  onEditProfileClick = () =>
+  onEditProfileClick = () => {
+    this.props.avatarMax && this.props.setAvatarMax(null);
+
     this.props.history.push(
       combineUrl(
         AppServerConfig.proxyURL,
@@ -106,6 +108,7 @@ class SectionBodyContent extends React.PureComponent {
         `/edit/${this.props.profile.userName}`
       )
     );
+  };
 
   render() {
     const {
@@ -208,5 +211,7 @@ export default withRouter(
     viewer: auth.userStore.user,
     isTabletView: auth.settingsStore.isTabletView,
     isSelf: peopleStore.targetUserStore.isMe,
+    avatarMax: peopleStore.avatarEditorStore.avatarMax,
+    setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
   }))(observer(withTranslation("Profile")(SectionBodyContent)))
 );
