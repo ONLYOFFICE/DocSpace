@@ -1,26 +1,59 @@
 #!/bin/bash
 
 SRC_PATH="/AppServer"
+BUILD_PATH="/publish"
+RID_ID="linux-x64"
+SELF_CONTAINED="false"
+ARGS=""
+
 
 while [ "$1" != "" ]; do
     case $1 in
-	    
+
         -sp | --srcpath )
         	if [ "$2" != "" ]; then
-				SRC_PATH=$2
-				shift
-			fi
+    				SRC_PATH=$2
+            BUILD_PATH=${SRC_PATH}/publish
+		    		shift
+		    	fi
 		;;
-
+        -bp | --buildpath )
+          if [ "$2" != "" ]; then
+            BUILD_PATH=$2
+            shift
+          fi
+    ;;
+        -ri | --runtime )
+          if [ "$2" != "" ]; then
+            RID_ID=$2
+            shift
+          fi
+    ;;
+        -sc | --self-contained )
+          if [ "$2" != "" ]; then
+            SELF_CONTAINED=$2
+            shift
+          fi
+    ;;
+        -ar | --arguments )
+          if [ "$2" != "" ]; then
+            ARGS=$2
+            shift
+          fi
+    ;;
         -? | -h | --help )
             echo " Usage: bash publish-backend.sh [PARAMETER] [[PARAMETER], ...]"
             echo "    Parameters:"
-            echo "      -sp, --srcpath             path to AppServer root directory"
+            echo "      -sp, --srcpath             path to AppServer root directory (by default=/AppServer)"
+            echo "      -bp, --buildpath           path where generated output is placed (by default=/publish)"
+            echo "      -ri, --runtime             RID ids for .NET runtime publish (by default=linux-x64)"
+            echo "      -sc, --self-contained      publish the .NET runtime with your application (by default=false)"
+            echo "      -ar, --arguments           additional arguments publish the .NET runtime with your application"
             echo "      -?, -h, --help             this help"
             echo "  Examples"
             echo "  bash publish-backend.sh -sp /app/AppServer"
             exit 0
-        ;;
+    ;;
 
 		* )
 			echo "Unknown parameter $1" 1>&2
@@ -30,83 +63,41 @@ while [ "$1" != "" ]; do
   shift
 done
 
-echo "== Publish ASC.ApiSystem.csproj project =="
-cd ${SRC_PATH}/common/services/ASC.ApiSystem
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/apisystem && echo -e "Done"
+# Array of names server in directory products
+servers_products_name_backend=(
+    ASC.CRM ASC.Files ASC.People ASC.Projects
+)
 
-echo "== Publish ASC.Data.Backup.csproj project =="
-cd ${SRC_PATH}/common/services/ASC.Data.Backup
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/backup && echo -e "Done"
+# Publish server backend products
+for i in ${!servers_products_name_backend[@]}; do
+  echo "== Publish ${servers_products_name_backend[$i]}.csproj project =="
+  SERVICE_DIR="$(dirname "$(find ${SRC_PATH} -type f -name "${servers_products_name_backend[$i]}".csproj)")"
+  cd ${SERVICE_DIR}
+  dotnet publish -c Release -r ${RID_ID} --self-contained ${SELF_CONTAINED} ${ARGS} -o ${BUILD_PATH}/products/${servers_products_name_backend[$i]}/server/
+done
 
-echo "== Publish ASC.CRM.csproj project =="
-cd ${SRC_PATH}/products/ASC.CRM/Server
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.CRM/server && echo -e "Done"
+# Array of names backend services
+services_name_backend=(
+    ASC.ApiSystem ASC.Data.Backup ASC.Data.Storage.Encryption ASC.Files.Service ASC.Data.Storage.Migration ASC.Notify ASC.Socket.IO.Svc ASC.Studio.Notify ASC.TelegramService ASC.Thumbnails.Svc ASC.UrlShortener.Svc ASC.Web.Api ASC.Web.Studio
+)
 
-echo "== Publish ASC.Data.Storage.Encryption.csproj project =="
-cd ${SRC_PATH}/common/services/ASC.Data.Storage.Encryption
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/storage.encryption && echo -e "Done"
+# Publish backend services
+for i in ${!services_name_backend[@]}; do
+  echo "== Publish ${services_name_backend[$i]}.csproj project =="
+  SERVICE_DIR="$(dirname "$(find ${SRC_PATH} -type f -name "${services_name_backend[$i]}".csproj)")"
+  cd ${SERVICE_DIR}
+  dotnet publish -c Release -r ${RID_ID} --self-contained ${SELF_CONTAINED} ${ARGS} -o ${BUILD_PATH}/services/${services_name_backend[$i]}/service/
+done
 
-echo "== Publish ASC.Files.csproj project =="
-cd ${SRC_PATH}/products/ASC.Files/Server
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.Files/server
-cp -avrf DocStore /var/www/products/ASC.Files/server/ && echo -e "Done"
+# Array of names backend services in directory common (Nodejs)  
+services_name_frontend=(
+    ASC.Thumbnails ASC.UrlShortener ASC.Socket.IO
+)
 
-echo "== Publish ASC.Files.Service.csproj project =="
-cd ${SRC_PATH}/products/ASC.Files/Service
-dotnet add ASC.Files.Service.csproj reference ${SRC_PATH}/products/ASC.People/Server/ASC.People.csproj  ${SRC_PATH}/products/ASC.Files/Server/ASC.Files.csproj
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.Files/service && echo -e "Done"
-
-echo "== Publish ASC.Data.Storage.Migration.csproj project =="
-cd ${SRC_PATH}/common/services/ASC.Data.Storage.Migration
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/storage.migration && echo -e "Done"
-
-echo "== Publish ASC.Notify.csproj project =="
-cd ${SRC_PATH}/common/services/ASC.Notify
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/notify && echo -e "Done"
-
-echo "== Publish ASC.People.csproj project =="
-cd ${SRC_PATH}/products/ASC.People/Server
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.People/server && echo -e "Done"
-
-echo "== Publish ASC.Projects.csproj project =="
-cd ${SRC_PATH}/products/ASC.Projects/Server
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.Projects/server && echo -e "Done"
-
-echo "== Publish ASC.Socket.csproj project =="
-cd ${SRC_PATH}/common/services/ASC.Socket.IO.Svc
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/socket/service && echo -e "Done"
-
-echo "== Publish ASC.Studio.Notify.csproj project =="
-cd ${SRC_PATH}/common/services/ASC.Studio.Notify
-dotnet add ASC.Studio.Notify.csproj reference ${SRC_PATH}/products/ASC.People/Server/ASC.People.csproj  ${SRC_PATH}/products/ASC.Files/Server/ASC.Files.csproj
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/studio.notify && echo -e "Done"
-
-echo "== Publish ASC.TelegramService.csproj project =="
-cd ${SRC_PATH}/common/services/ASC.TelegramService
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/telegram/service && echo -e "Done"
-
-echo "== Publish ASC.Thumbnails.Svc.csproj project =="
-cd ${SRC_PATH}/common/services/ASC.Thumbnails.Svc
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/thumb/service && echo -e "Done"
-
-echo "== Publish ASC.UrlShortener.Svc.csproj project =="
-cd ${SRC_PATH}/common/services/ASC.UrlShortener.Svc
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/urlshortener/service && echo -e "Done"
-
-echo "== Publish ASC.Web.Api.csproj project =="
-cd ${SRC_PATH}/web/ASC.Web.Api
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/studio/api && echo -e "Done"
-
-echo "== Publish ASC.Web.Studio.csproj project =="
-cd ${SRC_PATH}/web/ASC.Web.Studio
-dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/studio/server && echo -e "Done"
-
-echo "== Publish ASC.Thumbnails =="
-cd ${SRC_PATH}
-mkdir -p /var/www/services/thumb/client && cp -avrf common/ASC.Thumbnails/* /var/www/services/thumb/client && echo -e "Done"
-
-echo "== Publish Build ASC.UrlShortener =="
-mkdir -p /var/www/services/urlshortener/client && cp -avrf common/ASC.UrlShortener/* /var/www/services/urlshortener/client && echo -e "Done"
-
-echo "== Publish ASC.Socket.IO =="
-mkdir -p /var/www/services/socket/client && cp -avrf common/ASC.Socket.IO/* /var/www/services/socket/client && echo -e "Done"
+# Publish backend services (Nodejs) 
+for i in ${!services_name_frontend[@]}; do
+  echo "== Publish ${services_name_frontend[$i]} project =="
+  SERVICE_DIR="$(find ${SRC_PATH} -type d -name ${services_name_frontend[$i]})"
+  cd ${SERVICE_DIR}
+  mkdir -p ${BUILD_PATH}/services/${services_name_frontend[$i]}/service/ && cp -arfv ./* ${BUILD_PATH}/services/${services_name_frontend[$i]}/service/
+done
