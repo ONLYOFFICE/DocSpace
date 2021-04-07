@@ -222,7 +222,7 @@ namespace ASC.Calendar.Controllers
         {
             var product = new CalendarProduct();
             product.Init();
-            return new Module(product, true);
+            return new Module(product);
         }
 
         /// <summary>
@@ -505,6 +505,7 @@ namespace ASC.Calendar.Controllers
             var userId = SecurityContext.CurrentAccount.ID;
             var userName = UserManager.GetUsers(userId).Email.ToLower();
 
+            var ef = new EFUserService();
             string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, userId);
 
             var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(userName + ":" + currentAccountPaswd));
@@ -4737,31 +4738,5 @@ namespace ASC.Calendar.Controllers
                                   userSharingInfo.Email, null, updateDate, calendarVTimeZone, calendarTimeZone, false, true);
             }
         }
-    }
-
-    public static class CalendarControllerExtention
-    {
-        public static DIHelper AddCalendarController(this DIHelper services)
-        {
-            return services
-                .AddApiContextService()
-                .AddSecurityContextService()
-                .AddPermissionContextService()
-                .AddCommonLinkUtilityService()
-                .AddSignatureService()
-                .AddSetupInfo()
-                .AddDisplayUserSettingsService()
-                .AddCalendarDbContextService()
-                .AddCalendarDataProviderService()
-                .AddCalendarWrapper()
-                .AddCalendarNotifyClient()
-                .AddDDayICalParser()
-                .AddEventHistoryWrapper()
-                .AddEventWrapper()
-                .AddTodoWrapper()
-                .AddExportDataCache()
-                .AddSubscriptionWrapperHelper()
-                .AddEmailValidationKeyProviderService();
-        }
-    }
+    }  
 }
