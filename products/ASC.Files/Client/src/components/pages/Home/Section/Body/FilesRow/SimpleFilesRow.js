@@ -109,6 +109,7 @@ const SimpleFilesRow = (props) => {
     history,
     setTooltipPosition,
     setDownloadDialogVisible,
+    downloadAction,
   } = props;
 
   const {
@@ -233,7 +234,12 @@ const SimpleFilesRow = (props) => {
 
   const onClickLinkEdit = () => openDocEditor(id, providerKey);
 
-  const onClickDownload = () => window.open(viewUrl, "_blank");
+  const onClickDownload = () => {
+    const isFile = !!fileExst && contentLength;
+    isFile
+      ? window.open(viewUrl, "_blank")
+      : downloadAction(t("ArchivingData")).catch((err) => toastr.error(err));
+  };
 
   const onClickDownloadAs = () => setDownloadDialogVisible(true);
 
@@ -646,6 +652,7 @@ export default inject(
       selectRowAction,
       setThirdpartyInfo,
       onSelectItem,
+      downloadAction,
     } = filesActionsStore;
 
     const { setMediaViewerData } = mediaViewerDataStore;
@@ -693,6 +700,7 @@ export default inject(
       startUpload,
       onSelectItem,
       setTooltipPosition,
+      downloadAction,
     };
   }
 )(withTranslation("Home")(observer(withRouter(SimpleFilesRow))));

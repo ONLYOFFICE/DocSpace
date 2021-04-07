@@ -440,9 +440,9 @@ class FilesStore {
         } else {
           !isShareFolder && options.push("separator3");
         }
-
-        options.push("download");
       }
+
+      options.push("download");
 
       if (!isVisitor) {
         !isThirdPartyFolder && this.userAccess && options.push("move");
