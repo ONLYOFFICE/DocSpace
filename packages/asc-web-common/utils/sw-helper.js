@@ -1,6 +1,6 @@
 import { Workbox } from "workbox-window";
 
-export default registerSW = (homepage) => {
+export function registerSW(homepage) {
   if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
     const wb = new Workbox(`${homepage}/sw.js`);
 
@@ -58,4 +58,4 @@ export default registerSW = (homepage) => {
   } else {
     console.log("SKIP registerSW because of DEV mode");
   }
-};
+}
