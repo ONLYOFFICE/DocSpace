@@ -308,7 +308,7 @@ class LanguageAndTimeZone extends React.Component {
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage = (
       <Text fontSize="13px">
-        <Trans i18nKey="NotFoundLanguage" ns="Settings">
+        <Trans t={t} i18nKey="NotFoundLanguage" ns="Settings">
           "In case you cannot find your language in the list of the available
           ones, feel free to write to us at
           <Link href={`mailto:${supportEmail}`} isHovered={true}>

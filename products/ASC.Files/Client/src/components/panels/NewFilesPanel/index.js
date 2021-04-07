@@ -282,14 +282,12 @@ const NewFilesPanel = withTranslation("NewFilesPanel")(NewFilesPanelComponent);
 
 export default inject(
   ({
-    initFilesStore,
     filesStore,
     mediaViewerDataStore,
     treeFoldersStore,
     formatsStore,
     filesActionsStore,
   }) => {
-    const { setIsLoading } = initFilesStore;
     const {
       files,
       folders,
@@ -297,6 +295,7 @@ export default inject(
       filter,
       addFileToRecentlyViewed,
       setNewRowItems,
+      setIsLoading,
     } = filesStore;
     const { treeFolders, setTreeFolders } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;

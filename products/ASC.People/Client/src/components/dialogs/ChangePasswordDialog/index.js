@@ -43,6 +43,7 @@ class ChangePasswordDialogComponent extends React.Component {
             <Trans
               i18nKey="MessageSendPasswordChangeInstructionsOnEmail"
               ns="ChangePasswordDialog"
+              t={t}
             >
               Send the password change instructions to the
               <Link

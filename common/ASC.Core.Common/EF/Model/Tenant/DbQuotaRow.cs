@@ -36,7 +36,7 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("tenants_quotarow");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified");
+                    .HasDatabaseName("last_modified");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
 
@@ -70,7 +70,7 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("tenants_quotarow", "onlyoffice");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified_tenants_quotarow");
+                    .HasDatabaseName("last_modified_tenants_quotarow");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
 

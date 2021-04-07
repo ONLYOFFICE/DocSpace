@@ -24,6 +24,7 @@ import {
 
 import { ConvertDialog } from "../../dialogs";
 import MediaViewer from "./MediaViewer";
+import DragTooltip from "../../DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../../package.json";
 
@@ -135,30 +136,31 @@ class PureHome extends React.Component {
   };
 
   showOperationToast = (type, qty, title) => {
+    const { t } = this.props;
     switch (type) {
       case "move":
         if (qty > 1) {
           return toastr.success(
-            <Trans i18nKey="MoveItems" ns="Home">
+            <Trans t={t} i18nKey="MoveItems" ns="Home">
               {{ qty }} elements has been moved
             </Trans>
           );
         }
         return toastr.success(
-          <Trans i18nKey="MoveItem" ns="Home">
+          <Trans t={t} i18nKey="MoveItem" ns="Home">
             {{ title }} moved
           </Trans>
         );
       case "duplicate":
         if (qty > 1) {
           return toastr.success(
-            <Trans i18nKey="CopyItems" ns="Home">
+            <Trans t={t} i18nKey="CopyItems" ns="Home">
               {{ qty }} elements copied
             </Trans>
           );
         }
         return toastr.success(
-          <Trans i18nKey="CopyItem" ns="Home">
+          <Trans t={t} i18nKey="CopyItem" ns="Home">
             {{ title }} copied
           </Trans>
         );
@@ -169,6 +171,10 @@ class PureHome extends React.Component {
 
   showUploadPanel = () => {
     this.props.setUploadPanelVisible(!this.props.uploadPanelVisible);
+
+    this.props.primaryProgressDataVisible &&
+      this.props.uploaded &&
+      this.props.clearPrimaryProgressData();
   };
   componentDidUpdate(prevProps) {
     const {
@@ -229,6 +235,7 @@ class PureHome extends React.Component {
         )}
 
         <MediaViewer />
+        <DragTooltip />
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -292,19 +299,11 @@ const Home = withTranslation("Home")(PureHome);
 export default inject(
   ({
     auth,
-    initFilesStore,
     filesStore,
     uploadDataStore,
     dialogsStore,
     selectedFolderStore,
   }) => {
-    const {
-      dragging,
-      setDragging,
-      setIsLoading,
-      isLoading,
-      viewAs,
-    } = initFilesStore;
     const {
       secondaryProgressDataStore,
       primaryProgressDataStore,
@@ -317,6 +316,11 @@ export default inject(
       fileActionStore,
       selection,
       setSelections,
+      dragging,
+      setDragging,
+      setIsLoading,
+      isLoading,
+      viewAs,
     } = filesStore;
 
     const { id } = fileActionStore;
@@ -326,6 +330,7 @@ export default inject(
       percent: primaryProgressDataPercent,
       icon: primaryProgressDataIcon,
       alert: primaryProgressDataAlert,
+      clearPrimaryProgressData,
     } = primaryProgressDataStore;
 
     const {
@@ -338,7 +343,7 @@ export default inject(
 
     const { convertDialogVisible } = dialogsStore;
 
-    const { setUploadPanelVisible, startUpload } = uploadDataStore;
+    const { setUploadPanelVisible, startUpload, uploaded } = uploadDataStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
     const selectionTitle = isProgressFinished
@@ -354,11 +359,13 @@ export default inject(
       isLoading,
       filter,
       viewAs,
+      uploaded,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
       primaryProgressDataIcon,
       primaryProgressDataAlert,
+      clearPrimaryProgressData,
 
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,

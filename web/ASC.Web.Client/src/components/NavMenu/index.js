@@ -54,7 +54,7 @@ const StyledContainer = styled.header`
   #ipl-progress-indicator {
     position: fixed;
     z-index: 190;
-    top: 56px;
+    top: ${(props) => (props.isDesktop ? "0" : "56px")};
     left: -6px;
     width: 0%;
     height: 3px;
@@ -159,7 +159,11 @@ class NavMenu extends React.Component {
     return (
       <LayoutContextConsumer>
         {(value) => (
-          <StyledContainer isLoaded={isLoaded} isVisible={value.isVisible}>
+          <StyledContainer
+            isLoaded={isLoaded}
+            isVisible={value.isVisible}
+            isDesktop={isDesktop}
+          >
             <Toast />
 
             <Backdrop

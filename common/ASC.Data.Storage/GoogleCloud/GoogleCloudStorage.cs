@@ -801,10 +801,10 @@ namespace ASC.Data.Storage.GoogleCloud
 
                     break;
                 }
-                catch (Exception ex)
+                catch
                 {
                     AbortChunkedUpload(domain, path, uploadUri);
-                    throw (ex);
+                    throw;
                 }
             }
 

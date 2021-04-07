@@ -31,7 +31,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("FullAccess") && (
         <DropDownItem
           label={t("FullAccess")}
-          icon="images/access.edit.react.svg"
+          icon="/static/images/access.edit.react.svg"
           data-id={itemId}
           data-access={FullAccess}
           onClick={onAccessChange}
@@ -41,7 +41,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("FilterEditing") && (
         <DropDownItem
           label={t("CustomFilter")}
-          icon="images/custom.filter.react.svg"
+          icon="/static/images/custom.filter.react.svg"
           data-id={itemId}
           data-access={CustomFilter}
           onClick={onAccessChange}
@@ -51,7 +51,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("Review") && (
         <DropDownItem
           label={t("Review")}
-          icon="images/access.review.react.svg"
+          icon="/static/images/access.review.react.svg"
           data-id={itemId}
           data-access={Review}
           onClick={onAccessChange}
@@ -61,7 +61,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("FormFilling") && (
         <DropDownItem
           label={t("FormFilling")}
-          icon="images/access.form.react.svg"
+          icon="/static/images/access.form.react.svg"
           data-id={itemId}
           data-access={FormFilling}
           onClick={onAccessChange}
@@ -71,7 +71,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("Comment") && (
         <DropDownItem
           label={t("Comment")}
-          icon="images/access.comment.react.svg"
+          icon="/static/images/access.comment.react.svg"
           data-id={itemId}
           data-access={Comment}
           onClick={onAccessChange}
@@ -91,7 +91,7 @@ const AccessComboBox = (props) => {
       {accessOptions.includes("DenyAccess") && (
         <DropDownItem
           label={t("DenyAccess")}
-          icon="images/access.none.react.svg"
+          icon="/static/images/access.none.react.svg"
           data-id={itemId}
           data-access={DenyAccess}
           onClick={onAccessChange}

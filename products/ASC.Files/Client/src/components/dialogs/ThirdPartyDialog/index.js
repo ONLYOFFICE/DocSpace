@@ -125,7 +125,7 @@ const ThirdPartyDialog = (props) => {
         <Text as="div">
           {t("ConnectDescription")}
           {isAdmin && (
-            <Trans i18nKey="ConnectAdminDescription" ns="Settings">
+            <Trans t={t} i18nKey="ConnectAdminDescription" ns="Settings">
               For successful connection enter the necessary data at
               <Link isHovered href="/settings/integration/third-party-services">
                 this page
