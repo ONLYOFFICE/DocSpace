@@ -12,6 +12,7 @@
   "UpdatingProcess": "Updating...",
   "CancelButton": "Cancel",
   "CopyEmailAndPassword": "Copy e-mail & password",
+  "CopiedResourceText": "Copied",
   "UserType": "Type",
   "AddButton": "Add",
   "ContactInformation": "Contact information",
@@ -42,9 +43,7 @@
   "ErrorPasswordNoUpperCase": "capital letters",
   "ErrorPasswordNoSpecialSymbols": "special characters",
   "ErrorPasswordLength": "from {{from}} to {{to}} characters",
-
   "CustomCreation": "{{user}} (creation)",
-
   "ActivationLink": "Activation link",
   "AddPhoto": "Add photo",
   "TemporaryPassword": "Temporary password",

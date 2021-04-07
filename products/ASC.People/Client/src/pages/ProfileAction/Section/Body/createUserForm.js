@@ -524,6 +524,7 @@ class CreateUserForm extends React.Component {
               inputIsDisabled={isLoading || profile.passwordType === "link"}
               inputOnChange={this.onInputChange}
               copyLinkText={t("CopyEmailAndPassword")}
+              copiedResourceText={t("CopiedResourceText")}
               inputTabIndex={4}
               passwordSettings={passwordSettings}
               t={t}
