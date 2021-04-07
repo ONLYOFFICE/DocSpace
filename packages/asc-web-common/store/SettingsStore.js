@@ -99,12 +99,14 @@ class SettingsStore {
             ? combineUrl(proxyURL, newSettings[key])
             : newSettings[key]
         );
-
-        if (key === "culture" && !localStorage.getItem(LANGUAGE)) {
-          localStorage.setItem(LANGUAGE, newSettings[key]);
+        if (key === "culture") {
+          const language = localStorage.getItem(LANGUAGE);
+          if (!language || language == "undefined") {
+            localStorage.setItem(LANGUAGE, newSettings[key]);
+          }
+        } else if (key === "passwordHash") {
+          this.setValue("hashSettings", newSettings[key]);
         }
-      } else if (key === "passwordHash") {
-        this.setValue("hashSettings", newSettings[key]);
       }
     });
 
