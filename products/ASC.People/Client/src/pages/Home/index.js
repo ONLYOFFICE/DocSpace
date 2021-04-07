@@ -24,6 +24,7 @@ const Home = ({
   getUsersList,
   setIsLoading,
   setIsRefresh,
+  selectedGroup,
 }) => {
   const { location } = history;
   const { pathname } = location;
@@ -41,6 +42,14 @@ const Home = ({
       });
     }
   }, [pathname, location]);
+  useEffect(() => {
+    if (isMobile) {
+      const customScrollElm = document.querySelector(
+        "#customScrollBar > .scroll-body"
+      );
+      customScrollElm && customScrollElm.scrollTo(0, 0);
+    }
+  }, [selectedGroup]);
 
   useEffect(() => {
     isLoading ? showLoader() : hideLoader();
@@ -92,4 +101,5 @@ export default inject(({ peopleStore }) => ({
   getUsersList: peopleStore.usersStore.getUsersList,
   setIsLoading: peopleStore.setIsLoading,
   setIsRefresh: peopleStore.setIsRefresh,
+  selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
 }))(observer(withRouter(Home)));
