@@ -70,6 +70,7 @@ sed -i "s!\"header\".*!\"header\": \"${DOCUMENT_SERVER_JWT_HEADER}\"!" ${PATH_TO
 
 grep -q "${ELK_VALUE}" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json || sed -i "s!\"files\".*!${ELK_VALUE}\n\"files\": {!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 
+sed -i "s!\"subfolder\".*!\"subfolder\": \"server\",!g" ${PATH_TO_CONF}/appsettings.services.json
 sed -i "s!\"BootstrapServers\".*!\"BootstrapServers\": \"${KAFKA_HOST}\"!g" ${PATH_TO_CONF}/kafka.${APP_DOTNET_ENV}.json
 
 dotnet ${DOTNET_RUN} --urls=${URLS} --ENVIRONMENT=${APP_DOTNET_ENV} --'$STORAGE_ROOT'=${APP_STORAGE_ROOT} --pathToConf=${PATH_TO_CONF} --log:dir=${LOG_DIR} --log:name=${DOTNET_LOG_NAME} ${PARAMETERS}
