@@ -120,7 +120,6 @@ class FilesStore {
 
   initFiles = () => {
     if (this.isInit) return;
-    this.isInit = true;
 
     const { isAuthenticated } = this.authStore;
     const {
@@ -153,7 +152,7 @@ class FilesStore {
       }
     }
 
-    return Promise.all(requests);
+    return Promise.all(requests).then(() => (this.isInit = true));
   };
 
   setFirstLoad = (firstLoad) => {
@@ -291,41 +290,59 @@ class FilesStore {
       }
     }
 
-    return api.files.getFolder(folderId, filter).then((data) => {
-      const isPrivacyFolder =
-        data.current.rootFolderType === FolderType.Privacy;
+    //TODO: fix @my
+    let requestCounter = 1;
+    const request = () =>
+      api.files
+        .getFolder(folderId, filter)
+        .then((data) => {
+          const isPrivacyFolder =
+            data.current.rootFolderType === FolderType.Privacy;
 
-      const newExpandedKeys = createTreeFolders(data.pathParts, expandedKeys);
-      setExpandedKeys(newExpandedKeys);
-      filterData.total = data.total;
-      this.setFilesFilter(filterData); //TODO: FILTER
-      this.setFolders(
-        isPrivacyFolder && !this.settingsStore.isEncryptionSupport
-          ? []
-          : data.folders
-      );
-      this.setFiles(
-        isPrivacyFolder && !this.settingsStore.isEncryptionSupport
-          ? []
-          : data.files
-      );
-      if (clearFilter) {
-        this.fileActionStore.setAction({ type: null });
-        this.setSelected("close");
-      }
+          const newExpandedKeys = createTreeFolders(
+            data.pathParts,
+            expandedKeys
+          );
+          setExpandedKeys(newExpandedKeys);
+          filterData.total = data.total;
+          this.setFilesFilter(filterData); //TODO: FILTER
+          this.setFolders(
+            isPrivacyFolder && !this.settingsStore.isEncryptionSupport
+              ? []
+              : data.folders
+          );
+          this.setFiles(
+            isPrivacyFolder && !this.settingsStore.isEncryptionSupport
+              ? []
+              : data.files
+          );
+          if (clearFilter) {
+            this.fileActionStore.setAction({ type: null });
+            this.setSelected("close");
+          }
 
-      this.selectedFolderStore.setSelectedFolder({
-        folders: data.folders,
-        ...data.current,
-        pathParts: data.pathParts,
-        ...{ new: data.new },
-      });
+          this.selectedFolderStore.setSelectedFolder({
+            folders: data.folders,
+            ...data.current,
+            pathParts: data.pathParts,
+            ...{ new: data.new },
+          });
 
-      const selectedFolder = {
-        selectedFolder: { ...this.selectedFolderStore },
-      };
-      return Promise.resolve(selectedFolder);
-    });
+          const selectedFolder = {
+            selectedFolder: { ...this.selectedFolderStore },
+          };
+          return Promise.resolve(selectedFolder);
+        })
+        .catch(() => {
+          if (folderId === "@my" && requestCounter !== 0 && !this.isInit) {
+            requestCounter--;
+            setTimeout(() => {
+              return request();
+            }, 5000);
+          }
+        });
+
+    return request();
   };
 
   isFileSelected = (selection, fileId, parentId) => {
@@ -366,6 +383,7 @@ class FilesStore {
       isRecycleBinFolder,
       isPrivacyFolder,
       isRecentFolder,
+      isShareFolder,
     } = this.treeFoldersStore;
 
     if (isRecycleBinFolder) {
@@ -405,6 +423,16 @@ class FilesStore {
       }
 
       this.canShareOwnerChange(item) && options.push("owner-change");
+
+      if (isFile) {
+        if (canOpenPlayer) {
+          options.push("view");
+        } else {
+          options.push("edit");
+          options.push("preview");
+        }
+      }
+
       options.push("link-for-portal-users");
 
       if (!isVisitor) {
@@ -427,18 +455,11 @@ class FilesStore {
             options.push("mark-as-favorite");
           }
         } else {
-          options.push("separator3");
+          !isShareFolder && options.push("separator3");
         }
-
-        if (canOpenPlayer) {
-          options.push("view");
-        } else {
-          options.push("edit");
-          options.push("preview");
-        }
-
-        options.push("download");
       }
+
+      options.push("download");
 
       if (!isVisitor) {
         !isThirdPartyFolder && this.userAccess && options.push("move");
@@ -452,14 +473,18 @@ class FilesStore {
         isThirdPartyFolder &&
           this.userAccess &&
           options.push("change-thirdparty-info");
-        options.push("separator3");
-        this.userAccess && options.push("delete");
+
+        if (this.userAccess) {
+          options.push("separator3");
+          options.push("delete");
+        }
       } else {
         options.push("copy");
       }
     }
 
     if (isFavorite && !isRecycleBinFolder) {
+      !this.userAccess && options.push("separator3");
       options.push("remove-from-favorites");
     }
 
