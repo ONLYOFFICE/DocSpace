@@ -366,6 +366,7 @@ class FilesStore {
       isRecycleBinFolder,
       isPrivacyFolder,
       isRecentFolder,
+      isShareFolder,
     } = this.treeFoldersStore;
 
     if (isRecycleBinFolder) {
@@ -405,6 +406,16 @@ class FilesStore {
       }
 
       this.canShareOwnerChange(item) && options.push("owner-change");
+
+      if (isFile) {
+        if (canOpenPlayer) {
+          options.push("view");
+        } else {
+          options.push("edit");
+          options.push("preview");
+        }
+      }
+
       options.push("link-for-portal-users");
 
       if (!isVisitor) {
@@ -427,14 +438,7 @@ class FilesStore {
             options.push("mark-as-favorite");
           }
         } else {
-          options.push("separator3");
-        }
-
-        if (canOpenPlayer) {
-          options.push("view");
-        } else {
-          options.push("edit");
-          options.push("preview");
+          !isShareFolder && options.push("separator3");
         }
 
         options.push("download");
@@ -452,14 +456,18 @@ class FilesStore {
         isThirdPartyFolder &&
           this.userAccess &&
           options.push("change-thirdparty-info");
-        options.push("separator3");
-        this.userAccess && options.push("delete");
+
+        if (this.userAccess) {
+          options.push("separator3");
+          options.push("delete");
+        }
       } else {
         options.push("copy");
       }
     }
 
     if (isFavorite && !isRecycleBinFolder) {
+      !this.userAccess && options.push("separator3");
       options.push("remove-from-favorites");
     }
 
