@@ -59,6 +59,8 @@ class SettingsStore {
   isArticlePinned =
     localStorage.getItem(ARTICLE_PINNED_KEY) === "true" || false;
 
+  isArticleVisibleOnUnpin = false;
+
   hashSettings = null;
   title = "";
   ownerId = null;
@@ -227,6 +229,10 @@ class SettingsStore {
       ? localStorage.setItem(ARTICLE_PINNED_KEY, isPinned)
       : localStorage.removeItem(ARTICLE_PINNED_KEY);
     this.isArticlePinned = isPinned;
+  };
+
+  setArticleVisibleOnUnpin = (visible) => {
+    this.isArticleVisibleOnUnpin = visible;
   };
 }
 
