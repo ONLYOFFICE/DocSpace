@@ -112,7 +112,7 @@ const ExternalLink = ({ label, href, onClick }) => (
 const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
   const { t } = useTranslation("ComingSoon");
   const { error } = match.params;
-  const { pathname, origin } = window.location;
+  const { pathname, protocol, hostname } = window.location;
   const currentModule = modules.find((m) => m.link === pathname);
   const {
     id,
@@ -124,7 +124,10 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
     helpUrl,
   } = currentModule;
   const url = originUrl ? originUrl : link;
-  const webLink = combineUrl(origin, `${url}?desktop_view=true`);
+  const webLink = combineUrl(
+    protocol + "//" + hostname,
+    `${url}?desktop_view=true`
+  );
   const appLink = isIOS
     ? id === "2A923037-8B2D-487b-9A22-5AC0918ACF3F"
       ? "message:"
