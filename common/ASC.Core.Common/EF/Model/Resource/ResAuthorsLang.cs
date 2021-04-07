@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Resource
 {
-    [Table("res_authorslang")]
     public class ResAuthorsLang
     {
         public string AuthorLogin { get; set; }
@@ -30,7 +27,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.ToTable("res_authorslang");
 
                 entity.HasIndex(e => e.CultureTitle)
-                    .HasName("res_authorslang_FK2");
+                    .HasDatabaseName("res_authorslang_FK2");
 
                 entity.Property(e => e.AuthorLogin)
                     .HasColumnName("authorLogin")
@@ -55,7 +52,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.ToTable("res_authorslang", "onlyoffice");
 
                 entity.HasIndex(e => e.CultureTitle)
-                    .HasName("res_authorslang_FK2");
+                    .HasDatabaseName("res_authorslang_FK2");
 
                 entity.Property(e => e.AuthorLogin)
                     .HasColumnName("authorLogin")

@@ -1,20 +1,16 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import React from "react";
+//import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { store } from "asc-web-common";
-import { MainButton, DropDownItem } from "asc-web-components";
-import { InviteDialog } from "./../../dialogs";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import { utils, toastr, Loaders } from "asc-web-common";
-import { createI18N } from "../../../helpers/i18n";
-const { getLanguage, getSettings } = store.auth.selectors;
-const i18n = createI18N({
-  page: "Article",
-  localesPath: "Article",
-});
-
-const { changeLanguage } = utils;
+import MainButton from "@appserver/components/main-button";
+import DropDownItem from "@appserver/components/drop-down-item";
+import InviteDialog from "./../../dialogs/InviteDialog/index";
+import { withTranslation } from "react-i18next";
+import toastr from "studio/toastr";
+import Loaders from "@appserver/common/components/Loaders";
+import { inject, observer } from "mobx-react";
+import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class PureArticleMainButtonContent extends React.Component {
   constructor(props) {
@@ -24,23 +20,32 @@ class PureArticleMainButtonContent extends React.Component {
     };
   }
 
-  onDropDownItemClick = (link) => {
-    this.props.history.push(link);
+  onImportClick = () => {
+    const { history, homepage } = this.props;
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "${homepage}/import")
+    );
   };
 
   goToEmployeeCreate = () => {
-    const { history, settings } = this.props;
-    history.push(`${settings.homepage}/create/user`);
+    const { history, homepage } = this.props;
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "/create/user")
+    );
   };
 
   goToGuestCreate = () => {
-    const { history, settings } = this.props;
-    history.push(`${settings.homepage}/create/guest`);
+    const { history, homepage } = this.props;
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "/create/guest")
+    );
   };
 
   goToGroupCreate = () => {
-    const { history, settings } = this.props;
-    history.push(`${settings.homepage}/group/create`);
+    const { history, homepage } = this.props;
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "/group/create")
+    );
   };
 
   onNotImplementedClick = (text) => {
@@ -52,91 +57,103 @@ class PureArticleMainButtonContent extends React.Component {
 
   render() {
     //console.log("People ArticleMainButtonContent render");
-    const { settings, t, isLoaded } = this.props;
-    const { userCaption, guestCaption, groupCaption } = settings.customNames;
+    const {
+      t,
+      isLoaded,
+      isAdmin,
+      homepage,
+      userCaption,
+      guestCaption,
+      groupCaption,
+    } = this.props;
+
     const { dialogVisible } = this.state;
-    return !isLoaded ? (
-      <Loaders.Rectangle />
-    ) : (
-      <>
-        <MainButton isDisabled={false} isDropdown={true} text={t("Actions")}>
-          <DropDownItem
-            icon="AddEmployeeIcon"
-            label={userCaption}
-            onClick={this.goToEmployeeCreate}
-          />
-          <DropDownItem
-            icon="AddGuestIcon"
-            label={guestCaption}
-            onClick={this.goToGuestCreate}
-          />
-          <DropDownItem
-            icon="AddDepartmentIcon"
-            label={groupCaption}
-            onClick={this.goToGroupCreate}
-          />
-          <DropDownItem isSeparator />
-          <DropDownItem
-            icon="InvitationLinkIcon"
-            label={t("InviteLinkTitle")}
-            onClick={this.onInvitationDialogClick}
-          />
-          {/* <DropDownItem
-              icon="PlaneIcon"
+
+    return (
+      isAdmin &&
+      (!isLoaded ? (
+        <Loaders.Rectangle />
+      ) : (
+        <>
+          <MainButton isDisabled={false} isDropdown={true} text={t("Actions")}>
+            <DropDownItem
+              icon={combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                "/images/add.employee.react.svg"
+              )}
+              label={userCaption}
+              onClick={this.goToEmployeeCreate}
+            />
+
+            <DropDownItem
+              icon={combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                "/images/add.guest.react.svg"
+              )}
+              label={guestCaption}
+              onClick={this.goToGuestCreate}
+            />
+            <DropDownItem
+              icon={combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                "/images/add.department.react.svg"
+              )}
+              label={groupCaption}
+              onClick={this.goToGroupCreate}
+            />
+            <DropDownItem isSeparator />
+            <DropDownItem
+              icon={combineUrl(
+                AppServerConfig.proxyURL,
+                "/static/images/invitation.link.react.svg"
+              )}
+              label={t("InviteLinkTitle")}
+              onClick={this.onInvitationDialogClick}
+            />
+            {/* <DropDownItem
+              icon="images/plane.react.svg"
               label={t('LblInviteAgain')}
               onClick={this.onNotImplementedClick.bind(this, "Invite again action")}
             /> */}
-          {false && (
-            <DropDownItem
-              icon="ImportIcon"
-              label={t("ImportPeople")}
-              onClick={this.onDropDownItemClick.bind(
-                this,
-                `${settings.homepage}/import`
-              )}
+            {false && (
+              <DropDownItem
+                icon={combineUrl(
+                  AppServerConfig.proxyURL,
+                  homepage,
+                  "/images/import.react.svg"
+                )}
+                label={t("ImportPeople")}
+                onClick={this.onImportClick}
+              />
+            )}
+          </MainButton>
+          {dialogVisible && (
+            <InviteDialog
+              visible={dialogVisible}
+              onClose={this.onInvitationDialogClick}
+              onCloseButton={this.onInvitationDialogClick}
             />
           )}
-        </MainButton>
-        {dialogVisible && (
-          <InviteDialog
-            visible={dialogVisible}
-            onClose={this.onInvitationDialogClick}
-            onCloseButton={this.onInvitationDialogClick}
-          />
-        )}
-      </>
+        </>
+      ))
     );
   }
 }
 
-const ArticleMainButtonContentContainer = withTranslation()(
+const ArticleMainButtonContent = withTranslation("Article")(
   PureArticleMainButtonContent
 );
 
-const ArticleMainButtonContent = ({ language, ...rest }) => {
-  useEffect(() => {
-    changeLanguage(i18n, language);
-  }, [language]);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <ArticleMainButtonContentContainer {...rest} />
-    </I18nextProvider>
-  );
-};
-
-ArticleMainButtonContent.propTypes = {
-  history: PropTypes.object.isRequired,
-  language: PropTypes.string,
-};
-
-const mapStateToProps = (state) => {
-  const { isLoaded } = state.auth;
-  return {
-    isLoaded,
-    settings: getSettings(state),
-    language: getLanguage(state),
-  };
-};
-
-export default connect(mapStateToProps)(withRouter(ArticleMainButtonContent));
+export default withRouter(
+  inject(({ auth }) => ({
+    isAdmin: auth.isAdmin,
+    homepage: config.homepage,
+    userCaption: auth.settingsStore.customNames.userCaption,
+    guestCaption: auth.settingsStore.customNames.guestCaption,
+    groupCaption: auth.settingsStore.customNames.groupCaption,
+    isLoaded: auth.isLoaded,
+  }))(observer(ArticleMainButtonContent))
+);

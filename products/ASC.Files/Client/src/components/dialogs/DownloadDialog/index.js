@@ -1,36 +1,18 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 import ModalDialogContainer from "../ModalDialogContainer";
-import {
-  ModalDialog,
-  Button,
-  Text,
-  Row,
-  RowContent,
-  RowContainer,
-} from "asc-web-components";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import Row from "@appserver/components/row";
+import RowContent from "@appserver/components/row-content";
+import RowContainer from "@appserver/components/row-container";
 import { ReactSVG } from "react-svg";
 import { withTranslation } from "react-i18next";
-import { utils, api } from "asc-web-common";
-import {
-  getFileIcon,
-  getFolderIcon,
-  getSortedFiles,
-} from "../../../store/files/selectors";
-import {
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-} from "../../../store/files/actions";
+import { downloadFormatFiles } from "@appserver/common/api/files";
 import { TIMEOUT } from "../../../helpers/constants";
 import DownloadContent from "./DownloadContent";
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "DownloadDialog",
-  localesPath: "dialogs/DownloadDialog",
-});
-
-const { changeLanguage } = utils;
+import { inject, observer } from "mobx-react";
 
 const formatKeys = Object.freeze({
   OriginalFormat: 0,
@@ -50,8 +32,6 @@ class DownloadDialogComponent extends React.Component {
   constructor(props) {
     super(props);
     const { sortedFiles } = this.props;
-
-    changeLanguage(i18n);
 
     this.state = {
       documents: sortedFiles.documents,
@@ -74,6 +54,8 @@ class DownloadDialogComponent extends React.Component {
       indeterminateOtherTitle: false,
     };
   }
+
+  onClose = () => this.props.setDownloadDialogVisible(false);
 
   getTitleLabel = (format) => {
     switch (format) {
@@ -148,11 +130,12 @@ class DownloadDialogComponent extends React.Component {
     return [items, folders];
   };
 
+  //TODO: move to actions?
   onDownload = () => {
     const {
-      onDownloadProgress,
-      onClose,
+      //onDownloadProgress,
       t,
+      getDownloadProgress,
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.props;
@@ -169,11 +152,11 @@ class DownloadDialogComponent extends React.Component {
         label: t("ArchivingData"),
         alert: false,
       });
-      api.files
-        .downloadFormatFiles(fileConvertIds, folderIds)
+      downloadFormatFiles(fileConvertIds, folderIds)
         .then((res) => {
-          onClose();
-          onDownloadProgress(res[0]);
+          this.onClose();
+          getDownloadProgress(res[0], t("ArchivingData"))
+            .catch((err) => toastr.error(err));
         })
         .catch((err) => {
           setSecondaryProgressBarData({
@@ -189,8 +172,8 @@ class DownloadDialogComponent extends React.Component {
   getItemIcon = (item) => {
     const extension = item.fileExst;
     const icon = extension
-      ? getFileIcon(extension, 24)
-      : getFolderIcon(item.providerKey, 24);
+      ? this.props.getFileIcon(extension, 24)
+      : this.props.getFolderIcon(item.providerKey, 24);
 
     return (
       <ReactSVG
@@ -431,7 +414,7 @@ class DownloadDialogComponent extends React.Component {
   };
 
   render() {
-    const { onClose, visible, t } = this.props;
+    const { visible, t } = this.props;
     const {
       documentsTitleFormat,
       spreadsheetsTitleFormat,
@@ -457,7 +440,7 @@ class DownloadDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
+        <ModalDialog visible={visible} onClose={this.onClose}>
           <ModalDialog.Header>{t("DownloadAs")}</ModalDialog.Header>
           <ModalDialog.Body>
             <Text>{t("ChooseFormatText")}</Text>
@@ -585,7 +568,7 @@ class DownloadDialogComponent extends React.Component {
               key="CancelButton"
               label={t("CancelButton")}
               size="medium"
-              onClick={onClose}
+              onClick={this.onClose}
               //isLoading={isLoading}
             />
           </ModalDialog.Footer>
@@ -595,21 +578,43 @@ class DownloadDialogComponent extends React.Component {
   }
 }
 
-const ModalDialogContainerTranslated = withTranslation()(
+const DownloadDialog = withTranslation("DownloadDialog")(
   DownloadDialogComponent
 );
 
-const DownloadDialog = (props) => (
-  <ModalDialogContainerTranslated i18n={i18n} {...props} />
-);
+export default inject(
+  ({
+    filesStore,
+    uploadDataStore,
+    formatsStore,
+    dialogsStore,
+    filesActionsStore,
+  }) => {
+    const { secondaryProgressDataStore } = uploadDataStore;
+    const { sortedFiles } = filesStore;
+    const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
 
-const mapStateToProps = (state) => {
-  return {
-    sortedFiles: getSortedFiles(state),
-  };
-};
+    const {
+      downloadDialogVisible: visible,
+      setDownloadDialogVisible,
+    } = dialogsStore;
 
-export default connect(mapStateToProps, {
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-})(withRouter(DownloadDialog));
+    const { getDownloadProgress } = filesActionsStore;
+
+    return {
+      sortedFiles,
+      visible,
+
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+      getFileIcon,
+      getFolderIcon,
+      setDownloadDialogVisible,
+      getDownloadProgress,
+    };
+  }
+)(withRouter(observer(DownloadDialog)));

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <ApplicationIcon />
     <OutputType>Library</OutputType>
     <StartupObject />
@@ -12,6 +12,16 @@
     <DebugSymbols>false</DebugSymbols>
     <NoWarn>1701;1702;NU1701</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="callback.htm" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="callback.htm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DotNetOpenAuth.Ultimate" Version="4.3.4.13329" />

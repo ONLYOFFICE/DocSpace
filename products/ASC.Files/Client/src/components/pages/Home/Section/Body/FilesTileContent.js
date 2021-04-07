@@ -1,45 +1,23 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Link, Text, Icons, Badge } from "asc-web-components";
-import { constants, api, toastr, store as initStore } from "asc-web-common";
-import {
-  createFile,
-  createFolder,
-  renameFolder,
-  updateFile,
-  fetchFiles,
-  setTreeFolders,
-  setIsLoading,
-} from "../../../../../store/files/actions";
-import {
-  canWebEdit,
-  getDragging,
-  getFileAction,
-  getFilter,
-  getFolders,
-  getIsLoading,
-  getNewRowItems,
-  getSelectedFolder,
-  getSelectedFolderNew,
-  getSelectedFolderParentId,
-  getTitleWithoutExst,
-  getTreeFolders,
-  isImage,
-  isSound,
-  isVideo,
-  getIsRecycleBinFolder,
-  getRootFolderId,
-} from "../../../../../store/files/selectors";
+import Badge from "@appserver/components/badge";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
+import { markAsRead } from "@appserver/common/api/files";
+import { FileAction, AppServerConfig } from "@appserver/common/constants";
+import toastr from "studio/toastr";
+import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import TileContent from "./TileContent";
 import { isMobile } from "react-device-detect";
-
-const { FileAction } = constants;
-const { getSettings } = initStore.auth.selectors;
+import { inject, observer } from "mobx-react";
+import CheckIcon from "../../../../../../public/images/check.react.svg";
+import CrossIcon from "../../../../../../../../../public/images/cross.react.svg";
+import config from "../../../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
 
 const SimpleFilesTileContent = styled(TileContent)`
   .rowMainContainer {
@@ -86,7 +64,7 @@ const SimpleFilesTileContent = styled(TileContent)`
 `;
 
 const okIcon = (
-  <Icons.CheckIcon
+  <CheckIcon
     className="edit-ok-icon"
     size="scale"
     isfill={true}
@@ -95,7 +73,7 @@ const okIcon = (
 );
 
 const cancelIcon = (
-  <Icons.CrossIcon
+  <CrossIcon
     className="edit-cancel-icon"
     size="scale"
     isfill={true}
@@ -152,7 +130,7 @@ class FilesTileContent extends React.PureComponent {
   };
 
   createItem = (e) => {
-    const { createFile, item, setIsLoading, i18n } = this.props;
+    const { createFile, item, setIsLoading, createFolder, t } = this.props;
     const { itemTitle } = this.state;
 
     setIsLoading(true);
@@ -164,7 +142,7 @@ class FilesTileContent extends React.PureComponent {
           .then(() => this.completeAction(e))
           .finally(() => {
             toastr.success(
-              <Trans i18nKey="FolderCreated" i18n={i18n}>
+              <Trans t={t} i18nKey="FolderCreated" ns="Home">
                 New folder {{ itemTitle }} is created
               </Trans>
             );
@@ -175,7 +153,7 @@ class FilesTileContent extends React.PureComponent {
           .finally(() => {
             const exst = item.fileExst;
             toastr.success(
-              <Trans i18nKey="FileCreated" i18n={i18n}>
+              <Trans t={t} i18nKey="FileCreated" ns="Home">
                 New file {{ itemTitle }}.{{ exst }} is created
               </Trans>
             );
@@ -227,15 +205,20 @@ class FilesTileContent extends React.PureComponent {
       fetchFiles,
       canWebEdit,
       openDocEditor,
+      isVideo,
+      isImage,
+      isSound,
+      expandedKeys,
+      addExpandedKeys,
     } = this.props;
     if (!fileExst) {
       setIsLoading(true);
-      const newFilter = filter.clone();
-      if (!newFilter.treeFolders.includes(parentFolder.toString())) {
-        newFilter.treeFolders.push(parentFolder.toString());
+
+      if (!expandedKeys.includes(parentFolder + "")) {
+        addExpandedKeys(parentFolder + "");
       }
 
-      fetchFiles(id, newFilter)
+      fetchFiles(id, filter)
         .catch((err) => {
           toastr.error(err);
           setIsLoading(false);
@@ -246,8 +229,7 @@ class FilesTileContent extends React.PureComponent {
         return openDocEditor(id, providerKey);
       }
 
-      const isOpenMedia =
-        isImage(fileExst) || isSound(fileExst) || isVideo(fileExst);
+      const isOpenMedia = isImage || isSound || isVideo;
 
       if (isOpenMedia) {
         onMediaFileClick(id);
@@ -259,7 +241,7 @@ class FilesTileContent extends React.PureComponent {
   };
 
   onMobileRowClick = (e) => {
-    if (window.innerWidth > 1024) return;
+    if (!isMobile) return;
 
     this.onFilesClick();
   };
@@ -298,10 +280,12 @@ class FilesTileContent extends React.PureComponent {
   };
 
   onShowVersionHistory = (e) => {
-    const { settings, history } = this.props;
+    const { homepage, history } = this.props;
     const fileId = e.currentTarget.dataset.id;
 
-    history.push(`${settings.homepage}/${fileId}/history`);
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, `/${fileId}/history`)
+    );
   };
 
   onBadgeClick = () => {
@@ -316,18 +300,17 @@ class FilesTileContent extends React.PureComponent {
       fetchFiles,
     } = this.props;
     if (item.fileExst) {
-      api.files
-        .markAsRead([], [item.id])
+      markAsRead([], [item.id])
         .then(() => {
           const data = treeFolders;
           const dataItem = data.find((x) => x.id === rootFolderId);
           dataItem.newItems = newItems ? dataItem.newItems - 1 : 0; //////newItems
           setTreeFolders(data);
-          fetchFiles(this.props.selectedFolder.id, filter.clone());
+          fetchFiles(this.props.selectedFolderId, filter.clone());
         })
         .catch((err) => toastr.error(err));
     } else {
-      const newFolderId = this.props.selectedFolder.pathParts;
+      const newFolderId = this.props.selectedFolderPathParts;
       newFolderId.push(item.id);
       this.setState({
         showNewFilesPanel: !showNewFilesPanel,
@@ -440,30 +423,78 @@ class FilesTileContent extends React.PureComponent {
   }
 }
 
-function mapStateToProps(state, props) {
-  return {
-    filter: getFilter(state),
-    fileAction: getFileAction(state),
-    parentFolder: getSelectedFolderParentId(state),
-    isTrashFolder: getIsRecycleBinFolder(state),
-    settings: getSettings(state),
-    treeFolders: getTreeFolders(state),
-    rootFolderId: getRootFolderId(state),
-    newItems: getSelectedFolderNew(state),
-    selectedFolder: getSelectedFolder(state),
-    folders: getFolders(state),
-    newRowItems: getNewRowItems(state),
-    dragging: getDragging(state),
-    isLoading: getIsLoading(state),
-    canWebEdit: canWebEdit(props.item.fileExst)(state),
-  };
-}
+export default inject(
+  (
+    { auth, filesStore, formatsStore, treeFoldersStore, selectedFolderStore },
+    { item }
+  ) => {
+    const { culture } = auth.settingsStore;
+    const {
+      iconFormatsStore,
+      mediaViewersFormatsStore,
+      docserviceStore,
+    } = formatsStore;
+    const {
+      folders,
+      fetchFiles,
+      filter,
+      newRowItems,
+      createFile,
+      updateFile,
+      renameFolder,
+      createFolder,
+      setIsLoading,
+      isLoading,
+      dragging,
+    } = filesStore;
 
-export default connect(mapStateToProps, {
-  createFile,
-  updateFile,
-  renameFolder,
-  setTreeFolders,
-  setIsLoading,
-  fetchFiles,
-})(withRouter(withTranslation()(FilesTileContent)));
+    const {
+      treeFolders,
+      setTreeFolders,
+      isRecycleBinFolder,
+      expandedKeys,
+      addExpandedKeys,
+    } = treeFoldersStore;
+
+    const { type, extension, id } = filesStore.fileActionStore;
+
+    const fileAction = { type, extension, id };
+
+    const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
+    const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
+    const isImage = iconFormatsStore.isImage(item.fileExst);
+    const isSound = iconFormatsStore.isSound(item.fileExst);
+
+    return {
+      culture,
+      homepage: config.homepage,
+      fileAction,
+      folders,
+      rootFolderId: selectedFolderStore.pathParts,
+      selectedFolderId: selectedFolderStore.id,
+      selectedFolderPathParts: selectedFolderStore.pathParts,
+      newItems: selectedFolderStore.new,
+      parentFolder: selectedFolderStore.parentId,
+      isLoading,
+      treeFolders,
+      isTrashFolder: isRecycleBinFolder,
+      filter,
+      dragging,
+      canWebEdit,
+      isVideo,
+      isImage,
+      isSound,
+      newRowItems,
+      expandedKeys,
+
+      setIsLoading,
+      fetchFiles,
+      setTreeFolders,
+      createFile,
+      createFolder,
+      updateFile,
+      renameFolder,
+      addExpandedKeys,
+    };
+  }
+)(withRouter(withTranslation("Home")(observer(FilesTileContent))));

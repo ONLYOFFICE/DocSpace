@@ -30,7 +30,6 @@ using System.Security.Cryptography;
 
 using ASC.Common;
 using ASC.Core.Encryption;
-using ASC.Data.Storage.Encryption;
 
 using Microsoft.Extensions.Configuration;
 
@@ -119,7 +118,6 @@ namespace ASC.Data.Encryption
             }
 
             var ecryptedFilePath = GetUniqFileName(filePath, ".enc");
-
             try
             {
                 var metadata = new Metadata(Configuration);
@@ -152,14 +150,14 @@ namespace ASC.Data.Encryption
 
                 ReplaceFile(ecryptedFilePath, filePath);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 if (File.Exists(ecryptedFilePath))
                 {
                     File.Delete(ecryptedFilePath);
                 }
 
-                throw exception;
+                throw;
             }
         }
 
@@ -206,14 +204,14 @@ namespace ASC.Data.Encryption
 
                 ReplaceFile(decryptedFilePath, filePath);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 if (File.Exists(decryptedFilePath))
                 {
                     File.Delete(decryptedFilePath);
                 }
 
-                throw exception;
+                throw;
             }
         }
 
@@ -315,10 +313,10 @@ namespace ASC.Data.Encryption
             {
                 File.Move(modifiedFilePath, originalFilePath);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 File.Move(tempFilePath, originalFilePath);
-                throw exception;
+                throw;
             }
             finally
             {

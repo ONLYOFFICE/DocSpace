@@ -1,23 +1,16 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using ASC.Core.Common.EF.Model;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    [Table("tenants_quotarow")]
     public class DbQuotaRow : BaseEntity
     {
         public int Tenant { get; set; }
         public string Path { get; set; }
         public long Counter { get; set; }
         public string Tag { get; set; }
-
-        [Column("last_modified")]
         public DateTime LastModified { get; set; }
-
         public override object[] GetKeys()
         {
             return new object[] { Tenant, Path };
@@ -43,7 +36,7 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("tenants_quotarow");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified");
+                    .HasDatabaseName("last_modified");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
 
@@ -77,7 +70,7 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("tenants_quotarow", "onlyoffice");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified_tenants_quotarow");
+                    .HasDatabaseName("last_modified_tenants_quotarow");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
 

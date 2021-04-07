@@ -791,8 +791,8 @@ namespace ASC.Web.Files.Utils
                 {
                     if (!t.Key.Equals(file.ID)) continue;
 
-                    file.IsFavorite = t.Value.Any(r=> r.TagType == TagType.Favorite);
-                    file.IsTemplate = t.Value.Any(r => r.TagType == TagType.Template);
+                    if(t.Value.Any(r => r.TagType == TagType.Favorite)) file.IsFavorite = true;
+                    if(t.Value.Any(r => r.TagType == TagType.Template)) file.IsTemplate = true;
 
                     var lockedTag = t.Value.FirstOrDefault(r => r.TagType == TagType.Locked);
                     if (lockedTag != null)
@@ -884,7 +884,7 @@ namespace ASC.Web.Files.Utils
                     path += "new" + FileUtility.GetInternalExtension(file.Title);
 
                     //todo: think about the criteria for saving after creation
-                    if (file.ContentLength != storeTemplate.GetFileSize("", path))
+                    if (!storeTemplate.IsFile(path) || file.ContentLength != storeTemplate.GetFileSize("", path))
                     {
                         file.VersionGroup++;
                     }

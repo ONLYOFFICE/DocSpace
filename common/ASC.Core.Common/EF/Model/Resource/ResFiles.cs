@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
 
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Resource
 {
-    [Table("res_files")]
     public class ResFiles
     {
         public int Id { get; set; }
@@ -32,7 +30,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.ToTable("res_files");
 
                 entity.HasIndex(e => e.ResName)
-                    .HasName("resname")
+                    .HasDatabaseName("resname")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -79,7 +77,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.ToTable("res_files", "onlyoffice");
 
                 entity.HasIndex(e => e.ResName)
-                    .HasName("resname")
+                    .HasDatabaseName("resname")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");

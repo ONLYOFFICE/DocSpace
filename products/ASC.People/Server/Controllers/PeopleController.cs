@@ -162,7 +162,7 @@ namespace ASC.Employee.Core.Controllers
         {
             var product = new PeopleProduct();
             product.Init();
-            return new Module(product, true);
+            return new Module(product);
         }
 
         [Read]
@@ -573,10 +573,10 @@ namespace ASC.Employee.Core.Controllers
                     {
                         UserManager.SaveUserInfo(user);
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         user.CultureName = curLng;
-                        throw ex;
+                        throw;
                     }
 
                     MessageService.Send(MessageAction.UserUpdatedLanguage, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
@@ -1083,14 +1083,14 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/password")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Administrators")]
         public EmployeeWraperFull ChangeUserPasswordFromBody(Guid userid, [FromBody]MemberModel memberModel)
         {
             return ChangeUserPassword(userid, memberModel);
         }
 
         [Update("{userid}/password")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Administrators")]
         [Consumes("application/x-www-form-urlencoded")]
         public EmployeeWraperFull ChangeUserPasswordFromForm(Guid userid, [FromForm] MemberModel memberModel)
         {

@@ -1,22 +1,13 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
-    [Table("telegram_users")]
     public class TelegramUser : BaseEntity
     {
-        [Column("portal_user_id")]
         public Guid PortalUserId { get; set; }
-
-        [Column("tenant_id")]
         public int TenantId { get; set; }
-
-        [Column("telegram_user_id")]
         public int TelegramUserId { get; set; }
-
         public override object[] GetKeys()
         {
             return new object[] { TenantId, PortalUserId };
@@ -42,7 +33,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("telegram_users");
 
                 entity.HasIndex(e => e.TelegramUserId)
-                    .HasName("tgId");
+                    .HasDatabaseName("tgId");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
@@ -65,7 +56,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("telegram_users", "onlyoffice");
 
                 entity.HasIndex(e => e.TelegramUserId)
-                    .HasName("tgId");
+                    .HasDatabaseName("tgId");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 

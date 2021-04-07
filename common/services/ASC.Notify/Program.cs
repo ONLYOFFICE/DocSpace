@@ -57,6 +57,7 @@ namespace ASC.Notify
 
                     LogNLogExtension.ConfigureLog(diHelper, "ASC.Notify", "ASC.Notify.Messages");
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
 
@@ -70,7 +71,7 @@ namespace ASC.Notify
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
-                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath);
+                    builder.Register(context.Configuration);
                 })
                 .UseConsoleLifetime()
                 .Build();

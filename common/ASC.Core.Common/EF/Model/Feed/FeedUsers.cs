@@ -1,17 +1,11 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
-    [Table("feed_users")]
     public class FeedUsers : BaseEntity
     {
-        [Column("feed_id")]
         public string FeedId { get; set; }
-
-        [Column("user_id")]
         public Guid UserId { get; set; }
 
         public override object[] GetKeys()
@@ -39,7 +33,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("feed_users");
 
                 entity.HasIndex(e => e.UserId)
-                    .HasName("user_id");
+                    .HasDatabaseName("user_id");
 
                 entity.Property(e => e.FeedId)
                     .HasColumnName("feed_id")
@@ -64,7 +58,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("feed_users", "onlyoffice");
 
                 entity.HasIndex(e => e.UserId)
-                    .HasName("user_id_feed_users");
+                    .HasDatabaseName("user_id_feed_users");
 
                 entity.Property(e => e.FeedId)
                     .HasColumnName("feed_id")

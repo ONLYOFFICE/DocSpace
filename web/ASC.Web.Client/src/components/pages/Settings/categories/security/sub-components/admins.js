@@ -1,41 +1,28 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
-//import i18n from "../../../i18n";
-import { I18nextProvider, withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import {
-  changeAdmins,
-  getUpdateListAdmin,
-  fetchPeople,
-} from "../../../../../../store/settings/actions";
-import {
-  Text,
-  Avatar,
-  Row,
-  RowContent,
-  RowContainer,
-  Link,
-  Paging,
-  IconButton,
-  toastr,
-  Button,
-  RequestLoader,
-  Loader,
-  EmptyScreenContainer,
-  Icons,
-} from "asc-web-components";
-import { FilterInput, PeopleSelector } from "asc-web-common";
-import { getUserRole } from "../../../../../../store/settings/selectors";
+
+import Text from "@appserver/components/text";
+import Avatar from "@appserver/components/avatar";
+import Row from "@appserver/components/row";
+import RowContent from "@appserver/components/row-content";
+import RowContainer from "@appserver/components/row-container";
+import Link from "@appserver/components/link";
+import Paging from "@appserver/components/paging";
+import IconButton from "@appserver/components/icon-button";
+import toastr from "@appserver/components/toast/toastr";
+import Button from "@appserver/components/button";
+import RequestLoader from "@appserver/components/request-loader";
+import Loader from "@appserver/components/loader";
+import EmptyScreenContainer from "@appserver/components/empty-screen-container";
+import { showLoader, hideLoader } from "@appserver/common/utils";
+import FilterInput from "@appserver/common/components/FilterInput";
+import PeopleSelector from "people/PeopleSelector";
+
 import isEmpty from "lodash/isEmpty";
-
-import { createI18N } from "../../../../../../helpers/i18n";
-
-const i18n = createI18N({
-  page: "Settings",
-  localesPath: "pages/Settings",
-});
+import { inject, observer } from "mobx-react";
 
 const ToggleContentContainer = styled.div`
   .buttons_container {
@@ -100,7 +87,7 @@ class PureAdminsSettings extends Component {
 
   componentDidMount() {
     const { admins, fetchPeople } = this.props;
-
+    showLoader();
     if (isEmpty(admins, true)) {
       const newFilter = this.onAdminsFilter();
       fetchPeople(newFilter)
@@ -115,6 +102,7 @@ class PureAdminsSettings extends Component {
     } else {
       this.setState({ showLoader: false });
     }
+    hideLoader();
   }
 
   onChangeAdmin = (userIds, isAdmin, productId) => {
@@ -350,6 +338,18 @@ class PureAdminsSettings extends Component {
     ];
   };
 
+  getUserRole = (user) => {
+    if (user.isOwner) return "owner";
+    else if (user.isAdmin) return "admin";
+    else if (
+      user.listAdminModules !== undefined &&
+      user.listAdminModules.includes("people")
+    )
+      return "admin";
+    else if (user.isVisitor) return "guest";
+    else return "user";
+  };
+
   render() {
     const { t, admins, filter, me, groupsCaption } = this.props;
     const {
@@ -441,7 +441,7 @@ class PureAdminsSettings extends Component {
                         const element = (
                           <Avatar
                             size="min"
-                            role={getUserRole(user)}
+                            role={this.getUserRole(user)}
                             userName={user.displayName}
                             source={user.avatar}
                           />
@@ -486,7 +486,9 @@ class PureAdminsSettings extends Component {
                                     false,
                                     "00000000-0000-0000-0000-000000000000"
                                   )}
-                                  iconName={"CatalogTrashIcon"}
+                                  iconName={
+                                    "static/images/catalog.trash.react.svg"
+                                  }
                                   isFill={true}
                                   isClickable={false}
                                 />
@@ -530,7 +532,7 @@ class PureAdminsSettings extends Component {
                         className="cross_icon"
                         size="12"
                         onClick={this.onResetFilter}
-                        iconName="CrossIcon"
+                        iconName="/static/images/cross.react.svg"
                         isFill
                         color="#657077"
                       />
@@ -555,28 +557,7 @@ class PureAdminsSettings extends Component {
   }
 }
 
-const AccessRightsContainer = withTranslation()(PureAdminsSettings);
-
-const AdminsSettings = (props) => (
-  <I18nextProvider i18n={i18n}>
-    <AccessRightsContainer {...props} />
-  </I18nextProvider>
-);
-
-function mapStateToProps(state) {
-  const { admins, owner, filter } = state.settings.security.accessRight;
-  const { user: me } = state.auth;
-  const groupsCaption = state.auth.settings.customNames.groupsCaption;
-
-  return {
-    admins,
-    productId: state.auth.modules[0].id,
-    owner,
-    filter,
-    me,
-    groupsCaption,
-  };
-}
+const AdminsSettings = withTranslation("Settings")(PureAdminsSettings);
 
 AdminsSettings.defaultProps = {
   admins: [],
@@ -590,8 +571,19 @@ AdminsSettings.propTypes = {
   owner: PropTypes.object,
 };
 
-export default connect(mapStateToProps, {
-  changeAdmins,
-  fetchPeople,
-  getUpdateListAdmin,
-})(withRouter(AdminsSettings));
+export default inject(({ auth, setup }) => {
+  const { admins, owner, filter } = setup.security.accessRight;
+  const { user: me } = auth.userStore;
+
+  return {
+    groupsCaption: auth.settingsStore.customNames.groupsCaption,
+    changeAdmins: setup.changeAdmins,
+    fetchPeople: setup.fetchPeople,
+    getUpdateListAdmin: setup.getUpdateListAdmin,
+    admins,
+    productId: auth.moduleStore.modules[0].id,
+    owner,
+    filter,
+    me,
+  };
+})(withRouter(observer(AdminsSettings)));

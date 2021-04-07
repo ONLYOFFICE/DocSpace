@@ -37,7 +37,8 @@ namespace ASC.Files.Tests
             var host = Program.CreateHostBuilder(new string[] {
                 "--pathToConf", Path.Combine("..", "..", "..", "..","..", "..", "config"),
                 "--ConnectionStrings:default:connectionString", BaseFilesTests.TestConnection,
-                "--migration:enabled", "true" }).Build();
+                "--migration:enabled", "true",
+                "--core:products:folder", Path.Combine("..", "..", "..", "..","..", "..", "products")}).Build();
             
             Migrate(host.Services);
             Migrate(host.Services, Assembly.GetExecutingAssembly().GetName().Name);

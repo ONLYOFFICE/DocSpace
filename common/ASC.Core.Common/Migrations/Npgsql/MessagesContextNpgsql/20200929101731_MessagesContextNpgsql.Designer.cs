@@ -271,35 +271,6 @@ namespace ASC.Core.Common.Migrations.Npgsql.MessagesContextNpgsql
                     b.ToTable("tenants_partners");
                 });
 
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioSettings", b =>
-                {
-                    b.Property<int>("TenantId")
-                        .HasColumnName("TenantID")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnName("ID")
-                        .HasColumnType("uuid")
-                        .HasMaxLength(64);
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnName("UserID")
-                        .HasColumnType("uuid")
-                        .HasMaxLength(64);
-
-                    b.Property<string>("Data")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("TenantId", "Id", "UserId")
-                        .HasName("webstudio_settings_pkey");
-
-                    b.HasIndex("Id")
-                        .HasName("ID");
-
-                    b.ToTable("webstudio_settings","onlyoffice");
-                });
-
             modelBuilder.Entity("ASC.Core.Common.EF.Model.LoginEvents", b =>
                 {
                     b.Property<int>("Id")

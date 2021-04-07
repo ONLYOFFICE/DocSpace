@@ -1,19 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-using ASC.Core.Common.EF;
+﻿using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
 {
-    [Table("files_thirdparty_id_mapping")]
     public class DbFilesThirdpartyIdMapping : BaseEntity, IDbFile
     {
-        [Column("tenant_id")]
         public int TenantId { get; set; }
-
-        [Column("hash_id")]
         public string HashId { get; set; }
         public string Id { get; set; }
 
@@ -42,7 +35,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_thirdparty_id_mapping");
 
                 entity.HasIndex(e => new { e.TenantId, e.HashId })
-                    .HasName("index_1");
+                    .HasDatabaseName("index_1");
 
                 entity.Property(e => e.HashId)
                     .HasColumnName("hash_id")
@@ -70,7 +63,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_thirdparty_id_mapping", "onlyoffice");
 
                 entity.HasIndex(e => new { e.TenantId, e.HashId })
-                    .HasName("index_1");
+                    .HasDatabaseName("index_1");
 
                 entity.Property(e => e.HashId)
                     .HasColumnName("hash_id")

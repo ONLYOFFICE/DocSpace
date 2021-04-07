@@ -10,10 +10,11 @@ namespace ASC.Resource.Manager
     {
         IConfiguration Configuration { get; }
 
-        public Startup()
+        public Startup(string[] args)
         {
             var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json");
+                .AddJsonFile("appsettings.json")
+                .AddCommandLine(args);
 
             Configuration = builder.Build();
         }

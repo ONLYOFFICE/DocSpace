@@ -1,25 +1,23 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import {
-  Button,
-  TextInput,
-  Text,
-  PasswordInput,
-  toastr,
-  Loader,
-  EmailInput,
-} from "asc-web-components";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { store, PageLayout, utils as commonUtils } from "asc-web-common";
-import {
-  getConfirmationInfo,
-  createConfirmUser,
-} from "../../../../store/confirm/actions";
-const { logout, login } = store.auth.actions;
-const { createPasswordHash, tryRedirectTo } = commonUtils;
+import axios from "axios";
+import { createUser } from "@appserver/common/api/people";
+import { inject, observer } from "mobx-react";
+import Button from "@appserver/components/button";
+import TextInput from "@appserver/components/text-input";
+import Text from "@appserver/components/text";
+import PasswordInput from "@appserver/components/password-input";
+import toastr from "@appserver/components/toast/toastr";
+import Loader from "@appserver/components/loader";
+import EmailInput from "@appserver/components/email-input";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { combineUrl, createPasswordHash } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import { isMobile } from "react-device-detect";
+
 const inputWidth = "400px";
 
 const ConfirmContainer = styled.div`
@@ -34,6 +32,7 @@ const ConfirmContainer = styled.div`
 
   .start-basis {
     align-items: flex-start;
+    ${isMobile && `margin-top: 56px;`}
   }
 
   .margin-left {
@@ -89,12 +88,7 @@ class Confirm extends React.PureComponent {
 
   onSubmit = () => {
     this.setState({ isLoading: true }, () => {
-      const {
-        defaultPage,
-        createConfirmUser,
-        linkData,
-        hashSettings,
-      } = this.props;
+      const { defaultPage, linkData, hashSettings } = this.props;
       const isVisitor = parseInt(linkData.emplType) === 2;
 
       this.setState({ errorText: "" });
@@ -144,11 +138,8 @@ class Confirm extends React.PureComponent {
         isVisitor: isVisitor,
       });
 
-      createConfirmUser(registerData, loginData, this.state.key)
-        .then(() => {
-          toastr.success("User has been created successfully");
-          tryRedirectTo(defaultPage);
-        })
+      this.createConfirmUser(registerData, loginData, this.state.key)
+        .then(() => window.location.replace(defaultPage))
         .catch((error) => {
           console.error("confirm error", error);
           this.setState({
@@ -157,6 +148,27 @@ class Confirm extends React.PureComponent {
           });
         });
     });
+  };
+
+  createConfirmUser = async (registerData, loginData, key) => {
+    const data = Object.assign(
+      { fromInviteLink: true },
+      registerData,
+      loginData
+    );
+
+    const user = await createUser(data, key);
+
+    console.log("Created user", user);
+
+    const { login } = this.props;
+    const { userName, passwordHash } = loginData;
+
+    const response = await login(userName, passwordHash);
+
+    console.log("Login", response);
+
+    return user;
   };
 
   onKeyPress = (event) => {
@@ -170,11 +182,13 @@ class Confirm extends React.PureComponent {
   validatePassword = (value) => this.setState({ passwordValid: value });
 
   componentDidMount() {
-    const { getConfirmationInfo, history } = this.props;
+    const { history, getSettings, getPortalPasswordSettings } = this.props;
 
-    getConfirmationInfo(this.state.key).catch((e) => {
+    const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
+
+    axios.all(requests).catch((e) => {
       console.error("get settings error", e);
-      history.push(`/login/error=${e}`);
+      history.push(combineUrl(AppServerConfig.proxyURL, `/login/error=${e}`));
     });
 
     window.addEventListener("keydown", this.onKeyPress);
@@ -216,9 +230,11 @@ class Confirm extends React.PureComponent {
   };
 
   render() {
-    console.log("createUser render");
-    const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
-    return !isConfirmLoaded ? (
+    const { settings, t, greetingTitle } = this.props;
+
+    //console.log("createUser render");
+
+    return !settings ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <ConfirmContainer>
@@ -353,8 +369,6 @@ class Confirm extends React.PureComponent {
 }
 
 Confirm.propTypes = {
-  getConfirmationInfo: PropTypes.func.isRequired,
-  createConfirmUser: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
@@ -366,20 +380,26 @@ const CreateUserForm = (props) => (
   </PageLayout>
 );
 
-function mapStateToProps(state) {
-  return {
-    isConfirmLoaded: state.confirm.isConfirmLoaded,
-    isAuthenticated: state.auth.isAuthenticated,
-    settings: state.auth.settings.passwordSettings,
-    greetingTitle: state.auth.settings.greetingSettings,
-    hashSettings: state.auth.settings.hashSettings,
-    defaultPage: state.auth.settings.defaultPage,
-  };
-}
+export default inject(({ auth }) => {
+  const { login, logout, isAuthenticated, settingsStore } = auth;
+  const {
+    passwordSettings,
+    greetingSettings,
+    hashSettings,
+    defaultPage,
+    getSettings,
+    getPortalPasswordSettings,
+  } = settingsStore;
 
-export default connect(mapStateToProps, {
-  getConfirmationInfo,
-  createConfirmUser,
-  login,
-  logout,
-})(withRouter(withTranslation()(CreateUserForm)));
+  return {
+    settings: passwordSettings,
+    greetingTitle: greetingSettings,
+    hashSettings,
+    defaultPage,
+    isAuthenticated,
+    login,
+    logout,
+    getSettings,
+    getPortalPasswordSettings,
+  };
+})(withRouter(withTranslation("Confirm")(observer(CreateUserForm))));

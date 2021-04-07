@@ -1,11 +1,15 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import React from "react";
+//import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
-//import { RequestLoader } from "asc-web-components";
-import { PageLayout, utils, api, store, toastr } from "asc-web-common";
-import { withTranslation, I18nextProvider, Trans } from "react-i18next";
+import axios from "axios";
+import toastr from "studio/toastr";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { showLoader, hideLoader } from "@appserver/common/utils";
+import FilesFilter from "@appserver/common/api/files/filter";
+import { getGroup } from "@appserver/common/api/groups";
+import { getUserById } from "@appserver/common/api/people";
+import { withTranslation, Trans } from "react-i18next";
 import {
   ArticleBodyContent,
   ArticleHeaderContent,
@@ -17,44 +21,12 @@ import {
   SectionHeaderContent,
   SectionPagingContent,
 } from "./Section";
-import {
-  fetchFiles,
-  setDragging,
-  setIsLoading,
-  setFirstLoad,
-  startUpload,
-  setSelections,
-} from "../../../store/files/actions";
-import {
-  getConvertDialogVisible,
-  getSelectedFolderId,
-  getFileActionId,
-  getFilter,
-  getPrimaryProgressData,
-  getSecondaryProgressData,
-  getTreeFolders,
-  getViewAs,
-  getIsLoading,
-  getDragging,
-  getSharePanelVisible,
-  getFirstLoad,
-  isSecondaryProgressFinished,
-  getSelectionLength,
-  getSelectionTitle,
-  getShowOwnerChangePanel,
-} from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
-import { SharingPanel, ChangeOwnerPanel } from "../../panels";
-import { createI18N } from "../../../helpers/i18n";
-import { getFilterByLocation } from "../../../helpers/converters";
-const i18n = createI18N({
-  page: "Home",
-  localesPath: "pages/Home",
-});
-const { changeLanguage } = utils;
-const { FilesFilter } = api;
-const { getSettingsHomepage } = store.auth.selectors;
+import MediaViewer from "./MediaViewer";
+import DragTooltip from "../../DragTooltip";
+import { observer, inject } from "mobx-react";
+import config from "../../../../package.json";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -65,7 +37,7 @@ class PureHome extends React.Component {
     let filterObj = null;
 
     if (match && match.length > 0) {
-      filterObj = getFilterByLocation(window.location);
+      filterObj = FilesFilter.getFilter(window.location);
 
       if (!filterObj) {
         filterObj = FilesFilter.getDefault();
@@ -109,13 +81,15 @@ class PureHome extends React.Component {
     const requests = [Promise.resolve(newFilter)];
 
     if (type === "group") {
-      requests.push(api.groups.getGroup(itemId));
+      requests.push(getGroup(itemId));
     } else if (type === "user") {
-      requests.push(api.people.getUserById(itemId));
+      requests.push(getUserById(itemId));
     }
 
     setIsLoading(true);
-    Promise.all(requests)
+
+    axios
+      .all(requests)
       .catch((err) => {
         Promise.resolve(FilesFilter.getDefault());
         console.warn("Filter restored by default", err);
@@ -162,32 +136,31 @@ class PureHome extends React.Component {
   };
 
   showOperationToast = (type, qty, title) => {
-    const { i18n } = this.props;
-
+    const { t } = this.props;
     switch (type) {
       case "move":
         if (qty > 1) {
           return toastr.success(
-            <Trans i18nKey="MoveItems" i18n={i18n}>
+            <Trans t={t} i18nKey="MoveItems" ns="Home">
               {{ qty }} elements has been moved
             </Trans>
           );
         }
         return toastr.success(
-          <Trans i18nKey="MoveItem" i18n={i18n}>
+          <Trans t={t} i18nKey="MoveItem" ns="Home">
             {{ title }} moved
           </Trans>
         );
       case "duplicate":
         if (qty > 1) {
           return toastr.success(
-            <Trans i18nKey="CopyItems" i18n={i18n}>
+            <Trans t={t} i18nKey="CopyItems" ns="Home">
               {{ qty }} elements copied
             </Trans>
           );
         }
         return toastr.success(
-          <Trans i18nKey="CopyItem" i18n={i18n}>
+          <Trans t={t} i18nKey="CopyItem" ns="Home">
             {{ title }} copied
           </Trans>
         );
@@ -196,28 +169,37 @@ class PureHome extends React.Component {
     }
   };
 
+  showUploadPanel = () => {
+    this.props.setUploadPanelVisible(!this.props.uploadPanelVisible);
+
+    this.props.primaryProgressDataVisible &&
+      this.props.uploaded &&
+      this.props.clearPrimaryProgressData();
+  };
   componentDidUpdate(prevProps) {
     const {
       isLoading,
       isProgressFinished,
-      secondaryProgressData,
+      secondaryProgressDataStoreIcon,
       selectionLength,
       selectionTitle,
     } = this.props;
     if (isLoading !== prevProps.isLoading) {
       if (isLoading) {
-        utils.showLoader();
+        showLoader();
       } else {
-        utils.hideLoader();
+        hideLoader();
       }
     }
-
+    if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
+      this.props.setHeaderVisible(this.props.isHeaderVisible);
+    }
     if (
       isProgressFinished &&
       isProgressFinished !== prevProps.isProgressFinished
     ) {
       this.showOperationToast(
-        secondaryProgressData.icon,
+        secondaryProgressDataStoreIcon,
         selectionLength,
         selectionTitle
       );
@@ -227,14 +209,24 @@ class PureHome extends React.Component {
   render() {
     //console.log("Home render");
     const {
-      primaryProgressData,
-      secondaryProgressData,
       viewAs,
       convertDialogVisible,
-      sharingPanelVisible,
       fileActionId,
       firstLoad,
-      showOwnerChangePanel,
+      isHeaderVisible,
+      isRecycleBinFolder,
+
+      primaryProgressDataVisible,
+      primaryProgressDataPercent,
+      primaryProgressDataIcon,
+      primaryProgressDataAlert,
+
+      secondaryProgressDataStoreVisible,
+      secondaryProgressDataStorePercent,
+      secondaryProgressDataStoreIcon,
+      secondaryProgressDataStoreAlert,
+
+      isLoading,
     } = this.props;
 
     return (
@@ -243,31 +235,33 @@ class PureHome extends React.Component {
           <ConvertDialog visible={convertDialogVisible} />
         )}
 
-        {showOwnerChangePanel && <ChangeOwnerPanel />}
-
-        {sharingPanelVisible && <SharingPanel />}
+        <MediaViewer />
+        <DragTooltip />
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
           uploadFiles
-          onDrop={this.onDrop}
+          onDrop={isRecycleBinFolder ? null : this.onDrop}
           setSelections={this.props.setSelections}
           onMouseMove={this.onMouseMove}
-          showPrimaryProgressBar={primaryProgressData.visible}
-          primaryProgressBarValue={primaryProgressData.percent}
-          primaryProgressBarIcon={primaryProgressData.icon}
-          showPrimaryButtonAlert={primaryProgressData.alert}
-          showSecondaryProgressBar={secondaryProgressData.visible}
-          secondaryProgressBarValue={secondaryProgressData.percent}
-          secondaryProgressBarIcon={secondaryProgressData.icon}
-          showSecondaryButtonAlert={secondaryProgressData.alert}
+          showPrimaryProgressBar={primaryProgressDataVisible}
+          primaryProgressBarValue={primaryProgressDataPercent}
+          primaryProgressBarIcon={primaryProgressDataIcon}
+          showPrimaryButtonAlert={primaryProgressDataAlert}
+          showSecondaryProgressBar={secondaryProgressDataStoreVisible}
+          secondaryProgressBarValue={secondaryProgressDataStorePercent}
+          secondaryProgressBarIcon={secondaryProgressDataStoreIcon}
+          showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
           viewAs={viewAs}
           hideAside={
             !!fileActionId ||
-            primaryProgressData.visible ||
-            secondaryProgressData.visible
+            primaryProgressDataVisible ||
+            secondaryProgressDataStoreVisible
           }
           isLoaded={!firstLoad}
+          isHeaderVisible={isHeaderVisible}
+          onOpenUploadPanel={this.showUploadPanel}
+          isLoading={isLoading}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -289,11 +283,7 @@ class PureHome extends React.Component {
           </PageLayout.SectionFilter>
 
           <PageLayout.SectionBody>
-            <SectionBodyContent
-              isMobile={isMobile}
-              onChange={this.onRowChange}
-              onDropZoneUpload={this.onDrop}
-            />
+            <SectionBodyContent />
           </PageLayout.SectionBody>
 
           <PageLayout.SectionPaging>
@@ -305,55 +295,101 @@ class PureHome extends React.Component {
   }
 }
 
-const HomeContainer = withTranslation()(PureHome);
+const Home = withTranslation("Home")(PureHome);
 
-const Home = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-  return (
-    <I18nextProvider i18n={i18n}>
-      <HomeContainer {...props} />
-    </I18nextProvider>
-  );
-};
+export default inject(
+  ({
+    auth,
+    filesStore,
+    uploadDataStore,
+    dialogsStore,
+    selectedFolderStore,
+    treeFoldersStore,
+  }) => {
+    const {
+      secondaryProgressDataStore,
+      primaryProgressDataStore,
+    } = uploadDataStore;
+    const {
+      firstLoad,
+      setFirstLoad,
+      fetchFiles,
+      filter,
+      fileActionStore,
+      selection,
+      setSelections,
+      dragging,
+      setDragging,
+      setIsLoading,
+      isLoading,
+      viewAs,
+    } = filesStore;
 
-Home.propTypes = {
-  history: PropTypes.object.isRequired,
-};
+    const { id } = fileActionStore;
+    const { isRecycleBinFolder } = treeFoldersStore;
 
-function mapStateToProps(state) {
-  return {
-    convertDialogVisible: getConvertDialogVisible(state),
-    currentFolderId: getSelectedFolderId(state),
-    fileActionId: getFileActionId(state),
-    filter: getFilter(state),
-    primaryProgressData: getPrimaryProgressData(state),
-    secondaryProgressData: getSecondaryProgressData(state),
-    treeFolders: getTreeFolders(state),
-    viewAs: getViewAs(state),
-    isLoading: getIsLoading(state),
-    homepage: getSettingsHomepage(state),
-    dragging: getDragging(state),
-    firstLoad: getFirstLoad(state),
-    sharingPanelVisible: getSharePanelVisible(state),
-    isProgressFinished: isSecondaryProgressFinished(state),
-    selectionLength: getSelectionLength(state),
-    selectionTitle: getSelectionTitle(state),
-    showOwnerChangePanel: getShowOwnerChangePanel(state),
-  };
-}
+    const {
+      visible: primaryProgressDataVisible,
+      percent: primaryProgressDataPercent,
+      icon: primaryProgressDataIcon,
+      alert: primaryProgressDataAlert,
+      clearPrimaryProgressData,
+    } = primaryProgressDataStore;
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setDragging: (dragging) => dispatch(setDragging(dragging)),
-    startUpload: (files, folderId, t) =>
-      dispatch(startUpload(files, folderId, t)),
-    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-    setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
-    fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
-    setSelections: (items) => dispatch(setSelections(items)),
-  };
-};
+    const {
+      visible: secondaryProgressDataStoreVisible,
+      percent: secondaryProgressDataStorePercent,
+      icon: secondaryProgressDataStoreIcon,
+      alert: secondaryProgressDataStoreAlert,
+      isSecondaryProgressFinished: isProgressFinished,
+    } = secondaryProgressDataStore;
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Home));
+    const { convertDialogVisible } = dialogsStore;
+
+    const { setUploadPanelVisible, startUpload, uploaded } = uploadDataStore;
+
+    const selectionLength = isProgressFinished ? selection.length : null;
+    const selectionTitle = isProgressFinished
+      ? filesStore.selectionTitle
+      : null;
+
+    return {
+      homepage: config.homepage,
+      firstLoad,
+      dragging,
+      fileActionId: id,
+      currentFolderId: selectedFolderStore.id,
+      isLoading,
+      filter,
+      viewAs,
+      uploaded,
+      isRecycleBinFolder,
+
+      primaryProgressDataVisible,
+      primaryProgressDataPercent,
+      primaryProgressDataIcon,
+      primaryProgressDataAlert,
+      clearPrimaryProgressData,
+
+      secondaryProgressDataStoreVisible,
+      secondaryProgressDataStorePercent,
+      secondaryProgressDataStoreIcon,
+      secondaryProgressDataStoreAlert,
+
+      convertDialogVisible,
+      selectionLength,
+      isProgressFinished,
+      selectionTitle,
+
+      setFirstLoad,
+      setDragging,
+      setIsLoading,
+      fetchFiles,
+      setUploadPanelVisible,
+      setSelections,
+      startUpload,
+      isHeaderVisible: auth.settingsStore.isHeaderVisible,
+      setHeaderVisible: auth.settingsStore.setHeaderVisible,
+    };
+  }
+)(withRouter(observer(Home)));

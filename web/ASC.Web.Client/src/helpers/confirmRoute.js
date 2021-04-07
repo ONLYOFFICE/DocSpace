@@ -1,14 +1,13 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { ValidationResult } from "./../helpers/constants";
-import { Loader } from "asc-web-components";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { api, utils, PageLayout, store } from "asc-web-common";
-const { isAuthenticated } = store.auth.selectors;
-const { logout } = store.auth.actions;
-const { checkConfirmLink } = api.user;
-const { getObjectByLocation } = utils;
+import Loader from "@appserver/components/loader";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { checkConfirmLink } from "@appserver/common/api/user"; //TODO: Move AuthStore
+import { combineUrl, getObjectByLocation } from "@appserver/common/utils";
+import { inject, observer } from "mobx-react";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class ConfirmRoute extends React.Component {
   constructor(props) {
@@ -57,18 +56,26 @@ class ConfirmRoute extends React.Component {
             });
             break;
           case ValidationResult.Invalid:
-            history.push(`${path}/error=Invalid link`);
+            history.push(
+              combineUrl(AppServerConfig.proxyURL, path, "/error=Invalid link")
+            );
             break;
           case ValidationResult.Expired:
-            history.push(`${path}/error=Expired link`);
+            history.push(
+              combineUrl(AppServerConfig.proxyURL, path, "/error=Expired link")
+            );
             break;
           default:
-            history.push(`${path}/error=Unknown error`);
+            history.push(
+              combineUrl(AppServerConfig.proxyURL, path, "/error=Unknown error")
+            );
             break;
         }
       })
       .catch((error) => {
-        history.push(`${path}/error=${error}`);
+        history.push(
+          combineUrl(AppServerConfig.proxyURL, path, `/error=${error}`)
+        );
       });
   }
 
@@ -98,12 +105,10 @@ class ConfirmRoute extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+export default inject(({ auth }) => {
+  const { isAuthenticated, logout } = auth;
   return {
-    isAuthenticated: isAuthenticated(state),
+    isAuthenticated,
+    logout,
   };
-}
-
-export default connect(mapStateToProps, { checkConfirmLink, logout })(
-  withRouter(ConfirmRoute)
-);
+})(observer(withRouter(ConfirmRoute)));

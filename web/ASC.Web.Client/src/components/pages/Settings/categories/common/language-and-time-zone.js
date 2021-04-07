@@ -1,32 +1,17 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
-import {
-  FieldContainer,
-  Text,
-  ComboBox,
-  Loader,
-  toastr,
-  Link,
-  SaveCancelButtons,
-} from "asc-web-components";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
-import { store, utils } from "asc-web-common";
-import {
-  setLanguageAndTime,
-  getPortalTimezones,
-} from "../../../../../store/settings/actions";
+import FieldContainer from "@appserver/components/field-container";
+import Text from "@appserver/components/text";
+import ComboBox from "@appserver/components/combobox";
+import Loader from "@appserver/components/loader";
+import toastr from "@appserver/components/toast/toastr";
+import Link from "@appserver/components/link";
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
-import { default as clientStore } from "../../../../../store/store";
 import { setDocumentTitle } from "../../../../../helpers/utils";
-const { getLanguage } = store.auth.selectors;
-const { changeLanguage } = utils;
-const {
-  getPortalCultures,
-  getModules,
-  getCurrentCustomSchema,
-} = store.auth.actions;
+import { inject, observer } from "mobx-react";
 
 const mapCulturesToArray = (cultures, t) => {
   return cultures.map((culture) => {
@@ -80,7 +65,7 @@ class LanguageAndTimeZone extends React.Component {
       portalTimeZoneId,
       rawCultures,
       rawTimezones,
-      organizationName,
+      /*organizationName,*/
       t,
     } = props;
     const languages = mapCulturesToArray(rawCultures, t);
@@ -134,7 +119,7 @@ class LanguageAndTimeZone extends React.Component {
       });
     }
 
-    if (!timezones.length && !languages.length) {
+    if (!timezones.length || !languages.length) {
       let languages;
       getPortalCultures()
         .then(() => {
@@ -191,12 +176,14 @@ class LanguageAndTimeZone extends React.Component {
       timezoneDefault,
       languageDefault,
     } = this.state;
-    const { i18n, language, nameSchemaId } = this.props;
+    const { i18n, language, nameSchemaId, getCurrentCustomSchema } = this.props;
+
     if (timezones.length && languages.length && !prevState.isLoadedData) {
       this.setState({ isLoadedData: true });
     }
     if (language !== prevProps.language) {
-      changeLanguage(i18n)
+      i18n
+        .changeLanguage(language)
         .then((t) => {
           const newLocaleLanguages = mapCulturesToArray(
             this.props.rawCultures,
@@ -212,8 +199,8 @@ class LanguageAndTimeZone extends React.Component {
             language: languageFromSessionStorage || newLocaleSelectedLanguage,
           });
         })
-        .then(() => getModules(clientStore.dispatch))
-        .then(() => getCurrentCustomSchema(clientStore.dispatch, nameSchemaId));
+        //.then(() => getModules(clientStore.dispatch))
+        .then(() => getCurrentCustomSchema(nameSchemaId));
     }
     if (timezoneDefault && languageDefault) {
       this.checkChanges();
@@ -242,11 +229,12 @@ class LanguageAndTimeZone extends React.Component {
   };
 
   onSaveLngTZSettings = () => {
-    const { setLanguageAndTime, i18n } = this.props;
+    const { t, setLanguageAndTime, i18n } = this.props;
+    const { language, timezone } = this.state;
     this.setState({ isLoading: true }, function () {
-      setLanguageAndTime(this.state.language.key, this.state.timezone.key)
-        .then(() => changeLanguage(i18n))
-        .then((t) => toastr.success(t("SuccessfullySaveSettingsMessage")))
+      setLanguageAndTime(language.key, timezone.key)
+        .then(() => i18n.changeLanguage(language.key))
+        .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
         .catch((error) => toastr.error(error))
         .finally(() => this.setState({ isLoading: false }));
     });
@@ -306,7 +294,7 @@ class LanguageAndTimeZone extends React.Component {
   };
 
   render() {
-    const { t, i18n } = this.props;
+    const { t } = this.props;
     const {
       isLoadedData,
       languages,
@@ -320,7 +308,7 @@ class LanguageAndTimeZone extends React.Component {
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage = (
       <Text fontSize="13px">
-        <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
+        <Trans t={t} i18nKey="NotFoundLanguage" ns="Settings">
           "In case you cannot find your language in the list of the available
           ones, feel free to write to us at
           <Link href={`mailto:${supportEmail}`} isHovered={true}>
@@ -401,30 +389,34 @@ class LanguageAndTimeZone extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+export default inject(({ auth, setup }) => {
   const {
     culture,
     timezone,
     timezones,
     cultures,
-    greetingSettings,
     nameSchemaId,
     organizationName,
-  } = state.auth.settings;
+    greetingSettings,
+    getPortalCultures,
+    getPortalTimezones,
+    getCurrentCustomSchema,
+  } = auth.settingsStore;
+
+  const { setLanguageAndTime } = setup;
+
   return {
     portalLanguage: culture,
     portalTimeZoneId: timezone,
-    language: getLanguage(state),
+    language: culture,
     rawTimezones: timezones,
     rawCultures: cultures,
     greetingSettings,
     nameSchemaId,
     organizationName,
+    getPortalCultures,
+    setLanguageAndTime,
+    getCurrentCustomSchema,
+    getPortalTimezones,
   };
-}
-
-export default connect(mapStateToProps, {
-  getPortalCultures,
-  setLanguageAndTime,
-  getPortalTimezones,
-})(withTranslation()(LanguageAndTimeZone));
+})(withTranslation("Settings")(observer(LanguageAndTimeZone)));

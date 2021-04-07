@@ -1,29 +1,17 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using ASC.Core.Common.EF.Model;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    [Table("core_usergroup")]
     public class UserGroup : BaseEntity
     {
         public int Tenant { get; set; }
-
         public Guid UserId { get; set; }
-
         public Guid GroupId { get; set; }
-
-        [Column("ref_type")]
         public UserGroupRefType RefType { get; set; }
-
         public bool Removed { get; set; }
-
-        [Column("last_modified")]
         public DateTime LastModified { get; set; }
-
         public override object[] GetKeys()
         {
             return new object[] { Tenant, UserId, GroupId, RefType };
@@ -60,7 +48,7 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_usergroup");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified");
+                    .HasDatabaseName("last_modified");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
 
@@ -96,7 +84,7 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_usergroup", "onlyoffice");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified_core_usergroup");
+                    .HasDatabaseName("last_modified_core_usergroup");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
 

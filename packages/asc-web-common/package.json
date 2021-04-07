@@ -1,0 +1,21 @@
+{
+  "name": "@appserver/common",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "echo 'skip it'",
+    "start": "echo 'skip it'",
+    "start-prod": "echo 'skip it'",
+    "clean": "echo 'skip it'"
+  },
+  "api": {
+    "url": "/api/2.0",
+    "timeout": "30000"
+  },
+  "proxy": {
+    "url": ""
+  },
+  "dependencies": {
+    "global": "^4.4.0"
+  }
+}

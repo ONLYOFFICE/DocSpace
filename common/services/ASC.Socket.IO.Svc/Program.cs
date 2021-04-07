@@ -80,13 +80,15 @@ namespace ASC.Socket.IO.Svc
                     services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+
                     LogNLogExtension.ConfigureLog(diHelper, "ASC.Socket.IO.Svc");
                     services.AddHostedService<SocketServiceLauncher>();
                     diHelper.TryAdd<SocketServiceLauncher>();
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
-                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath, false, false);
+                    builder.Register(context.Configuration, false, false);
                 })
                 .UseConsoleLifetime()
                 .Build();

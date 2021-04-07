@@ -90,7 +90,7 @@
 			"boxClientSecret": ""
 		  },
 		  "additional": {
-			"boxRedirectUrl" : ""
+			"boxRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     }, 
@@ -146,10 +146,10 @@
 		  "props": {
 			"docuSignClientId": "",
 			"docuSignClientSecret": "",
-			"docuSignHost": "",
+			"docuSignHost": ""
 		  },
 		  "additional": {
-			"docuSignRedirectUrl" : ""
+			"docuSignRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -186,33 +186,6 @@
 		  }
 	  }
     },
-/*	{
-      "type": "ASC.Web.Files.Helpers.EasyBibHelper, ASC.Web.Files",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.Web.Files.Helpers.EasyBibHelper, ASC.Web.Files"
-		}, 
-		{
-		  "key": "EasyBib",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "EasyBib",
-		  "type": "ASC.Web.Files.Helpers.EasyBibHelper, ASC.Web.Files"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "EasyBib",
-		  "order": "15",
-		  "props": {
-			"easyBibappkey": ""
-		  }
-	  }
-    },*/
 	{
       "type": "ASC.FederatedLogin.LoginProviders.FacebookLoginProvider, ASC.FederatedLogin",
       "services": [
@@ -240,7 +213,7 @@
 			"facebookClientSecret": ""
 		  },
 		  "additional": {
-			"facebookRedirectUrl" : ""
+			"facebookRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -270,7 +243,7 @@
 			"firebase_apiKey": "",
 			"firebase_projectId": "",
 			"firebase_messagingSenderId": "",
-			"firebase_authorization": "",
+			"firebase_authorization": ""
 		  }
 	  }
     },
@@ -301,7 +274,7 @@
 			"googleClientSecret": ""
 		  },
 		  "additional": {
-			"googleRedirectUrl" : ""
+			"googleRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -332,7 +305,7 @@
 			"linkedInSecret": ""
 		  },
 		  "additional": {
-			"linkedInRedirectUrl" : ""
+			"linkedInRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -363,7 +336,7 @@
 			"mailRuClientSecret": ""
 		  },
 		  "additional": {
-			"mailRuRedirectUrl" : ""
+			"mailRuRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -394,7 +367,7 @@
 			"skydriveappsecret": ""
 		  },
 		  "additional": {
-			"skydriveRedirectUrl" : ""
+			"skydriveRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -459,39 +432,6 @@
 		  }
 	  }
     },
-/*	{
-      "type": "ASC.FederatedLogin.LoginProviders.TwitterLoginProvider, ASC.FederatedLogin",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.FederatedLogin.LoginProviders.TwitterLoginProvider, ASC.FederatedLogin"
-		}, 
-		{
-		  "key": "Twitter",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "Twitter",
-		  "type": "ASC.FederatedLogin.LoginProviders.TwitterLoginProvider, ASC.FederatedLogin"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "Twitter",
-		  "order": "7",
-		  "props": {
-			"twitterKey": "",
-			"twitterSecret": "",
-			"twitterAccessToken_Default": "",
-			"twitterAccessTokenSecret_Default": ""
-		  },
-		  "additional": {
-			"twitterRedirectUrl" : ""
-		  }
-	  }
-    }, */
 	{
       "type": "ASC.FederatedLogin.LoginProviders.YahooLoginProvider, ASC.FederatedLogin",
       "services": [
@@ -519,7 +459,7 @@
 			"yahooClientSecret": ""
 		  },
 		  "additional": {
-			"yahooRedirectUrl" : ""
+			"yahooRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -550,7 +490,7 @@
 			"vkClientSecret": ""
 		  },
 		  "additional": {
-			"vkRedirectUrl" : ""
+			"vkRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -581,7 +521,7 @@
 			"wpClientSecret": ""
 		  },
 		  "additional": {
-			"wpRedirectUrl" : ""
+			"wpRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -612,7 +552,7 @@
 			"yandexClientSecret": ""
 		  },
 		  "additional": {
-			"yandexRedirectUrl" : ""
+			"yandexRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
