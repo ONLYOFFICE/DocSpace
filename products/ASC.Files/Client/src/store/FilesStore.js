@@ -120,7 +120,6 @@ class FilesStore {
 
   initFiles = () => {
     if (this.isInit) return;
-    this.isInit = true;
 
     const { isAuthenticated } = this.authStore;
     const {
@@ -153,7 +152,7 @@ class FilesStore {
       }
     }
 
-    return Promise.all(requests);
+    return Promise.all(requests).then(() => (this.isInit = true));
   };
 
   setFirstLoad = (firstLoad) => {
@@ -291,41 +290,59 @@ class FilesStore {
       }
     }
 
-    return api.files.getFolder(folderId, filter).then((data) => {
-      const isPrivacyFolder =
-        data.current.rootFolderType === FolderType.Privacy;
+    //TODO: fix @my
+    let requestCounter = 1;
+    const request = () =>
+      api.files
+        .getFolder(folderId, filter)
+        .then((data) => {
+          const isPrivacyFolder =
+            data.current.rootFolderType === FolderType.Privacy;
 
-      const newExpandedKeys = createTreeFolders(data.pathParts, expandedKeys);
-      setExpandedKeys(newExpandedKeys);
-      filterData.total = data.total;
-      this.setFilesFilter(filterData); //TODO: FILTER
-      this.setFolders(
-        isPrivacyFolder && !this.settingsStore.isEncryptionSupport
-          ? []
-          : data.folders
-      );
-      this.setFiles(
-        isPrivacyFolder && !this.settingsStore.isEncryptionSupport
-          ? []
-          : data.files
-      );
-      if (clearFilter) {
-        this.fileActionStore.setAction({ type: null });
-        this.setSelected("close");
-      }
+          const newExpandedKeys = createTreeFolders(
+            data.pathParts,
+            expandedKeys
+          );
+          setExpandedKeys(newExpandedKeys);
+          filterData.total = data.total;
+          this.setFilesFilter(filterData); //TODO: FILTER
+          this.setFolders(
+            isPrivacyFolder && !this.settingsStore.isEncryptionSupport
+              ? []
+              : data.folders
+          );
+          this.setFiles(
+            isPrivacyFolder && !this.settingsStore.isEncryptionSupport
+              ? []
+              : data.files
+          );
+          if (clearFilter) {
+            this.fileActionStore.setAction({ type: null });
+            this.setSelected("close");
+          }
 
-      this.selectedFolderStore.setSelectedFolder({
-        folders: data.folders,
-        ...data.current,
-        pathParts: data.pathParts,
-        ...{ new: data.new },
-      });
+          this.selectedFolderStore.setSelectedFolder({
+            folders: data.folders,
+            ...data.current,
+            pathParts: data.pathParts,
+            ...{ new: data.new },
+          });
 
-      const selectedFolder = {
-        selectedFolder: { ...this.selectedFolderStore },
-      };
-      return Promise.resolve(selectedFolder);
-    });
+          const selectedFolder = {
+            selectedFolder: { ...this.selectedFolderStore },
+          };
+          return Promise.resolve(selectedFolder);
+        })
+        .catch(() => {
+          if (folderId === "@my" && requestCounter !== 0 && !this.isInit) {
+            requestCounter--;
+            setTimeout(() => {
+              return request();
+            }, 5000);
+          }
+        });
+
+    return request();
   };
 
   isFileSelected = (selection, fileId, parentId) => {
