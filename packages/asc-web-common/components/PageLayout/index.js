@@ -124,6 +124,7 @@ class PageLayout extends React.Component {
       isArticleVisible: false,
       isArticlePinned: false,
     });
+    isMobile && this.props.setArticleVisibleOnUnpin(false);
   };
 
   pinArticle = () => {
@@ -134,6 +135,7 @@ class PageLayout extends React.Component {
     });
 
     this.props.setArticlePinned(true);
+    isMobile && this.props.setArticleVisibleOnUnpin(false);
   };
 
   unpinArticle = () => {
@@ -144,6 +146,7 @@ class PageLayout extends React.Component {
     });
 
     this.props.setArticlePinned(false);
+    isMobile && this.props.setArticleVisibleOnUnpin(true);
   };
 
   showArticle = () => {
@@ -152,6 +155,7 @@ class PageLayout extends React.Component {
       isArticleVisible: true,
       isArticlePinned: false,
     });
+    isMobile && this.props.setArticleVisibleOnUnpin(true);
   };
 
   render() {
@@ -453,6 +457,7 @@ export default inject(({ auth }) => {
     isTabletView,
     isArticlePinned,
     setArticlePinned,
+    setArticleVisibleOnUnpin,
   } = settingsStore;
   return {
     isLoaded,
@@ -460,5 +465,6 @@ export default inject(({ auth }) => {
     isHeaderVisible,
     isArticlePinned,
     setArticlePinned,
+    setArticleVisibleOnUnpin,
   };
 })(observer(PageLayout));
