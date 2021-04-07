@@ -72,8 +72,14 @@ const SectionHeaderContent = (props) => {
   );
 
   const goBackAndReset = useCallback(() => {
-    if (!profile || !document.referrer) setFilterAndReset(filter);
-    else props.resetProfile();
+    if (!profile || !document.referrer) {
+      setFilterAndReset(filter);
+      const urlFilter = filter.toUrlParams();
+      return history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+      );
+    }
+
     history.push(
       combineUrl(
         AppServerConfig.proxyURL,
@@ -81,6 +87,8 @@ const SectionHeaderContent = (props) => {
         `/view/${profile.userName}`
       )
     );
+
+    return props.resetProfile();
   }, [history, props]);
 
   const onClickBack = useCallback(() => {
