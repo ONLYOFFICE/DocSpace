@@ -49,6 +49,7 @@ const StyledFileActionsConvertIcon = styled(FileActionsConvertIcon)`
 `;
 class BadgesFileTile extends React.PureComponent {
   render() {
+    console.log(this.props);
     const { item, canConvert, canWebEdit } = this.props;
     const { fileStatus, id, versionGroup } = item;
 

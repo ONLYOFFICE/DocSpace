@@ -126,6 +126,7 @@ const TileContent = (props) => {
     sideColor,
     onClick,
   } = props;
+  console.log(children[1]);
 
   const sideInfo = getSideInfo(children);
 

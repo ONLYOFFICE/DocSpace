@@ -155,6 +155,7 @@ class Tile extends React.Component {
       return contextOptions;
     };
 
+    console.log(children);
     return (
       <StyledTile {...this.props}>
         {isFolder ? (

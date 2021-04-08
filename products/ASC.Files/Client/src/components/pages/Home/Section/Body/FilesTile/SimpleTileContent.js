@@ -29,9 +29,7 @@ export const SimpleTileContent = styled(TileContent)`
     right: 29px;
     top: 19px;
   }
-  .item-about {
-    display: none;
-  }
+
   .badges {
     display: flex;
     align-items: center;

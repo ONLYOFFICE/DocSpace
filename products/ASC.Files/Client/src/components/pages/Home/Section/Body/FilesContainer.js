@@ -8,7 +8,7 @@ import Loaders from "@appserver/common/components/Loaders";
 import RowContainer from "@appserver/components/row-container";
 
 import TileContainer from "./FilesTile/sub-components/TileContainer";
-import FileItem from "./FIleItem";
+import FileItem from "./FileItem";
 
 const FilesContainer = (props) => {
   const { isLoaded, isLoading, filesList, viewAs, t } = props;

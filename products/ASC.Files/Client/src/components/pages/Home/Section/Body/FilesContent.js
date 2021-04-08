@@ -458,6 +458,105 @@ class FilesContent extends React.Component {
       .catch((err) => toastr.error(err));
   };
 
+  renderBadges = () => {
+    const { newItems } = this.state;
+    const { item, canWebEdit, isTrashFolder, canConvert } = this.props;
+    const {
+      id,
+      fileExst,
+      locked,
+      fileStatus,
+      versionGroup,
+      access,
+      title,
+    } = item;
+
+    const accessToEdit =
+      access === ShareAccessRights.FullAccess ||
+      access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
+
+    const showNew = !!newItems; // in tile const showNew = item.new && item.new > 0;
+    return (
+      <>
+        {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
+                  <IconButton
+                    onClick={this.setConvertDialogVisible}
+                    iconName="FileActionsConvertIcon"
+                    className="badge"
+                    size="small"
+                    isfill={true}
+                    color="#A3A9AE"
+                    hoverColor="#3B72A7"
+                  />
+                )} */}
+        {canWebEdit && !isTrashFolder && accessToEdit && (
+          <IconButton
+            onClick={this.onFilesClick}
+            iconName="/static/images/access.edit.react.svg"
+            className="badge"
+            size="small"
+            isfill={true}
+            color="#A3A9AE"
+            hoverColor="#3B72A7"
+          />
+        )}
+
+        {locked && (
+          <StyledFileActionsLockedIcon
+            className="badge lock-file"
+            size="small"
+            data-id={id}
+            data-locked={true}
+            onClick={this.onClickLock}
+          />
+        )}
+        {fileStatus === 32 && !isTrashFolder && (
+          <StyledFavoriteIcon
+            className="favorite"
+            size="small"
+            data-action="remove"
+            data-id={id}
+            data-title={title}
+            onClick={this.onClickFavorite}
+          />
+        )}
+        {fileStatus === 1 && (
+          <StyledFileActionsConvertEditDocIcon className="badge" size="small" />
+        )}
+        {versionGroup > 1 && (
+          <Badge
+            className="badge-version"
+            backgroundColor="#A3A9AE"
+            borderRadius="11px"
+            color="#FFFFFF"
+            fontSize="10px"
+            fontWeight={800}
+            label={`Ver.${versionGroup}`}
+            maxWidth="50px"
+            onClick={this.onShowVersionHistory}
+            padding="0 5px"
+            data-id={id}
+          />
+        )}
+        {showNew && (
+          <Badge
+            className="badge-version"
+            backgroundColor="#ED7309"
+            borderRadius="11px"
+            color="#FFFFFF"
+            fontSize="10px"
+            fontWeight={800}
+            label={`New`}
+            maxWidth="50px"
+            onClick={this.onBadgeClick}
+            padding="0 5px"
+            data-id={id}
+          />
+        )}
+      </>
+    );
+  };
+
   render() {
     const {
       itemTitle,
@@ -496,9 +595,7 @@ class FilesContent extends React.Component {
     } = item;
 
     const titleWithoutExt = getTitleWithoutExst(item);
-
-    //const Content = this.renderContent(fileExst);
-
+    // moved in method
     const accessToEdit =
       access === ShareAccessRights.FullAccess ||
       access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
@@ -520,6 +617,8 @@ class FilesContent extends React.Component {
         : { onClick: this.onFilesClick };
 
     console.log(viewAs);
+
+    const badges = this.renderBadges();
 
     return isEdit ? (
       <EditingWrapperComponent
@@ -578,84 +677,7 @@ class FilesContent extends React.Component {
                 >
                   {fileExst}
                 </Text>
-                {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
-                  <IconButton
-                    onClick={this.setConvertDialogVisible}
-                    iconName="FileActionsConvertIcon"
-                    className="badge"
-                    size="small"
-                    isfill={true}
-                    color="#A3A9AE"
-                    hoverColor="#3B72A7"
-                  />
-                )} */}
-                {canWebEdit && !isTrashFolder && accessToEdit && (
-                  <IconButton
-                    onClick={this.onFilesClick}
-                    iconName="/static/images/access.edit.react.svg"
-                    className="badge"
-                    size="small"
-                    isfill={true}
-                    color="#A3A9AE"
-                    hoverColor="#3B72A7"
-                  />
-                )}
-
-                {locked && (
-                  <StyledFileActionsLockedIcon
-                    className="badge lock-file"
-                    size="small"
-                    data-id={id}
-                    data-locked={true}
-                    onClick={this.onClickLock}
-                  />
-                )}
-                {fileStatus === 32 && !isTrashFolder && (
-                  <StyledFavoriteIcon
-                    className="favorite"
-                    size="small"
-                    data-action="remove"
-                    data-id={id}
-                    data-title={title}
-                    onClick={this.onClickFavorite}
-                  />
-                )}
-                {fileStatus === 1 && (
-                  <StyledFileActionsConvertEditDocIcon
-                    className="badge"
-                    size="small"
-                  />
-                )}
-                {versionGroup > 1 && (
-                  <Badge
-                    className="badge-version"
-                    backgroundColor="#A3A9AE"
-                    borderRadius="11px"
-                    color="#FFFFFF"
-                    fontSize="10px"
-                    fontWeight={800}
-                    label={`Ver.${versionGroup}`}
-                    maxWidth="50px"
-                    onClick={this.onShowVersionHistory}
-                    padding="0 5px"
-                    data-id={id}
-                  />
-                )}
-                {showNew && (
-                  <Badge
-                    className="badge-version"
-                    backgroundColor="#ED7309"
-                    borderRadius="11px"
-                    color="#FFFFFF"
-                    fontSize="10px"
-                    fontWeight={800}
-                    label={`New`}
-                    maxWidth="50px"
-                    onClick={this.onBadgeClick}
-                    padding="0 5px"
-                    data-id={id}
-                  />
-                )}
+                {viewAs !== "tile" && badges}
               </div>
             ) : (
               <div className="badges">
@@ -677,50 +699,55 @@ class FilesContent extends React.Component {
               </div>
             )}
           </>
-          <Text
-            containerMinWidth="120px"
-            containerWidth="15%"
-            as="div"
-            color={sideColor}
-            fontSize="12px"
-            fontWeight={400}
-            title={fileOwner}
-            truncate={true}
-            className="item-about"
-          >
-            {fileOwner}
-          </Text>
-          <Text
-            containerMinWidth="200px"
-            containerWidth="15%"
-            title={updatedDate}
-            fontSize="12px"
-            fontWeight={400}
-            color={sideColor}
-            className="row_update-text"
-            className="item-about"
-          >
-            {(fileExst || !providerKey) && updatedDate && updatedDate}
-          </Text>
-          <Text
-            containerMinWidth="90px"
-            containerWidth="10%"
-            as="div"
-            color={sideColor}
-            fontSize="12px"
-            fontWeight={400}
-            title=""
-            truncate={true}
-            className="item-about"
-          >
-            {fileExst
-              ? contentLength
-              : !providerKey
-              ? `${t("TitleDocuments")}: ${filesCount} | ${t(
-                  "TitleSubfolders"
-                )}: ${foldersCount}`
-              : ""}
-          </Text>
+          {viewAs !== "tile" && (
+            <Text
+              containerMinWidth="120px"
+              containerWidth="15%"
+              as="div"
+              color={sideColor}
+              fontSize="12px"
+              fontWeight={400}
+              title={fileOwner}
+              truncate={true}
+              className="item-about"
+            >
+              {fileOwner}
+            </Text>
+          )}
+          {viewAs !== "tile" && (
+            <Text
+              containerMinWidth="200px"
+              containerWidth="15%"
+              title={updatedDate}
+              fontSize="12px"
+              fontWeight={400}
+              color={sideColor}
+              className="row_update-text item-about"
+            >
+              {(fileExst || !providerKey) && updatedDate && updatedDate}
+            </Text>
+          )}
+          {viewAs !== "tile" && (
+            <Text
+              containerMinWidth="90px"
+              containerWidth="10%"
+              as="div"
+              color={sideColor}
+              fontSize="12px"
+              fontWeight={400}
+              title=""
+              truncate={true}
+              className="item-about"
+            >
+              {fileExst
+                ? contentLength
+                : !providerKey
+                ? `${t("TitleDocuments")}: ${filesCount} | ${t(
+                    "TitleSubfolders"
+                  )}: ${foldersCount}`
+                : ""}
+            </Text>
+          )}
         </Content>
       </>
     );
