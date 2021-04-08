@@ -13,7 +13,7 @@ describe("<ContextMenu />", () => {
     expect(wrapper).toExist();
   });
 
-  it("componentWillUnmount() test unmount", () => {
+  /*   it("componentWillUnmount() test unmount", () => {
     const wrapper = mount(<ContextMenu {...baseProps} />);
 
     wrapper.unmount();
@@ -82,5 +82,5 @@ describe("<ContextMenu />", () => {
     wrapper.setState({ visible: true });
 
     expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
-  });
+  }); */
 });

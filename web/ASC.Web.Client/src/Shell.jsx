@@ -221,7 +221,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   return (
     <Layout>
       <Router history={history}>
-        <Box>
+        <>
           {isEditor ? <></> : <NavMenu />}
           <ScrollToTop />
           <Main>
@@ -246,7 +246,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <PrivateRoute component={Error404Route} />
             </Switch>
           </Main>
-        </Box>
+        </>
       </Router>
     </Layout>
   );

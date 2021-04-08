@@ -161,46 +161,42 @@ const SectionBodyContent = ({
   );
 };
 
-export default inject(
-  ({ auth, initFilesStore, settingsStore, treeFoldersStore }) => {
-    const { isLoading } = initFilesStore;
-    const { selectedTreeNode } = treeFoldersStore;
-    const {
-      isLoadedSettingsTree,
-      storeOriginalFiles,
-      confirmDelete,
-      updateIfExist,
-      forcesave,
-      storeForcesave,
-      enableThirdParty,
-      setUpdateIfExist,
-      setStoreOriginal,
-      setEnableThirdParty,
-      setConfirmDelete,
-      setStoreForceSave,
-      setForceSave,
-      settingsIsLoaded,
-    } = settingsStore;
+export default inject(({ auth, filesStore, settingsStore }) => {
+  const { isLoading } = filesStore;
+  const {
+    isLoadedSettingsTree,
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forcesave,
+    storeForcesave,
+    enableThirdParty,
+    setUpdateIfExist,
+    setStoreOriginal,
+    setEnableThirdParty,
+    setConfirmDelete,
+    setStoreForceSave,
+    setForceSave,
+    settingsIsLoaded,
+  } = settingsStore;
 
-    return {
-      isAdmin: auth.isAdmin,
-      isLoading,
-      selectedTreeNode,
-      isLoadedSettingsTree,
-      storeOriginalFiles,
-      confirmDelete,
-      updateIfExist,
-      forceSave: forcesave,
-      storeForceSave: storeForcesave,
-      enableThirdParty,
+  return {
+    isAdmin: auth.isAdmin,
+    isLoading,
+    isLoadedSettingsTree,
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forceSave: forcesave,
+    storeForceSave: storeForcesave,
+    enableThirdParty,
 
-      setUpdateIfExist,
-      setStoreOriginal,
-      setEnableThirdParty,
-      setConfirmDelete,
-      setStoreForceSave,
-      setForceSave,
-      settingsIsLoaded,
-    };
-  }
-)(observer(SectionBodyContent));
+    setUpdateIfExist,
+    setStoreOriginal,
+    setEnableThirdParty,
+    setConfirmDelete,
+    setStoreForceSave,
+    setForceSave,
+    settingsIsLoaded,
+  };
+})(observer(SectionBodyContent));

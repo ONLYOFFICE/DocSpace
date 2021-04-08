@@ -49,7 +49,7 @@ const HeaderContainer = ({
   return licenseDate.isAfter(now, "day") ? (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
-        <Trans i18nKey="HeaderLicense" ns="PaymentsEnterprise">
+        <Trans t={t} i18nKey="HeaderLicense" ns="PaymentsEnterprise">
           {{ organizationName }}
         </Trans>
       </Text>
@@ -61,7 +61,7 @@ const HeaderContainer = ({
   ) : !trialMode ? (
     <StyledHeader>
       <Text className="payments-header" fontSize="27px" isBold={true}>
-        <Trans i18nKey="HeaderLicense" ns="PaymentsEnterprise">
+        <Trans t={t} i18nKey="HeaderLicense" ns="PaymentsEnterprise">
           {{ organizationName }}
         </Trans>
       </Text>
@@ -81,7 +81,7 @@ const HeaderContainer = ({
         {t("HeaderExpiredTrialLicense")}
       </Text>
       <Text className="payments-header-additional_support">
-        <Trans i18nKey="ExpiryTrialLicense" ns="PaymentsEnterprise">
+        <Trans t={t} i18nKey="ExpiryTrialLicense" ns="PaymentsEnterprise">
           {{ organizationName }}
         </Trans>
       </Text>

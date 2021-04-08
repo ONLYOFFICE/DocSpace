@@ -213,14 +213,14 @@ const ThirdPartyList = withTranslation("Article")(
 
 export default inject(
   ({
-    auth,
-    initFilesStore,
+    filesStore
+    auth
     settingsStore,
     treeFoldersStore,
     selectedFolderStore,
     dialogsStore,
   }) => {
-    const { setIsLoading } = initFilesStore;
+    const { setIsLoading } = filesStore;
     const { setSelectedFolder } = selectedFolderStore;
     const { setSelectedNode } = treeFoldersStore;
     const {

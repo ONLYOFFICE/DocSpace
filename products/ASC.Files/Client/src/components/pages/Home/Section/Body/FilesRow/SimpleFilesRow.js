@@ -103,15 +103,20 @@ const SimpleFilesRow = (props) => {
     setThirdpartyInfo,
     setMediaViewerData,
     setDragging,
+    setStartDrag,
     startUpload,
     onSelectItem,
     history,
+    setTooltipPosition,
+    setDownloadDialogVisible,
+    downloadAction,
   } = props;
 
   const {
     id,
     title,
     fileExst,
+    contentLength,
     shared,
     access,
     contextOptions,
@@ -122,10 +127,8 @@ const SimpleFilesRow = (props) => {
     webUrl,
     canOpenPlayer,
     locked,
+    parentId,
   } = item;
-
-  let value = fileExst ? `file_${id}` : `folder_${id}`;
-  value += draggable ? "_draggable" : "";
 
   const isThirdPartyFolder = providerKey && isRootFolder;
 
@@ -201,7 +204,9 @@ const SimpleFilesRow = (props) => {
     finalizeVersionAction(id).catch((err) => toastr.error(err));
 
   const onClickFavorite = (e) => {
-    const { action } = e.currentTarget.dataset;
+    const data = (e.currentTarget && e.currentTarget.dataset) || e;
+    const { action } = data;
+
     setFavoriteAction(action, id)
       .then(() =>
         action === "mark"
@@ -229,7 +234,14 @@ const SimpleFilesRow = (props) => {
 
   const onClickLinkEdit = () => openDocEditor(id, providerKey);
 
-  const onClickDownload = () => window.open(viewUrl, "_blank");
+  const onClickDownload = () => {
+    const isFile = !!fileExst && contentLength;
+    isFile
+      ? window.open(viewUrl, "_blank")
+      : downloadAction(t("ArchivingData")).catch((err) => toastr.error(err));
+  };
+
+  const onClickDownloadAs = () => setDownloadDialogVisible(true);
 
   const onDuplicate = () =>
     duplicateAction(item, t("CopyOperation")).catch((err) => toastr.error(err));
@@ -242,7 +254,7 @@ const SimpleFilesRow = (props) => {
     });
   };
 
-  const onChangeThirdPartyInfo = () => setThirdpartyInfo();
+  const onChangeThirdPartyInfo = () => setThirdpartyInfo(providerKey);
 
   const onMediaFileClick = (fileId) => {
     const itemId = typeof fileId !== "object" ? fileId : id;
@@ -261,11 +273,11 @@ const SimpleFilesRow = (props) => {
       deleteOperation: t("DeleteOperation"),
     };
 
-    item.fileExst
-      ? deleteFileAction(item.id, item.folderId, translations)
+    fileExst || contentLength
+      ? deleteFileAction(id, folderId, translations)
           .then(() => toastr.success(t("FileRemoved")))
           .catch((err) => toastr.error(err))
-      : deleteFolderAction(item.id, item.parentId, translations)
+      : deleteFolderAction(id, parentId, translations)
           .then(() => toastr.success(t("FolderRemoved")))
           .catch((err) => toastr.error(err));
   };
@@ -275,7 +287,7 @@ const SimpleFilesRow = (props) => {
   };
 
   const getFilesContextOptions = useCallback(() => {
-    const isSharable = item.access !== 1 && item.access !== 0;
+    const isSharable = access !== 1 && access !== 0;
 
     return contextOptions.map((option) => {
       switch (option) {
@@ -324,6 +336,7 @@ const SimpleFilesRow = (props) => {
             onClick: onClickFavorite,
             disabled: false,
             "data-action": "mark",
+            action: "mark",
           };
         case "block-unblock-version":
           return {
@@ -368,7 +381,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("Edit"),
-            icon: "images/access.edit.react.svg",
+            icon: "/static/images/access.edit.react.svg",
             onClick: onClickLinkEdit,
             disabled: false,
           };
@@ -396,10 +409,26 @@ const SimpleFilesRow = (props) => {
             onClick: onClickDownload,
             disabled: false,
           };
+        case "download-as":
+          return {
+            key: option,
+            label: t("DownloadAs"),
+            icon: "images/download-as.react.svg",
+            onClick: onClickDownloadAs,
+            disabled: false,
+          };
         case "move":
           return {
             key: option,
             label: t("MoveTo"),
+            icon: "images/move.react.svg",
+            onClick: onMoveAction,
+            disabled: false,
+          };
+        case "restore":
+          return {
+            key: option,
+            label: t("Restore"),
             icon: "images/move.react.svg",
             onClick: onMoveAction,
             disabled: false,
@@ -432,7 +461,7 @@ const SimpleFilesRow = (props) => {
           return {
             key: option,
             label: t("ThirdPartyInfo"),
-            icon: "images/access.edit.react.svg",
+            icon: "/static/images/access.edit.react.svg",
             onClick: onChangeThirdPartyInfo,
             disabled: false,
           };
@@ -452,6 +481,7 @@ const SimpleFilesRow = (props) => {
             onClick: onClickFavorite,
             disabled: false,
             "data-action": "remove",
+            action: "remove",
           };
         default:
           break;
@@ -470,17 +500,41 @@ const SimpleFilesRow = (props) => {
 
   const onDrop = (items) => {
     if (!fileExst) {
-      onDropZoneUpload(items, item.id);
+      onDropZoneUpload(items, id);
     } else {
       onDropZoneUpload(items, selectedFolderId);
     }
   };
 
-  const isMobile = sectionWidth < 500;
+  const onMouseDown = (e) => {
+    if (!draggable) {
+      return;
+    }
 
+    if (
+      window.innerWidth < 1025 ||
+      e.target.tagName === "rect" ||
+      e.target.tagName === "path"
+    ) {
+      return;
+    }
+    const mouseButton = e.which
+      ? e.which !== 1
+      : e.button
+      ? e.button !== 0
+      : false;
+    const label = e.currentTarget.getAttribute("label");
+    if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
+      return;
+    }
+
+    setTooltipPosition(e.pageX, e.pageY);
+    setStartDrag(true);
+  };
+
+  const isMobile = sectionWidth < 500;
   const isEdit =
     !!actionType && actionId === id && fileExst === actionExtension;
-
   const contextOptionsProps =
     !isEdit && contextOptions && contextOptions.length > 0
       ? {
@@ -488,11 +542,14 @@ const SimpleFilesRow = (props) => {
         }
       : {};
 
+  const isDragging = isFolder && access < 2 && !isRecycleBin;
   const checkedProps = isEdit || id <= 0 ? {} : { checked };
   const element = getItemIcon(isEdit || id <= 0);
   const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
-  let className = isFolder && access < 2 && !isRecycleBin ? " dropable" : "";
+  let className = isDragging ? " droppable" : "";
   if (draggable) className += " draggable";
+  let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
+  value += draggable ? "_draggable" : "";
 
   const sharedButton =
     !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
@@ -501,18 +558,18 @@ const SimpleFilesRow = (props) => {
 
   return (
     <DragAndDrop
+      value={value}
       className={className}
       onDrop={onDrop}
-      //onMouseDown={this.onMouseDown}
-      dragging={dragging && isFolder && access < 2}
+      onMouseDown={onMouseDown}
+      dragging={dragging && isDragging}
       {...contextOptionsProps}
-      value={value}
     >
       <StyledSimpleFilesRow
-        sectionWidth={sectionWidth}
         key={id}
         data={item}
         element={element}
+        sectionWidth={sectionWidth}
         contentElement={sharedButton}
         onSelect={onContentRowSelect}
         rowContextClick={rowContextClick}
@@ -531,7 +588,6 @@ export default inject(
   (
     {
       auth,
-      initFilesStore,
       filesStore,
       treeFoldersStore,
       selectedFolderStore,
@@ -544,7 +600,6 @@ export default inject(
     { item }
   ) => {
     const { isTabletView } = auth.settingsStore;
-    const { dragging, setDragging } = initFilesStore;
     const { type, extension, id } = filesStore.fileActionStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
@@ -555,9 +610,19 @@ export default inject(
       setDeleteThirdPartyDialogVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
+      setDownloadDialogVisible,
     } = dialogsStore;
 
-    const { selection, canShare, openDocEditor, fileActionStore } = filesStore;
+    const {
+      selection,
+      canShare,
+      openDocEditor,
+      fileActionStore,
+      dragging,
+      setDragging,
+      setStartDrag,
+      setTooltipPosition,
+    } = filesStore;
 
     const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
     const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
@@ -567,7 +632,12 @@ export default inject(
       (x) => x.id === item.id && x.fileExst === item.fileExst
     );
 
-    const isFolder = selectedItem ? false : item.fileExst ? false : true;
+    const isFolder = selectedItem
+      ? false
+      : item.fileExst || item.contentLength
+      ? false
+      : true;
+
     const draggable =
       !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
 
@@ -582,6 +652,7 @@ export default inject(
       selectRowAction,
       setThirdpartyInfo,
       onSelectItem,
+      downloadAction,
     } = filesActionsStore;
 
     const { setMediaViewerData } = mediaViewerDataStore;
@@ -608,6 +679,7 @@ export default inject(
       setDeleteThirdPartyDialogVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
+      setDownloadDialogVisible,
       openDocEditor,
       setIsVerHistoryPanel,
       fetchFileVersions,
@@ -624,8 +696,11 @@ export default inject(
       setMediaViewerData,
       selectedFolderId,
       setDragging,
+      setStartDrag,
       startUpload,
       onSelectItem,
+      setTooltipPosition,
+      downloadAction,
     };
   }
 )(withTranslation("Home")(observer(withRouter(SimpleFilesRow))));

@@ -1,3 +1,5 @@
+const CopyPlugin = require("copy-webpack-plugin");
+
 module.exports = ({ config }) => {
   const rules = config.module.rules;
 
@@ -17,6 +19,19 @@ module.exports = ({ config }) => {
       },
     ],
   });
+
+  config.plugins.push(
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "../../../public/images",
+          to: "./static/images",
+          toType: "dir",
+          context: "storybook-static",
+        },
+      ],
+    })
+  );
 
   return config;
 };

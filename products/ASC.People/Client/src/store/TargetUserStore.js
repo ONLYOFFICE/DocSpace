@@ -36,7 +36,8 @@ class TargetUserStore {
       return this.setTargetUser(authStore.userStore.user);
     } else {*/
     const user = await api.people.getUser(userName);
-    return this.setTargetUser(user);
+    this.setTargetUser(user);
+    return user;
     //}
   };
 

@@ -20,6 +20,9 @@ const StyledGroupButtonsMenu = styled.div`
   @media ${desktop} {
     margin-top: ${(props) => props.theme.groupButtonsMenu.marginTop};
   }
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
 `;
 StyledGroupButtonsMenu.defaultProps = { theme: Base };
 

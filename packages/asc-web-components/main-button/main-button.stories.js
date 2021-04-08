@@ -2,8 +2,6 @@ import React from "react";
 import MainButton from ".";
 import DropDownItem from "../drop-down-item";
 
-import { Icons } from "../icons";
-
 export default {
   title: "Components/MainButton",
   component: MainButton,
@@ -48,11 +46,6 @@ const Template = ({
           onClick={() => clickItem("New employee clicked")}
         />
         <DropDownItem
-          icon="CatalogGuestIcon"
-          label="New quest"
-          onClick={() => clickItem("New quest clicked")}
-        />
-        <DropDownItem
           icon="static/images/catalog.departments.react.svg"
           label="New department"
           onClick={() => clickItem("New department clicked")}
@@ -62,16 +55,6 @@ const Template = ({
           icon="static/images/invitation.link.react.svg"
           label="Invitation link"
           onClick={() => clickItem("Invitation link clicked")}
-        />
-        <DropDownItem
-          icon="PlaneIcon"
-          label="Invite again"
-          onClick={() => clickItem("Invite again clicked")}
-        />
-        <DropDownItem
-          icon="ImportIcon"
-          label="Import people"
-          onClick={() => clickItem("Import people clicked")}
         />
       </MainButton>
     </div>

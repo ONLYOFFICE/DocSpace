@@ -172,8 +172,13 @@ class IconFormatsStore {
 
   isSpreadsheet = (extension) => presentInArray(this.spreadsheet, extension);
 
-  getIcon = (size = 24, fileExst = null, providerKey = null) => {
-    if (fileExst) {
+  getIcon = (
+    size = 24,
+    fileExst = null,
+    providerKey = null,
+    contentLength = null
+  ) => {
+    if (fileExst || contentLength) {
       const isArchiveItem = this.isArchive(fileExst);
       const isImageItem = this.isImage(fileExst);
       const isSoundItem = this.isSound(fileExst);
@@ -395,4 +400,4 @@ class IconFormatsStore {
   };
 }
 
-export default IconFormatsStore;
+export default new IconFormatsStore();

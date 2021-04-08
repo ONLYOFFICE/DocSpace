@@ -14,8 +14,6 @@ import {
 import FileList from "./FileList";
 import { inject, observer } from "mobx-react";
 
-const DownloadBodyStyle = { height: `calc(100vh - 62px)` };
-
 class UploadPanelComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -60,6 +58,7 @@ class UploadPanelComponent extends React.Component {
       t,
       uploadPanelVisible,
       /* sharingPanelVisible, */ uploaded,
+      uploadDataFiles,
     } = this.props;
 
     const visible = uploadPanelVisible;
@@ -111,7 +110,11 @@ class UploadPanelComponent extends React.Component {
             <StyledBody
               stype="mediumBlack"
               className="upload-panel_body"
-              style={DownloadBodyStyle}
+              style={
+                uploadDataFiles.length > 15
+                  ? { height: `100vh` }
+                  : { height: `calc(100vh - 130px)` }
+              }
             >
               <FileList />
             </StyledBody>
@@ -134,6 +137,7 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
     cancelUpload,
     uploadPanelVisible,
     setUploadPanelVisible,
+    files,
   } = uploadDataStore;
 
   return {
@@ -144,5 +148,6 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
     setUploadPanelVisible,
     clearUploadData,
     cancelUpload,
+    uploadDataFiles: files,
   };
 })(observer(UploadPanel));

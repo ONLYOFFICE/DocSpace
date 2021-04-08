@@ -15,6 +15,7 @@ class DialogsStore {
 
   removeItem = null;
   connectItem = null;
+  destFolderId = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -72,6 +73,10 @@ class DialogsStore {
 
   setThirdPartyDialogVisible = (thirdPartyDialogVisible) => {
     this.thirdPartyDialogVisible = thirdPartyDialogVisible;
+  };
+
+  setDestFolderId = (destFolderId) => {
+    this.destFolderId = destFolderId;
   };
 }
 

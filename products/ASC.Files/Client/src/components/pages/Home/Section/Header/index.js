@@ -93,12 +93,10 @@ const StyledContainer = styled.div`
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
 
-    ${
-      isMobile &&
-      css`
-        position: sticky;
-      `
-    }
+    ${isMobile &&
+    css`
+      position: sticky;
+    `}
 
     ${(props) =>
       !props.isTabletView
@@ -115,12 +113,10 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       padding-bottom: 0;
-      ${
-        !isMobile &&
-        css`
-          height: 56px;
-        `
-      }
+      ${!isMobile &&
+      css`
+        height: 56px;
+      `}
       & > div:first-child {
         ${(props) =>
           !isMobile &&
@@ -317,7 +313,7 @@ class SectionHeaderContent extends React.Component {
   getMenuItems = () => {
     const {
       t,
-      isItemsSelected,
+      selectionCount,
       isAccessedSelected,
       isWebEditSelected,
       deleteDialogVisible,
@@ -383,33 +379,33 @@ class SectionHeaderContent extends React.Component {
         label: t("Share"),
         disabled:
           !isAccessedSelected ||
-          (isPrivacy && (isOnlyFoldersSelected || isItemsSelected)),
+          (isPrivacy && (isOnlyFoldersSelected || selectionCount > 1)),
         onClick: this.onOpenSharingPanel,
       },
       {
         label: t("Download"),
-        disabled: !isItemsSelected,
+        disabled: !selectionCount,
         onClick: this.downloadAction,
       },
       {
         label: t("DownloadAs"),
-        disabled: !isItemsSelected || !isWebEditSelected,
+        disabled: !selectionCount || !isWebEditSelected,
         onClick: this.downloadAsAction,
       },
       {
         label: t("MoveTo"),
-        disabled: !isItemsSelected || isThirdPartySelection,
+        disabled: !selectionCount || isThirdPartySelection,
         onClick: this.onMoveAction,
       },
       {
         label: t("Copy"),
-        disabled: !isItemsSelected,
+        disabled: !selectionCount,
         onClick: this.onCopyAction,
       },
       {
         label: t("Delete"),
         disabled:
-          !isItemsSelected || !deleteDialogVisible || isThirdPartySelection,
+          !selectionCount || !deleteDialogVisible || isThirdPartySelection,
         onClick: this.onDeleteAction,
       },
     ];
@@ -508,7 +504,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="images/actions.header.touch.react.svg"
+                          iconName="images/plus.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -533,7 +529,7 @@ class SectionHeaderContent extends React.Component {
                         <ContextMenuButton
                           className="add-button"
                           directionX="right"
-                          iconName="images/actions.header.touch.react.svg"
+                          iconName="images/plus.svg"
                           size={17}
                           color="#A3A9AE"
                           hoverColor="#657077"
@@ -557,7 +553,6 @@ class SectionHeaderContent extends React.Component {
 export default inject(
   ({
     auth,
-    initFilesStore,
     filesStore,
     dialogsStore,
     treeFoldersStore,
@@ -565,7 +560,6 @@ export default inject(
     filesActionsStore,
     settingsStore,
   }) => {
-    const { setIsLoading } = initFilesStore;
     const {
       setSelected,
       fileActionStore,
@@ -581,6 +575,7 @@ export default inject(
       isOnlyFoldersSelected,
       isThirdPartySelection,
       isWebEditSelected,
+      setIsLoading,
     } = filesStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
     const { setAction } = fileActionStore;
@@ -605,7 +600,7 @@ export default inject(
       isPrivacy: isPrivacyFolder,
       filter,
       canCreate,
-      isItemsSelected: !!selection.length,
+      selectionCount: selection.length,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,

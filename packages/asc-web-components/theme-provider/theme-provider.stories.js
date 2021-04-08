@@ -34,7 +34,7 @@ const Template = (args) => {
     <Box displayProp="flex" paddingProp="16px" alignItems="center">
       <ThemeProvider {...args} theme={value ? Dark : Base}>
         <Checkbox
-          checked={value}
+          isChecked={value}
           onChange={(e) => setValue(!value)}
           label={value ? "Dark" : "Light"}
         />
