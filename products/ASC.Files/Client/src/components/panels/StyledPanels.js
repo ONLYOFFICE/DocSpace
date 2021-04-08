@@ -472,6 +472,9 @@ const StyledFooter = styled.div`
   .sharing_panel-button {
     margin-left: auto;
   }
+  .new_files_panel-button {
+    margin-right: 8px;
+  }
 `;
 
 const StyledLinkRow = styled.div`

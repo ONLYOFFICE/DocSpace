@@ -265,6 +265,7 @@ class NewFilesPanelComponent extends React.Component {
             )}
             <StyledFooter>
               <Button
+                className="new_files_panel-button"
                 label={t("MarkAsRead")}
                 size="big"
                 primary
