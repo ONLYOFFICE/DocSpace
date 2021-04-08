@@ -104,9 +104,9 @@ class SettingsStore {
           if (!language || language == "undefined") {
             localStorage.setItem(LANGUAGE, newSettings[key]);
           }
-        } else if (key === "passwordHash") {
-          this.setValue("hashSettings", newSettings[key]);
         }
+      } else if (key === "passwordHash") {
+        this.setValue("hashSettings", newSettings[key]);
       }
     });
 
