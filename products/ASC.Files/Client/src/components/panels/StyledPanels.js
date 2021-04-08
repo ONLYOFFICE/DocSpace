@@ -196,11 +196,11 @@ const StyledContent = styled.div`
     }
   }
 
-  .sharing-panel-loader-wrapper {
+  .panel-loader-wrapper {
     margin-top: 8px;
     padding-left: 32px;
   }
-  .sharing-panel-loader {
+  .panel-loader {
     display: inline;
     margin-right: 10px;
   }
