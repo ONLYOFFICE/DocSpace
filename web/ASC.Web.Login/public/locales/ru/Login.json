@@ -28,7 +28,10 @@
   "Or": "ИЛИ",
   "Register": "Регистрация",
 
-  "Google": "Google",
+  "LogInWithGoogle": "Вход через Google",
+  "LogInWithFacebook": "Вход через Facebook",
+  "LogInWithTwitter": "Вход через Twitter",
+  "LogInWithLinkedIn": "Вход через LinkedIn",
   "ProviderLoginError": "Ошибка авторизации",
   "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту"
 }

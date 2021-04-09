@@ -28,7 +28,10 @@
   "Or": "OR",
   "Register": "Register",
 
-  "Google": "Google",
+  "LogInWithGoogle": "Login with Google",
+  "LogInWithFacebook": "Login with Facebook",
+  "LogInWithTwitter": "Login with Twitter",
+  "LogInWithLinkedIn": "Login with LinkedIn",
   "ProviderLoginError": "Authorization error",
   "ProviderNotConnected": "Provider is not connected to your account"
 }
