@@ -36,6 +36,7 @@ const providersData = Object.freeze({
     label: "",
     icon: "static/images/share.facebook.react.svg",
     iconOptions: facebookIconOptions,
+    className: "facebookButton",
   },
   Twitter: {
     label: "",
@@ -360,15 +361,16 @@ const Form = (props) => {
     const providerButtons =
       providers &&
       providers.map((item) => {
-        const { icon, label, iconOptions } = providersData[item.provider];
-
+        const { icon, label, iconOptions, className } = providersData[
+          item.provider
+        ];
         if (!icon) return <></>;
         return (
           <React.Fragment key={`${item.provider}ProviderItem`}>
             <SocialButton
               iconName={icon}
               label={t(label)}
-              className="socialButton"
+              className={`socialButton ${className ? className : ""}`}
               $iconOptions={iconOptions}
               data-url={item.url}
               data-providername={item.provider}
