@@ -13,7 +13,7 @@ const SectionBodyContent = (props) => {
   const {
     t,
     fileActionId,
-    viewAs,
+    //viewAs,
     firstLoad,
     isLoading,
     isEmptyFilesList,
@@ -145,7 +145,9 @@ const SectionBodyContent = (props) => {
       <EmptyContainer />
     )
   ) : (
-    <FilesContainer viewAs={viewAs} />
+    <FilesContainer
+    //viewAs={viewAs}
+    />
   );
 };
 
@@ -163,7 +165,7 @@ export default inject(
       dragging,
       setDragging,
       isLoading,
-      viewAs,
+      //viewAs,
       setTooltipPosition,
       startDrag,
       setStartDrag,
@@ -175,7 +177,7 @@ export default inject(
       setStartDrag,
       fileActionId: fileActionStore.id,
       firstLoad,
-      viewAs,
+      //viewAs,
       isLoading,
       isEmptyFilesList: filesList.length <= 0,
       setDragging,

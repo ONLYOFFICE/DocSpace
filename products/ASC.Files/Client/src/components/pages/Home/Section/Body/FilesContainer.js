@@ -12,7 +12,7 @@ import FileItem from "./FileItem";
 
 const FilesContainer = (props) => {
   const { isLoaded, isLoading, filesList, viewAs, t } = props;
-
+  console.log("viewAs container", viewAs);
   return !isLoaded || (isMobile && isLoading) ? (
     <Loaders.Rows />
   ) : (
@@ -27,7 +27,13 @@ const FilesContainer = (props) => {
             headingFiles={t("Files")}
           >
             {filesList.map((item) => {
-              return <FileItem key={item.id} item={item} viewAs={viewAs} />;
+              return (
+                <FileItem
+                  key={item.id}
+                  item={item}
+                  // viewAs={viewAs}
+                />
+              );
             })}
           </TileContainer>
         ) : (
@@ -42,7 +48,7 @@ const FilesContainer = (props) => {
                   key={item.id}
                   item={item}
                   sectionWidth={context.sectionWidth}
-                  viewAs={viewAs}
+                  //viewAs={viewAs}
                 />
               );
             })}
@@ -54,12 +60,13 @@ const FilesContainer = (props) => {
 };
 
 export default inject(({ auth, filesStore }) => {
-  const { filesList, isLoading } = filesStore;
+  const { filesList, isLoading, viewAs } = filesStore;
   const { isLoaded } = auth;
 
   return {
     filesList,
     isLoading,
     isLoaded,
+    viewAs,
   };
 })(withTranslation("Home")(observer(FilesContainer)));

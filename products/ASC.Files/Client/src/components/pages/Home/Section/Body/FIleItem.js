@@ -55,8 +55,6 @@ const FileItem = (props) => {
     providerKey,
     isFolder,
   } = item;
-  console.log("render item");
-
   const getItemIcon = (isEdit) => {
     return (
       <>
@@ -182,6 +180,8 @@ const FileItem = (props) => {
       ? null
       : getSharedButton(shared);
 
+  console.log("viewAs item", viewAs);
+
   return (
     <DragAndDrop
       className={className}
@@ -265,8 +265,8 @@ export default inject(
       setDragging,
       setStartDrag,
       setTooltipPosition,
+      viewAs,
     } = filesStore;
-
     const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
 
     const selectedItem = selection.find(
@@ -310,6 +310,7 @@ export default inject(
       onSelectItem,
       getContextOptions,
       setTooltipPosition,
+      viewAs,
     };
   }
-)(withTranslation("Home")(observer(withRouter(FileItem))));
+)(withRouter(withTranslation("Home")(observer(FileItem))));

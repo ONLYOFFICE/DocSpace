@@ -43,6 +43,7 @@ const Content = ({
   sectionWidth,
   fileExst,
   onMobileRowClick,
+  badges,
   ...props
 }) => {
   return viewAs === "tile" ? (
@@ -51,6 +52,7 @@ const Content = ({
       isFile={fileExst}
       onClick={onMobileRowClick}
       disableSideInfo
+      badges={badges}
       {...props}
     />
   ) : (
@@ -461,21 +463,13 @@ class FilesContent extends React.Component {
   renderBadges = () => {
     const { newItems } = this.state;
     const { item, canWebEdit, isTrashFolder, canConvert } = this.props;
-    const {
-      id,
-      fileExst,
-      locked,
-      fileStatus,
-      versionGroup,
-      access,
-      title,
-    } = item;
+    const { id, locked, fileStatus, versionGroup, access, title } = item;
 
     const accessToEdit =
       access === ShareAccessRights.FullAccess ||
       access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
-    const showNew = !!newItems; // in tile const showNew = item.new && item.new > 0;
+    const showNew = !!newItems;
     return (
       <>
         {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
@@ -493,7 +487,7 @@ class FilesContent extends React.Component {
           <IconButton
             onClick={this.onFilesClick}
             iconName="/static/images/access.edit.react.svg"
-            className="badge"
+            className="badge icons-group"
             size="small"
             isfill={true}
             color="#A3A9AE"
@@ -503,7 +497,7 @@ class FilesContent extends React.Component {
 
         {locked && (
           <StyledFileActionsLockedIcon
-            className="badge lock-file"
+            className="badge lock-file icons-group"
             size="small"
             data-id={id}
             data-locked={true}
@@ -512,7 +506,7 @@ class FilesContent extends React.Component {
         )}
         {fileStatus === 32 && !isTrashFolder && (
           <StyledFavoriteIcon
-            className="favorite"
+            className="favorite icons-group"
             size="small"
             data-action="remove"
             data-id={id}
@@ -521,11 +515,14 @@ class FilesContent extends React.Component {
           />
         )}
         {fileStatus === 1 && (
-          <StyledFileActionsConvertEditDocIcon className="badge" size="small" />
+          <StyledFileActionsConvertEditDocIcon
+            className="badge icons-group"
+            size="small"
+          />
         )}
         {versionGroup > 1 && (
           <Badge
-            className="badge-version"
+            className="badge-version icons-group"
             backgroundColor="#A3A9AE"
             borderRadius="11px"
             color="#FFFFFF"
@@ -540,7 +537,7 @@ class FilesContent extends React.Component {
         )}
         {showNew && (
           <Badge
-            className="badge-version"
+            className="badge-version icons-group"
             backgroundColor="#ED7309"
             borderRadius="11px"
             color="#FFFFFF"
@@ -616,7 +613,7 @@ class FilesContent extends React.Component {
         ? { noHover: true }
         : { onClick: this.onFilesClick };
 
-    console.log(viewAs);
+    console.log("viewAs content", viewAs);
 
     const badges = this.renderBadges();
 
@@ -650,6 +647,7 @@ class FilesContent extends React.Component {
           sectionWidth={sectionWidth}
           fileExst={fileExst}
           onMobileRowClick={this.onMobileRowClick}
+          badges={badges}
         >
           <Link
             containerWidth={viewAs === "row" ? "55%" : "100%"}
@@ -810,6 +808,7 @@ export default inject(
       openDocEditor,
       setIsLoading,
       isLoading,
+      viewAs,
     } = filesStore;
 
     const {
@@ -880,6 +879,7 @@ export default inject(
       selectedFolderId: selectedFolderStore.id,
       newItems: selectedFolderStore.new,
       parentFolder: selectedFolderStore.parentId,
+      viewAs,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesContent))));

@@ -93,7 +93,7 @@ class SectionFilterContent extends React.Component {
   };
 
   onChangeViewAs = (view) => {
-    const { viewAs, setViewAs } = this.props;
+    const { setViewAs } = this.props;
     setViewAs(view);
   };
 

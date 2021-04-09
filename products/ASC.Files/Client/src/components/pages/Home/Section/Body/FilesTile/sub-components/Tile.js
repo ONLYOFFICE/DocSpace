@@ -210,7 +210,9 @@ class Tile extends React.Component {
                   />
                 </StyledCheckbox>
               )}
-              <BadgesFileTile item={item} />
+              {
+                //<BadgesFileTile item={item} />
+              }
             </StyledFileTileTop>
             <StyledFileTileBottom>
               <StyledElement>{element}</StyledElement>

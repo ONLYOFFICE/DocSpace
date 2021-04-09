@@ -28,6 +28,12 @@ const StyledTileContent = styled.div`
       height: 56px;
     }
   `};
+
+  .icons-group {
+    position: absolute;
+    top: 10px;
+    right: 0px;
+  }
 `;
 
 const MainContainerWrapper = styled.div`
@@ -125,6 +131,7 @@ const TileContent = (props) => {
     style,
     sideColor,
     onClick,
+    badges,
   } = props;
   console.log(children[1]);
 
@@ -138,6 +145,7 @@ const TileContent = (props) => {
       style={style}
       onClick={onClick}
     >
+      {badges}
       <MainContainerWrapper
         disableSideInfo={disableSideInfo}
         mainContainerWidth={

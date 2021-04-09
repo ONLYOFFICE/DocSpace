@@ -1,3 +1,5 @@
+import React from "react";
+import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import FavoriteIcon from "../../../../../../../public/images/favorite.react.svg";
@@ -23,3 +25,13 @@ export const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
     fill: #3b72a7;
   }
 `;
+/*
+const BadgesFile = (props) => {
+  const { newItems, viewAs} = props;
+  return ();
+}
+
+export default inject (({filesStore}, {item}) => {
+  const { viewAs} = filesStore;
+  return {viewAs}
+})(observer(BadgesFile))*/
