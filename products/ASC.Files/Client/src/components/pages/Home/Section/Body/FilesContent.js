@@ -87,7 +87,10 @@ class FilesContent extends React.Component {
   }
 
   completeAction = (id) => {
-    this.props.editCompleteAction(id, this.props.item);
+    const isCancel =
+      (id.currentTarget && id.currentTarget.dataset.action === "cancel") ||
+      id.keyCode === 27;
+    this.props.editCompleteAction(id, this.props.item, isCancel);
   };
 
   updateItem = () => {
@@ -97,20 +100,23 @@ class FilesContent extends React.Component {
       item,
       setIsLoading,
       fileActionId,
+      editCompleteAction,
     } = this.props;
 
     const { itemTitle } = this.state;
     const originalTitle = getTitleWithoutExst(item);
 
     setIsLoading(true);
-    if (originalTitle === itemTitle || itemTitle.trim() === "") {
+    const isSameTitle =
+      originalTitle.trim() === itemTitle.trim() || itemTitle.trim() === "";
+    if (isSameTitle) {
       this.setState({
         itemTitle: originalTitle,
       });
-      return this.completeAction(fileActionId);
+      return editCompleteAction(fileActionId, item, isSameTitle);
     }
 
-    item.fileExst
+    item.fileExst || item.contentLength
       ? updateFile(fileActionId, itemTitle)
           .then(() => this.completeAction(fileActionId))
           .finally(() => setIsLoading(false))
@@ -155,12 +161,12 @@ class FilesContent extends React.Component {
           )
         : null;
 
-    !item.fileExst
+    !item.fileExst && !item.contentLength
       ? createFolder(item.parentId, itemTitle)
           .then(() => this.completeAction(itemId))
           .then(() =>
             toastr.success(
-              <Trans i18nKey="FolderCreated" ns="Home">
+              <Trans t={t} i18nKey="FolderCreated" ns="Home">
                 New folder {{ itemTitle }} is created
               </Trans>
             )
@@ -245,11 +251,11 @@ class FilesContent extends React.Component {
       addExpandedKeys,
       setMediaViewerData,
     } = this.props;
-    const { id, fileExst, viewUrl, providerKey } = item;
+    const { id, fileExst, viewUrl, providerKey, contentLength } = item;
 
     if (isTrashFolder) return;
 
-    if (!fileExst) {
+    if (!fileExst && !contentLength) {
       setIsLoading(true);
 
       if (!expandedKeys.includes(parentFolder + "")) {
@@ -322,7 +328,9 @@ class FilesContent extends React.Component {
       setIsVerHistoryPanel,
       fetchFileVersions,
       history,
+      isTrashFolder,
     } = this.props;
+    if (isTrashFolder) return;
 
     if (!isTabletView) {
       fetchFileVersions(item.id + "");

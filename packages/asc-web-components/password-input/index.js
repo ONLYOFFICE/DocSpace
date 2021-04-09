@@ -243,6 +243,15 @@ class PasswordInput extends React.Component {
     return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.clipActionResource !== this.props.clipActionResource &&
+      this.state.copyLabel !== this.props.clipCopiedResource
+    ) {
+      this.setState({ copyLabel: this.props.clipActionResource });
+    }
+  }
+
   renderTextTooltip = (settings, length, digits, capital, special) => {
     return (
       <>
@@ -415,6 +424,7 @@ class PasswordInput extends React.Component {
       hideNewPasswordButton,
       isDisabled,
     } = this.props;
+
     const { copyLabel, disableCopyAction } = this.state;
 
     return (

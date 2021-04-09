@@ -576,12 +576,11 @@ namespace ASC.Core.Data
 
             using var tr = UserDbContext.Database.BeginTransaction();
 
-            UserDbContext.AddOrUpdate(r => r.UserGroups, FromUserGroupRefToUserGroup(r));
-
             var user = GetUserQuery(tenant).FirstOrDefault(a => a.Tenant == tenant && a.Id == r.UserId);
             if (user != null)
             {
                 user.LastModified = r.LastModified;
+                UserDbContext.AddOrUpdate(r => r.UserGroups, FromUserGroupRefToUserGroup(r));
             }
 
             UserDbContext.SaveChanges();

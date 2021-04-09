@@ -45,6 +45,7 @@ class ContextMenuSub extends Component {
     if (item.onClick) {
       item.onClick({
         originalEvent: e,
+        action: item.action,
       });
     }
 
@@ -201,6 +202,7 @@ class ContextMenuSub extends Component {
   }
 
   renderItem(item, index) {
+    if (!item) return null;
     if (item.isSeparator) return this.renderSeparator(index);
     else return this.renderMenuitem(item, index);
   }

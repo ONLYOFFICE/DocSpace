@@ -59,6 +59,8 @@ class SettingsStore {
   isArticlePinned =
     localStorage.getItem(ARTICLE_PINNED_KEY) === "true" || false;
 
+  isArticleVisibleOnUnpin = false;
+
   hashSettings = null;
   title = "";
   ownerId = null;
@@ -97,9 +99,11 @@ class SettingsStore {
             ? combineUrl(proxyURL, newSettings[key])
             : newSettings[key]
         );
-
-        if (key === "culture" && !localStorage.getItem(LANGUAGE)) {
-          localStorage.setItem(LANGUAGE, newSettings[key]);
+        if (key === "culture") {
+          const language = localStorage.getItem(LANGUAGE);
+          if (!language || language == "undefined") {
+            localStorage.setItem(LANGUAGE, newSettings[key]);
+          }
         }
       } else if (key === "passwordHash") {
         this.setValue("hashSettings", newSettings[key]);
@@ -227,6 +231,10 @@ class SettingsStore {
       ? localStorage.setItem(ARTICLE_PINNED_KEY, isPinned)
       : localStorage.removeItem(ARTICLE_PINNED_KEY);
     this.isArticlePinned = isPinned;
+  };
+
+  setArticleVisibleOnUnpin = (visible) => {
+    this.isArticleVisibleOnUnpin = visible;
   };
 }
 

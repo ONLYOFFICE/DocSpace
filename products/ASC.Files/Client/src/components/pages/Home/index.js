@@ -136,30 +136,31 @@ class PureHome extends React.Component {
   };
 
   showOperationToast = (type, qty, title) => {
+    const { t } = this.props;
     switch (type) {
       case "move":
         if (qty > 1) {
           return toastr.success(
-            <Trans i18nKey="MoveItems" ns="Home">
+            <Trans t={t} i18nKey="MoveItems" ns="Home">
               {{ qty }} elements has been moved
             </Trans>
           );
         }
         return toastr.success(
-          <Trans i18nKey="MoveItem" ns="Home">
+          <Trans t={t} i18nKey="MoveItem" ns="Home">
             {{ title }} moved
           </Trans>
         );
       case "duplicate":
         if (qty > 1) {
           return toastr.success(
-            <Trans i18nKey="CopyItems" ns="Home">
+            <Trans t={t} i18nKey="CopyItems" ns="Home">
               {{ qty }} elements copied
             </Trans>
           );
         }
         return toastr.success(
-          <Trans i18nKey="CopyItem" ns="Home">
+          <Trans t={t} i18nKey="CopyItem" ns="Home">
             {{ title }} copied
           </Trans>
         );
@@ -170,6 +171,10 @@ class PureHome extends React.Component {
 
   showUploadPanel = () => {
     this.props.setUploadPanelVisible(!this.props.uploadPanelVisible);
+
+    this.props.primaryProgressDataVisible &&
+      this.props.uploaded &&
+      this.props.clearPrimaryProgressData();
   };
   componentDidUpdate(prevProps) {
     const {
@@ -209,6 +214,7 @@ class PureHome extends React.Component {
       fileActionId,
       firstLoad,
       isHeaderVisible,
+      isRecycleBinFolder,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -235,7 +241,7 @@ class PureHome extends React.Component {
           withBodyScroll
           withBodyAutoFocus={!isMobile}
           uploadFiles
-          onDrop={this.onDrop}
+          onDrop={isRecycleBinFolder ? null : this.onDrop}
           setSelections={this.props.setSelections}
           onMouseMove={this.onMouseMove}
           showPrimaryProgressBar={primaryProgressDataVisible}
@@ -298,6 +304,7 @@ export default inject(
     uploadDataStore,
     dialogsStore,
     selectedFolderStore,
+    treeFoldersStore,
   }) => {
     const {
       secondaryProgressDataStore,
@@ -319,12 +326,14 @@ export default inject(
     } = filesStore;
 
     const { id } = fileActionStore;
+    const { isRecycleBinFolder } = treeFoldersStore;
 
     const {
       visible: primaryProgressDataVisible,
       percent: primaryProgressDataPercent,
       icon: primaryProgressDataIcon,
       alert: primaryProgressDataAlert,
+      clearPrimaryProgressData,
     } = primaryProgressDataStore;
 
     const {
@@ -337,7 +346,7 @@ export default inject(
 
     const { convertDialogVisible } = dialogsStore;
 
-    const { setUploadPanelVisible, startUpload } = uploadDataStore;
+    const { setUploadPanelVisible, startUpload, uploaded } = uploadDataStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
     const selectionTitle = isProgressFinished
@@ -353,11 +362,14 @@ export default inject(
       isLoading,
       filter,
       viewAs,
+      uploaded,
+      isRecycleBinFolder,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
       primaryProgressDataIcon,
       primaryProgressDataAlert,
+      clearPrimaryProgressData,
 
       secondaryProgressDataStoreVisible,
       secondaryProgressDataStorePercent,

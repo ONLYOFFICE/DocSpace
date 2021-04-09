@@ -68,7 +68,7 @@ const OperationsPanelComponent = (props) => {
     const folderIds = [];
 
     for (let item of items) {
-      if (item.fileExst) {
+      if (item.fileExst || item.contentLength) {
         fileIds.push(item.id);
       } else if (item.id === destFolderId) {
         toastr.error(t("MoveToFolderMessage"));

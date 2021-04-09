@@ -15,7 +15,7 @@ import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
 import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 import ContextOptionsStore from "./ContextOptionsStore";
 
-import versionHistoryStore from "./VersionHistoryStore";
+import VersionHistoryStore from "./VersionHistoryStore";
 import dialogsStore from "./DialogsStore";
 
 import store from "studio/store";
@@ -57,7 +57,7 @@ const filesActionsStore = new FilesActionsStore(
 );
 
 const mediaViewerDataStore = new MediaViewerDataStore(filesStore);
-
+const versionHistoryStore = new VersionHistoryStore(filesStore);
 const contextOptionsStore = new ContextOptionsStore(
   filesStore,
   fileActionStore,

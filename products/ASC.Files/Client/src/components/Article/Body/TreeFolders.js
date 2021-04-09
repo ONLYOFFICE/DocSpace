@@ -148,7 +148,7 @@ class TreeFolders extends React.Component {
       isAdmin,
       myId,
       commonId,
-      rootFolderType,
+      //rootFolderType,
       currentId,
       draggableItems,
     } = this.props;
@@ -158,9 +158,9 @@ class TreeFolders extends React.Component {
 
     if (draggableItems.find((x) => x.id === item.id)) return false;
 
-    const isMy = rootFolderType === FolderType.USER;
-    const isCommon = rootFolderType === FolderType.COMMON;
-    const isShare = rootFolderType === FolderType.SHARE;
+    // const isMy = rootFolderType === FolderType.USER;
+    // const isCommon = rootFolderType === FolderType.COMMON;
+    // const isShare = rootFolderType === FolderType.SHARE;
 
     if (
       item.rootFolderType === FolderType.SHARE &&
@@ -170,25 +170,25 @@ class TreeFolders extends React.Component {
     }
 
     if (isAdmin) {
-      if (isMy || isCommon || isShare) {
-        if (
-          (item.pathParts &&
-            (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
-          item.rootFolderType === FolderType.USER ||
-          item.rootFolderType === FolderType.COMMON
-        ) {
-          return true;
-        }
+      //if (isMy || isCommon || isShare) {
+      if (
+        (item.pathParts &&
+          (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
+        item.rootFolderType === FolderType.USER ||
+        item.rootFolderType === FolderType.COMMON
+      ) {
+        return true;
       }
+      //}
     } else {
-      if (isMy || isCommon || isShare) {
-        if (
-          (item.pathParts && item.pathParts[0] === myId) ||
-          item.rootFolderType === FolderType.USER
-        ) {
-          return true;
-        }
+      //if (isMy || isCommon || isShare) {
+      if (
+        (item.pathParts && item.pathParts[0] === myId) ||
+        item.rootFolderType === FolderType.USER
+      ) {
+        return true;
       }
+      //}
     }
 
     return false;
@@ -489,13 +489,13 @@ export default inject(
       expandedKeys,
       setExpandedKeys,
     } = treeFoldersStore;
-    const { id, rootFolderType } = selectedFolderStore;
+    const { id /* rootFolderType */ } = selectedFolderStore;
 
     return {
       isAdmin: auth.isAdmin,
       isDesktop: auth.settingsStore.isDesktopClient,
       dragging,
-      rootFolderType,
+      //rootFolderType,
       currentId: id,
       myId: myFolderId,
       commonId: commonFolderId,

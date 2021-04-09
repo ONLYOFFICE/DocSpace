@@ -101,7 +101,10 @@ const StyledContextMenu = styled.div`
 
   .p-menuitem-icon {
     max-height: ${(props) => props.theme.dropDownItem.lineHeight};
-
+    & svg {
+      height: 16px;
+      width: 16px;
+    }
     path {
       fill: ${(props) => props.theme.dropDownItem.icon.color};
     }

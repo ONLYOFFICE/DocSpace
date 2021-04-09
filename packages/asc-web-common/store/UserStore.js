@@ -21,7 +21,8 @@ class UserStore {
 
   getCurrentUser = async () => {
     const user = await api.people.getUser();
-    localStorage.getItem(LANGUAGE) !== user.cultureName &&
+    user.cultureName &&
+      localStorage.getItem(LANGUAGE) !== user.cultureName &&
       localStorage.setItem(LANGUAGE, user.cultureName);
     this.setUser(user);
   };

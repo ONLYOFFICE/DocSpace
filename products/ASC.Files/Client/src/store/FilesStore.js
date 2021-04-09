@@ -120,7 +120,6 @@ class FilesStore {
 
   initFiles = () => {
     if (this.isInit) return;
-    this.isInit = true;
 
     const { isAuthenticated } = this.authStore;
     const {
@@ -153,7 +152,7 @@ class FilesStore {
       }
     }
 
-    return Promise.all(requests);
+    return Promise.all(requests).then(() => (this.isInit = true));
   };
 
   setFirstLoad = (firstLoad) => {
@@ -292,41 +291,59 @@ class FilesStore {
       }
     }
 
-    return api.files.getFolder(folderId, filter).then((data) => {
-      const isPrivacyFolder =
-        data.current.rootFolderType === FolderType.Privacy;
+    //TODO: fix @my
+    let requestCounter = 1;
+    const request = () =>
+      api.files
+        .getFolder(folderId, filter)
+        .then((data) => {
+          const isPrivacyFolder =
+            data.current.rootFolderType === FolderType.Privacy;
 
-      const newExpandedKeys = createTreeFolders(data.pathParts, expandedKeys);
-      setExpandedKeys(newExpandedKeys);
-      filterData.total = data.total;
-      this.setFilesFilter(filterData); //TODO: FILTER
-      this.setFolders(
-        isPrivacyFolder && !this.settingsStore.isEncryptionSupport
-          ? []
-          : data.folders
-      );
-      this.setFiles(
-        isPrivacyFolder && !this.settingsStore.isEncryptionSupport
-          ? []
-          : data.files
-      );
-      if (clearFilter) {
-        this.fileActionStore.setAction({ type: null });
-        this.setSelected("close");
-      }
+          const newExpandedKeys = createTreeFolders(
+            data.pathParts,
+            expandedKeys
+          );
+          setExpandedKeys(newExpandedKeys);
+          filterData.total = data.total;
+          this.setFilesFilter(filterData); //TODO: FILTER
+          this.setFolders(
+            isPrivacyFolder && !this.settingsStore.isEncryptionSupport
+              ? []
+              : data.folders
+          );
+          this.setFiles(
+            isPrivacyFolder && !this.settingsStore.isEncryptionSupport
+              ? []
+              : data.files
+          );
+          if (clearFilter) {
+            this.fileActionStore.setAction({ type: null });
+            this.setSelected("close");
+          }
 
-      this.selectedFolderStore.setSelectedFolder({
-        folders: data.folders,
-        ...data.current,
-        pathParts: data.pathParts,
-        ...{ new: data.new },
-      });
+          this.selectedFolderStore.setSelectedFolder({
+            folders: data.folders,
+            ...data.current,
+            pathParts: data.pathParts,
+            ...{ new: data.new },
+          });
 
-      const selectedFolder = {
-        selectedFolder: { ...this.selectedFolderStore },
-      };
-      return Promise.resolve(selectedFolder);
-    });
+          const selectedFolder = {
+            selectedFolder: { ...this.selectedFolderStore },
+          };
+          return Promise.resolve(selectedFolder);
+        })
+        .catch(() => {
+          if (folderId === "@my" && requestCounter !== 0 && !this.isInit) {
+            requestCounter--;
+            setTimeout(() => {
+              return request();
+            }, 5000);
+          }
+        });
+
+    return request();
   };
 
   isFileSelected = (selection, fileId, parentId) => {
@@ -355,7 +372,7 @@ class FilesStore {
     const isVisitor =
       (this.userStore.user && this.userStore.user.isVisitor) || false;
 
-    const isFile = !!item.fileExst;
+    const isFile = !!item.fileExst || item.contentLength;
     const isFavorite = item.fileStatus === 32;
     const isFullAccess = item.access < 2;
     const isThirdPartyFolder =
@@ -367,11 +384,12 @@ class FilesStore {
       isRecycleBinFolder,
       isPrivacyFolder,
       isRecentFolder,
+      isShareFolder,
     } = this.treeFoldersStore;
 
     if (isRecycleBinFolder) {
       options.push("download");
-      options.push("download-as");
+      isFile && options.push("download-as");
       options.push("restore");
       options.push("separator0");
       options.push("delete");
@@ -406,6 +424,16 @@ class FilesStore {
       }
 
       this.canShareOwnerChange(item) && options.push("owner-change");
+
+      if (isFile) {
+        if (canOpenPlayer) {
+          options.push("view");
+        } else {
+          options.push("edit");
+          options.push("preview");
+        }
+      }
+
       options.push("link-for-portal-users");
 
       if (!isVisitor) {
@@ -428,39 +456,36 @@ class FilesStore {
             options.push("mark-as-favorite");
           }
         } else {
-          options.push("separator3");
+          !isShareFolder && options.push("separator3");
         }
-
-        if (canOpenPlayer) {
-          options.push("view");
-        } else {
-          options.push("edit");
-          options.push("preview");
-        }
-
-        options.push("download");
       }
+
+      options.push("download");
 
       if (!isVisitor) {
         !isThirdPartyFolder && this.userAccess && options.push("move");
         options.push("copy");
 
-        if (isFile) {
-          options.push("duplicate");
-        }
+        // if (isFile) {
+        //   options.push("duplicate");
+        // }
 
         this.userAccess && options.push("rename");
         isThirdPartyFolder &&
           this.userAccess &&
           options.push("change-thirdparty-info");
-        options.push("separator3");
-        this.userAccess && options.push("delete");
+
+        if (this.userAccess) {
+          options.push("separator3");
+          options.push("delete");
+        }
       } else {
         options.push("copy");
       }
     }
 
     if (isFavorite && !isRecycleBinFolder) {
+      !this.userAccess && options.push("separator3");
       options.push("remove-from-favorites");
     }
 
@@ -516,7 +541,7 @@ class FilesStore {
   };
 
   canShareOwnerChange = (item) => {
-    const userId = this.userStore.user.id;
+    const userId = this.userStore.user && this.userStore.user.id;
     const isCommonFolder =
       this.treeFoldersStore.commonFolder &&
       this.selectedFolderStore.pathParts &&
@@ -683,7 +708,7 @@ class FilesStore {
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
-      const icon = getIcon(24, fileExst, providerKey);
+      const icon = getIcon(24, fileExst, providerKey, contentLength);
 
       let isFolder = false;
       this.folders.map((x) => {

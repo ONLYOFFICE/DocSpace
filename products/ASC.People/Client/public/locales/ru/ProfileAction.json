@@ -12,6 +12,7 @@
   "UpdatingProcess": "Обновление...",
   "CancelButton": "Отмена",
   "CopyEmailAndPassword": "Копировать email и пароль",
+  "CopiedResourceText": "Скопировано",
   "UserType": "Тип",
   "AddButton": "Добавить",
   "ContactInformation": "Контактные данные",
@@ -41,9 +42,7 @@
   "ErrorPasswordNoUpperCase": "заглавные буквы",
   "ErrorPasswordNoSpecialSymbols": "специальные символы",
   "ErrorPasswordLength": "от {{from}} до {{to}} символов",
-
   "CustomCreation": "{{user}} (создание)",
-
   "ActivationLink": "Ссылка для активации",
   "AddPhoto": "Добавить фотографию",
   "TemporaryPassword": "Временный пароль",

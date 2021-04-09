@@ -60,7 +60,7 @@ class FilesActionStore {
 
     let i = 0;
     while (selection.length !== i) {
-      if (selection[i].fileExst) {
+      if (selection[i].fileExst || selection[i].contentLength) {
         fileIds.push(selection[i].id);
       } else {
         folderIds.push(selection[i].id);
@@ -225,7 +225,7 @@ class FilesActionStore {
       });
   };
 
-  editCompleteAction = (id, selectedItem) => {
+  editCompleteAction = async (id, selectedItem, isCancelled = false) => {
     const {
       filter,
       folders,
@@ -241,22 +241,21 @@ class FilesActionStore {
     const item = items.find((o) => o.id === id && !o.fileExst); //TODO: maybe need files find and folders find, not at one function?
     if (type === FileAction.Create || type === FileAction.Rename) {
       setIsLoading(true);
-      fetchFiles(this.selectedFolderStore.id, filter)
-        .then((data) => {
-          const newItem = (item && item.id) === -1 ? null : item; //TODO: not add new folders?
-          if (!selectedItem.fileExst) {
-            const path = data.selectedFolder.pathParts;
-            const newTreeFolders = treeFolders;
-            const folders = data.selectedFolder.folders;
-            loopTreeFolders(path, newTreeFolders, folders, null, newItem);
-            setTreeFolders(newTreeFolders);
-          }
-        })
-        .finally(() => {
-          setAction({ type: null, id: null, extension: null });
-          setIsLoading(false);
-          type === FileAction.Rename && this.onSelectItem(selectedItem);
-        });
+
+      if (!isCancelled) {
+        const data = await fetchFiles(this.selectedFolderStore.id, filter);
+        const newItem = (item && item.id) === -1 ? null : item; //TODO: not add new folders?
+        if (!selectedItem.fileExst && !selectedItem.contentLength) {
+          const path = data.selectedFolder.pathParts;
+          const newTreeFolders = treeFolders;
+          const folders = data.selectedFolder.folders;
+          loopTreeFolders(path, newTreeFolders, folders, null, newItem);
+          setTreeFolders(newTreeFolders);
+        }
+      }
+      setAction({ type: null, id: null, extension: null });
+      setIsLoading(false);
+      type === FileAction.Rename && this.onSelectItem(selectedItem);
     }
   };
 

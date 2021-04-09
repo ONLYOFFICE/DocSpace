@@ -99,7 +99,7 @@ namespace ASC.Projects.Configuration
 
         public override string HelpURL
         {
-            get { return string.Concat(PathProvider.BaseVirtualPath, "Help.aspx"); }
+            get { return "https://helpcenter.onlyoffice.com/userguides/projects.aspx"; }
         }
 
         public override string ProductClassName
