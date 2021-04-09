@@ -62,8 +62,9 @@ class ContextOptionsStore {
   };
 
   onClickFavorite = (e) => {
-    const { id } = this.filesStore.selection[0];
-    const { action } = e.currentTarget.dataset;
+    const data = (e.currentTarget && e.currentTarget.dataset) || e;
+    const { action } = data;
+
     this.filesActionsStore
       .setFavoriteAction(action, id)
       .then(() =>
@@ -72,7 +73,6 @@ class ContextOptionsStore {
           : toastr.success(this.t("RemovedFromFavorites"))
       )
       .catch((err) => {
-        console.log(err);
         toastr.error(err);
       });
   };
@@ -129,9 +129,18 @@ class ContextOptionsStore {
   };
 
   onClickDownload = () => {
-    const { viewUrl } = this.filesStore.selection[0];
+    const { viewUrl, fileExst, contentLength } = this.filesStore.selection[0];
+    const isFile = !!fileExst && contentLength;
+
+    isFile
+      ? window.open(viewUrl, "_blank")
+      : this.filesActionsStore
+          .downloadAction(this.t("ArchivingData"))
+          .catch((err) => toastr.error(err));
     window.open(viewUrl, "_blank");
   };
+
+  onClickDownloadAs = () => this.dialogsStore.setDownloadDialogVisible(true);
 
   onMoveAction = () => this.dialogsStore.setMoveToPanelVisible(true);
   onCopyAction = () => this.dialogsStore.setCopyPanelVisible(true);
@@ -151,7 +160,10 @@ class ContextOptionsStore {
     });
   };
 
-  onChangeThirdPartyInfo = () => this.filesActionsStore.setThirdpartyInfo();
+  onChangeThirdPartyInfo = () => {
+    const { providerKey } = this.filesStore.selection[0];
+    this.filesActionsStore.setThirdpartyInfo(providerKey);
+  };
 
   onClickDelete = () => {
     const {
@@ -160,9 +172,12 @@ class ContextOptionsStore {
       folderId,
       parentId,
       providerKey,
+      contentLength,
     } = this.filesStore.selection[0];
+
     const isThirdPartyFolder =
       providerKey && this.selectedFolderStore.isRootFolder;
+
     if (isThirdPartyFolder) {
       const splitItem = id.split("-");
       this.dialogsStore.setRemoveItem({
@@ -177,7 +192,7 @@ class ContextOptionsStore {
       deleteOperation: this.t("DeleteOperation"),
     };
 
-    fileExst
+    fileExst || contentLength
       ? this.filesActionsStore
           .deleteFileAction(id, folderId, translations)
           .then(() => toastr.success(this.t("FileRemoved")))
@@ -317,10 +332,26 @@ class ContextOptionsStore {
             onClick: this.onClickDownload,
             disabled: false,
           };
+        case "download-as":
+          return {
+            key: option,
+            label: t("DownloadAs"),
+            icon: "images/download-as.react.svg",
+            onClick: this.onClickDownloadAs,
+            disabled: false,
+          };
         case "move":
           return {
             key: option,
             label: t("MoveTo"),
+            icon: "images/move.react.svg",
+            onClick: this.onMoveAction,
+            disabled: false,
+          };
+        case "restore":
+          return {
+            key: option,
+            label: t("Restore"),
             icon: "images/move.react.svg",
             onClick: this.onMoveAction,
             disabled: false,

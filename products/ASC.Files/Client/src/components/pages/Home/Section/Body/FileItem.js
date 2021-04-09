@@ -9,8 +9,6 @@ import IconButton from "@appserver/components/icon-button";
 import Text from "@appserver/components/text";
 
 import Tile from "./FilesTile/sub-components/Tile";
-//import FilesTileContent from "./FilesTile/FilesTileContent";
-//import FilesRowContent from "./FilesRow/FilesRowContent";
 import FilesContent from "./FilesContent";
 import { SimpleFilesRow, EncryptedFileIcon } from "./FilesRow/SimpleFilesRow";
 
@@ -54,6 +52,7 @@ const FileItem = (props) => {
     icon,
     providerKey,
     isFolder,
+    contentLength,
   } = item;
   const getItemIcon = (isEdit) => {
     return (
@@ -124,9 +123,7 @@ const FileItem = (props) => {
   };
 
   const onMouseDown = (e) => {
-    console.log("here");
     if (!draggable) {
-      console.log("here2");
       return;
     }
 
@@ -151,10 +148,10 @@ const FileItem = (props) => {
     setStartDrag(true);
   };
 
-  let value = fileExst ? `file_${id}` : `folder_${id}`;
+  let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
   value += draggable ? "_draggable" : "";
 
-  const isThirdPartyFolder = providerKey && isRootFolder;
+  const isThirdPartyFolder = providerKey && isRootFolder; //?
 
   const isMobile = sectionWidth < 500;
 
@@ -172,7 +169,9 @@ const FileItem = (props) => {
   const element = getItemIcon(isEdit || id <= 0);
   const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
 
-  let className = isFolder && access < 2 && !isRecycleBin ? " dropable" : "";
+  const isDragging = isFolder && access < 2 && !isRecycleBin;
+
+  let className = isDragging ? " dropable" : "";
   if (draggable) className += " draggable";
 
   const sharedButton =
@@ -187,7 +186,7 @@ const FileItem = (props) => {
       className={className}
       onDrop={onDrop}
       onMouseDown={onMouseDown}
-      dragging={dragging && isFolder && access < 2}
+      dragging={dragging && isDragging}
       {...contextOptionsProps}
       value={value}
     >
@@ -252,9 +251,9 @@ export default inject(
 
     const {
       setSharingPanelVisible,
-      setChangeOwnerPanelVisible,
-      setMoveToPanelVisible,
-      setCopyPanelVisible,
+      setChangeOwnerPanelVisible, // moved store
+      setMoveToPanelVisible, // moved store
+      setCopyPanelVisible, // moved store
     } = dialogsStore;
 
     const {
