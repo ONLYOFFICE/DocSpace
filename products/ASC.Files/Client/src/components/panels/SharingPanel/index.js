@@ -27,6 +27,7 @@ import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
+import { isMobile } from "react-device-detect";
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -273,7 +274,7 @@ class SharingPanelComponent extends React.Component {
     const fileId = returnValue[1];
 
     if (folderId.length !== 0 || fileId.length !== 0) {
-      setIsLoading(true);
+      !isMobile && setIsLoading(true);
       getShareUsers(folderId, fileId)
         .then((shareDataItems) => {
           const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
@@ -297,7 +298,7 @@ class SharingPanelComponent extends React.Component {
           toastr.error(err);
           this.onClose();
         })
-        .finally(() => setIsLoading(false));
+        .finally(() => !isMobile && setIsLoading(false));
     }
   };
 
