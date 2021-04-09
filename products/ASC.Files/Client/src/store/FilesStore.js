@@ -41,7 +41,6 @@ class FilesStore {
   selection = [];
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
-  newRowItems = [];
 
   constructor(
     authStore,
@@ -232,10 +231,6 @@ class FilesStore {
 
   setFilter = (filter) => {
     this.filter = filter;
-  };
-
-  setNewRowItems = (newRowItems) => {
-    this.newRowItems = newRowItems;
   };
 
   setFilesOwner = (folderIds, fileIds, ownerId) => {
@@ -515,6 +510,28 @@ class FilesStore {
     const folderIndex = this.folders.findIndex((f) => f.id === folder.id);
     if (folderIndex !== -1) this.folders[folderIndex] = folder;
   };
+
+  updateFolderBadge = (id, count) => {
+    const folder = this.folders.find((x) => x.id === id);
+    if (folder) folder.new -= count;
+  };
+
+  updateFileBadge = (id) => {
+    const file = this.files.find((x) => x.id === id);
+    if (file) file.fileStatus = 0;
+  };
+
+  updateFilesBadge = () => {
+    for(let file of this.files) {
+      file.fileStatus = 0;
+    }
+  }
+
+  updateFoldersBadge = () => {
+    for(let folder of this.folders) {
+      folder.new = 0;
+    }
+  }
 
   updateFile = (fileId, title) => {
     return api.files
