@@ -55,7 +55,6 @@ namespace ASC.Notify
         public Task StartAsync(CancellationToken cancellationToken)
         {
             NotifyConfiguration.Configure();
-            WebItemManager.LoadItems();
 
             StudioNotifyServiceSender.RegisterSendMethod();
 

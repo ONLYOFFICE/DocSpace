@@ -30,6 +30,7 @@ using System.Linq;
 using System.Linq.Expressions;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.Settings;
@@ -56,7 +57,8 @@ namespace ASC.Files.Core.Data
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
             AuthContext authContext,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            ICache cache)
             : base(dbContextManager,
                   userManager,
                   tenantManager,
@@ -68,7 +70,8 @@ namespace ASC.Files.Core.Data
                   coreConfiguration,
                   settingsManager,
                   authContext,
-                  serviceProvider)
+                  serviceProvider,
+                  cache)
         {
         }
 

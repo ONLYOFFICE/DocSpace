@@ -61,6 +61,7 @@ namespace ASC.ApiSystem
             var diHelper = new DIHelper(services);
 
             services.AddHttpContextAccessor();
+            services.AddMemoryCache();
 
             services.AddControllers()
                 .AddJsonOptions(options =>
@@ -120,7 +121,7 @@ namespace ASC.ApiSystem
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            builder.Register(Configuration, HostEnvironment.ContentRootPath, false);
+            builder.Register(Configuration, false);
         }
     }
 }

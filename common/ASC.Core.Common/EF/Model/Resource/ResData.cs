@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
 
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Resource
 {
-    [Table("res_data")]
     public class ResData
     {
         public int Id { get; set; }
@@ -39,14 +37,14 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.ToTable("res_data");
 
                 entity.HasIndex(e => e.CultureTitle)
-                    .HasName("resources_FK2");
+                    .HasDatabaseName("resources_FK2");
 
                 entity.HasIndex(e => e.Id)
-                    .HasName("id")
+                    .HasDatabaseName("id")
                     .IsUnique();
 
                 entity.HasIndex(e => e.TimeChanges)
-                    .HasName("dateIndex");
+                    .HasDatabaseName("dateIndex");
 
                 entity.Property(e => e.FileId).HasColumnName("fileid");
 
@@ -117,14 +115,14 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.ToTable("res_data", "onlyoffice");
 
                 entity.HasIndex(e => e.CultureTitle)
-                    .HasName("resources_FK2");
+                    .HasDatabaseName("resources_FK2");
 
                 entity.HasIndex(e => e.Id)
-                    .HasName("id_res_data")
+                    .HasDatabaseName("id_res_data")
                     .IsUnique();
 
                 entity.HasIndex(e => e.TimeChanges)
-                    .HasName("dateIndex");
+                    .HasDatabaseName("dateIndex");
 
                 entity.Property(e => e.FileId).HasColumnName("fileid");
 

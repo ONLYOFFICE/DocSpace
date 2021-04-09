@@ -1,13 +1,9 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using ASC.Core.Common.EF.Model;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
-    [Table("core_group")]
     public class DbGroup : BaseEntity
     {
         public int Tenant { get; set; }
@@ -17,8 +13,6 @@ namespace ASC.Core.Common.EF
         public Guid? ParentId { get; set; }
         public string Sid { get; set; }
         public bool Removed { get; set; }
-
-        [Column("last_modified")]
         public DateTime LastModified { get; set; }
 
         public override object[] GetKeys()
@@ -42,10 +36,10 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_group");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified");
+                    .HasDatabaseName("last_modified");
 
                 entity.HasIndex(e => new { e.Tenant, e.ParentId })
-                    .HasName("parentid");
+                    .HasDatabaseName("parentid");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -95,10 +89,10 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_group");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified");
+                    .HasDatabaseName("last_modified");
 
                 entity.HasIndex(e => new { e.Tenant, e.ParentId })
-                    .HasName("parentid");
+                    .HasDatabaseName("parentid");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")

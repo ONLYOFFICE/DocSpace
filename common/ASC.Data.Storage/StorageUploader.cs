@@ -51,7 +51,7 @@ namespace ASC.Data.Storage
         private static readonly TaskScheduler Scheduler;
         private static readonly CancellationTokenSource TokenSource;
 
-        private static readonly ICache Cache;
+        private ICache Cache { get; set; }
         private static readonly object Locker;
 
         private IServiceProvider ServiceProvider { get; }
@@ -61,14 +61,14 @@ namespace ASC.Data.Storage
         {
             Scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
             TokenSource = new CancellationTokenSource();
-            Cache = AscCache.Memory;
             Locker = new object();
         }
 
-        public StorageUploader(IServiceProvider serviceProvider, ICacheNotify<MigrationProgress> cacheMigrationNotify)
+        public StorageUploader(IServiceProvider serviceProvider, ICacheNotify<MigrationProgress> cacheMigrationNotify, ICache cache)
         {
             ServiceProvider = serviceProvider;
             CacheMigrationNotify = cacheMigrationNotify;
+            Cache = cache;
         }
 
         public void Start(int tenantId, StorageSettings newStorageSettings, StorageFactoryConfig storageFactoryConfig)
@@ -101,7 +101,7 @@ namespace ASC.Data.Storage
             task.Start(Scheduler);
         }
 
-        public static MigrateOperation GetProgress(int tenantId)
+        public MigrateOperation GetProgress(int tenantId)
         {
             lock (Locker)
             {

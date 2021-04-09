@@ -115,6 +115,7 @@ namespace ASC.Web.Files.Services.WCFService
         private SettingsManager SettingsManager { get; }
         private FileOperationsManager FileOperationsManager { get; }
         private TenantManager TenantManager { get; }
+        private FileTrackerHelper FileTracker { get; }
         private ILog Logger { get; set; }
 
         public FileStorageService(
@@ -156,7 +157,8 @@ namespace ASC.Web.Files.Services.WCFService
             EncryptionKeyPairHelper encryptionKeyPairHelper,
             SettingsManager settingsManager,
             FileOperationsManager fileOperationsManager,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            FileTrackerHelper fileTracker)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -197,6 +199,7 @@ namespace ASC.Web.Files.Services.WCFService
             Logger = optionMonitor.Get("ASC.Files");
             FileOperationsManager = fileOperationsManager;
             TenantManager = tenantManager;
+            FileTracker = fileTracker;
         }
 
         public Folder<T> GetFolder(T folderId)
@@ -545,7 +548,7 @@ namespace ASC.Web.Files.Services.WCFService
             return new ItemList<File<T>>(result);
         }
 
-        public File<T> CreateNewFile(FileModel<T> fileWrapper)
+        public File<T> CreateNewFile(FileModel<T> fileWrapper, bool enableExternalExt = false)
         {
             if (string.IsNullOrEmpty(fileWrapper.Title) || fileWrapper.ParentId == null) throw new ArgumentException();
 
@@ -576,12 +579,22 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 fileWrapper.Title = UserControlsCommonResource.NewDocument + ".docx";
             }
+            
+            var externalExt = false;
 
-            var fileExt = FileUtility.GetInternalExtension(fileWrapper.Title);
+            var fileExt = !enableExternalExt ? FileUtility.GetInternalExtension(fileWrapper.Title) : FileUtility.GetFileExtension(fileWrapper.Title);
             if (!FileUtility.InternalExtension.Values.Contains(fileExt))
             {
-                fileExt = FileUtility.InternalExtension[FileType.Document];
-                file.Title = fileWrapper.Title + fileExt;
+                if (!enableExternalExt)
+                {
+                    fileExt = FileUtility.InternalExtension[FileType.Document];
+                    file.Title = fileWrapper.Title + fileExt;
+                }
+                else
+                {
+                    externalExt = true;
+                    file.Title = fileWrapper.Title;
+                }
             }
             else
             {
@@ -603,9 +616,16 @@ namespace ASC.Web.Files.Services.WCFService
 
                 try
                 {
-                    using var stream = storeTemplate.GetReadStream("", path);
-                    file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(path);
-                    file = fileDao.SaveFile(file, stream);
+                    if (!externalExt)
+                    {
+                        using var stream = storeTemplate.GetReadStream("", path);
+                        file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(path);
+                        file = fileDao.SaveFile(file, stream);
+                    }
+                    else
+                    {
+                        file = fileDao.SaveFile(file, null);
+                    }
                 }
                 catch (Exception e)
                 {

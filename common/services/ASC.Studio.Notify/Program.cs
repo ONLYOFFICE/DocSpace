@@ -53,8 +53,10 @@ namespace ASC.Studio.Notify
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                     LogNLogExtension.ConfigureLog(diHelper, "ASC.Notify", "ASC.Notify.Messages");
                     services.AddHostedService<ServiceLauncher>();
                     diHelper.TryAdd<ServiceLauncher>();
@@ -63,7 +65,7 @@ namespace ASC.Studio.Notify
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
-                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath);
+                    builder.Register(context.Configuration);
                 })
                 .UseConsoleLifetime()
                 .Build();

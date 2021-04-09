@@ -120,16 +120,16 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Update("getshortenlink")]
-        public object GetShortenLink(string link)
+        public object GetShortenLink(ShortenLinkModel model)
         {
             try
             {
-                return UrlShortener.Instance.GetShortenLink(link);
+                return UrlShortener.Instance.GetShortenLink(model.Link);
             }
             catch (Exception ex)
             {
                 Log.Error("getshortenlink", ex);
-                return link;
+                return model.Link;
             }
         }
 

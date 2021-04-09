@@ -1,35 +1,18 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
 {
-    [Table("files_tag_link")]
     public class DbFilesTagLink : BaseEntity, IDbFile
     {
-        [Column("tenant_id")]
         public int TenantId { get; set; }
-
-        [Column("tag_id")]
         public int TagId { get; set; }
-
-        [Column("entry_type")]
         public FileEntryType EntryType { get; set; }
-
-        [Column("entry_id")]
         public string EntryId { get; set; }
-
-        [Column("create_by")]
         public Guid? CreateBy { get; set; }
-
-        [Column("create_on")]
         public DateTime? CreateOn { get; set; }
-
-        [Column("tag_count")]
         public int TagCount { get; set; }
 
         public override object[] GetKeys()
@@ -57,10 +40,10 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_tag_link");
 
                 entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on");
+                    .HasDatabaseName("create_on");
 
                 entity.HasIndex(e => new { e.TenantId, e.EntryId, e.EntryType })
-                    .HasName("entry_id");
+                    .HasDatabaseName("entry_id");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
@@ -97,10 +80,10 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_tag_link", "onlyoffice");
 
                 entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on_files_tag_link");
+                    .HasDatabaseName("create_on_files_tag_link");
 
                 entity.HasIndex(e => new { e.TenantId, e.EntryType, e.EntryId })
-                    .HasName("entry_id");
+                    .HasDatabaseName("entry_id");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 

@@ -749,13 +749,6 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                         .HasColumnName("tariff")
                         .HasColumnType("integer");
 
-                    b.Property<string>("TariffKey")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("tariff_key")
-                        .HasColumnType("character varying(64)")
-                        .HasDefaultValueSql("NULL")
-                        .HasMaxLength(64);
-
                     b.Property<int>("Tenant")
                         .HasColumnName("tenant")
                         .HasColumnType("integer");

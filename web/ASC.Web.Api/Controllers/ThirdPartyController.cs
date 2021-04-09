@@ -50,7 +50,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Read("{provider}")]
-        public RedirectResult Get(LoginProviderEnum provider)
+        public object Get(LoginProviderEnum provider)
         {
             switch (provider)
             {

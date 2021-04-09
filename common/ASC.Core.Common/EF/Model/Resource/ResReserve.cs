@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Resource
 {
-    [Table("res_reserve")]
     public class ResReserve
     {
         public int Id { get; set; }
@@ -33,10 +32,10 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.ToTable("res_reserve");
 
                 entity.HasIndex(e => e.CultureTitle)
-                    .HasName("resources_FK2");
+                    .HasDatabaseName("resources_FK2");
 
                 entity.HasIndex(e => e.Id)
-                    .HasName("id")
+                    .HasDatabaseName("id")
                     .IsUnique();
 
                 entity.Property(e => e.FileId).HasColumnName("fileid");

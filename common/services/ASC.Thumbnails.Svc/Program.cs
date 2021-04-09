@@ -77,6 +77,7 @@ namespace ASC.Thumbnails.Svc
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
 
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
@@ -86,7 +87,7 @@ namespace ASC.Thumbnails.Svc
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
-                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath, false, false);
+                    builder.Register(context.Configuration, false, false);
                 })
                 .UseConsoleLifetime()
                 .Build();

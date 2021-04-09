@@ -1,34 +1,17 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { TreeMenu, TreeNode, Icons } from "asc-web-components";
+import TreeMenu from "@appserver/components/tree-menu";
+import TreeNode from "@appserver/components/tree-menu/sub-components/tree-node";
 import styled from "styled-components";
-import { history, utils, store as initStore } from "asc-web-common";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import { createI18N } from "../../../helpers/i18n";
-
-import {
-  setSelectedNode,
-  setExpandSettingsTree,
-  getFilesSettings,
-  setSelectedFolder,
-  setIsLoading,
-} from "../../../store/files/actions";
-import {
-  getIsLoading,
-  getSettingsSelectedTreeNode,
-  getExpandedSetting,
-  getEnableThirdParty,
-  getSelectedTreeNode,
-} from "../../../store/files/selectors";
-const { isAdmin } = initStore.auth.selectors;
-
-const i18n = createI18N({
-  page: "Settings",
-  localesPath: "pages/Settings",
-});
-
-const { changeLanguage } = utils;
+import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
+import SettingsIcon from "../../../../../../../public/images/settings.react.svg";
+import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
+import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
@@ -65,7 +48,24 @@ const StyledTreeMenu = styled(TreeMenu)`
     }
   }
 `;
-
+const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
+const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
+const StyledSettingsIcon = styled(SettingsIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: dimgray;
+  }
+`;
 const PureTreeSettings = ({
   match,
   enableThirdParty,
@@ -77,18 +77,20 @@ const PureTreeSettings = ({
   setExpandSettingsTree,
   getFilesSettings,
   setSelectedFolder,
-  selectedFolder,
+  //selectedFolder,
+  history,
   setIsLoading,
   t,
 }) => {
+  const { setting } = match.params;
+
   useEffect(() => {
-    const { setting } = match.params;
     setIsLoading(true);
     getFilesSettings().then(() => {
       setIsLoading(false);
       setSelectedNode([setting]);
     });
-  }, []);
+  }, [getFilesSettings, setting, setIsLoading, setSelectedNode]);
 
   useEffect(() => {
     const { setting } = match.params;
@@ -100,27 +102,40 @@ const PureTreeSettings = ({
       return null;
     }
     if (obj.expanded) {
-      return <Icons.ExpanderDownIcon size="scale" isfill color="dimgray" />;
+      return <StyledExpanderDownIcon size="scale" />;
     } else {
-      return <Icons.ExpanderRightIcon size="scale" isfill color="dimgray" />;
+      return <StyledExpanderRightIcon size="scale" />;
     }
   };
 
   const onSelect = (section) => {
     const path = section[0];
 
-    if (selectedFolder) setSelectedFolder({});
+    //if (selectedFolder) setSelectedFolder({});
+    setSelectedFolder(null); //getSelectedTreeNode
 
     if (path === "settings") {
       setSelectedNode(["common"]);
       if (!expandedSetting || expandedSetting[0] !== "settings")
         setExpandSettingsTree(section);
-      return history.push("/products/files/settings/common");
+      return history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          "/settings/common"
+        )
+      );
     }
 
     if (selectedTreeNode[0] !== path) {
       setSelectedNode(section);
-      return history.push(`/products/files/settings/${path}`);
+      return history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          `/settings/${path}`
+        )
+      );
     }
   };
 
@@ -135,7 +150,7 @@ const PureTreeSettings = ({
         key="settings"
         title={t("TreeSettingsMenuTitle")}
         isLeaf={false}
-        icon={<Icons.SettingsIcon size="scale" isfill color="dimgray" />}
+        icon={<StyledSettingsIcon size="scale" />}
       >
         <TreeNode
           className="settings-node"
@@ -153,16 +168,16 @@ const PureTreeSettings = ({
             title={t("TreeSettingsAdminSettings")}
           />
         ) : null}
-        {/*enableThirdParty ? (
+        {enableThirdParty ? (
           <TreeNode
             selectable={true}
             className="settings-node"
             id="connected-clouds"
-            key="thirdparty"
+            key="thirdParty"
             isLeaf={true}
             title={t("TreeSettingsConnectedCloud")}
           />
-        ) : null*/}
+        ) : null}
       </TreeNode>
     );
   };
@@ -189,34 +204,38 @@ const PureTreeSettings = ({
   );
 };
 
-const TreeSettingsContainer = withTranslation()(PureTreeSettings);
+const TreeSettings = withTranslation("Settings")(withRouter(PureTreeSettings));
 
-const TreeSettings = (props) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-  return (
-    <I18nextProvider i18n={i18n}>
-      <TreeSettingsContainer {...props} />
-    </I18nextProvider>
-  );
-};
+export default inject(
+  ({
+    auth,
+    filesStore,
+    settingsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
+    const { setIsLoading, isLoading } = filesStore;
+    const { setSelectedFolder } = selectedFolderStore;
+    const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
+    const {
+      getFilesSettings,
+      enableThirdParty,
+      expandedSetting,
+      setExpandSettingsTree,
+    } = settingsStore;
 
-function mapStateToProps(state) {
-  return {
-    selectedTreeNode: getSettingsSelectedTreeNode(state),
-    expandedSetting: getExpandedSetting(state),
-    enableThirdParty: getEnableThirdParty(state),
-    isAdmin: isAdmin(state),
-    isLoading: getIsLoading(state),
-    selectedFolder: getSelectedTreeNode(state),
-  };
-}
+    return {
+      isAdmin: auth.isAdmin,
+      isLoading,
+      selectedTreeNode,
+      enableThirdParty,
+      expandedSetting,
 
-export default connect(mapStateToProps, {
-  setSelectedNode,
-  setExpandSettingsTree,
-  getFilesSettings,
-  setSelectedFolder,
-  setIsLoading,
-})(withRouter(TreeSettings));
+      setIsLoading,
+      setSelectedFolder,
+      setSelectedNode,
+      getFilesSettings,
+      setExpandSettingsTree,
+    };
+  }
+)(observer(TreeSettings));

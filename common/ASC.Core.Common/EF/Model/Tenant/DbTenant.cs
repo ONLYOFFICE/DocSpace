@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Core.Tenants;
 
@@ -7,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
-    [Table("tenants_tenants")]
     public class DbTenant
     {
         public int Id { get; set; }
@@ -15,36 +13,23 @@ namespace ASC.Core.Common.EF.Model
         public string Alias { get; set; }
         public string MappedDomain { get; set; }
         public int Version { get; set; }
-
         public DateTime? Version_Changed { get; set; }
-
-        [NotMapped]
         public DateTime VersionChanged { get => Version_Changed ?? DateTime.MinValue; set => Version_Changed = value; }
-
         public string Language { get; set; }
         public string TimeZone { get; set; }
         public string TrustedDomains { get; set; }
         public TenantTrustedDomainsType TrustedDomainsEnabled { get; set; }
         public TenantStatus Status { get; set; }
-
         public DateTime? StatusChanged { get; set; }
-
         //hack for DateTime?
-        [NotMapped]
+       
         public DateTime StatusChangedHack { get { return StatusChanged ?? DateTime.MinValue; } set { StatusChanged = value; } }
-
         public DateTime CreationDateTime { get; set; }
-
-        [Column("owner_id")]
         public Guid OwnerId { get; set; }
         public bool Public { get; set; }
         public string PublicVisibleProducts { get; set; }
-
-        [Column("payment_id")]
         public string PaymentId { get; set; }
         public TenantIndustry? Industry { get; set; }
-
-        [Column("last_modified")]
         public DateTime LastModified { get; set; }
         public bool Spam { get; set; }
         public bool Calls { get; set; }
@@ -69,6 +54,7 @@ namespace ASC.Core.Common.EF.Model
                     OwnerId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef")
                 }
                 );
+
             return modelBuilder;
         }
 
@@ -78,19 +64,19 @@ namespace ASC.Core.Common.EF.Model
             //    .HasOne(r => r.Partner)
             //    .WithOne(r => r.Tenant)
             //    .HasPrincipalKey<DbTenant>(r => new { r.Id });
-
+           
             modelBuilder.Entity<DbTenant>(entity =>
             {
                 entity.ToTable("tenants_tenants");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified");
+                    .HasDatabaseName("last_modified");
 
                 entity.HasIndex(e => e.MappedDomain)
-                    .HasName("mappeddomain");
+                    .HasDatabaseName("mappeddomain");
 
                 entity.HasIndex(e => e.Version)
-                    .HasName("version");
+                    .HasDatabaseName("version");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -190,26 +176,30 @@ namespace ASC.Core.Common.EF.Model
                 entity.Property(e => e.Version_Changed)
                     .HasColumnName("version_changed")
                     .HasColumnType("datetime");
+
+                entity.Ignore(c => c.StatusChangedHack);
+                entity.Ignore(c => c.VersionChanged);
             });
         }
         public static void PgSqlAddDbTenant(this ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DbTenant>().Ignore(c => c.StatusChangedHack);
             modelBuilder.Entity<DbTenant>(entity =>
             {
                 entity.ToTable("tenants_tenants", "onlyoffice");
 
                 entity.HasIndex(e => e.Alias)
-                    .HasName("alias")
+                    .HasDatabaseName("alias")
                     .IsUnique();
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified_tenants_tenants");
+                    .HasDatabaseName("last_modified_tenants_tenants");
 
                 entity.HasIndex(e => e.MappedDomain)
-                    .HasName("mappeddomain");
+                    .HasDatabaseName("mappeddomain");
 
                 entity.HasIndex(e => e.Version)
-                    .HasName("version");
+                    .HasDatabaseName("version");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -291,6 +281,9 @@ namespace ASC.Core.Common.EF.Model
                     .HasDefaultValueSql("2");
 
                 entity.Property(e => e.Version_Changed).HasColumnName("version_changed");
+
+                entity.Ignore(c => c.StatusChangedHack);
+                entity.Ignore(c => c.VersionChanged);
             });
         }
     }

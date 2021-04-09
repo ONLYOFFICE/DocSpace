@@ -1,18 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { Text, Link } from "asc-web-components";
 import { useTranslation } from "react-i18next";
-import { createI18N } from "../../../../helpers/i18n";
-import { utils } from "asc-web-common";
-const { changeLanguage } = utils;
+import { inject, observer } from "mobx-react";
 
-const i18n = createI18N({
-  page: "PaymentsEnterprise",
-  localesPath: "pages/PaymentsEnterprise",
-});
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
 
 const StyledContactContainer = styled.div`
   display: grid;
@@ -22,11 +16,7 @@ const StyledContactContainer = styled.div`
 `;
 
 const ContactContainer = ({ salesEmail, helpUrl }) => {
-  useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
-
-  const { t } = useTranslation("translation", { i18n });
+  const { t } = useTranslation("PaymentsEnterprise");
   return (
     <StyledContactContainer>
       <Text>
@@ -51,10 +41,10 @@ ContactContainer.propTypes = {
   helpUrl: PropTypes.string,
 };
 
-function mapStateToProps(state) {
+export default inject(({ payments }) => {
+  const { salesEmail, helpUrl } = payments;
   return {
-    salesEmail: state.payments.salesEmail,
-    helpUrl: state.payments.helpUrl,
+    salesEmail,
+    helpUrl,
   };
-}
-export default connect(mapStateToProps)(withRouter(ContactContainer));
+})(withRouter(observer(ContactContainer)));

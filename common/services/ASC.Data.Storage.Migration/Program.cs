@@ -50,17 +50,19 @@ namespace ASC.Data.Storage.Migration
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
-
                     LogNLogExtension.ConfigureLog(diHelper, "ASC.Data.Storage.Migration", "ASC.Migration");
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+                    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
                     diHelper.TryAdd<MigrationServiceLauncher>();
                     services.AddHostedService<MigrationServiceLauncher>();
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
-                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath);
+                    builder.Register(context.Configuration);
                 })
                 .UseConsoleLifetime()
                 .Build()

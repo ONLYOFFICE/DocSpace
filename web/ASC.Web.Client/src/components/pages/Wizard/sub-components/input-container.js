@@ -2,17 +2,14 @@ import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import {
-  Box,
-  EmailInput,
-  FileInput,
-  PasswordInput,
-  Link,
-  Checkbox,
-  utils,
-} from "asc-web-components";
+import Box from "@appserver/components/box";
+import EmailInput from "@appserver/components/email-input";
+import FileInput from "@appserver/components/file-input";
+import PasswordInput from "@appserver/components/password-input";
+import Link from "@appserver/components/link";
+import Checkbox from "@appserver/components/checkbox";
 
-const { tablet } = utils.device;
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledContainer = styled(Box)`
   width: 311px;
@@ -20,6 +17,10 @@ const StyledContainer = styled(Box)`
   display: grid;
   grid-template-columns: 1fr;
   grid-row-gap: 16px;
+
+  .password-field-wrapper {
+    width: 100%;
+  }
 
   .generate-pass-link {
     margin-bottom: 11px;
@@ -31,7 +32,7 @@ const StyledContainer = styled(Box)`
 
   .wizard-checkbox span {
     margin-right: 0.3em;
-    vertical-align: middle;
+    vertical-align: 2px;
   }
 
   .wizard-checkbox svg {
@@ -39,8 +40,7 @@ const StyledContainer = styled(Box)`
   }
 
   .link {
-    vertical-align: -2px;
-    margin-top: 2px;
+    vertical-align: 2px;
   }
 
   @media ${tablet} {

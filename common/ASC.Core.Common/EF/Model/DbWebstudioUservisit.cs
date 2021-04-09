@@ -1,11 +1,8 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
-    [Table("webstudio_uservisit")]
     public class DbWebstudioUserVisit
     {
         public int TenantId { get; set; }
@@ -43,7 +40,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("webstudio_uservisit");
 
                 entity.HasIndex(e => e.VisitDate)
-                    .HasName("visitdate");
+                    .HasDatabaseName("visitdate");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenantid");
 
@@ -84,7 +81,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("webstudio_uservisit", "onlyoffice");
 
                 entity.HasIndex(e => e.VisitDate)
-                    .HasName("visitdate");
+                    .HasDatabaseName("visitdate");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenantid");
 

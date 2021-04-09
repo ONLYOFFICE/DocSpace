@@ -7,7 +7,7 @@
           "type": "ASC.Web.Core.IWebItem, ASC.Web.Core"
         }
       ],
-	  "instanceScope": "singleinstance"
+	  "instanceScope": "InstancePerLifetimeScope"
     },
     {
       "type": "ASC.Files.ApiProductEntryPoint, ASC.Files",
@@ -16,7 +16,25 @@
           "type": "ASC.Web.Core.IWebItem, ASC.Web.Core"
         }
       ],
-	  "instanceScope": "singleinstance"
+	  "instanceScope": "InstancePerLifetimeScope"
+    },
+    {
+      "type": "ASC.Projects.Configuration.ProductEntryPoint, ASC.Projects",
+      "services": [
+        {
+          "type": "ASC.Web.Core.IWebItem, ASC.Web.Core"
+        }
+      ],
+	  "instanceScope": "InstancePerLifetimeScope"
+    },
+    {
+      "type": "ASC.CRM.Configuration.ProductEntryPoint, ASC.CRM",
+      "services": [
+        {
+          "type": "ASC.Web.Core.IWebItem, ASC.Web.Core"
+        }
+      ],
+	  "instanceScope": "InstancePerLifetimeScope"
     }
   ]
 }

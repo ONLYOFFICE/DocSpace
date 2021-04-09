@@ -1,33 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-import { connect } from "react-redux";
-import { Heading, ToggleButton } from "asc-web-components";
-import { Error403, Error520, store } from "asc-web-common";
-import {
-  setUpdateIfExist,
-  setStoreOriginal,
-  setEnableThirdParty,
-  setConfirmDelete,
-  setStoreForceSave,
-  setForceSave,
-} from "../../../../../store/files/actions";
-import {
-  getIsLoading,
-  getSettingsSelectedTreeNode,
-  getSettingsTreeStoreOriginalFiles,
-  getSettingsTreeConfirmDelete,
-  getSettingsTreeUpdateIfExist,
-  getSettingsTreeForceSave,
-  getSettingsTreeStoreForceSave,
-  getSettingsTreeEnableThirdParty,
-  getSettingsTree,
-} from "../../../../../store/files/selectors";
-
-const { isAdmin } = store.auth.selectors;
+import Heading from "@appserver/components/heading";
+import ToggleButton from "@appserver/components/toggle-button";
+import Error403 from "studio/Error403";
+import Error520 from "studio/Error520";
+import ConnectClouds from "./ConnectedClouds";
+import { inject, observer } from "mobx-react";
 
 const StyledSettings = styled.div`
   display: grid;
-  grid-gap: 12px;
+  grid-gap: 19px;
 
   .toggle-btn {
     position: relative;
@@ -38,8 +20,8 @@ const StyledSettings = styled.div`
     margin-top: 26px;
   }
 
-  .toggle-btn:first-child {
-    margin-top: -3px;
+  .toggle-button-text {
+    margin-top: -1px;
   }
 `;
 
@@ -60,8 +42,8 @@ const SectionBodyContent = ({
   setForceSave,
   isAdmin,
   isErrorSettings,
-  settingsTree,
-
+  isLoadedSettingsTree,
+  settingsIsLoaded,
   t,
 }) => {
   const onChangeStoreForceSave = () => {
@@ -73,7 +55,7 @@ const SectionBodyContent = ({
   };
 
   const renderAdminSettings = () => {
-    return Object.keys(settingsTree).length === 0 || isLoading ? null : (
+    return !isLoadedSettingsTree || isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -108,7 +90,7 @@ const SectionBodyContent = ({
   };
 
   const renderCommonSettings = () => {
-    return Object.keys(settingsTree).length === 0 || isLoading ? null : (
+    return !isLoadedSettingsTree || isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -162,18 +144,14 @@ const SectionBodyContent = ({
     );
   };
 
-  const renderClouds = () => {
-    return <></>;
-  };
-
   let content;
 
   if (setting === "admin" && isAdmin) content = renderAdminSettings();
   if (setting === "common") content = renderCommonSettings();
-  if (setting === "thirdparty" && enableThirdParty)
-    content = renderCommonSettings(); //renderClouds();
+  if (setting === "thirdParty" && enableThirdParty) content = <ConnectClouds />;
 
-  return isLoading ? null : (!enableThirdParty && setting === "thirdparty") ||
+  return !settingsIsLoaded ? null : (!enableThirdParty &&
+      setting === "thirdParty") ||
     (!isAdmin && setting === "admin") ? (
     <Error403 />
   ) : isErrorSettings ? (
@@ -183,26 +161,42 @@ const SectionBodyContent = ({
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    isAdmin: isAdmin(state),
-    selectedTreeNode: getSettingsSelectedTreeNode(state),
-    storeOriginalFiles: getSettingsTreeStoreOriginalFiles(state),
-    confirmDelete: getSettingsTreeConfirmDelete(state),
-    updateIfExist: getSettingsTreeUpdateIfExist(state),
-    forceSave: getSettingsTreeForceSave(state),
-    storeForceSave: getSettingsTreeStoreForceSave(state),
-    enableThirdParty: getSettingsTreeEnableThirdParty(state),
-    isLoading: getIsLoading(state),
-    settingsTree: getSettingsTree(state),
-  };
-}
+export default inject(({ auth, filesStore, settingsStore }) => {
+  const { isLoading } = filesStore;
+  const {
+    isLoadedSettingsTree,
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forcesave,
+    storeForcesave,
+    enableThirdParty,
+    setUpdateIfExist,
+    setStoreOriginal,
+    setEnableThirdParty,
+    setConfirmDelete,
+    setStoreForceSave,
+    setForceSave,
+    settingsIsLoaded,
+  } = settingsStore;
 
-export default connect(mapStateToProps, {
-  setUpdateIfExist,
-  setStoreOriginal,
-  setEnableThirdParty,
-  setConfirmDelete,
-  setStoreForceSave,
-  setForceSave,
-})(SectionBodyContent);
+  return {
+    isAdmin: auth.isAdmin,
+    isLoading,
+    isLoadedSettingsTree,
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forceSave: forcesave,
+    storeForceSave: storeForcesave,
+    enableThirdParty,
+
+    setUpdateIfExist,
+    setStoreOriginal,
+    setEnableThirdParty,
+    setConfirmDelete,
+    setStoreForceSave,
+    setForceSave,
+    settingsIsLoaded,
+  };
+})(observer(SectionBodyContent));

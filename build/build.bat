@@ -6,32 +6,11 @@ call start\stop.bat
 
 PUSHD %~dp0..
 
-echo "ASC.Web.Components"
-call build\scripts\components.sh
+echo "FRONT-END"
+call build\build.frontend.bat
 
-echo "ASC.Web.Common"
-call build\scripts\common.sh
-
-echo "ASC.Web.Client"
-call build\scripts\client.sh
-
-echo "ASC.Web.People.Client"
-call build\scripts\people.sh
-
-echo "ASC.Web.Files.Client"
-call build\scripts\files.sh
-
-echo "ASC.UrlShortener"
-call build\scripts\urlshortener.sh
-
-echo "ASC.Thumbnails"
-call build\scripts\thumbnails.sh
-
-echo "ASC.Socket.IO"
-call build\scripts\socket.sh
-
-echo "ASC.Web.sln"
-call build\build.sln.bat
+echo "BACK-END"
+call build\build.backend.bat
 
 start /b call build\start\start.bat
 

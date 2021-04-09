@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
 
 using ASC.Common;
@@ -12,62 +11,35 @@ using Microsoft.EntityFrameworkCore;
 
 using Nest;
 
-using ColumnAttribute = System.ComponentModel.DataAnnotations.Schema.ColumnAttribute;
-
 namespace ASC.Files.Core.EF
 {
     public static class Tables
     {
-        public const string File = "file";
-        public const string Tree = "tree";
-        public const string Folder = "folder";
+        public const string File = "files_file";
+        public const string Tree = "files_folder_tree";
+        public const string Folder = "files_folder";
     }
 
     [Transient]
     [ElasticsearchType(RelationName = Tables.File)]
-    [Table("files_file")]
     public class DbFile : BaseEntity, IDbFile, IDbSearch, ISearchItemDocument
     {
         public int Id { get; set; }
         public int Version { get; set; }
-
-        [Column("version_group")]
         public int VersionGroup { get; set; }
-
-        [Column("current_version")]
         public bool CurrentVersion { get; set; }
-
-        [Column("folder_id")]
         public int FolderId { get; set; }
 
         [Text(Analyzer = "whitespacecustom")]
         public string Title { get; set; }
-
-        [Column("content_length")]
         public long ContentLength { get; set; }
-
-        [Column("file_status")]
         public int FileStatus { get; set; }
-
-        [Column("category")]
         public int Category { get; set; }
-
-        [Column("create_by")]
         public Guid CreateBy { get; set; }
-
-        [Column("create_on")]
         public DateTime CreateOn { get; set; }
-
-        [Column("modified_by")]
         public Guid ModifiedBy { get; set; }
-
-        [Column("modified_on")]
         public DateTime ModifiedOn { get; set; }
-
-        [Column("tenant_id")]
         public int TenantId { get; set; }
-
-        [Column("converted_type")]
         public string ConvertedType { get; set; }
         public string Comment { get; set; }
         public string Changes { get; set; }
@@ -76,17 +48,14 @@ namespace ASC.Files.Core.EF
 
 
         [Nested]
-        [NotMapped]
         public List<DbFolderTree> Folders { get; set; }
 
-        [NotMapped]
         [Ignore]
         public string IndexName
         {
             get => Tables.File;
         }
 
-        [NotMapped]
         public Document Document { get; set; }
 
         [Ignore]
@@ -114,19 +83,23 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder.Entity<DbFile>(entity =>
             {
+                entity.Ignore(r => r.Folders);
+                entity.Ignore(r => r.IndexName);
+                entity.Ignore(r => r.Document);
+
                 entity.HasKey(e => new { e.TenantId, e.Id, e.Version })
                     .HasName("PRIMARY");
 
                 entity.ToTable("files_file");
 
                 entity.HasIndex(e => e.FolderId)
-                    .HasName("folder_id");
+                    .HasDatabaseName("folder_id");
 
                 entity.HasIndex(e => e.Id)
-                    .HasName("id");
+                    .HasDatabaseName("id");
 
                 entity.HasIndex(e => e.ModifiedOn)
-                    .HasName("modified_on");
+                    .HasDatabaseName("modified_on");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
@@ -205,19 +178,23 @@ namespace ASC.Files.Core.EF
         {
             modelBuilder.Entity<DbFile>(entity =>
             {
+                entity.Ignore(r => r.Folders);
+                entity.Ignore(r => r.IndexName);
+                entity.Ignore(r => r.Document);
+
                 entity.HasKey(e => new { e.Id, e.TenantId, e.Version })
                     .HasName("files_file_pkey");
 
                 entity.ToTable("files_file", "onlyoffice");
 
                 entity.HasIndex(e => e.FolderId)
-                    .HasName("folder_id");
+                    .HasDatabaseName("folder_id");
 
                 entity.HasIndex(e => e.Id)
-                    .HasName("id");
+                    .HasDatabaseName("id");
 
                 entity.HasIndex(e => e.ModifiedOn)
-                    .HasName("modified_on_files_file");
+                    .HasDatabaseName("modified_on_files_file");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

@@ -75,6 +75,7 @@ namespace ASC.UrlShortener.Svc
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
                     LogNLogExtension.ConfigureLog(diHelper, "ASC.UrlShortener.Svc");
                     services.AddHostedService<UrlShortenerServiceLauncher>();
@@ -82,7 +83,7 @@ namespace ASC.UrlShortener.Svc
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
-                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath, false, false);
+                    builder.Register(context.Configuration,  false, false);
                 })
                 .UseConsoleLifetime()
                 .Build();

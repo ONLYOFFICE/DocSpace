@@ -1,24 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  ModalDialog,
-  Button,
-  Text,
-  EmailInput,
-  FieldContainer,
-} from "asc-web-components";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import EmailInput from "@appserver/components/email-input";
+import FieldContainer from "@appserver/components/field-container";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { api, utils, toastr } from "asc-web-common";
-
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "ChangeEmailDialog",
-  localesPath: "dialogs/ChangeEmailDialog",
-});
-
-const { sendInstructionsToChangeEmail } = api.people;
-const { changeLanguage } = utils;
+import { sendInstructionsToChangeEmail } from "@appserver/common/api/people";
+import toastr from "studio/toastr";
 
 class ChangeEmailDialogComponent extends React.Component {
   constructor(props) {
@@ -35,8 +25,6 @@ class ChangeEmailDialogComponent extends React.Component {
       errorMessage: "",
       emailErrors: [],
     };
-
-    changeLanguage(i18n);
   }
 
   componentDidMount() {
@@ -155,12 +143,8 @@ class ChangeEmailDialogComponent extends React.Component {
   }
 }
 
-const ChangeEmailDialogTranslated = withTranslation()(
+const ChangeEmailDialog = withTranslation("ChangeEmailDialog")(
   ChangeEmailDialogComponent
-);
-
-const ChangeEmailDialog = (props) => (
-  <ChangeEmailDialogTranslated i18n={i18n} {...props} />
 );
 
 ChangeEmailDialog.propTypes = {

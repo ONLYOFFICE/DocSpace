@@ -1,11 +1,8 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
-    [Table("account_links")]
     public class AccountLinks : BaseEntity
     {
         public string Id { get; set; }
@@ -39,7 +36,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("account_links");
 
                 entity.HasIndex(e => e.UId)
-                    .HasName("uid");
+                    .HasDatabaseName("uid");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -81,7 +78,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("account_links", "onlyoffice");
 
                 entity.HasIndex(e => e.UId)
-                    .HasName("uid");
+                    .HasDatabaseName("uid");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")

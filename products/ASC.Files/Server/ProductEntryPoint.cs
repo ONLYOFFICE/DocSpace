@@ -25,6 +25,7 @@
 
 
 using ASC.Common;
+using ASC.Core;
 using ASC.Web.Files.Configuration;
 
 namespace ASC.Files
@@ -35,6 +36,17 @@ namespace ASC.Files
         public override string ApiURL
         {
             get => "api/2.0/files/info.json";
+        }
+
+        public ApiProductEntryPoint(
+           //            FilesSpaceUsageStatManager filesSpaceUsageStatManager,
+           CoreBaseSettings coreBaseSettings,
+           AuthContext authContext,
+           UserManager userManager
+           //            SubscriptionManager subscriptionManager
+           ): base(coreBaseSettings, authContext, userManager, null)
+        {
+
         }
     }
 }

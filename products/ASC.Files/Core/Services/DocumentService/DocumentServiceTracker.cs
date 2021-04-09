@@ -182,6 +182,7 @@ namespace ASC.Web.Files.Services.DocumentService
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private NotifyClient NotifyClient { get; }
         private MailMergeTaskRunner MailMergeTaskRunner { get; }
+        private FileTrackerHelper FileTracker { get; }
         public ILog Logger { get; }
 
         public DocumentServiceTrackerHelper(
@@ -202,7 +203,8 @@ namespace ASC.Web.Files.Services.DocumentService
             FilesMessageService filesMessageService,
             DocumentServiceConnector documentServiceConnector,
             NotifyClient notifyClient,
-            MailMergeTaskRunner mailMergeTaskRunner)
+            MailMergeTaskRunner mailMergeTaskRunner,
+            FileTrackerHelper fileTracker)
         {
             SecurityContext = securityContext;
             UserManager = userManager;
@@ -221,6 +223,7 @@ namespace ASC.Web.Files.Services.DocumentService
             DocumentServiceConnector = documentServiceConnector;
             NotifyClient = notifyClient;
             MailMergeTaskRunner = mailMergeTaskRunner;
+            FileTracker = fileTracker;
             Logger = options.CurrentValue;
         }
 

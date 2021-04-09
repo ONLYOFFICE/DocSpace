@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
-    [Table("tenants_iprestrictions")]
     public class TenantIpRestrictions
     {
         public int Id { get; set; }
@@ -27,7 +26,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("tenants_iprestrictions");
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant");
+                    .HasDatabaseName("tenant");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -49,7 +48,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("tenants_iprestrictions", "onlyoffice");
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant_tenants_iprestrictions");
+                    .HasDatabaseName("tenant_tenants_iprestrictions");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

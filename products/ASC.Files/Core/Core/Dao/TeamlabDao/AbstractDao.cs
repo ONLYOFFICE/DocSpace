@@ -79,9 +79,10 @@ namespace ASC.Files.Core.Data
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
             AuthContext authContext,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, 
+            ICache cache)
         {
-            cache = AscCache.Memory;
+            this.cache = cache;
             FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
             UserManager = userManager;
             TenantManager = tenantManager;
@@ -122,6 +123,8 @@ namespace ASC.Files.Core.Data
                     .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                     .Where(r => r.file.TenantId == f.TenantId)
                     .Where(r => r.tree.ParentId == f.Id)
+                    .Select(r=> r.file.Id)
+                    .Distinct()
                     .Count();
 
                 f.FilesCount = filesCount;

@@ -1,6 +1,7 @@
 import React, { memo, useState } from "react";
 import styled from "styled-components";
-import { TextInput, Button } from "asc-web-components";
+import Button from "@appserver/components/button";
+import TextInput from "@appserver/components/text-input";
 
 const EditingWrapper = styled.div`
   width: 100%;
@@ -115,6 +116,7 @@ const EditingWrapperComponent = (props) => {
         onClick={cancelUpdateItem}
         icon={cancelIcon}
         data-itemid={itemId}
+        data-action="cancel"
         onMouseEnter={setIsHoveredCancelHandler}
         onMouseLeave={setIsHoveredCancelHandler}
         isHovered={CancelIconIsHovered}

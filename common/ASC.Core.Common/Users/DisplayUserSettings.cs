@@ -90,7 +90,7 @@ namespace ASC.Web.Core.Users
             {
                 try
                 {
-                    var resourceType = Type.GetType("ASC.Web.Core.PublicResources.Resources.Resource, ASC.Web.Core");
+                    var resourceType = Type.GetType("ASC.Web.Core.PublicResources.Resource, ASC.Web.Core");
                     var resourceProperty = resourceType.GetProperty("ProfileRemoved", BindingFlags.Static | BindingFlags.Public);
                     var resourceValue = (string)resourceProperty.GetValue(null);
 

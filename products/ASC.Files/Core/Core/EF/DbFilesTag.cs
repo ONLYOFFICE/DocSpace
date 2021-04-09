@@ -1,25 +1,17 @@
-﻿using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Model;
-
-using Microsoft.EntityFrameworkCore;
-
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Model;
+using Microsoft.EntityFrameworkCore;
 namespace ASC.Files.Core.EF
 {
-    [Table("files_tag")]
     public class DbFilesTag : IDbFile
     {
-        [Column("tenant_id")]
         public int TenantId { get; set; }
-
         public int Id { get; set; }
-
         public string Name { get; set; }
-
         public Guid Owner { get; set; }
-
         public TagType Flag { get; set; }
     }
     public static class DbFilesTagExtension
@@ -38,7 +30,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_tag");
 
                 entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Flag })
-                    .HasName("name");
+                    .HasDatabaseName("name");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -68,7 +60,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_tag", "onlyoffice");
 
                 entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Flag })
-                    .HasName("name_files_tag");
+                    .HasDatabaseName("name_files_tag");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

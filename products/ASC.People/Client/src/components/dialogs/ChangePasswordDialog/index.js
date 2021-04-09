@@ -1,17 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ModalDialog, Button, Link, Text } from "asc-web-components";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Link from "@appserver/components/link";
+import Text from "@appserver/components/text";
 import { withTranslation, Trans } from "react-i18next";
-import { api, utils, toastr } from "asc-web-common";
-
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "ChangePasswordDialog",
-  localesPath: "dialogs/ChangePasswordDialog",
-});
-
-const { sendInstructionsToChangePassword } = api.people;
-const { changeLanguage } = utils;
+import { sendInstructionsToChangePassword } from "@appserver/common/api/people";
+import toastr from "studio/toastr";
 
 class ChangePasswordDialogComponent extends React.Component {
   constructor() {
@@ -20,8 +15,6 @@ class ChangePasswordDialogComponent extends React.Component {
     this.state = {
       isRequestRunning: false,
     };
-
-    changeLanguage(i18n);
   }
   onSendPasswordChangeInstructions = () => {
     const { email, onClose } = this.props;
@@ -49,7 +42,8 @@ class ChangePasswordDialogComponent extends React.Component {
           <Text fontSize="13px">
             <Trans
               i18nKey="MessageSendPasswordChangeInstructionsOnEmail"
-              i18n={i18n}
+              ns="ChangePasswordDialog"
+              t={t}
             >
               Send the password change instructions to the
               <Link
@@ -80,12 +74,8 @@ class ChangePasswordDialogComponent extends React.Component {
   }
 }
 
-const ChangePasswordDialogTranslated = withTranslation()(
+const ChangePasswordDialog = withTranslation("ChangePasswordDialog")(
   ChangePasswordDialogComponent
-);
-
-const ChangePasswordDialog = (props) => (
-  <ChangePasswordDialogTranslated i18n={i18n} {...props} />
 );
 
 ChangePasswordDialog.propTypes = {
