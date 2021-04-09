@@ -219,6 +219,7 @@ const Base = {
     textAlign: "left",
     stroke: " none",
     outline: "none",
+    width: "100%",
 
     background: white,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",

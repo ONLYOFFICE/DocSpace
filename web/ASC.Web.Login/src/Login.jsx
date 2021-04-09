@@ -13,6 +13,7 @@ import HelpButton from "@appserver/components/help-button";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
 import SocialButton from "@appserver/components/social-button";
+import FacebookButton from "@appserver/components/facebook-button";
 import PageLayout from "@appserver/common/components/PageLayout";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
@@ -24,30 +25,35 @@ import i18n from "./i18n";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import toastr from "@appserver/components/toast/toastr";
 
-const facebookIconOptions = { color: "#4469B0" };
+const facebookIconOptions = { color: "#1877F2" };
 const twitterIconOptions = { color: "#2AA3EF" };
 
 const providersData = Object.freeze({
-  Google: {
-    label: "Google",
-    icon: "static/images/share.google.react.svg",
-  },
   Facebook: {
-    label: "",
+    label: "LogInWithFacebook",
     icon: "static/images/share.facebook.react.svg",
     iconOptions: facebookIconOptions,
     className: "facebookButton",
   },
+  Google: {
+    label: "LogInWithGoogle",
+    icon: "static/images/share.google.react.svg",
+  },
   Twitter: {
-    label: "",
+    label: "LogInWithTwitter",
     icon: "static/images/share.twitter.react.svg",
     iconOptions: twitterIconOptions,
   },
   LinkedIn: {
-    label: "",
+    label: "LogInWithLinkedIn",
     icon: "static/images/share.linkedin.react.svg",
   },
 });
+
+const ButtonsWrapper = styled.div`
+  display: table;
+  margin: auto;
+`;
 
 const LoginContainer = styled.div`
   display: flex;
@@ -61,8 +67,9 @@ const LoginContainer = styled.div`
     display: inline-block;
   }
 
-  .socialButton {
-    margin: 0 6px;
+  .buttonWrapper {
+    margin: 6px;
+    min-width: 225px;
   }
 
   .line {
@@ -366,17 +373,31 @@ const Form = (props) => {
         ];
         if (!icon) return <></>;
         return (
-          <React.Fragment key={`${item.provider}ProviderItem`}>
-            <SocialButton
-              iconName={icon}
-              label={t(label)}
-              className={`socialButton ${className ? className : ""}`}
-              $iconOptions={iconOptions}
-              data-url={item.url}
-              data-providername={item.provider}
-              onClick={onSocialButtonClick}
-            />
-          </React.Fragment>
+          <div className="buttonWrapper">
+            <React.Fragment key={`${item.provider}ProviderItem`}>
+              {item.provider === "Facebook" ? (
+                <FacebookButton
+                  iconName={icon}
+                  label={t(label)}
+                  className="socialButton"
+                  $iconOptions={iconOptions}
+                  data-url={item.url}
+                  data-providername={item.provider}
+                  onClick={onSocialButtonClick}
+                />
+              ) : (
+                <SocialButton
+                  iconName={icon}
+                  label={t(label)}
+                  className={`socialButton ${className ? className : ""}`}
+                  $iconOptions={iconOptions}
+                  data-url={item.url}
+                  data-providername={item.provider}
+                  onClick={onSocialButtonClick}
+                />
+              )}
+            </React.Fragment>
+          </div>
         );
       });
 
@@ -510,14 +531,7 @@ const Form = (props) => {
               <div className="login-bottom-border"></div>
             </Box>
 
-            <Box
-              displayProp="flex"
-              alignItems="center"
-              justifyContent="center"
-              marginProp="0 -6px"
-            >
-              {providerButtons()}
-            </Box>
+            <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
           </>
         )}
       </form>
