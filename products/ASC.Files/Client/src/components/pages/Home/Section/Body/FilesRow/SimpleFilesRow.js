@@ -288,7 +288,6 @@ const SimpleFilesRow = (props) => {
 
   const getFilesContextOptions = useCallback(() => {
     const isSharable = access !== 1 && access !== 0;
-
     return contextOptions.map((option) => {
       switch (option) {
         case "open":
@@ -417,7 +416,7 @@ const SimpleFilesRow = (props) => {
             onClick: onClickDownloadAs,
             disabled: false,
           };
-        case "move":
+        case "move-to":
           return {
             key: option,
             label: t("MoveTo"),
@@ -433,7 +432,7 @@ const SimpleFilesRow = (props) => {
             onClick: onMoveAction,
             disabled: false,
           };
-        case "copy":
+        case "copy-to":
           return {
             key: option,
             label: t("Copy"),
@@ -441,7 +440,7 @@ const SimpleFilesRow = (props) => {
             onClick: onCopyAction,
             disabled: false,
           };
-        case "duplicate":
+        case "copy":
           return {
             key: option,
             label: t("Duplicate"),
