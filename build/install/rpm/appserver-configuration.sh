@@ -166,7 +166,8 @@ install_json() {
 		chown onlyoffice:onlyoffice $USER_CONF
 	
 		set_core_machinekey
-		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\"}" >/dev/null 2>&1
+		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", 'products': { \ 
+		'folder': '../../products', 'subfolder': 'server'} }" >/dev/null 2>&1
 		$JSON $APP_CONF -e "this.core.products.subfolder='server'" >/dev/null 2>&1 #Fix error
 	fi
 }
@@ -174,9 +175,11 @@ install_json() {
 restart_services() {
 	echo -n "Restarting services... "
 
-	for SVC in nginx mysqld appserver-api appserver-socket appserver-api_system appserver-backup \
-	appserver-files appserver-files_service appserver-notify appserver-people appserver-studio appserver-studio_notify \
-	appserver-thumbnails appserver-urlshortener elasticsearch kafka zookeeper
+	for SVC in nginx mysqld AppServer-ASC.Web.Api AppServer-ASC.ApiSystem AppServer-ASC.UrlShortener \
+	AppServer-ASC.Thumbnails AppServer-ASC.Socket AppServer-ASC.Studio.Notify AppServer-ASC.Notify \
+	AppServer-ASC.People AppServer-ASC.Files AppServer-ASC.Files.Service AppServer-ASC.Web.Studio \
+	AppServer-ASC.Data.Backup AppServer-ASC.Data.Storage.Encryption AppServer-ASC.Data.Storage.Migration \
+	AppServer-ASC.Projects AppServer-ASC.TelegramService AppServer-ASC.CRM elasticsearch kafka zookeeper
 	do
 		sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/$SVC.service >/dev/null 2>&1
 		
@@ -359,8 +362,14 @@ execute_mysql_script(){
 		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.sql" >/dev/null 2>&1
 		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.data.sql" >/dev/null 2>&1
 		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.resources.sql" >/dev/null 2>&1
+		for i in $(ls $SQL_DIR/onlyoffice.upgrade*); do
+			$MYSQL "$DB_NAME" < ${i} >/dev/null 2>&1
+		done
 	else
 		echo -n "Upgrading MySQL database... "
+		for i in $(ls $SQL_DIR/onlyoffice.upgrade*); do
+			$MYSQL "$DB_NAME" < ${i} >/dev/null 2>&1
+		done
     fi
     echo "OK"
 }

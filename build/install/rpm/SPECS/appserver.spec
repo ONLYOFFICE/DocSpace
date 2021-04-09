@@ -15,7 +15,7 @@ Source0:        https://github.com/ONLYOFFICE/appserver/archive/%GIT_BRANCH.tar.
 BuildRequires:  nodejs >= 12.0
 BuildRequires:  yarn
 BuildRequires:  libgdiplus
-BuildRequires:  dotnet-sdk-3.1
+BuildRequires:  dotnet-sdk-5.0
 Requires:       %name-ASC.ApiSystem
 Requires:       %name-ASC.CRM
 Requires:       %name-ASC.Data.Backup
@@ -28,8 +28,8 @@ Requires:       %name-ASC.Projects
 Requires:       %name-ASC.Socket
 Requires:       %name-ASC.Studio.Notify
 Requires:       %name-ASC.TelegramService
-Requires:       %name-ASC.Thumbnails.Svc
-Requires:       %name-ASC.UrlShortener.Svc
+Requires:       %name-ASC.Thumbnails
+Requires:       %name-ASC.UrlShortener
 Requires:       %name-ASC.Web.Api
 Requires:       %name-ASC.Web.Studio
 Requires:       %name-Proxy

@@ -21,7 +21,7 @@
 
 %files ASC.Data.Backup
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/backup/
+%{_var}/www/appserver/services/ASC.Data.Backup/
 %{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
 %{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
 %{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
@@ -66,7 +66,7 @@
 
 %files ASC.Notify
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/notify/
+%{_var}/www/appserver/services/ASC.Notify/
 %{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
 %{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
 %{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
@@ -101,7 +101,7 @@
 
 %files ASC.ApiSystem
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/apisystem/
+%{_var}/www/appserver/services/ASC.ApiSystem/
 %{_sysconfdir}/systemd/system/AppServer-ASC.ApiSystem.service
 %dir %{_var}/www/appserver/services/
 
@@ -114,7 +114,7 @@
 %{_var}/www/appserver/studio/login
 %{_var}/www/appserver/products/ASC.People/client/
 %{_var}/www/appserver/products/ASC.Files/client/
-%{_var}/www/appserver/products/ASC.Files/editor
+%{_var}/www/appserver/products/ASC.Files/editor/
 %{_var}/www/appserver/products/ASC.CRM/client/
 %{_var}/www/appserver/products/ASC.Projects/client
 %dir %{_var}/www/appserver/studio/
@@ -126,7 +126,7 @@
 
 %files ASC.Studio.Notify
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/studio.notify/
+%{_var}/www/appserver/services/ASC.Studio.Notify/
 %{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
 %{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
 %{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
@@ -159,26 +159,21 @@
 %dir %{_var}/www/appserver/products/ASC.Projects/
 %dir %{_var}/www/appserver/products/ASC.Projects/server/
 
-%files ASC.UrlShortener.Svc
+%files ASC.UrlShortener
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/urlshortener/service/
-%{_var}/www/appserver/services/urlshortener/client/
-%{_sysconfdir}/systemd/system/AppServer-ASC.UrlShortener.Svc.service
+%{_var}/www/appserver/services/ASC.UrlShortener/
+%{_sysconfdir}/systemd/system/AppServer-ASC.UrlShortener.service
 %dir %{_var}/www/appserver/services/
-%dir %{_var}/www/appserver/services/urlshortener/
 
-%files ASC.Thumbnails.Svc
+%files ASC.Thumbnails
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/thumb/service/
-%{_var}/www/appserver/services/thumb/client/
-%{_sysconfdir}/systemd/system/AppServer-ASC.Thumbnails.Svc.service
+%{_var}/www/appserver/services/ASC.Thumbnails/
+%{_sysconfdir}/systemd/system/AppServer-ASC.Thumbnails.service
 %dir %{_var}/www/appserver/services/
-%dir %{_var}/www/appserver/services/thumb/
 
 %files ASC.Socket
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/ASC.Socket.IO
-%{_var}/www/appserver/services/socket/service/
+%{_var}/www/appserver/services/ASC.Socket.IO/
 %{_var}/www/appserver/products/ASC.Files/server/
 %{_var}/www/appserver/products/ASC.People/server/
 %{_var}/www/appserver/products/ASC.CRM/server/
@@ -212,7 +207,7 @@
 
 %files ASC.Data.Storage.Encryption
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/storage.encryption/
+%{_var}/www/appserver/services/ASC.Data.Storage.Encryption/
 %{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
 %{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
 %{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
@@ -231,7 +226,7 @@
 
 %files ASC.Data.Storage.Migration
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/storage.migration/
+%{_var}/www/appserver/services/ASC.Data.Storage.Migration/
 %{_var}/www/appserver/products/ASC.Files/server/
 %{_var}/www/appserver/products/ASC.People/server/
 %{_var}/www/appserver/products/ASC.CRM/server/
@@ -262,14 +257,13 @@
 
 %files ASC.TelegramService
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/telegram/service/
+%{_var}/www/appserver/services/ASC.TelegramService/
 %{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
 %{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
 %{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
 %{_var}/www/appserver/products/ASC.Projects/server/ASC.Projects*.dll
 %{_sysconfdir}/systemd/system/AppServer-ASC.TelegramService.service
 %dir %{_var}/www/appserver/services/
-%dir %{_var}/www/appserver/services/telegram/
 %dir %{_var}/www/appserver/products/
 %dir %{_var}/www/appserver/products/ASC.Files/
 %dir %{_var}/www/appserver/products/ASC.Files/server/

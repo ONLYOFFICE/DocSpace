@@ -2,7 +2,7 @@
 Summary:        ASC.Data.Backup
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.Data.Backup
 
@@ -15,7 +15,7 @@ Group:          Applications/Internet
 Summary:        ASC.Files.Service
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.Files.Service
 
@@ -23,7 +23,7 @@ AutoReqProv:    no
 Summary:        ASC.Notify
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.Notify
 
@@ -31,7 +31,7 @@ AutoReqProv:    no
 Summary:        ASC.Files
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.Files
 
@@ -39,7 +39,7 @@ AutoReqProv:    no
 Summary:        ASC.ApiSystem
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.ApiSystem
 
@@ -56,7 +56,7 @@ AutoReqProv:    no
 Summary:        ASC.Studio.Notify
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.Studio.Notify
 
@@ -64,7 +64,7 @@ AutoReqProv:    no
 Summary:        ASC.People
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.People
 
@@ -72,7 +72,7 @@ AutoReqProv:    no
 Summary:        ASC.UrlShortener.Svc
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 Requires:       nodejs >= 12.0
 AutoReqProv:    no
 %description    ASC.UrlShortener.Svc
@@ -81,7 +81,7 @@ AutoReqProv:    no
 Summary:        ASC.Socket
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 Requires:       nodejs >= 12.0
 AutoReqProv:    no
 %description    ASC.Socket
@@ -90,7 +90,7 @@ AutoReqProv:    no
 Summary:        ASC.Thumbnails.Svc
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 Requires:       nodejs >= 12.0
 AutoReqProv:    no
 %description    ASC.Thumbnails.Svc
@@ -99,7 +99,7 @@ AutoReqProv:    no
 Summary:        ASC.Web.Studio
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.Web.Studio
 
@@ -107,7 +107,7 @@ AutoReqProv:    no
 Summary:        ASC.CRM
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.CRM
 
@@ -115,7 +115,7 @@ AutoReqProv:    no
 Summary:        ASC.Web.Api
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.Web.Api
 
@@ -123,7 +123,7 @@ AutoReqProv:    no
 Summary:        ASC.Data.Storage.Encryption
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.Data.Storage.Encryption
 
@@ -131,7 +131,7 @@ AutoReqProv:    no
 Summary:        ASC.Data.Storage.Migration
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.Data.Storage.Migration
 
@@ -139,7 +139,7 @@ AutoReqProv:    no
 Summary:        ASC.Projects
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.Projects
 
@@ -147,6 +147,6 @@ AutoReqProv:    no
 Summary:        ASC.TelegramService
 Group:          Applications/Internet
 Requires:       %name-Common
-Requires:       dotnet-sdk-3.1
+Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.TelegramService

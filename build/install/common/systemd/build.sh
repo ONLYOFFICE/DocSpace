@@ -13,8 +13,8 @@ ENVIRONMENT=" --ENVIRONMENT=production"
 service_name=(
 	ASC.Web.Api
 	ASC.ApiSystem
-	ASC.UrlShortener.Svc
-	ASC.Thumbnails.Svc
+	ASC.UrlShortener
+	ASC.Thumbnails
 	ASC.Socket
 	ASC.Studio.Notify
 	ASC.Notify 
@@ -39,33 +39,33 @@ reassign_values (){
 	;;
 	ASC.ApiSystem )
 		SERVICE_PORT="5010"
-		WORK_DIR="/var/www/appserver/services/apisystem/"
+		WORK_DIR="/var/www/appserver/services/ASC.ApiSystem/"
 		EXEC_FILE="ASC.ApiSystem.dll"
 	;;
-	ASC.UrlShortener.Svc )
-		SERVICE_PORT="5015"
-		WORK_DIR="/var/www/appserver/services/urlshortener/service/"
+	ASC.UrlShortener )
+		SERVICE_PORT="9999"
+		WORK_DIR="/var/www/appserver/services/ASC.UrlShortener/"
 		EXEC_FILE="ASC.UrlShortener.Svc.dll"
 	;;
-	ASC.Thumbnails.Svc )
-		SERVICE_PORT="5016"
-		WORK_DIR="/var/www/appserver/services/thumb/service/"
+	ASC.Thumbnails )
+		SERVICE_PORT="9800"
+		WORK_DIR="/var/www/appserver/services/ASC.Thumbnails/"
 		EXEC_FILE="ASC.Thumbnails.Svc.dll"
 	;;
 	ASC.Socket )
-		SERVICE_PORT="9999"
-		WORK_DIR="/var/www/appserver/services/socket/service/"
+		SERVICE_PORT="9899"
+		WORK_DIR="/var/www/appserver/services/ASC.Socket.IO/"
 		EXEC_FILE="ASC.Socket.IO.Svc.dll"
 	;;
 	ASC.Studio.Notify )
 		SERVICE_PORT="5006"
-		WORK_DIR="/var/www/appserver/services/studio.notify/"
+		WORK_DIR="/var/www/appserver/services/ASC.Studio.Notify/"
 		EXEC_FILE="ASC.Studio.Notify.dll"
 		CORE=" --core:products:folder=/var/www/appserver/products --core:products:subfolder=server "
 	;;
 	ASC.Notify )
 		SERVICE_PORT="5005"
-		WORK_DIR="/var/www/appserver/services/notify/"
+		WORK_DIR="/var/www/appserver/services/ASC.Notify/"
 		EXEC_FILE="ASC.Notify.dll"
 		CORE=" --core:products:folder=/var/www/appserver/products --core:products:subfolder=server "
 	;;
@@ -92,32 +92,32 @@ reassign_values (){
 	;;
 	ASC.Data.Backup )
 		SERVICE_PORT="5012"
-		WORK_DIR="/var/www/appserver/services/backup/"
+		WORK_DIR="/var/www/appserver/services/ASC.Data.Backup/"
 		EXEC_FILE="ASC.Data.Backup.dll"
 		CORE=" --core:products:folder=/var/www/appserver/products --core:products:subfolder=server"
 	;;
 	ASC.Data.Storage.Migration )
 		SERVICE_PORT="5018"
-		WORK_DIR="/var/www/appserver/services/storage.migration/"
+		WORK_DIR="/var/www/appserver/services/ASC.Data.Storage.Migration/"
 		EXEC_FILE="ASC.Data.Storage.Migration.dll"
 	;;
 	ASC.Data.Storage.Encryption )
 		SERVICE_PORT="5019"
-		WORK_DIR="/var/www/appserver/services/storage.encryption/"
+		WORK_DIR="/var/www/appserver/services/ASC.Data.Storage.Encryption/"
 		EXEC_FILE="ASC.Data.Storage.Encryption.dll"
 	;;
 	ASC.Projects )
-		SERVICE_PORT="5015"
+		SERVICE_PORT="5020"
 		WORK_DIR="/var/www/appserver/products/ASC.Projects/server/"
 		EXEC_FILE="ASC.Projects.dll"
 	;;
 	ASC.TelegramService )
 		SERVICE_PORT="51702"
-		WORK_DIR="/var/www/appserver/services/telegram/service/"
+		WORK_DIR="/var/www/appserver/services/ASC.TelegramService/"
 		EXEC_FILE="ASC.TelegramService.dll"
 	;;
 	ASC.CRM )
-		SERVICE_PORT="5014"
+		SERVICE_PORT="5021"
 		WORK_DIR="/var/www/appserver/products/ASC.CRM/server/"
 		EXEC_FILE="ASC.CRM.dll"
 	;;
