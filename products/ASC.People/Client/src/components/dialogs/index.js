@@ -9,6 +9,7 @@ import SendInviteDialog from "./SendInviteDialog";
 import ChangeUserStatusDialog from "./ChangeUserStatusDialog";
 import ChangeUserTypeDialog from "./ChangeUserTypeDialog";
 import DataLossWarningDialog from "./DataLossWarningDialog";
+import ResetApplicationDialog from "./ResetApplicationDialog";
 
 export {
   ChangeEmailDialog,
@@ -22,4 +23,5 @@ export {
   ChangeUserStatusDialog,
   ChangeUserTypeDialog,
   DataLossWarningDialog,
+  ResetApplicationDialog,
 };
