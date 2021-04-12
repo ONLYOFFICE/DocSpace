@@ -507,12 +507,8 @@ class SharingPanelComponent extends React.Component {
                   />
                 ))
               ) : (
-                <div key="loader" className="sharing-panel-loader-wrapper">
-                  <Loader
-                    type="oval"
-                    size="16px"
-                    className="sharing-panel-loader"
-                  />
+                <div key="loader" className="panel-loader-wrapper">
+                  <Loader type="oval" size="16px" className="panel-loader" />
                   <Text as="span">{t("LoadingLabel")}</Text>
                 </div>
               )}
