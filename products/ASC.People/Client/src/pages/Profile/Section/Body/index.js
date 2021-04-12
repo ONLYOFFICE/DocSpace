@@ -18,6 +18,7 @@ import {
 } from "../../../../helpers/people-helpers";
 import config from "../../../../../package.json";
 import { AppServerConfig } from "@appserver/common/constants";
+import { Trans, useTranslation } from "react-i18next";
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -185,12 +186,18 @@ class SectionBodyContent extends React.PureComponent {
         {isSelf && (
           <ToggleWrapper>
             <ToggleContent label={t("LoginSettings")} isOpen={true}>
-              <Text>{t("TwoFactorDescription")}</Text>
+              <Trans t={t} i18nKey="TwoFactorDescription" ns="Profile">
+                <Text>
+                  <strong>Two-factor authentication</strong> via code generating
+                  application was enabled for all users by cloud service
+                  administrator.
+                </Text>
+              </Trans>
               <LinkActionWrapper>
-                <Link type="action" className="link-action">
+                <Link type="action" isHovered={true} className="link-action">
                   {t("ResetApplication")}
                 </Link>
-                <Link type="action" className="link-action">
+                <Link type="action" isHovered={true} className="link-action">
                   {t("ShowBackupCodes")}
                 </Link>
               </LinkActionWrapper>

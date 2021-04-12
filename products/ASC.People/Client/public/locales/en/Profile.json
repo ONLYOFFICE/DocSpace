@@ -50,7 +50,7 @@
   "maxSizeFileError": "Maximum file size exceeded",
   "editAvatar": "Edit",
   "LoginSettings": "Login settings",
-  "TwoFactorDescription": "Two-factor authentication via code generating application was enabled for all users by cloud service administrator.",
+  "TwoFactorDescription": "<strong>Two-factor authentication</strong> via code generating application was enabled for all users by cloud service administrator.",
   "ResetApplication": "Reset application",
   "ShowBackupCodes": "Show backup codes"
 }
