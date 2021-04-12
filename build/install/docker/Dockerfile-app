@@ -4,14 +4,12 @@ ARG BUILD_PATH="/var/www"
 
 FROM ubuntu:20.10 AS develop
 ARG RELEASE_DATE="2016-06-21"
-ARG VERSION="8.9.0.190"
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_BRANCH="master"
 ARG SRC_PATH
 ARG BUILD_PATH
 
 LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
-      onlyoffice.appserver.version="${VERSION}" \
       maintainer="Ascensio System SIA <support@onlyoffice.com>"
 
 ENV LANG=en_US.UTF-8 \
