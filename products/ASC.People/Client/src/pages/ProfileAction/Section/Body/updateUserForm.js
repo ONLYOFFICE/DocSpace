@@ -53,10 +53,7 @@ import {
 } from "../../../../helpers/people-helpers";
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
-
-const facebookIconOptions = { color: "#1877F2" };
-const twitterIconOptions = { color: "#2AA3EF" };
+import { AppServerConfig, providersData } from "@appserver/common/constants";
 
 const dialogsDataset = {
   changeEmail: "changeEmail",
@@ -82,27 +79,6 @@ const StyledWrapper = styled.div`
   grid-template-columns: auto 1fr;
   grid-gap: 16px 22px;
 `;
-
-const providersData = Object.freeze({
-  Google: {
-    label: "SignInWithGoogle",
-    icon: "images/share.google.svg",
-  },
-  Facebook: {
-    label: "SignInWithFacebook",
-    icon: "images/share.facebook.react.svg",
-    iconOptions: facebookIconOptions,
-  },
-  Twitter: {
-    label: "SignInWithTwitter",
-    icon: "images/share.twitter.react.svg",
-    iconOptions: twitterIconOptions,
-  },
-  LinkedIn: {
-    label: "SignInWithLinkedIn",
-    icon: "images/share.linkedin.svg",
-  },
-});
 
 class UpdateUserForm extends React.Component {
   constructor(props) {

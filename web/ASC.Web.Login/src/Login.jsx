@@ -19,36 +19,12 @@ import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-di
 import Register from "./sub-components/register-container";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import { checkPwd } from "@appserver/common/desktop";
-import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
+import { createPasswordHash } from "@appserver/common/utils";
+import { providersData } from "@appserver/common/constants";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import toastr from "@appserver/components/toast/toastr";
-
-const facebookIconOptions = { color: "#1877F2" };
-const twitterIconOptions = { color: "#2AA3EF" };
-
-const providersData = Object.freeze({
-  Facebook: {
-    label: "LogInWithFacebook",
-    icon: "static/images/share.facebook.react.svg",
-    iconOptions: facebookIconOptions,
-    className: "facebookButton",
-  },
-  Google: {
-    label: "LogInWithGoogle",
-    icon: "static/images/share.google.react.svg",
-  },
-  Twitter: {
-    label: "LogInWithTwitter",
-    icon: "static/images/share.twitter.react.svg",
-    iconOptions: twitterIconOptions,
-  },
-  LinkedIn: {
-    label: "LogInWithLinkedIn",
-    icon: "static/images/share.linkedin.react.svg",
-  },
-});
 
 const ButtonsWrapper = styled.div`
   display: table;
