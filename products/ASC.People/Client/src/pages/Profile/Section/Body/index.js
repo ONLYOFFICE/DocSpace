@@ -19,6 +19,7 @@ import {
 import config from "../../../../../package.json";
 import { AppServerConfig } from "@appserver/common/constants";
 import { Trans, useTranslation } from "react-i18next";
+import { ResetApplicationDialog } from "../../../../components/dialogs";
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -96,6 +97,10 @@ const stringFormat = (string, data) =>
   string.replace(/\{(\d+)\}/g, (m, n) => data[n] || m);
 
 class SectionBodyContent extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = { dialogVisible: false };
+  }
   componentDidMount() {
     const { cultures, getPortalCultures, profile, viewer, isSelf } = this.props;
     //const isSelf = isMe(viewer, profile.userName);
@@ -118,7 +123,12 @@ class SectionBodyContent extends React.PureComponent {
     );
   };
 
+  toggleDialogVisible = () => {
+    this.setState({ dialogVisible: !this.state.dialogVisible });
+  };
+
   render() {
+    const { dialogVisible } = this.state;
     const {
       profile,
       cultures,
@@ -194,7 +204,12 @@ class SectionBodyContent extends React.PureComponent {
                 </Text>
               </Trans>
               <LinkActionWrapper>
-                <Link type="action" isHovered={true} className="link-action">
+                <Link
+                  type="action"
+                  isHovered={true}
+                  className="link-action"
+                  onClick={this.toggleDialogVisible}
+                >
                   {t("ResetApplication")}
                 </Link>
                 <Link type="action" isHovered={true} className="link-action">
@@ -225,6 +240,12 @@ class SectionBodyContent extends React.PureComponent {
               <Text as="span">{socialContacts}</Text>
             </ToggleContent>
           </ToggleWrapper>
+        )}
+        {dialogVisible && (
+          <ResetApplicationDialog
+            visible={dialogVisible}
+            onClose={this.toggleDialogVisible}
+          />
         )}
       </ProfileWrapper>
     );
