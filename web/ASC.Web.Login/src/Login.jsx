@@ -364,42 +364,56 @@ const Form = (props) => {
     }
   }, []);
 
+  const addFacebookToStart = (facebookIndex, providerButtons) => {
+    const faceBookData = providers[facebookIndex];
+    const { icon, label, iconOptions } = providersData[faceBookData.provider];
+    providerButtons.unshift(
+      <div
+        className="buttonWrapper"
+        key={`${faceBookData.provider}ProviderItem`}
+      >
+        <FacebookButton
+          iconName={icon}
+          label={t(label)}
+          className="socialButton"
+          $iconOptions={iconOptions}
+          data-url={faceBookData.url}
+          data-providername={faceBookData.provider}
+          onClick={onSocialButtonClick}
+        />
+      </div>
+    );
+  };
+
   const providerButtons = () => {
+    let facebookIndex = null;
     const providerButtons =
       providers &&
-      providers.map((item) => {
+      providers.map((item, index) => {
         const { icon, label, iconOptions, className } = providersData[
           item.provider
         ];
-        if (!icon) return <></>;
+        if (!icon) return;
+        if (item.provider === "Facebook") {
+          facebookIndex = index;
+          return;
+        }
         return (
-          <div className="buttonWrapper">
-            <React.Fragment key={`${item.provider}ProviderItem`}>
-              {item.provider === "Facebook" ? (
-                <FacebookButton
-                  iconName={icon}
-                  label={t(label)}
-                  className="socialButton"
-                  $iconOptions={iconOptions}
-                  data-url={item.url}
-                  data-providername={item.provider}
-                  onClick={onSocialButtonClick}
-                />
-              ) : (
-                <SocialButton
-                  iconName={icon}
-                  label={t(label)}
-                  className={`socialButton ${className ? className : ""}`}
-                  $iconOptions={iconOptions}
-                  data-url={item.url}
-                  data-providername={item.provider}
-                  onClick={onSocialButtonClick}
-                />
-              )}
-            </React.Fragment>
+          <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
+            <SocialButton
+              iconName={icon}
+              label={t(label)}
+              className={`socialButton ${className ? className : ""}`}
+              $iconOptions={iconOptions}
+              data-url={item.url}
+              data-providername={item.provider}
+              onClick={onSocialButtonClick}
+            />
           </div>
         );
       });
+
+    if (facebookIndex) addFacebookToStart(facebookIndex, providerButtons);
 
     return providerButtons;
   };
