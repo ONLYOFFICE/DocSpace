@@ -134,7 +134,10 @@ class FilesRowContent extends React.PureComponent {
   }
 
   completeAction = (id) => {
-    this.props.editCompleteAction(id, this.props.item);
+    const isCancel =
+      (id.currentTarget && id.currentTarget.dataset.action === "cancel") ||
+      id.keyCode === 27;
+    this.props.editCompleteAction(id, this.props.item, isCancel);
   };
 
   updateItem = () => {
@@ -144,20 +147,23 @@ class FilesRowContent extends React.PureComponent {
       item,
       setIsLoading,
       fileActionId,
+      editCompleteAction,
     } = this.props;
 
     const { itemTitle } = this.state;
     const originalTitle = getTitleWithoutExst(item);
 
     setIsLoading(true);
-    if (originalTitle === itemTitle || itemTitle.trim() === "") {
+    const isSameTitle =
+      originalTitle.trim() === itemTitle.trim() || itemTitle.trim() === "";
+    if (isSameTitle) {
       this.setState({
         itemTitle: originalTitle,
       });
-      return this.completeAction(fileActionId);
+      return editCompleteAction(fileActionId, item, isSameTitle);
     }
 
-    item.fileExst
+    item.fileExst || item.contentLength
       ? updateFile(fileActionId, itemTitle)
           .then(() => this.completeAction(fileActionId))
           .finally(() => setIsLoading(false))
@@ -202,12 +208,12 @@ class FilesRowContent extends React.PureComponent {
           )
         : null;
 
-    !item.fileExst
+    !item.fileExst && !item.contentLength
       ? createFolder(item.parentId, itemTitle)
           .then(() => this.completeAction(itemId))
           .then(() =>
             toastr.success(
-              <Trans i18nKey="FolderCreated" ns="Home">
+              <Trans t={t} i18nKey="FolderCreated" ns="Home">
                 New folder {{ itemTitle }} is created
               </Trans>
             )
@@ -310,11 +316,11 @@ class FilesRowContent extends React.PureComponent {
       addExpandedKeys,
       setMediaViewerData,
     } = this.props;
-    const { id, fileExst, viewUrl, providerKey } = item;
+    const { id, fileExst, viewUrl, providerKey, contentLength } = item;
 
     if (isTrashFolder) return;
 
-    if (!fileExst) {
+    if (!fileExst && !contentLength) {
       setIsLoading(true);
 
       if (!expandedKeys.includes(parentFolder + "")) {
@@ -387,7 +393,9 @@ class FilesRowContent extends React.PureComponent {
       setIsVerHistoryPanel,
       fetchFileVersions,
       history,
+      isTrashFolder,
     } = this.props;
+    if (isTrashFolder) return;
 
     if (!isTabletView) {
       fetchFileVersions(item.id + "");
@@ -606,7 +614,7 @@ class FilesRowContent extends React.PureComponent {
           sectionWidth={sectionWidth}
           isMobile={isMobile}
           sideColor={sideColor}
-          isFile={fileExst}
+          isFile={fileExst || contentLength}
           onClick={this.onMobileRowClick}
         >
           <Link
@@ -649,7 +657,7 @@ class FilesRowContent extends React.PureComponent {
                 {canWebEdit && !isTrashFolder && accessToEdit && (
                   <IconButton
                     onClick={this.onFilesClick}
-                    iconName="images/access.edit.react.svg"
+                    iconName="/static/images/access.edit.react.svg"
                     className="badge"
                     size="small"
                     isfill={true}
@@ -690,7 +698,9 @@ class FilesRowContent extends React.PureComponent {
                     color="#FFFFFF"
                     fontSize="10px"
                     fontWeight={800}
-                    label={`Ver.${versionGroup}`}
+                    label={t("Version", {
+                      version: versionGroup,
+                    })}
                     maxWidth="50px"
                     onClick={this.onShowVersionHistory}
                     padding="0 5px"
@@ -705,7 +715,7 @@ class FilesRowContent extends React.PureComponent {
                     color="#FFFFFF"
                     fontSize="10px"
                     fontWeight={800}
-                    label={`New`}
+                    label={t("New")}
                     maxWidth="50px"
                     onClick={this.onBadgeClick}
                     padding="0 5px"
@@ -754,7 +764,9 @@ class FilesRowContent extends React.PureComponent {
             color={sideColor}
             className="row_update-text"
           >
-            {(fileExst || !providerKey) && updatedDate && updatedDate}
+            {(fileExst || contentLength || !providerKey) &&
+              updatedDate &&
+              updatedDate}
           </Text>
           <Text
             containerMinWidth="90px"
@@ -766,7 +778,7 @@ class FilesRowContent extends React.PureComponent {
             title=""
             truncate={true}
           >
-            {fileExst
+            {fileExst || contentLength
               ? contentLength
               : !providerKey
               ? `${t("TitleDocuments")}: ${filesCount} | ${t(
@@ -784,7 +796,6 @@ export default inject(
   (
     {
       auth,
-      initFilesStore,
       filesStore,
       formatsStore,
       uploadDataStore,
@@ -798,7 +809,6 @@ export default inject(
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
     const { culture, isDesktopClient, isTabletView } = auth.settingsStore;
-    const { setIsLoading, isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
     const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
     const {
@@ -817,6 +827,8 @@ export default inject(
       renameFolder,
       createFolder,
       openDocEditor,
+      setIsLoading,
+      isLoading,
     } = filesStore;
 
     const {

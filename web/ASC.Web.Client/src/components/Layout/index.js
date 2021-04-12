@@ -26,6 +26,8 @@ const StyledContainer = styled.div`
   }
   #articleScrollBar {
     > .scroll-body {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
       position: ${(props) =>
         isMobile && !isSmallTablet()
           ? props.isArticlePinned
@@ -40,7 +42,7 @@ const StyledContainer = styled.div`
         css`
           overflow-y: hidden !important;
           overflow-x: hidden !important;
-          width: 208px;
+          width: 192px;
         `}
     }
 
@@ -55,7 +57,13 @@ const StyledContainer = styled.div`
 `;
 
 const Layout = (props) => {
-  const { children, isTabletView, setIsTabletView, isArticlePinned } = props;
+  const {
+    children,
+    isTabletView,
+    setIsTabletView,
+    isArticlePinned,
+    isArticleVisibleOnUnpin,
+  } = props;
 
   const [contentHeight, setContentHeight] = useState();
   const [isPortrait, setIsPortrait] = useState();
@@ -73,10 +81,10 @@ const Layout = (props) => {
     setIsTabletView(isTablet);
 
     let mediaQuery = window.matchMedia("(max-width: 1024px)");
-    mediaQuery.addEventListener("change", onWidthChange);
+    mediaQuery.addListener(onWidthChange);
 
     return () => {
-      mediaQuery.removeEventListener("change", onWidthChange);
+      mediaQuery.removeListener(onWidthChange);
       if (intervalHandler) clearInterval(intervalHandler);
       if (timeoutHandler) clearTimeout(timeoutHandler);
     };
@@ -183,6 +191,7 @@ export default inject(({ auth }) => {
   return {
     isTabletView: auth.settingsStore.isTabletView,
     isArticlePinned: auth.settingsStore.isArticlePinned,
+    isArticleVisibleOnUnpin: auth.settingsStore.isArticleVisibleOnUnpin,
     setIsTabletView: auth.settingsStore.setIsTabletView,
   };
 })(observer(Layout));

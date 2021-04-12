@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { ARTICLE_PINNED_KEY, LANGUAGE } from "../constants";
 import { combineUrl } from "../utils";
@@ -18,7 +18,10 @@ class SettingsStore {
   timezones = [];
   utcOffset = "00:00:00";
   utcHoursOffset = 0;
-  defaultPage = combineUrl(proxyURL, "/");
+  defaultPage = combineUrl(
+    proxyURL,
+    window["AscDesktopEditor"] !== undefined ? "/products/files/" : "/"
+  );
   homepage = "";
   datePattern = "M/d/yyyy";
   datePatternJQ = "00/00/0000";
@@ -56,6 +59,8 @@ class SettingsStore {
   isArticlePinned =
     localStorage.getItem(ARTICLE_PINNED_KEY) === "true" || false;
 
+  isArticleVisibleOnUnpin = false;
+
   hashSettings = null;
   title = "";
   ownerId = null;
@@ -66,68 +71,7 @@ class SettingsStore {
   hasShortenService = false;
 
   constructor() {
-    makeObservable(this, {
-      currentProductId: observable,
-      culture: observable,
-      cultures: observable,
-      trustedDomains: observable,
-      trustedDomainsType: observable,
-      timezone: observable,
-      timezones: observable,
-      utcOffset: observable,
-      utcHoursOffset: observable,
-      defaultPage: observable,
-      homepage: observable,
-      datePattern: observable,
-      datePatternJQ: observable,
-      dateTimePattern: observable,
-      datepicker: observable,
-      organizationName: observable,
-      greetingSettings: observable,
-      enableAdmMess: observable,
-      urlLicense: observable,
-      urlSupport: observable,
-      urlAuthKeys: computed,
-      logoUrl: observable,
-      customNames: observable,
-      isDesktopClient: observable,
-      isEncryptionSupport: observable,
-      encryptionKeys: observable,
-      isHeaderVisible: observable,
-      isTabletView: observable,
-      isArticlePinned: observable,
-      hashSettings: observable,
-      ownerId: observable,
-      nameSchemaId: observable,
-      wizardToken: observable,
-      wizardCompleted: computed,
-      passwordSettings: observable,
-      hasShortenService: observable,
-      getSettings: action,
-      getCurrentCustomSchema: action,
-      getPortalSettings: action,
-      init: action,
-      isLoaded: observable,
-      isLoading: observable,
-      setIsLoading: action,
-      setIsLoaded: action,
-      getPortalCultures: action,
-      getIsEncryptionSupport: action,
-      updateEncryptionKeys: action,
-      setEncryptionKeys: action,
-      getEncryptionKeys: action,
-      setModuleInfo: action,
-      setCurrentProductId: action,
-      setWizardComplete: action,
-      setPasswordSettings: action,
-      getPortalPasswordSettings: action,
-      setTimezones: action,
-      getPortalTimezones: action,
-      setHeaderVisible: action,
-      setIsTabletView: action,
-      setValue: action,
-      setArticlePinned: action,
-    });
+    makeAutoObservable(this);
   }
 
   get urlAuthKeys() {
@@ -155,9 +99,11 @@ class SettingsStore {
             ? combineUrl(proxyURL, newSettings[key])
             : newSettings[key]
         );
-
-        if (key === "culture" && !localStorage.getItem(LANGUAGE)) {
-          localStorage.setItem(LANGUAGE, newSettings[key]);
+        if (key === "culture") {
+          const language = localStorage.getItem(LANGUAGE);
+          if (!language || language == "undefined") {
+            localStorage.setItem(LANGUAGE, newSettings[key]);
+          }
         }
       } else if (key === "passwordHash") {
         this.setValue("hashSettings", newSettings[key]);
@@ -200,8 +146,13 @@ class SettingsStore {
     this.cultures = await api.settings.getPortalCultures();
   };
 
+  setIsEncryptionSupport = (isEncryptionSupport) => {
+    this.isEncryptionSupport = isEncryptionSupport;
+  };
+
   getIsEncryptionSupport = async () => {
-    this.isEncryptionSupport = await api.files.getIsEncryptionSupport();
+    const isEncryptionSupport = await api.files.getIsEncryptionSupport();
+    this.setIsEncryptionSupport(isEncryptionSupport);
   };
 
   updateEncryptionKeys = (encryptionKeys) => {
@@ -280,6 +231,10 @@ class SettingsStore {
       ? localStorage.setItem(ARTICLE_PINNED_KEY, isPinned)
       : localStorage.removeItem(ARTICLE_PINNED_KEY);
     this.isArticlePinned = isPinned;
+  };
+
+  setArticleVisibleOnUnpin = (visible) => {
+    this.isArticleVisibleOnUnpin = visible;
   };
 }
 

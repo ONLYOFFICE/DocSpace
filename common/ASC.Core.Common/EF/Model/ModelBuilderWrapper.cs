@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 using Microsoft.EntityFrameworkCore;
@@ -60,7 +61,7 @@ namespace ASC.Core.Common.EF.Model
                         }
                     }
 
-                    return SqlFunctionExpression.Create("JSON_EXTRACT", res, typeof(string), null);
+                    return new SqlFunctionExpression("JSON_EXTRACT", res, true, res.Select((SqlExpression a) => false), typeof(string), null);
                 });
         }
     }

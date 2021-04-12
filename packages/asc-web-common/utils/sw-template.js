@@ -81,20 +81,20 @@ offlineFallback({
 // ALL OTHER EVENTS
 
 // Receive push and show a notification
-self.addEventListener("push", function (event) {
-  console.log("[Service Worker]: Received push event", event);
+// self.addEventListener("push", function (event) {
+//   console.log("[Service Worker]: Received push event", event);
 
-  var notificationData = {};
+//   var notificationData = {};
 
-  if (event.data.json()) {
-    notificationData = event.data.json();
-  } else {
-    notificationData = {
-      title: "Something Has Happened",
-      message: "Something you might want to check out",
-      icon: "/assets/img/pwa-logo.png",
-    };
-  }
+//   if (event.data.json()) {
+//     notificationData = event.data.json();
+//   } else {
+//     notificationData = {
+//       title: "Something Has Happened",
+//       message: "Something you might want to check out",
+//       icon: "/assets/img/pwa-logo.png",
+//     };
+//   }
 
-  self.registration.showNotification(notificationData.title, notificationData);
-});
+//   self.registration.showNotification(notificationData.title, notificationData);
+// });

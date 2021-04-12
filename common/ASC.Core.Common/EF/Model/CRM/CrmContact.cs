@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
 {
@@ -41,16 +42,16 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("crm_contact");
 
                 entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on");
+                    .HasDatabaseName("create_on");
 
                 entity.HasIndex(e => new { e.LastModifedOn, e.TenantId })
-                    .HasName("last_modifed_on");
+                    .HasDatabaseName("last_modifed_on");
 
                 entity.HasIndex(e => new { e.TenantId, e.CompanyId })
-                    .HasName("company_id");
+                    .HasDatabaseName("company_id");
 
                 entity.HasIndex(e => new { e.TenantId, e.DisplayName })
-                    .HasName("display_name");
+                    .HasDatabaseName("display_name");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -143,16 +144,16 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("crm_contact", "onlyoffice");
 
                 entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on_crm_contact");
+                    .HasDatabaseName("create_on_crm_contact");
 
                 entity.HasIndex(e => new { e.LastModifedOn, e.TenantId })
-                    .HasName("last_modifed_on_crm_contact");
+                    .HasDatabaseName("last_modifed_on_crm_contact");
 
                 entity.HasIndex(e => new { e.TenantId, e.CompanyId })
-                    .HasName("company_id");
+                    .HasDatabaseName("company_id");
 
                 entity.HasIndex(e => new { e.TenantId, e.DisplayName })
-                    .HasName("display_name");
+                    .HasDatabaseName("display_name");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

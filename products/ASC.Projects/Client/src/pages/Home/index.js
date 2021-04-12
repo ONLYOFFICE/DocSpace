@@ -19,6 +19,7 @@ import { setDocumentTitle } from "../../helpers/utils";
 import { inject } from "mobx-react";
 import i18n from "../../i18n";
 import { I18nextProvider } from "react-i18next";
+import { combineUrl, deleteCookie } from "@appserver/common/utils";
 
 const commonStyles = `
   .link-box {
@@ -90,12 +91,13 @@ const StyledDesktopContainer = styled(EmptyScreenContainer)`
   }
 `;
 
-const ExternalLink = ({ label, href }) => (
+const ExternalLink = ({ label, href, onClick }) => (
   <Box className="link-box">
     <ExternalLinkIcon color="#333333" size={isMobile ? "small" : "medium"} />
     <Link
       as="a"
       href={href}
+      onClick={onClick}
       target="_blank"
       className="view-web-link"
       color="#555F65"
@@ -122,7 +124,10 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
     helpUrl,
   } = currentModule;
   const url = originUrl ? originUrl : link;
-  const webLink = protocol + "//" + hostname + url;
+  const webLink = combineUrl(
+    protocol + "//" + hostname,
+    `${url}?desktop_view=true`
+  );
   const appLink = isIOS
     ? id === "2A923037-8B2D-487b-9A22-5AC0918ACF3F"
       ? "message:"
@@ -147,7 +152,13 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
         borderRadius="2px"
         className="coming-soon-badge"
       />
-      <ExternalLink label={t("ViewWeb")} href={webLink} />
+      <ExternalLink
+        label={t("ViewWeb")}
+        onClick={() => {
+          deleteCookie("desktop_view");
+          window.open(webLink, "_self", "", true);
+        }}
+      />
       {appLink && (
         <ExternalLink
           label={t("OpenApp", {

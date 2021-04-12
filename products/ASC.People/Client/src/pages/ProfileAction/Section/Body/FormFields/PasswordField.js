@@ -32,6 +32,7 @@ class PasswordField extends React.Component {
       inputTabIndex,
 
       copyLinkText,
+      copiedResourceText,
       t,
     } = this.props;
 
@@ -60,6 +61,7 @@ class PasswordField extends React.Component {
           inputTabIndex={inputTabIndex}
           onChange={inputOnChange}
           clipActionResource={copyLinkText}
+          clipCopiedResource={copiedResourceText}
           clipEmailResource={`${t("Email")}: `}
           clipPasswordResource={`${t("Password")}: `}
           tooltipPasswordTitle={`${t("ErrorPasswordMessage")}:`}

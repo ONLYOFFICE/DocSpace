@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model.Mail
 {
@@ -27,7 +29,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.ToTable("mail_server_server");
 
                 entity.HasIndex(e => e.ServerType)
-                    .HasName("mail_server_server_type_server_type_fk_id");
+                    .HasDatabaseName("mail_server_server_type_server_type_fk_id");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -60,7 +62,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.ToTable("mail_server_server", "onlyoffice");
 
                 entity.HasIndex(e => e.ServerType)
-                    .HasName("mail_server_server_type_server_type_fk_id");
+                    .HasDatabaseName("mail_server_server_type_server_type_fk_id");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

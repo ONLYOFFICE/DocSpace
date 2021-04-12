@@ -16,7 +16,7 @@ class GroupsStore {
   }
 
   getGroupList = async () => {
-    const res = await api.groups.getGroupListFull();
+    const res = await api.groups.getGroupList(); //TODO: replace with getGroupListFull() after fixing problems on the server
     this.groups = res;
   };
 

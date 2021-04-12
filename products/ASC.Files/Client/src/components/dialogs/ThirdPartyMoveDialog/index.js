@@ -16,14 +16,66 @@ const StyledOperationDialog = styled.div`
 const PureThirdPartyMoveContainer = ({
   t,
   visible,
-  startMoveOperation,
-  startCopyOperation,
   provider,
+  selection,
+  destFolderId,
+  copyToAction,
+  moveToAction,
+  setDestFolderId,
   setThirdPartyMoveDialogVisible,
 }) => {
   const zIndex = 310;
+  const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2 TODO: get from settings
+  const deleteAfter = true; // TODO: get from settings
 
-  const onClose = () => setThirdPartyMoveDialogVisible(false);
+  const onClose = () => {
+    setDestFolderId(false);
+    setThirdPartyMoveDialogVisible(false);
+  };
+
+  const getOperationItems = () => {
+    const folderIds = [];
+    const fileIds = [];
+
+    for (let item of selection) {
+      if (item.fileExst) {
+        fileIds.push(item.id);
+      } else {
+        folderIds.push(item.id);
+      }
+    }
+    return [folderIds, fileIds];
+  };
+
+  const startMoveOperation = () => {
+    const result = getOperationItems();
+    const folderIds = result[0];
+    const fileIds = result[1];
+
+    moveToAction(
+      destFolderId,
+      folderIds,
+      fileIds,
+      conflictResolveType,
+      deleteAfter
+    );
+    onClose();
+  };
+
+  const startCopyOperation = () => {
+    const result = getOperationItems();
+    const folderIds = result[0];
+    const fileIds = result[1];
+
+    copyToAction(
+      destFolderId,
+      folderIds,
+      fileIds,
+      conflictResolveType,
+      deleteAfter
+    );
+    onClose();
+  };
 
   return (
     <StyledOperationDialog>
@@ -61,17 +113,25 @@ const PureThirdPartyMoveContainer = ({
   );
 };
 
-export default inject(({ filesStore, dialogsStore }) => {
+export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
   const {
     thirdPartyMoveDialogVisible: visible,
     setThirdPartyMoveDialogVisible,
+    destFolderId,
+    setDestFolderId,
   } = dialogsStore;
   const { selection } = filesStore;
+  const { copyToAction, moveToAction } = filesActionsStore;
 
   return {
     visible,
     setThirdPartyMoveDialogVisible,
+    destFolderId,
+    setDestFolderId,
     provider: selection[0].providerKey,
+    copyToAction,
+    moveToAction,
+    selection,
   };
 })(
   withTranslation("ThirdPartyMoveDialog")(observer(PureThirdPartyMoveContainer))

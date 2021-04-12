@@ -287,7 +287,7 @@ const SectionBodyContent = ({
               opened={isHeadSelectorOpen}
               selectedOption={
                 newGroupManager.default ||
-                newGroupManager.id === ID_NO_GROUP_MANAGER ||
+                newGroupManager.key === ID_NO_GROUP_MANAGER ||
                 newGroupManager.displayName === "profile removed"
                   ? { ...newGroupManager, label: t("LblSelect") }
                   : newGroupManager

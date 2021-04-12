@@ -11,6 +11,11 @@ import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 import { showLoader, hideLoader } from "@appserver/common/utils";
+import { withRouter } from "react-router";
+
+import { AppServerConfig } from "@appserver/common/constants";
+import { combineUrl } from "@appserver/common/utils";
+import config from "../../../../../../package.json";
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -99,12 +104,22 @@ class ProfileInfo extends React.PureComponent {
 
   onGroupClick = (e) => {
     const group = e.currentTarget.dataset.id;
-    const { filter, setIsLoading, fetchPeople } = this.props;
+    const { filter, setIsLoading, fetchPeople, history } = this.props;
 
     const newFilter = filter.clone();
     newFilter.group = group;
 
     setIsLoading(true);
+
+    const urlFilter = newFilter.toUrlParams();
+
+    const url = combineUrl(
+      AppServerConfig.proxyURL,
+      config.homepage,
+      `/filter?${urlFilter}`
+    );
+    history.push(url);
+
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
 
@@ -217,7 +232,7 @@ class ProfileInfo extends React.PureComponent {
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage = (
       <Text fontSize="13px">
-        <Trans i18nKey="NotFoundLanguage" ns="Profile">
+        <Trans t={t} i18nKey="NotFoundLanguage" ns="Profile">
           "In case you cannot find your language in the list of the available
           ones, feel free to write to us at
           <Link href={`mailto:${supportEmail}`} isHovered={true}>
@@ -351,15 +366,17 @@ class ProfileInfo extends React.PureComponent {
   }
 }
 
-export default inject(({ auth, peopleStore }) => ({
-  groupCaption: auth.settingsStore.customNames.groupCaption,
-  regDateCaption: auth.settingsStore.customNames.regDateCaption,
-  userPostCaption: auth.settingsStore.customNames.userPostCaption,
-  userCaption: auth.settingsStore.customNames.userCaption,
-  guestCaption: auth.settingsStore.customNames.guestCaption,
-  fetchPeople: peopleStore.usersStore.getUsersList,
-  filter: peopleStore.filterStore.filter,
-  setIsLoading: peopleStore.setIsLoading,
-  isLoading: peopleStore.isLoading,
-  updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
-}))(observer(withTranslation("Profile")(ProfileInfo)));
+export default withRouter(
+  inject(({ auth, peopleStore }) => ({
+    groupCaption: auth.settingsStore.customNames.groupCaption,
+    regDateCaption: auth.settingsStore.customNames.regDateCaption,
+    userPostCaption: auth.settingsStore.customNames.userPostCaption,
+    userCaption: auth.settingsStore.customNames.userCaption,
+    guestCaption: auth.settingsStore.customNames.guestCaption,
+    fetchPeople: peopleStore.usersStore.getUsersList,
+    filter: peopleStore.filterStore.filter,
+    setIsLoading: peopleStore.setIsLoading,
+    isLoading: peopleStore.isLoading,
+    updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
+  }))(observer(withTranslation("Profile")(ProfileInfo)))
+);

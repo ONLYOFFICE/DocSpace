@@ -128,12 +128,12 @@ class ArticleBodyContent extends React.Component {
 }
 
 export default inject(
-  ({ initFilesStore, filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const { setIsLoading } = initFilesStore;
-    const { fetchFiles, filter } = filesStore;
+  ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const { fetchFiles, filter, setIsLoading } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
     const selectedTreeNode =
-      treeFoldersStore.selectedTreeNode.length > 0
+      treeFoldersStore.selectedTreeNode.length > 0 &&
+      treeFoldersStore.selectedTreeNode[0] !== "@my"
         ? treeFoldersStore.selectedTreeNode
         : [selectedFolderStore.id + ""];
 

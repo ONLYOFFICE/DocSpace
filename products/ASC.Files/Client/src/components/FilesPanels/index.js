@@ -5,6 +5,7 @@ import {
   UploadPanel,
   OperationsPanel,
   VersionHistoryPanel,
+  ChangeOwnerPanel,
 } from "../panels";
 import {
   ThirdPartyMoveDialog,
@@ -46,11 +47,7 @@ const Panels = (props) => {
       <OperationsPanel key="operation-panel" isCopy={copyPanelVisible} />
     ),
     thirdPartyMoveDialogVisible && (
-      <ThirdPartyMoveDialog
-        key="thirdparty-move-dialog"
-        startMoveOperation={this.startMoveOperation} //TODO: added actions to dialog
-        startCopyOperation={this.startCopyOperation} //TODO: added actions to dialog
-      />
+      <ThirdPartyMoveDialog key="thirdparty-move-dialog" />
     ),
     connectDialogVisible && <ConnectDialog key="connect-dialog" />,
     deleteThirdPartyDialogVisible && (
@@ -94,7 +91,6 @@ export default inject(
       copyPanelVisible,
       moveToPanelVisible,
       thirdPartyMoveDialogVisible,
-      //connectDialogVisible,
       connectDialogVisible: connectDialogVisible || !!connectItem, //TODO:
       deleteThirdPartyDialogVisible,
       versionHistoryPanelVisible,

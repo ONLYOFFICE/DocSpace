@@ -116,6 +116,7 @@ const EditingWrapperComponent = (props) => {
         onClick={cancelUpdateItem}
         icon={cancelIcon}
         data-itemid={itemId}
+        data-action="cancel"
         onMouseEnter={setIsHoveredCancelHandler}
         onMouseLeave={setIsHoveredCancelHandler}
         isHovered={CancelIconIsHovered}

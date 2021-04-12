@@ -91,7 +91,7 @@ const Body = () => {
     "20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050";
   const licenseContent = (
     <Text as="div" className="text_style" fontSize="12px">
-      <Trans i18nKey="LicensedUnder" ns="About">
+      <Trans t={t} i18nKey="LicensedUnder" ns="About">
         "This software is licensed under:"
         <Link
           href="https://www.gnu.org/licenses/gpl-3.0.html"
@@ -128,7 +128,7 @@ const Body = () => {
       </Text>
 
       <Text as="div" className="text_style" fontSize="16px" isBold={true}>
-        <Trans i18nKey="AllRightsReservedCustomMode" ns="About">
+        <Trans t={t} i18nKey="AllRightsReservedCustomMode" ns="About">
           Ascensio System SIA
           <p className="hidden-text">All rights reserved.</p>
         </Trans>

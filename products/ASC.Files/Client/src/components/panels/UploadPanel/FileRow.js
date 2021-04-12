@@ -15,6 +15,11 @@ const StyledFileRow = styled(Row)`
   box-sizing: border-box;
   font-weight: 600;
 
+  .row_content > a,
+  .row_content > p {
+    margin: auto 0;
+  }
+
   .upload_panel-icon {
     margin-left: auto;
     padding-left: 16px;

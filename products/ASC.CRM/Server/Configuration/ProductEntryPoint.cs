@@ -77,7 +77,7 @@ namespace ASC.CRM.Configuration
 
         public override string StartURL { get { return PathProvider.StartURL(); } }
 
-        public override string HelpURL { get { return string.Concat(PathProvider.BaseVirtualPath, "Help.aspx"); } }
+        public override string HelpURL { get { return "https://helpcenter.onlyoffice.com/userguides/crm.aspx"; } }
 
         public override string ProductClassName { get { return "crm"; } }
 

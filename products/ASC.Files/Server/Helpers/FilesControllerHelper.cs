@@ -300,9 +300,9 @@ namespace ASC.Files.Helpers
             return FolderWrapperHelper.Get(folder);
         }
 
-        public FileWrapper<T> CreateFile(T folderId, string title, T templateId)
+        public FileWrapper<T> CreateFile(T folderId, string title, T templateId, bool enableExternalExt = false)
         {
-            var file = FileStorageService.CreateNewFile(new FileModel<T> { ParentId = folderId, Title = title, TemplateId = templateId });
+            var file = FileStorageService.CreateNewFile(new FileModel<T> { ParentId = folderId, Title = title, TemplateId = templateId }, enableExternalExt);
             return FileWrapperHelper.Get(file);
         }
 

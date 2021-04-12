@@ -23,7 +23,7 @@ const DragAndDrop = (props) => {
       className={`drag-and-drop ${classNameProp}`}
       dragging={dragging}
       isDragAccept={isDragActive}
-      drag={isDragActive && isDropZone}
+      drag={isDragActive && isDropZone && props.onDrop}
       {...getRootProps()}
     >
       {children}
