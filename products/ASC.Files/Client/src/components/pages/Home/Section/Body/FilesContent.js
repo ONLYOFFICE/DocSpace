@@ -4,10 +4,8 @@ import { Trans, withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
-import Badge from "@appserver/components/badge";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
-import IconButton from "@appserver/components/icon-button";
 import {
   convertFile,
   getFileConversationProgress,
@@ -30,11 +28,7 @@ import EditingWrapperComponent from "./sub-components/EditingWrapperComponent";
 import { SimpleTileContent } from "./FilesTile/SimpleTileContent";
 import { SimpleRowContent } from "./FilesRow/SimpleRowContent";
 
-import {
-  StyledFavoriteIcon,
-  StyledFileActionsConvertEditDocIcon,
-  StyledFileActionsLockedIcon,
-} from "./sub-components/Icons";
+import BadgesFile from "./sub-components/Badges";
 
 const sideColor = "#A3A9AE";
 
@@ -43,7 +37,6 @@ const Content = ({
   sectionWidth,
   fileExst,
   onMobileRowClick,
-  badges,
   ...props
 }) => {
   return viewAs === "tile" ? (
@@ -52,7 +45,6 @@ const Content = ({
       isFile={fileExst}
       onClick={onMobileRowClick}
       disableSideInfo
-      badges={badges}
       {...props}
     />
   ) : (
@@ -468,100 +460,6 @@ class FilesContent extends React.Component {
       .catch((err) => toastr.error(err));
   };
 
-  renderBadges = () => {
-    const { newItems } = this.state;
-    const { item, canWebEdit, isTrashFolder, canConvert } = this.props;
-    const { id, locked, fileStatus, versionGroup, access, title } = item;
-
-    const accessToEdit =
-      access === ShareAccessRights.FullAccess ||
-      access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
-
-    const showNew = !!newItems;
-    return (
-      <>
-        {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
-                  <IconButton
-                    onClick={this.setConvertDialogVisible}
-                    iconName="FileActionsConvertIcon"
-                    className="badge"
-                    size="small"
-                    isfill={true}
-                    color="#A3A9AE"
-                    hoverColor="#3B72A7"
-                  />
-                )} */}
-        {canWebEdit && !isTrashFolder && accessToEdit && (
-          <IconButton
-            onClick={this.onFilesClick}
-            iconName="/static/images/access.edit.react.svg"
-            className="badge icons-group"
-            size="small"
-            isfill={true}
-            color="#A3A9AE"
-            hoverColor="#3B72A7"
-          />
-        )}
-
-        {locked && (
-          <StyledFileActionsLockedIcon
-            className="badge lock-file icons-group"
-            size="small"
-            data-id={id}
-            data-locked={true}
-            onClick={this.onClickLock}
-          />
-        )}
-        {fileStatus === 32 && !isTrashFolder && (
-          <StyledFavoriteIcon
-            className="favorite icons-group"
-            size="small"
-            data-action="remove"
-            data-id={id}
-            data-title={title}
-            onClick={this.onClickFavorite}
-          />
-        )}
-        {fileStatus === 1 && (
-          <StyledFileActionsConvertEditDocIcon
-            className="badge icons-group"
-            size="small"
-          />
-        )}
-        {versionGroup > 1 && (
-          <Badge
-            className="badge-version icons-group"
-            backgroundColor="#A3A9AE"
-            borderRadius="11px"
-            color="#FFFFFF"
-            fontSize="10px"
-            fontWeight={800}
-            label={`Ver.${versionGroup}`}
-            maxWidth="50px"
-            onClick={this.onShowVersionHistory}
-            padding="0 5px"
-            data-id={id}
-          />
-        )}
-        {showNew && (
-          <Badge
-            className="badge-version icons-group"
-            backgroundColor="#ED7309"
-            borderRadius="11px"
-            color="#FFFFFF"
-            fontSize="10px"
-            fontWeight={800}
-            label={`New`}
-            maxWidth="50px"
-            onClick={this.onBadgeClick}
-            padding="0 5px"
-            data-id={id}
-          />
-        )}
-      </>
-    );
-  };
-
   render() {
     const {
       itemTitle,
@@ -623,8 +521,6 @@ class FilesContent extends React.Component {
 
     console.log("viewAs content", viewAs);
 
-    const badges = this.renderBadges();
-
     return isEdit ? (
       <EditingWrapperComponent
         itemTitle={itemTitle}
@@ -655,7 +551,6 @@ class FilesContent extends React.Component {
           sectionWidth={sectionWidth}
           fileExst={fileExst}
           onMobileRowClick={this.onMobileRowClick}
-          badges={badges}
         >
           <Link
             containerWidth={viewAs === "row" ? "55%" : "100%"}
@@ -669,42 +564,29 @@ class FilesContent extends React.Component {
           >
             {titleWithoutExt}
           </Link>
-          <>
-            {fileExst ? (
-              <div className="badges">
-                <Text
-                  className="badge-ext"
-                  as="span"
-                  color="#A3A9AE"
-                  fontSize="15px"
-                  fontWeight={600}
-                  title={fileExst}
-                  truncate={true}
-                >
-                  {fileExst}
-                </Text>
-                {viewAs !== "tile" && badges}
-              </div>
-            ) : (
-              <div className="badges">
-                {showNew && (
-                  <Badge
-                    className="new-items"
-                    backgroundColor="#ED7309"
-                    borderRadius="11px"
-                    color="#FFFFFF"
-                    fontSize="10px"
-                    fontWeight={800}
-                    label={newItems}
-                    maxWidth="50px"
-                    onClick={this.onBadgeClick}
-                    padding="0 5px"
-                    data-id={id}
-                  />
-                )}
-              </div>
-            )}
-          </>
+          <div className="badges">
+            <Text
+              className="badge-ext"
+              as="span"
+              color="#A3A9AE"
+              fontSize="15px"
+              fontWeight={600}
+              title={fileExst}
+              truncate={true}
+            >
+              {fileExst}
+            </Text>
+
+            <BadgesFile
+              item={item}
+              newItems={this.state.newItems}
+              onFilesClick={this.onFilesClick}
+              onClickLock={this.onClickLock}
+              onClickFavorite={this.onClickFavorite}
+              onShowVersionHistory={this.onShowVersionHistory}
+              onBadgeClick={this.onBadgeClick}
+            />
+          </div>
           {viewAs !== "tile" && (
             <Text
               containerMinWidth="120px"

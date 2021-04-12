@@ -13,7 +13,6 @@ const SectionBodyContent = (props) => {
   const {
     t,
     fileActionId,
-    //viewAs,
     firstLoad,
     isLoading,
     isEmptyFilesList,
@@ -148,9 +147,7 @@ const SectionBodyContent = (props) => {
       <EmptyContainer />
     )
   ) : (
-    <FilesContainer
-    //viewAs={viewAs}
-    />
+    <FilesContainer />
   );
 };
 
