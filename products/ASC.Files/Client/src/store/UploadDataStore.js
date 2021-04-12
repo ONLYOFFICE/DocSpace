@@ -567,7 +567,6 @@ class UploadDataStore {
     if (totalErrorsCount > 0) console.log("Errors: ", totalErrorsCount);
 
     const uploadData = {
-      files: this.files,
       filesSize: 0,
       uploadStatus: null,
       uploadedFiles: 0,
@@ -578,6 +577,12 @@ class UploadDataStore {
     setTimeout(() => {
       !this.primaryProgressDataStore.alert &&
         this.primaryProgressDataStore.clearPrimaryProgressData();
+
+      uploadData.files =
+        this.uploadPanelVisible || this.primaryProgressDataStore.alert
+          ? this.files
+          : [];
+
       this.setUploadData(uploadData);
     }, TIMEOUT);
   };
