@@ -7,6 +7,7 @@ import Textarea from "@appserver/components/textarea";
 import Text from "@appserver/components/text";
 import AvatarEditor from "@appserver/components/avatar-editor";
 import SocialButton from "@appserver/components/social-button";
+import FacebookButton from "@appserver/components/facebook-button";
 import Link from "@appserver/components/link";
 import { isTablet } from "@appserver/components/utils/device";
 
@@ -54,7 +55,7 @@ import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 
-const facebookIconOptions = { color: "#4469B0" };
+const facebookIconOptions = { color: "#1877F2" };
 const twitterIconOptions = { color: "#2AA3EF" };
 
 const dialogsDataset = {
@@ -632,12 +633,21 @@ class UpdateUserForm extends React.Component {
         return (
           <React.Fragment key={`${item.provider}ProviderItem`}>
             <div>
-              <SocialButton
-                iconName={icon}
-                label={t(label)}
-                className="socialButton"
-                $iconOptions={iconOptions}
-              />
+              {item.provider === "Facebook" ? (
+                <FacebookButton
+                  iconName={icon}
+                  label={t(label)}
+                  className="socialButton"
+                  $iconOptions={iconOptions}
+                />
+              ) : (
+                <SocialButton
+                  iconName={icon}
+                  label={t(label)}
+                  className="socialButton"
+                  $iconOptions={iconOptions}
+                />
+              )}
             </div>
             {item.linked ? (
               <div>
