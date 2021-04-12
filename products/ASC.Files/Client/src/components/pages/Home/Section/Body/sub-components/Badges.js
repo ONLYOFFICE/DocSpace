@@ -29,7 +29,7 @@ export const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
   }
 `;
 
-const BadgesFile = (props) => {
+const Badges = (props) => {
   const {
     newItems,
     viewAs,
@@ -37,6 +37,7 @@ const BadgesFile = (props) => {
     canWebEdit,
     isTrashFolder,
     canConvert,
+    accessToEdit,
 
     onFilesClick,
     onClickLock,
@@ -47,13 +48,9 @@ const BadgesFile = (props) => {
   const { id, locked, fileStatus, versionGroup, access, title } = item;
   const { fileExst } = item;
 
-  const accessToEdit =
-    access === ShareAccessRights.FullAccess ||
-    access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
-
   const showNew = !!newItems;
   return fileExst ? (
-    <div className="files-badges">
+    <>
       {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
                   <IconButton
                     onClick={this.setConvertDialogVisible}
@@ -131,7 +128,7 @@ const BadgesFile = (props) => {
           data-id={id}
         />
       )}
-    </div>
+    </>
   ) : (
     showNew && (
       <Badge
@@ -151,7 +148,13 @@ const BadgesFile = (props) => {
   );
 };
 
-export default inject(({ filesStore }, { item }) => {
+export default inject(({ filesStore, treeFoldersStore }, { item }) => {
   const { viewAs } = filesStore;
-  return { viewAs };
-})(observer(BadgesFile));
+  const { isRecycleBinFolder: isTrashFolder } = treeFoldersStore;
+  const { access } = item;
+  const accessToEdit =
+    access === ShareAccessRights.FullAccess ||
+    access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
+
+  return { viewAs, isTrashFolder, accessToEdit };
+})(observer(Badges));

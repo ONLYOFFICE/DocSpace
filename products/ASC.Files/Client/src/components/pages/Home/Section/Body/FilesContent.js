@@ -28,7 +28,7 @@ import EditingWrapperComponent from "./sub-components/EditingWrapperComponent";
 import { SimpleTileContent } from "./FilesTile/SimpleTileContent";
 import { SimpleRowContent } from "./FilesRow/SimpleRowContent";
 
-import BadgesFile from "./sub-components/Badges";
+import Badges from "./sub-components/Badges";
 
 const sideColor = "#A3A9AE";
 
@@ -564,22 +564,25 @@ class FilesContent extends React.Component {
           >
             {titleWithoutExt}
           </Link>
-          <div className="badges">
-            <Text
-              className="badge-ext"
-              as="span"
-              color="#A3A9AE"
-              fontSize="15px"
-              fontWeight={600}
-              title={fileExst}
-              truncate={true}
-            >
-              {fileExst}
-            </Text>
 
-            <BadgesFile
+          <div className="badges">
+            {fileExst && (
+              <Text
+                className="badge-ext"
+                as="span"
+                color="#A3A9AE"
+                fontSize="15px"
+                fontWeight={600}
+                title={fileExst}
+                truncate={true}
+              >
+                {fileExst}
+              </Text>
+            )}
+            <Badges
               item={item}
               newItems={this.state.newItems}
+              canWebEdit={canWebEdit}
               onFilesClick={this.onFilesClick}
               onClickLock={this.onClickLock}
               onClickFavorite={this.onClickFavorite}
@@ -587,6 +590,7 @@ class FilesContent extends React.Component {
               onBadgeClick={this.onBadgeClick}
             />
           </div>
+
           {viewAs !== "tile" && (
             <Text
               containerMinWidth="120px"
