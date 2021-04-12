@@ -59,6 +59,13 @@ const ContactWrapper = styled.div`
   }
 `;
 
+const LinkActionWrapper = styled.div`
+  margin-top: 17px;
+  .link-action {
+    margin-right: 5px;
+  }
+`;
+
 const createContacts = (contacts) => {
   const styledContacts = contacts.map((contact, index) => {
     let url = null;
@@ -175,6 +182,22 @@ class SectionBodyContent extends React.PureComponent {
             </ToggleContent>
           </ToggleWrapper>
         )}
+        {isSelf && (
+          <ToggleWrapper>
+            <ToggleContent label={t("LoginSettings")} isOpen={true}>
+              <Text>{t("TwoFactorDescription")}</Text>
+              <LinkActionWrapper>
+                <Link type="action" className="link-action">
+                  {t("ResetApplication")}
+                </Link>
+                <Link type="action" className="link-action">
+                  {t("ShowBackupCodes")}
+                </Link>
+              </LinkActionWrapper>
+            </ToggleContent>
+          </ToggleWrapper>
+        )}
+
         {profile.notes && (
           <ToggleWrapper>
             <ToggleContent label={t("Comments")} isOpen={true}>
