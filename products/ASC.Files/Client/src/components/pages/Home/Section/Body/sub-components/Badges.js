@@ -11,6 +11,9 @@ import FileActionsLockedIcon from "../../../../../../../public/images/file.actio
 
 export const StyledFavoriteIcon = styled(FavoriteIcon)`
   ${commonIconsStyles}
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const StyledFileActionsConvertEditDocIcon = styled(
@@ -20,12 +23,18 @@ export const StyledFileActionsConvertEditDocIcon = styled(
   path {
     fill: #3b72a7;
   }
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
   ${commonIconsStyles}
   path {
     fill: #3b72a7;
+  }
+  &:hover {
+    cursor: pointer;
   }
 `;
 
@@ -50,7 +59,7 @@ const Badges = (props) => {
 
   const showNew = !!newItems;
   return fileExst ? (
-    <>
+    <div className="badges additional-badges">
       {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
                   <IconButton
                     onClick={this.setConvertDialogVisible}
@@ -66,7 +75,7 @@ const Badges = (props) => {
         <IconButton
           onClick={onFilesClick}
           iconName="/static/images/access.edit.react.svg"
-          className="badge icons-group"
+          className="badge"
           size="small"
           isfill={true}
           color="#A3A9AE"
@@ -75,7 +84,7 @@ const Badges = (props) => {
       )}
       {locked && (
         <StyledFileActionsLockedIcon
-          className="badge lock-file icons-group"
+          className="badge lock-file"
           size="small"
           data-id={id}
           data-locked={true}
@@ -84,7 +93,7 @@ const Badges = (props) => {
       )}
       {fileStatus === 32 && !isTrashFolder && (
         <StyledFavoriteIcon
-          className="favorite icons-group"
+          className="favorite badge"
           size="small"
           data-action="remove"
           data-id={id}
@@ -93,14 +102,11 @@ const Badges = (props) => {
         />
       )}
       {fileStatus === 1 && (
-        <StyledFileActionsConvertEditDocIcon
-          className="badge icons-group"
-          size="small"
-        />
+        <StyledFileActionsConvertEditDocIcon className="badge" size="small" />
       )}
       {versionGroup > 1 && (
         <Badge
-          className="badge-version icons-group"
+          className="badge-version badge"
           backgroundColor="#A3A9AE"
           borderRadius="11px"
           color="#FFFFFF"
@@ -115,7 +121,7 @@ const Badges = (props) => {
       )}
       {showNew && (
         <Badge
-          className="badge-version icons-group"
+          className="badge-version badge"
           backgroundColor="#ED7309"
           borderRadius="11px"
           color="#FFFFFF"
@@ -128,7 +134,7 @@ const Badges = (props) => {
           data-id={id}
         />
       )}
-    </>
+    </div>
   ) : (
     showNew && (
       <Badge

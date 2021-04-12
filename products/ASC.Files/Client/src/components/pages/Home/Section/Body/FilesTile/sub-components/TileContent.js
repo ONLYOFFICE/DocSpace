@@ -65,6 +65,18 @@ const MainContainer = styled.div`
 const MainIcons = styled.div`
   align-self: center;
   white-space: nowrap;
+
+  .additional-badges {
+    position: absolute;
+    top: 11px;
+    right: 4px;
+    display: flex;
+    flex-direction: row;
+
+    .badge {
+      margin-right: 8;
+    }
+  }
 `;
 
 const SideContainerWrapper = styled.div`
