@@ -45,7 +45,7 @@ const Badges = (props) => {
     onShowVersionHistory,
     onBadgeClick,
   } = props;
-  const { id, locked, fileStatus, versionGroup, access, title } = item;
+  const { id, locked, fileStatus, versionGroup, title } = item;
   const { fileExst } = item;
 
   const showNew = !!newItems;

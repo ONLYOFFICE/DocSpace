@@ -591,7 +591,7 @@ class FilesContent extends React.Component {
             />
           </div>
 
-          {viewAs !== "tile" && (
+          {viewAs !== "tile" ? (
             <Text
               containerMinWidth="120px"
               containerWidth="15%"
@@ -605,8 +605,8 @@ class FilesContent extends React.Component {
             >
               {fileOwner}
             </Text>
-          )}
-          {viewAs !== "tile" && (
+          ) : null}
+          {viewAs !== "tile" ? (
             <Text
               containerMinWidth="200px"
               containerWidth="15%"
@@ -618,8 +618,8 @@ class FilesContent extends React.Component {
             >
               {(fileExst || !providerKey) && updatedDate && updatedDate}
             </Text>
-          )}
-          {viewAs !== "tile" && (
+          ) : null}
+          {viewAs !== "tile" ? (
             <Text
               containerMinWidth="90px"
               containerWidth="10%"
@@ -639,7 +639,7 @@ class FilesContent extends React.Component {
                   )}: ${foldersCount}`
                 : ""}
             </Text>
-          )}
+          ) : null}
         </Content>
       </>
     );

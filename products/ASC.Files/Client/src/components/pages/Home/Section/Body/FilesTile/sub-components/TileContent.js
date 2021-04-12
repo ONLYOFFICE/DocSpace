@@ -109,12 +109,14 @@ const getSideInfo = (content) => {
   const lastIndex = content.length - 1;
 
   content.forEach((element, index) => {
-    const delimiter = index === lastIndex ? "" : " | ";
-    if (index > 1) {
-      info +=
-        element.props && element.props.children
-          ? element.props.children + delimiter
-          : "";
+    if (element) {
+      const delimiter = index === lastIndex ? "" : " | ";
+      if (index > 1) {
+        info +=
+          element.props && element.props.children
+            ? element.props.children + delimiter
+            : "";
+      }
     }
   });
 
@@ -158,7 +160,7 @@ const TileContent = (props) => {
         <MainIcons className="mainIcons">{children[1]}</MainIcons>
       </MainContainerWrapper>
       {children.map((element, index) => {
-        if (index > 1) {
+        if (index > 1 && element) {
           return (
             <SideContainerWrapper
               disableSideInfo={disableSideInfo}

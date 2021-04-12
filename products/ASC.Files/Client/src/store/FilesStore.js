@@ -26,7 +26,7 @@ class FilesStore {
 
   isLoaded = false;
   isLoading = false;
-  viewAs = "row";
+  viewAs = localStorage.getItem("viewAs") || "row";
   dragging = false;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
   isInit = false;
@@ -71,6 +71,7 @@ class FilesStore {
 
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
+    localStorage.setItem("viewAs", viewAs);
   };
 
   setDragging = (dragging) => {
