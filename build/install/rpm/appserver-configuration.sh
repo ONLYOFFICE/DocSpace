@@ -2,7 +2,7 @@
 ENVIRONMENT="production"
 
 APP_DIR="/etc/onlyoffice/appserver"
-APP_CONF="$APP_DIR/appsettings.json"
+SERVICES_CONF="$APP_DIR/appsettings.services.json"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 NGINX_CONF="/etc/nginx/conf.d"
 SYSTEMD_DIR="/etc/systemd/system"
@@ -166,9 +166,11 @@ install_json() {
 		chown onlyoffice:onlyoffice $USER_CONF
 	
 		set_core_machinekey
-		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", 'products': { \ 
-		'folder': '../../products', 'subfolder': 'server'} }" >/dev/null 2>&1
-		$JSON $APP_CONF -e "this.core.products.subfolder='server'" >/dev/null 2>&1 #Fix error
+		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" \
+		-e "this.urlshortener={ 'path': 'client/index.js' }" -e "this.thumb={ 'path': 'client/' }" \
+		-e "this.socket={ 'path': '../ASC.Socket.IO' }" >/dev/null 2>&1
+		$JSON $SERVICES_CONF -e "this.core={ 'products': { 'folder': '../../products', 'subfolder': 'server'} }" >/dev/null 2>&1
+		
 	fi
 }
 
@@ -350,19 +352,15 @@ execute_mysql_script(){
 	#Checking the quantity of the tables created in the db
     DB_TABLES_COUNT=$($MYSQL --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}'"); 
     
+	local SQL_DIR="/var/www/appserver/sql"
     if [ "${DB_TABLES_COUNT}" -eq "0" ]; then
-		local SQL_DIR="/var/www/appserver/sql"
 
 		echo -n "Installing MYSQL database... "
 
 		#Adding data to the db
 		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $SQL_DIR/onlyoffice.sql
 		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$SQL_DIR/createdb.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.data.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.resources.sql" >/dev/null 2>&1
-		for i in $(ls $SQL_DIR/onlyoffice.upgrade*); do
+		for i in $(ls $SQL_DIR/*.sql); do
 			$MYSQL "$DB_NAME" < ${i} >/dev/null 2>&1
 		done
 	else
@@ -390,7 +388,9 @@ setup_nginx(){
 				PORTS+=("$DOCUMENT_SERVER_PORT")
 				PORTS+=('5001') #ASC.Web.Studio
 				PORTS+=('5002') #ASC.People
-				PORTS+=('5008') #ASC.Files
+				PORTS+=('5008') #ASC.Files/client
+				PORTS+=('5013') #ASC.Files/editor
+				PORTS+=('5014') #ASC.CRM
 				setsebool -P httpd_can_network_connect on
 			;;
 			disabled)

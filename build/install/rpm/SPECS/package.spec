@@ -68,14 +68,14 @@ Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.People
 
-%package        ASC.UrlShortener.Svc
-Summary:        ASC.UrlShortener.Svc
+%package        ASC.UrlShortener
+Summary:        ASC.UrlShortener
 Group:          Applications/Internet
 Requires:       %name-Common
 Requires:       dotnet-sdk-5.0
 Requires:       nodejs >= 12.0
 AutoReqProv:    no
-%description    ASC.UrlShortener.Svc
+%description    ASC.UrlShortener
 
 %package        ASC.Socket
 Summary:        ASC.Socket
@@ -86,14 +86,14 @@ Requires:       nodejs >= 12.0
 AutoReqProv:    no
 %description    ASC.Socket
 
-%package        ASC.Thumbnails.Svc
-Summary:        ASC.Thumbnails.Svc
+%package        ASC.Thumbnails
+Summary:        ASC.Thumbnails
 Group:          Applications/Internet
 Requires:       %name-Common
 Requires:       dotnet-sdk-5.0
 Requires:       nodejs >= 12.0
 AutoReqProv:    no
-%description    ASC.Thumbnails.Svc
+%description    ASC.Thumbnails
 
 %package        ASC.Web.Studio
 Summary:        ASC.Web.Studio
