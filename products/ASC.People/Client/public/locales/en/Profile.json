@@ -48,5 +48,9 @@
   "selectNewPhotoLabel": "Select new photo",
   "orDropFileHereLabel": "or drop file here",
   "maxSizeFileError": "Maximum file size exceeded",
-  "editAvatar": "Edit"
+  "editAvatar": "Edit",
+  "LoginSettings": "Login settings",
+  "TwoFactorDescription": "Two-factor authentication via code generating application was enabled for all users by cloud service administrator.",
+  "ResetApplication": "Reset application",
+  "ShowBackupCodes": "Show backup codes"
 }
