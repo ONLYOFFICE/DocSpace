@@ -2,6 +2,8 @@ import React from "react";
 import { withRouter } from "react-router";
 import Backdrop from "@appserver/components/backdrop";
 import Link from "@appserver/components/link";
+import Loader from "@appserver/components/loader";
+import Text from "@appserver/components/text";
 import Heading from "@appserver/components/heading";
 import Aside from "@appserver/components/aside";
 import Row from "@appserver/components/row";
@@ -167,7 +169,7 @@ class NewFilesPanel extends React.Component {
 
   render() {
     //console.log("NewFiles panel render");
-    const { t, visible } = this.props;
+    const { t, visible, onClose, isLoading } = this.props;
     const { files } = this.state;
     const zIndex = 310;
 
@@ -190,37 +192,45 @@ class NewFilesPanel extends React.Component {
                 {t("NewFiles")}
               </Heading>
             </StyledHeaderContent>
-            <StyledBody className="files-operations-body">
-              <RowContainer useReactWindow>
-                {files.map((file) => {
-                  const element = this.getItemIcon(file);
-                  return (
-                    <Row key={file.id} element={element}>
-                      <Box
-                        onClick={this.onNewFileClick.bind(this, file)}
-                        marginProp="auto 0"
-                      >
-                        <Link
-                          containerWidth="100%"
-                          type="page"
-                          fontWeight="bold"
-                          color="#333"
-                          isTextOverflow
-                          truncate
-                          title={file.title}
-                          fontSize="14px"
-                          className="files-new-link"
+            {!isLoading ? (
+              <StyledBody className="files-operations-body">
+                <RowContainer useReactWindow>
+                  {files.map((file) => {
+                    const element = this.getItemIcon(file);
+                    return (
+                      <Row key={file.id} element={element}>
+                        <Box
+                          onClick={this.onNewFilesClick.bind(this, file)}
+                          marginProp="auto 0"
                         >
-                          {file.title}
-                        </Link>
-                      </Box>
-                    </Row>
-                  );
-                })}
-              </RowContainer>
-            </StyledBody>
+                          <Link
+                            containerWidth="100%"
+                            type="page"
+                            fontWeight="bold"
+                            color="#333"
+                            isTextOverflow
+                            truncate
+                            title={file.title}
+                            fontSize="14px"
+                            className="files-new-link"
+                          >
+                            {file.title}
+                          </Link>
+                        </Box>
+                      </Row>
+                    );
+                  })}
+                </RowContainer>
+              </StyledBody>
+            ) : (
+              <div key="loader" className="panel-loader-wrapper">
+                <Loader type="oval" size="16px" className="panel-loader" />
+                <Text as="span">{t("LoadingLabel")}</Text>
+              </div>
+            )}
             <StyledFooter>
               <Button
+                className="new_files_panel-button"
                 label={t("MarkAsRead")}
                 size="big"
                 primary
@@ -255,6 +265,7 @@ export default inject(
       filter,
       addFileToRecentlyViewed,
       setIsLoading,
+      isLoading,
       updateFileBadge,
       updateFolderBadge,
     } = filesStore;
@@ -276,6 +287,7 @@ export default inject(
       visible,
       newFilesIds,
 
+      isLoading,
       setIsLoading,
       fetchFiles,
       setMediaViewerData,
