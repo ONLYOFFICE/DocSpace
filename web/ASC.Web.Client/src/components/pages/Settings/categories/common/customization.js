@@ -251,6 +251,25 @@ class Customization extends React.Component {
             {t("CustomTitlesSettingsDescription")}
           </Text>
         </div>
+        <div className="category-item-wrapper">
+          <div className="category-item-heading">
+            <Link
+              truncate={true}
+              className="inherit-title-link header"
+              onClick={this.onClickLink}
+              href={combineUrl(
+                AppServerConfig.proxyURL,
+                "/settings/common/customization/team-template"
+              )}
+            >
+              {t("TeamTemplate")}
+            </Link>
+            <StyledArrowRightIcon size="small" color="#333333" />
+          </div>
+          <Text className="category-item-description">
+            {t("TeamTemplateSettingsDescription")}
+          </Text>
+        </div>
       </StyledComponent>
     );
   }
