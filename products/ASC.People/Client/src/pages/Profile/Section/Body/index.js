@@ -19,7 +19,10 @@ import {
 import config from "../../../../../package.json";
 import { AppServerConfig } from "@appserver/common/constants";
 import { Trans, useTranslation } from "react-i18next";
-import { ResetApplicationDialog } from "../../../../components/dialogs";
+import {
+  ResetApplicationDialog,
+  BackupCodesDialog,
+} from "../../../../components/dialogs";
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -99,7 +102,10 @@ const stringFormat = (string, data) =>
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = { dialogVisible: false };
+    this.state = {
+      resetAppDialogVisible: false,
+      backupCodesDialogVisible: false,
+    };
   }
   componentDidMount() {
     const { cultures, getPortalCultures, profile, viewer, isSelf } = this.props;
@@ -123,12 +129,18 @@ class SectionBodyContent extends React.PureComponent {
     );
   };
 
-  toggleDialogVisible = () => {
-    this.setState({ dialogVisible: !this.state.dialogVisible });
+  toggleResetAppDialogVisible = () => {
+    this.setState({ resetAppDialogVisible: !this.state.resetAppDialogVisible });
+  };
+
+  toggleBackupCodesDialogVisible = () => {
+    this.setState({
+      backupCodesDialogVisible: !this.state.backupCodesDialogVisible,
+    });
   };
 
   render() {
-    const { dialogVisible } = this.state;
+    const { resetAppDialogVisible, backupCodesDialogVisible } = this.state;
     const {
       profile,
       cultures,
@@ -208,11 +220,16 @@ class SectionBodyContent extends React.PureComponent {
                   type="action"
                   isHovered={true}
                   className="link-action"
-                  onClick={this.toggleDialogVisible}
+                  onClick={this.toggleResetAppDialogVisible}
                 >
                   {t("ResetApplication")}
                 </Link>
-                <Link type="action" isHovered={true} className="link-action">
+                <Link
+                  type="action"
+                  isHovered={true}
+                  className="link-action"
+                  onClick={this.toggleBackupCodesDialogVisible}
+                >
                   {t("ShowBackupCodes")}
                 </Link>
               </LinkActionWrapper>
@@ -241,10 +258,16 @@ class SectionBodyContent extends React.PureComponent {
             </ToggleContent>
           </ToggleWrapper>
         )}
-        {dialogVisible && (
+        {resetAppDialogVisible && (
           <ResetApplicationDialog
-            visible={dialogVisible}
-            onClose={this.toggleDialogVisible}
+            visible={resetAppDialogVisible}
+            onClose={this.toggleResetAppDialogVisible}
+          />
+        )}
+        {backupCodesDialogVisible && (
+          <BackupCodesDialog
+            visible={backupCodesDialogVisible}
+            onClose={this.toggleBackupCodesDialogVisible}
           />
         )}
       </ProfileWrapper>
