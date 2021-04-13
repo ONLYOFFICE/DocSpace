@@ -6,7 +6,6 @@ ARG REPO=mcr.microsoft.com/dotnet/sdk
 
 FROM $REPO:$REPO_TAG AS base
 ARG RELEASE_DATE="2016-06-21"
-ARG VERSION=8.9.0.190
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_BRANCH=master
 ARG SRC_PATH
