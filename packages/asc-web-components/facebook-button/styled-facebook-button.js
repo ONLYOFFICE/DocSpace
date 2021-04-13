@@ -64,8 +64,7 @@ const StyledFacebookButton = styled(ButtonWrapper).attrs((props) => ({
     font-size: 14px;
     line-height: 14px;
     color: #1877f2;
-    margin-right: 11px;
-    margin-left: 13px;
+    margin: 0 11px;
   }
 `;
 

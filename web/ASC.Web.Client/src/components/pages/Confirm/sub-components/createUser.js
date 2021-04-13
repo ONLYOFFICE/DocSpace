@@ -26,7 +26,9 @@ const inputWidth = "400px";
 
 const ButtonsWrapper = styled.div`
   display: table;
-  margin: auto;
+  margin: -6px;
+  margin-top: 17px;
+  margin-right: auto;
 `;
 
 const ConfirmContainer = styled.div`
@@ -34,6 +36,11 @@ const ConfirmContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin-left: 200px;
+
+  .buttonWrapper {
+    margin: 6px;
+    min-width: 225px;
+  }
 
   @media (max-width: 830px) {
     margin-left: 40px;
@@ -479,21 +486,9 @@ class Confirm extends React.PureComponent {
             />
           </div>
           {providers && providers.length > 0 && (
-            <>
-              <Box
-                displayProp="flex"
-                alignItems="center"
-                marginProp="0 0 16px 0"
-              >
-                <div className="login-bottom-border"></div>
-                <Text className="login-bottom-text" color="#A3A9AE">
-                  {t("Or")}
-                </Text>
-                <div className="login-bottom-border"></div>
-              </Box>
-
+            <Box>
               <ButtonsWrapper>{this.providerButtons()}</ButtonsWrapper>
-            </>
+            </Box>
           )}
 
           {/*             <Row className='confirm-row'>

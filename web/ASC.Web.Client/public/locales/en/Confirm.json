@@ -26,5 +26,12 @@
   "ConfirmOwnerPortalTitle": "Please confirm that you want to change portal owner to {{newOwner}}",
   "SaveButton": "Save",
   "CancelButton": "Cancel",
-  "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}"
+  "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}",
+
+  "SignInWithGoogle": "Login with Google",
+  "SignInWithFacebook": "Login with Facebook",
+  "SignInWithTwitter": "Login with Twitter",
+  "SignInWithLinkedIn": "Login with LinkedIn",
+  "ProviderLoginError": "Authorization error",
+  "ProviderNotConnected": "Provider is not connected to your account"
 }
