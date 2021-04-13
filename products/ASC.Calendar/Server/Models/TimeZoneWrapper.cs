@@ -37,6 +37,7 @@ using ASC.Common;
 namespace ASC.Calendar.Models
 {
     [DataContract(Name = "timeZone", Namespace = "")]
+    [Scope]
     public class TimeZoneWrapper {
         [DataMember(Name = "name", Order = 0)]
         public string Name { get; set; }
@@ -72,15 +73,6 @@ namespace ASC.Calendar.Models
             result.Offset = (int)_timeZone.GetOffset().TotalMinutes;
 
             return result;
-        }
-    }
-    public static class TimeZoneWrapperExtension
-    {
-        public static DIHelper AddTimeZoneWrapper(this DIHelper services)
-        {
-            services.TryAddScoped<TimeZoneWrapperHelper>();
-
-            return services;
         }
     }
   

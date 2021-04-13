@@ -34,6 +34,7 @@ using ASC.Common;
 namespace ASC.Calendar.Models
 {
     [DataContract(Name = "subscription", Namespace = "")]
+    [Scope]
     public class SubscriptionWrapper : CalendarWrapper
     {
         [DataMember(Name = "isSubscribed", Order = 100)]
@@ -129,17 +130,6 @@ namespace ASC.Calendar.Models
             else
                 subscriptionWrapper.Group = String.IsNullOrEmpty(subscriptionWrapper.UserCalendar.Context.Group) ? Resources.CalendarApiResource.SharedCalendarsGroup : subscriptionWrapper.UserCalendar.Context.Group;
             return subscriptionWrapper;
-        }
-    }
-
-    public static class SubscriptionWrapperExtension
-    {
-        public static DIHelper AddSubscriptionWrapperHelper(this DIHelper services)
-        {
-            services.TryAddScoped<SubscriptionWrapperHelper>();
-
-            return services
-                .AddCalendarWrapper();
         }
     }
 }

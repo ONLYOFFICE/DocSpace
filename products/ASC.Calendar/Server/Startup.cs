@@ -25,30 +25,24 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using ASC.Common;
+using ASC.Api.Core;
+using ASC.Calendar.BusinessObjects;
+using ASC.Calendar.Core;
+using ASC.Calendar.Models;
 
 namespace ASC.Calendar
 {
-    public class Startup
+    public class Startup : BaseStartup
     {
-        public IConfiguration Configuration { get; }
-        public IHostEnvironment HostEnvironment { get; }
-
+        
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
+            : base(configuration, hostEnvironment)
         {
-            Configuration = configuration;
-            HostEnvironment = hostEnvironment;
+
         }
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddHttpContextAccessor();
-
-            services.AddControllers().AddControllersAsServices()
-                .AddNewtonsoftJson()
-                .AddXmlSerializerFormatters();
-
-            services.AddTransient<IConfigureOptions<MvcNewtonsoftJsonOptions>, CustomJsonOptionsWrapper>();
-
+        public override void ConfigureServices(IServiceCollection services)
+        {          
             services.AddMemoryCache();
 
             services.AddDistributedMemoryCache();
@@ -73,6 +67,15 @@ namespace ASC.Calendar
                 config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
+
+            DIHelper.TryAdd<CalendarController>();
+            DIHelper.TryAdd<DataProvider>();
+            DIHelper.TryAdd<EventHistory>();
+            DIHelper.TryAdd<ExportDataCache>();
+            DIHelper.TryAdd<CalendarWrapper>();
+            DIHelper.TryAdd<EventWrapper>();
+            DIHelper.TryAdd<EventWrapper>();
+
             var diHelper = new DIHelper(services);
             diHelper
                 .AddCookieAuthHandler()
@@ -91,7 +94,7 @@ namespace ASC.Calendar
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public override  void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

@@ -134,6 +134,7 @@ namespace ASC.Calendar.Models
         }
     }
 
+    [Scope]
     public class CalendarWrapperHelper
     {
 
@@ -289,20 +290,6 @@ namespace ASC.Calendar.Models
             return calendarWraper;
         }
     }
-
-    public static class CalendarWrapperExtension
-    {
-        public static DIHelper AddCalendarWrapper(this DIHelper services)
-        {
-            services.TryAddScoped<CalendarWrapperHelper>();
-
-            return services
-                .AddTimeZoneWrapper()
-                .AddPublicItemCollection()
-                .AddDisplayUserSettingsService();
-        }
-    }
-
 
 
 

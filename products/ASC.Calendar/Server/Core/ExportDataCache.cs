@@ -10,14 +10,16 @@ using System.Threading.Tasks;
 
 namespace ASC.Calendar.Core
 {
+    [Scope]
     public class ExportDataCache
     {
-        public static readonly ICache Cache = AscCache.Memory;
+        private readonly ICache cache;
 
         private TenantManager TenantManager { get; }
         public ExportDataCache(
-            TenantManager tenantManager)
+            TenantManager tenantManager, ICache cache)
         {
+            this.cache = cache;
             TenantManager = tenantManager;
         }
         public String GetCacheKey(string calendarId)
@@ -27,7 +29,7 @@ namespace ASC.Calendar.Core
 
         public string Get(string calendarId)
         {
-            return Cache.Get<string>(GetCacheKey(calendarId));
+            return cache.Get<string>(GetCacheKey(calendarId));
         }
 
         public void Insert(string calendarId, string data)
@@ -35,26 +37,12 @@ namespace ASC.Calendar.Core
             if (string.IsNullOrEmpty(data))
                 Reset(calendarId);
             else
-                Cache.Insert(GetCacheKey(calendarId), data, TimeSpan.FromMinutes(5));
+                cache.Insert(GetCacheKey(calendarId), data, TimeSpan.FromMinutes(5));
         }
 
         public void Reset(string calendarId)
         {
-            Cache.Remove(GetCacheKey(calendarId));
-        }
-    }
-
-    public static class ExportDataCacheExtention
-    {
-        public static DIHelper AddExportDataCache(this DIHelper services)
-        {
-            services.TryAddScoped<ExportDataCache>();
-            
-            return services
-                .AddApiContextService()
-                .AddSecurityContextService()
-                .AddPermissionContextService()
-                .AddTenantManagerService();
+            cache.Remove(GetCacheKey(calendarId));
         }
     }
 }

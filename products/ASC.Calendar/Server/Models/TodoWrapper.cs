@@ -39,6 +39,7 @@ using ASC.Common;
 namespace ASC.Calendar.Models
 {
     [DataContract(Name = "todo", Namespace = "")]
+    [Scope]
     public class TodoWrapper
     {
         public Guid UserId { get; set; }
@@ -147,17 +148,6 @@ namespace ASC.Calendar.Models
         {
             _utcStartDate = utcStartDate;
             return this.Get(baseTodo, userId, timeZone);
-        }
-    }
-
-    public static class TodoWrapperExtension
-    {
-        public static DIHelper AddTodoWrapper(this DIHelper services)
-        {
-            services.TryAddScoped<TodoWrapperHelper>();
-
-            return services
-                .AddApiContextService();
         }
     }
 }

@@ -46,6 +46,8 @@ using NotifyContext = ASC.Notify.Context;
 
 namespace ASC.Calendar.Notification
 {
+ 
+    [Scope]
     public class CalendarNotifyClient
     {
         private static INotifyClient _notifyClient;
@@ -231,19 +233,7 @@ namespace ASC.Calendar.Notification
         }
     }
 
-    public static class CalendarNotifyClientExtension
-    {
-        public static DIHelper AddCalendarNotifyClient(this DIHelper services)
-        {
-            services.TryAddScoped<CalendarNotifyClient>();
-
-            return services
-                .AddSubscriptionManagerService()
-                .AddRecipientProviderImplService()
-                .AddCalendarNotifySource();
-        }
-    }
-
+    [Scope]
     public class CalendarNotifySource : NotifySource
     {
         public static INotifyAction CalendarSharing = new NotifyAction("CalendarSharingPattern");
@@ -278,15 +268,4 @@ namespace ASC.Calendar.Notification
             return new XmlPatternProvider2(CalendarPatterns.calendar_patterns);
         }
     }
-
-    public static class CalendarNotifySourceExtension
-    {
-        public static DIHelper AddCalendarNotifySource(this DIHelper services)
-        {
-            services.TryAddScoped<CalendarNotifySource>();
-
-            return services;
-        }
-    }
-
 }

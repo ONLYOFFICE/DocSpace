@@ -32,6 +32,7 @@ using ASC.Common;
 
 namespace ASC.Calendar.BusinessObjects
 {
+    [Scope]
     public class EventHistory
     {
        
@@ -206,17 +207,6 @@ namespace ASC.Calendar.BusinessObjects
             targetCalendar.Events.Add(targetEvent);
 
             return targetCalendar;
-        }
-    }
-
-    public static class EventHistoryExtension
-    {
-        public static DIHelper AddEventHistoryHelper(this DIHelper services)
-        {
-            services.TryAddScoped<EventHistoryHelper>();
-
-            return services
-                .AddDDayICalParser();
         }
     }
 }

@@ -174,7 +174,7 @@ namespace ASC.Calendar.iCalParser
                         }
                         else if (_curPropToken.TokenVal == TokenValue.Texdate)
                         {
-                            _curEvent.RecurrenceRule.ExDates.Add(new RecurrenceRule.ExDate() { Date = dateTime, isDateTime = !isAllDay });
+                            _curEvent.RecurrenceRule.ExDates.Add(new RecurrenceRule.ExDate() { Date = dateTime, IsDateTime = !isAllDay });
                         }
 
                         break;

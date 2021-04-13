@@ -38,6 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Calendar.iCalParser
 {
+    [Scope]
     public class DDayICalParser
     {
         public IServiceProvider ServiceProvider { get; }
@@ -436,16 +437,6 @@ namespace ASC.Calendar.iCalParser
             var utcOffse = timeZone.GetOffset();
 
             return dateTime.Value - utcOffse;
-        }
-    }
-
-    public static class DDayICalParserExtention
-    {
-        public static DIHelper AddDDayICalParser(this DIHelper services)
-        {
-
-            services.TryAddScoped<DDayICalParser>(); 
-            return services;
         }
     }
 }

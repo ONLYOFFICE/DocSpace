@@ -56,6 +56,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Calendar.BusinessObjects
 {
+    [Scope]
     public class DataProvider
     {
 
@@ -84,8 +85,8 @@ namespace ASC.Calendar.BusinessObjects
         private TenantManager TenantManager { get; }
         protected UserManager UserManager { get; }
         protected DDayICalParser DDayICalParser { get; }
-
         public ILog Log { get; }
+        public InstanceCrypto InstanceCrypto { get; }
 
         public DataProvider(DbContextManager<CalendarDbContext> calendarDbContext,
             AuthManager authentication,
@@ -97,7 +98,8 @@ namespace ASC.Calendar.BusinessObjects
             EventHistoryHelper eventHistoryHelper,
             UserManager userManager,
             DDayICalParser dDayICalParser,
-            IOptionsMonitor<ILog> option)
+            IOptionsMonitor<ILog> option,
+            InstanceCrypto instanceCrypto)
         {
             Authentication = authentication;
             CalendarDb = calendarDbContext.Get("calendar");
@@ -110,6 +112,7 @@ namespace ASC.Calendar.BusinessObjects
             UserManager = userManager;
             DDayICalParser = dDayICalParser;
             Log = option.Get("ASC.CalendarDataProvider");
+            InstanceCrypto = instanceCrypto;
 
         }
 
@@ -728,28 +731,18 @@ namespace ASC.Calendar.BusinessObjects
             }
         }
 
-        public void RemoveCalendar(int calendarId, Uri myUri)
+        public Guid RemoveCalendar(int calendarId)
         {
             using var tx = CalendarDb.Database.BeginTransaction();
+
+            var caldavGuid = Guid.Empty;
 
             try
             {
                 var dataCaldavGuid = CalendarDb.CalendarCalendars.Where(p => p.Id == calendarId).Select(s => s.CaldavGuid).ToArray();
-                var caldavGuid = dataCaldavGuid[0] != null ? Guid.Parse(dataCaldavGuid[0].ToString()) : Guid.Empty;
-                if (caldavGuid != Guid.Empty)
-                {
-                    var caldavHost = myUri.Host;
 
-                    Log.Info("RADICALE REWRITE URL: " + myUri);
-
-                    var currentUserName = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email.ToLower() + "@" + caldavHost;
-                    var _email = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email;
-                    string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, UserManager.GetUserByEmail(_email).ID);
-                    var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email.ToLower() + ":" + currentAccountPaswd));
-
-                    var caldavTask = new Task(() => RemoveCaldavCalendar(currentUserName, _email, currentAccountPaswd, encoded, caldavGuid.ToString(), myUri));
-                    caldavTask.Start();
-                }
+                if (dataCaldavGuid[0] != null) 
+                    caldavGuid = Guid.Parse(dataCaldavGuid[0].ToString());             
             }
             catch (Exception ex)
             {
@@ -786,20 +779,24 @@ namespace ASC.Calendar.BusinessObjects
 
             CalendarDb.SaveChanges();
             tx.Commit();
+
+            return caldavGuid;
         }
 
-        public void RemoveCaldavCalendar(string currentUserName, string email, string currentAccountPaswd, string encoded, string calDavGuid, Uri myUri, bool isShared = false)
+        public void RemoveCaldavCalendar(string currentUserName, string email, string calDavGuid, Uri myUri, bool isShared = false)
         {
-            var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
-            var calDavUrl = calDavServerUrl.Insert(calDavServerUrl.IndexOf("://") + 3, HttpUtility.UrlEncode(currentUserName) + ":" + HttpUtility.UrlEncode(currentAccountPaswd) + "@");
-            var requestUrl = calDavUrl + "/" + HttpUtility.UrlEncode(currentUserName) + "/" + (isShared ? calDavGuid + "-shared" : calDavGuid);
+            var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";           
+            var requestUrl = calDavServerUrl + "/" + HttpUtility.UrlEncode(currentUserName) + "/" + (isShared ? calDavGuid + "-shared" : calDavGuid);
 
             try
             {
                 var webRequest = (HttpWebRequest)WebRequest.Create(requestUrl);
                 webRequest.Method = "DELETE";
                 webRequest.ContentType = "text/xml; charset=utf-8";
-                webRequest.Headers.Add("Authorization", "Basic " + encoded);
+
+                var authorization = isShared ? GetSystemAuthorization() : GetUserAuthorization(email);
+                webRequest.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
+
                 using (var webResponse = webRequest.GetResponse())
                 using (var reader = new StreamReader(webResponse.GetResponseStream())){}
             }
@@ -1975,16 +1972,32 @@ namespace ASC.Calendar.BusinessObjects
                 }
             }*/
         }
-    }
-    public static class CalendarDataProviderExtention
-    {
-        public static DIHelper AddCalendarDataProviderService(this DIHelper services)
+
+        public string GetSystemAuthorization()
         {
+            const string email = "admin@ascsystem";
+            var currentAccountPaswd = InstanceCrypto.Encrypt(email);
+            return email + ":" + currentAccountPaswd;
+        }
 
-            services.TryAddScoped<DataProvider>();
+        public string GetUserAuthorization(string email)
+        {
+            var user = UserManager.GetUserByEmail(email);
+            if (user == null || !CheckUserEmail(user)) return string.Empty;
+            email = user.Email.ToLower();
+            var currentAccountPaswd = InstanceCrypto.Encrypt(email);
+            return email + ":" + currentAccountPaswd;
+        }
+        public bool CheckUserEmail(UserInfo user)
+        {
+            //CoreContext.UserManager.IsSystemUser(user.ID)
+            if (string.IsNullOrEmpty(user.Email))
+            {
+                Log.Info("CalendarApi: user {0} has no email. {1}" + user.ID + Environment.StackTrace);
+                return false;
+            }
 
-            return services
-                .AddEventHistoryHelper();
+            return true;
         }
     }
 }

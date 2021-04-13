@@ -74,7 +74,7 @@ namespace ASC.Calendar.iCalParser
                 using (var stream = resp.GetResponseStream())
                 {
                     var ms = new MemoryStream();
-                    stream.StreamCopyTo(ms);
+                    stream.CopyTo(ms);
                     ms.Seek(0, SeekOrigin.Begin);
 
                     using (var tempReader = new StreamReader(ms))

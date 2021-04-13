@@ -40,6 +40,7 @@ using ASC.Common;
 namespace ASC.Calendar.Models
 {
     [DataContract(Name = "sharing", Namespace = "")]
+    [Scope]
     public class PublicItemCollection
     {
         [DataMember(Name = "actions", Order = 10)]
@@ -122,17 +123,6 @@ namespace ASC.Calendar.Models
             publicItemCollection.AvailableOptions = AccessOption.CalendarStandartOptions;
 
             return publicItemCollection;
-        }
-    }
-    public static class PublicItemCollectionExtension
-    {
-        public static DIHelper AddPublicItemCollection(this DIHelper services)
-        {
-            services.TryAddScoped<PublicItemCollectionHelper>();
-
-            return services
-                .AddApiContextService()
-                .AddPublicItemWrapper();
         }
     }
    

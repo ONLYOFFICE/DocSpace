@@ -34,6 +34,7 @@ using ASC.Common;
 namespace ASC.Calendar.Models
 {
     [DataContract(Name = "eventHistory", Namespace = "")]
+    [Scope]
     public class EventHistoryWrapper
     {
        
@@ -125,19 +126,6 @@ namespace ASC.Calendar.Models
                                                    : cal.TimeZone);
 
             return eventHistoryWrapper;
-        }
-    }
-
-    public static class EventHistoryWrapperExtension
-    {
-        public static DIHelper AddEventHistoryWrapper(this DIHelper services)
-        {
-            services.TryAddScoped<EventHistoryWrapperHelper>();
-
-            return services
-                .AddEventHistoryHelper()
-                .AddDDayICalParser()
-                .AddTimeZoneWrapper();
         }
     }
 }

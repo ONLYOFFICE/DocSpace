@@ -41,6 +41,7 @@ using ASC.Calendar.BusinessObjects;
 namespace ASC.Calendar.Models
 {
     [DataContract(Name = "publicItem")]
+    [Scope]
     public class PublicItemWrapper : ASC.Web.Core.Calendars.SharingOptions.PublicItem
     {
         [DataMember(Name = "id", Order = 10)]
@@ -189,17 +190,6 @@ namespace ASC.Calendar.Models
             
         }
     }
-
-    public static class PublicItemWrapperExtension
-    {
-        public static DIHelper AddPublicItemWrapper(this DIHelper services)
-        {
-            services.TryAddScoped<PublicItemWrapperHelper>();
-
-            return services;
-        }
-    }
-
     /*
             [DataContract(Name ="publicItem")]
             public class PublicItemWrapper : ASC.Web.Core.Calendars.SharingOptions.PublicItem

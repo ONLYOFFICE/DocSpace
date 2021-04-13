@@ -124,6 +124,7 @@ namespace ASC.Calendar.Models
         }
     }
 
+    [Scope]
     public class EventWrapperHelper
     {
         private TimeZoneInfo _timeZone;
@@ -300,15 +301,5 @@ namespace ASC.Calendar.Models
             return list;
         }
 
-    }
-    public static class EventWrapperExtension
-    {
-        public static DIHelper AddEventWrapper(this DIHelper services)
-        {
-            services.TryAddScoped<EventWrapperHelper>();
-
-            return services.
-                AddPublicItemCollection();
-        }
     }
 }
