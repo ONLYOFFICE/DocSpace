@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Il campo Valida codice non può essere vuoto</value>
@@ -104,7 +104,7 @@
     <value>Se aggiungi il servizio Bitly otterrai link abbreviati per invitare nuovi utenti nel portale ONLYOFFICE® e link abbreviati ai documenti nel modulo Documenti che sono stati condivisi con utenti esterni</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
-    <value>Chiave Box</value>
+    <value>Box</value>
   </data>
   <data name="ConsumersboxClientId" xml:space="preserve">
     <value>ID Box</value>
@@ -215,7 +215,7 @@
     <value>Se colleghi Firebase Cloud Messaging potrai ricevere notifiche dei messaggi a te inviati quando sei offline.</value>
   </data>
   <data name="ConsumersGoogle" xml:space="preserve">
-    <value>Chiave di Google</value>
+    <value>Google</value>
   </data>
   <data name="ConsumersgoogleClientId" xml:space="preserve">
     <value>ID di Google</value>
@@ -248,7 +248,7 @@
     <value>Se aggiungi un progetto del sevizio Google sarai successivamente in grado di collegare il tuo account Google nella tua pagina del profilo così che tu possa registrarti al portale ONLYOFFICE® inoltre utilizzando l'account Google Drive nel modulo Documenti. Ciò ti consentirà di caricare e creare nuovi files in Google Drive, modificare quelli esistenti, copiarli e/o cancellarli, condividere file e cartelle con gli utenti del portale ONLYOFFICE®.</value>
   </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
-    <value>Chiave di LinkedIn</value>
+    <value>LinkedIn</value>
   </data>
   <data name="ConsumersLinkedInDescription" xml:space="preserve">
     <value>Collega l'applicazione per registrarsi al portale usando l'account Linkedin</value>
@@ -404,7 +404,7 @@
     <value>Numero di telefono da Twilio (richiesto per l'autorizzazione SMS)</value>
   </data>
   <data name="ConsumersTwitter" xml:space="preserve">
-    <value>Chiave di Twitter</value>
+    <value>Twitter</value>
   </data>
   <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
     <value>Gettone d'accesso</value>
@@ -497,14 +497,14 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Personalizzato</value>
   </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>ID istanza errato.</value>
+  </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Indirizzo email non corretto</value>
   </data>
   <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
     <value>Codice promozionale errato</value>
-  </data>
-  <data name="EmailAndPasswordSaved" xml:space="preserve">
-    <value>Queste impostazioni sono state salvate con successo</value>
   </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Non si dispone di permessi sufficienti per effettuare questa azione</value>
@@ -529,6 +529,9 @@
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
     <value>L'indirizzo email corrente coincide con quello nuovo.</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Compila tutti i campi</value>
   </data>
   <data name="ErrorEmptyMessage" xml:space="preserve">
     <value>Il testo del messaggio è vuoto</value>
@@ -606,7 +609,7 @@
     <value>Licenza errata</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>La licenza è scaduta</value>
+    <value>La licenza non è valida per questa versione del portale.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Il numero di portali supera quello consentito dalla licenza</value>
@@ -621,13 +624,10 @@
     <value>Caricato con successo. {0}Il supporto e gli aggiornamenti non sono disponibili per questa licenza dal {2}.{1}</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>Le istruzioni di modifica dell'email sono state inviate correttamente</value>
+    <value>Le istruzioni di modifica dell'email sono state inviate a {0}</value>
   </data>
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>Se esiste un utente con l'e-mail {0}, l'istruzione di modifica della password è stata inviata a questo indirizzo e-mail.</value>
-  </data>
-  <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
-    <value>Le istruzioni di modifica della password sono state inviate all'indirizzo email {0}.</value>
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
     <value>Per modificare il numero, occorre eliminare il numero di telefono attuale</value>
@@ -640,9 +640,6 @@
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Accesso al portale</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>Il profilo è stato eliminato</value>
   </data>
   <data name="ReassignDataRemoveUserError" xml:space="preserve">
     <value>La riassegnazione dei dati in corso per {0} non è completa.</value>
@@ -697,9 +694,6 @@
   </data>
   <data name="TfaTooMuchError" xml:space="preserve">
     <value>Hai inviato troppi SMS. Prova più tardi.</value>
-  </data>
-  <data name="Trial" xml:space="preserve">
-    <value>Prova</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>Regione Ovest degli Stati Uniti (Oregon)</value>
