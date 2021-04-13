@@ -230,7 +230,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
       <StyledTreeMenu
         id={id}
         style={style}
-        className={className}
+        className={`${className} not-selectable`}
         ref={ref}
         {...expandedKeysProp}
         loadData={loadData}

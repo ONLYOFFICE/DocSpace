@@ -134,7 +134,7 @@ class ModalDialog extends React.Component {
         withBackground={true}
         isModalDialog
       >
-        <Dialog className={className} id={id} style={style}>
+        <Dialog className={`${className} not-selectable`} id={id} style={style}>
           <Content contentHeight={contentHeight} contentWidth={contentWidth}>
             <StyledHeader>
               <Heading className="heading" size="medium" truncate={true}>
@@ -161,7 +161,7 @@ class ModalDialog extends React.Component {
           visible={visible}
           scale={scale}
           zIndex={zIndex}
-          className="modal-dialog-aside"
+          className="modal-dialog-aside not-selectable"
         >
           <Content contentHeight={contentHeight} contentWidth={contentWidth}>
             <StyledHeader className="modal-dialog-aside-header">
