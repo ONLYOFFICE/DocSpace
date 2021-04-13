@@ -166,7 +166,7 @@ class PageLayout extends React.Component {
   };
 
   duringSelection = (duringItems) => {
-    if (this.props.uploadFiles) return;
+    if (!this.props.uploadFiles) return;
     const items = [];
     for (let item of duringItems) {
       items.push(item.props.item);
