@@ -1,42 +1,13 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import styled from "styled-components";
 import { ShareAccessRights } from "@appserver/common/constants";
 import Badge from "@appserver/components/badge";
 import IconButton from "@appserver/components/icon-button";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import FavoriteIcon from "../../../../../../../public/images/favorite.react.svg";
-import FileActionsConvertEditDocIcon from "../../../../../../../public/images/file.actions.convert.edit.doc.react.svg";
-import FileActionsLockedIcon from "../../../../../../../public/images/file.actions.locked.react.svg";
-
-export const StyledFavoriteIcon = styled(FavoriteIcon)`
-  ${commonIconsStyles}
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-export const StyledFileActionsConvertEditDocIcon = styled(
-  FileActionsConvertEditDocIcon
-)`
-  ${commonIconsStyles}
-  path {
-    fill: #3b72a7;
-  }
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-export const StyledFileActionsLockedIcon = styled(FileActionsLockedIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: #3b72a7;
-  }
-  &:hover {
-    cursor: pointer;
-  }
-`;
+import {
+  StyledFavoriteIcon,
+  StyledFileActionsConvertEditDocIcon,
+  StyledFileActionsLockedIcon,
+} from "./Icons";
 
 const Badges = (props) => {
   const {

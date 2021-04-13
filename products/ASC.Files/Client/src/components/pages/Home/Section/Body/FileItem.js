@@ -10,8 +10,8 @@ import Text from "@appserver/components/text";
 
 import Tile from "./FilesTile/sub-components/Tile";
 import FilesContent from "./FilesContent";
-import { SimpleFilesRow, EncryptedFileIcon } from "./FilesRow/SimpleFilesRow";
-
+import SimpleFilesRow from "./FilesRow/SimpleFilesRow";
+import { EncryptedFileIcon } from "./sub-components/Icons";
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 
 const FileItem = (props) => {
