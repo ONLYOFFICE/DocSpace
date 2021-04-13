@@ -5,7 +5,6 @@ import React from "react";
 //import equal from "fast-deep-equal/react";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
-import BadgesFileTile from "./BadgesFileTile";
 
 const FlexBoxStyles = css`
   display: flex;
@@ -198,6 +197,7 @@ class Tile extends React.Component {
               ) : (
                 <div className="expandButton"> </div>
               )}
+              <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
             </StyledOptionButton>
           </>
         ) : (
