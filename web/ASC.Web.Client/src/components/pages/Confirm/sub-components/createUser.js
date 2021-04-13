@@ -225,6 +225,7 @@ class Confirm extends React.PureComponent {
 
   authCallback = (profile) => {
     const { thirdPartyLogin, t } = this.props;
+    debugger;
 
     thirdPartyLogin(profile.Serialized)
       .then(() => {
