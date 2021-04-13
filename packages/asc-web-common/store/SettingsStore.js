@@ -70,6 +70,8 @@ class SettingsStore {
   passwordSettings = null;
   hasShortenService = false;
 
+  teamTemplate = [];
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -82,6 +84,13 @@ class SettingsStore {
 
   get wizardCompleted() {
     return this.isLoaded && !this.wizardToken;
+  }
+
+  get helpUrlCommonSettings() {
+    const substring = this.culture.substring(0, this.culture.indexOf("-"));
+    const lang = substring.length > 0 ? substring : "en";
+
+    return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CustomizingPortal_block`;
   }
 
   setValue = (key, value) => {
@@ -115,6 +124,12 @@ class SettingsStore {
 
   getCurrentCustomSchema = async (id) => {
     this.customNames = await api.settings.getCurrentCustomSchema(id);
+  };
+
+  getCustomSchema = async () => {
+    this.setIsLoading(true);
+    this.teamTemplate = await api.settings.getCustomSchema();
+    this.setIsLoading(false);
   };
 
   getPortalSettings = async () => {

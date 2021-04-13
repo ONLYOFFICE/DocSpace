@@ -111,6 +111,18 @@
   "CustomTitles": "Custom titles",
   "LanguageAndTimeZoneSettingsDescription": "Language and time zone settings is a way to change the language of the whole portal for all portal users and to configure the time zone so that all the events of the portal will be shown with the correct date and time.",
   "CustomTitlesSettingsDescription": "Custom welcome page title will be displayed on the welcome page of your portal. The same name is also used for the From field of your portal email notifications. Custom domain name is a way to set an alternative URL for your portal. Custom portal name will appear next to the onlyoffice.com/onlyoffice.eu portal address.",
+
   "TeamTemplate": "Team template",
-  "TeamTemplateSettingsDescription": "Team Template is a customizable way to name the organization (or group), its members and their activities."
+  "TeamTemplateSettingsDescription": "Team Template is a customizable way to name the organization (or group), its members and their activities. Drop down the Template list to choose one of the available presets or enter the names yourselves selecting the custom option from the list.",
+  "AddName": "Add Name",
+  "Template": "Template",
+  "User": "User",
+  "Users": "Users",
+  "Group": "Group",
+  "Groups": "Groups",
+  "Job/Title": "Job/Title",
+  "RegistrationDate": "Registration date",
+  "GroupLead": "Group Lead",
+  "Guest": "Guest",
+  "Guests": "Guests"
 }
