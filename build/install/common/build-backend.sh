@@ -51,7 +51,7 @@ done
 echo "== BACK-END-BUILD =="
 
 cd ${SRC_PATH}
-dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config
+dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config ${ARGS}
 dotnet build -r ${RID_ID} ${ARGS} ASC.Web.sln
 
 echo "== Build ASC.Thumbnails =="
