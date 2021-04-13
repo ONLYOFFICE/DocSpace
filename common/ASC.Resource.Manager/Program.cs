@@ -37,7 +37,7 @@ namespace ASC.Resource.Manager
             {
                 if(args[i] == "--pathToConf" || args[i] == "--ConnectionStrings:default:connectionString")
                 {
-                    i = i + 2;
+                    i++;
                     continue;
                 }
                 copy.Add(args[i]);
