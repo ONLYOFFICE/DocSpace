@@ -70,6 +70,8 @@ class SettingsStore {
   passwordSettings = null;
   hasShortenService = false;
 
+  teamTemplate = [];
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -115,6 +117,12 @@ class SettingsStore {
 
   getCurrentCustomSchema = async (id) => {
     this.customNames = await api.settings.getCurrentCustomSchema(id);
+  };
+
+  getCustomSchema = async () => {
+    this.setIsLoading(true);
+    this.teamTemplate = await api.settings.getCustomSchema();
+    this.setIsLoading(false);
   };
 
   getPortalSettings = async () => {

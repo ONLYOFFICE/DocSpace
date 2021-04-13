@@ -79,6 +79,13 @@ export function getLogoUrls() {
   });
 }
 
+export function getCustomSchema() {
+  return request({
+    method: "get",
+    url: `settings/customschemas`,
+  });
+}
+
 export function getCurrentCustomSchema(id) {
   return request({
     method: "get",

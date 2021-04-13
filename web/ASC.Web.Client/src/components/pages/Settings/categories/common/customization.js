@@ -3,6 +3,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import Text from "@appserver/components/text";
 import Loader from "@appserver/components/loader";
+import Box from "@appserver/components/box";
 import toastr from "@appserver/components/toast/toastr";
 import Link from "@appserver/components/link";
 import ArrowRightIcon from "../../../../../../public/images/arrow.right.react.svg";
@@ -149,6 +150,8 @@ class Customization extends React.Component {
           this.setState({ languages, language, timezones, timezone });
         });
     }
+    console.log("!!!!", this.state.language);
+
     hideLoader();
   }
 
@@ -204,8 +207,9 @@ class Customization extends React.Component {
   };
 
   render() {
-    const { t } = this.props;
+    const { t, language: lng, nameSchemaId } = this.props;
     const { language, timezone } = this.state;
+
     return (
       <StyledComponent>
         <div className="category-item-wrapper">
@@ -266,6 +270,9 @@ class Customization extends React.Component {
             </Link>
             <StyledArrowRightIcon size="small" color="#333333" />
           </div>
+          <Box marginProp="4px 0 6px 0">
+            <Text fontWeight="600">{"выбранный шаблон"}</Text>
+          </Box>
           <Text className="category-item-description">
             {t("TeamTemplateSettingsDescription")}
           </Text>
