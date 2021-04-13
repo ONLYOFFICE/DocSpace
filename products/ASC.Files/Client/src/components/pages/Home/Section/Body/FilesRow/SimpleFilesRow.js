@@ -547,9 +547,7 @@ const SimpleFilesRow = createSelectable((props) => {
   const element = getItemIcon(isEdit || id <= 0);
   const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
   let className = isDragging ? " droppable" : "";
-  if (draggable) className += " draggable";
-  let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
-  value += draggable ? "_draggable" : "";
+  if (draggable) className += " draggable not-selectable";
 
   const sharedButton =
     !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
@@ -559,7 +557,6 @@ const SimpleFilesRow = createSelectable((props) => {
   return (
     <div ref={props.selectableRef}>
       <DragAndDrop
-        value={value}
         className={className}
         onDrop={onDrop}
         onMouseDown={onMouseDown}

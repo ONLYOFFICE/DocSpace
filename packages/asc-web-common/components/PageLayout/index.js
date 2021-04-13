@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
 //import ProgressBar from "@appserver/components/progress-bar";
@@ -22,6 +22,11 @@ import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
 import { SelectableGroup } from "react-selectable-fast";
 import SelectedFrame from "./sub-components/SelectedFrame";
+import styled from "styled-components";
+
+const StyledSelectableGroup = styled(SelectableGroup)`
+  display: contents;
+`;
 
 function ArticleHeader() {
   return null;
@@ -161,6 +166,7 @@ class PageLayout extends React.Component {
   };
 
   duringSelection = (duringItems) => {
+    if (this.props.uploadFiles) return;
     const items = [];
     for (let item of duringItems) {
       items.push(item.props.item);
@@ -256,24 +262,12 @@ class PageLayout extends React.Component {
 
     return (
       <>
-        <SelectableGroup
-          style={{ display: "contents" }}
-          //className="main"
-          clickClassName="tick"
+        <StyledSelectableGroup
           enableDeselect
           resetOnStart
-          //tolerance={this.state.tolerance}
-          //globalMouse={this.state.isGlobal}
           allowClickWithoutSelected={false}
           duringSelection={this.duringSelection}
-          //onSelectionClear={this.handleSelectionClear}
-          //onSelectionFinish={this.handleSelectionFinish}
-          //onSelectedItemUnmount={this.handleSelectedItemUnmount}
-          //ignoreList={[
-          //  ".not-selectable",
-          //  ".item:nth-child(10)",
-          //  ".item:nth-child(27)",
-          //]}
+          ignoreList={[".not-selectable", "draggable"]}
         >
           {isBackdropAvailable && (
             <Backdrop
@@ -434,8 +428,8 @@ class PageLayout extends React.Component {
               )}
             </ReactResizeDetector>
           )}
-        </SelectableGroup>
-        <SelectedFrame />
+        </StyledSelectableGroup>
+        {uploadFiles && <SelectedFrame />}
       </>
     );
   }

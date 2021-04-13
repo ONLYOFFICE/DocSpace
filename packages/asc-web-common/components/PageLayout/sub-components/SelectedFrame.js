@@ -20,15 +20,9 @@ class SelectedFrame extends React.Component {
     mouseDown: false,
     top: 0,
     left: 0,
-
-    containerOffsetTop: 0,
-    containerOffsetLeft: 0,
-    rowItems: [],
   };
 
   refFrame = React.createRef();
-  container = null;
-  wrapper = null;
 
   componentDidMount() {
     document.addEventListener("mousedown", this.onMouseDown);
@@ -54,14 +48,29 @@ class SelectedFrame extends React.Component {
       ? e.button !== 0
       : false;
 
+    const isDivTag = e.target.tagName === "DIV";
+    const notSelectable = e.target.classList.contains("not-selectable");
+    const draggable = e.target.classList.contains("draggable");
+    const isBackdrop = e.target.classList.contains("backdrop-active");
+    const notSelectablePath = e.path.some(
+      (x) => x.classList && x.classList.contains("not-selectable")
+    );
+
+    if (
+      mouseButton ||
+      !isDivTag ||
+      notSelectable ||
+      draggable ||
+      isBackdrop ||
+      notSelectablePath
+    )
+      return;
+
     const mouseYX = this.getCoords(e);
     const top = mouseYX[0];
     const left = mouseYX[1];
     document.addEventListener("mousemove", this.onMouseMove, false);
     this.setState({ mouseDown: true, top, left });
-
-    this.refFrame.current.style.visibility = "visible";
-    this.refFrame.current.style.display = "block";
   };
 
   setFramePosition = (mouseYX) => {
@@ -91,6 +100,8 @@ class SelectedFrame extends React.Component {
     const { mouseDown } = this.state;
 
     if (mouseDown) {
+      this.refFrame.current.style.visibility = "visible";
+      this.refFrame.current.style.display = "block";
       const mouseYX = this.getCoords(e);
       this.setFramePosition(mouseYX);
     }
