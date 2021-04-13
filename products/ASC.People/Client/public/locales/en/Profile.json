@@ -52,5 +52,6 @@
   "LoginSettings": "Login settings",
   "TwoFactorDescription": "<strong>Two-factor authentication</strong> via code generating application was enabled for all users by cloud service administrator.",
   "ResetApplication": "Reset application",
-  "ShowBackupCodes": "Show backup codes"
+  "ShowBackupCodes": "Show backup codes",
+  "CountCodesRemaining": "({{count}} codes remaining)"
 }

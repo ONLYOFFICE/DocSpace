@@ -162,6 +162,8 @@ class SectionBodyContent extends React.PureComponent {
     const infoContacts = contacts && createContacts(contacts.contact);
     //const isSelf = isMe(viewer, profile.userName);
 
+    const count = 5; //TODO: get count from api
+
     return (
       <ProfileWrapper>
         <AvatarWrapper>
@@ -232,6 +234,14 @@ class SectionBodyContent extends React.PureComponent {
                 >
                   {t("ShowBackupCodes")}
                 </Link>
+                <Trans
+                  t={t}
+                  i18nKey="CountCodesRemaining"
+                  ns="Profile"
+                  count={count}
+                >
+                  <Text color="#A3A9AE">({{ count }} codes remaining)</Text>
+                </Trans>
               </LinkActionWrapper>
             </ToggleContent>
           </ToggleWrapper>
