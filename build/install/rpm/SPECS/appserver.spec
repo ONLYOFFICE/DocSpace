@@ -20,6 +20,7 @@ Requires:       %name-ASC.ApiSystem
 Requires:       %name-ASC.CRM
 Requires:       %name-ASC.Data.Backup
 Requires:       %name-ASC.Data.Storage.Encryption
+Requires:       %name-ASC.Data.Storage.Migration
 Requires:       %name-ASC.Files
 Requires:       %name-ASC.Files.Service
 Requires:       %name-ASC.Notify

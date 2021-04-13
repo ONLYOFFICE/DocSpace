@@ -3,7 +3,6 @@
 bash build/install/common/systemd/build.sh
 
 bash build/install/common/build-frontend.sh --srcpath %{_builddir}/AppServer-%GIT_BRANCH
-yarn build
 bash build/install/common/build-backend.sh --srcpath %{_builddir}/AppServer-%GIT_BRANCH
 bash build/install/common/publish-backend.sh --srcpath %{_builddir}/AppServer-%GIT_BRANCH --arguments "--disable-parallel"
 

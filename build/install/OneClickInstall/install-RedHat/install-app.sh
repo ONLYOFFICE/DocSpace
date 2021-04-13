@@ -31,6 +31,7 @@ if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ]; then
 		   MYSQL="mysql --connect-expired-password -u$MYSQL_SERVER_USER -D mysql";
 		else
 		   MYSQL="mysql --connect-expired-password -u$MYSQL_SERVER_USER -p${MYSQL_TEMPORARY_ROOT_PASS} -D mysql";
+		   MYSQL_TEMPORARY_ROOT_PASS=$(echo $MYSQL_TEMPORARY_ROOT_PASS | sed 's/;/!/g');
 		fi
 
 		$MYSQL -e "ALTER USER '${MYSQL_SERVER_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${MYSQL_TEMPORARY_ROOT_PASS}'" >/dev/null 2>&1 \
