@@ -6,6 +6,9 @@ import ComboBox from "@appserver/components/combobox";
 import TextInput from "@appserver/components/text-input";
 import FieldContainer from "@appserver/components/field-container";
 
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+import { isMobile } from "react-device-detect";
+
 const StyledComponent = styled.div`
   .team-template_text-input {
     max-width: 350px;
@@ -16,6 +19,21 @@ const StyledComponent = styled.div`
   }
   .main-field-container {
     margin-bottom: 32px;
+  }
+  .team-template_buttons {
+    position: absolute;
+
+    justify-content: space-between;
+    ${isMobile &&
+    `
+      max-width: 500px;
+      position: static;
+      padding-left: 0px;
+ 
+    `}
+  }
+  .cancel-button {
+    margin-right: 16px;
   }
 `;
 let options = [];
@@ -288,6 +306,16 @@ class TeamTemplate extends React.Component {
             placeholder={t("AddName")}
           />
         </FieldContainer>
+
+        <SaveCancelButtons
+          className="team-template_buttons"
+          onSaveClick={() => console.log("save")}
+          onCancelClick={() => console.log("cancel")}
+          showReminder={true}
+          reminderTest={t("YouHaveUnsavedChanges")}
+          saveButtonLabel={t("SaveButton")}
+          cancelButtonLabel={t("CancelButton")}
+        />
       </StyledComponent>
     );
   }
