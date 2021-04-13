@@ -219,12 +219,17 @@ namespace ASC.Resource.Manager
 
                         regex = new Regex(@"\<AssemblyName\>(\S*)\<\/AssemblyName\>", RegexOptions.IgnoreCase);
                         matches = regex.Matches(File.ReadAllText(asmbl));
+                        string assName = "";
                         if (!matches.Any() || matches[0].Groups.Count < 2)
                         {
-                            return;
+                            assName = Path.GetFileNameWithoutExtension(asmbl);
+                        }
+                        else
+                        {
+                            assName = matches[0].Groups[1].Value;
                         }
 
-                        key = CheckExist(fileName, $"{nsp}.{name},{matches[0].Groups[1].Value}", exportPath);
+                        key = CheckExist(fileName, $"{nsp}.{name},{assName}", exportPath);
                         var additional =  string.Join(",", keys.Where(r => r.Length > 1 && r.Contains("*")).ToArray());
 
                         if (!string.IsNullOrEmpty(additional))
