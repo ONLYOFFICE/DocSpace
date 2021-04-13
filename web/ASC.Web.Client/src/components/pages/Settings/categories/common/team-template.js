@@ -26,7 +26,7 @@ class TeamTemplate extends React.Component {
     const { customNames, t } = this.props;
     options = [];
     this.state = {
-      selectedOption: { key: 0, label: "Общий" },
+      selectedOption: { key: 0, label: `${customNames.name}` },
       user: customNames.userCaption,
       users: customNames.usersCaption,
       group: customNames.groupCaption,
@@ -48,12 +48,12 @@ class TeamTemplate extends React.Component {
   onCustomSchemaSelect = (option) => {
     console.log("select", option);
     const { teamTemplate } = this.props;
-    const currentTemplate = teamTemplate[option.key].items;
+    const currentTemplate = teamTemplate[option.key];
 
     this.setState({
       selectedOption: {
         key: 0,
-        label: teamTemplate[option.key].name,
+        label: currentTemplate.name,
       },
       user: currentTemplate.userCaption,
       users: currentTemplate.usersCaption,

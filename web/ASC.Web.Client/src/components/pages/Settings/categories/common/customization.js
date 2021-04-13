@@ -207,7 +207,7 @@ class Customization extends React.Component {
   };
 
   render() {
-    const { t, helpUrlCommonSettings } = this.props;
+    const { t, helpUrlCommonSettings, customNames } = this.props;
     const { language, timezone } = this.state;
 
     return (
@@ -271,7 +271,7 @@ class Customization extends React.Component {
             <StyledArrowRightIcon size="small" color="#333333" />
           </div>
           <Box marginProp="4px 0 6px 0">
-            <Text fontWeight="600">{"выбранный шаблон"}</Text>
+            <Text fontWeight="600">{`${customNames.name}`}</Text>
           </Box>
           <Text className="category-item-description">
             {t("TeamTemplateSettingsDescription")}
@@ -304,6 +304,7 @@ export default inject(({ auth, setup }) => {
     getCurrentCustomSchema,
     getPortalTimezones,
     helpUrlCommonSettings,
+    customNames,
   } = auth.settingsStore;
 
   const { setLanguageAndTime } = setup;
@@ -321,5 +322,6 @@ export default inject(({ auth, setup }) => {
     getPortalTimezones,
     getCurrentCustomSchema,
     helpUrlCommonSettings,
+    customNames,
   };
 })(withTranslation("Settings")(observer(Customization)));
