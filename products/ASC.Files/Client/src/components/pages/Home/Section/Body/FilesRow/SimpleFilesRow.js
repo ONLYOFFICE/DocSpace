@@ -14,6 +14,7 @@ import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import copy from "copy-to-clipboard";
 import config from "../../../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
+import { createSelectable } from "react-selectable-fast";
 
 const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
@@ -62,7 +63,7 @@ const EncryptedFileIcon = styled.div`
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 
-const SimpleFilesRow = (props) => {
+const SimpleFilesRow = createSelectable((props) => {
   const {
     t,
     item,
@@ -288,7 +289,6 @@ const SimpleFilesRow = (props) => {
 
   const getFilesContextOptions = useCallback(() => {
     const isSharable = access !== 1 && access !== 0;
-
     return contextOptions.map((option) => {
       switch (option) {
         case "open":
@@ -417,7 +417,7 @@ const SimpleFilesRow = (props) => {
             onClick: onClickDownloadAs,
             disabled: false,
           };
-        case "move":
+        case "move-to":
           return {
             key: option,
             label: t("MoveTo"),
@@ -433,7 +433,7 @@ const SimpleFilesRow = (props) => {
             onClick: onMoveAction,
             disabled: false,
           };
-        case "copy":
+        case "copy-to":
           return {
             key: option,
             label: t("Copy"),
@@ -441,7 +441,7 @@ const SimpleFilesRow = (props) => {
             onClick: onCopyAction,
             disabled: false,
           };
-        case "duplicate":
+        case "copy":
           return {
             key: option,
             label: t("Duplicate"),
@@ -547,7 +547,8 @@ const SimpleFilesRow = (props) => {
   const element = getItemIcon(isEdit || id <= 0);
   const displayShareButton = isMobile ? "26px" : !canShare ? "38px" : "96px";
   let className = isDragging ? " droppable" : "";
-  if (draggable) className += " draggable";
+  if (draggable) className += " draggable not-selectable";
+
   let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
   value += draggable ? "_draggable" : "";
 
@@ -557,32 +558,34 @@ const SimpleFilesRow = (props) => {
       : getSharedButton(shared);
 
   return (
-    <DragAndDrop
-      value={value}
-      className={className}
-      onDrop={onDrop}
-      onMouseDown={onMouseDown}
-      dragging={dragging && isDragging}
-      {...contextOptionsProps}
-    >
-      <StyledSimpleFilesRow
-        key={id}
-        data={item}
-        element={element}
-        sectionWidth={sectionWidth}
-        contentElement={sharedButton}
-        onSelect={onContentRowSelect}
-        rowContextClick={rowContextClick}
-        isPrivacy={isPrivacy}
-        {...checkedProps}
+    <div ref={props.selectableRef}>
+      <DragAndDrop
+        value={value}
+        className={className}
+        onDrop={onDrop}
+        onMouseDown={onMouseDown}
+        dragging={dragging && isDragging}
         {...contextOptionsProps}
-        contextButtonSpacerWidth={displayShareButton}
       >
-        <FilesRowContent item={item} sectionWidth={sectionWidth} />
-      </StyledSimpleFilesRow>
-    </DragAndDrop>
+        <StyledSimpleFilesRow
+          key={id}
+          data={item}
+          element={element}
+          sectionWidth={sectionWidth}
+          contentElement={sharedButton}
+          onSelect={onContentRowSelect}
+          rowContextClick={rowContextClick}
+          isPrivacy={isPrivacy}
+          {...checkedProps}
+          {...contextOptionsProps}
+          contextButtonSpacerWidth={displayShareButton}
+        >
+          <FilesRowContent item={item} sectionWidth={sectionWidth} />
+        </StyledSimpleFilesRow>
+      </DragAndDrop>
+    </div>
   );
-};
+});
 
 export default inject(
   (

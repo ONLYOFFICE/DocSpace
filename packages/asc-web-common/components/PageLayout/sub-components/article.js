@@ -31,17 +31,15 @@ const StyledArticle = styled.article`
         cursor: ew-resize !important;
       }
     }
-    ${
-      isMobile &&
-      css`
-        margin-top: 56px;
-        height: calc(100% - 56px) !important;
-        width: 240px !important;
-        @media ${tablet} {
-          margin-top: ${(props) => (props.pinned ? "56px;" : "0;")};
-        }
-      `
-    }
+    ${isMobile &&
+    css`
+      margin-top: 56px;
+      height: calc(100% - 56px) !important;
+      width: 240px !important;
+      @media ${tablet} {
+        margin-top: ${(props) => (props.pinned ? "56px;" : "0;")};
+      }
+    `}
     @media ${tablet} {
       padding: 0 16px;
       ${(props) =>
@@ -99,7 +97,7 @@ class Article extends React.Component {
         <Resizable
           enable={enable}
           className="resizable-block"
-          handleWrapperClass="resizable-border"
+          handleWrapperClass="resizable-border not-selectable"
         >
           {children}
           <div className="increaseHeight"></div>
