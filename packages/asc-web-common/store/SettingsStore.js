@@ -86,6 +86,13 @@ class SettingsStore {
     return this.isLoaded && !this.wizardToken;
   }
 
+  get helpUrlCommonSettings() {
+    const substring = this.culture.substring(0, this.culture.indexOf("-"));
+    const lang = substring.length > 0 ? substring : "en";
+
+    return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CustomizingPortal_block`;
+  }
+
   setValue = (key, value) => {
     this[key] = value;
   };

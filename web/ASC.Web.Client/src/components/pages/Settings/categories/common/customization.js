@@ -207,7 +207,7 @@ class Customization extends React.Component {
   };
 
   render() {
-    const { t, language: lng, nameSchemaId } = this.props;
+    const { t, helpUrlCommonSettings } = this.props;
     const { language, timezone } = this.state;
 
     return (
@@ -276,6 +276,16 @@ class Customization extends React.Component {
           <Text className="category-item-description">
             {t("TeamTemplateSettingsDescription")}
           </Text>
+          <Box marginProp="16px 0 0 0">
+            <Link
+              color="#316DAA"
+              target="_blank"
+              isHovered={true}
+              href={helpUrlCommonSettings}
+            >
+              {t("LearnMore")}
+            </Link>
+          </Box>
         </div>
       </StyledComponent>
     );
@@ -293,6 +303,7 @@ export default inject(({ auth, setup }) => {
     getPortalCultures,
     getCurrentCustomSchema,
     getPortalTimezones,
+    helpUrlCommonSettings,
   } = auth.settingsStore;
 
   const { setLanguageAndTime } = setup;
@@ -309,5 +320,6 @@ export default inject(({ auth, setup }) => {
     setLanguageAndTime,
     getPortalTimezones,
     getCurrentCustomSchema,
+    helpUrlCommonSettings,
   };
 })(withTranslation("Settings")(observer(Customization)));
