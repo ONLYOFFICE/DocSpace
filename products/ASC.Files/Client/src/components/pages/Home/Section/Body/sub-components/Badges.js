@@ -75,7 +75,7 @@ const Badges = (props) => {
         <IconButton
           onClick={onFilesClick}
           iconName="/static/images/access.edit.react.svg"
-          className="badge"
+          className="badge icons-group"
           size="small"
           isfill={true}
           color="#A3A9AE"
@@ -84,7 +84,7 @@ const Badges = (props) => {
       )}
       {locked && (
         <StyledFileActionsLockedIcon
-          className="badge lock-file"
+          className="badge lock-file icons-group"
           size="small"
           data-id={id}
           data-locked={true}
@@ -93,7 +93,7 @@ const Badges = (props) => {
       )}
       {fileStatus === 32 && !isTrashFolder && (
         <StyledFavoriteIcon
-          className="favorite badge"
+          className="favorite icons-group"
           size="small"
           data-action="remove"
           data-id={id}
@@ -106,7 +106,7 @@ const Badges = (props) => {
       )}
       {versionGroup > 1 && (
         <Badge
-          className="badge-version badge"
+          className="badge-version icons-group"
           backgroundColor="#A3A9AE"
           borderRadius="11px"
           color="#FFFFFF"
@@ -121,7 +121,7 @@ const Badges = (props) => {
       )}
       {showNew && (
         <Badge
-          className="badge-version badge"
+          className="badge-version icons-group"
           backgroundColor="#ED7309"
           borderRadius="11px"
           color="#FFFFFF"

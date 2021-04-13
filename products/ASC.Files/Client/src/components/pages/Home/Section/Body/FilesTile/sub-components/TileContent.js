@@ -68,13 +68,15 @@ const MainIcons = styled.div`
 
   .additional-badges {
     position: absolute;
-    top: 11px;
-    right: 4px;
+    top: 1px;
+    right: 2px;
     display: flex;
     flex-direction: row;
 
-    .badge {
-      margin-right: 8;
+    .icons-group {
+      position: relative;
+      margin: 0;
+      margin-right: 8px;
     }
   }
 `;
