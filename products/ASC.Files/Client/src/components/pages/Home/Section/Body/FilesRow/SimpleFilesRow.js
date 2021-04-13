@@ -14,6 +14,7 @@ import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import copy from "copy-to-clipboard";
 import config from "../../../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
+import { createSelectable } from "react-selectable-fast";
 
 const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
@@ -62,7 +63,7 @@ const EncryptedFileIcon = styled.div`
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 
-const SimpleFilesRow = (props) => {
+const SimpleFilesRow = createSelectable((props) => {
   const {
     t,
     item,
@@ -556,32 +557,34 @@ const SimpleFilesRow = (props) => {
       : getSharedButton(shared);
 
   return (
-    <DragAndDrop
-      value={value}
-      className={className}
-      onDrop={onDrop}
-      onMouseDown={onMouseDown}
-      dragging={dragging && isDragging}
-      {...contextOptionsProps}
-    >
-      <StyledSimpleFilesRow
-        key={id}
-        data={item}
-        element={element}
-        sectionWidth={sectionWidth}
-        contentElement={sharedButton}
-        onSelect={onContentRowSelect}
-        rowContextClick={rowContextClick}
-        isPrivacy={isPrivacy}
-        {...checkedProps}
+    <div ref={props.selectableRef}>
+      <DragAndDrop
+        value={value}
+        className={className}
+        onDrop={onDrop}
+        onMouseDown={onMouseDown}
+        dragging={dragging && isDragging}
         {...contextOptionsProps}
-        contextButtonSpacerWidth={displayShareButton}
       >
-        <FilesRowContent item={item} sectionWidth={sectionWidth} />
-      </StyledSimpleFilesRow>
-    </DragAndDrop>
+        <StyledSimpleFilesRow
+          key={id}
+          data={item}
+          element={element}
+          sectionWidth={sectionWidth}
+          contentElement={sharedButton}
+          onSelect={onContentRowSelect}
+          rowContextClick={rowContextClick}
+          isPrivacy={isPrivacy}
+          {...checkedProps}
+          {...contextOptionsProps}
+          contextButtonSpacerWidth={displayShareButton}
+        >
+          <FilesRowContent item={item} sectionWidth={sectionWidth} />
+        </StyledSimpleFilesRow>
+      </DragAndDrop>
+    </div>
   );
-};
+});
 
 export default inject(
   (
