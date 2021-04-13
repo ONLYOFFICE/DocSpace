@@ -41,7 +41,6 @@ class FilesStore {
   selection = [];
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
-  newRowItems = [];
 
   constructor(
     authStore,
@@ -234,10 +233,6 @@ class FilesStore {
     this.filter = filter;
   };
 
-  setNewRowItems = (newRowItems) => {
-    this.newRowItems = newRowItems;
-  };
-
   setFilesOwner = (folderIds, fileIds, ownerId) => {
     return api.files.setFileOwner(folderIds, fileIds, ownerId);
   };
@@ -366,129 +361,335 @@ class FilesStore {
       this.selection = this.selection.filter((x) => x.id !== id);
   };
 
+  removeOptions = (options, toRemoveArray) =>
+    options.filter((o) => !toRemoveArray.includes(o));
+
   getFilesContextOptions = (item, canOpenPlayer) => {
-    const options = [];
     const isVisitor =
       (this.userStore.user && this.userStore.user.isVisitor) || false;
-
     const isFile = !!item.fileExst || item.contentLength;
     const isFavorite = item.fileStatus === 32;
     const isFullAccess = item.access < 2;
-    const isThirdPartyFolder =
-      item.providerKey && this.selectedFolderStore.isRootFolder;
-
-    if (item.id <= 0) return [];
+    const withoutShare = false; //TODO: need this prop
+    const isThirdPartyItem = item.providerKey;
+    const hasNew = item.new > 0;
+    const canConvert = false; //TODO: fix of added convert check;
+    const isEncrypted = item.encrypted;
+    const isDocuSign = false; //TODO: need this prop;
+    const isEditing = false; //TODO: need this prop;
 
     const {
       isRecycleBinFolder,
       isPrivacyFolder,
       isRecentFolder,
       isShareFolder,
+      isCommonFolder,
+      isFavoritesFolder,
+      isThirdPartyFolder,
     } = this.treeFoldersStore;
 
-    if (isRecycleBinFolder) {
-      options.push("download");
-      isFile && options.push("download-as");
-      options.push("restore");
-      options.push("separator0");
-      options.push("delete");
-    } else if (isPrivacyFolder) {
-      if (isFile) {
-        options.push("sharing-settings");
-        options.push("separator0");
-        options.push("show-version-history");
-        options.push("separator1");
+    const { isDesktopClient } = this.settingsStore;
+
+    if (isFile) {
+      let fileOptions = [
+        //"open",
+        "edit",
+        "preview",
+        "view",
+        "separator0",
+        "sharing-settings",
+        "external-link",
+        "owner-change",
+        "link-for-portal-users",
+        "send-by-email",
+        "docu-sign",
+        "version", //category
+        "finalize-version",
+        "show-version-history",
+        "block-unblock-version", //need split
+        "separator1",
+        "open-location",
+        "mark-read",
+        "mark-as-favorite",
+        "download",
+        //"download-as",
+        "convert",
+        "move", //category
+        "move-to",
+        "copy-to",
+        "copy",
+        "restore",
+        "rename",
+        "separator2",
+        "remove-from-favorites",
+        "unsubscribe",
+        "delete",
+      ];
+
+      if (!canConvert || isEncrypted) {
+        fileOptions = this.removeOptions(fileOptions, ["convert"]);
       }
-      options.push("download");
-      options.push("move");
-      options.push("rename");
-      options.push("separator2");
-      options.push("delete");
+
+      if (!canOpenPlayer) {
+        fileOptions = this.removeOptions(fileOptions, ["view"]);
+      } else {
+        fileOptions = this.removeOptions(fileOptions, ["edit", "preview"]);
+      }
+
+      if (!isDocuSign) {
+        fileOptions = this.removeOptions(fileOptions, ["docu-sign"]);
+      }
+
+      if (isEditing) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "finalize-version",
+          "move-to",
+          "delete",
+        ]);
+        if (isThirdPartyFolder) {
+          fileOptions = this.removeOptions(fileOptions, ["rename"]);
+        }
+      }
+
+      if (isFavorite) {
+        fileOptions = this.removeOptions(fileOptions, ["mark-as-favorite"]);
+      } else {
+        fileOptions = this.removeOptions(fileOptions, [
+          "remove-from-favorites",
+        ]);
+
+        if (isFavoritesFolder) {
+          fileOptions = this.removeOptions(fileOptions, ["mark-as-favorite"]);
+        }
+      }
+
+      if (isFavoritesFolder) {
+        fileOptions = this.removeOptions(fileOptions, ["move-to", "delete"]);
+
+        if (!isFavorite) {
+          fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+        }
+      }
+
+      if (isEncrypted) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "open",
+          "edit",
+          "link-for-portal-users",
+          "external-link",
+          "send-by-email",
+          "block-unblock-version", //need split
+          "version", //category
+          "finalize-version",
+          "copy-to",
+          "copy",
+          "mark-as-favorite",
+        ]);
+      }
+
+      if (isRecycleBinFolder) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "open",
+          "open-location",
+          "edit",
+          "link-for-portal-users",
+          "sharing-settings",
+          "external-link",
+          "send-by-email",
+          "block-unblock-version", //need split
+          "version", //category
+          "finalize-version",
+          "show-version-history",
+          "move", //category
+          "move-to",
+          "copy-to",
+          "mark-read",
+          "mark-as-favorite",
+          "remove-from-favorites",
+          "rename",
+          "separator0",
+          "separator1",
+        ]);
+      } else {
+        fileOptions = this.removeOptions(fileOptions, ["restore"]);
+      }
+
+      if (!isFullAccess) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "finalize-version",
+          "rename",
+          "block-unblock-version",
+        ]);
+      }
+
+      if (isVisitor) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "block-unblock-version",
+          "finalize-version",
+          "mark-as-favorite",
+          "remove-from-favorites",
+        ]);
+
+        if (!isFullAccess) {
+          fileOptions = this.removeOptions(fileOptions, ["rename"]);
+        }
+      }
+
+      if (!this.canShareOwnerChange(item)) {
+        fileOptions = this.removeOptions(fileOptions, ["owner-change"]);
+      }
+
+      if (isThirdPartyItem) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "owner-change",
+          "finalize-version",
+          "copy",
+        ]);
+      }
+
+      if (!this.userAccess) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "owner-change",
+          "move-to",
+          "delete",
+        ]);
+      }
+
+      if (withoutShare) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "sharing-settings",
+          "external-link",
+        ]);
+      }
+
+      if (!hasNew) {
+        fileOptions = this.removeOptions(fileOptions, ["mark-read"]);
+      }
+
+      if (!isRecentFolder) {
+        fileOptions = this.removeOptions(fileOptions, ["open-location"]);
+      } else if (!isFavorite) {
+        fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+      }
+
+      return fileOptions;
     } else {
-      if (!isFile) {
-        options.push("open");
-        options.push("separator0");
+      let folderOptions = [
+        "open",
+        "separator0",
+        "sharing-settings",
+        "owner-change",
+        "link-for-portal-users",
+        "separator1",
+        "download",
+        "move", //category
+        "move-to",
+        "copy-to",
+        "mark-read",
+        "restore",
+        "rename",
+        "change-thirdparty-info",
+        "separator2",
+        "unsubscribe",
+        "delete",
+      ];
+
+      if (isPrivacyFolder) {
+        folderOptions = this.removeOptions(folderOptions, ["copy"]);
       }
 
-      //TODO: use canShare selector
-      if (
-        /*!(isRecentFolder || isFavoritesFolder || isVisitor) && */ this
-          .canShare
-      ) {
-        options.push("sharing-settings");
+      if (isRecycleBinFolder) {
+        folderOptions = this.removeOptions(folderOptions, [
+          "open",
+          "link-for-portal-users",
+          "sharing-settings",
+          "move",
+          "move-to",
+          "copy-to",
+          "mark-read",
+          "rename",
+          "separator0",
+          "separator1",
+        ]);
+      } else {
+        folderOptions = this.removeOptions(folderOptions, ["restore"]);
       }
 
-      if (isFile && !isVisitor) {
-        options.push("send-by-email");
+      if (!isFullAccess) {
+        //TODO: if added Projects, add project folder check
+        folderOptions = this.removeOptions(folderOptions, [
+          "rename",
+          "change-thirdparty-info",
+        ]);
       }
 
-      this.canShareOwnerChange(item) && options.push("owner-change");
+      if (!this.canShareOwnerChange(item)) {
+        folderOptions = this.removeOptions(folderOptions, ["owner-change"]);
+      }
 
-      if (isFile) {
-        if (canOpenPlayer) {
-          options.push("view");
-        } else {
-          options.push("edit");
-          options.push("preview");
+      if (!isFullAccess) {
+        folderOptions = this.removeOptions(folderOptions, [
+          "owner-change",
+          "move-to",
+          "delete",
+          "change-thirdparty-info",
+          "separator2",
+        ]);
+
+        if (isVisitor) {
+          folderOptions = this.removeOptions(folderOptions, ["rename"]);
         }
       }
 
-      options.push("link-for-portal-users");
-
-      if (!isVisitor) {
-        options.push("separator1");
+      if (withoutShare) {
+        folderOptions = this.removeOptions(folderOptions, ["sharing-settings"]);
       }
 
-      if (isFile) {
-        options.push("show-version-history");
-        if (!isVisitor) {
-          if (isFullAccess && !item.providerKey && !canOpenPlayer) {
-            options.push("finalize-version");
-            options.push("block-unblock-version");
-          }
-          options.push("separator2");
+      if (!hasNew) {
+        folderOptions = this.removeOptions(folderOptions, ["mark-read"]);
+      }
 
-          if (isRecentFolder) {
-            options.push("open-location");
-          }
-          if (!isFavorite) {
-            options.push("mark-as-favorite");
-          }
+      if (!isCommonFolder) {
+        folderOptions = this.removeOptions(folderOptions, ["unsubscribe"]);
+      }
+
+      if (isThirdPartyItem) {
+        folderOptions = this.removeOptions(folderOptions, ["owner-change"]);
+
+        if (isShareFolder) {
+          folderOptions = this.removeOptions(folderOptions, [
+            "change-thirdparty-info",
+          ]);
         } else {
-          !isShareFolder && options.push("separator3");
-        }
-      }
+          if (isDesktopClient) {
+            folderOptions = this.removeOptions(folderOptions, [
+              "change-thirdparty-info",
+            ]);
+          }
 
-      options.push("download");
+          folderOptions = this.removeOptions(folderOptions, [
+            "remove",
+            "move-to",
+          ]);
 
-      if (!isVisitor) {
-        !isThirdPartyFolder && this.userAccess && options.push("move");
-        options.push("copy");
-
-        // if (isFile) {
-        //   options.push("duplicate");
-        // }
-
-        this.userAccess && options.push("rename");
-        isThirdPartyFolder &&
-          this.userAccess &&
-          options.push("change-thirdparty-info");
-
-        if (this.userAccess) {
-          options.push("separator3");
-          options.push("delete");
+          if (!item) {
+            //For damaged items
+            folderOptions = this.removeOptions(folderOptions, [
+              "open",
+              "download",
+              "copy-to",
+              "rename",
+            ]);
+          }
         }
       } else {
-        options.push("copy");
+        folderOptions = this.removeOptions(folderOptions, [
+          "change-thirdparty-info",
+        ]);
       }
-    }
 
-    if (isFavorite && !isRecycleBinFolder) {
-      !this.userAccess && options.push("separator3");
-      options.push("remove-from-favorites");
+      return folderOptions;
     }
-
-    return options;
   };
 
   addFileToRecentlyViewed = (fileId) => {
@@ -514,6 +715,28 @@ class FilesStore {
   setFolder = (folder) => {
     const folderIndex = this.folders.findIndex((f) => f.id === folder.id);
     if (folderIndex !== -1) this.folders[folderIndex] = folder;
+  };
+
+  updateFolderBadge = (id, count) => {
+    const folder = this.folders.find((x) => x.id === id);
+    if (folder) folder.new -= count;
+  };
+
+  updateFileBadge = (id) => {
+    const file = this.files.find((x) => x.id === id);
+    if (file) file.fileStatus = 0;
+  };
+
+  updateFilesBadge = () => {
+    for (let file of this.files) {
+      file.fileStatus = 0;
+    }
+  };
+
+  updateFoldersBadge = () => {
+    for (let folder of this.folders) {
+      folder.new = 0;
+    }
   };
 
   updateFile = (fileId, title) => {
