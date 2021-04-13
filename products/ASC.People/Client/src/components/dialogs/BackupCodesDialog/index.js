@@ -31,6 +31,7 @@ class BackupCodesDialogComponent extends React.Component {
     console.log("Render BackupCodesDialog");
     const { t, visible, onClose } = this.props;
     const count = 5; //TODO: get count from api
+    const codes = ["qdf45g", "fg56dfg", "ugi8fm", "gfuti8f", "fkuidop"]; //TODO: get codes from api
 
     return (
       <ModalDialogContainer>
@@ -54,11 +55,13 @@ class BackupCodesDialogComponent extends React.Component {
                 </Text>
               </Trans>
               <Text className="text-dialog" isBold={true}>
-                code1 <br />
-                code2 <br />
-                code3 <br />
-                code4 <br />
-                code5
+                {codes.map((item) => {
+                  return (
+                    <strong key={item}>
+                      {item} <br />
+                    </strong>
+                  );
+                })}
               </Text>
             </div>
           </ModalDialog.Body>
