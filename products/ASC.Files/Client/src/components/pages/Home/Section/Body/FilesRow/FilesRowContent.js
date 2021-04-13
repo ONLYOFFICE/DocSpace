@@ -25,7 +25,6 @@ import CheckIcon from "../../../../../../../public/images/check.react.svg";
 import CrossIcon from "../../../../../../../../../../public/images/cross.react.svg";
 import { TIMEOUT } from "../../../../../../helpers/constants";
 import { getTitleWithoutExst } from "../../../../../../helpers/files-helpers";
-import { NewFilesPanel } from "../../../../../panels";
 import { ConvertDialog } from "../../../../../dialogs";
 import EditingWrapperComponent from "../EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
@@ -125,9 +124,6 @@ class FilesRowContent extends React.PureComponent {
 
     this.state = {
       itemTitle: titleWithoutExt,
-      showNewFilesPanel: false,
-      newFolderId: [],
-      newItems: props.item.new || props.item.fileStatus === 2,
       showConvertDialog: false,
       //loading: false
     };
@@ -256,16 +252,6 @@ class FilesRowContent extends React.PureComponent {
   };
 
   // componentDidUpdate(prevProps) {
-  //   const { item, newRowItems, setNewRowItems } = this.props;
-  //   const itemId = item.id.toString();
-
-  //   if (newRowItems.length && newRowItems.includes(itemId)) {
-  //     const rowItems = newRowItems.filter((x) => x !== itemId);
-  //     if (this.state.newItems !== 0) {
-  //       this.setState({ newItems: 0 }, () => setNewRowItems(rowItems));
-  //     }
-  //   }
-
   //   if (fileAction) {
   //     if (fileActionId !== prevProps.fileActionId) {
   //       this.setState({ editingId: fileActionId });
@@ -408,41 +394,28 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onBadgeClick = () => {
-    const { showNewFilesPanel } = this.state;
     const {
       item,
-      treeFolders,
-      setTreeFolders,
       selectedFolderPathParts,
-      newItems,
-      setNewRowItems,
       markAsRead,
+      setNewFilesPanelVisible,
+      setNewFilesIds,
+      updateRootBadge,
+      updateFileBadge,
     } = this.props;
     if (item.fileExst) {
       markAsRead([], [item.id])
         .then(() => {
-          const data = treeFolders;
-          const dataItem = data.find(
-            (x) => x.id === selectedFolderPathParts[0]
-          );
-          dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;
-          setTreeFolders(data);
-          setNewRowItems([`${item.id}`]);
+          updateRootBadge(selectedFolderPathParts[0], 1);
+          updateFileBadge(item.id);
         })
         .catch((err) => toastr.error(err));
     } else {
-      const newFolderId = this.props.selectedFolderPathParts;
-      newFolderId.push(item.id);
-      this.setState({
-        showNewFilesPanel: !showNewFilesPanel,
-        newFolderId,
-      });
+      setNewFilesPanelVisible(true);
+      const newFolderIds = this.props.selectedFolderPathParts;
+      newFolderIds.push(item.id);
+      setNewFilesIds(newFolderIds);
     }
-  };
-
-  onShowNewFilesPanel = () => {
-    const { showNewFilesPanel } = this.state;
-    this.setState({ showNewFilesPanel: !showNewFilesPanel });
   };
 
   setConvertDialogVisible = () =>
@@ -545,13 +518,7 @@ class FilesRowContent extends React.PureComponent {
       fileActionId,
       fileActionExt,
     } = this.props;
-    const {
-      itemTitle,
-      showNewFilesPanel,
-      newItems,
-      newFolderId,
-      showConvertDialog,
-    } = this.state;
+    const { itemTitle, showConvertDialog } = this.state;
     const {
       contentLength,
       updated,
@@ -581,6 +548,8 @@ class FilesRowContent extends React.PureComponent {
       isTrashFolder || window.innerWidth <= 1024
         ? { noHover: true }
         : { onClick: this.onFilesClick };
+
+    const newItems = item.new || fileStatus === 2;
     const showNew = !!newItems;
 
     return isEdit ? (
@@ -601,13 +570,6 @@ class FilesRowContent extends React.PureComponent {
             visible={showConvertDialog}
             onClose={this.setConvertDialogVisible}
             onConvert={this.onConvert}
-          />
-        )}
-        {showNewFilesPanel && (
-          <NewFilesPanel
-            visible={showNewFilesPanel}
-            onClose={this.onShowNewFilesPanel}
-            folderId={newFolderId}
           />
         )}
         <SimpleFilesRowContent
@@ -804,6 +766,7 @@ export default inject(
       filesActionsStore,
       mediaViewerDataStore,
       versionHistoryStore,
+      dialogsStore,
     },
     { item }
   ) => {
@@ -820,8 +783,6 @@ export default inject(
     const {
       fetchFiles,
       filter,
-      setNewRowItems,
-      newRowItems,
       createFile,
       updateFile,
       renameFolder,
@@ -829,15 +790,15 @@ export default inject(
       openDocEditor,
       setIsLoading,
       isLoading,
+      updateFileBadge,
     } = filesStore;
 
     const {
-      treeFolders,
-      setTreeFolders,
       isRecycleBinFolder,
       isPrivacyFolder,
       expandedKeys,
       addExpandedKeys,
+      updateRootBadge,
     } = treeFoldersStore;
 
     const {
@@ -865,6 +826,8 @@ export default inject(
       markAsRead,
     } = filesActionsStore;
 
+    const { setNewFilesPanelVisible, setNewFilesIds } = dialogsStore;
+
     return {
       isDesktop: isDesktopClient,
       isTabletView,
@@ -876,10 +839,8 @@ export default inject(
       fileActionExt,
       selectedFolderId: selectedFolderStore.id,
       selectedFolderPathParts: selectedFolderStore.pathParts,
-      newItems: selectedFolderStore.new,
       parentFolder: selectedFolderStore.parentId,
       isLoading,
-      treeFolders,
       isTrashFolder: isRecycleBinFolder,
       isPrivacy: isPrivacyFolder,
       filter,
@@ -888,15 +849,12 @@ export default inject(
       isVideo,
       isImage,
       isSound,
-      newRowItems,
       expandedKeys,
 
       setIsLoading,
       fetchFiles,
-      setTreeFolders,
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
-      setNewRowItems,
       createFile,
       createFolder,
       updateFile,
@@ -912,6 +870,10 @@ export default inject(
       setIsVerHistoryPanel,
       fetchFileVersions,
       markAsRead,
+      setNewFilesPanelVisible,
+      setNewFilesIds,
+      updateRootBadge,
+      updateFileBadge,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesRowContent))));
