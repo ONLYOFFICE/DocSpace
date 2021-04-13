@@ -22,26 +22,26 @@ class BackupCodesDialogComponent extends React.Component {
           <ModalDialog.Header>{t("BackupCodesTitle")}</ModalDialog.Header>
           <ModalDialog.Body>
             <Text className="text-dialog">{t("BackupCodesDescription")}</Text>
+            <Text className="text-dialog">
+              {t("BackupCodesSecondDescription")}
+            </Text>
+
             <Trans
               t={t}
-              i18nKey="BackupCodesCounter"
+              i18nKey="CodesCounter"
               ns="BackupCodesDialog"
               count={count}
             >
-              <Text>
-                Now you have only {{ count }} code(s) each can be used only one
-                time. Print them and use when needed.
+              <Text className="text-dialog">
+                <strong>{{ count }} codes:</strong>
               </Text>
             </Trans>
-            <Text className="text-dialog" textAlign="center" isBold={true}>
+            <Text className="text-dialog" isBold={true}>
               code1 <br />
               code2 <br />
               code3 <br />
               code4 <br />
               code5
-            </Text>
-            <Text className="text-dialog">
-              {t("BackupCodesFooterDescription")}
             </Text>
           </ModalDialog.Body>
           <ModalDialog.Footer>
@@ -57,15 +57,6 @@ class BackupCodesDialogComponent extends React.Component {
               label={t("RequestNewButton")}
               size="medium"
               primary={false}
-            />
-
-            <Button
-              key="CloseBtn"
-              className="button-dialog"
-              label={t("CloseButton")}
-              size="medium"
-              primary={false}
-              onClick={onClose}
             />
           </ModalDialog.Footer>
         </ModalDialog>

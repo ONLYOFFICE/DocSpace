@@ -1,8 +1,8 @@
 {
   "BackupCodesTitle": "Backup codes",
   "BackupCodesDescription": "Backup codes allow you to confirm login when you don't have access to your phone.",
-  "BackupCodesCounter": "Now you have only {{count}} code(s) each can be used only one time. Print them and use when needed.",
-  "BackupCodesFooterDescription": "You can get new codes anytime. Only codes which was generated last are valid.",
+  "BackupCodesSecondDescription": "Each code can be used only one time. You can get new codes anytime. Only codes which was generated last are valid.",
+  "CodesCounter": "<strong>{{count}} codes:</strong>",
   "PrintButton": "Print",
   "RequestNewButton": "Request new",
   "CloseButton": "Close"
