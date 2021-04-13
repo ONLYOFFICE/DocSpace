@@ -529,6 +529,7 @@ class FilesContent extends React.Component {
         cancelUpdateItem={this.cancelUpdateItem}
         itemId={id}
         isLoading={isLoading}
+        viewAs={viewAs}
       />
     ) : (
       <>
@@ -563,10 +564,7 @@ class FilesContent extends React.Component {
             isTextOverflow
           >
             {titleWithoutExt}
-          </Link>
-
-          <div className="badges">
-            {fileExst && (
+            {fileExst && viewAs === "tile" ? (
               <Text
                 className="badge-ext"
                 as="span"
@@ -578,7 +576,22 @@ class FilesContent extends React.Component {
               >
                 {fileExst}
               </Text>
-            )}
+            ) : null}
+          </Link>
+          <div className="badges">
+            {fileExst && viewAs !== "tile" ? (
+              <Text
+                className="badge-ext"
+                as="span"
+                color="#A3A9AE"
+                fontSize="15px"
+                fontWeight={600}
+                title={fileExst}
+                truncate={true}
+              >
+                {fileExst}
+              </Text>
+            ) : null}
             <Badges
               item={item}
               newItems={this.state.newItems}

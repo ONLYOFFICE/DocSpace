@@ -9,7 +9,7 @@ const truncateCss = css`
 `;
 
 const commonCss = css`
-  margin: 0 8px;
+  margin: 0;
   font-family: "Open Sans";
   font-size: 12px;
   font-style: normal;
@@ -28,12 +28,6 @@ const StyledTileContent = styled.div`
       height: 56px;
     }
   `};
-
-  .icons-group {
-    position: absolute;
-    top: 10px;
-    right: 0px;
-  }
 `;
 
 const MainContainerWrapper = styled.div`
@@ -55,7 +49,11 @@ const MainContainerWrapper = styled.div`
 
 const MainContainer = styled.div`
   height: 20px;
-  margin-right: 8px;
+  //margin-right: 8px;
+
+  .badge-ext {
+    margin: 0px !important;
+  }
 
   @media (max-width: 1024px) {
     ${truncateCss};
@@ -74,8 +72,7 @@ const MainIcons = styled.div`
     flex-direction: row;
 
     .icons-group {
-      position: relative;
-      margin: 0;
+      margin-top: 10px;
       margin-right: 8px;
     }
   }
