@@ -1,6 +1,8 @@
 #!/bin/bash
 
 SRC_PATH="/AppServer"
+RID_ID="linux-x64"
+ARGS=""
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -12,10 +14,26 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+        -ri | --runtime )
+          if [ "$2" != "" ]; then
+            RID_ID=$2
+            shift
+          fi
+    ;;
+
+        -ar | --arguments )
+          if [ "$2" != "" ]; then
+            ARGS=$2
+            shift
+          fi
+    ;;
+
         -? | -h | --help )
             echo " Usage: bash build-backend.sh [PARAMETER] [[PARAMETER], ...]"
             echo "    Parameters:"
             echo "      -sp, --srcpath             path to AppServer root directory"
+            echo "      -ri, --runtime             RID ids for .NET runtime publish (by default=linux-x64)"
+            echo "      -ar, --arguments           additional arguments publish the .NET runtime with your application"
             echo "      -?, -h, --help             this help"
             echo "  Examples"
             echo "  bash build-backend.sh -sp /app/AppServer"
@@ -34,7 +52,7 @@ echo "== BACK-END-BUILD =="
 
 cd ${SRC_PATH}
 dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config
-dotnet build -r linux-x64 ASC.Web.sln
+dotnet build -r ${RID_ID} ${ARGS} ASC.Web.sln
 
 echo "== Build ASC.Thumbnails =="
 yarn install --cwd common/ASC.Thumbnails --frozen-lockfile

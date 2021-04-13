@@ -120,11 +120,6 @@ services:
     image: "${REPO}/${STATUS}appserver-storage-migration:${SRV_VERSION}"
     container_name: ${STORAGE_MIGRATION_HOST}
   
-  onlyoffice-notify:
-    <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-notify:${SRV_VERSION}"
-    container_name: ${NOTIFY_HOST}  
-  
   onlyoffice-people-server:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-people-server:${SRV_VERSION}"
@@ -197,7 +192,6 @@ services:
       - onlyoffice-files
       - onlyoffice-files-services
       - onlyoffice-storage-migration
-      - onlyoffice-notify
       - onlyoffice-people-server
       - onlyoffice-projects-server
       - onlyoffice-socket
