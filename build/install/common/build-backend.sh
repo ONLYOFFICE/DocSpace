@@ -52,7 +52,7 @@ echo "== BACK-END-BUILD =="
 
 cd ${SRC_PATH}
 dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config ${ARGS}
-dotnet build -r ${RID_ID} ${ARGS} ASC.Web.sln
+dotnet build ASC.Web.sln -r ${RID_ID} ${ARGS} 
 
 echo "== Build ASC.Thumbnails =="
 yarn install --cwd common/ASC.Thumbnails --frozen-lockfile
