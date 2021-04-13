@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
 //import ProgressBar from "@appserver/components/progress-bar";
@@ -20,6 +20,13 @@ import SectionToggler from "./sub-components/section-toggler";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
+import { SelectableGroup } from "react-selectable-fast";
+import SelectedFrame from "./sub-components/SelectedFrame";
+import styled from "styled-components";
+
+const StyledSelectableGroup = styled(SelectableGroup)`
+  display: contents;
+`;
 
 function ArticleHeader() {
   return null;
@@ -158,6 +165,15 @@ class PageLayout extends React.Component {
     isMobile && this.props.setArticleVisibleOnUnpin(true);
   };
 
+  duringSelection = (duringItems) => {
+    if (!this.props.uploadFiles || isMobile) return;
+    const items = [];
+    for (let item of duringItems) {
+      items.push(item.props.item);
+    }
+    this.props.setSelections(items);
+  };
+
   render() {
     const {
       onDrop,
@@ -169,15 +185,14 @@ class PageLayout extends React.Component {
       secondaryProgressBarValue,
       secondaryProgressBarIcon,
       showSecondaryButtonAlert,
-      setSelections,
       uploadFiles,
       viewAs,
-      withBodyAutoFocus,
+      //withBodyAutoFocus,
       withBodyScroll,
       children,
       isLoaded,
       isHeaderVisible,
-      headerBorderBottom,
+      //headerBorderBottom,
       onOpenUploadPanel,
       isTabletView,
       firstLoad,
@@ -247,120 +262,143 @@ class PageLayout extends React.Component {
 
     return (
       <>
-        {isBackdropAvailable && (
-          <Backdrop
-            zIndex={400}
-            visible={this.state.isBackdropVisible}
-            onClick={this.backdropClick}
-          />
-        )}
-        {isArticleAvailable && (
-          <Article
-            visible={this.state.isArticleVisible}
-            pinned={this.state.isArticlePinned}
-            isLoaded={isLoaded}
-            firstLoad={firstLoad}
-            isLoading={!isLoading}
-          >
-            {isArticleHeaderAvailable && (
-              <SubArticleHeader>
-                {articleHeaderContent
-                  ? articleHeaderContent.props.children
-                  : null}
-              </SubArticleHeader>
-            )}
-            {isArticleMainButtonAvailable && (
-              <SubArticleMainButton>
-                {articleMainButtonContent
-                  ? articleMainButtonContent.props.children
-                  : null}
-              </SubArticleMainButton>
-            )}
-            {isArticleBodyAvailable && (
-              <SubArticleBody pinned={this.state.isArticlePinned}>
-                {articleBodyContent ? articleBodyContent.props.children : null}
-              </SubArticleBody>
-            )}
-            {isArticleBodyAvailable && (
-              <ArticlePinPanel
-                pinned={this.state.isArticlePinned}
-                onPin={this.pinArticle}
-                onUnpin={this.unpinArticle}
-              />
-            )}
-          </Article>
-        )}
-        {isSectionAvailable && (
-          <ReactResizeDetector
-            refreshRate={100}
-            refreshMode="debounce"
-            refreshOptions={{ trailing: true }}
-          >
-            {({ width, height }) => (
-              <Provider
-                value={{
-                  sectionWidth: width,
-                  sectionHeight: height,
-                }}
-              >
-                <Section
-                  widthProp={width}
-                  unpinArticle={this.unpinArticle}
+        <StyledSelectableGroup
+          enableDeselect
+          resetOnStart
+          allowClickWithoutSelected={false}
+          duringSelection={this.duringSelection}
+          ignoreList={[".not-selectable", "draggable"]}
+        >
+          {isBackdropAvailable && (
+            <Backdrop
+              zIndex={400}
+              visible={this.state.isBackdropVisible}
+              onClick={this.backdropClick}
+            />
+          )}
+          {isArticleAvailable && (
+            <Article
+              visible={this.state.isArticleVisible}
+              pinned={this.state.isArticlePinned}
+              isLoaded={isLoaded}
+              firstLoad={firstLoad}
+              isLoading={!isLoading}
+            >
+              {isArticleHeaderAvailable && (
+                <SubArticleHeader>
+                  {articleHeaderContent
+                    ? articleHeaderContent.props.children
+                    : null}
+                </SubArticleHeader>
+              )}
+              {isArticleMainButtonAvailable && (
+                <SubArticleMainButton>
+                  {articleMainButtonContent
+                    ? articleMainButtonContent.props.children
+                    : null}
+                </SubArticleMainButton>
+              )}
+              {isArticleBodyAvailable && (
+                <SubArticleBody pinned={this.state.isArticlePinned}>
+                  {articleBodyContent
+                    ? articleBodyContent.props.children
+                    : null}
+                </SubArticleBody>
+              )}
+              {isArticleBodyAvailable && (
+                <ArticlePinPanel
                   pinned={this.state.isArticlePinned}
+                  onPin={this.pinArticle}
+                  onUnpin={this.unpinArticle}
+                />
+              )}
+            </Article>
+          )}
+          {isSectionAvailable && (
+            <ReactResizeDetector
+              refreshRate={100}
+              refreshMode="debounce"
+              refreshOptions={{ trailing: true }}
+            >
+              {({ width, height }) => (
+                <Provider
+                  value={{
+                    sectionWidth: width,
+                    sectionHeight: height,
+                  }}
                 >
-                  {isSectionHeaderAvailable && (
-                    <SubSectionHeader
-                      isHeaderVisible={isHeaderVisible}
-                      isArticlePinned={this.state.isArticlePinned}
-                    >
-                      {sectionHeaderContent
-                        ? sectionHeaderContent.props.children
-                        : null}
-                    </SubSectionHeader>
-                  )}
-                  {isSectionFilterAvailable && (
-                    <SubSectionFilter className="section-header_filter">
-                      {sectionFilterContent
-                        ? sectionFilterContent.props.children
-                        : null}
-                    </SubSectionFilter>
-                  )}
-                  {isSectionBodyAvailable && (
-                    <>
-                      <SubSectionBody
-                        onDrop={onDrop}
-                        uploadFiles={uploadFiles}
-                        setSelections={setSelections}
-                        withScroll={withBodyScroll}
-                        autoFocus={isMobile || isTabletView ? false : true}
-                        pinned={this.state.isArticlePinned}
-                        viewAs={viewAs}
+                  <Section
+                    widthProp={width}
+                    unpinArticle={this.unpinArticle}
+                    pinned={this.state.isArticlePinned}
+                  >
+                    {isSectionHeaderAvailable && (
+                      <SubSectionHeader
+                        isHeaderVisible={isHeaderVisible}
+                        isArticlePinned={this.state.isArticlePinned}
                       >
-                        {isSectionFilterAvailable && (
-                          <SubSectionFilter className="section-body_filter">
-                            {sectionFilterContent
-                              ? sectionFilterContent.props.children
+                        {sectionHeaderContent
+                          ? sectionHeaderContent.props.children
+                          : null}
+                      </SubSectionHeader>
+                    )}
+                    {isSectionFilterAvailable && (
+                      <SubSectionFilter className="section-header_filter">
+                        {sectionFilterContent
+                          ? sectionFilterContent.props.children
+                          : null}
+                      </SubSectionFilter>
+                    )}
+                    {isSectionBodyAvailable && (
+                      <>
+                        <SubSectionBody
+                          onDrop={onDrop}
+                          uploadFiles={uploadFiles}
+                          withScroll={withBodyScroll}
+                          autoFocus={isMobile || isTabletView ? false : true}
+                          pinned={this.state.isArticlePinned}
+                          viewAs={viewAs}
+                        >
+                          {isSectionFilterAvailable && (
+                            <SubSectionFilter className="section-body_filter">
+                              {sectionFilterContent
+                                ? sectionFilterContent.props.children
+                                : null}
+                            </SubSectionFilter>
+                          )}
+                          <SubSectionBodyContent>
+                            {sectionBodyContent
+                              ? sectionBodyContent.props.children
                               : null}
-                          </SubSectionFilter>
-                        )}
-                        <SubSectionBodyContent>
-                          {sectionBodyContent
-                            ? sectionBodyContent.props.children
-                            : null}
-                        </SubSectionBodyContent>
-                        {isSectionPagingAvailable && (
-                          <SubSectionPaging>
-                            {sectionPagingContent
-                              ? sectionPagingContent.props.children
-                              : null}
-                          </SubSectionPaging>
-                        )}
-                      </SubSectionBody>
-                    </>
-                  )}
+                          </SubSectionBodyContent>
+                          {isSectionPagingAvailable && (
+                            <SubSectionPaging>
+                              {sectionPagingContent
+                                ? sectionPagingContent.props.children
+                                : null}
+                            </SubSectionPaging>
+                          )}
+                        </SubSectionBody>
+                      </>
+                    )}
 
-                  {showPrimaryProgressBar && showSecondaryProgressBar ? (
-                    <>
+                    {showPrimaryProgressBar && showSecondaryProgressBar ? (
+                      <>
+                        <FloatingButton
+                          className="layout-progress-bar"
+                          icon={primaryProgressBarIcon}
+                          percent={primaryProgressBarValue}
+                          alert={showPrimaryButtonAlert}
+                          onClick={onOpenUploadPanel}
+                        />
+                        <FloatingButton
+                          className="layout-progress-second-bar"
+                          icon={secondaryProgressBarIcon}
+                          percent={secondaryProgressBarValue}
+                          alert={showSecondaryButtonAlert}
+                        />
+                      </>
+                    ) : showPrimaryProgressBar && !showSecondaryProgressBar ? (
                       <FloatingButton
                         className="layout-progress-bar"
                         icon={primaryProgressBarIcon}
@@ -368,43 +406,30 @@ class PageLayout extends React.Component {
                         alert={showPrimaryButtonAlert}
                         onClick={onOpenUploadPanel}
                       />
+                    ) : !showPrimaryProgressBar && showSecondaryProgressBar ? (
                       <FloatingButton
-                        className="layout-progress-second-bar"
+                        className="layout-progress-bar"
                         icon={secondaryProgressBarIcon}
                         percent={secondaryProgressBarValue}
                         alert={showSecondaryButtonAlert}
                       />
-                    </>
-                  ) : showPrimaryProgressBar && !showSecondaryProgressBar ? (
-                    <FloatingButton
-                      className="layout-progress-bar"
-                      icon={primaryProgressBarIcon}
-                      percent={primaryProgressBarValue}
-                      alert={showPrimaryButtonAlert}
-                      onClick={onOpenUploadPanel}
-                    />
-                  ) : !showPrimaryProgressBar && showSecondaryProgressBar ? (
-                    <FloatingButton
-                      className="layout-progress-bar"
-                      icon={secondaryProgressBarIcon}
-                      percent={secondaryProgressBarValue}
-                      alert={showSecondaryButtonAlert}
-                    />
-                  ) : (
-                    <></>
-                  )}
+                    ) : (
+                      <></>
+                    )}
 
-                  {isArticleAvailable && (
-                    <SectionToggler
-                      visible={!this.state.isArticleVisible}
-                      onClick={this.showArticle}
-                    />
-                  )}
-                </Section>
-              </Provider>
-            )}
-          </ReactResizeDetector>
-        )}
+                    {isArticleAvailable && (
+                      <SectionToggler
+                        visible={!this.state.isArticleVisible}
+                        onClick={this.showArticle}
+                      />
+                    )}
+                  </Section>
+                </Provider>
+              )}
+            </ReactResizeDetector>
+          )}
+        </StyledSelectableGroup>
+        {uploadFiles && <SelectedFrame />}
       </>
     );
   }

@@ -12,7 +12,6 @@ ARG SRC_PATH
 ARG BUILD_PATH
 
 LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
-      onlyoffice.appserver.version="${VERSION}" \
       maintainer="Ascensio System SIA <support@onlyoffice.com>"
 
 ENV LANG=en_US.UTF-8 \

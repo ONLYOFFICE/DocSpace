@@ -42,7 +42,7 @@ const StyledContainer = styled.div`
         css`
           overflow-y: hidden !important;
           overflow-x: hidden !important;
-          width: 208px;
+          width: 192px;
         `}
     }
 
