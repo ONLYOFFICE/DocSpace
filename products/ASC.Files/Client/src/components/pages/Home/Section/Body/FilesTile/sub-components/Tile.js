@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import React from "react";
 //import equal from "fast-deep-equal/react";
 import styled, { css } from "styled-components";
+import ContextMenu from "@appserver/components/context-menu";
 import BadgesFileTile from "./BadgesFileTile";
 
 const FlexBoxStyles = css`
@@ -114,6 +115,12 @@ class Tile extends React.Component {
   //   }
   //   return !equal(this.props, nextProps);
   // }
+  constructor(props) {
+    super(props);
+
+    this.cm = React.createRef();
+    this.tile = React.createRef();
+  }
 
   render() {
     //console.log("Row render");
@@ -155,9 +162,17 @@ class Tile extends React.Component {
       return contextOptions;
     };
 
+    const onContextMenu = (e) => {
+      rowContextClick && rowContextClick();
+      if (!this.cm.current.menuRef.current) {
+        this.tile.current.click(e); //TODO: need fix context menu to global
+      }
+      this.cm.current.show(e);
+    };
+
     console.log(children);
     return (
-      <StyledTile {...this.props}>
+      <StyledTile ref={this.tile} {...this.props} onContextMenu={onContextMenu}>
         {isFolder ? (
           <>
             {renderCheckbox && (
@@ -227,6 +242,7 @@ class Tile extends React.Component {
                 ) : (
                   <div className="expandButton"> </div>
                 )}
+                <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
               </StyledOptionButton>
             </StyledFileTileBottom>
           </>
