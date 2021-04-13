@@ -538,9 +538,11 @@ namespace ASC.Api.Settings
                     .Select(r =>
                     {
                         var names = CustomNamingPeople.GetPeopleNames(r.Key);
-                        var schemaItem = new SchemaItemModel
+
+                        return new SchemaModel
                         {
                             Id = names.Id,
+                            Name = names.SchemaName,
                             UserCaption = names.UserCaption,
                             UsersCaption = names.UsersCaption,
                             GroupCaption = names.GroupCaption,
@@ -551,24 +553,18 @@ namespace ASC.Api.Settings
                             GuestCaption = names.GuestCaption,
                             GuestsCaption = names.GuestsCaption,
                         };
-
-                        return new SchemaModel
-                        {
-                            Id = r.Key,
-                            Name = r.Value,
-                            Items = schemaItem
-                        };
                     })
                     .ToList();
         }
 
         [Read("customschemas/{id}")]
-        public SchemaItemModel PeopleSchema(string id)
+        public SchemaModel PeopleSchema(string id)
         {
             var names = CustomNamingPeople.GetPeopleNames(id);
-            var schemaItem = new SchemaItemModel
+            var schemaItem = new SchemaModel
             {
                 Id = names.Id,
+                Name = names.SchemaName,
                 UserCaption = names.UserCaption,
                 UsersCaption = names.UsersCaption,
                 GroupCaption = names.GroupCaption,
