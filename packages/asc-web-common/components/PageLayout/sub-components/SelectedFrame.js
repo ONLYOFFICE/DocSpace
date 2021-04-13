@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { isMobile } from "react-device-detect";
 
 const StyledFrame = styled.div`
   .selectFrame {
@@ -58,6 +59,7 @@ class SelectedFrame extends React.Component {
 
     if (
       mouseButton ||
+      isMobile ||
       !isDivTag ||
       notSelectable ||
       draggable ||
