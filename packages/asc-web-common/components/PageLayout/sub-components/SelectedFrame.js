@@ -49,11 +49,12 @@ class SelectedFrame extends React.Component {
       ? e.button !== 0
       : false;
 
+    const path = e.composedPath();
     const isDivTag = e.target.tagName === "DIV";
     const notSelectable = e.target.classList.contains("not-selectable");
     const draggable = e.target.classList.contains("draggable");
     const isBackdrop = e.target.classList.contains("backdrop-active");
-    const notSelectablePath = e.path.some(
+    const notSelectablePath = path.some(
       (x) => x.classList && x.classList.contains("not-selectable")
     );
 
