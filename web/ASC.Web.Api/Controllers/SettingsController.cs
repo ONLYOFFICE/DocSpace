@@ -602,7 +602,6 @@ namespace ASC.Api.Settings
             var names = new PeopleNamesItem
             {
                 Id = PeopleNamesItem.CustomID,
-                SchemaName = model.Name,
                 UserCaption = usrCaption.Substring(0, Math.Min(30, usrCaption.Length)),
                 UsersCaption = usrsCaption.Substring(0, Math.Min(30, usrsCaption.Length)),
                 GroupCaption = grpCaption.Substring(0, Math.Min(30, grpCaption.Length)),
