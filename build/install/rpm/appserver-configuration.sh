@@ -2,7 +2,6 @@
 ENVIRONMENT="production"
 
 APP_DIR="/etc/onlyoffice/appserver"
-SERVICES_CONF="$APP_DIR/appsettings.services.json"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 NGINX_CONF="/etc/nginx/conf.d"
 SYSTEMD_DIR="/etc/systemd/system"
@@ -169,7 +168,8 @@ install_json() {
 		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" \
 		-e "this.urlshortener={ 'path': 'client/index.js' }" -e "this.thumb={ 'path': 'client/' }" \
 		-e "this.socket={ 'path': '../ASC.Socket.IO' }" >/dev/null 2>&1
-		$JSON $SERVICES_CONF -e "this.core={ 'products': { 'folder': '../../products', 'subfolder': 'server'} }" >/dev/null 2>&1
+		$JSON $APP_DIR/appsettings.json -e "this.core.products.subfolder='server'" >/dev/null 2>&1
+		$JSON $APP_DIR/appsettings.services.json -e "this.core={ 'products': { 'folder': '../../products', 'subfolder': 'server'} }" >/dev/null 2>&1
 		
 	fi
 }
