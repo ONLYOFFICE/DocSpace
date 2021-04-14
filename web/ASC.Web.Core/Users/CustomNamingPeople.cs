@@ -218,8 +218,10 @@ namespace ASC.Web.Core.Users
             if (PeopleNamesItem.CustomID.Equals(schemaId, StringComparison.InvariantCultureIgnoreCase))
             {
                 var settings = SettingsManager.Load<PeopleNamesSettings>();
-                return settings.Item ??
-                    new PeopleNamesItem
+                var result = settings.Item;
+                if (result == null)
+                {
+                    result = new PeopleNamesItem
                     {
                         Id = PeopleNamesItem.CustomID,
                         GroupCaption = string.Empty,
@@ -233,6 +235,13 @@ namespace ASC.Web.Core.Users
                         GuestsCaption = string.Empty,
                         SchemaName = Resource.CustomNamingPeopleSchema
                     };
+                }
+                else if(string.IsNullOrEmpty(result.SchemaName))
+                {
+                    result.SchemaName = Resource.CustomNamingPeopleSchema;
+                }
+
+                return result;
             }
 
             Load();
