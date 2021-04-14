@@ -38,6 +38,11 @@ class TreeFoldersStore {
     this.expandedKeys.push(item);
   };
 
+  updateRootBadge = (id, count) => {
+    const rootItem = this.treeFolders.find((x) => x.id === id);
+    if (rootItem) rootItem.newItems -= count;
+  };
+
   get myFolder() {
     return this.treeFolders.find((x) => x.rootFolderName === "@my");
   }
