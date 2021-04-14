@@ -81,7 +81,10 @@ class TeamTemplate extends React.Component {
     selectedOptionFromSessionStorage = getFromSessionStorage("selectedOption");
 
     this.state = {
-      selectedOption: { key: 0, label: selectedOptionFromSessionStorage } || {
+      selectedOption: (selectedOptionFromSessionStorage && {
+        key: 0,
+        label: selectedOptionFromSessionStorage,
+      }) || {
         key: 0,
         label: `${t(customNames.name)}`,
       },
@@ -116,12 +119,28 @@ class TeamTemplate extends React.Component {
   }
 
   componentDidMount() {
-    const { getCustomSchema, t } = this.props;
+    const { getCustomSchema, showReminder } = this.props;
     const { isChanged } = this.props;
 
     //isChanged && this.setState()
     //debugger;
-    this.checkChanges();
+    if (
+      userFromSessionStorage ||
+      usersFromSessionStorage ||
+      groupFromSessionStorage ||
+      groupsFromSessionStorage ||
+      jobFromSessionStorage ||
+      registrationDateFromSessionStorage ||
+      groupLeadFromSessionStorage ||
+      guestFromSessionStorage ||
+      guestsFromSessionStorage
+    ) {
+      this.checkChanges();
+      !showReminder &&
+        this.setState({
+          showReminder: true,
+        });
+    }
 
     getCustomSchema().then(() => this.getOptions());
   }
@@ -347,8 +366,9 @@ class TeamTemplate extends React.Component {
       selectedOption,
       formErrors,
       isChanged,
+      showReminder,
     } = this.state;
-
+    console.log("showReminder", showReminder);
     return (
       <StyledComponent>
         <FieldContainer
@@ -546,7 +566,7 @@ class TeamTemplate extends React.Component {
             className="team-template_buttons"
             onSaveClick={this.onSaveSettings}
             onCancelClick={() => console.log("cancel")}
-            showReminder={true}
+            showReminder={showReminder}
             reminderTest={t("YouHaveUnsavedChanges")}
             saveButtonLabel={t("SaveButton")}
             cancelButtonLabel={t("CancelButton")}
