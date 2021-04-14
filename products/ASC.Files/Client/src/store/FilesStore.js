@@ -386,6 +386,7 @@ class FilesStore {
       isCommonFolder,
       isFavoritesFolder,
       isThirdPartyFolder,
+      isMyFolder,
     } = this.treeFoldersStore;
 
     const { isDesktopClient } = this.settingsStore;
@@ -417,7 +418,7 @@ class FilesStore {
         "move", //category
         "move-to",
         "copy-to",
-        //"copy",
+        "copy",
         "restore",
         "rename",
         "separator2",
@@ -468,7 +469,11 @@ class FilesStore {
       }
 
       if (isFavoritesFolder) {
-        fileOptions = this.removeOptions(fileOptions, ["move-to", "delete"]);
+        fileOptions = this.removeOptions(fileOptions, [
+          "move-to",
+          "delete",
+          "copy",
+        ]);
 
         if (!isFavorite) {
           fileOptions = this.removeOptions(fileOptions, ["separator2"]);
@@ -491,6 +496,15 @@ class FilesStore {
         ]);
       }
 
+      if (
+        isCommonFolder ||
+        isFavoritesFolder ||
+        isPrivacyFolder ||
+        isRecentFolder
+      ) {
+        fileOptions = this.removeOptions(fileOptions, ["copy"]);
+      }
+
       if (isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, [
           "open",
@@ -507,6 +521,7 @@ class FilesStore {
           "move", //category
           "move-to",
           "copy-to",
+          "copy",
           "mark-read",
           "mark-as-favorite",
           "remove-from-favorites",
@@ -523,6 +538,7 @@ class FilesStore {
           "finalize-version",
           "rename",
           "block-unblock-version",
+          "copy",
         ]);
       }
 
@@ -551,16 +567,18 @@ class FilesStore {
         ]);
       }
 
-      if (!this.userAccess) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "owner-change",
-          "move-to",
-          "delete",
-        ]);
-        if (!isFavorite) {
-          fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+      if (isCommonFolder)
+        if (!this.userAccess) {
+          fileOptions = this.removeOptions(fileOptions, [
+            "owner-change",
+            "move-to",
+            "delete",
+            "copy",
+          ]);
+          if (!isFavorite) {
+            fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+          }
         }
-      }
 
       if (withoutShare) {
         fileOptions = this.removeOptions(fileOptions, [
