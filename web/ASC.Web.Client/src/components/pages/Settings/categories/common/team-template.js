@@ -5,7 +5,7 @@ import { withTranslation } from "react-i18next";
 import ComboBox from "@appserver/components/combobox";
 import TextInput from "@appserver/components/text-input";
 import FieldContainer from "@appserver/components/field-container";
-
+import toastr from "@appserver/components/toast/toastr";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { isMobile } from "react-device-detect";
 
@@ -45,6 +45,7 @@ class TeamTemplate extends React.Component {
     options = [];
     this.state = {
       selectedOption: { key: 0, label: `${customNames.name}` },
+      id: customNames.id,
       user: customNames.userCaption,
       users: customNames.usersCaption,
       group: customNames.groupCaption,
@@ -54,6 +55,20 @@ class TeamTemplate extends React.Component {
       groupLead: customNames.groupHeadCaption,
       guest: customNames.guestCaption,
       guests: customNames.guestsCaption,
+      showReminder: false,
+      isLoading: false,
+      hasChanged: false,
+      formErrors: {
+        user: false,
+        users: false,
+        group: false,
+        groups: false,
+        job: false,
+        registrationDate: false,
+        groupLead: false,
+        guest: false,
+        guests: false,
+      },
     };
   }
 
@@ -73,6 +88,7 @@ class TeamTemplate extends React.Component {
         key: 0,
         label: currentTemplate.name,
       },
+      id: currentTemplate.id,
       user: currentTemplate.userCaption,
       users: currentTemplate.usersCaption,
       group: currentTemplate.groupCaption,
@@ -103,18 +119,112 @@ class TeamTemplate extends React.Component {
   onChangeInput = (e) => {
     //debugger;
     const { teamTemplate } = this.props;
-    var stateCopy = { ...this.state };
-    stateCopy[e.target.name] = e.target.value;
-    this.setState(stateCopy);
+    const { selectedOption } = this.state;
+
+    const name = e.target.name;
+    const value = e.target.value;
+
+    this.setState({ [name]: value });
     console.log("change");
 
-    this.state.selectedOption.label !== teamTemplate[3].name &&
+    selectedOption.label !== teamTemplate[3].name &&
       this.setState({
+        id: teamTemplate[3].id,
         selectedOption: {
           key: 0,
           label: teamTemplate[3].name,
         },
       });
+  };
+  isInvalidForm = () => {
+    const {
+      user,
+      users,
+      group,
+      groups,
+      registrationDate,
+      groupLead,
+      job,
+      guest,
+      guests,
+    } = this.state;
+
+    const errors = {
+      user: !user.trim(),
+      users: !users.trim(),
+      group: !group.trim(),
+      groups: !groups.trim(),
+      job: !job.trim(),
+      registrationDate: !registrationDate.trim(),
+      groupLead: !groupLead.trim(),
+      guest: !guest.trim(),
+      guests: !guests.trim(),
+    };
+
+    const isError =
+      errors.user ||
+      errors.users ||
+      errors.group ||
+      errors.groups ||
+      errors.job ||
+      errors.registrationDate ||
+      errors.groupLead ||
+      errors.guest ||
+      errors.guests;
+
+    this.setState({ formErrors: errors });
+
+    return isError;
+  };
+
+  onSaveSettings = () => {
+    const {
+      id,
+      user,
+      users,
+      group,
+      groups,
+      registrationDate,
+      groupLead,
+      job,
+      guest,
+      guests,
+      selectedOption,
+    } = this.state;
+
+    const {
+      setCurrentShema,
+      setCustomShema,
+      teamTemplate,
+      getCurrentCustomSchema,
+      t,
+    } = this.props;
+
+    if (this.isInvalidForm()) return;
+
+    this.setState({ isLoading: true });
+    //debugger;
+    if (selectedOption.label !== teamTemplate[3].name) {
+      setCurrentShema(id)
+        .then(() => getCurrentCustomSchema(id))
+        .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
+        .catch((error) => toastr.error(error));
+    } else {
+      setCustomShema(
+        user,
+        users,
+        group,
+        groups,
+        registrationDate,
+        groupLead,
+        job,
+        guest,
+        guests
+      )
+        .then(() => getCurrentCustomSchema(id))
+        .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
+        .catch((error) => toastr.error(error));
+    }
   };
   render() {
     const { t } = this.props;
@@ -131,6 +241,7 @@ class TeamTemplate extends React.Component {
       guest,
       guests,
       selectedOption,
+      formErrors,
     } = this.state;
 
     return (
@@ -159,12 +270,14 @@ class TeamTemplate extends React.Component {
           isVertical
           labelText={`${t("User")}:`}
           place="top"
+          hasError={formErrors.user}
         >
           <TextInput
             name={"user"}
             className="team-template_text-input"
             scale={true}
             value={user}
+            hasError={formErrors.user}
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
@@ -176,12 +289,14 @@ class TeamTemplate extends React.Component {
           isVertical
           labelText={`${t("Users")}:`}
           place="top"
+          hasError={formErrors.users}
         >
           <TextInput
             name={"users"}
             className="team-template_text-input"
             scale={true}
             value={users}
+            hasError={formErrors.users}
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
@@ -193,12 +308,14 @@ class TeamTemplate extends React.Component {
           isVertical
           labelText={`${t("Group")}:`}
           place="top"
+          hasError={formErrors.group}
         >
           <TextInput
             name={"group"}
             className="team-template_text-input"
             scale={true}
             value={group}
+            hasError={formErrors.group}
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
@@ -210,12 +327,14 @@ class TeamTemplate extends React.Component {
           isVertical
           labelText={`${t("Groups")}:`}
           place="top"
+          hasError={formErrors.groups}
         >
           <TextInput
             name={"groups"}
             className="team-template_text-input"
             scale={true}
             value={groups}
+            hasError={formErrors.groups}
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
@@ -227,12 +346,14 @@ class TeamTemplate extends React.Component {
           isVertical
           labelText={`${t("Job/Title")}:`}
           place="top"
+          hasError={formErrors.job}
         >
           <TextInput
             name={"job"}
             className="team-template_text-input"
             scale={true}
             value={job}
+            hasError={formErrors.job}
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
@@ -244,12 +365,14 @@ class TeamTemplate extends React.Component {
           isVertical
           labelText={`${t("RegistrationDate")}:`}
           place="top"
+          hasError={formErrors.registrationDate}
         >
           <TextInput
             name={"registrationDate"}
             className="team-template_text-input"
             scale={true}
             value={registrationDate}
+            hasError={formErrors.registrationDate}
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
@@ -261,12 +384,14 @@ class TeamTemplate extends React.Component {
           isVertical
           labelText={`${t("GroupLead")}:`}
           place="top"
+          hasError={formErrors.groupLead}
         >
           <TextInput
             name={"groupLead"}
             className="team-template_text-input"
             scale={true}
             value={groupLead}
+            hasError={formErrors.groupLead}
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
@@ -278,12 +403,14 @@ class TeamTemplate extends React.Component {
           isVertical
           labelText={`${t("Guest")}:`}
           place="top"
+          hasError={formErrors.guest}
         >
           <TextInput
             name={"guest"}
             className="team-template_text-input"
             scale={true}
             value={guest}
+            hasError={formErrors.guest}
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
@@ -295,12 +422,14 @@ class TeamTemplate extends React.Component {
           isVertical
           labelText={`${t("Guests")}:`}
           place="top"
+          hasError={formErrors.guests}
         >
           <TextInput
             name={"guests"}
             className="team-template_text-input"
             scale={true}
             value={guests}
+            hasError={formErrors.guests}
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
@@ -309,7 +438,7 @@ class TeamTemplate extends React.Component {
 
         <SaveCancelButtons
           className="team-template_buttons"
-          onSaveClick={() => console.log("save")}
+          onSaveClick={this.onSaveSettings}
           onCancelClick={() => console.log("cancel")}
           showReminder={true}
           reminderTest={t("YouHaveUnsavedChanges")}
@@ -321,7 +450,7 @@ class TeamTemplate extends React.Component {
   }
 }
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const {
     nameSchemaId,
     organizationName,
@@ -331,15 +460,19 @@ export default inject(({ auth }) => {
     customNames,
     teamTemplate,
     isLoading,
+    getCurrentCustomSchema,
   } = auth.settingsStore;
-
+  const { setCurrentShema, setCustomShema } = setup;
   return {
     nameSchemaId,
     organizationName,
 
     getCustomSchema,
+    getCurrentCustomSchema,
     customNames,
     teamTemplate,
     isLoading,
+    setCurrentShema,
+    setCustomShema,
   };
 })(withTranslation("Settings")(observer(TeamTemplate)));
