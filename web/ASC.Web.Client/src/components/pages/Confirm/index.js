@@ -12,6 +12,7 @@ const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
 const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
 const ProfileRemoveForm = lazy(() => import("./sub-components/profileRemove"));
 const ChangeOwnerForm = lazy(() => import("./sub-components/changeOwner"));
+const TfaAuthForm = lazy(() => import("./sub-components/tfaAuth"));
 
 const Confirm = ({ match }) => {
   //console.log("Confirm render");
@@ -57,6 +58,8 @@ const Confirm = ({ match }) => {
         path={`${match.path}/PortalOwnerChange`}
         component={ChangeOwnerForm}
       />
+      <Route exact path={`${match.path}/TfaAuth`} component={TfaAuthForm} />
+
       {/* <Route component={Error404} /> */}
     </Switch>
   );
