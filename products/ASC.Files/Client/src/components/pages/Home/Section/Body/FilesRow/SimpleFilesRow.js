@@ -111,6 +111,8 @@ const SimpleFilesRow = createSelectable((props) => {
     setTooltipPosition,
     setDownloadDialogVisible,
     downloadAction,
+    confirmDelete,
+    setDeleteDialogVisible,
   } = props;
 
   const {
@@ -270,17 +272,21 @@ const SimpleFilesRow = createSelectable((props) => {
       return;
     }
 
-    const translations = {
-      deleteOperation: t("DeleteOperation"),
-    };
+    if (confirmDelete) {
+      setDeleteDialogVisible(true);
+    } else {
+      const translations = {
+        deleteOperation: t("DeleteOperation"),
+      };
 
-    fileExst || contentLength
-      ? deleteFileAction(id, folderId, translations)
-          .then(() => toastr.success(t("FileRemoved")))
-          .catch((err) => toastr.error(err))
-      : deleteFolderAction(id, parentId, translations)
-          .then(() => toastr.success(t("FolderRemoved")))
-          .catch((err) => toastr.error(err));
+      fileExst || contentLength
+        ? deleteFileAction(id, folderId, translations)
+            .then(() => toastr.success(t("FileRemoved")))
+            .catch((err) => toastr.error(err))
+        : deleteFolderAction(id, parentId, translations)
+            .then(() => toastr.success(t("FolderRemoved")))
+            .catch((err) => toastr.error(err));
+    }
   };
 
   const rowContextClick = () => {
@@ -599,6 +605,7 @@ export default inject(
       filesActionsStore,
       mediaViewerDataStore,
       uploadDataStore,
+      settingsStore,
     },
     { item }
   ) => {
@@ -614,6 +621,7 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setDownloadDialogVisible,
+      setDeleteDialogVisible,
     } = dialogsStore;
 
     const {
@@ -705,6 +713,8 @@ export default inject(
       onSelectItem,
       setTooltipPosition,
       downloadAction,
+      confirmDelete: settingsStore.confirmDelete,
+      setDeleteDialogVisible,
     };
   }
 )(withTranslation("Home")(observer(withRouter(SimpleFilesRow))));
