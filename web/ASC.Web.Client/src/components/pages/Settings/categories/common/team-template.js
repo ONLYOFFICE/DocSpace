@@ -300,7 +300,7 @@ class TeamTemplate extends React.Component {
     return isError;
   };
 
-  onSaveSettings = () => {
+  onSaveClick = () => {
     const {
       id,
       userCaption,
@@ -348,6 +348,26 @@ class TeamTemplate extends React.Component {
         .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
         .catch((error) => toastr.error(error));
     }
+  };
+  onCancelClick = () => {
+    const { customNames } = this.props;
+    settingNames.forEach((settingName) => {
+      const defaultValue = customNames[settingName];
+      this.setState({ [settingName]: defaultValue });
+      saveToSessionStorage(settingName, "");
+    });
+
+    saveToSessionStorage("selectedOption", customNames.name);
+
+    this.setState({
+      showReminder: false,
+      isChanged: false,
+      id: customNames.id,
+      selectedOption: {
+        key: 0,
+        label: customNames.name,
+      },
+    });
   };
   render() {
     const { t } = this.props;
@@ -564,8 +584,8 @@ class TeamTemplate extends React.Component {
         {isChanged && (
           <SaveCancelButtons
             className="team-template_buttons"
-            onSaveClick={this.onSaveSettings}
-            onCancelClick={() => console.log("cancel")}
+            onSaveClick={this.onSaveClick}
+            onCancelClick={this.onCancelClick}
             showReminder={showReminder}
             reminderTest={t("YouHaveUnsavedChanges")}
             saveButtonLabel={t("SaveButton")}
