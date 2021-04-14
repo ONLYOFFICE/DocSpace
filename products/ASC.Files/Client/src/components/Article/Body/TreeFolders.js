@@ -433,6 +433,7 @@ class TreeFolders extends React.Component {
       expandedKeys,
       expandedPanelKeys,
       treeFolders,
+      data,
     } = this.props;
 
     return (
@@ -457,7 +458,7 @@ class TreeFolders extends React.Component {
         gapBetweenNodesTablet="26"
         isFullFillSelection={false}
       >
-        {this.getItems(treeFolders)}
+        {this.getItems(data || treeFolders)}
       </StyledTreeMenu>
     );
   }
