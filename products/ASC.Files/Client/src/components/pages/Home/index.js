@@ -130,7 +130,6 @@ class PureHome extends React.Component {
       dragging,
     } = this.props;
     const folderId = uploadToFolder ? uploadToFolder : currentFolderId;
-
     dragging && setDragging(false);
     startUpload(files, folderId, t);
   };

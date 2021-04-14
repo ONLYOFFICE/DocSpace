@@ -509,7 +509,7 @@ class FilesContent extends React.Component {
       createdBy &&
       ((this.props.viewer.id === createdBy.id && t("AuthorMe")) ||
         createdBy.displayName);
-    console.log(fileOwner);
+
     const updatedDate = updated && this.getStatusByDate();
 
     const isEdit = id === fileActionId && fileExst === fileActionExt;
@@ -518,8 +518,6 @@ class FilesContent extends React.Component {
       isTrashFolder || window.innerWidth <= 1024 // in tile simple isTrashFOlder
         ? { noHover: true }
         : { onClick: this.onFilesClick };
-
-    console.log("viewAs content", viewAs);
 
     return isEdit ? (
       <EditingWrapperComponent

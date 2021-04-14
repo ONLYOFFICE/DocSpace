@@ -12,7 +12,7 @@ import FileItem from "./FileItem";
 
 const FilesContainer = (props) => {
   const { isLoaded, isLoading, filesList, viewAs, t } = props;
-  console.log("viewAs container", viewAs);
+
   return !isLoaded || (isMobile && isLoading) ? (
     <Loaders.Rows />
   ) : (

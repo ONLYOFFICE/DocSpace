@@ -128,7 +128,6 @@ class TileContainer extends React.PureComponent {
     const Files = [];
 
     children.forEach((item, index) => {
-      console.log(item.props);
       if (item.props.item.isFolder) {
         Folders.push(
           <div

@@ -222,7 +222,6 @@ class FilesStore {
   };
 
   setSelection = (selection) => {
-    console.log(selection);
     this.selection = selection;
   };
 

@@ -52,7 +52,6 @@ class SelectedFrame extends React.Component {
     ) {
       return;
     }
-    console.log("here");
     const { scrollRef } = this.props;
     const { view } = scrollRef.current;
 

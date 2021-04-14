@@ -136,8 +136,6 @@ class Tile extends React.Component {
       rowContextClick,
     } = this.props;
 
-    console.log(isFolder, "tile");
-
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
       this.props,
       "checked"
@@ -169,7 +167,6 @@ class Tile extends React.Component {
       this.cm.current.show(e);
     };
 
-    console.log(children);
     return (
       <StyledTile ref={this.tile} {...this.props} onContextMenu={onContextMenu}>
         {isFolder ? (

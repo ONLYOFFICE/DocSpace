@@ -146,7 +146,6 @@ const TileContent = (props) => {
     onClick,
     badges,
   } = props;
-  console.log(children[1]);
 
   const sideInfo = getSideInfo(children);
 

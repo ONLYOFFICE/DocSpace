@@ -64,7 +64,6 @@ const SectionBodyContent = (props) => {
       return;
     }
     const droppable = wrapperElement.closest(".droppable");
-
     if (currentDroppable !== droppable) {
       if (currentDroppable) {
         currentDroppable.classList.remove("droppable-hover");

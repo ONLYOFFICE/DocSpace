@@ -171,15 +171,13 @@ const FileItem = (props) => {
 
   const isDragging = isFolder && access < 2 && !isRecycleBin;
 
-  let className = isDragging ? " dropable" : "";
+  let className = isDragging ? " droppable" : "";
   if (draggable) className += " draggable";
 
   const sharedButton =
     !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
       ? null
       : getSharedButton(shared);
-
-  console.log("viewAs item", viewAs);
 
   return (
     <DragAndDrop
