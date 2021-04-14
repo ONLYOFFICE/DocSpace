@@ -20,7 +20,7 @@ while [ "$1" != "" ]; do
             echo "  Examples"
             echo "  bash build-backend.sh -sp /app/AppServer"
             exit 0
-        ;;
+    ;;
 
 		* )
 			echo "Unknown parameter $1" 1>&2
@@ -34,3 +34,4 @@ echo "== FRONT-END-BUILD =="
 
 cd ${SRC_PATH}
 yarn install
+yarn build
