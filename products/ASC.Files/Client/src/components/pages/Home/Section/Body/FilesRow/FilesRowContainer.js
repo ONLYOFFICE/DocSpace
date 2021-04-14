@@ -18,9 +18,9 @@ const FilesRowContainer = (props) => {
           draggable
           useReactWindow={false}
         >
-          {props.filesList.map((item) => (
+          {props.filesList.map((item, index) => (
             <SimpleFilesRow
-              key={item.id}
+              key={`${item.id}_${index}`}
               item={item}
               sectionWidth={context.sectionWidth}
             />

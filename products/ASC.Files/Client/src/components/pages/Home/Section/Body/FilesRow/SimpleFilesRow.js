@@ -625,6 +625,7 @@ export default inject(
       setDragging,
       setStartDrag,
       setTooltipPosition,
+      isFileSelected,
     } = filesStore;
 
     const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
@@ -669,7 +670,7 @@ export default inject(
       isRecycleBin: isRecycleBinFolder,
       isRootFolder,
       canShare,
-      checked: selection.some((el) => el.id === item.id),
+      checked: isFileSelected(item.id, item.parentId),
       isFolder,
       draggable,
       isItemsSelected: !!selection.length,

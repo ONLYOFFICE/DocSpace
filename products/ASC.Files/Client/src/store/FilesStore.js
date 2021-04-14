@@ -340,8 +340,8 @@ class FilesStore {
     return request();
   };
 
-  isFileSelected = (selection, fileId, parentId) => {
-    const item = selection.find(
+  isFileSelected = (fileId, parentId) => {
+    const item = this.selection.find(
       (x) => x.id === fileId && x.parentId === parentId
     );
 
@@ -350,13 +350,13 @@ class FilesStore {
 
   selectFile = (file) => {
     const { id, parentId } = file;
-    const isFileSelected = this.isFileSelected(this.selection, id, parentId);
+    const isFileSelected = this.isFileSelected(id, parentId);
     if (!isFileSelected) this.selection.push(file);
   };
 
   deselectFile = (file) => {
     const { id, parentId } = file;
-    const isFileSelected = this.isFileSelected(this.selection, id, parentId);
+    const isFileSelected = this.isFileSelected(id, parentId);
     if (isFileSelected)
       this.selection = this.selection.filter((x) => x.id !== id);
   };
