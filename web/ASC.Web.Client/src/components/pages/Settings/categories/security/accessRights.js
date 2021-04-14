@@ -2,10 +2,8 @@ import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import TabContainer from "@appserver/components/tabs-container";
 
 import OwnerSettings from "./sub-components/owner";
-import AdminsSettings from "./sub-components/admins";
 // import ModulesSettings from "./sub-components/modules";
 
 import { setDocumentTitle } from "../../../../../helpers/utils";
@@ -99,30 +97,6 @@ class PureAccessRights extends Component {
     return (
       <MainContainer>
         <OwnerSettings />
-        {/* <TabContainer
-          classNem="settings_tabs"
-          selectedItem={selectedTab}
-          isDisabled={isLoading}
-          onSelect={this.onSelectPage}
-          elements={[
-            {
-              key: "0",
-              title: t("OwnerSettings"),
-              content: <OwnerSettings />,
-            },
-            {
-              key: "1",
-              title: t("AdminsSettings"),
-              content: <AdminsSettings />,
-              dis
-            },
-            {
-              key: "2",
-              title: "Portals settings",
-              content: <ModulesSettings />
-            }
-          ]}
-        /> */}
       </MainContainer>
     );
   }
