@@ -360,12 +360,16 @@ execute_mysql_script(){
 		#Adding data to the db
 		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $SQL_DIR/onlyoffice.sql
 		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" >/dev/null 2>&1
-		for i in $(ls $SQL_DIR/*.sql); do
+		$MYSQL "$DB_NAME" < "$SQL_DIR/createdb.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.data.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "$SQL_DIR/onlyoffice.resources.sql" >/dev/null 2>&1
+		for i in $(ls $SQL_DIR/*upgrade*.sql); do
 			$MYSQL "$DB_NAME" < ${i} >/dev/null 2>&1
 		done
 	else
 		echo -n "Upgrading MySQL database... "
-		for i in $(ls $SQL_DIR/onlyoffice.upgrade*); do
+		for i in $(ls $SQL_DIR/*upgrade*.sql); do
 			$MYSQL "$DB_NAME" < ${i} >/dev/null 2>&1
 		done
     fi
