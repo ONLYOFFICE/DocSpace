@@ -232,14 +232,11 @@ namespace ASC.Web.Core.Users
                         UserPostCaption = string.Empty,
                         UsersCaption = string.Empty,
                         GuestCaption = string.Empty,
-                        GuestsCaption = string.Empty,
-                        SchemaName = Resource.CustomNamingPeopleSchema
+                        GuestsCaption = string.Empty
                     };
                 }
-                else if(string.IsNullOrEmpty(result.SchemaName))
-                {
-                    result.SchemaName = Resource.CustomNamingPeopleSchema;
-                }
+                
+                result.SchemaName = Resource.CustomNamingPeopleSchema;
 
                 return result;
             }
