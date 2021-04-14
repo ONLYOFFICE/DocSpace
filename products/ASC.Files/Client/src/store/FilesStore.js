@@ -417,7 +417,7 @@ class FilesStore {
         "move", //category
         "move-to",
         "copy-to",
-        "copy",
+        //"copy",
         "restore",
         "rename",
         "separator2",
@@ -553,6 +553,9 @@ class FilesStore {
           "move-to",
           "delete",
         ]);
+        if (!isFavorite) {
+          fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+        }
       }
 
       if (withoutShare) {
