@@ -251,13 +251,18 @@ class FilesRowContent extends React.PureComponent {
           });
   };
 
-  // componentDidUpdate(prevProps) {
-  //   if (fileAction) {
-  //     if (fileActionId !== prevProps.fileActionId) {
-  //       this.setState({ editingId: fileActionId });
-  //     }
-  //   }
-  // }
+  componentDidUpdate(prevProps) {
+    const { fileActionId, fileActionExt } = this.props;
+    if (fileActionId === -1 && fileActionExt !== prevProps.fileActionExt) {
+      const itemTitle = this.getDefaultName(fileActionExt);
+      this.setState({ itemTitle });
+    }
+    // if (fileAction) {
+    //   if (fileActionId !== prevProps.fileActionId) {
+    //     this.setState({ editingId: fileActionId });
+    //   }
+    // }
+  }
 
   renameTitle = (e) => {
     let title = e.target.value;
