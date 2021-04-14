@@ -412,7 +412,7 @@ class FilesStore {
         "mark-read",
         "mark-as-favorite",
         "download",
-        //"download-as",
+        "download-as",
         "convert",
         "move", //category
         "move-to",
@@ -425,6 +425,10 @@ class FilesStore {
         "unsubscribe",
         "delete",
       ];
+
+      if (!this.isWebEditSelected) {
+        fileOptions = this.removeOptions(fileOptions, ["download-as"]);
+      }
 
       if (!canConvert || isEncrypted) {
         fileOptions = this.removeOptions(fileOptions, ["convert"]);
