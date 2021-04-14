@@ -21,5 +21,9 @@
   "ConfirmOwnerPortalTitle": "Пожалуйста, подтвердите, что Вы хотите изменить владельца портала на {{newOwner}}",
   "SaveButton": "Сохранить",
   "CancelButton": "Отмена",
-  "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}"
+  "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}",
+  "EnterAppCodeTitle": "Введите код из приложения аутентификации",
+  "EnterAppCodeDescription": "Введите 6-значный сгенерированный код из вашего приложения. Если у вас нет доступа к телефону, вы можете использовать резервные коды.",
+  "EnterCodePlaceholder": "Введите код",
+  "Continue": "Продолжить"
 }

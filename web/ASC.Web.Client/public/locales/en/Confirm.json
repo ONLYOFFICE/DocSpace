@@ -26,5 +26,9 @@
   "ConfirmOwnerPortalTitle": "Please confirm that you want to change portal owner to {{newOwner}}",
   "SaveButton": "Save",
   "CancelButton": "Cancel",
-  "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}"
+  "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}",
+  "EnterAppCodeTitle": "Enter code from authentication app",
+  "EnterAppCodeDescription": "Enter 6-digit generated code from your application. If you don’t have access to your phone you can use your backup codes.",
+  "EnterCodePlaceholder": "Enter code",
+  "Continue": "Continue"
 }
