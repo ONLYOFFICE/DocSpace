@@ -5,6 +5,7 @@ import { combineUrl } from "@appserver/common/utils";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 
 const AccessRightsSettings = lazy(() => import("./accessRights"));
+const AccessPortalSettings = lazy(() => import("./accessPortal"));
 
 const PROXY_BASE_URL = combineUrl(
   AppServerConfig.proxyURL,
@@ -14,6 +15,8 @@ const ACCESS_RIGHTS_URLS = [
   combineUrl(PROXY_BASE_URL, "/accessrights"),
   combineUrl(PROXY_BASE_URL, "/accessrights/owner"),
 ];
+const ACCESS_PORTAL_URLS = [combineUrl(PROXY_BASE_URL, "/accessportal")];
+
 const ADMINS_URLS = [
   combineUrl(PROXY_BASE_URL, "/accessrights/admins"),
   PROXY_BASE_URL,
@@ -39,6 +42,13 @@ const Security = () => {
           component={AccessRightsSettings}
           selectedTab={1}
         />
+        <Route
+          exact
+          path={ACCESS_PORTAL_URLS}
+          component={AccessPortalSettings}
+          selectedTab={2}
+        />
+
         {/* <Route
           exact
           path={MODULES_URLS}

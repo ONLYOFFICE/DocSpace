@@ -53,6 +53,13 @@ export const settingsTree = [
         tKey: "AccessRights",
         isCategory: true,
       },
+      {
+        key: "1-1",
+        icon: "",
+        link: "accessportal",
+        tKey: "PortalAccess",
+        isCategory: true,
+      },
     ],
   },
   {
