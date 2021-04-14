@@ -19,6 +19,7 @@ const OperationsPanelComponent = (props) => {
     currentFolderId,
     operationsFolders,
     setCopyPanelVisible,
+    setExpandedPanelKeys,
     itemOperationToFolder,
     setMoveToPanelVisible,
     setThirdPartyMoveDialogVisible,
@@ -32,6 +33,7 @@ const OperationsPanelComponent = (props) => {
 
   const onClose = () => {
     isCopy ? setCopyPanelVisible(false) : setMoveToPanelVisible(false);
+    setExpandedPanelKeys(null);
   };
 
   const onSelect = (folder, treeNode) => {
@@ -102,7 +104,7 @@ const OperationsPanelComponent = (props) => {
         </ModalDialog.Header>
         <ModalDialog.Body>
           <TreeFolders
-            expandedKeys={expandedKeys}
+            expandedPanelKeys={expandedKeys}
             data={operationsFolders}
             filter={filter}
             onSelect={onSelect}
@@ -127,7 +129,12 @@ export default inject(
     uploadDataStore,
   }) => {
     const { filter, selection } = filesStore;
-    const { isRecycleBinFolder, operationsFolders } = treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      operationsFolders,
+      setExpandedPanelKeys,
+      expandedPanelKeys,
+    } = treeFoldersStore;
     const { itemOperationToFolder } = uploadDataStore;
 
     const {
@@ -142,7 +149,9 @@ export default inject(
     const provider = selection.find((x) => x.providerKey);
 
     return {
-      expandedKeys: selectedFolderStore.pathParts,
+      expandedKeys: expandedPanelKeys
+        ? expandedPanelKeys
+        : selectedFolderStore.pathParts,
       currentFolderId: selectedFolderStore.id,
       isRecycleBin: isRecycleBinFolder,
       filter,
@@ -156,6 +165,7 @@ export default inject(
       setDestFolderId,
       setThirdPartyMoveDialogVisible,
       itemOperationToFolder,
+      setExpandedPanelKeys,
     };
   }
 )(withRouter(observer(OperationsPanel)));

@@ -364,8 +364,7 @@ class TreeFolders extends React.Component {
         const treeData = [...this.props.treeFolders];
 
         this.getNewTreeData(treeData, listIds, data.folders, 10);
-        this.props.needUpdate && this.props.setTreeFolders(treeData);
-        //this.setState({ treeData });
+        /* this.props.needUpdate &&  */ this.props.setTreeFolders(treeData);
       })
       .catch((err) => toastr.error(err))
       .finally(() => {
@@ -374,15 +373,16 @@ class TreeFolders extends React.Component {
       });
   };
 
-  onExpand = (data, treeNode) => {
+  onExpand = (expandedKeys, treeNode) => {
     if (treeNode.node && !treeNode.node.props.children) {
       if (treeNode.expanded) {
         this.onLoadData(treeNode.node, true);
       }
     }
     if (this.props.needUpdate) {
-      const expandedKeys = data;
       this.props.setExpandedKeys(expandedKeys);
+    } else {
+      this.props.setExpandedPanelKeys(expandedKeys);
     }
   };
 
@@ -431,9 +431,9 @@ class TreeFolders extends React.Component {
       onSelect,
       dragging,
       expandedKeys,
+      expandedPanelKeys,
       treeFolders,
     } = this.props;
-    //const loadProp = needUpdate ? { loadData: this.onLoadData } : {};
 
     return (
       <StyledTreeMenu
@@ -446,9 +446,8 @@ class TreeFolders extends React.Component {
         switcherIcon={this.switcherIcon}
         onSelect={onSelect}
         selectedKeys={selectedKeys}
-        //{...loadProp}
         loadData={this.onLoadData}
-        expandedKeys={expandedKeys}
+        expandedKeys={expandedPanelKeys ? expandedPanelKeys : expandedKeys}
         onExpand={this.onExpand}
         onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
@@ -488,6 +487,7 @@ export default inject(
       isPrivacyFolder,
       expandedKeys,
       setExpandedKeys,
+      setExpandedPanelKeys,
     } = treeFoldersStore;
     const { id /* rootFolderType */ } = selectedFolderStore;
 
@@ -510,6 +510,7 @@ export default inject(
       setTreeFolders,
       setFilter,
       setExpandedKeys,
+      setExpandedPanelKeys,
     };
   }
 )(observer(TreeFolders));
