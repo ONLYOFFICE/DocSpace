@@ -1111,119 +1111,16 @@ class FilesStore {
     return this.getOptions(selection, true);
   };
 
-  convertSplitItem = (item) => {
-    let splitItem = item.split("_");
-    const fileExst = splitItem[0];
-    splitItem.splice(0, 1);
-    if (splitItem[splitItem.length - 1] === "draggable") {
-      splitItem.splice(-1, 1);
-    }
-    splitItem = splitItem.join("_");
-    return [fileExst, splitItem];
-  };
-
   setSelections = (items) => {
-    if (!items.length) return;
-    if (this.selection.length > items.length) {
-      //Delete selection
-      const newSelection = [];
-      let newFile = null;
-      for (let item of items) {
-        if (!item) break; // temporary fall protection selection tile
+    if (!items.length && !this.selection.length) return;
 
-        item = this.convertSplitItem(item);
-        if (item[0] === "folder") {
-          newFile = this.selection.find(
-            (x) => x.id + "" === item[1] && !x.fileExst
-          );
-        } else if (item[0] === "file") {
-          newFile = this.selection.find(
-            (x) => x.id + "" === item[1] && x.fileExst
-          );
-        }
-        if (newFile) {
-          newSelection.push(newFile);
-        }
-      }
-
-      for (let item of this.selection) {
-        const element = newSelection.find(
-          (x) => x.id === item.id && x.fileExst === item.fileExst
-        );
-        if (!element) {
-          this.deselectFile(item);
-        }
-      }
-    } else if (this.selection.length < items.length) {
-      //Add selection
-      for (let item of items) {
-        if (!item) break; // temporary fall protection selection tile
-
-        let newFile = null;
-        item = this.convertSplitItem(item);
-        if (item[0] === "folder") {
-          newFile = this.folders.find(
-            (x) => x.id + "" === item[1] && !x.fileExst
-          );
-        } else if (item[0] === "file") {
-          newFile = this.files.find((x) => x.id + "" === item[1] && x.fileExst);
-        }
-        if (newFile && this.fileActionStore.id !== newFile.id) {
-          const existItem = this.selection.find(
-            (x) => x.id === newFile.id && x.fileExst === newFile.fileExst
-          );
-          if (!existItem) {
-            this.selectFile(newFile);
-            this.selected !== "none" && this.setSelected("none");
-          }
-        }
-      }
-    } else if (this.selection.length === items.length && items.length === 1) {
-      const item = this.convertSplitItem(items[0]);
-
-      if (item[1] !== this.selection[0].id) {
-        let addFile = null;
-        let delFile = null;
-        const newSelection = [];
-        if (item[0] === "folder") {
-          delFile = this.selection.find(
-            (x) => x.id + "" === item[1] && !x.fileExst
-          );
-          addFile = this.folders.find(
-            (x) => x.id + "" === item[1] && !x.fileExst
-          );
-        } else if (item[0] === "file") {
-          delFile = this.selection.find(
-            (x) => x.id + "" === item[1] && x.fileExst
-          );
-          addFile = this.files.find((x) => x.id + "" === item[1] && x.fileExst);
-        }
-
-        const existItem = this.selection.find(
-          (x) => x.id === addFile.id && x.fileExst === addFile.fileExst
-        );
-        if (!existItem) {
-          this.selectFile(addFile);
-          this.selected !== "none" && this.setSelected("none");
-        }
-
-        if (delFile) {
-          newSelection.push(delFile);
-        }
-
-        for (let item of this.selection) {
-          const element = newSelection.find(
-            (x) => x.id === item.id && x.fileExst === item.fileExst
-          );
-          if (!element) {
-            this.deselectFile(item);
-          }
-        }
-      } else {
-        return;
-      }
-    } else {
-      return;
+    if (items.length !== this.selection.length) {
+      this.setSelection(items);
+    } else if (items.length === 0) {
+      const item = this.selection.find(
+        (x) => x.id === item[0].id && x.fileExst === item.fileExst
+      );
+      if (!item) this.setSelection(items);
     }
   };
 

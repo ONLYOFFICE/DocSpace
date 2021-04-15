@@ -214,7 +214,7 @@ namespace ASC.Api.Documents
                 result.Add((int)GlobalFolderHelper.FolderTrash);
             }
 
-            return result.Select(r => FilesControllerHelperInt.GetFolder(r, userIdOrGroupId, filterType, withsubfolders));
+            return result.Select(r => FilesControllerHelperInt.GetFolder(r, userIdOrGroupId, filterType, withsubfolders)).ToList();
         }
 
 
@@ -1061,7 +1061,7 @@ namespace ASC.Api.Documents
             var result = new List<FileEntry>();
             result.AddRange(FileStorageServiceInt.ChangeOwner(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.UserId));
             result.AddRange(FileStorageService.ChangeOwner(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.UserId));
-            return result.Select(FilesControllerHelperInt.GetFileEntryWrapper);
+            return result.Select(FilesControllerHelperInt.GetFileEntryWrapper).ToList();
         }
 
         /// <summary>
