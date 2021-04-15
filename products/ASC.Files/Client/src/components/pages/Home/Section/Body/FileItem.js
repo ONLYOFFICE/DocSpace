@@ -41,6 +41,7 @@ const FileItem = (props) => {
     startUpload,
     viewAs,
     setTooltipPosition,
+    getIcon,
   } = props;
 
   const {
@@ -179,6 +180,8 @@ const FileItem = (props) => {
       ? null
       : getSharedButton(shared);
 
+  const temporaryIcon = getIcon(96, fileExst, providerKey, contentLength);
+
   return (
     <DragAndDrop
       className={className}
@@ -198,6 +201,7 @@ const FileItem = (props) => {
           rowContextClick={fileContextClick}
           {...checkedProps}
           {...contextOptionsProps}
+          temporaryIcon={temporaryIcon}
         >
           <FilesContent item={item} viewAs={viewAs} />
         </Tile>
@@ -236,6 +240,7 @@ export default inject(
       filesActionsStore,
       uploadDataStore,
       contextOptionsStore,
+      formatsStore,
     },
     { item }
   ) => {
@@ -280,6 +285,8 @@ export default inject(
 
     const { getContextOptions } = contextOptionsStore;
 
+    const { getIcon } = formatsStore.iconFormatsStore;
+
     return {
       dragging,
       actionType,
@@ -308,6 +315,7 @@ export default inject(
       getContextOptions,
       setTooltipPosition,
       viewAs,
+      getIcon,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FileItem))));

@@ -49,6 +49,10 @@ const StyledFileTileTop = styled.div`
     margin: auto;
     z-index: 0;
   }
+
+  .temporary-icon {
+    margin-bottom: 16px;
+  }
 `;
 
 const StyledFileTileBottom = styled.div`
@@ -135,6 +139,7 @@ class Tile extends React.Component {
       onSelect,
       isFolder,
       rowContextClick,
+      temporaryIcon,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -209,8 +214,8 @@ class Tile extends React.Component {
                 />
               ) : (
                 <img
-                  className="thumbnailImage"
-                  src="images/example-thumbnail.png"
+                  className="thumbnailImage temporary-icon"
+                  src={temporaryIcon}
                   alt="thumbnail"
                 />
               )}
