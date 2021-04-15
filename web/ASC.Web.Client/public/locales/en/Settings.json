@@ -124,5 +124,7 @@
   "RegistrationDate": "Registration date",
   "GroupLead": "Group Lead",
   "Guest": "Guest",
-  "Guests": "Guests"
+  "Guests": "Guests",
+
+  "EmptyFieldError": "Empty field"
 }

@@ -127,9 +127,7 @@ class SettingsStore {
   };
 
   getCustomSchema = async () => {
-    this.setIsLoading(true);
     this.teamTemplate = await api.settings.getCustomSchema();
-    this.setIsLoading(false);
   };
 
   getPortalSettings = async () => {

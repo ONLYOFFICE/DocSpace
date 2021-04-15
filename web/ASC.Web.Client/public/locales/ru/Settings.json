@@ -124,5 +124,7 @@
   "RegistrationDate": "Дата регистрации",
   "GroupLead": "Руководитель группы",
   "Guest": "Гость",
-  "Guests": "Гости"
+  "Guests": "Гости",
+
+  "EmptyFieldError": "Пустое поле"
 }
