@@ -70,8 +70,7 @@ const FileItem = (props) => {
 
   const onContentFileSelect = (checked, file) => {
     if (!file) return;
-
-    selectRowAction(checked, file); // rename to selectFileAction ?
+    selectRowAction(checked, file);
   };
 
   const onClickShare = () => {
@@ -173,7 +172,7 @@ const FileItem = (props) => {
   const isDragging = isFolder && access < 2 && !isRecycleBin;
 
   let className = isDragging ? " droppable" : "";
-  if (draggable) className += " draggable";
+  if (draggable) className += " draggable not-selectable";
 
   const sharedButton =
     !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
@@ -183,50 +182,53 @@ const FileItem = (props) => {
   const temporaryIcon = getIcon(96, fileExst, providerKey, contentLength);
 
   return (
-    <DragAndDrop
-      className={className}
-      onDrop={onDrop}
-      onMouseDown={onMouseDown}
-      dragging={dragging && isDragging}
-      {...contextOptionsProps}
-      value={value}
-    >
-      {viewAs === "tile" ? (
-        <Tile
-          key={id}
-          item={item}
-          isFolder={isFolder}
-          element={element}
-          onSelect={onContentFileSelect}
-          rowContextClick={fileContextClick}
-          {...checkedProps}
-          {...contextOptionsProps}
-          temporaryIcon={temporaryIcon}
-        >
-          <FilesContent item={item} viewAs={viewAs} />
-        </Tile>
-      ) : (
-        <SimpleFilesRow
-          sectionWidth={sectionWidth}
-          key={id}
-          data={item}
-          element={element}
-          contentElement={sharedButton}
-          onSelect={onContentFileSelect}
-          rowContextClick={fileContextClick}
-          isPrivacy={isPrivacy}
-          {...checkedProps}
-          {...contextOptionsProps}
-          contextButtonSpacerWidth={displayShareButton}
-        >
-          <FilesContent
+    <div ref={props.selectableRef}>
+      <DragAndDrop
+        className={className}
+        onDrop={onDrop}
+        onMouseDown={onMouseDown}
+        dragging={dragging && isDragging}
+        {...contextOptionsProps}
+        value={value}
+      >
+        {viewAs === "tile" ? (
+          <Tile
+            key={id}
             item={item}
+            isFolder={isFolder}
+            element={element}
+            onSelect={onContentFileSelect}
+            rowContextClick={fileContextClick} // rename!
+            {...checkedProps}
+            {...contextOptionsProps}
+            temporaryIcon={temporaryIcon}
+            isPrivacy={isPrivacy}
+          >
+            <FilesContent item={item} viewAs={viewAs} />
+          </Tile>
+        ) : (
+          <SimpleFilesRow
             sectionWidth={sectionWidth}
-            viewAs={viewAs}
-          />
-        </SimpleFilesRow>
-      )}
-    </DragAndDrop>
+            key={id}
+            data={item}
+            element={element}
+            contentElement={sharedButton}
+            onSelect={onContentFileSelect}
+            rowContextClick={fileContextClick}
+            isPrivacy={isPrivacy}
+            {...checkedProps}
+            {...contextOptionsProps}
+            contextButtonSpacerWidth={displayShareButton}
+          >
+            <FilesContent
+              item={item}
+              sectionWidth={sectionWidth}
+              viewAs={viewAs}
+            />
+          </SimpleFilesRow>
+        )}
+      </DragAndDrop>
+    </div>
   );
 };
 

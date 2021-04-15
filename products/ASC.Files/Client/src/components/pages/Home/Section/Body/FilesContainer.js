@@ -26,15 +26,9 @@ const FilesContainer = (props) => {
             headingFolders={t("Folders")}
             headingFiles={t("Files")}
           >
-            {filesList.map((item) => {
-              return (
-                <FileItem
-                  key={item.id}
-                  item={item}
-                  // viewAs={viewAs}
-                />
-              );
-            })}
+            {filesList.map((item) => (
+              <FileItem key={item.id} item={item} />
+            ))}
           </TileContainer>
         ) : (
           <RowContainer
@@ -42,16 +36,13 @@ const FilesContainer = (props) => {
             draggable
             useReactWindow={false}
           >
-            {filesList.map((item) => {
-              return (
-                <FileItem
-                  key={item.id}
-                  item={item}
-                  sectionWidth={context.sectionWidth}
-                  //viewAs={viewAs}
-                />
-              );
-            })}
+            {filesList.map((item) => (
+              <FileItem
+                key={item.id}
+                item={item}
+                sectionWidth={context.sectionWidth}
+              />
+            ))}
           </RowContainer>
         )
       }

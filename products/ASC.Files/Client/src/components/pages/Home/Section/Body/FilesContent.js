@@ -445,13 +445,7 @@ class FilesContent extends React.Component {
   };
 
   render() {
-    const {
-      itemTitle,
-      showConvertDialog,
-      showNewFilesPanel,
-      newFolderId,
-      newItems,
-    } = this.state;
+    const { itemTitle, showConvertDialog, newItems } = this.state;
 
     const {
       t,
@@ -736,8 +730,8 @@ export default inject(
       fetchFileVersions,
       fetchFiles,
       filter,
-      setNewRowItems,
-      newRowItems,
+      //setNewRowItems,
+      //newRowItems,
       createFile,
       updateFile,
       renameFolder,

@@ -341,7 +341,7 @@ class ContextOptionsStore {
             onClick: this.onClickDownloadAs,
             disabled: false,
           };
-        case "move":
+        case "move-to":
           return {
             key: option,
             label: t("MoveTo"),
@@ -357,7 +357,7 @@ class ContextOptionsStore {
             onClick: this.onMoveAction,
             disabled: false,
           };
-        case "copy":
+        case "copy-to":
           return {
             key: option,
             label: t("Copy"),
@@ -365,7 +365,7 @@ class ContextOptionsStore {
             onClick: this.onCopyAction,
             disabled: false,
           };
-        case "duplicate":
+        case "copy":
           return {
             key: option,
             label: t("Duplicate"),
