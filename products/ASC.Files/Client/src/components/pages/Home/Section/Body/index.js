@@ -24,6 +24,7 @@ const SectionBodyContent = (props) => {
     setTooltipPosition,
     isRecycleBinFolder,
     moveDragItems,
+    viewAs,
   } = props;
 
   useEffect(() => {
@@ -141,7 +142,13 @@ const SectionBodyContent = (props) => {
 
   return (!fileActionId && isEmptyFilesList) || null ? (
     firstLoad || (isMobile && isLoading) ? (
-      <Loaders.Rows />
+      viewAs === "tile" ? (
+        <>
+          <Loaders.Tiles />
+        </>
+      ) : (
+        <Loaders.Rows />
+      )
     ) : (
       <EmptyContainer />
     )
@@ -164,7 +171,7 @@ export default inject(
       dragging,
       setDragging,
       isLoading,
-      //viewAs,
+      viewAs,
       setTooltipPosition,
       startDrag,
       setStartDrag,
@@ -176,7 +183,7 @@ export default inject(
       setStartDrag,
       fileActionId: fileActionStore.id,
       firstLoad,
-      //viewAs,
+      viewAs,
       isLoading,
       isEmptyFilesList: filesList.length <= 0,
       setDragging,

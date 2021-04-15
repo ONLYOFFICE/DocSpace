@@ -103,7 +103,7 @@ const StyledOptionButton = styled.div`
     padding-top: 8px;
     padding-bottom: 8px;
     padding-left: 12px;
-    padding-right: 14px;
+    padding-right: 13px;
   }
 `;
 
