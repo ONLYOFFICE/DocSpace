@@ -39,6 +39,7 @@ const StyledFileTileTop = styled.div`
   padding: 13px;
   height: 157px;
   position: relative;
+  user-select: none;
 
   .thumbnailImage {
     position: absolute;

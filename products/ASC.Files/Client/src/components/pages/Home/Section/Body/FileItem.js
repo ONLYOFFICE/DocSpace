@@ -13,6 +13,7 @@ import Tile from "./FilesTile/sub-components/Tile";
 import FilesContent from "./FilesContent";
 import SimpleFilesRow from "./FilesRow/SimpleFilesRow";
 import { EncryptedFileIcon } from "./sub-components/Icons";
+
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 
 const FileItem = createSelectable((props) => {
@@ -31,7 +32,7 @@ const FileItem = createSelectable((props) => {
     isPrivacy,
     isRecycleBin,
     canShare,
-    //isFolder, take from item
+    isFolder,
     draggable,
     isRootFolder,
     actionId,
@@ -53,9 +54,10 @@ const FileItem = createSelectable((props) => {
     contextOptions,
     icon,
     providerKey,
-    isFolder,
     contentLength,
   } = item;
+
+  const isMobile = sectionWidth < 500;
   const getItemIcon = (isEdit) => {
     return (
       <>
@@ -127,12 +129,14 @@ const FileItem = createSelectable((props) => {
     if (!draggable) {
       return;
     }
-
-    if (
+    /*if (
       window.innerWidth < 1025 ||
       e.target.tagName === "rect" ||
       e.target.tagName === "path"
     ) {
+      return;
+    }*/
+    if (isMobile) {
       return;
     }
     const mouseButton = e.which
@@ -153,8 +157,6 @@ const FileItem = createSelectable((props) => {
   value += draggable ? "_draggable" : "";
 
   const isThirdPartyFolder = providerKey && isRootFolder; //?
-
-  const isMobile = sectionWidth < 500;
 
   const isEdit =
     !!actionType && actionId === id && fileExst === actionExtension;
@@ -185,18 +187,18 @@ const FileItem = createSelectable((props) => {
   return (
     <div ref={props.selectableRef}>
       <DragAndDrop
+        value={value}
         className={className}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
         {...contextOptionsProps}
-        value={value}
       >
         {viewAs === "tile" ? (
           <Tile
             key={id}
             item={item}
-            isFolder={isFolder}
+            isFolder={item.isFolder}
             element={element}
             onSelect={onContentFileSelect}
             rowContextClick={fileContextClick} // rename!
@@ -278,7 +280,7 @@ export default inject(
       (x) => x.id === item.id && x.fileExst === item.fileExst
     );
 
-    //const isFolder = selectedItem ? false : item.fileExst ? false : true;
+    const isFolder = selectedItem ? false : item.fileExst ? false : true;
     const draggable =
       !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
 
