@@ -283,8 +283,6 @@ class TeamTemplate extends React.Component {
 
     this.setState({ [name]: value });
 
-    console.log("change");
-
     if (selectedOption.label !== teamTemplate[3].name) {
       this.setState({
         id: teamTemplate[3].id,
