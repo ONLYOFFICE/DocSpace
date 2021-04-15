@@ -84,16 +84,17 @@ const ThirdPartyDialog = (props) => {
   };
 
   const showOAuthModal = (token, serviceData) => {
-    setConnectDialogVisible(true);
     setConnectItem({
       title: serviceData.title,
       provider_key: serviceData.title,
       link: serviceData.link,
       token,
     });
+    setConnectDialogVisible(true);
   };
 
   const onShowService = (e) => {
+    setThirdPartyDialogVisible(false);
     const item = e.currentTarget.dataset;
     const showAccountSetting = !e.currentTarget.dataset.link;
     if (!showAccountSetting) {
@@ -103,12 +104,14 @@ const ThirdPartyDialog = (props) => {
         "height=600, width=1020"
       );
       openConnectWindow(item.title, authModal).then((modal) =>
-        getOAuthToken(modal).then((token) => showOAuthModal(token, item))
+        getOAuthToken(modal).then((token) => {
+          showOAuthModal(token, item);
+          setConnectItem(item);
+          setConnectDialogVisible(true);
+        })
       );
     }
 
-    setConnectDialogVisible(true);
-    setConnectItem(item);
     setThirdPartyDialogVisible(false);
   };
 
