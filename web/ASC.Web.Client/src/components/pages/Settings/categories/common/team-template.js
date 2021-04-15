@@ -9,6 +9,7 @@ import toastr from "@appserver/components/toast/toastr";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { isMobile } from "react-device-detect";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
+import { mobile, tablet } from "@appserver/components/utils/device";
 
 const StyledComponent = styled.div`
   .team-template_text-input {
@@ -20,21 +21,6 @@ const StyledComponent = styled.div`
   }
   .main-field-container {
     margin-bottom: 32px;
-  }
-  .team-template_buttons {
-    position: absolute;
-
-    justify-content: space-between;
-    ${isMobile &&
-    `
-      max-width: 500px;
-      position: static;
-      padding-left: 0px;
- 
-    `}
-  }
-  .cancel-button {
-    margin-right: 16px;
   }
 `;
 let options = [];
@@ -60,6 +46,7 @@ const settingNames = [
   "guestCaption",
   "guestsCaption",
 ];
+
 class TeamTemplate extends React.Component {
   constructor(props) {
     super(props);
@@ -121,7 +108,8 @@ class TeamTemplate extends React.Component {
   componentDidMount() {
     const { getCustomSchema, showReminder } = this.props;
     const { isChanged } = this.props;
-
+    const { customNames } = this.props;
+    console.log("custom", customNames);
     //isChanged && this.setState()
     //debugger;
     if (
@@ -387,9 +375,9 @@ class TeamTemplate extends React.Component {
         usersCaption,
         groupCaption,
         groupsCaption,
+        userPostCaption,
         regDateCaption,
         groupHeadCaption,
-        userPostCaption,
         guestCaption,
         guestsCaption
       )
