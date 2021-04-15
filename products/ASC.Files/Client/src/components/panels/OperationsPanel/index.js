@@ -5,6 +5,7 @@ import { withTranslation } from "react-i18next";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import { inject, observer } from "mobx-react";
+import toastr from "studio/toastr";
 
 const OperationsPanelComponent = (props) => {
   const {
@@ -78,6 +79,8 @@ const OperationsPanelComponent = (props) => {
         folderIds.push(item.id);
       }
     }
+
+    if (!folderIds.length && !fileIds.length) return;
 
     itemOperationToFolder(
       destFolderId,
