@@ -178,6 +178,7 @@ class IconFormatsStore {
     providerKey = null,
     contentLength = null
   ) => {
+    console.log(size);
     if (fileExst || contentLength) {
       const isArchiveItem = this.isArchive(fileExst);
       const isImageItem = this.isImage(fileExst);
@@ -192,7 +193,7 @@ class IconFormatsStore {
         isSoundItem,
         isHtmlItem
       );
-
+      console.log(icon);
       return icon;
     } else {
       return this.getFolderIcon(providerKey, size);

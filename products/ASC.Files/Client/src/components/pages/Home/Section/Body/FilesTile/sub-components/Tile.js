@@ -87,12 +87,13 @@ const StyledContent = styled.div`
 
 const StyledCheckbox = styled.div`
   flex: 0 0 16px;
+  margin-right: -4px;
 `;
 
 const StyledElement = styled.div`
   flex: 0 0 auto;
   display: flex;
-  margin-right: 8px;
+  margin-right: 4px;
   user-select: none;
 `;
 

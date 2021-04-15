@@ -708,7 +708,10 @@ class FilesStore {
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
 
       //const isCanWebEdit = canWebEdit(item.fileExst);
-      const icon = getIcon(24, fileExst, providerKey, contentLength);
+      const icon =
+        this.viewAs !== "tile"
+          ? getIcon(24, fileExst, providerKey, contentLength)
+          : getIcon(32, fileExst, providerKey, contentLength);
 
       let isFolder = false;
       this.folders.map((x) => {
