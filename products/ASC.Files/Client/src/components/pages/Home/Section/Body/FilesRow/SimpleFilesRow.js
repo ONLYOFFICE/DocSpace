@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Row from "@appserver/components/row";
+import { createSelectable } from "react-selectable-fast";
 
 export default styled(Row)`
   margin-top: -2px;

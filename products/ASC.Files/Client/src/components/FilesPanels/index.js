@@ -6,6 +6,7 @@ import {
   OperationsPanel,
   VersionHistoryPanel,
   ChangeOwnerPanel,
+  NewFilesPanel,
 } from "../panels";
 import {
   ThirdPartyMoveDialog,
@@ -32,6 +33,7 @@ const Panels = (props) => {
     downloadDialogVisible,
     emptyTrashDialogVisible,
     thirdPartyDialogVisible,
+    newFilesPanelVisible,
   } = props;
 
   return [
@@ -60,6 +62,7 @@ const Panels = (props) => {
     emptyTrashDialogVisible && <EmptyTrashDialog key="empty-trash-dialog" />,
     downloadDialogVisible && <DownloadDialog key="download-dialog" />,
     thirdPartyDialogVisible && <ThirdPartyDialog key="thirdparty-dialog" />,
+    newFilesPanelVisible && <NewFilesPanel key="new-files-panel" />,
   ];
 };
 
@@ -77,6 +80,7 @@ export default inject(
       downloadDialogVisible,
       emptyTrashDialogVisible,
       thirdPartyDialogVisible,
+      newFilesPanelVisible,
 
       connectItem, //TODO:
     } = dialogsStore;
@@ -98,6 +102,7 @@ export default inject(
       downloadDialogVisible,
       emptyTrashDialogVisible,
       thirdPartyDialogVisible,
+      newFilesPanelVisible,
     };
   }
 )(observer(Panels));

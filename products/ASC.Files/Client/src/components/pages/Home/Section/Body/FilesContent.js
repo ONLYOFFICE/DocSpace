@@ -70,9 +70,6 @@ class FilesContent extends React.Component {
 
     this.state = {
       itemTitle: titleWithoutExt,
-      showNewFilesPanel: false,
-      newFolderId: [],
-      newItems: props.item.new || props.item.fileStatus === 2,
       showConvertDialog: false,
       //loading: false
     };
@@ -335,41 +332,28 @@ class FilesContent extends React.Component {
   };
 
   onBadgeClick = () => {
-    const { showNewFilesPanel } = this.state;
     const {
       item,
-      treeFolders,
-      setTreeFolders,
       selectedFolderPathParts,
-      newItems,
-      setNewRowItems,
       markAsRead,
+      setNewFilesPanelVisible,
+      setNewFilesIds,
+      updateRootBadge,
+      updateFileBadge,
     } = this.props;
     if (item.fileExst) {
       markAsRead([], [item.id])
         .then(() => {
-          const data = treeFolders;
-          const dataItem = data.find(
-            (x) => x.id === selectedFolderPathParts[0]
-          );
-          dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;
-          setTreeFolders(data);
-          setNewRowItems([`${item.id}`]);
+          updateRootBadge(selectedFolderPathParts[0], 1);
+          updateFileBadge(item.id);
         })
         .catch((err) => toastr.error(err));
     } else {
-      const newFolderId = this.props.selectedFolderPathParts;
-      newFolderId.push(item.id);
-      this.setState({
-        showNewFilesPanel: !showNewFilesPanel,
-        newFolderId,
-      });
+      setNewFilesPanelVisible(true);
+      const newFolderIds = this.props.selectedFolderPathParts;
+      newFolderIds.push(item.id);
+      setNewFilesIds(newFolderIds);
     }
-  };
-
-  onShowNewFilesPanel = () => {
-    const { showNewFilesPanel } = this.state;
-    this.setState({ showNewFilesPanel: !showNewFilesPanel });
   };
 
   setConvertDialogVisible = () =>
@@ -538,13 +522,6 @@ class FilesContent extends React.Component {
             onConvert={this.onConvert}
           />
         )}
-        {showNewFilesPanel && (
-          <NewFilesPanel
-            visible={showNewFilesPanel}
-            onClose={this.onShowNewFilesPanel}
-            folderId={newFolderId}
-          />
-        )}
         <Content
           viewAs={viewAs}
           sectionWidth={sectionWidth}
@@ -669,6 +646,7 @@ export default inject(
       filesActionsStore,
       mediaViewerDataStore,
       versionHistoryStore,
+      dialogsStore,
     },
     { item }
   ) => {
@@ -704,8 +682,6 @@ export default inject(
     const {
       fetchFiles,
       filter,
-      setNewRowItems,
-      newRowItems,
       createFile,
       updateFile,
       renameFolder,
@@ -736,6 +712,8 @@ export default inject(
     const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
     const isImage = iconFormatsStore.isImage(item.fileExst);
     const isSound = iconFormatsStore.isSound(item.fileExst);
+
+    const { setNewFilesPanelVisible, setNewFilesIds } = dialogsStore;
 
     return {
       isLoading,
