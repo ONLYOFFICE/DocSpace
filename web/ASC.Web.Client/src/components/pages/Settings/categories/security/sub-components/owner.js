@@ -10,60 +10,17 @@ import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
 import Button from "@appserver/components/button";
 import Heading from "@appserver/components/heading";
-import RequestLoader from "@appserver/components/request-loader";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import Loader from "@appserver/components/loader";
 import PeopleSelector from "people/PeopleSelector";
 import isEmpty from "lodash/isEmpty";
 import { inject } from "mobx-react";
-import { showLoader, hideLoader, combineUrl } from "@appserver/common/utils";
-import ArrowRightIcon from "@appserver/studio/public/images/arrow.right.react.svg";
+import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
-
-const StyledArrowRightIcon = styled(ArrowRightIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: ${(props) => props.color};
-  }
-`;
 
 const StyledWrapper = styled.div`
   .portal-owner-description {
     margin-left: 16px;
     overflow: hidden;
     width: 100%;
-  }
-
-  .category-item-wrapper {
-    margin-bottom: 40px;
-
-    .category-item-heading {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-
-    .category-item-subheader {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-
-    .category-item-description {
-      color: #555f65;
-      font-size: 12px;
-      max-width: 1024px;
-    }
-
-    .inherit-title-link {
-      margin-right: 7px;
-      font-size: 19px;
-      font-weight: 600;
-    }
-
-    .link-text {
-      margin: 0;
-    }
   }
 `;
 
@@ -156,15 +113,7 @@ class PureOwnerSettings extends Component {
   }
 
   async componentDidMount() {
-    const {
-      owner,
-      getPortalOwner,
-      admins,
-      filter,
-      getUpdateListAdmin,
-    } = this.props;
-
-    showLoader();
+    const { owner, getPortalOwner } = this.props;
 
     if (isEmpty(owner, true)) {
       try {
@@ -173,22 +122,10 @@ class PureOwnerSettings extends Component {
         toastr.error(error);
       }
     }
-
-    if (isEmpty(admins, true)) {
-      try {
-        const newFilter = filter.clone();
-        await getUpdateListAdmin(newFilter);
-      } catch (error) {
-        toastr.error(error);
-      }
-    }
-
-    this.setState({ showLocalLoader: false });
-    hideLoader();
   }
 
   onChangeOwner = () => {
-    const { t, owner, sendOwnerChange } = this.props;
+    const { sendOwnerChange } = this.props;
     const { selectedOwner } = this.state;
     sendOwnerChange(selectedOwner.key)
       .then((res) => toastr.success(res.message)) //toastr.success(t("DnsChangeMsg", { email: owner.email })))
@@ -213,132 +150,93 @@ class PureOwnerSettings extends Component {
   };
 
   render() {
-    const { t, owner, me, groupsCaption, admins } = this.props;
-    const {
-      isLoading,
-      showLocalLoader,
-      showSelector,
-      selectedOwner,
-    } = this.state;
+    const { t, owner, me, groupsCaption } = this.props;
+    const { isLoading, showSelector, selectedOwner } = this.state;
 
     const formattedDepartments =
       owner.department && getFormattedDepartments(owner.groups);
 
     return (
-      <>
-        {showLocalLoader ? (
-          <Loader className="pageLoader" type="rombs" size="40px" />
-        ) : (
-          <StyledWrapper>
-            <OwnerContainer>
-              <div className="owner-content-wrapper">
-                <Link href={owner.profileUrl}>
-                  <Avatar
-                    className="avatar_wrapper"
-                    size="big"
-                    userName={owner.userName}
-                    source={owner.avatar}
-                    role="user"
-                  />
-                </Link>
+      <StyledWrapper>
+        <OwnerContainer>
+          <div className="owner-content-wrapper">
+            <Link href={owner.profileUrl}>
+              <Avatar
+                className="avatar_wrapper"
+                size="big"
+                userName={owner.userName}
+                source={owner.avatar}
+                role="user"
+              />
+            </Link>
 
-                <div className="portal-owner-description">
-                  <Heading
-                    className="portal-owner-heading"
-                    level={3}
-                    size="small"
-                  >
-                    {t("PortalOwner")}
-                  </Heading>
-                  <div className="portal-owner-info">
-                    <Link
-                      className="avatar_text"
-                      fontSize="13px"
-                      fontWeight={600}
-                      isBold={true}
-                      color="#316DAA"
-                      href={owner.profileUrl}
-                    >
-                      {owner.displayName}
-                    </Link>
-                    {owner.groups && (
-                      <div className="group-wrapper">
-                        <Text as="span">(</Text>
-                        {formattedDepartments}
-                        <Text as="span">)</Text>
-                      </div>
-                    )}
-                  </div>
-                  <Text className="PortalOwnerDescription" color="#555F65">
-                    {t("PortalOwnerDescription")}
-                  </Text>
-                  <div className="chooseOwnerWrap">
-                    <Link
-                      className="link_style"
-                      isHovered={true}
-                      onClick={this.onShowSelector.bind(this, !showSelector)}
-                    >
-                      {selectedOwner ? selectedOwner.label : t("ChooseOwner")}
-                    </Link>
-
-                    <Button
-                      className="button_offset"
-                      size="medium"
-                      primary={true}
-                      label={t("AccessRightsChangeOwnerButtonText")}
-                      isDisabled={!isLoading ? selectedOwner === null : false}
-                      onClick={this.onChangeOwner}
-                    />
-                    <Text
-                      className="text-body_inline"
-                      fontSize="12px"
-                      color="#A3A9AE"
-                    >
-                      {t("AccessRightsChangeOwnerConfirmText")}
-                    </Text>
-                  </div>
-                </div>
-              </div>
-
-              <div className="advanced-selector">
-                <PeopleSelector
-                  isOpen={showSelector}
-                  size={"compact"}
-                  onSelect={this.onSelect}
-                  onCancel={this.onCancelSelector}
-                  defaultOption={me}
-                  defaultOptionLabel={t("MeLabel")}
-                  groupsCaption={groupsCaption}
-                />
-              </div>
-            </OwnerContainer>
-            <div className="category-item-wrapper">
-              <div className="category-item-heading">
+            <div className="portal-owner-description">
+              <Heading className="portal-owner-heading" level={3} size="small">
+                {t("PortalOwner")}
+              </Heading>
+              <div className="portal-owner-info">
                 <Link
-                  className="inherit-title-link header"
-                  onClick={this.onClickLink}
-                  truncate={true}
-                  href={combineUrl(
-                    AppServerConfig.proxyURL,
-                    "/settings/security/access-rights/portal-admins"
-                  )}
+                  className="avatar_text"
+                  fontSize="13px"
+                  fontWeight={600}
+                  isBold={true}
+                  color="#316DAA"
+                  href={owner.profileUrl}
                 >
-                  {t("PortalAdmins")}
+                  {owner.displayName}
                 </Link>
-                <StyledArrowRightIcon size="small" color="#333333" />
+                {owner.groups && (
+                  <div className="group-wrapper">
+                    <Text as="span">(</Text>
+                    {formattedDepartments}
+                    <Text as="span">)</Text>
+                  </div>
+                )}
               </div>
-              {admins.length > 0 && (
-                <Text className="category-item-subheader" truncate={true}>
-                  {admins.length} {t("Employees")}
-                </Text>
-              )}
-              <Text className="category-item-description">
-                {t("PortalAdminsDescription")}
+              <Text className="PortalOwnerDescription" color="#555F65">
+                {t("PortalOwnerDescription")}
               </Text>
+              <div className="chooseOwnerWrap">
+                <Link
+                  className="link_style"
+                  isHovered={true}
+                  onClick={this.onShowSelector.bind(this, !showSelector)}
+                >
+                  {selectedOwner ? selectedOwner.label : t("ChooseOwner")}
+                </Link>
+
+                <Button
+                  className="button_offset"
+                  size="medium"
+                  primary={true}
+                  label={t("AccessRightsChangeOwnerButtonText")}
+                  isDisabled={!isLoading ? selectedOwner === null : false}
+                  onClick={this.onChangeOwner}
+                />
+                <Text
+                  className="text-body_inline"
+                  fontSize="12px"
+                  color="#A3A9AE"
+                >
+                  {t("AccessRightsChangeOwnerConfirmText")}
+                </Text>
+              </div>
             </div>
-          </StyledWrapper>
-        )}
-      </>
+          </div>
+
+          <div className="advanced-selector">
+            <PeopleSelector
+              isOpen={showSelector}
+              size={"compact"}
+              onSelect={this.onSelect}
+              onCancel={this.onCancelSelector}
+              defaultOption={me}
+              defaultOptionLabel={t("MeLabel")}
+              groupsCaption={groupsCaption}
+            />
+          </div>
+        </OwnerContainer>
+      </StyledWrapper>
     );
   }
 }
@@ -352,22 +250,12 @@ PureOwnerSettings.propTypes = {
 };
 
 export default inject(({ auth, setup }) => {
-  const {
-    customNames,
-    getPortalOwner,
-    owner,
-    fetchPeople,
-  } = auth.settingsStore;
-  const { admins, filter } = setup.security.accessRight;
-  const { sendOwnerChange, getUpdateListAdmin } = setup;
+  const { customNames, getPortalOwner, owner } = auth.settingsStore;
+  const { sendOwnerChange } = setup;
   return {
     groupsCaption: customNames.groupsCaption,
     getPortalOwner,
     owner,
-    admins,
-    filter,
-    fetchPeople,
-    getUpdateListAdmin,
     me: auth.userStore.user,
     sendOwnerChange,
   };
