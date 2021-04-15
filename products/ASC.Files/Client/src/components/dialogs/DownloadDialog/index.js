@@ -155,8 +155,9 @@ class DownloadDialogComponent extends React.Component {
       downloadFormatFiles(fileConvertIds, folderIds)
         .then((res) => {
           this.onClose();
-          getDownloadProgress(res[0], t("ArchivingData"))
-            .catch((err) => toastr.error(err));
+          getDownloadProgress(res[0], t("ArchivingData")).catch((err) =>
+            toastr.error(err)
+          );
         })
         .catch((err) => {
           setSecondaryProgressBarData({
@@ -438,6 +439,13 @@ class DownloadDialogComponent extends React.Component {
     const showOther = otherLength > 1;
     const minHeight = otherLength > 2 ? 110 : otherLength * 50;
 
+    const isSingleFile =
+      documents.filter((f) => f.checked).length +
+        spreadsheets.filter((f) => f.checked).length +
+        presentations.filter((f) => f.checked).length +
+        other.filter((f) => f.checked).length ===
+      1;
+
     return (
       <ModalDialogContainer>
         <ModalDialog visible={visible} onClose={this.onClose}>
@@ -550,7 +558,7 @@ class DownloadDialogComponent extends React.Component {
               </>
             )}
 
-            <Text>{t("ConvertToZip")}</Text>
+            {!isSingleFile && <Text>{t("ConvertToZip")}</Text>}
             <Text>{t("ConvertMessage")}</Text>
           </ModalDialog.Body>
           <ModalDialog.Footer>
