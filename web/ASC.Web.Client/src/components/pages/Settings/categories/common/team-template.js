@@ -149,12 +149,38 @@ class TeamTemplate extends React.Component {
     console.log("select", option);
 
     const { teamTemplate } = this.props;
-
+    const { formErrors } = this.state;
     const currentTemplate = teamTemplate[option.key];
 
-    if (this.settingIsEqualInitialValue("id", currentTemplate.id))
+    if (this.settingIsEqualInitialValue("id", currentTemplate.id)) {
       this.setState({ isChanged: false });
-    else this.setState({ isChanged: true });
+      const isError =
+        formErrors.userCaption ||
+        formErrors.usersCaption ||
+        formErrors.groupCaption ||
+        formErrors.groupsCaption ||
+        formErrors.userPostCaption ||
+        formErrors.regDateCaption ||
+        formErrors.groupHeadCaption ||
+        formErrors.guestCaption ||
+        formErrors.guestsCaption;
+
+      if (isError) {
+        this.setState({
+          formErrors: {
+            userCaption: false,
+            usersCaption: false,
+            groupCaption: false,
+            groupsCaption: false,
+            userPostCaption: false,
+            regDateCaption: false,
+            groupHeadCaption: false,
+            guestCaption: false,
+            guestsCaption: false,
+          },
+        });
+      }
+    } else this.setState({ isChanged: true });
 
     this.setState({
       selectedOption: {
@@ -172,6 +198,27 @@ class TeamTemplate extends React.Component {
       guestCaption: currentTemplate.guestCaption,
       guestsCaption: currentTemplate.guestsCaption,
     });
+
+    const fieldsArray = this.getFields(currentTemplate);
+    const keysArray = Object.keys(currentTemplate);
+
+    saveToSessionStorage("selectedOption", currentTemplate.name);
+
+    for (let i = 0; i < keysArray.length; i++) {
+      if (
+        this.settingIsEqualInitialValue(`${keysArray[i]}`, `${fieldsArray[i]}`)
+      ) {
+        saveToSessionStorage(`${keysArray[i]}`, "");
+      } else {
+        saveToSessionStorage(`${keysArray[i]}`, `${fieldsArray[i]}`);
+      }
+    }
+  };
+
+  getFields = (obj) => {
+    return Object.keys(obj).reduce((acc, rec) => {
+      return [...acc, obj[rec]];
+    }, []);
   };
 
   getOptions = () => {
@@ -199,10 +246,12 @@ class TeamTemplate extends React.Component {
 
   checkChanges = () => {
     const { customNames } = this.props;
+
     let isChanged = false;
 
     settingNames.forEach((settingName) => {
       const valueFromSessionStorage = getFromSessionStorage(settingName);
+
       if (
         valueFromSessionStorage &&
         !this.settingIsEqualInitialValue(settingName, valueFromSessionStorage)
@@ -348,6 +397,11 @@ class TeamTemplate extends React.Component {
         .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
         .catch((error) => toastr.error(error));
     }
+
+    this.setState({
+      showReminder: false,
+      isChanged: false,
+    });
   };
   onCancelClick = () => {
     const { customNames } = this.props;
