@@ -150,23 +150,40 @@ class PureOwnerSettings extends Component {
     this.state = {
       isLoading: false,
       showSelector: false,
-      showLoader: true,
+      showLocalLoader: true,
       selectedOwner: null,
     };
   }
 
-  componentDidMount() {
-    const { owner, getPortalOwner } = this.props;
+  async componentDidMount() {
+    const {
+      owner,
+      getPortalOwner,
+      admins,
+      filter,
+      getUpdateListAdmin,
+    } = this.props;
+
     showLoader();
+
     if (isEmpty(owner, true)) {
-      getPortalOwner()
-        .catch((error) => {
-          toastr.error(error);
-        })
-        .finally(() => this.setState({ showLoader: false }));
-    } else {
-      this.setState({ showLoader: false });
+      try {
+        await getPortalOwner();
+      } catch (error) {
+        toastr.error(error);
+      }
     }
+
+    if (isEmpty(admins, true)) {
+      try {
+        const newFilter = filter.clone();
+        await getUpdateListAdmin(newFilter);
+      } catch (error) {
+        toastr.error(error);
+      }
+    }
+
+    this.setState({ showLocalLoader: false });
     hideLoader();
   }
 
@@ -196,15 +213,20 @@ class PureOwnerSettings extends Component {
   };
 
   render() {
-    const { t, owner, me, groupsCaption } = this.props;
-    const { isLoading, showLoader, showSelector, selectedOwner } = this.state;
+    const { t, owner, me, groupsCaption, admins } = this.props;
+    const {
+      isLoading,
+      showLocalLoader,
+      showSelector,
+      selectedOwner,
+    } = this.state;
 
     const formattedDepartments =
       owner.department && getFormattedDepartments(owner.groups);
 
     return (
       <>
-        {showLoader ? (
+        {showLocalLoader ? (
           <Loader className="pageLoader" type="rombs" size="40px" />
         ) : (
           <StyledWrapper>
@@ -305,9 +327,11 @@ class PureOwnerSettings extends Component {
                 </Link>
                 <StyledArrowRightIcon size="small" color="#333333" />
               </div>
-              <Text className="category-item-subheader" truncate={true}>
-                8 employees (Test value)
-              </Text>
+              {admins.length > 0 && (
+                <Text className="category-item-subheader" truncate={true}>
+                  {admins.length} {t("Employees")}
+                </Text>
+              )}
               <Text className="category-item-description">
                 {t("PortalAdminsDescription")}
               </Text>
@@ -328,12 +352,22 @@ PureOwnerSettings.propTypes = {
 };
 
 export default inject(({ auth, setup }) => {
-  const { customNames, getPortalOwner, owner } = auth.settingsStore;
-  const { sendOwnerChange } = setup;
+  const {
+    customNames,
+    getPortalOwner,
+    owner,
+    fetchPeople,
+  } = auth.settingsStore;
+  const { admins, filter } = setup.security.accessRight;
+  const { sendOwnerChange, getUpdateListAdmin } = setup;
   return {
     groupsCaption: customNames.groupsCaption,
     getPortalOwner,
     owner,
+    admins,
+    filter,
+    fetchPeople,
+    getUpdateListAdmin,
     me: auth.userStore.user,
     sendOwnerChange,
   };
