@@ -46,7 +46,7 @@ const settingNames = [
   "guestCaption",
   "guestsCaption",
 ];
-
+let isError;
 class TeamTemplate extends React.Component {
   constructor(props) {
     super(props);
@@ -91,6 +91,7 @@ class TeamTemplate extends React.Component {
       showReminder: false,
       isLoading: false,
       isChanged: false,
+      availableOptions: [],
       formErrors: {
         userCaption: false,
         usersCaption: false,
@@ -106,11 +107,10 @@ class TeamTemplate extends React.Component {
   }
 
   componentDidMount() {
-    const { getCustomSchema, showReminder } = this.props;
-    const { isChanged } = this.props;
+    const { getCustomSchema, showReminder, teamTemplate } = this.props;
+
     const { customNames } = this.props;
-    console.log("custom", customNames);
-    //isChanged && this.setState()
+
     //debugger;
     if (
       userFromSessionStorage ||
@@ -129,7 +129,26 @@ class TeamTemplate extends React.Component {
           showReminder: true,
         });
     }
-
+    if (
+      !userFromSessionStorage &&
+      !usersFromSessionStorage &&
+      !groupFromSessionStorage &&
+      !groupsFromSessionStorage &&
+      !jobFromSessionStorage &&
+      !registrationDateFromSessionStorage &&
+      !groupLeadFromSessionStorage &&
+      !guestFromSessionStorage &&
+      !guestsFromSessionStorage &&
+      selectedOptionFromSessionStorage !== customNames.name
+    ) {
+      this.setState({
+        selectedOption: {
+          key: 0,
+          label: customNames.name,
+        },
+      });
+      saveToSessionStorage("selectedOption", customNames.name);
+    }
     getCustomSchema().then(() => this.getOptions());
   }
 
@@ -137,37 +156,27 @@ class TeamTemplate extends React.Component {
     console.log("select", option);
 
     const { teamTemplate } = this.props;
-    const { formErrors } = this.state;
+
     const currentTemplate = teamTemplate[option.key];
+
+    if (isError) {
+      this.setState({
+        formErrors: {
+          userCaption: false,
+          usersCaption: false,
+          groupCaption: false,
+          groupsCaption: false,
+          userPostCaption: false,
+          regDateCaption: false,
+          groupHeadCaption: false,
+          guestCaption: false,
+          guestsCaption: false,
+        },
+      });
+    }
 
     if (this.settingIsEqualInitialValue("id", currentTemplate.id)) {
       this.setState({ isChanged: false });
-      const isError =
-        formErrors.userCaption ||
-        formErrors.usersCaption ||
-        formErrors.groupCaption ||
-        formErrors.groupsCaption ||
-        formErrors.userPostCaption ||
-        formErrors.regDateCaption ||
-        formErrors.groupHeadCaption ||
-        formErrors.guestCaption ||
-        formErrors.guestsCaption;
-
-      if (isError) {
-        this.setState({
-          formErrors: {
-            userCaption: false,
-            usersCaption: false,
-            groupCaption: false,
-            groupsCaption: false,
-            userPostCaption: false,
-            regDateCaption: false,
-            groupHeadCaption: false,
-            guestCaption: false,
-            guestsCaption: false,
-          },
-        });
-      }
     } else this.setState({ isChanged: true });
 
     this.setState({
@@ -211,6 +220,7 @@ class TeamTemplate extends React.Component {
 
   getOptions = () => {
     const { isLoading, teamTemplate } = this.props;
+
     //debugger;
     console.log("isLoading", isLoading);
 
@@ -222,6 +232,7 @@ class TeamTemplate extends React.Component {
       };
       options.push(obj);
     }
+    this.setState({ availableOptions: options });
   };
 
   settingIsEqualInitialValue = (settingName, value) => {
@@ -229,12 +240,13 @@ class TeamTemplate extends React.Component {
     //debugger;
     const defaultValue = customNames[settingName];
     const currentValue = value;
+
     return defaultValue === currentValue;
   };
 
   checkChanges = () => {
-    const { customNames } = this.props;
-
+    const { customNames, selectedOption } = this.props;
+    //debugger;
     let isChanged = false;
 
     settingNames.forEach((settingName) => {
@@ -243,8 +255,9 @@ class TeamTemplate extends React.Component {
       if (
         valueFromSessionStorage &&
         !this.settingIsEqualInitialValue(settingName, valueFromSessionStorage)
-      )
+      ) {
         isChanged = true;
+      }
     });
 
     if (!isChanged) {
@@ -268,7 +281,7 @@ class TeamTemplate extends React.Component {
   onChangeInput = (e) => {
     //debugger;
     const { teamTemplate, customNames } = this.props;
-    const { selectedOption } = this.state;
+    const { selectedOption, isChanged } = this.state;
 
     const name = e.target.name;
     const value = e.target.value;
@@ -294,7 +307,11 @@ class TeamTemplate extends React.Component {
       saveToSessionStorage(`${name}`, `${value}`);
     }
 
-    this.checkChanges();
+    if (value.length === 0) {
+      this.setState({
+        isChanged: true,
+      });
+    } else this.checkChanges();
   };
   isInvalidForm = () => {
     const {
@@ -321,7 +338,7 @@ class TeamTemplate extends React.Component {
       guestsCaption: !guestsCaption.trim(),
     };
 
-    const isError =
+    isError =
       errors.userCaption ||
       errors.usersCaption ||
       errors.groupCaption ||
@@ -362,8 +379,6 @@ class TeamTemplate extends React.Component {
 
     if (this.isInvalidForm()) return;
 
-    //this.setState({ isLoading: true });
-    //debugger;
     if (selectedOption.label !== teamTemplate[3].name) {
       setCurrentShema(id)
         .then(() => getCurrentCustomSchema(id))
@@ -385,6 +400,10 @@ class TeamTemplate extends React.Component {
         .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
         .catch((error) => toastr.error(error));
     }
+
+    settingNames.forEach((settingName) => {
+      saveToSessionStorage(settingName, "");
+    });
 
     this.setState({
       showReminder: false,
@@ -414,7 +433,6 @@ class TeamTemplate extends React.Component {
   render() {
     const { t } = this.props;
 
-    console.log("options", options);
     const {
       userCaption,
       usersCaption,
@@ -429,8 +447,9 @@ class TeamTemplate extends React.Component {
       formErrors,
       isChanged,
       showReminder,
+      availableOptions,
     } = this.state;
-    console.log("showReminder", showReminder);
+
     return (
       <StyledComponent>
         <FieldContainer
@@ -440,7 +459,7 @@ class TeamTemplate extends React.Component {
           place="top"
         >
           <ComboBox
-            options={options}
+            options={availableOptions}
             selectedOption={selectedOption}
             onSelect={this.onCustomSchemaSelect}
             isDisabled={false}
