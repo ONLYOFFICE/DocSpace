@@ -3,6 +3,7 @@ import { ReactSVG } from "react-svg";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router-dom";
+import { createSelectable } from "react-selectable-fast";
 
 import DragAndDrop from "@appserver/components/drag-and-drop";
 import IconButton from "@appserver/components/icon-button";
@@ -14,7 +15,7 @@ import SimpleFilesRow from "./FilesRow/SimpleFilesRow";
 import { EncryptedFileIcon } from "./sub-components/Icons";
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 
-const FileItem = (props) => {
+const FileItem = createSelectable((props) => {
   const {
     t,
     history,
@@ -230,7 +231,7 @@ const FileItem = (props) => {
       </DragAndDrop>
     </div>
   );
-};
+});
 
 export default inject(
   (
