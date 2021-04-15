@@ -34,6 +34,8 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 
+using AutoMapper;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
@@ -46,29 +48,33 @@ namespace ASC.CRM.Core.Dao
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
-            ICache ascCache) :
+            ICache ascCache,
+            IMapper mapper) :
               base(dbContextManager,
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache)
+                 ascCache,
+                 mapper)
         {
 
         }
 
         public virtual List<CurrencyRate> GetAll()
         {
-            return CRMDbContext.CurrencyRate.Where(x => x.TenantId == TenantID).ToList().ConvertAll(ToCurrencyRate);
+            var rates = CRMDbContext.CurrencyRate.Where(x => x.TenantId == TenantID).ToList();
+
+            return _mapper.Map<List<DbCurrencyRate>, List<CurrencyRate>>(rates);
         }
 
         public virtual CurrencyRate GetByID(int id)
         {
-            return ToCurrencyRate(CRMDbContext.CurrencyRate.FirstOrDefault(x => x.Id == id));
+            return _mapper.Map<CurrencyRate>(CRMDbContext.CurrencyRate.FirstOrDefault(x => x.Id == id));
         }
 
         public CurrencyRate GetByCurrencies(string fromCurrency, string toCurrency)
         {
-            return ToCurrencyRate(CRMDbContext.CurrencyRate.FirstOrDefault(x => x.TenantId == TenantID && String.Compare(x.FromCurrency, fromCurrency, true) == 0 &&
+            return _mapper.Map<CurrencyRate>(CRMDbContext.CurrencyRate.FirstOrDefault(x => x.TenantId == TenantID && String.Compare(x.FromCurrency, fromCurrency, true) == 0 &&
                                                  String.Compare(x.ToCurrency, toCurrency, true) == 0));
         }
 
@@ -162,23 +168,6 @@ namespace ASC.CRM.Core.Dao
             tx.Commit();
 
             return rates;
-        }
-
-        private static CurrencyRate ToCurrencyRate(DbCurrencyRate dbCurrencyRate)
-        {
-            if (dbCurrencyRate == null) return null;
-
-            return new CurrencyRate
-            {
-                ID = dbCurrencyRate.Id,
-                FromCurrency = dbCurrencyRate.FromCurrency,
-                ToCurrency = dbCurrencyRate.ToCurrency,
-                Rate = dbCurrencyRate.Rate,
-                CreateBy = dbCurrencyRate.CreateBy,
-                CreateOn = dbCurrencyRate.CreateOn,
-                LastModifedBy = dbCurrencyRate.LastModifedBy,
-                LastModifedOn = dbCurrencyRate.LastModifedOn
-            };
         }
     }
 }

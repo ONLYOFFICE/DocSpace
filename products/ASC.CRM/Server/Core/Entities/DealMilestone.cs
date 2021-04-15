@@ -29,33 +29,23 @@
 using System;
 using System.Runtime.Serialization;
 
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
 
 #endregion
 
 namespace ASC.CRM.Core.Entities
 {
-
-    [DataContract]
-    public class DealMilestone : DomainObject
+    public class DealMilestone : DomainObject, IMapFrom<DbDealMilestone>
     {
-        [DataMember(Name = "title")]
         public String Title { get; set; }
-
-        [DataMember(Name = "description")]
         public String Description { get; set; }
-
-        [DataMember(Name = "color")]
         public String Color { get; set; }
 
         [DataMember(Name = "sort_order")]
         public int SortOrder { get; set; }
-
-        [DataMember(Name = "probability")]
         public int Probability { get; set; }
-
-        [DataMember(Name = "status")]
         public DealMilestoneStatus Status { get; set; }
-
     }
 }

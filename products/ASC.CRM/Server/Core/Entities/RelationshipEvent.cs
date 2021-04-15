@@ -29,12 +29,14 @@
 using System;
 
 using ASC.Common.Security;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
 #endregion
 
 namespace ASC.CRM.Core.Entities
 {
-    public class RelationshipEvent : DomainObject, ISecurityObjectId
+    public class RelationshipEvent : DomainObject, ISecurityObjectId, IMapFrom<DbRelationshipEvent>
     {
         public Guid CreateBy { get; set; }
         public DateTime CreateOn { get; set; }

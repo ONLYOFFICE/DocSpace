@@ -27,26 +27,24 @@
 using System;
 using System.Runtime.Serialization;
 
+using ASC.CRM.Core.EF;
+using ASC.CRM.Mapping;
 using ASC.CRM.Resources;
 
 namespace ASC.CRM.Core
 {
-    [DataContract]
-    public class CurrencyInfo
+    public class CurrencyInfo : IMapFrom<DbCurrencyInfo>
     {
         private readonly String _resourceKey;
 
-        [DataMember(Name = "title")]
         public String Title
         {
             get
             {
-
                 if (String.IsNullOrEmpty(_resourceKey))
                     return String.Empty;
 
                 return CRMCommonResource.ResourceManager.GetString(_resourceKey);
-
             }
         }
 
@@ -55,6 +53,11 @@ namespace ASC.CRM.Core
         public string CultureName { get; set; }
         public bool IsConvertable { get; set; }
         public bool IsBasic { get; set; }
+
+        public CurrencyInfo()
+        {
+                
+        }
 
         public CurrencyInfo(string resourceKey, string abbreviation, string symbol, string cultureName, bool isConvertable, bool isBasic)
         {

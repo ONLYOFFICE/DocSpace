@@ -45,6 +45,8 @@ using ASC.ElasticSearch;
 using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Core.Search;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -70,7 +72,8 @@ namespace ASC.CRM.Core.Dao
             InvoiceSetting invoiceSetting,
             InvoiceFormattedData invoiceFormattedData,
             CRMSecurity crmSecurity,
-            TenantUtil tenantUtil)
+            TenantUtil tenantUtil,
+            IMapper mapper)
               : base(dbContextManager,
                  tenantManager,
                  securityContext,
@@ -81,7 +84,8 @@ namespace ASC.CRM.Core.Dao
                  invoiceSetting,
                  invoiceFormattedData,
                  crmSecurity,
-                 tenantUtil
+                 tenantUtil,
+                 mapper
                  )
         {
             _invoiceCache = new HttpRequestDictionary<Invoice>(httpContextAccessor?.HttpContext, "crm_invoice");
@@ -149,12 +153,14 @@ namespace ASC.CRM.Core.Dao
             InvoiceSetting invoiceSetting,
             InvoiceFormattedData invoiceFormattedData,
             CRMSecurity crmSecurity,
-            TenantUtil tenantUtil)
+            TenantUtil tenantUtil,
+            IMapper mapper)
               : base(dbContextManager,
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache)
+                 ascCache,
+                 mapper)
         {
             _factoryIndexer = factoryIndexer;
             _settingsManager = settingsManager;
@@ -189,17 +195,19 @@ namespace ASC.CRM.Core.Dao
 
         public virtual List<Invoice> GetAll()
         {
-            return Query(CRMDbContext.Invoices)
-                .ToList()
-                .ConvertAll(ToInvoice);
+            var dbInvoices = Query(CRMDbContext.Invoices)
+                .ToList();
+
+            return _mapper.Map<List<DbInvoice>, List<Invoice>>(dbInvoices);
         }
 
         public virtual List<Invoice> GetByID(int[] ids)
         {
-            return Query(CRMDbContext.Invoices)
+            var dbInvoices = Query(CRMDbContext.Invoices)
                         .Where(x => ids.Contains(x.Id))
-                        .ToList()
-                        .ConvertAll(ToInvoice);
+                        .ToList();
+
+            return _mapper.Map<List<DbInvoice>, List<Invoice>>(dbInvoices);
         }
 
         public virtual Invoice GetByID(int id)
@@ -209,17 +217,17 @@ namespace ASC.CRM.Core.Dao
 
         public virtual Invoice GetByIDFromDb(int id)
         {
-            return ToInvoice(Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Id == id));
+            return _mapper.Map<Invoice>(Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Id == id));
         }
 
         public Invoice GetByNumber(string number)
         {
-            return ToInvoice(Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Number == number));
+            return _mapper.Map<Invoice>(Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Number == number));
         }
 
         public Invoice GetByFileId(Int32 fileID)
         {
-            return ToInvoice(Query(CRMDbContext.Invoices)
+            return _mapper.Map<Invoice>(Query(CRMDbContext.Invoices)
                     .FirstOrDefault(x => x.FileId == fileID));
         }
 
@@ -383,7 +391,7 @@ namespace ASC.CRM.Core.Dao
                 sqlQuery = sqlQuery.OrderBy("Number", orderBy.IsAsc);
             }
 
-            return sqlQuery.ToList().ConvertAll(ToInvoice);
+            return _mapper.Map<List<DbInvoice>, List<Invoice>>(sqlQuery.ToList());
         }
 
         public int GetAllInvoicesCount()
@@ -459,25 +467,30 @@ namespace ASC.CRM.Core.Dao
         {
             if (ids == null || !ids.Any()) return new List<Invoice>();
 
-            return Query(CRMDbContext.Invoices)
+            var dbInvoices = Query(CRMDbContext.Invoices)
                 .Where(x => ids.Contains(x.Id))
-                .ToList()
-                .ConvertAll(ToInvoice)
+                .ToList();
+
+            return _mapper.Map<List<DbInvoice>, List<Invoice>>(dbInvoices)
                 .FindAll(_crmSecurity.CanAccessTo);
         }
 
         public List<Invoice> GetEntityInvoices(EntityType entityType, int entityID)
         {
             var result = new List<Invoice>();
+            
             if (entityID <= 0)
                 return result;
 
             if (entityType == EntityType.Opportunity)
             {
-                return Query(CRMDbContext.Invoices).Where(x => x.EntityId == entityID && x.EntityType == entityType)
-                    .ToList()
-                    .ConvertAll(ToInvoice)
+
+                var sqlQuery = Query(CRMDbContext.Invoices).Where(x => x.EntityId == entityID && x.EntityType == entityType)
+                    .ToList();
+
+                return _mapper.Map<List<DbInvoice>, List<Invoice>>(sqlQuery)
                     .FindAll(_crmSecurity.CanAccessTo);
+
             }
 
             if (entityType == EntityType.Contact || entityType == EntityType.Person || entityType == EntityType.Company)
@@ -493,9 +506,10 @@ namespace ASC.CRM.Core.Dao
             if (contactID <= 0)
                 return result;
 
-            return Query(CRMDbContext.Invoices).Where(x => x.ContactId == contactID)
-                    .ToList()
-                    .ConvertAll(ToInvoice)
+            var dbInvoices = Query(CRMDbContext.Invoices).Where(x => x.ContactId == contactID)
+                    .ToList();
+
+            return _mapper.Map<List<DbInvoice>, List<Invoice>>(dbInvoices)
                     .FindAll(_crmSecurity.CanAccessTo);
         }
 
@@ -603,8 +617,8 @@ namespace ASC.CRM.Core.Dao
             {
                 var itemToUpdate = Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Id == invoice.ID);
 
-                var oldInvoice = ToInvoice(itemToUpdate);
-
+                var oldInvoice = _mapper.Map<Invoice>(itemToUpdate);
+                
                 _crmSecurity.DemandEdit(oldInvoice);
 
                 itemToUpdate.Status = invoice.Status;
@@ -808,43 +822,6 @@ namespace ASC.CRM.Core.Dao
 
             dbInvoicesQuery.ToList().ForEach(invoice => _factoryIndexer.Delete(invoice));
 
-        }
-
-        private Invoice ToInvoice(DbInvoice dbInvoice)
-        {
-            if (dbInvoice == null) return null;
-
-            var result = new Invoice
-            {
-                ID = dbInvoice.Id,
-                Status = dbInvoice.Status,
-                Number = dbInvoice.Number,
-                IssueDate = _tenantUtil.DateTimeFromUtc(dbInvoice.IssueDate),
-                TemplateType = dbInvoice.TemplateType,
-                ContactID = dbInvoice.ContactId,
-                ConsigneeID = dbInvoice.ConsigneeId,
-                EntityType = dbInvoice.EntityType,
-                EntityID = dbInvoice.EntityId,
-                DueDate = _tenantUtil.DateTimeFromUtc(dbInvoice.DueDate),
-                Language = dbInvoice.Language,
-                Currency = dbInvoice.Currency,
-                ExchangeRate = dbInvoice.ExchangeRate,
-                PurchaseOrderNumber = dbInvoice.PurchaseOrderNumber,
-                Terms = dbInvoice.Terms,
-                Description = dbInvoice.Description,
-                JsonData = dbInvoice.JsonData,
-                FileID = dbInvoice.FileId,
-                CreateOn = _tenantUtil.DateTimeFromUtc(dbInvoice.CreateOn),
-                CreateBy = dbInvoice.CreateBy,
-                LastModifedBy = dbInvoice.LastModifedBy
-            };
-
-            if (dbInvoice.LastModifedOn.HasValue)
-            {
-                result.LastModifedOn = _tenantUtil.DateTimeFromUtc(dbInvoice.LastModifedOn.Value);
-            }
-
-            return result;
         }
 
         private IQueryable<DbInvoice> GetDbInvoceByFilters(

@@ -48,6 +48,8 @@ using ASC.Web.CRM.Core.Search;
 using ASC.Web.Files.Api;
 using ASC.Web.Studio.Core;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -72,7 +74,8 @@ namespace ASC.CRM.Core.Dao
             PathProvider pathProvider,
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> logger,
-            ICache ascCache
+            ICache ascCache,
+            IMapper mapper
             ) :
                         base(dbContextManager,
                             tenantManager,
@@ -83,7 +86,8 @@ namespace ASC.CRM.Core.Dao
                             setupInfo,
                             pathProvider,
                             logger,
-                            ascCache)
+                            ascCache,
+                            mapper)
         {
             _relationshipEventCache = new HttpRequestDictionary<RelationshipEvent>(httpContextAccessor?.HttpContext, "crm_relationshipEvent");
         }
@@ -117,13 +121,15 @@ namespace ASC.CRM.Core.Dao
             SetupInfo setupInfo,
             PathProvider pathProvider,
             IOptionsMonitor<ILog> logger,
-            ICache ascCache
+            ICache ascCache,
+            IMapper mapper
             ) :
-                                            base(dbContextManager,
-                                                 tenantManager,
-                                                 securityContext,
-                                                 logger,
-                                                 ascCache)
+                base(dbContextManager,
+                        tenantManager,
+                        securityContext,
+                        logger,
+                        ascCache,
+                        mapper)
         {
             FilesIntegration = filesIntegration;
             TenantUtil = tenantUtil;

@@ -37,6 +37,8 @@ using ASC.CRM.Core.EF;
 using ASC.Files.Core;
 using ASC.Web.Files.Api;
 
+using AutoMapper;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
@@ -49,12 +51,14 @@ namespace ASC.CRM.Core.Dao
                        TenantManager tenantManager,
                        SecurityContext securityContext,
                        IOptionsMonitor<ILog> logger,
-                       ICache ascCache) :
+                       ICache ascCache,
+                       IMapper mapper) :
             base(dbContextManager,
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache)
+                 ascCache,
+                 mapper)
         {
             FilesIntegration = filesIntegration;
         }

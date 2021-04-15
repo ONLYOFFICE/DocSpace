@@ -45,6 +45,8 @@ using ASC.Files.Core;
 using ASC.Web.CRM.Core.Search;
 using ASC.Web.Files.Api;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -70,7 +72,8 @@ namespace ASC.CRM.Core.Dao
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
             DbContextManager<CoreDbContext> coreDbContext,
-            BundleSearch bundleSearch) :
+            BundleSearch bundleSearch,
+            IMapper mapper) :
                  base(dbContextManager,
                  tenantManager,
                  securityContext,
@@ -83,7 +86,8 @@ namespace ASC.CRM.Core.Dao
                  logger,
                  ascCache,
                  coreDbContext,
-                 bundleSearch)
+                 bundleSearch,
+                 mapper)
         {
             _contactCache = new HttpRequestDictionary<Contact>(httpContextAccessor?.HttpContext, "crm_contact");
         }
@@ -147,13 +151,15 @@ namespace ASC.CRM.Core.Dao
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
             DbContextManager<CoreDbContext> coreDbContext,
-            BundleSearch bundleSearch
+            BundleSearch bundleSearch,
+            IMapper mapper
             ) :
                  base(dbContextManager,
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache)
+                 ascCache, 
+                 mapper)
         {
             CRMSecurity = crmSecurity;
             TenantUtil = tenantUtil;

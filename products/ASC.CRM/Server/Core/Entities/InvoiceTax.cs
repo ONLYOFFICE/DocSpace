@@ -38,26 +38,12 @@ namespace ASC.CRM.Core.Entities
     [DataContract]
     public class InvoiceTax : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceTax>
     {
-        [DataMember(Name = "name")]
         public string Name { get; set; }
-
-        [DataMember(Name = "description")]
         public string Description { get; set; }
-
-        [DataMember(Name = "rate")]
         public decimal Rate { get; set; }
-
-
-        [DataMember(Name = "createOn")]
         public DateTime CreateOn { get; set; }
-
-        [DataMember(Name = "createBy")]
         public Guid CreateBy { get; set; }
-
-        [DataMember(Name = "lastModifedOn")]
         public DateTime? LastModifedOn { get; set; }
-
-        [DataMember(Name = "lastModifedBy")]
         public Guid? LastModifedBy { get; set; }
 
         public object SecurityId

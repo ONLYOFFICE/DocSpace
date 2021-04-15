@@ -45,6 +45,8 @@ using ASC.Web.CRM;
 using ASC.Web.CRM.Configuration;
 using ASC.Web.CRM.Core.Search;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -72,13 +74,15 @@ namespace ASC.CRM.Core.Dao
                       IOptionsMonitor<ILog> logger,
                       ICache ascCache,
                       WebImageSupplier webImageSupplier,
-                      BundleSearch bundleSearch
+                      BundleSearch bundleSearch,
+                      IMapper mapper
                       ) :
            base(dbContextManager,
                 tenantManager,
                 securityContext,
                 logger,
-                ascCache)
+                ascCache,
+                mapper)
         {
             FactoryIndexerTask = tasksDtoIndexer;
             FactoryIndexerInvoice = invoicesDtoIndexer;

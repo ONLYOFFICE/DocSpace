@@ -39,6 +39,8 @@ using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
@@ -55,12 +57,14 @@ namespace ASC.CRM.Core.Dao
             SecurityContext securityContext,
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> logger,
-            ICache ascCache)
+            ICache ascCache,
+            IMapper mapper)
               : base(dbContextManager,
                     tenantManager,
                     securityContext,
                     logger,
-                    ascCache)
+                    ascCache,
+                    mapper)
         {
             _invoiceLineCache = new HttpRequestDictionary<InvoiceLine>(httpContextAccessor?.HttpContext, "crm_invoice_line");
         }
@@ -103,12 +107,14 @@ namespace ASC.CRM.Core.Dao
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
-            ICache ascCache)
+            ICache ascCache,
+            IMapper mapper)
               : base(dbContextManager,
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache)
+                 ascCache,
+                 mapper)
         {
 
         }
@@ -140,20 +146,22 @@ namespace ASC.CRM.Core.Dao
 
         public virtual List<InvoiceLine> GetAll()
         {
-            return Query(CRMDbContext.InvoiceLine)
-                    .ToList()
-                    .ConvertAll(ToInvoiceLine);
+            var dbInvoiceLines = Query(CRMDbContext.InvoiceLine)
+                    .ToList();
+
+            return _mapper.Map<List<DbInvoiceLine>, List<InvoiceLine>>(dbInvoiceLines);
         }
 
         public virtual List<InvoiceLine> GetByID(int[] ids)
         {
-            return Query(CRMDbContext.InvoiceLine).Where(x => ids.Contains(x.Id)).ToList()
-                    .ConvertAll(ToInvoiceLine);
+            var dbInvoiceLines = Query(CRMDbContext.InvoiceLine).Where(x => ids.Contains(x.Id)).ToList();
+
+            return _mapper.Map<List<DbInvoiceLine>, List<InvoiceLine>>(dbInvoiceLines);               
         }
 
         public virtual InvoiceLine GetByID(int id)
         {
-            return ToInvoiceLine(Query(CRMDbContext.InvoiceLine).FirstOrDefault(x => x.Id == id));
+            return _mapper.Map<InvoiceLine>(Query(CRMDbContext.InvoiceLine).FirstOrDefault(x => x.Id == id));
         }
 
         public List<InvoiceLine> GetInvoiceLines(int invoiceID)
@@ -163,11 +171,12 @@ namespace ASC.CRM.Core.Dao
 
         public List<InvoiceLine> GetInvoiceLinesInDb(int invoiceID)
         {
-            return Query(CRMDbContext.InvoiceLine)
+            var dbInvoiceLines = Query(CRMDbContext.InvoiceLine)
                 .Where(x => x.InvoiceId == invoiceID)
                 .OrderBy(x => x.SortOrder)
-                .ToList()
-                .ConvertAll(ToInvoiceLine);
+                .ToList();
+
+            return _mapper.Map<List<DbInvoiceLine>, List<InvoiceLine>>(dbInvoiceLines);                
         }
 
         public virtual int SaveOrUpdateInvoiceLine(InvoiceLine invoiceLine)
@@ -274,25 +283,6 @@ namespace ASC.CRM.Core.Dao
             if (!invoiceID.Any()) return false;
 
             return Query(CRMDbContext.InvoiceLine).Where(x => x.InvoiceId == invoiceLineID).Any();
-        }
-
-        private InvoiceLine ToInvoiceLine(DbInvoiceLine dbInvoiceLine)
-        {
-            if (dbInvoiceLine == null) return null;
-
-            return new InvoiceLine
-            {
-                ID = dbInvoiceLine.Id,
-                InvoiceID = dbInvoiceLine.InvoiceId,
-                InvoiceItemID = dbInvoiceLine.InvoiceItemId,
-                InvoiceTax1ID = dbInvoiceLine.InvoiceTax1Id,
-                InvoiceTax2ID = dbInvoiceLine.InvoiceTax2Id,
-                SortOrder = dbInvoiceLine.SortOrder,
-                Description = dbInvoiceLine.Description,
-                Quantity = dbInvoiceLine.Quantity,
-                Price = dbInvoiceLine.Price,
-                Discount = dbInvoiceLine.Discount
-            };
         }
     }
 }

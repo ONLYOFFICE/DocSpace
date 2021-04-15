@@ -33,6 +33,7 @@ namespace ASC.CRM
 
             base.ConfigureServices(services);
 
+            DIHelper.TryAdd<EntryPointApiController>();
             DIHelper.TryAdd<CasesController>();
             DIHelper.TryAdd<ContactInfosController>();
             DIHelper.TryAdd<ContactsController>();
@@ -61,6 +62,7 @@ namespace ASC.CRM
             DIHelper.TryAdd<ListItemDtoTypeConverter>();
             DIHelper.TryAdd<TaskDtoTypeConverter>();
             DIHelper.TryAdd<CustomFieldDtoTypeConverter>();
+            DIHelper.TryAdd<DealMilestoneDtoTypeConverter>();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }

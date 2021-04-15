@@ -40,6 +40,8 @@ using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Resources;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
@@ -56,13 +58,14 @@ namespace ASC.CRM.Core.Dao
                                 SecurityContext securityContext,
                                 IHttpContextAccessor httpContextAccessor,
                                 IOptionsMonitor<ILog> logger,
-                                ICache ascCache)
+                                ICache ascCache,
+                                IMapper mapper)
             : base(dbContextManager,
                   tenantManager,
                   securityContext,
                   logger,
-                  ascCache
-                  )
+                  ascCache,
+                  mapper)
         {
 
             _dealMilestoneCache = new HttpRequestDictionary<DealMilestone>(httpContextAccessor?.HttpContext, "crm_deal_milestone");
@@ -123,12 +126,14 @@ namespace ASC.CRM.Core.Dao
                                 TenantManager tenantManager,
                                 SecurityContext securityContext,
                                 IOptionsMonitor<ILog> logger,
-                                ICache ascCache) :
+                                ICache ascCache,
+                                IMapper mapper) :
                                             base(dbContextManager,
                                                     tenantManager,
                                                     securityContext,
                                                     logger,
-                                                    ascCache)
+                                                    ascCache,
+                                                    mapper)
         {
 
 
@@ -270,7 +275,9 @@ namespace ASC.CRM.Core.Dao
 
         public virtual DealMilestone GetByID(int id)
         {
-            return ToDealMilestone(Query(CRMDbContext.DealMilestones).FirstOrDefault(x => x.Id == id));
+            var dbDealMilestone = Query(CRMDbContext.DealMilestones).FirstOrDefault(x => x.Id == id);
+
+            return _mapper.Map<DbDealMilestone, DealMilestone>(dbDealMilestone);
         }
 
         public Boolean IsExist(int id)
@@ -280,31 +287,21 @@ namespace ASC.CRM.Core.Dao
 
         public List<DealMilestone> GetAll(int[] id)
         {
-            return Query(CRMDbContext.DealMilestones)
-                  .OrderBy(x => x.SortOrder)
-                  .Where(x => id.Contains(x.Id)).ToList().ConvertAll(ToDealMilestone);
+            var result = Query(CRMDbContext.DealMilestones)
+                          .OrderBy(x => x.SortOrder)
+                          .Where(x => id.Contains(x.Id)).ToList();
+
+            return _mapper.Map<List<DbDealMilestone>, List<DealMilestone>>(result);                
         }
 
         public List<DealMilestone> GetAll()
         {
-            return Query(CRMDbContext.DealMilestones)
+            var result =  Query(CRMDbContext.DealMilestones)
                     .OrderBy(x => x.SortOrder)
-                    .ToList()
-                    .ConvertAll(ToDealMilestone);
-        }
+                    .ToList();
 
-        private static DealMilestone ToDealMilestone(DbDealMilestone dbDealMilestone)
-        {
-            return new DealMilestone
-            {
-                ID = dbDealMilestone.Id,
-                Title = dbDealMilestone.Title,
-                Color = dbDealMilestone.Color,
-                Status = dbDealMilestone.Status,
-                Description = dbDealMilestone.Description,
-                Probability = dbDealMilestone.Probability,
-                SortOrder = dbDealMilestone.SortOrder
-            };
+            return _mapper.Map<List<DbDealMilestone>, List<DealMilestone>>(result);
+
         }
     }
 }

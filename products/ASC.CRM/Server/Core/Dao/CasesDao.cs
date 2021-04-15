@@ -44,6 +44,8 @@ using ASC.Files.Core;
 using ASC.Web.CRM.Core.Search;
 using ASC.Web.Files.Api;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -67,7 +69,8 @@ namespace ASC.CRM.Core.Dao
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
             IHttpContextAccessor httpContextAccessor,
-            BundleSearch bundleSearch)
+            BundleSearch bundleSearch,
+            IMapper mapper)
             :
                  base(dbContextManager,
                  tenantManager,
@@ -78,7 +81,8 @@ namespace ASC.CRM.Core.Dao
                  authorizationManager,
                  logger,
                  ascCache,
-                 bundleSearch)
+                 bundleSearch,
+                 mapper)
 
         {
             _casesCache = new HttpRequestDictionary<Cases>(httpContextAccessor?.HttpContext, "crm_cases");
@@ -128,13 +132,15 @@ namespace ASC.CRM.Core.Dao
             AuthorizationManager authorizationManager,
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
-            BundleSearch bundleSearch
+            BundleSearch bundleSearch,
+            IMapper mapper
             ) :
                  base(dbContextManager,
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache)
+                 ascCache,
+                 mapper)
         {
             CRMSecurity = crmSecurity;
             TenantUtil = tenantUtil;
@@ -564,11 +570,12 @@ namespace ASC.CRM.Core.Dao
         {
             if (casesID == null || !casesID.Any()) return new List<Cases>();
 
-            return Query(CRMDbContext.Cases)
+            var result = Query(CRMDbContext.Cases)
                         .Where(x => casesID.Contains(x.Id))
-                        .ToList()
-                        .ConvertAll(ToCases)
-                        .FindAll(CRMSecurity.CanAccessTo);
+                        .ToList();               
+
+            return _mapper.Map<List<DbCase>, List<Cases>>(result)
+                                        .FindAll(CRMSecurity.CanAccessTo);
         }
 
         public List<Cases> GetCases(
@@ -607,8 +614,7 @@ namespace ASC.CRM.Core.Dao
                 }
             }
 
-
-            return dbCasesQuery.ToList().ConvertAll(ToCases);
+            return _mapper.Map<List<DbCase>, List<Cases>>(dbCasesQuery.ToList());
         }
 
         public List<Cases> GetCasesByPrefix(String prefix, int from, int count)
@@ -638,17 +644,20 @@ namespace ASC.CRM.Core.Dao
             if (0 < count && count < int.MaxValue) q = q.Take(count);
 
             q = q.OrderBy(x => x.Title);
-
-            return q.ToList().ConvertAll(ToCases).FindAll(CRMSecurity.CanAccessTo);
+                     
+            return _mapper.Map<List<DbCase>, List<Cases>>(q.ToList())
+                    .FindAll(CRMSecurity.CanAccessTo);
         }
 
 
         public virtual List<Cases> GetByID(int[] ids)
         {
-            return CRMDbContext.Cases
+            var result = CRMDbContext.Cases
                                .Where(x => ids.Contains(x.Id))
-                               .ToList()
-                               .ConvertAll(ToCases);
+                               .ToList();
+
+
+          return  _mapper.Map<List<DbCase>, List<Cases>>(result);
         }
 
         public virtual Cases GetByID(int id)
@@ -658,22 +667,6 @@ namespace ASC.CRM.Core.Dao
             var cases = GetByID(new[] { id });
 
             return cases.Count == 0 ? null : cases[0];
-        }
-
-        private Cases ToCases(DbCase dbCase)
-        {
-            if (dbCase == null) return null;
-
-            return new Cases
-            {
-                ID = dbCase.Id,
-                Title = dbCase.Title,
-                CreateBy = dbCase.CreateBy,
-                CreateOn = TenantUtil.DateTimeFromUtc(dbCase.CreateOn),
-                IsClosed = dbCase.IsClosed,
-                LastModifedBy = dbCase.LastModifedBy,
-                LastModifedOn = dbCase.LastModifedOn
-            };
         }
 
         public void ReassignCasesResponsible(Guid fromUserId, Guid toUserId)

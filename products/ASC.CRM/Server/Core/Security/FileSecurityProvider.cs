@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.CRM.Core.Dao;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
@@ -125,6 +126,7 @@ namespace ASC.CRM.Core
         }
     }
 
+    [Scope]
     public class FileSecurityProvider : IFileSecurityProvider
     {
         public FileSecurityProvider(FilesIntegration filesIntegration,

@@ -120,7 +120,8 @@ namespace ASC.CRM.Core.Dao
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache)
+                 ascCache,
+                 mapper)
         {
             TenantUtil = tenantUtil;
             _mapper = mapper;

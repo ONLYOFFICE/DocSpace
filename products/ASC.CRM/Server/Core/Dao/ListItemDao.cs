@@ -40,6 +40,8 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -57,12 +59,14 @@ namespace ASC.CRM.Core.Dao
             SecurityContext securityContext,
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> logger,
-            ICache ascCache)
+            ICache ascCache,
+            IMapper mapper)
             : base(dbContextManager,
                   tenantManager,
                   securityContext,
                   logger,
-                  ascCache)
+                  ascCache, 
+                  mapper)
         {
             _listItemCache = new HttpRequestDictionary<ListItem>(httpContextAccessor?.HttpContext, "crm_list_item");
         }
@@ -126,12 +130,14 @@ namespace ASC.CRM.Core.Dao
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
-            ICache ascCache)
+            ICache ascCache,
+            IMapper mapper)
             : base(dbContextManager,
                   tenantManager,
                   securityContext,
                   logger,
-                  ascCache)
+                  ascCache,
+                  mapper)
         {
 
 
@@ -151,19 +157,21 @@ namespace ASC.CRM.Core.Dao
 
         public List<ListItem> GetItems()
         {
-            return Query(CRMDbContext.ListItem)
+            var dbListItems = Query(CRMDbContext.ListItem)
             .OrderBy(x => x.SortOrder)
-            .ToList()
-            .ConvertAll(ToListItem);
+            .ToList();
+
+            return _mapper.Map<List<DbListItem>, List<ListItem>>(dbListItems);
         }
 
         public List<ListItem> GetItems(ListType listType)
         {
-            return Query(CRMDbContext.ListItem)
+            var dbListItems = Query(CRMDbContext.ListItem)
                         .Where(x => x.ListType == listType)
                         .OrderBy(x => x.SortOrder)
-                        .ToList()
-                        .ConvertAll(ToListItem);
+                        .ToList();
+
+            return _mapper.Map<List<DbListItem>, List<ListItem>>(dbListItems);
         }
 
         public int GetItemsCount(ListType listType)
@@ -233,12 +241,12 @@ namespace ASC.CRM.Core.Dao
         {
             if (id < 0) return GetSystemListItem(id);
 
-            return ToListItem(Query(CRMDbContext.ListItem).FirstOrDefault(x => x.Id == id));
+            return _mapper.Map<ListItem>(Query(CRMDbContext.ListItem).FirstOrDefault(x => x.Id == id));
         }
 
         public virtual List<ListItem> GetItems(int[] id)
         {
-            var sqlResult = CRMDbContext.ListItem.Where(x => id.Contains(x.Id)).ToList().ConvertAll(ToListItem);
+            var sqlResult = _mapper.Map<List<DbListItem>, List<ListItem>>(CRMDbContext.ListItem.Where(x => id.Contains(x.Id)).ToList());
 
             var systemItem = id.Where(item => item < 0).Select(GetSystemListItem);
 
@@ -247,10 +255,12 @@ namespace ASC.CRM.Core.Dao
 
         public virtual List<ListItem> GetAll()
         {
-            return CRMDbContext
+            var dbListItems = CRMDbContext
                         .ListItem
-                        .ToList()
-                        .ConvertAll(ToListItem);
+                        .ToList();
+
+            return _mapper.Map<List<DbListItem>, List<ListItem>>(dbListItems);
+
         }
 
         public virtual void ChangeColor(int id, string newColor)
@@ -283,7 +293,7 @@ namespace ASC.CRM.Core.Dao
 
         public ListItem GetByTitle(ListType listType, string title)
         {
-            return ToListItem(Query(CRMDbContext.ListItem)
+            return _mapper.Map<ListItem>(Query(CRMDbContext.ListItem)
                                 .FirstOrDefault(x => String.Compare(x.Title, title, true) == 0 && x.ListType == listType));
         }
 
@@ -593,24 +603,5 @@ namespace ASC.CRM.Core.Dao
 
             tx.Commit();
         }
-
-        public static ListItem ToListItem(DbListItem dbListItem)
-        {
-            if (dbListItem == null) return null;
-
-            var result = new ListItem
-            {
-                ID = dbListItem.Id,
-                Title = dbListItem.Title,
-                Description = dbListItem.Description,
-                Color = dbListItem.Color,
-                SortOrder = dbListItem.SortOrder,
-                AdditionalParams = dbListItem.AdditionalParams,
-                ListType = dbListItem.ListType
-            };
-
-            return result;
-        }
     }
-
 }

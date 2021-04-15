@@ -29,59 +29,37 @@ using System.Collections.Generic;
 
 using ASC.Common.Security;
 using ASC.CRM.Core.Dao;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
 using ASC.Files.Core;
 
 
 namespace ASC.CRM.Core.Entities
 {
-    public class Invoice : DomainObject, ISecurityObjectId
+    public class Invoice : DomainObject, ISecurityObjectId, IMapFrom<DbInvoice>
     {
         public InvoiceStatus Status { get; set; }
-
         public string Number { get; set; }
-
         public DateTime IssueDate { get; set; }
-
         public InvoiceTemplateType TemplateType { get; set; }
-
         public int ContactID { get; set; }
-
         public int ConsigneeID { get; set; }
-
         public EntityType EntityType { get; set; }
-
         public int EntityID { get; set; }
-
         public DateTime DueDate { get; set; }
-
         public string Language { get; set; }
-
         public string Currency { get; set; }
-
         public decimal ExchangeRate { get; set; }
-
         public string PurchaseOrderNumber { get; set; }
-
         public string Terms { get; set; }
-
         public string Description { get; set; }
-
         public string JsonData { get; set; }
-
         public int FileID { get; set; }
-
-
         public DateTime CreateOn { get; set; }
-
         public Guid CreateBy { get; set; }
-
         public DateTime? LastModifedOn { get; set; }
-
         public Guid? LastModifedBy { get; set; }
-
-
-
         public object SecurityId
         {
             get { return ID; }
@@ -91,7 +69,6 @@ namespace ASC.CRM.Core.Entities
         {
             get { return GetType(); }
         }
-
 
         public List<InvoiceLine> GetInvoiceLines(DaoFactory daoFactory)
         {

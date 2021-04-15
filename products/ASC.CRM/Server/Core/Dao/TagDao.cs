@@ -37,6 +37,8 @@ using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
 
@@ -51,12 +53,14 @@ namespace ASC.CRM.Core.Dao
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
-            ICache ascCache) :
+            ICache ascCache,
+            IMapper mapper) :
                         base(dbContextManager,
                                 tenantManager,
                                 securityContext,
                                 logger,
-                                ascCache)
+                                ascCache, 
+                                mapper)
         {
 
         }

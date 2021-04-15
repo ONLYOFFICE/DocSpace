@@ -50,6 +50,8 @@ using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
 using ASC.Web.Files.Api;
 
+using AutoMapper;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -91,12 +93,14 @@ namespace ASC.CRM.Core.Dao
                        IServiceProvider serviceProvider,
                        CurrencyProvider currencyProvider,
                        DaoFactory daoFactory,
-                       DisplayUserSettingsHelper displayUserSettingsHelper) :
+                       DisplayUserSettingsHelper displayUserSettingsHelper,
+                       IMapper mapper) :
             base(dbContextManager,
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache)
+                 ascCache,
+                 mapper)
         {
             _tenantUtil = tenantUtil;
 

@@ -28,29 +28,19 @@ using System;
 using System.Runtime.Serialization;
 
 using ASC.CRM.Classes;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
 
 namespace ASC.CRM.Core
 {
-    [DataContract]
-    public class ContactInfo : DomainObject
+    public class ContactInfo : DomainObject, IMapFrom<DbContactInfo>
     {
-        [DataMember(Name = "contactID")]
         public int ContactID { get; set; }
-
-        [DataMember(Name = "infoType")]
         public ContactInfoType InfoType { get; set; }
-
-        [DataMember(Name = "category")]
         public int Category { get; set; }
-
-        [DataMember(Name = "data")]
         public String Data { get; set; }
-
-        [DataMember(Name = "isPrimary")]
         public bool IsPrimary { get; set; }
-
-
         public static int GetDefaultCategory(ContactInfoType infoTypeEnum)
         {
             switch (infoTypeEnum)

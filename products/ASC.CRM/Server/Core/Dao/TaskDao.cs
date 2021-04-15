@@ -125,7 +125,6 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class TaskDao : AbstractDao
     {
-        private readonly IMapper _mapper;
         public TaskDao(DbContextManager<CRMDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
@@ -141,7 +140,8 @@ namespace ASC.CRM.Core.Dao
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache)
+                 ascCache,
+                 mapper)
         {
             CRMSecurity = crmSecurity;
             TenantUtil = tenantUtil;

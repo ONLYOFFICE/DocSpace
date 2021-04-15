@@ -26,20 +26,27 @@
 
 using System.Runtime.Serialization;
 
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
 
 namespace ASC.CRM.Core.Entities
 {
-    [DataContract]
-    public class ListItem : DomainObject
+    public class ListItem : DomainObject, IMapFrom<DbListItem>
     {
-        [DataMember(Name = "title")]
+        public ListItem()
+        {
+
+        }
+
+        public ListItem(string title, string addparams)
+        {
+            Title = title;
+            AdditionalParams = addparams;
+        }
+
         public string Title { get; set; }
-
-        [DataMember(Name = "description")]
         public string Description { get; set; }
-
-        [DataMember(Name = "color")]
         public string Color { get; set; }
 
         [DataMember(Name = "sort_order")]
@@ -50,16 +57,5 @@ namespace ASC.CRM.Core.Entities
 
         [DataMember(Name = "list_type")]
         public ListType? ListType { get; set; }
-
-
-        public ListItem()
-        {
-        }
-
-        public ListItem(string title, string addparams)
-        {
-            Title = title;
-            AdditionalParams = addparams;
-        }
     }
 }

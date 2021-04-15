@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -24,35 +24,29 @@
 */
 
 
-using System;
-using System.Collections.Generic;
+#region Import
 
-using ASC.Common.Security;
+using System;
+
 using ASC.CRM.Core.EF;
 using ASC.CRM.Mapping;
 
+#endregion
+
 namespace ASC.CRM.Core.Entities
 {
-    public class Cases : DomainObject, ISecurityObjectId, IMapFrom<DbCase>
+    public class TaskTemplate : DomainObject, IMapFrom<DbTaskTemplate>
     {
+        public int ContainerID { get; set; }
+        public String Title { get; set; }
+        public String Description { get; set; }
+        public Guid ResponsibleID { get; set; }
+        public int CategoryID { get; set; }
+        public bool isNotify { get; set; }
+        public TimeSpan Offset { get; set; }
+        public bool DeadLineIsFixed { get; set; }
         public Guid CreateBy { get; set; }
         public DateTime CreateOn { get; set; }
-        public Guid? LastModifedBy { get; set; }
-        public DateTime? LastModifedOn { get; set; }
-        public String Title { get; set; }
-        public bool IsClosed { get; set; }
-        public HashSet<int> Members { get; set; }
-        // TODO: to finish the field
-        public DateTime ClosedDate { get; set; }
 
-        public object SecurityId
-        {
-            get { return ID; }
-        }
-
-        public Type ObjectType
-        {
-            get { return GetType(); }
-        }
     }
 }

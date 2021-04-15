@@ -27,7 +27,9 @@
 using System;
 
 using ASC.Common.Security;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
 
 namespace ASC.CRM.Core.Entities
 {
@@ -43,11 +45,8 @@ namespace ASC.CRM.Core.Entities
         }
 
         public String FirstName { get; set; }
-
         public String LastName { get; set; }
-
         public int CompanyID { get; set; }
-
         public String JobTitle { get; set; }
     }
 
@@ -111,19 +110,12 @@ namespace ASC.CRM.Core.Entities
         }
 
         public Guid CreateBy { get; set; }
-
         public DateTime CreateOn { get; set; }
-
         public Guid? LastModifedBy { get; set; }
-
         public DateTime? LastModifedOn { get; set; }
-
         public String About { get; set; }
-
         public String Industry { get; set; }
-
         public int StatusID { get; set; }
-
         public int ContactTypeID { get; set; }
 
         public ShareType ShareType { get; set; }

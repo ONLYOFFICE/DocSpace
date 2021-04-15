@@ -41,6 +41,8 @@ using ASC.ElasticSearch;
 using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Core.Search;
 
+using AutoMapper;
+
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
@@ -57,13 +59,15 @@ namespace ASC.CRM.Core.Dao
             SecurityContext securityContext,
             TenantUtil tenantUtil,
             IOptionsMonitor<ILog> logger,
-            ICache ascCache
+            ICache ascCache,
+            IMapper mapper
             ) :
               base(dbContextManager,
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache)
+                 ascCache, 
+                 mapper)
         {
             TenantUtil = tenantUtil;
         }

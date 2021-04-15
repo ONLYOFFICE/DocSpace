@@ -40,23 +40,14 @@ namespace ASC.CRM.Core.Entities
     public class Deal : DomainObject, ISecurityObjectId, IMapFrom<DbDeal>
     {
         public Guid CreateBy { get; set; }
-
         public DateTime CreateOn { get; set; }
-
         public Guid? LastModifedBy { get; set; }
-
         public DateTime? LastModifedOn { get; set; }
 
         [DataMember(Name = "contact_id")]
         public int ContactID { get; set; }
-
-        [DataMember(Name = "contact")]
         public Contact Contact { get; set; }
-
-        [DataMember(Name = "title")]
         public string Title { get; set; }
-
-        [DataMember(Name = "description")]
         public string Description { get; set; }
 
         [DataMember(Name = "responsible_id")]

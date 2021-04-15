@@ -33,13 +33,9 @@ namespace ASC.CRM.Core.Entities
     public class ListItemHistory : DomainObject
     {
         public int EntityID { get; set; }
-
         public EntityType EntityType { get; set; }
-
         public int StatusID { get; set; }
-
         public DateTime ModifedOn { get; set; }
-
         public Guid ModifedBy { get; set; }
     }
 }

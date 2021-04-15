@@ -27,26 +27,19 @@
 using System;
 using System.Runtime.Serialization;
 
+using ASC.CRM.Core.EF;
+using ASC.CRM.Mapping;
+
 namespace ASC.CRM.Core
 {
-    [DataContract]
-    public class CurrencyRate : DomainObject
+    public class CurrencyRate : DomainObject, IMapFrom<DbCurrencyRate>
     {
-        [DataMember(Name = "fromCurrency")]
         public string FromCurrency { get; set; }
-
-        [DataMember(Name = "toCurrency")]
         public string ToCurrency { get; set; }
-
-        [DataMember(Name = "rate")]
         public decimal Rate { get; set; }
-
         public Guid CreateBy { get; set; }
-
         public DateTime CreateOn { get; set; }
-
         public Guid? LastModifedBy { get; set; }
-
         public DateTime? LastModifedOn { get; set; }
     }
 }

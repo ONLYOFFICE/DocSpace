@@ -23,26 +23,21 @@
  *
 */
 
+using ASC.CRM.Core.EF;
+using ASC.CRM.Mapping;
+
 namespace ASC.CRM.Core.Entities
 {
-    public class InvoiceLine : DomainObject
+    public class InvoiceLine : DomainObject, IMapFrom<DbInvoiceItem>
     {
         public int InvoiceID { get; set; }
-
         public int InvoiceItemID { get; set; }
-
         public int InvoiceTax1ID { get; set; }
-
         public int InvoiceTax2ID { get; set; }
-
         public int SortOrder { get; set; }
-
         public string Description { get; set; }
-
         public decimal Quantity { get; set; }
-
         public decimal Price { get; set; }
-
         public decimal Discount { get; set; }
     }
 }

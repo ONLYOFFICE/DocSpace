@@ -30,6 +30,7 @@ using System;
 using System.Runtime.Serialization;
 
 using ASC.CRM.Core.Enums;
+using ASC.CRM.Mapping;
 
 #endregion
 
@@ -44,22 +45,11 @@ namespace ASC.CRM.Core.Entities
 
         [DataMember(Name = "entity_id")]
         public int EntityID { get; set; }
-
-        [DataMember(Name = "label")]
         public String Label { get; set; }
-
-        [DataMember(Name = "value")]
         public String Value { get; set; }
-
-        [DataMember(Name = "fieldType")]
         public CustomFieldType FieldType { get; set; }
-
-        [DataMember(Name = "position")]
         public int Position { get; set; }
-
-        [DataMember(Name = "mask")]
         public String Mask { get; set; }
-
         public override int GetHashCode()
         {
             return string.Format("{0}|{1}|{2}|{3}|{4}", GetType().FullName, ID, EntityID, Label, (int)FieldType).GetHashCode();

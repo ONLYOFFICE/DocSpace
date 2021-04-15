@@ -36,6 +36,8 @@ using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -48,16 +50,18 @@ namespace ASC.CRM.Core.Dao
         protected SecurityContext _securityContext;
         protected readonly ICache _cache;
         protected ILog _logger;
+        protected IMapper _mapper;
 
         public AbstractDao(
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
-            ICache ascCache
+            ICache ascCache,
+            IMapper mapper
             )
         {
-
+            _mapper = mapper;
             _logger = logger.Get("ASC.CRM");
 
             _cache = ascCache;

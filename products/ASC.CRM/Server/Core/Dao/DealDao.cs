@@ -122,8 +122,6 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class DealDao : AbstractDao
     {
-        private readonly IMapper _mapper;
-
         public DealDao(DbContextManager<CRMDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
@@ -138,7 +136,8 @@ namespace ASC.CRM.Core.Dao
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache)
+                 ascCache,
+                 mapper)
         {
             CRMSecurity = crmSecurity;
             FactoryIndexer = factoryIndexer;

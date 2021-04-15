@@ -39,6 +39,8 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Web.CRM.Core.Search;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
@@ -57,7 +59,8 @@ namespace ASC.CRM.Core.Dao
              ICache ascCache,
              FactoryIndexerContactInfo factoryIndexerContactInfo,
              IHttpContextAccessor httpContextAccessor,
-             IServiceProvider serviceProvider
+             IServiceProvider serviceProvider,
+             IMapper mapper
              )
             : base(
                 dbContextManager,
@@ -67,7 +70,8 @@ namespace ASC.CRM.Core.Dao
                 logger,
                 ascCache,
                 factoryIndexerContactInfo,
-                serviceProvider)
+                serviceProvider, 
+                mapper)
         {
             _contactInfoCache = new HttpRequestDictionary<ContactInfo>(httpContextAccessor?.HttpContext, "crm_contact_info");
         }
@@ -122,12 +126,14 @@ namespace ASC.CRM.Core.Dao
              IOptionsMonitor<ILog> logger,
              ICache ascCache,
              FactoryIndexerContactInfo factoryIndexerContactInfo,
-             IServiceProvider serviceProvider)
+             IServiceProvider serviceProvider,
+             IMapper mapper)
            : base(dbContextManager,
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache)
+                 ascCache, 
+                 mapper)
         {
             TenantUtil = tenantUtil;
             ServiceProvider = serviceProvider;
@@ -141,7 +147,9 @@ namespace ASC.CRM.Core.Dao
 
         public virtual ContactInfo GetByID(int id)
         {
-            return ToContactInfo(CRMDbContext.ContactsInfo.SingleOrDefault(x => x.Id == id));
+            var dbContactInfo = CRMDbContext.ContactsInfo.SingleOrDefault(x => x.Id == id);
+
+            return _mapper.Map<ContactInfo>(dbContactInfo);
         }
 
         public virtual void Delete(int id)
@@ -257,9 +265,11 @@ namespace ASC.CRM.Core.Dao
         {
             if (contactID == null || contactID.Length == 0) return null;
 
-            return Query(CRMDbContext.ContactsInfo)
+            var result = Query(CRMDbContext.ContactsInfo)
                 .Where(x => contactID.Contains(x.ContactId))
-                .ToList().ConvertAll(ToContactInfo);
+                .ToList();
+
+            return _mapper.Map<List<DbContactInfo>, List<ContactInfo>>(result);
         }
 
         public virtual List<ContactInfo> GetList(int contactID, ContactInfoType? infoType, int? categoryID, bool? isPrimary)
@@ -280,7 +290,7 @@ namespace ASC.CRM.Core.Dao
 
             items = items.OrderBy(x => x.Type);
 
-            return items.ToList().ConvertAll(row => ToContactInfo(row));
+            return _mapper.Map<List<DbContactInfo>, List<ContactInfo>>(items.ToList());
         }
 
 
@@ -344,21 +354,6 @@ namespace ASC.CRM.Core.Dao
             }
 
             return result.ToArray();
-        }
-
-        protected static ContactInfo ToContactInfo(DbContactInfo dbContactInfo)
-        {
-            if (dbContactInfo == null) return null;
-
-            return new ContactInfo
-            {
-                ID = dbContactInfo.Id,
-                Category = dbContactInfo.Category,
-                ContactID = dbContactInfo.ContactId,
-                Data = dbContactInfo.Data,
-                InfoType = dbContactInfo.Type,
-                IsPrimary = dbContactInfo.IsPrimary
-            };
         }
     }
 }
