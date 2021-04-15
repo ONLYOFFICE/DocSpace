@@ -44,9 +44,11 @@ class FilesActionStore {
     this.dialogsStore = dialogsStore;
   }
 
-  deleteAction = (translations) => {
+  deleteAction = (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
-    const { selection } = this.filesStore;
+
+    const selection = newSelection ? newSelection : this.filesStore.selection;
+
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
