@@ -1,11 +1,13 @@
 import Checkbox from "@appserver/components/checkbox";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import PropTypes from "prop-types";
+import { ReactSVG } from "react-svg";
 import React from "react";
 //import equal from "fast-deep-equal/react";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
 
+const svgLoader = () => <div style={{ width: "96px" }}></div>;
 const FlexBoxStyles = css`
   display: flex;
   flex-direction: row;
@@ -39,19 +41,19 @@ const StyledFileTileTop = styled.div`
   padding: 13px;
   height: 157px;
   position: relative;
-  user-select: none;
 
   .thumbnailImage {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: block;
-    margin: auto;
-    z-index: 0;
+    & > .injected-svg {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      z-index: 0;
+    }
   }
 
-  .temporary-icon {
+  .temporary-icon > .injected-svg {
     margin-bottom: 16px;
   }
 `;
@@ -127,6 +129,16 @@ class Tile extends React.Component {
     this.tile = React.createRef();
   }
 
+  getIconFile() {
+    const { item, temporaryIcon } = this.props;
+
+    const icon = item.thumbnail ? item.thumbnail : temporaryIcon;
+    let className = "thumbnailImage";
+    if (!item.thumbnail) className += " temporary-icon";
+
+    return <ReactSVG className={className} src={icon} loading={svgLoader} />;
+  }
+
   render() {
     //console.log("Row render");
     const {
@@ -140,7 +152,6 @@ class Tile extends React.Component {
       onSelect,
       isFolder,
       rowContextClick,
-      temporaryIcon,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -173,6 +184,8 @@ class Tile extends React.Component {
       }
       this.cm.current.show(e);
     };
+
+    const icon = this.getIconFile();
 
     return (
       <StyledTile ref={this.tile} {...this.props} onContextMenu={onContextMenu}>
@@ -207,19 +220,6 @@ class Tile extends React.Component {
         ) : (
           <>
             <StyledFileTileTop>
-              {item.thumbnail ? (
-                <img
-                  className="thumbnailImage"
-                  src={item.thumbnail}
-                  alt="thumbnail"
-                />
-              ) : (
-                <img
-                  className="thumbnailImage temporary-icon"
-                  src={temporaryIcon}
-                  alt="thumbnail"
-                />
-              )}
               {renderCheckbox && (
                 <StyledCheckbox>
                   <Checkbox
@@ -229,9 +229,7 @@ class Tile extends React.Component {
                   />
                 </StyledCheckbox>
               )}
-              {
-                //<BadgesFileTile item={item} />
-              }
+              {icon}
             </StyledFileTileTop>
             <StyledFileTileBottom>
               <StyledElement>{element}</StyledElement>
