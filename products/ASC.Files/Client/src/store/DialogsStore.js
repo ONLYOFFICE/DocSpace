@@ -12,10 +12,12 @@ class DialogsStore {
   downloadDialogVisible = false;
   emptyTrashDialogVisible = false;
   thirdPartyDialogVisible = false;
+  newFilesPanelVisible = false;
 
   removeItem = null;
   connectItem = null;
   destFolderId = null;
+  newFilesIds = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -77,6 +79,15 @@ class DialogsStore {
 
   setDestFolderId = (destFolderId) => {
     this.destFolderId = destFolderId;
+  };
+
+  setNewFilesPanelVisible = (newFilesPanelVisible) => {
+    if (!newFilesPanelVisible) this.setNewFilesIds(null);
+    this.newFilesPanelVisible = newFilesPanelVisible;
+  };
+
+  setNewFilesIds = (newFilesIds) => {
+    this.newFilesIds = newFilesIds;
   };
 }
 
