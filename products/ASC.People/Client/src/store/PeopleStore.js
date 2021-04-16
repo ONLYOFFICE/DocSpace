@@ -31,6 +31,7 @@ class PeopleStore {
   isLoaded = false;
   isRefresh = false;
   isInit = false;
+  loadTimeout = null;
 
   constructor() {
     this.groupsStore = new GroupsStore(this);
@@ -77,8 +78,16 @@ class PeopleStore {
     this.setIsLoaded(true);
   };
 
-  setIsLoading = (loading) => {
-    this.isLoading = loading;
+  setIsLoading = (isLoading) => {
+    if (isLoading) {
+      this.loadTimeout && clearTimeout(this.loadTimeout);
+      this.loadTimeout = setTimeout(() => {
+        this.isLoading = isLoading;
+      }, 500);
+    } else {
+      this.loadTimeout && clearTimeout(this.loadTimeout);
+      this.isLoading = isLoading;
+    }
   };
 
   setIsLoaded = (isLoaded) => {

@@ -41,6 +41,7 @@ class FilesStore {
   selection = [];
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
+  loadTimeout = null;
 
   constructor(
     authStore,
@@ -77,7 +78,15 @@ class FilesStore {
   };
 
   setIsLoading = (isLoading) => {
-    this.isLoading = isLoading;
+    if (isLoading) {
+      this.loadTimeout && clearTimeout(this.loadTimeout);
+      this.loadTimeout = setTimeout(() => {
+        this.isLoading = isLoading;
+      }, 500);
+    } else {
+      this.loadTimeout && clearTimeout(this.loadTimeout);
+      this.isLoading = isLoading;
+    }
   };
 
   setTooltipPosition = (tooltipPageX, tooltipPageY) => {
