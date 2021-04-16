@@ -9,7 +9,7 @@ import Avatar from "@appserver/components/avatar";
 import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
 import HelpButton from "@appserver/components/help-button";
-import PeopleSelector from "people/PeopleSelector";
+import PeopleSelector from "@appserver/people/src/components/PeopleSelector";
 import isEmpty from "lodash/isEmpty";
 import { inject } from "mobx-react";
 import { combineUrl } from "@appserver/common/utils";
@@ -37,7 +37,6 @@ const OwnerContainer = styled.div`
 
   .owner-content-wrapper {
     display: flex;
-    margin-bottom: 30px;
     padding: 16px;
     background-color: #f8f9f9;
     border-radius: 12px;
@@ -221,7 +220,7 @@ class PureOwnerSettings extends Component {
           <div className="advanced-selector">
             <PeopleSelector
               isOpen={showSelector}
-              size={"compact"}
+              size={"full"}
               onSelect={this.onSelect}
               onCancel={this.onCancelSelector}
               defaultOption={me}
