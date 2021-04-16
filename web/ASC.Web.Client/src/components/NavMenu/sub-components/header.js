@@ -45,6 +45,14 @@ const Header = styled.header`
     font-size: 21px;
     line-height: 0;
     margin-top: -5px;
+    cursor: pointer;
+
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 
     @media ${desktop} {
       display: none;
@@ -192,7 +200,12 @@ const HeaderComponent = ({
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
         </LinkWithoutRedirect>
-        <Headline className="header-module-title" type="header" color="#FFF">
+        <Headline
+          className="header-module-title"
+          type="header"
+          color="#FFF"
+          onClick={onClick}
+        >
           {currentProductName}
         </Headline>
       </Header>
