@@ -67,7 +67,7 @@ namespace ASC.Thumbnails.Svc
                     UseShellExecute = false,
                     FileName = "node",
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = string.Format("\"{0}\"", Path.GetFullPath(Path.Combine(HostEnvironment.ContentRootPath, settings.Path, "index.js"))),
+                    Arguments = string.Format("\"{0}\"", Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, settings.Path, "index.js"))),
                     WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
                 };
 
@@ -77,7 +77,7 @@ namespace ASC.Thumbnails.Svc
                     savePath += "/";
                 }
                 StartInfo.EnvironmentVariables.Add("port", settings.Port);
-                StartInfo.EnvironmentVariables.Add("logPath", Path.Combine(Logger.LogDirectory, "web.thumbnails.log"));
+                StartInfo.EnvironmentVariables.Add("logPath", CrossPlatform.PathCombine(Logger.LogDirectory, "web.thumbnails.log"));
                 StartInfo.EnvironmentVariables.Add("savePath", Path.GetFullPath(savePath));
 
                 StartNode(cancellationToken);

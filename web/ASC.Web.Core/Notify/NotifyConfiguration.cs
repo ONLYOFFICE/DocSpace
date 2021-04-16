@@ -34,6 +34,7 @@ using System.Threading;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Notify.Engine;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
@@ -361,7 +362,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public static byte[] GetDefaultMailLogo()
         {
-            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "skins", "default", "images", "onlyoffice_logo", "dark_general.png");
+            var filePath = CrossPlatform.PathCombine(AppDomain.CurrentDomain.BaseDirectory, "skins", "default", "images", "onlyoffice_logo", "dark_general.png");
 
             return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
         }

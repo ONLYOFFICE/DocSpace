@@ -34,6 +34,7 @@ using System.Threading;
 using System.Xml.Linq;
 
 using ASC.Common;
+using ASC.Common.Utils;
 
 namespace ASC.Data.Backup
 {
@@ -103,7 +104,7 @@ namespace ASC.Data.Backup
             {
                 var map = new ExeConfigurationFileMap
                 {
-                    ExeConfigFilename = string.Compare(Path.GetExtension(config), ".config", true) == 0 ? config : Path.Combine(config, "Web.config")
+                    ExeConfigFilename = string.Compare(Path.GetExtension(config), ".config", true) == 0 ? config : CrossPlatform.PathCombine(config, "Web.config")
                 };
                 return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
             }

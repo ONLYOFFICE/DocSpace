@@ -27,6 +27,8 @@
 using System.IO;
 using System.Reflection;
 
+using ASC.Common.Utils;
+
 namespace ASC.Data.Backup.Utils
 {
     internal static class PathHelper
@@ -40,7 +42,7 @@ namespace ASC.Data.Backup.Utils
         {
             if (!Path.IsPathRooted(path))
             {
-                path = Path.Combine(basePath, path);
+                path = CrossPlatform.PathCombine(basePath, path);
             }
             return Path.GetFullPath(path);
         }
@@ -49,7 +51,7 @@ namespace ASC.Data.Backup.Utils
         {
             if (!Path.HasExtension(path))
             {
-                path = Path.Combine(path, "Web.config");
+                path = CrossPlatform.PathCombine(path, "Web.config");
             }
             return ToRootedPath(path);
         }
@@ -59,7 +61,7 @@ namespace ASC.Data.Backup.Utils
             string tempPath;
             do
             {
-                tempPath = Path.Combine(tempDir, Path.GetRandomFileName());
+                tempPath = CrossPlatform.PathCombine(tempDir, Path.GetRandomFileName());
             } while (File.Exists(tempPath));
             return tempPath;
         }

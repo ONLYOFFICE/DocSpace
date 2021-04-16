@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Security.Cryptography;
 
@@ -75,7 +76,7 @@ namespace ASC.Data.Storage.DiscStorage
             }
 
             var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
-            var path = Path.Combine(_path, GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar));
+            var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar));
             var header = context.Request.Query[Constants.QUERY_HEADER].FirstOrDefault() ?? "";
 
             var auth = context.Request.Query[Constants.QUERY_AUTH].FirstOrDefault() ?? "";
