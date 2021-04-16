@@ -566,6 +566,7 @@ const SimpleFilesRow = createSelectable((props) => {
   return (
     <div ref={props.selectableRef}>
       <DragAndDrop
+        data-title={item.title}
         value={value}
         className={className}
         onDrop={onDrop}

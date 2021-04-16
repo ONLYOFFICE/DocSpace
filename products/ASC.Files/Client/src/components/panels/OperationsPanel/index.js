@@ -21,13 +21,12 @@ const OperationsPanelComponent = (props) => {
     operationsFolders,
     setCopyPanelVisible,
     setExpandedPanelKeys,
-    itemOperationToFolder,
     setMoveToPanelVisible,
+    checkOperationConflict,
     setThirdPartyMoveDialogVisible,
   } = props;
 
   const zIndex = 310;
-  const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2 TODO: get from settings
   const deleteAfter = true; // TODO: get from settings
 
   const expandedKeys = props.expandedKeys.map((item) => item.toString());
@@ -38,6 +37,7 @@ const OperationsPanelComponent = (props) => {
   };
 
   const onSelect = (folder, treeNode) => {
+    const folderTitle = treeNode.node.props.title;
     const destFolderId = isNaN(+folder[0]) ? folder[0] : +folder[0];
 
     if (currentFolderId === destFolderId) {
@@ -45,7 +45,7 @@ const OperationsPanelComponent = (props) => {
     }
 
     if (isCopy) {
-      startOperation(isCopy, destFolderId);
+      startOperation(isCopy, destFolderId, folderTitle);
     } else {
       if (
         provider &&
@@ -54,13 +54,13 @@ const OperationsPanelComponent = (props) => {
         setDestFolderId(destFolderId);
         setThirdPartyMoveDialogVisible(true);
       } else {
-        startOperation(isCopy, destFolderId);
+        startOperation(isCopy, destFolderId, folderTitle);
       }
     }
     onClose();
   };
 
-  const startOperation = (isCopy, destFolderId) => {
+  const startOperation = (isCopy, destFolderId, folderTitle) => {
     const isProviderFolder = selection.find((x) => !x.providerKey);
     const items =
       isProviderFolder && !isCopy
@@ -82,15 +82,15 @@ const OperationsPanelComponent = (props) => {
 
     if (!folderIds.length && !fileIds.length) return;
 
-    itemOperationToFolder(
+    checkOperationConflict({
       destFolderId,
       folderIds,
       fileIds,
-      conflictResolveType,
       deleteAfter,
       isCopy,
-      { copy: t("CopyOperation"), move: t("MoveToOperation") }
-    );
+      folderTitle,
+      translations: { copy: t("CopyOperation"), move: t("MoveToOperation") },
+    });
   };
 
   //console.log("Operations panel render");
@@ -129,7 +129,7 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
     dialogsStore,
-    uploadDataStore,
+    filesActionsStore,
   }) => {
     const { filter, selection } = filesStore;
     const {
@@ -138,7 +138,7 @@ export default inject(
       setExpandedPanelKeys,
       expandedPanelKeys,
     } = treeFoldersStore;
-    const { itemOperationToFolder } = uploadDataStore;
+    const { checkOperationConflict } = filesActionsStore;
 
     const {
       moveToPanelVisible,
@@ -167,7 +167,7 @@ export default inject(
       setMoveToPanelVisible,
       setDestFolderId,
       setThirdPartyMoveDialogVisible,
-      itemOperationToFolder,
+      checkOperationConflict,
       setExpandedPanelKeys,
     };
   }
