@@ -481,7 +481,7 @@ class TeamTemplate extends React.Component {
             options={availableOptions}
             selectedOption={selectedOption}
             onSelect={this.onCustomSchemaSelect}
-            isDisabled={false}
+            isDisabled={isLoadingData}
             noBorder={false}
             scaled={true}
             scaledOptions={true}
@@ -525,7 +525,6 @@ class TeamTemplate extends React.Component {
             value={usersCaption}
             hasError={formErrors.usersCaption}
             onChange={this.onChangeInput}
-            isDisabled={false}
             placeholder={t("AddName")}
             isDisabled={isLoadingData}
           />
@@ -546,7 +545,6 @@ class TeamTemplate extends React.Component {
             value={groupCaption}
             hasError={formErrors.groupCaption}
             onChange={this.onChangeInput}
-            isDisabled={false}
             placeholder={t("AddName")}
             isDisabled={isLoadingData}
           />
@@ -567,7 +565,6 @@ class TeamTemplate extends React.Component {
             value={groupsCaption}
             hasError={formErrors.groupsCaption}
             onChange={this.onChangeInput}
-            isDisabled={false}
             placeholder={t("AddName")}
             isDisabled={isLoadingData}
           />
@@ -588,7 +585,6 @@ class TeamTemplate extends React.Component {
             value={userPostCaption}
             hasError={formErrors.userPostCaption}
             onChange={this.onChangeInput}
-            isDisabled={false}
             placeholder={t("AddName")}
             isDisabled={isLoadingData}
           />
@@ -609,7 +605,6 @@ class TeamTemplate extends React.Component {
             value={regDateCaption}
             hasError={formErrors.regDateCaption}
             onChange={this.onChangeInput}
-            isDisabled={false}
             placeholder={t("AddName")}
             isDisabled={isLoadingData}
           />
@@ -630,7 +625,6 @@ class TeamTemplate extends React.Component {
             value={groupHeadCaption}
             hasError={formErrors.groupHeadCaption}
             onChange={this.onChangeInput}
-            isDisabled={false}
             placeholder={t("AddName")}
             isDisabled={isLoadingData}
           />
@@ -651,7 +645,6 @@ class TeamTemplate extends React.Component {
             value={guestCaption}
             hasError={formErrors.guestCaption}
             onChange={this.onChangeInput}
-            isDisabled={false}
             placeholder={t("AddName")}
             isDisabled={isLoadingData}
           />
@@ -672,7 +665,6 @@ class TeamTemplate extends React.Component {
             value={guestsCaption}
             hasError={formErrors.guestsCaption}
             onChange={this.onChangeInput}
-            isDisabled={false}
             placeholder={t("AddName")}
             isDisabled={isLoadingData}
           />
