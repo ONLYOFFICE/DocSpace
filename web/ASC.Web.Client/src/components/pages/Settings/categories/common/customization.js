@@ -150,7 +150,6 @@ class Customization extends React.Component {
           this.setState({ languages, language, timezones, timezone });
         });
     }
-    console.log("!!!!", this.state.language);
 
     hideLoader();
   }
