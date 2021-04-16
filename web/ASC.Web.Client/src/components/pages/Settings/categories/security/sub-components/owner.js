@@ -128,11 +128,11 @@ class PureOwnerSettings extends Component {
   );
 
   changeOwner = (selectedOwner) => {
-    const { sendOwnerChange } = this.props;
+    const { sendOwnerChange, t, owner } = this.props;
     sendOwnerChange(selectedOwner.key)
       .then(() =>
         toastr.success(
-          `${t("ConfirmEmailSended", { ownerName: owner.displayName })}`
+          t("ConfirmEmailSended", { ownerName: owner.displayName })
         )
       )
       .catch((err) => toastr.error(err));
