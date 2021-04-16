@@ -91,6 +91,8 @@ class TeamTemplate extends React.Component {
       isLoadingData: false,
       isChanged: false,
       availableOptions: [],
+      customId: "custom",
+      customName: "",
       formErrors: {
         userCaption: false,
         usersCaption: false,
@@ -219,6 +221,7 @@ class TeamTemplate extends React.Component {
 
   getOptions = () => {
     const { teamTemplate } = this.props;
+    const { customId } = this.state;
 
     for (let item = 0; item < teamTemplate.length; item++) {
       let obj = {
@@ -227,6 +230,12 @@ class TeamTemplate extends React.Component {
         disabled: false,
       };
       options.push(obj);
+
+      if (teamTemplate[item].id === customId) {
+        this.setState({
+          customName: teamTemplate[item].name,
+        });
+      }
     }
     this.setState({ availableOptions: options });
   };
@@ -275,23 +284,22 @@ class TeamTemplate extends React.Component {
   };
 
   onChangeInput = (e) => {
-    const { teamTemplate } = this.props;
-    const { selectedOption } = this.state;
+    const { selectedOption, customName, customId } = this.state;
 
     const name = e.target.name;
     const value = e.target.value;
 
     this.setState({ [name]: value });
 
-    if (selectedOption.label !== teamTemplate[3].name) {
+    if (selectedOption.label !== customName) {
       this.setState({
-        id: teamTemplate[3].id,
+        id: customId,
         selectedOption: {
           key: 0,
-          label: teamTemplate[3].name,
+          label: customName,
         },
       });
-      saveToSessionStorage("selectedOption", teamTemplate[3].name);
+      saveToSessionStorage("selectedOption", customName);
     }
 
     if (this.settingIsEqualInitialValue(`${name}`, `${value}`)) {
@@ -360,20 +368,19 @@ class TeamTemplate extends React.Component {
       guestCaption,
       guestsCaption,
       selectedOption,
+      customName,
     } = this.state;
 
     const {
       setCurrentSchema,
       setCustomSchema,
-      teamTemplate,
       getCurrentCustomSchema,
       t,
-      setIsLoading,
     } = this.props;
 
     if (this.isInvalidForm()) return;
 
-    if (selectedOption.label !== teamTemplate[3].name) {
+    if (selectedOption.label !== customName) {
       this.setState({ isLoadingData: true }, function () {
         setCurrentSchema(id)
           .then(() => getCurrentCustomSchema(id))
