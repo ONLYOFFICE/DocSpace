@@ -474,7 +474,7 @@ class TeamTemplate extends React.Component {
         <FieldContainer
           className="team-template_field-container main-field-container"
           isVertical
-          labelText={`${t("Template")}:`}
+          labelText={t("Template")}
           place="top"
         >
           <ComboBox
@@ -493,10 +493,10 @@ class TeamTemplate extends React.Component {
         <FieldContainer
           className="team-template_field-container"
           isVertical
-          labelText={`${t("User")}:`}
+          labelText={t("User")}
           place="top"
           hasError={formErrors.userCaption}
-          errorMessage={`${t("EmptyFieldError")}`}
+          errorMessage={t("EmptyFieldError")}
         >
           <TextInput
             name={"userCaption"}
@@ -513,10 +513,10 @@ class TeamTemplate extends React.Component {
         <FieldContainer
           className="team-template_field-container"
           isVertical
-          labelText={`${t("Users")}:`}
+          labelText={t("Users")}
           place="top"
           hasError={formErrors.usersCaption}
-          errorMessage={`${t("EmptyFieldError")}`}
+          errorMessage={t("EmptyFieldError")}
         >
           <TextInput
             name={"usersCaption"}
@@ -533,10 +533,10 @@ class TeamTemplate extends React.Component {
         <FieldContainer
           className="team-template_field-container"
           isVertical
-          labelText={`${t("Group")}:`}
+          labelText={t("Group")}
           place="top"
           hasError={formErrors.groupCaption}
-          errorMessage={`${t("EmptyFieldError")}`}
+          errorMessage={t("EmptyFieldError")}
         >
           <TextInput
             name={"groupCaption"}
@@ -553,10 +553,10 @@ class TeamTemplate extends React.Component {
         <FieldContainer
           className="team-template_field-container"
           isVertical
-          labelText={`${t("Groups")}:`}
+          labelText={t("Groups")}
           place="top"
           hasError={formErrors.groupsCaption}
-          errorMessage={`${t("EmptyFieldError")}`}
+          errorMessage={t("EmptyFieldError")}
         >
           <TextInput
             name={"groupsCaption"}
@@ -573,10 +573,10 @@ class TeamTemplate extends React.Component {
         <FieldContainer
           className="team-template_field-container"
           isVertical
-          labelText={`${t("Job/Title")}:`}
+          labelText={t("Job/Title")}
           place="top"
           hasError={formErrors.userPostCaption}
-          errorMessage={`${t("EmptyFieldError")}`}
+          errorMessage={t("EmptyFieldError")}
         >
           <TextInput
             name={"userPostCaption"}
@@ -593,10 +593,10 @@ class TeamTemplate extends React.Component {
         <FieldContainer
           className="team-template_field-container"
           isVertical
-          labelText={`${t("RegistrationDate")}:`}
+          labelText={t("RegistrationDate")}
           place="top"
           hasError={formErrors.regDateCaption}
-          errorMessage={`${t("EmptyFieldError")}`}
+          errorMessage={t("EmptyFieldError")}
         >
           <TextInput
             name={"regDateCaption"}
@@ -613,10 +613,10 @@ class TeamTemplate extends React.Component {
         <FieldContainer
           className="team-template_field-container"
           isVertical
-          labelText={`${t("GroupLead")}:`}
+          labelText={t("GroupLead")}
           place="top"
           hasError={formErrors.groupHeadCaption}
-          errorMessage={`${t("EmptyFieldError")}`}
+          errorMessage={t("EmptyFieldError")}
         >
           <TextInput
             name={"groupHeadCaption"}
@@ -633,10 +633,10 @@ class TeamTemplate extends React.Component {
         <FieldContainer
           className="team-template_field-container"
           isVertical
-          labelText={`${t("Guest")}:`}
+          labelText={t("Guest")}
           place="top"
           hasError={formErrors.guestCaption}
-          errorMessage={`${t("EmptyFieldError")}`}
+          errorMessage={t("EmptyFieldError")}
         >
           <TextInput
             name={"guestCaption"}
@@ -653,10 +653,10 @@ class TeamTemplate extends React.Component {
         <FieldContainer
           className="team-template_field-container"
           isVertical
-          labelText={`${t("Guests")}:`}
+          labelText={t("Guests")}
           place="top"
           hasError={formErrors.guestsCaption}
-          errorMessage={`${t("EmptyFieldError")}`}
+          errorMessage={t("EmptyFieldError")}
         >
           <TextInput
             name={"guestsCaption"}
