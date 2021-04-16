@@ -444,24 +444,6 @@ class FilesContent extends React.Component {
       .catch((err) => toastr.error(err));
   };
 
-  renderFileExst = () => {
-    const { item } = this.props;
-    const { fileExst } = item;
-    return (
-      <Text
-        className="badge-ext"
-        as="span"
-        color="#A3A9AE"
-        fontSize="15px"
-        fontWeight={600}
-        title={fileExst}
-        truncate={true}
-      >
-        {fileExst}
-      </Text>
-    );
-  };
-
   render() {
     const { itemTitle, showConvertDialog, newItems } = this.state;
 
@@ -481,6 +463,10 @@ class FilesContent extends React.Component {
       id,
       fileExst,
       access,
+      locked,
+      fileStatus,
+      title,
+      versionGroup,
       createdBy,
       updated,
       providerKey,
@@ -510,8 +496,6 @@ class FilesContent extends React.Component {
       isTrashFolder || window.innerWidth <= 1024 // in tile simple isTrashFOlder
         ? { noHover: true }
         : { onClick: this.onFilesClick };
-
-    const fileExstElement = this.renderFileExst();
 
     return isEdit ? (
       <EditingWrapperComponent
@@ -549,10 +533,34 @@ class FilesContent extends React.Component {
             isTextOverflow
           >
             {titleWithoutExt}
-            {fileExst && viewAs === "tile" ? fileExstElement : null}
+            {fileExst && viewAs === "tile" ? (
+              <Text
+                className="badge-ext"
+                as="span"
+                color="#A3A9AE"
+                fontSize="15px"
+                fontWeight={600}
+                title={fileExst}
+                truncate={true}
+              >
+                {fileExst}
+              </Text>
+            ) : null}
           </Link>
           <div className="badges">
-            {fileExst && viewAs !== "tile" ? fileExstElement : null}
+            {fileExst && viewAs !== "tile" ? (
+              <Text
+                className="badge-ext"
+                as="span"
+                color="#A3A9AE"
+                fontSize="15px"
+                fontWeight={600}
+                title={fileExst}
+                truncate={true}
+              >
+                {fileExst}
+              </Text>
+            ) : null}
             <Badges
               item={item}
               newItems={this.state.newItems}

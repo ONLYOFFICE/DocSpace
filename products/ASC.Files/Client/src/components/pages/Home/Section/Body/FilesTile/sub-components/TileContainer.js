@@ -29,22 +29,6 @@ const StyledTileContainer = styled.div`
     min-width: 220px;
     box-sizing: border-box;
 
-    &.folder {
-      &:before {
-        content: "";
-        position: absolute;
-        top: -7px;
-        left: -1px;
-        border: 1px solid #eceef1;
-        border-top-left-radius: 3px;
-        border-top-right-radius: 6px;
-        width: 50px;
-        height: 6px;
-        background-color: #fff;
-        border-bottom: transparent;
-      }
-    }
-
     &.file {
       padding: 0;
 

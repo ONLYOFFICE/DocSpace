@@ -1,13 +1,14 @@
 import Checkbox from "@appserver/components/checkbox";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import PropTypes from "prop-types";
-import { ReactSVG } from "react-svg";
 import React from "react";
+import { ReactSVG } from "react-svg";
 //import equal from "fast-deep-equal/react";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
 
 const svgLoader = () => <div style={{ width: "96px" }}></div>;
+
 const FlexBoxStyles = css`
   display: flex;
   flex-direction: row;
@@ -31,6 +32,36 @@ const StyledTile = styled.div`
 
   ${(props) => props.isFolder && FlexBoxStyles}
   ${(props) => props.isFolder && FolderStyles}
+
+  ${(props) =>
+    props.isFolder &&
+    `&:before {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: -1px;
+    border: 1px solid #eceef1;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 7px;
+    width: 50px;
+    height: 7px;
+    background-color: #FFF;
+    border-bottom: transparent;
+  }`}
+  ${(props) =>
+    props.isFolder &&
+    props.dragging &&
+    `&:before {
+        background-color: #F8F7BF;
+        width: 51px; 
+        left: -2px;
+  }`}
+  ${(props) =>
+    props.isFolder &&
+    props.dragging &&
+    `&:hover:before {
+        background-color: #EFEFB2;
+  }`}
 `;
 
 const StyledFileTileTop = styled.div`
@@ -43,6 +74,7 @@ const StyledFileTileTop = styled.div`
   position: relative;
 
   .thumbnailImage {
+    pointer-events: none;
     & > .injected-svg {
       position: absolute;
       left: 0;
@@ -152,6 +184,8 @@ class Tile extends React.Component {
       onSelect,
       isFolder,
       rowContextClick,
+      temporaryIcon,
+      dragging,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -188,7 +222,12 @@ class Tile extends React.Component {
     const icon = this.getIconFile();
 
     return (
-      <StyledTile ref={this.tile} {...this.props} onContextMenu={onContextMenu}>
+      <StyledTile
+        ref={this.tile}
+        {...this.props}
+        onContextMenu={onContextMenu}
+        dragging={dragging && isFolder}
+      >
         {isFolder ? (
           <>
             {renderCheckbox && (

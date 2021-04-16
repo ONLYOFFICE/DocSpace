@@ -199,6 +199,7 @@ const FileItem = createSelectable((props) => {
             key={id}
             item={item}
             isFolder={item.isFolder}
+            dragging={dragging && isFolder}
             element={element}
             onSelect={onContentFileSelect}
             rowContextClick={fileContextClick} // rename!
@@ -301,7 +302,7 @@ export default inject(
       isRootFolder,
       canShare,
       checked: selection.some((el) => el.id === item.id),
-      //isFolder,
+      isFolder,
       draggable,
 
       isItemsSelected: !!selection.length,
