@@ -70,7 +70,7 @@ class SettingsStore {
   passwordSettings = null;
   hasShortenService = false;
 
-  teamTemplate = [];
+  customSchemaList = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -127,7 +127,7 @@ class SettingsStore {
   };
 
   getCustomSchemaList = async () => {
-    this.teamTemplate = await api.settings.getCustomSchemaList();
+    this.customSchemaList = await api.settings.getCustomSchemaList();
   };
 
   getPortalSettings = async () => {

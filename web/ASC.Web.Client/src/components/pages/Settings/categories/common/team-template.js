@@ -156,9 +156,9 @@ class TeamTemplate extends React.Component {
   }
 
   onCustomSchemaSelect = (option) => {
-    const { teamTemplate } = this.props;
+    const { customSchemaList } = this.props;
 
-    const currentTemplate = teamTemplate[option.key];
+    const currentTemplate = customSchemaList[option.key];
 
     if (isError) {
       this.setState({
@@ -220,20 +220,20 @@ class TeamTemplate extends React.Component {
   };
 
   getOptions = () => {
-    const { teamTemplate } = this.props;
+    const { customSchemaList } = this.props;
     const { customId } = this.state;
 
-    for (let item = 0; item < teamTemplate.length; item++) {
+    for (let item = 0; item < customSchemaList.length; item++) {
       let obj = {
         key: item,
-        label: teamTemplate[item].name,
+        label: customSchemaList[item].name,
         disabled: false,
       };
       options.push(obj);
 
-      if (teamTemplate[item].id === customId) {
+      if (customSchemaList[item].id === customId) {
         this.setState({
-          customName: teamTemplate[item].name,
+          customName: customSchemaList[item].name,
         });
       }
     }
@@ -701,7 +701,7 @@ export default inject(({ auth, setup }) => {
     getCustomSchemaList,
 
     customNames,
-    teamTemplate,
+    customSchemaList,
     isLoading,
     getCurrentCustomSchema,
     setIsLoading,
@@ -714,7 +714,7 @@ export default inject(({ auth, setup }) => {
     getCustomSchemaList,
     getCurrentCustomSchema,
     customNames,
-    teamTemplate,
+    customSchemaList,
     isLoading,
     setCurrentSchema,
     setCustomSchema,
