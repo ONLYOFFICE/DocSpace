@@ -126,8 +126,8 @@ class SettingsStore {
     this.customNames = await api.settings.getCurrentCustomSchema(id);
   };
 
-  getCustomSchema = async () => {
-    this.teamTemplate = await api.settings.getCustomSchema();
+  getCustomSchemaList = async () => {
+    this.teamTemplate = await api.settings.getCustomSchemaList();
   };
 
   getPortalSettings = async () => {

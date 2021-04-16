@@ -79,21 +79,21 @@ export function getLogoUrls() {
   });
 }
 
-export function getCustomSchema() {
+export function getCustomSchemaList() {
   return request({
     method: "get",
     url: `settings/customschemas`,
   });
 }
 
-export function setCurrentShema(id) {
+export function setCurrentSchema(id) {
   return request({
     method: "post",
     url: "settings/customschemas",
     data: { id },
   });
 }
-export function setCustomShema(
+export function setCustomSchema(
   userCaption,
   usersCaption,
   groupCaption,

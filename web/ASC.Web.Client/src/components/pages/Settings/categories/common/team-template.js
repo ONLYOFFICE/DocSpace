@@ -106,7 +106,7 @@ class TeamTemplate extends React.Component {
   }
 
   componentDidMount() {
-    const { getCustomSchema, showReminder, setIsLoading } = this.props;
+    const { getCustomSchemaList, showReminder, setIsLoading } = this.props;
 
     const { customNames } = this.props;
 
@@ -148,7 +148,7 @@ class TeamTemplate extends React.Component {
       saveToSessionStorage("selectedOption", customNames.name);
     }
     setIsLoading(true);
-    getCustomSchema()
+    getCustomSchemaList()
       .then(() => this.getOptions())
       .then(() => setIsLoading(false));
   }
@@ -363,8 +363,8 @@ class TeamTemplate extends React.Component {
     } = this.state;
 
     const {
-      setCurrentShema,
-      setCustomShema,
+      setCurrentSchema,
+      setCustomSchema,
       teamTemplate,
       getCurrentCustomSchema,
       t,
@@ -375,7 +375,7 @@ class TeamTemplate extends React.Component {
 
     if (selectedOption.label !== teamTemplate[3].name) {
       this.setState({ isLoadingData: true }, function () {
-        setCurrentShema(id)
+        setCurrentSchema(id)
           .then(() => getCurrentCustomSchema(id))
 
           .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
@@ -384,7 +384,7 @@ class TeamTemplate extends React.Component {
       });
     } else {
       this.setState({ isLoadingData: true }, function () {
-        setCustomShema(
+        setCustomSchema(
           userCaption,
           usersCaption,
           groupCaption,
@@ -691,7 +691,7 @@ export default inject(({ auth, setup }) => {
     nameSchemaId,
     organizationName,
 
-    getCustomSchema,
+    getCustomSchemaList,
 
     customNames,
     teamTemplate,
@@ -699,18 +699,18 @@ export default inject(({ auth, setup }) => {
     getCurrentCustomSchema,
     setIsLoading,
   } = auth.settingsStore;
-  const { setCurrentShema, setCustomShema } = setup;
+  const { setCurrentSchema, setCustomSchema } = setup;
   return {
     nameSchemaId,
     organizationName,
 
-    getCustomSchema,
+    getCustomSchemaList,
     getCurrentCustomSchema,
     customNames,
     teamTemplate,
     isLoading,
-    setCurrentShema,
-    setCustomShema,
+    setCurrentSchema,
+    setCustomSchema,
     setIsLoading,
   };
 })(withTranslation("Settings")(observer(TeamTemplate)));
