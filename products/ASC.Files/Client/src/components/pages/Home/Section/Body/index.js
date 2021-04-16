@@ -98,6 +98,7 @@ const SectionBodyContent = (props) => {
     const treeValue = isDragging ? treeClassList[index].split("_")[1] : null;
 
     const elem = e.target.closest(".droppable");
+    const title = elem && elem.dataset.title;
     const value = elem && elem.getAttribute("value");
     if ((!value && !treeValue) || isRecycleBinFolder) {
       setDragging(false);
@@ -109,13 +110,16 @@ const SectionBodyContent = (props) => {
 
     setStartDrag(false);
     setDragging(false);
-    onMoveTo(folderId);
+    onMoveTo(folderId, title);
     return;
   };
 
-  const onMoveTo = (destFolderId) => {
+  const onMoveTo = (destFolderId, title) => {
     const id = isNaN(+destFolderId) ? destFolderId : +destFolderId;
-    moveDragItems(id, t("MoveToOperation")); //TODO: then catch
+    moveDragItems(id, title, {
+      copy: t("CopyOperation"),
+      move: t("MoveToOperation"),
+    }); //TODO: then catch
   };
 
   const onDropEvent = () => {
