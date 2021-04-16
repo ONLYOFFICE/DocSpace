@@ -88,7 +88,7 @@ class TeamTemplate extends React.Component {
       guestsCaption: guestsFromSessionStorage || customNames.guestsCaption,
 
       showReminder: false,
-      isLoading: false,
+      isLoadingData: false,
       isChanged: false,
       availableOptions: [],
       formErrors: {
@@ -374,30 +374,32 @@ class TeamTemplate extends React.Component {
     if (this.isInvalidForm()) return;
 
     if (selectedOption.label !== teamTemplate[3].name) {
-      setIsLoading(true);
-      setCurrentShema(id)
-        .then(() => getCurrentCustomSchema(id))
+      this.setState({ isLoadingData: true }, function () {
+        setCurrentShema(id)
+          .then(() => getCurrentCustomSchema(id))
 
-        .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
-        .catch((error) => toastr.error(error))
-        .finally(() => setIsLoading(false));
+          .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
+          .catch((error) => toastr.error(error))
+          .finally(() => this.setState({ isLoadingData: false }));
+      });
     } else {
-      setIsLoading(true);
-      setCustomShema(
-        userCaption,
-        usersCaption,
-        groupCaption,
-        groupsCaption,
-        userPostCaption,
-        regDateCaption,
-        groupHeadCaption,
-        guestCaption,
-        guestsCaption
-      )
-        .then(() => getCurrentCustomSchema(id))
-        .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
-        .catch((error) => toastr.error(error))
-        .finally(() => setIsLoading(false));
+      this.setState({ isLoadingData: true }, function () {
+        setCustomShema(
+          userCaption,
+          usersCaption,
+          groupCaption,
+          groupsCaption,
+          userPostCaption,
+          regDateCaption,
+          groupHeadCaption,
+          guestCaption,
+          guestsCaption
+        )
+          .then(() => getCurrentCustomSchema(id))
+          .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
+          .catch((error) => toastr.error(error))
+          .finally(() => this.setState({ isLoadingData: false }));
+      });
     }
 
     settingNames.forEach((settingName) => {
@@ -462,9 +464,9 @@ class TeamTemplate extends React.Component {
       isChanged,
       showReminder,
       availableOptions,
+      isLoadingData,
     } = this.state;
 
-    console.log("isLoading", isLoading);
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -503,7 +505,7 @@ class TeamTemplate extends React.Component {
             value={userCaption}
             hasError={formErrors.userCaption}
             onChange={this.onChangeInput}
-            isDisabled={false}
+            isDisabled={isLoadingData}
             placeholder={t("AddName")}
           />
         </FieldContainer>
@@ -525,6 +527,7 @@ class TeamTemplate extends React.Component {
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
+            isDisabled={isLoadingData}
           />
         </FieldContainer>
 
@@ -545,6 +548,7 @@ class TeamTemplate extends React.Component {
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
+            isDisabled={isLoadingData}
           />
         </FieldContainer>
 
@@ -565,6 +569,7 @@ class TeamTemplate extends React.Component {
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
+            isDisabled={isLoadingData}
           />
         </FieldContainer>
 
@@ -585,6 +590,7 @@ class TeamTemplate extends React.Component {
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
+            isDisabled={isLoadingData}
           />
         </FieldContainer>
 
@@ -605,6 +611,7 @@ class TeamTemplate extends React.Component {
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
+            isDisabled={isLoadingData}
           />
         </FieldContainer>
 
@@ -625,6 +632,7 @@ class TeamTemplate extends React.Component {
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
+            isDisabled={isLoadingData}
           />
         </FieldContainer>
 
@@ -645,6 +653,7 @@ class TeamTemplate extends React.Component {
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
+            isDisabled={isLoadingData}
           />
         </FieldContainer>
 
@@ -665,6 +674,7 @@ class TeamTemplate extends React.Component {
             onChange={this.onChangeInput}
             isDisabled={false}
             placeholder={t("AddName")}
+            isDisabled={isLoadingData}
           />
         </FieldContainer>
 
