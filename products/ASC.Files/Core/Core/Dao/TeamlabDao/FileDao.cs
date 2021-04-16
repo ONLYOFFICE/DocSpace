@@ -1319,29 +1319,25 @@ namespace ASC.Files.Core.Data
 
         protected IQueryable<DbFileQuery> FromQueryWithShared(IQueryable<DbFile> dbFiles)
         {
-            return dbFiles
-                .Select(r => new DbFileQuery
-                {
-                    File = r,
-                    Root =
-                    FilesDbContext.Folders
-                        .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                        .Where(x => x.folder.TenantId == r.TenantId)
-                        .Where(x => x.tree.FolderId == r.FolderId)
-                        .OrderByDescending(r => r.tree.Level)
-                        .Select(r => new DbFolder
-                        {
-                            FolderType = r.folder.FolderType,
-                            CreateBy = r.folder.CreateBy,
-                            Id = r.folder.Id
-                        })
-                        .FirstOrDefault(),
-                    Shared =
-                     FilesDbContext.Security
-                        .Any(x=> x.TenantId == TenantID && 
-                                   x.EntryType == FileEntryType.File && 
-                                   x.EntryId == r.Id.ToString())
-                });
+            return from r in dbFiles
+                   select new DbFileQuery
+                   {
+                       File = r,
+                       Root = (from f in FilesDbContext.Folders
+                               where f.Id ==
+                               (from t in FilesDbContext.Tree
+                                where t.FolderId == r.FolderId
+                                orderby t.Level descending
+                                select t.ParentId
+                                ).FirstOrDefault()
+                               where f.TenantId == r.TenantId
+                               select f
+                              ).FirstOrDefault(),
+                       Shared = (from f in FilesDbContext.Security
+                                 where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
+                                 select f
+                                 ).Any()
+                   };
         }
 
         protected IQueryable<DbFileQuery> FromQuery(IQueryable<DbFile> dbFiles)
@@ -1350,18 +1346,16 @@ namespace ASC.Files.Core.Data
                 .Select(r => new DbFileQuery
                 {
                     File = r,
-                    Root = FilesDbContext.Folders
-                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                            .Where(x => x.folder.TenantId == r.TenantId)
-                            .Where(x => x.tree.FolderId == r.FolderId)
-                            .OrderByDescending(r => r.tree.Level)
-                            .Select(r => new DbFolder
-                            {
-                                FolderType = r.folder.FolderType,
-                                CreateBy = r.folder.CreateBy,
-                                Id = r.folder.Id
-                            })
-                            .FirstOrDefault(),
+                    Root = (from f in FilesDbContext.Folders
+                            where f.Id ==
+                            (from t in FilesDbContext.Tree
+                             where t.FolderId == r.FolderId
+                             orderby t.Level descending
+                             select t.ParentId
+                             ).FirstOrDefault()
+                            where f.TenantId == r.TenantId
+                            select f
+                              ).FirstOrDefault(),
                     Shared = true
                 });
         }

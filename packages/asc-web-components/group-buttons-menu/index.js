@@ -138,11 +138,16 @@ class GroupButtonsMenu extends React.Component {
       checked,
       isIndeterminate,
       onChange,
+      className,
     } = this.props;
     const { priorityItems, moreItems, visible } = this.state;
 
     return (
-      <StyledGroupButtonsMenu id="groupMenuOuter" visible={visible}>
+      <StyledGroupButtonsMenu
+        id="groupMenuOuter"
+        className={`${className} not-selectable`}
+        visible={visible}
+      >
         <GroupMenuWrapper id="groupMenu">
           {priorityItems.length &&
             priorityItems.map((item, i) => {
@@ -186,7 +191,11 @@ class GroupButtonsMenu extends React.Component {
             ))}
           </GroupButton>
         )}
-        <CloseButton title={closeTitle} onClick={this.closeMenu} />
+        <CloseButton
+          className="not-selectable"
+          title={closeTitle}
+          onClick={this.closeMenu}
+        />
       </StyledGroupButtonsMenu>
     );
   }
