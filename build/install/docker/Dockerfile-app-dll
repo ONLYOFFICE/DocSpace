@@ -1,11 +1,15 @@
-### STAGE 1: Develop ######
-FROM ubuntu:20.10 AS develop
+### STAGE 1: Base image ######
+ARG SRC_PATH=/app/onlyoffice/src
+ARG BUILD_PATH=/var/www
+ARG REPO_TAG=5.0.202-focal-amd64
+ARG REPO=mcr.microsoft.com/dotnet/sdk
 
-ARG RELEASE_DATE="2016-06-21"
-ARG VERSION="8.9.0.190"
-ARG DEBIAN_FRONTEND=noninteractive
-ARG GIT_BRANCH="master"
-ARG SRC_PATH="/app/onlyoffice/src"
+FROM $REPO:$REPO_TAG AS base
+ARG RELEASE_DATE=2021-04-11
+ARG VERSION=8.9.0.190
+ARG GIT_BRANCH=master
+ARG SRC_PATH
+ARG BUILD_PATH
 
 LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
       onlyoffice.appserver.version="${VERSION}" \
@@ -24,22 +28,8 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
     locale-gen en_US.UTF-8 && \
     apt-get -y update && \
-    apt-get install -yq software-properties-common wget curl && \
-    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - && \
-    apt-get install -y nodejs && \
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list && \
-    wget https://packages.microsoft.com/config/ubuntu/20.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
-    dpkg -i packages-microsoft-prod.deb && \
-    apt-get -y update && \
-    apt-get install -y apt-transport-https && \
-    apt-get install -y apt-utils &&\
-    apt-get -y update && \
-    cd ~ && \
-    echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
-    apt-get install -yq git \
-                        yarn \
-                        dotnet-sdk-5.0 
+    apt-get install -yq git apt-utils npm nodejs && \
+    npm install --global yarn 
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     echo ${GIT_BRANCH}  && \
@@ -54,8 +44,7 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
     cd ${SRC_PATH}/build/install/common/ && \
     bash build-frontend.sh -sp ${SRC_PATH} && \
-    cd ${SRC_PATH} && yarn build && cd ${SRC_PATH}/build/install/common/ && \
-    bash build-backend.sh -sp ${SRC_PATH} && \
+    bash build-backend.sh -sp ${SRC_PATH} -ar "--disable-parallel" && \
     bash publish-backend.sh -sp ${SRC_PATH} -bp ${BUILD_PATH} -ar "--disable-parallel"
    
 COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
@@ -69,7 +58,7 @@ RUN rm -rf /var/lib/apt/lists/*
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0.4-focal-amd64 as builder
 
-COPY --from=develop /app/onlyoffice/config/ /app/onlyoffice/config/
+COPY --from=base /app/onlyoffice/config/ /app/onlyoffice/config/
 
 # add defualt user and group for no-root run
 RUN mkdir -p /var/log/onlyoffice && \
@@ -107,16 +96,16 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     rm -rf /usr/share/nginx/html/*
 
 # copy static services files and config values
-COPY --from=develop /etc/nginx/conf.d /etc/nginx/conf.d
-COPY --from=develop /etc/nginx/includes /etc/nginx/includes
-COPY --from=develop /var/www/public /var/www/public
-COPY --from=develop ${SRC_PATH}/products/ASC.CRM/Client/dist /var/www/products/ASC.CRM/client
-COPY --from=develop ${SRC_PATH}/web/ASC.Web.Editor/dist /var/www/products/ASC.Files/editor
-COPY --from=develop ${SRC_PATH}/products/ASC.Files/Client/dist /var/www/products/ASC.Files/client
-COPY --from=develop ${SRC_PATH}/web/ASC.Web.Login/dist /var/www/studio/login
-COPY --from=develop ${SRC_PATH}/products/ASC.People/Client/dist /var/www/products/ASC.People/client
-COPY --from=develop ${SRC_PATH}/products/ASC.Projects/Client/dist /var/www/products/ASC.Projects/client
-COPY --from=develop ${SRC_PATH}/web/ASC.Web.Client/dist /var/www/studio/client
+COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
+COPY --from=base /etc/nginx/includes /etc/nginx/includes
+COPY --from=base /var/www/public /var/www/public
+COPY --from=base ${SRC_PATH}/products/ASC.CRM/Client/dist /var/www/products/ASC.CRM/client
+COPY --from=base ${SRC_PATH}/web/ASC.Web.Editor/dist /var/www/products/ASC.Files/editor
+COPY --from=base ${SRC_PATH}/products/ASC.Files/Client/dist /var/www/products/ASC.Files/client
+COPY --from=base ${SRC_PATH}/web/ASC.Web.Login/dist /var/www/studio/login
+COPY --from=base ${SRC_PATH}/products/ASC.People/Client/dist /var/www/products/ASC.People/client
+COPY --from=base ${SRC_PATH}/products/ASC.Projects/Client/dist /var/www/products/ASC.Projects/client
+COPY --from=base ${SRC_PATH}/web/ASC.Web.Client/dist /var/www/studio/client
 
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 
@@ -144,7 +133,7 @@ FROM builder AS api_system
 WORKDIR /var/www/services/apisystem/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/apisystem/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/services/apisystem/ .
 
 CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
 
@@ -154,11 +143,11 @@ FROM builder AS backup
 WORKDIR /var/www/services/backup/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/backup/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/services/backup/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
 
 CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
@@ -168,11 +157,11 @@ FROM builder AS crm
 WORKDIR /var/www/products/ASC.CRM/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
 
 CMD ["ASC.CRM.dll", "ASC.CRM"]
 
@@ -182,11 +171,11 @@ FROM builder AS data_storage_encryption
 WORKDIR /var/www/services/storage.encryption/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/storage.encryption/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/services/storage.encryption/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
 
 CMD ["ASC.Data.Storage.Encryption.dll", "ASC.Data.Storage.Encryption"]
 
@@ -196,11 +185,11 @@ FROM builder AS files
 WORKDIR /var/www/products/ASC.Files/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice ${SRC_PATH}/ASC.Files/Server/DocStore .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/ASC.Files/Server/DocStore .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
 
 CMD ["ASC.Files.dll", "ASC.Files"]
 
@@ -210,9 +199,9 @@ FROM builder AS files_services
 WORKDIR /var/www/products/ASC.Files/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/service/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/Server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People*.dll /var/www/products/ASC.People/Server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/service/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/Server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People*.dll /var/www/products/ASC.People/Server/
 
 CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
@@ -222,11 +211,11 @@ FROM builder AS data_storage_migration
 WORKDIR /var/www/services/storage.migration/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/storage.migration/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ /var/www/products/ASC.Files/Server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ /var/www/products/ASC.People/Server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ /var/www/products/ASC.CRM/Server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ /var/www/products/ASC.Projects/Server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/services/storage.migration/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ /var/www/products/ASC.Files/Server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ /var/www/products/ASC.People/Server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ /var/www/products/ASC.CRM/Server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ /var/www/products/ASC.Projects/Server/
 
 
 CMD ["ASC.Data.Storage.Migration.dll", "ASC.Data.Storage.Migration"]
@@ -237,11 +226,11 @@ FROM builder AS notify
 WORKDIR /var/www/services/notify/service
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop /var/www/services/notify/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/Server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/Server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/Server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/Server/
+COPY --from=base /var/www/services/notify/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/Server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/Server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/Server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/Server/
 
 CMD ["ASC.Notify.dll", "ASC.Notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
@@ -251,10 +240,10 @@ FROM builder AS people_server
 WORKDIR /var/www/products/ASC.People/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
 
 CMD ["ASC.People.dll", "ASC.People"]
 
@@ -264,11 +253,11 @@ FROM builder AS projects_server
 WORKDIR /var/www/products/ASC.Projects/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
 
 CMD ["ASC.Projects.dll", "ASC.Projects"]
 
@@ -278,12 +267,12 @@ FROM builder AS socket
 WORKDIR /var/www/services/socket/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/socket/service/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/socket/client /var/www/ASC.Socket.IO
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ /var/www/products/ASC.Files/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ /var/www/products/ASC.People/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ /var/www/products/ASC.CRM/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ /var/www/products/ASC.Projects/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/services/socket/service/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/services/socket/client /var/www/ASC.Socket.IO
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ /var/www/products/ASC.Files/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ /var/www/products/ASC.People/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ /var/www/products/ASC.CRM/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ /var/www/products/ASC.Projects/server/
 
 CMD ["ASC.Socket.IO.Svc.dll", "ASC.Socket.IO.Svc"]
 
@@ -293,11 +282,11 @@ FROM builder AS studio_notify
 WORKDIR /var/www/services/studio.notify/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop /var/www/services/studio.notify/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/Server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/Server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/Server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/Server/
+COPY --from=base /var/www/services/studio.notify/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/Server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/Server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/Server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/Server/
 
 CMD ["ASC.Studio.Notify.dll", "ASC.Studio.Notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
@@ -307,11 +296,11 @@ FROM builder AS telegram_service
 WORKDIR /var/www/services/telegram/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/telegram/service/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/services/telegram/service/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
 
 CMD ["ASC.TelegramService.dll", "ASC.TelegramService"]
 
@@ -321,8 +310,8 @@ FROM builder AS thumbnails
 WORKDIR /var/www/services/thumb/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/thumb/service/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/thumb/client /var/www/services/thumb/client
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/services/thumb/service/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/services/thumb/client /var/www/services/thumb/client
 
 CMD ["ASC.Thumbnails.Svc.dll", "ASC.Thumbnails.Svc"]
 
@@ -332,8 +321,8 @@ FROM builder AS urlshortener
 WORKDIR /var/www/services/urlshortener/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/urlshortener/service/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/urlshortener/client /var/www/services/urlshortener/client
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/services/urlshortener/service/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/services/urlshortener/client /var/www/services/urlshortener/client
 
 CMD ["ASC.UrlShortener.Svc.dll", "ASC.UrlShortener.Svc"]
 
@@ -343,11 +332,11 @@ FROM builder AS api
 WORKDIR /var/www/studio/api/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/studio/api .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/studio/api .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
 
 CMD ["ASC.Web.Api.dll", "ASC.Web.Api"]
 
@@ -357,10 +346,10 @@ FROM builder AS studio
 WORKDIR /var/www/studio/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/studio/server/ .
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
-COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/studio/server/ .
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.CRM/server/ASC.CRM*.dll /var/www/products/ASC.CRM/server/
+COPY --from=base --chown=onlyoffice:onlyoffice /var/www/products/ASC.Projects/server/ASC.Projects*.dll /var/www/products/ASC.Projects/server/
 
 CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
