@@ -279,11 +279,18 @@ class SectionFilterContent extends React.Component {
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, firstLoad, sectionWidth, tReady } = this.props;
+    const {
+      t,
+      firstLoad,
+      sectionWidth,
+      tReady,
+      isAnyItems,
+      filterSearch,
+    } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
 
-    return !tReady ? (
+    return !isAnyItems && !filterSearch ? null : !tReady ? (
       <Loaders.Filter />
     ) : (
       <FilterInput
@@ -314,10 +321,14 @@ export default inject(({ auth, filesStore, selectedFolderStore }) => {
     setIsLoading,
     setViewAs,
     viewAs,
+    files,
+    folders,
   } = filesStore;
 
   const { user } = auth.userStore;
   const { customNames, culture } = auth.settingsStore;
+  const isAnyItems = !!files.length || !!folders.length;
+  const filterSearch = filter.search;
 
   return {
     customNames,
@@ -331,6 +342,9 @@ export default inject(({ auth, filesStore, selectedFolderStore }) => {
     setIsLoading,
     fetchFiles,
     setViewAs,
+
+    isAnyItems,
+    filterSearch,
   };
 })(
   withRouter(
