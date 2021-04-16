@@ -98,7 +98,7 @@ class AccessRights extends PureComponent {
     return (
       <MainContainer>
         <OwnerSettings />
-        <div className="category-item-wrapper">
+        {/*<div className="category-item-wrapper">
           <div className="category-item-heading">
             <Link
               className="inherit-title-link header"
@@ -120,7 +120,7 @@ class AccessRights extends PureComponent {
           <Text className="category-item-description">
             {t("PortalAdminsDescription")}
           </Text>
-        </div>
+          </div>*/}
       </MainContainer>
     );
   }

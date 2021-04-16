@@ -8,8 +8,7 @@ import Text from "@appserver/components/text";
 import Avatar from "@appserver/components/avatar";
 import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
-import Button from "@appserver/components/button";
-import Heading from "@appserver/components/heading";
+import HelpButton from "@appserver/components/help-button";
 import PeopleSelector from "people/PeopleSelector";
 import isEmpty from "lodash/isEmpty";
 import { inject } from "mobx-react";
@@ -21,6 +20,15 @@ const StyledWrapper = styled.div`
     margin-left: 16px;
     overflow: hidden;
     width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+  }
+
+  .portal-owner-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
   }
 `;
 
@@ -40,40 +48,32 @@ const OwnerContainer = styled.div`
       flex: none;
     }
 
+    .avatar_text {
+      margin-right: 3px;
+    }
+
     .portal-owner-heading {
       margin: 0;
       margin-bottom: 4px;
     }
 
-    .portal-owner-info {
-      margin-bottom: 9px;
-    }
-
     .group-wrapper {
       display: inline-block;
-      margin-left: 3px;
+      margin-right: 3px;
     }
   }
 
   .link_style {
-    margin-right: 16px;
-  }
-  .text-body_wrapper {
-    margin-bottom: 16px;
+    margin-right: 3px;
   }
   .advanced-selector {
     position: relative;
-  }
-  .text-body_inline {
-    display: inline-flex;
   }
   .button_offset {
     margin-right: 16px;
   }
   .chooseOwnerWrap {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid #eceef1;
+    margin-top: 8px;
   }
 `;
 
@@ -108,7 +108,6 @@ class PureOwnerSettings extends Component {
       isLoading: false,
       showSelector: false,
       showLocalLoader: true,
-      selectedOwner: null,
     };
   }
 
@@ -124,11 +123,18 @@ class PureOwnerSettings extends Component {
     }
   }
 
-  onChangeOwner = () => {
+  ownerInfo = () => (
+    <Text>{this.props.t("AccessRightsOwnerOpportunities")}</Text>
+  );
+
+  changeOwner = (selectedOwner) => {
     const { sendOwnerChange } = this.props;
-    const { selectedOwner } = this.state;
     sendOwnerChange(selectedOwner.key)
-      .then((res) => toastr.success(res.message)) //toastr.success(t("DnsChangeMsg", { email: owner.email })))
+      .then(() =>
+        toastr.success(
+          `${t("ConfirmEmailSended", { ownerName: owner.displayName })}`
+        )
+      )
       .catch((err) => toastr.error(err));
   };
 
@@ -146,7 +152,7 @@ class PureOwnerSettings extends Component {
 
   onSelect = (items) => {
     this.onShowSelector(false);
-    this.setState({ selectedOwner: items[0] });
+    this.changeOwner(items[0]);
   };
 
   render() {
@@ -171,13 +177,10 @@ class PureOwnerSettings extends Component {
             </Link>
 
             <div className="portal-owner-description">
-              <Heading className="portal-owner-heading" level={3} size="small">
-                {t("PortalOwner")}
-              </Heading>
-              <div className="portal-owner-info">
+              <div className="portal-owner-name">
                 <Link
                   className="avatar_text"
-                  fontSize="13px"
+                  fontSize="16px"
                   fontWeight={600}
                   isBold={true}
                   color="#316DAA"
@@ -185,39 +188,30 @@ class PureOwnerSettings extends Component {
                 >
                   {owner.displayName}
                 </Link>
-                {owner.groups && (
-                  <div className="group-wrapper">
-                    <Text as="span">(</Text>
-                    {formattedDepartments}
-                    <Text as="span">)</Text>
-                  </div>
-                )}
+
+                <div className="group-wrapper">
+                  <Text fontSize="16px" as="span">{`(${t(
+                    "PortalOwner"
+                  )})`}</Text>
+                </div>
+                <HelpButton
+                  place="right"
+                  className="option-info"
+                  offsetRight={0}
+                  tooltipContent={this.ownerInfo()}
+                />
               </div>
-              <Text className="PortalOwnerDescription" color="#555F65">
-                {t("PortalOwnerDescription")}
-              </Text>
               <div className="chooseOwnerWrap">
                 <Link
                   className="link_style"
                   isHovered={true}
                   onClick={this.onShowSelector.bind(this, !showSelector)}
+                  fontSize="12px"
+                  type="action"
                 >
                   {selectedOwner ? selectedOwner.label : t("ChooseOwner")}
                 </Link>
-
-                <Button
-                  className="button_offset"
-                  size="medium"
-                  primary={true}
-                  label={t("AccessRightsChangeOwnerButtonText")}
-                  isDisabled={!isLoading ? selectedOwner === null : false}
-                  onClick={this.onChangeOwner}
-                />
-                <Text
-                  className="text-body_inline"
-                  fontSize="12px"
-                  color="#A3A9AE"
-                >
+                <Text as="span" fontSize="12px" color="#A3A9AE">
                   {t("AccessRightsChangeOwnerConfirmText")}
                 </Text>
               </div>
