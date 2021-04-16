@@ -13,7 +13,7 @@ import toastr from "studio/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { isMobile, isIOS } from "react-device-detect";
+import { isMobile, isTablet, isIOS } from "react-device-detect";
 
 import { setDocumentTitle } from "../../helpers/utils";
 import { inject } from "mobx-react";
@@ -34,14 +34,19 @@ const commonStyles = `
 `;
 
 const ComingSoonPage = styled.div`
-  padding: ${isMobile ? "62px 0 0 0" : "0"};
-  width: 336px;
+  padding: ${isTablet ? "106px 0 0 0" : isMobile ? "62px 0 0 0" : "0"};
+  width: ${isTablet ? "500px" : "336px"};
   margin: 0 auto;
 
   .module-logo-icon {
     float: left;
     margin-top: 8px;
     margin-right: 16px;
+
+    svg {
+      width: ${isTablet ? "192px" : "96px"};
+      height: ${isTablet ? "192px" : "96px"};
+    }
   }
 
   .module-title {
@@ -93,7 +98,10 @@ const StyledDesktopContainer = styled(EmptyScreenContainer)`
 
 const ExternalLink = ({ label, href, onClick }) => (
   <Box className="link-box">
-    <ExternalLinkIcon color="#333333" size={isMobile ? "small" : "medium"} />
+    <ExternalLinkIcon
+      color="#333333"
+      size={isMobile || isTablet ? "small" : "medium"}
+    />
     <Link
       as="a"
       href={href}
@@ -114,15 +122,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
   const { error } = match.params;
   const { pathname, protocol, hostname } = window.location;
   const currentModule = modules.find((m) => m.link === pathname);
-  const {
-    id,
-    title,
-    description,
-    imageUrl,
-    link,
-    originUrl,
-    helpUrl,
-  } = currentModule;
+  const { id, title, imageUrl, link, originUrl, helpUrl } = currentModule;
   const url = originUrl ? originUrl : link;
   const webLink = combineUrl(
     protocol + "//" + hostname,
@@ -172,8 +172,8 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
 
   const moduleDescription = (
     <Text className="module-info">
-      {description}{" "}
-      {helpUrl && (
+      {t("ModuleDescription")}{" "}
+      {helpUrl && false && (
         <Link
           as="a"
           href={helpUrl}
@@ -191,7 +191,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
 
   return !isLoaded ? (
     <></>
-  ) : isMobile ? (
+  ) : isMobile || isTablet ? (
     <ComingSoonPage>
       <ReactSVG
         className="module-logo-icon"
@@ -208,7 +208,11 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
         src={imageUrl}
       />
       <Box displayProp="flex" flexDirection="column" widthProp="220px">
-        <Text fontWeight="600" fontSize="19px" className="module-title">
+        <Text
+          fontWeight="600"
+          fontSize={isTablet ? "24px" : "19px"}
+          className="module-title"
+        >
           {title}
         </Text>
         {moduleDescription}
