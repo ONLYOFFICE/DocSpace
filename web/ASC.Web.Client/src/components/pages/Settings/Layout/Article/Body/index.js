@@ -18,6 +18,7 @@ import {
 } from "../../../utils";
 import { ReactSVG } from "react-svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { clickBackdrop } from "@appserver/common/utils";
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
     font-size: inherit;
@@ -147,6 +148,7 @@ class ArticleBodyContent extends React.Component {
       return;
     }
 
+    clickBackdrop();
     this.setState({ selectedKeys: value });
   };
 
