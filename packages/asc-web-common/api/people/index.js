@@ -205,6 +205,14 @@ export function thirdPartyLinkAccount(SerializedProfile) {
   });
 }
 
+export function thirdPartySignup(signupAccount) {
+  return request({
+    method: "post",
+    url: "people/thirdparty/signup.json",
+    data: signupAccount,
+  });
+}
+
 export function thirdPartyUnlinkAccount(provider) {
   return request({
     method: "delete",

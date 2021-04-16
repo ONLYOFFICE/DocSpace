@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { createUser } from "@appserver/common/api/people";
+import { createUser, thirdPartySignup } from "@appserver/common/api/people";
 import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
@@ -224,10 +224,21 @@ class Confirm extends React.PureComponent {
   };
 
   authCallback = (profile) => {
-    const { thirdPartyLogin, t } = this.props;
-    debugger;
+    const { t } = this.props;
+    const { FirstName, LastName, EMail, Serialized } = profile;
 
-    thirdPartyLogin(profile.Serialized)
+    console.log(profile);
+
+    const signupAccount = {
+      EmployeeType: null,
+      FirstName: FirstName,
+      LastName: LastName,
+      Email: EMail,
+      PasswordHash: "",
+      SerializedProfile: Serialized,
+    };
+
+    thirdPartySignup(signupAccount)
       .then(() => {
         history.push(defaultPage);
       })
