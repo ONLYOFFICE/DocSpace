@@ -1524,17 +1524,17 @@ namespace ASC.Employee.Core.Controllers
 
         [AllowAnonymous]
         [Create("thirdparty/signup")]
-        public void SignupAccountFromBody([FromBody] LinkAccountModel model)
+        public void SignupAccountFromBody([FromBody] SignupAccountModel model)
         {
-            LinkAccount(model);
+            SignupAccount(model);
         }
 
         [AllowAnonymous]
-        [Update("thirdparty/linkaccount")]
+        [Create("thirdparty/signup")]
         [Consumes("application/x-www-form-urlencoded")]
-        public void SignupAccountFromForm([FromForm] LinkAccountModel model)
+        public void SignupAccountFromForm([FromForm] SignupAccountModel model)
         {
-            LinkAccount(model);
+            SignupAccount(model);
         }
 
         public void SignupAccount(SignupAccountModel model)
