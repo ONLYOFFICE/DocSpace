@@ -1,31 +1,29 @@
 ﻿{
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:5021",
-      "sslPort": 0
-    }
-  },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
+    "Kestrel WebServer": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "launchUrl": "http://localhost:5021/api/2.0/crm/info",
       "environmentVariables": {
         "$STORAGE_ROOT": "../../../Data",
         "log__dir": "../../../Logs",
         "log__name": "crm",
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5021"
       }
     },
-    "ASC.CRM": {
-      "commandName": "Project",
+    "WSL 2 : Ubuntu 20.04": {
+      "commandName": "WSL2",
+      "launchBrowser": false,
+      "launchUrl": "http://localhost:5021/api/2.0/crm/info",
       "environmentVariables": {
         "$STORAGE_ROOT": "../../../Data",
         "log__dir": "../../../Logs",
         "log__name": "crm",
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5021"
       },
-      "applicationUrl": "http://localhost:5021"
+      "distributionName": "Ubuntu-20.04"
     }
   }
 }

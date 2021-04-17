@@ -116,7 +116,7 @@ namespace ASC.UrlShortener.Svc
                 UseShellExecute = false,
                 FileName = "node",
                 WindowStyle = ProcessWindowStyle.Hidden,
-                Arguments = string.Format("\"{0}\"", Path.GetFullPath(Path.Combine(hostEnvironment.ContentRootPath, path))),
+                Arguments = string.Format("\"{0}\"", Path.GetFullPath(CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, path))),
                 WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
             };
 
@@ -146,7 +146,7 @@ namespace ASC.UrlShortener.Svc
                 }
             }
 
-            startInfo.EnvironmentVariables.Add("logPath", Path.GetFullPath(Path.Combine(hostEnvironment.ContentRootPath, log.LogDirectory, "web.urlshortener.log")));
+            startInfo.EnvironmentVariables.Add("logPath", Path.GetFullPath(CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, log.LogDirectory, "web.urlshortener.log")));
 
             return startInfo;
         }

@@ -28,6 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+using ASC.Common.Utils;
+
 using SharpCompress.Common;
 using SharpCompress.Readers;
 using SharpCompress.Writers;
@@ -65,7 +67,7 @@ namespace ASC.Data.Backup
 
         public ZipReadOperator(string targetFile)
         {
-            tmpdir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
+            tmpdir = CrossPlatform.PathCombine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
             Entries = new List<string>();
 
             using var stream = File.OpenRead(targetFile);
@@ -82,7 +84,7 @@ namespace ASC.Data.Backup
                         fullPath = streamReader.ReadToEnd().TrimEnd(char.MinValue);
                     }
 
-                    fullPath = Path.Combine(tmpdir, fullPath);
+                    fullPath = CrossPlatform.PathCombine(tmpdir, fullPath);
 
                     if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
                     {
@@ -111,7 +113,7 @@ namespace ASC.Data.Backup
 
         public Stream GetEntry(string key)
         {
-            var filePath = Path.Combine(tmpdir, key);
+            var filePath = CrossPlatform.PathCombine(tmpdir, key);
             return File.Exists(filePath) ? File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read) : null;
         }
 

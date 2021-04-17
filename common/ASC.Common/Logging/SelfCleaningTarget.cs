@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using ASC.Common.Utils;
+
 using NLog;
 using NLog.Common;
 using NLog.Targets;
@@ -87,7 +89,7 @@ namespace ASC.Common.Logging
                     return;
 
                 if (!Path.IsPathRooted(dirPath))
-                    dirPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dirPath);
+                    dirPath = CrossPlatform.PathCombine(AppDomain.CurrentDomain.BaseDirectory, dirPath);
 
                 var directory = new DirectoryInfo(dirPath);
 
