@@ -244,6 +244,8 @@ class FilesContent extends React.Component {
 
     if (isTrashFolder) return;
 
+    this.props.onLinkClick();
+
     if (!fileExst && !contentLength) {
       setIsLoading(true);
 
@@ -463,10 +465,6 @@ class FilesContent extends React.Component {
       id,
       fileExst,
       access,
-      locked,
-      fileStatus,
-      title,
-      versionGroup,
       createdBy,
       updated,
       providerKey,
@@ -481,7 +479,7 @@ class FilesContent extends React.Component {
       access === ShareAccessRights.FullAccess ||
       access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
-    const showNew = !!newItems; // in tile const showNew = item.new && item.new > 0;
+    const showNew = !!newItems;
 
     const fileOwner =
       createdBy &&

@@ -159,9 +159,13 @@ class Tile extends React.Component {
 
     this.cm = React.createRef();
     this.tile = React.createRef();
+
+    this.state = {
+      checkedCheckbox: false,
+    };
   }
 
-  getIconFile() {
+  getIconFile = () => {
     const { item, temporaryIcon } = this.props;
 
     const icon = item.thumbnail ? item.thumbnail : temporaryIcon;
@@ -169,7 +173,21 @@ class Tile extends React.Component {
     if (!item.thumbnail) className += " temporary-icon";
 
     return <ReactSVG className={className} src={icon} loading={svgLoader} />;
-  }
+  };
+
+  onClickHandler = (e) => {
+    const { onSelect, item } = this.props;
+    if (e.target.closest(".checkbox") || e.target.tagName === "INPUT") return;
+
+    this.setState({ checkedCheckbox: !this.state.checkedCheckbox });
+    onSelect && onSelect(!this.state.checkedCheckbox, item);
+  };
+
+  changeCheckbox = (e) => {
+    const { onSelect, item } = this.props;
+    this.setState({ checkedCheckbox: e.target.checked });
+    onSelect && onSelect(e.target.checked, item);
+  };
 
   render() {
     //console.log("Row render");
@@ -202,10 +220,6 @@ class Tile extends React.Component {
       Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
       contextOptions.length > 0;
 
-    const changeCheckbox = (e) => {
-      onSelect && onSelect(e.target.checked, item);
-    };
-
     const getOptions = () => {
       rowContextClick && rowContextClick();
       return contextOptions;
@@ -227,6 +241,7 @@ class Tile extends React.Component {
         {...this.props}
         onContextMenu={onContextMenu}
         dragging={dragging && isFolder}
+        onClick={this.onClickHandler}
       >
         {isFolder ? (
           <>
@@ -235,7 +250,7 @@ class Tile extends React.Component {
                 <Checkbox
                   isChecked={checked}
                   isIndeterminate={indeterminate}
-                  onChange={changeCheckbox}
+                  onChange={this.changeCheckbox}
                 />
               </StyledCheckbox>
             )}
@@ -264,7 +279,7 @@ class Tile extends React.Component {
                   <Checkbox
                     isChecked={checked}
                     isIndeterminate={indeterminate}
-                    onChange={changeCheckbox}
+                    onChange={this.changeCheckbox}
                   />
                 </StyledCheckbox>
               )}

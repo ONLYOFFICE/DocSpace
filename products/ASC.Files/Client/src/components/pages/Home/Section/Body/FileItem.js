@@ -44,6 +44,7 @@ const FileItem = createSelectable((props) => {
     viewAs,
     setTooltipPosition,
     getIcon,
+    startDrag,
   } = props;
 
   const {
@@ -56,7 +57,6 @@ const FileItem = createSelectable((props) => {
     providerKey,
     contentLength,
   } = item;
-
   const isMobile = sectionWidth < 500;
   const getItemIcon = (isEdit) => {
     return (
@@ -176,6 +176,8 @@ const FileItem = createSelectable((props) => {
 
   let className = isDragging ? " droppable" : "";
   if (draggable) className += " draggable not-selectable";
+  /*if (draggable)
+    className += ` draggable ${startDrag ? " not-selectable " : ""}`;*/
 
   const sharedButton =
     !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
@@ -208,7 +210,11 @@ const FileItem = createSelectable((props) => {
             temporaryIcon={temporaryIcon}
             isPrivacy={isPrivacy}
           >
-            <FilesContent item={item} viewAs={viewAs} />
+            <FilesContent
+              item={item}
+              viewAs={viewAs}
+              onLinkClick={fileContextClick}
+            />
           </Tile>
         ) : (
           <SimpleFilesRow
@@ -274,6 +280,7 @@ export default inject(
       setStartDrag,
       setTooltipPosition,
       viewAs,
+      startDrag,
     } = filesStore;
     const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
 
@@ -322,6 +329,7 @@ export default inject(
       setTooltipPosition,
       viewAs,
       getIcon,
+      startDrag,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FileItem))));
