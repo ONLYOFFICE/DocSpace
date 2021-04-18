@@ -30,5 +30,9 @@
   "EnterAppCodeTitle": "Enter code from authentication app",
   "EnterAppCodeDescription": "Enter 6-digit generated code from your application. If you don’t have access to your phone you can use your backup codes.",
   "EnterCodePlaceholder": "Enter code",
-  "Continue": "Continue"
+  "Continue": "Continue",
+  "SetAppTitle": "Configure your authenticator application",
+  "SetAppDescription": "The two-factor authentication is enabled to provide additional portal security. Configure your authenticator application to continue work on the portal. For example you could use Google Authenticator for Android and iOS or Authenticator for Windows Phone.",
+  "SetAppInstallDescription": "To connect your apllication scan the QR code or manually enter your secret key {key} then enter 6-digit code from your application in the field below.",
+  "SetAppButton": "Connect App"
 }
