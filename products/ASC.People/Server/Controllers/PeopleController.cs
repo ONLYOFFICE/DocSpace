@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Security;
+using System.ServiceModel.Security;
 using System.Threading;
 
 using ASC.Api.Core;
@@ -87,6 +88,7 @@ namespace ASC.Employee.Core.Controllers
         private PasswordHasher PasswordHasher { get; }
         private UserHelpTourHelper UserHelpTourHelper { get; }
         private PersonalSettingsHelper PersonalSettingsHelper { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
         private ILog Log { get; }
 
         public PeopleController(
@@ -124,7 +126,8 @@ namespace ASC.Employee.Core.Controllers
             UserFormatter userFormatter,
             PasswordHasher passwordHasher,
             UserHelpTourHelper userHelpTourHelper,
-            PersonalSettingsHelper personalSettingsHelper)
+            PersonalSettingsHelper personalSettingsHelper,
+            CommonLinkUtility commonLinkUtility)
         {
             Log = option.Get("ASC.Api");
             Log.Debug("Test");
@@ -162,6 +165,7 @@ namespace ASC.Employee.Core.Controllers
             PasswordHasher = passwordHasher;
             UserHelpTourHelper = userHelpTourHelper;
             PersonalSettingsHelper = personalSettingsHelper;
+            CommonLinkUtility = commonLinkUtility;
         }
 
         [Read("info")]
@@ -1577,6 +1581,45 @@ namespace ASC.Employee.Core.Controllers
             UserHelpTourHelper.IsNewUser = true;
             if (CoreBaseSettings.Personal)
                 PersonalSettingsHelper.IsNewUser = true;
+        }
+
+        [Create("phone")]
+        public object SendNotificationToChangeFromBody([FromBody] UpdateMemberModel model)
+        {
+            return SendNotificationToChange(model.UserId);
+        }
+
+        [Create("phone")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SendNotificationToChangeFromForm([FromForm] UpdateMemberModel model)
+        {
+            return SendNotificationToChange(model.UserId);
+        }
+
+        public object SendNotificationToChange(string userId)
+        {
+            var user = UserManager.GetUsers(
+                string.IsNullOrEmpty(userId)
+                    ? SecurityContext.CurrentAccount.ID
+                    : new Guid(userId));
+
+            var canChange =
+                user.IsMe(AuthContext)
+                || PermissionContext.CheckPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+
+            if (!canChange)
+                throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
+
+            user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
+            UserManager.SaveUserInfo(user);
+
+            if (user.IsMe(AuthContext))
+            {
+                return CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation);
+            }
+
+            StudioNotifyService.SendMsgMobilePhoneChange(user);
+            return string.Empty;
         }
 
         protected string GetEmailAddress(SignupAccountModel model)
