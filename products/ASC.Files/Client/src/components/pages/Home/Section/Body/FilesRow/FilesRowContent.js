@@ -549,10 +549,9 @@ class FilesRowContent extends React.PureComponent {
       item.access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
     const isEdit = id === fileActionId && fileExst === fileActionExt;
 
-    const linkStyles =
-      isTrashFolder || window.innerWidth <= 1024
-        ? { noHover: true }
-        : { onClick: this.onFilesClick };
+    const linkStyles = isTrashFolder //|| window.innerWidth <= 1024
+      ? { noHover: true }
+      : { onClick: this.onFilesClick };
 
     const newItems = item.new || fileStatus === 2;
     const showNew = !!newItems;
@@ -582,7 +581,7 @@ class FilesRowContent extends React.PureComponent {
           isMobile={isMobile}
           sideColor={sideColor}
           isFile={fileExst || contentLength}
-          onClick={this.onMobileRowClick}
+          //onClick={this.onMobileRowClick}
         >
           <Link
             containerWidth="55%"
