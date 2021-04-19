@@ -27,7 +27,7 @@ const FolderStyles = css`
 `;
 
 const StyledTile = styled.div`
-  cursor: default;
+  cursor: ${(props) => (props.isFolder ? "pointer" : "default")};
 
   min-height: 55px;
   width: 100%;
@@ -164,28 +164,17 @@ class Tile extends React.Component {
   }
 
   getIconFile = () => {
-    const { item, temporaryIcon, onDoubleClick } = this.props;
+    const { item, temporaryIcon, thumbnailClick } = this.props;
 
     const icon = item.thumbnail ? item.thumbnail : temporaryIcon;
     let className = "thumbnailImage";
     if (!item.thumbnail) className += " temporary-icon";
 
     return (
-      <Link type="page" onClick={onDoubleClick}>
+      <Link type="page" onClick={thumbnailClick}>
         <ReactSVG className={className} src={icon} loading={svgLoader} />
       </Link>
     );
-  };
-
-  onClickHandler = (e) => {
-    const { onSelect, item, checked } = this.props;
-    console.log(
-      e.target.closest(".thumbnailImage"),
-      e.target.closest(".checkbox")
-    );
-    if (e.target.closest(".checkbox") || e.target.tagName === "INPUT") return;
-
-    onSelect && onSelect(!checked, item);
   };
 
   changeCheckbox = (e) => {
@@ -205,7 +194,6 @@ class Tile extends React.Component {
       isFolder,
       tileContextClick,
       dragging,
-      onDoubleClick,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -236,15 +224,13 @@ class Tile extends React.Component {
     };
 
     const icon = this.getIconFile();
-
     return (
       <StyledTile
         ref={this.tile}
         {...this.props}
         onContextMenu={onContextMenu}
         dragging={dragging && isFolder}
-        onClick={this.onClickHandler}
-        onDoubleClick={onDoubleClick}
+        isFolder={isFolder}
       >
         {isFolder ? (
           <>

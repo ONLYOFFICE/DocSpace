@@ -63,9 +63,11 @@ class ContextOptionsStore {
 
   onClickFavorite = (e) => {
     const { id } = this.filesStore.selection[0];
+    console.log(e);
+    console.log(e.currentTarget, e.currentTarget.dataset, e);
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
     const { action } = data;
-
+    console.log(action, data);
     this.filesActionsStore
       .setFavoriteAction(action, id)
       .then(() =>

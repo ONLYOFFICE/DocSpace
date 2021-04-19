@@ -140,7 +140,6 @@ const FileItem = createSelectable((props) => {
   };
 
   const onMouseDown = (e) => {
-    console.log(e.target, e.currentTarget);
     if (!draggable) {
       return;
     }
@@ -161,7 +160,6 @@ const FileItem = createSelectable((props) => {
       : false;
     const label = e.currentTarget.getAttribute("label");
     if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
-      console.log("here");
       return;
     }
 
@@ -171,8 +169,6 @@ const FileItem = createSelectable((props) => {
 
   const onFilesClick = () => {
     if (isRecycleBin) return;
-
-    fileContextClick();
 
     if (!fileExst && !contentLength) {
       setIsLoading(true);
@@ -201,6 +197,26 @@ const FileItem = createSelectable((props) => {
     }
   };
 
+  const onClickHandler = (e) => {
+    if (
+      e.target.closest(".checkbox") ||
+      e.target.tagName === "INPUT" ||
+      e.target.closest(".expandButton") ||
+      e.button !== 0 ||
+      startDrag
+    )
+      return;
+
+    if (isFolder && viewAs === "tile") onFilesClick();
+    else {
+      if (checked) {
+        onContentFileSelect(!checked, item);
+      } else {
+        fileContextClick && fileContextClick(item);
+      }
+    }
+  };
+
   let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
   value += draggable ? "_draggable" : "";
 
@@ -223,8 +239,8 @@ const FileItem = createSelectable((props) => {
   const isDragging = isFolder && access < 2 && !isRecycleBin;
 
   let className = isDragging ? " droppable" : "";
-  //if (draggable) className += " draggable not-selectable";
-  if (draggable) className += `${startDrag ? " not-selectable " : ""}`;
+  if (draggable) className += " draggable not-selectable";
+  //if (draggable) className += `${startDrag ? " not-selectable " : ""}`;
 
   const sharedButton =
     !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
@@ -256,7 +272,9 @@ const FileItem = createSelectable((props) => {
             {...contextOptionsProps}
             temporaryIcon={temporaryIcon}
             isPrivacy={isPrivacy}
+            thumbnailClick={onFilesClick}
             onDoubleClick={onFilesClick}
+            onMouseUp={onClickHandler}
           >
             <FilesContent
               item={item}
@@ -279,6 +297,7 @@ const FileItem = createSelectable((props) => {
             {...contextOptionsProps}
             contextButtonSpacerWidth={displayShareButton}
             onDoubleClick={onFilesClick}
+            onMouseUp={onClickHandler}
           >
             <FilesContent
               item={item}
