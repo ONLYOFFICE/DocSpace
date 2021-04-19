@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Loaders from "@appserver/common/components/Loaders";
@@ -9,6 +9,8 @@ import FilesTileContainer from "./FilesTile/FilesTileContainer";
 import EmptyContainer from "./EmptyContainer";
 
 let currentDroppable = null;
+
+let loadTimeout = null;
 
 const SectionBodyContent = (props) => {
   const {
@@ -27,6 +29,31 @@ const SectionBodyContent = (props) => {
     isRecycleBinFolder,
     moveDragItems,
   } = props;
+
+  const [inLoad, setInLoad] = useState(false);
+
+  const cleanTimer = () => {
+    loadTimeout && clearTimeout(loadTimeout);
+    loadTimeout = null;
+  };
+
+  useEffect(() => {
+    if (isLoading) {
+      cleanTimer();
+      loadTimeout = setTimeout(() => {
+        console.log("inLoad", true);
+        setInLoad(true);
+      }, 500);
+    } else {
+      cleanTimer();
+      console.log("inLoad", false);
+      setInLoad(false);
+    }
+
+    return () => {
+      cleanTimer();
+    };
+  }, [isLoading]);
 
   useEffect(() => {
     const customScrollElm = document.querySelector(
@@ -146,7 +173,7 @@ const SectionBodyContent = (props) => {
   //console.log("Files Home SectionBodyContent render", props);
 
   return (!fileActionId && isEmptyFilesList) || null ? (
-    firstLoad || (isMobile && isLoading) ? (
+    firstLoad || (isMobile && inLoad) ? (
       <Loaders.Rows />
     ) : (
       <EmptyContainer />

@@ -171,7 +171,7 @@ class ArticleBodyContent extends React.Component {
     const { history, selectGroup } = this.props;
 
     this.changeTitleDocument(groupId);
-    clickBackdrop();
+
 
     if (window.location.pathname.indexOf("/people/filter") > 0) {
       selectGroup(groupId);
