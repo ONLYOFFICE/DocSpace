@@ -111,6 +111,7 @@ module_hotfixes=true
 END
 
 if [ "$REV" = "8" ]; then
+rabbitmq_version="-3.8.12"
 
 cat > /etc/yum.repos.d/rabbitmq-server.repo <<END
 [rabbitmq-server]
@@ -143,7 +144,7 @@ ${package_manager} -y install epel-release \
 			supervisor \
 			postgresql \
 			postgresql-server \
-			rabbitmq-server \
+			rabbitmq-server$rabbitmq_version \
 			redis --enablerepo=remi
 	
 postgresql-setup initdb	|| true
