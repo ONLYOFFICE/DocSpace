@@ -223,59 +223,10 @@ class FilesContent extends React.Component {
       : this.updateItem(e);
   };
 
-  onFilesClick = () => {
-    const {
-      filter,
-      parentFolder,
-      setIsLoading,
-      fetchFiles,
-      isImage,
-      isSound,
-      isVideo,
-      canWebEdit,
-      item,
-      isTrashFolder,
-      openDocEditor,
-      expandedKeys,
-      addExpandedKeys,
-      setMediaViewerData,
-    } = this.props;
-    const { id, fileExst, viewUrl, providerKey, contentLength } = item;
-
-    if (isTrashFolder) return;
-
-    this.props.onLinkClick();
-
-    if (!fileExst && !contentLength) {
-      setIsLoading(true);
-
-      if (!expandedKeys.includes(parentFolder + "")) {
-        addExpandedKeys(parentFolder + "");
-      }
-
-      fetchFiles(id, filter)
-        .catch((err) => {
-          toastr.error(err);
-          setIsLoading(false);
-        })
-        .finally(() => setIsLoading(false));
-    } else {
-      if (canWebEdit) {
-        return openDocEditor(id, providerKey);
-      }
-
-      if (isImage || isSound || isVideo) {
-        setMediaViewerData({ visible: true, id });
-        return;
-      }
-
-      return window.open(viewUrl, "_blank");
-    }
-  };
-
   onMobileRowClick = () => {
+    const { onFilesClick } = this.props;
     if (this.props.isTrashFolder || window.innerWidth > 1024) return;
-    this.onFilesClick();
+    onFilesClick();
   };
 
   getStatusByDate = () => {
@@ -459,6 +410,7 @@ class FilesContent extends React.Component {
       fileActionId,
       fileActionExt,
       sectionWidth,
+      onFilesClick,
     } = this.props;
 
     const {
@@ -493,7 +445,7 @@ class FilesContent extends React.Component {
     const linkStyles =
       isTrashFolder || window.innerWidth <= 1024 // in tile simple isTrashFOlder
         ? { noHover: true }
-        : { onClick: this.onFilesClick };
+        : { onClick: onFilesClick };
 
     return isEdit ? (
       <EditingWrapperComponent
@@ -563,7 +515,7 @@ class FilesContent extends React.Component {
               item={item}
               newItems={this.state.newItems}
               canWebEdit={canWebEdit}
-              onFilesClick={this.onFilesClick}
+              onFilesClick={onFilesClick}
               onClickLock={this.onClickLock}
               onClickFavorite={this.onClickFavorite}
               onShowVersionHistory={this.onShowVersionHistory}

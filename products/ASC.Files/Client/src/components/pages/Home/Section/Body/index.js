@@ -53,6 +53,7 @@ const SectionBodyContent = (props) => {
   }, [onMouseUp, onMouseMove, startDrag, folderId]);
 
   const onMouseMove = (e) => {
+    console.log(e.target);
     if (!dragging) {
       document.body.classList.add("drag-cursor");
       setDragging(true);
@@ -65,6 +66,7 @@ const SectionBodyContent = (props) => {
       return;
     }
     const droppable = wrapperElement.closest(".droppable");
+    console.log(droppable);
     if (currentDroppable !== droppable) {
       if (currentDroppable) {
         currentDroppable.classList.remove("droppable-hover");

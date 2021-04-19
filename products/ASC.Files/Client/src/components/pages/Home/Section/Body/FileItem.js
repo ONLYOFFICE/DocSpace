@@ -45,6 +45,19 @@ const FileItem = createSelectable((props) => {
     setTooltipPosition,
     getIcon,
     startDrag,
+    filter,
+    parentFolder,
+    setIsLoading,
+    fetchFiles,
+    isImage,
+    isSound,
+    isVideo,
+    canWebEdit,
+
+    openDocEditor,
+    expandedKeys,
+    addExpandedKeys,
+    setMediaViewerData,
   } = props;
 
   const {
@@ -56,6 +69,7 @@ const FileItem = createSelectable((props) => {
     icon,
     providerKey,
     contentLength,
+    viewUrl,
   } = item;
   const isMobile = sectionWidth < 500;
   const getItemIcon = (isEdit) => {
@@ -126,6 +140,7 @@ const FileItem = createSelectable((props) => {
   };
 
   const onMouseDown = (e) => {
+    console.log(e.target, e.currentTarget);
     if (!draggable) {
       return;
     }
@@ -146,11 +161,44 @@ const FileItem = createSelectable((props) => {
       : false;
     const label = e.currentTarget.getAttribute("label");
     if (mouseButton || e.currentTarget.tagName !== "DIV" || label) {
+      console.log("here");
       return;
     }
 
     setTooltipPosition(e.pageX, e.pageY);
     setStartDrag(true);
+  };
+
+  const onFilesClick = () => {
+    if (isRecycleBin) return;
+
+    fileContextClick();
+
+    if (!fileExst && !contentLength) {
+      setIsLoading(true);
+
+      if (!expandedKeys.includes(parentFolder + "")) {
+        addExpandedKeys(parentFolder + "");
+      }
+
+      fetchFiles(id, filter)
+        .catch((err) => {
+          toastr.error(err);
+          setIsLoading(false);
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      if (canWebEdit) {
+        return openDocEditor(id, providerKey);
+      }
+
+      if (isImage || isSound || isVideo) {
+        setMediaViewerData({ visible: true, id });
+        return;
+      }
+
+      return window.open(viewUrl, "_blank");
+    }
   };
 
   let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
@@ -175,9 +223,8 @@ const FileItem = createSelectable((props) => {
   const isDragging = isFolder && access < 2 && !isRecycleBin;
 
   let className = isDragging ? " droppable" : "";
-  if (draggable) className += " draggable not-selectable";
-  /*if (draggable)
-    className += ` draggable ${startDrag ? " not-selectable " : ""}`;*/
+  //if (draggable) className += " draggable not-selectable";
+  if (draggable) className += `${startDrag ? " not-selectable " : ""}`;
 
   const sharedButton =
     !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
@@ -204,15 +251,17 @@ const FileItem = createSelectable((props) => {
             dragging={dragging && isFolder}
             element={element}
             onSelect={onContentFileSelect}
-            rowContextClick={fileContextClick} // rename!
+            tileContextClick={fileContextClick}
             {...checkedProps}
             {...contextOptionsProps}
             temporaryIcon={temporaryIcon}
             isPrivacy={isPrivacy}
+            onDoubleClick={onFilesClick}
           >
             <FilesContent
               item={item}
               viewAs={viewAs}
+              onFilesClick={onFilesClick}
               onLinkClick={fileContextClick}
             />
           </Tile>
@@ -229,11 +278,14 @@ const FileItem = createSelectable((props) => {
             {...checkedProps}
             {...contextOptionsProps}
             contextButtonSpacerWidth={displayShareButton}
+            onDoubleClick={onFilesClick}
           >
             <FilesContent
               item={item}
               sectionWidth={sectionWidth}
               viewAs={viewAs}
+              onFilesClick={onFilesClick}
+              onLinkClick={fileContextClick}
             />
           </SimpleFilesRow>
         )}
@@ -253,6 +305,7 @@ export default inject(
       uploadDataStore,
       contextOptionsStore,
       formatsStore,
+      mediaViewerDataStore,
     },
     { item }
   ) => {
@@ -262,7 +315,12 @@ export default inject(
       id,
     } = filesStore.fileActionStore;
 
-    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      expandedKeys,
+      addExpandedKeys,
+    } = treeFoldersStore;
 
     const {
       setSharingPanelVisible,
@@ -281,8 +339,16 @@ export default inject(
       setTooltipPosition,
       viewAs,
       startDrag,
+      filter,
+      setIsLoading,
+      fetchFiles,
+      openDocEditor,
     } = filesStore;
-    const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
+    const {
+      isRootFolder,
+      id: selectedFolderId,
+      parentId: parentFolder,
+    } = selectedFolderStore;
 
     const selectedItem = selection.find(
       (x) => x.id === item.id && x.fileExst === item.fileExst
@@ -299,6 +365,15 @@ export default inject(
     const { getContextOptions } = contextOptionsStore;
 
     const { getIcon } = formatsStore.iconFormatsStore;
+
+    const isImage = formatsStore.iconFormatsStore.isImage(item.fileExst);
+    const isSound = formatsStore.iconFormatsStore.isSound(item.fileExst);
+    const isVideo = formatsStore.mediaViewersFormatsStore.isVideo(
+      item.fileExst
+    );
+    const canWebEdit = formatsStore.docserviceStore.canWebEdit(item.fileExst);
+
+    const { setMediaViewerData } = mediaViewerDataStore;
 
     return {
       dragging,
@@ -330,6 +405,19 @@ export default inject(
       viewAs,
       getIcon,
       startDrag,
+
+      filter,
+      parentFolder,
+      setIsLoading,
+      fetchFiles,
+      isImage,
+      isSound,
+      isVideo,
+      canWebEdit,
+      openDocEditor,
+      expandedKeys,
+      addExpandedKeys,
+      setMediaViewerData,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FileItem))));

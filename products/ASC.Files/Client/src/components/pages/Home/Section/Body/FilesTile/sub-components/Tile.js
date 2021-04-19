@@ -7,6 +7,8 @@ import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
 
+import Link from "@appserver/components/link";
+
 const svgLoader = () => <div style={{ width: "96px" }}></div>;
 
 const FlexBoxStyles = css`
@@ -74,7 +76,7 @@ const StyledFileTileTop = styled.div`
   position: relative;
 
   .thumbnailImage {
-    pointer-events: none;
+    //pointer-events: none;
     & > .injected-svg {
       position: absolute;
       left: 0;
@@ -159,33 +161,35 @@ class Tile extends React.Component {
 
     this.cm = React.createRef();
     this.tile = React.createRef();
-
-    this.state = {
-      checkedCheckbox: false,
-    };
   }
 
   getIconFile = () => {
-    const { item, temporaryIcon } = this.props;
+    const { item, temporaryIcon, onDoubleClick } = this.props;
 
     const icon = item.thumbnail ? item.thumbnail : temporaryIcon;
     let className = "thumbnailImage";
     if (!item.thumbnail) className += " temporary-icon";
 
-    return <ReactSVG className={className} src={icon} loading={svgLoader} />;
+    return (
+      <Link type="page" onClick={onDoubleClick}>
+        <ReactSVG className={className} src={icon} loading={svgLoader} />
+      </Link>
+    );
   };
 
   onClickHandler = (e) => {
-    const { onSelect, item } = this.props;
+    const { onSelect, item, checked } = this.props;
+    console.log(
+      e.target.closest(".thumbnailImage"),
+      e.target.closest(".checkbox")
+    );
     if (e.target.closest(".checkbox") || e.target.tagName === "INPUT") return;
 
-    this.setState({ checkedCheckbox: !this.state.checkedCheckbox });
-    onSelect && onSelect(!this.state.checkedCheckbox, item);
+    onSelect && onSelect(!checked, item);
   };
 
   changeCheckbox = (e) => {
     const { onSelect, item } = this.props;
-    this.setState({ checkedCheckbox: e.target.checked });
     onSelect && onSelect(e.target.checked, item);
   };
 
@@ -196,14 +200,12 @@ class Tile extends React.Component {
       children,
       contextButtonSpacerWidth,
       contextOptions,
-      item,
       element,
       indeterminate,
-      onSelect,
       isFolder,
-      rowContextClick,
-      temporaryIcon,
+      tileContextClick,
       dragging,
+      onDoubleClick,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -221,12 +223,12 @@ class Tile extends React.Component {
       contextOptions.length > 0;
 
     const getOptions = () => {
-      rowContextClick && rowContextClick();
+      tileContextClick && tileContextClick();
       return contextOptions;
     };
 
     const onContextMenu = (e) => {
-      rowContextClick && rowContextClick();
+      tileContextClick && tileContextClick();
       if (!this.cm.current.menuRef.current) {
         this.tile.current.click(e); //TODO: need fix context menu to global
       }
@@ -242,6 +244,7 @@ class Tile extends React.Component {
         onContextMenu={onContextMenu}
         dragging={dragging && isFolder}
         onClick={this.onClickHandler}
+        onDoubleClick={onDoubleClick}
       >
         {isFolder ? (
           <>
@@ -322,7 +325,7 @@ Tile.propTypes = {
   onSelect: PropTypes.func,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   viewAs: PropTypes.string,
-  rowContextClick: PropTypes.func,
+  tileContextClick: PropTypes.func,
 };
 
 Tile.defaultProps = {
