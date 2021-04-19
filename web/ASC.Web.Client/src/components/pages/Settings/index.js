@@ -16,6 +16,7 @@ const CustomTitles = lazy(() => import("./categories/common/custom-titles"));
 const ThirdPartyServices = lazy(() =>
   import("./categories/integration/thirdPartyServicesSettings")
 );
+const StatisticsPage = lazy(() => import("./categories/statistics/statistics"));
 
 //const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/settings");
@@ -39,6 +40,7 @@ const THIRD_PARTY_URL = combineUrl(
   PROXY_BASE_URL,
   "/integration/third-party-services"
 );
+const STATISTICS_URL = combineUrl(PROXY_BASE_URL, "/statistics");
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 
 const Settings = () => {
@@ -60,6 +62,7 @@ const Settings = () => {
           /> */}
           <Route path={SECURITY_URL} component={SecuritySettings} />
           <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />
+          <Route exact path={STATISTICS_URL} component={StatisticsPage} />
           <Redirect
             to={{
               pathname: ERROR_404_URL,

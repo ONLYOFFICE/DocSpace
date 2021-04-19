@@ -71,6 +71,13 @@ export const settingsTree = [
       },
     ],
   },
+  {
+    key: "4",
+    icon: "/static/images/stats.react.svg",
+    link: "statistics",
+    tKey: "ManagementCategoryStatistic",
+    isHeader: true,
+  },
 ];
 
 /**

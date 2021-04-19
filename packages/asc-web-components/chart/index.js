@@ -168,6 +168,7 @@ Chart.defaultProps = {
   type: "line",
   data: null,
   options: {
+    responsive: true,
     plugins: {
       legend: {
         display: false,
