@@ -165,9 +165,91 @@ Chart.propTypes = {
 
 Chart.defaultProps = {
   id: null,
-  type: null,
+  type: "line",
   data: null,
-  options: null,
+  options: {
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: "#ffffff",
+        titleColor: "#333333",
+        titleFont: {
+          family: "Open Sans, sans-serif, Arial",
+          size: 11,
+          lineHeight: 1.35,
+        },
+        bodyColor: "#A3A3A3",
+        bodyFont: {
+          family: "Open Sans, sans-serif, Arial",
+          size: 11,
+          lineHeight: 1.35,
+        },
+        padding: 16,
+        displayColors: false,
+        borderColor: "#ECEEF1",
+        borderWidth: 1,
+        caretSize: 5,
+      },
+    },
+    interaction: {
+      mode: "nearest",
+    },
+    elements: {
+      line: {
+        borderWidth: 2,
+        borderColor: "#2DA7DB",
+        tension: 0.3,
+      },
+      point: {
+        pointStyle: "circle",
+        pointRadius: 3,
+        backgroundColor: "#FFFFFF",
+        borderColor: "#2DA7DB",
+        borderWidth: 2,
+        hoverRadius: 3,
+        hoverBackgroundColor: "#2DA7DB",
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          borderColor: "#F0F0F0",
+          color: "#F0F0F0",
+          tickColor: "#FFFFFF",
+        },
+        ticks: {
+          color: "#A3A3A3",
+          font: {
+            family: "Open Sans, sans-serif, Arial",
+            size: 10,
+            lineHeight: 1,
+            weight: 600,
+            padding: 10,
+          },
+        },
+      },
+      y: {
+        min: 0,
+        grid: {
+          borderColor: "#F0F0F0",
+          color: "#F0F0F0",
+          tickColor: "#FFFFFF",
+        },
+        ticks: {
+          color: "#A3A3A3",
+          font: {
+            family: "Open Sans, sans-serif, Arial",
+            size: 10,
+            lineHeight: 1,
+            weight: 600,
+            padding: 10,
+          },
+        },
+      },
+    },
+  },
   width: null,
   height: null,
   style: null,
