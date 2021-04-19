@@ -73,6 +73,10 @@ const StyledArticle = styled.article`
             .resizable-border {
               display: none;
             }
+
+            .newItem {
+              right: -24px;
+            }
           `
           : `
           display: none;
