@@ -224,7 +224,7 @@ class Confirm extends React.PureComponent {
   };
 
   authCallback = (profile) => {
-    const { t } = this.props;
+    const { t, defaultPage } = this.props;
     const { FirstName, LastName, EMail, Serialized } = profile;
 
     console.log(profile);
@@ -240,10 +240,10 @@ class Confirm extends React.PureComponent {
 
     thirdPartySignup(signupAccount)
       .then(() => {
-        history.push(defaultPage);
+        window.location.replace(defaultPage);
       })
-      .catch(() => {
-        toastr.error(t("ProviderNotConnected"), t("ProviderLoginError"));
+      .catch((e) => {
+        toastr.error(e);
       });
   };
 
