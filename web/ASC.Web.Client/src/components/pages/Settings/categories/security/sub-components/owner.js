@@ -9,7 +9,7 @@ import Avatar from "@appserver/components/avatar";
 import Link from "@appserver/components/link";
 import toastr from "@appserver/components/toast/toastr";
 import HelpButton from "@appserver/components/help-button";
-import PeopleSelector from "people/PeopleSelector";
+import PeopleSelector from "@appserver/people/src/components/PeopleSelector";
 import isEmpty from "lodash/isEmpty";
 import { inject } from "mobx-react";
 import { combineUrl } from "@appserver/common/utils";
@@ -37,7 +37,6 @@ const OwnerContainer = styled.div`
 
   .owner-content-wrapper {
     display: flex;
-    margin-bottom: 30px;
     padding: 16px;
     background-color: #f8f9f9;
     border-radius: 12px;
@@ -107,6 +106,7 @@ class PureOwnerSettings extends Component {
     this.state = {
       isLoading: false,
       showSelector: false,
+      selectorIsLoaded: false,
       showLocalLoader: true,
     };
   }
@@ -140,24 +140,30 @@ class PureOwnerSettings extends Component {
 
   onLoading = (status) => this.setState({ isLoading: status });
 
-  onShowSelector = (status) => {
+  onToggleSelector = (status = !this.state.showSelector) => {
     this.setState({
       showSelector: status,
+      selectorIsLoaded: true,
     });
   };
 
   onCancelSelector = () => {
-    this.onShowSelector(false);
+    this.onToggleSelector(false);
   };
 
   onSelect = (items) => {
-    this.onShowSelector(false);
+    this.onToggleSelector(false);
     this.changeOwner(items[0]);
   };
 
   render() {
     const { t, owner, me, groupsCaption } = this.props;
-    const { isLoading, showSelector, selectedOwner } = this.state;
+    const {
+      isLoading,
+      showSelector,
+      selectedOwner,
+      selectorIsLoaded,
+    } = this.state;
 
     const formattedDepartments =
       owner.department && getFormattedDepartments(owner.groups);
@@ -195,6 +201,7 @@ class PureOwnerSettings extends Component {
                   )})`}</Text>
                 </div>
                 <HelpButton
+                  displayType="dropdown"
                   place="right"
                   className="option-info"
                   offsetRight={0}
@@ -205,7 +212,7 @@ class PureOwnerSettings extends Component {
                 <Link
                   className="link_style"
                   isHovered={true}
-                  onClick={this.onShowSelector.bind(this, !showSelector)}
+                  onClick={this.onToggleSelector}
                   fontSize="12px"
                   type="action"
                 >
@@ -217,18 +224,19 @@ class PureOwnerSettings extends Component {
               </div>
             </div>
           </div>
-
-          <div className="advanced-selector">
-            <PeopleSelector
-              isOpen={showSelector}
-              size={"compact"}
-              onSelect={this.onSelect}
-              onCancel={this.onCancelSelector}
-              defaultOption={me}
-              defaultOptionLabel={t("MeLabel")}
-              groupsCaption={groupsCaption}
-            />
-          </div>
+          {selectorIsLoaded && (
+            <div className="advanced-selector">
+              <PeopleSelector
+                isOpen={showSelector}
+                size={"full"}
+                onSelect={this.onSelect}
+                onCancel={this.onCancelSelector}
+                defaultOption={me}
+                defaultOptionLabel={t("MeLabel")}
+                groupsCaption={groupsCaption}
+              />
+            </div>
+          )}
         </OwnerContainer>
       </StyledWrapper>
     );
