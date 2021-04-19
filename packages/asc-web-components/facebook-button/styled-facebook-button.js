@@ -36,17 +36,19 @@ const StyledFacebookButton = styled(ButtonWrapper).attrs((props) => ({
   -moz-touch-callout: none;
   -webkit-touch-callout: none;
 
+  svg {
+    margin: 11px;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+  }
+
   ${(props) =>
     props.$iconOptions &&
     props.$iconOptions.color &&
     css`
       svg {
-        margin: 11px;
-        width: 18px;
-        height: 18px;
-        min-width: 18px;
-        min-height: 18px;
-
         path {
           fill: ${props.$iconOptions.color};
         }

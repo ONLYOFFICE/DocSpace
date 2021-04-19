@@ -111,7 +111,6 @@ export const providersData = Object.freeze({
   Facebook: {
     label: "SignInWithFacebook",
     icon: "/static/images/share.facebook.react.svg",
-    iconOptions: { color: "#1877F2" },
   },
   Twitter: {
     label: "SignInWithTwitter",
