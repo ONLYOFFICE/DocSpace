@@ -206,3 +206,10 @@ export function deleteCookie(name) {
     "max-age": -1,
   });
 }
+
+export function clickBackdrop() {
+  var elms = document.getElementsByClassName("backdrop-active");
+  if (elms && elms.length > 0) {
+    elms[0].click();
+  }
+}
