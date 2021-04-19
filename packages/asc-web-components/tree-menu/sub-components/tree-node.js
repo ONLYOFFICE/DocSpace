@@ -322,11 +322,7 @@ const TreeNodeMenu = styled(TreeNode)`
   span.rc-tree-title:first-child {
     max-width: 100%;
   }
-  .newItem {
-    position: absolute;
-    right: 0px;
-    top: 2px;
-  }
+
   .rc-tree-node-selected {
     background: ${(props) => props.theme.treeNode.selected.background};
     mix-blend-mode: normal;
@@ -350,7 +346,7 @@ const TreeNodeMenu = styled(TreeNode)`
     right: -30px;
     top: 2px;
     @media (max-width: 1024px) {
-      right: -29px;
+      right: -24px;
     }
   }
   ${(props) =>
