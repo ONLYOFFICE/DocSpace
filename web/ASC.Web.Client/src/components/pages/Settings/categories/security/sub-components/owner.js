@@ -106,6 +106,7 @@ class PureOwnerSettings extends Component {
     this.state = {
       isLoading: false,
       showSelector: false,
+      selectorIsLoaded: false,
       showLocalLoader: true,
     };
   }
@@ -139,24 +140,30 @@ class PureOwnerSettings extends Component {
 
   onLoading = (status) => this.setState({ isLoading: status });
 
-  onShowSelector = (status) => {
+  onToggleSelector = (status = !this.state.showSelector) => {
     this.setState({
       showSelector: status,
+      selectorIsLoaded: true,
     });
   };
 
   onCancelSelector = () => {
-    this.onShowSelector(false);
+    this.onToggleSelector(false);
   };
 
   onSelect = (items) => {
-    this.onShowSelector(false);
+    this.onToggleSelector(false);
     this.changeOwner(items[0]);
   };
 
   render() {
     const { t, owner, me, groupsCaption } = this.props;
-    const { isLoading, showSelector, selectedOwner } = this.state;
+    const {
+      isLoading,
+      showSelector,
+      selectedOwner,
+      selectorIsLoaded,
+    } = this.state;
 
     const formattedDepartments =
       owner.department && getFormattedDepartments(owner.groups);
@@ -204,7 +211,7 @@ class PureOwnerSettings extends Component {
                 <Link
                   className="link_style"
                   isHovered={true}
-                  onClick={this.onShowSelector.bind(this, !showSelector)}
+                  onClick={this.onToggleSelector}
                   fontSize="12px"
                   type="action"
                 >
@@ -216,18 +223,19 @@ class PureOwnerSettings extends Component {
               </div>
             </div>
           </div>
-
-          <div className="advanced-selector">
-            <PeopleSelector
-              isOpen={showSelector}
-              size={"full"}
-              onSelect={this.onSelect}
-              onCancel={this.onCancelSelector}
-              defaultOption={me}
-              defaultOptionLabel={t("MeLabel")}
-              groupsCaption={groupsCaption}
-            />
-          </div>
+          {selectorIsLoaded && (
+            <div className="advanced-selector">
+              <PeopleSelector
+                isOpen={showSelector}
+                size={"full"}
+                onSelect={this.onSelect}
+                onCancel={this.onCancelSelector}
+                defaultOption={me}
+                defaultOptionLabel={t("MeLabel")}
+                groupsCaption={groupsCaption}
+              />
+            </div>
+          )}
         </OwnerContainer>
       </StyledWrapper>
     );
