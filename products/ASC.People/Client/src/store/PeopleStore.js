@@ -79,15 +79,7 @@ class PeopleStore {
   };
 
   setIsLoading = (isLoading) => {
-    if (isLoading) {
-      this.loadTimeout && clearTimeout(this.loadTimeout);
-      this.loadTimeout = setTimeout(() => {
-        this.isLoading = isLoading;
-      }, 500);
-    } else {
-      this.loadTimeout && clearTimeout(this.loadTimeout);
-      this.isLoading = isLoading;
-    }
+    this.isLoading = isLoading;
   };
 
   setIsLoaded = (isLoaded) => {

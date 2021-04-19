@@ -62,11 +62,11 @@ class ArticleBodyContent extends React.Component {
         fetchFiles(data[0], newFilter)
           .catch((err) => toastr.error(err))
           .finally(() => {
-            clickBackdrop();
+
             setIsLoading(false);
           });
       } else {
-        clickBackdrop();
+
         newFilter.startIndex = 0;
         const urlFilter = newFilter.toUrlParams();
         history.push(

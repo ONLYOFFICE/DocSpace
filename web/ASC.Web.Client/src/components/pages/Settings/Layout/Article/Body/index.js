@@ -148,7 +148,7 @@ class ArticleBodyContent extends React.Component {
       return;
     }
 
-    clickBackdrop();
+
     this.setState({ selectedKeys: value });
   };
 
