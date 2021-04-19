@@ -20,7 +20,8 @@ function getHorizontalCss(labelWidth) {
       width: ${labelWidth};
     }
     .field-body {
-      flex-grow: ${(props) => props.theme.fieldContainer.horizontal.body.width};
+      flex-grow: ${(props) =>
+        props.theme.fieldContainer.horizontal.body.flexGrow};
     }
     .icon-button {
       position: relative;

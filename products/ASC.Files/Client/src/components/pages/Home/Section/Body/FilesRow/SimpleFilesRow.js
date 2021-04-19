@@ -111,6 +111,8 @@ const SimpleFilesRow = createSelectable((props) => {
     setTooltipPosition,
     setDownloadDialogVisible,
     downloadAction,
+    confirmDelete,
+    setDeleteDialogVisible,
   } = props;
 
   const {
@@ -270,17 +272,21 @@ const SimpleFilesRow = createSelectable((props) => {
       return;
     }
 
-    const translations = {
-      deleteOperation: t("DeleteOperation"),
-    };
+    if (confirmDelete) {
+      setDeleteDialogVisible(true);
+    } else {
+      const translations = {
+        deleteOperation: t("DeleteOperation"),
+      };
 
-    fileExst || contentLength
-      ? deleteFileAction(id, folderId, translations)
-          .then(() => toastr.success(t("FileRemoved")))
-          .catch((err) => toastr.error(err))
-      : deleteFolderAction(id, parentId, translations)
-          .then(() => toastr.success(t("FolderRemoved")))
-          .catch((err) => toastr.error(err));
+      fileExst || contentLength
+        ? deleteFileAction(id, folderId, translations)
+            .then(() => toastr.success(t("FileRemoved")))
+            .catch((err) => toastr.error(err))
+        : deleteFolderAction(id, parentId, translations)
+            .then(() => toastr.success(t("FolderRemoved")))
+            .catch((err) => toastr.error(err));
+    }
   };
 
   const rowContextClick = () => {
@@ -560,6 +566,7 @@ const SimpleFilesRow = createSelectable((props) => {
   return (
     <div ref={props.selectableRef}>
       <DragAndDrop
+        data-title={item.title}
         value={value}
         className={className}
         onDrop={onDrop}
@@ -599,6 +606,7 @@ export default inject(
       filesActionsStore,
       mediaViewerDataStore,
       uploadDataStore,
+      settingsStore,
     },
     { item }
   ) => {
@@ -614,6 +622,7 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setDownloadDialogVisible,
+      setDeleteDialogVisible,
     } = dialogsStore;
 
     const {
@@ -625,6 +634,7 @@ export default inject(
       setDragging,
       setStartDrag,
       setTooltipPosition,
+      isFileSelected,
     } = filesStore;
 
     const { isRootFolder, id: selectedFolderId } = selectedFolderStore;
@@ -669,7 +679,7 @@ export default inject(
       isRecycleBin: isRecycleBinFolder,
       isRootFolder,
       canShare,
-      checked: selection.some((el) => el.id === item.id),
+      checked: isFileSelected(item.id, item.parentId),
       isFolder,
       draggable,
       isItemsSelected: !!selection.length,
@@ -704,6 +714,8 @@ export default inject(
       onSelectItem,
       setTooltipPosition,
       downloadAction,
+      confirmDelete: settingsStore.confirmDelete,
+      setDeleteDialogVisible,
     };
   }
 )(withTranslation("Home")(observer(withRouter(SimpleFilesRow))));
