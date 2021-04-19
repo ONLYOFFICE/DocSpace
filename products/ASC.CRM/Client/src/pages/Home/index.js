@@ -11,7 +11,7 @@ import ExternalLinkIcon from "../../../../../../public/images/external.link.reac
 import Loaders from "@appserver/common/components/Loaders";
 import toastr from "studio/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
-import { useTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { isMobile, isTablet, isIOS } from "react-device-detect";
 
@@ -117,8 +117,7 @@ const ExternalLink = ({ label, href, onClick }) => (
   </Box>
 );
 
-const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
-  const { t } = useTranslation("ComingSoon");
+const Body = ({ modules, match, isLoaded, setCurrentProductId, t, tReady }) => {
   const { error } = match.params;
   const { pathname, protocol, hostname } = window.location;
   const currentModule = modules.find((m) => m.link === pathname);
@@ -189,7 +188,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
     </Text>
   );
 
-  return !isLoaded ? (
+  return !isLoaded || !tReady ? (
     <></>
   ) : isMobile || isTablet ? (
     <ComingSoonPage>
@@ -249,7 +248,7 @@ const ComingSoonWrapper = inject(({ auth }) => ({
   modules: auth.moduleStore.modules,
   isLoaded: auth.isLoaded,
   setCurrentProductId: auth.settingsStore.setCurrentProductId,
-}))(withRouter(ComingSoon));
+}))(withRouter(withTranslation("ComingSoon")(ComingSoon)));
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>
