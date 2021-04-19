@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using ASC.Common;
+using ASC.Common.Utils;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -113,7 +114,7 @@ namespace ASC.Data.Storage
 
             if (!Path.IsPathRooted(physPath))
             {
-                physPath = Path.GetFullPath(Path.Combine(HostEnvironment.ContentRootPath, physPath.Trim(Path.DirectorySeparatorChar)));
+                physPath = Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, physPath.Trim(Path.DirectorySeparatorChar)));
             }
             return physPath;
         }
