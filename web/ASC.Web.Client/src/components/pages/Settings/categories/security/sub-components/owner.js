@@ -201,6 +201,7 @@ class PureOwnerSettings extends Component {
                   )})`}</Text>
                 </div>
                 <HelpButton
+                  displayType="dropdown"
                   place="right"
                   className="option-info"
                   offsetRight={0}
