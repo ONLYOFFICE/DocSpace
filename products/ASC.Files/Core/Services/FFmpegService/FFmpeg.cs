@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 
 using Microsoft.Extensions.Configuration;
@@ -70,7 +71,7 @@ namespace ASC.Web.Files.Services.FFmpegService
 
                     foreach (var name in FFmpegExecutables)
                     {
-                        var path = Path.Combine(folder, WorkContext.IsMono ? name : name + ".exe");
+                        var path = CrossPlatform.PathCombine(folder, WorkContext.IsMono ? name : name + ".exe");
                         if (File.Exists(path))
                         {
                             FFmpegPath = path;

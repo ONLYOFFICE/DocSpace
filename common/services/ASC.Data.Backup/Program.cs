@@ -2,6 +2,8 @@
 using System.IO;
 using System.Threading.Tasks;
 
+using ASC.Common.Utils;
+
 using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.AspNetCore.Hosting;
@@ -26,7 +28,7 @@ namespace ASC.Data.Backup
                     var path = buided["pathToConf"];
                     if (!Path.IsPathRooted(path))
                     {
-                        path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
+                        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
                     config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
