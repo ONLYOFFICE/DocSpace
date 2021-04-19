@@ -88,7 +88,9 @@ const TfaActivationForm = (props) => {
           </Box>
         </Box>
       </div>
-      <div>QR-code</div>
+      <div id="qrcode">
+        <img src="images/fakeQR.png" alt="QR-code"></img>
+      </div>
     </StyledForm>
   );
 };
