@@ -9,6 +9,8 @@ import toastr from "@appserver/components/toast/toastr";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import Loader from "@appserver/components/loader";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
+import { desktop } from "@appserver/components/utils/device";
+import { Consumer } from "@appserver/components/utils/context";
 
 const StyledComponent = styled.div`
   .team-template_text-input {
@@ -20,6 +22,16 @@ const StyledComponent = styled.div`
   }
   .main-field-container {
     margin-bottom: 32px;
+  }
+
+  @media ${desktop} {
+    .team-template_buttons {
+      position: fixed;
+      left: auto;
+      padding-left: 0px;
+      padding-right: 16px;
+      max-width: ${(props) => props.sectionWidth}px;
+    }
   }
 `;
 let options = [];
@@ -477,218 +489,222 @@ class TeamTemplate extends React.Component {
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <StyledComponent>
-        <FieldContainer
-          className="team-template_field-container main-field-container"
-          isVertical
-          labelText={t("Template")}
-          place="top"
-        >
-          <ComboBox
-            options={availableOptions}
-            selectedOption={selectedOption}
-            onSelect={this.onCustomSchemaSelect}
-            isDisabled={isLoadingData}
-            noBorder={false}
-            scaled={true}
-            scaledOptions={true}
-            dropDownMaxHeight={300}
-            className="team-template_text-input"
-          />
-        </FieldContainer>
+      <Consumer>
+        {(context) => (
+          <StyledComponent sectionWidth={context.sectionWidth}>
+            <FieldContainer
+              className="team-template_field-container main-field-container"
+              isVertical
+              labelText={t("Template")}
+              place="top"
+            >
+              <ComboBox
+                options={availableOptions}
+                selectedOption={selectedOption}
+                onSelect={this.onCustomSchemaSelect}
+                isDisabled={isLoadingData}
+                noBorder={false}
+                scaled={true}
+                scaledOptions={true}
+                dropDownMaxHeight={300}
+                className="team-template_text-input"
+              />
+            </FieldContainer>
 
-        <FieldContainer
-          className="team-template_field-container"
-          isVertical
-          labelText={t("User")}
-          place="top"
-          hasError={formErrors.userCaption}
-          errorMessage={t("EmptyFieldError")}
-        >
-          <TextInput
-            name={"userCaption"}
-            className="team-template_text-input"
-            scale={true}
-            value={userCaption}
-            hasError={formErrors.userCaption}
-            onChange={this.onChangeInput}
-            isDisabled={isLoadingData}
-            placeholder={t("AddName")}
-          />
-        </FieldContainer>
+            <FieldContainer
+              className="team-template_field-container"
+              isVertical
+              labelText={t("User")}
+              place="top"
+              hasError={formErrors.userCaption}
+              errorMessage={t("EmptyFieldError")}
+            >
+              <TextInput
+                name={"userCaption"}
+                className="team-template_text-input"
+                scale={true}
+                value={userCaption}
+                hasError={formErrors.userCaption}
+                onChange={this.onChangeInput}
+                isDisabled={isLoadingData}
+                placeholder={t("AddName")}
+              />
+            </FieldContainer>
 
-        <FieldContainer
-          className="team-template_field-container"
-          isVertical
-          labelText={t("Users")}
-          place="top"
-          hasError={formErrors.usersCaption}
-          errorMessage={t("EmptyFieldError")}
-        >
-          <TextInput
-            name={"usersCaption"}
-            className="team-template_text-input"
-            scale={true}
-            value={usersCaption}
-            hasError={formErrors.usersCaption}
-            onChange={this.onChangeInput}
-            placeholder={t("AddName")}
-            isDisabled={isLoadingData}
-          />
-        </FieldContainer>
+            <FieldContainer
+              className="team-template_field-container"
+              isVertical
+              labelText={t("Users")}
+              place="top"
+              hasError={formErrors.usersCaption}
+              errorMessage={t("EmptyFieldError")}
+            >
+              <TextInput
+                name={"usersCaption"}
+                className="team-template_text-input"
+                scale={true}
+                value={usersCaption}
+                hasError={formErrors.usersCaption}
+                onChange={this.onChangeInput}
+                placeholder={t("AddName")}
+                isDisabled={isLoadingData}
+              />
+            </FieldContainer>
 
-        <FieldContainer
-          className="team-template_field-container"
-          isVertical
-          labelText={t("Group")}
-          place="top"
-          hasError={formErrors.groupCaption}
-          errorMessage={t("EmptyFieldError")}
-        >
-          <TextInput
-            name={"groupCaption"}
-            className="team-template_text-input"
-            scale={true}
-            value={groupCaption}
-            hasError={formErrors.groupCaption}
-            onChange={this.onChangeInput}
-            placeholder={t("AddName")}
-            isDisabled={isLoadingData}
-          />
-        </FieldContainer>
+            <FieldContainer
+              className="team-template_field-container"
+              isVertical
+              labelText={t("Group")}
+              place="top"
+              hasError={formErrors.groupCaption}
+              errorMessage={t("EmptyFieldError")}
+            >
+              <TextInput
+                name={"groupCaption"}
+                className="team-template_text-input"
+                scale={true}
+                value={groupCaption}
+                hasError={formErrors.groupCaption}
+                onChange={this.onChangeInput}
+                placeholder={t("AddName")}
+                isDisabled={isLoadingData}
+              />
+            </FieldContainer>
 
-        <FieldContainer
-          className="team-template_field-container"
-          isVertical
-          labelText={t("Groups")}
-          place="top"
-          hasError={formErrors.groupsCaption}
-          errorMessage={t("EmptyFieldError")}
-        >
-          <TextInput
-            name={"groupsCaption"}
-            className="team-template_text-input"
-            scale={true}
-            value={groupsCaption}
-            hasError={formErrors.groupsCaption}
-            onChange={this.onChangeInput}
-            placeholder={t("AddName")}
-            isDisabled={isLoadingData}
-          />
-        </FieldContainer>
+            <FieldContainer
+              className="team-template_field-container"
+              isVertical
+              labelText={t("Groups")}
+              place="top"
+              hasError={formErrors.groupsCaption}
+              errorMessage={t("EmptyFieldError")}
+            >
+              <TextInput
+                name={"groupsCaption"}
+                className="team-template_text-input"
+                scale={true}
+                value={groupsCaption}
+                hasError={formErrors.groupsCaption}
+                onChange={this.onChangeInput}
+                placeholder={t("AddName")}
+                isDisabled={isLoadingData}
+              />
+            </FieldContainer>
 
-        <FieldContainer
-          className="team-template_field-container"
-          isVertical
-          labelText={t("Job/Title")}
-          place="top"
-          hasError={formErrors.userPostCaption}
-          errorMessage={t("EmptyFieldError")}
-        >
-          <TextInput
-            name={"userPostCaption"}
-            className="team-template_text-input"
-            scale={true}
-            value={userPostCaption}
-            hasError={formErrors.userPostCaption}
-            onChange={this.onChangeInput}
-            placeholder={t("AddName")}
-            isDisabled={isLoadingData}
-          />
-        </FieldContainer>
+            <FieldContainer
+              className="team-template_field-container"
+              isVertical
+              labelText={t("Job/Title")}
+              place="top"
+              hasError={formErrors.userPostCaption}
+              errorMessage={t("EmptyFieldError")}
+            >
+              <TextInput
+                name={"userPostCaption"}
+                className="team-template_text-input"
+                scale={true}
+                value={userPostCaption}
+                hasError={formErrors.userPostCaption}
+                onChange={this.onChangeInput}
+                placeholder={t("AddName")}
+                isDisabled={isLoadingData}
+              />
+            </FieldContainer>
 
-        <FieldContainer
-          className="team-template_field-container"
-          isVertical
-          labelText={t("RegistrationDate")}
-          place="top"
-          hasError={formErrors.regDateCaption}
-          errorMessage={t("EmptyFieldError")}
-        >
-          <TextInput
-            name={"regDateCaption"}
-            className="team-template_text-input"
-            scale={true}
-            value={regDateCaption}
-            hasError={formErrors.regDateCaption}
-            onChange={this.onChangeInput}
-            placeholder={t("AddName")}
-            isDisabled={isLoadingData}
-          />
-        </FieldContainer>
+            <FieldContainer
+              className="team-template_field-container"
+              isVertical
+              labelText={t("RegistrationDate")}
+              place="top"
+              hasError={formErrors.regDateCaption}
+              errorMessage={t("EmptyFieldError")}
+            >
+              <TextInput
+                name={"regDateCaption"}
+                className="team-template_text-input"
+                scale={true}
+                value={regDateCaption}
+                hasError={formErrors.regDateCaption}
+                onChange={this.onChangeInput}
+                placeholder={t("AddName")}
+                isDisabled={isLoadingData}
+              />
+            </FieldContainer>
 
-        <FieldContainer
-          className="team-template_field-container"
-          isVertical
-          labelText={t("GroupLead")}
-          place="top"
-          hasError={formErrors.groupHeadCaption}
-          errorMessage={t("EmptyFieldError")}
-        >
-          <TextInput
-            name={"groupHeadCaption"}
-            className="team-template_text-input"
-            scale={true}
-            value={groupHeadCaption}
-            hasError={formErrors.groupHeadCaption}
-            onChange={this.onChangeInput}
-            placeholder={t("AddName")}
-            isDisabled={isLoadingData}
-          />
-        </FieldContainer>
+            <FieldContainer
+              className="team-template_field-container"
+              isVertical
+              labelText={t("GroupLead")}
+              place="top"
+              hasError={formErrors.groupHeadCaption}
+              errorMessage={t("EmptyFieldError")}
+            >
+              <TextInput
+                name={"groupHeadCaption"}
+                className="team-template_text-input"
+                scale={true}
+                value={groupHeadCaption}
+                hasError={formErrors.groupHeadCaption}
+                onChange={this.onChangeInput}
+                placeholder={t("AddName")}
+                isDisabled={isLoadingData}
+              />
+            </FieldContainer>
 
-        <FieldContainer
-          className="team-template_field-container"
-          isVertical
-          labelText={t("Guest")}
-          place="top"
-          hasError={formErrors.guestCaption}
-          errorMessage={t("EmptyFieldError")}
-        >
-          <TextInput
-            name={"guestCaption"}
-            className="team-template_text-input"
-            scale={true}
-            value={guestCaption}
-            hasError={formErrors.guestCaption}
-            onChange={this.onChangeInput}
-            placeholder={t("AddName")}
-            isDisabled={isLoadingData}
-          />
-        </FieldContainer>
+            <FieldContainer
+              className="team-template_field-container"
+              isVertical
+              labelText={t("Guest")}
+              place="top"
+              hasError={formErrors.guestCaption}
+              errorMessage={t("EmptyFieldError")}
+            >
+              <TextInput
+                name={"guestCaption"}
+                className="team-template_text-input"
+                scale={true}
+                value={guestCaption}
+                hasError={formErrors.guestCaption}
+                onChange={this.onChangeInput}
+                placeholder={t("AddName")}
+                isDisabled={isLoadingData}
+              />
+            </FieldContainer>
 
-        <FieldContainer
-          className="team-template_field-container"
-          isVertical
-          labelText={t("Guests")}
-          place="top"
-          hasError={formErrors.guestsCaption}
-          errorMessage={t("EmptyFieldError")}
-        >
-          <TextInput
-            name={"guestsCaption"}
-            className="team-template_text-input"
-            scale={true}
-            value={guestsCaption}
-            hasError={formErrors.guestsCaption}
-            onChange={this.onChangeInput}
-            placeholder={t("AddName")}
-            isDisabled={isLoadingData}
-          />
-        </FieldContainer>
+            <FieldContainer
+              className="team-template_field-container"
+              isVertical
+              labelText={t("Guests")}
+              place="top"
+              hasError={formErrors.guestsCaption}
+              errorMessage={t("EmptyFieldError")}
+            >
+              <TextInput
+                name={"guestsCaption"}
+                className="team-template_text-input"
+                scale={true}
+                value={guestsCaption}
+                hasError={formErrors.guestsCaption}
+                onChange={this.onChangeInput}
+                placeholder={t("AddName")}
+                isDisabled={isLoadingData}
+              />
+            </FieldContainer>
 
-        {isChanged && (
-          <SaveCancelButtons
-            className="team-template_buttons"
-            onSaveClick={this.onSaveClick}
-            onCancelClick={this.onCancelClick}
-            showReminder={showReminder}
-            reminderTest={t("YouHaveUnsavedChanges")}
-            saveButtonLabel={t("SaveButton")}
-            cancelButtonLabel={t("CancelButton")}
-          />
+            {isChanged && (
+              <SaveCancelButtons
+                className="team-template_buttons"
+                onSaveClick={this.onSaveClick}
+                onCancelClick={this.onCancelClick}
+                showReminder={showReminder}
+                reminderTest={t("YouHaveUnsavedChanges")}
+                saveButtonLabel={t("SaveButton")}
+                cancelButtonLabel={t("CancelButton")}
+              />
+            )}
+          </StyledComponent>
         )}
-      </StyledComponent>
+      </Consumer>
     );
   }
 }
