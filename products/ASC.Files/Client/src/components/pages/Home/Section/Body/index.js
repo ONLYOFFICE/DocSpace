@@ -15,6 +15,7 @@ let loadTimeout = null;
 const SectionBodyContent = (props) => {
   const {
     t,
+    tReady,
     fileActionId,
     viewAs,
     firstLoad,
@@ -181,7 +182,7 @@ const SectionBodyContent = (props) => {
   ) : viewAs === "tile" ? (
     <FilesTileContainer />
   ) : (
-    <FilesRowContainer />
+    <FilesRowContainer tReady={tReady} />
   );
 };
 

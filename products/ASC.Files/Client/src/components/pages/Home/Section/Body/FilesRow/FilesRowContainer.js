@@ -8,7 +8,7 @@ import { isMobile } from "react-device-detect";
 
 let loadTimeout = null;
 
-const FilesRowContainer = ({ isLoaded, isLoading, filesList }) => {
+const FilesRowContainer = ({ isLoaded, isLoading, filesList, tReady }) => {
   const [inLoad, setInLoad] = useState(false);
 
   const cleanTimer = () => {
@@ -34,7 +34,7 @@ const FilesRowContainer = ({ isLoaded, isLoading, filesList }) => {
     };
   }, [isLoading]);
 
-  return !isLoaded || (isMobile && inLoad) ? (
+  return !isLoaded || (isMobile && inLoad) || !tReady ? (
     <Loaders.Rows />
   ) : (
     <Consumer>
