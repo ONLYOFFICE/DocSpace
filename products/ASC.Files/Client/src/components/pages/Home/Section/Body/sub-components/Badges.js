@@ -12,13 +12,11 @@ import {
 const Badges = (props) => {
   const {
     newItems,
-    viewAs,
     item,
     canWebEdit,
     isTrashFolder,
     canConvert,
     accessToEdit,
-
     onFilesClick,
     onClickLock,
     onClickFavorite,
@@ -27,7 +25,6 @@ const Badges = (props) => {
   } = props;
   const { id, locked, fileStatus, versionGroup, title } = item;
   const { fileExst } = item;
-
   const showNew = !!newItems;
   return fileExst ? (
     <div className="badges additional-badges">
@@ -125,13 +122,12 @@ const Badges = (props) => {
   );
 };
 
-export default inject(({ filesStore, treeFoldersStore }, { item }) => {
-  const { viewAs } = filesStore;
+export default inject(({ treeFoldersStore }, { item }) => {
   const { isRecycleBinFolder: isTrashFolder } = treeFoldersStore;
   const { access } = item;
   const accessToEdit =
     access === ShareAccessRights.FullAccess ||
     access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
-  return { viewAs, isTrashFolder, accessToEdit };
+  return { isTrashFolder, accessToEdit };
 })(observer(Badges));

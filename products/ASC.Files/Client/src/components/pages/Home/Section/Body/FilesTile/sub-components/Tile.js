@@ -149,7 +149,7 @@ const StyledOptionButton = styled.div`
   }
 `;
 
-class Tile extends React.Component {
+class Tile extends React.PureComponent {
   // shouldComponentUpdate(nextProps) {
   //   if (this.props.needForUpdate) {
   //     return this.props.needForUpdate(this.props, nextProps);
@@ -183,7 +183,6 @@ class Tile extends React.Component {
   };
 
   render() {
-    //console.log("Row render");
     const {
       checked,
       children,

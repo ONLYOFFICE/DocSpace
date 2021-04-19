@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
@@ -32,32 +32,28 @@ import Badges from "./sub-components/Badges";
 
 const sideColor = "#A3A9AE";
 
-const Content = ({
-  viewAs,
-  sectionWidth,
-  fileExst,
-  onMobileRowClick,
-  ...props
-}) => {
-  return viewAs === "tile" ? (
-    <SimpleTileContent
-      sideColor={sideColor}
-      isFile={fileExst}
-      onClick={onMobileRowClick}
-      disableSideInfo
-      {...props}
-    />
-  ) : (
-    <SimpleRowContent
-      sectionWidth={sectionWidth}
-      isMobile={isMobile}
-      sideColor={sideColor}
-      isFile={fileExst}
-      onClick={onMobileRowClick}
-      {...props}
-    />
-  );
-};
+const Content = memo(
+  ({ viewAs, sectionWidth, fileExst, onMobileRowClick, ...props }) => {
+    return viewAs === "tile" ? (
+      <SimpleTileContent
+        sideColor={sideColor}
+        isFile={fileExst}
+        onClick={onMobileRowClick}
+        disableSideInfo
+        {...props}
+      />
+    ) : (
+      <SimpleRowContent
+        sectionWidth={sectionWidth}
+        isMobile={isMobile}
+        sideColor={sideColor}
+        isFile={fileExst}
+        onClick={onMobileRowClick}
+        {...props}
+      />
+    );
+  }
+);
 
 class FilesContent extends React.Component {
   constructor(props) {
@@ -397,9 +393,24 @@ class FilesContent extends React.Component {
       .catch((err) => toastr.error(err));
   };
 
+  renderExst = (fileExst) => {
+    return (
+      <Text
+        className="badge-ext"
+        as="span"
+        color="#A3A9AE"
+        fontSize="15px"
+        fontWeight={600}
+        title={fileExst}
+        truncate={true}
+      >
+        {fileExst}
+      </Text>
+    );
+  };
+
   render() {
     const { itemTitle, showConvertDialog, newItems } = this.state;
-
     const {
       t,
       viewAs,
@@ -447,6 +458,8 @@ class FilesContent extends React.Component {
         ? { noHover: true }
         : { onClick: onFilesClick };
 
+    const exstElement = this.renderExst(fileExst);
+
     return isEdit ? (
       <EditingWrapperComponent
         itemTitle={itemTitle}
@@ -483,34 +496,10 @@ class FilesContent extends React.Component {
             isTextOverflow
           >
             {titleWithoutExt}
-            {fileExst && viewAs === "tile" ? (
-              <Text
-                className="badge-ext"
-                as="span"
-                color="#A3A9AE"
-                fontSize="15px"
-                fontWeight={600}
-                title={fileExst}
-                truncate={true}
-              >
-                {fileExst}
-              </Text>
-            ) : null}
+            {fileExst && viewAs === "tile" ? exstElement : null}
           </Link>
           <div className="badges">
-            {fileExst && viewAs !== "tile" ? (
-              <Text
-                className="badge-ext"
-                as="span"
-                color="#A3A9AE"
-                fontSize="15px"
-                fontWeight={600}
-                title={fileExst}
-                truncate={true}
-              >
-                {fileExst}
-              </Text>
-            ) : null}
+            {fileExst && viewAs !== "tile" ? exstElement : null}
             <Badges
               item={item}
               newItems={this.state.newItems}

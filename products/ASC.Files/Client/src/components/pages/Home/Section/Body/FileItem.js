@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ReactSVG } from "react-svg";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -44,7 +44,6 @@ const FileItem = createSelectable((props) => {
     viewAs,
     setTooltipPosition,
     getIcon,
-    startDrag,
     filter,
     parentFolder,
     setIsLoading,
@@ -59,7 +58,7 @@ const FileItem = createSelectable((props) => {
     addExpandedKeys,
     setMediaViewerData,
   } = props;
-
+  const [isMouseDown, setIsMouseDown] = useState(false);
   const {
     id,
     fileExst,
@@ -140,6 +139,7 @@ const FileItem = createSelectable((props) => {
   };
 
   const onMouseDown = (e) => {
+    setIsMouseDown(true);
     if (!draggable) {
       return;
     }
@@ -197,24 +197,27 @@ const FileItem = createSelectable((props) => {
     }
   };
 
-  const onClickHandler = (e) => {
+  const onMouseUpHandler = (e) => {
     if (
       e.target.closest(".checkbox") ||
       e.target.tagName === "INPUT" ||
       e.target.closest(".expandButton") ||
-      e.button !== 0 ||
-      startDrag
+      e.button !== 0
     )
       return;
 
-    if (isFolder && viewAs === "tile") onFilesClick();
-    else {
+    if (isFolder && viewAs === "tile") {
+      if (!isMouseDown) return;
+      onFilesClick();
+    } else {
       if (checked) {
         onContentFileSelect(!checked, item);
       } else {
+        if (!isMouseDown) return;
         fileContextClick && fileContextClick(item);
       }
     }
+    setIsMouseDown(false);
   };
 
   let value = fileExst || contentLength ? `file_${id}` : `folder_${id}`;
@@ -240,7 +243,6 @@ const FileItem = createSelectable((props) => {
 
   let className = isDragging ? " droppable" : "";
   if (draggable) className += " draggable not-selectable";
-  //if (draggable) className += `${startDrag ? " not-selectable " : ""}`;
 
   const sharedButton =
     !canShare || (isPrivacy && !fileExst) || isEdit || id <= 0 || isMobile
@@ -248,7 +250,6 @@ const FileItem = createSelectable((props) => {
       : getSharedButton(shared);
 
   const temporaryIcon = getIcon(96, fileExst, providerKey, contentLength);
-
   return (
     <div ref={props.selectableRef}>
       <DragAndDrop
@@ -274,7 +275,7 @@ const FileItem = createSelectable((props) => {
             isPrivacy={isPrivacy}
             thumbnailClick={onFilesClick}
             onDoubleClick={onFilesClick}
-            onMouseUp={onClickHandler}
+            onMouseUp={onMouseUpHandler}
           >
             <FilesContent
               item={item}
@@ -297,7 +298,7 @@ const FileItem = createSelectable((props) => {
             {...contextOptionsProps}
             contextButtonSpacerWidth={displayShareButton}
             onDoubleClick={onFilesClick}
-            onMouseUp={onClickHandler}
+            onMouseUp={onMouseUpHandler}
           >
             <FilesContent
               item={item}
@@ -357,7 +358,6 @@ export default inject(
       setStartDrag,
       setTooltipPosition,
       viewAs,
-      startDrag,
       filter,
       setIsLoading,
       fetchFiles,
@@ -372,7 +372,6 @@ export default inject(
     const selectedItem = selection.find(
       (x) => x.id === item.id && x.fileExst === item.fileExst
     );
-
     const isFolder = selectedItem ? false : item.fileExst ? false : true;
     const draggable =
       !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
@@ -406,8 +405,6 @@ export default inject(
       isFolder,
       draggable,
 
-      isItemsSelected: !!selection.length,
-
       actionId: fileActionStore.id,
       setSharingPanelVisible,
       setChangeOwnerPanelVisible,
@@ -423,7 +420,6 @@ export default inject(
       setTooltipPosition,
       viewAs,
       getIcon,
-      startDrag,
 
       filter,
       parentFolder,
