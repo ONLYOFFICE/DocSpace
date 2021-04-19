@@ -10,7 +10,7 @@ import ThirdPartyList from "./ThirdPartyList";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import config from "../../../../package.json";
-import { combineUrl } from "@appserver/common/utils";
+import { clickBackdrop, combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 
 class ArticleBodyContent extends React.Component {
@@ -45,6 +45,7 @@ class ArticleBodyContent extends React.Component {
     if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
       setSelectedNode(data);
       setIsLoading(true);
+
       const newFilter = filter.clone();
       newFilter.page = 0;
       newFilter.startIndex = 0;
@@ -60,8 +61,12 @@ class ArticleBodyContent extends React.Component {
       if (window.location.pathname.indexOf("/filter") > 0) {
         fetchFiles(data[0], newFilter)
           .catch((err) => toastr.error(err))
-          .finally(() => setIsLoading(false));
+          .finally(() => {
+
+            setIsLoading(false);
+          });
       } else {
+
         newFilter.startIndex = 0;
         const urlFilter = newFilter.toUrlParams();
         history.push(

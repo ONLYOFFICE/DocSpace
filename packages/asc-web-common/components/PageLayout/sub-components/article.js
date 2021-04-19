@@ -62,9 +62,9 @@ const StyledArticle = styled.article`
           `
             : `
             position: fixed !important;
-            width: 240px !important;
-            min-width: 240px;
-            max-width: 240px;
+            width: 260px !important;
+            min-width: 260px;
+            max-width: 260px;
             position: fixed;
             height: 100% !important;
             top: 0;
@@ -72,6 +72,10 @@ const StyledArticle = styled.article`
             z-index: 400;
             .resizable-border {
               display: none;
+            }
+
+            .newItem {
+              right: -24px;
             }
           `
           : `

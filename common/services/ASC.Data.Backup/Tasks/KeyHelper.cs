@@ -26,6 +26,7 @@
 
 using System.IO;
 
+using ASC.Common.Utils;
 using ASC.Data.Backup.Tasks.Modules;
 
 namespace ASC.Data.Backup.Tasks
@@ -66,7 +67,7 @@ namespace ASC.Data.Backup.Tasks
 
         public static string GetZipKey(this BackupFileInfo file)
         {
-            return Path.Combine(file.Module, file.Domain, file.Path);
+            return CrossPlatform.PathCombine(file.Module, file.Domain, file.Path);
         }
 
         public static string GetStorage()

@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
@@ -125,4 +125,4 @@ const EditingWrapperComponent = (props) => {
   );
 };
 
-export default memo(EditingWrapperComponent);
+export default EditingWrapperComponent;

@@ -31,6 +31,7 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Encryption;
 using ASC.Data.Storage.Configuration;
@@ -647,7 +648,7 @@ namespace ASC.Data.Storage.DiscStorage
             // Copy each file into it's new directory.
             foreach (var fi in source.GetFiles())
             {
-                var fp = Path.Combine(target.ToString(), fi.Name);
+                var fp = CrossPlatform.PathCombine(target.ToString(), fi.Name);
                 fi.CopyTo(fp, true);
                 var size = Crypt.GetFileSize(fp);
                 QuotaUsedAdd(newdomain, size);
@@ -698,7 +699,7 @@ namespace ASC.Data.Storage.DiscStorage
         {
             var pathMap = GetPath(domain);
             //Build Dir
-            var target = Path.Combine(pathMap.PhysicalPath, PathUtils.Normalize(path));
+            var target = CrossPlatform.PathCombine(pathMap.PhysicalPath, PathUtils.Normalize(path));
             ValidatePath(target);
             return target;
         }
