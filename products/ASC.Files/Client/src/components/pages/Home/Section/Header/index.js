@@ -394,7 +394,8 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("MoveTo"),
-        disabled: !selectionCount || isThirdPartySelection,
+        disabled:
+          !isAccessedSelected || !selectionCount || isThirdPartySelection,
         onClick: this.onMoveAction,
       },
       {

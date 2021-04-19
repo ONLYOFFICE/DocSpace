@@ -453,6 +453,11 @@ export function getProgress() {
   return request({ method: "get", url: "/files/fileops" });
 }
 
+export function checkFileConflicts(destFolderId, folderIds, fileIds) {
+  const data = { destFolderId, folderIds, fileIds };
+  return request({ method: "post", url: "/files/fileops/move", data });
+}
+
 export function copyToFolder(
   destFolderId,
   folderIds,

@@ -122,12 +122,14 @@ class GroupButton extends React.Component {
                   isChecked={checked}
                   isIndeterminate={isIndeterminate}
                   onChange={this.checkboxChange}
+                  title={itemLabel}
                 />
               </StyledCheckbox>
             )}
             <StyledDropdownToggle
               {...this.props}
               onClick={this.dropDownToggleClick}
+              title={itemLabel}
             >
               {itemLabel}
               <Caret isOpen={this.state.isOpen}>
@@ -141,6 +143,7 @@ class GroupButton extends React.Component {
               open={this.state.isOpen}
               clickOutsideAction={this.clickOutsideAction}
               showDisabledItems={true}
+              title={this.state.isOpen ? "" : itemLabel}
             >
               {React.Children.map(children, (child) => (
                 <DropDownItem
@@ -151,9 +154,11 @@ class GroupButton extends React.Component {
             </DropDown>
           </>
         ) : (
-          <StyledDropdownToggle {...this.props}>{label}</StyledDropdownToggle>
+          <StyledDropdownToggle {...this.props} title={itemLabel}>
+            {label}
+          </StyledDropdownToggle>
         )}
-        {isSeparator && <Separator />}
+        {isSeparator && <Separator title="" />}
       </StyledGroupButton>
     );
   }

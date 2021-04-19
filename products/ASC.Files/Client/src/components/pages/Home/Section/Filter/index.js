@@ -258,32 +258,39 @@ class SectionFilterContent extends React.Component {
     return selectedFilterData;
   };
 
-  isTranslationsLoaded = () => {
-    const { t, i18n } = this.props;
+  // isTranslationsLoaded = () => { // used tReady instead of this
+  //   const { t, i18n } = this.props;
 
-    const { store, services, language } = i18n;
+  //   const { store, services, language } = i18n;
 
-    let translationIsLoaded = false;
-    try {
-      translationIsLoaded = store.hasResourceBundle(
-        services.languageUtils.getLanguagePartFromCode(language),
-        "Home"
-      );
-    } catch {
-      translationIsLoaded = t("UserStatus") !== "UserStatus";
-    }
+  //   let translationIsLoaded = false;
+  //   try {
+  //     translationIsLoaded = store.hasResourceBundle(
+  //       services.languageUtils.getLanguagePartFromCode(language),
+  //       "Home"
+  //     );
+  //   } catch {
+  //     translationIsLoaded = t("UserStatus") !== "UserStatus";
+  //   }
 
-    return translationIsLoaded;
-  };
+  //   return translationIsLoaded;
+  // };
 
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, firstLoad, sectionWidth } = this.props;
+    const {
+      t,
+      firstLoad,
+      sectionWidth,
+      tReady,
+      isAnyItems,
+      filterSearch,
+    } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
 
-    return firstLoad && !this.isTranslationsLoaded() ? (
+    return !isAnyItems && !filterSearch ? null : !tReady ? (
       <Loaders.Filter />
     ) : (
       <FilterInput
@@ -314,10 +321,14 @@ export default inject(({ auth, filesStore, selectedFolderStore }) => {
     setIsLoading,
     setViewAs,
     viewAs,
+    files,
+    folders,
   } = filesStore;
 
   const { user } = auth.userStore;
   const { customNames, culture } = auth.settingsStore;
+  const isAnyItems = !!files.length || !!folders.length;
+  const filterSearch = filter.search;
 
   return {
     customNames,
@@ -331,6 +342,9 @@ export default inject(({ auth, filesStore, selectedFolderStore }) => {
     setIsLoading,
     fetchFiles,
     setViewAs,
+
+    isAnyItems,
+    filterSearch,
   };
 })(
   withRouter(

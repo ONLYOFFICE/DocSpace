@@ -33,6 +33,7 @@ using System.Net;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Data.Storage.Configuration;
@@ -219,7 +220,7 @@ namespace ASC.Data.Storage
                 if (Uri.IsWellFormedUriString(path, UriKind.Relative) && HttpContextAccessor?.HttpContext != null)
                 {
                     //Local
-                    Existing[path] = File.Exists(Path.Combine(HostEnvironment.ContentRootPath, path));
+                    Existing[path] = File.Exists(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, path));
                 }
                 if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
                 {

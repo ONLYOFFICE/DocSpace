@@ -32,6 +32,7 @@ using System.Linq;
 using System.Web;
 
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
@@ -305,7 +306,7 @@ namespace ASC.Data.Storage
             var filePaths = ListFilesRelative(domain, path, pattern, recursive);
             return Array.ConvertAll(
                 filePaths,
-                x => GetUri(domain, Path.Combine(PathUtils.Normalize(path), x)));
+                x => GetUri(domain, CrossPlatform.PathCombine(PathUtils.Normalize(path), x)));
         }
 
         public bool IsFile(string path)

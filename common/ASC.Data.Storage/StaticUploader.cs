@@ -35,6 +35,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
@@ -269,7 +270,7 @@ namespace ASC.Data.Storage
             foreach (var file in directoryFiles)
             {
                 var filePath = file.Substring(mappedPath.TrimEnd('/').Length);
-                tasks.Add(StaticUploader.UploadFileAsync(Path.Combine(relativePath, filePath), file, (res) => StepDone()));
+                tasks.Add(StaticUploader.UploadFileAsync(CrossPlatform.PathCombine(relativePath, filePath), file, (res) => StepDone()));
             }
 
             await Task.WhenAll(tasks);
@@ -280,7 +281,7 @@ namespace ASC.Data.Storage
             foreach (var file in directoryFiles)
             {
                 var filePath = file.Substring(mappedPath.TrimEnd('/').Length);
-                StaticUploader.UploadFileAsync(Path.Combine(relativePath, filePath), file, (res) => StepDone()).Wait();
+                StaticUploader.UploadFileAsync(CrossPlatform.PathCombine(relativePath, filePath), file, (res) => StepDone()).Wait();
             }
         }
     }
