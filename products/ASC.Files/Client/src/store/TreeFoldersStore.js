@@ -8,6 +8,7 @@ class TreeFoldersStore {
   treeFolders = [];
   selectedTreeNode = [];
   expandedKeys = [];
+  expandedPanelKeys = null;
 
   constructor(selectedFolderStore) {
     makeAutoObservable(this);
@@ -34,8 +35,17 @@ class TreeFoldersStore {
     this.expandedKeys = expandedKeys;
   };
 
+  setExpandedPanelKeys = (expandedPanelKeys) => {
+    this.expandedPanelKeys = expandedPanelKeys;
+  };
+
   addExpandedKeys = (item) => {
     this.expandedKeys.push(item);
+  };
+
+  updateRootBadge = (id, count) => {
+    const rootItem = this.treeFolders.find((x) => x.id === id);
+    if (rootItem) rootItem.newItems -= count;
   };
 
   get myFolder() {

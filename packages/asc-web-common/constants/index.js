@@ -103,6 +103,12 @@ export const ShareAccessRights = Object.freeze({
   CustomFilter: 8,
 });
 
+export const ConflictResolveType = Object.freeze({
+  Skip: 0,
+  Overwrite: 1,
+  Duplicate: 2,
+});
+
 export const i18nBaseSettings = {
   lng: localStorage.getItem(LANGUAGE) || "en",
   supportedLngs: ["en", "ru"],

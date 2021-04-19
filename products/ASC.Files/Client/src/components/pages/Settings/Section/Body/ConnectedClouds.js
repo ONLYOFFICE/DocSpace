@@ -157,22 +157,6 @@ class ConnectClouds extends React.Component {
   render() {
     const { t, providers } = this.props;
 
-    const buttons = (
-      <div className="empty-folder_container-links empty-connect_container-links">
-        <img
-          className="empty-folder_container_plus-image"
-          src="images/plus.svg"
-          onClick={this.onShowThirdPartyDialog}
-          alt="plus_icon"
-        />
-        <Box className="flex-wrapper_container">
-          <Link onClick={this.onShowThirdPartyDialog} {...linkStyles}>
-            {t("AddAccount")},
-          </Link>
-        </Box>
-      </div>
-    );
-
     return (
       <>
         {!!providers.length ? (
@@ -249,7 +233,21 @@ class ConnectClouds extends React.Component {
             headerText={t("ConnectAccounts")}
             subheadingText={t("ConnectAccountsSubTitle")}
             imageSrc="images/empty_screen.png"
-            buttons={buttons}
+            buttons={
+              <div className="empty-folder_container-links empty-connect_container-links">
+                <img
+                  className="empty-folder_container_plus-image"
+                  src="images/plus.svg"
+                  onClick={this.onShowThirdPartyDialog}
+                  alt="plus_icon"
+                />
+                <Box className="flex-wrapper_container">
+                  <Link onClick={this.onShowThirdPartyDialog} {...linkStyles}>
+                    {t("AddAccount")},
+                  </Link>
+                </Box>
+              </div>
+            }
           />
         )}
       </>

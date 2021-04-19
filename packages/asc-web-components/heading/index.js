@@ -2,9 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import StyledHeading from "./styled-heading";
 
-const Heading = ({ level, color, ...rest }) => {
+const Heading = ({ level, color, className, ...rest }) => {
   return (
-    <StyledHeading as={`h${level}`} colorProp={color} {...rest}></StyledHeading>
+    <StyledHeading
+      className={`${className} not-selectable`}
+      as={`h${level}`}
+      colorProp={color}
+      {...rest}
+    ></StyledHeading>
   );
 };
 

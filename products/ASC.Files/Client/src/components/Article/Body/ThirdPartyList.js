@@ -98,11 +98,12 @@ const PureThirdPartyListContainer = ({
   nextCloudConnectItem,
   webDavConnectItem,
   setConnectItem,
-  setThirdPartyDialogVisible,
+  setConnectDialogVisible,
   setSelectedNode,
   setSelectedFolder,
   getOAuthToken,
   openConnectWindow,
+  setThirdPartyDialogVisible,
   history,
 }) => {
   const redirectAction = () => {
@@ -125,7 +126,8 @@ const PureThirdPartyListContainer = ({
         "Authorization",
         "height=600, width=1020"
       );
-      openConnectWindow(data.title, authModal).then((modal) =>
+      openConnectWindow(data.title, authModal).then((modal) => {
+        redirectAction();
         getOAuthToken(modal).then((token) => {
           const serviceData = {
             title: data.title,
@@ -134,17 +136,17 @@ const PureThirdPartyListContainer = ({
             token,
           };
           setConnectItem(serviceData);
-        })
-      );
+          setConnectDialogVisible(true);
+        });
+      });
     } else {
       setConnectItem(data);
+      setConnectDialogVisible(true);
+      redirectAction();
     }
-
-    onShowConnectPanel();
   };
 
   const onShowConnectPanel = () => {
-    //setThirdPartyDialogVisible((prev) => !prev); TODO:
     setThirdPartyDialogVisible(true);
     redirectAction();
   };
@@ -233,7 +235,11 @@ export default inject(
       openConnectWindow,
     } = settingsStore.thirdPartyStore;
 
-    const { setConnectItem, setThirdPartyDialogVisible } = dialogsStore;
+    const {
+      setConnectItem,
+      setConnectDialogVisible,
+      setThirdPartyDialogVisible,
+    } = dialogsStore;
 
     return {
       googleConnectItem,
@@ -247,9 +253,10 @@ export default inject(
       setSelectedFolder,
       setSelectedNode,
       setConnectItem,
-      setThirdPartyDialogVisible,
+      setConnectDialogVisible,
       getOAuthToken,
       openConnectWindow,
+      setThirdPartyDialogVisible,
     };
   }
 )(observer(ThirdPartyList));

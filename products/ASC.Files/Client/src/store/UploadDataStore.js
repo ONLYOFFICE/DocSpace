@@ -5,6 +5,9 @@ import { loopTreeFolders } from "../helpers/files-helpers";
 import uniqueid from "lodash/uniqueId";
 import throttle from "lodash/throttle";
 import sumBy from "lodash/sumBy";
+import { ConflictResolveType } from "@appserver/common/constants";
+
+import { copyToFolder, moveToFolder } from "@appserver/common/api/files";
 
 const chunkSize = 1024 * 1023; //~0.999mb
 
@@ -567,7 +570,6 @@ class UploadDataStore {
     if (totalErrorsCount > 0) console.log("Errors: ", totalErrorsCount);
 
     const uploadData = {
-      files: this.files,
       filesSize: 0,
       uploadStatus: null,
       uploadedFiles: 0,
@@ -578,75 +580,42 @@ class UploadDataStore {
     setTimeout(() => {
       !this.primaryProgressDataStore.alert &&
         this.primaryProgressDataStore.clearPrimaryProgressData();
+
+      uploadData.files =
+        this.uploadPanelVisible || this.primaryProgressDataStore.alert
+          ? this.files
+          : [];
+
       this.setUploadData(uploadData);
     }, TIMEOUT);
   };
 
-  selectItemOperation(
+  copyToAction = (
     destFolderId,
     folderIds,
     fileIds,
     conflictResolveType,
-    deleteAfter,
-    isCopy
-  ) {
-    return isCopy
-      ? api.files.copyToFolder(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        )
-      : api.files.moveToFolder(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        );
-  }
-
-  itemOperationToFolder = (
-    destFolderId,
-    folderIds,
-    fileIds,
-    conflictResolveType,
-    deleteAfter,
-    isCopy,
-    translations
+    deleteAfter
   ) => {
     const {
-      clearSecondaryProgressData,
       setSecondaryProgressBarData,
-    } = this.secondaryProgressDataStore;
-    const {
+      clearSecondaryProgressData,
       clearPrimaryProgressData,
-      setPrimaryProgressBarData,
-    } = this.primaryProgressDataStore;
+    } = this.secondaryProgressDataStore;
 
-    setSecondaryProgressBarData({
-      icon: isCopy ? "duplicate" : "move",
-      visible: true,
-      percent: 0,
-      label: isCopy ? translations.copy : translations.move,
-      alert: false,
-    });
-
-    this.selectItemOperation(
+    return copyToFolder(
       destFolderId,
       folderIds,
       fileIds,
       conflictResolveType,
-      deleteAfter,
-      isCopy
+      deleteAfter
     )
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
-        this.loopFilesOperations(id, destFolderId, isCopy);
+        this.loopFilesOperations(id, destFolderId, true);
       })
       .catch((err) => {
-        setPrimaryProgressBarData({
+        setSecondaryProgressBarData({
           visible: true,
           alert: true,
         });
@@ -654,6 +623,79 @@ class UploadDataStore {
         setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
+  };
+
+  moveToAction = (
+    destFolderId,
+    folderIds,
+    fileIds,
+    conflictResolveType,
+    deleteAfter
+  ) => {
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+      clearPrimaryProgressData,
+    } = this.secondaryProgressDataStore;
+
+    return moveToFolder(
+      destFolderId,
+      folderIds,
+      fileIds,
+      conflictResolveType,
+      deleteAfter
+    )
+      .then((res) => {
+        const id = res[0] && res[0].id ? res[0].id : null;
+        this.loopFilesOperations(id, destFolderId, false);
+      })
+      .catch((err) => {
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearPrimaryProgressData(), TIMEOUT);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      });
+  };
+
+  itemOperationToFolder = (data) => {
+    const {
+      destFolderId,
+      folderIds,
+      fileIds,
+      deleteAfter,
+      isCopy,
+      translations,
+    } = data;
+    const conflictResolveType = data.conflictResolveType
+      ? data.conflictResolveType
+      : ConflictResolveType.Duplicate;
+
+    this.secondaryProgressDataStore.setSecondaryProgressBarData({
+      icon: isCopy ? "duplicate" : "move",
+      visible: true,
+      percent: 0,
+      label: isCopy ? translations.copy : translations.move,
+      alert: false,
+    });
+
+    isCopy
+      ? this.copyToAction(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        )
+      : this.moveToAction(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
   };
 
   loopFilesOperations = (id, destFolderId, isCopy) => {
