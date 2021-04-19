@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
+import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
@@ -36,6 +36,8 @@ const TfaActivationForm = (props) => {
     if (target.code === "Enter") onSubmit();
   };
 
+  const key = "QWERTYUIOP"; //TODO: get key from api
+
   return (
     <StyledForm className="set-app-container">
       <div>
@@ -44,7 +46,18 @@ const TfaActivationForm = (props) => {
             {t("SetAppTitle")}
           </Text>
           <Text className="set-app-text">{t("SetAppDescription")}</Text>
-          <Text>{t("SetAppInstallDescription")}</Text>
+          <Trans
+            t={t}
+            i18nKey="SetAppInstallDescription"
+            ns="Confirm"
+            key={key}
+          >
+            <Text>
+              To connect your apllication scan the QR code or manually enter
+              your secret key <strong>{{ key }}</strong> then enter 6-digit code
+              from your application in the field below.
+            </Text>
+          </Trans>
         </Box>
         <Box displayProp="flex">
           <Box className="app-code-input">
