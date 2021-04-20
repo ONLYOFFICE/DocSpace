@@ -212,6 +212,7 @@ const FileItem = createSelectable((props) => {
     } else {
       if (checked) {
         onContentFileSelect(!checked, item);
+        fileContextClick && fileContextClick(item);
       } else {
         if (!isMouseDown) return;
         fileContextClick && fileContextClick(item);
