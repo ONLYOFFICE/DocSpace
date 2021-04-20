@@ -42,12 +42,14 @@ namespace ASC.Api.Core
         private static int MaxCount = 1000;
         public IHttpContextAccessor HttpContextAccessor { get; set; }
         public Tenant tenant;
-        public Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext); } }
+        public Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(HttpContextAccessor?.HttpContext); } }
 
         public ApiContext(IHttpContextAccessor httpContextAccessor, SecurityContext securityContext, TenantManager tenantManager)
         {
-            if (httpContextAccessor == null || httpContextAccessor.HttpContext == null) return;
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
             HttpContextAccessor = httpContextAccessor;
+            if (httpContextAccessor.HttpContext == null) return;
 
             Count = MaxCount;
             var query = HttpContextAccessor.HttpContext.Request.Query;
@@ -85,9 +87,6 @@ namespace ASC.Api.Core
             {
                 UpdatedSince = Convert.ToDateTime(updatedSince);
             }
-
-            SecurityContext = securityContext;
-            TenantManager = tenantManager;
         }
 
         public string[] Fields { get; set; }

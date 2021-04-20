@@ -133,8 +133,7 @@ const SectionPagingContent = ({
   const showCountItem = useMemo(() => {
     if (files && folders)
       return (
-        files.length + folders.length === filter.pageCount ||
-        (pageItems.length < 1 && filter.total > 25)
+        files.length + folders.length === filter.pageCount || filter.total > 25
       );
   }, [files, folders, filter, pageItems]);
 
