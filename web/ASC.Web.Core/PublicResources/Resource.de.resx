@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Das Feld mit dem Prüfcode darf nicht leer sein</value>
@@ -107,7 +107,7 @@
     <value>Verbinden Sie Bitly Service, um Einladungslinks und freigegebene Links zu dem Modul "Dokumente" zu verkürzen. {0}Fügen Sie Ihr Bitly-Login und API-Schlüssel unten ein:</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
-    <value>Box Schlüssel</value>
+    <value>Box</value>
   </data>
   <data name="ConsumersboxClientId" xml:space="preserve">
     <value>Box ID</value>
@@ -149,7 +149,7 @@
     <value>Der geheime Schlüssel DocuSign</value>
   </data>
   <data name="ConsumersDocuSignDescription" xml:space="preserve">
-    <value>Verbinden Sie die Anwendung, um elektronische Signatur DocuSign den Dokumenten hinzufügen zu können.</value>
+    <value>Verbinden Sie die Anwendung, um Ihre Dokumente mit DocuSign zu signieren.</value>
   </data>
   <data name="ConsumersdocuSignHost" xml:space="preserve">
     <value>DocuSign Authentifizierungsendpunkt </value>
@@ -236,7 +236,7 @@
     <value>Wenn Sie Firebase Cloud Messaging anschließen, können Sie Benachrichtigungen über die gesendeten Nachrichten erhalten, auch wenn Sie offline sind.</value>
   </data>
   <data name="ConsumersGoogle" xml:space="preserve">
-    <value>Google-Schlüssel</value>
+    <value>Google</value>
   </data>
   <data name="ConsumersgoogleClientId" xml:space="preserve">
     <value>Google ID</value>
@@ -273,7 +273,7 @@
     <value>Erlauben Sie dieser App, die Verbindung von Google Drive mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem Google Drive-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. {0}Öffnen Sie Google APIs Console und erstellen Sie ein neues Projekt für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
-    <value>Linkedin-Schlüssel</value>
+    <value>LinkedIn</value>
   </data>
   <data name="ConsumersLinkedInDescription" xml:space="preserve">
     <value>Verbinden Sie die Anwendung, um sich ins Portal via LinkedIn anzumelden.</value>
@@ -387,10 +387,10 @@
     <value>OneDrive</value>
   </data>
   <data name="Consumersskydriveappkey" xml:space="preserve">
-    <value>OneDrive ID</value>
+    <value>Anwendungs-ID</value>
   </data>
   <data name="Consumersskydriveappsecret" xml:space="preserve">
-    <value>OneDrive-Schlüssel</value>
+    <value>Geheimer Clientschlüssel</value>
   </data>
   <data name="ConsumersSkyDriveDescription" xml:space="preserve">
     <value>Verbinden Sie die Anwendung, um OneDrive-Dateien und Ordner zu verwalten.</value>
@@ -441,7 +441,7 @@
     <value>Telefonnummer von Twilio (erforderlich für die SMS-Autorisierung)</value>
   </data>
   <data name="ConsumersTwitter" xml:space="preserve">
-    <value>Twitter-Schlüssel</value>
+    <value>Twitter</value>
   </data>
   <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
     <value>Zugriffstoken</value>
@@ -539,14 +539,14 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Einstellbar</value>
   </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Falsche Instanz-ID.</value>
+  </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Falsche E-Mail-Adresse</value>
   </data>
   <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
     <value>Ungültiger Werbecode</value>
-  </data>
-  <data name="EmailAndPasswordSaved" xml:space="preserve">
-    <value>Diese Einstellungen wurden erfolgreich gespeichert</value>
   </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Keine Berechtigung zum Durchführen dieser Aktion</value>
@@ -571,6 +571,9 @@
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
     <value>Die aktuelle E-Mail-Adresse und die neue sind gleich</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Bitte alle Felder ausfüllen</value>
   </data>
   <data name="ErrorEmptyMessage" xml:space="preserve">
     <value>Der Nachrichtentext ist leer</value>
@@ -648,7 +651,7 @@
     <value>Lizenz ist nicht korrekt</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Lizenz ist abgelaufen </value>
+    <value>Die Lizenz ist für diese Portalversion nicht gültig.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Die Anzahl der Portale übersteigt die zugelassene Lizenz</value>
@@ -671,9 +674,6 @@
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>Wenn es einen Benutzer mit der E-Mail {0} gibt, wurden die Anweisungen zum Ändern des Passworts an diese E-Mail-Adresse verschickt.</value>
   </data>
-  <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
-    <value>Die Hinweise für die Änderung des Kennworts wurden an die folgende E-Mail-Adresse versandt: {0}</value>
-  </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
     <value>Um die Nummer zu ändern, müssen Sie Ihre aktuelle Telefonnummer löschen</value>
   </data>
@@ -685,9 +685,6 @@
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Zugang zum Portal</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>Das Profil wurde gelöscht</value>
   </data>
   <data name="ReassignDataRemoveUserError" xml:space="preserve">
     <value>Die Neuzuweisung der Daten für {0} ist nicht abgeschlossen.</value>
@@ -742,9 +739,6 @@
   </data>
   <data name="TfaTooMuchError" xml:space="preserve">
     <value>Sie haben zu viele Kurzmitteilungen gesendet. Bitte versuchen Sie es später erneut.</value>
-  </data>
-  <data name="Trial" xml:space="preserve">
-    <value>Test</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>Region US West (Oregon) </value>

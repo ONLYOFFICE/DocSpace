@@ -146,7 +146,36 @@ class SettingsSetupStore {
 
   setGreetingTitle = async (greetingTitle) => {
     const res = await api.settings.setGreetingSettings(greetingTitle);
+
     if (res) this.setGreetingSettings(greetingTitle);
+  };
+
+  setCurrentSchema = async (id) => {
+    return api.settings.setCurrentSchema(id);
+  };
+
+  setCustomSchema = async (
+    userCaption,
+    usersCaption,
+    groupCaption,
+    groupsCaption,
+    userPostCaption,
+    regDateCaption,
+    groupHeadCaption,
+    guestCaption,
+    guestsCaption
+  ) => {
+    return api.settings.setCustomSchema(
+      userCaption,
+      usersCaption,
+      groupCaption,
+      groupsCaption,
+      userPostCaption,
+      regDateCaption,
+      groupHeadCaption,
+      guestCaption,
+      guestsCaption
+    );
   };
 
   restoreGreetingTitle = async () => {

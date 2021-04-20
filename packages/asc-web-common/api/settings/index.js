@@ -79,6 +79,49 @@ export function getLogoUrls() {
   });
 }
 
+export function getCustomSchemaList() {
+  return request({
+    method: "get",
+    url: `settings/customschemas`,
+  });
+}
+
+export function setCurrentSchema(id) {
+  return request({
+    method: "post",
+    url: "settings/customschemas",
+    data: { id },
+  });
+}
+export function setCustomSchema(
+  userCaption,
+  usersCaption,
+  groupCaption,
+  groupsCaption,
+  userPostCaption,
+  regDateCaption,
+  groupHeadCaption,
+  guestCaption,
+  guestsCaption
+) {
+  const data = {
+    userCaption,
+    usersCaption,
+    groupCaption,
+    groupsCaption,
+    userPostCaption,
+    regDateCaption,
+    groupHeadCaption,
+    guestCaption,
+    guestsCaption,
+  };
+  return request({
+    method: "put",
+    url: `settings/customschemas`,
+    data,
+  });
+}
+
 export function getCurrentCustomSchema(id) {
   return request({
     method: "get",

@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Validation code field cannot be empty</value>
@@ -107,7 +107,7 @@
     <value>Enable this app to shorten the invitation and document links. {0}Insert your Bitly login and API key below:</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
-    <value>Box Key</value>
+    <value>Box</value>
   </data>
   <data name="ConsumersboxClientId" xml:space="preserve">
     <value>Box ID</value>
@@ -116,7 +116,7 @@
     <value>Box Key</value>
   </data>
   <data name="ConsumersBoxDescription" xml:space="preserve">
-    <value>Connect the application to manage Box files and folders.</value>
+    <value>Enable the application to manage Box files and folders.</value>
   </data>
   <data name="ConsumersBoxInstruction" xml:space="preserve">
     <value>If you add an application of the Box service you will be able to connect your Box account in the Documents module. This will allow to upload and create new files in Box, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users.</value>
@@ -149,7 +149,7 @@
     <value>DocuSign Secret</value>
   </data>
   <data name="ConsumersDocuSignDescription" xml:space="preserve">
-    <value>Connect the application to add the DocuSign electronic sign to documents.</value>
+    <value>Enable the application to digitally sign your documents with DocuSign.</value>
   </data>
   <data name="ConsumersdocuSignHost" xml:space="preserve">
     <value>DocuSign authentication endpoint</value>
@@ -227,13 +227,13 @@
     <value>Project ID</value>
   </data>
   <data name="ConsumersFirebaseDescription" xml:space="preserve">
-    <value>Connect Firebase Cloud Messaging service to receive notifications about the messages sent to you.</value>
+    <value>Enable this application to receive notifications about the messages sent to you with Firebase Cloud Messaging.</value>
   </data>
   <data name="ConsumersFirebaseInstruction" xml:space="preserve">
     <value>If you connect Firebase Cloud Messaging you will be able to receive notifications about the messages sent to you even when you are offline.</value>
   </data>
   <data name="ConsumersGoogle" xml:space="preserve">
-    <value>Google Key</value>
+    <value>Google</value>
   </data>
   <data name="ConsumersgoogleClientId" xml:space="preserve">
     <value>Google ID</value>
@@ -269,7 +269,7 @@
     <value>Enable this app to connect your Google Drive account to the Documents module. You’ll be able to manage, edit, and share files from Google Drive with ONLYOFFICE users. {0}Go to Google APIs console and create a new project for ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
-    <value>Linkedin Key</value>
+    <value>LinkedIn</value>
   </data>
   <data name="ConsumersLinkedInDescription" xml:space="preserve">
     <value>Enable the application to sign in to the portal using a LinkedIn account.</value>
@@ -383,10 +383,10 @@
     <value>OneDrive</value>
   </data>
   <data name="Consumersskydriveappkey" xml:space="preserve">
-    <value>OneDrive ID</value>
+    <value>Application ID</value>
   </data>
   <data name="Consumersskydriveappsecret" xml:space="preserve">
-    <value>OneDrive Key</value>
+    <value>Client secret</value>
   </data>
   <data name="ConsumersSkyDriveDescription" xml:space="preserve">
     <value>Enable the application to manage OneDrive files and folders.</value>
@@ -437,7 +437,7 @@
     <value>Phone number from Twilio (required for SMS authorization)</value>
   </data>
   <data name="ConsumersTwitter" xml:space="preserve">
-    <value>Twitter Key</value>
+    <value>Twitter</value>
   </data>
   <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
     <value>Access Token</value>
@@ -470,7 +470,7 @@
     <value>Application ID</value>
   </data>
   <data name="ConsumersVkClientSecret" xml:space="preserve">
-    <value>Secret key</value>
+    <value>Secure key</value>
   </data>
   <data name="ConsumersVkDescription" xml:space="preserve">
     <value>Enable the application to sign in to the portal using a VK account.</value>
@@ -535,14 +535,14 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Custom</value>
   </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Incorrect Instance id.</value>
+  </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Incorrect email address</value>
   </data>
   <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
     <value>Incorrect promo code</value>
-  </data>
-  <data name="EmailAndPasswordSaved" xml:space="preserve">
-    <value>These settings have been successfully saved</value>
   </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>No permissions to perform this action</value>
@@ -567,6 +567,9 @@
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
     <value>The current email and the new email are the same</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Please fill in all fields</value>
   </data>
   <data name="ErrorEmptyMessage" xml:space="preserve">
     <value>Message text is empty</value>
@@ -644,7 +647,7 @@
     <value>License is not correct</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>License has expired</value>
+    <value>The license is not valid for this portal version.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>The number of portals exceeds the one allowed by the license</value>
@@ -667,9 +670,6 @@
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>If a user with the {0} email exists, the password change instruction has been sent to this email address.</value>
   </data>
-  <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
-    <value>The password change instructions have been sent to the {0} email address.</value>
-  </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
     <value>To change the number, you need to delete your current phone number</value>
   </data>
@@ -681,9 +681,6 @@
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portal Access</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>Profile has been removed</value>
   </data>
   <data name="ReassignDataRemoveUserError" xml:space="preserve">
     <value>Data reassign process for {0} is not complete.</value>
@@ -738,9 +735,6 @@
   </data>
   <data name="TfaTooMuchError" xml:space="preserve">
     <value>You have sent too many text messages. Please try again later.</value>
-  </data>
-  <data name="Trial" xml:space="preserve">
-    <value>Trial</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>US West (Oregon) Region</value>
