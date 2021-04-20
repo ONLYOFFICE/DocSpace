@@ -528,7 +528,7 @@ class TeamTemplate extends React.Component {
                 onChange={this.onChangeInput}
                 isDisabled={isLoadingData}
                 placeholder={t("AddName")}
-                tabIndex="1"
+                tabIndex={1}
               />
             </FieldContainer>
 
@@ -549,7 +549,7 @@ class TeamTemplate extends React.Component {
                 onChange={this.onChangeInput}
                 placeholder={t("AddName")}
                 isDisabled={isLoadingData}
-                tabIndex="2"
+                tabIndex={2}
               />
             </FieldContainer>
 
@@ -570,7 +570,7 @@ class TeamTemplate extends React.Component {
                 onChange={this.onChangeInput}
                 placeholder={t("AddName")}
                 isDisabled={isLoadingData}
-                tabIndex="3"
+                tabIndex={3}
               />
             </FieldContainer>
 
@@ -591,7 +591,7 @@ class TeamTemplate extends React.Component {
                 onChange={this.onChangeInput}
                 placeholder={t("AddName")}
                 isDisabled={isLoadingData}
-                tabIndex="4"
+                tabIndex={4}
               />
             </FieldContainer>
 
@@ -612,7 +612,7 @@ class TeamTemplate extends React.Component {
                 onChange={this.onChangeInput}
                 placeholder={t("AddName")}
                 isDisabled={isLoadingData}
-                tabIndex="5"
+                tabIndex={5}
               />
             </FieldContainer>
 
@@ -633,7 +633,7 @@ class TeamTemplate extends React.Component {
                 onChange={this.onChangeInput}
                 placeholder={t("AddName")}
                 isDisabled={isLoadingData}
-                tabIndex="6"
+                tabIndex={6}
               />
             </FieldContainer>
 
@@ -654,7 +654,7 @@ class TeamTemplate extends React.Component {
                 onChange={this.onChangeInput}
                 placeholder={t("AddName")}
                 isDisabled={isLoadingData}
-                tabIndex="7"
+                tabIndex={7}
               />
             </FieldContainer>
 
@@ -675,7 +675,7 @@ class TeamTemplate extends React.Component {
                 onChange={this.onChangeInput}
                 placeholder={t("AddName")}
                 isDisabled={isLoadingData}
-                tabIndex="8"
+                tabIndex={8}
               />
             </FieldContainer>
 
@@ -696,7 +696,7 @@ class TeamTemplate extends React.Component {
                 onChange={this.onChangeInput}
                 placeholder={t("AddName")}
                 isDisabled={isLoadingData}
-                tabIndex="9"
+                tabIndex={9}
               />
             </FieldContainer>
 
