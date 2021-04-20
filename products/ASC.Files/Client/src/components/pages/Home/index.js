@@ -226,8 +226,10 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreAlert,
 
       isLoading,
-    } = this.props;
 
+      dragging,
+    } = this.props;
+    console.log(dragging, "Home");
     return (
       <>
         {convertDialogVisible && (
@@ -261,6 +263,7 @@ class PureHome extends React.Component {
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           isLoading={isLoading}
+          dragging={dragging}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />

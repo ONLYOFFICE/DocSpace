@@ -59,11 +59,11 @@ const SectionBodyContent = (props) => {
     }
 
     setTooltipPosition(e.pageX, e.pageY);
-
     const wrapperElement = document.elementFromPoint(e.clientX, e.clientY);
     if (!wrapperElement) {
       return;
     }
+
     const droppable = wrapperElement.closest(".droppable");
     if (currentDroppable !== droppable) {
       if (currentDroppable) {

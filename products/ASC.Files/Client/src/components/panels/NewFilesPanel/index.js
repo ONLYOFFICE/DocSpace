@@ -268,6 +268,8 @@ export default inject(
       isLoading,
       updateFileBadge,
       updateFolderBadge,
+      updateFoldersBadge,
+      updateFilesBadge,
     } = filesStore;
     const { updateRootBadge } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;

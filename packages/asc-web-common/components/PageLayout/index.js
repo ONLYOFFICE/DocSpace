@@ -95,6 +95,11 @@ class PageLayout extends React.Component {
     ) {
       this.backdropClick();
     }
+    if (this.props.dragging) {
+      const el = document.getElementsByClassName("selectable-selectbox");
+      el[0].style.maxHeight = "0px";
+      el[0].style.maxWidth = "0px";
+    }
   }
 
   componentDidMount() {
@@ -166,6 +171,7 @@ class PageLayout extends React.Component {
   };
 
   duringSelection = (duringItems) => {
+    if (duringItems.some((x) => x.props.dragging)) return;
     if (!this.props.uploadFiles || isMobile) return;
     const items = [];
     for (let item of duringItems) {
@@ -198,7 +204,6 @@ class PageLayout extends React.Component {
       firstLoad,
       isLoading,
     } = this.props;
-
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
     let articleBodyContent = null;

@@ -27,7 +27,6 @@ const Badges = (props) => {
   const { fileExst } = item;
   const showNew = !!newItems;
 
-  console.log(showNew, newItems);
   return fileExst ? (
     <div className="badges additional-badges">
       {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (

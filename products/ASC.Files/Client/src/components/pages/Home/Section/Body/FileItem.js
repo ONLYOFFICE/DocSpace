@@ -163,6 +163,8 @@ const FileItem = createSelectable((props) => {
       return;
     }
 
+    console.log(e);
+
     setTooltipPosition(e.pageX, e.pageY);
     setStartDrag(true);
   };
@@ -202,6 +204,7 @@ const FileItem = createSelectable((props) => {
       e.target.closest(".checkbox") ||
       e.target.tagName === "INPUT" ||
       e.target.closest(".expandButton") ||
+      e.target.closest(".badges") ||
       e.button !== 0
     )
       return;
@@ -215,6 +218,7 @@ const FileItem = createSelectable((props) => {
         fileContextClick && fileContextClick(item);
       } else {
         if (!isMouseDown) return;
+        onContentFileSelect(true, item);
         fileContextClick && fileContextClick(item);
       }
     }
