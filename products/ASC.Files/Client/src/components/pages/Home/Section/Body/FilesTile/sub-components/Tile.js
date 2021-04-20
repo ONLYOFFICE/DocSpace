@@ -27,7 +27,8 @@ const FolderStyles = css`
 `;
 
 const StyledTile = styled.div`
-  cursor: ${(props) => (props.isFolder ? "pointer" : "default")};
+  cursor: ${(props) =>
+    props.isFolder && !props.isRecycleBin ? "pointer" : "default"};
 
   min-height: 55px;
   width: 100%;
@@ -193,6 +194,7 @@ class Tile extends React.PureComponent {
       isFolder,
       tileContextClick,
       dragging,
+      isRecycleBin,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -230,6 +232,7 @@ class Tile extends React.PureComponent {
         onContextMenu={onContextMenu}
         dragging={dragging && isFolder}
         isFolder={isFolder}
+        isRecycleBin={isRecycleBin}
       >
         {isFolder ? (
           <>

@@ -278,6 +278,7 @@ const FileItem = createSelectable((props) => {
             thumbnailClick={onFilesClick}
             onDoubleClick={onFilesClick}
             onMouseUp={onMouseUpHandler}
+            isRecycleBin={isRecycleBin}
           >
             <FilesContent
               item={item}
