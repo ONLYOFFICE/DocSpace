@@ -251,8 +251,9 @@ const FileItem = createSelectable((props) => {
       : getSharedButton(shared);
 
   const temporaryIcon = getIcon(96, fileExst, providerKey, contentLength);
+  const wrapperClassNameProp = draggable ? { className: "not-selectable" } : {};
   return (
-    <div ref={props.selectableRef}>
+    <div {...wrapperClassNameProp} ref={props.selectableRef}>
       <DragAndDrop
         value={value}
         className={className}
