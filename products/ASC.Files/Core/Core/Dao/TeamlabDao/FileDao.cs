@@ -692,6 +692,8 @@ namespace ASC.Files.Core.Data
 
         public bool IsExist(string title, object folderId)
         {
+            if (folderId is int fId) return IsExist(title, fId);
+
             throw new NotImplementedException();
         }
 

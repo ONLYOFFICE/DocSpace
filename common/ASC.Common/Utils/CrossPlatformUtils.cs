@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
  *
@@ -23,39 +23,31 @@
  *
 */
 
-
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
-using ASC.Common.Utils;
-
-namespace ASC.Data.Storage.DiscStorage
+namespace ASC.Common.Utils
 {
-    internal class MappedPath
+    public static class CrossPlatform
     {
-        public string PhysicalPath { get; set; }
-        private PathUtils PathUtils { get; }
-
-        private MappedPath(PathUtils pathUtils)
+        public static string PathCombine(string basePath, params string[] additional)
         {
-            PathUtils = pathUtils;
-        }
-
-        public MappedPath(PathUtils pathUtils, string tenant, bool appendTenant, string ppath, IDictionary<string, string> storageConfig) : this(pathUtils)
-        {
-            tenant = tenant.Trim('/');
-
-            ppath = PathUtils.ResolvePhysicalPath(ppath, storageConfig);
-            PhysicalPath = ppath.IndexOf('{') == -1 && appendTenant ? CrossPlatform.PathCombine(ppath, tenant) : string.Format(ppath, tenant);
-        }
-
-        public MappedPath AppendDomain(string domain)
-        {
-            domain = domain.Replace('.', '_'); //Domain prep. Remove dots
-            return new MappedPath(PathUtils)
+            var splits = additional.Select(s => s.Split(pathSplitCharacters)).ToArray();
+            var totalLength = splits.Sum(arr => arr.Length);
+            var segments = new string[totalLength + 1];
+            segments[0] = basePath;
+            var i = 0;
+            foreach (var split in splits)
             {
-                PhysicalPath = CrossPlatform.PathCombine(PhysicalPath, PathUtils.Normalize(domain, true)),
-            };
+                foreach (var value in split)
+                {
+                    i++;
+                    segments[i] = value;
+                }
+            }
+            return Path.Combine(segments);
         }
+
+        static char[] pathSplitCharacters = new char[] { '/', '\\' };
     }
 }

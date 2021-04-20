@@ -70,7 +70,7 @@ RadioButtonGroup.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.string.isRequired,
-      label: PropTypes.string,
+      label: PropTypes.oneOfType([PropTypes.any, PropTypes.string]),
       disabled: PropTypes.bool,
     })
   ).isRequired,

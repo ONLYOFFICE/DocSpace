@@ -13,8 +13,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Properties\**" />
     <Compile Remove="VoxImplant\**" />
+    <EmbeddedResource Remove="Properties\**" />
     <EmbeddedResource Remove="VoxImplant\**" />
+    <None Remove="Properties\**" />
     <None Remove="VoxImplant\**" />
   </ItemGroup>
 
@@ -29,10 +32,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 
   <ItemGroup>

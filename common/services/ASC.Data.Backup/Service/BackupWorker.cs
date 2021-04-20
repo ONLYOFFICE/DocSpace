@@ -34,6 +34,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Backup.Contracts;
@@ -378,7 +379,7 @@ namespace ASC.Data.Backup.Service
             var dateTime = coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
             var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).TenantAlias, dateTime, ArchiveFormat);
 
-            var tempFile = Path.Combine(TempFolder, backupName);
+            var tempFile = CrossPlatform.PathCombine(TempFolder, backupName);
             var storagePath = tempFile;
             try
             {

@@ -32,6 +32,7 @@ using System.Xml.Linq;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Data.Storage;
 
 using Microsoft.Extensions.Options;
@@ -148,7 +149,7 @@ namespace ASC.Data.Backup
 
         private string GetBackupPath(FileBackupInfo backupInfo)
         {
-            return Path.Combine(backupInfo.Module, Path.Combine(backupInfo.Domain, backupInfo.Path.Replace('/', '\\')));
+            return CrossPlatform.PathCombine(backupInfo.Module, CrossPlatform.PathCombine(backupInfo.Domain, backupInfo.Path.Replace('/', '\\')));
         }
 
 

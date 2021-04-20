@@ -13,11 +13,14 @@ class DialogsStore {
   emptyTrashDialogVisible = false;
   thirdPartyDialogVisible = false;
   newFilesPanelVisible = false;
+  conflictResolveDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
   destFolderId = null;
   newFilesIds = null;
+  conflictResolveDialogData = null;
+  conflictResolveDialogItems = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -88,6 +91,18 @@ class DialogsStore {
 
   setNewFilesIds = (newFilesIds) => {
     this.newFilesIds = newFilesIds;
+  };
+
+  setConflictResolveDialogVisible = (conflictResolveDialogVisible) => {
+    this.conflictResolveDialogVisible = conflictResolveDialogVisible;
+  };
+
+  setConflictResolveDialogData = (data) => {
+    this.conflictResolveDialogData = data;
+  };
+
+  setConflictResolveDialogItems = (items) => {
+    this.conflictResolveDialogItems = items;
   };
 }
 

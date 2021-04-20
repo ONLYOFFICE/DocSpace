@@ -87,7 +87,7 @@ namespace ASC.Socket.IO.Svc
                     UseShellExecute = false,
                     FileName = "node",
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = string.Format("\"{0}\"", Path.GetFullPath(Path.Combine(HostEnvironment.ContentRootPath, settings.Path, "app.js"))),
+                    Arguments = string.Format("\"{0}\"", Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, settings.Path, "app.js"))),
                     WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
                 };
                 StartInfo.EnvironmentVariables.Add("core.machinekey", Configuration["core:machinekey"]);
@@ -105,7 +105,7 @@ namespace ASC.Socket.IO.Svc
                 }
 
                 LogDir = Logger.LogDirectory;
-                StartInfo.EnvironmentVariables.Add("logPath", Path.Combine(LogDir, "web.socketio.log"));
+                StartInfo.EnvironmentVariables.Add("logPath", CrossPlatform.PathCombine(LogDir, "web.socketio.log"));
                 StartNode();
             }
             catch (Exception e)
