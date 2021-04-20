@@ -260,6 +260,7 @@ class ContextOptionsStore {
             onClick: this.onClickFavorite,
             disabled: false,
             "data-action": "mark",
+            action: "mark",
           };
         case "block-unblock-version":
           return {
@@ -404,6 +405,7 @@ class ContextOptionsStore {
             onClick: this.onClickFavorite,
             disabled: false,
             "data-action": "remove",
+            action: "remove",
           };
         default:
           break;
