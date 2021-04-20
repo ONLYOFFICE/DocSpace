@@ -290,6 +290,7 @@ class FilesContent extends React.Component {
       updateRootBadge,
       updateFileBadge,
     } = this.props;
+    console.log("here");
     if (item.fileExst) {
       markAsRead([], [item.id])
         .then(() => {
@@ -410,7 +411,7 @@ class FilesContent extends React.Component {
   };
 
   render() {
-    const { itemTitle, showConvertDialog, newItems } = this.state;
+    const { itemTitle, showConvertDialog } = this.state;
     const {
       t,
       viewAs,
@@ -422,6 +423,7 @@ class FilesContent extends React.Component {
       fileActionExt,
       sectionWidth,
       onFilesClick,
+      newItems,
     } = this.props;
 
     const {
@@ -441,8 +443,6 @@ class FilesContent extends React.Component {
     const accessToEdit =
       access === ShareAccessRights.FullAccess ||
       access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
-
-    const showNew = !!newItems;
 
     const fileOwner =
       createdBy &&
@@ -502,7 +502,7 @@ class FilesContent extends React.Component {
             {fileExst && viewAs !== "tile" ? exstElement : null}
             <Badges
               item={item}
-              newItems={this.state.newItems}
+              newItems={this.props.newItems}
               canWebEdit={canWebEdit}
               onFilesClick={onFilesClick}
               onClickLock={this.onClickLock}
@@ -605,6 +605,7 @@ export default inject(
       isPrivacyFolder: isPrivacy,
       expandedKeys,
       addExpandedKeys,
+      updateRootBadge,
     } = treeFoldersStore;
 
     const {
@@ -623,6 +624,7 @@ export default inject(
       setIsLoading,
       isLoading,
       viewAs,
+      updateFileBadge,
     } = filesStore;
 
     const {
@@ -696,6 +698,10 @@ export default inject(
       newItems: selectedFolderStore.new,
       parentFolder: selectedFolderStore.parentId,
       viewAs,
+      setNewFilesPanelVisible,
+      setNewFilesIds,
+      updateRootBadge,
+      updateFileBadge,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesContent))));
