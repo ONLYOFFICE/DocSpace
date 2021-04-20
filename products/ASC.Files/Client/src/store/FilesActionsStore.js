@@ -3,16 +3,15 @@ import { makeAutoObservable } from "mobx";
 import {
   removeFiles,
   getProgress,
-  copyToFolder,
   deleteFile,
   deleteFolder,
-  moveToFolder,
   finalizeVersion,
   lockFile,
   downloadFiles,
   markAsRead,
+  checkFileConflicts,
 } from "@appserver/common/api/files";
-import { FileAction } from "@appserver/common/constants";
+import { ConflictResolveType, FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
 
@@ -44,9 +43,11 @@ class FilesActionStore {
     this.dialogsStore = dialogsStore;
   }
 
-  deleteAction = (translations) => {
+  deleteAction = (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
-    const { selection } = this.filesStore;
+
+    const selection = newSelection ? newSelection : this.filesStore.selection;
+
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -265,72 +266,13 @@ class FilesActionStore {
     setSelection([item]);
   };
 
-  copyToAction = (
-    destFolderId,
-    folderIds,
-    fileIds,
-    conflictResolveType,
-    deleteAfter
-  ) => {
-    const { loopFilesOperations } = this.uploadDataStore;
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.uploadDataStore.secondaryProgressDataStore;
-
-    return copyToFolder(
+  checkFileConflicts = async (destFolderId, folderIds, fileIds) => {
+    const conflicts = await checkFileConflicts(
       destFolderId,
       folderIds,
-      fileIds,
-      conflictResolveType,
-      deleteAfter
-    )
-      .then((res) => {
-        const id = res[0] && res[0].id ? res[0].id : null;
-        loopFilesOperations(id, destFolderId, true);
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        //toastr.error(err);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      });
-  };
-
-  moveToAction = (
-    destFolderId,
-    folderIds,
-    fileIds,
-    conflictResolveType,
-    deleteAfter
-  ) => {
-    const { loopFilesOperations } = this.uploadDataStore;
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.uploadDataStore.secondaryProgressDataStore;
-
-    return moveToFolder(
-      destFolderId,
-      folderIds,
-      fileIds,
-      conflictResolveType,
-      deleteAfter
-    )
-      .then((res) => {
-        const id = res[0] && res[0].id ? res[0].id : null;
-        loopFilesOperations(id, destFolderId, false);
-      })
-      .catch((err) => {
-        setSecondaryProgressBarData({
-          visible: true,
-          alert: true,
-        });
-        //toastr.error(err);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      });
+      fileIds
+    );
+    return conflicts;
   };
 
   deleteFileAction = (fileId, currentFolderId, translations) => {
@@ -466,13 +408,12 @@ class FilesActionStore {
   duplicateAction = (item, label) => {
     const {
       setSecondaryProgressBarData,
-      clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
     const folderIds = [];
     const fileIds = [];
     item.fileExst ? fileIds.push(item.id) : folderIds.push(item.id);
-    const conflictResolveType = 2; //Skip = 0, Overwrite = 1, Duplicate = 2 //TODO: get from settings
+    const conflictResolveType = ConflictResolveType.Duplicate;
     const deleteAfter = false; //TODO: get from settings
 
     setSecondaryProgressBarData({
@@ -483,7 +424,7 @@ class FilesActionStore {
       alert: false,
     });
 
-    return this.copyToAction(
+    return this.uploadDataStore.copyToAction(
       this.selectedFolderStore.id,
       folderIds,
       fileIds,
@@ -555,24 +496,30 @@ class FilesActionStore {
     return markAsRead(folderIds, fileId);
   };
 
-  moveDragItems = (destFolderId, label) => {
+  moveDragItems = (destFolderId, folderTitle, translations) => {
     const folderIds = [];
     const fileIds = [];
-    const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2 TODO: get from settings
     const deleteAfter = true;
 
     const { selection } = this.filesStore;
     const { isRootFolder } = this.selectedFolderStore;
     const { isShareFolder, isCommonFolder } = this.treeFoldersStore;
+    const isCopy = isShareFolder || (!this.authStore.isAdmin && isCommonFolder);
+
+    const operationData = {
+      destFolderId,
+      folderIds,
+      fileIds,
+      deleteAfter,
+      translations,
+      folderTitle,
+      isCopy,
+    };
+
     const {
       setThirdPartyMoveDialogVisible,
       setDestFolderId,
     } = this.dialogsStore;
-
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.uploadDataStore.secondaryProgressDataStore;
 
     for (let item of selection) {
       if (item.providerKey && !isRootFolder) {
@@ -589,51 +536,28 @@ class FilesActionStore {
     }
 
     if (!folderIds.length && !fileIds.length) return;
+    this.checkOperationConflict(operationData);
+  };
 
-    setSecondaryProgressBarData({
-      icon: "move",
-      visible: true,
-      percent: 0,
-      label,
-      alert: false,
-    });
+  checkOperationConflict = async (operationData) => {
+    const { destFolderId, folderIds, fileIds } = operationData;
+    const {
+      setConflictResolveDialogData,
+      setConflictResolveDialogVisible,
+      setConflictResolveDialogItems,
+    } = this.dialogsStore;
+    const conflicts = await this.checkFileConflicts(
+      destFolderId,
+      folderIds,
+      fileIds
+    );
 
-    if (this.authStore.isAdmin) {
-      if (isShareFolder) {
-        this.copyToAction(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        );
-      } else {
-        this.moveToAction(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        );
-      }
+    if (conflicts.length) {
+      setConflictResolveDialogItems(conflicts);
+      setConflictResolveDialogData(operationData);
+      setConflictResolveDialogVisible(true);
     } else {
-      if (isShareFolder || isCommonFolder) {
-        this.copyToAction(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        );
-      } else {
-        this.moveToAction(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        );
-      }
+      this.uploadDataStore.itemOperationToFolder(operationData);
     }
   };
 }

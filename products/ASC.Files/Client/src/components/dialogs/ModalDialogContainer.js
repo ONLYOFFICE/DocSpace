@@ -127,6 +127,16 @@ const ModalDialogContainer = styled.div`
       width: 90%;
     }
   }
+
+  .conflict-resolve-dialog-text {
+    padding-bottom: 8px;
+  }
+
+  .conflict-resolve-radio-button {
+    svg {
+      overflow: visible;
+    }
+  }
 `;
 
 export default ModalDialogContainer;

@@ -34,6 +34,7 @@ class SettingsStore {
   organizationName = "ONLYOFFICE";
   greetingSettings = "Web Office Applications";
   enableAdmMess = false;
+  enabledJoin = false;
   urlLicense = "https://gnu.org/licenses/gpl-3.0.html";
   urlSupport = "https://helpdesk.onlyoffice.com/";
   logoUrl = combineUrl(proxyURL, "/static/images/nav.logo.opened.react.svg");

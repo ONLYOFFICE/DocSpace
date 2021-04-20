@@ -1242,13 +1242,13 @@ namespace ASC.Api.Documents
         /// <param name="folderIds">Folder ID list</param>
         /// <param name="fileIds">File ID list</param>
         /// <returns>Conflicts file ids</returns>
-        [Read("fileops/move")]
+        [Create("fileops/move")]
         public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckFromBody([FromBody]BatchModel batchModel)
         {
             return FilesControllerHelperString.MoveOrCopyBatchCheck(batchModel);
         }
 
-        [Read("fileops/move")]
+        [Create("fileops/move")]
         [Consumes("application/x-www-form-urlencoded")]
         public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckFromForm([FromForm]BatchModel batchModel)
         {
