@@ -90,6 +90,20 @@ export const settingsTree = [
         link: "backup",
         tKey: "Backup",
         isCategory: true,
+        children: [
+          {
+            key: "4-0-0",
+            icon: "",
+            link: "automatic-backup",
+            tKey: "AutomaticBackup",
+          },
+          {
+            key: "4-0-1",
+            icon: "",
+            link: "manual-backup",
+            tKey: "ManualBackup",
+          },
+        ],
       },
     ],
   },
