@@ -7,20 +7,18 @@ import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 
 const StatisticsPage = lazy(() => import("./statistics"));
 
+const PROXY_STATISTICS_URL = combineUrl(
+  AppServerConfig.proxyURL,
+  "/settings/statistics"
+);
+
 const Statistics = ({ match }) => {
   return (
     <Suspense
       fallback={<Loader className="pageLoader" type="rombs" size="40px" />}
     >
       <Switch>
-        <Route
-          exact
-          path={[
-            combineUrl(AppServerConfig.proxyURL, "/settings/statistics"),
-            match.path,
-          ]}
-          component={StatisticsPage}
-        />
+        <Route exact path={PROXY_STATISTICS_URL} component={StatisticsPage} />
       </Switch>
     </Suspense>
   );

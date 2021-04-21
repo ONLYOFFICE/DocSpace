@@ -114,5 +114,11 @@
   "ConfirmEmailSended": "Confirmation e-mail has been sent to {{ownerName}}",
 
   "VisitsGraph": "Visits graph",
-  "ActiveUsers": "Active users: {{current}} of {{total}}"
+  "VisitsWeek": "Week",
+  "VisitsMonth": "Month",
+  "VisitsThreeMonth": "3 month",
+  "VisitsPeriod": "Period",
+  "ActiveUsers": "Active users: {{current}} of {{total}}",
+  "StorageTitle": "Storage",
+  "StorageInfo": "To increase storage space select an upgraded pricing plan. To free the storage space, you can delete the personal data of the disabled users. To do this, go to the user profile and select the 'Delete personal data' action from the drop-down menu to the right of the name."
 }

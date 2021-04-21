@@ -61,8 +61,6 @@ class Chart extends Component {
       data: this.props.data,
       options: this.props.options,
     });
-
-    console.log(this.chart);
   }
 
   getCanvas() {
@@ -168,6 +166,7 @@ Chart.defaultProps = {
   type: "line",
   data: null,
   options: {
+    maintainAspectRatio: false,
     responsive: true,
     plugins: {
       legend: {
@@ -233,12 +232,14 @@ Chart.defaultProps = {
       },
       y: {
         min: 0,
+        stacked: true,
         grid: {
           borderColor: "#F0F0F0",
           color: "#F0F0F0",
           tickColor: "#FFFFFF",
         },
         ticks: {
+          stepSize: 20,
           color: "#A3A3A3",
           font: {
             family: "Open Sans, sans-serif, Arial",

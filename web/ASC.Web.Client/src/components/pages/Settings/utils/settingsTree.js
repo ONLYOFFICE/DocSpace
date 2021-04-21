@@ -76,7 +76,16 @@ export const settingsTree = [
     icon: "/static/images/stats.react.svg",
     link: "statistics",
     tKey: "ManagementCategoryStatistic",
-    isHeader: true,
+    isHeader: false,
+    children: [
+      {
+        key: "4-0",
+        icon: "",
+        link: "",
+        tKey: "ManagementCategoryStatistic",
+        isCategory: true,
+      },
+    ],
   },
 ];
 
