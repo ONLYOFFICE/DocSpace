@@ -329,11 +329,7 @@ const Form = (props) => {
           })
         );
 
-        window.open(
-          `/login.ashx?p=${token}&code=${code}`,
-          "login",
-          "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
-        );
+        tokenGetterWin.location.href = `/login.ashx?p=${token}&code=${code}`;
       });
     } catch (err) {
       console.log(err);
