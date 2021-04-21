@@ -112,7 +112,6 @@
   "PortalAdmins": "Portal admins",
   "PortalAdminsDescription": "Have the same access rights as the portal owner, except the right to: change portal owner; deactivate or delete portal.",
   "ConfirmEmailSended": "Confirmation e-mail has been sent to {{ownerName}}",
- 
 
   "TeamTemplate": "Team template",
   "TeamTemplateSettingsDescription": "Team Template is a customizable way to name the organization (or group), its members and their activities. Drop down the Template list to choose one of the available presets or enter the names yourselves selecting the custom option from the list.",
@@ -128,5 +127,11 @@
   "Guest": "Guest",
   "Guests": "Guests",
 
-  "EmptyFieldError": "Empty field"
+  "EmptyFieldError": "Empty field",
+
+  "AutomaticBackup": "Automatic backup",
+  "AutomaticBackupSettingsDescription": "The Automatic backup option is used to automate the portal data backup process to be able to restore it later on a local server. Choose the data storage, automatic backup period and maximal number of saved copies.",
+  "ManualBackup": "Manual backup",
+  "ManualBackupSettingsDescription": "Manual backup option is used to backup the portal data to be able to restore it later to your local server.",
+  "ManualBackupSettingsWarningDescription": "При создании резервной копии в ручную, в неё не будут включены данные о лицензии. После восстановления данных из бекапа вам понадобится повторно загрузить файл лицензии."
 }
