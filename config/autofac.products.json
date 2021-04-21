@@ -44,6 +44,15 @@
         }
       ],
 	  "instanceScope": "InstancePerLifetimeScope"
+    },
+    {
+      "type": "ASC.Calendar.Configuration.ProductEntryPoint, ASC.Calendar",
+      "services": [
+        {
+          "type": "ASC.Web.Core.IWebItem, ASC.Web.Core"
+        }
+      ],
+	  "instanceScope": "InstancePerLifetimeScope"
     }
   ]
 }
