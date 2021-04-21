@@ -21,11 +21,18 @@ import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
 import { SelectableGroup } from "react-selectable-fast";
-import SelectedFrame from "./sub-components/SelectedFrame";
 import styled from "styled-components";
 
 const StyledSelectableGroup = styled(SelectableGroup)`
   display: contents;
+
+  .selectable-selectbox {
+    display: ${(props) => (props.dragging ? "none" : "block")};
+    border: 1px dotted #5c6a8e;
+    background-color: #6582c9;
+    z-index: 200;
+    opacity: 0.4;
+  }
 `;
 
 function ArticleHeader() {
@@ -95,11 +102,11 @@ class PageLayout extends React.Component {
     ) {
       this.backdropClick();
     }
-    if (this.props.dragging) {
-      const el = document.getElementsByClassName("selectable-selectbox");
-      el[0].style.maxHeight = "0px";
-      el[0].style.maxWidth = "0px";
-    }
+    // if (this.props.dragging) {
+    //   const el = document.getElementsByClassName("selectable-selectbox");
+    //   el[0].style.maxHeight = "0px";
+    //   el[0].style.maxWidth = "0px";
+    // }
   }
 
   componentDidMount() {
@@ -203,6 +210,7 @@ class PageLayout extends React.Component {
       isTabletView,
       firstLoad,
       isLoading,
+      dragging,
     } = this.props;
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
@@ -268,6 +276,7 @@ class PageLayout extends React.Component {
     return (
       <>
         <StyledSelectableGroup
+          dragging={dragging}
           enableDeselect
           resetOnStart
           allowClickWithoutSelected={false}
@@ -434,7 +443,6 @@ class PageLayout extends React.Component {
             </ReactResizeDetector>
           )}
         </StyledSelectableGroup>
-        {uploadFiles && <SelectedFrame />}
       </>
     );
   }
