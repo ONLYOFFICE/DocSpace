@@ -127,6 +127,7 @@ metadata_expire=300
 END
 
 fi
+
 ${package_manager} -y install yum-plugin-versionlock
 ${package_manager} versionlock clear
 
@@ -150,6 +151,10 @@ ${package_manager} -y install epel-release \
 postgresql-setup initdb	|| true
 
 semanage permissive -a httpd_t
+
+if [ ! -e /usr/bin/json ]; then
+	npm i json -g >/dev/null 2>&1
+fi
 
 systemctl daemon-reload
 package_services="rabbitmq-server postgresql redis supervisord nginx kafka"
