@@ -129,6 +129,7 @@ const PureThirdPartyListContainer = ({
       openConnectWindow(data.title, authModal).then((modal) => {
         redirectAction();
         getOAuthToken(modal).then((token) => {
+          authModal.close();
           const serviceData = {
             title: data.title,
             provider_key: data.title,
