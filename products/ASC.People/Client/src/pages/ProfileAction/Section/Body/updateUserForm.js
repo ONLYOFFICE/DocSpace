@@ -31,7 +31,7 @@ import {
   createThumbnailsAvatar,
   loadAvatar,
   deleteAvatar,
-  thirdPartyUnlinkAccount,
+  unlinkThirdPartyAccount,
 } from "@appserver/common/api/people";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import toastr from "studio/toastr";
@@ -558,7 +558,7 @@ class UpdateUserForm extends React.Component {
 
   unlinkAccount = (providerName) => {
     const { setProviders, t } = this.props;
-    thirdPartyUnlinkAccount(providerName).then(() => {
+    unlinkThirdPartyAccount(providerName).then(() => {
       getAuthProviders().then((providers) => {
         setProviders(providers);
         toastr.success(t("ProviderSuccessfullyDisconnected"));
@@ -567,7 +567,7 @@ class UpdateUserForm extends React.Component {
   };
 
   linkAccount = (providerName, link, e) => {
-    const { getOAuthToken } = this.props;
+    const { getOAuthToken, getLoginLink } = this.props;
     e.preventDefault();
 
     try {
@@ -586,7 +586,7 @@ class UpdateUserForm extends React.Component {
           })
         );
 
-        tokenGetterWin.location.href = `/login.ashx?p=${token}&code=${code}`;
+        tokenGetterWin.location.href = getLoginLink(token, code);
       });
     } catch (err) {
       console.log(err);
@@ -1035,6 +1035,7 @@ class UpdateUserForm extends React.Component {
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
     getOAuthToken: auth.settingsStore.getOAuthToken,
+    getLoginLink: auth.settingsStore.getLoginLink,
     customNames: auth.settingsStore.customNames,
     isAdmin: auth.isAdmin,
     groups: peopleStore.groupsStore.groups,

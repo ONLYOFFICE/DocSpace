@@ -311,7 +311,7 @@ const Form = (props) => {
     const providerName = e.target.dataset.providername;
     const url = e.target.dataset.url;
 
-    const { getOAuthToken } = props;
+    const { getOAuthToken, getLoginLink } = props;
 
     try {
       const tokenGetterWin = window.open(
@@ -329,7 +329,7 @@ const Form = (props) => {
           })
         );
 
-        tokenGetterWin.location.href = `/login.ashx?p=${token}&code=${code}`;
+        tokenGetterWin.location.href = getLoginLink(token, code);
       });
     } catch (err) {
       console.log(err);
@@ -582,6 +582,7 @@ const Login = inject(({ auth }) => {
     defaultPage,
     isDesktopClient: isDesktop,
     getOAuthToken,
+    getLoginLink,
   } = settingsStore;
 
   return {
@@ -596,6 +597,7 @@ const Login = inject(({ auth }) => {
     login,
     thirdPartyLogin,
     getOAuthToken,
+    getLoginLink,
     setProviders,
     providers,
   };

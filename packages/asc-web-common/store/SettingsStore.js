@@ -206,6 +206,10 @@ class SettingsStore {
     });
   };
 
+  getLoginLink = (token, code) => {
+    return `/login.ashx?p=${token}&code=${code}`;
+  };
+
   setModuleInfo = (homepage, productId) => {
     if (this.homepage == homepage) return;
     this.homepage = homepage;

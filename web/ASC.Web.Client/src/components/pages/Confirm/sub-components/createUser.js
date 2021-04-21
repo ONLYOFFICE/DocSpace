@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { createUser, thirdPartySignup } from "@appserver/common/api/people";
+import { createUser, signupThirdParty } from "@appserver/common/api/people";
 import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
@@ -238,7 +238,7 @@ class Confirm extends React.PureComponent {
       SerializedProfile: Serialized,
     };
 
-    thirdPartySignup(signupAccount)
+    signupThirdParty(signupAccount)
       .then(() => {
         window.location.replace(defaultPage);
       })
@@ -284,7 +284,7 @@ class Confirm extends React.PureComponent {
     const providerName = e.target.dataset.providername;
     const url = e.target.dataset.url;
 
-    const { getOAuthToken } = this.props;
+    const { getOAuthToken, getLoginLink } = this.props;
 
     try {
       const tokenGetterWin = window.open(
@@ -302,7 +302,7 @@ class Confirm extends React.PureComponent {
           })
         );
 
-        tokenGetterWin.location.href = `/login.ashx?p=${token}&code=${code}`;
+        tokenGetterWin.location.href = getLoginLink(token, code);
       });
     } catch (err) {
       console.log(err);
@@ -544,6 +544,7 @@ export default inject(({ auth }) => {
     getSettings,
     getPortalPasswordSettings,
     getOAuthToken,
+    getLoginLink,
   } = settingsStore;
 
   return {
@@ -558,6 +559,7 @@ export default inject(({ auth }) => {
     getPortalPasswordSettings,
     thirdPartyLogin,
     getOAuthToken,
+    getLoginLink,
     setProviders,
     providers,
   };
