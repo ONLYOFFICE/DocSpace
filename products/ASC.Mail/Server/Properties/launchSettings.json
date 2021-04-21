@@ -18,7 +18,7 @@
       }
     },
     "ASC.Mail": {
-      "commandName": "Mail",
+      "commandName": "Project",
       "environmentVariables": {
         "$STORAGE_ROOT": "../../../Data",
         "log__dir": "../../../Logs",
