@@ -37,6 +37,7 @@ using System.Web;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Files.Core;
@@ -823,7 +824,7 @@ namespace ASC.Web.Files
 
             var store = GlobalStore.GetStore();
 
-            var path = Path.Combine("temp_stream", fileName);
+            var path = CrossPlatform.PathCombine("temp_stream", fileName);
 
             if (!store.IsFile(FileConstant.StorageDomainTmp, path))
             {

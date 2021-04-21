@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Campo de código de validación no puede estar vacío</value>
@@ -107,7 +107,7 @@
     <value>Habilite esta aplicación para acortar los enlaces de invitación y de documentos. {0}Inserte su login de Bitly y su clave de la API a continuación:</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
-    <value>Clave Box</value>
+    <value>Clave</value>
   </data>
   <data name="ConsumersboxClientId" xml:space="preserve">
     <value>Box ID</value>
@@ -116,7 +116,7 @@
     <value>Clave Box</value>
   </data>
   <data name="ConsumersBoxDescription" xml:space="preserve">
-    <value>Conectar la aplicación para manejar los archivos y carpetas de Box.</value>
+    <value>Habilite la aplicación para gestionar los archivos y carpetas de Box.</value>
   </data>
   <data name="ConsumersBoxInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio Box, Usted podrá conectar su cuenta de Box en el módulo 'Documentos'. Este permite cargar y crear unos archivos nuevos en Box, editar unos archivos existentes, copiar y eliminarlos, compartir los archivos y carpetas con los usuarios de portal ONLYOFFICE™.</value>
@@ -149,7 +149,7 @@
     <value>Clave secreta de DocuSign</value>
   </data>
   <data name="ConsumersDocuSignDescription" xml:space="preserve">
-    <value>Conectar la aplicación para añadir la firma electrónica DocuSign a los documentos.</value>
+    <value>Habilite la aplicación para firmar digitalmente sus documentos con DocuSign.</value>
   </data>
   <data name="ConsumersdocuSignHost" xml:space="preserve">
     <value>Punto final de autentificación de DocuSign</value>
@@ -227,13 +227,13 @@
     <value>ID del Proyecto</value>
   </data>
   <data name="ConsumersFirebaseDescription" xml:space="preserve">
-    <value>Conecte el servicio Mensajería en Nube Firebase para recibir notificaciones de mensajes que le han sido enviados.</value>
+    <value>Habilite esta aplicación para recibir notificaciones sobre los mensajes que se le han enviado con la mensajería Firebase Cloud.</value>
   </data>
   <data name="ConsumersFirebaseInstruction" xml:space="preserve">
     <value>Si se conecta a la Nube de Mensajería Firebase podrá recibir notificaciones de los mensajes que le han enviado incluso cuando no está en línea.</value>
   </data>
   <data name="ConsumersGoogle" xml:space="preserve">
-    <value>Clave de Google</value>
+    <value>Google</value>
   </data>
   <data name="ConsumersgoogleClientId" xml:space="preserve">
     <value>ID de Google</value>
@@ -263,7 +263,7 @@
     <value>Habilite esta aplicación para conectar su cuenta de Google Drive al módulo Documentos. Podrá administrar, editar y compartir archivos de Google Drive con los usuarios de ONLYOFFICE. {0}Vaya a la consola de las APIs de Google y cree un nuevo proyecto para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
   </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
-    <value>Clave de Linkedin</value>
+    <value>LinkedIn</value>
   </data>
   <data name="ConsumersLinkedInDescription" xml:space="preserve">
     <value>Conectar la aplicación para acceder al portal usando la cuenta LinkedIn.</value>
@@ -329,7 +329,7 @@
     <value>Selectel Cloud Storage</value>
   </data>
   <data name="ConsumersSelectelauthPwd" xml:space="preserve">
-    <value>Contraseña para autorización</value>
+    <value>Contraseña para acceder al almacenamiento</value>
   </data>
   <data name="ConsumersSelectelauthUser" xml:space="preserve">
     <value>Nombre de usuario para autorización</value>
@@ -350,10 +350,10 @@
     <value>OneDrive</value>
   </data>
   <data name="Consumersskydriveappkey" xml:space="preserve">
-    <value>ID de OneDrive</value>
+    <value>Id. de aplicación</value>
   </data>
   <data name="Consumersskydriveappsecret" xml:space="preserve">
-    <value>Clave de OneDrive</value>
+    <value>Secreto del cliente</value>
   </data>
   <data name="ConsumersSkyDriveDescription" xml:space="preserve">
     <value>Conectar la aplicación para manejar los archivos y carpetas de OneDrive.</value>
@@ -362,7 +362,7 @@
     <value>Si Usted añade la aplicación del servicio OneDrive, Usted podrá conectar su cuenta de OneDrive en el módulo 'Documentos'. Este permite cargar y crear unos archivos nuevos en OneDrive, editar unos archivos existentes, copiar y eliminarlos, compartir los archivos y carpetas con los usuarios de portal ONLYOFFICE™.</value>
   </data>
   <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
-    <value>Habilite esta aplicación para conectar su cuenta de OneDrive al módulo Documentos. Podrá administrar, editar y compartir archivos de OneDrive con los usuarios de ONLYOFFICE. {0}Acceda a su cuenta en el Centro de Desarrolladores de Live Connect y cree una nueva aplicación para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
+    <value>Habilite esta aplicación para conectar su cuenta de OneDrive al módulo Documentos. Podrá administrar, editar y compartir archivos de OneDrive con los usuarios de ONLYOFFICE. {0}Acceda a su cuenta de Microsoft Azure y cree una nueva aplicación para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
   </data>
   <data name="ConsumersSmsc" xml:space="preserve">
     <value>Centro SMS</value>
@@ -404,7 +404,7 @@
     <value>Número telefónico de Twilio (se requiere para la autenticación SMS)</value>
   </data>
   <data name="ConsumersTwitter" xml:space="preserve">
-    <value>Clave de Twitter </value>
+    <value>Twitter</value>
   </data>
   <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
     <value>Token de acceso</value>
@@ -502,14 +502,14 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Personalizado</value>
   </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Id. incorrecta de instancia</value>
+  </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Dirección de correo electrónico incorrecta</value>
   </data>
   <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
     <value>Código de promocional incorrecto</value>
-  </data>
-  <data name="EmailAndPasswordSaved" xml:space="preserve">
-    <value>Estos ajustes han sido guardados con éxito</value>
   </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>No hay permisos para realizar esta acción</value>
@@ -534,6 +534,9 @@
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
     <value>El correo electrónico actual y el nuevo correo electrónico son iguales</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Complete, por favor, todos los campos</value>
   </data>
   <data name="ErrorEmptyMessage" xml:space="preserve">
     <value>Texto del mensaje está vacío</value>
@@ -611,7 +614,7 @@
     <value>Licencia no correcta</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Licencia ha expirado</value>
+    <value>La licencia no es válida para esta versión del portal.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Número de portales excede el número permitido por la licencia</value>
@@ -634,9 +637,6 @@
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>Si existe un usuario con el correo electrónico {0}, la instrucción para cambiar la contraseña se ha enviado a esta dirección de correo electrónico.</value>
   </data>
-  <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
-    <value>La contraseña de usuario ha sido enviada al e-mail {0}</value>
-  </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
     <value>Para cambiar el número, usted necesita borrar su número de teléfono actual </value>
   </data>
@@ -648,9 +648,6 @@
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Acceso a portal</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>Perfil ha sido eliminado</value>
   </data>
   <data name="ReassignDataRemoveUserError" xml:space="preserve">
     <value>El proceso de reasignación de datos para {0} no se ha completado.</value>
@@ -705,9 +702,6 @@
   </data>
   <data name="TfaTooMuchError" xml:space="preserve">
     <value>Usted ha enviado demasiados mensajes de texto. Por favor, intente de nuevo más tarde.</value>
-  </data>
-  <data name="Trial" xml:space="preserve">
-    <value>Periodo de prueba</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>Región EE.UU. Oeste (Oregón)</value>

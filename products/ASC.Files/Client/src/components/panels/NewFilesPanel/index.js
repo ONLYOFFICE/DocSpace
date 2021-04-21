@@ -200,7 +200,7 @@ class NewFilesPanel extends React.Component {
                     return (
                       <Row key={file.id} element={element}>
                         <Box
-                          onClick={this.onNewFilesClick.bind(this, file)}
+                          onClick={this.onNewFileClick.bind(this, file)}
                           marginProp="auto 0"
                         >
                           <Link
@@ -267,7 +267,9 @@ export default inject(
       setIsLoading,
       isLoading,
       updateFileBadge,
+      updateFilesBadge,
       updateFolderBadge,
+      updateFoldersBadge,
     } = filesStore;
     const { updateRootBadge } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;

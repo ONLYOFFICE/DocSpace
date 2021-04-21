@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
+using ASC.Common.Utils;
+
 using Microsoft.AspNetCore.Hosting;
 
 namespace ASC.Web.Core.Utility.Skins
@@ -46,7 +48,7 @@ namespace ASC.Web.Core.Utility.Skins
         {
             try
             {
-                var dir = Path.Combine(webHostEnvironment.ContentRootPath, "~/skins/default/");
+                var dir = CrossPlatform.PathCombine(webHostEnvironment.ContentRootPath, "~/skins/default/");
                 if (!Directory.Exists(dir)) return;
 
                 foreach (var f in Directory.GetFiles(dir, "common_style.*.css"))

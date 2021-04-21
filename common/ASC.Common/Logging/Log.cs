@@ -384,7 +384,7 @@ namespace ASC.Common.Logging
             Configuration = configuration;
             ConfigurationExtension = configurationExtension;
 
-            LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(Path.Combine(Configuration["pathToConf"], "nlog.config"));
+            LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(CrossPlatform.PathCombine(Configuration["pathToConf"], "nlog.config"));
             LogManager.ThrowConfigExceptions = false;
 
             var settings = ConfigurationExtension.GetSetting<NLogSettings>("log");

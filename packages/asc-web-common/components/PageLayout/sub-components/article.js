@@ -31,17 +31,15 @@ const StyledArticle = styled.article`
         cursor: ew-resize !important;
       }
     }
-    ${
-      isMobile &&
-      css`
-        margin-top: 56px;
-        height: calc(100% - 56px) !important;
-        width: 240px !important;
-        @media ${tablet} {
-          margin-top: ${(props) => (props.pinned ? "56px;" : "0;")};
-        }
-      `
-    }
+    ${isMobile &&
+    css`
+      margin-top: 56px;
+      height: calc(100% - 56px) !important;
+      width: 240px !important;
+      @media ${tablet} {
+        margin-top: ${(props) => (props.pinned ? "56px;" : "0;")};
+      }
+    `}
     @media ${tablet} {
       padding: 0 16px;
       ${(props) =>
@@ -64,9 +62,9 @@ const StyledArticle = styled.article`
           `
             : `
             position: fixed !important;
-            width: 240px !important;
-            min-width: 240px;
-            max-width: 240px;
+            width: 260px !important;
+            min-width: 260px;
+            max-width: 260px;
             position: fixed;
             height: 100% !important;
             top: 0;
@@ -74,6 +72,10 @@ const StyledArticle = styled.article`
             z-index: 400;
             .resizable-border {
               display: none;
+            }
+
+            .newItem {
+              right: -24px;
             }
           `
           : `
@@ -99,7 +101,7 @@ class Article extends React.Component {
         <Resizable
           enable={enable}
           className="resizable-block"
-          handleWrapperClass="resizable-border"
+          handleWrapperClass="resizable-border not-selectable"
         >
           {children}
           <div className="increaseHeight"></div>

@@ -28,6 +28,7 @@ using System;
 using System.IO;
 
 using ASC.Common;
+using ASC.Common.Utils;
 
 namespace ASC.Data.Backup.Storage
 {
@@ -40,7 +41,7 @@ namespace ASC.Data.Backup.Storage
             {
                 throw new FileNotFoundException("Directory not found.");
             }
-            var storagePath = Path.Combine(storageBasePath, Path.GetFileName(localPath));
+            var storagePath = CrossPlatform.PathCombine(storageBasePath, Path.GetFileName(localPath));
             if (localPath != storagePath)
             {
                 File.Copy(localPath, storagePath, true);
