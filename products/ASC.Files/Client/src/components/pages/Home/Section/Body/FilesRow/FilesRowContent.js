@@ -251,13 +251,18 @@ class FilesRowContent extends React.PureComponent {
           });
   };
 
-  // componentDidUpdate(prevProps) {
-  //   if (fileAction) {
-  //     if (fileActionId !== prevProps.fileActionId) {
-  //       this.setState({ editingId: fileActionId });
-  //     }
-  //   }
-  // }
+  componentDidUpdate(prevProps) {
+    const { fileActionId, fileActionExt } = this.props;
+    if (fileActionId === -1 && fileActionExt !== prevProps.fileActionExt) {
+      const itemTitle = this.getDefaultName(fileActionExt);
+      this.setState({ itemTitle });
+    }
+    // if (fileAction) {
+    //   if (fileActionId !== prevProps.fileActionId) {
+    //     this.setState({ editingId: fileActionId });
+    //   }
+    // }
+  }
 
   renameTitle = (e) => {
     let title = e.target.value;
@@ -544,10 +549,9 @@ class FilesRowContent extends React.PureComponent {
       item.access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
     const isEdit = id === fileActionId && fileExst === fileActionExt;
 
-    const linkStyles =
-      isTrashFolder || window.innerWidth <= 1024
-        ? { noHover: true }
-        : { onClick: this.onFilesClick };
+    const linkStyles = isTrashFolder //|| window.innerWidth <= 1024
+      ? { noHover: true }
+      : { onClick: this.onFilesClick };
 
     const newItems = item.new || fileStatus === 2;
     const showNew = !!newItems;
@@ -577,7 +581,7 @@ class FilesRowContent extends React.PureComponent {
           isMobile={isMobile}
           sideColor={sideColor}
           isFile={fileExst || contentLength}
-          onClick={this.onMobileRowClick}
+          //onClick={this.onMobileRowClick}
         >
           <Link
             containerWidth="55%"

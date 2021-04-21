@@ -103,6 +103,11 @@ export const ShareAccessRights = Object.freeze({
   CustomFilter: 8,
 });
 
+export const ConflictResolveType = Object.freeze({
+  Skip: 0,
+  Overwrite: 1,
+  Duplicate: 2,
+});
 export const providersData = Object.freeze({
   Google: {
     label: "SignInWithGoogle",
@@ -121,9 +126,7 @@ export const providersData = Object.freeze({
     label: "SignInWithLinkedIn",
     icon: "/static/images/share.linkedin.react.svg",
   },
-});
-
-export const i18nBaseSettings = {
+});export const i18nBaseSettings = {
   lng: localStorage.getItem(LANGUAGE) || "en",
   supportedLngs: ["en", "ru"],
   fallbackLng: "en",

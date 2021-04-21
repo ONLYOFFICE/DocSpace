@@ -538,9 +538,11 @@ namespace ASC.Api.Settings
                     .Select(r =>
                     {
                         var names = CustomNamingPeople.GetPeopleNames(r.Key);
-                        var schemaItem = new SchemaItemModel
+
+                        return new SchemaModel
                         {
                             Id = names.Id,
+                            Name = names.SchemaName,
                             UserCaption = names.UserCaption,
                             UsersCaption = names.UsersCaption,
                             GroupCaption = names.GroupCaption,
@@ -551,24 +553,83 @@ namespace ASC.Api.Settings
                             GuestCaption = names.GuestCaption,
                             GuestsCaption = names.GuestsCaption,
                         };
-
-                        return new SchemaModel
-                        {
-                            Id = r.Key,
-                            Name = r.Value,
-                            Items = schemaItem
-                        };
                     })
                     .ToList();
         }
 
+        [Create("customschemas")]
+        public SchemaModel SaveNamingSettings(SchemaModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            CustomNamingPeople.SetPeopleNames(model.Id);
+
+            TenantManager.SaveTenant(TenantManager.GetCurrentTenant());
+
+            MessageService.Send(MessageAction.TeamTemplateChanged);
+
+            return PeopleSchema(model.Id);
+        }
+
+        [Update("customschemas")]
+        public SchemaModel SaveCustomNamingSettings(SchemaModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            var usrCaption =  (model.UserCaption ?? "").Trim();
+            var usrsCaption = (model.UsersCaption ?? "").Trim();
+            var grpCaption =  (model.GroupCaption ?? "").Trim();
+            var grpsCaption = (model.GroupsCaption ?? "").Trim();
+            var usrStatusCaption = (model.UserPostCaption ?? "").Trim();
+            var regDateCaption = (model.RegDateCaption ?? "").Trim();
+            var grpHeadCaption = (model.GroupHeadCaption ?? "").Trim();
+            var guestCaption = (model.GuestCaption ?? "").Trim();
+            var guestsCaption = (model.GuestsCaption ?? "").Trim();
+
+            if (string.IsNullOrEmpty(usrCaption)
+             || string.IsNullOrEmpty(usrsCaption)
+             || string.IsNullOrEmpty(grpCaption)
+             || string.IsNullOrEmpty(grpsCaption)
+             || string.IsNullOrEmpty(usrStatusCaption)
+             || string.IsNullOrEmpty(regDateCaption)
+             || string.IsNullOrEmpty(grpHeadCaption)
+             || string.IsNullOrEmpty(guestCaption)
+             || string.IsNullOrEmpty(guestsCaption))
+            {
+                throw new Exception(Resource.ErrorEmptyFields);
+            }
+
+            var names = new PeopleNamesItem
+            {
+                Id = PeopleNamesItem.CustomID,
+                UserCaption = usrCaption.Substring(0, Math.Min(30, usrCaption.Length)),
+                UsersCaption = usrsCaption.Substring(0, Math.Min(30, usrsCaption.Length)),
+                GroupCaption = grpCaption.Substring(0, Math.Min(30, grpCaption.Length)),
+                GroupsCaption = grpsCaption.Substring(0, Math.Min(30, grpsCaption.Length)),
+                UserPostCaption = usrStatusCaption.Substring(0, Math.Min(30, usrStatusCaption.Length)),
+                RegDateCaption = regDateCaption.Substring(0, Math.Min(30, regDateCaption.Length)),
+                GroupHeadCaption = grpHeadCaption.Substring(0, Math.Min(30, grpHeadCaption.Length)),
+                GuestCaption = guestCaption.Substring(0, Math.Min(30, guestCaption.Length)),
+                GuestsCaption = guestsCaption.Substring(0, Math.Min(30, guestsCaption.Length)),
+            };
+
+            CustomNamingPeople.SetPeopleNames(names);
+
+            TenantManager.SaveTenant(TenantManager.GetCurrentTenant());
+
+            MessageService.Send(MessageAction.TeamTemplateChanged);
+
+            return PeopleSchema(PeopleNamesItem.CustomID);
+        }
+
         [Read("customschemas/{id}")]
-        public SchemaItemModel PeopleSchema(string id)
+        public SchemaModel PeopleSchema(string id)
         {
             var names = CustomNamingPeople.GetPeopleNames(id);
-            var schemaItem = new SchemaItemModel
+            var schemaItem = new SchemaModel
             {
                 Id = names.Id,
+                Name = names.SchemaName,
                 UserCaption = names.UserCaption,
                 UsersCaption = names.UsersCaption,
                 GroupCaption = names.GroupCaption,

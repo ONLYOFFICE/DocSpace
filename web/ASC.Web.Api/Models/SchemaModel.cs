@@ -4,12 +4,6 @@
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public SchemaItemModel Items { get; set; }
-    }
-
-    public class SchemaItemModel
-    {
-        public string Id { get; set; }
         public string UserCaption { get; set; }
         public string UsersCaption { get; set; }
         public string GroupCaption { get; set; }

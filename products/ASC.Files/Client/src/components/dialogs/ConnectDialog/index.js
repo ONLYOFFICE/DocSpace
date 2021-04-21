@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import toastr from "@appserver/components/toast";
+import toastr from "studio/toastr";
 import Button from "@appserver/components/button";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Checkbox from "@appserver/components/checkbox";
@@ -155,6 +155,7 @@ const PureConnectDialogContainer = (props) => {
       })
       .catch((err) => {
         toastr.error(err);
+        onClose();
         setIsLoading(false);
       });
   }, [
