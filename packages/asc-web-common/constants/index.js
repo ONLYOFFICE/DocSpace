@@ -126,7 +126,8 @@ export const providersData = Object.freeze({
     label: "SignInWithLinkedIn",
     icon: "/static/images/share.linkedin.react.svg",
   },
-});export const i18nBaseSettings = {
+});
+export const i18nBaseSettings = {
   lng: localStorage.getItem(LANGUAGE) || "en",
   supportedLngs: ["en", "ru"],
   fallbackLng: "en",
