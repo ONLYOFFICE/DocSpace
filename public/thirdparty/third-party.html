@@ -10,53 +10,39 @@
     <title>Third party</title>
 
     <style type="text/css">
-      body {
+      #third-party-body {
+        cursor: default;
         height: 100%;
-        margin: 0;
-        padding: 0;
         width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        padding: 36px 36px 0 36px;
+        border: 0;
+        box-sizing: border-box;
         font-family: "Open Sans", sans-serif;
-        font-size: 13px;
-        -webkit-font-smoothing: antialiased;
       }
 
-      .offline-container {
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: repeat(3, max-content);
-        justify-items: center;
+      #container {
+        position: relative;
+        margin: 12px 0 60px 0;
       }
 
-      .offline-img-container {
-        padding-top: 20px;
+      .text {
+        font-size: 18px;
+        line-height: 22px;
+        text-align: center;
+        margin: auto;
+        max-width: 560px;
+        padding: 0;
       }
 
-      .offline-img {
-        width: 150px;
-        height: 106px;
-      }
-
-      .offline-disclaimer {
-        padding-top: 25px;
-      }
-
-      .offline-title {
-        font-weight: 700;
-        font-size: 19px;
-        line-height: 24px;
-      }
-
-      .offline-reload {
-        padding-top: 40px;
-      }
-
-      .offline-reload-button {
-        background: #2da7db;
-        border-radius: 3px;
-        padding: 8px 16px;
-        color: white;
-        font-weight: 600;
-        text-decoration: none;
+      img {
+        display: block;
+        width: 100%;
       }
     </style>
     <script>
@@ -76,14 +62,24 @@
         return object;
       }
 
+      function renderError(error) {
+        var container = document.getElementById("container");
+        container.innerHTML = `<img src="/static/images/clouds.png" /><p class="text">${error}</p>`;
+      }
+
       const urlParams = getObjectByLocation(window.location);
       const code = urlParams ? urlParams.code || null : null;
       const error = urlParams ? urlParams.error || null : null;
-
-      if (code) {
-        localStorage.setItem("code", code);
-      }
     </script>
   </head>
-  <body></body>
+  <body id="third-party-body">
+    <div id="container"></div>
+  </body>
+  <script>
+    if (code) {
+      localStorage.setItem("code", code);
+    } else if (error) {
+      renderError(error);
+    }
+  </script>
 </html>
