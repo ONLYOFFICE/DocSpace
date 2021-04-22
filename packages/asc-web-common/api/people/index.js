@@ -197,7 +197,7 @@ export function updateUserType(type, userIds) {
   });
 }
 
-export function linkThirdPartyAccount(serializedProfile) {
+export function linkOAuth(serializedProfile) {
   return request({
     method: "put",
     url: "people/thirdparty/linkaccount.json",
@@ -205,7 +205,7 @@ export function linkThirdPartyAccount(serializedProfile) {
   });
 }
 
-export function signupThirdParty(signupAccount) {
+export function signupOAuth(signupAccount) {
   return request({
     method: "post",
     url: "people/thirdparty/signup.json",
@@ -213,7 +213,7 @@ export function signupThirdParty(signupAccount) {
   });
 }
 
-export function unlinkThirdPartyAccount(provider) {
+export function unlinkOAuth(provider) {
   return request({
     method: "delete",
     url: `people/thirdparty/unlinkaccount.json?provider=${provider}`,

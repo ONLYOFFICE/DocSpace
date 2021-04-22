@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { createUser, signupThirdParty } from "@appserver/common/api/people";
+import { createUser, signupOAuth } from "@appserver/common/api/people";
 import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
@@ -238,7 +238,7 @@ class Confirm extends React.PureComponent {
       SerializedProfile: Serialized,
     };
 
-    signupThirdParty(signupAccount)
+    signupOAuth(signupAccount)
       .then(() => {
         window.location.replace(defaultPage);
       })

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import PageLayout from "@appserver/common/components/PageLayout";
 import Loaders from "@appserver/common/components/Loaders";
 import toastr from "studio/toastr";
-import { linkThirdPartyAccount } from "@appserver/common/api/people";
+import { linkOAuth } from "@appserver/common/api/people";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import {
   ArticleHeaderContent,
@@ -71,7 +71,7 @@ class ProfileAction extends React.Component {
 
   loginCallback = (profile) => {
     const { setProviders, t } = this.props;
-    linkThirdPartyAccount(profile.Serialized).then((resp) => {
+    linkOAuth(profile.Serialized).then((resp) => {
       getAuthProviders().then((providers) => {
         setProviders(providers);
         toastr.success(t("ProviderSuccessfullyConnected"));

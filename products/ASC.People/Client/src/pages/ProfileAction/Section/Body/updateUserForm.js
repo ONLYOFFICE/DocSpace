@@ -31,7 +31,7 @@ import {
   createThumbnailsAvatar,
   loadAvatar,
   deleteAvatar,
-  unlinkThirdPartyAccount,
+  unlinkOAuth,
 } from "@appserver/common/api/people";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import toastr from "studio/toastr";
@@ -558,7 +558,7 @@ class UpdateUserForm extends React.Component {
 
   unlinkAccount = (providerName) => {
     const { setProviders, t } = this.props;
-    unlinkThirdPartyAccount(providerName).then(() => {
+    unlinkOAuth(providerName).then(() => {
       getAuthProviders().then((providers) => {
         setProviders(providers);
         toastr.success(t("ProviderSuccessfullyDisconnected"));
