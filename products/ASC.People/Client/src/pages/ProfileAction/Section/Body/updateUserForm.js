@@ -6,8 +6,6 @@ import Button from "@appserver/components/button";
 import Textarea from "@appserver/components/textarea";
 import Text from "@appserver/components/text";
 import AvatarEditor from "@appserver/components/avatar-editor";
-import SocialButton from "@appserver/components/social-button";
-import FacebookButton from "@appserver/components/facebook-button";
 import Link from "@appserver/components/link";
 import { isTablet } from "@appserver/components/utils/device";
 
@@ -31,9 +29,7 @@ import {
   createThumbnailsAvatar,
   loadAvatar,
   deleteAvatar,
-  unlinkOAuth,
 } from "@appserver/common/api/people";
-import { getAuthProviders } from "@appserver/common/api/settings";
 import toastr from "studio/toastr";
 import {
   ChangeEmailDialog,
@@ -53,7 +49,7 @@ import {
 } from "../../../../helpers/people-helpers";
 import config from "../../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
-import { AppServerConfig, providersData } from "@appserver/common/constants";
+import { AppServerConfig } from "@appserver/common/constants";
 
 const dialogsDataset = {
   changeEmail: "changeEmail",
@@ -72,13 +68,6 @@ const Th = styled.th`
 `;
 
 const Td = styled.td``;
-
-const StyledWrapper = styled.div`
-  align-items: center;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-gap: 16px 22px;
-`;
 
 class UpdateUserForm extends React.Component {
   constructor(props) {
@@ -113,18 +102,6 @@ class UpdateUserForm extends React.Component {
     this.onRemoveGroup = this.onRemoveGroup.bind(this);
 
     this.mainFieldsContainerRef = React.createRef();
-  }
-
-  async componentDidMount() {
-    const { setProviders, isSelf } = this.props;
-    if (!isSelf) return;
-    try {
-      await getAuthProviders().then((providers) => {
-        setProviders(providers);
-      });
-    } catch (e) {
-      console.error(e);
-    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -556,103 +533,6 @@ class UpdateUserForm extends React.Component {
     this.setIsEdit();
   }
 
-  unlinkAccount = (providerName) => {
-    const { setProviders, t } = this.props;
-    unlinkOAuth(providerName).then(() => {
-      getAuthProviders().then((providers) => {
-        setProviders(providers);
-        toastr.success(t("ProviderSuccessfullyDisconnected"));
-      });
-    });
-  };
-
-  linkAccount = (providerName, link, e) => {
-    const { getOAuthToken, getLoginLink } = this.props;
-    e.preventDefault();
-
-    try {
-      const tokenGetterWin = window.open(
-        link,
-        "login",
-        "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
-      );
-
-      getOAuthToken(tokenGetterWin).then((code) => {
-        const token = window.btoa(
-          JSON.stringify({
-            auth: providerName,
-            mode: "popup",
-            callback: "loginCallback",
-          })
-        );
-
-        tokenGetterWin.location.href = getLoginLink(token, code);
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  providerButtons = () => {
-    const { t, providers } = this.props;
-
-    const providerButtons =
-      providers &&
-      providers.map((item) => {
-        const { icon, label, iconOptions } = providersData[item.provider];
-
-        if (!icon || !label) return <></>;
-        return (
-          <React.Fragment key={`${item.provider}ProviderItem`}>
-            <div>
-              {item.provider === "Facebook" ? (
-                <FacebookButton
-                  noHover={true}
-                  iconName={icon}
-                  label={t(label)}
-                  className="socialButton"
-                  $iconOptions={iconOptions}
-                />
-              ) : (
-                <SocialButton
-                  noHover={true}
-                  iconName={icon}
-                  label={t(label)}
-                  className="socialButton"
-                  $iconOptions={iconOptions}
-                />
-              )}
-            </div>
-            {item.linked ? (
-              <div>
-                <Link
-                  type="action"
-                  color="A3A9AE"
-                  onClick={(e) => this.unlinkAccount(item.provider, e)}
-                  isHovered={true}
-                >
-                  {t("Disconnect")}
-                </Link>
-              </div>
-            ) : (
-              <div>
-                <Link
-                  type="action"
-                  color="A3A9AE"
-                  onClick={(e) => this.linkAccount(item.provider, item.url, e)}
-                  isHovered={true}
-                >
-                  {t("Connect")}
-                </Link>
-              </div>
-            )}
-          </React.Fragment>
-        );
-      });
-
-    return providerButtons;
-  };
-
   render() {
     const {
       isLoading,
@@ -668,8 +548,6 @@ class UpdateUserForm extends React.Component {
       //avatarMax,
       disableProfileType,
       isAdmin,
-      providers,
-      isSelf,
     } = this.props;
     const {
       guestCaption,
@@ -948,11 +826,6 @@ class UpdateUserForm extends React.Component {
             />
           </MainFieldsContainer>
         </MainContainer>
-        {providers && providers.length > 0 && isSelf && (
-          <InfoFieldContainer headerText={t("LoginSettings")}>
-            <StyledWrapper>{this.providerButtons()}</StyledWrapper>
-          </InfoFieldContainer>
-        )}
         <InfoFieldContainer headerText={t("Comments")}>
           <Textarea
             placeholder={t("WriteComment")}
@@ -1036,8 +909,6 @@ class UpdateUserForm extends React.Component {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
-    getOAuthToken: auth.settingsStore.getOAuthToken,
-    getLoginLink: auth.settingsStore.getLoginLink,
     customNames: auth.settingsStore.customNames,
     isAdmin: auth.isAdmin,
     groups: peopleStore.groupsStore.groups,
@@ -1053,8 +924,6 @@ export default withRouter(
     avatarMax: peopleStore.avatarEditorStore.avatarMax,
     setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
-    setProviders: peopleStore.usersStore.setProviders,
-    providers: peopleStore.usersStore.providers,
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,

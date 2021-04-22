@@ -49,8 +49,6 @@ class ProfileAction extends React.Component {
         this.documentElement[i].style.transition = "none";
       }
     }
-
-    window.loginCallback = this.loginCallback;
   }
 
   componentDidUpdate(prevProps) {
@@ -68,16 +66,6 @@ class ProfileAction extends React.Component {
       }
     }
   }
-
-  loginCallback = (profile) => {
-    const { setProviders, t } = this.props;
-    linkOAuth(profile.Serialized).then((resp) => {
-      getAuthProviders().then((providers) => {
-        setProviders(providers);
-        toastr.success(t("ProviderSuccessfullyConnected"));
-      });
-    });
-  };
 
   render() {
     console.log("ProfileAction render");
