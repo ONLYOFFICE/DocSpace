@@ -107,10 +107,11 @@ const ThirdPartyDialog = (props) => {
         getOAuthToken(modal).then((token) => {
           authModal.close();
           showOAuthModal(token, item);
-          setConnectItem(item);
-          setConnectDialogVisible(true);
         })
       );
+    } else {
+      setConnectItem(item);
+      setConnectDialogVisible(true);
     }
 
     setThirdPartyDialogVisible(false);
