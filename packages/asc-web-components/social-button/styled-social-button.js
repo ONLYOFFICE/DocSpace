@@ -61,20 +61,27 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
           box-shadow: ${(props) => props.theme.socialButton.boxShadow};
           color: ${(props) => props.theme.socialButton.color};
 
-          :hover,
-          :active {
-            cursor: pointer;
-            box-shadow: ${(props) => props.theme.socialButton.hoverBoxShadow};
-          }
+          ${(props) =>
+            !props.noHover &&
+            css`
+              :hover,
+              :active {
+                cursor: pointer;
+                box-shadow: ${(props) =>
+                  props.theme.socialButton.hoverBoxShadow};
+              }
 
-          :hover {
-            background: ${(props) => props.theme.socialButton.hoverBackground};
-          }
+              :hover {
+                background: ${(props) =>
+                  props.theme.socialButton.hoverBackground};
+              }
 
-          :active {
-            background: ${(props) => props.theme.socialButton.activeBackground};
-            border: none;
-          }
+              :active {
+                background: ${(props) =>
+                  props.theme.socialButton.activeBackground};
+                border: none;
+              }
+            `}
         `
       : css`
           box-shadow: none;

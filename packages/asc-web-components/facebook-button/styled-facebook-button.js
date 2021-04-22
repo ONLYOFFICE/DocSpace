@@ -27,7 +27,7 @@ const StyledFacebookButton = styled(ButtonWrapper).attrs((props) => ({
   border: 1px solid #1877f2;
   border-radius: 3px;
   width: 100%;
-  cursor: pointer;
+  ${(props) => !props.noHover && "cursor: pointer;"}
   padding: 0;
   outline: none;
 

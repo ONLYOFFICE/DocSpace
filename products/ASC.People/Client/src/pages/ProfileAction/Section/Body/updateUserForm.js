@@ -607,6 +607,7 @@ class UpdateUserForm extends React.Component {
             <div>
               {item.provider === "Facebook" ? (
                 <FacebookButton
+                  noHover={true}
                   iconName={icon}
                   label={t(label)}
                   className="socialButton"
@@ -614,6 +615,7 @@ class UpdateUserForm extends React.Component {
                 />
               ) : (
                 <SocialButton
+                  noHover={true}
                   iconName={icon}
                   label={t(label)}
                   className="socialButton"
