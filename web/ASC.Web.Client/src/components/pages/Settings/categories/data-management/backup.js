@@ -50,8 +50,6 @@ const StyledArrowRightIcon = styled(ArrowRightIcon)`
 const Backup = ({ history }) => {
   const onClickLink = (e) => {
     e.preventDefault();
-
-    console.log("history", history);
     history.push(e.target.pathname);
   };
 
@@ -97,7 +95,17 @@ const Backup = ({ history }) => {
           {t("ManualBackupSettingsDescription")}
         </Text>
         <Text className="category-item-description">
-          {t("ManualBackupSettingsWarningDescription")}
+          {t("ManualBackupSettingsNoteDescription")}
+        </Text>
+      </div>
+
+      <div className="category-item-wrapper">
+        <div className="category-item-heading">
+          <Text className="inherit-title-link">{t("DataRestore")}</Text>
+          <StyledArrowRightIcon size="small" color="#333333" />
+        </div>
+        <Text className="category-item-description">
+          {t("DataRestoreSettingsDescription")}
         </Text>
       </div>
     </StyledComponent>
