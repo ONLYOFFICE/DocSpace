@@ -29,6 +29,12 @@ export const settingsTree = [
             link: "custom-titles",
             tKey: "CustomTitles",
           },
+          {
+            key: "0-0-2",
+            icon: "",
+            link: "team-template",
+            tKey: "TeamTemplate",
+          },
         ],
       },
       // {

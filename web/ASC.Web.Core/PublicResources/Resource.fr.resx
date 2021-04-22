@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Le champ du code de validation ne peut pas être vide</value>
@@ -107,7 +107,7 @@
     <value>Activez cette application pour raccourcir des liens d'invitations et de documents. {0}Insérez votre identifiant Bitly et votre clé API ci-dessous :</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
-    <value>clé de Box</value>
+    <value>Box</value>
   </data>
   <data name="ConsumersboxClientId" xml:space="preserve">
     <value>ID de Box</value>
@@ -233,7 +233,7 @@
     <value>Si vous vous connectez à Firebase Cloud Messaging, vous serez en mesure de recevoir des notifications sur les messages qui vous sont envoyés même lorsque vous n'êtes pas connecté.</value>
   </data>
   <data name="ConsumersGoogle" xml:space="preserve">
-    <value>Clé de Google</value>
+    <value>Google</value>
   </data>
   <data name="ConsumersgoogleClientId" xml:space="preserve">
     <value>ID de Google</value>
@@ -269,7 +269,7 @@
     <value>Activez cette application pour connecter votre compte Google Drive au module Documents. Vous serez en mesure de gérer, éditer et partager les fichiers stockés sur Google Drive avec les utilisateurs d'ONLYOFFICE. {0}Passez à la console Google APIs et créez un nouveau projet d'intégration avec ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
   </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
-    <value>Clé de LinkedIn</value>
+    <value>LinkedIn</value>
   </data>
   <data name="ConsumersLinkedInDescription" xml:space="preserve">
     <value>Se connecter à l'application pour accéder au portail en utilisant le compte LinkedIn.</value>
@@ -383,10 +383,10 @@
     <value>OneDrive</value>
   </data>
   <data name="Consumersskydriveappkey" xml:space="preserve">
-    <value>ID de OneDrive</value>
+    <value>Identifiant de l'application</value>
   </data>
   <data name="Consumersskydriveappsecret" xml:space="preserve">
-    <value>Clé de OneDrive</value>
+    <value>Clé secrète du client</value>
   </data>
   <data name="ConsumersSkyDriveDescription" xml:space="preserve">
     <value>Connecter l'application pour gérer les fichiers et dossiers OneDrive.</value>
@@ -437,7 +437,7 @@
     <value>Numéro de téléphone de Twilio (requis pour l'autorisation SMS)</value>
   </data>
   <data name="ConsumersTwitter" xml:space="preserve">
-    <value>Clé de Twitter</value>
+    <value>Twitter</value>
   </data>
   <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
     <value>Jeton d'accès</value>
@@ -535,14 +535,14 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Personnel</value>
   </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Identifiant de l'instance n'est pas valide.</value>
+  </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Adresse e-mail incorrecte</value>
   </data>
   <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
     <value>Le code promo est incorrect </value>
-  </data>
-  <data name="EmailAndPasswordSaved" xml:space="preserve">
-    <value>Ces paramètres ont été bien enregistrés</value>
   </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Pas d'autorisation pour effectuer cette action</value>
@@ -567,6 +567,9 @@
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
     <value>L'adresse email actuelle et la nouvelle adresse sont les mêmes</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Veuillez remplir tous les champs</value>
   </data>
   <data name="ErrorEmptyMessage" xml:space="preserve">
     <value>Texte du message est vide</value>
@@ -646,7 +649,7 @@
     <value>La licence n'est pas correcte</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>La licence a expiré</value>
+    <value>La licence  n'est pas valide pour cette version du portail</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Le nombre de portails a dépassé la limite autorisée par la licence</value>
@@ -669,9 +672,6 @@
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>Si l'utilisateur avec le mail {0} existe, les consignes du changement de mot de passe ont été envoyées à votre adresse mail.</value>
   </data>
-  <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
-    <value>Les instructions de changement de mot de passe ont été envoyées à {0}</value>
-  </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
     <value>Pour changer le numéro; vous avez besoin de supprimer le numéro de téléphone actuel.</value>
   </data>
@@ -683,9 +683,6 @@
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Accès au portail</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>Le profil a été supprimé</value>
   </data>
   <data name="ReassignDataRemoveUserError" xml:space="preserve">
     <value>Le processus de réaffectation des données pour {0} n'est pas terminé.</value>
@@ -740,9 +737,6 @@
   </data>
   <data name="TfaTooMuchError" xml:space="preserve">
     <value>Vous avez envoyé trop de messages texte. Veuillez réessayer plus tard.</value>
-  </data>
-  <data name="Trial" xml:space="preserve">
-    <value>Essai</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>Région US West (Oregon)</value>

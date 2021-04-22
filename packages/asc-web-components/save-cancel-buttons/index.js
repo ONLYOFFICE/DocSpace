@@ -57,6 +57,7 @@ class SaveCancelButtons extends React.Component {
             label={saveButtonLabel}
           />
           <Button
+            className="cancel-button"
             size="big"
             isDisabled={false}
             onClick={onCancelClick}

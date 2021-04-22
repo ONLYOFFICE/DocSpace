@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Поле кода подтверждения не может быть пустым</value>
@@ -98,7 +98,7 @@
     <value>apiKey</value>
   </data>
   <data name="ConsumersBitlyDescription" xml:space="preserve">
-    <value>Подключить сервис Bitly для сокращения пригласительных ссылок на портал и ссылок для доступа к файлам в модуле 'Документы'.</value>
+    <value>Подключите это приложение для сокращения пригласительных ссылок на портал и ссылок для доступа к файлам в модуле 'Документы' с помощью сервиса Bitly.</value>
   </data>
   <data name="ConsumersBitlyInstruction" xml:space="preserve">
     <value>Добавив сервис Bitly, Вы будуте получать сокращенные ссылки для приглашения новых пользователей на портал ONLYOFFICE™ и сокращенные ссылки для документов в модуле 'Документы', к которым был предоставлен доступ для внешних пользователей.</value>
@@ -107,7 +107,7 @@
     <value>Подключите это приложение, чтобы сокращать пригласительные ссылки и ссылки на документы. {0}Вставьте ваш логин Bitly и ключ API ниже:</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
-    <value>Ключ Box</value>
+    <value>Box</value>
   </data>
   <data name="ConsumersboxClientId" xml:space="preserve">
     <value>Box ID</value>
@@ -116,7 +116,7 @@
     <value>Ключ Box</value>
   </data>
   <data name="ConsumersBoxDescription" xml:space="preserve">
-    <value>Подключить приложение для управления файлами и папками Box.</value>
+    <value>Подключите приложение для управления файлами и папками Box.</value>
   </data>
   <data name="ConsumersBoxInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса Box, Вы сможете подключить свой аккаунт Box в модуле 'Документы'. Это позволит загружать и создавать новые файлы в Box, редактировать существующие, копировать и удалять их, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™.</value>
@@ -131,7 +131,7 @@
     <value>apiKey</value>
   </data>
   <data name="ConsumersClickatellDescription" xml:space="preserve">
-    <value>Подключить приложение для включения двухфакторной аутентификации через Clickatell.</value>
+    <value>Подключите приложение для включения двухфакторной аутентификации через Clickatell.</value>
   </data>
   <data name="ConsumersClickatellInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса Clickatell, Вы сможете включить двухфакторную аутентификацию для получения SMS с кодом входа пользователя на портал ONLYOFFICE.</value>
@@ -149,7 +149,7 @@
     <value>Секретный ключ DocuSign</value>
   </data>
   <data name="ConsumersDocuSignDescription" xml:space="preserve">
-    <value>Подключить приложение для добавления к документам электронной подписи DocuSign.</value>
+    <value>Подключите приложение, чтобы подписывать документы цифровой подписью с помощью сервиса DocuSign.</value>
   </data>
   <data name="ConsumersdocuSignHost" xml:space="preserve">
     <value>Конечная точка авторизации DocuSign</value>
@@ -164,7 +164,7 @@
     <value>Dropbox</value>
   </data>
   <data name="ConsumersDropBoxDescription" xml:space="preserve">
-    <value>Подключить приложение для управления файлами и папками Dropbox.</value>
+    <value>Подключите приложение для управления файлами и папками Dropbox.</value>
   </data>
   <data name="ConsumersDropBoxInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса Dropbox, Вы сможете подключить свой аккаунт Dropbox в модуле 'Документы'. Это позволит загружать и создавать новые файлы в Dropbox, редактировать существующие, копировать и удалять их, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™.</value>
@@ -185,7 +185,7 @@
     <value>Ключ приложения</value>
   </data>
   <data name="ConsumersEasyBibDescription" xml:space="preserve">
-    <value>Подключить приложение EasyBib для создания библиографических списков.</value>
+    <value>Подключите это приложение для создания библиографических списков в документах с помощью сервиса EasyBib.</value>
   </data>
   <data name="ConsumersEasyBibInstruction" xml:space="preserve">
     <value>Добавив приложение EasyBib, вы сможете легко создавать библиографические списки в документах.</value>
@@ -203,7 +203,7 @@
     <value>Ключ Facebook</value>
   </data>
   <data name="ConsumersFacebookDescription" xml:space="preserve">
-    <value>Подключить приложение для входа на портал по учетной записи Facebook и поиска контактов.</value>
+    <value>Подключите приложение для входа на портал по учетной записи Facebook и поиска контактов.</value>
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса Facebook, Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ с помощью аккаунта Facebook. Также Вы сможете на странице редактирования персоны или компании CRM находить и привязывать аккаунт Facebook.</value>
@@ -227,13 +227,13 @@
     <value>Идентификатор проекта</value>
   </data>
   <data name="ConsumersFirebaseDescription" xml:space="preserve">
-    <value>Подключить сервис Firebase Cloud Messaging для получения оповещений об отправленных вам сообщениях.</value>
+    <value>Подключите это приложение для получения оповещений об отправленных вам сообщениях с помощью сервиса Firebase Cloud Messaging.</value>
   </data>
   <data name="ConsumersFirebaseInstruction" xml:space="preserve">
     <value>Подключив сервис Firebase Cloud Messaging, вы сможете получать оповещения об отправленных вам сообщениях, даже если вы не в сети.</value>
   </data>
   <data name="ConsumersGoogle" xml:space="preserve">
-    <value>Ключ Google</value>
+    <value>Google</value>
   </data>
   <data name="ConsumersgoogleClientId" xml:space="preserve">
     <value>Google ID</value>
@@ -260,7 +260,7 @@
     <value>json-файл GoogleCloud</value>
   </data>
   <data name="ConsumersGoogleDescription" xml:space="preserve">
-    <value>Подключить проект для входа на портал по учетной записи Google и для управления файлами и папками Google Drive.</value>
+    <value>Подключите проект для входа на портал по учетной записи Google и для управления файлами и папками Google Drive.</value>
   </data>
   <data name="ConsumersGoogleInstruction" xml:space="preserve">
     <value>Добавив проект сервиса Google, Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ с помощью аккаунта Google и подключить свой аккаунт Google Drive в модуле 'Документы'. Это позволит загружать и создавать новые файлы в Google Drive, редактировать существующие, копировать и удалять их, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™.</value>
@@ -269,10 +269,10 @@
     <value>Подключите это приложение, чтобы подключить свой аккаунт Google Drive к модулю "Документы". Вы сможете управлять документами из Google Drive, редактировать их и предоставлять к ним доступ для пользователей ONLYOFFICE. {0}Перейдите в консоль API Google и создайте новый проект для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
-    <value>Ключ Linkedin</value>
+    <value>LinkedIn</value>
   </data>
   <data name="ConsumersLinkedInDescription" xml:space="preserve">
-    <value>Подключить приложение для входа на портал по учетной записи LinkedIn.</value>
+    <value>Подключите приложение для входа на портал по учетной записи LinkedIn.</value>
   </data>
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса LinkedIn, Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ с помощью аккаунта LinkedIn.</value>
@@ -383,13 +383,13 @@
     <value>OneDrive</value>
   </data>
   <data name="Consumersskydriveappkey" xml:space="preserve">
-    <value>OneDrive ID</value>
+    <value>ID приложения</value>
   </data>
   <data name="Consumersskydriveappsecret" xml:space="preserve">
-    <value>Ключ OneDrive</value>
+    <value>Секрет клиента</value>
   </data>
   <data name="ConsumersSkyDriveDescription" xml:space="preserve">
-    <value>Подключить приложение для управления файлами и папками OneDrive.</value>
+    <value>Подключите приложение для управления файлами и папками OneDrive.</value>
   </data>
   <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса OneDrive, Вы сможете подключить свой аккаунт OneDrive в модуле 'Документы'. Это позволит загружать и создавать новые файлы в OneDrive, редактировать существующие, копировать и удалять их, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™.</value>
@@ -401,7 +401,7 @@
     <value>SMS-центр</value>
   </data>
   <data name="ConsumersSmscDescription" xml:space="preserve">
-    <value>Подключить приложение для включения двухфакторной аутентификации через SMS-центр.</value>
+    <value>Подключите приложение для включения двухфакторной аутентификации через SMS-центр.</value>
   </data>
   <data name="ConsumersSmscInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса SMS-центр, Вы сможете включить двухфакторную аутентификацию для получения SMS с кодом входа пользователя на портал ONLYOFFICE. SMS-центр удобно использовать как SMS-провайдер для стран СНГ.</value>
@@ -425,7 +425,7 @@
     <value>Auth Token</value>
   </data>
   <data name="ConsumersTwilioDescription" xml:space="preserve">
-    <value>Добавить Twilio, чтобы можно было звонить контактам CRM прямо из браузера.</value>
+    <value>Подключите это приложение, чтобы звонить контактам CRM с помощью сервиса Twilio.</value>
   </data>
   <data name="ConsumersTwilioInstruction" xml:space="preserve">
     <value>После добавления Twilio вы сможете звонить любому контакту CRM прямо из браузера.</value>
@@ -437,7 +437,7 @@
     <value>Номер телефона из Twilio (требуется для SMS-авторизации)</value>
   </data>
   <data name="ConsumersTwitter" xml:space="preserve">
-    <value>Ключ Twitter</value>
+    <value>Twitter</value>
   </data>
   <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
     <value>Токен доступа</value>
@@ -446,7 +446,7 @@
     <value>Секретный токен доступа</value>
   </data>
   <data name="ConsumersTwitterDescription" xml:space="preserve">
-    <value>Подключить приложение для входа на портал по учетной записи Twitter и поиска контактов.</value>
+    <value>Подключите приложение для входа на портал по учетной записи Twitter и поиска контактов.</value>
   </data>
   <data name="ConsumersTwitterInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса Twitter, Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ с помощью аккаунта Twitter. Также Вы сможете на странице персоны или компании CRM привязывать аккаунт и читать новости Twitter.</value>
@@ -482,7 +482,7 @@
     <value>WordPress</value>
   </data>
   <data name="ConsumersWordpressDescription" xml:space="preserve">
-    <value>Подключить приложение для публикации документов в WordPress.</value>
+    <value>Подключите приложение для публикации документов прямо в WordPress.</value>
   </data>
   <data name="ConsumersWordpressInstruction" xml:space="preserve">
     <value>Добавив приложение WordPress Вы сможете легко, сохраняя форматирование, публиковать документы на своем сайте WordPress.</value>
@@ -503,7 +503,7 @@
     <value>Client Secret</value>
   </data>
   <data name="ConsumersYahooDescription" xml:space="preserve">
-    <value>Подключить приложение для импорта контактов Yahoo.</value>
+    <value>Подключите приложение для импорта контактов Yahoo.</value>
   </data>
   <data name="ConsumersYahooInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса Yahoo, Вы сможете добавлять новых пользователей на портал ONLYOFFICE из списка контактов.</value>
@@ -535,14 +535,14 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Пользовательский</value>
   </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Неправильный ID экземпляра.</value>
+  </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Некорректный адрес электронной почты</value>
   </data>
   <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
     <value>Неверный промо-код</value>
-  </data>
-  <data name="EmailAndPasswordSaved" xml:space="preserve">
-    <value>Эти параметры были успешно сохранены</value>
   </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Недостаточно прав для выполнения данной операции</value>
@@ -567,6 +567,9 @@
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
     <value>Текущий адрес электронной почты совпадает с новым адресом</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Пожалуйста, заполните все поля</value>
   </data>
   <data name="ErrorEmptyMessage" xml:space="preserve">
     <value>Отсутствует текст сообщения</value>
@@ -644,7 +647,7 @@
     <value>Некорректная лицензия</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Истек срок действия лицензии</value>
+    <value>Лицензия недействительна для этой версии портала.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Превышено количество порталов, разрешенных по лицензии</value>
@@ -667,9 +670,6 @@
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>Если пользователь с почтой {0} существует, то на этот адрес была отправлена инструкция по смене пароля.</value>
   </data>
-  <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
-    <value>Инструкции по изменению пароля были высланы на email {0}</value>
-  </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
     <value>Для смены номера телефона необходимо удалить текущий номер</value>
   </data>
@@ -681,9 +681,6 @@
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Доступ к порталу</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>Профиль удален</value>
   </data>
   <data name="ReassignDataRemoveUserError" xml:space="preserve">
     <value>Процесс передачи данных для {0} не завершен.</value>
@@ -738,9 +735,6 @@
   </data>
   <data name="TfaTooMuchError" xml:space="preserve">
     <value>Вы отправили слишком много текстовых сообщений. Повторите попытку позже.</value>
-  </data>
-  <data name="Trial" xml:space="preserve">
-    <value>Триал</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>Запад США (Орегон)</value>
