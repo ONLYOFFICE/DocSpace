@@ -26,7 +26,7 @@ import CrossIcon from "../../../../../../../../../../public/images/cross.react.s
 import { TIMEOUT } from "../../../../../../helpers/constants";
 import { getTitleWithoutExst } from "../../../../../../helpers/files-helpers";
 import { ConvertDialog } from "../../../../../dialogs";
-import EditingWrapperComponent from "../EditingWrapperComponent";
+import EditingWrapperComponent from "../sub-components/EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
 import { observer, inject } from "mobx-react";
 import config from "../../../../../../../package.json";

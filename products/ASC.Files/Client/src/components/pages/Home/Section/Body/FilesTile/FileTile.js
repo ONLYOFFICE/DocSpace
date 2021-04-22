@@ -2,50 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import DragAndDrop from "@appserver/components/drag-and-drop";
-import Row from "@appserver/components/row";
-import FilesRowContent from "./FilesRowContent";
+
+import Tile from "./sub-components/Tile";
+import FilesTileContent from "./FilesTileContent";
 import { withRouter } from "react-router-dom";
 import { createSelectable } from "react-selectable-fast";
 
 import withFileActions from "../hoc/withFileActions";
 
-const StyledSimpleFilesRow = styled(Row)`
-  margin-top: -2px;
-  ${(props) =>
-    !props.contextOptions &&
-    `
-    & > div:last-child {
-        width: 0px;
-      }
-  `}
-
-  .share-button-icon {
-    margin-right: 7px;
-    margin-top: -1px;
-  }
-
-  .share-button:hover,
-  .share-button-icon:hover {
-    cursor: pointer;
-    color: #657077;
-    path {
-      fill: #657077;
-    }
-  }
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-  @media (max-width: 1312px) {
-    .share-button {
-      padding-top: 3px;
-    }
-  }
-
-  .styled-element {
-    margin-right: 7px;
-  }
-`;
-
-const SimpleFilesRow = createSelectable((props) => {
+const FilesTile = createSelectable((props) => {
   const {
     item,
     sectionWidth,
@@ -76,7 +41,7 @@ const SimpleFilesRow = createSelectable((props) => {
         dragging={dragging && isDragging}
         {...contextOptionsProps}
       >
-        <StyledSimpleFilesRow
+        <Tile
           key={item.id}
           data={item}
           element={element}
@@ -89,13 +54,11 @@ const SimpleFilesRow = createSelectable((props) => {
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
         >
-          <FilesRowContent item={item} sectionWidth={sectionWidth} />
-        </StyledSimpleFilesRow>
+          <FilesTileContent item={item} sectionWidth={sectionWidth} />
+        </Tile>
       </DragAndDrop>
     </div>
   );
 });
 
-export default withTranslation("Home")(
-  withFileActions(withRouter(SimpleFilesRow))
-);
+export default withTranslation("Home")(withFileActions(withRouter(FilesTile)));

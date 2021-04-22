@@ -10,7 +10,7 @@ import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 import { getTitleWithoutExst } from "../../../../../helpers/files-helpers";
 import { NewFilesPanel } from "../../../../panels";
-import EditingWrapperComponent from "./EditingWrapperComponent";
+import EditingWrapperComponent from "../sub-components/EditingWrapperComponent";
 import TileContent from "./TileContent";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";

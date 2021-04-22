@@ -516,6 +516,7 @@ export default function withFileActions(WrappedFileItem) {
         sectionWidth,
         checked,
         dragging,
+        isFolder,
       } = this.props;
       const {
         fileExst,
@@ -529,7 +530,7 @@ export default function withFileActions(WrappedFileItem) {
       const isEdit =
         !!actionType && actionId === id && fileExst === actionExtension;
 
-      const isDragging = !fileExst && access < 2 && !isRecycleBin;
+      const isDragging = isFolder && access < 2 && !isRecycleBin;
 
       let className = isDragging ? " droppable" : "";
       if (draggable) className += " draggable not-selectable";
@@ -651,7 +652,7 @@ export default function withFileActions(WrappedFileItem) {
 
       const isFolder = selectedItem
         ? false
-        : item.fileExst || item.contentLength
+        : item.fileExst //|| item.contentLength
         ? false
         : true;
 
