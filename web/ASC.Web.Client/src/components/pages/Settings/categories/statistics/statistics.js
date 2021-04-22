@@ -16,6 +16,7 @@ import { showLoader, hideLoader } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import ArrowRightIcon from "@appserver/studio/public/images/arrow.right.react.svg";
+import moment from "moment";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
@@ -116,12 +117,14 @@ class Statistics extends React.Component {
 
     this.state = {
       isLoading: false,
-      visitsData: this.getTestData(),
+      isPeriod: false,
+      visitsDateFrom: moment().subtract(7, "days").utc().format(),
+      visitsDateTo: moment().utc().format(),
     };
   }
 
   async componentDidMount() {
-    const { quota, visits, getQuota, getVisits } = this.props;
+    const { quota, visits, getQuota } = this.props;
 
     showLoader();
     if (isEmpty(quota, true)) {
@@ -134,10 +137,7 @@ class Statistics extends React.Component {
 
     if (isEmpty(visits, true)) {
       try {
-        await getVisits(
-          new Date("2021/01/13").toISOString(),
-          new Date().toISOString()
-        );
+        await this.getVisitsData("week");
       } catch (error) {
         toastr.error(error);
       }
@@ -146,46 +146,48 @@ class Statistics extends React.Component {
     hideLoader();
   }
 
-  /* 
-  https://dotnet.onlyoffice.com:8093/api/2.0/settings/quota
-  "response": {
-"storageSize": 10995116277760,
-"maxFileSize": 107374182400,
-"usedSize": 1596396544,
-"maxUsersCount": 10000,
-"usersCount": 1058,
-"availableSize": 10993519881216,
-"availableUsersCount": 8942,
-"storageUsage": [
-{
-"path": "files",
-"size": 1596396544
-}
-],
-"userStorageSize": 0,
-"userUsedSize": 0,
-"userAvailableSize": 0
-},
-  */
-
-  getRandData = (items) => {
-    return items.map(
-      () => Math.floor(Math.random() * (Math.floor(100) - 0)) + 0
-    );
+  getVisitsData = (period) => {
+    const { getVisits } = this.props;
+    const { visitsDateFrom, visitsDateTo } = this.state;
+    switch (period) {
+      case "week":
+        return getVisits(
+          moment().subtract(7, "days").utc().format(),
+          moment().utc().format()
+        );
+      case "month":
+        return getVisits(
+          moment().subtract(1, "months").utc().format(),
+          moment().utc().format()
+        );
+      case "threeMonth":
+        return getVisits(
+          moment().subtract(3, "months").utc().format(),
+          moment().utc().format()
+        );
+      case "period":
+        return getVisits(
+          moment(visitsDateFrom).utc().format(),
+          moment(visitsDateTo).utc().format()
+        );
+    }
   };
 
-  getTestData = (period = 7, title = "Data ") => {
-    const labels = Array.from({ length: period }, (v, i) => ++i);
+  setPeriodData = (period) => {
+    const { key } = period;
+    const { isPeriod } = this.state;
 
-    return {
-      labels: labels,
-      datasets: [
-        {
-          label: "Visits",
-          data: this.getRandData(labels),
-        },
-      ],
-    };
+    if (key === "period") {
+      this.setState({
+        isPeriod: true,
+      });
+    } else if (isPeriod) {
+      this.setState({
+        isPeriod: false,
+      });
+    }
+
+    return this.getVisitsData(key);
   };
 
   toUserValue = (value) => {
@@ -195,17 +197,10 @@ class Statistics extends React.Component {
     return Math.round(value / Math.pow(1024, i), 2) + " " + sizes[i];
   };
 
-  setPeriod = (period) => {
-    if (period.value) period = period.value;
-    this.setState({
-      visitsData: this.getTestData(period),
-    });
-  };
-
   render() {
     const { t, quota, visits } = this.props;
     const { maxUsersCount, usersCount, storageSize, usedSize } = quota;
-    const { visitsData } = this.state;
+    const { isPeriod } = this.state;
 
     const convertedData = {
       labels: visits.map((item) => item.displayDate),
@@ -217,8 +212,6 @@ class Statistics extends React.Component {
       ],
     };
 
-    console.log(convertedData);
-
     const storageSizeConverted = this.toUserValue(storageSize);
     const usedSizeConverted = this.toUserValue(usedSize);
     const storageUsedPercent = parseFloat(
@@ -229,26 +222,22 @@ class Statistics extends React.Component {
       {
         key: "week",
         title: t("VisitsWeek"),
-        value: 7,
         content: "",
       },
       {
         key: "month",
         title: t("VisitsMonth"),
-        value: 30,
         content: "",
       },
       {
         key: "threeMonth",
         title: t("VisitsThreeMonth"),
-        value: 90,
         content: "",
       },
       {
         key: "period",
         title: t("VisitsPeriod"),
         content: "",
-        isDisabled: true,
       },
     ];
 
@@ -284,7 +273,7 @@ class Statistics extends React.Component {
               total: maxUsersCount,
             })}
           </Text>
-          <TabsContainer onSelect={this.setPeriod} elements={visitTabs} />
+          <TabsContainer onSelect={this.setPeriodData} elements={visitTabs} />
           <div className="visits-datepicker-container">
             <DatePicker
               className="visits-datepicker"
@@ -293,8 +282,8 @@ class Statistics extends React.Component {
               }}
               selectedDate={new Date()}
               minDate={new Date("1970/01/01")}
-              maxDate={new Date(new Date().getFullYear() + 1 + "/01/01")}
-              isDisabled={true}
+              maxDate={moment().toDate()}
+              isDisabled={!isPeriod}
               isReadOnly={false}
               hasError={false}
               isOpen={false}
@@ -309,8 +298,8 @@ class Statistics extends React.Component {
               }}
               selectedDate={new Date()}
               minDate={new Date("1970/01/01")}
-              maxDate={new Date(new Date().getFullYear() + 1 + "/01/01")}
-              isDisabled={true}
+              maxDate={moment().toDate()}
+              isDisabled={!isPeriod}
               isReadOnly={false}
               hasError={false}
               isOpen={false}
