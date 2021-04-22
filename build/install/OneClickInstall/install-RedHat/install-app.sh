@@ -188,10 +188,8 @@ EOF
 	else 
 		bash appserver-configuration.sh
 		APPSERVER_INSTALLED="true";
+	fi
 fi
-fi
-
-
 
 echo ""
 echo "$RES_INSTALL_SUCCESS"
