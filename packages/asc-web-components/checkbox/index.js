@@ -50,6 +50,7 @@ class Checkbox extends React.Component {
     if (this.props.isIndeterminate !== prevProps.isIndeterminate) {
       this.ref.current.indeterminate = this.props.isIndeterminate;
     }
+
     if (this.props.isChecked !== prevProps.isChecked) {
       this.setState({ checked: this.props.isChecked });
     }
@@ -72,6 +73,7 @@ class Checkbox extends React.Component {
       value,
       title,
       truncate,
+      name,
     } = this.props;
 
     return (
@@ -83,6 +85,7 @@ class Checkbox extends React.Component {
         className={className}
       >
         <HiddenInput
+          name={name}
           type="checkbox"
           checked={this.state.checked}
           isDisabled={isDisabled}
