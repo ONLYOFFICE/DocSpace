@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import Loaders from "@appserver/common/components/Loaders";
 import { isMobile } from "react-device-detect";
 import { observer, inject } from "mobx-react";
 import FilesRowContainer from "./FilesRow/FilesRowContainer";
 import FilesTileContainer from "./FilesTile/FilesTileContainer";
 import EmptyContainer from "./EmptyContainer";
 
-let currentDroppable = null;
+import withLoadingCheck from "./hoc/withLoadingCheck";
 
-let loadTimeout = null;
+let currentDroppable = null;
 
 const SectionBodyContent = (props) => {
   const {
@@ -18,8 +17,6 @@ const SectionBodyContent = (props) => {
     tReady,
     fileActionId,
     viewAs,
-    firstLoad,
-    isLoading,
     isEmptyFilesList,
     folderId,
     dragging,
@@ -30,31 +27,6 @@ const SectionBodyContent = (props) => {
     isRecycleBinFolder,
     moveDragItems,
   } = props;
-
-  const [inLoad, setInLoad] = useState(false);
-
-  const cleanTimer = () => {
-    loadTimeout && clearTimeout(loadTimeout);
-    loadTimeout = null;
-  };
-
-  useEffect(() => {
-    if (isLoading) {
-      cleanTimer();
-      loadTimeout = setTimeout(() => {
-        console.log("inLoad", true);
-        setInLoad(true);
-      }, 500);
-    } else {
-      cleanTimer();
-      console.log("inLoad", false);
-      setInLoad(false);
-    }
-
-    return () => {
-      cleanTimer();
-    };
-  }, [isLoading]);
 
   useEffect(() => {
     const customScrollElm = document.querySelector(
@@ -174,11 +146,7 @@ const SectionBodyContent = (props) => {
   //console.log("Files Home SectionBodyContent render", props);
 
   return (!fileActionId && isEmptyFilesList) || null ? (
-    firstLoad || (isMobile && inLoad) ? (
-      <Loaders.Rows />
-    ) : (
-      <EmptyContainer />
-    )
+    <EmptyContainer />
   ) : viewAs === "tile" ? (
     <FilesTileContainer />
   ) : (
@@ -194,14 +162,12 @@ export default inject(
     filesActionsStore,
   }) => {
     const {
-      firstLoad,
       fileActionStore,
       filesList,
       dragging,
       setDragging,
       startDrag,
       setStartDrag,
-      isLoading,
       viewAs,
       setTooltipPosition,
     } = filesStore;
@@ -209,9 +175,7 @@ export default inject(
     return {
       dragging,
       fileActionId: fileActionStore.id,
-      firstLoad,
       viewAs,
-      isLoading,
       isEmptyFilesList: filesList.length <= 0,
       setDragging,
       startDrag,
@@ -222,4 +186,8 @@ export default inject(
       moveDragItems: filesActionsStore.moveDragItems,
     };
   }
-)(withRouter(withTranslation("Home")(observer(SectionBodyContent))));
+)(
+  withRouter(
+    withTranslation("Home")(withLoadingCheck(observer(SectionBodyContent)))
+  )
+);
