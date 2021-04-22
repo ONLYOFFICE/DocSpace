@@ -18,7 +18,6 @@ import {
 import config from "../../../../../../../package.json";
 import EditingWrapperComponent from "../sub-components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../../../../../../helpers/files-helpers";
-import { cancelIcon, okIcon } from "../sub-components/icons";
 import { ConvertDialog } from "../../../../../dialogs";
 
 export default function withContentActions(WrappedContent) {
@@ -464,8 +463,6 @@ export default function withContentActions(WrappedContent) {
       return isEdit ? (
         <EditingWrapperComponent
           itemTitle={itemTitle}
-          okIcon={okIcon}
-          cancelIcon={cancelIcon}
           itemId={id}
           isLoading={isLoading}
           renameTitle={this.renameTitle}

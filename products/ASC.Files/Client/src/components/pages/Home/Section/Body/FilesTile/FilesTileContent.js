@@ -3,12 +3,12 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import Badge from "@appserver/components/badge";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 
 import TileContent from "./TileContent";
 import withContentActions from "../hoc/withContentActions";
+import Badges from "../sub-components/Badges";
 
 const SimpleFilesTileContent = styled(TileContent)`
   .rowMainContainer {
@@ -66,14 +66,14 @@ const FilesTileContent = ({
   newItems,
   showNew,
   canWebEdit,
-  /* canConvert,*/
+  canConvert,
   isTrashFolder,
   onFilesClick,
   onShowVersionHistory,
   onBadgeClick,
   onClickLock,
   onClickFavorite,
-  /*setConvertDialogVisible*/
+  setConvertDialogVisible,
 }) => {
   const {
     contentLength,
@@ -111,42 +111,38 @@ const FilesTileContent = ({
           isTextOverflow
         >
           {titleWithoutExt}
-        </Link>
-        <>
           {fileExst ? (
-            <div className="badges">
-              <Text
-                className="badge-ext"
-                as="span"
-                color="#A3A9AE"
-                fontSize="15px"
-                fontWeight={600}
-                title={fileExst}
-                truncate={true}
-              >
-                {fileExst}
-              </Text>
-            </div>
-          ) : (
-            <div className="badges">
-              {!!showNew && (
-                <Badge
-                  className="badge-version"
-                  backgroundColor="#ED7309"
-                  borderRadius="11px"
-                  color="#FFFFFF"
-                  fontSize="10px"
-                  fontWeight={800}
-                  label={newItems}
-                  maxWidth="50px"
-                  onClick={onBadgeClick}
-                  padding="0 5px"
-                  data-id={id}
-                />
-              )}
-            </div>
-          )}
-        </>
+            <Text
+              className="badge-ext"
+              as="span"
+              color="#A3A9AE"
+              fontSize="15px"
+              fontWeight={600}
+              title={fileExst}
+              truncate={true}
+            >
+              {fileExst}
+            </Text>
+          ) : null}
+        </Link>
+
+        <div className="badges">
+          <Badges
+            newItems={newItems}
+            item={item}
+            canWebEdit={canWebEdit}
+            isTrashFolder={isTrashFolder}
+            canConvert={canConvert}
+            accessToEdit={accessToEdit}
+            showNew={showNew}
+            onFilesClick={onFilesClick}
+            onClickLock={onClickLock}
+            onClickFavorite={onClickFavorite}
+            onShowVersionHistory={onShowVersionHistory}
+            onBadgeClick={onBadgeClick}
+            setConvertDialogVisible={setConvertDialogVisible}
+          />
+        </div>
       </SimpleFilesTileContent>
     </>
   );

@@ -9,7 +9,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 
-import { EncryptedFileIcon } from "../sub-components/icons";
+import { EncryptedFileIcon } from "../sub-components/Icons";
 import config from "../../../../../../../package.json";
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;

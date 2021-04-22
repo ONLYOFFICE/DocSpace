@@ -7,15 +7,9 @@ import { isMobile } from "react-device-detect";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import RowContent from "@appserver/components/row-content";
-import IconButton from "@appserver/components/icon-button";
-import Badge from "@appserver/components/badge";
 
 import withContentActions from "../hoc/withContentActions";
-import {
-  StyledFavoriteIcon,
-  StyledFileActionsConvertEditDocIcon,
-  StyledFileActionsLockedIcon,
-} from "../sub-components/icons";
+import Badges from "../sub-components/Badges";
 
 const sideColor = "#A3A9AE";
 
@@ -66,14 +60,14 @@ const FilesRowContent = ({
   newItems,
   showNew,
   canWebEdit,
-  /* canConvert,*/
+  canConvert,
   isTrashFolder,
   onFilesClick,
   onShowVersionHistory,
   onBadgeClick,
   onClickLock,
   onClickFavorite,
-  /*setConvertDialogVisible*/
+  setConvertDialogVisible,
 }) => {
   const {
     contentLength,
@@ -113,120 +107,37 @@ const FilesRowContent = ({
         >
           {titleWithoutExt}
         </Link>
-        <>
+
+        <div className="badges">
           {fileExst ? (
-            <div className="badges">
-              <Text
-                className="badge-ext"
-                as="span"
-                color="#A3A9AE"
-                fontSize="15px"
-                fontWeight={600}
-                title={fileExst}
-                truncate={true}
-              >
-                {fileExst}
-              </Text>
-              {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
-                  <IconButton
-                    onClick={setConvertDialogVisible}
-                    iconName="FileActionsConvertIcon"
-                    className="badge"
-                    size="small"
-                    isfill={true}
-                    color="#A3A9AE"
-                    hoverColor="#3B72A7"
-                  />
-                )} */}
-              {canWebEdit && !isTrashFolder && accessToEdit && (
-                <IconButton
-                  onClick={onFilesClick}
-                  iconName="/static/images/access.edit.react.svg"
-                  className="badge"
-                  size="small"
-                  isfill={true}
-                  color="#A3A9AE"
-                  hoverColor="#3B72A7"
-                />
-              )}
-              {locked && (
-                <StyledFileActionsLockedIcon
-                  className="badge lock-file"
-                  size="small"
-                  data-id={item.id}
-                  data-locked={true}
-                  onClick={onClickLock}
-                />
-              )}
-              {fileStatus === 32 && !isTrashFolder && (
-                <StyledFavoriteIcon
-                  className="favorite"
-                  size="small"
-                  data-action="remove"
-                  data-id={item.id}
-                  data-title={item.title}
-                  onClick={onClickFavorite}
-                />
-              )}
-              {fileStatus === 1 && (
-                <StyledFileActionsConvertEditDocIcon
-                  className="badge"
-                  size="small"
-                />
-              )}
-              {versionGroup > 1 && (
-                <Badge
-                  className="badge-version"
-                  backgroundColor="#A3A9AE"
-                  borderRadius="11px"
-                  color="#FFFFFF"
-                  fontSize="10px"
-                  fontWeight={800}
-                  label={t("Version", {
-                    version: versionGroup,
-                  })}
-                  maxWidth="50px"
-                  onClick={onShowVersionHistory}
-                  padding="0 5px"
-                  data-id={id}
-                />
-              )}
-              {showNew && (
-                <Badge
-                  className="badge-version"
-                  backgroundColor="#ED7309"
-                  borderRadius="11px"
-                  color="#FFFFFF"
-                  fontSize="10px"
-                  fontWeight={800}
-                  label={t("New")}
-                  maxWidth="50px"
-                  onClick={onBadgeClick}
-                  padding="0 5px"
-                  data-id={id}
-                />
-              )}
-            </div>
-          ) : (
-            <div className="badges">
-              {showNew && (
-                <Badge
-                  className="badge-version"
-                  backgroundColor="#ED7309"
-                  borderRadius="11px"
-                  color="#FFFFFF"
-                  fontSize="10px"
-                  fontWeight={800}
-                  label={newItems}
-                  maxWidth="50px"
-                  onClick={onBadgeClick}
-                  padding="0 5px"
-                  data-id={id}
-                />
-              )}
-            </div>
-          )}
-        </>
+            <Text
+              className="badge-ext"
+              as="span"
+              color="#A3A9AE"
+              fontSize="15px"
+              fontWeight={600}
+              title={fileExst}
+              truncate={true}
+            >
+              {fileExst}
+            </Text>
+          ) : null}
+          <Badges
+            newItems={newItems}
+            item={item}
+            canWebEdit={canWebEdit}
+            isTrashFolder={isTrashFolder}
+            canConvert={canConvert}
+            accessToEdit={accessToEdit}
+            showNew={showNew}
+            onFilesClick={onFilesClick}
+            onClickLock={onClickLock}
+            onClickFavorite={onClickFavorite}
+            onShowVersionHistory={onShowVersionHistory}
+            onBadgeClick={onBadgeClick}
+            setConvertDialogVisible={setConvertDialogVisible}
+          />
+        </div>
         <Text
           containerMinWidth="120px"
           containerWidth="15%"
