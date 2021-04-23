@@ -3,11 +3,11 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import { observer, inject } from "mobx-react";
-import FilesRowContainer from "./FilesRow/FilesRowContainer";
-import FilesTileContainer from "./FilesTile/FilesTileContainer";
-import EmptyContainer from "../../../../EmptyContainer";
+import FilesRowContainer from "./RowsView/FilesRowContainer";
+import FilesTileContainer from "./TilesView/FilesTileContainer";
+import EmptyContainer from "../../../../components/EmptyContainer";
 
-import withLoader from "../../../../../HOCs/withLoader";
+import withLoader from "../../../../HOCs/withLoader";
 
 let currentDroppable = null;
 

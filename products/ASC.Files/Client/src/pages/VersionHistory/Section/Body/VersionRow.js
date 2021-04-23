@@ -10,7 +10,7 @@ import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import VersionBadge from "./VersionBadge";
 import StyledVersionRow from "./StyledVersionRow";
-import ExternalLinkIcon from "../../../../../../public/images/external.link.react.svg";
+import ExternalLinkIcon from "../../../../../public/images/external.link.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 

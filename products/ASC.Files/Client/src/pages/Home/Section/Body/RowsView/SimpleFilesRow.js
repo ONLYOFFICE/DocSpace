@@ -7,8 +7,8 @@ import FilesRowContent from "./FilesRowContent";
 import { withRouter } from "react-router-dom";
 import { createSelectable } from "react-selectable-fast";
 
-import withFileActions from "../../../../../../HOCs/withFileActions";
-import withContextOptions from "../../../../../../HOCs/withContextOptions";
+import withFileActions from "../../../../../HOCs/withFileActions";
+import withContextOptions from "../../../../../HOCs/withContextOptions";
 
 const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
