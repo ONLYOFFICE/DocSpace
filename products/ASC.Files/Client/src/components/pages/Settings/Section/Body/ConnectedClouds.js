@@ -20,6 +20,10 @@ import WebDavIcon from "../../../../../../public/images/icon_webdav.react.svg";
 import YandexDiskIcon from "../../../../../../public/images/icon_yandex_disk.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
+import combineUrl from "@appserver/common/utils/combineUrl";
+import AppServerConfig from "@appserver/common/constants/AppServerConfig";
+import config from "../../../../../../package.json";
+import { withRouter } from "react-router";
 
 const StyledBoxIcon = styled(BoxIcon)`
   ${commonIconsStyles}
@@ -141,10 +145,11 @@ class ConnectClouds extends React.Component {
       myDirectoryFolders,
       commonDirectoryFolders,
       filter,
-      fetchFiles,
-      setSelectedNode,
       providers,
+      homepage,
+      history,
     } = this.props;
+
     const provider = e.currentTarget.dataset.providerKey;
     const isCorporate =
       !!providers.length &&
@@ -154,7 +159,16 @@ class ConnectClouds extends React.Component {
       .filter((f) => f.providerKey === provider)
       .map((f) => f.id)
       .join();
-    return fetchFiles(id, filter).then(() => setSelectedNode([id]));
+
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.startIndex = 0;
+    newFilter.folder = id;
+
+    const urlFilter = newFilter.toUrlParams();
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+    );
   };
 
   getContextOptions = (item, index) => {
@@ -266,8 +280,8 @@ class ConnectClouds extends React.Component {
 export default inject(
   ({ filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
     const { providers, capabilities } = settingsStore.thirdPartyStore;
-    const { fetchFiles, filter } = filesStore;
-    const { setSelectedNode, myFolder, commonFolder } = treeFoldersStore;
+    const { filter } = filesStore;
+    const { myFolder, commonFolder } = treeFoldersStore;
     const {
       setConnectItem,
       setThirdPartyDialogVisible,
@@ -283,13 +297,13 @@ export default inject(
       myDirectoryFolders: myFolder && myFolder.folders,
       commonDirectoryFolders: commonFolder && commonFolder.folders,
 
-      fetchFiles,
-      setSelectedNode,
       setThirdPartyDialogVisible,
       setConnectDialogVisible,
       setConnectItem,
       setDeleteThirdPartyDialogVisible,
       setRemoveItem,
+
+      homepage: config.homepage,
     };
   }
-)(withTranslation("Settings")(observer(ConnectClouds)));
+)(withTranslation("Settings")(observer(withRouter(ConnectClouds))));
