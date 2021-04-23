@@ -13,32 +13,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\MailCommonResource.Designer.cs">
+    <Compile Update="Resources\MailResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>MailCommonResource.resx</DependentUpon>
+      <DependentUpon>MailResource.resx</DependentUpon>
     </Compile>
   </ItemGroup>
   
   <ItemGroup>
-    <EmbeddedResource Update="Resources\MailCommonResource.resx">
+    <EmbeddedResource Update="Resources\MailResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>MailCommonResource.Designer.cs</LastGenOutput>
+      <LastGenOutput>MailResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\MailCommonResource.ru.resx">
-      <DependentUpon>MailCommonResource.resx</DependentUpon>
+    <EmbeddedResource Update="Resources\MailResource.ru.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\MailCommonResource.de.resx">
-      <DependentUpon>MailCommonResource.resx</DependentUpon>
+    <EmbeddedResource Update="Resources\MailResource.de.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\MailCommonResource.es.resx">
-      <DependentUpon>MailCommonResource.resx</DependentUpon>
+    <EmbeddedResource Update="Resources\MailResource.es.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\MailCommonResource.fr.resx">
-      <DependentUpon>MailCommonResource.resx</DependentUpon>
+    <EmbeddedResource Update="Resources\MailResource.fr.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\MailCommonResource.it.resx">
-      <DependentUpon>MailCommonResource.resx</DependentUpon>
+    <EmbeddedResource Update="Resources\MailResource.it.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
 

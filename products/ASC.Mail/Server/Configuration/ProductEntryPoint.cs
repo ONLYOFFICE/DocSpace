@@ -63,23 +63,12 @@ namespace ASC.Mail.Configuration
 
         public override string Name
         {
-            get { return MailCommonResource.ProductName; }
+            get { return MailResource.ProductName; }
         }
 
         public override string Description
         {
-            get
-            {
-                var id = AuthContext.CurrentAccount.ID;
-
-                if (UserManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupVisitor.ID))
-                    return MailCommonResource.ProductDescriptionShort;
-
-                if (UserManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupAdmin.ID) || UserManager.IsUserInGroup(id, ID))
-                    return MailCommonResource.ProductDescriptionEx;
-
-                return MailCommonResource.ProductDescription;
-            }
+            get { return MailResource.MailDescription; }
         }
 
         public override string StartURL
@@ -117,8 +106,8 @@ namespace ASC.Mail.Configuration
                 //SubscriptionManager = new ProductSubscriptionManager(),
                 DefaultSortOrder = 20,
                 //SpaceUsageStatManager = new ProjectsSpaceUsageStatManager(),
-                AdminOpportunities = () => MailCommonResource.ProductAdminOpportunities.Split('|').ToList(),
-                UserOpportunities = () => MailCommonResource.ProductUserOpportunities.Split('|').ToList(),
+                AdminOpportunities = () => MailResource.AddonAdminOpportunities.Split('|').ToList(),
+                UserOpportunities = () => MailResource.AddonUserOpportunities.Split('|').ToList(),
                 HasComplexHierarchyOfAccessRights = true,
             };
         }
