@@ -1,28 +1,51 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import Text from "@appserver/components/text";
 import Avatar from "@appserver/components/avatar";
 import Row from "@appserver/components/row";
-import RowContent from "@appserver/components/row-content";
 import RowContainer from "@appserver/components/row-container";
 import Link from "@appserver/components/link";
-import Paging from "@appserver/components/paging";
 import IconButton from "@appserver/components/icon-button";
 import toastr from "@appserver/components/toast/toastr";
-import Button from "@appserver/components/button";
+import SearchInput from "@appserver/components/search-input";
 import RequestLoader from "@appserver/components/request-loader";
 import Loader from "@appserver/components/loader";
 import EmptyScreenContainer from "@appserver/components/empty-screen-container";
-import { showLoader, hideLoader } from "@appserver/common/utils";
-import FilterInput from "@appserver/common/components/FilterInput";
-import PeopleSelector from "people/PeopleSelector";
+
+import { inject, observer } from "mobx-react";
+
+import { getUserRole } from "@appserver/people/src/helpers/people-helpers";
 
 import isEmpty from "lodash/isEmpty";
-import { inject, observer } from "mobx-react";
+
+import {
+  EmployeeStatus,
+  EmployeeActivationStatus,
+} from "@appserver/common/constants";
+
+import { tablet } from "@appserver/components/utils/device";
+
+const getUserStatus = (user) => {
+  if (
+    user.status === EmployeeStatus.Active &&
+    user.activationStatus === EmployeeActivationStatus.Activated
+  ) {
+    return "normal";
+  } else if (
+    user.status === EmployeeStatus.Active &&
+    user.activationStatus === EmployeeActivationStatus.Pending
+  ) {
+    return "pending";
+  } else if (user.status === EmployeeStatus.Disabled) {
+    return "disabled";
+  } else {
+    return "unknown";
+  }
+};
 
 const ToggleContentContainer = styled.div`
   .buttons_container {
@@ -45,9 +68,7 @@ const ToggleContentContainer = styled.div`
       margin-left: 0px;
     }
   }
-  .cross_icon {
-    margin-right: 8px;
-  }
+
   .people-admin_container {
     margin-right: 16px;
     position: relative;
@@ -61,18 +82,127 @@ const ToggleContentContainer = styled.div`
     position: relative;
   }
 
-  .filter_container {
-    margin-top: 16px;
-  }
-
   *,
   *::before,
   *::after {
     box-sizing: border-box;
   }
+  .nameAndStatus {
+    display: flex;
+    align-items: center;
+
+    .statusIcon {
+      margin-left: 5px;
+    }
+  }
+
+  .rowMainContainer {
+    height: auto;
+  }
+
+  .userRole {
+    text-transform: capitalize;
+    font-size: 12px;
+    color: #d0d5da;
+  }
+
+  .row_content {
+    justify-content: space-between;
+    align-items: center;
+
+    .userData {
+      max-width: calc(100% - 300px);
+    }
+  }
+
+  .iconsWrapper {
+    display: flex;
+  }
+
+  .actionIconsWrapper {
+    display: flex;
+    align-items: center;
+
+    .fullAccessWrapper {
+      margin-right: 20px;
+      display: flex;
+      align-items: center;
+      padding: 10px 0px;
+      cursor: pointer;
+
+      &.owner {
+        cursor: default;
+      }
+
+      .fullAccessIcon {
+        margin-right: 4px;
+        width: 16px;
+      }
+    }
+
+    .hyphen {
+      height: 1px;
+      width: 8px;
+      background-color: #d0d5da;
+      margin-right: 20px;
+    }
+
+    .iconWrapper {
+      display: inline-block;
+      margin-right: 32px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  @media ${tablet} {
+    .row_content {
+      flex-direction: column;
+      align-items: baseline;
+
+      .userData {
+        max-width: 100%;
+      }
+    }
+
+    .actionIconsWrapper {
+      .hyphen {
+        margin-right: 10px;
+      }
+
+      .fullAccessWrapper {
+        margin-right: 10px;
+        p {
+          display: none;
+        }
+      }
+
+      .iconWrapper {
+        margin-right: 22px;
+      }
+    }
+
+    .wrapper {
+      #rowContainer {
+        & > div > div {
+          align-items: normal;
+          padding-top: 10px;
+
+          & > div label {
+            margin-top: 8px;
+          }
+        }
+      }
+    }
+  }
 `;
 
-class PureAdminsSettings extends Component {
+let adminsFromSessionStorage = null;
+const fullAccessId = "00000000-0000-0000-0000-000000000000";
+
+class PortalAdmins extends Component {
   constructor(props) {
     super(props);
 
@@ -82,159 +212,69 @@ class PureAdminsSettings extends Component {
       isLoading: false,
       showLoader: true,
       selectedOptions: [],
+      admins: adminsFromSessionStorage || {},
+      hasChanged: false,
+      showReminder: false,
+      searchValue: "",
     };
   }
 
   componentDidMount() {
     const { admins, fetchPeople } = this.props;
-    showLoader();
+    const { showReminder } = this.state;
+
+    if (adminsFromSessionStorage && !showReminder) {
+      this.setState({
+        showReminder: true,
+      });
+    }
+
     if (isEmpty(admins, true)) {
       const newFilter = this.onAdminsFilter();
       fetchPeople(newFilter)
         .catch((error) => {
           toastr.error(error);
         })
-        .finally(() =>
+        .finally(() => {
           this.setState({
             showLoader: false,
-          })
-        );
+          });
+
+          this.checkChanges();
+
+          if (!adminsFromSessionStorage && this.props.admins.length > 0) {
+            this.setState({
+              admins: this.props.admins,
+            });
+          }
+        });
     } else {
-      this.setState({ showLoader: false });
+      if (!adminsFromSessionStorage && this.props.admins.length > 0) {
+        this.setState({
+          admins: this.props.admins,
+          showLoader: false,
+        });
+      } else {
+        this.setState({
+          admins: adminsFromSessionStorage || {},
+          showLoader: false,
+        });
+      }
     }
-    hideLoader();
   }
 
-  onChangeAdmin = (userIds, isAdmin, productId) => {
+  onChangeAdmin = async (userIds, isAdmin, productId) => {
     this.onLoading(true);
     const { changeAdmins } = this.props;
     const newFilter = this.onAdminsFilter();
 
-    changeAdmins(userIds, productId, isAdmin, newFilter)
+    await changeAdmins(userIds, productId, isAdmin, newFilter)
       .catch((error) => {
         toastr.error("accessRights onChangeAdmin", error);
       })
       .finally(() => {
         this.onLoading(false);
       });
-  };
-
-  onShowGroupSelector = () => {
-    /* console.log(
-      `onShowGroupSelector(showSelector: ${!this.state.showSelector})`
-    ); */
-
-    this.setState({
-      showSelector: !this.state.showSelector,
-    });
-  };
-
-  onShowFullAdminGroupSelector = () => {
-    /* console.log(
-      `onShowFullAdminGroupSelector(showFullAdminSelector: ${!this.state
-        .showFullAdminSelector})`
-    ); */
-
-    this.setState({
-      showFullAdminSelector: !this.state.showFullAdminSelector,
-    });
-  };
-
-  onCancelSelector = (e) => {
-    /* console.log(
-      `onCancelSelector(showSelector: false, showFullAdminSelector: false`,
-      e
-    ); */
-
-    if (
-      (this.state.showSelector &&
-        e.target.id === "people-admin-selector_button") ||
-      (this.state.showFullAdminSelector &&
-        e.target.id === "full-admin-selector_button")
-    ) {
-      // Skip double set of isOpen property
-      return;
-    }
-
-    this.setState({
-      showSelector: false,
-      showFullAdminSelector: false,
-    });
-  };
-
-  onSelect = (selected) => {
-    const { productId } = this.props;
-    this.onChangeAdmin(
-      selected.map((user) => user.key),
-      true,
-      productId
-    );
-    this.onShowGroupSelector();
-  };
-
-  onSelectFullAdmin = (selected) => {
-    this.onChangeAdmin(
-      selected.map((user) => user.key),
-      true,
-      "00000000-0000-0000-0000-000000000000"
-    );
-    this.onShowFullAdminGroupSelector();
-  };
-
-  onChangePage = (pageItem) => {
-    const { filter, getUpdateListAdmin } = this.props;
-
-    const newFilter = filter.clone();
-    newFilter.page = pageItem.key;
-    this.onLoading(true);
-
-    getUpdateListAdmin(newFilter)
-      .catch((res) => console.log(res))
-      .finally(() => this.onLoading(false));
-  };
-
-  onChangePageSize = (pageItem) => {
-    const { filter, getUpdateListAdmin } = this.props;
-
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.pageCount = pageItem.key;
-    this.onLoading(true);
-
-    getUpdateListAdmin(newFilter)
-      .catch((res) => console.log(res))
-      .finally(() => this.onLoading(false));
-  };
-
-  onPrevClick = (e) => {
-    const { filter, getUpdateListAdmin } = this.props;
-
-    if (!filter.hasPrev()) {
-      e.preventDefault();
-      return;
-    }
-    const newFilter = filter.clone();
-    newFilter.page--;
-    this.onLoading(true);
-    getUpdateListAdmin(newFilter)
-      .catch((res) => console.log(res))
-      .finally(() => this.onLoading(false));
-  };
-
-  onNextClick = (e) => {
-    const { filter, getUpdateListAdmin } = this.props;
-
-    if (!filter.hasNext()) {
-      e.preventDefault();
-      return;
-    }
-    const newFilter = filter.clone();
-    newFilter.page++;
-    this.onLoading(true);
-
-    getUpdateListAdmin(newFilter)
-      .catch((res) => console.log(res))
-      .finally(() => this.onLoading(false));
   };
 
   onLoading = (status) => {
@@ -251,115 +291,387 @@ class PureAdminsSettings extends Component {
     return newFilter;
   };
 
-  onFilter = (data) => {
-    const { filter, getUpdateListAdmin } = this.props;
+  onModuleIconClick = (userIds, moduleName, isAdmin) => {
+    const { admins } = this.state;
 
-    const search = data.inputValue || null;
-    const sortBy = data.sortId;
-    const sortOrder =
-      data.sortDirection === "desc" ? "descending" : "ascending";
+    if (admins.length < 1) return false;
+    let adminIndex = null;
 
-    const newFilter = filter.clone();
+    for (let i = 0; i < admins.length; i++) {
+      if (admins[i].id === userIds[0]) {
+        adminIndex = i;
+        break;
+      }
+    }
 
-    newFilter.sortBy = sortBy;
-    newFilter.sortOrder = sortOrder;
-    newFilter.page = 0;
-    newFilter.role = "admin";
-    newFilter.search = search;
-    this.onLoading(true);
-
-    getUpdateListAdmin(newFilter)
-      .catch((res) => console.log(res))
-      .finally(this.onLoading(false));
+    this.changeAdminRights(adminIndex, moduleName, isAdmin);
   };
 
-  onResetFilter = () => {
-    const { getUpdateListAdmin, filter } = this.props;
+  onFullAccessClick = (admin) => {
+    const admins = JSON.parse(JSON.stringify(this.state.admins));
 
-    const newFilter = filter.clone(true);
+    const adminIndex = admins.findIndex((adminState) => {
+      if (admin.id === adminState.id) return true;
+      return false;
+    });
 
-    this.onLoading(true);
-    getUpdateListAdmin(newFilter)
-      .catch((res) => console.log(res))
-      .finally(() => this.onLoading(false));
+    if (adminIndex < 0) return false;
+
+    admins[adminIndex].isAdmin = !admin.isAdmin;
+
+    this.setState({
+      admins,
+    });
+
+    this.checkChanges();
   };
 
-  pageItems = () => {
-    const { t, filter } = this.props;
-    if (filter.total < filter.pageCount) return [];
-    const totalPages = Math.ceil(filter.total / filter.pageCount);
-    return [...Array(totalPages).keys()].map((item) => {
-      return {
-        key: item,
-        label: t("PageOfTotalPage", { page: item + 1, totalPage: totalPages }),
-      };
+  findAdminById = (admin) => {
+    if (admin.id === this.id) return true;
+  };
+
+  filterNewAdmins = (admins, newAdmins) => {
+    admins.forEach((admin) => {
+      for (let t = 0; t < newAdmins.length; t++) {
+        if (admin.id === newAdmins[t].id) {
+          newAdmins.splice(t, 1);
+          break;
+        }
+      }
     });
   };
 
-  countItems = () => [
-    { key: 25, label: this.props.t("CountPerPage", { count: 25 }) },
-    { key: 50, label: this.props.t("CountPerPage", { count: 50 }) },
-    { key: 100, label: this.props.t("CountPerPage", { count: 100 }) },
-  ];
+  changeAdminRights = (adminIndex, moduleName, isAdmin) => {
+    const admins = JSON.parse(JSON.stringify(this.state.admins));
+    const listAdminModules = admins[adminIndex].listAdminModules;
 
-  selectedPageItem = () => {
-    const { filter, t } = this.props;
-    const pageItems = this.pageItems();
-
-    const emptyPageSelection = {
-      key: 0,
-      label: t("PageOfTotalPage", { page: 1, totalPage: 1 }),
-    };
-
-    return pageItems.find((x) => x.key === filter.page) || emptyPageSelection;
-  };
-
-  selectedCountItem = () => {
-    const { filter, t } = this.props;
-
-    const emptyCountSelection = {
-      key: 0,
-      label: t("CountPerPage", { count: 25 }),
-    };
-
-    const countItems = this.countItems();
-
-    return (
-      countItems.find((x) => x.key === filter.pageCount) || emptyCountSelection
+    let newListAdminModules = this.createNewListAdminModules(
+      isAdmin,
+      listAdminModules,
+      moduleName
     );
+    newListAdminModules.sort();
+
+    admins[adminIndex].listAdminModules = newListAdminModules;
+    const newAdmins = [];
+
+    for (const key in admins) {
+      newAdmins.push(admins[key]);
+    }
+    this.setState({
+      admins: newAdmins,
+    });
+
+    this.checkChanges();
   };
 
-  getSortData = () => {
-    const { t } = this.props;
+  createNewListAdminModules = (isAdmin, listAdminModules, moduleName) => {
+    let newListAdminModules = listAdminModules ? listAdminModules.slice() : [];
 
-    return [
-      { key: "firstname", label: t("ByFirstNameSorting"), default: true },
-      { key: "lastname", label: t("ByLastNameSorting"), default: true },
-    ];
+    if (!isAdmin) {
+      newListAdminModules.push(moduleName);
+    } else {
+      newListAdminModules = listAdminModules.filter((module) => {
+        return module !== moduleName;
+      });
+    }
+    return newListAdminModules;
   };
 
-  getUserRole = (user) => {
-    if (user.isOwner) return "owner";
-    else if (user.isAdmin) return "admin";
-    else if (
-      user.listAdminModules !== undefined &&
-      user.listAdminModules.includes("people")
-    )
-      return "admin";
-    else if (user.isVisitor) return "guest";
-    else return "user";
+  onSaveButtonClick = () => {
+    const { fetchPeople } = this.props;
+    const changedAdmins = this.createChangedAdminsList();
+    const changedFullAccessAdmins = this.createChangedFullAccessAdminsList();
+    const deletedAdmins = this.createDeletedAdminsList();
+    this.saveChanges(
+      changedAdmins,
+      deletedAdmins,
+      changedFullAccessAdmins
+    ).then(() => {
+      const newFilter = this.onAdminsFilter();
+      fetchPeople(newFilter)
+        .catch((error) => {
+          toastr.error(error);
+        })
+        .finally(() => {
+          this.onCancelClick();
+          this.setState({
+            showLoader: false,
+          });
+        });
+    });
+  };
+
+  onCancelClick = () => {
+    adminsFromSessionStorage = "";
+
+    this.setState({
+      admins: this.props.admins,
+      showReminder: false,
+      hasChanged: false,
+    });
+  };
+
+  onContentRowSelect = (checked, user) => {
+    if (checked) {
+      this.props.selectUser(user);
+    } else {
+      this.props.deselectUser(user);
+    }
+  };
+
+  onSearchChange = (value) => {
+    if (this.state.searchValue === value) return false;
+
+    this.setState({
+      searchValue: value,
+    });
+  };
+
+  saveChanges = async (
+    changedAdmins,
+    deletedAdmins,
+    changedFullAccessAdmins
+  ) => {
+    await this.saveChangedFullAccessAdmins(changedFullAccessAdmins);
+    await this.saveChangedAdmins(changedAdmins);
+    await this.saveDeletedAdmins(deletedAdmins);
+  };
+
+  saveChangedAdmins = async (changedAdmins) => {
+    for (let i = 0; i < changedAdmins.length; i++) {
+      const adminBeforeChanges = this.getAdminById(
+        this.props.admins,
+        changedAdmins[i].id
+      );
+
+      let changedAdminModules = adminBeforeChanges
+        ? this.getChangedAdminModules(adminBeforeChanges, changedAdmins[i])
+        : changedAdmins[i].listAdminModules &&
+          changedAdmins[i].listAdminModules.slice();
+
+      if (changedAdminModules && changedAdminModules.length > 0) {
+        for (const key in changedAdminModules) {
+          const currentModule = this.props.modules.find(
+            (module) =>
+              module.title.toLowerCase() ===
+              changedAdminModules[key].toLowerCase()
+          );
+          if (currentModule)
+            await this.onChangeAdmin(
+              [changedAdmins[i].id],
+              this.isModuleAdmin(changedAdmins[i], changedAdminModules[key]),
+              currentModule.id
+            );
+        }
+      }
+    }
+  };
+
+  saveDeletedAdmins = async (deletedAdmins) => {
+    for (let i = 0; i < deletedAdmins.length; i++) {
+      await this.onChangeAdmin([deletedAdmins[i].id], false, fullAccessId);
+    }
+  };
+
+  saveChangedFullAccessAdmins = async (changedAdmins) => {
+    for (let i = 0; i < changedAdmins.length; i++) {
+      const modulesList = changedAdmins[i].listAdminModules;
+
+      await this.onChangeAdmin(
+        [changedAdmins[i].id],
+        changedAdmins[i].isAdmin,
+        fullAccessId
+      );
+
+      if (modulesList && modulesList.length > 0) {
+        for (const key in modulesList) {
+          const currentModule = this.props.modules.find(
+            (module) =>
+              module.title.toLowerCase() === modulesList[key].toLowerCase()
+          );
+          if (currentModule)
+            await this.onChangeAdmin(
+              [changedAdmins[i].id],
+              this.isModuleAdmin(changedAdmins[i], modulesList[key]),
+              currentModule.id
+            );
+        }
+      }
+    }
+  };
+
+  getChangedAdminModules = (adminBeforeChanges, admin) => {
+    const modulesListBeforeChanges = adminBeforeChanges.listAdminModules
+      ? adminBeforeChanges.listAdminModules.slice()
+      : [];
+    const modulesList = admin.listAdminModules
+      ? admin.listAdminModules.slice()
+      : [];
+    let newListAdminModules = [];
+
+    newListAdminModules = modulesList.filter((module) => {
+      let hasModule = false;
+
+      for (let i = 0; i < modulesListBeforeChanges.length; i++) {
+        if (modulesListBeforeChanges[i] === module) {
+          hasModule = true;
+          modulesListBeforeChanges.splice(i, 1);
+          break;
+        }
+      }
+
+      return !hasModule;
+    });
+
+    if (modulesListBeforeChanges.length > 0) {
+      newListAdminModules = newListAdminModules
+        .concat(modulesListBeforeChanges)
+        .sort();
+    }
+
+    return newListAdminModules;
+  };
+
+  createChangedAdminsList = () => {
+    const { admins } = this.state;
+    let changedAdmins = [];
+
+    for (let i = 0; i < admins.length; i++) {
+      const adminBeforeChanges = this.getAdminById(
+        this.props.admins,
+        admins[i].id
+      );
+
+      if (adminBeforeChanges) {
+        if (
+          adminBeforeChanges.isAdmin === admins[i].isAdmin &&
+          !this.compareObjects(admins[i], adminBeforeChanges)
+        ) {
+          changedAdmins.push(admins[i]);
+        }
+      } else if (!this.compareObjects(admins[i], adminBeforeChanges)) {
+        changedAdmins.push(admins[i]);
+      }
+    }
+
+    if (changedAdmins) return changedAdmins;
+  };
+
+  createDeletedAdminsList = () => {
+    const { admins } = this.props;
+    let deletedAdmins = [];
+
+    if (!admins && admins.length < 1) return deletedAdmins;
+
+    for (let i = 0; i < admins.length; i++) {
+      const adminAfterChanges = this.getAdminById(
+        this.state.admins,
+        admins[i].id
+      );
+      if (!adminAfterChanges) deletedAdmins.push(admins[i]);
+    }
+
+    return deletedAdmins;
+  };
+
+  createChangedFullAccessAdminsList = () => {
+    const { admins } = this.state;
+    let changedAdmins = [];
+
+    for (let i = 0; i < admins.length; i++) {
+      const adminBeforeChanges = this.getAdminById(
+        this.props.admins,
+        admins[i].id
+      );
+
+      if (
+        (!adminBeforeChanges && admins[i].isAdmin) ||
+        (adminBeforeChanges && adminBeforeChanges.isAdmin !== admins[i].isAdmin)
+      ) {
+        changedAdmins.push(admins[i]);
+      }
+    }
+
+    if (changedAdmins) return changedAdmins;
+  };
+
+  getAdminById = (admins, id) => {
+    let currentAdmin;
+
+    admins.findIndex((admin) => {
+      for (let key in admin) {
+        if (key === "id" && admin[key] === id) {
+          currentAdmin = JSON.parse(JSON.stringify(admin));
+          return true;
+        }
+      }
+      return false;
+    });
+
+    if (currentAdmin) return currentAdmin;
+  };
+
+  isModuleAdmin = (user, moduleName) => {
+    let isModuleAdmin = false;
+
+    if (!user.listAdminModules) return false;
+
+    for (let i = 0; i < user.listAdminModules.length; i++) {
+      if (user.listAdminModules[i] === moduleName) {
+        isModuleAdmin = true;
+        break;
+      }
+    }
+
+    return isModuleAdmin;
+  };
+
+  checkChanges = () => {
+    let hasChanged =
+      adminsFromSessionStorage &&
+      !this.compareObjects(adminsFromSessionStorage, this.props.admins);
+
+    if (hasChanged !== this.state.hasChanged) {
+      this.setState({
+        hasChanged: hasChanged,
+      });
+    }
+  };
+
+  compareObjects = (obj1, obj2) => {
+    return JSON.stringify(obj1) === JSON.stringify(obj2);
+  };
+
+  getFilteredAdmins = (admins, searchValue) => {
+    const filteredAdmins = admins.filter((admin) => {
+      if (
+        admin.displayName.toLowerCase().indexOf(searchValue.toLowerCase()) !==
+        -1
+      )
+        return true;
+      return false;
+    });
+
+    return filteredAdmins;
   };
 
   render() {
-    const { t, admins, filter, me, groupsCaption } = this.props;
+    const { t } = this.props;
     const {
-      showSelector,
       isLoading,
-      showFullAdminSelector,
       showLoader,
+      admins,
+      hasChanged,
+      showReminder,
+      searchValue,
     } = this.state;
 
-    console.log("Admins render_");
+    const filteredAdmins = searchValue
+      ? this.getFilteredAdmins(admins, searchValue)
+      : admins;
+
+    const checked = false;
 
     return (
       <>
@@ -379,146 +691,221 @@ class PureAdminsSettings extends Component {
             />
 
             <ToggleContentContainer>
-              <div className="buttons_container">
-                <div className="people-admin_container">
-                  <Button
-                    id="people-admin-selector_button"
-                    size="medium"
-                    primary={true}
-                    label={t("SetPeopleAdmin")}
-                    isDisabled={isLoading}
-                    onClick={this.onShowGroupSelector}
-                  />
-                  <PeopleSelector
-                    id="people-admin-selector"
-                    isOpen={showSelector}
-                    isMultiSelect={true}
-                    role="user"
-                    onSelect={this.onSelect}
-                    onCancel={this.onCancelSelector}
-                    defaultOption={me}
-                    defaultOptionLabel={t("MeLabel")}
-                    groupsCaption={groupsCaption}
-                  />
-                </div>
-                <div className="full-admin_container">
-                  <Button
-                    id="full-admin-selector_button"
-                    size="medium"
-                    primary={true}
-                    label={t("SetPortalAdmin")}
-                    isDisabled={isLoading}
-                    onClick={this.onShowFullAdminGroupSelector}
-                  />
-                  <PeopleSelector
-                    id="full-admin-selector"
-                    isOpen={showFullAdminSelector}
-                    isMultiSelect={true}
-                    role="user"
-                    onSelect={this.onSelectFullAdmin}
-                    onCancel={this.onCancelSelector}
-                    defaultOption={me}
-                    defaultOptionLabel={t("MeLabel")}
-                    groupsCaption={groupsCaption}
-                  />
-                </div>
-              </div>
-
-              <FilterInput
+              <SearchInput
                 className="filter_container"
-                getFilterData={() => []}
-                getSortData={this.getSortData}
-                onFilter={this.onFilter}
-                directionAscLabel={t("DirectionAscLabel")}
-                directionDescLabel={t("DirectionDescLabel")}
+                placeholder="Search added employees"
+                onChange={this.onSearchChange}
+                onClearSearch={this.onSearchChange}
+                value={searchValue}
               />
 
-              {admins.length > 0 ? (
+              {filteredAdmins.length > 0 ? (
                 <>
                   <div className="wrapper">
-                    <RowContainer manualHeight={`${admins.length * 50}px`}>
-                      {admins.map((user) => {
+                    <RowContainer useReactWindow={false}>
+                      {filteredAdmins.map((user) => {
                         const element = (
                           <Avatar
-                            size="min"
-                            role={this.getUserRole(user)}
+                            size="small"
+                            role={getUserRole(user)}
                             userName={user.displayName}
                             source={user.avatar}
                           />
                         );
+
                         const nameColor =
-                          user.status === "pending" ? "#A3A9AE" : "#333333";
+                          getUserStatus(user) === "pending"
+                            ? "#A3A9AE"
+                            : "#333333";
 
                         return (
                           <Row
                             key={user.id}
                             status={user.status}
+                            onSelect={this.onContentRowSelect}
                             data={user}
                             element={element}
+                            checkbox={true}
+                            checked={checked}
+                            contextButtonSpacerWidth={"0px"}
                           >
-                            <RowContent disableSideInfo={true}>
-                              <Link
-                                containerWidth="50%"
-                                type="page"
-                                title={user.displayName}
-                                isBold={true}
-                                fontSize="15px"
-                                color={nameColor}
-                                href={user.profileUrl}
-                              >
-                                {user.displayName}
-                              </Link>
-                              <></>
-                              <Text containerWidth="10%">
-                                {user.isAdmin
-                                  ? t("AccessRightsFullAccess")
-                                  : t("PeopleAdmin")}
-                              </Text>
-                              {!user.isOwner ? (
-                                <IconButton
-                                  containerWidth="5%"
-                                  className="remove_icon"
-                                  size="16"
-                                  isDisabled={isLoading}
-                                  onClick={this.onChangeAdmin.bind(
-                                    this,
-                                    [user.id],
-                                    false,
-                                    "00000000-0000-0000-0000-000000000000"
-                                  )}
-                                  iconName={
-                                    "static/images/catalog.trash.react.svg"
-                                  }
-                                  isFill={true}
-                                  isClickable={false}
-                                />
-                              ) : (
-                                <div containerWidth="5%" />
-                              )}
-                            </RowContent>
+                            <>
+                              <div className="userData">
+                                <div className="nameAndStatus">
+                                  <Link
+                                    isTextOverflow={true}
+                                    type="page"
+                                    title={user.displayName}
+                                    isBold={true}
+                                    fontSize="15px"
+                                    color={nameColor}
+                                    href={user.profileUrl}
+                                  >
+                                    {user.displayName}
+                                  </Link>
+                                  {/*getUserStatus(user) === "pending" && (
+                                    <Icons.SendClockIcon
+                                      className="statusIcon"
+                                      size="small"
+                                      isfill={true}
+                                      color="#3B72A7"
+                                    />
+                                  )*/}
+                                  {/*getUserStatus(user) === "disabled" && (
+                                    <Icons.CatalogSpamIcon
+                                      className="statusIcon"
+                                      size="small"
+                                      isfill={true}
+                                      color="#3B72A7"
+                                    />
+                                  )*/}
+                                </div>
+                                <div>
+                                  <Text truncate={true} className="userRole">
+                                    {getUserRole(user)}
+                                  </Text>
+                                </div>
+                              </div>
+                              <div className="actionIconsWrapper">
+                                {getUserRole(user) === "owner" ? (
+                                  <div className="fullAccessWrapper owner">
+                                    <IconButton
+                                      iconName="OwnerSettingsIcon"
+                                      isClickable={false}
+                                      className="fullAccessIcon"
+                                      size="medium"
+                                      isFill={true}
+                                      color="#7A95B0"
+                                    />
+                                    <Text
+                                      as="p"
+                                      truncate={true}
+                                      color="#7A95B0"
+                                      font-size="11px"
+                                      fontWeight={700}
+                                    >
+                                      Owner
+                                    </Text>
+                                  </div>
+                                ) : (
+                                  <div
+                                    className="fullAccessWrapper"
+                                    onClick={this.onFullAccessClick.bind(
+                                      this,
+                                      user
+                                    )}
+                                  >
+                                    <IconButton
+                                      iconName="ActionsFullAccessIcon"
+                                      isClickable={false}
+                                      className="fullAccessIcon"
+                                      size="medium"
+                                      isFill={true}
+                                      color={
+                                        user.isAdmin ? "#316DAA" : "#D0D5DA"
+                                      }
+                                    />
+                                    <Text
+                                      as="p"
+                                      truncate={true}
+                                      color={
+                                        user.isAdmin ? "#316DAA" : "#D0D5DA"
+                                      }
+                                      font-size="11px"
+                                      fontWeight={700}
+                                    >
+                                      Full access
+                                    </Text>
+                                  </div>
+                                )}
+                                <div className="hyphen"></div>
+                                <div className="iconsWrapper">
+                                  <div className="iconWrapper">
+                                    <IconButton
+                                      iconName="ActionsDocumentsSettingsIcon"
+                                      size={14}
+                                      color={
+                                        getUserRole(user) === "owner" ||
+                                        user.isAdmin
+                                          ? "#7A95B0"
+                                          : this.isModuleAdmin(
+                                              user,
+                                              "documents"
+                                            )
+                                          ? "#316DAA"
+                                          : "#D0D5DA"
+                                      }
+                                      isfill={true}
+                                      isClickable={false}
+                                      isDisabled={
+                                        getUserRole(user) === "owner" ||
+                                        user.isAdmin
+                                      }
+                                      onClick={
+                                        getUserRole(user) !== "owner" ||
+                                        !user.isAdmin
+                                          ? this.onModuleIconClick.bind(
+                                              this,
+                                              [user.id],
+                                              "documents",
+                                              this.isModuleAdmin(
+                                                user,
+                                                "documents"
+                                              )
+                                            )
+                                          : null
+                                      }
+                                    />
+                                  </div>
+                                  <div className="iconWrapper">
+                                    <IconButton
+                                      iconName="MainMenuPeopleIcon"
+                                      size={16}
+                                      color={
+                                        getUserRole(user) === "owner" ||
+                                        user.isAdmin
+                                          ? "#7A95B0"
+                                          : this.isModuleAdmin(user, "people")
+                                          ? "#316DAA"
+                                          : "#D0D5DA"
+                                      }
+                                      isfill={true}
+                                      isClickable={false}
+                                      isDisabled={
+                                        getUserRole(user) === "owner" ||
+                                        user.isAdmin
+                                      }
+                                      onClick={
+                                        getUserRole(user) !== "owner" ||
+                                        !user.isAdmin
+                                          ? this.onModuleIconClick.bind(
+                                              this,
+                                              [user.id],
+                                              "people",
+                                              this.isModuleAdmin(user, "people")
+                                            )
+                                          : null
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </>
                           </Row>
                         );
                       })}
                     </RowContainer>
                   </div>
-                  <div className="wrapper">
-                    <Paging
-                      previousLabel={t("PreviousPage")}
-                      nextLabel={t("NextPage")}
-                      openDirection="top"
-                      countItems={this.countItems()}
-                      pageItems={this.pageItems()}
-                      displayItems={false}
-                      selectedPageItem={this.selectedPageItem()}
-                      selectedCountItem={this.selectedCountItem()}
-                      onSelectPage={this.onChangePage}
-                      onSelectCount={this.onChangePageSize}
-                      previousAction={this.onPrevClick}
-                      nextAction={this.onNextClick}
-                      disablePrevious={!filter.hasPrev()}
-                      disableNext={!filter.hasNext()}
+                  {hasChanged && (
+                    <SaveCancelButtons
+                      onSaveClick={this.onSaveButtonClick}
+                      onCancelClick={this.onCancelClick}
+                      showReminder={showReminder}
+                      reminderTest={t("YouHaveUnsavedChanges")}
+                      saveButtonLabel={t("SaveButton")}
+                      cancelButtonLabel={t("CancelButton")}
                     />
-                  </div>
+                  )}
                 </>
               ) : (
                 <EmptyScreenContainer
@@ -528,20 +915,10 @@ class PureAdminsSettings extends Component {
                   descriptionText={t("NotFoundDescription")}
                   buttons={
                     <>
-                      <IconButton
-                        className="cross_icon"
-                        size="12"
-                        onClick={this.onResetFilter}
-                        iconName="/static/images/cross.react.svg"
-                        isFill
-                        color="#657077"
-                      />
                       <Link
                         type="action"
                         isHovered={true}
-                        fontWeight="600"
-                        color="#555f65"
-                        onClick={this.onResetFilter}
+                        onClick={this.onSearchChange.bind(this, "")}
                       >
                         {t("ClearButton")}
                       </Link>
@@ -557,15 +934,13 @@ class PureAdminsSettings extends Component {
   }
 }
 
-const AdminsSettings = withTranslation("Settings")(PureAdminsSettings);
-
-AdminsSettings.defaultProps = {
+PortalAdmins.defaultProps = {
   admins: [],
   productId: "",
   owner: {},
 };
 
-AdminsSettings.propTypes = {
+PortalAdmins.propTypes = {
   admins: PropTypes.arrayOf(PropTypes.object),
   productId: PropTypes.string,
   owner: PropTypes.object,
@@ -586,4 +961,4 @@ export default inject(({ auth, setup }) => {
     filter,
     me,
   };
-})(withRouter(observer(AdminsSettings)));
+})(withTranslation("Settings")(withRouter(observer(PortalAdmins))));
