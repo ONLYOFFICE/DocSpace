@@ -510,6 +510,8 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, [
           "open",
           "open-location",
+          "view",
+          "preview",
           "edit",
           "link-for-portal-users",
           "sharing-settings",
