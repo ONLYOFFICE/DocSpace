@@ -106,10 +106,23 @@ class SettingsStore {
       .storeForceSave(data)
       .then((res) => this.setFilesSetting(setting, res));
 
-  setEnableThirdParty = (data, setting) =>
-    api.files
-      .thirdParty(data)
-      .then((res) => this.setFilesSetting(setting, res));
+  setEnableThirdParty = async (data, setting) => {
+    const res = await api.files.thirdParty(data);
+    this.setFilesSetting(setting, res);
+
+    return axios
+      .all([
+        api.files.getThirdPartyCapabilities(),
+        api.files.getThirdPartyList(),
+      ])
+      .then(([capabilities, providers]) => {
+        for (let item of capabilities) {
+          item.splice(1, 1);
+        }
+        this.thirdPartyStore.setThirdPartyCapabilities(capabilities); //TODO: Out of bounds read: 1
+        this.thirdPartyStore.setThirdPartyProviders(providers);
+      });
+  };
 
   setForceSave = (data, setting) =>
     api.files.forceSave(data).then((res) => this.setFilesSetting(setting, res));
