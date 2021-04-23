@@ -1528,17 +1528,17 @@ namespace ASC.Employee.Core.Controllers
 
         [AllowAnonymous]
         [Create("thirdparty/signup")]
-        public void SignupAccountFromBody([FromBody] LinkAccountModel model)
+        public void SignupAccountFromBody([FromBody] SignupAccountModel model)
         {
-            LinkAccount(model);
+            SignupAccount(model);
         }
 
         [AllowAnonymous]
-        [Update("thirdparty/linkaccount")]
+        [Create("thirdparty/signup")]
         [Consumes("application/x-www-form-urlencoded")]
-        public void SignupAccountFromForm([FromForm] LinkAccountModel model)
+        public void SignupAccountFromForm([FromForm] SignupAccountModel model)
         {
-            LinkAccount(model);
+            SignupAccount(model);
         }
 
         public void SignupAccount(SignupAccountModel model)
@@ -1554,18 +1554,41 @@ namespace ASC.Employee.Core.Controllers
             }
 
             var thirdPartyProfile = new LoginProfile(Signature, InstanceCrypto, model.SerializedProfile);
-            var newUser = CreateNewUser(GetFirstName(model, thirdPartyProfile), GetLastName(model, thirdPartyProfile), GetEmailAddress(model, thirdPartyProfile), passwordHash, employeeType, false);
-
-            var messageAction = employeeType == EmployeeType.User ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
-            MessageService.Send(MessageInitiator.System, messageAction, MessageTarget.Create(newUser.ID), newUser.DisplayUserName(false, DisplayUserSettingsHelper));
-
-            var userID = newUser.ID;
-            if (!string.IsNullOrEmpty(thirdPartyProfile.Avatar))
+            if (!string.IsNullOrEmpty(thirdPartyProfile.AuthorizationError))
             {
-                SaveContactImage(userID, thirdPartyProfile.Avatar);
+                // ignore cancellation
+                if (thirdPartyProfile.AuthorizationError != "Canceled at provider")
+                    throw new Exception(thirdPartyProfile.AuthorizationError);
+
+                return;
             }
 
-            GetLinker().AddLink(userID.ToString(), thirdPartyProfile);
+            if (string.IsNullOrEmpty(thirdPartyProfile.EMail))
+            {
+                throw new Exception(Resource.ErrorNotCorrectEmail);
+            }
+
+            var userID = Guid.Empty;
+            try
+            {
+                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                var newUser = CreateNewUser(GetFirstName(model, thirdPartyProfile), GetLastName(model, thirdPartyProfile), GetEmailAddress(model, thirdPartyProfile), passwordHash, employeeType, false);
+
+                var messageAction = employeeType == EmployeeType.User ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
+                MessageService.Send(MessageInitiator.System, messageAction, MessageTarget.Create(newUser.ID), newUser.DisplayUserName(false, DisplayUserSettingsHelper));
+
+                userID = newUser.ID;
+                if (!string.IsNullOrEmpty(thirdPartyProfile.Avatar))
+                {
+                    SaveContactImage(userID, thirdPartyProfile.Avatar);
+                }
+
+                GetLinker().AddLink(userID.ToString(), thirdPartyProfile);
+            }
+            finally
+            {
+                SecurityContext.Logout();
+            }
 
             var user = UserManager.GetUsers(userID);
             var cookiesKey = SecurityContext.AuthenticateMe(user.Email, passwordHash);
@@ -1581,6 +1604,7 @@ namespace ASC.Employee.Core.Controllers
             UserHelpTourHelper.IsNewUser = true;
             if (CoreBaseSettings.Personal)
                 PersonalSettingsHelper.IsNewUser = true;
+
         }
 
         [Create("phone")]
