@@ -77,18 +77,21 @@ class ConnectClouds extends React.Component {
   };
 
   onDeleteThirdParty = (e) => {
-    const { id, title } = e.currentTarget.dataset;
+    const { dataset } = (e.originalEvent || e).currentTarget;
+    const { id, title } = dataset;
     this.props.setDeleteThirdPartyDialogVisible(true);
     this.props.setRemoveItem({ id, title });
   };
 
   onChangeThirdPartyInfo = (e) => {
-    const key = e.currentTarget.dataset.key;
-    const capabilitiesItem = this.props.capabilities.find((x) => x[0] === key);
-    const providerItem = this.props.providers.find(
-      (x) => x.provider_key === key
+    const { dataset } = (e.originalEvent || e).currentTarget;
+    const { provider_key } = dataset;
+    const capabilitiesItem = this.props.capabilities.find(
+      (x) => x[0] === provider_key
     );
-
+    const providerItem = this.props.providers.find(
+      (x) => x.provider_key === provider_key
+    );
     const { corporate, provider_id, customer_title } = providerItem;
 
     const item = {
@@ -96,7 +99,7 @@ class ConnectClouds extends React.Component {
       link: capabilitiesItem ? capabilitiesItem[1] : " ",
       corporate: corporate,
       provider_id: provider_id,
-      provider_key: key,
+      provider_key: provider_key,
     };
 
     this.props.setConnectItem(item);
@@ -154,6 +157,25 @@ class ConnectClouds extends React.Component {
     return fetchFiles(id, filter).then(() => setSelectedNode([id]));
   };
 
+  getContextOptions = (item, index) => {
+    const { t } = this.props;
+    return [
+      {
+        key: `${index}_change`,
+        "data-provider_key": item.provider_key,
+        label: t("ThirdPartyInfo"),
+        onClick: this.onChangeThirdPartyInfo,
+      },
+      {
+        key: `${index}_delete`,
+        "data-id": item.provider_id,
+        "data-title": item.customer_title,
+        label: t("DeleteThirdParty"),
+        onClick: this.onDeleteThirdParty,
+      },
+    ];
+  };
+
   render() {
     const { t, providers } = this.props;
 
@@ -174,21 +196,7 @@ class ConnectClouds extends React.Component {
                   <Row
                     key={index}
                     element={element}
-                    contextOptions={[
-                      {
-                        key: `${index}_change`,
-                        "data-key": item.provider_key,
-                        label: t("ThirdPartyInfo"),
-                        onClick: this.onChangeThirdPartyInfo,
-                      },
-                      {
-                        key: `${index}_delete`,
-                        "data-id": item.provider_id,
-                        "data-title": item.customer_title,
-                        label: t("DeleteThirdParty"),
-                        onClick: this.onDeleteThirdParty,
-                      },
-                    ]}
+                    contextOptions={this.getContextOptions(item, index)}
                   >
                     <Box
                       containerMinWidth="200px"
