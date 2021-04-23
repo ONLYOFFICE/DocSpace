@@ -4,8 +4,6 @@ import RowContainer from "@appserver/components/row-container";
 import { Consumer } from "@appserver/components/utils/context";
 import SimpleFilesRow from "./SimpleFilesRow";
 
-import withLoadingCheck from "../hoc/withLoadingCheck";
-
 const FilesRowContainer = ({ filesList }) => {
   return (
     <Consumer>
@@ -34,4 +32,4 @@ export default inject(({ filesStore }) => {
   return {
     filesList,
   };
-})(withLoadingCheck(observer(FilesRowContainer)));
+})(observer(FilesRowContainer));

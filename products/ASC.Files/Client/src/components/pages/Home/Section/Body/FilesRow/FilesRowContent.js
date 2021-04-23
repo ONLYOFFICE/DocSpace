@@ -10,6 +10,7 @@ import RowContent from "@appserver/components/row-content";
 
 import withContentActions from "../hoc/withContentActions";
 import Badges from "../sub-components/Badges";
+import withBadges from "../hoc/withBadges";
 
 const sideColor = "#A3A9AE";
 
@@ -55,29 +56,16 @@ const FilesRowContent = ({
   titleWithoutExt,
   updatedDate,
   fileOwner,
-  accessToEdit,
   linkStyles,
-  newItems,
-  showNew,
-  canWebEdit,
-  canConvert,
   isTrashFolder,
   onFilesClick,
-  onShowVersionHistory,
-  onBadgeClick,
-  onClickLock,
-  onClickFavorite,
-  setConvertDialogVisible,
+  badgesComponent,
 }) => {
   const {
     contentLength,
     fileExst,
     filesCount,
     foldersCount,
-    fileStatus,
-    id,
-    versionGroup,
-    locked,
     providerKey,
   } = item;
 
@@ -122,21 +110,7 @@ const FilesRowContent = ({
               {fileExst}
             </Text>
           ) : null}
-          <Badges
-            newItems={newItems}
-            item={item}
-            canWebEdit={canWebEdit}
-            isTrashFolder={isTrashFolder}
-            canConvert={canConvert}
-            accessToEdit={accessToEdit}
-            showNew={showNew}
-            onFilesClick={onFilesClick}
-            onClickLock={onClickLock}
-            onClickFavorite={onClickFavorite}
-            onShowVersionHistory={onShowVersionHistory}
-            onBadgeClick={onBadgeClick}
-            setConvertDialogVisible={setConvertDialogVisible}
-          />
+          {badgesComponent}
         </div>
         <Text
           containerMinWidth="120px"
@@ -187,5 +161,5 @@ const FilesRowContent = ({
 };
 
 export default withRouter(
-  withTranslation("Home")(withContentActions(FilesRowContent))
+  withTranslation("Home")(withContentActions(withBadges(FilesRowContent)))
 );

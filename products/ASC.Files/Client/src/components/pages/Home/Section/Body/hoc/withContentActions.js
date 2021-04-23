@@ -10,15 +10,10 @@ import {
   ShareAccessRights,
 } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
-import {
-  convertFile,
-  getFileConversationProgress,
-} from "@appserver/common/api/files";
 
 import config from "../../../../../../../package.json";
 import EditingWrapperComponent from "../sub-components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../../../../../../helpers/files-helpers";
-import { ConvertDialog } from "../../../../../dialogs";
 
 export default function withContentActions(WrappedContent) {
   class WithContentActions extends React.Component {
@@ -32,7 +27,7 @@ export default function withContentActions(WrappedContent) {
 
       this.state = {
         itemTitle: titleWithoutExt,
-        showConvertDialog: false,
+
         //loading: false
       };
     }
@@ -287,144 +282,8 @@ export default function withContentActions(WrappedContent) {
       return mobile ? dateLabel : `${title}: ${dateLabel}`;
     };
 
-    onShowVersionHistory = () => {
-      const {
-        homepage,
-        isTabletView,
-        item,
-        setIsVerHistoryPanel,
-        fetchFileVersions,
-        history,
-        isTrashFolder,
-      } = this.props;
-      if (isTrashFolder) return;
-
-      if (!isTabletView) {
-        fetchFileVersions(item.id + "");
-        setIsVerHistoryPanel(true);
-      } else {
-        history.push(
-          combineUrl(AppServerConfig.proxyURL, homepage, `/${item.id}/history`)
-        );
-      }
-    };
-
-    onBadgeClick = () => {
-      const {
-        item,
-        selectedFolderPathParts,
-        markAsRead,
-        setNewFilesPanelVisible,
-        setNewFilesIds,
-        updateRootBadge,
-        updateFileBadge,
-      } = this.props;
-      if (item.fileExst) {
-        markAsRead([], [item.id])
-          .then(() => {
-            updateRootBadge(selectedFolderPathParts[0], 1);
-            updateFileBadge(item.id);
-          })
-          .catch((err) => toastr.error(err));
-      } else {
-        setNewFilesPanelVisible(true);
-        const newFolderIds = selectedFolderPathParts;
-        newFolderIds.push(item.id);
-        setNewFilesIds(newFolderIds);
-      }
-    };
-
-    setConvertDialogVisible = () =>
-      this.setState({ showConvertDialog: !this.state.showConvertDialog });
-
-    onConvert = () => {
-      const { item, t, setSecondaryProgressBarData } = this.props;
-      setSecondaryProgressBarData({
-        icon: "file",
-        visible: true,
-        percent: 0,
-        label: t("Convert"),
-        alert: false,
-      });
-      this.setState({ showConvertDialog: false }, () =>
-        convertFile(item.id).then((convertRes) => {
-          if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {
-            this.getConvertProgress(item.id);
-          }
-        })
-      );
-    };
-
-    getConvertProgress = (fileId) => {
-      const {
-        selectedFolderId,
-        filter,
-        setIsLoading,
-        setSecondaryProgressBarData,
-        t,
-        clearSecondaryProgressData,
-        fetchFiles,
-      } = this.props;
-      getFileConversationProgress(fileId).then((res) => {
-        if (res && res[0] && res[0].progress !== 100) {
-          setSecondaryProgressBarData({
-            icon: "file",
-            visible: true,
-            percent: res[0].progress,
-            label: t("Convert"),
-            alert: false,
-          });
-          setTimeout(() => this.getConvertProgress(fileId), 1000);
-        } else {
-          if (res[0].error) {
-            setSecondaryProgressBarData({
-              visible: true,
-              alert: true,
-            });
-            toastr.error(res[0].error);
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          } else {
-            setSecondaryProgressBarData({
-              icon: "file",
-              visible: true,
-              percent: 100,
-              label: t("Convert"),
-              alert: false,
-            });
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-            const newFilter = filter.clone();
-            fetchFiles(selectedFolderId, newFilter)
-              .catch((err) => {
-                setSecondaryProgressBarData({
-                  visible: true,
-                  alert: true,
-                });
-                //toastr.error(err);
-                setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-              })
-              .finally(() => setIsLoading(false));
-          }
-        }
-      });
-    };
-
-    onClickLock = () => {
-      const { item, lockFileAction } = this.props;
-      const { locked, id } = item;
-
-      lockFileAction(id, !locked).catch((err) => toastr.error(err));
-    };
-
-    onClickFavorite = () => {
-      const { t, item, setFavoriteAction } = this.props;
-
-      setFavoriteAction("remove", item.id)
-        .then(() => toastr.success(t("RemovedFromFavorites")))
-        .catch((err) => toastr.error(err));
-    };
-
     render() {
-      const { itemTitle, showConvertDialog } = this.state;
+      const { itemTitle } = this.state;
       const {
         item,
         fileActionId,
@@ -433,8 +292,6 @@ export default function withContentActions(WrappedContent) {
         viewer,
         t,
         isTrashFolder,
-        canWebEdit,
-        canConvert,
       } = this.props;
       const { id, fileExst, updated, createdBy, access, fileStatus } = item;
 
@@ -450,7 +307,7 @@ export default function withContentActions(WrappedContent) {
           createdBy.displayName);
 
       const accessToEdit =
-        access === ShareAccessRights.FullAccess ||
+        access === ShareAccessRights.FullAccess || // only badges?
         access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
       const linkStyles = isTrashFolder //|| window.innerWidth <= 1024
@@ -470,34 +327,18 @@ export default function withContentActions(WrappedContent) {
           cancelUpdateItem={this.cancelUpdateItem}
         />
       ) : (
-        <>
-          {showConvertDialog && (
-            <ConvertDialog
-              visible={showConvertDialog}
-              onClose={this.setConvertDialogVisible}
-              onConvert={this.onConvert}
-            />
-          )}
-          <WrappedContent
-            titleWithoutExt={titleWithoutExt}
-            updatedDate={updatedDate}
-            fileOwner={fileOwner}
-            accessToEdit={accessToEdit}
-            linkStyles={linkStyles}
-            newItems={newItems}
-            showNew={showNew}
-            canWebEdit={canWebEdit}
-            canConvert={canConvert}
-            isTrashFolder={isTrashFolder}
-            onFilesClick={this.onFilesClick}
-            onShowVersionHistory={this.onShowVersionHistory}
-            onBadgeClick={this.onBadgeClick}
-            onClickLock={this.onClickLock}
-            onClickFavorite={this.onClickFavorite}
-            setConvertDialogVisible={this.setConvertDialogVisible}
-            {...this.props}
-          />
-        </>
+        <WrappedContent
+          titleWithoutExt={titleWithoutExt}
+          updatedDate={updatedDate}
+          fileOwner={fileOwner}
+          accessToEdit={accessToEdit}
+          linkStyles={linkStyles}
+          newItems={newItems}
+          showNew={showNew}
+          isTrashFolder={isTrashFolder}
+          onFilesClick={this.onFilesClick}
+          {...this.props}
+        />
       );
     }
   }
@@ -512,18 +353,10 @@ export default function withContentActions(WrappedContent) {
         treeFoldersStore,
         mediaViewerDataStore,
         auth,
-        versionHistoryStore,
-        dialogsStore,
-        uploadDataStore,
       },
       { item, t, history }
     ) => {
-      const {
-        editCompleteAction,
-        markAsRead,
-        lockFileAction,
-        setFavoriteAction,
-      } = filesActionsStore;
+      const { editCompleteAction } = filesActionsStore;
       const {
         filter,
         setIsLoading,
@@ -534,7 +367,6 @@ export default function withContentActions(WrappedContent) {
         createFile,
         createFolder,
         isLoading,
-        updateFileBadge,
       } = filesStore;
       const {
         iconFormatsStore,
@@ -546,7 +378,6 @@ export default function withContentActions(WrappedContent) {
         expandedKeys,
         addExpandedKeys,
         isPrivacyFolder,
-        updateRootBadge,
       } = treeFoldersStore;
       const { setMediaViewerData } = mediaViewerDataStore;
       const {
@@ -555,15 +386,8 @@ export default function withContentActions(WrappedContent) {
         id: fileActionId,
       } = filesStore.fileActionStore;
       const { replaceFileStream, setEncryptionAccess } = auth;
-      const { culture, isDesktopClient, isTabletView } = auth.settingsStore;
-      const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
-      const { setNewFilesPanelVisible, setNewFilesIds } = dialogsStore;
-      const { secondaryProgressDataStore } = uploadDataStore;
+      const { culture, isDesktopClient } = auth.settingsStore;
 
-      const {
-        setSecondaryProgressBarData,
-        clearSecondaryProgressData,
-      } = secondaryProgressDataStore;
       const isImage = iconFormatsStore.isImage(item.fileExst);
       const isSound = iconFormatsStore.isSound(item.fileExst);
       const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
@@ -599,21 +423,7 @@ export default function withContentActions(WrappedContent) {
         isLoading,
         culture,
         homepage: config.homepage,
-        isTabletView,
-        setIsVerHistoryPanel,
-        fetchFileVersions,
         history,
-        selectedFolderPathParts: selectedFolderStore.pathParts,
-        markAsRead,
-        setNewFilesPanelVisible,
-        setNewFilesIds,
-        updateRootBadge,
-        updateFileBadge,
-        setSecondaryProgressBarData,
-        clearSecondaryProgressData,
-        selectedFolderId: selectedFolderStore.id,
-        lockFileAction,
-        setFavoriteAction,
         viewer: auth.userStore.user,
       };
     }

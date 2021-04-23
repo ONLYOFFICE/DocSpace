@@ -7,7 +7,7 @@ import FilesRowContainer from "./FilesRow/FilesRowContainer";
 import FilesTileContainer from "./FilesTile/FilesTileContainer";
 import EmptyContainer from "./EmptyContainer";
 
-import withLoadingCheck from "./hoc/withLoadingCheck";
+import withLoader from "./hoc/withLoader";
 
 let currentDroppable = null;
 
@@ -187,7 +187,5 @@ export default inject(
     };
   }
 )(
-  withRouter(
-    withTranslation("Home")(withLoadingCheck(observer(SectionBodyContent)))
-  )
+  withRouter(withTranslation("Home")(withLoader(observer(SectionBodyContent))))
 );
