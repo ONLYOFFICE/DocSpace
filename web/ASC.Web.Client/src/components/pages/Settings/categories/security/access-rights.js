@@ -93,34 +93,43 @@ class AccessRights extends PureComponent {
     hideLoader();
   }
 
+  onClickLink = (e) => {
+    e.preventDefault();
+    const { history } = this.props;
+    history.push(e.target.pathname);
+  };
+
   render() {
     const { t, admins } = this.props;
     return (
       <MainContainer>
         <OwnerSettings />
-        {/*<div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Link
-              className="inherit-title-link header"
-              truncate={true}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/security/access-rights/portal-admins"
-              )}
-            >
-              {t("PortalAdmins")}
-            </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
-          </div>
-          {admins.length > 0 && (
-            <Text className="category-item-subheader" truncate={true}>
-              {admins.length} {t("Employees")}
+        {
+          <div className="category-item-wrapper">
+            <div className="category-item-heading">
+              <Link
+                className="inherit-title-link header"
+                truncate={true}
+                onClick={this.onClickLink}
+                href={combineUrl(
+                  AppServerConfig.proxyURL,
+                  "/settings/security/access-rights/admins"
+                )}
+              >
+                {t("PortalAdmins")}
+              </Link>
+              <StyledArrowRightIcon size="small" color="#333333" />
+            </div>
+            {admins.length > 0 && (
+              <Text className="category-item-subheader" truncate={true}>
+                {admins.length} {t("Employees")}
+              </Text>
+            )}
+            <Text className="category-item-description">
+              {t("PortalAdminsDescription")}
             </Text>
-          )}
-          <Text className="category-item-description">
-            {t("PortalAdminsDescription")}
-          </Text>
-          </div>*/}
+          </div>
+        }
       </MainContainer>
     );
   }

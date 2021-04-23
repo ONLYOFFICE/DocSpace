@@ -5,7 +5,10 @@ import Layout from "./Layout";
 import { combineUrl } from "@appserver/common/utils";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
 
-const SecuritySettings = lazy(() => import("./categories/security"));
+const SecuritySettings = lazy(() =>
+  import("./categories/security/access-rights")
+);
+const Admins = lazy(() => import("./categories/security/admins"));
 const CustomizationSettings = lazy(() =>
   import("./categories/common/customization")
 );
@@ -40,6 +43,7 @@ const TEAM_TEMPLATE_URL = combineUrl(
 );
 //const WHITELABEL_URL = combineUrl(PROXY_BASE_URL, "/common/whitelabel");
 const SECURITY_URL = combineUrl(PROXY_BASE_URL, "/security");
+const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
 const THIRD_PARTY_URL = combineUrl(
   PROXY_BASE_URL,
   "/integration/third-party-services"
@@ -64,6 +68,7 @@ const Settings = () => {
             path={WHITELABEL_URL}
             component={WhiteLabel}
           /> */}
+          <Route path={ADMINS_URL} component={Admins} />
           <Route path={SECURITY_URL} component={SecuritySettings} />
           <Route exact path={THIRD_PARTY_URL} component={ThirdPartyServices} />
           <Redirect
