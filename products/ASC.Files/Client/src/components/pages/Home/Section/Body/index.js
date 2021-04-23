@@ -5,9 +5,9 @@ import { isMobile } from "react-device-detect";
 import { observer, inject } from "mobx-react";
 import FilesRowContainer from "./FilesRow/FilesRowContainer";
 import FilesTileContainer from "./FilesTile/FilesTileContainer";
-import EmptyContainer from "./EmptyContainer";
+import EmptyContainer from "../../../../EmptyContainer";
 
-import withLoader from "./hoc/withLoader";
+import withLoader from "../../../../../HOCs/withLoader";
 
 let currentDroppable = null;
 

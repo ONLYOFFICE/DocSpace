@@ -11,9 +11,9 @@ import {
 } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 
-import config from "../../../../../../../package.json";
-import EditingWrapperComponent from "../sub-components/EditingWrapperComponent";
-import { getTitleWithoutExst } from "../../../../../../helpers/files-helpers";
+import config from "../../package.json";
+import EditingWrapperComponent from "../components/EditingWrapperComponent";
+import { getTitleWithoutExst } from "../helpers/files-helpers";
 
 export default function withContentActions(WrappedContent) {
   class WithContentActions extends React.Component {
@@ -297,10 +297,7 @@ export default function withContentActions(WrappedContent) {
   }
 
   return inject(
-    (
-      { filesActionsStore, filesStore, treeFoldersStore, auth },
-      { t, history }
-    ) => {
+    ({ filesActionsStore, filesStore, treeFoldersStore, auth }, {}) => {
       const { editCompleteAction } = filesActionsStore;
       const {
         setIsLoading,
@@ -326,7 +323,6 @@ export default function withContentActions(WrappedContent) {
       const { culture, isDesktopClient } = auth.settingsStore;
 
       return {
-        t,
         editCompleteAction,
         setIsLoading,
         isTrashFolder: isRecycleBinFolder,
@@ -346,7 +342,6 @@ export default function withContentActions(WrappedContent) {
         isLoading,
         culture,
         homepage: config.homepage,
-        history,
         viewer: auth.userStore.user,
       };
     }

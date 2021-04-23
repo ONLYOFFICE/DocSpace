@@ -8,8 +8,8 @@ import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import RowContent from "@appserver/components/row-content";
 
-import withContent from "../hoc/withContent";
-import withBadges from "../hoc/withBadges";
+import withContent from "../../../../../../HOCs/withContent";
+import withBadges from "../../../../../../HOCs/withBadges";
 
 const sideColor = "#A3A9AE";
 

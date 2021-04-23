@@ -5,7 +5,7 @@ import { ReactSVG } from "react-svg";
 import IconButton from "@appserver/components/icon-button";
 import Text from "@appserver/components/text";
 
-import { EncryptedFileIcon } from "../sub-components/Icons";
+import { EncryptedFileIcon } from "../components/Icons";
 
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 export default function withFileActions(WrappedFileItem) {

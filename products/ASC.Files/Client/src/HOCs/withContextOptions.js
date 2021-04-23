@@ -6,7 +6,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 
-import config from "../../../../../../../package.json";
+import config from "../../package.json";
 
 export default function withContextOptions(WrappedComponent) {
   class WithContextOptions extends React.Component {

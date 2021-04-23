@@ -7,7 +7,7 @@ import Box from "@appserver/components/box";
 import Row from "@appserver/components/row";
 import RowContainer from "@appserver/components/row-container";
 import { withTranslation } from "react-i18next";
-import EmptyFolderContainer from "../../../Home/Section/Body/EmptyContainer/EmptyContainer";
+import EmptyFolderContainer from "../../../../EmptyContainer/EmptyContainer";
 import BoxIcon from "../../../../../../public/images/icon_box.react.svg";
 import DropBoxIcon from "../../../../../../public/images/icon_dropbox.react.svg";
 import GoogleDriveIcon from "../../../../../../public/images/icon_google_drive.react.svg";

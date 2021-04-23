@@ -12,8 +12,8 @@ import {
   getFileConversationProgress,
 } from "@appserver/common/api/files";
 
-import Badges from "../sub-components/Badges";
-import config from "../../../../../../../package.json";
+import Badges from "../components/Badges";
+import config from "../../package.json";
 
 export default function withBadges(WrappedComponent) {
   class WithBadges extends React.Component {
@@ -219,7 +219,7 @@ export default function withBadges(WrappedComponent) {
         filesStore,
         uploadDataStore,
       },
-      { item, history, t }
+      { item }
     ) => {
       const { docserviceStore } = formatsStore;
       const { isRecycleBinFolder, updateRootBadge } = treeFoldersStore;
@@ -242,8 +242,6 @@ export default function withBadges(WrappedComponent) {
       const canConvert = docserviceStore.canConvert(item.fileExst);
 
       return {
-        history,
-        t,
         canWebEdit,
         canConvert,
         isTrashFolder: isRecycleBinFolder,

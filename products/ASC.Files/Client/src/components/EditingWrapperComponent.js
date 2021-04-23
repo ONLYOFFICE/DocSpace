@@ -4,8 +4,8 @@ import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
-import CheckIcon from "../../../../../../../public/images/check.react.svg";
-import CrossIcon from "../../../../../../../../../../public/images/cross.react.svg";
+import CheckIcon from "../../public/images/check.react.svg";
+import CrossIcon from "../../../../../public/images/cross.react.svg";
 
 const StyledCheckIcon = styled(CheckIcon)`
   ${commonIconsStyles}
