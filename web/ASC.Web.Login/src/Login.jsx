@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
@@ -12,14 +12,24 @@ import Toast from "@appserver/components/toast";
 import HelpButton from "@appserver/components/help-button";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
+import SocialButton from "@appserver/components/social-button";
+import FacebookButton from "@appserver/components/facebook-button";
 import PageLayout from "@appserver/common/components/PageLayout";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
+import { getAuthProviders } from "@appserver/common/api/settings";
 import { checkPwd } from "@appserver/common/desktop";
-import { createPasswordHash, tryRedirectTo } from "@appserver/common/utils";
+import { createPasswordHash } from "@appserver/common/utils";
+import { providersData } from "@appserver/common/constants";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
 import { I18nextProvider, useTranslation } from "react-i18next";
+import toastr from "@appserver/components/toast/toastr";
+
+const ButtonsWrapper = styled.div`
+  display: table;
+  margin: auto;
+`;
 
 const LoginContainer = styled.div`
   display: flex;
@@ -31,6 +41,18 @@ const LoginContainer = styled.div`
   .login-tooltip {
     padding-left: 4px;
     display: inline-block;
+  }
+
+  .buttonWrapper {
+    margin: 6px;
+    min-width: 225px;
+  }
+
+  .line {
+    height: 1px;
+    background-color: #eceef1;
+    flex-basis: 100%;
+    margin: 0 8px;
   }
 
   @media (max-width: 768px) {
@@ -140,7 +162,6 @@ const Form = (props) => {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
 
   const [errorText, setErrorText] = useState("");
-  const [socialButtons, setSocialButtons] = useState([]);
 
   const { t } = useTranslation("Login");
 
@@ -153,6 +174,8 @@ const Form = (props) => {
     organizationName,
     greetingTitle,
     history,
+    thirdPartyLogin,
+    providers,
   } = props;
 
   const { error, confirmedEmail } = match.params;
@@ -175,7 +198,30 @@ const Form = (props) => {
 
   //const throttledKeyPress = throttle(onKeyPress, 500);
 
-  useEffect(() => {
+  const authCallback = (profile) => {
+    thirdPartyLogin(profile.Serialized)
+      .then(() => {
+        setIsLoading(true);
+        history.push(defaultPage);
+      })
+      .catch(() => {
+        toastr.error(t("ProviderNotConnected"), t("ProviderLoginError"));
+      });
+  };
+
+  const setProviders = async () => {
+    const { setProviders } = props;
+
+    try {
+      await getAuthProviders().then((providers) => {
+        setProviders(providers);
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(async () => {
     document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
 
     error && setErrorText(error);
@@ -183,6 +229,9 @@ const Form = (props) => {
 
     focusInput();
 
+    window.authCallback = authCallback;
+
+    await setProviders();
     //window.addEventListener("keyup", throttledKeyPress, false);
 
     /*return () => {
@@ -245,9 +294,10 @@ const Form = (props) => {
     const hash = createPasswordHash(pass, hashSettings);
 
     isDesktop && checkPwd();
-
     login(userName, hash)
-      .then(() => history.push(defaultPage))
+      .then(() => {
+        history.push(defaultPage);
+      })
       .catch((error) => {
         setErrorText(error);
         setIdentifierValid(!error);
@@ -255,6 +305,89 @@ const Form = (props) => {
         setIsLoading(false);
         focusInput();
       });
+  };
+
+  const onSocialButtonClick = useCallback((e) => {
+    const providerName = e.target.dataset.providername;
+    const url = e.target.dataset.url;
+
+    const { getOAuthToken, getLoginLink } = props;
+
+    try {
+      const tokenGetterWin = window.open(
+        url,
+        "login",
+        "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+      );
+
+      getOAuthToken(tokenGetterWin).then((code) => {
+        const token = window.btoa(
+          JSON.stringify({
+            auth: providerName,
+            mode: "popup",
+            callback: "authCallback",
+          })
+        );
+
+        tokenGetterWin.location.href = getLoginLink(token, code);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  const addFacebookToStart = (facebookIndex, providerButtons) => {
+    const faceBookData = providers[facebookIndex];
+    const { icon, label, iconOptions } = providersData[faceBookData.provider];
+    providerButtons.unshift(
+      <div
+        className="buttonWrapper"
+        key={`${faceBookData.provider}ProviderItem`}
+      >
+        <FacebookButton
+          iconName={icon}
+          label={t(label)}
+          className="socialButton"
+          $iconOptions={iconOptions}
+          data-url={faceBookData.url}
+          data-providername={faceBookData.provider}
+          onClick={onSocialButtonClick}
+        />
+      </div>
+    );
+  };
+
+  const providerButtons = () => {
+    let facebookIndex = null;
+    const providerButtons =
+      providers &&
+      providers.map((item, index) => {
+        const { icon, label, iconOptions, className } = providersData[
+          item.provider
+        ];
+        if (!icon) return;
+        if (item.provider === "Facebook") {
+          facebookIndex = index;
+          return;
+        }
+        return (
+          <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
+            <SocialButton
+              iconName={icon}
+              label={t(label)}
+              className={`socialButton ${className ? className : ""}`}
+              $iconOptions={iconOptions}
+              data-url={item.url}
+              data-providername={item.provider}
+              onClick={onSocialButtonClick}
+            />
+          </div>
+        );
+      });
+
+    if (facebookIndex) addFacebookToStart(facebookIndex, providerButtons);
+
+    return providerButtons;
   };
 
   //console.log("Login render");
@@ -374,15 +507,19 @@ const Form = (props) => {
           </Text>
         )}
 
-        {socialButtons.length ? (
-          <Box displayProp="flex" alignItems="center">
-            <div className="login-bottom-border"></div>
-            <Text className="login-bottom-text" color="#A3A9AE">
-              {t("Or")}
-            </Text>
-            <div className="login-bottom-border"></div>
-          </Box>
-        ) : null}
+        {providers && providers.length > 0 && (
+          <>
+            <Box displayProp="flex" alignItems="center" marginProp="0 0 16px 0">
+              <div className="login-bottom-border"></div>
+              <Text className="login-bottom-text" color="#A3A9AE">
+                {t("Or")}
+              </Text>
+              <div className="login-bottom-border"></div>
+            </Box>
+
+            <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
+          </>
+        )}
       </form>
       <Toast />
     </LoginContainer>
@@ -394,7 +531,6 @@ Form.propTypes = {
   match: PropTypes.object.isRequired,
   hashSettings: PropTypes.object,
   greetingTitle: PropTypes.string.isRequired,
-  socialButtons: PropTypes.array,
   organizationName: PropTypes.string,
   homepage: PropTypes.string,
   defaultPage: PropTypes.string,
@@ -429,7 +565,15 @@ LoginForm.propTypes = {
 };
 
 const Login = inject(({ auth }) => {
-  const { settingsStore, isAuthenticated, isLoaded, login } = auth;
+  const {
+    settingsStore,
+    isAuthenticated,
+    isLoaded,
+    login,
+    thirdPartyLogin,
+    setProviders,
+    providers,
+  } = auth;
   const {
     greetingSettings: greetingTitle,
     organizationName,
@@ -437,6 +581,8 @@ const Login = inject(({ auth }) => {
     enabledJoin,
     defaultPage,
     isDesktopClient: isDesktop,
+    getOAuthToken,
+    getLoginLink,
   } = settingsStore;
 
   return {
@@ -449,6 +595,11 @@ const Login = inject(({ auth }) => {
     defaultPage,
     isDesktop,
     login,
+    thirdPartyLogin,
+    getOAuthToken,
+    getLoginLink,
+    setProviders,
+    providers,
   };
 })(withRouter(observer(LoginForm)));
 
