@@ -207,7 +207,7 @@ class SettingsStore {
   };
 
   getLoginLink = (token, code) => {
-    return `/login.ashx?p=${token}&code=${code}`;
+    return combineUrl(proxyURL, `/login.ashx?p=${token}&code=${code}`);
   };
 
   setModuleInfo = (homepage, productId) => {
