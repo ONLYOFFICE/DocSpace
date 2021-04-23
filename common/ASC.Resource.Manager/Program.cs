@@ -303,6 +303,7 @@ namespace ASC.Resource.Manager
             var bag = new ConcurrentBag<string>();
 
             var csFiles = Directory.GetFiles(Path.GetFullPath(path), "*.cs", SearchOption.AllDirectories).Except(Directory.GetFiles(Path.GetFullPath(path), "*Resource.Designer.cs", SearchOption.AllDirectories));
+            csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.cshtml", SearchOption.AllDirectories)).ToArray();
             csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.aspx", SearchOption.AllDirectories)).ToArray();
             csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.Master", SearchOption.AllDirectories)).ToArray();
             csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.ascx", SearchOption.AllDirectories)).ToArray();
