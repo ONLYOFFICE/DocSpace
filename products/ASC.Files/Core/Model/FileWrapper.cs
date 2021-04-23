@@ -227,7 +227,7 @@ namespace ASC.Api.Documents
             {
                 result.ViewUrl = CommonLinkUtility.GetFullAbsolutePath(file.DownloadUrl);
 
-                result.WebUrl = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID));
+                result.WebUrl = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID, file.Version));
             }
             catch (Exception)
             {

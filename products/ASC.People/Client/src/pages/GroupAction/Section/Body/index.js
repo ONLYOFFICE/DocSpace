@@ -92,6 +92,7 @@ const SectionBodyContent = ({
   filter,
   setFilter,
   isLoaded,
+  tReady,
 }) => {
   const { t, i18n } = useTranslation("GroupAction");
 
@@ -230,25 +231,9 @@ const SectionBodyContent = ({
 
   const buttonLabel = id ? t("SaveButton") : t("AddButton");
 
-  const isTranslationsLoaded = () => {
-    const { store, services, language } = i18n;
-
-    let translationIsLoaded = false;
-    try {
-      translationIsLoaded = store.hasResourceBundle(
-        services.languageUtils.getLanguagePartFromCode(language),
-        "GroupAction"
-      );
-    } catch {
-      translationIsLoaded = t("LblSelect") !== "LblSelect";
-    }
-
-    return translationIsLoaded;
-  };
-
   return (
     <MainContainer>
-      {isLoaded && isTranslationsLoaded() ? (
+      {isLoaded && tReady ? (
         <>
           <FieldContainer
             className="group-name_container"

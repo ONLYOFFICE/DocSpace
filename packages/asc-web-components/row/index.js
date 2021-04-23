@@ -100,6 +100,8 @@ class Row extends React.Component {
               className="expandButton"
               getData={getOptions}
               directionX="right"
+              isNew={true}
+              onClick={onContextMenu}
             />
           ) : (
             <div className="expandButton"> </div>
