@@ -4,12 +4,22 @@ import FilesFilter from "./filter";
 import { FolderType } from "../../constants";
 import find from "lodash/find";
 
-export function openEdit(fileId, doc) {
-  const params = doc ? `?doc=${doc}` : "";
+export function openEdit(fileId, version, doc) {
+  const params = []; // doc ? `?doc=${doc}` : "";
+
+  if (version) {
+    params.push(`version=${version}`);
+  }
+
+  if (doc) {
+    params.push(`version=${version}`);
+  }
+
+  const paramsString = params.length > 0 ? `?${params.join("&")}` : "";
 
   const options = {
     method: "get",
-    url: `/files/file/${fileId}/openedit${params}`,
+    url: `/files/file/${fileId}/openedit${paramsString}`,
   };
 
   return request(options);
