@@ -8,6 +8,7 @@ import { withRouter } from "react-router-dom";
 import { createSelectable } from "react-selectable-fast";
 
 import withFileActions from "../hoc/withFileActions";
+import withContextOptions from "../hoc/withContextOptions";
 
 const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
@@ -97,5 +98,5 @@ const SimpleFilesRow = createSelectable((props) => {
 });
 
 export default withTranslation("Home")(
-  withFileActions(withRouter(SimpleFilesRow))
+  withFileActions(withContextOptions(withRouter(SimpleFilesRow)))
 );
