@@ -197,6 +197,29 @@ export function updateUserType(type, userIds) {
   });
 }
 
+export function linkOAuth(serializedProfile) {
+  return request({
+    method: "put",
+    url: "people/thirdparty/linkaccount.json",
+    data: { serializedProfile },
+  });
+}
+
+export function signupOAuth(signupAccount) {
+  return request({
+    method: "post",
+    url: "people/thirdparty/signup.json",
+    data: signupAccount,
+  });
+}
+
+export function unlinkOAuth(provider) {
+  return request({
+    method: "delete",
+    url: `people/thirdparty/unlinkaccount.json?provider=${provider}`,
+  });
+}
+
 export function sendInstructionsToDelete() {
   return request({
     method: "put",

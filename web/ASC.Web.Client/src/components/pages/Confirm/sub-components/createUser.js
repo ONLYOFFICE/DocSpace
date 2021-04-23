@@ -4,27 +4,43 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { createUser } from "@appserver/common/api/people";
+import { createUser, signupOAuth } from "@appserver/common/api/people";
 import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
+import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
 import PasswordInput from "@appserver/components/password-input";
 import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
+import SocialButton from "@appserver/components/social-button";
+import FacebookButton from "@appserver/components/facebook-button";
 import EmailInput from "@appserver/components/email-input";
+import { getAuthProviders } from "@appserver/common/api/settings";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { combineUrl, createPasswordHash } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
+import { AppServerConfig, providersData } from "@appserver/common/constants";
 import { isMobile } from "react-device-detect";
 
 const inputWidth = "400px";
+
+const ButtonsWrapper = styled.div`
+  display: table;
+  margin: -6px;
+  margin-top: 17px;
+  margin-right: auto;
+`;
 
 const ConfirmContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-left: 200px;
+
+  .buttonWrapper {
+    margin: 6px;
+    min-width: 225px;
+  }
 
   @media (max-width: 830px) {
     margin-left: 40px;
@@ -150,6 +166,99 @@ class Confirm extends React.PureComponent {
     });
   };
 
+  addFacebookToStart = (facebookIndex, providerButtons) => {
+    const { providers, t } = this.props;
+    const faceBookData = providers[facebookIndex];
+    const { icon, label, iconOptions } = providersData[faceBookData.provider];
+    providerButtons.unshift(
+      <div
+        className="buttonWrapper"
+        key={`${faceBookData.provider}ProviderItem`}
+      >
+        <FacebookButton
+          iconName={icon}
+          label={t(label)}
+          className="socialButton"
+          $iconOptions={iconOptions}
+          data-url={faceBookData.url}
+          data-providername={faceBookData.provider}
+          onClick={this.onSocialButtonClick}
+        />
+      </div>
+    );
+  };
+
+  providerButtons = () => {
+    const { providers, t } = this.props;
+
+    let facebookIndex = null;
+    const providerButtons =
+      providers &&
+      providers.map((item, index) => {
+        const { icon, label, iconOptions, className } = providersData[
+          item.provider
+        ];
+        if (!icon) return;
+        if (item.provider === "Facebook") {
+          facebookIndex = index;
+          return;
+        }
+        return (
+          <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
+            <SocialButton
+              iconName={icon}
+              label={t(label)}
+              className={`socialButton ${className ? className : ""}`}
+              $iconOptions={iconOptions}
+              data-url={item.url}
+              data-providername={item.provider}
+              onClick={this.onSocialButtonClick}
+            />
+          </div>
+        );
+      });
+
+    if (facebookIndex) this.addFacebookToStart(facebookIndex, providerButtons);
+
+    return providerButtons;
+  };
+
+  authCallback = (profile) => {
+    const { t, defaultPage } = this.props;
+    const { FirstName, LastName, EMail, Serialized } = profile;
+
+    console.log(profile);
+
+    const signupAccount = {
+      EmployeeType: null,
+      FirstName: FirstName,
+      LastName: LastName,
+      Email: EMail,
+      PasswordHash: "",
+      SerializedProfile: Serialized,
+    };
+
+    signupOAuth(signupAccount)
+      .then(() => {
+        window.location.replace(defaultPage);
+      })
+      .catch((e) => {
+        toastr.error(e);
+      });
+  };
+
+  setProviders = async () => {
+    const { setProviders } = this.props;
+
+    try {
+      await getAuthProviders().then((providers) => {
+        setProviders(providers);
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   createConfirmUser = async (registerData, loginData, key) => {
     const data = Object.assign(
       { fromInviteLink: true },
@@ -171,6 +280,35 @@ class Confirm extends React.PureComponent {
     return user;
   };
 
+  onSocialButtonClick = (e) => {
+    const providerName = e.target.dataset.providername;
+    const url = e.target.dataset.url;
+
+    const { getOAuthToken, getLoginLink } = this.props;
+
+    try {
+      const tokenGetterWin = window.open(
+        url,
+        "login",
+        "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+      );
+
+      getOAuthToken(tokenGetterWin).then((code) => {
+        const token = window.btoa(
+          JSON.stringify({
+            auth: providerName,
+            mode: "popup",
+            callback: "authCallback",
+          })
+        );
+
+        tokenGetterWin.location.href = getLoginLink(token, code);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   onKeyPress = (event) => {
     if (event.key === "Enter") {
       this.onSubmit();
@@ -190,6 +328,9 @@ class Confirm extends React.PureComponent {
       console.error("get settings error", e);
       history.push(combineUrl(AppServerConfig.proxyURL, `/login/error=${e}`));
     });
+
+    this.setProviders();
+    window.authCallback = this.authCallback;
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -230,7 +371,7 @@ class Confirm extends React.PureComponent {
   };
 
   render() {
-    const { settings, t, greetingTitle } = this.props;
+    const { settings, t, greetingTitle, providers } = this.props;
 
     //console.log("createUser render");
 
@@ -352,6 +493,11 @@ class Confirm extends React.PureComponent {
               onClick={this.onSubmit}
             />
           </div>
+          {providers && providers.length > 0 && (
+            <Box>
+              <ButtonsWrapper>{this.providerButtons()}</ButtonsWrapper>
+            </Box>
+          )}
 
           {/*             <Row className='confirm-row'>
 
@@ -381,7 +527,15 @@ const CreateUserForm = (props) => (
 );
 
 export default inject(({ auth }) => {
-  const { login, logout, isAuthenticated, settingsStore } = auth;
+  const {
+    login,
+    logout,
+    isAuthenticated,
+    settingsStore,
+    setProviders,
+    providers,
+    thirdPartyLogin,
+  } = auth;
   const {
     passwordSettings,
     greetingSettings,
@@ -389,6 +543,8 @@ export default inject(({ auth }) => {
     defaultPage,
     getSettings,
     getPortalPasswordSettings,
+    getOAuthToken,
+    getLoginLink,
   } = settingsStore;
 
   return {
@@ -401,5 +557,10 @@ export default inject(({ auth }) => {
     logout,
     getSettings,
     getPortalPasswordSettings,
+    thirdPartyLogin,
+    getOAuthToken,
+    getLoginLink,
+    setProviders,
+    providers,
   };
 })(withRouter(withTranslation("Confirm")(observer(CreateUserForm))));

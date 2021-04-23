@@ -2,9 +2,12 @@ import Avatar from "@appserver/components/avatar";
 import Button from "@appserver/components/button";
 import IconButton from "@appserver/components/icon-button";
 import Text from "@appserver/components/text";
+import SocialButton from "@appserver/components/social-button";
+import FacebookButton from "@appserver/components/facebook-button";
 import ToggleContent from "@appserver/components/toggle-content";
 import Link from "@appserver/components/link";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
+import toastr from "studio/toastr";
 import React from "react";
 import { combineUrl, isMe } from "@appserver/common/utils";
 import styled from "styled-components";
@@ -17,7 +20,9 @@ import {
   getUserRole,
 } from "../../../../helpers/people-helpers";
 import config from "../../../../../package.json";
-import { AppServerConfig } from "@appserver/common/constants";
+import { AppServerConfig, providersData } from "@appserver/common/constants";
+import { unlinkOAuth, linkOAuth } from "@appserver/common/api/people";
+import { getAuthProviders } from "@appserver/common/api/settings";
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -59,6 +64,13 @@ const ContactWrapper = styled.div`
   }
 `;
 
+const ProviderButtonsWrapper = styled.div`
+  align-items: center;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-gap: 16px 22px;
+`;
+
 const createContacts = (contacts) => {
   const styledContacts = contacts.map((contact, index) => {
     let url = null;
@@ -88,12 +100,30 @@ const stringFormat = (string, data) =>
   string.replace(/\{(\d+)\}/g, (m, n) => data[n] || m);
 
 class SectionBodyContent extends React.PureComponent {
-  componentDidMount() {
-    const { cultures, getPortalCultures, profile, viewer, isSelf } = this.props;
+  async componentDidMount() {
+    const {
+      cultures,
+      getPortalCultures,
+      profile,
+      viewer,
+      isSelf,
+      setProviders,
+    } = this.props;
     //const isSelf = isMe(viewer, profile.userName);
     if (isSelf && !cultures.length) {
       getPortalCultures();
     }
+
+    if (!isSelf) return;
+    try {
+      await getAuthProviders().then((providers) => {
+        setProviders(providers);
+      });
+    } catch (e) {
+      console.error(e);
+    }
+
+    window.loginCallback = this.loginCallback;
   }
 
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
@@ -110,6 +140,113 @@ class SectionBodyContent extends React.PureComponent {
     );
   };
 
+  loginCallback = (profile) => {
+    const { setProviders, t } = this.props;
+    linkOAuth(profile.Serialized).then((resp) => {
+      getAuthProviders().then((providers) => {
+        setProviders(providers);
+        toastr.success(t("ProviderSuccessfullyConnected"));
+      });
+    });
+  };
+
+  unlinkAccount = (providerName) => {
+    const { setProviders, t } = this.props;
+    unlinkOAuth(providerName).then(() => {
+      getAuthProviders().then((providers) => {
+        setProviders(providers);
+        toastr.success(t("ProviderSuccessfullyDisconnected"));
+      });
+    });
+  };
+
+  linkAccount = (providerName, link, e) => {
+    const { getOAuthToken, getLoginLink } = this.props;
+    e.preventDefault();
+
+    try {
+      const tokenGetterWin = window.open(
+        link,
+        "login",
+        "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+      );
+
+      getOAuthToken(tokenGetterWin).then((code) => {
+        const token = window.btoa(
+          JSON.stringify({
+            auth: providerName,
+            mode: "popup",
+            callback: "loginCallback",
+          })
+        );
+
+        tokenGetterWin.location.href = getLoginLink(token, code);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  providerButtons = () => {
+    const { t, providers } = this.props;
+
+    const providerButtons =
+      providers &&
+      providers.map((item) => {
+        const { icon, label, iconOptions } = providersData[item.provider];
+
+        if (!icon || !label) return <React.Fragment></React.Fragment>;
+        return (
+          <React.Fragment key={`${item.provider}ProviderItem`}>
+            <div>
+              {item.provider === "Facebook" ? (
+                <FacebookButton
+                  noHover={true}
+                  iconName={icon}
+                  label={t(label)}
+                  className="socialButton"
+                  $iconOptions={iconOptions}
+                />
+              ) : (
+                <SocialButton
+                  noHover={true}
+                  iconName={icon}
+                  label={t(label)}
+                  className="socialButton"
+                  $iconOptions={iconOptions}
+                />
+              )}
+            </div>
+            {item.linked ? (
+              <div>
+                <Link
+                  type="action"
+                  color="A3A9AE"
+                  onClick={(e) => this.unlinkAccount(item.provider, e)}
+                  isHovered={true}
+                >
+                  {t("Disconnect")}
+                </Link>
+              </div>
+            ) : (
+              <div>
+                <Link
+                  type="action"
+                  color="A3A9AE"
+                  onClick={(e) => this.linkAccount(item.provider, item.url, e)}
+                  isHovered={true}
+                >
+                  {t("Connect")}
+                </Link>
+              </div>
+            )}
+          </React.Fragment>
+        );
+      });
+
+    return providerButtons;
+  };
+
   render() {
     const {
       profile,
@@ -119,6 +256,7 @@ class SectionBodyContent extends React.PureComponent {
       viewer,
       t,
       isSelf,
+      providers,
     } = this.props;
 
     const contacts = profile.contacts && getUserContacts(profile.contacts);
@@ -161,6 +299,16 @@ class SectionBodyContent extends React.PureComponent {
           cultures={cultures}
           culture={culture}
         />
+
+        {isSelf && providers && providers.length > 0 && (
+          <ToggleWrapper>
+            <ToggleContent label={t("LoginSettings")} isOpen={true}>
+              <ProviderButtonsWrapper>
+                {this.providerButtons()}
+              </ProviderButtonsWrapper>
+            </ToggleContent>
+          </ToggleWrapper>
+        )}
         {isSelf && false && (
           <ToggleWrapper isSelf={true}>
             <ToggleContent label={t("Subscriptions")} isOpen={true}>
@@ -213,5 +361,9 @@ export default withRouter(
     isSelf: peopleStore.targetUserStore.isMe,
     avatarMax: peopleStore.avatarEditorStore.avatarMax,
     setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
+    providers: peopleStore.usersStore.providers,
+    setProviders: peopleStore.usersStore.setProviders,
+    getOAuthToken: auth.settingsStore.getOAuthToken,
+    getLoginLink: auth.settingsStore.getLoginLink,
   }))(observer(withTranslation("Profile")(SectionBodyContent)))
 );
