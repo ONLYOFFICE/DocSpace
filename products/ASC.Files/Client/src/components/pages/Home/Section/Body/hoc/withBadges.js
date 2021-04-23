@@ -162,7 +162,7 @@ export default function withBadges(WrappedComponent) {
         canWebEdit,
         isTrashFolder,
         canConvert,
-        onFilesClick, // from withContentAction HOC
+        onFilesClick, // from withFileAction HOC
       } = this.props;
       const { fileStatus, access } = item;
 

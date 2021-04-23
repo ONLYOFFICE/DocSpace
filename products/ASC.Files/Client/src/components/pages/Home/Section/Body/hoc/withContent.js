@@ -69,54 +69,6 @@ export default function withContentActions(WrappedContent) {
       editCompleteAction(id, item, isCancel);
     };
 
-    onFilesClick = () => {
-      const {
-        filter,
-        parentFolder,
-        setIsLoading,
-        fetchFiles,
-        isImage,
-        isSound,
-        isVideo,
-        canWebEdit,
-        item,
-        isTrashFolder,
-        openDocEditor,
-        expandedKeys,
-        addExpandedKeys,
-        setMediaViewerData,
-      } = this.props;
-      const { id, fileExst, viewUrl, providerKey, contentLength } = item;
-
-      if (isTrashFolder) return;
-
-      if (!fileExst && !contentLength) {
-        setIsLoading(true);
-
-        if (!expandedKeys.includes(parentFolder + "")) {
-          addExpandedKeys(parentFolder + "");
-        }
-
-        fetchFiles(id, filter)
-          .catch((err) => {
-            toastr.error(err);
-            setIsLoading(false);
-          })
-          .finally(() => setIsLoading(false));
-      } else {
-        if (canWebEdit) {
-          return openDocEditor(id, providerKey);
-        }
-
-        if (isImage || isSound || isVideo) {
-          setMediaViewerData({ visible: true, id });
-          return;
-        }
-
-        return window.open(viewUrl, "_blank");
-      }
-    };
-
     updateItem = () => {
       const {
         updateFile,
@@ -292,6 +244,7 @@ export default function withContentActions(WrappedContent) {
         viewer,
         t,
         isTrashFolder,
+        onFilesClick,
       } = this.props;
       const { id, fileExst, updated, createdBy, access, fileStatus } = item;
 
@@ -312,7 +265,7 @@ export default function withContentActions(WrappedContent) {
 
       const linkStyles = isTrashFolder //|| window.innerWidth <= 1024
         ? { noHover: true }
-        : { onClick: this.onFilesClick };
+        : { onClick: onFilesClick };
 
       const newItems = item.new || fileStatus === 2;
       const showNew = !!newItems;
@@ -345,22 +298,12 @@ export default function withContentActions(WrappedContent) {
 
   return inject(
     (
-      {
-        filesActionsStore,
-        filesStore,
-        selectedFolderStore,
-        formatsStore,
-        treeFoldersStore,
-        mediaViewerDataStore,
-        auth,
-      },
-      { item, t, history }
+      { filesActionsStore, filesStore, treeFoldersStore, auth },
+      { t, history }
     ) => {
       const { editCompleteAction } = filesActionsStore;
       const {
-        filter,
         setIsLoading,
-        fetchFiles,
         openDocEditor,
         updateFile,
         renameFolder,
@@ -369,17 +312,11 @@ export default function withContentActions(WrappedContent) {
         isLoading,
       } = filesStore;
       const {
-        iconFormatsStore,
-        mediaViewersFormatsStore,
-        docserviceStore,
-      } = formatsStore;
-      const {
         isRecycleBinFolder,
-        expandedKeys,
-        addExpandedKeys,
+
         isPrivacyFolder,
       } = treeFoldersStore;
-      const { setMediaViewerData } = mediaViewerDataStore;
+
       const {
         type: fileActionType,
         extension: fileActionExt,
@@ -388,26 +325,12 @@ export default function withContentActions(WrappedContent) {
       const { replaceFileStream, setEncryptionAccess } = auth;
       const { culture, isDesktopClient } = auth.settingsStore;
 
-      const isImage = iconFormatsStore.isImage(item.fileExst);
-      const isSound = iconFormatsStore.isSound(item.fileExst);
-      const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
-      const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
       return {
         t,
         editCompleteAction,
-        filter,
-        parentFolder: selectedFolderStore.parentId,
         setIsLoading,
-        fetchFiles,
-        isImage,
-        isSound,
-        isVideo,
-        canWebEdit,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
-        expandedKeys,
-        addExpandedKeys,
-        setMediaViewerData,
         updateFile,
         renameFolder,
         fileActionId,

@@ -8,8 +8,7 @@ import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import RowContent from "@appserver/components/row-content";
 
-import withContentActions from "../hoc/withContentActions";
-import Badges from "../sub-components/Badges";
+import withContent from "../hoc/withContent";
 import withBadges from "../hoc/withBadges";
 
 const sideColor = "#A3A9AE";
@@ -161,5 +160,5 @@ const FilesRowContent = ({
 };
 
 export default withRouter(
-  withTranslation("Home")(withContentActions(withBadges(FilesRowContent)))
+  withTranslation("Home")(withContent(withBadges(FilesRowContent)))
 );

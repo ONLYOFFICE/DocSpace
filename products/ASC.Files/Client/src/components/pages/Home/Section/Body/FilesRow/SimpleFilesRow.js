@@ -64,6 +64,7 @@ const SimpleFilesRow = createSelectable((props) => {
     contextOptionsProps,
     checkedProps,
     element,
+    onFilesClick,
   } = props;
 
   return (
@@ -90,7 +91,11 @@ const SimpleFilesRow = createSelectable((props) => {
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
         >
-          <FilesRowContent item={item} sectionWidth={sectionWidth} />
+          <FilesRowContent
+            item={item}
+            sectionWidth={sectionWidth}
+            onFilesClick={onFilesClick}
+          />
         </StyledSimpleFilesRow>
       </DragAndDrop>
     </div>

@@ -119,6 +119,54 @@ export default function withFileActions(WrappedFileItem) {
       setStartDrag(true);
     };
 
+    onFilesClick = () => {
+      const {
+        filter,
+        parentFolder,
+        setIsLoading,
+        fetchFiles,
+        isImage,
+        isSound,
+        isVideo,
+        canWebEdit,
+        item,
+        isTrashFolder,
+        openDocEditor,
+        expandedKeys,
+        addExpandedKeys,
+        setMediaViewerData,
+      } = this.props;
+      const { id, fileExst, viewUrl, providerKey, contentLength } = item;
+
+      if (isTrashFolder) return;
+
+      if (!fileExst && !contentLength) {
+        setIsLoading(true);
+
+        if (!expandedKeys.includes(parentFolder + "")) {
+          addExpandedKeys(parentFolder + "");
+        }
+
+        fetchFiles(id, filter)
+          .catch((err) => {
+            toastr.error(err);
+            setIsLoading(false);
+          })
+          .finally(() => setIsLoading(false));
+      } else {
+        if (canWebEdit) {
+          return openDocEditor(id, providerKey);
+        }
+
+        if (isImage || isSound || isVideo) {
+          setMediaViewerData({ visible: true, id });
+          return;
+        }
+
+        return window.open(viewUrl, "_blank");
+      }
+    };
+
     render() {
       const {
         item,
@@ -169,6 +217,7 @@ export default function withFileActions(WrappedFileItem) {
           rowContextClick={this.rowContextClick}
           onDrop={this.onDrop}
           onMouseDown={this.onMouseDown}
+          onFilesClick={this.onFilesClick}
           getClassName={this.getClassName}
           className={className}
           isDragging={isDragging}
@@ -194,12 +243,19 @@ export default function withFileActions(WrappedFileItem) {
         selectedFolderStore,
         filesStore,
         uploadDataStore,
+        formatsStore,
+        mediaViewerDataStore,
       },
       { item, t, history }
     ) => {
       const { selectRowAction, onSelectItem } = filesActionsStore;
       const { setSharingPanelVisible } = dialogsStore;
-      const { isPrivacyFolder, isRecycleBinFolder } = treeFoldersStore;
+      const {
+        isPrivacyFolder,
+        isRecycleBinFolder,
+        expandedKeys,
+        addExpandedKeys,
+      } = treeFoldersStore;
       const { id: selectedFolderId, isRootFolder } = selectedFolderStore;
       const {
         dragging,
@@ -210,9 +266,19 @@ export default function withFileActions(WrappedFileItem) {
         fileActionStore,
         canShare,
         isFileSelected,
+        filter,
+        setIsLoading,
+        fetchFiles,
+        openDocEditor,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
+      const {
+        iconFormatsStore,
+        mediaViewersFormatsStore,
+        docserviceStore,
+      } = formatsStore;
+      const { setMediaViewerData } = mediaViewerDataStore;
 
       const selectedItem = selection.find(
         (x) => x.id === item.id && x.fileExst === item.fileExst
@@ -226,6 +292,11 @@ export default function withFileActions(WrappedFileItem) {
         : item.fileExst //|| item.contentLength
         ? false
         : true;
+
+      const isImage = iconFormatsStore.isImage(item.fileExst);
+      const isSound = iconFormatsStore.isSound(item.fileExst);
+      const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
+      const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
 
       return {
         t,
@@ -243,12 +314,25 @@ export default function withFileActions(WrappedFileItem) {
         setStartDrag,
         history,
         isFolder,
-        isRootFolder, //??
+        isRootFolder,
         canShare,
         actionType: type,
         actionExtension: extension,
         actionId: id,
         checked: isFileSelected(item.id, item.parentId),
+        filter,
+        parentFolder: selectedFolderStore.parentId,
+        setIsLoading,
+        fetchFiles,
+        isImage,
+        isSound,
+        isVideo,
+        canWebEdit,
+        isTrashFolder: isRecycleBinFolder,
+        openDocEditor,
+        expandedKeys,
+        addExpandedKeys,
+        setMediaViewerData,
       };
     }
   )(observer(WithFileActions));
