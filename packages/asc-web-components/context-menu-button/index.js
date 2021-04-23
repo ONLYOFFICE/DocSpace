@@ -124,6 +124,15 @@ class ContextMenuButton extends React.Component {
     return true;
   }
 
+  callNewMenu = (e) => {
+    if (this.props.isDisabled) {
+      this.stopAction;
+      return;
+    }
+
+    this.props.isNew && this.props.onClick(e);
+  };
+
   render() {
     //console.log("ContextMenuButton render", this.props);
     const {
@@ -148,12 +157,19 @@ class ContextMenuButton extends React.Component {
       style,
       isFill, // eslint-disable-line react/prop-types
       asideHeader, // eslint-disable-line react/prop-types
+      isNew,
     } = this.props;
 
     const { isOpen, displayType, offsetX, offsetY } = this.state;
     const iconButtonName = isOpen && iconOpenName ? iconOpenName : iconName;
     return (
-      <StyledOuter ref={this.ref} className={className} id={id} style={style}>
+      <StyledOuter
+        ref={this.ref}
+        className={className}
+        id={id}
+        style={style}
+        onClick={this.callNewMenu}
+      >
         <IconButton
           color={color}
           hoverColor={hoverColor}
@@ -284,6 +300,7 @@ ContextMenuButton.propTypes = {
   columnCount: PropTypes.number,
   /** Set the display type */
   displayType: PropTypes.string,
+  isNew: PropTypes.bool,
 };
 
 ContextMenuButton.defaultProps = {
@@ -296,6 +313,7 @@ ContextMenuButton.defaultProps = {
   directionX: "left",
   isFill: false,
   displayType: "dropdown",
+  isNew: false,
 };
 
 export default ContextMenuButton;
