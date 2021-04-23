@@ -20,6 +20,10 @@ import WebDavIcon from "../../../../../../public/images/icon_webdav.react.svg";
 import YandexDiskIcon from "../../../../../../public/images/icon_yandex_disk.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
+import combineUrl from "@appserver/common/utils/combineUrl";
+import AppServerConfig from "@appserver/common/constants/AppServerConfig";
+import config from "../../../../../../package.json";
+import { withRouter } from "react-router";
 
 const StyledBoxIcon = styled(BoxIcon)`
   ${commonIconsStyles}
@@ -77,18 +81,21 @@ class ConnectClouds extends React.Component {
   };
 
   onDeleteThirdParty = (e) => {
-    const { id, title } = e.currentTarget.dataset;
+    const { dataset } = (e.originalEvent || e).currentTarget;
+    const { id, title } = dataset;
     this.props.setDeleteThirdPartyDialogVisible(true);
     this.props.setRemoveItem({ id, title });
   };
 
   onChangeThirdPartyInfo = (e) => {
-    const key = e.currentTarget.dataset.key;
-    const capabilitiesItem = this.props.capabilities.find((x) => x[0] === key);
-    const providerItem = this.props.providers.find(
-      (x) => x.provider_key === key
+    const { dataset } = (e.originalEvent || e).currentTarget;
+    const { provider_key } = dataset;
+    const capabilitiesItem = this.props.capabilities.find(
+      (x) => x[0] === provider_key
     );
-
+    const providerItem = this.props.providers.find(
+      (x) => x.provider_key === provider_key
+    );
     const { corporate, provider_id, customer_title } = providerItem;
 
     const item = {
@@ -96,7 +103,7 @@ class ConnectClouds extends React.Component {
       link: capabilitiesItem ? capabilitiesItem[1] : " ",
       corporate: corporate,
       provider_id: provider_id,
-      provider_key: key,
+      provider_key: provider_key,
     };
 
     this.props.setConnectItem(item);
@@ -138,10 +145,11 @@ class ConnectClouds extends React.Component {
       myDirectoryFolders,
       commonDirectoryFolders,
       filter,
-      fetchFiles,
-      setSelectedNode,
       providers,
+      homepage,
+      history,
     } = this.props;
+
     const provider = e.currentTarget.dataset.providerKey;
     const isCorporate =
       !!providers.length &&
@@ -151,7 +159,35 @@ class ConnectClouds extends React.Component {
       .filter((f) => f.providerKey === provider)
       .map((f) => f.id)
       .join();
-    return fetchFiles(id, filter).then(() => setSelectedNode([id]));
+
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.startIndex = 0;
+    newFilter.folder = id;
+
+    const urlFilter = newFilter.toUrlParams();
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+    );
+  };
+
+  getContextOptions = (item, index) => {
+    const { t } = this.props;
+    return [
+      {
+        key: `${index}_change`,
+        "data-provider_key": item.provider_key,
+        label: t("ThirdPartyInfo"),
+        onClick: this.onChangeThirdPartyInfo,
+      },
+      {
+        key: `${index}_delete`,
+        "data-id": item.provider_id,
+        "data-title": item.customer_title,
+        label: t("DeleteThirdParty"),
+        onClick: this.onDeleteThirdParty,
+      },
+    ];
   };
 
   render() {
@@ -174,21 +210,7 @@ class ConnectClouds extends React.Component {
                   <Row
                     key={index}
                     element={element}
-                    contextOptions={[
-                      {
-                        key: `${index}_change`,
-                        "data-key": item.provider_key,
-                        label: t("ThirdPartyInfo"),
-                        onClick: this.onChangeThirdPartyInfo,
-                      },
-                      {
-                        key: `${index}_delete`,
-                        "data-id": item.provider_id,
-                        "data-title": item.customer_title,
-                        label: t("DeleteThirdParty"),
-                        onClick: this.onDeleteThirdParty,
-                      },
-                    ]}
+                    contextOptions={this.getContextOptions(item, index)}
                   >
                     <Box
                       containerMinWidth="200px"
@@ -258,8 +280,8 @@ class ConnectClouds extends React.Component {
 export default inject(
   ({ filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
     const { providers, capabilities } = settingsStore.thirdPartyStore;
-    const { fetchFiles, filter } = filesStore;
-    const { setSelectedNode, myFolder, commonFolder } = treeFoldersStore;
+    const { filter } = filesStore;
+    const { myFolder, commonFolder } = treeFoldersStore;
     const {
       setConnectItem,
       setThirdPartyDialogVisible,
@@ -275,13 +297,13 @@ export default inject(
       myDirectoryFolders: myFolder && myFolder.folders,
       commonDirectoryFolders: commonFolder && commonFolder.folders,
 
-      fetchFiles,
-      setSelectedNode,
       setThirdPartyDialogVisible,
       setConnectDialogVisible,
       setConnectItem,
       setDeleteThirdPartyDialogVisible,
       setRemoveItem,
+
+      homepage: config.homepage,
     };
   }
-)(withTranslation("Settings")(observer(ConnectClouds)));
+)(withTranslation("Settings")(observer(withRouter(ConnectClouds))));

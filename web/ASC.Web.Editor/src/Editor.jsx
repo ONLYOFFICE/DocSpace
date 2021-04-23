@@ -53,6 +53,7 @@ const Editor = () => {
   const fileId = urlParams
     ? urlParams.fileId || urlParams.fileid || null
     : null;
+  const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;
 
@@ -80,7 +81,9 @@ const Editor = () => {
     try {
       if (!fileId) return;
 
-      console.log("PureEditor componentDidMount", fileId, doc);
+      console.log(
+        `Editor componentDidMount fileId=${fileId}, version=${version}, doc=${doc}`
+      );
 
       if (isIPad()) {
         const vh = window.innerHeight * 0.01;
@@ -102,7 +105,7 @@ const Editor = () => {
       }
       fileInfo = await getFileInfo(fileId);
 
-      config = await openEdit(fileId, doc);
+      config = await openEdit(fileId, version, doc);
 
       if (isDesktop) {
         const isEncryption =

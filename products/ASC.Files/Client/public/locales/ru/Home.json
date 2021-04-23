@@ -112,6 +112,8 @@
   "AddFilter": "Добавить фильтр",
   "FolderCreated": "Создана новая папка <strong>{{itemTitle}}</strong>",
   "FileCreated": "Создан новый файл <strong>{{itemTitle}}.{{exst}}</strong>",
+  "FileRenamed": "Документ '{{oldTitle}}' переименован в '{{newTitle}}'",
+  "FolderRenamed": "Папка '{{folderTitle}}' переименована в '{{newFoldedTitle}}'",
   "FolderRemoved": "Папка перемещена в корзину",
   "FileRemoved": "Файл перемещен в корзину",
   "MoveItem": "<strong>{{title}}</strong> перемещен",

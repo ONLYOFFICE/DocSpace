@@ -6,7 +6,7 @@ import uniqueid from "lodash/uniqueId";
 import throttle from "lodash/throttle";
 import sumBy from "lodash/sumBy";
 import { ConflictResolveType } from "@appserver/common/constants";
-
+//import toastr from "studio/toastr";
 import { copyToFolder, moveToFolder } from "@appserver/common/api/files";
 
 const chunkSize = 1024 * 1023; //~0.999mb

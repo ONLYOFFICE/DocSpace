@@ -138,6 +138,7 @@ class FilesRowContent extends React.PureComponent {
 
   updateItem = () => {
     const {
+      t,
       updateFile,
       renameFolder,
       item,
@@ -162,9 +163,27 @@ class FilesRowContent extends React.PureComponent {
     item.fileExst || item.contentLength
       ? updateFile(fileActionId, itemTitle)
           .then(() => this.completeAction(fileActionId))
+          .then(() =>
+            toastr.success(
+              t("FileRenamed", {
+                oldTitle: item.title,
+                newTitle: itemTitle + item.fileExst,
+              })
+            )
+          )
+          .catch((err) => toastr.error(err))
           .finally(() => setIsLoading(false))
       : renameFolder(fileActionId, itemTitle)
           .then(() => this.completeAction(fileActionId))
+          .then(() =>
+            toastr.success(
+              t("FolderRenamed", {
+                folderTitle: item.title,
+                newFoldedTitle: itemTitle,
+              })
+            )
+          )
+          .catch((err) => toastr.error(err))
           .finally(() => setIsLoading(false));
   };
 
