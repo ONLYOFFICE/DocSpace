@@ -25,13 +25,12 @@
 
 
 using System;
-using System.Linq;
 
+using ASC.Calendar.Resources;
 using ASC.Common;
 using ASC.Core;
-using ASC.Calendar.Resources;
-using ASC.Web.Core;
 using ASC.Web.Calendar.Classes;
+using ASC.Web.Core;
 
 namespace ASC.Calendar.Configuration
 {
@@ -63,23 +62,12 @@ namespace ASC.Calendar.Configuration
 
         public override string Name
         {
-            get { return CalendarCommonResource.ProductName; }
+            get { return CalendarAddonResource.AddonName; }
         }
 
         public override string Description
         {
-            get
-            {
-                var id = AuthContext.CurrentAccount.ID;
-
-                if (UserManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupVisitor.ID))
-                    return CalendarCommonResource.ProductDescriptionShort;
-
-                if (UserManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupAdmin.ID) || UserManager.IsUserInGroup(id, ID))
-                    return CalendarCommonResource.ProductDescriptionEx;
-
-                return CalendarCommonResource.ProductDescription;
-            }
+            get { return CalendarAddonResource.AddonDescription; }
         }
 
         public override string StartURL
@@ -117,8 +105,6 @@ namespace ASC.Calendar.Configuration
                 //SubscriptionManager = new ProductSubscriptionManager(),
                 DefaultSortOrder = 20,
                 //SpaceUsageStatManager = new ProjectsSpaceUsageStatManager(),
-                AdminOpportunities = () => CalendarCommonResource.ProductAdminOpportunities.Split('|').ToList(),
-                UserOpportunities = () => CalendarCommonResource.ProductUserOpportunities.Split('|').ToList(),
                 HasComplexHierarchyOfAccessRights = true,
             };
         }

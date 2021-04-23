@@ -13,32 +13,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\CalendarCommonResource.Designer.cs">
+    <Compile Update="Resources\CalendarAddonResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>CalendarCommonResource.resx</DependentUpon>
+      <DependentUpon>CalendarAddonResource.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\CalendarCommonResource.resx">
+    <EmbeddedResource Update="Resources\CalendarAddonResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>CalendarCommonResource.Designer.cs</LastGenOutput>
+      <LastGenOutput>CalendarAddonResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\CalendarCommonResource.ru.resx">
-      <DependentUpon>CalendarCommonResource.resx</DependentUpon>
+    <EmbeddedResource Update="Resources\CalendarAddonResource.ru.resx">
+      <DependentUpon>CalendarAddonResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\CalendarCommonResource.de.resx">
-      <DependentUpon>CalendarCommonResource.resx</DependentUpon>
+    <EmbeddedResource Update="Resources\CalendarAddonResource.de.resx">
+      <DependentUpon>CalendarAddonResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\CalendarCommonResource.es.resx">
-      <DependentUpon>CalendarCommonResource.resx</DependentUpon>
+    <EmbeddedResource Update="Resources\CalendarAddonResource.es.resx">
+      <DependentUpon>CalendarAddonResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\CalendarCommonResource.fr.resx">
-      <DependentUpon>CalendarCommonResource.resx</DependentUpon>
+    <EmbeddedResource Update="Resources\CalendarAddonResource.fr.resx">
+      <DependentUpon>CalendarAddonResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\CalendarCommonResource.it.resx">
-      <DependentUpon>CalendarCommonResource.resx</DependentUpon>
+    <EmbeddedResource Update="Resources\CalendarAddonResource.it.resx">
+      <DependentUpon>CalendarAddonResource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
 
