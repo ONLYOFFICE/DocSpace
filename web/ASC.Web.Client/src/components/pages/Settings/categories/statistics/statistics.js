@@ -1,41 +1,22 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
+import moment from "moment";
 import isEmpty from "lodash/isEmpty";
 import styled from "styled-components";
-import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
-import Link from "@appserver/components/link";
 import TabsContainer from "@appserver/components/tabs-container";
 import ProgressBar from "@appserver/components/progress-bar";
 import toastr from "@appserver/components/toast/toastr";
 import Chart from "@appserver/components/chart";
 import DatePicker from "@appserver/components/date-picker";
-import { tablet, mobile } from "@appserver/components/utils/device";
+import ComboBox from "@appserver/components/combobox";
+import { isMobile, isTablet } from "react-device-detect";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import ArrowRightIcon from "@appserver/studio/public/images/arrow.right.react.svg";
-import moment from "moment";
-
-const StyledArrowRightIcon = styled(ArrowRightIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: ${(props) => props.color};
-  }
-`;
 
 const MainContainer = styled.div`
   width: 100%;
-
-  .settings_tabs {
-    padding-bottom: 16px;
-  }
-
-  .page_loader {
-    position: fixed;
-    left: 50%;
-  }
 
   .category-item-wrapper {
     margin-bottom: 40px;
@@ -64,19 +45,46 @@ const MainContainer = styled.div`
       font-weight: 600;
     }
 
-    .link-text {
-      margin: 0;
-    }
-
     .visits-chart {
       height: 230px;
     }
 
-    .visits-datepicker-container {
-      .visits-datepicker {
-        display: inline-block;
-        margin-left: 4px;
-        margin-right: 4px;
+    .visits-selectors-container {
+      display: ${isMobile && !isTablet ? "block" : "inline-flex"};
+
+      .scrollbar {
+        width: 340px !important;
+      }
+
+      .visits-datepicker-container {
+        ${isMobile &&
+        !isTablet &&
+        `
+        display: flex; 
+        align-items: baseline;
+        `}
+
+        .visits-datepicker {
+          display: inline-block;
+          margin-left: 4px;
+          margin-right: 4px;
+          margin-bottom: 8px;
+          ${isMobile &&
+          !isTablet &&
+          `
+          display: inline-flex;
+          width: auto;
+          margin-top: 8px;
+
+          :first-of-type {
+            margin-left: 0px;
+          }
+
+          :last-of-type {
+            margin-right: 0px;
+          }
+          `};
+        }
       }
     }
 
@@ -118,8 +126,9 @@ class Statistics extends React.Component {
     this.state = {
       isLoading: false,
       isPeriod: false,
-      visitsDateFrom: moment().subtract(7, "days").utc().format(),
-      visitsDateTo: moment().utc().format(),
+      visitsDateFrom: moment().subtract(6, "months").toDate(),
+      visitsDateTo: moment().toDate(),
+      selectedPeriod: null,
     };
   }
 
@@ -175,19 +184,38 @@ class Statistics extends React.Component {
 
   setPeriodData = (period) => {
     const { key } = period;
-    const { isPeriod } = this.state;
 
     if (key === "period") {
       this.setState({
         isPeriod: true,
+        selectedPeriod: period,
       });
-    } else if (isPeriod) {
+    } else {
       this.setState({
         isPeriod: false,
+        selectedPeriod: period,
       });
     }
 
     return this.getVisitsData(key);
+  };
+
+  setPeriodFromDate = (date) => {
+    this.setState(
+      {
+        visitsDateFrom: date,
+      },
+      () => this.getVisitsData("period")
+    );
+  };
+
+  setPeriodToDate = (date) => {
+    this.setState(
+      {
+        visitsDateTo: date,
+      },
+      () => this.getVisitsData("period")
+    );
   };
 
   toUserValue = (value) => {
@@ -198,15 +226,20 @@ class Statistics extends React.Component {
   };
 
   render() {
-    const { t, quota, visits } = this.props;
+    const { t, quota, visits, culture } = this.props;
     const { maxUsersCount, usersCount, storageSize, usedSize } = quota;
-    const { isPeriod } = this.state;
+    const {
+      isPeriod,
+      visitsDateFrom,
+      visitsDateTo,
+      selectedPeriod,
+    } = this.state;
 
     const convertedData = {
-      labels: visits.map((item) => item.displayDate),
+      labels: visits.map((item) => moment(item.date).format("D MMM")),
       datasets: [
         {
-          label: "Посещения",
+          label: t("Visits"),
           data: visits.map((item) => item.hits),
         },
       ],
@@ -222,37 +255,32 @@ class Statistics extends React.Component {
       {
         key: "week",
         title: t("VisitsWeek"),
-        content: "",
+        label: t("VisitsWeek"),
       },
       {
         key: "month",
         title: t("VisitsMonth"),
-        content: "",
+        label: t("VisitsMonth"),
       },
       {
         key: "threeMonth",
         title: t("VisitsThreeMonth"),
-        content: "",
+        label: t("VisitsThreeMonth"),
       },
       {
         key: "period",
         title: t("VisitsPeriod"),
-        content: "",
+        label: t("VisitsPeriod"),
       },
     ];
 
     return (
-      <MainContainer>
+      <MainContainer className="not-selectable">
         <div className="category-item-wrapper">
           <div className="category-item-heading">
-            <Link
-              className="inherit-title-link header"
-              truncate={true}
-              href="#"
-            >
+            <Text className="inherit-title-link header" truncate={true}>
               {t("StorageTitle")}
-            </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
+            </Text>
           </div>
           <div className="storage-value-title">
             <div className="storage-value-current">{usedSizeConverted}</div>
@@ -273,39 +301,44 @@ class Statistics extends React.Component {
               total: maxUsersCount,
             })}
           </Text>
-          <TabsContainer onSelect={this.setPeriodData} elements={visitTabs} />
-          <div className="visits-datepicker-container">
-            <DatePicker
-              className="visits-datepicker"
-              onChange={(date) => {
-                console.log("Selected date", date);
-              }}
-              selectedDate={new Date()}
-              minDate={new Date("1970/01/01")}
-              maxDate={moment().toDate()}
-              isDisabled={!isPeriod}
-              isReadOnly={false}
-              hasError={false}
-              isOpen={false}
-              themeColor="#ED7309"
-              locale="en"
-            />
-            {`-`}
-            <DatePicker
-              className="visits-datepicker"
-              onChange={(date) => {
-                console.log("Selected date", date);
-              }}
-              selectedDate={new Date()}
-              minDate={new Date("1970/01/01")}
-              maxDate={moment().toDate()}
-              isDisabled={!isPeriod}
-              isReadOnly={false}
-              hasError={false}
-              isOpen={false}
-              themeColor="#ED7309"
-              locale="en"
-            />
+          <div className="visits-selectors-container">
+            {isMobile ? (
+              <ComboBox
+                options={visitTabs}
+                onSelect={this.setPeriodData}
+                selectedOption={selectedPeriod || visitTabs[0]}
+                scaledOptions={true}
+                scaled={!isTablet}
+                noBorder={false}
+                isDisabled={false}
+                showDisabledItems={true}
+              />
+            ) : (
+              <TabsContainer
+                onSelect={this.setPeriodData}
+                elements={visitTabs}
+              />
+            )}
+            <div className="visits-datepicker-container">
+              <DatePicker
+                className="visits-datepicker"
+                onChange={this.setPeriodFromDate}
+                selectedDate={visitsDateFrom}
+                maxDate={moment().subtract(1, "days").toDate()}
+                isDisabled={!isPeriod}
+                locale={culture}
+              />
+              {`-`}
+              <DatePicker
+                className="visits-datepicker"
+                onChange={this.setPeriodToDate}
+                selectedDate={visitsDateTo}
+                maxDate={moment().toDate()}
+                minDate={moment(visitsDateFrom).add(1, "days").toDate()}
+                isDisabled={!isPeriod}
+                locale={culture}
+              />
+            </div>
           </div>
           <Chart className="visits-chart" data={convertedData} />
         </div>
@@ -319,13 +352,15 @@ Statistics.propTypes = {
   i18n: PropTypes.object,
 };
 
-export default inject(({ setup }) => {
+export default inject(({ auth, setup }) => {
   const { getQuota, getVisits } = setup;
   const { quota, visits } = setup.statistic;
+  const { culture } = auth.settingsStore;
 
   return {
     quota,
     visits,
+    culture,
     getQuota,
     getVisits,
   };
