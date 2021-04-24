@@ -1,10 +1,8 @@
-{
-  "DeleteOperation": "Deleting",
-  "SuccessEmptyTrash": "Success empty recycle bin",
-
-  "DeleteForeverTitle": "Delete forever?",
-  "DeleteForeverNote": "All items from Trash will be deleted forever. You won’t be able to restore them.",
-
+﻿{
+  "CancelButton": "Cancel",
   "DeleteForeverButton": "Delete forever",
-  "CancelButton": "Cancel"
+  "DeleteForeverNote": "All items from Trash will be deleted forever. You won’t be able to restore them.",
+  "DeleteForeverTitle": "Delete forever?",
+  "DeleteOperation": "Deleting",
+  "SuccessEmptyTrash": "Trash emptied"
 }

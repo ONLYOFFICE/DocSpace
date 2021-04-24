@@ -1,35 +1,30 @@
-{
-  "Owner": "Owner",
-  "SharingSettingsTitle": "Sharing settings",
-  "LinkText": "Add users",
-  "AddGroupsForSharingButton": "Add groups",
-  "AddButton": "Save",
+﻿{
   "AccessRightsFullAccess": "Full access",
+  "AddButton": "Save",
+  "AddGroupsForSharingButton": "Add groups",
   "AddShareMessage": "Add message",
-  "LinkCopySuccess": "Link has been copied to the clipboard",
-
-  "Notify users": "Notify users",
+  "Comment": "Comment",
   "CopyExternalLink": "Copy external link",
   "CopyInternalLink": "Copy internal link",
-  "ShareVia": "Share via",
+  "CustomFilter": "Custom filter",
+  "DenyAccess": "Deny access",
   "Embedding": "Embedding",
-  "ExternalLink": "External link",
-  "InternalLink": "Internal link",
-
   "EncryptedFileSaving": "Saving encrypted file",
-  "EncryptedFileSharing": "File <strong>{{title}}</strong> successfully shared",
-
+  "EncryptedFileSharing": "File \u003Cstrong\u003E{{title}}\u003C/strong\u003E successfully shared",
+  "ExternalLink": "External link",
+  "FormFilling": "Form filling",
   "FullAccess": "Full access",
+  "InternalLink": "Internal link",
+  "LinkCopySuccess": "Link has been copied to the clipboard",
+  "LinkText": "Add users",
+  "LoadingLabel": "Loading... Please wait...",
+  "Notify users": "Notify users",
+  "Owner": "Owner",
   "ReadOnly": "Read only",
   "Review": "Review",
-  "Comment": "Comment",
-  "FormFilling": "Form filling",
-  "DenyAccess": "Deny access",
-  "CustomFilter": "Custom filter",
-
-  "ShareEveryone": "Everyone",
-  "ShareEmailSubject": "You have been granted access to the {{itemName}} document",
   "ShareEmailBody": "You have been granted access to the {{itemName}} document. Click the link below to open the document right now: {{shareLink}}",
-
-  "LoadingLabel": "Loading... Please wait..."
+  "ShareEmailSubject": "You have been granted access to the {{itemName}} document",
+  "ShareEveryone": "Everyone",
+  "ShareVia": "Share via",
+  "SharingSettingsTitle": "Sharing settings"
 }

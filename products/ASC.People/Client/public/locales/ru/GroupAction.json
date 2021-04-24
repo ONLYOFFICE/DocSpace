@@ -1,17 +1,15 @@
-{
-  "SaveButton": "Сохранить",
-  "CancelButton": "Отмена",
-  "Members": "Участники",
-  "AddMembers": "Добавить участников",
-  "LblSelect": "Выбрать",
-  "Name": "Название",
+﻿{
   "AddButton": "Добавить",
-
-  "SuccessSaveGroup": "Успешное сохранение: {{groupCaption, lowercase}} '{{ groupName }}'",
-
+  "AddMembers": "Добавить участников",
+  "CancelButton": "Отмена",
   "CustomNewDepartment": "{{groupCaption}} (создание)",
-  "SearchAddedMembers": "Поиск добавленных участников",
-  "MeLabel": "Я",
   "EmptyFieldError": "Пустое поле",
-  "GroupAction": "Работа с группой"
+  "GroupAction": "Работа с группой",
+  "LblSelect": "Выбрать",
+  "MeLabel": "Я",
+  "Members": "Участники",
+  "Name": "Название",
+  "SaveButton": "Сохранить",
+  "SearchAddedMembers": "Поиск добавленных участников",
+  "SuccessSaveGroup": "Успешное сохранение: {{groupCaption, lowercase}} \u0027{{ groupName }}\u0027"
 }

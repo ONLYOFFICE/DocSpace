@@ -1,10 +1,8 @@
-{
-  "DeleteOperation": "Удаление",
-  "SuccessEmptyTrash": "Корзина успешно очищена",
-
-  "DeleteForeverTitle": "Удалить навсегда?",
-  "DeleteForeverNote": "Все объекты из корзины будут удалены навсегда. Вы не сможете их восстановить.",
-
+﻿{
+  "CancelButton": "Отмена",
   "DeleteForeverButton": "Удалить навсегда",
-  "CancelButton": "Отмена"
+  "DeleteForeverNote": "Все объекты из корзины будут удалены навсегда. Вы не сможете их восстановить.",
+  "DeleteForeverTitle": "Удалить навсегда?",
+  "DeleteOperation": "Удаление",
+  "SuccessEmptyTrash": "Корзина успешно очищена"
 }

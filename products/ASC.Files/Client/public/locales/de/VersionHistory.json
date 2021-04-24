@@ -1,0 +1,10 @@
+﻿{
+  "AddButton": "Speichern",
+  "CancelButton": "Abbrechen",
+  "Download": "Herunterladen",
+  "EditComment": "Kommentar bearbeiten",
+  "LoadingDescription": "Bitte warten...",
+  "LoadingProcessing": "Ladevorgang...",
+  "Restore": "Wiederherstellen",
+  "Version": "Version {{version}}"
+}

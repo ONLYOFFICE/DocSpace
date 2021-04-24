@@ -1,17 +1,17 @@
-{
-  "RecoverProcessSending": "Sending...",
+﻿{
+  "AboutCompanyTitle": "About this program",
+  "AboutShort": "About",
+  "LogoutButton": "Sign Out",
+  "Profile": "Profile",
   "RecoverAccess": "Recover access",
-  "RecoverTitle": "Access recovery",
-  "RecoverTextBody": "If you are an existing user and have problems accessing this portal or you want to register as the portal new user, please contact the portal administrator using the form below.",
-  "RecoverContactEmailPlaceholder": "Contact e-mail",
+  "RecoverContactEmailPlaceholder": "Contact email",
   "RecoverDescribeYourProblemPlaceholder": "Describe your problem",
   "RecoverErrorMessage": "Required field",
+  "RecoverProcessSending": "Sending...",
   "RecoverSendButton": "Send",
-  "Profile": "Profile",
-  "AboutCompanyTitle": "About this program",
-  "LogoutButton": "Sign Out",
+  "RecoverTextBody": "If you can\u0027t log in with your existing account or want to be registered as a new user, contact the portal administrator. ",
+  "RecoverTitle": "Access recovery",
   "Settings": "Settings",
-  "Version": "Version",
-  "AboutShort": "About",
-  "TurnOnDesktopVersion": "Turn on desktop version"
+  "TurnOnDesktopVersion": "Turn on desktop version",
+  "Version": "Version"
 }

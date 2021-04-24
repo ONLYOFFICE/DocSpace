@@ -1,6 +1,6 @@
-{
-  "DeleteProfileTitle": "Delete profile dialog",
+﻿{
+  "CloseButton": "Close",
   "DeleteProfileInfo": "Send the profile deletion instructions to the email address",
-  "SendButton": "Send",
-  "CloseButton": "Close"
+  "DeleteProfileTitle": "Delete profile dialog",
+  "SendButton": "Send"
 }

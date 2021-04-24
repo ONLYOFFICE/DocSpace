@@ -1,0 +1,15 @@
+﻿{
+  "CancelButton": "Abbrechen",
+  "ChooseUser": "Benutzer wählen",
+  "DeleteProfileAfterReassignment": "Profil nach der Neuzuweisung löschen",
+  "LDAPLbl": "LDAP",
+  "NotBeUndone": "Dies kann nicht rückgängig gemacht werden.",
+  "ReassignButton": "Neu zuweisen",
+  "ReassignmentData": "Neuzuweisung von Daten",
+  "ReassignsReadMore": "Mehr zur Datenübertragung",
+  "ReassignsToUser": "Dieser Benutzer erhielt die Daten —",
+  "ReassignsTransferedListHdr": "Werden überwiesen:",
+  "ReassignsTransferedListItem1": "Gemeinsame und private Dokumente, die für andere Portalbenutzer verfügbar sind;",
+  "ReassignsTransferedListItem2": "Offene Projekte, Meilensteine und Aufgaben;",
+  "ReassignsTransferedListItem3": "Kontakte, offene Aufgaben und Veranstaltungen, Verkaufschancen"
+}

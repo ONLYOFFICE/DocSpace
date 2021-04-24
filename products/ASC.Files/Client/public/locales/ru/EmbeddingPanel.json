@@ -1,10 +1,9 @@
-{
-  "Size": "Размер",
-
-  "EmbeddingDocument": "Встраивание документа",
-  "Width": "Ширина",
-  "Height": "Высота",
-  "EmbedCode": "Встраиваемый код",
+﻿{
   "Auto": "Авто",
-  "CodeCopySuccess": "Код скопирован в буфер обмена"
+  "CodeCopySuccess": "Код скопирован в буфер обмена",
+  "EmbedCode": "Встраиваемый код",
+  "EmbeddingDocument": "Встраивание документа",
+  "Height": "Высота",
+  "Size": "Размер",
+  "Width": "Ширина"
 }

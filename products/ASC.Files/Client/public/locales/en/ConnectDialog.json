@@ -1,13 +1,13 @@
-{
-  "ConnectingAccount": "Connecting account",
+﻿{
   "Account": "Account",
-  "Reconnect": "Reconnect",
-  "SaveButton": "Save",
-  "ConnectMakeShared": "Make shared and put into the 'Common' folder",
   "ConnectFolderTitle": "Folder title",
+  "ConnectingAccount": "Connecting account",
   "ConnectionUrl": "Connection url",
+  "ConnectMakeShared": "Share and put into \u0027Common\u0027 folder",
+  "EmptyField": "All fields are required",
   "Login": "Login",
   "Password": "Password",
-  "EmptyField": "All fields are required to be filled in",
-  "RequiredFieldMessage": "Required field"
+  "Reconnect": "Reconnect",
+  "RequiredFieldMessage": "Required field",
+  "SaveButton": "Save"
 }

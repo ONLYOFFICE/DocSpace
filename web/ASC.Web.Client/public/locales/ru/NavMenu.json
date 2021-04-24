@@ -1,17 +1,17 @@
-{
-  "RecoverProcessSending": "Отправка...",
+﻿{
+  "AboutCompanyTitle": "О программе",
+  "AboutShort": "О программе",
+  "LogoutButton": "Выйти",
+  "Profile": "Профиль",
   "RecoverAccess": "Доступ к порталу",
-  "RecoverTitle": "Доступ к порталу",
-  "RecoverTextBody": "Если Вы уже зарегистрированы и у Вас есть проблемы с доступом к этому порталу, или Вы хотите зарегистрироваться как новый пользователь портала, пожалуйста, обратитесь к администратору портала, используя форму, расположенную ниже.",
   "RecoverContactEmailPlaceholder": "Адрес email, по которому можно связаться с Вами",
   "RecoverDescribeYourProblemPlaceholder": "Пожалуйста, опишите вашу проблему",
   "RecoverErrorMessage": "Обязательное поле",
+  "RecoverProcessSending": "Отправка...",
   "RecoverSendButton": "Отправить",
-  "Profile": "Профиль",
-  "AboutCompanyTitle": "О программе",
-  "LogoutButton": "Выйти",
+  "RecoverTextBody": "Если Вы уже зарегистрированы и у Вас есть проблемы с доступом к этому порталу, или Вы хотите зарегистрироваться как новый пользователь портала, пожалуйста, обратитесь к администратору портала, используя форму, расположенную ниже.",
+  "RecoverTitle": "Доступ к порталу",
   "Settings": "Настройки",
-  "Version": "Версия",
-  "AboutShort": "О программе",
-  "TurnOnDesktopVersion": "Включить версию для ПК"
+  "TurnOnDesktopVersion": "Включить версию для ПК",
+  "Version": "Версия"
 }

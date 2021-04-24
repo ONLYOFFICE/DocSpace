@@ -1,0 +1,13 @@
+﻿{
+  "ActiveEmployeeTitle": "Aktiv",
+  "CancelButton": "Abbrechen",
+  "ChangeUsersActiveStatus": "Deaktiviert",
+  "ChangeUsersDisableStatus": "aktiviert",
+  "ChangeUsersStatusButton": "Benutzerstatus ändern",
+  "ChangeUserStatusDialog": "Die Benutzer mit dem Status \u0027{{ status }}\u0027 werden deaktiviert.",
+  "ChangeUserStatusDialogHeader": "Benutzerstatus ändern",
+  "ChangeUserStatusDialogMessage": "Sie können Status für Sie oder Portalbesitzer nicht ändern",
+  "DisabledEmployeeTitle": "Deaktiviert",
+  "ShowUsersList": "Liste der Benutzer anzeigen",
+  "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert"
+}

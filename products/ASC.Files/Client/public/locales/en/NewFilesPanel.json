@@ -1,7 +1,6 @@
-{
-  "NewFiles": "New files",
-  "MarkAsRead": "Mark all as read",
+﻿{
   "CloseButton": "Close",
-
-  "LoadingLabel": "Loading... Please wait..."
+  "LoadingLabel": "Loading... Please wait...",
+  "MarkAsRead": "Mark all as read",
+  "NewFiles": "New files"
 }

@@ -1,12 +1,12 @@
-{
-  "Copy": "Copy",
-  "Move": "Move",
-  "CopyOperation": "Copying",
-  "MoveToOperation": "Moving",
-  "Restore": "Restore",
+﻿{
   "CancelButton": "Cancel",
-  "MoveToFolderMessage": "You cannot move the folder to its subfolder",
+  "Copy": "Copy",
+  "CopyOperation": "Copying",
+  "Move": "Move",
   "MoveConfirmation": "Move confirmation",
-  "MoveConfirmationMessage": "You are about to move elements from the {{provider}} directory. In such a case, they will be deleted from your {{provider}} account and will no longer be accessible to other users, in case these elements have previously been shared.",
-  "MoveConfirmationAlert": "Are you sure you want to move the elements?"
+  "MoveConfirmationAlert": "Are you sure you want to move the elements?",
+  "MoveConfirmationMessage": "You are about to move elements from the {{provider}} directory. They will be deleted from your {{provider}} account and will no longer be accessible to other users.",
+  "MoveToFolderMessage": "You can\u0027t move the folder to its subfolder",
+  "MoveToOperation": "Moving",
+  "Restore": "Restore"
 }

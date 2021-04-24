@@ -1,12 +1,11 @@
-{
-  "NotBeUndone": "Note: this action cannot be undone.",
-  "Warning": "Warning",
-  "DeleteUserDataConfirmation": "User's personal documents that are available to others will be deleted. To avoid this, you must start the data reassign process before deleting.",
-  "OKButton": "OK",
+﻿{
   "CancelButton": "Cancel",
-
-  "DeleteGroupUsersMessage": "The selected disabled users will be deleted from the portal.",
+  "DeleteGroupUsersMessage": "The disabled users you selected will be deleted.",
   "DeleteGroupUsersMessageHeader": "Delete the users from portal",
   "DeleteGroupUsersSuccessMessage": "Users have been successfully deleted.",
-  "ShowUsersList": "View users list"
+  "DeleteUserDataConfirmation": "User documents shared others will be deleted. To avoid this, reassign data.",
+  "NotBeUndone": "Note: this action can\u0027t be undone.",
+  "OKButton": "OK",
+  "ShowUsersList": "View users list",
+  "Warning": "Warning"
 }

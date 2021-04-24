@@ -1,6 +1,6 @@
-{
-  "Done": "Done",
-  "Warning": "Warning",
+﻿{
   "Alert": "Alert",
-  "Info": "Info"
+  "Done": "Done",
+  "Info": "Info",
+  "Warning": "Warning"
 }

@@ -1,0 +1,15 @@
+﻿{
+  "AddButton": "Hinzufügen",
+  "AddMembers": "Mitglieder hinzufügen",
+  "CancelButton": "Abbrechen",
+  "CustomNewDepartment": "{{groupCaption}} (Erstellung)",
+  "EmptyFieldError": "Leeres Feld",
+  "GroupAction": "Arbeit mit Gruppe",
+  "LblSelect": "Auswählen",
+  "MeLabel": "Ich",
+  "Members": "Mitglieder",
+  "Name": "Name",
+  "SaveButton": "Speichern",
+  "SearchAddedMembers": "Hinzugefügte Mitglieder suchen",
+  "SuccessSaveGroup": "{{groupCaption}} \u0027{{ groupName }}\u0027 wurde erfolgreich gespeichert"
+}
