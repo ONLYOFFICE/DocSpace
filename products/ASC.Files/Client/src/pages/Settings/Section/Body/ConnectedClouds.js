@@ -22,7 +22,7 @@ import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
-import config from "../../../../../../package.json";
+import config from "../../../../../package.json";
 import { withRouter } from "react-router";
 
 const StyledBoxIcon = styled(BoxIcon)`

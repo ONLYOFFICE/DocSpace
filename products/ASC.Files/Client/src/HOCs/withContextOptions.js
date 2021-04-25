@@ -39,8 +39,10 @@ export default function withContextOptions(WrappedComponent) {
         setIsVerHistoryPanel,
         history,
         homepage,
+        isTrashFolder,
       } = this.props;
       const { id } = item;
+      if (isTrashFolder) return;
 
       if (!isTabletView) {
         fetchFileVersions(id + "");
@@ -427,6 +429,7 @@ export default function withContextOptions(WrappedComponent) {
         settingsStore,
         selectedFolderStore,
         dialogsStore,
+        treeFoldersStore,
       },
       { item }
     ) => {
@@ -458,6 +461,7 @@ export default function withContextOptions(WrappedComponent) {
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
       const { isRootFolder } = selectedFolderStore;
+      const { isRecycleBinFolder } = treeFoldersStore;
 
       const isThirdPartyFolder = item.providerKey && isRootFolder;
 
@@ -492,6 +496,7 @@ export default function withContextOptions(WrappedComponent) {
         actionType: type,
         actionId: id,
         actionExtension: extension,
+        isTrashFolder: isRecycleBinFolder,
       };
     }
   )(observer(WithContextOptions));

@@ -71,6 +71,7 @@ export default function withContentActions(WrappedContent) {
 
     updateItem = () => {
       const {
+        t,
         updateFile,
         renameFolder,
         item,
@@ -95,9 +96,27 @@ export default function withContentActions(WrappedContent) {
       item.fileExst || item.contentLength
         ? updateFile(fileActionId, itemTitle)
             .then(() => this.completeAction(fileActionId))
+            .then(() =>
+              toastr.success(
+                t("FileRenamed", {
+                  oldTitle: item.title,
+                  newTitle: itemTitle + item.fileExst,
+                })
+              )
+            )
+            .catch((err) => toastr.error(err))
             .finally(() => setIsLoading(false))
         : renameFolder(fileActionId, itemTitle)
             .then(() => this.completeAction(fileActionId))
+            .then(() =>
+              toastr.success(
+                t("FolderRenamed", {
+                  folderTitle: item.title,
+                  newFoldedTitle: itemTitle,
+                })
+              )
+            )
+            .catch((err) => toastr.error(err))
             .finally(() => setIsLoading(false));
     };
 
@@ -308,11 +327,7 @@ export default function withContentActions(WrappedContent) {
         createFolder,
         isLoading,
       } = filesStore;
-      const {
-        isRecycleBinFolder,
-
-        isPrivacyFolder,
-      } = treeFoldersStore;
+      const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
       const {
         type: fileActionType,
