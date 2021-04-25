@@ -62,7 +62,7 @@ const ModalDialogContainer = styled.div`
   }
 
   .delete_dialog-text {
-    padding-top: 8px;
+    padding-bottom: 8px;
   }
 
   .modal-dialog-content {
@@ -76,6 +76,10 @@ const ModalDialogContainer = styled.div`
 
     .modal-dialog-checkbox:not(:last-child) {
       padding-bottom: 4px;
+    }
+
+    .delete_dialog-text:not(:first-child) {
+      padding-top: 8px;
     }
   }
 

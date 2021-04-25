@@ -117,15 +117,14 @@ const EmptyTrashDialogComponent = (props) => {
   return (
     <ModalDialogContainer>
       <ModalDialog visible={visible} onClose={onClose}>
-        <ModalDialog.Header>{t("ConfirmationTitle")}</ModalDialog.Header>
+        <ModalDialog.Header>{t("DeleteForeverTitle")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <Text>{t("EmptyTrashDialogQuestion")}</Text>
-          <Text>{t("EmptyTrashDialogMessage")}</Text>
+          <Text>{t("DeleteForeverNote")}</Text>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
             key="OkButton"
-            label={t("OKButton")}
+            label={t("DeleteForeverButton")}
             size="medium"
             primary
             onClick={onEmptyTrash}
