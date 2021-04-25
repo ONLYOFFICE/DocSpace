@@ -148,5 +148,10 @@
   "ThirdPartyResourceNoteDescription": "You need to connect your cloud drive account to {{organizationName}} Common Documents folder before you will be able to save your backup there.",
   "ThirdPartyStorage": "Third-party storage",
   "ThirdPartyStorageDescription": "Резервная копия может быть сохранена на стороннем хранилище.",
-  "ThirdPartyStorageNoteDescription": "The corresponding service must be previously connected in the Integration section. Otherwise the following settings will be disabled."
+  "ThirdPartyStorageNoteDescription": "The corresponding service must be previously connected in the Integration section. Otherwise the following settings will be disabled.",
+  "DisableAutomaticBackup": "Disable",
+  "EnableAutomaticBackup": "Enable",
+  "MonthlyPeriodSchedule": "Every month",
+  "DailyPeriodSchedule": "Every day",
+  "WeeklyPeriodSchedule": "Every week"
 }

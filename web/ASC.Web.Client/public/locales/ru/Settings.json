@@ -148,5 +148,10 @@
   "ThirdPartyResourceNoteDescription": "Прежде чем Вы сможете сохранять резервные копии в стороннем аккаунте (Dropbox, Box.com, OneDrive или Google Drive), потребуется подключить его к папке 'Общие' {{organizationName}}.",
   "ThirdPartyStorage": "Стороннее хранилище",
   "ThirdPartyStorageDescription": "Резервная копия может быть сохранена на стороннем хранилище.",
-  "ThirdPartyStorageNoteDescription": "Соответствующий сервис необходимо предварительно подключить в разделе 'Интеграция'. В противном случае указанные ниже настройки будут неактивны."
+  "ThirdPartyStorageNoteDescription": "Соответствующий сервис необходимо предварительно подключить в разделе 'Интеграция'. В противном случае указанные ниже настройки будут неактивны.",
+  "DisableAutomaticBackup": "Запрещать",
+  "EnableAutomaticBackup": "Давать возможность",
+  "MonthlyPeriodSchedule": "Каждый месяц",
+  "DailyPeriodSchedule": "Каждый день",
+  "WeeklyPeriodSchedule": "Каждую неделю"
 }

@@ -5,7 +5,9 @@ import commonSettingsStyles from "../../utils/commonSettingsStyles";
 import styled from "styled-components";
 import Button from "@appserver/components/button";
 import Checkbox from "@appserver/components/checkbox";
-
+import { inject, observer } from "mobx-react";
+import { getThirdPartyList } from "@appserver/common/api/files";
+import DocumentsModule from "./sub-components/documentsModule";
 const StyledComponent = styled.div`
   ${commonSettingsStyles}
   .manual-backup_buttons {
@@ -36,6 +38,8 @@ const StyledComponent = styled.div`
 class ManualBackup extends React.Component {
   constructor(props) {
     super(props);
+    this.manualBackup = true;
+
     this.state = {
       backupMailTemporaryStorage: false,
       backupMailDocuments: false,
@@ -43,13 +47,16 @@ class ManualBackup extends React.Component {
       backupMailThirdPartyStorage: false,
     };
   }
+  componentDidMount() {
+    getThirdPartyList().then((res) => console.log("res", res));
+  }
   onClickCheckbox = (e) => {
     const name = e.target.name;
     let change = !this.state[name];
     this.setState({ [name]: change });
   };
   render() {
-    const { t } = this.props;
+    const { t, providers } = this.props;
     const {
       backupMailTemporaryStorage,
       backupMailDocuments,
@@ -95,35 +102,11 @@ class ManualBackup extends React.Component {
           </div>
         </div>
 
-        <div className="category-item-wrapper temporary-storage">
-          <div className="category-item-heading">
-            <Text className="inherit-title-link header">
-              {t("DocumentsModule")}
-            </Text>
-          </div>
-          <Text className="category-item-description">
-            {t("DocumentsModuleDescription")}
-          </Text>
-
-          <div className="backup-include_mail">
-            <Checkbox
-              name={"backupMailDocuments"}
-              isChecked={backupMailDocuments}
-              label={t("IncludeMail")}
-              onChange={this.onClickCheckbox}
-            />
-          </div>
-          <div className="manual-backup_buttons">
-            <Button
-              label={t("MakeCopy")}
-              onClick={() => console.log("click")}
-              primary
-              isDisabled={false}
-              size="medium"
-              tabIndex={10}
-            />
-          </div>
-        </div>
+        <DocumentsModule
+          isManualBackup={this.manualBackup}
+          backupMailDocuments={backupMailDocuments}
+          onClickCheckbox={this.onClickCheckbox}
+        />
 
         <div className="category-item-wrapper temporary-storage">
           <div className="category-item-heading">
