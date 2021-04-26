@@ -150,3 +150,19 @@ Requires:       %name-Common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
 %description    ASC.TelegramService
+
+%package        ASC.Calendar
+Summary:        ASC.Calendar
+Group:          Applications/Internet
+Requires:       %name-Common
+Requires:       dotnet-sdk-5.0
+AutoReqProv:    no
+%description    ASC.Calendar
+
+%package        ASC.Mail
+Summary:        ASC.Mail
+Group:          Applications/Internet
+Requires:       %name-Common
+Requires:       dotnet-sdk-5.0
+AutoReqProv:    no
+%description    ASC.Mail

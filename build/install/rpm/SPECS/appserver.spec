@@ -17,12 +17,14 @@ BuildRequires:  yarn
 BuildRequires:  libgdiplus
 BuildRequires:  dotnet-sdk-5.0
 Requires:       %name-ASC.ApiSystem
+Requires:       %name-ASC.Calendar
 Requires:       %name-ASC.CRM
 Requires:       %name-ASC.Data.Backup
 Requires:       %name-ASC.Data.Storage.Encryption
 Requires:       %name-ASC.Data.Storage.Migration
 Requires:       %name-ASC.Files
 Requires:       %name-ASC.Files.Service
+Requires:       %name-ASC.Mail
 Requires:       %name-ASC.Notify
 Requires:       %name-ASC.People
 Requires:       %name-ASC.Projects

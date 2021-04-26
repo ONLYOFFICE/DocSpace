@@ -177,11 +177,11 @@ install_json() {
 restart_services() {
 	echo -n "Restarting services... "
 
-	for SVC in nginx mysqld AppServer-ASC.Web.Api AppServer-ASC.ApiSystem AppServer-ASC.UrlShortener \
-	AppServer-ASC.Thumbnails AppServer-ASC.Socket AppServer-ASC.Studio.Notify AppServer-ASC.Notify \
-	AppServer-ASC.People AppServer-ASC.Files AppServer-ASC.Files.Service AppServer-ASC.Web.Studio \
-	AppServer-ASC.Data.Backup AppServer-ASC.Data.Storage.Encryption AppServer-ASC.Data.Storage.Migration \
-	AppServer-ASC.Projects AppServer-ASC.TelegramService AppServer-ASC.CRM elasticsearch kafka zookeeper
+	for SVC in nginx mysqld AppServer-ASC.Web.Api AppServer-ASC.ApiSystem AppServer-ASC.UrlShortener AppServer-ASC.Thumbnails \
+	AppServer-ASC.Socket AppServer-ASC.Studio.Notify AppServer-ASC.Notify AppServer-ASC.People AppServer-ASC.Files \
+	AppServer-ASC.Files.Service AppServer-ASC.Web.Studio AppServer-ASC.Data.Backup AppServer-ASC.Data.Storage.Encryption \
+	AppServer-ASC.Data.Storage.Migration AppServer-ASC.Projects AppServer-ASC.TelegramService AppServer-ASC.CRM \
+	AppServer-ASC.Calendar AppServer-ASC.Mail elasticsearch kafka zookeeper
 	do
 		sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/$SVC.service >/dev/null 2>&1
 		

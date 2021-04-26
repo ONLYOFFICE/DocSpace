@@ -28,6 +28,8 @@ service_name=(
 	ASC.Projects
 	ASC.TelegramService
 	ASC.CRM
+	ASC.Calendar
+	ASC.Mail
 	)
 
 reassign_values (){
@@ -120,6 +122,16 @@ reassign_values (){
 		SERVICE_PORT="5021"
 		WORK_DIR="/var/www/appserver/products/ASC.CRM/server/"
 		EXEC_FILE="ASC.CRM.dll"
+	;;
+	ASC.Calendar )
+		SERVICE_PORT="5023"
+		WORK_DIR="/var/www/appserver/products/ASC.Calendar/server/"
+		EXEC_FILE="ASC.Calendar.dll"
+	;;
+	ASC.Mail )
+		SERVICE_PORT="5022"
+		WORK_DIR="/var/www/appserver/products/ASC.Mail/server/"
+		EXEC_FILE="ASC.Mail.dll"
 	;;
   esac
   SERVICE_NAME="$1"

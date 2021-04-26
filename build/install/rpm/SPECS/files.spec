@@ -117,12 +117,16 @@
 %{_var}/www/appserver/products/ASC.Files/editor/
 %{_var}/www/appserver/products/ASC.CRM/client/
 %{_var}/www/appserver/products/ASC.Projects/client
+%{_var}/www/appserver/products/ASC.Calendar/client/
+%{_var}/www/appserver/products/ASC.Mail/client
 %dir %{_var}/www/appserver/studio/
 %dir %{_var}/www/appserver/products/
 %dir %{_var}/www/appserver/products/ASC.People/
 %dir %{_var}/www/appserver/products/ASC.Files/
 %dir %{_var}/www/appserver/products/ASC.CRM/
 %dir %{_var}/www/appserver/products/ASC.Projects/
+%dir %{_var}/www/appserver/products/ASC.Calendar/
+%dir %{_var}/www/appserver/products/ASC.Mail/
 
 %files ASC.Studio.Notify
 %defattr(-, onlyoffice, onlyoffice, -)
@@ -287,3 +291,17 @@
 %dir %{_var}/www/appserver/products/ASC.Files/server/
 %dir %{_var}/www/appserver/products/ASC.Projects/
 %dir %{_var}/www/appserver/products/ASC.Projects/server/
+
+%files ASC.Calendar
+%defattr(-, onlyoffice, onlyoffice, -)
+%{_var}/www/appserver/products/ASC.Calendar/server/
+%{_sysconfdir}/systemd/system/AppServer-ASC.Calendar.service
+%dir %{_var}/www/appserver/products/
+%dir %{_var}/www/appserver/products/ASC.Calendar/
+
+%files ASC.Mail
+%defattr(-, onlyoffice, onlyoffice, -)
+%{_var}/www/appserver/products/ASC.Mail/server/
+%{_sysconfdir}/systemd/system/AppServer-ASC.Mail.service
+%dir %{_var}/www/appserver/products/
+%dir %{_var}/www/appserver/products/ASC.Mail/
