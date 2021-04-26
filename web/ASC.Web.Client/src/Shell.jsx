@@ -49,10 +49,6 @@ const COMING_SOON_URLS = [
   //combineUrl(PROXY_HOMEPAGE_URL, "/products/calendar"),
   //combineUrl(PROXY_HOMEPAGE_URL, "/products/talk/"),
 ];
-const THIRD_PARTY_RESPONSE_URL = combineUrl(
-  PROXY_HOMEPAGE_URL,
-  "/thirdparty/:provider"
-);
 const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
 const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings");
 const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
@@ -66,9 +62,6 @@ const About = React.lazy(() => import("./components/pages/About"));
 const Wizard = React.lazy(() => import("./components/pages/Wizard"));
 const Settings = React.lazy(() => import("./components/pages/Settings"));
 const ComingSoon = React.lazy(() => import("./components/pages/ComingSoon"));
-const ThirdPartyResponse = React.lazy(() =>
-  import("./components/pages/ThirdParty")
-);
 const Confirm = React.lazy(() => import("./components/pages/Confirm"));
 
 const SettingsRoute = (props) => (
@@ -149,14 +142,6 @@ const ComingSoonRoute = (props) => (
   </React.Suspense>
 );
 
-const ThirdPartyResponseRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <ThirdPartyResponse {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const { isLoaded, loadBaseInfo, modules } = rest;
 
@@ -174,7 +159,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         LOGIN_URLS,
         CONFIRM_URL,
         COMING_SOON_URLS,
-        THIRD_PARTY_RESPONSE_URL,
         PAYMENTS_URL,
         SETTINGS_URL,
         ERROR_401_URL,
@@ -250,10 +234,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <PrivateRoute
                 path={COMING_SOON_URLS}
                 component={ComingSoonRoute}
-              />
-              <PrivateRoute
-                path={THIRD_PARTY_RESPONSE_URL}
-                component={ThirdPartyResponseRoute}
               />
               <PrivateRoute path={PAYMENTS_URL} component={PaymentsRoute} />
               <PrivateRoute

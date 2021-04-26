@@ -21,5 +21,12 @@
   "ConfirmOwnerPortalTitle": "Пожалуйста, подтвердите, что Вы хотите изменить владельца портала на {{newOwner}}",
   "SaveButton": "Сохранить",
   "CancelButton": "Отмена",
-  "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}"
+  "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}",
+
+  "SignInWithGoogle": "Вход через Google",
+  "SignInWithFacebook": "Вход через Facebook",
+  "SignInWithTwitter": "Вход через Twitter",
+  "SignInWithLinkedIn": "Вход через LinkedIn",
+  "ProviderLoginError": "Ошибка авторизации",
+  "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту"
 }

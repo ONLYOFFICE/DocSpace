@@ -129,6 +129,7 @@ const PureThirdPartyListContainer = ({
       openConnectWindow(data.title, authModal).then((modal) => {
         redirectAction();
         getOAuthToken(modal).then((token) => {
+          authModal.close();
           const serviceData = {
             title: data.title,
             provider_key: data.title,
@@ -216,6 +217,7 @@ const ThirdPartyList = withTranslation("Article")(
 export default inject(
   ({
     filesStore,
+    auth,
     settingsStore,
     treeFoldersStore,
     selectedFolderStore,
@@ -231,16 +233,16 @@ export default inject(
       oneDriveConnectItem,
       nextCloudConnectItem,
       webDavConnectItem,
-      getOAuthToken,
       openConnectWindow,
     } = settingsStore.thirdPartyStore;
+
+    const { getOAuthToken } = auth.settingsStore;
 
     const {
       setConnectItem,
       setConnectDialogVisible,
       setThirdPartyDialogVisible,
     } = dialogsStore;
-
     return {
       googleConnectItem,
       boxConnectItem,

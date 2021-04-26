@@ -503,13 +503,19 @@ class FilesStore {
         isPrivacyFolder ||
         isRecentFolder
       ) {
-        fileOptions = this.removeOptions(fileOptions, ["copy"]);
+        fileOptions = this.removeOptions(fileOptions, [
+          "copy",
+          "move-to",
+          "sharing-settings",
+        ]);
       }
 
       if (isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, [
           "open",
           "open-location",
+          "view",
+          "preview",
           "edit",
           "link-for-portal-users",
           "sharing-settings",

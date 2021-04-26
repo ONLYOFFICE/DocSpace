@@ -14,6 +14,7 @@ import {
 import { ConflictResolveType, FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
+import toastr from "studio/toastr";
 
 class FilesActionStore {
   authStore;
@@ -264,15 +265,6 @@ class FilesActionStore {
     const { setSelection, selected, setSelected } = this.filesStore;
     selected === "close" && setSelected("none");
     setSelection([item]);
-  };
-
-  checkFileConflicts = async (destFolderId, folderIds, fileIds) => {
-    const conflicts = await checkFileConflicts(
-      destFolderId,
-      folderIds,
-      fileIds
-    );
-    return conflicts;
   };
 
   deleteFileAction = (fileId, currentFolderId, translations) => {
@@ -546,11 +538,15 @@ class FilesActionStore {
       setConflictResolveDialogVisible,
       setConflictResolveDialogItems,
     } = this.dialogsStore;
-    const conflicts = await this.checkFileConflicts(
-      destFolderId,
-      folderIds,
-      fileIds
-    );
+
+    let conflicts;
+
+    try {
+      conflicts = await checkFileConflicts(destFolderId, folderIds, fileIds);
+    } catch (err) {
+      toastr.error(err);
+      return;
+    }
 
     if (conflicts.length) {
       setConflictResolveDialogItems(conflicts);

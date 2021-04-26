@@ -48,5 +48,16 @@
   "selectNewPhotoLabel": "Выбрать новое фото",
   "orDropFileHereLabel": "или перетащите файл сюда",
   "maxSizeFileError": "Превышен максимальный размер файла",
-  "editAvatar": "Изменить"
+  "editAvatar": "Изменить",
+
+  "LoginSettings": "Вход через социальные сети",
+  "SignInWithGoogle": "Вход через Google",
+  "SignInWithFacebook": "Вход через Facebook",
+  "SignInWithTwitter": "Вход через Twitter",
+  "SignInWithLinkedIn": "Вход через LinkedIn",
+  "Connect": "Подключить",
+  "Disconnect": "Отключить",
+
+  "ProviderSuccessfullyConnected": "Провайдер успешно подключен",
+  "ProviderSuccessfullyDisconnected": "Провайдер успешно отключен"
 }
