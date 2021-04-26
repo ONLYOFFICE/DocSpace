@@ -7,7 +7,7 @@ import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 
 import TileContent from "./TileContent";
-import withContentActions from "../hoc/withContentActions";
+import withContent from "../hoc/withContent";
 import Badges from "../sub-components/Badges";
 
 const SimpleFilesTileContent = styled(TileContent)`
@@ -149,5 +149,5 @@ const FilesTileContent = ({
 };
 
 export default withRouter(
-  withTranslation("Home")(withContentActions(FilesTileContent))
+  withTranslation("Home")(withContent(FilesTileContent))
 );

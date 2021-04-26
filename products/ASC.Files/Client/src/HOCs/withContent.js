@@ -15,8 +15,8 @@ import config from "../../package.json";
 import EditingWrapperComponent from "../components/EditingWrapperComponent";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
 
-export default function withContentActions(WrappedContent) {
-  class WithContentActions extends React.Component {
+export default function withContent(WrappedContent) {
+  class WithContent extends React.Component {
     constructor(props) {
       super(props);
       let titleWithoutExt = getTitleWithoutExst(props.item);
@@ -360,5 +360,5 @@ export default function withContentActions(WrappedContent) {
         viewer: auth.userStore.user,
       };
     }
-  )(observer(WithContentActions));
+  )(observer(WithContent));
 }
