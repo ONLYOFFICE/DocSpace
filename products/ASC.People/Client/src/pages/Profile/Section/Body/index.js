@@ -193,6 +193,7 @@ class SectionBodyContent extends React.PureComponent {
     const providerButtons =
       providers &&
       providers.map((item) => {
+        if (!providersData[item.provider]) return;
         const { icon, label, iconOptions } = providersData[item.provider];
 
         if (!icon || !label) return <React.Fragment></React.Fragment>;
@@ -247,17 +248,21 @@ class SectionBodyContent extends React.PureComponent {
     return providerButtons;
   };
 
+  oauthDataExists = () => {
+    const { providers } = this.props;
+
+    let existProviders = 0;
+    providers && providers.length > 0;
+    providers.map((item) => {
+      if (!providersData[item.provider]) return;
+      existProviders++;
+    });
+
+    return !!existProviders;
+  };
+
   render() {
-    const {
-      profile,
-      cultures,
-      culture,
-      isAdmin,
-      viewer,
-      t,
-      isSelf,
-      providers,
-    } = this.props;
+    const { profile, cultures, culture, isAdmin, t, isSelf } = this.props;
 
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -300,7 +305,7 @@ class SectionBodyContent extends React.PureComponent {
           culture={culture}
         />
 
-        {isSelf && providers && providers.length > 0 && (
+        {isSelf && this.oauthDataExists() && (
           <ToggleWrapper>
             <ToggleContent label={t("LoginSettings")} isOpen={true}>
               <ProviderButtonsWrapper>
