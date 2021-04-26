@@ -12,7 +12,7 @@ export function openEdit(fileId, version, doc) {
   }
 
   if (doc) {
-    params.push(`version=${version}`);
+    params.push(`doc=${doc}`);
   }
 
   const paramsString = params.length > 0 ? `?${params.join("&")}` : "";
