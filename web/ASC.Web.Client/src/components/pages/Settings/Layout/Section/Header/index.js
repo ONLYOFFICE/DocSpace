@@ -1,10 +1,12 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Headline from "@appserver/common/components/Headline";
 import IconButton from "@appserver/components/icon-button";
 import { tablet } from "@appserver/components/utils/device";
+import PeopleSelector from "people/PeopleSelector";
 
 import {
   getKeyByLink,
@@ -20,6 +22,14 @@ const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   max-width: calc(100vw - 32px);
+
+  .action-wrapper {
+    flex-grow: 1;
+
+    .action-button {
+      margin-left: auto;
+    }
+  }
 
   .arrow-button {
     margin-right: 16px;
@@ -59,6 +69,7 @@ class SectionHeaderContent extends React.Component {
     this.state = {
       header,
       isCategoryOrHeader: isCategory || isHeader,
+      showSelector: false,
     };
   }
 
@@ -102,9 +113,31 @@ class SectionHeaderContent extends React.Component {
     return arrayOfParams;
   };
 
+  addUsers = (items) => {
+    const { addUsers } = this.props;
+    if (!addUsers) return;
+    addUsers(items);
+  };
+
+  onToggleSelector = (status = !this.state.showSelector) => {
+    this.setState({
+      showSelector: status,
+    });
+  };
+
+  onCancelSelector = () => {
+    this.onToggleSelector(false);
+  };
+
+  onSelect = (items) => {
+    this.onToggleSelector(false);
+    this.addUsers(items);
+    //this.changeOwner(items[0]);
+  };
+
   render() {
-    const { t } = this.props;
-    const { header, isCategoryOrHeader } = this.state;
+    const { t, addUsers, groupsCaption } = this.props;
+    const { header, isCategoryOrHeader, showSelector } = this.state;
     const arrayOfParams = this.getArrayOfParams();
 
     return (
@@ -123,9 +156,38 @@ class SectionHeaderContent extends React.Component {
         <Headline type="content" truncate={true}>
           {t(header)}
         </Headline>
+        {addUsers && (
+          <div className="action-wrapper">
+            <IconButton
+              iconName="/static/images/actions.header.touch.react.svg"
+              size="17"
+              color="#A3A9AE"
+              hoverColor="#657077"
+              isFill={true}
+              onClick={this.onToggleSelector}
+              className="action-button"
+            />
+            <PeopleSelector
+              isMultiSelect={true}
+              displayType="aside"
+              isOpen={showSelector}
+              onSelect={this.onSelect}
+              groupsCaption={groupsCaption}
+              onCancel={this.onCancelSelector}
+            />
+          </div>
+        )}
       </HeaderContainer>
     );
   }
 }
 
-export default withRouter(withTranslation("Settings")(SectionHeaderContent));
+export default inject(({ auth, setup }) => {
+  const { customNames } = auth.settingsStore;
+  const { addUsers } = setup.headerAction;
+
+  return {
+    addUsers,
+    groupsCaption: customNames.groupsCaption,
+  };
+})(withRouter(withTranslation("Settings")(observer(SectionHeaderContent))));

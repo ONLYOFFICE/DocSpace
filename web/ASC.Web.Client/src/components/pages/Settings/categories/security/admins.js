@@ -3,6 +3,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { ReactSVG } from "react-svg";
 
 import Text from "@appserver/components/text";
 import Avatar from "@appserver/components/avatar";
@@ -210,7 +211,7 @@ class PortalAdmins extends Component {
       showSelector: false,
       showFullAdminSelector: false,
       isLoading: false,
-      showLoader: true,
+      showLoader: false,
       selectedOptions: [],
       admins: adminsFromSessionStorage || {},
       hasChanged: false,
@@ -219,48 +220,30 @@ class PortalAdmins extends Component {
     };
   }
 
-  componentDidMount() {
-    const { admins, fetchPeople } = this.props;
+  async componentDidMount() {
+    const { admins, setAddUsers, getUpdateListAdmin } = this.props;
     const { showReminder } = this.state;
+
+    setAddUsers(this.addUsers);
+
+    if (isEmpty(admins, true)) {
+      try {
+        await getUpdateListAdmin();
+      } catch (error) {
+        toastr.error(error);
+      }
+    }
 
     if (adminsFromSessionStorage && !showReminder) {
       this.setState({
         showReminder: true,
       });
     }
+  }
 
-    if (isEmpty(admins, true)) {
-      const newFilter = this.onAdminsFilter();
-      fetchPeople(newFilter)
-        .catch((error) => {
-          toastr.error(error);
-        })
-        .finally(() => {
-          this.setState({
-            showLoader: false,
-          });
-
-          this.checkChanges();
-
-          if (!adminsFromSessionStorage && this.props.admins.length > 0) {
-            this.setState({
-              admins: this.props.admins,
-            });
-          }
-        });
-    } else {
-      if (!adminsFromSessionStorage && this.props.admins.length > 0) {
-        this.setState({
-          admins: this.props.admins,
-          showLoader: false,
-        });
-      } else {
-        this.setState({
-          admins: adminsFromSessionStorage || {},
-          showLoader: false,
-        });
-      }
-    }
+  componentWillUnmount() {
+    const { setAddUsers } = this.props;
+    setAddUsers("");
   }
 
   onChangeAdmin = async (userIds, isAdmin, productId) => {
@@ -328,6 +311,10 @@ class PortalAdmins extends Component {
 
   findAdminById = (admin) => {
     if (admin.id === this.id) return true;
+  };
+
+  addUsers = () => {
+    console.log("Added users");
   };
 
   filterNewAdmins = (admins, newAdmins) => {
@@ -657,11 +644,10 @@ class PortalAdmins extends Component {
   };
 
   render() {
-    const { t } = this.props;
+    const { t, admins } = this.props;
     const {
       isLoading,
       showLoader,
-      admins,
       hasChanged,
       showReminder,
       searchValue,
@@ -750,7 +736,10 @@ class PortalAdmins extends Component {
                                       isfill={true}
                                       color="#3B72A7"
                                     />
-                                  )*/}
+                                  )
+                                  <ReactSVG src={icon} className="drop-down-item_icon" />
+                                  
+                                  */}
                                   {/*getUserStatus(user) === "disabled" && (
                                     <Icons.CatalogSpamIcon
                                       className="statusIcon"
@@ -822,7 +811,7 @@ class PortalAdmins extends Component {
                                 <div className="iconsWrapper">
                                   <div className="iconWrapper">
                                     <IconButton
-                                      iconName="ActionsDocumentsSettingsIcon"
+                                      iconName="/static/images/files.menu.svg"
                                       size={14}
                                       color={
                                         getUserRole(user) === "owner" ||
@@ -859,7 +848,9 @@ class PortalAdmins extends Component {
                                   </div>
                                   <div className="iconWrapper">
                                     <IconButton
-                                      iconName="MainMenuPeopleIcon"
+                                      iconName={
+                                        "/static/images/departments.group.react.svg"
+                                      }
                                       size={16}
                                       color={
                                         getUserRole(user) === "owner" ||
@@ -944,11 +935,14 @@ PortalAdmins.propTypes = {
   admins: PropTypes.arrayOf(PropTypes.object),
   productId: PropTypes.string,
   owner: PropTypes.object,
+  setAddUsers: PropTypes.func.isRequired,
+  getUpdateListAdmin: PropTypes.func.isRequired,
 };
 
 export default inject(({ auth, setup }) => {
   const { admins, owner, filter } = setup.security.accessRight;
   const { user: me } = auth.userStore;
+  const { setAddUsers } = setup;
 
   return {
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
@@ -960,5 +954,6 @@ export default inject(({ auth, setup }) => {
     owner,
     filter,
     me,
+    setAddUsers,
   };
 })(withTranslation("Settings")(withRouter(observer(PortalAdmins))));

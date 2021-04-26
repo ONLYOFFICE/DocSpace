@@ -20,6 +20,10 @@ class SettingsSetupStore {
     },
   };
 
+  headerAction = {
+    addUsers: "",
+  };
+
   integration = {
     consumers: [],
     selectedConsumer: {},
@@ -63,6 +67,10 @@ class SettingsSetupStore {
 
   setConsumers = (consumers) => {
     this.integration.consumers = consumers;
+  };
+
+  setAddUsers = (func) => {
+    this.headerAction.addUsers = func;
   };
 
   setSelectedConsumer = (selectedConsumerName) => {
