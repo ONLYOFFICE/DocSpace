@@ -111,5 +111,22 @@
   "CustomTitlesSettingsDescription": "Custom welcome page title will be displayed on the welcome page of your portal. The same name is also used for the From field of your portal email notifications. Custom domain name is a way to set an alternative URL for your portal. Custom portal name will appear next to the onlyoffice.com/onlyoffice.eu portal address.",
   "PortalAdmins": "Portal admins",
   "PortalAdminsDescription": "Have the same access rights as the portal owner, except the right to: change portal owner; deactivate or delete portal.",
-  "ConfirmEmailSended": "Confirmation e-mail has been sent to {{ownerName}}"
+  "ConfirmEmailSended": "Confirmation e-mail has been sent to {{ownerName}}",
+ 
+
+  "TeamTemplate": "Team template",
+  "TeamTemplateSettingsDescription": "Team Template is a customizable way to name the organization (or group), its members and their activities. Drop down the Template list to choose one of the available presets or enter the names yourselves selecting the custom option from the list.",
+  "AddName": "Add Name",
+  "Template": "Template",
+  "User": "User",
+  "Users": "Users",
+  "Group": "Group",
+  "Groups": "Groups",
+  "Job/Title": "Job/Title",
+  "RegistrationDate": "Registration date",
+  "GroupLead": "Group Lead",
+  "Guest": "Guest",
+  "Guests": "Guests",
+
+  "EmptyFieldError": "Empty field"
 }
