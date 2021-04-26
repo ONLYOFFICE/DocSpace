@@ -2,6 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import PageLayout from "@appserver/common/components/PageLayout";
 import Loaders from "@appserver/common/components/Loaders";
+import toastr from "studio/toastr";
+import { linkOAuth } from "@appserver/common/api/people";
+import { getAuthProviders } from "@appserver/common/api/settings";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -118,6 +121,7 @@ ProfileAction.propTypes = {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
+    setProviders: peopleStore.usersStore.setProviders,
     setDocumentTitle: auth.setDocumentTitle,
     isEdit: peopleStore.editingFormStore.isEdit,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,

@@ -321,6 +321,8 @@ class SectionHeaderContent extends React.Component {
       isThirdPartySelection,
       isPrivacy,
       isOnlyFoldersSelected,
+      isFavoritesFolder,
+      isRecentFolder,
     } = this.props;
 
     let menu = [
@@ -378,6 +380,8 @@ class SectionHeaderContent extends React.Component {
       {
         label: t("Share"),
         disabled:
+          isFavoritesFolder ||
+          isRecentFolder ||
           !isAccessedSelected ||
           (isPrivacy && (isOnlyFoldersSelected || selectionCount > 1)),
         onClick: this.onOpenSharingPanel,
@@ -394,7 +398,12 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("MoveTo"),
-        disabled: !selectionCount || isThirdPartySelection,
+        disabled:
+          isFavoritesFolder ||
+          isRecentFolder ||
+          !isAccessedSelected ||
+          !selectionCount ||
+          isThirdPartySelection,
         onClick: this.onMoveAction,
       },
       {
@@ -577,7 +586,12 @@ export default inject(
       isWebEditSelected,
       setIsLoading,
     } = filesStore;
-    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+    } = treeFoldersStore;
     const { setAction } = fileActionStore;
     const {
       setSharingPanelVisible,
@@ -598,6 +612,8 @@ export default inject(
       currentFolderId: selectedFolderStore.id,
       isRecycleBin: isRecycleBinFolder,
       isPrivacy: isPrivacyFolder,
+      isFavoritesFolder,
+      isRecentFolder,
       filter,
       canCreate,
       selectionCount: selection.length,

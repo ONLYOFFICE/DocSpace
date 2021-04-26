@@ -8,6 +8,7 @@ class TreeFoldersStore {
   treeFolders = [];
   selectedTreeNode = [];
   expandedKeys = [];
+  expandedPanelKeys = null;
 
   constructor(selectedFolderStore) {
     makeAutoObservable(this);
@@ -32,6 +33,10 @@ class TreeFoldersStore {
 
   setExpandedKeys = (expandedKeys) => {
     this.expandedKeys = expandedKeys;
+  };
+
+  setExpandedPanelKeys = (expandedPanelKeys) => {
+    this.expandedPanelKeys = expandedPanelKeys;
   };
 
   addExpandedKeys = (item) => {
@@ -135,7 +140,8 @@ class TreeFoldersStore {
         (folder) =>
           (folder.rootFolderType === FolderType.USER ||
             folder.rootFolderType === FolderType.COMMON ||
-            folder.rootFolderType === FolderType.Projects) &&
+            folder.rootFolderType === FolderType.Projects ||
+            folder.rootFolderType === FolderType.SHARE) &&
           folder
       );
     }

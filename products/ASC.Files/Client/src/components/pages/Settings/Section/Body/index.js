@@ -6,6 +6,7 @@ import Error403 from "studio/Error403";
 import Error520 from "studio/Error520";
 import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
+import { loopTreeFolders } from "../../../../../helpers/files-helpers";
 
 const StyledSettings = styled.div`
   display: grid;
@@ -44,6 +45,11 @@ const SectionBodyContent = ({
   isErrorSettings,
   isLoadedSettingsTree,
   settingsIsLoaded,
+  fetchTreeFolders,
+  setTreeFolders,
+  treeFolders,
+  myFolderId,
+  commonFolderId,
   t,
 }) => {
   const onChangeStoreForceSave = () => {
@@ -51,7 +57,31 @@ const SectionBodyContent = ({
   };
 
   const onChangeThirdParty = () => {
-    setEnableThirdParty(!enableThirdParty, "enableThirdParty");
+    setEnableThirdParty(!enableThirdParty, "enableThirdParty").then(() => {
+      fetchTreeFolders().then((data) => {
+        const commonFolder = data.find((x) => x.id === commonFolderId);
+        const myFolder = data.find((x) => x.id === myFolderId);
+
+        const newTreeFolders = treeFolders;
+
+        loopTreeFolders(
+          myFolder.pathParts,
+          newTreeFolders,
+          myFolder.folders,
+          myFolder.foldersCount,
+          null
+        );
+
+        loopTreeFolders(
+          commonFolder.pathParts,
+          newTreeFolders,
+          commonFolder.folders,
+          commonFolder.foldersCount,
+          null
+        );
+        setTreeFolders(newTreeFolders);
+      });
+    });
   };
 
   const renderAdminSettings = () => {
@@ -161,42 +191,65 @@ const SectionBodyContent = ({
   );
 };
 
-export default inject(({ auth, filesStore, settingsStore }) => {
-  const { isLoading } = filesStore;
-  const {
-    isLoadedSettingsTree,
-    storeOriginalFiles,
-    confirmDelete,
-    updateIfExist,
-    forcesave,
-    storeForcesave,
-    enableThirdParty,
-    setUpdateIfExist,
-    setStoreOriginal,
-    setEnableThirdParty,
-    setConfirmDelete,
-    setStoreForceSave,
-    setForceSave,
-    settingsIsLoaded,
-  } = settingsStore;
+export default inject(
+  ({
+    auth,
+    filesStore,
+    settingsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
+    const { isLoading } = filesStore;
+    const {
+      isLoadedSettingsTree,
+      storeOriginalFiles,
+      confirmDelete,
+      updateIfExist,
+      forcesave,
+      storeForcesave,
+      enableThirdParty,
+      setUpdateIfExist,
+      setStoreOriginal,
+      setEnableThirdParty,
+      setConfirmDelete,
+      setStoreForceSave,
+      setForceSave,
+      settingsIsLoaded,
+    } = settingsStore;
 
-  return {
-    isAdmin: auth.isAdmin,
-    isLoading,
-    isLoadedSettingsTree,
-    storeOriginalFiles,
-    confirmDelete,
-    updateIfExist,
-    forceSave: forcesave,
-    storeForceSave: storeForcesave,
-    enableThirdParty,
+    const {
+      fetchTreeFolders,
+      setTreeFolders,
+      treeFolders,
+      myFolderId,
+      commonFolderId,
+    } = treeFoldersStore;
 
-    setUpdateIfExist,
-    setStoreOriginal,
-    setEnableThirdParty,
-    setConfirmDelete,
-    setStoreForceSave,
-    setForceSave,
-    settingsIsLoaded,
-  };
-})(observer(SectionBodyContent));
+    const { folders } = selectedFolderStore;
+
+    return {
+      isAdmin: auth.isAdmin,
+      isLoading,
+      isLoadedSettingsTree,
+      storeOriginalFiles,
+      confirmDelete,
+      updateIfExist,
+      forceSave: forcesave,
+      storeForceSave: storeForcesave,
+      enableThirdParty,
+      treeFolders,
+      myFolderId,
+      commonFolderId,
+
+      setUpdateIfExist,
+      setStoreOriginal,
+      setEnableThirdParty,
+      setConfirmDelete,
+      setStoreForceSave,
+      setForceSave,
+      settingsIsLoaded,
+      fetchTreeFolders,
+      setTreeFolders,
+    };
+  }
+)(observer(SectionBodyContent));

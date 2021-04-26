@@ -48,10 +48,39 @@
   "selectNewPhotoLabel": "Select new photo",
   "orDropFileHereLabel": "or drop file here",
   "maxSizeFileError": "Maximum file size exceeded",
-  "editAvatar": "Edit",
   "LoginSettings": "Login settings",
+  "SignInWithGoogle": "Sign in with Google",
+  "SignInWithFacebook": "Sign in with Facebook",
+  "SignInWithTwitter": "Sign in with Twitter",
+  "SignInWithLinkedIn": "Sign in with LinkedIn",
+  "Connect": "Connect",
+  "Disconnect": "Disconnect",
+
+  "ProviderSuccessfullyConnected": "Provider successfully connected",
+  "ProviderSuccessfullyDisconnected": "Provider successfully disconnected",  "TwoFactorDescription": "<strong>Two-factor authentication</strong> via code generating application was enabled for all users by cloud service administrator.",
+  "ResetApplication": "Reset application",
+  "ShowBackupCodes": "Show backup codes",
+  "CountCodesRemaining": "({{count}} codes remaining)"<<<<<<< .mine
   "TwoFactorDescription": "<strong>Two-factor authentication</strong> via code generating application was enabled for all users by cloud service administrator.",
   "ResetApplication": "Reset application",
   "ShowBackupCodes": "Show backup codes",
   "CountCodesRemaining": "({{count}} codes remaining)"
+
+
+
+
+
+
+=======
+  "LoginSettings": "Login settings",
+  "SignInWithGoogle": "Sign in with Google",
+  "SignInWithFacebook": "Sign in with Facebook",
+  "SignInWithTwitter": "Sign in with Twitter",
+  "SignInWithLinkedIn": "Sign in with LinkedIn",
+  "Connect": "Connect",
+  "Disconnect": "Disconnect",
+
+  "ProviderSuccessfullyConnected": "Provider successfully connected",
+  "ProviderSuccessfullyDisconnected": "Provider successfully disconnected"
+>>>>>>> .theirs
 }

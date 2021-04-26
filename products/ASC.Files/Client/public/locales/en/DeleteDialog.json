@@ -1,16 +1,19 @@
 {
-  "OKButton": "OK",
-  "CancelButton": "Cancel",
-  "ConfirmationTitle": "Confirmation",
-  "QuestionDeleteFile": "Are you sure you want to delete this file?",
   "FilesModule": "Files",
   "FoldersModule": "Folders",
 
-  "DeleteDialogQuestion": "Are you sure you want to delete these elements?",
-  "DeleteDialogNote": "Note: This action can not be undone.",
-  "QuestionDeleteFolder": "Are you sure you want to delete this folder?",
-  "QuestionDeleteElements": "Are you sure you want to delete these elements?",
   "DeleteOperation": "Deleting",
   "DeleteSelectedElem": "Selected elements were successfully deleted",
-  "DeleteFromTrash": "Selected elements were successfully deleted from trash"
+  "DeleteFromTrash": "Selected elements were successfully deleted from trash",
+
+  "MoveToTrashOneFileTitle": "Move file to Trash?",
+  "MoveToTrashOneFolderTitle": "Move folder to Trash?",
+  "MoveToTrashItemsTitle": "Move items to Trash?",
+
+  "MoveToTrashOneFileNote": "If you delete a shared file, other users won’t be able to access it.",
+  "MoveToTrashOneFolderNote": "If you delete a shared folder, other users won’t be able to access it.",
+  "MoveToTrashItemsNote": "If you delete shared items, other users won’t be able to access them.",
+
+  "MoveToTrashButton": "Move to Trash",
+  "CancelButton": "Cancel"
 }

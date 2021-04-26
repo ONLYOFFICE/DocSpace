@@ -88,46 +88,32 @@ class DownloadDialogComponent extends React.Component {
 
   getDownloadItems = () => {
     const { documents, spreadsheets, presentations, other } = this.state;
-    const items = [];
+    const files = [];
     const folders = [];
 
-    for (let item of documents) {
-      if (item.checked) {
-        const format =
-          item.format === 0 ? item.fileExst : this.getTitleLabel(item.format);
-        items.push({ key: item.id, value: format });
-      }
-    }
-
-    for (let item of spreadsheets) {
-      if (item.checked) {
-        const format =
-          item.format === 0 ? item.fileExst : this.getTitleLabel(item.format);
-        items.push({ key: item.id, value: format });
-      }
-    }
-
-    for (let item of presentations) {
-      if (item.checked) {
-        const format =
-          item.format === 0 ? item.fileExst : this.getTitleLabel(item.format);
-        items.push({ key: item.id, value: format });
-      }
-    }
-
-    for (let item of other) {
-      if (item.checked) {
-        if (item.fileExst) {
-          const format =
-            item.format === 0 ? item.fileExst : this.getTitleLabel(item.format);
-          items.push({ key: item.id, value: format });
-        } else {
-          folders.push(item.id);
+    const collectItems = (itemList) => {
+      for (let item of itemList) {
+        if (item.checked) {
+          if (item.fileExst) {
+            const format =
+              item.format === 0
+                ? item.fileExst
+                : this.getTitleLabel(item.format);
+            const viewUrl = item.viewUrl;
+            files.push({ key: item.id, value: format, viewUrl });
+          } else {
+            folders.push(item.id);
+          }
         }
       }
-    }
+    };
 
-    return [items, folders];
+    collectItems(documents);
+    collectItems(spreadsheets);
+    collectItems(presentations);
+    collectItems(other);
+
+    return [files, folders];
   };
 
   //TODO: move to actions?
@@ -140,11 +126,18 @@ class DownloadDialogComponent extends React.Component {
       clearSecondaryProgressData,
     } = this.props;
 
-    const downloadItems = this.getDownloadItems();
-    const fileConvertIds = downloadItems[0];
-    const folderIds = downloadItems[1];
+    const [fileConvertIds, folderIds] = this.getDownloadItems();
 
-    if (fileConvertIds.length || folderIds.length) {
+    if (fileConvertIds.length === 1 && folderIds.length === 0) {
+      // Single file download as
+      const file = fileConvertIds[0];
+      let viewUrl = file.viewUrl;
+      if (file.value) {
+        viewUrl = `${viewUrl}&outputtype=${file.value}`;
+      }
+      window.open(viewUrl, "_blank");
+      this.onClose();
+    } else if (fileConvertIds.length || folderIds.length) {
       setSecondaryProgressBarData({
         icon: "file",
         visible: true,
@@ -155,8 +148,9 @@ class DownloadDialogComponent extends React.Component {
       downloadFormatFiles(fileConvertIds, folderIds)
         .then((res) => {
           this.onClose();
-          getDownloadProgress(res[0], t("ArchivingData"))
-            .catch((err) => toastr.error(err));
+          getDownloadProgress(res[0], t("ArchivingData")).catch((err) =>
+            toastr.error(err)
+          );
         })
         .catch((err) => {
           setSecondaryProgressBarData({
@@ -438,6 +432,13 @@ class DownloadDialogComponent extends React.Component {
     const showOther = otherLength > 1;
     const minHeight = otherLength > 2 ? 110 : otherLength * 50;
 
+    const isSingleFile =
+      documents.filter((f) => f.checked).length +
+        spreadsheets.filter((f) => f.checked).length +
+        presentations.filter((f) => f.checked).length +
+        other.filter((f) => f.checked).length ===
+      1;
+
     return (
       <ModalDialogContainer>
         <ModalDialog visible={visible} onClose={this.onClose}>
@@ -550,7 +551,7 @@ class DownloadDialogComponent extends React.Component {
               </>
             )}
 
-            <Text>{t("ConvertToZip")}</Text>
+            {!isSingleFile && <Text>{t("ConvertToZip")}</Text>}
             <Text>{t("ConvertMessage")}</Text>
           </ModalDialog.Body>
           <ModalDialog.Footer>

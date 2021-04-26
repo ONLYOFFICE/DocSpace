@@ -183,7 +183,7 @@ class FilesFilter {
       dtoFilter[FILTER_TYPE] = filterType;
     }
 
-    if (withSubfolders === "false") {
+    if (withSubfolders) {
       dtoFilter[SEARCH_TYPE] = withSubfolders;
     }
 

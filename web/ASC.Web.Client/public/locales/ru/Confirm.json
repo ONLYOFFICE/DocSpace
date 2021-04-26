@@ -21,8 +21,19 @@
   "ConfirmOwnerPortalTitle": "Пожалуйста, подтвердите, что Вы хотите изменить владельца портала на {{newOwner}}",
   "SaveButton": "Сохранить",
   "CancelButton": "Отмена",
-  "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}",
-  "EnterAppCodeTitle": "Введите код из приложения аутентификации",
+"SignInWithGoogle": "Вход через Google",
+  "SignInWithFacebook": "Вход через Facebook",
+  "SignInWithTwitter": "Вход через Twitter",
+  "SignInWithLinkedIn": "Вход через LinkedIn",
+  "ProviderLoginError": "Ошибка авторизации",
+  "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту","EnterAppCodeTitle": "Введите код из приложения аутентификации",
+  "EnterAppCodeDescription": "Введите 6-значный сгенерированный код из вашего приложения. Если у вас нет доступа к телефону, вы можете использовать резервные коды.",
+  "EnterCodePlaceholder": "Введите код",
+  "Continue": "Продолжить",
+  "SetAppTitle": "Настройте приложение для аутентификации",
+  "SetAppDescription": "Для повышения безопасности на портале включена двухфакторная аутентификация. Чтобы продолжить работу на портале, настройте приложение для аутентификации. Например, вы можете использовать Google Authenticator для Android и iOS или Authenticator для Windows Phone.",
+  "SetAppInstallDescription": "Для подключения приложения отсканируйте QR-код или вручную введите секретный ключ <strong>{{key}}</strong>, затем введите 6-значный код из приложения в поле ниже.",
+  "SetAppButton": "Подключить приложение"<<<<<<< .mine
   "EnterAppCodeDescription": "Введите 6-значный сгенерированный код из вашего приложения. Если у вас нет доступа к телефону, вы можете использовать резервные коды.",
   "EnterCodePlaceholder": "Введите код",
   "Continue": "Продолжить",
@@ -30,4 +41,13 @@
   "SetAppDescription": "Для повышения безопасности на портале включена двухфакторная аутентификация. Чтобы продолжить работу на портале, настройте приложение для аутентификации. Например, вы можете использовать Google Authenticator для Android и iOS или Authenticator для Windows Phone.",
   "SetAppInstallDescription": "Для подключения приложения отсканируйте QR-код или вручную введите секретный ключ <strong>{{key}}</strong>, затем введите 6-значный код из приложения в поле ниже.",
   "SetAppButton": "Подключить приложение"
+=======
+  "SignInWithGoogle": "Вход через Google",
+  "SignInWithFacebook": "Вход через Facebook",
+  "SignInWithTwitter": "Вход через Twitter",
+  "SignInWithLinkedIn": "Вход через LinkedIn",
+  "ProviderLoginError": "Ошибка авторизации",
+  "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту"
+
+>>>>>>> .theirs
 }
