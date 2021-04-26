@@ -51,7 +51,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
 {
-    [Scope]
+    [Scope(Additional = typeof(BaseLoginProviderExtension))]
     [DefaultRoute]
     [ApiController]
     public class PeopleController : ControllerBase
