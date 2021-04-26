@@ -8,7 +8,7 @@ import {
   ArticleHeaderContent,
   ArticleBodyContent,
   ArticleMainButtonContent,
-} from "../../Article";
+} from "../../components/Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 //import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";

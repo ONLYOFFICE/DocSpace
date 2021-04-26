@@ -2,6 +2,35 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+
+import CheckIcon from "../../public/images/check.react.svg";
+import CrossIcon from "../../../../../public/images/cross.react.svg";
+
+const StyledCheckIcon = styled(CheckIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: #a3a9ae;
+  }
+  :hover {
+    fill: #657077;
+  }
+`;
+
+const StyledCrossIcon = styled(CrossIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: #a3a9ae;
+  }
+  :hover {
+    fill: #657077;
+  }
+`;
+
+export const okIcon = <StyledCheckIcon className="edit-ok-icon" size="scale" />;
+export const cancelIcon = (
+  <StyledCrossIcon className="edit-cancel-icon" size="scale" />
+);
 
 const EditingWrapper = styled.div`
   width: 100%;
@@ -49,8 +78,6 @@ const EditingWrapperComponent = (props) => {
   const {
     itemTitle,
     itemId,
-    okIcon,
-    cancelIcon,
     renameTitle,
     onClickUpdateItem,
     cancelUpdateItem,

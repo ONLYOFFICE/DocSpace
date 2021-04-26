@@ -7,10 +7,10 @@ import {
   ArticleHeaderContent,
   ArticleBodyContent,
   ArticleMainButtonContent,
-} from "../../Article";
+} from "../../components/Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation } from "react-i18next";
-import { setDocumentTitle } from "../../../helpers/utils";
+import { setDocumentTitle } from "../../helpers/utils";
 import { inject, observer } from "mobx-react";
 
 const PureSettings = ({
