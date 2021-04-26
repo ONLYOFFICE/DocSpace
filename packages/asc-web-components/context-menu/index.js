@@ -154,11 +154,15 @@ class ContextMenuSub extends Component {
       <ArrowIcon className={submenuIconClassName} />
     );
     const submenu = this.renderSubmenu(item);
+    const dataKeys = Object.fromEntries(
+      Object.entries(item).filter((el) => el[0].indexOf("data-") === 0)
+    );
     let content = (
       <a
         href={item.url || "#"}
         className={linkClassName}
         target={item.target}
+        {...dataKeys}
         onClick={(event) => this.onItemClick(event, item, index)}
         role="menuitem"
       >

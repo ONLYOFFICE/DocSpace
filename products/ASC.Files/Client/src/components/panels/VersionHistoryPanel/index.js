@@ -12,7 +12,7 @@ import {
   StyledHeaderContent,
   StyledBody,
 } from "../StyledPanels";
-import { SectionBodyContent } from "../../pages/VersionHistory/Section/";
+import { SectionBodyContent } from "../../../pages/VersionHistory/Section/";
 import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 

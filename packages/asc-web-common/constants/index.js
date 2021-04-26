@@ -108,7 +108,25 @@ export const ConflictResolveType = Object.freeze({
   Overwrite: 1,
   Duplicate: 2,
 });
-
+export const providersData = Object.freeze({
+  Google: {
+    label: "SignInWithGoogle",
+    icon: "/static/images/share.google.react.svg",
+  },
+  Facebook: {
+    label: "SignInWithFacebook",
+    icon: "/static/images/share.facebook.react.svg",
+  },
+  Twitter: {
+    label: "SignInWithTwitter",
+    icon: "/static/images/share.twitter.react.svg",
+    iconOptions: { color: "#2AA3EF" },
+  },
+  LinkedIn: {
+    label: "SignInWithLinkedIn",
+    icon: "/static/images/share.linkedin.react.svg",
+  },
+});
 export const i18nBaseSettings = {
   lng: localStorage.getItem(LANGUAGE) || "en",
   supportedLngs: ["en", "ru"],

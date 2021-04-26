@@ -105,11 +105,13 @@ const ThirdPartyDialog = (props) => {
       );
       openConnectWindow(item.title, authModal).then((modal) =>
         getOAuthToken(modal).then((token) => {
+          authModal.close();
           showOAuthModal(token, item);
-          setConnectItem(item);
-          setConnectDialogVisible(true);
         })
       );
+    } else {
+      setConnectItem(item);
+      setConnectDialogVisible(true);
     }
 
     setThirdPartyDialogVisible(false);
@@ -242,7 +244,6 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     ownCloudConnectItem,
     webDavConnectItem,
     sharePointConnectItem,
-    getOAuthToken,
     openConnectWindow,
   } = settingsStore.thirdPartyStore;
   const {
@@ -251,6 +252,7 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     setConnectDialogVisible,
     setConnectItem,
   } = dialogsStore;
+  const { getOAuthToken } = auth.settingsStore;
 
   return {
     visible,

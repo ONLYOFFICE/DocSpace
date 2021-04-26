@@ -9,14 +9,10 @@ const homepage = config.homepage;
 // have a look at the Quick start guide
 // for passing in lng and translations on init
 
-const languages = ["en", "ru"];
-
 const newInstance = i18n.createInstance();
 
 newInstance.use(Backend).init({
   lng: localStorage.getItem(LANGUAGE) || "en",
-  supportedLngs: languages,
-  whitelist: languages,
   fallbackLng: "en",
   load: "languageOnly",
   //debug: true,
