@@ -30,6 +30,7 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Core.SMS;
 using ASC.Web.Studio.Core.TFA;
+using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -71,6 +72,7 @@ namespace ASC.Web.Api.Controllers
         private TfaManager TfaManager { get; }
         private TimeZoneConverter TimeZoneConverter { get; }
         private SmsKeyStorage SmsKeyStorage { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
         private UserManagerWrapper UserManagerWrapper { get; }
 
         public AuthenticationController(
@@ -100,7 +102,8 @@ namespace ASC.Web.Api.Controllers
             SmsManager smsManager,
             TfaManager tfaManager,
             TimeZoneConverter timeZoneConverter,
-            SmsKeyStorage smsKeyStorage)
+            SmsKeyStorage smsKeyStorage,
+            CommonLinkUtility commonLinkUtility)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
@@ -128,6 +131,7 @@ namespace ASC.Web.Api.Controllers
             TfaManager = tfaManager;
             TimeZoneConverter = timeZoneConverter;
             SmsKeyStorage = smsKeyStorage;
+            CommonLinkUtility = commonLinkUtility;
             UserManagerWrapper = userManagerWrapper;
         }
 
@@ -196,7 +200,8 @@ namespace ASC.Web.Api.Controllers
                 if (string.IsNullOrEmpty(user.MobilePhone) || user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
                     return new AuthenticationTokenData
                     {
-                        Sms = true
+                        Sms = true,
+                        ConfirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation)
                     };
 
                 SmsManager.PutAuthCode(user, false);
@@ -205,7 +210,8 @@ namespace ASC.Web.Api.Controllers
                 {
                     Sms = true,
                     PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone),
-                    Expires = new ApiDateTime(TenantManager, TimeZoneConverter, DateTime.UtcNow.Add(SmsKeyStorage.StoreInterval))
+                    Expires = new ApiDateTime(TenantManager, TimeZoneConverter, DateTime.UtcNow.Add(SmsKeyStorage.StoreInterval)),
+                    ConfirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneAuth)
                 };
             }
 
@@ -215,12 +221,14 @@ namespace ASC.Web.Api.Controllers
                     return new AuthenticationTokenData
                     {
                         Tfa = true,
-                        TfaKey = TfaManager.GenerateSetupCode(user, 300).ManualEntryKey
+                        TfaKey = TfaManager.GenerateSetupCode(user, 300).ManualEntryKey,
+                        ConfirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation)
                     };
 
                 return new AuthenticationTokenData
                 {
-                    Tfa = true
+                    Tfa = true,
+                    ConfirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaAuth)
                 };
             }
 
@@ -563,6 +571,8 @@ namespace ASC.Web.Api.Controllers
         public bool Tfa { get; set; }
 
         public string TfaKey { get; set; }
+
+        public string ConfirmUrl { get; set; }
 
         public static AuthenticationTokenData GetSample()
         {
