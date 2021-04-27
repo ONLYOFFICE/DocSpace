@@ -3,10 +3,6 @@ import styled from "styled-components";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-<<<<<<< HEAD:products/ASC.Files/Client/src/components/sub-components/EditingWrapperComponent.js
-import CheckIcon from "../../../../../../../public/images/check.react.svg";
-import CrossIcon from "../../../../../../../../../../public/images/cross.react.svg";
-=======
 
 import CheckIcon from "../../public/images/check.react.svg";
 import CrossIcon from "../../../../../public/images/cross.react.svg";
@@ -35,7 +31,6 @@ export const okIcon = <StyledCheckIcon className="edit-ok-icon" size="scale" />;
 export const cancelIcon = (
   <StyledCrossIcon className="edit-cancel-icon" size="scale" />
 );
->>>>>>> develop:products/ASC.Files/Client/src/components/EditingWrapperComponent.js
 
 const EditingWrapper = styled.div`
   width: 100%;
@@ -82,41 +77,10 @@ const EditingWrapper = styled.div`
   }
 `;
 
-const StyledCheckIcon = styled(CheckIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: #a3a9ae;
-  }
-  :hover {
-    fill: #657077;
-  }
-`;
-
-const StyledCrossIcon = styled(CrossIcon)`
-  ${commonIconsStyles}
-  path {
-    fill: #a3a9ae;
-  }
-  :hover {
-    fill: #657077;
-  }
-`;
-
-const OkIcon = <StyledCheckIcon className="edit-ok-icon" size="scale" />;
-
-const CancelIcon = (
-  <StyledCrossIcon className="edit-cancel-icon" size="scale" />
-);
-
 const EditingWrapperComponent = (props) => {
   const {
     itemTitle,
     itemId,
-<<<<<<< HEAD:products/ASC.Files/Client/src/components/sub-components/EditingWrapperComponent.js
-    //okIcon,
-    //cancelIcon,
-=======
->>>>>>> develop:products/ASC.Files/Client/src/components/EditingWrapperComponent.js
     renameTitle,
     onClickUpdateItem,
     cancelUpdateItem,

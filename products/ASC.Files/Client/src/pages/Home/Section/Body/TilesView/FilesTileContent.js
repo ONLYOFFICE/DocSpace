@@ -34,6 +34,12 @@ const SimpleFilesTileContent = styled(TileContent)`
     margin-right: 8px;
   }
 
+  .new-items {
+    position: absolute;
+    right: 29px;
+    top: 19px;
+  }
+
   .badges {
     display: flex;
     align-items: center;
