@@ -1367,6 +1367,32 @@ namespace ASC.Api.Settings
         }
 
 
+        [Read("tfaapp/confirm")]
+        public string TfaConfirmUrl()
+        {
+            var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
+            if (StudioSmsNotificationSettingsHelper.IsVisibleSettings() && StudioSmsNotificationSettingsHelper.Enable)// && smsConfirm.ToLower() != "true")
+            {
+                var confirmType = string.IsNullOrEmpty(user.MobilePhone) ||
+                               user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated
+                                   ? ConfirmType.PhoneActivation
+                                   : ConfirmType.PhoneAuth;
+
+                return CommonLinkUtility.GetConfirmationUrl(user.Email, confirmType);
+            }
+
+            if (TfaAppAuthSettings.IsVisibleSettings && SettingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+            {
+                var confirmType = TfaAppUserSettings.EnableForUser(SettingsManager, AuthContext.CurrentAccount.ID)
+                    ? ConfirmType.TfaAuth
+                    : ConfirmType.TfaActivation;
+
+                return CommonLinkUtility.GetConfirmationUrl(user.Email, confirmType);
+            }
+
+            return string.Empty;
+        }
+
         [Update("tfaapp")]
         public bool TfaSettingsFromBody([FromBody]TfaModel model)
         {
