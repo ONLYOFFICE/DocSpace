@@ -80,8 +80,8 @@ class ContextMenuButton extends React.Component {
     }
   }
 
-  onIconButtonClick = () => {
-    if (this.props.isDisabled) {
+  onIconButtonClick = (e) => {
+    if (this.props.isDisabled || this.props.isNew) {
       this.stopAction;
       return;
     }
@@ -95,7 +95,7 @@ class ContextMenuButton extends React.Component {
         !this.props.isDisabled &&
         this.state.isOpen &&
         this.props.onClick &&
-        this.props.onClick()
+        this.props.onClick(e)
     ); // eslint-disable-line react/prop-types
   };
 
@@ -125,12 +125,17 @@ class ContextMenuButton extends React.Component {
   }
 
   callNewMenu = (e) => {
-    if (this.props.isDisabled) {
+    if (this.props.isDisabled || !this.props.isNew) {
       this.stopAction;
       return;
     }
 
-    this.props.isNew && this.props.onClick(e);
+    this.setState(
+      {
+        data: this.props.getData(),
+      },
+      () => this.props.onClick(e)
+    );
   };
 
   render() {

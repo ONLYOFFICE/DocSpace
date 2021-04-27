@@ -10,6 +10,11 @@ map $SERVICE_BACKUP $service_backup {
     $SERVICE_BACKUP $SERVICE_BACKUP;
 }
 
+map $SERVICE_CALENDAR $service_calendar {
+    volatile;
+    $SERVICE_CALENDAR $SERVICE_CALENDAR;
+}
+
 map $SERVICE_CRM $service_crm {
     volatile;
     $SERVICE_CRM $SERVICE_CRM;
@@ -28,6 +33,11 @@ map $SERVICE_FILES $service_files {
 map $SERVICE_FILES_SERVICES $service_files_services {
     volatile;
     $SERVICE_FILES_SERVICES $SERVICE_FILES_SERVICES;
+}
+
+map $SERVICE_MAIL $service_mail {
+    volatile;
+    $SERVICE_MAIL $SERVICE_MAIL;
 }
 
 map $SERVICE_STORAGE_MIGRATION $service_storage_migration {
