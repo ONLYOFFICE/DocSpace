@@ -37,7 +37,7 @@ const Confirm = ({ match }) => {
         path={`${match.path}/EmailChange`}
         component={ChangeEmailForm}
       />
-      <Route
+      <ConfirmRoute
         forUnauthorized
         path={`${match.path}/PasswordChange`}
         component={ChangePasswordForm}
