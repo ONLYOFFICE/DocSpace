@@ -1,6 +1,5 @@
 import { action, makeObservable, observable } from "mobx";
 import api from "../api";
-import { LANGUAGE } from "../constants";
 
 class UserStore {
   user = null;
@@ -21,9 +20,7 @@ class UserStore {
 
   getCurrentUser = async () => {
     const user = await api.people.getUser();
-    user.cultureName &&
-      localStorage.getItem(LANGUAGE) !== user.cultureName &&
-      localStorage.setItem(LANGUAGE, user.cultureName);
+
     this.setUser(user);
   };
 

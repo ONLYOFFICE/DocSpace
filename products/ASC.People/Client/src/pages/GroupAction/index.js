@@ -40,7 +40,7 @@ class GroupAction extends React.Component {
   render() {
     console.log("GroupAction render");
 
-    const { group, match } = this.props;
+    const { group, match, tReady } = this.props;
 
     return (
       <>
@@ -63,7 +63,7 @@ class GroupAction extends React.Component {
             </PageLayout.SectionHeader>
 
             <PageLayout.SectionBody>
-              <SectionBodyContent />
+              <SectionBodyContent tReady={tReady} />
             </PageLayout.SectionBody>
           </PageLayout>
         ) : (
