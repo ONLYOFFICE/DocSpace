@@ -362,10 +362,12 @@ const Form = (props) => {
     const providerButtons =
       providers &&
       providers.map((item, index) => {
+        if (!providersData[item.provider]) return;
+
         const { icon, label, iconOptions, className } = providersData[
           item.provider
         ];
-        if (!icon) return;
+
         if (item.provider === "Facebook") {
           facebookIndex = index;
           return;
@@ -388,6 +390,17 @@ const Form = (props) => {
     if (facebookIndex) addFacebookToStart(facebookIndex, providerButtons);
 
     return providerButtons;
+  };
+
+  const oauthDataExists = () => {
+    let existProviders = 0;
+    providers && providers.length > 0;
+    providers.map((item) => {
+      if (!providersData[item.provider]) return;
+      existProviders++;
+    });
+
+    return !!existProviders;
   };
 
   //console.log("Login render");
@@ -507,7 +520,7 @@ const Form = (props) => {
           </Text>
         )}
 
-        {providers && providers.length > 0 && (
+        {oauthDataExists() && (
           <>
             <Box displayProp="flex" alignItems="center" marginProp="0 0 16px 0">
               <div className="login-bottom-border"></div>

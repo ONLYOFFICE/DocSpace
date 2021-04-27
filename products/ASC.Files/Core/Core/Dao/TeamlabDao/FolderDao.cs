@@ -976,10 +976,12 @@ namespace ASC.Files.Core.Data
                 };
 
                 FilesDbContext.AddOrUpdate(r => r.BunchObjects, toInsert);
+                FilesDbContext.SaveChanges();
+
                 tx.Commit(); //Commit changes
             }
 
-            FilesDbContext.SaveChanges();
+
 
             return newFolderId;
         }

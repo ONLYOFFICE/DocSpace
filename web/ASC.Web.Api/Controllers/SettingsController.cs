@@ -1372,21 +1372,54 @@ namespace ASC.Api.Settings
             return FirstTimeTenantSettings.SaveData(wizardModel);
         }
 
+        [Read("tfaapp")]
+        public IEnumerable<TfaSettings> GetTfaSettings()
+        {
+            var result = new List<TfaSettings>();
+
+            var SmsVisible = StudioSmsNotificationSettingsHelper.IsVisibleSettings();
+            var SmsEnable = SmsVisible && SmsProviderManager.Enabled();
+            var TfaVisible = TfaAppAuthSettings.IsVisibleSettings;
+
+            if (SmsVisible)
+            {
+                result.Add(new TfaSettings
+                {
+                    Enabled = StudioSmsNotificationSettingsHelper.Enable,
+                    Id = "sms",
+                    Title = Resource.ButtonSmsEnable,
+                    Avaliable = SmsEnable
+                });
+            }
+
+            if (TfaVisible)
+            {
+                result.Add(new TfaSettings
+                {
+                    Enabled = SettingsManager.Load<TfaAppAuthSettings>().EnableSetting,
+                    Id = "app",
+                    Title = Resource.ButtonTfaAppEnable,
+                    Avaliable = true
+                });
+            }
+
+            return result;
+        }
 
         [Update("tfaapp")]
         public bool TfaSettingsFromBody([FromBody]TfaModel model)
         {
-            return TfaSettings(model);
+            return TfaSettingsUpdate(model);
         }
 
         [Update("tfaapp")]
         [Consumes("application/x-www-form-urlencoded")]
         public bool TfaSettingsFromForm([FromForm] TfaModel model)
         {
-            return TfaSettings(model);
+            return TfaSettingsUpdate(model);
         }
         
-        private bool TfaSettings(TfaModel model)
+        private bool TfaSettingsUpdate(TfaModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
