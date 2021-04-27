@@ -85,8 +85,6 @@ const PureTreeSettings = ({
 }) => {
   const { setting } = match.params;
 
-  console.log(isVisitor);
-
   useEffect(() => {
     setIsLoading(true);
     getFilesSettings().then(() => {
