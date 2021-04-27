@@ -26,5 +26,12 @@
   "CookieSettingsTitle": "Время жизни сессии",
   "Authorization": "Авторизация",
   "Or": "ИЛИ",
-  "Register": "Регистрация"
+  "Register": "Регистрация",
+
+  "SignInWithGoogle": "Вход через Google",
+  "SignInWithFacebook": "Вход через Facebook",
+  "SignInWithTwitter": "Вход через Twitter",
+  "SignInWithLinkedIn": "Вход через LinkedIn",
+  "ProviderLoginError": "Ошибка авторизации",
+  "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту"
 }

@@ -37,7 +37,7 @@ namespace ASC.Resource.Manager
             {
                 if(args[i] == "--pathToConf" || args[i] == "--ConnectionStrings:default:connectionString")
                 {
-                    i = i + 2;
+                    i++;
                     continue;
                 }
                 copy.Add(args[i]);
@@ -219,12 +219,17 @@ namespace ASC.Resource.Manager
 
                         regex = new Regex(@"\<AssemblyName\>(\S*)\<\/AssemblyName\>", RegexOptions.IgnoreCase);
                         matches = regex.Matches(File.ReadAllText(asmbl));
+                        string assName = "";
                         if (!matches.Any() || matches[0].Groups.Count < 2)
                         {
-                            return;
+                            assName = Path.GetFileNameWithoutExtension(asmbl);
+                        }
+                        else
+                        {
+                            assName = matches[0].Groups[1].Value;
                         }
 
-                        key = CheckExist(fileName, $"{nsp}.{name},{matches[0].Groups[1].Value}", exportPath);
+                        key = CheckExist(fileName, $"{nsp}.{name},{assName}", exportPath);
                         var additional =  string.Join(",", keys.Where(r => r.Length > 1 && r.Contains("*")).ToArray());
 
                         if (!string.IsNullOrEmpty(additional))
@@ -298,6 +303,7 @@ namespace ASC.Resource.Manager
             var bag = new ConcurrentBag<string>();
 
             var csFiles = Directory.GetFiles(Path.GetFullPath(path), "*.cs", SearchOption.AllDirectories).Except(Directory.GetFiles(Path.GetFullPath(path), "*Resource.Designer.cs", SearchOption.AllDirectories));
+            csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.cshtml", SearchOption.AllDirectories)).ToArray();
             csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.aspx", SearchOption.AllDirectories)).ToArray();
             csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.Master", SearchOption.AllDirectories)).ToArray();
             csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.ascx", SearchOption.AllDirectories)).ToArray();

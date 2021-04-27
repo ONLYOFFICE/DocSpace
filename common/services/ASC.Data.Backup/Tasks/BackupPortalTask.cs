@@ -36,6 +36,7 @@ using System.Xml.Linq;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Data.Backup.EF.Context;
@@ -152,9 +153,9 @@ namespace ASC.Data.Backup.Tasks
             excluded.Add("res_");
 
             var dir = Path.GetDirectoryName(BackupFilePath);
-            var subDir = Path.Combine(dir, Path.GetFileNameWithoutExtension(BackupFilePath));
-            var schemeDir = Path.Combine(subDir, KeyHelper.GetDatabaseSchema());
-            var dataDir = Path.Combine(subDir, KeyHelper.GetDatabaseData());
+            var subDir = CrossPlatform.PathCombine(dir, Path.GetFileNameWithoutExtension(BackupFilePath));
+            var schemeDir = CrossPlatform.PathCombine(subDir, KeyHelper.GetDatabaseSchema());
+            var dataDir = CrossPlatform.PathCombine(subDir, KeyHelper.GetDatabaseData());
 
             if (!Directory.Exists(schemeDir))
             {
@@ -227,7 +228,7 @@ namespace ASC.Data.Backup.Tasks
                             .FirstOrDefault());
                     creates.Append(";");
 
-                    var path = Path.Combine(dir, t);
+                    var path = CrossPlatform.PathCombine(dir, t);
                     using (var stream = File.OpenWrite(path))
                     {
                         var bytes = Encoding.UTF8.GetBytes(creates.ToString());
@@ -326,7 +327,7 @@ namespace ASC.Data.Backup.Tasks
                     }
                 }
 
-                var path = Path.Combine(dir, t);
+                var path = CrossPlatform.PathCombine(dir, t);
 
                 var offset = 0;
 
@@ -443,11 +444,11 @@ namespace ASC.Data.Backup.Tasks
             Logger.Debug("begin backup storage");
 
             var dir = Path.GetDirectoryName(BackupFilePath);
-            var subDir = Path.Combine(dir, Path.GetFileNameWithoutExtension(BackupFilePath));
+            var subDir = CrossPlatform.PathCombine(dir, Path.GetFileNameWithoutExtension(BackupFilePath));
 
             for (var i = 0; i < files.Count; i += TasksLimit)
             {
-                var storageDir = Path.Combine(subDir, KeyHelper.GetStorage());
+                var storageDir = CrossPlatform.PathCombine(subDir, KeyHelper.GetStorage());
 
                 if (!Directory.Exists(storageDir))
                 {
@@ -470,7 +471,7 @@ namespace ASC.Data.Backup.Tasks
 
             var restoreInfoXml = new XElement("storage_restore", files.Select(file => (object)file.ToXElement()).ToArray());
 
-            var tmpPath = Path.Combine(subDir, KeyHelper.GetStorageRestoreInfoZipKey());
+            var tmpPath = CrossPlatform.PathCombine(subDir, KeyHelper.GetStorageRestoreInfoZipKey());
             Directory.CreateDirectory(Path.GetDirectoryName(tmpPath));
 
             using (var tmpFile = File.OpenWrite(tmpPath))
@@ -490,7 +491,7 @@ namespace ASC.Data.Backup.Tasks
         private async Task DoDumpFile(BackupFileInfo file, string dir)
         {
             var storage = StorageFactory.GetStorage(ConfigPath, file.Tenant.ToString(), file.Module);
-            var filePath = Path.Combine(dir, file.GetZipKey());
+            var filePath = CrossPlatform.PathCombine(dir, file.GetZipKey());
             var dirName = Path.GetDirectoryName(filePath);
 
             Logger.DebugFormat("backup file {0}", filePath);
