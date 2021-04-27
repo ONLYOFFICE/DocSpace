@@ -12,6 +12,7 @@ import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject, observer } from "mobx-react";
+import { LANGUAGE } from "@appserver/common/constants";
 
 const mapCulturesToArray = (cultures, t) => {
   return cultures.map((culture) => {
@@ -176,7 +177,13 @@ class LanguageAndTimeZone extends React.Component {
       timezoneDefault,
       languageDefault,
     } = this.state;
-    const { i18n, language, nameSchemaId, getCurrentCustomSchema } = this.props;
+    const {
+      i18n,
+      language,
+      nameSchemaId,
+      getCurrentCustomSchema,
+      t,
+    } = this.props;
 
     if (timezones.length && languages.length && !prevState.isLoadedData) {
       this.setState({ isLoadedData: true });
@@ -229,12 +236,20 @@ class LanguageAndTimeZone extends React.Component {
   };
 
   onSaveLngTZSettings = () => {
-    const { t, setLanguageAndTime, i18n } = this.props;
+    const { t, setLanguageAndTime, user, language: lng } = this.props;
     const { language, timezone } = this.state;
+
     this.setState({ isLoading: true }, function () {
       setLanguageAndTime(language.key, timezone.key)
-        .then(() => i18n.changeLanguage(language.key))
+        .then(
+          () =>
+            !user.cultureName &&
+            localStorage.setItem(LANGUAGE, language.key || "en-US")
+        )
         .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
+        .then(
+          () => !user.cultureName && lng !== language.key && location.reload()
+        )
         .catch((error) => toastr.error(error))
         .finally(() => this.setState({ isLoading: false }));
     });
@@ -403,9 +418,12 @@ export default inject(({ auth, setup }) => {
     getCurrentCustomSchema,
   } = auth.settingsStore;
 
+  const { user } = auth.userStore;
+
   const { setLanguageAndTime } = setup;
 
   return {
+    user,
     portalLanguage: culture,
     portalTimeZoneId: timezone,
     language: culture,
