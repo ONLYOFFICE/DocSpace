@@ -32,6 +32,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -55,7 +56,7 @@ namespace ASC.Thumbnails.Svc
                     var path = buided["pathToConf"];
                     if (!Path.IsPathRooted(path))
                     {
-                        path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
+                        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
                     config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");

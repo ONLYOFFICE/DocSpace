@@ -19,7 +19,7 @@ namespace ASC.Web.Core.PublicResources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resource {
@@ -102,6 +102,24 @@ namespace ASC.Web.Core.PublicResources {
         public static string AdminMessageSent {
             get {
                 return ResourceManager.GetString("AdminMessageSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By SMS.
+        /// </summary>
+        public static string ButtonSmsEnable {
+            get {
+                return ResourceManager.GetString("ButtonSmsEnable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By authenticator app.
+        /// </summary>
+        public static string ButtonTfaAppEnable {
+            get {
+                return ResourceManager.GetString("ButtonTfaAppEnable", resourceCulture);
             }
         }
         
@@ -205,7 +223,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Box Key.
+        ///   Looks up a localized string similar to Box.
         /// </summary>
         public static string ConsumersBox {
             get {
@@ -232,7 +250,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect the application to manage Box files and folders..
+        ///   Looks up a localized string similar to Enable the application to manage Box files and folders..
         /// </summary>
         public static string ConsumersBoxDescription {
             get {
@@ -331,7 +349,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect the application to add the DocuSign electronic sign to documents..
+        ///   Looks up a localized string similar to Enable the application to digitally sign your documents with DocuSign..
         /// </summary>
         public static string ConsumersDocuSignDescription {
             get {
@@ -565,7 +583,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect Firebase Cloud Messaging service to receive notifications about the messages sent to you..
+        ///   Looks up a localized string similar to Enable this application to receive notifications about the messages sent to you with Firebase Cloud Messaging..
         /// </summary>
         public static string ConsumersFirebaseDescription {
             get {
@@ -583,7 +601,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Google Key.
+        ///   Looks up a localized string similar to Google.
         /// </summary>
         public static string ConsumersGoogle {
             get {
@@ -691,7 +709,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Linkedin Key.
+        ///   Looks up a localized string similar to LinkedIn.
         /// </summary>
         public static string ConsumersLinkedIn {
             get {
@@ -1033,7 +1051,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OneDrive ID.
+        ///   Looks up a localized string similar to Application ID.
         /// </summary>
         public static string Consumersskydriveappkey {
             get {
@@ -1042,7 +1060,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OneDrive Key.
+        ///   Looks up a localized string similar to Client secret.
         /// </summary>
         public static string Consumersskydriveappsecret {
             get {
@@ -1195,7 +1213,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Twitter Key.
+        ///   Looks up a localized string similar to Twitter.
         /// </summary>
         public static string ConsumersTwitter {
             get {
@@ -1294,7 +1312,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Secret key.
+        ///   Looks up a localized string similar to Secure key.
         /// </summary>
         public static string ConsumersVkClientSecret {
             get {
@@ -1492,6 +1510,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Incorrect Instance id..
+        /// </summary>
+        public static string EmailAndPasswordIncorrectAmiId {
+            get {
+                return ResourceManager.GetString("EmailAndPasswordIncorrectAmiId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Incorrect email address.
         /// </summary>
         public static string EmailAndPasswordIncorrectEmail {
@@ -1506,15 +1533,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string EmailAndPasswordIncorrectPromocode {
             get {
                 return ResourceManager.GetString("EmailAndPasswordIncorrectPromocode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to These settings have been successfully saved.
-        /// </summary>
-        public static string EmailAndPasswordSaved {
-            get {
-                return ResourceManager.GetString("EmailAndPasswordSaved", resourceCulture);
             }
         }
         
@@ -1587,6 +1605,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string ErrorEmailsAreTheSame {
             get {
                 return ResourceManager.GetString("ErrorEmailsAreTheSame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please fill in all fields.
+        /// </summary>
+        public static string ErrorEmptyFields {
+            get {
+                return ResourceManager.GetString("ErrorEmptyFields", resourceCulture);
             }
         }
         
@@ -1816,7 +1843,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to License has expired.
+        ///   Looks up a localized string similar to The license is not valid for this portal version..
         /// </summary>
         public static string LicenseErrorExpired {
             get {
@@ -1888,15 +1915,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The password change instructions have been sent to the {0} email address..
-        /// </summary>
-        public static string MessageYourPasswordSuccessfullySendedToEmail {
-            get {
-                return ResourceManager.GetString("MessageYourPasswordSuccessfullySendedToEmail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to To change the number, you need to delete your current phone number.
         /// </summary>
         public static string MobilePhoneMustErase {
@@ -1929,15 +1947,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string PortalSecurity {
             get {
                 return ResourceManager.GetString("PortalSecurity", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Profile has been removed.
-        /// </summary>
-        public static string ProfileRemoved {
-            get {
-                return ResourceManager.GetString("ProfileRemoved", resourceCulture);
             }
         }
         
@@ -2100,15 +2109,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string TfaTooMuchError {
             get {
                 return ResourceManager.GetString("TfaTooMuchError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Trial.
-        /// </summary>
-        public static string Trial {
-            get {
-                return ResourceManager.GetString("Trial", resourceCulture);
             }
         }
         

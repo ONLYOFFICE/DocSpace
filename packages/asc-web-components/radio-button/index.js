@@ -83,7 +83,7 @@ RadioButton.propTypes = {
   /** Used as HTML `disabled` property for each `<input>` tag */
   isDisabled: PropTypes.bool,
   /** Name of the radiobutton. If missed, `value` will be used  */
-  label: PropTypes.string,
+  label: PropTypes.oneOfType([PropTypes.any, PropTypes.string]),
   /** Font size of link  */
   fontSize: PropTypes.string,
   /** Font weight of link  */

@@ -34,6 +34,7 @@ using System.Xml.Linq;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Tenants;
@@ -286,7 +287,7 @@ namespace ASC.Data.Backup.Tasks
                             var key = file.GetZipKey();
                             if (Dump)
                             {
-                                key = Path.Combine(KeyHelper.GetStorage(), key);
+                                key = CrossPlatform.PathCombine(KeyHelper.GetStorage(), key);
                             }
                             using var stream = dataReader.GetEntry(key);
                             try

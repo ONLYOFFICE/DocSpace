@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Data.Storage;
 
 using Microsoft.Extensions.Options;
@@ -177,7 +178,7 @@ namespace ASC.Core.ChunkedUploader
 
         private string GetPathWithId(string id)
         {
-            return Path.Combine(StoragePath, id + ".session");
+            return CrossPlatform.PathCombine(StoragePath, id + ".session");
         }
     }
 }

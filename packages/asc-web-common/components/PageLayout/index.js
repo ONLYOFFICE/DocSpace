@@ -96,9 +96,13 @@ class PageLayout extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (
-      this.props.hideAside &&
-      !this.state.isArticlePinned &&
-      this.props.hideAside !== prevProps.hideAside
+      (this.props.hideAside &&
+        !this.state.isArticlePinned &&
+        this.props.hideAside !== prevProps.hideAside) ||
+      (this.props.isLoading !== prevProps.isLoading &&
+        this.props.isLoaded &&
+        this.state.isArticleVisible &&
+        !this.state.isArticlePinned)
     ) {
       this.backdropClick();
     }

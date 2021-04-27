@@ -19,13 +19,11 @@ const PureThirdPartyMoveContainer = ({
   provider,
   selection,
   destFolderId,
-  copyToAction,
-  moveToAction,
   setDestFolderId,
+  checkOperationConflict,
   setThirdPartyMoveDialogVisible,
 }) => {
   const zIndex = 310;
-  const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2 TODO: get from settings
   const deleteAfter = true; // TODO: get from settings
 
   const onClose = () => {
@@ -33,7 +31,8 @@ const PureThirdPartyMoveContainer = ({
     setThirdPartyMoveDialogVisible(false);
   };
 
-  const getOperationItems = () => {
+  const startOperation = (e) => {
+    const isCopy = e.target.dataset.copy;
     const folderIds = [];
     const fileIds = [];
 
@@ -44,36 +43,16 @@ const PureThirdPartyMoveContainer = ({
         folderIds.push(item.id);
       }
     }
-    return [folderIds, fileIds];
-  };
 
-  const startMoveOperation = () => {
-    const result = getOperationItems();
-    const folderIds = result[0];
-    const fileIds = result[1];
-
-    moveToAction(
+    const data = {
       destFolderId,
       folderIds,
       fileIds,
-      conflictResolveType,
-      deleteAfter
-    );
-    onClose();
-  };
+      deleteAfter,
+      isCopy,
+    };
 
-  const startCopyOperation = () => {
-    const result = getOperationItems();
-    const folderIds = result[0];
-    const fileIds = result[1];
-
-    copyToAction(
-      destFolderId,
-      folderIds,
-      fileIds,
-      conflictResolveType,
-      deleteAfter
-    );
+    checkOperationConflict(data);
     onClose();
   };
 
@@ -93,13 +72,14 @@ const PureThirdPartyMoveContainer = ({
             label={t("Move")}
             size="big"
             primary
-            onClick={startMoveOperation}
+            onClick={startOperation}
           />
           <Button
+            data-copy="copy"
             className="operation-button"
             label={t("Copy")}
             size="big"
-            onClick={startCopyOperation}
+            onClick={startOperation}
           />
           <Button
             className="operation-button"
@@ -121,7 +101,7 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
     setDestFolderId,
   } = dialogsStore;
   const { selection } = filesStore;
-  const { copyToAction, moveToAction } = filesActionsStore;
+  const { checkOperationConflict } = filesActionsStore;
 
   return {
     visible,
@@ -129,8 +109,7 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
     destFolderId,
     setDestFolderId,
     provider: selection[0].providerKey,
-    copyToAction,
-    moveToAction,
+    checkOperationConflict,
     selection,
   };
 })(

@@ -41,6 +41,7 @@ class FilesStore {
   selection = [];
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
+  loadTimeout = null;
 
   constructor(
     authStore,
@@ -341,8 +342,8 @@ class FilesStore {
     return request();
   };
 
-  isFileSelected = (selection, fileId, parentId) => {
-    const item = selection.find(
+  isFileSelected = (fileId, parentId) => {
+    const item = this.selection.find(
       (x) => x.id === fileId && x.parentId === parentId
     );
 
@@ -351,13 +352,13 @@ class FilesStore {
 
   selectFile = (file) => {
     const { id, parentId } = file;
-    const isFileSelected = this.isFileSelected(this.selection, id, parentId);
+    const isFileSelected = this.isFileSelected(id, parentId);
     if (!isFileSelected) this.selection.push(file);
   };
 
   deselectFile = (file) => {
     const { id, parentId } = file;
-    const isFileSelected = this.isFileSelected(this.selection, id, parentId);
+    const isFileSelected = this.isFileSelected(id, parentId);
     if (isFileSelected)
       this.selection = this.selection.filter((x) => x.id !== id);
   };
@@ -387,6 +388,7 @@ class FilesStore {
       isCommonFolder,
       isFavoritesFolder,
       isThirdPartyFolder,
+      isMyFolder,
     } = this.treeFoldersStore;
 
     const { isDesktopClient } = this.settingsStore;
@@ -413,7 +415,7 @@ class FilesStore {
         "mark-read",
         "mark-as-favorite",
         "download",
-        //"download-as",
+        "download-as",
         "convert",
         "move", //category
         "move-to",
@@ -426,6 +428,10 @@ class FilesStore {
         "unsubscribe",
         "delete",
       ];
+
+      if (!this.isWebEditSelected) {
+        fileOptions = this.removeOptions(fileOptions, ["download-as"]);
+      }
 
       if (!canConvert || isEncrypted) {
         fileOptions = this.removeOptions(fileOptions, ["convert"]);
@@ -465,7 +471,11 @@ class FilesStore {
       }
 
       if (isFavoritesFolder) {
-        fileOptions = this.removeOptions(fileOptions, ["move-to", "delete"]);
+        fileOptions = this.removeOptions(fileOptions, [
+          "move-to",
+          "delete",
+          "copy",
+        ]);
 
         if (!isFavorite) {
           fileOptions = this.removeOptions(fileOptions, ["separator2"]);
@@ -488,10 +498,25 @@ class FilesStore {
         ]);
       }
 
+      if (
+        isCommonFolder ||
+        isFavoritesFolder ||
+        isPrivacyFolder ||
+        isRecentFolder
+      ) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "copy",
+          "move-to",
+          "sharing-settings",
+        ]);
+      }
+
       if (isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, [
           "open",
           "open-location",
+          "view",
+          "preview",
           "edit",
           "link-for-portal-users",
           "sharing-settings",
@@ -504,6 +529,7 @@ class FilesStore {
           "move", //category
           "move-to",
           "copy-to",
+          "copy",
           "mark-read",
           "mark-as-favorite",
           "remove-from-favorites",
@@ -520,6 +546,7 @@ class FilesStore {
           "finalize-version",
           "rename",
           "block-unblock-version",
+          "copy",
         ]);
       }
 
@@ -548,13 +575,18 @@ class FilesStore {
         ]);
       }
 
-      if (!this.userAccess) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "owner-change",
-          "move-to",
-          "delete",
-        ]);
-      }
+      if (isCommonFolder)
+        if (!this.userAccess) {
+          fileOptions = this.removeOptions(fileOptions, [
+            "owner-change",
+            "move-to",
+            "delete",
+            "copy",
+          ]);
+          if (!isFavorite) {
+            fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+          }
+        }
 
       if (withoutShare) {
         fileOptions = this.removeOptions(fileOptions, [

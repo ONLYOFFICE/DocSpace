@@ -28,6 +28,7 @@ using System;
 using System.IO;
 
 using ASC.Common;
+using ASC.Common.Utils;
 using ASC.Core.Common.Settings;
 
 using Microsoft.AspNetCore.Mvc;
@@ -86,7 +87,7 @@ namespace ASC.Web.Core.Utility
 
             try
             {
-                var filePath = Path.Combine(HostEnvironment.ContentRootPath, resolvedPath);
+                var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
                 if (!File.Exists(filePath))
                     throw new FileNotFoundException("", path);
             }
@@ -97,7 +98,7 @@ namespace ASC.Web.Core.Utility
                 if (!urlHelper.IsLocalUrl(resolvedPath))
                     resolvedPath = urlHelper.Action(resolvedPath);
 
-                var filePath = Path.Combine(HostEnvironment.ContentRootPath, resolvedPath);
+                var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
 
                 if (!File.Exists(filePath))
                     throw new FileNotFoundException("", path);
@@ -128,7 +129,7 @@ namespace ASC.Web.Core.Utility
 
             try
             {
-                var filePath = Path.Combine(HostEnvironment.ContentRootPath, resolvedPath);
+                var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
                 if (Directory.Exists(filePath))
                 {
                     SettingsManager.Save(settings);

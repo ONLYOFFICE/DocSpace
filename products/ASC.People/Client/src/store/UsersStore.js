@@ -10,13 +10,16 @@ import store from "studio/store";
 const { auth: authStore } = store;
 class UsersStore {
   users = [];
+  providers = [];
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
     makeObservable(this, {
       users: observable,
+      providers: observable,
       getUsersList: action,
       setUsers: action,
+      setProviders: action,
       createUser: action,
       removeUser: action,
       updateUserStatus: action,
@@ -50,6 +53,10 @@ class UsersStore {
 
   setUsers = (users) => {
     this.users = users;
+  };
+
+  setProviders = (providers) => {
+    this.providers = providers;
   };
 
   employeeWrapperToMemberModel = (profile) => {

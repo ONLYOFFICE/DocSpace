@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 
+using ASC.Common.Utils;
+
 using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +32,7 @@ namespace ASC.Files
                     var path = buided["pathToConf"];
                     if (!Path.IsPathRooted(path))
                     {
-                        path = Path.GetFullPath(Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, path));
+                        path = Path.GetFullPath(CrossPlatform.PathCombine(hostingContext.HostingEnvironment.ContentRootPath, path));
                     }
 
                     config.SetBasePath(path);

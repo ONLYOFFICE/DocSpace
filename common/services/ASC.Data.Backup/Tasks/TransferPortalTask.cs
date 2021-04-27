@@ -31,6 +31,7 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core.Tenants;
 using ASC.Data.Backup.Extensions;
 using ASC.Data.Backup.Tasks.Modules;
@@ -246,7 +247,7 @@ namespace ASC.Data.Backup.Tasks
             if (!Directory.Exists(BackupDirectory ?? DefaultDirectoryName))
                 Directory.CreateDirectory(BackupDirectory ?? DefaultDirectoryName);
 
-            return Path.Combine(BackupDirectory ?? DefaultDirectoryName, tenantAlias + DateTime.UtcNow.ToString("(yyyy-MM-dd HH-mm-ss)") + ".backup");
+            return CrossPlatform.PathCombine(BackupDirectory ?? DefaultDirectoryName, tenantAlias + DateTime.UtcNow.ToString("(yyyy-MM-dd HH-mm-ss)") + ".backup");
         }
 
     }
