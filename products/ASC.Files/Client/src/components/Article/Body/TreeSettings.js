@@ -81,6 +81,7 @@ const PureTreeSettings = ({
   history,
   setIsLoading,
   t,
+  isVisitor,
 }) => {
   const { setting } = match.params;
 
@@ -168,7 +169,7 @@ const PureTreeSettings = ({
             title={t("TreeSettingsAdminSettings")}
           />
         ) : null}
-        {enableThirdParty ? (
+        {enableThirdParty && !isVisitor ? (
           <TreeNode
             selectable={true}
             className="settings-node"
@@ -226,6 +227,7 @@ export default inject(
 
     return {
       isAdmin: auth.isAdmin,
+      isVisitor: auth.userStore.user.isVisitor,
       isLoading,
       selectedTreeNode,
       enableThirdParty,
