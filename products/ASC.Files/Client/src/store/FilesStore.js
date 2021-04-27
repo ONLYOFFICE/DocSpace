@@ -574,7 +574,7 @@ class FilesStore {
         ]);
       }
 
-      if (isCommonFolder)
+      if (isCommonFolder) {
         if (!this.userAccess) {
           fileOptions = this.removeOptions(fileOptions, [
             "owner-change",
@@ -586,6 +586,7 @@ class FilesStore {
             fileOptions = this.removeOptions(fileOptions, ["separator2"]);
           }
         }
+      }
 
       if (withoutShare) {
         fileOptions = this.removeOptions(fileOptions, [
@@ -602,6 +603,10 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
       } else if (!isFavorite) {
         fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+      }
+
+      if (isShareFolder) {
+        fileOptions = this.removeOptions(fileOptions, ["move-to"]);
       }
 
       return fileOptions;
@@ -628,6 +633,10 @@ class FilesStore {
 
       if (isPrivacyFolder) {
         folderOptions = this.removeOptions(folderOptions, ["copy"]);
+      }
+
+      if (isShareFolder) {
+        folderOptions = this.removeOptions(folderOptions, ["move-to"]);
       }
 
       if (isRecycleBinFolder) {
