@@ -80,19 +80,12 @@ const ProviderButtonsWrapper = styled.div`
   display: grid;
   grid-template-columns: auto 1fr;
   grid-gap: 16px 22px;
-`;<<<<<<< .mine
+
   .link-action {
     margin-right: 5px;
   }
 `;
 
-=======
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-gap: 16px 22px;
-`;
-
->>>>>>> .theirs
 const createContacts = (contacts) => {
   const styledContacts = contacts.map((contact, index) => {
     let url = null;
@@ -122,7 +115,7 @@ const stringFormat = (string, data) =>
   string.replace(/\{(\d+)\}/g, (m, n) => data[n] || m);
 
 class SectionBodyContent extends React.PureComponent {
-constructor(props) {
+  constructor(props) {
     super(props);
     this.state = {
       resetAppDialogVisible: false,
@@ -130,13 +123,15 @@ constructor(props) {
     };
   }
   async componentDidMount() {
-    const { cultures, getPortalCultures, profile, viewer, isSelf, setProviders } = this.props;
-<<<<<<< .mine
-  constructor(props) {
-=======
-  async componentDidMount() {
->>>>>>> .theirs
- 
+    const {
+      cultures,
+      getPortalCultures,
+      profile,
+      viewer,
+      isSelf,
+      setProviders,
+    } = this.props;
+
     //const isSelf = isMe(viewer, profile.userName);
     if (isSelf && !cultures.length) {
       getPortalCultures();
@@ -168,7 +163,7 @@ constructor(props) {
     );
   };
 
-toggleResetAppDialogVisible = () => {
+  toggleResetAppDialogVisible = () => {
     this.setState({ resetAppDialogVisible: !this.state.resetAppDialogVisible });
   };
 
@@ -299,17 +294,7 @@ toggleResetAppDialogVisible = () => {
   };
 
   render() {
- const { resetAppDialogVisible, backupCodesDialogVisible } = this.state;
-    const {
-      profile,
-      cultures,
-      culture,
-      isAdmin,
-      viewer,
-      t,
-      isSelf,
-      providers,
-    } = this.props;<<<<<<< .mine
+    const { resetAppDialogVisible, backupCodesDialogVisible } = this.state;
     const {
       profile,
       cultures,
@@ -320,18 +305,6 @@ toggleResetAppDialogVisible = () => {
       isSelf,
       providers,
     } = this.props;
-=======
-
-
-
-
-
-
-
-
-
-
->>>>>>> .theirs
 
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
