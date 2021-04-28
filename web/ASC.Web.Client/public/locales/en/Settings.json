@@ -108,10 +108,9 @@
   "YouHaveUnsavedChanges": "You have unsaved changes",
   "CustomTitles": "Custom titles",
   "LanguageAndTimeZoneSettingsDescription": "Language and time zone settings is a way to change the language of the whole portal for all portal users and to configure the time zone so that all the events of the portal will be shown with the correct date and time.",
- "PortalAdmins": "Portal admins",
+  "PortalAdmins": "Portal admins",
   "PortalAdminsDescription": "Have the same access rights as the portal owner, except the right to: change portal owner; deactivate or delete portal.",
   "ConfirmEmailSended": "Confirmation e-mail has been sent to {{ownerName}}",
- 
 
   "TeamTemplate": "Team template",
   "TeamTemplateSettingsDescription": "Team Template is a customizable way to name the organization (or group), its members and their activities. Drop down the Template list to choose one of the available presets or enter the names yourselves selecting the custom option from the list.",
@@ -127,49 +126,10 @@
   "Guest": "Guest",
   "Guests": "Guests",
 
-  "EmptyFieldError": "Empty field","PortalAccess": "Portal access",
-  "TwoFactorAuth": "Two-factor authentication",
-  "Disabled": "Disabled",
-  "BySms": "By sms",
-  "ByApp": "By authenticator app"<<<<<<< .mine
+  "EmptyFieldError": "Empty field",
+  "PortalAccess": "Portal access",
   "TwoFactorAuth": "Two-factor authentication",
   "Disabled": "Disabled",
   "BySms": "By sms",
   "ByApp": "By authenticator app"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
-  "PortalAdminsDescription": "Have the same access rights as the portal owner, except the right to: change portal owner; deactivate or delete portal.",
-  "ConfirmEmailSended": "Confirmation e-mail has been sent to {{ownerName}}",
- 
-
-  "TeamTemplate": "Team template",
-  "TeamTemplateSettingsDescription": "Team Template is a customizable way to name the organization (or group), its members and their activities. Drop down the Template list to choose one of the available presets or enter the names yourselves selecting the custom option from the list.",
-  "AddName": "Add Name",
-  "Template": "Template",
-  "User": "User",
-  "Users": "Users",
-  "Group": "Group",
-  "Groups": "Groups",
-  "Job/Title": "Job/Title",
-  "RegistrationDate": "Registration date",
-  "GroupLead": "Group Lead",
-  "Guest": "Guest",
-  "Guests": "Guests",
-
-  "EmptyFieldError": "Empty field"
->>>>>>> .theirs
 }
