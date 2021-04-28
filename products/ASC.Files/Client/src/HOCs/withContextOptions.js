@@ -83,7 +83,7 @@ export default function withContextOptions(WrappedComponent) {
 
     onClickLinkForPortal = () => {
       const { item, homepage, t } = this.props;
-      const { fileExst, canOpenPlayer, webUrl } = item;
+      const { fileExst, canOpenPlayer, webUrl, id } = item;
 
       const isFile = !!fileExst;
       copy(
