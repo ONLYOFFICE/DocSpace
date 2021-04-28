@@ -85,6 +85,7 @@ class ArticleBodyContent extends React.Component {
       onTreeDrop,
       selectedTreeNode,
       enableThirdParty,
+      isVisitor,
     } = this.props;
 
     return isEmpty(treeFolders) ? (
@@ -99,7 +100,7 @@ class ArticleBodyContent extends React.Component {
           onTreeDrop={onTreeDrop}
         />
         <TreeSettings />
-        {enableThirdParty && <ThirdPartyList />}
+        {enableThirdParty && !isVisitor && <ThirdPartyList />}
       </>
     );
   }
@@ -107,6 +108,7 @@ class ArticleBodyContent extends React.Component {
 
 export default inject(
   ({
+    auth,
     filesStore,
     treeFoldersStore,
     selectedFolderStore,
@@ -129,6 +131,7 @@ export default inject(
       selectedTreeNode,
       filter,
       enableThirdParty: settingsStore.enableThirdParty,
+      isVisitor: auth.userStore.user.isVisitor,
 
       setIsLoading,
       fetchFiles,
