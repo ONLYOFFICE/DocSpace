@@ -11,7 +11,6 @@ const Badge = (props) => {
     if (!props.onClick) return;
 
     e.preventDefault();
-    e.stopPropagation();
     props.onClick(e);
   };
 

@@ -29,6 +29,8 @@ x-service:
     - people_data:/var/www/products/ASC.People/server/
     - crm_data:/var/www/products/ASC.CRM/server/
     - project_data:/var/www/products/ASC.Projects/server/
+    - calendar_data:/var/www/products/ASC.Calendar/server/
+    - mail_data:/var/www/products/ASC.Mail/server/
 
 services:
   onlyoffice-notify:
@@ -47,3 +49,5 @@ volumes:
   people_data:
   crm_data:
   project_data:
+  calendar_data:
+  mail_data:

@@ -6,7 +6,7 @@ import Error403 from "studio/Error403";
 import Error520 from "studio/Error520";
 import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
-import { loopTreeFolders } from "../../../../../helpers/files-helpers";
+import { loopTreeFolders } from "../../../../helpers/files-helpers";
 
 const StyledSettings = styled.div`
   display: grid;

@@ -230,6 +230,7 @@ toggleResetAppDialogVisible = () => {
     const providerButtons =
       providers &&
       providers.map((item) => {
+        if (!providersData[item.provider]) return;
         const { icon, label, iconOptions } = providersData[item.provider];
 
         if (!icon || !label) return <React.Fragment></React.Fragment>;
@@ -284,8 +285,31 @@ toggleResetAppDialogVisible = () => {
     return providerButtons;
   };
 
+  oauthDataExists = () => {
+    const { providers } = this.props;
+
+    let existProviders = 0;
+    providers && providers.length > 0;
+    providers.map((item) => {
+      if (!providersData[item.provider]) return;
+      existProviders++;
+    });
+
+    return !!existProviders;
+  };
+
   render() {
-    const { resetAppDialogVisible, backupCodesDialogVisible } = this.state;
+ const { resetAppDialogVisible, backupCodesDialogVisible } = this.state;
+    const {
+      profile,
+      cultures,
+      culture,
+      isAdmin,
+      viewer,
+      t,
+      isSelf,
+      providers,
+    } = this.props;<<<<<<< .mine
     const {
       profile,
       cultures,
@@ -296,6 +320,18 @@ toggleResetAppDialogVisible = () => {
       isSelf,
       providers,
     } = this.props;
+=======
+
+
+
+
+
+
+
+
+
+
+>>>>>>> .theirs
 
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
@@ -340,7 +376,7 @@ toggleResetAppDialogVisible = () => {
           culture={culture}
         />
 
-        {isSelf && providers && providers.length > 0 && (
+        {isSelf && this.oauthDataExists() && (
           <ToggleWrapper>
             <ToggleContent label={t("LoginSettings")} isOpen={true}>
               <ProviderButtonsWrapper>

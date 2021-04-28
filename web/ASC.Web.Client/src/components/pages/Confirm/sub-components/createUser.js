@@ -195,10 +195,11 @@ class Confirm extends React.PureComponent {
     const providerButtons =
       providers &&
       providers.map((item, index) => {
+        if (!providersData[item.provider]) return;
         const { icon, label, iconOptions, className } = providersData[
           item.provider
         ];
-        if (!icon) return;
+
         if (item.provider === "Facebook") {
           facebookIndex = index;
           return;
@@ -221,6 +222,19 @@ class Confirm extends React.PureComponent {
     if (facebookIndex) this.addFacebookToStart(facebookIndex, providerButtons);
 
     return providerButtons;
+  };
+
+  oauthDataExists = () => {
+    const { providers } = this.props;
+
+    let existProviders = 0;
+    providers && providers.length > 0;
+    providers.map((item) => {
+      if (!providersData[item.provider]) return;
+      existProviders++;
+    });
+
+    return !!existProviders;
   };
 
   authCallback = (profile) => {
@@ -493,7 +507,7 @@ class Confirm extends React.PureComponent {
               onClick={this.onSubmit}
             />
           </div>
-          {providers && providers.length > 0 && (
+          {this.oauthDataExists && (
             <Box>
               <ButtonsWrapper>{this.providerButtons()}</ButtonsWrapper>
             </Box>

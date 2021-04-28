@@ -1,4 +1,4 @@
-﻿namespace ASC.Web.Api.Models
+﻿namespace ASC.People.Models
 {
     public class AccountInfo
     {

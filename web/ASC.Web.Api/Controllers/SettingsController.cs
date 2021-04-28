@@ -43,7 +43,6 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
-using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Configuration;
@@ -59,16 +58,13 @@ using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.Encryption;
 using ASC.Data.Storage.Migration;
-using ASC.FederatedLogin;
 using ASC.FederatedLogin.LoginProviders;
-using ASC.FederatedLogin.Profile;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
-using ASC.Web.Core.Mobile;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Sms;
 using ASC.Web.Core.Users;
@@ -124,8 +120,6 @@ namespace ASC.Api.Settings
         private IPSecurity.IPSecurity IpSecurity { get; }
         private IMemoryCache MemoryCache { get; }
         private ProviderManager ProviderManager { get; }
-        private MobileDetector MobileDetector { get; }
-        private IOptionsSnapshot<AccountLinker> AccountLinker { get; }
         private FirstTimeTenantSettings FirstTimeTenantSettings { get; }
         private UserManager UserManager { get; }
         private TenantManager TenantManager { get; }
@@ -222,8 +216,6 @@ namespace ASC.Api.Settings
             IPSecurity.IPSecurity ipSecurity,
             IMemoryCache memoryCache,
             ProviderManager providerManager,
-            MobileDetector mobileDetector,
-            IOptionsSnapshot<AccountLinker> accountLinker,
             FirstTimeTenantSettings firstTimeTenantSettings,
             ServiceClient serviceClient,
             TelegramHelper telegramHelper,
@@ -249,8 +241,6 @@ namespace ASC.Api.Settings
             IpSecurity = ipSecurity;
             MemoryCache = memoryCache;
             ProviderManager = providerManager;
-            MobileDetector = mobileDetector;
-            AccountLinker = accountLinker;
             FirstTimeTenantSettings = firstTimeTenantSettings;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
@@ -649,51 +639,6 @@ namespace ASC.Api.Settings
         public QuotaWrapper GetQuotaUsed()
         {
             return new QuotaWrapper(Tenant, CoreBaseSettings, CoreConfiguration, TenantExtra, TenantStatisticsProvider, AuthContext, SettingsManager, WebItemManager);
-        }
-
-
-        [AllowAnonymous]
-        [Read("authproviders")]
-        public ICollection<AccountInfo> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
-        {
-            ICollection<AccountInfo> infos = new List<AccountInfo>();
-            IEnumerable<LoginProfile> linkedAccounts = new List<LoginProfile>();
-
-            if (AuthContext.IsAuthenticated)
-            {
-                linkedAccounts = AccountLinker.Get("webstudio").GetLinkedProfiles(AuthContext.CurrentAccount.ID.ToString());
-            }
-
-            fromOnly = string.IsNullOrWhiteSpace(fromOnly) ? string.Empty : fromOnly.ToLower();
-
-            foreach (var provider in ProviderManager.AuthProviders.Where(provider => string.IsNullOrEmpty(fromOnly) || fromOnly == provider || (provider == "google" && fromOnly == "openid")))
-            {
-                if (inviteView && provider.ToLower() == "twitter") continue;
-
-                var loginProvider = ProviderManager.GetLoginProvider(provider);
-                if (loginProvider != null && loginProvider.IsEnabled)
-                {
-
-                    var url = VirtualPathUtility.ToAbsolute("~/login.ashx") + $"?auth={provider}";
-                    var mode = (settingsView || inviteView || (!MobileDetector.IsMobile() && !Request.DesktopApp())
-                                     ? ("&mode=popup&callback=" + clientCallback)
-                                     : ("&mode=Redirect&returnurl="
-                                    + HttpUtility.UrlEncode(new Uri(Request.GetUrlRewriter(),
-                                        "Auth.aspx"
-                                        + (Request.DesktopApp() ? "?desktop=true" : "")
-                                        ).ToString())
-                                 ));
-
-                    infos.Add(new AccountInfo
-                    {
-                        Linked = linkedAccounts.Any(x => x.Provider == provider),
-                        Provider = provider,
-                        Url = url + mode
-                    });
-                }
-            }
-
-            return infos;
         }
 
         [AllowAnonymous]

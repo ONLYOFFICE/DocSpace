@@ -14,7 +14,7 @@ import {
   ArticleBodyContent,
   ArticleHeaderContent,
   ArticleMainButtonContent,
-} from "../../Article";
+} from "../../components/Article";
 import {
   SectionBodyContent,
   SectionFilterContent,
@@ -22,11 +22,11 @@ import {
   SectionPagingContent,
 } from "./Section";
 
-import { ConvertDialog } from "../../dialogs";
+import { ConvertDialog } from "../../components/dialogs";
 import MediaViewer from "./MediaViewer";
-import DragTooltip from "../../DragTooltip";
+import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
-import config from "../../../../package.json";
+import config from "../../../package.json";
 
 class PureHome extends React.Component {
   componentDidMount() {

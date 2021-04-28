@@ -10,6 +10,7 @@ using System.Net.Mail;
 using System.Security;
 using System.ServiceModel.Security;
 using System.Threading;
+using System.Web;
 
 using ASC.Api.Core;
 using ASC.Common;
@@ -22,6 +23,7 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Reassigns;
 using ASC.FederatedLogin;
+using ASC.FederatedLogin.LoginProviders;
 using ASC.FederatedLogin.Profile;
 using ASC.MessagingSystem;
 using ASC.People;
@@ -31,6 +33,7 @@ using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
+using ASC.Web.Core.Mobile;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Core;
@@ -48,7 +51,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
 {
-    [Scope]
+    [Scope(Additional = typeof(BaseLoginProviderExtension))]
     [DefaultRoute]
     [ApiController]
     public class PeopleController : ControllerBase
@@ -88,7 +91,9 @@ namespace ASC.Employee.Core.Controllers
         private PasswordHasher PasswordHasher { get; }
         private UserHelpTourHelper UserHelpTourHelper { get; }
         private PersonalSettingsHelper PersonalSettingsHelper { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private MobileDetector MobileDetector { get; }
+        private ProviderManager ProviderManager { get; }
         private ILog Log { get; }
 
         public PeopleController(
@@ -127,7 +132,10 @@ namespace ASC.Employee.Core.Controllers
             PasswordHasher passwordHasher,
             UserHelpTourHelper userHelpTourHelper,
             PersonalSettingsHelper personalSettingsHelper,
-            CommonLinkUtility commonLinkUtility)
+            CommonLinkUtility commonLinkUtility,
+            MobileDetector mobileDetector,
+            ProviderManager providerManager
+            )
         {
             Log = option.Get("ASC.Api");
             Log.Debug("Test");
@@ -166,6 +174,8 @@ namespace ASC.Employee.Core.Controllers
             UserHelpTourHelper = userHelpTourHelper;
             PersonalSettingsHelper = personalSettingsHelper;
             CommonLinkUtility = commonLinkUtility;
+            MobileDetector = mobileDetector;
+            ProviderManager = providerManager;
         }
 
         [Read("info")]
@@ -1484,6 +1494,50 @@ namespace ASC.Employee.Core.Controllers
             MessageService.Send(MessageAction.UserSentDeleteInstructions);
 
             return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
+        }
+
+        [AllowAnonymous]
+        [Read("thirdparty/providers")]
+        public ICollection<AccountInfo> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
+        {
+            ICollection<AccountInfo> infos = new List<AccountInfo>();
+            IEnumerable<LoginProfile> linkedAccounts = new List<LoginProfile>();
+
+            if (AuthContext.IsAuthenticated)
+            {
+                linkedAccounts = AccountLinker.Get("webstudio").GetLinkedProfiles(AuthContext.CurrentAccount.ID.ToString());
+            }
+
+            fromOnly = string.IsNullOrWhiteSpace(fromOnly) ? string.Empty : fromOnly.ToLower();
+
+            foreach (var provider in ProviderManager.AuthProviders.Where(provider => string.IsNullOrEmpty(fromOnly) || fromOnly == provider || (provider == "google" && fromOnly == "openid")))
+            {
+                if (inviteView && provider.ToLower() == "twitter") continue;
+
+                var loginProvider = ProviderManager.GetLoginProvider(provider);
+                if (loginProvider != null && loginProvider.IsEnabled)
+                {
+
+                    var url = VirtualPathUtility.ToAbsolute("~/login.ashx") + $"?auth={provider}";
+                    var mode = (settingsView || inviteView || (!MobileDetector.IsMobile() && !Request.DesktopApp())
+                                     ? ("&mode=popup&callback=" + clientCallback)
+                                     : ("&mode=Redirect&returnurl="
+                                    + HttpUtility.UrlEncode(new Uri(Request.GetUrlRewriter(),
+                                        "Auth.aspx"
+                                        + (Request.DesktopApp() ? "?desktop=true" : "")
+                                        ).ToString())
+                                 ));
+
+                    infos.Add(new AccountInfo
+                    {
+                        Linked = linkedAccounts.Any(x => x.Provider == provider),
+                        Provider = provider,
+                        Url = url + mode
+                    });
+                }
+            }
+
+            return infos;
         }
 
 
