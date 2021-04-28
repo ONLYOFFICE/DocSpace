@@ -5,14 +5,11 @@ import commonSettingsStyles from "../../utils/commonSettingsStyles";
 import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
 import Checkbox from "@appserver/components/checkbox";
-import FieldContainer from "@appserver/components/field-container";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import RadioButton from "@appserver/components/radio-button";
-import DocumentsModule from "./sub-components/documentsModule";
-import ComboBox from "@appserver/components/combobox";
 import styled from "styled-components";
 import moment from "moment";
-
+import ScheduleComponent from "./sub-components/scheduleComponent";
 const StyledComponent = styled.div`
   ${commonSettingsStyles}
   .manual-backup_buttons {
@@ -46,6 +43,9 @@ const StyledComponent = styled.div`
   .automatic-backup_current_storage {
     margin-bottom: 8px;
   }
+`;
+const StyledModules = styled.div`
+  margin-bottom: 40px;
 `;
 class AutomaticBackup extends React.Component {
   constructor(props) {
@@ -182,6 +182,8 @@ class AutomaticBackup extends React.Component {
           isCheckedDocuments: true,
           isShowThirdParty: false,
           isCheckedThirdParty: false,
+          isShowThirdPartyStorage: false,
+          isCheckedThirdPartyStorage: false,
         })
       : name === "ThirdPartyResource"
       ? this.setState({
@@ -189,8 +191,17 @@ class AutomaticBackup extends React.Component {
           isCheckedDocuments: false,
           isShowThirdParty: true,
           isCheckedThirdParty: true,
+          isShowThirdPartyStorage: false,
+          isCheckedThirdPartyStorage: false,
         })
-      : "";
+      : this.setState({
+          isShowDocuments: false,
+          isCheckedDocuments: false,
+          isShowThirdParty: false,
+          isCheckedThirdParty: false,
+          isShowThirdPartyStorage: true,
+          isCheckedThirdPartyStorage: true,
+        });
   };
   onClickCheckbox = (e) => {
     const name = e.target.name;
@@ -239,7 +250,10 @@ class AutomaticBackup extends React.Component {
       isShowedStorageTypes,
       isCheckedDocuments,
       isCheckedThirdParty,
+      isCheckedThirdPartyStorage,
       isShowDocuments,
+      isShowThirdParty,
+      isShowThirdPartyStorage,
       weeklySchedule,
       monthlySchedule,
       weekOptions,
@@ -273,107 +287,141 @@ class AutomaticBackup extends React.Component {
 
         {isShowedStorageTypes && (
           <>
-            <RadioButton
-              fontSize="13px"
-              fontWeight="400"
-              label={t("DocumentsModule")}
-              name={"DocumentsModule"}
-              onClick={this.onClickShowStorage}
-              isChecked={isCheckedDocuments}
-              value="value"
-              className="automatic-backup_current_storage"
-            />
-            {isShowDocuments && (
-              <div className="category-item-wrapper">
-                <Text className="category-item-description">
-                  {t("DocumentsModuleDescription")}
-                </Text>
+            <StyledModules>
+              <RadioButton
+                fontSize="13px"
+                fontWeight="400"
+                label={t("DocumentsModule")}
+                name={"DocumentsModule"}
+                onClick={this.onClickShowStorage}
+                isChecked={isCheckedDocuments}
+                value="value"
+                className="automatic-backup_current_storage"
+              />
+              <Text className="category-item-description">
+                {t("DocumentsModuleDescription")}
+              </Text>
+              {isShowDocuments && (
+                <>
+                  <ScheduleComponent
+                    weeklySchedule={weeklySchedule}
+                    monthlySchedule={monthlySchedule}
+                    weekOptions={weekOptions}
+                    selectedOption={selectedOption}
+                    selectedWeekdayOption={selectedWeekdayOption}
+                    selectedTimeOption={selectedTimeOption}
+                    selectedMonthOption={selectedMonthOption}
+                    periodOptions={this.periodOptions}
+                    monthNumberOptionsArray={this.monthNumberOptionsArray}
+                    timeOptionsArray={this.timeOptionsArray}
+                    onSelectMonthNumberAndTimeOptions={
+                      this.onSelectMonthNumberAndTimeOptions
+                    }
+                    onSelectPeriodAndWeekday={this.onSelectPeriodAndWeekday}
+                  />
+                  <div className="backup-include_mail">
+                    <Checkbox
+                      name={"backupMailDocuments"}
+                      isChecked={backupMailDocuments}
+                      label={t("IncludeMail")}
+                      onChange={this.onClickCheckbox}
+                    />
+                  </div>
+                </>
+              )}
+            </StyledModules>
 
-                <ComboBox
-                  options={this.periodOptions}
-                  selectedOption={{
-                    key: 0,
-                    label: selectedOption,
-                  }}
-                  onSelect={this.onSelectPeriodAndWeekday}
-                  isDisabled={false}
-                  noBorder={false}
-                  scaled={false}
-                  scaledOptions={false}
-                  dropDownMaxHeight={300}
-                  size="base"
-                  className="backup_combobox"
-                />
-                {weeklySchedule && (
-                  <ComboBox
-                    options={weekOptions}
-                    selectedOption={{
-                      key: 0,
-                      label: selectedWeekdayOption,
-                    }}
-                    onSelect={this.onSelectPeriodAndWeekday}
-                    isDisabled={false}
-                    noBorder={false}
-                    scaled={false}
-                    scaledOptions={false}
-                    dropDownMaxHeight={300}
-                    size="base"
-                    className="backup_combobox"
+            <StyledModules>
+              <RadioButton
+                fontSize="13px"
+                fontWeight="400"
+                label={t("ThirdPartyResource")}
+                name={"ThirdPartyResource"}
+                onClick={this.onClickShowStorage}
+                isChecked={isCheckedThirdParty}
+                value="value"
+              />
+              <Text className="category-item-description">
+                {t("ThirdPartyResourceDescription")}
+              </Text>
+              <Text className="category-item-description note_description">
+                {t("ThirdPartyResourceNoteDescription")}
+              </Text>
+              {isShowThirdParty && (
+                <>
+                  <ScheduleComponent
+                    weeklySchedule={weeklySchedule}
+                    monthlySchedule={monthlySchedule}
+                    weekOptions={weekOptions}
+                    selectedOption={selectedOption}
+                    selectedWeekdayOption={selectedWeekdayOption}
+                    selectedTimeOption={selectedTimeOption}
+                    selectedMonthOption={selectedMonthOption}
+                    periodOptions={this.periodOptions}
+                    monthNumberOptionsArray={this.monthNumberOptionsArray}
+                    timeOptionsArray={this.timeOptionsArray}
+                    onSelectMonthNumberAndTimeOptions={
+                      this.onSelectMonthNumberAndTimeOptions
+                    }
+                    onSelectPeriodAndWeekday={this.onSelectPeriodAndWeekday}
                   />
-                )}
-                {monthlySchedule && (
-                  <ComboBox
-                    options={this.monthNumberOptionsArray}
-                    selectedOption={{
-                      key: 0,
-                      label: selectedMonthOption,
-                    }}
-                    onSelect={this.onSelectMonthNumberAndTimeOptions}
-                    isDisabled={false}
-                    noBorder={false}
-                    scaled={false}
-                    scaledOptions={false}
-                    dropDownMaxHeight={300}
-                    size="base"
-                    className="backup_combobox"
-                  />
-                )}
-                <ComboBox
-                  options={this.timeOptionsArray}
-                  selectedOption={{
-                    key: 0,
-                    label: selectedTimeOption,
-                  }}
-                  onSelect={this.onSelectMonthNumberAndTimeOptions}
-                  isDisabled={false}
-                  noBorder={false}
-                  scaled={false}
-                  scaledOptions={false}
-                  dropDownMaxHeight={300}
-                  size="base"
-                  className="backup_combobox"
-                />
+                  <div className="backup-include_mail">
+                    <Checkbox
+                      name={"backupMailDocuments"}
+                      isChecked={backupMailDocuments}
+                      label={t("IncludeMail")}
+                      onChange={this.onClickCheckbox}
+                    />
+                  </div>
+                </>
+              )}
+            </StyledModules>
 
-                <div className="backup-include_mail">
-                  <Checkbox
-                    name={"backupMailDocuments"}
-                    isChecked={backupMailDocuments}
-                    label={t("IncludeMail")}
-                    onChange={this.onClickCheckbox}
+            <StyledModules>
+              <RadioButton
+                fontSize="13px"
+                fontWeight="400"
+                label={t("ThirdPartyStorage")}
+                name={"ThirdPartyStorage"}
+                onClick={this.onClickShowStorage}
+                isChecked={isCheckedThirdPartyStorage}
+                value="value"
+              />
+              <Text className="category-item-description">
+                {t("ThirdPartyStorageDescription")}
+              </Text>
+              <Text className="category-item-description note_description">
+                {t("ThirdPartyStorageNoteDescription")}
+              </Text>
+              {isShowThirdPartyStorage && (
+                <>
+                  <ScheduleComponent
+                    weeklySchedule={weeklySchedule}
+                    monthlySchedule={monthlySchedule}
+                    weekOptions={weekOptions}
+                    selectedOption={selectedOption}
+                    selectedWeekdayOption={selectedWeekdayOption}
+                    selectedTimeOption={selectedTimeOption}
+                    selectedMonthOption={selectedMonthOption}
+                    periodOptions={this.periodOptions}
+                    monthNumberOptionsArray={this.monthNumberOptionsArray}
+                    timeOptionsArray={this.timeOptionsArray}
+                    onSelectMonthNumberAndTimeOptions={
+                      this.onSelectMonthNumberAndTimeOptions
+                    }
+                    onSelectPeriodAndWeekday={this.onSelectPeriodAndWeekday}
                   />
-                </div>
-              </div>
-            )}
-            <RadioButton
-              fontSize="13px"
-              fontWeight="400"
-              label={t("ThirdPartyResource")}
-              name={"ThirdPartyResource"}
-              //onChange={this.onClickShowStorage}
-              onClick={this.onClickShowStorage}
-              isChecked={isCheckedThirdParty}
-              value="value"
-            />
+                  <div className="backup-include_mail">
+                    <Checkbox
+                      name={"backupMailDocuments"}
+                      isChecked={backupMailDocuments}
+                      label={t("IncludeMail")}
+                      onChange={this.onClickCheckbox}
+                    />
+                  </div>
+                </>
+              )}
+            </StyledModules>
           </>
         )}
       </StyledComponent>
