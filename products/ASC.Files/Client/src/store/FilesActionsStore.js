@@ -14,6 +14,7 @@ import {
 import { ConflictResolveType, FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
 import { loopTreeFolders } from "../helpers/files-helpers";
+import toastr from "studio/toastr";
 
 class FilesActionStore {
   authStore;
@@ -70,17 +71,18 @@ class FilesActionStore {
     }
 
     if (folderIds.length || fileIds.length) {
-      setSecondaryProgressBarData({
-        icon: "trash",
-        visible: true,
-        label: translations.deleteOperation,
-        percent: 0,
-        alert: false,
-      });
-
       return removeFiles(folderIds, fileIds, deleteAfter, immediately)
         .then((res) => {
           const id = res[0] && res[0].id ? res[0].id : null;
+          const currentProcess = res.find((x) => x.id === id);
+          setSecondaryProgressBarData({
+            icon: "trash",
+            visible: true,
+            label: translations.deleteOperation,
+            percent: currentProcess.progress,
+            alert: false,
+          });
+
           this.loopDeleteOperation(id, translations);
         })
         .catch((err) => {
@@ -264,15 +266,6 @@ class FilesActionStore {
     const { setSelection, selected, setSelected } = this.filesStore;
     selected === "close" && setSelected("none");
     setSelection([item]);
-  };
-
-  checkFileConflicts = async (destFolderId, folderIds, fileIds) => {
-    const conflicts = await checkFileConflicts(
-      destFolderId,
-      folderIds,
-      fileIds
-    );
-    return conflicts;
   };
 
   deleteFileAction = (fileId, currentFolderId, translations) => {
@@ -546,11 +539,15 @@ class FilesActionStore {
       setConflictResolveDialogVisible,
       setConflictResolveDialogItems,
     } = this.dialogsStore;
-    const conflicts = await this.checkFileConflicts(
-      destFolderId,
-      folderIds,
-      fileIds
-    );
+
+    let conflicts;
+
+    try {
+      conflicts = await checkFileConflicts(destFolderId, folderIds, fileIds);
+    } catch (err) {
+      toastr.error(err);
+      return;
+    }
 
     if (conflicts.length) {
       setConflictResolveDialogItems(conflicts);

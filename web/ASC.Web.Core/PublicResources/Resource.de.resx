@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.5.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.4.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.5.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Das Feld mit dem Prüfcode darf nicht leer sein</value>
@@ -72,6 +72,12 @@
   </data>
   <data name="AdminMessageSent" xml:space="preserve">
     <value>Ihre Nachricht wurde erfolgreich gesendet. Der Portaladministrator wird Sie kontaktieren.</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>Per SMS</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Über die Authentifizierungs-App</value>
   </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
     <value>Der Link zum Bestätigen der Operation wurde an :email verschickt (die E-Mail-Adresse des Portalbesitzers).</value>

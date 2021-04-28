@@ -236,7 +236,7 @@ export function getConsumersList() {
 export function getAuthProviders() {
   return request({
     method: "get",
-    url: `/settings/authproviders`,
+    url: `/people/thirdparty/providers`,
   });
 }
 

@@ -62,11 +62,9 @@ class ArticleBodyContent extends React.Component {
         fetchFiles(data[0], newFilter)
           .catch((err) => toastr.error(err))
           .finally(() => {
-
             setIsLoading(false);
           });
       } else {
-
         newFilter.startIndex = 0;
         const urlFilter = newFilter.toUrlParams();
         history.push(
@@ -82,7 +80,13 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    const { treeFolders, onTreeDrop, selectedTreeNode } = this.props;
+    const {
+      treeFolders,
+      onTreeDrop,
+      selectedTreeNode,
+      enableThirdParty,
+      isVisitor,
+    } = this.props;
 
     return isEmpty(treeFolders) ? (
       <Loaders.TreeFolders />
@@ -96,14 +100,21 @@ class ArticleBodyContent extends React.Component {
           onTreeDrop={onTreeDrop}
         />
         <TreeSettings />
-        <ThirdPartyList />
+        {enableThirdParty && !isVisitor && <ThirdPartyList />}
       </>
     );
   }
 }
 
 export default inject(
-  ({ filesStore, treeFoldersStore, selectedFolderStore, dialogsStore }) => {
+  ({
+    auth,
+    filesStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    dialogsStore,
+    settingsStore,
+  }) => {
     const { fetchFiles, filter, setIsLoading } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
     const selectedTreeNode =
@@ -119,6 +130,8 @@ export default inject(
       treeFolders,
       selectedTreeNode,
       filter,
+      enableThirdParty: settingsStore.enableThirdParty,
+      isVisitor: auth.userStore.user.isVisitor,
 
       setIsLoading,
       fetchFiles,
