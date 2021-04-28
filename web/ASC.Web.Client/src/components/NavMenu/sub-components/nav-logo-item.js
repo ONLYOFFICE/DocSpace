@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
@@ -25,7 +25,7 @@ const NavLogoItem = (props) => {
   //console.log("NavLogoItem render");
   return (
     <LogoItem opened={props.opened}>
-      <Link className="nav-logo-wrapper" to="/">
+      <Link className="nav-logo-wrapper" to="/" onClick={props.onClick}>
         <img className="nav-logo-icon" src={props.logoUrl} />
       </Link>
     </LogoItem>

@@ -19,11 +19,11 @@ const RenderCheckboxIcon = ({ isChecked, isIndeterminate }) => {
   return (
     <>
       {isIndeterminate ? (
-        <CheckboxIndeterminateIcon className="checkbox" />
+        <CheckboxIndeterminateIcon className="checkbox not-selectable" />
       ) : isChecked ? (
-        <CheckboxCheckedIcon className="checkbox" />
+        <CheckboxCheckedIcon className="checkbox not-selectable" />
       ) : (
-        <CheckboxIcon className="checkbox" />
+        <CheckboxIcon className="checkbox not-selectable" />
       )}
     </>
   );

@@ -84,16 +84,17 @@ const ThirdPartyDialog = (props) => {
   };
 
   const showOAuthModal = (token, serviceData) => {
-    setConnectDialogVisible(true);
     setConnectItem({
       title: serviceData.title,
       provider_key: serviceData.title,
       link: serviceData.link,
       token,
     });
+    setConnectDialogVisible(true);
   };
 
   const onShowService = (e) => {
+    setThirdPartyDialogVisible(false);
     const item = e.currentTarget.dataset;
     const showAccountSetting = !e.currentTarget.dataset.link;
     if (!showAccountSetting) {
@@ -103,12 +104,16 @@ const ThirdPartyDialog = (props) => {
         "height=600, width=1020"
       );
       openConnectWindow(item.title, authModal).then((modal) =>
-        getOAuthToken(modal).then((token) => showOAuthModal(token, item))
+        getOAuthToken(modal).then((token) => {
+          authModal.close();
+          showOAuthModal(token, item);
+        })
       );
+    } else {
+      setConnectItem(item);
+      setConnectDialogVisible(true);
     }
 
-    setConnectDialogVisible(true);
-    setConnectItem(item);
     setThirdPartyDialogVisible(false);
   };
 
@@ -125,7 +130,7 @@ const ThirdPartyDialog = (props) => {
         <Text as="div">
           {t("ConnectDescription")}
           {isAdmin && (
-            <Trans i18nKey="ConnectAdminDescription" ns="Settings">
+            <Trans t={t} i18nKey="ConnectAdminDescription" ns="Settings">
               For successful connection enter the necessary data at
               <Link isHovered href="/settings/integration/third-party-services">
                 this page
@@ -239,7 +244,6 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     ownCloudConnectItem,
     webDavConnectItem,
     sharePointConnectItem,
-    getOAuthToken,
     openConnectWindow,
   } = settingsStore.thirdPartyStore;
   const {
@@ -248,6 +252,7 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     setConnectDialogVisible,
     setConnectItem,
   } = dialogsStore;
+  const { getOAuthToken } = auth.settingsStore;
 
   return {
     visible,

@@ -407,35 +407,48 @@ namespace ASC.Files.Helpers
         public IEnumerable<FileOperationWraper> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
         {
             return FileStorageService.DeleteFolder("delete", folderId, false, deleteAfter, immediately)
-                    .Select(FileOperationWraperHelper.Get);
+                    .Select(FileOperationWraperHelper.Get)
+                    .ToList();
         }
 
         public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck(BatchModel batchModel)
         {
-            var (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId);
+            var checkedFiles = new List<object>();
+            var checkedFolders = new List<object>();
+
+            if (batchModel.DestFolderId.ValueKind == JsonValueKind.Number)
+            {
+                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId.GetInt32());
+            }
+            else
+            {
+                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId.GetString());
+            }
 
             var entries = FileStorageService.GetItems(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
 
             entries.AddRange(FileStorageService.GetItems(checkedFiles.OfType<string>(), checkedFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
 
-            return entries.Select(GetFileEntryWrapper);
+            return entries.Select(GetFileEntryWrapper).ToList();
         }
 
         public IEnumerable<FileOperationWraper> MoveBatchItems(BatchModel batchModel)
         {
             return FileStorageService.MoveOrCopyItems(batchModel.FolderIds, batchModel.FileIds, batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter)
-                .Select(FileOperationWraperHelper.Get);
+                .Select(FileOperationWraperHelper.Get)
+                .ToList();
         }
 
         public IEnumerable<FileOperationWraper> CopyBatchItems(BatchModel batchModel)
         {
             return FileStorageService.MoveOrCopyItems(batchModel.FolderIds, batchModel.FileIds, batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter)
-                .Select(FileOperationWraperHelper.Get);
+                .Select(FileOperationWraperHelper.Get)
+                .ToList();
         }
 
         public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<JsonElement> model)
         {
-            return FileStorageService.MarkAsRead(model.FolderIds, model.FileIds).Select(FileOperationWraperHelper.Get);
+            return FileStorageService.MarkAsRead(model.FolderIds, model.FileIds).Select(FileOperationWraperHelper.Get).ToList();
         }
 
         public IEnumerable<FileOperationWraper> TerminateTasks()
@@ -468,24 +481,24 @@ namespace ASC.Files.Helpers
                 folders.Add(folderId, string.Empty);
             }
 
-            return FileStorageService.BulkDownload(folders, files).Select(FileOperationWraperHelper.Get);
+            return FileStorageService.BulkDownload(folders, files).Select(FileOperationWraperHelper.Get).ToList();
         }
 
         public IEnumerable<FileOperationWraper> EmptyTrash()
         {
-            return FileStorageService.EmptyTrash().Select(FileOperationWraperHelper.Get);
+            return FileStorageService.EmptyTrash().Select(FileOperationWraperHelper.Get).ToList();
         }
 
         public IEnumerable<FileWrapper<T>> GetFileVersionInfo(T fileId)
         {
             var files = FileStorageService.GetFileHistory(fileId);
-            return files.Select(r=> FileWrapperHelper.Get(r));
+            return files.Select(r=> FileWrapperHelper.Get(r)).ToList();
         }
 
         public IEnumerable<FileWrapper<T>> ChangeHistory(T fileId, int version, bool continueVersion)
         {
             var history = FileStorageService.CompleteVersion(fileId, version, continueVersion).Value;
-            return history.Select(r=> FileWrapperHelper.Get(r));
+            return history.Select(r=> FileWrapperHelper.Get(r)).ToList();
         }
 
         public FileWrapper<T> LockFile(T fileId, bool lockFile)
@@ -512,7 +525,7 @@ namespace ASC.Files.Helpers
         public IEnumerable<FileShareWrapper> GetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
         {
             var fileShares = FileStorageService.GetSharedInfo(fileIds, folderIds);
-            return fileShares.Select(FileShareWrapperHelper.Get);
+            return fileShares.Select(FileShareWrapperHelper.Get).ToList();
         }
 
         public IEnumerable<FileShareWrapper> SetFileSecurityInfo(T fileId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)

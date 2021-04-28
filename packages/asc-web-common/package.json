@@ -1,6 +1,6 @@
 {
   "name": "@appserver/common",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
     "build": "echo 'skip it'",
@@ -14,5 +14,9 @@
   },
   "proxy": {
     "url": ""
+  },
+  "dependencies": {
+    "global": "^4.4.0",
+    "react-selectable-fast": "^3.4.0"
   }
 }

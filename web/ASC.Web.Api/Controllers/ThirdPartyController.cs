@@ -37,7 +37,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.Web.Api.Controllers
 {
-    [Scope(Additional = typeof(ThirdPartyControllerExtension))]
+    [Scope(Additional = typeof(BaseLoginProviderExtension))]
     [DefaultRoute]
     [ApiController]
     public class ThirdPartyController : ControllerBase
@@ -138,19 +138,6 @@ namespace ASC.Web.Api.Controllers
                           : ("error/" + HttpUtility.UrlEncode(error)));
 
             return url;
-        }
-    }
-
-    public class ThirdPartyControllerExtension
-    {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<BoxLoginProvider>();
-            services.TryAdd<DropboxLoginProvider>();
-            services.TryAdd<OneDriveLoginProvider>();
-            services.TryAdd<DocuSignLoginProvider>();
-            services.TryAdd<GoogleLoginProvider>();
-            services.TryAdd<WordpressLoginProvider>();
         }
     }
 }

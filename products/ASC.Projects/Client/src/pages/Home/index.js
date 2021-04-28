@@ -11,14 +11,15 @@ import ExternalLinkIcon from "../../../../../../public/images/external.link.reac
 import Loaders from "@appserver/common/components/Loaders";
 import toastr from "studio/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
-import { useTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { isMobile, isIOS } from "react-device-detect";
+import { isMobile, isTablet, isIOS } from "react-device-detect";
 
 import { setDocumentTitle } from "../../helpers/utils";
 import { inject } from "mobx-react";
 import i18n from "../../i18n";
 import { I18nextProvider } from "react-i18next";
+import { combineUrl, deleteCookie } from "@appserver/common/utils";
 
 const commonStyles = `
   .link-box {
@@ -33,14 +34,19 @@ const commonStyles = `
 `;
 
 const ComingSoonPage = styled.div`
-  padding: ${isMobile ? "62px 0 0 0" : "0"};
-  width: 336px;
+  padding: ${isTablet ? "106px 0 0 0" : isMobile ? "62px 0 0 0" : "0"};
+  width: ${isTablet ? "500px" : "336px"};
   margin: 0 auto;
 
   .module-logo-icon {
     float: left;
     margin-top: 8px;
     margin-right: 16px;
+
+    svg {
+      width: ${isTablet ? "192px" : "96px"};
+      height: ${isTablet ? "192px" : "96px"};
+    }
   }
 
   .module-title {
@@ -90,12 +96,16 @@ const StyledDesktopContainer = styled(EmptyScreenContainer)`
   }
 `;
 
-const ExternalLink = ({ label, href }) => (
+const ExternalLink = ({ label, href, onClick }) => (
   <Box className="link-box">
-    <ExternalLinkIcon color="#333333" size={isMobile ? "small" : "medium"} />
+    <ExternalLinkIcon
+      color="#333333"
+      size={isMobile || isTablet ? "small" : "medium"}
+    />
     <Link
       as="a"
       href={href}
+      onClick={onClick}
       target="_blank"
       className="view-web-link"
       color="#555F65"
@@ -107,22 +117,16 @@ const ExternalLink = ({ label, href }) => (
   </Box>
 );
 
-const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
-  const { t } = useTranslation("ComingSoon");
+const Body = ({ modules, match, isLoaded, setCurrentProductId, t, tReady }) => {
   const { error } = match.params;
   const { pathname, protocol, hostname } = window.location;
   const currentModule = modules.find((m) => m.link === pathname);
-  const {
-    id,
-    title,
-    description,
-    imageUrl,
-    link,
-    originUrl,
-    helpUrl,
-  } = currentModule;
+  const { id, title, imageUrl, link, originUrl, helpUrl } = currentModule;
   const url = originUrl ? originUrl : link;
-  const webLink = protocol + "//" + hostname + url;
+  const webLink = combineUrl(
+    protocol + "//" + hostname,
+    `${url}?desktop_view=true`
+  );
   const appLink = isIOS
     ? id === "2A923037-8B2D-487b-9A22-5AC0918ACF3F"
       ? "message:"
@@ -147,7 +151,13 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
         borderRadius="2px"
         className="coming-soon-badge"
       />
-      <ExternalLink label={t("ViewWeb")} href={webLink} />
+      <ExternalLink
+        label={t("ViewWeb")}
+        onClick={() => {
+          deleteCookie("desktop_view");
+          window.open(webLink, "_self", "", true);
+        }}
+      />
       {appLink && (
         <ExternalLink
           label={t("OpenApp", {
@@ -161,8 +171,8 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
 
   const moduleDescription = (
     <Text className="module-info">
-      {description}{" "}
-      {helpUrl && (
+      {t("ModuleDescription")}{" "}
+      {helpUrl && false && (
         <Link
           as="a"
           href={helpUrl}
@@ -178,9 +188,9 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
     </Text>
   );
 
-  return !isLoaded ? (
+  return !isLoaded || !tReady ? (
     <></>
-  ) : isMobile ? (
+  ) : isMobile || isTablet ? (
     <ComingSoonPage>
       <ReactSVG
         className="module-logo-icon"
@@ -197,7 +207,11 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId }) => {
         src={imageUrl}
       />
       <Box displayProp="flex" flexDirection="column" widthProp="220px">
-        <Text fontWeight="600" fontSize="19px" className="module-title">
+        <Text
+          fontWeight="600"
+          fontSize={isTablet ? "24px" : "19px"}
+          className="module-title"
+        >
           {title}
         </Text>
         {moduleDescription}
@@ -234,7 +248,7 @@ const ComingSoonWrapper = inject(({ auth }) => ({
   modules: auth.moduleStore.modules,
   isLoaded: auth.isLoaded,
   setCurrentProductId: auth.settingsStore.setCurrentProductId,
-}))(withRouter(ComingSoon));
+}))(withRouter(withTranslation("ComingSoon")(ComingSoon)));
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

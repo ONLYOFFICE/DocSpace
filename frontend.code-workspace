@@ -29,6 +29,14 @@
       "path": "products\\ASC.Projects\\Client"
     },
     {
+      "name": "🚀 @appserver/mail",
+      "path": "products\\ASC.Mail\\Client"
+    },
+    {
+      "name": "🚀 @appserver/calendar",
+      "path": "products\\ASC.Calendar\\Client"
+    },
+    {
       "name": "🚀 @appserver/studio",
       "path": "web\\ASC.Web.Client"
     },

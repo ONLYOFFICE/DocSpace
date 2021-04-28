@@ -10,7 +10,9 @@
     "products/ASC.People/Client",
     "products/ASC.Files/Client",
     "products/ASC.CRM/Client",
-    "products/ASC.Projects/Client"
+    "products/ASC.Projects/Client",
+    "products/ASC.Mail/Client",
+    "products/ASC.Calendar/Client"
   ],
   "scripts": {
     "wipe": "rimraf node_modules yarn.lock web/**/node_modules products/**/node_modules",

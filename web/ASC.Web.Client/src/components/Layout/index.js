@@ -42,7 +42,7 @@ const StyledContainer = styled.div`
         css`
           overflow-y: hidden !important;
           overflow-x: hidden !important;
-          width: 208px;
+          width: 192px;
         `}
     }
 
@@ -57,7 +57,13 @@ const StyledContainer = styled.div`
 `;
 
 const Layout = (props) => {
-  const { children, isTabletView, setIsTabletView, isArticlePinned } = props;
+  const {
+    children,
+    isTabletView,
+    setIsTabletView,
+    isArticlePinned,
+    isArticleVisibleOnUnpin,
+  } = props;
 
   const [contentHeight, setContentHeight] = useState();
   const [isPortrait, setIsPortrait] = useState();
@@ -185,6 +191,7 @@ export default inject(({ auth }) => {
   return {
     isTabletView: auth.settingsStore.isTabletView,
     isArticlePinned: auth.settingsStore.isArticlePinned,
+    isArticleVisibleOnUnpin: auth.settingsStore.isArticleVisibleOnUnpin,
     setIsTabletView: auth.settingsStore.setIsTabletView,
   };
 })(observer(Layout));

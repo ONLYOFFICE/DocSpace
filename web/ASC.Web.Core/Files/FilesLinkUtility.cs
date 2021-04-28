@@ -311,9 +311,10 @@ namespace ASC.Web.Core.Files
             get { return FilesBaseAbsolutePath + EditorPage + "?" + FileId + "={0}"; }
         }
 
-        public string GetFileWebEditorUrl(object fileId)
+        public string GetFileWebEditorUrl(object fileId, int fileVersion = 0)
         {
-            return string.Format(FileWebEditorUrlString, HttpUtility.UrlEncode(fileId.ToString()));
+            return string.Format(FileWebEditorUrlString, HttpUtility.UrlEncode(fileId.ToString()))
+                + (fileVersion > 0 ? "&" + Version + "=" + fileVersion : string.Empty);
         }
 
         public string GetFileWebEditorTryUrl(FileType fileType)
@@ -339,7 +340,7 @@ namespace ASC.Web.Core.Files
             return url;
         }
 
-        public string GetFileWebPreviewUrl(FileUtility fileUtility, string fileTitle, object fileId)
+        public string GetFileWebPreviewUrl(FileUtility fileUtility, string fileTitle, object fileId, int fileVersion = 0)
         {
             if (fileUtility.CanImageView(fileTitle) || fileUtility.CanMediaView(fileTitle))
                 return GetFileWebMediaViewUrl(fileId);
@@ -348,7 +349,7 @@ namespace ASC.Web.Core.Files
             {
                 if (fileUtility.ExtsMustConvert.Contains(FileUtility.GetFileExtension(fileTitle)))
                     return string.Format(FileWebViewerUrlString, HttpUtility.UrlEncode(fileId.ToString()));
-                return GetFileWebEditorUrl(fileId);
+                return GetFileWebEditorUrl(fileId, fileVersion);
             }
 
             return GetFileDownloadUrl(fileId);

@@ -3,7 +3,13 @@ import { isTouchDevice } from "@appserver/components/utils/device";
 import Scrollbar from "@appserver/components/scrollbar";
 import { LayoutContextProvider } from "./context";
 import PropTypes from "prop-types";
-import { isMobile, isSafari, isIOS, isChrome } from "react-device-detect";
+import {
+  isTablet,
+  isMobile,
+  isSafari,
+  isIOS,
+  isChrome,
+} from "react-device-detect";
 class MobileLayout extends Component {
   constructor(props) {
     super(props);
@@ -44,7 +50,11 @@ class MobileLayout extends Component {
     const currentScrollPosition =
       this.customScrollElm.scrollTop > 0 ? this.customScrollElm.scrollTop : 0;
 
-    if (document.getElementsByClassName("backdrop-active").length > 0) {
+    if (
+      isTablet &&
+      document.getElementsByClassName("backdrop-active").length > 0 &&
+      !this.props.isArticleVisibleOnUnpin
+    ) {
       const elements = document.getElementsByClassName("backdrop-active");
       elements[0].click();
       return;

@@ -139,4 +139,4 @@ class DocserviceStore {
   canWebFilterEditing = (extension) =>
     presentInArray(this.customfilterDocs, extension);
 }
-export default DocserviceStore;
+export default new DocserviceStore();

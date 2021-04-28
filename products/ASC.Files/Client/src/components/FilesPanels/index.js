@@ -6,6 +6,7 @@ import {
   OperationsPanel,
   VersionHistoryPanel,
   ChangeOwnerPanel,
+  NewFilesPanel,
 } from "../panels";
 import {
   ThirdPartyMoveDialog,
@@ -15,6 +16,7 @@ import {
   DeleteDialog,
   DownloadDialog,
   ThirdPartyDialog,
+  ConflictResolveDialog,
 } from "../dialogs";
 
 const Panels = (props) => {
@@ -32,6 +34,8 @@ const Panels = (props) => {
     downloadDialogVisible,
     emptyTrashDialogVisible,
     thirdPartyDialogVisible,
+    newFilesPanelVisible,
+    conflictResolveDialogVisible,
   } = props;
 
   return [
@@ -60,6 +64,10 @@ const Panels = (props) => {
     emptyTrashDialogVisible && <EmptyTrashDialog key="empty-trash-dialog" />,
     downloadDialogVisible && <DownloadDialog key="download-dialog" />,
     thirdPartyDialogVisible && <ThirdPartyDialog key="thirdparty-dialog" />,
+    newFilesPanelVisible && <NewFilesPanel key="new-files-panel" />,
+    conflictResolveDialogVisible && (
+      <ConflictResolveDialog key="conflict-resolve-dialog" />
+    ),
   ];
 };
 
@@ -77,6 +85,8 @@ export default inject(
       downloadDialogVisible,
       emptyTrashDialogVisible,
       thirdPartyDialogVisible,
+      newFilesPanelVisible,
+      conflictResolveDialogVisible,
 
       connectItem, //TODO:
     } = dialogsStore;
@@ -98,6 +108,8 @@ export default inject(
       downloadDialogVisible,
       emptyTrashDialogVisible,
       thirdPartyDialogVisible,
+      newFilesPanelVisible,
+      conflictResolveDialogVisible,
     };
   }
 )(observer(Panels));

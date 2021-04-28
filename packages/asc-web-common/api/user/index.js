@@ -13,6 +13,14 @@ export function login(userName, passwordHash) {
   });
 }
 
+export function thirdPartyLogin(SerializedProfile) {
+  return request({
+    method: "post",
+    url: "authentication.json",
+    data: { SerializedProfile },
+  });
+}
+
 export function logout() {
   return request({
     method: "post",

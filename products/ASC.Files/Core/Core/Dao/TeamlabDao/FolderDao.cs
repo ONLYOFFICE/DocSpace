@@ -976,10 +976,12 @@ namespace ASC.Files.Core.Data
                 };
 
                 FilesDbContext.AddOrUpdate(r => r.BunchObjects, toInsert);
+                FilesDbContext.SaveChanges();
+
                 tx.Commit(); //Commit changes
             }
 
-            FilesDbContext.SaveChanges();
+
 
             return newFolderId;
         }
@@ -1044,24 +1046,25 @@ namespace ASC.Files.Core.Data
 
         protected IQueryable<DbFolderQuery> FromQueryWithShared(IQueryable<DbFolder> dbFiles)
         {
-            return dbFiles
-                .Select(r => new DbFolderQuery
-                {
-                    Folder = r,
-                    Root = FilesDbContext.Folders
-                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                            .Where(x => x.folder.TenantId == r.TenantId && x.tree.FolderId == r.ParentId)
-                            .OrderByDescending(r => r.tree.Level)
-                            .Select(r => new DbFolder
-                            {
-                                FolderType = r.folder.FolderType,
-                                CreateBy = r.folder.CreateBy,
-                                Id = r.folder.Id
-                            })
-                            .FirstOrDefault(),
-                    Shared = FilesDbContext.Security
-                            .Any(x => x.TenantId == TenantID && x.EntryType == FileEntryType.Folder && x.EntryId == r.Id.ToString())
-                });
+            return from r in dbFiles
+                   select new DbFolderQuery
+                   {
+                       Folder = r,
+                       Root = (from f in FilesDbContext.Folders
+                               where f.Id ==
+                               (from t in FilesDbContext.Tree
+                                where t.FolderId == r.ParentId
+                                orderby t.Level descending
+                                select t.ParentId
+                                ).FirstOrDefault()
+                               where f.TenantId == r.TenantId
+                               select f
+                              ).FirstOrDefault(),
+                       Shared = (from f in FilesDbContext.Security
+                                 where f.EntryType == FileEntryType.Folder && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
+                                 select f
+                                 ).Any()
+                   };
         }
 
         protected IQueryable<DbFolderQuery> FromQuery(IQueryable<DbFolder> dbFiles)
@@ -1070,18 +1073,16 @@ namespace ASC.Files.Core.Data
                 .Select(r => new DbFolderQuery
                 {
                     Folder = r,
-                    Root = FilesDbContext.Folders
-                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                            .Where(x => x.folder.TenantId == r.TenantId)
-                            .Where(x => x.tree.FolderId == r.ParentId)
-                            .OrderByDescending(x => x.tree.Level)
-                            .Select(r => new DbFolder
-                            {
-                                FolderType = r.folder.FolderType,
-                                CreateBy = r.folder.CreateBy,
-                                Id = r.folder.Id
-                            })
-                            .FirstOrDefault(),
+                    Root = (from f in FilesDbContext.Folders
+                            where f.Id ==
+                            (from t in FilesDbContext.Tree
+                             where t.FolderId == r.ParentId
+                             orderby t.Level descending
+                             select t.ParentId
+                             ).FirstOrDefault()
+                            where f.TenantId == r.TenantId
+                            select f
+                              ).FirstOrDefault(),
                     Shared = true
                 });
         }

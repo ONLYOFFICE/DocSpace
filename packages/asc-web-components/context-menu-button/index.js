@@ -30,8 +30,6 @@ class ContextMenuButton extends React.Component {
       isOpen: props.opened,
       data: props.data,
       displayType,
-      offsetX: props.manualX,
-      offsetY: props.manualY,
     };
     this.throttledResize = throttle(this.resize, 300);
   }
@@ -73,10 +71,6 @@ class ContextMenuButton extends React.Component {
       this.toggle(this.props.opened);
     }
 
-    if (this.props.manualX !== prevProps.manualX) {
-      this.onContextClick();
-    }
-
     if (this.props.opened && this.state.displayType === "aside") {
       window.addEventListener("popstate", this.popstate, false);
     }
@@ -86,22 +80,8 @@ class ContextMenuButton extends React.Component {
     }
   }
 
-  onContextClick = () => {
-    if (this.props.isDisabled) {
-      this.stopAction;
-      return;
-    }
-
-    this.setState({
-      data: this.props.getData(),
-      isOpen: !this.state.isOpen,
-      offsetX: this.props.manualX,
-      offsetY: this.props.manualY,
-    });
-  };
-
-  onIconButtonClick = () => {
-    if (this.props.isDisabled) {
+  onIconButtonClick = (e) => {
+    if (this.props.isDisabled || this.props.isNew) {
       this.stopAction;
       return;
     }
@@ -110,14 +90,12 @@ class ContextMenuButton extends React.Component {
       {
         data: this.props.getData(),
         isOpen: !this.state.isOpen,
-        offsetX: "0px",
-        offsetY: "100%",
       },
       () =>
         !this.props.isDisabled &&
         this.state.isOpen &&
         this.props.onClick &&
-        this.props.onClick()
+        this.props.onClick(e)
     ); // eslint-disable-line react/prop-types
   };
 
@@ -146,6 +124,20 @@ class ContextMenuButton extends React.Component {
     return true;
   }
 
+  callNewMenu = (e) => {
+    if (this.props.isDisabled || !this.props.isNew) {
+      this.stopAction;
+      return;
+    }
+
+    this.setState(
+      {
+        data: this.props.getData(),
+      },
+      () => this.props.onClick(e)
+    );
+  };
+
   render() {
     //console.log("ContextMenuButton render", this.props);
     const {
@@ -170,12 +162,19 @@ class ContextMenuButton extends React.Component {
       style,
       isFill, // eslint-disable-line react/prop-types
       asideHeader, // eslint-disable-line react/prop-types
+      isNew,
     } = this.props;
 
     const { isOpen, displayType, offsetX, offsetY } = this.state;
     const iconButtonName = isOpen && iconOpenName ? iconOpenName : iconName;
     return (
-      <StyledOuter ref={this.ref} className={className} id={id} style={style}>
+      <StyledOuter
+        ref={this.ref}
+        className={className}
+        id={id}
+        style={style}
+        onClick={this.callNewMenu}
+      >
         <IconButton
           color={color}
           hoverColor={hoverColor}
@@ -194,15 +193,12 @@ class ContextMenuButton extends React.Component {
         />
         {displayType === "dropdown" ? (
           <DropDown
-            id="contextMenu"
-            manualX={offsetX}
-            manualY={offsetY}
             directionX={directionX}
             directionY={directionY}
             open={isOpen}
             clickOutsideAction={this.clickOutsideAction}
             columnCount={columnCount}
-            withBackdrop={isMobile}
+            withBackdrop={!!isMobile}
           >
             {this.state.data.map(
               (item, index) =>
@@ -299,10 +295,6 @@ ContextMenuButton.propTypes = {
   directionX: PropTypes.string,
   /** Direction Y */
   directionY: PropTypes.string,
-  /** Manual X padding */
-  manualX: PropTypes.string,
-  /** Manual Y padding */
-  manualY: PropTypes.string,
   /** Accepts class */
   className: PropTypes.string,
   /** Accepts id */
@@ -313,6 +305,7 @@ ContextMenuButton.propTypes = {
   columnCount: PropTypes.number,
   /** Set the display type */
   displayType: PropTypes.string,
+  isNew: PropTypes.bool,
 };
 
 ContextMenuButton.defaultProps = {
@@ -325,6 +318,7 @@ ContextMenuButton.defaultProps = {
   directionX: "left",
   isFill: false,
   displayType: "dropdown",
+  isNew: false,
 };
 
 export default ContextMenuButton;

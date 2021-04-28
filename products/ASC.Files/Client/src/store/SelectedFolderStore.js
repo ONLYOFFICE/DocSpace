@@ -1,4 +1,4 @@
-import { makeObservable, action, observable, computed } from "mobx";
+import { makeAutoObservable } from "mobx";
 
 class SelectedFolderStore {
   folders = null;
@@ -20,29 +20,7 @@ class SelectedFolderStore {
   providerItem = null;
 
   constructor() {
-    makeObservable(this, {
-      folders: observable,
-      parentId: observable,
-      filesCount: observable,
-      foldersCount: observable,
-      isShareable: observable,
-      new: observable,
-      id: observable,
-      title: observable,
-      access: observable,
-      shared: observable,
-      created: observable,
-      createdBy: observable,
-      updated: observable,
-      updatedBy: observable,
-      rootFolderType: observable,
-      pathParts: observable,
-      providerItem: observable,
-
-      isRootFolder: computed,
-
-      setSelectedFolder: action,
-    });
+    makeAutoObservable(this);
   }
 
   get isRootFolder() {

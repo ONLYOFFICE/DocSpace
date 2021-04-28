@@ -7,24 +7,14 @@ import PrivateRoute from "@appserver/common/components/PrivateRoute";
 import AppLoader from "@appserver/common/components/AppLoader";
 import toastr from "studio/toastr";
 import { combineUrl, updateTempContent } from "@appserver/common/utils";
-import initFilesStore from "./store/InitFilesStore";
-import filesStore from "./store/FilesStore";
-import settingsStore from "./store/SettingsStore";
-import mediaViewerDataStore from "./store/MediaViewerDataStore";
-import formatsStore from "./store/FormatsStore";
-import versionHistoryStore from "./store/VersionHistoryStore";
-import uploadDataStore from "./store/UploadDataStore";
-import dialogsStore from "./store/DialogsStore";
-import treeFoldersStore from "./store/TreeFoldersStore";
-import selectedFolderStore from "./store/SelectedFolderStore";
-import filesActionsStore from "./store/FilesActionsStore";
+import stores from "./store/index";
 import "./custom.scss";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 import { regDesktop } from "@appserver/common/desktop";
-import Home from "./components/pages/Home";
-import Settings from "./components/pages/Settings";
-import VersionHistory from "./components/pages/VersionHistory";
+import Home from "./pages/Home";
+import Settings from "./pages/Settings";
+import VersionHistory from "./pages/VersionHistory";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Panels from "./components/FilesPanels";
 import { AppServerConfig } from "@appserver/common/constants";
@@ -125,38 +115,26 @@ class FilesContent extends React.Component {
   }
 }
 
-const Files = inject(({ auth, initFilesStore }) => {
+const Files = inject(({ auth, filesStore }) => {
   return {
     isDesktop: auth.settingsStore.isDesktopClient,
     user: auth.userStore.user,
     isAuthenticated: auth.isAuthenticated,
     encryptionKeys: auth.settingsStore.encryptionKeys,
     isEncryption: auth.settingsStore.isEncryptionSupport,
-    isLoaded: auth.isLoaded && initFilesStore.isLoaded,
-    setIsLoaded: initFilesStore.setIsLoaded,
+    isLoaded: auth.isLoaded && filesStore.isLoaded,
+    setIsLoaded: filesStore.setIsLoaded,
     setEncryptionKeys: auth.settingsStore.setEncryptionKeys,
     loadFilesInfo: async () => {
       //await auth.init();
-      await initFilesStore.initFiles();
+      await filesStore.initFiles();
       auth.setProductVersion(config.version);
     },
   };
 })(observer(FilesContent));
 
 export default () => (
-  <FilesProvider
-    initFilesStore={initFilesStore}
-    filesStore={filesStore}
-    settingsStore={settingsStore}
-    mediaViewerDataStore={mediaViewerDataStore}
-    formatsStore={formatsStore}
-    versionHistoryStore={versionHistoryStore}
-    uploadDataStore={uploadDataStore}
-    dialogsStore={dialogsStore}
-    treeFoldersStore={treeFoldersStore}
-    selectedFolderStore={selectedFolderStore}
-    filesActionsStore={filesActionsStore}
-  >
+  <FilesProvider {...stores}>
     <I18nextProvider i18n={i18n}>
       <Files />
     </I18nextProvider>

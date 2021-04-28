@@ -22,9 +22,13 @@
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+
+using ASC.Common.Utils;
 
 using Autofac.Extensions.DependencyInjection;
 
@@ -36,13 +40,40 @@ namespace ASC.Data.Storage.Encryption
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public async static Task Main(string[] args)
         {
-            await Host.CreateDefaultBuilder(args)
+            var host = CreateHostBuilder(args).Build();
+
+            await host.RunAsync();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .UseSystemd()
+                .UseWindowsService()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    var builder = webBuilder.UseStartup<Startup>();
+
+                    builder.ConfigureKestrel((hostingContext, serverOptions) =>
+                    {
+                        var kestrelConfig = hostingContext.Configuration.GetSection("Kestrel");
+
+                        if (!kestrelConfig.Exists()) return;
+
+                        var unixSocket = kestrelConfig.GetValue<string>("ListenUnixSocket");
+
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                        {
+                            if (!String.IsNullOrWhiteSpace(unixSocket))
+                            {
+                                unixSocket = String.Format(unixSocket, hostingContext.HostingEnvironment.ApplicationName.Replace("ASC.", "").Replace(".", ""));
+
+                                serverOptions.ListenUnixSocket(unixSocket);
+                            }
+                        }
+                    });
                 })
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
@@ -50,7 +81,7 @@ namespace ASC.Data.Storage.Encryption
                     var path = buided["pathToConf"];
                     if (!Path.IsPathRooted(path))
                     {
-                        path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
+                        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
                     config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
@@ -67,10 +98,6 @@ namespace ASC.Data.Storage.Encryption
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables();
-                })
-                .UseConsoleLifetime()
-                .Build()
-                .RunAsync();
-        }
+                });
     }
 }

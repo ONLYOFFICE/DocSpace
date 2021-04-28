@@ -681,7 +681,7 @@ class UpdateUserForm extends React.Component {
               helpButtonHeaderContent={t("Mail")}
               tooltipContent={
                 <Text fontSize="13px" as="div">
-                  <Trans i18nKey="EmailPopupHelper" ns="ProfileAction">
+                  <Trans t={t} i18nKey="EmailPopupHelper" ns="ProfileAction">
                     The main e-mail is needed to restore access to the portal in
                     case of loss of the password and send notifications.
                     <p
@@ -927,5 +927,6 @@ export default withRouter(
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
+    isSelf: peopleStore.targetUserStore.isMe,
   }))(observer(withTranslation("ProfileAction")(UpdateUserForm)))
 );

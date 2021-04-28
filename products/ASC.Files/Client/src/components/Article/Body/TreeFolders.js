@@ -148,7 +148,7 @@ class TreeFolders extends React.Component {
       isAdmin,
       myId,
       commonId,
-      rootFolderType,
+      //rootFolderType,
       currentId,
       draggableItems,
     } = this.props;
@@ -158,9 +158,9 @@ class TreeFolders extends React.Component {
 
     if (draggableItems.find((x) => x.id === item.id)) return false;
 
-    const isMy = rootFolderType === FolderType.USER;
-    const isCommon = rootFolderType === FolderType.COMMON;
-    const isShare = rootFolderType === FolderType.SHARE;
+    // const isMy = rootFolderType === FolderType.USER;
+    // const isCommon = rootFolderType === FolderType.COMMON;
+    // const isShare = rootFolderType === FolderType.SHARE;
 
     if (
       item.rootFolderType === FolderType.SHARE &&
@@ -170,25 +170,25 @@ class TreeFolders extends React.Component {
     }
 
     if (isAdmin) {
-      if (isMy || isCommon || isShare) {
-        if (
-          (item.pathParts &&
-            (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
-          item.rootFolderType === FolderType.USER ||
-          item.rootFolderType === FolderType.COMMON
-        ) {
-          return true;
-        }
+      //if (isMy || isCommon || isShare) {
+      if (
+        (item.pathParts &&
+          (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
+        item.rootFolderType === FolderType.USER ||
+        item.rootFolderType === FolderType.COMMON
+      ) {
+        return true;
       }
+      //}
     } else {
-      if (isMy || isCommon || isShare) {
-        if (
-          (item.pathParts && item.pathParts[0] === myId) ||
-          item.rootFolderType === FolderType.USER
-        ) {
-          return true;
-        }
+      //if (isMy || isCommon || isShare) {
+      if (
+        (item.pathParts && item.pathParts[0] === myId) ||
+        item.rootFolderType === FolderType.USER
+      ) {
+        return true;
       }
+      //}
     }
 
     return false;
@@ -364,8 +364,7 @@ class TreeFolders extends React.Component {
         const treeData = [...this.props.treeFolders];
 
         this.getNewTreeData(treeData, listIds, data.folders, 10);
-        this.props.needUpdate && this.props.setTreeFolders(treeData);
-        //this.setState({ treeData });
+        /* this.props.needUpdate &&  */ this.props.setTreeFolders(treeData);
       })
       .catch((err) => toastr.error(err))
       .finally(() => {
@@ -374,15 +373,16 @@ class TreeFolders extends React.Component {
       });
   };
 
-  onExpand = (data, treeNode) => {
+  onExpand = (expandedKeys, treeNode) => {
     if (treeNode.node && !treeNode.node.props.children) {
       if (treeNode.expanded) {
         this.onLoadData(treeNode.node, true);
       }
     }
     if (this.props.needUpdate) {
-      const expandedKeys = data;
       this.props.setExpandedKeys(expandedKeys);
+    } else {
+      this.props.setExpandedPanelKeys(expandedKeys);
     }
   };
 
@@ -431,9 +431,10 @@ class TreeFolders extends React.Component {
       onSelect,
       dragging,
       expandedKeys,
+      expandedPanelKeys,
       treeFolders,
+      data,
     } = this.props;
-    //const loadProp = needUpdate ? { loadData: this.onLoadData } : {};
 
     return (
       <StyledTreeMenu
@@ -446,9 +447,8 @@ class TreeFolders extends React.Component {
         switcherIcon={this.switcherIcon}
         onSelect={onSelect}
         selectedKeys={selectedKeys}
-        //{...loadProp}
         loadData={this.onLoadData}
-        expandedKeys={expandedKeys}
+        expandedKeys={expandedPanelKeys ? expandedPanelKeys : expandedKeys}
         onExpand={this.onExpand}
         onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
@@ -458,7 +458,7 @@ class TreeFolders extends React.Component {
         gapBetweenNodesTablet="26"
         isFullFillSelection={false}
       >
-        {this.getItems(treeFolders)}
+        {this.getItems(data || treeFolders)}
       </StyledTreeMenu>
     );
   }
@@ -470,15 +470,15 @@ TreeFolders.defaultProps = {
 };
 
 export default inject(
-  ({
-    auth,
-    initFilesStore,
-    filesStore,
-    treeFoldersStore,
-    selectedFolderStore,
-  }) => {
-    const { setIsLoading, dragging, setDragging } = initFilesStore;
-    const { filter, setFilter, selection } = filesStore;
+  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const {
+      filter,
+      setFilter,
+      selection,
+      setIsLoading,
+      dragging,
+      setDragging,
+    } = filesStore;
 
     const {
       treeFolders,
@@ -488,14 +488,15 @@ export default inject(
       isPrivacyFolder,
       expandedKeys,
       setExpandedKeys,
+      setExpandedPanelKeys,
     } = treeFoldersStore;
-    const { id, rootFolderType } = selectedFolderStore;
+    const { id /* rootFolderType */ } = selectedFolderStore;
 
     return {
       isAdmin: auth.isAdmin,
       isDesktop: auth.settingsStore.isDesktopClient,
       dragging,
-      rootFolderType,
+      //rootFolderType,
       currentId: id,
       myId: myFolderId,
       commonId: commonFolderId,
@@ -510,6 +511,7 @@ export default inject(
       setTreeFolders,
       setFilter,
       setExpandedKeys,
+      setExpandedPanelKeys,
     };
   }
 )(observer(TreeFolders));

@@ -59,8 +59,15 @@ class SelectedGroupStore {
     const { group, search, role, activationStatus, employeeStatus } = filter;
 
     let countMembers;
-    groups.filter((el) => {
-      if (el.id === group) countMembers = el.members.length;
+    groups.filter(async (el) => {
+      if (el.id === group) {
+        if (!el.members) {
+          const currGroup = await getGroup(el.id);
+          countMembers = currGroup.members.length; // TODO: simplify after fixing server issues with getGroupListFull
+        } else {
+          countMembers = el.members.length;
+        }
+      }
     });
 
     const filterIsClear =

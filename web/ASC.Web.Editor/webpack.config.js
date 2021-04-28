@@ -5,8 +5,8 @@ const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const TerserPlugin = require("terser-webpack-plugin");
 const { InjectManifest } = require("workbox-webpack-plugin");
-//const combineUrl = require("@appserver/common/utils/combineUrl");
-//const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
+const combineUrl = require("@appserver/common/utils/combineUrl");
+const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 
 const path = require("path");
 const pkg = require("./package.json");
@@ -133,7 +133,16 @@ const config = {
     new ModuleFederationPlugin({
       name: "editor",
       filename: "remoteEntry.js",
-      remotes: {},
+      remotes: {
+        studio: `studio@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/remoteEntry.js"
+        )}`,
+        files: `files@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/products/files/remoteEntry.js"
+        )}`,
+      },
       exposes: {
         "./app": "./src/Editor.jsx",
       },

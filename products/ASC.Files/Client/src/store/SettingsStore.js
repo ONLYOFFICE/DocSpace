@@ -1,10 +1,9 @@
 import { makeAutoObservable } from "mobx";
 import api from "@appserver/common/api";
 import axios from "axios";
-import ThirdPartyStore from "./ThirdPartyStore";
 
 class SettingsStore {
-  thirdPartyStore = null;
+  thirdPartyStore;
 
   isErrorSettings = null;
   expandedSetting = null;
@@ -18,10 +17,10 @@ class SettingsStore {
 
   settingsIsLoaded = false;
 
-  constructor() {
+  constructor(thirdPartyStore) {
     makeAutoObservable(this);
 
-    this.thirdPartyStore = new ThirdPartyStore();
+    this.thirdPartyStore = thirdPartyStore;
   }
 
   setIsLoaded = (isLoaded) => {
@@ -107,13 +106,30 @@ class SettingsStore {
       .storeForceSave(data)
       .then((res) => this.setFilesSetting(setting, res));
 
-  setEnableThirdParty = (data, setting) =>
-    api.files
-      .thirdParty(data)
-      .then((res) => this.setFilesSetting(setting, res));
+  setEnableThirdParty = async (data, setting) => {
+    const res = await api.files.thirdParty(data);
+    this.setFilesSetting(setting, res);
+
+    if (data) {
+      return axios
+        .all([
+          api.files.getThirdPartyCapabilities(),
+          api.files.getThirdPartyList(),
+        ])
+        .then(([capabilities, providers]) => {
+          for (let item of capabilities) {
+            item.splice(1, 1);
+          }
+          this.thirdPartyStore.setThirdPartyCapabilities(capabilities); //TODO: Out of bounds read: 1
+          this.thirdPartyStore.setThirdPartyProviders(providers);
+        });
+    } else {
+      return Promise.resolve();
+    }
+  };
 
   setForceSave = (data, setting) =>
     api.files.forceSave(data).then((res) => this.setFilesSetting(setting, res));
 }
 
-export default new SettingsStore();
+export default SettingsStore;
