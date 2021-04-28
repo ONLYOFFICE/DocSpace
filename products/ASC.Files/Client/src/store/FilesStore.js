@@ -383,8 +383,8 @@ class FilesStore {
       isRecycleBinFolder,
       isPrivacyFolder,
       isRecentFolder,
-      isShareFolder,
-      isCommonFolder,
+      shareFolder: isShareFolder,
+      commonFolder: isCommonFolder,
       isFavoritesFolder,
       isThirdPartyFolder,
       isMyFolder,
@@ -1080,9 +1080,8 @@ class FilesStore {
 
   get isAccessedSelected() {
     return (
-      (this.selection.length &&
-        this.selection.every((x) => x.access === 1 || x.access === 0)) ||
-      (this.authStore.isAdmin && this.selection.length)
+      this.selection.length &&
+      this.selection.every((x) => x.access === 1 || x.access === 0)
     );
   }
 

@@ -440,6 +440,10 @@ class SectionHeaderContent extends React.Component {
       menu.splice(4, 1);
     }
 
+    if (isShareFolder) {
+      menu.splice(4, 1);
+    }
+
     return menu;
   };
 
@@ -593,7 +597,7 @@ export default inject(
       isPrivacyFolder,
       isFavoritesFolder,
       isRecentFolder,
-      isShareFolder,
+      shareFolder: isShareFolder,
     } = treeFoldersStore;
     const { setAction } = fileActionStore;
     const {
