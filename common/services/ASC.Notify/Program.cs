@@ -21,9 +21,17 @@ namespace ASC.Notify
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public async static Task Main(string[] args)
         {
-            var host = Host.CreateDefaultBuilder(args)
+            var host = CreateHostBuilder(args).Build();
+
+            await host.RunAsync();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .UseSystemd()
+                .UseWindowsService()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
@@ -73,18 +81,6 @@ namespace ASC.Notify
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
                     builder.Register(context.Configuration);
-                })
-                .UseConsoleLifetime()
-                .Build();
-
-            using (host)
-            {
-                // Start the host
-                await host.StartAsync();
-
-                // Wait for the host to shutdown
-                await host.WaitForShutdownAsync();
-            }
-        }
+                });
     }
 }
