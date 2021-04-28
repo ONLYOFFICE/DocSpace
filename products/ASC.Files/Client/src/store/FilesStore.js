@@ -369,7 +369,7 @@ class FilesStore {
     const isVisitor =
       (this.userStore.user && this.userStore.user.isVisitor) || false;
     const isFile = !!item.fileExst || item.contentLength;
-    const isFavorite = item.fileStatus === 32;
+    const isFavorite = item.fileStatus === 32 || item.fileStatus === 34;
     const isFullAccess = item.access < 2;
     const withoutShare = false; //TODO: need this prop
     const isThirdPartyItem = item.providerKey;
