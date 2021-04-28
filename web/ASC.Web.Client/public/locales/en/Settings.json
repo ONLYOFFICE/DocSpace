@@ -153,5 +153,6 @@
   "EnableAutomaticBackup": "Enable",
   "MonthlyPeriodSchedule": "Every month",
   "DailyPeriodSchedule": "Every day",
-  "WeeklyPeriodSchedule": "Every week"
+  "WeeklyPeriodSchedule": "Every week",
+  "MaxCopies": "copies max will be saved"
 }

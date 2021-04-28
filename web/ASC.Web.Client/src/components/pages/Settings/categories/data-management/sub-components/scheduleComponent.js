@@ -1,5 +1,6 @@
 import React from "react";
 import ComboBox from "@appserver/components/combobox";
+import { useTranslation } from "react-i18next";
 
 const ScheduleComponent = ({
   weeklySchedule,
@@ -14,9 +15,13 @@ const ScheduleComponent = ({
   monthNumberOptionsArray,
   onSelectPeriodAndWeekday,
   onSelectMonthNumberAndTimeOptions,
+  selectedMaxCopies,
+  onSelectMaxCopies,
+  maxNumberCopiesArray,
 }) => {
+  const { t } = useTranslation("Settings");
   return (
-    <div className="category-item-wrapper">
+    <div>
       <ComboBox
         options={periodOptions}
         selectedOption={{
@@ -29,8 +34,8 @@ const ScheduleComponent = ({
         scaled={false}
         scaledOptions={false}
         dropDownMaxHeight={300}
-        size="base"
-        className="backup_combobox"
+        size="content"
+        className="backup_combobox "
       />
       {weeklySchedule && (
         <ComboBox
@@ -45,7 +50,7 @@ const ScheduleComponent = ({
           scaled={false}
           scaledOptions={false}
           dropDownMaxHeight={300}
-          size="base"
+          size="content"
           className="backup_combobox"
         />
       )}
@@ -62,7 +67,7 @@ const ScheduleComponent = ({
           scaled={false}
           scaledOptions={false}
           dropDownMaxHeight={300}
-          size="base"
+          size="content"
           className="backup_combobox"
         />
       )}
@@ -78,7 +83,22 @@ const ScheduleComponent = ({
         scaled={false}
         scaledOptions={false}
         dropDownMaxHeight={300}
-        size="base"
+        size="content"
+        className="backup_combobox"
+      />
+      <ComboBox
+        options={maxNumberCopiesArray}
+        selectedOption={{
+          key: 0,
+          label: `${selectedMaxCopies} ${t("MaxCopies")}`,
+        }}
+        onSelect={onSelectMaxCopies}
+        isDisabled={false}
+        noBorder={false}
+        scaled={false}
+        scaledOptions={false}
+        dropDownMaxHeight={300}
+        size="content"
         className="backup_combobox"
       />
     </div>

@@ -43,6 +43,10 @@ const StyledComponent = styled.div`
   .automatic-backup_current_storage {
     margin-bottom: 8px;
   }
+  .backup_combobox {
+    display: inline-block;
+    margin-right: 8px;
+  }
 `;
 const StyledModules = styled.div`
   margin-bottom: 40px;
@@ -78,6 +82,8 @@ class AutomaticBackup extends React.Component {
       selectedWeekdayOption: "",
       selectedTimeOption: "12:00",
       selectedMonthOption: "1",
+      selectedMaxCopies: "10",
+
       weekOptions: [],
     };
 
@@ -100,6 +106,10 @@ class AutomaticBackup extends React.Component {
     this.getTimeOptions();
     this.monthNumberOptionsArray = [];
     this.getMonthNumbersOption();
+
+    this.maxNumberCopiesArray = [];
+    this.getMaxNumberCopies();
+
     this.weekdaysOptions = [];
     this.arrayWeekdays = moment.weekdays();
   }
@@ -125,6 +135,17 @@ class AutomaticBackup extends React.Component {
         label: `${item}`,
       };
       this.monthNumberOptionsArray.push(obj);
+    }
+  };
+
+  getMaxNumberCopies = () => {
+    const { t } = this.props;
+    for (let item = 1; item <= 30; item++) {
+      let obj = {
+        key: item,
+        label: `${item} ${t("MaxCopies")}`,
+      };
+      this.maxNumberCopiesArray.push(obj);
     }
   };
   getWeekdaysOptions = () => {
@@ -240,6 +261,12 @@ class AutomaticBackup extends React.Component {
       });
     }
   };
+  onSelectMaxCopies = (options) => {
+    console.log("opr max", options);
+    this.setState({
+      selectedMaxCopies: options.label,
+    });
+  };
   render() {
     const { t, language } = this.props;
     const {
@@ -261,6 +288,7 @@ class AutomaticBackup extends React.Component {
       selectedWeekdayOption,
       selectedTimeOption,
       selectedMonthOption,
+      selectedMaxCopies,
     } = this.state;
     console.log(" this.arrayWeekdays", this.arrayWeekdays);
     console.log("isCheckedDocuments", isCheckedDocuments);
@@ -311,9 +339,12 @@ class AutomaticBackup extends React.Component {
                     selectedWeekdayOption={selectedWeekdayOption}
                     selectedTimeOption={selectedTimeOption}
                     selectedMonthOption={selectedMonthOption}
+                    selectedMaxCopies={selectedMaxCopies}
                     periodOptions={this.periodOptions}
                     monthNumberOptionsArray={this.monthNumberOptionsArray}
                     timeOptionsArray={this.timeOptionsArray}
+                    maxNumberCopiesArray={this.maxNumberCopiesArray}
+                    onSelectMaxCopies={this.onSelectMaxCopies}
                     onSelectMonthNumberAndTimeOptions={
                       this.onSelectMonthNumberAndTimeOptions
                     }
@@ -357,9 +388,12 @@ class AutomaticBackup extends React.Component {
                     selectedWeekdayOption={selectedWeekdayOption}
                     selectedTimeOption={selectedTimeOption}
                     selectedMonthOption={selectedMonthOption}
+                    selectedMaxCopies={selectedMaxCopies}
                     periodOptions={this.periodOptions}
                     monthNumberOptionsArray={this.monthNumberOptionsArray}
                     timeOptionsArray={this.timeOptionsArray}
+                    maxNumberCopiesArray={this.maxNumberCopiesArray}
+                    onSelectMaxCopies={this.onSelectMaxCopies}
                     onSelectMonthNumberAndTimeOptions={
                       this.onSelectMonthNumberAndTimeOptions
                     }
@@ -403,9 +437,12 @@ class AutomaticBackup extends React.Component {
                     selectedWeekdayOption={selectedWeekdayOption}
                     selectedTimeOption={selectedTimeOption}
                     selectedMonthOption={selectedMonthOption}
+                    selectedMaxCopies={selectedMaxCopies}
                     periodOptions={this.periodOptions}
                     monthNumberOptionsArray={this.monthNumberOptionsArray}
                     timeOptionsArray={this.timeOptionsArray}
+                    maxNumberCopiesArray={this.maxNumberCopiesArray}
+                    onSelectMaxCopies={this.onSelectMaxCopies}
                     onSelectMonthNumberAndTimeOptions={
                       this.onSelectMonthNumberAndTimeOptions
                     }
