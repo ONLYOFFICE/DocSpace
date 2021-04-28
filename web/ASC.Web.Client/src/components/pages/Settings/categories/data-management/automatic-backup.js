@@ -60,10 +60,7 @@ class AutomaticBackup extends React.Component {
     moment.locale(this.lng);
 
     this.state = {
-      backupMailTemporaryStorage: false,
-      backupMailDocuments: false,
-      backupMailThirdParty: false,
-      backupMailThirdPartyStorage: false,
+      backupMail: false,
       isShowedStorageType: false, //if current automatic storage not choose
 
       isShowDocuments: false,
@@ -170,11 +167,6 @@ class AutomaticBackup extends React.Component {
     });
   };
 
-  onClickCheckbox = (e) => {
-    const name = e.target.name;
-    let change = !this.state[name];
-    this.setState({ [name]: change });
-  };
   onClickPermissions = (e) => {
     console.log("res", e);
     const name = e.target.defaultValue;
@@ -225,9 +217,9 @@ class AutomaticBackup extends React.Component {
         });
   };
   onClickCheckbox = (e) => {
-    const name = e.target.name;
-    let change = !this.state[name];
-    this.setState({ [name]: change });
+    const { backupMail } = this.state;
+    let change = !backupMail;
+    this.setState({ backupMail: change });
   };
 
   onSelectPeriodAndWeekday = (options) => {
@@ -270,10 +262,7 @@ class AutomaticBackup extends React.Component {
   render() {
     const { t, language } = this.props;
     const {
-      backupMailTemporaryStorage,
-      backupMailDocuments,
-      backupMailThirdParty,
-      backupMailThirdPartyStorage,
+      backupMail,
       isShowedStorageTypes,
       isCheckedDocuments,
       isCheckedThirdParty,
@@ -330,35 +319,27 @@ class AutomaticBackup extends React.Component {
                 {t("DocumentsModuleDescription")}
               </Text>
               {isShowDocuments && (
-                <>
-                  <ScheduleComponent
-                    weeklySchedule={weeklySchedule}
-                    monthlySchedule={monthlySchedule}
-                    weekOptions={weekOptions}
-                    selectedOption={selectedOption}
-                    selectedWeekdayOption={selectedWeekdayOption}
-                    selectedTimeOption={selectedTimeOption}
-                    selectedMonthOption={selectedMonthOption}
-                    selectedMaxCopies={selectedMaxCopies}
-                    periodOptions={this.periodOptions}
-                    monthNumberOptionsArray={this.monthNumberOptionsArray}
-                    timeOptionsArray={this.timeOptionsArray}
-                    maxNumberCopiesArray={this.maxNumberCopiesArray}
-                    onSelectMaxCopies={this.onSelectMaxCopies}
-                    onSelectMonthNumberAndTimeOptions={
-                      this.onSelectMonthNumberAndTimeOptions
-                    }
-                    onSelectPeriodAndWeekday={this.onSelectPeriodAndWeekday}
-                  />
-                  <div className="backup-include_mail">
-                    <Checkbox
-                      name={"backupMailDocuments"}
-                      isChecked={backupMailDocuments}
-                      label={t("IncludeMail")}
-                      onChange={this.onClickCheckbox}
-                    />
-                  </div>
-                </>
+                <ScheduleComponent
+                  weeklySchedule={weeklySchedule}
+                  monthlySchedule={monthlySchedule}
+                  weekOptions={weekOptions}
+                  selectedOption={selectedOption}
+                  selectedWeekdayOption={selectedWeekdayOption}
+                  selectedTimeOption={selectedTimeOption}
+                  selectedMonthOption={selectedMonthOption}
+                  selectedMaxCopies={selectedMaxCopies}
+                  periodOptions={this.periodOptions}
+                  monthNumberOptionsArray={this.monthNumberOptionsArray}
+                  timeOptionsArray={this.timeOptionsArray}
+                  maxNumberCopiesArray={this.maxNumberCopiesArray}
+                  backupMail={backupMail}
+                  onClickCheckbox={this.onClickCheckbox}
+                  onSelectMaxCopies={this.onSelectMaxCopies}
+                  onSelectMonthNumberAndTimeOptions={
+                    this.onSelectMonthNumberAndTimeOptions
+                  }
+                  onSelectPeriodAndWeekday={this.onSelectPeriodAndWeekday}
+                />
               )}
             </StyledModules>
 
@@ -379,35 +360,27 @@ class AutomaticBackup extends React.Component {
                 {t("ThirdPartyResourceNoteDescription")}
               </Text>
               {isShowThirdParty && (
-                <>
-                  <ScheduleComponent
-                    weeklySchedule={weeklySchedule}
-                    monthlySchedule={monthlySchedule}
-                    weekOptions={weekOptions}
-                    selectedOption={selectedOption}
-                    selectedWeekdayOption={selectedWeekdayOption}
-                    selectedTimeOption={selectedTimeOption}
-                    selectedMonthOption={selectedMonthOption}
-                    selectedMaxCopies={selectedMaxCopies}
-                    periodOptions={this.periodOptions}
-                    monthNumberOptionsArray={this.monthNumberOptionsArray}
-                    timeOptionsArray={this.timeOptionsArray}
-                    maxNumberCopiesArray={this.maxNumberCopiesArray}
-                    onSelectMaxCopies={this.onSelectMaxCopies}
-                    onSelectMonthNumberAndTimeOptions={
-                      this.onSelectMonthNumberAndTimeOptions
-                    }
-                    onSelectPeriodAndWeekday={this.onSelectPeriodAndWeekday}
-                  />
-                  <div className="backup-include_mail">
-                    <Checkbox
-                      name={"backupMailDocuments"}
-                      isChecked={backupMailDocuments}
-                      label={t("IncludeMail")}
-                      onChange={this.onClickCheckbox}
-                    />
-                  </div>
-                </>
+                <ScheduleComponent
+                  weeklySchedule={weeklySchedule}
+                  monthlySchedule={monthlySchedule}
+                  weekOptions={weekOptions}
+                  selectedOption={selectedOption}
+                  selectedWeekdayOption={selectedWeekdayOption}
+                  selectedTimeOption={selectedTimeOption}
+                  selectedMonthOption={selectedMonthOption}
+                  selectedMaxCopies={selectedMaxCopies}
+                  periodOptions={this.periodOptions}
+                  monthNumberOptionsArray={this.monthNumberOptionsArray}
+                  timeOptionsArray={this.timeOptionsArray}
+                  maxNumberCopiesArray={this.maxNumberCopiesArray}
+                  backupMail={backupMail}
+                  onClickCheckbox={this.onClickCheckbox}
+                  onSelectMaxCopies={this.onSelectMaxCopies}
+                  onSelectMonthNumberAndTimeOptions={
+                    this.onSelectMonthNumberAndTimeOptions
+                  }
+                  onSelectPeriodAndWeekday={this.onSelectPeriodAndWeekday}
+                />
               )}
             </StyledModules>
 
@@ -428,35 +401,27 @@ class AutomaticBackup extends React.Component {
                 {t("ThirdPartyStorageNoteDescription")}
               </Text>
               {isShowThirdPartyStorage && (
-                <>
-                  <ScheduleComponent
-                    weeklySchedule={weeklySchedule}
-                    monthlySchedule={monthlySchedule}
-                    weekOptions={weekOptions}
-                    selectedOption={selectedOption}
-                    selectedWeekdayOption={selectedWeekdayOption}
-                    selectedTimeOption={selectedTimeOption}
-                    selectedMonthOption={selectedMonthOption}
-                    selectedMaxCopies={selectedMaxCopies}
-                    periodOptions={this.periodOptions}
-                    monthNumberOptionsArray={this.monthNumberOptionsArray}
-                    timeOptionsArray={this.timeOptionsArray}
-                    maxNumberCopiesArray={this.maxNumberCopiesArray}
-                    onSelectMaxCopies={this.onSelectMaxCopies}
-                    onSelectMonthNumberAndTimeOptions={
-                      this.onSelectMonthNumberAndTimeOptions
-                    }
-                    onSelectPeriodAndWeekday={this.onSelectPeriodAndWeekday}
-                  />
-                  <div className="backup-include_mail">
-                    <Checkbox
-                      name={"backupMailDocuments"}
-                      isChecked={backupMailDocuments}
-                      label={t("IncludeMail")}
-                      onChange={this.onClickCheckbox}
-                    />
-                  </div>
-                </>
+                <ScheduleComponent
+                  weeklySchedule={weeklySchedule}
+                  monthlySchedule={monthlySchedule}
+                  weekOptions={weekOptions}
+                  selectedOption={selectedOption}
+                  selectedWeekdayOption={selectedWeekdayOption}
+                  selectedTimeOption={selectedTimeOption}
+                  selectedMonthOption={selectedMonthOption}
+                  selectedMaxCopies={selectedMaxCopies}
+                  periodOptions={this.periodOptions}
+                  monthNumberOptionsArray={this.monthNumberOptionsArray}
+                  timeOptionsArray={this.timeOptionsArray}
+                  maxNumberCopiesArray={this.maxNumberCopiesArray}
+                  backupMail={backupMail}
+                  onClickCheckbox={this.onClickCheckbox}
+                  onSelectMaxCopies={this.onSelectMaxCopies}
+                  onSelectMonthNumberAndTimeOptions={
+                    this.onSelectMonthNumberAndTimeOptions
+                  }
+                  onSelectPeriodAndWeekday={this.onSelectPeriodAndWeekday}
+                />
               )}
             </StyledModules>
           </>

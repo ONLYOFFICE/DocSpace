@@ -1,7 +1,7 @@
 import React from "react";
 import ComboBox from "@appserver/components/combobox";
 import { useTranslation } from "react-i18next";
-
+import Checkbox from "@appserver/components/checkbox";
 const ScheduleComponent = ({
   weeklySchedule,
   monthlySchedule,
@@ -18,6 +18,8 @@ const ScheduleComponent = ({
   selectedMaxCopies,
   onSelectMaxCopies,
   maxNumberCopiesArray,
+  onClickCheckbox,
+  backupMail,
 }) => {
   const { t } = useTranslation("Settings");
   return (
@@ -101,6 +103,14 @@ const ScheduleComponent = ({
         size="content"
         className="backup_combobox"
       />
+      <div className="backup-include_mail">
+        <Checkbox
+          name={"backupMail"}
+          isChecked={backupMail}
+          label={t("IncludeMail")}
+          onChange={onClickCheckbox}
+        />
+      </div>
     </div>
   );
 };
