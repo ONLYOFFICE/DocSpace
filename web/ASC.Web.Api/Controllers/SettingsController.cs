@@ -88,6 +88,8 @@ using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
+using Google.Authenticator;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -1461,6 +1463,32 @@ namespace ASC.Api.Settings
             return result;
         }
 
+        [Read("tfaapp/confirm")]
+        public string TfaConfirmUrl()
+        {
+            var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
+            if (StudioSmsNotificationSettingsHelper.IsVisibleSettings() && StudioSmsNotificationSettingsHelper.Enable)// && smsConfirm.ToLower() != "true")
+            {
+                var confirmType = string.IsNullOrEmpty(user.MobilePhone) ||
+                               user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated
+                                   ? ConfirmType.PhoneActivation
+                                   : ConfirmType.PhoneAuth;
+
+                return CommonLinkUtility.GetConfirmationUrl(user.Email, confirmType);
+            }
+
+            if (TfaAppAuthSettings.IsVisibleSettings && SettingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+            {
+                var confirmType = TfaAppUserSettings.EnableForUser(SettingsManager, AuthContext.CurrentAccount.ID)
+                    ? ConfirmType.TfaAuth
+                    : ConfirmType.TfaActivation;
+
+                return CommonLinkUtility.GetConfirmationUrl(user.Email, confirmType);
+            }
+
+            return string.Empty;
+        }
+
         [Update("tfaapp")]
         public bool TfaSettingsFromBody([FromBody]TfaModel model)
         {
@@ -1551,7 +1579,24 @@ namespace ASC.Api.Settings
             return result;
         }
 
-        ///<visible>false</visible>
+        [Read("tfaapp/setup")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation")]
+        public SetupCode TfaAppGenerateSetupCode()
+        {
+            ApiContext.AuthByClaim();
+            var currentUser = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
+
+            if (!TfaAppAuthSettings.IsVisibleSettings || 
+                !SettingsManager.Load<TfaAppAuthSettings>().EnableSetting ||
+                TfaAppUserSettings.EnableForUser(SettingsManager, currentUser.ID))
+                throw new Exception(Resource.TfaAppNotAvailable);
+
+            if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
+                throw new NotSupportedException("Not available.");
+
+            return TfaManager.GenerateSetupCode(currentUser, 300);
+        }
+
         [Read("tfaappcodes")]
         public IEnumerable<object> TfaAppGetCodes()
         {
