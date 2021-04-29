@@ -81,7 +81,7 @@ class TreeFolders extends React.Component {
         iconUrl = "images/catalog.shared.react.svg";
         break;
       case FolderType.COMMON:
-        iconUrl = "images/catalog.portfolio.react.svg";
+        iconUrl = "/static/images/catalog.portfolio.react.svg";
         break;
       case FolderType.Favorites:
         iconUrl = "images/catalog.favorites.react.svg";
@@ -99,38 +99,39 @@ class TreeFolders extends React.Component {
         break;
     }
 
-    if (item.parentId !== 0) iconUrl = "images/catalog.folder.react.svg";
-
+    if (item.parentId !== 0)
+      iconUrl = "/static/images/catalog.folder.react.svg";
+    //debugger;
     switch (item.providerKey) {
       case "GoogleDrive":
-        iconUrl = "images/cloud.services.google.drive.react.svg";
+        iconUrl = "/static/images/cloud.services.google.drive.react.svg";
         break;
       case "Box":
-        iconUrl = "images/cloud.services.box.react.svg";
+        iconUrl = "/static/images/cloud.services.box.react.svg";
         break;
       case "DropboxV2":
-        iconUrl = "images/cloud.services.dropbox.react.svg";
+        iconUrl = "/static/images/cloud.services.dropbox.react.svg";
         break;
       case "OneDrive":
-        iconUrl = "images/cloud.services.onedrive.react.svg";
+        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
         break;
       case "SharePoint":
-        iconUrl = "images/cloud.services.onedrive.react.svg";
+        iconUrl = "/static/images/cloud.services.onedrive.react.svg";
         break;
       case "kDrive":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       case "Yandex":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       case "NextCloud":
-        iconUrl = "images/cloud.services.nextcloud.react.svg";
+        iconUrl = "/static/images/cloud.services.nextcloud.react.svg";
         break;
       case "OwnCloud":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       case "WebDav":
-        iconUrl = "images/catalog.folder.react.svg";
+        iconUrl = "/static/images/catalog.folder.react.svg";
         break;
       default:
         break;
@@ -201,7 +202,7 @@ class TreeFolders extends React.Component {
       const showBadge = item.newItems
         ? item.newItems > 0 && this.props.needUpdate
         : false;
-
+      const provider = item.providerKey;
       const serviceFolder = !!item.providerKey;
       let className = `tree-drag tree-id_${item.id}`;
       if (dragging) className += " dragging";
@@ -260,6 +261,75 @@ class TreeFolders extends React.Component {
     });
   };
 
+  getCommonItems = (data) => {
+    return data.map((item) => {
+      const dragging = this.props.dragging ? this.showDragItems(item) : false;
+
+      const showBadge = item.newItems
+        ? item.newItems > 0 && this.props.needUpdate
+        : false;
+      const provider = item.providerKey;
+      const serviceFolder = !!item.providerKey;
+      let className = `tree-drag tree-id_${item.id}`;
+      if (dragging) className += " dragging";
+      if ((item.folders && item.folders.length > 0) || serviceFolder) {
+        return !provider ? (
+          <TreeNode
+            id={item.id}
+            key={item.id}
+            className={className}
+            title={item.title}
+            needTopMargin={item.rootFolderType === FolderType.Privacy}
+            icon={this.getFolderIcon(item)}
+            dragging={dragging}
+            isLeaf={
+              item.rootFolderType === FolderType.Privacy &&
+              !this.props.isDesktop
+                ? true
+                : null
+            }
+            newItems={
+              !this.props.isDesktop &&
+              item.rootFolderType === FolderType.Privacy
+                ? null
+                : item.newItems
+            }
+            providerKey={item.providerKey}
+            onBadgeClick={this.onBadgeClick}
+            showBadge={showBadge}
+          >
+            {item.rootFolderType === FolderType.Privacy && !this.props.isDesktop
+              ? null
+              : this.getCommonItems(item.folders ? item.folders : [])}
+          </TreeNode>
+        ) : (
+          <></>
+        );
+      }
+      return !provider ? (
+        <TreeNode
+          id={item.id}
+          key={item.id}
+          className={className}
+          title={item.title}
+          needTopMargin={item.rootFolderType === FolderType.TRASH}
+          dragging={dragging}
+          isLeaf={item.foldersCount ? false : true}
+          icon={this.getFolderIcon(item)}
+          newItems={
+            !this.props.isDesktop && item.rootFolderType === FolderType.Privacy
+              ? null
+              : item.newItems
+          }
+          providerKey={item.providerKey}
+          onBadgeClick={this.onBadgeClick}
+          showBadge={showBadge}
+        />
+      ) : (
+        <></>
+      );
+    });
+  };
   switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
@@ -434,6 +504,7 @@ class TreeFolders extends React.Component {
       expandedPanelKeys,
       treeFolders,
       data,
+      isCommonWithoutProvider,
     } = this.props;
 
     return (
@@ -458,7 +529,9 @@ class TreeFolders extends React.Component {
         gapBetweenNodesTablet="26"
         isFullFillSelection={false}
       >
-        {this.getItems(data || treeFolders)}
+        {isCommonWithoutProvider
+          ? this.getCommonItems(data)
+          : this.getItems(data || treeFolders)}
       </StyledTreeMenu>
     );
   }

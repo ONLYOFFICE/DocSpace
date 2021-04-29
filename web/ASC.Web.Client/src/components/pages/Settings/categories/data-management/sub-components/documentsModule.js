@@ -5,7 +5,7 @@ import ComboBox from "@appserver/components/combobox";
 import styled from "styled-components";
 import Button from "@appserver/components/button";
 import Checkbox from "@appserver/components/checkbox";
-
+import OperationsDialog from "files/OperationsDialog";
 class DocumentsModule extends React.Component {
   constructor(props) {
     super(props);
@@ -92,14 +92,14 @@ class DocumentsModule extends React.Component {
             </>
           )}
 
-          <div className="backup-include_mail">
+          {/* <div className="backup-include_mail">
             <Checkbox
               name={"backupMailDocuments"}
               isChecked={backupMailDocuments}
               label={t("IncludeMail")}
               onChange={onClickCheckbox}
             />
-          </div>
+          </div> */}
 
           {isManualBackup && (
             <div className="manual-backup_buttons">

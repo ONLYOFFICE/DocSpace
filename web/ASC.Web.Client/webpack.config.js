@@ -143,6 +143,10 @@ const config = {
           AppServerConfig.proxyURL,
           "/products/people/remoteEntry.js"
         )}`,
+        files: `files@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/products/files/remoteEntry.js"
+        )}`,
       },
       exposes: {
         "./shell": "./src/Shell",

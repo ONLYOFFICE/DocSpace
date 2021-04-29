@@ -10,6 +10,7 @@ class TreeFoldersStore {
   expandedKeys = [];
   expandedPanelKeys = null;
 
+  commonTreeFolder = [];
   constructor(selectedFolderStore) {
     makeAutoObservable(this);
     this.selectedFolderStore = selectedFolderStore;
@@ -41,6 +42,12 @@ class TreeFoldersStore {
 
   addExpandedKeys = (item) => {
     this.expandedKeys.push(item);
+  };
+
+  getCommonFolder = () => {
+    this.commonTreeFolder = this.treeFolders.find(
+      (x) => x.rootFolderName === "@common"
+    );
   };
 
   updateRootBadge = (id, count) => {
@@ -145,6 +152,18 @@ class TreeFoldersStore {
       );
     }
   }
+
+  // get commonFolder() {
+  //   if (this.isPrivacyFolder) {
+  //     return this.treeFolders.filter(
+  //       (folder) => folder.rootFolderType === FolderType.Privacy && folder
+  //     );
+  //   } else {
+  //     return this.treeFolders.filter(
+  //       (folder) => folder.rootFolderType === FolderType.COMMON
+  //     );
+  //   }
+  // }
 }
 
 export default TreeFoldersStore;

@@ -8,6 +8,10 @@ import Checkbox from "@appserver/components/checkbox";
 import { inject, observer } from "mobx-react";
 import { getThirdPartyList } from "@appserver/common/api/files";
 import DocumentsModule from "./sub-components/documentsModule";
+import FileInputPath from "@appserver/components/file-input-path";
+
+import OperationsDialog from "files/OperationsDialog";
+
 const StyledComponent = styled.div`
   ${commonSettingsStyles}
   .manual-backup_buttons {
@@ -40,29 +44,34 @@ class ManualBackup extends React.Component {
     super(props);
     this.manualBackup = true;
 
+    // this.state = {
+    //   backupMailTemporaryStorage: false,
+    //   backupMailDocuments: false,
+    //   backupMailThirdParty: false,
+    //   backupMailThirdPartyStorage: false,
+    // };
     this.state = {
-      backupMailTemporaryStorage: false,
-      backupMailDocuments: false,
-      backupMailThirdParty: false,
-      backupMailThirdPartyStorage: false,
+      isVisiblePanel: false,
     };
   }
   componentDidMount() {
-    getThirdPartyList().then((res) => console.log("res", res));
+    // getThirdPartyList().then((res) => console.log("res", res));
   }
   onClickCheckbox = (e) => {
     const name = e.target.name;
     let change = !this.state[name];
     this.setState({ [name]: change });
   };
+
   render() {
-    const { t, providers } = this.props;
-    const {
-      backupMailTemporaryStorage,
-      backupMailDocuments,
-      backupMailThirdParty,
-      backupMailThirdPartyStorage,
-    } = this.state;
+    const { t, providers, panelVisible, folderPath } = this.props;
+    // const {
+    //   backupMailTemporaryStorage,
+    //   backupMailDocuments,
+    //   backupMailThirdParty,
+    //   backupMailThirdPartyStorage,
+    // } = this.state;
+    console.log("folderPath", folderPath);
     return (
       <StyledComponent>
         <div className="category-item-wrapper temporary-storage">
@@ -74,14 +83,15 @@ class ManualBackup extends React.Component {
           <Text className="category-item-description">
             {t("TemporaryStorageDescription")}
           </Text>
-          <div className="backup-include_mail">
+
+          {/* <div className="backup-include_mail">
             <Checkbox
               name={"backupMailTemporaryStorage"}
               isChecked={backupMailTemporaryStorage}
               label={t("IncludeMail")}
               onChange={this.onClickCheckbox}
             />
-          </div>
+          </div> */}
           <div className="manual-backup_buttons">
             <Button
               label={t("MakeCopy")}
@@ -104,9 +114,11 @@ class ManualBackup extends React.Component {
 
         <DocumentsModule
           isManualBackup={this.manualBackup}
-          backupMailDocuments={backupMailDocuments}
+          //backupMailDocuments={backupMailDocuments}
           onClickCheckbox={this.onClickCheckbox}
         />
+        <FileInputPath onClick={this.onClickInput} folderPath={folderPath} />
+        {panelVisible && <OperationsDialog />}
 
         <div className="category-item-wrapper temporary-storage">
           <div className="category-item-heading">
@@ -121,14 +133,14 @@ class ManualBackup extends React.Component {
             {t("ThirdPartyResourceNoteDescription")}
           </Text>
 
-          <div className="backup-include_mail">
+          {/* <div className="backup-include_mail">
             <Checkbox
               name={"backupMailThirdParty"}
               isChecked={backupMailThirdParty}
               label={t("IncludeMail")}
               onChange={this.onClickCheckbox}
             />
-          </div>
+          </div> */}
           <div className="manual-backup_buttons">
             <Button
               label={t("MakeCopy")}
@@ -154,14 +166,14 @@ class ManualBackup extends React.Component {
             {t("ThirdPartyStorageNoteDescription")}
           </Text>
 
-          <div className="backup-include_mail">
+          {/* <div className="backup-include_mail">
             <Checkbox
               name={"backupMailThirdPartyStorage"}
               isChecked={backupMailThirdPartyStorage}
               label={t("IncludeMail")}
               onChange={this.onClickCheckbox}
             />
-          </div>
+          </div> */}
           <div className="manual-backup_buttons">
             <Button
               label={t("MakeCopy")}
@@ -178,4 +190,12 @@ class ManualBackup extends React.Component {
   }
 }
 
-export default withTranslation("Settings")(ManualBackup);
+export default inject(({ auth }) => {
+  const { setPanelVisible, panelVisible } = auth;
+  const { folderPath } = auth.settingsStore;
+  return {
+    setPanelVisible,
+    panelVisible,
+    folderPath,
+  };
+})(withTranslation("Settings")(observer(ManualBackup)));

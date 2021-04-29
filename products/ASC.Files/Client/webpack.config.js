@@ -141,10 +141,15 @@ var config = {
           AppServerConfig.proxyURL,
           "/products/people/remoteEntry.js"
         )}`,
+        files: `files@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/products/files/remoteEntry.js"
+        )}`,
       },
       exposes: {
         "./app": "./src/Files.jsx",
         "./SharingDialog": "./src/components/panels/SharingDialog",
+        "./OperationsDialog": "./src/components/panels/OperationsDialog",
       },
       shared: {
         ...deps,

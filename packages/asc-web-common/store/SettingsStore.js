@@ -62,6 +62,8 @@ class SettingsStore {
 
   isArticleVisibleOnUnpin = false;
 
+  folderPath = [];
+
   hashSettings = null;
   title = "";
   ownerId = null;
@@ -121,6 +123,11 @@ class SettingsStore {
     });
 
     return newSettings;
+  };
+
+  getFolderPath = async (id) => {
+    //debugger;
+    this.folderPath = await api.files.getFolderPath(id);
   };
 
   getCurrentCustomSchema = async (id) => {

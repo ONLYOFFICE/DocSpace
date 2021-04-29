@@ -4,64 +4,83 @@ import equal from "fast-deep-equal/react";
 
 import IconButton from "../icon-button";
 import TextInput from "../text-input";
-import StyledFileInput from "./styled-file-input";
-
-class FileInput extends Component {
+import StyledFileInput from "../file-input/styled-file-input";
+import { inject, observer } from "mobx-react";
+let path = "";
+class FileInputPath extends Component {
   constructor(props) {
     super(props);
 
     this.inputRef = React.createRef();
 
     this.state = {
-      fileName: "",
+      fileName: "fileName",
       file: null,
+      fullFolderPath: "",
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return !equal(this.props, nextProps) || !equal(this.state, nextState);
+  componentDidUpdate(prevProps) {
+    const { folderPath } = this.props;
+    if (folderPath !== prevProps.folderPath) {
+      console.log("YES");
+      this.getTitlesFolders();
+    }
   }
 
-  onIconFileClick = (e) => {
-    const { isDisabled } = this.props;
+  getTitlesFolders = () => {
+    const { folderPath } = this.props;
+    path = "";
+    if (folderPath.length > 1) {
+      for (let item of folderPath) {
+        console.log("item", item.title);
 
-    if (isDisabled) {
-      return false;
+        //debugger;
+        if (!path) {
+          path = path + `${item.title}`;
+        } else path = path + " " + ">" + " " + `${item.title}`;
+        console.log("path", path);
+        console.log("this.state.fullFolderPath", this.state.fullFolderPath);
+      }
+      this.setState({
+        fullFolderPath: path,
+      });
+    } else {
+      for (let item of folderPath) {
+        console.log("item", item.title);
+
+        //debugger;
+        path = `${item.title}`;
+        console.log("path", path);
+        console.log("this.state.fullFolderPath", this.state.fullFolderPath);
+      }
+      this.setState({
+        fullFolderPath: path,
+      });
     }
-    e.target.blur();
-    this.inputRef.current.click();
   };
-
   onChangeHandler = (e) => {
-    debugger;
+    const { folderPath } = this.props;
+    //debugger;
+    console.log("onChangeHandler");
     this.setState({
       fileName: e.target.value,
     });
   };
 
-  onInputFile = () => {
-    const { onInput } = this.props;
+  onClickInput = () => {
+    const { setPanelVisible } = this.props;
+    setPanelVisible(true);
+    const { folderPath } = this.props;
 
-    if (this.inputRef.current.files.length > 0) {
-      this.setState(
-        {
-          fileName: this.inputRef.current.files[0].name,
-          file: this.inputRef.current.files[0],
-        },
-        () => {
-          if (onInput) {
-            this.inputRef.current.value = "";
-            onInput(this.state.file);
-          }
-        }
-      );
-    }
+    //console.log("onChangeHandler", folderPath);
   };
 
   render() {
-    //console.log('render FileInput');
-    const { fileName } = this.state;
+    const { fileName, fullFolderPath } = this.state;
     const {
+      folderPath,
+      onClick,
       size,
       placeholder,
       isDisabled,
@@ -73,7 +92,7 @@ class FileInput extends Component {
       onInput, // eslint-disable-line no-unused-vars
       ...rest
     } = this.props;
-
+    console.log("render FileInputPath", fullFolderPath);
     let iconSize = 0;
 
     switch (size) {
@@ -95,35 +114,21 @@ class FileInput extends Component {
     }
 
     return (
-      <StyledFileInput
-        size={size}
-        scale={scale ? 1 : 0}
-        hasError={hasError}
-        hasWarning={hasWarning}
-        isDisabled={isDisabled}
-        {...rest}
-      >
+      <StyledFileInput>
         <TextInput
           className="text-input"
           placeholder={placeholder}
-          value={fileName}
+          value={fullFolderPath}
           size={size}
           isDisabled={isDisabled}
           hasError={hasError}
           hasWarning={hasWarning}
           scale={scale}
-          onFocus={this.onIconFileClick}
+          onFocus={this.onClickInput}
           onChange={this.onChangeHandler}
         />
-        <input
-          type="file"
-          id={id}
-          ref={this.inputRef}
-          style={{ display: "none" }}
-          accept={accept}
-          onInput={this.onInputFile}
-        />
-        <div className="icon" onClick={this.onIconFileClick}>
+
+        <div className="icon" onClick={this.onClickInput}>
           <IconButton
             className="icon-button"
             iconName={"/static/images/catalog.folder.react.svg"}
@@ -137,7 +142,7 @@ class FileInput extends Component {
   }
 }
 
-FileInput.propTypes = {
+FileInputPath.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Placeholder text for the input */
@@ -164,7 +169,7 @@ FileInput.propTypes = {
   accept: PropTypes.string,
 };
 
-FileInput.defaultProps = {
+FileInputPath.defaultProps = {
   size: "base",
   scale: false,
   hasWarning: false,
@@ -173,4 +178,11 @@ FileInput.defaultProps = {
   accept: "",
 };
 
-export default FileInput;
+export default inject(({ auth }) => {
+  const { setPanelVisible } = auth;
+  const { folderPath } = auth.settingsStore;
+  return {
+    folderPath,
+    setPanelVisible,
+  };
+})(observer(FileInputPath));

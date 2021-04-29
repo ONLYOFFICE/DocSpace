@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
@@ -24,13 +24,17 @@ const OperationsPanelComponent = (props) => {
     setMoveToPanelVisible,
     checkOperationConflict,
     setThirdPartyMoveDialogVisible,
+    commonFolder,
+    getCommonFolder,
+    commonTreeFolder,
   } = props;
 
+  useEffect(() => getCommonFolder(), []);
   const zIndex = 310;
   const deleteAfter = true; // TODO: get from settings
 
   const expandedKeys = props.expandedKeys.map((item) => item.toString());
-
+  //const expandedKeys = ["1"];
   const onClose = () => {
     isCopy ? setCopyPanelVisible(false) : setMoveToPanelVisible(false);
     setExpandedPanelKeys(null);
@@ -94,6 +98,7 @@ const OperationsPanelComponent = (props) => {
   };
 
   //console.log("Operations panel render");
+  console.log("commonTreeFolder", commonTreeFolder);
   return (
     <StyledAsidePanel visible={visible}>
       <ModalDialog
@@ -124,22 +129,29 @@ const OperationsPanel = withTranslation("OperationsPanel")(
 );
 
 export default inject(
-  ({
-    filesStore,
-    treeFoldersStore,
-    selectedFolderStore,
-    dialogsStore,
-    filesActionsStore,
-  }) => {
+  (
+    {
+      filesStore,
+      treeFoldersStore,
+      selectedFolderStore,
+      dialogsStore,
+      filesActionsStore,
+    },
+    commonTreeFolder
+  ) => {
     const { filter, selection } = filesStore;
     const {
       isRecycleBinFolder,
       operationsFolders,
       setExpandedPanelKeys,
       expandedPanelKeys,
+      commonFolder,
+      getCommonFolder,
     } = treeFoldersStore;
     const { checkOperationConflict } = filesActionsStore;
 
+    //debugger;
+    console.log("commonFolder", commonFolder);
     const {
       moveToPanelVisible,
       copyPanelVisible,
@@ -150,7 +162,7 @@ export default inject(
     } = dialogsStore;
 
     const provider = selection.find((x) => x.providerKey);
-
+    //debugger;
     return {
       expandedKeys: expandedPanelKeys
         ? expandedPanelKeys
@@ -162,7 +174,8 @@ export default inject(
       visible: copyPanelVisible || moveToPanelVisible,
       provider,
       selection,
-
+      getCommonFolder,
+      commonTreeFolder,
       setCopyPanelVisible,
       setMoveToPanelVisible,
       setDestFolderId,
