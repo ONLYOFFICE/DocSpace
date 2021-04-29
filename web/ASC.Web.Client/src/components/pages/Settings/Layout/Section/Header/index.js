@@ -1,11 +1,12 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Headline from "@appserver/common/components/Headline";
 import IconButton from "@appserver/components/icon-button";
-import { tablet } from "@appserver/components/utils/device";
+import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
+import { tablet, desktop } from "@appserver/components/utils/device";
 import PeopleSelector from "people/PeopleSelector";
 
 import {
@@ -41,6 +42,39 @@ const HeaderContainer = styled.div`
   }
 `;
 
+const StyledContainer = styled.div`
+  @media ${desktop} {
+    ${(props) =>
+      props.isHeaderVisible &&
+      css`
+        width: calc(100% + 76px);
+      `}
+  }
+
+  .group-button-menu-container {
+    margin: 0 -16px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    padding-bottom: 56px;
+
+    @media ${tablet} {
+      & > div:first-child {
+        ${(props) =>
+          props.isArticlePinned &&
+          css`
+            width: calc(100% - 240px);
+          `}
+        position: absolute;
+        top: 56px;
+        z-index: 180;
+      }
+    }
+
+    @media ${desktop} {
+      margin: 0 -24px;
+    }
+  }
+`;
+
 class SectionHeaderContent extends React.Component {
   constructor(props) {
     super(props);
@@ -70,6 +104,7 @@ class SectionHeaderContent extends React.Component {
       header,
       isCategoryOrHeader: isCategory || isHeader,
       showSelector: false,
+      isHeaderVisible: false,
     };
   }
 
@@ -135,59 +170,106 @@ class SectionHeaderContent extends React.Component {
     //this.changeOwner(items[0]);
   };
 
+  onSelectorSelect = () => {
+    console.log("onSelect");
+  };
+
+  removeAdmins = () => {
+    console.log("removeAdmins");
+  };
+
   render() {
-    const { t, addUsers, groupsCaption } = this.props;
+    const { t, addUsers, groupsCaption, selection } = this.props;
     const { header, isCategoryOrHeader, showSelector } = this.state;
     const arrayOfParams = this.getArrayOfParams();
 
+    const menuItems = [
+      {
+        label: t("SelectAll"),
+        isDropdown: true,
+        isSeparator: true,
+        isSelect: true,
+        fontWeight: "bold",
+        onSelect: this.onSelectorSelect,
+      },
+      {
+        label: t("Remove"),
+        onClick: this.removeAdmins,
+      },
+    ];
+
     return (
-      <HeaderContainer>
-        {!isCategoryOrHeader && arrayOfParams[0] && (
-          <IconButton
-            iconName="/static/images/arrow.path.react.svg"
-            size="17"
-            color="#A3A9AE"
-            hoverColor="#657077"
-            isFill={true}
-            onClick={this.onBackToParent}
-            className="arrow-button"
-          />
-        )}
-        <Headline type="content" truncate={true}>
-          {t(header)}
-        </Headline>
-        {addUsers && (
-          <div className="action-wrapper">
-            <IconButton
-              iconName="/static/images/actions.header.touch.react.svg"
-              size="17"
-              color="#A3A9AE"
-              hoverColor="#657077"
-              isFill={true}
-              onClick={this.onToggleSelector}
-              className="action-button"
-            />
-            <PeopleSelector
-              isMultiSelect={true}
-              displayType="aside"
-              isOpen={showSelector}
-              onSelect={this.onSelect}
-              groupsCaption={groupsCaption}
-              onCancel={this.onCancelSelector}
+      <StyledContainer isHeaderVisible={selection && selection.length > 0}>
+        {selection && selection.length > 0 ? (
+          <div className="group-button-menu-container">
+            <GroupButtonsMenu
+              checked={true}
+              //isIndeterminate={isHeaderIndeterminate}
+              onChange={this.onCheck}
+              menuItems={menuItems}
+              visible={true}
+              moreLabel={t("More")}
+              closeTitle={t("CloseButton")}
+              onClose={this.onClose}
+              selected={menuItems[0].label}
             />
           </div>
+        ) : (
+          <HeaderContainer>
+            {!isCategoryOrHeader && arrayOfParams[0] && (
+              <IconButton
+                iconName="/static/images/arrow.path.react.svg"
+                size="17"
+                color="#A3A9AE"
+                hoverColor="#657077"
+                isFill={true}
+                onClick={this.onBackToParent}
+                className="arrow-button"
+              />
+            )}
+            <Headline type="content" truncate={true}>
+              {t(header)}
+            </Headline>
+            {addUsers && (
+              <div className="action-wrapper">
+                <IconButton
+                  iconName="/static/images/actions.header.touch.react.svg"
+                  size="17"
+                  color="#A3A9AE"
+                  hoverColor="#657077"
+                  isFill={true}
+                  onClick={this.onToggleSelector}
+                  className="action-button"
+                />
+                <PeopleSelector
+                  isMultiSelect={true}
+                  displayType="aside"
+                  isOpen={showSelector}
+                  onSelect={this.onSelect}
+                  groupsCaption={groupsCaption}
+                  onCancel={this.onCancelSelector}
+                />
+              </div>
+            )}
+          </HeaderContainer>
         )}
-      </HeaderContainer>
+      </StyledContainer>
     );
   }
 }
 
-export default inject(({ auth, setup }) => {
+export default inject(({ auth, setup, selectionStore }) => {
   const { customNames } = auth.settingsStore;
   const { addUsers } = setup.headerAction;
+  const { selection, selected, setSelected } = selectionStore;
+  const { admins } = setup.security.accessRight;
 
   return {
     addUsers,
     groupsCaption: customNames.groupsCaption,
+    selection,
+    selected,
+    setSelected,
+    admins,
   };
 })(withRouter(withTranslation("Settings")(observer(SectionHeaderContent))));

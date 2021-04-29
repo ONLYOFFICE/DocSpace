@@ -254,6 +254,7 @@ class PortalAdmins extends Component {
     await changeAdmins(userIds, productId, isAdmin, newFilter)
       .catch((error) => {
         toastr.error("accessRights onChangeAdmin", error);
+        this.onLoading(false);
       })
       .finally(() => {
         this.onLoading(false);
@@ -313,8 +314,13 @@ class PortalAdmins extends Component {
     if (admin.id === this.id) return true;
   };
 
-  addUsers = () => {
-    console.log("Added users");
+  addUsers = (users) => {
+    if (!users && users.length === 0) return;
+    const userIds = users.map((user) => {
+      return user.key;
+    });
+
+    this.onChangeAdmin(userIds, true, fullAccessId);
   };
 
   filterNewAdmins = (admins, newAdmins) => {
@@ -400,10 +406,12 @@ class PortalAdmins extends Component {
   };
 
   onContentRowSelect = (checked, user) => {
+    const { selectUser, deselectUser } = this.props;
+
     if (checked) {
-      this.props.selectUser(user);
+      selectUser(user);
     } else {
-      this.props.deselectUser(user);
+      deselectUser(user);
     }
   };
 
@@ -644,7 +652,7 @@ class PortalAdmins extends Component {
   };
 
   render() {
-    const { t, admins } = this.props;
+    const { t, admins, isUserSelected } = this.props;
     const {
       isLoading,
       showLoader,
@@ -703,6 +711,8 @@ class PortalAdmins extends Component {
                           getUserStatus(user) === "pending"
                             ? "#A3A9AE"
                             : "#333333";
+
+                        const checked = isUserSelected(user.id);
 
                         return (
                           <Row
@@ -939,10 +949,16 @@ PortalAdmins.propTypes = {
   getUpdateListAdmin: PropTypes.func.isRequired,
 };
 
-export default inject(({ auth, setup }) => {
+export default inject(({ auth, setup, selectionStore }) => {
   const { admins, owner, filter } = setup.security.accessRight;
   const { user: me } = auth.userStore;
   const { setAddUsers } = setup;
+  const {
+    selectUser,
+    deselectUser,
+    selection,
+    isUserSelected,
+  } = selectionStore;
 
   return {
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
@@ -955,5 +971,9 @@ export default inject(({ auth, setup }) => {
     filter,
     me,
     setAddUsers,
+    selectUser,
+    deselectUser,
+    selection,
+    isUserSelected,
   };
 })(withTranslation("Settings")(withRouter(observer(PortalAdmins))));
