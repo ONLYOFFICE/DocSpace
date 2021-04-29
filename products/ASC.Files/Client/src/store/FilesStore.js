@@ -500,12 +500,7 @@ class FilesStore {
         ]);
       }
 
-      if (
-        isCommonFolder ||
-        isFavoritesFolder ||
-        isPrivacyFolder ||
-        isRecentFolder
-      ) {
+      if (isFavoritesFolder || isPrivacyFolder || isRecentFolder) {
         fileOptions = this.removeOptions(fileOptions, [
           "copy",
           "move-to",
@@ -549,6 +544,7 @@ class FilesStore {
           "rename",
           "block-unblock-version",
           "copy",
+          "sharing-settings",
         ]);
       }
 
