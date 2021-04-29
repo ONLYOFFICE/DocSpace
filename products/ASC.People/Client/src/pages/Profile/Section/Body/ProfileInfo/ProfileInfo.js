@@ -12,9 +12,9 @@ import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import { withRouter } from "react-router";
-
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
+import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import config from "../../../../../../package.json";
 
 const InfoContainer = styled.div`
@@ -184,14 +184,26 @@ class ProfileInfo extends React.PureComponent {
   };
 
   getLanguages = () => {
-    const { cultures, t } = this.props;
+    const { cultureNames } = this.props;
 
-    return cultures.map((culture) => {
-      return { key: culture, label: t(`Culture_${culture}`) };
-    });
+    return cultureNames;
   };
 
   render() {
+    const {
+      t,
+      userPostCaption,
+      regDateCaption,
+      groupCaption,
+      userCaption,
+      guestCaption,
+      cultureNames,
+      profile,
+      isAdmin,
+      isSelf,
+      culture,
+    } = this.props;
+
     const {
       isVisitor,
       email,
@@ -206,30 +218,26 @@ class ProfileInfo extends React.PureComponent {
       location,
       cultureName,
       currentCulture,
-    } = this.props.profile;
-    const isAdmin = this.props.isAdmin;
-    const isSelf = this.props.isSelf;
-    const {
-      t,
-      userPostCaption,
-      regDateCaption,
-      groupCaption,
-      userCaption,
-      guestCaption,
-    } = this.props;
+    } = profile;
+
     const type = isVisitor ? guestCaption : userCaption;
-    const language = cultureName || currentCulture || this.props.culture;
-    const languages = this.getLanguages();
+    const language = cultureName || currentCulture || culture;
+    //const languages = this.getLanguages();
     const selectedLanguage =
-      languages.find((item) => item.key === language) ||
-      languages.find((item) => item.key === this.props.culture);
+      cultureNames.find((item) => item.key === language) ||
+      cultureNames.find((item) => item.key === culture);
+
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
+
     const formatedSex =
       (sex === "male" && t("MaleSexStatus")) || t("FemaleSexStatus");
+
     const formatedDepartments =
       department && this.getFormattedDepartments(groups);
+
     const supportEmail = "documentation@onlyoffice.com";
+
     const tooltipLanguage = (
       <Text fontSize="13px">
         <Trans t={t} i18nKey="NotFoundLanguage" ns="Profile">
@@ -332,10 +340,10 @@ class ProfileInfo extends React.PureComponent {
           <InfoItem>
             <InfoItemLabel>{t("Language")}:</InfoItemLabel>
             <InfoItemValue>
-              {languages && selectedLanguage ? (
+              {cultureNames && selectedLanguage ? (
                 <>
                   <ComboBox
-                    options={languages}
+                    options={cultureNames}
                     selectedOption={selectedLanguage}
                     onSelect={this.onLanguageSelect}
                     isDisabled={false}
@@ -368,6 +376,7 @@ class ProfileInfo extends React.PureComponent {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
+    culture: auth.settingsStore.culture,
     groupCaption: auth.settingsStore.customNames.groupCaption,
     regDateCaption: auth.settingsStore.customNames.regDateCaption,
     userPostCaption: auth.settingsStore.customNames.userPostCaption,
@@ -378,5 +387,5 @@ export default withRouter(
     setIsLoading: peopleStore.setIsLoading,
     isLoading: peopleStore.isLoading,
     updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
-  }))(observer(withTranslation("Profile")(ProfileInfo)))
+  }))(observer(withTranslation("Profile")(withCultureNames(ProfileInfo))))
 );
