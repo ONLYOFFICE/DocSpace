@@ -605,7 +605,7 @@ class FilesStore {
       }
 
       if (isShareFolder) {
-        fileOptions = this.removeOptions(fileOptions, ["move-to"]);
+        fileOptions = this.removeOptions(fileOptions, ["move-to", "delete"]);
       }
 
       return fileOptions;
