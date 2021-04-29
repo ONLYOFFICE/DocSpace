@@ -49,7 +49,11 @@ class SharingRow extends React.Component {
     const subject = t("ShareEmailSubject", { itemName });
     const body = t("ShareEmailBody", { itemName, shareLink });
 
-    window.open(`mailto:?subject=${subject}&body=${body}`);
+    window.open(
+      `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+        body
+      )}`
+    );
   };
 
   onShareTwitter = () => {
