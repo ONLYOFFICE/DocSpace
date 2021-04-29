@@ -503,13 +503,19 @@ class FilesStore {
         isPrivacyFolder ||
         isRecentFolder
       ) {
-        fileOptions = this.removeOptions(fileOptions, ["copy"]);
+        fileOptions = this.removeOptions(fileOptions, [
+          "copy",
+          "move-to",
+          "sharing-settings",
+        ]);
       }
 
       if (isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, [
           "open",
           "open-location",
+          "view",
+          "preview",
           "edit",
           "link-for-portal-users",
           "sharing-settings",
@@ -568,7 +574,7 @@ class FilesStore {
         ]);
       }
 
-      if (isCommonFolder)
+      if (isCommonFolder) {
         if (!this.userAccess) {
           fileOptions = this.removeOptions(fileOptions, [
             "owner-change",
@@ -580,6 +586,7 @@ class FilesStore {
             fileOptions = this.removeOptions(fileOptions, ["separator2"]);
           }
         }
+      }
 
       if (withoutShare) {
         fileOptions = this.removeOptions(fileOptions, [
@@ -596,6 +603,10 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
       } else if (!isFavorite) {
         fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+      }
+
+      if (isShareFolder) {
+        fileOptions = this.removeOptions(fileOptions, ["move-to"]);
       }
 
       return fileOptions;
@@ -622,6 +633,10 @@ class FilesStore {
 
       if (isPrivacyFolder) {
         folderOptions = this.removeOptions(folderOptions, ["copy"]);
+      }
+
+      if (isShareFolder) {
+        folderOptions = this.removeOptions(folderOptions, ["move-to"]);
       }
 
       if (isRecycleBinFolder) {
@@ -1214,6 +1229,11 @@ class FilesStore {
   getFileInfo = async (id) => {
     const fileInfo = await api.files.getFileInfo(id);
     this.setFile(fileInfo);
+  };
+
+  getFolderInfo = async (id) => {
+    const folderInfo = await api.files.getFolderInfo(id);
+    this.setFolder(folderInfo);
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {

@@ -85,16 +85,23 @@ class DeleteDialogComponent extends React.Component {
 
     const checkedSelections = selection.filter((x) => x.checked === true);
 
-    const questionMessage =
+    const title =
       checkedSelections.length === 1
         ? checkedSelections[0].fileExst
-          ? t("QuestionDeleteFile")
-          : t("QuestionDeleteFolder")
-        : t("QuestionDeleteElements");
+          ? t("MoveToTrashOneFileTitle")
+          : t("MoveToTrashOneFolderTitle")
+        : t("MoveToTrashItemsTitle");
+
+    const noteText =
+      checkedSelections.length === 1
+        ? checkedSelections[0].fileExst
+          ? t("MoveToTrashOneFileNote")
+          : t("MoveToTrashOneFolderNote")
+        : t("MoveToTrashItemsNote");
 
     const accuracy = 20;
     let filesHeight = 25 * filesList.length + accuracy + 8;
-    let foldersHeight = 25 * foldersList.length + accuracy;
+    let foldersHeight = 25 * foldersList.length + accuracy + 8;
     if (foldersList.length === 0) {
       foldersHeight = 0;
     }
@@ -107,15 +114,15 @@ class DeleteDialogComponent extends React.Component {
     return (
       <ModalDialogContainer>
         <ModalDialog visible={visible} onClose={this.onClose}>
-          <ModalDialog.Header>{t("ConfirmationTitle")}</ModalDialog.Header>
+          <ModalDialog.Header>{title}</ModalDialog.Header>
           <ModalDialog.Body>
             <div className="modal-dialog-content">
-              <Text className="delete_dialog-header-text">
-                {questionMessage}
-              </Text>
+              <Text className="delete_dialog-header-text">{noteText}</Text>
               <Scrollbar style={{ height, maxHeight: 330 }} stype="mediumBlack">
                 {foldersList.length > 0 && (
-                  <Text isBold>{t("FoldersModule")}:</Text>
+                  <Text isBold className="delete_dialog-text">
+                    {t("FoldersModule")}:
+                  </Text>
                 )}
                 {foldersList.map((item, index) => (
                   <Checkbox
@@ -152,7 +159,7 @@ class DeleteDialogComponent extends React.Component {
             <Button
               className="button-dialog-accept"
               key="OkButton"
-              label={t("OKButton")}
+              label={t("MoveToTrashButton")}
               size="medium"
               primary
               onClick={this.onDelete}

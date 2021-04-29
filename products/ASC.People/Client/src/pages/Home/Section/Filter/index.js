@@ -221,29 +221,11 @@ class SectionFilterContent extends React.Component {
     return selectedFilterData;
   };
 
-  isTranslationsLoaded = () => {
-    const { t, i18n } = this.props;
-
-    const { store, services, language } = i18n;
-
-    let translationIsLoaded = false;
-    try {
-      translationIsLoaded = store.hasResourceBundle(
-        services.languageUtils.getLanguagePartFromCode(language),
-        "Home"
-      );
-    } catch {
-      translationIsLoaded = t("UserStatus") !== "UserStatus";
-    }
-
-    return translationIsLoaded;
-  };
-
   render() {
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, isLoaded, sectionWidth } = this.props;
+    const { t, isLoaded, sectionWidth, tReady } = this.props;
 
-    return isLoaded && this.isTranslationsLoaded() ? (
+    return isLoaded && tReady ? (
       <FilterInput
         sectionWidth={sectionWidth}
         getFilterData={this.getData}

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -160,5 +161,18 @@ namespace ASC.FederatedLogin.LoginProviders
         }
 
         public abstract LoginProfile GetLoginProfile(string accessToken);
+    }
+
+    public class BaseLoginProviderExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<BoxLoginProvider>();
+            services.TryAdd<DropboxLoginProvider>();
+            services.TryAdd<OneDriveLoginProvider>();
+            services.TryAdd<DocuSignLoginProvider>();
+            services.TryAdd<GoogleLoginProvider>();
+            services.TryAdd<WordpressLoginProvider>();
+        }
     }
 }

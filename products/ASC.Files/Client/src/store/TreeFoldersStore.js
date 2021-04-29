@@ -140,7 +140,8 @@ class TreeFoldersStore {
         (folder) =>
           (folder.rootFolderType === FolderType.USER ||
             folder.rootFolderType === FolderType.COMMON ||
-            folder.rootFolderType === FolderType.Projects) &&
+            folder.rootFolderType === FolderType.Projects ||
+            folder.rootFolderType === FolderType.SHARE) &&
           folder
       );
     }

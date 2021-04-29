@@ -45,11 +45,8 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     bash build-frontend.sh -sp ${SRC_PATH} && \
     bash build-backend.sh -sp ${SRC_PATH} -ar "--disable-parallel" && \
     bash publish-backend.sh -sp ${SRC_PATH} -bp ${BUILD_PATH} -ar "--disable-parallel"
-   
-COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
-COPY config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-RUN sed -i 's/Server=.*;Port=/Server=127.0.0.1;Port=/' /app/onlyoffice/config/appsettings.test.json
+COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 
 RUN rm -rf /var/lib/apt/lists/*
 
@@ -107,6 +104,8 @@ COPY --from=base ${SRC_PATH}/web/ASC.Web.Login/dist ${BUILD_PATH}/studio/login
 COPY --from=base ${SRC_PATH}/products/ASC.People/Client/dist ${BUILD_PATH}/products/ASC.People/client
 COPY --from=base ${SRC_PATH}/products/ASC.Projects/Client/dist ${BUILD_PATH}/products/ASC.Projects/client
 COPY --from=base ${SRC_PATH}/web/ASC.Web.Client/dist ${BUILD_PATH}/studio/client
+COPY --from=base ${SRC_PATH}/products/ASC.Calendar/Client/dist ${BUILD_PATH}/products/ASC.Calendar/client
+COPY --from=base ${SRC_PATH}/products/ASC.Mail/Client/dist ${BUILD_PATH}/products/ASC.Mail/client
 
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 
@@ -122,6 +121,8 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     sed -i 's/localhost:5020/$service_projects_server/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5000/$service_api/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5003/$service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5023/$service_calendar/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5022/$service_mail/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf && \
     # configute the image nginx whith less privileged https://hub.docker.com/_/nginx
@@ -145,6 +146,15 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup/service .
 
 CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
+
+## ASC.Calendar ##
+FROM builder AS calendar
+WORKDIR ${BUILD_PATH}/products/ASC.Calendar/server/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Calendar/server/ .
+
+CMD ["ASC.Calendar.dll", "ASC.Calendar"]
 
 ## ASC.CRM ##
 FROM builder AS crm
@@ -181,6 +191,15 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.Service/service/ .
 
 CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
+
+## ASC.Mail ##
+FROM builder AS mail
+WORKDIR ${BUILD_PATH}/products/ASC.Mail/server/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Mail/server/ .
+
+CMD ["ASC.Mail.dll", "ASC.Mail"]
 
 ## ASC.Data.Storage.Migration ##
 FROM builder AS data_storage_migration

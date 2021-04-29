@@ -4,8 +4,6 @@ import Backend from "i18next-http-backend";
 import config from "../package.json";
 import { LANGUAGE } from "@appserver/common/constants";
 
-const languages = ["en", "ru"];
-
 const newInstance = i18n.createInstance();
 
 const lng = localStorage.getItem(LANGUAGE) || "en";
@@ -15,8 +13,6 @@ newInstance
   .use(Backend)
   .init({
     lng: lng,
-    supportedLngs: languages,
-    //whitelist: languages,
     fallbackLng: "en",
     load: "languageOnly",
     debug: true,
