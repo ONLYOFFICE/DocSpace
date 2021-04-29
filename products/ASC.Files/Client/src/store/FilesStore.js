@@ -383,12 +383,15 @@ class FilesStore {
       isRecycleBinFolder,
       isPrivacyFolder,
       isRecentFolder,
-      shareFolder: isShareFolder,
-      commonFolder: isCommonFolder,
+      isCommon,
+      isShare,
       isFavoritesFolder,
       isThirdPartyFolder,
       isMyFolder,
     } = this.treeFoldersStore;
+
+    const isShareFolder = isCommon(item.rootFolderType);
+    const isCommonFolder = isShare(item.rootFolderType);
 
     const { isDesktopClient } = this.settingsStore;
 
