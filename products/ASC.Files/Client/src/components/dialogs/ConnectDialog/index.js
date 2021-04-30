@@ -163,7 +163,6 @@ const PureConnectDialogContainer = (props) => {
       })
       .catch((err) => {
         toastr.error(err);
-        onClose();
         setIsLoading(false);
       });
   }, [
@@ -242,6 +241,7 @@ const PureConnectDialogContainer = (props) => {
                 errorMessage={t("RequiredFieldMessage")}
               >
                 <TextInput
+                  isAutoFocussed={true}
                   hasError={!isUrlValid}
                   isDisabled={isLoading}
                   tabIndex={1}

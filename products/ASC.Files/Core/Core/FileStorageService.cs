@@ -1225,7 +1225,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
                 catch (Exception e)
                 {
-                    throw GenerateException(e);
+                    throw GenerateException(e.InnerException ?? e);
                 }
             }
             else

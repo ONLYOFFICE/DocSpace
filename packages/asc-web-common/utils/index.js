@@ -147,21 +147,6 @@ export function isAdmin(currentUser, currentProductId) {
   return currentUser.isAdmin || currentUser.isOwner || isProductAdmin;
 }
 
-// export function combineUrl(host = "", ...params) {
-//   let url = host.replace(/\/+$/, "");
-
-//   params.forEach((part) => {
-//     const newPart = part.trim().replace(/^\/+/, "");
-//     url += newPart
-//       ? url.length > 0 && url[url.length - 1] === "/"
-//         ? newPart
-//         : `/${newPart}`
-//       : "";
-//   });
-
-//   return url;
-// }
-
 import combineUrlFunc from "./combineUrl";
 
 export const combineUrl = combineUrlFunc;
