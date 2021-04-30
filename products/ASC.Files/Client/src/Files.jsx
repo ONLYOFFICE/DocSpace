@@ -127,7 +127,7 @@ const Files = inject(({ auth, filesStore }) => {
     setEncryptionKeys: auth.settingsStore.setEncryptionKeys,
     loadFilesInfo: async () => {
       //await auth.init();
-      await filesStore.initFiles();
+      await filesStore.initFiles(auth.isAuthenticated); //TODO: fixed Firefox isAuthenticated bug
       auth.setProductVersion(config.version);
     },
   };

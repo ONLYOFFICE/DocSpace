@@ -17,7 +17,7 @@ import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 import VersionHistoryStore from "./VersionHistoryStore";
 import dialogsStore from "./DialogsStore";
 
-import store from "studio/store";
+import store from "studio/store"; //TODO: creates a new store (FireFox problem)
 
 const formatsStore = new FormatsStore(
   iconFormatsStore,

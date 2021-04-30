@@ -118,10 +118,10 @@ class FilesStore {
       : { label: "TooltipElementsMoveMessage", filesCount };
   }
 
-  initFiles = () => {
+  initFiles = (isAuthenticated) => {
     if (this.isInit) return;
+    //TODO: this.authStore.isAuthenticated returned false in Firefox
 
-    const { isAuthenticated } = this.authStore;
     const {
       getPortalCultures,
       isDesktopClient,
