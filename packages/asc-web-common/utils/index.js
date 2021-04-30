@@ -133,7 +133,7 @@ export function isAdmin(currentUser, currentProductId) {
       productName = "people";
       break;
     case "e67be73d-f9ae-4ce1-8fec-1880cb518cb4":
-      productName = "documents";
+      productName = "files";
       break;
     default:
       break;
