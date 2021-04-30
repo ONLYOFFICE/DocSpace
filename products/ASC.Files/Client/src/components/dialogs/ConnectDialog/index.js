@@ -31,7 +31,15 @@ const PureConnectDialogContainer = (props) => {
     openConnectWindow,
     setConnectDialogVisible,
   } = props;
-  const { corporate, title, link, token, provider_id, provider_key } = item;
+  const {
+    corporate,
+    title,
+    link,
+    token,
+    provider_id,
+    provider_key,
+    key,
+  } = item;
 
   const provider = providers.find(
     (el) => el.provider_key === item.provider_key
@@ -105,13 +113,13 @@ const PureConnectDialogContainer = (props) => {
 
     setIsLoading(true);
     saveThirdParty(
-      null,
-      null,
-      null,
+      urlValue,
+      loginValue,
+      passwordValue,
       oAuthToken,
       isCorporate,
       customerTitle,
-      provider_key,
+      provider_key || key,
       provider_id
     )
       .then((folderData) => {
