@@ -166,6 +166,9 @@ const config = {
           singleton: true,
           requiredVersion: deps["react-dom"],
         },
+        "./src/store": {
+          singleton: true,
+        },
       },
     }),
     new HtmlWebpackPlugin({
