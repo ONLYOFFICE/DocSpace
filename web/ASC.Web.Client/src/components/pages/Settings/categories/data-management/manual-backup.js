@@ -8,7 +8,7 @@ import Checkbox from "@appserver/components/checkbox";
 import { inject, observer } from "mobx-react";
 import { getThirdPartyList } from "@appserver/common/api/files";
 import DocumentsModule from "./sub-components/documentsModule";
-import FileInputPath from "@appserver/components/file-input-path";
+import FileInputWithFolderPath from "@appserver/components/file-input-with-folder-path";
 
 import OperationsDialog from "files/OperationsDialog";
 
@@ -26,6 +26,9 @@ const StyledComponent = styled.div`
   }
   .note_description {
     margin-top: 8px;
+  }
+  .backup-folder_path {
+    margin-top: 16px;
   }
 `;
 // const ManualBackup = () => {
@@ -112,14 +115,39 @@ class ManualBackup extends React.Component {
           </div>
         </div>
 
-        <DocumentsModule
-          isManualBackup={this.manualBackup}
-          //backupMailDocuments={backupMailDocuments}
-          onClickCheckbox={this.onClickCheckbox}
-        />
-        <FileInputPath onClick={this.onClickInput} folderPath={folderPath} />
-        {panelVisible && <OperationsDialog />}
+        <div className="category-item-wrapper">
+          <div className="category-item-heading">
+            <Text className="inherit-title-link header">
+              {t("DocumentsModule")}
+            </Text>
+          </div>
 
+          <Text className="category-item-description">
+            {t("DocumentsModuleDescription")}
+          </Text>
+
+          {/* <div className="backup-include_mail">
+            <Checkbox
+              name={"backupMailDocuments"}
+              isChecked={backupMailDocuments}
+              label={t("IncludeMail")}
+              onChange={onClickCheckbox}
+            />
+          </div> */}
+
+          <FileInputWithFolderPath scale className="backup-folder_path" />
+          {panelVisible && <OperationsDialog />}
+          <div className="manual-backup_buttons">
+            <Button
+              label={t("MakeCopy")}
+              onClick={() => console.log("click")}
+              primary
+              isDisabled={false}
+              size="medium"
+              tabIndex={10}
+            />
+          </div>
+        </div>
         <div className="category-item-wrapper temporary-storage">
           <div className="category-item-heading">
             <Text className="inherit-title-link header">

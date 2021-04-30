@@ -7,6 +7,8 @@ const paddingRightStyle = (props) =>
 const widthIconStyle = (props) => props.theme.fileInput.icon.width[props.size];
 const heightIconStyle = (props) =>
   props.theme.fileInput.icon.height[props.size];
+const widthIconButtonStyle = (props) =>
+  props.theme.fileInput.iconButton.width[props.size];
 
 const StyledFileInput = styled.div`
   display: flex;
@@ -79,6 +81,7 @@ const StyledFileInput = styled.div`
 
   .icon-button {
     cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
+    width: ${(props) => widthIconButtonStyle(props)};
   }
 `;
 StyledFileInput.defaultProps = { theme: Base };

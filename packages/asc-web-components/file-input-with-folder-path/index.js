@@ -1,29 +1,27 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import equal from "fast-deep-equal/react";
 
 import IconButton from "../icon-button";
 import TextInput from "../text-input";
 import StyledFileInput from "../file-input/styled-file-input";
+
 import { inject, observer } from "mobx-react";
+
 let path = "";
-class FileInputPath extends Component {
+
+class FileInputWithFolderPath extends Component {
   constructor(props) {
     super(props);
 
-    this.inputRef = React.createRef();
-
     this.state = {
-      fileName: "fileName",
-      file: null,
       fullFolderPath: "",
+      iconSize: 0,
     };
   }
 
   componentDidUpdate(prevProps) {
     const { folderPath } = this.props;
     if (folderPath !== prevProps.folderPath) {
-      console.log("YES");
       this.getTitlesFolders();
     }
   }
@@ -33,51 +31,30 @@ class FileInputPath extends Component {
     path = "";
     if (folderPath.length > 1) {
       for (let item of folderPath) {
-        console.log("item", item.title);
-
-        //debugger;
         if (!path) {
           path = path + `${item.title}`;
-        } else path = path + " " + ">" + " " + `${item.title}`;
-        console.log("path", path);
-        console.log("this.state.fullFolderPath", this.state.fullFolderPath);
+        } else path = path + " " + "/" + " " + `${item.title}`;
       }
       this.setState({
         fullFolderPath: path,
       });
     } else {
       for (let item of folderPath) {
-        console.log("item", item.title);
-
-        //debugger;
         path = `${item.title}`;
-        console.log("path", path);
-        console.log("this.state.fullFolderPath", this.state.fullFolderPath);
       }
       this.setState({
         fullFolderPath: path,
       });
     }
   };
-  onChangeHandler = (e) => {
-    const { folderPath } = this.props;
-    //debugger;
-    console.log("onChangeHandler");
-    this.setState({
-      fileName: e.target.value,
-    });
-  };
 
   onClickInput = () => {
     const { setPanelVisible } = this.props;
     setPanelVisible(true);
-    const { folderPath } = this.props;
-
-    //console.log("onChangeHandler", folderPath);
   };
 
   render() {
-    const { fileName, fullFolderPath } = this.state;
+    const { fullFolderPath } = this.state;
     const {
       folderPath,
       onClick,
@@ -89,32 +66,18 @@ class FileInputPath extends Component {
       hasWarning,
       accept,
       id,
-      onInput, // eslint-disable-line no-unused-vars
       ...rest
     } = this.props;
-    console.log("render FileInputPath", fullFolderPath);
-    let iconSize = 0;
-
-    switch (size) {
-      case "base":
-        iconSize = 15;
-        break;
-      case "middle":
-        iconSize = 15;
-        break;
-      case "big":
-        iconSize = 16;
-        break;
-      case "huge":
-        iconSize = 16;
-        break;
-      case "large":
-        iconSize = 16;
-        break;
-    }
 
     return (
-      <StyledFileInput>
+      <StyledFileInput
+        size={size}
+        scale={scale ? 1 : 0}
+        hasError={hasError}
+        hasWarning={hasWarning}
+        isDisabled={isDisabled}
+        {...rest}
+      >
         <TextInput
           className="text-input"
           placeholder={placeholder}
@@ -124,8 +87,8 @@ class FileInputPath extends Component {
           hasError={hasError}
           hasWarning={hasWarning}
           scale={scale}
-          onFocus={this.onClickInput}
-          onChange={this.onChangeHandler}
+          onClick={this.onClickInput}
+          isReadOnly
         />
 
         <div className="icon" onClick={this.onClickInput}>
@@ -133,7 +96,6 @@ class FileInputPath extends Component {
             className="icon-button"
             iconName={"/static/images/catalog.folder.react.svg"}
             color={"#A3A9AE"}
-            size={iconSize}
             isDisabled={isDisabled}
           />
         </div>
@@ -142,7 +104,7 @@ class FileInputPath extends Component {
   }
 }
 
-FileInputPath.propTypes = {
+FileInputWithFolderPath.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Placeholder text for the input */
@@ -163,13 +125,11 @@ FileInputPath.propTypes = {
   isDisabled: PropTypes.bool,
   /** Used as HTML `name` property */
   name: PropTypes.string,
-  /** Called when a file is selected */
-  onInput: PropTypes.func,
   /**Specifies files visible for upload */
   accept: PropTypes.string,
 };
 
-FileInputPath.defaultProps = {
+FileInputWithFolderPath.defaultProps = {
   size: "base",
   scale: false,
   hasWarning: false,
@@ -185,4 +145,4 @@ export default inject(({ auth }) => {
     folderPath,
     setPanelVisible,
   };
-})(observer(FileInputPath));
+})(observer(FileInputWithFolderPath));
