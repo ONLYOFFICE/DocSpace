@@ -27,6 +27,7 @@
 using System;
 using System.Runtime.Serialization;
 
+using ASC.Common.Mapping;
 using ASC.CRM.Classes;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Enums;

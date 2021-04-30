@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common.Mapping;
 using ASC.Common.Security;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.EF;

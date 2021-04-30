@@ -31,6 +31,7 @@ using System.Runtime.Serialization;
 using ASC.Api.Core;
 using ASC.Api.Documents;
 using ASC.Common;
+using ASC.Common.Mapping;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;

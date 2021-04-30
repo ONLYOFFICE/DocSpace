@@ -25,6 +25,7 @@
 
 using System.Runtime.Serialization;
 
+using ASC.Common.Mapping;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Mapping;
 
