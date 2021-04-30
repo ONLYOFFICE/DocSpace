@@ -199,7 +199,7 @@ export function clickBackdrop() {
   }
 }
 
-export default function objectToGetParams(object) {
+export function objectToGetParams(object) {
   const params = Object.entries(object)
     .filter(([, value]) => value !== undefined && value !== null)
     .map(
@@ -208,4 +208,19 @@ export default function objectToGetParams(object) {
     );
 
   return params.length > 0 ? `?${params.join("&")}` : "";
+}
+
+export function toCommunityHostname(hostname) {
+  let communityHostname;
+  try {
+    communityHostname =
+      hostname.indexOf("m.") > -1
+        ? hostname.substring(2, hostname.length)
+        : hostname;
+  } catch (e) {
+    console.error(e);
+    communityHostname = hostname;
+  }
+
+  return communityHostname;
 }
