@@ -384,9 +384,7 @@ namespace ASC.Web.Files.Utils
             }
             else if (parent.FolderType == FolderType.Recent)
             {
-                var folderDao = DaoFactory.GetFolderDao<T>();
-                var fileDao = DaoFactory.GetFileDao<T>();
-                var files = GetRecent(folderDao, fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
+                var files = GetRecent(filter, subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(files);
 
                 CalculateTotal();
@@ -545,23 +543,48 @@ namespace ASC.Web.Files.Utils
             return folderList;
         }
 
-        public IEnumerable<File<T>> GetRecent<T>(IFolderDao<T> folderDao, IFileDao<T> fileDao, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
+        public IEnumerable<FileEntry> GetRecent(FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
-            var tagDao = DaoFactory.GetTagDao<T>();
+            var tagDao = DaoFactory.GetTagDao<int>();
             var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Recent).ToList();
 
-            var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).Select(tag => (T)Convert.ChangeType(tag.EntryId, typeof(T))).ToArray();
-            var files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent);
-            files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
+            var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).ToList();
 
-            files = FileSecurity.FilterRead(files).ToList();
+            List<FileEntry> files = GetRecentByIds(fileIds.Where(r => r.EntryId is int).Select(r=> (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent).ToList();
+            files.AddRange(GetRecentByIds(fileIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent));
 
-            CheckFolderId(folderDao, files);
+            var listFileIds = fileIds.Select(tag => tag.EntryId).ToList();
 
-            var listFileIds = fileIds.ToList();
-            files = files.OrderBy(file => listFileIds.IndexOf(file.ID)).ToList();
+            files = files.OrderBy(file =>
+            {
+                var fileId = "";
+                if (file is File<int> fileInt)
+                {
+                    fileId = fileInt.ID.ToString();
+                }
+                else if (file is File<string> fileString)
+                {
+                    fileId = fileString.ID;
+                }
+
+                return listFileIds.IndexOf(fileId);
+            }).ToList();
 
             return files;
+
+            IEnumerable<FileEntry> GetRecentByIds<T>(IEnumerable<T> fileIds, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
+            {
+                var folderDao = DaoFactory.GetFolderDao<T>();
+                var fileDao = DaoFactory.GetFileDao<T>();
+                var files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent);
+                files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
+
+                files = FileSecurity.FilterRead(files).ToList();
+
+                CheckFolderId(folderDao, files);
+
+                return files;
+            }
         }
 
         public void GetFavorites<T>(IFolderDao<T> folderDao, IFileDao<T> fileDao, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, out IEnumerable<Folder<T>> folders, out IEnumerable<File<T>> files)
