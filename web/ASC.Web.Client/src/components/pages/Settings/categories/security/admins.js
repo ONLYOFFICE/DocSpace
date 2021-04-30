@@ -221,10 +221,16 @@ class PortalAdmins extends Component {
   }
 
   async componentDidMount() {
-    const { admins, setAddUsers, getUpdateListAdmin } = this.props;
+    const {
+      admins,
+      setAddUsers,
+      setRemoveAdmins,
+      getUpdateListAdmin,
+    } = this.props;
     const { showReminder } = this.state;
 
     setAddUsers(this.addUsers);
+    setRemoveAdmins(this.removeAdmins);
 
     if (isEmpty(admins, true)) {
       try {
@@ -242,8 +248,9 @@ class PortalAdmins extends Component {
   }
 
   componentWillUnmount() {
-    const { setAddUsers } = this.props;
+    const { setAddUsers, setRemoveAdmins } = this.props;
     setAddUsers("");
+    setRemoveAdmins("");
   }
 
   onChangeAdmin = async (userIds, isAdmin, productId) => {
@@ -315,12 +322,30 @@ class PortalAdmins extends Component {
   };
 
   addUsers = (users) => {
+    const { t } = this.props;
+
     if (!users && users.length === 0) return;
     const userIds = users.map((user) => {
       return user.key;
     });
 
-    this.onChangeAdmin(userIds, true, fullAccessId);
+    this.onChangeAdmin(userIds, true, fullAccessId).then(() => {
+      toastr.success(t("administratorsAddedSuccessfully"));
+    });
+  };
+
+  removeAdmins = () => {
+    const { selection, setSelected, t } = this.props;
+
+    if (!selection && selection.length === 0) return;
+    const userIds = selection.map((user) => {
+      return user.id;
+    });
+
+    this.onChangeAdmin(userIds, false, fullAccessId).then(() => {
+      setSelected("none");
+      toastr.success(t("administratorsRemovedSuccessfully"));
+    });
   };
 
   filterNewAdmins = (admins, newAdmins) => {
@@ -665,8 +690,6 @@ class PortalAdmins extends Component {
       ? this.getFilteredAdmins(admins, searchValue)
       : admins;
 
-    const checked = false;
-
     return (
       <>
         {showLoader ? (
@@ -949,16 +972,17 @@ PortalAdmins.propTypes = {
   getUpdateListAdmin: PropTypes.func.isRequired,
 };
 
-export default inject(({ auth, setup, selectionStore }) => {
+export default inject(({ auth, setup }) => {
   const { admins, owner, filter } = setup.security.accessRight;
   const { user: me } = auth.userStore;
-  const { setAddUsers } = setup;
+  const { setAddUsers, setRemoveAdmins } = setup;
   const {
     selectUser,
     deselectUser,
     selection,
     isUserSelected,
-  } = selectionStore;
+    setSelected,
+  } = setup.selectionStore;
 
   return {
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
@@ -971,9 +995,11 @@ export default inject(({ auth, setup, selectionStore }) => {
     filter,
     me,
     setAddUsers,
+    setRemoveAdmins,
     selectUser,
     deselectUser,
     selection,
     isUserSelected,
+    setSelected,
   };
 })(withTranslation("Settings")(withRouter(observer(PortalAdmins))));

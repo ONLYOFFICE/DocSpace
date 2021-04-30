@@ -1,14 +1,12 @@
 import { makeAutoObservable } from "mobx";
-import {
-  EmployeeStatus,
-  EmployeeActivationStatus,
-} from "@appserver/common/constants";
+import { getUserStatus } from "@appserver/people/src/helpers/people-helpers";
 
 class SelectionStore {
   selection = [];
   selected = "none";
 
-  constructor() {
+  constructor(settingsSetupStore) {
+    this.settingsSetupStore = settingsSetupStore;
     makeAutoObservable(this);
   }
 
@@ -17,8 +15,7 @@ class SelectionStore {
   };
 
   selectUser = (user) => {
-    const u = user;
-    return this.selection.push(u);
+    return this.selection.push(user);
   };
 
   deselectUser = (user) => {
@@ -43,10 +40,19 @@ class SelectionStore {
     return (this.selection = list);
   };
 
-  getUsersBySelected = (users, selected) => {
+  getUserChecked = () => {
+    switch (this.selected) {
+      case "all":
+        return true;
+      default:
+        return false;
+    }
+  };
+
+  getUsersBySelected = (users) => {
     let newSelection = [];
     users.forEach((user) => {
-      const checked = this.getUserChecked(user, selected);
+      const checked = this.getUserChecked();
 
       if (checked) newSelection.push(user);
     });
@@ -55,148 +61,34 @@ class SelectionStore {
   };
 
   isUserSelected = (userId) => {
-    return !!this.getSelectedUser(userId);
+    return this.selection.some((el) => el.id === userId);
   };
 
-  getSelectedUser = (userId) => {
-    return find(this.selection, (user) => {
-      return user.id === userId;
-    });
-  };
-
-  setSelected = (selected, admins) => {
+  setSelected = (selected) => {
+    const { admins } = this.settingsSetupStore.security.accessRight;
     this.selected = selected;
-    this.setSelection(this.getUsersBySelected(admins, selected));
+    this.setSelection(this.getUsersBySelected(admins));
 
     return selected;
   };
 
-  get hasAnybodySelected() {
-    return this.selection.length > 0;
+  get isHeaderVisible() {
+    return !!this.selection.length || this.selected !== "none";
   }
 
-  get hasUsersToMakeEmployees() {
-    const users = this.selection.filter((x) => {
-      return (
-        !x.isAdmin &&
-        !x.isOwner &&
-        x.isVisitor &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== authStore.userStore.user.id
-      );
-    });
-    return !!users.length;
-  }
-
-  get getUsersToMakeEmployeesIds() {
-    const users = this.selection.filter((x) => {
-      return (
-        !x.isAdmin &&
-        !x.isOwner &&
-        x.isVisitor &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== authStore.userStore.user.id
-      );
-    });
-    return users.map((u) => u.id);
-  }
-
-  get hasUsersToMakeGuests() {
-    const users = this.selection.filter((x) => {
-      return (
-        !x.isAdmin &&
-        !x.isOwner &&
-        !x.isVisitor &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== authStore.userStore.user.id
-      );
-    });
-    return !!users.length;
-  }
-
-  get getUsersToMakeGuestsIds() {
-    const users = this.selection.filter((x) => {
-      return (
-        !x.isAdmin &&
-        !x.isOwner &&
-        !x.isVisitor &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== authStore.userStore.user.id
-      );
-    });
-    return users.map((u) => u.id);
-  }
-
-  get hasUsersToActivate() {
-    const users = this.selection.filter(
-      (x) =>
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Active &&
-        x.id !== authStore.userStore.user.id
+  get isHeaderIndeterminate() {
+    console.log("RUN isHeaderIndeterminate");
+    const { admins } = this.settingsSetupStore.security.accessRight;
+    return (
+      this.isHeaderVisible &&
+      !!this.selection.length &&
+      this.selection.length < admins.length
     );
-    return !!users.length;
   }
 
-  get getUsersToActivateIds() {
-    const users = this.selection.filter(
-      (x) =>
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Active &&
-        x.id !== authStore.userStore.user.id
-    );
-    return users.map((u) => u.id);
-  }
-
-  get hasUsersToDisable() {
-    const users = this.selection.filter(
-      (x) =>
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== authStore.userStore.user.id
-    );
-    return !!users.length;
-  }
-
-  get getUsersToDisableIds() {
-    const users = this.selection.filter(
-      (x) =>
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== authStore.userStore.user.id
-    );
-    return users.map((u) => u.id);
-  }
-
-  get hasUsersToInvite() {
-    const users = this.selection.filter(
-      (x) =>
-        x.activationStatus === EmployeeActivationStatus.Pending &&
-        x.status === EmployeeStatus.Active
-    );
-    return !!users.length;
-  }
-
-  get getUsersToInviteIds() {
-    const users = this.selection.filter(
-      (x) =>
-        x.activationStatus === EmployeeActivationStatus.Pending &&
-        x.status === EmployeeStatus.Active
-    );
-    return users.map((u) => u.id);
-  }
-
-  get hasUsersToRemove() {
-    const users = this.selection.filter(
-      (x) => x.status === EmployeeStatus.Disabled
-    );
-    return !!users.length;
-  }
-
-  get getUsersToRemoveIds() {
-    const users = this.selection.filter(
-      (x) => x.status === EmployeeStatus.Disabled
-    );
-    return users.map((u) => u.id);
+  get isHeaderChecked() {
+    const { admins } = this.settingsSetupStore.security.accessRight;
+    return this.isHeaderVisible && this.selection.length === admins.length;
   }
 }
 

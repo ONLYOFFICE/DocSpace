@@ -170,27 +170,41 @@ class SectionHeaderContent extends React.Component {
     //this.changeOwner(items[0]);
   };
 
-  onSelectorSelect = () => {
-    console.log("onSelect");
+  onClose = () => {
+    const { deselectUser } = this.props;
+    deselectUser();
+  };
+
+  onCheck = (checked) => {
+    const { setSelected } = this.props;
+    setSelected(checked ? "all" : "close");
   };
 
   removeAdmins = () => {
-    console.log("removeAdmins");
+    const { removeAdmins } = this.props;
+    if (!removeAdmins) return;
+    removeAdmins();
   };
 
   render() {
-    const { t, addUsers, groupsCaption, selection } = this.props;
+    const {
+      t,
+      addUsers,
+      groupsCaption,
+      isHeaderIndeterminate,
+      isHeaderChecked,
+      isHeaderVisible,
+    } = this.props;
     const { header, isCategoryOrHeader, showSelector } = this.state;
     const arrayOfParams = this.getArrayOfParams();
 
     const menuItems = [
       {
-        label: t("SelectAll"),
+        label: t("Select"),
         isDropdown: true,
         isSeparator: true,
         isSelect: true,
         fontWeight: "bold",
-        onSelect: this.onSelectorSelect,
       },
       {
         label: t("Remove"),
@@ -199,12 +213,12 @@ class SectionHeaderContent extends React.Component {
     ];
 
     return (
-      <StyledContainer isHeaderVisible={selection && selection.length > 0}>
-        {selection && selection.length > 0 ? (
+      <StyledContainer isHeaderVisible={isHeaderVisible}>
+        {isHeaderVisible ? (
           <div className="group-button-menu-container">
             <GroupButtonsMenu
-              checked={true}
-              //isIndeterminate={isHeaderIndeterminate}
+              checked={isHeaderChecked}
+              isIndeterminate={isHeaderIndeterminate}
               onChange={this.onCheck}
               menuItems={menuItems}
               visible={true}
@@ -258,18 +272,31 @@ class SectionHeaderContent extends React.Component {
   }
 }
 
-export default inject(({ auth, setup, selectionStore }) => {
+export default inject(({ auth, setup }) => {
   const { customNames } = auth.settingsStore;
-  const { addUsers } = setup.headerAction;
-  const { selection, selected, setSelected } = selectionStore;
+  const { addUsers, removeAdmins } = setup.headerAction;
+  const {
+    selected,
+    setSelected,
+    isHeaderIndeterminate,
+    isHeaderChecked,
+    isHeaderVisible,
+    deselectUser,
+    selectAll,
+  } = setup.selectionStore;
   const { admins } = setup.security.accessRight;
 
   return {
     addUsers,
+    removeAdmins,
     groupsCaption: customNames.groupsCaption,
-    selection,
     selected,
     setSelected,
     admins,
+    isHeaderIndeterminate,
+    isHeaderChecked,
+    isHeaderVisible,
+    deselectUser,
+    selectAll,
   };
 })(withRouter(withTranslation("Settings")(observer(SectionHeaderContent))));

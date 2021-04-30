@@ -1,8 +1,11 @@
 import api from "@appserver/common/api";
 import { makeAutoObservable } from "mobx";
 const { Filter } = api;
+import SelectionStore from "./SelectionStore";
 
 class SettingsSetupStore {
+  selectionStore = null;
+
   common = {
     whiteLabel: {
       logoSizes: [],
@@ -22,6 +25,7 @@ class SettingsSetupStore {
 
   headerAction = {
     addUsers: "",
+    removeAdmins: "",
   };
 
   integration = {
@@ -30,6 +34,7 @@ class SettingsSetupStore {
   };
 
   constructor() {
+    this.selectionStore = new SelectionStore(this);
     makeAutoObservable(this);
   }
 
@@ -71,6 +76,10 @@ class SettingsSetupStore {
 
   setAddUsers = (func) => {
     this.headerAction.addUsers = func;
+  };
+
+  setRemoveAdmins = (func) => {
+    this.headerAction.removeAdmins = func;
   };
 
   setSelectedConsumer = (selectedConsumerName) => {
