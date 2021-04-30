@@ -43,8 +43,6 @@ class FilesStore {
   filter = FilesFilter.getDefault(); //TODO: FILTER
   loadTimeout = null;
 
-  commonThirdPartyList = [];
-
   constructor(
     authStore,
     settingsStore,
@@ -1218,11 +1216,6 @@ class FilesStore {
     this.setFile(fileInfo);
   };
 
-  getCommonThirdPartyList = async () => {
-    this.commonThirdPartyList = await api.files.getCommonThirdPartyList();
-
-    console.log(" this.commonThirdPartyList", this.commonThirdPartyList);
-  };
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {
     if (providerKey) {
       tab

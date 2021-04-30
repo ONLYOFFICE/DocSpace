@@ -242,3 +242,11 @@ export function updateConsumerProps(newProps) {
 
   return request(options);
 }
+
+export function getCommonThirdPartyList() {
+  const options = {
+    method: "get",
+    url: "/files/thirdparty/common",
+  };
+  return request(options);
+}

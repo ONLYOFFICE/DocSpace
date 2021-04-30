@@ -13,8 +13,6 @@ import { useTranslation, withTranslation } from "react-i18next";
 const { auth: authStore } = store;
 
 const OperationsDialog = ({
-  getCommonThirdPartyList,
-  commonThirdPartyList,
   commonFolder,
   operationsFolders,
   treeFolders,
@@ -27,7 +25,6 @@ const OperationsDialog = ({
   getFolderPath,
 }) => {
   useEffect(() => {
-    getCommonThirdPartyList();
     fetchTreeFolders().then(() => getCommonFolder());
   }, []);
 
@@ -80,18 +77,8 @@ const OperationsDialog = ({
 };
 
 const OperationsDialogWrapper = inject(
-  ({
-    auth,
-    filesStore,
-    treeFoldersStore,
-    selectedFolderStore,
-    dialogsStore,
-  }) => {
-    const {
-      commonThirdPartyList,
-      getCommonThirdPartyList,
-      filter,
-    } = filesStore;
+  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+    const { filter } = filesStore;
     const { setPanelVisible } = auth;
     const { getFolderPath } = auth.settingsStore;
     const {
@@ -110,8 +97,7 @@ const OperationsDialogWrapper = inject(
         ? expandedPanelKeys
         : selectedFolderStore.pathParts,
       filter,
-      commonThirdPartyList,
-      getCommonThirdPartyList,
+
       commonFolder,
       operationsFolders,
       treeFolders,

@@ -177,14 +177,6 @@ export function getCommonFolderList(filter = FilesFilter.getDefault()) {
   return request(options);
 }
 
-export function getCommonThirdPartyList() {
-  const options = {
-    method: "get",
-    url: "/files/thirdparty/common",
-  };
-  return request(options);
-}
-
 export function getFavoritesFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",

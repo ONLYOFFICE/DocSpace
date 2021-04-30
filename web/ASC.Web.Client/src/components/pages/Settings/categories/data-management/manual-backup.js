@@ -6,7 +6,7 @@ import styled from "styled-components";
 import Button from "@appserver/components/button";
 import Checkbox from "@appserver/components/checkbox";
 import { inject, observer } from "mobx-react";
-import { getThirdPartyList } from "@appserver/common/api/files";
+
 import DocumentsModule from "./sub-components/documentsModule";
 import FileInputWithFolderPath from "@appserver/components/file-input-with-folder-path";
 
@@ -31,17 +31,6 @@ const StyledComponent = styled.div`
     margin-top: 16px;
   }
 `;
-// const ManualBackup = () => {
-//   const { t } = useTranslation("Settings");
-//   const [isChecked, setIsChecked] = useState(false);
-//   const [isIncludeMail, setIsIncludeMail] = useState(false);
-
-// ;
-//   return (
-
-//   );
-// };
-
 class ManualBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -58,7 +47,8 @@ class ManualBackup extends React.Component {
     };
   }
   componentDidMount() {
-    // getThirdPartyList().then((res) => console.log("res", res));
+    const { getCommonThirdPartyList } = this.props;
+    getCommonThirdPartyList();
   }
   onClickCheckbox = (e) => {
     const name = e.target.name;
@@ -67,14 +57,20 @@ class ManualBackup extends React.Component {
   };
 
   render() {
-    const { t, providers, panelVisible, folderPath } = this.props;
+    const {
+      t,
+      providers,
+      panelVisible,
+      folderPath,
+      commonThirdPartyList,
+    } = this.props;
     // const {
     //   backupMailTemporaryStorage,
     //   backupMailDocuments,
     //   backupMailThirdParty,
     //   backupMailThirdPartyStorage,
     // } = this.state;
-    console.log("folderPath", folderPath);
+    console.log("commonThirdPartyList", commonThirdPartyList);
     return (
       <StyledComponent>
         <div className="category-item-wrapper temporary-storage">
@@ -169,12 +165,18 @@ class ManualBackup extends React.Component {
               onChange={this.onClickCheckbox}
             />
           </div> */}
+          <FileInputWithFolderPath
+            scale
+            className="backup-folder_path"
+            isDisabled={commonThirdPartyList.length === 0}
+          />
+          {panelVisible && <OperationsDialog />}
           <div className="manual-backup_buttons">
             <Button
               label={t("MakeCopy")}
               onClick={() => console.log("click")}
               primary
-              isDisabled={false}
+              isDisabled={commonThirdPartyList.length === 0}
               size="medium"
               tabIndex={10}
             />
@@ -218,12 +220,16 @@ class ManualBackup extends React.Component {
   }
 }
 
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const { setPanelVisible, panelVisible } = auth;
   const { folderPath } = auth.settingsStore;
+  const { getCommonThirdPartyList } = setup;
+  const { commonThirdPartyList } = setup.dataManagement;
   return {
     setPanelVisible,
     panelVisible,
     folderPath,
+    getCommonThirdPartyList,
+    commonThirdPartyList,
   };
 })(withTranslation("Settings")(observer(ManualBackup)));

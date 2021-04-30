@@ -25,6 +25,10 @@ class SettingsSetupStore {
     selectedConsumer: {},
   };
 
+  dataManagement = {
+    commonThirdPartyList: [],
+  };
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -65,6 +69,9 @@ class SettingsSetupStore {
     this.integration.consumers = consumers;
   };
 
+  setCommonThirdPartyList = (commonThirdPartyList) => {
+    this.dataManagement.commonThirdPartyList = commonThirdPartyList;
+  };
   setSelectedConsumer = (selectedConsumerName) => {
     this.integration.selectedConsumer =
       this.integration.consumers.find((c) => c.name === selectedConsumerName) ||
@@ -200,6 +207,12 @@ class SettingsSetupStore {
 
   sendOwnerChange = (id) => {
     return api.settings.sendOwnerChange(id);
+  };
+
+  getCommonThirdPartyList = async () => {
+    const res = await api.settings.getCommonThirdPartyList();
+
+    this.setCommonThirdPartyList(res);
   };
 }
 

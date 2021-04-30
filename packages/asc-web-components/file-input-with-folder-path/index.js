@@ -91,7 +91,7 @@ class FileInputWithFolderPath extends Component {
           isReadOnly
         />
 
-        <div className="icon" onClick={this.onClickInput}>
+        <div className="icon" onClick={!isDisabled ? this.onClickInput : null}>
           <IconButton
             className="icon-button"
             iconName={"/static/images/catalog.folder.react.svg"}
