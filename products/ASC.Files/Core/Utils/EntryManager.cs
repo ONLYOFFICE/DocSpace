@@ -394,7 +394,7 @@ namespace ASC.Web.Files.Utils
                 var fileDao = DaoFactory.GetFileDao<T>();
                 var folderDao = DaoFactory.GetFolderDao<T>();
 
-                GetFavorites(folderDao, fileDao, filter, subjectGroup, subjectId, searchText, searchInContent, out var folders, out var files);
+                var (files, folders) = GetFavorites(filter, subjectGroup, subjectId, searchText, searchInContent);
 
                 entries = entries.Concat(folders);
                 entries = entries.Concat(files);
@@ -587,34 +587,57 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public void GetFavorites<T>(IFolderDao<T> folderDao, IFileDao<T> fileDao, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, out IEnumerable<Folder<T>> folders, out IEnumerable<File<T>> files)
+        public (IEnumerable<FileEntry>, IEnumerable<FileEntry>) GetFavorites(FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
-            folders = new List<Folder<T>>();
-            files = new List<File<T>>();
             var fileSecurity = FileSecurity;
-            var tagDao = DaoFactory.GetTagDao<T>();
+            var tagDao = DaoFactory.GetTagDao<int>();
             var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Favorite);
 
-            if (filter == FilterType.None || filter == FilterType.FoldersOnly)
+            var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).ToList();
+            var folderIds = tags.Where(tag => tag.EntryType == FileEntryType.Folder).ToList();
+
+            var (filesInt, foldersInt) = GetFavoritesById(fileIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), folderIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent);
+            var (filesString, foldersString) = GetFavoritesById(fileIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), folderIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent);
+
+            var files = new List<FileEntry>();
+            files.AddRange(filesInt);
+            files.AddRange(filesString);
+
+            var folders = new List<FileEntry>();
+            folders.AddRange(foldersInt);
+            folders.AddRange(foldersString);
+
+            return (files, folders);
+
+            (IEnumerable<FileEntry>, IEnumerable<FileEntry>) GetFavoritesById<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
             {
-                var folderIds = tags.Where(tag => tag.EntryType == FileEntryType.Folder).Select(tag => (T)Convert.ChangeType(tag.EntryId, typeof(T))).ToList();
-                folders = folderDao.GetFolders(folderIds, filter, subjectGroup, subjectId, searchText, false, false);
-                folders = folders.Where(folder => folder.RootFolderType != FolderType.TRASH).ToList();
+                var folderDao = DaoFactory.GetFolderDao<T>();
+                var fileDao = DaoFactory.GetFileDao<T>();
+                var folders = new List<Folder<T>>();
+                var files = new List<File<T>>();
+                var fileSecurity = FileSecurity;
 
-                folders = fileSecurity.FilterRead(folders).ToList();
+                if (filter == FilterType.None || filter == FilterType.FoldersOnly)
+                {
+                    folders = folderDao.GetFolders(folderIds, filter, subjectGroup, subjectId, searchText, false, false);
+                    folders = folders.Where(folder => folder.RootFolderType != FolderType.TRASH).ToList();
 
-                CheckFolderId(folderDao, folders);
-            }
+                    folders = fileSecurity.FilterRead(folders).ToList();
 
-            if (filter != FilterType.FoldersOnly)
-            {
-                var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).Select(tag => (T)Convert.ChangeType(tag.EntryId, typeof(T))).ToArray();
-                files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent);
-                files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
+                    CheckFolderId(folderDao, folders);
+                }
 
-                files = fileSecurity.FilterRead(files).ToList();
+                if (filter != FilterType.FoldersOnly)
+                {
+                    files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent);
+                    files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
 
-                CheckFolderId(folderDao, folders);
+                    files = fileSecurity.FilterRead(files).ToList();
+
+                    CheckFolderId(folderDao, folders);
+                }
+
+                return (files, folders);
             }
         }
 
