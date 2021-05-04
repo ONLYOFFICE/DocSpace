@@ -123,9 +123,9 @@ docker_image_update() {
        cd ${DOCKER_COMPOSE_PATH}
     fi
 
-    docker-compose -f appserver.yml -f ssl.yml down --volumes
-    docker-compose -f build.yml -f ssl.yml pull
-    docker-compose -f appserver.yml -f ssl.yml up -d
+    docker-compose -f appserver.yml -f notify.yml down --volumes
+    docker-compose -f build.yml pull
+    docker-compose -f appserver.yml -f notify.yml up -d
 }
 
 check_installed_hub_tool
