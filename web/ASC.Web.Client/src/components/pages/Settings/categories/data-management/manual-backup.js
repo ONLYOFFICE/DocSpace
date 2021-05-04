@@ -54,12 +54,14 @@ class ManualBackup extends React.Component {
     getCommonThirdPartyList()
       .then(() => getBackupProgress())
       .then((res) => {
-        this.setState({
-          downloadingProgress: res.progress,
-          link: res.link,
-        });
-        if (res.progress !== 100)
-          this.timerId = setInterval(() => this.getProgress(), 1000);
+        if (res) {
+          this.setState({
+            downloadingProgress: res.progress,
+            link: res.link,
+          });
+          if (res.progress !== 100)
+            this.timerId = setInterval(() => this.getProgress(), 1000);
+        }
       });
   }
 
@@ -82,14 +84,16 @@ class ManualBackup extends React.Component {
     console.log("downloadingProgress", downloadingProgress);
 
     getBackupProgress().then((res) => {
-      this.setState({
-        downloadingProgress: res.progress,
-      });
-      if (res.progress === 100) {
-        clearInterval(this.timerId);
+      if (res) {
         this.setState({
-          link: res.link,
+          downloadingProgress: res.progress,
         });
+        if (res.progress === 100) {
+          clearInterval(this.timerId);
+          this.setState({
+            link: res.link,
+          });
+        }
       }
     });
   };

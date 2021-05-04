@@ -10,6 +10,9 @@ import RadioButton from "@appserver/components/radio-button";
 import styled from "styled-components";
 import moment from "moment";
 import ScheduleComponent from "./sub-components/scheduleComponent";
+import { getBackupProgress } from "@appserver/common/api/portal";
+import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+
 const StyledComponent = styled.div`
   ${commonSettingsStyles}
   .manual-backup_buttons {
@@ -82,6 +85,8 @@ class AutomaticBackup extends React.Component {
       selectedMaxCopies: "10",
 
       weekOptions: [],
+
+      isCopyingToLocal: true,
     };
 
     this.periodOptions = [
@@ -113,8 +118,32 @@ class AutomaticBackup extends React.Component {
 
   componentDidMount() {
     this.getWeekdaysOptions();
+    getBackupProgress().then((res) => {
+      if (res) {
+        if (res.progress === 100)
+          this.setState({
+            isCopyingToLocal: false,
+          });
+        if (res.progress !== 100)
+          this.timerId = setInterval(() => this.getProgress(), 1000);
+      }
+    });
   }
-
+  componentWillUnmount() {
+    clearInterval(this.timerId);
+  }
+  getProgress = () => {
+    getBackupProgress().then((res) => {
+      if (res) {
+        if (res.progress === 100) {
+          clearInterval(this.timerId);
+          this.setState({
+            isCopyingToLocal: false,
+          });
+        }
+      }
+    });
+  };
   getTimeOptions = () => {
     for (let item = 0; item < 24; item++) {
       let obj = {
@@ -278,6 +307,7 @@ class AutomaticBackup extends React.Component {
       selectedTimeOption,
       selectedMonthOption,
       selectedMaxCopies,
+      isCopyingToLocal,
     } = this.state;
     console.log(" this.arrayWeekdays", this.arrayWeekdays);
     console.log("isCheckedDocuments", isCheckedDocuments);
@@ -426,6 +456,16 @@ class AutomaticBackup extends React.Component {
             </StyledModules>
           </>
         )}
+        <SaveCancelButtons
+          className="team-template_buttons"
+          onSaveClick={() => console.log("click")}
+          onCancelClick={() => console.log("cancel")}
+          showReminder={false}
+          reminderTest={t("YouHaveUnsavedChanges")}
+          saveButtonLabel={t("SaveButton")}
+          cancelButtonLabel={t("CancelButton")}
+          isDisabled={isCopyingToLocal}
+        />
       </StyledComponent>
     );
   }

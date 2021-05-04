@@ -44,6 +44,7 @@ class SaveCancelButtons extends React.Component {
       cancelButtonLabel,
       className,
       id,
+      isDisabled,
     } = this.props;
     return (
       <StyledSaveCancelButtons className={className} id={id}>
@@ -51,7 +52,7 @@ class SaveCancelButtons extends React.Component {
           <Button
             className="save-button"
             size="big"
-            isDisabled={false}
+            isDisabled={isDisabled}
             primary
             onClick={onSaveClick}
             label={saveButtonLabel}
@@ -59,7 +60,7 @@ class SaveCancelButtons extends React.Component {
           <Button
             className="cancel-button"
             size="big"
-            isDisabled={false}
+            isDisabled={isDisabled}
             onClick={onCancelClick}
             label={cancelButtonLabel}
           />
@@ -94,6 +95,7 @@ SaveCancelButtons.propTypes = {
 SaveCancelButtons.defaultProps = {
   saveButtonLabel: "Save",
   cancelButtonLabel: "Cancel",
+  isDisabled: false,
 };
 
 export default SaveCancelButtons;
