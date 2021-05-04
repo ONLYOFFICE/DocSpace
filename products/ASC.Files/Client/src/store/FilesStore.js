@@ -636,7 +636,10 @@ class FilesStore {
       }
 
       if (isShareFolder) {
-        folderOptions = this.removeOptions(folderOptions, ["move-to"]);
+        folderOptions = this.removeOptions(folderOptions, [
+          "move-to",
+          "delete",
+        ]);
       }
 
       if (isRecycleBinFolder) {
