@@ -10,7 +10,7 @@ import AccessComboBox from "./AccessComboBox";
 //import equal from "fast-deep-equal/react";
 import { getAccessIcon } from "../../../helpers/files-helpers";
 import { ReactSVG } from "react-svg";
-import objectToGetParams from "@appserver/common/utils";
+import { objectToGetParams } from "@appserver/common/utils";
 
 class SharingRow extends React.Component {
   constructor(props) {

@@ -12,7 +12,6 @@ import {
   getObjectByLocation,
   //showLoader,
   //hideLoader,
-  tryRedirectTo,
 } from "@appserver/common/utils";
 import {
   getDocServiceUrl,
@@ -96,7 +95,13 @@ const Editor = () => {
       const success = await checkIsAuthenticated();
 
       if (!doc && !success) {
-        return tryRedirectTo(combineUrl(AppServerConfig.proxyURL, "/login"));
+        window.open(
+          combineUrl(AppServerConfig.proxyURL, "/login"),
+          "_self",
+          "",
+          true
+        );
+        return;
       }
 
       if (success) {

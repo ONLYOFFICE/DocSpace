@@ -6,6 +6,7 @@ import {
   FileType,
   FileAction,
   AppServerConfig,
+  FilesFormats,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
 import { createTreeFolders } from "../helpers/files-helpers";
@@ -1028,10 +1029,6 @@ class FilesStore {
     } = this.formatsStore.iconFormatsStore;
     const { canWebEdit } = this.formatsStore.docserviceStore;
 
-    const formatKeys = Object.freeze({
-      OriginalFormat: 0,
-    });
-
     let sortedFiles = {
       documents: [],
       spreadsheets: [],
@@ -1041,7 +1038,7 @@ class FilesStore {
 
     for (let item of this.selection) {
       item.checked = true;
-      item.format = formatKeys.OriginalFormat;
+      item.format = FilesFormats.OriginalFormat;
 
       if (item.fileExst) {
         if (isSpreadsheet(item.fileExst)) {
