@@ -471,7 +471,7 @@ namespace ASC.Web.Files.Utils
                 if (0 < count) entries = entries.Take(count);
             }
 
-            SetFileStatus(entries.OfType<File<T>>().Where(r => r != null && r.ID != null && r.FileEntryType == FileEntryType.File).ToList());
+            SetFileStatus(entries.Where(r => r != null && r.FileEntryType == FileEntryType.File).ToList());
             return entries;
 
             void CalculateTotal()
@@ -822,6 +822,12 @@ namespace ASC.Web.Files.Utils
             if (file == null || file.ID == null) return;
 
             SetFileStatus(new List<File<T>>(1) { file });
+        }
+
+        public void SetFileStatus(IEnumerable<FileEntry> files)
+        {
+            SetFileStatus(files.OfType<File<int>>().Where(r=> r.ID != 0));
+            SetFileStatus(files.OfType<File<string>>().Where(r=> !string.IsNullOrEmpty(r.ID)));
         }
 
         public void SetFileStatus<T>(IEnumerable<File<T>> files)
