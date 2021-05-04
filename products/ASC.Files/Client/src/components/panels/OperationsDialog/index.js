@@ -23,14 +23,14 @@ const OperationsDialog = ({
   getCommonFolder,
   setPanelVisible,
   getFolderPath,
+  onSelectFolder,
 }) => {
   useEffect(() => {
     fetchTreeFolders().then(() => getCommonFolder());
   }, []);
 
   const { t } = useTranslation("OperationsPanel");
-  //   console.log("commonTreeFolder", commonTreeFolder);
-  //   console.log("treeFolders", treeFolders);
+
   const visible = true;
   const zIndex = 310;
   const onClose = () => {
@@ -38,16 +38,16 @@ const OperationsDialog = ({
   };
   const onSelect = (folder, treeNode) => {
     //debugger;
-    const folderTitle = treeNode.node.props.title;
-    const destFolderId = isNaN(+folder[0]) ? folder[0] : +folder[0];
-    //console.log("treeNode", treeNode.node);
-    getFolderPath(folder).then((res) => console.log("res!!!", res));
+    console.log("folder", folder);
+    getFolderPath(folder);
+    onSelectFolder(folder);
     // if (currentFolderId === destFolderId) {
     //   return onClose();
     // }
 
     onClose();
   };
+
   return (
     <>
       <StyledAsidePanel visible={visible}>

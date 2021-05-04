@@ -11,6 +11,8 @@ import FileInputWithFolderPath from "@appserver/components/file-input-with-folde
 
 import OperationsDialog from "files/OperationsDialog";
 import { getBackupProgress, startBackup } from "@appserver/common/api/portal";
+import toastr from "@appserver/components/toast/toastr";
+import { toast } from "react-toastify";
 
 const StyledComponent = styled.div`
   ${commonSettingsStyles}
@@ -46,6 +48,7 @@ class ManualBackup extends React.Component {
       isVisiblePanel: false,
       downloadingProgress: 100,
       link: "",
+      selectedFolder: "",
     };
   }
   componentDidMount() {
@@ -81,19 +84,28 @@ class ManualBackup extends React.Component {
 
   getProgress = () => {
     const { downloadingProgress } = this.state;
+    const { t } = this.props;
     console.log("downloadingProgress", downloadingProgress);
-
     getBackupProgress().then((res) => {
-      if (res) {
+      if (res.error.length > 0 && res.progress !== 100) {
+        clearInterval(this.timerId);
+        toastr.error(`${res.error}`);
+        console.log("error", res.error);
         this.setState({
-          downloadingProgress: res.progress,
+          downloadingProgress: 100,
         });
-        if (res.progress === 100) {
-          clearInterval(this.timerId);
-          this.setState({
-            link: res.link,
-          });
-        }
+        return;
+      }
+      this.setState({
+        downloadingProgress: res.progress,
+      });
+
+      if (res.progress === 100) {
+        clearInterval(this.timerId);
+        this.setState({
+          link: res.link,
+        });
+        toastr.success(`${t("SuccessCopied")}`);
       }
     });
   };
@@ -105,6 +117,18 @@ class ManualBackup extends React.Component {
     window.open(downloadUrl, "_blank");
   };
 
+  onClickCopiedDocModules = () => {
+    const { selectedFolder } = this.state;
+    console.log("selectedFolder", selectedFolder);
+    startBackup("0", "folderId", selectedFolder[0]);
+    this.timerId = setInterval(() => this.getProgress(), 1000);
+  };
+
+  onSelectFolder = (folderId) => {
+    this.setState({
+      selectedFolder: folderId,
+    });
+  };
   render() {
     const {
       t,
@@ -121,7 +145,6 @@ class ManualBackup extends React.Component {
     //   backupMailThirdParty,
     //   backupMailThirdPartyStorage,
     // } = this.state;
-    console.log("link", link);
 
     return (
       <StyledComponent>
@@ -196,11 +219,13 @@ class ManualBackup extends React.Component {
           </div> */}
 
           <FileInputWithFolderPath scale className="backup-folder_path" />
-          {panelVisible && <OperationsDialog />}
+          {panelVisible && (
+            <OperationsDialog onSelectFolder={this.onSelectFolder} />
+          )}
           <div className="manual-backup_buttons">
             <Button
               label={t("MakeCopy")}
-              onClick={() => console.log("click")}
+              onClick={this.onClickCopiedDocModules}
               primary
               isDisabled={!maxProgress}
               size="medium"
@@ -234,7 +259,9 @@ class ManualBackup extends React.Component {
             className="backup-folder_path"
             isDisabled={commonThirdPartyList.length === 0}
           />
-          {panelVisible && <OperationsDialog />}
+          {panelVisible && (
+            <OperationsDialog onSelectFolder={this.onSelectFolder} />
+          )}
           <div className="manual-backup_buttons">
             <Button
               label={t("MakeCopy")}
@@ -289,6 +316,7 @@ export default inject(({ auth, setup }) => {
   const { folderPath } = auth.settingsStore;
   const { getCommonThirdPartyList } = setup;
   const { commonThirdPartyList } = setup.dataManagement;
+
   return {
     setPanelVisible,
     panelVisible,

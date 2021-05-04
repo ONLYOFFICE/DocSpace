@@ -61,13 +61,22 @@ export function startBackup(
   value = null,
   backupMail = false
 ) {
+  const storageParams =
+    key === null
+      ? null
+      : [
+          {
+            key,
+            value,
+          },
+        ];
+
   const options = {
     method: "post",
     url: `/portal/startbackup`,
     data: {
       storageType,
-      key,
-      value,
+      storageParams: storageParams,
       backupMail,
     },
   };

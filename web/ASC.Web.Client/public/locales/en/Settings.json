@@ -155,5 +155,6 @@
   "DailyPeriodSchedule": "Every day",
   "WeeklyPeriodSchedule": "Every week",
   "MaxCopies": "copies max will be saved",
-  "Copying": "Copying..."
+  "Copying": "Copying...",
+  "SuccessCopied": "The backup copy has been successfully created."
 }

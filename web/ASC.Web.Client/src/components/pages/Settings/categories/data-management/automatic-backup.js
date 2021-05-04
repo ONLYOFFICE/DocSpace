@@ -135,6 +135,14 @@ class AutomaticBackup extends React.Component {
   getProgress = () => {
     getBackupProgress().then((res) => {
       if (res) {
+        if (res.error.length > 0 && res.progress !== 100) {
+          clearInterval(this.timerId);
+          console.log("error", res.error);
+          this.setState({
+            isCopyingToLocal: true,
+          });
+          return;
+        }
         if (res.progress === 100) {
           clearInterval(this.timerId);
           this.setState({
