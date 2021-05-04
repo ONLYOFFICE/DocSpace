@@ -91,3 +91,11 @@ export function getBackupProgress() {
   };
   return request(options);
 }
+
+export function deleteBackupSchedule() {
+  const options = {
+    method: "delete",
+    url: "/portal/deletebackupschedule",
+  };
+  return request(options);
+}

@@ -10,8 +10,12 @@ import RadioButton from "@appserver/components/radio-button";
 import styled from "styled-components";
 import moment from "moment";
 import ScheduleComponent from "./sub-components/scheduleComponent";
-import { getBackupProgress } from "@appserver/common/api/portal";
+import {
+  deleteBackupSchedule,
+  getBackupProgress,
+} from "@appserver/common/api/portal";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+import toastr from "@appserver/components/toast/toastr";
 
 const StyledComponent = styled.div`
   ${commonSettingsStyles}
@@ -87,6 +91,7 @@ class AutomaticBackup extends React.Component {
       weekOptions: [],
 
       isCopyingToLocal: true,
+      isLoadingData: false,
     };
 
     this.periodOptions = [
@@ -296,6 +301,16 @@ class AutomaticBackup extends React.Component {
       selectedMaxCopies: options.label,
     });
   };
+
+  onClickDeleteSchedule = () => {
+    const { t } = this.props;
+    this.setState({ isLoadingData: true }, function () {
+      deleteBackupSchedule()
+        .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
+        .catch((error) => toastr.error(error))
+        .finally(() => this.setState({ isLoadingData: false }));
+    });
+  };
   render() {
     const { t, language } = this.props;
     const {
@@ -316,8 +331,9 @@ class AutomaticBackup extends React.Component {
       selectedMonthOption,
       selectedMaxCopies,
       isCopyingToLocal,
+      isLoadingData,
     } = this.state;
-    console.log(" this.arrayWeekdays", this.arrayWeekdays);
+
     console.log("isCheckedDocuments", isCheckedDocuments);
     return (
       <StyledComponent>
@@ -334,7 +350,7 @@ class AutomaticBackup extends React.Component {
               value: "enable",
             },
           ]}
-          isDisabled={false}
+          isDisabled={isLoadingData}
           onClick={this.onClickPermissions}
           orientation="vertical"
           selected="disable"
@@ -464,16 +480,17 @@ class AutomaticBackup extends React.Component {
             </StyledModules>
           </>
         )}
-        <SaveCancelButtons
-          className="team-template_buttons"
-          onSaveClick={() => console.log("click")}
-          onCancelClick={() => console.log("cancel")}
-          showReminder={false}
-          reminderTest={t("YouHaveUnsavedChanges")}
-          saveButtonLabel={t("SaveButton")}
-          cancelButtonLabel={t("CancelButton")}
-          isDisabled={isCopyingToLocal}
-        />
+
+        {!isShowedStorageTypes && (
+          <Button
+            label={t("SaveButton")}
+            onClick={this.onClickDeleteSchedule}
+            primary
+            isDisabled={isCopyingToLocal || isLoadingData}
+            size="medium"
+            tabIndex={10}
+          />
+        )}
       </StyledComponent>
     );
   }
