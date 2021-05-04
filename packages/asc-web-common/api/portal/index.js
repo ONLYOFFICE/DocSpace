@@ -54,3 +54,31 @@ export function getInvitationLinks() {
     }
   );
 }
+
+export function startBackup(
+  storageType,
+  key = null,
+  value = null,
+  backupMail = false
+) {
+  const options = {
+    method: "post",
+    url: `/portal/startbackup`,
+    data: {
+      storageType,
+      key,
+      value,
+      backupMail,
+    },
+  };
+
+  return request(options);
+}
+
+export function getBackupProgress() {
+  const options = {
+    method: "get",
+    url: "/portal/getbackupprogress",
+  };
+  return request(options);
+}

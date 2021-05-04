@@ -154,5 +154,6 @@
   "MonthlyPeriodSchedule": "Every month",
   "DailyPeriodSchedule": "Every day",
   "WeeklyPeriodSchedule": "Every week",
-  "MaxCopies": "copies max will be saved"
+  "MaxCopies": "copies max will be saved",
+  "Copying": "Copying..."
 }

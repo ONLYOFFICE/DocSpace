@@ -7,10 +7,10 @@ import Button from "@appserver/components/button";
 import Checkbox from "@appserver/components/checkbox";
 import { inject, observer } from "mobx-react";
 
-import DocumentsModule from "./sub-components/documentsModule";
 import FileInputWithFolderPath from "@appserver/components/file-input-with-folder-path";
 
 import OperationsDialog from "files/OperationsDialog";
+import { getBackupProgress, startBackup } from "@appserver/common/api/portal";
 
 const StyledComponent = styled.div`
   ${commonSettingsStyles}
@@ -44,16 +44,61 @@ class ManualBackup extends React.Component {
     // };
     this.state = {
       isVisiblePanel: false,
+      downloadingProgress: 100,
+      link: "",
     };
   }
   componentDidMount() {
     const { getCommonThirdPartyList } = this.props;
-    getCommonThirdPartyList();
+
+    getCommonThirdPartyList()
+      .then(() => getBackupProgress())
+      .then((res) => {
+        this.setState({
+          downloadingProgress: res.progress,
+          link: res.link,
+        });
+        if (res.progress !== 100)
+          this.timerId = setInterval(() => this.getProgress(), 1000);
+      });
   }
-  onClickCheckbox = (e) => {
-    const name = e.target.name;
-    let change = !this.state[name];
-    this.setState({ [name]: change });
+
+  // onClickCheckbox = (e) => {
+  //   const name = e.target.name;
+  //   let change = !this.state[name];
+  //   this.setState({ [name]: change });
+  // };
+  componentWillUnmount() {
+    clearInterval(this.timerId);
+  }
+
+  onClickButton = () => {
+    startBackup("4");
+    this.timerId = setInterval(() => this.getProgress(), 1000);
+  };
+
+  getProgress = () => {
+    const { downloadingProgress } = this.state;
+    console.log("downloadingProgress", downloadingProgress);
+
+    getBackupProgress().then((res) => {
+      this.setState({
+        downloadingProgress: res.progress,
+      });
+      if (res.progress === 100) {
+        clearInterval(this.timerId);
+        this.setState({
+          link: res.link,
+        });
+      }
+    });
+  };
+
+  onClickDownload = () => {
+    const { link } = this.state;
+    const url = window.location.origin;
+    const downloadUrl = `${url}` + `${link}`;
+    window.open(downloadUrl, "_blank");
   };
 
   render() {
@@ -64,13 +109,16 @@ class ManualBackup extends React.Component {
       folderPath,
       commonThirdPartyList,
     } = this.props;
+    const { downloadingProgress, link } = this.state;
+    const maxProgress = downloadingProgress === 100;
     // const {
     //   backupMailTemporaryStorage,
     //   backupMailDocuments,
     //   backupMailThirdParty,
     //   backupMailThirdPartyStorage,
     // } = this.state;
-    console.log("commonThirdPartyList", commonThirdPartyList);
+    console.log("link", link);
+
     return (
       <StyledComponent>
         <div className="category-item-wrapper temporary-storage">
@@ -94,20 +142,32 @@ class ManualBackup extends React.Component {
           <div className="manual-backup_buttons">
             <Button
               label={t("MakeCopy")}
-              onClick={() => console.log("click")}
+              onClick={this.onClickButton}
               primary
-              isDisabled={false}
+              isDisabled={!maxProgress}
               size="medium"
               tabIndex={10}
             />
-            <Button
-              label={t("DownloadBackup")}
-              onClick={() => console.log("click")}
-              isDisabled={false}
-              size="medium"
-              style={{ marginLeft: "8px" }}
-              tabIndex={11}
-            />
+            {link.length > 0 && maxProgress && (
+              <Button
+                label={t("DownloadBackup")}
+                onClick={this.onClickDownload}
+                isDisabled={false}
+                size="medium"
+                style={{ marginLeft: "8px" }}
+                tabIndex={11}
+              />
+            )}
+            {!maxProgress && (
+              <Button
+                label={t("Copying")}
+                onClick={() => console.log("click")}
+                isDisabled={true}
+                size="medium"
+                style={{ marginLeft: "8px" }}
+                tabIndex={11}
+              />
+            )}
           </div>
         </div>
 
@@ -138,7 +198,7 @@ class ManualBackup extends React.Component {
               label={t("MakeCopy")}
               onClick={() => console.log("click")}
               primary
-              isDisabled={false}
+              isDisabled={!maxProgress}
               size="medium"
               tabIndex={10}
             />
@@ -176,7 +236,7 @@ class ManualBackup extends React.Component {
               label={t("MakeCopy")}
               onClick={() => console.log("click")}
               primary
-              isDisabled={commonThirdPartyList.length === 0}
+              isDisabled={!maxProgress || commonThirdPartyList.length === 0}
               size="medium"
               tabIndex={10}
             />
@@ -209,7 +269,7 @@ class ManualBackup extends React.Component {
               label={t("MakeCopy")}
               onClick={() => console.log("click")}
               primary
-              isDisabled={false}
+              isDisabled={!maxProgress}
               size="medium"
               tabIndex={10}
             />
@@ -229,7 +289,8 @@ export default inject(({ auth, setup }) => {
     setPanelVisible,
     panelVisible,
     folderPath,
-    getCommonThirdPartyList,
+
     commonThirdPartyList,
+    getCommonThirdPartyList,
   };
 })(withTranslation("Settings")(observer(ManualBackup)));

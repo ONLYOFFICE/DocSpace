@@ -154,5 +154,6 @@
   "MonthlyPeriodSchedule": "Каждый месяц",
   "DailyPeriodSchedule": "Каждый день",
   "WeeklyPeriodSchedule": "Каждую неделю",
-  "MaxCopies": "копий максимум будет сохранено"
+  "MaxCopies": "копий максимум будет сохранено",
+  "Copying": "Копирование..."
 }
