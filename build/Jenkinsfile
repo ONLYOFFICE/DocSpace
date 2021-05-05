@@ -6,12 +6,12 @@ pipeline {
 				stage('Unix') {
 					agent { label 'net-core' }
 					stages {
-						stage('Backend') {
+						stage('Frontend') {
 							steps {
 								sh 'yarn install && yarn build'
 							}
 						}
-						stage('Frontend') {
+						stage('Backend') {
 							steps {
 								sh 'dotnet build ASC.Web.sln'
 							}
@@ -21,12 +21,12 @@ pipeline {
 				stage('Windows') {
 					agent { label 'win-core' }
 					stages {
-						stage('Backend') {
+						stage('Frontend') {
 							steps {
 								bat 'yarn install && yarn build'
 							}
 						}
-						stage('Frontend') {
+						stage('Backend') {
 							steps {
 								bat 'dotnet build ASC.Web.sln'
 							}
