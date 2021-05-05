@@ -9,7 +9,14 @@ import ModalDialogContainer from "../ModalDialogContainer";
 class BackupCodesDialogComponent extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { backupCodes: this.props.getBackupCodes() };
   }
+
+  getNewBackupCodes = () => {
+    const { getBackupCodes } = this.props;
+    const newCodes = getBackupCodes();
+    this.setState({ backupCodes: newCodes });
+  };
 
   printPage = () => {
     const { t } = this.props;
@@ -29,9 +36,10 @@ class BackupCodesDialogComponent extends React.Component {
 
   render() {
     console.log("Render BackupCodesDialog");
+    const { backupCodes } = this.state;
     const { t, visible, onClose } = this.props;
     const count = 5; //TODO: get count from api
-    const codes = ["qdf45g", "fg56dfg", "ugi8fm", "gfuti8f", "fkuidop"]; //TODO: get codes from api
+    //const codes = ["qdf45g", "fg56dfg", "ugi8fm", "gfuti8f", "fkuidop"]; //TODO: get codes from api
 
     return (
       <ModalDialogContainer>
@@ -55,7 +63,7 @@ class BackupCodesDialogComponent extends React.Component {
                 </Text>
               </Trans>
               <Text className="text-dialog" isBold={true}>
-                {codes.map((item) => {
+                {backupCodes.map((item) => {
                   return (
                     <strong key={item}>
                       {item} <br />
@@ -79,6 +87,7 @@ class BackupCodesDialogComponent extends React.Component {
               label={t("RequestNewButton")}
               size="medium"
               primary={false}
+              onClick={this.getNewBackupCodes}
             />
           </ModalDialog.Footer>
         </ModalDialog>
@@ -94,6 +103,7 @@ const BackupCodesDialog = withTranslation("BackupCodesDialog")(
 BackupCodesDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  getBackupCodes: PropTypes.func.isRequired,
 };
 
 export default BackupCodesDialog;

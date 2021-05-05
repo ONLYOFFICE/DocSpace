@@ -443,6 +443,7 @@ class SectionBodyContent extends React.PureComponent {
           <BackupCodesDialog
             visible={backupCodesDialogVisible}
             onClose={this.toggleBackupCodesDialogVisible}
+            getBackupCodes={this.props.getBackupCodes}
           />
         )}
       </ProfileWrapper>
@@ -466,5 +467,6 @@ export default withRouter(
     setProviders: peopleStore.usersStore.setProviders,
     getOAuthToken: auth.settingsStore.getOAuthToken,
     getLoginLink: auth.settingsStore.getLoginLink,
+    getBackupCodes: auth.tfaStore.getTfaNewBackupCodes,
   }))(observer(withTranslation("Profile")(SectionBodyContent)))
 );
