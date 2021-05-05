@@ -59,8 +59,12 @@ const Confirm = ({ match }) => {
         path={`${match.path}/PortalOwnerChange`}
         component={ChangeOwnerForm}
       />
-      <Route exact path={`${match.path}/TfaAuth`} component={TfaAuthForm} />
-      <Route
+      <ConfirmRoute
+        exact
+        path={`${match.path}/TfaAuth`}
+        component={TfaAuthForm}
+      />
+      <ConfirmRoute
         exact
         path={`${match.path}/TfaActivation`}
         component={TfaActivationForm}
