@@ -143,7 +143,7 @@ const ComingSoonRoute = (props) => (
 );
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
-  const { isLoaded, loadBaseInfo, modules } = rest;
+  const { isLoaded, loadBaseInfo, modules, isDesktop } = rest;
 
   useEffect(() => {
     try {
@@ -224,7 +224,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         <>
           {isEditor ? <></> : <NavMenu />}
           <ScrollToTop />
-          <Main>
+          <Main isDesktop={isDesktop}>
             <Switch>
               <PrivateRoute exact path={HOME_URLS} component={HomeRoute} />
               <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
@@ -270,6 +270,7 @@ const ShellWrapper = inject(({ auth }) => {
     //isThirdPartyResponse,
     isLoaded,
     modules: auth.moduleStore.modules,
+    isDesktop: auth.settingsStore.isDesktopClient,
   };
 })(observer(Shell));
 
