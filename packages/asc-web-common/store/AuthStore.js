@@ -5,6 +5,7 @@ import history from "../history";
 import ModuleStore from "./ModuleStore";
 import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
+import TfaStore from "./TfaStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
 import { combineUrl, isAdmin } from "../utils";
 import isEmpty from "lodash/isEmpty";
@@ -15,6 +16,7 @@ class AuthStore {
   userStore = null;
   moduleStore = null;
   settingsStore = null;
+  tfaStore = null;
 
   isLoading = false;
   isAuthenticated = false;
@@ -26,6 +28,7 @@ class AuthStore {
     this.userStore = new UserStore();
     this.moduleStore = new ModuleStore();
     this.settingsStore = new SettingsStore();
+    this.tfaStore = new TfaStore();
 
     makeAutoObservable(this);
   }
