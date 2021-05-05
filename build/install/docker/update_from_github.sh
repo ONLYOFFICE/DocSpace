@@ -126,6 +126,7 @@ docker_image_update() {
     docker-compose -f appserver.yml -f notify.yml down --volumes
     docker-compose -f build.yml pull
     docker-compose -f appserver.yml -f notify.yml up -d
+    docker image prune -a -f
 }
 
 check_installed_hub_tool
