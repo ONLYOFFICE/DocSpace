@@ -51,7 +51,7 @@ namespace ASC.Web.CRM.HttpHandlers
 
         public async Task Invoke(HttpContext context,
                                 WebItemSecurity webItemSecurity,
-                                CRMSecurity crmSecurity,
+                                CrmSecurity crmSecurity,
                                 Global global,
                                 ImportFromCSV importFromCSV)
         {

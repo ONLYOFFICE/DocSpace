@@ -49,7 +49,7 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class TagDao : AbstractDao
     {
-        public TagDao(DbContextManager<CRMDbContext> dbContextManager,
+        public TagDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,

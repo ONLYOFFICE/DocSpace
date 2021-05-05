@@ -64,11 +64,11 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly HttpRequestDictionary<RelationshipEvent> _relationshipEventCache;
 
-        public CachedRelationshipEventDao(DbContextManager<CRMDbContext> dbContextManager,
+        public CachedRelationshipEventDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             FilesIntegration filesIntegration,
-            CRMSecurity crmSecurity,
+            CrmSecurity crmSecurity,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
             PathProvider pathProvider,
@@ -112,11 +112,11 @@ namespace ASC.CRM.Core.Dao
     public class RelationshipEventDao : AbstractDao
     {
 
-        public RelationshipEventDao(DbContextManager<CRMDbContext> dbContextManager,
+        public RelationshipEventDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             FilesIntegration filesIntegration,
-            CRMSecurity crmSecurity,
+            CrmSecurity crmSecurity,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
             PathProvider pathProvider,
@@ -143,7 +143,7 @@ namespace ASC.CRM.Core.Dao
 
         public SetupInfo SetupInfo { get; }
 
-        public CRMSecurity CRMSecurity { get; }
+        public CrmSecurity CRMSecurity { get; }
 
         public TenantUtil TenantUtil { get; }
 

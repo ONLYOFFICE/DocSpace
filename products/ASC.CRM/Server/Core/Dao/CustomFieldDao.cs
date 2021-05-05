@@ -54,7 +54,7 @@ namespace ASC.CRM.Core.Dao
     public class CustomFieldDao : AbstractDao
     {
         public CustomFieldDao(
-            DbContextManager<CRMDbContext> dbContextManager,
+            DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             TenantUtil tenantUtil,

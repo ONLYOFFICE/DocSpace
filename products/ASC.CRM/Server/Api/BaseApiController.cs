@@ -48,10 +48,10 @@ namespace ASC.Api.CRM
     {
         protected IMapper _mapper;
         protected DaoFactory _daoFactory;
-        protected CRMSecurity _crmSecurity;
+        protected CrmSecurity _crmSecurity;
 
         public BaseApiController(DaoFactory daoFactory,
-                                 CRMSecurity crmSecurity,
+                                 CrmSecurity crmSecurity,
                                  IMapper mapper)
         {
             _daoFactory = daoFactory;

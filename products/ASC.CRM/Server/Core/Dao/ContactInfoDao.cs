@@ -51,7 +51,7 @@ namespace ASC.CRM.Core.Dao
         private readonly HttpRequestDictionary<ContactInfo> _contactInfoCache;
 
         public CachedContactInfo(
-             DbContextManager<CRMDbContext> dbContextManager,
+             DbContextManager<CrmDbContext> dbContextManager,
              TenantManager tenantManager,
              SecurityContext securityContext,
              TenantUtil tenantUtil,
@@ -119,7 +119,7 @@ namespace ASC.CRM.Core.Dao
     public class ContactInfoDao : AbstractDao
     {
         public ContactInfoDao(
-             DbContextManager<CRMDbContext> dbContextManager,
+             DbContextManager<CrmDbContext> dbContextManager,
              TenantManager tenantManager,
              SecurityContext securityContext,
              TenantUtil tenantUtil,

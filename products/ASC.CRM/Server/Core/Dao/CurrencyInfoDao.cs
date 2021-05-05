@@ -44,7 +44,7 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class CurrencyInfoDao : AbstractDao
     {
-        public CurrencyInfoDao(DbContextManager<CRMDbContext> dbContextManager,
+        public CurrencyInfoDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
@@ -63,41 +63,36 @@ namespace ASC.CRM.Core.Dao
 
         public virtual List<CurrencyInfo> GetAll()
         {
-            return CRMDbContext.CurrencyInfo.ToList().ConvertAll(ToCurrencyInfo);
+            var dbItems = CRMDbContext.CurrencyInfo.ToList();
+
+            return _mapper.Map<List<DbCurrencyInfo>, List<CurrencyInfo>>(dbItems);               
         }
 
         public virtual CurrencyInfo GetByAbbreviation(string abbreviation)
         {
-            return ToCurrencyInfo(CRMDbContext.CurrencyInfo
-                            .FirstOrDefault(x => String.Compare(x.Abbreviation, abbreviation, true) == 0));
+            var dbItem = CRMDbContext.CurrencyInfo
+                         .FirstOrDefault(x => String.Compare(x.Abbreviation, abbreviation, true) == 0);
+
+            return _mapper.Map<CurrencyInfo>(dbItem);
+
         }
 
         public List<CurrencyInfo> GetBasic()
         {
-            return CRMDbContext.CurrencyInfo
+            var dbItems = CRMDbContext.CurrencyInfo
                                         .Where(x => x.IsBasic)
-                                        .ToList()
-                                        .ConvertAll(ToCurrencyInfo);
+                                        .ToList();
+
+            return _mapper.Map<List<DbCurrencyInfo>, List<CurrencyInfo>>(dbItems);
         }
 
         public List<CurrencyInfo> GetOther()
         {
-            return CRMDbContext.CurrencyInfo
-                                            .Where(x => !x.IsBasic)
-                                            .ToList()
-                                            .ConvertAll(ToCurrencyInfo);
-        }
+            var dbItems = CRMDbContext.CurrencyInfo
+                                       .Where(x => !x.IsBasic)
+                                       .ToList();
 
-        private static CurrencyInfo ToCurrencyInfo(DbCurrencyInfo dbCurrencyInfo)
-        {
-            return new CurrencyInfo(
-                    dbCurrencyInfo.ResourceKey,
-                    dbCurrencyInfo.Abbreviation,
-                    dbCurrencyInfo.Abbreviation,
-                    dbCurrencyInfo.CultureName,
-                    dbCurrencyInfo.IsConvertable,
-                    dbCurrencyInfo.IsBasic
-                );
+            return _mapper.Map<List<DbCurrencyInfo>, List<CurrencyInfo>>(dbItems);
         }
     }
 }

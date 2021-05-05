@@ -63,7 +63,7 @@ namespace ASC.Web.CRM.HttpHandlers
         public Global Global { get; set; }
         public WebItemSecurity WebItemSecurity { get; set; }
         public SecurityContext SecurityContext { get; set; }
-        public CRMSecurity CRMSecurity { get; set; }
+        public CrmSecurity CRMSecurity { get; set; }
         public MessageTarget MessageTarget { get; set; }
         public ILog Logger { get; set; }
         public NotifyClient NotifyClient { get; set; }
@@ -93,7 +93,7 @@ namespace ASC.Web.CRM.HttpHandlers
 
                 var webFromKeyAsGuid = new Guid(webFromKey);
 
-                var TenantSettings = SettingsManager.Load<CRMSettings>();
+                var TenantSettings = SettingsManager.Load<CrmSettings>();
 
                 return TenantSettings.WebFormKey == webFromKeyAsGuid;
             }
@@ -106,7 +106,7 @@ namespace ASC.Web.CRM.HttpHandlers
         public async System.Threading.Tasks.Task Invoke(HttpContext context,
                         WebItemSecurity webItemSecurity,
             SecurityContext securityContext,
-            CRMSecurity crmSecurity,
+            CrmSecurity crmSecurity,
             MessageTarget messageTarget,
             MessageService messageService,
             Global global,

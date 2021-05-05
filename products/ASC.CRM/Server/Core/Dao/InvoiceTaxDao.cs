@@ -50,7 +50,7 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly HttpRequestDictionary<InvoiceTax> _invoiceTaxCache;
 
-        public CachedInvoiceTaxDao(DbContextManager<CRMDbContext> dbContextManager,
+        public CachedInvoiceTaxDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SecurityContext securityContext,
@@ -108,7 +108,7 @@ namespace ASC.CRM.Core.Dao
         private readonly IMapper _mapper;
 
         public InvoiceTaxDao(
-            DbContextManager<CRMDbContext> dbContextManager,
+            DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SecurityContext securityContext,
@@ -128,7 +128,7 @@ namespace ASC.CRM.Core.Dao
         }
 
         public TenantUtil TenantUtil { get; }
-        public CRMSecurity CRMSecurity { get; }
+        public CrmSecurity CRMSecurity { get; }
 
         public Boolean IsExist(int invoiceTaxID)
         {

@@ -54,11 +54,11 @@ using SecurityContext = ASC.Core.SecurityContext;
 namespace ASC.CRM.Core
 {
     [Scope]
-    public class CRMSecurity
+    public class CrmSecurity
     {
         public readonly IAction _actionRead = new Action(new Guid("{6F05C382-8BCA-4469-9424-C807A98C40D7}"), "", true, false);
 
-        public CRMSecurity(SecurityContext securityContext,
+        public CrmSecurity(SecurityContext securityContext,
                             AuthorizationManager authorizationManager,
                             UserManager userManager,
                             DisplayUserSettingsHelper displayUserSettingsHelper,
@@ -96,7 +96,7 @@ namespace ASC.CRM.Core
 
         private ISecurityObjectProvider GetCRMSecurityProvider()
         {
-            return new CRMSecurityObjectProvider();
+            return new CrmSecurityObjectProvider();
         }
 
         public bool IsPrivate(ISecurityObjectId entity)

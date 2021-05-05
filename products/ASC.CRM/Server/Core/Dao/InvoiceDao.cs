@@ -61,7 +61,7 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly HttpRequestDictionary<Invoice> _invoiceCache;
 
-        public CachedInvoiceDao(DbContextManager<CRMDbContext> dbContextManager,
+        public CachedInvoiceDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             FactoryIndexerInvoice factoryIndexer,
@@ -71,7 +71,7 @@ namespace ASC.CRM.Core.Dao
             SettingsManager settingsManager,
             InvoiceSetting invoiceSetting,
             InvoiceFormattedData invoiceFormattedData,
-            CRMSecurity crmSecurity,
+            CrmSecurity crmSecurity,
             TenantUtil tenantUtil,
             IMapper mapper)
               : base(dbContextManager,
@@ -139,10 +139,10 @@ namespace ASC.CRM.Core.Dao
         private readonly SettingsManager _settingsManager;
         private readonly FactoryIndexerInvoice _factoryIndexer;
         private readonly TenantUtil _tenantUtil;
-        private readonly CRMSecurity _crmSecurity;
+        private readonly CrmSecurity _crmSecurity;
 
         public InvoiceDao(
-            DbContextManager<CRMDbContext> dbContextManager,
+            DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
 
             SecurityContext securityContext,
@@ -152,7 +152,7 @@ namespace ASC.CRM.Core.Dao
             SettingsManager settingsManager,
             InvoiceSetting invoiceSetting,
             InvoiceFormattedData invoiceFormattedData,
-            CRMSecurity crmSecurity,
+            CrmSecurity crmSecurity,
             TenantUtil tenantUtil,
             IMapper mapper)
               : base(dbContextManager,
@@ -545,7 +545,7 @@ namespace ASC.CRM.Core.Dao
 
         public InvoiceSetting GetSettings()
         {
-            var tenantSettings = _settingsManager.Load<CRMSettings>();
+            var tenantSettings = _settingsManager.Load<CrmSettings>();
 
             return tenantSettings.InvoiceSetting ?? _invoiceSetting.DefaultSettings;
         }
@@ -767,10 +767,10 @@ namespace ASC.CRM.Core.Dao
 
         public InvoiceSetting SaveInvoiceSettings(InvoiceSetting invoiceSetting)
         {
-            var tenantSettings = _settingsManager.Load<CRMSettings>();
+            var tenantSettings = _settingsManager.Load<CrmSettings>();
             tenantSettings.InvoiceSetting = invoiceSetting;
 
-            _settingsManager.Save<CRMSettings>(tenantSettings);
+            _settingsManager.Save<CrmSettings>(tenantSettings);
 
             return tenantSettings.InvoiceSetting;
         }

@@ -73,7 +73,7 @@ namespace ASC.CRM.Api
         private readonly MessageService _messageService;
         private readonly MessageTarget _messageTarget;
 
-        public ContactsController(CRMSecurity crmSecurity,
+        public ContactsController(CrmSecurity crmSecurity,
                      DaoFactory daoFactory,
                      ApiContext apiContext,
                      MessageTarget messageTarget,
@@ -374,7 +374,8 @@ namespace ASC.CRM.Api
 
             if (contactsOrderBy != null)
             {
-                result = _mapper.Map<List<Contact>, List<ContactDto>>(_daoFactory.GetContactDao().GetContacts(
+
+                var contacts = _daoFactory.GetContactDao().GetContacts(
                     searchString,
                     tags,
                     contactStageInt,
@@ -386,7 +387,10 @@ namespace ASC.CRM.Api
                     count,
                     contactsOrderBy,
                     responsibleid,
-                    isShared));
+                    isShared);
+
+                result = _mapper.Map<List<Contact>, List<ContactDto>>(contacts);
+               
                 _apiContext.SetDataPaginated();
                 _apiContext.SetDataFiltered();
                 _apiContext.SetDataSorted();

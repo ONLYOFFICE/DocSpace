@@ -28,7 +28,7 @@ namespace ASC.CRM.Api
         private readonly MessageService _messageService;
         private readonly MessageTarget _messageTarget;
 
-        public TasksController(CRMSecurity crmSecurity,
+        public TasksController(CrmSecurity crmSecurity,
                      DaoFactory daoFactory,
                      ApiContext apiContext,
                      MessageTarget messageTarget,

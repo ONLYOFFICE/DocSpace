@@ -53,7 +53,7 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly HttpRequestDictionary<DealMilestone> _dealMilestoneCache;
 
-        public CachedDealMilestoneDao(DbContextManager<CRMDbContext> dbContextManager,
+        public CachedDealMilestoneDao(DbContextManager<CrmDbContext> dbContextManager,
                                 TenantManager tenantManager,
                                 SecurityContext securityContext,
                                 IHttpContextAccessor httpContextAccessor,
@@ -122,7 +122,7 @@ namespace ASC.CRM.Core.Dao
     public class DealMilestoneDao : AbstractDao
     {
 
-        public DealMilestoneDao(DbContextManager<CRMDbContext> dbContextManager,
+        public DealMilestoneDao(DbContextManager<CrmDbContext> dbContextManager,
                                 TenantManager tenantManager,
                                 SecurityContext securityContext,
                                 IOptionsMonitor<ILog> logger,

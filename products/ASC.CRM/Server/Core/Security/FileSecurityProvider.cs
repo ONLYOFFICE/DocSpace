@@ -41,7 +41,7 @@ namespace ASC.CRM.Core
     public class FileSecurity : IFileSecurity
     {
         public FileSecurity(FilesIntegration filesIntegration,
-                            CRMSecurity crmSecurity,
+                            CrmSecurity crmSecurity,
                             DaoFactory daoFactory)
         {
             FilesIntegration = filesIntegration;
@@ -53,7 +53,7 @@ namespace ASC.CRM.Core
 
         public FilesIntegration FilesIntegration { get; }
 
-        public CRMSecurity CRMSecurity { get; }
+        public CrmSecurity CRMSecurity { get; }
 
         public bool CanCreate<T>(FileEntry<T> entry, Guid userId)
         {
@@ -130,7 +130,7 @@ namespace ASC.CRM.Core
     public class FileSecurityProvider : IFileSecurityProvider
     {
         public FileSecurityProvider(FilesIntegration filesIntegration,
-                                    CRMSecurity crmSecurity,
+                                    CrmSecurity crmSecurity,
                                     DaoFactory daoFactory)
         {
             FilesIntegration = filesIntegration;
@@ -140,7 +140,7 @@ namespace ASC.CRM.Core
 
         public DaoFactory DaoFactory { get; }
         public FilesIntegration FilesIntegration { get; }
-        public CRMSecurity CRMSecurity { get; }
+        public CrmSecurity CRMSecurity { get; }
 
         public IFileSecurity GetFileSecurity(string data)
         {

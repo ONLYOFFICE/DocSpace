@@ -35,11 +35,13 @@ namespace ASC.Common.Mapping
     {
         public MappingProfile()
         {
-            ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+            Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => ApplyMappingsFromAssembly(a));
         }
 
         private void ApplyMappingsFromAssembly(Assembly assembly)
         {
+            if (!assembly.GetName().Name.StartsWith("ASC.")) return;
+
             var types = assembly.GetExportedTypes()
                 .Where(t => t.GetInterfaces().Any(i =>
                     i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IMapFrom<>)))

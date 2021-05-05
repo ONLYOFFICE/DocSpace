@@ -1,23 +1,29 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 using ASC.Api.Core;
 using ASC.Common;
+using ASC.Common.Mapping;
 using ASC.CRM.Api;
 using ASC.CRM.ApiModels;
+using ASC.CRM.HttpHandlers;
 using ASC.CRM.Mapping;
 using ASC.Web.CRM.HttpHandlers;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.CRM
 {
+
     public class Startup : BaseStartup
     {
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
@@ -63,13 +69,13 @@ namespace ASC.CRM
             DIHelper.TryAdd<TaskDtoTypeConverter>();
             DIHelper.TryAdd<CustomFieldDtoTypeConverter>();
             DIHelper.TryAdd<DealMilestoneDtoTypeConverter>();
-
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             base.Configure(app, env);
+
+            app.UseMiddleware<TenantConfigureMiddleware>();
 
             app.MapWhen(
                 context => context.Request.Path.ToString().EndsWith("httphandlers/contactphotohandler.ashx"),

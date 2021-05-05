@@ -119,7 +119,7 @@ namespace ASC.Web.CRM.Classes
 
             _tenantID = tenantManager.GetCurrentTenant().TenantId;
 
-            var _crmSettings = settingsManager.Load<CRMSettings>();
+            var _crmSettings = settingsManager.Load<CrmSettings>();
 
             _smtpSetting = new SMTPServerSetting(coreConfiguration.SmtpSettings);
             _currUser = SecurityContext.CurrentAccount.ID;

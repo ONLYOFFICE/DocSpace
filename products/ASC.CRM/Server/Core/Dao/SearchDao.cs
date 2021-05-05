@@ -63,10 +63,10 @@ namespace ASC.CRM.Core.Dao
 
         private DaoFactory DaoFactory { get; set; }
 
-        public SearchDao(DbContextManager<CRMDbContext> dbContextManager,
+        public SearchDao(DbContextManager<CrmDbContext> dbContextManager,
                       TenantManager tenantManager,
                       SecurityContext securityContext,
-                      CRMSecurity crmSecurity,
+                      CrmSecurity crmSecurity,
                       TenantUtil tenantUtil,
                       PathProvider pathProvider,
                       FactoryIndexerTask tasksDtoIndexer,
@@ -102,7 +102,7 @@ namespace ASC.CRM.Core.Dao
         public PathProvider PathProvider { get; }
         public FactoryIndexerTask FactoryIndexerTask { get; }
         public FactoryIndexerInvoice FactoryIndexerInvoice { get; }
-        public CRMSecurity CRMSecurity { get; }
+        public CrmSecurity CRMSecurity { get; }
 
         public SearchResultItem[] Search(String searchText)
         {

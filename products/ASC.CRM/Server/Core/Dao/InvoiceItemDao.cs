@@ -53,11 +53,11 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly HttpRequestDictionary<InvoiceItem> _invoiceItemCache;
 
-        public CachedInvoiceItemDao(DbContextManager<CRMDbContext> dbContextManager,
+        public CachedInvoiceItemDao(DbContextManager<CrmDbContext> dbContextManager,
                 TenantManager tenantManager,
                 SecurityContext securityContext,
                 TenantUtil tenantUtil,
-                CRMSecurity crmSecurity,
+                CrmSecurity crmSecurity,
                 IHttpContextAccessor httpContextAccessor,
                 IOptionsMonitor<ILog> logger,
                 ICache ascCache,
@@ -110,11 +110,11 @@ namespace ASC.CRM.Core.Dao
     public class InvoiceItemDao : AbstractDao
     {
         public InvoiceItemDao(
-                DbContextManager<CRMDbContext> dbContextManager,
+                DbContextManager<CrmDbContext> dbContextManager,
                 TenantManager tenantManager,
                 SecurityContext securityContext,
                 TenantUtil tenantUtil,
-                CRMSecurity crmSecurity,
+                CrmSecurity crmSecurity,
                 IOptionsMonitor<ILog> logger,
                 ICache ascCache,
                 IMapper mapper
@@ -130,7 +130,7 @@ namespace ASC.CRM.Core.Dao
         }
 
 
-        public CRMSecurity CRMSecurity { get; }
+        public CrmSecurity CRMSecurity { get; }
 
         public TenantUtil TenantUtil { get; }
 

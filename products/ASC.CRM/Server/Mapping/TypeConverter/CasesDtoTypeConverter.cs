@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core.Users;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
@@ -41,16 +42,17 @@ using AutoMapper;
 
 namespace ASC.CRM.Mapping
 {
+    [Scope]
     public class CasesDtoTypeConverter : ITypeConverter<Cases, CasesDto>
     {
         private readonly DaoFactory _daoFactory;
-        private readonly CRMSecurity _CRMSecurity;
+        private readonly CrmSecurity _CRMSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
         private readonly EmployeeWraperHelper _employeeWraperHelper;
 
         public CasesDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
-                           CRMSecurity crmSecurity,
+                           CrmSecurity crmSecurity,
                            DaoFactory daoFactory)
         {
             _apiDateTimeHelper = apiDateTimeHelper;

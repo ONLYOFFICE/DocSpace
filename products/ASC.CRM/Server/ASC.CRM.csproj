@@ -34,7 +34,6 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Collection.EntityFrameworkCore" Version="7.0.1" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Grpc.Tools" Version="2.32.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

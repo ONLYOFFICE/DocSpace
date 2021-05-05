@@ -37,7 +37,7 @@ using ASC.CRM.Core.Enums;
 
 namespace ASC.CRM.Core
 {
-    public class CRMSecurityObjectProvider : ISecurityObjectProvider
+    public class CrmSecurityObjectProvider : ISecurityObjectProvider
     {
         public ISecurityObjectId InheritFrom(ISecurityObjectId objectId)
         {

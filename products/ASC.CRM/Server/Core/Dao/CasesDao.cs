@@ -59,10 +59,10 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly HttpRequestDictionary<Cases> _casesCache;
 
-        public CachedCasesDao(DbContextManager<CRMDbContext> dbContextManager,
+        public CachedCasesDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            CRMSecurity crmSecurity,
+            CrmSecurity crmSecurity,
             TenantUtil tenantUtil,
             FilesIntegration filesIntegration,
             AuthorizationManager authorizationManager,
@@ -123,10 +123,10 @@ namespace ASC.CRM.Core.Dao
     public class CasesDao : AbstractDao
     {
         public CasesDao(
-            DbContextManager<CRMDbContext> dbContextManager,
+            DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            CRMSecurity crmSecurity,
+            CrmSecurity crmSecurity,
             TenantUtil tenantUtil,
             FilesIntegration filesIntegration,
             AuthorizationManager authorizationManager,
@@ -157,7 +157,7 @@ namespace ASC.CRM.Core.Dao
 
         public TenantUtil TenantUtil { get; }
 
-        public CRMSecurity CRMSecurity { get; }
+        public CrmSecurity CRMSecurity { get; }
 
         public void AddMember(int caseID, int memberID)
         {

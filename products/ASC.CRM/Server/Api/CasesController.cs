@@ -61,7 +61,7 @@ namespace ASC.CRM.Api
         private readonly MessageTarget _messageTarget;
         private readonly UserManager _userManager;
 
-        public CasesController(CRMSecurity crmSecurity,
+        public CasesController(CrmSecurity crmSecurity,
                      DaoFactory daoFactory,
                      ApiContext apiContext,
                      MessageTarget messageTarget,

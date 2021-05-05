@@ -41,7 +41,7 @@ using ASC.Web.Core.Calendars;
 namespace ASC.CRM.Api
 {
     [Scope]
-    public sealed class CRMCalendar : BaseCalendar
+    public sealed class CrmCalendar : BaseCalendar
     {
         [AllDayLongUTC]
         private class Event : BaseEvent
@@ -53,7 +53,7 @@ namespace ASC.CRM.Api
         public TenantManager TenantManager { get; }
         public TenantUtil TenantUtil { get; }
 
-        public CRMCalendar(WebItemSecurity webItemSecurity,
+        public CrmCalendar(WebItemSecurity webItemSecurity,
                            DaoFactory daoFactory,
                            AuthContext authContext,
                            TimeZoneConverter timeZoneConverter,

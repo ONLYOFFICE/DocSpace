@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.CRM.Core.EF
 {
-    public partial class CRMDbContext : BaseDbContext
+    public partial class CrmDbContext : BaseDbContext
     {
         public virtual DbSet<DbCase> Cases { get; set; }
         public virtual DbSet<DbContact> Contacts { get; set; }
@@ -467,11 +467,11 @@ namespace ASC.CRM.Core.EF
     }
 
 
-    public static class CRMDbContextExtention
+    public static class CrmDbContextExtention
     {
         public static DIHelper AddCRMDbContextService(this DIHelper services)
         {
-            return services.AddDbContextManagerService<CRMDbContext>();
+            return services.AddDbContextManagerService<CrmDbContext>();
         }
     }
 }

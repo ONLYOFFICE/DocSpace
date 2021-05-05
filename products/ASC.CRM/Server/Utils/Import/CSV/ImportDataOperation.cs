@@ -139,7 +139,7 @@ namespace ASC.Web.CRM.Classes
                                    IOptionsMonitor<ILog> logger,
                                    UserManager userManager,
                                    ImportDataCache importDataCache,
-                                   CRMSecurity crmSecurity,
+                                   CrmSecurity crmSecurity,
                                    NotifyClient notifyClient,
                                    SettingsManager settingsManager,
                                    CurrencyProvider currencyProvider,
@@ -190,7 +190,7 @@ namespace ASC.Web.CRM.Classes
 
         public SettingsManager SettingsManager { get; }
 
-        public CRMSecurity CRMSecurity { get; }
+        public CrmSecurity CRMSecurity { get; }
 
         public ImportDataCache ImportDataCache { get; }
 

@@ -53,7 +53,7 @@ namespace ASC.Web.CRM.Classes
         private readonly object Locker = new object();
 
         public VoipEngine(DaoFactory daoFactory,
-                         CRMSecurity crmSecurity,
+                         CrmSecurity crmSecurity,
                          TenantUtil tenantUtil,
                          SecurityContext securityContext,
                          IOptionsMonitor<ILog> logger,
@@ -83,7 +83,7 @@ namespace ASC.Web.CRM.Classes
 
         public TenantUtil TenantUtil { get; }
 
-        public CRMSecurity CRMSecurity { get; }
+        public CrmSecurity CRMSecurity { get; }
 
         public VoipCall SaveOrUpdateCall(VoipCall callHistory)
         {

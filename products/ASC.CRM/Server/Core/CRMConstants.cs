@@ -28,7 +28,7 @@ using System;
 
 namespace ASC.CRM.Core
 {
-    public static class CRMConstants
+    public static class CrmConstants
     {
         public static readonly String StorageModule = "crm";
         public static readonly String DatabaseId = "crm";

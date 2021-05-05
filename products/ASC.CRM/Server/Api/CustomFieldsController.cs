@@ -49,7 +49,7 @@ namespace ASC.CRM.Api
         private readonly MessageService _messageService;
         private readonly MessageTarget _messageTarget;
 
-        public CustomFieldsController(CRMSecurity crmSecurity,
+        public CustomFieldsController(CrmSecurity crmSecurity,
                      DaoFactory daoFactory,
                      MessageTarget messageTarget,
                      MessageService messageService,

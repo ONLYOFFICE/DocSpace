@@ -53,7 +53,7 @@ namespace ASC.CRM.Api
         private readonly Global _global;
         private readonly SettingsManager _settingsManager;
 
-        public ReportsController(CRMSecurity crmSecurity,
+        public ReportsController(CrmSecurity crmSecurity,
                      DaoFactory daoFactory,
                      SettingsManager settingsManager,
                      Global global,
@@ -89,7 +89,7 @@ namespace ASC.CRM.Api
 
             if (!files.Any())
             {
-                var settings = _settingsManager.Load<CRMReportSampleSettings>();
+                var settings = _settingsManager.Load<CrmReportSampleSettings>();
 
                 if (settings.NeedToGenerate)
                 {
@@ -97,7 +97,7 @@ namespace ASC.CRM.Api
 
                     settings.NeedToGenerate = false;
 
-                    _settingsManager.Save<CRMReportSampleSettings>(settings);
+                    _settingsManager.Save<CrmReportSampleSettings>(settings);
                 }
             }
 

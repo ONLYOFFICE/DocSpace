@@ -42,7 +42,7 @@ namespace ASC.CRM.Mapping
     public class TaskDtoTypeConverter : ITypeConverter<Task, TaskDto>,
                                         ITypeConverter<Task, TaskBaseDto>
     {
-        private readonly CRMSecurity _CRMSecurity;
+        private readonly CrmSecurity _crmSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
         private readonly EmployeeWraperHelper _employeeWraperHelper;
         private readonly DaoFactory _daoFactory;
@@ -50,13 +50,13 @@ namespace ASC.CRM.Mapping
 
         public TaskDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
                                  EmployeeWraperHelper employeeWraperHelper,
-                                 CRMSecurity crmSecurity,
+                                 CrmSecurity crmSecurity,
                                  DaoFactory daoFactory,
                                  EntityDtoHelper entityDtoHelper)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
             _employeeWraperHelper = employeeWraperHelper;
-            _CRMSecurity = crmSecurity;
+            _crmSecurity = crmSecurity;
             _daoFactory = daoFactory;
             _entityDtoHelper = entityDtoHelper;
         }
@@ -96,7 +96,7 @@ namespace ASC.CRM.Mapping
                 result.Entity = _entityDtoHelper.Get(source.EntityType, source.EntityID);
             }
 
-            result.CanEdit = _CRMSecurity.CanEdit(source);
+            result.CanEdit = _crmSecurity.CanEdit(source);
 
             return result;
         }

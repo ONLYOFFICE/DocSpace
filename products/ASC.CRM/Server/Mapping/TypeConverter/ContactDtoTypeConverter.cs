@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Common.Web;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
@@ -45,6 +46,7 @@ using Contact = ASC.CRM.Core.Entities.Contact;
 
 namespace ASC.CRM.Mapping
 {
+    [Scope]
     public class ContactDtoTypeConverter : ITypeConverter<Contact, ContactDto>,
                                            ITypeConverter<List<Contact>, List<ContactDto>>,
                                            ITypeConverter<Contact, ContactBaseDto>,
@@ -56,7 +58,7 @@ namespace ASC.CRM.Mapping
 
     {
         private readonly DaoFactory _daoFactory;
-        private readonly CRMSecurity _crmSecurity;
+        private readonly CrmSecurity _crmSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
         private readonly EmployeeWraperHelper _employeeDtoHelper;
         private readonly CurrencyProvider _currencyProvider;
@@ -64,7 +66,7 @@ namespace ASC.CRM.Mapping
 
         public ContactDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
-                           CRMSecurity crmSecurity,
+                           CrmSecurity crmSecurity,
                            CurrencyProvider currencyProvider,
                            PathProvider pathProvider,
                            DaoFactory daoFactory)

@@ -116,9 +116,9 @@ namespace ASC.Web.CRM.Classes
 
     [Serializable]
     [DataContract]
-    public class CRMSettings : ISettings
+    public class CrmSettings : ISettings
     {
-        public CRMSettings()
+        public CrmSettings()
         {
                 
         }
@@ -173,7 +173,7 @@ namespace ASC.Web.CRM.Classes
 
             var findedCurrency = currencyProvider.GetAll().Find(item => String.Compare(item.CultureName, languageName, true) == 0);
 
-            return new CRMSettings()
+            return new CrmSettings()
             {
                 DefaultCurrency = findedCurrency != null ? findedCurrency.Abbreviation : "USD",
                 IsConfiguredPortal = false,
@@ -189,7 +189,7 @@ namespace ASC.Web.CRM.Classes
 
     [Serializable]
     [DataContract]
-    public class CRMReportSampleSettings : ISettings
+    public class CrmReportSampleSettings : ISettings
     {
         [DataMember(Name = "NeedToGenerate")]
         public bool NeedToGenerate { get; set; }
@@ -201,7 +201,7 @@ namespace ASC.Web.CRM.Classes
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {
-            return new CRMReportSampleSettings { NeedToGenerate = true };
+            return new CrmReportSampleSettings { NeedToGenerate = true };
         }
     }
 }

@@ -44,7 +44,7 @@ namespace ASC.CRM.Core.Dao
     public class CurrencyRateDao : AbstractDao
     {
         public CurrencyRateDao(
-            DbContextManager<CRMDbContext> dbContextManager,
+            DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,

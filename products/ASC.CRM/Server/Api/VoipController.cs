@@ -72,7 +72,7 @@ namespace ASC.CRM.Api
         private readonly ContactPhotoManager _contactPhotoManager;
         private readonly Global _global;
 
-        public VoIPController(CRMSecurity crmSecurity,
+        public VoIPController(CrmSecurity crmSecurity,
              DaoFactory daoFactory,
              Global global,
              ContactPhotoManager contactPhotoManager,

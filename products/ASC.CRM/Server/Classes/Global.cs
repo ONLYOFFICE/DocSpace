@@ -54,7 +54,7 @@ namespace ASC.Web.CRM.Classes
                       SecurityContext securityContext,
                       SetupInfo setupInfo,
                       FilesLinkUtility filesLinkUtility,
-                      CRMSecurity crmSecurity,
+                      CrmSecurity crmSecurity,
                       TenantManager tenantManager,
                       SettingsManager settingsManager,
                       IConfiguration configuration
@@ -97,7 +97,7 @@ namespace ASC.Web.CRM.Classes
 
         public StorageFactory StorageFactory { get; }
 
-        public CRMSecurity CRMSecurity { get; }
+        public CrmSecurity CRMSecurity { get; }
 
         public IDataStore GetStore()
         {
@@ -174,10 +174,10 @@ namespace ASC.Web.CRM.Classes
 
         public void SaveDefaultCurrencySettings(CurrencyInfo currency)
         {
-            var tenantSettings = SettingsManager.Load<CRMSettings>();
+            var tenantSettings = SettingsManager.Load<CrmSettings>();
 
             tenantSettings.DefaultCurrency = currency.Abbreviation;
-            SettingsManager.Save<CRMSettings>(tenantSettings);
+            SettingsManager.Save<CrmSettings>(tenantSettings);
         }
 
 

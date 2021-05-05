@@ -108,10 +108,5 @@ namespace ASC.CRM.Core.Entities
         {
             get { return GetType(); }
         }
-
-        public void Mapping(Profile profile)
-        {
-            profile.CreateMap<DbDeal, Deal>();
-        }
     }
 }

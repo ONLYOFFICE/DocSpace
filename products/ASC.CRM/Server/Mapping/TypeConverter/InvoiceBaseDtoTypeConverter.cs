@@ -45,14 +45,14 @@ namespace ASC.CRM.Mapping
         private readonly EntityDtoHelper _entityDtoHelper;
         private readonly CurrencyProvider _currencyProvider;
         private readonly SettingsManager _settingsManager;
-        private readonly CRMSecurity _crmSecurity;
+        private readonly CrmSecurity _crmSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
         private readonly EmployeeWraperHelper _employeeWraperHelper;
         private readonly DaoFactory _daoFactory;
 
         public InvoiceBaseDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
-                           CRMSecurity crmSecurity,
+                           CrmSecurity crmSecurity,
                            SettingsManager settingsManager,
                            CurrencyProvider currencyProvider,
                            DaoFactory daoFactory,
@@ -69,7 +69,7 @@ namespace ASC.CRM.Mapping
 
         public InvoiceBaseDto Convert(Invoice source, InvoiceBaseDto destination, ResolutionContext context)
         {
-            var crmSettings = _settingsManager.Load<CRMSettings>();
+            var crmSettings = _settingsManager.Load<CrmSettings>();
             var defaultCurrency = _currencyProvider.Get(crmSettings.DefaultCurrency);
 
             var result = new InvoiceBaseDto

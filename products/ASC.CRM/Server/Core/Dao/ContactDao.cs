@@ -59,10 +59,10 @@ namespace ASC.CRM.Core.Dao
         private readonly HttpRequestDictionary<Contact> _contactCache;
 
         public CachedContactDao(
-            DbContextManager<CRMDbContext> dbContextManager,
+            DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            CRMSecurity crmSecurity,
+            CrmSecurity crmSecurity,
             IHttpContextAccessor httpContextAccessor,
             TenantUtil tenantUtil,
             AuthorizationManager authorizationManager,
@@ -139,10 +139,10 @@ namespace ASC.CRM.Core.Dao
     public class ContactDao : AbstractDao
     {
         public ContactDao(
-            DbContextManager<CRMDbContext> dbContextManager,
+            DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            CRMSecurity crmSecurity,
+            CrmSecurity crmSecurity,
             TenantUtil tenantUtil,
             AuthorizationManager authorizationManager,
             FilesIntegration filesIntegration,
@@ -180,7 +180,7 @@ namespace ASC.CRM.Core.Dao
         public FilesIntegration FilesIntegration { get; }
         public AuthorizationManager AuthorizationManager { get; }
         public TenantUtil TenantUtil { get; }
-        public CRMSecurity CRMSecurity { get; }
+        public CrmSecurity CRMSecurity { get; }
 
         private readonly String _displayNameSeparator = "!=!";
 

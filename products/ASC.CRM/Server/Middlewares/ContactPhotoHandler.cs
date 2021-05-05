@@ -37,6 +37,7 @@ using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Utility;
 using ASC.Web.CRM.Classes;
+using ASC.Web.CRM.Configuration;
 using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Builder;
@@ -55,7 +56,7 @@ namespace ASC.Web.CRM.HttpHandlers
 
         public async System.Threading.Tasks.Task Invoke(HttpContext context,
                                  SetupInfo setupInfo,
-                                 CRMSecurity crmSecurity,
+                                 CrmSecurity crmSecurity,
                                  FileSizeComment fileSizeComment,
                                  WebItemSecurity webItemSecurity,
                                  MessageTarget messageTarget,
@@ -64,8 +65,8 @@ namespace ASC.Web.CRM.HttpHandlers
                                  ContactPhotoManager contactPhotoManager)
         {
 
-            //if (!webItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))
-            //    throw crmSecurity.CreateSecurityException();
+            if (!webItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))
+                throw crmSecurity.CreateSecurityException();
 
             context.Request.EnableBuffering();
 
@@ -77,8 +78,8 @@ namespace ASC.Web.CRM.HttpHandlers
             {
                 contact = daoFactory.GetContactDao().GetByID(contactId);
 
-                //if (!crmSecurity.CanEdit(contact))
-                //    throw crmSecurity.CreateSecurityException();
+                if (!crmSecurity.CanEdit(contact))
+                    throw crmSecurity.CreateSecurityException();
             }
 
             var fileUploadResult = new FileUploadResult();

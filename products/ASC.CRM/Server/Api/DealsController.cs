@@ -63,7 +63,7 @@ namespace ASC.CRM.Api
         private readonly UserManager _userManager;
         private readonly EmployeeWraperHelper _employeeWraperHelper;
 
-        public DealsController(CRMSecurity crmSecurity,
+        public DealsController(CrmSecurity crmSecurity,
                    DaoFactory daoFactory,
                    ApiContext apiContext,
                    MessageTarget messageTarget,

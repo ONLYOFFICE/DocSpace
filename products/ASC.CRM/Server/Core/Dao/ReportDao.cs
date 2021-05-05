@@ -79,7 +79,7 @@ namespace ASC.CRM.Core.Dao
 
         #region Constructor
 
-        public ReportDao(DbContextManager<CRMDbContext> dbContextManager,
+        public ReportDao(DbContextManager<CrmDbContext> dbContextManager,
                         DbContextManager<UserDbContext> dbUserContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
@@ -111,9 +111,9 @@ namespace ASC.CRM.Core.Dao
             _serviceProvider = serviceProvider;
             _daoFactory = daoFactory;
 
-            var crmSettings = settingsManager.Load<CRMSettings>();
+            var crmSettings = settingsManager.Load<CrmSettings>();
 
-            _userDbContext = dbUserContextManager.Get(CRMConstants.DatabaseId);
+            _userDbContext = dbUserContextManager.Get(CrmConstants.DatabaseId);
 
             _defaultCurrency = currencyProvider.Get(crmSettings.DefaultCurrency);
 

@@ -26,6 +26,7 @@
 using System;
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core.Common.Settings;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
@@ -38,6 +39,7 @@ using AutoMapper;
 
 namespace ASC.CRM.Mapping
 {
+    [Scope]
     public class InvoiceItemDtoTypeConverter : ITypeConverter<InvoiceItem, InvoiceItemDto>
     {
         private readonly DaoFactory _daoFactory;
@@ -45,11 +47,11 @@ namespace ASC.CRM.Mapping
         private readonly SettingsManager _settingsManager;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
         private readonly EmployeeWraperHelper _employeeWraperHelper;
-        private readonly CRMSecurity _crmSecurity;
+        private readonly CrmSecurity _crmSecurity;
 
         public InvoiceItemDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
                                     EmployeeWraperHelper employeeWraperHelper,
-                                   CRMSecurity crmSecurity,
+                                   CrmSecurity crmSecurity,
                                    SettingsManager settingsManager,
                                    CurrencyProvider currencyProvider,
                                    DaoFactory daoFactory)
@@ -67,7 +69,7 @@ namespace ASC.CRM.Mapping
             if (destination != null)
                 throw new NotImplementedException();
 
-            var crmSettings = _settingsManager.Load<CRMSettings>();
+            var crmSettings = _settingsManager.Load<CrmSettings>();
             var defaultCurrency = _currencyProvider.Get(crmSettings.DefaultCurrency);
 
             var result = new InvoiceItemDto

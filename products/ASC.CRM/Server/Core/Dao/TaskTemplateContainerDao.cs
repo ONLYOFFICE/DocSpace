@@ -47,7 +47,7 @@ namespace ASC.CRM.Core.Dao
     public class TaskTemplateContainerDao : AbstractDao
     {
         public TaskTemplateContainerDao(
-            DbContextManager<CRMDbContext> dbContextManager,
+            DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
@@ -146,7 +146,7 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class TaskTemplateDao : AbstractDao
     {
-        public TaskTemplateDao(DbContextManager<CRMDbContext> dbContextManager,
+        public TaskTemplateDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,

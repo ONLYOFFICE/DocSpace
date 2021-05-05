@@ -54,7 +54,7 @@ namespace ASC.CRM.Core.Dao
         private readonly HttpRequestDictionary<ListItem> _listItemCache;
 
         public CachedListItem(
-            DbContextManager<CRMDbContext> dbContextManager,
+            DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IHttpContextAccessor httpContextAccessor,
@@ -126,7 +126,7 @@ namespace ASC.CRM.Core.Dao
     public class ListItemDao : AbstractDao
     {
         public ListItemDao(
-            DbContextManager<CRMDbContext> dbContextManager,
+            DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,

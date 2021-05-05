@@ -47,7 +47,7 @@ namespace ASC.CRM.Api
     {
         private readonly EmployeeWraperHelper _employeeWraperHelper;
 
-        public TaskTemplateController(CRMSecurity crmSecurity,
+        public TaskTemplateController(CrmSecurity crmSecurity,
                                     DaoFactory daoFactory,
                                     EmployeeWraperHelper employeeWraperHelper,
                                     IMapper mapper)

@@ -32,11 +32,34 @@ using ASC.CRM.Core.EF;
 using ASC.CRM.Mapping;
 using ASC.CRM.Resources;
 
+using AutoMapper;
+
 namespace ASC.CRM.Core
 {
     public class CurrencyInfo : IMapFrom<DbCurrencyInfo>
     {
-        private readonly String _resourceKey;
+        private String _resourceKey;
+
+        public CurrencyInfo()
+        {
+
+        }
+        public CurrencyInfo(string resourceKey, string abbreviation, string symbol, string cultureName, bool isConvertable, bool isBasic)
+        {
+            _resourceKey = resourceKey;
+            Symbol = symbol;
+            Abbreviation = abbreviation;
+            CultureName = cultureName;
+            IsConvertable = isConvertable;
+            IsBasic = isBasic;
+        }
+
+
+        public string Symbol { get; set; }
+        public string Abbreviation { get; set; }
+        public string CultureName { get; set; }
+        public bool IsConvertable { get; set; }
+        public bool IsBasic { get; set; }
 
         public String Title
         {
@@ -47,27 +70,6 @@ namespace ASC.CRM.Core
 
                 return CRMCommonResource.ResourceManager.GetString(_resourceKey);
             }
-        }
-
-        public string Symbol { get; set; }
-        public string Abbreviation { get; set; }
-        public string CultureName { get; set; }
-        public bool IsConvertable { get; set; }
-        public bool IsBasic { get; set; }
-
-        public CurrencyInfo()
-        {
-                
-        }
-
-        public CurrencyInfo(string resourceKey, string abbreviation, string symbol, string cultureName, bool isConvertable, bool isBasic)
-        {
-            _resourceKey = resourceKey;
-            Symbol = symbol;
-            Abbreviation = abbreviation;
-            CultureName = cultureName;
-            IsConvertable = isConvertable;
-            IsBasic = isBasic;
         }
 
         public override bool Equals(object obj)
@@ -84,6 +86,12 @@ namespace ASC.CRM.Core
         public override string ToString()
         {
             return string.Concat(Abbreviation, "-", Title);
+        }
+
+        public void Mapping(Profile profile) 
+        {
+            profile.CreateMap<DbCurrencyInfo, CurrencyInfo>()
+                .ForMember(dest => dest._resourceKey, opt => opt.MapFrom(src => src.ResourceKey));
         }
     }
 }

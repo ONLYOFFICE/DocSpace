@@ -44,7 +44,7 @@ namespace ASC.CRM.Mapping
     {
         private readonly FileWrapperHelper _fileWrapperHelper;
         private readonly DaoFactory _daoFactory;
-        private readonly CRMSecurity _crmSecurity;
+        private readonly CrmSecurity _crmSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
         private readonly EmployeeWraperHelper _employeeWraperHelper;
         private readonly EntityDtoHelper _entityDtoHelper;
@@ -53,7 +53,7 @@ namespace ASC.CRM.Mapping
                            ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
                            FileWrapperHelper fileWrapperHelper,
-                           CRMSecurity crmSecurity,
+                           CrmSecurity crmSecurity,
                            DaoFactory daoFactory,
                            EntityDtoHelper entityDtoHelper)
         {

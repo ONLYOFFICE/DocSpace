@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Common.Web;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
@@ -41,23 +42,24 @@ using AutoMapper;
 
 namespace ASC.CRM.Mapping
 {
+    [Scope]
     public class OpportunityDtoTypeConverter : ITypeConverter<Deal, OpportunityDto>
     {
         private readonly CurrencyProvider _currencyProvider;
         private readonly DaoFactory _daoFactory;
-        private readonly CRMSecurity _cRMSecurity;
+        private readonly CrmSecurity _crmSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
         private readonly EmployeeWraperHelper _employeeWraperHelper;
 
         public OpportunityDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
                            EmployeeWraperHelper employeeWraperHelper,
-                           CRMSecurity crmSecurity,
+                           CrmSecurity crmSecurity,
                            DaoFactory daoFactory,
                            CurrencyProvider currencyProvider)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
             _employeeWraperHelper = employeeWraperHelper;
-            _cRMSecurity = crmSecurity;
+            _crmSecurity = crmSecurity;
             _daoFactory = daoFactory;
             _currencyProvider = currencyProvider;
         }
@@ -78,7 +80,7 @@ namespace ASC.CRM.Mapping
                 SuccessProbability = source.DealMilestoneProbability,
                 ActualCloseDate = _apiDateTimeHelper.Get(source.ActualCloseDate),
                 ExpectedCloseDate = _apiDateTimeHelper.Get(source.ExpectedCloseDate),
-                CanEdit = _cRMSecurity.CanEdit(source)
+                CanEdit = _crmSecurity.CanEdit(source)
             };
 
             if (source.ContactID > 0)
@@ -94,10 +96,10 @@ namespace ASC.CRM.Mapping
                 dealDto.Stage = new DealMilestoneBaseDto(dealMilestone);
             }
 
-            dealDto.AccessList = _cRMSecurity.GetAccessSubjectTo(source)
+            dealDto.AccessList = _crmSecurity.GetAccessSubjectTo(source)
                                                 .Select(item => _employeeWraperHelper.Get(item.Key));
 
-            dealDto.IsPrivate = _cRMSecurity.IsPrivate(source);
+            dealDto.IsPrivate = _crmSecurity.IsPrivate(source);
 
             if (!string.IsNullOrEmpty(source.BidCurrency))
                 dealDto.BidCurrency = context.Mapper.Map<CurrencyInfoDto>(_currencyProvider.Get(source.BidCurrency));

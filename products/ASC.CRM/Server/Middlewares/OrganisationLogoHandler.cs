@@ -51,7 +51,7 @@ namespace ASC.Web.CRM.HttpHandlers
         }
 
         public async System.Threading.Tasks.Task Invoke(HttpContext context,
-            CRMSecurity crmSecurity,
+            CrmSecurity crmSecurity,
             SetupInfo setupInfo,
             FileSizeComment fileSizeComment,
             ContactPhotoManager contactPhotoManager,

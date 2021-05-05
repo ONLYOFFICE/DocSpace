@@ -42,9 +42,9 @@ namespace ASC.Web.CRM.Configuration
 {
 
     [Scope]
-    public class CRMSpaceUsageStatManager : SpaceUsageStatManager
+    public class CrmSpaceUsageStatManager : SpaceUsageStatManager
     {
-        public CRMSpaceUsageStatManager(DbContextManager<FilesDbContext> filesDbContext,
+        public CrmSpaceUsageStatManager(DbContextManager<FilesDbContext> filesDbContext,
                                         PathProvider pathProvider,
                                         TenantManager tenantManager)
         {

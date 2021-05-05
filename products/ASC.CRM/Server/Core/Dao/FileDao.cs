@@ -47,7 +47,7 @@ namespace ASC.CRM.Core.Dao
     public class FileDao : AbstractDao
     {
         public FileDao(FilesIntegration filesIntegration,
-                       DbContextManager<CRMDbContext> dbContextManager,
+                       DbContextManager<CrmDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
                        IOptionsMonitor<ILog> logger,

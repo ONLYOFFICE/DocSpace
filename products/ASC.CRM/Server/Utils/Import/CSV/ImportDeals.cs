@@ -103,7 +103,7 @@ namespace ASC.Web.CRM.Classes
 
                     var currency = CurrencyProvider.Get(GetPropertyValue("bid_currency"));
 
-                    var crmSettings = SettingsManager.Load<CRMSettings>();
+                    var crmSettings = SettingsManager.Load<CrmSettings>();
                     var defaultCurrency = CurrencyProvider.Get(crmSettings.DefaultCurrency);
 
                     if (currency != null)

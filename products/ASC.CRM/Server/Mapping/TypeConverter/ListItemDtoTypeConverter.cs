@@ -26,6 +26,7 @@
 
 using System;
 
+using ASC.Common;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
@@ -38,6 +39,7 @@ using AutoMapper;
 namespace ASC.CRM.Mapping
 {
 
+    [Scope]
     public sealed class ListItemDtoTypeConverter : ITypeConverter<ListItem, TaskCategoryBaseDto>,
                                                    ITypeConverter<ListItem, TaskCategoryDto>,
                                                    ITypeConverter<ListItem, HistoryCategoryDto>,

@@ -59,10 +59,10 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly HttpRequestDictionary<Deal> _dealCache;
 
-        public CachedDealDao(DbContextManager<CRMDbContext> dbContextManager,
+        public CachedDealDao(DbContextManager<CrmDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
-                       CRMSecurity crmSecurity,
+                       CrmSecurity crmSecurity,
                        FactoryIndexerDeal factoryIndexer,
                        FilesIntegration filesIntegration,
                        IHttpContextAccessor httpContextAccessor,
@@ -122,10 +122,10 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class DealDao : AbstractDao
     {
-        public DealDao(DbContextManager<CRMDbContext> dbContextManager,
+        public DealDao(DbContextManager<CrmDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
-                       CRMSecurity crmSecurity,
+                       CrmSecurity crmSecurity,
                        FactoryIndexerDeal factoryIndexer,
                        FilesIntegration filesIntegration,
                        IOptionsMonitor<ILog> logger,
@@ -153,7 +153,7 @@ namespace ASC.CRM.Core.Dao
         public FactoryIndexerDeal FactoryIndexer { get; }
 
         public TenantUtil TenantUtil { get; }
-        public CRMSecurity CRMSecurity { get; }
+        public CrmSecurity CRMSecurity { get; }
 
         public AuthorizationManager AuthorizationManager { get; }
 

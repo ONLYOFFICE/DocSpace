@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Reflection;
+using System.Text.Json.Serialization;
 
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Convention;
@@ -8,6 +9,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+using ASC.Common.Mapping;
 
 using Autofac;
 
@@ -113,6 +115,8 @@ namespace ASC.Api.Core
             {
                 LogNLogExtension.ConfigureLog(DIHelper, LogParams);
             }
+
+            services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
         }
 
         public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -52,7 +52,7 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly HttpRequestDictionary<InvoiceLine> _invoiceLineCache;
 
-        public CachedInvoiceLineDao(DbContextManager<CRMDbContext> dbContextManager,
+        public CachedInvoiceLineDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IHttpContextAccessor httpContextAccessor,
@@ -103,7 +103,7 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class InvoiceLineDao : AbstractDao
     {
-        public InvoiceLineDao(DbContextManager<CRMDbContext> dbContextManager,
+        public InvoiceLineDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,

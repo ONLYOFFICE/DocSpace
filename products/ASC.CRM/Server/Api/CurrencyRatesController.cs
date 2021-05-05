@@ -51,7 +51,7 @@ namespace ASC.CRM.Api
         private readonly Global _global;
         private readonly MessageService _messageService;
 
-        public CurrencyRatesController(CRMSecurity crmSecurity,
+        public CurrencyRatesController(CrmSecurity crmSecurity,
                      DaoFactory daoFactory,
                      MessageService messageService,
                      SettingsManager settingsManager,
@@ -204,8 +204,8 @@ namespace ASC.CRM.Api
 
             currency = currency.ToUpper();
 
-            var crmSettings = _settingsManager.Load<CRMSettings>();
-            var defaultCurrency = _currencyProvider.Get(_settingsManager.Load<CRMSettings>().DefaultCurrency);
+            var crmSettings = _settingsManager.Load<CrmSettings>();
+            var defaultCurrency = _currencyProvider.Get(_settingsManager.Load<CrmSettings>().DefaultCurrency);
 
             if (defaultCurrency.Abbreviation != currency)
             {

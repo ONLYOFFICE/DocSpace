@@ -56,10 +56,10 @@ namespace ASC.CRM.Core.Dao
 
         private readonly HttpRequestDictionary<Task> _contactCache;
 
-        public CachedTaskDao(DbContextManager<CRMDbContext> dbContextManager,
+        public CachedTaskDao(DbContextManager<CrmDbContext> dbContextManager,
                       TenantManager tenantManager,
                       SecurityContext securityContext,
-                      CRMSecurity crmSecurity,
+                      CrmSecurity crmSecurity,
                       TenantUtil tenantUtil,
                       FactoryIndexerTask factoryIndexer,
                       IOptionsMonitor<ILog> logger,
@@ -125,10 +125,10 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class TaskDao : AbstractDao
     {
-        public TaskDao(DbContextManager<CRMDbContext> dbContextManager,
+        public TaskDao(DbContextManager<CrmDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
-                       CRMSecurity crmSecurity,
+                       CrmSecurity crmSecurity,
                        TenantUtil tenantUtil,
                        FactoryIndexerTask factoryIndexer,
                        IOptionsMonitor<ILog> logger,
@@ -159,7 +159,7 @@ namespace ASC.CRM.Core.Dao
 
         public TenantUtil TenantUtil { get; }
 
-        public CRMSecurity CRMSecurity { get; }
+        public CrmSecurity CRMSecurity { get; }
 
         public void OpenTask(int taskId)
         {

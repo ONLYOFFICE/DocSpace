@@ -71,7 +71,7 @@ namespace ASC.CRM.Api
         private readonly NotifyClient _notifyClient;
 
         public RelationshipEventsController(
-                     CRMSecurity crmSecurity,
+                     CrmSecurity crmSecurity,
                      DaoFactory daoFactory,
                      ApiContext apiContext,
                      MessageTarget messageTarget,

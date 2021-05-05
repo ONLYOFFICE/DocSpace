@@ -64,7 +64,7 @@ namespace ASC.CRM.Api
         private readonly MessageTarget _messageTarget;
         private readonly CurrencyProvider _currencyProvider;
 
-        public InvoicesController(CRMSecurity crmSecurity,
+        public InvoicesController(CrmSecurity crmSecurity,
                      DaoFactory daoFactory,
                      ApiContext apiContext,
                      MessageTarget messageTarget,
@@ -125,7 +125,7 @@ namespace ASC.CRM.Api
         [Read(@"invoice/sample")]
         public InvoiceDto GetInvoiceSample()
         {
-            var crmSettings = _settingsManager.Load<CRMSettings>();
+            var crmSettings = _settingsManager.Load<CrmSettings>();
             var defaultCurrency = _currencyProvider.Get(crmSettings.DefaultCurrency);
 
             var sample = InvoiceDto.GetSample();
