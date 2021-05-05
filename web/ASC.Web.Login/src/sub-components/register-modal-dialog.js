@@ -8,16 +8,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import FieldContainer from "@appserver/components/field-container";
 
 import ModalDialogContainer from "./modal-dialog-container";
-
-const domains = ["mail.ru", "gmail.com", "yandex.ru"];
-const domainList = domains.map((domain, i) => (
-  <span key={i}>
-    <b>
-      {domain}
-      {i === domains.length - 1 ? "." : ", "}
-    </b>
-  </span>
-));
+import { TenantTrustedDomainsType } from "@appserver/common/constants";
 
 const RegisterModalDialog = ({
   visible,
@@ -28,7 +19,30 @@ const RegisterModalDialog = ({
   onChangeEmail,
   onRegisterModalClose,
   onSendRegisterRequest,
+  trustedDomainsType,
+  trustedDomains,
 }) => {
+  const getDomains = () => {
+    return trustedDomains.map((domain, i) => (
+      <span key={i}>
+        <b>
+          {domain}
+          {i === trustedDomains.length - 1 ? "." : ", "}
+        </b>
+      </span>
+    ));
+  };
+
+  const getDomainsBlock = () => {
+    return trustedDomainsType === TenantTrustedDomainsType.Custom ? (
+      <>
+        {t("RegisterTextBodyBeforeDomainsList")} {getDomains()}{" "}
+      </>
+    ) : (
+      <></>
+    );
+  };
+
   return (
     <ModalDialogContainer>
       <ModalDialog
@@ -43,7 +57,7 @@ const RegisterModalDialog = ({
         </ModalDialog.Header>
         <ModalDialog.Body>
           <Text key="text-body" isBold={false} fontSize="13px">
-            {t("RegisterTextBodyBeforeDomainsList")} {domainList}{" "}
+            {getDomainsBlock()}
             {t("RegisterTextBodyAfterDomainsList")}
           </Text>
 
@@ -100,6 +114,8 @@ RegisterModalDialog.propTypes = {
   onChangeEmail: PropTypes.func.isRequired,
   onSendRegisterRequest: PropTypes.func.isRequired,
   onRegisterModalClose: PropTypes.func.isRequired,
+  trustedDomainsType: PropTypes.number,
+  trustedDomains: PropTypes.array,
 };
 
 export default RegisterModalDialog;
