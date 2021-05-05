@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 
+using ASC.Common.Utils;
+
 using Autofac;
 using Autofac.Configuration;
 
@@ -82,13 +84,13 @@ namespace ASC.Common.DependencyInjection
 
             if (!Path.IsPathRooted(folder))
             {
-                if (currentDir.EndsWith(Path.Combine(Path.GetFileName(folder), Assembly.GetEntryAssembly().GetName().Name, subfolder)))
+                if (currentDir.EndsWith(CrossPlatform.PathCombine(Path.GetFileName(folder), Assembly.GetEntryAssembly().GetName().Name, subfolder)))
                 {
-                    productsDir = Path.GetFullPath(Path.Combine("..", ".."));
+                    productsDir = Path.GetFullPath(CrossPlatform.PathCombine("..", ".."));
                 }
                 else
                 {
-                    productsDir = Path.GetFullPath(Path.Combine(currentDir, folder));
+                    productsDir = Path.GetFullPath(CrossPlatform.PathCombine(currentDir, folder));
                 }
             }
             else
@@ -129,8 +131,8 @@ namespace ASC.Common.DependencyInjection
 
             string GetFullPath(string n)
             {
-                var productPath = Path.Combine(productsDir, n, subfolder);
-                return GetPath(Path.Combine(productPath, "bin"), n, SearchOption.AllDirectories) ?? GetPath(productPath, n, SearchOption.TopDirectoryOnly);
+                var productPath = CrossPlatform.PathCombine(productsDir, n, subfolder);
+                return GetPath(CrossPlatform.PathCombine(productPath, "bin"), n, SearchOption.AllDirectories) ?? GetPath(productPath, n, SearchOption.TopDirectoryOnly);
             }
 
             static string GetPath(string dirPath, string dll, SearchOption searchOption)
@@ -155,7 +157,7 @@ namespace ASC.Common.DependencyInjection
 
         public Assembly Resolving(AssemblyLoadContext context, AssemblyName assemblyName)
         {
-            var path = Path.Combine(Path.GetDirectoryName(ResolvePath), $"{assemblyName.Name}.dll");
+            var path = CrossPlatform.PathCombine(Path.GetDirectoryName(ResolvePath), $"{assemblyName.Name}.dll");
 
             if (!File.Exists(path)) return null;
 

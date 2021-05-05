@@ -1,8 +1,9 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import Backdrop from "@appserver/components/backdrop";
 import Link from "@appserver/components/link";
+import Loader from "@appserver/components/loader";
+import Text from "@appserver/components/text";
 import Heading from "@appserver/components/heading";
 import Aside from "@appserver/components/aside";
 import Row from "@appserver/components/row";
@@ -24,21 +25,25 @@ import { inject, observer } from "mobx-react";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
-class NewFilesPanelComponent extends React.Component {
+class NewFilesPanel extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { files: [] };
+    this.state = { files: [], readingFiles: [] };
   }
 
   componentDidMount() {
-    const { folderId, setIsLoading } = this.props;
+    const { newFilesIds, setIsLoading } = this.props;
     setIsLoading(true);
-    getNewFiles(folderId[folderId.length - 1])
+    getNewFiles(newFilesIds[newFilesIds.length - 1])
       .then((files) => this.setState({ files }))
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
   }
+
+  onClose = () => {
+    this.props.setNewFilesPanelVisible(false);
+  };
 
   getItemIcon = (item, isEdit) => {
     const extension = item.fileExst;
@@ -59,57 +64,50 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   onMarkAsRead = () => {
-    const { folderId, onClose } = this.props;
-    const markAsReadFiles = true;
-
-    const folderIds = [];
     const fileIds = [];
-    const itemsIds = [];
 
     for (let item of this.state.files) {
-      itemsIds.push(`${item.id}`);
-      if (item.fileExst) {
-        fileIds.push(item.id);
-      } else {
-        folderIds.push(item.id);
-      }
+      fileIds.push(`${item.id}`);
     }
 
-    markAsRead(folderIds, fileIds)
-      .then(() => {
-        this.setNewFilesCount(folderId, markAsReadFiles);
-        this.props.setNewRowItems(itemsIds);
-      })
+    markAsRead([], fileIds)
+      .then(() => this.setNewBadgeCount())
       .catch((err) => toastr.error(err))
-      .finally(() => onClose());
+      .finally(() => this.onClose());
   };
 
-  onNewFilesClick = (item) => {
-    const { onClose, /*setIsLoading,*/ folderId, markAsRead } = this.props;
-    const folderIds = [];
-    const fileId = [];
-    const isFile = item.fileExst;
+  onNewFileClick = (item) => {
+    const {
+      updateFileBadge,
+      updateFolderBadge,
+      updateRootBadge,
+      markAsRead,
+      newFilesIds,
+    } = this.props;
+    const readingFiles = this.state.readingFiles;
 
-    isFile ? fileId.push(item.id) : folderIds.push(item.id);
-
-    markAsRead(folderIds, fileId)
+    markAsRead([], [item.id])
       .then(() => {
-        this.setNewFilesCount(folderId, false, item);
-        this.onFilesClick(item);
+        // TODO: How update row folder badge count? Fetch?
+
+        if (readingFiles.includes(item.id)) return this.onFileClick(item);
+
+        updateRootBadge(+newFilesIds[0], 1);
+        updateFolderBadge(item.folderId, 1);
+        updateFileBadge(item.id);
+
+        readingFiles.push(item.id);
+        this.setState({ readingFiles });
+        this.onFileClick(item);
       })
-      .catch((err) => toastr.error(err))
-      .finally(() => {
-        !isFile && onClose();
-      });
+      .catch((err) => toastr.error(err));
   };
 
-  onFilesClick = (item) => {
-    console.log("ITEM", item);
-    return;
-    const { id, fileExst, viewUrl, fileType, providerKey } = item;
+  onFileClick = (item) => {
+    const { id, fileExst, webUrl, fileType, providerKey } = item;
     const {
       filter,
-      setMediaViewerData,
+      //setMediaViewerData,
       fetchFiles,
       addFileToRecentlyViewed,
     } = this.props;
@@ -142,74 +140,43 @@ class NewFilesPanelComponent extends React.Component {
         return;
       }
 
-      return window.open(viewUrl, "_blank");
+      return window.open(webUrl, "_blank");
     }
   };
 
-  setNewFilesCount = (folderPath, markAsReadAll, item) => {
-    const { treeFolders, setTreeFolders, folders, files } = this.props;
+  setNewBadgeCount = () => {
+    const {
+      newFilesIds,
+      updateFoldersBadge,
+      updateFilesBadge,
+      updateRootBadge,
+      updateFolderBadge,
+      pathParts,
+    } = this.props;
 
-    const data = treeFolders;
-    let dataItem;
+    const filesCount = this.state.files.length;
+    updateRootBadge(+newFilesIds[0], filesCount);
 
-    const loop = (index, newData) => {
-      dataItem = newData.find((x) => x.id === folderPath[index]);
-      if (index === folderPath.length - 1) {
-        const rootItem = data.find((x) => x.id === folderPath[0]);
-        const newFilesCounter = dataItem.newItems
-          ? dataItem.newItems
-          : dataItem.new;
-        rootItem.newItems = markAsReadAll
-          ? rootItem.newItems - newFilesCounter
-          : rootItem.newItems - 1;
-        dataItem.newItems = markAsReadAll ? 0 : newFilesCounter - 1;
-        this.props.setNewRowItems([`${item.id}`]);
-        return;
-      } else {
-        loop(index + 1, dataItem.folders);
+    if (newFilesIds.length <= 1) {
+      if (pathParts[0] === +newFilesIds[0]) {
+        updateFoldersBadge();
+        updateFilesBadge();
       }
-    };
-
-    if (folderPath.length > 1) {
-      loop(0, data);
     } else {
-      dataItem = data.find((x) => x.id === +folderPath[0]);
-      dataItem.newItems = markAsReadAll ? 0 : dataItem.newItems - 1;
-
-      if (item && (item.fileExst || item.contentLength)) {
-        const fileItem = files.find(
-          (x) => x.id === item.id && (x.fileExst || item.contentLength)
-        );
-        if (fileItem) {
-          fileItem.new = markAsReadAll ? 0 : fileItem.new - 1;
-        } else {
-          const filesFolder = folders.find((x) => x.id === item.folderId);
-          if (filesFolder) {
-            filesFolder.new = markAsReadAll ? 0 : filesFolder.new - 1;
-          }
-        }
-        this.props.setNewRowItems([`${item.id}`]);
-      } else if (item && !item.fileExst) {
-        const folderItem = folders.find((x) => x.id === item.id && !x.fileExst);
-        if (folderItem) {
-          folderItem.new = markAsReadAll ? 0 : folderItem.new - 1;
-        }
-      }
+      updateFolderBadge(+newFilesIds[newFilesIds.length - 1], filesCount);
     }
-
-    setTreeFolders(data);
   };
 
   render() {
     //console.log("NewFiles panel render");
-    const { t, visible, onClose } = this.props;
+    const { t, visible, onClose, isLoading } = this.props;
     const { files } = this.state;
     const zIndex = 310;
 
     return (
       <StyledAsidePanel visible={visible}>
         <Backdrop
-          onClick={onClose}
+          onClick={this.onClose}
           visible={visible}
           zIndex={zIndex}
           isAside={true}
@@ -225,37 +192,45 @@ class NewFilesPanelComponent extends React.Component {
                 {t("NewFiles")}
               </Heading>
             </StyledHeaderContent>
-            <StyledBody className="files-operations-body">
-              <RowContainer useReactWindow>
-                {files.map((file) => {
-                  const element = this.getItemIcon(file);
-                  return (
-                    <Row key={file.id} element={element}>
-                      <Box
-                        onClick={this.onNewFilesClick.bind(this, file)}
-                        marginProp="auto 0"
-                      >
-                        <Link
-                          containerWidth="100%"
-                          type="page"
-                          fontWeight="bold"
-                          color="#333"
-                          isTextOverflow
-                          truncate
-                          title={file.title}
-                          fontSize="14px"
-                          className="files-new-link"
+            {!isLoading ? (
+              <StyledBody className="files-operations-body">
+                <RowContainer useReactWindow>
+                  {files.map((file) => {
+                    const element = this.getItemIcon(file);
+                    return (
+                      <Row key={file.id} element={element}>
+                        <Box
+                          onClick={this.onNewFileClick.bind(this, file)}
+                          marginProp="auto 0"
                         >
-                          {file.title}
-                        </Link>
-                      </Box>
-                    </Row>
-                  );
-                })}
-              </RowContainer>
-            </StyledBody>
+                          <Link
+                            containerWidth="100%"
+                            type="page"
+                            fontWeight="bold"
+                            color="#333"
+                            isTextOverflow
+                            truncate
+                            title={file.title}
+                            fontSize="14px"
+                            className="files-new-link"
+                          >
+                            {file.title}
+                          </Link>
+                        </Box>
+                      </Row>
+                    );
+                  })}
+                </RowContainer>
+              </StyledBody>
+            ) : (
+              <div key="loader" className="panel-loader-wrapper">
+                <Loader type="oval" size="16px" className="panel-loader" />
+                <Text as="span">{t("LoadingLabel")}</Text>
+              </div>
+            )}
             <StyledFooter>
               <Button
+                className="new_files_panel-button"
                 label={t("MarkAsRead")}
                 size="big"
                 primary
@@ -265,7 +240,7 @@ class NewFilesPanelComponent extends React.Component {
                 className="sharing_panel-button"
                 label={t("CloseButton")}
                 size="big"
-                onClick={onClose}
+                onClick={this.onClose}
               />
             </StyledFooter>
           </StyledContent>
@@ -275,13 +250,6 @@ class NewFilesPanelComponent extends React.Component {
   }
 }
 
-NewFilesPanelComponent.propTypes = {
-  onClose: PropTypes.func,
-  visible: PropTypes.bool,
-};
-
-const NewFilesPanel = withTranslation("NewFilesPanel")(NewFilesPanelComponent);
-
 export default inject(
   ({
     filesStore,
@@ -289,36 +257,52 @@ export default inject(
     treeFoldersStore,
     formatsStore,
     filesActionsStore,
+    selectedFolderStore,
+    dialogsStore,
   }) => {
     const {
-      files,
-      folders,
       fetchFiles,
       filter,
       addFileToRecentlyViewed,
-      setNewRowItems,
       setIsLoading,
+      isLoading,
+      updateFileBadge,
+      updateFilesBadge,
+      updateFolderBadge,
+      updateFoldersBadge,
     } = filesStore;
-    const { treeFolders, setTreeFolders } = treeFoldersStore;
+    const { updateRootBadge } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;
     const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
     const { markAsRead } = filesActionsStore;
+    const { pathParts } = selectedFolderStore;
+
+    const {
+      setNewFilesPanelVisible,
+      newFilesPanelVisible: visible,
+      newFilesIds,
+    } = dialogsStore;
 
     return {
-      files,
-      folders,
-      treeFolders,
       filter,
+      pathParts,
+      visible,
+      newFilesIds,
 
+      isLoading,
       setIsLoading,
       fetchFiles,
-      setTreeFolders,
       setMediaViewerData,
       addFileToRecentlyViewed,
-      setNewRowItems,
       getFileIcon,
       getFolderIcon,
       markAsRead,
+      setNewFilesPanelVisible,
+      updateRootBadge,
+      updateFileBadge,
+      updateFolderBadge,
+      updateFoldersBadge,
+      updateFilesBadge,
     };
   }
-)(withRouter(observer(NewFilesPanel)));
+)(withRouter(withTranslation("NewFilesPanel")(observer(NewFilesPanel))));

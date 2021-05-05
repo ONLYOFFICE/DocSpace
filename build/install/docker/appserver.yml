@@ -29,6 +29,9 @@ x-service:
     - people_data:/var/www/products/ASC.People/server/
     - crm_data:/var/www/products/ASC.CRM/server/
     - project_data:/var/www/products/ASC.Projects/server/
+    - calendar_data:/var/www/products/ASC.Calendar/server/
+    - mail_data:/var/www/products/ASC.Mail/server/
+    
 
 services: 
   onlyoffice-elasticsearch:
@@ -95,6 +98,11 @@ services:
     image: "${REPO}/${STATUS}appserver-backup:${SRV_VERSION}"
     container_name: ${BACKUP_HOST}
   
+  onlyoffice-calendar:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-calendar:${SRV_VERSION}"
+    container_name: ${CALENDAR_HOST}
+
   onlyoffice-crm:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-crm:${SRV_VERSION}"
@@ -115,15 +123,15 @@ services:
     image: "${REPO}/${STATUS}appserver-files-services:${SRV_VERSION}"
     container_name: ${FILES_SERVICES_HOST}
 
+  onlyoffice-mail:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-mail:${SRV_VERSION}"
+    container_name: ${MAIL_HOST}
+
   onlyoffice-storage-migration:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-storage-migration:${SRV_VERSION}"
     container_name: ${STORAGE_MIGRATION_HOST}
-  
-  onlyoffice-notify:
-    <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-notify:${SRV_VERSION}"
-    container_name: ${NOTIFY_HOST}  
   
   onlyoffice-people-server:
     <<: *x-service-base
@@ -192,12 +200,13 @@ services:
     depends_on:
       - onlyoffice-api-system
       - onlyoffice-backup
+      - onlyoffice-calendar
       - onlyoffice-crm
       - onlyoffice-storage-encryption
       - onlyoffice-files
       - onlyoffice-files-services
+      - onlyoffice-mail
       - onlyoffice-storage-migration
-      - onlyoffice-notify
       - onlyoffice-people-server
       - onlyoffice-projects-server
       - onlyoffice-socket
@@ -210,10 +219,12 @@ services:
     environment:
       - SERVICE_API_SYSTEM=${SERVICE_API_SYSTEM}
       - SERVICE_BACKUP=${SERVICE_BACKUP}
+      - SERVICE_CALENDAR=${SERVICE_CALENDAR}
       - SERVICE_CRM=${SERVICE_CRM}
       - SERVICE_STORAGE_ENCRYPTION=${SERVICE_STORAGE_ENCRYPTION}
       - SERVICE_FILES=${SERVICE_FILES}
       - SERVICE_FILES_SERVICES=${SERVICE_FILES_SERVICES}
+      - SERVICE_MAIL=${SERVICE_MAIL}
       - SERVICE_STORAGE_MIGRATION=${SERVICE_STORAGE_MIGRATION}
       - SERVICE_NOTIFY=${SERVICE_NOTIFY}
       - SERVICE_PEOPLE_SERVER=${SERVICE_PEOPLE_SERVER}
@@ -246,3 +257,5 @@ volumes:
   people_data:
   crm_data:
   project_data:
+  calendar_data:
+  mail_data:

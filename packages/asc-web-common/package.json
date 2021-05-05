@@ -1,6 +1,6 @@
 {
   "name": "@appserver/common",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
     "build": "echo 'skip it'",
@@ -16,6 +16,7 @@
     "url": ""
   },
   "dependencies": {
-    "global": "^4.4.0"
+    "global": "^4.4.0",
+    "react-selectable-fast": "^3.4.0"
   }
 }

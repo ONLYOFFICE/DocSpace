@@ -214,7 +214,7 @@ namespace ASC.Api.Documents
                 result.Add((int)GlobalFolderHelper.FolderTrash);
             }
 
-            return result.Select(r => FilesControllerHelperInt.GetFolder(r, userIdOrGroupId, filterType, withsubfolders));
+            return result.Select(r => FilesControllerHelperInt.GetFolder(r, userIdOrGroupId, filterType, withsubfolders)).ToList();
         }
 
 
@@ -1061,7 +1061,7 @@ namespace ASC.Api.Documents
             var result = new List<FileEntry>();
             result.AddRange(FileStorageServiceInt.ChangeOwner(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.UserId));
             result.AddRange(FileStorageService.ChangeOwner(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.UserId));
-            return result.Select(FilesControllerHelperInt.GetFileEntryWrapper);
+            return result.Select(FilesControllerHelperInt.GetFileEntryWrapper).ToList();
         }
 
         /// <summary>
@@ -1242,13 +1242,13 @@ namespace ASC.Api.Documents
         /// <param name="folderIds">Folder ID list</param>
         /// <param name="fileIds">File ID list</param>
         /// <returns>Conflicts file ids</returns>
-        [Read("fileops/move")]
+        [Create("fileops/move")]
         public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckFromBody([FromBody]BatchModel batchModel)
         {
             return FilesControllerHelperString.MoveOrCopyBatchCheck(batchModel);
         }
 
-        [Read("fileops/move")]
+        [Create("fileops/move")]
         [Consumes("application/x-www-form-urlencoded")]
         public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckFromForm([FromForm]BatchModel batchModel)
         {

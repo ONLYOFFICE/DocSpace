@@ -27,6 +27,7 @@ import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
+import { isMobile } from "react-device-detect";
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -76,14 +77,10 @@ class SharingPanelComponent extends React.Component {
   };
 
   updateRowData = (newRowData) => {
-    const { setFile, setFolder } = this.props;
+    const { getFileInfo, getFolderInfo } = this.props;
 
     for (let item of newRowData) {
-      if (!item.fileExst) {
-        setFolder(item);
-      } else {
-        setFile(item);
-      }
+      !item.fileExst ? getFolderInfo(item.id) : getFileInfo(item.id);
     }
   };
 
@@ -171,8 +168,8 @@ class SharingPanelComponent extends React.Component {
       ownerId
     )
       .then((res) => {
-        if (ownerId) {
-          this.updateRowData(res[0]);
+        if (!ownerId) {
+          this.updateRowData(selection);
         }
         if (isPrivacy && isDesktop) {
           if (share.length === 0) return Promise.resolve();
@@ -273,7 +270,7 @@ class SharingPanelComponent extends React.Component {
     const fileId = returnValue[1];
 
     if (folderId.length !== 0 || fileId.length !== 0) {
-      setIsLoading(true);
+      !isMobile && setIsLoading(true);
       getShareUsers(folderId, fileId)
         .then((shareDataItems) => {
           const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
@@ -297,7 +294,7 @@ class SharingPanelComponent extends React.Component {
           toastr.error(err);
           this.onClose();
         })
-        .finally(() => setIsLoading(false));
+        .finally(() => !isMobile && setIsLoading(false));
     }
   };
 
@@ -507,12 +504,8 @@ class SharingPanelComponent extends React.Component {
                   />
                 ))
               ) : (
-                <div key="loader" className="sharing-panel-loader-wrapper">
-                  <Loader
-                    type="oval"
-                    size="16px"
-                    className="sharing-panel-loader"
-                  />
+                <div key="loader" className="panel-loader-wrapper">
+                  <Loader type="oval" size="16px" className="panel-loader" />
                   <Text as="span">{t("LoadingLabel")}</Text>
                 </div>
               )}
@@ -613,6 +606,8 @@ const SharingPanel = inject(
       getShareUsers,
       setShareFiles,
       setIsLoading,
+      getFileInfo,
+      getFolderInfo,
       isLoading,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
@@ -647,6 +642,8 @@ const SharingPanel = inject(
       setFolder,
       getShareUsers,
       setShareFiles,
+      getFileInfo,
+      getFolderInfo,
     };
   }
 )(observer(withTranslation("SharingPanel")(SharingPanelComponent)));

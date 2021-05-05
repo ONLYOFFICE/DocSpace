@@ -1,31 +1,29 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:5020",
-      "sslPort": 0
-    }
-  },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
+    "Kestrel WebServer": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "launchUrl": "http://localhost:5004/api/2.0/project/info",
       "environmentVariables": {
         "$STORAGE_ROOT": "../../../Data",
         "log__dir": "../../../Logs",
         "log__name": "projects",
+        "ASPNETCORE_URLS": "http://localhost:5020",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "ASC.Project": {
-      "commandName": "Project",
+    "WSL 2 : Ubuntu 20.04": {
+      "commandName": "WSL2",
+      "launchBrowser": false,
+      "launchUrl": "http://localhost:5004/api/2.0/project/info",
       "environmentVariables": {
         "$STORAGE_ROOT": "../../../Data",
         "log__dir": "../../../Logs",
         "log__name": "projects",
+        "ASPNETCORE_URLS": "http://localhost:5020",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:5020"
+      "distributionName": "Ubuntu-20.04"
     }
   }
 }

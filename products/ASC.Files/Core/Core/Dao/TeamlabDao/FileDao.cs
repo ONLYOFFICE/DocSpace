@@ -692,6 +692,8 @@ namespace ASC.Files.Core.Data
 
         public bool IsExist(string title, object folderId)
         {
+            if (folderId is int fId) return IsExist(title, fId);
+
             throw new NotImplementedException();
         }
 
@@ -1346,18 +1348,16 @@ namespace ASC.Files.Core.Data
                 .Select(r => new DbFileQuery
                 {
                     File = r,
-                    Root = FilesDbContext.Folders
-                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                            .Where(x => x.folder.TenantId == r.TenantId)
-                            .Where(x => x.tree.FolderId == r.FolderId)
-                            .OrderByDescending(r => r.tree.Level)
-                            .Select(r => new DbFolder
-                            {
-                                FolderType = r.folder.FolderType,
-                                CreateBy = r.folder.CreateBy,
-                                Id = r.folder.Id
-                            })
-                            .FirstOrDefault(),
+                    Root = (from f in FilesDbContext.Folders
+                            where f.Id ==
+                            (from t in FilesDbContext.Tree
+                             where t.FolderId == r.FolderId
+                             orderby t.Level descending
+                             select t.ParentId
+                             ).FirstOrDefault()
+                            where f.TenantId == r.TenantId
+                            select f
+                              ).FirstOrDefault(),
                     Shared = true
                 });
         }

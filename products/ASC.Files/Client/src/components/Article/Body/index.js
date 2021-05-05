@@ -5,13 +5,12 @@ import Loaders from "@appserver/common/components/Loaders";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
-import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
 import config from "../../../../package.json";
-import { combineUrl } from "@appserver/common/utils";
+import { clickBackdrop, combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 
 class ArticleBodyContent extends React.Component {
@@ -23,10 +22,6 @@ class ArticleBodyContent extends React.Component {
     selectedFolderTitle
       ? setDocumentTitle(selectedFolderTitle)
       : setDocumentTitle();
-
-    this.state = {
-      showNewFilesPanel: false,
-    };
   }
 
   /*componentDidMount() {
@@ -50,6 +45,7 @@ class ArticleBodyContent extends React.Component {
     if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
       setSelectedNode(data);
       setIsLoading(true);
+
       const newFilter = filter.clone();
       newFilter.page = 0;
       newFilter.startIndex = 0;
@@ -65,7 +61,9 @@ class ArticleBodyContent extends React.Component {
       if (window.location.pathname.indexOf("/filter") > 0) {
         fetchFiles(data[0], newFilter)
           .catch((err) => toastr.error(err))
-          .finally(() => setIsLoading(false));
+          .finally(() => {
+            setIsLoading(false);
+          });
       } else {
         newFilter.startIndex = 0;
         const urlFilter = newFilter.toUrlParams();
@@ -77,58 +75,46 @@ class ArticleBodyContent extends React.Component {
   };
 
   onShowNewFilesPanel = (folderId) => {
-    const { showNewFilesPanel } = this.state;
-    this.setState({
-      showNewFilesPanel: !showNewFilesPanel,
-      newFolderId: [folderId],
-    });
-  };
-
-  setNewFilesCount = (folderPath, filesCount) => {
-    const data = this.props.treeFolders;
-    const dataItem = data.find((x) => x.id === folderPath[0]);
-    dataItem.newItems = filesCount ? filesCount : dataItem.newItems - 1;
-
-    this.props.setTreeFolders(data);
+    this.props.setNewFilesPanelVisible(true);
+    this.props.setNewFilesIds([folderId]);
   };
 
   render() {
-    const { treeFolders, onTreeDrop, selectedTreeNode } = this.props;
-    const { showNewFilesPanel, newFolderId } = this.state;
+    const {
+      treeFolders,
+      onTreeDrop,
+      selectedTreeNode,
+      enableThirdParty,
+      isVisitor,
+    } = this.props;
 
-    return (
+    return isEmpty(treeFolders) ? (
+      <Loaders.TreeFolders />
+    ) : (
       <>
-        {showNewFilesPanel && (
-          <NewFilesPanel
-            visible={showNewFilesPanel}
-            onClose={this.onShowNewFilesPanel}
-            setNewFilesCount={this.setNewFilesCount}
-            folderId={newFolderId}
-            treeFolders={treeFolders}
-          />
-        )}
-        {isEmpty(treeFolders) ? (
-          <Loaders.TreeFolders />
-        ) : (
-          <>
-            <TreeFolders
-              selectedKeys={selectedTreeNode}
-              onSelect={this.onSelect}
-              data={treeFolders}
-              onBadgeClick={this.onShowNewFilesPanel}
-              onTreeDrop={onTreeDrop}
-            />
-            <TreeSettings />
-            <ThirdPartyList />
-          </>
-        )}
+        <TreeFolders
+          selectedKeys={selectedTreeNode}
+          onSelect={this.onSelect}
+          data={treeFolders}
+          onBadgeClick={this.onShowNewFilesPanel}
+          onTreeDrop={onTreeDrop}
+        />
+        <TreeSettings />
+        {enableThirdParty && !isVisitor && <ThirdPartyList />}
       </>
     );
   }
 }
 
 export default inject(
-  ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
+  ({
+    auth,
+    filesStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    dialogsStore,
+    settingsStore,
+  }) => {
     const { fetchFiles, filter, setIsLoading } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
     const selectedTreeNode =
@@ -137,16 +123,22 @@ export default inject(
         ? treeFoldersStore.selectedTreeNode
         : [selectedFolderStore.id + ""];
 
+    const { setNewFilesPanelVisible, setNewFilesIds } = dialogsStore;
+
     return {
       selectedFolderTitle: selectedFolderStore.title,
       treeFolders,
       selectedTreeNode,
       filter,
+      enableThirdParty: settingsStore.enableThirdParty,
+      isVisitor: auth.userStore.user.isVisitor,
 
       setIsLoading,
       fetchFiles,
       setSelectedNode,
       setTreeFolders,
+      setNewFilesPanelVisible,
+      setNewFilesIds,
 
       homepage: config.homepage,
     };

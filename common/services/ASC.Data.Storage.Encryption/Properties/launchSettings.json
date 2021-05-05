@@ -1,35 +1,29 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:5019/",
-      "sslPort": 0
-    }
-  },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": false,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "$STORAGE_ROOT": "../../../Data",
-        "log__name": "Encryption",
-        "log__dir": "../../../Logs",
-        "core__products__folder": "../../../products"
-      }
-    },
-    "ASC.Data.Storage.Encryption": {
+    "Kestrel WebServer": {
       "commandName": "Project",
       "launchBrowser": false,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
         "$STORAGE_ROOT": "../../../Data",
         "log__name": "Encryption",
         "log__dir": "../../../Logs",
-        "core__products__folder": "../../../products"
+        "core__products__folder": "../../../products",
+        "ASPNETCORE_URLS": "http://localhost:5019",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "WSL 2 : Ubuntu 20.04": {
+      "commandName": "WSL2",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "$STORAGE_ROOT": "../../../Data",
+        "log__name": "Encryption",
+        "log__dir": "../../../Logs",
+        "core__products__folder": "../../../products",
+        "ASPNETCORE_URLS": "http://localhost:5019",
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:5019/"
+      "distributionName": "Ubuntu-20.04"
     }
   }
 }
