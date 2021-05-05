@@ -72,7 +72,7 @@ namespace ASC.Web.Api.Controllers
         private TfaManager TfaManager { get; }
         private TimeZoneConverter TimeZoneConverter { get; }
         private SmsKeyStorage SmsKeyStorage { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
         private UserManagerWrapper UserManagerWrapper { get; }
 
         public AuthenticationController(
@@ -235,6 +235,7 @@ namespace ASC.Web.Api.Controllers
             try
             {
                 var token = SecurityContext.AuthenticateMe(user.ID);
+                CookiesManager.SetCookies(CookiesType.AuthKey, token);
 
                 MessageService.Send(viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount);
 
