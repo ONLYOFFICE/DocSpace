@@ -3,7 +3,6 @@ import { Router, Switch, Route } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
 import Main from "./components/Main";
-import Box from "@appserver/components/box";
 import PrivateRoute from "@appserver/common/components/PrivateRoute";
 import PublicRoute from "@appserver/common/components/PublicRoute";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
@@ -254,8 +253,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
 const ShellWrapper = inject(({ auth }) => {
   const { init, isLoaded } = auth;
-  const pathname = window.location.pathname.toLowerCase();
-  //const isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
 
   return {
     loadBaseInfo: () => {
@@ -267,7 +264,6 @@ const ShellWrapper = inject(({ auth }) => {
         document.body.classList.add("desktop");
       }
     },
-    //isThirdPartyResponse,
     isLoaded,
     modules: auth.moduleStore.modules,
     isDesktop: auth.settingsStore.isDesktopClient,
