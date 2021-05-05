@@ -21,6 +21,7 @@ import PageLayout from "@appserver/common/components/PageLayout";
 import { combineUrl, createPasswordHash } from "@appserver/common/utils";
 import { AppServerConfig, providersData } from "@appserver/common/constants";
 import { isMobile } from "react-device-detect";
+import { desktop } from "@appserver/components/utils/device";
 
 const inputWidth = "400px";
 
@@ -49,6 +50,10 @@ const ConfirmContainer = styled.div`
   .start-basis {
     align-items: flex-start;
     ${isMobile && `margin-top: 56px;`}
+
+    @media ${desktop} {
+      min-width: 604px;
+    }
   }
 
   .margin-left {
