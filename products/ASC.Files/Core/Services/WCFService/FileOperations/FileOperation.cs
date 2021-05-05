@@ -358,7 +358,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected void ProgressStep(TId folderId = default, TId fileId = default)
         {
-            if (folderId.Equals(default(TId)) && fileId.Equals(default(TId))
+            if (folderId == null && fileId == null
+                || folderId.Equals(default(TId)) && fileId.Equals(default(TId))
                 || !folderId.Equals(default(TId)) && Folders.Contains(folderId)
                 || !fileId.Equals(default(TId)) && Files.Contains(fileId))
             {
