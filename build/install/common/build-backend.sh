@@ -42,7 +42,7 @@ done
 echo "== BACK-END-BUILD =="
 
 cd ${SRC_PATH}
-dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config ${ARGS}
+dotnet restore ASC.Web.sln${ARGS}
 dotnet build ASC.Web.sln ${ARGS} 
 
 echo "== Build ASC.Thumbnails =="
