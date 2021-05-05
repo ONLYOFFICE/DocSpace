@@ -262,6 +262,10 @@ const ShellWrapper = inject(({ auth }) => {
       init();
       auth.settingsStore.setModuleInfo(config.homepage, "home");
       auth.setProductVersion(config.version);
+
+      if (auth.settingsStore.isDesktopClient) {
+        document.body.classList.add("desktop");
+      }
     },
     //isThirdPartyResponse,
     isLoaded,
