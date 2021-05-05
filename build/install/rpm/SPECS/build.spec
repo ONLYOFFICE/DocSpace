@@ -48,7 +48,7 @@ npm i && cd ../../../)
 npm run-script build --prefix products/ASC.People/Client
 
 cd %{_builddir}/AppServer-%GIT_BRANCH/
-dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config
+dotnet restore ASC.Web.sln
 dotnet build -r linux-x64 ASC.Web.sln
 cd products/ASC.People/Server
 dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/appserver/products/ASC.People/server

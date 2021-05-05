@@ -13,7 +13,7 @@ pipeline {
 						}
 						stage('Frontend') {
 							steps {
-								sh 'dotnet build ASC.Web.sln  --configfile .nuget/NuGet.Config'
+								sh 'dotnet build ASC.Web.sln'
 							}
 						}
 					}
@@ -28,7 +28,7 @@ pipeline {
 						}
 						stage('Frontend') {
 							steps {
-								bat 'dotnet build ASC.Web.sln  --configfile .nuget\\NuGet.Config'
+								bat 'dotnet build ASC.Web.sln'
 							}
 						}
 					}
@@ -62,7 +62,7 @@ pipeline {
 						}
 						stage('Files') {
 							steps {
-								sh "dotnet build ASC.Web.sln --configfile .nuget/NuGet.Config && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj -r linux-x64 -l \"console;verbosity=detailed\""
+								sh "dotnet build ASC.Web.sln && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj -r linux-x64 -l \"console;verbosity=detailed\""
 							}
 						}
 					}
@@ -90,7 +90,7 @@ pipeline {
 						}
 						stage('Files') {
 							steps {
-								bat "dotnet build ASC.Web.sln --configfile .nuget\\NuGet.Config && cd ${env.WORKSPACE}\\products\\ASC.Files\\Tests\\ && dotnet test ASC.Files.Tests.csproj"
+								bat "dotnet build ASC.Web.sln && cd ${env.WORKSPACE}\\products\\ASC.Files\\Tests\\ && dotnet test ASC.Files.Tests.csproj"
 							}
 						}
 					}
