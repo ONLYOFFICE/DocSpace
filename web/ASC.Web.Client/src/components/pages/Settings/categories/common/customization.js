@@ -3,6 +3,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import Text from "@appserver/components/text";
 import Loader from "@appserver/components/loader";
+import Box from "@appserver/components/box";
 import toastr from "@appserver/components/toast/toastr";
 import Link from "@appserver/components/link";
 import ArrowRightIcon from "../../../../../../public/images/arrow.right.react.svg";
@@ -149,6 +150,7 @@ class Customization extends React.Component {
           this.setState({ languages, language, timezones, timezone });
         });
     }
+
     hideLoader();
   }
 
@@ -204,8 +206,9 @@ class Customization extends React.Component {
   };
 
   render() {
-    const { t } = this.props;
+    const { t, helpUrlCommonSettings, customNames } = this.props;
     const { language, timezone } = this.state;
+
     return (
       <StyledComponent>
         <div className="category-item-wrapper">
@@ -251,6 +254,38 @@ class Customization extends React.Component {
             {t("CustomTitlesSettingsDescription")}
           </Text>
         </div>
+        <div className="category-item-wrapper">
+          <div className="category-item-heading">
+            <Link
+              truncate={true}
+              className="inherit-title-link header"
+              onClick={this.onClickLink}
+              href={combineUrl(
+                AppServerConfig.proxyURL,
+                "/settings/common/customization/team-template"
+              )}
+            >
+              {t("TeamTemplate")}
+            </Link>
+            <StyledArrowRightIcon size="small" color="#333333" />
+          </div>
+          <Box marginProp="4px 0 6px 0">
+            <Text fontWeight="600">{`${customNames.name}`}</Text>
+          </Box>
+          <Text className="category-item-description">
+            {t("TeamTemplateSettingsDescription")}
+          </Text>
+          <Box marginProp="16px 0 0 0">
+            <Link
+              color="#316DAA"
+              target="_blank"
+              isHovered={true}
+              href={helpUrlCommonSettings}
+            >
+              {t("LearnMore")}
+            </Link>
+          </Box>
+        </div>
       </StyledComponent>
     );
   }
@@ -267,6 +302,8 @@ export default inject(({ auth, setup }) => {
     getPortalCultures,
     getCurrentCustomSchema,
     getPortalTimezones,
+    helpUrlCommonSettings,
+    customNames,
   } = auth.settingsStore;
 
   const { setLanguageAndTime } = setup;
@@ -283,5 +320,7 @@ export default inject(({ auth, setup }) => {
     setLanguageAndTime,
     getPortalTimezones,
     getCurrentCustomSchema,
+    helpUrlCommonSettings,
+    customNames,
   };
 })(withTranslation("Settings")(observer(Customization)));

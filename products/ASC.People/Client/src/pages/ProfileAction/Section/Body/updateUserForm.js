@@ -927,5 +927,6 @@ export default withRouter(
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
+    isSelf: peopleStore.targetUserStore.isMe,
   }))(observer(withTranslation("ProfileAction")(UpdateUserForm)))
 );

@@ -6,11 +6,7 @@ import TopLoaderService from "@appserver/components/top-loading-indicator";
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
   for (var key in obj) {
-    if (
-      (skipNull && !obj[key] && key !== "withSubfolders") ||
-      (key === "withSubfolders" && obj[key] !== "false")
-    )
-      continue;
+    if (skipNull && !obj[key]) continue;
 
     if (str !== "") {
       str += "&";
@@ -209,4 +205,11 @@ export function deleteCookie(name) {
   setCookie(name, "", {
     "max-age": -1,
   });
+}
+
+export function clickBackdrop() {
+  var elms = document.getElementsByClassName("backdrop-active");
+  if (elms && elms.length > 0) {
+    elms[0].click();
+  }
 }

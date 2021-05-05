@@ -16,6 +16,7 @@ import {
   DeleteDialog,
   DownloadDialog,
   ThirdPartyDialog,
+  ConflictResolveDialog,
 } from "../dialogs";
 
 const Panels = (props) => {
@@ -34,6 +35,7 @@ const Panels = (props) => {
     emptyTrashDialogVisible,
     thirdPartyDialogVisible,
     newFilesPanelVisible,
+    conflictResolveDialogVisible,
   } = props;
 
   return [
@@ -63,6 +65,9 @@ const Panels = (props) => {
     downloadDialogVisible && <DownloadDialog key="download-dialog" />,
     thirdPartyDialogVisible && <ThirdPartyDialog key="thirdparty-dialog" />,
     newFilesPanelVisible && <NewFilesPanel key="new-files-panel" />,
+    conflictResolveDialogVisible && (
+      <ConflictResolveDialog key="conflict-resolve-dialog" />
+    ),
   ];
 };
 
@@ -81,6 +86,7 @@ export default inject(
       emptyTrashDialogVisible,
       thirdPartyDialogVisible,
       newFilesPanelVisible,
+      conflictResolveDialogVisible,
 
       connectItem, //TODO:
     } = dialogsStore;
@@ -103,6 +109,7 @@ export default inject(
       emptyTrashDialogVisible,
       thirdPartyDialogVisible,
       newFilesPanelVisible,
+      conflictResolveDialogVisible,
     };
   }
 )(observer(Panels));

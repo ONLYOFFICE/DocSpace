@@ -1,11 +1,10 @@
 {
-  "OKButton": "OK",
-  "CancelButton": "Cancel",
-  "ConfirmationTitle": "Confirmation",
-
-  "EmptyTrashDialogQuestion": "Are you sure you want to empty the recycle bin?",
-  "EmptyTrashDialogMessage": "Note: This action can not be undone. Note: removal from your account can not be undone.",
   "DeleteOperation": "Deleting",
-  "SuccessEmptyTrash": "Success empty recycle bin"
+  "SuccessEmptyTrash": "Success empty recycle bin",
 
+  "DeleteForeverTitle": "Delete forever?",
+  "DeleteForeverNote": "All items from Trash will be deleted forever. You won’t be able to restore them.",
+
+  "DeleteForeverButton": "Delete forever",
+  "CancelButton": "Cancel"
 }

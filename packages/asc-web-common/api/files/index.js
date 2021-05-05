@@ -4,12 +4,22 @@ import FilesFilter from "./filter";
 import { FolderType } from "../../constants";
 import find from "lodash/find";
 
-export function openEdit(fileId, doc) {
-  const params = doc ? `?doc=${doc}` : "";
+export function openEdit(fileId, version, doc) {
+  const params = []; // doc ? `?doc=${doc}` : "";
+
+  if (version) {
+    params.push(`version=${version}`);
+  }
+
+  if (doc) {
+    params.push(`doc=${doc}`);
+  }
+
+  const paramsString = params.length > 0 ? `?${params.join("&")}` : "";
 
   const options = {
     method: "get",
-    url: `/files/file/${fileId}/openedit${params}`,
+    url: `/files/file/${fileId}/openedit${paramsString}`,
   };
 
   return request(options);
@@ -451,6 +461,11 @@ export function downloadFormatFiles(fileConvertIds, folderIds) {
 
 export function getProgress() {
   return request({ method: "get", url: "/files/fileops" });
+}
+
+export function checkFileConflicts(destFolderId, folderIds, fileIds) {
+  const data = { destFolderId, folderIds, fileIds };
+  return request({ method: "post", url: "/files/fileops/move", data });
 }
 
 export function copyToFolder(

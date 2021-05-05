@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 
+using ASC.Common.Utils;
+
 namespace ASC.Data.Backup.Service
 {
     public class BackupSettings
@@ -52,7 +54,7 @@ namespace ASC.Data.Backup.Service
                     }
                     if (Elements.Count == 0)
                     {
-                        return Path.Combine("..", "..", "WebStudio");
+                        return CrossPlatform.PathCombine("..", "..", "WebStudio");
                     }
                     if (Elements.Count == 1)
                     {
