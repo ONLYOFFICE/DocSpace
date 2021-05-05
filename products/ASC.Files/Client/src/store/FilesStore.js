@@ -374,7 +374,7 @@ class FilesStore {
     const isFavorite = item.fileStatus === 32 || item.fileStatus === 34;
     const isFullAccess = item.access < 2;
     const withoutShare = false; //TODO: need this prop
-    const isThirdPartyItem = item.providerKey;
+    const isThirdPartyItem = !!item.providerKey;
     const hasNew = item.new > 0;
     const canConvert = false; //TODO: fix of added convert check;
     const isEncrypted = item.encrypted;
@@ -388,12 +388,14 @@ class FilesStore {
       isCommon,
       isShare,
       isFavoritesFolder,
-      isThirdPartyFolder,
-      isMyFolder,
     } = this.treeFoldersStore;
 
-    const isShareFolder = isCommon(item.rootFolderType);
-    const isCommonFolder = isShare(item.rootFolderType);
+    const { isRootFolder } = this.selectedFolderStore;
+
+    const isThirdPartyFolder = item.providerKey && isRootFolder;
+
+    const isShareFolder = isShare(item.rootFolderType);
+    const isCommonFolder = isCommon(item.rootFolderType);
 
     const { isDesktopClient } = this.settingsStore;
 
@@ -698,6 +700,14 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, ["unsubscribe"]);
       }
 
+      if (isThirdPartyFolder) {
+        folderOptions = this.removeOptions(folderOptions, ["move-to"]);
+      } else {
+        folderOptions = this.removeOptions(folderOptions, [
+          "change-thirdparty-info",
+        ]);
+      }
+
       if (isThirdPartyItem) {
         folderOptions = this.removeOptions(folderOptions, ["owner-change"]);
 
@@ -712,10 +722,7 @@ class FilesStore {
             ]);
           }
 
-          folderOptions = this.removeOptions(folderOptions, [
-            "remove",
-            "move-to",
-          ]);
+          folderOptions = this.removeOptions(folderOptions, ["remove"]);
 
           if (!item) {
             //For damaged items

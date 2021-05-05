@@ -402,7 +402,6 @@ class SectionHeaderContent extends React.Component {
         disabled:
           isFavoritesFolder ||
           isRecentFolder ||
-          isShareFolder ||
           !isAccessedSelected ||
           !selectionCount ||
           isThirdPartySelection,
@@ -597,7 +596,7 @@ export default inject(
       isPrivacyFolder,
       isFavoritesFolder,
       isRecentFolder,
-      shareFolder: isShareFolder,
+      isShareFolder,
     } = treeFoldersStore;
     const { setAction } = fileActionStore;
     const {
