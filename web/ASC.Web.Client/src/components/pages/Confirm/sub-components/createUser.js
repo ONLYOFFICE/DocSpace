@@ -390,9 +390,11 @@ class Confirm extends React.PureComponent {
   };
 
   render() {
-    const { settings, t, greetingTitle, providers } = this.props;
-
     //console.log("createUser render");
+
+    const { settings, t, greetingTitle, providers } = this.props;
+    const { email, password } = this.state;
+    const showCopyLink = !!email.trim() || !!password.trim();
 
     return !settings ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -500,6 +502,7 @@ class Confirm extends React.PureComponent {
               passwordSettings={settings}
               isDisabled={this.state.isLoading}
               onKeyDown={this.onKeyPress}
+              showCopyLink={showCopyLink}
             />
 
             <Button
