@@ -111,7 +111,7 @@ class SectionBody extends React.Component {
     const focusProps = autoFocus
       ? {
           ref: this.focusRef,
-          tabIndex: 1,
+          tabIndex: -1,
         }
       : {};
 

@@ -368,6 +368,8 @@ namespace ASC.Files.Thirdparty
                 Id = id,
                 Title = customerTitle,
                 Token = EncryptPassword(authData.Token),
+                Url = authData.Url,
+                UserName = authData.Login,
                 Password = EncryptPassword(authData.Password),
                 UserId = owner,
                 FolderType = type,
@@ -390,10 +392,11 @@ namespace ASC.Files.Thirdparty
             var createOn = TenantUtil.DateTimeFromUtc(input.CreateOn);
             var authData = new AuthData(input.Url, input.UserName, DecryptPassword(input.Password), token);
 
-            if (string.IsNullOrEmpty(token)) throw new ArgumentException("Token can't be null");
-
             if (key == ProviderTypes.Box)
             {
+                if (string.IsNullOrEmpty(token))
+                    throw new ArgumentException("Token can't be null");
+
                 var box = ServiceProvider.GetService<BoxProviderInfo>();
                 box.ID = id;
                 box.CustomerTitle = providerTitle;
@@ -407,6 +410,9 @@ namespace ASC.Files.Thirdparty
 
             if (key == ProviderTypes.DropboxV2)
             {
+                if (string.IsNullOrEmpty(token))
+                    throw new ArgumentException("Token can't be null");
+
                 var drop = ServiceProvider.GetService<DropboxProviderInfo>();
                 drop.ID = id;
                 drop.CustomerTitle = providerTitle;
@@ -437,6 +443,9 @@ namespace ASC.Files.Thirdparty
 
             if (key == ProviderTypes.GoogleDrive)
             {
+                if (string.IsNullOrEmpty(token))
+                    throw new ArgumentException("Token can't be null");
+
                 var gd = ServiceProvider.GetService<GoogleDriveProviderInfo>();
                 gd.ID = id;
                 gd.CustomerTitle = providerTitle;
@@ -451,6 +460,9 @@ namespace ASC.Files.Thirdparty
 
             if (key == ProviderTypes.OneDrive)
             {
+                if (string.IsNullOrEmpty(token))
+                    throw new ArgumentException("Token can't be null");
+
                 var od = ServiceProvider.GetService<OneDriveProviderInfo>();
                 od.ID = id;
                 od.CustomerTitle = providerTitle;
