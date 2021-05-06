@@ -262,6 +262,7 @@ class TreeFolders extends React.Component {
   };
 
   getCommonItems = (data) => {
+    //debugger;
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
@@ -272,6 +273,8 @@ class TreeFolders extends React.Component {
       const serviceFolder = !!item.providerKey;
       let className = `tree-drag tree-id_${item.id}`;
       if (dragging) className += " dragging";
+
+      if (provider) return;
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return !provider ? (
           <TreeNode
@@ -506,7 +509,7 @@ class TreeFolders extends React.Component {
       data,
       isCommonWithoutProvider,
     } = this.props;
-
+    //debugger;
     return (
       <StyledTreeMenu
         className="files-tree-menu"

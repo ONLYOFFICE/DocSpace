@@ -5,56 +5,68 @@ import IconButton from "../icon-button";
 import TextInput from "../text-input";
 import StyledFileInput from "../file-input/styled-file-input";
 
-import { inject, observer } from "mobx-react";
-
 let path = "";
 
 class FileInputWithFolderPath extends Component {
   constructor(props) {
     super(props);
-
+    this.inputRef = React.createRef();
     this.state = {
       fullFolderPath: "",
-      iconSize: 0,
+      thirdParty: "",
+      selectedInput: "",
     };
   }
 
-  componentDidUpdate(prevProps) {
-    const { folderPath } = this.props;
-    if (folderPath !== prevProps.folderPath) {
-      this.getTitlesFolders();
-    }
+  // componentDidUpdate(prevProps) {
+  //   const { folderPath, selectedInput } = this.props;
+  //   if (folderPath !== prevProps.folderPath) {
+  //     //this.getTitlesFolders();
+  //   }
+  // }
+
+  // getTitlesFolders = () => {
+  //   const { folderPath, selectedInput } = this.props;
+  //   //debugger;
+  //   console.log("selectedInput", selectedInput);
+
+  //   path = "";
+  //   if (folderPath.length > 1) {
+  //     for (let item of folderPath) {
+  //       if (!path) {
+  //         path = path + `${item.title}`;
+  //       } else path = path + " " + "/" + " " + `${item.title}`;
+  //     }
+  //     this.setState({
+  //       //fullFolderPath: path,
+  //       [selectedInput]: path,
+  //     });
+  //   } else {
+  //     for (let item of folderPath) {
+  //       path = `${item.title}`;
+  //     }
+  //     this.setState({
+  //       //fullFolderPath: path,
+  //     });
+  //   }
+  // };
+
+  handleOptionChange(e) {
+    console.log("e.target.value", e.target.name);
+    //console.log("this.inputRef.current", this.inputRef.current);
+    const { curRef } = this.props;
+    this.setState({
+      //fullFolderPath: path,
+      //[e.target.name]: "HELLO",
+      selectedInput: this.inputRef.current,
+    });
   }
 
-  getTitlesFolders = () => {
-    const { folderPath } = this.props;
-    path = "";
-    if (folderPath.length > 1) {
-      for (let item of folderPath) {
-        if (!path) {
-          path = path + `${item.title}`;
-        } else path = path + " " + "/" + " " + `${item.title}`;
-      }
-      this.setState({
-        fullFolderPath: path,
-      });
-    } else {
-      for (let item of folderPath) {
-        path = `${item.title}`;
-      }
-      this.setState({
-        fullFolderPath: path,
-      });
-    }
+  onChange = () => {
+    console.log("on change!!!!");
   };
-
-  onClickInput = () => {
-    const { setPanelVisible } = this.props;
-    setPanelVisible(true);
-  };
-
   render() {
-    const { fullFolderPath } = this.state;
+    const { fullFolderPath, selectedInput } = this.state;
     const {
       folderPath,
       onClick,
@@ -66,6 +78,10 @@ class FileInputWithFolderPath extends Component {
       hasWarning,
       accept,
       id,
+      baseFolder,
+      onClickInput,
+      name,
+      onSelect,
       ...rest
     } = this.props;
 
@@ -79,19 +95,27 @@ class FileInputWithFolderPath extends Component {
         {...rest}
       >
         <TextInput
+          ref={this.inputRef}
+          id={id}
           className="text-input"
           placeholder={placeholder}
-          value={fullFolderPath}
+          value={folderPath || baseFolder}
           size={size}
           isDisabled={isDisabled}
           hasError={hasError}
           hasWarning={hasWarning}
           scale={scale}
-          onClick={this.onClickInput}
+          //onClick={onClickInput}
+          onClick={(e) => {
+            this.handleOptionChange(e);
+            onClickInput && onClickInput(e);
+          }}
           isReadOnly
+          name={name}
+          onChange={this.onChange}
         />
 
-        <div className="icon" onClick={!isDisabled ? this.onClickInput : null}>
+        <div className="icon" onClick={!isDisabled ? onClickInput : null}>
           <IconButton
             className="icon-button"
             iconName={"/static/images/catalog.folder.react.svg"}
@@ -135,14 +159,8 @@ FileInputWithFolderPath.defaultProps = {
   hasWarning: false,
   hasError: false,
   isDisabled: false,
+  baseFolder: "",
   accept: "",
 };
 
-export default inject(({ auth }) => {
-  const { setPanelVisible } = auth;
-  const { folderPath } = auth.settingsStore;
-  return {
-    folderPath,
-    setPanelVisible,
-  };
-})(observer(FileInputWithFolderPath));
+export default FileInputWithFolderPath;

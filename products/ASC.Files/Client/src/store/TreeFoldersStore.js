@@ -152,18 +152,6 @@ class TreeFoldersStore {
       );
     }
   }
-
-  // get commonFolder() {
-  //   if (this.isPrivacyFolder) {
-  //     return this.treeFolders.filter(
-  //       (folder) => folder.rootFolderType === FolderType.Privacy && folder
-  //     );
-  //   } else {
-  //     return this.treeFolders.filter(
-  //       (folder) => folder.rootFolderType === FolderType.COMMON
-  //     );
-  //   }
-  // }
 }
 
 export default TreeFoldersStore;

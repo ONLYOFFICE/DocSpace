@@ -99,3 +99,46 @@ export function deleteBackupSchedule() {
   };
   return request(options);
 }
+
+export function getBackupSchedule() {
+  const options = {
+    method: "get",
+    url: "/portal/getbackupschedule",
+  };
+  return request(options);
+}
+
+export function createBackupSchedule(
+  storageType,
+  key = null,
+  value = null,
+  backupsStored,
+  Period,
+  Hour,
+  Day,
+  backupMail = false
+) {
+  const storageParams = [
+    {
+      key,
+      value,
+    },
+  ];
+  const cronParams = {
+    Period: Period,
+    Hour: Hour,
+    Day: Day,
+  };
+  const options = {
+    method: "post",
+    url: "/portal/createbackupschedule",
+    data: {
+      storageType,
+      storageParams: storageParams,
+      backupsStored,
+      cronParams: cronParams,
+      backupMail,
+    },
+  };
+  return request(options);
+}

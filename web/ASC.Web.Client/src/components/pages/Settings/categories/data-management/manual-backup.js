@@ -8,11 +8,12 @@ import Checkbox from "@appserver/components/checkbox";
 import { inject, observer } from "mobx-react";
 
 import FileInputWithFolderPath from "@appserver/components/file-input-with-folder-path";
-
+import ThirdPartyModule from "./sub-components/thirdPartyModule";
 import OperationsDialog from "files/OperationsDialog";
 import { getBackupProgress, startBackup } from "@appserver/common/api/portal";
 import toastr from "@appserver/components/toast/toastr";
 import { toast } from "react-toastify";
+import DocumentsModule from "./sub-components/documentsModule";
 
 const StyledComponent = styled.div`
   ${commonSettingsStyles}
@@ -49,23 +50,36 @@ class ManualBackup extends React.Component {
       downloadingProgress: 100,
       link: "",
       selectedFolder: "",
+      isPanelVisible: false,
+      isLoading: true,
     };
   }
   componentDidMount() {
     const { getCommonThirdPartyList } = this.props;
-
-    getCommonThirdPartyList()
-      .then(() => getBackupProgress())
-      .then((res) => {
-        if (res) {
-          this.setState({
-            downloadingProgress: res.progress,
-            link: res.link,
-          });
-          if (res.progress !== 100)
-            this.timerId = setInterval(() => this.getProgress(), 1000);
-        }
-      });
+    this.setState(
+      {
+        isLoading: true,
+      },
+      function () {
+        getCommonThirdPartyList()
+          .then(() => getBackupProgress())
+          .then((res) => {
+            if (res) {
+              this.setState({
+                downloadingProgress: res.progress,
+                link: res.link,
+              });
+              if (res.progress !== 100)
+                this.timerId = setInterval(() => this.getProgress(), 1000);
+            }
+          })
+          .finally(() =>
+            this.setState({
+              isLoading: false,
+            })
+          );
+      }
+    );
   }
 
   // onClickCheckbox = (e) => {
@@ -86,28 +100,37 @@ class ManualBackup extends React.Component {
     const { downloadingProgress } = this.state;
     const { t } = this.props;
     console.log("downloadingProgress", downloadingProgress);
-    getBackupProgress().then((res) => {
-      if (res.error.length > 0 && res.progress !== 100) {
-        clearInterval(this.timerId);
-        toastr.error(`${res.error}`);
-        console.log("error", res.error);
+    getBackupProgress()
+      .then((res) => {
+        if (res.error.length > 0 && res.progress !== 100) {
+          clearInterval(this.timerId);
+          toastr.error(`${res.error}`);
+          console.log("error", res.error);
+          this.setState({
+            downloadingProgress: 100,
+          });
+          return;
+        }
         this.setState({
-          downloadingProgress: 100,
+          downloadingProgress: res.progress,
         });
-        return;
-      }
-      this.setState({
-        downloadingProgress: res.progress,
-      });
 
-      if (res.progress === 100) {
+        if (res.progress === 100) {
+          clearInterval(this.timerId);
+          this.setState({
+            link: res.link,
+          });
+          toastr.success(`${t("SuccessCopied")}`);
+        }
+      })
+      .catch(() => {
+        toastr.error();
         clearInterval(this.timerId);
-        this.setState({
-          link: res.link,
-        });
-        toastr.success(`${t("SuccessCopied")}`);
-      }
-    });
+      });
+  };
+
+  setInterval = () => {
+    this.timerId = setInterval(() => this.getProgress(), 1000);
   };
 
   onClickDownload = () => {
@@ -117,18 +140,6 @@ class ManualBackup extends React.Component {
     window.open(downloadUrl, "_blank");
   };
 
-  onClickCopiedDocModules = () => {
-    const { selectedFolder } = this.state;
-    console.log("selectedFolder", selectedFolder);
-    startBackup("0", "folderId", selectedFolder[0]);
-    this.timerId = setInterval(() => this.getProgress(), 1000);
-  };
-
-  onSelectFolder = (folderId) => {
-    this.setState({
-      selectedFolder: folderId,
-    });
-  };
   render() {
     const {
       t,
@@ -137,7 +148,7 @@ class ManualBackup extends React.Component {
       folderPath,
       commonThirdPartyList,
     } = this.props;
-    const { downloadingProgress, link } = this.state;
+    const { downloadingProgress, link, isPanelVisible, isLoading } = this.state;
     const maxProgress = downloadingProgress === 100;
     // const {
     //   backupMailTemporaryStorage,
@@ -145,8 +156,11 @@ class ManualBackup extends React.Component {
     //   backupMailThirdParty,
     //   backupMailThirdPartyStorage,
     // } = this.state;
-
-    return (
+    // console.log("isLoading", isLoading);
+    // console.log("commonThirdPartyList", commonThirdPartyList);
+    return isLoading ? (
+      <></>
+    ) : (
       <StyledComponent>
         <div className="category-item-wrapper temporary-storage">
           <div className="category-item-heading">
@@ -198,81 +212,15 @@ class ManualBackup extends React.Component {
           </div>
         </div>
 
-        <div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Text className="inherit-title-link header">
-              {t("DocumentsModule")}
-            </Text>
-          </div>
+        <DocumentsModule
+          maxProgress={maxProgress}
+          setInterval={this.setInterval}
+        />
 
-          <Text className="category-item-description">
-            {t("DocumentsModuleDescription")}
-          </Text>
-
-          {/* <div className="backup-include_mail">
-            <Checkbox
-              name={"backupMailDocuments"}
-              isChecked={backupMailDocuments}
-              label={t("IncludeMail")}
-              onChange={onClickCheckbox}
-            />
-          </div> */}
-
-          <FileInputWithFolderPath scale className="backup-folder_path" />
-          {panelVisible && (
-            <OperationsDialog onSelectFolder={this.onSelectFolder} />
-          )}
-          <div className="manual-backup_buttons">
-            <Button
-              label={t("MakeCopy")}
-              onClick={this.onClickCopiedDocModules}
-              primary
-              isDisabled={!maxProgress}
-              size="medium"
-              tabIndex={10}
-            />
-          </div>
-        </div>
-        <div className="category-item-wrapper temporary-storage">
-          <div className="category-item-heading">
-            <Text className="inherit-title-link header">
-              {t("ThirdPartyResource")}
-            </Text>
-          </div>
-          <Text className="category-item-description">
-            {t("ThirdPartyResourceDescription")}
-          </Text>
-          <Text className="category-item-description note_description">
-            {t("ThirdPartyResourceNoteDescription")}
-          </Text>
-
-          {/* <div className="backup-include_mail">
-            <Checkbox
-              name={"backupMailThirdParty"}
-              isChecked={backupMailThirdParty}
-              label={t("IncludeMail")}
-              onChange={this.onClickCheckbox}
-            />
-          </div> */}
-          <FileInputWithFolderPath
-            scale
-            className="backup-folder_path"
-            isDisabled={commonThirdPartyList.length === 0}
-          />
-          {panelVisible && (
-            <OperationsDialog onSelectFolder={this.onSelectFolder} />
-          )}
-          <div className="manual-backup_buttons">
-            <Button
-              label={t("MakeCopy")}
-              onClick={() => console.log("click")}
-              primary
-              isDisabled={!maxProgress || commonThirdPartyList.length === 0}
-              size="medium"
-              tabIndex={10}
-            />
-          </div>
-        </div>
+        <ThirdPartyModule
+          maxProgress={maxProgress}
+          commonThirdPartyList={commonThirdPartyList}
+        />
 
         <div className="category-item-wrapper temporary-storage">
           <div className="category-item-heading">
