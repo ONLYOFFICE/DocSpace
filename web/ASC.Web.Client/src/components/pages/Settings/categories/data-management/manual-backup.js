@@ -7,13 +7,12 @@ import Button from "@appserver/components/button";
 import Checkbox from "@appserver/components/checkbox";
 import { inject, observer } from "mobx-react";
 
-import FileInputWithFolderPath from "@appserver/components/file-input-with-folder-path";
-import ThirdPartyModule from "./sub-components/thirdPartyModule";
-import OperationsDialog from "files/OperationsDialog";
 import { getBackupProgress, startBackup } from "@appserver/common/api/portal";
 import toastr from "@appserver/components/toast/toastr";
 import { toast } from "react-toastify";
+import ThirdPartyModule from "./sub-components/thirdPartyModule";
 import DocumentsModule from "./sub-components/documentsModule";
+import ThirdPartyStorageModule from "./sub-components/thirdPartyStorageModule";
 
 const StyledComponent = styled.div`
   ${commonSettingsStyles}
@@ -223,38 +222,7 @@ class ManualBackup extends React.Component {
           setInterval={this.setInterval}
         />
 
-        <div className="category-item-wrapper temporary-storage">
-          <div className="category-item-heading">
-            <Text className="inherit-title-link header">
-              {t("ThirdPartyStorage")}
-            </Text>
-          </div>
-          <Text className="category-item-description">
-            {t("ThirdPartyStorageDescription")}
-          </Text>
-          <Text className="category-item-description note_description">
-            {t("ThirdPartyStorageNoteDescription")}
-          </Text>
-
-          {/* <div className="backup-include_mail">
-            <Checkbox
-              name={"backupMailThirdPartyStorage"}
-              isChecked={backupMailThirdPartyStorage}
-              label={t("IncludeMail")}
-              onChange={this.onClickCheckbox}
-            />
-          </div> */}
-          <div className="manual-backup_buttons">
-            <Button
-              label={t("MakeCopy")}
-              onClick={() => console.log("click")}
-              primary
-              isDisabled={!maxProgress}
-              size="medium"
-              tabIndex={10}
-            />
-          </div>
-        </div>
+        <ThirdPartyStorageModule maxProgress={maxProgress} />
       </StyledComponent>
     );
   }
