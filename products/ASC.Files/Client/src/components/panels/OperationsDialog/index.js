@@ -10,7 +10,8 @@ import { StyledAsidePanel } from "../StyledPanels";
 import { useTranslation, withTranslation } from "react-i18next";
 import FileInputWithFolderPath from "@appserver/components/file-input-with-folder-path";
 import styled from "styled-components";
-
+import Loader from "@appserver/components/loader";
+import Text from "@appserver/components/text";
 const { auth: authStore } = store;
 
 let path = "";
@@ -19,6 +20,14 @@ const StyledComponent = styled.div`
   .input-with-folder-path {
     margin-top: 16px;
   }
+  .panel-loader-wrapper {
+    margin-top: 8px;
+    padding-left: 32px;
+  }
+  .panel-loader {
+    display: inline;
+    margin-right: 10px;
+  }
 `;
 class OperationsDialog extends React.PureComponent {
   constructor(props) {
@@ -26,6 +35,7 @@ class OperationsDialog extends React.PureComponent {
     this.inputRef = React.createRef();
     this.state = {
       isLoading: false,
+      isLoadingData: false,
       selectedInput: "",
       fullFolderPath: "",
       thirdParty: "",
@@ -55,21 +65,22 @@ class OperationsDialog extends React.PureComponent {
   // };
   onSelect = (folder, treeNode) => {
     const { onSelectFolder, onClose } = this.props;
-
-    getFolderPath(folder).then((res) =>
-      this.setState(
-        {
-          selectedInput: this.inputRef.current.props.name,
-        },
-        function () {
-          this.getTitlesFolders(res);
-        }
-      )
-    );
-
-    onSelectFolder(folder);
-
-    onClose();
+    this.setState({ isLoadingData: true }, function () {
+      getFolderPath(folder)
+        .then((res) =>
+          this.setState(
+            {
+              selectedInput: this.inputRef.current.props.name,
+            },
+            function () {
+              this.getTitlesFolders(res);
+            }
+          )
+        )
+        .then(() => onSelectFolder(folder))
+        .then(() => onClose())
+        .finally(() => this.setState({ isLoadingData: false }));
+    });
   };
   getTitlesFolders = (folderPath) => {
     const { selectedInput } = this.state;
@@ -117,15 +128,14 @@ class OperationsDialog extends React.PureComponent {
       isCommonWithoutProvider,
       onClose,
     } = this.props;
-    const { isLoading, selectedInput } = this.state;
+    const { isLoading, selectedInput, isLoadingData } = this.state;
     const zIndex = 310;
-    //console.log("folderList ", folderList);
+    console.log("folderList ", isLoadingData);
 
     return (
       <StyledComponent>
         <FileInputWithFolderPath
           name={name}
-          id={name}
           scale
           className="input-with-folder-path"
           baseFolder={folderList ? "" : commonTreeFolder.title}
@@ -145,15 +155,23 @@ class OperationsDialog extends React.PureComponent {
               onClose={onClose}
             >
               <ModalDialog.Header>{t("ChooseFolder")}</ModalDialog.Header>
+
               <ModalDialog.Body>
-                <TreeFolders
-                  expandedPanelKeys={expandedKeys}
-                  data={folderList ? folderList : [commonTreeFolder]}
-                  filter={filter}
-                  onSelect={this.onSelect}
-                  needUpdate={false}
-                  isCommonWithoutProvider={isCommonWithoutProvider}
-                />
+                {!isLoadingData ? (
+                  <TreeFolders
+                    expandedPanelKeys={expandedKeys}
+                    data={folderList ? folderList : [commonTreeFolder]}
+                    filter={filter}
+                    onSelect={this.onSelect}
+                    needUpdate={false}
+                    isCommonWithoutProvider={isCommonWithoutProvider}
+                  />
+                ) : (
+                  <div key="loader" className="panel-loader-wrapper">
+                    <Loader type="oval" size="16px" className="panel-loader" />
+                    <Text as="span">{t("LoadingLabel")}</Text>
+                  </div>
+                )}
               </ModalDialog.Body>
             </ModalDialog>
           </StyledAsidePanel>
