@@ -115,31 +115,29 @@ const EmptyTrashDialogComponent = (props) => {
   ]);
 
   return (
-    <ModalDialogContainer>
-      <ModalDialog visible={visible} onClose={onClose}>
-        <ModalDialog.Header>{t("DeleteForeverTitle")}</ModalDialog.Header>
-        <ModalDialog.Body>
-          <Text>{t("DeleteForeverNote")}</Text>
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            key="OkButton"
-            label={t("DeleteForeverButton")}
-            size="medium"
-            primary
-            onClick={onEmptyTrash}
-            isLoading={isLoading}
-          />
-          <Button
-            className="button-dialog"
-            key="CancelButton"
-            label={t("CancelButton")}
-            size="medium"
-            onClick={onClose}
-            isLoading={isLoading}
-          />
-        </ModalDialog.Footer>
-      </ModalDialog>
+    <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialog.Header>{t("DeleteForeverTitle")}</ModalDialog.Header>
+      <ModalDialog.Body>
+        <Text>{t("DeleteForeverNote")}</Text>
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          key="OkButton"
+          label={t("DeleteForeverButton")}
+          size="medium"
+          primary
+          onClick={onEmptyTrash}
+          isLoading={isLoading}
+        />
+        <Button
+          className="button-dialog"
+          key="CancelButton"
+          label={t("CancelButton")}
+          size="medium"
+          onClick={onClose}
+          isLoading={isLoading}
+        />
+      </ModalDialog.Footer>
     </ModalDialogContainer>
   );
 };
