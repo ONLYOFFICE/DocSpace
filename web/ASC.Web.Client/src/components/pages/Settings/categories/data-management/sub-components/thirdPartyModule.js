@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import OperationsDialog from "files/OperationsDialog";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
-
+import { startBackup } from "@appserver/common/api/portal";
 const DocumentsModule = ({
   maxProgress,
   commonThirdPartyList,
@@ -24,6 +24,12 @@ const DocumentsModule = ({
 
   const onClose = () => {
     setPanelVisible(false);
+  };
+
+  const onClickButton = () => {
+    console.log("selectedFolder", selectedFolder);
+    startBackup("1", "folderId", selectedFolder[0]);
+    setInterval();
   };
 
   return (
@@ -53,7 +59,7 @@ const DocumentsModule = ({
       <div className="manual-backup_buttons">
         <Button
           label={t("MakeCopy")}
-          onClick={() => console.log("click")}
+          onClick={onClickButton}
           primary
           isDisabled={!maxProgress}
           size="medium"

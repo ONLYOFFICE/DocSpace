@@ -220,6 +220,7 @@ class ManualBackup extends React.Component {
         <ThirdPartyModule
           maxProgress={maxProgress}
           commonThirdPartyList={commonThirdPartyList}
+          setInterval={this.setInterval}
         />
 
         <div className="category-item-wrapper temporary-storage">
