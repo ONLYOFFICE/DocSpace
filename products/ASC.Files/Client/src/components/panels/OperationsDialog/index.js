@@ -9,10 +9,17 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import { StyledAsidePanel } from "../StyledPanels";
 import { useTranslation, withTranslation } from "react-i18next";
 import FileInputWithFolderPath from "@appserver/components/file-input-with-folder-path";
+import styled from "styled-components";
 
 const { auth: authStore } = store;
 
 let path = "";
+
+const StyledComponent = styled.div`
+  .input-with-folder-path {
+    margin-top: 16px;
+  }
+`;
 class OperationsDialog extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -115,12 +122,12 @@ class OperationsDialog extends React.PureComponent {
     //console.log("folderList ", folderList);
 
     return (
-      <>
+      <StyledComponent>
         <FileInputWithFolderPath
           name={name}
           id={name}
           scale
-          className="folder_path"
+          className="input-with-folder-path"
           baseFolder={folderList ? "" : commonTreeFolder.title}
           isDisabled={isLoading}
           folderPath={this.state[selectedInput]}
@@ -151,7 +158,7 @@ class OperationsDialog extends React.PureComponent {
             </ModalDialog>
           </StyledAsidePanel>
         )}
-      </>
+      </StyledComponent>
     );
   }
 }
