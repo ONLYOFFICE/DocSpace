@@ -13,20 +13,7 @@ import { downloadFormatFiles } from "@appserver/common/api/files";
 import { TIMEOUT } from "../../../helpers/constants";
 import DownloadContent from "./DownloadContent";
 import { inject, observer } from "mobx-react";
-
-const formatKeys = Object.freeze({
-  OriginalFormat: 0,
-  TxtFormat: 1,
-  DocxFormat: 2,
-  OdtFormat: 3,
-  OdsFormat: 4,
-  OdpFormat: 5,
-  PdfFormat: 6,
-  RtfFormat: 7,
-  XlsxFormat: 8,
-  PptxFormat: 9,
-  CustomFormat: 10,
-});
+import { FilesFormats } from "@appserver/common/constants";
 
 class DownloadDialogComponent extends React.Component {
   constructor(props) {
@@ -39,9 +26,9 @@ class DownloadDialogComponent extends React.Component {
       presentations: sortedFiles.presentations,
       other: sortedFiles.other,
 
-      documentsTitleFormat: formatKeys.OriginalFormat,
-      spreadsheetsTitleFormat: formatKeys.OriginalFormat,
-      presentationsTitleFormat: formatKeys.OriginalFormat,
+      documentsTitleFormat: FilesFormats.OriginalFormat,
+      spreadsheetsTitleFormat: FilesFormats.OriginalFormat,
+      presentationsTitleFormat: FilesFormats.OriginalFormat,
 
       checkedDocTitle: true,
       checkedSpreadsheetTitle: true,
@@ -192,8 +179,8 @@ class DownloadDialogComponent extends React.Component {
       if (!file) {
         for (let file of newDocuments) {
           file.format =
-            format === formatKeys.CustomFormat || file.fileExst === format
-              ? formatKeys.OriginalFormat
+            format === FilesFormats.CustomFormat || file.fileExst === format
+              ? FilesFormats.OriginalFormat
               : format;
         }
         this.setState({
@@ -207,7 +194,7 @@ class DownloadDialogComponent extends React.Component {
           newDoc.format = format;
           this.setState({
             documents: newDocuments,
-            documentsTitleFormat: formatKeys.CustomFormat,
+            documentsTitleFormat: FilesFormats.CustomFormat,
           });
         }
       }
@@ -216,8 +203,8 @@ class DownloadDialogComponent extends React.Component {
       if (!file) {
         for (let file of newSpreadsheets) {
           file.format =
-            format === formatKeys.CustomFormat || file.fileExst === format
-              ? formatKeys.OriginalFormat
+            format === FilesFormats.CustomFormat || file.fileExst === format
+              ? FilesFormats.OriginalFormat
               : format;
         }
         this.setState({
@@ -231,7 +218,7 @@ class DownloadDialogComponent extends React.Component {
           newSpreadsheet.format = format;
           this.setState({
             spreadsheets: newSpreadsheets,
-            spreadsheetsTitleFormat: formatKeys.CustomFormat,
+            spreadsheetsTitleFormat: FilesFormats.CustomFormat,
           });
         }
       }
@@ -240,8 +227,8 @@ class DownloadDialogComponent extends React.Component {
       if (!file) {
         for (let file of newPresentations) {
           file.format =
-            format === formatKeys.CustomFormat || file.fileExst === format
-              ? formatKeys.OriginalFormat
+            format === FilesFormats.CustomFormat || file.fileExst === format
+              ? FilesFormats.OriginalFormat
               : format;
         }
         this.setState({
@@ -255,7 +242,7 @@ class DownloadDialogComponent extends React.Component {
           newPresentation.format = format;
           this.setState({
             presentations: newPresentations,
-            presentationsTitleFormat: formatKeys.CustomFormat,
+            presentationsTitleFormat: FilesFormats.CustomFormat,
           });
         }
       }
@@ -427,6 +414,9 @@ class DownloadDialogComponent extends React.Component {
       indeterminateOtherTitle,
     } = this.state;
 
+    console.log("this.props", this.props);
+    console.log("this.state", this.state);
+
     const otherLength = other.length;
 
     const showOther = otherLength > 1;
@@ -451,7 +441,6 @@ class DownloadDialogComponent extends React.Component {
                 checkedTitle={checkedDocTitle}
                 indeterminateTitle={indeterminateDocTitle}
                 items={documents}
-                formatKeys={formatKeys}
                 onSelectFormat={this.onSelectFormat}
                 onRowSelect={this.onRowSelect}
                 getItemIcon={this.getItemIcon}
@@ -467,7 +456,6 @@ class DownloadDialogComponent extends React.Component {
                 checkedTitle={checkedSpreadsheetTitle}
                 indeterminateTitle={indeterminateSpreadsheetTitle}
                 items={spreadsheets}
-                formatKeys={formatKeys}
                 onSelectFormat={this.onSelectFormat}
                 onRowSelect={this.onRowSelect}
                 getItemIcon={this.getItemIcon}
@@ -483,7 +471,6 @@ class DownloadDialogComponent extends React.Component {
                 checkedTitle={checkedPresentationTitle}
                 indeterminateTitle={indeterminatePresentationTitle}
                 items={presentations}
-                formatKeys={formatKeys}
                 onSelectFormat={this.onSelectFormat}
                 onRowSelect={this.onRowSelect}
                 getItemIcon={this.getItemIcon}

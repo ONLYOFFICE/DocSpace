@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes, css } from "styled-components";
 
 const backgroundColor = "none";
 const color = "#2DA7DB";
@@ -11,6 +11,15 @@ const StyledCircleWrap = styled.div`
   cursor: pointer;
 `;
 
+const rotate360 = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
 const StyledCircle = styled.div`
   .circle__mask,
   .circle__fill {
@@ -20,14 +29,24 @@ const StyledCircle = styled.div`
     border-radius: 50%;
   }
 
-  .circle__mask {
-    clip: rect(0px, 54px, 54px, 27px);
-  }
+  ${(props) =>
+    props.percent > 0
+      ? css`
+          .circle__mask {
+            clip: rect(0px, 54px, 54px, 27px);
+          }
 
-  .circle__fill {
-    animation: fill-rotate ease-in-out none;
-    transform: rotate(${(props) => props.percent * 1.8}deg);
-  }
+          .circle__fill {
+            animation: fill-rotate ease-in-out none;
+            transform: rotate(${(props) => props.percent * 1.8}deg);
+          }
+        `
+      : css`
+          .circle__fill {
+            animation: ${rotate360} 2s linear infinite;
+            transform: translate(0);
+          }
+        `}
 
   .circle__mask .circle__fill {
     clip: rect(0px, 27px, 54px, 0px);

@@ -13,7 +13,8 @@ class SettingsStore {
   culture = "en-US";
   cultures = [];
   trustedDomains = [];
-  trustedDomainsType = 1;
+  trustedDomainsType = 0;
+  trustedDomains = [];
   timezone = "UTC";
   timezones = [];
   utcOffset = "00:00:00";

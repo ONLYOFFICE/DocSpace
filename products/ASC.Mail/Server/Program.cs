@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 using Autofac.Extensions.DependencyInjection;
 
@@ -12,13 +13,17 @@ namespace ASC.Mail
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public async static Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseSystemd()
+                .UseWindowsService()
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
