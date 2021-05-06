@@ -135,6 +135,7 @@ export default function withFileActions(WrappedFileItem) {
         expandedKeys,
         addExpandedKeys,
         setMediaViewerData,
+        onSelectItem,
       } = this.props;
       const { id, fileExst, viewUrl, providerKey, contentLength } = item;
 
@@ -154,6 +155,7 @@ export default function withFileActions(WrappedFileItem) {
           })
           .finally(() => setIsLoading(false));
       } else {
+        onSelectItem(item);
         if (canWebEdit) {
           return openDocEditor(id, providerKey);
         }
