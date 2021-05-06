@@ -112,7 +112,7 @@ class OperationsDialog extends React.PureComponent {
     } = this.props;
     const { isLoading, selectedInput } = this.state;
     const zIndex = 310;
-    // console.log("selectedInput ", selectedInput);
+    //console.log("folderList ", folderList);
 
     return (
       <>
@@ -121,7 +121,7 @@ class OperationsDialog extends React.PureComponent {
           id={name}
           scale
           className="folder_path"
-          baseFolder={commonTreeFolder.title}
+          baseFolder={folderList ? "" : commonTreeFolder.title}
           isDisabled={isLoading}
           folderPath={this.state[selectedInput]}
           onClickInput={onClickInput}
