@@ -165,7 +165,14 @@ namespace ASC.Api.Documents
         public IEnumerable<FolderContentWrapper<int>> GetRootFolders(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders, bool withoutTrash, bool withoutAdditionalFolder)
         {
             var IsVisitor = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager);
+            var IsOutsider = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOutsider(UserManager);
             var result = new SortedSet<int>();
+
+            if (IsOutsider)
+            {
+                withoutTrash = true;
+                withoutAdditionalFolder = true;
+            }
 
             if (!IsVisitor)
             {
@@ -208,8 +215,7 @@ namespace ASC.Api.Documents
                 result.Add(GlobalFolderHelper.FolderTemplates);
             }
 
-            if (!IsVisitor
-               && !withoutTrash)
+            if (!withoutTrash)
             {
                 result.Add((int)GlobalFolderHelper.FolderTrash);
             }
