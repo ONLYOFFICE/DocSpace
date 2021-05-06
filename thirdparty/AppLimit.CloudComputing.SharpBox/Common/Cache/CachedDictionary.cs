@@ -1,4 +1,4 @@
-#if NETSTANDARD2_1
+#if NET5_0
 using System;
 using System.Diagnostics;
 
