@@ -18,6 +18,7 @@ const FilesMediaViewer = (props) => {
     mediaViewerMediaFormats,
     mediaViewerImageFormats,
     location,
+    setRemoveMediaItem,
   } = props;
 
   useEffect(() => {
@@ -60,7 +61,10 @@ const FilesMediaViewer = (props) => {
 
     if (files.length > 0) {
       let file = files.find((file) => file.id === id);
-      if (file) deleteItemAction(file.id, file.folderId, translations, true);
+      if (file) {
+        setRemoveMediaItem(file);
+        deleteItemAction(file.id, file.folderId, translations, true);
+      }
     }
   };
 
@@ -95,7 +99,13 @@ const FilesMediaViewer = (props) => {
 };
 
 export default inject(
-  ({ filesStore, mediaViewerDataStore, filesActionsStore, formatsStore }) => {
+  ({
+    filesStore,
+    mediaViewerDataStore,
+    filesActionsStore,
+    formatsStore,
+    dialogsStore,
+  }) => {
     const { files } = filesStore;
     const {
       visible,
@@ -115,6 +125,7 @@ export default inject(
       setMediaViewerData,
       mediaViewerImageFormats: images,
       mediaViewerMediaFormats: media,
+      setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesMediaViewer))));

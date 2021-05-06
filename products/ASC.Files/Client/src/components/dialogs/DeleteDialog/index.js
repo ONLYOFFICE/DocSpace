@@ -77,7 +77,10 @@ class DeleteDialogComponent extends React.Component {
     }
   };
 
-  onClose = () => this.props.setDeleteDialogVisible(false);
+  onClose = () => {
+    this.props.setRemoveMediaItem(null);
+    this.props.setDeleteDialogVisible(false);
+  };
 
   render() {
     const { visible, t, isLoading } = this.props;
@@ -208,11 +211,13 @@ export default inject(
     const {
       deleteDialogVisible: visible,
       setDeleteDialogVisible,
+      removeMediaItem,
+      setRemoveMediaItem,
     } = dialogsStore;
 
     return {
       currentFolderId: selectedFolderStore.id,
-      selection,
+      selection: removeMediaItem ? [removeMediaItem] : selection,
       isLoading,
       treeFolders,
       isRecycleBinFolder,
@@ -227,6 +232,8 @@ export default inject(
       clearSecondaryProgressData,
       setDeleteDialogVisible,
       deleteAction,
+
+      setRemoveMediaItem,
     };
   }
 )(withRouter(observer(DeleteDialog)));
