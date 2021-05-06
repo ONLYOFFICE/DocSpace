@@ -5,10 +5,14 @@ import OperationsDialog from "files/OperationsDialog";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import { startBackup } from "@appserver/common/api/portal";
-const DocumentsModule = ({
+import { inject, observer } from "mobx-react";
+import Box from "@appserver/components/box";
+import Link from "@appserver/components/link";
+const ThirdPartyModule = ({
   maxProgress,
   commonThirdPartyList,
   setInterval,
+  helpUrlCreatingBackup,
 }) => {
   const [selectedFolder, setSelectedFolder] = useState("");
   const [isPanelVisible, setPanelVisible] = useState(false);
@@ -46,6 +50,16 @@ const DocumentsModule = ({
       <Text className="category-item-description note_description">
         {t("ThirdPartyResourceNoteDescription")}
       </Text>
+      <Box marginProp="16px 0 16px 0">
+        <Link
+          color="#316DAA"
+          target="_blank"
+          isHovered={true}
+          href={helpUrlCreatingBackup}
+        >
+          {t("LearnMore")}
+        </Link>
+      </Box>
 
       <OperationsDialog
         onSelectFolder={onSelectFolder}
@@ -70,4 +84,9 @@ const DocumentsModule = ({
   );
 };
 
-export default DocumentsModule;
+export default inject(({ auth }) => {
+  const { helpUrlCreatingBackup } = auth.settingsStore;
+  return {
+    helpUrlCreatingBackup,
+  };
+})(observer(ThirdPartyModule));

@@ -96,6 +96,13 @@ class SettingsStore {
     return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CustomizingPortal_block`;
   }
 
+  get helpUrlCreatingBackup() {
+    const substring = this.culture.substring(0, this.culture.indexOf("-"));
+    const lang = substring.length > 0 ? substring : "en";
+
+    return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CreatingBackup_block`;
+  }
+
   setValue = (key, value) => {
     this[key] = value;
   };
