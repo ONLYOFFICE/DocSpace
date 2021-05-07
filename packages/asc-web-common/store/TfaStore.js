@@ -9,6 +9,15 @@ class TfaStore {
     makeAutoObservable(this);
   }
 
+  getTfaSettings = async () => {
+    console.log("getTfaSettings");
+    const res = await api.settings.getTfaSettings();
+    const sms = res[0].enabled;
+    const app = res[1].enabled;
+
+    return sms ? "sms" : app ? "app" : "none";
+  };
+
   setTfaSettings = async (type) => {
     console.log("setTfaSettings");
     const res = await api.settings.setTfaSettings(type);
