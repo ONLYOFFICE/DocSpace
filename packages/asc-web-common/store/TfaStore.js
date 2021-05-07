@@ -15,18 +15,25 @@ class TfaStore {
     const sms = res[0].enabled;
     const app = res[1].enabled;
 
-    return sms ? "sms" : app ? "app" : "none";
+    const type = sms ? "sms" : app ? "app" : "none";
+    this.tfaSettings = type;
+
+    return type;
   };
 
   setTfaSettings = async (type) => {
     console.log("setTfaSettings");
     const res = await api.settings.setTfaSettings(type);
     console.log(res);
+    this.getTfaConfirmLink(res, type);
+  };
+
+  getTfaConfirmLink = async (res, type) => {
+    console.log("getTfaConfirmLink");
 
     if (res && type !== "none") {
       const link = await api.settings.getTfaConfirmLink();
       console.log(link);
-      this.tfaSettings = type;
       return link;
     }
   };
