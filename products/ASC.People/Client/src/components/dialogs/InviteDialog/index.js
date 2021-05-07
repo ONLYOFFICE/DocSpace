@@ -125,6 +125,7 @@ class InviteDialogComponent extends React.Component {
           ChangeTextAnim={ChangeTextAnim}
           visible={visible}
           onClose={this.onClose}
+          zIndex={400}
         >
           <ModalDialog.Header>{t("InviteLinkTitle")}</ModalDialog.Header>
           <ModalDialog.Body>
