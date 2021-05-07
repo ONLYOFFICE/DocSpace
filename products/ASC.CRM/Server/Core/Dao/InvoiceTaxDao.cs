@@ -46,67 +46,9 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
 {
-    public class CachedInvoiceTaxDao : InvoiceTaxDao
-    {
-        private readonly HttpRequestDictionary<InvoiceTax> _invoiceTaxCache;
-
-        public CachedInvoiceTaxDao(DbContextManager<CrmDbContext> dbContextManager,
-            TenantManager tenantManager,
-            TenantUtil tenantUtil,
-            SecurityContext securityContext,
-            IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> logger,
-            ICache ascCache,
-            IMapper mapper
-            )
-            : base(dbContextManager,
-                 tenantManager,
-                 tenantUtil,
-                 securityContext,
-                 logger,
-                 ascCache,
-                 mapper)
-
-        {
-            _invoiceTaxCache = new HttpRequestDictionary<InvoiceTax>(httpContextAccessor?.HttpContext, "crm_invoice_tax");
-        }
-
-        public override InvoiceTax GetByID(int invoiceTaxID)
-        {
-            return _invoiceTaxCache.Get(invoiceTaxID.ToString(CultureInfo.InvariantCulture), () => GetByIDBase(invoiceTaxID));
-        }
-
-        private InvoiceTax GetByIDBase(int invoiceTaxID)
-        {
-            return base.GetByID(invoiceTaxID);
-        }
-
-        public override InvoiceTax SaveOrUpdateInvoiceTax(InvoiceTax invoiceTax)
-        {
-            if (invoiceTax != null && invoiceTax.ID > 0)
-                ResetCache(invoiceTax.ID);
-
-            return base.SaveOrUpdateInvoiceTax(invoiceTax);
-        }
-
-        public override InvoiceTax DeleteInvoiceTax(int invoiceTaxID)
-        {
-            ResetCache(invoiceTaxID);
-
-            return base.DeleteInvoiceTax(invoiceTaxID);
-        }
-
-        private void ResetCache(int invoiceTaxID)
-        {
-            _invoiceTaxCache.Reset(invoiceTaxID.ToString(CultureInfo.InvariantCulture));
-        }
-    }
-
     [Scope]
     public class InvoiceTaxDao : AbstractDao
     {
-        private readonly IMapper _mapper;
-
         public InvoiceTaxDao(
             DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
@@ -132,53 +74,53 @@ namespace ASC.CRM.Core.Dao
 
         public Boolean IsExist(int invoiceTaxID)
         {
-            return CRMDbContext.InvoiceTax.Where(x => x.Id == invoiceTaxID).Any();
+            return CrmDbContext.InvoiceTax.Where(x => x.Id == invoiceTaxID).Any();
         }
 
         public Boolean IsExist(String invoiceName)
         {
-            return Query(CRMDbContext.InvoiceTax).Where(x => String.Compare(x.Name, invoiceName, true) == 0).Any();
+            return Query(CrmDbContext.InvoiceTax).Where(x => String.Compare(x.Name, invoiceName, true) == 0).Any();
         }
 
         public Boolean CanDelete(int invoiceTaxID)
         {
-            return !Query(CRMDbContext.InvoiceItem)
+            return !Query(CrmDbContext.InvoiceItem)
                         .Where(x => x.InvoiceTax1Id == invoiceTaxID || x.InvoiceTax2Id == invoiceTaxID).Any() &&
-                    !Query(CRMDbContext.InvoiceLine)
+                    !Query(CrmDbContext.InvoiceLine)
                         .Where(x => x.InvoiceTax1Id == invoiceTaxID || x.InvoiceTax2Id == invoiceTaxID).Any();
         }
 
-        public virtual List<InvoiceTax> GetAll()
+        public List<InvoiceTax> GetAll()
         {
-            return _mapper.Map<List<DbInvoiceTax>, List<InvoiceTax>>(Query(CRMDbContext.InvoiceTax).ToList());
+            return _mapper.Map<List<DbInvoiceTax>, List<InvoiceTax>>(Query(CrmDbContext.InvoiceTax).ToList());
         }
 
         public DateTime GetMaxLastModified()
         {
-            var result = Query(CRMDbContext.InvoiceTax).Max(x => x.LastModifedOn);
+            var result = Query(CrmDbContext.InvoiceTax).Max(x => x.LastModifedOn);
 
             if (result.HasValue) return result.Value;
 
             return DateTime.MinValue;
         }
 
-        public virtual List<InvoiceTax> GetByID(int[] ids)
+        public List<InvoiceTax> GetByID(int[] ids)
         {
-            var result = Query(CRMDbContext.InvoiceTax)
+            var result = Query(CrmDbContext.InvoiceTax)
                     .Where(x => ids.Contains(x.Id))
                     .ToList();
 
             return _mapper.Map<List<DbInvoiceTax>, List<InvoiceTax>>(result);
         }
 
-        public virtual InvoiceTax GetByID(int id)
+        public InvoiceTax GetByID(int id)
         {
-            var invoiceTax = CRMDbContext.InvoiceTax.FirstOrDefault(x => x.Id == id);
+            var invoiceTax = CrmDbContext.InvoiceTax.FirstOrDefault(x => x.Id == id);
 
             return _mapper.Map<InvoiceTax>(invoiceTax);
         }
 
-        public virtual InvoiceTax SaveOrUpdateInvoiceTax(InvoiceTax invoiceTax)
+        public InvoiceTax SaveOrUpdateInvoiceTax(InvoiceTax invoiceTax)
         {
             /*_cache.Remove(_invoiceItemCacheKey);
             _cache.Insert(_invoiceTaxCacheKey, String.Empty);*/
@@ -194,7 +136,7 @@ namespace ASC.CRM.Core.Dao
             invoiceTax.LastModifedBy = _securityContext.CurrentAccount.ID;
             invoiceTax.LastModifedOn = DateTime.UtcNow;
 
-            if (!Query(CRMDbContext.InvoiceTax).Where(x => x.Id == invoiceTax.ID).Any())
+            if (!Query(CrmDbContext.InvoiceTax).Where(x => x.Id == invoiceTax.ID).Any())
             {
                 invoiceTax.CreateOn = DateTime.UtcNow;
                 invoiceTax.CreateBy = _securityContext.CurrentAccount.ID;
@@ -211,9 +153,9 @@ namespace ASC.CRM.Core.Dao
                     TenantId = TenantID
                 };
 
-                CRMDbContext.InvoiceTax.Add(itemToInsert);
+                CrmDbContext.InvoiceTax.Add(itemToInsert);
 
-                CRMDbContext.SaveChanges();
+                CrmDbContext.SaveChanges();
 
                 invoiceTax.ID = itemToInsert.Id;
             }
@@ -223,7 +165,7 @@ namespace ASC.CRM.Core.Dao
 
                 CRMSecurity.DemandEdit(oldInvoiceTax);
 
-                var itemToUpdate = Query(CRMDbContext.InvoiceTax)
+                var itemToUpdate = Query(CrmDbContext.InvoiceTax)
                                     .FirstOrDefault(x => x.Id == invoiceTax.ID);
 
                 itemToUpdate.Name = invoiceTax.Name;
@@ -232,16 +174,16 @@ namespace ASC.CRM.Core.Dao
                 itemToUpdate.LastModifedOn = itemToUpdate.LastModifedOn;
                 itemToUpdate.LastModifedBy = itemToUpdate.LastModifedBy;
 
-                CRMDbContext.InvoiceTax.Update(itemToUpdate);
+                CrmDbContext.InvoiceTax.Update(itemToUpdate);
 
-                CRMDbContext.SaveChanges();
+                CrmDbContext.SaveChanges();
 
             }
 
             return invoiceTax;
         }
 
-        public virtual InvoiceTax DeleteInvoiceTax(int invoiceTaxID)
+        public InvoiceTax DeleteInvoiceTax(int invoiceTaxID)
         {
             var invoiceTax = GetByID(invoiceTaxID);
 
@@ -254,10 +196,10 @@ namespace ASC.CRM.Core.Dao
                 Id = invoiceTaxID
             };
 
-            CRMDbContext.Attach(invoiceTax);
-            CRMDbContext.Remove(itemToDelete);
+            CrmDbContext.Attach(invoiceTax);
+            CrmDbContext.Remove(itemToDelete);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             /* _cache.Remove(_invoiceItemCacheKey);
              _cache.Insert(_invoiceTaxCacheKey, String.Empty);*/

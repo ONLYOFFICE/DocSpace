@@ -46,75 +46,6 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
 {
-    public class CachedContactInfo : ContactInfoDao
-    {
-        private readonly HttpRequestDictionary<ContactInfo> _contactInfoCache;
-
-        public CachedContactInfo(
-             DbContextManager<CrmDbContext> dbContextManager,
-             TenantManager tenantManager,
-             SecurityContext securityContext,
-             TenantUtil tenantUtil,
-             IOptionsMonitor<ILog> logger,
-             ICache ascCache,
-             FactoryIndexerContactInfo factoryIndexerContactInfo,
-             IHttpContextAccessor httpContextAccessor,
-             IServiceProvider serviceProvider,
-             IMapper mapper
-             )
-            : base(
-                dbContextManager,
-                tenantManager,
-                securityContext,
-                tenantUtil,
-                logger,
-                ascCache,
-                factoryIndexerContactInfo,
-                serviceProvider, 
-                mapper)
-        {
-            _contactInfoCache = new HttpRequestDictionary<ContactInfo>(httpContextAccessor?.HttpContext, "crm_contact_info");
-        }
-
-        public override ContactInfo GetByID(int id)
-        {
-            return _contactInfoCache.Get(id.ToString(), () => GetByIDBase(id));
-        }
-
-        public override void Delete(int id)
-        {
-
-            ResetCache(id);
-
-            base.Delete(id);
-        }
-
-        private ContactInfo GetByIDBase(int id)
-        {
-            return base.GetByID(id);
-        }
-
-        private void ResetCache(int id)
-        {
-            _contactInfoCache.Reset(id.ToString());
-        }
-
-        public override void DeleteByContact(int contactID)
-        {
-            _contactInfoCache.Clear();
-
-            base.DeleteByContact(contactID);
-        }
-
-        public override int Update(ContactInfo contactInfo)
-        {
-            ResetCache(contactInfo.ID);
-
-            return base.Update(contactInfo);
-        }
-
-    }
-
     [Scope]
     public class ContactInfoDao : AbstractDao
     {
@@ -145,43 +76,43 @@ namespace ASC.CRM.Core.Dao
         public TenantUtil TenantUtil { get; }
         public FactoryIndexerContactInfo FactoryIndexerContactInfo { get; }
 
-        public virtual ContactInfo GetByID(int id)
+        public ContactInfo GetByID(int id)
         {
-            var dbContactInfo = CRMDbContext.ContactsInfo.SingleOrDefault(x => x.Id == id);
+            var dbContactInfo = CrmDbContext.ContactsInfo.SingleOrDefault(x => x.Id == id);
 
             return _mapper.Map<ContactInfo>(dbContactInfo);
         }
 
-        public virtual void Delete(int id)
+        public void Delete(int id)
         {
             var itemToDelete = new DbContactInfo
             {
                 Id = id
             };
 
-            CRMDbContext.ContactsInfo.Remove(itemToDelete);
-            CRMDbContext.SaveChanges();
+            CrmDbContext.ContactsInfo.Remove(itemToDelete);
+            CrmDbContext.SaveChanges();
 
             FactoryIndexerContactInfo.Delete(r => r.Where(a => a.Id, id));
         }
 
-        public virtual void DeleteByContact(int contactID)
+        public void DeleteByContact(int contactID)
         {
             if (contactID <= 0) return;
 
-            CRMDbContext.RemoveRange(Query(CRMDbContext.ContactsInfo)
+            CrmDbContext.RemoveRange(Query(CrmDbContext.ContactsInfo)
                                         .Where(x => x.ContactId == contactID));
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             FactoryIndexerContactInfo.Delete(r => r.Where(a => a.ContactId, contactID));
         }
 
-        public virtual int Update(ContactInfo contactInfo)
+        public int Update(ContactInfo contactInfo)
         {
             var result = UpdateInDb(contactInfo);
 
-            FactoryIndexerContactInfo.Update(Query(CRMDbContext.ContactsInfo)
+            FactoryIndexerContactInfo.Update(Query(CrmDbContext.ContactsInfo)
                                         .Where(x => x.ContactId == contactInfo.ID).Single());
 
             return result;
@@ -205,9 +136,9 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             };
 
-            CRMDbContext.ContactsInfo.Update(itemToUpdate);
+            CrmDbContext.ContactsInfo.Update(itemToUpdate);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             return contactInfo.ID;
         }
@@ -219,7 +150,7 @@ namespace ASC.CRM.Core.Dao
 
             contactInfo.ID = id;
 
-            var dbContactInfo = Query(CRMDbContext.ContactsInfo)
+            var dbContactInfo = Query(CrmDbContext.ContactsInfo)
                                         .Where(x => x.ContactId == contactInfo.ID)
                                         .Single();
 
@@ -243,9 +174,9 @@ namespace ASC.CRM.Core.Dao
 
             };
 
-            CRMDbContext.Add(itemToInsert);
+            CrmDbContext.Add(itemToInsert);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             return itemToInsert.Id;
 
@@ -265,16 +196,16 @@ namespace ASC.CRM.Core.Dao
         {
             if (contactID == null || contactID.Length == 0) return null;
 
-            var result = Query(CRMDbContext.ContactsInfo)
+            var result = Query(CrmDbContext.ContactsInfo)
                 .Where(x => contactID.Contains(x.ContactId))
                 .ToList();
 
             return _mapper.Map<List<DbContactInfo>, List<ContactInfo>>(result);
         }
 
-        public virtual List<ContactInfo> GetList(int contactID, ContactInfoType? infoType, int? categoryID, bool? isPrimary)
+        public List<ContactInfo> GetList(int contactID, ContactInfoType? infoType, int? categoryID, bool? isPrimary)
         {
-            var items = Query(CRMDbContext.ContactsInfo);
+            var items = Query(CrmDbContext.ContactsInfo);
 
             if (contactID > 0)
                 items = items.Where(x => x.ContactId == contactID);
@@ -300,7 +231,7 @@ namespace ASC.CRM.Core.Dao
 
             var result = new List<int>();
 
-            var tx = CRMDbContext.Database.BeginTransaction();
+            var tx = CrmDbContext.Database.BeginTransaction();
 
             foreach (var contactInfo in items)
                 result.Add(UpdateInDb(contactInfo));
@@ -311,7 +242,7 @@ namespace ASC.CRM.Core.Dao
             {
                 var itemIDs = items.Select(y => y.ID);
 
-                var dbContactInfos = Query(CRMDbContext.ContactsInfo)
+                var dbContactInfos = Query(CrmDbContext.ContactsInfo)
                             .Where(x => itemIDs.Contains(x.Id));
 
                 foreach (var dbContactInfo in dbContactInfos)
@@ -329,7 +260,7 @@ namespace ASC.CRM.Core.Dao
 
             var result = new List<int>();
 
-            var tx = CRMDbContext.Database.BeginTransaction();
+            var tx = CrmDbContext.Database.BeginTransaction();
 
             foreach (var contactInfo in items)
             {
@@ -344,7 +275,7 @@ namespace ASC.CRM.Core.Dao
             {
                 var itemIDs = items.Select(y => y.ID);
 
-                var dbContactInfos = Query(CRMDbContext.ContactsInfo)
+                var dbContactInfos = Query(CrmDbContext.ContactsInfo)
                             .Where(x => itemIDs.Contains(x.Id));
 
                 foreach (var dbContactInfo in dbContactInfos)

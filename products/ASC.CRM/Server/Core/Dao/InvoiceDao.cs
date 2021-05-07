@@ -56,72 +56,7 @@ using Newtonsoft.Json;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.CRM.Core.Dao
-{
-    public class CachedInvoiceDao : InvoiceDao
-    {
-        private readonly HttpRequestDictionary<Invoice> _invoiceCache;
-
-        public CachedInvoiceDao(DbContextManager<CrmDbContext> dbContextManager,
-            TenantManager tenantManager,
-            SecurityContext securityContext,
-            FactoryIndexerInvoice factoryIndexer,
-            IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> logger,
-            ICache ascCache,
-            SettingsManager settingsManager,
-            InvoiceSetting invoiceSetting,
-            InvoiceFormattedData invoiceFormattedData,
-            CrmSecurity crmSecurity,
-            TenantUtil tenantUtil,
-            IMapper mapper)
-              : base(dbContextManager,
-                 tenantManager,
-                 securityContext,
-                 factoryIndexer,
-                 logger,
-                 ascCache,
-                 settingsManager,
-                 invoiceSetting,
-                 invoiceFormattedData,
-                 crmSecurity,
-                 tenantUtil,
-                 mapper
-                 )
-        {
-            _invoiceCache = new HttpRequestDictionary<Invoice>(httpContextAccessor?.HttpContext, "crm_invoice");
-        }
-
-        public override Invoice GetByID(int invoiceID)
-        {
-            return _invoiceCache.Get(invoiceID.ToString(CultureInfo.InvariantCulture), () => GetByIDBase(invoiceID));
-        }
-
-        private Invoice GetByIDBase(int invoiceID)
-        {
-            return base.GetByID(invoiceID);
-        }
-
-        public override int SaveOrUpdateInvoice(Invoice invoice)
-        {
-            if (invoice != null && invoice.ID > 0)
-                ResetCache(invoice.ID);
-
-            return base.SaveOrUpdateInvoice(invoice);
-        }
-
-        public override Invoice DeleteInvoice(int invoiceID)
-        {
-            ResetCache(invoiceID);
-
-            return base.DeleteInvoice(invoiceID);
-        }
-
-        private void ResetCache(int invoiceID)
-        {
-            _invoiceCache.Reset(invoiceID.ToString(CultureInfo.InvariantCulture));
-        }
-    }
-
+{  
     [Scope]
     public class InvoiceDao : AbstractDao
     {
@@ -178,7 +113,7 @@ namespace ASC.CRM.Core.Dao
 
         public Boolean IsExistFromDb(int invoiceID)
         {
-            return Query(CRMDbContext.Invoices).Where(x => x.Id == invoiceID).Any();
+            return Query(CrmDbContext.Invoices).Where(x => x.Id == invoiceID).Any();
         }
 
         public Boolean IsExist(string number)
@@ -188,46 +123,46 @@ namespace ASC.CRM.Core.Dao
 
         public Boolean IsExistFromDb(string number)
         {
-            return Query(CRMDbContext.Invoices)
+            return Query(CrmDbContext.Invoices)
                 .Where(x => x.Number == number)
                 .Any();
         }
 
-        public virtual List<Invoice> GetAll()
+        public List<Invoice> GetAll()
         {
-            var dbInvoices = Query(CRMDbContext.Invoices)
+            var dbInvoices = Query(CrmDbContext.Invoices)
                 .ToList();
 
             return _mapper.Map<List<DbInvoice>, List<Invoice>>(dbInvoices);
         }
 
-        public virtual List<Invoice> GetByID(int[] ids)
+        public List<Invoice> GetByID(int[] ids)
         {
-            var dbInvoices = Query(CRMDbContext.Invoices)
+            var dbInvoices = Query(CrmDbContext.Invoices)
                         .Where(x => ids.Contains(x.Id))
                         .ToList();
 
             return _mapper.Map<List<DbInvoice>, List<Invoice>>(dbInvoices);
         }
 
-        public virtual Invoice GetByID(int id)
+        public Invoice GetByID(int id)
         {
             return GetByIDFromDb(id);
         }
 
-        public virtual Invoice GetByIDFromDb(int id)
+        public Invoice GetByIDFromDb(int id)
         {
-            return _mapper.Map<Invoice>(Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Id == id));
+            return _mapper.Map<Invoice>(Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Id == id));
         }
 
         public Invoice GetByNumber(string number)
         {
-            return _mapper.Map<Invoice>(Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Number == number));
+            return _mapper.Map<Invoice>(Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Number == number));
         }
 
         public Invoice GetByFileId(Int32 fileID)
         {
-            return _mapper.Map<Invoice>(Query(CRMDbContext.Invoices)
+            return _mapper.Map<Invoice>(Query(CrmDbContext.Invoices)
                     .FirstOrDefault(x => x.FileId == fileID));
         }
 
@@ -359,7 +294,7 @@ namespace ASC.CRM.Core.Dao
                         break;
                     case InvoiceSortedByType.Contact:
 
-                        var subSqlQuery = sqlQuery.GroupJoin(CRMDbContext.Contacts,
+                        var subSqlQuery = sqlQuery.GroupJoin(CrmDbContext.Contacts,
                                         x => x.ContactId,
                                         y => y.Id,
                                         (x, y) => new { x, y })
@@ -396,7 +331,7 @@ namespace ASC.CRM.Core.Dao
 
         public int GetAllInvoicesCount()
         {
-            return Query(CRMDbContext.Invoices).Count();
+            return Query(CrmDbContext.Invoices).Count();
         }
 
 
@@ -440,7 +375,7 @@ namespace ASC.CRM.Core.Dao
             }
             else
             {
-                var countWithoutPrivate = Query(CRMDbContext.Invoices).Count();
+                var countWithoutPrivate = Query(CrmDbContext.Invoices).Count();
 
                 var privateCount = exceptIDs.Count;
 
@@ -467,7 +402,7 @@ namespace ASC.CRM.Core.Dao
         {
             if (ids == null || !ids.Any()) return new List<Invoice>();
 
-            var dbInvoices = Query(CRMDbContext.Invoices)
+            var dbInvoices = Query(CrmDbContext.Invoices)
                 .Where(x => ids.Contains(x.Id))
                 .ToList();
 
@@ -485,7 +420,7 @@ namespace ASC.CRM.Core.Dao
             if (entityType == EntityType.Opportunity)
             {
 
-                var sqlQuery = Query(CRMDbContext.Invoices).Where(x => x.EntityId == entityID && x.EntityType == entityType)
+                var sqlQuery = Query(CrmDbContext.Invoices).Where(x => x.EntityId == entityID && x.EntityType == entityType)
                     .ToList();
 
                 return _mapper.Map<List<DbInvoice>, List<Invoice>>(sqlQuery)
@@ -506,7 +441,7 @@ namespace ASC.CRM.Core.Dao
             if (contactID <= 0)
                 return result;
 
-            var dbInvoices = Query(CRMDbContext.Invoices).Where(x => x.ContactId == contactID)
+            var dbInvoices = Query(CrmDbContext.Invoices).Where(x => x.ContactId == contactID)
                     .ToList();
 
             return _mapper.Map<List<DbInvoice>, List<Invoice>>(dbInvoices)
@@ -520,7 +455,7 @@ namespace ASC.CRM.Core.Dao
             if (!settings.Autogenerated)
                 return string.Empty;
 
-            var stringNumber = Query(CRMDbContext.Invoices).OrderByDescending(x => x.Id).Select(x => x.Number).ToString();
+            var stringNumber = Query(CrmDbContext.Invoices).OrderByDescending(x => x.Id).Select(x => x.Number).ToString();
 
             if (string.IsNullOrEmpty(stringNumber) || !stringNumber.StartsWith(settings.Prefix))
                 return string.Concat(settings.Prefix, settings.Number);
@@ -550,13 +485,13 @@ namespace ASC.CRM.Core.Dao
             return tenantSettings.InvoiceSetting ?? _invoiceSetting.DefaultSettings;
         }
 
-        public virtual int SaveOrUpdateInvoice(Invoice invoice)
+        public int SaveOrUpdateInvoice(Invoice invoice)
         {
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
 
             var result = SaveOrUpdateInvoiceInDb(invoice);
 
-            _factoryIndexer.Index(Query(CRMDbContext.Invoices).Where(x => x.Id == invoice.ID).Single());
+            _factoryIndexer.Index(Query(CrmDbContext.Invoices).Where(x => x.Id == invoice.ID).Single());
 
             return result;
         }
@@ -606,16 +541,16 @@ namespace ASC.CRM.Core.Dao
                     TenantId = TenantID
                 };
 
-                CRMDbContext.Invoices.Add(itemToInsert);
+                CrmDbContext.Invoices.Add(itemToInsert);
 
-                CRMDbContext.SaveChanges();
+                CrmDbContext.SaveChanges();
 
                 invoice.ID = itemToInsert.Id;
 
             }
             else
             {
-                var itemToUpdate = Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Id == invoice.ID);
+                var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Id == invoice.ID);
 
                 var oldInvoice = _mapper.Map<Invoice>(itemToUpdate);
                 
@@ -640,7 +575,7 @@ namespace ASC.CRM.Core.Dao
                 itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
                 itemToUpdate.TenantId = TenantID;
 
-                CRMDbContext.SaveChanges();
+                CrmDbContext.SaveChanges();
 
 
             }
@@ -648,7 +583,7 @@ namespace ASC.CRM.Core.Dao
             return invoice.ID;
         }
 
-        public virtual Invoice UpdateInvoiceStatus(int invoiceid, InvoiceStatus status)
+        public Invoice UpdateInvoiceStatus(int invoiceid, InvoiceStatus status)
         {
             return UpdateInvoiceStatusInDb(invoiceid, status);
         }
@@ -689,15 +624,15 @@ namespace ASC.CRM.Core.Dao
                 return invoice;
             }
 
-            var itemToUpdate = Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceid);
+            var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceid);
 
             itemToUpdate.Status = status;
             itemToUpdate.LastModifedOn = DateTime.UtcNow;
             itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
 
-            CRMDbContext.Update(itemToUpdate);
+            CrmDbContext.Update(itemToUpdate);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             invoice.Status = status;
 
@@ -705,21 +640,21 @@ namespace ASC.CRM.Core.Dao
 
         }
 
-        public virtual int UpdateInvoiceJsonData(int invoiceId, string jsonData)
+        public int UpdateInvoiceJsonData(int invoiceId, string jsonData)
         {
             return UpdateInvoiceJsonDataInDb(invoiceId, jsonData);
         }
 
         private int UpdateInvoiceJsonDataInDb(int invoiceId, string jsonData)
         {
-            var itemToUpdate = Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceId);
+            var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceId);
 
             itemToUpdate.JsonData = jsonData;
             itemToUpdate.LastModifedOn = DateTime.UtcNow;
             itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
 
-            CRMDbContext.Update(itemToUpdate);
-            CRMDbContext.SaveChanges();
+            CrmDbContext.Update(itemToUpdate);
+            CrmDbContext.SaveChanges();
 
             return invoiceId;
         }
@@ -745,7 +680,7 @@ namespace ASC.CRM.Core.Dao
             UpdateInvoiceJsonData(invoice.ID, invoice.JsonData);
         }
 
-        public virtual int UpdateInvoiceFileID(int invoiceId, int fileId)
+        public int UpdateInvoiceFileID(int invoiceId, int fileId)
         {
             return UpdateInvoiceFileIDInDb(invoiceId, fileId);
         }
@@ -753,14 +688,14 @@ namespace ASC.CRM.Core.Dao
         private int UpdateInvoiceFileIDInDb(int invoiceId, int fileId)
         {
 
-            var sqlToUpdate = Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceId);
+            var sqlToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceId);
 
             sqlToUpdate.FileId = fileId;
             sqlToUpdate.LastModifedOn = DateTime.UtcNow;
             sqlToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
 
-            CRMDbContext.Update(sqlToUpdate);
-            CRMDbContext.SaveChanges();
+            CrmDbContext.Update(sqlToUpdate);
+            CrmDbContext.SaveChanges();
 
             return invoiceId;
         }
@@ -775,7 +710,7 @@ namespace ASC.CRM.Core.Dao
             return tenantSettings.InvoiceSetting;
         }
 
-        public virtual Invoice DeleteInvoice(int invoiceID)
+        public Invoice DeleteInvoice(int invoiceID)
         {
             if (invoiceID <= 0) return null;
 
@@ -809,14 +744,14 @@ namespace ASC.CRM.Core.Dao
         {
             var invoiceID = invoices.Select(x => x.ID).ToArray();
 
-            using var tx = CRMDbContext.Database.BeginTransaction();
+            using var tx = CrmDbContext.Database.BeginTransaction();
 
-            var dbInvoicesQuery = Query(CRMDbContext.Invoices).Where(x => invoiceID.Contains(x.Id));
+            var dbInvoicesQuery = Query(CrmDbContext.Invoices).Where(x => invoiceID.Contains(x.Id));
 
-            CRMDbContext.InvoiceLine.RemoveRange(Query(CRMDbContext.InvoiceLine).Where(x => invoiceID.Contains(x.InvoiceId)));
-            CRMDbContext.Invoices.RemoveRange(dbInvoicesQuery);
+            CrmDbContext.InvoiceLine.RemoveRange(Query(CrmDbContext.InvoiceLine).Where(x => invoiceID.Contains(x.InvoiceId)));
+            CrmDbContext.Invoices.RemoveRange(dbInvoicesQuery);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             tx.Commit();
 
@@ -836,7 +771,7 @@ namespace ASC.CRM.Core.Dao
                                 int entityID,
                                 String currency)
         {
-            var sqlQuery = Query(CRMDbContext.Invoices);
+            var sqlQuery = Query(CrmDbContext.Invoices);
 
             if (entityID > 0)
             {
@@ -949,12 +884,12 @@ namespace ASC.CRM.Core.Dao
         /// <param name="creationDate"></param>
         public void SetInvoiceCreationDate(int invoiceId, DateTime creationDate)
         {
-            var itemToUpdate = Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceId);
+            var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceId);
 
             itemToUpdate.CreateOn = _tenantUtil.DateTimeToUtc(creationDate);
 
-            CRMDbContext.Invoices.Update(itemToUpdate);
-            CRMDbContext.SaveChanges();
+            CrmDbContext.Invoices.Update(itemToUpdate);
+            CrmDbContext.SaveChanges();
 
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
@@ -967,13 +902,13 @@ namespace ASC.CRM.Core.Dao
         /// <param name="lastModifedDate"></param>
         public void SetInvoiceLastModifedDate(int invoiceId, DateTime lastModifedDate)
         {
-            var itemToUpdate = Query(CRMDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceId);
+            var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceId);
 
             itemToUpdate.LastModifedOn = _tenantUtil.DateTimeToUtc(lastModifedDate);
 
-            CRMDbContext.Invoices.Update(itemToUpdate);
+            CrmDbContext.Invoices.Update(itemToUpdate);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));

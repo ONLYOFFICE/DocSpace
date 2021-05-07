@@ -40,7 +40,7 @@ namespace ASC.Web.CRM.Core.Search
 
             (int, int, int) getCount(DateTime lastIndexed)
             {
-                var q = dealDao.CRMDbContext.ContactsInfo
+                var q = dealDao.CrmDbContext.ContactsInfo
                         .Where(r => r.LastModifedOn >= lastIndexed);
 
                 var count = q.GroupBy(a => a.Id).Count();
@@ -51,7 +51,7 @@ namespace ASC.Web.CRM.Core.Search
             }
 
             List<DbDeal> getData(long i, long step, DateTime lastIndexed) =>
-                    dealDao.CRMDbContext.Deals
+                    dealDao.CrmDbContext.Deals
                     .Where(r => r.LastModifedOn >= lastIndexed)
                     .Where(r => r.Id >= i && r.Id <= i + step)
                     .Select(r => r)

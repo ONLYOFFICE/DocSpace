@@ -48,80 +48,6 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
 {
-
-    public class CachedListItem : ListItemDao
-    {
-        private readonly HttpRequestDictionary<ListItem> _listItemCache;
-
-        public CachedListItem(
-            DbContextManager<CrmDbContext> dbContextManager,
-            TenantManager tenantManager,
-            SecurityContext securityContext,
-            IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> logger,
-            ICache ascCache,
-            IMapper mapper)
-            : base(dbContextManager,
-                  tenantManager,
-                  securityContext,
-                  logger,
-                  ascCache, 
-                  mapper)
-        {
-            _listItemCache = new HttpRequestDictionary<ListItem>(httpContextAccessor?.HttpContext, "crm_list_item");
-        }
-
-        public override void ChangeColor(int id, string newColor)
-        {
-            ResetCache(id);
-
-            base.ChangeColor(id, newColor);
-        }
-
-        public override void DeleteItem(ListType listType, int itemID, int toItemID)
-        {
-            ResetCache(itemID);
-
-            base.DeleteItem(listType, itemID, toItemID);
-        }
-
-        public override void ChangePicture(int id, string newPicture)
-        {
-            ResetCache(id);
-
-            base.ChangePicture(id, newPicture);
-        }
-
-        public override void EditItem(ListType listType, ListItem enumItem)
-        {
-            ResetCache(enumItem.ID);
-
-            base.EditItem(listType, enumItem);
-        }
-
-        public override void ReorderItems(ListType listType, string[] titles)
-        {
-            _listItemCache.Clear();
-
-            base.ReorderItems(listType, titles);
-        }
-
-        public override ListItem GetByID(int id)
-        {
-            return _listItemCache.Get(id.ToString(), () => GetByIDBase(id));
-        }
-
-        private ListItem GetByIDBase(int id)
-        {
-            return base.GetByID(id);
-        }
-
-        private void ResetCache(int id)
-        {
-            _listItemCache.Reset(id.ToString());
-        }
-    }
-
     [Scope]
     public class ListItemDao : AbstractDao
     {
@@ -145,19 +71,19 @@ namespace ASC.CRM.Core.Dao
 
         public bool IsExist(ListType listType, String title)
         {
-            return CRMDbContext.ListItem
+            return CrmDbContext.ListItem
                     .Where(x => x.TenantId == TenantID && x.ListType == listType && String.Compare(x.Title, title, true) == 0)
                     .Any();
         }
 
         public bool IsExist(int id)
         {
-            return CRMDbContext.ListItem.Where(x => x.Id == id).Any();
+            return CrmDbContext.ListItem.Where(x => x.Id == id).Any();
         }
 
         public List<ListItem> GetItems()
         {
-            var dbListItems = Query(CRMDbContext.ListItem)
+            var dbListItems = Query(CrmDbContext.ListItem)
             .OrderBy(x => x.SortOrder)
             .ToList();
 
@@ -166,7 +92,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<ListItem> GetItems(ListType listType)
         {
-            var dbListItems = Query(CRMDbContext.ListItem)
+            var dbListItems = Query(CrmDbContext.ListItem)
                         .Where(x => x.ListType == listType)
                         .OrderBy(x => x.SortOrder)
                         .ToList();
@@ -176,7 +102,7 @@ namespace ASC.CRM.Core.Dao
 
         public int GetItemsCount(ListType listType)
         {
-            return Query(CRMDbContext.ListItem)
+            return Query(CrmDbContext.ListItem)
                 .Where(x => x.ListType == listType)
                 .OrderBy(x => x.SortOrder).Count();
         }
@@ -237,25 +163,25 @@ namespace ASC.CRM.Core.Dao
             };
         }
 
-        public virtual ListItem GetByID(int id)
+        public ListItem GetByID(int id)
         {
             if (id < 0) return GetSystemListItem(id);
 
-            return _mapper.Map<ListItem>(Query(CRMDbContext.ListItem).FirstOrDefault(x => x.Id == id));
+            return _mapper.Map<ListItem>(Query(CrmDbContext.ListItem).FirstOrDefault(x => x.Id == id));
         }
 
-        public virtual List<ListItem> GetItems(int[] id)
+        public List<ListItem> GetItems(int[] id)
         {
-            var sqlResult = _mapper.Map<List<DbListItem>, List<ListItem>>(CRMDbContext.ListItem.Where(x => id.Contains(x.Id)).ToList());
+            var sqlResult = _mapper.Map<List<DbListItem>, List<ListItem>>(CrmDbContext.ListItem.Where(x => id.Contains(x.Id)).ToList());
 
             var systemItem = id.Where(item => item < 0).Select(GetSystemListItem);
 
             return systemItem.Any() ? sqlResult.Union(systemItem).ToList() : sqlResult;
         }
 
-        public virtual List<ListItem> GetAll()
+        public List<ListItem> GetAll()
         {
-            var dbListItems = CRMDbContext
+            var dbListItems = CrmDbContext
                         .ListItem
                         .ToList();
 
@@ -263,7 +189,7 @@ namespace ASC.CRM.Core.Dao
 
         }
 
-        public virtual void ChangeColor(int id, string newColor)
+        public void ChangeColor(int id, string newColor)
         {
             var listItem = new DbListItem
             {
@@ -272,16 +198,16 @@ namespace ASC.CRM.Core.Dao
             };
 
 
-            CRMDbContext.Attach(listItem);
-            CRMDbContext.Entry(listItem).Property("Color").IsModified = true;
-            CRMDbContext.SaveChanges();
+            CrmDbContext.Attach(listItem);
+            CrmDbContext.Entry(listItem).Property("Color").IsModified = true;
+            CrmDbContext.SaveChanges();
         }
 
         public NameValueCollection GetColors(ListType listType)
         {
             var result = new NameValueCollection();
 
-            Query(CRMDbContext.ListItem)
+            Query(CrmDbContext.ListItem)
                             .Where(x => x.ListType == listType)
                             .Select(x => new { x.Id, x.Color })
                             .ToList()
@@ -293,7 +219,7 @@ namespace ASC.CRM.Core.Dao
 
         public ListItem GetByTitle(ListType listType, string title)
         {
-            return _mapper.Map<ListItem>(Query(CRMDbContext.ListItem)
+            return _mapper.Map<ListItem>(Query(CrmDbContext.ListItem)
                                 .FirstOrDefault(x => String.Compare(x.Title, title, true) == 0 && x.ListType == listType));
         }
 
@@ -304,16 +230,16 @@ namespace ASC.CRM.Core.Dao
             switch (listType)
             {
                 case ListType.ContactStatus:
-                    result = Query(CRMDbContext.Contacts).Where(x => x.StatusId == id).Count();
+                    result = Query(CrmDbContext.Contacts).Where(x => x.StatusId == id).Count();
                     break;
                 case ListType.ContactType:
-                    result = Query(CRMDbContext.Contacts).Where(x => x.ContactTypeId == id).Count();
+                    result = Query(CrmDbContext.Contacts).Where(x => x.ContactTypeId == id).Count();
                     break;
                 case ListType.TaskCategory:
-                    result = Query(CRMDbContext.Tasks).Where(x => x.CategoryId == id).Count();
+                    result = Query(CrmDbContext.Tasks).Where(x => x.CategoryId == id).Count();
                     break;
                 case ListType.HistoryCategory:
-                    result = Query(CRMDbContext.RelationshipEvent).Where(x => x.CategoryId == id).Count();
+                    result = Query(CrmDbContext.RelationshipEvent).Where(x => x.CategoryId == id).Count();
                     break;
                 default:
                     throw new ArgumentException();
@@ -332,8 +258,8 @@ namespace ASC.CRM.Core.Dao
             {
                 case ListType.ContactStatus:
                 {
-                    result = Query(CRMDbContext.ListItem)
-                            .Join(Query(CRMDbContext.Contacts),
+                    result = Query(CrmDbContext.ListItem)
+                            .Join(Query(CrmDbContext.Contacts),
                                        x => x.Id,
                                        y => y.StatusId,
                                        (x, y) => new { x, y })
@@ -346,8 +272,8 @@ namespace ASC.CRM.Core.Dao
                 }
                 case ListType.ContactType:
                 {
-                    result = Query(CRMDbContext.ListItem)
-                            .Join(Query(CRMDbContext.Contacts),
+                    result = Query(CrmDbContext.ListItem)
+                            .Join(Query(CrmDbContext.Contacts),
                                        x => x.Id,
                                        y => y.ContactTypeId,
                                        (x, y) => new { x, y })
@@ -360,8 +286,8 @@ namespace ASC.CRM.Core.Dao
                 }
                 case ListType.TaskCategory:
                 {
-                    result = Query(CRMDbContext.ListItem)
-                            .Join(Query(CRMDbContext.Tasks),
+                    result = Query(CrmDbContext.ListItem)
+                            .Join(Query(CrmDbContext.Tasks),
                                        x => x.Id,
                                        y => y.CategoryId,
                                        (x, y) => new { x, y })
@@ -375,8 +301,8 @@ namespace ASC.CRM.Core.Dao
                 case ListType.HistoryCategory:
                 {
 
-                    result = Query(CRMDbContext.ListItem)
-                            .Join(Query(CRMDbContext.RelationshipEvent),
+                    result = Query(CrmDbContext.ListItem)
+                            .Join(Query(CrmDbContext.RelationshipEvent),
                                        x => x.Id,
                                        y => y.CategoryId,
                                        (x, y) => new { x, y })
@@ -394,7 +320,7 @@ namespace ASC.CRM.Core.Dao
             return result;
         }
 
-        public virtual int CreateItem(ListType listType, ListItem enumItem)
+        public int CreateItem(ListType listType, ListItem enumItem)
         {
 
             if (IsExist(listType, enumItem.Title))
@@ -416,7 +342,7 @@ namespace ASC.CRM.Core.Dao
             var sortOrder = enumItem.SortOrder;
 
             if (sortOrder == 0)
-                sortOrder = Query(CRMDbContext.ListItem)
+                sortOrder = Query(CrmDbContext.ListItem)
                     .Where(x => x.ListType == listType)
                     .Max(x => x.SortOrder) + 1;
 
@@ -431,14 +357,14 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             };
 
-            CRMDbContext.Add(listItem);
+            CrmDbContext.Add(listItem);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             return listItem.Id;
         }
 
-        public virtual void EditItem(ListType listType, ListItem enumItem)
+        public void EditItem(ListType listType, ListItem enumItem)
         {
             if (HaveRelativeItemsLink(listType, enumItem.ID))
             {
@@ -456,25 +382,25 @@ namespace ASC.CRM.Core.Dao
                 }
             }
 
-            var itemToUpdate = Query(CRMDbContext.ListItem).Single(x => x.Id == enumItem.ID);
+            var itemToUpdate = Query(CrmDbContext.ListItem).Single(x => x.Id == enumItem.ID);
 
             itemToUpdate.Description = enumItem.Description;
             itemToUpdate.Title = enumItem.Title;
             itemToUpdate.AdditionalParams = enumItem.AdditionalParams;
             itemToUpdate.Color = enumItem.Color;
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
         }
 
-        public virtual void ChangePicture(int id, String newPicture)
+        public void ChangePicture(int id, String newPicture)
         {
-            var itemToUpdate = Query(CRMDbContext.ListItem).Single(x => x.Id == id);
+            var itemToUpdate = Query(CrmDbContext.ListItem).Single(x => x.Id == id);
 
             itemToUpdate.AdditionalParams = newPicture;
 
-            CRMDbContext.Update(itemToUpdate);
+            CrmDbContext.Update(itemToUpdate);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
         }
 
         private bool HaveRelativeItemsLink(ListType listType, int itemID)
@@ -484,16 +410,16 @@ namespace ASC.CRM.Core.Dao
             switch (listType)
             {
                 case ListType.ContactStatus:
-                    result = Query(CRMDbContext.Contacts).Where(x => x.StatusId == itemID).Any();
+                    result = Query(CrmDbContext.Contacts).Where(x => x.StatusId == itemID).Any();
                     break;
                 case ListType.ContactType:
-                    result = Query(CRMDbContext.Contacts).Where(x => x.ContactTypeId == itemID).Any();
+                    result = Query(CrmDbContext.Contacts).Where(x => x.ContactTypeId == itemID).Any();
                     break;
                 case ListType.TaskCategory:
-                    result = Query(CRMDbContext.Tasks).Where(x => x.CategoryId == itemID).Any();
+                    result = Query(CrmDbContext.Tasks).Where(x => x.CategoryId == itemID).Any();
                     break;
                 case ListType.HistoryCategory:
-                    result = Query(CRMDbContext.RelationshipEvent).Where(x => x.CategoryId == itemID).Any();
+                    result = Query(CrmDbContext.RelationshipEvent).Where(x => x.CategoryId == itemID).Any();
                     break;
                 default:
                     throw new ArgumentException();
@@ -516,46 +442,46 @@ namespace ASC.CRM.Core.Dao
             {
                 case ListType.ContactStatus:
                 {
-                    var itemToUpdate = Query(CRMDbContext.Contacts).Single(x => x.StatusId == fromItemID);
+                    var itemToUpdate = Query(CrmDbContext.Contacts).Single(x => x.StatusId == fromItemID);
 
                     itemToUpdate.StatusId = toItemID;
 
-                    CRMDbContext.Update(itemToUpdate);
+                    CrmDbContext.Update(itemToUpdate);
                 }
                 break;
                 case ListType.ContactType:
                 {
-                    var itemToUpdate = Query(CRMDbContext.Contacts).Single(x => x.ContactTypeId == fromItemID);
+                    var itemToUpdate = Query(CrmDbContext.Contacts).Single(x => x.ContactTypeId == fromItemID);
 
                     itemToUpdate.ContactTypeId = toItemID;
 
-                    CRMDbContext.Update(itemToUpdate);
+                    CrmDbContext.Update(itemToUpdate);
                 }
                 break;
                 case ListType.TaskCategory:
                 {
-                    var itemToUpdate = Query(CRMDbContext.Tasks).Single(x => x.CategoryId == fromItemID);
+                    var itemToUpdate = Query(CrmDbContext.Tasks).Single(x => x.CategoryId == fromItemID);
                     itemToUpdate.CategoryId = toItemID;
 
-                    CRMDbContext.Update(itemToUpdate);
+                    CrmDbContext.Update(itemToUpdate);
                 }
                 break;
                 case ListType.HistoryCategory:
                 {
-                    var itemToUpdate = Query(CRMDbContext.RelationshipEvent).Single(x => x.CategoryId == fromItemID);
+                    var itemToUpdate = Query(CrmDbContext.RelationshipEvent).Single(x => x.CategoryId == fromItemID);
                     itemToUpdate.CategoryId = toItemID;
 
-                    CRMDbContext.Update(itemToUpdate);
+                    CrmDbContext.Update(itemToUpdate);
                 }
                 break;
                 default:
                     throw new ArgumentException();
             }
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
         }
 
-        public virtual void DeleteItem(ListType listType, int itemID, int toItemID)
+        public void DeleteItem(ListType listType, int itemID, int toItemID)
         {
             if (HaveRelativeItemsLink(listType, itemID))
             {
@@ -578,28 +504,28 @@ namespace ASC.CRM.Core.Dao
 
             var itemToRemove = new DbListItem { Id = itemID };
 
-            CRMDbContext.Entry(itemToRemove).State = EntityState.Deleted;
+            CrmDbContext.Entry(itemToRemove).State = EntityState.Deleted;
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
         }
 
-        public virtual void ReorderItems(ListType listType, String[] titles)
+        public void ReorderItems(ListType listType, String[] titles)
         {
-            using var tx = CRMDbContext.Database.BeginTransaction();
+            using var tx = CrmDbContext.Database.BeginTransaction();
 
             for (int index = 0; index < titles.Length; index++)
             {
-                var itemToUpdate = Query(CRMDbContext.ListItem)
+                var itemToUpdate = Query(CrmDbContext.ListItem)
                                        .Single(x => String.Compare(x.Title, titles[index]) == 0 && x.ListType == listType);
 
                 itemToUpdate.SortOrder = index;
 
-                CRMDbContext.Update(itemToUpdate);
+                CrmDbContext.Update(itemToUpdate);
             }
 
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             tx.Commit();
         }

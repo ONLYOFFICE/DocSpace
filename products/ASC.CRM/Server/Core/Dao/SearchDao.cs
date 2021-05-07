@@ -161,7 +161,7 @@ namespace ASC.CRM.Core.Dao
 
         private Dictionary<EntityType, IEnumerable<int>> SearchByRelationshipEvent(String[] keywords)
         {
-            var sqlQuery = Query(CRMDbContext.RelationshipEvent);
+            var sqlQuery = Query(CrmDbContext.RelationshipEvent);
 
             if (keywords.Length > 0)
             {
@@ -177,7 +177,7 @@ namespace ASC.CRM.Core.Dao
 
         private Dictionary<EntityType, IEnumerable<int>> SearchByCustomFields(String[] keywords)
         {
-            var sqlQuery = Query(CRMDbContext.FieldValue);
+            var sqlQuery = Query(CrmDbContext.FieldValue);
 
             if (keywords.Length > 0)
             {
@@ -193,7 +193,7 @@ namespace ASC.CRM.Core.Dao
 
         private Dictionary<EntityType, IEnumerable<int>> SearchByContactInfos(String[] keywords)
         {
-            var sqlQuery = Query(CRMDbContext.ContactsInfo);
+            var sqlQuery = Query(CrmDbContext.ContactsInfo);
 
             if (keywords.Length > 0)
             {
@@ -217,7 +217,7 @@ namespace ASC.CRM.Core.Dao
 
             if (IncludeToSearch(EntityType.Task))
             {
-                var sqlQuery = Query(CRMDbContext.Tasks);
+                var sqlQuery = Query(CrmDbContext.Tasks);
 
                 if (_findedIDs.ContainsKey(EntityType.Task))
                 {
@@ -259,7 +259,7 @@ namespace ASC.CRM.Core.Dao
 
             if (IncludeToSearch(EntityType.Opportunity))
             {
-                var sqlQuery = Query(CRMDbContext.Deals);
+                var sqlQuery = Query(CrmDbContext.Deals);
 
                 if (_findedIDs.ContainsKey(EntityType.Opportunity))
                 {
@@ -304,7 +304,7 @@ namespace ASC.CRM.Core.Dao
 
             if (IncludeToSearch(EntityType.Contact))
             {
-                var sqlQuery = Query(CRMDbContext.Contacts);
+                var sqlQuery = Query(CrmDbContext.Contacts);
 
                 if (_findedIDs.ContainsKey(EntityType.Contact))
                 {
@@ -357,7 +357,7 @@ namespace ASC.CRM.Core.Dao
 
             if (IncludeToSearch(EntityType.Case))
             {
-                var sqlQuery = Query(CRMDbContext.Cases);
+                var sqlQuery = Query(CrmDbContext.Cases);
 
                 if (_findedIDs.ContainsKey(EntityType.Case))
                 {
@@ -401,7 +401,7 @@ namespace ASC.CRM.Core.Dao
 
             if (IncludeToSearch(EntityType.Invoice))
             {
-                var sqlQuery = Query(CRMDbContext.Invoices);
+                var sqlQuery = Query(CrmDbContext.Invoices);
 
                 if (_findedIDs.ContainsKey(EntityType.Invoice))
                 {

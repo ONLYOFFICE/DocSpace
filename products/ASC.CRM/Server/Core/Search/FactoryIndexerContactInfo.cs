@@ -66,7 +66,7 @@ namespace ASC.Web.CRM.Core.Search
 
             (int, int, int) getCount(DateTime lastIndexed)
             {
-                var q = contactInfoDao.CRMDbContext.ContactsInfo
+                var q = contactInfoDao.CrmDbContext.ContactsInfo
                         .Where(r => r.LastModifedOn >= lastIndexed);
 
                 var count = q.GroupBy(a => a.Id).Count();
@@ -77,7 +77,7 @@ namespace ASC.Web.CRM.Core.Search
             }
 
             List<DbContactInfo> getData(long i, long step, DateTime lastIndexed) =>
-                    contactInfoDao.CRMDbContext.ContactsInfo
+                    contactInfoDao.CrmDbContext.ContactsInfo
                     .Where(r => r.LastModifedOn >= lastIndexed)
                     .Where(r => r.Id >= i && r.Id <= i + step)
                     .Select(r => r)

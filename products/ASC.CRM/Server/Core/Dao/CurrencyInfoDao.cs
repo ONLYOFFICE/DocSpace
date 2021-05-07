@@ -61,16 +61,16 @@ namespace ASC.CRM.Core.Dao
 
         }
 
-        public virtual List<CurrencyInfo> GetAll()
+        public List<CurrencyInfo> GetAll()
         {
-            var dbItems = CRMDbContext.CurrencyInfo.ToList();
+            var dbItems = CrmDbContext.CurrencyInfo.ToList();
 
             return _mapper.Map<List<DbCurrencyInfo>, List<CurrencyInfo>>(dbItems);               
         }
 
-        public virtual CurrencyInfo GetByAbbreviation(string abbreviation)
+        public CurrencyInfo GetByAbbreviation(string abbreviation)
         {
-            var dbItem = CRMDbContext.CurrencyInfo
+            var dbItem = CrmDbContext.CurrencyInfo
                          .FirstOrDefault(x => String.Compare(x.Abbreviation, abbreviation, true) == 0);
 
             return _mapper.Map<CurrencyInfo>(dbItem);
@@ -79,7 +79,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<CurrencyInfo> GetBasic()
         {
-            var dbItems = CRMDbContext.CurrencyInfo
+            var dbItems = CrmDbContext.CurrencyInfo
                                         .Where(x => x.IsBasic)
                                         .ToList();
 
@@ -88,7 +88,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<CurrencyInfo> GetOther()
         {
-            var dbItems = CRMDbContext.CurrencyInfo
+            var dbItems = CrmDbContext.CurrencyInfo
                                        .Where(x => !x.IsBasic)
                                        .ToList();
 

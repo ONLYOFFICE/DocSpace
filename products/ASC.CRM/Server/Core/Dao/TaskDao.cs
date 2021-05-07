@@ -30,7 +30,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using ASC.Collections;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
@@ -45,86 +44,19 @@ using ASC.Web.CRM.Core.Search;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
 {
-    public class CachedTaskDao : TaskDao
-    {
-
-        private readonly HttpRequestDictionary<Task> _contactCache;
-
-        public CachedTaskDao(DbContextManager<CrmDbContext> dbContextManager,
-                      TenantManager tenantManager,
-                      SecurityContext securityContext,
-                      CrmSecurity crmSecurity,
-                      TenantUtil tenantUtil,
-                      FactoryIndexerTask factoryIndexer,
-                      IOptionsMonitor<ILog> logger,
-                      ICache ascCache,
-                      IHttpContextAccessor httpContextAccessor,
-                      DbContextManager<UserDbContext> userDbContext,
-                      DbContextManager<CoreDbContext> coreDbContext,
-                      IMapper mapper
-                      ) :
-           base(dbContextManager,
-                tenantManager,
-                securityContext,
-                crmSecurity,
-                tenantUtil,
-                factoryIndexer,
-                logger,
-                ascCache,
-                userDbContext,
-                coreDbContext,
-                mapper
-                )
-        {
-            _contactCache = new HttpRequestDictionary<Task>(httpContextAccessor?.HttpContext, "crm_task");
-        }
-
-
-        public override Task GetByID(int taskID)
-        {
-            return _contactCache.Get(taskID.ToString(), () => GetByIDBase(taskID));
-
-        }
-
-        private Task GetByIDBase(int taskID)
-        {
-            return base.GetByID(taskID);
-        }
-
-        public override void DeleteTask(int taskID)
-        {
-            ResetCache(taskID);
-
-            base.DeleteTask(taskID);
-        }
-
-        public override Task SaveOrUpdateTask(Task task)
-        {
-
-            if (task != null && task.ID > 0)
-            {
-                ResetCache(task.ID);
-            }
-
-            return base.SaveOrUpdateTask(task);
-        }
-
-        private void ResetCache(int taskID)
-        {
-            _contactCache.Reset(taskID.ToString());
-        }
-
-    }
-
     [Scope]
     public class TaskDao : AbstractDao
     {
+        private readonly UserDbContext _userDbContext;
+        private readonly FactoryIndexerTask _factoryIndexer;
+        private readonly TenantUtil _tenantUtil;
+        private readonly CrmSecurity _crmSecurity;
+
         public TaskDao(DbContextManager<CrmDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
@@ -134,7 +66,6 @@ namespace ASC.CRM.Core.Dao
                        IOptionsMonitor<ILog> logger,
                        ICache ascCache,
                        DbContextManager<UserDbContext> userDbContext,
-                       DbContextManager<CoreDbContext> coreDbContext,
                        IMapper mapper) :
             base(dbContextManager,
                  tenantManager,
@@ -143,23 +74,12 @@ namespace ASC.CRM.Core.Dao
                  ascCache,
                  mapper)
         {
-            CRMSecurity = crmSecurity;
-            TenantUtil = tenantUtil;
-            FactoryIndexer = factoryIndexer;
-            UserDbContext = userDbContext.Value;
-            CoreDbContext = coreDbContext.Value;
+            _crmSecurity = crmSecurity;
+            _tenantUtil = tenantUtil;
+            _factoryIndexer = factoryIndexer;
+            _userDbContext = userDbContext.Value;
             _mapper = mapper;
         }
-
-        public CoreDbContext CoreDbContext { get; }
-
-        public UserDbContext UserDbContext { get; }
-
-        public FactoryIndexerTask FactoryIndexer { get; }
-
-        public TenantUtil TenantUtil { get; }
-
-        public CrmSecurity CRMSecurity { get; }
 
         public void OpenTask(int taskId)
         {
@@ -168,7 +88,7 @@ namespace ASC.CRM.Core.Dao
             if (task == null)
                 throw new ArgumentException();
 
-            CRMSecurity.DemandEdit(task);
+            _crmSecurity.DemandEdit(task);
 
             DbTask entity = new DbTask()
             {
@@ -176,9 +96,9 @@ namespace ASC.CRM.Core.Dao
                 IsClosed = false
             };
 
-            CRMDbContext.Tasks.Update(entity);
+            CrmDbContext.Tasks.Update(entity);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
         }
 
         public void CloseTask(int taskId)
@@ -188,7 +108,7 @@ namespace ASC.CRM.Core.Dao
             if (task == null)
                 throw new ArgumentException();
 
-            CRMSecurity.DemandEdit(task);
+            _crmSecurity.DemandEdit(task);
 
             DbTask entity = new DbTask()
             {
@@ -196,18 +116,16 @@ namespace ASC.CRM.Core.Dao
                 IsClosed = true
             };
 
-            CRMDbContext.Tasks.Update(entity);
+            CrmDbContext.Tasks.Update(entity);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
         }
 
-        public virtual Task GetByID(int taskID)
+        public Task GetByID(int id)
         {
-            var dbTask = CRMDbContext.Tasks.Where(x => x.Id == taskID).SingleOrDefault();
+            var entity = Query(CrmDbContext.Tasks).FirstOrDefault(x => x.Id == id);
 
-            if (dbTask == default(DbTask)) return null;
-
-            return _mapper.Map<Task>(dbTask);
+            return _mapper.Map<Task>(entity);
         }
 
         public List<Task> GetTasks(EntityType entityType, int entityID, bool? onlyActiveTask)
@@ -217,31 +135,31 @@ namespace ASC.CRM.Core.Dao
         }
         public int GetAllTasksCount()
         {
-            return CRMDbContext.Tasks.Count();
+            return Query(CrmDbContext.Tasks).Count();
         }
 
         public List<Task> GetAllTasks()
         {
-            var dbTasks = Query(CRMDbContext.Tasks)
+            var dbTasks = Query(CrmDbContext.Tasks)
                  .OrderBy(x => x.Deadline)
                  .OrderBy(x => x.Title).ToList();
 
             return _mapper.Map<List<DbTask>, List<Task>>(dbTasks)
-                 .FindAll(CRMSecurity.CanAccessTo);
+                 .FindAll(_crmSecurity.CanAccessTo);
         }
 
         public void ExecAlert(IEnumerable<int> ids)
         {
             if (!ids.Any()) return;
 
-            CRMDbContext.Tasks.UpdateRange(ids.Select(x => new DbTask { ExecAlert = 1, Id = x })); ;
+            CrmDbContext.Tasks.UpdateRange(ids.Select(x => new DbTask { ExecAlert = 1, Id = x })); ;
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
         }
 
         public List<object[]> GetInfoForReminder(DateTime scheduleDate)
         {
-            return CRMDbContext.Tasks.Where(x =>
+            return CrmDbContext.Tasks.Where(x =>
                                             x.IsClosed == false &&
                                             x.AlertValue != 0 &&
                                             x.ExecAlert == 0 &&
@@ -263,7 +181,7 @@ namespace ASC.CRM.Core.Dao
                                   OrderBy orderBy)
         {
 
-            if (CRMSecurity.IsAdmin)
+            if (_crmSecurity.IsAdmin)
                 return GetCrudeTasks(
                     searchText,
                     responsibleID,
@@ -293,9 +211,9 @@ namespace ASC.CRM.Core.Dao
 
             if (crudeTasks.Count == 0) return crudeTasks;
 
-            if (crudeTasks.Count < from + count) return CRMSecurity.FilterRead(crudeTasks).Skip(from).ToList();
+            if (crudeTasks.Count < from + count) return _crmSecurity.FilterRead(crudeTasks).Skip(from).ToList();
 
-            var result = CRMSecurity.FilterRead(crudeTasks).ToList();
+            var result = _crmSecurity.FilterRead(crudeTasks).ToList();
 
             if (result.Count == crudeTasks.Count) return result.Skip(from).ToList();
 
@@ -319,7 +237,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (crudeTasks.Count == 0) break;
 
-                result.AddRange(CRMSecurity.FilterRead(crudeTasks));
+                result.AddRange(_crmSecurity.FilterRead(crudeTasks));
 
                 if ((result.Count >= count + from) || (crudeTasks.Count < localCount)) break;
 
@@ -358,7 +276,7 @@ namespace ASC.CRM.Core.Dao
                 {
                     List<int> tasksIds;
 
-                    if (!FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out tasksIds))
+                    if (!_factoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out tasksIds))
                     {
                         foreach (var k in keywords)
                         {
@@ -432,14 +350,14 @@ namespace ASC.CRM.Core.Dao
                                       0,
                                       null);
 
-                if (CRMSecurity.IsAdmin)
+                if (_crmSecurity.IsAdmin)
                     result = tasks.Count();
                 else
-                    result = CRMSecurity.FilterRead(tasks).Count();
+                    result = _crmSecurity.FilterRead(tasks).Count();
             }
             else
             {
-                if (CRMSecurity.IsAdmin)
+                if (_crmSecurity.IsAdmin)
                 {
                     result = GetDbTaskByFilters(
                                               responsibleId,
@@ -595,7 +513,7 @@ namespace ASC.CRM.Core.Dao
                                   int count,
                                   OrderBy orderBy)
         {
-            var sqlQuery = Query(CRMDbContext.Tasks);
+            var sqlQuery = Query(CrmDbContext.Tasks);
 
             if (responsibleID != Guid.Empty)
                 sqlQuery = sqlQuery.Where(x => x.ResponsibleId == responsibleID);
@@ -604,7 +522,7 @@ namespace ASC.CRM.Core.Dao
                 switch (entityType)
                 {
                     case EntityType.Contact:
-                        var isCompany = Query(CRMDbContext.Contacts).Where(x => x.Id == entityID).Select(x => x.IsCompany).Single();
+                        var isCompany = Query(CrmDbContext.Contacts).Where(x => x.Id == entityID).Select(x => x.IsCompany).Single();
 
                         if (isCompany)
                             return GetDbTaskByFilters(responsibleID, categoryID, isClosed, fromDate, toDate, EntityType.Company, entityID, from, count, orderBy);
@@ -649,15 +567,15 @@ namespace ASC.CRM.Core.Dao
 
             if (fromDate != DateTime.MinValue && toDate != DateTime.MinValue)
             {
-                sqlQuery = sqlQuery.Where(x => x.Deadline >= TenantUtil.DateTimeToUtc(fromDate) && x.Deadline <= TenantUtil.DateTimeToUtc(toDate));
+                sqlQuery = sqlQuery.Where(x => x.Deadline >= _tenantUtil.DateTimeToUtc(fromDate) && x.Deadline <= _tenantUtil.DateTimeToUtc(toDate));
             }
             else if (fromDate != DateTime.MinValue)
             {
-                sqlQuery = sqlQuery.Where(x => x.Deadline > TenantUtil.DateTimeToUtc(fromDate));
+                sqlQuery = sqlQuery.Where(x => x.Deadline > _tenantUtil.DateTimeToUtc(fromDate));
             }
             else if (toDate != DateTime.MinValue)
             {
-                sqlQuery = sqlQuery.Where(x => x.Deadline < TenantUtil.DateTimeToUtc(toDate));
+                sqlQuery = sqlQuery.Where(x => x.Deadline < _tenantUtil.DateTimeToUtc(toDate));
             }
 
             if (0 < from && from < int.MaxValue)
@@ -708,7 +626,7 @@ namespace ASC.CRM.Core.Dao
                     break;
                     case TaskSortedByType.ContactManager:
                     {
-                        sqlQuery = sqlQuery.GroupJoin(UserDbContext.Users.Where(x => x.Tenant == TenantID),
+                        sqlQuery = sqlQuery.GroupJoin(_userDbContext.Users.Where(x => x.Tenant == TenantID),
                               x => x.ResponsibleId,
                               y => y.Id,
                               (x, y) => new { x, y }
@@ -724,7 +642,7 @@ namespace ASC.CRM.Core.Dao
                     break;
                     case TaskSortedByType.Contact:
                     {
-                        var subSqlQuery = sqlQuery.GroupJoin(CRMDbContext.Contacts,
+                        var subSqlQuery = sqlQuery.GroupJoin(CrmDbContext.Contacts,
                                                       x => x.ContactId,
                                                       y => y.Id,
                                                       (x, y) => new { x, y }
@@ -763,7 +681,7 @@ namespace ASC.CRM.Core.Dao
 
         public Dictionary<int, Task> GetNearestTask(int[] contactID)
         {
-            return Query(CRMDbContext.Tasks)
+            return Query(CrmDbContext.Tasks)
                         .Where(x => contactID.Contains(x.ContactId) && !x.IsClosed)
                         .GroupBy(x => x.ContactId)
                         .ToDictionary(x => x.Key, y => _mapper.Map<Task>(y.Single(x => x.Id == y.Min(x => x.Id))));
@@ -771,7 +689,7 @@ namespace ASC.CRM.Core.Dao
 
         public IEnumerable<Guid> GetResponsibles(int categoryID)
         {
-            var sqlQuery = Query(CRMDbContext.Tasks);
+            var sqlQuery = Query(CrmDbContext.Tasks);
 
             if (0 < categoryID)
                 sqlQuery = sqlQuery.Where(x => x.CategoryId == categoryID);
@@ -781,7 +699,7 @@ namespace ASC.CRM.Core.Dao
 
         public Dictionary<int, int> GetTasksCount(int[] contactID)
         {
-            return Query(CRMDbContext.Tasks)
+            return Query(CrmDbContext.Tasks)
                 .Where(x => contactID.Contains(x.ContactId))
                 .GroupBy(x => x.ContactId)
                 .Select(x => new { Key = x.Key, Value = x.Count() })
@@ -799,7 +717,7 @@ namespace ASC.CRM.Core.Dao
 
         public Dictionary<int, bool> HaveLateTask(int[] contactID)
         {
-            return Query(CRMDbContext.Tasks)
+            return Query(CrmDbContext.Tasks)
                     .Where(x => contactID.Contains(x.ContactId) && !x.IsClosed && x.Deadline <= DateTime.UtcNow)
                     .GroupBy(x => x.ContactId)
                     .Select(x => new { Key = x.Key, Value = x.Count() })
@@ -815,14 +733,14 @@ namespace ASC.CRM.Core.Dao
             return result[contactID];
         }
 
-        public virtual Task SaveOrUpdateTask(Task newTask)
+        public Task SaveOrUpdateTask(Task newTask)
         {
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
 
             return SaveOrUpdateTaskInDb(newTask);
         }
 
-        public virtual Task[] SaveOrUpdateTaskList(List<Task> newTasks)
+        public Task[] SaveOrUpdateTaskList(List<Task> newTasks)
         {
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
 
@@ -838,11 +756,12 @@ namespace ASC.CRM.Core.Dao
 
         private Task SaveOrUpdateTaskInDb(Task newTask)
         {
-            if (string.IsNullOrEmpty(newTask.Title) || newTask.DeadLine == DateTime.MinValue ||
+            if (string.IsNullOrEmpty(newTask.Title) || 
+                newTask.DeadLine == DateTime.MinValue ||
                 newTask.CategoryID <= 0)
                 throw new ArgumentException();
-
-            if (newTask.ID == 0 || Query(CRMDbContext.Tasks).Where(x => x.Id == newTask.ID).Count() == 0)
+            
+            if (newTask.ID == 0 )
             {
                 newTask.CreateOn = DateTime.UtcNow;
                 newTask.CreateBy = _securityContext.CurrentAccount.ID;
@@ -854,7 +773,7 @@ namespace ASC.CRM.Core.Dao
                 {
                     Title = newTask.Title,
                     Description = newTask.Description,
-                    Deadline = TenantUtil.DateTimeToUtc(newTask.DeadLine),
+                    Deadline = _tenantUtil.DateTimeToUtc(newTask.DeadLine),
                     ResponsibleId = newTask.ResponsibleID,
                     ContactId = newTask.ContactID,
                     EntityType = newTask.EntityType,
@@ -869,23 +788,24 @@ namespace ASC.CRM.Core.Dao
                     TenantId = TenantID
                 };
 
-                CRMDbContext.Add(itemToInsert);
-                CRMDbContext.SaveChanges();
+                CrmDbContext.Add(itemToInsert);
+                
+                CrmDbContext.SaveChanges();
 
                 newTask.ID = itemToInsert.Id;
             }
             else
             {
 
-                var itemToUpdate = Query(CRMDbContext.Tasks).FirstOrDefault(x => x.Id == newTask.ID);
+                var itemToUpdate = Query(CrmDbContext.Tasks).FirstOrDefault(x => x.Id == newTask.ID);
 
                 var oldTask = _mapper.Map<Task>(itemToUpdate);
 
-                CRMSecurity.DemandEdit(oldTask);
+                _crmSecurity.DemandEdit(oldTask);
 
                 itemToUpdate.Title = newTask.Title;
                 itemToUpdate.Description = newTask.Description;
-                itemToUpdate.Deadline = TenantUtil.DateTimeToUtc(newTask.DeadLine);
+                itemToUpdate.Deadline = _tenantUtil.DateTimeToUtc(newTask.DeadLine);
                 itemToUpdate.ResponsibleId = newTask.ResponsibleID;
                 itemToUpdate.ContactId = newTask.ContactID;
                 itemToUpdate.EntityType = newTask.EntityType;
@@ -897,8 +817,8 @@ namespace ASC.CRM.Core.Dao
                 itemToUpdate.ExecAlert = 0;
                 itemToUpdate.TenantId = TenantID;
 
-                CRMDbContext.Update(itemToUpdate);
-                CRMDbContext.SaveChanges();
+                CrmDbContext.Update(itemToUpdate);
+                CrmDbContext.SaveChanges();
 
 
                 newTask.CreateOn = oldTask.CreateOn;
@@ -910,12 +830,12 @@ namespace ASC.CRM.Core.Dao
                 newTask.IsClosed = oldTask.IsClosed;
             }
 
-            FactoryIndexer.Index(Query(CRMDbContext.Tasks).Where(x => x.Id == newTask.ID).Single());
+            _factoryIndexer.Index(Query(CrmDbContext.Tasks).Where(x => x.Id == newTask.ID).Single());
 
             return newTask;
         }
 
-        public virtual int SaveTask(Task newTask)
+        public int SaveTask(Task newTask)
         {
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
             return SaveTaskInDb(newTask);
@@ -931,7 +851,7 @@ namespace ASC.CRM.Core.Dao
             {
                 Title = newTask.Title,
                 Description = newTask.Description,
-                Deadline = TenantUtil.DateTimeToUtc(newTask.DeadLine),
+                Deadline = _tenantUtil.DateTimeToUtc(newTask.DeadLine),
                 ResponsibleId = newTask.ResponsibleID,
                 ContactId = newTask.ContactID,
                 EntityType = newTask.EntityType,
@@ -946,21 +866,21 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             };
 
-            CRMDbContext.Tasks.Add(dbTask);
+            CrmDbContext.Tasks.Add(dbTask);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             newTask.ID = dbTask.Id;
 
-            FactoryIndexer.Index(dbTask);
+            _factoryIndexer.Index(dbTask);
 
             return newTask.ID;
         }
 
-        public virtual int[] SaveTaskList(List<Task> items)
+        public int[] SaveTaskList(List<Task> items)
         {
 
-            using var tx = CRMDbContext.Database.BeginTransaction();
+            using var tx = CrmDbContext.Database.BeginTransaction();
 
             var result = new List<int>();
 
@@ -969,27 +889,26 @@ namespace ASC.CRM.Core.Dao
                 result.Add(SaveTaskInDb(item));
             }
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             tx.Commit();
 
             return result.ToArray();
         }
 
-
-        public virtual void DeleteTask(int taskID)
+        public void DeleteTask(int taskID)
         {
             var task = GetByID(taskID);
 
             if (task == null) return;
 
-            CRMSecurity.DemandEdit(task);
+            _crmSecurity.DemandEdit(task);
 
-            var dbTask = Query(CRMDbContext.Tasks).Where(x => x.Id == taskID).Single();
+            var dbTask = Query(CrmDbContext.Tasks).Where(x => x.Id == taskID).Single();
 
-            FactoryIndexer.Delete(dbTask);
+            _factoryIndexer.Delete(dbTask);
 
-            CRMDbContext.Tasks.Remove(new DbTask { Id = taskID });
+            CrmDbContext.Tasks.Remove(new DbTask { Id = taskID });
 
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
 
@@ -1001,7 +920,7 @@ namespace ASC.CRM.Core.Dao
 
             var result = new List<Task>();
 
-            using var tx = CRMDbContext.Database.BeginTransaction();
+            using var tx = CrmDbContext.Database.BeginTransaction();
 
             foreach (var templateItem in templateItems)
             {
@@ -1009,10 +928,10 @@ namespace ASC.CRM.Core.Dao
                 {
                     ResponsibleID = templateItem.ResponsibleID,
                     Description = templateItem.Description,
-                    DeadLine = TenantUtil.DateTimeNow().AddTicks(templateItem.Offset.Ticks),
+                    DeadLine = _tenantUtil.DateTimeNow().AddTicks(templateItem.Offset.Ticks),
                     CategoryID = templateItem.CategoryID,
                     Title = templateItem.Title,
-                    CreateOn = TenantUtil.DateTimeNow(),
+                    CreateOn = _tenantUtil.DateTimeNow(),
                     CreateBy = templateItem.CreateBy
                 };
 
@@ -1039,7 +958,7 @@ namespace ASC.CRM.Core.Dao
 
                 result.Add(task);
 
-                CRMDbContext.TaskTemplateTask.Add(new DbTaskTemplateTask
+                CrmDbContext.TaskTemplateTask.Add(new DbTaskTemplateTask
                 {
                     TaskId = task.ID,
                     TaskTemplateId = templateItem.ID,
@@ -1049,7 +968,7 @@ namespace ASC.CRM.Core.Dao
 
             tx.Commit();
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             return result;
         }
@@ -1138,12 +1057,12 @@ namespace ASC.CRM.Core.Dao
             DbTask entity = new DbTask()
             {
                 Id = taskId,
-                CreateOn = TenantUtil.DateTimeToUtc(creationDate)
+                CreateOn = _tenantUtil.DateTimeToUtc(creationDate)
             };
 
-            CRMDbContext.Tasks.Update(entity);
+            CrmDbContext.Tasks.Update(entity);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
@@ -1159,12 +1078,12 @@ namespace ASC.CRM.Core.Dao
             DbTask entity = new DbTask()
             {
                 Id = taskId,
-                LastModifedOn = TenantUtil.DateTimeToUtc(lastModifedDate)
+                LastModifedOn = _tenantUtil.DateTimeToUtc(lastModifedDate)
             };
 
-            CRMDbContext.Tasks.Update(entity);
+            CrmDbContext.Tasks.Update(entity);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));

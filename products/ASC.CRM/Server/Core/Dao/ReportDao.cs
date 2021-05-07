@@ -265,11 +265,11 @@ namespace ASC.CRM.Core.Dao
 
         public List<string> GetMissingRates(string defaultCurrency)
         {
-            var existingRatesQuery = CRMDbContext.CurrencyRate
+            var existingRatesQuery = CrmDbContext.CurrencyRate
                                     .Where(x => x.ToCurrency == defaultCurrency)
                                     .Select(x => x.FromCurrency).Distinct().ToList();
 
-            var missingRatesQuery = Query(CRMDbContext.Deals)
+            var missingRatesQuery = Query(CrmDbContext.Deals)
                                     .Where(x => x.BidCurrency != defaultCurrency && !existingRatesQuery.Contains(x.BidCurrency))
                                     .Select(x => x.BidCurrency)
                                     .Distinct();
@@ -332,7 +332,7 @@ namespace ASC.CRM.Core.Dao
         {
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            var fileIds = Query(CRMDbContext.ReportFile).Where(x => x.CreateBy == userId).Select(x => x.FileId).ToArray();
+            var fileIds = Query(CrmDbContext.ReportFile).Where(x => x.CreateBy == userId).Select(x => x.FileId).ToArray();
 
             return fileIds.Length > 0 ? filedao.GetFiles(fileIds) : new List<Files.Core.File<int>>();
 
@@ -340,7 +340,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<int> GetFileIds(Guid userId)
         {
-            return Query(CRMDbContext.ReportFile)
+            return Query(CrmDbContext.ReportFile)
                         .Where(x => x.CreateBy == userId).Select(x => x.FileId).ToList();
         }
 
@@ -351,7 +351,7 @@ namespace ASC.CRM.Core.Dao
 
         public Files.Core.File<int> GetFile(int fileid, Guid userId)
         {
-            var exist = Query(CRMDbContext.ReportFile)
+            var exist = Query(CrmDbContext.ReportFile)
                         .Any(x => x.CreateBy == userId && x.FileId == fileid);
 
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
@@ -362,10 +362,10 @@ namespace ASC.CRM.Core.Dao
 
         public void DeleteFile(int fileid)
         {
-            var itemToDelete = Query(CRMDbContext.ReportFile).Where(x => x.FileId == fileid && x.CreateBy == _securityContext.CurrentAccount.ID);
+            var itemToDelete = Query(CrmDbContext.ReportFile).Where(x => x.FileId == fileid && x.CreateBy == _securityContext.CurrentAccount.ID);
 
-            CRMDbContext.Remove(itemToDelete);
-            CRMDbContext.SaveChanges();
+            CrmDbContext.Remove(itemToDelete);
+            CrmDbContext.SaveChanges();
 
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
@@ -376,10 +376,10 @@ namespace ASC.CRM.Core.Dao
         {
             var fileIds = GetFileIds(userId);
 
-            var itemToDelete = Query(CRMDbContext.ReportFile).Where(x => x.CreateBy == _securityContext.CurrentAccount.ID);
+            var itemToDelete = Query(CrmDbContext.ReportFile).Where(x => x.CreateBy == _securityContext.CurrentAccount.ID);
 
-            CRMDbContext.Remove(itemToDelete);
-            CRMDbContext.SaveChanges();
+            CrmDbContext.Remove(itemToDelete);
+            CrmDbContext.SaveChanges();
 
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
@@ -402,8 +402,8 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             };
 
-            CRMDbContext.Add(itemToInsert);
-            CRMDbContext.SaveChanges();
+            CrmDbContext.Add(itemToInsert);
+            CrmDbContext.SaveChanges();
         }
 
         #endregion
@@ -419,7 +419,7 @@ namespace ASC.CRM.Core.Dao
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
 
-            return Query(CRMDbContext.Deals).Join(Query(CRMDbContext.DealMilestones),
+            return Query(CrmDbContext.Deals).Join(Query(CrmDbContext.DealMilestones),
                                             x => x.DealMilestoneId,
                                             y => y.Id,
                                             (x, y) => new { x, y })
@@ -470,13 +470,13 @@ namespace ASC.CRM.Core.Dao
                     return null;
             }
 
-            var result = Query(CRMDbContext.Deals)
-                               .GroupJoin(Query(CRMDbContext.CurrencyRate),
+            var result = Query(CrmDbContext.Deals)
+                               .GroupJoin(Query(CrmDbContext.CurrencyRate),
                                        x => x.BidCurrency,
                                        y => y.FromCurrency,
                                        (x, y) => new { x, y })
                                .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
-                               .GroupJoin(Query(CRMDbContext.DealMilestones),
+                               .GroupJoin(Query(CrmDbContext.DealMilestones),
                                      x => x.Deal.DealMilestoneId,
                                      y => y.Id,
                                      (x, y) => new { x, y })
@@ -796,7 +796,7 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            return Query(CRMDbContext.Deals).Join(Query(CRMDbContext.DealMilestones),
+            return Query(CrmDbContext.Deals).Join(Query(CrmDbContext.DealMilestones),
                                      x => x.DealMilestoneId,
                                      y => y.Id,
                                      (x, y) => new { x, y })
@@ -840,13 +840,13 @@ namespace ASC.CRM.Core.Dao
                     return null;
             }
 
-            var result = Query(CRMDbContext.Deals)
-                               .GroupJoin(Query(CRMDbContext.CurrencyRate),
+            var result = Query(CrmDbContext.Deals)
+                               .GroupJoin(Query(CrmDbContext.CurrencyRate),
                                        x => x.BidCurrency,
                                        y => y.FromCurrency,
                                        (x, y) => new { x, y })
                                .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
-                               .GroupJoin(Query(CRMDbContext.DealMilestones),
+                               .GroupJoin(Query(CrmDbContext.DealMilestones),
                                      x => x.Deal.DealMilestoneId,
                                      y => y.Id,
                                      (x, y) => new { x, y })
@@ -1056,7 +1056,7 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            return Query(CRMDbContext.Deals)
+            return Query(CrmDbContext.Deals)
                         .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
                         .Where(x => x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                         .Any();
@@ -1076,13 +1076,13 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            var result = Query(CRMDbContext.DealMilestones)
-                                            .GroupJoin(Query(CRMDbContext.Deals),
+            var result = Query(CrmDbContext.DealMilestones)
+                                            .GroupJoin(Query(CrmDbContext.Deals),
                                                    x => x.Id,
                                                    y => y.DealMilestoneId,
                                                    (x, y) => new { x, y })
                                             .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = y, DealMilestone = x.x })
-                                            .GroupJoin(Query(CRMDbContext.CurrencyRate),
+                                            .GroupJoin(Query(CrmDbContext.CurrencyRate),
                                                     x => x.Deal.BidCurrency,
                                                     y => y.FromCurrency,
                                                     (x, y) => new { x, y })
@@ -1187,7 +1187,7 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            return Query(CRMDbContext.Contacts)
+            return Query(CrmDbContext.Contacts)
                        .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
                        .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                        .Any();
@@ -1207,13 +1207,13 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            var result = Query(CRMDbContext.Contacts)
-                                           .GroupJoin(Query(CRMDbContext.ListItem),
+            var result = Query(CrmDbContext.Contacts)
+                                           .GroupJoin(Query(CrmDbContext.ListItem),
                                                x => x.ContactTypeId,
                                                y => y.Id,
                                                (x, y) => new { x, y })
                                            .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Contact = x.x, ListItem = y })
-                                           .GroupJoin(Query(CRMDbContext.Deals),
+                                           .GroupJoin(Query(CrmDbContext.Deals),
                                                x => x.Contact.Id,
                                                y => y.ContactId,
                                                (x, y) => new { x, y })
@@ -1284,12 +1284,12 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            var sqlNewTasksQuery = Query(CRMDbContext.Tasks)
+            var sqlNewTasksQuery = Query(CrmDbContext.Tasks)
                                         .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
                                         .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                                         .Any();
 
-            var sqlClosedTasksQuery = Query(CRMDbContext.Tasks)
+            var sqlClosedTasksQuery = Query(CrmDbContext.Tasks)
                                         .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
                                         .Where(x => x.IsClosed)
                                         .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))
@@ -1297,7 +1297,7 @@ namespace ASC.CRM.Core.Dao
 
 
 
-            var sqlOverdueTasksQuery = Query(CRMDbContext.Tasks)
+            var sqlOverdueTasksQuery = Query(CrmDbContext.Tasks)
                                         .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
                                         .Where(x => x.IsClosed)
                                         .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.Deadline >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))
@@ -1328,8 +1328,8 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            var sqlNewTasksQuery = Query(CRMDbContext.Tasks)
-                                   .GroupJoin(Query(CRMDbContext.ListItem),
+            var sqlNewTasksQuery = Query(CrmDbContext.Tasks)
+                                   .GroupJoin(Query(CrmDbContext.ListItem),
                                          x => x.CategoryId,
                                          y => y.Id,
                                          (x, y) => new { x, y })
@@ -1356,8 +1356,8 @@ namespace ASC.CRM.Core.Dao
                                       Count = x.count
                                   });
 
-            var sqlClosedTasksQuery = Query(CRMDbContext.Tasks)
-                       .GroupJoin(Query(CRMDbContext.ListItem),
+            var sqlClosedTasksQuery = Query(CrmDbContext.Tasks)
+                       .GroupJoin(Query(CrmDbContext.ListItem),
                              x => x.CategoryId,
                              y => y.Id,
                              (x, y) => new { x, y })
@@ -1385,8 +1385,8 @@ namespace ASC.CRM.Core.Dao
                           Count = x.count
                       });
 
-            var sqlOverdueTasksQuery = Query(CRMDbContext.Tasks)
-                                   .GroupJoin(Query(CRMDbContext.ListItem),
+            var sqlOverdueTasksQuery = Query(CrmDbContext.Tasks)
+                                   .GroupJoin(Query(CrmDbContext.ListItem),
                                          x => x.CategoryId,
                                          y => y.Id,
                                          (x, y) => new { x, y })
@@ -1455,7 +1455,7 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            return Query(CRMDbContext.Deals)
+            return Query(CrmDbContext.Deals)
                    .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
                    .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : (x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate)) ||
                                                                                       (x.ActualCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.ActualCloseDate <= _tenantUtil.DateTimeToUtc(toDate)))
@@ -1476,13 +1476,13 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            var result = Query(CRMDbContext.Deals)
-                               .GroupJoin(Query(CRMDbContext.CurrencyRate),
+            var result = Query(CrmDbContext.Deals)
+                               .GroupJoin(Query(CrmDbContext.CurrencyRate),
                                        x => x.BidCurrency,
                                        y => y.FromCurrency,
                                        (x, y) => new { x, y })
                                .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
-                               .GroupJoin(Query(CRMDbContext.DealMilestones),
+                               .GroupJoin(Query(CrmDbContext.DealMilestones),
                                      x => x.Deal.DealMilestoneId,
                                      y => y.Id,
                                      (x, y) => new { x, y })
@@ -1561,7 +1561,7 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            return Query(CRMDbContext.Invoices)
+            return Query(CrmDbContext.Invoices)
                         .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
                         .Where(x => (x.Status != InvoiceStatus.Draft && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.IssueDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.IssueDate <= _tenantUtil.DateTimeToUtc(toDate))) ||
                                     (x.Status == InvoiceStatus.Paid && (timePeriod == ReportTimePeriod.DuringAllTime ? true : x.LastModifedOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.LastModifedOn <= _tenantUtil.DateTimeToUtc(toDate))) ||
@@ -1589,7 +1589,7 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
             
-            var result = Query(CRMDbContext.Invoices)
+            var result = Query(CrmDbContext.Invoices)
                                 .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
                                 .GroupBy(x => x.CreateBy)
                                 .Select(x => new
@@ -1655,7 +1655,7 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            return Query(CRMDbContext.VoipCalls)
+            return Query(CrmDbContext.VoipCalls)
                         .Where(x => x.ParentCallId == "")
                         .Where(x => managers != null && managers.Any() ? managers.ToList().Contains(x.AnsweredBy) : true)
                         .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ?
@@ -1678,7 +1678,7 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            var result = Query(CRMDbContext.VoipCalls)
+            var result = Query(CrmDbContext.VoipCalls)
                             .Where(x => x.ParentCallId == "")
                             .Where(x => managers != null && managers.Any() ? managers.Contains(x.AnsweredBy) : true)
                             .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.DialDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DialDate <= _tenantUtil.DateTimeToUtc(toDate))
@@ -1775,13 +1775,13 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            var newDealsSqlQuery = Query(CRMDbContext.Deals)
+            var newDealsSqlQuery = Query(CrmDbContext.Deals)
                                         .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
                                         .Where(x => x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                                         .Any();
 
-            var closedDealsSqlQuery = Query(CRMDbContext.Deals)
-                            .Join(Query(CRMDbContext.DealMilestones),
+            var closedDealsSqlQuery = Query(CrmDbContext.Deals)
+                            .Join(Query(CrmDbContext.DealMilestones),
                                   x => x.DealMilestoneId,
                                   y => y.Id,
                                   (x, y) => new { x, y })
@@ -1790,8 +1790,8 @@ namespace ASC.CRM.Core.Dao
                             .Where(x => x.y.Status != DealMilestoneStatus.Open)
                             .Any();
 
-            var overdueDealsSqlQuery = Query(CRMDbContext.Deals)
-                            .Join(Query(CRMDbContext.DealMilestones),
+            var overdueDealsSqlQuery = Query(CrmDbContext.Deals)
+                            .Join(Query(CrmDbContext.DealMilestones),
                                   x => x.DealMilestoneId,
                                   y => y.Id,
                                   (x, y) => new { x, y })
@@ -1801,24 +1801,24 @@ namespace ASC.CRM.Core.Dao
                                         (x.y.Status == DealMilestoneStatus.ClosedAndWon && x.x.ActualCloseDate > x.x.ExpectedCloseDate))
                             .Any();
 
-            var invoicesSqlQuery = Query(CRMDbContext.Invoices)
+            var invoicesSqlQuery = Query(CrmDbContext.Invoices)
                                       .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
                                       .Where(x => x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                                       .Any();
 
-            var contactsSqlQuery = Query(CRMDbContext.Contacts)
+            var contactsSqlQuery = Query(CrmDbContext.Contacts)
                                       .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
                                       .Where(x => x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                                       .Any();
 
 
-            var tasksSqlQuery = Query(CRMDbContext.Tasks)
+            var tasksSqlQuery = Query(CrmDbContext.Tasks)
                                       .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
                                       .Where(x => x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                                       .Any();
 
 
-            var voipSqlQuery = Query(CRMDbContext.VoipCalls)
+            var voipSqlQuery = Query(CrmDbContext.VoipCalls)
                           .Where(x => x.ParentCallId == "")
                           .Where(x => managers != null && managers.Any() ? managers.Contains(x.AnsweredBy) : true)
                           .Where(x => x.DialDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DialDate <= _tenantUtil.DateTimeToUtc(toDate))
@@ -1849,8 +1849,8 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            var newDealsSqlQuery = Query(CRMDbContext.Deals)
-                                           .GroupJoin(Query(CRMDbContext.CurrencyRate),
+            var newDealsSqlQuery = Query(CrmDbContext.Deals)
+                                           .GroupJoin(Query(CrmDbContext.CurrencyRate),
                                                    x => x.BidCurrency,
                                                    y => y.FromCurrency,
                                                    (x, y) => new { x, y })
@@ -1865,13 +1865,13 @@ namespace ASC.CRM.Core.Dao
                                                                                    x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
                                            }).ToList();
 
-            var wonDealsSqlQuery = Query(CRMDbContext.Deals)
-                                           .GroupJoin(Query(CRMDbContext.CurrencyRate),
+            var wonDealsSqlQuery = Query(CrmDbContext.Deals)
+                                           .GroupJoin(Query(CrmDbContext.CurrencyRate),
                                                    x => x.BidCurrency,
                                                    y => y.FromCurrency,
                                                    (x, y) => new { x, y })
                                            .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
-                                           .GroupJoin(Query(CRMDbContext.DealMilestones),
+                                           .GroupJoin(Query(CrmDbContext.DealMilestones),
                                                  x => x.Deal.DealMilestoneId,
                                                  y => y.Id,
                                                  (x, y) => new { x, y })
@@ -1887,13 +1887,13 @@ namespace ASC.CRM.Core.Dao
                                                                                   x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
                                           }).ToList();
 
-            var lostDealsSqlQuery = Query(CRMDbContext.Deals)
-                                           .GroupJoin(Query(CRMDbContext.CurrencyRate),
+            var lostDealsSqlQuery = Query(CrmDbContext.Deals)
+                                           .GroupJoin(Query(CrmDbContext.CurrencyRate),
                                                    x => x.BidCurrency,
                                                    y => y.FromCurrency,
                                                    (x, y) => new { x, y })
                                            .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
-                                           .GroupJoin(Query(CRMDbContext.DealMilestones),
+                                           .GroupJoin(Query(CrmDbContext.DealMilestones),
                                                  x => x.Deal.DealMilestoneId,
                                                  y => y.Id,
                                                  (x, y) => new { x, y })
@@ -1910,13 +1910,13 @@ namespace ASC.CRM.Core.Dao
                                          }).ToList();
 
 
-            var overdueDealsSqlQuery = Query(CRMDbContext.Deals)
-                                           .GroupJoin(Query(CRMDbContext.CurrencyRate),
+            var overdueDealsSqlQuery = Query(CrmDbContext.Deals)
+                                           .GroupJoin(Query(CrmDbContext.CurrencyRate),
                                                    x => x.BidCurrency,
                                                    y => y.FromCurrency,
                                                    (x, y) => new { x, y })
                                            .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
-                                           .GroupJoin(Query(CRMDbContext.DealMilestones),
+                                           .GroupJoin(Query(CrmDbContext.DealMilestones),
                                                  x => x.Deal.DealMilestoneId,
                                                  y => y.Id,
                                                  (x, y) => new { x, y })
@@ -1933,7 +1933,7 @@ namespace ASC.CRM.Core.Dao
                                                                                 x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : x.Deal.PerPeriodValue) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
                                         }).ToList();
 
-            var invoicesSqlQuery = Query(CRMDbContext.Invoices)
+            var invoicesSqlQuery = Query(CrmDbContext.Invoices)
                                   .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
                                   .Where(x => x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                                   .GroupBy(x => x.Status)
@@ -1947,8 +1947,8 @@ namespace ASC.CRM.Core.Dao
                                       ? 1 : 0)
                                   }).ToList();
 
-            var contactsSqlQuery = Query(CRMDbContext.Contacts)
-                                  .GroupJoin(Query(CRMDbContext.ListItem),
+            var contactsSqlQuery = Query(CrmDbContext.Contacts)
+                                  .GroupJoin(Query(CrmDbContext.ListItem),
                                       x => x.ContactTypeId,
                                       y => y.Id,
                                       (x, y) => new { x, y })
@@ -1965,8 +1965,8 @@ namespace ASC.CRM.Core.Dao
                                   .OrderBy(x => x.title)
                                   .ToList();
 
-            var tasksSqlQuery = Query(CRMDbContext.Tasks)
-                                .GroupJoin(Query(CRMDbContext.ListItem),
+            var tasksSqlQuery = Query(CrmDbContext.Tasks)
+                                .GroupJoin(Query(CrmDbContext.ListItem),
                                       x => x.CategoryId,
                                       y => y.Id,
                                       (x, y) => new { x, y })
@@ -1987,7 +1987,7 @@ namespace ASC.CRM.Core.Dao
                               .ToList();
                         //    .OrderBy("i.sort_order, i.title", true);
 
-            var voipSqlQuery = Query(CRMDbContext.VoipCalls)
+            var voipSqlQuery = Query(CrmDbContext.VoipCalls)
                                 .Where(x => String.IsNullOrEmpty(x.ParentCallId))
                                 .Where(x => managers != null && managers.Any() ? managers.Contains(x.AnsweredBy) : true)
                                 .Where(x => x.DialDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.DialDate <= _tenantUtil.DateTimeToUtc(toDate))
@@ -2075,8 +2075,8 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            var dealsSqlQuery = Query(CRMDbContext.Deals)
-                                        .Join(CRMDbContext.DealMilestones,
+            var dealsSqlQuery = Query(CrmDbContext.Deals)
+                                        .Join(CrmDbContext.DealMilestones,
                                               x => x.DealMilestoneId,
                                               y => y.Id,
                                               (x, y) => new { x, y })
@@ -2086,17 +2086,17 @@ namespace ASC.CRM.Core.Dao
                                         .Any();
 
 
-            var contactsSqlQuery = Query(CRMDbContext.Contacts)
+            var contactsSqlQuery = Query(CrmDbContext.Contacts)
                                       .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
                                       .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                                       .Any();
 
-            var tasksSqlQuery = Query(CRMDbContext.Tasks)
+            var tasksSqlQuery = Query(CrmDbContext.Tasks)
                                       .Where(x => managers != null && managers.Any() ? managers.Contains(x.ResponsibleId) : true)
                                       .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                                       .Any();
 
-            var invoicesSqlQuery = Query(CRMDbContext.Invoices)
+            var invoicesSqlQuery = Query(CrmDbContext.Invoices)
                                       .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
                                       .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                                       .Any();
@@ -2124,13 +2124,13 @@ namespace ASC.CRM.Core.Dao
 
             GetTimePeriod(timePeriod, out fromDate, out toDate);
 
-            var openDealsSqlQuery = Query(CRMDbContext.Deals)
-                                           .GroupJoin(Query(CRMDbContext.CurrencyRate),
+            var openDealsSqlQuery = Query(CrmDbContext.Deals)
+                                           .GroupJoin(Query(CrmDbContext.CurrencyRate),
                                                    x => x.BidCurrency,
                                                    y => y.FromCurrency,
                                                    (x, y) => new { x, y })
                                            .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
-                                           .GroupJoin(Query(CRMDbContext.DealMilestones),
+                                           .GroupJoin(Query(CrmDbContext.DealMilestones),
                                                  x => x.Deal.DealMilestoneId,
                                                  y => y.Id,
                                                  (x, y) => new { x, y })
@@ -2146,13 +2146,13 @@ namespace ASC.CRM.Core.Dao
                                                                                   x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
                                           }).ToList();
 
-            var overdueDealsSqlQuery = Query(CRMDbContext.Deals)
-                               .GroupJoin(Query(CRMDbContext.CurrencyRate),
+            var overdueDealsSqlQuery = Query(CrmDbContext.Deals)
+                               .GroupJoin(Query(CrmDbContext.CurrencyRate),
                                        x => x.BidCurrency,
                                        y => y.FromCurrency,
                                        (x, y) => new { x, y })
                                .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
-                               .GroupJoin(Query(CRMDbContext.DealMilestones),
+                               .GroupJoin(Query(CrmDbContext.DealMilestones),
                                      x => x.Deal.DealMilestoneId,
                                      y => y.Id,
                                      (x, y) => new { x, y })
@@ -2170,13 +2170,13 @@ namespace ASC.CRM.Core.Dao
                               }).ToList();
 
 
-            var nearDealsSqlQuery = Query(CRMDbContext.Deals)
-                   .GroupJoin(Query(CRMDbContext.CurrencyRate),
+            var nearDealsSqlQuery = Query(CrmDbContext.Deals)
+                   .GroupJoin(Query(CrmDbContext.CurrencyRate),
                            x => x.BidCurrency,
                            y => y.FromCurrency,
                            (x, y) => new { x, y })
                    .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = x.x, CurrencyRate = y })
-                   .GroupJoin(Query(CRMDbContext.DealMilestones),
+                   .GroupJoin(Query(CrmDbContext.DealMilestones),
                          x => x.Deal.DealMilestoneId,
                          y => y.Id,
                          (x, y) => new { x, y })
@@ -2193,13 +2193,13 @@ namespace ASC.CRM.Core.Dao
                                                           x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
                   }).ToList();
 
-            var dealsByStageSqlQuery = Query(CRMDbContext.DealMilestones)
-                                            .GroupJoin(Query(CRMDbContext.Deals),
+            var dealsByStageSqlQuery = Query(CrmDbContext.DealMilestones)
+                                            .GroupJoin(Query(CrmDbContext.Deals),
                                                    x => x.Id,
                                                    y => y.DealMilestoneId,
                                                    (x, y) => new { x, y })
                                             .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { Deal = y, DealMilestone = x.x })
-                                            .GroupJoin(Query(CRMDbContext.CurrencyRate),
+                                            .GroupJoin(Query(CrmDbContext.CurrencyRate),
                                                     x => x.Deal.BidCurrency,
                                                     y => y.FromCurrency,
                                                     (x, y) => new { x, y })
@@ -2216,8 +2216,8 @@ namespace ASC.CRM.Core.Dao
                                                                                   x.Deal.BidValue * (x.Deal.PerPeriodValue == 0 ? 1.0m : Convert.ToDecimal(x.Deal.PerPeriodValue)) * (x.Deal.BidCurrency == defaultCurrency ? 1.0m : x.CurrencyRate.Rate))
                                           }).ToList();
 
-            var contactsByTypeSqlQuery = Query(CRMDbContext.Contacts)
-                                        .GroupJoin(Query(CRMDbContext.ListItem),
+            var contactsByTypeSqlQuery = Query(CrmDbContext.Contacts)
+                                        .GroupJoin(Query(CrmDbContext.ListItem),
                                             x => x.ContactTypeId,
                                             y => y.Id,
                                             (x, y) => new { x, y })
@@ -2234,8 +2234,8 @@ namespace ASC.CRM.Core.Dao
                                         .OrderBy(x => x.title)
                                         .ToList();
 
-            var contactsByStageSqlQuery = Query(CRMDbContext.Contacts)
-                                  .GroupJoin(Query(CRMDbContext.ListItem),
+            var contactsByStageSqlQuery = Query(CrmDbContext.Contacts)
+                                  .GroupJoin(Query(CrmDbContext.ListItem),
                                       x => x.StatusId,
                                       y => y.Id,
                                       (x, y) => new { x, y })
@@ -2252,8 +2252,8 @@ namespace ASC.CRM.Core.Dao
                                   .OrderBy(x => x.title)
                                   .ToList();
 
-            var tasksSqlQuery = Query(CRMDbContext.Tasks)
-                    .GroupJoin(Query(CRMDbContext.ListItem),
+            var tasksSqlQuery = Query(CrmDbContext.Tasks)
+                    .GroupJoin(Query(CrmDbContext.ListItem),
                           x => x.CategoryId,
                           y => y.Id,
                           (x, y) => new { x, y })
@@ -2274,7 +2274,7 @@ namespace ASC.CRM.Core.Dao
                   .ToList();
 
 
-            var invoicesSqlQuery = Query(CRMDbContext.Invoices)
+            var invoicesSqlQuery = Query(CrmDbContext.Invoices)
                       .Where(x => managers != null && managers.Any() ? managers.Contains(x.CreateBy) : true)
                       .Where(x => timePeriod == ReportTimePeriod.DuringAllTime ? true : x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate))
                       .GroupBy(x => x.Status)

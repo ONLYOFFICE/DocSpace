@@ -55,70 +55,6 @@ using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
 namespace ASC.CRM.Core.Dao
 {
-    public class CachedDealDao : DealDao
-    {
-        private readonly HttpRequestDictionary<Deal> _dealCache;
-
-        public CachedDealDao(DbContextManager<CrmDbContext> dbContextManager,
-                       TenantManager tenantManager,
-                       SecurityContext securityContext,
-                       CrmSecurity crmSecurity,
-                       FactoryIndexerDeal factoryIndexer,
-                       FilesIntegration filesIntegration,
-                       IHttpContextAccessor httpContextAccessor,
-                       IOptionsMonitor<ILog> logger,
-                       ICache ascCache,
-                       IMapper mapper,
-                       BundleSearch bundleSearch)
-            : base(dbContextManager,
-                 tenantManager,
-                 securityContext,
-                 crmSecurity,
-                 factoryIndexer,
-                 filesIntegration,
-                 logger,
-                 ascCache,
-                 mapper,
-                 bundleSearch)
-        {
-            _dealCache = new HttpRequestDictionary<Deal>(httpContextAccessor?.HttpContext, "crm_deal");
-        }
-
-        public override void EditDeal(Deal deal)
-        {
-            ResetCache(deal.ID);
-            base.EditDeal(deal);
-        }
-
-        public override Deal GetByID(int dealID)
-        {
-            return _dealCache.Get(dealID.ToString(), () => GetByIDBase(dealID));
-        }
-
-        private Deal GetByIDBase(int dealID)
-        {
-            return base.GetByID(dealID);
-        }
-
-        public override Deal DeleteDeal(int dealID)
-        {
-            ResetCache(dealID);
-            return base.DeleteDeal(dealID);
-        }
-
-        public override int CreateNewDeal(Deal deal)
-        {
-            deal.ID = base.CreateNewDeal(deal);
-            _dealCache.Add(deal.ID.ToString(), deal);
-            return deal.ID;
-        }
-
-        private void ResetCache(int dealID)
-        {
-            _dealCache.Reset(dealID.ToString());
-        }
-    }
-
     [Scope]
     public class DealDao : AbstractDao
     {
@@ -182,31 +118,29 @@ namespace ASC.CRM.Core.Dao
             RemoveRelative(memberID, EntityType.Opportunity, dealID);
         }
 
-        public virtual List<Deal> GetDeals(int[] id)
+        public List<Deal> GetDeals(int[] id)
         {
             if (id == null || !id.Any()) return new List<Deal>();
 
-            var dbDeals = Query(CRMDbContext.Deals).Where(x => id.Contains(x.Id)).ToList();
+            var dbDeals = Query(CrmDbContext.Deals).Where(x => id.Contains(x.Id)).ToList();
 
             return _mapper.Map<List<DbDeal>, List<Deal>>(dbDeals);
         }
 
-        public virtual Deal GetByID(int dealID)
-        {
-            if (dealID <= 0) return null;
-
+        public Deal GetByID(int dealID)
+        {        
             var deals = GetDeals(new[] { dealID });
 
             return deals.Count == 0 ? null : deals[0];
         }
 
-        public virtual int CreateNewDeal(Deal deal)
+        public int CreateNewDeal(Deal deal)
         {
             var result = CreateNewDealInDb(deal);
 
             deal.ID = result;
 
-            FactoryIndexer.Index(Query(CRMDbContext.Deals).Where(x => x.Id == deal.ID).FirstOrDefault());
+            FactoryIndexer.Index(Query(CrmDbContext.Deals).Where(x => x.Id == deal.ID).FirstOrDefault());
 
             return result;
         }
@@ -240,8 +174,8 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             };
 
-            CRMDbContext.Deals.Add(itemToInsert);
-            CRMDbContext.SaveChanges();
+            CrmDbContext.Deals.Add(itemToInsert);
+            CrmDbContext.SaveChanges();
 
             var dealID = itemToInsert.Id;
 
@@ -251,15 +185,15 @@ namespace ASC.CRM.Core.Dao
             return dealID;
         }
 
-        public virtual int[] SaveDealList(List<Deal> items)
+        public int[] SaveDealList(List<Deal> items)
         {
-            var tx = CRMDbContext.Database.BeginTransaction();
+            var tx = CrmDbContext.Database.BeginTransaction();
 
             var result = items.Select(item => CreateNewDealInDb(item)).ToArray();
 
             tx.Commit();
 
-            foreach (var deal in Query(CRMDbContext.Deals).Where(x => result.Contains(x.Id)))
+            foreach (var deal in Query(CrmDbContext.Deals).Where(x => result.Contains(x.Id)))
             {
                 FactoryIndexer.Index(deal);
             }
@@ -267,7 +201,7 @@ namespace ASC.CRM.Core.Dao
             return result;
         }
 
-        public virtual void EditDeal(Deal deal)
+        public void EditDeal(Deal deal)
         {
             CRMSecurity.DemandEdit(deal);
 
@@ -278,7 +212,7 @@ namespace ASC.CRM.Core.Dao
 
             //    AddMember(deal.ID, deal.ContactID);
 
-            var itemToUpdate = Query(CRMDbContext.Deals).Single(x => x.Id == deal.ID);
+            var itemToUpdate = Query(CrmDbContext.Deals).Single(x => x.Id == deal.ID);
 
             itemToUpdate.Title = deal.Title;
             itemToUpdate.Description = deal.Description;
@@ -296,8 +230,8 @@ namespace ASC.CRM.Core.Dao
             itemToUpdate.LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
             itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
 
-            CRMDbContext.Update(itemToUpdate);
-            CRMDbContext.SaveChanges();
+            CrmDbContext.Update(itemToUpdate);
+            CrmDbContext.SaveChanges();
 
             FactoryIndexer.Index(itemToUpdate);
         }
@@ -338,7 +272,7 @@ namespace ASC.CRM.Core.Dao
                                   OrderBy orderBy)
         {
 
-            var sqlQuery = Query(CRMDbContext.Deals).Join(CRMDbContext.DealMilestones,
+            var sqlQuery = Query(CrmDbContext.Deals).Join(CrmDbContext.DealMilestones,
                                             x => x.DealMilestoneId,
                                             y => y.Id,
                                             (x, y) => new { x, y }
@@ -592,7 +526,7 @@ namespace ASC.CRM.Core.Dao
             else
             {
 
-                var countWithoutPrivate = Query(CRMDbContext.Deals).Count();
+                var countWithoutPrivate = Query(CrmDbContext.Deals).Count();
                 var privateCount = exceptIDs.Count;
 
                 if (privateCount > countWithoutPrivate)
@@ -765,7 +699,7 @@ namespace ASC.CRM.Core.Dao
 
             var keywords = prefix.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
-            var sqlQuery = Query(CRMDbContext.Deals);
+            var sqlQuery = Query(CrmDbContext.Deals);
 
             if (keywords.Length == 1)
             {
@@ -799,7 +733,7 @@ namespace ASC.CRM.Core.Dao
             return _mapper.Map<List<DbDeal>, List<Deal>>(dbDeals).FindAll(CRMSecurity.CanAccessTo);
         }
 
-        public virtual Deal DeleteDeal(int dealID)
+        public Deal DeleteDeal(int dealID)
         {
             if (dealID <= 0) return null;
 
@@ -808,7 +742,7 @@ namespace ASC.CRM.Core.Dao
 
             CRMSecurity.DemandDelete(deal);
 
-            FactoryIndexer.Delete(Query(CRMDbContext.Deals).Where(x => x.Id == dealID).Single());
+            FactoryIndexer.Delete(Query(CrmDbContext.Deals).Where(x => x.Id == dealID).Single());
 
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
@@ -851,29 +785,29 @@ namespace ASC.CRM.Core.Dao
 
             var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
 
-            var tagNames = Query(CRMDbContext.RelationshipEvent)
+            var tagNames = Query(CrmDbContext.RelationshipEvent)
                                 .Where(x => x.HaveFiles && dealID.Contains(x.EntityId) && x.EntityType == EntityType.Opportunity)
                                 .Select(x => string.Format("RelationshipEvent_{0}", x.Id)).ToArray();
 
             filesIDs = tagdao.GetTags(tagNames, TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => t.EntryId).ToArray();
 
-            var tx = CRMDbContext.Database.BeginTransaction();
+            var tx = CrmDbContext.Database.BeginTransaction();
 
 
-            CRMDbContext.RemoveRange(Query(CRMDbContext.FieldValue)
+            CrmDbContext.RemoveRange(Query(CrmDbContext.FieldValue)
                                           .Where(x => dealID.Contains(x.EntityId) && x.EntityType == EntityType.Opportunity)
                                     );
 
-            CRMDbContext.RemoveRange(CRMDbContext.EntityContact.Where(x => dealID.Contains(x.EntityId) && x.EntityType == EntityType.Opportunity));
+            CrmDbContext.RemoveRange(CrmDbContext.EntityContact.Where(x => dealID.Contains(x.EntityId) && x.EntityType == EntityType.Opportunity));
 
-            CRMDbContext.RemoveRange(Query(CRMDbContext.RelationshipEvent)
+            CrmDbContext.RemoveRange(Query(CrmDbContext.RelationshipEvent)
                                         .Where(x => dealID.Contains(x.EntityId) && x.EntityType == EntityType.Opportunity));
 
-            CRMDbContext.RemoveRange(Query(CRMDbContext.Tasks).Where(x => dealID.Contains(x.EntityId) && x.EntityType == EntityType.Opportunity));
+            CrmDbContext.RemoveRange(Query(CrmDbContext.Tasks).Where(x => dealID.Contains(x.EntityId) && x.EntityType == EntityType.Opportunity));
 
-            CRMDbContext.RemoveRange(CRMDbContext.EntityTags.Where(x => dealID.Contains(x.EntityId) && x.EntityType == EntityType.Opportunity));
+            CrmDbContext.RemoveRange(CrmDbContext.EntityTags.Where(x => dealID.Contains(x.EntityId) && x.EntityType == EntityType.Opportunity));
 
-            CRMDbContext.RemoveRange(Query(CRMDbContext.Deals).Where(x => dealID.Contains(x.Id)));
+            CrmDbContext.RemoveRange(Query(CrmDbContext.Deals).Where(x => dealID.Contains(x.Id)));
 
             tx.Commit();
 
@@ -934,9 +868,9 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             };
 
-            CRMDbContext.Attach(dbDeal);
-            CRMDbContext.Entry(dbDeal).Property(x => x.CreateOn).IsModified = true;
-            CRMDbContext.SaveChanges();
+            CrmDbContext.Attach(dbDeal);
+            CrmDbContext.Entry(dbDeal).Property(x => x.CreateOn).IsModified = true;
+            CrmDbContext.SaveChanges();
 
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
@@ -956,9 +890,9 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             };
 
-            CRMDbContext.Attach(dbDeal);
-            CRMDbContext.Entry(dbDeal).Property(x => x.LastModifedOn).IsModified = true;
-            CRMDbContext.SaveChanges();
+            CrmDbContext.Attach(dbDeal);
+            CrmDbContext.Entry(dbDeal).Property(x => x.LastModifedOn).IsModified = true;
+            CrmDbContext.SaveChanges();
 
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));

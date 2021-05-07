@@ -78,20 +78,20 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             };
 
-            if (item.ID == 0 && Query(CRMDbContext.TaskTemplateContainer).Where(x => x.Id == item.ID).Any())
+            if (item.ID == 0 && Query(CrmDbContext.TaskTemplateContainer).Where(x => x.Id == item.ID).Any())
             {
-                CRMDbContext.TaskTemplateContainer.Add(dbTaskTemplateContainer);
+                CrmDbContext.TaskTemplateContainer.Add(dbTaskTemplateContainer);
 
-                CRMDbContext.SaveChanges();
+                CrmDbContext.SaveChanges();
 
                 item.ID = dbTaskTemplateContainer.Id;
             }
             else
             {
-                CRMDbContext.TaskTemplateContainer.Attach(dbTaskTemplateContainer);
-                CRMDbContext.TaskTemplateContainer.Update(dbTaskTemplateContainer);
+                CrmDbContext.TaskTemplateContainer.Attach(dbTaskTemplateContainer);
+                CrmDbContext.TaskTemplateContainer.Update(dbTaskTemplateContainer);
 
-                CRMDbContext.SaveChanges();
+                CrmDbContext.SaveChanges();
             }
 
 
@@ -105,10 +105,10 @@ namespace ASC.CRM.Core.Dao
 
             var itemToDelete = new DbTaskTemplateContainer { Id = id };
 
-            CRMDbContext.TaskTemplateContainer.Attach(itemToDelete);
-            CRMDbContext.TaskTemplateContainer.Remove(itemToDelete);
+            CrmDbContext.TaskTemplateContainer.Attach(itemToDelete);
+            CrmDbContext.TaskTemplateContainer.Remove(itemToDelete);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
         }
 
         public virtual TaskTemplateContainer GetByID(int id)
@@ -116,7 +116,7 @@ namespace ASC.CRM.Core.Dao
             if (id <= 0)
                 throw new ArgumentException();
 
-            return ToObject(Query(CRMDbContext.TaskTemplateContainer).FirstOrDefault(x => x.Id == id));
+            return ToObject(Query(CrmDbContext.TaskTemplateContainer).FirstOrDefault(x => x.Id == id));
         }
 
         public virtual List<TaskTemplateContainer> GetItems(EntityType entityType)
@@ -124,7 +124,7 @@ namespace ASC.CRM.Core.Dao
             if (!_supportedEntityType.Contains(entityType))
                 throw new ArgumentException("", entityType.ToString());
 
-            return Query(CRMDbContext.TaskTemplateContainer)
+            return Query(CrmDbContext.TaskTemplateContainer)
                 .Where(x => x.EntityType == entityType)
                 .ToList()
                 .ConvertAll(ToObject);
@@ -185,8 +185,8 @@ namespace ASC.CRM.Core.Dao
                 itemToInsert.CreateOn = DateTime.UtcNow;
                 itemToInsert.CreateBy = _securityContext.CurrentAccount.ID;
 
-                CRMDbContext.TaskTemplates.Add(itemToInsert);
-                CRMDbContext.SaveChanges();
+                CrmDbContext.TaskTemplates.Add(itemToInsert);
+                CrmDbContext.SaveChanges();
             }
             else
             {
@@ -194,10 +194,10 @@ namespace ASC.CRM.Core.Dao
                 itemToInsert.LastModifedOn = DateTime.UtcNow;
                 itemToInsert.LastModifedBy = _securityContext.CurrentAccount.ID;
 
-                CRMDbContext.TaskTemplates.Attach(itemToInsert);
-                CRMDbContext.TaskTemplates.Update(itemToInsert);
+                CrmDbContext.TaskTemplates.Attach(itemToInsert);
+                CrmDbContext.TaskTemplates.Update(itemToInsert);
 
-                CRMDbContext.SaveChanges();
+                CrmDbContext.SaveChanges();
             }
 
             return item.ID;
@@ -205,10 +205,10 @@ namespace ASC.CRM.Core.Dao
 
         public TaskTemplate GetNext(int taskID)
         {
-            using var tx = CRMDbContext.Database.BeginTransaction();
+            using var tx = CrmDbContext.Database.BeginTransaction();
 
-            var sqlResult = Query(CRMDbContext.TaskTemplateTask)
-                 .Join(Query(CRMDbContext.TaskTemplates),
+            var sqlResult = Query(CrmDbContext.TaskTemplateTask)
+                 .Join(Query(CrmDbContext.TaskTemplates),
                        x => x.TaskTemplateId,
                        y => y.Id,
                        (x, y) => new { x, y }
@@ -218,11 +218,11 @@ namespace ASC.CRM.Core.Dao
 
             if (sqlResult == null) return null;
 
-            var result = ToObject(Query(CRMDbContext.TaskTemplates)
+            var result = ToObject(Query(CrmDbContext.TaskTemplates)
                                        .FirstOrDefault(x => x.ContainerId == sqlResult.ContainerId &&
                                                             x.SortOrder > sqlResult.SortOrder && !x.DeadLineIsFixed));
 
-            CRMDbContext.Remove(new DbTaskTemplateTask
+            CrmDbContext.Remove(new DbTaskTemplateTask
             {
                 TaskId = taskID,
                 TenantId = TenantID
@@ -235,7 +235,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<TaskTemplate> GetAll()
         {
-            return Query(CRMDbContext.TaskTemplates)
+            return Query(CrmDbContext.TaskTemplates)
                     .OrderBy(x => x.SortOrder)
                     .ToList()
                     .ConvertAll(ToObject);
@@ -246,7 +246,7 @@ namespace ASC.CRM.Core.Dao
             if (containerID <= 0)
                 throw new NotImplementedException();
 
-            return Query(CRMDbContext.TaskTemplates)
+            return Query(CrmDbContext.TaskTemplates)
                 .Where(x => x.ContainerId == containerID)
                 .OrderBy(x => x.SortOrder)
                 .ToList()
@@ -258,7 +258,7 @@ namespace ASC.CRM.Core.Dao
             if (id <= 0)
                 throw new NotImplementedException();
 
-            return ToObject(CRMDbContext.TaskTemplates.FirstOrDefault(x => x.Id == id));
+            return ToObject(CrmDbContext.TaskTemplates.FirstOrDefault(x => x.Id == id));
         }
 
         public virtual void Delete(int id)
@@ -271,8 +271,8 @@ namespace ASC.CRM.Core.Dao
                 Id = id
             };
 
-            CRMDbContext.Entry(itemToRemove).State = EntityState.Deleted;
-            CRMDbContext.SaveChanges();
+            CrmDbContext.Entry(itemToRemove).State = EntityState.Deleted;
+            CrmDbContext.SaveChanges();
         }
 
         protected TaskTemplate ToObject(DbTaskTemplate dbTaskTemplate)

@@ -46,7 +46,6 @@ using ASC.Web.Files.Api;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -55,70 +54,6 @@ using SortedByType = ASC.CRM.Core.Enums.SortedByType;
 
 namespace ASC.CRM.Core.Dao
 {
-    public class CachedCasesDao : CasesDao
-    {
-        private readonly HttpRequestDictionary<Cases> _casesCache;
-
-        public CachedCasesDao(DbContextManager<CrmDbContext> dbContextManager,
-            TenantManager tenantManager,
-            SecurityContext securityContext,
-            CrmSecurity crmSecurity,
-            TenantUtil tenantUtil,
-            FilesIntegration filesIntegration,
-            AuthorizationManager authorizationManager,
-            IOptionsMonitor<ILog> logger,
-            ICache ascCache,
-            IHttpContextAccessor httpContextAccessor,
-            BundleSearch bundleSearch,
-            IMapper mapper)
-            :
-                 base(dbContextManager,
-                 tenantManager,
-                 securityContext,
-                 crmSecurity,
-                 tenantUtil,
-                 filesIntegration,
-                 authorizationManager,
-                 logger,
-                 ascCache,
-                 bundleSearch,
-                 mapper)
-
-        {
-            _casesCache = new HttpRequestDictionary<Cases>(httpContextAccessor?.HttpContext, "crm_cases");
-        }
-
-        public override Cases GetByID(int caseID)
-        {
-            return _casesCache.Get(caseID.ToString(CultureInfo.InvariantCulture), () => GetByIDBase(caseID));
-        }
-
-        private Cases GetByIDBase(int caseID)
-        {
-            return base.GetByID(caseID);
-        }
-
-        public override void UpdateCases(Cases cases)
-        {
-            if (cases != null && cases.ID > 0)
-                ResetCache(cases.ID);
-
-            base.UpdateCases(cases);
-        }
-
-        public override Cases DeleteCases(int casesID)
-        {
-            ResetCache(casesID);
-
-            return base.DeleteCases(casesID);
-        }
-
-        private void ResetCache(int taskID)
-        {
-            _casesCache.Reset(taskID.ToString(CultureInfo.InvariantCulture));
-        }
-    }
-
     [Scope]
     public class CasesDao : AbstractDao
     {
@@ -184,9 +119,9 @@ namespace ASC.CRM.Core.Dao
             RemoveRelative(memberID, EntityType.Case, caseID);
         }
 
-        public virtual int[] SaveCasesList(List<Cases> items)
+        public int[] SaveCasesList(List<Cases> items)
         {
-            using var tx = CRMDbContext.Database.BeginTransaction();
+            using var tx = CrmDbContext.Database.BeginTransaction();
 
             var result = items.Select(item => CreateCasesInDb(item.Title)).ToArray();
 
@@ -220,9 +155,9 @@ namespace ASC.CRM.Core.Dao
                 Title = cases.Title
             };
 
-            CRMDbContext.Cases.Update(itemToUpdate);
+            CrmDbContext.Cases.Update(itemToUpdate);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             cases.IsClosed = true;
 
@@ -239,7 +174,7 @@ namespace ASC.CRM.Core.Dao
 
             CRMSecurity.DemandAccessTo(cases);
 
-            CRMDbContext.Cases.Update(new DbCase
+            CrmDbContext.Cases.Update(new DbCase
             {
                 Id = cases.ID,
                 CreateBy = cases.CreateBy,
@@ -251,7 +186,7 @@ namespace ASC.CRM.Core.Dao
                 Title = cases.Title
             });
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             cases.IsClosed = false;
 
@@ -280,22 +215,22 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             };
 
-            CRMDbContext.Cases.Add(dbCase);
+            CrmDbContext.Cases.Add(dbCase);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             return dbCase.Id;
 
         }
 
-        public virtual void UpdateCases(Cases cases)
+        public void UpdateCases(Cases cases)
         {
             CRMSecurity.DemandEdit(cases);
 
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
 
-            CRMDbContext.Cases.Update(new DbCase
+            CrmDbContext.Cases.Update(new DbCase
             {
                 Id = cases.ID,
                 Title = cases.Title,
@@ -307,10 +242,10 @@ namespace ASC.CRM.Core.Dao
                 CreateOn = cases.CreateOn
             });
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
         }
 
-        public virtual Cases DeleteCases(int casesID)
+        public Cases DeleteCases(int casesID)
         {
             if (casesID <= 0) return null;
 
@@ -327,7 +262,7 @@ namespace ASC.CRM.Core.Dao
             return cases;
         }
 
-        public virtual List<Cases> DeleteBatchCases(List<Cases> caseses)
+        public List<Cases> DeleteBatchCases(List<Cases> caseses)
         {
             caseses = caseses.FindAll(CRMSecurity.CanDelete).ToList();
 
@@ -341,7 +276,7 @@ namespace ASC.CRM.Core.Dao
             return caseses;
         }
 
-        public virtual List<Cases> DeleteBatchCases(int[] casesID)
+        public List<Cases> DeleteBatchCases(int[] casesID)
         {
             if (casesID == null || !casesID.Any()) return null;
 
@@ -363,31 +298,31 @@ namespace ASC.CRM.Core.Dao
 
             var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
 
-            var tagNames = Query(CRMDbContext.RelationshipEvent)
+            var tagNames = Query(CrmDbContext.RelationshipEvent)
                             .Where(x => x.HaveFiles && casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case)
                             .Select(x => String.Format("RelationshipEvent_{0}", x.Id)).ToArray();
 
             var filesIDs = tagdao.GetTags(tagNames, TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => Convert.ToInt32(t.EntryId)).ToArray();
 
-            using var tx = CRMDbContext.Database.BeginTransaction();
+            using var tx = CrmDbContext.Database.BeginTransaction();
 
-            CRMDbContext.RemoveRange(Query(CRMDbContext.FieldValue)
+            CrmDbContext.RemoveRange(Query(CrmDbContext.FieldValue)
                                      .Where(x => casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case));
 
-            CRMDbContext.RemoveRange(Query(CRMDbContext.RelationshipEvent)
+            CrmDbContext.RemoveRange(Query(CrmDbContext.RelationshipEvent)
                                      .Where(x => casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case));
 
-            CRMDbContext.RemoveRange(Query(CRMDbContext.Tasks)
+            CrmDbContext.RemoveRange(Query(CrmDbContext.Tasks)
                                     .Where(x => casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case));
 
-            CRMDbContext.RemoveRange(CRMDbContext.EntityTags.Where(x => casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case));
+            CrmDbContext.RemoveRange(CrmDbContext.EntityTags.Where(x => casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case));
 
-            CRMDbContext.Cases.RemoveRange(caseses.ConvertAll(x => new DbCase
+            CrmDbContext.Cases.RemoveRange(caseses.ConvertAll(x => new DbCase
             {
                 Id = x.ID
             }));
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             tx.Commit();
 
@@ -460,7 +395,7 @@ namespace ASC.CRM.Core.Dao
             else
             {
 
-                var countWithoutPrivate = Query(CRMDbContext.Cases).Count();
+                var countWithoutPrivate = Query(CrmDbContext.Cases).Count();
 
                 var privateCount = exceptIDs.Count;
 
@@ -494,7 +429,7 @@ namespace ASC.CRM.Core.Dao
                                 IEnumerable<String> tags)
         {
 
-            var result = Query(CRMDbContext.Cases);
+            var result = Query(CrmDbContext.Cases);
 
             var ids = new List<int>();
 
@@ -523,7 +458,7 @@ namespace ASC.CRM.Core.Dao
 
             if (contactID > 0)
             {
-                var sqlQuery = CRMDbContext.EntityContact
+                var sqlQuery = CrmDbContext.EntityContact
                     .Where(x => x.ContactId == contactID && x.EntityType == EntityType.Case);
 
                 if (ids.Count > 0)
@@ -570,7 +505,7 @@ namespace ASC.CRM.Core.Dao
         {
             if (casesID == null || !casesID.Any()) return new List<Cases>();
 
-            var result = Query(CRMDbContext.Cases)
+            var result = Query(CrmDbContext.Cases)
                         .Where(x => casesID.Contains(x.Id))
                         .ToList();               
 
@@ -626,7 +561,7 @@ namespace ASC.CRM.Core.Dao
 
             var keywords = prefix.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
-            var q = Query(CRMDbContext.Cases);
+            var q = Query(CrmDbContext.Cases);
 
             if (keywords.Length == 1)
             {
@@ -650,9 +585,9 @@ namespace ASC.CRM.Core.Dao
         }
 
 
-        public virtual List<Cases> GetByID(int[] ids)
+        public List<Cases> GetByID(int[] ids)
         {
-            var result = CRMDbContext.Cases
+            var result = CrmDbContext.Cases
                                .Where(x => ids.Contains(x.Id))
                                .ToList();
 
@@ -660,7 +595,7 @@ namespace ASC.CRM.Core.Dao
           return  _mapper.Map<List<DbCase>, List<Cases>>(result);
         }
 
-        public virtual Cases GetByID(int id)
+        public Cases GetByID(int id)
         {
             if (id <= 0) return null;
 

@@ -65,7 +65,7 @@ namespace ASC.Web.CRM.Core.Search
 
             (int, int, int) getCount(DateTime lastIndexed)
             {
-                var q = eventsDao.CRMDbContext.RelationshipEvent
+                var q = eventsDao.CrmDbContext.RelationshipEvent
                         .Where(r => r.LastModifedOn >= lastIndexed);
 
                 var count = q.GroupBy(a => a.Id).Count();
@@ -76,7 +76,7 @@ namespace ASC.Web.CRM.Core.Search
             }
 
             List<DbRelationshipEvent> getData(long i, long step, DateTime lastIndexed) =>
-                    eventsDao.CRMDbContext.RelationshipEvent
+                    eventsDao.CrmDbContext.RelationshipEvent
                     .Where(r => r.LastModifedOn >= lastIndexed)
                     .Where(r => r.Id >= i && r.Id <= i + step)
                     .Select(r => r)

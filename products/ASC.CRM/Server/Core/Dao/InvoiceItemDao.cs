@@ -48,64 +48,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
-{
-    public class CachedInvoiceItemDao : InvoiceItemDao
-    {
-        private readonly HttpRequestDictionary<InvoiceItem> _invoiceItemCache;
-
-        public CachedInvoiceItemDao(DbContextManager<CrmDbContext> dbContextManager,
-                TenantManager tenantManager,
-                SecurityContext securityContext,
-                TenantUtil tenantUtil,
-                CrmSecurity crmSecurity,
-                IHttpContextAccessor httpContextAccessor,
-                IOptionsMonitor<ILog> logger,
-                ICache ascCache,
-                IMapper mapper
-            ) : base(dbContextManager,
-                 tenantManager,
-                 securityContext,
-                 tenantUtil,
-                 crmSecurity,
-                 logger,
-                 ascCache,
-                 mapper)
-
-        {
-            _invoiceItemCache = new HttpRequestDictionary<InvoiceItem>(httpContextAccessor?.HttpContext, "crm_invoice_item");
-        }
-
-        public override InvoiceItem GetByID(int invoiceItemID)
-        {
-            return _invoiceItemCache.Get(invoiceItemID.ToString(CultureInfo.InvariantCulture), () => GetByIDBase(invoiceItemID));
-        }
-
-        private InvoiceItem GetByIDBase(int invoiceItemID)
-        {
-            return base.GetByID(invoiceItemID);
-        }
-
-        public override InvoiceItem SaveOrUpdateInvoiceItem(InvoiceItem invoiceItem)
-        {
-            if (invoiceItem != null && invoiceItem.ID > 0)
-                ResetCache(invoiceItem.ID);
-
-            return base.SaveOrUpdateInvoiceItem(invoiceItem);
-        }
-
-        public override InvoiceItem DeleteInvoiceItem(int invoiceItemID)
-        {
-            ResetCache(invoiceItemID);
-
-            return base.DeleteInvoiceItem(invoiceItemID);
-        }
-
-        private void ResetCache(int invoiceItemID)
-        {
-            _invoiceItemCache.Reset(invoiceItemID.ToString(CultureInfo.InvariantCulture));
-        }
-    }
-
+{   
     [Scope]
     public class InvoiceItemDao : AbstractDao
     {
@@ -141,37 +84,37 @@ namespace ASC.CRM.Core.Dao
 
         public Boolean IsExistInDb(int invoiceItemID)
         {
-            return Query(CRMDbContext.InvoiceItem).Any(x => x.Id == invoiceItemID);
+            return Query(CrmDbContext.InvoiceItem).Any(x => x.Id == invoiceItemID);
         }
 
         public Boolean CanDelete(int invoiceItemID)
         {
-            return Query(CRMDbContext.InvoiceLine).Any(x => x.InvoiceItemId == invoiceItemID);
+            return Query(CrmDbContext.InvoiceLine).Any(x => x.InvoiceItemId == invoiceItemID);
         }
 
-        public virtual List<InvoiceItem> GetAll()
+        public List<InvoiceItem> GetAll()
         {
             return GetAllInDb();
         }
-        public virtual List<InvoiceItem> GetAllInDb()
+        public List<InvoiceItem> GetAllInDb()
         {
-            var dbInvoiceItems = Query(CRMDbContext.InvoiceItem).ToList();
+            var dbInvoiceItems = Query(CrmDbContext.InvoiceItem).ToList();
 
             return _mapper.Map<List<DbInvoiceItem>, List<InvoiceItem>>(dbInvoiceItems);
         }
 
-        public virtual List<InvoiceItem> GetByID(int[] ids)
+        public List<InvoiceItem> GetByID(int[] ids)
         {
-            var dbInvoiceItems = Query(CRMDbContext.InvoiceItem)
+            var dbInvoiceItems = Query(CrmDbContext.InvoiceItem)
                                 .Where(x => ids.Contains(x.Id))
                                 .ToList();
 
             return _mapper.Map<List<DbInvoiceItem>, List<InvoiceItem>>(dbInvoiceItems);
         }
 
-        public virtual InvoiceItem GetByID(int id)
+        public InvoiceItem GetByID(int id)
         {
-            var dbInvoiceItems = Query(CRMDbContext.InvoiceItem).FirstOrDefault(x => x.Id == id);
+            var dbInvoiceItems = Query(CrmDbContext.InvoiceItem).FirstOrDefault(x => x.Id == id);
 
             return _mapper.Map<InvoiceItem>(dbInvoiceItems);
         }
@@ -180,7 +123,7 @@ namespace ASC.CRM.Core.Dao
         {
             if (ids == null || !ids.Any()) return new List<InvoiceItem>();
 
-            var dbInvoiceItems = Query(CRMDbContext.InvoiceItem)
+            var dbInvoiceItems = Query(CrmDbContext.InvoiceItem)
                             .Where(x => ids.Contains(x.Id))
                             .ToList();
 
@@ -276,7 +219,7 @@ namespace ASC.CRM.Core.Dao
             }
             else
             {
-                var countWithoutPrivate = Query(CRMDbContext.InvoiceItem).Count();
+                var countWithoutPrivate = Query(CrmDbContext.InvoiceItem).Count();
 
                 var privateCount = exceptIDs.Count;
 
@@ -299,7 +242,7 @@ namespace ASC.CRM.Core.Dao
             return result;
         }
 
-        public virtual InvoiceItem SaveOrUpdateInvoiceItem(InvoiceItem invoiceItem)
+        public InvoiceItem SaveOrUpdateInvoiceItem(InvoiceItem invoiceItem)
         {
             /*_cache.Remove(_invoiceItemCacheKey);
             _cache.Insert(_invoiceItemCacheKey, String.Empty);*/
@@ -346,8 +289,8 @@ namespace ASC.CRM.Core.Dao
                     TenantId = TenantID
                 };
 
-                CRMDbContext.Add(itemToInsert);
-                CRMDbContext.SaveChanges();
+                CrmDbContext.Add(itemToInsert);
+                CrmDbContext.SaveChanges();
 
                 invoiceItem.ID = itemToInsert.Id;
 
@@ -357,7 +300,7 @@ namespace ASC.CRM.Core.Dao
             else
             {
 
-                var itemToUpdate = Query(CRMDbContext.InvoiceItem).Single(x => x.Id == invoiceItem.ID);
+                var itemToUpdate = Query(CrmDbContext.InvoiceItem).Single(x => x.Id == invoiceItem.ID);
                 var oldInvoiceItem = _mapper.Map<InvoiceItem>(itemToUpdate);
 
                 CRMSecurity.DemandEdit(oldInvoiceItem);
@@ -375,8 +318,8 @@ namespace ASC.CRM.Core.Dao
                 itemToUpdate.LastModifedOn = invoiceItem.LastModifedOn;
                 itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
 
-                CRMDbContext.Add(itemToUpdate);
-                CRMDbContext.SaveChanges();
+                CrmDbContext.Add(itemToUpdate);
+                CrmDbContext.SaveChanges();
 
 
             }
@@ -384,20 +327,20 @@ namespace ASC.CRM.Core.Dao
             return invoiceItem;
         }
 
-        public virtual InvoiceItem DeleteInvoiceItem(int invoiceItemID)
+        public InvoiceItem DeleteInvoiceItem(int invoiceItemID)
         {
             var invoiceItem = GetByID(invoiceItemID);
             if (invoiceItem == null) return null;
 
             CRMSecurity.DemandDelete(invoiceItem);
 
-            CRMDbContext.Remove(new DbInvoiceItem
+            CrmDbContext.Remove(new DbInvoiceItem
             {
                 Id = invoiceItemID,
                 TenantId = TenantID
             });
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             /*_cache.Remove(_invoiceItemCacheKey);
             _cache.Insert(_invoiceItemCacheKey, String.Empty);*/
@@ -405,7 +348,7 @@ namespace ASC.CRM.Core.Dao
             return invoiceItem;
         }
 
-        public virtual List<InvoiceItem> DeleteBatchInvoiceItems(int[] invoiceItemIDs)
+        public List<InvoiceItem> DeleteBatchInvoiceItems(int[] invoiceItemIDs)
         {
             if (invoiceItemIDs == null || !invoiceItemIDs.Any()) return null;
 
@@ -424,13 +367,13 @@ namespace ASC.CRM.Core.Dao
 
         private void DeleteBatchItemsExecute(List<InvoiceItem> items)
         {
-            CRMDbContext.RemoveRange(items.ConvertAll(x => new DbInvoiceItem
+            CrmDbContext.RemoveRange(items.ConvertAll(x => new DbInvoiceItem
             {
                 Id = x.ID,
                 TenantId = TenantID
             }));
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
         }
            
         private IQueryable<DbInvoiceItem> GetDbInvoiceItemByFilters(
@@ -440,7 +383,7 @@ namespace ASC.CRM.Core.Dao
                                 bool? inventoryStock)
         {
 
-            var sqlQuery = Query(CRMDbContext.InvoiceItem);
+            var sqlQuery = Query(CrmDbContext.InvoiceItem);
 
             //if (status > 0)
             //{

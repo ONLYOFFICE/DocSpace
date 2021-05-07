@@ -46,8 +46,8 @@ namespace ASC.CRM.Core.Dao
     public class AbstractDao
     {
         protected readonly List<EntityType> _supportedEntityType = new List<EntityType>();
-        public CrmDbContext CRMDbContext { get; }
-        protected SecurityContext _securityContext;
+        public  CrmDbContext CrmDbContext { get; }
+        protected readonly SecurityContext _securityContext;
         protected readonly ICache _cache;
         protected ILog _logger;
         protected IMapper _mapper;
@@ -65,7 +65,7 @@ namespace ASC.CRM.Core.Dao
             _logger = logger.Get("ASC.CRM");
 
             _cache = ascCache;
-            CRMDbContext = dbContextManager.Get(CrmConstants.DatabaseId);
+            CrmDbContext = dbContextManager.Get(CrmConstants.DatabaseId);
             TenantID = tenantManager.GetCurrentTenant().TenantId;
             _securityContext = securityContext;
 
@@ -114,13 +114,13 @@ namespace ASC.CRM.Core.Dao
 
             foreach (var tag in tags)
             {
-                tagIDs.Add(CRMDbContext
+                tagIDs.Add(CrmDbContext
                     .Tags
                     .Where(x => x.EntityType == entityType && String.Compare(x.Title, tag.Trim(), true) == 0)
                     .Select(x => x.Id).Single());
             }
 
-            var sqlQuery = CRMDbContext.EntityTags.Where(x => x.EntityType == entityType && tagIDs.Contains(x.TagId));
+            var sqlQuery = CrmDbContext.EntityTags.Where(x => x.EntityType == entityType && tagIDs.Contains(x.TagId));
 
             if (exceptIDs != null && exceptIDs.Length > 0)
                 sqlQuery = sqlQuery.Where(x => exceptIDs.Contains(x.EntityId));
@@ -140,7 +140,7 @@ namespace ASC.CRM.Core.Dao
             else if (entityID != null && entityID.Length > 0 && (contactID == null || contactID.Length == 0))
                 exp = x => x.EntityType == entityType && entityID.Contains(x.EntityId);
 
-            return CRMDbContext.EntityContact
+            return CrmDbContext.EntityContact
                 .Where(exp)
                 .Select(x => new { EntityId = x.EntityId, ContactId = x.ContactId })
                 .ToList()
@@ -156,13 +156,13 @@ namespace ASC.CRM.Core.Dao
         protected int[] GetRelativeToEntityInDb(int? contactID, EntityType entityType, int? entityID)
         {
             if (contactID.HasValue && !entityID.HasValue)
-                return CRMDbContext.EntityContact
+                return CrmDbContext.EntityContact
                        .Where(x => x.EntityType == entityType && x.ContactId == contactID.Value)
                        .Select(x => x.EntityId)
                        .ToArray();
 
             if (!contactID.HasValue && entityID.HasValue)
-                return CRMDbContext.EntityContact
+                return CrmDbContext.EntityContact
                        .Where(x => x.EntityType == entityType && x.EntityId == entityID.Value)
                        .Select(x => x.ContactId)
                        .ToArray();
@@ -175,19 +175,19 @@ namespace ASC.CRM.Core.Dao
             if (entityID == 0)
                 throw new ArgumentException();
 
-            using var tx = CRMDbContext.Database.BeginTransaction();
+            using var tx = CrmDbContext.Database.BeginTransaction();
 
-            var exists = CRMDbContext.EntityContact
+            var exists = CrmDbContext.EntityContact
                                     .Where(x => x.EntityType == entityType && x.EntityId == entityID)
                                     .Select(x => x.ContactId)
                                     .ToArray();
 
             foreach (var existContact in exists)
             {
-                var items = CRMDbContext.EntityContact
+                var items = CrmDbContext.EntityContact
                                         .Where(x => x.EntityType == entityType && x.EntityId == entityID && x.ContactId == existContact);
 
-                CRMDbContext.EntityContact.RemoveRange(items);
+                CrmDbContext.EntityContact.RemoveRange(items);
             }
 
             if (!(contactID == null || contactID.Length == 0))
@@ -199,14 +199,14 @@ namespace ASC.CRM.Core.Dao
 
         protected void SetRelative(int contactID, EntityType entityType, int entityID)
         {
-            CRMDbContext.EntityContact.Add(new DbEntityContact
+            CrmDbContext.EntityContact.Add(new DbEntityContact
             {
                 ContactId = contactID,
                 EntityType = entityType,
                 EntityId = entityID
             });
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
         }
 
         protected void RemoveRelativeInDb(int[] contactID, EntityType entityType, int[] entityID)
@@ -222,11 +222,11 @@ namespace ASC.CRM.Core.Dao
             if (entityID != null && entityID.Length > 0)
                 expr = x => entityID.Contains(x.EntityId) && x.EntityType == entityType;
 
-            var dbCrmEntity = CRMDbContext.EntityContact;
+            var dbCrmEntity = CrmDbContext.EntityContact;
 
             dbCrmEntity.RemoveRange(dbCrmEntity.Where(expr));
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
         }
 
         protected void RemoveRelative(int contactID, EntityType entityType, int entityID)
@@ -255,9 +255,9 @@ namespace ASC.CRM.Core.Dao
                 CreateBy = _securityContext.CurrentAccount.ID.ToString()
             };
 
-            CRMDbContext.OrganisationLogo.Add(entity);
+            CrmDbContext.OrganisationLogo.Add(entity);
 
-            CRMDbContext.SaveChanges();
+            CrmDbContext.SaveChanges();
 
             return entity.Id;
         }
@@ -266,7 +266,7 @@ namespace ASC.CRM.Core.Dao
         {
             if (logo_id <= 0) throw new ArgumentException();
 
-            return Query(CRMDbContext.OrganisationLogo)
+            return Query(CrmDbContext.OrganisationLogo)
                                 .Where(x => x.Id == logo_id)
                                 .Select(x => x.Content)
                                 .FirstOrDefault();
@@ -274,10 +274,10 @@ namespace ASC.CRM.Core.Dao
 
         public bool HasActivity()
         {
-            return Query(CRMDbContext.Cases).Any() &&
-                   Query(CRMDbContext.Deals).Any() &&
-                   Query(CRMDbContext.Tasks).Any() &&
-                   Query(CRMDbContext.Contacts).Any();
+            return Query(CrmDbContext.Cases).Any() &&
+                   Query(CrmDbContext.Deals).Any() &&
+                   Query(CrmDbContext.Tasks).Any() &&
+                   Query(CrmDbContext.Contacts).Any();
         }
 
         protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbCrm

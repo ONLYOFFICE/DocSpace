@@ -66,7 +66,7 @@ namespace ASC.Web.CRM.Core.Search
 
             (int, int, int) getCount(DateTime lastIndexed)
             {
-                var q = invoiceDao.CRMDbContext.Invoices
+                var q = invoiceDao.CrmDbContext.Invoices
                         .Where(r => r.LastModifedOn >= lastIndexed);
 
                 var count = q.GroupBy(a => a.Id).Count();
@@ -77,7 +77,7 @@ namespace ASC.Web.CRM.Core.Search
             }
 
             List<DbInvoice> getData(long i, long step, DateTime lastIndexed) =>
-                    invoiceDao.CRMDbContext.Invoices
+                    invoiceDao.CrmDbContext.Invoices
                     .Where(r => r.LastModifedOn >= lastIndexed)
                     .Where(r => r.Id >= i && r.Id <= i + step)
                     .Select(r => r)
