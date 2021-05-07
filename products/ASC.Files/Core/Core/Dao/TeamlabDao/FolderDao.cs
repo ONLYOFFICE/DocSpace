@@ -271,7 +271,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            return (checkShare ? FromQueryWithShared(q) : FromQuery(q)).Select(ToFolder).ToList();
+            return (checkShare ? FromQueryWithShared(q) : FromQuery(q)).Select(ToFolder).Distinct().ToList();
         }
 
         public List<Folder<int>> GetParentFolders(int folderId)
