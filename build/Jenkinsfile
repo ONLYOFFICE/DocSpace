@@ -6,14 +6,14 @@ pipeline {
 				stage('Unix') {
 					agent { label 'net-core' }
 					stages {
-						stage('Backend') {
+						stage('Frontend') {
 							steps {
 								sh 'yarn install && yarn build'
 							}
 						}
-						stage('Frontend') {
+						stage('Backend') {
 							steps {
-								sh 'dotnet build ASC.Web.sln  --configfile .nuget/NuGet.Config'
+								sh 'dotnet build ASC.Web.sln'
 							}
 						}
 					}
@@ -21,14 +21,14 @@ pipeline {
 				stage('Windows') {
 					agent { label 'win-core' }
 					stages {
-						stage('Backend') {
+						stage('Frontend') {
 							steps {
 								bat 'yarn install && yarn build'
 							}
 						}
-						stage('Frontend') {
+						stage('Backend') {
 							steps {
-								bat 'dotnet build ASC.Web.sln  --configfile .nuget\\NuGet.Config'
+								bat 'dotnet build ASC.Web.sln'
 							}
 						}
 					}
@@ -62,7 +62,7 @@ pipeline {
 						}
 						stage('Files') {
 							steps {
-								sh "dotnet build ASC.Web.sln --configfile .nuget/NuGet.Config && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj -r linux-x64 -l \"console;verbosity=detailed\""
+								sh "dotnet build ASC.Web.sln && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj -r linux-x64 -l \"console;verbosity=detailed\""
 							}
 						}
 					}
@@ -90,7 +90,7 @@ pipeline {
 						}
 						stage('Files') {
 							steps {
-								bat "dotnet build ASC.Web.sln --configfile .nuget\\NuGet.Config && cd ${env.WORKSPACE}\\products\\ASC.Files\\Tests\\ && dotnet test ASC.Files.Tests.csproj"
+								bat "dotnet build ASC.Web.sln && cd ${env.WORKSPACE}\\products\\ASC.Files\\Tests\\ && dotnet test ASC.Files.Tests.csproj"
 							}
 						}
 					}

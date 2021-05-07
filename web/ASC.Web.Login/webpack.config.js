@@ -16,8 +16,9 @@ const homepage = pkg.homepage; // combineUrl(proxyURL, pkg.homepage);
 const title = pkg.title;
 
 var config = {
-  mode: "development",
   entry: "./src/index",
+  target: "web",
+  mode: "development",
 
   devServer: {
     publicPath: homepage,
@@ -151,9 +152,9 @@ var config = {
       template: "./public/index.html",
       publicPath: homepage,
       title: title,
-      templateParameters: {
-        proxyURL: proxyURL,
-      },
+      // templateParameters: {
+      //   proxyURL: proxyURL,
+      // },
       base: `${homepage}/`,
     }),
     new CopyPlugin({
@@ -163,7 +164,7 @@ var config = {
           globOptions: {
             dot: true,
             gitignore: true,
-            ignore: ["**/index.ejs"],
+            ignore: ["**/index.html"],
           },
         },
       ],

@@ -38,11 +38,11 @@ const StyledMediaDownloadIcon = styled(MediaDownloadIcon)`
 const StyledViewer = styled(Viewer)`
   .react-viewer-footer {
     bottom: 5px !important;
-    z-index: 4001 !important;
+    z-index: 301 !important;
     overflow: visible;
   }
   .react-viewer-canvas {
-    z-index: 4000 !important;
+    z-index: 300 !important;
     margin-top: 50px;
   }
   .react-viewer-navbar,

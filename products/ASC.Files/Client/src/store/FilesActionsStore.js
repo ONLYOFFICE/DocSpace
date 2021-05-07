@@ -268,25 +268,41 @@ class FilesActionStore {
     setSelection([item]);
   };
 
+  deleteItemAction = (itemId, currentFolderId, translations, isFile) => {
+    const {
+      setSecondaryProgressBarData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+    if (this.settingsStore.confirmDelete) {
+      this.dialogsStore.setDeleteDialogVisible(true);
+    } else {
+      setSecondaryProgressBarData({
+        icon: "trash",
+        visible: true,
+        percent: 0,
+        label: translations.deleteOperation,
+        alert: false,
+      });
+
+      isFile
+        ? deleteFileAction(itemId, currentFolderId, translations)
+        : deleteFolderAction(itemId, currentFolderId, translations);
+    }
+  };
+
   deleteFileAction = (fileId, currentFolderId, translations) => {
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
-    setSecondaryProgressBarData({
-      icon: "trash",
-      visible: true,
-      percent: 0,
-      label: translations.deleteOperation,
-      alert: false,
-    });
     return deleteFile(fileId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, false, translations);
       })
+      .then(() => toastr.success(translations.successRemoveFile))
       .catch((err) => {
+        toastr.error(err);
         setSecondaryProgressBarData({
           visible: true,
           alert: true,
@@ -301,19 +317,14 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
-    setSecondaryProgressBarData({
-      icon: "trash",
-      visible: true,
-      percent: 0,
-      label: translations.deleteOperation,
-      alert: false,
-    });
     return deleteFolder(folderId, currentFolderId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, true, translations);
       })
+      .then(() => toastr.success(translations.successRemoveFolder))
       .catch((err) => {
+        toastr.error(err);
         setSecondaryProgressBarData({
           visible: true,
           alert: true,

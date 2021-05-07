@@ -21,6 +21,7 @@ class DialogsStore {
   newFilesIds = null;
   conflictResolveDialogData = null;
   conflictResolveDialogItems = null;
+  removeMediaItem = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -103,6 +104,10 @@ class DialogsStore {
 
   setConflictResolveDialogItems = (items) => {
     this.conflictResolveDialogItems = items;
+  };
+
+  setRemoveMediaItem = (removeMediaItem) => {
+    this.removeMediaItem = removeMediaItem;
   };
 }
 

@@ -402,7 +402,6 @@ class SectionHeaderContent extends React.Component {
         disabled:
           isFavoritesFolder ||
           isRecentFolder ||
-          isShareFolder ||
           !isAccessedSelected ||
           !selectionCount ||
           isThirdPartySelection,
@@ -437,6 +436,10 @@ class SectionHeaderContent extends React.Component {
 
     if (isPrivacy) {
       menu.splice(3, 1);
+      menu.splice(4, 1);
+    }
+
+    if (isShareFolder) {
       menu.splice(4, 1);
     }
 
