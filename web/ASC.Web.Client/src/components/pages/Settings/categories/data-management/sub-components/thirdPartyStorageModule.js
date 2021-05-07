@@ -10,10 +10,14 @@ import Link from "@appserver/components/link";
 import ComboBox from "@appserver/components/combobox";
 import { getBackupStorage } from "@appserver/common/api/settings";
 import styled from "styled-components";
+import TextInput from "@appserver/components/text-input";
 
 const StyledComponent = styled.div`
-  .manual-backup_text-input {
+  .manual-backup_combo {
     margin-top: 16px;
+  }
+  .backup_text-input {
+    margin: 10px 0;
   }
 `;
 class ThirdPartyStorageModule extends React.PureComponent {
@@ -21,8 +25,9 @@ class ThirdPartyStorageModule extends React.PureComponent {
     super(props);
     this.state = {
       availableOptions: [],
-      availableStorage: [],
+      availableStorage: {},
       selectedOption: "",
+      selectedId: "",
       isLoading: false,
     };
   }
@@ -40,32 +45,51 @@ class ThirdPartyStorageModule extends React.PureComponent {
   }
 
   getOptions = (storageBackup) => {
+    this.setState({
+      isLoading: true,
+    });
     let options = [];
-    let availableStorage = [];
+    let availableStorage = {};
     //debugger;
     for (let item = 0; item < storageBackup.length; item++) {
       let obj = {
-        [storageBackup[item].title]: storageBackup[item].isSet,
+        [storageBackup[item].id]: {
+          isSet: storageBackup[item].isSet,
+          properties: storageBackup[item].properties,
+          title: storageBackup[item].title,
+          id: storageBackup[item].id,
+        },
       };
       let titleObj = {
-        key: item,
+        key: storageBackup[item].id,
         label: storageBackup[item].title,
         disabled: false,
       };
       options.push(titleObj);
-      availableStorage.push(obj);
+
+      availableStorage = { ...availableStorage, ...obj };
       if (storageBackup[item].id === "GoogleCloud") {
         this.setState({
           selectedOption: storageBackup[item].title,
+          selectedId: storageBackup[item].id,
         });
       }
     }
     this.setState({
       availableOptions: options,
       availableStorage: availableStorage,
+      isLoading: false,
     });
   };
 
+  onSelect = (option) => {
+    const selectedStorageId = option.key;
+    const { availableStorage } = this.state;
+    this.setState({
+      selectedOption: availableStorage[selectedStorageId].title,
+      selectedId: availableStorage[selectedStorageId].id,
+    });
+  };
   render() {
     const { maxProgress, t, helpUrlCreatingBackup, storageBackup } = this.props;
     const {
@@ -73,10 +97,12 @@ class ThirdPartyStorageModule extends React.PureComponent {
       availableStorage,
       selectedOption,
       isLoading,
+      selectedId,
     } = this.state;
-    console.log("availableOptions", availableOptions);
-    console.log("availableStorage", availableStorage);
-    return (
+
+    return isLoading ? (
+      <></>
+    ) : (
       <StyledComponent>
         <div className="category-item-wrapper temporary-storage">
           <div className="category-item-heading">
@@ -93,14 +119,129 @@ class ThirdPartyStorageModule extends React.PureComponent {
           <ComboBox
             options={availableOptions}
             selectedOption={{ key: 0, label: selectedOption }}
-            onSelect={() => ""}
+            onSelect={this.onSelect}
             isDisabled={isLoading}
             noBorder={false}
             scaled={true}
             scaledOptions={true}
             dropDownMaxHeight={300}
-            className="manual-backup_text-input"
+            className="manual-backup_combo"
           />
+
+          {selectedId === "GoogleCloud" && (
+            <TextInput
+              name={"GoogleCloud_bucket"}
+              className="backup_text-input"
+              scale={true}
+              //value={"value"}
+              //hasError={formErrors.userCaption}
+              onChange={() => console.log("onChange")}
+              isDisabled={
+                availableStorage[selectedId] &&
+                !availableStorage[selectedId].isSet
+              }
+              placeholder={
+                availableStorage[selectedId] &&
+                availableStorage[selectedId].properties[0].title
+              }
+              tabIndex={1}
+            />
+          )}
+
+          {selectedId === "Selectel" && (
+            <>
+              <TextInput
+                name={"Selectel_private_container"}
+                className="backup_text-input"
+                scale={true}
+                //value={"value"}
+                //hasError={formErrors.userCaption}
+                onChange={() => console.log("onChange")}
+                isDisabled={
+                  availableStorage[selectedId] &&
+                  !availableStorage[selectedId].isSet
+                }
+                placeholder={
+                  availableStorage[selectedId] &&
+                  availableStorage[selectedId].properties[0].title
+                }
+                tabIndex={1}
+              />
+              <TextInput
+                name={"Selectel_public_container"}
+                className="backup_text-input"
+                scale={true}
+                //value={"value"}
+                //hasError={formErrors.userCaption}
+                onChange={() => console.log("onChange")}
+                isDisabled={
+                  availableStorage[selectedId] &&
+                  !availableStorage[selectedId].isSet
+                }
+                placeholder={
+                  availableStorage[selectedId] &&
+                  availableStorage[selectedId].properties[1].title
+                }
+                tabIndex={1}
+              />
+            </>
+          )}
+
+          {selectedId === "Rackspace" && (
+            <>
+              <TextInput
+                name={"Rackspace_private_container"}
+                className="backup_text-input"
+                scale={true}
+                //value={"value"}
+                //hasError={formErrors.userCaption}
+                onChange={() => console.log("onChange")}
+                isDisabled={
+                  availableStorage[selectedId] &&
+                  !availableStorage[selectedId].isSet
+                }
+                placeholder={
+                  availableStorage[selectedId] &&
+                  availableStorage[selectedId].properties[0].title
+                }
+                tabIndex={1}
+              />
+              <TextInput
+                name={"Rackspace_public_container"}
+                className="backup_text-input"
+                scale={true}
+                //value={"value"}
+                //hasError={formErrors.userCaption}
+                onChange={() => console.log("onChange")}
+                isDisabled={
+                  availableStorage[selectedId] &&
+                  !availableStorage[selectedId].isSet
+                }
+                placeholder={
+                  availableStorage[selectedId] &&
+                  availableStorage[selectedId].properties[1].title
+                }
+                tabIndex={1}
+              />
+              <TextInput
+                name={"Rackspace_region"}
+                className="backup_text-input"
+                scale={true}
+                //value={"value"}
+                //hasError={formErrors.userCaption}
+                onChange={() => console.log("onChange")}
+                isDisabled={
+                  availableStorage[selectedId] &&
+                  !availableStorage[selectedId].isSet
+                }
+                placeholder={
+                  availableStorage[selectedId] &&
+                  availableStorage[selectedId].properties[2].title
+                }
+                tabIndex={1}
+              />
+            </>
+          )}
           <Box marginProp="16px 0 16px 0">
             <Link
               color="#316DAA"
