@@ -31,9 +31,17 @@ class PureAccessPortal extends Component {
     super(props);
 
     const { t } = props;
-    this.state = { type: "disabled" };
+    this.state = { type: "none" };
 
     setDocumentTitle(t("ManagementCategorySecurity"));
+  }
+
+  async componentDidMount() {
+    const { getTfaSettings } = this.props;
+
+    const type = await getTfaSettings();
+
+    this.setState({ type: type });
   }
 
   onSelectTfaType = (e) => this.setState({ type: e.target.value });
@@ -47,6 +55,7 @@ class PureAccessPortal extends Component {
   };
 
   render() {
+    const { type } = this.state;
     const { t } = this.props;
 
     console.log("accessPortal render");
@@ -76,7 +85,7 @@ class PureAccessPortal extends Component {
               value: "app",
             },
           ]}
-          selected="none"
+          selected={type}
           onClick={this.onSelectTfaType}
         />
         <Button
@@ -93,5 +102,6 @@ class PureAccessPortal extends Component {
 
 export default inject(({ auth }) => ({
   organizationName: auth.settingsStore.organizationName,
+  getTfaSettings: auth.tfaStore.getTfaSettings,
   setTfaSettings: auth.tfaStore.setTfaSettings,
 }))(withTranslation("Settings")(withRouter(PureAccessPortal)));
