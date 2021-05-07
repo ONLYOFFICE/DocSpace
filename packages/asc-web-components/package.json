@@ -12,7 +12,8 @@
     "storybook": "start-storybook -p 8082 -s public",
     "storybook-build": "build-storybook",
     "storybook-serve": "serve storybook-static -p 8082",
-    "clean": "echo 'skip it'"
+    "clean": "echo 'skip it'",
+    "deploy": "echo 'skip it'"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",

@@ -9,6 +9,7 @@
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5017",
     "build": "webpack --mode production",
+    "deploy": "xcopy /s \"./dist\" /D \"../../../build/deploy/products/ASC.Calendar/client\" /Y /I",
     "serve": "serve dist -p 5017",
     "clean": "rm -rf dist"
   },

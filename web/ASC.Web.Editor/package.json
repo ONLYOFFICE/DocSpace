@@ -8,6 +8,7 @@
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5013",
     "build": "webpack --mode production",
+    "deploy": "xcopy /s \"./dist\" \"../../build/deploy/products/ASC.Files/editor\" /Y /I",
     "serve": "serve dist -p 5013",
     "clean": "rm -rf dist"
   },

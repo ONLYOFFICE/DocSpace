@@ -9,6 +9,7 @@
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5014",
     "build": "webpack --mode production",
+    "deploy": "xcopy /s \"./dist\" \"../../../build/deploy/products/ASC.CRM/client\" /Y /I",
     "serve": "serve dist -p 5014",
     "clean": "rm -rf dist"
   },

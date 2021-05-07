@@ -8,6 +8,7 @@
     "start": "webpack-cli serve",
     "start-prod": "webpack --mode production && serve dist -p 5001",
     "build": "webpack --mode production",
+    "deploy": "xcopy /s \"./dist\" \"../../build/deploy/studio/client\" /Y /I",
     "serve": "serve dist -p 5001",
     "clean": "rm -rf dist"
   },
