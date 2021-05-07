@@ -11,11 +11,16 @@ import styled from "styled-components";
 import moment from "moment";
 import ScheduleComponent from "./sub-components/scheduleComponent";
 import {
+  createBackupSchedule,
   deleteBackupSchedule,
   getBackupProgress,
+  getBackupSchedule,
 } from "@appserver/common/api/portal";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import toastr from "@appserver/components/toast/toastr";
+import FileInputWithFolderPath from "@appserver/components/file-input-with-folder-path";
+import OperationsDialog from "files/OperationsDialog";
+import { getFolderPath } from "@appserver/common/api/files";
 
 const StyledComponent = styled.div`
   ${commonSettingsStyles}
@@ -58,6 +63,7 @@ const StyledComponent = styled.div`
 const StyledModules = styled.div`
   margin-bottom: 40px;
 `;
+
 class AutomaticBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -67,7 +73,6 @@ class AutomaticBackup extends React.Component {
     moment.locale(this.lng);
 
     this.state = {
-      backupMail: false,
       isShowedStorageType: false, //if current automatic storage not choose
 
       isShowDocuments: false,
@@ -84,14 +89,19 @@ class AutomaticBackup extends React.Component {
 
       selectedOption: t("DailyPeriodSchedule"),
       selectedWeekdayOption: "",
+      selectedNumberWeekdayOption: "2",
       selectedTimeOption: "12:00",
       selectedMonthOption: "1",
       selectedMaxCopies: "10",
-
+      selectedNumberMaxCopies: "10",
+      selectedPermission: "disable",
       weekOptions: [],
 
       isCopyingToLocal: true,
       isLoadingData: false,
+      selectedFolder: "",
+      isPanelVisible: false,
+      isLoading: false,
     };
 
     this.periodOptions = [
@@ -123,6 +133,7 @@ class AutomaticBackup extends React.Component {
 
   componentDidMount() {
     this.getWeekdaysOptions();
+
     getBackupProgress().then((res) => {
       if (res) {
         if (res.progress === 100)
@@ -131,7 +142,67 @@ class AutomaticBackup extends React.Component {
           });
         if (res.progress !== 100)
           this.timerId = setInterval(() => this.getProgress(), 1000);
+      } else {
+        this.setState({
+          isCopyingToLocal: false,
+        });
       }
+    });
+
+    this.setState({ isLoading: true }, function () {
+      getBackupSchedule()
+        .then((selectedSchedule) => {
+          if (selectedSchedule) {
+            this.folderId = selectedSchedule.storageParams.folderId;
+            this.onSelectFolder([`${this.folderId}`]);
+            getFolderPath(this.folderId)
+              .then((folderPath) => (this.folderPath = folderPath))
+              .then(() => {
+                this.setState({
+                  selectedPermission: "enable",
+                  isShowedStorageTypes: true,
+                });
+
+                if (selectedSchedule.storageType === 0) {
+                  // Documents Module
+                  this.setState({
+                    isShowDocuments: true,
+                    isCheckedDocuments: true,
+                    selectedTimeOption: `${selectedSchedule.cronParams.hour}:00`,
+                    selectedMaxCopies: `${selectedSchedule.backupsStored}`,
+                  });
+
+                  if (selectedSchedule.cronParams.period === 1) {
+                    //Every Week option
+                    const selectedDay = selectedSchedule.cronParams.day; //selected number of week
+                    const arrayIndex =
+                      this.lng === "en" ? selectedDay - 1 : selectedDay - 2;
+                    console.log("this.weekdaysOptions", this.weekdaysOptions);
+                    this.setState({
+                      selectedOption: this.periodOptions[1].label,
+                      weeklySchedule: true,
+                      selectedWeekdayOption: this.weekdaysOptions[arrayIndex]
+                        .label,
+                    });
+                  } else {
+                    if (selectedSchedule.cronParams.period === 2) {
+                      //Every Month option
+                      this.setState({
+                        selectedOption: this.periodOptions[2].label,
+                        monthlySchedule: true,
+                        selectedMonthOption: `${selectedSchedule.cronParams.day}`, //selected day of month
+                      });
+                    }
+                  }
+                }
+              });
+          }
+        })
+        .finally(() =>
+          this.setState({
+            isLoading: false,
+          })
+        );
     });
   }
   componentWillUnmount() {
@@ -181,7 +252,7 @@ class AutomaticBackup extends React.Component {
     const { t } = this.props;
     for (let item = 1; item <= 30; item++) {
       let obj = {
-        key: item,
+        key: `${item}`,
         label: `${item} ${t("MaxCopies")}`,
       };
       this.maxNumberCopiesArray.push(obj);
@@ -190,7 +261,7 @@ class AutomaticBackup extends React.Component {
   getWeekdaysOptions = () => {
     for (let item = 0; item < this.arrayWeekdays.length; item++) {
       let obj = {
-        key: item + 4,
+        key: `${item + 1}`,
         label: `${this.arrayWeekdays[item]}`,
       };
       this.weekdaysOptions.push(obj);
@@ -258,32 +329,32 @@ class AutomaticBackup extends React.Component {
           isCheckedThirdPartyStorage: true,
         });
   };
-  onClickCheckbox = (e) => {
-    const { backupMail } = this.state;
-    let change = !backupMail;
-    this.setState({ backupMail: change });
-  };
 
-  onSelectPeriodAndWeekday = (options) => {
+  onSelectPeriod = (options) => {
     console.log("options", options);
 
     const key = options.key;
     const label = options.label;
 
-    if (key <= 3) {
-      this.setState({ selectedOption: label });
-      key === 1
-        ? this.setState({ weeklySchedule: false, monthlySchedule: false })
-        : key === 2
-        ? this.setState({ weeklySchedule: true, monthlySchedule: false })
-        : this.setState({ monthlySchedule: true, weeklySchedule: false });
-    } else {
-      this.setState({
-        selectedWeekdayOption: label,
-      });
-    }
+    this.setState({ selectedOption: label });
+    key === 1
+      ? this.setState({ weeklySchedule: false, monthlySchedule: false })
+      : key === 2
+      ? this.setState({ weeklySchedule: true, monthlySchedule: false })
+      : this.setState({ monthlySchedule: true, weeklySchedule: false });
   };
 
+  onSelectWeedDay = (options) => {
+    console.log("options", options);
+
+    const key = options.key;
+    const label = options.label;
+
+    this.setState({
+      selectedNumberWeekdayOption: key,
+      selectedWeekdayOption: label,
+    });
+  };
   onSelectMonthNumberAndTimeOptions = (options) => {
     const key = options.key;
     const label = options.label;
@@ -296,9 +367,12 @@ class AutomaticBackup extends React.Component {
     }
   };
   onSelectMaxCopies = (options) => {
+    const key = options.key;
+    const label = options.label;
     console.log("opr max", options);
     this.setState({
-      selectedMaxCopies: options.label,
+      selectedNumberMaxCopies: key,
+      selectedMaxCopies: label,
     });
   };
 
@@ -311,10 +385,73 @@ class AutomaticBackup extends React.Component {
         .finally(() => this.setState({ isLoadingData: false }));
     });
   };
-  render() {
-    const { t, language } = this.props;
+
+  onSelectFolder = (folderId) => {
+    console.log("folderId", folderId);
+    this.setState({
+      selectedFolder: folderId,
+    });
+  };
+
+  onSaveDocumentsModuleSettings = () => {
     const {
-      backupMail,
+      selectedFolder,
+      weeklySchedule,
+      selectedTimeOption,
+      monthlySchedule,
+      selectedMonthOption,
+      selectedNumberWeekdayOption,
+      selectedNumberMaxCopies,
+    } = this.state;
+    const { t } = this.props;
+    this.setState({ isLoadingData: true }, function () {
+      let period = weeklySchedule ? "1" : monthlySchedule ? "2" : "0";
+
+      let day = weeklySchedule
+        ? selectedNumberWeekdayOption
+        : monthlySchedule
+        ? selectedMonthOption
+        : null;
+
+      let time = selectedTimeOption.substring(
+        0,
+        selectedTimeOption.indexOf(":")
+      );
+
+      console.log("selectedNumberMaxCopies", selectedNumberMaxCopies);
+      console.log("period", period);
+      console.log("selectedTimeOption", selectedTimeOption);
+      console.log("time", time);
+      console.log("day", day);
+      createBackupSchedule(
+        "0",
+        "folderId",
+        selectedFolder[0],
+        selectedNumberMaxCopies,
+        period,
+        time,
+        day
+      )
+        .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
+        .catch((error) => console.log("error", error))
+        .finally(() => this.setState({ isLoadingData: false }));
+    });
+  };
+
+  onClickInput = (e) => {
+    this.setState({
+      isPanelVisible: true,
+    });
+  };
+
+  onClose = () => {
+    this.setState({
+      isPanelVisible: false,
+    });
+  };
+  render() {
+    const { t, panelVisible } = this.props;
+    const {
       isShowedStorageTypes,
       isCheckedDocuments,
       isCheckedThirdParty,
@@ -332,10 +469,15 @@ class AutomaticBackup extends React.Component {
       selectedMaxCopies,
       isCopyingToLocal,
       isLoadingData,
+      isPanelVisible,
+      selectedPermission,
+      isLoading,
     } = this.state;
 
-    console.log("isCheckedDocuments", isCheckedDocuments);
-    return (
+    console.log("this.folderPath", this.folderPath);
+    return isLoading ? (
+      <></>
+    ) : (
       <StyledComponent>
         <RadioButtonGroup
           className="automatic-backup_main "
@@ -353,7 +495,7 @@ class AutomaticBackup extends React.Component {
           isDisabled={isLoadingData}
           onClick={this.onClickPermissions}
           orientation="vertical"
-          selected="disable"
+          selected={selectedPermission}
         />
 
         {isShowedStorageTypes && (
@@ -373,28 +515,51 @@ class AutomaticBackup extends React.Component {
                 {t("DocumentsModuleDescription")}
               </Text>
               {isShowDocuments && (
-                <ScheduleComponent
-                  weeklySchedule={weeklySchedule}
-                  monthlySchedule={monthlySchedule}
-                  weekOptions={weekOptions}
-                  selectedOption={selectedOption}
-                  selectedWeekdayOption={selectedWeekdayOption}
-                  selectedTimeOption={selectedTimeOption}
-                  selectedMonthOption={selectedMonthOption}
-                  selectedMaxCopies={selectedMaxCopies}
-                  periodOptions={this.periodOptions}
-                  monthNumberOptionsArray={this.monthNumberOptionsArray}
-                  timeOptionsArray={this.timeOptionsArray}
-                  maxNumberCopiesArray={this.maxNumberCopiesArray}
-                  backupMail={backupMail}
-                  onClickCheckbox={this.onClickCheckbox}
-                  onSelectMaxCopies={this.onSelectMaxCopies}
-                  onSelectMonthNumberAndTimeOptions={
-                    this.onSelectMonthNumberAndTimeOptions
-                  }
-                  onSelectPeriodAndWeekday={this.onSelectPeriodAndWeekday}
-                />
+                <>
+                  <OperationsDialog
+                    onSelectFolder={this.onSelectFolder}
+                    name={"common"}
+                    onClose={this.onClose}
+                    onClickInput={this.onClickInput}
+                    isPanelVisible={isPanelVisible}
+                    isCommonWithoutProvider
+                    folderPath={this.folderPath}
+                  />
+
+                  <ScheduleComponent
+                    weeklySchedule={weeklySchedule}
+                    monthlySchedule={monthlySchedule}
+                    weekOptions={weekOptions}
+                    selectedOption={selectedOption}
+                    selectedWeekdayOption={selectedWeekdayOption}
+                    selectedTimeOption={selectedTimeOption}
+                    selectedMonthOption={selectedMonthOption}
+                    selectedMaxCopies={selectedMaxCopies}
+                    periodOptions={this.periodOptions}
+                    monthNumberOptionsArray={this.monthNumberOptionsArray}
+                    timeOptionsArray={this.timeOptionsArray}
+                    maxNumberCopiesArray={this.maxNumberCopiesArray}
+                    onClickCheckbox={this.onClickCheckbox}
+                    onSelectMaxCopies={this.onSelectMaxCopies}
+                    onSelectMonthNumberAndTimeOptions={
+                      this.onSelectMonthNumberAndTimeOptions
+                    }
+                    onSelectWeedDay={this.onSelectWeedDay}
+                    onSelectPeriod={this.onSelectPeriod}
+                  />
+                </>
               )}
+
+              <SaveCancelButtons
+                className="team-template_buttons"
+                onSaveClick={this.onSaveDocumentsModuleSettings}
+                onCancelClick={() => console.log("cancel")}
+                showReminder={false}
+                reminderTest={t("YouHaveUnsavedChanges")}
+                saveButtonLabel={t("SaveButton")}
+                cancelButtonLabel={t("CancelButton")}
+                isDisabled={isCopyingToLocal || isLoadingData}
+              />
             </StyledModules>
 
             <StyledModules>
@@ -414,27 +579,37 @@ class AutomaticBackup extends React.Component {
                 {t("ThirdPartyResourceNoteDescription")}
               </Text>
               {isShowThirdParty && (
-                <ScheduleComponent
-                  weeklySchedule={weeklySchedule}
-                  monthlySchedule={monthlySchedule}
-                  weekOptions={weekOptions}
-                  selectedOption={selectedOption}
-                  selectedWeekdayOption={selectedWeekdayOption}
-                  selectedTimeOption={selectedTimeOption}
-                  selectedMonthOption={selectedMonthOption}
-                  selectedMaxCopies={selectedMaxCopies}
-                  periodOptions={this.periodOptions}
-                  monthNumberOptionsArray={this.monthNumberOptionsArray}
-                  timeOptionsArray={this.timeOptionsArray}
-                  maxNumberCopiesArray={this.maxNumberCopiesArray}
-                  backupMail={backupMail}
-                  onClickCheckbox={this.onClickCheckbox}
-                  onSelectMaxCopies={this.onSelectMaxCopies}
-                  onSelectMonthNumberAndTimeOptions={
-                    this.onSelectMonthNumberAndTimeOptions
-                  }
-                  onSelectPeriodAndWeekday={this.onSelectPeriodAndWeekday}
-                />
+                <>
+                  <OperationsDialog
+                    onSelectFolder={this.onSelectFolder}
+                    name={"common"}
+                    onClose={this.onClose}
+                    onClickInput={this.onClickInput}
+                    isPanelVisible={isPanelVisible}
+                    isCommonWithoutProvider
+                  />
+                  <ScheduleComponent
+                    weeklySchedule={weeklySchedule}
+                    monthlySchedule={monthlySchedule}
+                    weekOptions={weekOptions}
+                    selectedOption={selectedOption}
+                    selectedWeekdayOption={selectedWeekdayOption}
+                    selectedTimeOption={selectedTimeOption}
+                    selectedMonthOption={selectedMonthOption}
+                    selectedMaxCopies={selectedMaxCopies}
+                    periodOptions={this.periodOptions}
+                    monthNumberOptionsArray={this.monthNumberOptionsArray}
+                    timeOptionsArray={this.timeOptionsArray}
+                    maxNumberCopiesArray={this.maxNumberCopiesArray}
+                    onClickCheckbox={this.onClickCheckbox}
+                    onSelectMaxCopies={this.onSelectMaxCopies}
+                    onSelectMonthNumberAndTimeOptions={
+                      this.onSelectMonthNumberAndTimeOptions
+                    }
+                    onSelectWeedDay={this.onSelectWeedDay}
+                    onSelectPeriod={this.onSelectPeriod}
+                  />
+                </>
               )}
             </StyledModules>
 
@@ -468,13 +643,13 @@ class AutomaticBackup extends React.Component {
                   monthNumberOptionsArray={this.monthNumberOptionsArray}
                   timeOptionsArray={this.timeOptionsArray}
                   maxNumberCopiesArray={this.maxNumberCopiesArray}
-                  backupMail={backupMail}
                   onClickCheckbox={this.onClickCheckbox}
                   onSelectMaxCopies={this.onSelectMaxCopies}
                   onSelectMonthNumberAndTimeOptions={
                     this.onSelectMonthNumberAndTimeOptions
                   }
-                  onSelectPeriodAndWeekday={this.onSelectPeriodAndWeekday}
+                  onSelectWeedDay={this.onSelectWeedDay}
+                  onSelectPeriod={this.onSelectPeriod}
                 />
               )}
             </StyledModules>
@@ -497,8 +672,9 @@ class AutomaticBackup extends React.Component {
 }
 export default inject(({ auth }) => {
   const { language } = auth;
-
+  const { panelVisible } = auth;
   return {
     language,
+    panelVisible,
   };
 })(withTranslation("Settings")(observer(AutomaticBackup)));

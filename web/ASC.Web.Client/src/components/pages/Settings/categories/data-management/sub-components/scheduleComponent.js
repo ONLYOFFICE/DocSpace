@@ -13,13 +13,12 @@ const ScheduleComponent = ({
   timeOptionsArray,
   periodOptions,
   monthNumberOptionsArray,
-  onSelectPeriodAndWeekday,
   onSelectMonthNumberAndTimeOptions,
   selectedMaxCopies,
   onSelectMaxCopies,
   maxNumberCopiesArray,
-  onClickCheckbox,
-  backupMail,
+  onSelectPeriod,
+  onSelectWeedDay,
 }) => {
   const { t } = useTranslation("Settings");
   return (
@@ -30,7 +29,7 @@ const ScheduleComponent = ({
           key: 0,
           label: selectedOption,
         }}
-        onSelect={onSelectPeriodAndWeekday}
+        onSelect={onSelectPeriod}
         isDisabled={false}
         noBorder={false}
         scaled={false}
@@ -46,7 +45,7 @@ const ScheduleComponent = ({
             key: 0,
             label: selectedWeekdayOption,
           }}
-          onSelect={onSelectPeriodAndWeekday}
+          onSelect={onSelectWeedDay}
           isDisabled={false}
           noBorder={false}
           scaled={false}
@@ -103,14 +102,14 @@ const ScheduleComponent = ({
         size="content"
         className="backup_combobox"
       />
-      <div className="backup-include_mail">
+      {/* <div className="backup-include_mail">
         <Checkbox
           name={"backupMail"}
           isChecked={backupMail}
           label={t("IncludeMail")}
           onChange={onClickCheckbox}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

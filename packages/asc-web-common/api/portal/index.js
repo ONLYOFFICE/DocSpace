@@ -115,7 +115,7 @@ export function createBackupSchedule(
   backupsStored,
   Period,
   Hour,
-  Day,
+  Day = null,
   backupMail = false
 ) {
   const storageParams = [

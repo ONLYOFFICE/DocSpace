@@ -43,26 +43,29 @@ class OperationsDialog extends React.PureComponent {
     };
   }
   componentDidMount() {
-    const { fetchTreeFolders, getCommonFolder } = this.props;
+    const { fetchTreeFolders, getCommonFolder, folderPath } = this.props;
     this.setState({ isLoading: true }, function () {
       fetchTreeFolders()
         .then(() => getCommonFolder())
         .finally(() => this.setState({ isLoading: false }));
     });
-  }
 
-  componentDidUpdate(prevProps) {
-    const { commonTreeFolder, onSelectFolder } = this.props;
-
-    if (commonTreeFolder.length !== prevProps.commonTreeFolder.length) {
-      onSelectFolder(commonTreeFolder.id);
+    if (folderPath.length !== 0) {
+      this.getTitlesFolders(folderPath);
     }
   }
 
-  // onClose = () => {
-  //   const { setPanelVisible } = this.props;
-  //   setPanelVisible(false);
-  // };
+  componentDidUpdate(prevProps) {
+    const { commonTreeFolder, onSelectFolder, folderPath } = this.props;
+
+    if (
+      commonTreeFolder.length !== prevProps.commonTreeFolder.length &&
+      folderPath.length === 0
+    ) {
+      onSelectFolder([`${commonTreeFolder.id}`]);
+    }
+  }
+
   onSelect = (folder, treeNode) => {
     const { onSelectFolder, onClose } = this.props;
     this.setState({ isLoadingData: true }, function () {
@@ -84,10 +87,7 @@ class OperationsDialog extends React.PureComponent {
   };
   getTitlesFolders = (folderPath) => {
     const { selectedInput } = this.state;
-    //debugger;
-    //console.log("selectedInput", selectedInput);
 
-    //debugger;
     path = "";
     if (folderPath.length > 1) {
       for (let item of folderPath) {
@@ -109,10 +109,6 @@ class OperationsDialog extends React.PureComponent {
       });
     }
   };
-  // onClickInput = (e) => {
-  //   const { setPanelVisible } = this.props;
-  //   setPanelVisible(true);
-  // };
 
   render() {
     const {
@@ -130,7 +126,6 @@ class OperationsDialog extends React.PureComponent {
     } = this.props;
     const { isLoading, selectedInput, isLoadingData } = this.state;
     const zIndex = 310;
-    console.log("folderList ", isLoadingData);
 
     return (
       <StyledComponent>
@@ -184,12 +179,13 @@ class OperationsDialog extends React.PureComponent {
 OperationsDialog.defaultProps = {
   isCommonWithoutProvider: false,
   folderList: "",
+  folderPath: "",
 };
 const OperationsDialogWrapper = inject(
   ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
     const { filter } = filesStore;
     const { setPanelVisible, panelVisible } = auth;
-    const { getFolderPath, folderPath } = auth.settingsStore;
+    const { getFolderPath } = auth.settingsStore;
     const {
       fetchTreeFolders,
       expandedPanelKeys,
@@ -208,8 +204,6 @@ const OperationsDialogWrapper = inject(
       commonTreeFolder,
       getCommonFolder,
       panelVisible,
-
-      folderPath,
     };
   }
 )(observer(withTranslation("OperationsPanel")(OperationsDialog)));
