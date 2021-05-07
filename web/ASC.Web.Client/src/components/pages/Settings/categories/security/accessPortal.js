@@ -33,7 +33,7 @@ class PureAccessPortal extends Component {
     const { t } = props;
     this.state = { type: "none" };
 
-    setDocumentTitle(t("ManagementCategorySecurity"));
+    setDocumentTitle(t("PortalSecurity"));
   }
 
   async componentDidMount() {
