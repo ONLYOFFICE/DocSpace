@@ -25,12 +25,13 @@
     "storybook": "yarn workspace @appserver/components storybook",
     "storybook-build": "yarn workspace @appserver/components run storybook-build",
     "bump": "lerna version --no-push --no-git-tag-version",
-    "deploy": "rimraf build/deploy && yarn workspaces run deploy"
+    "deploy": "rimraf build/deploy && lerna run deploy"
   },
   "devDependencies": {
-    "lerna": "^3.22.1",
     "concurrently": "^5.3.0",
-    "wsrun": "^5.2.4",
-    "rimraf": "^3.0.2"
-  }
+    "lerna": "^3.22.1",
+    "rimraf": "^3.0.2",
+    "wsrun": "^5.2.4"
+  },
+  "version": "0.0.0"
 }
