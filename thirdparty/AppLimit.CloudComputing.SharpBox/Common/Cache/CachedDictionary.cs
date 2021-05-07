@@ -110,7 +110,7 @@ namespace AppLimit.CloudComputing.SharpBox.Common.Cache
 }
 #endif
 
-#if NET45
+#if NET48
 using System;
 using System.Diagnostics;
 using System.Web;
