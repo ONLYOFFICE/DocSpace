@@ -41,9 +41,7 @@ const PureConnectDialogContainer = (props) => {
     key,
   } = item;
 
-  const provider = providers.find(
-    (el) => el.provider_key === item.provider_key
-  );
+  const provider = providers.find((el) => el.provider_id === item.provider_id);
   const folderTitle = provider ? provider.customer_title : title;
 
   const [urlValue, setUrlValue] = useState("");
