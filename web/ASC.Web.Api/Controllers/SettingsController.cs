@@ -1415,7 +1415,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("tfaapp/confirm")]
-        public string TfaConfirmUrl()
+        public object TfaConfirmUrl()
         {
             var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
             if (StudioSmsNotificationSettingsHelper.IsVisibleSettings() && StudioSmsNotificationSettingsHelper.Enable)// && smsConfirm.ToLower() != "true")
