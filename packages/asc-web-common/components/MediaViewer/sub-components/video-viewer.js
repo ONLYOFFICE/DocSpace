@@ -19,7 +19,7 @@ const StyledControls = styled.div`
   height: ${(props) => props.height}px;
   display: block;
   position: fixed;
-  z-index: 4001;
+  z-index: 301;
   ${(props) => !props.isVideo && "background-color: rgba(11,11,11,0.7);"}
   top: calc(50% + ${(props) => props.top}px);
   left: ${(props) => props.left}px;
@@ -174,13 +174,13 @@ const StyledVideoViewer = styled.div`
     height: ${(props) => props.height}px;
     left: ${(props) => props.left}px;
     top: calc(50% - ${(props) => props.top / 2}px);
-    z-index: 4001;
+    z-index: 301;
     position: fixed;
     padding-bottom: 40px;
     background-color: rgba(11, 11, 11, 0.7);
 
     video {
-      z-index: 4000;
+      z-index: 300;
     }
   }
 `;

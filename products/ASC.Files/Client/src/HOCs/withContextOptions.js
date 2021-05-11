@@ -83,7 +83,7 @@ export default function withContextOptions(WrappedComponent) {
 
     onClickLinkForPortal = () => {
       const { item, homepage, t } = this.props;
-      const { fileExst, canOpenPlayer, webUrl } = item;
+      const { fileExst, canOpenPlayer, webUrl, id } = item;
 
       const isFile = !!fileExst;
       copy(
@@ -151,11 +151,8 @@ export default function withContextOptions(WrappedComponent) {
         item,
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
-        confirmDelete,
-        setDeleteDialogVisible,
         t,
-        deleteFileAction,
-        deleteFolderAction,
+        deleteItemAction,
         isThirdPartyFolder,
       } = this.props;
       const { id, title, fileExst, contentLength, folderId, parentId } = item;
@@ -167,21 +164,13 @@ export default function withContextOptions(WrappedComponent) {
         return;
       }
 
-      if (confirmDelete) {
-        setDeleteDialogVisible(true);
-      } else {
-        const translations = {
-          deleteOperation: t("DeleteOperation"),
-        };
+      const translations = {
+        deleteOperation: t("DeleteOperation"),
+        successRemoveFile: t("FileRemoved"),
+        successRemoveFolder: t("FolderRemoved"),
+      };
 
-        fileExst || contentLength
-          ? deleteFileAction(id, folderId, translations)
-              .then(() => toastr.success(t("FileRemoved")))
-              .catch((err) => toastr.error(err))
-          : deleteFolderAction(id, parentId, translations)
-              .then(() => toastr.success(t("FolderRemoved")))
-              .catch((err) => toastr.error(err));
-      }
+      deleteItemAction(id, folderId, translations, fileExst || contentLength);
     };
 
     onClickShare = () => {
@@ -426,7 +415,6 @@ export default function withContextOptions(WrappedComponent) {
         auth,
         versionHistoryStore,
         mediaViewerDataStore,
-        settingsStore,
         selectedFolderStore,
         dialogsStore,
         treeFoldersStore,
@@ -442,9 +430,8 @@ export default function withContextOptions(WrappedComponent) {
         downloadAction,
         duplicateAction,
         setThirdpartyInfo,
-        deleteFileAction,
-        deleteFolderAction,
         onSelectItem,
+        deleteItemAction,
       } = filesActionsStore;
       const {
         setChangeOwnerPanelVisible,
@@ -453,7 +440,6 @@ export default function withContextOptions(WrappedComponent) {
         setDownloadDialogVisible,
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
-        setDeleteDialogVisible,
         setSharingPanelVisible,
       } = dialogsStore;
       const { isTabletView } = auth.settingsStore;
@@ -486,10 +472,7 @@ export default function withContextOptions(WrappedComponent) {
         setMediaViewerData,
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
-        confirmDelete: settingsStore.confirmDelete,
-        setDeleteDialogVisible,
-        deleteFileAction,
-        deleteFolderAction,
+        deleteItemAction,
         isThirdPartyFolder,
         onSelectItem,
         setSharingPanelVisible,

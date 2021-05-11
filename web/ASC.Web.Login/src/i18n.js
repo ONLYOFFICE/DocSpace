@@ -12,10 +12,10 @@ newInstance
   .use(initReactI18next)
   .use(Backend)
   .init({
-    lng: "ru",
+    lng: lng,
     fallbackLng: "en",
     load: "languageOnly",
-    debug: true,
+    //debug: true,
 
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default

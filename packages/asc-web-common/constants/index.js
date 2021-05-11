@@ -163,3 +163,27 @@ export const LoaderStyle = {
 import config from "./AppServerConfig";
 
 export const AppServerConfig = config;
+
+/**
+ * Enum for Tenant trusted domains on registration.
+ * @readonly
+ */
+export const TenantTrustedDomainsType = Object.freeze({
+  None: 0,
+  Custom: 1,
+  All: 2,
+});
+
+export const FilesFormats = Object.freeze({
+  OriginalFormat: 0,
+  TxtFormat: 1,
+  DocxFormat: 2,
+  OdtFormat: 3,
+  OdsFormat: 4,
+  OdpFormat: 5,
+  PdfFormat: 6,
+  RtfFormat: 7,
+  XlsxFormat: 8,
+  PptxFormat: 9,
+  CustomFormat: 10,
+});

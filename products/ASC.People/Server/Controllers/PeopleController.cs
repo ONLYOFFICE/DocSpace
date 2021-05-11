@@ -420,14 +420,14 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
         public EmployeeWraperFull AddMemberFromBody([FromBody]MemberModel memberModel)
         {
             return AddMember(memberModel);
         }
 
         [Create]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
         [Consumes("application/x-www-form-urlencoded")]
         public EmployeeWraperFull AddMemberFromForm([FromForm]MemberModel memberModel)
         {
@@ -1104,14 +1104,14 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/password")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
         public EmployeeWraperFull ChangeUserPasswordFromBody(Guid userid, [FromBody]MemberModel memberModel)
         {
             return ChangeUserPassword(userid, memberModel);
         }
 
         [Update("{userid}/password")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
         [Consumes("application/x-www-form-urlencoded")]
         public EmployeeWraperFull ChangeUserPasswordFromForm(Guid userid, [FromForm] MemberModel memberModel)
         {
@@ -1242,14 +1242,14 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("activationstatus/{activationstatus}")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
         public IEnumerable<EmployeeWraperFull> UpdateEmployeeActivationStatusFromBody(EmployeeActivationStatus activationstatus, [FromBody]UpdateMembersModel model)
         {
             return UpdateEmployeeActivationStatus(activationstatus, model);
         }
 
         [Update("activationstatus/{activationstatus}")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
         [Consumes("application/x-www-form-urlencoded")]
         public IEnumerable<EmployeeWraperFull> UpdateEmployeeActivationStatusFromForm(EmployeeActivationStatus activationstatus, [FromForm] UpdateMembersModel model)
         {

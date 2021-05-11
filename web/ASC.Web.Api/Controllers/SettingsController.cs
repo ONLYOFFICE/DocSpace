@@ -323,6 +323,12 @@ namespace ASC.Api.Settings
                     Tenant.TrustedDomains.Count > 0) ||
                     Tenant.TrustedDomainsType == TenantTrustedDomainsType.All;
 
+                if (settings.EnabledJoin.GetValueOrDefault(false))
+                {
+                    settings.TrustedDomainsType = Tenant.TrustedDomainsType;
+                    settings.TrustedDomains = Tenant.TrustedDomains;
+                }
+
                 var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
 
                 settings.EnableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();

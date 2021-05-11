@@ -118,46 +118,44 @@ class ChangeUserStatusDialogComponent extends React.Component {
       userStatus === 1 ? t("DisabledEmployeeTitle") : t("ActiveEmployeeTitle");
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
-          <ModalDialog.Header>
-            {t("ChangeUserStatusDialogHeader")}
-          </ModalDialog.Header>
-          <ModalDialog.Body>
-            <Text>
-              {t("ChangeUserStatusDialog", {
-                status: statusTranslation,
-                userStatus: userStatusTranslation,
-              })}
-            </Text>
-            <Text>{t("ChangeUserStatusDialogMessage")}</Text>
-            <ToggleContent
-              className="toggle-content-dialog"
-              label={t("ShowUsersList")}
-            >
-              <div style={containerStyles} className="modal-dialog-content">
-                <AutoSizer>{renderList}</AutoSizer>
-              </div>
-            </ToggleContent>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              label={t("ChangeUsersStatusButton")}
-              size="medium"
-              primary
-              onClick={this.onChangeUserStatus}
-              isLoading={isRequestRunning}
-              isDisabled={!userIds.length}
-            />
-            <Button
-              className="button-dialog"
-              label={t("CancelButton")}
-              size="medium"
-              onClick={onClose}
-              isDisabled={isRequestRunning}
-            />
-          </ModalDialog.Footer>
-        </ModalDialog>
+      <ModalDialogContainer visible={visible} onClose={onClose}>
+        <ModalDialog.Header>
+          {t("ChangeUserStatusDialogHeader")}
+        </ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text>
+            {t("ChangeUserStatusDialog", {
+              status: statusTranslation,
+              userStatus: userStatusTranslation,
+            })}
+          </Text>
+          <Text>{t("ChangeUserStatusDialogMessage")}</Text>
+          <ToggleContent
+            className="toggle-content-dialog"
+            label={t("ShowUsersList")}
+          >
+            <div style={containerStyles} className="modal-dialog-content">
+              <AutoSizer>{renderList}</AutoSizer>
+            </div>
+          </ToggleContent>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            label={t("ChangeUsersStatusButton")}
+            size="medium"
+            primary
+            onClick={this.onChangeUserStatus}
+            isLoading={isRequestRunning}
+            isDisabled={!userIds.length}
+          />
+          <Button
+            className="button-dialog"
+            label={t("CancelButton")}
+            size="medium"
+            onClick={onClose}
+            isDisabled={isRequestRunning}
+          />
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
