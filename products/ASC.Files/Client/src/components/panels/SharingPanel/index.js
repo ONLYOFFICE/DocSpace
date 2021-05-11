@@ -77,14 +77,10 @@ class SharingPanelComponent extends React.Component {
   };
 
   updateRowData = (newRowData) => {
-    const { setFile, setFolder } = this.props;
+    const { getFileInfo, getFolderInfo } = this.props;
 
     for (let item of newRowData) {
-      if (!item.fileExst) {
-        setFolder(item);
-      } else {
-        setFile(item);
-      }
+      !item.fileExst ? getFolderInfo(item.id) : getFileInfo(item.id);
     }
   };
 
@@ -172,8 +168,8 @@ class SharingPanelComponent extends React.Component {
       ownerId
     )
       .then((res) => {
-        if (ownerId) {
-          this.updateRowData(res[0]);
+        if (!ownerId) {
+          this.updateRowData(selection);
         }
         if (isPrivacy && isDesktop) {
           if (share.length === 0) return Promise.resolve();
@@ -610,6 +606,8 @@ const SharingPanel = inject(
       getShareUsers,
       setShareFiles,
       setIsLoading,
+      getFileInfo,
+      getFolderInfo,
       isLoading,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
@@ -644,6 +642,8 @@ const SharingPanel = inject(
       setFolder,
       getShareUsers,
       setShareFiles,
+      getFileInfo,
+      getFolderInfo,
     };
   }
 )(observer(withTranslation("SharingPanel")(SharingPanelComponent)));

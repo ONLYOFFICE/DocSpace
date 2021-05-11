@@ -1,5 +1,5 @@
 import React, { lazy } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import ConfirmRoute from "../../../helpers/confirmRoute";
 
 const ActivateUserForm = lazy(() => import("./sub-components/activateUser"));
@@ -37,7 +37,7 @@ const Confirm = ({ match }) => {
         path={`${match.path}/EmailChange`}
         component={ChangeEmailForm}
       />
-      <Route
+      <ConfirmRoute
         forUnauthorized
         path={`${match.path}/PasswordChange`}
         component={ChangePasswordForm}
@@ -47,7 +47,7 @@ const Confirm = ({ match }) => {
         path={`${match.path}/ProfileRemove`}
         component={ProfileRemoveForm}
       />
-      <Route
+      <ConfirmRoute
         exact
         path={`${match.path}/PhoneActivation`}
         component={ChangePhoneForm}
@@ -57,7 +57,6 @@ const Confirm = ({ match }) => {
         path={`${match.path}/PortalOwnerChange`}
         component={ChangeOwnerForm}
       />
-      {/* <Route component={Error404} /> */}
     </Switch>
   );
 };

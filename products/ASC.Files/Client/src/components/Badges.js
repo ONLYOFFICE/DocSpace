@@ -48,7 +48,7 @@ const Badges = ({
           hoverColor="#3B72A7"
         />
       )}
-      {locked && (
+      {locked && accessToEdit && (
         <StyledFileActionsLockedIcon
           className="badge lock-file icons-group"
           size="small"

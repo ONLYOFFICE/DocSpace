@@ -71,17 +71,18 @@ class FilesActionStore {
     }
 
     if (folderIds.length || fileIds.length) {
-      setSecondaryProgressBarData({
-        icon: "trash",
-        visible: true,
-        label: translations.deleteOperation,
-        percent: 0,
-        alert: false,
-      });
-
       return removeFiles(folderIds, fileIds, deleteAfter, immediately)
         .then((res) => {
           const id = res[0] && res[0].id ? res[0].id : null;
+          const currentProcess = res.find((x) => x.id === id);
+          setSecondaryProgressBarData({
+            icon: "trash",
+            visible: true,
+            label: translations.deleteOperation,
+            percent: currentProcess.progress,
+            alert: false,
+          });
+
           this.loopDeleteOperation(id, translations);
         })
         .catch((err) => {
