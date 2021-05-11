@@ -475,11 +475,10 @@ class FilesActionStore {
 
   openLocationAction = (locationId, isFolder) => {
     const locationFilter = isFolder ? this.filesStore.filter : null;
-
-    return this.filesStore.fetchFiles(locationId, locationFilter).then(() =>
+    return this.filesStore.fetchFiles(locationId, locationFilter);
+    /*.then(() =>
       //isFolder ? null : this.selectRowAction(!checked, item)
-      isFolder ? null : this.selectRowAction(false, item)
-    );
+    );*/
   };
 
   setThirdpartyInfo = (providerKey) => {
