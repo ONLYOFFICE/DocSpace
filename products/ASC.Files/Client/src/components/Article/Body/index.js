@@ -85,6 +85,7 @@ class ArticleBodyContent extends React.Component {
       onTreeDrop,
       selectedTreeNode,
       enableThirdParty,
+      isVisitor,
     } = this.props;
 
     return isEmpty(treeFolders) ? (
@@ -99,7 +100,7 @@ class ArticleBodyContent extends React.Component {
           onTreeDrop={onTreeDrop}
         />
         <TreeSettings />
-        {enableThirdParty && <ThirdPartyList />}
+        {enableThirdParty && !isVisitor && <ThirdPartyList />}
       </>
     );
   }
@@ -107,6 +108,7 @@ class ArticleBodyContent extends React.Component {
 
 export default inject(
   ({
+    auth,
     filesStore,
     treeFoldersStore,
     selectedFolderStore,
@@ -115,10 +117,14 @@ export default inject(
   }) => {
     const { fetchFiles, filter, setIsLoading } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
+
+    const selectedNode = treeFoldersStore.selectedTreeNode;
+
     const selectedTreeNode =
-      treeFoldersStore.selectedTreeNode.length > 0 &&
-      treeFoldersStore.selectedTreeNode[0] !== "@my"
-        ? treeFoldersStore.selectedTreeNode
+      selectedNode.length > 0 &&
+      selectedNode[0] !== "@my" &&
+      selectedNode[0] !== "@common"
+        ? selectedNode
         : [selectedFolderStore.id + ""];
 
     const { setNewFilesPanelVisible, setNewFilesIds } = dialogsStore;
@@ -129,6 +135,7 @@ export default inject(
       selectedTreeNode,
       filter,
       enableThirdParty: settingsStore.enableThirdParty,
+      isVisitor: auth.userStore.user.isVisitor,
 
       setIsLoading,
       fetchFiles,

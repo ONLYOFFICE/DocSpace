@@ -323,6 +323,7 @@ class SectionHeaderContent extends React.Component {
       isOnlyFoldersSelected,
       isFavoritesFolder,
       isRecentFolder,
+      isShareFolder,
     } = this.props;
 
     let menu = [
@@ -435,6 +436,10 @@ class SectionHeaderContent extends React.Component {
 
     if (isPrivacy) {
       menu.splice(3, 1);
+      menu.splice(4, 1);
+    }
+
+    if (isShareFolder) {
       menu.splice(4, 1);
     }
 
@@ -591,6 +596,7 @@ export default inject(
       isPrivacyFolder,
       isFavoritesFolder,
       isRecentFolder,
+      isShareFolder,
     } = treeFoldersStore;
     const { setAction } = fileActionStore;
     const {
@@ -614,6 +620,7 @@ export default inject(
       isPrivacy: isPrivacyFolder,
       isFavoritesFolder,
       isRecentFolder,
+      isShareFolder,
       filter,
       canCreate,
       selectionCount: selection.length,

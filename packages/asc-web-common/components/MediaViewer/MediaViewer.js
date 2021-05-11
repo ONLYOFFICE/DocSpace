@@ -15,7 +15,7 @@ import CrossIcon from "../../../../public/images/cross.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 const StyledVideoViewer = styled(VideoViewer)`
-  z-index: 4001;
+  z-index: 301;
 `;
 const mediaTypes = Object.freeze({
   audio: 1,
@@ -181,12 +181,14 @@ class MediaViewer extends React.Component {
   }
 
   componentWillUnmount() {
-    this.hammer.off("swipeleft", this.nextMedia);
-    this.hammer.off("swiperight", this.prevMedia);
-    this.hammer.off("pinchout", this.prevMedia);
-    this.hammer.off("pinchin", this.prevMedia);
-    this.hammer.off("pinchend", this.prevMedia);
-    this.hammer.off("doubletap", this.prevMedia);
+    if (this.hammer) {
+      this.hammer.off("swipeleft", this.nextMedia);
+      this.hammer.off("swiperight", this.prevMedia);
+      this.hammer.off("pinchout", this.prevMedia);
+      this.hammer.off("pinchin", this.prevMedia);
+      this.hammer.off("pinchend", this.prevMedia);
+      this.hammer.off("doubletap", this.prevMedia);
+    }
     document.removeEventListener("keydown", this.onKeydown, false);
     document.removeEventListener("keyup", this.onKeyup, false);
   }

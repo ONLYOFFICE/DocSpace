@@ -8,7 +8,7 @@ import UserStore from "./UserStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
 import { combineUrl, isAdmin } from "../utils";
 import isEmpty from "lodash/isEmpty";
-import { AppServerConfig } from "../constants";
+import { AppServerConfig, LANGUAGE } from "../constants";
 const { proxyURL } = AppServerConfig;
 
 class AuthStore {
@@ -43,7 +43,14 @@ class AuthStore {
 
     return Promise.all(requests);
   };
-
+  setLanguage() {
+    if (this.userStore.user.cultureName) {
+      localStorage.getItem(LANGUAGE) !== this.userStore.user.cultureName &&
+        localStorage.setItem(LANGUAGE, this.userStore.user.cultureName);
+    } else {
+      localStorage.setItem(LANGUAGE, this.settingsStore.culture || "en-US");
+    }
+  }
   get isLoaded() {
     let success = false;
     if (this.isAuthenticated) {
@@ -51,6 +58,8 @@ class AuthStore {
         this.userStore.isLoaded &&
         this.moduleStore.isLoaded &&
         this.settingsStore.isLoaded;
+
+      success && this.setLanguage();
     } else {
       success = this.settingsStore.isLoaded;
     }

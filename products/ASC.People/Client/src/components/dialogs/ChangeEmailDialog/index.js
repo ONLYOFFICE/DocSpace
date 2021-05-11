@@ -102,42 +102,38 @@ class ChangeEmailDialogComponent extends React.Component {
     const { isRequestRunning, email, errorMessage, hasError } = this.state;
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
-          <ModalDialog.Header>{t("EmailChangeTitle")}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <FieldContainer
-              isVertical
-              labelText={t("EnterEmail")}
-              errorMessage={errorMessage}
+      <ModalDialogContainer visible={visible} onClose={onClose}>
+        <ModalDialog.Header>{t("EmailChangeTitle")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <FieldContainer
+            isVertical
+            labelText={t("EnterEmail")}
+            errorMessage={errorMessage}
+            hasError={hasError}
+          >
+            <EmailInput
+              id="new-email"
+              scale={true}
+              isAutoFocussed={true}
+              value={email}
+              onChange={this.onChangeEmailInput}
+              onValidateInput={this.onValidateEmailInput}
+              onKeyUp={this.onKeyPress}
               hasError={hasError}
-            >
-              <EmailInput
-                id="new-email"
-                scale={true}
-                isAutoFocussed={true}
-                value={email}
-                onChange={this.onChangeEmailInput}
-                onValidateInput={this.onValidateEmailInput}
-                onKeyUp={this.onKeyPress}
-                hasError={hasError}
-              />
-            </FieldContainer>
-            <Text className="text-dialog">
-              {t("EmailActivationDescription")}
-            </Text>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              key="SendBtn"
-              label={t("SendButton")}
-              size="medium"
-              primary={true}
-              onClick={this.onValidateEmail}
-              isLoading={isRequestRunning}
             />
-          </ModalDialog.Footer>
-        </ModalDialog>
+          </FieldContainer>
+          <Text className="text-dialog">{t("EmailActivationDescription")}</Text>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            key="SendBtn"
+            label={t("SendButton")}
+            size="medium"
+            primary={true}
+            onClick={this.onValidateEmail}
+            isLoading={isRequestRunning}
+          />
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
