@@ -91,6 +91,7 @@ const ToggleContentContainer = styled.div`
   .nameAndStatus {
     display: flex;
     align-items: center;
+    height: 100%;
 
     .statusIcon {
       margin-left: 5px;
@@ -128,24 +129,9 @@ const ToggleContentContainer = styled.div`
       margin-right: 20px;
       display: flex;
       align-items: center;
-      padding: 10px 0px;
-      cursor: pointer;
-
-      &.owner {
-        cursor: default;
-      }
-
-      .fullAccessIcon {
-        margin-right: 4px;
-        width: 16px;
-      }
-    }
-
-    .hyphen {
-      height: 1px;
-      width: 8px;
-      background-color: #d0d5da;
-      margin-right: 20px;
+      padding: 0px 4px;
+      background-color: #2da7db;
+      border-radius: 5px;
     }
 
     .iconWrapper {
@@ -160,8 +146,9 @@ const ToggleContentContainer = styled.div`
 
   @media ${tablet} {
     .row_content {
-      flex-direction: column;
-      align-items: baseline;
+      flex-direction: row;
+      align-items: center;
+      height: 48px;
 
       .userData {
         max-width: 100%;
@@ -169,15 +156,8 @@ const ToggleContentContainer = styled.div`
     }
 
     .actionIconsWrapper {
-      .hyphen {
-        margin-right: 10px;
-      }
-
       .fullAccessWrapper {
         margin-right: 10px;
-        p {
-          display: none;
-        }
       }
 
       .iconWrapper {
@@ -187,13 +167,8 @@ const ToggleContentContainer = styled.div`
 
     .wrapper {
       #rowContainer {
-        & > div > div {
-          align-items: normal;
-          padding-top: 10px;
-
-          & > div label {
-            margin-top: 8px;
-          }
+        .styled-element {
+          margin-right: 8px;
         }
       }
     }
@@ -721,10 +696,13 @@ class PortalAdmins extends Component {
                   <div className="wrapper">
                     <RowContainer useReactWindow={false}>
                       {filteredAdmins.map((user) => {
+                        const userRole = getUserRole(user);
+
+                        if (userRole === "owner") return;
                         const element = (
                           <Avatar
                             size="small"
-                            role={getUserRole(user)}
+                            role={userRole}
                             userName={user.displayName}
                             source={user.avatar}
                           />
@@ -762,157 +740,49 @@ class PortalAdmins extends Component {
                                   >
                                     {user.displayName}
                                   </Link>
-                                  {/*getUserStatus(user) === "pending" && (
-                                    <Icons.SendClockIcon
-                                      className="statusIcon"
-                                      size="small"
-                                      isfill={true}
-                                      color="#3B72A7"
-                                    />
-                                  )
-                                  <ReactSVG src={icon} className="drop-down-item_icon" />
-                                  
-                                  */}
-                                  {/*getUserStatus(user) === "disabled" && (
-                                    <Icons.CatalogSpamIcon
-                                      className="statusIcon"
-                                      size="small"
-                                      isfill={true}
-                                      color="#3B72A7"
-                                    />
-                                  )*/}
-                                </div>
-                                <div>
-                                  <Text truncate={true} className="userRole">
-                                    {getUserRole(user)}
-                                  </Text>
                                 </div>
                               </div>
                               <div className="actionIconsWrapper">
-                                {getUserRole(user) === "owner" ? (
-                                  <div className="fullAccessWrapper owner">
-                                    <IconButton
-                                      iconName="OwnerSettingsIcon"
-                                      isClickable={false}
-                                      className="fullAccessIcon"
-                                      size="medium"
-                                      isFill={true}
-                                      color="#7A95B0"
-                                    />
+                                {user.isAdmin ? (
+                                  <div className="fullAccessWrapper">
                                     <Text
-                                      as="p"
                                       truncate={true}
-                                      color="#7A95B0"
-                                      font-size="11px"
-                                      fontWeight={700}
-                                    >
-                                      Owner
-                                    </Text>
-                                  </div>
-                                ) : (
-                                  <div
-                                    className="fullAccessWrapper"
-                                    onClick={this.onFullAccessClick.bind(
-                                      this,
-                                      user
-                                    )}
-                                  >
-                                    <IconButton
-                                      iconName="ActionsFullAccessIcon"
-                                      isClickable={false}
-                                      className="fullAccessIcon"
-                                      size="medium"
-                                      isFill={true}
-                                      color={
-                                        user.isAdmin ? "#316DAA" : "#D0D5DA"
-                                      }
-                                    />
-                                    <Text
-                                      as="p"
-                                      truncate={true}
-                                      color={
-                                        user.isAdmin ? "#316DAA" : "#D0D5DA"
-                                      }
-                                      font-size="11px"
+                                      color="#FFFFFF"
+                                      font-size="9px"
                                       fontWeight={700}
                                     >
                                       Full access
                                     </Text>
                                   </div>
+                                ) : (
+                                  <div className="iconsWrapper">
+                                    {this.isModuleAdmin(user, "documents") && (
+                                      <div className="iconWrapper">
+                                        <IconButton
+                                          iconName="/static/images/files.menu.svg"
+                                          size={14}
+                                          color="#2DA7DB"
+                                          isfill={true}
+                                          isClickable={false}
+                                        />
+                                      </div>
+                                    )}
+
+                                    {this.isModuleAdmin(user, "people") && (
+                                      <div className="iconWrapper">
+                                        <IconButton
+                                          iconName={
+                                            "/static/images/departments.group.react.svg"
+                                          }
+                                          size={16}
+                                          color="#2DA7DB"
+                                          isfill={true}
+                                          isClickable={false}
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
                                 )}
-                                <div className="hyphen"></div>
-                                <div className="iconsWrapper">
-                                  <div className="iconWrapper">
-                                    <IconButton
-                                      iconName="/static/images/files.menu.svg"
-                                      size={14}
-                                      color={
-                                        getUserRole(user) === "owner" ||
-                                        user.isAdmin
-                                          ? "#7A95B0"
-                                          : this.isModuleAdmin(
-                                              user,
-                                              "documents"
-                                            )
-                                          ? "#316DAA"
-                                          : "#D0D5DA"
-                                      }
-                                      isfill={true}
-                                      isClickable={false}
-                                      isDisabled={
-                                        getUserRole(user) === "owner" ||
-                                        user.isAdmin
-                                      }
-                                      onClick={
-                                        getUserRole(user) !== "owner" ||
-                                        !user.isAdmin
-                                          ? this.onModuleIconClick.bind(
-                                              this,
-                                              [user.id],
-                                              "documents",
-                                              this.isModuleAdmin(
-                                                user,
-                                                "documents"
-                                              )
-                                            )
-                                          : null
-                                      }
-                                    />
-                                  </div>
-                                  <div className="iconWrapper">
-                                    <IconButton
-                                      iconName={
-                                        "/static/images/departments.group.react.svg"
-                                      }
-                                      size={16}
-                                      color={
-                                        getUserRole(user) === "owner" ||
-                                        user.isAdmin
-                                          ? "#7A95B0"
-                                          : this.isModuleAdmin(user, "people")
-                                          ? "#316DAA"
-                                          : "#D0D5DA"
-                                      }
-                                      isfill={true}
-                                      isClickable={false}
-                                      isDisabled={
-                                        getUserRole(user) === "owner" ||
-                                        user.isAdmin
-                                      }
-                                      onClick={
-                                        getUserRole(user) !== "owner" ||
-                                        !user.isAdmin
-                                          ? this.onModuleIconClick.bind(
-                                              this,
-                                              [user.id],
-                                              "people",
-                                              this.isModuleAdmin(user, "people")
-                                            )
-                                          : null
-                                      }
-                                    />
-                                  </div>
-                                </div>
                               </div>
                             </>
                           </Row>
