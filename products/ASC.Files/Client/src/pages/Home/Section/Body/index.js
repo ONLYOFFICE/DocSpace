@@ -146,6 +146,8 @@ const SectionBodyContent = (props) => {
 
   return (!fileActionId && isEmptyFilesList) || null ? (
     <EmptyContainer />
+  ) : viewAs === "tile" ? (
+    <FilesTileContainer t={t} />
   ) : (
     <FilesRowContainer tReady={tReady} />
   );
@@ -174,7 +176,6 @@ export default inject(
       startDrag,
       setStartDrag,
       fileActionId: fileActionStore.id,
-      viewAs,
       isEmptyFilesList: filesList.length <= 0,
       setDragging,
       startDrag,
@@ -183,6 +184,7 @@ export default inject(
       setTooltipPosition,
       isRecycleBinFolder: treeFoldersStore.isRecycleBinFolder,
       moveDragItems: filesActionsStore.moveDragItems,
+      viewAs,
     };
   }
 )(

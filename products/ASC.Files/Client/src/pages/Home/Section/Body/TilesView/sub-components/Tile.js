@@ -191,11 +191,12 @@ class Tile extends React.PureComponent {
       contextOptions,
       element,
       indeterminate,
-      isFolder,
       tileContextClick,
       dragging,
       isRecycleBin,
+      item,
     } = this.props;
+    const { isFolder } = item;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -225,6 +226,7 @@ class Tile extends React.PureComponent {
     };
 
     const icon = this.getIconFile();
+
     return (
       <StyledTile
         ref={this.tile}

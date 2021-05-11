@@ -6,9 +6,9 @@ import styled from "styled-components";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 
-import TileContent from "./TileContent";
-import withContent from "../hoc/withContent";
-import Badges from "../sub-components/Badges";
+import TileContent from "./sub-components/TileContent";
+import withContent from "../../../../../HOCs/withContent";
+import withBadges from "../../../../../HOCs/withBadges";
 
 const SimpleFilesTileContent = styled(TileContent)`
   .rowMainContainer {
@@ -80,6 +80,7 @@ const FilesTileContent = ({
   onClickLock,
   onClickFavorite,
   setConvertDialogVisible,
+  badgesComponent,
 }) => {
   const {
     contentLength,
@@ -132,28 +133,12 @@ const FilesTileContent = ({
           ) : null}
         </Link>
 
-        <div className="badges">
-          <Badges
-            newItems={newItems}
-            item={item}
-            canWebEdit={canWebEdit}
-            isTrashFolder={isTrashFolder}
-            canConvert={canConvert}
-            accessToEdit={accessToEdit}
-            showNew={showNew}
-            onFilesClick={onFilesClick}
-            onClickLock={onClickLock}
-            onClickFavorite={onClickFavorite}
-            onShowVersionHistory={onShowVersionHistory}
-            onBadgeClick={onBadgeClick}
-            setConvertDialogVisible={setConvertDialogVisible}
-          />
-        </div>
+        <div className="badges">{badgesComponent}</div>
       </SimpleFilesTileContent>
     </>
   );
 };
 
 export default withRouter(
-  withTranslation("Home")(withContent(FilesTileContent))
+  withTranslation("Home")(withContent(withBadges(FilesTileContent)))
 );

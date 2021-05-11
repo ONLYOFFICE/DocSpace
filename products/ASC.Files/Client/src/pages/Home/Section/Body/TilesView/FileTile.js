@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import DragAndDrop from "@appserver/components/drag-and-drop";
 
@@ -8,7 +9,8 @@ import FilesTileContent from "./FilesTileContent";
 import { withRouter } from "react-router-dom";
 import { createSelectable } from "react-selectable-fast";
 
-import withFileActions from "../hoc/withFileActions";
+import withFileActions from "../../../../../HOCs/withFileActions";
+import withContextOptions from "../../../../../HOCs/withContextOptions";
 
 const FilesTile = createSelectable((props) => {
   const {
@@ -28,8 +30,15 @@ const FilesTile = createSelectable((props) => {
     contextOptionsProps,
     checkedProps,
     element,
+    getIcon,
+    onFilesClick,
   } = props;
-
+  const temporaryIcon = getIcon(
+    96,
+    item.fileExst,
+    item.providerKey,
+    item.contentLength
+  );
   return (
     <div ref={props.selectableRef}>
       <DragAndDrop
@@ -43,22 +52,36 @@ const FilesTile = createSelectable((props) => {
       >
         <Tile
           key={item.id}
-          data={item}
+          //data={item}
+          item={item}
+          temporaryIcon={temporaryIcon}
           element={element}
           sectionWidth={sectionWidth}
           contentElement={sharedButton}
           onSelect={onContentRowSelect}
           rowContextClick={rowContextClick}
           isPrivacy={isPrivacy}
+          dragging={dragging && isDragging}
           {...checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
         >
-          <FilesTileContent item={item} sectionWidth={sectionWidth} />
+          <FilesTileContent
+            item={item}
+            sectionWidth={sectionWidth}
+            onFilesClick={onFilesClick}
+          />
         </Tile>
       </DragAndDrop>
     </div>
   );
 });
 
-export default withTranslation("Home")(withFileActions(withRouter(FilesTile)));
+export default inject(({ formatsStore }) => {
+  const { getIcon } = formatsStore.iconFormatsStore;
+  return { getIcon };
+})(
+  withTranslation("Home")(
+    withFileActions(withContextOptions(withRouter(observer(FilesTile))))
+  )
+);
