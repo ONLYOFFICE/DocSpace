@@ -63,7 +63,7 @@ const ThirdPartyModule = ({
 
       <OperationsDialog
         onSelectFolder={onSelectFolder}
-        name={"common"}
+        name={"thirdParty"}
         onClose={onClose}
         onClickInput={onClickInput}
         isPanelVisible={isPanelVisible}

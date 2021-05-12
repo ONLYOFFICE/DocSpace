@@ -10,9 +10,9 @@ import { inject, observer } from "mobx-react";
 import { getBackupProgress, startBackup } from "@appserver/common/api/portal";
 import toastr from "@appserver/components/toast/toastr";
 import { toast } from "react-toastify";
-import ThirdPartyModule from "./sub-components/thirdPartyModule";
-import DocumentsModule from "./sub-components/documentsModule";
-import ThirdPartyStorageModule from "./sub-components/thirdPartyStorageModule";
+import ThirdPartyModule from "./sub-components-manual-backup/thirdPartyModule";
+import DocumentsModule from "./sub-components-manual-backup/documentsModule";
+import ThirdPartyStorageModule from "./sub-components-manual-backup/thirdPartyStorageModule";
 
 const StyledComponent = styled.div`
   ${commonSettingsStyles}

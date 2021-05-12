@@ -9,7 +9,7 @@ import RadioButtonGroup from "@appserver/components/radio-button-group";
 import RadioButton from "@appserver/components/radio-button";
 import styled from "styled-components";
 import moment from "moment";
-import ScheduleComponent from "./sub-components/scheduleComponent";
+import ScheduleComponent from "./sub-components-automatic-backup/scheduleComponent";
 import {
   createBackupSchedule,
   deleteBackupSchedule,
@@ -18,7 +18,6 @@ import {
 } from "@appserver/common/api/portal";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import toastr from "@appserver/components/toast/toastr";
-import FileInputWithFolderPath from "@appserver/components/file-input-with-folder-path";
 import OperationsDialog from "files/OperationsDialog";
 import { getFolderPath } from "@appserver/common/api/files";
 
@@ -64,6 +63,20 @@ const StyledModules = styled.div`
   margin-bottom: 40px;
 `;
 
+let folderDocumentsModulePath = "";
+let folderThirdPartyModulePath = "";
+
+let defaultStorageType = "";
+let defaultHour = "";
+let defaultPeriod = "";
+let defaultDay = 1;
+let defaultMaxCopies = "10";
+
+let defaultSelectedOption = "";
+let defaultSelectedWeekdayOption = "";
+let defaultMonthly = false;
+let defaultWeekly = false;
+let defaultDaily = false;
 class AutomaticBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -102,6 +115,7 @@ class AutomaticBackup extends React.Component {
       selectedFolder: "",
       isPanelVisible: false,
       isLoading: false,
+      isChanged: false,
     };
 
     this.periodOptions = [
@@ -132,6 +146,8 @@ class AutomaticBackup extends React.Component {
   }
 
   componentDidMount() {
+    const { getCommonThirdPartyList } = this.props;
+
     this.getWeekdaysOptions();
 
     getBackupProgress().then((res) => {
@@ -150,51 +166,32 @@ class AutomaticBackup extends React.Component {
     });
 
     this.setState({ isLoading: true }, function () {
-      getBackupSchedule()
+      getCommonThirdPartyList()
+        .then(() => getBackupSchedule())
+
         .then((selectedSchedule) => {
           if (selectedSchedule) {
-            this.folderId = selectedSchedule.storageParams.folderId;
-            this.onSelectFolder([`${this.folderId}`]);
-            getFolderPath(this.folderId)
-              .then((folderPath) => (this.folderPath = folderPath))
+            const folderId = selectedSchedule.storageParams.folderId;
+            defaultStorageType = `${selectedSchedule.storageType}`;
+            defaultHour = `${selectedSchedule.cronParams.hour}:00`;
+            defaultPeriod = `${selectedSchedule.cronParams.period}`;
+            defaultDay = selectedSchedule.cronParams.day;
+            defaultMaxCopies = `${selectedSchedule.backupsStored}`;
+
+            this.onSelectFolder([`${folderId}`]);
+            getFolderPath(folderId)
+              .then((folderPath) =>
+                defaultStorageType === "0"
+                  ? (folderDocumentsModulePath = folderPath)
+                  : (folderThirdPartyModulePath = folderPath)
+              )
               .then(() => {
                 this.setState({
                   selectedPermission: "enable",
                   isShowedStorageTypes: true,
                 });
 
-                if (selectedSchedule.storageType === 0) {
-                  // Documents Module
-                  this.setState({
-                    isShowDocuments: true,
-                    isCheckedDocuments: true,
-                    selectedTimeOption: `${selectedSchedule.cronParams.hour}:00`,
-                    selectedMaxCopies: `${selectedSchedule.backupsStored}`,
-                  });
-
-                  if (selectedSchedule.cronParams.period === 1) {
-                    //Every Week option
-                    const selectedDay = selectedSchedule.cronParams.day; //selected number of week
-                    const arrayIndex =
-                      this.lng === "en" ? selectedDay - 1 : selectedDay - 2;
-                    console.log("this.weekdaysOptions", this.weekdaysOptions);
-                    this.setState({
-                      selectedOption: this.periodOptions[1].label,
-                      weeklySchedule: true,
-                      selectedWeekdayOption: this.weekdaysOptions[arrayIndex]
-                        .label,
-                    });
-                  } else {
-                    if (selectedSchedule.cronParams.period === 2) {
-                      //Every Month option
-                      this.setState({
-                        selectedOption: this.periodOptions[2].label,
-                        monthlySchedule: true,
-                        selectedMonthOption: `${selectedSchedule.cronParams.day}`, //selected day of month
-                      });
-                    }
-                  }
-                }
+                this.onSetDefaultOptions();
               });
           }
         })
@@ -205,9 +202,62 @@ class AutomaticBackup extends React.Component {
         );
     });
   }
+
   componentWillUnmount() {
     clearInterval(this.timerId);
   }
+
+  onSetDefaultOptions = () => {
+    if (defaultStorageType === "0") {
+      // Documents Module
+      this.setState({
+        isShowDocuments: true,
+        isCheckedDocuments: true,
+        selectedTimeOption: defaultHour,
+        selectedMaxCopies: defaultMaxCopies,
+      });
+    }
+    if (defaultStorageType === "1") {
+      // ThirdPartyResource Module
+      this.setState({
+        isShowThirdParty: true,
+        isCheckedThirdParty: true,
+        selectedTimeOption: defaultHour,
+        selectedMaxCopies: defaultMaxCopies,
+      });
+    }
+
+    if (+defaultPeriod === 1) {
+      //Every Week option
+
+      const arrayIndex = this.lng === "en" ? defaultDay - 1 : defaultDay - 2; //selected number of week
+      defaultSelectedOption = this.periodOptions[1].label;
+      defaultSelectedWeekdayOption = defaultDay;
+      defaultWeekly = true;
+      this.setState({
+        selectedOption: defaultSelectedOption,
+        weeklySchedule: true,
+        selectedWeekdayOption: this.weekdaysOptions[arrayIndex].label,
+      });
+    } else {
+      if (+defaultPeriod === 2) {
+        //Every Month option
+        defaultSelectedOption = this.periodOptions[2].label;
+        defaultMonthly = true;
+        this.setState({
+          selectedOption: defaultSelectedOption,
+          monthlySchedule: true,
+          selectedMonthOption: `${defaultDay}`, //selected day of month
+        });
+      } else {
+        defaultDaily = true;
+        defaultSelectedOption = this.periodOptions[0].label;
+        this.setState({
+          selectedOption: defaultSelectedOption,
+        });
+      }
+    }
+  };
   getProgress = () => {
     getBackupProgress().then((res) => {
       if (res) {
@@ -228,6 +278,7 @@ class AutomaticBackup extends React.Component {
       }
     });
   };
+
   getTimeOptions = () => {
     for (let item = 0; item < 24; item++) {
       let obj = {
@@ -280,68 +331,45 @@ class AutomaticBackup extends React.Component {
     });
   };
 
-  onClickPermissions = (e) => {
-    console.log("res", e);
-    const name = e.target.defaultValue;
-    if (name === "enable") {
-      this.setState({
-        isShowedStorageTypes: true,
-        isCheckedDocuments: true,
-        isShowDocuments: true,
-      });
-    } else {
-      this.setState({
-        isShowedStorageTypes: false,
-        isCheckedDocuments: false,
-        isShowDocuments: false,
-      });
-    }
-  };
-
-  onClickShowStorage = (e) => {
-    console.log("e0", e);
-    const name = e.target.name;
-
-    name === "DocumentsModule"
-      ? this.setState({
-          isShowDocuments: true,
-          isCheckedDocuments: true,
-          isShowThirdParty: false,
-          isCheckedThirdParty: false,
-          isShowThirdPartyStorage: false,
-          isCheckedThirdPartyStorage: false,
-        })
-      : name === "ThirdPartyResource"
-      ? this.setState({
-          isShowDocuments: false,
-          isCheckedDocuments: false,
-          isShowThirdParty: true,
-          isCheckedThirdParty: true,
-          isShowThirdPartyStorage: false,
-          isCheckedThirdPartyStorage: false,
-        })
-      : this.setState({
-          isShowDocuments: false,
-          isCheckedDocuments: false,
-          isShowThirdParty: false,
-          isCheckedThirdParty: false,
-          isShowThirdPartyStorage: true,
-          isCheckedThirdPartyStorage: true,
-        });
-  };
-
   onSelectPeriod = (options) => {
     console.log("options", options);
 
     const key = options.key;
     const label = options.label;
-
+    //debugger;
     this.setState({ selectedOption: label });
     key === 1
-      ? this.setState({ weeklySchedule: false, monthlySchedule: false })
+      ? this.setState(
+          {
+            weeklySchedule: false,
+            monthlySchedule: false,
+            dailySchedule: true,
+          },
+          function () {
+            this.checkChanges();
+          }
+        )
       : key === 2
-      ? this.setState({ weeklySchedule: true, monthlySchedule: false })
-      : this.setState({ monthlySchedule: true, weeklySchedule: false });
+      ? this.setState(
+          {
+            weeklySchedule: true,
+            monthlySchedule: false,
+            dailySchedule: false,
+          },
+          function () {
+            this.checkChanges();
+          }
+        )
+      : this.setState(
+          {
+            monthlySchedule: true,
+            weeklySchedule: false,
+            dailySchedule: false,
+          },
+          function () {
+            this.checkChanges();
+          }
+        );
   };
 
   onSelectWeedDay = (options) => {
@@ -349,41 +377,50 @@ class AutomaticBackup extends React.Component {
 
     const key = options.key;
     const label = options.label;
-
-    this.setState({
-      selectedNumberWeekdayOption: key,
-      selectedWeekdayOption: label,
-    });
+    //debugger;
+    this.setState(
+      {
+        selectedNumberWeekdayOption: key,
+        selectedWeekdayOption: label,
+      },
+      function () {
+        this.checkChanges();
+      }
+    );
   };
   onSelectMonthNumberAndTimeOptions = (options) => {
     const key = options.key;
     const label = options.label;
+
     if (key <= 24) {
-      this.setState({ selectedTimeOption: label });
-    } else {
-      this.setState({
-        selectedMonthOption: label,
+      this.setState({ selectedTimeOption: label }, function () {
+        this.checkChanges();
       });
+    } else {
+      this.setState(
+        {
+          selectedMonthOption: label,
+        },
+        function () {
+          this.checkChanges();
+        }
+      );
     }
   };
+
   onSelectMaxCopies = (options) => {
     const key = options.key;
     const label = options.label;
-    console.log("opr max", options);
-    this.setState({
-      selectedNumberMaxCopies: key,
-      selectedMaxCopies: label,
-    });
-  };
 
-  onClickDeleteSchedule = () => {
-    const { t } = this.props;
-    this.setState({ isLoadingData: true }, function () {
-      deleteBackupSchedule()
-        .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
-        .catch((error) => toastr.error(error))
-        .finally(() => this.setState({ isLoadingData: false }));
-    });
+    this.setState(
+      {
+        selectedNumberMaxCopies: key,
+        selectedMaxCopies: label,
+      },
+      function () {
+        this.checkChanges();
+      }
+    );
   };
 
   onSelectFolder = (folderId) => {
@@ -393,7 +430,7 @@ class AutomaticBackup extends React.Component {
     });
   };
 
-  onSaveDocumentsModuleSettings = () => {
+  onSaveModuleSettings = () => {
     const {
       selectedFolder,
       weeklySchedule,
@@ -402,6 +439,7 @@ class AutomaticBackup extends React.Component {
       selectedMonthOption,
       selectedNumberWeekdayOption,
       selectedNumberMaxCopies,
+      isShowDocuments,
     } = this.state;
     const { t } = this.props;
     this.setState({ isLoadingData: true }, function () {
@@ -417,14 +455,10 @@ class AutomaticBackup extends React.Component {
         0,
         selectedTimeOption.indexOf(":")
       );
+      let storageType = isShowDocuments ? "0" : "1";
 
-      console.log("selectedNumberMaxCopies", selectedNumberMaxCopies);
-      console.log("period", period);
-      console.log("selectedTimeOption", selectedTimeOption);
-      console.log("time", time);
-      console.log("day", day);
       createBackupSchedule(
-        "0",
+        storageType,
         "folderId",
         selectedFolder[0],
         selectedNumberMaxCopies,
@@ -433,8 +467,354 @@ class AutomaticBackup extends React.Component {
         day
       )
         .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
+        .then(() => getBackupSchedule())
+
+        .then((selectedSchedule) => {
+          if (selectedSchedule) {
+            const folderId = selectedSchedule.storageParams.folderId;
+            defaultStorageType = `${selectedSchedule.storageType}`;
+            defaultHour = `${selectedSchedule.cronParams.hour}:00`;
+            defaultPeriod = `${selectedSchedule.cronParams.period}`;
+            defaultDay = selectedSchedule.cronParams.day;
+            defaultMaxCopies = `${selectedSchedule.backupsStored}`;
+
+            this.onSelectFolder([`${folderId}`]);
+            getFolderPath(folderId)
+              .then((folderPath) =>
+                defaultStorageType === "0"
+                  ? (folderDocumentsModulePath = folderPath)
+                  : (folderThirdPartyModulePath = folderPath)
+              )
+              .then(() => {
+                this.setState({
+                  selectedPermission: "enable",
+                  isShowedStorageTypes: true,
+                });
+
+                this.onSetDefaultOptions();
+              });
+          }
+        })
         .catch((error) => console.log("error", error))
-        .finally(() => this.setState({ isLoadingData: false }));
+        .finally(() =>
+          this.setState({ isLoadingData: false, isChanged: false })
+        );
+    });
+  };
+
+  onCancelModuleSettings = () => {
+    const {
+      isShowDocuments,
+      isShowThirdParty,
+      selectedPermission,
+      isCheckedDocuments,
+      monthlySchedule,
+      weeklySchedule,
+    } = this.state;
+
+    this.setState({
+      isChanged: false,
+    });
+    this.setState({});
+
+    if (defaultStorageType) {
+      selectedPermission === "disable" &&
+        this.setState({
+          selectedPermission: "enable",
+          isShowedStorageTypes: true,
+        });
+
+      this.setState({
+        selectedOption: defaultSelectedOption,
+      });
+
+      if (
+        monthlySchedule === defaultWeekly ||
+        monthlySchedule === defaultDaily
+      ) {
+        this.setState({
+          monthlySchedule: false,
+        });
+      }
+
+      if (
+        weeklySchedule === defaultMonthly ||
+        weeklySchedule === defaultDaily
+      ) {
+        this.setState({
+          weeklySchedule: false,
+        });
+      }
+
+      this.onSetDefaultOptions();
+
+      if (+defaultStorageType === 0) {
+        // Documents Module
+        isShowThirdParty
+          ? this.setState({
+              isShowThirdParty: false,
+              isCheckedThirdParty: false,
+            })
+          : this.setState({
+              isShowThirdPartyStorage: false,
+              isCheckedThirdPartyStorage: false,
+            });
+      }
+
+      if (+defaultStorageType === 1) {
+        // ThirdPartyResource Module
+        isShowDocuments || isCheckedDocuments
+          ? this.setState({
+              isShowDocuments: false,
+              isCheckedDocuments: false,
+            })
+          : this.setState({
+              isShowThirdPartyStorage: false,
+              isCheckedThirdPartyStorage: false,
+            });
+      }
+
+      if (+defaultStorageType === 2) {
+        // ThirdPartyStorage Module
+        isShowDocuments
+          ? this.setState({
+              isShowDocuments: false,
+              isCheckedDocuments: false,
+            })
+          : this.setState({
+              isShowThirdParty: false,
+              isCheckedThirdParty: false,
+            });
+      }
+    } else {
+      this.setState({
+        selectedPermission: "disable",
+        isShowedStorageTypes: false,
+
+        isCheckedDocuments: false,
+        isCheckedThirdParty: false,
+        isCheckedThirdPartyStorage: false,
+
+        isShowDocuments: false,
+        isShowThirdParty: false,
+        isShowThirdPartyStorage: false,
+      });
+    }
+  };
+  onClickShowStorage = (e) => {
+    console.log("e0", e);
+    const name = e.target.name;
+
+    // this.setState({
+    //   isChanged: defaultStorageType !== name,
+    // });
+
+    name === "0"
+      ? this.setState(
+          {
+            isShowDocuments: true,
+            isCheckedDocuments: true,
+            isShowThirdParty: false,
+            isCheckedThirdParty: false,
+            isShowThirdPartyStorage: false,
+            isCheckedThirdPartyStorage: false,
+          },
+          function () {
+            this.checkChanges();
+          }
+        )
+      : name === "1"
+      ? this.setState(
+          {
+            isShowDocuments: false,
+            isCheckedDocuments: false,
+            isShowThirdParty: true,
+            isCheckedThirdParty: true,
+            isShowThirdPartyStorage: false,
+            isCheckedThirdPartyStorage: false,
+          },
+          function () {
+            this.checkChanges();
+          }
+        )
+      : this.setState(
+          {
+            isShowDocuments: false,
+            isCheckedDocuments: false,
+            isShowThirdParty: false,
+            isCheckedThirdParty: false,
+            isShowThirdPartyStorage: true,
+            isCheckedThirdPartyStorage: true,
+          },
+          function () {
+            this.checkChanges();
+          }
+        );
+  };
+
+  checkChanges = () => {
+    const {
+      isCheckedDocuments,
+      isCheckedThirdParty,
+      isCheckedThirdPartyStorage,
+    } = this.state;
+    let changed;
+    //debugger;
+    if (isCheckedDocuments) {
+      if (+defaultStorageType === 0) {
+        changed = this.checkOptions();
+        this.setState({
+          isChanged: changed,
+        });
+        return;
+      } else {
+        this.setState({
+          isChanged: true,
+        });
+        return;
+      }
+    }
+    //debugger;
+    if (isCheckedThirdParty) {
+      if (+defaultStorageType === 1) {
+        changed = this.checkOptions();
+        this.setState({
+          isChanged: changed,
+        });
+        return;
+      } else {
+        this.setState({
+          isChanged: true,
+        });
+        return;
+      }
+    }
+    if (isCheckedThirdPartyStorage) {
+      if (+defaultStorageType === 2) {
+        changed = this.checkOptions();
+        this.setState({
+          isChanged: changed,
+        });
+        return;
+      } else {
+        this.setState({
+          isChanged: true,
+        });
+        return;
+      }
+    }
+  };
+
+  checkOptions = () => {
+    const {
+      selectedTimeOption,
+      monthlySchedule,
+      weeklySchedule,
+      selectedMonthOption,
+      selectedNumberMaxCopies,
+      selectedNumberWeekdayOption,
+      dailySchedule,
+    } = this.state;
+
+    if (selectedTimeOption !== defaultHour) {
+      return true;
+    }
+    if (+selectedNumberMaxCopies !== +defaultMaxCopies) {
+      return true;
+    }
+    if (+defaultPeriod === 0 && (monthlySchedule || weeklySchedule)) {
+      return true;
+    }
+
+    if (+defaultPeriod === 1 && (monthlySchedule || dailySchedule)) {
+      return true;
+    }
+    if (+defaultPeriod === 2 && (weeklySchedule || dailySchedule)) {
+      return true;
+    }
+    if (monthlySchedule) {
+      if (+selectedMonthOption !== defaultDay) {
+        return true;
+      }
+    }
+    //debugger;
+    if (weeklySchedule) {
+      if (+selectedNumberWeekdayOption !== defaultSelectedWeekdayOption) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+  onClickPermissions = (e) => {
+    const {
+      isCheckedDocuments,
+      isCheckedThirdParty,
+      isCheckedThirdPartyStorage,
+    } = this.state;
+    const name = e.target.defaultValue;
+    if (name === "enable") {
+      this.setState({
+        isShowedStorageTypes: true,
+
+        selectedPermission: "enable",
+      });
+
+      this.checkChanges();
+
+      if (isCheckedDocuments) {
+        this.setState({
+          isShowDocuments: true,
+        });
+      } else {
+        if (isCheckedThirdParty) {
+          this.setState({
+            isShowThirdParty: true,
+          });
+        } else {
+          if (isCheckedThirdPartyStorage) {
+            this.setState({
+              isShowThirdPartyStorage: true,
+            });
+          } else {
+            this.setState({
+              isCheckedDocuments: true,
+              isShowDocuments: true,
+              isChanged: true,
+            });
+          }
+        }
+      }
+    } else {
+      this.setState({
+        isShowedStorageTypes: false,
+        //isCheckedDocuments: false,
+        //isCheckedThirdParty: false,
+        //isCheckedThirdPartyStorage: false,
+
+        isShowDocuments: false,
+        isShowThirdParty: false,
+        isShowThirdPartyStorage: false,
+        isChanged: true,
+        selectedPermission: "disable",
+      });
+    }
+  };
+  onClickDeleteSchedule = () => {
+    const { t } = this.props;
+    this.setState({ isLoadingData: true }, function () {
+      deleteBackupSchedule()
+        .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
+        .then(() => getBackupSchedule())
+        .then((selectedSchedule) => {
+          if (selectedSchedule) {
+            defaultStorageType = `${selectedSchedule.storageType}`;
+          }
+        })
+        .catch((error) => toastr.error(error))
+        .finally(() =>
+          this.setState({ isLoadingData: false, isChanged: false })
+        );
     });
   };
 
@@ -450,7 +830,7 @@ class AutomaticBackup extends React.Component {
     });
   };
   render() {
-    const { t, panelVisible } = this.props;
+    const { t, commonThirdPartyList } = this.props;
     const {
       isShowedStorageTypes,
       isCheckedDocuments,
@@ -472,16 +852,18 @@ class AutomaticBackup extends React.Component {
       isPanelVisible,
       selectedPermission,
       isLoading,
+      isChanged,
     } = this.state;
 
-    console.log("this.folderPath", this.folderPath);
+    console.log("isChanged", isChanged);
+
     return isLoading ? (
       <></>
     ) : (
       <StyledComponent>
         <RadioButtonGroup
           className="automatic-backup_main "
-          name={"DocumentsModule"}
+          name={"0"}
           options={[
             {
               label: t("DisableAutomaticBackup"),
@@ -505,7 +887,8 @@ class AutomaticBackup extends React.Component {
                 fontSize="13px"
                 fontWeight="400"
                 label={t("DocumentsModule")}
-                name={"DocumentsModule"}
+                name={"0"}
+                key={0}
                 onClick={this.onClickShowStorage}
                 isChecked={isCheckedDocuments}
                 value="value"
@@ -523,7 +906,7 @@ class AutomaticBackup extends React.Component {
                     onClickInput={this.onClickInput}
                     isPanelVisible={isPanelVisible}
                     isCommonWithoutProvider
-                    folderPath={this.folderPath}
+                    folderPath={folderDocumentsModulePath}
                   />
 
                   <ScheduleComponent
@@ -550,16 +933,18 @@ class AutomaticBackup extends React.Component {
                 </>
               )}
 
-              <SaveCancelButtons
-                className="team-template_buttons"
-                onSaveClick={this.onSaveDocumentsModuleSettings}
-                onCancelClick={() => console.log("cancel")}
-                showReminder={false}
-                reminderTest={t("YouHaveUnsavedChanges")}
-                saveButtonLabel={t("SaveButton")}
-                cancelButtonLabel={t("CancelButton")}
-                isDisabled={isCopyingToLocal || isLoadingData}
-              />
+              {isChanged && (
+                <SaveCancelButtons
+                  className="team-template_buttons"
+                  onSaveClick={this.onSaveModuleSettings}
+                  onCancelClick={this.onCancelModuleSettings}
+                  showReminder={false}
+                  reminderTest={t("YouHaveUnsavedChanges")}
+                  saveButtonLabel={t("SaveButton")}
+                  cancelButtonLabel={t("CancelButton")}
+                  isDisabled={isCopyingToLocal || isLoadingData}
+                />
+              )}
             </StyledModules>
 
             <StyledModules>
@@ -567,7 +952,7 @@ class AutomaticBackup extends React.Component {
                 fontSize="13px"
                 fontWeight="400"
                 label={t("ThirdPartyResource")}
-                name={"ThirdPartyResource"}
+                name={"1"}
                 onClick={this.onClickShowStorage}
                 isChecked={isCheckedThirdParty}
                 value="value"
@@ -582,11 +967,12 @@ class AutomaticBackup extends React.Component {
                 <>
                   <OperationsDialog
                     onSelectFolder={this.onSelectFolder}
-                    name={"common"}
+                    name={"thirdParty"}
                     onClose={this.onClose}
                     onClickInput={this.onClickInput}
                     isPanelVisible={isPanelVisible}
-                    isCommonWithoutProvider
+                    folderList={commonThirdPartyList}
+                    folderPath={folderThirdPartyModulePath}
                   />
                   <ScheduleComponent
                     weeklySchedule={weeklySchedule}
@@ -611,6 +997,18 @@ class AutomaticBackup extends React.Component {
                   />
                 </>
               )}
+              {isChanged && (
+                <SaveCancelButtons
+                  className="team-template_buttons"
+                  onSaveClick={this.onSaveModuleSettings}
+                  onCancelClick={this.onCancelModuleSettings}
+                  showReminder={false}
+                  reminderTest={t("YouHaveUnsavedChanges")}
+                  saveButtonLabel={t("SaveButton")}
+                  cancelButtonLabel={t("CancelButton")}
+                  isDisabled={isCopyingToLocal || isLoadingData}
+                />
+              )}
             </StyledModules>
 
             <StyledModules>
@@ -618,7 +1016,7 @@ class AutomaticBackup extends React.Component {
                 fontSize="13px"
                 fontWeight="400"
                 label={t("ThirdPartyStorage")}
-                name={"ThirdPartyStorage"}
+                name={"2"}
                 onClick={this.onClickShowStorage}
                 isChecked={isCheckedThirdPartyStorage}
                 value="value"
@@ -656,7 +1054,7 @@ class AutomaticBackup extends React.Component {
           </>
         )}
 
-        {!isShowedStorageTypes && (
+        {/* {!isShowedStorageTypes && isChanged && (
           <Button
             label={t("SaveButton")}
             onClick={this.onClickDeleteSchedule}
@@ -665,16 +1063,33 @@ class AutomaticBackup extends React.Component {
             size="medium"
             tabIndex={10}
           />
+        )} */}
+
+        {!isShowedStorageTypes && isChanged && (
+          <SaveCancelButtons
+            className="team-template_buttons"
+            onSaveClick={this.onClickDeleteSchedule}
+            onCancelClick={this.onCancelModuleSettings}
+            showReminder={false}
+            reminderTest={t("YouHaveUnsavedChanges")}
+            saveButtonLabel={t("SaveButton")}
+            cancelButtonLabel={t("CancelButton")}
+            isDisabled={isCopyingToLocal || isLoadingData}
+          />
         )}
       </StyledComponent>
     );
   }
 }
-export default inject(({ auth }) => {
+export default inject(({ auth, setup }) => {
   const { language } = auth;
   const { panelVisible } = auth;
+  const { getCommonThirdPartyList } = setup;
+  const { commonThirdPartyList } = setup.dataManagement;
   return {
     language,
     panelVisible,
+    getCommonThirdPartyList,
+    commonThirdPartyList,
   };
 })(withTranslation("Settings")(observer(AutomaticBackup)));
