@@ -38,7 +38,8 @@ const EditingWrapper = styled.div`
   align-items: center;
 
   ${(props) =>
-    props.viewAs === "tile" && `margin-right: 12px; margin-left: -4px;`}
+    props.viewAs === "tile" &&
+    `margin-right: 12px !important; margin-left: -4px;`}
 
   @media (max-width: 1024px) {
     height: 56px;
@@ -134,7 +135,7 @@ const EditingWrapperComponent = (props) => {
         size="medium"
         isDisabled={isLoading}
         onClick={onClickUpdateItem}
-        icon={OkIcon}
+        icon={okIcon}
         data-itemid={itemId}
         onMouseEnter={setIsHoveredOkHandler}
         onMouseLeave={setIsHoveredOkHandler}
@@ -145,7 +146,7 @@ const EditingWrapperComponent = (props) => {
         size="medium"
         isDisabled={isLoading}
         onClick={cancelUpdateItem}
-        icon={CancelIcon}
+        icon={cancelIcon}
         data-itemid={itemId}
         data-action="cancel"
         onMouseEnter={setIsHoveredCancelHandler}

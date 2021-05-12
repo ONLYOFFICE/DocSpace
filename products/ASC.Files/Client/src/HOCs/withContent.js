@@ -264,6 +264,7 @@ export default function withContent(WrappedContent) {
         t,
         isTrashFolder,
         onFilesClick,
+        viewAs,
       } = this.props;
       const { id, fileExst, updated, createdBy, access, fileStatus } = item;
 
@@ -294,6 +295,7 @@ export default function withContent(WrappedContent) {
           itemTitle={itemTitle}
           itemId={id}
           isLoading={isLoading}
+          viewAs={viewAs}
           renameTitle={this.renameTitle}
           onClickUpdateItem={this.onClickUpdateItem}
           cancelUpdateItem={this.cancelUpdateItem}
@@ -326,6 +328,7 @@ export default function withContent(WrappedContent) {
         createFile,
         createFolder,
         isLoading,
+        viewAs,
       } = filesStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
@@ -358,6 +361,7 @@ export default function withContent(WrappedContent) {
         culture,
         homepage: config.homepage,
         viewer: auth.userStore.user,
+        viewAs,
       };
     }
   )(observer(WithContent));

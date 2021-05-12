@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import DragAndDrop from "@appserver/components/drag-and-drop";
@@ -52,7 +51,6 @@ const FilesTile = createSelectable((props) => {
       >
         <Tile
           key={item.id}
-          //data={item}
           item={item}
           temporaryIcon={temporaryIcon}
           element={element}
