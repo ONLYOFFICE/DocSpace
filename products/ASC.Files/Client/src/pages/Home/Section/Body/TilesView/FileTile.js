@@ -16,8 +16,8 @@ const FilesTile = createSelectable((props) => {
     item,
     sectionWidth,
     dragging,
-    onContentRowSelect,
-    rowContextClick,
+    onContentFileSelect,
+    fileContextClick,
     onDrop,
     onMouseDown,
     className,
@@ -31,6 +31,7 @@ const FilesTile = createSelectable((props) => {
     element,
     getIcon,
     onFilesClick,
+    onMouseUp,
   } = props;
   const temporaryIcon = getIcon(
     96,
@@ -56,10 +57,13 @@ const FilesTile = createSelectable((props) => {
           element={element}
           sectionWidth={sectionWidth}
           contentElement={sharedButton}
-          onSelect={onContentRowSelect}
-          rowContextClick={rowContextClick}
+          onSelect={onContentFileSelect}
+          tileContextClick={fileContextClick}
           isPrivacy={isPrivacy}
           dragging={dragging && isDragging}
+          onMouseUp={onMouseUp}
+          thumbnailClick={onFilesClick}
+          onDoubleClick={onFilesClick}
           {...checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}

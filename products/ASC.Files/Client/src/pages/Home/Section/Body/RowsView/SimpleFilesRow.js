@@ -51,8 +51,8 @@ const SimpleFilesRow = createSelectable((props) => {
     item,
     sectionWidth,
     dragging,
-    onContentRowSelect,
-    rowContextClick,
+    onContentFileSelect,
+    fileContextClick,
     onDrop,
     onMouseDown,
     className,
@@ -65,6 +65,7 @@ const SimpleFilesRow = createSelectable((props) => {
     checkedProps,
     element,
     onFilesClick,
+    onMouseUp,
   } = props;
 
   return (
@@ -84,9 +85,11 @@ const SimpleFilesRow = createSelectable((props) => {
           element={element}
           sectionWidth={sectionWidth}
           contentElement={sharedButton}
-          onSelect={onContentRowSelect}
-          rowContextClick={rowContextClick}
+          onSelect={onContentFileSelect}
+          rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
+          onMouseUp={onMouseUp}
+          onDoubleClick={onFilesClick}
           {...checkedProps}
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}

@@ -10,7 +10,14 @@ import { EncryptedFileIcon } from "../components/Icons";
 const svgLoader = () => <div style={{ width: "24px" }}></div>;
 export default function withFileActions(WrappedFileItem) {
   class WithFileActions extends React.Component {
-    onContentRowSelect = (checked, file) => {
+    constructor(props) {
+      super(props);
+
+      this.state = {
+        isMouseDown: false,
+      };
+    }
+    onContentFileSelect = (checked, file) => {
       const { selectRowAction } = this.props;
       if (!file) return;
       selectRowAction(checked, file);
@@ -22,7 +29,7 @@ export default function withFileActions(WrappedFileItem) {
       setSharingPanelVisible(true);
     };
 
-    rowContextClick = () => {
+    fileContextClick = () => {
       const { onSelectItem, item } = this.props;
       onSelectItem(item);
     };
@@ -93,18 +100,23 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onMouseDown = (e) => {
-      const { draggable, setTooltipPosition, setStartDrag } = this.props;
-      if (!draggable) {
-        return;
-      }
+      const { draggable, setTooltipPosition, setStartDrag, item } = this.props;
+      const { sectionWidth } = item;
+      const isMobile = sectionWidth < 500;
 
-      if (
+      this.setState({ isMouseDown: true });
+
+      if (!draggable) return;
+      if (isMobile) return;
+
+      /*if (
         window.innerWidth < 1025 ||
         e.target.tagName === "rect" ||
         e.target.tagName === "path"
       ) {
         return;
-      }
+      }*/
+
       const mouseButton = e.which
         ? e.which !== 1
         : e.button
@@ -117,6 +129,34 @@ export default function withFileActions(WrappedFileItem) {
 
       setTooltipPosition(e.pageX, e.pageY);
       setStartDrag(true);
+    };
+
+    onMouseUpHandler = (e) => {
+      const { isMouseDown } = this.state;
+      const { isFolder, viewAs, checked, item } = this.props;
+      if (
+        e.target.closest(".checkbox") ||
+        e.target.tagName === "INPUT" ||
+        e.target.closest(".expandButton") ||
+        e.target.closest(".badges") ||
+        e.button !== 0
+      )
+        return;
+
+      if (isFolder && viewAs === "tile") {
+        if (!isMouseDown) return;
+        this.onFilesClick();
+      } else {
+        if (checked) {
+          this.onContentFileSelect(!checked, item);
+          this.fileContextClick(item);
+        } else {
+          if (!isMouseDown) return;
+          this.onContentFileSelect(true, item);
+          this.fileContextClick(item);
+        }
+      }
+      this.setState({ isMouseDown: false });
     };
 
     onFilesClick = () => {
@@ -212,12 +252,13 @@ export default function withFileActions(WrappedFileItem) {
 
       return (
         <WrappedFileItem
-          onContentRowSelect={this.onContentRowSelect}
+          onContentFileSelect={this.onContentFileSelect}
           onClickShare={this.onClickShare}
-          rowContextClick={this.rowContextClick}
+          fileContextClick={this.fileContextClick}
           onDrop={this.onDrop}
           onMouseDown={this.onMouseDown}
           onFilesClick={this.onFilesClick}
+          onMouseUp={this.onMouseUpHandler}
           getClassName={this.getClassName}
           className={className}
           isDragging={isDragging}
@@ -270,6 +311,7 @@ export default function withFileActions(WrappedFileItem) {
         setIsLoading,
         fetchFiles,
         openDocEditor,
+        viewAs,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
@@ -333,6 +375,7 @@ export default function withFileActions(WrappedFileItem) {
         expandedKeys,
         addExpandedKeys,
         setMediaViewerData,
+        viewAs,
       };
     }
   )(observer(WithFileActions));
