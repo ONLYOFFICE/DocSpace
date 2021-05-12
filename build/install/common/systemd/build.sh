@@ -1,6 +1,36 @@
 #!/bin/bash
 
 BASEDIR="$(cd $(dirname $0) && pwd)"
+BUILD_PATH="$BASEDIR/modules"
+
+while [ "$1" != "" ]; do
+    case $1 in
+	    
+        -bp | --buildpath )
+        	if [ "$2" != "" ]; then
+				    BUILD_PATH=$2
+				    shift
+			    fi
+		;;
+
+        -? | -h | --help )
+            echo " Usage: bash build.sh [PARAMETER] [[PARAMETER], ...]"
+            echo "    Parameters:"
+            echo "      -bp, --buildpath           output path"
+            echo "      -?, -h, --help             this help"
+            echo "  Examples"
+            echo "  bash build.sh -bp /etc/systemd/system/"
+            exit 0
+    ;;
+
+		* )
+			echo "Unknown parameter $1" 1>&2
+			exit 1
+		;;
+    esac
+  shift
+done
+
 PRODUCT="onlyoffice/appserver"
 BASE_DIR="/etc/${PRODUCT}"
 PATH_TO_CONF="${BASE_DIR}"
@@ -141,13 +171,13 @@ reassign_values (){
 
 write_to_file () {
   sed -i -e 's#${SERVICE_NAME}#'$SERVICE_NAME'#g' -e 's#${WORK_DIR}#'$WORK_DIR'#g' -e \
-  "s#\${EXEC_START}#$EXEC_START#g" $BASEDIR/modules/AppServer-${service_name[$i]}.service
+  "s#\${EXEC_START}#$EXEC_START#g" $BUILD_PATH/AppServer-${service_name[$i]}.service
 }
 
-mkdir -p $BASEDIR/modules
+mkdir -p $BUILD_PATH
 
 for i in ${!service_name[@]}; do
-  cp $BASEDIR/service $BASEDIR/modules/AppServer-${service_name[$i]}.service
+  cp $BASEDIR/service $BUILD_PATH/AppServer-${service_name[$i]}.service
   reassign_values "${service_name[$i]}"
   write_to_file $i
 done
