@@ -63,7 +63,7 @@ const Badges = ({
       )}
       {(isFavorite || isNewWithFav) && !isTrashFolder && (
         <StyledFavoriteIcon
-          className="favorite icons-group"
+          className="favorite icons-group badge"
           size="small"
           data-action="remove"
           data-id={id}

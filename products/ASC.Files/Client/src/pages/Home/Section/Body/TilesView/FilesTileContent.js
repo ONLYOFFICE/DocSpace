@@ -32,6 +32,7 @@ const SimpleFilesTileContent = styled(TileContent)`
 
   .badge {
     margin-right: 8px;
+    cursor: pointer;
   }
 
   .new-items {
@@ -63,36 +64,13 @@ const SimpleFilesTileContent = styled(TileContent)`
 const FilesTileContent = ({
   t,
   item,
-  sectionWidth,
   titleWithoutExt,
-  updatedDate,
-  fileOwner,
-  accessToEdit,
   linkStyles,
-  newItems,
-  showNew,
-  canWebEdit,
-  canConvert,
   isTrashFolder,
   onFilesClick,
-  onShowVersionHistory,
-  onBadgeClick,
-  onClickLock,
-  onClickFavorite,
-  setConvertDialogVisible,
   badgesComponent,
 }) => {
-  const {
-    contentLength,
-    fileExst,
-    filesCount,
-    foldersCount,
-    fileStatus,
-    id,
-    versionGroup,
-    locked,
-    providerKey,
-  } = item;
+  const { fileExst } = item;
 
   const onMobileRowClick = () => {
     if (isTrashFolder || window.innerWidth > 1024) return;
