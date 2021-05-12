@@ -158,15 +158,6 @@ class SectionHeaderContent extends React.Component {
     toggleSelector(isOpen);
   };
 
-  onCancelSelector = () => {
-    this.onToggleSelector(false);
-  };
-
-  onSelect = (items) => {
-    this.onToggleSelector(false);
-    this.addUsers(items);
-  };
-
   onClose = () => {
     const { deselectUser } = this.props;
     deselectUser();

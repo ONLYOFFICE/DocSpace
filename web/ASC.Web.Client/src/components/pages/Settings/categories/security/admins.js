@@ -5,6 +5,8 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 
+import ToggleButton from "@appserver/components/toggle-button";
+import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Avatar from "@appserver/components/avatar";
 import Row from "@appserver/components/row";
@@ -30,6 +32,7 @@ import {
 } from "@appserver/common/constants";
 
 import { tablet } from "@appserver/components/utils/device";
+import { ConsoleView } from "react-device-detect";
 
 const getUserStatus = (user) => {
   if (
@@ -48,6 +51,40 @@ const getUserStatus = (user) => {
     return "unknown";
   }
 };
+
+const StyledModalBody = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  .avatar {
+    margin-right: 16px;
+  }
+
+  .toggle-btn {
+    position: relative;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+
+  .full-access-wrapper {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .setting-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+  }
+
+  .setting-heading {
+    margin-top: 12px;
+  }
+`;
 
 const ToggleContentContainer = styled.div`
   .buttons_container {
@@ -176,7 +213,6 @@ const ToggleContentContainer = styled.div`
   }
 `;
 
-let adminsFromSessionStorage = null;
 const fullAccessId = "00000000-0000-0000-0000-000000000000";
 
 class PortalAdmins extends Component {
@@ -188,10 +224,8 @@ class PortalAdmins extends Component {
       isLoading: false,
       showLoader: false,
       selectedOptions: [],
-      admins: adminsFromSessionStorage || {},
-      hasChanged: false,
-      showReminder: false,
       searchValue: "",
+      selectedUser: null,
     };
   }
 
@@ -202,7 +236,6 @@ class PortalAdmins extends Component {
       setRemoveAdmins,
       getUpdateListAdmin,
     } = this.props;
-    const { showReminder } = this.state;
 
     setAddUsers(this.addUsers);
     setRemoveAdmins(this.removeAdmins);
@@ -213,12 +246,6 @@ class PortalAdmins extends Component {
       } catch (error) {
         toastr.error(error);
       }
-    }
-
-    if (adminsFromSessionStorage && !showReminder) {
-      this.setState({
-        showReminder: true,
-      });
     }
   }
 
@@ -255,41 +282,6 @@ class PortalAdmins extends Component {
     newFilter.role = "admin";
 
     return newFilter;
-  };
-
-  onModuleIconClick = (userIds, moduleName, isAdmin) => {
-    const { admins } = this.state;
-
-    if (admins.length < 1) return false;
-    let adminIndex = null;
-
-    for (let i = 0; i < admins.length; i++) {
-      if (admins[i].id === userIds[0]) {
-        adminIndex = i;
-        break;
-      }
-    }
-
-    this.changeAdminRights(adminIndex, moduleName, isAdmin);
-  };
-
-  onFullAccessClick = (admin) => {
-    const admins = JSON.parse(JSON.stringify(this.state.admins));
-
-    const adminIndex = admins.findIndex((adminState) => {
-      if (admin.id === adminState.id) return true;
-      return false;
-    });
-
-    if (adminIndex < 0) return false;
-
-    admins[adminIndex].isAdmin = !admin.isAdmin;
-
-    this.setState({
-      admins,
-    });
-
-    this.checkChanges();
   };
 
   onCancelSelector = () => {
@@ -347,30 +339,6 @@ class PortalAdmins extends Component {
     });
   };
 
-  changeAdminRights = (adminIndex, moduleName, isAdmin) => {
-    const admins = JSON.parse(JSON.stringify(this.state.admins));
-    const listAdminModules = admins[adminIndex].listAdminModules;
-
-    let newListAdminModules = this.createNewListAdminModules(
-      isAdmin,
-      listAdminModules,
-      moduleName
-    );
-    newListAdminModules.sort();
-
-    admins[adminIndex].listAdminModules = newListAdminModules;
-    const newAdmins = [];
-
-    for (const key in admins) {
-      newAdmins.push(admins[key]);
-    }
-    this.setState({
-      admins: newAdmins,
-    });
-
-    this.checkChanges();
-  };
-
   createNewListAdminModules = (isAdmin, listAdminModules, moduleName) => {
     let newListAdminModules = listAdminModules ? listAdminModules.slice() : [];
 
@@ -382,40 +350,6 @@ class PortalAdmins extends Component {
       });
     }
     return newListAdminModules;
-  };
-
-  onSaveButtonClick = () => {
-    const { fetchPeople } = this.props;
-    const changedAdmins = this.createChangedAdminsList();
-    const changedFullAccessAdmins = this.createChangedFullAccessAdminsList();
-    const deletedAdmins = this.createDeletedAdminsList();
-    this.saveChanges(
-      changedAdmins,
-      deletedAdmins,
-      changedFullAccessAdmins
-    ).then(() => {
-      const newFilter = this.onAdminsFilter();
-      fetchPeople(newFilter)
-        .catch((error) => {
-          toastr.error(error);
-        })
-        .finally(() => {
-          this.onCancelClick();
-          this.setState({
-            showLoader: false,
-          });
-        });
-    });
-  };
-
-  onCancelClick = () => {
-    adminsFromSessionStorage = "";
-
-    this.setState({
-      admins: this.props.admins,
-      showReminder: false,
-      hasChanged: false,
-    });
   };
 
   onContentRowSelect = (checked, user) => {
@@ -436,191 +370,30 @@ class PortalAdmins extends Component {
     });
   };
 
-  onRowClick = () => {};
-
-  saveChanges = async (
-    changedAdmins,
-    deletedAdmins,
-    changedFullAccessAdmins
-  ) => {
-    await this.saveChangedFullAccessAdmins(changedFullAccessAdmins);
-    await this.saveChangedAdmins(changedAdmins);
-    await this.saveDeletedAdmins(deletedAdmins);
-  };
-
-  saveChangedAdmins = async (changedAdmins) => {
-    for (let i = 0; i < changedAdmins.length; i++) {
-      const adminBeforeChanges = this.getAdminById(
-        this.props.admins,
-        changedAdmins[i].id
-      );
-
-      let changedAdminModules = adminBeforeChanges
-        ? this.getChangedAdminModules(adminBeforeChanges, changedAdmins[i])
-        : changedAdmins[i].listAdminModules &&
-          changedAdmins[i].listAdminModules.slice();
-
-      if (changedAdminModules && changedAdminModules.length > 0) {
-        for (const key in changedAdminModules) {
-          const currentModule = this.props.modules.find(
-            (module) =>
-              module.title.toLowerCase() ===
-              changedAdminModules[key].toLowerCase()
-          );
-          if (currentModule)
-            await this.onChangeAdmin(
-              [changedAdmins[i].id],
-              this.isModuleAdmin(changedAdmins[i], changedAdminModules[key]),
-              currentModule.id
-            );
-        }
-      }
-    }
-  };
-
-  saveDeletedAdmins = async (deletedAdmins) => {
-    for (let i = 0; i < deletedAdmins.length; i++) {
-      await this.onChangeAdmin([deletedAdmins[i].id], false, fullAccessId);
-    }
-  };
-
-  saveChangedFullAccessAdmins = async (changedAdmins) => {
-    for (let i = 0; i < changedAdmins.length; i++) {
-      const modulesList = changedAdmins[i].listAdminModules;
-
-      await this.onChangeAdmin(
-        [changedAdmins[i].id],
-        changedAdmins[i].isAdmin,
-        fullAccessId
-      );
-
-      if (modulesList && modulesList.length > 0) {
-        for (const key in modulesList) {
-          const currentModule = this.props.modules.find(
-            (module) =>
-              module.title.toLowerCase() === modulesList[key].toLowerCase()
-          );
-          if (currentModule)
-            await this.onChangeAdmin(
-              [changedAdmins[i].id],
-              this.isModuleAdmin(changedAdmins[i], modulesList[key]),
-              currentModule.id
-            );
-        }
-      }
-    }
-  };
-
-  getChangedAdminModules = (adminBeforeChanges, admin) => {
-    const modulesListBeforeChanges = adminBeforeChanges.listAdminModules
-      ? adminBeforeChanges.listAdminModules.slice()
-      : [];
-    const modulesList = admin.listAdminModules
-      ? admin.listAdminModules.slice()
-      : [];
-    let newListAdminModules = [];
-
-    newListAdminModules = modulesList.filter((module) => {
-      let hasModule = false;
-
-      for (let i = 0; i < modulesListBeforeChanges.length; i++) {
-        if (modulesListBeforeChanges[i] === module) {
-          hasModule = true;
-          modulesListBeforeChanges.splice(i, 1);
-          break;
-        }
-      }
-
-      return !hasModule;
+  onRowClick = (user) => {
+    this.setState({
+      selectedUser: user,
     });
-
-    if (modulesListBeforeChanges.length > 0) {
-      newListAdminModules = newListAdminModules
-        .concat(modulesListBeforeChanges)
-        .sort();
-    }
-
-    return newListAdminModules;
+    this.openModal();
   };
 
-  createChangedAdminsList = () => {
-    const { admins } = this.state;
-    let changedAdmins = [];
-
-    for (let i = 0; i < admins.length; i++) {
-      const adminBeforeChanges = this.getAdminById(
-        this.props.admins,
-        admins[i].id
-      );
-
-      if (adminBeforeChanges) {
-        if (
-          adminBeforeChanges.isAdmin === admins[i].isAdmin &&
-          !this.compareObjects(admins[i], adminBeforeChanges)
-        ) {
-          changedAdmins.push(admins[i]);
-        }
-      } else if (!this.compareObjects(admins[i], adminBeforeChanges)) {
-        changedAdmins.push(admins[i]);
-      }
-    }
-
-    if (changedAdmins) return changedAdmins;
-  };
-
-  createDeletedAdminsList = () => {
-    const { admins } = this.props;
-    let deletedAdmins = [];
-
-    if (!admins && admins.length < 1) return deletedAdmins;
-
-    for (let i = 0; i < admins.length; i++) {
-      const adminAfterChanges = this.getAdminById(
-        this.state.admins,
-        admins[i].id
-      );
-      if (!adminAfterChanges) deletedAdmins.push(admins[i]);
-    }
-
-    return deletedAdmins;
-  };
-
-  createChangedFullAccessAdminsList = () => {
-    const { admins } = this.state;
-    let changedAdmins = [];
-
-    for (let i = 0; i < admins.length; i++) {
-      const adminBeforeChanges = this.getAdminById(
-        this.props.admins,
-        admins[i].id
-      );
-
-      if (
-        (!adminBeforeChanges && admins[i].isAdmin) ||
-        (adminBeforeChanges && adminBeforeChanges.isAdmin !== admins[i].isAdmin)
-      ) {
-        changedAdmins.push(admins[i]);
-      }
-    }
-
-    if (changedAdmins) return changedAdmins;
-  };
-
-  getAdminById = (admins, id) => {
-    let currentAdmin;
-
-    admins.findIndex((admin) => {
-      for (let key in admin) {
-        if (key === "id" && admin[key] === id) {
-          currentAdmin = JSON.parse(JSON.stringify(admin));
-          return true;
-        }
-      }
-      return false;
+  onCloseModal = () => {
+    this.setState({
+      modalIsVisible: false,
     });
-
-    if (currentAdmin) return currentAdmin;
   };
+
+  openModal = () => {
+    this.setState({
+      modalIsVisible: true,
+    });
+  };
+
+  onFullAccessToggle = () => {};
+
+  onDocumentToggle = () => {};
+
+  onPeopleToggle = () => {};
 
   isModuleAdmin = (user, moduleName) => {
     let isModuleAdmin = false;
@@ -635,22 +408,6 @@ class PortalAdmins extends Component {
     }
 
     return isModuleAdmin;
-  };
-
-  checkChanges = () => {
-    let hasChanged =
-      adminsFromSessionStorage &&
-      !this.compareObjects(adminsFromSessionStorage, this.props.admins);
-
-    if (hasChanged !== this.state.hasChanged) {
-      this.setState({
-        hasChanged: hasChanged,
-      });
-    }
-  };
-
-  compareObjects = (obj1, obj2) => {
-    return JSON.stringify(obj1) === JSON.stringify(obj2);
   };
 
   getFilteredAdmins = (admins, searchValue) => {
@@ -677,9 +434,9 @@ class PortalAdmins extends Component {
     const {
       isLoading,
       showLoader,
-      hasChanged,
-      showReminder,
       searchValue,
+      modalIsVisible,
+      selectedUser,
     } = this.state;
 
     const filteredAdmins = searchValue
@@ -719,6 +476,90 @@ class PortalAdmins extends Component {
                 groupsCaption={groupsCaption}
                 onCancel={this.onCancelSelector}
               />
+              {selectedUser && (
+                <ModalDialog
+                  visible={modalIsVisible}
+                  zIndex={310}
+                  onClose={this.onCloseModal}
+                >
+                  <ModalDialog.Header>{t("AccessSettings")}</ModalDialog.Header>
+                  <ModalDialog.Body>
+                    <StyledModalBody>
+                      <div className="user-info">
+                        <Avatar
+                          size="medium"
+                          role={getUserRole(selectedUser)}
+                          userName={selectedUser.displayName}
+                          source={selectedUser.avatar}
+                          className="avatar"
+                        />
+                        <div>
+                          <Text
+                            color="#316DAA"
+                            fontWeight={600}
+                            fontSize="19px"
+                          >
+                            {selectedUser.displayName}
+                          </Text>
+                          {selectedUser.department && (
+                            <Text
+                              color="#A3A9AE"
+                              fontWeight={400}
+                              fontSize="13px"
+                            >
+                              {selectedUser.department}
+                            </Text>
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="full-access-wrapper">
+                          <Text fontWeight={600} fontSize="15px">
+                            Full access
+                          </Text>
+                          <ToggleButton
+                            className="toggle-btn"
+                            isChecked={true}
+                            onChange={this.onFullAccessToggle}
+                            isDisabled={false}
+                          />
+                        </div>
+                        <Text
+                          className="setting-heading"
+                          fontWeight={600}
+                          fontSize="15px"
+                        >
+                          Admin in modules
+                        </Text>
+                        <div className="module-settings">
+                          <div className="setting-wrapper">
+                            <Text fontWeight={400} fontSize="13px">
+                              Documents
+                            </Text>
+                            <ToggleButton
+                              className="toggle-btn"
+                              isChecked={true}
+                              onChange={this.onDocumentToggle}
+                              isDisabled={false}
+                            />
+                          </div>
+                          <div className="setting-wrapper">
+                            <Text fontWeight={400} fontSize="13px">
+                              People
+                            </Text>
+                            <ToggleButton
+                              className="toggle-btn"
+                              isChecked={true}
+                              onChange={this.onPeopleToggle}
+                              isDisabled={false}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </StyledModalBody>
+                  </ModalDialog.Body>
+                </ModalDialog>
+              )}
 
               {filteredAdmins.length > 0 ? (
                 <>
@@ -750,26 +591,16 @@ class PortalAdmins extends Component {
                             status={user.status}
                             onSelect={this.onContentRowSelect}
                             data={user}
+                            data-letter="test"
                             element={element}
                             checkbox={true}
                             checked={checked}
                             contextButtonSpacerWidth={"0px"}
-                            onRowClick={this.onRowClick}
+                            onRowClick={() => this.onRowClick(user)}
                           >
                             <>
                               <div className="userData">
                                 <div className="nameAndStatus">
-                                  {/*<Link
-                                    isTextOverflow={true}
-                                    type="page"
-                                    title={user.displayName}
-                                    isBold={true}
-                                    fontSize="15px"
-                                    color={nameColor}
-                                    href={user.profileUrl}
-                                  >
-                                    {user.displayName}
-                                  </Link>*/}
                                   <Text
                                     isBold={true}
                                     fontSize="15px"
@@ -827,16 +658,6 @@ class PortalAdmins extends Component {
                       })}
                     </RowContainer>
                   </div>
-                  {hasChanged && (
-                    <SaveCancelButtons
-                      onSaveClick={this.onSaveButtonClick}
-                      onCancelClick={this.onCancelClick}
-                      showReminder={showReminder}
-                      reminderTest={t("YouHaveUnsavedChanges")}
-                      saveButtonLabel={t("SaveButton")}
-                      cancelButtonLabel={t("CancelButton")}
-                    />
-                  )}
                 </>
               ) : (
                 <EmptyScreenContainer
