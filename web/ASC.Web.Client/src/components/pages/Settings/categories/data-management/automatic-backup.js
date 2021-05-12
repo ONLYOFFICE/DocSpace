@@ -215,6 +215,7 @@ class AutomaticBackup extends React.Component {
         isCheckedDocuments: true,
         selectedTimeOption: defaultHour,
         selectedMaxCopies: defaultMaxCopies,
+        selectedNumberMaxCopies: defaultMaxCopies,
       });
     }
     if (defaultStorageType === "1") {
@@ -224,6 +225,7 @@ class AutomaticBackup extends React.Component {
         isCheckedThirdParty: true,
         selectedTimeOption: defaultHour,
         selectedMaxCopies: defaultMaxCopies,
+        selectedNumberMaxCopies: defaultMaxCopies,
       });
     }
 
@@ -411,7 +413,7 @@ class AutomaticBackup extends React.Component {
   onSelectMaxCopies = (options) => {
     const key = options.key;
     const label = options.label;
-
+    debugger;
     this.setState(
       {
         selectedNumberMaxCopies: key,
@@ -608,8 +610,8 @@ class AutomaticBackup extends React.Component {
     // this.setState({
     //   isChanged: defaultStorageType !== name,
     // });
-
-    name === "0"
+    //debugger;
+    +name === 0
       ? this.setState(
           {
             isShowDocuments: true,
@@ -623,7 +625,7 @@ class AutomaticBackup extends React.Component {
             this.checkChanges();
           }
         )
-      : name === "1"
+      : +name === 1
       ? this.setState(
           {
             isShowDocuments: false,
@@ -661,6 +663,7 @@ class AutomaticBackup extends React.Component {
     let changed;
     //debugger;
     if (isCheckedDocuments) {
+      //debugger;
       if (+defaultStorageType === 0) {
         changed = this.checkOptions();
         this.setState({
@@ -715,7 +718,9 @@ class AutomaticBackup extends React.Component {
       selectedNumberWeekdayOption,
       dailySchedule,
     } = this.state;
-
+    console.log("+selectedNumberMaxCopies", +selectedNumberMaxCopies);
+    console.log("+selectedNumberMaxCopies", +selectedNumberMaxCopies);
+    //debugger;
     if (selectedTimeOption !== defaultHour) {
       return true;
     }
