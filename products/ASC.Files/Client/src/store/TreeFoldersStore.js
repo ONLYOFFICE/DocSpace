@@ -10,7 +10,6 @@ class TreeFoldersStore {
   expandedKeys = [];
   expandedPanelKeys = null;
 
-  commonTreeFolder = [];
   constructor(selectedFolderStore) {
     makeAutoObservable(this);
     this.selectedFolderStore = selectedFolderStore;
@@ -45,9 +44,7 @@ class TreeFoldersStore {
   };
 
   getCommonFolder = () => {
-    this.commonTreeFolder = this.treeFolders.find(
-      (x) => x.rootFolderName === "@common"
-    );
+    return this.treeFolders.find((x) => x.rootFolderName === "@common");
   };
 
   updateRootBadge = (id, count) => {

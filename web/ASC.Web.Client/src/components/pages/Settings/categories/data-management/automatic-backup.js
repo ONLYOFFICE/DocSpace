@@ -116,6 +116,7 @@ class AutomaticBackup extends React.Component {
       isPanelVisible: false,
       isLoading: false,
       isChanged: false,
+      isSetDefaultFolderPath: false,
     };
 
     this.periodOptions = [
@@ -178,7 +179,6 @@ class AutomaticBackup extends React.Component {
             defaultDay = selectedSchedule.cronParams.day;
             defaultMaxCopies = `${selectedSchedule.backupsStored}`;
 
-            this.onSelectFolder([`${folderId}`]);
             getFolderPath(folderId)
               .then((folderPath) =>
                 defaultStorageType === "0"
@@ -202,7 +202,15 @@ class AutomaticBackup extends React.Component {
         );
     });
   }
+  componentDidUpdate(prevState) {
+    const { isChanged, isSetDefaultFolderPath } = this.state;
 
+    if (isChanged !== prevState.isChanged && isSetDefaultFolderPath) {
+      this.setState({
+        isSetDefaultFolderPath: false,
+      });
+    }
+  }
   componentWillUnmount() {
     clearInterval(this.timerId);
   }
@@ -413,7 +421,7 @@ class AutomaticBackup extends React.Component {
   onSelectMaxCopies = (options) => {
     const key = options.key;
     const label = options.label;
-    debugger;
+
     this.setState(
       {
         selectedNumberMaxCopies: key,
@@ -429,6 +437,7 @@ class AutomaticBackup extends React.Component {
     console.log("folderId", folderId);
     this.setState({
       selectedFolder: folderId,
+      isChanged: true,
     });
   };
 
@@ -517,7 +526,7 @@ class AutomaticBackup extends React.Component {
     this.setState({
       isChanged: false,
     });
-    this.setState({});
+    this.setState({ isSetDefaultFolderPath: true });
 
     if (defaultStorageType) {
       selectedPermission === "disable" &&
@@ -718,8 +727,7 @@ class AutomaticBackup extends React.Component {
       selectedNumberWeekdayOption,
       dailySchedule,
     } = this.state;
-    console.log("+selectedNumberMaxCopies", +selectedNumberMaxCopies);
-    console.log("+selectedNumberMaxCopies", +selectedNumberMaxCopies);
+
     //debugger;
     if (selectedTimeOption !== defaultHour) {
       return true;
@@ -858,9 +866,10 @@ class AutomaticBackup extends React.Component {
       selectedPermission,
       isLoading,
       isChanged,
+      isSetDefaultFolderPath,
     } = this.state;
 
-    console.log("isChanged", isChanged);
+    console.log("folderThirdPartyModulePath", folderThirdPartyModulePath);
 
     return isLoading ? (
       <></>
@@ -912,6 +921,7 @@ class AutomaticBackup extends React.Component {
                     isPanelVisible={isPanelVisible}
                     isCommonWithoutProvider
                     folderPath={folderDocumentsModulePath}
+                    isSetDefaultFolderPath={isSetDefaultFolderPath}
                   />
 
                   <ScheduleComponent
@@ -978,6 +988,7 @@ class AutomaticBackup extends React.Component {
                     isPanelVisible={isPanelVisible}
                     folderList={commonThirdPartyList}
                     folderPath={folderThirdPartyModulePath}
+                    isSetDefaultFolderPath={isSetDefaultFolderPath}
                   />
                   <ScheduleComponent
                     weeklySchedule={weeklySchedule}
