@@ -16,6 +16,7 @@ import SearchInput from "@appserver/components/search-input";
 import RequestLoader from "@appserver/components/request-loader";
 import Loader from "@appserver/components/loader";
 import EmptyScreenContainer from "@appserver/components/empty-screen-container";
+import PeopleSelector from "people/PeopleSelector";
 
 import { inject, observer } from "mobx-react";
 
@@ -157,7 +158,7 @@ const ToggleContentContainer = styled.div`
 
     .actionIconsWrapper {
       .fullAccessWrapper {
-        margin-right: 10px;
+        margin-right: 0;
       }
 
       .iconWrapper {
@@ -183,7 +184,6 @@ class PortalAdmins extends Component {
     super(props);
 
     this.state = {
-      showSelector: false,
       showFullAdminSelector: false,
       isLoading: false,
       showLoader: false,
@@ -290,6 +290,19 @@ class PortalAdmins extends Component {
     });
 
     this.checkChanges();
+  };
+
+  onCancelSelector = () => {
+    const { toggleSelector } = this.props;
+
+    toggleSelector(false);
+  };
+
+  onSelect = (items) => {
+    const { toggleSelector } = this.props;
+
+    toggleSelector(false);
+    this.addUsers(items);
   };
 
   findAdminById = (admin) => {
@@ -422,6 +435,8 @@ class PortalAdmins extends Component {
       searchValue: value,
     });
   };
+
+  onRowClick = () => {};
 
   saveChanges = async (
     changedAdmins,
@@ -652,7 +667,13 @@ class PortalAdmins extends Component {
   };
 
   render() {
-    const { t, admins, isUserSelected } = this.props;
+    const {
+      t,
+      admins,
+      isUserSelected,
+      selectorIsOpen,
+      groupsCaption,
+    } = this.props;
     const {
       isLoading,
       showLoader,
@@ -690,6 +711,14 @@ class PortalAdmins extends Component {
                 onClearSearch={this.onSearchChange}
                 value={searchValue}
               />
+              <PeopleSelector
+                isMultiSelect={true}
+                displayType="aside"
+                isOpen={!!selectorIsOpen}
+                onSelect={this.onSelect}
+                groupsCaption={groupsCaption}
+                onCancel={this.onCancelSelector}
+              />
 
               {filteredAdmins.length > 0 ? (
                 <>
@@ -725,11 +754,12 @@ class PortalAdmins extends Component {
                             checkbox={true}
                             checked={checked}
                             contextButtonSpacerWidth={"0px"}
+                            onRowClick={this.onRowClick}
                           >
                             <>
                               <div className="userData">
                                 <div className="nameAndStatus">
-                                  <Link
+                                  {/*<Link
                                     isTextOverflow={true}
                                     type="page"
                                     title={user.displayName}
@@ -739,7 +769,14 @@ class PortalAdmins extends Component {
                                     href={user.profileUrl}
                                   >
                                     {user.displayName}
-                                  </Link>
+                                  </Link>*/}
+                                  <Text
+                                    isBold={true}
+                                    fontSize="15px"
+                                    color={nameColor}
+                                  >
+                                    {user.displayName}
+                                  </Text>
                                 </div>
                               </div>
                               <div className="actionIconsWrapper">
@@ -843,9 +880,9 @@ PortalAdmins.propTypes = {
 };
 
 export default inject(({ auth, setup }) => {
-  const { admins, owner, filter } = setup.security.accessRight;
+  const { admins, owner, filter, selectorIsOpen } = setup.security.accessRight;
   const { user: me } = auth.userStore;
-  const { setAddUsers, setRemoveAdmins } = setup;
+  const { setAddUsers, setRemoveAdmins, toggleSelector } = setup;
   const {
     selectUser,
     deselectUser,
@@ -871,5 +908,7 @@ export default inject(({ auth, setup }) => {
     selection,
     isUserSelected,
     setSelected,
+    selectorIsOpen,
+    toggleSelector,
   };
 })(withTranslation("Settings")(withRouter(observer(PortalAdmins))));

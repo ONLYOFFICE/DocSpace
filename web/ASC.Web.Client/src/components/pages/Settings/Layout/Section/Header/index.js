@@ -7,7 +7,6 @@ import Headline from "@appserver/common/components/Headline";
 import IconButton from "@appserver/components/icon-button";
 import GroupButtonsMenu from "@appserver/components/group-buttons-menu";
 import { tablet, desktop } from "@appserver/components/utils/device";
-import PeopleSelector from "people/PeopleSelector";
 
 import {
   getKeyByLink,
@@ -154,10 +153,9 @@ class SectionHeaderContent extends React.Component {
     addUsers(items);
   };
 
-  onToggleSelector = (status = !this.state.showSelector) => {
-    this.setState({
-      showSelector: status,
-    });
+  onToggleSelector = (isOpen = !this.props.selectorIsOpen) => {
+    const { toggleSelector } = this.props;
+    toggleSelector(isOpen);
   };
 
   onCancelSelector = () => {
@@ -167,7 +165,6 @@ class SectionHeaderContent extends React.Component {
   onSelect = (items) => {
     this.onToggleSelector(false);
     this.addUsers(items);
-    //this.changeOwner(items[0]);
   };
 
   onClose = () => {
@@ -255,14 +252,6 @@ class SectionHeaderContent extends React.Component {
                   onClick={this.onToggleSelector}
                   className="action-button"
                 />
-                <PeopleSelector
-                  isMultiSelect={true}
-                  displayType="aside"
-                  isOpen={showSelector}
-                  onSelect={this.onSelect}
-                  groupsCaption={groupsCaption}
-                  onCancel={this.onCancelSelector}
-                />
               </div>
             )}
           </HeaderContainer>
@@ -275,6 +264,7 @@ class SectionHeaderContent extends React.Component {
 export default inject(({ auth, setup }) => {
   const { customNames } = auth.settingsStore;
   const { addUsers, removeAdmins } = setup.headerAction;
+  const { toggleSelector } = setup;
   const {
     selected,
     setSelected,
@@ -284,7 +274,7 @@ export default inject(({ auth, setup }) => {
     deselectUser,
     selectAll,
   } = setup.selectionStore;
-  const { admins } = setup.security.accessRight;
+  const { admins, selectorIsOpen } = setup.security.accessRight;
 
   return {
     addUsers,
@@ -298,5 +288,7 @@ export default inject(({ auth, setup }) => {
     isHeaderVisible,
     deselectUser,
     selectAll,
+    toggleSelector,
+    selectorIsOpen,
   };
 })(withRouter(withTranslation("Settings")(observer(SectionHeaderContent))));

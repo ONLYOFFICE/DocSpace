@@ -20,6 +20,7 @@ class SettingsSetupStore {
       admins: [],
       owner: {},
       filter: Filter.getDefault(),
+      selectorIsOpen: false,
     },
   };
 
@@ -80,6 +81,10 @@ class SettingsSetupStore {
 
   setRemoveAdmins = (func) => {
     this.headerAction.removeAdmins = func;
+  };
+
+  toggleSelector = (isOpen) => {
+    this.security.accessRight.selectorIsOpen = isOpen;
   };
 
   setSelectedConsumer = (selectedConsumerName) => {
