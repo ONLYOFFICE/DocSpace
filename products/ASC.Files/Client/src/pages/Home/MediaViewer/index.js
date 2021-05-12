@@ -63,6 +63,7 @@ const FilesMediaViewer = (props) => {
       let file = files.find((file) => file.id === id);
       if (file) {
         setRemoveMediaItem(file);
+        if (playlist.length === 1) onMediaViewerClose();
         deleteItemAction(file.id, file.folderId, translations, true);
       }
     }

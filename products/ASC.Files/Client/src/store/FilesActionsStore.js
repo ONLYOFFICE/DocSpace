@@ -284,8 +284,8 @@ class FilesActionStore {
       });
 
       isFile
-        ? deleteFileAction(itemId, currentFolderId, translations)
-        : deleteFolderAction(itemId, currentFolderId, translations);
+        ? this.deleteFileAction(itemId, currentFolderId, translations)
+        : this.deleteFolderAction(itemId, currentFolderId, translations);
     }
   };
 

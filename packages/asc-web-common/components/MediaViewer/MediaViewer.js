@@ -436,7 +436,7 @@ class MediaViewer extends React.Component {
               onClick={this.props.onClose && this.props.onClose}
               className="mediaPlayerClose"
             >
-              <CrossIcon size="medium" isfill={true} color="#fff" />
+              <CrossIcon size="medium" /* isfill={true} */ color="#fff" />
             </ControlBtn>
           </div>
         </div>
