@@ -133,7 +133,7 @@
   "AutomaticBackupSettingsDescription": "The Automatic backup option is used to automate the portal data backup process to be able to restore it later on a local server. Choose the data storage, automatic backup period and maximal number of saved copies.",
   "ManualBackup": "Manual backup",
   "ManualBackupSettingsDescription": "Manual backup option is used to backup the portal data to be able to restore it later to your local server.",
-  "ManualBackupSettingsNoteDescription": "При создании резервной копии в ручную, в неё не будут включены данные о лицензии. После восстановления данных из бекапа вам понадобится повторно загрузить файл лицензии.",
+  "ManualBackupSettingsNoteDescription": "The license data will not be included into the backup. After restoring data from the backup, you will need to upload your license file again.",
   "TemporaryStorage": "Temporary storage",
   "TemporaryStorageDescription": "Резервная копия будет храниться в разделе Backup, вы сможете скачать её в течение 24 часов с момента создания.",
   "MakeCopy": "Make copy",
