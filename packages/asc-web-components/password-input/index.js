@@ -426,13 +426,14 @@ class PasswordInput extends React.Component {
       showCopyLink,
     } = this.props;
 
-    const { copyLabel, disableCopyAction } = this.state;
+    const { copyLabel, disableCopyAction, type } = this.state;
 
     return (
       <StyledInput
         onValidateInput={onValidateInput}
         className={className}
         style={style}
+        visiblePassword={type === "password"}
       >
         {simpleView ? (
           <>

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import Text from "../text";
 import { tablet, mobile } from "../utils/device";
 import Base from "../themes/base";
+import { isSafari, isFirefox, isIOS, isDesktop } from "react-device-detect";
 // eslint-disable-next-line no-unused-vars
 const SimpleInput = ({ onValidateInput, onCopyToClipboard, ...props }) => (
   <div {...props}></div>
@@ -20,6 +21,7 @@ const StyledInput = styled(SimpleInput)`
   line-height: ${(props) => props.theme.passwordInput.lineHeight};
   flex-direction: row;
   flex-wrap: wrap;
+  position: relative;
 
   .input-relative {
     svg {
@@ -36,8 +38,16 @@ const StyledInput = styled(SimpleInput)`
     flex-wrap: wrap;
   }
 
+  .input-block-icon {
+    height: 42px;
+  }
+
   .append {
     padding-right: 8px;
+    position: absolute;
+    right: -16px;
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .prepend-children {
