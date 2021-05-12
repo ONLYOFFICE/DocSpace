@@ -63,6 +63,10 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class RelationshipEventDao : AbstractDao
     {
+        private CrmSecurity _crmSecurity;
+        private TenantUtil _tenantUtil;
+        private FilesIntegration _filesIntegration;
+        private FactoryIndexerEvents _factoryIndexer;
 
         public RelationshipEventDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
@@ -70,8 +74,6 @@ namespace ASC.CRM.Core.Dao
             FilesIntegration filesIntegration,
             CrmSecurity crmSecurity,
             TenantUtil tenantUtil,
-            SetupInfo setupInfo,
-            PathProvider pathProvider,
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
             IMapper mapper
@@ -83,25 +85,10 @@ namespace ASC.CRM.Core.Dao
                         ascCache,
                         mapper)
         {
-            FilesIntegration = filesIntegration;
-            TenantUtil = tenantUtil;
-            CRMSecurity = crmSecurity;
-            SetupInfo = setupInfo;
-            PathProvider = pathProvider;
+            _filesIntegration = filesIntegration;
+            _tenantUtil = tenantUtil;
+            _crmSecurity = crmSecurity;
         }
-
-
-        public PathProvider PathProvider { get; }
-
-        public SetupInfo SetupInfo { get; }
-
-        public CrmSecurity CRMSecurity { get; }
-
-        public TenantUtil TenantUtil { get; }
-
-        public FilesIntegration FilesIntegration { get; }
-
-        public FactoryIndexerEvents FactoryIndexer { get; }
 
         public RelationshipEvent AttachFiles(int contactID, EntityType entityType, int entityID, int[] fileIDs)
         {
@@ -128,7 +115,7 @@ namespace ASC.CRM.Core.Dao
         {
             if (fileIDs.Length == 0) return;
 
-            var dao = FilesIntegration.DaoFactory.GetTagDao<int>();
+            var dao = _filesIntegration.DaoFactory.GetTagDao<int>();
 
             var tags = fileIDs.ToList().ConvertAll(fileID => new Tag("RelationshipEvent_" + eventID, TagType.System, Guid.Empty) { EntryType = FileEntryType.File, EntryId = fileID });
 
@@ -170,7 +157,7 @@ namespace ASC.CRM.Core.Dao
             sqlQuery = sqlQuery.Where(x => x.HaveFiles);
 
             var tagNames = sqlQuery.Select(x => String.Format("RelationshipEvent_{0}", x.Id));
-            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
+            var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
 
             return tagdao.GetTags(tagNames.ToArray(), TagType.System)
                .Where(t => t.EntryType == FileEntryType.File)
@@ -180,12 +167,12 @@ namespace ASC.CRM.Core.Dao
 
         public List<File<int>> GetAllFiles(int[] contactID, EntityType entityType, int entityID)
         {
-            var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             var ids = GetFilesIDs(contactID, entityType, entityID);
             var files = 0 < ids.Length ? filedao.GetFiles(ids) : new List<File<int>>();
 
-            files.ForEach(CRMSecurity.SetAccessTo);
+            files.ForEach(_crmSecurity.SetAccessTo);
 
             return files.ToList();
         }
@@ -195,8 +182,8 @@ namespace ASC.CRM.Core.Dao
             if (eventID == null || eventID.Length == 0)
                 throw new ArgumentException("eventID");
 
-            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
-            var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
+            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             var findedTags = tagdao.GetTags(eventID.Select(item => String.Concat("RelationshipEvent_", item)).ToArray(),
                 TagType.System).Where(t => t.EntryType == FileEntryType.File);
@@ -222,13 +209,13 @@ namespace ASC.CRM.Core.Dao
             if (eventID == 0)
                 throw new ArgumentException("eventID");
 
-            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
-            var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
+            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             var ids = tagdao.GetTags(String.Concat("RelationshipEvent_", eventID), TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => Convert.ToInt32(t.EntryId)).ToArray();
             var files = 0 < ids.Length ? filedao.GetFiles(ids) : new List<File<int>>();
 
-            files.ForEach(CRMSecurity.SetAccessTo);
+            files.ForEach(_crmSecurity.SetAccessTo);
 
             return files.ToList();
         }
@@ -242,7 +229,7 @@ namespace ASC.CRM.Core.Dao
 
             var files = GetAllFiles(contactID, entityType, entityID);
 
-            var dao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             foreach (var file in files)
             {
@@ -252,17 +239,17 @@ namespace ASC.CRM.Core.Dao
 
         public List<int> RemoveFile(File<int> file)
         {
-            CRMSecurity.DemandDelete(file);
+            _crmSecurity.DemandDelete(file);
 
             List<int> eventIDs;
 
-            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
+            var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
 
             var tags = tagdao.GetTags(file.ID, FileEntryType.File, TagType.System).ToList().FindAll(tag => tag.TagName.StartsWith("RelationshipEvent_"));
 
             eventIDs = tags.Select(item => Convert.ToInt32(item.TagName.Split(new[] { '_' })[1])).ToList();
 
-            var dao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             dao.DeleteFile(file.ID);
 
@@ -314,12 +301,12 @@ namespace ASC.CRM.Core.Dao
 
         public RelationshipEvent CreateItem(RelationshipEvent item)
         {
-            CRMSecurity.DemandCreateOrUpdate(item);
+            _crmSecurity.DemandCreateOrUpdate(item);
 
             var htmlBody = String.Empty;
 
             if (item.CreateOn == DateTime.MinValue)
-                item.CreateOn = TenantUtil.DateTimeNow();
+                item.CreateOn = _tenantUtil.DateTimeNow();
 
             item.CreateBy = _securityContext.CurrentAccount.ID;
             item.LastModifedBy = _securityContext.CurrentAccount.ID;
@@ -388,7 +375,7 @@ namespace ASC.CRM.Core.Dao
             {
                 ContactId = item.ContactID,
                 Content = item.Content,
-                CreateOn = TenantUtil.DateTimeToUtc(item.CreateOn),
+                CreateOn = _tenantUtil.DateTimeToUtc(item.CreateOn),
                 CreateBy = item.CreateBy,
                 EntityType = item.EntityType,
                 EntityId = item.EntityID,
@@ -405,9 +392,9 @@ namespace ASC.CRM.Core.Dao
             item.ID = itemToInsert.Id;
 
             if (item.CreateOn.Kind == DateTimeKind.Utc)
-                item.CreateOn = TenantUtil.DateTimeFromUtc(item.CreateOn);
+                item.CreateOn = _tenantUtil.DateTimeFromUtc(item.CreateOn);
 
-            FactoryIndexer.Index(itemToInsert);
+            _factoryIndexer.Index(itemToInsert);
 
             return item;
         }
@@ -489,15 +476,15 @@ namespace ASC.CRM.Core.Dao
 
             if (fromDate != DateTime.MinValue && toDate != DateTime.MinValue)
             {
-                sqlQuery = sqlQuery.Where(x => x.CreateOn >= TenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= TenantUtil.DateTimeToUtc(toDate.AddDays(1).AddMinutes(-1)));
+                sqlQuery = sqlQuery.Where(x => x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate.AddDays(1).AddMinutes(-1)));
             }
             else if (fromDate != DateTime.MinValue)
             {
-                sqlQuery = sqlQuery.Where(x => x.CreateOn >= TenantUtil.DateTimeToUtc(fromDate));
+                sqlQuery = sqlQuery.Where(x => x.CreateOn >= _tenantUtil.DateTimeToUtc(fromDate));
             }
             else if (toDate != DateTime.MinValue)
             {
-                sqlQuery = sqlQuery.Where(x => x.CreateOn <= TenantUtil.DateTimeToUtc(toDate).AddDays(1).AddMinutes(-1));
+                sqlQuery = sqlQuery.Where(x => x.CreateOn <= _tenantUtil.DateTimeToUtc(toDate).AddDays(1).AddMinutes(-1));
             }
 
             if (createBy != Guid.Empty)
@@ -519,7 +506,7 @@ namespace ASC.CRM.Core.Dao
 
                 List<int> eventsIds;
 
-                if (!FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out eventsIds))
+                if (!_factoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out eventsIds))
                 {
                     if (keywords.Length > 0)
                     {
@@ -577,7 +564,7 @@ namespace ASC.CRM.Core.Dao
                 Content = relationshipEvent.Content,
                 EntityID = relationshipEvent.EntityId,
                 EntityType = relationshipEvent.EntityType,
-                CreateOn = TenantUtil.DateTimeFromUtc(relationshipEvent.CreateOn),
+                CreateOn = _tenantUtil.DateTimeFromUtc(relationshipEvent.CreateOn),
                 CreateBy = relationshipEvent.CreateBy,
                 CategoryID = relationshipEvent.CategoryId,
                 LastModifedBy = relationshipEvent.LastModifedBy,
@@ -595,7 +582,7 @@ namespace ASC.CRM.Core.Dao
 
         public void DeleteItem(RelationshipEvent item)
         {
-            CRMSecurity.DemandDelete(item);
+            _crmSecurity.DemandDelete(item);
 
             var relativeFiles = GetFiles(item.ID);
 
@@ -608,7 +595,7 @@ namespace ASC.CRM.Core.Dao
 
             var itemToDelete = Query(CrmDbContext.RelationshipEvent).Where(x => x.Id == item.ID).Single();
 
-            FactoryIndexer.DeleteAsync(itemToDelete);
+            _factoryIndexer.DeleteAsync(itemToDelete);
 
             CrmDbContext.RelationshipEvent.Remove(itemToDelete);
 

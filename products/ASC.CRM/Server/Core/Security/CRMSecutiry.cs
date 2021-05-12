@@ -56,6 +56,15 @@ namespace ASC.CRM.Core
     [Scope]
     public class CrmSecurity
     {
+        private readonly CurrencyProvider _currencyProvider;
+        private readonly PermissionContext _permissionContext;
+        private readonly WebItemSecurity _webItemSecurity;
+        private readonly DaoFactory _daoFactory;
+        private readonly SecurityContext _securityContext;
+        private readonly AuthorizationManager _authorizationManager;
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+        private readonly UserManager _userManager;
+        
         public readonly IAction _actionRead = new Action(new Guid("{6F05C382-8BCA-4469-9424-C807A98C40D7}"), "", true, false);
 
         public CrmSecurity(SecurityContext securityContext,
@@ -65,34 +74,18 @@ namespace ASC.CRM.Core
                             DaoFactory daoFactory,
                             WebItemSecurity webItemSecurity,
                             PermissionContext permissionContext,
-                            CurrencyProvider currencyProvider)
+                            CurrencyProvider currencyProvider,
+                            TenantManager tenantManager)
         {
-            SecurityContext = securityContext;
-            AuthorizationManager = authorizationManager;
-            UserManager = userManager;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-            DaoFactory = daoFactory;
-            WebItemSecurity = webItemSecurity;
-            PermissionContext = permissionContext;
-            CurrencyProvider = currencyProvider;
+            _securityContext = securityContext;
+            _authorizationManager = authorizationManager;
+            _userManager = userManager;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
+            _daoFactory = daoFactory;
+            _webItemSecurity = webItemSecurity;
+            _permissionContext = permissionContext;
+            _currencyProvider = currencyProvider;
         }
-
-
-        public CurrencyProvider CurrencyProvider { get; }
-
-        public PermissionContext PermissionContext { get; }
-
-        public WebItemSecurity WebItemSecurity { get; }
-
-        public DaoFactory DaoFactory { get; }
-
-        public SecurityContext SecurityContext { get; }
-
-        public AuthorizationManager AuthorizationManager { get; }
-
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-
-        public UserManager UserManager { get; }
 
         private ISecurityObjectProvider GetCRMSecurityProvider()
         {
@@ -106,12 +99,12 @@ namespace ASC.CRM.Core
 
         public bool CanAccessTo(ISecurityObjectId entity)
         {
-            return CanAccessTo(entity, SecurityContext.CurrentAccount.ID);
+            return CanAccessTo(entity, _securityContext.CurrentAccount.ID);
         }
 
         public bool CanAccessTo(ISecurityObjectId entity, Guid userId)
         {
-            return IsAdministrator(userId) || PermissionContext.CheckPermissions(entity, GetCRMSecurityProvider(), _actionRead);
+            return IsAdministrator(userId) || _permissionContext.CheckPermissions(entity, GetCRMSecurityProvider(), _actionRead);
         }
 
         public void MakePublic(ISecurityObjectId entity)
@@ -128,7 +121,7 @@ namespace ASC.CRM.Core
 
         private IEnumerable<int> GetPrivateItems(Type objectType, Guid userId, bool withoutUser)
         {
-            var query = AuthorizationManager
+            var query = _authorizationManager
                                    .GetAces(userId, _actionRead.ID)
                                    .Where(
                                        item =>
@@ -141,7 +134,7 @@ namespace ASC.CRM.Core
                 if (userId != Guid.Empty)
                     query = query.Where(item => !item.Contains(userId));
                 else
-                    query = query.Where(item => !item.Contains(SecurityContext.CurrentAccount.ID));
+                    query = query.Where(item => !item.Contains(_securityContext.CurrentAccount.ID));
 
             }
 
@@ -163,7 +156,7 @@ namespace ASC.CRM.Core
 
         private Dictionary<Guid, String> GetAccessSubjectTo(ISecurityObjectId entity, EmployeeStatus employeeStatus)
         {
-            var allAces = AuthorizationManager.GetAcesWithInherits(Guid.Empty, _actionRead.ID, entity,
+            var allAces = _authorizationManager.GetAcesWithInherits(Guid.Empty, _actionRead.ID, entity,
                                                                                GetCRMSecurityProvider())
                                      .Where(item => item.SubjectId != Constants.GroupEveryone.ID);
 
@@ -173,10 +166,10 @@ namespace ASC.CRM.Core
             {
                 if (!result.ContainsKey(azRecord.SubjectId))
                 {
-                    var userInfo = UserManager.GetUsers(azRecord.SubjectId);
+                    var userInfo = _userManager.GetUsers(azRecord.SubjectId);
                     var displayName = employeeStatus == EmployeeStatus.All || userInfo.Status == employeeStatus
-                                          ? userInfo.DisplayUserName(DisplayUserSettingsHelper)
-                                          : Constants.LostUser.DisplayUserName(DisplayUserSettingsHelper);
+                                          ? userInfo.DisplayUserName(_displayUserSettingsHelper)
+                                          : Constants.LostUser.DisplayUserName(_displayUserSettingsHelper);
                     result.Add(azRecord.SubjectId, displayName);
                 }
             }
@@ -190,7 +183,7 @@ namespace ASC.CRM.Core
 
         public List<Guid> GetAccessSubjectGuidsTo(ISecurityObjectId entity)
         {
-            var allAces = AuthorizationManager.GetAcesWithInherits(Guid.Empty, _actionRead.ID, entity,
+            var allAces = _authorizationManager.GetAcesWithInherits(Guid.Empty, _actionRead.ID, entity,
                                                                                GetCRMSecurityProvider())
                                      .Where(item => item.SubjectId != Constants.GroupEveryone.ID);
 
@@ -209,16 +202,16 @@ namespace ASC.CRM.Core
 
             if (subjectID.Count == 0)
             {
-                AuthorizationManager.RemoveAllAces(entity);
+                _authorizationManager.RemoveAllAces(entity);
                 return;
             }
 
-            var aces = AuthorizationManager.GetAcesWithInherits(Guid.Empty, _actionRead.ID, entity, GetCRMSecurityProvider());
+            var aces = _authorizationManager.GetAcesWithInherits(Guid.Empty, _actionRead.ID, entity, GetCRMSecurityProvider());
             foreach (var r in aces)
             {
                 if (!subjectID.Contains(r.SubjectId) && (r.SubjectId != Constants.GroupEveryone.ID || r.Reaction != AceType.Allow))
                 {
-                    AuthorizationManager.RemoveAce(r);
+                    _authorizationManager.RemoveAce(r);
                 }
             }
 
@@ -228,16 +221,16 @@ namespace ASC.CRM.Core
             {
                 if (!oldSubjects.Contains(s))
                 {
-                    AuthorizationManager.AddAce(new AzRecord(s, _actionRead.ID, AceType.Allow, entity));
+                    _authorizationManager.AddAce(new AzRecord(s, _actionRead.ID, AceType.Allow, entity));
                 }
             }
 
-            AuthorizationManager.AddAce(new AzRecord(Constants.GroupEveryone.ID, _actionRead.ID, AceType.Deny, entity));
+            _authorizationManager.AddAce(new AzRecord(Constants.GroupEveryone.ID, _actionRead.ID, AceType.Deny, entity));
         }
 
         public void SetAccessTo(File<int> file)
         {
-            if (IsAdmin || file.CreateBy == SecurityContext.CurrentAccount.ID || file.ModifiedBy == SecurityContext.CurrentAccount.ID)
+            if (IsAdmin || file.CreateBy == _securityContext.CurrentAccount.ID || file.ModifiedBy == _securityContext.CurrentAccount.ID)
                 file.Access = FileShare.None;
             else
                 file.Access = FileShare.Read;
@@ -245,7 +238,7 @@ namespace ASC.CRM.Core
 
         public void SetAccessTo(Deal deal, List<Guid> subjectID)
         {
-            if (IsAdmin || deal.CreateBy == SecurityContext.CurrentAccount.ID)
+            if (IsAdmin || deal.CreateBy == _securityContext.CurrentAccount.ID)
             {
                 SetAccessTo((ISecurityObjectId)deal, subjectID);
             }
@@ -253,7 +246,7 @@ namespace ASC.CRM.Core
 
         public void SetAccessTo(Cases cases, List<Guid> subjectID)
         {
-            if (IsAdmin || cases.CreateBy == SecurityContext.CurrentAccount.ID)
+            if (IsAdmin || cases.CreateBy == _securityContext.CurrentAccount.ID)
             {
                 SetAccessTo((ISecurityObjectId)cases, subjectID);
             }
@@ -261,7 +254,7 @@ namespace ASC.CRM.Core
 
         public bool CanAccessTo(RelationshipEvent relationshipEvent)
         {
-            return CanAccessTo(relationshipEvent, SecurityContext.CurrentAccount.ID);
+            return CanAccessTo(relationshipEvent, _securityContext.CurrentAccount.ID);
         }
 
         public bool CanAccessTo(RelationshipEvent relationshipEvent, Guid userId)
@@ -271,19 +264,19 @@ namespace ASC.CRM.Core
 
             if (relationshipEvent.ContactID > 0)
             {
-                var contactObj = DaoFactory.GetContactDao().GetByID(relationshipEvent.ContactID);
+                var contactObj = _daoFactory.GetContactDao().GetByID(relationshipEvent.ContactID);
                 if (contactObj != null) return CanAccessTo(contactObj, userId);
             }
 
             if (relationshipEvent.EntityType == EntityType.Case)
             {
-                var caseObj = DaoFactory.GetCasesDao().GetByID(relationshipEvent.EntityID);
+                var caseObj = _daoFactory.GetCasesDao().GetByID(relationshipEvent.EntityID);
                 if (caseObj != null) return CanAccessTo(caseObj, userId);
             }
 
             if (relationshipEvent.EntityType == EntityType.Opportunity)
             {
-                var dealObj = DaoFactory.GetDealDao().GetByID(relationshipEvent.EntityID);
+                var dealObj = _daoFactory.GetDealDao().GetByID(relationshipEvent.EntityID);
                 if (dealObj != null) return CanAccessTo(dealObj, userId);
             }
 
@@ -292,7 +285,7 @@ namespace ASC.CRM.Core
 
         public bool CanAccessTo(Contact contact)
         {
-            return CanAccessTo(contact, SecurityContext.CurrentAccount.ID);
+            return CanAccessTo(contact, _securityContext.CurrentAccount.ID);
         }
 
         public bool CanAccessTo(Contact contact, Guid userId)
@@ -312,19 +305,19 @@ namespace ASC.CRM.Core
             if (entityType == EntityType.Company)
             {
                 var fakeContact = new Company() { ID = contactID };
-                return GetAccessSubjectTo(fakeContact).ContainsKey(SecurityContext.CurrentAccount.ID);
+                return GetAccessSubjectTo(fakeContact).ContainsKey(_securityContext.CurrentAccount.ID);
             }
             else if (entityType == EntityType.Person)
             {
                 var fakeContact = new Person() { ID = contactID, CompanyID = companyID };
-                return GetAccessSubjectTo(fakeContact).ContainsKey(SecurityContext.CurrentAccount.ID);
+                return GetAccessSubjectTo(fakeContact).ContainsKey(_securityContext.CurrentAccount.ID);
             }
             return false;
         }
 
         public bool CanAccessTo(Task task)
         {
-            return CanAccessTo(task, SecurityContext.CurrentAccount.ID);
+            return CanAccessTo(task, _securityContext.CurrentAccount.ID);
         }
 
         public bool CanAccessTo(Task task, Guid userId)
@@ -335,19 +328,19 @@ namespace ASC.CRM.Core
 
             if (task.ContactID > 0)
             {
-                var contactObj = DaoFactory.GetContactDao().GetByID(task.ContactID);
+                var contactObj = _daoFactory.GetContactDao().GetByID(task.ContactID);
                 if (contactObj != null) return CanAccessTo(contactObj, userId);
             }
 
             if (task.EntityType == EntityType.Case)
             {
-                var caseObj = DaoFactory.GetCasesDao().GetByID(task.EntityID);
+                var caseObj = _daoFactory.GetCasesDao().GetByID(task.EntityID);
                 if (caseObj != null) return CanAccessTo(caseObj, userId);
             }
 
             if (task.EntityType == EntityType.Opportunity)
             {
-                var dealObj = DaoFactory.GetDealDao().GetByID(task.EntityID);
+                var dealObj = _daoFactory.GetDealDao().GetByID(task.EntityID);
                 if (dealObj != null) return CanAccessTo(dealObj, userId);
             }
 
@@ -357,7 +350,7 @@ namespace ASC.CRM.Core
 
         public bool CanAccessTo(Invoice invoice)
         {
-            return CanAccessTo(invoice, SecurityContext.CurrentAccount.ID);
+            return CanAccessTo(invoice, _securityContext.CurrentAccount.ID);
         }
 
         public bool CanAccessTo(Invoice invoice, Guid userId)
@@ -365,10 +358,10 @@ namespace ASC.CRM.Core
             if (IsAdministrator(userId) || invoice.CreateBy == userId) return true;
 
             if (invoice.ContactID > 0)
-                return CanAccessTo(DaoFactory.GetContactDao().GetByID(invoice.ContactID), userId);
+                return CanAccessTo(_daoFactory.GetContactDao().GetByID(invoice.ContactID), userId);
 
             if (invoice.EntityType == EntityType.Opportunity)
-                return CanAccessTo(DaoFactory.GetDealDao().GetByID(invoice.EntityID), userId);
+                return CanAccessTo(_daoFactory.GetDealDao().GetByID(invoice.EntityID), userId);
 
             return false;
 
@@ -376,7 +369,7 @@ namespace ASC.CRM.Core
 
         public bool CanAccessTo(InvoiceTax invoiceTax)
         {
-            return CanAccessTo(invoiceTax, SecurityContext.CurrentAccount.ID);
+            return CanAccessTo(invoiceTax, _securityContext.CurrentAccount.ID);
         }
 
         public bool CanAccessTo(InvoiceTax invoiceTax, Guid userId)
@@ -388,7 +381,7 @@ namespace ASC.CRM.Core
 
         public bool CanEdit(File<int> file)
         {
-            if (!(IsAdmin || file.CreateBy == SecurityContext.CurrentAccount.ID || file.ModifiedBy == SecurityContext.CurrentAccount.ID))
+            if (!(IsAdmin || file.CreateBy == _securityContext.CurrentAccount.ID || file.ModifiedBy == _securityContext.CurrentAccount.ID))
                 return false;
 
             if ((file.FileStatus & FileStatus.IsEditing) == FileStatus.IsEditing)
@@ -399,20 +392,20 @@ namespace ASC.CRM.Core
 
         public bool CanEdit(Deal deal)
         {
-            return (IsAdmin || deal.ResponsibleID == SecurityContext.CurrentAccount.ID || deal.CreateBy == SecurityContext.CurrentAccount.ID ||
-                !IsPrivate(deal) || GetAccessSubjectTo(deal).ContainsKey(SecurityContext.CurrentAccount.ID));
+            return (IsAdmin || deal.ResponsibleID == _securityContext.CurrentAccount.ID || deal.CreateBy == _securityContext.CurrentAccount.ID ||
+                !IsPrivate(deal) || GetAccessSubjectTo(deal).ContainsKey(_securityContext.CurrentAccount.ID));
         }
 
         public bool CanEdit(RelationshipEvent relationshipEvent)
         {
-            var userId = SecurityContext.CurrentAccount.ID;
+            var userId = _securityContext.CurrentAccount.ID;
 
             if (IsAdmin) return true;
 
 
             if (relationshipEvent.ContactID > 0)
             {
-                var contactObj = DaoFactory.GetContactDao().GetByID(relationshipEvent.ContactID);
+                var contactObj = _daoFactory.GetContactDao().GetByID(relationshipEvent.ContactID);
                 if (contactObj != null)
                 {
                     if (CanEdit(contactObj)) return true;
@@ -423,7 +416,7 @@ namespace ASC.CRM.Core
 
             if (relationshipEvent.EntityType == EntityType.Case)
             {
-                var caseObj = DaoFactory.GetCasesDao().GetByID(relationshipEvent.EntityID);
+                var caseObj = _daoFactory.GetCasesDao().GetByID(relationshipEvent.EntityID);
                 if (caseObj != null)
                 {
                     if (CanEdit(caseObj)) return true;
@@ -434,7 +427,7 @@ namespace ASC.CRM.Core
 
             if (relationshipEvent.EntityType == EntityType.Opportunity)
             {
-                var dealObj = DaoFactory.GetDealDao().GetByID(relationshipEvent.EntityID);
+                var dealObj = _daoFactory.GetDealDao().GetByID(relationshipEvent.EntityID);
                 if (dealObj != null)
                 {
                     if (CanEdit(dealObj)) return true;
@@ -448,23 +441,23 @@ namespace ASC.CRM.Core
 
         public bool CanEdit(Contact contact)
         {
-            return contact.ShareType == ShareType.ReadWrite || IsAdmin || GetAccessSubjectTo(contact).ContainsKey(SecurityContext.CurrentAccount.ID);
+            return contact.ShareType == ShareType.ReadWrite || IsAdmin || GetAccessSubjectTo(contact).ContainsKey(_securityContext.CurrentAccount.ID);
         }
 
         public bool CanEdit(Task task)
         {
-            return (IsAdmin || task.ResponsibleID == SecurityContext.CurrentAccount.ID || task.CreateBy == SecurityContext.CurrentAccount.ID);
+            return (IsAdmin || task.ResponsibleID == _securityContext.CurrentAccount.ID || task.CreateBy == _securityContext.CurrentAccount.ID);
         }
 
         public bool CanEdit(Cases cases)
         {
-            return (IsAdmin || cases.CreateBy == SecurityContext.CurrentAccount.ID ||
-                !IsPrivate(cases) || GetAccessSubjectTo(cases).ContainsKey(SecurityContext.CurrentAccount.ID));
+            return (IsAdmin || cases.CreateBy == _securityContext.CurrentAccount.ID ||
+                !IsPrivate(cases) || GetAccessSubjectTo(cases).ContainsKey(_securityContext.CurrentAccount.ID));
         }
 
         public bool CanEdit(Invoice invoice)
         {
-            return (IsAdmin || invoice.CreateBy == SecurityContext.CurrentAccount.ID) && invoice.Status == InvoiceStatus.Draft;
+            return (IsAdmin || invoice.CreateBy == _securityContext.CurrentAccount.ID) && invoice.Status == InvoiceStatus.Draft;
         }
 
         public bool CanEdit(InvoiceTax invoiceTax)
@@ -480,23 +473,23 @@ namespace ASC.CRM.Core
 
         public bool CanDelete(Contact contact)
         {
-            return CanEdit(contact) && DaoFactory.GetContactDao().CanDelete(contact.ID);
+            return CanEdit(contact) && _daoFactory.GetContactDao().CanDelete(contact.ID);
 
         }
 
         public bool CanDelete(Invoice invoice)
         {
-            return (IsAdmin || invoice.CreateBy == SecurityContext.CurrentAccount.ID);
+            return (IsAdmin || invoice.CreateBy == _securityContext.CurrentAccount.ID);
         }
 
         public bool CanDelete(InvoiceItem invoiceItem)
         {
-            return CanEdit(invoiceItem) && DaoFactory.GetInvoiceItemDao().CanDelete(invoiceItem.ID);
+            return CanEdit(invoiceItem) && _daoFactory.GetInvoiceItemDao().CanDelete(invoiceItem.ID);
         }
 
         public bool CanDelete(InvoiceTax invoiceTax)
         {
-            return CanEdit(invoiceTax) && DaoFactory.GetInvoiceTaxDao().CanDelete(invoiceTax.ID);
+            return CanEdit(invoiceTax) && _daoFactory.GetInvoiceTaxDao().CanDelete(invoiceTax.ID);
 
         }
 
@@ -666,12 +659,12 @@ namespace ASC.CRM.Core
                 deal.DealMilestoneID <= 0 || string.IsNullOrEmpty(deal.BidCurrency))
                 throw new ArgumentException();
 
-            var listItem = DaoFactory.GetDealMilestoneDao().GetByID(deal.DealMilestoneID);
+            var listItem = _daoFactory.GetDealMilestoneDao().GetByID(deal.DealMilestoneID);
             if (listItem == null) throw new ArgumentException(CRMErrorsResource.DealMilestoneNotFound);
 
             if (deal.ContactID != 0)
             {
-                var contact = DaoFactory.GetContactDao().GetByID(deal.ContactID);
+                var contact = _daoFactory.GetContactDao().GetByID(deal.ContactID);
                 if (contact == null) throw new ArgumentException();
 
                 if (!CanAccessTo(contact)) throw new SecurityException(CRMErrorsResource.AccessDenied);
@@ -682,7 +675,7 @@ namespace ASC.CRM.Core
             }
             else
             {
-                if (CurrencyProvider.Get(deal.BidCurrency.ToUpper()) == null)
+                if (_currencyProvider.Get(deal.BidCurrency.ToUpper()) == null)
                 {
                     throw new ArgumentException();
                 }
@@ -699,13 +692,13 @@ namespace ASC.CRM.Core
             if (targetInvoice == null || targetInvoice.ID != line.InvoiceID) throw new ArgumentException();
             if (!CanEdit(targetInvoice)) throw CreateSecurityException();
 
-            if (!DaoFactory.GetInvoiceItemDao().IsExist(line.InvoiceItemID))
+            if (!_daoFactory.GetInvoiceItemDao().IsExist(line.InvoiceItemID))
                 throw new ArgumentException();
 
-            if (line.InvoiceTax1ID > 0 && !DaoFactory.GetInvoiceTaxDao().IsExist(line.InvoiceTax1ID))
+            if (line.InvoiceTax1ID > 0 && !_daoFactory.GetInvoiceTaxDao().IsExist(line.InvoiceTax1ID))
                 throw new ArgumentException();
 
-            if (line.InvoiceTax2ID > 0 && !DaoFactory.GetInvoiceTaxDao().IsExist(line.InvoiceTax2ID))
+            if (line.InvoiceTax2ID > 0 && !_daoFactory.GetInvoiceTaxDao().IsExist(line.InvoiceTax2ID))
                 throw new ArgumentException();
 
         }
@@ -720,29 +713,29 @@ namespace ASC.CRM.Core
                 String.IsNullOrEmpty(invoice.Terms))
                 throw new ArgumentException();
 
-            var contact = DaoFactory.GetContactDao().GetByID(invoice.ContactID);
+            var contact = _daoFactory.GetContactDao().GetByID(invoice.ContactID);
             if (contact == null) throw new ArgumentException();
             if (!CanAccessTo(contact)) throw new SecurityException(CRMErrorsResource.AccessDenied);
 
             if (invoice.ConsigneeID != 0 && invoice.ConsigneeID != invoice.ContactID)
             {
-                var consignee = DaoFactory.GetContactDao().GetByID(invoice.ConsigneeID);
+                var consignee = _daoFactory.GetContactDao().GetByID(invoice.ConsigneeID);
                 if (consignee == null) throw new ArgumentException();
                 if (!CanAccessTo(consignee)) throw new SecurityException(CRMErrorsResource.AccessDenied);
             }
 
             if (invoice.EntityID != 0)
             {
-                var deal = DaoFactory.GetDealDao().GetByID(invoice.EntityID);
+                var deal = _daoFactory.GetDealDao().GetByID(invoice.EntityID);
                 if (deal == null) throw new ArgumentException();
                 if (!CanAccessTo(deal)) throw new SecurityException(CRMErrorsResource.AccessDenied);
 
-                var dealMembers = DaoFactory.GetDealDao().GetMembers(invoice.EntityID);
+                var dealMembers = _daoFactory.GetDealDao().GetMembers(invoice.EntityID);
                 if (!dealMembers.Contains(invoice.ContactID))
                     throw new ArgumentException();
             }
 
-            if (CurrencyProvider.Get(invoice.Currency.ToUpper()) == null)
+            if (_currencyProvider.Get(invoice.Currency.ToUpper()) == null)
             {
                 throw new ArgumentException();
             }
@@ -757,13 +750,13 @@ namespace ASC.CRM.Core
         {
             get
             {
-                return IsAdministrator(SecurityContext.CurrentAccount.ID);
+                return IsAdministrator(_securityContext.CurrentAccount.ID);
             }
         }
 
         public bool IsAdministrator(Guid userId)
         {
-            return WebItemSecurity.IsProductAdministrator(ProductEntryPoint.ID, userId);
+            return _webItemSecurity.IsProductAdministrator(ProductEntryPoint.ID, userId);
         }
 
         public IEnumerable<Task> FilterRead(IEnumerable<Task> tasks)
@@ -774,54 +767,54 @@ namespace ASC.CRM.Core
 
             var result = tasks.ToList();
             var contactIDs = result
-                .Where(x => x.ResponsibleID != SecurityContext.CurrentAccount.ID)
+                .Where(x => x.ResponsibleID != _securityContext.CurrentAccount.ID)
                 .Select(x => x.ContactID)
                 .Distinct()
                 .ToList();
 
             if (contactIDs.Any())
             {
-                contactIDs = DaoFactory.GetContactDao()
+                contactIDs = _daoFactory.GetContactDao()
                     .GetContacts(contactIDs.ToArray())
                     .Select(x => x.ID)
                     .ToList();
 
-                result = result.Where(x => x.ContactID == 0 || contactIDs.Contains(x.ContactID) || x.ResponsibleID == SecurityContext.CurrentAccount.ID).ToList();
+                result = result.Where(x => x.ContactID == 0 || contactIDs.Contains(x.ContactID) || x.ResponsibleID == _securityContext.CurrentAccount.ID).ToList();
 
                 if (!result.Any()) return Enumerable.Empty<Task>();
             }
 
-            var casesIds = result.Where(x => x.EntityType == EntityType.Case && x.ResponsibleID != SecurityContext.CurrentAccount.ID)
+            var casesIds = result.Where(x => x.EntityType == EntityType.Case && x.ResponsibleID != _securityContext.CurrentAccount.ID)
                     .Select(x => x.EntityID)
                     .Distinct()
                     .ToList();
 
             if (casesIds.Any())
             {
-                casesIds = DaoFactory.GetCasesDao()
+                casesIds = _daoFactory.GetCasesDao()
                     .GetCases(casesIds.ToArray())
                     .Select(x => x.ID)
                     .ToList();
 
-                result = result.Where(x => x.EntityID == 0 || casesIds.Contains(x.EntityID) || x.ResponsibleID == SecurityContext.CurrentAccount.ID).ToList();
+                result = result.Where(x => x.EntityID == 0 || casesIds.Contains(x.EntityID) || x.ResponsibleID == _securityContext.CurrentAccount.ID).ToList();
 
                 if (!result.Any()) return Enumerable.Empty<Task>();
             }
 
-            var dealsIds = result.Where(x => x.EntityType == EntityType.Opportunity && x.ResponsibleID != SecurityContext.CurrentAccount.ID)
+            var dealsIds = result.Where(x => x.EntityType == EntityType.Opportunity && x.ResponsibleID != _securityContext.CurrentAccount.ID)
                     .Select(x => x.EntityID)
                     .Distinct()
                     .ToList();
 
             if (dealsIds.Any())
             {
-                dealsIds = DaoFactory.GetDealDao()
+                dealsIds = _daoFactory.GetDealDao()
                     .GetDeals(dealsIds.ToArray())
                     .Select(x => x.ID)
                     .ToList();
 
                 result = result
-                    .Where(x => x.EntityID == 0 || dealsIds.Contains(x.EntityID) || x.ResponsibleID == SecurityContext.CurrentAccount.ID)
+                    .Where(x => x.EntityID == 0 || dealsIds.Contains(x.EntityID) || x.ResponsibleID == _securityContext.CurrentAccount.ID)
                     .ToList();
 
                 if (!result.Any()) return Enumerable.Empty<Task>();
@@ -843,7 +836,7 @@ namespace ASC.CRM.Core
 
             if (contactIDs.Any())
             {
-                contactIDs = DaoFactory.GetContactDao()
+                contactIDs = _daoFactory.GetContactDao()
                     .GetContacts(contactIDs.ToArray())
                     .Select(x => x.ID)
                     .ToList();
@@ -858,7 +851,7 @@ namespace ASC.CRM.Core
 
         public bool CanGoToFeed(Task task)
         {
-            return IsAdmin || task.ResponsibleID == SecurityContext.CurrentAccount.ID || task.CreateBy == SecurityContext.CurrentAccount.ID;
+            return IsAdmin || task.ResponsibleID == _securityContext.CurrentAccount.ID || task.CreateBy == _securityContext.CurrentAccount.ID;
         }
     }
 }

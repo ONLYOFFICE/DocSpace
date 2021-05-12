@@ -57,6 +57,12 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class CasesDao : AbstractDao
     {
+        private readonly BundleSearch _bundleSearch;
+        private readonly AuthorizationManager _authorizationManager;
+        private readonly FilesIntegration _filesIntegration;
+        private readonly TenantUtil _tenantUtil;
+        private readonly CrmSecurity _crmSecurity;
+
         public CasesDao(
             DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
@@ -77,28 +83,17 @@ namespace ASC.CRM.Core.Dao
                  ascCache,
                  mapper)
         {
-            CRMSecurity = crmSecurity;
-            TenantUtil = tenantUtil;
-            FilesIntegration = filesIntegration;
-            AuthorizationManager = authorizationManager;
-            BundleSearch = bundleSearch;
+            _crmSecurity = crmSecurity;
+            _tenantUtil = tenantUtil;
+            _filesIntegration = filesIntegration;
+            _authorizationManager = authorizationManager;
+            _bundleSearch = bundleSearch;
         }
-
-        public BundleSearch BundleSearch { get; }
-
-        public AuthorizationManager AuthorizationManager { get; }
-
-        public FilesIntegration FilesIntegration { get; }
-
-        public TenantUtil TenantUtil { get; }
-
-        public CrmSecurity CRMSecurity { get; }
 
         public void AddMember(int caseID, int memberID)
         {
             SetRelative(memberID, EntityType.Case, caseID);
         }
-
         public Dictionary<int, int[]> GetMembers(int[] caseID)
         {
             return GetRelativeToEntity(null, EntityType.Case, caseID);
@@ -133,64 +128,46 @@ namespace ASC.CRM.Core.Dao
             return result;
         }
 
-        public Cases CloseCases(int caseID)
+        public Cases CloseCases(int id)
         {
-            if (caseID <= 0) throw new ArgumentException();
+            var dbEntity = CrmDbContext.Cases.Find(id);
 
-            var cases = GetByID(caseID);
+            if (dbEntity == null)
+                throw new ArgumentException();
 
-            if (cases == null) return null;
+            var entity = _mapper.Map<Cases>(dbEntity);
 
-            CRMSecurity.DemandAccessTo(cases);
+            if (dbEntity.IsClosed) return entity;
+            if (dbEntity.TenantId != TenantID) return null;
 
-            var itemToUpdate = new DbCase
-            {
-                Id = cases.ID,
-                CreateBy = cases.CreateBy,
-                CreateOn = cases.CreateOn,
-                IsClosed = true,
-                LastModifedBy = cases.LastModifedBy,
-                LastModifedOn = cases.LastModifedOn,
-                TenantId = TenantID,
-                Title = cases.Title
-            };
+            _crmSecurity.DemandEdit(entity);
 
-            CrmDbContext.Cases.Update(itemToUpdate);
+            dbEntity.IsClosed = true;
 
             CrmDbContext.SaveChanges();
 
-            cases.IsClosed = true;
-
-            return cases;
+            return entity;
         }
 
-        public Cases ReOpenCases(int caseID)
+        public Cases ReOpenCases(int id)
         {
-            if (caseID <= 0) throw new ArgumentException();
+            var dbEntity = CrmDbContext.Cases.Find(id);
 
-            var cases = GetByID(caseID);
+            if (dbEntity == null)
+                throw new ArgumentException();
 
-            if (cases == null) return null;
+            var entity = _mapper.Map<Cases>(dbEntity);
 
-            CRMSecurity.DemandAccessTo(cases);
+            if (!dbEntity.IsClosed) return entity;
+            if (dbEntity.TenantId != TenantID) return null;
 
-            CrmDbContext.Cases.Update(new DbCase
-            {
-                Id = cases.ID,
-                CreateBy = cases.CreateBy,
-                CreateOn = cases.CreateOn,
-                IsClosed = false,
-                LastModifedBy = cases.LastModifedBy,
-                LastModifedOn = cases.LastModifedOn,
-                TenantId = TenantID,
-                Title = cases.Title
-            });
+            _crmSecurity.DemandEdit(entity);
+
+            dbEntity.IsClosed = false;
 
             CrmDbContext.SaveChanges();
 
-            cases.IsClosed = false;
-
-            return cases;
+            return entity;
         }
 
         public int CreateCases(String title)
@@ -208,9 +185,9 @@ namespace ASC.CRM.Core.Dao
             {
                 Title = title,
                 IsClosed = false,
-                CreateOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
+                CreateOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()),
                 CreateBy = _securityContext.CurrentAccount.ID,
-                LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
+                LastModifedOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()),
                 LastModifedBy = _securityContext.CurrentAccount.ID,
                 TenantId = TenantID
             };
@@ -225,7 +202,7 @@ namespace ASC.CRM.Core.Dao
 
         public void UpdateCases(Cases cases)
         {
-            CRMSecurity.DemandEdit(cases);
+            _crmSecurity.DemandEdit(cases);
 
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
@@ -235,7 +212,7 @@ namespace ASC.CRM.Core.Dao
                 Id = cases.ID,
                 Title = cases.Title,
                 IsClosed = cases.IsClosed,
-                LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
+                LastModifedOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()),
                 LastModifedBy = _securityContext.CurrentAccount.ID,
                 TenantId = TenantID,
                 CreateBy = cases.CreateBy,
@@ -253,7 +230,7 @@ namespace ASC.CRM.Core.Dao
 
             if (cases == null) return null;
 
-            CRMSecurity.DemandDelete(cases);
+            _crmSecurity.DemandDelete(cases);
 
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
@@ -264,7 +241,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<Cases> DeleteBatchCases(List<Cases> caseses)
         {
-            caseses = caseses.FindAll(CRMSecurity.CanDelete).ToList();
+            caseses = caseses.FindAll(_crmSecurity.CanDelete).ToList();
 
             if (!caseses.Any()) return caseses;
 
@@ -280,7 +257,7 @@ namespace ASC.CRM.Core.Dao
         {
             if (casesID == null || !casesID.Any()) return null;
 
-            var cases = GetCases(casesID).FindAll(CRMSecurity.CanDelete).ToList();
+            var cases = GetCases(casesID).FindAll(_crmSecurity.CanDelete).ToList();
 
             if (!cases.Any()) return cases;
 
@@ -296,7 +273,7 @@ namespace ASC.CRM.Core.Dao
         {
             var casesID = caseses.Select(x => x.ID).ToArray();
 
-            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
+            var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
 
             var tagNames = Query(CrmDbContext.RelationshipEvent)
                             .Where(x => x.HaveFiles && casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case)
@@ -326,11 +303,11 @@ namespace ASC.CRM.Core.Dao
 
             tx.Commit();
 
-            caseses.ForEach(item => AuthorizationManager.RemoveAllAces(item));
+            caseses.ForEach(item => _authorizationManager.RemoveAllAces(item));
 
             if (0 < tagNames.Length)
             {
-                var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
+                var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
                 foreach (var filesID in filesIDs)
                 {
@@ -381,7 +358,7 @@ namespace ASC.CRM.Core.Dao
                                (tags == null || !tags.Any()));
 
 
-            var exceptIDs = CRMSecurity.GetPrivateItems(typeof(Cases)).ToList();
+            var exceptIDs = _crmSecurity.GetPrivateItems(typeof(Cases)).ToList();
 
             int result;
 
@@ -429,7 +406,7 @@ namespace ASC.CRM.Core.Dao
                                 IEnumerable<String> tags)
         {
 
-            var result = Query(CrmDbContext.Cases);
+            var result = Query(CrmDbContext.Cases).AsNoTracking();
 
             var ids = new List<int>();
 
@@ -442,7 +419,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (keywords.Length > 0)
                 {
-                    if (!BundleSearch.TrySelectCase(searchText, out ids))
+                    if (!_bundleSearch.TrySelectCase(searchText, out ids))
                     {
                         foreach (var k in keywords)
                         {
@@ -507,10 +484,11 @@ namespace ASC.CRM.Core.Dao
 
             var result = Query(CrmDbContext.Cases)
                         .Where(x => casesID.Contains(x.Id))
+                        .AsNoTracking()
                         .ToList();               
 
             return _mapper.Map<List<DbCase>, List<Cases>>(result)
-                                        .FindAll(CRMSecurity.CanAccessTo);
+                                        .FindAll(_crmSecurity.CanAccessTo);
         }
 
         public List<Cases> GetCases(
@@ -522,7 +500,7 @@ namespace ASC.CRM.Core.Dao
                                  int count,
                                  OrderBy orderBy)
         {
-            var dbCasesQuery = GetDbCasesByFilters(CRMSecurity.GetPrivateItems(typeof(Cases)).ToList(), searchText,
+            var dbCasesQuery = GetDbCasesByFilters(_crmSecurity.GetPrivateItems(typeof(Cases)).ToList(), searchText,
                                                     contactID, isClosed,
                                                     tags);
 
@@ -561,7 +539,7 @@ namespace ASC.CRM.Core.Dao
 
             var keywords = prefix.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
-            var q = Query(CrmDbContext.Cases);
+            var q = Query(CrmDbContext.Cases).AsNoTracking();
 
             if (keywords.Length == 1)
             {
@@ -581,27 +559,31 @@ namespace ASC.CRM.Core.Dao
             q = q.OrderBy(x => x.Title);
                      
             return _mapper.Map<List<DbCase>, List<Cases>>(q.ToList())
-                    .FindAll(CRMSecurity.CanAccessTo);
+                    .FindAll(_crmSecurity.CanAccessTo);
         }
 
 
         public List<Cases> GetByID(int[] ids)
         {
-            var result = CrmDbContext.Cases
+            var result = Query(CrmDbContext.Cases)
                                .Where(x => ids.Contains(x.Id))
+                               .AsNoTracking()
                                .ToList();
-
 
           return  _mapper.Map<List<DbCase>, List<Cases>>(result);
         }
 
         public Cases GetByID(int id)
-        {
-            if (id <= 0) return null;
+{
+            var dbEntity = CrmDbContext.Cases.Find(id);
 
-            var cases = GetByID(new[] { id });
+            if (dbEntity.TenantId != TenantID) return null;
 
-            return cases.Count == 0 ? null : cases[0];
+            var entity = _mapper.Map<Cases>(dbEntity);
+
+            _crmSecurity.DemandAccessTo(entity);
+
+            return _mapper.Map<Cases>(dbEntity);
         }
 
         public void ReassignCasesResponsible(Guid fromUserId, Guid toUserId)
@@ -610,14 +592,14 @@ namespace ASC.CRM.Core.Dao
 
             foreach (var item in cases)
             {
-                var responsibles = CRMSecurity.GetAccessSubjectGuidsTo(item);
+                var responsibles = _crmSecurity.GetAccessSubjectGuidsTo(item);
 
                 if (!responsibles.Any()) continue;
 
                 responsibles.Remove(fromUserId);
                 responsibles.Add(toUserId);
 
-                CRMSecurity.SetAccessTo(item, responsibles.Distinct().ToList());
+                _crmSecurity.SetAccessTo(item, responsibles.Distinct().ToList());
             }
         }
     }

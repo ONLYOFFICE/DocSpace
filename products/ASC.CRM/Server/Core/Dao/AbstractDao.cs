@@ -65,7 +65,9 @@ namespace ASC.CRM.Core.Dao
             _logger = logger.Get("ASC.CRM");
 
             _cache = ascCache;
+            
             CrmDbContext = dbContextManager.Get(CrmConstants.DatabaseId);
+   
             TenantID = tenantManager.GetCurrentTenant().TenantId;
             _securityContext = securityContext;
 
@@ -199,12 +201,14 @@ namespace ASC.CRM.Core.Dao
 
         protected void SetRelative(int contactID, EntityType entityType, int entityID)
         {
-            CrmDbContext.EntityContact.Add(new DbEntityContact
+            var dbEntity = new DbEntityContact
             {
                 ContactId = contactID,
                 EntityType = entityType,
                 EntityId = entityID
-            });
+            };
+
+            CrmDbContext.EntityContact.Add(dbEntity);
 
             CrmDbContext.SaveChanges();
         }
@@ -248,18 +252,18 @@ namespace ASC.CRM.Core.Dao
 
         public int SaveOrganisationLogo(byte[] bytes)
         {
-            var entity = new DbOrganisationLogo
+            var dbEntity = new DbOrganisationLogo
             {
                 Content = Convert.ToBase64String(bytes),
                 CreateOn = DateTime.UtcNow,
                 CreateBy = _securityContext.CurrentAccount.ID.ToString()
             };
 
-            CrmDbContext.OrganisationLogo.Add(entity);
+            CrmDbContext.OrganisationLogo.Add(dbEntity);
 
             CrmDbContext.SaveChanges();
 
-            return entity.Id;
+            return dbEntity.Id;
         }
 
         public string GetOrganisationLogoBase64(int logo_id)

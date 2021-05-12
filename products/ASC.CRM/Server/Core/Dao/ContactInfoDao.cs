@@ -49,6 +49,9 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class ContactInfoDao : AbstractDao
     {
+        private TenantUtil _tenantUtil;
+        private FactoryIndexerContactInfo _factoryIndexerContactInfo;
+
         public ContactInfoDao(
              DbContextManager<CrmDbContext> dbContextManager,
              TenantManager tenantManager,
@@ -57,7 +60,6 @@ namespace ASC.CRM.Core.Dao
              IOptionsMonitor<ILog> logger,
              ICache ascCache,
              FactoryIndexerContactInfo factoryIndexerContactInfo,
-             IServiceProvider serviceProvider,
              IMapper mapper)
            : base(dbContextManager,
                  tenantManager,
@@ -66,21 +68,15 @@ namespace ASC.CRM.Core.Dao
                  ascCache, 
                  mapper)
         {
-            TenantUtil = tenantUtil;
-            ServiceProvider = serviceProvider;
-
-            FactoryIndexerContactInfo = factoryIndexerContactInfo;
+            _tenantUtil = tenantUtil;
+            _factoryIndexerContactInfo = factoryIndexerContactInfo;
         }
-
-        public IServiceProvider ServiceProvider { get; }
-        public TenantUtil TenantUtil { get; }
-        public FactoryIndexerContactInfo FactoryIndexerContactInfo { get; }
 
         public ContactInfo GetByID(int id)
         {
-            var dbContactInfo = CrmDbContext.ContactsInfo.SingleOrDefault(x => x.Id == id);
-
-            return _mapper.Map<ContactInfo>(dbContactInfo);
+            var dbEntity = CrmDbContext.ContactsInfo.Find(id);
+                     
+            return _mapper.Map<ContactInfo>(dbEntity);
         }
 
         public void Delete(int id)
@@ -93,7 +89,7 @@ namespace ASC.CRM.Core.Dao
             CrmDbContext.ContactsInfo.Remove(itemToDelete);
             CrmDbContext.SaveChanges();
 
-            FactoryIndexerContactInfo.Delete(r => r.Where(a => a.Id, id));
+            _factoryIndexerContactInfo.Delete(r => r.Where(a => a.Id, id));
         }
 
         public void DeleteByContact(int contactID)
@@ -105,14 +101,14 @@ namespace ASC.CRM.Core.Dao
 
             CrmDbContext.SaveChanges();
 
-            FactoryIndexerContactInfo.Delete(r => r.Where(a => a.ContactId, contactID));
+            _factoryIndexerContactInfo.Delete(r => r.Where(a => a.ContactId, contactID));
         }
 
         public int Update(ContactInfo contactInfo)
         {
             var result = UpdateInDb(contactInfo);
 
-            FactoryIndexerContactInfo.Update(Query(CrmDbContext.ContactsInfo)
+            _factoryIndexerContactInfo.Update(Query(CrmDbContext.ContactsInfo)
                                         .Where(x => x.ContactId == contactInfo.ID).Single());
 
             return result;
@@ -131,7 +127,7 @@ namespace ASC.CRM.Core.Dao
                 IsPrimary = contactInfo.IsPrimary,
                 ContactId = contactInfo.ContactID,
                 Type = contactInfo.InfoType,
-                LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
+                LastModifedOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()),
                 LastModifedBy = _securityContext.CurrentAccount.ID,
                 TenantId = TenantID
             };
@@ -154,7 +150,7 @@ namespace ASC.CRM.Core.Dao
                                         .Where(x => x.ContactId == contactInfo.ID)
                                         .Single();
 
-            FactoryIndexerContactInfo.Index(dbContactInfo);
+            _factoryIndexerContactInfo.Index(dbContactInfo);
 
             return id;
         }
@@ -168,7 +164,7 @@ namespace ASC.CRM.Core.Dao
                 IsPrimary = contactInfo.IsPrimary,
                 ContactId = contactInfo.ContactID,
                 Type = contactInfo.InfoType,
-                LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
+                LastModifedOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()),
                 LastModifedBy = _securityContext.CurrentAccount.ID,
                 TenantId = TenantID
 
@@ -247,7 +243,7 @@ namespace ASC.CRM.Core.Dao
 
                 foreach (var dbContactInfo in dbContactInfos)
                 {
-                    FactoryIndexerContactInfo.Index(dbContactInfo);
+                    _factoryIndexerContactInfo.Index(dbContactInfo);
                 }
             }
 
@@ -280,7 +276,7 @@ namespace ASC.CRM.Core.Dao
 
                 foreach (var dbContactInfo in dbContactInfos)
                 {
-                    FactoryIndexerContactInfo.Index(dbContactInfo);
+                    _factoryIndexerContactInfo.Index(dbContactInfo);
                 }
             }
 

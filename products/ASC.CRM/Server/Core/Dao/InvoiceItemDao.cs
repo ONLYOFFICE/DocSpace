@@ -52,6 +52,9 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class InvoiceItemDao : AbstractDao
     {
+        private CrmSecurity _crmSecurity { get; }
+        private TenantUtil _tTenantUtil { get; }
+
         public InvoiceItemDao(
                 DbContextManager<CrmDbContext> dbContextManager,
                 TenantManager tenantManager,
@@ -68,14 +71,9 @@ namespace ASC.CRM.Core.Dao
                  ascCache,
                  mapper)
         {
-            TenantUtil = tenantUtil;
-            CRMSecurity = crmSecurity;
+            _tTenantUtil = tenantUtil;
+            _crmSecurity = crmSecurity;
         }
-
-
-        public CrmSecurity CRMSecurity { get; }
-
-        public TenantUtil TenantUtil { get; }
 
         public Boolean IsExist(int invoiceItemID)
         {
@@ -207,7 +205,7 @@ namespace ASC.CRM.Core.Dao
 
             if (fromCache != null) return Convert.ToInt32(fromCache);
 
-            var exceptIDs = CRMSecurity.GetPrivateItems(typeof(InvoiceItem)).ToList();
+            var exceptIDs = _crmSecurity.GetPrivateItems(typeof(InvoiceItem)).ToList();
 
             int result;
 
@@ -258,7 +256,7 @@ namespace ASC.CRM.Core.Dao
             if (invoiceItem.Price > Global.MaxInvoiceItemPrice)
                 throw new ArgumentException("Max Invoice Item Price: " + Global.MaxInvoiceItemPrice);
 
-            if (!CRMSecurity.IsAdmin) CRMSecurity.CreateSecurityException();
+            if (!_crmSecurity.IsAdmin) _crmSecurity.CreateSecurityException();
 
             if (String.IsNullOrEmpty(invoiceItem.Description))
             {
@@ -303,7 +301,7 @@ namespace ASC.CRM.Core.Dao
                 var itemToUpdate = Query(CrmDbContext.InvoiceItem).Single(x => x.Id == invoiceItem.ID);
                 var oldInvoiceItem = _mapper.Map<InvoiceItem>(itemToUpdate);
 
-                CRMSecurity.DemandEdit(oldInvoiceItem);
+                _crmSecurity.DemandEdit(oldInvoiceItem);
 
                 itemToUpdate.Title = invoiceItem.Title;
                 itemToUpdate.Description = invoiceItem.Description;
@@ -332,7 +330,7 @@ namespace ASC.CRM.Core.Dao
             var invoiceItem = GetByID(invoiceItemID);
             if (invoiceItem == null) return null;
 
-            CRMSecurity.DemandDelete(invoiceItem);
+            _crmSecurity.DemandDelete(invoiceItem);
 
             CrmDbContext.Remove(new DbInvoiceItem
             {
@@ -352,7 +350,7 @@ namespace ASC.CRM.Core.Dao
         {
             if (invoiceItemIDs == null || !invoiceItemIDs.Any()) return null;
 
-            var items = GetInvoiceItems(invoiceItemIDs).Where(CRMSecurity.CanDelete).ToList();
+            var items = GetInvoiceItems(invoiceItemIDs).Where(_crmSecurity.CanDelete).ToList();
 
             if (!items.Any()) return items;
 

@@ -49,6 +49,9 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class InvoiceTaxDao : AbstractDao
     {
+        private TenantUtil _tenantUtil { get; }
+        private CrmSecurity _crmSecurity { get; }
+
         public InvoiceTaxDao(
             DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
@@ -65,12 +68,9 @@ namespace ASC.CRM.Core.Dao
                  ascCache,
                  mapper)
         {
-            TenantUtil = tenantUtil;
+            _tenantUtil = tenantUtil;
             _mapper = mapper;
-        }
-
-        public TenantUtil TenantUtil { get; }
-        public CrmSecurity CRMSecurity { get; }
+        }  
 
         public Boolean IsExist(int invoiceTaxID)
         {
@@ -163,7 +163,7 @@ namespace ASC.CRM.Core.Dao
             {
                 var oldInvoiceTax = GetByID(invoiceTax.ID);
 
-                CRMSecurity.DemandEdit(oldInvoiceTax);
+                _crmSecurity.DemandEdit(oldInvoiceTax);
 
                 var itemToUpdate = Query(CrmDbContext.InvoiceTax)
                                     .FirstOrDefault(x => x.Id == invoiceTax.ID);
@@ -189,7 +189,7 @@ namespace ASC.CRM.Core.Dao
 
             if (invoiceTax == null) return null;
 
-            CRMSecurity.DemandDelete(invoiceTax);
+            _crmSecurity.DemandDelete(invoiceTax);
 
             var itemToDelete = new DbInvoiceTax
             {

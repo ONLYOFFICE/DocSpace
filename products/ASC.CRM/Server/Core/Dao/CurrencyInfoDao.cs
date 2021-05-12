@@ -37,6 +37,7 @@ using ASC.CRM.Core.EF;
 
 using AutoMapper;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
@@ -63,17 +64,18 @@ namespace ASC.CRM.Core.Dao
 
         public List<CurrencyInfo> GetAll()
         {
-            var dbItems = CrmDbContext.CurrencyInfo.ToList();
+            var dbEntities = CrmDbContext.CurrencyInfo
+                                         .AsNoTracking()
+                                         .ToList();
 
-            return _mapper.Map<List<DbCurrencyInfo>, List<CurrencyInfo>>(dbItems);               
+            return _mapper.Map<List<DbCurrencyInfo>, List<CurrencyInfo>>(dbEntities);               
         }
 
         public CurrencyInfo GetByAbbreviation(string abbreviation)
         {
-            var dbItem = CrmDbContext.CurrencyInfo
-                         .FirstOrDefault(x => String.Compare(x.Abbreviation, abbreviation, true) == 0);
+            var dbEntity = CrmDbContext.CurrencyInfo.Find(abbreviation);
 
-            return _mapper.Map<CurrencyInfo>(dbItem);
+            return _mapper.Map<CurrencyInfo>(dbEntity);
 
         }
 

@@ -39,6 +39,7 @@ using ASC.CRM.Resources;
 
 using AutoMapper;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
 
@@ -99,6 +100,7 @@ namespace ASC.CRM.Core.Dao
         public List<KeyValuePair<EntityType, string>> GetAllTags()
         {
             return Query(CrmDbContext.Tags)
+                .AsNoTracking()
                 .OrderBy(x => x.Title)
                 .Select(x => new KeyValuePair<EntityType, string>(x.EntityType, x.Title)).ToList();
         }
@@ -112,6 +114,7 @@ namespace ASC.CRM.Core.Dao
         public IEnumerable<int> GetTagsLinkCount(EntityType entityType)
         {
             return Query(CrmDbContext.Tags)
+                       .AsNoTracking()
                        .Join(CrmDbContext.EntityTags,
                                    x => x.Id,
                                    y => y.TagId,

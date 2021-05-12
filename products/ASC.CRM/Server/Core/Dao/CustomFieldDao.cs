@@ -53,6 +53,9 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class CustomFieldDao : AbstractDao
     {
+
+        private TenantUtil _tenantUtil;
+        private FactoryIndexerFieldValue _factoryIndexer;
         public CustomFieldDao(
             DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
@@ -69,12 +72,9 @@ namespace ASC.CRM.Core.Dao
                  ascCache, 
                  mapper)
         {
-            TenantUtil = tenantUtil;
+            _tenantUtil = tenantUtil;
         }
 
-        public TenantUtil TenantUtil { get; }
-
-        public FactoryIndexerFieldValue FactoryIndexer { get; }
 
         public void SaveList(List<CustomField> items)
         {
@@ -115,7 +115,7 @@ namespace ASC.CRM.Core.Dao
 
             if (!String.IsNullOrEmpty(fieldValue))
             {
-                var lastModifiedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
+                var lastModifiedOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
 
                 var dbFieldValue = new DbFieldValue
                 {
@@ -133,7 +133,7 @@ namespace ASC.CRM.Core.Dao
 
                 var id = dbFieldValue.Id;
 
-                FactoryIndexer.Index(dbFieldValue);
+                _factoryIndexer.Index(dbFieldValue);
             }
         }
 
@@ -551,7 +551,7 @@ namespace ASC.CRM.Core.Dao
 
             var fieldValue = Query(CrmDbContext.FieldValue).FirstOrDefault(x => x.FieldId == fieldID);
 
-            FactoryIndexer.Delete(fieldValue);
+            _factoryIndexer.Delete(fieldValue);
 
             CrmDbContext.Remove(fieldValue);
 

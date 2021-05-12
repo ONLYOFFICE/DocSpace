@@ -58,6 +58,13 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class DealDao : AbstractDao
     {
+        private BundleSearch _bundleSearch;
+        private FilesIntegration _filesIntegration;
+        private FactoryIndexerDeal _factoryIndexer;
+        private TenantUtil _tenantUtil;
+        private CrmSecurity _crmSecurity;
+        private AuthorizationManager _authorizationManager;
+
         public DealDao(DbContextManager<CrmDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
@@ -75,23 +82,13 @@ namespace ASC.CRM.Core.Dao
                  ascCache,
                  mapper)
         {
-            CRMSecurity = crmSecurity;
-            FactoryIndexer = factoryIndexer;
-            FilesIntegration = filesIntegration;
-            BundleSearch = bundleSearch;
+            _crmSecurity = crmSecurity;
+            _factoryIndexer = factoryIndexer;
+            _filesIntegration = filesIntegration;
+            _bundleSearch = bundleSearch;
             _mapper = mapper;
         }
 
-        public BundleSearch BundleSearch { get; }
-
-        public FilesIntegration FilesIntegration { get; }
-
-        public FactoryIndexerDeal FactoryIndexer { get; }
-
-        public TenantUtil TenantUtil { get; }
-        public CrmSecurity CRMSecurity { get; }
-
-        public AuthorizationManager AuthorizationManager { get; }
 
         public void AddMember(int dealID, int memberID)
         {
@@ -140,7 +137,7 @@ namespace ASC.CRM.Core.Dao
 
             deal.ID = result;
 
-            FactoryIndexer.Index(Query(CrmDbContext.Deals).Where(x => x.Id == deal.ID).FirstOrDefault());
+            _factoryIndexer.Index(Query(CrmDbContext.Deals).Where(x => x.Id == deal.ID).FirstOrDefault());
 
             return result;
         }
@@ -167,9 +164,9 @@ namespace ASC.CRM.Core.Dao
                 ExpectedCloseDate = deal.ExpectedCloseDate,
                 ActualCloseDate = deal.ActualCloseDate,
                 PerPeriodValue = deal.PerPeriodValue,
-                CreateOn = TenantUtil.DateTimeToUtc(deal.CreateOn == DateTime.MinValue ? TenantUtil.DateTimeNow() : deal.CreateOn),
+                CreateOn = _tenantUtil.DateTimeToUtc(deal.CreateOn == DateTime.MinValue ? _tenantUtil.DateTimeNow() : deal.CreateOn),
                 CreateBy = _securityContext.CurrentAccount.ID,
-                LastModifedOn = TenantUtil.DateTimeToUtc(deal.CreateOn == DateTime.MinValue ? TenantUtil.DateTimeNow() : deal.CreateOn),
+                LastModifedOn = _tenantUtil.DateTimeToUtc(deal.CreateOn == DateTime.MinValue ? _tenantUtil.DateTimeNow() : deal.CreateOn),
                 LastModifedBy = _securityContext.CurrentAccount.ID,
                 TenantId = TenantID
             };
@@ -195,7 +192,7 @@ namespace ASC.CRM.Core.Dao
 
             foreach (var deal in Query(CrmDbContext.Deals).Where(x => result.Contains(x.Id)))
             {
-                FactoryIndexer.Index(deal);
+                _factoryIndexer.Index(deal);
             }
 
             return result;
@@ -203,7 +200,7 @@ namespace ASC.CRM.Core.Dao
 
         public void EditDeal(Deal deal)
         {
-            CRMSecurity.DemandEdit(deal);
+            _crmSecurity.DemandEdit(deal);
 
             //   var oldDeal = GetByID(deal.ID);
 
@@ -226,14 +223,14 @@ namespace ASC.CRM.Core.Dao
             itemToUpdate.ExpectedCloseDate = deal.ExpectedCloseDate;
             itemToUpdate.PerPeriodValue = deal.PerPeriodValue;
 
-            itemToUpdate.ActualCloseDate = TenantUtil.DateTimeToUtc(deal.ActualCloseDate);
-            itemToUpdate.LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
+            itemToUpdate.ActualCloseDate = _tenantUtil.DateTimeToUtc(deal.ActualCloseDate);
+            itemToUpdate.LastModifedOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
             itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
 
             CrmDbContext.Update(itemToUpdate);
             CrmDbContext.SaveChanges();
 
-            FactoryIndexer.Index(itemToUpdate);
+            _factoryIndexer.Index(itemToUpdate);
         }
 
 
@@ -288,7 +285,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (keywords.Length > 0)
                 {
-                    if (!BundleSearch.TrySelectOpportunity(searchText, out ids))
+                    if (!_bundleSearch.TrySelectOpportunity(searchText, out ids))
                     {
                         foreach (var k in keywords)
                         {
@@ -368,8 +365,8 @@ namespace ASC.CRM.Core.Dao
                     sqlQuery = sqlQuery.Where(x => x.y.Status == stageType.Value);
 
                 if (fromDate != DateTime.MinValue && toDate != DateTime.MinValue)
-                    sqlQuery = sqlQuery.Where(x => x.y.Status == 0 ? x.x.ExpectedCloseDate >= TenantUtil.DateTimeToUtc(fromDate) && x.x.ExpectedCloseDate <= TenantUtil.DateTimeToUtc(toDate)
-                                                                         : x.x.ActualCloseDate >= TenantUtil.DateTimeToUtc(fromDate) && x.x.ActualCloseDate <= TenantUtil.DateTimeToUtc(toDate));
+                    sqlQuery = sqlQuery.Where(x => x.y.Status == 0 ? x.x.ExpectedCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.x.ExpectedCloseDate <= _tenantUtil.DateTimeToUtc(toDate)
+                                                                         : x.x.ActualCloseDate >= _tenantUtil.DateTimeToUtc(fromDate) && x.x.ActualCloseDate <= _tenantUtil.DateTimeToUtc(toDate));
 
             }
 
@@ -503,7 +500,7 @@ namespace ASC.CRM.Core.Dao
                                fromDate == DateTime.MinValue &&
                                toDate == DateTime.MinValue);
 
-            ICollection<int> exceptIDs = CRMSecurity.GetPrivateItems(typeof(Deal)).ToList();
+            ICollection<int> exceptIDs = _crmSecurity.GetPrivateItems(typeof(Deal)).ToList();
 
             int result;
 
@@ -561,7 +558,7 @@ namespace ASC.CRM.Core.Dao
                                   OrderBy orderBy)
         {
 
-            if (CRMSecurity.IsAdmin)
+            if (_crmSecurity.IsAdmin)
                 return GetCrudeDeals(searchText,
                                      responsibleID,
                                      milestoneID,
@@ -590,9 +587,9 @@ namespace ASC.CRM.Core.Dao
 
             if (crudeDeals.Count == 0) return crudeDeals;
 
-            if (crudeDeals.Count < from + count) return crudeDeals.FindAll(CRMSecurity.CanAccessTo).Skip(from).ToList();
+            if (crudeDeals.Count < from + count) return crudeDeals.FindAll(_crmSecurity.CanAccessTo).Skip(from).ToList();
 
-            var result = crudeDeals.FindAll(CRMSecurity.CanAccessTo);
+            var result = crudeDeals.FindAll(_crmSecurity.CanAccessTo);
 
             if (result.Count == crudeDeals.Count) return result.Skip(from).ToList();
 
@@ -616,7 +613,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (crudeDeals.Count == 0) break;
 
-                result.AddRange(crudeDeals.Where(CRMSecurity.CanAccessTo));
+                result.AddRange(crudeDeals.Where(_crmSecurity.CanAccessTo));
 
                 if ((result.Count >= count + from) || (crudeDeals.Count < localCount)) break;
 
@@ -730,7 +727,7 @@ namespace ASC.CRM.Core.Dao
 
             var dbDeals = sqlQuery.ToList();
 
-            return _mapper.Map<List<DbDeal>, List<Deal>>(dbDeals).FindAll(CRMSecurity.CanAccessTo);
+            return _mapper.Map<List<DbDeal>, List<Deal>>(dbDeals).FindAll(_crmSecurity.CanAccessTo);
         }
 
         public Deal DeleteDeal(int dealID)
@@ -740,9 +737,9 @@ namespace ASC.CRM.Core.Dao
             var deal = GetByID(dealID);
             if (deal == null) return null;
 
-            CRMSecurity.DemandDelete(deal);
+            _crmSecurity.DemandDelete(deal);
 
-            FactoryIndexer.Delete(Query(CrmDbContext.Deals).Where(x => x.Id == dealID).Single());
+            _factoryIndexer.Delete(Query(CrmDbContext.Deals).Where(x => x.Id == dealID).Single());
 
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
@@ -754,7 +751,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<Deal> DeleteBatchDeals(int[] dealID)
         {
-            var deals = GetDeals(dealID).FindAll(CRMSecurity.CanDelete).ToList();
+            var deals = GetDeals(dealID).FindAll(_crmSecurity.CanDelete).ToList();
             if (!deals.Any()) return deals;
 
             // Delete relative  keys
@@ -766,7 +763,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<Deal> DeleteBatchDeals(List<Deal> deals)
         {
-            deals = deals.FindAll(CRMSecurity.CanDelete).ToList();
+            deals = deals.FindAll(_crmSecurity.CanDelete).ToList();
             if (!deals.Any()) return deals;
 
             // Delete relative  keys
@@ -783,7 +780,7 @@ namespace ASC.CRM.Core.Dao
             var dealID = deals.Select(x => x.ID).ToArray();
             object[] filesIDs;
 
-            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
+            var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
 
             var tagNames = Query(CrmDbContext.RelationshipEvent)
                                 .Where(x => x.HaveFiles && dealID.Contains(x.EntityId) && x.EntityType == EntityType.Opportunity)
@@ -811,9 +808,9 @@ namespace ASC.CRM.Core.Dao
 
             tx.Commit();
 
-            deals.ForEach(deal => AuthorizationManager.RemoveAllAces(deal));
+            deals.ForEach(deal => _authorizationManager.RemoveAllAces(deal));
 
-            var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             foreach (var filesID in filesIDs)
             {
@@ -843,14 +840,14 @@ namespace ASC.CRM.Core.Dao
 
                 EditDeal(deal);
 
-                var responsibles = CRMSecurity.GetAccessSubjectGuidsTo(deal);
+                var responsibles = _crmSecurity.GetAccessSubjectGuidsTo(deal);
 
                 if (!responsibles.Any()) continue;
 
                 responsibles.Remove(fromUserId);
                 responsibles.Add(toUserId);
 
-                CRMSecurity.SetAccessTo(deal, responsibles.Distinct().ToList());
+                _crmSecurity.SetAccessTo(deal, responsibles.Distinct().ToList());
             }
         }
 
@@ -864,7 +861,7 @@ namespace ASC.CRM.Core.Dao
             var dbDeal = new DbDeal
             {
                 Id = opportunityid,
-                CreateOn = TenantUtil.DateTimeToUtc(creationDate),
+                CreateOn = _tenantUtil.DateTimeToUtc(creationDate),
                 TenantId = TenantID
             };
 
@@ -886,7 +883,7 @@ namespace ASC.CRM.Core.Dao
             var dbDeal = new DbDeal
             {
                 Id = opportunityid,
-                LastModifedOn = TenantUtil.DateTimeToUtc(lastModifedDate),
+                LastModifedOn = _tenantUtil.DateTimeToUtc(lastModifedDate),
                 TenantId = TenantID
             };
 

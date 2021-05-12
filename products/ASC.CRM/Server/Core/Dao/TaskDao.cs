@@ -81,51 +81,54 @@ namespace ASC.CRM.Core.Dao
             _mapper = mapper;
         }
 
-        public void OpenTask(int taskId)
+        public void OpenTask(int id)
         {
-            var task = GetByID(taskId);
+            var dbEntity = CrmDbContext.Tasks.Find(id);
 
-            if (task == null)
+            if (dbEntity == null)
                 throw new ArgumentException();
 
-            _crmSecurity.DemandEdit(task);
+            if (!dbEntity.IsClosed) return;
+            if (dbEntity.TenantId != TenantID) return;
 
-            DbTask entity = new DbTask()
-            {
-                Id = taskId,
-                IsClosed = false
-            };
+            var entity = _mapper.Map<Task>(dbEntity);
 
-            CrmDbContext.Tasks.Update(entity);
+            _crmSecurity.DemandEdit(entity);
+
+            dbEntity.IsClosed = false;
 
             CrmDbContext.SaveChanges();
         }
 
-        public void CloseTask(int taskId)
+        public void CloseTask(int id)
         {
-            var task = GetByID(taskId);
+            var dbEntity = CrmDbContext.Tasks.Find(id);
 
-            if (task == null)
+            if (dbEntity == null)
                 throw new ArgumentException();
 
-            _crmSecurity.DemandEdit(task);
+            if (dbEntity.IsClosed) return;
 
-            DbTask entity = new DbTask()
-            {
-                Id = taskId,
-                IsClosed = true
-            };
+            var entity = _mapper.Map<Task>(dbEntity);
 
-            CrmDbContext.Tasks.Update(entity);
+            _crmSecurity.DemandEdit(entity);
+
+            dbEntity.IsClosed = true;
 
             CrmDbContext.SaveChanges();
         }
 
         public Task GetByID(int id)
         {
-            var entity = Query(CrmDbContext.Tasks).FirstOrDefault(x => x.Id == id);
+            var dbEntity = CrmDbContext.Tasks.Find(id);
 
-            return _mapper.Map<Task>(entity);
+            if (dbEntity.TenantId != TenantID) return null;
+
+            var entity = _mapper.Map<Task>(dbEntity);
+
+            _crmSecurity.DemandAccessTo(entity);
+
+            return entity;
         }
 
         public List<Task> GetTasks(EntityType entityType, int entityID, bool? onlyActiveTask)
@@ -142,7 +145,9 @@ namespace ASC.CRM.Core.Dao
         {
             var dbTasks = Query(CrmDbContext.Tasks)
                  .OrderBy(x => x.Deadline)
-                 .OrderBy(x => x.Title).ToList();
+                 .OrderBy(x => x.Title)
+                 .AsNoTracking()
+                 .ToList();
 
             return _mapper.Map<List<DbTask>, List<Task>>(dbTasks)
                  .FindAll(_crmSecurity.CanAccessTo);
@@ -152,19 +157,29 @@ namespace ASC.CRM.Core.Dao
         {
             if (!ids.Any()) return;
 
-            CrmDbContext.Tasks.UpdateRange(ids.Select(x => new DbTask { ExecAlert = 1, Id = x })); ;
+            foreach (var id in ids)
+            {
+                var dbEntity = CrmDbContext.Tasks.Find(id);
+
+                if (dbEntity.TenantId != TenantID)
+                    throw new Exception("Get data from another tenant");
+
+                dbEntity.ExecAlert = 1;
+            }
 
             CrmDbContext.SaveChanges();
         }
 
         public List<object[]> GetInfoForReminder(DateTime scheduleDate)
         {
-            return CrmDbContext.Tasks.Where(x =>
+            return Query(CrmDbContext.Tasks).Where(x =>
                                             x.IsClosed == false &&
                                             x.AlertValue != 0 &&
                                             x.ExecAlert == 0 &&
                                             (x.Deadline.AddMinutes(-x.AlertValue) >= scheduleDate.AddHours(-1) && x.Deadline.AddMinutes(-x.AlertValue) <= scheduleDate.AddHours(-1))
-            ).Select(x => new object[] { x.TenantId, x.Id, x.Deadline, x.AlertValue, x.ResponsibleId }).ToList();
+                                      )
+                                      .Select(x => new object[] { x.TenantId, x.Id, x.Deadline, x.AlertValue, x.ResponsibleId })
+                                      .ToList();
         }
 
         public List<Task> GetTasks(
@@ -513,7 +528,7 @@ namespace ASC.CRM.Core.Dao
                                   int count,
                                   OrderBy orderBy)
         {
-            var sqlQuery = Query(CrmDbContext.Tasks);
+            var sqlQuery = Query(CrmDbContext.Tasks).AsNoTracking();
 
             if (responsibleID != Guid.Empty)
                 sqlQuery = sqlQuery.Where(x => x.ResponsibleId == responsibleID);
@@ -756,88 +771,44 @@ namespace ASC.CRM.Core.Dao
 
         private Task SaveOrUpdateTaskInDb(Task newTask)
         {
-            if (string.IsNullOrEmpty(newTask.Title) || 
+            if (string.IsNullOrEmpty(newTask.Title) ||
                 newTask.DeadLine == DateTime.MinValue ||
                 newTask.CategoryID <= 0)
                 throw new ArgumentException();
-            
-            if (newTask.ID == 0 )
+
+            var dbEntity = new DbTask
             {
-                newTask.CreateOn = DateTime.UtcNow;
-                newTask.CreateBy = _securityContext.CurrentAccount.ID;
+                Id = newTask.ID,
+                Title = newTask.Title,
+                Description = newTask.Description,
+                Deadline = _tenantUtil.DateTimeToUtc(newTask.DeadLine),
+                ResponsibleId = newTask.ResponsibleID,
+                ContactId = newTask.ContactID,
+                EntityType = newTask.EntityType,
+                EntityId = newTask.EntityID,
+                IsClosed = newTask.IsClosed,
+                CategoryId = newTask.CategoryID,
+                CreateOn = newTask.CreateOn == DateTime.MinValue ? DateTime.UtcNow : newTask.CreateOn,
+                CreateBy = newTask.CreateBy == Guid.Empty ? _securityContext.CurrentAccount.ID : newTask.CreateBy,
+                LastModifedOn = DateTime.UtcNow,
+                LastModifedBy = _securityContext.CurrentAccount.ID,
+                AlertValue = newTask.AlertValue,
+                ExecAlert = 0,
+                TenantId = TenantID
+            };
 
-                newTask.LastModifedOn = DateTime.UtcNow;
-                newTask.LastModifedBy = _securityContext.CurrentAccount.ID;
+            CrmDbContext.Update(dbEntity);
+            CrmDbContext.SaveChanges();
 
-                var itemToInsert = new DbTask
-                {
-                    Title = newTask.Title,
-                    Description = newTask.Description,
-                    Deadline = _tenantUtil.DateTimeToUtc(newTask.DeadLine),
-                    ResponsibleId = newTask.ResponsibleID,
-                    ContactId = newTask.ContactID,
-                    EntityType = newTask.EntityType,
-                    EntityId = newTask.EntityID,
-                    IsClosed = newTask.IsClosed,
-                    CategoryId = newTask.CategoryID,
-                    CreateOn = newTask.CreateOn,
-                    CreateBy = newTask.CreateBy,
-                    LastModifedOn = newTask.LastModifedOn,
-                    LastModifedBy = newTask.LastModifedBy,
-                    AlertValue = newTask.AlertValue,
-                    TenantId = TenantID
-                };
+            _factoryIndexer.Index(dbEntity);
 
-                CrmDbContext.Add(itemToInsert);
-                
-                CrmDbContext.SaveChanges();
-
-                newTask.ID = itemToInsert.Id;
-            }
-            else
-            {
-
-                var itemToUpdate = Query(CrmDbContext.Tasks).FirstOrDefault(x => x.Id == newTask.ID);
-
-                var oldTask = _mapper.Map<Task>(itemToUpdate);
-
-                _crmSecurity.DemandEdit(oldTask);
-
-                itemToUpdate.Title = newTask.Title;
-                itemToUpdate.Description = newTask.Description;
-                itemToUpdate.Deadline = _tenantUtil.DateTimeToUtc(newTask.DeadLine);
-                itemToUpdate.ResponsibleId = newTask.ResponsibleID;
-                itemToUpdate.ContactId = newTask.ContactID;
-                itemToUpdate.EntityType = newTask.EntityType;
-                itemToUpdate.EntityId = newTask.EntityID;
-                itemToUpdate.CategoryId = newTask.CategoryID;
-                itemToUpdate.LastModifedOn = newTask.LastModifedOn;
-                itemToUpdate.LastModifedBy = newTask.LastModifedBy;
-                itemToUpdate.AlertValue = newTask.AlertValue;
-                itemToUpdate.ExecAlert = 0;
-                itemToUpdate.TenantId = TenantID;
-
-                CrmDbContext.Update(itemToUpdate);
-                CrmDbContext.SaveChanges();
-
-
-                newTask.CreateOn = oldTask.CreateOn;
-                newTask.CreateBy = oldTask.CreateBy;
-
-                newTask.LastModifedOn = DateTime.UtcNow;
-                newTask.LastModifedBy = _securityContext.CurrentAccount.ID;
-
-                newTask.IsClosed = oldTask.IsClosed;
-            }
-
-            _factoryIndexer.Index(Query(CrmDbContext.Tasks).Where(x => x.Id == newTask.ID).Single());
-
-            return newTask;
+            return _mapper.Map<Task>(dbEntity);
         }
 
         public int SaveTask(Task newTask)
         {
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
+
             return SaveTaskInDb(newTask);
         }
 
@@ -879,7 +850,6 @@ namespace ASC.CRM.Core.Dao
 
         public int[] SaveTaskList(List<Task> items)
         {
-
             using var tx = CrmDbContext.Database.BeginTransaction();
 
             var result = new List<int>();
@@ -896,19 +866,19 @@ namespace ASC.CRM.Core.Dao
             return result.ToArray();
         }
 
-        public void DeleteTask(int taskID)
+        public void DeleteTask(int id)
         {
-            var task = GetByID(taskID);
+            var task = GetByID(id);
 
             if (task == null) return;
 
             _crmSecurity.DemandEdit(task);
 
-            var dbTask = Query(CrmDbContext.Tasks).Where(x => x.Id == taskID).Single();
+            var dbEntity = CrmDbContext.Tasks.Find(id);
 
-            _factoryIndexer.Delete(dbTask);
+            _factoryIndexer.Delete(dbEntity);
 
-            CrmDbContext.Tasks.Remove(new DbTask { Id = taskID });
+            CrmDbContext.Tasks.Remove(dbEntity);
 
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
 
@@ -973,94 +943,30 @@ namespace ASC.CRM.Core.Dao
             return result;
         }
 
-        #region Private Methods
-
-        //private String[] GetTaskColumnsTable(String alias)
-        //{
-        //    if (!String.IsNullOrEmpty(alias))
-        //        alias = alias + ".";
-
-        //    var result = new List<String>
-        //                     {
-        //                        "id",
-        //                        "contact_id",
-        //                        "title",
-        //                        "description",
-        //                        "deadline",
-        //                        "responsible_id",
-        //                        "is_closed",
-        //                        "category_id",
-        //                        "entity_id",
-        //                        "entity_type",
-        //                        "create_on",
-        //                        "create_by",
-        //                        "alert_value"
-        //                     };
-
-        //    if (String.IsNullOrEmpty(alias)) return result.ToArray();
-
-        //    return result.ConvertAll(item => String.Concat(alias, item)).ToArray();
-        //}
-
-        //private SqlQuery GetTaskQuery(Exp where, String alias)
-        //{
-
-        //    var sqlQuery = Query("crm_task");
-
-        //    if (!String.IsNullOrEmpty(alias))
-        //    {
-        //        sqlQuery = new SqlQuery(String.Concat("crm_task ", alias))
-        //                   .Where(Exp.Eq(alias + ".tenant_id", TenantID));
-        //        sqlQuery.Select(GetTaskColumnsTable(alias));
-
-        //    }
-        //    else
-        //        sqlQuery.Select(GetTaskColumnsTable(String.Empty));
-
-
-        //    if (where != null)
-        //        sqlQuery.Where(where);
-
-        //    return sqlQuery;
-
-        //}
-
-        //private SqlQuery GetTaskQuery(Exp where)
-        //{
-        //    return GetTaskQuery(where, String.Empty);
-
-        //}
-
-
-        #endregion
-
         public void ReassignTasksResponsible(Guid fromUserId, Guid toUserId)
         {
-            var tasks = GetTasks(String.Empty, fromUserId, 0, false, DateTime.MinValue, DateTime.MinValue,
-                            EntityType.Any, 0, 0, 0, null);
+            var dbEntities = Query(CrmDbContext.Tasks)
+                          .Where(x => x.ResponsibleId == fromUserId)
+                          .ToList();
 
-            foreach (var task in tasks)
+            foreach (var dbEntity in dbEntities)
             {
-                task.ResponsibleID = toUserId;
-
-                SaveOrUpdateTask(task);
+                dbEntity.ResponsibleId = toUserId;
             }
+
+            CrmDbContext.SaveChanges();
         }
 
         /// <summary>
         /// Test method
         /// </summary>
-        /// <param name="taskId"></param>
+        /// <param name="id"></param>
         /// <param name="creationDate"></param>
-        public void SetTaskCreationDate(int taskId, DateTime creationDate)
+        public void SetTaskCreationDate(int id, DateTime creationDate)
         {
-            DbTask entity = new DbTask()
-            {
-                Id = taskId,
-                CreateOn = _tenantUtil.DateTimeToUtc(creationDate)
-            };
+            var dbEntity = CrmDbContext.Tasks.Find(id);
 
-            CrmDbContext.Tasks.Update(entity);
+            dbEntity.LastModifedOn = _tenantUtil.DateTimeToUtc(creationDate);
 
             CrmDbContext.SaveChanges();
 
@@ -1071,17 +977,13 @@ namespace ASC.CRM.Core.Dao
         /// <summary>
         /// Test method
         /// </summary>
-        /// <param name="taskId"></param>
+        /// <param name="id"></param>
         /// <param name="lastModifedDate"></param>
-        public void SetTaskLastModifedDate(int taskId, DateTime lastModifedDate)
+        public void SetTaskLastModifedDate(int id, DateTime lastModifedDate)
         {
-            DbTask entity = new DbTask()
-            {
-                Id = taskId,
-                LastModifedOn = _tenantUtil.DateTimeToUtc(lastModifedDate)
-            };
+            var dbEntity = CrmDbContext.Tasks.Find(id);
 
-            CrmDbContext.Tasks.Update(entity);
+            dbEntity.LastModifedOn = _tenantUtil.DateTimeToUtc(lastModifedDate);
 
             CrmDbContext.SaveChanges();
 

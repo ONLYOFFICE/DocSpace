@@ -46,6 +46,7 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class FileDao : AbstractDao
     {
+        private FilesIntegration _filesIntegration;
         public FileDao(FilesIntegration filesIntegration,
                        DbContextManager<CrmDbContext> dbContextManager,
                        TenantManager tenantManager,
@@ -60,14 +61,13 @@ namespace ASC.CRM.Core.Dao
                  ascCache,
                  mapper)
         {
-            FilesIntegration = filesIntegration;
+            _filesIntegration = filesIntegration;
         }
 
-        public FilesIntegration FilesIntegration { get; }
 
         public File<int> GetFile(int id, int version)
         {
-            var dao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             var file = 0 < version ? dao.GetFile(id, version) : dao.GetFile(id);
 
@@ -76,31 +76,31 @@ namespace ASC.CRM.Core.Dao
 
         public void DeleteFile(int id)
         {
-            var dao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             dao.DeleteFile(id);
         }
 
         public int GetRoot()
         {
-            return FilesIntegration.RegisterBunch<int>("crm", "crm_common", "");
+            return _filesIntegration.RegisterBunch<int>("crm", "crm_common", "");
         }
 
         public int GetMy()
         {
-            return FilesIntegration.RegisterBunch<int>("files", "my", _securityContext.CurrentAccount.ID.ToString());
+            return _filesIntegration.RegisterBunch<int>("files", "my", _securityContext.CurrentAccount.ID.ToString());
         }
 
         public File<int> SaveFile(File<int> file, System.IO.Stream stream)
         {
-            var dao = FilesIntegration.DaoFactory.GetFileDao<int>();
+            var dao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
             return dao.SaveFile(file, stream);
         }
 
         public List<int> GetEventsByFile(int id)
         {
-            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
+            var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
 
             var tags = tagdao.GetTags(id, FileEntryType.File, TagType.System).ToList().FindAll(tag => tag.TagName.StartsWith("RelationshipEvent_"));
 
