@@ -19,6 +19,7 @@ const FilesMediaViewer = (props) => {
     mediaViewerImageFormats,
     location,
     setRemoveMediaItem,
+    selectedFolderId,
     userAccess,
   } = props;
 
@@ -65,7 +66,7 @@ const FilesMediaViewer = (props) => {
       if (file) {
         setRemoveMediaItem(file);
         if (playlist.length === 1) onMediaViewerClose();
-        deleteItemAction(file.id, file.folderId, translations, true);
+        deleteItemAction(file.id, selectedFolderId, translations, true);
       }
     }
   };
@@ -108,6 +109,7 @@ export default inject(
     filesActionsStore,
     formatsStore,
     dialogsStore,
+    selectedFolderStore,
   }) => {
     const { files, userAccess } = filesStore;
     const {
@@ -130,6 +132,7 @@ export default inject(
       mediaViewerImageFormats: images,
       mediaViewerMediaFormats: media,
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
+      selectedFolderId: selectedFolderStore.id,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesMediaViewer))));
