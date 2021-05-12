@@ -70,6 +70,7 @@ export default function withFileActions(WrappedFileItem) {
 
     onDropZoneUpload = (files, uploadToFolder) => {
       const {
+        t,
         selectedFolderId,
         dragging,
         setDragging,
