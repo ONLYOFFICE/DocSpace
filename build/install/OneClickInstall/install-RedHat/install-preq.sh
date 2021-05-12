@@ -111,9 +111,9 @@ module_hotfixes=true
 END
 
 if [ "$REV" = "8" ]; then
-rabbitmq_version="-3.8.12"
+	rabbitmq_version="-3.8.12"
 
-cat > /etc/yum.repos.d/rabbitmq-server.repo <<END
+	cat > /etc/yum.repos.d/rabbitmq-server.repo <<END
 [rabbitmq-server]
 name=rabbitmq-server
 baseurl=https://packagecloud.io/rabbitmq/rabbitmq-server/el/7/\$basearch
@@ -157,5 +157,4 @@ if [ ! -e /usr/bin/json ]; then
 fi
 
 systemctl daemon-reload
-package_services="rabbitmq-server postgresql redis supervisord nginx kafka"
-systemctl enable mysqld && systemctl start mysqld
+package_services="rabbitmq-server postgresql redis supervisord nginx kafka mysqld"

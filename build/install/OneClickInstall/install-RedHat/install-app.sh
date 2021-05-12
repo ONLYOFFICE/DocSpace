@@ -10,6 +10,21 @@ cat<<EOF
 
 EOF
 
+if [ -e /etc/redis.conf ]; then
+ sed -i "s/bind .*/bind 127.0.0.1/g" /etc/redis.conf
+ sed -r "/^save\s[0-9]+/d" -i /etc/redis.conf
+ 
+ systemctl restart redis
+fi
+
+sed "/host\s*all\s*all\s*127\.0\.0\.1\/32\s*ident$/s|ident$|trust|" -i /var/lib/pgsql/data/pg_hba.conf
+sed "/host\s*all\s*all\s*::1\/128\s*ident$/s|ident$|trust|" -i /var/lib/pgsql/data/pg_hba.conf
+
+for SVC in $package_services; do
+		systemctl start $SVC	
+		systemctl enable $SVC
+done
+
 MYSQL_SERVER_HOST=${MYSQL_SERVER_HOST:-"localhost"}
 MYSQL_SERVER_DB_NAME=${MYSQL_SERVER_DB_NAME:-"${package_sysname}"}
 MYSQL_SERVER_USER=${MYSQL_SERVER_USER:-"root"}
@@ -48,21 +63,6 @@ elif [ "${UPDATE}" = "true" ] && [ "${MYSQL_FIRST_TIME_INSTALL}" != "true" ]; th
 	MYSQL_SERVER_PORT=$(echo $USER_CONNECTIONSTRING | grep -oP 'Port=\K.*' | grep -o '^[^;]*')
 	MYSQL_ROOT_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
 fi
-
-if [ -e /etc/redis.conf ]; then
- sed -i "s/bind .*/bind 127.0.0.1/g" /etc/redis.conf
- sed -r "/^save\s[0-9]+/d" -i /etc/redis.conf
- 
- systemctl restart redis
-fi
-
-sed "/host\s*all\s*all\s*127\.0\.0\.1\/32\s*ident$/s|ident$|trust|" -i /var/lib/pgsql/data/pg_hba.conf
-sed "/host\s*all\s*all\s*::1\/128\s*ident$/s|ident$|trust|" -i /var/lib/pgsql/data/pg_hba.conf
-
-for SVC in $package_services; do
-		systemctl start $SVC	
-		systemctl enable $SVC
-done
 
 if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	declare -x DS_PORT=8083
