@@ -19,6 +19,7 @@ const FilesMediaViewer = (props) => {
     mediaViewerImageFormats,
     location,
     setRemoveMediaItem,
+    userAccess,
   } = props;
 
   useEffect(() => {
@@ -82,6 +83,7 @@ const FilesMediaViewer = (props) => {
   return (
     visible && (
       <MediaViewer
+        userAccess={userAccess}
         currentFileId={currentMediaFileId}
         allowConvert={true} //TODO:
         canDelete={canDelete} //TODO:
@@ -107,7 +109,7 @@ export default inject(
     formatsStore,
     dialogsStore,
   }) => {
-    const { files } = filesStore;
+    const { files, userAccess } = filesStore;
     const {
       visible,
       id: currentMediaFileId,
@@ -120,6 +122,7 @@ export default inject(
     return {
       files,
       playlist,
+      userAccess,
       visible: playlist.length > 0 && visible,
       currentMediaFileId,
       deleteItemAction,

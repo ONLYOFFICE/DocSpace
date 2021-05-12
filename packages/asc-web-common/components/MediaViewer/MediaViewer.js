@@ -443,6 +443,7 @@ class MediaViewer extends React.Component {
         {canOpen &&
           (isImage ? (
             <ImageViewer
+              userAccess={this.props.userAccess}
               visible={this.state.visible}
               onClose={this.onClose}
               images={[{ src: url, alt: "" }]}
