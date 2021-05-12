@@ -24,6 +24,10 @@ const Badges = ({
 }) => {
   const { id, locked, fileStatus, versionGroup, title, fileExst } = item;
 
+  const isFavorite = fileStatus === 32;
+  const isEditing = fileStatus === 1;
+  const isNewWithFav = fileStatus === 34;
+
   return fileExst ? (
     <div className="badges additional-badges">
       {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
@@ -57,7 +61,7 @@ const Badges = ({
           onClick={onClickLock}
         />
       )}
-      {fileStatus === 32 && !isTrashFolder && (
+      {(isFavorite || isNewWithFav) && !isTrashFolder && (
         <StyledFavoriteIcon
           className="favorite icons-group"
           size="small"
@@ -67,7 +71,7 @@ const Badges = ({
           onClick={onClickFavorite}
         />
       )}
-      {fileStatus === 1 && (
+      {isEditing && (
         <StyledFileActionsConvertEditDocIcon className="badge" size="small" />
       )}
       {versionGroup > 1 && (
@@ -85,7 +89,7 @@ const Badges = ({
           data-id={id}
         />
       )}
-      {showNew && (
+      {(showNew || isNewWithFav) && (
         <Badge
           className="badge-version icons-group"
           backgroundColor="#ED7309"

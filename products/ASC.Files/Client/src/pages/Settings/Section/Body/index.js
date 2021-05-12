@@ -51,6 +51,7 @@ const SectionBodyContent = ({
   myFolderId,
   commonFolderId,
   t,
+  isVisitor,
 }) => {
   const onChangeStoreForceSave = () => {
     setStoreForceSave(!storeForceSave, "storeForceSave");
@@ -134,42 +135,51 @@ const SectionBodyContent = ({
           onChange={onChangeDeleteConfirm}
           isChecked={confirmDelete}
         />
-        <ToggleButton
-          isDisabled={true}
-          className="toggle-btn"
-          label={t("DisplayRecent")}
-          onChange={(e) => console.log(e)}
-          isChecked={false}
-        />
-        <ToggleButton
-          isDisabled={true}
-          className="toggle-btn"
-          label={t("DisplayFavorites")}
-          onChange={(e) => console.log(e)}
-          isChecked={false}
-        />
-        <ToggleButton
-          isDisabled={true}
-          className="toggle-btn"
-          label={t("DisplayTemplates")}
-          onChange={(e) => console.log(e)}
-          isChecked={false}
-        />
-        <Heading className="heading" level={2} size="small">
-          {t("StoringFileVersion")}
-        </Heading>
-        <ToggleButton
-          className="toggle-btn"
-          label={t("UpdateOrCreate")}
-          onChange={onChangeUpdateIfExist}
-          isChecked={updateIfExist}
-        />
-        <ToggleButton
-          className="toggle-btn"
-          label={t("KeepIntermediateVersion")}
-          onChange={onChangeForceSave}
-          isChecked={forceSave}
-        />
+        {!isVisitor && (
+          <>
+            <ToggleButton
+              isDisabled={true}
+              className="toggle-btn"
+              label={t("DisplayRecent")}
+              onChange={(e) => console.log(e)}
+              isChecked={false}
+            />
+
+            <ToggleButton
+              isDisabled={true}
+              className="toggle-btn"
+              label={t("DisplayFavorites")}
+              onChange={(e) => console.log(e)}
+              isChecked={false}
+            />
+            <ToggleButton
+              isDisabled={true}
+              className="toggle-btn"
+              label={t("DisplayTemplates")}
+              onChange={(e) => console.log(e)}
+              isChecked={false}
+            />
+          </>
+        )}
+        {!isVisitor && (
+          <>
+            <Heading className="heading" level={2} size="small">
+              {t("StoringFileVersion")}
+            </Heading>
+            <ToggleButton
+              className="toggle-btn"
+              label={t("UpdateOrCreate")}
+              onChange={onChangeUpdateIfExist}
+              isChecked={updateIfExist}
+            />
+            <ToggleButton
+              className="toggle-btn"
+              label={t("KeepIntermediateVersion")}
+              onChange={onChangeForceSave}
+              isChecked={forceSave}
+            />
+          </>
+        )}
       </StyledSettings>
     );
   };
@@ -240,6 +250,7 @@ export default inject(
       treeFolders,
       myFolderId,
       commonFolderId,
+      isVisitor: auth.userStore.user.isVisitor,
 
       setUpdateIfExist,
       setStoreOriginal,

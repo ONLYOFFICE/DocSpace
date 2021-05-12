@@ -24,6 +24,7 @@ class FilesActionStore {
   selectedFolderStore;
   settingsStore;
   dialogsStore;
+  mediaViewerDataStore;
 
   constructor(
     authStore,
@@ -32,7 +33,8 @@ class FilesActionStore {
     filesStore,
     selectedFolderStore,
     settingsStore,
-    dialogsStore
+    dialogsStore,
+    mediaViewerDataStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -42,7 +44,15 @@ class FilesActionStore {
     this.selectedFolderStore = selectedFolderStore;
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
+    this.mediaViewerDataStore = mediaViewerDataStore;
   }
+
+  isMediaOpen = () => {
+    const { visible, setMediaViewerData, playlist } = this.mediaViewerDataStore;
+    if (visible && playlist.length === 1) {
+      setMediaViewerData({ visible: false, id: null });
+    }
+  };
 
   deleteAction = (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
@@ -71,6 +81,7 @@ class FilesActionStore {
     }
 
     if (folderIds.length || fileIds.length) {
+      this.isMediaOpen();
       return removeFiles(folderIds, fileIds, deleteAfter, immediately)
         .then((res) => {
           const id = res[0] && res[0].id ? res[0].id : null;
@@ -268,25 +279,42 @@ class FilesActionStore {
     setSelection([item]);
   };
 
+  deleteItemAction = (itemId, currentFolderId, translations, isFile) => {
+    const {
+      setSecondaryProgressBarData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+    if (this.settingsStore.confirmDelete) {
+      this.dialogsStore.setDeleteDialogVisible(true);
+    } else {
+      setSecondaryProgressBarData({
+        icon: "trash",
+        visible: true,
+        percent: 0,
+        label: translations.deleteOperation,
+        alert: false,
+      });
+
+      isFile
+        ? this.deleteFileAction(itemId, currentFolderId, translations)
+        : this.deleteFolderAction(itemId, currentFolderId, translations);
+    }
+  };
+
   deleteFileAction = (fileId, currentFolderId, translations) => {
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
-    setSecondaryProgressBarData({
-      icon: "trash",
-      visible: true,
-      percent: 0,
-      label: translations.deleteOperation,
-      alert: false,
-    });
+    this.isMediaOpen();
     return deleteFile(fileId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, false, translations);
       })
+      .then(() => toastr.success(translations.successRemoveFile))
       .catch((err) => {
+        toastr.error(err);
         setSecondaryProgressBarData({
           visible: true,
           alert: true,
@@ -301,19 +329,14 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
-    setSecondaryProgressBarData({
-      icon: "trash",
-      visible: true,
-      percent: 0,
-      label: translations.deleteOperation,
-      alert: false,
-    });
     return deleteFolder(folderId, currentFolderId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         this.loopDeleteProgress(id, currentFolderId, true, translations);
       })
+      .then(() => toastr.success(translations.successRemoveFolder))
       .catch((err) => {
+        toastr.error(err);
         setSecondaryProgressBarData({
           visible: true,
           alert: true,

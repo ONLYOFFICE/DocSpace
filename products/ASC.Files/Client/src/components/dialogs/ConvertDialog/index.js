@@ -31,53 +31,51 @@ class ConvertDialogComponent extends React.Component {
     const { saveOriginalFormat, hideMessage } = this.state;
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={this.onClose}>
-          <ModalDialog.Header>{t("ConversionTitle")}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <div className="convert_dialog_content">
-              <img
-                className="convert_dialog_image"
-                src="images/convert_alert.png"
-                alt="convert alert"
+      <ModalDialogContainer visible={visible} onClose={this.onClose}>
+        <ModalDialog.Header>{t("ConversionTitle")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <div className="convert_dialog_content">
+            <img
+              className="convert_dialog_image"
+              src="images/convert_alert.png"
+              alt="convert alert"
+            />
+            <div className="convert_dialog-content">
+              <Text>{t("ConversionMessage")}</Text>
+              <Checkbox
+                className="convert_dialog_checkbox"
+                label={t("SaveOriginalFormatMessage")}
+                isChecked={saveOriginalFormat}
+                onChange={this.onChangeFormat}
               />
-              <div className="convert_dialog-content">
-                <Text>{t("ConversionMessage")}</Text>
-                <Checkbox
-                  className="convert_dialog_checkbox"
-                  label={t("SaveOriginalFormatMessage")}
-                  isChecked={saveOriginalFormat}
-                  onChange={this.onChangeFormat}
-                />
-                <Checkbox
-                  className="convert_dialog_checkbox"
-                  label={t("HideMessage")}
-                  isChecked={hideMessage}
-                  onChange={this.onChangeMessageVisible}
-                />
-              </div>
-            </div>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <div className="convert_dialog_footer">
-              <Button
-                className="convert_dialog_button-accept"
-                key="ContinueButton"
-                label={t("ContinueButton")}
-                size="medium"
-                primary
-                onClick={this.onConvert}
-              />
-              <Button
-                className="convert_dialog_button"
-                key="CloseButton"
-                label={t("CloseButton")}
-                size="medium"
-                onClick={this.onClose}
+              <Checkbox
+                className="convert_dialog_checkbox"
+                label={t("HideMessage")}
+                isChecked={hideMessage}
+                onChange={this.onChangeMessageVisible}
               />
             </div>
-          </ModalDialog.Footer>
-        </ModalDialog>
+          </div>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <div className="convert_dialog_footer">
+            <Button
+              className="convert_dialog_button-accept"
+              key="ContinueButton"
+              label={t("ContinueButton")}
+              size="medium"
+              primary
+              onClick={this.onConvert}
+            />
+            <Button
+              className="convert_dialog_button"
+              key="CloseButton"
+              label={t("CloseButton")}
+              size="medium"
+              onClick={this.onClose}
+            />
+          </div>
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
