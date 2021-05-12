@@ -1,5 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
+import history from "../history";
+import { combineUrl, isAdmin } from "../utils";
 
 class TfaStore {
   tfaSettings = null;
@@ -34,7 +36,7 @@ class TfaStore {
     if (res && type !== "none") {
       const link = await api.settings.getTfaConfirmLink();
       console.log(link);
-      return link;
+      document.location.href = link;
     }
   };
 
