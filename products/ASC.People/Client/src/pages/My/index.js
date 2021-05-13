@@ -1,20 +1,18 @@
 import React from "react";
+import i18n from "../../i18n";
+import PeopleStore from "../../store/PeopleStore";
+
 import PropTypes from "prop-types";
 import PageLayout from "@appserver/common/components/PageLayout";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
-import {
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-  ArticleBodyContent,
-} from "../../components/Article";
-import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withRouter } from "react-router";
 
-import { inject, observer } from "mobx-react";
-import { withTranslation } from "react-i18next";
+import { Provider as PeopleProvider, inject, observer } from "mobx-react";
+import { I18nextProvider, withTranslation } from "react-i18next";
+import { SectionBodyContent, SectionHeaderContent } from "../Profile/Section";
 
-class Profile extends React.Component {
+class My extends React.Component {
   componentDidMount() {
     const {
       match,
@@ -78,18 +76,6 @@ class Profile extends React.Component {
 
     return (
       <PageLayout withBodyAutoFocus>
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
-
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent />
-        </PageLayout.ArticleMainButton>
-
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
-
         <PageLayout.SectionHeader>
           {profile ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
         </PageLayout.SectionHeader>
@@ -102,7 +88,7 @@ class Profile extends React.Component {
   }
 }
 
-Profile.propTypes = {
+My.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
@@ -111,7 +97,7 @@ Profile.propTypes = {
   language: PropTypes.string,
 };
 
-export default withRouter(
+const MyProfile = withRouter(
   inject(({ auth, peopleStore }) => ({
     setDocumentTitle: auth.setDocumentTitle,
     isAdmin: auth.isAdmin,
@@ -119,5 +105,15 @@ export default withRouter(
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
-  }))(observer(withTranslation("Profile")(Profile)))
+  }))(observer(withTranslation("Profile")(My)))
+);
+
+const peopleStore = new PeopleStore();
+
+export default (props) => (
+  <PeopleProvider peopleStore={peopleStore}>
+    <I18nextProvider i18n={i18n}>
+      <MyProfile {...props} />
+    </I18nextProvider>
+  </PeopleProvider>
 );
