@@ -20,8 +20,9 @@ const StyledNav = styled.nav`
 
   .version-box {
     position: inherit;
-    left: 16px;
-    bottom: 16px;
+    margin-left: 16px;
+    padding-bottom: 16px;
+    margin-top: 115%;
     white-space: nowrap;
     a:focus {
       outline: 0;
