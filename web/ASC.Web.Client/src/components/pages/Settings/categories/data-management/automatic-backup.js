@@ -52,7 +52,7 @@ const StyledComponent = styled.div`
     font-size: 19px;
     font-weight: 600;
   }
-  .automatic-backup_current_storage {
+  .automatic-backup_radio-button {
     margin-bottom: 8px;
   }
   .backup_combobox {
@@ -927,7 +927,7 @@ class AutomaticBackup extends React.Component {
                 onClick={this.onClickShowStorage}
                 isChecked={isCheckedDocuments}
                 value="value"
-                className="automatic-backup_current_storage"
+                className="automatic-backup_radio-button"
               />
               <Text className="category-item-description">
                 {t("DocumentsModuleDescription")}
@@ -992,6 +992,7 @@ class AutomaticBackup extends React.Component {
                 onClick={this.onClickShowStorage}
                 isChecked={isCheckedThirdParty}
                 value="value"
+                className="automatic-backup_radio-button"
               />
               <Text className="category-item-description">
                 {t("ThirdPartyResourceDescription")}
@@ -1058,6 +1059,7 @@ class AutomaticBackup extends React.Component {
                 onClick={this.onClickShowStorage}
                 isChecked={isCheckedThirdPartyStorage}
                 value="value"
+                className="automatic-backup_radio-button"
               />
               <Text className="category-item-description">
                 {t("ThirdPartyStorageDescription")}
@@ -1066,27 +1068,30 @@ class AutomaticBackup extends React.Component {
                 {t("ThirdPartyStorageNoteDescription")}
               </Text>
               {isShowThirdPartyStorage && (
-                <ScheduleComponent
-                  weeklySchedule={weeklySchedule}
-                  monthlySchedule={monthlySchedule}
-                  weekOptions={weekOptions}
-                  selectedOption={selectedOption}
-                  selectedWeekdayOption={selectedWeekdayOption}
-                  selectedTimeOption={selectedTimeOption}
-                  selectedMonthOption={selectedMonthOption}
-                  selectedMaxCopies={selectedMaxCopies}
-                  periodOptions={this.periodOptions}
-                  monthNumberOptionsArray={this.monthNumberOptionsArray}
-                  timeOptionsArray={this.timeOptionsArray}
-                  maxNumberCopiesArray={this.maxNumberCopiesArray}
-                  onClickCheckbox={this.onClickCheckbox}
-                  onSelectMaxCopies={this.onSelectMaxCopies}
-                  onSelectMonthNumberAndTimeOptions={
-                    this.onSelectMonthNumberAndTimeOptions
-                  }
-                  onSelectWeedDay={this.onSelectWeedDay}
-                  onSelectPeriod={this.onSelectPeriod}
-                />
+                <>
+                  <ThirdPartyStorageModule />
+                  <ScheduleComponent
+                    weeklySchedule={weeklySchedule}
+                    monthlySchedule={monthlySchedule}
+                    weekOptions={weekOptions}
+                    selectedOption={selectedOption}
+                    selectedWeekdayOption={selectedWeekdayOption}
+                    selectedTimeOption={selectedTimeOption}
+                    selectedMonthOption={selectedMonthOption}
+                    selectedMaxCopies={selectedMaxCopies}
+                    periodOptions={this.periodOptions}
+                    monthNumberOptionsArray={this.monthNumberOptionsArray}
+                    timeOptionsArray={this.timeOptionsArray}
+                    maxNumberCopiesArray={this.maxNumberCopiesArray}
+                    onClickCheckbox={this.onClickCheckbox}
+                    onSelectMaxCopies={this.onSelectMaxCopies}
+                    onSelectMonthNumberAndTimeOptions={
+                      this.onSelectMonthNumberAndTimeOptions
+                    }
+                    onSelectWeedDay={this.onSelectWeedDay}
+                    onSelectPeriod={this.onSelectPeriod}
+                  />
+                </>
               )}
             </StyledModules>
           </>
