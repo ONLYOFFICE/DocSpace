@@ -1,5 +1,5 @@
 import React from "react";
-import i18n from "../../i18n";
+import MyProfileI18n from "../../i18n";
 import PeopleStore from "../../store/PeopleStore";
 
 import PropTypes from "prop-types";
@@ -16,12 +16,22 @@ import {
 } from "../Profile/Section";
 import { SectionHeaderContent as EditHeaderContent } from "../ProfileAction/Section";
 import EditBodyContent from "../ProfileAction/Section/Body";
+import config from "../../../package.json";
 
 class My extends React.Component {
   componentDidMount() {
-    const { fetchProfile, profile, location, t, setDocumentTitle } = this.props;
+    const {
+      fetchProfile,
+      profile,
+      location,
+      t,
+      setDocumentTitle,
+      setModuleInfo,
+    } = this.props;
 
     setDocumentTitle(t("Profile"));
+    setModuleInfo(config.homepage, config.id);
+
     this.documentElement = document.getElementsByClassName("hidingHeader");
     const queryString = ((location && location.search) || "").slice(1);
     const queryParams = queryString.split("&");
@@ -53,7 +63,7 @@ class My extends React.Component {
 
     const isEdit = (location && location.search === "?action=edit") || false;
 
-    console.log("My Profile render", this.props, isEdit);
+    //console.log("My Profile render", this.props, isEdit);
 
     return (
       <PageLayout withBodyAutoFocus>
@@ -100,15 +110,18 @@ const MyProfile = withRouter(
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
+    setModuleInfo: auth.settingsStore.setModuleInfo,
   }))(observer(withTranslation("Profile")(My)))
 );
 
 const peopleStore = new PeopleStore();
 
-export default (props) => (
-  <PeopleProvider peopleStore={peopleStore}>
-    <I18nextProvider i18n={i18n}>
-      <MyProfile {...props} />
-    </I18nextProvider>
-  </PeopleProvider>
-);
+export default ({ i18n, ...rest }) => {
+  return (
+    <PeopleProvider peopleStore={peopleStore}>
+      <I18nextProvider i18n={MyProfileI18n}>
+        <MyProfile {...rest} />
+      </I18nextProvider>
+    </PeopleProvider>
+  );
+};
