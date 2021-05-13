@@ -548,6 +548,7 @@ class UpdateUserForm extends React.Component {
       //avatarMax,
       disableProfileType,
       isAdmin,
+      isMy,
     } = this.props;
     const {
       guestCaption,
@@ -775,7 +776,7 @@ class UpdateUserForm extends React.Component {
                 { value: "true", label: guestCaption },
                 { value: "false", label: userCaption },
               ]}
-              radioIsDisabled={isLoading || disableProfileType}
+              radioIsDisabled={isLoading || disableProfileType || isMy}
               radioOnChange={this.onUserTypeChange}
               tooltipContent={tooltipTypeContent}
               helpButtonHeaderContent={t("UserType")}
@@ -810,20 +811,22 @@ class UpdateUserForm extends React.Component {
               inputOnChange={this.onInputChange}
               inputTabIndex={9}
             />
-            <DepartmentField
-              labelText={`${groupCaption}:`}
-              isDisabled={isLoading || !isAdmin}
-              showGroupSelectorButtonTitle={t("AddButton")}
-              onShowGroupSelector={this.onShowGroupSelector}
-              onCloseGroupSelector={this.onCloseGroupSelector}
-              onRemoveGroup={this.onRemoveGroup}
-              selectorIsVisible={selector.visible}
-              selectorOptions={selector.options}
-              selectorSelectedOptions={selector.selected}
-              selectorSelectAllText={t("SelectAll")}
-              selectorOnSearchGroups={this.onSearchGroups}
-              selectorOnSelectGroups={this.onSelectGroups}
-            />
+            {!isMy && (
+              <DepartmentField
+                labelText={`${groupCaption}:`}
+                isDisabled={isLoading || !isAdmin}
+                showGroupSelectorButtonTitle={t("AddButton")}
+                onShowGroupSelector={this.onShowGroupSelector}
+                onCloseGroupSelector={this.onCloseGroupSelector}
+                onRemoveGroup={this.onRemoveGroup}
+                selectorIsVisible={selector.visible}
+                selectorOptions={selector.options}
+                selectorSelectedOptions={selector.selected}
+                selectorSelectAllText={t("SelectAll")}
+                selectorOnSearchGroups={this.onSearchGroups}
+                selectorOnSelectGroups={this.onSelectGroups}
+              />
+            )}
           </MainFieldsContainer>
         </MainContainer>
         <InfoFieldContainer headerText={t("Comments")}>
