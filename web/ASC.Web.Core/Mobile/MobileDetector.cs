@@ -35,11 +35,12 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Mobile
 {
+    [Scope]
     public class MobileDetector
     {
         private readonly Regex uaMobileRegex;
 
-        private static readonly ICache cache = AscCache.Memory;
+        private ICache cache { get; set; }
 
         private IHttpContextAccessor HttpContextAccessor { get; }
 
@@ -49,8 +50,9 @@ namespace ASC.Web.Core.Mobile
         }
 
 
-        public MobileDetector(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        public MobileDetector(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, ICache cache)
         {
+            this.cache = cache;
             if (!string.IsNullOrEmpty(configuration["mobile:regex"]))
             {
                 uaMobileRegex = new Regex(configuration["mobile:regex"], RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
@@ -80,15 +82,6 @@ namespace ASC.Web.Core.Mobile
                 }
             }
             return result.GetValueOrDefault();
-        }
-    }
-
-    public static class MobileDetectorExtension
-    {
-        public static DIHelper AddMobileDetectorService(this DIHelper services)
-        {
-            services.TryAddScoped<MobileDetector>();
-            return services;
         }
     }
 }

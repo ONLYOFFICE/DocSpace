@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Backup.Listerners
 {
+    [Singletone]
     public class BackupListener
     {
         private ICacheNotify<DeleteSchedule> CacheDeleteSchedule { get; }
@@ -36,15 +37,6 @@ namespace ASC.Data.Backup.Listerners
             using var scope = ServiceProvider.CreateScope();
             var backupService = scope.ServiceProvider.GetService<BackupService>();
             backupService.DeleteSchedule(deleteSchedule.TenantId);
-        }
-    }
-
-    public static class BackupListenerExtension
-    {
-        public static DIHelper AddBackupListenerService(this DIHelper services)
-        {
-            services.TryAddSingleton<BackupListener>();
-            return services.AddBackupService();
         }
     }
 }

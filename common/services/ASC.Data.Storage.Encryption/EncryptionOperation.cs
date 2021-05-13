@@ -34,6 +34,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Core;
+using ASC.Core.Encryption;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.DiscStorage;
 
@@ -43,6 +44,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.Encryption
 {
+    [Transient(Additional = typeof(EncryptionOperationExtension))]
     public class EncryptionOperation : DistributedTaskProgress
     {
         private const string ConfigPath = "";
@@ -174,10 +176,8 @@ namespace ASC.Data.Storage.Encryption
 
             if (store.IsFile(string.Empty, ProgressFileName))
             {
-                using (var stream = store.GetReadStream(string.Empty, ProgressFileName))
-                {
-                    using (var reader = new StreamReader(stream))
-                    {
+                using var stream = store.GetReadStream(string.Empty, ProgressFileName);
+                using var reader = new StreamReader(stream);
                         string line;
 
                         while ((line = reader.ReadLine()) != null)
@@ -185,8 +185,6 @@ namespace ASC.Data.Storage.Encryption
                             encryptedFiles.Add(line);
                         }
                     }
-                }
-            }
             else
             {
                 store.GetWriteStream(string.Empty, ProgressFileName).Close();
@@ -270,14 +268,10 @@ namespace ASC.Data.Storage.Encryption
                 return;
             }
 
-            using (var stream = store.GetWriteStream(string.Empty, ProgressFileName, FileMode.Append))
-            {
-                using (var writer = new StreamWriter(stream))
-                {
+            using var stream = store.GetWriteStream(string.Empty, ProgressFileName, FileMode.Append);
+            using var writer = new StreamWriter(stream);
                     writer.WriteLine(file);
                 }
-            }
-        }
 
         private void DeleteProgressFiles(StorageFactory storageFactory)
         {
@@ -356,6 +350,7 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
+    [Scope]
     public class EncryptionOperationScope
     {
         private ILog Log { get; set; }
@@ -403,17 +398,11 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
-    public static class EncryptionOperationExtension
+    public class EncryptionOperationExtension
     {
-        public static DIHelper AddEncryptionOperationService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddTransient<EncryptionOperation>();
-            services.TryAddTransient<EncryptionOperationScope>();
-            return services
-                .AddStorageFactoryConfigService()
-                .AddStorageFactoryService()
-                .AddNotifyHelperService()
-                .AddEncryptionSettingsHelperService();
+            services.TryAdd<EncryptionOperationScope>();
         }
     }
 }

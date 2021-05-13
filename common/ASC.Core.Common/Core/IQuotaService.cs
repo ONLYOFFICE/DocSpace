@@ -26,10 +26,14 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
+using ASC.Core.Caching;
+using ASC.Core.Data;
 using ASC.Core.Tenants;
 
 namespace ASC.Core
 {
+    [Scope(typeof(ConfigureDbQuotaService), typeof(ConfigureCachedQuotaService))]
     public interface IQuotaService
     {
         IEnumerable<TenantQuota> GetTenantQuotas();
@@ -40,8 +44,7 @@ namespace ASC.Core
 
         void RemoveTenantQuota(int id);
 
-
-        IEnumerable<TenantQuotaRow> FindTenantQuotaRows(TenantQuotaRowQuery query);
+        IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId);
 
         void SetTenantQuotaRow(TenantQuotaRow row, bool exchange);
     }

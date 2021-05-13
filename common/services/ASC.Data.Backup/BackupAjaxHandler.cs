@@ -18,9 +18,9 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Data.Backup
 {
+    [Scope]
     public class BackupAjaxHandler
     {
-
         private TenantManager TenantManager { get; }
         private MessageService MessageService { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
@@ -177,7 +177,7 @@ namespace ASC.Data.Backup
                 LastBackupTime = response.LastBackupTime
             };
 
-            if ((BackupStorageType)response.StorageType == BackupStorageType.CustomCloud)
+            if (response.StorageType == BackupStorageType.CustomCloud)
             {
                 var amazonSettings = CoreConfiguration.GetSection<AmazonS3Settings>();
 
@@ -198,7 +198,7 @@ namespace ASC.Data.Backup
                 var Schedule = new CreateScheduleRequest
                 {
                     TenantId = TenantManager.GetCurrentTenant().TenantId,
-                    BackupMail = schedule.BackupMail == null ? false : (bool)schedule.BackupMail,
+                    BackupMail = schedule.BackupMail != null && (bool)schedule.BackupMail,
                     Cron = schedule.CronParams.ToString(),
                     NumberOfBackupsStored = schedule.BackupsStored == null ? 0 : (int)schedule.BackupsStored,
                     StorageType = schedule.StorageType,
@@ -208,7 +208,7 @@ namespace ASC.Data.Backup
                 BackupService.CreateSchedule(Schedule);
 
             }
-            else if ((BackupStorageType)response.StorageType != BackupStorageType.ThirdPartyConsumer)
+            else if (response.StorageType != BackupStorageType.ThirdPartyConsumer)
             {
                 schedule.StorageParams["folderId"] = response.StorageBasePath;
             }
@@ -397,28 +397,6 @@ namespace ASC.Data.Backup
             EveryDay = 0,
             EveryWeek = 1,
             EveryMonth = 2
-        }
-    }
-    public static class BackupAjaxHandlerExtension
-    {
-        public static DIHelper AddBackupAjaxHandler(this DIHelper services)
-        {
-            if (services.TryAddScoped<BackupAjaxHandler>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddMessageServiceService()
-                    .AddCoreSettingsService()
-                    .AddPermissionContextService()
-                    .AddSecurityContextService()
-                    .AddUserManagerService()
-                    .AddTenantExtraService()
-                    .AddConsumerFactoryService()
-                    .AddBackupHelperService();
-            }
-
-            return services;
         }
     }
 }

@@ -37,6 +37,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.Web.Files.Helpers
 {
+    [Scope]
     public class FilesMessageService
     {
         private readonly ILog log;
@@ -118,21 +119,6 @@ namespace ASC.Web.Files.Helpers
             if (entry == null || entry.RootFolderType == FolderType.USER) return;
 
             MessageService.Send(initiator, action, MessageTarget.Create(entry.ID), description);
-        }
-    }
-
-    public static class FilesMessageServiceExtension
-    {
-        public static DIHelper AddFilesMessageService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FilesMessageService>())
-            {
-                return services
-                    .AddMessageTargetService()
-                    .AddMessageServiceService();
-            }
-
-            return services;
         }
     }
 }

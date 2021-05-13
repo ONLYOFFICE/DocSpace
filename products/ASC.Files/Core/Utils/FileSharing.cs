@@ -34,7 +34,6 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Files.Core.Services.NotifyService;
@@ -48,6 +47,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Utils
 {
+    [Scope]
     public class FileSharingAceHelper<T>
     {
         private FileSecurity FileSecurity { get; }
@@ -60,6 +60,7 @@ namespace ASC.Web.Files.Utils
         private NotifyClient NotifyClient { get; }
         private GlobalFolderHelper GlobalFolderHelper { get; }
         private FileSharingHelper FileSharingHelper { get; }
+        private FileTrackerHelper FileTracker { get; }
 
         public FileSharingAceHelper(
             FileSecurity fileSecurity,
@@ -71,7 +72,8 @@ namespace ASC.Web.Files.Utils
             FileMarker fileMarker,
             NotifyClient notifyClient,
             GlobalFolderHelper globalFolderHelper,
-            FileSharingHelper fileSharingHelper)
+            FileSharingHelper fileSharingHelper,
+            FileTrackerHelper fileTracker)
         {
             FileSecurity = fileSecurity;
             CoreBaseSettings = coreBaseSettings;
@@ -83,6 +85,7 @@ namespace ASC.Web.Files.Utils
             NotifyClient = notifyClient;
             GlobalFolderHelper = globalFolderHelper;
             FileSharingHelper = fileSharingHelper;
+            FileTracker = fileTracker;
         }
 
         public bool SetAceObject(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message)
@@ -214,6 +217,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
+    [Scope]
     public class FileSharingHelper
     {
         public FileSharingHelper(
@@ -250,6 +254,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
+    [Scope]
     public class FileSharing
     {
         private Global Global { get; }
@@ -422,7 +427,7 @@ namespace ASC.Web.Files.Utils
             return result;
         }
 
-        public ItemList<AceWrapper> GetSharedInfo<T>(ItemList<string> objectIds)
+        public ItemList<AceWrapper> GetSharedInfo<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
         {
             if (!AuthContext.IsAuthenticated)
             {
@@ -431,23 +436,16 @@ namespace ASC.Web.Files.Utils
 
             var result = new List<AceWrapper>();
 
-            var folderDao = DaoFactory.GetFolderDao<T>();
             var fileDao = DaoFactory.GetFileDao<T>();
+            var files = fileDao.GetFiles(fileIds);
 
-            foreach (var objectId in objectIds)
+            var folderDao = DaoFactory.GetFolderDao<T>();
+            var folders = folderDao.GetFolders(folderIds);
+
+            var entries = files.Cast<FileEntry<T>>().Concat(folders.Cast<FileEntry<T>>());
+
+            foreach (var entry in entries)
             {
-                if (string.IsNullOrEmpty(objectId))
-                {
-                    throw new InvalidOperationException(FilesCommonResource.ErrorMassage_BadRequest);
-                }
-
-                var entryType = objectId.StartsWith("file_") ? FileEntryType.File : FileEntryType.Folder;
-                var entryId = (T)Convert.ChangeType(objectId.Substring((entryType == FileEntryType.File ? "file_" : "folder_").Length), typeof(T));
-
-                var entry = entryType == FileEntryType.File
-                                ? fileDao.GetFile(entryId)
-                                : (FileEntry<T>)folderDao.GetFolder(entryId);
-
                 IEnumerable<AceWrapper> acesForObject;
                 try
                 {
@@ -514,7 +512,7 @@ namespace ASC.Web.Files.Utils
             result.Remove(meAce);
 
             AceWrapper linkAce = null;
-            if (objectIds.Count > 1)
+            if (entries.Count() > 1)
             {
                 result.RemoveAll(ace => ace.SubjectId == FileConstant.ShareLinkId);
             }
@@ -542,69 +540,25 @@ namespace ASC.Web.Files.Utils
             return new ItemList<AceWrapper>(result);
         }
 
-        public ItemList<AceShortWrapper> GetSharedInfoShort<T>(string objectId)
+        public ItemList<AceShortWrapper> GetSharedInfoShortFile<T>(T fileID)
         {
-            var aces = GetSharedInfo<T>(new ItemList<string> { objectId });
+            var aces = GetSharedInfo(new List<T> { fileID}, new List<T>());
 
-            return new ItemList<AceShortWrapper>(
-                aces.Where(aceWrapper => !aceWrapper.SubjectId.Equals(FileConstant.ShareLinkId) || aceWrapper.Share != FileShare.Restrict)
-                    .Select(aceWrapper => new AceShortWrapper(aceWrapper)));
-        }
-    }
-
-    public static class FileSharingExtension
-    {
-        public static DIHelper AddFileSharingService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileSharing>())
-            {
-                return services
-                    .AddGlobalService()
-                    .AddFileSecurityService()
-                    .AddAuthContextService()
-                    .AddUserManagerService()
-                    .AddDisplayUserSettingsService()
-                    .AddFileShareLinkService()
-                    .AddDaoFactoryService()
-                    .AddFileSharingHelperService();
-            }
-
-            return services;
+            return GetAceShortWrappers(aces);
         }
 
-        public static DIHelper AddFileSharingHelperService(this DIHelper services)
+        public ItemList<AceShortWrapper> GetSharedInfoShortFolder<T>(T folderId)
         {
-            if (services.TryAddScoped<FileSharingHelper>())
-            {
-                return services
-                    .AddGlobalService()
-                    .AddGlobalFolderHelperService()
-                    .AddFileSecurityService()
-                    .AddAuthContextService()
-                    .AddUserManagerService();
-            }
-            return services;
+            var aces = GetSharedInfo(new List<T>(), new List<T> { folderId });
+
+            return GetAceShortWrappers(aces);
         }
-        public static DIHelper AddFileSharingAceHelperService(this DIHelper services)
+
+        private ItemList<AceShortWrapper> GetAceShortWrappers(ItemList<AceWrapper> aces)
         {
-            if (services.TryAddScoped<FileSharingAceHelper<string>>())
-            {
-                services.TryAddScoped<FileSharingAceHelper<int>>();
-
-                return services
-                    .AddFileSecurityService()
-                    .AddCoreBaseSettingsService()
-                    .AddFileUtilityService()
-                    .AddUserManagerService()
-                    .AddAuthContextService()
-                    .AddDocumentServiceHelperService()
-                    .AddFileMarkerService()
-                    .AddNotifyClientService()
-                    .AddGlobalFolderHelperService()
-                    .AddFileSharingHelperService();
-            }
-
-            return services;
+            return new ItemList<AceShortWrapper>(aces
+                .Where(aceWrapper => !aceWrapper.SubjectId.Equals(FileConstant.ShareLinkId) || aceWrapper.Share != FileShare.Restrict)
+                .Select(aceWrapper => new AceShortWrapper(aceWrapper)));
         }
     }
 }

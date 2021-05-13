@@ -35,7 +35,6 @@ using ASC.Common.Utils;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -51,7 +50,7 @@ namespace ASC.Core.Billing
 
         public TariffSyncService(
             IServiceProvider serviceProvider,
-            IConfiguration configuration,
+            ConfigurationExtension configuration,
             DbQuotaService dbQuotaService,
             IOptionsMonitor<ILog> options)
         {
@@ -86,7 +85,7 @@ namespace ASC.Core.Billing
         }
 
         private IServiceProvider ServiceProvider { get; }
-        private IConfiguration Configuration { get; }
+        private ConfigurationExtension Configuration { get; }
         private DbQuotaService DbQuotaService { get; }
 
         public void Start()

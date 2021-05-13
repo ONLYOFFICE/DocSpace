@@ -1,16 +1,25 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2020
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * (c) Copyright Ascensio System Limited 2010-2018
+ *
+ * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
+ * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
+ * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
+ * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
+ * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
+ *
+ * You can contact Ascensio System SIA by email at sales@onlyoffice.com
+ *
+ * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
+ * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
+ *
+ * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+ * relevant author attributions when distributing the software. If the display of the logo in its graphic 
+ * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
+ * in every copy of the program you distribute. 
+ * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
 
@@ -23,6 +32,7 @@ using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
+using ASC.Files.Core.Model;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.PublicResources;
@@ -35,9 +45,10 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Documents
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
-    public class PrivacyRoomApi : ControllerBase
+    public class PrivacyRoomController : ControllerBase
     {
         private AuthContext AuthContext { get; }
         private PermissionContext PermissionContext { get; }
@@ -49,7 +60,7 @@ namespace ASC.Api.Documents
         private MessageService MessageService { get; }
         private ILog Log { get; }
 
-        public PrivacyRoomApi(
+        public PrivacyRoomController(
             AuthContext authContext,
             PermissionContext permissionContext,
             SettingsManager settingsManager,
@@ -76,7 +87,19 @@ namespace ASC.Api.Documents
         /// </summary>
         /// <visible>false</visible>
         [Update("keys")]
-        public object SetKeys(string publicKey, string privateKeyEnc)
+        public object SetKeysFromBody([FromBody]PrivacyRoomModel model)
+        {
+            return SetKeys(model);
+        }
+
+        [Update("keys")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SetKeysFromForm([FromForm]PrivacyRoomModel model)
+        {
+            return SetKeys(model);
+        }
+
+        private object SetKeys(PrivacyRoomModel model)
         {
             PermissionContext.DemandPermissions(new UserSecurityProvider(AuthContext.CurrentAccount.ID), Constants.Action_EditUser);
 
@@ -93,12 +116,26 @@ namespace ASC.Api.Documents
                 Log.InfoFormat("User {0} updates address", AuthContext.CurrentAccount.ID);
             }
 
-            EncryptionKeyPairHelper.SetKeyPair(publicKey, privateKeyEnc);
+            EncryptionKeyPairHelper.SetKeyPair(model.PublicKey, model.PrivateKeyEnc);
 
             return new
             {
                 isset = true
             };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <visible>false</visible>
+        [Read("keys")]
+        public EncryptionKeyPair GetKeys()
+        {
+            PermissionContext.DemandPermissions(new UserSecurityProvider(AuthContext.CurrentAccount.ID), Constants.Action_EditUser);
+
+            if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
+
+            return EncryptionKeyPairHelper.GetKeyPair();
         }
 
         /// <summary>
@@ -142,11 +179,23 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         /// <visible>false</visible>
         [Update("")]
-        public bool SetPrivacyRoom(bool enable)
+        public bool SetPrivacyRoomFromBody([FromBody]PrivacyRoomModel model)
+        {
+            return SetPrivacyRoom(model);
+        }
+
+        [Update("")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool SetPrivacyRoomFromForm([FromForm]PrivacyRoomModel model)
+        {
+            return SetPrivacyRoom(model);
+        }
+
+        private bool SetPrivacyRoom(PrivacyRoomModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            if (enable)
+            if (model.Enable)
             {
                 if (!PrivacyRoomSettings.IsAvailable(TenantManager))
                 {
@@ -154,30 +203,11 @@ namespace ASC.Api.Documents
                 }
             }
 
-            PrivacyRoomSettings.SetEnabled(TenantManager, SettingsManager, enable);
+            PrivacyRoomSettings.SetEnabled(TenantManager, SettingsManager, model.Enable);
 
-            MessageService.Send(enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
+            MessageService.Send(model.Enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
 
-            return enable;
-        }
-    }
-
-    public static class PrivacyRoomApiExtention
-    {
-        public static DIHelper AddPrivacyRoomApiService(this DIHelper services)
-        {
-            if (services.TryAddScoped<PrivacyRoomApi>())
-            {
-                services
-                    .AddAuthContextService()
-                    .AddPermissionContextService()
-                    .AddSettingsManagerService()
-                    .AddTenantManagerService()
-                    .AddMessageServiceService()
-                    .AddEncryptionKeyPairHelperService();
-            }
-
-            return services;
+            return model.Enable;
         }
     }
 }

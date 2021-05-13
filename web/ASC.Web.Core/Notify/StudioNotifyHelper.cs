@@ -44,6 +44,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Scope]
     public class StudioNotifyHelper
     {
         public readonly string Helplink;
@@ -184,27 +185,6 @@ namespace ASC.Web.Studio.Core.Notify
             return res.ToArray();
         }
 
-
-        public string GetNotifyAnalytics(INotifyAction action, bool toowner, bool toadmins,
-                                                bool tousers, bool toguests)
-        {
-            if (string.IsNullOrEmpty(SetupInfo.NotifyAnalyticsUrl))
-                return string.Empty;
-
-            var target = "";
-
-            if (toowner) target = "owner";
-            if (toadmins) target += string.IsNullOrEmpty(target) ? "admin" : "-admin";
-            if (tousers) target += string.IsNullOrEmpty(target) ? "user" : "-user";
-            if (toguests) target += string.IsNullOrEmpty(target) ? "guest" : "-guest";
-
-            return string.Format("<img src=\"{0}\" width=\"1\" height=\"1\"/>",
-                                 string.Format(SetupInfo.NotifyAnalyticsUrl,
-                                               TenantManager.GetCurrentTenant().TenantId,
-                                               target,
-                                               action.ID));
-        }
-
         public string GetNotificationImageUrl(string imageFileName)
         {
             if (string.IsNullOrEmpty(NotificationImagePath))
@@ -245,28 +225,6 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 SubscriptionProvider.UnSubscribe(notifyAction, null, recipient);
             }
-        }
-    }
-
-    public static class StudioNotifyHelperExtension
-    {
-        public static DIHelper AddStudioNotifyHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<StudioNotifyHelper>())
-            {
-                return services
-                    .AddStudioNotifySourceService()
-                    .AddUserManagerService()
-                    .AddAdditionalWhiteLabelSettingsService()
-                    .AddCommonLinkUtilityService()
-                    .AddTenantManagerService()
-                    .AddSetupInfo()
-                    .AddTenantExtraService()
-                    .AddCoreBaseSettingsService()
-                    .AddWebImageSupplierService();
-            }
-
-            return services;
         }
     }
 }

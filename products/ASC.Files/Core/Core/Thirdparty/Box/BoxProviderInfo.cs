@@ -43,6 +43,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.Box
 {
+    [Transient]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class BoxProviderInfo : IProviderInfo
     {
@@ -130,7 +131,6 @@ namespace ASC.Files.Thirdparty.Box
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
-                Wrapper = null;
             }
 
             CacheReset();
@@ -167,6 +167,7 @@ namespace ASC.Files.Thirdparty.Box
         }
     }
 
+    [Scope]
     internal class BoxStorageDisposableWrapper : IDisposable
     {
         public BoxStorage Storage { get; private set; }
@@ -181,7 +182,7 @@ namespace ASC.Files.Thirdparty.Box
 
         internal BoxStorage CreateStorage(OAuth20Token token, int id)
         {
-            if (Storage != null) return Storage;
+            if (Storage != null && Storage.IsOpened) return Storage;
 
             var boxStorage = new BoxStorage();
             CheckToken(token, id);
@@ -197,7 +198,7 @@ namespace ASC.Files.Thirdparty.Box
             {
                 token = OAuth20TokenHelper.RefreshToken<BoxLoginProvider>(ConsumerFactory, token);
 
-                var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
+                var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
                 dbDao.UpdateProviderInfo(id, new AuthData(token: token.ToJson()));
             }
         }
@@ -212,16 +213,20 @@ namespace ASC.Files.Thirdparty.Box
         }
     }
 
+    [Singletone]
     public class BoxProviderInfoHelper
     {
         private readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(1);
-        private readonly ICache CacheFile = AscCache.Memory;
-        private readonly ICache CacheFolder = AscCache.Memory;
-        private readonly ICache CacheChildItems = AscCache.Memory;
+        private readonly ICache CacheFile;
+        private readonly ICache CacheFolder;
+        private readonly ICache CacheChildItems;
         private readonly ICacheNotify<BoxCacheItem> CacheNotify;
 
-        public BoxProviderInfoHelper(ICacheNotify<BoxCacheItem> cacheNotify)
+        public BoxProviderInfoHelper(ICacheNotify<BoxCacheItem> cacheNotify, ICache cache)
         {
+            CacheFile = cache;
+            CacheFolder = cache;
+            CacheChildItems = cache;
             CacheNotify = cacheNotify;
             CacheNotify.Subscribe((i) =>
             {
@@ -313,22 +318,6 @@ namespace ASC.Files.Thirdparty.Box
 
                 CacheNotify.Publish(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove);
             }
-        }
-    }
-
-    public static class BoxProviderInfoExtension
-    {
-        public static DIHelper AddBoxProviderInfoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<BoxProviderInfo>())
-            {
-                services.TryAddScoped<BoxStorageDisposableWrapper>();
-                services.TryAddSingleton<BoxProviderInfoHelper>();
-
-                return services;
-            }
-
-            return services;
         }
     }
 }

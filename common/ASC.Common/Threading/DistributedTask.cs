@@ -26,8 +26,7 @@
 
 using System;
 using System.Linq;
-
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace ASC.Common.Threading
 {
@@ -37,7 +36,7 @@ namespace ASC.Common.Threading
 
         protected internal DistributedTaskCache DistributedTaskCache { get; internal set; }
 
-        public string InstanceId
+        public int InstanceId
         {
             get
             {
@@ -45,7 +44,7 @@ namespace ASC.Common.Threading
             }
             set
             {
-                DistributedTaskCache.InstanceId = value?.ToString() ?? "";
+                DistributedTaskCache.InstanceId = value;
             }
         }
         public string Id
@@ -99,9 +98,11 @@ namespace ASC.Common.Threading
 
         public T GetProperty<T>(string name)
         {
-            return DistributedTaskCache.Props.Any(r => r.Key == name) ?
-                JsonConvert.DeserializeObject<T>(DistributedTaskCache.Props.Single(r => r.Key == name).Value) :
-                default;
+            var prop = DistributedTaskCache.Props.FirstOrDefault(r => r.Key == name);
+
+            if (prop == null) return default;
+
+            return JsonSerializer.Deserialize<T>(prop.Value);
         }
 
         public void SetProperty(string name, object value)
@@ -109,7 +110,7 @@ namespace ASC.Common.Threading
             var prop = new DistributedTaskCache.Types.DistributedTaskCacheProp()
             {
                 Key = name,
-                Value = JsonConvert.SerializeObject(value)
+                Value = JsonSerializer.Serialize(value)
             };
 
             var current = DistributedTaskCache.Props.SingleOrDefault(r => r.Key == name);

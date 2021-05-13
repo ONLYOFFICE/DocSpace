@@ -36,6 +36,7 @@ using System.Xml.Linq;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Data.Backup.EF.Context;
@@ -51,6 +52,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Data.Backup.Tasks
 {
+    [Scope]
     public class BackupPortalTask : PortalTaskBase
     {
         private const int MaxLength = 250;
@@ -151,9 +153,9 @@ namespace ASC.Data.Backup.Tasks
             excluded.Add("res_");
 
             var dir = Path.GetDirectoryName(BackupFilePath);
-            var subDir = Path.Combine(dir, Path.GetFileNameWithoutExtension(BackupFilePath));
-            var schemeDir = Path.Combine(subDir, KeyHelper.GetDatabaseSchema());
-            var dataDir = Path.Combine(subDir, KeyHelper.GetDatabaseData());
+            var subDir = CrossPlatform.PathCombine(dir, Path.GetFileNameWithoutExtension(BackupFilePath));
+            var schemeDir = CrossPlatform.PathCombine(subDir, KeyHelper.GetDatabaseSchema());
+            var dataDir = CrossPlatform.PathCombine(subDir, KeyHelper.GetDatabaseData());
 
             if (!Directory.Exists(schemeDir))
             {
@@ -226,7 +228,7 @@ namespace ASC.Data.Backup.Tasks
                             .FirstOrDefault());
                     creates.Append(";");
 
-                    var path = Path.Combine(dir, t);
+                    var path = CrossPlatform.PathCombine(dir, t);
                     using (var stream = File.OpenWrite(path))
                     {
                         var bytes = Encoding.UTF8.GetBytes(creates.ToString());
@@ -253,7 +255,7 @@ namespace ASC.Data.Backup.Tasks
                 using var connection = DbFactory.OpenConnection();
                 using var analyzeCommand = connection.CreateCommand();
                 analyzeCommand.CommandText = $"analyze table {t}";
-                _ = analyzeCommand.ExecuteNonQuery();
+                analyzeCommand.ExecuteNonQuery();
                 using var command = connection.CreateCommand();
                 command.CommandText = "select TABLE_ROWS from INFORMATION_SCHEMA.TABLES where TABLE_NAME = '" + t + "'";
                 return int.Parse(command.ExecuteScalar().ToString());
@@ -312,22 +314,20 @@ namespace ASC.Data.Backup.Tasks
 
                 if (searchWithPrimary)
                 {
-                    using (var connection = DbFactory.OpenConnection())
-                    {
-                        var command = connection.CreateCommand();
-                        command.CommandText = string.Format("select max({1}), min({1}) from {0}", t, primaryIndex);
-                        var minMax = ExecuteList(command).ConvertAll(r => new Tuple<int, int>(Convert.ToInt32(r[0]), Convert.ToInt32(r[1]))).FirstOrDefault();
-                        primaryIndexStart = minMax.Item2;
-                        primaryIndexStep = (minMax.Item1 - minMax.Item2) / count;
+                    using var connection = DbFactory.OpenConnection();
+                    var command = connection.CreateCommand();
+                    command.CommandText = string.Format("select max({1}), min({1}) from {0}", t, primaryIndex);
+                    var minMax = ExecuteList(command).ConvertAll(r => new Tuple<int, int>(Convert.ToInt32(r[0]), Convert.ToInt32(r[1]))).FirstOrDefault();
+                    primaryIndexStart = minMax.Item2;
+                    primaryIndexStep = (minMax.Item1 - minMax.Item2) / count;
 
-                        if (primaryIndexStep < Limit)
-                        {
-                            primaryIndexStep = Limit;
-                        }
+                    if (primaryIndexStep < Limit)
+                    {
+                        primaryIndexStep = Limit;
                     }
                 }
 
-                var path = Path.Combine(dir, t);
+                var path = CrossPlatform.PathCombine(dir, t);
 
                 var offset = 0;
 
@@ -406,8 +406,7 @@ namespace ASC.Data.Backup.Tasks
 
                         for (var i = 0; i < obj.Length; i++)
                         {
-                            var byteArray = obj[i] as byte[];
-                            if (byteArray != null)
+                            if (obj[i] is byte[] byteArray)
                             {
                                 sw.Write("0x");
                                 foreach (var b in byteArray)
@@ -445,11 +444,11 @@ namespace ASC.Data.Backup.Tasks
             Logger.Debug("begin backup storage");
 
             var dir = Path.GetDirectoryName(BackupFilePath);
-            var subDir = Path.Combine(dir, Path.GetFileNameWithoutExtension(BackupFilePath));
+            var subDir = CrossPlatform.PathCombine(dir, Path.GetFileNameWithoutExtension(BackupFilePath));
 
             for (var i = 0; i < files.Count; i += TasksLimit)
             {
-                var storageDir = Path.Combine(subDir, KeyHelper.GetStorage());
+                var storageDir = CrossPlatform.PathCombine(subDir, KeyHelper.GetStorage());
 
                 if (!Directory.Exists(storageDir))
                 {
@@ -472,7 +471,7 @@ namespace ASC.Data.Backup.Tasks
 
             var restoreInfoXml = new XElement("storage_restore", files.Select(file => (object)file.ToXElement()).ToArray());
 
-            var tmpPath = Path.Combine(subDir, KeyHelper.GetStorageRestoreInfoZipKey());
+            var tmpPath = CrossPlatform.PathCombine(subDir, KeyHelper.GetStorageRestoreInfoZipKey());
             Directory.CreateDirectory(Path.GetDirectoryName(tmpPath));
 
             using (var tmpFile = File.OpenWrite(tmpPath))
@@ -492,7 +491,7 @@ namespace ASC.Data.Backup.Tasks
         private async Task DoDumpFile(BackupFileInfo file, string dir)
         {
             var storage = StorageFactory.GetStorage(ConfigPath, file.Tenant.ToString(), file.Module);
-            var filePath = Path.Combine(dir, file.GetZipKey());
+            var filePath = CrossPlatform.PathCombine(dir, file.GetZipKey());
             var dirName = Path.GetDirectoryName(filePath);
 
             Logger.DebugFormat("backup file {0}", filePath);
@@ -624,24 +623,22 @@ namespace ASC.Data.Backup.Tasks
                     ActionInvoker.Try(state =>
                     {
                         var f = (BackupFileInfo)state;
-                        using (var fileStream = storage.GetReadStream(f.Domain, f.Path))
+                        using var fileStream = storage.GetReadStream(f.Domain, f.Path);
+                        var tmp = Path.GetTempFileName();
+                        try
                         {
-                            var tmp = Path.GetTempFileName();
-                            try
+                            using (var tmpFile = File.OpenWrite(tmp))
                             {
-                                using (var tmpFile = File.OpenWrite(tmp))
-                                {
-                                    fileStream.CopyTo(tmpFile);
-                                }
-
-                                writer.WriteEntry(file1.GetZipKey(), tmp);
+                                fileStream.CopyTo(tmpFile);
                             }
-                            finally
+
+                            writer.WriteEntry(file1.GetZipKey(), tmp);
+                        }
+                        finally
+                        {
+                            if (File.Exists(tmp))
                             {
-                                if (File.Exists(tmp))
-                                {
-                                    File.Delete(tmp);
-                                }
+                                File.Delete(tmp);
                             }
                         }
                     }, file, 5, error => Logger.WarnFormat("can't backup file ({0}:{1}): {2}", file1.Module, file1.Path, error));
@@ -681,24 +678,6 @@ namespace ASC.Data.Backup.Tasks
                 }
             }
             return list;
-        }
-    }
-    public static class BackupPortalTaskExtension
-    {
-        public static DIHelper AddBackupPortalTaskService(this DIHelper services)
-        {
-            if (services.TryAddScoped<BackupPortalTask>())
-            {
-                return services
-                    .AddCoreConfigurationService()
-                    .AddStorageFactoryService()
-                    .AddModuleProvider()
-                    .AddBackupsContext()
-                    .AddTenantManagerService()
-                    .AddDbFactoryService();
-            }
-
-            return services;
         }
     }
 }

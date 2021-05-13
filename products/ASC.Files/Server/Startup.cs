@@ -1,10 +1,8 @@
-
 using System.Text;
 using System.Text.Json.Serialization;
 
 using ASC.Api.Core;
 using ASC.Api.Documents;
-using ASC.Common;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
 using ASC.Web.Studio.Core.Notify;
@@ -34,23 +32,26 @@ namespace ASC.Files
 
             services.AddMemoryCache();
 
-            var diHelper = new DIHelper(services);
-
-            diHelper
-                .AddApiProductEntryPointService()
-                .AddDocumentsControllerService()
-                .AddPrivacyRoomApiService()
-                .AddFileHandlerService()
-                .AddChunkedUploaderHandlerService()
-                .AddThirdPartyAppHandlerService()
-                .AddDocuSignHandlerService()
-                .AddNotifyConfiguration();
-
             base.ConfigureServices(services);
+
+            DIHelper.TryAdd<FilesController>();
+            DIHelper.TryAdd<PrivacyRoomController>();
+            DIHelper.TryAdd<FileHandlerService>();
+            DIHelper.TryAdd<ChunkedUploaderHandlerService>();
+            DIHelper.TryAdd<DocuSignHandlerService>();
+            DIHelper.TryAdd<ThirdPartyAppHandlerService>();
+
+            NotifyConfigurationExtension.Register(DIHelper);
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(builder =>
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+
             base.Configure(app, env);
 
             app.MapWhen(

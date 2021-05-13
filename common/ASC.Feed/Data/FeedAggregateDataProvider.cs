@@ -42,6 +42,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Feed.Data
 {
+    [Scope]
     public class FeedAggregateDataProvider
     {
         private AuthContext AuthContext { get; }
@@ -379,20 +380,6 @@ namespace ASC.Feed.Data
                 comment.Author = new FeedMinUser { UserInfo = userManager.GetUsers(comment.AuthorId) };
             }
             return feedMin;
-        }
-    }
-
-    public static class FeedAggregateDataProviderExtension
-    {
-        public static DIHelper AddFeedAggregateDataProvider(this DIHelper services)
-        {
-            services.TryAddScoped<FeedAggregateDataProvider>();
-
-            return services
-                .AddAuthContextService()
-                .AddTenantManagerService()
-                .AddTenantUtilService()
-                .AddFeedDbService();
         }
     }
 }

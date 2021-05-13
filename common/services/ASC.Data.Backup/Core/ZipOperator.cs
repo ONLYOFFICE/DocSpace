@@ -28,6 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+using ASC.Common.Utils;
+
 using SharpCompress.Common;
 using SharpCompress.Readers;
 using SharpCompress.Writers;
@@ -65,57 +67,53 @@ namespace ASC.Data.Backup
 
         public ZipReadOperator(string targetFile)
         {
-            tmpdir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
+            tmpdir = CrossPlatform.PathCombine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
             Entries = new List<string>();
 
-            using (var stream = File.OpenRead(targetFile))
+            using var stream = File.OpenRead(targetFile);
+            var reader = ReaderFactory.Open(stream, new ReaderOptions { LookForHeader = true, LeaveStreamOpen = true });
+            while (reader.MoveToNextEntry())
             {
-                var reader = ReaderFactory.Open(stream, new ReaderOptions { LookForHeader = true, LeaveStreamOpen = true });
-                while (reader.MoveToNextEntry())
+                if (reader.Entry.IsDirectory) continue;
+
+                if (reader.Entry.Key == "././@LongLink")
                 {
-                    if (reader.Entry.IsDirectory) continue;
-
-                    if (reader.Entry.Key == "././@LongLink")
+                    string fullPath;
+                    using (var streamReader = new StreamReader(reader.OpenEntryStream()))
                     {
-                        string fullPath;
-                        using (var streamReader = new StreamReader(reader.OpenEntryStream()))
-                        {
-                            fullPath = streamReader.ReadToEnd().TrimEnd(char.MinValue);
-                        }
-
-                        fullPath = Path.Combine(tmpdir, fullPath);
-
-                        if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
-                        {
-                            Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-                        }
-
-                        reader.MoveToNextEntry();
-
-                        using (var fileStream = File.Create(fullPath))
-                        using (var entryStream = reader.OpenEntryStream())
-                        {
-                            entryStream.CopyTo(fileStream);
-                        }
+                        fullPath = streamReader.ReadToEnd().TrimEnd(char.MinValue);
                     }
-                    else
+
+                    fullPath = CrossPlatform.PathCombine(tmpdir, fullPath);
+
+                    if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
                     {
-                        try
-                        {
-                            reader.WriteEntryToDirectory(tmpdir, new ExtractionOptions { ExtractFullPath = true, Overwrite = true });
-                        }
-                        catch (ArgumentException)
-                        {
-                        }
+                        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
                     }
-                    Entries.Add(reader.Entry.Key);
+
+                    reader.MoveToNextEntry();
+
+                    using var fileStream = File.Create(fullPath);
+                    using var entryStream = reader.OpenEntryStream();
+                    entryStream.CopyTo(fileStream);
                 }
+                else
+                {
+                    try
+                    {
+                        reader.WriteEntryToDirectory(tmpdir, new ExtractionOptions { ExtractFullPath = true, Overwrite = true });
+                    }
+                    catch (ArgumentException)
+                    {
+                    }
+                }
+                Entries.Add(reader.Entry.Key);
             }
         }
 
         public Stream GetEntry(string key)
         {
-            var filePath = Path.Combine(tmpdir, key);
+            var filePath = CrossPlatform.PathCombine(tmpdir, key);
             return File.Exists(filePath) ? File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read) : null;
         }
 

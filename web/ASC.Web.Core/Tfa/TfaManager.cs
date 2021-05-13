@@ -83,10 +83,11 @@ namespace ASC.Web.Studio.Core.TFA
         }
     }
 
+    [Scope]
     public class TfaManager
     {
         private static readonly TwoFactorAuthenticator Tfa = new TwoFactorAuthenticator();
-        private static readonly ICache Cache = AscCache.Memory;
+        private ICache Cache { get; set; }
 
         private SettingsManager SettingsManager { get; }
         private SecurityContext SecurityContext { get; }
@@ -103,8 +104,10 @@ namespace ASC.Web.Studio.Core.TFA
             SetupInfo setupInfo,
             Signature signature,
             InstanceCrypto instanceCrypto,
-            MachinePseudoKeys machinePseudoKeys)
+            MachinePseudoKeys machinePseudoKeys,
+            ICache cache)
         {
+            Cache = cache;
             SettingsManager = settingsManager;
             SecurityContext = securityContext;
             CookiesManager = cookiesManager;
@@ -119,7 +122,7 @@ namespace ASC.Web.Studio.Core.TFA
             return Tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, Encoding.UTF8.GetBytes(GenerateAccessToken(user)), size, true);
         }
 
-        public bool ValidateAuthCode(UserInfo user, int tenantId, string code, bool checkBackup = true)
+        public bool ValidateAuthCode(UserInfo user, string code, bool checkBackup = true)
         {
             if (!TfaAppAuthSettings.IsVisibleSettings
                 || !SettingsManager.Load<TfaAppAuthSettings>().EnableSetting)
@@ -162,14 +165,14 @@ namespace ASC.Web.Studio.Core.TFA
 
             if (!TfaAppUserSettings.EnableForUser(SettingsManager, user.ID))
             {
-                GenerateBackupCodes(user);
+                GenerateBackupCodes();
                 return true;
             }
 
             return false;
         }
 
-        public IEnumerable<BackupCode> GenerateBackupCodes(UserInfo user)
+        public IEnumerable<BackupCode> GenerateBackupCodes()
         {
             var count = SetupInfo.TfaAppBackupCodeCount;
             var length = SetupInfo.TfaAppBackupCodeLength;
@@ -212,25 +215,6 @@ namespace ASC.Web.Studio.Core.TFA
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
             return encodedToken.Substring(0, 10);
-        }
-    }
-
-    public static class TfaManagerExtension
-    {
-        public static DIHelper AddTfaManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TfaManager>())
-            {
-
-                return services
-                    .AddSettingsManagerService()
-                    .AddSetupInfo()
-                    .AddSignatureService()
-                    .AddCookiesManagerService()
-                    .AddSecurityContextService();
-            }
-
-            return services;
         }
     }
 }

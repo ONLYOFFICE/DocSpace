@@ -42,14 +42,15 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
+    [Singletone]
     public class DbSettingsManagerCache
     {
         public ICache Cache { get; }
         private ICacheNotify<SettingsCacheItem> Notify { get; }
 
-        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify)
+        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             Notify = notify;
             Notify.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
         }
@@ -60,6 +61,7 @@ namespace ASC.Core.Data
         }
     }
 
+    [Scope]
     class ConfigureDbSettingsManager : IConfigureNamedOptions<DbSettingsManager>
     {
         private IServiceProvider ServiceProvider { get; }
@@ -91,7 +93,7 @@ namespace ASC.Core.Data
             Configure(options);
 
             options.TenantManager = TenantManager.Get(name);
-            options.WebstudioDbContext = DbContextManager.Get(name);
+            options.LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => DbContextManager.Get(name));
         }
 
         public void Configure(DbSettingsManager options)
@@ -102,10 +104,11 @@ namespace ASC.Core.Data
             options.Log = ILog.CurrentValue;
 
             options.TenantManager = TenantManager.Value;
-            options.WebstudioDbContext = DbContextManager.Value;
+            options.LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => DbContextManager.Value);
         }
     }
 
+    [Scope(typeof(ConfigureDbSettingsManager))]
     public class DbSettingsManager
     {
         private readonly TimeSpan expirationTimeout = TimeSpan.FromMinutes(5);
@@ -116,7 +119,8 @@ namespace ASC.Core.Data
         internal DbSettingsManagerCache DbSettingsManagerCache { get; set; }
         internal AuthContext AuthContext { get; set; }
         internal TenantManager TenantManager { get; set; }
-        internal WebstudioDbContext WebstudioDbContext { get; set; }
+        internal WebstudioDbContext WebstudioDbContext { get => LazyWebstudioDbContext.Value; }
+        internal Lazy<WebstudioDbContext> LazyWebstudioDbContext { get; set; }
 
         public DbSettingsManager()
         {
@@ -137,7 +141,7 @@ namespace ASC.Core.Data
             TenantManager = tenantManager;
             Cache = dbSettingsManagerCache.Cache;
             Log = option.CurrentValue;
-            WebstudioDbContext = dbContextManager.Value;
+            LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
         }
 
         private int tenantID;
@@ -328,21 +332,5 @@ namespace ASC.Core.Data
             return JsonSerializer.Serialize(settings);
         }
 
-    }
-
-    public static class DbSettingsManagerExtension
-    {
-        public static DIHelper AddDbSettingsManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DbSettingsManager>())
-            {
-                services.TryAddScoped<IConfigureOptions<DbSettingsManager>, ConfigureDbSettingsManager>();
-                services.TryAddSingleton<DbSettingsManagerCache>();
-
-                return services.AddWebstudioDbContextService();
-            }
-
-            return services;
-        }
     }
 }

@@ -28,21 +28,24 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Runtime.Caching;
+using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Core.Common.Notify;
 using ASC.Core.Common.Notify.Telegram;
 using ASC.Notify.Messages;
 using ASC.TelegramService.Core;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
 using Telegram.Bot;
 using Telegram.Bot.Args;
-using ASC.Common;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
-using ASC.Core.Common.Notify;
 
 namespace ASC.TelegramService
 {
+    [Singletone(Additional = typeof(TelegramHandlerExtension))]
     public class TelegramHandler
     {
         private Dictionary<int, TenantTgClient> Clients { get; set; }
@@ -59,7 +62,7 @@ namespace ASC.TelegramService
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
         }
 
-        public async void SendMessage(NotifyMessage msg)
+        public async Task SendMessage(NotifyMessage msg)
         {
             var scope = ServiceProvider.CreateScope();
             var cachedTelegramDao = scope.ServiceProvider.GetService<IOptionsSnapshot<CachedTelegramDao>>().Value;
@@ -110,7 +113,7 @@ namespace ASC.TelegramService
 
                 if (token != client.Token || proxy != client.Proxy)
                 {
-                    if (startTelegramService) 
+                    if (startTelegramService)
                     {
                         if (!telegramHelper.TestingClient(newClient)) return;
                     }
@@ -154,7 +157,7 @@ namespace ASC.TelegramService
         }
 
 
-        private async void OnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
+        private async Task OnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
         {
             if (string.IsNullOrEmpty(e.Message.Text) || e.Message.Text[0] != '/') return;
             await Command.HandleCommand(e.Message, client, tenantId);
@@ -173,14 +176,11 @@ namespace ASC.TelegramService
         }
     }
 
-    public static class TelegramHandlerExtension
+    public class TelegramHandlerExtension
     {
-        public static DIHelper AddTelegramHandlerService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<TelegramHandler>();
-            return services.AddCachedTelegramDaoService()
-                .AddCommandModuleService()
-                .AddTelegramHelperSerivce();
+            services.TryAdd<TelegramHelper>();
         }
     }
 }

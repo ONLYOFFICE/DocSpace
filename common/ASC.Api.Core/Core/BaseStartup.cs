@@ -4,8 +4,11 @@ using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+
+using Autofac;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -29,18 +32,21 @@ namespace ASC.Api.Core
         public virtual JsonConverter[] Converters { get; }
         public virtual bool AddControllers { get; } = true;
         public virtual bool ConfirmAddScheme { get; } = false;
+        protected DIHelper DIHelper { get; }
 
         public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
             Configuration = configuration;
             HostEnvironment = hostEnvironment;
+            DIHelper = new DIHelper();
         }
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpContextAccessor();
+            services.AddMemoryCache();
 
-            var diHelper = new DIHelper(services);
+            DIHelper.Configure(services);
 
             if (AddControllers)
             {
@@ -62,12 +68,17 @@ namespace ASC.Api.Core
                     });
             }
 
-            diHelper
-                .AddCultureMiddleware()
-                .AddIpSecurityFilter()
-                .AddPaymentFilter()
-                .AddProductSecurityFilter()
-                .AddTenantStatusFilter();
+            DIHelper.TryAdd<DisposeMiddleware>();
+            DIHelper.TryAdd<CultureMiddleware>();
+            DIHelper.TryAdd<IpSecurityFilter>();
+            DIHelper.TryAdd<PaymentFilter>();
+            DIHelper.TryAdd<ProductSecurityFilter>();
+            DIHelper.TryAdd<TenantStatusFilter>();
+            DIHelper.TryAdd<ConfirmAuthHandler>();
+
+            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+            DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
 
             var builder = services.AddMvcCore(config =>
             {
@@ -85,7 +96,7 @@ namespace ASC.Api.Core
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            diHelper.AddCookieAuthHandler();
+
             var authBuilder = services.AddAuthentication("cookie")
                 .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
@@ -96,10 +107,8 @@ namespace ASC.Api.Core
 
             if (LogParams != null)
             {
-                diHelper.AddNLogManager(LogParams);
+                LogNLogExtension.ConfigureLog(DIHelper, LogParams);
             }
-
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -124,6 +133,11 @@ namespace ASC.Api.Core
                 endpoints.MapControllers();
                 endpoints.MapCustom();
             });
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration);
         }
     }
 }

@@ -41,7 +41,6 @@ using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Core;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
@@ -61,7 +60,8 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Files.Utils
 {
-    internal class FileConverterQueue<T>
+    [Singletone(Additional = typeof(FileConverterQueueExtension))]
+    internal class FileConverterQueue<T> : IDisposable
     {
         private readonly object singleThread = new object();
         private readonly IDictionary<File<T>, ConvertFileOperationResult> conversionQueue;
@@ -72,13 +72,13 @@ namespace ASC.Web.Files.Utils
 
         private IServiceProvider ServiceProvider { get; }
 
-        public FileConverterQueue(IServiceProvider ServiceProvider)
+        public FileConverterQueue(IServiceProvider ServiceProvider, ICache cache)
         {
             conversionQueue = new Dictionary<File<T>, ConvertFileOperationResult>(new FileComparer<T>());
             timer = new Timer(CheckConvertFilesStatus, null, 0, Timeout.Infinite);
             locker = new object();
             this.ServiceProvider = ServiceProvider;
-            cache = AscCache.Memory;
+            this.cache = cache;
         }
 
         public void Add(File<T> file, string password, int tenantId, IAccount account, bool deleteAfter, string url)
@@ -399,8 +399,17 @@ namespace ASC.Web.Files.Utils
                                       FileJson = JsonSerializer.Serialize(file, options)
                                   }, options);
         }
+
+        public void Dispose()
+        {
+            if (timer != null)
+            {
+                timer.Dispose();
+            }
+        }
     }
 
+    [Scope]
     public class FileConverterQueueScope
     {
         private IOptionsMonitor<ILog> Options { get; }
@@ -488,6 +497,7 @@ namespace ASC.Web.Files.Utils
         public string FileJson { get; set; }
     }
 
+    [Scope(Additional = typeof(FileConverterExtension))]
     public class FileConverter
     {
         private FileUtility FileUtility { get; }
@@ -506,6 +516,7 @@ namespace ASC.Web.Files.Utils
         private FileShareLink FileShareLink { get; }
         private DocumentServiceHelper DocumentServiceHelper { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
+        private FileTrackerHelper FileTracker { get; }
         private IServiceProvider ServiceProvider { get; }
         private IHttpContextAccessor HttpContextAccesor { get; }
 
@@ -520,13 +531,13 @@ namespace ASC.Web.Files.Utils
             TenantManager tenantManager,
             AuthContext authContext,
             EntryManager entryManager,
-            IOptionsMonitor<ILog> options,
             FilesSettingsHelper filesSettingsHelper,
             GlobalFolderHelper globalFolderHelper,
             FilesMessageService filesMessageService,
             FileShareLink fileShareLink,
             DocumentServiceHelper documentServiceHelper,
             DocumentServiceConnector documentServiceConnector,
+            FileTrackerHelper fileTracker,
             IServiceProvider serviceProvider)
         {
             FileUtility = fileUtility;
@@ -545,6 +556,7 @@ namespace ASC.Web.Files.Utils
             FileShareLink = fileShareLink;
             DocumentServiceHelper = documentServiceHelper;
             DocumentServiceConnector = documentServiceConnector;
+            FileTracker = fileTracker;
             ServiceProvider = serviceProvider;
         }
         public FileConverter(
@@ -558,18 +570,18 @@ namespace ASC.Web.Files.Utils
             TenantManager tenantManager,
             AuthContext authContext,
             EntryManager entryManager,
-            IOptionsMonitor<ILog> options,
             FilesSettingsHelper filesSettingsHelper,
             GlobalFolderHelper globalFolderHelper,
             FilesMessageService filesMessageService,
             FileShareLink fileShareLink,
             DocumentServiceHelper documentServiceHelper,
             DocumentServiceConnector documentServiceConnector,
+            FileTrackerHelper fileTracker,
             IServiceProvider serviceProvider,
             IHttpContextAccessor httpContextAccesor)
             : this(fileUtility, filesLinkUtility, daoFactory, setupInfo, pathProvider, fileSecurity,
-                  fileMarker, tenantManager, authContext, entryManager, options, filesSettingsHelper,
-                  globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector,
+                  fileMarker, tenantManager, authContext, entryManager, filesSettingsHelper,
+                  globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector, fileTracker,
                   serviceProvider)
         {
             HttpContextAccesor = httpContextAccesor;
@@ -775,11 +787,9 @@ namespace ASC.Web.Files.Utils
 
             try
             {
-                using (var convertedFileStream = new ResponseStream(req.GetResponse()))
-                {
-                    newFile.ContentLength = convertedFileStream.Length;
-                    newFile = fileDao.SaveFile(newFile, convertedFileStream);
-                }
+                using var convertedFileStream = new ResponseStream(req.GetResponse());
+                newFile.ContentLength = convertedFileStream.Length;
+                newFile = fileDao.SaveFile(newFile, convertedFileStream);
             }
             catch (WebException e)
             {
@@ -820,8 +830,10 @@ namespace ASC.Web.Files.Utils
             return newFile;
         }
 
-        private FileConverterQueue<T> GetFileConverter<T>() => ServiceProvider.GetService<FileConverterQueue<T>>();
-
+        private FileConverterQueue<T> GetFileConverter<T>()
+        {
+            return ServiceProvider.GetService<FileConverterQueue<T>>();
+        }
     }
 
     internal class FileComparer<T> : IEqualityComparer<File<T>>
@@ -848,36 +860,20 @@ namespace ASC.Web.Files.Utils
         public string Password { get; set; }
     }
 
-    public static class FileConverterExtension
+    public class FileConverterQueueExtension
     {
-        public static DIHelper AddFileConverterService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<FileConverter>())
-            {
-                services.TryAddSingleton<FileConverterQueue<string>>();
-                services.TryAddSingleton<FileConverterQueue<int>>();
-                services.TryAddScoped<FileConverterQueueScope>();
+            services.TryAdd<FileConverterQueueScope>();
+        }
+    }
 
-                return services
-                    .AddFilesLinkUtilityService()
-                    .AddFileUtilityService()
-                    .AddDaoFactoryService()
-                    .AddSetupInfo()
-                    .AddPathProviderService()
-                    .AddFileSecurityService()
-                    .AddFileMarkerService()
-                    .AddTenantManagerService()
-                    .AddAuthContextService()
-                    .AddEntryManagerService()
-                    .AddFilesSettingsHelperService()
-                    .AddGlobalFolderHelperService()
-                    .AddFilesMessageService()
-                    .AddFileShareLinkService()
-                    .AddDocumentServiceHelperService()
-                    .AddDocumentServiceConnectorService();
-            }
-
-            return services;
+    public class FileConverterExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<FileConverterQueue<int>>();
+            services.TryAdd<FileConverterQueue<string>>();
         }
     }
 }

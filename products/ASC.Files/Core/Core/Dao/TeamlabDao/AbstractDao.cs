@@ -79,9 +79,10 @@ namespace ASC.Files.Core.Data
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
             AuthContext authContext,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, 
+            ICache cache)
         {
-            cache = AscCache.Memory;
+            this.cache = cache;
             FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
             UserManager = userManager;
             TenantManager = tenantManager;
@@ -108,11 +109,11 @@ namespace ASC.Files.Core.Data
                 .Where(where);
         }
 
-        protected void GetRecalculateFilesCountUpdate(object folderId)
+        protected void GetRecalculateFilesCountUpdate(int folderId)
         {
             var folders = FilesDbContext.Folders
                 .Where(r => r.TenantId == TenantID)
-                .Where(r => FilesDbContext.Tree.Where(r => r.FolderId.ToString() == folderId.ToString()).Select(r => r.ParentId).Any(a => a == r.Id))
+                .Where(r => FilesDbContext.Tree.Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id))
                 .ToList();
 
             foreach (var f in folders)
@@ -122,6 +123,8 @@ namespace ASC.Files.Core.Data
                     .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                     .Where(r => r.file.TenantId == f.TenantId)
                     .Where(r => r.tree.ParentId == f.Id)
+                    .Select(r=> r.file.Id)
+                    .Distinct()
                     .Count();
 
                 f.FilesCount = filesCount;
@@ -162,7 +165,8 @@ namespace ASC.Files.Core.Data
                 var newItem = new DbFilesThirdpartyIdMapping
                 {
                     Id = id.ToString(),
-                    HashId = result.ToString()
+                    HashId = result.ToString(),
+                    TenantId = TenantID
                 };
 
                 FilesDbContext.AddOrUpdate(r => r.ThirdpartyIdMapping, newItem);

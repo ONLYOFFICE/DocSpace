@@ -38,6 +38,7 @@ using Dropbox.Api.Files;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
+    [Transient]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class DropboxProviderInfo : IProviderInfo
     {
@@ -149,6 +150,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         }
     }
 
+    [Scope]
     internal class DropboxStorageDisposableWrapper : IDisposable
     {
         public DropboxStorage Storage { get; private set; }
@@ -160,7 +162,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public DropboxStorage CreateStorage(OAuth20Token token)
         {
-            if (Storage != null) return Storage;
+            if (Storage != null && Storage.IsOpened) return Storage;
 
             var dropboxStorage = new DropboxStorage();
             dropboxStorage.Open(token);
@@ -174,6 +176,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         }
     }
 
+    [Singletone]
     public class DropboxProviderInfoHelper
     {
         private readonly TimeSpan CacheExpiration;
@@ -182,12 +185,12 @@ namespace ASC.Files.Thirdparty.Dropbox
         private readonly ICache CacheChildItems;
         private readonly ICacheNotify<DropboxCacheItem> CacheNotify;
 
-        public DropboxProviderInfoHelper(ICacheNotify<DropboxCacheItem> cacheNotify)
+        public DropboxProviderInfoHelper(ICacheNotify<DropboxCacheItem> cacheNotify, ICache cache)
         {
             CacheExpiration = TimeSpan.FromMinutes(1);
-            CacheFile = AscCache.Memory;
-            CacheFolder = AscCache.Memory;
-            CacheChildItems = AscCache.Memory;
+            CacheFile = cache;
+            CacheFolder = cache;
+            CacheChildItems = cache;
             CacheNotify = cacheNotify;
 
             CacheNotify.Subscribe((i) =>
@@ -276,20 +279,6 @@ namespace ASC.Files.Thirdparty.Dropbox
 
                 CacheNotify.Publish(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove);
             }
-        }
-    }
-
-    public static class DropboxProviderInfoExtension
-    {
-        public static DIHelper AddDropboxProviderInfoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DropboxProviderInfo>())
-            {
-                services.TryAddScoped<DropboxStorageDisposableWrapper>();
-                services.TryAddSingleton<DropboxProviderInfoHelper>();
-            }
-
-            return services;
         }
     }
 }

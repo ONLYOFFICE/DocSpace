@@ -118,7 +118,7 @@ namespace ASC.Api.Settings.Smtp
             Logger = options.CurrentValue;
         }
 
-        public void RunJob(DistributedTask _, CancellationToken cancellationToken)
+        public void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
         {
             try
             {

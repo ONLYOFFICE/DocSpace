@@ -58,12 +58,12 @@ namespace ASC.Data.Backup.Storage
 
         public string Upload(string storageBasePath, string localPath, Guid userId)
         {
-            var key = String.Empty;
+            string key;
 
-            if (String.IsNullOrEmpty(storageBasePath))
+            if (string.IsNullOrEmpty(storageBasePath))
                 key = "backup/" + Path.GetFileName(localPath);
             else
-                key = String.Concat(storageBasePath.Trim(new char[] { ' ', '/', '\\' }), "/", Path.GetFileName(localPath));
+                key = string.Concat(storageBasePath.Trim(new char[] { ' ', '/', '\\' }), "/", Path.GetFileName(localPath));
 
             using (var fileTransferUtility = new TransferUtility(accessKeyId, secretAccessKey, RegionEndpoint.GetBySystemName(region)))
             {
@@ -90,57 +90,49 @@ namespace ASC.Data.Backup.Storage
                 Key = GetKey(storagePath),
             };
 
-            using (var s3 = GetClient())
-            using (var response = s3.GetObjectAsync(request).Result)
-            {
-                response.WriteResponseStreamToFileAsync(targetLocalPath, true, new System.Threading.CancellationToken());
-            }
+            using var s3 = GetClient();
+            using var response = s3.GetObjectAsync(request).Result;
+            response.WriteResponseStreamToFileAsync(targetLocalPath, true, new System.Threading.CancellationToken());
         }
 
         public void Delete(string storagePath)
         {
-            using (var s3 = GetClient())
+            using var s3 = GetClient();
+            s3.DeleteObjectAsync(new DeleteObjectRequest
             {
-                s3.DeleteObjectAsync(new DeleteObjectRequest
-                {
-                    BucketName = bucket,
-                    Key = GetKey(storagePath)
-                });
-            }
+                BucketName = bucket,
+                Key = GetKey(storagePath)
+            });
         }
 
         public bool IsExists(string storagePath)
         {
-            using (var s3 = GetClient())
+            using var s3 = GetClient();
+            try
             {
-                try
-                {
-                    var request = new ListObjectsRequest { BucketName = bucket, Prefix = GetKey(storagePath) };
-                    var response = s3.ListObjectsAsync(request).Result;
-                    return response.S3Objects.Count > 0;
-                }
-                catch (AmazonS3Exception ex)
-                {
-                    log.Warn(ex);
+                var request = new ListObjectsRequest { BucketName = bucket, Prefix = GetKey(storagePath) };
+                var response = s3.ListObjectsAsync(request).Result;
+                return response.S3Objects.Count > 0;
+            }
+            catch (AmazonS3Exception ex)
+            {
+                log.Warn(ex);
 
-                    return false;
-                }
+                return false;
             }
         }
 
         public string GetPublicLink(string storagePath)
         {
-            using (var s3 = GetClient())
-            {
-                return s3.GetPreSignedURL(
-                    new GetPreSignedUrlRequest
-                    {
-                        BucketName = bucket,
-                        Key = GetKey(storagePath),
-                        Expires = DateTime.UtcNow.AddDays(1),
-                        Verb = HttpVerb.GET
-                    });
-            }
+            using var s3 = GetClient();
+            return s3.GetPreSignedURL(
+                new GetPreSignedUrlRequest
+                {
+                    BucketName = bucket,
+                    Key = GetKey(storagePath),
+                    Expires = DateTime.UtcNow.AddDays(1),
+                    Verb = HttpVerb.GET
+                });
         }
 
         private string GetKey(string fileName)

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 
 using ASC.Common;
-using ASC.Common.Logging;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
@@ -12,21 +12,31 @@ namespace ASC.Core.Common.EF
     {
         private Dictionary<string, T> Pairs { get; set; }
         private List<T> AsyncList { get; set; }
+        private IOptionsFactory<T> Factory { get; }
+        private IConfiguration Configuration { get; }
 
-        public IOptionsFactory<T> Factory { get; }
-
-        public BaseDbContextManager(IOptionsFactory<T> factory) : base(factory)
+        public BaseDbContextManager(IOptionsFactory<T> factory, IConfiguration configuration) : base(factory)
         {
             Pairs = new Dictionary<string, T>();
             AsyncList = new List<T>();
             Factory = factory;
+            Configuration = configuration;
         }
 
         public override T Get(string name)
         {
             if (!Pairs.ContainsKey(name))
             {
-                Pairs.Add(name, base.Get(name));
+                var t = base.Get(name);
+                Pairs.Add(name, t);
+
+                if (t is BaseDbContext dbContext)
+                {
+                    if (Configuration["migration:enabled"] == "true")
+                    {
+                        dbContext.Migrate();
+                    }
+                }
             }
 
             return Pairs[name];
@@ -55,16 +65,17 @@ namespace ASC.Core.Common.EF
         }
     }
 
+    [Scope(typeof(ConfigureDbContext<>))]
     public class DbContextManager<T> : BaseDbContextManager<T> where T : BaseDbContext, new()
     {
-        public DbContextManager(IOptionsFactory<T> factory) : base(factory)
+        public DbContextManager(IOptionsFactory<T> factory, IConfiguration configuration) : base(factory, configuration)
         {
         }
     }
 
     public class MultiRegionalDbContextManager<T> : BaseDbContextManager<MultiRegionalDbContext<T>> where T : BaseDbContext, new()
     {
-        public MultiRegionalDbContextManager(IOptionsFactory<MultiRegionalDbContext<T>> factory) : base(factory)
+        public MultiRegionalDbContextManager(IOptionsFactory<MultiRegionalDbContext<T>> factory, IConfiguration configuration) : base(factory, configuration)
         {
         }
     }
@@ -73,14 +84,9 @@ namespace ASC.Core.Common.EF
     {
         public static DIHelper AddDbContextManagerService<T>(this DIHelper services) where T : BaseDbContext, new()
         {
-            if (services.TryAddScoped<DbContextManager<T>>())
-            {
-                services.TryAddScoped<MultiRegionalDbContextManager<T>>();
-                services.TryAddScoped<IConfigureOptions<T>, ConfigureDbContext>();
-                services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
-
-                return services.AddLoggerService();
-            }
+            //TODO
+            //services.TryAddScoped<MultiRegionalDbContextManager<T>>();
+            //services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
             return services;
         }
     }

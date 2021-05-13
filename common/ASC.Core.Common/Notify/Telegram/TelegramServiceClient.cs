@@ -32,6 +32,7 @@ using ASC.Notify.Messages;
 
 namespace ASC.Core.Common.Notify
 {
+    [Singletone]
     public class TelegramServiceClient : ITelegramService
     {
         private ICacheNotify<NotifyMessage> CacheMessage { get; }
@@ -44,13 +45,14 @@ namespace ASC.Core.Common.Notify
         public TelegramServiceClient(ICacheNotify<NotifyMessage> cacheMessage,
             ICacheNotify<RegisterUserProto> cacheRegisterUser,
             ICacheNotify<CreateClientProto> cacheCreateClient,
-            ICacheNotify<DisableClientProto> cacheDisableClient)
+            ICacheNotify<DisableClientProto> cacheDisableClient, 
+            ICache cache)
         {
             CacheMessage = cacheMessage;
             CacheRegisterUser = cacheRegisterUser;
             CacheCreateClient = cacheCreateClient;
             CacheDisableClient = cacheDisableClient;
-            Cache = AscCache.Memory;
+            Cache = cache;
         }
 
         public void SendMessage(NotifyMessage m)
@@ -61,11 +63,12 @@ namespace ASC.Core.Common.Notify
         public void RegisterUser(string userId, int tenantId, string token)
         {
             Cache.Insert(GetCacheTokenKey(tenantId, userId), token, DateTime.MaxValue);
-            CacheRegisterUser.Publish(new RegisterUserProto() { 
+            CacheRegisterUser.Publish(new RegisterUserProto()
+            {
                 UserId = userId,
                 TenantId = tenantId,
-                Token = token 
-            } , CacheNotifyAction.Insert);
+                Token = token
+            }, CacheNotifyAction.Insert);
         }
 
         public void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy)
@@ -92,15 +95,6 @@ namespace ASC.Core.Common.Notify
         private string GetCacheTokenKey(int tenantId, string userId)
         {
             return "Token" + userId + tenantId;
-        }
-    }
-
-    public static class TelegramServiceClientExtension
-    {
-        public static DIHelper AddTelegramServiceClient(this DIHelper services)
-        {
-            services.TryAddSingleton<TelegramServiceClient>();
-            return services;
         }
     }
 }

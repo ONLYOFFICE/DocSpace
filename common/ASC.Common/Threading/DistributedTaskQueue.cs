@@ -39,6 +39,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Threading
 {
+    [Singletone]
     public class DistributedTaskCacheNotify
     {
         public ConcurrentDictionary<string, CancellationTokenSource> Cancelations { get; }
@@ -46,11 +47,14 @@ namespace ASC.Common.Threading
         private readonly ICacheNotify<DistributedTaskCancelation> notify;
         private readonly ICacheNotify<DistributedTaskCache> notifyCache;
 
-        public DistributedTaskCacheNotify(ICacheNotify<DistributedTaskCancelation> notify, ICacheNotify<DistributedTaskCache> notifyCache)
+        public DistributedTaskCacheNotify(
+            ICacheNotify<DistributedTaskCancelation> notify, 
+            ICacheNotify<DistributedTaskCache> notifyCache,
+            ICache cache)
         {
             Cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
 
-            Cache = AscCache.Memory;
+            Cache = cache;
 
             this.notify = notify;
 
@@ -91,13 +95,20 @@ namespace ASC.Common.Threading
         }
     }
 
+    [Singletone(typeof(ConfigureDistributedTaskQueue))]
     public class DistributedTaskQueueOptionsManager : OptionsManager<DistributedTaskQueue>
     {
         public DistributedTaskQueueOptionsManager(IOptionsFactory<DistributedTaskQueue> factory) : base(factory)
         {
         }
+
+        public DistributedTaskQueue Get<T>() where T : DistributedTask
+        {
+            return Get(typeof(T).FullName);
+        }
     }
 
+    [Scope]
     public class ConfigureDistributedTaskQueue : IConfigureNamedOptions<DistributedTaskQueue>
     {
         private DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
@@ -124,7 +135,7 @@ namespace ASC.Common.Threading
 
     public class DistributedTaskQueue
     {
-        public static readonly string InstanceId;
+        public static readonly int InstanceId;
 
         private string key;
         private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
@@ -140,7 +151,7 @@ namespace ASC.Common.Threading
             {
                 Scheduler = value <= 0
                     ? TaskScheduler.Default
-                    : new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
+                : new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, value).ConcurrentScheduler;
             }
         }
 
@@ -148,7 +159,7 @@ namespace ASC.Common.Threading
 
         static DistributedTaskQueue()
         {
-            InstanceId = Process.GetCurrentProcess().Id.ToString();
+            InstanceId = Process.GetCurrentProcess().Id;
         }
 
 
@@ -170,7 +181,7 @@ namespace ASC.Common.Threading
             var token = cancelation.Token;
             Cancelations[distributedTask.Id] = cancelation;
 
-            var task = new Task(() => action(distributedTask, token), token, TaskCreationOptions.LongRunning);
+            var task = new Task(() => { action(distributedTask, token); }, token, TaskCreationOptions.LongRunning);
             task
                 .ConfigureAwait(false)
                 .GetAwaiter()
@@ -305,13 +316,13 @@ namespace ASC.Common.Threading
 
     public static class DistributedTaskQueueExtention
     {
-        public static DIHelper AddDistributedTaskQueueService<T>(this DIHelper services, int maxThreadsCount)
+        public static DIHelper AddDistributedTaskQueueService<T>(this DIHelper services, int maxThreadsCount) where T : DistributedTask
         {
-            services.TryAddSingleton<DistributedTaskCacheNotify>();
-            services
-                .TryAddSingleton<DistributedTaskQueueOptionsManager>()
-                .TryAddSingleton<DistributedTaskQueue>()
-                .AddSingleton<IConfigureOptions<DistributedTaskQueue>, ConfigureDistributedTaskQueue>();
+            services.TryAdd<DistributedTaskCacheNotify>();
+            services.TryAdd<DistributedTaskQueueOptionsManager>();
+            services.TryAdd<DistributedTaskQueue>();
+
+            services.TryAddSingleton<IConfigureOptions<DistributedTaskQueue>, ConfigureDistributedTaskQueue>();
 
             _ = services.Configure<DistributedTaskQueue>(typeof(T).Name, r =>
             {

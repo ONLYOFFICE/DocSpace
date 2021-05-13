@@ -89,16 +89,11 @@ namespace ASC.Web.Core.Users
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var result = UserId.GetHashCode();
-                result = (result * 397) ^ MaxFileSize.GetHashCode();
-                result = (result * 397) ^ Size.GetHashCode();
-                return result;
+            return HashCode.Combine(UserId, MaxFileSize, Size);
             }
         }
-    }
 
+    [Singletone]
     public class UserPhotoManagerCache
     {
         private readonly ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>> Photofiles;
@@ -185,6 +180,7 @@ namespace ASC.Web.Core.Users
         }
     }
 
+    [Scope(Additional = typeof(ResizeWorkerItemExtension))]
     public class UserPhotoManager
     {
         //Regex for parsing filenames into groups with id's
@@ -219,7 +215,7 @@ namespace ASC.Web.Core.Users
             SettingsManager settingsManager,
             IServiceProvider serviceProvider)
         {
-            ResizeQueue = optionsQueue.Get(nameof(ResizeWorkerItem));
+            ResizeQueue = optionsQueue.Get<ResizeWorkerItem>();
             UserManager = userManager;
             WebImageSupplier = webImageSupplier;
             TenantManager = tenantManager;
@@ -433,8 +429,9 @@ namespace ASC.Web.Core.Users
             return GetDefaultPhotoAbsoluteWebPath(size);
         }
 
-        private string GetDefaultPhotoAbsoluteWebPath(Size size) =>
-            size switch
+        private string GetDefaultPhotoAbsoluteWebPath(Size size)
+            {
+            return size switch
             {
                 Size(var w, var h) when w == RetinaFotoSize.Width && h == RetinaFotoSize.Height => WebImageSupplier.GetAbsoluteWebPath(_defaultRetinaAvatar),
                 Size(var w, var h) when w == MaxFotoSize.Width && h == MaxFotoSize.Height => WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar),
@@ -443,6 +440,7 @@ namespace ASC.Web.Core.Users
                 Size(var w, var h) when w == MediumFotoSize.Width && h == MediumFotoSize.Height => WebImageSupplier.GetAbsoluteWebPath(_defaultMediumAvatar),
                 _ => GetDefaultPhotoAbsoluteWebPath()
             };
+        }
 
         private static readonly HashSet<int> TenantDiskCache = new HashSet<int>();
         private static readonly object DiskCacheLoaderLock = new object();
@@ -608,25 +606,25 @@ namespace ASC.Web.Core.Users
 
                         if (width > height)
                         {
-                            height = (int)((double)height * (double)maxWidth / (double)width + 0.5);
+                            height = (int)(height * (double)maxWidth / width + 0.5);
                             width = maxWidth;
                         }
                         else
                         {
-                            width = (int)((double)width * (double)maxHeight / (double)height + 0.5);
+                            width = (int)(width * (double)maxHeight / height + 0.5);
                             height = maxHeight;
                         }
                     }
 
                     if (width > maxWidth && height <= maxHeight)
                     {
-                        height = (int)((double)height * (double)maxWidth / (double)width + 0.5);
+                        height = (int)(height * (double)maxWidth / width + 0.5);
                         width = maxWidth;
                     }
 
                     if (width <= maxWidth && height > maxHeight)
                     {
-                        width = (int)((double)width * (double)maxHeight / (double)height + 0.5);
+                        width = (int)(width * (double)maxHeight / height + 0.5);
                         height = maxHeight;
                     }
 
@@ -726,7 +724,7 @@ namespace ASC.Web.Core.Users
 
         public string SaveTempPhoto(byte[] data, long maxFileSize, int maxWidth, int maxHeight)
         {
-            data = TryParseImage(data, maxFileSize, new Size(maxWidth, maxHeight), out var imgFormat, out var width, out var height);
+            data = TryParseImage(data, maxFileSize, new Size(maxWidth, maxHeight), out var imgFormat, out _, out _);
 
             var fileName = Guid.NewGuid() + "." + CommonPhotoManager.GetImgFormatName(imgFormat);
 
@@ -857,11 +855,12 @@ namespace ASC.Web.Core.Users
         private IDataStore dataStore;
         private IDataStore GetDataStore()
         {
-            return dataStore ?? (dataStore = StorageFactory.GetStorage(Tenant.TenantId.ToString(), "userPhotos"));
+            return dataStore ??= StorageFactory.GetStorage(Tenant.TenantId.ToString(), "userPhotos");
         }
 
-        public static CacheSize ToCache(Size size) =>
-            size switch
+        public static CacheSize ToCache(Size size)
+            {
+            return size switch
             {
                 Size(var w, var h) when w == RetinaFotoSize.Width && h == RetinaFotoSize.Height => CacheSize.Retina,
                 Size(var w, var h) when w == MaxFotoSize.Width && h == MaxFotoSize.Height => CacheSize.Max,
@@ -870,6 +869,7 @@ namespace ASC.Web.Core.Users
                 Size(var w, var h) when w == MediumFotoSize.Width && h == MediumFotoSize.Height => CacheSize.Medium,
                 _ => CacheSize.Original
             };
+    }
     }
 
     #region Exception Classes
@@ -994,28 +994,17 @@ namespace ASC.Web.Core.Users
 
     public static class SizeExtend
     {
-        public static void Deconstruct(this Size size, out int w, out int h) =>
+        public static void Deconstruct(this Size size, out int w, out int h)
+        {
             (w, h) = (size.Width, size.Height);
     }
+    }
 
-    public static class UserPhotoManagerExtension
+    public class ResizeWorkerItemExtension
     {
-        public static DIHelper AddUserPhotoManagerService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<UserPhotoManager>())
-            {
-                services.TryAddSingleton<UserPhotoManagerCache>();
-
-                return services
-                    .AddStorageFactoryService()
-                    .AddSettingsManagerService()
-                    .AddWebImageSupplierService()
-                    .AddUserManagerService()
-                    .AddTenantManagerService()
-                    .AddDistributedTaskQueueService<ResizeWorkerItem>(2);
-            }
-
-            return services;
+            services.AddDistributedTaskQueueService<ResizeWorkerItem>(2);
         }
     }
 }

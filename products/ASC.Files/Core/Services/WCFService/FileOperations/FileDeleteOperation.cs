@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.Resources;
@@ -120,7 +121,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             DeleteFiles(Files, scope);
             DeleteFolders(Folders, scope);
         }
-        
+
         private void DeleteFolders(IEnumerable<T> folderIds, IServiceScope scope)
         {
             var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
@@ -252,6 +253,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private bool WithError(IServiceScope scope, IEnumerable<File<T>> files, bool folder, out string error)
         {
             var entryManager = scope.ServiceProvider.GetService<EntryManager>();
+            var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
 
             error = null;
             foreach (var file in files)
@@ -266,7 +268,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     error = FilesCommonResource.ErrorMassage_LockedFile;
                     return true;
                 }
-                if (FileTracker.IsEditing(file.ID))
+                if (fileTracker.IsEditing(file.ID))
                 {
                     error = folder ? FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFolder : FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFile;
                     return true;
@@ -276,6 +278,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
+    [Scope]
     public class FileDeleteOperationScope
     {
         private FileMarker FileMarker { get; }

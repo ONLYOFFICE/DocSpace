@@ -227,7 +227,7 @@ namespace ASC.Common.Tests.Security.Authorizing
         public bool GetObjectAcesInheritance(ISecurityObjectId objectId)
         {
             var fullObjectId = AzObjectIdHelper.GetFullObjectId(objectId);
-            return inheritAces.ContainsKey(fullObjectId) ? inheritAces[fullObjectId] : true;
+            return !inheritAces.ContainsKey(fullObjectId) || inheritAces[fullObjectId];
         }
 
         #region IPermissionProvider Members

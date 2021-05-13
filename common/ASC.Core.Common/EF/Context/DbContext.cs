@@ -1,10 +1,15 @@
-﻿using ASC.Common;
+﻿using System;
+using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
+    public class MySqlDbContext : DbContext { }
+    public class PostgreSqlDbContext : DbContext { }
     public class DbContext : BaseDbContext
     {
         public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
@@ -18,10 +23,23 @@ namespace ASC.Core.Common.EF.Context
         public DbContext(DbContextOptions options) : base(options)
         {
         }
-
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlDbContext() } ,
+                    { Provider.Postgre, () => new PostgreSqlDbContext() } ,
+                };
+            }
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddMobileAppInstall();
+            ModelBuilderWrapper
+                   .From(modelBuilder, Provider)
+                   .AddMobileAppInstall()
+                   .AddDbipLocation();
         }
     }
 

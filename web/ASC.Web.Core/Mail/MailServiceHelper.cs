@@ -46,9 +46,9 @@ namespace ASC.Web.Core.Mail
     {
         private ICacheNotify<MailServiceHelperCache> CacheNotify { get; }
         public ICache Cache { get; }
-        public MailServiceHelperStorage(ICacheNotify<MailServiceHelperCache> cacheNotify)
+        public MailServiceHelperStorage(ICacheNotify<MailServiceHelperCache> cacheNotify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             CacheNotify = cacheNotify;
             CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
         }
@@ -79,7 +79,7 @@ namespace ASC.Web.Core.Mail
         public MailServiceHelperStorage MailServiceHelperStorage { get; }
         private EFLoggerFactory LoggerFactory { get; }
         private MailDbContext MailDbContext { get; }
-        public ICache Cache { get; }
+        private ICache Cache { get; }
 
         public MailServiceHelper(
             UserManager userManager,
@@ -128,7 +128,7 @@ namespace ASC.Web.Core.Mail
 
         public bool IsMailServerAvailable()
         {
-            return _GetMailServerInfo() != null;
+            return InnerGetMailServerInfo() != null;
         }
 
 
@@ -136,10 +136,10 @@ namespace ASC.Web.Core.Mail
         {
             DemandPermission();
 
-            return _GetMailServerInfo();
+            return InnerGetMailServerInfo();
         }
 
-        private MailServerInfo _GetMailServerInfo()
+        private MailServerInfo InnerGetMailServerInfo()
         {
             var cachedData = Cache.Get<Tuple<MailServerInfo>>(CacheKey);
 
@@ -165,7 +165,8 @@ namespace ASC.Web.Core.Mail
 
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<MailDbContext>();
             var options = dbContextOptionsBuilder
-                .UseMySql(connectionString)
+                //.UseMySql(connectionString)
+                .UseNpgsql(connectionString)
                 .UseLoggerFactory(LoggerFactory)
                 .Options;
 
@@ -184,7 +185,8 @@ namespace ASC.Web.Core.Mail
 
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<MailDbContext>();
             var options = dbContextOptionsBuilder
-                .UseMySql(connectionString)
+                //.UseMySql(connectionString)
+                .UseNpgsql(connectionString)
                 .UseLoggerFactory(LoggerFactory)
                 .Options;
 

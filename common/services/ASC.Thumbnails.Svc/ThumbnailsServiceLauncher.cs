@@ -34,21 +34,21 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Thumbnails.Svc
 {
+    [Scope]
     public class ThumbnailsServiceLauncher : IHostedService
     {
         private ProcessStartInfo StartInfo { get; set; }
         private Process Proc { get; set; }
         private ILog Logger { get; set; }
-        private IConfiguration Configuration { get; set; }
+        private ConfigurationExtension Configuration { get; set; }
         private IHostEnvironment HostEnvironment { get; set; }
 
-        public ThumbnailsServiceLauncher(IOptionsMonitor<ILog> options, IConfiguration configuration, IHostEnvironment hostEnvironment)
+        public ThumbnailsServiceLauncher(IOptionsMonitor<ILog> options, ConfigurationExtension configuration, IHostEnvironment hostEnvironment)
         {
             Logger = options.CurrentValue;
             Configuration = configuration;
@@ -67,7 +67,7 @@ namespace ASC.Thumbnails.Svc
                     UseShellExecute = false,
                     FileName = "node",
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = string.Format("\"{0}\"", Path.GetFullPath(Path.Combine(HostEnvironment.ContentRootPath, settings.Path, "index.js"))),
+                    Arguments = string.Format("\"{0}\"", Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, settings.Path, "index.js"))),
                     WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
                 };
 
@@ -77,7 +77,7 @@ namespace ASC.Thumbnails.Svc
                     savePath += "/";
                 }
                 StartInfo.EnvironmentVariables.Add("port", settings.Port);
-                StartInfo.EnvironmentVariables.Add("logPath", Path.Combine(Logger.LogDirectory, "web.thumbnails.log"));
+                StartInfo.EnvironmentVariables.Add("logPath", CrossPlatform.PathCombine(Logger.LogDirectory, "web.thumbnails.log"));
                 StartInfo.EnvironmentVariables.Add("savePath", Path.GetFullPath(savePath));
 
                 StartNode(cancellationToken);
@@ -114,14 +114,6 @@ namespace ASC.Thumbnails.Svc
         {
             StopAsync(cancellationToken);
             Proc = Process.Start(StartInfo);
-        }
-    }
-    public static class ThumbnailsServiceLauncherExtension
-    {
-        public static DIHelper AddThumbnailsServiceLauncher(this DIHelper services)
-        {
-            services.TryAddScoped<ThumbnailsServiceLauncher>();
-            return services;
         }
     }
 }

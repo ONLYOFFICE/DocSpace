@@ -31,17 +31,18 @@ using System.Globalization;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Notify.Patterns;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
+using ASC.Web.Studio.Core.Notify;
 
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Services.NotifyService
 {
+    [Scope(Additional = typeof(NotifyClientExtension))]
     public class NotifyClient
     {
         private IServiceProvider ServiceProvider { get; }
@@ -115,6 +116,7 @@ namespace ASC.Files.Core.Services.NotifyService
             var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var (notifySource, _, filesLinkUtility, fileUtility, baseCommonLinkUtility, daoFactory, pathProvider, userManager, tenantManager) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
 
             var folderDao = daoFactory.GetFolderDao<T>();
             if (fileEntry.FileEntryType == FileEntryType.File && folderDao.GetFolder(((File<T>)fileEntry).FolderID) == null) return;
@@ -124,6 +126,13 @@ namespace ASC.Files.Core.Services.NotifyService
                           : pathProvider.GetFolderUrl((Folder<T>)fileEntry);
 
             var recipientsProvider = notifySource.GetRecipientsProvider();
+
+            var action = fileEntry.FileEntryType == FileEntryType.File
+            ? ((File<T>)fileEntry).Encrypted
+                ? NotifyConstants.Event_ShareEncryptedDocument
+                : NotifyConstants.Event_ShareDocument
+            : NotifyConstants.Event_ShareFolder;
+
 
             foreach (var recipientPair in recipients)
             {
@@ -136,14 +145,15 @@ namespace ASC.Files.Core.Services.NotifyService
                 var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
 
                 client.SendNoticeAsync(
-                    fileEntry.FileEntryType == FileEntryType.File ? NotifyConstants.Event_ShareDocument : NotifyConstants.Event_ShareFolder,
+                    action,
                     fileEntry.UniqID,
                     recipient,
                     true,
                     new TagValue(NotifyConstants.Tag_DocumentTitle, fileEntry.Title),
                     new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(url)),
                     new TagValue(NotifyConstants.Tag_AccessRights, aceString),
-                    new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode())
+                    new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode()),
+                    TagValues.Image(studioNotifyHelper,0, "privacy.png")
                     );
             }
         }
@@ -179,26 +189,20 @@ namespace ASC.Files.Core.Services.NotifyService
 
         private static string GetAccessString(FileShare fileShare, CultureInfo cultureInfo)
         {
-            switch (fileShare)
+            return fileShare switch
             {
-                case FileShare.Read:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Read", cultureInfo);
-                case FileShare.ReadWrite:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_ReadWrite", cultureInfo);
-                case FileShare.CustomFilter:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_CustomFilter", cultureInfo);
-                case FileShare.Review:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Review", cultureInfo);
-                case FileShare.FillForms:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_FillForms", cultureInfo);
-                case FileShare.Comment:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Comment", cultureInfo);
-                default:
-                    return string.Empty;
-            }
+                FileShare.Read => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Read", cultureInfo),
+                FileShare.ReadWrite => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_ReadWrite", cultureInfo),
+                FileShare.CustomFilter => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_CustomFilter", cultureInfo),
+                FileShare.Review => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Review", cultureInfo),
+                FileShare.FillForms => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_FillForms", cultureInfo),
+                FileShare.Comment => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Comment", cultureInfo),
+                _ => string.Empty,
+            };
         }
     }
 
+    [Scope]
     public class NotifyClientScope
     {
         private NotifySource NotifySource { get; }
@@ -254,27 +258,11 @@ namespace ASC.Files.Core.Services.NotifyService
         }
     }
 
-    public static class NotifyClientExtension
+    public class NotifyClientExtension
     {
-        public static DIHelper AddNotifyClientService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<NotifyClient>())
-            {
-                services.TryAddScoped<NotifyClientScope>();
-                return services
-                    .AddFilesNotifySourceService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddUserManagerService()
-                    .AddSecurityContextService()
-                    .AddFilesLinkUtilityService()
-                    .AddFileUtilityService()
-                    .AddPathProviderService()
-                    .AddTenantManagerService()
-                    .AddDaoFactoryService()
-                    ;
-            }
-
-            return services;
+            services.TryAdd<NotifyClientScope>();
         }
     }
 }

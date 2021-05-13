@@ -1,0 +1,17 @@
+{
+  "SaveButton": "Save",
+  "CancelButton": "Cancel",
+  "Members": "Members",
+  "AddMembers": "Add members",
+  "LblSelect": "Select",
+  "Name": "Name",
+  "AddButton": "Add",
+
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' has been saved successfully",
+
+  "CustomNewDepartment": "{{groupCaption}} (creation)",
+  "SearchAddedMembers": "Search added members",
+  "MeLabel": "Me",
+  "EmptyFieldError": "Empty field",
+  "GroupAction": "Group action"
+}

@@ -42,14 +42,15 @@ using SecurityAction = ASC.Common.Security.Authorizing.Action;
 
 namespace ASC.Web.Core
 {
+    [Singletone]
     public class WebItemSecurityCache
     {
-        public ICache Cache { get; }
+        private ICache Cache { get; }
         private ICacheNotify<WebItemSecurityNotifier> CacheNotify { get; }
 
-        public WebItemSecurityCache(ICacheNotify<WebItemSecurityNotifier> cacheNotify)
+        public WebItemSecurityCache(ICacheNotify<WebItemSecurityNotifier> cacheNotify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             CacheNotify = cacheNotify;
             CacheNotify.Subscribe((r) =>
             {
@@ -72,7 +73,11 @@ namespace ASC.Web.Core
             CacheNotify.Publish(new WebItemSecurityNotifier { Tenant = tenantId }, CacheNotifyAction.Any);
         }
 
-        public Dictionary<string, bool> Get(int tenantId) => Cache.Get<Dictionary<string, bool>>(GetCacheKey(tenantId));
+        public Dictionary<string, bool> Get(int tenantId)
+        {
+            return Cache.Get<Dictionary<string, bool>>(GetCacheKey(tenantId));
+        }
+
         public Dictionary<string, bool> GetOrInsert(int tenantId)
         {
 
@@ -86,6 +91,7 @@ namespace ASC.Web.Core
         }
     }
 
+    [Scope]
     public class WebItemSecurity
     {
         private static readonly SecurityAction Read = new SecurityAction(new Guid("77777777-32ae-425f-99b5-83176061d1ae"), "ReadWebItem", false, true);
@@ -430,35 +436,6 @@ namespace ASC.Web.Core
             {
                 throw new NotImplementedException();
             }
-        }
-    }
-
-    public static class WebItemSecurityExtension
-    {
-        public static DIHelper AddWebItemSecurity(this DIHelper services)
-        {
-            if (services.TryAddScoped<WebItemSecurity>())
-            {
-
-                return services
-                    .AddPermissionContextService()
-                    .AddUserManagerService()
-                    .AddAuthContextService()
-                    .AddWebItemManager()
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddAuthorizationManagerService()
-                    .AddWebItemSecurityCache()
-                    .AddAuthManager()
-                    .AddSettingsManagerService();
-            }
-
-            return services;
-        }
-        public static DIHelper AddWebItemSecurityCache(this DIHelper services)
-        {
-            services.TryAddSingleton<WebItemSecurityCache>();
-            return services;
         }
     }
 }

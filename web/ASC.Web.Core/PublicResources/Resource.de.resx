@@ -1,5 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -73,6 +132,12 @@
   <data name="AdminMessageSent" xml:space="preserve">
     <value>Ihre Nachricht wurde erfolgreich gesendet. Der Portaladministrator wird Sie kontaktieren.</value>
   </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>Per SMS</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Über die Authentifizierungs-App</value>
+  </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
     <value>Der Link zum Bestätigen der Operation wurde an :email verschickt (die E-Mail-Adresse des Portalbesitzers).</value>
   </data>
@@ -103,8 +168,11 @@
   <data name="ConsumersBitlyInstruction" xml:space="preserve">
     <value>Wenn Sie den Bitly-Dienst hinzufügen, erhalten Sie verkürzte Links, um neue Nutzer zum ONLYOFFICE ™ -Portal einzuladen und verkürzte Links zu dem Modul "Dokumente", der mit externen Benutzern geteilt wurde.</value>
   </data>
+  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
+    <value>Verbinden Sie Bitly Service, um Einladungslinks und freigegebene Links zu dem Modul "Dokumente" zu verkürzen. {0}Fügen Sie Ihr Bitly-Login und API-Schlüssel unten ein:</value>
+  </data>
   <data name="ConsumersBox" xml:space="preserve">
-    <value>Box Schlüssel</value>
+    <value>Box</value>
   </data>
   <data name="ConsumersboxClientId" xml:space="preserve">
     <value>Box ID</value>
@@ -118,6 +186,9 @@
   <data name="ConsumersBoxInstruction" xml:space="preserve">
     <value>Wenn man die Anwendung des Box-Dienstes hinzufügt, kann man sein Box-Konto mit dem Modul "Dokumente" verknüpfen. Dies  ermöglicht das Hochladen und Erstellen neuer Dateien in Box, Bearbeiten der bestehenden Dateien, Kopieren und Löschen, Freigabe von Dateien oder Ordnern mit ONLYOFFICE ™ Portalbenutzer.</value>
   </data>
+  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
+    <value>Erlauben Sie dieser App, die Verbindung von Box mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem Box-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. {0}Melden Sie bei Ihrem Konto auf der Box-Seite für Entwickler an, erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
+  </data>
   <data name="ConsumersClickatell" xml:space="preserve">
     <value>Clickatell</value>
   </data>
@@ -130,6 +201,9 @@
   <data name="ConsumersClickatellInstruction" xml:space="preserve">
     <value>Durch Hinzufügen der Clickatell-Dienstanwendung können Sie die Zwei-Faktor-Authentifizierung aktivieren und eine SMS mit einem Code empfangen, der es dem Benutzer ermöglicht, das ONLYOFFICE-Portal zu betreten.</value>
   </data>
+  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
+    <value>Benutzen Sie diese App, um die Zwei-Faktor-Authentifizierung über Clickatell zu ermöglichen. {0}Melden Sie bei Ihrer SMS-Plattform an und erstellen Sie eine neue Integration mit ONLYOFFICE. Kopieren Sie den API-Schlüssel und fügen Sie diesen unten ein:</value>
+  </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
     <value>DocuSign</value>
   </data>
@@ -140,7 +214,7 @@
     <value>Der geheime Schlüssel DocuSign</value>
   </data>
   <data name="ConsumersDocuSignDescription" xml:space="preserve">
-    <value>Verbinden Sie die Anwendung, um elektronische Signatur DocuSign den Dokumenten hinzufügen zu können.</value>
+    <value>Verbinden Sie die Anwendung, um Ihre Dokumente mit DocuSign zu signieren.</value>
   </data>
   <data name="ConsumersdocuSignHost" xml:space="preserve">
     <value>DocuSign Authentifizierungsendpunkt </value>
@@ -148,6 +222,9 @@
   <data name="ConsumersDocuSignInstruction" xml:space="preserve">
     <value>Wenn man die Anwendung des DocuSign-Dienstes hinzufügt, kann man Dateien aus dem Modul "Dokumente" signieren. Dies ermöglicht Ihnen, Dateien  über DocuSugn für eine elektronische Signatur an die Mitarbeiter des ONLYOFFICE ™ Portals zu schicken. Die signierte Datei wird im ONLYOFFICE Modul gespeichert. 
 </value>
+  </data>
+  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
+    <value>Erlauben Sie dieser App, Dokumente mit DocuSign digital zu unterschreiben. {0}Öffnen Sie Ihre DocuSign Admin-Konsole und ermöglichen Sie die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersDropBox" xml:space="preserve">
     <value>Dropbox</value>
@@ -157,6 +234,9 @@
   </data>
   <data name="ConsumersDropBoxInstruction" xml:space="preserve">
     <value>Wenn man die Anwendung des Dropbox-Dienstes hinzufügt, kann man sein Dropbox -Konto mit dem Modul "Dokumente" verknüpfen. Dies  ermöglicht das Hochladen und Erstellen neuer Dateien in Dropbox, Bearbeiten der bestehenden Dateien, Kopieren und Löschen, Freigabe von Dateien oder Ordnern mit ONLYOFFICE ™ Portalbenutzer.</value>
+  </data>
+  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
+    <value>Erlauben Sie dieser App, die Verbindung von Dropbox mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem Dropbox-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. {0}Melden Sie bei Ihrem Konto auf der Dropbox-Seite für Entwickler an, erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
     <value>Dropbox ID</value>
@@ -196,6 +276,9 @@
 
 </value>
   </data>
+  <data name="ConsumersFacebookInstructionV11" xml:space="preserve">
+    <value>Erlauben Sie dieser App, Einloggen bei ONLYOFFICE über Facebook und Import von Facebook-Kontakten ins CRM-Modul zu ermöglichen. {0}Öffnen Sie das Facebook-Portal für Entwickler und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
+  </data>
   <data name="ConsumersFirebase" xml:space="preserve">
     <value>Firebase</value>
   </data>
@@ -218,7 +301,7 @@
     <value>Wenn Sie Firebase Cloud Messaging anschließen, können Sie Benachrichtigungen über die gesendeten Nachrichten erhalten, auch wenn Sie offline sind.</value>
   </data>
   <data name="ConsumersGoogle" xml:space="preserve">
-    <value>Google-Schlüssel</value>
+    <value>Google</value>
   </data>
   <data name="ConsumersgoogleClientId" xml:space="preserve">
     <value>Google ID</value>
@@ -251,14 +334,20 @@
     <value>Wenn Sie ein Projekt des Google-Dienstes hinzufügen, können Sie Ihr Google-Konto mit Ihrer Profilseite verbinden, sodass Sie sich im ONLYOFFICE ™ -Portal anmelden und Ihr Google Drive-Konto im Modul Dokumente verbinden können. Dies ermöglicht Ihnen, neue Dateien in Google Drive hochzuladen und zu erstellen, bestehende zu bearbeiten, sie zu kopieren und zu löschen, Dateien und Ordner den ONLYOFFICE ™ Portalbenutzern freizugeben.
 </value>
   </data>
+  <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
+    <value>Erlauben Sie dieser App, die Verbindung von Google Drive mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem Google Drive-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. {0}Öffnen Sie Google APIs Console und erstellen Sie ein neues Projekt für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
+  </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
-    <value>Linkedin-Schlüssel</value>
+    <value>LinkedIn</value>
   </data>
   <data name="ConsumersLinkedInDescription" xml:space="preserve">
     <value>Verbinden Sie die Anwendung, um sich ins Portal via LinkedIn anzumelden.</value>
   </data>
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
     <value>Wenn man die Anwendung des LinkedIn-Dienstes hinzufügt, kann man sein LinkedIn-Konto mit der Profilseite verknüpfen. So meldet man sich ins ONLYOFFICE™ Portal mit eigenen LinkedIn-Login-Daten an. </value>
+  </data>
+  <data name="ConsumersLinkedInInstructionV11" xml:space="preserve">
+    <value>Erlauben Sie dieser App, Einloggen bei ONLYOFFICE über LinkedIn-Konten zu ermöglichen. {0}Öffnen Sie die LinkedIn-Seite für Entwickler (LinkedIn Developers) und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersLinkedInKey" xml:space="preserve">
     <value>Linkedin ID</value>
@@ -363,16 +452,19 @@
     <value>OneDrive</value>
   </data>
   <data name="Consumersskydriveappkey" xml:space="preserve">
-    <value>OneDrive ID</value>
+    <value>Anwendungs-ID</value>
   </data>
   <data name="Consumersskydriveappsecret" xml:space="preserve">
-    <value>OneDrive-Schlüssel</value>
+    <value>Geheimer Clientschlüssel</value>
   </data>
   <data name="ConsumersSkyDriveDescription" xml:space="preserve">
     <value>Verbinden Sie die Anwendung, um OneDrive-Dateien und Ordner zu verwalten.</value>
   </data>
   <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
     <value>Wenn man die Anwendung des OneDrive-Dienstes hinzufügt, kann man sein OneDrive-Konto mit dem Modul "Dokumente" verknüpfen. Dies ermöglicht das Hochladen und Erstellen neuer Dateien in OneDrive, Bearbeiten der bestehenden Dateien, Kopieren und Löschen, Freigabe von Dateien oder Ordnern mit ONLYOFFICE ™ Portalbenutzer.</value>
+  </data>
+  <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
+    <value>Erlauben Sie dieser App, die Verbindung von OneDrive mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem OneDrive-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. {0}Melden Sie bei Ihrem Microsoft Azure-Konto an und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersSmsc" xml:space="preserve">
     <value>SMS-Center</value>
@@ -382,6 +474,9 @@
   </data>
   <data name="ConsumersSmscInstruction" xml:space="preserve">
     <value>Durch Hinzufügen der SMS-Center-Dienstanwendung können Sie die Zwei-Faktor-Authentifizierung aktivieren und eine SMS mit einem Code empfangen, der es dem Benutzer ermöglicht, das ONLYOFFICE-Portal zu betreten. SMS-Center-Anwendung ist als Anbieter für die GUS-Staaten nützlich.</value>
+  </data>
+  <data name="ConsumersSmscInstructionV11" xml:space="preserve">
+    <value>Benutzen Sie diese App, um die Zwei-Faktor-Authentifizierung über SMS Center zu ermöglichen. {0}Geben Sie Ihre SMSC Anmeldedaten (Login und Passwort bzw. MD5-Passwort) unten ein:</value>
   </data>
   <data name="Consumerssmsclogin" xml:space="preserve">
     <value>Login</value>
@@ -404,11 +499,14 @@
   <data name="ConsumersTwilioInstruction" xml:space="preserve">
     <value>Nachdem Sie Twilio hinzugefügt haben, können Sie jeden CRM-Kontakt direkt aus dem Browser anrufen.</value>
   </data>
+  <data name="ConsumersTwilioInstructionV11" xml:space="preserve">
+    <value>Erlauben Sie dieser App, Anrufe aus dem CRM-Modul mit Twilio zu ermöglichen. {0}Öffnen Sie die Twilio-Konsole und fügen Sie die folgenden Daten unten ein:</value>
+  </data>
   <data name="Consumerstwiliosender" xml:space="preserve">
     <value>Telefonnummer von Twilio (erforderlich für die SMS-Autorisierung)</value>
   </data>
   <data name="ConsumersTwitter" xml:space="preserve">
-    <value>Twitter-Schlüssel</value>
+    <value>Twitter</value>
   </data>
   <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
     <value>Zugriffstoken</value>
@@ -421,6 +519,9 @@
   </data>
   <data name="ConsumersTwitterInstruction" xml:space="preserve">
     <value>Wenn man die Anwendung des Twitter-Dienstes hinzufügt, kann man sein Twitter-Konto mit der Profilseite verknüpfen. So meldet man sich ins ONLYOFFICE™ Portal mit eigenen Twitter-Login-Daten an. Sie können auch ein Facebook-Konto der Person im CRM-Modul finden und mit "Person / Firma bearbeiten" verknüpfen und Twitter-Newsfeedaktualisierungen durchschauen.</value>
+  </data>
+  <data name="ConsumersTwitterInstructionV11" xml:space="preserve">
+    <value>Erlauben Sie dieser App, Einloggen bei ONLYOFFICE über Twitter und Import von Twitter-Kontakten ins CRM-Modul zu ermöglichen. {0}Öffnen Sie das Twitter-Portal für Entwickler (Twitter Developer) und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
     <value>Twitter ID</value>
@@ -476,6 +577,9 @@
   <data name="ConsumersYahooInstruction" xml:space="preserve">
     <value>Durch Hinzufügen der Yahoo-Dienstanwendung können Sie neue Benutzer des ONLYOFFICE-Portals aus der Kontaktliste hinzufügen.</value>
   </data>
+  <data name="ConsumersYahooInstructionV11" xml:space="preserve">
+    <value>Erlauben Sie dieser App, neue Portal-Benutzer aus Ihren Yahoo-Kontaktlisten hinzuzufügen. {0}Öffnen Sie die Seite Create Application (App erstellen) in Yahoo Developer Network und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
+  </data>
   <data name="ConsumersYandex" xml:space="preserve">
     <value>Yandex</value>
   </data>
@@ -500,14 +604,14 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Einstellbar</value>
   </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Falsche Instanz-ID.</value>
+  </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Falsche E-Mail-Adresse</value>
   </data>
   <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
     <value>Ungültiger Werbecode</value>
-  </data>
-  <data name="EmailAndPasswordSaved" xml:space="preserve">
-    <value>Diese Einstellungen wurden erfolgreich gespeichert</value>
   </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Keine Berechtigung zum Durchführen dieser Aktion</value>
@@ -532,6 +636,9 @@
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
     <value>Die aktuelle E-Mail-Adresse und die neue sind gleich</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Bitte alle Felder ausfüllen</value>
   </data>
   <data name="ErrorEmptyMessage" xml:space="preserve">
     <value>Der Nachrichtentext ist leer</value>
@@ -609,7 +716,7 @@
     <value>Lizenz ist nicht korrekt</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Lizenz ist abgelaufen </value>
+    <value>Die Lizenz ist für diese Portalversion nicht gültig.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Die Anzahl der Portale übersteigt die zugelassene Lizenz</value>
@@ -623,14 +730,14 @@
   <data name="LicenseUploadedOverdue" xml:space="preserve">
     <value>Erfolgreich hochgeladen. {0}Support und Updates sind ab dieser Lizenz nicht mehr verfügbar {2}.{1}</value>
   </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Upload abgeschlossen. {0}Support ist für dieser Lizenz ab {2}.{1} nicht verfügbar</value>
+  </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Die Hinweise für die Änderung der E-Mail-Adresse wurden erfolgreich gesendet</value>
   </data>
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>Wenn es einen Benutzer mit der E-Mail {0} gibt, wurden die Anweisungen zum Ändern des Passworts an diese E-Mail-Adresse verschickt.</value>
-  </data>
-  <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
-    <value>Die Hinweise für die Änderung des Kennworts wurden an die folgende E-Mail-Adresse versandt: {0}</value>
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
     <value>Um die Nummer zu ändern, müssen Sie Ihre aktuelle Telefonnummer löschen</value>
@@ -643,9 +750,6 @@
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Zugang zum Portal</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>Das Profil wurde gelöscht</value>
   </data>
   <data name="ReassignDataRemoveUserError" xml:space="preserve">
     <value>Die Neuzuweisung der Daten für {0} ist nicht abgeschlossen.</value>
@@ -701,13 +805,13 @@
   <data name="TfaTooMuchError" xml:space="preserve">
     <value>Sie haben zu viele Kurzmitteilungen gesendet. Bitte versuchen Sie es später erneut.</value>
   </data>
-  <data name="Trial" xml:space="preserve">
-    <value>Test</value>
-  </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>Region US West (Oregon) </value>
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Neues</value>
+  </data>
+  <data name="ProfileRemoved" xml:space="preserve">
+    <value>Das Profil wurde gelöscht</value>
   </data>
 </root>

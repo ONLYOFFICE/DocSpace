@@ -1,17 +1,23 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { store, Headline } from 'asc-web-common';
-const { getCurrentModule } = store.auth.selectors;
+import React from "react";
+import Headline from "@appserver/common/components/Headline";
+import Loaders from "@appserver/common/components/Loaders";
+import { inject, observer } from "mobx-react";
 
-const ArticleHeaderContent = ({currentModuleName}) => {
-  return <Headline type="menu">{currentModuleName}</Headline>;
-}
+const ArticleHeaderContent = ({ isVisitor, isLoaded, currentModuleName }) => {
+  return (
+    !isVisitor &&
+    (isLoaded ? (
+      <Headline type="menu">{currentModuleName}</Headline>
+    ) : (
+      <Loaders.ArticleHeader />
+    ))
+  );
+};
 
-const mapStateToProps = (state) => {
-  const currentModule = getCurrentModule(state.auth.modules, state.auth.settings.currentProductId);
+export default inject(({ auth }) => {
   return {
-      currentModuleName: (currentModule && currentModule.title) || ""
-  }
-}
-
-export default connect(mapStateToProps)(ArticleHeaderContent);
+    isVisitor: auth.userStore.user.isVisitor,
+    isLoaded: auth.isLoaded,
+    currentModuleName: auth.product.title,
+  };
+})(observer(ArticleHeaderContent));

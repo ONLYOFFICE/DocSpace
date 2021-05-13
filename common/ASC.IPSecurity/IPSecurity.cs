@@ -41,13 +41,13 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.IPSecurity
 {
+    [Scope]
     public class IPSecurity
     {
         private readonly ILog Log;
 
         public bool IpSecurityEnabled { get; }
 
-        private IConfiguration Configuration { get; }
         private IHttpContextAccessor HttpContextAccessor { get; }
         private AuthContext AuthContext { get; }
         private TenantManager TenantManager { get; }
@@ -66,7 +66,6 @@ namespace ASC.IPSecurity
             IOptionsMonitor<ILog> options)
         {
             Log = options.Get("ASC.IPSecurity");
-            Configuration = configuration;
             HttpContextAccessor = httpContextAccessor;
             AuthContext = authContext;
             TenantManager = tenantManager;
@@ -139,23 +138,6 @@ namespace ASC.IPSecurity
         {
             var portIdx = ip.IndexOf(':');
             return portIdx > 0 ? ip.Substring(0, portIdx) : ip;
-        }
-    }
-
-    public static class IPSecurityExtension
-    {
-        public static DIHelper AddIPSecurityService(this DIHelper services)
-        {
-            if (services.TryAddScoped<IPSecurity>())
-            {
-                return services
-                    .AddIPRestrictionsService()
-                    .AddSettingsManagerService()
-                    .AddAuthContextService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 }

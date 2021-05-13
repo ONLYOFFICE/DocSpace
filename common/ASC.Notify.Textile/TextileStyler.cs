@@ -48,6 +48,7 @@ using Textile.Blocks;
 
 namespace ASC.Notify.Textile
 {
+    [Scope]
     public class TextileStyler : IPatternStyler
     {
         private static readonly Regex VelocityArguments = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
@@ -92,7 +93,6 @@ namespace ASC.Notify.Textile
             formatter.Format(message.Body);
 
             var template = GetTemplate(message);
-            var analytics = GetAnalytics(message);
             var imagePath = GetImagePath(message);
             var logoImg = GetLogoImg(message, imagePath);
             var logoText = GetLogoText(message);
@@ -102,7 +102,7 @@ namespace ASC.Notify.Textile
 
             InitFooter(message, mailSettings, out var footerContent, out var footerSocialContent);
 
-            message.Body = template.Replace("%ANALYTICS%", analytics)
+            message.Body = template
                                    .Replace("%CONTENT%", output.GetFormattedText())
                                    .Replace("%LOGO%", logoImg)
                                    .Replace("%LOGOTEXT%", logoText)
@@ -130,12 +130,6 @@ namespace ASC.Notify.Textile
             }
 
             return template;
-        }
-
-        private static string GetAnalytics(NoticeMessage message)
-        {
-            var analyticsTag = message.GetArgument("Analytics");
-            return analyticsTag == null ? string.Empty : (string)analyticsTag.Value;
         }
 
         private static string GetImagePath(NoticeMessage message)
@@ -323,19 +317,6 @@ namespace ASC.Notify.Textile
                                  WebEncoders.Base64UrlEncode(
                                      InstanceCrypto.Encrypt(
                                          Encoding.UTF8.GetBytes(mail.ToLowerInvariant()))));
-        }
-    }
-
-    public static class TextileStylerExtension
-    {
-        public static DIHelper AddTextileStylerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TextileStyler>())
-            {
-                return services.AddStylerService();
-            }
-
-            return services;
         }
     }
 }

@@ -29,13 +29,13 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Security.Authentication;
-using ASC.Core.Caching;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 
 namespace ASC.Core
 {
+    [Scope]
     public class AuthManager
     {
         private readonly IUserService userService;
@@ -81,21 +81,6 @@ namespace ASC.Core
         private IUserAccount ToAccount(int tenantId, UserInfo u)
         {
             return new UserAccount(u, tenantId, UserFormatter);
-        }
-    }
-    public static class AuthManagerExtension
-    {
-        public static DIHelper AddAuthManager(this DIHelper services)
-        {
-            if (services.TryAddScoped<AuthManager>())
-            {
-                return services
-                    .AddUserService()
-                    .AddUserFormatter()
-                    .AddUserManagerService();
-            }
-
-            return services;
         }
     }
 }

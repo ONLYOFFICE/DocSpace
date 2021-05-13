@@ -28,50 +28,51 @@ using System;
 using System.IO;
 using System.Threading;
 
-using ASC.Data.Storage;
-
-public static class Extensions
+namespace ASC.Data.Storage
 {
-    private const int BufferSize = 2048;//NOTE: set to 2048 to fit in minimum tcp window
-
-    public static Stream IronReadStream(this IDataStore store, string domain, string path, int tryCount)
+    public static class Extensions
     {
-        var ms = TempStream.Create();
-        IronReadToStream(store, domain, path, tryCount, ms);
-        ms.Seek(0, SeekOrigin.Begin);
-        return ms;
-    }
+        private const int BufferSize = 2048;//NOTE: set to 2048 to fit in minimum tcp window
 
-    public static void IronReadToStream(this IDataStore store, string domain, string path, int tryCount, Stream readTo)
-    {
-        if (tryCount < 1) throw new ArgumentOutOfRangeException("tryCount", "Must be greater or equal 1.");
-        if (!readTo.CanWrite) throw new ArgumentException("stream cannot be written", "readTo");
-
-        var tryCurrent = 0;
-        var offset = 0;
-
-        while (tryCurrent < tryCount)
+        public static Stream IronReadStream(this IDataStore store, string domain, string path, int tryCount)
         {
-            try
+            var ms = TempStream.Create();
+            IronReadToStream(store, domain, path, tryCount, ms);
+            ms.Seek(0, SeekOrigin.Begin);
+            return ms;
+        }
+
+        public static void IronReadToStream(this IDataStore store, string domain, string path, int tryCount, Stream readTo)
+        {
+            if (tryCount < 1) throw new ArgumentOutOfRangeException("tryCount", "Must be greater or equal 1.");
+            if (!readTo.CanWrite) throw new ArgumentException("stream cannot be written", "readTo");
+
+            var tryCurrent = 0;
+            var offset = 0;
+
+            while (tryCurrent < tryCount)
             {
-                tryCurrent++;
-                using var stream = store.GetReadStream(domain, path, offset);
-                var buffer = new byte[BufferSize];
-                var readed = 0;
-                while ((readed = stream.Read(buffer, 0, BufferSize)) > 0)
+                try
                 {
-                    readTo.Write(buffer, 0, readed);
-                    offset += readed;
+                    tryCurrent++;
+                    using var stream = store.GetReadStream(domain, path, offset);
+                    var buffer = new byte[BufferSize];
+                    var readed = 0;
+                    while ((readed = stream.Read(buffer, 0, BufferSize)) > 0)
+                    {
+                        readTo.Write(buffer, 0, readed);
+                        offset += readed;
+                    }
+                    break;
                 }
-                break;
-            }
-            catch (Exception ex)
-            {
-                if (tryCurrent >= tryCount)
+                catch (Exception ex)
                 {
-                    throw new IOException("Can not read stream. Tries count: " + tryCurrent + ".", ex);
+                    if (tryCurrent >= tryCount)
+                    {
+                        throw new IOException("Can not read stream. Tries count: " + tryCurrent + ".", ex);
+                    }
+                    Thread.Sleep(tryCount * 50);
                 }
-                Thread.Sleep(tryCount * 50);
             }
         }
     }

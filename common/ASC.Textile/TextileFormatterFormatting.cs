@@ -22,7 +22,7 @@ namespace Textile
         private readonly Regex VelocityArguments =
             new Regex("nostyle(?<arg>.*?)/nostyle", RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
-        private string argMatchReplace(Match match)
+        private string ArgMatchReplace(Match match)
         {
             return match.Result("${arg}");
         }
@@ -74,7 +74,7 @@ namespace Textile
                         }
                     }
 
-                    tmp = VelocityArguments.Replace(tmp, argMatchReplace);
+                    tmp = VelocityArguments.Replace(tmp, ArgMatchReplace);
 
                     // Format the current line.
                     CurrentState.FormatLine(tmp);

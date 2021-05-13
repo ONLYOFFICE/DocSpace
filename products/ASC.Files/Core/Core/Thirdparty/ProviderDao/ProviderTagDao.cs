@@ -35,6 +35,7 @@ using ASC.Files.Core.Thirdparty;
 
 namespace ASC.Files.Thirdparty.ProviderDao
 {
+    [Scope]
     internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
     {
         public ProviderTagDao(
@@ -128,21 +129,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return TagDao.GetTags(entryID, entryType, tagType);
         }
 
+        public IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return TagDao.GetTags(subject, tagType, fileEntries);
+        }
+
         #endregion
-
-        public void Dispose()
-        {
-        }
-    }
-
-    public static class ProviderTagDaoExtention
-    {
-        public static DIHelper AddProviderTagDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<ITagDao<string>, ProviderTagDao>();
-
-            return services
-                .AddProviderDaoBaseService();
-        }
     }
 }

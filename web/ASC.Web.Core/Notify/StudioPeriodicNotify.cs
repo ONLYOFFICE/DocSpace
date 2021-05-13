@@ -54,6 +54,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Singletone(Additional = typeof(StudioPeriodicNotifyExtension))]
     public class StudioPeriodicNotify
     {
         private IServiceProvider ServiceProvider { get; }
@@ -118,7 +119,8 @@ namespace ASC.Web.Studio.Core.Notify
                     var coupon = string.Empty;
 
                     Func<string> greenButtonText = () => string.Empty;
-                    string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
+
+                    static string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
                     var greenButtonUrl = string.Empty;
 
                     Func<string> tableItemText1 = () => string.Empty;
@@ -154,12 +156,18 @@ namespace ASC.Web.Studio.Core.Notify
                     Func<string> tableItemComment7 = () => string.Empty;
 
                     Func<string> tableItemLearnMoreText1 = () => string.Empty;
-                    string tableItemLearnMoreText2() => string.Empty;
-                    string tableItemLearnMoreText3() => string.Empty;
-                    string tableItemLearnMoreText4() => string.Empty;
-                    string tableItemLearnMoreText5() => string.Empty;
-                    string tableItemLearnMoreText6() => string.Empty;
-                    string tableItemLearnMoreText7() => string.Empty;
+
+                    static string tableItemLearnMoreText2() => string.Empty;
+
+                    static string tableItemLearnMoreText3() => string.Empty;
+
+                    static string tableItemLearnMoreText4() => string.Empty;
+
+                    static string tableItemLearnMoreText5() => string.Empty;
+
+                    static string tableItemLearnMoreText6() => string.Empty;
+
+                    static string tableItemLearnMoreText7() => string.Empty;
 
                     var tableItemLearnMoreUrl1 = string.Empty;
                     var tableItemLearnMoreUrl2 = string.Empty;
@@ -473,9 +481,6 @@ namespace ASC.Web.Studio.Core.Notify
                                     ? new List<UserInfo> { userManager.GetUsers(tenant.OwnerId) }
                                     : studioNotifyHelper.GetRecipients(toadmins, tousers, false);
 
-
-                    var analytics = studioNotifyHelper.GetNotifyAnalytics(action, toowner, toadmins, tousers, false);
-
                     foreach (var u in users.Where(u => paymentMessage || studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
@@ -506,7 +511,6 @@ namespace ASC.Web.Studio.Core.Notify
                             TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
                             TagValues.TableBottom(),
                             new TagValue(CommonTags.Footer, u.IsAdmin(userManager) ? "common" : "social"),
-                            new TagValue(CommonTags.Analytics, analytics),
                             new TagValue(Tags.Coupon, coupon));
                     }
                 }
@@ -556,8 +560,9 @@ namespace ASC.Web.Studio.Core.Notify
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
                     var createdDate = tenant.CreatedDateTime.Date;
 
-                    var dueDateIsNotMax = tariff.DueDate != DateTime.MaxValue;
-                    var dueDate = tariff.DueDate.Date;
+                    var actualEndDate = (tariff.DueDate != DateTime.MaxValue ? tariff.DueDate : tariff.LicenseDate);
+                    var dueDateIsNotMax = actualEndDate != DateTime.MaxValue;
+                    var dueDate = actualEndDate.Date;
 
                     var delayDueDateIsNotMax = tariff.DelayDueDate != DateTime.MaxValue;
                     var delayDueDate = tariff.DelayDueDate.Date;
@@ -569,7 +574,8 @@ namespace ASC.Web.Studio.Core.Notify
                     var tousers = false;
 
                     Func<string> greenButtonText = () => string.Empty;
-                    string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
+
+                    static string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
                     var greenButtonUrl = string.Empty;
 
                     Func<string> tableItemText1 = () => string.Empty;
@@ -605,12 +611,18 @@ namespace ASC.Web.Studio.Core.Notify
                     Func<string> tableItemComment7 = () => string.Empty;
 
                     Func<string> tableItemLearnMoreText1 = () => string.Empty;
-                    string tableItemLearnMoreText2() => string.Empty;
-                    string tableItemLearnMoreText3() => string.Empty;
-                    string tableItemLearnMoreText4() => string.Empty;
-                    string tableItemLearnMoreText5() => string.Empty;
-                    string tableItemLearnMoreText6() => string.Empty;
-                    string tableItemLearnMoreText7() => string.Empty;
+
+                    static string tableItemLearnMoreText2() => string.Empty;
+
+                    static string tableItemLearnMoreText3() => string.Empty;
+
+                    static string tableItemLearnMoreText4() => string.Empty;
+
+                    static string tableItemLearnMoreText5() => string.Empty;
+
+                    static string tableItemLearnMoreText6() => string.Empty;
+
+                    static string tableItemLearnMoreText7() => string.Empty;
 
                     var tableItemLearnMoreUrl1 = string.Empty;
                     var tableItemLearnMoreUrl2 = string.Empty;
@@ -1068,7 +1080,7 @@ namespace ASC.Web.Studio.Core.Notify
                                 case 28:
                                     action = Actions.PersonalAfterRegistration28;
                                     greenButtonText = () => WebstudioNotifyPatternResource.ButtonStartFreeTrial;
-                                    greenButtonUrl = "https://www.onlyoffice.com/enterprise-edition-free.aspx";
+                                    greenButtonUrl = "https://www.onlyoffice.com/download-commercial.aspx";
                                     break;
                                 default:
                                     continue;
@@ -1116,6 +1128,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
+    [Scope]
     public class StudioPeriodicNotifyScope
     {
         private TenantManager TenantManager { get; }
@@ -1211,29 +1224,11 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
-    public static class StudioPeriodicNotifyExtension
+    public class StudioPeriodicNotifyExtension
     {
-        public static DIHelper AddStudioPeriodicNotify(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<StudioPeriodicNotify>();
-            services.TryAddSingleton<CouponManager>();
-            services.TryAddScoped<StudioPeriodicNotifyScope>();
-
-            return services
-                .AddApiSystemHelper()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddStudioNotifyHelperService()
-                .AddPaymentManagerService()
-                .AddTenantExtraService()
-                .AddAuthContextService()
-                .AddCommonLinkUtilityService()
-                .AddSetupInfo()
-                .AddFeedDbService()
-                .AddCoreBaseSettingsService()
-                .AddDisplayUserSettingsService()
-                .AddSecurityContextService()
-                .AddAuthManager();
+            services.TryAdd<StudioPeriodicNotifyScope>();
         }
     }
 }

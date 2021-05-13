@@ -42,13 +42,14 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.ElasticSearch
 {
+    [Singletone(Additional = typeof(ServiceLauncherExtension))]
     public class ServiceLauncher : IHostedService
     {
         private ILog Log { get; }
         private ICacheNotify<AscCacheItem> Notify { get; }
         private ICacheNotify<IndexAction> IndexNotify { get; }
         private IServiceProvider ServiceProvider { get; }
-        public IContainer Container { get; }
+        public ILifetimeScope Container { get; }
         private bool IsStarted { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }
         private Timer Timer { get; set; }
@@ -59,7 +60,7 @@ namespace ASC.ElasticSearch
             ICacheNotify<AscCacheItem> notify,
             ICacheNotify<IndexAction> indexNotify,
             IServiceProvider serviceProvider,
-            IContainer container,
+            ILifetimeScope container,
             Settings settings)
         {
             Log = options.Get("ASC.Indexer");
@@ -109,6 +110,7 @@ namespace ASC.ElasticSearch
 
             }, CancellationTokenSource.Token, TaskCreationOptions.LongRunning);
 
+            task.ConfigureAwait(false);
             task.Start();
 
             return Task.CompletedTask;
@@ -130,20 +132,28 @@ namespace ASC.ElasticSearch
 
         private void IndexAll(bool reindex = false)
         {
-            Timer.Change(-1, -1);
-            IsStarted = true;
-
-            using var scope = Container.BeginLifetimeScope();
-            var wrappers = scope.Resolve<IEnumerable<IFactoryIndexer>>();
-
-            foreach (var w in wrappers)
+            try
             {
-                IndexProduct(w, reindex);
-            }
+                Timer.Change(Timeout.Infinite, Timeout.Infinite);
+                IsStarted = true;
 
-            Timer.Change(Period, Period);
-            IndexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, CacheNotifyAction.Any);
-            IsStarted = false;
+                using var scope = Container.BeginLifetimeScope();
+                var wrappers = scope.Resolve<IEnumerable<IFactoryIndexer>>();
+
+                foreach (var w in wrappers)
+                {
+                    IndexProduct(w, reindex);
+                }
+
+                Timer.Change(Period, Period);
+                IndexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, CacheNotifyAction.Any);
+                IsStarted = false;
+            }
+            catch (Exception e)
+            {
+                Log.Fatal("IndexAll", e);
+                throw;
+            }
         }
 
         public void IndexProduct(IFactoryIndexer product, bool reindex)
@@ -180,6 +190,7 @@ namespace ASC.ElasticSearch
         }
     }
 
+    [Scope]
     public class ServiceLauncherScope
     {
         private FactoryIndexer FactoryIndexer { get; }
@@ -198,18 +209,11 @@ namespace ASC.ElasticSearch
         }
     }
 
-    public static class ServiceLauncherExtension
+    public class ServiceLauncherExtension
     {
-        public static DIHelper AddServiceLauncher(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<ServiceLauncher>();
-            services.TryAddScoped<ServiceLauncherScope>();
-            services.TryAddSingleton<Service.Service>();
-            services.TryAddScoped<ServiceScope>();
-
-            return services
-                .AddSettingsService()
-                .AddFactoryIndexerService();
+            services.TryAdd<ServiceLauncherScope>();
         }
     }
 }

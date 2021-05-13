@@ -131,11 +131,20 @@ namespace ASC.Files.Core
 
         public T ID { get; set; }
 
+        public T FolderID { get; set; }
+
+        private T _folderIdDisplay;
+
         [JsonPropertyName("folder_id")]
-        public abstract T FolderIdDisplay
+        public T FolderIdDisplay
         {
-            get;
-            set;
+            get
+            {
+                if (_folderIdDisplay != null) return _folderIdDisplay;
+
+                return FolderID;
+            }
+            set { _folderIdDisplay = value; }
         }
 
         public T RootFolderId { get; set; }

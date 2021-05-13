@@ -88,6 +88,13 @@
         "virtualpath": "~/products/crm/data",
         "domain": [
           {
+            "name": "export",
+            "visible": false,
+            "data": "00000000-0000-0000-0000-000000000000",
+            "path": "$STORAGE_ROOT\\Products\\CRM\\Data\\{0}\\export",
+            "expires": "1.0:0:0"
+          },
+          {
             "name": "temp",
             "visible": false,
             "data": "00000000-0000-0000-0000-000000000000",

@@ -45,6 +45,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Core.Helpers
 {
+    [Scope]
     public class ApiSystemHelper
     {
         public string ApiSystemUrl { get; private set; }
@@ -168,15 +169,6 @@ namespace ASC.Web.Core.Helpers
             using var stream = response.GetResponseStream();
             using var reader = new StreamReader(stream, Encoding.UTF8);
             return reader.ReadToEnd();
-        }
-    }
-
-    public static class ApiSystemHelperExtension
-    {
-        public static DIHelper AddApiSystemHelper(this DIHelper services)
-        {
-            services.TryAddScoped<ApiSystemHelper>();
-            return services;
         }
     }
 }

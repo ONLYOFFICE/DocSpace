@@ -31,7 +31,6 @@ using System.Text.Json.Serialization;
 
 using ASC.Common;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 using ASC.Web.Studio.Utility;
 
@@ -104,6 +103,7 @@ namespace ASC.Api.Documents
         }
     }
 
+    [Scope]
     public class FileOperationWraperHelper
     {
         private FolderWrapperHelper FolderWrapperHelper { get; }
@@ -198,34 +198,18 @@ namespace ASC.Api.Documents
             IEnumerable<FileEntryWrapper> GetFolders<T>(IEnumerable<T> folders)
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
-                return folderDao.GetFolders(folders.ToArray())
-                    .Select(FolderWrapperHelper.Get)
+                return folderDao.GetFolders(folders)
+                    .Select(r => FolderWrapperHelper.Get(r))
                     .Cast<FileEntryWrapper>();
             }
 
             IEnumerable<FileEntryWrapper> GetFiles<T>(IEnumerable<T> files)
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
-                return fileDao.GetFiles(files.ToArray())
-                    .Select(FilesWrapperHelper.Get)
+                return fileDao.GetFiles(files)
+                    .Select(r => FilesWrapperHelper.Get(r))
                     .Cast<FileEntryWrapper>();
             }
-        }
-    }
-    public static class FileOperationWraperHelperExtention
-    {
-        public static DIHelper AddFileOperationWraperHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileOperationWraperHelper>())
-            {
-                return services
-                    .AddFolderWrapperHelperService()
-                    .AddFileWrapperHelperService()
-                    .AddDaoFactoryService()
-                    .AddCommonLinkUtilityService();
-            }
-
-            return services;
         }
     }
 }

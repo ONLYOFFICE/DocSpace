@@ -1,130 +1,159 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router';
-import {
-  MainButton,
-  DropDownItem,
-  toastr
-} from "asc-web-components";
-import { InviteDialog } from './../../dialogs';
-import { withTranslation, I18nextProvider } from 'react-i18next';
-import i18n from '../i18n';
-import { store, utils } from 'asc-web-common';
-const { changeLanguage } = utils;
-const { isAdmin } = store.auth.selectors;
+import React from "react";
+//import PropTypes from "prop-types";
+import { withRouter } from "react-router";
+import MainButton from "@appserver/components/main-button";
+import DropDownItem from "@appserver/components/drop-down-item";
+import InviteDialog from "./../../dialogs/InviteDialog/index";
+import { withTranslation } from "react-i18next";
+import toastr from "studio/toastr";
+import Loaders from "@appserver/common/components/Loaders";
+import { inject, observer } from "mobx-react";
+import config from "../../../../package.json";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class PureArticleMainButtonContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dialogVisible: false
-    }
+      dialogVisible: false,
+    };
   }
 
-  onDropDownItemClick = (link) => {
-    this.props.history.push(link);
+  onImportClick = () => {
+    const { history, homepage } = this.props;
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "${homepage}/import")
+    );
   };
 
   goToEmployeeCreate = () => {
-    const { history, settings } = this.props;
-    history.push(`${settings.homepage}/create/user`);
+    const { history, homepage } = this.props;
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "/create/user")
+    );
   };
 
   goToGuestCreate = () => {
-    const { history, settings } = this.props;
-    history.push(`${settings.homepage}/create/guest`);
-  }
+    const { history, homepage } = this.props;
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "/create/guest")
+    );
+  };
 
   goToGroupCreate = () => {
-    const { history, settings } = this.props;
-    history.push(`${settings.homepage}/group/create`);
-  }
+    const { history, homepage } = this.props;
+    history.push(
+      combineUrl(AppServerConfig.proxyURL, homepage, "/group/create")
+    );
+  };
 
   onNotImplementedClick = (text) => {
     toastr.success(text);
   };
 
-  onInvitationDialogClick = () => this.setState({ dialogVisible: !this.state.dialogVisible });
+  onInvitationDialogClick = () =>
+    this.setState({ dialogVisible: !this.state.dialogVisible });
 
   render() {
-    console.log("People ArticleMainButtonContent render");
-    const { isAdmin, settings, t } = this.props;
-    const { userCaption, guestCaption, groupCaption } = settings.customNames;
+    //console.log("People ArticleMainButtonContent render");
+    const {
+      t,
+      isLoaded,
+      isAdmin,
+      homepage,
+      userCaption,
+      guestCaption,
+      groupCaption,
+    } = this.props;
+
     const { dialogVisible } = this.state;
+
     return (
-      isAdmin ?
+      isAdmin &&
+      (!isLoaded ? (
+        <Loaders.Rectangle />
+      ) : (
         <>
-          <MainButton
-            isDisabled={false}
-            isDropdown={true}
-            text={t('Actions')}
-          >
+          <MainButton isDisabled={false} isDropdown={true} text={t("Actions")}>
             <DropDownItem
-              icon="AddEmployeeIcon"
+              icon={combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                "/images/add.employee.react.svg"
+              )}
               label={userCaption}
               onClick={this.goToEmployeeCreate}
             />
+
             <DropDownItem
-              icon="AddGuestIcon"
+              icon={combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                "/images/add.guest.react.svg"
+              )}
               label={guestCaption}
               onClick={this.goToGuestCreate}
             />
             <DropDownItem
-              icon="AddDepartmentIcon"
+              icon={combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                "/images/add.department.react.svg"
+              )}
               label={groupCaption}
               onClick={this.goToGroupCreate}
             />
             <DropDownItem isSeparator />
             <DropDownItem
-              icon="InvitationLinkIcon"
-              label={t('InviteLinkTitle')}
+              icon={combineUrl(
+                AppServerConfig.proxyURL,
+                "/static/images/invitation.link.react.svg"
+              )}
+              label={t("InviteLinkTitle")}
               onClick={this.onInvitationDialogClick}
             />
             {/* <DropDownItem
-              icon="PlaneIcon"
+              icon="images/plane.react.svg"
               label={t('LblInviteAgain')}
               onClick={this.onNotImplementedClick.bind(this, "Invite again action")}
             /> */}
-            {false &&
+            {false && (
               <DropDownItem
-                icon="ImportIcon"
-                label={t('ImportPeople')}
-                onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/import`)}
+                icon={combineUrl(
+                  AppServerConfig.proxyURL,
+                  homepage,
+                  "/images/import.react.svg"
+                )}
+                label={t("ImportPeople")}
+                onClick={this.onImportClick}
               />
-            }
+            )}
           </MainButton>
-          {dialogVisible &&
+          {dialogVisible && (
             <InviteDialog
               visible={dialogVisible}
               onClose={this.onInvitationDialogClick}
               onCloseButton={this.onInvitationDialogClick}
             />
-          }
+          )}
         </>
-        :
-        <></>
+      ))
     );
-  };
-};
-
-const ArticleMainButtonContentContainer = withTranslation()(PureArticleMainButtonContent);
-
-const ArticleMainButtonContent = (props) => {
-  changeLanguage(i18n);
-  return (<I18nextProvider i18n={i18n}><ArticleMainButtonContentContainer {...props} /></I18nextProvider>);
-};
-
-ArticleMainButtonContent.propTypes = {
-  isAdmin: PropTypes.bool.isRequired,
-  history: PropTypes.object.isRequired
-};
-
-const mapStateToProps = (state) => {
-  return {
-    isAdmin: isAdmin(state.auth.user),
-    settings: state.auth.settings
   }
 }
 
-export default connect(mapStateToProps)(withRouter(ArticleMainButtonContent));
+const ArticleMainButtonContent = withTranslation("Article")(
+  PureArticleMainButtonContent
+);
+
+export default withRouter(
+  inject(({ auth }) => ({
+    isAdmin: auth.isAdmin,
+    homepage: config.homepage,
+    userCaption: auth.settingsStore.customNames.userCaption,
+    guestCaption: auth.settingsStore.customNames.guestCaption,
+    groupCaption: auth.settingsStore.customNames.groupCaption,
+    isLoaded: auth.isLoaded,
+  }))(observer(ArticleMainButtonContent))
+);

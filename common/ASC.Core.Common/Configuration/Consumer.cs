@@ -176,7 +176,7 @@ namespace ASC.Core.Common.Configuration
         {
             if (!CanSet)
             {
-                throw new NotSupportedException("Key for read only.");
+                throw new NotSupportedException("Key for read only. Consumer " + Name);
             }
 
             foreach (var providerProp in Props)
@@ -258,7 +258,7 @@ namespace ASC.Core.Common.Configuration
         {
             if (!CanSet)
             {
-                throw new NotSupportedException("Key for read only.");
+                throw new NotSupportedException("Key for read only. Key " + name);
             }
 
             if (!ManagedKeys.Contains(name))
@@ -378,6 +378,7 @@ namespace ASC.Core.Common.Configuration
         }
     }
 
+    [Scope]
     public class ConsumerFactory : IDisposable
     {
         public ILifetimeScope Builder { get; set; }
@@ -430,15 +431,6 @@ namespace ASC.Core.Common.Configuration
         public void Dispose()
         {
             Builder.Dispose();
-        }
-    }
-
-    public static class ConsumerFactoryExtension
-    {
-        public static DIHelper AddConsumerFactoryService(this DIHelper services)
-        {
-            services.TryAddScoped<ConsumerFactory>();
-            return services;
         }
     }
 }

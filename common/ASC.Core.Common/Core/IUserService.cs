@@ -29,11 +29,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
+using ASC.Common;
+using ASC.Core.Caching;
 using ASC.Core.Common.EF;
+using ASC.Core.Data;
 using ASC.Core.Users;
 
 namespace ASC.Core
 {
+    [Scope(typeof(ConfigureEFUserService), typeof(ConfigureCachedUserService))]
     public interface IUserService
     {
         IDictionary<Guid, UserInfo> GetUsers(int tenant, DateTime from);
@@ -52,6 +56,8 @@ namespace ASC.Core
             out int count);
 
         UserInfo GetUser(int tenant, Guid id);
+
+        UserInfo GetUser(int tenant, string email);
 
         UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp);
 

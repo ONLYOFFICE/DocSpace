@@ -39,7 +39,6 @@ using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OneDrive.Sdk;
 
@@ -47,7 +46,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 {
     internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProviderInfo>
     {
-        public override string Id { get => "onedrive"; }
+        protected override string Id { get => "onedrive"; }
 
         public OneDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
@@ -123,7 +122,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             var folder = GetFolder();
 
             folder.ID = MakeId(isRoot ? string.Empty : onedriveFolder.Id);
-            folder.ParentFolderID = isRoot ? null : MakeId(GetParentFolderId(onedriveFolder));
+            folder.FolderID = isRoot ? null : MakeId(GetParentFolderId(onedriveFolder));
             folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.CreatedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFolder.CreatedDateTime.Value.DateTime) : default);
             folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.LastModifiedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFolder.LastModifiedDateTime.Value.DateTime) : default);
 
@@ -171,7 +170,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             if (onedriveFile.File == null) return null;
 
-            var file = ServiceProvider.GetService<File<string>>();
+            var file = GetFile();
 
             file.ID = MakeId(onedriveFile.Id);
             file.ContentLength = onedriveFile.Size.HasValue ? (long)onedriveFile.Size : 0;
@@ -202,7 +201,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
         }
 
-        protected IEnumerable<string> GetChildren(string folderId)
+        protected override IEnumerable<string> GetChildren(string folderId)
         {
             return GetOneDriveItems(folderId).Select(entry => MakeId(entry.Id));
         }

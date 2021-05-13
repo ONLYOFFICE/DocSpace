@@ -150,7 +150,7 @@ namespace ASC.Web.Files.Services.DocumentService
             };
 
         }
-        
+
         public void GenerateReport(DistributedTask task, CancellationToken cancellationToken)
         {
             using var scope = ServiceProvider.CreateScope();
@@ -354,9 +354,20 @@ namespace ASC.Web.Files.Services.DocumentService
         private int TenantId { get; set; }
         private Guid UserId { get; set; }
 
-        public void Enqueue(ReportState state) => DocbuilderReportsUtility.Enqueue(state);
-        public void Terminate(ReportOrigin origin) => DocbuilderReportsUtility.Terminate(origin, TenantId, UserId);
-        public ReportState Status(ReportOrigin origin) => DocbuilderReportsUtility.Status(origin, HttpContextAccessor, TenantId, UserId);
+        public void Enqueue(ReportState state)
+        {
+            DocbuilderReportsUtility.Enqueue(state);
+        }
+
+        public void Terminate(ReportOrigin origin)
+        {
+            DocbuilderReportsUtility.Terminate(origin, TenantId, UserId);
+        }
+
+        public ReportState Status(ReportOrigin origin)
+        {
+            return DocbuilderReportsUtility.Status(origin, HttpContextAccessor, TenantId, UserId);
+        }
     }
 
     public class ReportStateScope
@@ -381,9 +392,9 @@ namespace ASC.Web.Files.Services.DocumentService
             DocumentServiceConnector = documentServiceConnector;
         }
 
-        public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor, 
-            out TenantManager tenantManager, 
-            out AuthContext authContext, 
+        public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor,
+            out TenantManager tenantManager,
+            out AuthContext authContext,
             out SecurityContext securityContext,
             out DocumentServiceConnector documentServiceConnector)
         {

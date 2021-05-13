@@ -54,6 +54,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.ApiSystem.Controllers
 {
+    [Scope]
     [Obsolete("Registration is deprecated, please use PortalController or TariffController instead.")]
     [ApiController]
     [Route("[controller]")]
@@ -267,20 +268,19 @@ namespace ASC.ApiSystem.Controllers
                 Culture = lang,
                 FirstName = model.FirstName.Trim(),
                 LastName = model.LastName.Trim(),
-                PasswordHash = String.IsNullOrEmpty(model.PasswordHash) ? null : model.PasswordHash,
+                PasswordHash = string.IsNullOrEmpty(model.PasswordHash) ? null : model.PasswordHash,
                 Email = model.Email.Trim(),
                 TimeZoneInfo = tz,
                 MobilePhone = string.IsNullOrEmpty(model.Phone) ? null : model.Phone.Trim(),
                 Industry = (TenantIndustry)model.Industry,
                 Spam = model.Spam,
                 Calls = model.Calls,
-                Analytics = model.Analytics,
                 LimitedControlPanel = model.LimitedControlPanel
             };
 
             if (!string.IsNullOrEmpty(model.PartnerId))
             {
-                if (Guid.TryParse(model.PartnerId, out Guid guid))
+                if (Guid.TryParse(model.PartnerId, out var guid))
                 {
                     // valid guid
                     info.PartnerId = model.PartnerId;
@@ -328,7 +328,7 @@ namespace ASC.ApiSystem.Controllers
 
             string sendCongratulationsAddress = null;
 
-            if (!String.IsNullOrEmpty(model.PasswordHash))
+            if (!string.IsNullOrEmpty(model.PasswordHash))
             {
                 isFirst = !CommonMethods.SendCongratulations(Request.Scheme, t, model.SkipWelcome, out sendCongratulationsAddress);
             }
@@ -783,25 +783,5 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
-    }
-
-    public static class RegistrationControllerExtention
-    {
-        public static DIHelper AddRegistrationController(this DIHelper services)
-        {
-            return services
-                .AddCommonMethods()
-                .AddTimeZonesProvider()
-                .AddCommonConstants()
-                .AddUserManagerService()
-                .AddUserFormatter()
-                .AddCoreSettingsService()
-                .AddHostedSolutionService()
-                .AddApiSystemHelper()
-                .AddSettingsManagerService()
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                ;
-        }
     }
 }

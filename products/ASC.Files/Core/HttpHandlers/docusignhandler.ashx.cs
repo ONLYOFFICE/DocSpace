@@ -36,10 +36,10 @@ using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Services.NotifyService;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
-using ASC.Files.Core.Services.NotifyService;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Builder;
@@ -69,6 +69,7 @@ namespace ASC.Web.Files.HttpHandlers
         }
     }
 
+    [Scope]
     public class DocuSignHandlerService
     {
         public static string Path(FilesLinkUtility filesLinkUtility)
@@ -254,21 +255,6 @@ namespace ASC.Web.Files.HttpHandlers
 
     public static class DocuSignHandlerExtension
     {
-        public static DIHelper AddDocuSignHandlerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DocuSignHandlerService>())
-            {
-                return services
-                    .AddFilesLinkUtilityService()
-                    .AddTenantExtraService()
-                    .AddDocuSignHelperService()
-                    .AddSecurityContextService()
-                    .AddNotifyClientService();
-            }
-
-            return services;
-        }
-
         public static IApplicationBuilder UseDocuSignHandler(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<DocuSignHandler>();

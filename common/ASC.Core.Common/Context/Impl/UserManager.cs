@@ -40,6 +40,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.Core
 {
+    [Singletone]
     public class UserManagerConstants
     {
         public IDictionary<Guid, UserInfo> SystemUsers { get; }
@@ -55,6 +56,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope]
     public class UserManager
     {
         private IDictionary<Guid, UserInfo> SystemUsers { get => UserManagerConstants.SystemUsers; }
@@ -64,10 +66,11 @@ namespace ASC.Core
         private TenantManager TenantManager { get; }
         private PermissionContext PermissionContext { get; }
         private UserManagerConstants UserManagerConstants { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
         private Constants Constants { get; }
 
         private Tenant tenant;
-        private Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
+        private Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(); } }
 
         public UserManager()
         {
@@ -78,12 +81,14 @@ namespace ASC.Core
             IUserService service,
             TenantManager tenantManager,
             PermissionContext permissionContext,
-            UserManagerConstants userManagerConstants)
+            UserManagerConstants userManagerConstants,
+            CoreBaseSettings coreBaseSettings)
         {
             UserService = service;
             TenantManager = tenantManager;
             PermissionContext = permissionContext;
             UserManagerConstants = userManagerConstants;
+            CoreBaseSettings = coreBaseSettings;
             Constants = UserManagerConstants.Constants;
         }
 
@@ -92,8 +97,9 @@ namespace ASC.Core
             TenantManager tenantManager,
             PermissionContext permissionContext,
             UserManagerConstants userManagerConstants,
+            CoreBaseSettings coreBaseSettings,
             IHttpContextAccessor httpContextAccessor)
-            : this(service, tenantManager, permissionContext, userManagerConstants)
+            : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings)
         {
             Accessor = httpContextAccessor;
         }
@@ -230,6 +236,13 @@ namespace ASC.Core
         {
             if (string.IsNullOrEmpty(email)) return Constants.LostUser;
 
+            if (CoreBaseSettings.Personal)
+            {
+                var u = UserService.GetUser(Tenant.TenantId, email);
+                return u != null && !u.Removed ? u : Constants.LostUser;
+            }
+
+
             return GetUsersInternal()
                 .FirstOrDefault(u => string.Compare(u.Email, email, StringComparison.CurrentCultureIgnoreCase) == 0) ?? Constants.LostUser;
         }
@@ -269,7 +282,7 @@ namespace ASC.Core
             return findUsers.ToArray();
         }
 
-        public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false)
+        public UserInfo SaveUserInfo(UserInfo u)
         {
             if (IsSystemUser(u.ID)) return SystemUsers[u.ID];
             if (u.ID == Guid.Empty) PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
@@ -650,25 +663,6 @@ namespace ASC.Core
                 CategoryId = g.CategoryID,
                 Sid = g.Sid
             };
-        }
-    }
-
-    public static class UserManagerConfigExtension
-    {
-        public static DIHelper AddUserManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<UserManager>())
-            {
-                services.TryAddSingleton<UserManagerConstants>();
-
-                return services
-                    .AddUserService()
-                    .AddTenantManagerService()
-                    .AddConstantsService()
-                    .AddPermissionContextService();
-            }
-
-            return services;
         }
     }
 }

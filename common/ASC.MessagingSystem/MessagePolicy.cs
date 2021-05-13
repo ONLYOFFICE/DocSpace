@@ -34,6 +34,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.MessagingSystem
 {
+    [Singletone]
     public class MessagePolicy
     {
         private readonly IEnumerable<string> secretIps;
@@ -61,16 +62,6 @@ namespace ASC.MessagingSystem
 
             var portIdx = ip.IndexOf(':');
             return portIdx > -1 ? ip.Substring(0, portIdx) : ip;
-        }
-    }
-
-    public static class MessagePolicyExtension
-    {
-        public static DIHelper AddMessagePolicyService(this DIHelper services)
-        {
-            services.TryAddSingleton<MessagePolicy>();
-
-            return services;
         }
     }
 }

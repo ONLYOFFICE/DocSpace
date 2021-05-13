@@ -36,7 +36,6 @@ using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Classes;
@@ -47,6 +46,7 @@ using Microsoft.Extensions.Options;
 namespace ASC.Web.Files.Utils
 {
 
+    [Singletone]
     public class FileMarkerHelper<T>
     {
         private IServiceProvider ServiceProvider { get; }
@@ -60,7 +60,7 @@ namespace ASC.Web.Files.Utils
         {
             ServiceProvider = serviceProvider;
             Log = optionsMonitor.CurrentValue;
-            Tasks = distributedTaskQueueOptionsManager.Get(nameof(FileMarker));
+            Tasks = distributedTaskQueueOptionsManager.Get<AsyncTaskData<T>>();
         }
 
         internal void Add(AsyncTaskData<T> taskData)
@@ -83,6 +83,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
+    [Scope(Additional = typeof(FileMarkerExtention))]
     public class FileMarker
     {
         private readonly ICache cache;
@@ -108,7 +109,8 @@ namespace ASC.Web.Files.Utils
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
             IServiceProvider serviceProvider,
-            FilesSettingsHelper filesSettingsHelper)
+            FilesSettingsHelper filesSettingsHelper, 
+            ICache cache)
         {
             TenantManager = tenantManager;
             UserManager = userManager;
@@ -119,7 +121,7 @@ namespace ASC.Web.Files.Utils
             AuthContext = authContext;
             ServiceProvider = serviceProvider;
             FilesSettingsHelper = filesSettingsHelper;
-            cache = AscCache.Memory;
+            this.cache = cache;
         }
 
         internal void ExecMarkFileAsNew<T>(AsyncTaskData<T> obj)
@@ -138,7 +140,7 @@ namespace ASC.Web.Files.Utils
 
             var userIDs = obj.UserIDs;
 
-            var userEntriesData = new Dictionary<Guid, List<FileEntry<T>>>();
+            var userEntriesData = new Dictionary<Guid, List<FileEntry>>();
 
             if (obj.FileEntry.RootFolderType == FolderType.BUNCH)
             {
@@ -146,7 +148,7 @@ namespace ASC.Web.Files.Utils
 
                 parentFolders.Add(folderDao.GetFolder(GlobalFolder.GetFolderProjects<T>(DaoFactory)));
 
-                var entries = new List<FileEntry<T>> { obj.FileEntry };
+                var entries = new List<FileEntry> { obj.FileEntry };
                 entries = entries.Concat(parentFolders).ToList();
 
                 userIDs.ForEach(userID =>
@@ -182,7 +184,7 @@ namespace ASC.Web.Files.Utils
                                                            if (userEntriesData.ContainsKey(userID))
                                                                userEntriesData[userID].Add(parentFolder);
                                                            else
-                                                               userEntriesData.Add(userID, new List<FileEntry<T>> { parentFolder });
+                                                               userEntriesData.Add(userID, new List<FileEntry> { parentFolder });
                                                        })
                     );
 
@@ -190,18 +192,19 @@ namespace ASC.Web.Files.Utils
 
                 if (obj.FileEntry.RootFolderType == FolderType.USER)
                 {
-                    var folderShare = folderDao.GetFolder(GlobalFolder.GetFolderShare<T>(DaoFactory));
+                    var folderDaoInt = DaoFactory.GetFolderDao<int>();
+                    var folderShare = folderDaoInt.GetFolder(GlobalFolder.GetFolderShare(DaoFactory));
 
                     foreach (var userID in userIDs)
                     {
-                        var userFolderId = folderDao.GetFolderIDUser(false, userID);
+                        var userFolderId = GlobalFolder.GetFolderMy(this, DaoFactory);
                         if (Equals(userFolderId, 0)) continue;
 
-                        Folder<T> rootFolder = null;
+                        Folder<int> rootFolder = null;
                         if (obj.FileEntry.ProviderEntry)
                         {
                             rootFolder = obj.FileEntry.RootFolderCreator == userID
-                                             ? folderDao.GetFolder(userFolderId)
+                                             ? folderDaoInt.GetFolder(userFolderId)
                                              : folderShare;
                         }
                         else if (!Equals(obj.FileEntry.RootFolderId, userFolderId))
@@ -218,7 +221,7 @@ namespace ASC.Web.Files.Utils
                         if (userEntriesData.ContainsKey(userID))
                             userEntriesData[userID].Add(rootFolder);
                         else
-                            userEntriesData.Add(userID, new List<FileEntry<T>> { rootFolder });
+                            userEntriesData.Add(userID, new List<FileEntry> { rootFolder });
 
                         RemoveFromCahce(rootFolder.ID, userID);
                     }
@@ -235,7 +238,7 @@ namespace ASC.Web.Files.Utils
                                                 if (userEntriesData.ContainsKey(userID))
                                                     userEntriesData[userID].Add(commonFolder);
                                                 else
-                                                    userEntriesData.Add(userID, new List<FileEntry<T>> { commonFolder });
+                                                    userEntriesData.Add(userID, new List<FileEntry> { commonFolder });
 
                                                 RemoveFromCahce(GlobalFolder.GetFolderCommon(this, DaoFactory), userID);
                                             });
@@ -254,7 +257,7 @@ namespace ASC.Web.Files.Utils
                         if (userEntriesData.ContainsKey(userID))
                             userEntriesData[userID].Add(rootFolder);
                         else
-                            userEntriesData.Add(userID, new List<FileEntry<T>> { rootFolder });
+                            userEntriesData.Add(userID, new List<FileEntry> { rootFolder });
 
                         RemoveFromCahce(rootFolder.ID, userID);
                     }
@@ -265,7 +268,7 @@ namespace ASC.Web.Files.Utils
                                         if (userEntriesData.ContainsKey(userID))
                                             userEntriesData[userID].Add(obj.FileEntry);
                                         else
-                                            userEntriesData.Add(userID, new List<FileEntry<T>> { obj.FileEntry });
+                                            userEntriesData.Add(userID, new List<FileEntry> { obj.FileEntry });
                                     });
             }
 
@@ -280,7 +283,19 @@ namespace ASC.Web.Files.Utils
 
                 var entries = userEntriesData[userID].Distinct().ToList();
 
-                var exist = tagDao.GetNewTags(userID, entries).ToList();
+                GetNewTags(userID, entries.OfType<FileEntry<int>>().ToList());
+                GetNewTags(userID, entries.OfType<FileEntry<string>>().ToList());
+            }
+
+            if (updateTags.Any())
+                tagDao.UpdateNewTags(updateTags);
+            if (newTags.Any())
+                tagDao.SaveTags(newTags);
+
+            void GetNewTags<T1>(Guid userID, List<FileEntry<T1>> entries)
+            {
+                var tagDao1 = DaoFactory.GetTagDao<T1>();
+                var exist = tagDao1.GetNewTags(userID, entries).ToList();
                 var update = exist.Where(t => t.EntryType == FileEntryType.Folder).ToList();
                 update.ForEach(t => t.Count++);
                 updateTags.AddRange(update);
@@ -293,11 +308,6 @@ namespace ASC.Web.Files.Utils
                                         }
                                     });
             }
-
-            if (updateTags.Any())
-                tagDao.UpdateNewTags(updateTags);
-            if (newTags.Any())
-                tagDao.SaveTags(newTags);
         }
 
         public void MarkAsNew<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
@@ -339,13 +349,14 @@ namespace ASC.Web.Files.Utils
             if (fileEntry == null) return;
 
             var tagDao = DaoFactory.GetTagDao<T>();
+            var internalFolderDao = DaoFactory.GetFolderDao<int>();
             var folderDao = DaoFactory.GetFolderDao<T>();
             if (!tagDao.GetNewTags(userID, fileEntry).Any()) return;
 
             T folderID;
             int valueNew;
-            var userFolderId = folderDao.GetFolderIDUser(false, userID);
-            var privacyFolderId = folderDao.GetFolderIDPrivacy(false, userID);
+            var userFolderId = internalFolderDao.GetFolderIDUser(false, userID);
+            var privacyFolderId = internalFolderDao.GetFolderIDPrivacy(false, userID);
 
             var removeTags = new List<Tag>();
 
@@ -384,21 +395,21 @@ namespace ASC.Web.Files.Utils
             parentFolders.Reverse();
 
             var rootFolder = parentFolders.LastOrDefault();
-            T rootFolderId = default;
-            T cacheFolderId = default;
+            int rootFolderId = default;
+            int cacheFolderId = default;
             if (rootFolder == null)
             {
             }
             else if (rootFolder.RootFolderType == FolderType.BUNCH)
             {
-                cacheFolderId = rootFolderId = GlobalFolder.GetFolderProjects<T>(DaoFactory);
+                cacheFolderId = rootFolderId = GlobalFolder.GetFolderProjects(DaoFactory);
             }
             else if (rootFolder.RootFolderType == FolderType.COMMON)
             {
                 if (rootFolder.ProviderEntry)
-                    cacheFolderId = rootFolderId = GlobalFolder.GetFolderCommon<T>(this, DaoFactory);
+                    cacheFolderId = rootFolderId = GlobalFolder.GetFolderCommon(this, DaoFactory);
                 else
-                    cacheFolderId = GlobalFolder.GetFolderCommon<T>(this, DaoFactory);
+                    cacheFolderId = GlobalFolder.GetFolderCommon(this, DaoFactory);
             }
             else if (rootFolder.RootFolderType == FolderType.USER)
             {
@@ -406,7 +417,7 @@ namespace ASC.Web.Files.Utils
                     cacheFolderId = rootFolderId = userFolderId;
                 else if (!rootFolder.ProviderEntry && !Equals(rootFolder.RootFolderId, userFolderId)
                          || rootFolder.ProviderEntry && rootFolder.RootFolderCreator != userID)
-                    cacheFolderId = rootFolderId = GlobalFolder.GetFolderShare<T>(DaoFactory);
+                    cacheFolderId = rootFolderId = GlobalFolder.GetFolderShare(DaoFactory);
                 else
                     cacheFolderId = userFolderId;
             }
@@ -419,22 +430,35 @@ namespace ASC.Web.Files.Utils
             }
             else if (rootFolder.RootFolderType == FolderType.SHARE)
             {
-                cacheFolderId = GlobalFolder.GetFolderShare<T>(DaoFactory);
+                cacheFolderId = GlobalFolder.GetFolderShare(DaoFactory);
             }
+
+            var updateTags = new List<Tag>();
 
             if (!rootFolderId.Equals(default(T)))
             {
-                parentFolders.Add(folderDao.GetFolder(rootFolderId));
+                UpdateRemoveTags(internalFolderDao.GetFolder(rootFolderId));
             }
+
             if (!cacheFolderId.Equals(default(T)))
             {
                 RemoveFromCahce(cacheFolderId, userID);
             }
 
-            var updateTags = new List<Tag>();
             foreach (var parentFolder in parentFolders)
             {
-                var parentTag = tagDao.GetNewTags(userID, parentFolder).FirstOrDefault();
+                UpdateRemoveTags(parentFolder);
+            }
+
+            if (updateTags.Any())
+                tagDao.UpdateNewTags(updateTags);
+            if (removeTags.Any())
+                tagDao.RemoveTags(removeTags);
+
+            void UpdateRemoveTags<TFolder>(Folder<TFolder> folder)
+            {
+                var tagDao = DaoFactory.GetTagDao<TFolder>();
+                var parentTag = tagDao.GetNewTags(userID, folder).FirstOrDefault();
 
                 if (parentTag != null)
                 {
@@ -450,11 +474,6 @@ namespace ASC.Web.Files.Utils
                     }
                 }
             }
-
-            if (updateTags.Any())
-                tagDao.UpdateNewTags(updateTags);
-            if (removeTags.Any())
-                tagDao.RemoveTags(removeTags);
         }
 
         public void RemoveMarkAsNewForAll<T>(FileEntry<T> fileEntry)
@@ -499,33 +518,108 @@ namespace ASC.Web.Files.Utils
             if (!FileSecurity.CanRead(folder)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
             if (folder.RootFolderType == FolderType.TRASH && !Equals(folder.ID, GlobalFolder.GetFolderTrash<T>(DaoFactory))) throw new SecurityException(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
-            var entryTags = new Dictionary<FileEntry<T>, Tag>();
-
             var tagDao = DaoFactory.GetTagDao<T>();
             var fileDao = DaoFactory.GetFileDao<T>();
             var folderDao = DaoFactory.GetFolderDao<T>();
+            var providerFolderDao = DaoFactory.GetFolderDao<string>();
+            var providerTagDao = DaoFactory.GetTagDao<string>();
             var tags = (tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folder, true) ?? new List<Tag>()).ToList();
 
             if (!tags.Any()) return new List<FileEntry>();
 
-            if (Equals(folder.ID, GlobalFolder.GetFolderMy(this, DaoFactory)) || Equals(folder.ID, GlobalFolder.GetFolderCommon(this, DaoFactory)) || Equals(folder.ID, GlobalFolder.GetFolderShare(DaoFactory)))
+            if (Equals(folder.ID, GlobalFolder.GetFolderMy(this, DaoFactory)) || 
+                Equals(folder.ID, GlobalFolder.GetFolderCommon(this, DaoFactory)) || 
+                Equals(folder.ID, GlobalFolder.GetFolderShare(DaoFactory)))
             {
-                var folderTags = tags.Where(tag => tag.EntryType == FileEntryType.Folder);
+                var folderTags = tags.Where(tag => tag.EntryType == FileEntryType.Folder && tag.EntryId.GetType() == typeof(string));
 
-                var providerFolderTags = folderTags.Select(tag => new KeyValuePair<Tag, Folder<T>>(tag, folderDao.GetFolder((T)Convert.ChangeType(tag.EntryId, typeof(T)))))
-                                                    .Where(pair => pair.Value != null && pair.Value.ProviderEntry).ToList();
+                var providerFolderTags = folderTags
+                    .Select(tag => new KeyValuePair<Tag, Folder<string>>(tag, providerFolderDao.GetFolder(tag.EntryId.ToString())))
+                    .Where(pair => pair.Value != null && pair.Value.ProviderEntry)
+                    .ToList();
+
                 providerFolderTags.Reverse();
 
                 foreach (var providerFolderTag in providerFolderTags)
                 {
-                    tags.AddRange(tagDao.GetNewTags(AuthContext.CurrentAccount.ID, providerFolderTag.Value, true));
+                    tags.AddRange(providerTagDao.GetNewTags(AuthContext.CurrentAccount.ID, providerFolderTag.Value, true));
                 }
             }
 
-            tags = tags.Distinct().ToList();
-            tags.RemoveAll(tag => Equals(tag.EntryId, folder.ID));
-            tags = tags.Where(t => t.EntryType == FileEntryType.Folder)
-                        .Concat(tags.Where(t => t.EntryType == FileEntryType.File)).ToList();
+            tags = tags
+                .Where(r => !Equals(r.EntryId, folder.ID))
+                .Distinct()
+                .ToList();
+
+            //TODO: refactoring
+            var entryTagsProvider = GetEntryTags<string>(tags.Where(r=> r.EntryId.GetType() == typeof(string)));
+            var entryTagsInternal = GetEntryTags<int>(tags.Where(r=> r.EntryId.GetType() == typeof(int)));
+
+            foreach (var entryTag in entryTagsInternal)
+            {
+                var parentEntry = entryTagsInternal.Keys
+                    .FirstOrDefault(entryCountTag => Equals(entryCountTag.ID, entryTag.Key.FolderID));
+
+                if (parentEntry != null)
+                {
+                    entryTagsInternal[parentEntry].Count -= entryTag.Value.Count;
+                }
+            }
+
+            foreach (var entryTag in entryTagsProvider)
+                {
+                if (int.TryParse(entryTag.Key.FolderID, out var fId))
+                {
+                    var parentEntryInt = entryTagsInternal.Keys
+                            .FirstOrDefault(entryCountTag => Equals(entryCountTag.ID, fId));
+
+                    if (parentEntryInt != null)
+                    {
+                        entryTagsInternal[parentEntryInt].Count -= entryTag.Value.Count;
+                }
+
+                    continue;
+            }
+
+                var parentEntry = entryTagsProvider.Keys
+                    .FirstOrDefault(entryCountTag => Equals(entryCountTag.ID, entryTag.Key.FolderID));
+
+                if (parentEntry != null)
+                {
+                    entryTagsProvider[parentEntry].Count -= entryTag.Value.Count;
+            }
+            }
+
+            var result = new List<FileEntry>();
+
+            GetResult(entryTagsInternal);
+            GetResult(entryTagsProvider);
+
+            return result;
+
+            void GetResult<TEntry>(Dictionary<FileEntry<TEntry>, Tag> entryTags)
+            {
+            foreach (var entryTag in entryTags)
+            {
+                if (!string.IsNullOrEmpty(entryTag.Key.Error))
+                {
+                    RemoveMarkAsNew(entryTag.Key);
+                    continue;
+                }
+
+                if (entryTag.Value.Count > 0)
+                {
+                    result.Add(entryTag.Key);
+                }
+            }
+        }
+        }
+
+        private Dictionary<FileEntry<T>, Tag> GetEntryTags<T>(IEnumerable<Tag> tags)
+        {
+            var fileDao = DaoFactory.GetFileDao<T>();
+            var folderDao = DaoFactory.GetFolderDao<T>();
+            var entryTags = new Dictionary<FileEntry<T>, Tag>();
 
             foreach (var tag in tags)
             {
@@ -542,36 +636,9 @@ namespace ASC.Web.Files.Utils
                 }
             }
 
-            foreach (var entryTag in entryTags)
-            {
-                var entry = entryTag.Key;
-                var parentId =
-                    entry.FileEntryType == FileEntryType.File
-                        ? ((File<T>)entry).FolderID
-                        : ((Folder<T>)entry).ParentFolderID;
-
-                var parentEntry = entryTags.Keys.FirstOrDefault(entryCountTag => Equals(entryCountTag.ID, parentId));
-                if (parentEntry != null)
-                    entryTags[parentEntry].Count -= entryTag.Value.Count;
-            }
-
-            var result = new List<FileEntry>();
-
-            foreach (var entryTag in entryTags)
-            {
-                if (!string.IsNullOrEmpty(entryTag.Key.Error))
-                {
-                    RemoveMarkAsNew(entryTag.Key);
-                    continue;
-                }
-
-                if (entryTag.Value.Count > 0)
-                {
-                    result.Add(entryTag.Key);
-                }
-            }
-            return result;
+            return entryTags;
         }
+
 
         public IEnumerable<FileEntry> SetTagsNew<T>(Folder<T> parent, IEnumerable<FileEntry> entries)
         {
@@ -710,6 +777,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
+    [Transient]
     public class AsyncTaskData<T> : DistributedTask
     {
         public AsyncTaskData(TenantManager tenantManager, AuthContext authContext) : base()
@@ -727,35 +795,17 @@ namespace ASC.Web.Files.Utils
         public Guid CurrentAccountId { get; set; }
     }
 
-    public static class FileMarkerExtention
+    public class FileMarkerExtention
     {
-        public static DIHelper AddFileMarkerService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            return services
-                .AddFileMarkerService<string>()
-                .AddFileMarkerService<int>()
-                ;
-        }
+            services.TryAdd<AsyncTaskData<int>>();
+            services.TryAdd<FileMarkerHelper<int>>();
+            services.AddDistributedTaskQueueService<AsyncTaskData<int>>(1);
 
-        public static DIHelper AddFileMarkerService<T>(this DIHelper services)
-        {
-            services.TryAddTransient<AsyncTaskData<T>>();
-            services.TryAddSingleton<FileMarkerHelper<T>>();
-
-            if (services.TryAddScoped<FileMarker>())
-            {
-                return services
-                    .AddDistributedTaskQueueService<FileMarker>(1)
-                    .AddTenantManagerService()
-                    .AddUserManagerService()
-                    .AddDaoFactoryService()
-                    .AddGlobalFolderService()
-                    .AddFileSecurityService()
-                    .AddCoreBaseSettingsService()
-                    .AddAuthContextService();
-            }
-
-            return services;
+            services.TryAdd<AsyncTaskData<string>>();
+            services.TryAdd<FileMarkerHelper<string>>();
+            services.AddDistributedTaskQueueService<AsyncTaskData<string>>(1);
         }
     }
 }

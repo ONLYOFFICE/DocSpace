@@ -32,6 +32,7 @@ using ASC.Data.Storage;
 
 namespace ASC.Data.Backup.Storage
 {
+    [Scope]
     public class DataStoreBackupStorage : IBackupStorage
     {
         private string WebConfigPath { get; set; }
@@ -49,21 +50,17 @@ namespace ASC.Data.Backup.Storage
         }
         public string Upload(string storageBasePath, string localPath, Guid userId)
         {
-            using (var stream = File.OpenRead(localPath))
-            {
-                var storagePath = Path.GetFileName(localPath);
-                GetDataStore().Save("", storagePath, stream);
-                return storagePath;
-            }
+            using var stream = File.OpenRead(localPath);
+            var storagePath = Path.GetFileName(localPath);
+            GetDataStore().Save("", storagePath, stream);
+            return storagePath;
         }
 
         public void Download(string storagePath, string targetLocalPath)
         {
-            using (var source = GetDataStore().GetReadStream("", storagePath))
-            using (var destination = File.OpenWrite(targetLocalPath))
-            {
-                source.CopyTo(destination);
-            }
+            using var source = GetDataStore().GetReadStream("", storagePath);
+            using var destination = File.OpenWrite(targetLocalPath);
+            source.CopyTo(destination);
         }
 
         public void Delete(string storagePath)
@@ -88,20 +85,6 @@ namespace ASC.Data.Backup.Storage
         protected virtual IDataStore GetDataStore()
         {
             return StorageFactory.GetStorage(WebConfigPath, Tenant.ToString(), "backup", null);
-        }
-
-
-    }
-
-    public static class DataStoreBackupStorageExtension
-    {
-        public static DIHelper AddDataStoreBackupStorage(this DIHelper services)
-        {
-            if (services.TryAddScoped<DataStoreBackupStorage>())
-            {
-                return services.AddStorageFactoryService();
-            }
-            return services;
         }
     }
 }

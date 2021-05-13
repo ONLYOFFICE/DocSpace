@@ -61,7 +61,7 @@ namespace ASC.Data.Reassigns
         {
             HttpContextAccessor = httpContextAccessor;
             ServiceProvider = serviceProvider;
-            Queue = options.Get(typeof(T).Name);
+            Queue = options.Get<T>();
         }
 
         public static string GetProgressItemId(int tenantId, Guid userId)
@@ -108,6 +108,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
+    [Scope(Additional = typeof(ReassignProgressItemExtension))]
     public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
     {
         public QueueWorkerReassign(
@@ -129,6 +130,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
+    [Scope(Additional = typeof(RemoveProgressItemExtension))]
     public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
     {
         public QueueWorkerRemove(
@@ -147,34 +149,6 @@ namespace ASC.Data.Reassigns
                 result.Init(tenantId, user, currentUserId, notify);
                 return result;
             }) as RemoveProgressItem;
-        }
-    }
-
-    public static class QueueExtension
-    {
-        public static DIHelper AddQueueWorkerRemoveService(this DIHelper services)
-        {
-            if (services.TryAddScoped<QueueWorkerRemove>())
-            {
-                return services
-                    .AddRemoveProgressItemService()
-                    .AddDistributedTaskQueueService<RemoveProgressItem>(1);
-            }
-
-            return services;
-        }
-
-        public static DIHelper AddQueueWorkerReassignService(this DIHelper services)
-        {
-            if (services.TryAddScoped<QueueWorkerReassign>())
-            {
-                return services
-                    .AddReassignProgressItemService()
-                    .AddQueueWorkerRemoveService()
-                    .AddDistributedTaskQueueService<ReassignProgressItem>(1);
-            }
-
-            return services;
         }
     }
 }

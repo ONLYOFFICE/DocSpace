@@ -35,7 +35,6 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
@@ -50,6 +49,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Files.Utils
 {
+    [Scope]
     public class FileUploader
     {
         private FilesSettingsHelper FilesSettingsHelper { get; }
@@ -70,6 +70,7 @@ namespace ASC.Web.Files.Utils
         private EntryManager EntryManager { get; }
         private IServiceProvider ServiceProvider { get; }
         private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
+        private FileTrackerHelper FileTracker { get; }
 
         public FileUploader(
             FilesSettingsHelper filesSettingsHelper,
@@ -89,7 +90,8 @@ namespace ASC.Web.Files.Utils
             FileSecurity fileSecurity,
             EntryManager entryManager,
             IServiceProvider serviceProvider,
-            ChunkedUploadSessionHolder chunkedUploadSessionHolder)
+            ChunkedUploadSessionHolder chunkedUploadSessionHolder,
+            FileTrackerHelper fileTracker)
         {
             FilesSettingsHelper = filesSettingsHelper;
             FileUtility = fileUtility;
@@ -109,6 +111,7 @@ namespace ASC.Web.Files.Utils
             EntryManager = entryManager;
             ServiceProvider = serviceProvider;
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
+            FileTracker = fileTracker;
         }
 
         public File<T> Exec<T>(T folderId, string title, long contentLength, Stream data)
@@ -213,7 +216,7 @@ namespace ASC.Web.Files.Utils
                     {
                         var newFolder = ServiceProvider.GetService<Folder<T>>();
                         newFolder.Title = subFolderTitle;
-                        newFolder.ParentFolderID = folderId;
+                        newFolder.FolderID = folderId;
 
                         folderId = folderDao.SaveFolder(newFolder);
 
@@ -328,37 +331,5 @@ namespace ASC.Web.Files.Utils
         }
 
         #endregion
-    }
-
-    public static class FileUploaderExtention
-    {
-        public static DIHelper AddFileUploaderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileUploader>())
-            {
-
-                return services
-                    .AddChunkedUploadSessionHolderService()
-                    .AddEntryManagerService()
-                    .AddFileSecurityService()
-                    .AddFilesLinkUtilityService()
-                    .AddFilesMessageService()
-                    .AddGlobalService()
-                    .AddDaoFactoryService()
-                    .AddFileConverterService()
-                    .AddFileMarkerService()
-                    .AddTenantStatisticsProviderService()
-                    .AddTenantExtraService()
-                    .AddUserManagerService()
-                    .AddTenantManagerService()
-                    .AddAuthContextService()
-                    .AddSetupInfo()
-                    .AddFileUtilityService()
-                    .AddFilesSettingsHelperService()
-                    ;
-            }
-
-            return services;
-        }
     }
 }

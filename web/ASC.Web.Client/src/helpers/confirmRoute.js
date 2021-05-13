@@ -1,30 +1,31 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { ValidationResult } from "./../helpers/constants";
-import { Loader } from "asc-web-components";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { api, constants, utils, PageLayout } from "asc-web-common";
-const { checkConfirmLink } = api.user;
-const { AUTH_KEY } = constants;
-const { getObjectByLocation } = utils;
+import Loader from "@appserver/components/loader";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { checkConfirmLink } from "@appserver/common/api/user"; //TODO: Move AuthStore
+import { combineUrl, getObjectByLocation } from "@appserver/common/utils";
+import { inject, observer } from "mobx-react";
+import { AppServerConfig } from "@appserver/common/constants";
 
 class ConfirmRoute extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       linkData: {},
-      isLoaded: false
+      isLoaded: false,
     };
   }
 
   componentDidMount() {
-    const { forUnauthorized, history } = this.props;
+    const { forUnauthorized, history, isAuthenticated } = this.props;
 
-    if (forUnauthorized && localStorage.getItem(AUTH_KEY))
-      return history.push(`/error=Access error. You should be unauthorized for performing this action`);
+    if (forUnauthorized && isAuthenticated) {
+      this.props.logout(true);
+    }
 
-    const { location, isAuthenticated } = this.props;
+    const { location } = this.props;
     const { search } = location;
 
     const queryParams = getObjectByLocation(location);
@@ -39,32 +40,42 @@ class ConfirmRoute extends React.Component {
     }
 
     checkConfirmLink(confirmLinkData)
-      .then(validationResult => {
+      .then((validationResult) => {
         switch (validationResult) {
           case ValidationResult.Ok:
-            const confirmHeader = `type=${confirmLinkData.type}&${search.slice(1)}`;
+            const confirmHeader = `type=${confirmLinkData.type}&${search.slice(
+              1
+            )}`;
             const linkData = {
               ...confirmLinkData,
-              confirmHeader
+              confirmHeader,
             };
             this.setState({
               isLoaded: true,
-              linkData
+              linkData,
             });
             break;
           case ValidationResult.Invalid:
-            history.push(`${path}/error=Invalid link`);
+            history.push(
+              combineUrl(AppServerConfig.proxyURL, path, "/error=Invalid link")
+            );
             break;
           case ValidationResult.Expired:
-            history.push(`${path}/error=Expired link`);
+            history.push(
+              combineUrl(AppServerConfig.proxyURL, path, "/error=Expired link")
+            );
             break;
           default:
-            history.push(`${path}/error=Unknown error`);
+            history.push(
+              combineUrl(AppServerConfig.proxyURL, path, "/error=Unknown error")
+            );
             break;
         }
       })
-      .catch(error => {
-        history.push(`${path}/error=${error}`);
+      .catch((error) => {
+        history.push(
+          combineUrl(AppServerConfig.proxyURL, path, `/error=${error}`)
+        );
       });
   }
 
@@ -76,13 +87,13 @@ class ConfirmRoute extends React.Component {
     return (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           !this.state.isLoaded ? (
-            <PageLayout
-              sectionBodyContent={
-                <Loader className="pageLoader" type="rombs" size='40px' />
-              }
-            />
+            <PageLayout>
+              <PageLayout.SectionBody>
+                <Loader className="pageLoader" type="rombs" size="40px" />
+              </PageLayout.SectionBody>
+            </PageLayout>
           ) : (
             <Component
               {...(props = { ...props, linkData: this.state.linkData })}
@@ -94,13 +105,10 @@ class ConfirmRoute extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+export default inject(({ auth }) => {
+  const { isAuthenticated, logout } = auth;
   return {
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated,
+    logout,
   };
-}
-
-export default connect(
-  mapStateToProps,
-  { checkConfirmLink }
-)(withRouter(ConfirmRoute));
+})(observer(withRouter(ConfirmRoute)));

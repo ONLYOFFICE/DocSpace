@@ -196,6 +196,7 @@ namespace ASC.Web.Core.WhiteLabel
         #endregion
     }
 
+    [Scope]
     public class TenantWhiteLabelSettingsHelper
     {
         private const string moduleName = "whitelabel";
@@ -206,10 +207,8 @@ namespace ASC.Web.Core.WhiteLabel
         private WhiteLabelHelper WhiteLabelHelper { get; }
         private TenantManager TenantManager { get; }
         private SettingsManager SettingsManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private IOptionsMonitor<ILog> Option { get; }
 
-        public ILog Log { get; set; }
+        private ILog Log { get; set; }
 
         public TenantWhiteLabelSettingsHelper(
             WebImageSupplier webImageSupplier,
@@ -218,7 +217,6 @@ namespace ASC.Web.Core.WhiteLabel
             WhiteLabelHelper whiteLabelHelper,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            CoreBaseSettings coreBaseSettings,
             IOptionsMonitor<ILog> option)
         {
             WebImageSupplier = webImageSupplier;
@@ -227,8 +225,6 @@ namespace ASC.Web.Core.WhiteLabel
             WhiteLabelHelper = whiteLabelHelper;
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
-            CoreBaseSettings = coreBaseSettings;
-            Option = option;
             Log = option.CurrentValue;
         }
 
@@ -319,7 +315,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             var generalSize = GetSize(type, true);
             var generalFileName = BuildLogoFileName(type, logoFileExt, true);
-            ResizeLogo(type, generalFileName, data, -1, generalSize, store);
+            ResizeLogo(generalFileName, data, -1, generalSize, store);
         }
 
         public void SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, Dictionary<int, string> logo, IDataStore storage = null)
@@ -334,8 +330,7 @@ namespace ASC.Web.Core.WhiteLabel
                 if (!string.IsNullOrEmpty(currentLogoPath))
                 {
                     var fileExt = "png";
-                    byte[] data = null;
-
+                    byte[] data;
                     if (!currentLogoPath.StartsWith(xStart))
                     {
                         var fileName = Path.GetFileName(currentLogoPath);
@@ -504,7 +499,7 @@ namespace ASC.Web.Core.WhiteLabel
             };
         }
 
-        private static void ResizeLogo(WhiteLabelLogoTypeEnum type, string fileName, byte[] data, long maxFileSize, Size size, IDataStore store)
+        private static void ResizeLogo(string fileName, byte[] data, long maxFileSize, Size size, IDataStore store)
         {
             //Resize synchronously
             if (data == null || data.Length <= 0) throw new UnknownImageFormatException();
@@ -600,24 +595,5 @@ namespace ASC.Web.Core.WhiteLabel
         }
 
         #endregion
-    }
-
-    public static class TenantWhiteLabelSettingsExtension
-    {
-        public static DIHelper AddTenantWhiteLabelSettingsService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TenantWhiteLabelSettingsHelper>())
-            {
-                return services
-                    .AddUserPhotoManagerService()
-                    .AddWebImageSupplierService()
-                    .AddStorageFactoryService()
-                    .AddWhiteLabelHelperService()
-                    .AddSettingsManagerService()
-                    .AddCoreBaseSettingsService();
-            }
-
-            return services;
-        }
     }
 }

@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.ElasticSearch;
@@ -41,6 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Core.Search
 {
+    [Scope(Additional = typeof(FactoryIndexerFileExtension))]
     public class FactoryIndexerFile : FactoryIndexer<DbFile>
     {
         private IDaoFactory DaoFactory { get; }
@@ -52,8 +54,9 @@ namespace ASC.Web.Files.Core.Search
             FactoryIndexer factoryIndexer,
             BaseIndexer<DbFile> baseIndexer,
             IServiceProvider serviceProvider,
-            IDaoFactory daoFactory)
-            : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider)
+            IDaoFactory daoFactory,
+            ICache cache)
+            : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
             DaoFactory = daoFactory;
         }
@@ -95,7 +98,6 @@ namespace ASC.Web.Files.Core.Search
                     {
                         TenantManager.SetCurrentTenant(r.TenantId);
                         fileDao.InitDocument(r);
-                        TenantManager.CurrentTenant = null;
                     });
                     Index(data);
                 }
@@ -113,15 +115,12 @@ namespace ASC.Web.Files.Core.Search
             get { return FilesCommonResource.IndexTitle; }
         }
     }
-    public static class FactoryIndexerFileExtention
-    {
-        public static DIHelper AddFactoryIndexerFileService(this DIHelper services)
-        {
-            services.TryAddTransient<DbFile>();
-            services.TryAddScoped<FactoryIndexer<DbFile>, FactoryIndexerFile>();
 
-            return services
-                .AddFactoryIndexerService<DbFile>(false);
+    public class FactoryIndexerFileExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<DbFile>();
         }
     }
 }

@@ -41,6 +41,7 @@ using Telegram.Bot;
 
 namespace ASC.Core.Common.Notify
 {
+    [Scope]
     public class TelegramHelper
     {
         public enum RegStatus
@@ -122,7 +123,7 @@ namespace ASC.Core.Common.Notify
 
         private bool IsAwaitingRegistration(Guid userId, int tenantId)
         {
-            return GetCurrentToken(userId, tenantId) == null ? false : true;
+            return GetCurrentToken(userId, tenantId) != null;
         }
 
         private string GetCurrentToken(Guid userId, int tenantId)
@@ -137,17 +138,15 @@ namespace ASC.Core.Common.Notify
 
             var buf = id.Concat(d).ToArray();
 
-            using (var sha = new SHA256CryptoServiceProvider())
-            {
-                return Convert.ToBase64String(sha.ComputeHash(buf))
-                    .Replace('+', '-').Replace('/', '_').Replace("=", ""); // make base64 url safe
-            }
+            using var sha = new SHA256CryptoServiceProvider();
+            return Convert.ToBase64String(sha.ComputeHash(buf))
+                .Replace('+', '-').Replace('/', '_').Replace("=", ""); // make base64 url safe
         }
 
         private string GetLink(string token)
         {
             var tgProvider = (ITelegramLoginProvider)ConsumerFactory.GetByKey("Telegram");
-            var botname = tgProvider == null ? default(string) : tgProvider.TelegramBotName;
+            var botname = tgProvider == null ? default : tgProvider.TelegramBotName;
             if (string.IsNullOrEmpty(botname)) return null;
 
             return string.Format("t.me/{0}?start={1}", botname, token);
@@ -170,19 +169,6 @@ namespace ASC.Core.Common.Notify
         public TelegramBotClient InitClient(string token, string proxy)
         {
             return string.IsNullOrEmpty(proxy) ? new TelegramBotClient(token) : new TelegramBotClient(token, new WebProxy(proxy));
-        }
-    }
-
-    public static class TelegramHelperExtension
-    {
-        public static DIHelper AddTelegramHelperSerivce(this DIHelper services)
-        {
-            if (services.TryAddScoped<TelegramHelper>())
-            {
-                return services.AddTelegramServiceClient()
-                    .AddCachedTelegramDaoService();
-            }
-            return services;
         }
     }
 }

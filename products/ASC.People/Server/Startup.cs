@@ -20,13 +20,10 @@ namespace ASC.People
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            var diHelper = new DIHelper(services);
-
-            diHelper
-                .AddPeopleController()
-                .AddGroupController();
-
             base.ConfigureServices(services);
+
+            DIHelper.TryAdd<PeopleController>();
+            DIHelper.TryAdd<GroupController>();
         }
     }
 }

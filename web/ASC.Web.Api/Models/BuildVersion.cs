@@ -33,6 +33,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Api.Settings
 {
+    [Singletone]
     public class BuildVersion
     {
         public string CommunityServer { get; set; }
@@ -107,7 +108,7 @@ namespace ASC.Api.Settings
             //    if (ConfigurationManagerExtension.AppSettings["web.talk"] != "true")
             //        return null;
 
-            //    return GetCommunityVersion();
+            //    return new JabberServiceClient().GetVersion();
             //}
             //catch (Exception e)
             //{
@@ -115,16 +116,6 @@ namespace ASC.Api.Settings
             //}
 
             return null;
-        }
-    }
-
-    public static class BuildVersionExtension
-    {
-        public static DIHelper AddBuildVersionService(this DIHelper services)
-        {
-            services.TryAddSingleton<BuildVersion>();
-
-            return services;
         }
     }
 }

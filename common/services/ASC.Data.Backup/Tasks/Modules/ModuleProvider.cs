@@ -35,6 +35,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks.Modules
 {
+    [Scope]
     public class ModuleProvider
     {
         public List<IModuleSpecifics> AllModules;
@@ -61,40 +62,15 @@ namespace ASC.Data.Backup.Tasks.Modules
         }
         public IModuleSpecifics GetByStorageModule(string storageModuleName, string storageDomainName = null)
         {
-            switch (storageModuleName)
+            return storageModuleName switch
             {
-                case "files":
-                    return AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Files);
-
-                case "projects":
-                    return AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Projects);
-
-                case "crm":
-                    return AllModules.FirstOrDefault(m => m.ModuleName == (storageDomainName == "mail_messages" ? ModuleName.Crm2 : ModuleName.Crm));
-
-                case "forum":
-                    return AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Community);
-
-                case "mailaggregator":
-                    return AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Mail);
-
-                default:
-                    return null;
-            }
-        }
-    }
-    public static class ModuleProviderExtension
-    {
-        public static DIHelper AddModuleProvider(this DIHelper services)
-        {
-            if (services.TryAddScoped<ModuleProvider>())
-            {
-                return services
-                    .AddCoreSettingsService()
-                    .AddHelpers();
-            }
-
-            return services;
+                "files" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Files),
+                "projects" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Projects),
+                "crm" => AllModules.FirstOrDefault(m => m.ModuleName == (storageDomainName == "mail_messages" ? ModuleName.Crm2 : ModuleName.Crm)),
+                "forum" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Community),
+                "mailaggregator" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Mail),
+                _ => null,
+            };
         }
     }
 }

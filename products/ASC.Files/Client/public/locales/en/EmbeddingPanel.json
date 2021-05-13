@@ -1,0 +1,10 @@
+{
+  "Size": "Size",
+
+  "EmbeddingDocument": "Embedding document",
+  "Width": "Width",
+  "Height": "Height",
+  "EmbedCode": "Embed code",
+  "Auto": "Auto",
+  "CodeCopySuccess": "Code has been copied to the clipboard"
+}

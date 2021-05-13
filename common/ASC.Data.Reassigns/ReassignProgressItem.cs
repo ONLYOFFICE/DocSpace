@@ -48,6 +48,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Reassigns
 {
+    [Transient]
     public class ReassignProgressItem : DistributedTaskProgress
     {
         private readonly IDictionary<string, StringValues> _httpHeaders;
@@ -211,6 +212,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
+    [Scope]
     public class ReassignProgressItemScope
     {
         private TenantManager TenantManager { get; }
@@ -271,12 +273,12 @@ namespace ASC.Data.Reassigns
         }
     }
 
-    public static class ReassignProgressItemExtension
+    public class ReassignProgressItemExtension
     {
-        public static DIHelper AddReassignProgressItemService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<ReassignProgressItem>();
-            return services;
+            services.TryAdd<ReassignProgressItemScope>();
+            services.AddDistributedTaskQueueService<ReassignProgressItem>(1);
         }
     }
 }

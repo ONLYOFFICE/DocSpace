@@ -97,7 +97,7 @@ namespace ASC.Data.Backup.Tasks.Data
             }
             else if (sb.Length > 0)
             {
-                sb.Length = sb.Length - 2;
+                sb.Length -= 2;
             }
 
             return sb.ToString();

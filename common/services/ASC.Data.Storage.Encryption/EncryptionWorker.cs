@@ -28,11 +28,13 @@ using System;
 
 using ASC.Common;
 using ASC.Common.Threading;
+using ASC.Core.Encryption;
 
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.Encryption
 {
+    [Singletone]
     public class EncryptionWorker
     {
         private object Locker { get; }
@@ -44,7 +46,7 @@ namespace ASC.Data.Storage.Encryption
         {
             Locker = new object();
             FactoryOperation = factoryOperation;
-            Queue = options.Get(nameof(EncryptionWorker));
+            Queue = options.Get<EncryptionOperation>();
         }
 
         public void Start(EncryptionSettingsProto encryptionSettings)
@@ -69,6 +71,7 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
+    [Singletone(Additional = typeof(FactoryOperationExtension))]
     public class FactoryOperation
     {
         private IServiceProvider ServiceProvider { get; set; }
@@ -86,16 +89,12 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
-    public static class EncryptionWorkerExtension
+    public class FactoryOperationExtension
     {
-        public static DIHelper AddEncryptionWorkerService(this DIHelper services)
+        public static void Register(DIHelper dIHelper)
         {
-            services.TryAddTransient<EncryptionOperation>();
-            services.TryAddSingleton<EncryptionWorker>();
-            services.TryAddSingleton<FactoryOperation>();
-            return services
-                .AddEncryptionOperationService()
-                .AddDistributedTaskQueueService<EncryptionWorker>(1);
+            dIHelper.TryAdd<EncryptionOperation>();
+            dIHelper.AddDistributedTaskQueueService<EncryptionOperation>(1);
         }
     }
 }

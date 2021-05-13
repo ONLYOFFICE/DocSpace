@@ -1279,6 +1279,9 @@ Ihr Portal steht wieder zur Verfügung.</value>
   <data name="subject_opensource_user_activation_v11" xml:space="preserve">
     <value>${__VirtualRootPath} beitreten</value>
   </data>
+  <data name="subject_opensource_user_docs_tips_v11" xml:space="preserve">
+    <value>6 Tipps zum effektiven Bearbeiten Ihrer Dokumente</value>
+  </data>
   <data name="subject_opensource_user_welcome_v11" xml:space="preserve">
     <value>Willkommen in Ihrem Web-Office</value>
   </data>

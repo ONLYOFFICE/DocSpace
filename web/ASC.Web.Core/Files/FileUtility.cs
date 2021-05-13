@@ -38,6 +38,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Files
 {
+    [Scope]
     public class FileUtility
     {
         private DbContextManager<FilesDbContext> FilesDbContext { get; set; }
@@ -180,13 +181,13 @@ namespace ASC.Web.Core.Files
                     const string databaseId = "files";
 
                     var dbManager = FilesDbContext.Get(databaseId);
-                    var list = dbManager.FilesConverts.Select(r => new { r.Input, r.Ouput }).ToList();
+                    var list = dbManager.FilesConverts.Select(r => new { r.Input, r.Output }).ToList();
 
 
                     list.ForEach(item =>
                         {
                             var input = item.Input;
-                            var output = item.Ouput;
+                            var output = item.Output;
                             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
                                 return;
                             input = input.ToLower().Trim();
@@ -219,13 +220,13 @@ namespace ASC.Web.Core.Files
         }
 
         private List<string> extsIndexing;
-        private List<string> ExtsIndexing { get => extsIndexing ?? (extsIndexing = (Configuration.GetSection("files:index").Get<string[]>() ?? new string[] { }).ToList()); }
+        private List<string> ExtsIndexing { get => extsIndexing ??= (Configuration.GetSection("files:index").Get<string[]>() ?? new string[] { }).ToList(); }
 
         private List<string> extsImagePreviewed;
-        public List<string> ExtsImagePreviewed { get => extsImagePreviewed ?? (extsImagePreviewed = (Configuration.GetSection("files:viewed-images").Get<string[]>() ?? new string[] { }).ToList()); }
+        public List<string> ExtsImagePreviewed { get => extsImagePreviewed ??= (Configuration.GetSection("files:viewed-images").Get<string[]>() ?? new string[] { }).ToList(); }
 
         private List<string> extsMediaPreviewed;
-        public List<string> ExtsMediaPreviewed { get => extsMediaPreviewed ?? (extsMediaPreviewed = (Configuration.GetSection("files:viewed-media").Get<string[]>() ?? new string[] { }).ToList()); }
+        public List<string> ExtsMediaPreviewed { get => extsMediaPreviewed ??= (Configuration.GetSection("files:viewed-media").Get<string[]>() ?? new string[] { }).ToList(); }
 
         private List<string> extsWebPreviewed;
         public List<string> ExtsWebPreviewed
@@ -237,7 +238,7 @@ namespace ASC.Web.Core.Files
                     return new List<string>();
                 }
 
-                return extsWebPreviewed ?? (extsWebPreviewed = (Configuration.GetSection("files:docservice:viewed-docs").Get<string[]>() ?? new string[] { }).ToList());
+                return extsWebPreviewed ??= (Configuration.GetSection("files:docservice:viewed-docs").Get<string[]>() ?? new string[] { }).ToList();
             }
         }
 
@@ -251,12 +252,12 @@ namespace ASC.Web.Core.Files
                     return new List<string>();
                 }
 
-                return extsWebEdited ?? (extsWebEdited = (Configuration.GetSection("files:docservice:edited-docs").Get<string[]>() ?? new string[] { }).ToList());
+                return extsWebEdited ??= (Configuration.GetSection("files:docservice:edited-docs").Get<string[]>() ?? new string[] { }).ToList();
             }
         }
 
-        public List<string> extsWebEncrypt;
-        public List<string> ExtsWebEncrypt { get => extsWebEncrypt ?? (extsWebEncrypt = (Configuration.GetSection("files:docservice:encrypted-docs").Get<string[]>() ?? new string[] { }).ToList()); }
+        private List<string> extsWebEncrypt;
+        public List<string> ExtsWebEncrypt { get => extsWebEncrypt ??= (Configuration.GetSection("files:docservice:encrypted-docs").Get<string[]>() ?? new string[] { }).ToList(); }
 
         private List<string> extsWebReviewed;
         public List<string> ExtsWebReviewed
@@ -268,7 +269,7 @@ namespace ASC.Web.Core.Files
                     return new List<string>();
                 }
 
-                return extsWebReviewed ?? (extsWebReviewed = (Configuration.GetSection("files:docservice:reviewed-docs").Get<string[]>() ?? new string[] { }).ToList());
+                return extsWebReviewed ??= (Configuration.GetSection("files:docservice:reviewed-docs").Get<string[]>() ?? new string[] { }).ToList();
             }
         }
 
@@ -282,7 +283,7 @@ namespace ASC.Web.Core.Files
                     return new List<string>();
                 }
 
-                return extsWebCustomFilterEditing ?? (extsWebCustomFilterEditing = (Configuration.GetSection("files:docservice:customfilter-docs").Get<string[]>() ?? new string[] { }).ToList());
+                return extsWebCustomFilterEditing ??= (Configuration.GetSection("files:docservice:customfilter-docs").Get<string[]>() ?? new string[] { }).ToList();
             }
         }
 
@@ -296,7 +297,7 @@ namespace ASC.Web.Core.Files
                     return new List<string>();
                 }
 
-                return extsWebRestrictedEditing ?? (extsWebRestrictedEditing = (Configuration.GetSection("files:docservice:formfilling-docs").Get<string[]>() ?? new string[] { }).ToList());
+                return extsWebRestrictedEditing ??= (Configuration.GetSection("files:docservice:formfilling-docs").Get<string[]>() ?? new string[] { }).ToList();
             }
         }
 
@@ -310,11 +311,18 @@ namespace ASC.Web.Core.Files
                     return new List<string>();
                 }
 
-                return extsWebCommented ?? (extsWebCommented = (Configuration.GetSection("files:docservice:commented-docs").Get<string[]>() ?? new string[] { }).ToList());
+                return extsWebCommented ??= (Configuration.GetSection("files:docservice:commented-docs").Get<string[]>() ?? new string[] { }).ToList();
             }
         }
 
-        public List<string> ExtsWebTemplate { get; }
+        private List<string> extsWebTemplate;
+        public List<string> ExtsWebTemplate
+        {
+            get
+            {
+                return extsWebTemplate ??= (Configuration.GetSection("files:docservice:template-docs").Get<string[]>() ?? new string[] { }).ToList();
+            }
+        }
 
         private List<string> extsMustConvert;
         public List<string> ExtsMustConvert
@@ -326,14 +334,14 @@ namespace ASC.Web.Core.Files
                     return new List<string>();
                 }
 
-                return extsMustConvert ?? (extsMustConvert = (Configuration.GetSection("files:docservice:convert-docs").Get<string[]>() ?? new string[] { }).ToList());
+                return extsMustConvert ??= (Configuration.GetSection("files:docservice:convert-docs").Get<string[]>() ?? new string[] { }).ToList();
             }
         }
 
         private List<string> extsCoAuthoring;
         public List<string> ExtsCoAuthoring
         {
-            get => extsCoAuthoring ?? (extsCoAuthoring = (Configuration.GetSection("files:docservice:coauthor-docs").Get<string[]>() ?? new string[] { }).ToList());
+            get => extsCoAuthoring ??= (Configuration.GetSection("files:docservice:coauthor-docs").Get<string[]>() ?? new string[] { }).ToList();
         }
 
         private IConfiguration Configuration { get; }
@@ -457,25 +465,9 @@ namespace ASC.Web.Core.Files
 
         private bool GetCanForcesave()
         {
-            bool canForcesave;
-            return !bool.TryParse(Configuration["files:docservice:forcesave"] ?? "", out canForcesave) || canForcesave;
+            return !bool.TryParse(Configuration["files:docservice:forcesave"] ?? "", out var canForcesave) || canForcesave;
         }
 
         #endregion
-    }
-
-    public static class FileUtilityExtention
-    {
-        public static DIHelper AddFileUtilityService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileUtility>())
-            {
-                return services
-                    .AddFilesLinkUtilityService()
-                    .AddFilesDbContextService();
-            }
-
-            return services;
-        }
     }
 }

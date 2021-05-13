@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
@@ -45,6 +46,7 @@ using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Data.Storage.RackspaceCloud
 {
+    [Scope]
     public class RackspaceCloudStorage : BaseStorage
     {
         private string _region;
@@ -61,6 +63,16 @@ namespace ASC.Data.Storage.RackspaceCloud
         private Uri _cnameSSL;
 
         private readonly ILog _logger;
+
+        public RackspaceCloudStorage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<ILog> options)
+            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+        {
+            _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
+        }
 
         public RackspaceCloudStorage(
             TenantManager tenantManager,
@@ -248,7 +260,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         {
             var contentDisposition = string.Format("attachment; filename={0};",
                                                 HttpUtility.UrlPathEncode(attachmentFileName));
-            if (attachmentFileName.Any(c => (int)c >= 0 && (int)c <= 127))
+            if (attachmentFileName.Any(c => c >= 0 && c <= 127))
             {
                 contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
                                                    HttpUtility.UrlPathEncode(attachmentFileName));
@@ -383,7 +395,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         public override void Delete(string domain, string path)
         {
             var client = GetClient();
-            _ = MakePath(domain, path);
+            MakePath(domain, path);
             var size = GetFileSize(domain, path);
 
             client.DeleteObject(_private_container, MakePath(domain, path));

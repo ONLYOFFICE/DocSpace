@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using ASC.Api.Core;
 using ASC.Common;
-using ASC.Core;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.WebZones;
@@ -10,21 +10,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.Web.Api.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class ModulesController : ControllerBase
     {
-        private UserManager UserManager { get; }
-        private TenantManager TenantManager { get; }
         private WebItemManagerSecurity WebItemManagerSecurity { get; }
 
         public ModulesController(
-            UserManager userManager,
-            TenantManager tenantManager,
             WebItemManagerSecurity webItemManagerSecurity)
         {
-            UserManager = userManager;
-            TenantManager = tenantManager;
             WebItemManagerSecurity = webItemManagerSecurity;
         }
 
@@ -40,16 +35,19 @@ namespace ASC.Web.Api.Controllers
 
             return result;
         }
-    }
 
-    public static class ModulesControllerExtension
-    {
-        public static DIHelper AddModulesController(this DIHelper services)
+        [Read("info")]
+        public IEnumerable<Module> GetAllWithInfo()
         {
-            return services
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddWebItemManagerSecurity();
+            foreach (var a in WebItemManagerSecurity.GetItems(WebZoneType.StartProductList))
+            {
+                if(a is Product product)
+                {
+                    product.Init();
+                    yield return new Module(product);
+                }
+                
+            }
         }
     }
 }

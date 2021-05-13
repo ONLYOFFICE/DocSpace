@@ -31,12 +31,14 @@ using System.Threading;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Data.Backup.Storage;
+using ASC.Files.Core;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Service
 {
+    [Scope]
     internal class BackupCleanerHelperService
     {
         private readonly ILog log;
@@ -94,13 +96,23 @@ namespace ASC.Data.Backup.Service
 
                     BackupRepository.DeleteBackupRecord(backupRecord.Id);
                 }
+                catch (ProviderInfoArgumentException error)
+                {
+                    log.Warn("can't remove backup record " + backupRecord.Id, error);
+                    if (DateTime.UtcNow > backupRecord.CreatedOn.AddMonths(6))
+                    {
+                        BackupRepository.DeleteBackupRecord(backupRecord.Id);
+                    }
+                }
                 catch (Exception error)
                 {
-                    log.Warn("can't remove backup record: {0}", error);
+                    log.Warn("can't remove backup record: " + backupRecord.Id, error);
                 }
             }
         }
     }
+
+    [Singletone(Additional = typeof(BackupCleanerServiceExtension))]
     public class BackupCleanerService
     {
         private readonly object cleanerLock = new object();
@@ -169,19 +181,12 @@ namespace ASC.Data.Backup.Service
             }
         }
     }
-    public static class BackupCleanerServiceExtension
-    {
-        public static DIHelper AddBackupCleanerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<BackupCleanerHelperService>())
-            {
-                services.TryAddSingleton<BackupCleanerService>();
-                return services
-                    .AddBackupStorageFactory()
-                    .AddBackupRepositoryService();
-            }
 
-            return services;
+    public class BackupCleanerServiceExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<BackupCleanerHelperService>();
         }
     }
 }

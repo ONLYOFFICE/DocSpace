@@ -30,20 +30,20 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Core.Common.EF;
 using ASC.Core.Data;
 
 namespace ASC.Core.Caching
 {
+    [Singletone]
     class SubscriptionServiceCache
     {
         internal ICache Cache { get; }
         internal ICacheNotify<SubscriptionRecord> NotifyRecord { get; }
         internal ICacheNotify<SubscriptionMethodCache> NotifyMethod { get; }
 
-        public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> notifyRecord, ICacheNotify<SubscriptionMethodCache> notifyMethod)
+        public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> notifyRecord, ICacheNotify<SubscriptionMethodCache> notifyMethod, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             NotifyRecord = notifyRecord;
             NotifyMethod = notifyMethod;
 
@@ -102,6 +102,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     class CachedSubscriptionService : ISubscriptionService
     {
         private readonly ISubscriptionService service;
@@ -137,6 +138,16 @@ namespace ASC.Core.Caching
             {
                 return store.GetSubscriptions(recipientId, objectId);
             }
+        }
+
+        public string[] GetRecipients(int tenant, string sourceID, string actionID, string objectID)
+        {
+            return service.GetRecipients(tenant, sourceID, actionID, objectID);
+        }
+
+        public string[] GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe)
+        {
+            return service.GetSubscriptions(tenant, sourceId, actionId, recipientId, checkSubscribe);
         }
 
         public SubscriptionRecord GetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId)
@@ -194,7 +205,12 @@ namespace ASC.Core.Caching
             }
             return store;
         }
+        public bool IsUnsubscribe(int tenant, string sourceId, string actionId, string recipientId, string objectId)
+        {
+            return service.IsUnsubscribe(tenant, sourceId, actionId, recipientId, objectId);
+        }
     }
+
     internal class SubsciptionsStore
     {
         private readonly List<SubscriptionRecord> records;
@@ -283,22 +299,6 @@ namespace ASC.Core.Caching
         private void BuildMethodsIndex(IEnumerable<SubscriptionMethod> methods)
         {
             methodsByRec = methods.GroupBy(r => r.RecipientId).ToDictionary(g => g.Key, g => g.ToList());
-        }
-    }
-
-    public static class SubscriptionConfigExtension
-    {
-        public static DIHelper AddSubscriptionService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DbSubscriptionService>())
-            {
-                services.TryAddScoped<ISubscriptionService, CachedSubscriptionService>();
-                services.TryAddSingleton<SubscriptionServiceCache>();
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                services.AddUserDbContextService();
-            }
-
-            return services;
         }
     }
 }

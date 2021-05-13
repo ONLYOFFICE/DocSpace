@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Globalization;
 
 using ASC.Common;
 using ASC.Core.Common.Settings;
@@ -35,6 +34,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core.WhiteLabel
 {
+    public class AdditionalWhiteLabelSettingsWrapper
+    {
+        public AdditionalWhiteLabelSettings Settings { get; set; }
+    }
+
     [Serializable]
     public class AdditionalWhiteLabelSettings : ISettings
     {
@@ -119,7 +123,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                return CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ru" ? "https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=4522572&doc=VzZXY2FQb29EdjZmTnhlZkFYZS9XYzFPK3JTaC9zcC9mNHEvTTZXSXNLUT0_IjQ1MjI1NzIi0" : "https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=4485697&doc=R29zSHZNRi9LYnRTb3JDditmVGpXQThVVXhMTWdja0xwemlYZXpiaDBYdz0_IjQ0ODU2OTci0";
+                return "https://help.onlyoffice.com/Products/Files/doceditor.aspx?fileid=6795868&doc=RG5GaVN6azdUQW5kLzZQNzBXbHZ4Rm9QWVZuNjZKUmgya0prWnpCd2dGcz0_IjY3OTU4Njgi0";
             }
         }
 
@@ -129,6 +133,7 @@ namespace ASC.Web.Core.WhiteLabel
         }
     }
 
+    [Singletone]
     public class AdditionalWhiteLabelSettingsHelper
     {
         private IConfiguration Configuration { get; }
@@ -190,15 +195,6 @@ namespace ASC.Web.Core.WhiteLabel
                 var site = Configuration["web:teamlab-site"];
                 return !string.IsNullOrEmpty(site) ? site + "/post.ashx?type=buyenterprise" : "";
             }
-        }
-    }
-
-    public static class AdditionalWhiteLabelSettingsExtension
-    {
-        public static DIHelper AddAdditionalWhiteLabelSettingsService(this DIHelper services)
-        {
-            services.TryAddSingleton<AdditionalWhiteLabelSettingsHelper>();
-            return services;
         }
     }
 }

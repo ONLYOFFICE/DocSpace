@@ -28,6 +28,7 @@ using ASC.Common;
 using ASC.Common.Threading;
 using ASC.Data.Backup.Controllers;
 using ASC.Data.Backup.Service;
+using ASC.Web.Studio.Core.Notify;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,15 +47,15 @@ namespace ASC.Data.Backup
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            var diHelper = new DIHelper(services);
+            base.ConfigureServices(services);
 
-            diHelper
-                .AddBackupServiceLauncher()
-                .AddBackupController()
-                .AddDistributedTaskQueueService<BaseBackupProgressItem>(1);
+            DIHelper.AddDistributedTaskQueueService<BaseBackupProgressItem>(1);
+
+            DIHelper.TryAdd<BackupServiceLauncher>();
+            DIHelper.TryAdd<BackupController>();
+            NotifyConfigurationExtension.Register(DIHelper);
 
             services.AddHostedService<BackupServiceLauncher>();
-            base.ConfigureServices(services);
         }
     }
 }

@@ -32,6 +32,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Storage.Encryption
 {
+    [Singletone]
     public class EncryptionServiceLauncher : IHostedService
     {
         private EncryptionServiceListener EncryptionServiceListener { get; set; }
@@ -58,15 +59,6 @@ namespace ASC.Data.Storage.Encryption
                 EncryptionServiceListener.Stop();
             }
             return Task.CompletedTask;
-        }
-    }
-
-    public static class EncryptionServiceLauncherExtension
-    {
-        public static DIHelper AddEncryptionServiceLauncher(this DIHelper services)
-        {
-            services.TryAddSingleton<EncryptionServiceLauncher>();
-            return services.AddEncryptionServiceListener();
         }
     }
 }

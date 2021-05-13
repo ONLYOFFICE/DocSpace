@@ -1,56 +1,48 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
-import store from "./store/store";
-//import { fetchGroups, fetchPeople } from "./store/files/actions";
-import config from "../package.json";
-import "./custom.scss";
-import App from "./App";
+import("./bootstrap");
 
-import * as serviceWorker from "./serviceWorker";
-import { store as commonStore, constants, ErrorBoundary} from "asc-web-common";
-//import { getFilterByLocation } from "./helpers/converters";
-const { setIsLoaded, getUserInfo, setCurrentProductId, setCurrentProductHomePage, getPortalPasswordSettings, getPortalCultures } = commonStore.auth.actions;
-const { AUTH_KEY } = constants;
+//import "./wdyr";
 
-const token = localStorage.getItem(AUTH_KEY);
+// import React from "react";
+// import ReactDOM from "react-dom";
+// import "./custom.scss";
+// import App from "./App";
 
-if (token) {
-  getUserInfo(store.dispatch)
-  .then(() => getPortalPasswordSettings(store.dispatch))
-  .then(() => getPortalCultures(store.dispatch))
-  // .then(() => fetchGroups(store.dispatch))
-  .then(() => {
-    // var re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
-    // const match = window.location.pathname.match(re);
+// import * as serviceWorker from "./serviceWorker";
+// import { ErrorBoundary, store as commonStore } from "asc-web-common";
+// import { Provider as MobxProvider } from "mobx-react";
+// import filesStore from "./store/FilesStore";
+// import settingsStore from "./store/SettingsStore";
+// import mediaViewerDataStore from "./store/MediaViewerDataStore";
+// import formatsStore from "./store/FormatsStore";
+// import versionHistoryStore from "./store/VersionHistoryStore";
+// import uploadDataStore from "./store/UploadDataStore";
+// import dialogsStore from "./store/DialogsStore";
+// import treeFoldersStore from "./store/TreeFoldersStore";
+// import selectedFolderStore from "./store/SelectedFolderStore";
 
-    // if (match && match.length > 0) {
-    //   const newFilter = getFilterByLocation(window.location);
-    //   return fetchPeople(newFilter, store.dispatch);
-    // }
+// const { authStore } = commonStore;
 
-    return Promise.resolve();
-  })
-  .then(() => { 
-    store.dispatch(setCurrentProductHomePage(config.homepage));
-    store.dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));
-    store.dispatch(setIsLoaded(true));
-  });
-}
-else { 
-  store.dispatch(setIsLoaded(true));
-};
+// ReactDOM.render(
+//   <MobxProvider
+//     auth={authStore}
+//     filesStore={filesStore}
+//     settingsStore={settingsStore}
+//     mediaViewerDataStore={mediaViewerDataStore}
+//     formatsStore={formatsStore}
+//     versionHistoryStore={versionHistoryStore}
+//     uploadDataStore={uploadDataStore}
+//     dialogsStore={dialogsStore}
+//     treeFoldersStore={treeFoldersStore}
+//     selectedFolderStore={selectedFolderStore}
+//   >
+//     <ErrorBoundary>
+//       <App />
+//     </ErrorBoundary>
+//   </MobxProvider>,
+//   document.getElementById("root")
+// );
 
-ReactDOM.render(
-  <Provider store={store}>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </Provider>,
-  document.getElementById("root")
-);
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.register();
+// // If you want your app to work offline and load faster, you can change
+// // unregister() to register() below. Note this comes with some pitfalls.
+// // Learn more about service workers: https://bit.ly/CRA-PWA
+// serviceWorker.register();

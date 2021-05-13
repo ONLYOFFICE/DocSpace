@@ -31,6 +31,7 @@ using ASC.Common.Logging;
 using ASC.Core.Common.Notify;
 using ASC.Notify.Messages;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify.Senders
@@ -38,14 +39,14 @@ namespace ASC.Core.Notify.Senders
     public class TelegramSender : INotifySender
     {
         private readonly ILog log;
-        private TelegramHelper TelegramHelper { get; }
 
-        public TelegramSender(IOptionsMonitor<ILog> options, TelegramHelper telegramHelper)
+        public TelegramSender(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
         {
             log = options.Get("ASC");
-            TelegramHelper = telegramHelper;
+            ServiceProvider = serviceProvider;
         }
 
+        public IServiceProvider ServiceProvider { get; }
 
         public void Init(IDictionary<string, string> properties)
         {
@@ -60,6 +61,8 @@ namespace ASC.Core.Notify.Senders
             }
             try
             {
+                using var scope = ServiceProvider.CreateScope();
+                var TelegramHelper = scope.ServiceProvider.GetService<TelegramHelper>();
                 TelegramHelper.SendMessage(m);
             }
             catch (Exception e)

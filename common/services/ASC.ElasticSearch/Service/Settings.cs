@@ -27,10 +27,9 @@
 using ASC.Common;
 using ASC.Common.Utils;
 
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.ElasticSearch.Service
 {
+    [Singletone]
     public class Settings
     {
         public Settings()
@@ -38,14 +37,15 @@ namespace ASC.ElasticSearch.Service
 
         }
 
-        public Settings(IConfiguration configuration)
+        public Settings(ConfigurationExtension configuration)
         {
             var cfg = configuration.GetSetting<Settings>("elastic");
             Scheme = cfg.Scheme ?? "http";
             Host = cfg.Host ?? "localhost";
             Port = cfg.Port ?? 9200;
             Period = cfg.Period ?? 1;
-            MemoryLimit = cfg.MemoryLimit ?? 10 * 1024 * 1024L;
+            MemoryLimit = cfg.MemoryLimit ?? 1 * 1024 * 1024L;
+            MaxContentLength = cfg.MaxContentLength ?? 10 * 1024 * 1024L;
         }
 
         public string Host { get; set; }
@@ -57,14 +57,7 @@ namespace ASC.ElasticSearch.Service
         public int? Period { get; set; }
 
         public long? MemoryLimit { get; set; }
-    }
 
-    public static class SettingsExtention
-    {
-        public static DIHelper AddSettingsService(this DIHelper services)
-        {
-            services.TryAddSingleton<Settings>();
-            return services;
-        }
+        public long? MaxContentLength { get; set; }
     }
 }

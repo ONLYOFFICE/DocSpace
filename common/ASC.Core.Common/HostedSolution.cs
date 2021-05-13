@@ -104,6 +104,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope(typeof(ConfigureHostedSolution))]
     public class HostedSolution
     {
         internal ITenantService TenantService { get; set; }
@@ -205,7 +206,6 @@ namespace ASC.Core
             tenant.OwnerId = user.ID;
             tenant = TenantService.SaveTenant(CoreSettings, tenant);
 
-            SettingsManager.SaveSettings(new TenantAnalyticsSettings() { Analytics = ri.Analytics }, tenant.TenantId);
             SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = ri.LimitedControlPanel }, tenant.TenantId);
         }
 
@@ -282,25 +282,6 @@ namespace ASC.Core
                 tenant.HostedRegion = Region;
             }
             return tenant;
-        }
-    }
-
-    public static class HostedSolutionExtension
-    {
-        public static DIHelper AddHostedSolutionService(this DIHelper services)
-        {
-            services.TryAddScoped<IConfigureOptions<HostedSolution>, ConfigureHostedSolution>();
-
-            return services
-                .AddUserFormatter()
-                .AddTenantService()
-                .AddUserService()
-                .AddQuotaService()
-                .AddTariffService()
-                .AddTenantManagerService()
-                .AddTenantUtilService()
-                .AddDbSettingsManagerService()
-                .AddCoreSettingsService();
         }
     }
 }

@@ -35,6 +35,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core.WhiteLabel
 {
+    public class CompanyWhiteLabelSettingsWrapper
+    {
+        public CompanyWhiteLabelSettings Settings { get; set; }
+    }
+
     [Serializable]
     public class CompanyWhiteLabelSettings : ISettings
     {

@@ -28,9 +28,11 @@ using System;
 using System.IO;
 
 using ASC.Common;
+using ASC.Common.Utils;
 
 namespace ASC.Data.Backup.Storage
 {
+    [Scope]
     public class LocalBackupStorage : IBackupStorage
     {
         public string Upload(string storageBasePath, string localPath, Guid userId)
@@ -39,7 +41,7 @@ namespace ASC.Data.Backup.Storage
             {
                 throw new FileNotFoundException("Directory not found.");
             }
-            var storagePath = Path.Combine(storageBasePath, Path.GetFileName(localPath));
+            var storagePath = CrossPlatform.PathCombine(storageBasePath, Path.GetFileName(localPath));
             if (localPath != storagePath)
             {
                 File.Copy(localPath, storagePath, true);
@@ -65,14 +67,6 @@ namespace ASC.Data.Backup.Storage
         public string GetPublicLink(string storagePath)
         {
             return string.Empty;
-        }
-    }
-    public static class LocalBackupStorageExtension
-    {
-        public static DIHelper AddLocalBackupStorage(this DIHelper services)
-        {
-            services.TryAddScoped<LocalBackupStorage>();
-            return services;
         }
     }
 }

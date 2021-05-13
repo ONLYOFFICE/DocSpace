@@ -68,8 +68,7 @@ namespace ASC.Data.Backup.Extensions
             foreach (var keyValue in dic)
             {
                 var parentKey = parentKeySelector(keyValue.Value.Entry);
-                TreeNode<TEntry> parent;
-                if (parentKey != null && dic.TryGetValue(parentKeySelector(keyValue.Value.Entry), out parent))
+                if (parentKey != null && dic.TryGetValue(parentKeySelector(keyValue.Value.Entry), out var parent))
                 {
                     parent.Children.Add(keyValue.Value);
                     keyValue.Value.Parent = parent;

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading;
@@ -43,6 +44,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
+    [Singletone]
     public class StorageUploader
     {
         protected readonly DistributedTaskQueue Queue;

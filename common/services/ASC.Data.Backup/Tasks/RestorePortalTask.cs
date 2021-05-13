@@ -34,6 +34,7 @@ using System.Xml.Linq;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Tenants;
@@ -45,6 +46,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks
 {
+    [Scope]
     public class RestorePortalTask : PortalTaskBase
     {
         private ColumnMapper ColumnMapper { get; set; }
@@ -285,18 +287,16 @@ namespace ASC.Data.Backup.Tasks
                             var key = file.GetZipKey();
                             if (Dump)
                             {
-                                key = Path.Combine(KeyHelper.GetStorage(), key);
+                                key = CrossPlatform.PathCombine(KeyHelper.GetStorage(), key);
                             }
-                            using (var stream = dataReader.GetEntry(key))
+                            using var stream = dataReader.GetEntry(key);
+                            try
                             {
-                                try
-                                {
-                                    storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, ColumnMapper) : stream);
-                                }
-                                catch (Exception error)
-                                {
-                                    Logger.WarnFormat("can't restore file ({0}:{1}): {2}", file.Module, file.Path, error);
-                                }
+                                storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, ColumnMapper) : stream);
+                            }
+                            catch (Exception error)
+                            {
+                                Logger.WarnFormat("can't restore file ({0}:{1}): {2}", file.Module, file.Path, error);
                             }
                         }
                     }
@@ -357,54 +357,30 @@ namespace ASC.Data.Backup.Tasks
 
         private IEnumerable<BackupFileInfo> GetFilesToProcess(IDataReadOperator dataReader)
         {
-            using (var stream = dataReader.GetEntry(KeyHelper.GetStorageRestoreInfoZipKey()))
+            using var stream = dataReader.GetEntry(KeyHelper.GetStorageRestoreInfoZipKey());
+            if (stream == null)
             {
-                if (stream == null)
-                {
-                    return Enumerable.Empty<BackupFileInfo>();
-                }
-                var restoreInfo = XElement.Load(new StreamReader(stream));
-                return restoreInfo.Elements("file").Select(BackupFileInfo.FromXElement).ToList();
+                return Enumerable.Empty<BackupFileInfo>();
             }
+            var restoreInfo = XElement.Load(new StreamReader(stream));
+            return restoreInfo.Elements("file").Select(BackupFileInfo.FromXElement).ToList();
         }
 
         private void SetTenantActive(int tenantId)
         {
-            using (var connection = DbFactory.OpenConnection())
-            {
-                var commandText = string.Format(
-                    "update tenants_tenants " +
-                    "set " +
-                    "  status={0}, " +
-                    "  last_modified='{1}', " +
-                    "  statuschanged='{1}' " +
-                    "where id = '{2}'",
-                    (int)TenantStatus.Active,
-                    DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
-                    tenantId);
+            using var connection = DbFactory.OpenConnection();
+            var commandText = string.Format(
+                "update tenants_tenants " +
+                "set " +
+                "  status={0}, " +
+                "  last_modified='{1}', " +
+                "  statuschanged='{1}' " +
+                "where id = '{2}'",
+                (int)TenantStatus.Active,
+                DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                tenantId);
 
-                connection.CreateCommand().WithTimeout(120).ExecuteNonQuery();
-            }
-        }
-    }
-
-    public static class RestorePortalTaskExtension
-    {
-        public static DIHelper AddRestorePortalTaskService(this DIHelper services)
-        {
-            if (services.TryAddScoped<RestorePortalTask>())
-            {
-                services.TryAddSingleton<AscCacheNotify>();
-                return services
-                    .AddCoreConfigurationService()
-                    .AddStorageFactoryService()
-                    .AddStorageFactoryConfigService()
-                    .AddModuleProvider()
-                    .AddCoreBaseSettingsService()
-                    .AddLicenseReaderService();
-            }
-
-            return services;
+            connection.CreateCommand().WithTimeout(120).ExecuteNonQuery();
         }
     }
 }

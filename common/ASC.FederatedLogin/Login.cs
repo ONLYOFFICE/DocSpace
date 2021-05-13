@@ -48,6 +48,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.FederatedLogin
 {
+    [Scope]
     public class Login
     {
         private Dictionary<string, string> _params;
@@ -75,7 +76,7 @@ namespace ASC.FederatedLogin
 
         public async Task Invoke(HttpContext context)
         {
-            var scope = context.PushRewritenUri();
+            _ = context.PushRewritenUri();
 
             if (string.IsNullOrEmpty(context.Request.Query["p"]))
             {
@@ -244,19 +245,6 @@ namespace ASC.FederatedLogin
 
     public static class LoginHandlerExtensions
     {
-        public static DIHelper AddLoginHandlerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<Login>())
-            {
-                return services
-                    .AddSignatureService()
-                    .AddInstanceCryptoService()
-                    .AddProviderManagerService();
-            }
-
-            return services;
-        }
-
         public static IApplicationBuilder UseLoginHandler(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<LoginHandler>();

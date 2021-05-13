@@ -1,0 +1,14 @@
+{
+  "AboutCompanyTitle": "О программе",
+  "AboutCompanyVersion": "Версия",
+  "AboutCompanyLicensor": "АВТОРСКИЕ ПРАВА",
+  "AboutCompanyAddressTitle": "адрес",
+  "AboutCompanyEmailTitle": "email",
+  "AboutCompanyTelTitle": "тел.",
+  "LicensedUnder": "Программа распространяется под лицензией: {{license}}",
+  "AllRightsReservedCustomMode": "<0>Ascensio System SIA.</0> <1>All rights reserved.</1>",
+  "People": "Люди",
+  "AboutTitle": "О программе",
+
+  "SourceCode": "Исходный код программы доступен по cсылке"
+}

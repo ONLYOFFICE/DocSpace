@@ -26,10 +26,12 @@
 
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Core.Encryption;
 
 namespace ASC.Data.Storage.Encryption
 {
-    public class EncryptionServiceClient :  IEncryptionService
+    [Scope]
+    public class EncryptionServiceClient : IEncryptionService
     {
 
         private ICacheNotify<EncryptionSettingsProto> NotifySetting { get; }
@@ -52,14 +54,5 @@ namespace ASC.Data.Storage.Encryption
             NotifyStop.Publish(new EncryptionStop(), CacheNotifyAction.Insert);
         }
 
-    }
-
-    public static class EncryptionServiceClientExtension
-    {
-        public static DIHelper AddEncryptionServiceClient(this DIHelper services)
-        {
-            services.TryAddScoped<EncryptionServiceClient>();
-            return services;
-        }
     }
 }

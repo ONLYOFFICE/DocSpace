@@ -48,6 +48,7 @@ using Folder = Microsoft.SharePoint.Client.Folder;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
+    [Transient]
     public class SharePointProviderInfo : IProviderInfo
     {
         private ClientContext clientContext;
@@ -94,7 +95,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             if (clientContext != null)
             {
                 clientContext.Dispose();
-                clientContext = null;
             }
 
             SharePointProviderInfoHelper.Invalidate();
@@ -500,7 +500,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             if (folder is SharePointFolderErrorEntry errorFolder)
             {
                 result.ID = MakeId(errorFolder.ID);
-                result.ParentFolderID = null;
+                result.FolderID = null;
                 result.CreateBy = Owner;
                 result.CreateOn = DateTime.UtcNow;
                 result.FolderType = FolderType.DEFAULT;
@@ -523,7 +523,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             var isRoot = folder.ServerRelativeUrl == SpRootFolderId;
 
             result.ID = MakeId(isRoot ? "" : folder.ServerRelativeUrl);
-            result.ParentFolderID = isRoot ? null : MakeId(GetParentFolderId(folder.ServerRelativeUrl));
+            result.FolderID = isRoot ? null : MakeId(GetParentFolderId(folder.ServerRelativeUrl));
             result.CreateBy = Owner;
             result.CreateOn = CreateOn;
             result.FolderType = FolderType.DEFAULT;
@@ -584,6 +584,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         }
     }
 
+    [Singletone]
     public class SharePointProviderInfoHelper
     {
         private readonly TimeSpan CacheExpiration;
@@ -591,11 +592,11 @@ namespace ASC.Files.Thirdparty.SharePoint
         private readonly ICache FolderCache;
         private readonly ICacheNotify<SharePointProviderCacheItem> Notify;
 
-        public SharePointProviderInfoHelper(ICacheNotify<SharePointProviderCacheItem> notify)
+        public SharePointProviderInfoHelper(ICacheNotify<SharePointProviderCacheItem> notify, ICache cache)
         {
             CacheExpiration = TimeSpan.FromMinutes(1);
-            FileCache = AscCache.Memory;
-            FolderCache = AscCache.Memory;
+            FileCache = cache;
+            FolderCache = cache;
             Notify = notify;
 
             Notify.Subscribe((i) =>
@@ -666,17 +667,6 @@ namespace ASC.Files.Thirdparty.SharePoint
         public void AddFile(string key, File file)
         {
             FileCache.Insert(key, file, DateTime.UtcNow.Add(CacheExpiration));
-        }
-    }
-
-    public static class SharePointProviderInfoExtension
-    {
-        public static DIHelper AddSharePointProviderInfoService(this DIHelper services)
-        {
-            services.TryAddScoped<SharePointProviderInfo>();
-            services.TryAddSingleton<SharePointProviderInfoHelper>();
-
-            return services;
         }
     }
 }

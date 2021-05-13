@@ -80,6 +80,7 @@ namespace ASC.ElasticSearch.Core
         }
     }
 
+    [Scope]
     public class SearchSettingsHelper
     {
         private TenantManager TenantManager { get; }
@@ -127,7 +128,7 @@ namespace ASC.ElasticSearch.Core
         {
             get
             {
-                return allItems ?? (allItems = FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().ToList());
+                return allItems ??= FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().ToList();
             }
         }
 
@@ -183,22 +184,5 @@ namespace ASC.ElasticSearch.Core
         public bool Enabled { get; set; }
 
         public string Title { get; set; }
-    }
-
-    public static class SearchSettingsHelperExtention
-    {
-        public static DIHelper AddSearchSettingsHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<SearchSettingsHelper>())
-            {
-                return services
-                    .AddSettingsManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddFactoryIndexerService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
-        }
     }
 }

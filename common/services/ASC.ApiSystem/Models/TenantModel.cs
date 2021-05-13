@@ -26,7 +26,6 @@
 
 using System.ComponentModel.DataAnnotations;
 
-using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Interfaces;
 using ASC.Core.Tenants;
 
@@ -47,7 +46,7 @@ namespace ASC.ApiSystem.Models
         [StringLength(255)]
         public string FirstName { get; set; }
 
-        [Email]
+        //todo  [Email]
         [StringLength(255)]
         public string Email { get; set; }
 
@@ -89,8 +88,6 @@ namespace ASC.ApiSystem.Models
         public bool Spam { get; set; }
 
         public bool Calls { get; set; }
-
-        public bool Analytics { get; set; }
 
         public string AppKey { get; set; }
 

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Core.Users
@@ -50,6 +51,28 @@ namespace ASC.Web.Core.Users
                 ModuleHelpTour = new Dictionary<Guid, int>(),
                 IsNewUser = false
             };
+        }
+    }
+
+    [Scope]
+    public class UserHelpTourHelper
+    {
+        private SettingsManager SettingsManager { get; }
+
+        public UserHelpTourHelper(SettingsManager settingsManager)
+        {
+            SettingsManager = settingsManager;
+        }
+
+        public bool IsNewUser
+        {
+            get { return SettingsManager.LoadForCurrentUser<UserHelpTourSettings>().IsNewUser; }
+            set
+            {
+                var settings = SettingsManager.LoadForCurrentUser<UserHelpTourSettings>();
+                settings.IsNewUser = value;
+                SettingsManager.SaveForCurrentUser(settings);
+            }
         }
     }
 }

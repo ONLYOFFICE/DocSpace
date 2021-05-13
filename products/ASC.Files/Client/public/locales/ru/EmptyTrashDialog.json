@@ -1,0 +1,10 @@
+{
+  "DeleteOperation": "Удаление",
+  "SuccessEmptyTrash": "Корзина успешно очищена",
+
+  "DeleteForeverTitle": "Удалить навсегда?",
+  "DeleteForeverNote": "Все объекты из корзины будут удалены навсегда. Вы не сможете их восстановить.",
+
+  "DeleteForeverButton": "Удалить навсегда",
+  "CancelButton": "Отмена"
+}

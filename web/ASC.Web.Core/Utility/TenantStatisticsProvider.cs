@@ -35,6 +35,7 @@ using ASC.Core.Users;
 
 namespace ASC.Web.Studio.UserControls.Statistics
 {
+    [Scope]
     public class TenantStatisticsProvider
     {
         private UserManager UserManager { get; }
@@ -68,23 +69,8 @@ namespace ASC.Web.Studio.UserControls.Statistics
 
         public IEnumerable<TenantQuotaRow> GetQuotaRows(int tenant)
         {
-            return TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant))
+            return TenantManager.FindTenantQuotaRows(tenant)
                 .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty);
-        }
-    }
-
-    public static class TenantStatisticsProviderExtension
-    {
-        public static DIHelper AddTenantStatisticsProviderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TenantStatisticsProvider>())
-            {
-                return services
-                    .AddUserManagerService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 }

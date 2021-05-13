@@ -30,6 +30,7 @@ using ASC.Notify.Messages;
 
 namespace ASC.TelegramService
 {
+    [Singletone]
     public class TelegramService : ITelegramService
     {
         private TelegramHandler TelegramHandler { get; set; }
@@ -56,16 +57,7 @@ namespace ASC.TelegramService
 
         public void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy)
         {
-             TelegramHandler.CreateOrUpdateClientForTenant(tenantId, token, tokenLifespan, proxy, false);
-        }
-    }
-
-    public static class TelegramServiceExtension
-    {
-        public static DIHelper AddTelegramService(this DIHelper services)
-        {
-            services.TryAddSingleton<TelegramService>();
-            return services.AddTelegramHandlerService();
+            TelegramHandler.CreateOrUpdateClientForTenant(tenantId, token, tokenLifespan, proxy, false);
         }
     }
 }

@@ -39,7 +39,7 @@ namespace ASC.Core.Notify
     public abstract class NotifySource : INotifySource
     {
         private readonly object syncRoot = new object();
-        private bool initialized;
+        private readonly bool initialized;
 
         private readonly IDictionary<CultureInfo, IActionProvider> actions = new Dictionary<CultureInfo, IActionProvider>();
 

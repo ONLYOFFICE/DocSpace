@@ -3097,6 +3097,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 6 tips for effective work on your docs.
+        /// </summary>
+        internal static string subject_opensource_user_docs_tips_v11 {
+            get {
+                return ResourceManager.GetString("subject_opensource_user_docs_tips_v11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Welcome to your web-office.
         /// </summary>
         internal static string subject_opensource_user_welcome_v11 {

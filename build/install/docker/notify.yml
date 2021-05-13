@@ -1,0 +1,53 @@
+version: "3.6"
+x-service: 
+    &x-service-base
+    container_name: base
+    restart: always
+    expose:
+    - ${SERVICE_PORT}
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      APP_DOTNET_ENV: ${APP_DOTNET_ENV}
+      APP_CORE_BASE_DOMAIN: ${APP_CORE_BASE_DOMAIN}
+      APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY}
+      DOCUMENT_SERVER_JWT_SECRET: ${DOCUMENT_SERVER_JWT_SECRET}
+      DOCUMENT_SERVER_JWT_HEADER: ${DOCUMENT_SERVER_JWT_HEADER}
+      DOCUMENT_SERVER_URL_PUBLIC: ${DOCUMENT_SERVER_URL_PUBLIC}
+      DOCUMENT_SERVER_URL_INTERNAL: ${DOCUMENT_SERVER_URL_INTERNAL}
+      DOCUMENT_SERVER_URL_CONVERTER: ${DOCUMENT_SERVER_URL_CONVERTER}
+      KAFKA_HOST: ${KAFKA_HOST}
+      ELK_HOST: ${ELK_HOST}
+      PROXY_HOST: ${PROXY_HOST}
+    volumes:
+    #- /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data
+    - app_data:/app/onlyoffice/data
+    - files_data:/var/www/products/ASC.Files/server/
+    - people_data:/var/www/products/ASC.People/server/
+    - crm_data:/var/www/products/ASC.CRM/server/
+    - project_data:/var/www/products/ASC.Projects/server/
+    - calendar_data:/var/www/products/ASC.Calendar/server/
+    - mail_data:/var/www/products/ASC.Mail/server/
+
+services:
+  onlyoffice-notify:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-notify:${SRV_VERSION}"
+    container_name: ${NOTIFY_HOST}
+
+networks:
+  default:
+    external:
+      name: ${NETWORK_NAME}
+
+volumes:
+  app_data:
+  files_data:
+  people_data:
+  crm_data:
+  project_data:
+  calendar_data:
+  mail_data:

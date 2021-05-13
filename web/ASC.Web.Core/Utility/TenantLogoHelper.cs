@@ -30,6 +30,7 @@ using ASC.Web.Core.WhiteLabel;
 
 namespace ASC.Web.Studio.Utility
 {
+    [Scope]
     public class TenantLogoHelper
     {
         private TenantLogoManager TenantLogoManager { get; }
@@ -81,23 +82,6 @@ namespace ASC.Web.Studio.Utility
 
             return imgUrl;
 
-        }
-    }
-    public static class TenantLogoHelperExtention
-    {
-        public static DIHelper AddTenantLogoHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TenantLogoHelper>())
-            {
-
-                return services
-                    .AddTenantLogoManagerService()
-                    .AddSettingsManagerService()
-                    .AddTenantWhiteLabelSettingsService()
-                    .AddTenantInfoSettingsService();
-            }
-
-            return services;
         }
     }
 }

@@ -6,10 +6,13 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.ElasticSearch;
 using ASC.Feed.Aggregator;
 using ASC.Web.Files.Core.Search;
-using ASC.Web.Files.Utils;
+
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,16 +22,25 @@ namespace ASC.Files.Service
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public async static Task Main(string[] args)
         {
-            var host = Host.CreateDefaultBuilder(args)
+            var host = CreateHostBuilder(args).Build();
+
+            await host.RunAsync();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .UseSystemd()
+                .UseWindowsService()
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
                     var path = buided["pathToConf"];
                     if (!Path.IsPathRooted(path))
                     {
-                        path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
+                        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
                     config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
@@ -50,34 +62,27 @@ namespace ASC.Files.Service
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddMemoryCache();
+
                     var diHelper = new DIHelper(services);
-                    diHelper.AddNLogManager("ASC.Files");
+
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+                    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                     services.AddHostedService<ServiceLauncher>();
-                    diHelper
-                        .AddServiceLauncher()
-                        .AddFileConverterService()
-                        .AddKafkaService()
-                        .AddFactoryIndexerFileService()
-                        .AddFactoryIndexerFolderService();
+                    diHelper.TryAdd<ServiceLauncher>();
 
-                    diHelper.AddNLogManager("ASC.Feed.Agregator");
                     services.AddHostedService<FeedAggregatorService>();
-                    diHelper
-                        .AddFeedAggregatorService();
+                    diHelper.TryAdd<FeedAggregatorService>();
 
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, true, false, "search.json", "feed.json");
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Files", "ASC.Feed.Agregator");
+                    //diHelper.TryAdd<FileConverter>();
+                    diHelper.TryAdd<FactoryIndexerFile>();
+                    diHelper.TryAdd<FactoryIndexerFolder>();
                 })
-                .UseConsoleLifetime()
-                .Build();
-
-            using (host)
-            {
-                // Start the host
-                await host.StartAsync();
-
-                // Wait for the host to shutdown
-                await host.WaitForShutdownAsync();
-            }
-        }
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.Register(context.Configuration, true, false, "search.json", "feed.json");
+                });
     }
 }

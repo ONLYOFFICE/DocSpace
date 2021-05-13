@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.ElasticSearch;
@@ -41,6 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Core.Search
 {
+    [Scope(Additional = typeof(FactoryIndexerFolderExtension))]
     public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
     {
         private IDaoFactory DaoFactory { get; }
@@ -52,8 +54,9 @@ namespace ASC.Web.Files.Core.Search
             FactoryIndexer factoryIndexer,
             BaseIndexer<DbFolder> baseIndexer,
             IServiceProvider serviceProvider,
-            IDaoFactory daoFactory)
-            : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider)
+            IDaoFactory daoFactory,
+            ICache cache)
+            : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
             DaoFactory = daoFactory;
         }
@@ -101,16 +104,11 @@ namespace ASC.Web.Files.Core.Search
         }
     }
 
-    public static class FactoryIndexerFolderExtention
+    public class FactoryIndexerFolderExtension
     {
-        public static DIHelper AddFactoryIndexerFolderService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddTransient<DbFolder>();
-            services.TryAddScoped<FactoryIndexer<DbFolder>, FactoryIndexerFolder>();
-
-            return services
-                .AddFactoryIndexerService<DbFolder>(false)
-                .AddDaoFactoryService();
+            services.TryAdd<DbFolder>();
         }
     }
 }

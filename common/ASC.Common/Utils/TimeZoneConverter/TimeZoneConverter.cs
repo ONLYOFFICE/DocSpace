@@ -41,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Utils
 {
+    [Singletone]
     public class TimeZoneConverter
     {
         private TimeZoneInfo defaultTimeZone;

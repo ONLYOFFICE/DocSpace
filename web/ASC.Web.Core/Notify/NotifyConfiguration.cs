@@ -34,6 +34,7 @@ using System.Threading;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Notify.Engine;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
@@ -58,22 +59,29 @@ using MimeKit.Utils;
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    public static class NotifyConfiguration
+    [Singletone(Additional = typeof(WorkContextExtension))]
+    public class NotifyConfiguration
     {
         private static bool configured;
         private static readonly object locker = new object();
         private static readonly Regex urlReplacer = new Regex(@"(<a [^>]*href=(('(?<url>[^>']*)')|(""(?<url>[^>""]*)""))[^>]*>)|(<img [^>]*src=(('(?<url>(?![data:|cid:])[^>']*)')|(""(?<url>(?![data:|cid:])[^>""]*)""))[^/>]*/?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex textileLinkReplacer = new Regex(@"""(?<text>[\w\W]+?)"":""(?<link>[^""]+)""", RegexOptions.Singleline | RegexOptions.Compiled);
-        private static IServiceProvider ServiceProvider { get; set; }
-        public static void Configure(IServiceProvider serviceProvider)
+
+        private IServiceProvider ServiceProvider { get; }
+
+        public NotifyConfiguration(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
+
+        public void Configure()
         {
             lock (locker)
             {
                 if (!configured)
                 {
                     configured = true;
-                    ServiceProvider = serviceProvider;
-                    WorkContext.NotifyStartUp(serviceProvider);
+                    WorkContext.NotifyStartUp(ServiceProvider);
                     WorkContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
                     WorkContext.NotifyContext.NotifyEngine.BeforeTransferRequest += BeforeTransferRequest;
                 }
@@ -131,60 +139,64 @@ namespace ASC.Web.Studio.Core.Notify
                  (r, p, scope) =>
                  {
                      var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
+                     var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
                      var (tenantManager, webItemSecurity, userManager, options, _, _, _, _, _, _, _, _, _, _, _) = scopeClass;
                      try
                      {
                          // culture
                          var u = Constants.LostUser;
-                         var tenant = tenantManager.GetCurrentTenant();
-
-                         if (32 <= r.Recipient.ID.Length)
+                         if (!(coreBaseSettings.Personal && r.NotifyAction.ID == Actions.PersonalConfirmation.ID))
                          {
-                             var guid = default(Guid);
-                             try
+                             var tenant = tenantManager.GetCurrentTenant();
+
+                             if (32 <= r.Recipient.ID.Length)
                              {
-                                 guid = new Guid(r.Recipient.ID);
+                                 var guid = default(Guid);
+                                 try
+                                 {
+                                     guid = new Guid(r.Recipient.ID);
+                                 }
+                                 catch (FormatException) { }
+                                 catch (OverflowException) { }
+
+                                 if (guid != default)
+                                 {
+                                     u = userManager.GetUsers(guid);
+                                 }
                              }
-                             catch (FormatException) { }
-                             catch (OverflowException) { }
 
-                             if (guid != default)
+                             if (Constants.LostUser.Equals(u))
                              {
-                                 u = userManager.GetUsers(guid);
+                                 u = userManager.GetUserByEmail(r.Recipient.ID);
                              }
-                         }
 
-                         if (Constants.LostUser.Equals(u))
-                         {
-                             u = userManager.GetUserByEmail(r.Recipient.ID);
-                         }
-
-                         if (Constants.LostUser.Equals(u))
-                         {
-                             u = userManager.GetUserByUserName(r.Recipient.ID);
-                         }
-
-                         if (!Constants.LostUser.Equals(u))
-                         {
-                             var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
-                             Thread.CurrentThread.CurrentCulture = culture;
-                             Thread.CurrentThread.CurrentUICulture = culture;
-
-                             // security
-                             var tag = r.Arguments.Find(a => a.Tag == CommonTags.ModuleID);
-                             var productId = tag != null ? (Guid)tag.Value : Guid.Empty;
-                             if (productId == Guid.Empty)
+                             if (Constants.LostUser.Equals(u))
                              {
-                                 tag = r.Arguments.Find(a => a.Tag == CommonTags.ProductID);
-                                 productId = tag != null ? (Guid)tag.Value : Guid.Empty;
+                                 u = userManager.GetUserByUserName(r.Recipient.ID);
                              }
-                             if (productId == Guid.Empty)
+
+                             if (!Constants.LostUser.Equals(u))
                              {
-                                 productId = (Guid)(CallContext.GetData("asc.web.product_id") ?? Guid.Empty);
-                             }
-                             if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
-                             {
-                                 return !webItemSecurity.IsAvailableForUser(productId, u.ID);
+                                 var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
+                                 Thread.CurrentThread.CurrentCulture = culture;
+                                 Thread.CurrentThread.CurrentUICulture = culture;
+
+                                 // security
+                                 var tag = r.Arguments.Find(a => a.Tag == CommonTags.ModuleID);
+                                 var productId = tag != null ? (Guid)tag.Value : Guid.Empty;
+                                 if (productId == Guid.Empty)
+                                 {
+                                     tag = r.Arguments.Find(a => a.Tag == CommonTags.ProductID);
+                                     productId = tag != null ? (Guid)tag.Value : Guid.Empty;
+                                 }
+                                 if (productId == Guid.Empty)
+                                 {
+                                     productId = (Guid)(CallContext.GetData("asc.web.product_id") ?? Guid.Empty);
+                                 }
+                                 if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
+                                 {
+                                     return !webItemSecurity.IsAvailableForUser(productId, u.ID);
+                                 }
                              }
                          }
 
@@ -350,12 +362,13 @@ namespace ASC.Web.Studio.Core.Notify
 
         public static byte[] GetDefaultMailLogo()
         {
-            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "skins", "default", "images", "onlyoffice_logo", "dark_general.png");
+            var filePath = CrossPlatform.PathCombine(AppDomain.CurrentDomain.BaseDirectory, "skins", "default", "images", "onlyoffice_logo", "dark_general.png");
 
             return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
         }
     }
 
+    [Scope]
     public class NotifyConfigurationScope
     {
         private TenantManager TenantManager { get; }
@@ -442,34 +455,14 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
-    public static class NotifyConfigurationExtension
+    public class NotifyConfigurationExtension
     {
-        public static DIHelper AddNotifyConfiguration(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<NotifyConfigurationScope>())
-            {
-
-                return services
-                    .AddJabberStylerService()
-                    .AddTextileStylerService()
-                    .AddPushStylerService()
-                    .AddTenantManagerService()
-                    .AddAuthContextService()
-                    .AddUserManagerService()
-                    .AddDisplayUserSettingsService()
-                    .AddTenantExtraService()
-                    .AddWebItemManagerSecurity()
-                    .AddWebItemManager()
-                    .AddTenantLogoManagerService()
-                    .AddTenantUtilService()
-                    .AddCoreBaseSettingsService()
-                    .AddAdditionalWhiteLabelSettingsService()
-                    .AddCommonLinkUtilityService()
-                    .AddMailWhiteLabelSettingsService()
-                    .AddStudioNotifyHelperService();
-            }
-
-            return services;
+            services.TryAdd<NotifyConfigurationScope>();
+            services.TryAdd<TextileStyler>();
+            services.TryAdd<JabberStyler>();
+            services.TryAdd<PushStyler>();
         }
     }
 }

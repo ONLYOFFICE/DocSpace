@@ -32,6 +32,7 @@
     <None Remove="protos\ConsumerCacheItem.proto" />
     <None Remove="protos\CreateClientProto.proto" />
     <None Remove="protos\DisableClientProto.proto" />
+    <None Remove="protos\EncryptionSettingsProto.proto" />
     <None Remove="protos\GroupCacheItem.proto" />
     <None Remove="protos\NotifyInvoke.proto" />
     <None Remove="protos\NotifyMessage.proto" />
@@ -47,23 +48,25 @@
     <None Remove="protos\UserPhotoCacheItem.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.CloudFront" Version="3.3.102.11" />
-    <PackageReference Include="AWSSDK.Core" Version="3.3.107.18" />
-    <PackageReference Include="AWSSDK.S3" Version="3.3.111.19" />
-    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.3.101.172" />
-    <PackageReference Include="Grpc.Tools" Version="2.30.0">
+    <PackageReference Include="AWSSDK.CloudFront" Version="3.5.3.16" />
+    <PackageReference Include="AWSSDK.Core" Version="3.5.1.25" />
+    <PackageReference Include="AWSSDK.S3" Version="3.5.3.3" />
+    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.5.0.27" />
+    <PackageReference Include="Grpc.Tools" Version="2.32.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MailKit" Version="2.5.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.5" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
-    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.5" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.2" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0" />
+    <PackageReference Include="System.Text.Json" Version="5.0.2" />
     <PackageReference Include="Telegram.Bot" Version="15.7.1" />
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="protos\CreateClientProto.proto" />
+    <Protobuf Include="protos\EncryptionSettingsProto.proto" />
     <Protobuf Include="protos\NotifyInvoke.proto" />
     <Protobuf Include="protos\NotifyMessage.proto" />
     <Protobuf Include="protos\DisableClientProto.proto" />

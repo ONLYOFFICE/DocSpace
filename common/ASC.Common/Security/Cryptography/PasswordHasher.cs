@@ -34,6 +34,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Security.Cryptography
 {
+    [Singletone]
     public class PasswordHasher
     {
         public PasswordHasher(IConfiguration configuration, MachinePseudoKeys machinePseudoKeys)
@@ -93,15 +94,6 @@ namespace ASC.Security.Cryptography
             var hash = BitConverter.ToString(hashBytes).Replace("-", string.Empty).ToLower();
 
             return hash;
-        }
-    }
-    public static class PasswordHasherExtension
-    {
-        public static DIHelper AddPasswordHasherService(this DIHelper services)
-        {
-            services.TryAddSingleton<PasswordHasher>();
-
-            return services.AddMachinePseudoKeysService();
         }
     }
 

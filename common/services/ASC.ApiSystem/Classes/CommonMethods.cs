@@ -39,12 +39,8 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
-using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
-using ASC.Core.Users;
 using ASC.Security.Cryptography;
-using ASC.Web.Core.Helpers;
-using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
@@ -57,6 +53,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.ApiSystem.Controllers
 {
+    [Scope]
     public class CommonMethods
     {
         private IHttpContextAccessor HttpContextAccessor { get; }
@@ -78,8 +75,10 @@ namespace ASC.ApiSystem.Controllers
         private HostedSolution HostedSolution { get; }
 
         private IMemoryCache MemoryCache { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public TenantManager TenantManager { get; }
+
+        private CoreBaseSettings CoreBaseSettings { get; }
+
+        private TenantManager TenantManager { get; }
 
         public CommonMethods(
             IHttpContextAccessor httpContextAccessor,
@@ -305,7 +304,7 @@ namespace ASC.ApiSystem.Controllers
             try
             {
                 var data = string.Format("secret={0}&remoteip={1}&response={2}", Configuration["recaptcha:private-key"], ip, response);
-                var url = Configuration["recaptcha:verify-url"] ?? "https://www.google.com/recaptcha/api/siteverify";
+                var url = Configuration["recaptcha:verify-url"] ?? "https://www.recaptcha.net/recaptcha/api/siteverify";
 
                 var webRequest = (HttpWebRequest)WebRequest.Create(url);
                 webRequest.Method = WebRequestMethods.Http.Post;
@@ -340,29 +339,6 @@ namespace ASC.ApiSystem.Controllers
                 Log.Error(ex);
             }
             return false;
-        }
-    }
-
-    public static class CommonMethodsExtention
-    {
-        public static DIHelper AddCommonMethods(this DIHelper services)
-        {
-            if (services.TryAddScoped<CommonMethods>())
-            {
-                return services
-                    .AddCoreSettingsService()
-                    .AddCommonLinkUtilityService()
-                    .AddEmailValidationKeyProviderService()
-                    .AddApiSystemHelper()
-                    .AddTenantManagerService()
-                    .AddUserFormatter()
-                    .AddUserManagerWrapperService()
-                    .AddSettingsManagerService()
-                    .AddSecurityContextService()
-                    .AddHostedSolutionService();
-            }
-
-            return services;
         }
     }
 }

@@ -28,36 +28,44 @@ using System;
 using System.Collections.Generic;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Data.Backup.Contracts;
 using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Service;
 using ASC.Data.Backup.Utils;
-using ASC.Web.Files.Utils;
 
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
 namespace ASC.Data.Backup.Storage
 {
+    [Scope]
     public class BackupStorageFactory
     {
-        private IServiceProvider ServiceProvider { get; }
-        private IConfiguration Configuration { get; }
+        private ConfigurationExtension Configuration { get; }
         private DocumentsBackupStorage DocumentsBackupStorage { get; }
         private DataStoreBackupStorage DataStoreBackupStorage { get; }
+        private ILog Log { get; }
         private LocalBackupStorage LocalBackupStorage { get; }
         private ConsumerBackupStorage ConsumerBackupStorage { get; }
         private TenantManager TenantManager { get; }
 
-        public BackupStorageFactory(ConsumerBackupStorage consumerBackupStorage, LocalBackupStorage localBackupStorage, IServiceProvider serviceProvider, IConfiguration configuration, DocumentsBackupStorage documentsBackupStorage, TenantManager tenantManager, DataStoreBackupStorage dataStoreBackupStorage)
+        public BackupStorageFactory(
+            ConsumerBackupStorage consumerBackupStorage,
+            LocalBackupStorage localBackupStorage,
+            ConfigurationExtension configuration,
+            DocumentsBackupStorage documentsBackupStorage,
+            TenantManager tenantManager,
+            DataStoreBackupStorage dataStoreBackupStorage,
+            IOptionsMonitor<ILog> options)
         {
-            ServiceProvider = serviceProvider;
             Configuration = configuration;
             DocumentsBackupStorage = documentsBackupStorage;
             DataStoreBackupStorage = dataStoreBackupStorage;
+            Log = options.CurrentValue;
             LocalBackupStorage = localBackupStorage;
             ConsumerBackupStorage = consumerBackupStorage;
             TenantManager = tenantManager;
@@ -65,7 +73,15 @@ namespace ASC.Data.Backup.Storage
 
         public IBackupStorage GetBackupStorage(BackupRecord record)
         {
-            return GetBackupStorage(record.StorageType, record.TenantId, JsonConvert.DeserializeObject<Dictionary<string, string>>(record.StorageParams));
+            try
+            {
+                return GetBackupStorage(record.StorageType, record.TenantId, JsonConvert.DeserializeObject<Dictionary<string, string>>(record.StorageParams));
+            }
+            catch (Exception error)
+            {
+                Log.Error("can't get backup storage for record " + record.Id, error);
+                return null;
+            }
         }
 
         public IBackupStorage GetBackupStorage(BackupStorageType type, int tenantId, Dictionary<string, string> storageParams)
@@ -78,45 +94,27 @@ namespace ASC.Data.Backup.Storage
             {
                 case BackupStorageType.Documents:
                 case BackupStorageType.ThridpartyDocuments:
-                    {
-                        DocumentsBackupStorage.Init(tenantId, webConfigPath);
-                        return DocumentsBackupStorage;
-                    }
+                {
+                    DocumentsBackupStorage.Init(tenantId, webConfigPath);
+                    return DocumentsBackupStorage;
+                }
                 case BackupStorageType.DataStore:
-                    {
-                        DataStoreBackupStorage.Init(tenantId, webConfigPath);
-                        return DataStoreBackupStorage;
-                    }
+                {
+                    DataStoreBackupStorage.Init(tenantId, webConfigPath);
+                    return DataStoreBackupStorage;
+                }
                 case BackupStorageType.Local:
                     return LocalBackupStorage;
                 case BackupStorageType.ThirdPartyConsumer:
-                    {
-                        if (storageParams == null) return null;
-                        TenantManager.SetCurrentTenant(tenantId);
-                        ConsumerBackupStorage.Init(storageParams);
-                        return ConsumerBackupStorage;
-                    }
+                {
+                    if (storageParams == null) return null;
+                    TenantManager.SetCurrentTenant(tenantId);
+                    ConsumerBackupStorage.Init(storageParams);
+                    return ConsumerBackupStorage;
+                }
                 default:
                     throw new InvalidOperationException("Unknown storage type.");
             }
-        }
-    }
-    public static class BackupStorageFactoryExtension
-    {
-        public static DIHelper AddBackupStorageFactory(this DIHelper services)
-        {
-            if (services.TryAddScoped<BackupStorageFactory>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddDocumentsBackupStorage()
-                    .AddDataStoreBackupStorage()
-                    .AddLocalBackupStorage()
-                    .AddConsumerBackupStorage()
-                    .AddFileConverterService();
-            }
-
-            return services;
         }
     }
 }

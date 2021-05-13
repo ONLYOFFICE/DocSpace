@@ -33,8 +33,6 @@ namespace ASC.Web.Core.Utility.Settings
     [Serializable]
     public class WizardSettings : ISettings
     {
-        public bool Analytics { get; set; }
-
         public bool Completed { get; set; }
 
         public Guid ID
@@ -47,7 +45,6 @@ namespace ASC.Web.Core.Utility.Settings
         {
             return new WizardSettings
             {
-                Analytics = false,
                 Completed = true
             };
         }

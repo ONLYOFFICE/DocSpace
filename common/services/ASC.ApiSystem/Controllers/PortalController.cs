@@ -57,6 +57,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.ApiSystem.Controllers
 {
+    [Scope]
     [ApiController]
     [Route("[controller]")]
     public class PortalController : ControllerBase
@@ -248,7 +249,6 @@ namespace ASC.ApiSystem.Controllers
                 Industry = (TenantIndustry)model.Industry,
                 Spam = model.Spam,
                 Calls = model.Calls,
-                Analytics = model.Analytics,
                 LimitedControlPanel = model.LimitedControlPanel
             };
 
@@ -369,7 +369,7 @@ namespace ASC.ApiSystem.Controllers
         [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult Remove([FromQuery] TenantModel model)
         {
-            if (!CommonMethods.GetTenant(model, out Tenant tenant))
+            if (!CommonMethods.GetTenant(model, out var tenant))
             {
                 Log.Error("Model without tenant");
 
@@ -404,7 +404,7 @@ namespace ASC.ApiSystem.Controllers
         [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult ChangeStatus(TenantModel model)
         {
-            if (!CommonMethods.GetTenant(model, out Tenant tenant))
+            if (!CommonMethods.GetTenant(model, out var tenant))
             {
                 Log.Error("Model without tenant");
 
@@ -456,7 +456,7 @@ namespace ASC.ApiSystem.Controllers
                 });
             }
 
-            if (!CheckExistingNamePortal((model.PortalName ?? "").Trim(), out object error))
+            if (!CheckExistingNamePortal((model.PortalName ?? "").Trim(), out var error))
             {
                 return BadRequest(error);
             }
@@ -695,25 +695,5 @@ namespace ASC.ApiSystem.Controllers
         #endregion
 
         #endregion
-    }
-
-    public static class PortalControllerExtention
-    {
-        public static DIHelper AddPortalController(this DIHelper services)
-        {
-            return services
-                .AddCommonMethods()
-                .AddTimeZonesProvider()
-                .AddCommonConstants()
-                .AddUserManagerService()
-                .AddUserFormatter()
-                .AddCoreSettingsService()
-                .AddHostedSolutionService()
-                .AddApiSystemHelper()
-                .AddSettingsManagerService()
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                ;
-        }
     }
 }

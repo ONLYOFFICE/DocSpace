@@ -53,6 +53,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Scope(Additional = typeof(StudioNotifyServiceExtension))]
     public class StudioNotifyService
     {
         private readonly StudioNotifyServiceHelper client;
@@ -73,7 +74,6 @@ namespace ASC.Web.Studio.Core.Notify
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         private SettingsManager SettingsManager { get; }
         private WebItemSecurity WebItemSecurity { get; }
-        private WebItemManager WebItemManager { get; }
         private ILog Log { get; }
 
         public StudioNotifyService(
@@ -92,7 +92,6 @@ namespace ASC.Web.Studio.Core.Notify
             DisplayUserSettingsHelper displayUserSettingsHelper,
             SettingsManager settingsManager,
             WebItemSecurity webItemSecurity,
-            WebItemManager webItemManager,
             IOptionsMonitor<ILog> option)
         {
             Log = option.Get("ASC.Notify");
@@ -109,7 +108,6 @@ namespace ASC.Web.Studio.Core.Notify
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             SettingsManager = settingsManager;
             WebItemSecurity = webItemSecurity;
-            WebItemManager = webItemManager;
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
         }
@@ -181,7 +179,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void UserPasswordChange(UserInfo userInfo)
         {
             var hash = Authentication.GetUserPasswordStamp(userInfo.ID).ToString("s");
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash + userInfo.ID, userInfo.ID);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.ID);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 
@@ -220,7 +218,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendEmailActivationInstructions(UserInfo user, string email)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailActivation, null, AuthContext.CurrentAccount.ID);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailActivation, null, user.ID);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonActivateEmail;
 
@@ -272,8 +270,7 @@ namespace ASC.Web.Studio.Core.Notify
                     : Actions.MailboxCreated,
                 null,
                 StudioNotifyHelper.RecipientFromEmail(toEmails, false),
-                new[] { EMailSenderName },
-                null);
+                new[] { EMailSenderName });
         }
 
         public void SendMailboxPasswordChanged(List<string> toEmails, string username, string address)
@@ -283,7 +280,6 @@ namespace ASC.Web.Studio.Core.Notify
                 null,
                 StudioNotifyHelper.RecipientFromEmail(toEmails, false),
                 new[] { EMailSenderName },
-                null,
                 new TagValue(Tags.UserName, username ?? string.Empty),
                 new TagValue(Tags.Address, address ?? string.Empty));
         }
@@ -319,7 +315,10 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void UserHasJoin()
         {
-            client.SendNoticeAsync(Actions.UserHasJoin, null);
+            if (!CoreBaseSettings.Personal)
+            {
+                client.SendNoticeAsync(Actions.UserHasJoin, null);
+            }
         }
 
         public void SendJoinMsg(string email, EmployeeType emplType)
@@ -343,7 +342,6 @@ namespace ASC.Web.Studio.Core.Notify
 
             INotifyAction notifyAction;
             var footer = "social";
-            var analytics = string.Empty;
 
             if (CoreBaseSettings.Personal)
             {
@@ -376,7 +374,6 @@ namespace ASC.Web.Studio.Core.Notify
             else
             {
                 notifyAction = Actions.SaasUserWelcomeV10;
-                analytics = StudioNotifyHelper.GetNotifyAnalytics(notifyAction, false, false, true, false);
             }
 
             string greenButtonText() => TenantExtra.Enterprise
@@ -391,8 +388,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(Tags.MyStaffLink, GetMyStaffLink()),
                 TagValues.GreenButton(greenButtonText, CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')),
                 new TagValue(CommonTags.Footer, footer),
-                new TagValue(CommonTags.MasterTemplate, CoreBaseSettings.Personal ? "HtmlMasterPersonal" : "HtmlMaster"),
-                new TagValue(CommonTags.Analytics, analytics));
+                new TagValue(CommonTags.MasterTemplate, CoreBaseSettings.Personal ? "HtmlMasterPersonal" : "HtmlMaster"));
         }
 
         public void GuestInfoAddedAfterInvite(UserInfo newUserInfo)
@@ -400,7 +396,6 @@ namespace ASC.Web.Studio.Core.Notify
             if (!UserManager.UserExists(newUserInfo)) return;
 
             INotifyAction notifyAction;
-            var analytics = string.Empty;
             var footer = "social";
 
             if (TenantExtra.Enterprise)
@@ -417,8 +412,6 @@ namespace ASC.Web.Studio.Core.Notify
             else
             {
                 notifyAction = Actions.SaasGuestWelcomeV10;
-                var tenant = TenantManager.GetCurrentTenant();
-                analytics = StudioNotifyHelper.GetNotifyAnalytics(notifyAction, false, false, false, true);
             }
 
             string greenButtonText() => TenantExtra.Enterprise
@@ -432,8 +425,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
                 new TagValue(Tags.MyStaffLink, GetMyStaffLink()),
                 TagValues.GreenButton(greenButtonText, CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')),
-                new TagValue(CommonTags.Footer, footer),
-                new TagValue(CommonTags.Analytics, analytics));
+                new TagValue(CommonTags.Footer, footer));
         }
 
         public void UserInfoActivation(UserInfo newUserInfo)
@@ -442,7 +434,6 @@ namespace ASC.Web.Studio.Core.Notify
                 throw new ArgumentException("User is already activated!");
 
             INotifyAction notifyAction;
-            var analytics = string.Empty;
             var footer = "social";
 
             if (TenantExtra.Enterprise)
@@ -459,7 +450,6 @@ namespace ASC.Web.Studio.Core.Notify
             else
             {
                 notifyAction = Actions.SaasUserActivationV10;
-                analytics = StudioNotifyHelper.GetNotifyAnalytics(notifyAction, false, false, true, false);
             }
 
             var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
@@ -473,8 +463,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(Tags.ActivateUrl, confirmationUrl),
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
-                new TagValue(CommonTags.Footer, footer),
-                new TagValue(CommonTags.Analytics, analytics));
+                new TagValue(CommonTags.Footer, footer));
         }
 
         public void GuestInfoActivation(UserInfo newUserInfo)
@@ -483,7 +472,6 @@ namespace ASC.Web.Studio.Core.Notify
                 throw new ArgumentException("User is already activated!");
 
             INotifyAction notifyAction;
-            var analytics = string.Empty;
             var footer = "social";
 
             if (TenantExtra.Enterprise)
@@ -500,7 +488,6 @@ namespace ASC.Web.Studio.Core.Notify
             else
             {
                 notifyAction = Actions.SaasGuestActivationV10;
-                analytics = StudioNotifyHelper.GetNotifyAnalytics(notifyAction, false, false, false, true);
             }
 
             var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
@@ -514,8 +501,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(Tags.ActivateUrl, confirmationUrl),
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
-                new TagValue(CommonTags.Footer, footer),
-                new TagValue(CommonTags.Analytics, analytics));
+                new TagValue(CommonTags.Footer, footer));
         }
 
         public void SendMsgProfileDeletion(UserInfo user)
@@ -559,7 +545,6 @@ namespace ASC.Web.Studio.Core.Notify
                             null,
                             new IRecipient[] { admin },
                             new[] { EMailSenderName },
-                            null,
                             new TagValue(Tags.FromUserName, user.DisplayUserName(DisplayUserSettingsHelper)),
                             new TagValue(Tags.FromUserLink, GetUserProfileLink(user)));
                     }
@@ -655,10 +640,6 @@ namespace ASC.Web.Studio.Core.Notify
 
                 tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonConfigureRightNow, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetAdministration(ManagementType.General))));
 
-                var tenant = TenantManager.GetCurrentTenant();
-                var analytics = StudioNotifyHelper.GetNotifyAnalytics(notifyAction, false, true, false, false);
-                tagValues.Add(new TagValue(CommonTags.Analytics, analytics));
-
                 tagValues.Add(TagValues.TableTop());
                 tagValues.Add(TagValues.TableItem(1, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-regional-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_regional, null, null));
                 tagValues.Add(TagValues.TableItem(2, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-brand-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_brand, null, null));
@@ -753,7 +734,6 @@ namespace ASC.Web.Studio.Core.Notify
                 null,
                 new IRecipient[] { owner },
                 new[] { EMailSenderName },
-                null,
                 TagValues.GreenButton(greenButtonText, confirmOwnerUpdateUrl),
                 new TagValue(Tags.UserName, newOwner.DisplayUserName(DisplayUserSettingsHelper)),
                 new TagValue(Tags.OwnerName, owner.DisplayUserName(DisplayUserSettingsHelper)));
@@ -765,7 +745,6 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 INotifyAction notifyAction;
                 var footer = "common";
-                var analytics = string.Empty;
 
                 if (TenantExtra.Enterprise)
                 {
@@ -781,8 +760,6 @@ namespace ASC.Web.Studio.Core.Notify
                 else
                 {
                     notifyAction = Actions.SaasAdminActivationV10;
-                    var tenant = TenantManager.GetCurrentTenant();
-                    analytics = StudioNotifyHelper.GetNotifyAnalytics(notifyAction, false, true, false, false);
                 }
 
                 var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(u.Email, ConfirmType.EmailActivation);
@@ -798,8 +775,7 @@ namespace ASC.Web.Studio.Core.Notify
                     new TagValue(Tags.MyStaffLink, GetMyStaffLink()),
                     new TagValue(Tags.ActivateUrl, confirmationUrl),
                     TagValues.GreenButton(greenButtonText, confirmationUrl),
-                    new TagValue(CommonTags.Footer, footer),
-                    new TagValue(CommonTags.Analytics, analytics));
+                    new TagValue(CommonTags.Footer, footer));
             }
             catch (Exception error)
             {
@@ -809,7 +785,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         #region Personal
 
-        public void SendInvitePersonal(string email, string additionalMember = "", bool analytics = true)
+        public void SendInvitePersonal(string email, string additionalMember = "")
         {
             var newUserInfo = UserManager.GetUserByEmail(email);
             if (UserManager.UserExists(newUserInfo)) return;
@@ -820,7 +796,6 @@ namespace ASC.Web.Studio.Core.Notify
 
             var confirmUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmpInvite, (int)EmployeeType.User)
                              + "&emplType=" + (int)EmployeeType.User
-                             + "&analytics=" + analytics
                              + "&lang=" + lang
                              + additionalMember;
 
@@ -928,7 +903,6 @@ namespace ASC.Web.Studio.Core.Notify
                     null,
                     new IRecipient[] { recipient },
                     new[] { EMailSenderName },
-                    null,
                     new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                     new TagValue(Tags.UserLastName, u.LastName.HtmlEncode()),
                     new TagValue(Tags.UserEmail, u.Email.HtmlEncode()),
@@ -990,7 +964,6 @@ namespace ASC.Web.Studio.Core.Notify
                     null,
                     new[] { StudioNotifyHelper.ToRecipient(u.ID) },
                     new[] { EMailSenderName },
-                    null,
                     new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                     new TagValue(Tags.PortalUrl, serverRootPath),
                     new TagValue(Tags.ControlPanelUrl, GetControlPanelUrl(serverRootPath)));
@@ -1014,6 +987,7 @@ namespace ASC.Web.Studio.Core.Notify
         #endregion
     }
 
+    [Scope]
     public class StudioNotifyServiceScope
     {
         private TenantManager TenantManager { get; }
@@ -1034,30 +1008,9 @@ namespace ASC.Web.Studio.Core.Notify
 
     public static class StudioNotifyServiceExtension
     {
-        public static DIHelper AddStudioNotifyServiceService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<StudioNotifyService>())
-            {
-                services.TryAddScoped<StudioNotifyServiceScope>();
-                return services
-                    .AddDisplayUserSettingsService()
-                    .AddMailWhiteLabelSettingsService()
-                    .AddAdditionalWhiteLabelSettingsService()
-                    .AddStudioNotifyServiceHelper()
-                    .AddUserManagerService()
-                    .AddStudioNotifyHelperService()
-                    .AddTenantExtraService()
-                    .AddAuthManager()
-                    .AddAuthContextService()
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddCommonLinkUtilityService()
-                    .AddSetupInfo()
-                    .AddWebItemSecurity()
-                    .AddWebItemManager();
-            }
-
-            return services;
+            services.TryAdd<StudioNotifyServiceScope>();
         }
     }
 }

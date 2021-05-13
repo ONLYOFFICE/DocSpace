@@ -35,7 +35,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading;
-using ASC.Common.Threading.Progress;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
@@ -46,12 +46,13 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
+    [Scope(Additional = typeof(StaticUploaderExtension))]
     public class StaticUploader
     {
         private static readonly TaskScheduler Scheduler;
         private static readonly CancellationTokenSource TokenSource;
 
-        private static readonly ICache Cache;
+        private ICache Cache { get; set; }
         private static readonly object Locker;
 
         private IServiceProvider ServiceProvider { get; }
@@ -63,7 +64,6 @@ namespace ASC.Data.Storage
         static StaticUploader()
         {
             Scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
-            Cache = AscCache.Memory;
             Locker = new object();
             TokenSource = new CancellationTokenSource();
         }
@@ -72,14 +72,16 @@ namespace ASC.Data.Storage
             IServiceProvider serviceProvider,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            StorageSettingsHelper storageSettingsHelper,
+            StorageSettingsHelper storageSettingsHelper, 
+            ICache cache,
             DistributedTaskQueueOptionsManager options)
         {
+            Cache = cache;
             ServiceProvider = serviceProvider;
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
             StorageSettingsHelper = storageSettingsHelper;
-            Queue = options.Get(nameof(StaticUploader));
+            Queue = options.Get<UploadOperationProgress>();
         }
 
         public string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
@@ -129,7 +131,7 @@ namespace ASC.Data.Storage
             return task;
         }
 
-        public void UploadDir(string relativePath, string mappedPath)
+        public async Task UploadDir(string relativePath, string mappedPath)
         {
             if (!CanUpload()) return;
             if (!Directory.Exists(mappedPath)) return;
@@ -143,7 +145,7 @@ namespace ASC.Data.Storage
                 uploadOperation = Queue.GetTask<UploadOperationProgress>(key);
                 if (uploadOperation != null) return;
 
-                uploadOperation = new UploadOperationProgress(key, tenant.TenantId, relativePath, mappedPath);
+                uploadOperation = new UploadOperationProgress(ServiceProvider, key, tenant.TenantId, relativePath, mappedPath);
                 Queue.QueueTask(uploadOperation);
             }
         }
@@ -241,8 +243,10 @@ namespace ASC.Data.Storage
         private IServiceProvider ServiceProvider { get; }
         public int TenantId { get; }
 
-        public UploadOperationProgress(string key, int tenantId, string relativePath, string mappedPath)
+        public UploadOperationProgress(IServiceProvider serviceProvider, string key, int tenantId, string relativePath, string mappedPath)
         {
+            ServiceProvider = serviceProvider;
+
             Id = key;
             Status = DistributedTaskStatus.Created;
 
@@ -275,7 +279,7 @@ namespace ASC.Data.Storage
             foreach (var file in directoryFiles)
             {
                 var filePath = file.Substring(mappedPath.TrimEnd('/').Length);
-                staticUploader.UploadFile(Path.Combine(relativePath, filePath), file, (res) => StepDone());
+                staticUploader.UploadFile(CrossPlatform.PathCombine(relativePath, filePath), file, (res) => StepDone());
             }
 
             tenant.SetStatus(Core.Tenants.TenantStatus.Active);
@@ -287,6 +291,7 @@ namespace ASC.Data.Storage
             return MemberwiseClone();
         }
     }
+    [Scope]
     public class StaticUploaderScope
     {
         private TenantManager TenantManager { get; }
@@ -320,17 +325,10 @@ namespace ASC.Data.Storage
 
     public static class StaticUploaderExtension
     {
-        public static DIHelper AddStaticUploaderService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<StaticUploader>())
-            {
-                services.TryAddScoped<StaticUploaderScope>();
-                return services
-                    .AddTenantManagerService()
-                    .AddCdnStorageSettingsService();
-            }
-
-            return services;
+            services.TryAdd<StaticUploaderScope>();
+            services.AddDistributedTaskQueueService<UploadOperationProgress>(1);
         }
     }
 }

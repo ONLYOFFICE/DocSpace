@@ -32,17 +32,16 @@ using System.Threading;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Security.Cryptography;
 
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
 {
+    [Singletone]
     public class UserServiceCache
     {
         public const string USERS = "users";
@@ -50,7 +49,7 @@ namespace ASC.Core.Caching
         public const string REFS = "refs";
 
         public TrustInterval TrustInterval { get; set; }
-        public ICache Cache { get; }
+        internal ICache Cache { get; }
         internal CoreBaseSettings CoreBaseSettings { get; }
         internal ICacheNotify<UserInfoCacheItem> CacheUserInfoItem { get; }
         internal ICacheNotify<UserPhotoCacheItem> CacheUserPhotoItem { get; }
@@ -62,10 +61,11 @@ namespace ASC.Core.Caching
             ICacheNotify<UserInfoCacheItem> cacheUserInfoItem,
             ICacheNotify<UserPhotoCacheItem> cacheUserPhotoItem,
             ICacheNotify<GroupCacheItem> cacheGroupCacheItem,
-            ICacheNotify<UserGroupRefCacheItem> cacheUserGroupRefItem)
+            ICacheNotify<UserGroupRefCacheItem> cacheUserGroupRefItem, 
+            ICache cache)
         {
             TrustInterval = new TrustInterval();
-            Cache = AscCache.Memory;
+            Cache = cache;
             CoreBaseSettings = coreBaseSettings;
             CacheUserInfoItem = cacheUserInfoItem;
             CacheUserPhotoItem = cacheUserPhotoItem;
@@ -138,6 +138,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     class ConfigureCachedUserService : IConfigureNamedOptions<CachedUserService>
     {
         internal IOptionsSnapshot<EFUserService> Service { get; }
@@ -174,6 +175,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     public class CachedUserService : IUserService, ICachedService
     {
         internal IUserService Service { get; set; }
@@ -257,6 +259,12 @@ namespace ASC.Core.Caching
                 return u;
             }
         }
+
+        public UserInfo GetUser(int tenant, string email)
+        {
+            return Service.GetUser(tenant, email);
+        }
+
 
         /// <summary>
         /// For Personal only
@@ -518,30 +526,6 @@ namespace ASC.Core.Caching
         class UserPhoto
         {
             public string Key { get; set; }
-        }
-    }
-    public static class UserConfigExtension
-    {
-        public static DIHelper AddUserService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EFUserService>())
-            {
-                services.TryAddScoped<IUserService, CachedUserService>();
-
-                services.TryAddScoped<IConfigureOptions<EFUserService>, ConfigureEFUserService>();
-                services.TryAddScoped<IConfigureOptions<CachedUserService>, ConfigureCachedUserService>();
-
-                services.TryAddSingleton<UserServiceCache>();
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-                services
-                    .AddCoreSettingsService()
-                    .AddLoggerService()
-                    .AddUserDbContextService()
-                    .AddPasswordHasherService();
-            }
-
-            return services;
         }
     }
 }

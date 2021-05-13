@@ -40,14 +40,15 @@ using ASC.Core.Tenants;
 
 namespace ASC.VoipService.Dao
 {
+    [Singletone]
     public class VoipDaoCache
     {
-        public ICache Cache { get; }
+        internal ICache Cache { get; }
         private ICacheNotify<CachedVoipItem> Notify { get; }
 
-        public VoipDaoCache(ICacheNotify<CachedVoipItem> notify)
+        public VoipDaoCache(ICacheNotify<CachedVoipItem> notify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             Notify = notify;
             Notify.Subscribe((c) => Cache.Remove(CachedVoipDao.GetCacheKey(c.Tenant)), CacheNotifyAction.Any);
         }
@@ -58,6 +59,7 @@ namespace ASC.VoipService.Dao
         }
     }
 
+    [Scope]
     public class CachedVoipDao : VoipDao
     {
         private readonly ICache cache;
@@ -98,7 +100,7 @@ namespace ASC.VoipService.Dao
             var numbers = cache.Get<List<VoipPhone>>(GetCacheKey(TenantID));
             if (numbers == null)
             {
-                numbers = new List<VoipPhone>(base.GetNumbers());
+                numbers = new List<VoipPhone>(base.GetAllNumbers());
                 cache.Insert(GetCacheKey(TenantID), numbers, DateTime.UtcNow.Add(timeout));
             }
 
@@ -108,23 +110,6 @@ namespace ASC.VoipService.Dao
         public static string GetCacheKey(int tenant)
         {
             return "voip" + tenant.ToString(CultureInfo.InvariantCulture);
-        }
-    }
-
-    public static class VoipDaoExtention
-    {
-        public static DIHelper AddVoipDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<VoipDao, CachedVoipDao>();
-            services.TryAddSingleton<VoipDaoCache>();
-
-            return services
-                .AddDbContextManagerService<VoipDbContext>()
-                .AddAuthContextService()
-                .AddTenantUtilService()
-                .AddSecurityContextService()
-                .AddBaseCommonLinkUtilityService()
-                .AddConsumerFactoryService();
         }
     }
 }

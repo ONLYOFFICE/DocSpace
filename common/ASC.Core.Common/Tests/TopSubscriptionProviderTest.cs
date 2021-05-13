@@ -42,7 +42,7 @@ namespace ASC.Core.Common.Tests
     class TopSubscriptionProviderTest
     {
         private TopSubscriptionProvider subProvider;
-        private RecipientProviderImpl recProvider;
+        private readonly RecipientProviderImpl recProvider;
         private Tenants.Tenant tenant;
         private string sourceId;
         private string actionId;
@@ -54,7 +54,7 @@ namespace ASC.Core.Common.Tests
         private IRecipient testRec;
         private IRecipient testRec2;
         private NotifyAction nAction;
-        private IServiceProvider serviceProvider;
+        private readonly IServiceProvider serviceProvider;
 
         [OneTimeSetUp]
         public void CreateProviders()
