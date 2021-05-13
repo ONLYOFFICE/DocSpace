@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Threading;
@@ -39,7 +40,6 @@ namespace ASC.Data.Storage.Encryption
     {
         private object Locker { get; }
         private FactoryOperation FactoryOperation { get; }
-
         private DistributedTaskQueue Queue { get; }
 
         public EncryptionWorker(FactoryOperation factoryOperation, DistributedTaskQueueOptionsManager options)
@@ -54,21 +54,27 @@ namespace ASC.Data.Storage.Encryption
             EncryptionOperation encryptionOperation;
             lock (Locker)
             {
-                if (Queue.GetTask<EncryptionOperation>(GetCacheKey()) != null) return;
-                encryptionOperation = FactoryOperation.CreateOperation(encryptionSettings, GetCacheKey());
+                if (Queue.GetTask<EncryptionOperation>(GetCacheId()) != null) return;
+                encryptionOperation = FactoryOperation.CreateOperation(encryptionSettings, GetCacheId());
                 Queue.QueueTask(encryptionOperation);
             }
         }
 
         public void Stop()
         {
-            Queue.CancelTask(GetCacheKey());
+            Queue.CancelTask(GetCacheId());
         }
 
-        public string GetCacheKey()
+        public string GetCacheId()
         {
             return typeof(EncryptionOperation).FullName;
         }
+
+        public double? GetEncryptionProgress()
+        {
+            var progress = Queue.GetTasks<EncryptionOperation>().FirstOrDefault();
+            return progress.Percentage;
+    }
     }
 
     [Singletone(Additional = typeof(FactoryOperationExtension))]
