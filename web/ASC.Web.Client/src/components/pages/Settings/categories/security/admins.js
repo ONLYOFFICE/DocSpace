@@ -31,6 +31,8 @@ import {
   EmployeeActivationStatus,
 } from "@appserver/common/constants";
 
+import api from "@appserver/common/api";
+
 import { tablet } from "@appserver/components/utils/device";
 import { ConsoleView } from "react-device-detect";
 
@@ -255,21 +257,6 @@ class PortalAdmins extends Component {
     setRemoveAdmins("");
   }
 
-  onChangeAdmin = async (userIds, isAdmin, productId) => {
-    this.onLoading(true);
-    const { changeAdmins } = this.props;
-    const newFilter = this.onAdminsFilter();
-
-    await changeAdmins(userIds, productId, isAdmin, newFilter)
-      .catch((error) => {
-        toastr.error("accessRights onChangeAdmin", error);
-        this.onLoading(false);
-      })
-      .finally(() => {
-        this.onLoading(false);
-      });
-  };
-
   onLoading = (status) => {
     this.setState({ isLoading: status });
   };
@@ -302,27 +289,57 @@ class PortalAdmins extends Component {
   };
 
   addUsers = (users) => {
-    const { t } = this.props;
+    const { t, admins, setAdmins, getUsersByIds, changeAdmins } = this.props;
 
     if (!users && users.length === 0) return;
-    const userIds = users.map((user) => {
-      return user.key;
+
+    const userIds = [];
+
+    users.forEach((user) => {
+      const isNewAdmin = admins.every((admin) => {
+        return admin.id !== user.key;
+      });
+
+      if (isNewAdmin) userIds.push(user.key);
     });
 
-    this.onChangeAdmin(userIds, true, fullAccessId).then(() => {
+    if (!userIds.length > 0) return;
+
+    changeAdmins(userIds, fullAccessId, true).then(async () => {
+      const updatedAdmins = admins.slice();
+      const addedUsers = await getUsersByIds(userIds);
+      updatedAdmins.push(...addedUsers);
+      setAdmins(updatedAdmins);
       toastr.success(t("administratorsAddedSuccessfully"));
     });
   };
 
   removeAdmins = () => {
-    const { selection, setSelected, t } = this.props;
+    const {
+      selection,
+      setSelected,
+      t,
+      setAdmins,
+      admins,
+      changeAdmins,
+    } = this.props;
 
     if (!selection && selection.length === 0) return;
     const userIds = selection.map((user) => {
       return user.id;
     });
 
-    this.onChangeAdmin(userIds, false, fullAccessId).then(() => {
+    changeAdmins(userIds, fullAccessId, false).then(() => {
+      const newAdmins = admins.filter((admin) => {
+        return selection.every((selectedAdmin) => {
+          if (selectedAdmin.id === admin.id) {
+            return false;
+          }
+          return true;
+        });
+      });
+
+      setAdmins(newAdmins);
       setSelected("none");
       toastr.success(t("administratorsRemovedSuccessfully"));
     });
@@ -377,7 +394,7 @@ class PortalAdmins extends Component {
     this.openModal();
   };
 
-  onCloseModal = () => {
+  closeModal = () => {
     this.setState({
       modalIsVisible: false,
     });
@@ -389,7 +406,27 @@ class PortalAdmins extends Component {
     });
   };
 
-  onFullAccessToggle = () => {};
+  onFullAccessToggle = () => {
+    const { selectedUser } = this.state;
+    const { changeAdmins, admins, setAdmins } = this.props;
+
+    changeAdmins([selectedUser.id], fullAccessId, !selectedUser.isAdmin)
+      .then(async () => {
+        const updatedUser = await api.people.getUserById([selectedUser.id]);
+        const updatedAdmins = admins.map((admin) => {
+          if (admin.id === selectedUser.id) return updatedUser;
+          return admin;
+        });
+
+        setAdmins(updatedAdmins);
+        this.setState({
+          selectedUser: updatedUser,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   onDocumentToggle = () => {};
 
@@ -430,6 +467,7 @@ class PortalAdmins extends Component {
       isUserSelected,
       selectorIsOpen,
       groupsCaption,
+      modules,
     } = this.props;
     const {
       isLoading,
@@ -480,7 +518,7 @@ class PortalAdmins extends Component {
                 <ModalDialog
                   visible={modalIsVisible}
                   zIndex={310}
-                  onClose={this.onCloseModal}
+                  onClose={this.closeModal}
                 >
                   <ModalDialog.Header>{t("AccessSettings")}</ModalDialog.Header>
                   <ModalDialog.Body>
@@ -515,46 +553,49 @@ class PortalAdmins extends Component {
                       <div>
                         <div className="full-access-wrapper">
                           <Text fontWeight={600} fontSize="15px">
-                            Full access
+                            {t("FullAccess")}
                           </Text>
                           <ToggleButton
                             className="toggle-btn"
-                            isChecked={true}
+                            isChecked={selectedUser.isAdmin}
                             onChange={this.onFullAccessToggle}
                             isDisabled={false}
                           />
                         </div>
-                        <Text
-                          className="setting-heading"
-                          fontWeight={600}
-                          fontSize="15px"
-                        >
-                          Admin in modules
-                        </Text>
-                        <div className="module-settings">
-                          <div className="setting-wrapper">
-                            <Text fontWeight={400} fontSize="13px">
-                              Documents
+                        {modules && modules.length > 0 && (
+                          <div>
+                            <Text
+                              className="setting-heading"
+                              fontWeight={600}
+                              fontSize="15px"
+                            >
+                              {t("AdminInModules")}
                             </Text>
-                            <ToggleButton
-                              className="toggle-btn"
-                              isChecked={true}
-                              onChange={this.onDocumentToggle}
-                              isDisabled={false}
-                            />
+                            <div className="module-settings">
+                              {modules.map((module) => {
+                                return (
+                                  <div
+                                    key={module.appName}
+                                    className="setting-wrapper"
+                                  >
+                                    <Text fontWeight={400} fontSize="13px">
+                                      {module.title}
+                                    </Text>
+                                    <ToggleButton
+                                      className="toggle-btn"
+                                      isChecked={this.isModuleAdmin(
+                                        selectedUser,
+                                        module.appName
+                                      )}
+                                      onChange={this.onDocumentToggle}
+                                      isDisabled={selectedUser.isAdmin}
+                                    />
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </div>
-                          <div className="setting-wrapper">
-                            <Text fontWeight={400} fontSize="13px">
-                              People
-                            </Text>
-                            <ToggleButton
-                              className="toggle-btn"
-                              isChecked={true}
-                              onChange={this.onPeopleToggle}
-                              isDisabled={false}
-                            />
-                          </div>
-                        </div>
+                        )}
                       </div>
                     </StyledModalBody>
                   </ModalDialog.Body>
@@ -703,7 +744,14 @@ PortalAdmins.propTypes = {
 export default inject(({ auth, setup }) => {
   const { admins, owner, filter, selectorIsOpen } = setup.security.accessRight;
   const { user: me } = auth.userStore;
-  const { setAddUsers, setRemoveAdmins, toggleSelector } = setup;
+  const { modules } = auth.moduleStore;
+  const {
+    setAddUsers,
+    setRemoveAdmins,
+    toggleSelector,
+    setAdmins,
+    getUsersByIds,
+  } = setup;
   const {
     selectUser,
     deselectUser,
@@ -717,8 +765,9 @@ export default inject(({ auth, setup }) => {
     changeAdmins: setup.changeAdmins,
     fetchPeople: setup.fetchPeople,
     getUpdateListAdmin: setup.getUpdateListAdmin,
+    modules,
     admins,
-    productId: auth.moduleStore.modules[0].id,
+    productId: modules[0].id,
     owner,
     filter,
     me,
@@ -731,5 +780,7 @@ export default inject(({ auth, setup }) => {
     setSelected,
     selectorIsOpen,
     toggleSelector,
+    setAdmins,
+    getUsersByIds,
   };
 })(withTranslation("Settings")(withRouter(observer(PortalAdmins))));

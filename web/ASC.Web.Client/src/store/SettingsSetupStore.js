@@ -93,30 +93,26 @@ class SettingsSetupStore {
       {};
   };
 
-  changeAdmins = async (userIds, productId, isAdmin, filter) => {
-    let filterData = filter && filter.clone();
-    if (!filterData) {
-      filterData = Filter.getDefault();
-    }
-
+  changeAdmins = async (userIds, productId, isAdmin) => {
     const requests = userIds.map((userId) =>
       api.people.changeProductAdmin(userId, productId, isAdmin)
     );
 
     await Promise.all(requests);
-
-    const admins = await api.people.getListAdmins(filterData);
-
-    filterData.total = admins.total;
-
-    this.setAdmins(admins.items);
-    this.setFilter(filterData);
   };
 
   getPortalOwner = async (userId) => {
     const owner = await api.people.getUserById(userId);
 
     this.setOwner(owner);
+  };
+
+  getUsersByIds = async (Ids) => {
+    const users = Ids.map((id) => {
+      return api.people.getUserById(id);
+    });
+
+    return Promise.all(users);
   };
 
   fetchPeople = async (filter) => {
