@@ -246,6 +246,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               />
               <PrivateRoute
                 exact
+                allowForMe
                 path={PROFILE_MY_URL}
                 component={MyProfileRoute}
               />
