@@ -10,7 +10,12 @@ import { withRouter } from "react-router";
 
 import { Provider as PeopleProvider, inject, observer } from "mobx-react";
 import { I18nextProvider, withTranslation } from "react-i18next";
-import { SectionBodyContent, SectionHeaderContent } from "../Profile/Section";
+import {
+  SectionBodyContent as ViewBodyContent,
+  SectionHeaderContent as ViewHeaderContent,
+} from "../Profile/Section";
+import { SectionHeaderContent as EditHeaderContent } from "../ProfileAction/Section";
+import EditBodyContent from "../ProfileAction/Section/Body";
 
 class My extends React.Component {
   componentDidMount() {
@@ -44,15 +49,21 @@ class My extends React.Component {
   }
 
   render() {
-    //console.log("My Profile render");
+    const { profile, tReady, location } = this.props;
 
-    const { profile, tReady } = this.props;
+    const isEdit = (location && location.search === "?action=edit") || false;
+
+    console.log("My Profile render", this.props, isEdit);
 
     return (
       <PageLayout withBodyAutoFocus>
         <PageLayout.SectionHeader>
           {profile && tReady ? (
-            <SectionHeaderContent isMy={true} />
+            isEdit ? (
+              <EditHeaderContent isMy={true} />
+            ) : (
+              <ViewHeaderContent isMy={true} />
+            )
           ) : (
             <Loaders.SectionHeader />
           )}
@@ -60,7 +71,11 @@ class My extends React.Component {
 
         <PageLayout.SectionBody>
           {profile && tReady ? (
-            <SectionBodyContent isMy={true} />
+            isEdit ? (
+              <EditBodyContent isMy={true} />
+            ) : (
+              <ViewBodyContent isMy={true} />
+            )
           ) : (
             <Loaders.ProfileView />
           )}
