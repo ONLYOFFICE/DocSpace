@@ -250,6 +250,7 @@ class AutomaticBackup extends React.Component {
         selectedOption: defaultSelectedOption,
         weeklySchedule: true,
         selectedWeekdayOption: this.weekdaysOptions[arrayIndex].label,
+        selectedNumberWeekdayOption: defaultDay,
       });
     } else {
       if (+defaultPeriod === 2) {
