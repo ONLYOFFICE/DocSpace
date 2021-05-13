@@ -19,6 +19,7 @@ import {
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import toastr from "@appserver/components/toast/toastr";
 import OperationsDialog from "files/OperationsDialog";
+import ThirdPartyStorageModule from "./sub-components-automatic-backup/thirdPartyStorageModule";
 import { getFolderPath } from "@appserver/common/api/files";
 
 const StyledComponent = styled.div`
@@ -117,6 +118,7 @@ class AutomaticBackup extends React.Component {
       isLoading: false,
       isChanged: false,
       isSetDefaultFolderPath: false,
+      isError: false,
     };
 
     this.periodOptions = [
@@ -451,8 +453,16 @@ class AutomaticBackup extends React.Component {
       selectedNumberWeekdayOption,
       selectedNumberMaxCopies,
       isShowDocuments,
+      isError,
     } = this.state;
     const { t } = this.props;
+
+    if (!selectedFolder) {
+      this.setState({
+        isError: true,
+      });
+      return;
+    }
     this.setState({ isLoadingData: true }, function () {
       let period = weeklySchedule ? "1" : monthlySchedule ? "2" : "0";
 
@@ -491,11 +501,16 @@ class AutomaticBackup extends React.Component {
 
             this.onSelectFolder([`${folderId}`]);
             getFolderPath(folderId)
-              .then((folderPath) =>
-                defaultStorageType === "0"
-                  ? (folderDocumentsModulePath = folderPath)
-                  : (folderThirdPartyModulePath = folderPath)
-              )
+              .then((folderPath) => {
+                if (+defaultStorageType === 0) {
+                  folderDocumentsModulePath = folderPath;
+                  folderThirdPartyModulePath = "";
+                }
+                if (+defaultStorageType === 1) {
+                  folderThirdPartyModulePath = folderPath;
+                  folderDocumentsModulePath = "";
+                }
+              })
               .then(() => {
                 this.setState({
                   selectedPermission: "enable",
@@ -507,9 +522,14 @@ class AutomaticBackup extends React.Component {
           }
         })
         .catch((error) => console.log("error", error))
-        .finally(() =>
-          this.setState({ isLoadingData: false, isChanged: false })
-        );
+        .finally(() => {
+          if (isError) this.setState({ isError: false });
+          this.setState({
+            isLoadingData: false,
+            isChanged: false,
+            selectedFolder: "",
+          });
+        });
     });
   };
 
@@ -521,13 +541,16 @@ class AutomaticBackup extends React.Component {
       isCheckedDocuments,
       monthlySchedule,
       weeklySchedule,
+      isError,
     } = this.state;
 
     this.setState({
       isChanged: false,
+      isSetDefaultFolderPath: true,
+      selectedFolder: "",
     });
-    this.setState({ isSetDefaultFolderPath: true });
 
+    if (isError) this.setState({ isError: false });
     if (defaultStorageType) {
       selectedPermission === "disable" &&
         this.setState({
@@ -613,12 +636,8 @@ class AutomaticBackup extends React.Component {
     }
   };
   onClickShowStorage = (e) => {
-    console.log("e0", e);
     const name = e.target.name;
 
-    // this.setState({
-    //   isChanged: defaultStorageType !== name,
-    // });
     //debugger;
     +name === 0
       ? this.setState(
@@ -867,6 +886,7 @@ class AutomaticBackup extends React.Component {
       isLoading,
       isChanged,
       isSetDefaultFolderPath,
+      isError,
     } = this.state;
 
     console.log("folderThirdPartyModulePath", folderThirdPartyModulePath);
@@ -989,6 +1009,7 @@ class AutomaticBackup extends React.Component {
                     folderList={commonThirdPartyList}
                     folderPath={folderThirdPartyModulePath}
                     isSetDefaultFolderPath={isSetDefaultFolderPath}
+                    isError={isError}
                   />
                   <ScheduleComponent
                     weeklySchedule={weeklySchedule}

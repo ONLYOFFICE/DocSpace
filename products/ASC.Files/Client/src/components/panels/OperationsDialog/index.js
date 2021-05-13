@@ -56,6 +56,7 @@ class OperationsDialog extends React.PureComponent {
       onSelectFolder,
       name,
       folderList,
+      isCommonWithoutProvider,
     } = this.props;
 
     this.setState({ isLoading: true }, function () {
@@ -65,6 +66,7 @@ class OperationsDialog extends React.PureComponent {
         .then(
           () =>
             folderPath.length === 0 &&
+            isCommonWithoutProvider &&
             onSelectFolder([`${commonTreeFolder.id}`])
         )
         .finally(() =>
@@ -158,6 +160,7 @@ class OperationsDialog extends React.PureComponent {
       folderList,
       isCommonWithoutProvider,
       onClose,
+      isError,
     } = this.props;
     const { isLoading, isLoadingData, commonDefault, baseFolder } = this.state;
     const zIndex = 310;
@@ -175,6 +178,7 @@ class OperationsDialog extends React.PureComponent {
           isDisabled={isLoading}
           folderPath={this.state[name]}
           onClickInput={onClickInput}
+          hasError={isError}
         />
 
         {!isLoading && commonTreeFolder && isPanelVisible && (
