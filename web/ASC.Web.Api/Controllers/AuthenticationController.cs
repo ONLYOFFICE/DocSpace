@@ -142,13 +142,13 @@ namespace ASC.Web.Api.Controllers
             return SecurityContext.IsAuthenticated;
         }
 
-        [Create("{code}", false)]
+        [Create("{code}", false, order: int.MaxValue)]
         public AuthenticationTokenData AuthenticateMeFromBodyWithCode([FromBody] AuthModel auth)
         {
             return AuthenticateMeWithCode(auth);
         }
 
-        [Create("{code}", false)]
+        [Create("{code}", false, order: int.MaxValue)]
         [Consumes("application/x-www-form-urlencoded")]
         public AuthenticationTokenData AuthenticateMeFromFormWithCode([FromForm] AuthModel auth)
         {
