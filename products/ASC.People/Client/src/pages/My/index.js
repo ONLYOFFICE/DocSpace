@@ -14,17 +14,7 @@ import { SectionBodyContent, SectionHeaderContent } from "../Profile/Section";
 
 class My extends React.Component {
   componentDidMount() {
-    const {
-      match,
-      fetchProfile,
-      profile,
-      location,
-      t,
-      setDocumentTitle,
-    } = this.props;
-    let { userId } = match.params;
-
-    if (!userId) userId = "@self";
+    const { fetchProfile, profile, location, t, setDocumentTitle } = this.props;
 
     setDocumentTitle(t("Profile"));
     this.documentElement = document.getElementsByClassName("hidingHeader");
@@ -39,7 +29,7 @@ class My extends React.Component {
       toastr.success(t("ChangeEmailSuccess"));
     }
     if (!profile) {
-      fetchProfile(userId);
+      fetchProfile("@self");
     }
 
     if (!profile && this.documentElement) {
@@ -49,39 +39,31 @@ class My extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    const { match, fetchProfile, profile } = this.props;
-    const { userId } = match.params;
-    const prevUserId = prevProps.match.params.userId;
-
-    if (userId !== undefined && userId !== prevUserId) {
-      fetchProfile(userId);
-    }
-
-    if (profile && this.documentElement) {
-      for (var i = 0; i < this.documentElement.length; i++) {
-        this.documentElement[i].style.transition = "";
-      }
-    }
-  }
-
   componentWillUnmount() {
     this.props.resetProfile();
   }
 
   render() {
-    //console.log("Profile render");
+    //console.log("My Profile render");
 
-    const { profile } = this.props;
+    const { profile, tReady } = this.props;
 
     return (
       <PageLayout withBodyAutoFocus>
         <PageLayout.SectionHeader>
-          {profile ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
+          {profile && tReady ? (
+            <SectionHeaderContent isMy={true} />
+          ) : (
+            <Loaders.SectionHeader />
+          )}
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {profile ? <SectionBodyContent /> : <Loaders.ProfileView />}
+          {profile && tReady ? (
+            <SectionBodyContent isMy={true} />
+          ) : (
+            <Loaders.ProfileView />
+          )}
         </PageLayout.SectionBody>
       </PageLayout>
     );
@@ -93,14 +75,12 @@ My.propTypes = {
   history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  isAdmin: PropTypes.bool,
   language: PropTypes.string,
 };
 
 const MyProfile = withRouter(
   inject(({ auth, peopleStore }) => ({
     setDocumentTitle: auth.setDocumentTitle,
-    isAdmin: auth.isAdmin,
     language: auth.language,
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
