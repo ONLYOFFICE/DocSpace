@@ -438,7 +438,7 @@ class PageLayout extends React.Component {
       );
     };
 
-    return isMobile ? (
+    return isMobile || !uploadFiles ? (
       renderPageLayout()
     ) : (
       <StyledSelectableGroup
