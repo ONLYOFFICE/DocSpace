@@ -454,9 +454,11 @@ class AutomaticBackup extends React.Component {
       selectedNumberWeekdayOption,
       selectedNumberMaxCopies,
       isShowDocuments,
+      isShowThirdPartyStorage,
       isError,
     } = this.state;
     const { t } = this.props;
+    let storageParams = [];
 
     if (!selectedFolder) {
       this.setState({
@@ -468,9 +470,9 @@ class AutomaticBackup extends React.Component {
       let period = weeklySchedule ? "1" : monthlySchedule ? "2" : "0";
 
       let day = weeklySchedule
-        ? selectedNumberWeekdayOption
+        ? `${selectedNumberWeekdayOption}`
         : monthlySchedule
-        ? selectedMonthOption
+        ? `${selectedMonthOption}`
         : null;
 
       let time = selectedTimeOption.substring(
@@ -479,10 +481,17 @@ class AutomaticBackup extends React.Component {
       );
       let storageType = isShowDocuments ? "0" : "1";
 
+      if (!isShowThirdPartyStorage) {
+        storageParams = [
+          {
+            key: "folderId",
+            value: selectedFolder[0],
+          },
+        ];
+      }
       createBackupSchedule(
         storageType,
-        "folderId",
-        selectedFolder[0],
+        storageParams,
         selectedNumberMaxCopies,
         period,
         time,

@@ -110,20 +110,13 @@ export function getBackupSchedule() {
 
 export function createBackupSchedule(
   storageType,
-  key = null,
-  value = null,
+  storageParams,
   backupsStored,
   Period,
   Hour,
   Day = null,
   backupMail = false
 ) {
-  const storageParams = [
-    {
-      key,
-      value,
-    },
-  ];
   const cronParams = {
     Period: Period,
     Hour: Hour,
@@ -134,7 +127,7 @@ export function createBackupSchedule(
     url: "/portal/createbackupschedule",
     data: {
       storageType,
-      storageParams: storageParams,
+      storageParams,
       backupsStored,
       cronParams: cronParams,
       backupMail,
