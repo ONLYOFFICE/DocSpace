@@ -296,9 +296,11 @@ class PortalAdmins extends Component {
     const userIds = [];
 
     users.forEach((user) => {
-      const isNewAdmin = admins.every((admin) => {
+      let isNewAdmin = admins.every((admin) => {
         return admin.id !== user.key;
       });
+
+      if (user.isAdmin) isNewAdmin = false;
 
       if (isNewAdmin) userIds.push(user.key);
     });
