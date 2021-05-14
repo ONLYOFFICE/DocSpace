@@ -545,14 +545,14 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasColumnName("authentication")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Hostname)
                     .IsRequired()
                     .HasColumnName("hostname")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.IdProvider).HasColumnName("id_provider");
 
@@ -566,20 +566,20 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasColumnType("enum('plain','SSL','STARTTLS')")
                     .HasDefaultValueSql("'plain'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Type)
                     .IsRequired()
                     .HasColumnName("type")
                     .HasColumnType("enum('pop3','imap','smtp')")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.UserName)
                     .HasColumnName("username")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddMailboxServer(this ModelBuilder modelBuilder)
