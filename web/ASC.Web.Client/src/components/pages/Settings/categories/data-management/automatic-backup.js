@@ -702,6 +702,7 @@ class AutomaticBackup extends React.Component {
     const name = e.target.name;
 
     //debugger;
+
     +name === 0
       ? this.setState(
           {
@@ -753,6 +754,7 @@ class AutomaticBackup extends React.Component {
     } = this.state;
     let changed;
     //debugger;
+
     if (isCheckedDocuments) {
       //debugger;
       if (+defaultStorageType === 0) {
@@ -995,6 +997,7 @@ class AutomaticBackup extends React.Component {
                 key={0}
                 onClick={this.onClickShowStorage}
                 isChecked={isCheckedDocuments}
+                isDisabled={isLoadingData}
                 value="value"
                 className="automatic-backup_radio-button"
               />
@@ -1048,6 +1051,7 @@ class AutomaticBackup extends React.Component {
                 name={"1"}
                 onClick={this.onClickShowStorage}
                 isChecked={isCheckedThirdParty}
+                isDisabled={isLoadingData}
                 value="value"
                 className="automatic-backup_radio-button"
               />
@@ -1104,6 +1108,7 @@ class AutomaticBackup extends React.Component {
                 name={"2"}
                 onClick={this.onClickShowStorage}
                 isChecked={isCheckedThirdPartyStorage}
+                isDisabled={isLoadingData}
                 value="value"
                 className="automatic-backup_radio-button"
               />
