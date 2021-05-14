@@ -34,7 +34,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasColumnName("authorLogin")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.FileId).HasColumnName("fileid");
 

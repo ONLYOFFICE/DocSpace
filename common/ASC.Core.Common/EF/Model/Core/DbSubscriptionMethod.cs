@@ -77,26 +77,26 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("source")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Action)
                     .HasColumnName("action")
                     .HasColumnType("varchar(128)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Recipient)
                     .HasColumnName("recipient")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Sender)
                     .IsRequired()
                     .HasColumnName("sender")
                     .HasColumnType("varchar(1024)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddSubscriptionMethod(this ModelBuilder modelBuilder)
