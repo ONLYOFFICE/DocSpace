@@ -19,6 +19,7 @@ const ScheduleComponent = ({
   maxNumberCopiesArray,
   onSelectPeriod,
   onSelectWeedDay,
+  isLoadingData,
 }) => {
   const { t } = useTranslation("Settings");
   return (
@@ -30,7 +31,7 @@ const ScheduleComponent = ({
           label: selectedOption,
         }}
         onSelect={onSelectPeriod}
-        isDisabled={false}
+        isDisabled={isLoadingData}
         noBorder={false}
         scaled={false}
         scaledOptions={false}
@@ -46,7 +47,7 @@ const ScheduleComponent = ({
             label: selectedWeekdayOption,
           }}
           onSelect={onSelectWeedDay}
-          isDisabled={false}
+          isDisabled={isLoadingData}
           noBorder={false}
           scaled={false}
           scaledOptions={false}
@@ -63,7 +64,7 @@ const ScheduleComponent = ({
             label: selectedMonthOption,
           }}
           onSelect={onSelectMonthNumberAndTimeOptions}
-          isDisabled={false}
+          isDisabled={isLoadingData}
           noBorder={false}
           scaled={false}
           scaledOptions={false}
@@ -79,7 +80,7 @@ const ScheduleComponent = ({
           label: selectedTimeOption,
         }}
         onSelect={onSelectMonthNumberAndTimeOptions}
-        isDisabled={false}
+        isDisabled={isLoadingData}
         noBorder={false}
         scaled={false}
         scaledOptions={false}
@@ -94,7 +95,7 @@ const ScheduleComponent = ({
           label: `${selectedMaxCopies} ${t("MaxCopies")}`,
         }}
         onSelect={onSelectMaxCopies}
-        isDisabled={false}
+        isDisabled={isLoadingData}
         noBorder={false}
         scaled={false}
         scaledOptions={false}

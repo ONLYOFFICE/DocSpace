@@ -20,6 +20,7 @@ import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import toastr from "@appserver/components/toast/toastr";
 import OperationsDialog from "files/OperationsDialog";
 import ThirdPartyStorageModule from "./sub-components-automatic-backup/thirdPartyStorageModule";
+import Loader from "@appserver/components/loader";
 import { getFolderPath } from "@appserver/common/api/files";
 
 const StyledComponent = styled.div`
@@ -961,7 +962,7 @@ class AutomaticBackup extends React.Component {
     console.log("folderThirdPartyModulePath", folderThirdPartyModulePath);
 
     return isLoading ? (
-      <></>
+      <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledComponent>
         <RadioButtonGroup
@@ -1022,6 +1023,7 @@ class AutomaticBackup extends React.Component {
                     selectedTimeOption={selectedTimeOption}
                     selectedMonthOption={selectedMonthOption}
                     selectedMaxCopies={selectedMaxCopies}
+                    isLoadingData={isLoadingData}
                     periodOptions={this.periodOptions}
                     monthNumberOptionsArray={this.monthNumberOptionsArray}
                     timeOptionsArray={this.timeOptionsArray}
@@ -1077,6 +1079,7 @@ class AutomaticBackup extends React.Component {
                     selectedTimeOption={selectedTimeOption}
                     selectedMonthOption={selectedMonthOption}
                     selectedMaxCopies={selectedMaxCopies}
+                    isLoadingData={isLoadingData}
                     periodOptions={this.periodOptions}
                     monthNumberOptionsArray={this.monthNumberOptionsArray}
                     timeOptionsArray={this.timeOptionsArray}
@@ -1128,6 +1131,7 @@ class AutomaticBackup extends React.Component {
                     selectedTimeOption={selectedTimeOption}
                     selectedMonthOption={selectedMonthOption}
                     selectedMaxCopies={selectedMaxCopies}
+                    isLoadingData={isLoadingData}
                     periodOptions={this.periodOptions}
                     monthNumberOptionsArray={this.monthNumberOptionsArray}
                     timeOptionsArray={this.timeOptionsArray}
