@@ -133,6 +133,13 @@ services:
       dockerfile: "${DOCKERFILE}"
       target: studio
     image: "${REPO}/${STATUS}appserver-studio:${SRV_VERSION}"
+
+  onlyoffice-storage-dll:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: dll_storage_share
+    image: "${REPO}/${STATUS}appserver-storage-dll:${SRV_VERSION}"
     
   onlyoffice-proxy:
     build:
