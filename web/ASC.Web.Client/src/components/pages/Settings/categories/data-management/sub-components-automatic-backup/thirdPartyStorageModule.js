@@ -272,7 +272,13 @@ class ThirdPartyStorageModule extends React.PureComponent {
   };
 
   render() {
-    const { t, helpUrlCreatingBackup, isChanged } = this.props;
+    const {
+      t,
+      helpUrlCreatingBackup,
+      isChanged,
+      isLoadingData,
+      isCopyingToLocal,
+    } = this.props;
     const {
       availableOptions,
       availableStorage,
@@ -306,7 +312,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
           options={availableOptions}
           selectedOption={{ key: 0, label: selectedOption }}
           onSelect={this.onSelect}
-          isDisabled={isLoading}
+          isDisabled={isLoadingData || isLoading}
           noBorder={false}
           scaled={true}
           scaledOptions={true}
@@ -324,8 +330,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
               hasError={isError}
               onChange={this.onChange}
               isDisabled={
-                availableStorage[selectedId] &&
-                !availableStorage[selectedId].isSet
+                isLoadingData ||
+                isLoading ||
+                (availableStorage[selectedId] &&
+                  !availableStorage[selectedId].isSet)
               }
               placeholder={
                 availableStorage[selectedId] &&
@@ -344,8 +352,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
                   hasError={isError}
                   onChange={this.onChange}
                   isDisabled={
-                    availableStorage[selectedId] &&
-                    !availableStorage[selectedId].isSet
+                    isLoadingData ||
+                    isLoading ||
+                    (availableStorage[selectedId] &&
+                      !availableStorage[selectedId].isSet)
                   }
                   placeholder={
                     availableStorage[selectedId] &&
@@ -363,8 +373,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
                     hasError={isError}
                     onChange={this.onChange}
                     isDisabled={
-                      availableStorage[selectedId] &&
-                      !availableStorage[selectedId].isSet
+                      isLoadingData ||
+                      isLoading ||
+                      (availableStorage[selectedId] &&
+                        !availableStorage[selectedId].isSet)
                     }
                     placeholder={
                       availableStorage[selectedId] &&
@@ -383,9 +395,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
                       hasError={isError}
                       onChange={this.onChange}
                       isDisabled={
+                        isLoadingData ||
+                        isLoading ||
                         (availableStorage[selectedId] &&
-                          !availableStorage[selectedId].isSet) ||
-                        isLoading
+                          !availableStorage[selectedId].isSet)
                       }
                       placeholder={
                         availableStorage[selectedId] &&
@@ -401,8 +414,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
                       hasError={isError}
                       onChange={this.onChange}
                       isDisabled={
-                        availableStorage[selectedId] &&
-                        !availableStorage[selectedId].isSet
+                        isLoadingData ||
+                        isLoading ||
+                        (availableStorage[selectedId] &&
+                          !availableStorage[selectedId].isSet)
                       }
                       placeholder={
                         availableStorage[selectedId] &&
@@ -418,9 +433,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
                       hasError={isError}
                       onChange={this.onChange}
                       isDisabled={
+                        isLoadingData ||
+                        isLoading ||
                         (availableStorage[selectedId] &&
-                          !availableStorage[selectedId].isSet) ||
-                        isLoading
+                          !availableStorage[selectedId].isSet)
                       }
                       placeholder={
                         availableStorage[selectedId] &&
@@ -443,11 +459,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             reminderTest={t("YouHaveUnsavedChanges")}
             saveButtonLabel={t("SaveButton")}
             cancelButtonLabel={t("CancelButton")}
-            isDisabled={
-              this.props.isCopyingToLocal ||
-              this.props.isLoadingData ||
-              isLoading
-            }
+            isDisabled={isCopyingToLocal || isLoadingData || isLoading}
           />
         )}
       </StyledComponent>
