@@ -312,7 +312,7 @@ class PortalAdmins extends Component {
       const addedUsers = await getUsersByIds(userIds);
       updatedAdmins.push(...addedUsers);
       setAdmins(updatedAdmins);
-      toastr.success(t("administratorsAddedSuccessfully"));
+      toastr.success(t("AdministratorsAddedSuccessfully"));
     });
   };
 
@@ -343,7 +343,7 @@ class PortalAdmins extends Component {
 
       setAdmins(newAdmins);
       setSelected("none");
-      toastr.success(t("administratorsRemovedSuccessfully"));
+      toastr.success(t("AdministratorsRemovedSuccessfully"));
     });
   };
 

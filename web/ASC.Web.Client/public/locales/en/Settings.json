@@ -70,6 +70,12 @@
   "LearnMore": "Learn more...",
   "AccessRightsChangeOwnerButtonText": "Change portal owner",
 
+  "AdministratorsAddedSuccessfully": "Administrators added successfully",
+  "AdministratorsRemovedSuccessfully": "Administrators removed successfully",
+  "AccessSettings": "Access settings",
+  "FullAccess": "Full access",
+  "AdminInModules": "Admin in modules",
+
   "ThirdPartyTitleDescription": "Authorization keys is the option which allows you to connect your portal with the third-party services like Twitter, Facebook, DropBox etc. Connect your portal with Facebook, Twitter or Linkedin if you don't want to introduce your portal credentials every time you enter it. Link it up with such services like DropBox, OneDrive, etc. to transfer the documents from all those storages to Documents module.",
   "ThirdPartyBodyDescription": "For more detailed instructions about connecting this service, please refer to our <2>Help Center</2> that provides all the necessary information.",
   "ThirdPartyHowItWorks": "How It Works?",
@@ -112,7 +118,6 @@
   "PortalAdmins": "Portal admins",
   "PortalAdminsDescription": "Have the same access rights as the portal owner, except the right to: change portal owner; deactivate or delete portal.",
   "ConfirmEmailSended": "Confirmation e-mail has been sent to {{ownerName}}",
- 
 
   "TeamTemplate": "Team template",
   "TeamTemplateSettingsDescription": "Team Template is a customizable way to name the organization (or group), its members and their activities. Drop down the Template list to choose one of the available presets or enter the names yourselves selecting the custom option from the list.",
