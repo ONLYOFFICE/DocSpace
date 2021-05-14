@@ -414,11 +414,7 @@ class DownloadDialogComponent extends React.Component {
       indeterminateOtherTitle,
     } = this.state;
 
-    console.log("this.props", this.props);
-    console.log("this.state", this.state);
-
     const otherLength = other.length;
-
     const showOther = otherLength > 1;
     const minHeight = otherLength > 2 ? 110 : otherLength * 50;
 
@@ -426,7 +422,7 @@ class DownloadDialogComponent extends React.Component {
       documents.filter((f) => f.checked).length +
         spreadsheets.filter((f) => f.checked).length +
         presentations.filter((f) => f.checked).length +
-        other.filter((f) => f.checked).length ===
+        other.filter((f) => f.checked).length <=
       1;
 
     return (
