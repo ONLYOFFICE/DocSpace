@@ -33,7 +33,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       isLoading: false,
       isSetDefaultStorage: true,
       isSelectedOptionChanges: false,
-
+      isError: false,
       firstInput: "",
       secondInput: "",
       thirdInput: "",
@@ -119,6 +119,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       selectedId: availableStorage[selectedStorageId].id,
       isSelectedOptionChanges: true,
       isSetDefaultStorage: false,
+      isError: false,
       firstInput: "",
       secondInput: "",
       thirdInput: "",
@@ -136,9 +137,66 @@ class ThirdPartyStorageModule extends React.PureComponent {
     // console.log("value", value);
     // console.log("name", name);
 
-    this.setState({ [name]: value });
+    this.setState({ [name]: value, isSelectedOptionChanges: true });
   };
 
+  isInvalidForm = () => {
+    const {
+      selectedId,
+      firstInput,
+      secondInput,
+      thirdInput,
+      fifthInput,
+      fourthInput,
+      sixthInput,
+    } = this.state;
+
+    if (!firstInput) {
+      this.setState({
+        isError: true,
+      });
+      return false;
+    }
+
+    if (selectedId !== googleStorageId) {
+      if (!secondInput) {
+        this.setState({
+          isError: true,
+        });
+        return false;
+      }
+      if (selectedId === "Rackspace") {
+        if (!thirdInput) {
+          this.setState({
+            isError: true,
+          });
+          return false;
+        }
+      }
+
+      if (selectedId === "S3") {
+        if (!fifthInput) {
+          this.setState({
+            isError: true,
+          });
+          return false;
+        }
+        if (!fourthInput) {
+          this.setState({
+            isError: true,
+          });
+          return;
+        }
+        if (!sixthInput) {
+          this.setState({
+            isError: true,
+          });
+          return false;
+        }
+      }
+    }
+    return true;
+  };
   onSaveSettings = () => {
     const { fillStorageFields } = this.props;
     const {
@@ -151,6 +209,9 @@ class ThirdPartyStorageModule extends React.PureComponent {
       sixthInput,
       availableStorage,
     } = this.state;
+
+    if (!this.isInvalidForm()) return;
+
     let obj = {};
     const selectedStorage = availableStorage[selectedId];
     const inputValueArray = [
@@ -171,6 +232,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       };
       inputValueArray.push(obj);
     }
+
     if (fourthInput) {
       inputValueArray.push(
         { key: selectedStorage.properties[3].title, value: fourthInput },
@@ -180,6 +242,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     }
     this.setState({
       isSelectedOptionChanges: false,
+      isError: false,
     });
 
     fillStorageFields(selectedId, inputValueArray);
@@ -224,9 +287,9 @@ class ThirdPartyStorageModule extends React.PureComponent {
       sixthInput,
       isSetDefaultStorage,
       isSelectedOptionChanges,
+      isError,
     } = this.state;
 
-    console.log("isSelectedOptionChanges", isSelectedOptionChanges);
     return isLoading ? (
       <></>
     ) : (
@@ -260,7 +323,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
               className="backup_text-input"
               scale={true}
               value={firstInput}
-              //hasError={formErrors.userCaption}
+              hasError={isError}
               onChange={this.onChange}
               isDisabled={
                 availableStorage[selectedId] &&
@@ -280,7 +343,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
                   className="backup_text-input"
                   scale={true}
                   value={secondInput}
-                  //hasError={formErrors.userCaption}
+                  hasError={isError}
                   onChange={this.onChange}
                   isDisabled={
                     availableStorage[selectedId] &&
@@ -299,7 +362,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
                     className="backup_text-input"
                     scale={true}
                     value={thirdInput}
-                    //hasError={formErrors.userCaption}
+                    hasError={isError}
                     onChange={this.onChange}
                     isDisabled={
                       availableStorage[selectedId] &&
@@ -319,7 +382,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
                       className="backup_text-input"
                       scale={true}
                       value={fourthInput}
-                      //hasError={formErrors.userCaption}
+                      hasError={isError}
                       onChange={this.onChange}
                       isDisabled={
                         availableStorage[selectedId] &&
@@ -336,7 +399,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
                       className="backup_text-input"
                       scale={true}
                       value={fifthInput}
-                      //hasError={formErrors.userCaption}
+                      hasError={isError}
                       onChange={this.onChange}
                       isDisabled={
                         availableStorage[selectedId] &&
@@ -353,7 +416,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
                       className="backup_text-input"
                       scale={true}
                       value={sixthInput}
-                      //hasError={formErrors.userCaption}
+                      hasError={isError}
                       onChange={this.onChange}
                       isDisabled={
                         availableStorage[selectedId] &&
