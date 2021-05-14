@@ -40,6 +40,10 @@ class TfaStore {
     }
   };
 
+  getSecretKeyAndQR = async (confirmKey) => {
+    return api.settings.getTfaSecretKeyAndQR(confirmKey);
+  };
+
   getBackupCodes = async () => {
     console.log("getBackupCodes");
     const backupCodes = await api.settings.getTfaNewBackupCodes();

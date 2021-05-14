@@ -285,3 +285,14 @@ export function unlinkTfaApp() {
     url: "/settings/tfaappnewapp",
   });
 }
+
+export function getTfaSecretKeyAndQR(confirmKey = null) {
+  const options = {
+    method: "get",
+    url: "/settings/tfaapp/setup",
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
+}
