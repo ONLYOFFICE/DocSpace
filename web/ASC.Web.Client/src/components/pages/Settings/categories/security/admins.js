@@ -408,11 +408,11 @@ class PortalAdmins extends Component {
     });
   };
 
-  onFullAccessToggle = () => {
+  onModuleToggle = (moduleId, access) => {
     const { selectedUser } = this.state;
     const { changeAdmins, admins, setAdmins } = this.props;
 
-    changeAdmins([selectedUser.id], fullAccessId, !selectedUser.isAdmin)
+    changeAdmins([selectedUser.id], moduleId, access)
       .then(async () => {
         const updatedUser = await api.people.getUserById([selectedUser.id]);
         const updatedAdmins = admins.map((admin) => {
@@ -429,10 +429,6 @@ class PortalAdmins extends Component {
         console.log(e);
       });
   };
-
-  onDocumentToggle = () => {};
-
-  onPeopleToggle = () => {};
 
   isModuleAdmin = (user, moduleName) => {
     let isModuleAdmin = false;
@@ -560,7 +556,12 @@ class PortalAdmins extends Component {
                           <ToggleButton
                             className="toggle-btn"
                             isChecked={selectedUser.isAdmin}
-                            onChange={this.onFullAccessToggle}
+                            onChange={() =>
+                              this.onModuleToggle(
+                                fullAccessId,
+                                !selectedUser.isAdmin
+                              )
+                            }
                             isDisabled={false}
                           />
                         </div>
@@ -575,6 +576,11 @@ class PortalAdmins extends Component {
                             </Text>
                             <div className="module-settings">
                               {modules.map((module) => {
+                                const isModuleAdmin = this.isModuleAdmin(
+                                  selectedUser,
+                                  module.appName
+                                );
+
                                 return (
                                   <div
                                     key={module.appName}
@@ -585,11 +591,14 @@ class PortalAdmins extends Component {
                                     </Text>
                                     <ToggleButton
                                       className="toggle-btn"
-                                      isChecked={this.isModuleAdmin(
-                                        selectedUser,
-                                        module.appName
-                                      )}
-                                      onChange={this.onDocumentToggle}
+                                      isChecked={isModuleAdmin}
+                                      inputId={module.id}
+                                      onChange={() =>
+                                        this.onModuleToggle(
+                                          module.id,
+                                          !isModuleAdmin
+                                        )
+                                      }
                                       isDisabled={selectedUser.isAdmin}
                                     />
                                   </div>
@@ -665,34 +674,29 @@ class PortalAdmins extends Component {
                                       Full access
                                     </Text>
                                   </div>
-                                ) : (
+                                ) : user.listAdminModules ? (
                                   <div className="iconsWrapper">
-                                    {this.isModuleAdmin(user, "documents") && (
-                                      <div className="iconWrapper">
-                                        <IconButton
-                                          iconName="/static/images/files.menu.svg"
-                                          size={14}
-                                          color="#2DA7DB"
-                                          isfill={true}
-                                          isClickable={false}
-                                        />
-                                      </div>
-                                    )}
+                                    {user.listAdminModules.map((moduleName) => {
+                                      const { modules } = this.props;
+                                      const module = modules.find((module) => {
+                                        return module.appName === moduleName;
+                                      });
 
-                                    {this.isModuleAdmin(user, "people") && (
-                                      <div className="iconWrapper">
-                                        <IconButton
-                                          iconName={
-                                            "/static/images/departments.group.react.svg"
-                                          }
-                                          size={16}
-                                          color="#2DA7DB"
-                                          isfill={true}
-                                          isClickable={false}
-                                        />
-                                      </div>
-                                    )}
+                                      return (
+                                        <div className="iconWrapper">
+                                          <IconButton
+                                            iconName={module.iconUrl}
+                                            size={14}
+                                            color="#2DA7DB"
+                                            isfill={true}
+                                            isClickable={false}
+                                          />
+                                        </div>
+                                      );
+                                    })}
                                   </div>
+                                ) : (
+                                  <></>
                                 )}
                               </div>
                             </>
