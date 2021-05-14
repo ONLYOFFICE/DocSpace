@@ -57,9 +57,12 @@ class OperationsDialog extends React.PureComponent {
       name,
       folderList,
       isCommonWithoutProvider,
+      onSetLoadingData,
     } = this.props;
 
     this.setState({ isLoading: true }, function () {
+      onSetLoadingData && onSetLoadingData(true);
+
       fetchTreeFolders()
         .then(() => getCommonFolder())
         .then((commonFolder) => (commonTreeFolder = commonFolder))
@@ -69,12 +72,13 @@ class OperationsDialog extends React.PureComponent {
             isCommonWithoutProvider &&
             onSelectFolder([`${commonTreeFolder.id}`])
         )
-        .finally(() =>
+        .finally(() => {
+          onSetLoadingData && onSetLoadingData(false);
           this.setState({
             isLoading: false,
             baseFolder: folderList ? "" : commonTreeFolder.title,
-          })
-        );
+          });
+        });
     });
 
     if (folderPath.length !== 0) {

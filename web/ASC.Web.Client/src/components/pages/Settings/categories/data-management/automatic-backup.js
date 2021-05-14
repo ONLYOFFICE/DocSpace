@@ -933,6 +933,12 @@ class AutomaticBackup extends React.Component {
     this.storageFiledValue = storageFiledValue;
     this.onSaveModuleSettings();
   };
+
+  onSetLoadingData = (isLoading) => {
+    this.setState({
+      isLoadingData: isLoading,
+    });
+  };
   render() {
     const { t, commonThirdPartyList } = this.props;
     const {
@@ -961,7 +967,8 @@ class AutomaticBackup extends React.Component {
       isError,
     } = this.state;
 
-    console.log("folderThirdPartyModulePath", folderThirdPartyModulePath);
+    console.log("this.state", this.state);
+    console.log("this.props", this.props);
 
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -1015,6 +1022,7 @@ class AutomaticBackup extends React.Component {
                     isCommonWithoutProvider
                     folderPath={folderDocumentsModulePath}
                     isSetDefaultFolderPath={isSetDefaultFolderPath}
+                    onSetLoadingData={this.onSetLoadingData}
                   />
 
                   <ScheduleComponent
@@ -1073,6 +1081,7 @@ class AutomaticBackup extends React.Component {
                     folderPath={folderThirdPartyModulePath}
                     isSetDefaultFolderPath={isSetDefaultFolderPath}
                     isError={isError}
+                    onSetLoadingData={this.onSetLoadingData}
                   />
                   <ScheduleComponent
                     weeklySchedule={weeklySchedule}
