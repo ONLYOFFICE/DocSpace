@@ -485,8 +485,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
             var folderDao = DaoFactory.GetFolderDao<int>();
-            var fileDao = DaoFactory.GetFileDao<int>();
-            var files = entryManager.GetRecent(folderDao, fileDao, filter, false, Guid.Empty, string.Empty, false);
+            var files = entryManager.GetRecent(filter, false, Guid.Empty, string.Empty, false).Cast<File<int>>();
 
             var listRecent = from file in files
                              where !Equals(_configuration.Document.Info.File.ID, file.ID)

@@ -285,17 +285,25 @@ class CreateUserForm extends React.Component {
 
   handleSubmit = () => {
     if (!this.validate()) return false;
-    const { setIsEditingForm, homepage } = this.props;
+    const {
+      setIsEditingForm,
+      homepage,
+      createProfile,
+      createdAvatar,
+      t,
+      history,
+    } = this.props;
+    const profile = this.state.profile;
+    if (!profile.birthday) profile.birthday = new Date();
 
     this.setState({ isLoading: true });
-    this.props
-      .createProfile(this.state.profile)
+    createProfile(profile)
       .then((profile) => {
-        if (this.props.createdAvatar.tmpFile !== "") {
+        if (createdAvatar.tmpFile !== "") {
           this.createAvatar(profile.id, profile.userName);
         } else {
-          toastr.success(this.props.t("ChangesSavedSuccessfully"));
-          this.props.history.push(
+          toastr.success(t("ChangesSavedSuccessfully"));
+          history.push(
             combineUrl(
               AppServerConfig.proxyURL,
               homepage,

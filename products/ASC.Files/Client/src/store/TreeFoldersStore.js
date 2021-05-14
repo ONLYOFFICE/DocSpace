@@ -48,6 +48,9 @@ class TreeFoldersStore {
     if (rootItem) rootItem.newItems -= count;
   };
 
+  isCommon = (commonType) => commonType === FolderType.COMMON;
+  isShare = (shareType) => shareType === FolderType.SHARE;
+
   get myFolder() {
     return this.treeFolders.find((x) => x.rootFolderName === "@my");
   }

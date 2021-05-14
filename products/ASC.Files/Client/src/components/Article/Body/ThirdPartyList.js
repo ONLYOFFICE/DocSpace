@@ -80,6 +80,7 @@ const ServiceItem = (props) => {
   const dataProps = {
     "data-link": capabilityLink,
     "data-title": capabilityName,
+    "data-key": capabilityName,
   };
 
   return (

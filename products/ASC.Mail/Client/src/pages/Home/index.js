@@ -19,7 +19,7 @@ import { setDocumentTitle } from "../../helpers/utils";
 import { inject } from "mobx-react";
 import i18n from "../../i18n";
 import { I18nextProvider } from "react-i18next";
-import { combineUrl, deleteCookie } from "@appserver/common/utils";
+import { deleteCookie, toCommunityHostname } from "@appserver/common/utils";
 
 const commonStyles = `
   .link-box {
@@ -121,12 +121,10 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t, tReady }) => {
   const { error } = match.params;
   const { pathname, protocol, hostname } = window.location;
   const currentModule = modules.find((m) => m.link === pathname);
-  const { id, title, imageUrl, link, originUrl, helpUrl } = currentModule;
-  const url = originUrl ? originUrl : link;
-  const webLink = combineUrl(
-    protocol + "//" + hostname,
-    `${url}?desktop_view=true`
-  );
+  const { id, title, imageUrl, /*link, originUrl,*/ helpUrl } = currentModule;
+  //const url = originUrl ? originUrl : link;
+  const communityHostname = toCommunityHostname(hostname);
+  const webLink = `${protocol}//${communityHostname}/addons/mail/?desktop_view=true`;
   const appLink = isIOS
     ? id === "2A923037-8B2D-487b-9A22-5AC0918ACF3F"
       ? "message:"
