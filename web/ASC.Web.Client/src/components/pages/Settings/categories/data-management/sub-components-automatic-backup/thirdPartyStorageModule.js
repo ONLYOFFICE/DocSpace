@@ -290,9 +290,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       isError,
     } = this.state;
 
-    return isLoading ? (
-      <></>
-    ) : (
+    return (
       <StyledComponent>
         <Box marginProp="16px 0 16px 0">
           <Link
@@ -385,8 +383,9 @@ class ThirdPartyStorageModule extends React.PureComponent {
                       hasError={isError}
                       onChange={this.onChange}
                       isDisabled={
-                        availableStorage[selectedId] &&
-                        !availableStorage[selectedId].isSet
+                        (availableStorage[selectedId] &&
+                          !availableStorage[selectedId].isSet) ||
+                        isLoading
                       }
                       placeholder={
                         availableStorage[selectedId] &&
@@ -419,8 +418,9 @@ class ThirdPartyStorageModule extends React.PureComponent {
                       hasError={isError}
                       onChange={this.onChange}
                       isDisabled={
-                        availableStorage[selectedId] &&
-                        !availableStorage[selectedId].isSet
+                        (availableStorage[selectedId] &&
+                          !availableStorage[selectedId].isSet) ||
+                        isLoading
                       }
                       placeholder={
                         availableStorage[selectedId] &&
@@ -443,7 +443,11 @@ class ThirdPartyStorageModule extends React.PureComponent {
             reminderTest={t("YouHaveUnsavedChanges")}
             saveButtonLabel={t("SaveButton")}
             cancelButtonLabel={t("CancelButton")}
-            isDisabled={this.props.isCopyingToLocal || this.props.isLoadingData}
+            isDisabled={
+              this.props.isCopyingToLocal ||
+              this.props.isLoadingData ||
+              isLoading
+            }
           />
         )}
       </StyledComponent>
