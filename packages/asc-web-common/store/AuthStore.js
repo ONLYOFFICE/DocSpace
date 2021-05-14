@@ -156,7 +156,13 @@ class AuthStore {
     try {
       const response = await api.user.login(user, hash);
 
-      if (!response || !response.token) throw "Empty API response";
+      if (!response || (!response.token && !response.tfa))
+        throw "Empty API response";
+
+      if (response.tfa && response.confirmUrl) {
+        document.location.href = response.confirmUrl;
+        return Promise.resolve(true);
+      }
 
       setWithCredentialsStatus(true);
 
