@@ -78,6 +78,9 @@ let defaultSelectedWeekdayOption = "";
 let defaultMonthly = false;
 let defaultWeekly = false;
 let defaultDaily = false;
+
+let moduleName = "";
+let storageFiledValue = "";
 class AutomaticBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -181,20 +184,29 @@ class AutomaticBackup extends React.Component {
             defaultDay = selectedSchedule.cronParams.day;
             defaultMaxCopies = `${selectedSchedule.backupsStored}`;
 
-            getFolderPath(folderId)
-              .then((folderPath) =>
-                defaultStorageType === "0"
-                  ? (folderDocumentsModulePath = folderPath)
-                  : (folderThirdPartyModulePath = folderPath)
-              )
-              .then(() => {
-                this.setState({
-                  selectedPermission: "enable",
-                  isShowedStorageTypes: true,
-                });
-
-                this.onSetDefaultOptions();
+            if (defaultStorageType === "5") {
+              this.setState({
+                selectedPermission: "enable",
+                isShowedStorageTypes: true,
               });
+
+              this.onSetDefaultOptions();
+            } else {
+              getFolderPath(folderId)
+                .then((folderPath) =>
+                  defaultStorageType === "0"
+                    ? (folderDocumentsModulePath = folderPath)
+                    : (folderThirdPartyModulePath = folderPath)
+                )
+                .then(() => {
+                  this.setState({
+                    selectedPermission: "enable",
+                    isShowedStorageTypes: true,
+                  });
+
+                  this.onSetDefaultOptions();
+                });
+            }
           }
         })
         .finally(() =>
@@ -233,6 +245,18 @@ class AutomaticBackup extends React.Component {
       this.setState({
         isShowThirdParty: true,
         isCheckedThirdParty: true,
+
+        selectedTimeOption: defaultHour,
+        selectedMaxCopies: defaultMaxCopies,
+        selectedNumberMaxCopies: defaultMaxCopies,
+      });
+    }
+
+    if (defaultStorageType === "5") {
+      // ThirdPartyStorage Module
+      this.setState({
+        isShowThirdPartyStorage: true,
+        isCheckedThirdPartyStorage: true,
         selectedTimeOption: defaultHour,
         selectedMaxCopies: defaultMaxCopies,
         selectedNumberMaxCopies: defaultMaxCopies,
@@ -241,7 +265,6 @@ class AutomaticBackup extends React.Component {
 
     if (+defaultPeriod === 1) {
       //Every Week option
-
       const arrayIndex = this.lng === "en" ? defaultDay - 1 : defaultDay - 2; //selected number of week
       defaultSelectedOption = this.periodOptions[1].label;
       defaultSelectedWeekdayOption = defaultDay;
@@ -454,13 +477,14 @@ class AutomaticBackup extends React.Component {
       selectedNumberWeekdayOption,
       selectedNumberMaxCopies,
       isShowDocuments,
+      isShowThirdParty,
       isShowThirdPartyStorage,
       isError,
     } = this.state;
     const { t } = this.props;
     let storageParams = [];
 
-    if (!selectedFolder) {
+    if (!selectedFolder && !isShowThirdPartyStorage) {
       this.setState({
         isError: true,
       });
@@ -479,8 +503,9 @@ class AutomaticBackup extends React.Component {
         0,
         selectedTimeOption.indexOf(":")
       );
-      let storageType = isShowDocuments ? "0" : "1";
+      let storageType = isShowDocuments ? "0" : isShowThirdParty ? "1" : "5";
 
+      //console.log("storageFiledValue", this.storageFiledValue);
       if (!isShowThirdPartyStorage) {
         storageParams = [
           {
@@ -488,7 +513,25 @@ class AutomaticBackup extends React.Component {
             value: selectedFolder[0],
           },
         ];
+      } else {
+        storageParams = [
+          {
+            key: "module",
+            value: this.moduleName,
+          },
+        ];
+        let obj = {};
+
+        for (let i = 0; i < this.storageFiledValue.length; i++) {
+          obj = {
+            key: this.storageFiledValue[i].key,
+            value: this.storageFiledValue[i].value,
+          };
+          storageParams.push(obj);
+        }
       }
+      //debugger;
+
       createBackupSchedule(
         storageType,
         storageParams,
@@ -509,26 +552,35 @@ class AutomaticBackup extends React.Component {
             defaultDay = selectedSchedule.cronParams.day;
             defaultMaxCopies = `${selectedSchedule.backupsStored}`;
 
-            this.onSelectFolder([`${folderId}`]);
-            getFolderPath(folderId)
-              .then((folderPath) => {
-                if (+defaultStorageType === 0) {
-                  folderDocumentsModulePath = folderPath;
-                  folderThirdPartyModulePath = "";
-                }
-                if (+defaultStorageType === 1) {
-                  folderThirdPartyModulePath = folderPath;
-                  folderDocumentsModulePath = "";
-                }
-              })
-              .then(() => {
-                this.setState({
-                  selectedPermission: "enable",
-                  isShowedStorageTypes: true,
-                });
+            !isShowThirdPartyStorage && this.onSelectFolder([`${folderId}`]);
+            if (!isShowThirdPartyStorage) {
+              getFolderPath(folderId)
+                .then((folderPath) => {
+                  if (+defaultStorageType === 0) {
+                    folderDocumentsModulePath = folderPath;
+                    folderThirdPartyModulePath = "";
+                  }
+                  if (+defaultStorageType === 1) {
+                    folderThirdPartyModulePath = folderPath;
+                    folderDocumentsModulePath = "";
+                  }
+                })
+                .then(() => {
+                  this.setState({
+                    selectedPermission: "enable",
+                    isShowedStorageTypes: true,
+                  });
 
-                this.onSetDefaultOptions();
+                  this.onSetDefaultOptions();
+                });
+            } else {
+              this.setState({
+                selectedPermission: "enable",
+                isShowedStorageTypes: true,
               });
+
+              this.onSetDefaultOptions();
+            }
           }
         })
         .catch((error) => console.log("error", error))
@@ -618,7 +670,7 @@ class AutomaticBackup extends React.Component {
             });
       }
 
-      if (+defaultStorageType === 2) {
+      if (+defaultStorageType === 5) {
         // ThirdPartyStorage Module
         isShowDocuments
           ? this.setState({
@@ -731,7 +783,7 @@ class AutomaticBackup extends React.Component {
       }
     }
     if (isCheckedThirdPartyStorage) {
-      if (+defaultStorageType === 2) {
+      if (+defaultStorageType === 5) {
         changed = this.checkOptions();
         this.setState({
           isChanged: changed,
@@ -871,6 +923,13 @@ class AutomaticBackup extends React.Component {
       isPanelVisible: false,
     });
   };
+
+  fillStorageFields = (moduleName = "", storageFiledValue = "") => {
+    //debugger;
+    this.moduleName = moduleName;
+    this.storageFiledValue = storageFiledValue;
+    this.onSaveModuleSettings();
+  };
   render() {
     const { t, commonThirdPartyList } = this.props;
     const {
@@ -977,19 +1036,6 @@ class AutomaticBackup extends React.Component {
                   />
                 </>
               )}
-
-              {isChanged && (
-                <SaveCancelButtons
-                  className="team-template_buttons"
-                  onSaveClick={this.onSaveModuleSettings}
-                  onCancelClick={this.onCancelModuleSettings}
-                  showReminder={false}
-                  reminderTest={t("YouHaveUnsavedChanges")}
-                  saveButtonLabel={t("SaveButton")}
-                  cancelButtonLabel={t("CancelButton")}
-                  isDisabled={isCopyingToLocal || isLoadingData}
-                />
-              )}
             </StyledModules>
 
             <StyledModules>
@@ -1045,18 +1091,6 @@ class AutomaticBackup extends React.Component {
                   />
                 </>
               )}
-              {isChanged && (
-                <SaveCancelButtons
-                  className="team-template_buttons"
-                  onSaveClick={this.onSaveModuleSettings}
-                  onCancelClick={this.onCancelModuleSettings}
-                  showReminder={false}
-                  reminderTest={t("YouHaveUnsavedChanges")}
-                  saveButtonLabel={t("SaveButton")}
-                  cancelButtonLabel={t("CancelButton")}
-                  isDisabled={isCopyingToLocal || isLoadingData}
-                />
-              )}
             </StyledModules>
 
             <StyledModules>
@@ -1078,7 +1112,13 @@ class AutomaticBackup extends React.Component {
               </Text>
               {isShowThirdPartyStorage && (
                 <>
-                  <ThirdPartyStorageModule />
+                  <ThirdPartyStorageModule
+                    fillStorageFields={this.fillStorageFields}
+                    onCancelModuleSettings={this.onCancelModuleSettings}
+                    isCopyingToLocal={isCopyingToLocal}
+                    isLoadingData={isLoadingData}
+                    isChanged={isChanged}
+                  />
                   <ScheduleComponent
                     weeklySchedule={weeklySchedule}
                     monthlySchedule={monthlySchedule}
@@ -1103,6 +1143,18 @@ class AutomaticBackup extends React.Component {
                 </>
               )}
             </StyledModules>
+            {isChanged && !isShowThirdPartyStorage && (
+              <SaveCancelButtons
+                className="team-template_buttons"
+                onSaveClick={this.onSaveModuleSettings}
+                onCancelClick={this.onCancelModuleSettings}
+                showReminder={false}
+                reminderTest={t("YouHaveUnsavedChanges")}
+                saveButtonLabel={t("SaveButton")}
+                cancelButtonLabel={t("CancelButton")}
+                isDisabled={isCopyingToLocal || isLoadingData}
+              />
+            )}
           </>
         )}
 
