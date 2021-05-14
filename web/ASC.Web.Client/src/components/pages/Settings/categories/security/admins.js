@@ -236,7 +236,7 @@ class PortalAdmins extends Component {
       admins,
       setAddUsers,
       setRemoveAdmins,
-      getUpdateListAdmin,
+      updateListAdmins,
     } = this.props;
 
     setAddUsers(this.addUsers);
@@ -244,7 +244,7 @@ class PortalAdmins extends Component {
 
     if (isEmpty(admins, true)) {
       try {
-        await getUpdateListAdmin();
+        await updateListAdmins(null, true);
       } catch (error) {
         toastr.error(error);
       }
@@ -738,7 +738,7 @@ PortalAdmins.propTypes = {
   productId: PropTypes.string,
   owner: PropTypes.object,
   setAddUsers: PropTypes.func.isRequired,
-  getUpdateListAdmin: PropTypes.func.isRequired,
+  updateListAdmins: PropTypes.func.isRequired,
 };
 
 export default inject(({ auth, setup }) => {
@@ -764,7 +764,7 @@ export default inject(({ auth, setup }) => {
     groupsCaption: auth.settingsStore.customNames.groupsCaption,
     changeAdmins: setup.changeAdmins,
     fetchPeople: setup.fetchPeople,
-    getUpdateListAdmin: setup.getUpdateListAdmin,
+    updateListAdmins: setup.updateListAdmins,
     modules,
     admins,
     productId: modules[0].id,

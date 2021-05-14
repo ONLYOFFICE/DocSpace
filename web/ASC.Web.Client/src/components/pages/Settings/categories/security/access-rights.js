@@ -79,12 +79,12 @@ class AccessRights extends PureComponent {
   }
 
   async componentDidMount() {
-    const { admins, getUpdateListAdmin } = this.props;
+    const { admins, updateListAdmins } = this.props;
 
     showLoader();
     if (isEmpty(admins, true)) {
       try {
-        await getUpdateListAdmin();
+        await updateListAdmins();
       } catch (error) {
         toastr.error(error);
       }
@@ -136,11 +136,11 @@ class AccessRights extends PureComponent {
 }
 
 export default inject(({ auth, setup }) => {
-  const { getUpdateListAdmin } = setup;
+  const { updateListAdmins } = setup;
   const { admins } = setup.security.accessRight;
   return {
     admins,
-    getUpdateListAdmin,
+    updateListAdmins,
     organizationName: auth.settingsStore.organizationName,
   };
 })(withTranslation("Settings")(withRouter(AccessRights)));
