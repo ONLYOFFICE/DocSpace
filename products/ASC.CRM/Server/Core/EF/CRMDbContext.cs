@@ -76,10 +76,10 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbCurrencyRate>(entity =>
             {
                 entity.HasIndex(e => e.FromCurrency)
-                    .HasName("from_currency");
+                    .HasDatabaseName("from_currency");
 
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.CreateBy)
                     .HasCharSet("utf8")
@@ -103,7 +103,7 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbDealMilestone>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.Color)
                     .HasDefaultValueSql("'0'")
@@ -125,7 +125,7 @@ namespace ASC.CRM.Core.EF
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.ContactId)
-                    .HasName("IX_Contact");
+                    .HasDatabaseName("IX_Contact");
             });
 
             modelBuilder.Entity<DbEntityTag>(entity =>
@@ -134,13 +134,13 @@ namespace ASC.CRM.Core.EF
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.TagId)
-                    .HasName("tag_id");
+                    .HasDatabaseName("tag_id");
             });
 
             modelBuilder.Entity<DbFieldDescription>(entity =>
             {
                 entity.HasIndex(e => new { e.TenantId, e.EntityType, e.SortOrder })
-                    .HasName("entity_type");
+                    .HasDatabaseName("entity_type");
 
                 entity.Property(e => e.Label)
                     .HasCharSet("utf8")
@@ -155,7 +155,7 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbInvoice>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.ConsigneeId).HasDefaultValueSql("'-1'");
 
@@ -207,7 +207,7 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbInvoiceItem>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.CreateBy)
                     .HasCharSet("utf8")
@@ -237,7 +237,7 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbInvoiceLine>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8")
@@ -247,7 +247,7 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbInvoiceTax>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.CreateBy)
                     .HasCharSet("utf8")
@@ -269,7 +269,7 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbListItem>(entity =>
             {
                 entity.HasIndex(e => new { e.TenantId, e.ListType })
-                    .HasName("list_type");
+                    .HasDatabaseName("list_type");
 
                 entity.Property(e => e.AdditionalParams)
                     .HasCharSet("utf8")
@@ -291,7 +291,7 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbOrganisationLogo>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.Content)
                     .HasCharSet("utf8")
@@ -308,10 +308,10 @@ namespace ASC.CRM.Core.EF
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => new { e.TenantId, e.ContactId })
-                    .HasName("contact_id");
+                    .HasDatabaseName("contact_id");
 
                 entity.HasIndex(e => new { e.TenantId, e.ProjectId })
-                    .HasName("project_id");
+                    .HasDatabaseName("project_id");
             });
 
 
@@ -321,13 +321,13 @@ namespace ASC.CRM.Core.EF
                     .HasName("PRIMARY");
 
                 entity.HasIndex(e => e.CreateBy)
-                    .HasName("create_by");
+                    .HasDatabaseName("create_by");
 
                 entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on");
+                    .HasDatabaseName("create_on");
 
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.CreateBy)
                     .HasCharSet("utf8")
@@ -337,7 +337,7 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbTag>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.Title)
                     .HasCharSet("utf8")
@@ -348,7 +348,7 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbTaskTemplate>(entity =>
             {
                 entity.HasIndex(e => new { e.TenantId, e.ContainerId })
-                    .HasName("template_id");
+                    .HasDatabaseName("template_id");
 
                 entity.Property(e => e.CreateBy)
                     .HasDefaultValueSql("'00000000-0000-0000-0000-000000000000'")
@@ -377,7 +377,7 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbTaskTemplateContainer>(entity =>
             {
                 entity.HasIndex(e => new { e.TenantId, e.EntityType })
-                    .HasName("entity_type");
+                    .HasDatabaseName("entity_type");
 
                 entity.Property(e => e.CreateBy)
                     .HasDefaultValueSql("'0'")
@@ -403,10 +403,10 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbVoipCalls>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.HasIndex(e => new { e.ParentCallId, e.TenantId })
-                    .HasName("parent_call_id");
+                    .HasDatabaseName("parent_call_id");
 
                 entity.Property(e => e.Id)
                     .HasCharSet("utf8")
@@ -441,7 +441,7 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbVoipNumber>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.Id)
                     .HasCharSet("utf8")

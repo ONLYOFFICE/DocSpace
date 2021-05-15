@@ -42,6 +42,7 @@ using ASC.CRM.Core.Entities;
 using AutoMapper;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
@@ -94,22 +95,30 @@ namespace ASC.CRM.Core.Dao
 
         public List<InvoiceLine> GetAll()
         {
-            var dbInvoiceLines = Query(CrmDbContext.InvoiceLine)
+            var dbEntities = Query(CrmDbContext.InvoiceLine)
+                    .AsNoTracking()
                     .ToList();
 
-            return _mapper.Map<List<DbInvoiceLine>, List<InvoiceLine>>(dbInvoiceLines);
+            return _mapper.Map<List<DbInvoiceLine>, List<InvoiceLine>>(dbEntities);
         }
 
         public List<InvoiceLine> GetByID(int[] ids)
         {
-            var dbInvoiceLines = Query(CrmDbContext.InvoiceLine).Where(x => ids.Contains(x.Id)).ToList();
+            var dbEntities = Query(CrmDbContext.InvoiceLine)
+                                .AsNoTracking()
+                                .Where(x => ids.Contains(x.Id))
+                                .ToList();
 
-            return _mapper.Map<List<DbInvoiceLine>, List<InvoiceLine>>(dbInvoiceLines);               
+            return _mapper.Map<List<DbInvoiceLine>, List<InvoiceLine>>(dbEntities);
         }
 
         public InvoiceLine GetByID(int id)
         {
-            return _mapper.Map<InvoiceLine>(Query(CrmDbContext.InvoiceLine).FirstOrDefault(x => x.Id == id));
+            var dbEntity = CrmDbContext.InvoiceLine.Find(id);
+
+            if (dbEntity.TenantId != TenantID) return null;
+
+            return _mapper.Map<InvoiceLine>(dbEntity);
         }
 
         public List<InvoiceLine> GetInvoiceLines(int invoiceID)
@@ -124,7 +133,7 @@ namespace ASC.CRM.Core.Dao
                 .OrderBy(x => x.SortOrder)
                 .ToList();
 
-            return _mapper.Map<List<DbInvoiceLine>, List<InvoiceLine>>(dbInvoiceLines);                
+            return _mapper.Map<List<DbInvoiceLine>, List<InvoiceLine>>(dbInvoiceLines);
         }
 
         public int SaveOrUpdateInvoiceLine(InvoiceLine invoiceLine)
@@ -139,67 +148,32 @@ namespace ASC.CRM.Core.Dao
             if (invoiceLine.InvoiceID <= 0 || invoiceLine.InvoiceItemID <= 0)
                 throw new ArgumentException();
 
-            if (String.IsNullOrEmpty(invoiceLine.Description))
+            var dbEntity = new DbInvoiceLine
             {
-                invoiceLine.Description = String.Empty;
-            }
+                Id = invoiceLine.ID,
+                InvoiceId = invoiceLine.InvoiceItemID,
+                InvoiceItemId = invoiceLine.InvoiceItemID,
+                InvoiceTax1Id = invoiceLine.InvoiceTax1ID,
+                InvoiceTax2Id = invoiceLine.InvoiceTax2ID,
+                SortOrder = invoiceLine.SortOrder,
+                Description = invoiceLine.Description,
+                Quantity = invoiceLine.Quantity,
+                Price = invoiceLine.Price,
+                Discount = invoiceLine.Discount,                 
+                TenantId = TenantID
+            };
 
-            if (Query(CrmDbContext.InvoiceLine).Where(x => x.Id == invoiceLine.ID).Any())
-            {
+            CrmDbContext.Update(dbEntity);
+            CrmDbContext.SaveChanges();
 
-                var itemToInsert = new DbInvoiceLine
-                {
-                    InvoiceId = invoiceLine.InvoiceItemID,
-                    InvoiceItemId = invoiceLine.InvoiceItemID,
-                    InvoiceTax1Id = invoiceLine.InvoiceTax1ID,
-                    InvoiceTax2Id = invoiceLine.InvoiceTax2ID,
-                    SortOrder = invoiceLine.SortOrder,
-                    Description = invoiceLine.Description,
-                    Quantity = invoiceLine.Quantity,
-                    Price = invoiceLine.Price,
-                    Discount = invoiceLine.Discount,
-                    TenantId = TenantID
-                };
-
-                CrmDbContext.Add(itemToInsert);
-                CrmDbContext.SaveChanges();
-
-                invoiceLine.ID = itemToInsert.Id;
-            }
-            else
-            {
-                var itemToUpdate = Query(CrmDbContext.InvoiceLine).Single(x => x.Id == invoiceLine.ID);
-
-                itemToUpdate.InvoiceId = invoiceLine.InvoiceID;
-                itemToUpdate.InvoiceItemId = invoiceLine.InvoiceItemID;
-                itemToUpdate.InvoiceTax1Id = invoiceLine.InvoiceTax1ID;
-                itemToUpdate.InvoiceTax2Id = invoiceLine.InvoiceTax2ID;
-                itemToUpdate.SortOrder = invoiceLine.SortOrder;
-                itemToUpdate.Description = invoiceLine.Description;
-                itemToUpdate.Quantity = invoiceLine.Quantity;
-                itemToUpdate.Price = invoiceLine.Price;
-                itemToUpdate.Discount = invoiceLine.Discount;
-
-                CrmDbContext.Update(itemToUpdate);
-
-                CrmDbContext.SaveChanges();
-
-
-            }
-
-            return invoiceLine.ID;
+            return dbEntity.Id;
         }
 
-        public void DeleteInvoiceLine(int invoiceLineID)
+        public void DeleteInvoiceLine(int id)
         {
-            var invoiceLine = GetByID(invoiceLineID);
-
-            if (invoiceLine == null) return;
-
-            var itemToDelete = new DbInvoiceLine { Id = invoiceLineID };
-
-            CrmDbContext.Attach(itemToDelete);
-            CrmDbContext.Remove(itemToDelete);
+            var dbEntity = CrmDbContext.InvoiceLine.Find(id);
+                      
+            CrmDbContext.Remove(dbEntity);
             CrmDbContext.SaveChanges();
 
             /*_cache.Remove(_invoiceItemCacheKey);
@@ -208,7 +182,8 @@ namespace ASC.CRM.Core.Dao
 
         public void DeleteInvoiceLines(int invoiceID)
         {
-            var itemToDelete = Query(CrmDbContext.InvoiceLine).Where(x => x.InvoiceId == invoiceID);
+            var itemToDelete = Query(CrmDbContext.InvoiceLine)
+                                .Where(x => x.InvoiceId == invoiceID);
 
             CrmDbContext.RemoveRange(itemToDelete);
             CrmDbContext.SaveChanges();
@@ -225,8 +200,8 @@ namespace ASC.CRM.Core.Dao
         public Boolean CanDeleteInDb(int invoiceLineID)
         {
             var invoiceID = Query(CrmDbContext.InvoiceLine)
-                .Where(x => x.Id == invoiceLineID)
-                .Select(x => x.InvoiceId);
+                            .Where(x => x.Id == invoiceLineID)
+                            .Select(x => x.InvoiceId);
 
             if (!invoiceID.Any()) return false;
 

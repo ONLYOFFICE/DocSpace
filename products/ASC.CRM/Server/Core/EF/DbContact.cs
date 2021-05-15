@@ -110,16 +110,16 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbContact>(entity =>
             {
                 entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on");
+                    .HasDatabaseName("create_on");
 
                 entity.HasIndex(e => new { e.LastModifedOn, e.TenantId })
-                    .HasName("last_modifed_on");
+                    .HasDatabaseName("last_modifed_on");
 
                 entity.HasIndex(e => new { e.TenantId, e.CompanyId })
-                    .HasName("company_id");
+                    .HasDatabaseName("company_id");
 
                 entity.HasIndex(e => new { e.TenantId, e.DisplayName })
-                    .HasName("display_name");
+                    .HasDatabaseName("display_name");
 
                 entity.Property(e => e.CompanyName)
                     .HasCharSet("utf8")

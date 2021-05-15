@@ -77,7 +77,8 @@ namespace ASC.CRM.Core.Dao
         private bool IsExistInDb(EntityType entityType, String tagName)
         {
             return Query(CrmDbContext.Tags)
-                    .Where(x => x.EntityType == entityType && String.Compare(x.Title, tagName, true) == 0).Any();
+                    .Where(x => x.EntityType == entityType && String.Compare(x.Title, tagName, true) == 0)
+                    .Any();
         }
 
         private int GetTagId(EntityType entityType, String tagName)
@@ -100,7 +101,6 @@ namespace ASC.CRM.Core.Dao
         public List<KeyValuePair<EntityType, string>> GetAllTags()
         {
             return Query(CrmDbContext.Tags)
-                .AsNoTracking()
                 .OrderBy(x => x.Title)
                 .Select(x => new KeyValuePair<EntityType, string>(x.EntityType, x.Title)).ToList();
         }
@@ -108,13 +108,13 @@ namespace ASC.CRM.Core.Dao
         public String GetTagsLinkCountJSON(EntityType entityType)
         {
             int[] tags = GetTagsLinkCount(entityType).ToArray();
+
             return JsonConvert.SerializeObject(tags);
         }
 
         public IEnumerable<int> GetTagsLinkCount(EntityType entityType)
         {
             return Query(CrmDbContext.Tags)
-                       .AsNoTracking()
                        .Join(CrmDbContext.EntityTags,
                                    x => x.Id,
                                    y => y.TagId,
@@ -151,7 +151,8 @@ namespace ASC.CRM.Core.Dao
 
                             })
                     .Where(x => x.y.EntityId == entityID && x.y.EntityType == entityType)
-                    .Select(x => x.x.Title).ToArray();
+                    .Select(x => x.x.Title)
+                    .ToArray();
         }
 
         public string[] GetUnusedTags(EntityType entityType)
@@ -162,14 +163,16 @@ namespace ASC.CRM.Core.Dao
                                y => y.TagId,
                                (x, y) => new { x, y })
                     .Where(x => x.y == null && x.x.EntityType == entityType)
-                    .Select(x => x.x.Title).ToArray();
+                    .Select(x => x.x.Title)
+                    .ToArray();
         }
 
         public bool CanDeleteTag(EntityType entityType, String tagName)
         {
             return Query(CrmDbContext.Tags)
                  .Where(x => string.Compare(x.Title, tagName, true) == 0 && x.EntityType == entityType)
-                 .Select(x => x.Id).SingleOrDefault() != 0;
+                 .Select(x => x.Id)
+                 .SingleOrDefault() != 0;
         }
 
         public void DeleteTag(EntityType entityType, String tagName)
@@ -183,7 +186,8 @@ namespace ASC.CRM.Core.Dao
         {
             var tagID = Query(CrmDbContext.Tags)
                         .Where(x => String.Compare(x.Title, tagName, true) == 0 && x.EntityType == entityType)
-                        .Select(x => x.Id).SingleOrDefault();
+                        .Select(x => x.Id)
+                        .SingleOrDefault();
 
             if (tagID == 0) return;
 

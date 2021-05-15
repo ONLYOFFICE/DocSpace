@@ -145,10 +145,10 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
 
                 entity.HasIndex(e => new { e.TenantId, e.ContactId })
-                    .HasName("contact_id");
+                    .HasDatabaseName("contact_id");
 
                 entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on");
+                    .HasDatabaseName("create_on");
 
                 entity.Property(e => e.CreateBy)
                     .HasCharSet("utf8")
@@ -159,10 +159,10 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.LastModifedOn)
-                    .HasName("last_modifed_on");
+                    .HasDatabaseName("last_modifed_on");
 
                 entity.HasIndex(e => e.DealMilestoneId)
-                    .HasName("deal_milestone_id");
+                    .HasDatabaseName("deal_milestone_id");
 
                 entity.Property(e => e.LastModifedBy)
                     .HasCharSet("utf8")

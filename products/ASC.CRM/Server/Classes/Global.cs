@@ -111,38 +111,39 @@ namespace ASC.Web.CRM.Classes
 
         public bool CanCreateProjects()
         {
-            try
-            {
-                var apiUrl = String.Format("{0}project/securityinfo.json", SetupInfo.WebApiBaseUrl);
+            throw new NotImplementedException();
 
-                var cacheKey = String.Format("{0}-{1}", SecurityContext.CurrentAccount.ID, apiUrl);
+            //try
+            //{
+            //    var apiUrl = String.Format("{0}project/securityinfo.json", SetupInfo.WebApiBaseUrl);
 
-                bool canCreateProject = false;
+            //    var cacheKey = String.Format("{0}-{1}", SecurityContext.CurrentAccount.ID, apiUrl);
 
-                throw new NotImplementedException();
-                //if (HttpRuntime.Cache[cacheKey] != null)
-                //    return Convert.ToBoolean(HttpRuntime.Cache[cacheKey]);
+            //    bool canCreateProject = false;
 
-                //var apiServer = new Api.ApiServer();
+            //    //if (HttpRuntime.Cache[cacheKey] != null)
+            //    //    return Convert.ToBoolean(HttpRuntime.Cache[cacheKey]);
 
-                //var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(apiServer.GetApiResponse(apiUrl, "GET"))))["response"];
+            //    //var apiServer = new Api.ApiServer();
 
-                //if (responseApi.HasValues)
-                //    canCreateProject = Convert.ToBoolean(responseApi["canCreateProject"].Value<String>());
-                //else
-                //    canCreateProject = false;
+            //    //var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(apiServer.GetApiResponse(apiUrl, "GET"))))["response"];
 
-                //HttpRuntime.Cache.Remove(cacheKey);
-                //HttpRuntime.Cache.Insert(cacheKey, canCreateProject, null, System.Web.Caching.Cache.NoAbsoluteExpiration,
-                //                  TimeSpan.FromMinutes(5));
+            //    //if (responseApi.HasValues)
+            //    //    canCreateProject = Convert.ToBoolean(responseApi["canCreateProject"].Value<String>());
+            //    //else
+            //    //    canCreateProject = false;
 
-                return canCreateProject;
+            //    //HttpRuntime.Cache.Remove(cacheKey);
+            //    //HttpRuntime.Cache.Insert(cacheKey, canCreateProject, null, System.Web.Caching.Cache.NoAbsoluteExpiration,
+            //    //                  TimeSpan.FromMinutes(5));
 
-            }
-            catch
-            {
-                return false;
-            }
+            //    return canCreateProject;
+
+            //}
+            //catch
+            //{
+            //    return false;
+            //}
 
         }
 

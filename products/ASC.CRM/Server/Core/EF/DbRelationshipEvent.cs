@@ -92,16 +92,16 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbRelationshipEvent>(entity =>
             {
                 entity.HasIndex(e => e.ContactId)
-                    .HasName("IX_Contact");
+                    .HasDatabaseName("IX_Contact");
 
                 entity.HasIndex(e => e.LastModifedOn)
-                    .HasName("last_modifed_on");
+                    .HasDatabaseName("last_modifed_on");
 
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.HasIndex(e => new { e.EntityId, e.EntityType })
-                    .HasName("IX_Entity");
+                    .HasDatabaseName("IX_Entity");
 
                 entity.Property(e => e.Content)
                     .HasCharSet("utf8")

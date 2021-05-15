@@ -80,10 +80,10 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbContactInfo>(entity =>
             {
                 entity.HasIndex(e => e.LastModifedOn)
-                    .HasName("last_modifed_on");
+                    .HasDatabaseName("last_modifed_on");
 
                 entity.HasIndex(e => new { e.TenantId, e.ContactId })
-                    .HasName("IX_Contact");
+                    .HasDatabaseName("IX_Contact");
 
                 entity.Property(e => e.Data)
                     .HasCharSet("utf8")

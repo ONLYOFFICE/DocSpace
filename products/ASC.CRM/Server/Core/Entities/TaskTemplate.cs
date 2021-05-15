@@ -32,6 +32,8 @@ using ASC.Common.Mapping;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Mapping;
 
+using AutoMapper;
+
 #endregion
 
 namespace ASC.CRM.Core.Entities
@@ -48,6 +50,12 @@ namespace ASC.CRM.Core.Entities
         public bool DeadLineIsFixed { get; set; }
         public Guid CreateBy { get; set; }
         public DateTime CreateOn { get; set; }
+        public int SortOrder { get; set; }
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<DbTaskTemplate, TaskTemplate>()
+                   .ForMember(dest => dest.Offset, opt => opt.MapFrom(src => TimeSpan.FromTicks(src.Offset)));
 
+        }
     }
 }

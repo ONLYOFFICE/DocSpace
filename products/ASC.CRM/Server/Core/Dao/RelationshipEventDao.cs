@@ -63,15 +63,16 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class RelationshipEventDao : AbstractDao
     {
-        private CrmSecurity _crmSecurity;
-        private TenantUtil _tenantUtil;
-        private FilesIntegration _filesIntegration;
-        private FactoryIndexerEvents _factoryIndexer;
+        private readonly CrmSecurity _crmSecurity;
+        private readonly TenantUtil _tenantUtil;
+        private readonly FilesIntegration _filesIntegration;
+        private readonly FactoryIndexerEvents _factoryIndexer;
 
         public RelationshipEventDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             FilesIntegration filesIntegration,
+            FactoryIndexerEvents factoryIndexerEvents,
             CrmSecurity crmSecurity,
             TenantUtil tenantUtil,
             IOptionsMonitor<ILog> logger,
@@ -88,6 +89,7 @@ namespace ASC.CRM.Core.Dao
             _filesIntegration = filesIntegration;
             _tenantUtil = tenantUtil;
             _crmSecurity = crmSecurity;
+            _factoryIndexer = factoryIndexerEvents;
         }
 
         public RelationshipEvent AttachFiles(int contactID, EntityType entityType, int entityID, int[] fileIDs)
@@ -123,15 +125,10 @@ namespace ASC.CRM.Core.Dao
 
             if (fileIDs.Length > 0)
             {
-                var dbRelationshipEvent = new DbRelationshipEvent
-                {
-                    Id = eventID,
-                    HaveFiles = true,
-                    TenantId = TenantID
-                };
+                var dbEntity = CrmDbContext.RelationshipEvent.Find(eventID);
 
-                CrmDbContext.RelationshipEvent.Attach(dbRelationshipEvent);
-                CrmDbContext.Entry(dbRelationshipEvent).Property(x => x.HaveFiles).IsModified = true;
+                dbEntity.HaveFiles = true;
+                
                 CrmDbContext.SaveChanges();
             }
         }
@@ -257,15 +254,11 @@ namespace ASC.CRM.Core.Dao
             {
                 if (GetFiles(eventID).Count == 0)
                 {
-                    var dbRelationshipEvent = new DbRelationshipEvent
-                    {
-                        Id = eventID,
-                        HaveFiles = false,
-                        TenantId = TenantID
-                    };
+                    var dbEntity = CrmDbContext.RelationshipEvent.Find(eventID);
 
-                    CrmDbContext.Attach(dbRelationshipEvent);
-                    CrmDbContext.Entry(dbRelationshipEvent).Property(x => x.HaveFiles).IsModified = true;
+                    if (dbEntity.TenantId != TenantID) continue;
+
+                    dbEntity.HaveFiles = false;
 
                     CrmDbContext.SaveChanges();
                 }
@@ -274,8 +267,6 @@ namespace ASC.CRM.Core.Dao
             var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.FileId == Convert.ToInt32(file.ID));
 
             itemToUpdate.FileId = 0;
-
-            CrmDbContext.Update(itemToUpdate);
 
             CrmDbContext.SaveChanges();
 
@@ -399,10 +390,18 @@ namespace ASC.CRM.Core.Dao
             return item;
         }
 
-        public RelationshipEvent GetByID(int eventID)
+        public RelationshipEvent GetByID(int id)
         {
-            return ToRelationshipEvent(Query(CrmDbContext.RelationshipEvent)
-                                            .FirstOrDefault(x => x.Id == eventID));
+            var dbEntity = CrmDbContext.RelationshipEvent.Find(id);
+
+            if (dbEntity.TenantId != TenantID) return null;
+
+            var entity = _mapper.Map<DbRelationshipEvent, RelationshipEvent>(dbEntity);
+
+            _crmSecurity.DemandAccessTo(entity);
+
+            return entity;
+
         }
 
         public int GetAllItemsCount()
@@ -436,7 +435,7 @@ namespace ASC.CRM.Core.Dao
             OrderBy orderBy)
         {
 
-            var sqlQuery = Query(CrmDbContext.RelationshipEvent);
+            var sqlQuery = Query(CrmDbContext.RelationshipEvent).AsNoTracking();
 
             if (entityID > 0)
                 switch (entityType)
@@ -531,6 +530,8 @@ namespace ASC.CRM.Core.Dao
                 sqlQuery = sqlQuery.Take(count);
 
             if (orderBy != null && Enum.IsDefined(typeof(RelationshipEventByType), orderBy.SortedBy))
+            {
+
                 switch ((RelationshipEventByType)orderBy.SortedBy)
                 {
                     case RelationshipEventByType.Category:
@@ -546,30 +547,13 @@ namespace ASC.CRM.Core.Dao
                         sqlQuery = sqlQuery.OrderBy(x => x.CreateOn);
                         break;
                 }
+            }
             else
-                sqlQuery = sqlQuery.OrderBy(x => x.CreateOn);
-
-            return sqlQuery.ToList().ConvertAll(ToRelationshipEvent);
-        }
-
-
-        private RelationshipEvent ToRelationshipEvent(DbRelationshipEvent relationshipEvent)
-        {
-            if (relationshipEvent == null) return null;
-
-            return new RelationshipEvent
             {
-                ID = relationshipEvent.Id,
-                ContactID = relationshipEvent.ContactId,
-                Content = relationshipEvent.Content,
-                EntityID = relationshipEvent.EntityId,
-                EntityType = relationshipEvent.EntityType,
-                CreateOn = _tenantUtil.DateTimeFromUtc(relationshipEvent.CreateOn),
-                CreateBy = relationshipEvent.CreateBy,
-                CategoryID = relationshipEvent.CategoryId,
-                LastModifedBy = relationshipEvent.LastModifedBy,
-                LastModifedOn = relationshipEvent.LastModifedOn
-            };
+                sqlQuery = sqlQuery.OrderBy(x => x.CreateOn);
+            }
+
+            return _mapper.Map<List<DbRelationshipEvent>, List<RelationshipEvent>>(sqlQuery.ToList());
         }
 
         public void DeleteItem(int id)
@@ -595,7 +579,7 @@ namespace ASC.CRM.Core.Dao
 
             var itemToDelete = Query(CrmDbContext.RelationshipEvent).Where(x => x.Id == item.ID).Single();
 
-            _factoryIndexer.DeleteAsync(itemToDelete);
+            _factoryIndexer.Delete(itemToDelete);
 
             CrmDbContext.RelationshipEvent.Remove(itemToDelete);
 
@@ -606,39 +590,17 @@ namespace ASC.CRM.Core.Dao
         [DataContract]
         internal class CrmHistoryContent
         {
-
             public string to;
-
-
             public string from;
-
-
             public string cc;
-
-
             public string bcc;
-
-
             public string subject;
-
-
             public bool important;
-
-
             public string chain_id;
-
-
             public bool is_sended;
-
-
             public string date_created;
-
-
             public string introduction;
-
-
             public long message_id;
-
         }
 
         private static string GetHistoryContentJson(JObject apiResponse)
@@ -663,6 +625,7 @@ namespace ASC.CRM.Core.Dao
             using (var stream = new System.IO.MemoryStream())
             {
                 serializer.WriteObject(stream, content_struct);
+            
                 return Encoding.UTF8.GetString(stream.ToArray());
             }
         }

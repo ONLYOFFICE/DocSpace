@@ -42,6 +42,7 @@ using ASC.Web.CRM.Core.Search;
 using AutoMapper;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
@@ -65,7 +66,7 @@ namespace ASC.CRM.Core.Dao
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache, 
+                 ascCache,
                  mapper)
         {
             _tenantUtil = tenantUtil;
@@ -75,18 +76,17 @@ namespace ASC.CRM.Core.Dao
         public ContactInfo GetByID(int id)
         {
             var dbEntity = CrmDbContext.ContactsInfo.Find(id);
-                     
+
+            if (dbEntity.TenantId != TenantID) return null;
+
             return _mapper.Map<ContactInfo>(dbEntity);
         }
 
         public void Delete(int id)
         {
-            var itemToDelete = new DbContactInfo
-            {
-                Id = id
-            };
-
-            CrmDbContext.ContactsInfo.Remove(itemToDelete);
+            var dbEntity = CrmDbContext.ContactsInfo.Find(id); 
+            
+            CrmDbContext.Remove(dbEntity);
             CrmDbContext.SaveChanges();
 
             _factoryIndexerContactInfo.Delete(r => r.Where(a => a.Id, id));
@@ -96,8 +96,11 @@ namespace ASC.CRM.Core.Dao
         {
             if (contactID <= 0) return;
 
-            CrmDbContext.RemoveRange(Query(CrmDbContext.ContactsInfo)
-                                        .Where(x => x.ContactId == contactID));
+            var dbEntities = Query(CrmDbContext.ContactsInfo)
+                                  .AsNoTracking()
+                                  .Where(x => x.ContactId == contactID);
+
+            CrmDbContext.RemoveRange(dbEntities);
 
             CrmDbContext.SaveChanges();
 

@@ -75,13 +75,13 @@ namespace ASC.CRM.Core.EF
             modelBuilder.Entity<DbCase>(entity =>
             {
                 entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on");
+                    .HasDatabaseName("create_on");
 
                 entity.HasIndex(e => e.LastModifedOn)
-                    .HasName("last_modifed_on");
+                    .HasDatabaseName("last_modifed_on");
 
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.CreateBy)
                     .HasCharSet("utf8")

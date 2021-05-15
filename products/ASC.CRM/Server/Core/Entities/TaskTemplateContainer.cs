@@ -41,6 +41,9 @@ namespace ASC.CRM.Core.Entities
     {
         public String Title { get; set; }
         public EntityType EntityType { get; set; }
+        public Guid CreateBy { get; set; }
+        public DateTime CreateOn { get; set; }
+
 
     }
 }

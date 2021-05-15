@@ -53,13 +53,11 @@ namespace ASC.CRM.Core.Dao
     public class InvoiceItemDao : AbstractDao
     {
         private CrmSecurity _crmSecurity { get; }
-        private TenantUtil _tTenantUtil { get; }
 
         public InvoiceItemDao(
                 DbContextManager<CrmDbContext> dbContextManager,
                 TenantManager tenantManager,
                 SecurityContext securityContext,
-                TenantUtil tenantUtil,
                 CrmSecurity crmSecurity,
                 IOptionsMonitor<ILog> logger,
                 ICache ascCache,
@@ -71,7 +69,6 @@ namespace ASC.CRM.Core.Dao
                  ascCache,
                  mapper)
         {
-            _tTenantUtil = tenantUtil;
             _crmSecurity = crmSecurity;
         }
 
@@ -96,7 +93,9 @@ namespace ASC.CRM.Core.Dao
         }
         public List<InvoiceItem> GetAllInDb()
         {
-            var dbInvoiceItems = Query(CrmDbContext.InvoiceItem).ToList();
+            var dbInvoiceItems = Query(CrmDbContext.InvoiceItem)
+                                .AsNoTracking()
+                                .ToList();
 
             return _mapper.Map<List<DbInvoiceItem>, List<InvoiceItem>>(dbInvoiceItems);
         }
@@ -104,6 +103,7 @@ namespace ASC.CRM.Core.Dao
         public List<InvoiceItem> GetByID(int[] ids)
         {
             var dbInvoiceItems = Query(CrmDbContext.InvoiceItem)
+                                .AsNoTracking()
                                 .Where(x => ids.Contains(x.Id))
                                 .ToList();
 
@@ -112,9 +112,9 @@ namespace ASC.CRM.Core.Dao
 
         public InvoiceItem GetByID(int id)
         {
-            var dbInvoiceItems = Query(CrmDbContext.InvoiceItem).FirstOrDefault(x => x.Id == id);
+            var dbEntity = CrmDbContext.InvoiceItem.Find(id);
 
-            return _mapper.Map<InvoiceItem>(dbInvoiceItems);
+            return _mapper.Map<InvoiceItem>(dbEntity);
         }
 
         public List<InvoiceItem> GetInvoiceItems(IEnumerable<int> ids)
@@ -122,11 +122,11 @@ namespace ASC.CRM.Core.Dao
             if (ids == null || !ids.Any()) return new List<InvoiceItem>();
 
             var dbInvoiceItems = Query(CrmDbContext.InvoiceItem)
-                            .Where(x => ids.Contains(x.Id))
-                            .ToList();
+                                .AsNoTracking()
+                                .Where(x => ids.Contains(x.Id))
+                                .ToList();
 
             return _mapper.Map<List<DbInvoiceItem>, List<InvoiceItem>>(dbInvoiceItems);
-
         }
 
         public List<InvoiceItem> GetInvoiceItems(
@@ -250,7 +250,7 @@ namespace ASC.CRM.Core.Dao
 
         private InvoiceItem SaveOrUpdateInvoiceItemInDb(InvoiceItem invoiceItem)
         {
-            if (invoiceItem.Price <= 0 || String.IsNullOrEmpty(invoiceItem.Title))
+            if (invoiceItem.Price <= 0 || string.IsNullOrEmpty(invoiceItem.Title))
                 throw new ArgumentException();
 
             if (invoiceItem.Price > Global.MaxInvoiceItemPrice)
@@ -258,69 +258,28 @@ namespace ASC.CRM.Core.Dao
 
             if (!_crmSecurity.IsAdmin) _crmSecurity.CreateSecurityException();
 
-            if (String.IsNullOrEmpty(invoiceItem.Description))
+
+            var dbEntity = new DbInvoiceItem
             {
-                invoiceItem.Description = String.Empty;
-            }
-            if (String.IsNullOrEmpty(invoiceItem.StockKeepingUnit))
-            {
-                invoiceItem.StockKeepingUnit = String.Empty;
-            }
+                Id = invoiceItem.ID,                 
+                Title = invoiceItem.Title,
+                Description = invoiceItem.Description,
+                StockKeepingUnit = invoiceItem.StockKeepingUnit,
+                Price = invoiceItem.Price,
+                StockQuantity = invoiceItem.StockQuantity,
+                TrackInventory = invoiceItem.TrackInventory,
+                InvoiceTax1Id = invoiceItem.InvoiceTax1ID,
+                InvoiceTax2Id = invoiceItem.InvoiceTax2ID,
+                Currency = String.Empty,
+                CreateOn = DateTime.UtcNow,
+                CreateBy = _securityContext.CurrentAccount.ID,
+                LastModifedOn = DateTime.Now,
+                LastModifedBy = _securityContext.CurrentAccount.ID,
+                TenantId = TenantID
+            };
 
-            if (!IsExistInDb(invoiceItem.ID))
-            {
-                var itemToInsert = new DbInvoiceItem
-                {
-                    Title = invoiceItem.Title,
-                    Description = invoiceItem.Description,
-                    StockKeepingUnit = invoiceItem.StockKeepingUnit,
-                    Price = invoiceItem.Price,
-                    StockQuantity = invoiceItem.StockQuantity,
-                    TrackInventory = invoiceItem.TrackInventory,
-                    InvoiceTax1Id = invoiceItem.InvoiceTax1ID,
-                    InvoiceTax2Id = invoiceItem.InvoiceTax2ID,
-                    Currency = String.Empty,
-                    CreateOn = DateTime.UtcNow,
-                    CreateBy = _securityContext.CurrentAccount.ID,
-                    LastModifedOn = DateTime.Now,
-                    LastModifedBy = _securityContext.CurrentAccount.ID,
-                    TenantId = TenantID
-                };
-
-                CrmDbContext.Add(itemToInsert);
-                CrmDbContext.SaveChanges();
-
-                invoiceItem.ID = itemToInsert.Id;
-
-
-
-            }
-            else
-            {
-
-                var itemToUpdate = Query(CrmDbContext.InvoiceItem).Single(x => x.Id == invoiceItem.ID);
-                var oldInvoiceItem = _mapper.Map<InvoiceItem>(itemToUpdate);
-
-                _crmSecurity.DemandEdit(oldInvoiceItem);
-
-                itemToUpdate.Title = invoiceItem.Title;
-                itemToUpdate.Description = invoiceItem.Description;
-                itemToUpdate.StockKeepingUnit = invoiceItem.StockKeepingUnit;
-                itemToUpdate.Price = invoiceItem.Price;
-                itemToUpdate.StockQuantity = invoiceItem.StockQuantity;
-                itemToUpdate.TrackInventory = invoiceItem.TrackInventory;
-                itemToUpdate.InvoiceTax1Id = invoiceItem.InvoiceTax1ID;
-                itemToUpdate.InvoiceTax2Id = invoiceItem.InvoiceTax2ID;
-
-                itemToUpdate.Currency = invoiceItem.Currency;
-                itemToUpdate.LastModifedOn = invoiceItem.LastModifedOn;
-                itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
-
-                CrmDbContext.Add(itemToUpdate);
-                CrmDbContext.SaveChanges();
-
-
-            }
+            CrmDbContext.Update(dbEntity);
+            CrmDbContext.SaveChanges();
 
             return invoiceItem;
         }
@@ -328,6 +287,7 @@ namespace ASC.CRM.Core.Dao
         public InvoiceItem DeleteInvoiceItem(int invoiceItemID)
         {
             var invoiceItem = GetByID(invoiceItemID);
+            
             if (invoiceItem == null) return null;
 
             _crmSecurity.DemandDelete(invoiceItem);
@@ -346,37 +306,35 @@ namespace ASC.CRM.Core.Dao
             return invoiceItem;
         }
 
-        public List<InvoiceItem> DeleteBatchInvoiceItems(int[] invoiceItemIDs)
+        public List<InvoiceItem> DeleteBatchInvoiceItems(int[] ids)
         {
-            if (invoiceItemIDs == null || !invoiceItemIDs.Any()) return null;
+            var result = new List<InvoiceItem>();
 
-            var items = GetInvoiceItems(invoiceItemIDs).Where(_crmSecurity.CanDelete).ToList();
+            foreach (var id in ids)
+            {
+                var dbEntity = CrmDbContext.InvoiceItem.Find(id);
 
-            if (!items.Any()) return items;
+                var entity = _mapper.Map<InvoiceItem>(dbEntity);
 
+                result.Add(entity);
+
+                _crmSecurity.DemandDelete(entity);
+
+                CrmDbContext.Remove(dbEntity);
+            }
+
+            CrmDbContext.SaveChanges();
+                        
             // Delete relative  keys
             /*_cache.Remove(_invoiceItemCacheKey);
             _cache.Insert(_invoiceItemCacheKey, String.Empty);*/
-
-            DeleteBatchItemsExecute(items);
-
-            return items;
-        }
-
-        private void DeleteBatchItemsExecute(List<InvoiceItem> items)
-        {
-            CrmDbContext.RemoveRange(items.ConvertAll(x => new DbInvoiceItem
-            {
-                Id = x.ID,
-                TenantId = TenantID
-            }));
-
-            CrmDbContext.SaveChanges();
+         
+            return result;
         }
            
         private IQueryable<DbInvoiceItem> GetDbInvoiceItemByFilters(
                                 ICollection<int> exceptIDs,
-                                String searchText,
+                                string searchText,
                                 int status,
                                 bool? inventoryStock)
         {

@@ -105,22 +105,22 @@ namespace ASC.CRM.Core.EF
                 entity.ToTable("crm_task");
 
                 entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on");
+                    .HasDatabaseName("create_on");
 
                 entity.HasIndex(e => e.Deadline)
-                    .HasName("deadline");
+                    .HasDatabaseName("deadline");
 
                 entity.HasIndex(e => e.LastModifedOn)
-                    .HasName("last_modifed_on");
+                    .HasDatabaseName("last_modifed_on");
 
                 entity.HasIndex(e => new { e.TenantId, e.ContactId })
-                    .HasName("IX_Contact");
+                    .HasDatabaseName("IX_Contact");
 
                 entity.HasIndex(e => new { e.TenantId, e.ResponsibleId })
-                    .HasName("responsible_id");
+                    .HasDatabaseName("responsible_id");
 
                 entity.HasIndex(e => new { e.TenantId, e.EntityId, e.EntityType })
-                    .HasName("IX_Entity");
+                    .HasDatabaseName("IX_Entity");
 
                 entity.Property(e => e.ContactId).HasDefaultValueSql("'-1'");
 

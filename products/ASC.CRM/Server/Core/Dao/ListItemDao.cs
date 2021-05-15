@@ -52,6 +52,7 @@ namespace ASC.CRM.Core.Dao
     public class ListItemDao : AbstractDao
     {
         public ListItemDao(
+            CrmSecurity crmSecurity,
             DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
@@ -66,45 +67,47 @@ namespace ASC.CRM.Core.Dao
                   mapper)
         {
 
-
         }
 
         public bool IsExist(ListType listType, String title)
         {
-            return CrmDbContext.ListItem
+            return Query(CrmDbContext.ListItem)
                     .Where(x => x.TenantId == TenantID && x.ListType == listType && String.Compare(x.Title, title, true) == 0)
                     .Any();
         }
 
         public bool IsExist(int id)
         {
-            return CrmDbContext.ListItem.Where(x => x.Id == id).Any();
+            return Query(CrmDbContext.ListItem).Where(x => x.Id == id).Any();
         }
 
         public List<ListItem> GetItems()
         {
             var dbListItems = Query(CrmDbContext.ListItem)
-            .OrderBy(x => x.SortOrder)
-            .ToList();
+                                .AsNoTracking()
+                                .OrderBy(x => x.SortOrder)
+                                .ToList();
 
             return _mapper.Map<List<DbListItem>, List<ListItem>>(dbListItems);
         }
 
         public List<ListItem> GetItems(ListType listType)
         {
-            var dbListItems = Query(CrmDbContext.ListItem)
-                        .Where(x => x.ListType == listType)
-                        .OrderBy(x => x.SortOrder)
-                        .ToList();
+            var dbEntities = Query(CrmDbContext.ListItem)
+                                .AsNoTracking()
+                                .Where(x => x.ListType == listType)
+                                .OrderBy(x => x.SortOrder)
+                                .ToList();
 
-            return _mapper.Map<List<DbListItem>, List<ListItem>>(dbListItems);
+            return _mapper.Map<List<DbListItem>, List<ListItem>>(dbEntities);
         }
 
         public int GetItemsCount(ListType listType)
         {
             return Query(CrmDbContext.ListItem)
                 .Where(x => x.ListType == listType)
-                .OrderBy(x => x.SortOrder).Count();
+                .OrderBy(x => x.SortOrder)
+                .Count();
         }
 
         public ListItem GetSystemListItem(int id)
@@ -167,39 +170,42 @@ namespace ASC.CRM.Core.Dao
         {
             if (id < 0) return GetSystemListItem(id);
 
-            return _mapper.Map<ListItem>(Query(CrmDbContext.ListItem).FirstOrDefault(x => x.Id == id));
+            var dbEntity = CrmDbContext.ListItem.Find(id);
+
+            if (dbEntity.TenantId != TenantID) return null;
+
+            return _mapper.Map<ListItem>(dbEntity);        
         }
 
         public List<ListItem> GetItems(int[] id)
         {
-            var sqlResult = _mapper.Map<List<DbListItem>, List<ListItem>>(CrmDbContext.ListItem.Where(x => id.Contains(x.Id)).ToList());
+            var dbEntities = Query(CrmDbContext.ListItem)
+                                         .AsNoTracking()
+                                         .Where(x => id.Contains(x.Id))
+                                         .ToList();
+            
+            var entities = _mapper.Map<List<DbListItem>, List<ListItem>>(dbEntities);
 
             var systemItem = id.Where(item => item < 0).Select(GetSystemListItem);
 
-            return systemItem.Any() ? sqlResult.Union(systemItem).ToList() : sqlResult;
+            return systemItem.Any() ? entities.Union(systemItem).ToList() : entities;
         }
 
         public List<ListItem> GetAll()
         {
-            var dbListItems = CrmDbContext
-                        .ListItem
-                        .ToList();
+            var dbListItems = Query(CrmDbContext.ListItem)
+                            .AsNoTracking()
+                            .ToList();
 
             return _mapper.Map<List<DbListItem>, List<ListItem>>(dbListItems);
-
         }
 
         public void ChangeColor(int id, string newColor)
         {
-            var listItem = new DbListItem
-            {
-                Id = id,
-                Color = newColor
-            };
+            var dbEntity = CrmDbContext.ListItem.Find(id);
+                      
+            dbEntity.Color = newColor;            
 
-
-            CrmDbContext.Attach(listItem);
-            CrmDbContext.Entry(listItem).Property("Color").IsModified = true;
             CrmDbContext.SaveChanges();
         }
 
@@ -207,7 +213,7 @@ namespace ASC.CRM.Core.Dao
         {
             var result = new NameValueCollection();
 
-            Query(CrmDbContext.ListItem)
+             Query(CrmDbContext.ListItem)
                             .Where(x => x.ListType == listType)
                             .Select(x => new { x.Id, x.Color })
                             .ToList()
@@ -219,8 +225,10 @@ namespace ASC.CRM.Core.Dao
 
         public ListItem GetByTitle(ListType listType, string title)
         {
-            return _mapper.Map<ListItem>(Query(CrmDbContext.ListItem)
-                                .FirstOrDefault(x => String.Compare(x.Title, title, true) == 0 && x.ListType == listType));
+            var dbEntity = Query(CrmDbContext.ListItem)
+                                .FirstOrDefault(x => String.Compare(x.Title, title, true) == 0 && x.ListType == listType);
+
+            return _mapper.Map<ListItem>(dbEntity);
         }
 
         public int GetRelativeItemsCount(ListType listType, int id)
@@ -502,32 +510,25 @@ namespace ASC.CRM.Core.Dao
                 }
             }
 
-            var itemToRemove = new DbListItem { Id = itemID };
+            var dbEntity = CrmDbContext.ListItem.Find(itemID);
 
-            CrmDbContext.Entry(itemToRemove).State = EntityState.Deleted;
+            CrmDbContext.ListItem.Remove(dbEntity);
 
             CrmDbContext.SaveChanges();
 
         }
 
-        public void ReorderItems(ListType listType, String[] titles)
+        public void ReorderItems(ListType listType, string[] titles)
         {
-            using var tx = CrmDbContext.Database.BeginTransaction();
-
             for (int index = 0; index < titles.Length; index++)
             {
-                var itemToUpdate = Query(CrmDbContext.ListItem)
-                                       .Single(x => String.Compare(x.Title, titles[index]) == 0 && x.ListType == listType);
+                var dbEntity = Query(CrmDbContext.ListItem)
+                               .Single(x => string.Compare(x.Title, titles[index]) == 0 && x.ListType == listType);
 
-                itemToUpdate.SortOrder = index;
-
-                CrmDbContext.Update(itemToUpdate);
+                dbEntity.SortOrder = index;
             }
 
-
             CrmDbContext.SaveChanges();
-
-            tx.Commit();
         }
     }
 }
