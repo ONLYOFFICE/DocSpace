@@ -27,6 +27,7 @@ const Badges = ({
   const isFavorite = fileStatus === 32;
   const isEditing = fileStatus === 1;
   const isNewWithFav = fileStatus === 34;
+  const showEditBadge = !locked || item.access === 0;
 
   return fileExst ? (
     <div className="badges additional-badges">
@@ -41,7 +42,7 @@ const Badges = ({
                     hoverColor="#3B72A7"
                   />
       )} */}
-      {canWebEdit && !isTrashFolder && accessToEdit && (
+      {canWebEdit && !isTrashFolder && accessToEdit && showEditBadge && (
         <IconButton
           onClick={onFilesClick}
           iconName="/static/images/access.edit.react.svg"

@@ -1,5 +1,7 @@
 ﻿using System;
+
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -45,13 +47,13 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("id")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CategoryId)
                     .HasColumnName("categoryid")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
@@ -63,13 +65,13 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("name")
                     .HasColumnType("varchar(128)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ParentId)
                     .HasColumnName("parentid")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Removed).HasColumnName("removed");
 
@@ -77,7 +79,7 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("sid")
                     .HasColumnType("varchar(512)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Tenant).HasColumnName("tenant");
             });

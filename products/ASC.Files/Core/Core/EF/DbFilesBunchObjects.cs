@@ -1,5 +1,6 @@
 ﻿using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
@@ -43,14 +44,14 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("right_node")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LeftNode)
                     .IsRequired()
                     .HasColumnName("left_node")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddDbFilesBunchObjects(this ModelBuilder modelBuilder)

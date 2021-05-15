@@ -21,6 +21,8 @@ class TreeFoldersStore {
     return treeFolders;
   };
 
+  getFoldersTree = () => getFoldersTree();
+
   setTreeFolders = (treeFolders) => {
     this.treeFolders = treeFolders;
   };

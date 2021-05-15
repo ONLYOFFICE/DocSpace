@@ -75,7 +75,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("create_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CreateOn)
                     .HasColumnName("create_on")
@@ -92,7 +92,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("modified_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ModifiedOn)
                     .HasColumnName("modified_on")
@@ -107,7 +107,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("title")
                     .HasColumnType("varchar(400)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddDbFolder(this ModelBuilder modelBuilder)

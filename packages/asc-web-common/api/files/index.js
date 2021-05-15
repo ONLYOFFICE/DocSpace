@@ -709,3 +709,19 @@ export function updateFileStream(file, fileId, encrypted, forcesave) {
     data: fd,
   });
 }
+
+export function setFavoritesSetting(set) {
+  return request({
+    method: "put",
+    url: "/files/settings/favorites",
+    data: { set },
+  });
+}
+
+export function setRecentSetting(set) {
+  return request({
+    method: "put",
+    url: "/files/displayRecent",
+    data: { set },
+  });
+}
