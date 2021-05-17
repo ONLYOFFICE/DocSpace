@@ -171,7 +171,7 @@ const ToggleContentContainer = styled.div`
       align-items: center;
       padding: 0px 4px;
       background-color: #2da7db;
-      border-radius: 5px;
+      border-radius: 9px;
     }
 
     .iconWrapper {
@@ -671,7 +671,7 @@ class PortalAdmins extends Component {
                                       font-size="9px"
                                       fontWeight={700}
                                     >
-                                      Full access
+                                      {t("FullAccess")}
                                     </Text>
                                   </div>
                                 ) : user.listAdminModules ? (
@@ -683,7 +683,10 @@ class PortalAdmins extends Component {
                                       });
 
                                       return (
-                                        <div className="iconWrapper">
+                                        <div
+                                          key={`key-${moduleName}`}
+                                          className="iconWrapper"
+                                        >
                                           <IconButton
                                             iconName={module.iconUrl}
                                             size={14}
