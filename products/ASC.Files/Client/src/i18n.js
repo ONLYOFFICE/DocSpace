@@ -22,7 +22,12 @@ newInstance.use(Backend).init({
   },
 
   backend: {
-    loadPath: `${config.homepage}/locales/{{lng}}/{{ns}}.json`,
+    loadPath: (lng, ns) => {
+      if (ns.length > 0 && ns[0] === "Common") {
+        return `/static/locales/${lng}/Common.json`;
+      }
+      return `${config.homepage}/locales/${lng}/${ns}.json`;
+    },
     allowMultiLoading: false,
     crossDomain: false,
   },
