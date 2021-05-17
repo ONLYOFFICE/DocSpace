@@ -2,49 +2,208 @@
 # -*- makefile -*-
 
 # Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+export DH_VERBOSE=1
+export DH_OPTIONS=-v
 
 %:
 	dh $@ --with=systemd
 
-verride_dh_systemd_enable:
-	dh_systemd_enable --name={{package_sysname}}AppserverApi
-	dh_systemd_enable --name={{package_sysname}}AppserverApiSystem
-	dh_systemd_enable --name={{package_sysname}}AppserverBackup
-	dh_systemd_enable --name={{package_sysname}}AppserverFiles
-	dh_systemd_enable --name={{package_sysname}}AppserverFilesServices
-	dh_systemd_enable --name={{package_sysname}}AppserverNotify
-	dh_systemd_enable --name={{package_sysname}}AppserverPeopleServer
-	dh_systemd_enable --name={{package_sysname}}AppserverSocket
-	dh_systemd_enable --name={{package_sysname}}AppserverStudioNotify
-	dh_systemd_enable --name={{package_sysname}}AppserverStudio
-	dh_systemd_enable --name={{package_sysname}}AppserverThumbnails
-	dh_systemd_enable --name={{package_sysname}}AppserverThumbnails	
+PRODUCT=appserver
+CURRENT_PATH=${CURDIR}
+BUILD_PATH=var/www
+SRC_PATH=$(shell cd ../../../; pwd)
+SCRIPT_PATH=build/install/common
 
-override_dh_installinit:
-	dh_systemd_enable --name={{package_sysname}}AppserverApi
-	dh_systemd_enable --name={{package_sysname}}AppserverApiSystem
-	dh_systemd_enable --name={{package_sysname}}AppserverBackup
-	dh_systemd_enable --name={{package_sysname}}AppserverFiles
-	dh_systemd_enable --name={{package_sysname}}AppserverFilesServices
-	dh_systemd_enable --name={{package_sysname}}AppserverNotify
-	dh_systemd_enable --name={{package_sysname}}AppserverPeopleServer
-	dh_systemd_enable --name={{package_sysname}}AppserverSocket
-	dh_systemd_enable --name={{package_sysname}}AppserverStudioNotify
-	dh_systemd_enable --name={{package_sysname}}AppserverStudio
-	dh_systemd_enable --name={{package_sysname}}AppserverThumbnails
-	dh_systemd_enable --name={{package_sysname}}AppserverThumbnails	
+override_dh_auto_clean:
+	@echo "RULES.$@"
+	dh_testdir 
+# 	rm -rf ${CURRENT_PATH}/src
 
-override_dh_systemd_start:
-	dh_systemd_enable --name={{package_sysname}}AppserverApi
-	dh_systemd_enable --name={{package_sysname}}AppserverApiSystem
-	dh_systemd_enable --name={{package_sysname}}AppserverBackup
-	dh_systemd_enable --name={{package_sysname}}AppserverFiles
-	dh_systemd_enable --name={{package_sysname}}AppserverFilesServices
-	dh_systemd_enable --name={{package_sysname}}AppserverNotify
-	dh_systemd_enable --name={{package_sysname}}AppserverPeopleServer
-	dh_systemd_enable --name={{package_sysname}}AppserverSocket
-	dh_systemd_enable --name={{package_sysname}}AppserverStudioNotify
-	dh_systemd_enable --name={{package_sysname}}AppserverStudio
-	dh_systemd_enable --name={{package_sysname}}AppserverThumbnails
-	dh_systemd_enable --name={{package_sysname}}AppserverThumbnails	
+override_dh_auto_configure:
+	@echo "RULES.$@"
+	dh_testdir 
+	dh_auto_configure
+
+override_dh_auto_build:
+	mkdir -p ${CURRENT_PATH}/src/${BUILD_PATH}
+	mkdir -p ${CURRENT_PATH}/src/${BUILD_PATH}/public/ && cp -rf ${SRC_PATH}/public/* ${CURRENT_PATH}/src/${BUILD_PATH}/public/
+	mkdir -p ${CURRENT_PATH}/src/${BUILD_PATH}/etc/nginx/conf.d && \
+	cp -f ${SRC_PATH}/config/nginx/onlyoffice*.conf ${CURRENT_PATH}/src/${BUILD_PATH}/etc/nginx/conf.d/
+	mkdir -p ${CURRENT_PATH}/src/${BUILD_PATH}/etc/nginx/includes/ && \
+	cp -f ${SRC_PATH}/config/nginx/includes/onlyoffice*.conf ${CURRENT_PATH}/src/${BUILD_PATH}/etc/nginx/includes/
+	mkdir -p ${CURRENT_PATH}/src/${BUILD_PATH}/config/mysql/conf.d && \
+	cp -f ${SRC_PATH}/build/install/docker/config/mysql/conf.d/*.cnf ${CURRENT_PATH}/src/${BUILD_PATH}/config/mysql/conf.d/
+	cd ${SRC_PATH}/${SCRIPT_PATH}/systemd; \
+	bash build.sh -bp "${CURRENT_PATH}"; \
+	cd ${SRC_PATH}/${SCRIPT_PATH}; \
+	bash build-frontend.sh -sp ${SRC_PATH}; \
+	bash build-backend.sh -sp ${SRC_PATH} -ar "--disable-parallel"; \
+	bash publish-backend.sh -sp ${SRC_PATH} -bp ${CURRENT_PATH}/src/${BUILD_PATH} -ar "--disable-parallel"
+	cp -rf ${SRC_PATH}/build/deploy/* ${CURRENT_PATH}/src/${BUILD_PATH}
+	stop
+	
+override_dh_auto_install:
+	# ## AppServer ##
+	# @echo "AppServer.$@"
+	# mkdir -p debian/${PRODUCT}/${BUILD_PATH}/app/onlyoffice/config/
+	# cp -fr ${SRC_PATH}/config/*.json debian/${PRODUCT}/app/onlyoffice/config/
+	# cp -fr ${SRC_PATH}/config/*.config debian/${PRODUCT}/app/onlyoffice/config/
+
+	## ASC.ApiSystem ##
+	@echo "ASC.ApiSystem.$@"
+	mkdir -p debian/${PRODUCT}-api-system/${BUILD_PATH}/${PRODUCT}/services/ASC.ApiSystem/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.ApiSystem/service debian/${PRODUCT}-api-system/${BUILD_PATH}/${PRODUCT}/services/ASC.ApiSystem/
+	dh_installinit    --name=${PRODUCT}-api-system
+	dh_systemd_enable --name=${PRODUCT}-api-system
+	dh_systemd_start  --name=${PRODUCT}-api-system
+#	cp -fr ${CURRENT_PATH}src/services/${PRODUCT}-ASC.ApiSystem.service debian/${PRODUCT}-ASC.ApiSystem/
+
+	## ASC.Data.Backup ##
+	@echo "ASC.Data.Backup.$@"
+	mkdir -p debian/${PRODUCT}-backup/${BUILD_PATH}/${PRODUCT}/services/backup/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Data.Backup/service debian/${PRODUCT}-backup/${BUILD_PATH}/${PRODUCT}/services/backup/
+	dh_installinit    --name=${PRODUCT}-backup
+	dh_systemd_enable --name=${PRODUCT}-backup
+	dh_systemd_start  --name=${PRODUCT}-backup
+
+    ## ASC.Calendar ##
+	@echo "ASC.Calendar.$@"
+	mkdir -p debian/${PRODUCT}-calendar/${BUILD_PATH}/${PRODUCT}/products/ASC.Calendar/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Calendar/server/ debian/${PRODUCT}-calendar/${BUILD_PATH}/${PRODUCT}/products/ASC.Calendar/server/
+	dh_installinit    --name=${PRODUCT}-calendar
+	dh_systemd_enable --name=${PRODUCT}-calendar
+	dh_systemd_start  --name=${PRODUCT}-calendar
+
+	## ASC.CRM ##
+	@echo "ASC.CRM.$@"
+	mkdir -p debian/${PRODUCT}-crm/${BUILD_PATH}/${PRODUCT}/products/ASC.CRM/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.CRM/server/ debian/${PRODUCT}-crm/${BUILD_PATH}/${PRODUCT}/products/ASC.CRM/server/
+	dh_installinit    --name=${PRODUCT}-crm
+	dh_systemd_enable --name=${PRODUCT}-crm
+	dh_systemd_start  --name=${PRODUCT}-crm
+
+	## ASC.Data.Storage.Encryption ##
+	@echo "ASC.Data.Storage.Encryption.$@"
+	mkdir -p debian/${PRODUCT}-storage-encryption/${BUILD_PATH}/${PRODUCT}/services/storage.encryption/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Data.Storage.Encryption/service/ debian/${PRODUCT}-storage-encryption/${BUILD_PATH}/${PRODUCT}/services/storage.encryption/
+	dh_installinit    --name=${PRODUCT}-storage-encryption
+	dh_systemd_enable --name=${PRODUCT}-storage-encryption
+	dh_systemd_start  --name=${PRODUCT}-storage-encryption
+
+	## ASC.Files ##
+	@echo "ASC.Files.$@"
+	mkdir -p debian/${PRODUCT}-files/${BUILD_PATH}/${PRODUCT}/products/ASC.Files/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Files/server/ debian/${PRODUCT}-files/${BUILD_PATH}/${PRODUCT}/products/ASC.Files/server/
+	dh_installinit    --name=${PRODUCT}-files
+	dh_systemd_enable --name=${PRODUCT}-files
+	dh_systemd_start  --name=${PRODUCT}-files
+
+	## ASC.Files.Service ##
+	@echo "ASC.Files.Service.$@"
+	mkdir -p debian/${PRODUCT}-files-services/${BUILD_PATH}/${PRODUCT}/products/ASC.Files/service/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Files/service/ debian/${PRODUCT}-files-services/${BUILD_PATH}/${PRODUCT}/products/ASC.Files/service/
+	dh_installinit    --name=${PRODUCT}-files-services
+	dh_systemd_enable --name=${PRODUCT}-files-services
+	dh_systemd_start  --name=${PRODUCT}-files-services
+
+	## ASC.Mail ##
+	@echo "ASC.Mail.$@"
+	mkdir -p debian/${PRODUCT}-mail/${BUILD_PATH}/${PRODUCT}/products/ASC.Mail/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Mail/server/ debian/${PRODUCT}-mail/${BUILD_PATH}/${PRODUCT}/products/ASC.Mail/server/
+	dh_installinit    --name=${PRODUCT}-mail
+	dh_systemd_enable --name=${PRODUCT}-mail
+	dh_systemd_start  --name=${PRODUCT}-mail
+
+	## ASC.Data.Storage.Migration ##
+	@echo "ASC.Data.Storage.Migration.$@"
+	mkdir -p debian/${PRODUCT}-storage-migration/${BUILD_PATH}/${PRODUCT}/services/storage.migration/service/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Data.Storage.Migration/service/ debian/${PRODUCT}-storage-migration/${BUILD_PATH}/${PRODUCT}/services/storage.migration/service/
+	dh_installinit    --name=${PRODUCT}-storage-migration
+	dh_systemd_enable --name=${PRODUCT}-storage-migration
+	dh_systemd_start  --name=${PRODUCT}-storage-migration
+
+	## ASC.Notify ##
+	@echo "ASC.Notify.$@"
+	mkdir -p debian/${PRODUCT}-notify/${BUILD_PATH}/${PRODUCT}/services/notify/service/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Notify/service/ debian/${PRODUCT}-notify/${BUILD_PATH}/${PRODUCT}/services/notify/service/
+	dh_installinit    --name=${PRODUCT}-notify
+	dh_systemd_enable --name=${PRODUCT}-notify
+	dh_systemd_start  --name=${PRODUCT}-notify
+
+	## ASC.People ##
+	@echo "ASC.People.$@"
+	mkdir -p debian/${PRODUCT}-people-server/${BUILD_PATH}/${PRODUCT}/products/ASC.People/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.People/server/ debian/${PRODUCT}-people-server/${BUILD_PATH}/${PRODUCT}/products/ASC.People/server/
+	dh_installinit    --name=${PRODUCT}-people-server
+	dh_systemd_enable --name=${PRODUCT}-people-server
+	dh_systemd_start  --name=${PRODUCT}-people-server
+
+	## ASC.Projects ##
+	@echo "ASC.Projects.$@"
+	mkdir -p debian/${PRODUCT}-projects-server/${BUILD_PATH}/${PRODUCT}/products/ASC.Projects/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Projects/server/ debian/${PRODUCT}-projects-server/${BUILD_PATH}/${PRODUCT}/products/ASC.Projects/server/
+	dh_installinit    --name=${PRODUCT}-projects-server
+	dh_systemd_enable --name=${PRODUCT}-projects-server
+	dh_systemd_start  --name=${PRODUCT}-projects-server
+
+	## ASC.Socket.IO.Svc ##
+	@echo "ASC.Socket.IO.Svc.$@"
+	mkdir -p debian/${PRODUCT}-socket/${BUILD_PATH}/${PRODUCT}/services/socket/
+	mkdir -p debian/${PRODUCT}-socket/${BUILD_PATH}/${PRODUCT}/ASC.Socket.IO/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Socket.IO.Svc/service/ debian/${PRODUCT}-socket/${BUILD_PATH}/${PRODUCT}/services/socket/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Socket.IO/service/ debian/${PRODUCT}-socket/${BUILD_PATH}/${PRODUCT}/ASC.Socket.IO/
+	dh_installinit    --name=${PRODUCT}-socket
+	dh_systemd_enable --name=${PRODUCT}-socket
+	dh_systemd_start  --name=${PRODUCT}-socket
+
+	## ASC.Studio.Notify ##
+	@echo "ASC.Studio.Notify.$@"
+	mkdir -p debian/${PRODUCT}-studio-notify/${BUILD_PATH}/${PRODUCT}/services/studio.notify/service/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Studio.Notify/service/ debian/${PRODUCT}-studio-notify/${BUILD_PATH}/${PRODUCT}/services/studio.notify/service/
+	dh_installinit    --name=${PRODUCT}-studio-notify
+	dh_systemd_enable --name=${PRODUCT}-studio-notify
+	dh_systemd_start  --name=${PRODUCT}-studio-notify
+
+	## ASC.TelegramService ##
+	@echo "ASC.TelegramService.$@"
+	mkdir -p debian/${PRODUCT}-telegram-service/${BUILD_PATH}/${PRODUCT}/services/telegram/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.TelegramService/service/ debian/${PRODUCT}-telegram-service/${BUILD_PATH}/${PRODUCT}/services/telegram/
+	dh_installinit    --name=${PRODUCT}-telegram-service
+	dh_systemd_enable --name=${PRODUCT}-telegram-service
+	dh_systemd_start  --name=${PRODUCT}-telegram-service
+
+	## ASC.Thumbnails.Svc ##
+	@echo "ASC.Thumbnails.Svc.$@"
+	mkdir -p debian/${PRODUCT}-thumbnails/${BUILD_PATH}/${PRODUCT}/services/thumb/service/
+	mkdir -p debian/${PRODUCT}-thumbnails/${BUILD_PATH}/${PRODUCT}/services/thumb/client/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/ debian/${PRODUCT}-thumbnails/${BUILD_PATH}/${PRODUCT}/services/thumb/service/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Thumbnails/service/ debian/${PRODUCT}-thumbnails/${BUILD_PATH}/${PRODUCT}/services/thumb/client/
+	dh_installinit    --name=${PRODUCT}-thumbnails
+	dh_systemd_enable --name=${PRODUCT}-thumbnails
+	dh_systemd_start  --name=${PRODUCT}-thumbnails
+
+	## ASC.UrlShortener.Svc ##
+	@echo "ASC.UrlShortener.Svc.$@"
+	mkdir -p debian/${PRODUCT}-urlshortener/${BUILD_PATH}/${PRODUCT}/services/urlshortener/service/
+	mkdir -p debian/${PRODUCT}-urlshortener/${BUILD_PATH}/${PRODUCT}/services/urlshortener/client/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.UrlShortener.Svc/service/ debian/${PRODUCT}-urlshortener/${BUILD_PATH}/${PRODUCT}/services/urlshortener/service/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.UrlShortener/service/ debian/${PRODUCT}-urlshortener/${BUILD_PATH}/${PRODUCT}/services/urlshortener/client/
+	dh_installinit    --name=${PRODUCT}-urlshortener
+	dh_systemd_enable --name=${PRODUCT}-urlshortener
+	dh_systemd_start  --name=${PRODUCT}-urlshortener
+
+	## ASC.Web.Api ##
+	@echo "ASC.Web.Api.$@"
+	mkdir -p debian/${PRODUCT}-api/${BUILD_PATH}/${PRODUCT}/studio/api/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Web.Api/service/ debian/${PRODUCT}-api/${BUILD_PATH}/${PRODUCT}/studio/api/
+	dh_installinit    --name=${PRODUCT}-api
+	dh_systemd_enable --name=${PRODUCT}-api
+	dh_systemd_start  --name=${PRODUCT}-api
+
+	## ASC.Web.Studio ##
+	@echo "ASC.Web.Studio.$@"
+	mkdir -p debian/${PRODUCT}-studio/${BUILD_PATH}/${PRODUCT}/studio/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Web.Studio/service/ debian/${PRODUCT}-studio/${BUILD_PATH}/${PRODUCT}/studio/server/
+	dh_installinit    --name=${PRODUCT}-studio
+	dh_systemd_enable --name=${PRODUCT}-studio
+	dh_systemd_start  --name=${PRODUCT}-studio

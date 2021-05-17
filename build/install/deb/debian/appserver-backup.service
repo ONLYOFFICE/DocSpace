@@ -1,0 +1,18 @@
+[Unit]
+Description=AppServer-backup
+After=network.target syslog.target
+
+[Service]
+PIDFile=/run/appserver/appserver-backup.pid
+Type=simple
+User=onlyoffice
+Group=onlyoffice
+WorkingDirectory=/var/www/appserver/services/ASC.Data.Backup/
+ExecStart=/usr/bin/dotnet /var/www/appserver/services/ASC.Data.Backup/ASC.Data.Backup.dll --urls=http://0.0.0.0:5012 --pathToConf=/etc/onlyoffice/appserver --'$STORAGE_ROOT'=/etc/onlyoffice/appserver/data --log:dir=/var/log/onlyoffice/appserver --log:name=backup --core:products:folder=/var/www/appserver/products --core:products:subfolder=server --ENVIRONMENT=production
+TimeoutSec=600
+
+Restart=no
+PrivateTmp=false
+
+[Install]
+WantedBy=multi-user.target

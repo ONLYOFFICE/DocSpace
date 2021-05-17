@@ -1,0 +1,18 @@
+[Unit]
+Description=AppServer-projects-server
+After=network.target syslog.target
+
+[Service]
+PIDFile=/run/appserver/appserver-projects-server.pid
+Type=simple
+User=onlyoffice
+Group=onlyoffice
+WorkingDirectory=/var/www/appserver/products/ASC.Projects/server/
+ExecStart=/usr/bin/dotnet /var/www/appserver/products/ASC.Projects/server/ASC.Projects.dll --urls=http://0.0.0.0:5020 --pathToConf=/etc/onlyoffice/appserver --'$STORAGE_ROOT'=/etc/onlyoffice/appserver/data --log:dir=/var/log/onlyoffice/appserver --log:name=projects-server --ENVIRONMENT=production
+TimeoutSec=600
+
+Restart=no
+PrivateTmp=false
+
+[Install]
+WantedBy=multi-user.target

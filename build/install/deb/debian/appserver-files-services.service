@@ -1,0 +1,18 @@
+[Unit]
+Description=AppServer-files-services
+After=network.target syslog.target
+
+[Service]
+PIDFile=/run/appserver/appserver-files-services.pid
+Type=simple
+User=onlyoffice
+Group=onlyoffice
+WorkingDirectory=/var/www/appserver/products/ASC.Files/service/
+ExecStart=/usr/bin/dotnet /var/www/appserver/products/ASC.Files/service/ASC.Files.Service.dll --urls=http://0.0.0.0:5009 --pathToConf=/etc/onlyoffice/appserver --'$STORAGE_ROOT'=/etc/onlyoffice/appserver/data --log:dir=/var/log/onlyoffice/appserver --log:name=files-services --core:products:folder=/var/www/appserver/products --core:products:subfolder=server --ENVIRONMENT=production
+TimeoutSec=600
+
+Restart=no
+PrivateTmp=false
+
+[Install]
+WantedBy=multi-user.target

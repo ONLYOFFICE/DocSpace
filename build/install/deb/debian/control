@@ -1,85 +1,129 @@
-Source: app-server
+Source: appserver
 Section: web
 Priority: optional
 Maintainer: onlyoffice
 Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 1.0-0
 Homepage: https://www.onlyoffice.com/
-Package: app-server
-Version: 1.0-0
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends},
-         nginx,
-         mysql-client-5.7,
-         appserver-api,
-         appserver-api_system,
+         appserver-api-system,
          appserver-backup,
+         appserver-calendar,
+         appserver-crm,
+         appserver-storage-encryption,
          appserver-files,
-         appserver-files_services,
+         appserver-files-services,    
+         appserver-mail,
+         appserver-storage-migration,
          appserver-notify,
-         appserver-people_server,
+         appserver-people-server,
+         appserver-projects-server,
          appserver-socket,
-         appserver-studio,
-         appserver-studio_notify,
+         appserver-studio-notify,
+         appserver-telegram-service,
          appserver-thumbnails,
-         appserver-urlshortener-1.0-0
+         appserver-urlshortener,
+         appserver-api,
+         appserver-studio
+Description: Description
+
+Package: appserver
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-api-system
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-backup
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-calendar
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-crm
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-storage-encryption
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-files
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-files-services
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-mail
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-storage-migration
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-notify
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-people-server
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-projects-server
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-socket
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-studio-notify
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-telegram-service
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-thumbnails
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-urlshortener
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-api
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: API deb package
-
-Package: appserver-api_system
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: API System deb package
-
-Package: appserver-backup
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Backup deb package
-
-Package: appserver-files
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Files deb package
-
-Package: appserver-files_services
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Files Services deb package
-
-Package: appserver-notify
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Notify deb package
-
-Package: appserver-people_server
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: People Server deb package
-
-Package: appserver-socket
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Socket deb package
+Description: Description
 
 Package: appserver-studio
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Studio deb package
-
-Package: appserver-studio_notify
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Studio Notify deb package
-
-Package: appserver-thumbnails
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Thumbnails deb package
-
-Package: appserver-urlshortener
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Urlshortener deb package
+Description: Description

@@ -1,0 +1,18 @@
+[Unit]
+Description=AppServer-storage-migration
+After=network.target syslog.target
+
+[Service]
+PIDFile=/run/appserver/appserver-storage-migration.pid
+Type=simple
+User=onlyoffice
+Group=onlyoffice
+WorkingDirectory=/var/www/appserver/services/ASC.Data.Storage.Migration/
+ExecStart=/usr/bin/dotnet /var/www/appserver/services/ASC.Data.Storage.Migration/ASC.Data.Storage.Migration.dll --urls=http://0.0.0.0:5018 --pathToConf=/etc/onlyoffice/appserver --'$STORAGE_ROOT'=/etc/onlyoffice/appserver/data --log:dir=/var/log/onlyoffice/appserver --log:name=storage-migration --ENVIRONMENT=production
+TimeoutSec=600
+
+Restart=no
+PrivateTmp=false
+
+[Install]
+WantedBy=multi-user.target

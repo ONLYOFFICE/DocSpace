@@ -1,0 +1,3 @@
+#!/bin/sh -e
+
+echo " ==================== Configure running test ============="
