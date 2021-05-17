@@ -5,7 +5,6 @@ import { combineUrl, isAdmin } from "../utils";
 
 class TfaStore {
   tfaSettings = null;
-  backupCodes = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -38,13 +37,16 @@ class TfaStore {
     return api.settings.getTfaSecretKeyAndQR(confirmKey);
   };
 
-  getBackupCodes = async () => {
-    const backupCodes = await api.settings.getTfaNewBackupCodes();
-    this.backupCodes = backupCodes;
-  };
-
   loginWithCode = async (userName, passwordHash, code) => {
     return api.user.loginWithTfaCode(userName, passwordHash, code);
+  };
+
+  getBackupCodes = async () => {
+    return api.settings.getTfaNewBackupCodes();
+  };
+
+  unlinkApp = async () => {
+    await api.settings.unlinkTfaApp();
   };
 }
 
