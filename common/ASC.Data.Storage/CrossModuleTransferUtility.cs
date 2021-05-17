@@ -27,6 +27,7 @@
 using System;
 using System.IO;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.ChunkedUploader;
 
@@ -41,18 +42,19 @@ namespace ASC.Data.Storage
         private readonly IDataStore destination;
         private readonly long maxChunkUploadSize;
         private readonly int chunksize;
+        private IOptionsMonitor<ILog> Option { get; }
+        private TempStream TempStream { get; }
 
-        public CrossModuleTransferUtility(IOptionsMonitor<ILog> option, IDataStore source, IDataStore destination)
+        public CrossModuleTransferUtility(IOptionsMonitor<ILog> option, TempStream tempStream, IDataStore source, IDataStore destination)
         {
             Log = option.Get("ASC.CrossModuleTransferUtility");
             Option = option;
+            TempStream = tempStream;
             this.source = source ?? throw new ArgumentNullException("source");
             this.destination = destination ?? throw new ArgumentNullException("destination");
             maxChunkUploadSize = 10 * 1024 * 1024;
             chunksize = 5 * 1024 * 1024;
         }
-
-        private IOptionsMonitor<ILog> Option { get; }
 
         public void CopyFile(string srcDomain, string srcPath, string destDomain, string destPath)
         {

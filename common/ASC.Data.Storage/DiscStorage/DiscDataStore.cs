@@ -77,19 +77,21 @@ namespace ASC.Data.Storage.DiscStorage
         }
 
         public DiscDataStore(
-    TenantManager tenantManager,
-    PathUtils pathUtils,
-    EmailValidationKeyProvider emailValidationKeyProvider,
-    IOptionsMonitor<ILog> options,
-    EncryptionSettingsHelper encryptionSettingsHelper,
-    EncryptionFactory encryptionFactory)
-    : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+            TempStream tempStream,
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<ILog> options,
+            EncryptionSettingsHelper encryptionSettingsHelper,
+            EncryptionFactory encryptionFactory)
+    : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, options)
         {
             EncryptionSettingsHelper = encryptionSettingsHelper;
             EncryptionFactory = encryptionFactory;
         }
 
         public DiscDataStore(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
@@ -97,7 +99,7 @@ namespace ASC.Data.Storage.DiscStorage
             IOptionsMonitor<ILog> options,
             EncryptionSettingsHelper encryptionSettingsHelper,
             EncryptionFactory encryptionFactory)
-            : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
             EncryptionSettingsHelper = encryptionSettingsHelper;
             EncryptionFactory = encryptionFactory;
@@ -171,7 +173,7 @@ namespace ASC.Data.Storage.DiscStorage
         public override Uri Save(string domain, string path, Stream stream)
         {
             Log.Debug("Save " + path);
-            var buffered = stream.GetBuffered();
+            var buffered = TempStream.GetBuffered(stream);
             if (QuotaController != null)
             {
                 QuotaController.QuotaUsedCheck(buffered.Length);

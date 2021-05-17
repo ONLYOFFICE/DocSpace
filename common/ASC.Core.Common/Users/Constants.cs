@@ -62,6 +62,19 @@ namespace ASC.Core.Users
             }
         }
 
+        public int CoefficientOfVisitors
+        {
+            get
+            {
+                int count;
+                if (!int.TryParse(Configuration["core:coefficient-of-visitors"], out count))
+                {
+                    count = 2;
+                }
+                return count;
+            }
+        }
+
         private IConfiguration Configuration { get; }
 
 

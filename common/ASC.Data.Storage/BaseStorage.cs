@@ -31,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -45,13 +46,21 @@ namespace ASC.Data.Storage
     public abstract class BaseStorage : IDataStore
     {
         protected ILog Log { get; set; }
+        protected TempStream TempStream { get; }
+        protected TenantManager TenantManager { get; }
+        protected PathUtils PathUtils { get; }
+        protected EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        protected IHttpContextAccessor HttpContextAccessor { get; }
+        protected IOptionsMonitor<ILog> Options { get; }
 
         public BaseStorage(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options)
         {
+            TempStream = tempStream;
             TenantManager = tenantManager;
             PathUtils = pathUtils;
             EmailValidationKeyProvider = emailValidationKeyProvider;
@@ -60,11 +69,14 @@ namespace ASC.Data.Storage
         }
 
         public BaseStorage(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options) : this(tenantManager,
+            IOptionsMonitor<ILog> options) : this(
+            tempStream,
+            tenantManager,
             pathUtils,
             emailValidationKeyProvider,
             options)
@@ -227,12 +239,6 @@ namespace ASC.Data.Storage
         }
 
         public virtual bool IsSupportChunking { get { return false; } }
-
-        protected TenantManager TenantManager { get; }
-        protected PathUtils PathUtils { get; }
-        protected EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        protected IHttpContextAccessor HttpContextAccessor { get; }
-        protected IOptionsMonitor<ILog> Options { get; }
 
         #endregion
 

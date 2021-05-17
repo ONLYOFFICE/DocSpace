@@ -55,6 +55,7 @@ namespace ASC.Data.Storage
         private static readonly object Locker;
 
         private IServiceProvider ServiceProvider { get; }
+        private TempStream TempStream { get; }
         private ICacheNotify<MigrationProgress> CacheMigrationNotify { get; }
 
         static StorageUploader()
@@ -64,9 +65,10 @@ namespace ASC.Data.Storage
             Locker = new object();
         }
 
-        public StorageUploader(IServiceProvider serviceProvider, ICacheNotify<MigrationProgress> cacheMigrationNotify, ICache cache)
+        public StorageUploader(IServiceProvider serviceProvider, TempStream tempStream, ICacheNotify<MigrationProgress> cacheMigrationNotify, ICache cache)
         {
             ServiceProvider = serviceProvider;
+            TempStream = tempStream;
             CacheMigrationNotify = cacheMigrationNotify;
             Cache = cache;
         }
@@ -82,7 +84,7 @@ namespace ASC.Data.Storage
                 migrateOperation = Cache.Get<MigrateOperation>(GetCacheKey(tenantId));
                 if (migrateOperation != null) return;
 
-                migrateOperation = new MigrateOperation(ServiceProvider, CacheMigrationNotify, tenantId, newStorageSettings, storageFactoryConfig);
+                migrateOperation = new MigrateOperation(ServiceProvider, CacheMigrationNotify, tenantId, newStorageSettings, storageFactoryConfig, TempStream);
                 Cache.Insert(GetCacheKey(tenantId), migrateOperation, DateTime.MaxValue);
             }
 
@@ -133,13 +135,20 @@ namespace ASC.Data.Storage
             ConfigPath = "";
         }
 
-        public MigrateOperation(IServiceProvider serviceProvider, ICacheNotify<MigrationProgress> cacheMigrationNotify, int tenantId, StorageSettings settings, StorageFactoryConfig storageFactoryConfig)
+        public MigrateOperation(
+            IServiceProvider serviceProvider,
+            ICacheNotify<MigrationProgress> cacheMigrationNotify,
+            int tenantId,
+            StorageSettings settings,
+            StorageFactoryConfig storageFactoryConfig,
+            TempStream tempStream)
         {
             ServiceProvider = serviceProvider;
             CacheMigrationNotify = cacheMigrationNotify;
             this.tenantId = tenantId;
             this.settings = settings;
             StorageFactoryConfig = storageFactoryConfig;
+            TempStream = tempStream;
             Modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
             StepCount = Modules.Count();
             Log = serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
@@ -147,6 +156,7 @@ namespace ASC.Data.Storage
 
         private IServiceProvider ServiceProvider { get; }
         private StorageFactoryConfig StorageFactoryConfig { get; }
+        private TempStream TempStream { get; }
         private ICacheNotify<MigrationProgress> CacheMigrationNotify { get; }
 
         protected override void DoJob()
@@ -168,7 +178,7 @@ namespace ASC.Data.Storage
                     var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(settings));
                     var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
-                    var crossModuleTransferUtility = new CrossModuleTransferUtility(options, oldStore, store);
+                    var crossModuleTransferUtility = new CrossModuleTransferUtility(options, TempStream, oldStore, store);
 
                     string[] files;
                     foreach (var domain in domains)

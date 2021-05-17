@@ -45,6 +45,7 @@ namespace ASC.Files.Core.EF
         public string Changes { get; set; }
         public bool Encrypted { get; set; }
         public ForcesaveType Forcesave { get; set; }
+        public bool Thumb { get; set; }
 
 
         [Nested]
@@ -142,6 +143,8 @@ namespace ASC.Files.Core.EF
 
                 entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
 
+                entity.Property(e => e.Thumb).HasColumnName("thumb");
+
                 entity.Property(e => e.Encrypted).HasColumnName("encrypted");
 
                 entity.Property(e => e.FileStatus).HasColumnName("file_status");
@@ -229,6 +232,8 @@ namespace ASC.Files.Core.EF
                 entity.Property(e => e.CreateOn).HasColumnName("create_on");
 
                 entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
+
+                entity.Property(e => e.Thumb).HasColumnName("thumb");
 
                 entity.Property(e => e.Encrypted).HasColumnName("encrypted");
 

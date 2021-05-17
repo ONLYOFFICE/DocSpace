@@ -65,22 +65,24 @@ namespace ASC.Data.Storage.RackspaceCloud
         private readonly ILog _logger;
 
         public RackspaceCloudStorage(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options)
-            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, options)
         {
             _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
         }
 
         public RackspaceCloudStorage(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> options)
-            : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
             _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
         }
@@ -283,7 +285,7 @@ namespace ASC.Data.Storage.RackspaceCloud
                               string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5,
             DateTime? deleteAt = null, long? deleteAfter = null)
         {
-            var buffered = stream.GetBuffered();
+            var buffered = TempStream.GetBuffered(stream);
 
             if (QuotaController != null)
             {

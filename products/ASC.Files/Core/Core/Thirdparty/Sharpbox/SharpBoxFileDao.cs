@@ -53,12 +53,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
     [Scope]
     internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
     {
+        private TempStream TempStream { get; }
         private CrossDao CrossDao { get; }
         private SharpBoxDaoSelector SharpBoxDaoSelector { get; }
         private IFileDao<int> FileDao { get; }
 
         public SharpBoxFileDao(
             IServiceProvider serviceProvider,
+            TempStream tempStream,
             UserManager userManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
@@ -71,6 +73,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             IFileDao<int> fileDao)
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
+            TempStream = tempStream;
             CrossDao = crossDao;
             SharpBoxDaoSelector = sharpBoxDaoSelector;
             FileDao = fileDao;
@@ -303,7 +306,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             try
             {
-                entry.GetDataTransferAccessor().Transfer(fileStream.GetBuffered(), nTransferDirection.nUpload);
+                entry.GetDataTransferAccessor().Transfer(TempStream.GetBuffered(fileStream), nTransferDirection.nUpload);
             }
             catch (SharpBoxException e)
             {

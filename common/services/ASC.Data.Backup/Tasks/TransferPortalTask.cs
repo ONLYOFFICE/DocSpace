@@ -54,17 +54,26 @@ namespace ASC.Data.Backup.Tasks
         public bool BlockOldPortalAfterStart { get; set; }
         public bool DeleteOldPortalAfterCompletion { get; set; }
         private IOptionsMonitor<ILog> Options { get; set; }
+        private TempStream TempStream { get; }
         private IServiceProvider ServiceProvider { get; set; }
 
         public int Limit { get; private set; }
 
-        public TransferPortalTask(DbFactory dbFactory, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+        public TransferPortalTask(
+            DbFactory dbFactory, 
+            IServiceProvider serviceProvider,
+            IOptionsMonitor<ILog> options, 
+            StorageFactory storageFactory, 
+            StorageFactoryConfig storageFactoryConfig, 
+            ModuleProvider moduleProvider,
+            TempStream tempStream)
             : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
             DeleteBackupFileAfterCompletion = true;
             BlockOldPortalAfterStart = true;
             DeleteOldPortalAfterCompletion = true;
             Options = options;
+            TempStream = tempStream;
             ServiceProvider = serviceProvider;
         }
 
@@ -163,7 +172,7 @@ namespace ASC.Data.Backup.Tasks
             {
                 var baseStorage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
                 var destStorage = StorageFactory.GetStorage(ToConfigPath, columnMapper.GetTenantMapping().ToString(), group.Key);
-                var utility = new CrossModuleTransferUtility(Options, baseStorage, destStorage);
+                var utility = new CrossModuleTransferUtility(Options, TempStream, baseStorage, destStorage);
 
                 foreach (var file in group)
                 {

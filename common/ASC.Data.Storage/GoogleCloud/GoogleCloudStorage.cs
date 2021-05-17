@@ -72,19 +72,21 @@ namespace ASC.Data.Storage.GoogleCloud
         private bool _lowerCasing = true;
 
         public GoogleCloudStorage(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<ILog> options) : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+            IOptionsMonitor<ILog> options) : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, options)
         {
         }
 
         public GoogleCloudStorage(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options) : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            IOptionsMonitor<ILog> options) : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
         }
 
@@ -273,7 +275,7 @@ namespace ASC.Data.Storage.GoogleCloud
                           string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
         {
 
-            var buffered = stream.GetBuffered();
+            var buffered = TempStream.GetBuffered(stream);
 
             if (QuotaController != null)
             {
@@ -662,7 +664,7 @@ namespace ASC.Data.Storage.GoogleCloud
             using var storage = GetStorage();
 
             var objectKey = MakePath(domain, path);
-            var buffered = stream.GetBuffered();
+            var buffered = TempStream.GetBuffered(stream);
 
             var uploadObjectOptions = new UploadObjectOptions
             {

@@ -35,7 +35,6 @@ using ASC.Common;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Threading;
 using ASC.Core.Tenants;
-using ASC.Data.Storage;
 using ASC.Files.Core;
 using ASC.Files.Core.Resources;
 using ASC.MessagingSystem;
@@ -69,15 +68,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
     class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<string>, FileDownloadOperationData<int>>
     {
-        public FileDownloadOperation(IServiceProvider serviceProvider, FileOperation<FileDownloadOperationData<string>, string> f1, FileOperation<FileDownloadOperationData<int>, int> f2)
+        public FileDownloadOperation(IServiceProvider serviceProvider, TempStream tempStream, FileOperation<FileDownloadOperationData<string>, string> f1, FileOperation<FileDownloadOperationData<int>, int> f2)
             : base(serviceProvider, f1, f2)
         {
+            TempStream = tempStream;
         }
 
         public override FileOperationType OperationType
         {
             get { return FileOperationType.Download; }
         }
+
+        private TempStream TempStream { get; }
 
         public override void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
         {

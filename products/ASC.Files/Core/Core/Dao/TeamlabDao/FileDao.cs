@@ -71,6 +71,7 @@ namespace ASC.Files.Core.Data
         private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
         private ProviderFolderDao ProviderFolderDao { get; }
         private CrossDao CrossDao { get; }
+        public TempStream TempStream { get; }
 
         public FileDao(
             FactoryIndexerFile factoryIndexer,
@@ -1424,10 +1425,14 @@ namespace ASC.Files.Core.Data
             using var stream = GetFileStream(file);
             if (stream == null) return dbFile;
 
-            dbFile.Document = new Document
+            using (var ms = new MemoryStream())
             {
-                Data = Convert.ToBase64String(stream.GetCorrectBuffer())
-            };
+                stream.CopyTo(ms);
+                dbFile.Document = new Document
+                {
+                    Data = Convert.ToBase64String(ms.GetBuffer())
+                };
+            }
 
             return dbFile;
         }

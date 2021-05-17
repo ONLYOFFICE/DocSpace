@@ -78,21 +78,23 @@ namespace ASC.Data.Storage.S3
         private string _subDir = string.Empty;
 
         public S3Storage(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options)
-            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, options)
         {
         }
 
         public S3Storage(
+            TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> options)
-            : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
         }
 
@@ -218,7 +220,7 @@ namespace ASC.Data.Storage.S3
         public Uri Save(string domain, string path, Stream stream, string contentType,
                                  string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
         {
-            var buffered = stream.GetBuffered();
+            var buffered = TempStream.GetBuffered(stream);
             if (QuotaController != null)
             {
                 QuotaController.QuotaUsedCheck(buffered.Length);
@@ -618,7 +620,7 @@ namespace ASC.Data.Storage.S3
             using var client = GetClient();
             using var uploader = new TransferUtility(client);
             var objectKey = MakePath(domain, path);
-            var buffered = stream.GetBuffered();
+            var buffered = TempStream.GetBuffered(stream);
             var request = new TransferUtilityUploadRequest
             {
                 BucketName = _bucket,
