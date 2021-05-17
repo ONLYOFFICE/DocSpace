@@ -56,7 +56,7 @@ namespace ASC.Data.Backup.Tasks
         private IOptionsMonitor<ILog> Options { get; set; }
         private TempStream TempStream { get; }
         private IServiceProvider ServiceProvider { get; set; }
-
+        public int ToTenantId { get; private set; }
         public int Limit { get; private set; }
 
         public TransferPortalTask(
@@ -143,6 +143,8 @@ namespace ASC.Data.Backup.Tasks
                 {
                     SaveTenant(fromDbFactory, tenantAlias, TenantStatus.Active);
                 }
+
+                ToTenantId = columnMapper.GetTenantMapping();
             }
             catch
             {

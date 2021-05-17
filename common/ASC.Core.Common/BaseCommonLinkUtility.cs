@@ -112,7 +112,7 @@ namespace ASC.Core.Common
 
         protected CoreBaseSettings CoreBaseSettings { get; }
         private CoreSettings CoreSettings { get; }
-        private TenantManager TenantManager { get; }
+        protected TenantManager TenantManager { get; }
 
         private string serverRootPath;
         public string ServerRootPath

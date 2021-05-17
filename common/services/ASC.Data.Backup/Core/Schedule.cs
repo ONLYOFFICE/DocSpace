@@ -32,8 +32,6 @@ namespace ASC.Data.Backup
         {
             try
             {
-                if (BackupHelper.ExceedsMaxAvailableSize(backupSchedule.TenantId)) throw new Exception("Backup file exceed " + backupSchedule.TenantId);
-
                 var cron = new CronExpression(backupSchedule.Cron);
                 var tenant = TenantManager.GetTenant(backupSchedule.TenantId);
                 var tenantTimeZone = tenant.TimeZone;

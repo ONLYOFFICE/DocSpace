@@ -68,6 +68,7 @@ namespace ASC.Web.Studio.Core.Notify
         public static readonly INotifyAction TfaChange = new NotifyAction("change_tfa", "change_tfa");
         public static readonly INotifyAction MigrationPortalStart = new NotifyAction("migration_start", "migration start");
         public static readonly INotifyAction MigrationPortalSuccess = new NotifyAction("migration_success", "migration success");
+        public static readonly INotifyAction MigrationPortalSuccessV115 = new NotifyAction("migration_success_v115");
         public static readonly INotifyAction MigrationPortalError = new NotifyAction("migration_error", "migration error");
         public static readonly INotifyAction MigrationPortalServerFailure = new NotifyAction("migration_server_failure", "migration_server_failure");
         public static readonly INotifyAction PortalRename = new NotifyAction("portal_rename", "portal_rename");
