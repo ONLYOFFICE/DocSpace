@@ -50,15 +50,12 @@ class PureAccessPortal extends Component {
     const { type } = this.state;
     const { setTfaSettings } = this.props;
 
-    console.log("Save settings");
     setTfaSettings(type);
   };
 
   render() {
     const { type } = this.state;
     const { t } = this.props;
-
-    console.log("accessPortal render");
 
     return (
       <MainContainer>

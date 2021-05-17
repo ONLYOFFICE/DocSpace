@@ -124,8 +124,6 @@ const TfaActivationWrapper = (props) => {
   const [qrCode, setQrCode] = useState("");
   const [error, setError] = useState(null);
 
-  console.log(linkData);
-
   useEffect(async () => {
     try {
       setIsLoading(true);
