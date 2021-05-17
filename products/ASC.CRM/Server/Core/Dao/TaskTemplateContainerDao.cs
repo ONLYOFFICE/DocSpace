@@ -226,6 +226,8 @@ namespace ASC.CRM.Core.Dao
         {
             var dbEntity = CrmDbContext.TaskTemplateContainer.Find(id);
 
+            if (dbEntity.TenantId != TenantID) return;
+
             CrmDbContext.Remove(dbEntity);
 
             CrmDbContext.SaveChanges();

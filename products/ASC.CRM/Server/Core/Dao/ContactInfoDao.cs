@@ -111,8 +111,12 @@ namespace ASC.CRM.Core.Dao
         {
             var result = UpdateInDb(contactInfo);
 
-            _factoryIndexerContactInfo.Update(Query(CrmDbContext.ContactsInfo)
-                                        .Where(x => x.ContactId == contactInfo.ID).Single());
+            var dbEntity = Query(CrmDbContext.ContactsInfo)
+                                    .AsNoTracking()
+                                    .Where(x => x.ContactId == contactInfo.ID)
+                                    .Single();
+
+            _factoryIndexerContactInfo.Update(dbEntity);
 
             return result;
         }
@@ -135,7 +139,7 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             };
 
-            CrmDbContext.ContactsInfo.Update(itemToUpdate);
+            CrmDbContext.Update(itemToUpdate);
 
             CrmDbContext.SaveChanges();
 
@@ -149,11 +153,12 @@ namespace ASC.CRM.Core.Dao
 
             contactInfo.ID = id;
 
-            var dbContactInfo = Query(CrmDbContext.ContactsInfo)
+            var dbEntity = Query(CrmDbContext.ContactsInfo)
+                                        .AsNoTracking()
                                         .Where(x => x.ContactId == contactInfo.ID)
                                         .Single();
 
-            _factoryIndexerContactInfo.Index(dbContactInfo);
+            _factoryIndexerContactInfo.Index(dbEntity);
 
             return id;
         }
@@ -204,7 +209,8 @@ namespace ASC.CRM.Core.Dao
 
         public List<ContactInfo> GetList(int contactID, ContactInfoType? infoType, int? categoryID, bool? isPrimary)
         {
-            var items = Query(CrmDbContext.ContactsInfo);
+            var items = Query(CrmDbContext.ContactsInfo)
+                            .AsNoTracking();
 
             if (contactID > 0)
                 items = items.Where(x => x.ContactId == contactID);

@@ -1210,21 +1210,23 @@ namespace ASC.CRM.Core.Dao
 
         public void UpdateContactStatus(IEnumerable<int> contactid, int statusid)
         {
-            foreach (var item in contactid)
+            var tx = CrmDbContext.Database.BeginTransaction();
+
+            foreach (var id in contactid)
             {
-                var itemToUpdate = new DbContact
-                {
-                    Id = item,
-                    StatusId = statusid,
-                    TenantId = TenantID
-                };
+                var dbEntity = CrmDbContext.Contacts.Find(id);
 
-                CrmDbContext.Attach(itemToUpdate);
-                CrmDbContext.Entry(itemToUpdate).Property(x => x.StatusId).IsModified = true;
+                if (dbEntity.TenantId != TenantID)
+                    throw new ArgumentException();
 
+                dbEntity.Id = id;
+                dbEntity.StatusId = statusid;
+            
             }
 
             CrmDbContext.SaveChanges();
+
+            tx.Commit();
 
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
@@ -1307,25 +1309,20 @@ namespace ASC.CRM.Core.Dao
         {
             if (contactId <= 0) throw new ArgumentException();
 
-            var itemToUpdate = new DbContact
-            {
-                Id = contactId,
-                IsShared = isShared ? ShareType.ReadWrite : ShareType.None,
-                TenantId = TenantID
-            };
+            var dbEntity = CrmDbContext.Contacts.Find(contactId);
 
-            CrmDbContext.Attach(itemToUpdate);
-            CrmDbContext.Entry(itemToUpdate).Property(x => x.IsShared).IsModified = true;
+            dbEntity.IsShared = isShared ? ShareType.ReadWrite : ShareType.None;
+
             CrmDbContext.SaveChanges();
-
         }
 
         public int SaveContact(Contact contact)
         {
             var result = SaveContactToDb(contact);
 
-            _factoryIndexerContact.Index(Query(CrmDbContext.Contacts)
-                                        .Where(x => x.Id == contact.ID).Single());
+            var dbEntity = CrmDbContext.Contacts.Find(contact.ID);
+
+            _factoryIndexerContact.Index(dbEntity);
 
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
@@ -1537,8 +1534,9 @@ namespace ASC.CRM.Core.Dao
 
             _crmSecurity.DemandDelete(contact);
 
-            _factoryIndexerContact.Delete(Query(CrmDbContext.Contacts)
-              .Where(x => x.Id == contactID).Single());
+            var dbEntity = CrmDbContext.Contacts.Find(contactID);
+
+            _factoryIndexerContact.Delete(dbEntity);
 
             DeleteBatchContactsExecute(new List<Contact>() { contact });
 

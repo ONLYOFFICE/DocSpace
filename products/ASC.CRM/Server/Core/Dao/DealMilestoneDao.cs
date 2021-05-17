@@ -79,7 +79,9 @@ namespace ASC.CRM.Core.Dao
 
             for (int index = 0; index < ids.Length; index++)
             {
-                var itemToUpdate = Query(CrmDbContext.DealMilestones).FirstOrDefault(x => x.Id == ids[index]);
+                var itemToUpdate = CrmDbContext.DealMilestones.Find(ids[index]);
+
+                if (itemToUpdate.TenantId != TenantID) continue;
 
                 itemToUpdate.SortOrder = index;
 
