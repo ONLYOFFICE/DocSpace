@@ -649,7 +649,7 @@ class CreateUserForm extends React.Component {
             tabIndex={10}
           />
           <Button
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             onClick={this.onCancelHandler}
             isDisabled={isLoading}
             size="big"
@@ -683,5 +683,5 @@ export default withRouter(
     setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
     updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
-  }))(observer(withTranslation("ProfileAction")(CreateUserForm)))
+  }))(observer(withTranslation(["ProfileAction", "Common"])(CreateUserForm)))
 );

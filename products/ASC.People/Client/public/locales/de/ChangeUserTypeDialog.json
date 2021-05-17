@@ -1,5 +1,4 @@
 ﻿{
-  "CancelButton": "Abbrechen",
   "ChangeUserTypeButton": "Typ ändern",
   "ChangeUserTypeHeader": "Benutzertyp ändern",
   "ChangeUserTypeMessage": "Benutzer mit dem Typ \u0027{{ firstType }}\u0027 bekommen den Typ \u0027{{ secondType }}\u0027.",

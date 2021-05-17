@@ -544,7 +544,7 @@ class DownloadDialogComponent extends React.Component {
           <Button
             className="button-dialog"
             key="CancelButton"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={this.onClose}
             //isLoading={isLoading}
@@ -555,7 +555,7 @@ class DownloadDialogComponent extends React.Component {
   }
 }
 
-const DownloadDialog = withTranslation("DownloadDialog")(
+const DownloadDialog = withTranslation(["DownloadDialog", "Common"])(
   DownloadDialogComponent
 );
 

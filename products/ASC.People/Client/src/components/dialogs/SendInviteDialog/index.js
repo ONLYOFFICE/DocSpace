@@ -137,7 +137,7 @@ class SendInviteDialogComponent extends React.Component {
           />
           <Button
             className="button-dialog"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={onClose}
             isDisabled={isRequestRunning}
@@ -148,7 +148,7 @@ class SendInviteDialogComponent extends React.Component {
   }
 }
 
-const SendInviteDialog = withTranslation("SendInviteDialog")(
+const SendInviteDialog = withTranslation(["SendInviteDialog", "Common"])(
   SendInviteDialogComponent
 );
 

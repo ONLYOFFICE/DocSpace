@@ -142,7 +142,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
           />
           <Button
             className="button-dialog"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={onClose}
             isDisabled={isRequestRunning}
@@ -153,7 +153,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
   }
 }
 
-const DeleteUsersDialog = withTranslation("DeleteUsersDialog")(
+const DeleteUsersDialog = withTranslation(["DeleteUsersDialog", "Common"])(
   DeleteGroupUsersDialogComponent
 );
 

@@ -1,5 +1,4 @@
 ﻿{
-  "CancelButton": "Отмена",
   "ChangePasswordSuccess": "Пароль был успешно изменен",
   "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}",
   "ConfirmOwnerPortalTitle": "Пожалуйста, подтвердите, что Вы хотите изменить владельца портала на {{newOwner}}",

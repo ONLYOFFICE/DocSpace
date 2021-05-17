@@ -302,7 +302,7 @@ class AvatarEditorPage extends React.PureComponent {
           saveButtonLabel={
             this.state.isLoading ? t("UpdatingProcess") : t("SaveButton")
           }
-          cancelButtonLabel={t("CancelButton")}
+          cancelButtonLabel={t("Common:CancelButton")}
           saveButtonLoading={this.state.isLoading}
         />
       </AvatarEditorBody>
@@ -324,5 +324,5 @@ export default withRouter(
     setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
-  }))(observer(withTranslation("ProfileAction")(AvatarEditorPage)))
+  }))(observer(withTranslation(["ProfileAction", "Common"])(AvatarEditorPage)))
 );

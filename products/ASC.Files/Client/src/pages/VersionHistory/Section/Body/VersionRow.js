@@ -222,7 +222,7 @@ const VersionRow = (props) => {
                 size="base"
                 scale={true}
                 onClick={onCancelClick}
-                label={t("CancelButton")}
+                label={t("Common:CancelButton")}
               />
             </Box>
           </Box>
@@ -250,4 +250,8 @@ export default inject(({ auth, versionHistoryStore }) => {
     restoreVersion,
     updateCommentVersion,
   };
-})(withRouter(withTranslation("VersionHistory")(observer(VersionRow))));
+})(
+  withRouter(
+    withTranslation(["VersionHistory", "Common"])(observer(VersionRow))
+  )
+);

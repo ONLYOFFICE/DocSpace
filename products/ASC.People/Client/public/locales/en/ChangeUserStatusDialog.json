@@ -1,6 +1,5 @@
 ﻿{
   "ActiveEmployeeTitle": "Active",
-  "CancelButton": "Cancel",
   "ChangeUsersActiveStatus": "disabled",
   "ChangeUsersDisableStatus": "enabled",
   "ChangeUsersStatusButton": "Change user status",

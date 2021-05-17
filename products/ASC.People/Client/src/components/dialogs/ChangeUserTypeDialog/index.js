@@ -145,7 +145,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
           />
           <Button
             className="button-dialog"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={onClose}
             isDisabled={isRequestRunning}
@@ -156,9 +156,10 @@ class ChangeUserTypeDialogComponent extends React.Component {
   }
 }
 
-const ChangeUserTypeDialog = withTranslation("ChangeUserTypeDialog")(
-  ChangeUserTypeDialogComponent
-);
+const ChangeUserTypeDialog = withTranslation([
+  "ChangeUserTypeDialog",
+  "Common",
+])(ChangeUserTypeDialogComponent);
 
 ChangeUserTypeDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

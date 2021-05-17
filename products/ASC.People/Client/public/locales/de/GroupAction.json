@@ -1,7 +1,6 @@
 ﻿{
   "AddButton": "Hinzufügen",
   "AddMembers": "Mitglieder hinzufügen",
-  "CancelButton": "Abbrechen",
   "CustomNewDepartment": "{{groupCaption}} (Erstellung)",
   "EmptyFieldError": "Leeres Feld",
   "GroupAction": "Arbeit mit Gruppe",

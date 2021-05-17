@@ -372,7 +372,7 @@ const SectionBodyContent = ({
               onClick={onSave}
             />
             <Button
-              label={t("CancelButton")}
+              label={t("Common:CancelButton")}
               className="cancel-button"
               size="big"
               isDisabled={inLoading}

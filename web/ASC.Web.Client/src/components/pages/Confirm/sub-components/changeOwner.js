@@ -98,7 +98,7 @@ class Form extends React.PureComponent {
                 <Button
                   className="owner-buttons"
                   size="big"
-                  label={t("CancelButton")}
+                  label={t("Common:CancelButton")}
                   tabIndex={2}
                   isDisabled={false}
                   onClick={this.onCancelClick}
@@ -131,4 +131,6 @@ const ChangeOwnerForm = (props) => (
 export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   defaultPage: auth.settingsStore.defaultPage,
-}))(withRouter(withTranslation("Confirm")(observer(ChangeOwnerForm))));
+}))(
+  withRouter(withTranslation(["Confirm", "Common"])(observer(ChangeOwnerForm)))
+);

@@ -150,7 +150,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
           />
           <Button
             className="button-dialog"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={onClose}
             isDisabled={isRequestRunning}
@@ -161,9 +161,10 @@ class ChangeUserStatusDialogComponent extends React.Component {
   }
 }
 
-const ChangeUserStatusDialog = withTranslation("ChangeUserStatusDialog")(
-  ChangeUserStatusDialogComponent
-);
+const ChangeUserStatusDialog = withTranslation([
+  "ChangeUserStatusDialog",
+  "Common",
+])(ChangeUserStatusDialogComponent);
 
 ChangeUserStatusDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

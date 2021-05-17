@@ -132,7 +132,7 @@ const EmptyTrashDialogComponent = (props) => {
         <Button
           className="button-dialog"
           key="CancelButton"
-          label={t("CancelButton")}
+          label={t("Common:CancelButton")}
           size="medium"
           onClick={onClose}
           isLoading={isLoading}
@@ -142,7 +142,7 @@ const EmptyTrashDialogComponent = (props) => {
   );
 };
 
-const EmptyTrashDialog = withTranslation("EmptyTrashDialog")(
+const EmptyTrashDialog = withTranslation(["EmptyTrashDialog", "Common"])(
   EmptyTrashDialogComponent
 );
 

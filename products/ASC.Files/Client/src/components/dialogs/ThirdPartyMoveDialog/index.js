@@ -83,7 +83,7 @@ const PureThirdPartyMoveContainer = ({
           />
           <Button
             className="operation-button"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="big"
             onClick={onClose}
           />
@@ -113,5 +113,7 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
     selection,
   };
 })(
-  withTranslation("ThirdPartyMoveDialog")(observer(PureThirdPartyMoveContainer))
+  withTranslation(["ThirdPartyMoveDialog", "Common"])(
+    observer(PureThirdPartyMoveContainer)
+  )
 );

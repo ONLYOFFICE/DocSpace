@@ -1,5 +1,4 @@
 ﻿{
-  "CancelButton": "Abbrechen",
   "ChangePasswordSuccess": "Passwort wurde erfolgreich geändert",
   "ConfirmOwnerPortalSuccessMessage": "Der Portalbesitzer wurde erfolgreich geändert. {0} In 10 Sekunden werden Sie {1} hier {2} umgeleitet werden",
   "ConfirmOwnerPortalTitle": "Bitte bestätigen Sie, dass {{newOwner}} Portalbesitzer werden soll",

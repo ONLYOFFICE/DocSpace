@@ -371,7 +371,7 @@ class LanguageAndTimeZone extends React.Component {
               showReminder={showReminder}
               reminderTest={t("YouHaveUnsavedChanges")}
               saveButtonLabel={t("SaveButton")}
-              cancelButtonLabel={t("CancelButton")}
+              cancelButtonLabel={t("Common:CancelButton")}
             />
           )}
         </StyledComponent>
@@ -414,5 +414,7 @@ export default inject(({ auth, setup }) => {
     getPortalTimezones,
   };
 })(
-  withTranslation("Settings")(observer(withCultureNames(LanguageAndTimeZone)))
+  withTranslation(["Settings", "Common"])(
+    observer(withCultureNames(LanguageAndTimeZone))
+  )
 );

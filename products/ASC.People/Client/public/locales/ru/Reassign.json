@@ -1,5 +1,4 @@
 ﻿{
-  "CancelButton": "Отмена",
   "ChooseUser": "Выберите пользователя",
   "DeleteProfileAfterReassignment": "Удалить профиль, когда переназначение будет завершено",
   "LDAPLbl": "LDAP",

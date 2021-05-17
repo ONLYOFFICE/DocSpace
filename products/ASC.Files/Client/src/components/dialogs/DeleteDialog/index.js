@@ -170,7 +170,7 @@ class DeleteDialogComponent extends React.Component {
           <Button
             className="button-dialog"
             key="CancelButton"
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             size="medium"
             onClick={this.onClose}
             isLoading={isLoading}
@@ -181,7 +181,9 @@ class DeleteDialogComponent extends React.Component {
   }
 }
 
-const DeleteDialog = withTranslation("DeleteDialog")(DeleteDialogComponent);
+const DeleteDialog = withTranslation(["DeleteDialog", "Common"])(
+  DeleteDialogComponent
+);
 
 export default inject(
   ({

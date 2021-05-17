@@ -708,7 +708,7 @@ class TeamTemplate extends React.Component {
                 showReminder={showReminder}
                 reminderTest={t("YouHaveUnsavedChanges")}
                 saveButtonLabel={t("SaveButton")}
-                cancelButtonLabel={t("CancelButton")}
+                cancelButtonLabel={t("Common:CancelButton")}
               />
             )}
           </StyledComponent>
@@ -745,4 +745,4 @@ export default inject(({ auth, setup }) => {
     setCustomSchema,
     setIsLoading,
   };
-})(withTranslation("Settings")(observer(TeamTemplate)));
+})(withTranslation(["Settings", "Common"])(observer(TeamTemplate)));

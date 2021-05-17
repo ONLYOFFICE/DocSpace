@@ -870,7 +870,7 @@ class UpdateUserForm extends React.Component {
             tabIndex={11}
           />
           <Button
-            label={t("CancelButton")}
+            label={t("Common:CancelButton")}
             onClick={this.onCancelHandler}
             isDisabled={isLoading}
             size="big"
@@ -928,5 +928,5 @@ export default withRouter(
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
     isSelf: peopleStore.targetUserStore.isMe,
-  }))(observer(withTranslation("ProfileAction")(UpdateUserForm)))
+  }))(observer(withTranslation(["ProfileAction", "Common"])(UpdateUserForm)))
 );
