@@ -9,6 +9,7 @@ import PageLayout from "@appserver/common/components/PageLayout";
 import { inject, observer } from "mobx-react";
 import Box from "@appserver/components/box";
 import Link from "@appserver/components/link";
+import toastr from "studio/toastr";
 
 const StyledForm = styled(Box)`
   margin: 63px auto auto 216px;
@@ -21,13 +22,21 @@ const StyledForm = styled(Box)`
 `;
 
 const TfaAuthForm = (props) => {
-  const { t } = props;
+  const { t, loginWithCode, location, history } = props;
+  const { user, hash } = location.state;
 
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const onSubmit = () => {
-    console.log(`Received code: ${code}`);
+  const onSubmit = async () => {
+    try {
+      const url = await loginWithCode(user, hash, code);
+      history.push(url || "/");
+    } catch (e) {
+      setError(e);
+      toastr.error(e);
+    }
   };
 
   const onKeyPress = (target) => {
@@ -86,4 +95,5 @@ const TfaAuthFormWrapper = (props) => {
 
 export default inject(({ auth }) => ({
   isLoaded: auth.isLoaded,
+  loginWithCode: auth.loginWithCode,
 }))(withRouter(withTranslation("Confirm")(observer(TfaAuthFormWrapper))));

@@ -25,13 +25,20 @@ const StyledForm = styled(Box)`
   }
 `;
 const TfaActivationForm = withLoader((props) => {
-  const { t, secretKey, qrCode } = props;
+  const { t, secretKey, qrCode, loginWithCode, user, hash, history } = props;
 
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const onSubmit = () => {
-    console.log(`Received code: ${code}`);
+  const onSubmit = async () => {
+    try {
+      const url = await loginWithCode(user, hash, code);
+      history.push(url || "/");
+    } catch (e) {
+      setError(e);
+      toastr.error(e);
+    }
   };
 
   const onKeyPress = (target) => {
@@ -100,11 +107,24 @@ const TfaActivationForm = withLoader((props) => {
 });
 
 const TfaActivationWrapper = (props) => {
-  const { t, getSecretKeyAndQR, linkData, setIsLoaded, setIsLoading } = props;
+  const {
+    t,
+    getSecretKeyAndQR,
+    linkData,
+    setIsLoaded,
+    setIsLoading,
+    loginWithCode,
+    location,
+    history,
+  } = props;
+
+  const { user, hash } = location.state;
 
   const [secretKey, setSecretKey] = useState("");
   const [qrCode, setQrCode] = useState("");
   const [error, setError] = useState(null);
+
+  console.log(linkData);
 
   useEffect(async () => {
     try {
@@ -126,7 +146,13 @@ const TfaActivationWrapper = (props) => {
   return error ? (
     <ErrorContainer bodyText={error} />
   ) : (
-    <TfaActivationForm secretKey={secretKey} qrCode={qrCode} {...props} />
+    <TfaActivationForm
+      secretKey={secretKey}
+      qrCode={qrCode}
+      user={user}
+      hash={hash}
+      {...props}
+    />
   );
 };
 
@@ -134,4 +160,5 @@ export default inject(({ auth, confirm }) => ({
   setIsLoaded: confirm.setIsLoaded,
   setIsLoading: confirm.setIsLoading,
   getSecretKeyAndQR: auth.tfaStore.getSecretKeyAndQR,
+  loginWithCode: auth.loginWithCode,
 }))(withRouter(withTranslation("Confirm")(observer(TfaActivationWrapper))));
