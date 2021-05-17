@@ -20,9 +20,11 @@ const StyledNav = styled.nav`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   .version-box {
-    position: ${isMobileOnly && window.innerWidth > window.innerHeight
-      ? "relative"
-      : "absolute"};
+    position: absolute;
+
+    @media (orientation: landscape) {
+      position: ${isMobileOnly && "relative"};
+    }
     bottom: 8px;
     left: 16px;
 
