@@ -11,36 +11,42 @@ class ResetApplicationDialogComponent extends React.Component {
     super(props);
   }
 
+  resetApp = async () => {
+    const { resetTfaApp, history } = this.props;
+    const res = await resetTfaApp();
+
+    if (res) history.push(res);
+  };
+
   render() {
     console.log("Render ResetApplicationDialog");
     const { t, visible, onClose } = this.props;
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
-          <ModalDialog.Header>{t("ResetApplicationTitle")}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <Text className="text-dialog">
-              {t("ResetApplicationDescription")}
-            </Text>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              key="SendBtn"
-              label={t("ResetButton")}
-              size="medium"
-              primary={true}
-            />
-            <Button
-              key="CloseBtn"
-              className="button-dialog"
-              label={t("CloseButton")}
-              size="medium"
-              primary={false}
-              onClick={onClose}
-            />
-          </ModalDialog.Footer>
-        </ModalDialog>
+      <ModalDialogContainer visible={visible} onClose={onClose}>
+        <ModalDialog.Header>{t("ResetApplicationTitle")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text className="text-dialog">
+            {t("ResetApplicationDescription")}
+          </Text>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            key="SendBtn"
+            label={t("ResetButton")}
+            size="medium"
+            primary={true}
+            onClick={this.resetApp}
+          />
+          <Button
+            key="CloseBtn"
+            className="button-dialog"
+            label={t("CloseButton")}
+            size="medium"
+            primary={false}
+            onClick={onClose}
+          />
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
@@ -53,6 +59,7 @@ const ResetApplicationDialog = withTranslation("ResetApplicationDialog")(
 ResetApplicationDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  resetTfaApp: PropTypes.func.isRequired,
 };
 
 export default ResetApplicationDialog;

@@ -437,6 +437,7 @@ class SectionBodyContent extends React.PureComponent {
           <ResetApplicationDialog
             visible={resetAppDialogVisible}
             onClose={this.toggleResetAppDialogVisible}
+            resetTfaApp={this.props.resetTfaApp}
           />
         )}
         {backupCodesDialogVisible && (
@@ -468,5 +469,6 @@ export default withRouter(
     getOAuthToken: auth.settingsStore.getOAuthToken,
     getLoginLink: auth.settingsStore.getLoginLink,
     getBackupCodes: auth.tfaStore.getBackupCodes,
+    resetTfaApp: auth.tfaStore.unlinkApp,
   }))(observer(withTranslation("Profile")(SectionBodyContent)))
 );
