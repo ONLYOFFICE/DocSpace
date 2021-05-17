@@ -154,8 +154,14 @@ export default function withContextOptions(WrappedComponent) {
         t,
         deleteItemAction,
         isThirdPartyFolder,
+        isShareFolder,
       } = this.props;
       const { id, title, fileExst, contentLength, folderId, parentId } = item;
+
+      if (isShareFolder) {
+        toastr.success("Unsubscribe call", "Unsubscribe call", true);
+        return;
+      }
 
       if (isThirdPartyFolder) {
         const splitItem = id.split("-");
@@ -377,6 +383,14 @@ export default function withContextOptions(WrappedComponent) {
               "data-action": "remove",
               action: "remove",
             };
+          case "unsubscribe":
+            return {
+              key: option,
+              label: t("RemoveFromList"),
+              icon: "/static/images/catalog.trash.react.svg",
+              onClick: this.onClickDelete,
+              disabled: false,
+            };
           default:
             break;
         }
@@ -447,9 +461,10 @@ export default function withContextOptions(WrappedComponent) {
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
       const { isRootFolder } = selectedFolderStore;
-      const { isRecycleBinFolder } = treeFoldersStore;
+      const { isRecycleBinFolder, isShare } = treeFoldersStore;
 
       const isThirdPartyFolder = item.providerKey && isRootFolder;
+      const isShareFolder = isShare(item.rootFolderType);
 
       return {
         openLocationAction,
@@ -480,6 +495,7 @@ export default function withContextOptions(WrappedComponent) {
         actionId: id,
         actionExtension: extension,
         isTrashFolder: isRecycleBinFolder,
+        isShareFolder,
       };
     }
   )(observer(WithContextOptions));

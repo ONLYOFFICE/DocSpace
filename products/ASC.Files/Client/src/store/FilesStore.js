@@ -504,11 +504,20 @@ class FilesStore {
         ]);
       }
 
+      if (isRecentFolder) {
+        fileOptions = this.removeOptions(fileOptions, ["delete"]);
+
+        if (!isFavorite) {
+          fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+        }
+      }
+
       if (isFavoritesFolder || isPrivacyFolder || isRecentFolder) {
         fileOptions = this.removeOptions(fileOptions, [
           "copy",
           "move-to",
           "sharing-settings",
+          "unsubscribe",
         ]);
       }
 
@@ -608,6 +617,8 @@ class FilesStore {
 
       if (isShareFolder) {
         fileOptions = this.removeOptions(fileOptions, ["move-to", "delete"]);
+      } else {
+        fileOptions = this.removeOptions(fileOptions, ["unsubscribe"]);
       }
 
       return fileOptions;
@@ -641,6 +652,8 @@ class FilesStore {
           "move-to",
           "delete",
         ]);
+      } else {
+        folderOptions = this.removeOptions(folderOptions, ["unsubscribe"]);
       }
 
       if (isRecycleBinFolder) {
@@ -692,10 +705,6 @@ class FilesStore {
 
       if (!hasNew) {
         folderOptions = this.removeOptions(folderOptions, ["mark-read"]);
-      }
-
-      if (!isCommonFolder) {
-        folderOptions = this.removeOptions(folderOptions, ["unsubscribe"]);
       }
 
       if (isThirdPartyFolder) {
