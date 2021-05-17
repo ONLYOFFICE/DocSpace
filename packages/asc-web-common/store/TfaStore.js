@@ -50,6 +50,11 @@ class TfaStore {
     console.log(backupCodes);
     this.backupCodes = backupCodes;
   };
+
+  loginWithCode = async (userName, passwordHash, code) => {
+    //console.log("loginWithCode");
+    return api.user.loginWithTfaCode(userName, passwordHash, code);
+  };
 }
 
 export default TfaStore;
