@@ -374,7 +374,7 @@ class SectionBodyContent extends React.PureComponent {
         )}
         {isSelf && (
           <ToggleWrapper>
-            <ToggleContent label={t("LoginSettings")} isOpen={true}>
+            <ToggleContent label={t("TfaLoginSettings")} isOpen={true}>
               <Trans t={t} i18nKey="TwoFactorDescription" ns="Profile">
                 <Text>
                   <strong>Two-factor authentication</strong> via code generating
@@ -467,6 +467,6 @@ export default withRouter(
     setProviders: peopleStore.usersStore.setProviders,
     getOAuthToken: auth.settingsStore.getOAuthToken,
     getLoginLink: auth.settingsStore.getLoginLink,
-    getBackupCodes: auth.tfaStore.getTfaNewBackupCodes,
+    getBackupCodes: auth.tfaStore.getBackupCodes,
   }))(observer(withTranslation("Profile")(SectionBodyContent)))
 );
