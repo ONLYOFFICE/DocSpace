@@ -10,7 +10,7 @@ namespace Frontend.Translations.Tests
 {
     public class Tests
     {
-        public string BasePath
+        public static string BasePath
         {
             get
             {
@@ -62,7 +62,7 @@ namespace Frontend.Translations.Tests
                 .OrderByDescending(itm => itm.Count)
                 .ToList();
 
-            Assert.AreEqual(0, allDuplicates.Count());
+            Assert.AreEqual(0, allDuplicates.Count);
         }
     }
 }
