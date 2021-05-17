@@ -24,14 +24,12 @@ class TfaStore {
 
   setTfaSettings = async (type) => {
     const res = await api.settings.setTfaSettings(type);
-    console.log(res);
     this.getTfaConfirmLink(res, type);
   };
 
   getTfaConfirmLink = async (res, type) => {
     if (res && type !== "none") {
       const link = await api.settings.getTfaConfirmLink();
-      console.log(link);
       document.location.href = link;
     }
   };
@@ -42,7 +40,6 @@ class TfaStore {
 
   getBackupCodes = async () => {
     const backupCodes = await api.settings.getTfaNewBackupCodes();
-    console.log(backupCodes);
     this.backupCodes = backupCodes;
   };
 
