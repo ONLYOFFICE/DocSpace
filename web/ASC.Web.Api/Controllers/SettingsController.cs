@@ -90,6 +90,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -1579,7 +1580,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("tfaappnewapp")]
-        public object TfaAppNewAppFromBody([FromBody]TfaModel model)
+        public object TfaAppNewAppFromBody([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)]TfaModel model)
         {
             return TfaAppNewApp(model);
         }
@@ -1593,8 +1594,9 @@ namespace ASC.Api.Settings
 
         private object TfaAppNewApp(TfaModel model)
         {
-            var isMe = model.Id.Equals(Guid.Empty);
-            var user = UserManager.GetUsers(isMe ? AuthContext.CurrentAccount.ID : model.Id);
+            var id = model?.Id ?? Guid.Empty;
+            var isMe = id.Equals(Guid.Empty);
+            var user = UserManager.GetUsers(isMe ? AuthContext.CurrentAccount.ID : id);
 
             if (!isMe && !PermissionContext.CheckPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser))
                 throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
