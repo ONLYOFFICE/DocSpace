@@ -203,7 +203,7 @@ class OperationsDialog extends React.PureComponent {
                     filter={filter}
                     onSelect={this.onSelect}
                     needUpdate={false}
-                    isCommonWithoutProvider={isCommonWithoutProvider}
+                    withoutProvider={isCommonWithoutProvider}
                   />
                 ) : (
                   <div key="loader" className="panel-loader-wrapper">

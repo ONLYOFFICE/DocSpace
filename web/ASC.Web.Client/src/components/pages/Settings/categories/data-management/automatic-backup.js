@@ -80,9 +80,7 @@ let defaultMonthly = false;
 let defaultWeekly = false;
 let defaultDaily = false;
 
-let moduleName = "";
-let storageFiledValue = "";
-class AutomaticBackup extends React.Component {
+class AutomaticBackup extends React.PureComponent {
   constructor(props) {
     super(props);
     const { t, language } = props;
@@ -91,8 +89,6 @@ class AutomaticBackup extends React.Component {
     moment.locale(this.lng);
 
     this.state = {
-      isShowedStorageType: false, //if current automatic storage not choose
-
       isShowDocuments: false,
       isShowThirdParty: false,
       isShowThirdPartyStorage: false,
@@ -186,11 +182,6 @@ class AutomaticBackup extends React.Component {
             defaultMaxCopies = `${selectedSchedule.backupsStored}`;
 
             if (defaultStorageType === "5") {
-              this.setState({
-                selectedPermission: "enable",
-                isShowedStorageTypes: true,
-              });
-
               this.onSetDefaultOptions();
             } else {
               getFolderPath(folderId)
@@ -199,14 +190,7 @@ class AutomaticBackup extends React.Component {
                     ? (folderDocumentsModulePath = folderPath)
                     : (folderThirdPartyModulePath = folderPath)
                 )
-                .then(() => {
-                  this.setState({
-                    selectedPermission: "enable",
-                    isShowedStorageTypes: true,
-                  });
-
-                  this.onSetDefaultOptions();
-                });
+                .then(() => this.onSetDefaultOptions());
             }
           }
         })
@@ -234,6 +218,9 @@ class AutomaticBackup extends React.Component {
     if (defaultStorageType === "0") {
       // Documents Module
       this.setState({
+        selectedPermission: "enable",
+        isShowedStorageTypes: true,
+
         isShowDocuments: true,
         isCheckedDocuments: true,
         selectedTimeOption: defaultHour,
@@ -244,9 +231,11 @@ class AutomaticBackup extends React.Component {
     if (defaultStorageType === "1") {
       // ThirdPartyResource Module
       this.setState({
+        selectedPermission: "enable",
+        isShowedStorageTypes: true,
+
         isShowThirdParty: true,
         isCheckedThirdParty: true,
-
         selectedTimeOption: defaultHour,
         selectedMaxCopies: defaultMaxCopies,
         selectedNumberMaxCopies: defaultMaxCopies,
@@ -256,6 +245,9 @@ class AutomaticBackup extends React.Component {
     if (defaultStorageType === "5") {
       // ThirdPartyStorage Module
       this.setState({
+        selectedPermission: "enable",
+        isShowedStorageTypes: true,
+
         isShowThirdPartyStorage: true,
         isCheckedThirdPartyStorage: true,
         selectedTimeOption: defaultHour,
@@ -567,19 +559,9 @@ class AutomaticBackup extends React.Component {
                   }
                 })
                 .then(() => {
-                  this.setState({
-                    selectedPermission: "enable",
-                    isShowedStorageTypes: true,
-                  });
-
                   this.onSetDefaultOptions();
                 });
             } else {
-              this.setState({
-                selectedPermission: "enable",
-                isShowedStorageTypes: true,
-              });
-
               this.onSetDefaultOptions();
             }
           }
@@ -614,6 +596,7 @@ class AutomaticBackup extends React.Component {
     });
 
     if (isError) this.setState({ isError: false });
+
     if (defaultStorageType) {
       selectedPermission === "disable" &&
         this.setState({
@@ -751,6 +734,7 @@ class AutomaticBackup extends React.Component {
       isCheckedDocuments,
       isCheckedThirdParty,
       isCheckedThirdPartyStorage,
+      isChanged,
     } = this.state;
     let changed;
     //debugger;
@@ -759,14 +743,16 @@ class AutomaticBackup extends React.Component {
       //debugger;
       if (+defaultStorageType === 0) {
         changed = this.checkOptions();
-        this.setState({
-          isChanged: changed,
-        });
+        isChanged !== changed &&
+          this.setState({
+            isChanged: changed,
+          });
         return;
       } else {
-        this.setState({
-          isChanged: true,
-        });
+        isChanged !== changed &&
+          this.setState({
+            isChanged: true,
+          });
         return;
       }
     }
@@ -774,28 +760,32 @@ class AutomaticBackup extends React.Component {
     if (isCheckedThirdParty) {
       if (+defaultStorageType === 1) {
         changed = this.checkOptions();
-        this.setState({
-          isChanged: changed,
-        });
+        isChanged !== changed &&
+          this.setState({
+            isChanged: changed,
+          });
         return;
       } else {
-        this.setState({
-          isChanged: true,
-        });
+        isChanged !== changed &&
+          this.setState({
+            isChanged: true,
+          });
         return;
       }
     }
     if (isCheckedThirdPartyStorage) {
       if (+defaultStorageType === 5) {
         changed = this.checkOptions();
-        this.setState({
-          isChanged: changed,
-        });
+        isChanged !== changed &&
+          this.setState({
+            isChanged: changed,
+          });
         return;
       } else {
-        this.setState({
-          isChanged: true,
-        });
+        isChanged !== changed &&
+          this.setState({
+            isChanged: true,
+          });
         return;
       }
     }
@@ -853,7 +843,6 @@ class AutomaticBackup extends React.Component {
     if (name === "enable") {
       this.setState({
         isShowedStorageTypes: true,
-
         selectedPermission: "enable",
       });
 
@@ -885,10 +874,6 @@ class AutomaticBackup extends React.Component {
     } else {
       this.setState({
         isShowedStorageTypes: false,
-        //isCheckedDocuments: false,
-        //isCheckedThirdParty: false,
-        //isCheckedThirdPartyStorage: false,
-
         isShowDocuments: false,
         isShowThirdParty: false,
         isShowThirdPartyStorage: false,
@@ -969,6 +954,7 @@ class AutomaticBackup extends React.Component {
 
     console.log("this.state", this.state);
     console.log("this.props", this.props);
+    console.log("__________________");
 
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />

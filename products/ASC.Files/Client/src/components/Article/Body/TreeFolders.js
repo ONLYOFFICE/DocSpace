@@ -196,6 +196,7 @@ class TreeFolders extends React.Component {
   };
 
   getItems = (data) => {
+    const { withoutProvider } = this.props;
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
@@ -205,6 +206,9 @@ class TreeFolders extends React.Component {
       const provider = item.providerKey;
       const serviceFolder = !!item.providerKey;
       let className = `tree-drag tree-id_${item.id}`;
+
+      if (withoutProvider && provider) return;
+
       if (dragging) className += " dragging";
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
@@ -261,78 +265,6 @@ class TreeFolders extends React.Component {
     });
   };
 
-  getCommonItems = (data) => {
-    //debugger;
-    return data.map((item) => {
-      const dragging = this.props.dragging ? this.showDragItems(item) : false;
-
-      const showBadge = item.newItems
-        ? item.newItems > 0 && this.props.needUpdate
-        : false;
-      const provider = item.providerKey;
-      const serviceFolder = !!item.providerKey;
-      let className = `tree-drag tree-id_${item.id}`;
-      if (dragging) className += " dragging";
-
-      if (provider) return;
-      if ((item.folders && item.folders.length > 0) || serviceFolder) {
-        return !provider ? (
-          <TreeNode
-            id={item.id}
-            key={item.id}
-            className={className}
-            title={item.title}
-            needTopMargin={item.rootFolderType === FolderType.Privacy}
-            icon={this.getFolderIcon(item)}
-            dragging={dragging}
-            isLeaf={
-              item.rootFolderType === FolderType.Privacy &&
-              !this.props.isDesktop
-                ? true
-                : null
-            }
-            newItems={
-              !this.props.isDesktop &&
-              item.rootFolderType === FolderType.Privacy
-                ? null
-                : item.newItems
-            }
-            providerKey={item.providerKey}
-            onBadgeClick={this.onBadgeClick}
-            showBadge={showBadge}
-          >
-            {item.rootFolderType === FolderType.Privacy && !this.props.isDesktop
-              ? null
-              : this.getCommonItems(item.folders ? item.folders : [])}
-          </TreeNode>
-        ) : (
-          <></>
-        );
-      }
-      return !provider ? (
-        <TreeNode
-          id={item.id}
-          key={item.id}
-          className={className}
-          title={item.title}
-          needTopMargin={item.rootFolderType === FolderType.TRASH}
-          dragging={dragging}
-          isLeaf={item.foldersCount ? false : true}
-          icon={this.getFolderIcon(item)}
-          newItems={
-            !this.props.isDesktop && item.rootFolderType === FolderType.Privacy
-              ? null
-              : item.newItems
-          }
-          providerKey={item.providerKey}
-          onBadgeClick={this.onBadgeClick}
-          showBadge={showBadge}
-        />
-      ) : (
-        <></>
-      );
-    });
-  };
   switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
@@ -507,7 +439,6 @@ class TreeFolders extends React.Component {
       expandedPanelKeys,
       treeFolders,
       data,
-      isCommonWithoutProvider,
     } = this.props;
     //debugger;
     return (
@@ -532,9 +463,7 @@ class TreeFolders extends React.Component {
         gapBetweenNodesTablet="26"
         isFullFillSelection={false}
       >
-        {isCommonWithoutProvider
-          ? this.getCommonItems(data)
-          : this.getItems(data || treeFolders)}
+        {this.getItems(data || treeFolders)}
       </StyledTreeMenu>
     );
   }
