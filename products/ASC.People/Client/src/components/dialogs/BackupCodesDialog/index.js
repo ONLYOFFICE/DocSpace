@@ -12,9 +12,13 @@ class BackupCodesDialogComponent extends React.Component {
     this.state = { backupCodes: this.props.getBackupCodes() };
   }
 
-  getNewBackupCodes = () => {
+  componentDidMount = () => {
+    this.getNewBackupCodes();
+  };
+
+  getNewBackupCodes = async () => {
     const { getBackupCodes } = this.props;
-    const newCodes = getBackupCodes();
+    const newCodes = await getBackupCodes();
     this.setState({ backupCodes: newCodes });
   };
 
@@ -41,56 +45,54 @@ class BackupCodesDialogComponent extends React.Component {
     const count = 5; //TODO: get count from api
     //const codes = ["qdf45g", "fg56dfg", "ugi8fm", "gfuti8f", "fkuidop"]; //TODO: get codes from api
 
+    console.log(backupCodes);
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
-          <ModalDialog.Header>{t("BackupCodesTitle")}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <div id="backup-codes-print-content">
-              <Text className="text-dialog">{t("BackupCodesDescription")}</Text>
-              <Text className="text-dialog">
-                {t("BackupCodesSecondDescription")}
-              </Text>
+      <ModalDialogContainer visible={visible} onClose={onClose}>
+        <ModalDialog.Header>{t("BackupCodesTitle")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <div id="backup-codes-print-content">
+            <Text className="text-dialog">{t("BackupCodesDescription")}</Text>
+            <Text className="text-dialog">
+              {t("BackupCodesSecondDescription")}
+            </Text>
 
-              <Trans
-                t={t}
-                i18nKey="CodesCounter"
-                ns="BackupCodesDialog"
-                count={count}
-              >
-                <Text className="text-dialog">
-                  <strong>{{ count }} codes:</strong>
-                </Text>
-              </Trans>
-              <Text className="text-dialog" isBold={true}>
-                {backupCodes.map((item) => {
-                  return (
-                    <strong key={item}>
-                      {item} <br />
-                    </strong>
-                  );
-                })}
+            <Trans
+              t={t}
+              i18nKey="CodesCounter"
+              ns="BackupCodesDialog"
+              count={count}
+            >
+              <Text className="text-dialog">
+                <strong>{{ count }} codes:</strong>
               </Text>
-            </div>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              key="PrintBtn"
-              label={t("PrintButton")}
-              size="medium"
-              primary={true}
-              onClick={this.printPage}
-            />
-            <Button
-              key="RequestNewBtn"
-              className="button-dialog"
-              label={t("RequestNewButton")}
-              size="medium"
-              primary={false}
-              onClick={this.getNewBackupCodes}
-            />
-          </ModalDialog.Footer>
-        </ModalDialog>
+            </Trans>
+            <Text className="text-dialog" isBold={true}>
+              {backupCodes.length > 0 &&
+                backupCodes.map((item) => (
+                  <strong key={item.code}>
+                    {item.code} <br />
+                  </strong>
+                ))}
+            </Text>
+          </div>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            key="PrintBtn"
+            label={t("PrintButton")}
+            size="medium"
+            primary={true}
+            onClick={this.printPage}
+          />
+          <Button
+            key="RequestNewBtn"
+            className="button-dialog"
+            label={t("RequestNewButton")}
+            size="medium"
+            primary={false}
+            onClick={this.getNewBackupCodes}
+          />
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
