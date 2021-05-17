@@ -41,7 +41,7 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("userid")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Photo)
                     .IsRequired()

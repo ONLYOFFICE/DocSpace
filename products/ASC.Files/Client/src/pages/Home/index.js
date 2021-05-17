@@ -234,6 +234,7 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreAlert,
 
       isLoading,
+      dragging,
     } = this.props;
 
     return (
@@ -245,6 +246,7 @@ class PureHome extends React.Component {
         <MediaViewer />
         <DragTooltip />
         <PageLayout
+          dragging={dragging}
           withBodyScroll
           withBodyAutoFocus={!isMobile}
           uploadFiles

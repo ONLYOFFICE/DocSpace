@@ -24,6 +24,7 @@ class FilesActionStore {
   selectedFolderStore;
   settingsStore;
   dialogsStore;
+  mediaViewerDataStore;
 
   constructor(
     authStore,
@@ -32,7 +33,8 @@ class FilesActionStore {
     filesStore,
     selectedFolderStore,
     settingsStore,
-    dialogsStore
+    dialogsStore,
+    mediaViewerDataStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -42,7 +44,15 @@ class FilesActionStore {
     this.selectedFolderStore = selectedFolderStore;
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
+    this.mediaViewerDataStore = mediaViewerDataStore;
   }
+
+  isMediaOpen = () => {
+    const { visible, setMediaViewerData, playlist } = this.mediaViewerDataStore;
+    if (visible && playlist.length === 1) {
+      setMediaViewerData({ visible: false, id: null });
+    }
+  };
 
   deleteAction = (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
@@ -71,6 +81,7 @@ class FilesActionStore {
     }
 
     if (folderIds.length || fileIds.length) {
+      this.isMediaOpen();
       return removeFiles(folderIds, fileIds, deleteAfter, immediately)
         .then((res) => {
           const id = res[0] && res[0].id ? res[0].id : null;
@@ -284,8 +295,8 @@ class FilesActionStore {
       });
 
       isFile
-        ? deleteFileAction(itemId, currentFolderId, translations)
-        : deleteFolderAction(itemId, currentFolderId, translations);
+        ? this.deleteFileAction(itemId, currentFolderId, translations)
+        : this.deleteFolderAction(itemId, currentFolderId, translations);
     }
   };
 
@@ -295,6 +306,7 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
+    this.isMediaOpen();
     return deleteFile(fileId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;

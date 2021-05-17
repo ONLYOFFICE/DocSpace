@@ -1973,7 +1973,9 @@ namespace ASC.Api.Documents
                 FilesSettingsHelper.UpdateIfExist,
                 FilesSettingsHelper.Forcesave,
                 FilesSettingsHelper.StoreForcesave,
-                FilesSettingsHelper.EnableThirdParty
+                FilesSettingsHelper.EnableThirdParty,
+                FilesSettingsHelper.RecentSection,
+                FilesSettingsHelper.FavoritesSection
             };
         }
 

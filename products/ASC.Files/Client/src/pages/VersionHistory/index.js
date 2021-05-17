@@ -87,7 +87,7 @@ VersionHistory.propTypes = {
 };
 
 export default inject(({ auth, filesStore, versionHistoryStore }) => {
-  const { filter, setFilesFilter, isLoading } = filesStore;
+  const { filter, isLoading } = filesStore;
   const { setIsVerHistoryPanel, versions } = versionHistoryStore;
 
   return {
@@ -96,7 +96,6 @@ export default inject(({ auth, filesStore, versionHistoryStore }) => {
     filter,
     versions,
 
-    setFilesFilter,
     setIsVerHistoryPanel,
   };
 })(withRouter(observer(VersionHistory)));

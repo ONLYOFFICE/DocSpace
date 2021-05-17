@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Heading from "@appserver/components/heading";
 import ToggleButton from "@appserver/components/toggle-button";
@@ -7,6 +7,7 @@ import Error520 from "studio/Error520";
 import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 import { loopTreeFolders } from "../../../../helpers/files-helpers";
+import toastr from "@appserver/components/toast/toastr";
 
 const StyledSettings = styled.div`
   display: grid;
@@ -45,21 +46,28 @@ const SectionBodyContent = ({
   isErrorSettings,
   isLoadedSettingsTree,
   settingsIsLoaded,
-  fetchTreeFolders,
+  getFoldersTree,
   setTreeFolders,
   treeFolders,
   myFolderId,
   commonFolderId,
   t,
   isVisitor,
+  favoritesSection,
+  recentSection,
+  setFavoritesSetting,
+  setRecentSetting,
 }) => {
+  const [isLoadingFavorites, setIsLoadingFavorites] = useState(false);
+  const [isLoadingRecent, setIsLoadingRecent] = useState(false);
+
   const onChangeStoreForceSave = () => {
     setStoreForceSave(!storeForceSave, "storeForceSave");
   };
 
   const onChangeThirdParty = () => {
     setEnableThirdParty(!enableThirdParty, "enableThirdParty").then(() => {
-      fetchTreeFolders().then((data) => {
+      getFoldersTree().then((data) => {
         const commonFolder = data.find((x) => x.id === commonFolderId);
         const myFolder = data.find((x) => x.id === myFolderId);
 
@@ -120,6 +128,20 @@ const SectionBodyContent = ({
     setForceSave(!forceSave, "forceSave");
   };
 
+  const onChangeFavorites = (e) => {
+    setIsLoadingFavorites(true);
+    setFavoritesSetting(e.target.checked, "favoritesSection")
+      .catch((err) => toastr.error(err))
+      .finally(() => setIsLoadingFavorites(false));
+  };
+
+  const onChangeRecent = (e) => {
+    setIsLoadingRecent(true);
+    setRecentSetting(e.target.checked, "recentSection")
+      .catch((err) => toastr.error(err))
+      .finally(() => setIsLoadingRecent(false));
+  };
+
   const renderCommonSettings = () => {
     return !isLoadedSettingsTree || isLoading ? null : (
       <StyledSettings>
@@ -138,19 +160,19 @@ const SectionBodyContent = ({
         {!isVisitor && (
           <>
             <ToggleButton
-              isDisabled={true}
+              isDisabled={isLoadingRecent}
               className="toggle-btn"
               label={t("DisplayRecent")}
-              onChange={(e) => console.log(e)}
-              isChecked={false}
+              onChange={onChangeRecent}
+              isChecked={recentSection}
             />
 
             <ToggleButton
-              isDisabled={true}
+              isDisabled={isLoadingFavorites}
               className="toggle-btn"
               label={t("DisplayFavorites")}
-              onChange={(e) => console.log(e)}
-              isChecked={false}
+              onChange={onChangeFavorites}
+              isChecked={favoritesSection}
             />
             <ToggleButton
               isDisabled={true}
@@ -202,13 +224,7 @@ const SectionBodyContent = ({
 };
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    settingsStore,
-    treeFoldersStore,
-    selectedFolderStore,
-  }) => {
+  ({ auth, filesStore, settingsStore, treeFoldersStore }) => {
     const { isLoading } = filesStore;
     const {
       isLoadedSettingsTree,
@@ -225,17 +241,20 @@ export default inject(
       setStoreForceSave,
       setForceSave,
       settingsIsLoaded,
+
+      favoritesSection,
+      recentSection,
+      setFavoritesSetting,
+      setRecentSetting,
     } = settingsStore;
 
     const {
-      fetchTreeFolders,
+      getFoldersTree,
       setTreeFolders,
       treeFolders,
       myFolderId,
       commonFolderId,
     } = treeFoldersStore;
-
-    const { folders } = selectedFolderStore;
 
     return {
       isAdmin: auth.isAdmin,
@@ -251,6 +270,8 @@ export default inject(
       myFolderId,
       commonFolderId,
       isVisitor: auth.userStore.user.isVisitor,
+      favoritesSection,
+      recentSection,
 
       setUpdateIfExist,
       setStoreOriginal,
@@ -259,8 +280,10 @@ export default inject(
       setStoreForceSave,
       setForceSave,
       settingsIsLoaded,
-      fetchTreeFolders,
+      getFoldersTree,
       setTreeFolders,
+      setFavoritesSetting,
+      setRecentSetting,
     };
   }
 )(observer(SectionBodyContent));
