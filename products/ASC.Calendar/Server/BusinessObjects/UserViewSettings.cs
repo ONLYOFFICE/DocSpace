@@ -35,6 +35,7 @@ namespace ASC.Calendar.BusinessObjects
     public class UserViewSettings
     { 
         public virtual string CalendarId { get; set; }
+        public string ExtCalendarId { get; set; }
         public Guid UserId { get; set; }
         public string Name { get; set; }      
         public bool IsHideEvents { get; set; }
@@ -48,6 +49,7 @@ namespace ASC.Calendar.BusinessObjects
         {
             this.TextColor = String.Empty;
             this.BackgroundColor = String.Empty;
+            this.ExtCalendarId = "";
         }
     }
 }

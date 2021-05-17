@@ -72,6 +72,7 @@ namespace ASC.Calendar.Models
         }
     }
 
+    [Scope]
     public class PublicItemWrapperHelper
     {
         private Guid _owner;

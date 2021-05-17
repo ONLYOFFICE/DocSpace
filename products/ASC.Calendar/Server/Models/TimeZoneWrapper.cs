@@ -54,6 +54,7 @@ namespace ASC.Calendar.Models
         }
     }
 
+    [Scope]
     public class TimeZoneWrapperHelper
     {
         private TimeZoneInfo _timeZone;

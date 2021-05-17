@@ -26,14 +26,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 using ASC.Api.Core;
 using ASC.Calendar.Core.Dao;
@@ -44,14 +40,11 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
-using ASC.Core.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Calendars;
-using ASC.Web.Core.WhiteLabel;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Calendar.BusinessObjects
@@ -118,10 +111,10 @@ namespace ASC.Calendar.BusinessObjects
 
         public List<UserViewSettings> GetUserViewSettings(Guid userId, List<string> calendarIds)
         {
-            var data = CalendarDb.CalendarCalendarUser
+            var data = CalendarDb.CalendarCalendarUser.AsNoTracking()
                 .Where(ccu =>
-                        (calendarIds.Contains(ccu.CalendarId.ToString()) || calendarIds.Contains(ccu.ExtCalendarId)) &&
-                        ccu.UserId == userId)
+                (calendarIds.Contains(ccu.CalendarId.ToString()) || calendarIds.Contains(ccu.ExtCalendarId)) &&
+                ccu.UserId == userId)
                 .ToList();
 
             var options = new List<UserViewSettings>();
@@ -320,12 +313,12 @@ namespace ASC.Calendar.BusinessObjects
                            calDavGuid = cc.CaldavGuid,
                            isTodo = cc.IsTodo,
 
-                           usrId = uc.UserId,
-                           usrHideEvents = uc.HideEvents,
-                           usrIsAccepted = uc.IsAccepted,
+                           usrId = (Guid?)uc.UserId,
+                           usrHideEvents = (int?)uc.HideEvents,
+                           usrIsAccepted = (int?)uc.IsAccepted,
                            usrTextColor = uc.TextColor,
                            usrBackground = uc.BackgroundColor,
-                           usrAlertType = uc.AlertType,
+                           usrAlertType = (int?)uc.AlertType,
                            usrCalName = uc.Name,
                            usrTimeZone = uc.TimeZone
                        };
@@ -383,7 +376,7 @@ namespace ASC.Calendar.BusinessObjects
                     var uvs = new UserViewSettings
                     {
                         CalendarId = calendar.Id,
-                        UserId = r.usrId,
+                        UserId = r.usrId.GetValueOrDefault(),
                         IsHideEvents = Convert.ToBoolean(r.usrHideEvents),
                         IsAccepted = Convert.ToBoolean(r.usrIsAccepted),
                         TextColor = r.usrTextColor,
@@ -627,7 +620,7 @@ namespace ASC.Calendar.BusinessObjects
         }
         public void UpdateCalendarUserView(UserViewSettings viewSettings)
         {
-            using var tx = CalendarDb.Database.BeginTransaction();
+            //using var tx = CalendarDb.Database.BeginTransaction();
 
             int calendarId;
             if (int.TryParse(viewSettings.CalendarId, out calendarId))
@@ -636,6 +629,7 @@ namespace ASC.Calendar.BusinessObjects
                 {
                     CalendarId = calendarId,
                     UserId = viewSettings.UserId,
+                    ExtCalendarId = viewSettings.ExtCalendarId,
                     HideEvents = Convert.ToInt32(viewSettings.IsHideEvents),
                     TextColor = viewSettings.TextColor,
                     BackgroundColor = viewSettings.BackgroundColor,
@@ -644,7 +638,17 @@ namespace ASC.Calendar.BusinessObjects
                     Name = viewSettings.Name ?? "",
                     TimeZone = viewSettings.TimeZone != null ? viewSettings.TimeZone.Id : null
                 };
-                CalendarDb.CalendarCalendarUser.Add(calendarUser);
+
+                var existCalendar = CalendarDb.CalendarCalendarUser
+                    .Any(c => c.CalendarId == calendarUser.CalendarId && c.UserId == calendarUser.UserId);
+
+                if (existCalendar)
+                    CalendarDb.CalendarCalendarUser.Update(calendarUser);
+                else
+                    CalendarDb.CalendarCalendarUser.Add(calendarUser);
+
+                CalendarDb.SaveChanges();
+                //tx.Commit();
 
                 //update notifications
                 var eventsData = CalendarDb.CalendarEvents
@@ -659,9 +663,6 @@ namespace ASC.Calendar.BusinessObjects
                           eIsAllDay = s.AllDayLong
                       }
                       ).ToList();
-
-                CalendarDb.SaveChanges();
-                tx.Commit();
 
                 foreach (var r in eventsData)
                 {
@@ -686,10 +687,17 @@ namespace ASC.Calendar.BusinessObjects
                     Name = viewSettings.Name ?? "",
                     TimeZone = viewSettings.TimeZone != null ? viewSettings.TimeZone.Id : null
                 };
-                CalendarDb.CalendarCalendarUser.Add(calendarUser);
+
+                var existCalendar = CalendarDb.CalendarCalendarUser
+                    .Any(c => c.ExtCalendarId == calendarUser.ExtCalendarId && c.UserId == calendarUser.UserId);
+
+                if (existCalendar)
+                    CalendarDb.CalendarCalendarUser.Update(calendarUser);
+                else
+                    CalendarDb.CalendarCalendarUser.Add(calendarUser);
 
                 CalendarDb.SaveChanges();
-                tx.Commit();
+                //tx.Commit();
 
                 if (String.Equals(viewSettings.CalendarId, SharedEventsCalendar.CalendarId,
                                     StringComparison.InvariantCultureIgnoreCase))
@@ -852,6 +860,7 @@ namespace ASC.Calendar.BusinessObjects
             {
                 Id = Convert.ToInt32(id),
                 Name = name,
+                Tenant = TenantManager.GetCurrentTenant().TenantId,
                 Description = description,
                 CalendarId = calendarId,
                 OwnerId = ownerId,
@@ -1023,7 +1032,6 @@ namespace ASC.Calendar.BusinessObjects
                                     select calEventUser.EventId).Any()
                             )
                        select events.Id;
-
             return GetEventsByIds(evIds.ToArray(), userId, tenantId);
         }
 
@@ -1047,7 +1055,7 @@ namespace ASC.Calendar.BusinessObjects
                         )
                     )
                 )
-                .Select(s => s.Id).ToList();
+                .Select(s => s.Id).ToList();          
 
             return GetEventsByIds(evIds.ToArray(), userId, tenantId);
         }
@@ -1098,17 +1106,17 @@ namespace ASC.Calendar.BusinessObjects
                                    Id = calEvt.Id.ToString(),
                                    Name = calEvt.Name,
                                    Description = calEvt.Description,
-                                   TenantId = calEvt.Tenant,
+                                   TenantId = (int?)calEvt.Tenant,
                                    CalendarId = calEvt.CalendarId.ToString(),
                                    UtcStartDate = calEvt.StartDate,
                                    UtcEndDate = calEvt.EndDate,
                                    UtcUpdateDate = (DateTime)calEvt.UpdateDate,
                                    AllDayLong = Convert.ToBoolean(calEvt.AllDayLong),
-                                   OwnerId = calEvt.OwnerId,
-                                   AlertType = (EventAlertType)ue.AlertType,
+                                   OwnerId = (Guid?)calEvt.OwnerId,
+                                   AlertType = (EventAlertType?)ue.AlertType,
                                    RecurrenceRule = calEvt.Rrule,
                                    Uid = calEvt.Uid,
-                                   Status = (EventStatus)calEvt.Status
+                                   Status = (EventStatus?)calEvt.Status
                                };
                     foreach (var r in data)
                     {
@@ -1123,17 +1131,17 @@ namespace ASC.Calendar.BusinessObjects
                                 Id = r.Id,
                                 Name = r.Name,
                                 Description = r.Description,
-                                TenantId = r.TenantId,
+                                TenantId = r.TenantId.GetValueOrDefault(),
                                 CalendarId = r.CalendarId,
                                 UtcStartDate = r.UtcStartDate,
                                 UtcEndDate = r.UtcEndDate,
                                 UtcUpdateDate = r.UtcUpdateDate,
                                 AllDayLong = r.AllDayLong,
-                                OwnerId = r.OwnerId,
-                                AlertType = r.AlertType,
+                                OwnerId = r.OwnerId.GetValueOrDefault(),
+                                AlertType = r.AlertType.GetValueOrDefault(),
                                 RecurrenceRule = RecurrenceRule.Parse(r.RecurrenceRule),
                                 Uid = r.Uid,
-                                Status = r.Status
+                                Status = r.Status.GetValueOrDefault()
                             };
                             events.Add(ev);
                         }
@@ -1164,17 +1172,17 @@ namespace ASC.Calendar.BusinessObjects
                                    Id = calEvt.Id.ToString(),
                                    Name = calEvt.Name,
                                    Description = calEvt.Description,
-                                   TenantId = calEvt.Tenant,
+                                   TenantId = (int?)calEvt.Tenant,
                                    CalendarId = calEvt.CalendarId.ToString(),
                                    UtcStartDate = calEvt.StartDate,
                                    UtcEndDate = calEvt.EndDate,
                                    UtcUpdateDate = (DateTime)calEvt.UpdateDate,
                                    AllDayLong = Convert.ToBoolean(calEvt.AllDayLong),
-                                   OwnerId = calEvt.OwnerId,
-                                   AlertType = (EventAlertType)ue.AlertType,
+                                   OwnerId = (Guid?)calEvt.OwnerId,
+                                   AlertType = (EventAlertType?)ue.AlertType,
                                    RecurrenceRule = calEvt.Rrule,
                                    Uid = calEvt.Uid,
-                                   Status = (EventStatus)calEvt.Status
+                                   Status = (EventStatus?)calEvt.Status
                                };
                     foreach (var r in data)
                     {
@@ -1189,17 +1197,17 @@ namespace ASC.Calendar.BusinessObjects
                                 Id = r.Id,
                                 Name = r.Name,
                                 Description = r.Description,
-                                TenantId = r.TenantId,
+                                TenantId = r.TenantId.GetValueOrDefault(),
                                 CalendarId = r.CalendarId,
                                 UtcStartDate = r.UtcStartDate,
                                 UtcEndDate = r.UtcEndDate,
                                 UtcUpdateDate = r.UtcUpdateDate,
                                 AllDayLong = r.AllDayLong,
-                                OwnerId = r.OwnerId,
-                                AlertType = r.AlertType,
+                                OwnerId = r.OwnerId.GetValueOrDefault(),
+                                AlertType = r.AlertType.GetValueOrDefault(),
                                 RecurrenceRule = RecurrenceRule.Parse(r.RecurrenceRule),
                                 Uid = r.Uid,
-                                Status = r.Status
+                                Status = r.Status.GetValueOrDefault()
                             };
                             events.Add(ev);
                         }
@@ -1247,12 +1255,13 @@ namespace ASC.Calendar.BusinessObjects
             using var tx = CalendarDb.Database.BeginTransaction();
 
             var cei = CalendarDb.CalendarEventItem.Where(r => r.EventId == eventID && r.ItemId == userId && r.IsGroup == 0).SingleOrDefault();
+            var userNoSubscibe = CalendarDb.CalendarEventUser.Any(u => u.UserId == userId && u.EventId == eventID && u.IsUnsubscribe == 1);
 
             if (cei != null)
             {
                 CalendarDb.CalendarEventItem.Remove(cei);
             }
-            else
+            else if(!userNoSubscibe)
             {
                 var newEventUser = new CalendarEventUser
                 {

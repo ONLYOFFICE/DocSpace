@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +10,6 @@ using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -43,6 +40,8 @@ namespace ASC.Radicale
             {
                 var pythonName = "python";
 
+                var configPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "radicale.config"));
+
                 if (WorkContext.IsMono)
                 {
                     pythonName = "python3";
@@ -54,8 +53,7 @@ namespace ASC.Radicale
                     UseShellExecute = false,
                     FileName = pythonName,
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = string.Format("-m radicale --config \"{0}\"",
-                                                Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "radicale.config"))),
+                    Arguments = $"-m radicale --config \"{configPath}\"",
                     WorkingDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)
                 };
 
@@ -78,7 +76,6 @@ namespace ASC.Radicale
         {
             StopRadicale();
             Proc = Process.Start(StartInfo);
-
         }
 
         private void StopRadicale()

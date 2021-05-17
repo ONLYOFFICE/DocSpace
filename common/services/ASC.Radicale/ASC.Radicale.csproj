@@ -21,6 +21,12 @@
     <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="radicale.log.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="https://json.schemastore.org/local.settings.json" /></VisualStudio></ProjectExtensions>
 
   

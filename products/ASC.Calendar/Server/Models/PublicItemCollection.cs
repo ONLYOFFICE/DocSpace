@@ -56,6 +56,8 @@ namespace ASC.Calendar.Models
         }
 
     }
+
+    [Scope]
     public class PublicItemCollectionHelper
     {
         public AuthContext AuthContext { get; }

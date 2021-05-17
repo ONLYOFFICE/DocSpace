@@ -44,6 +44,7 @@ namespace ASC.Calendar.BusinessObjects
         public List<Ical.Net.Calendar> History { get; set; }
     }
 
+    [Scope]
     public class EventHistoryHelper
     {
         public DDayICalParser DDayICalParser { get; }

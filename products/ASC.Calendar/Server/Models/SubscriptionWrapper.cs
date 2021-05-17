@@ -78,6 +78,7 @@ namespace ASC.Calendar.Models
         }
     }
 
+    [Scope]
     public class SubscriptionWrapperHelper
     {
 
