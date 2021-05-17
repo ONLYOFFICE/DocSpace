@@ -46,7 +46,7 @@ class TfaStore {
   };
 
   unlinkApp = async () => {
-    await api.settings.unlinkTfaApp();
+    return api.settings.unlinkTfaApp();
   };
 }
 
