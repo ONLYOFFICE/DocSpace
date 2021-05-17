@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
+import { isMobileOnly } from "react-device-detect";
 
 const backgroundColor = "#0F4071";
 
@@ -19,10 +20,12 @@ const StyledNav = styled.nav`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   .version-box {
-    position: inherit;
-    margin-left: 16px;
-    padding-bottom: 16px;
-    margin-top: 115%;
+    position: ${isMobileOnly && window.innerWidth > window.innerHeight
+      ? "relative"
+      : "absolute"};
+    bottom: 8px;
+    left: 16px;
+
     white-space: nowrap;
     a:focus {
       outline: 0;
