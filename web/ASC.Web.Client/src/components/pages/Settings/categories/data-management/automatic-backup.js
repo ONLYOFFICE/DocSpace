@@ -1068,6 +1068,7 @@ class AutomaticBackup extends React.PureComponent {
                     isSetDefaultFolderPath={isSetDefaultFolderPath}
                     isError={isError}
                     onSetLoadingData={this.onSetLoadingData}
+                    withoutTopLevelFolder
                   />
                   <ScheduleComponent
                     weeklySchedule={weeklySchedule}

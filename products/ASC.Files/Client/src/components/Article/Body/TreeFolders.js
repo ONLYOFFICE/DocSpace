@@ -101,7 +101,7 @@ class TreeFolders extends React.Component {
 
     if (item.parentId !== 0)
       iconUrl = "/static/images/catalog.folder.react.svg";
-    //debugger;
+
     switch (item.providerKey) {
       case "GoogleDrive":
         iconUrl = "/static/images/cloud.services.google.drive.react.svg";
@@ -197,6 +197,7 @@ class TreeFolders extends React.Component {
 
   getItems = (data) => {
     const { withoutProvider } = this.props;
+
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
 
@@ -341,6 +342,7 @@ class TreeFolders extends React.Component {
 
         const folderIndex = treeNode.props.pos;
         let i = 0;
+
         for (let item of arrayFolders) {
           item["key"] = `${folderIndex}-${i}`;
           i++;
@@ -352,6 +354,7 @@ class TreeFolders extends React.Component {
   };
 
   onLoadData = (treeNode, isExpand) => {
+    const { data: incomingDate, withoutTopLevelFolder } = this.props;
     isExpand && this.setState({ isExpand: true });
     this.props.setIsLoading && this.props.setIsLoading(true);
     //console.log("load data...", treeNode);
@@ -366,7 +369,9 @@ class TreeFolders extends React.Component {
         const listIds = data.listIds;
         listIds.push(itemId);
 
-        const treeData = [...this.props.treeFolders];
+        const treeData = withoutTopLevelFolder
+          ? incomingDate
+          : [...this.props.treeFolders];
 
         this.getNewTreeData(treeData, listIds, data.folders, 10);
         /* this.props.needUpdate &&  */ this.props.setTreeFolders(treeData);
@@ -440,7 +445,7 @@ class TreeFolders extends React.Component {
       treeFolders,
       data,
     } = this.props;
-    //debugger;
+
     return (
       <StyledTreeMenu
         className="files-tree-menu"

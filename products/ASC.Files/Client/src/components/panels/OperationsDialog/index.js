@@ -165,12 +165,13 @@ class OperationsDialog extends React.PureComponent {
       isCommonWithoutProvider,
       onClose,
       isError,
+      withoutTopLevelFolder,
     } = this.props;
     const { isLoading, isLoadingData, commonDefault, baseFolder } = this.state;
     const zIndex = 310;
     //console.log("name", name);
 
-    console.log("commonDefault", commonDefault);
+    console.log("folderList", folderList);
 
     return (
       <StyledComponent>
@@ -204,6 +205,7 @@ class OperationsDialog extends React.PureComponent {
                     onSelect={this.onSelect}
                     needUpdate={false}
                     withoutProvider={isCommonWithoutProvider}
+                    withoutTopLevelFolder={withoutTopLevelFolder}
                   />
                 ) : (
                   <div key="loader" className="panel-loader-wrapper">
@@ -222,6 +224,7 @@ class OperationsDialog extends React.PureComponent {
 
 OperationsDialog.defaultProps = {
   isCommonWithoutProvider: false,
+  withoutTopLevelFolder: false,
   folderList: "",
   folderPath: "",
 };

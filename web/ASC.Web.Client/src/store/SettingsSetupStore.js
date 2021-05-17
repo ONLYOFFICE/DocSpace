@@ -70,6 +70,10 @@ class SettingsSetupStore {
   };
 
   setCommonThirdPartyList = (commonThirdPartyList) => {
+    commonThirdPartyList.map((currentValue, index) => {
+      commonThirdPartyList[index].key = `0-${index}`;
+    });
+
     this.dataManagement.commonThirdPartyList = commonThirdPartyList;
   };
   setSelectedConsumer = (selectedConsumerName) => {
