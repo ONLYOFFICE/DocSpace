@@ -160,18 +160,27 @@ class AuthStore {
         throw "Empty API response";
 
       if (response.tfa && response.confirmUrl) {
-        document.location.href = response.confirmUrl;
-        return Promise.resolve(true);
+        const url = response.confirmUrl.replace(window.location.origin, "");
+        return Promise.resolve({ url, user, hash });
       }
 
       setWithCredentialsStatus(true);
 
       await this.init();
 
-      return Promise.resolve(true);
+      return Promise.resolve({ url: this.settingsStore.defaultPage });
     } catch (e) {
       return Promise.reject(e);
     }
+  };
+
+  loginWithCode = async (userName, passwordHash, code) => {
+    await this.tfaStore.loginWithCode(userName, passwordHash, code);
+    setWithCredentialsStatus(true);
+
+    await this.init();
+
+    return Promise.resolve(this.settingsStore.defaultPage);
   };
 
   thirdPartyLogin = async (SerializedProfile) => {
