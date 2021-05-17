@@ -519,7 +519,7 @@ namespace ASC.Web.CRM.Classes
                     EntityID = contact.ID,
                     EntityType = contact is Person ? EntityType.Person : EntityType.Company,
                     ID = fieldID,
-                    Value = field.FieldType == CustomFieldType.CheckBox ? (propertyValue == "on" || propertyValue == "true" ? "true" : "false") : propertyValue
+                    Value = field.Type == CustomFieldType.CheckBox ? (propertyValue == "on" || propertyValue == "true" ? "true" : "false") : propertyValue
                 });
             }
         }

@@ -29,30 +29,32 @@
 using System;
 using System.Runtime.Serialization;
 
+using ASC.Common.Mapping;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Mapping;
+
+using AutoMapper;
+
+using DocuSign.eSign.Model;
 
 #endregion
 
 namespace ASC.CRM.Core.Entities
 {
-
-    [DataContract]
-    public class CustomField : DomainObject
+    public class CustomField : DomainObject, IMapFrom<DbFieldDescription>
     {
-        [DataMember(Name = "entity_type")]
         public EntityType EntityType { get; set; }
-
-        [DataMember(Name = "entity_id")]
         public int EntityID { get; set; }
         public String Label { get; set; }
         public String Value { get; set; }
-        public CustomFieldType FieldType { get; set; }
-        public int Position { get; set; }
+        public CustomFieldType Type { get; set; }
+        public int SortOrder { get; set; }
         public String Mask { get; set; }
+
         public override int GetHashCode()
         {
-            return string.Format("{0}|{1}|{2}|{3}|{4}", GetType().FullName, ID, EntityID, Label, (int)FieldType).GetHashCode();
+            return string.Format("{0}|{1}|{2}|{3}|{4}", GetType().FullName, ID, EntityID, Label, (int)Type).GetHashCode();
         }
     }
 }

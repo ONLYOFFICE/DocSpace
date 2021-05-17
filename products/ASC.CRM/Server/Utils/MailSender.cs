@@ -1082,10 +1082,10 @@ namespace ASC.Web.CRM.Classes
 
             foreach (var customField in customFields)
             {
-                if (customField.FieldType == CustomFieldType.SelectBox) continue;
-                if (customField.FieldType == CustomFieldType.CheckBox) continue;
+                if (customField.Type == CustomFieldType.SelectBox) continue;
+                if (customField.Type == CustomFieldType.CheckBox) continue;
 
-                if (customField.FieldType == CustomFieldType.Heading)
+                if (customField.Type == CustomFieldType.Heading)
                 {
                     if (!String.IsNullOrEmpty(customField.Label))
                         category = customField.Label;

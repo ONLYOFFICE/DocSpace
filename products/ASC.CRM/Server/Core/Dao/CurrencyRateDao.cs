@@ -36,6 +36,7 @@ using ASC.CRM.Core.EF;
 
 using AutoMapper;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
@@ -62,7 +63,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<CurrencyRate> GetAll()
         {
-            var rates = CrmDbContext.CurrencyRate.Where(x => x.TenantId == TenantID).ToList();
+            var rates = Query(CrmDbContext.CurrencyRate).ToList();
 
             return _mapper.Map<List<DbCurrencyRate>, List<CurrencyRate>>(rates);
         }
@@ -71,68 +72,54 @@ namespace ASC.CRM.Core.Dao
         {
             var entity = CrmDbContext.CurrencyRate.Find(id);
 
+            if (entity.TenantId != TenantID) return null;
+
             return _mapper.Map<CurrencyRate>(entity);
         }
 
         public CurrencyRate GetByCurrencies(string fromCurrency, string toCurrency)
         {
-            return _mapper.Map<CurrencyRate>(CrmDbContext.CurrencyRate.FirstOrDefault(x => x.TenantId == TenantID && String.Compare(x.FromCurrency, fromCurrency, true) == 0 &&
-                                                 String.Compare(x.ToCurrency, toCurrency, true) == 0));
+            var dbEntity =  Query(CrmDbContext.CurrencyRate).FirstOrDefault(x => 
+                                 string.Compare(x.FromCurrency, fromCurrency, true) == 0 &&
+                                 string.Compare(x.ToCurrency, toCurrency, true) == 0);
+
+            return _mapper.Map<CurrencyRate>(dbEntity);
+
         }
 
-        public int SaveOrUpdate(CurrencyRate currencyRate)
+        public int SaveOrUpdate(CurrencyRate entity)
         {
-            if (String.IsNullOrEmpty(currencyRate.FromCurrency) || String.IsNullOrEmpty(currencyRate.ToCurrency) || currencyRate.Rate < 0)
+            if (String.IsNullOrEmpty(entity.FromCurrency) || String.IsNullOrEmpty(entity.ToCurrency) || entity.Rate < 0)
                 throw new ArgumentException();
 
-            if (currencyRate.ID > 0 && currencyRate.Rate == 0)
-                return Delete(currencyRate.ID);
+            if (entity.ID > 0 && entity.Rate == 0)
+                return Delete(entity.ID);
 
-            if (CrmDbContext.CurrencyRate.Where(x => x.Id == currencyRate.ID).Any())
-            {
-                var itemToInsert = new DbCurrencyRate
-                {
-                    FromCurrency = currencyRate.FromCurrency.ToUpper(),
-                    ToCurrency = currencyRate.ToCurrency.ToUpper(),
-                    Rate = currencyRate.Rate,
-                    CreateBy = _securityContext.CurrentAccount.ID,
-                    CreateOn = DateTime.UtcNow,
-                    LastModifedBy = _securityContext.CurrentAccount.ID,
-                    LastModifedOn = DateTime.UtcNow,
-                    TenantId = TenantID
-                };
+            var dbEntity = new DbCurrencyRate
+            { 
+                Id = entity.ID, 
+                FromCurrency = entity.FromCurrency.ToUpper(),
+                ToCurrency = entity.ToCurrency.ToUpper(),
+                Rate = entity.Rate,
+                CreateOn = entity.CreateOn == DateTime.MinValue ? DateTime.UtcNow : entity.CreateOn,
+                CreateBy = entity.CreateBy == Guid.Empty ? _securityContext.CurrentAccount.ID : entity.CreateBy,
+                LastModifedOn = DateTime.UtcNow,
+                LastModifedBy = _securityContext.CurrentAccount.ID,
+                TenantId = TenantID                   
+            };
 
-                CrmDbContext.CurrencyRate.Add(itemToInsert);
-                CrmDbContext.SaveChanges();
+            CrmDbContext.Update(dbEntity);
+            CrmDbContext.SaveChanges();
 
-                currencyRate.ID = itemToInsert.Id;
-            }
-            else
-            {
-                var itemToUpdate = CrmDbContext.CurrencyRate.FirstOrDefault(x => x.Id == currencyRate.ID);
-
-                itemToUpdate.FromCurrency = currencyRate.FromCurrency.ToUpper();
-                itemToUpdate.ToCurrency = currencyRate.ToCurrency.ToUpper();
-                itemToUpdate.Rate = currencyRate.Rate;
-                itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
-                itemToUpdate.LastModifedOn = DateTime.UtcNow;
-                itemToUpdate.TenantId = TenantID;
-
-                CrmDbContext.Update(itemToUpdate);
-                CrmDbContext.SaveChanges();
-            }
-
-            return currencyRate.ID;
+            return dbEntity.Id;
         }
 
         public int Delete(int id)
         {
-            if (id <= 0) throw new ArgumentException();
+            var dbEntity = CrmDbContext.CurrencyRate.Find(id);
 
-            var itemToDelete = new DbCurrencyRate { Id = id };
+            CrmDbContext.Remove(dbEntity);
 
-            CrmDbContext.CurrencyRate.Attach(itemToDelete);
-            CrmDbContext.CurrencyRate.Remove(itemToDelete);
             CrmDbContext.SaveChanges();
 
             return id;
@@ -142,8 +129,8 @@ namespace ASC.CRM.Core.Dao
         {
             using var tx = CrmDbContext.Database.BeginTransaction();
 
-            var items = CrmDbContext.CurrencyRate.Where(x => x.TenantId == TenantID);
-
+            var items = Query(CrmDbContext.CurrencyRate).AsNoTracking();
+                
             CrmDbContext.RemoveRange(items);
 
             foreach (var rate in rates)

@@ -248,7 +248,7 @@ namespace ASC.Web.CRM.HttpHandlers
                               customField.EntityType == EntityType.Company && isCompany ||
                               customField.EntityType == EntityType.Person && !isCompany)) continue;
 
-                        if (customField.FieldType == CustomFieldType.CheckBox)
+                        if (customField.Type == CustomFieldType.CheckBox)
                         {
                             fieldValue = fieldValue == "on" || fieldValue == "true" ? "true" : "false";
                         }

@@ -29,11 +29,11 @@ namespace ASC.CRM.Mapping
             {
                 Id = source.ID,
                 EntityId = source.EntityID,
-                FieldType = source.FieldType,
+                FieldType = source.Type,
                 FieldValue = source.Value,
                 Label = source.Label,
                 Mask = source.Mask,
-                Position = source.Position,
+                Position = source.SortOrder,
                 RelativeItemsCount = _daoFactory.GetCustomFieldDao().GetContactLinkCount(source.EntityType, source.ID)
             };
 

@@ -583,7 +583,7 @@ namespace ASC.Web.CRM.Classes
             fieldsDescription.ForEach(
                 item =>
                 {
-                    if (item.FieldType == CustomFieldType.Heading) return;
+                    if (item.Type == CustomFieldType.Heading) return;
 
                     dataTable.Columns.Add(
                         new DataColumn
@@ -820,7 +820,7 @@ namespace ASC.Web.CRM.Classes
             customFieldDao.GetFieldsDescription(EntityType.Opportunity).ForEach(
                 item =>
                 {
-                    if (item.FieldType == CustomFieldType.Heading) return;
+                    if (item.Type == CustomFieldType.Heading) return;
 
                     dataTable.Columns.Add(new DataColumn
                     {
@@ -939,7 +939,7 @@ namespace ASC.Web.CRM.Classes
             customFieldDao.GetFieldsDescription(EntityType.Case).ForEach(
                 item =>
                 {
-                    if (item.FieldType == CustomFieldType.Heading) return;
+                    if (item.Type == CustomFieldType.Heading) return;
 
                     dataTable.Columns.Add(new DataColumn
                     {

@@ -43,6 +43,7 @@ using ASC.Web.CRM.Core.Search;
 
 using AutoMapper;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
@@ -53,14 +54,15 @@ namespace ASC.CRM.Core.Dao
     [Scope]
     public class CustomFieldDao : AbstractDao
     {
-
-        private TenantUtil _tenantUtil;
-        private FactoryIndexerFieldValue _factoryIndexer;
+        private readonly TenantUtil _tenantUtil;
+        private readonly FactoryIndexerFieldValue _factoryIndexer;
+     
         public CustomFieldDao(
             DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             TenantUtil tenantUtil,
+            FactoryIndexerFieldValue factoryIndexer,
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
             IMapper mapper
@@ -73,6 +75,7 @@ namespace ASC.CRM.Core.Dao
                  mapper)
         {
             _tenantUtil = tenantUtil;
+            _factoryIndexer = factoryIndexer;
         }
 
 
@@ -100,41 +103,34 @@ namespace ASC.CRM.Core.Dao
             SetFieldValueInDb(entityType, entityID, fieldID, fieldValue);
         }
 
-        private void SetFieldValueInDb(EntityType entityType, int entityID, int fieldID, String fieldValue)
+        private void SetFieldValueInDb(EntityType entityType, int entityID, int fieldID, string fieldValue)
         {
             if (!_supportedEntityType.Contains(entityType))
                 throw new ArgumentException();
 
             fieldValue = fieldValue.Trim();
 
-            var itemToDelete = Query(CrmDbContext.FieldValue)
-                .Where(x => x.EntityId == entityID && x.EntityType == entityType && x.FieldId == fieldID);
+            var dbEntity = Query(CrmDbContext.FieldValue)
+                                    .FirstOrDefault(x => x.EntityId == entityID && 
+                                                x.EntityType == entityType && 
+                                                x.FieldId == fieldID);
 
-            CrmDbContext.FieldValue.RemoveRange(itemToDelete);
-            CrmDbContext.SaveChanges();
-
-            if (!String.IsNullOrEmpty(fieldValue))
+            if (string.IsNullOrEmpty(fieldValue))
             {
-                var lastModifiedOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
+                _factoryIndexer.Delete(dbEntity);
 
-                var dbFieldValue = new DbFieldValue
-                {
-                    EntityId = entityID,
-                    Value = fieldValue,
-                    FieldId = fieldID,
-                    EntityType = entityType,
-                    LastModifedOn = lastModifiedOn,
-                    LastModifedBy = _securityContext.CurrentAccount.ID,
-                    TenantId = TenantID
-                };
-
-                CrmDbContext.Add(dbFieldValue);
-                CrmDbContext.SaveChanges();
-
-                var id = dbFieldValue.Id;
-
-                _factoryIndexer.Index(dbFieldValue);
+                CrmDbContext.Remove(dbEntity);
             }
+            else
+            {  
+                dbEntity.Value = fieldValue;
+                dbEntity.LastModifedOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
+                dbEntity.LastModifedBy = _securityContext.CurrentAccount.ID;
+
+                _factoryIndexer.Index(dbEntity);
+            }
+
+            CrmDbContext.SaveChanges();
         }
 
         private string GetValidMask(CustomFieldType customFieldType, String mask)
@@ -224,7 +220,7 @@ namespace ASC.CRM.Core.Dao
                 {
                     _logger.Error(ex);
 
-                    throw ex;
+                    throw;
                 }
             }
             return JsonConvert.SerializeObject(resultMask);
@@ -234,11 +230,12 @@ namespace ASC.CRM.Core.Dao
         {
             if (!_supportedEntityType.Contains(entityType) || String.IsNullOrEmpty(label))
                 throw new ArgumentException();
+            
             var resultMask = GetValidMask(customFieldType, mask);
 
             var sortOrder = Query(CrmDbContext.FieldDescription).Select(x => x.SortOrder).Max() + 1;
 
-            var itemToInsert = new DbFieldDescription
+            var dbEntity = new DbFieldDescription
             {
                 Label = label,
                 Type = customFieldType,
@@ -248,11 +245,11 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             };
 
-            CrmDbContext.FieldDescription.Add(itemToInsert);
+            CrmDbContext.FieldDescription.Add(dbEntity);
 
             CrmDbContext.SaveChanges();
 
-            return itemToInsert.Id;
+            return dbEntity.Id;
         }
 
         public String GetValue(EntityType entityType, int entityID, int fieldID)
@@ -317,7 +314,7 @@ namespace ASC.CRM.Core.Dao
 
         public void EditItem(CustomField customField)
         {
-            if (String.IsNullOrEmpty(customField.Label))
+            if (string.IsNullOrEmpty(customField.Label))
                 throw new ArgumentException();
 
             if (HaveRelativeLink(customField.ID))
@@ -367,7 +364,7 @@ namespace ASC.CRM.Core.Dao
                 {
                     _logger.Error(ex);
 
-                    throw ex;
+                    throw;
                 }
 
                 var itemToUpdate = Query(CrmDbContext.FieldDescription).FirstOrDefault(x => x.Id == customField.ID);
@@ -375,37 +372,37 @@ namespace ASC.CRM.Core.Dao
                 itemToUpdate.Label = customField.Label;
                 itemToUpdate.Mask = customField.Mask;
 
-                CrmDbContext.Update(itemToUpdate);
                 CrmDbContext.SaveChanges();
 
             }
             else
             {
-                var resultMask = GetValidMask(customField.FieldType, customField.Mask);
+                var resultMask = GetValidMask(customField.Type, customField.Mask);
 
                 var itemToUpdate = Query(CrmDbContext.FieldDescription).FirstOrDefault(x => x.Id == customField.ID);
 
                 itemToUpdate.Label = customField.Label;
-                itemToUpdate.Type = customField.FieldType;
+                itemToUpdate.Type = customField.Type;
                 itemToUpdate.Mask = customField.Mask;
 
-                CrmDbContext.Update(itemToUpdate);
                 CrmDbContext.SaveChanges();
             }
         }
 
-        public void ReorderFields(int[] fieldID)
+        public void ReorderFields(int[] ids)
         {
-            for (int index = 0; index < fieldID.Length; index++)
+            var tx = CrmDbContext.Database.BeginTransaction();
+
+            for (int index = 0; index < ids.Length; index++)
             {
-                var itemToUpdate = Query(CrmDbContext.FieldDescription).FirstOrDefault(x => x.Id == fieldID[index]);
+                var dbEntity = CrmDbContext.FieldDescription.Find(ids[index]);
 
-                itemToUpdate.SortOrder = index;
-
-                CrmDbContext.Update(itemToUpdate);
+                dbEntity.SortOrder = index;
 
                 CrmDbContext.SaveChanges();
             }
+
+            tx.Commit();
         }
 
         private bool HaveRelativeLink(int fieldID)
@@ -509,13 +506,17 @@ namespace ASC.CRM.Core.Dao
             if (!includeEmptyFields)
                 sqlQuery = sqlQuery.Where(x => x.y != null || x.x.Type == CustomFieldType.Heading);
 
-
             return sqlQuery.ToList().ConvertAll(x => ToCustomField(x.x, x.y));
+
         }
 
-        public CustomField GetFieldDescription(int fieldID)
+        public CustomField GetFieldDescription(int id)
         {
-            return ToCustomField(Query(CrmDbContext.FieldDescription).FirstOrDefault(x => x.Id == fieldID));
+            var dbEntity = CrmDbContext.FieldDescription.Find(id);
+
+            if (dbEntity.TenantId != TenantID) return null;
+
+            return _mapper.Map<CustomField>(dbEntity);
         }
 
         public List<CustomField> GetFieldsDescription(EntityType entityType)
@@ -523,7 +524,8 @@ namespace ASC.CRM.Core.Dao
             if (!_supportedEntityType.Contains(entityType))
                 throw new ArgumentException();
 
-            var sqlQuery = Query(CrmDbContext.FieldDescription);
+            var sqlQuery = Query(CrmDbContext.FieldDescription)
+                            .AsNoTracking();
 
             if (entityType == EntityType.Company || entityType == EntityType.Person)
             {
@@ -534,26 +536,27 @@ namespace ASC.CRM.Core.Dao
                 sqlQuery = sqlQuery.Where(x => x.EntityType == entityType);
             }
 
-            return sqlQuery.ToList().ConvertAll(x => ToCustomField(x));
+            var dbEntities = sqlQuery.ToList();
+
+            return _mapper.Map<List<DbFieldDescription>, List<CustomField>>(dbEntities);        
         }
 
-        public void DeleteField(int fieldID)
+        public void DeleteField(int id)
         {
-            //if (HaveRelativeLink(fieldID))
-            //    throw new ArgumentException();
+            if (HaveRelativeLink(id))
+                throw new ArgumentException();
 
             var tx = CrmDbContext.Database.BeginTransaction();
 
-            var fieldDescription = new DbFieldDescription { Id = fieldID };
+            var dbFieldDescription = CrmDbContext.FieldDescription.Find(id);
 
-            CrmDbContext.FieldDescription.Attach(fieldDescription);
-            CrmDbContext.FieldDescription.Remove(fieldDescription);
+            CrmDbContext.Remove(dbFieldDescription);
 
-            var fieldValue = Query(CrmDbContext.FieldValue).FirstOrDefault(x => x.FieldId == fieldID);
+            var dbFieldValue = Query(CrmDbContext.FieldValue).FirstOrDefault(x => x.FieldId == id);
 
-            _factoryIndexer.Delete(fieldValue);
+            _factoryIndexer.Delete(dbFieldValue);
 
-            CrmDbContext.Remove(fieldValue);
+            CrmDbContext.Remove(dbFieldValue);
 
             CrmDbContext.SaveChanges();
 
@@ -561,22 +564,11 @@ namespace ASC.CRM.Core.Dao
         }
 
         public CustomField ToCustomField(DbFieldDescription dbFieldDescription,
-                                                DbFieldValue dbFieldValue = null)
+                                               DbFieldValue dbFieldValue = null)
         {
-            if (dbFieldDescription == null) return null;
+            var customField = _mapper.Map<CustomField>(dbFieldDescription);
 
-            var customField = new CustomField
-            {
-                ID = dbFieldDescription.Id,
-                EntityType = dbFieldDescription.EntityType,
-                FieldType = dbFieldDescription.Type,
-                Label = dbFieldDescription.Label,
-                Mask = dbFieldDescription.Mask,
-                Position = dbFieldDescription.SortOrder
-
-            };
-
-            if (dbFieldValue != null)
+            if (customField != null &&  dbFieldValue != null)
             {
                 customField.Value = dbFieldValue.Value;
                 customField.EntityID = dbFieldValue.EntityId;

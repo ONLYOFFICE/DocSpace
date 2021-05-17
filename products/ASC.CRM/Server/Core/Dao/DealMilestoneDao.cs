@@ -43,6 +43,7 @@ using ASC.CRM.Resources;
 using AutoMapper;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 #endregion
@@ -116,18 +117,13 @@ namespace ASC.CRM.Core.Dao
 
         public int Create(DealMilestone item)
         {
-
             if (String.IsNullOrEmpty(item.Title) || String.IsNullOrEmpty(item.Color))
                 throw new ArgumentException();
-
-            int id;
-
-            using var tx = CrmDbContext.Database.BeginTransaction();
 
             if (item.SortOrder == 0)
                 item.SortOrder = Query(CrmDbContext.DealMilestones).Select(x => x.SortOrder).Max() + 1;
 
-            var itemToAdd = new DbDealMilestone
+            var dbEntity = new DbDealMilestone
             {
                 Title = item.Title,
                 Description = item.Description,
@@ -138,27 +134,21 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             };
 
-            CrmDbContext.DealMilestones.Add(itemToAdd);
+            CrmDbContext.DealMilestones.Add(dbEntity);
             CrmDbContext.SaveChanges();
 
-            id = itemToAdd.Id;
-
-            tx.Commit();
-
-            return id;
+            return dbEntity.Id;
         }
 
         public void ChangeColor(int id, String newColor)
         {
-            var itemToUpdate = new DbDealMilestone
-            {
-                Id = id,
-                Color = newColor,
-                TenantId = TenantID
-            };
+            var dbEntity = CrmDbContext.DealMilestones.Find(id);
 
-            CrmDbContext.Attach(itemToUpdate);
-            CrmDbContext.Entry(itemToUpdate).Property(x => x.Color).IsModified = true;
+            if (dbEntity.TenantId != TenantID)
+                throw new ArgumentException();
+
+            dbEntity.Color = newColor;
+
             CrmDbContext.SaveChanges();
         }
 
@@ -167,24 +157,24 @@ namespace ASC.CRM.Core.Dao
             if (HaveContactLink(item.ID))
                 throw new ArgumentException(String.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeEdited, CRMErrorsResource.DealMilestoneHasRelatedDeals));
 
-            var itemToUpdate = Query(CrmDbContext.DealMilestones)
-                .FirstOrDefault(x => x.Id == item.ID);
+            var dbEntity = CrmDbContext.DealMilestones.Find(item.ID);
 
-            itemToUpdate.Title = item.Title;
-            itemToUpdate.Description = item.Description;
-            itemToUpdate.Color = item.Color;
-            itemToUpdate.Probability = item.Probability;
-            itemToUpdate.Status = item.Status;
+            if (dbEntity.TenantId != TenantID)
+                throw new ArgumentException();
 
-            CrmDbContext.DealMilestones.Update(itemToUpdate);
+            dbEntity.Title = item.Title;
+            dbEntity.Description = item.Description;
+            dbEntity.Color = item.Color;
+            dbEntity.Probability = item.Probability;
+            dbEntity.Status = item.Status;
 
             CrmDbContext.SaveChanges();
         }
 
-        public bool HaveContactLink(int dealMilestoneID)
+        public bool HaveContactLink(int id)
         {
             return Query(CrmDbContext.Deals)
-                .Any(x => x.DealMilestoneId == dealMilestoneID);
+                .Any(x => x.DealMilestoneId == id);
         }
 
         public void Delete(int id)
@@ -192,23 +182,24 @@ namespace ASC.CRM.Core.Dao
             if (HaveContactLink(id))
                 throw new ArgumentException(String.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeDeleted, CRMErrorsResource.DealMilestoneHasRelatedDeals));
 
-            var dbDealMilestones = new DbDealMilestone
-            {
-                Id = id,
-                TenantId = TenantID
-            };
+            var dbEntity = CrmDbContext.DealMilestones.Find(id);
 
-            CrmDbContext.DealMilestones.Remove(dbDealMilestones);
+            if (dbEntity.TenantId != TenantID)
+                throw new ArgumentException();
+
+            CrmDbContext.DealMilestones.Remove(dbEntity);
 
             CrmDbContext.SaveChanges();
-
         }
 
         public DealMilestone GetByID(int id)
         {
-            var dbDealMilestone = Query(CrmDbContext.DealMilestones).FirstOrDefault(x => x.Id == id);
+            var dbEntity = CrmDbContext.DealMilestones.Find(id);
 
-            return _mapper.Map<DbDealMilestone, DealMilestone>(dbDealMilestone);
+            if (dbEntity.TenantId != TenantID)
+                throw new ArgumentException();
+
+            return _mapper.Map<DbDealMilestone, DealMilestone>(dbEntity);
         }
 
         public Boolean IsExist(int id)
@@ -219,6 +210,7 @@ namespace ASC.CRM.Core.Dao
         public List<DealMilestone> GetAll(int[] id)
         {
             var result = Query(CrmDbContext.DealMilestones)
+                          .AsNoTracking()
                           .OrderBy(x => x.SortOrder)
                           .Where(x => id.Contains(x.Id)).ToList();
 
@@ -228,11 +220,11 @@ namespace ASC.CRM.Core.Dao
         public List<DealMilestone> GetAll()
         {
             var result =  Query(CrmDbContext.DealMilestones)
+                    .AsNoTracking()
                     .OrderBy(x => x.SortOrder)
                     .ToList();
 
             return _mapper.Map<List<DbDealMilestone>, List<DealMilestone>>(result);
-
         }
     }
 }

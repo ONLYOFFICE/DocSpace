@@ -268,11 +268,11 @@ namespace ASC.CRM.Api
             var customField = new CustomField
             {
                 EntityType = entityTypeObj,
-                FieldType = (CustomFieldType)fieldType,
+                Type = (CustomFieldType)fieldType,
                 ID = id,
                 Mask = mask,
                 Label = label,
-                Position = position
+                SortOrder = position
             };
 
             _daoFactory.GetCustomFieldDao().EditItem(customField);

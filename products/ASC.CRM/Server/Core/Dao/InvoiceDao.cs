@@ -47,7 +47,6 @@ using ASC.Web.CRM.Core.Search;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -79,7 +78,6 @@ namespace ASC.CRM.Core.Dao
         public InvoiceDao(
             DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
-
             SecurityContext securityContext,
             FactoryIndexerInvoice factoryIndexer,
             IOptionsMonitor<ILog> logger,
@@ -111,9 +109,9 @@ namespace ASC.CRM.Core.Dao
             return IsExistFromDb(invoiceID);
         }
 
-        public Boolean IsExistFromDb(int invoiceID)
+        public Boolean IsExistFromDb(int id)
         {
-            return Query(CrmDbContext.Invoices).Where(x => x.Id == invoiceID).Any();
+            return Query(CrmDbContext.Invoices).Where(x => x.Id == id).Any();
         }
 
         public Boolean IsExist(string number)
@@ -139,8 +137,9 @@ namespace ASC.CRM.Core.Dao
         public List<Invoice> GetByID(int[] ids)
         {
             var dbInvoices = Query(CrmDbContext.Invoices)
-                        .Where(x => ids.Contains(x.Id))
-                        .ToList();
+                                    .AsNoTracking()
+                                    .Where(x => ids.Contains(x.Id))
+                                    .ToList();
 
             return _mapper.Map<List<DbInvoice>, List<Invoice>>(dbInvoices);
         }
@@ -152,12 +151,19 @@ namespace ASC.CRM.Core.Dao
 
         public Invoice GetByIDFromDb(int id)
         {
-            return _mapper.Map<Invoice>(Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Id == id));
+            var dbEntity = CrmDbContext.Invoices.Find(id);
+
+            if (dbEntity.TenantId != TenantID)
+                throw new ArgumentException();
+
+            return _mapper.Map<Invoice>(dbEntity);
         }
 
         public Invoice GetByNumber(string number)
         {
-            return _mapper.Map<Invoice>(Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Number == number));
+            var dbEntity = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Number == number);
+
+            return _mapper.Map<Invoice>(dbEntity);
         }
 
         public Invoice GetByFileId(Int32 fileID)
@@ -403,6 +409,7 @@ namespace ASC.CRM.Core.Dao
             if (ids == null || !ids.Any()) return new List<Invoice>();
 
             var dbInvoices = Query(CrmDbContext.Invoices)
+                .AsNoTracking()
                 .Where(x => ids.Contains(x.Id))
                 .ToList();
 
@@ -420,8 +427,10 @@ namespace ASC.CRM.Core.Dao
             if (entityType == EntityType.Opportunity)
             {
 
-                var sqlQuery = Query(CrmDbContext.Invoices).Where(x => x.EntityId == entityID && x.EntityType == entityType)
-                    .ToList();
+                var sqlQuery = Query(CrmDbContext.Invoices)
+                                .AsNoTracking()
+                                .Where(x => x.EntityId == entityID && x.EntityType == entityType)
+                                .ToList();
 
                 return _mapper.Map<List<DbInvoice>, List<Invoice>>(sqlQuery)
                     .FindAll(_crmSecurity.CanAccessTo);
@@ -441,8 +450,10 @@ namespace ASC.CRM.Core.Dao
             if (contactID <= 0)
                 return result;
 
-            var dbInvoices = Query(CrmDbContext.Invoices).Where(x => x.ContactId == contactID)
-                    .ToList();
+            var dbInvoices = Query(CrmDbContext.Invoices)
+                            .AsNoTracking()
+                            .Where(x => x.ContactId == contactID)
+                            .ToList();
 
             return _mapper.Map<List<DbInvoice>, List<Invoice>>(dbInvoices)
                     .FindAll(_crmSecurity.CanAccessTo);
@@ -491,6 +502,8 @@ namespace ASC.CRM.Core.Dao
 
             var result = SaveOrUpdateInvoiceInDb(invoice);
 
+
+
             _factoryIndexer.Index(Query(CrmDbContext.Invoices).Where(x => x.Id == invoice.ID).Single());
 
             return result;
@@ -506,81 +519,40 @@ namespace ASC.CRM.Core.Dao
                 invoice.ExchangeRate <= 0 ||
                 String.IsNullOrEmpty(invoice.Terms))
                 throw new ArgumentException();
-
-
-            invoice.PurchaseOrderNumber = !String.IsNullOrEmpty(invoice.PurchaseOrderNumber) ? invoice.PurchaseOrderNumber : String.Empty;
-
-            if (!IsExistFromDb(invoice.ID))
+                        
+            var dbEntity = new DbInvoice
             {
-                if (IsExistFromDb(invoice.Number))
-                    throw new ArgumentException();
+                Id = invoice.ID,
+                Status = invoice.Status,
+                Number = invoice.Number,
+                IssueDate = _tenantUtil.DateTimeToUtc(invoice.IssueDate),
+                TemplateType = invoice.TemplateType,
+                ContactId = invoice.ContactID,
+                ConsigneeId = invoice.ConsigneeID,
+                EntityType = invoice.EntityType,
+                EntityId = invoice.EntityID,
+                DueDate = _tenantUtil.DateTimeToUtc(invoice.DueDate),
+                Language = invoice.Language,
+                Currency = invoice.Currency,
+                ExchangeRate = invoice.ExchangeRate,
+                PurchaseOrderNumber = invoice.PurchaseOrderNumber,
+                Terms = invoice.Terms,
+                Description = invoice.Description,
+                JsonData = invoice.JsonData,
+                FileId = invoice.FileID,
+                CreateOn = invoice.CreateOn == DateTime.MinValue ? DateTime.UtcNow : invoice.CreateOn,
+                CreateBy = _securityContext.CurrentAccount.ID,
+                LastModifedOn = DateTime.UtcNow,                 
+                LastModifedBy = _securityContext.CurrentAccount.ID,
+                TenantId = TenantID
+            };
 
-                var itemToInsert = new DbInvoice
-                {
-                    Status = invoice.Status,
-                    Number = invoice.Number,
-                    IssueDate = _tenantUtil.DateTimeToUtc(invoice.IssueDate),
-                    TemplateType = invoice.TemplateType,
-                    ContactId = invoice.ContactID,
-                    ConsigneeId = invoice.ConsigneeID,
-                    EntityType = invoice.EntityType,
-                    EntityId = invoice.EntityID,
-                    DueDate = _tenantUtil.DateTimeToUtc(invoice.DueDate),
-                    Language = invoice.Language,
-                    Currency = invoice.Currency,
-                    ExchangeRate = invoice.ExchangeRate,
-                    PurchaseOrderNumber = invoice.PurchaseOrderNumber,
-                    Terms = invoice.Terms,
-                    Description = invoice.Description,
-                    JsonData = invoice.JsonData,
-                    FileId = invoice.FileID,
-                    CreateOn = invoice.CreateOn == DateTime.MinValue ? DateTime.UtcNow : invoice.CreateOn,
-                    CreateBy = _securityContext.CurrentAccount.ID,
-                    LastModifedOn = invoice.CreateOn == DateTime.MinValue ? DateTime.UtcNow : invoice.CreateOn,
-                    LastModifedBy = _securityContext.CurrentAccount.ID,
-                    TenantId = TenantID
-                };
+            dbEntity.PurchaseOrderNumber = !String.IsNullOrEmpty(invoice.PurchaseOrderNumber) ? invoice.PurchaseOrderNumber : String.Empty;
 
-                CrmDbContext.Invoices.Add(itemToInsert);
+            CrmDbContext.Update(dbEntity);
+            CrmDbContext.SaveChanges();
 
-                CrmDbContext.SaveChanges();
-
-                invoice.ID = itemToInsert.Id;
-
-            }
-            else
-            {
-                var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Id == invoice.ID);
-
-                var oldInvoice = _mapper.Map<Invoice>(itemToUpdate);
-                
-                _crmSecurity.DemandEdit(oldInvoice);
-
-                itemToUpdate.Status = invoice.Status;
-                itemToUpdate.IssueDate = _tenantUtil.DateTimeToUtc(invoice.IssueDate);
-                itemToUpdate.TemplateType = invoice.TemplateType;
-                itemToUpdate.ContactId = invoice.ContactID;
-                itemToUpdate.ConsigneeId = invoice.ConsigneeID;
-                itemToUpdate.EntityType = invoice.EntityType;
-                itemToUpdate.EntityId = invoice.EntityID;
-                itemToUpdate.DueDate = _tenantUtil.DateTimeToUtc(invoice.DueDate);
-                itemToUpdate.Language = invoice.Language;
-                itemToUpdate.Currency = invoice.Currency;
-                itemToUpdate.ExchangeRate = invoice.ExchangeRate;
-                itemToUpdate.PurchaseOrderNumber = invoice.PurchaseOrderNumber;
-                itemToUpdate.Description = invoice.Description;
-                itemToUpdate.JsonData = null;
-                itemToUpdate.FileId = 0;
-                itemToUpdate.LastModifedOn = DateTime.UtcNow;
-                itemToUpdate.LastModifedBy = _securityContext.CurrentAccount.ID;
-                itemToUpdate.TenantId = TenantID;
-
-                CrmDbContext.SaveChanges();
-
-
-            }
-
-            return invoice.ID;
+            return dbEntity.Id;
         }
 
         public Invoice UpdateInvoiceStatus(int invoiceid, InvoiceStatus status)
@@ -756,12 +728,11 @@ namespace ASC.CRM.Core.Dao
             tx.Commit();
 
             dbInvoicesQuery.ToList().ForEach(invoice => _factoryIndexer.Delete(invoice));
-
         }
 
         private IQueryable<DbInvoice> GetDbInvoceByFilters(
                                 ICollection<int> exceptIDs,
-                                String searchText,
+                                string searchText,
                                 InvoiceStatus? status,
                                 DateTime issueDateFrom,
                                 DateTime issueDateTo,
@@ -771,7 +742,8 @@ namespace ASC.CRM.Core.Dao
                                 int entityID,
                                 String currency)
         {
-            var sqlQuery = Query(CrmDbContext.Invoices);
+            var sqlQuery = Query(CrmDbContext.Invoices)
+                            .AsNoTracking();
 
             if (entityID > 0)
             {
@@ -880,15 +852,16 @@ namespace ASC.CRM.Core.Dao
         /// <summary>
         /// Test method
         /// </summary>
-        /// <param name="invoiceId"></param>
+        /// <param name="id"></param>
         /// <param name="creationDate"></param>
-        public void SetInvoiceCreationDate(int invoiceId, DateTime creationDate)
+        public void SetInvoiceCreationDate(int id, DateTime creationDate)
         {
-            var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceId);
+            var dbEntity = CrmDbContext.Invoices.Find(id);
+          
+            var entity = _mapper.Map<Invoice>(dbEntity);
 
-            itemToUpdate.CreateOn = _tenantUtil.DateTimeToUtc(creationDate);
+            dbEntity.CreateOn = _tenantUtil.DateTimeToUtc(creationDate);
 
-            CrmDbContext.Invoices.Update(itemToUpdate);
             CrmDbContext.SaveChanges();
 
             // Delete relative  keys
@@ -898,15 +871,17 @@ namespace ASC.CRM.Core.Dao
         /// <summary>
         /// Test method
         /// </summary>
-        /// <param name="invoiceId"></param>
+        /// <param name="id"></param>
         /// <param name="lastModifedDate"></param>
-        public void SetInvoiceLastModifedDate(int invoiceId, DateTime lastModifedDate)
+        public void SetInvoiceLastModifedDate(int id, DateTime lastModifedDate)
         {
-            var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.Id == invoiceId);
+            var dbEntity = CrmDbContext.Invoices.Find(id);
 
-            itemToUpdate.LastModifedOn = _tenantUtil.DateTimeToUtc(lastModifedDate);
+            var entity = _mapper.Map<Invoice>(dbEntity);
 
-            CrmDbContext.Invoices.Update(itemToUpdate);
+            _crmSecurity.DemandAccessTo(entity);
+
+            dbEntity.LastModifedOn = _tenantUtil.DateTimeToUtc(lastModifedDate);
 
             CrmDbContext.SaveChanges();
 

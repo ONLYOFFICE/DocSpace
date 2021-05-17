@@ -72,19 +72,19 @@ namespace ASC.CRM.Core.Dao
             _crmSecurity = crmSecurity;
         }
 
-        public Boolean IsExist(int invoiceItemID)
+        public Boolean IsExist(int id)
         {
-            return IsExistInDb(invoiceItemID);
+            return IsExistInDb(id);
         }
 
-        public Boolean IsExistInDb(int invoiceItemID)
+        public Boolean IsExistInDb(int id)
         {
-            return Query(CrmDbContext.InvoiceItem).Any(x => x.Id == invoiceItemID);
+            return Query(CrmDbContext.InvoiceItem).Any(x => x.Id == id);
         }
 
-        public Boolean CanDelete(int invoiceItemID)
+        public Boolean CanDelete(int id)
         {
-            return Query(CrmDbContext.InvoiceLine).Any(x => x.InvoiceItemId == invoiceItemID);
+            return Query(CrmDbContext.InvoiceLine).Any(x => x.InvoiceItemId == id);
         }
 
         public List<InvoiceItem> GetAll()
