@@ -179,7 +179,7 @@ class InviteDialogComponent extends React.Component {
               label={
                 this.state.isLoading
                   ? t("Common:LoadingProcessing")
-                  : t("CloseButton")
+                  : t("Common:CloseButton")
               }
               size="medium"
               primary={true}

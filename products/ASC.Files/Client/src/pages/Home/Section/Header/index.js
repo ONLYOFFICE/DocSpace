@@ -483,7 +483,7 @@ class SectionHeaderContent extends React.Component {
                   menuItems={menuItems}
                   visible={isHeaderVisible}
                   moreLabel={t("More")}
-                  closeTitle={t("CloseButton")}
+                  closeTitle={t("Common:CloseButton")}
                   onClose={this.onClose}
                   selected={menuItems[0].label}
                   sectionWidth={context.sectionWidth}
@@ -649,4 +649,8 @@ export default inject(
       downloadAction,
     };
   }
-)(withTranslation("Home")(withRouter(observer(SectionHeaderContent))));
+)(
+  withTranslation(["Home", "Common"])(
+    withRouter(observer(SectionHeaderContent))
+  )
+);

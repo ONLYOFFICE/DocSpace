@@ -238,7 +238,7 @@ class NewFilesPanel extends React.Component {
               />
               <Button
                 className="sharing_panel-button"
-                label={t("CloseButton")}
+                label={t("Common:CloseButton")}
                 size="big"
                 onClick={this.onClose}
               />
@@ -305,4 +305,8 @@ export default inject(
       updateFilesBadge,
     };
   }
-)(withRouter(withTranslation("NewFilesPanel")(observer(NewFilesPanel))));
+)(
+  withRouter(
+    withTranslation(["NewFilesPanel", "Common"])(observer(NewFilesPanel))
+  )
+);

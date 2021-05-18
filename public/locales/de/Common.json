@@ -6,5 +6,6 @@
   "CancelButton": "Abbrechen",
   "SaveButton": "Speichern",
   "OKButton": "OK",
-  "LoadingProcessing": "Ladevorgang..."
+  "LoadingProcessing": "Ladevorgang...",
+  "CloseButton": "Schließen"
 }

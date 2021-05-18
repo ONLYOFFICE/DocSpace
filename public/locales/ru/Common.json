@@ -6,5 +6,6 @@
   "CancelButton": "Отмена",
   "SaveButton": "Сохранить",
   "OKButton": "ОК",
-  "LoadingProcessing": "Загрузка..."
+  "LoadingProcessing": "Загрузка...",
+  "CloseButton": "Закрыть"
 }

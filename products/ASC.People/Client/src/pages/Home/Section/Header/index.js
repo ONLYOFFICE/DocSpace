@@ -34,12 +34,10 @@ const StyledContainer = styled.div`
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
-    ${
-      isMobile &&
-      css`
-        position: sticky;
-      `
-    }
+    ${isMobile &&
+    css`
+      position: sticky;
+    `}
     ${(props) =>
       !props.isTabletView
         ? props.width &&
@@ -55,12 +53,10 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       padding-bottom: 0;
-      ${
-        !isMobile &&
-        css`
-          height: 56px;
-        `
-      }
+      ${!isMobile &&
+      css`
+        height: 56px;
+      `}
       & > div:first-child {
         ${(props) =>
           !isMobile &&
@@ -454,7 +450,7 @@ const SectionHeaderContent = (props) => {
                 menuItems={menuItems}
                 visible={isHeaderVisible}
                 moreLabel={t("More")}
-                closeTitle={t("CloseButton")}
+                closeTitle={t("Common:CloseButton")}
                 onClose={onClose}
                 selected={menuItems[0].label}
                 sectionWidth={context.sectionWidth}
@@ -555,5 +551,5 @@ export default withRouter(
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
     group: peopleStore.selectedGroupStore.group,
     isTabletView: auth.settingsStore.isTabletView,
-  }))(observer(withTranslation("Home")(SectionHeaderContent)))
+  }))(observer(withTranslation(["Home", "Common"])(SectionHeaderContent)))
 );

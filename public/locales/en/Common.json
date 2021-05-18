@@ -6,5 +6,6 @@
   "CancelButton": "Cancel",
   "SaveButton": "Save",
   "OKButton": "OK",
-  "LoadingProcessing": "Loading..."
+  "LoadingProcessing": "Loading...",
+  "CloseButton": "Close"
 }
