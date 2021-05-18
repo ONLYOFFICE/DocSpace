@@ -264,9 +264,15 @@ class PageLayout extends React.Component {
         isArticleAvailable,
       isBackdropAvailable = isArticleAvailable;
 
-    const renderPageLayout = () => {
-      return (
-        <>
+    return (
+      <>
+        <StyledSelectableGroup
+          enableDeselect
+          resetOnStart
+          allowClickWithoutSelected={false}
+          duringSelection={this.duringSelection}
+          ignoreList={[".not-selectable", "draggable"]}
+        >
           {isBackdropAvailable && (
             <Backdrop
               zIndex={400}
@@ -426,22 +432,6 @@ class PageLayout extends React.Component {
               )}
             </ReactResizeDetector>
           )}
-        </>
-      );
-    };
-
-    return isMobile ? (
-      renderPageLayout()
-    ) : (
-      <>
-        <StyledSelectableGroup
-          enableDeselect
-          resetOnStart
-          allowClickWithoutSelected={false}
-          duringSelection={this.duringSelection}
-          ignoreList={[".not-selectable", "draggable"]}
-        >
-          {renderPageLayout()}
         </StyledSelectableGroup>
         {uploadFiles && <SelectedFrame />}
       </>
