@@ -5,5 +5,6 @@
   "Culture_de-DE": "Deutsche (Deutschland)",
   "CancelButton": "Abbrechen",
   "SaveButton": "Speichern",
-  "OKButton": "OK"
+  "OKButton": "OK",
+  "LoadingProcessing": "Ladevorgang..."
 }

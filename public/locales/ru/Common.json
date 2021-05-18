@@ -5,5 +5,6 @@
   "Culture_de-DE": "Немецкий (Германия)",
   "CancelButton": "Отмена",
   "SaveButton": "Сохранить",
-  "OKButton": "ОК"
+  "OKButton": "ОК",
+  "LoadingProcessing": "Загрузка..."
 }

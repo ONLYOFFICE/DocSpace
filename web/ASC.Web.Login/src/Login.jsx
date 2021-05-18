@@ -507,7 +507,7 @@ const Form = (props) => {
           primary
           size="large"
           scale={true}
-          label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
+          label={isLoading ? t("Common:LoadingProcessing") : t("LoginButton")}
           tabIndex={1}
           isDisabled={isLoading}
           isLoading={isLoading}

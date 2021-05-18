@@ -372,7 +372,9 @@ class PureAdminsSettings extends Component {
               zIndex={256}
               loaderSize="16px"
               loaderColor={"#999"}
-              label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
+              label={`${t("Common:LoadingProcessing")} ${t(
+                "LoadingDescription"
+              )}`}
               fontSize="12px"
               fontColor={"#999"}
               className="page_loader"
@@ -557,7 +559,9 @@ class PureAdminsSettings extends Component {
   }
 }
 
-const AdminsSettings = withTranslation("Settings")(PureAdminsSettings);
+const AdminsSettings = withTranslation(["Settings", "Common"])(
+  PureAdminsSettings
+);
 
 AdminsSettings.defaultProps = {
   admins: [],

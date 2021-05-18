@@ -185,7 +185,9 @@ class Form extends React.PureComponent {
           primary
           size="big"
           tabIndex={2}
-          label={isLoading ? t("LoadingProcessing") : t("Common:OkButton")}
+          label={
+            isLoading ? t("Common:LoadingProcessing") : t("Common:OkButton")
+          }
           isDisabled={isLoading}
           isLoading={isLoading}
           onClick={this.onSubmit}

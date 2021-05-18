@@ -177,7 +177,9 @@ class InviteDialogComponent extends React.Component {
             <Button
               key="CloseBtn"
               label={
-                this.state.isLoading ? t("LoadingProcessing") : t("CloseButton")
+                this.state.isLoading
+                  ? t("Common:LoadingProcessing")
+                  : t("CloseButton")
               }
               size="medium"
               primary={true}
@@ -191,7 +193,9 @@ class InviteDialogComponent extends React.Component {
   }
 }
 
-const InviteDialog = withTranslation("InviteDialog")(InviteDialogComponent);
+const InviteDialog = withTranslation(["InviteDialog", "Common"])(
+  InviteDialogComponent
+);
 
 InviteDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
