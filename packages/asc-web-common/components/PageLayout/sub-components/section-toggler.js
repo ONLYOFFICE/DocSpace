@@ -41,7 +41,7 @@ const SectionToggler = React.memo((props) => {
   const { visible, onClick } = props;
 
   return (
-    <StyledSectionToggler visible={visible}>
+    <StyledSectionToggler className="not-selectable" visible={visible}>
       <div onClick={onClick}>
         <CatalogButtonIcon style={iconStyle} />
       </div>
