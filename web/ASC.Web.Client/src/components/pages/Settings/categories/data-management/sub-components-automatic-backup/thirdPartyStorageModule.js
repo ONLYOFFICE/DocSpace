@@ -43,14 +43,19 @@ class ThirdPartyStorageModule extends React.PureComponent {
     };
   }
   componentDidMount() {
+    const { onSetLoadingData } = this.props;
     this.setState(
       {
         isLoading: true,
       },
       function () {
+        onSetLoadingData && onSetLoadingData(true);
         getBackupStorage()
           .then((storageBackup) => this.getOptions(storageBackup))
-          .finally(() => this.setState({ isLoading: false }));
+          .finally(() => {
+            onSetLoadingData && onSetLoadingData(false);
+            this.setState({ isLoading: false });
+          });
       }
     );
   }
