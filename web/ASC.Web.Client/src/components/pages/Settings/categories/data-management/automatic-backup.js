@@ -150,7 +150,7 @@ class AutomaticBackup extends React.PureComponent {
 
   componentDidMount() {
     const { getCommonThirdPartyList } = this.props;
-
+    const { selectedFolder } = this.state;
     this.getWeekdaysOptions();
 
     getBackupProgress().then((res) => {
@@ -175,6 +175,7 @@ class AutomaticBackup extends React.PureComponent {
         .then((selectedSchedule) => {
           if (selectedSchedule) {
             const folderId = selectedSchedule.storageParams.folderId;
+
             defaultStorageType = `${selectedSchedule.storageType}`;
             defaultHour = `${selectedSchedule.cronParams.hour}:00`;
             defaultPeriod = `${selectedSchedule.cronParams.period}`;
@@ -189,6 +190,13 @@ class AutomaticBackup extends React.PureComponent {
                   defaultStorageType === "0"
                     ? (folderDocumentsModulePath = folderPath)
                     : (folderThirdPartyModulePath = folderPath)
+                )
+                .then(
+                  () =>
+                    defaultStorageType === "1" &&
+                    this.setState({
+                      selectedFolder: [folderId],
+                    })
                 )
                 .then(() => this.onSetDefaultOptions());
             }
