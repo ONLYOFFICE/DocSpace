@@ -730,8 +730,13 @@ namespace ASC.Web.Files.Utils
                     }
                 }
 
-                entries.OfType<FileEntry<T>>()
-                    .ToList()
+                SetTagsNew(entries.OfType<FileEntry<int>>().ToList());
+                SetTagsNew(entries.OfType<FileEntry<string>>().ToList());
+            }
+
+            void SetTagsNew<T1>(List<FileEntry<T1>> fileEntries)
+            {
+                fileEntries
                     .ForEach(
                     entry =>
                     {
@@ -739,7 +744,7 @@ namespace ASC.Web.Files.Utils
 
                         if (entry.FileEntryType == FileEntryType.Folder)
                         {
-                            ((Folder<T>)entry).NewForMe = curTag != null ? curTag.Count : 0;
+                            ((IFolder)entry).NewForMe = curTag != null ? curTag.Count : 0;
                         }
                         else if (curTag != null)
                         {
@@ -747,7 +752,6 @@ namespace ASC.Web.Files.Utils
                         }
                     });
             }
-
 
             return entries;
         }
