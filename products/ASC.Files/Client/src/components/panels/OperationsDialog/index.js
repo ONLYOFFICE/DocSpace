@@ -8,10 +8,11 @@ import store from "studio/store";
 import ModalDialog from "@appserver/components/modal-dialog";
 import { StyledAsidePanel } from "../StyledPanels";
 import { useTranslation, withTranslation } from "react-i18next";
-import FileInputWithFolderPath from "@appserver/components/file-input-with-folder-path";
+import FileInputWithFolderPath from "./fileInputWithFolderPath";
 import styled from "styled-components";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
+
 const { auth: authStore } = store;
 
 let path = "";
@@ -38,14 +39,9 @@ class OperationsDialog extends React.PureComponent {
     this.state = {
       isLoading: false,
       isLoadingData: false,
-
-      thirdPartyDefault: "",
-      thirdParty: "",
-
-      commonDefault: "",
-      common: "",
-
       baseFolder: "",
+      fullFolderPath: "",
+      fullFolderPathDefault: "",
     };
   }
   componentDidMount() {
@@ -54,7 +50,6 @@ class OperationsDialog extends React.PureComponent {
       getCommonFolder,
       folderPath,
       onSelectFolder,
-      name,
       folderList,
       isCommonWithoutProvider,
       onSetLoadingData,
@@ -85,25 +80,21 @@ class OperationsDialog extends React.PureComponent {
       pathName = this.getTitlesFolders(folderPath);
 
       this.setState({
-        //fullFolderPath: path,
-        [name]: pathName,
-        [`${name}Default`]: pathName,
+        fullFolderPath: pathName,
+        fullFolderPathDefault: pathName,
       });
     }
-
-    console.log("DID MOunt", folderPath);
   }
 
   componentDidUpdate(prevProps) {
-    const { isSetDefaultFolderPath, name, folderPath } = this.props;
+    const { isSetDefaultFolderPath, folderPath } = this.props;
 
-    //debugger;
     if (
       isSetDefaultFolderPath &&
       isSetDefaultFolderPath !== prevProps.isSetDefaultFolderPath
     ) {
       this.setState({
-        [name]: this.state[`${name}Default`],
+        fullFolderPath: this.state.fullFolderPathDefault,
       });
     }
     if (folderPath !== prevProps.folderPath) {
@@ -115,7 +106,7 @@ class OperationsDialog extends React.PureComponent {
     }
   }
   onSelect = (folder) => {
-    const { onSelectFolder, onClose, name } = this.props;
+    const { onSelectFolder, onClose } = this.props;
 
     this.setState({ isLoadingData: true }, function () {
       getFolderPath(folder)
@@ -123,8 +114,7 @@ class OperationsDialog extends React.PureComponent {
         .then(() =>
           this.setState(
             {
-              //fullFolderPath: path,
-              [name]: pathName,
+              fullFolderPath: pathName,
             },
             function () {
               onSelectFolder(folder);
@@ -168,11 +158,11 @@ class OperationsDialog extends React.PureComponent {
       withoutTopLevelFolder,
       isSavingProcess,
     } = this.props;
-    const { isLoading, isLoadingData, baseFolder } = this.state;
+    const { isLoading, isLoadingData, baseFolder, fullFolderPath } = this.state;
     const zIndex = 310;
     //console.log("name", name);
 
-    console.log("folderList", folderList);
+    //console.log("folderList", folderList);
 
     return (
       <StyledComponent>
@@ -182,7 +172,7 @@ class OperationsDialog extends React.PureComponent {
           className="input-with-folder-path"
           baseFolder={baseFolder}
           isDisabled={isLoading || isSavingProcess}
-          folderPath={this.state[name]}
+          folderPath={fullFolderPath}
           onClickInput={onClickInput}
           hasError={isError}
         />
