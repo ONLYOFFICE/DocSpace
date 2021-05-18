@@ -22,9 +22,10 @@ export default function withBadges(WrappedComponent) {
       this.state = { showConvertDialog: false };
     }
     onClickLock = () => {
-      const { item, lockFileAction } = this.props;
-      const { locked, id } = item;
+      const { item, lockFileAction, isAdmin } = this.props;
+      const { locked, id, access } = item;
 
+      if (!isAdmin || !access === 0) return;
       lockFileAction(id, !locked).catch((err) => toastr.error(err));
     };
 
@@ -158,11 +159,13 @@ export default function withBadges(WrappedComponent) {
     render() {
       const { showConvertDialog } = this.state;
       const {
+        t,
         item,
         canWebEdit,
         isTrashFolder,
         canConvert,
         onFilesClick, // from withFileAction HOC
+        isAdmin,
       } = this.props;
       const { fileStatus, access } = item;
 
@@ -175,7 +178,9 @@ export default function withBadges(WrappedComponent) {
 
       const badgesComponent = (
         <Badges
+          t={t}
           item={item}
+          isAdmin={isAdmin}
           showNew={showNew}
           newItems={newItems}
           canWebEdit={canWebEdit}
@@ -242,6 +247,7 @@ export default function withBadges(WrappedComponent) {
       const canConvert = docserviceStore.canConvert(item.fileExst);
 
       return {
+        isAdmin: auth.isAdmin,
         canWebEdit,
         canConvert,
         isTrashFolder: isRecycleBinFolder,
