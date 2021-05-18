@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { tablet } from "@appserver/components/utils/device";
+import ModalDialog from "@appserver/components/modal-dialog";
 
-const ModalDialogContainer = styled.div`
+const ModalDialogContainer = styled(ModalDialog)`
   .flex {
     display: flex;
     justify-content: space-between;
@@ -62,7 +63,7 @@ const ModalDialogContainer = styled.div`
   }
 
   .delete_dialog-text {
-    padding-top: 8px;
+    padding-bottom: 8px;
   }
 
   .modal-dialog-content {
@@ -76,6 +77,10 @@ const ModalDialogContainer = styled.div`
 
     .modal-dialog-checkbox:not(:last-child) {
       padding-bottom: 4px;
+    }
+
+    .delete_dialog-text:not(:first-child) {
+      padding-top: 8px;
     }
   }
 
@@ -125,6 +130,16 @@ const ModalDialogContainer = styled.div`
   .modal-dialog-aside-footer {
     @media ${tablet} {
       width: 90%;
+    }
+  }
+
+  .conflict-resolve-dialog-text {
+    padding-bottom: 8px;
+  }
+
+  .conflict-resolve-radio-button {
+    svg {
+      overflow: visible;
     }
   }
 `;

@@ -115,32 +115,29 @@ const EmptyTrashDialogComponent = (props) => {
   ]);
 
   return (
-    <ModalDialogContainer>
-      <ModalDialog visible={visible} onClose={onClose}>
-        <ModalDialog.Header>{t("ConfirmationTitle")}</ModalDialog.Header>
-        <ModalDialog.Body>
-          <Text>{t("EmptyTrashDialogQuestion")}</Text>
-          <Text>{t("EmptyTrashDialogMessage")}</Text>
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            key="OkButton"
-            label={t("OKButton")}
-            size="medium"
-            primary
-            onClick={onEmptyTrash}
-            isLoading={isLoading}
-          />
-          <Button
-            className="button-dialog"
-            key="CancelButton"
-            label={t("CancelButton")}
-            size="medium"
-            onClick={onClose}
-            isLoading={isLoading}
-          />
-        </ModalDialog.Footer>
-      </ModalDialog>
+    <ModalDialogContainer visible={visible} onClose={onClose}>
+      <ModalDialog.Header>{t("DeleteForeverTitle")}</ModalDialog.Header>
+      <ModalDialog.Body>
+        <Text>{t("DeleteForeverNote")}</Text>
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          key="OkButton"
+          label={t("DeleteForeverButton")}
+          size="medium"
+          primary
+          onClick={onEmptyTrash}
+          isLoading={isLoading}
+        />
+        <Button
+          className="button-dialog"
+          key="CancelButton"
+          label={t("CancelButton")}
+          size="medium"
+          onClick={onClose}
+          isLoading={isLoading}
+        />
+      </ModalDialog.Footer>
     </ModalDialogContainer>
   );
 };
@@ -150,16 +147,9 @@ const EmptyTrashDialog = withTranslation("EmptyTrashDialog")(
 );
 
 export default inject(
-  ({
-    initFilesStore,
-    filesStore,
-    uploadDataStore,
-    selectedFolderStore,
-    dialogsStore,
-  }) => {
-    const { isLoading } = initFilesStore;
+  ({ filesStore, uploadDataStore, selectedFolderStore, dialogsStore }) => {
     const { secondaryProgressDataStore } = uploadDataStore;
-    const { fetchFiles, filter } = filesStore;
+    const { fetchFiles, filter, isLoading } = filesStore;
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,

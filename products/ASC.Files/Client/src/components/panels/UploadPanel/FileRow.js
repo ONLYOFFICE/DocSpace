@@ -15,6 +15,11 @@ const StyledFileRow = styled(Row)`
   box-sizing: border-box;
   font-weight: 600;
 
+  .row_content > a,
+  .row_content > p {
+    margin: auto 0;
+  }
+
   .upload_panel-icon {
     margin-left: auto;
     padding-left: 16px;
@@ -178,8 +183,11 @@ export default inject(
     }
 
     const { iconFormatsStore, mediaViewersFormatsStore } = formatsStore;
-    const { cancelCurrentUpload } = filesStore;
-    const { uploaded, primaryProgressDataStore } = uploadDataStore;
+    const {
+      uploaded,
+      primaryProgressDataStore,
+      cancelCurrentUpload,
+    } = uploadDataStore;
     const { loadingFile: file } = primaryProgressDataStore;
     const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
     const fileIcon = iconFormatsStore.getIconSrc(ext, 24);

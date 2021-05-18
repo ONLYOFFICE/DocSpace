@@ -27,6 +27,8 @@
 using System.Collections.Generic;
 using System.IO;
 
+using ASC.Common.Utils;
+
 namespace ASC.Data.Storage.DiscStorage
 {
     internal class MappedPath
@@ -44,7 +46,7 @@ namespace ASC.Data.Storage.DiscStorage
             tenant = tenant.Trim('/');
 
             ppath = PathUtils.ResolvePhysicalPath(ppath, storageConfig);
-            PhysicalPath = ppath.IndexOf('{') == -1 && appendTenant ? Path.Combine(ppath, tenant) : string.Format(ppath, tenant);
+            PhysicalPath = ppath.IndexOf('{') == -1 && appendTenant ? CrossPlatform.PathCombine(ppath, tenant) : string.Format(ppath, tenant);
         }
 
         public MappedPath AppendDomain(string domain)
@@ -52,7 +54,7 @@ namespace ASC.Data.Storage.DiscStorage
             domain = domain.Replace('.', '_'); //Domain prep. Remove dots
             return new MappedPath(PathUtils)
             {
-                PhysicalPath = Path.Combine(PhysicalPath, PathUtils.Normalize(domain, true)),
+                PhysicalPath = CrossPlatform.PathCombine(PhysicalPath, PathUtils.Normalize(domain, true)),
             };
         }
     }

@@ -140,9 +140,15 @@ const ChangeOwnerPanel = withTranslation("ChangeOwnerPanel")(
   ChangeOwnerComponent
 );
 
-export default inject(({ auth, initFilesStore, filesStore, dialogsStore }) => {
-  const { setIsLoading, isLoading } = initFilesStore;
-  const { selection, setFile, setFolder, setFilesOwner } = filesStore;
+export default inject(({ auth, filesStore, dialogsStore }) => {
+  const {
+    selection,
+    setFile,
+    setFolder,
+    setFilesOwner,
+    setIsLoading,
+    isLoading,
+  } = filesStore;
   const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
   return {

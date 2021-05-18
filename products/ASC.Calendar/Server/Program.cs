@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 using Autofac.Extensions.DependencyInjection;
 
@@ -11,9 +12,11 @@ namespace ASC.Calendar
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -43,7 +46,8 @@ namespace ASC.Calendar
                     .AddJsonFile("storage.json")
                     .AddJsonFile("kafka.json")
                     .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
-                    .AddEnvironmentVariables();
+                    .AddEnvironmentVariables()
+					.AddCommandLine(args);
             });
     }
 }

@@ -243,6 +243,15 @@ class PasswordInput extends React.Component {
     return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.clipActionResource !== this.props.clipActionResource &&
+      this.state.copyLabel !== this.props.clipCopiedResource
+    ) {
+      this.setState({ copyLabel: this.props.clipActionResource });
+    }
+  }
+
   renderTextTooltip = (settings, length, digits, capital, special) => {
     return (
       <>
@@ -414,7 +423,9 @@ class PasswordInput extends React.Component {
       simpleView,
       hideNewPasswordButton,
       isDisabled,
+      showCopyLink,
     } = this.props;
+
     const { copyLabel, disableCopyAction } = this.state;
 
     return (
@@ -451,18 +462,20 @@ class PasswordInput extends React.Component {
               ) : null}
             </div>
             {this.renderTextTooltip()}
-            <CopyLink>
-              <Link
-                type="action"
-                isHovered={true}
-                fontSize="13px"
-                className="password-input_link"
-                isSemitransparent={disableCopyAction}
-                onClick={this.copyToClipboard.bind(this, emailInputName)}
-              >
-                {copyLabel}
-              </Link>
-            </CopyLink>
+            {showCopyLink && (
+              <CopyLink>
+                <Link
+                  type="action"
+                  isHovered={true}
+                  fontSize="13px"
+                  className="password-input_link"
+                  isSemitransparent={disableCopyAction}
+                  onClick={this.copyToClipboard.bind(this, emailInputName)}
+                >
+                  {copyLabel}
+                </Link>
+              </CopyLink>
+            )}
           </>
         )}
       </StyledInput>
@@ -539,6 +552,8 @@ PasswordInput.propTypes = {
   tooltipOffsetLeft: PropTypes.number,
   /** Set simple view of password input (without tooltips, password progress bar and several additional buttons (copy and generate password) */
   simpleView: PropTypes.bool,
+  /** Sets the link to copy the password visible  */
+  showCopyLink: PropTypes.bool,
 };
 
 PasswordInput.defaultProps = {
@@ -569,6 +584,7 @@ PasswordInput.defaultProps = {
     digits: false,
     specSymbols: false,
   },
+  showCopyLink: true,
 };
 
 export default PasswordInput;

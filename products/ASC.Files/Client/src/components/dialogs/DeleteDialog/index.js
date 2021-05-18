@@ -7,10 +7,10 @@ import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
 import Scrollbar from "@appserver/components/scrollbar";
 import { withTranslation } from "react-i18next";
-import { getProgress, removeFiles } from "@appserver/common/api/files";
+//import { getProgress, removeFiles } from "@appserver/common/api/files";
 import toastr from "studio/toastr";
-import { TIMEOUT } from "../../../helpers/constants";
-import { loopTreeFolders } from "../../../helpers/files-helpers";
+//import { TIMEOUT } from "../../../helpers/constants";
+//import { loopTreeFolders } from "../../../helpers/files-helpers";
 import { inject, observer } from "mobx-react";
 
 class DeleteDialogComponent extends React.Component {
@@ -52,8 +52,11 @@ class DeleteDialogComponent extends React.Component {
       deleteSelectedElem: t("DeleteSelectedElem"),
     };
 
-    deleteAction(translations)
-      .catch((err) => toastr.error(err));
+    const selection = this.state.selection.filter((f) => f.checked);
+
+    if (!selection.length) return;
+
+    deleteAction(translations, selection).catch((err) => toastr.error(err));
   };
 
   onChange = (event) => {
@@ -74,7 +77,10 @@ class DeleteDialogComponent extends React.Component {
     }
   };
 
-  onClose = () => this.props.setDeleteDialogVisible(false);
+  onClose = () => {
+    this.props.setRemoveMediaItem(null);
+    this.props.setDeleteDialogVisible(false);
+  };
 
   render() {
     const { visible, t, isLoading } = this.props;
@@ -82,16 +88,23 @@ class DeleteDialogComponent extends React.Component {
 
     const checkedSelections = selection.filter((x) => x.checked === true);
 
-    const questionMessage =
+    const title =
       checkedSelections.length === 1
         ? checkedSelections[0].fileExst
-          ? t("QuestionDeleteFile")
-          : t("QuestionDeleteFolder")
-        : t("QuestionDeleteElements");
+          ? t("MoveToTrashOneFileTitle")
+          : t("MoveToTrashOneFolderTitle")
+        : t("MoveToTrashItemsTitle");
+
+    const noteText =
+      checkedSelections.length === 1
+        ? checkedSelections[0].fileExst
+          ? t("MoveToTrashOneFileNote")
+          : t("MoveToTrashOneFolderNote")
+        : t("MoveToTrashItemsNote");
 
     const accuracy = 20;
     let filesHeight = 25 * filesList.length + accuracy + 8;
-    let foldersHeight = 25 * foldersList.length + accuracy;
+    let foldersHeight = 25 * foldersList.length + accuracy + 8;
     if (foldersList.length === 0) {
       foldersHeight = 0;
     }
@@ -102,69 +115,67 @@ class DeleteDialogComponent extends React.Component {
     const height = filesHeight + foldersHeight;
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={this.onClose}>
-          <ModalDialog.Header>{t("ConfirmationTitle")}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <div className="modal-dialog-content">
-              <Text className="delete_dialog-header-text">
-                {questionMessage}
-              </Text>
-              <Scrollbar style={{ height, maxHeight: 330 }} stype="mediumBlack">
-                {foldersList.length > 0 && (
-                  <Text isBold>{t("FoldersModule")}:</Text>
-                )}
-                {foldersList.map((item, index) => (
-                  <Checkbox
-                    truncate
-                    className="modal-dialog-checkbox"
-                    value={`${item.fileExst}/${item.id}`}
-                    onChange={this.onChange}
-                    key={`checkbox_${index}`}
-                    isChecked={item.checked}
-                    label={item.title}
-                  />
-                ))}
+      <ModalDialogContainer visible={visible} onClose={this.onClose}>
+        <ModalDialog.Header>{title}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <div className="modal-dialog-content">
+            <Text className="delete_dialog-header-text">{noteText}</Text>
+            <Scrollbar style={{ height, maxHeight: 330 }} stype="mediumBlack">
+              {foldersList.length > 0 && (
+                <Text isBold className="delete_dialog-text">
+                  {t("FoldersModule")}:
+                </Text>
+              )}
+              {foldersList.map((item, index) => (
+                <Checkbox
+                  truncate
+                  className="modal-dialog-checkbox"
+                  value={`${item.fileExst}/${item.id}`}
+                  onChange={this.onChange}
+                  key={`checkbox_${index}`}
+                  isChecked={item.checked}
+                  label={item.title}
+                />
+              ))}
 
-                {filesList.length > 0 && (
-                  <Text isBold className="delete_dialog-text">
-                    {t("FilesModule")}:
-                  </Text>
-                )}
-                {filesList.map((item, index) => (
-                  <Checkbox
-                    truncate
-                    className="modal-dialog-checkbox"
-                    value={`${item.fileExst}/${item.id}`}
-                    onChange={this.onChange}
-                    key={`checkbox_${index}`}
-                    isChecked={item.checked}
-                    label={item.title}
-                  />
-                ))}
-              </Scrollbar>
-            </div>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              className="button-dialog-accept"
-              key="OkButton"
-              label={t("OKButton")}
-              size="medium"
-              primary
-              onClick={this.onDelete}
-              isLoading={isLoading}
-            />
-            <Button
-              className="button-dialog"
-              key="CancelButton"
-              label={t("CancelButton")}
-              size="medium"
-              onClick={this.onClose}
-              isLoading={isLoading}
-            />
-          </ModalDialog.Footer>
-        </ModalDialog>
+              {filesList.length > 0 && (
+                <Text isBold className="delete_dialog-text">
+                  {t("FilesModule")}:
+                </Text>
+              )}
+              {filesList.map((item, index) => (
+                <Checkbox
+                  truncate
+                  className="modal-dialog-checkbox"
+                  value={`${item.fileExst}/${item.id}`}
+                  onChange={this.onChange}
+                  key={`checkbox_${index}`}
+                  isChecked={item.checked}
+                  label={item.title}
+                />
+              ))}
+            </Scrollbar>
+          </div>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            className="button-dialog-accept"
+            key="OkButton"
+            label={t("MoveToTrashButton")}
+            size="medium"
+            primary
+            onClick={this.onDelete}
+            isLoading={isLoading}
+          />
+          <Button
+            className="button-dialog"
+            key="CancelButton"
+            label={t("CancelButton")}
+            size="medium"
+            onClick={this.onClose}
+            isLoading={isLoading}
+          />
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
@@ -174,7 +185,6 @@ const DeleteDialog = withTranslation("DeleteDialog")(DeleteDialogComponent);
 
 export default inject(
   ({
-    initFilesStore,
     filesStore,
     uploadDataStore,
     treeFoldersStore,
@@ -182,9 +192,8 @@ export default inject(
     dialogsStore,
     filesActionsStore,
   }) => {
-    const { isLoading } = initFilesStore;
     const { secondaryProgressDataStore } = uploadDataStore;
-    const { fetchFiles, selection, filter } = filesStore;
+    const { fetchFiles, selection, filter, isLoading } = filesStore;
     const { deleteAction } = filesActionsStore;
 
     const {
@@ -202,11 +211,13 @@ export default inject(
     const {
       deleteDialogVisible: visible,
       setDeleteDialogVisible,
+      removeMediaItem,
+      setRemoveMediaItem,
     } = dialogsStore;
 
     return {
       currentFolderId: selectedFolderStore.id,
-      selection,
+      selection: removeMediaItem ? [removeMediaItem] : selection,
       isLoading,
       treeFolders,
       isRecycleBinFolder,
@@ -221,6 +232,8 @@ export default inject(
       clearSecondaryProgressData,
       setDeleteDialogVisible,
       deleteAction,
+
+      setRemoveMediaItem,
     };
   }
 )(withRouter(observer(DeleteDialog)));

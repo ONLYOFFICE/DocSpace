@@ -1,7 +1,7 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Link as LinkWithoutRedirect } from "react-router-dom";
 import NavItem from "./nav-item";
 import Headline from "@appserver/common/components/Headline";
@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
-import { desktop } from "@appserver/components/utils/device";
+import { desktop, tablet } from "@appserver/components/utils/device";
 import i18n from "../i18n";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
@@ -30,6 +30,14 @@ const Header = styled.header`
 
   .header-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+    ${(props) =>
+      props.module &&
+      css`
+        @media ${tablet} {
+          display: none;
+        }
+      `}
   }
 
   .header-module-title {
@@ -37,6 +45,15 @@ const Header = styled.header`
     font-size: 21px;
     line-height: 0;
     margin-top: -5px;
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 
     @media ${desktop} {
       display: none;
@@ -184,7 +201,12 @@ const HeaderComponent = ({
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
         </LinkWithoutRedirect>
-        <Headline className="header-module-title" type="header" color="#FFF">
+        <Headline
+          className="header-module-title"
+          type="header"
+          color="#FFF"
+          onClick={onClick}
+        >
           {currentProductName}
         </Headline>
       </Header>

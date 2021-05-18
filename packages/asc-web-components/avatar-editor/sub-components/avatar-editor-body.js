@@ -399,18 +399,17 @@ class AvatarEditorBody extends React.Component {
                           isClickable={true}
                           color="#FFFFFF"
                           className="editor-button"
-                          style={{padding: 8}}
                         />
                       </Box>
                       <Box className="zoom-container">
                         <IconButton
+                          className="zoom-container-svg_zoom-minus"
                           size="16"
                           isDisabled={false}
                           onClick={this.onZoomMinusClick}
                           iconName={"/static/images/zoom-minus.react.svg"}
                           isFill={true}
                           isClickable={false}
-                          style={{paddingTop: 20}}
                         />
                         <Slider
                           id="scale"
@@ -424,12 +423,12 @@ class AvatarEditorBody extends React.Component {
                         />
                         <IconButton
                           size="16"
+                          className="zoom-container-svg_zoom-plus"
                           isDisabled={false}
                           onClick={this.onZoomPlusClick}
                           iconName={"/static/images/zoom-plus.react.svg"}
                           isFill={true}
                           isClickable={false}
-                          style={{paddingTop: 20}}
                         />
                       </Box>
                     </Box>

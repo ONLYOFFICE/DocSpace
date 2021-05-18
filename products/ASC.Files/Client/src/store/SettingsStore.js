@@ -1,10 +1,15 @@
 import { makeAutoObservable } from "mobx";
 import api from "@appserver/common/api";
 import axios from "axios";
-import ThirdPartyStore from "./ThirdPartyStore";
+import {
+  setFavoritesSetting,
+  setRecentSetting,
+} from "@appserver/common/api/files";
+import { FolderType } from "@appserver/common/constants";
 
 class SettingsStore {
-  thirdPartyStore = null;
+  thirdPartyStore;
+  treeFoldersStore;
 
   isErrorSettings = null;
   expandedSetting = null;
@@ -15,13 +20,16 @@ class SettingsStore {
   storeForcesave = null;
   storeOriginalFiles = null;
   updateIfExist = null;
+  favoritesSection = null;
+  recentSection = null;
 
   settingsIsLoaded = false;
 
-  constructor() {
+  constructor(thirdPartyStore, treeFoldersStore) {
     makeAutoObservable(this);
 
-    this.thirdPartyStore = new ThirdPartyStore();
+    this.thirdPartyStore = thirdPartyStore;
+    this.treeFoldersStore = treeFoldersStore;
   }
 
   setIsLoaded = (isLoaded) => {
@@ -107,13 +115,67 @@ class SettingsStore {
       .storeForceSave(data)
       .then((res) => this.setFilesSetting(setting, res));
 
-  setEnableThirdParty = (data, setting) =>
-    api.files
-      .thirdParty(data)
-      .then((res) => this.setFilesSetting(setting, res));
+  setEnableThirdParty = async (data, setting) => {
+    const res = await api.files.thirdParty(data);
+    this.setFilesSetting(setting, res);
+
+    if (data) {
+      return axios
+        .all([
+          api.files.getThirdPartyCapabilities(),
+          api.files.getThirdPartyList(),
+        ])
+        .then(([capabilities, providers]) => {
+          for (let item of capabilities) {
+            item.splice(1, 1);
+          }
+          this.thirdPartyStore.setThirdPartyCapabilities(capabilities); //TODO: Out of bounds read: 1
+          this.thirdPartyStore.setThirdPartyProviders(providers);
+        });
+    } else {
+      return Promise.resolve();
+    }
+  };
 
   setForceSave = (data, setting) =>
     api.files.forceSave(data).then((res) => this.setFilesSetting(setting, res));
+
+  updateRootTreeFolders = (set, rootFolderIndex, folderType) => {
+    const {
+      getFoldersTree,
+      treeFolders,
+      setTreeFolders,
+    } = this.treeFoldersStore;
+
+    getFoldersTree().then((root) => {
+      if (set) {
+        const rootFolder = root.find((x) => x.rootFolderType === folderType);
+        const newTreeFolders = treeFolders;
+        newTreeFolders.splice(rootFolderIndex, 0, rootFolder);
+        setTreeFolders(newTreeFolders);
+      } else {
+        const newTreeFolders = treeFolders.filter(
+          (x) => x.rootFolderType !== folderType
+        );
+        setTreeFolders(newTreeFolders);
+      }
+    });
+  };
+
+  setFavoritesSetting = (set, setting) => {
+    return setFavoritesSetting(set).then((res) => {
+      this.setFilesSetting(setting, res);
+      this.updateRootTreeFolders(set, 2, FolderType.Favorites);
+    });
+  };
+
+  setRecentSetting = (set, setting) => {
+    return setRecentSetting(set).then((res) => {
+      this.setFilesSetting(setting, res);
+      const index = this.treeFoldersStore.favoritesFolder ? 3 : 2;
+      this.updateRootTreeFolders(set, index, FolderType.Recent);
+    });
+  };
 }
 
-export default new SettingsStore();
+export default SettingsStore;

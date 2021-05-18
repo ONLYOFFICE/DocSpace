@@ -1,14 +1,10 @@
-import React from "react";
+import React, { useRef } from "react";
 
-import RowContainer from "../row-container";
-import RowContent from "../row-content";
-import Row from "../row";
 import ContextMenu from "./index";
 
 export default {
   title: "Components/ContextMenu",
   component: ContextMenu,
-  subcomponents: { RowContainer, Row, RowContent },
   parameters: {
     docs: {
       description: {
@@ -24,37 +20,112 @@ In particular case, state is created containing options for particular Row eleme
   },
 };
 
-const getRndString = (n) =>
-  Math.random()
-    .toString(36)
-    .substring(2, n + 2);
+const Template = (args) => {
+  const cm = useRef(null);
+  const items = [
+    {
+      label: "Edit",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Preview",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      separator: true,
+    },
+    {
+      label: "Sharing settings",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Link for portal users",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Copy external link",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Send by e-mail",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Version history",
+      icon: "/static/images/catalog.folder.react.svg",
+      items: [
+        {
+          label: "Show version history",
+        },
+        {
+          label: "Finalize version",
+        },
+        {
+          label: "Unblock / Check-in",
+        },
+      ],
+    },
+    {
+      separator: true,
+    },
+    {
+      label: "Make as favorite",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Download",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Download as",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+    {
+      label: "Move or copy",
+      icon: "/static/images/catalog.folder.react.svg",
+      items: [
+        {
+          label: "Move to",
+        },
+        {
+          label: "Copy",
+        },
+        {
+          label: "Duplicate",
+        },
+      ],
+    },
+    {
+      label: "Rename",
+      icon: "/static/images/catalog.folder.react.svg",
+      disabled: true,
+    },
+    {
+      separator: true,
+    },
+    {
+      label: "Quit",
+      icon: "/static/images/catalog.folder.react.svg",
+    },
+  ];
 
-const array = Array.from(Array(10).keys());
-const Template = (args) => (
-  <RowContainer {...args} manualHeight="300px">
-    {array.map((item, index) => {
-      return (
-        <Row
-          key={`${item + 1}`}
-          contextOptions={
-            index !== 3
-              ? [
-                  { key: 1, label: getRndString(5) },
-                  { key: 2, label: getRndString(5) },
-                  { key: 3, label: getRndString(5) },
-                  { key: 4, label: getRndString(5) },
-                ]
-              : []
-          }
-        >
-          <RowContent>
-            <span>{getRndString(5)}</span>
-            <></>
-          </RowContent>
-        </Row>
-      );
-    })}
-  </RowContainer>
-);
+  return (
+    <div>
+      <ContextMenu model={items} ref={cm}></ContextMenu>
+
+      <div
+        style={{
+          width: "200px",
+          height: "200px",
+          backgroundColor: "red",
+          display: "inline-block",
+        }}
+        onContextMenu={(e) => cm.current.show(e)}
+      >
+        {""}
+      </div>
+    </div>
+  );
+};
 
 export const Default = Template.bind({});

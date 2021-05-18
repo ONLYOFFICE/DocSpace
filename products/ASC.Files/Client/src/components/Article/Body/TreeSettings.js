@@ -81,6 +81,7 @@ const PureTreeSettings = ({
   history,
   setIsLoading,
   t,
+  isVisitor,
 }) => {
   const { setting } = match.params;
 
@@ -168,7 +169,7 @@ const PureTreeSettings = ({
             title={t("TreeSettingsAdminSettings")}
           />
         ) : null}
-        {enableThirdParty ? (
+        {enableThirdParty && !isVisitor ? (
           <TreeNode
             selectable={true}
             className="settings-node"
@@ -209,12 +210,12 @@ const TreeSettings = withTranslation("Settings")(withRouter(PureTreeSettings));
 export default inject(
   ({
     auth,
-    initFilesStore,
+    filesStore,
     settingsStore,
     treeFoldersStore,
     selectedFolderStore,
   }) => {
-    const { setIsLoading, isLoading } = initFilesStore;
+    const { setIsLoading, isLoading } = filesStore;
     const { setSelectedFolder } = selectedFolderStore;
     const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
     const {
@@ -226,6 +227,7 @@ export default inject(
 
     return {
       isAdmin: auth.isAdmin,
+      isVisitor: auth.userStore.user.isVisitor,
       isLoading,
       selectedTreeNode,
       enableThirdParty,

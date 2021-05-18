@@ -39,7 +39,6 @@ using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OneDrive.Sdk;
 
@@ -171,7 +170,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             if (onedriveFile.File == null) return null;
 
-            var file = ServiceProvider.GetService<File<string>>();
+            var file = GetFile();
 
             file.ID = MakeId(onedriveFile.Id);
             file.ContentLength = onedriveFile.Size.HasValue ? (long)onedriveFile.Size : 0;

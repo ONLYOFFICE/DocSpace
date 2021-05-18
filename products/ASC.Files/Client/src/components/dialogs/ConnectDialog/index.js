@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import toastr from "@appserver/components/toast";
+import toastr from "studio/toastr";
 import Button from "@appserver/components/button";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Checkbox from "@appserver/components/checkbox";
@@ -31,11 +31,17 @@ const PureConnectDialogContainer = (props) => {
     openConnectWindow,
     setConnectDialogVisible,
   } = props;
-  const { corporate, title, link, token, provider_id, provider_key } = item;
+  const {
+    corporate,
+    title,
+    link,
+    token,
+    provider_id,
+    provider_key,
+    key,
+  } = item;
 
-  const provider = providers.find(
-    (el) => el.provider_key === item.provider_key
-  );
+  const provider = providers.find((el) => el.provider_id === item.provider_id);
   const folderTitle = provider ? provider.customer_title : title;
 
   const [urlValue, setUrlValue] = useState("");
@@ -105,13 +111,13 @@ const PureConnectDialogContainer = (props) => {
 
     setIsLoading(true);
     saveThirdParty(
-      null,
-      null,
-      null,
+      urlValue,
+      loginValue,
+      passwordValue,
       oAuthToken,
       isCorporate,
       customerTitle,
-      provider_key,
+      provider_key || key,
       provider_id
     )
       .then((folderData) => {
@@ -154,6 +160,7 @@ const PureConnectDialogContainer = (props) => {
         });
       })
       .catch((err) => {
+        onClose();
         toastr.error(err);
         setIsLoading(false);
       });
@@ -184,7 +191,10 @@ const PureConnectDialogContainer = (props) => {
   const onReconnect = () => {
     let authModal = window.open("", "Authorization", "height=600, width=1020");
     openConnectWindow(title, authModal).then((modal) =>
-      getOAuthToken(modal).then((token) => setToken(token))
+      getOAuthToken(modal).then((token) => {
+        authModal.close();
+        setToken(token);
+      })
     );
   };
 
@@ -230,6 +240,7 @@ const PureConnectDialogContainer = (props) => {
                 errorMessage={t("RequiredFieldMessage")}
               >
                 <TextInput
+                  isAutoFocussed={true}
                   hasError={!isUrlValid}
                   isDisabled={isLoading}
                   tabIndex={1}
@@ -320,6 +331,7 @@ const ConnectDialog = withTranslation("ConnectDialog")(
 
 export default inject(
   ({
+    auth,
     filesStore,
     settingsStore,
     treeFoldersStore,
@@ -328,12 +340,12 @@ export default inject(
   }) => {
     const {
       providers,
-      getOAuthToken,
       saveThirdParty,
       openConnectWindow,
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
     const { fetchFiles } = filesStore;
+    const { getOAuthToken } = auth.settingsStore;
 
     const {
       treeFolders,

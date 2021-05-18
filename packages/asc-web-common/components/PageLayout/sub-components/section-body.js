@@ -9,7 +9,6 @@ import { inject, observer } from "mobx-react";
 import Scrollbar from "@appserver/components/scrollbar";
 import DragAndDrop from "@appserver/components/drag-and-drop";
 import { tablet } from "@appserver/components/utils/device";
-import SelectedFrame from "./SelectedFrame";
 
 const commonStyles = css`
   flex-grow: 1;
@@ -112,7 +111,7 @@ class SectionBody extends React.Component {
     const focusProps = autoFocus
       ? {
           ref: this.focusRef,
-          tabIndex: 1,
+          tabIndex: -1,
         }
       : {};
 
@@ -130,18 +129,12 @@ class SectionBody extends React.Component {
         {withScroll ? (
           !isMobile ? (
             <Scrollbar {...scrollProp} stype="mediumBlack">
-              <SelectedFrame
-                viewAs={viewAs}
-                scrollRef={this.scrollRef}
-                setSelections={setSelections}
-              >
-                <div className="section-wrapper">
-                  <div className="section-wrapper-content" {...focusProps}>
-                    {children}
-                    <StyledSpacer pinned={pinned} />
-                  </div>
+              <div className="section-wrapper">
+                <div className="section-wrapper-content" {...focusProps}>
+                  {children}
+                  <StyledSpacer pinned={pinned} />
                 </div>
-              </SelectedFrame>
+              </div>
             </Scrollbar>
           ) : (
             <div className="section-wrapper">
@@ -152,16 +145,10 @@ class SectionBody extends React.Component {
             </div>
           )
         ) : (
-          <SelectedFrame
-            viewAs={viewAs}
-            scrollRef={this.scrollRef}
-            setSelections={setSelections}
-          >
-            <div className="section-wrapper">
-              {children}
-              <StyledSpacer pinned={pinned} />
-            </div>
-          </SelectedFrame>
+          <div className="section-wrapper">
+            {children}
+            <StyledSpacer pinned={pinned} />
+          </div>
         )}
       </StyledDropZoneBody>
     ) : (

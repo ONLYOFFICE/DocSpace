@@ -8,6 +8,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Security;
+using System.ServiceModel.Security;
+using System.Threading;
+using System.Web;
 
 using ASC.Api.Core;
 using ASC.Common;
@@ -20,6 +23,7 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Reassigns;
 using ASC.FederatedLogin;
+using ASC.FederatedLogin.LoginProviders;
 using ASC.FederatedLogin.Profile;
 using ASC.MessagingSystem;
 using ASC.People;
@@ -29,6 +33,7 @@ using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
+using ASC.Web.Core.Mobile;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Core;
@@ -46,7 +51,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
 {
-    [Scope]
+    [Scope(Additional = typeof(BaseLoginProviderExtension))]
     [DefaultRoute]
     [ApiController]
     public class PeopleController : ControllerBase
@@ -83,8 +88,13 @@ namespace ASC.Employee.Core.Controllers
         private EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
         private EmployeeWraperHelper EmployeeWraperHelper { get; }
         private UserFormatter UserFormatter { get; }
-        public PasswordHasher PasswordHasher { get; }
-        public ILog Log { get; }
+        private PasswordHasher PasswordHasher { get; }
+        private UserHelpTourHelper UserHelpTourHelper { get; }
+        private PersonalSettingsHelper PersonalSettingsHelper { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private MobileDetector MobileDetector { get; }
+        private ProviderManager ProviderManager { get; }
+        private ILog Log { get; }
 
         public PeopleController(
             MessageService messageService,
@@ -119,7 +129,13 @@ namespace ASC.Employee.Core.Controllers
             EmployeeWraperFullHelper employeeWraperFullHelper,
             EmployeeWraperHelper employeeWraperHelper,
             UserFormatter userFormatter,
-            PasswordHasher passwordHasher)
+            PasswordHasher passwordHasher,
+            UserHelpTourHelper userHelpTourHelper,
+            PersonalSettingsHelper personalSettingsHelper,
+            CommonLinkUtility commonLinkUtility,
+            MobileDetector mobileDetector,
+            ProviderManager providerManager
+            )
         {
             Log = option.Get("ASC.Api");
             Log.Debug("Test");
@@ -155,6 +171,11 @@ namespace ASC.Employee.Core.Controllers
             EmployeeWraperHelper = employeeWraperHelper;
             UserFormatter = userFormatter;
             PasswordHasher = passwordHasher;
+            UserHelpTourHelper = userHelpTourHelper;
+            PersonalSettingsHelper = personalSettingsHelper;
+            CommonLinkUtility = commonLinkUtility;
+            MobileDetector = mobileDetector;
+            ProviderManager = providerManager;
         }
 
         [Read("info")]
@@ -399,14 +420,14 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
         public EmployeeWraperFull AddMemberFromBody([FromBody]MemberModel memberModel)
         {
             return AddMember(memberModel);
         }
 
         [Create]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
         [Consumes("application/x-www-form-urlencoded")]
         public EmployeeWraperFull AddMemberFromForm([FromForm]MemberModel memberModel)
         {
@@ -451,7 +472,7 @@ namespace ASC.Employee.Core.Controllers
                            ? true
                            : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
 
-            user.BirthDate = memberModel.Birthday != null && memberModel.Birthday != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : (DateTime?)null;
+            user.BirthDate = memberModel.Birthday != null && memberModel.Birthday != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : null;
             user.WorkFromDate = memberModel.Worksfrom != null && memberModel.Worksfrom != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : DateTime.UtcNow.Date;
 
             UpdateContacts(memberModel.Contacts, user);
@@ -520,7 +541,7 @@ namespace ASC.Employee.Core.Controllers
                            ? true
                            : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
 
-            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : (DateTime?)null;
+            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : null;
             user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : DateTime.UtcNow.Date;
 
             UpdateContacts(memberModel.Contacts, user);
@@ -665,7 +686,7 @@ namespace ASC.Employee.Core.Controllers
             if (memberModel.Disable.HasValue)
             {
                 user.Status = memberModel.Disable.Value ? EmployeeStatus.Terminated : EmployeeStatus.Active;
-                user.TerminatedDate = memberModel.Disable.Value ? DateTime.UtcNow : (DateTime?)null;
+                user.TerminatedDate = memberModel.Disable.Value ? DateTime.UtcNow : null;
             }
 
             if (self && !isAdmin)
@@ -1083,14 +1104,14 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/password")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
         public EmployeeWraperFull ChangeUserPasswordFromBody(Guid userid, [FromBody]MemberModel memberModel)
         {
             return ChangeUserPassword(userid, memberModel);
         }
 
         [Update("{userid}/password")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
         [Consumes("application/x-www-form-urlencoded")]
         public EmployeeWraperFull ChangeUserPasswordFromForm(Guid userid, [FromForm] MemberModel memberModel)
         {
@@ -1221,14 +1242,14 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("activationstatus/{activationstatus}")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
         public IEnumerable<EmployeeWraperFull> UpdateEmployeeActivationStatusFromBody(EmployeeActivationStatus activationstatus, [FromBody]UpdateMembersModel model)
         {
             return UpdateEmployeeActivationStatus(activationstatus, model);
         }
 
         [Update("activationstatus/{activationstatus}")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
         [Consumes("application/x-www-form-urlencoded")]
         public IEnumerable<EmployeeWraperFull> UpdateEmployeeActivationStatusFromForm(EmployeeActivationStatus activationstatus, [FromForm] UpdateMembersModel model)
         {
@@ -1475,6 +1496,50 @@ namespace ASC.Employee.Core.Controllers
             return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
         }
 
+        [AllowAnonymous]
+        [Read("thirdparty/providers")]
+        public ICollection<AccountInfo> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
+        {
+            ICollection<AccountInfo> infos = new List<AccountInfo>();
+            IEnumerable<LoginProfile> linkedAccounts = new List<LoginProfile>();
+
+            if (AuthContext.IsAuthenticated)
+            {
+                linkedAccounts = AccountLinker.Get("webstudio").GetLinkedProfiles(AuthContext.CurrentAccount.ID.ToString());
+            }
+
+            fromOnly = string.IsNullOrWhiteSpace(fromOnly) ? string.Empty : fromOnly.ToLower();
+
+            foreach (var provider in ProviderManager.AuthProviders.Where(provider => string.IsNullOrEmpty(fromOnly) || fromOnly == provider || (provider == "google" && fromOnly == "openid")))
+            {
+                if (inviteView && provider.ToLower() == "twitter") continue;
+
+                var loginProvider = ProviderManager.GetLoginProvider(provider);
+                if (loginProvider != null && loginProvider.IsEnabled)
+                {
+
+                    var url = VirtualPathUtility.ToAbsolute("~/login.ashx") + $"?auth={provider}";
+                    var mode = (settingsView || inviteView || (!MobileDetector.IsMobile() && !Request.DesktopApp())
+                                     ? ("&mode=popup&callback=" + clientCallback)
+                                     : ("&mode=Redirect&returnurl="
+                                    + HttpUtility.UrlEncode(new Uri(Request.GetUrlRewriter(),
+                                        "Auth.aspx"
+                                        + (Request.DesktopApp() ? "?desktop=true" : "")
+                                        ).ToString())
+                                 ));
+
+                    infos.Add(new AccountInfo
+                    {
+                        Linked = linkedAccounts.Any(x => x.Provider == provider),
+                        Provider = provider,
+                        Url = url + mode
+                    });
+                }
+            }
+
+            return infos;
+        }
+
 
         [Update("thirdparty/linkaccount")]
         public void LinkAccountFromBody([FromBody]LinkAccountModel model)
@@ -1513,6 +1578,210 @@ namespace ASC.Employee.Core.Controllers
         {
             GetLinker().RemoveProvider(SecurityContext.CurrentAccount.ID.ToString(), provider);
             MessageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
+        }
+
+        [AllowAnonymous]
+        [Create("thirdparty/signup")]
+        public void SignupAccountFromBody([FromBody] SignupAccountModel model)
+        {
+            SignupAccount(model);
+        }
+
+        [AllowAnonymous]
+        [Create("thirdparty/signup")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void SignupAccountFromForm([FromForm] SignupAccountModel model)
+        {
+            SignupAccount(model);
+        }
+
+        public void SignupAccount(SignupAccountModel model)
+        {
+            var employeeType = model.EmplType ?? EmployeeType.User;
+            var passwordHash = model.PasswordHash;
+            var mustChangePassword = false;
+
+            if (string.IsNullOrEmpty(passwordHash))
+            {
+                passwordHash = UserManagerWrapper.GeneratePassword();
+                mustChangePassword = true;
+            }
+
+            var thirdPartyProfile = new LoginProfile(Signature, InstanceCrypto, model.SerializedProfile);
+            if (!string.IsNullOrEmpty(thirdPartyProfile.AuthorizationError))
+            {
+                // ignore cancellation
+                if (thirdPartyProfile.AuthorizationError != "Canceled at provider")
+                    throw new Exception(thirdPartyProfile.AuthorizationError);
+
+                return;
+            }
+
+            if (string.IsNullOrEmpty(thirdPartyProfile.EMail))
+            {
+                throw new Exception(Resource.ErrorNotCorrectEmail);
+            }
+
+            var userID = Guid.Empty;
+            try
+            {
+                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                var newUser = CreateNewUser(GetFirstName(model, thirdPartyProfile), GetLastName(model, thirdPartyProfile), GetEmailAddress(model, thirdPartyProfile), passwordHash, employeeType, false);
+
+                var messageAction = employeeType == EmployeeType.User ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
+                MessageService.Send(MessageInitiator.System, messageAction, MessageTarget.Create(newUser.ID), newUser.DisplayUserName(false, DisplayUserSettingsHelper));
+
+                userID = newUser.ID;
+                if (!string.IsNullOrEmpty(thirdPartyProfile.Avatar))
+                {
+                    SaveContactImage(userID, thirdPartyProfile.Avatar);
+                }
+
+                GetLinker().AddLink(userID.ToString(), thirdPartyProfile);
+            }
+            finally
+            {
+                SecurityContext.Logout();
+            }
+
+            var user = UserManager.GetUsers(userID);
+            var cookiesKey = SecurityContext.AuthenticateMe(user.Email, passwordHash);
+            CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
+            MessageService.Send(MessageAction.LoginSuccess);
+            StudioNotifyService.UserHasJoin();
+
+            if (mustChangePassword)
+            {
+                StudioNotifyService.UserPasswordChange(user);
+            }
+
+            UserHelpTourHelper.IsNewUser = true;
+            if (CoreBaseSettings.Personal)
+                PersonalSettingsHelper.IsNewUser = true;
+
+        }
+
+        [Create("phone")]
+        public object SendNotificationToChangeFromBody([FromBody] UpdateMemberModel model)
+        {
+            return SendNotificationToChange(model.UserId);
+        }
+
+        [Create("phone")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SendNotificationToChangeFromForm([FromForm] UpdateMemberModel model)
+        {
+            return SendNotificationToChange(model.UserId);
+        }
+
+        public object SendNotificationToChange(string userId)
+        {
+            var user = UserManager.GetUsers(
+                string.IsNullOrEmpty(userId)
+                    ? SecurityContext.CurrentAccount.ID
+                    : new Guid(userId));
+
+            var canChange =
+                user.IsMe(AuthContext)
+                || PermissionContext.CheckPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+
+            if (!canChange)
+                throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
+
+            user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
+            UserManager.SaveUserInfo(user);
+
+            if (user.IsMe(AuthContext))
+            {
+                return CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation);
+            }
+
+            StudioNotifyService.SendMsgMobilePhoneChange(user);
+            return string.Empty;
+        }
+
+        protected string GetEmailAddress(SignupAccountModel model)
+        {
+            if (!string.IsNullOrEmpty(model.Email))
+                return model.Email.Trim();
+
+            return string.Empty;
+        }
+
+        private string GetEmailAddress(SignupAccountModel model, LoginProfile account)
+        {
+            var value = GetEmailAddress(model);
+            return string.IsNullOrEmpty(value) ? account.EMail : value;
+        }
+
+        protected string GetFirstName(SignupAccountModel model)
+        {
+            var value = string.Empty;
+            if (!string.IsNullOrEmpty(model.FirstName)) value = model.FirstName.Trim();
+            return HtmlUtil.GetText(value);
+        }
+
+        private string GetFirstName(SignupAccountModel model, LoginProfile account)
+        {
+            var value = GetFirstName(model);
+            return string.IsNullOrEmpty(value) ? account.FirstName : value;
+        }
+
+        protected string GetLastName(SignupAccountModel model)
+        {
+            var value = string.Empty;
+            if (!string.IsNullOrEmpty(model.LastName)) value = model.LastName.Trim();
+            return HtmlUtil.GetText(value);
+        }
+
+        private string GetLastName(SignupAccountModel model, LoginProfile account)
+        {
+            var value = GetLastName(model);
+            return string.IsNullOrEmpty(value) ? account.LastName : value;
+        }
+
+        private UserInfo CreateNewUser(string firstName, string lastName, string email, string passwordHash, EmployeeType employeeType, bool fromInviteLink)
+        {
+            var isVisitor = employeeType == EmployeeType.Visitor;
+
+            if (SetupInfo.IsSecretEmail(email))
+            {
+                fromInviteLink = false;
+            }
+
+            var userInfo = new UserInfo
+            {
+                FirstName = string.IsNullOrEmpty(firstName) ? UserControlsCommonResource.UnknownFirstName : firstName,
+                LastName = string.IsNullOrEmpty(lastName) ? UserControlsCommonResource.UnknownLastName : lastName,
+                Email = email,
+            };
+
+            if (CoreBaseSettings.Personal)
+            {
+                userInfo.ActivationStatus = EmployeeActivationStatus.Activated;
+                userInfo.CultureName = CoreBaseSettings.CustomMode ? "ru-RU" : Thread.CurrentThread.CurrentUICulture.Name;
+            }
+
+            return UserManagerWrapper.AddUser(userInfo, passwordHash, true, true, isVisitor, fromInviteLink);
+        }
+
+        private void SaveContactImage(Guid userID, string url)
+        {
+            using (var memstream = new MemoryStream())
+            {
+                var req = WebRequest.Create(url);
+                using (var response = req.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    var buffer = new byte[512];
+                    int bytesRead;
+                    while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                        memstream.Write(buffer, 0, bytesRead);
+                    var bytes = memstream.ToArray();
+
+                    UserPhotoManager.SaveOrUpdatePhoto(userID, bytes);
+                }
+            }
         }
 
         private AccountLinker GetLinker()

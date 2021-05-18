@@ -285,17 +285,25 @@ class CreateUserForm extends React.Component {
 
   handleSubmit = () => {
     if (!this.validate()) return false;
-    const { setIsEditingForm, homepage } = this.props;
+    const {
+      setIsEditingForm,
+      homepage,
+      createProfile,
+      createdAvatar,
+      t,
+      history,
+    } = this.props;
+    const profile = this.state.profile;
+    if (!profile.birthday) profile.birthday = new Date();
 
     this.setState({ isLoading: true });
-    this.props
-      .createProfile(this.state.profile)
+    createProfile(profile)
       .then((profile) => {
-        if (this.props.createdAvatar.tmpFile !== "") {
+        if (createdAvatar.tmpFile !== "") {
           this.createAvatar(profile.id, profile.userName);
         } else {
-          toastr.success(this.props.t("ChangesSavedSuccessfully"));
-          this.props.history.push(
+          toastr.success(t("ChangesSavedSuccessfully"));
+          history.push(
             combineUrl(
               AppServerConfig.proxyURL,
               homepage,
@@ -491,7 +499,7 @@ class CreateUserForm extends React.Component {
               helpButtonHeaderContent={t("Mail")}
               tooltipContent={
                 <Text fontSize="13px" as="div">
-                  <Trans i18nKey="EmailPopupHelper" ns="ProfileAction">
+                  <Trans t={t} i18nKey="EmailPopupHelper" ns="ProfileAction">
                     The main e-mail is needed to restore access to the portal in
                     case of loss of the password and send notifications.
                     <p className="tooltip_email" style={{ margin: "1rem 0" }}>
@@ -524,6 +532,7 @@ class CreateUserForm extends React.Component {
               inputIsDisabled={isLoading || profile.passwordType === "link"}
               inputOnChange={this.onInputChange}
               copyLinkText={t("CopyEmailAndPassword")}
+              copiedResourceText={t("CopiedResourceText")}
               inputTabIndex={4}
               passwordSettings={passwordSettings}
               t={t}

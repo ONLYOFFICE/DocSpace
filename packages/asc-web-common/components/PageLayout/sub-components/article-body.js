@@ -4,6 +4,7 @@ import styled from "styled-components";
 import equal from "fast-deep-equal/react";
 import Scrollbar from "@appserver/components/scrollbar";
 import { tablet, smallTablet } from "@appserver/components/utils/device";
+import { isMobile } from "react-device-detect";
 
 const StyledArticleBody = styled.div`
   ${(props) => props.displayBorder && `outline: 1px dotted;`}
@@ -27,6 +28,7 @@ const StyledArticleBody = styled.div`
 
   .people-tree-menu {
     margin-right: 0;
+    ${(props) => isMobile && props.pinned && `margin-bottom: 56px`}
   }
 
   .custom-scrollbar {
@@ -56,10 +58,10 @@ class ArticleBody extends React.Component {
 
   render() {
     //console.log("PageLayout ArticleBody render");
-    const { children } = this.props;
+    const { children, pinned } = this.props;
 
     return (
-      <StyledArticleBody>
+      <StyledArticleBody pinned={pinned}>
         <Scrollbar
           id="articleScrollBar"
           className="custom-scrollbar"

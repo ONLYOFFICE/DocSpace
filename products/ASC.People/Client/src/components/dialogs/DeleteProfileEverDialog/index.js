@@ -57,35 +57,35 @@ class DeleteProfileEverDialogComponent extends React.Component {
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={onClose}>
-          <ModalDialog.Header>{t("Confirmation")}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <Text>
-              <Trans
-                i18nKey="DeleteUserConfirmation"
-                ns="DeleteProfileEverDialog"
-              >
-                {{ userCaption }} <strong>{{ user: user.displayName }}</strong>{" "}
-                will be deleted.
-              </Trans>
-            </Text>
-            <Text>{t("NotBeUndone")}</Text>
-            {/* <Text color="#c30" fontSize="18px" className="warning-text">
+      <ModalDialogContainer visible={visible} onClose={onClose}>
+        <ModalDialog.Header>{t("Confirmation")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text>
+            <Trans
+              i18nKey="DeleteUserConfirmation"
+              ns="DeleteProfileEverDialog"
+              t={t}
+            >
+              {{ userCaption }} <strong>{{ user: user.displayName }}</strong>{" "}
+              will be deleted.
+            </Trans>
+          </Text>
+          <Text>{t("NotBeUndone")}</Text>
+          {/* <Text color="#c30" fontSize="18px" className="warning-text">
               {t("Warning")}
             </Text>
             <Text>{t("DeleteUserDataConfirmation")}</Text> */}
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              key="OKBtn"
-              label={t("OKButton")}
-              size="medium"
-              primary={true}
-              onClick={this.onDeleteProfileEver}
-              isLoading={isRequestRunning}
-            />
-            {/* <Button
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            key="OKBtn"
+            label={t("OKButton")}
+            size="medium"
+            primary={true}
+            onClick={this.onDeleteProfileEver}
+            isLoading={isRequestRunning}
+          />
+          {/* <Button
               className="button-dialog"
               key="ReassignBtn"
               label={t("ReassignData")}
@@ -93,8 +93,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
               onClick={this.onReassignDataClick}
               isDisabled={isRequestRunning}
             /> */}
-          </ModalDialog.Footer>
-        </ModalDialog>
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }

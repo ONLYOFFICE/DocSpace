@@ -95,7 +95,11 @@ class ConsumerModalDialog extends React.Component {
         </Text>
       </Box>
       <Text as="div">
-        <Trans i18nKey="ThirdPartyBodyDescription" ns="Settings">
+        <Trans
+          t={this.props.t}
+          i18nKey="ThirdPartyBodyDescription"
+          ns="Settings"
+        >
           For more detailed instructions about connecting this service, please
           refer to our{" "}
           <Link
@@ -113,7 +117,7 @@ class ConsumerModalDialog extends React.Component {
   );
 
   bottomDescription = (
-    <Trans i18nKey="ThirdPartyBottomDescription" ns="Settings">
+    <Trans t={this.props.t} i18nKey="ThirdPartyBottomDescription" ns="Settings">
       If you still have some questions on how to connect this service or need
       technical assistance, please feel free to contact our{" "}
       <Link
@@ -145,58 +149,56 @@ class ConsumerModalDialog extends React.Component {
     } = this;
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={dialogVisible} onClose={onModalClose}>
-          <ModalDialog.Header>{selectedConsumer.title}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <Text as="div">{consumerInstruction}</Text>
-            <Text as="div">{bodyDescription}</Text>
-            <React.Fragment>
-              {selectedConsumer.props.map((prop, i) => (
-                <React.Fragment key={prop.name}>
-                  <Box
-                    displayProp="flex"
-                    flexDirection="column"
-                    marginProp="0 0 16px 0"
-                  >
-                    <Box marginProp="0 0 4px 0">
-                      <Text isBold>{prop.title}:</Text>
-                    </Box>
-                    <Box>
-                      <TextInput
-                        scale
-                        name={prop.name}
-                        placeholder={prop.title}
-                        isAutoFocussed={i === 0}
-                        tabIndex={1}
-                        value={Object.values(state)[i]}
-                        isDisabled={isLoading}
-                        onChange={onChangeHandler}
-                      />
-                    </Box>
+      <ModalDialogContainer visible={dialogVisible} onClose={onModalClose}>
+        <ModalDialog.Header>{selectedConsumer.title}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text as="div">{consumerInstruction}</Text>
+          <Text as="div">{bodyDescription}</Text>
+          <React.Fragment>
+            {selectedConsumer.props.map((prop, i) => (
+              <React.Fragment key={prop.name}>
+                <Box
+                  displayProp="flex"
+                  flexDirection="column"
+                  marginProp="0 0 16px 0"
+                >
+                  <Box marginProp="0 0 4px 0">
+                    <Text isBold>{prop.title}:</Text>
                   </Box>
-                </React.Fragment>
-              ))}
-            </React.Fragment>
-            <Text>{bottomDescription}</Text>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              className="modal-dialog-button"
-              primary
-              size="big"
-              label={
-                isLoading
-                  ? t("ThirdPartyProcessSending")
-                  : t("ThirdPartyEnableButton")
-              }
-              tabIndex={1}
-              isLoading={isLoading}
-              isDisabled={isLoading}
-              onClick={updateConsumerValues}
-            />
-          </ModalDialog.Footer>
-        </ModalDialog>
+                  <Box>
+                    <TextInput
+                      scale
+                      name={prop.name}
+                      placeholder={prop.title}
+                      isAutoFocussed={i === 0}
+                      tabIndex={1}
+                      value={Object.values(state)[i]}
+                      isDisabled={isLoading}
+                      onChange={onChangeHandler}
+                    />
+                  </Box>
+                </Box>
+              </React.Fragment>
+            ))}
+          </React.Fragment>
+          <Text>{bottomDescription}</Text>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            className="modal-dialog-button"
+            primary
+            size="big"
+            label={
+              isLoading
+                ? t("ThirdPartyProcessSending")
+                : t("ThirdPartyEnableButton")
+            }
+            tabIndex={1}
+            isLoading={isLoading}
+            isDisabled={isLoading}
+            onClick={updateConsumerValues}
+          />
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }

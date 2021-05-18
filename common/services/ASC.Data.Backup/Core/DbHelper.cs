@@ -11,6 +11,7 @@ using System.Xml.XPath;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Data.Backup.EF.Context;
 
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,7 @@ namespace ASC.Data.Backup
             var file = connectionString.ElementInformation.Source;
             if ("web.connections.config".Equals(Path.GetFileName(file), StringComparison.InvariantCultureIgnoreCase))
             {
-                file = Path.Combine(Path.GetDirectoryName(file), "Web.config");
+                file = CrossPlatform.PathCombine(Path.GetDirectoryName(file), "Web.config");
             }
             var xconfig = XDocument.Load(file);
             var provider = xconfig.XPathSelectElement("/configuration/system.data/DbProviderFactories/add[@invariant='" + connectionString.ProviderName + "']");

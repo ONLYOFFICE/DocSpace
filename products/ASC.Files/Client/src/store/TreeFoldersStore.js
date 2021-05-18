@@ -1,43 +1,18 @@
-import { makeObservable, observable, computed, action } from "mobx";
+import { makeAutoObservable } from "mobx";
 import { getFoldersTree } from "@appserver/common/api/files";
 import { FolderType } from "@appserver/common/constants";
-import selectedFolderStore from "./SelectedFolderStore";
 
 class TreeFoldersStore {
+  selectedFolderStore;
+
   treeFolders = [];
   selectedTreeNode = [];
   expandedKeys = [];
+  expandedPanelKeys = null;
 
-  constructor() {
-    makeObservable(this, {
-      treeFolders: observable,
-      selectedTreeNode: observable,
-      expandedKeys: observable,
-
-      myFolderId: computed,
-      commonFolderId: computed,
-
-      myFolder: computed,
-      shareFolder: computed,
-      favoritesFolder: computed,
-      recentFolder: computed,
-      privacyFolder: computed,
-      commonFolder: computed,
-      recycleBinFolder: computed,
-
-      isMyFolder: computed,
-      isShareFolder: computed,
-      isFavoritesFolder: computed,
-      isRecentFolder: computed,
-      isPrivacyFolder: computed,
-      isCommonFolder: computed,
-      isRecycleBinFolder: computed,
-
-      fetchTreeFolders: action,
-      setTreeFolders: action,
-      setExpandedKeys: action,
-      setSelectedNode: action,
-    });
+  constructor(selectedFolderStore) {
+    makeAutoObservable(this);
+    this.selectedFolderStore = selectedFolderStore;
   }
 
   fetchTreeFolders = async () => {
@@ -45,6 +20,8 @@ class TreeFoldersStore {
     this.setTreeFolders(treeFolders);
     return treeFolders;
   };
+
+  getFoldersTree = () => getFoldersTree();
 
   setTreeFolders = (treeFolders) => {
     this.treeFolders = treeFolders;
@@ -60,9 +37,21 @@ class TreeFoldersStore {
     this.expandedKeys = expandedKeys;
   };
 
+  setExpandedPanelKeys = (expandedPanelKeys) => {
+    this.expandedPanelKeys = expandedPanelKeys;
+  };
+
   addExpandedKeys = (item) => {
     this.expandedKeys.push(item);
   };
+
+  updateRootBadge = (id, count) => {
+    const rootItem = this.treeFolders.find((x) => x.id === id);
+    if (rootItem) rootItem.newItems -= count;
+  };
+
+  isCommon = (commonType) => commonType === FolderType.COMMON;
+  isShare = (shareType) => shareType === FolderType.SHARE;
 
   get myFolder() {
     return this.treeFolders.find((x) => x.rootFolderName === "@my");
@@ -103,38 +92,46 @@ class TreeFoldersStore {
   }
 
   get isMyFolder() {
-    return this.myFolder && this.myFolder.id === selectedFolderStore.id;
+    return this.myFolder && this.myFolder.id === this.selectedFolderStore.id;
   }
 
   get isShareFolder() {
-    return this.shareFolder && this.shareFolder.id === selectedFolderStore.id;
+    return (
+      this.shareFolder && this.shareFolder.id === this.selectedFolderStore.id
+    );
   }
 
   get isFavoritesFolder() {
     return (
-      this.favoritesFolder && selectedFolderStore.id === this.favoritesFolder.id
+      this.favoritesFolder &&
+      this.selectedFolderStore.id === this.favoritesFolder.id
     );
   }
 
   get isRecentFolder() {
-    return this.recentFolder && selectedFolderStore.id === this.recentFolder.id;
+    return (
+      this.recentFolder && this.selectedFolderStore.id === this.recentFolder.id
+    );
   }
 
   get isPrivacyFolder() {
     return (
       this.privacyFolder &&
-      this.privacyFolder.rootFolderType === selectedFolderStore.rootFolderType
+      this.privacyFolder.rootFolderType ===
+        this.selectedFolderStore.rootFolderType
     );
   }
 
   get isCommonFolder() {
-    return this.commonFolder && this.commonFolder.id === selectedFolderStore.id;
+    return (
+      this.commonFolder && this.commonFolder.id === this.selectedFolderStore.id
+    );
   }
 
   get isRecycleBinFolder() {
     return (
       this.recycleBinFolder &&
-      selectedFolderStore.id === this.recycleBinFolder.id
+      this.selectedFolderStore.id === this.recycleBinFolder.id
     );
   }
 
@@ -148,11 +145,12 @@ class TreeFoldersStore {
         (folder) =>
           (folder.rootFolderType === FolderType.USER ||
             folder.rootFolderType === FolderType.COMMON ||
-            folder.rootFolderType === FolderType.Projects) &&
+            folder.rootFolderType === FolderType.Projects ||
+            folder.rootFolderType === FolderType.SHARE) &&
           folder
       );
     }
   }
 }
 
-export default new TreeFoldersStore();
+export default TreeFoldersStore;

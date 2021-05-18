@@ -14,6 +14,7 @@ const Input = ({
   fontWeight,
   isBold,
   forwardedRef,
+  className,
   ...props
 }) => {
   const rest = {};
@@ -23,9 +24,13 @@ const Input = ({
   if (forwardedRef) rest.ref = forwardedRef;
 
   return props.mask != null ? (
-    <MaskedInput keepCharPositions {...props} />
+    <MaskedInput
+      className={`${className} not-selectable`}
+      keepCharPositions
+      {...props}
+    />
   ) : (
-    <input {...props} {...rest} />
+    <input className={`${className} not-selectable`} {...props} {...rest} />
   );
 };
 export default Input;

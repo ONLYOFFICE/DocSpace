@@ -1,4 +1,4 @@
-import { makeObservable, action, observable, computed } from "mobx";
+import { makeAutoObservable } from "mobx";
 
 class SelectedFolderStore {
   folders = null;
@@ -20,45 +20,36 @@ class SelectedFolderStore {
   providerItem = null;
 
   constructor() {
-    makeObservable(this, {
-      folders: observable,
-      parentId: observable,
-      filesCount: observable,
-      foldersCount: observable,
-      isShareable: observable,
-      new: observable,
-      id: observable,
-      title: observable,
-      access: observable,
-      shared: observable,
-      created: observable,
-      createdBy: observable,
-      updated: observable,
-      updatedBy: observable,
-      rootFolderType: observable,
-      pathParts: observable,
-      providerItem: observable,
-
-      isRootFolder: computed,
-
-      setSelectedFolder: action,
-    });
+    makeAutoObservable(this);
   }
 
   get isRootFolder() {
     return this.pathParts && this.pathParts.length <= 1;
   }
 
+  toDefault = () => {
+    this.folders = null;
+    this.parentId = null;
+    this.filesCount = null;
+    this.foldersCount = null;
+    this.isShareable = null;
+    this.new = null;
+    this.id = null;
+    this.title = null;
+    this.access = null;
+    this.shared = null;
+    this.created = null;
+    this.createdBy = null;
+    this.updated = null;
+    this.updatedBy = null;
+    this.rootFolderType = null;
+    this.pathParts = null;
+    this.providerItem = null;
+  };
+
   setSelectedFolder = (selectedFolder) => {
     if (!selectedFolder) {
-      const newStore = new SelectedFolderStore();
-
-      const selectedFolderItems = Object.keys(newStore);
-      for (let key of selectedFolderItems) {
-        if (key in this) {
-          this[key] = newStore[key];
-        }
-      }
+      this.toDefault();
     } else {
       const selectedFolderItems = Object.keys(selectedFolder);
 

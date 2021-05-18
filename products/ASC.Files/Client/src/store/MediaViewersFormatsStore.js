@@ -52,4 +52,4 @@ class MediaViewersFormatsStore {
   };
 }
 
-export default MediaViewersFormatsStore;
+export default new MediaViewersFormatsStore();

@@ -1,5 +1,5 @@
 import React from "react";
-import CustomScrollbarsVirtualList from "@appserver/components/scrollbar";
+import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import RowWrapper from "./RowWrapper";
@@ -17,7 +17,7 @@ const FileList = ({ uploadDataFiles }) => {
           width={width}
           itemData={uploadDataFiles}
           itemCount={uploadDataFiles.length}
-          itemSize={46}
+          itemSize={56}
           outerElementType={CustomScrollbarsVirtualList}
         >
           {RowWrapper}

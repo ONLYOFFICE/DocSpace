@@ -195,6 +195,15 @@ const StyledContent = styled.div`
       min-height: 16px;
     }
   }
+
+  .panel-loader-wrapper {
+    margin-top: 8px;
+    padding-left: 32px;
+  }
+  .panel-loader {
+    display: inline;
+    margin-right: 10px;
+  }
 `;
 
 const StyledHeaderContent = styled.div`
@@ -462,6 +471,9 @@ const StyledFooter = styled.div`
 
   .sharing_panel-button {
     margin-left: auto;
+  }
+  .new_files_panel-button {
+    margin-right: 8px;
   }
 `;
 

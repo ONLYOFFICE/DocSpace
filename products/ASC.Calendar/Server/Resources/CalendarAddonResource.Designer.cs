@@ -19,10 +19,10 @@ namespace ASC.Calendar.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class CalendarAddonResource {
+    internal class CalendarAddonResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace ASC.Calendar.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Calendar.Resources.CalendarAddonResource", typeof(CalendarAddonResource).Assembly);
@@ -51,7 +51,7 @@ namespace ASC.Calendar.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace ASC.Calendar.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Organize your work schedule. Track tasks and milestones due dates. Get notifications about events..
         /// </summary>
-        public static string AddonDescription {
+        internal static string AddonDescription {
             get {
                 return ResourceManager.GetString("AddonDescription", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace ASC.Calendar.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Calendar.
         /// </summary>
-        public static string AddonName {
+        internal static string AddonName {
             get {
                 return ResourceManager.GetString("AddonName", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace ASC.Calendar.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Sharing of calendars &amp; events.
         /// </summary>
-        public static string CalendarSharingSubscription {
+        internal static string CalendarSharingSubscription {
             get {
                 return ResourceManager.GetString("CalendarSharingSubscription", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace ASC.Calendar.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Event reminders.
         /// </summary>
-        public static string EventAlertSubscription {
+        internal static string EventAlertSubscription {
             get {
                 return ResourceManager.GetString("EventAlertSubscription", resourceCulture);
             }

@@ -5,8 +5,9 @@ class VersionHistoryStore {
   isVisible = false;
   fileId = null;
   versions = null;
+  filesStore = null;
 
-  constructor() {
+  constructor(filesStore) {
     makeObservable(this, {
       isVisible: observable,
       fileId: observable,
@@ -19,6 +20,7 @@ class VersionHistoryStore {
       restoreVersion: action,
       updateCommentVersion: action,
     });
+    this.filesStore = filesStore;
   }
 
   setIsVerHistoryPanel = (isVisible) => {
@@ -32,6 +34,26 @@ class VersionHistoryStore {
 
   //setFileVersions
   setVerHistoryFileVersions = (versions) => {
+    const file = this.filesStore.files.find((item) => item.id == this.fileId);
+
+    const currentVersionGroup = Math.max.apply(
+      null,
+      versions.map((ver) => ver.versionGroup)
+    );
+
+    if (
+      versions.length !== file.version ||
+      currentVersionGroup !== file.versionGroup
+    ) {
+      const newFile = {
+        ...file,
+        version: versions.length,
+        versionGroup: currentVersionGroup,
+      };
+
+      this.filesStore.setFile(newFile);
+    }
+
     this.versions = versions;
   };
 
@@ -76,4 +98,4 @@ class VersionHistoryStore {
   };
 }
 
-export default new VersionHistoryStore();
+export default VersionHistoryStore;

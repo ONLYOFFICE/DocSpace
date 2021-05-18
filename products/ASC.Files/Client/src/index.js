@@ -10,7 +10,6 @@ import("./bootstrap");
 // import * as serviceWorker from "./serviceWorker";
 // import { ErrorBoundary, store as commonStore } from "asc-web-common";
 // import { Provider as MobxProvider } from "mobx-react";
-// import initFilesStore from "./store/InitFilesStore";
 // import filesStore from "./store/FilesStore";
 // import settingsStore from "./store/SettingsStore";
 // import mediaViewerDataStore from "./store/MediaViewerDataStore";
@@ -26,7 +25,6 @@ import("./bootstrap");
 // ReactDOM.render(
 //   <MobxProvider
 //     auth={authStore}
-//     initFilesStore={initFilesStore}
 //     filesStore={filesStore}
 //     settingsStore={settingsStore}
 //     mediaViewerDataStore={mediaViewerDataStore}

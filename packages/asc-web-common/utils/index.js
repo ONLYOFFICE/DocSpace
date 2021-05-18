@@ -6,11 +6,7 @@ import TopLoaderService from "@appserver/components/top-loading-indicator";
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
   for (var key in obj) {
-    if (
-      (skipNull && !obj[key] && key !== "withSubfolders") ||
-      (key === "withSubfolders" && obj[key] !== "false")
-    )
-      continue;
+    if (skipNull && !obj[key]) continue;
 
     if (str !== "") {
       str += "&";
@@ -137,7 +133,7 @@ export function isAdmin(currentUser, currentProductId) {
       productName = "people";
       break;
     case "e67be73d-f9ae-4ce1-8fec-1880cb518cb4":
-      productName = "documents";
+      productName = "files";
       break;
     default:
       break;
@@ -151,21 +147,80 @@ export function isAdmin(currentUser, currentProductId) {
   return currentUser.isAdmin || currentUser.isOwner || isProductAdmin;
 }
 
-// export function combineUrl(host = "", ...params) {
-//   let url = host.replace(/\/+$/, "");
-
-//   params.forEach((part) => {
-//     const newPart = part.trim().replace(/^\/+/, "");
-//     url += newPart
-//       ? url.length > 0 && url[url.length - 1] === "/"
-//         ? newPart
-//         : `/${newPart}`
-//       : "";
-//   });
-
-//   return url;
-// }
-
 import combineUrlFunc from "./combineUrl";
 
 export const combineUrl = combineUrlFunc;
+
+export function getCookie(name) {
+  let matches = document.cookie.match(
+    new RegExp(
+      "(?:^|; )" +
+        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+        "=([^;]*)"
+    )
+  );
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+export function setCookie(name, value, options = {}) {
+  options = {
+    path: "/",
+    ...options,
+  };
+
+  if (options.expires instanceof Date) {
+    options.expires = options.expires.toUTCString();
+  }
+
+  let updatedCookie =
+    encodeURIComponent(name) + "=" + encodeURIComponent(value);
+
+  for (let optionKey in options) {
+    updatedCookie += "; " + optionKey;
+    let optionValue = options[optionKey];
+    if (optionValue !== true) {
+      updatedCookie += "=" + optionValue;
+    }
+  }
+
+  document.cookie = updatedCookie;
+}
+
+export function deleteCookie(name) {
+  setCookie(name, "", {
+    "max-age": -1,
+  });
+}
+
+export function clickBackdrop() {
+  var elms = document.getElementsByClassName("backdrop-active");
+  if (elms && elms.length > 0) {
+    elms[0].click();
+  }
+}
+
+export function objectToGetParams(object) {
+  const params = Object.entries(object)
+    .filter(([, value]) => value !== undefined && value !== null)
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+    );
+
+  return params.length > 0 ? `?${params.join("&")}` : "";
+}
+
+export function toCommunityHostname(hostname) {
+  let communityHostname;
+  try {
+    communityHostname =
+      hostname.indexOf("m.") > -1
+        ? hostname.substring(2, hostname.length)
+        : hostname;
+  } catch (e) {
+    console.error(e);
+    communityHostname = hostname;
+  }
+
+  return communityHostname;
+}
