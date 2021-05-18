@@ -411,22 +411,30 @@ class PortalAdmins extends Component {
 
   onFullAccessClick = (access) => {
     const { selectedUser } = this.state;
-    const { changeAdmins, admins, setAdmins } = this.props;
+    const { changeAdmins, admins, setAdmins, modules } = this.props;
 
     changeAdmins([selectedUser.id], fullAccessId, access)
-      .then(async () => {
-        const updatedUser = await api.people.getUserById([selectedUser.id]);
+      .then(() => {
+        let updatedAdmin = {};
         const updatedAdmins = admins.map((admin) => {
           if (admin.id === selectedUser.id) {
-            return updatedUser;
+            admin.isAdmin = access;
+            if (access) {
+              admin.listAdminModules = modules.map((module) => {
+                return module.appName;
+              });
+            } else {
+              delete admin.listAdminModules;
+            }
+
+            updatedAdmin = admin;
           }
           return admin;
         });
-
-        setAdmins(updatedAdmins);
         this.setState({
-          selectedUser: updatedUser,
+          selectedUser: updatedAdmin,
         });
+        setAdmins(updatedAdmins);
       })
       .catch((e) => {
         console.log(e);
@@ -438,37 +446,38 @@ class PortalAdmins extends Component {
     const { changeAdmins, admins, setAdmins, modules } = this.props;
 
     changeAdmins([selectedUser.id], module.id, access)
-      .then(async () => {
+      .then(() => {
+        let updatedAdmin = {};
         const updatedAdmins = admins.map((admin) => {
           if (admin.id === selectedUser.id) {
-            if (!admin.listAdminModules) {
-              admin.listAdminModules = [module.appName];
+            updatedAdmin = { ...admin };
+            if (!updatedAdmin.listAdminModules) {
+              updatedAdmin.listAdminModules = [module.appName];
             } else if (!access) {
-              const moduleIndex = admin.listAdminModules.findIndex(
+              const moduleIndex = updatedAdmin.listAdminModules.findIndex(
                 (adminModule) => {
                   return module.appName === adminModule;
                 }
               );
 
-              admin.listAdminModules.splice(moduleIndex, 1);
+              updatedAdmin.listAdminModules.splice(moduleIndex, 1);
             } else if (access) {
               const newModuleList = getNewModulesList(
                 module,
-                admin.listAdminModules,
+                updatedAdmin.listAdminModules,
                 modules
               );
 
-              admin.listAdminModules = newModuleList;
+              updatedAdmin.listAdminModules = newModuleList;
             }
-
-            this.setState({
-              selectedUser: admin,
-            });
+            return updatedAdmin;
           }
-
           return admin;
         });
 
+        this.setState({
+          selectedUser: updatedAdmin,
+        });
         setAdmins(updatedAdmins);
       })
       .catch((e) => {
