@@ -63,7 +63,7 @@ class PasswordField extends React.Component {
           clipActionResource={copyLinkText}
           clipCopiedResource={copiedResourceText}
           clipEmailResource={`${t("Email")}: `}
-          clipPasswordResource={`${t("Password")}: `}
+          clipPasswordResource={`${t("Common:Password")}: `}
           tooltipPasswordTitle={`${t("ErrorPasswordMessage")}:`}
           tooltipPasswordLength={t("ErrorPasswordLength", {
             from: passwordSettings ? passwordSettings.minLength : 8,

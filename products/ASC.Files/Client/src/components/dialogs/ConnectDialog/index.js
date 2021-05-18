@@ -267,7 +267,7 @@ const PureConnectDialogContainer = (props) => {
               />
             </FieldContainer>
             <FieldContainer
-              labelText={t("Password")}
+              labelText={t("Common:Password")}
               isRequired
               isVertical
               hasError={!isPasswordValid}

@@ -7,5 +7,6 @@
   "SaveButton": "Сохранить",
   "OKButton": "ОК",
   "LoadingProcessing": "Загрузка...",
-  "CloseButton": "Закрыть"
+  "CloseButton": "Закрыть",
+  "Password": "Пароль"
 }

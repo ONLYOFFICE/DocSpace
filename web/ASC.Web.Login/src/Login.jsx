@@ -452,7 +452,7 @@ const Form = (props) => {
             passwordSettings={settings}
             id="password"
             inputName="password"
-            placeholder={t("Password")}
+            placeholder={t("Common:Password")}
             type="password"
             hasError={!passwordValid}
             inputValue={password}

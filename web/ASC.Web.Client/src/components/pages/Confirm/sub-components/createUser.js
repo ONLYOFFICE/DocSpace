@@ -475,7 +475,7 @@ class Confirm extends React.PureComponent {
               inputName={passwordInputName}
               emailInputName={emailInputName}
               inputValue={this.state.password}
-              placeholder={t("InvitePassword")}
+              placeholder={t("Common:Password")}
               size="huge"
               scale={true}
               tabIndex={4}
@@ -487,7 +487,7 @@ class Confirm extends React.PureComponent {
               onValidateInput={this.validatePassword}
               clipActionResource={t("CopyEmailAndPassword")}
               clipEmailResource={`${t("Email")}: `}
-              clipPasswordResource={`${t("InvitePassword")}: `}
+              clipPasswordResource={`${t("Common:Password")}: `}
               tooltipPasswordTitle={`${t("ErrorPasswordMessage")}:`}
               tooltipPasswordLength={`${t("ErrorPasswordLength", {
                 fromNumber: settings.minLength,
@@ -585,4 +585,6 @@ export default inject(({ auth }) => {
     setProviders,
     providers,
   };
-})(withRouter(withTranslation("Confirm")(observer(CreateUserForm))));
+})(
+  withRouter(withTranslation(["Confirm", "Common"])(observer(CreateUserForm)))
+);

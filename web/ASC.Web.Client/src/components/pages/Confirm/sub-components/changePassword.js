@@ -173,7 +173,7 @@ class Form extends React.PureComponent {
             fromNumber: settings.minLength,
             toNumber: 30,
           })}:`}
-          placeholder={t("PasswordCustomMode")}
+          placeholder={t("Common:Password")}
           maxLength={30}
           onKeyDown={this.onKeyPress}
           isAutoFocussed={true}

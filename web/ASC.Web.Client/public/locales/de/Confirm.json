@@ -16,11 +16,9 @@
   "ErrorPasswordNoSpecialSymbols": "Sonderzeichen",
   "ErrorPasswordNoUpperCase": "Großbuchstaben",
   "FirstName": "Vorname",
-  "InvitePassword": "Passwort",
   "InviteTitle": "Sie sind eingeladen, diesem Portal beizutreten!",
   "LastName": "Familienname",
   "LoginRegistryButton": "Beitreten",
   "LoginWithAccount": "oder melden Sie sich ein:",
-  "PasswordCustomMode": "Passwort",
   "PassworResetTitle": "Jetzt können Sie ein neues Kennwort erstellen."
 }

@@ -6,7 +6,6 @@
   "ConnectMakeShared": "Freigeben und in den Ordner \u0022Gemeinsame Dokumente\u0022 verschieben",
   "EmptyField": "Alle Felder sind erforderlich",
   "Login": "Anmeldung",
-  "Password": "Passwort",
   "Reconnect": "Neu verbinden",
   "RequiredFieldMessage": "Pflichtfeld"
 }

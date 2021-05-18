@@ -517,7 +517,7 @@ class CreateUserForm extends React.Component {
             <PasswordField
               isRequired={true}
               hasError={errors.password}
-              labelText={`${t("Password")}:`}
+              labelText={`${t("Common:Password")}:`}
               radioName="passwordType"
               radioValue={profile.passwordType}
               radioOptions={[

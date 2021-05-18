@@ -7,5 +7,6 @@
   "SaveButton": "Save",
   "OKButton": "OK",
   "LoadingProcessing": "Loading...",
-  "CloseButton": "Close"
+  "CloseButton": "Close",
+  "Password": "Password"
 }

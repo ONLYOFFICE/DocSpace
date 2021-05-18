@@ -704,7 +704,7 @@ class UpdateUserForm extends React.Component {
               dataDialog={dialogsDataset.changeEmail}
             />
             <TextChangeField
-              labelText={`${t("Password")}:`}
+              labelText={`${t("Common:Password")}:`}
               inputName="password"
               inputValue={"********"}
               buttonText={t("ChangeButton")}

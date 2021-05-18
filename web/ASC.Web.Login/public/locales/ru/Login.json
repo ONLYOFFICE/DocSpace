@@ -7,7 +7,6 @@
   "MessageEmailConfirmed": "Ваш email успешно активирован.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Пожалуйста, введите адрес электронной почты, указанный при регистрации на портале. Инструкции для восстановления пароля будут отправлены на этот адрес электронной почты.",
   "Or": "ИЛИ",
-  "Password": "Пароль",
   "PasswordRecoveryPlaceholder": "Ваш регистрационный email",
   "PasswordRecoveryTitle": "Восстановление пароля",
   "ProviderLoginError": "Ошибка авторизации",

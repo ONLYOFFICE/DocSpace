@@ -7,7 +7,6 @@
   "MessageEmailConfirmed": "Votre adresse e-mail est activée avec succès.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "S\u0027il vous plaît entrez l\u0027adresse e-mail que vous avez utilisée lors de votre inscription sur le portail. Les instructions de récupération de votre mot de passe seront envoyées à cette adresse.",
   "Or": "Ou",
-  "Password": "Mot de passe",
   "PasswordRecoveryPlaceholder": "Votre mail d\u0027inscription",
   "PasswordRecoveryTitle": "Récupération de mot de passe",
   "Register": "Inscription",
