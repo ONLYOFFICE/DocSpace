@@ -288,6 +288,7 @@ class AutomaticBackup extends React.PureComponent {
       });
   };
   getProgress = () => {
+    const { t } = this.props;
     getBackupProgress().then((res) => {
       if (res) {
         if (res.error.length > 0 && res.progress !== 100) {
@@ -300,6 +301,7 @@ class AutomaticBackup extends React.PureComponent {
         }
         if (res.progress === 100) {
           clearInterval(this.timerId);
+          toastr.success(`${t("SuccessCopied")}`);
           this.setState({
             isCopyingToLocal: false,
           });
