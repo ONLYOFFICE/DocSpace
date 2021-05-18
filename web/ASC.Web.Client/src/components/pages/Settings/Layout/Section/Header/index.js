@@ -178,12 +178,12 @@ class SectionHeaderContent extends React.Component {
     const {
       t,
       addUsers,
-      groupsCaption,
       isHeaderIndeterminate,
       isHeaderChecked,
       isHeaderVisible,
+      selection,
     } = this.props;
-    const { header, isCategoryOrHeader, showSelector } = this.state;
+    const { header, isCategoryOrHeader } = this.state;
     const arrayOfParams = this.getArrayOfParams();
 
     const menuItems = [
@@ -196,6 +196,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("Remove"),
+        disabled: !selection || !selection.length > 0,
         onClick: this.removeAdmins,
       },
     ];
@@ -264,6 +265,7 @@ export default inject(({ auth, setup }) => {
     isHeaderVisible,
     deselectUser,
     selectAll,
+    selection,
   } = setup.selectionStore;
   const { admins, selectorIsOpen } = setup.security.accessRight;
 
@@ -281,5 +283,6 @@ export default inject(({ auth, setup }) => {
     selectAll,
     toggleSelector,
     selectorIsOpen,
+    selection,
   };
 })(withRouter(withTranslation("Settings")(observer(SectionHeaderContent))));

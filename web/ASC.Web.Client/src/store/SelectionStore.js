@@ -1,5 +1,4 @@
 import { makeAutoObservable } from "mobx";
-import { getUserStatus } from "@appserver/people/src/helpers/people-helpers";
 
 class SelectionStore {
   selection = [];
@@ -19,6 +18,12 @@ class SelectionStore {
   };
 
   deselectUser = (user) => {
+    if (!user) {
+      this.selected = "none";
+      this.selection = [];
+      return;
+    }
+
     const newData = this.selection.filter((el) => el.id !== user.id);
     return (this.selection = newData);
   };
