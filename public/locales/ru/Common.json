@@ -13,5 +13,7 @@
   "SendButton": "Отправить",
   "People": "Люди",
   "ComingSoon": "Скоро появится",
-  "LearnMore": "Узнать больше"
+  "LearnMore": "Узнать больше",
+  "OpenApp": "Откройте {{title}}",
+  "ViewWeb": "Просмотреть веб-версию"
 }

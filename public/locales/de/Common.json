@@ -13,5 +13,7 @@
   "SendButton": "Senden",
   "People": "Personen",
   "ComingSoon": "Kommt demnächst",
-  "LearnMore": "Mehr erfahren"
+  "LearnMore": "Mehr erfahren",
+  "OpenApp": "Öffnen Sie {{title}}",
+  "ViewWeb": "Web-Version öffnen"
 }

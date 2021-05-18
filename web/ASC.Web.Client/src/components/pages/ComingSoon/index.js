@@ -146,10 +146,10 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t }) => {
         borderRadius="2px"
         className="coming-soon-badge"
       />
-      <ExternalLink label={t("ViewWeb")} href={webLink} />
+      <ExternalLink label={t("Common:ViewWeb")} href={webLink} />
       {appLink && (
         <ExternalLink
-          label={t("OpenApp", {
+          label={t("Common:OpenApp", {
             title: title,
           })}
           href={appLink}
@@ -233,7 +233,7 @@ const ComingSoonWrapper = inject(({ auth }) => ({
   modules: auth.moduleStore.modules,
   isLoaded: auth.isLoaded,
   setCurrentProductId: auth.settingsStore.setCurrentProductId,
-}))(withRouter(withTranslation(["ComingSoon", "Common"])(ComingSoon)));
+}))(withRouter(withTranslation("Common")(ComingSoon)));
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

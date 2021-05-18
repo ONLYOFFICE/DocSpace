@@ -150,7 +150,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t, tReady }) => {
         className="coming-soon-badge"
       />
       <ExternalLink
-        label={t("ViewWeb")}
+        label={t("Common:ViewWeb")}
         onClick={() => {
           deleteCookie("desktop_view");
           window.open(webLink, "_self", "", true);
@@ -158,7 +158,7 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t, tReady }) => {
       />
       {appLink && (
         <ExternalLink
-          label={t("OpenApp", {
+          label={t("Common:OpenApp", {
             title: title,
           })}
           href={appLink}

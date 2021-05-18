@@ -13,5 +13,7 @@
   "SendButton": "Send",
   "People": "People",
   "ComingSoon": "Coming soon",
-  "LearnMore": "Learn more"
+  "LearnMore": "Learn more",
+  "OpenApp": "Open your {{title}} app",
+  "ViewWeb": "View web version"
 }
