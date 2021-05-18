@@ -1,6 +1,5 @@
 ﻿{
   "DeleteThirdParty": "Delete third-party",
   "DeleteThirdPartyAlert": "Remove {{service}} from the \u0027Documents\u0027 module? This will not affect your {{account}} account in any way.",
-  "OKButton": "OK",
   "SuccessDeleteThirdParty": "Third-party {{service}} is deleted"
 }

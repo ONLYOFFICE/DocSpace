@@ -128,7 +128,7 @@ class SendInviteDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
-            label={t("OKButton")}
+            label={t("Common:OKButton")}
             size="medium"
             primary
             onClick={this.onSendInvite}

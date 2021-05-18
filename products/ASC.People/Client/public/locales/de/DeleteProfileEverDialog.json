@@ -3,7 +3,6 @@
   "DeleteUserConfirmation": "{{userCaption}} \u003Cstrong\u003E{{user}}\u003C/strong\u003E wird gelöscht.",
   "DeleteUserDataConfirmation": "Freigegebene Dokumente dieses Benutzers werden gelöscht. Um dies zu vermeiden, weisen Sie Daten neu zu.",
   "NotBeUndone": "Dies kann nicht rückgängig gemacht werden.",
-  "OKButton": "OK",
   "ReassignData": "Daten erneut zuweisen",
   "SuccessfullyDeleteUserInfoMessage": "Der Benutzer wurde erfolgreich gelöscht",
   "Warning": "Warnung!"

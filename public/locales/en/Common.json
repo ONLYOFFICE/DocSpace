@@ -4,5 +4,6 @@
   "Culture_ru-RU": "Russian (Russia)",
   "Culture_de-DE": "German (Germany)",
   "CancelButton": "Cancel",
-  "SaveButton": "Save"
+  "SaveButton": "Save",
+  "OKButton": "OK"
 }

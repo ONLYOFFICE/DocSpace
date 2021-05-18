@@ -1,6 +1,5 @@
 ﻿{
   "DeleteThirdParty": "Отключить сторонний ресурс",
   "DeleteThirdPartyAlert": "Вы действительно хотите удалить {{service}} из модуля \u0027Документы\u0027? Это никак не повлияет на Ваш аккаунт.",
-  "OKButton": "ОК",
   "SuccessDeleteThirdParty": "Сторонний ресурс {{service}} отключен"
 }

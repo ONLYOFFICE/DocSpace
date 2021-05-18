@@ -4,5 +4,6 @@
   "Culture_ru-RU": "Русский (Россия)",
   "Culture_de-DE": "Немецкий (Германия)",
   "CancelButton": "Отмена",
-  "SaveButton": "Сохранить"
+  "SaveButton": "Сохранить",
+  "OKButton": "ОК"
 }

@@ -79,7 +79,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="OKBtn"
-            label={t("OKButton")}
+            label={t("Common:OKButton")}
             size="medium"
             primary={true}
             onClick={this.onDeleteProfileEver}
@@ -99,9 +99,10 @@ class DeleteProfileEverDialogComponent extends React.Component {
   }
 }
 
-const DeleteProfileEverDialog = withTranslation("DeleteProfileEverDialog")(
-  DeleteProfileEverDialogComponent
-);
+const DeleteProfileEverDialog = withTranslation([
+  "DeleteProfileEverDialog",
+  "Common",
+])(DeleteProfileEverDialogComponent);
 
 DeleteProfileEverDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

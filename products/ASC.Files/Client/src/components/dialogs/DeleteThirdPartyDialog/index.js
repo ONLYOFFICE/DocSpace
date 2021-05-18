@@ -76,7 +76,7 @@ const DeleteThirdPartyDialog = (props) => {
       <ModalDialog.Footer>
         <Button
           isLoading={isLoading}
-          label={t("OKButton")}
+          label={t("Common:OKButton")}
           size="big"
           primary
           onClick={onDeleteThirdParty}
@@ -132,6 +132,8 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation("DeleteThirdPartyDialog")(observer(DeleteThirdPartyDialog))
+    withTranslation(["DeleteThirdPartyDialog", "Common"])(
+      observer(DeleteThirdPartyDialog)
+    )
   )
 );

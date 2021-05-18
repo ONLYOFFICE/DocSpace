@@ -139,7 +139,7 @@ const ConflictResolveDialog = (props) => {
         <Button
           className="button-dialog-accept"
           key="OkButton"
-          label={t("OKButton")}
+          label={t("Common:OKButton")}
           size="medium"
           primary
           onClick={onAcceptType}

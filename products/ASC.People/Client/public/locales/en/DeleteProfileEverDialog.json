@@ -3,7 +3,6 @@
   "DeleteUserConfirmation": "{{userCaption}} \u003Cstrong\u003E{{user}}\u003C/strong\u003E will be deleted.",
   "DeleteUserDataConfirmation": "User documents shared with others will be deleted. To avoid this, reassign data.",
   "NotBeUndone": "Note: this action can\u0027t be undone.",
-  "OKButton": "OK",
   "ReassignData": "Reassign data",
   "SuccessfullyDeleteUserInfoMessage": "The user has been successfully deleted",
   "Warning": "Warning!"
