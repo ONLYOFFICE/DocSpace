@@ -411,7 +411,17 @@ class PortalAdmins extends Component {
 
   onFullAccessClick = (access) => {
     const { selectedUser } = this.state;
-    const { changeAdmins, admins, setAdmins, modules } = this.props;
+    const {
+      changeAdmins,
+      admins,
+      setAdmins,
+      modules,
+      isLoading,
+      setIsLoading,
+    } = this.props;
+
+    if (isLoading) return;
+    setIsLoading(true);
 
     changeAdmins([selectedUser.id], fullAccessId, access)
       .then(() => {
@@ -435,15 +445,28 @@ class PortalAdmins extends Component {
           selectedUser: updatedAdmin,
         });
         setAdmins(updatedAdmins);
+        setIsLoading(false);
       })
       .catch((e) => {
         console.log(e);
+        setIsLoading(false);
       });
   };
 
   onModuleToggle = (module, access) => {
     const { selectedUser } = this.state;
-    const { changeAdmins, admins, setAdmins, modules } = this.props;
+    const {
+      changeAdmins,
+      admins,
+      setAdmins,
+      modules,
+      isLoading,
+      setIsLoading,
+    } = this.props;
+
+    if (isLoading) return;
+
+    setIsLoading(true);
 
     changeAdmins([selectedUser.id], module.id, access)
       .then(() => {
@@ -479,8 +502,10 @@ class PortalAdmins extends Component {
           selectedUser: updatedAdmin,
         });
         setAdmins(updatedAdmins);
+        setIsLoading(false);
       })
       .catch((e) => {
+        setIsLoading(false);
         console.log(e);
       });
   };
@@ -806,6 +831,7 @@ export default inject(({ auth, setup }) => {
   const { admins, owner, filter, selectorIsOpen } = setup.security.accessRight;
   const { user: me } = auth.userStore;
   const { modules } = auth.moduleStore;
+  const { setIsLoading, isLoading } = auth.settingsStore;
   const {
     setAddUsers,
     setRemoveAdmins,
@@ -843,5 +869,7 @@ export default inject(({ auth, setup }) => {
     toggleSelector,
     setAdmins,
     getUsersByIds,
+    setIsLoading,
+    isLoading,
   };
 })(withTranslation("Settings")(withRouter(observer(PortalAdmins))));
