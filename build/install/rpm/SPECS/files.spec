@@ -1,307 +1,307 @@
 %files
 %config %attr(644, root, root) %{_bindir}/*
 
-%files ASC.Web.Api
+%files api
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/studio/api/
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
-%{_var}/www/appserver/products/ASC.Projects/server/ASC.Projects*.dll
-%{_sysconfdir}/systemd/system/AppServer-ASC.Web.Api.service
-%dir %{_var}/www/appserver/studio/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.CRM/server/
-%dir %{_var}/www/appserver/products/ASC.Projects/
-%dir %{_var}/www/appserver/products/ASC.Projects/server/
+%{_var}/www/%{sysname}/studio/api/
+%{_var}/www/%{sysname}/products/ASC.People/server/ASC.People.dll
+%{_var}/www/%{sysname}/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/%{sysname}/products/ASC.CRM/server/ASC.CRM*.dll
+%{_var}/www/%{sysname}/products/ASC.Projects/server/ASC.Projects*.dll
+%{_sysconfdir}/systemd/system/%{sysname}-api.service
+%dir %{_var}/www/%{sysname}/studio/
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.People/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/server/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/server/
 
-%files ASC.Data.Backup
+%files backup
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/ASC.Data.Backup/
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
-%{_var}/www/appserver/products/ASC.Projects/server/ASC.Projects*.dll
-%{_sysconfdir}/systemd/system/AppServer-ASC.Data.Backup.service
-%dir %{_var}/www/appserver/services/
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.CRM/server/
-%dir %{_var}/www/appserver/products/ASC.Projects/
-%dir %{_var}/www/appserver/products/ASC.Projects/server/
+%{_var}/www/%{sysname}/services/ASC.Data.Backup/
+%{_var}/www/%{sysname}/products/ASC.People/server/ASC.People.dll
+%{_var}/www/%{sysname}/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/%{sysname}/products/ASC.CRM/server/ASC.CRM*.dll
+%{_var}/www/%{sysname}/products/ASC.Projects/server/ASC.Projects*.dll
+%{_sysconfdir}/systemd/system/%{sysname}-backup.service
+%dir %{_var}/www/%{sysname}/services/
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.People/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/server/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/server/
 
-%files Common
+%files common
 %defattr(-, onlyoffice, onlyoffice, -)
-%config %{_sysconfdir}/onlyoffice/appserver/
-%{_var}/log/onlyoffice/appserver/
-%{_var}/www/appserver/sql/
+%config %{_sysconfdir}/onlyoffice/%{sysname}/
+%{_var}/log/onlyoffice/%{sysname}/
+%{_var}/www/%{sysname}/sql/
 %dir %{_sysconfdir}/onlyoffice/
 %dir %{_var}/log/onlyoffice/
 
-%files ASC.Files.Service
+%files files-services
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/products/ASC.Files/service/
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_var}/www/appserver/products/ASC.People/server/ASC.People*.dll
-%{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
-%{_var}/www/appserver/products/ASC.Projects/server/ASC.Projects*.dll
-%{_sysconfdir}/systemd/system/AppServer-ASC.Files.Service.service
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.CRM/server/
-%dir %{_var}/www/appserver/products/ASC.Projects/
-%dir %{_var}/www/appserver/products/ASC.Projects/server/
+%{_var}/www/%{sysname}/products/ASC.Files/service/
+%{_var}/www/%{sysname}/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/%{sysname}/products/ASC.People/server/ASC.People*.dll
+%{_var}/www/%{sysname}/products/ASC.CRM/server/ASC.CRM*.dll
+%{_var}/www/%{sysname}/products/ASC.Projects/server/ASC.Projects*.dll
+%{_sysconfdir}/systemd/system/%{sysname}-files-services.service
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.People/server
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/server/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/server/
 
-%files ASC.Notify
+%files notify
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/ASC.Notify/
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
-%{_var}/www/appserver/products/ASC.Projects/server/ASC.Projects*.dll
-%{_sysconfdir}/systemd/system/AppServer-ASC.Notify.service
-%dir %{_var}/www/appserver/services/
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.CRM/server/
-%dir %{_var}/www/appserver/products/ASC.Projects/
-%dir %{_var}/www/appserver/products/ASC.Projects/server/
+%{_var}/www/%{sysname}/services/ASC.Notify/
+%{_var}/www/%{sysname}/products/ASC.People/server/ASC.People.dll
+%{_var}/www/%{sysname}/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/%{sysname}/products/ASC.CRM/server/ASC.CRM*.dll
+%{_var}/www/%{sysname}/products/ASC.Projects/server/ASC.Projects*.dll
+%{_sysconfdir}/systemd/system/%{sysname}-notify.service
+%dir %{_var}/www/%{sysname}/services/
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.People/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/server/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/server/
 
-%files ASC.Files
+%files files
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/products/ASC.Files/server/
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
-%{_var}/www/appserver/products/ASC.Projects/server/ASC.Projects*.dll
-%{_sysconfdir}/systemd/system/AppServer-ASC.Files.service
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.CRM/server/
-%dir %{_var}/www/appserver/products/ASC.Projects/
-%dir %{_var}/www/appserver/products/ASC.Projects/server/
+%{_var}/www/%{sysname}/products/ASC.Files/server/
+%{_var}/www/%{sysname}/products/ASC.People/server/ASC.People.dll
+%{_var}/www/%{sysname}/products/ASC.CRM/server/ASC.CRM*.dll
+%{_var}/www/%{sysname}/products/ASC.Projects/server/ASC.Projects*.dll
+%{_sysconfdir}/systemd/system/%{sysname}-files.service
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.People/server/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/server/
 
-%files ASC.ApiSystem
+%files api-system
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/ASC.ApiSystem/
-%{_sysconfdir}/systemd/system/AppServer-ASC.ApiSystem.service
-%dir %{_var}/www/appserver/services/
+%{_var}/www/%{sysname}/services/ASC.ApiSystem/
+%{_sysconfdir}/systemd/system/%{sysname}-api-system.service
+%dir %{_var}/www/%{sysname}/services/
 
-%files Proxy
+%files proxy
 %defattr(-, onlyoffice, onlyoffice, -)
 %{_sysconfdir}/nginx/includes/*
 %{_sysconfdir}/nginx/conf.d/*
-%{_var}/www/appserver/public/
-%{_var}/www/appserver/studio/client/
-%{_var}/www/appserver/studio/login
-%{_var}/www/appserver/products/ASC.People/client/
-%{_var}/www/appserver/products/ASC.Files/client/
-%{_var}/www/appserver/products/ASC.Files/editor/
-%{_var}/www/appserver/products/ASC.CRM/client/
-%{_var}/www/appserver/products/ASC.Projects/client
-%{_var}/www/appserver/products/ASC.Calendar/client/
-%{_var}/www/appserver/products/ASC.Mail/client
-%dir %{_var}/www/appserver/studio/
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.Projects/
-%dir %{_var}/www/appserver/products/ASC.Calendar/
-%dir %{_var}/www/appserver/products/ASC.Mail/
+%{_var}/www/%{sysname}/public/
+%{_var}/www/%{sysname}/studio/client/
+%{_var}/www/%{sysname}/studio/login
+%{_var}/www/%{sysname}/products/ASC.People/client/
+%{_var}/www/%{sysname}/products/ASC.Files/client/
+%{_var}/www/%{sysname}/products/ASC.Files/editor/
+%{_var}/www/%{sysname}/products/ASC.CRM/client/
+%{_var}/www/%{sysname}/products/ASC.Projects/client
+%{_var}/www/%{sysname}/products/ASC.Calendar/client/
+%{_var}/www/%{sysname}/products/ASC.Mail/client
+%dir %{_var}/www/%{sysname}/studio/
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
+%dir %{_var}/www/%{sysname}/products/ASC.Calendar/
+%dir %{_var}/www/%{sysname}/products/ASC.Mail/
 
-%files ASC.Studio.Notify
+%files studio-notify
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/ASC.Studio.Notify/
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
-%{_var}/www/appserver/products/ASC.Projects/server/ASC.Projects*.dll
-%{_sysconfdir}/systemd/system/AppServer-ASC.Studio.Notify.service
-%dir %{_var}/www/appserver/services/
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.CRM/server/
-%dir %{_var}/www/appserver/products/ASC.Projects/
-%dir %{_var}/www/appserver/products/ASC.Projects/server/
+%{_var}/www/%{sysname}/services/ASC.Studio.Notify/
+%{_var}/www/%{sysname}/products/ASC.People/server/ASC.People.dll
+%{_var}/www/%{sysname}/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/%{sysname}/products/ASC.CRM/server/ASC.CRM*.dll
+%{_var}/www/%{sysname}/products/ASC.Projects/server/ASC.Projects*.dll
+%{_sysconfdir}/systemd/system/%{sysname}-studio-notify.service
+%dir %{_var}/www/%{sysname}/services/
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.People/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/server/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/server/
 
-%files ASC.People
+%files people-server
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/products/ASC.People/server/
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
-%{_var}/www/appserver/products/ASC.Projects/server/ASC.Projects*.dll
-%{_sysconfdir}/systemd/system/AppServer-ASC.People.service
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.CRM/server/
-%dir %{_var}/www/appserver/products/ASC.Projects/
-%dir %{_var}/www/appserver/products/ASC.Projects/server/
+%{_var}/www/%{sysname}/products/ASC.People/server/
+%{_var}/www/%{sysname}/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/%{sysname}/products/ASC.CRM/server/ASC.CRM*.dll
+%{_var}/www/%{sysname}/products/ASC.Projects/server/ASC.Projects*.dll
+%{_sysconfdir}/systemd/system/%{sysname}-people-server.service
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/server/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/server/
 
-%files ASC.UrlShortener
+%files urlshortener
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/ASC.UrlShortener/
-%{_sysconfdir}/systemd/system/AppServer-ASC.UrlShortener.service
-%dir %{_var}/www/appserver/services/
+%{_var}/www/%{sysname}/services/ASC.UrlShortener/
+%{_sysconfdir}/systemd/system/%{sysname}-urlshortener.service
+%dir %{_var}/www/%{sysname}/services/
 
-%files ASC.Thumbnails
+%files thumbnails
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/ASC.Thumbnails/
-%{_sysconfdir}/systemd/system/AppServer-ASC.Thumbnails.service
-%dir %{_var}/www/appserver/services/
+%{_var}/www/%{sysname}/services/ASC.Thumbnails/
+%{_sysconfdir}/systemd/system/%{sysname}-thumbnails.service
+%dir %{_var}/www/%{sysname}/services/
 
-%files ASC.Socket
+%files socket
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/ASC.Socket.IO/
-%{_var}/www/appserver/products/ASC.Files/server/
-%{_var}/www/appserver/products/ASC.People/server/
-%{_var}/www/appserver/products/ASC.CRM/server/
-%{_var}/www/appserver/products/ASC.Projects/server/
-%{_sysconfdir}/systemd/system/AppServer-ASC.Socket.service
-%dir %{_var}/www/appserver/services/
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.Projects/
+%{_var}/www/%{sysname}/services/ASC.Socket.IO/
+%{_var}/www/%{sysname}/products/ASC.Files/server/
+%{_var}/www/%{sysname}/products/ASC.People/server/
+%{_var}/www/%{sysname}/products/ASC.CRM/server/
+%{_var}/www/%{sysname}/products/ASC.Projects/server/
+%{_sysconfdir}/systemd/system/%{sysname}-socket.service
+%dir %{_var}/www/%{sysname}/services/
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
 
-%files ASC.Web.Studio
+%files studio
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/studio/server/
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
-%{_var}/www/appserver/products/ASC.Projects/server/ASC.Projects*.dll
-%{_sysconfdir}/systemd/system/AppServer-ASC.Web.Studio.service
-%dir %{_var}/www/appserver/studio/
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.CRM/server/
-%dir %{_var}/www/appserver/products/ASC.Projects/
-%dir %{_var}/www/appserver/products/ASC.Projects/server/
+%{_var}/www/%{sysname}/studio/server/
+%{_var}/www/%{sysname}/products/ASC.People/server/ASC.People.dll
+%{_var}/www/%{sysname}/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/%{sysname}/products/ASC.CRM/server/ASC.CRM*.dll
+%{_var}/www/%{sysname}/products/ASC.Projects/server/ASC.Projects*.dll
+%{_sysconfdir}/systemd/system/%{sysname}-studio.service
+%dir %{_var}/www/%{sysname}/studio/
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.People/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/server/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/server/
 
-%files ASC.Data.Storage.Encryption
+%files storage-encryption
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/ASC.Data.Storage.Encryption/
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
-%{_var}/www/appserver/products/ASC.Projects/server/ASC.Projects*.dll
-%{_sysconfdir}/systemd/system/AppServer-ASC.Data.Storage.Encryption.service
-%dir %{_var}/www/appserver/services/
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.CRM/server
-%dir %{_var}/www/appserver/products/ASC.Projects/
-%dir %{_var}/www/appserver/products/ASC.Projects/server
+%{_var}/www/%{sysname}/services/ASC.Data.Storage.Encryption/
+%{_var}/www/%{sysname}/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/%{sysname}/products/ASC.People/server/ASC.People.dll
+%{_var}/www/%{sysname}/products/ASC.CRM/server/ASC.CRM*.dll
+%{_var}/www/%{sysname}/products/ASC.Projects/server/ASC.Projects*.dll
+%{_sysconfdir}/systemd/system/%{sysname}-storage-encryption.service
+%dir %{_var}/www/%{sysname}/services/
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/server
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.People/server
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/server
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/server
 
-%files ASC.Data.Storage.Migration
+%files storage-migration
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/ASC.Data.Storage.Migration/
-%{_var}/www/appserver/products/ASC.Files/server/
-%{_var}/www/appserver/products/ASC.People/server/
-%{_var}/www/appserver/products/ASC.CRM/server/
-%{_var}/www/appserver/products/ASC.Projects/server/
-%{_sysconfdir}/systemd/system/AppServer-ASC.Data.Storage.Migration.service
-%dir %{_var}/www/appserver/services/
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.Projects/
+%{_var}/www/%{sysname}/services/ASC.Data.Storage.Migration/
+%{_var}/www/%{sysname}/products/ASC.Files/server/
+%{_var}/www/%{sysname}/products/ASC.People/server/
+%{_var}/www/%{sysname}/products/ASC.CRM/server/
+%{_var}/www/%{sysname}/products/ASC.Projects/server/
+%{_sysconfdir}/systemd/system/%{sysname}-storage-migration.service
+%dir %{_var}/www/%{sysname}/services/
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
 
-%files ASC.Projects
+%files projects-server
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/products/ASC.Projects/server/
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll 
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
-%{_sysconfdir}/systemd/system/AppServer-ASC.Projects.service
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.CRM/server/
-%dir %{_var}/www/appserver/products/ASC.Projects/
+%{_var}/www/%{sysname}/products/ASC.Projects/server/
+%{_var}/www/%{sysname}/products/ASC.Files/server/ASC.Files*.dll 
+%{_var}/www/%{sysname}/products/ASC.People/server/ASC.People.dll
+%{_var}/www/%{sysname}/products/ASC.CRM/server/ASC.CRM*.dll
+%{_sysconfdir}/systemd/system/%{sysname}-projects-server.service
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/server/
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.People/server/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
 
-%files ASC.TelegramService
+%files telegram-service
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/services/ASC.TelegramService/
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.CRM/server/ASC.CRM*.dll
-%{_var}/www/appserver/products/ASC.Projects/server/ASC.Projects*.dll
-%{_sysconfdir}/systemd/system/AppServer-ASC.TelegramService.service
-%dir %{_var}/www/appserver/services/
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
-%dir %{_var}/www/appserver/products/ASC.People/
-%dir %{_var}/www/appserver/products/ASC.People/server/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.CRM/server/
-%dir %{_var}/www/appserver/products/ASC.Projects/
-%dir %{_var}/www/appserver/products/ASC.Projects/server/
+%{_var}/www/%{sysname}/services/ASC.TelegramService/
+%{_var}/www/%{sysname}/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/%{sysname}/products/ASC.People/server/ASC.People.dll
+%{_var}/www/%{sysname}/products/ASC.CRM/server/ASC.CRM*.dll
+%{_var}/www/%{sysname}/products/ASC.Projects/server/ASC.Projects*.dll
+%{_sysconfdir}/systemd/system/%{sysname}-telegram-service.service
+%dir %{_var}/www/%{sysname}/services/
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/server/
+%dir %{_var}/www/%{sysname}/products/ASC.People/
+%dir %{_var}/www/%{sysname}/products/ASC.People/server/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/server/
 
-%files ASC.CRM
+%files crm
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/products/ASC.CRM/server/
-%{_var}/www/appserver/products/ASC.Files/server/ASC.Files*.dll
-%{_var}/www/appserver/products/ASC.People/server/ASC.People.dll
-%{_var}/www/appserver/products/ASC.Projects/server/ASC.Projects*.dll
-%{_sysconfdir}/systemd/system/AppServer-ASC.CRM.service
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.CRM/
-%dir %{_var}/www/appserver/products/ASC.Files/
-%dir %{_var}/www/appserver/products/ASC.Files/server/
-%dir %{_var}/www/appserver/products/ASC.Projects/
-%dir %{_var}/www/appserver/products/ASC.Projects/server/
+%{_var}/www/%{sysname}/products/ASC.CRM/server/
+%{_var}/www/%{sysname}/products/ASC.Files/server/ASC.Files*.dll
+%{_var}/www/%{sysname}/products/ASC.People/server/ASC.People.dll
+%{_var}/www/%{sysname}/products/ASC.Projects/server/ASC.Projects*.dll
+%{_sysconfdir}/systemd/system/%{sysname}-crm.service
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.CRM/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/
+%dir %{_var}/www/%{sysname}/products/ASC.Files/server/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/
+%dir %{_var}/www/%{sysname}/products/ASC.Projects/server/
 
-%files ASC.Calendar
+%files calendar
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/products/ASC.Calendar/server/
-%{_sysconfdir}/systemd/system/AppServer-ASC.Calendar.service
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.Calendar/
+%{_var}/www/%{sysname}/products/ASC.Calendar/server/
+%{_sysconfdir}/systemd/system/%{sysname}-calendar.service
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.Calendar/
 
-%files ASC.Mail
+%files mail
 %defattr(-, onlyoffice, onlyoffice, -)
-%{_var}/www/appserver/products/ASC.Mail/server/
-%{_sysconfdir}/systemd/system/AppServer-ASC.Mail.service
-%dir %{_var}/www/appserver/products/
-%dir %{_var}/www/appserver/products/ASC.Mail/
+%{_var}/www/%{sysname}/products/ASC.Mail/server/
+%{_sysconfdir}/systemd/system/%{sysname}-mail.service
+%dir %{_var}/www/%{sysname}/products/
+%dir %{_var}/www/%{sysname}/products/ASC.Mail/

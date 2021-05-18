@@ -55,7 +55,7 @@ if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ]; then
 		systemctl restart mysqld
 	fi
 elif [ "${UPDATE}" = "true" ] && [ "${MYSQL_FIRST_TIME_INSTALL}" != "true" ]; then
-	ENVIRONMENT="$(cat /etc/systemd/system/AppServer-ASC.ApiSystem.service | grep -oP 'ENVIRONMENT=\K.*')"
+	ENVIRONMENT="$(cat /etc/systemd/system/appserver-api.service | grep -oP 'ENVIRONMENT=\K.*')"
 	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/appserver/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
 	MYSQL_SERVER_HOST=$(echo $USER_CONNECTIONSTRING | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
 	MYSQL_SERVER_DB_NAME=$(echo $USER_CONNECTIONSTRING | grep -oP 'Database=\K.*' | grep -o '^[^;]*')

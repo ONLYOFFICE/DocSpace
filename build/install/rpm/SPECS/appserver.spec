@@ -1,4 +1,6 @@
 %define         debug_package %{nil}
+%global 	    sourcename AppServer-%GIT_BRANCH
+%global 	    sysname appserver
 Name:           onlyoffice-appserver
 Summary:        Business productivity tools.
 Version:        %version
@@ -11,31 +13,31 @@ ExclusiveArch:  x86_64
 AutoReq:        no
 AutoProv:       no
 License:        GPLv3
-Source0:        https://github.com/ONLYOFFICE/appserver/archive/%GIT_BRANCH.tar.gz
+Source0:        https://github.com/ONLYOFFICE/%{sysname}/archive/%GIT_BRANCH.tar.gz
 BuildRequires:  nodejs >= 12.0
 BuildRequires:  yarn
 BuildRequires:  libgdiplus
 BuildRequires:  dotnet-sdk-5.0
-Requires:       %name-ASC.ApiSystem
-Requires:       %name-ASC.Calendar
-Requires:       %name-ASC.CRM
-Requires:       %name-ASC.Data.Backup
-Requires:       %name-ASC.Data.Storage.Encryption
-Requires:       %name-ASC.Data.Storage.Migration
-Requires:       %name-ASC.Files
-Requires:       %name-ASC.Files.Service
-Requires:       %name-ASC.Mail
-Requires:       %name-ASC.Notify
-Requires:       %name-ASC.People
-Requires:       %name-ASC.Projects
-Requires:       %name-ASC.Socket
-Requires:       %name-ASC.Studio.Notify
-Requires:       %name-ASC.TelegramService
-Requires:       %name-ASC.Thumbnails
-Requires:       %name-ASC.UrlShortener
-Requires:       %name-ASC.Web.Api
-Requires:       %name-ASC.Web.Studio
-Requires:       %name-Proxy
+Requires:       %name-api-system
+Requires:       %name-calendar
+Requires:       %name-crm
+Requires:       %name-backup
+Requires:       %name-storage-encryption
+Requires:       %name-storage-migration
+Requires:       %name-files
+Requires:       %name-files-services
+Requires:       %name-mail
+Requires:       %name-notify
+Requires:       %name-people-server
+Requires:       %name-projects-server
+Requires:       %name-socket
+Requires:       %name-studio-notify
+Requires:       %name-telegram-service
+Requires:       %name-thumbnails
+Requires:       %name-urlshortener
+Requires:       %name-api
+Requires:       %name-studio
+Requires:       %name-proxy
 AutoReqProv:    no
 %description
 App Server is a platform for building your own online office by connecting ONLYOFFICE modules packed as separate apps.
@@ -44,8 +46,8 @@ App Server is a platform for building your own online office by connecting ONLYO
 
 %prep
 
-rm -rf %{_rpmdir}/%{_arch}/%{name}-*
-%setup -n AppServer-%GIT_BRANCH
+rm -rf %{_rpmdir}/%{_arch}/%{sysname}-*
+%setup -n %{sourcename}
 
 %include build.spec
 
@@ -55,14 +57,14 @@ rm -rf %{_rpmdir}/%{_arch}/%{name}-*
 
 %pre
 
-%pre Common
+%pre common
 
 getent group onlyoffice >/dev/null || groupadd -r onlyoffice
 getent passwd onlyoffice >/dev/null || useradd -r -g onlyoffice -s /sbin/nologin onlyoffice
 
 %post 
 
-chmod +x %{_bindir}/appserver-configuration.sh
+chmod +x %{_bindir}/%{sysname}-configuration.sh
 
 %preun
 

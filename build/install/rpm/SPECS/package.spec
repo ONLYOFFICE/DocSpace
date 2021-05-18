@@ -1,168 +1,168 @@
-%package        ASC.Data.Backup
-Summary:        ASC.Data.Backup
+%package        backup
+Summary:        backup
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.Data.Backup
+%description    backup
 
-%package        Common
-Summary:        Common
+%package        common
+Summary:        common
 Group:          Applications/Internet
-%description    Common
+%description    common
 
-%package        ASC.Files.Service
-Summary:        ASC.Files.Service
+%package        files-services
+Summary:        files-services
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.Files.Service
+%description    files-services
 
-%package        ASC.Notify
-Summary:        ASC.Notify
+%package        notify
+Summary:        notify
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.Notify
+%description    notify
 
-%package        ASC.Files
-Summary:        ASC.Files
+%package        files
+Summary:        files
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.Files
+%description    files
 
-%package        ASC.ApiSystem
-Summary:        ASC.ApiSystem
+%package        api-system
+Summary:        api-system
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.ApiSystem
+%description    api-system
 
-%package        Proxy
-Summary:        Proxy
+%package        proxy
+Summary:        proxy
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       nginx >= 1.9.5
 Requires:       mysql-community-client >= 5.7.0
 AutoReqProv:    no
-%description    Proxy
+%description    proxy
 
-%package        ASC.Studio.Notify
-Summary:        ASC.Studio.Notify
+%package        studio-notify
+Summary:        studio-notify
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.Studio.Notify
+%description    studio-notify
 
-%package        ASC.People
-Summary:        ASC.People
+%package        people-server
+Summary:        people-server
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.People
+%description    people-server
 
-%package        ASC.UrlShortener
-Summary:        ASC.UrlShortener
+%package        urlshortener
+Summary:        urlshortener
 Group:          Applications/Internet
-Requires:       %name-Common
-Requires:       dotnet-sdk-5.0
-Requires:       nodejs >= 12.0
-AutoReqProv:    no
-%description    ASC.UrlShortener
-
-%package        ASC.Socket
-Summary:        ASC.Socket
-Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 Requires:       nodejs >= 12.0
 AutoReqProv:    no
-%description    ASC.Socket
+%description    urlshortener
 
-%package        ASC.Thumbnails
-Summary:        ASC.Thumbnails
+%package        socket
+Summary:        socket
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 Requires:       nodejs >= 12.0
 AutoReqProv:    no
-%description    ASC.Thumbnails
+%description    socket
 
-%package        ASC.Web.Studio
-Summary:        ASC.Web.Studio
+%package        thumbnails
+Summary:        thumbnails
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
+Requires:       dotnet-sdk-5.0
+Requires:       nodejs >= 12.0
+AutoReqProv:    no
+%description    thumbnails
+
+%package        studio
+Summary:        studio
+Group:          Applications/Internet
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.Web.Studio
+%description    studio
 
-%package        ASC.CRM
-Summary:        ASC.CRM
+%package        crm
+Summary:        crm
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.CRM
+%description    crm
 
-%package        ASC.Web.Api
-Summary:        ASC.Web.Api
+%package        api
+Summary:        api
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.Web.Api
+%description    api
 
-%package        ASC.Data.Storage.Encryption
-Summary:        ASC.Data.Storage.Encryption
+%package        storage-encryption
+Summary:        storage-encryption
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.Data.Storage.Encryption
+%description    storage-encryption
 
-%package        ASC.Data.Storage.Migration
-Summary:        ASC.Data.Storage.Migration
+%package        storage-migration
+Summary:        storage-migration
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.Data.Storage.Migration
+%description    storage-migration
 
-%package        ASC.Projects
-Summary:        ASC.Projects
+%package        projects-server
+Summary:        projects-server
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.Projects
+%description    projects-server
 
-%package        ASC.TelegramService
-Summary:        ASC.TelegramService
+%package        telegram-service
+Summary:        telegram-service
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.TelegramService
+%description    telegram-service
 
-%package        ASC.Calendar
-Summary:        ASC.Calendar
+%package        calendar
+Summary:        calendar
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.Calendar
+%description    calendar
 
-%package        ASC.Mail
-Summary:        ASC.Mail
+%package        mail
+Summary:        mail
 Group:          Applications/Internet
-Requires:       %name-Common
+Requires:       %name-common
 Requires:       dotnet-sdk-5.0
 AutoReqProv:    no
-%description    ASC.Mail
+%description    mail
