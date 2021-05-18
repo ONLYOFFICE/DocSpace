@@ -159,6 +159,7 @@ export default function withBadges(WrappedComponent) {
     render() {
       const { showConvertDialog } = this.state;
       const {
+        t,
         item,
         canWebEdit,
         isTrashFolder,
@@ -177,6 +178,7 @@ export default function withBadges(WrappedComponent) {
 
       const badgesComponent = (
         <Badges
+          t={t}
           item={item}
           isAdmin={isAdmin}
           showNew={showNew}

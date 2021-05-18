@@ -76,6 +76,7 @@ const FilesTileContent = ({
   setConvertDialogVisible,
 }) => {
   const {
+    t,
     contentLength,
     fileExst,
     filesCount,
@@ -128,6 +129,7 @@ const FilesTileContent = ({
 
         <div className="badges">
           <Badges
+            t={t}
             newItems={newItems}
             item={item}
             canWebEdit={canWebEdit}
