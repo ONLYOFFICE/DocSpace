@@ -19,6 +19,5 @@
   "RegistrationEmailWatermark": "Email",
   "Remember": "‎Ricordati di me‎",
   "RememberHelper": "‎La durata predefinita della sessione è di 20 minuti. Selezionare questa opzione per impostarla su 1 anno. Per impostare il proprio valore, passare a Impostazioni.‎",
-  "RequiredFieldMessage": "‎Campo obbligatorio‎",
-  "SendButton": "Invia"
+  "RequiredFieldMessage": "‎Campo obbligatorio‎"
 }

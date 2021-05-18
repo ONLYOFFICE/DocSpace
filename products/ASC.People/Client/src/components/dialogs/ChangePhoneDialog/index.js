@@ -38,7 +38,7 @@ class ChangePhoneDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
-            label={t("SendButton")}
+            label={t("Common:SendButton")}
             size="medium"
             primary={true}
             onClick={this.onChangePhone}
@@ -50,7 +50,7 @@ class ChangePhoneDialogComponent extends React.Component {
   }
 }
 
-const ChangePhoneDialog = withTranslation("ChangePhoneDialog")(
+const ChangePhoneDialog = withTranslation(["ChangePhoneDialog", "Common"])(
   ChangePhoneDialogComponent
 );
 

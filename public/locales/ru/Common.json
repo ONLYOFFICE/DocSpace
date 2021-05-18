@@ -9,5 +9,6 @@
   "LoadingProcessing": "Загрузка...",
   "CloseButton": "Закрыть",
   "Password": "Пароль",
-  "Email": "Email"
+  "Email": "Email",
+  "SendButton": "Отправить"
 }

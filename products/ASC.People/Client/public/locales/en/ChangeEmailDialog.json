@@ -13,6 +13,5 @@
   "PunycodeDomain": "Punycode domains are not supported",
   "PunycodeLocalPart": "Punycode local part is not supported",
   "SameEmail": "You can\u0027t use the same email",
-  "SendButton": "Send",
   "SpacesInLocalPart": "Local part can\u0027t contain spaces"
 }

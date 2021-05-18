@@ -9,5 +9,6 @@
   "LoadingProcessing": "Loading...",
   "CloseButton": "Close",
   "Password": "Password",
-  "Email": "Email"
+  "Email": "Email",
+  "SendButton": "Send"
 }

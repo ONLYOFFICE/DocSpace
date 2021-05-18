@@ -13,6 +13,5 @@
   "PunycodeDomain": "Punycode-Domänen werden nicht unterstützt.",
   "PunycodeLocalPart": "Punycode wird beim lokalen Teil nicht unterstützt",
   "SameEmail": "Dasselbe E-Mail darf nicht benutzt werden",
-  "SendButton": "Senden",
   "SpacesInLocalPart": "Lokaler Teil beinhaltet Leerzeichen"
 }

@@ -127,7 +127,7 @@ class ChangeEmailDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
-            label={t("SendButton")}
+            label={t("Common:SendButton")}
             size="medium"
             primary={true}
             onClick={this.onValidateEmail}
@@ -139,7 +139,7 @@ class ChangeEmailDialogComponent extends React.Component {
   }
 }
 
-const ChangeEmailDialog = withTranslation("ChangeEmailDialog")(
+const ChangeEmailDialog = withTranslation(["ChangeEmailDialog", "Common"])(
   ChangeEmailDialogComponent
 );
 

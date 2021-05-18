@@ -58,7 +58,7 @@ class DeleteSelfProfileDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
-            label={t("SendButton")}
+            label={t("Common:SendButton")}
             size="medium"
             primary={true}
             onClick={this.onDeleteSelfProfileInstructions}

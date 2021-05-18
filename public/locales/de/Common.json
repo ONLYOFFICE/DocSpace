@@ -9,5 +9,6 @@
   "LoadingProcessing": "Ladevorgang...",
   "CloseButton": "Schließen",
   "Password": "Passwort",
-  "Email": "E-Mail"
+  "Email": "E-Mail",
+  "SendButton": "Senden"
 }
