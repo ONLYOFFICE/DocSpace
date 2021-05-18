@@ -23,6 +23,7 @@ import PeopleSelector from "people/PeopleSelector";
 import { inject, observer } from "mobx-react";
 
 import { getUserRole } from "@appserver/people/src/helpers/people-helpers";
+import { getNewModulesList } from "../../utils";
 
 import isEmpty from "lodash/isEmpty";
 
@@ -408,15 +409,17 @@ class PortalAdmins extends Component {
     });
   };
 
-  onModuleToggle = (moduleId, access) => {
+  onFullAccessClick = (access) => {
     const { selectedUser } = this.state;
     const { changeAdmins, admins, setAdmins } = this.props;
 
-    changeAdmins([selectedUser.id], moduleId, access)
+    changeAdmins([selectedUser.id], fullAccessId, access)
       .then(async () => {
         const updatedUser = await api.people.getUserById([selectedUser.id]);
         const updatedAdmins = admins.map((admin) => {
-          if (admin.id === selectedUser.id) return updatedUser;
+          if (admin.id === selectedUser.id) {
+            return updatedUser;
+          }
           return admin;
         });
 
@@ -424,6 +427,49 @@ class PortalAdmins extends Component {
         this.setState({
           selectedUser: updatedUser,
         });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  onModuleToggle = (module, access) => {
+    const { selectedUser } = this.state;
+    const { changeAdmins, admins, setAdmins, modules } = this.props;
+
+    changeAdmins([selectedUser.id], module.id, access)
+      .then(async () => {
+        const updatedAdmins = admins.map((admin) => {
+          if (admin.id === selectedUser.id) {
+            if (!admin.listAdminModules) {
+              admin.listAdminModules = [module.appName];
+            } else if (!access) {
+              const moduleIndex = admin.listAdminModules.findIndex(
+                (adminModule) => {
+                  return module.appName === adminModule;
+                }
+              );
+
+              admin.listAdminModules.splice(moduleIndex, 1);
+            } else if (access) {
+              const newModuleList = getNewModulesList(
+                module,
+                admin.listAdminModules,
+                modules
+              );
+
+              admin.listAdminModules = newModuleList;
+            }
+
+            this.setState({
+              selectedUser: admin,
+            });
+          }
+
+          return admin;
+        });
+
+        setAdmins(updatedAdmins);
       })
       .catch((e) => {
         console.log(e);
@@ -557,10 +603,7 @@ class PortalAdmins extends Component {
                             className="toggle-btn"
                             isChecked={selectedUser.isAdmin}
                             onChange={() =>
-                              this.onModuleToggle(
-                                fullAccessId,
-                                !selectedUser.isAdmin
-                              )
+                              this.onFullAccessClick(!selectedUser.isAdmin)
                             }
                             isDisabled={false}
                           />
@@ -595,7 +638,7 @@ class PortalAdmins extends Component {
                                       inputId={module.id}
                                       onChange={() =>
                                         this.onModuleToggle(
-                                          module.id,
+                                          module,
                                           !isModuleAdmin
                                         )
                                       }
