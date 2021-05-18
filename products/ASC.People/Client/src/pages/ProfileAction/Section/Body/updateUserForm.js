@@ -607,7 +607,7 @@ class UpdateUserForm extends React.Component {
                 <Td>{t("ViewAccess")}</Td>
               </tr>
               <tr>
-                <Td>{t("People")}</Td>
+                <Td>{t("Common:People")}</Td>
                 <Td>{t("ReviewingCustomMode")}</Td>
                 <Td>-</Td>
               </tr>

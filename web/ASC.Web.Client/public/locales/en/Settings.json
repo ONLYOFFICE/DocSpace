@@ -74,7 +74,6 @@
   "NotFoundTitle": "Nothing found",
   "OwnerSettings": "Owner settings",
   "PageOfTotalPage": "{{page}} of {{totalPage}}",
-  "People": "People",
   "PeopleAdmin": "People module admin",
   "PortalAdmins": "Portal admins",
   "PortalAdminsDescription": "Have the same access rights as the portal owner, except the right to: change portal owner; deactivate or delete portal.",

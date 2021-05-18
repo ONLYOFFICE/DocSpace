@@ -81,7 +81,7 @@ const Body = () => {
   const { t } = useTranslation("About");
 
   useEffect(() => {
-    setDocumentTitle(t("AboutTitle")); //TODO: implement the ability to read the current module in redux to implement the template `${t("AboutTitle")} – ${t("People")}`
+    setDocumentTitle(t("AboutTitle"));
   }, [t]);
 
   const gitHub = "GitHub";
