@@ -3,7 +3,6 @@
   "CustomAllGroups": "Все {{ groupsCaption, lowercase }}",
   "EmptySearchUsersResult": "Нет такого пользователя",
   "EmptyUsers": "Нет пользователей",
-  "LoadingLabel": "Загрузка... Пожалуйста подождите...",
   "SearchUsersPlaceholder": "Поиск пользователей",
   "SelectAllLabel": "Выбрать все"
 }

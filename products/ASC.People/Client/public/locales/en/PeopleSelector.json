@@ -3,7 +3,6 @@
   "CustomAllGroups": "All {{ groupsCaption, lowercase }}",
   "EmptySearchUsersResult": "There are no users with such name",
   "EmptyUsers": "There are no users",
-  "LoadingLabel": "Loading... Please wait...",
   "SearchUsersPlaceholder": "Search users",
   "SelectAllLabel": "Select all"
 }

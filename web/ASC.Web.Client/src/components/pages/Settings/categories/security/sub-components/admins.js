@@ -373,7 +373,7 @@ class PureAdminsSettings extends Component {
               loaderSize="16px"
               loaderColor={"#999"}
               label={`${t("Common:LoadingProcessing")} ${t(
-                "LoadingDescription"
+                "Common:LoadingDescription"
               )}`}
               fontSize="12px"
               fontColor={"#999"}

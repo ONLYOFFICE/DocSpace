@@ -1,7 +1,6 @@
 ﻿{
   "Download": "Herunterladen",
   "EditComment": "Kommentar bearbeiten",
-  "LoadingDescription": "Bitte warten...",
   "Restore": "Wiederherstellen",
   "Version": "Version {{version}}"
 }

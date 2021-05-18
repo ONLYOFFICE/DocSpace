@@ -23,7 +23,11 @@ import { createPasswordHash } from "@appserver/common/utils";
 import { providersData } from "@appserver/common/constants";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
-import { I18nextProvider, useTranslation } from "react-i18next";
+import {
+  I18nextProvider,
+  useTranslation,
+  withTranslation,
+} from "react-i18next";
 import toastr from "@appserver/components/toast/toastr";
 
 const ButtonsWrapper = styled.div`
@@ -614,7 +618,7 @@ const Login = inject(({ auth }) => {
     setProviders,
     providers,
   };
-})(withRouter(observer(LoginForm)));
+})(withRouter(observer(withTranslation("Login", "Common")(LoginForm))));
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

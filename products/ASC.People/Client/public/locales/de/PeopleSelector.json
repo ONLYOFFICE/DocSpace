@@ -3,7 +3,6 @@
   "CustomAllGroups": "Alle {{ groupsCaption, lowercase }}",
   "EmptySearchUsersResult": "Keine Benutzer mit diesem Namen",
   "EmptyUsers": "Keine Benutzer",
-  "LoadingLabel": "Ladevorgang...Bitte warten...",
   "SearchUsersPlaceholder": "Benutzer suchen",
   "SelectAllLabel": "Alle auswählen"
 }

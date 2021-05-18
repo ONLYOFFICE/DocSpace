@@ -2,7 +2,6 @@
   "AddDepartmentsButtonLabel": "Add departments",
   "EmptyOptionsLabel": "There are no departments",
   "EmptySearchOptionsLabel": "There are no departments with such name",
-  "LoadingLabel": "Loading... Please wait...",
   "SearchPlaceholder": "Search groups",
   "SelectAllLabel": "Select all"
 }

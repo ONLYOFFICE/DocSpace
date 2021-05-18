@@ -257,7 +257,9 @@ class PeopleSelector extends React.Component {
         groupsHeaderLabel={groupsCaption}
         emptySearchOptionsLabel={t("EmptySearchUsersResult")}
         emptyOptionsLabel={t("EmptyUsers")}
-        loadingLabel={t("LoadingLabel")}
+        loadingLabel={`${t("Common:LoadingProcessing")} ${t(
+          "Common:LoadingDescription"
+        )}`}
         onSelect={onSelect}
         onSearchChanged={this.onSearchChanged}
         onGroupChanged={this.onGroupChanged}
@@ -308,7 +310,9 @@ PeopleSelector.defaultProps = {
   withoutAside: false,
 };
 
-const ExtendedPeopleSelector = withTranslation()(PeopleSelector);
+const ExtendedPeopleSelector = withTranslation(["PeopleSelector", "Common"])(
+  PeopleSelector
+);
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>
