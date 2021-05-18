@@ -8,7 +8,6 @@
   "DeleteProfileConfirmationInfo": "Wenn Sie auf \u0022Mein Konto löschen\u0022 klicken, akzeptieren Sie unsere Datenschutzerklärung.",
   "DeleteProfileSuccessMessage": "Ihr Konto wurde erfolgreich gelöscht. ",
   "DeleteProfileSuccessMessageInfo": "Erfahren Sie mehr über Löschen Ihres Portals und aller Daten in unserer Datenschutzerklärung.",
-  "Email": "E-Mail",
   "EmailAndPasswordCopiedToClipboard": "E-Mail und Passwort wurde in die Zwischenablage kopiert",
   "ErrorPasswordLength": "von {{fromNumber}} bis {{toNumber}} Symbole",
   "ErrorPasswordMessage": "Das Kennwort muss enthalten:",

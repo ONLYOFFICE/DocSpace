@@ -456,7 +456,7 @@ class Confirm extends React.PureComponent {
                 id="email"
                 name={emailInputName}
                 value={this.state.email}
-                placeholder={t("Email")}
+                placeholder={t("Common:Email")}
                 size="huge"
                 scale={true}
                 tabIndex={3}
@@ -486,7 +486,7 @@ class Confirm extends React.PureComponent {
               onCopyToClipboard={this.onCopyToClipboard}
               onValidateInput={this.validatePassword}
               clipActionResource={t("CopyEmailAndPassword")}
-              clipEmailResource={`${t("Email")}: `}
+              clipEmailResource={`${t("Common:Email")}: `}
               clipPasswordResource={`${t("Common:Password")}: `}
               tooltipPasswordTitle={`${t("ErrorPasswordMessage")}:`}
               tooltipPasswordLength={`${t("ErrorPasswordLength", {

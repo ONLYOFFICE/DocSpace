@@ -8,7 +8,6 @@
   "DeleteProfileConfirmationInfo": "By clicking \u0022Delete my account\u0022 you agree with our Privacy policy.",
   "DeleteProfileSuccessMessage": "Your account has been successfully deleted.",
   "DeleteProfileSuccessMessageInfo": "See our Privacy policy to learn more about deleting your account and the data associated with it.",
-  "Email": "Email",
   "EmailAndPasswordCopiedToClipboard": "Email and password copied to clipboard",
   "ErrorPasswordLength": "from {{fromNumber}} to {{toNumber}} characters",
   "ErrorPasswordMessage": "Password must contain",

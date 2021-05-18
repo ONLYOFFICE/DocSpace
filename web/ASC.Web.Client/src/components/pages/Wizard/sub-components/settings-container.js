@@ -48,7 +48,7 @@ const SettingsContainer = ({
   onSelectLanguageHandler,
   onSelectTimezoneHandler,
 }) => {
-  const titleEmail = !emailNeeded ? <Text>{t("Email")}</Text> : null;
+  const titleEmail = !emailNeeded ? <Text>{t("Common:Email")}</Text> : null;
 
   const contentEmail = !emailNeeded ? (
     <Link

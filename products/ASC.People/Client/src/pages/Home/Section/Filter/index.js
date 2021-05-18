@@ -119,7 +119,7 @@ class SectionFilterContent extends React.Component {
       {
         key: "filter-email",
         group: "filter-email",
-        label: t("Email"),
+        label: t("Common:Email"),
         isHeader: true,
       },
       {
@@ -256,5 +256,9 @@ export default withRouter(
       filter: peopleStore.filterStore.filter,
       setIsLoading: peopleStore.setIsLoading,
     };
-  })(observer(withLayoutSize(withTranslation("Home")(SectionFilterContent))))
+  })(
+    observer(
+      withLayoutSize(withTranslation(["Home", "Common"])(SectionFilterContent))
+    )
+  )
 );

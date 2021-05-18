@@ -62,7 +62,7 @@ class PasswordField extends React.Component {
           onChange={inputOnChange}
           clipActionResource={copyLinkText}
           clipCopiedResource={copiedResourceText}
-          clipEmailResource={`${t("Email")}: `}
+          clipEmailResource={`${t("Common:Email")}: `}
           clipPasswordResource={`${t("Common:Password")}: `}
           tooltipPasswordTitle={`${t("ErrorPasswordMessage")}:`}
           tooltipPasswordLength={t("ErrorPasswordLength", {

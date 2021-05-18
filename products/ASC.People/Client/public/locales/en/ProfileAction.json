@@ -19,7 +19,6 @@
   "editAvatar": "Edit",
   "EditPhoto": "Edit Photo",
   "EditUserDialogTitle": "Edit profile",
-  "Email": "Email",
   "EmailPopupHelper": "The main email is used for notifications and restoring access. \u003C1\u003E You can create a new email on this domain for the user and set a one-time password for the first login.\u003C/1\u003E",
   "Error": "Error",
   "ErrorPasswordLength": "from {{from}} to {{to}} characters",

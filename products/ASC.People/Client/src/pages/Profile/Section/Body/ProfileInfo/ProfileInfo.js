@@ -266,7 +266,7 @@ class ProfileInfo extends React.PureComponent {
         </InfoItem>
         {email && (
           <InfoItem>
-            <InfoItemLabel>{t("Email")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Common:Email")}:</InfoItemLabel>
             <InfoItemValue>
               <>
                 {activationStatus === 2 && (isAdmin || isSelf) && (
@@ -387,5 +387,9 @@ export default withRouter(
     setIsLoading: peopleStore.setIsLoading,
     isLoading: peopleStore.isLoading,
     updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
-  }))(observer(withTranslation("Profile")(withCultureNames(ProfileInfo))))
+  }))(
+    observer(
+      withTranslation(["Profile", "Common"])(withCultureNames(ProfileInfo))
+    )
+  )
 );

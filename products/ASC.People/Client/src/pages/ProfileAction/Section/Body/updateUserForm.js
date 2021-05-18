@@ -673,7 +673,7 @@ class UpdateUserForm extends React.Component {
           </AvatarContainer>
           <MainFieldsContainer ref={this.mainFieldsContainerRef}>
             <TextChangeField
-              labelText={`${t("Email")}:`}
+              labelText={`${t("Common:Email")}:`}
               inputName="email"
               inputValue={profile.email}
               buttonText={t("ChangeButton")}

@@ -490,7 +490,7 @@ class CreateUserForm extends React.Component {
             <EmailField
               isRequired={true}
               hasError={errors.email}
-              labelText={`${t("Email")}:`}
+              labelText={`${t("Common:Email")}:`}
               inputName="email"
               inputValue={profile.email}
               inputIsDisabled={isLoading}
