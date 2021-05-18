@@ -375,7 +375,8 @@ class FilesStore {
     const isFullAccess = item.access < 2;
     const withoutShare = false; //TODO: need this prop
     const isThirdPartyItem = !!item.providerKey;
-    const hasNew = item.new > 0;
+    const hasNew =
+      item.new > 0 || item.fileStatus === 2 || item.fileStatus === 34;
     const canConvert = false; //TODO: fix of added convert check;
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;

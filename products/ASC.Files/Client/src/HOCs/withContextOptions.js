@@ -185,6 +185,11 @@ export default function withContextOptions(WrappedComponent) {
       setSharingPanelVisible(true);
     };
 
+    onClickMarkRead = () => {
+      const { t } = this.props;
+      toastr.success(t("MarkRead"));
+    };
+
     getFilesContextOptions = () => {
       const { item, t, isThirdPartyFolder } = this.props;
       const { access, contextOptions } = item;
@@ -389,6 +394,14 @@ export default function withContextOptions(WrappedComponent) {
               label: t("RemoveFromList"),
               icon: "/static/images/catalog.trash.react.svg",
               onClick: this.onClickDelete,
+              disabled: false,
+            };
+          case "mark-read":
+            return {
+              key: option,
+              label: t("MarkRead"),
+              icon: "/static/images/catalog.trash.react.svg",
+              onClick: this.onClickMarkRead,
               disabled: false,
             };
           default:

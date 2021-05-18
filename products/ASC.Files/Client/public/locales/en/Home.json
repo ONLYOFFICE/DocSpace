@@ -132,5 +132,6 @@
   "DeleteFromTrash": "Selected elements were successfully deleted from trash",
   "New": "New",
   "Version": "Ver.{{version}}",
-  "RemoveFromList": "Remove from list"
+  "RemoveFromList": "Remove from list",
+  "MarkRead": "Mark as read"
 }
