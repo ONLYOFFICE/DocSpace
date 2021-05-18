@@ -193,12 +193,7 @@ class AutomaticBackup extends React.PureComponent {
                 .then(() => this.onSetDefaultOptions());
             }
           }
-        })
-        .finally(() =>
-          this.setState({
-            isLoading: false,
-          })
-        );
+        });
     });
   }
   componentDidUpdate(prevState) {
@@ -215,6 +210,7 @@ class AutomaticBackup extends React.PureComponent {
   }
 
   onSetDefaultOptions = () => {
+    const { isLoading } = this.state;
     if (defaultStorageType === "0") {
       // Documents Module
       this.setState({
@@ -286,6 +282,10 @@ class AutomaticBackup extends React.PureComponent {
         });
       }
     }
+    isLoading &&
+      this.setState({
+        isLoading: false,
+      });
   };
   getProgress = () => {
     getBackupProgress().then((res) => {
@@ -1009,6 +1009,7 @@ class AutomaticBackup extends React.PureComponent {
                     folderPath={folderDocumentsModulePath}
                     isSetDefaultFolderPath={isSetDefaultFolderPath}
                     onSetLoadingData={this.onSetLoadingData}
+                    isSavingProcess={isLoadingData}
                   />
 
                   <ScheduleComponent
@@ -1069,6 +1070,7 @@ class AutomaticBackup extends React.PureComponent {
                     isError={isError}
                     onSetLoadingData={this.onSetLoadingData}
                     withoutTopLevelFolder
+                    isSavingProcess={isLoadingData}
                   />
                   <ScheduleComponent
                     weeklySchedule={weeklySchedule}

@@ -166,8 +166,9 @@ class OperationsDialog extends React.PureComponent {
       onClose,
       isError,
       withoutTopLevelFolder,
+      isSavingProcess,
     } = this.props;
-    const { isLoading, isLoadingData, commonDefault, baseFolder } = this.state;
+    const { isLoading, isLoadingData, baseFolder } = this.state;
     const zIndex = 310;
     //console.log("name", name);
 
@@ -180,7 +181,7 @@ class OperationsDialog extends React.PureComponent {
           scale
           className="input-with-folder-path"
           baseFolder={baseFolder}
-          isDisabled={isLoading}
+          isDisabled={isLoading || isSavingProcess}
           folderPath={this.state[name]}
           onClickInput={onClickInput}
           hasError={isError}
