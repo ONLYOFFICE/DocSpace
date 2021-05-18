@@ -48,6 +48,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core.Users
 {
+    [Transient]
     public class ResizeWorkerItem : DistributedTask
     {
         public ResizeWorkerItem(Guid userId, byte[] data, long maxFileSize, Size size, IDataStore dataStore, UserPhotoThumbnailSettings settings) : base()

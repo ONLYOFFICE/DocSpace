@@ -322,6 +322,7 @@ namespace ASC.Common.Threading
             services.TryAdd<DistributedTaskCacheNotify>();
             services.TryAdd<DistributedTaskQueueOptionsManager>();
             services.TryAdd<DistributedTaskQueue>();
+            services.TryAdd<T>();
 
             services.TryAddSingleton<IConfigureOptions<DistributedTaskQueue>, ConfigureDistributedTaskQueue>();
 

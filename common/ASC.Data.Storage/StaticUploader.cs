@@ -234,6 +234,7 @@ namespace ASC.Data.Storage
         }
     }
 
+    [Transient]
     public class UploadOperationProgress : DistributedTaskProgress
     {
         private readonly string relativePath;

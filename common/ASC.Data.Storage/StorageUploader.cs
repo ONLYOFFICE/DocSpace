@@ -100,6 +100,7 @@ namespace ASC.Data.Storage
         }
     }
 
+    [Transient]
     public class MigrateOperation : DistributedTaskProgress
     {
         private readonly ILog Log;
