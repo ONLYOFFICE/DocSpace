@@ -300,7 +300,7 @@ class AvatarEditorPage extends React.PureComponent {
           maxSizeFileError={t("maxSizeFileError")}
           unknownError={t("Error")}
           saveButtonLabel={
-            this.state.isLoading ? t("UpdatingProcess") : t("SaveButton")
+            this.state.isLoading ? t("UpdatingProcess") : t("Common:SaveButton")
           }
           cancelButtonLabel={t("Common:CancelButton")}
           saveButtonLoading={this.state.isLoading}

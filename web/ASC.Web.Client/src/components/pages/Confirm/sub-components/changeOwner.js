@@ -90,7 +90,7 @@ class Form extends React.PureComponent {
                   className="owner-button owner-buttons"
                   primary
                   size="big"
-                  label={t("SaveButton")}
+                  label={t("Common:SaveButton")}
                   tabIndex={2}
                   isDisabled={false}
                   onClick={this.onAcceptClick}

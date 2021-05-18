@@ -8,6 +8,5 @@
   "Login": "Логин",
   "Password": "Пароль",
   "Reconnect": "Подключить повторно",
-  "RequiredFieldMessage": "Обязательное поле",
-  "SaveButton": "Сохранить"
+  "RequiredFieldMessage": "Обязательное поле"
 }

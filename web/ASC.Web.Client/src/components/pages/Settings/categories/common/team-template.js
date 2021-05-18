@@ -707,7 +707,7 @@ class TeamTemplate extends React.Component {
                 onCancelClick={this.onCancelClick}
                 showReminder={showReminder}
                 reminderTest={t("YouHaveUnsavedChanges")}
-                saveButtonLabel={t("SaveButton")}
+                saveButtonLabel={t("Common:SaveButton")}
                 cancelButtonLabel={t("Common:CancelButton")}
               />
             )}

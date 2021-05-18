@@ -159,7 +159,7 @@ const VersionRow = (props) => {
                     <ModalDialog.Footer>
                       <Button
                         className="version_save-button"
-                        label={t("AddButton")}
+                        label={t("Common:SaveButton")}
                         size="big"
                         primary
                         onClick={onSaveClick}
@@ -211,7 +211,7 @@ const VersionRow = (props) => {
                 scale={true}
                 primary
                 onClick={onSaveClick}
-                label={t("AddButton")}
+                label={t("Common:SaveButton")}
               />
             </Box>
             <Box

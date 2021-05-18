@@ -3,5 +3,6 @@
   "Culture_en-US": "Английский (США)",
   "Culture_ru-RU": "Русский (Россия)",
   "Culture_de-DE": "Немецкий (Германия)",
-  "CancelButton": "Отмена"
+  "CancelButton": "Отмена",
+  "SaveButton": "Сохранить"
 }

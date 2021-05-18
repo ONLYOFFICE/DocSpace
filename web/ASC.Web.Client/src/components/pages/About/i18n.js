@@ -1,6 +1,7 @@
 import i18n from "i18next";
 import Backend from "i18next-http-backend";
 import { LANGUAGE } from "@appserver/common/constants";
+import config from "../../../../package.json";
 
 //import LanguageDetector from "i18next-browser-languagedetector";
 // not like to use this?
@@ -24,7 +25,12 @@ newInstance.use(Backend).init({
   },
 
   backend: {
-    loadPath: `/locales/{{lng}}/About.json`,
+    loadPath: (lng, ns) => {
+      if (ns.length > 0 && ns[0] === "Common") {
+        return `/static/locales/${lng}/Common.json`;
+      }
+      return `${config.homepage}/locales/${lng}/About.json`;
+    },
   },
 
   react: {

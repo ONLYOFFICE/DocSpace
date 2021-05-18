@@ -530,7 +530,7 @@ class SharingPanelComponent extends React.Component {
               />
               <Button
                 className="sharing_panel-button"
-                label={t("AddButton")}
+                label={t("Common:SaveButton")}
                 size="big"
                 primary
                 onClick={this.onSaveClick}
@@ -646,7 +646,7 @@ const SharingPanel = inject(
       getFolderInfo,
     };
   }
-)(observer(withTranslation("SharingPanel")(SharingPanelComponent)));
+)(observer(withTranslation(["SharingPanel", "Common"])(SharingPanelComponent)));
 
 class Panel extends React.Component {
   static convertSharingUsers = (shareDataItems) => {

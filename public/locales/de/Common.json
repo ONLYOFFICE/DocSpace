@@ -3,5 +3,6 @@
   "Culture_en-US": "Englisch (USA)",
   "Culture_ru-RU": "Russisch (Russland)",
   "Culture_de-DE": "Deutsche (Deutschland)",
-  "CancelButton": "Abbrechen"
+  "CancelButton": "Abbrechen",
+  "SaveButton": "Speichern"
 }

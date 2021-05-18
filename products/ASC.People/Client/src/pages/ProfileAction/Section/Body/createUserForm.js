@@ -462,7 +462,7 @@ class CreateUserForm extends React.Component {
               unknownTypeError={t("ErrorUnknownFileImageType")}
               maxSizeFileError={t("maxSizeFileError")}
               unknownError={t("Error")}
-              saveButtonLabel={t("SaveButton")}
+              saveButtonLabel={t("Common:SaveButton")}
             />
           </AvatarContainer>
           <MainFieldsContainer ref={this.mainFieldsContainerRef}>
@@ -641,7 +641,7 @@ class CreateUserForm extends React.Component {
         </InfoFieldContainer>
         <div>
           <Button
-            label={t("SaveButton")}
+            label={t("Common:SaveButton")}
             onClick={this.handleSubmit}
             primary
             isDisabled={isLoading}

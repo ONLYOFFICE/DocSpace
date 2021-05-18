@@ -664,7 +664,9 @@ class UpdateUserForm extends React.Component {
               maxSizeFileError={t("maxSizeFileError")}
               unknownError={t("Error")}
               saveButtonLabel={
-                this.state.isLoading ? t("UpdatingProcess") : t("SaveButton")
+                this.state.isLoading
+                  ? t("UpdatingProcess")
+                  : t("Common:SaveButton")
               }
               saveButtonLoading={this.state.isLoading}
             />
@@ -862,7 +864,7 @@ class UpdateUserForm extends React.Component {
         </InfoFieldContainer>
         <div>
           <Button
-            label={t("SaveButton")}
+            label={t("Common:SaveButton")}
             onClick={this.handleSubmit}
             primary
             isDisabled={isLoading}

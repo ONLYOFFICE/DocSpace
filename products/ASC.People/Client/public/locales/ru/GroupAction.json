@@ -8,7 +8,6 @@
   "MeLabel": "Я",
   "Members": "Участники",
   "Name": "Название",
-  "SaveButton": "Сохранить",
   "SearchAddedMembers": "Поиск добавленных участников",
   "SuccessSaveGroup": "Успешное сохранение: {{groupCaption, lowercase}} \u0027{{ groupName }}\u0027"
 }

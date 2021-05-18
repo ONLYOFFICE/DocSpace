@@ -312,7 +312,7 @@ const PureConnectDialogContainer = (props) => {
       <ModalDialog.Footer>
         <Button
           tabIndex={5}
-          label={t("SaveButton")}
+          label={t("Common:SaveButton")}
           size="big"
           primary
           onClick={onSave}
@@ -324,7 +324,7 @@ const PureConnectDialogContainer = (props) => {
   );
 };
 
-const ConnectDialog = withTranslation("ConnectDialog")(
+const ConnectDialog = withTranslation(["ConnectDialog", "Common"])(
   PureConnectDialogContainer
 );
 

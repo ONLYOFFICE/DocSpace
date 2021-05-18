@@ -8,6 +8,5 @@
   "Login": "Login",
   "Password": "Password",
   "Reconnect": "Reconnect",
-  "RequiredFieldMessage": "Required field",
-  "SaveButton": "Save"
+  "RequiredFieldMessage": "Required field"
 }

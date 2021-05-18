@@ -8,7 +8,6 @@
   "MeLabel": "Me",
   "Members": "Members",
   "Name": "Name",
-  "SaveButton": "Save",
   "SearchAddedMembers": "Search added members",
   "SuccessSaveGroup": "{{groupCaption}} \u0027{{ groupName }}\u0027 has been saved successfully"
 }

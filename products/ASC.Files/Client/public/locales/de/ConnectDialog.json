@@ -8,6 +8,5 @@
   "Login": "Anmeldung",
   "Password": "Passwort",
   "Reconnect": "Neu verbinden",
-  "RequiredFieldMessage": "Pflichtfeld",
-  "SaveButton": "Speichern"
+  "RequiredFieldMessage": "Pflichtfeld"
 }

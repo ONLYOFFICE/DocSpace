@@ -442,7 +442,7 @@ class WhiteLabel extends React.Component {
               className="margin-top"
               primary={true}
               size="medium"
-              label={t("SaveButton")}
+              label={t("Common:SaveButton")}
               isLoading={false}
               isDisabled={false}
               onClick={() => toastr.success("Save button action")}
@@ -482,4 +482,4 @@ export default inject(({ setup }) => {
     getWhiteLabelLogoSizes,
     getWhiteLabelLogoUrls,
   };
-})(withTranslation("Settings")(observer(WhiteLabel)));
+})(withTranslation(["Settings", "Common"])(observer(WhiteLabel)));

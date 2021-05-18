@@ -459,7 +459,7 @@ class SectionHeaderContent extends React.PureComponent {
           unknownTypeError={t("ErrorUnknownFileImageType")}
           maxSizeFileError={t("maxSizeFileError")}
           unknownError={t("Error")}
-          saveButtonLabel={t("SaveButton")}
+          saveButtonLabel={t("Common:SaveButton")}
         />
 
         {dialogsVisible.deleteSelfProfile && (
@@ -517,5 +517,5 @@ export default withRouter(
       updateProfile: peopleStore.targetUserStore.updateProfile,
       getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     };
-  })(observer(withTranslation("Profile")(SectionHeaderContent)))
+  })(observer(withTranslation(["Profile", "Common"])(SectionHeaderContent)))
 );
