@@ -101,7 +101,7 @@ const ToggleContentContainer = styled.div`
   }
 
   .wrapper {
-    margin-top: 16px;
+    margin-top: 8px;
   }
 
   .remove_icon {
@@ -170,7 +170,7 @@ const ToggleContentContainer = styled.div`
       margin-right: 20px;
       display: flex;
       align-items: center;
-      padding: 0px 4px;
+      padding: 0px 5px;
       background-color: #2da7db;
       border-radius: 9px;
     }
@@ -202,7 +202,7 @@ const ToggleContentContainer = styled.div`
       }
 
       .iconWrapper {
-        margin-right: 22px;
+        margin-right: 12px;
       }
     }
 
@@ -700,7 +700,7 @@ class PortalAdmins extends Component {
                         if (userRole === "owner") return;
                         const element = (
                           <Avatar
-                            size="small"
+                            size="min"
                             role={userRole}
                             userName={user.displayName}
                             source={user.avatar}
@@ -720,7 +720,6 @@ class PortalAdmins extends Component {
                             status={user.status}
                             onSelect={this.onContentRowSelect}
                             data={user}
-                            data-letter="test"
                             element={element}
                             checkbox={true}
                             checked={checked}
@@ -731,8 +730,8 @@ class PortalAdmins extends Component {
                               <div className="userData">
                                 <div className="nameAndStatus">
                                   <Text
-                                    isBold={true}
                                     fontSize="15px"
+                                    fontWeight="600"
                                     color={nameColor}
                                   >
                                     {user.displayName}
@@ -745,8 +744,8 @@ class PortalAdmins extends Component {
                                     <Text
                                       truncate={true}
                                       color="#FFFFFF"
-                                      font-size="9px"
-                                      fontWeight={700}
+                                      fontSize="9px"
+                                      fontWeight={600}
                                     >
                                       {t("FullAccess")}
                                     </Text>
