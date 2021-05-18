@@ -8,6 +8,8 @@ import styled from "styled-components";
 import { isMobile } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
 import i18n from "./i18n";
+import config from "../../../../package.json";
+import { inject } from "mobx-react";
 
 const BodyStyle = styled.div`
   margin-top: ${isMobile ? "80px" : "24px"};
@@ -191,14 +193,24 @@ const Body = () => {
   );
 };
 
-const About = ({ language }) => (
-  <I18nextProvider i18n={i18n}>
-    <PageLayout>
-      <PageLayout.SectionBody>
-        <Body language={language} />
-      </PageLayout.SectionBody>
-    </PageLayout>
-  </I18nextProvider>
-);
+const About = ({ language, setModuleInfo }) => {
+  useEffect(() => {
+    setModuleInfo(config.homepage, "home");
+  }, []);
 
-export default About;
+  return (
+    <I18nextProvider i18n={i18n}>
+      <PageLayout>
+        <PageLayout.SectionBody>
+          <Body language={language} />
+        </PageLayout.SectionBody>
+      </PageLayout>
+    </I18nextProvider>
+  );
+};
+
+export default inject(({ auth }) => {
+  return {
+    setModuleInfo: auth.settingsStore.setModuleInfo,
+  };
+})(About);

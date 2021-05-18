@@ -265,9 +265,9 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        public DocbuilderReportsUtility(DistributedTaskCacheNotify distributedTaskCacheNotify)
+        public DocbuilderReportsUtility(DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager)
         {
-            tasks = new DistributedTaskQueue(distributedTaskCacheNotify, "DocbuilderReportsUtility", 10);
+            tasks = distributedTaskQueueOptionsManager.Get("DocbuilderReportsUtility");
             Locker = new object();
         }
 

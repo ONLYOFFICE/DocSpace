@@ -548,6 +548,7 @@ class UpdateUserForm extends React.Component {
       //avatarMax,
       disableProfileType,
       isAdmin,
+      isSelf,
     } = this.props;
     const {
       guestCaption,
@@ -634,6 +635,9 @@ class UpdateUserForm extends React.Component {
         </Link>
       </>
     );
+
+    const radioIsDisabled =
+      isSelf || (profile.listAdminModules && !!profile.listAdminModules.length);
 
     return (
       <>
@@ -775,7 +779,9 @@ class UpdateUserForm extends React.Component {
                 { value: "true", label: guestCaption },
                 { value: "false", label: userCaption },
               ]}
-              radioIsDisabled={isLoading || disableProfileType}
+              radioIsDisabled={
+                isLoading || disableProfileType || radioIsDisabled
+              }
               radioOnChange={this.onUserTypeChange}
               tooltipContent={tooltipTypeContent}
               helpButtonHeaderContent={t("UserType")}

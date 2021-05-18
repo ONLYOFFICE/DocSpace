@@ -33,7 +33,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("address")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddDbTenantForbiden(this ModelBuilder modelBuilder)

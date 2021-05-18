@@ -49,7 +49,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    public abstract class FileOperation
+    public abstract class FileOperation : DistributedTask
     {
         public const string SPLIT_CHAR = ":";
         public const string OWNER = "Owner";
@@ -358,9 +358,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected void ProgressStep(TId folderId = default, TId fileId = default)
         {
-            if (folderId.Equals(default(TId)) && fileId.Equals(default(TId))
-                || !folderId.Equals(default(TId)) && Folders.Contains(folderId)
-                || !fileId.Equals(default(TId)) && Files.Contains(fileId))
+            if (Equals(folderId, default(TId)) && Equals(fileId, default(TId))
+                || !Equals(folderId, default(TId)) && Folders.Contains(folderId)
+                || !Equals(fileId, default(TId)) && Files.Contains(fileId))
             {
                 processed++;
                 PublishTaskInfo();

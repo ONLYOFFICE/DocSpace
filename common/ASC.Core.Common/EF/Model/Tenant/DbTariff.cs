@@ -40,7 +40,7 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("comment")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CreateOn)
                     .HasColumnName("create_on")

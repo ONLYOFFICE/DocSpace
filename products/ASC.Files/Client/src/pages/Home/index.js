@@ -30,7 +30,13 @@ import config from "../../../package.json";
 
 class PureHome extends React.Component {
   componentDidMount() {
-    const { fetchFiles, homepage, setIsLoading, setFirstLoad } = this.props;
+    const {
+      fetchFiles,
+      homepage,
+      setIsLoading,
+      setFirstLoad,
+      isVisitor,
+    } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
@@ -41,6 +47,7 @@ class PureHome extends React.Component {
 
       if (!filterObj) {
         filterObj = FilesFilter.getDefault();
+        if (isVisitor) filterObj.folder = "@common";
         const folderId = filterObj.folder;
         setIsLoading(true);
         fetchFiles(folderId, filterObj).finally(() => {
@@ -227,6 +234,7 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreAlert,
 
       isLoading,
+      dragging,
     } = this.props;
 
     return (
@@ -238,6 +246,7 @@ class PureHome extends React.Component {
         <MediaViewer />
         <DragTooltip />
         <PageLayout
+          dragging={dragging}
           withBodyScroll
           withBodyAutoFocus={!isMobile}
           uploadFiles
@@ -364,6 +373,7 @@ export default inject(
       viewAs,
       uploaded,
       isRecycleBinFolder,
+      isVisitor: auth.userStore.user.isVisitor,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,

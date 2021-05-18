@@ -13,11 +13,14 @@ const FilesMediaViewer = (props) => {
     playlist,
     visible,
     currentMediaFileId,
-    deleteFileAction,
+    deleteItemAction,
     setMediaViewerData,
     mediaViewerMediaFormats,
     mediaViewerImageFormats,
     location,
+    setRemoveMediaItem,
+    selectedFolderId,
+    userAccess,
   } = props;
 
   useEffect(() => {
@@ -60,7 +63,10 @@ const FilesMediaViewer = (props) => {
 
     if (files.length > 0) {
       let file = files.find((file) => file.id === id);
-      if (file) deleteFileAction(file.id, file.folderId, translations);
+      if (file) {
+        setRemoveMediaItem(file);
+        deleteItemAction(file.id, selectedFolderId, translations, true);
+      }
     }
   };
 
@@ -77,6 +83,7 @@ const FilesMediaViewer = (props) => {
   return (
     visible && (
       <MediaViewer
+        userAccess={userAccess}
         currentFileId={currentMediaFileId}
         allowConvert={true} //TODO:
         canDelete={canDelete} //TODO:
@@ -95,26 +102,36 @@ const FilesMediaViewer = (props) => {
 };
 
 export default inject(
-  ({ filesStore, mediaViewerDataStore, filesActionsStore, formatsStore }) => {
-    const { files } = filesStore;
+  ({
+    filesStore,
+    mediaViewerDataStore,
+    filesActionsStore,
+    formatsStore,
+    dialogsStore,
+    selectedFolderStore,
+  }) => {
+    const { files, userAccess } = filesStore;
     const {
       visible,
       id: currentMediaFileId,
       setMediaViewerData,
       playlist,
     } = mediaViewerDataStore;
-    const { deleteFileAction } = filesActionsStore;
+    const { deleteItemAction } = filesActionsStore;
     const { media, images } = formatsStore.mediaViewersFormatsStore;
 
     return {
       files,
       playlist,
+      userAccess,
       visible: playlist.length > 0 && visible,
       currentMediaFileId,
-      deleteFileAction,
+      deleteItemAction,
       setMediaViewerData,
       mediaViewerImageFormats: images,
       mediaViewerMediaFormats: media,
+      setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
+      selectedFolderId: selectedFolderStore.id,
     };
   }
 )(withRouter(withTranslation("Home")(observer(FilesMediaViewer))));

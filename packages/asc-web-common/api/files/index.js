@@ -638,8 +638,7 @@ export function getSettingsFiles() {
 }
 
 export function markAsFavorite(ids) {
-  let items = ids.map((id) => +id);
-  const data = { fileIds: items };
+  const data = { fileIds: ids };
   const options = {
     method: "post",
     url: "/files/favorites",
@@ -650,8 +649,7 @@ export function markAsFavorite(ids) {
 }
 
 export function removeFromFavorite(ids) {
-  let items = ids.map((id) => +id);
-  const data = { fileIds: items };
+  const data = { fileIds: ids };
   const options = {
     method: "delete",
     url: "/files/favorites",
@@ -709,5 +707,21 @@ export function updateFileStream(file, fileId, encrypted, forcesave) {
     method: "put",
     url: `/files/${fileId}/update`,
     data: fd,
+  });
+}
+
+export function setFavoritesSetting(set) {
+  return request({
+    method: "put",
+    url: "/files/settings/favorites",
+    data: { set },
+  });
+}
+
+export function setRecentSetting(set) {
+  return request({
+    method: "put",
+    url: "/files/displayRecent",
+    data: { set },
   });
 }

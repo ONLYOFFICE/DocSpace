@@ -15,7 +15,7 @@ newInstance
     lng: lng,
     fallbackLng: "en",
     load: "languageOnly",
-    debug: true,
+    //debug: true,
 
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default

@@ -1,4 +1,4 @@
-resolver 127.0.0.11 valid=30s;
+resolver $DNS_NAMESERVER valid=30s;
 
 map $SERVICE_API_SYSTEM $service_api_system {
     volatile;

@@ -117,10 +117,14 @@ export default inject(
   }) => {
     const { fetchFiles, filter, setIsLoading } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
+
+    const selectedNode = treeFoldersStore.selectedTreeNode;
+
     const selectedTreeNode =
-      treeFoldersStore.selectedTreeNode.length > 0 &&
-      treeFoldersStore.selectedTreeNode[0] !== "@my"
-        ? treeFoldersStore.selectedTreeNode
+      selectedNode.length > 0 &&
+      selectedNode[0] !== "@my" &&
+      selectedNode[0] !== "@common"
+        ? selectedNode
         : [selectedFolderStore.id + ""];
 
     const { setNewFilesPanelVisible, setNewFilesIds } = dialogsStore;
