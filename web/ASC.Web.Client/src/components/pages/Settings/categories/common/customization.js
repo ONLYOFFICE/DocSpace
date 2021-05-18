@@ -268,7 +268,7 @@ class Customization extends React.Component {
               isHovered={true}
               href={helpUrlCommonSettings}
             >
-              {t("LearnMore")}
+              {t("Common:LearnMore")}
             </Link>
           </Box>
         </div>
@@ -305,4 +305,8 @@ export default inject(({ auth, setup }) => {
     helpUrlCommonSettings,
     customNames,
   };
-})(withCultureNames(observer(withTranslation("Settings")(Customization))));
+})(
+  withCultureNames(
+    observer(withTranslation(["Settings", "Common"])(Customization))
+  )
+);

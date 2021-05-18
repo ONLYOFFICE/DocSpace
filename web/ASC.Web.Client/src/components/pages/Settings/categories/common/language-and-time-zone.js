@@ -311,7 +311,7 @@ class LanguageAndTimeZone extends React.Component {
           isHovered={true}
           href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
         >
-          {t("LearnMore")}
+          {t("Common:LearnMore")}
         </Link>
       </Text>
     );

@@ -253,7 +253,7 @@ class ProfileInfo extends React.PureComponent {
           href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
           target="_blank"
         >
-          {t("LearnMore")}
+          {t("Common:LearnMore")}
         </Link>
       </Text>
     );

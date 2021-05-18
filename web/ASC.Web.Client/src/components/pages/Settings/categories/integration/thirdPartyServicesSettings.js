@@ -141,7 +141,7 @@ class ThirdPartyServices extends React.Component {
                 target="_blank"
                 href={urlAuthKeys}
               >
-                {t("LearnMore")}
+                {t("Common:LearnMore")}
               </Link>
             </Box>
           </Box>
@@ -220,4 +220,4 @@ export default inject(({ setup, auth }) => {
     updateConsumerProps,
     setSelectedConsumer,
   };
-})(withTranslation("Settings")(observer(ThirdPartyServices)));
+})(withTranslation(["Settings", "Common"])(observer(ThirdPartyServices)));
