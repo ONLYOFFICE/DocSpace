@@ -185,9 +185,7 @@ class Form extends React.PureComponent {
           primary
           size="big"
           tabIndex={2}
-          label={
-            isLoading ? t("LoadingProcessing") : t("ImportContactsOkButton")
-          }
+          label={isLoading ? t("LoadingProcessing") : t("Common:OkButton")}
           isDisabled={isLoading}
           isLoading={isLoading}
           onClick={this.onSubmit}
@@ -238,4 +236,8 @@ export default inject(({ auth, setup }) => {
     getPortalPasswordSettings,
     changePassword,
   };
-})(withRouter(withTranslation("Confirm")(observer(ChangePasswordForm))));
+})(
+  withRouter(
+    withTranslation(["Confirm", "Common"])(observer(ChangePasswordForm))
+  )
+);

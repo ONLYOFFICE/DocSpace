@@ -65,7 +65,7 @@ const ModalContainer = ({
       <BtnContainer>
         <Button
           key="saveBtn"
-          label={t("ChangeEmailBtn")}
+          label={t("Common:SaveButton")}
           primary={true}
           scale={true}
           size="big"

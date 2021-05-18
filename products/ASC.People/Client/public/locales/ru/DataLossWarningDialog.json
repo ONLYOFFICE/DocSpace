@@ -1,6 +1,5 @@
 ﻿{
   "DataLossWarningBody": "Внесенные вами изменения могут быть не сохранены.",
-  "DataLossWarningCancelBtn": "Отмена",
   "DataLossWarningHeader": "Покинуть страницу?",
   "DataLossWarningLeaveBtn": "Покинуть"
 }
