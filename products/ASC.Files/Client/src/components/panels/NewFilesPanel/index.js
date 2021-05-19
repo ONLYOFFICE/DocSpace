@@ -26,11 +26,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
 
 class NewFilesPanel extends React.Component {
-  constructor(props) {
-    super(props);
-
-    state = { readingFiles: [] };
-  }
+  state = { readingFiles: [] };
 
   onClose = () => {
     this.props.setNewFilesPanelVisible(false);

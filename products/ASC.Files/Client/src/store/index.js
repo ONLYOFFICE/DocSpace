@@ -46,7 +46,11 @@ const uploadDataStore = new UploadDataStore(
   secondaryProgressDataStore,
   primaryProgressDataStore
 );
-const dialogsStore = new DialogsStore(treeFoldersStore, filesStore);
+const dialogsStore = new DialogsStore(
+  treeFoldersStore,
+  filesStore,
+  selectedFolderStore
+);
 const filesActionsStore = new FilesActionsStore(
   store.auth,
   uploadDataStore,

@@ -4,6 +4,7 @@ import { makeAutoObservable } from "mobx";
 class DialogsStore {
   treeFoldersStore;
   filesStore;
+  selectedFolderStore;
 
   sharingPanelVisible = false;
   ownerPanelVisible = false;
@@ -29,11 +30,12 @@ class DialogsStore {
   removeMediaItem = null;
   unsubscribe = null;
 
-  constructor(treeFoldersStore, filesStore) {
+  constructor(treeFoldersStore, filesStore, selectedFolderStore) {
     makeAutoObservable(this);
 
     this.treeFoldersStore = treeFoldersStore;
     this.filesStore = filesStore;
+    this.selectedFolderStore = selectedFolderStore;
   }
 
   setSharingPanelVisible = (sharingPanelVisible) => {
@@ -102,16 +104,27 @@ class DialogsStore {
       const files = await getNewFiles(id);
       if (files && files.length) {
         this.setNewFiles(files);
-        setNewFilesIds(newIds);
+        this.setNewFilesIds(newIds);
       } else {
         newFilesPanelVisible = false;
-        const { getRootFolder, updateRootBadge } = this.treeFoldersStore;
-        const { updateFolderBadge } = this.filesStore;
-        const { rootFolderType, id } = item;
+        const {
+          getRootFolder,
+          updateRootBadge,
+          treeFolders,
+        } = this.treeFoldersStore;
+        const { updateFolderBadge, updateFoldersBadge } = this.filesStore;
 
-        const rootFolder = getRootFolder(rootFolderType);
-        updateRootBadge(rootFolder.id, item.new);
-        updateFolderBadge(id, item.new);
+        if (item) {
+          const { rootFolderType, id } = item;
+          const rootFolder = getRootFolder(rootFolderType);
+          updateRootBadge(rootFolder.id, item.new);
+          updateFolderBadge(id, item.new);
+        } else {
+          const rootFolder = treeFolders.find((x) => x.id === +newIds[0]);
+          updateRootBadge(rootFolder.id, rootFolder.new);
+          if (this.selectedFolderStore.id === rootFolder.id)
+            updateFoldersBadge();
+        }
       }
     } else {
       this.setNewFilesIds(null);
