@@ -73,7 +73,7 @@ namespace ASC.Data.Backup.Service
             FactoryProgressItem factoryProgressItem)
         {
             Log = options.CurrentValue;
-            ProgressQueue = progressQueue.Get<BackupProgressItem>();
+            ProgressQueue = progressQueue.Get<BaseBackupProgressItem>();
             CacheBackupProgress = cacheBackupProgress;
             FactoryProgressItem = factoryProgressItem;
         }
@@ -314,12 +314,26 @@ namespace ASC.Data.Backup.Service
         public abstract BackupProgressItemEnum BackupProgressItemEnum { get; }
 
         public abstract object Clone();
+
+        protected ILog Log { get; set; }
+
+        protected IServiceProvider ServiceProvider { get; set; }
+
+        public BaseBackupProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
+        {
+            Log = options.CurrentValue;
+            ServiceProvider = serviceProvider;
+        }
     }
 
     [Transient]
     public class BackupProgressItem : BaseBackupProgressItem
     {
         private const string ArchiveFormat = "tar.gz";
+
+        public BackupProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
+        {
+        }
 
         public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Backup; }
 
@@ -334,14 +348,6 @@ namespace ASC.Data.Backup.Service
         private string CurrentRegion { get; set; }
         private Dictionary<string, string> ConfigPaths { get; set; }
         private int Limit { get; set; }
-        private ILog Log { get; set; }
-        private IServiceProvider ServiceProvider { get; set; }
-
-        public BackupProgressItem(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
-        {
-            Log = options.CurrentValue;
-            ServiceProvider = serviceProvider;
-        }
 
         public void Init(BackupSchedule schedule, bool isScheduled, string tempFolder, int limit, string currentRegion, Dictionary<string, string> configPaths)
         {
@@ -481,6 +487,10 @@ namespace ASC.Data.Backup.Service
     [Transient]
     public class RestoreProgressItem : BaseBackupProgressItem
     {
+        public RestoreProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
+        {
+        }
+
         public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Restore; }
         public BackupStorageType StorageType { get; set; }
         public string StoragePath { get; set; }
@@ -490,16 +500,7 @@ namespace ASC.Data.Backup.Service
         private string CurrentRegion { get; set; }
         private string UpgradesPath { get; set; }
         private Dictionary<string, string> ConfigPaths { get; set; }
-        private ILog Log { get; set; }
-        private IServiceProvider ServiceProvider { get; set; }
 
-        public RestoreProgressItem(
-            IOptionsMonitor<ILog> options,
-            IServiceProvider serviceProvider)
-        {
-            Log = options.CurrentValue;
-            ServiceProvider = serviceProvider;
-        }
         public void Init(StartRestoreRequest request, string tempFolder, string upgradesPath, string currentRegion, Dictionary<string, string> configPaths)
         {
             TenantId = request.TenantId;
@@ -628,6 +629,10 @@ namespace ASC.Data.Backup.Service
     [Transient]
     public class TransferProgressItem : BaseBackupProgressItem
     {
+        public TransferProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
+        {
+        }
+
         public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Transfer; }
         public string TargetRegion { get; set; }
         public bool TransferMail { get; set; }
@@ -638,18 +643,7 @@ namespace ASC.Data.Backup.Service
         public Dictionary<string, string> ConfigPaths { get; set; }
         public string CurrentRegion { get; set; }
         public int Limit { get; set; }
-        public ILog Log { get; set; }
-        private IServiceProvider ServiceProvider { get; set; }
 
-
-        public TransferProgressItem(
-            IOptionsMonitor<ILog> options,
-            IServiceProvider serviceProvider
-            )
-        {
-            Log = options.CurrentValue;
-            ServiceProvider = serviceProvider;
-        }
         public void Init(
             string targetRegion,
             bool transferMail,

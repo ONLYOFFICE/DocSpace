@@ -322,11 +322,16 @@ namespace ASC.Common.Threading
             services.TryAdd<DistributedTaskCacheNotify>();
             services.TryAdd<DistributedTaskQueueOptionsManager>();
             services.TryAdd<DistributedTaskQueue>();
-            services.TryAdd<T>();
+
+            var type = typeof(T);
+            if (!type.IsAbstract)
+            {
+                services.TryAdd<T>();
+            }
 
             services.TryAddSingleton<IConfigureOptions<DistributedTaskQueue>, ConfigureDistributedTaskQueue>();
 
-            _ = services.Configure<DistributedTaskQueue>(typeof(T).Name, r =>
+            _ = services.Configure<DistributedTaskQueue>(type.Name, r =>
             {
                 r.MaxThreadsCount = maxThreadsCount;
                 //r.errorCount = 1;
