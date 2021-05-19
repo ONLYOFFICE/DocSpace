@@ -21,6 +21,11 @@ const StyledComponent = styled.div`
   .input-with-folder-path {
     margin-top: 16px;
   }
+  .input-with-folder-path,
+  .text-input-with-folder-path {
+    width: 100%;
+    max-width: 820px;
+  }
   .panel-loader-wrapper {
     margin-top: 8px;
     padding-left: 32px;
@@ -168,7 +173,6 @@ class OperationsDialog extends React.PureComponent {
       <StyledComponent>
         <FileInputWithFolderPath
           name={name}
-          scale
           className="input-with-folder-path"
           baseFolder={baseFolder}
           isDisabled={isLoading || isSavingProcess}

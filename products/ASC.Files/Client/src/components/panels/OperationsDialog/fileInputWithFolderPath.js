@@ -18,6 +18,7 @@ const FileInputWithFolderPath = (
     baseFolder,
     onClickInput,
     name,
+    className,
   },
   ...rest
 ) => {
@@ -28,11 +29,12 @@ const FileInputWithFolderPath = (
       hasError={hasError}
       hasWarning={hasWarning}
       isDisabled={isDisabled}
+      className={className}
       {...rest}
     >
       <TextInput
         id={id}
-        className="text-input"
+        className="text-input-with-folder-path"
         placeholder={placeholder}
         value={folderPath || baseFolder}
         size={size}
