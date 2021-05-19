@@ -296,3 +296,15 @@ export function getTfaSecretKeyAndQR(confirmKey = null) {
 
   return request(options);
 }
+
+export function loginWithTfaCodeAndCookie(code) {
+  const data = {
+    code,
+  };
+
+  return request({
+    method: "post",
+    url: "/settings/tfaapp/validate",
+    data,
+  });
+}

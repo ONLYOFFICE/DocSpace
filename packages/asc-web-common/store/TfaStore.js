@@ -38,6 +38,10 @@ class TfaStore {
     return api.user.loginWithTfaCode(userName, passwordHash, code);
   };
 
+  loginWithCodeAndCookie = async (code) => {
+    return api.settings.loginWithTfaCodeAndCookie(code);
+  };
+
   getBackupCodes = async () => {
     return api.settings.getTfaNewBackupCodes();
   };
