@@ -49,7 +49,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("id")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.AnsweredBy)
                     .IsRequired()
@@ -57,7 +57,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnType("varchar(50)")
                     .HasDefaultValueSql("'00000000-0000-0000-0000-000000000000'")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ContactId).HasColumnName("contact_id");
 
@@ -72,21 +72,21 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("number_from")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.NumberTo)
                     .IsRequired()
                     .HasColumnName("number_to")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ParentCallId)
                     .IsRequired()
                     .HasColumnName("parent_call_id")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Price)
                     .HasColumnName("price")
@@ -102,13 +102,13 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("record_sid")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.RecordUrl)
                     .HasColumnName("record_url")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Status).HasColumnName("status");
 

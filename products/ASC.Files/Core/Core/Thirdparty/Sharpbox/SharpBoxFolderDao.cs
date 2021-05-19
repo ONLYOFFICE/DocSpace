@@ -34,6 +34,7 @@ using System.Threading;
 using AppLimit.CloudComputing.SharpBox;
 using AppLimit.CloudComputing.SharpBox.Exceptions;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -49,6 +50,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Sharpbox
 {
+    [Scope]
     internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
         private CrossDao CrossDao { get; }

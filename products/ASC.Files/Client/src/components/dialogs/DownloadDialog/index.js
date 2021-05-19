@@ -153,7 +153,7 @@ class DownloadDialogComponent extends React.Component {
   getItemIcon = (item) => {
     const extension = item.fileExst;
     const icon = extension
-      ? this.props.getFileIcon(extension, 24)
+      ? this.props.getIcon(24, extension)
       : this.props.getFolderIcon(item.providerKey, 24);
 
     return (
@@ -414,11 +414,7 @@ class DownloadDialogComponent extends React.Component {
       indeterminateOtherTitle,
     } = this.state;
 
-    console.log("this.props", this.props);
-    console.log("this.state", this.state);
-
     const otherLength = other.length;
-
     const showOther = otherLength > 1;
     const minHeight = otherLength > 2 ? 110 : otherLength * 50;
 
@@ -426,7 +422,7 @@ class DownloadDialogComponent extends React.Component {
       documents.filter((f) => f.checked).length +
         spreadsheets.filter((f) => f.checked).length +
         presentations.filter((f) => f.checked).length +
-        other.filter((f) => f.checked).length ===
+        other.filter((f) => f.checked).length <=
       1;
 
     return (
@@ -573,7 +569,7 @@ export default inject(
   }) => {
     const { secondaryProgressDataStore } = uploadDataStore;
     const { sortedFiles } = filesStore;
-    const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+    const { getIcon, getFolderIcon } = formatsStore.iconFormatsStore;
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -592,7 +588,7 @@ export default inject(
 
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
-      getFileIcon,
+      getIcon,
       getFolderIcon,
       setDownloadDialogVisible,
       getDownloadProgress,

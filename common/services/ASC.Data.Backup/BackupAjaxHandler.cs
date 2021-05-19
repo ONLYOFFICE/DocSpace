@@ -100,6 +100,13 @@ namespace ASC.Data.Backup
             return BackupService.GetBackupProgress(GetCurrentTenantId());
         }
 
+        public BackupProgress GetBackupProgress(int tenantId)
+        {
+            DemandPermissionsBackup();
+
+            return BackupService.GetBackupProgress(tenantId);
+        }
+
         public void DeleteBackup(Guid id)
         {
             DemandPermissionsBackup();

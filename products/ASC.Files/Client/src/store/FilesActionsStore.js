@@ -24,6 +24,7 @@ class FilesActionStore {
   selectedFolderStore;
   settingsStore;
   dialogsStore;
+  mediaViewerDataStore;
 
   constructor(
     authStore,
@@ -32,7 +33,8 @@ class FilesActionStore {
     filesStore,
     selectedFolderStore,
     settingsStore,
-    dialogsStore
+    dialogsStore,
+    mediaViewerDataStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -42,7 +44,15 @@ class FilesActionStore {
     this.selectedFolderStore = selectedFolderStore;
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
+    this.mediaViewerDataStore = mediaViewerDataStore;
   }
+
+  isMediaOpen = () => {
+    const { visible, setMediaViewerData, playlist } = this.mediaViewerDataStore;
+    if (visible && playlist.length === 1) {
+      setMediaViewerData({ visible: false, id: null });
+    }
+  };
 
   deleteAction = (translations, newSelection = null) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
@@ -71,6 +81,7 @@ class FilesActionStore {
     }
 
     if (folderIds.length || fileIds.length) {
+      this.isMediaOpen();
       return removeFiles(folderIds, fileIds, deleteAfter, immediately)
         .then((res) => {
           const id = res[0] && res[0].id ? res[0].id : null;
@@ -138,6 +149,44 @@ class FilesActionStore {
               setTreeFolders(newTreeFolders);
             }
           });
+        }
+      })
+      .catch((err) => {
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      });
+  };
+
+  loopFilesOperations = (id, translations) => {
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
+    getProgress()
+      .then((res) => {
+        const currentProcess = res.find((x) => x.id === id);
+        if (currentProcess && currentProcess.progress !== 100) {
+          setSecondaryProgressBarData({
+            icon: "file",
+            percent: currentProcess.progress,
+            label: "", //TODO: add translation if need "MarkAsRead": "Mark all as read",
+            visible: true,
+            alert: false,
+          });
+          setTimeout(() => this.loopFilesOperations(id, translations), 1000);
+        } else {
+          setSecondaryProgressBarData({
+            icon: "file",
+            percent: 100,
+            label: "", //TODO: add translation if need "MarkAsRead": "Mark all as read",
+            visible: true,
+            alert: false,
+          });
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         }
       })
       .catch((err) => {
@@ -284,8 +333,8 @@ class FilesActionStore {
       });
 
       isFile
-        ? deleteFileAction(itemId, currentFolderId, translations)
-        : deleteFolderAction(itemId, currentFolderId, translations);
+        ? this.deleteFileAction(itemId, currentFolderId, translations)
+        : this.deleteFolderAction(itemId, currentFolderId, translations);
     }
   };
 
@@ -295,6 +344,7 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
+    this.isMediaOpen();
     return deleteFile(fileId)
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
@@ -497,7 +547,21 @@ class FilesActionStore {
   };
 
   markAsRead = (folderIds, fileId) => {
-    return markAsRead(folderIds, fileId);
+    const {
+      setSecondaryProgressBarData,
+    } = this.uploadDataStore.secondaryProgressDataStore;
+
+    setSecondaryProgressBarData({
+      icon: "file",
+      label: "", //TODO: add translation if need "MarkAsRead": "Mark all as read",
+      percent: 0,
+      visible: true,
+    });
+
+    return markAsRead(folderIds, fileId).then((res) => {
+      const id = res[0] && res[0].id ? res[0].id : null;
+      this.loopFilesOperations(id);
+    });
   };
 
   moveDragItems = (destFolderId, folderTitle, translations) => {
