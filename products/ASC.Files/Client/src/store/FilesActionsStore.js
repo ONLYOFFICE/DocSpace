@@ -10,6 +10,7 @@ import {
   downloadFiles,
   markAsRead,
   checkFileConflicts,
+  removeShareFiles,
 } from "@appserver/common/api/files";
 import { ConflictResolveType, FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
@@ -331,7 +332,6 @@ class FilesActionStore {
         label: translations.deleteOperation,
         alert: false,
       });
-
       isFile
         ? this.deleteFileAction(itemId, currentFolderId, translations)
         : this.deleteFolderAction(itemId, currentFolderId, translations);
@@ -359,6 +359,31 @@ class FilesActionStore {
         });
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
+  };
+
+  unsubscribeAction = async (fileIds, folderIds) => {
+    const { setUnsubscribe } = this.dialogsStore;
+    const { filter, fetchFiles } = this.filesStore;
+    const {
+      treeFolders,
+      isRecycleBinFolder,
+      setTreeFolders,
+    } = this.treeFoldersStore;
+
+    return removeShareFiles(fileIds, folderIds)
+      .then(() => setUnsubscribe(false))
+      .then(() =>
+        fetchFiles(this.selectedFolderStore.id, filter).then((data) => {
+          if (!isRecycleBinFolder && !!folderIds.length) {
+            const path = data.selectedFolder.pathParts.slice(0);
+            const newTreeFolders = treeFolders;
+            const folders = data.selectedFolder.folders;
+            const foldersCount = data.selectedFolder.foldersCount;
+            loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+            setTreeFolders(newTreeFolders);
+          }
+        })
+      );
   };
 
   deleteFolderAction = (folderId, currentFolderId, translations) => {
