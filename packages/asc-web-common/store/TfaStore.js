@@ -43,6 +43,10 @@ class TfaStore {
   };
 
   getBackupCodes = async () => {
+    return api.settings.getTfaBackupCodes();
+  };
+
+  getNewBackupCodes = async () => {
     return api.settings.getTfaNewBackupCodes();
   };
 

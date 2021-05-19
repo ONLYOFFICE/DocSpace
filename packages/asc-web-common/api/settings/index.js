@@ -265,6 +265,13 @@ export function setTfaSettings(type) {
   });
 }
 
+export function getTfaBackupCodes() {
+  return request({
+    method: "get",
+    url: "/settings/tfaappcodes",
+  });
+}
+
 export function getTfaNewBackupCodes() {
   return request({
     method: "put",
