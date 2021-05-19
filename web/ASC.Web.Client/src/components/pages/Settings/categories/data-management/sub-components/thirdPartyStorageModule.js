@@ -9,6 +9,8 @@ import { getBackupStorage } from "@appserver/common/api/settings";
 import styled from "styled-components";
 import TextInput from "@appserver/components/text-input";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
+import Button from "@appserver/components/button";
+import { startBackup } from "@appserver/common/api/portal";
 
 const StyledComponent = styled.div`
   .backup_combo {
@@ -24,11 +26,12 @@ const StyledComponent = styled.div`
 `;
 
 let googleStorageId = "GoogleCloud";
-
+let inputValueArray;
 class ThirdPartyStorageModule extends React.PureComponent {
   constructor(props) {
     super(props);
     this.isSetDefaultIdStorage = false;
+    inputValueArray = [];
     this.state = {
       availableOptions: [],
       availableStorage: {},
@@ -45,19 +48,18 @@ class ThirdPartyStorageModule extends React.PureComponent {
       input_5: "",
       input_6: "",
     };
+    this.isFirstSet = false;
+    this.firstSetId = "";
   }
   componentDidMount() {
-    const { onSetLoadingData } = this.props;
     this.setState(
       {
         isLoading: true,
       },
       function () {
-        onSetLoadingData && onSetLoadingData(true);
         getBackupStorage()
           .then((storageBackup) => this.getOptions(storageBackup))
           .finally(() => {
-            onSetLoadingData && onSetLoadingData(false);
             this.setState({ isLoading: false });
           });
       }
@@ -65,6 +67,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
   }
 
   getOptions = (storageBackup) => {
+    const { isManualBackup, onSetDisableOptions } = this.props;
     this.setState({
       isLoading: true,
     });
@@ -73,6 +76,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
     //debugger;
     for (let item = 0; item < storageBackup.length; item++) {
+      // debugger;
       let obj = {
         [storageBackup[item].id]: {
           isSet: storageBackup[item].isSet,
@@ -91,7 +95,8 @@ class ThirdPartyStorageModule extends React.PureComponent {
       availableStorage = { ...availableStorage, ...obj };
       //debugger;
       console.log("availableStorage", availableStorage);
-      if (storageBackup[item].current) {
+
+      if (!isManualBackup && storageBackup[item].current) {
         this.isSetDefaultIdStorage = true;
         this.setState({
           selectedOption: storageBackup[item].title,
@@ -100,14 +105,32 @@ class ThirdPartyStorageModule extends React.PureComponent {
           defaultSelectedId: storageBackup[item].id,
         });
       }
+
+      if (this.isSetDefaultIdStorage)
+        onSetDisableOptions && onSetDisableOptions(true);
+
+      if (!this.isFirstSet && storageBackup[item].isSet) {
+        this.isFirstSet = true;
+        this.firstSetId = storageBackup[item].id;
+      }
     }
 
-    if (!this.isSetDefaultIdStorage) {
+    if (!this.isSetDefaultIdStorage && !this.isFirstSet) {
       this.setState({
         selectedOption: availableStorage[googleStorageId].title,
         defaultSelectedOption: availableStorage[googleStorageId].title,
         selectedId: availableStorage[googleStorageId].id,
         defaultSelectedId: availableStorage[googleStorageId].id,
+        isSetDefaultStorage: false,
+      });
+    }
+
+    if (!this.isSetDefaultIdStorage && this.isFirstSet) {
+      this.setState({
+        selectedOption: availableStorage[this.firstSetId].title,
+        defaultSelectedOption: availableStorage[this.firstSetId].title,
+        selectedId: availableStorage[this.firstSetId].id,
+        defaultSelectedId: availableStorage[this.firstSetId].id,
         isSetDefaultStorage: false,
       });
     }
@@ -121,7 +144,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
   onSelect = (option) => {
     const selectedStorageId = option.key;
-    const { availableStorage } = this.state;
+    const { availableStorage, isSetDefaultStorage } = this.state;
+    const { onSetDisableOptions } = this.props;
+    //debugger;
+    if (isSetDefaultStorage) onSetDisableOptions && onSetDisableOptions(false);
 
     this.setState({
       selectedOption: availableStorage[selectedStorageId].title,
@@ -192,15 +218,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
         return false;
     }
   };
-  onSaveSettings = () => {
-    const { fillStorageFields } = this.props;
+  fillInputValueArray = () => {
     const { selectedId, availableStorage } = this.state;
-
-    if (!this.isInvalidForm()) return;
-
     let obj = {};
     const selectedStorage = availableStorage[selectedId];
-    let inputValueArray = [];
 
     for (let i = 1; i <= 6; i++) {
       if (this.state[`input_${i}`]) {
@@ -211,6 +232,15 @@ class ThirdPartyStorageModule extends React.PureComponent {
         inputValueArray.push(obj);
       }
     }
+  };
+  onSaveSettings = () => {
+    const { fillStorageFields } = this.props;
+    const { selectedId } = this.state;
+
+    if (!this.isInvalidForm()) return;
+
+    this.fillInputValueArray();
+
     this.setState({
       isSelectedOptionChanges: false,
       isError: false,
@@ -220,11 +250,14 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
   onCancelSettings = () => {
     const { defaultSelectedOption, defaultSelectedId } = this.state;
-    const { onCancelModuleSettings } = this.props;
-    this.isSetDefaultIdStorage &&
+    const { onCancelModuleSettings, onSetDisableOptions } = this.props;
+
+    if (this.isSetDefaultIdStorage) {
       this.setState({
         isSetDefaultStorage: true,
       });
+      onSetDisableOptions && onSetDisableOptions(true);
+    }
 
     this.setState({
       selectedOption: defaultSelectedOption,
@@ -241,6 +274,33 @@ class ThirdPartyStorageModule extends React.PureComponent {
     onCancelModuleSettings();
   };
 
+  onMakeCopy = () => {
+    const { setInterval } = this.props;
+    const { selectedId } = this.state;
+
+    if (!this.isInvalidForm()) return;
+    this.fillInputValueArray();
+
+    let storageParams = [
+      {
+        key: "module",
+        value: selectedId,
+      },
+    ];
+
+    let obj = {};
+
+    for (let i = 0; i < inputValueArray.length; i++) {
+      obj = {
+        key: inputValueArray[i].key,
+        value: inputValueArray[i].value,
+      };
+      storageParams.push(obj);
+    }
+
+    startBackup("5", storageParams);
+    setInterval();
+  };
   render() {
     const {
       t,
@@ -248,6 +308,8 @@ class ThirdPartyStorageModule extends React.PureComponent {
       isChanged,
       isLoadingData,
       isCopyingToLocal,
+      isManualBackup,
+      maxProgress,
     } = this.props;
     const {
       availableOptions,
@@ -265,7 +327,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       isSelectedOptionChanges,
       isError,
     } = this.state;
-
+    console.log("selectedOption", isLoadingData);
     return (
       <StyledComponent>
         <Box marginProp="16px 0 16px 0">
@@ -420,22 +482,38 @@ class ThirdPartyStorageModule extends React.PureComponent {
             )}
           </>
         )}
-        {(isSelectedOptionChanges || isChanged) && (
-          <SaveCancelButtons
-            className="team-template_buttons"
-            onSaveClick={this.onSaveSettings}
-            onCancelClick={this.onCancelSettings}
-            showReminder={false}
-            reminderTest={t("YouHaveUnsavedChanges")}
-            saveButtonLabel={t("SaveButton")}
-            cancelButtonLabel={t("CancelButton")}
-            isDisabled={isCopyingToLocal || isLoadingData || isLoading}
-          />
+        {!isManualBackup ? (
+          (isSelectedOptionChanges || isChanged) && (
+            <SaveCancelButtons
+              className="team-template_buttons"
+              onSaveClick={this.onSaveSettings}
+              onCancelClick={this.onCancelSettings}
+              showReminder={false}
+              reminderTest={t("YouHaveUnsavedChanges")}
+              saveButtonLabel={t("SaveButton")}
+              cancelButtonLabel={t("CancelButton")}
+              isDisabled={isCopyingToLocal || isLoadingData || isLoading}
+            />
+          )
+        ) : (
+          <div className="manual-backup_buttons">
+            <Button
+              label={t("MakeCopy")}
+              onClick={this.onMakeCopy}
+              primary
+              isDisabled={!maxProgress}
+              size="medium"
+              tabIndex={10}
+            />
+          </div>
         )}
       </StyledComponent>
     );
   }
 }
+ThirdPartyStorageModule.defaultProps = {
+  isManualBackup: false,
+};
 export default inject(({ auth }) => {
   const { helpUrlCreatingBackup } = auth.settingsStore;
 

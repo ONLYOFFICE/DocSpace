@@ -20,6 +20,7 @@ const ScheduleComponent = ({
   onSelectPeriod,
   onSelectWeedDay,
   isLoadingData,
+  isDisableOptions,
 }) => {
   const { t } = useTranslation("Settings");
   return (
@@ -31,7 +32,7 @@ const ScheduleComponent = ({
           label: selectedOption,
         }}
         onSelect={onSelectPeriod}
-        isDisabled={isLoadingData}
+        isDisabled={isLoadingData || isDisableOptions}
         noBorder={false}
         scaled={false}
         scaledOptions={false}
@@ -47,7 +48,7 @@ const ScheduleComponent = ({
             label: selectedWeekdayOption,
           }}
           onSelect={onSelectWeedDay}
-          isDisabled={isLoadingData}
+          isDisabled={isLoadingData || isDisableOptions}
           noBorder={false}
           scaled={false}
           scaledOptions={false}
@@ -64,7 +65,7 @@ const ScheduleComponent = ({
             label: selectedMonthOption,
           }}
           onSelect={onSelectMonthNumberAndTimeOptions}
-          isDisabled={isLoadingData}
+          isDisabled={isLoadingData || isDisableOptions}
           noBorder={false}
           scaled={false}
           scaledOptions={false}
@@ -80,7 +81,7 @@ const ScheduleComponent = ({
           label: selectedTimeOption,
         }}
         onSelect={onSelectMonthNumberAndTimeOptions}
-        isDisabled={isLoadingData}
+        isDisabled={isLoadingData || isDisableOptions}
         noBorder={false}
         scaled={false}
         scaledOptions={false}
@@ -95,7 +96,7 @@ const ScheduleComponent = ({
           label: `${selectedMaxCopies} ${t("MaxCopies")}`,
         }}
         onSelect={onSelectMaxCopies}
-        isDisabled={isLoadingData}
+        isDisabled={isLoadingData || isDisableOptions}
         noBorder={false}
         scaled={false}
         scaledOptions={false}
@@ -114,5 +115,7 @@ const ScheduleComponent = ({
     </div>
   );
 };
-
+ScheduleComponent.defaultProps = {
+  isDisableOptions: false,
+};
 export default ScheduleComponent;

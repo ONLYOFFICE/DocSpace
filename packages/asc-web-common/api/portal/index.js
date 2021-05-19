@@ -55,22 +55,7 @@ export function getInvitationLinks() {
   );
 }
 
-export function startBackup(
-  storageType,
-  key = null,
-  value = null,
-  backupMail = false
-) {
-  const storageParams =
-    key === null
-      ? null
-      : [
-          {
-            key,
-            value,
-          },
-        ];
-
+export function startBackup(storageType, storageParams, backupMail = false) {
   const options = {
     method: "post",
     url: `/portal/startbackup`,

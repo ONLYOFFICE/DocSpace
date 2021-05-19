@@ -19,7 +19,7 @@ import {
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import toastr from "@appserver/components/toast/toastr";
 import OperationsDialog from "files/OperationsDialog";
-import ThirdPartyStorageModule from "./sub-components-automatic-backup/thirdPartyStorageModule";
+import ThirdPartyStorageModule from "./sub-components/thirdPartyStorageModule";
 import Loader from "@appserver/components/loader";
 import { getFolderPath } from "@appserver/common/api/files";
 
@@ -113,9 +113,11 @@ class AutomaticBackup extends React.PureComponent {
 
       isCopyingToLocal: true,
       isLoadingData: false,
+      isLoading: false,
+      isDisableOptions: false,
+
       selectedFolder: "",
       isPanelVisible: false,
-      isLoading: false,
       isChanged: false,
       isSetDefaultFolderPath: false,
       isError: false,
@@ -785,11 +787,11 @@ class AutomaticBackup extends React.PureComponent {
     }
     if (isCheckedThirdPartyStorage) {
       if (+defaultStorageType === 5) {
-        changed = this.checkOptions();
-        isChanged !== changed &&
-          this.setState({
-            isChanged: changed,
-          });
+        // changed = this.checkOptions();
+        // isChanged !== changed &&
+        //   this.setState({
+        //     isChanged: changed,
+        //   });
         return;
       } else {
         isChanged !== changed &&
@@ -934,6 +936,11 @@ class AutomaticBackup extends React.PureComponent {
       isLoadingData: isLoading,
     });
   };
+  onSetDisableOptions = (isDisable) => {
+    this.setState({
+      isDisableOptions: isDisable,
+    });
+  };
   render() {
     const { t, commonThirdPartyList } = this.props;
     const {
@@ -960,6 +967,7 @@ class AutomaticBackup extends React.PureComponent {
       isChanged,
       isSetDefaultFolderPath,
       isError,
+      isDisableOptions,
     } = this.state;
 
     console.log("this.state", this.state);
@@ -1032,6 +1040,7 @@ class AutomaticBackup extends React.PureComponent {
                     selectedMonthOption={selectedMonthOption}
                     selectedMaxCopies={selectedMaxCopies}
                     isLoadingData={isLoadingData}
+                    isDisableOptions={isDisableOptions}
                     periodOptions={this.periodOptions}
                     monthNumberOptionsArray={this.monthNumberOptionsArray}
                     timeOptionsArray={this.timeOptionsArray}
@@ -1092,6 +1101,7 @@ class AutomaticBackup extends React.PureComponent {
                     selectedMonthOption={selectedMonthOption}
                     selectedMaxCopies={selectedMaxCopies}
                     isLoadingData={isLoadingData}
+                    isDisableOptions={isDisableOptions}
                     periodOptions={this.periodOptions}
                     monthNumberOptionsArray={this.monthNumberOptionsArray}
                     timeOptionsArray={this.timeOptionsArray}
@@ -1134,6 +1144,7 @@ class AutomaticBackup extends React.PureComponent {
                     isCopyingToLocal={isCopyingToLocal}
                     isLoadingData={isLoadingData}
                     isChanged={isChanged}
+                    onSetDisableOptions={this.onSetDisableOptions}
                   />
                   <ScheduleComponent
                     weeklySchedule={weeklySchedule}
@@ -1145,6 +1156,7 @@ class AutomaticBackup extends React.PureComponent {
                     selectedMonthOption={selectedMonthOption}
                     selectedMaxCopies={selectedMaxCopies}
                     isLoadingData={isLoadingData}
+                    isDisableOptions={isDisableOptions}
                     periodOptions={this.periodOptions}
                     monthNumberOptionsArray={this.monthNumberOptionsArray}
                     timeOptionsArray={this.timeOptionsArray}

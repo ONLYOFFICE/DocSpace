@@ -32,7 +32,13 @@ const ThirdPartyModule = ({
 
   const onClickButton = () => {
     console.log("selectedFolder", selectedFolder);
-    startBackup("1", "folderId", selectedFolder[0]);
+    const storageParams = [
+      {
+        key: "folderId",
+        value: selectedFolder[0],
+      },
+    ];
+    startBackup("1", storageParams);
     setInterval();
   };
 

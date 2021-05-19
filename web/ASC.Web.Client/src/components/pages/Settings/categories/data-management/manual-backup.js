@@ -12,7 +12,7 @@ import toastr from "@appserver/components/toast/toastr";
 import { toast } from "react-toastify";
 import ThirdPartyModule from "./sub-components-manual-backup/thirdPartyModule";
 import DocumentsModule from "./sub-components-manual-backup/documentsModule";
-import ThirdPartyStorageModule from "./sub-components-manual-backup/thirdPartyStorageModule";
+import ThirdPartyStorageModule from "./sub-components/thirdPartyStorageModule";
 
 const StyledComponent = styled.div`
   ${commonSettingsStyles}
@@ -91,7 +91,8 @@ class ManualBackup extends React.Component {
   }
 
   onClickButton = () => {
-    startBackup("4");
+    const storageParams = null;
+    startBackup("4", storageParams);
     this.timerId = setInterval(() => this.getProgress(), 1000);
   };
 
@@ -222,7 +223,11 @@ class ManualBackup extends React.Component {
           setInterval={this.setInterval}
         />
 
-        <ThirdPartyStorageModule maxProgress={maxProgress} />
+        <ThirdPartyStorageModule
+          maxProgress={maxProgress}
+          isManualBackup
+          setInterval={this.setInterval}
+        />
       </StyledComponent>
     );
   }

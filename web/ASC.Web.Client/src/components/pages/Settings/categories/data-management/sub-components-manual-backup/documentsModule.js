@@ -25,7 +25,13 @@ const DocumentsModule = ({ maxProgress, setInterval }) => {
 
   const onClickButton = () => {
     console.log("selectedFolder", selectedFolder);
-    startBackup("0", "folderId", selectedFolder[0]);
+    const storageParams = [
+      {
+        key: "folderId",
+        value: selectedFolder[0],
+      },
+    ];
+    startBackup("0", storageParams);
     setInterval();
   };
   //console.log("thirdparty!!! commonThirdPartyList", commonThirdPartyList);
