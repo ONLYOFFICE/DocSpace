@@ -19,7 +19,7 @@ class ResetApplicationDialogComponent extends React.Component {
   };
 
   render() {
-    console.log("Render ResetApplicationDialog");
+    //console.log("Render ResetApplicationDialog");
     const { t, visible, onClose } = this.props;
 
     return (

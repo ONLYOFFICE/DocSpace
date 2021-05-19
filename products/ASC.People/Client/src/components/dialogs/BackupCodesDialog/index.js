@@ -39,13 +39,11 @@ class BackupCodesDialogComponent extends React.Component {
   };
 
   render() {
-    console.log("Render BackupCodesDialog");
+    //console.log("Render BackupCodesDialog");
     const { backupCodes } = this.state;
     const { t, visible, onClose } = this.props;
     const count = 5; //TODO: get count from api
-    //const codes = ["qdf45g", "fg56dfg", "ugi8fm", "gfuti8f", "fkuidop"]; //TODO: get codes from api
 
-    console.log(backupCodes);
     return (
       <ModalDialogContainer visible={visible} onClose={onClose}>
         <ModalDialog.Header>{t("BackupCodesTitle")}</ModalDialog.Header>
