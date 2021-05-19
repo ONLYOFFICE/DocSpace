@@ -186,8 +186,10 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     onClickMarkRead = () => {
-      const { t } = this.props;
-      toastr.success(t("MarkRead"));
+      const { markAsRead, item } = this.props;
+      item.fileExst && item.contentLength > 0
+        ? markAsRead([], [item.id])
+        : markAsRead([item.id], []);
     };
 
     getFilesContextOptions = () => {
@@ -392,7 +394,7 @@ export default function withContextOptions(WrappedComponent) {
             return {
               key: option,
               label: t("RemoveFromList"),
-              icon: "/static/images/catalog.trash.react.svg",
+              icon: "images/remove.svg",
               onClick: this.onClickDelete,
               disabled: false,
             };
@@ -400,7 +402,7 @@ export default function withContextOptions(WrappedComponent) {
             return {
               key: option,
               label: t("MarkRead"),
-              icon: "/static/images/catalog.trash.react.svg",
+              icon: "images/tick.rounded.svg",
               onClick: this.onClickMarkRead,
               disabled: false,
             };
@@ -459,6 +461,7 @@ export default function withContextOptions(WrappedComponent) {
         setThirdpartyInfo,
         onSelectItem,
         deleteItemAction,
+        markAsRead,
       } = filesActionsStore;
       const {
         setChangeOwnerPanelVisible,
@@ -509,6 +512,7 @@ export default function withContextOptions(WrappedComponent) {
         actionExtension: extension,
         isTrashFolder: isRecycleBinFolder,
         isShareFolder,
+        markAsRead,
       };
     }
   )(observer(WithContextOptions));
