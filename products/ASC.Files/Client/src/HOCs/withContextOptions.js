@@ -187,9 +187,9 @@ export default function withContextOptions(WrappedComponent) {
 
     onClickMarkRead = () => {
       const { markAsRead, item } = this.props;
-      item.fileExst && item.contentLength > 0
-        ? markAsRead([], [item.id])
-        : markAsRead([item.id], []);
+      item.fileExst
+        ? markAsRead([], [item.id], item)
+        : markAsRead([item.id], [], item);
     };
 
     getFilesContextOptions = () => {

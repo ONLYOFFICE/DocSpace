@@ -25,6 +25,7 @@ import { inject, observer } from "mobx-react";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
+
 class NewFilesPanel extends React.Component {
   constructor(props) {
     super(props);
@@ -62,37 +63,34 @@ class NewFilesPanel extends React.Component {
 
   onMarkAsRead = () => {
     const fileIds = [];
+    const folderIds = [];
 
     for (let item of this.state.files) {
-      fileIds.push(`${item.id}`);
+      if (item.fileExst) fileIds.push(item.id);
+      else folderIds.push(item.id);
     }
 
     this.props
-      .markAsRead([], fileIds)
+      .markAsRead(folderIds, fileIds)
       .then(() => this.setNewBadgeCount())
       .catch((err) => toastr.error(err))
       .finally(() => this.onClose());
   };
 
   onNewFileClick = (item) => {
-    const {
-      updateFileBadge,
-      updateFolderBadge,
-      updateRootBadge,
-      markAsRead,
-      newFilesIds,
-    } = this.props;
+    const { /* updateFolderBadge, */ markAsRead } = this.props;
+    const { /* folderId, */ fileExst, id } = item;
     const readingFiles = this.state.readingFiles;
 
-    markAsRead([], [item.id])
+    const fileIds = fileExst ? [id] : [];
+    const folderIds = fileExst ? [] : [id];
+
+    if (readingFiles.includes(id)) return this.onFileClick(item);
+    markAsRead(folderIds, fileIds, item)
       .then(() => {
-        if (readingFiles.includes(item.id)) return this.onFileClick(item);
+        //updateFolderBadge(folderId, 1);
 
-        updateRootBadge(+newFilesIds[0], 1);
-        updateFolderBadge(item.folderId, 1);
-        updateFileBadge(item.id);
-
-        readingFiles.push(item.id);
+        readingFiles.push(id);
         this.setState({ readingFiles });
         this.onFileClick(item);
       })
@@ -111,7 +109,7 @@ class NewFilesPanel extends React.Component {
     if (!fileExst) {
       fetchFiles(id, filter)
         .catch((err) => toastr.error(err))
-        .finally(() => this.onClose);
+        .finally(() => this.onClose());
     } else {
       const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
       const isMedia = [2, 3, 4].includes(fileType);
@@ -167,7 +165,7 @@ class NewFilesPanel extends React.Component {
 
   render() {
     //console.log("NewFiles panel render");
-    const { t, visible, onClose, isLoading } = this.props;
+    const { t, visible, isLoading } = this.props;
     const { files } = this.state;
     const zIndex = 310;
 
@@ -264,7 +262,6 @@ export default inject(
       addFileToRecentlyViewed,
       setIsLoading,
       isLoading,
-      updateFileBadge,
       updateFilesBadge,
       updateFolderBadge,
       updateFoldersBadge,
@@ -286,8 +283,8 @@ export default inject(
       pathParts,
       visible,
       newFilesIds,
-
       isLoading,
+
       setIsLoading,
       fetchFiles,
       setMediaViewerData,
@@ -297,7 +294,6 @@ export default inject(
       markAsRead,
       setNewFilesPanelVisible,
       updateRootBadge,
-      updateFileBadge,
       updateFolderBadge,
       updateFoldersBadge,
       updateFilesBadge,

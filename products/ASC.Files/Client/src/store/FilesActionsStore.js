@@ -545,7 +545,20 @@ class FilesActionStore {
     setConnectItem({ ...provider, ...capability });
   };
 
-  markAsRead = (folderIds, fileId) => {
+  setNewBadgeCount = (item) => {
+    const { getRootFolder, updateRootBadge } = this.treeFoldersStore;
+    const { updateFileBadge, updateFolderBadge } = this.filesStore;
+    const { rootFolderType, fileExst, id } = item;
+
+    const count = item.new ? item.new : 1;
+    const rootFolder = getRootFolder(rootFolderType);
+    updateRootBadge(rootFolder.id, count);
+
+    if (fileExst) updateFileBadge(id);
+    else updateFolderBadge(id, item.new);
+  };
+
+  markAsRead = (folderIds, fileId, item) => {
     const {
       setSecondaryProgressBarData,
     } = this.uploadDataStore.secondaryProgressDataStore;
@@ -557,10 +570,13 @@ class FilesActionStore {
       visible: true,
     });
 
-    return markAsRead(folderIds, fileId).then((res) => {
-      const id = res[0] && res[0].id ? res[0].id : null;
-      this.loopFilesOperations(id);
-    });
+    return markAsRead(folderIds, fileId)
+      .then((res) => {
+        const id = res[0] && res[0].id ? res[0].id : null;
+        this.loopFilesOperations(id);
+      })
+      .then(() => item && this.setNewBadgeCount(item))
+      .catch((err) => toastr.error(err));
   };
 
   moveDragItems = (destFolderId, folderTitle, translations) => {

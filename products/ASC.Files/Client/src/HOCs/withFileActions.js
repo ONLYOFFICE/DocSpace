@@ -121,28 +121,8 @@ export default function withFileActions(WrappedFileItem) {
       setStartDrag(true);
     };
 
-    setNewBadgeCount = () => {
-      const {
-        item,
-        getRootFolder,
-        updateRootBadge,
-        updateFileBadge,
-      } = this.props;
-      const { rootFolderType, fileExst, id } = item;
-
-      const rootFolder = getRootFolder(rootFolderType);
-      updateRootBadge(rootFolder.id, 1);
-
-      if (fileExst) {
-        updateFileBadge(id);
-      }
-    };
-
     onMarkAsRead = (id) =>
-      this.props
-        .markAsRead([], [`${id}`])
-        .then(() => this.setNewBadgeCount())
-        .catch((err) => toastr.error(err));
+      this.props.markAsRead([], [`${id}`], this.props.item);
 
     onFilesClick = () => {
       const {
@@ -282,8 +262,6 @@ export default function withFileActions(WrappedFileItem) {
         isRecycleBinFolder,
         expandedKeys,
         addExpandedKeys,
-        getRootFolder,
-        updateRootBadge,
       } = treeFoldersStore;
       const { id: selectedFolderId, isRootFolder } = selectedFolderStore;
       const {
@@ -300,7 +278,6 @@ export default function withFileActions(WrappedFileItem) {
         fetchFiles,
         openDocEditor,
         getFolderInfo,
-        updateFileBadge,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
@@ -364,10 +341,7 @@ export default function withFileActions(WrappedFileItem) {
         expandedKeys,
         addExpandedKeys,
         setMediaViewerData,
-        getRootFolder,
-        updateRootBadge,
         getFolderInfo,
-        updateFileBadge,
         markAsRead,
       };
     }
