@@ -70,6 +70,7 @@ using Ical.Net.CalendarComponents;
 using System.Threading.Tasks;
 using ASC.Web.Studio.Core;
 using System.Text.Json;
+using ASC.Calendar.Configuration;
 
 namespace ASC.Calendar.Controllers
 {
@@ -123,6 +124,7 @@ namespace ASC.Calendar.Controllers
     {
         private const int _monthCount = 3;
         private static List<String> updatedEvents = new List<string>();
+        private ProductEntryPoint ProductEntryPoint { get; }
 
         public Tenant Tenant { get { return ApiContext.Tenant; } }
         public ApiContext ApiContext { get; }
@@ -183,7 +185,8 @@ namespace ASC.Calendar.Controllers
             EmailValidationKeyProvider emailValidationKeyProvider,
             SetupInfo setupInfo,
             InstanceCrypto instanceCrypto,
-            CalendarManager calendarManager)
+            CalendarManager calendarManager,
+            ProductEntryPoint productEntryPoint)
         {
             AuthContext = authContext;
             Authentication = authentication;
@@ -212,6 +215,7 @@ namespace ASC.Calendar.Controllers
             SetupInfo = setupInfo;
             InstanceCrypto = instanceCrypto;
             CalendarManager = calendarManager;
+            ProductEntryPoint = productEntryPoint;
 
             CalendarManager.RegistryCalendar(new SharedEventsCalendar(AuthContext, TimeZoneConverter, TenantManager, DataProvider));
             var birthdayReminderCalendar = new BirthdayReminderCalendar(AuthContext, TimeZoneConverter, UserManager, DisplayUserSettingsHelper);
@@ -246,13 +250,22 @@ namespace ASC.Calendar.Controllers
             AllFollowing = 1,
             AllSeries = 2
         }
+
+        //[Read("info")]
+        //public Module GetModule()
+        //{
+        //    var product = new CalendarProduct();
+        //    product.Init();
+        //    return new Module(product);
+        //}
+
         [Read("info")]
         public Module GetModule()
         {
-            var product = new CalendarProduct();
-            product.Init();
-            return new Module(product);
+            ProductEntryPoint.Init();
+            return new Module(ProductEntryPoint);
         }
+
 
         /// <summary>
         /// Returns the list of all subscriptions available to the user
