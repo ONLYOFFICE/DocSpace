@@ -389,13 +389,14 @@ class FilesStore {
       isCommon,
       isShare,
       isFavoritesFolder,
+      isShareFolder,
     } = this.treeFoldersStore;
 
     const { isRootFolder } = this.selectedFolderStore;
 
     const isThirdPartyFolder = item.providerKey && isRootFolder;
 
-    const isShareFolder = isShare(item.rootFolderType);
+    const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
 
     const { isDesktopClient } = this.settingsStore;
@@ -616,8 +617,14 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
       }
 
-      if (isShareFolder) {
-        fileOptions = this.removeOptions(fileOptions, ["move-to", "delete"]);
+      if (isShareItem) {
+        if (isShareFolder) {
+          fileOptions = this.removeOptions(fileOptions, [
+            "copy",
+            "move-to",
+            "delete",
+          ]);
+        }
       } else {
         fileOptions = this.removeOptions(fileOptions, ["unsubscribe"]);
       }
@@ -648,11 +655,13 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, ["copy"]);
       }
 
-      if (isShareFolder) {
-        folderOptions = this.removeOptions(folderOptions, [
-          "move-to",
-          "delete",
-        ]);
+      if (isShareItem) {
+        if (isShareFolder) {
+          folderOptions = this.removeOptions(folderOptions, [
+            "move-to",
+            "delete",
+          ]);
+        }
       } else {
         folderOptions = this.removeOptions(folderOptions, ["unsubscribe"]);
       }
@@ -692,8 +701,11 @@ class FilesStore {
           "move-to",
           "delete",
           "change-thirdparty-info",
-          "separator2",
         ]);
+
+        if (!isShareItem) {
+          folderOptions = this.removeOptions(folderOptions, ["separator2"]);
+        }
 
         if (isVisitor) {
           folderOptions = this.removeOptions(folderOptions, ["rename"]);

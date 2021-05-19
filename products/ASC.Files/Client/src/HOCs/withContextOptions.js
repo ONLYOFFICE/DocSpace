@@ -297,9 +297,9 @@ export default function withContextOptions(WrappedComponent) {
             return {
               key: option,
               label: t("Preview"),
-              icon: "EyeIcon",
+              icon: "/static/images/eye.react.svg",
               onClick: this.onClickLinkEdit,
-              disabled: true,
+              disabled: false,
             };
           case "view":
             return {
