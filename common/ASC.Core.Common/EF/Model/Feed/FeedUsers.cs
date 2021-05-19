@@ -39,13 +39,13 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("feed_id")
                     .HasColumnType("varchar(88)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddFeedUsers(this ModelBuilder modelBuilder)

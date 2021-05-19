@@ -46,19 +46,19 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("ID")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("UserID")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Data)
                     .IsRequired()
                     .HasColumnType("mediumtext")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddWebstudioSettings(this ModelBuilder modelBuilder)

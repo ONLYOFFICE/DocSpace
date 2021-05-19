@@ -4,6 +4,7 @@ import { ReactSVG } from "react-svg";
 
 import IconButton from "@appserver/components/icon-button";
 import Text from "@appserver/components/text";
+import toastr from "@appserver/components/toast/toastr";
 
 import { EncryptedFileIcon } from "../components/Icons";
 
@@ -120,6 +121,29 @@ export default function withFileActions(WrappedFileItem) {
       setStartDrag(true);
     };
 
+    setNewBadgeCount = () => {
+      const {
+        item,
+        getRootFolder,
+        updateRootBadge,
+        updateFileBadge,
+      } = this.props;
+      const { rootFolderType, fileExst, id } = item;
+
+      const rootFolder = getRootFolder(rootFolderType);
+      updateRootBadge(rootFolder.id, 1);
+
+      if (fileExst) {
+        updateFileBadge(id);
+      }
+    };
+
+    onMarkAsRead = (id) =>
+      this.props
+        .markAsRead([], [`${id}`])
+        .then(() => this.setNewBadgeCount())
+        .catch((err) => toastr.error(err));
+
     onFilesClick = () => {
       const {
         filter,
@@ -149,12 +173,14 @@ export default function withFileActions(WrappedFileItem) {
         }
 
         fetchFiles(id, filter)
+          .then(() => this.setNewBadgeCount())
           .catch((err) => {
             toastr.error(err);
             setIsLoading(false);
           })
           .finally(() => setIsLoading(false));
       } else {
+        this.onMarkAsRead(id);
         if (canWebEdit) {
           return openDocEditor(id, providerKey);
         }
@@ -249,13 +275,15 @@ export default function withFileActions(WrappedFileItem) {
       },
       { item, t, history }
     ) => {
-      const { selectRowAction, onSelectItem } = filesActionsStore;
+      const { selectRowAction, onSelectItem, markAsRead } = filesActionsStore;
       const { setSharingPanelVisible } = dialogsStore;
       const {
         isPrivacyFolder,
         isRecycleBinFolder,
         expandedKeys,
         addExpandedKeys,
+        getRootFolder,
+        updateRootBadge,
       } = treeFoldersStore;
       const { id: selectedFolderId, isRootFolder } = selectedFolderStore;
       const {
@@ -271,6 +299,8 @@ export default function withFileActions(WrappedFileItem) {
         setIsLoading,
         fetchFiles,
         openDocEditor,
+        getFolderInfo,
+        updateFileBadge,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
@@ -334,6 +364,11 @@ export default function withFileActions(WrappedFileItem) {
         expandedKeys,
         addExpandedKeys,
         setMediaViewerData,
+        getRootFolder,
+        updateRootBadge,
+        getFolderInfo,
+        updateFileBadge,
+        markAsRead,
       };
     }
   )(observer(WithFileActions));

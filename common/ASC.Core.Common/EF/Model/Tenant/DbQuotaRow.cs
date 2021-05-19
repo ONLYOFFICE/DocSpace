@@ -44,7 +44,7 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("path")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Counter).HasColumnName("counter");
 
@@ -57,7 +57,7 @@ namespace ASC.Core.Common.EF
                     .HasColumnName("tag")
                     .HasColumnType("varchar(1024)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddDbQuotaRow(this ModelBuilder modelBuilder)

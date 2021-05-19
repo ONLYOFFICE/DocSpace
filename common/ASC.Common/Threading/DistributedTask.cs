@@ -34,7 +34,7 @@ namespace ASC.Common.Threading
     {
         public Action<DistributedTask> Publication { get; set; }
 
-        public DistributedTaskCache DistributedTaskCache { get; internal set; }
+        protected internal DistributedTaskCache DistributedTaskCache { get; internal set; }
 
         public int InstanceId
         {
@@ -53,7 +53,7 @@ namespace ASC.Common.Threading
             {
                 return DistributedTaskCache.Id;
             }
-            private set
+            protected set
             {
                 DistributedTaskCache.Id = value?.ToString() ?? "";
             }
@@ -65,19 +65,19 @@ namespace ASC.Common.Threading
             {
                 return Enum.Parse<DistributedTaskStatus>(DistributedTaskCache.Status);
             }
-            internal set
+            set
             {
                 DistributedTaskCache.Status = value.ToString();
             }
         }
 
-        public AggregateException Exception
+        public Exception Exception
         {
             get
             {
-                return new AggregateException(DistributedTaskCache.Exception);
+                return new Exception(DistributedTaskCache.Exception);
             }
-            internal set
+            set
             {
                 DistributedTaskCache.Exception = value?.ToString() ?? "";
             }
