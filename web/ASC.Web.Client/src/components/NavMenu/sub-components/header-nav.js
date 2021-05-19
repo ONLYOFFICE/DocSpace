@@ -121,7 +121,6 @@ const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
             noHover={true}
           />
         ))}
-
       {isAuthenticated && user ? (
         <ProfileActions userActions={getCurrentUserActions()} user={user} />
       ) : (

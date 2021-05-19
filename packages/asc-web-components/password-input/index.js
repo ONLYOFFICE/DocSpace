@@ -433,7 +433,6 @@ class PasswordInput extends React.Component {
         onValidateInput={onValidateInput}
         className={className}
         style={style}
-        visiblePassword={type === "password"}
       >
         {simpleView ? (
           <>

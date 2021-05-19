@@ -184,6 +184,8 @@ const HeaderComponent = ({
   //   );
   // };
 
+  const numberOfModules = mainModules.filter((item) => !item.separator).length;
+
   return (
     <>
       <Header
@@ -216,6 +218,7 @@ const HeaderComponent = ({
           opened={isNavOpened}
           onMouseEnter={onNavMouseEnter}
           onMouseLeave={onNavMouseLeave}
+          numberOfModules={numberOfModules}
         >
           <NavLogoItem opened={isNavOpened} onClick={onLogoClick} />
           <NavItem

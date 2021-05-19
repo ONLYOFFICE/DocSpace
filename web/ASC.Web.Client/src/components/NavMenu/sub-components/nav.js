@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isDesktop } from "react-device-detect";
 
 const backgroundColor = "#0F4071";
 
@@ -25,6 +25,13 @@ const StyledNav = styled.nav`
     @media (orientation: landscape) {
       position: ${isMobileOnly && "relative"};
     }
+
+    ${(props) =>
+      props.numberOfModules &&
+      `@media (max-height: ${props.numberOfModules * 52 + 64}px) {
+      position: ${isDesktop && "relative"};
+    }`}
+
     bottom: 8px;
     left: 16px;
 
@@ -41,13 +48,19 @@ const StyledScrollbar = styled(Scrollbar)`
 
 const Nav = React.memo((props) => {
   //console.log("Nav render");
-  const { opened, onMouseEnter, onMouseLeave, children } = props;
-
+  const {
+    opened,
+    onMouseEnter,
+    onMouseLeave,
+    children,
+    numberOfModules,
+  } = props;
   return (
     <StyledNav
       opened={opened}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      numberOfModules={numberOfModules}
     >
       <StyledScrollbar stype="smallWhite">{children}</StyledScrollbar>
     </StyledNav>
