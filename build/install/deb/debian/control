@@ -2,11 +2,15 @@ Source: appserver
 Section: web
 Priority: optional
 Maintainer: onlyoffice
-Build-Depends: debhelper (>= 8.0.0)
+Build-Depends: debhelper (>= 10), nodejs (>=10), dotnet-sdk-5.0
 Standards-Version: 1.0-0
 Homepage: https://www.onlyoffice.com/
 Architecture: any
+
+Package: appserver
+Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends},
+         appserver-common,
          appserver-api-system,
          appserver-backup,
          appserver-calendar,
@@ -25,37 +29,38 @@ Depends: ${misc:Depends}, ${shlibs:Depends},
          appserver-thumbnails,
          appserver-urlshortener,
          appserver-api,
-         appserver-studio
+         appserver-studio,
+         appserver-proxy
 Description: Description
 
-Package: appserver
+Package: appserver-common
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-api-system
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-backup
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-calendar
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-crm
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-storage-encryption
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-files
@@ -65,65 +70,70 @@ Description: Description
 
 Package: appserver-files-services
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-mail
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-storage-migration
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-notify
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-people-server
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-projects-server
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-socket
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-studio-notify
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-telegram-service
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-thumbnails
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-urlshortener
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-api
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
 Package: appserver-studio
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: appserver-common, ${misc:Depends}, ${shlibs:Depends}
+Description: Description
+
+Package: appserver-proxy
+Architecture: any
+Depends: nginx (>=1.18) ${misc:Depends}, ${shlibs:Depends}
 Description: Description

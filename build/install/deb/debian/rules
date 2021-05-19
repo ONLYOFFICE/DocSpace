@@ -17,7 +17,8 @@ SCRIPT_PATH=build/install/common
 override_dh_auto_clean:
 	@echo "RULES.$@"
 	dh_testdir 
-# 	rm -rf ${CURRENT_PATH}/src
+	rm -rf ${CURRENT_PATH}/src
+	rm -rf  ${CURRENT_PATH}/debian/*.service
 
 override_dh_auto_configure:
 	@echo "RULES.$@"
@@ -34,13 +35,12 @@ override_dh_auto_build:
 	mkdir -p ${CURRENT_PATH}/src/${BUILD_PATH}/config/mysql/conf.d && \
 	cp -f ${SRC_PATH}/build/install/docker/config/mysql/conf.d/*.cnf ${CURRENT_PATH}/src/${BUILD_PATH}/config/mysql/conf.d/
 	cd ${SRC_PATH}/${SCRIPT_PATH}/systemd; \
-	bash build.sh -bp "${CURRENT_PATH}"; \
+	bash build.sh -bp "${CURRENT_PATH}/debian/"; \
 	cd ${SRC_PATH}/${SCRIPT_PATH}; \
 	bash build-frontend.sh -sp ${SRC_PATH}; \
 	bash build-backend.sh -sp ${SRC_PATH} -ar "--disable-parallel"; \
 	bash publish-backend.sh -sp ${SRC_PATH} -bp ${CURRENT_PATH}/src/${BUILD_PATH} -ar "--disable-parallel"
 	cp -rf ${SRC_PATH}/build/deploy/* ${CURRENT_PATH}/src/${BUILD_PATH}
-	stop
 	
 override_dh_auto_install:
 	# ## AppServer ##
@@ -48,6 +48,11 @@ override_dh_auto_install:
 	# mkdir -p debian/${PRODUCT}/${BUILD_PATH}/app/onlyoffice/config/
 	# cp -fr ${SRC_PATH}/config/*.json debian/${PRODUCT}/app/onlyoffice/config/
 	# cp -fr ${SRC_PATH}/config/*.config debian/${PRODUCT}/app/onlyoffice/config/
+
+	## Proxy-Nginx ##
+	@echo "AppServer.$@"
+	mkdir -p debian/${PRODUCT}-proxy/${BUILD_PATH}/public/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/public debian/${PRODUCT}-proxy/${BUILD_PATH}/public/
 
 	## ASC.ApiSystem ##
 	@echo "ASC.ApiSystem.$@"
