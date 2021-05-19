@@ -158,6 +158,18 @@ class SectionBodyContent extends React.PureComponent {
     window.loginCallback = this.loginCallback;
   }
 
+  async componentDidUpdate(prevState) {
+    const { getBackupCodes } = this.props;
+
+    if (
+      this.state.backupCodesDialogVisible !== prevState.backupCodesDialogVisible
+    ) {
+      await getBackupCodes().then((codes) =>
+        this.setState({ backupCodes: codes })
+      );
+    }
+  }
+
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
 
   onEditProfileClick = () => {
@@ -468,8 +480,8 @@ class SectionBodyContent extends React.PureComponent {
           <BackupCodesDialog
             visible={backupCodesDialogVisible}
             onClose={this.toggleBackupCodesDialogVisible}
-            getBackupCodes={this.props.getBackupCodes}
             getNewBackupCodes={this.props.getNewBackupCodes}
+            backupCodes={backupCodes}
             backupCodesCount={backupCodesCount}
           />
         )}

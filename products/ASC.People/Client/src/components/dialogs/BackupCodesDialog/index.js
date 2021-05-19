@@ -10,18 +10,8 @@ import toastr from "studio/toastr";
 class BackupCodesDialogComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { backupCodes: this.props.getBackupCodes() };
+    this.state = { backupCodes: this.props.backupCodes };
   }
-
-  componentDidMount = async () => {
-    const { getBackupCodes } = this.props;
-    try {
-      const codes = await getBackupCodes();
-      this.setState({ backupCodes: codes });
-    } catch (e) {
-      toastr.error(e);
-    }
-  };
 
   getNewBackupCodes = async () => {
     const { getNewBackupCodes } = this.props;
@@ -118,8 +108,8 @@ const BackupCodesDialog = withTranslation("BackupCodesDialog")(
 BackupCodesDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  getBackupCodes: PropTypes.func.isRequired,
   getNewBackupCodes: PropTypes.func.isRequired,
+  backupCodes: PropTypes.array.isRequired,
   backupCodesCount: PropTypes.number.isRequired,
 };
 
