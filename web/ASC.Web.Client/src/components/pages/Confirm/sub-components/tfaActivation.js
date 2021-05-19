@@ -96,8 +96,13 @@ const TfaActivationForm = withLoader((props) => {
                   tabIndex={1}
                   placeholder={t("EnterCodePlaceholder")}
                   isDisabled={isLoading}
-                  onChange={(e) => setCode(e.target.value)}
+                  maxLength={6}
+                  onChange={(e) => {
+                    setCode(e.target.value);
+                    setError("");
+                  }}
                   value={code}
+                  hasError={error ? true : false}
                 />
               </Box>
               <Box className="app-code-continue-btn" marginProp="0 0 0 8px">
