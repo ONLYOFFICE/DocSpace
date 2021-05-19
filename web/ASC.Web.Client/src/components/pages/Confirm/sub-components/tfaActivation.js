@@ -103,6 +103,7 @@ const TfaActivationForm = withLoader((props) => {
                   }}
                   value={code}
                   hasError={error ? true : false}
+                  onKeyDown={onKeyPress}
                 />
               </Box>
               <Box className="app-code-continue-btn" marginProp="0 0 0 8px">
