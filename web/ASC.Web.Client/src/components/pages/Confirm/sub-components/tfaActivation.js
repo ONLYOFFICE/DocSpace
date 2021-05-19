@@ -25,7 +25,16 @@ const StyledForm = styled(Box)`
   }
 `;
 const TfaActivationForm = withLoader((props) => {
-  const { t, secretKey, qrCode, loginWithCode, user, hash, history } = props;
+  const {
+    t,
+    secretKey,
+    qrCode,
+    loginWithCode,
+    user,
+    hash,
+    history,
+    location,
+  } = props;
 
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -33,8 +42,15 @@ const TfaActivationForm = withLoader((props) => {
 
   const onSubmit = async () => {
     try {
-      const url = await loginWithCode(user, hash, code);
-      history.push(url || "/");
+      const { user, hash } = (location && location.state) || {};
+
+      if (user && hash) {
+        const url = await loginWithCode(user, hash, code);
+        history.push(url || "/");
+      } else {
+        //TODO: call method to activate tfa with cookie
+        throw "Not implemented activate tfa with cookie";
+      }
     } catch (e) {
       setError(e);
       toastr.error(e);
@@ -118,8 +134,6 @@ const TfaActivationWrapper = (props) => {
     history,
   } = props;
 
-  const { user, hash } = location.state;
-
   const [secretKey, setSecretKey] = useState("");
   const [qrCode, setQrCode] = useState("");
   const [error, setError] = useState(null);
@@ -144,13 +158,7 @@ const TfaActivationWrapper = (props) => {
   return error ? (
     <ErrorContainer bodyText={error} />
   ) : (
-    <TfaActivationForm
-      secretKey={secretKey}
-      qrCode={qrCode}
-      user={user}
-      hash={hash}
-      {...props}
-    />
+    <TfaActivationForm secretKey={secretKey} qrCode={qrCode} {...props} />
   );
 };
 

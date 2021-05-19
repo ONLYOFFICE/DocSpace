@@ -23,7 +23,6 @@ const StyledForm = styled(Box)`
 
 const TfaAuthForm = (props) => {
   const { t, loginWithCode, location, history } = props;
-  const { user, hash } = location.state;
 
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -31,8 +30,15 @@ const TfaAuthForm = (props) => {
 
   const onSubmit = async () => {
     try {
-      const url = await loginWithCode(user, hash, code);
-      history.push(url || "/");
+      const { user, hash } = (location && location.state) || {};
+
+      if (user && hash) {
+        const url = await loginWithCode(user, hash, code);
+        history.push(url || "/");
+      } else {
+        //TODO: call method to auth tfa with cookie
+        throw "Not implemented auth tfa with cookie";
+      }
     } catch (e) {
       setError(e);
       toastr.error(e);

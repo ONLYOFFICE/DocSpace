@@ -49,11 +49,15 @@ class PureAccessPortal extends Component {
 
   saveSettings = () => {
     const { type } = this.state;
-    const { t, setTfaSettings } = this.props;
+    const { t, setTfaSettings, getTfaConfirmLink, user, history } = this.props;
 
-    setTfaSettings(type).then(() =>
-      toastr.success(t("SuccessfullySaveSettingsMessage"))
-    );
+    setTfaSettings(type).then((res) => {
+      toastr.success(t("SuccessfullySaveSettingsMessage"));
+      getTfaConfirmLink(type, res).then((link) =>
+        history.push(link.replace(window.location.origin, ""))
+      );
+      console.log(user);
+    });
   };
 
   render() {
@@ -78,7 +82,7 @@ class PureAccessPortal extends Component {
             {
               label: t("BySms"),
               value: "sms",
-              disabled: true,
+              disabled: true, //TODO: get from api, when added sms tfa
             },
             {
               label: t("ByApp"),
@@ -104,4 +108,6 @@ export default inject(({ auth }) => ({
   organizationName: auth.settingsStore.organizationName,
   getTfaSettings: auth.tfaStore.getTfaSettings,
   setTfaSettings: auth.tfaStore.setTfaSettings,
+  getTfaConfirmLink: auth.tfaStore.getTfaConfirmLink,
+  user: auth.userStore.user,
 }))(withTranslation("Settings")(withRouter(PureAccessPortal)));
