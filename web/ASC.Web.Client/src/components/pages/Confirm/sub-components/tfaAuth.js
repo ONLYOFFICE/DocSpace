@@ -8,7 +8,6 @@ import Text from "@appserver/components/text";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { inject, observer } from "mobx-react";
 import Box from "@appserver/components/box";
-import Link from "@appserver/components/link";
 import toastr from "studio/toastr";
 
 const StyledForm = styled(Box)`
@@ -38,7 +37,6 @@ const TfaAuthForm = (props) => {
       } else {
         const url = await loginWithCodeAndCookie(code);
         history.push(url || "/");
-        //throw "Not implemented auth tfa with cookie";
       }
     } catch (e) {
       setError(e);

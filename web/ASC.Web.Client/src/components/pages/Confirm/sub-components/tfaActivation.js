@@ -8,7 +8,6 @@ import Text from "@appserver/components/text";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { inject, observer } from "mobx-react";
 import Box from "@appserver/components/box";
-import Link from "@appserver/components/link";
 import withLoader from "../withLoader";
 import toastr from "studio/toastr";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
@@ -49,7 +48,6 @@ const TfaActivationForm = withLoader((props) => {
       } else {
         const url = await loginWithCodeAndCookie(code);
         history.push(url || "/");
-        //throw "Not implemented activate tfa with cookie";
       }
     } catch (e) {
       setError(e);
