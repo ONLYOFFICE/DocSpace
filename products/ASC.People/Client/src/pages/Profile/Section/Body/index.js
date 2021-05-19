@@ -449,6 +449,7 @@ class SectionBodyContent extends React.PureComponent {
             visible={backupCodesDialogVisible}
             onClose={this.toggleBackupCodesDialogVisible}
             getBackupCodes={this.props.getBackupCodes}
+            getNewBackupCodes={this.props.getNewBackupCodes}
           />
         )}
       </ProfileWrapper>
@@ -473,6 +474,7 @@ export default withRouter(
     getOAuthToken: auth.settingsStore.getOAuthToken,
     getLoginLink: auth.settingsStore.getLoginLink,
     getBackupCodes: auth.tfaStore.getBackupCodes,
+    getNewBackupCodes: auth.tfaStore.getNewBackupCodes,
     resetTfaApp: auth.tfaStore.unlinkApp,
     getTfaSettings: auth.tfaStore.getTfaSettings,
   }))(observer(withTranslation("Profile")(SectionBodyContent)))

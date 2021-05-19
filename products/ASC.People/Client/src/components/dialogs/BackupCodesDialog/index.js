@@ -13,14 +13,20 @@ class BackupCodesDialogComponent extends React.Component {
     this.state = { backupCodes: this.props.getBackupCodes() };
   }
 
-  componentDidMount = () => {
-    this.getNewBackupCodes();
+  componentDidMount = async () => {
+    const { getBackupCodes } = this.props;
+    try {
+      const codes = await getBackupCodes();
+      this.setState({ backupCodes: codes });
+    } catch (e) {
+      toastr.error(e);
+    }
   };
 
   getNewBackupCodes = async () => {
-    const { getBackupCodes } = this.props;
+    const { getNewBackupCodes } = this.props;
     try {
-      const newCodes = await getBackupCodes();
+      const newCodes = await getNewBackupCodes();
       this.setState({ backupCodes: newCodes });
     } catch (e) {
       toastr.error(e);
@@ -109,6 +115,7 @@ BackupCodesDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   getBackupCodes: PropTypes.func.isRequired,
+  getNewBackupCodes: PropTypes.func.isRequired,
 };
 
 export default BackupCodesDialog;
