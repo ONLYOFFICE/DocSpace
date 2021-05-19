@@ -1415,6 +1415,15 @@ namespace ASC.Api.Settings
             return result;
         }
 
+        [Create("tfaapp/validate")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation,Everyone")]
+        public bool TfaValidateAuthCode(TfaValidateModel model)
+        {
+            ApiContext.AuthByClaim();
+            var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
+            return TfaManager.ValidateAuthCode(user, model.Code);
+        }
+
         [Read("tfaapp/confirm")]
         public object TfaConfirmUrl()
         {
