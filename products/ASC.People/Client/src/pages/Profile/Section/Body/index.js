@@ -331,12 +331,12 @@ class SectionBodyContent extends React.PureComponent {
     const infoContacts = contacts && createContacts(contacts.contact);
     //const isSelf = isMe(viewer, profile.userName);
 
-    let count = 0;
+    let backupCodesCount = 0;
 
     if (backupCodes && backupCodes.length > 0) {
       backupCodes.map((item) => {
         if (!item.isUsed) {
-          count++;
+          backupCodesCount++;
         }
       });
     }
@@ -425,9 +425,11 @@ class SectionBodyContent extends React.PureComponent {
                   t={t}
                   i18nKey="CountCodesRemaining"
                   ns="Profile"
-                  count={count}
+                  count={backupCodesCount}
                 >
-                  <Text color="#A3A9AE">({{ count }} codes remaining)</Text>
+                  <Text color="#A3A9AE">
+                    ({{ count: backupCodesCount }} codes remaining)
+                  </Text>
                 </Trans>
               </LinkActionWrapper>
             </ToggleContent>
@@ -468,6 +470,7 @@ class SectionBodyContent extends React.PureComponent {
             onClose={this.toggleBackupCodesDialogVisible}
             getBackupCodes={this.props.getBackupCodes}
             getNewBackupCodes={this.props.getNewBackupCodes}
+            backupCodesCount={backupCodesCount}
           />
         )}
       </ProfileWrapper>
