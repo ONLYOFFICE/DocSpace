@@ -32,7 +32,7 @@ class PureAccessPortal extends Component {
     super(props);
 
     const { t } = props;
-    this.state = { type: "none" };
+    this.state = { type: "none", showButton: false };
 
     setDocumentTitle(t("PortalSecurity"));
   }
@@ -45,7 +45,8 @@ class PureAccessPortal extends Component {
     this.setState({ type: type });
   }
 
-  onSelectTfaType = (e) => this.setState({ type: e.target.value });
+  onSelectTfaType = (e) =>
+    this.setState({ type: e.target.value, showButton: true });
 
   saveSettings = () => {
     const { type } = this.state;
@@ -58,11 +59,12 @@ class PureAccessPortal extends Component {
           history.push(link.replace(window.location.origin, ""))
         );
       }
+      this.setState({ type: type, showButton: false });
     });
   };
 
   render() {
-    const { type } = this.state;
+    const { type, showButton } = this.state;
     const { t } = this.props;
 
     return (
@@ -93,13 +95,15 @@ class PureAccessPortal extends Component {
           selected={type}
           onClick={this.onSelectTfaType}
         />
-        <Button
-          label={t("SaveButton")}
-          size="medium"
-          primary={true}
-          className="save-button"
-          onClick={this.saveSettings}
-        />
+        {showButton && (
+          <Button
+            label={t("SaveButton")}
+            size="medium"
+            primary={true}
+            className="save-button"
+            onClick={this.saveSettings}
+          />
+        )}
       </MainContainer>
     );
   }
