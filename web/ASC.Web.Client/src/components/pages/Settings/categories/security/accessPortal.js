@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Text from "@appserver/components/text";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import Button from "@appserver/components/button";
+import toastr from "@appserver/components/toast/toastr";
 
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject } from "mobx-react";
@@ -48,9 +49,11 @@ class PureAccessPortal extends Component {
 
   saveSettings = () => {
     const { type } = this.state;
-    const { setTfaSettings } = this.props;
+    const { t, setTfaSettings } = this.props;
 
-    setTfaSettings(type);
+    setTfaSettings(type).then(() =>
+      toastr.success(t("SuccessfullySaveSettingsMessage"))
+    );
   };
 
   render() {
