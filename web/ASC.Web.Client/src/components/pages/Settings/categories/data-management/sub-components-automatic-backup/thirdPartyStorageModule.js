@@ -11,11 +11,15 @@ import TextInput from "@appserver/components/text-input";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 
 const StyledComponent = styled.div`
-  .manual-backup_combo {
+  .backup_combo {
     margin-top: 16px;
+    width: 100%;
+    max-width: 820px;
   }
   .backup_text-input {
     margin: 10px 0;
+    width: 100%;
+    max-width: 820px;
   }
 `;
 
@@ -322,7 +326,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
           scaled={true}
           scaledOptions={true}
           dropDownMaxHeight={300}
-          className="manual-backup_combo"
+          className="backup_combo"
         />
 
         {!isSetDefaultStorage && (
