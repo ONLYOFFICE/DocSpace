@@ -68,13 +68,17 @@
   "ClearButton": "Reset filter",
   "ProductUserOpportunities": "View profiles and groups",
   "LearnMore": "Learn more...",
-  "AccessRightsChangeOwnerButtonText": "Change portal owner",
+  "ChangeOwner": "Change portal owner",
 
   "AdministratorsAddedSuccessfully": "Administrators added successfully",
   "AdministratorsRemovedSuccessfully": "Administrators removed successfully",
   "AccessSettings": "Access settings",
   "FullAccess": "Full access",
   "AdminInModules": "Admin in modules",
+  "FullAccessTooltip": "Have tha same access rights as the portal owner, except the right to:",
+  "DeactivateOrDeletePortal": "Deactivate or delete portal.",
+  "DocumentsAdministratorsCan": "Documents administrators can: do the same as a user, link Dropbox, Box and other accounts in the 'Common Documents' section, set up access rights to the documents and folders in the 'Common Documents' section.",
+  "PeopleAdministratorsCan": "People administrators can: do the same as a user, create profiles and groups, import profiles, invite users.",
 
   "ThirdPartyTitleDescription": "Authorization keys is the option which allows you to connect your portal with the third-party services like Twitter, Facebook, DropBox etc. Connect your portal with Facebook, Twitter or Linkedin if you don't want to introduce your portal credentials every time you enter it. Link it up with such services like DropBox, OneDrive, etc. to transfer the documents from all those storages to Documents module.",
   "ThirdPartyBodyDescription": "For more detailed instructions about connecting this service, please refer to our <2>Help Center</2> that provides all the necessary information.",

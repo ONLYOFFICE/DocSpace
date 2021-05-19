@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { ReactSVG } from "react-svg";
+import HelpButton from "@appserver/components/help-button";
 
 import ToggleButton from "@appserver/components/toggle-button";
 import ModalDialog from "@appserver/components/modal-dialog";
@@ -78,14 +78,51 @@ const StyledModalBody = styled.div`
     justify-content: space-between;
   }
 
+  .help-button-wrapper {
+    display: flex;
+    align-items: center;
+
+    &.modules {
+      margin-top: 12px;
+    }
+
+    .place-left {
+      margin-left: 0;
+    }
+  }
+
+  p {
+    margin-right: 8px;
+  }
+
+  .modules-settings {
+    margin-top: 12px;
+  }
+
   .setting-wrapper {
     display: flex;
     justify-content: space-between;
     margin-top: 12px;
   }
 
-  .setting-heading {
-    margin-top: 12px;
+  .listOfFullAccess {
+    padding-left: 10px;
+    position: relative;
+    margin-left: 8px;
+    text-transform: lowercase;
+
+    &:before {
+      content: "";
+      width: 3px;
+      height: 3px;
+      background-color: #333333;
+      border-radius: 2px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+    }
   }
 `;
 
@@ -359,6 +396,31 @@ class PortalAdmins extends Component {
     });
   };
 
+  fullAccessTooltip = () => {
+    const { t } = this.props;
+    return (
+      <>
+        <Text>{t("FullAccessTooltip")}</Text>
+        <br />
+        <Text className="listOfFullAccess">{t("ChangeOwner")}</Text>
+        <Text className="listOfFullAccess">
+          {t("DeactivateOrDeletePortal")}
+        </Text>
+      </>
+    );
+  };
+
+  modulesTooltip = () => {
+    const { t } = this.props;
+    return (
+      <div>
+        <Text>{t("DocumentsAdministratorsCan")}</Text>
+        <br />
+        <Text>{t("PeopleAdministratorsCan")}</Text>
+      </div>
+    );
+  };
+
   createNewListAdminModules = (isAdmin, listAdminModules, moduleName) => {
     let newListAdminModules = listAdminModules ? listAdminModules.slice() : [];
 
@@ -630,9 +692,17 @@ class PortalAdmins extends Component {
                       </div>
                       <div>
                         <div className="full-access-wrapper">
-                          <Text fontWeight={600} fontSize="15px">
-                            {t("FullAccess")}
-                          </Text>
+                          <div className="help-button-wrapper">
+                            <Text as="p" fontWeight={600} fontSize="15px">
+                              {t("FullAccess")}
+                            </Text>
+                            <HelpButton
+                              displayType="dropdown"
+                              place="top"
+                              offsetRight={0}
+                              tooltipContent={this.fullAccessTooltip()}
+                            />
+                          </div>
                           <ToggleButton
                             className="toggle-btn"
                             isChecked={selectedUser.isAdmin}
@@ -643,46 +713,53 @@ class PortalAdmins extends Component {
                           />
                         </div>
                         {modules && modules.length > 0 && (
-                          <div>
-                            <Text
-                              className="setting-heading"
-                              fontWeight={600}
-                              fontSize="15px"
-                            >
-                              {t("AdminInModules")}
-                            </Text>
-                            <div className="module-settings">
-                              {modules.map((module) => {
-                                const isModuleAdmin = this.isModuleAdmin(
-                                  selectedUser,
-                                  module.appName
-                                );
-
-                                return (
-                                  <div
-                                    key={module.appName}
-                                    className="setting-wrapper"
-                                  >
-                                    <Text fontWeight={400} fontSize="13px">
-                                      {module.title}
-                                    </Text>
-                                    <ToggleButton
-                                      className="toggle-btn"
-                                      isChecked={isModuleAdmin}
-                                      inputId={module.id}
-                                      onChange={() =>
-                                        this.onModuleToggle(
-                                          module,
-                                          !isModuleAdmin
-                                        )
-                                      }
-                                      isDisabled={selectedUser.isAdmin}
-                                    />
-                                  </div>
-                                );
-                              })}
+                          <>
+                            <div className="help-button-wrapper modules">
+                              <Text as="p" fontWeight={600} fontSize="15px">
+                                {t("AdminInModules")}
+                              </Text>
+                              <HelpButton
+                                displayType="dropdown"
+                                place="top"
+                                offsetRight={0}
+                                tooltipContent={this.modulesTooltip()}
+                              />
                             </div>
-                          </div>
+
+                            <div className="modules-settings">
+                              <div className="module-settings">
+                                {modules.map((module) => {
+                                  const isModuleAdmin = this.isModuleAdmin(
+                                    selectedUser,
+                                    module.appName
+                                  );
+
+                                  return (
+                                    <div
+                                      key={module.appName}
+                                      className="setting-wrapper"
+                                    >
+                                      <Text fontWeight={400} fontSize="13px">
+                                        {module.title}
+                                      </Text>
+                                      <ToggleButton
+                                        className="toggle-btn"
+                                        isChecked={isModuleAdmin}
+                                        inputId={module.id}
+                                        onChange={() =>
+                                          this.onModuleToggle(
+                                            module,
+                                            !isModuleAdmin
+                                          )
+                                        }
+                                        isDisabled={selectedUser.isAdmin}
+                                      />
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </>
                         )}
                       </div>
                     </StyledModalBody>
