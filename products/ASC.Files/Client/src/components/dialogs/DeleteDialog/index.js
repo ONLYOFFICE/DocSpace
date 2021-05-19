@@ -26,7 +26,8 @@ class DeleteDialogComponent extends React.Component {
       if (!(props.isRootFolder && props.selection[i].providerKey)) {
         if (
           props.selection[i].access === 0 ||
-          props.selection[i].access === 1
+          props.selection[i].access === 1 ||
+          props.unsubscribe
         ) {
           const item = { ...props.selection[i], checked: true };
           selection.push(item);
@@ -59,6 +60,24 @@ class DeleteDialogComponent extends React.Component {
     deleteAction(translations, selection).catch((err) => toastr.error(err));
   };
 
+  onUnsubscribe = () => {
+    this.onClose();
+    const { unsubscribeAction } = this.props;
+
+    const selection = this.state.selection.filter((f) => f.checked);
+
+    if (!selection.length) return;
+
+    let filesId = [];
+    let foldersId = [];
+
+    selection.map((item) => {
+      item.fileExst ? filesId.push(item.id) : foldersId.push(item.id);
+    });
+
+    unsubscribeAction(filesId, foldersId).catch((err) => toastr.error(err));
+  };
+
   onChange = (event) => {
     const value = event.target.value.split("/");
     const fileType = value[0];
@@ -83,24 +102,28 @@ class DeleteDialogComponent extends React.Component {
   };
 
   render() {
-    const { visible, t, isLoading } = this.props;
+    const { visible, t, isLoading, unsubscribe } = this.props;
     const { filesList, foldersList, selection } = this.state;
 
     const checkedSelections = selection.filter((x) => x.checked === true);
 
-    const title =
-      checkedSelections.length === 1
-        ? checkedSelections[0].fileExst
-          ? t("MoveToTrashOneFileTitle")
-          : t("MoveToTrashOneFolderTitle")
-        : t("MoveToTrashItemsTitle");
+    console.log(selection);
 
-    const noteText =
-      checkedSelections.length === 1
-        ? checkedSelections[0].fileExst
-          ? t("MoveToTrashOneFileNote")
-          : t("MoveToTrashOneFolderNote")
-        : t("MoveToTrashItemsNote");
+    const title = unsubscribe
+      ? t("UnsubscribeTitle")
+      : checkedSelections.length === 1
+      ? checkedSelections[0].fileExst
+        ? t("MoveToTrashOneFileTitle")
+        : t("MoveToTrashOneFolderTitle")
+      : t("MoveToTrashItemsTitle");
+
+    const noteText = unsubscribe
+      ? t("UnsubscribeNote")
+      : checkedSelections.length === 1
+      ? checkedSelections[0].fileExst
+        ? t("MoveToTrashOneFileNote")
+        : t("MoveToTrashOneFolderNote")
+      : t("MoveToTrashItemsNote");
 
     const accuracy = 20;
     let filesHeight = 25 * filesList.length + accuracy + 8;
@@ -161,10 +184,12 @@ class DeleteDialogComponent extends React.Component {
           <Button
             className="button-dialog-accept"
             key="OkButton"
-            label={t("MoveToTrashButton")}
+            label={
+              unsubscribe ? t("UnsubscribeButton") : t("MoveToTrashButton")
+            }
             size="medium"
             primary
-            onClick={this.onDelete}
+            onClick={unsubscribe ? this.onUnsubscribe : this.onDelete}
             isLoading={isLoading}
           />
           <Button
@@ -192,7 +217,7 @@ export default inject(
     filesActionsStore,
   }) => {
     const { fetchFiles, selection, filter, isLoading } = filesStore;
-    const { deleteAction } = filesActionsStore;
+    const { deleteAction, unsubscribeAction } = filesActionsStore;
 
     const {
       treeFolders,
@@ -206,6 +231,7 @@ export default inject(
       setDeleteDialogVisible,
       removeMediaItem,
       setRemoveMediaItem,
+      unsubscribe,
     } = dialogsStore;
 
     return {
@@ -223,6 +249,8 @@ export default inject(
       setTreeFolders,
       setDeleteDialogVisible,
       deleteAction,
+      unsubscribeAction,
+      unsubscribe,
 
       setRemoveMediaItem,
     };
