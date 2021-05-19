@@ -5,6 +5,7 @@ import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import { Trans, withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
+import toastr from "studio/toastr";
 
 class BackupCodesDialogComponent extends React.Component {
   constructor(props) {
@@ -18,8 +19,12 @@ class BackupCodesDialogComponent extends React.Component {
 
   getNewBackupCodes = async () => {
     const { getBackupCodes } = this.props;
-    const newCodes = await getBackupCodes();
-    this.setState({ backupCodes: newCodes });
+    try {
+      const newCodes = await getBackupCodes();
+      this.setState({ backupCodes: newCodes });
+    } catch (e) {
+      toastr.error(e);
+    }
   };
 
   printPage = () => {

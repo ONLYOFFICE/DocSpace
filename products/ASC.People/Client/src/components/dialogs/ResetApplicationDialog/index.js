@@ -5,6 +5,7 @@ import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
+import toastr from "studio/toastr";
 
 class ResetApplicationDialogComponent extends React.Component {
   constructor(props) {
@@ -13,9 +14,12 @@ class ResetApplicationDialogComponent extends React.Component {
 
   resetApp = async () => {
     const { resetTfaApp, history } = this.props;
-    const res = await resetTfaApp();
-
-    if (res) history.push(res);
+    try {
+      const res = await resetTfaApp();
+      if (res) history.push(res);
+    } catch (e) {
+      toastr.error(e);
+    }
   };
 
   render() {
