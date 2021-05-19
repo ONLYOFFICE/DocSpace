@@ -30,9 +30,8 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using ASC.Common;
-using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Threading.Progress;
+using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Encryption;
 using ASC.Core.Tenants;
@@ -45,7 +44,7 @@ using Microsoft.Extensions.Options;
 namespace ASC.Data.Storage.Encryption
 {
     [Transient(Additional = typeof(EncryptionOperationExtension))]
-    public class EncryptionOperation : ProgressBase
+    public class EncryptionOperation : DistributedTaskProgress
     {
         private const string ConfigPath = "";
         private bool HasErrors = false;
@@ -63,8 +62,9 @@ namespace ASC.Data.Storage.Encryption
             ServiceProvider = serviceProvider;
         }
 
-        public void Init(EncryptionSettingsProto encryptionSettingsProto)
+        public void Init(EncryptionSettingsProto encryptionSettingsProto, string id)
         {
+            Id = id;
             EncryptionSettings = new EncryptionSettings(encryptionSettingsProto);
             IsEncryption = EncryptionSettings.Status == EncryprtionStatus.EncryptionStarted;
             ServerRootPath = encryptionSettingsProto.ServerRootPath;
@@ -74,14 +74,15 @@ namespace ASC.Data.Storage.Encryption
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();
-            var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, progressEncryption, configuration) = scopeClass;
+            var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, configuration) = scopeClass;
             notifyHelper.Init(ServerRootPath);
             Tenants = tenantManager.GetTenants(false);
             Modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
             UseProgressFile = Convert.ToBoolean(configuration["storage:encryption:progressfile"] ?? "true");
 
             Percentage = 10;
-            GetProgress(progressEncryption);
+            PublishChanges();
+
             try
             {
                 if (!coreBaseSettings.Standalone)
@@ -94,8 +95,10 @@ namespace ASC.Data.Storage.Encryption
                     log.Debug("Storage already " + EncryptionSettings.Status);
                     return;
                 }
+
                 Percentage = 30;
-                GetProgress(progressEncryption);
+                PublishChanges();
+
                 foreach (var tenant in Tenants)
                 {
                     var dictionary = new Dictionary<string, DiscDataStore>();
@@ -108,22 +111,27 @@ namespace ASC.Data.Storage.Encryption
                         EncryptStore(tenant, elem.Key, elem.Value, storageFactoryConfig, log);
                     });
                 }
+
                 Percentage = 70;
-                GetProgress(progressEncryption);
+                PublishChanges();
+
                 if (!HasErrors)
                 {
                     DeleteProgressFiles(storageFactory);
                     SaveNewSettings(encryptionSettingsHelper, log);
                 }
+
                 Percentage = 90;
-                GetProgress(progressEncryption);
+                PublishChanges();
+
                 ActivateTenants(tenantManager, log, notifyHelper);
+
                 Percentage = 100;
-                GetProgress(progressEncryption);
+                PublishChanges();
             }
             catch (Exception e)
             {
-                Error = e;
+                Exception = e;
                 log.Error(e);
             }
         }
@@ -164,28 +172,19 @@ namespace ASC.Data.Storage.Encryption
             {
                 using var stream = store.GetReadStream(string.Empty, ProgressFileName);
                 using var reader = new StreamReader(stream);
-                string line;
+                        string line;
 
-                while ((line = reader.ReadLine()) != null)
-                {
-                    encryptedFiles.Add(line);
-                }
-            }
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            encryptedFiles.Add(line);
+                        }
+                    }
             else
             {
                 store.GetWriteStream(string.Empty, ProgressFileName).Close();
             }
 
             return encryptedFiles;
-        }
-
-        public void GetProgress(ICacheNotify<ProgressEncryption> progress)
-        {
-            var progressEncryption = new ProgressEncryption()
-            {
-                Progress = Percentage
-            };
-            progress.Publish(progressEncryption, CacheNotifyAction.Insert);
         }
 
         private IEnumerable<string> GetFiles(List<string> domains, List<string> progress, DiscDataStore targetStore, string targetDomain)
@@ -255,8 +254,8 @@ namespace ASC.Data.Storage.Encryption
 
             using var stream = store.GetWriteStream(string.Empty, ProgressFileName, FileMode.Append);
             using var writer = new StreamWriter(stream);
-            writer.WriteLine(file);
-        }
+                    writer.WriteLine(file);
+                }
 
         private void DeleteProgressFiles(StorageFactory storageFactory)
         {
@@ -345,7 +344,6 @@ namespace ASC.Data.Storage.Encryption
         private CoreBaseSettings CoreBaseSettings { get; set; }
         private StorageFactoryConfig StorageFactoryConfig { get; set; }
         private StorageFactory StorageFactory { get; set; }
-        private ICacheNotify<ProgressEncryption> ProgressEncryption { get; }
         private IConfiguration Configuration { get; }
 
         public EncryptionOperationScope(IOptionsMonitor<ILog> options,
@@ -355,8 +353,7 @@ namespace ASC.Data.Storage.Encryption
            CoreBaseSettings coreBaseSettings,
            NotifyHelper notifyHelper,
            EncryptionSettingsHelper encryptionSettingsHelper,
-           IConfiguration configuration,
-           ICacheNotify<ProgressEncryption> progressEncryption)
+           IConfiguration configuration)
         {
             Log = options.CurrentValue;
             StorageFactoryConfig = storageFactoryConfig;
@@ -365,11 +362,10 @@ namespace ASC.Data.Storage.Encryption
             CoreBaseSettings = coreBaseSettings;
             NotifyHelper = notifyHelper;
             EncryptionSettingsHelper = encryptionSettingsHelper;
-            ProgressEncryption = progressEncryption;
             Configuration = configuration;
         }
 
-        public void Deconstruct(out ILog log, out EncryptionSettingsHelper encryptionSettingsHelper, out TenantManager tenantManager, out NotifyHelper notifyHelper, out CoreBaseSettings coreBaseSettings, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory, out ICacheNotify<ProgressEncryption> progressEncryption, out IConfiguration configuration)
+        public void Deconstruct(out ILog log, out EncryptionSettingsHelper encryptionSettingsHelper, out TenantManager tenantManager, out NotifyHelper notifyHelper, out CoreBaseSettings coreBaseSettings, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory, out IConfiguration configuration)
         {
             log = Log;
             encryptionSettingsHelper = EncryptionSettingsHelper;
@@ -378,7 +374,6 @@ namespace ASC.Data.Storage.Encryption
             coreBaseSettings = CoreBaseSettings;
             storageFactoryConfig = StorageFactoryConfig;
             storageFactory = StorageFactory;
-            progressEncryption = ProgressEncryption;
             configuration = Configuration;
         }
     }

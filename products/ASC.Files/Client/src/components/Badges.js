@@ -8,6 +8,7 @@ import {
 } from "./Icons";
 
 const Badges = ({
+  t,
   newItems,
   item,
   canWebEdit,
@@ -98,7 +99,7 @@ const Badges = ({
           color="#FFFFFF"
           fontSize="10px"
           fontWeight={800}
-          label={`New`}
+          label={t("New")}
           maxWidth="50px"
           onClick={onBadgeClick}
           padding="0 5px"
