@@ -53,7 +53,15 @@ class BackupCodesDialogComponent extends React.Component {
     //console.log("Render BackupCodesDialog");
     const { backupCodes } = this.state;
     const { t, visible, onClose } = this.props;
-    const count = 5; //TODO: get count from api
+    let count = 0;
+
+    if (backupCodes.length > 0) {
+      backupCodes.map((item) => {
+        if (!item.isUsed) {
+          count++;
+        }
+      });
+    }
 
     return (
       <ModalDialogContainer visible={visible} onClose={onClose}>
@@ -77,11 +85,15 @@ class BackupCodesDialogComponent extends React.Component {
             </Trans>
             <Text className="text-dialog" isBold={true}>
               {backupCodes.length > 0 &&
-                backupCodes.map((item) => (
-                  <strong key={item.code}>
-                    {item.code} <br />
-                  </strong>
-                ))}
+                backupCodes.map((item) => {
+                  if (!item.isUsed) {
+                    return (
+                      <strong key={item.code}>
+                        {item.code} <br />
+                      </strong>
+                    );
+                  }
+                })}
             </Text>
           </div>
         </ModalDialog.Body>

@@ -121,6 +121,7 @@ class SectionBodyContent extends React.PureComponent {
       resetAppDialogVisible: false,
       backupCodesDialogVisible: false,
       tfa: null,
+      backupCodes: null,
     };
   }
   async componentDidMount() {
@@ -132,6 +133,7 @@ class SectionBodyContent extends React.PureComponent {
       isSelf,
       setProviders,
       getTfaSettings,
+      getBackupCodes,
     } = this.props;
 
     //const isSelf = isMe(viewer, profile.userName);
@@ -149,6 +151,9 @@ class SectionBodyContent extends React.PureComponent {
     }
 
     await getTfaSettings().then((type) => this.setState({ tfa: type }));
+    await getBackupCodes().then((codes) =>
+      this.setState({ backupCodes: codes })
+    );
 
     window.loginCallback = this.loginCallback;
   }
@@ -298,7 +303,12 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const { resetAppDialogVisible, backupCodesDialogVisible, tfa } = this.state;
+    const {
+      resetAppDialogVisible,
+      backupCodesDialogVisible,
+      tfa,
+      backupCodes,
+    } = this.state;
     const {
       profile,
       cultures,
@@ -321,7 +331,15 @@ class SectionBodyContent extends React.PureComponent {
     const infoContacts = contacts && createContacts(contacts.contact);
     //const isSelf = isMe(viewer, profile.userName);
 
-    const count = 5; //TODO: get count from api
+    let count = 0;
+
+    if (backupCodes && backupCodes.length > 0) {
+      backupCodes.map((item) => {
+        if (!item.isUsed) {
+          count++;
+        }
+      });
+    }
 
     return (
       <ProfileWrapper>
