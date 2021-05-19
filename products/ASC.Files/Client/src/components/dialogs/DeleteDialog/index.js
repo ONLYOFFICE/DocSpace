@@ -184,22 +184,9 @@ class DeleteDialogComponent extends React.Component {
 const DeleteDialog = withTranslation("DeleteDialog")(DeleteDialogComponent);
 
 export default inject(
-  ({
-    filesStore,
-    treeFoldersStore,
-    selectedFolderStore,
-    dialogsStore,
-    filesActionsStore,
-  }) => {
-    const { fetchFiles, selection, filter, isLoading } = filesStore;
+  ({ filesStore, selectedFolderStore, dialogsStore, filesActionsStore }) => {
+    const { selection, isLoading } = filesStore;
     const { deleteAction } = filesActionsStore;
-
-    const {
-      treeFolders,
-      setTreeFolders,
-      isRecycleBinFolder,
-      isPrivacyFolder,
-    } = treeFoldersStore;
 
     const {
       deleteDialogVisible: visible,
@@ -209,21 +196,13 @@ export default inject(
     } = dialogsStore;
 
     return {
-      currentFolderId: selectedFolderStore.id,
       selection: removeMediaItem ? [removeMediaItem] : selection,
       isLoading,
-      treeFolders,
-      isRecycleBinFolder,
-      isPrivacy: isPrivacyFolder,
-      filter,
       isRootFolder: selectedFolderStore.isRootFolder,
       visible,
 
-      fetchFiles,
-      setTreeFolders,
       setDeleteDialogVisible,
       deleteAction,
-
       setRemoveMediaItem,
     };
   }
