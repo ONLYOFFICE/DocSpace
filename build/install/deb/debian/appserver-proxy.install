@@ -1,0 +1,2 @@
+config/nginx/*.conf /etc/nginx/conf.d/
+config/nginx/includes/*.conf /etc/nginx/includes/
