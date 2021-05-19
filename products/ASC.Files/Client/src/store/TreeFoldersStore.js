@@ -21,6 +21,8 @@ class TreeFoldersStore {
     return treeFolders;
   };
 
+  getFoldersTree = () => getFoldersTree();
+
   setTreeFolders = (treeFolders) => {
     this.treeFolders = treeFolders;
   };
@@ -50,6 +52,10 @@ class TreeFoldersStore {
 
   isCommon = (commonType) => commonType === FolderType.COMMON;
   isShare = (shareType) => shareType === FolderType.SHARE;
+
+  getRootFolder = (rootFolderType) => {
+    return this.treeFolders.find((x) => x.rootFolderType === rootFolderType);
+  };
 
   get myFolder() {
     return this.treeFolders.find((x) => x.rootFolderName === "@my");

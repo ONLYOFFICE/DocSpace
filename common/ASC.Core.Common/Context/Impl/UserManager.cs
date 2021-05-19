@@ -361,13 +361,18 @@ namespace ASC.Core
         internal List<GroupInfo> GetUserGroups(Guid userID, IncludeType includeType, Guid? categoryId)
         {
             var httpRequestDictionary = new HttpRequestDictionary<List<GroupInfo>>(Accessor?.HttpContext, "GroupInfo");
-            var fromCache = httpRequestDictionary.Get(userID.ToString());
-            if (fromCache != null)
+            var result = httpRequestDictionary.Get(userID.ToString());
+            if (result != null)
             {
-                return fromCache;
+                if (categoryId.HasValue)
+                {
+                    result = result.Where(r => r.CategoryID.Equals(categoryId.Value)).ToList();
+                }
+
+                return result;
             }
 
-            var result = new List<GroupInfo>();
+            result = new List<GroupInfo>();
             var distinctUserGroups = new List<GroupInfo>();
 
             var refs = GetRefsInternal();
@@ -393,14 +398,14 @@ namespace ASC.Core
                 result.AddRange(distinctUserGroups);
             }
 
+            result.Sort((group1, group2) => string.Compare(group1.Name, group2.Name, StringComparison.Ordinal));
+
+            httpRequestDictionary.Add(userID.ToString(), result);
+
             if (categoryId.HasValue)
             {
                 result = result.Where(r => r.CategoryID.Equals(categoryId.Value)).ToList();
             }
-
-            result.Sort((group1, group2) => string.Compare(group1.Name, group2.Name, StringComparison.Ordinal));
-
-            httpRequestDictionary.Add(userID.ToString(), result);
 
             return result;
         }
