@@ -154,14 +154,8 @@ export default function withContextOptions(WrappedComponent) {
         t,
         deleteItemAction,
         isThirdPartyFolder,
-        isShareFolder,
       } = this.props;
       const { id, title, fileExst, contentLength, folderId, parentId } = item;
-
-      if (isShareFolder) {
-        toastr.success("Unsubscribe call", "Unsubscribe call", true);
-        return;
-      }
 
       if (isThirdPartyFolder) {
         const splitItem = id.split("-");
@@ -190,6 +184,13 @@ export default function withContextOptions(WrappedComponent) {
       item.fileExst && item.contentLength > 0
         ? markAsRead([], [item.id])
         : markAsRead([item.id], []);
+    };
+
+    onClickUnsubscribe = () => {
+      const { setDeleteDialogVisible, setUnsubscribe } = this.props;
+
+      setUnsubscribe(true);
+      setDeleteDialogVisible(true);
     };
 
     getFilesContextOptions = () => {
@@ -395,7 +396,7 @@ export default function withContextOptions(WrappedComponent) {
               key: option,
               label: t("RemoveFromList"),
               icon: "images/remove.svg",
-              onClick: this.onClickDelete,
+              onClick: this.onClickUnsubscribe,
               disabled: false,
             };
           case "mark-read":
@@ -462,6 +463,7 @@ export default function withContextOptions(WrappedComponent) {
         onSelectItem,
         deleteItemAction,
         markAsRead,
+        unsubscribeAction,
       } = filesActionsStore;
       const {
         setChangeOwnerPanelVisible,
@@ -471,6 +473,8 @@ export default function withContextOptions(WrappedComponent) {
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
         setSharingPanelVisible,
+        setDeleteDialogVisible,
+        setUnsubscribe,
       } = dialogsStore;
       const { isTabletView } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
@@ -513,6 +517,9 @@ export default function withContextOptions(WrappedComponent) {
         isTrashFolder: isRecycleBinFolder,
         isShareFolder,
         markAsRead,
+        unsubscribeAction,
+        setDeleteDialogVisible,
+        setUnsubscribe,
       };
     }
   )(observer(WithContextOptions));
