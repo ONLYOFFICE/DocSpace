@@ -618,6 +618,10 @@ class FilesStore {
       }
 
       if (isShareItem) {
+        if (!isFullAccess) {
+          fileOptions = this.removeOptions(fileOptions, ["edit"]);
+        }
+
         if (isShareFolder) {
           fileOptions = this.removeOptions(fileOptions, [
             "copy",
