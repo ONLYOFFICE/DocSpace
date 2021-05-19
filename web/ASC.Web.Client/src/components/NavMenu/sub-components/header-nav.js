@@ -48,6 +48,9 @@ const StyledNav = styled.nav`
   @media ${tablet} {
     padding: 0 16px;
   }
+  .icon-profile-menu {
+    cursor: pointer;
+  }
 `;
 const HeaderNav = ({ history, modules, user, logout, isAuthenticated }) => {
   const { t } = useTranslation("NavMenu");
