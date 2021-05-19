@@ -22,7 +22,7 @@ const StyledForm = styled(Box)`
 `;
 
 const TfaAuthForm = (props) => {
-  const { t, loginWithCode, location, history } = props;
+  const { t, loginWithCode, loginWithCodeAndCookie, location, history } = props;
 
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -36,8 +36,9 @@ const TfaAuthForm = (props) => {
         const url = await loginWithCode(user, hash, code);
         history.push(url || "/");
       } else {
-        //TODO: call method to auth tfa with cookie
-        throw "Not implemented auth tfa with cookie";
+        const url = await loginWithCodeAndCookie(code);
+        history.push(url || "/");
+        //throw "Not implemented auth tfa with cookie";
       }
     } catch (e) {
       setError(e);
@@ -108,4 +109,5 @@ const TfaAuthFormWrapper = (props) => {
 export default inject(({ auth }) => ({
   isLoaded: auth.isLoaded,
   loginWithCode: auth.loginWithCode,
+  loginWithCodeAndCookie: auth.tfaStore.loginWithCodeAndCookie,
 }))(withRouter(withTranslation("Confirm")(observer(TfaAuthFormWrapper))));

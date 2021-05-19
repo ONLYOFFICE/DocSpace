@@ -30,8 +30,7 @@ const TfaActivationForm = withLoader((props) => {
     secretKey,
     qrCode,
     loginWithCode,
-    user,
-    hash,
+    loginWithCodeAndCookie,
     history,
     location,
   } = props;
@@ -48,8 +47,9 @@ const TfaActivationForm = withLoader((props) => {
         const url = await loginWithCode(user, hash, code);
         history.push(url || "/");
       } else {
-        //TODO: call method to activate tfa with cookie
-        throw "Not implemented activate tfa with cookie";
+        const url = await loginWithCodeAndCookie(code);
+        history.push(url || "/");
+        //throw "Not implemented activate tfa with cookie";
       }
     } catch (e) {
       setError(e);
@@ -173,4 +173,5 @@ export default inject(({ auth, confirm }) => ({
   setIsLoading: confirm.setIsLoading,
   getSecretKeyAndQR: auth.tfaStore.getSecretKeyAndQR,
   loginWithCode: auth.loginWithCode,
+  loginWithCodeAndCookie: auth.tfaStore.loginWithCodeAndCookie,
 }))(withRouter(withTranslation("Confirm")(observer(TfaActivationWrapper))));
