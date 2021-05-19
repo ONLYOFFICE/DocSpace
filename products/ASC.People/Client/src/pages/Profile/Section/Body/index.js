@@ -120,6 +120,7 @@ class SectionBodyContent extends React.PureComponent {
     this.state = {
       resetAppDialogVisible: false,
       backupCodesDialogVisible: false,
+      tfa: null,
     };
   }
   async componentDidMount() {
@@ -130,6 +131,7 @@ class SectionBodyContent extends React.PureComponent {
       viewer,
       isSelf,
       setProviders,
+      getTfaSettings,
     } = this.props;
 
     //const isSelf = isMe(viewer, profile.userName);
@@ -145,6 +147,8 @@ class SectionBodyContent extends React.PureComponent {
     } catch (e) {
       console.error(e);
     }
+
+    await getTfaSettings().then((type) => this.setState({ tfa: type }));
 
     window.loginCallback = this.loginCallback;
   }
@@ -294,7 +298,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const { resetAppDialogVisible, backupCodesDialogVisible } = this.state;
+    const { resetAppDialogVisible, backupCodesDialogVisible, tfa } = this.state;
     const {
       profile,
       cultures,
@@ -372,7 +376,7 @@ class SectionBodyContent extends React.PureComponent {
             </ToggleContent>
           </ToggleWrapper>
         )}
-        {isSelf && (
+        {isSelf && tfa && tfa !== "none" && (
           <ToggleWrapper>
             <ToggleContent label={t("TfaLoginSettings")} isOpen={true}>
               <Trans t={t} i18nKey="TwoFactorDescription" ns="Profile">
@@ -470,5 +474,6 @@ export default withRouter(
     getLoginLink: auth.settingsStore.getLoginLink,
     getBackupCodes: auth.tfaStore.getBackupCodes,
     resetTfaApp: auth.tfaStore.unlinkApp,
+    getTfaSettings: auth.tfaStore.getTfaSettings,
   }))(observer(withTranslation("Profile")(SectionBodyContent)))
 );
