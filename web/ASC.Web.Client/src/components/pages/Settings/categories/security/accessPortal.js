@@ -49,14 +49,15 @@ class PureAccessPortal extends Component {
 
   saveSettings = () => {
     const { type } = this.state;
-    const { t, setTfaSettings, getTfaConfirmLink, user, history } = this.props;
+    const { t, setTfaSettings, getTfaConfirmLink, history } = this.props;
 
     setTfaSettings(type).then((res) => {
       toastr.success(t("SuccessfullySaveSettingsMessage"));
-      getTfaConfirmLink(type, res).then((link) =>
-        history.push(link.replace(window.location.origin, ""))
-      );
-      console.log(user);
+      if (type !== "none") {
+        getTfaConfirmLink(type, res).then((link) =>
+          history.push(link.replace(window.location.origin, ""))
+        );
+      }
     });
   };
 
@@ -109,5 +110,4 @@ export default inject(({ auth }) => ({
   getTfaSettings: auth.tfaStore.getTfaSettings,
   setTfaSettings: auth.tfaStore.setTfaSettings,
   getTfaConfirmLink: auth.tfaStore.getTfaConfirmLink,
-  user: auth.userStore.user,
 }))(withTranslation("Settings")(withRouter(PureAccessPortal)));
