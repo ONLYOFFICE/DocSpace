@@ -6,6 +6,8 @@ import Text from "@appserver/components/text";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import Button from "@appserver/components/button";
 import toastr from "@appserver/components/toast/toastr";
+import Loader from "@appserver/components/loader";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject } from "mobx-react";
@@ -32,17 +34,19 @@ class PureAccessPortal extends Component {
     super(props);
 
     const { t } = props;
-    this.state = { type: "none", showButton: false };
+    this.state = { isLoaded: false, type: "none", showButton: false };
 
     setDocumentTitle(t("PortalSecurity"));
   }
 
   async componentDidMount() {
     const { getTfaSettings } = this.props;
+    showLoader();
 
-    const type = await getTfaSettings();
-
-    this.setState({ type: type });
+    await getTfaSettings().then((type) => {
+      this.setState({ type: type, isLoaded: true });
+      hideLoader();
+    });
   }
 
   onSelectTfaType = (e) =>
@@ -64,10 +68,12 @@ class PureAccessPortal extends Component {
   };
 
   render() {
-    const { type, showButton } = this.state;
+    const { isLoaded, type, showButton } = this.state;
     const { t } = this.props;
 
-    return (
+    return !isLoaded ? (
+      <Loader className="pageLoader" type="rombs" size="40px" />
+    ) : (
       <MainContainer>
         <HeaderContainer>
           <Text fontSize="18px">{t("TwoFactorAuth")}</Text>
