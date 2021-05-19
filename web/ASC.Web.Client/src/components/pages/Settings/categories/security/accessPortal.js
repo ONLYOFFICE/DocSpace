@@ -49,8 +49,17 @@ class PureAccessPortal extends Component {
     });
   }
 
-  onSelectTfaType = (e) =>
-    this.setState({ type: e.target.value, showButton: true });
+  onSelectTfaType = async (e) => {
+    const { getTfaSettings } = this.props;
+
+    const type = await getTfaSettings();
+
+    if (type !== e.target.value) {
+      this.setState({ type: e.target.value, showButton: true });
+    } else {
+      this.setState({ type: e.target.value, showButton: false });
+    }
+  };
 
   saveSettings = () => {
     const { type } = this.state;
