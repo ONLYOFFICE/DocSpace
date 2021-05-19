@@ -64,15 +64,13 @@ export default function withBadges(WrappedComponent) {
         selectedFolderPathParts,
         markAsRead,
         setNewFilesPanelVisible,
-        setNewFilesIds,
       } = this.props;
       if (item.fileExst) {
         markAsRead([], [item.id], item);
       } else {
-        setNewFilesPanelVisible(true);
         const newFolderIds = selectedFolderPathParts;
         newFolderIds.push(item.id);
-        setNewFilesIds(newFolderIds);
+        setNewFilesPanelVisible(true, newFolderIds, item);
       }
     };
 
@@ -228,7 +226,7 @@ export default function withBadges(WrappedComponent) {
       } = filesActionsStore;
       const { isTabletView } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
-      const { setNewFilesPanelVisible, setNewFilesIds } = dialogsStore;
+      const { setNewFilesPanelVisible } = dialogsStore;
       const { filter, setIsLoading, fetchFiles } = filesStore;
       const { secondaryProgressDataStore } = uploadDataStore;
       const {
@@ -253,7 +251,6 @@ export default function withBadges(WrappedComponent) {
         selectedFolderPathParts: selectedFolderStore.pathParts,
         markAsRead,
         setNewFilesPanelVisible,
-        setNewFilesIds,
         updateRootBadge,
         setSecondaryProgressBarData,
         selectedFolderId: selectedFolderStore.id,

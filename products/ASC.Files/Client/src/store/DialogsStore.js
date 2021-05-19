@@ -1,6 +1,10 @@
+import { getNewFiles } from "@appserver/common/api/files";
 import { makeAutoObservable } from "mobx";
 
 class DialogsStore {
+  treeFoldersStore;
+  filesStore;
+
   sharingPanelVisible = false;
   ownerPanelVisible = false;
   moveToPanelVisible = false;
@@ -19,13 +23,17 @@ class DialogsStore {
   connectItem = null;
   destFolderId = null;
   newFilesIds = null;
+  newFiles = null;
   conflictResolveDialogData = null;
   conflictResolveDialogItems = null;
   removeMediaItem = null;
   unsubscribe = null;
 
-  constructor() {
+  constructor(treeFoldersStore, filesStore) {
     makeAutoObservable(this);
+
+    this.treeFoldersStore = treeFoldersStore;
+    this.filesStore = filesStore;
   }
 
   setSharingPanelVisible = (sharingPanelVisible) => {
@@ -86,13 +94,38 @@ class DialogsStore {
     this.destFolderId = destFolderId;
   };
 
-  setNewFilesPanelVisible = (newFilesPanelVisible) => {
-    if (!newFilesPanelVisible) this.setNewFilesIds(null);
+  setNewFilesPanelVisible = async (visible, newIds, item) => {
+    const id = newIds && newIds[newIds.length - 1];
+    let newFilesPanelVisible = visible;
+
+    if (visible) {
+      const files = await getNewFiles(id);
+      if (files && files.length) {
+        this.setNewFiles(files);
+        setNewFilesIds(newIds);
+      } else {
+        newFilesPanelVisible = false;
+        const { getRootFolder, updateRootBadge } = this.treeFoldersStore;
+        const { updateFolderBadge } = this.filesStore;
+        const { rootFolderType, id } = item;
+
+        const rootFolder = getRootFolder(rootFolderType);
+        updateRootBadge(rootFolder.id, item.new);
+        updateFolderBadge(id, item.new);
+      }
+    } else {
+      this.setNewFilesIds(null);
+    }
+
     this.newFilesPanelVisible = newFilesPanelVisible;
   };
 
   setNewFilesIds = (newFilesIds) => {
     this.newFilesIds = newFilesIds;
+  };
+
+  setNewFiles = (files) => {
+    this.newFiles = files;
   };
 
   setConflictResolveDialogVisible = (conflictResolveDialogVisible) => {
@@ -116,4 +149,4 @@ class DialogsStore {
   };
 }
 
-export default new DialogsStore();
+export default DialogsStore;

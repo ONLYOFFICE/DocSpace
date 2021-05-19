@@ -11,7 +11,6 @@ import Box from "@appserver/components/box";
 import RowContainer from "@appserver/components/row-container";
 import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
-import { getNewFiles } from "@appserver/common/api/files";
 import toastr from "studio/toastr";
 import { ReactSVG } from "react-svg";
 import {
@@ -30,16 +29,7 @@ class NewFilesPanel extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { files: [], readingFiles: [] };
-  }
-
-  componentDidMount() {
-    const { newFilesIds, setIsLoading } = this.props;
-    setIsLoading(true);
-    getNewFiles(newFilesIds[newFilesIds.length - 1])
-      .then((files) => this.setState({ files }))
-      .catch((err) => toastr.error(err))
-      .finally(() => setIsLoading(false));
+    state = { readingFiles: [] };
   }
 
   onClose = () => {
@@ -65,7 +55,7 @@ class NewFilesPanel extends React.Component {
     const fileIds = [];
     const folderIds = [];
 
-    for (let item of this.state.files) {
+    for (let item of this.props.newFiles) {
       if (item.fileExst) fileIds.push(item.id);
       else folderIds.push(item.id);
     }
@@ -148,9 +138,10 @@ class NewFilesPanel extends React.Component {
       updateRootBadge,
       updateFolderBadge,
       pathParts,
+      newFiles,
     } = this.props;
 
-    const filesCount = this.state.files.length;
+    const filesCount = newFiles.length;
     updateRootBadge(+newFilesIds[0], filesCount);
 
     if (newFilesIds.length <= 1) {
@@ -165,8 +156,7 @@ class NewFilesPanel extends React.Component {
 
   render() {
     //console.log("NewFiles panel render");
-    const { t, visible, isLoading } = this.props;
-    const { files } = this.state;
+    const { t, visible, isLoading, newFiles } = this.props;
     const zIndex = 310;
 
     return (
@@ -191,7 +181,7 @@ class NewFilesPanel extends React.Component {
             {!isLoading ? (
               <StyledBody className="files-operations-body">
                 <RowContainer useReactWindow>
-                  {files.map((file) => {
+                  {newFiles.map((file) => {
                     const element = this.getItemIcon(file);
                     return (
                       <Row key={file.id} element={element}>
@@ -260,7 +250,7 @@ export default inject(
       fetchFiles,
       filter,
       addFileToRecentlyViewed,
-      setIsLoading,
+      //setIsLoading,
       isLoading,
       updateFilesBadge,
       updateFolderBadge,
@@ -276,16 +266,18 @@ export default inject(
       setNewFilesPanelVisible,
       newFilesPanelVisible: visible,
       newFilesIds,
+      newFiles,
     } = dialogsStore;
 
     return {
       filter,
       pathParts,
       visible,
+      newFiles,
       newFilesIds,
       isLoading,
 
-      setIsLoading,
+      //setIsLoading,
       fetchFiles,
       setMediaViewerData,
       addFileToRecentlyViewed,
