@@ -22,6 +22,7 @@ class DialogsStore {
   conflictResolveDialogData = null;
   conflictResolveDialogItems = null;
   removeMediaItem = null;
+  unsubscribe = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -108,6 +109,10 @@ class DialogsStore {
 
   setRemoveMediaItem = (removeMediaItem) => {
     this.removeMediaItem = removeMediaItem;
+  };
+
+  setUnsubscribe = (unsubscribe) => {
+    this.unsubscribe = unsubscribe;
   };
 }
 
