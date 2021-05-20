@@ -107,8 +107,6 @@ class DeleteDialogComponent extends React.Component {
 
     const checkedSelections = selection.filter((x) => x.checked === true);
 
-    console.log(selection);
-
     const title = unsubscribe
       ? t("UnsubscribeTitle")
       : checkedSelections.length === 1
