@@ -49,7 +49,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    public abstract class FileOperation
+    public abstract class FileOperation : DistributedTask
     {
         public const string SPLIT_CHAR = ":";
         public const string OWNER = "Owner";
