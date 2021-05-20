@@ -31,6 +31,8 @@ const StyledForm = styled(Box)`
   @media ${mobile} {
     margin: 72px 16px auto 8px;
     width: 311px;
+    flex: 1fr;
+    flex-direction: column;
   }
 
   .app-code-wrapper {
@@ -175,16 +177,9 @@ const TfaActivationForm = withLoader((props) => {
               </Box>
             </Box>
           </div>
-          {window.innerWidth > 375 && (
-            <div id="qrcode">
-              <img
-                src={qrCode}
-                height="180px"
-                width="180px"
-                alt="QR-code"
-              ></img>
-            </div>
-          )}
+          <div id="qrcode">
+            <img src={qrCode} height="180px" width="180px" alt="QR-code"></img>
+          </div>
         </StyledForm>
       </PageLayout.SectionBody>
     </PageLayout>
