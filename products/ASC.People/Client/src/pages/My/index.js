@@ -1,5 +1,5 @@
 import React from "react";
-import MyProfileI18n from "../../i18n";
+import MyProfileI18n from "./i18n";
 import PeopleStore from "../../store/PeopleStore";
 
 import PropTypes from "prop-types";
@@ -101,7 +101,7 @@ const MyProfile = withRouter(
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
-  }))(observer(withTranslation("Profile")(My)))
+  }))(withTranslation(["Profile", "ProfileAction"])(observer(My)))
 );
 
 const peopleStore = new PeopleStore();
