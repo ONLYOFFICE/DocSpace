@@ -57,7 +57,7 @@ override_dh_auto_install:
 	## ASC.ApiSystem ##
 	@echo "ASC.ApiSystem.$@"
 	mkdir -p debian/${PRODUCT}-api-system/${BUILD_PATH}/${PRODUCT}/services/ASC.ApiSystem/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.ApiSystem/service debian/${PRODUCT}-api-system/${BUILD_PATH}/${PRODUCT}/services/ASC.ApiSystem/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.ApiSystem/service/* debian/${PRODUCT}-api-system/${BUILD_PATH}/${PRODUCT}/services/ASC.ApiSystem/
 	dh_installinit    --name=${PRODUCT}-api-system
 	dh_systemd_enable --name=${PRODUCT}-api-system
 	dh_systemd_start  --name=${PRODUCT}-api-system
@@ -66,7 +66,7 @@ override_dh_auto_install:
 	## ASC.Data.Backup ##
 	@echo "ASC.Data.Backup.$@"
 	mkdir -p debian/${PRODUCT}-backup/${BUILD_PATH}/${PRODUCT}/services/backup/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Data.Backup/service debian/${PRODUCT}-backup/${BUILD_PATH}/${PRODUCT}/services/backup/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Data.Backup/service/* debian/${PRODUCT}-backup/${BUILD_PATH}/${PRODUCT}/services/backup/
 	dh_installinit    --name=${PRODUCT}-backup
 	dh_systemd_enable --name=${PRODUCT}-backup
 	dh_systemd_start  --name=${PRODUCT}-backup
@@ -74,7 +74,7 @@ override_dh_auto_install:
     ## ASC.Calendar ##
 	@echo "ASC.Calendar.$@"
 	mkdir -p debian/${PRODUCT}-calendar/${BUILD_PATH}/${PRODUCT}/products/ASC.Calendar/server/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Calendar/server/ debian/${PRODUCT}-calendar/${BUILD_PATH}/${PRODUCT}/products/ASC.Calendar/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Calendar/server/* debian/${PRODUCT}-calendar/${BUILD_PATH}/${PRODUCT}/products/ASC.Calendar/server/
 	dh_installinit    --name=${PRODUCT}-calendar
 	dh_systemd_enable --name=${PRODUCT}-calendar
 	dh_systemd_start  --name=${PRODUCT}-calendar
@@ -82,7 +82,7 @@ override_dh_auto_install:
 	## ASC.CRM ##
 	@echo "ASC.CRM.$@"
 	mkdir -p debian/${PRODUCT}-crm/${BUILD_PATH}/${PRODUCT}/products/ASC.CRM/server/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.CRM/server/ debian/${PRODUCT}-crm/${BUILD_PATH}/${PRODUCT}/products/ASC.CRM/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.CRM/server/* debian/${PRODUCT}-crm/${BUILD_PATH}/${PRODUCT}/products/ASC.CRM/server/
 	dh_installinit    --name=${PRODUCT}-crm
 	dh_systemd_enable --name=${PRODUCT}-crm
 	dh_systemd_start  --name=${PRODUCT}-crm
@@ -90,7 +90,7 @@ override_dh_auto_install:
 	## ASC.Data.Storage.Encryption ##
 	@echo "ASC.Data.Storage.Encryption.$@"
 	mkdir -p debian/${PRODUCT}-storage-encryption/${BUILD_PATH}/${PRODUCT}/services/storage.encryption/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Data.Storage.Encryption/service/ debian/${PRODUCT}-storage-encryption/${BUILD_PATH}/${PRODUCT}/services/storage.encryption/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Data.Storage.Encryption/service/* debian/${PRODUCT}-storage-encryption/${BUILD_PATH}/${PRODUCT}/services/storage.encryption/
 	dh_installinit    --name=${PRODUCT}-storage-encryption
 	dh_systemd_enable --name=${PRODUCT}-storage-encryption
 	dh_systemd_start  --name=${PRODUCT}-storage-encryption
@@ -98,7 +98,7 @@ override_dh_auto_install:
 	## ASC.Files ##
 	@echo "ASC.Files.$@"
 	mkdir -p debian/${PRODUCT}-files/${BUILD_PATH}/${PRODUCT}/products/ASC.Files/server/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Files/server/ debian/${PRODUCT}-files/${BUILD_PATH}/${PRODUCT}/products/ASC.Files/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Files/server/* debian/${PRODUCT}-files/${BUILD_PATH}/${PRODUCT}/products/ASC.Files/server/
 	dh_installinit    --name=${PRODUCT}-files
 	dh_systemd_enable --name=${PRODUCT}-files
 	dh_systemd_start  --name=${PRODUCT}-files
@@ -106,7 +106,7 @@ override_dh_auto_install:
 	## ASC.Files.Service ##
 	@echo "ASC.Files.Service.$@"
 	mkdir -p debian/${PRODUCT}-files-services/${BUILD_PATH}/${PRODUCT}/products/ASC.Files/service/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Files/service/ debian/${PRODUCT}-files-services/${BUILD_PATH}/${PRODUCT}/products/ASC.Files/service/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Files.Service/service/* debian/${PRODUCT}-files-services/${BUILD_PATH}/${PRODUCT}/products/ASC.Files/service/
 	dh_installinit    --name=${PRODUCT}-files-services
 	dh_systemd_enable --name=${PRODUCT}-files-services
 	dh_systemd_start  --name=${PRODUCT}-files-services
@@ -114,7 +114,7 @@ override_dh_auto_install:
 	## ASC.Mail ##
 	@echo "ASC.Mail.$@"
 	mkdir -p debian/${PRODUCT}-mail/${BUILD_PATH}/${PRODUCT}/products/ASC.Mail/server/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Mail/server/ debian/${PRODUCT}-mail/${BUILD_PATH}/${PRODUCT}/products/ASC.Mail/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Mail/server/* debian/${PRODUCT}-mail/${BUILD_PATH}/${PRODUCT}/products/ASC.Mail/server/
 	dh_installinit    --name=${PRODUCT}-mail
 	dh_systemd_enable --name=${PRODUCT}-mail
 	dh_systemd_start  --name=${PRODUCT}-mail
@@ -122,7 +122,7 @@ override_dh_auto_install:
 	## ASC.Data.Storage.Migration ##
 	@echo "ASC.Data.Storage.Migration.$@"
 	mkdir -p debian/${PRODUCT}-storage-migration/${BUILD_PATH}/${PRODUCT}/services/storage.migration/service/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Data.Storage.Migration/service/ debian/${PRODUCT}-storage-migration/${BUILD_PATH}/${PRODUCT}/services/storage.migration/service/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Data.Storage.Migration/service/* debian/${PRODUCT}-storage-migration/${BUILD_PATH}/${PRODUCT}/services/storage.migration/service/
 	dh_installinit    --name=${PRODUCT}-storage-migration
 	dh_systemd_enable --name=${PRODUCT}-storage-migration
 	dh_systemd_start  --name=${PRODUCT}-storage-migration
@@ -130,7 +130,7 @@ override_dh_auto_install:
 	## ASC.Notify ##
 	@echo "ASC.Notify.$@"
 	mkdir -p debian/${PRODUCT}-notify/${BUILD_PATH}/${PRODUCT}/services/notify/service/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Notify/service/ debian/${PRODUCT}-notify/${BUILD_PATH}/${PRODUCT}/services/notify/service/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Notify/service/* debian/${PRODUCT}-notify/${BUILD_PATH}/${PRODUCT}/services/notify/service/
 	dh_installinit    --name=${PRODUCT}-notify
 	dh_systemd_enable --name=${PRODUCT}-notify
 	dh_systemd_start  --name=${PRODUCT}-notify
@@ -138,7 +138,7 @@ override_dh_auto_install:
 	## ASC.People ##
 	@echo "ASC.People.$@"
 	mkdir -p debian/${PRODUCT}-people-server/${BUILD_PATH}/${PRODUCT}/products/ASC.People/server/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.People/server/ debian/${PRODUCT}-people-server/${BUILD_PATH}/${PRODUCT}/products/ASC.People/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.People/server/* debian/${PRODUCT}-people-server/${BUILD_PATH}/${PRODUCT}/products/ASC.People/server/
 	dh_installinit    --name=${PRODUCT}-people-server
 	dh_systemd_enable --name=${PRODUCT}-people-server
 	dh_systemd_start  --name=${PRODUCT}-people-server
@@ -146,7 +146,7 @@ override_dh_auto_install:
 	## ASC.Projects ##
 	@echo "ASC.Projects.$@"
 	mkdir -p debian/${PRODUCT}-projects-server/${BUILD_PATH}/${PRODUCT}/products/ASC.Projects/server/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Projects/server/ debian/${PRODUCT}-projects-server/${BUILD_PATH}/${PRODUCT}/products/ASC.Projects/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/products/ASC.Projects/server/* debian/${PRODUCT}-projects-server/${BUILD_PATH}/${PRODUCT}/products/ASC.Projects/server/
 	dh_installinit    --name=${PRODUCT}-projects-server
 	dh_systemd_enable --name=${PRODUCT}-projects-server
 	dh_systemd_start  --name=${PRODUCT}-projects-server
@@ -155,8 +155,8 @@ override_dh_auto_install:
 	@echo "ASC.Socket.IO.Svc.$@"
 	mkdir -p debian/${PRODUCT}-socket/${BUILD_PATH}/${PRODUCT}/services/socket/
 	mkdir -p debian/${PRODUCT}-socket/${BUILD_PATH}/${PRODUCT}/ASC.Socket.IO/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Socket.IO.Svc/service/ debian/${PRODUCT}-socket/${BUILD_PATH}/${PRODUCT}/services/socket/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Socket.IO/service/ debian/${PRODUCT}-socket/${BUILD_PATH}/${PRODUCT}/ASC.Socket.IO/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Socket.IO.Svc/service/* debian/${PRODUCT}-socket/${BUILD_PATH}/${PRODUCT}/services/socket/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Socket.IO/service/* debian/${PRODUCT}-socket/${BUILD_PATH}/${PRODUCT}/ASC.Socket.IO/
 	dh_installinit    --name=${PRODUCT}-socket
 	dh_systemd_enable --name=${PRODUCT}-socket
 	dh_systemd_start  --name=${PRODUCT}-socket
@@ -164,7 +164,7 @@ override_dh_auto_install:
 	## ASC.Studio.Notify ##
 	@echo "ASC.Studio.Notify.$@"
 	mkdir -p debian/${PRODUCT}-studio-notify/${BUILD_PATH}/${PRODUCT}/services/studio.notify/service/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Studio.Notify/service/ debian/${PRODUCT}-studio-notify/${BUILD_PATH}/${PRODUCT}/services/studio.notify/service/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Studio.Notify/service/* debian/${PRODUCT}-studio-notify/${BUILD_PATH}/${PRODUCT}/services/studio.notify/service/
 	dh_installinit    --name=${PRODUCT}-studio-notify
 	dh_systemd_enable --name=${PRODUCT}-studio-notify
 	dh_systemd_start  --name=${PRODUCT}-studio-notify
@@ -172,7 +172,7 @@ override_dh_auto_install:
 	## ASC.TelegramService ##
 	@echo "ASC.TelegramService.$@"
 	mkdir -p debian/${PRODUCT}-telegram-service/${BUILD_PATH}/${PRODUCT}/services/telegram/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.TelegramService/service/ debian/${PRODUCT}-telegram-service/${BUILD_PATH}/${PRODUCT}/services/telegram/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.TelegramService/service/* debian/${PRODUCT}-telegram-service/${BUILD_PATH}/${PRODUCT}/services/telegram/
 	dh_installinit    --name=${PRODUCT}-telegram-service
 	dh_systemd_enable --name=${PRODUCT}-telegram-service
 	dh_systemd_start  --name=${PRODUCT}-telegram-service
@@ -181,8 +181,8 @@ override_dh_auto_install:
 	@echo "ASC.Thumbnails.Svc.$@"
 	mkdir -p debian/${PRODUCT}-thumbnails/${BUILD_PATH}/${PRODUCT}/services/thumb/service/
 	mkdir -p debian/${PRODUCT}-thumbnails/${BUILD_PATH}/${PRODUCT}/services/thumb/client/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/ debian/${PRODUCT}-thumbnails/${BUILD_PATH}/${PRODUCT}/services/thumb/service/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Thumbnails/service/ debian/${PRODUCT}-thumbnails/${BUILD_PATH}/${PRODUCT}/services/thumb/client/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Thumbnails.Svc/service/* debian/${PRODUCT}-thumbnails/${BUILD_PATH}/${PRODUCT}/services/thumb/service/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Thumbnails/service/* debian/${PRODUCT}-thumbnails/${BUILD_PATH}/${PRODUCT}/services/thumb/client/
 	dh_installinit    --name=${PRODUCT}-thumbnails
 	dh_systemd_enable --name=${PRODUCT}-thumbnails
 	dh_systemd_start  --name=${PRODUCT}-thumbnails
@@ -191,8 +191,8 @@ override_dh_auto_install:
 	@echo "ASC.UrlShortener.Svc.$@"
 	mkdir -p debian/${PRODUCT}-urlshortener/${BUILD_PATH}/${PRODUCT}/services/urlshortener/service/
 	mkdir -p debian/${PRODUCT}-urlshortener/${BUILD_PATH}/${PRODUCT}/services/urlshortener/client/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.UrlShortener.Svc/service/ debian/${PRODUCT}-urlshortener/${BUILD_PATH}/${PRODUCT}/services/urlshortener/service/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.UrlShortener/service/ debian/${PRODUCT}-urlshortener/${BUILD_PATH}/${PRODUCT}/services/urlshortener/client/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.UrlShortener.Svc/service/* debian/${PRODUCT}-urlshortener/${BUILD_PATH}/${PRODUCT}/services/urlshortener/service/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.UrlShortener/service/* debian/${PRODUCT}-urlshortener/${BUILD_PATH}/${PRODUCT}/services/urlshortener/client/
 	dh_installinit    --name=${PRODUCT}-urlshortener
 	dh_systemd_enable --name=${PRODUCT}-urlshortener
 	dh_systemd_start  --name=${PRODUCT}-urlshortener
@@ -200,7 +200,7 @@ override_dh_auto_install:
 	## ASC.Web.Api ##
 	@echo "ASC.Web.Api.$@"
 	mkdir -p debian/${PRODUCT}-api/${BUILD_PATH}/${PRODUCT}/studio/api/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Web.Api/service/ debian/${PRODUCT}-api/${BUILD_PATH}/${PRODUCT}/studio/api/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Web.Api/service/* debian/${PRODUCT}-api/${BUILD_PATH}/${PRODUCT}/studio/api/
 	dh_installinit    --name=${PRODUCT}-api
 	dh_systemd_enable --name=${PRODUCT}-api
 	dh_systemd_start  --name=${PRODUCT}-api
@@ -208,7 +208,13 @@ override_dh_auto_install:
 	## ASC.Web.Studio ##
 	@echo "ASC.Web.Studio.$@"
 	mkdir -p debian/${PRODUCT}-studio/${BUILD_PATH}/${PRODUCT}/studio/server/
-	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Web.Studio/service/ debian/${PRODUCT}-studio/${BUILD_PATH}/${PRODUCT}/studio/server/
+	cp -fr ${CURRENT_PATH}/src/${BUILD_PATH}/services/ASC.Web.Studio/service/* debian/${PRODUCT}-studio/${BUILD_PATH}/${PRODUCT}/studio/server/
 	dh_installinit    --name=${PRODUCT}-studio
 	dh_systemd_enable --name=${PRODUCT}-studio
 	dh_systemd_start  --name=${PRODUCT}-studio
+
+override_dh_strip:
+#	dh_strip --exclude=/site-packages/
+
+override_dh_shlibdeps:
+#	dh_shlibdeps --exclude=/site-packages/
