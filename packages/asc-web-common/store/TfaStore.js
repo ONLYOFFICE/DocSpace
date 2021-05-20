@@ -4,6 +4,11 @@ import history from "../history";
 
 class TfaStore {
   tfaSettings = null;
+  tfaAndroidAppUrl =
+    "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2";
+  tfaIosAppUrl = "https://apps.apple.com/app/google-authenticator/id388497605";
+  tfaWinAppUrl =
+    "https://www.microsoft.com/ru-ru/p/authenticator/9wzdncrfj3rj?rtc=1&activetab=pivot:overviewtab";
 
   constructor() {
     makeAutoObservable(this);
