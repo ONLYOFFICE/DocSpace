@@ -58,6 +58,7 @@ const StyledModalBody = styled.div`
 
   .avatar {
     margin-right: 16px;
+    min-width: 48px;
   }
 
   .toggle-btn {
@@ -68,6 +69,12 @@ const StyledModalBody = styled.div`
     display: flex;
     align-items: center;
     margin-bottom: 32px;
+
+    .user-info-wrapper {
+      flex: 1 1 auto;
+      max-width: 100%;
+      min-width: 0;
+    }
   }
 
   .full-access-wrapper {
@@ -188,7 +195,9 @@ const ToggleContentContainer = styled.div`
     align-items: center;
 
     .userData {
-      max-width: calc(100% - 300px);
+      flex: 1 1 auto;
+      max-width: 100%;
+      min-width: 0;
     }
   }
 
@@ -668,11 +677,12 @@ class PortalAdmins extends Component {
                           source={selectedUser.avatar}
                           className="avatar"
                         />
-                        <div>
+                        <div className="user-info-wrapper">
                           <Text
                             color="#316DAA"
                             fontWeight={600}
                             fontSize="19px"
+                            truncate={true}
                           >
                             {selectedUser.displayName}
                           </Text>
@@ -681,6 +691,7 @@ class PortalAdmins extends Component {
                               color="#A3A9AE"
                               fontWeight={400}
                               fontSize="13px"
+                              truncate={true}
                             >
                               {selectedUser.department}
                             </Text>
@@ -807,6 +818,7 @@ class PortalAdmins extends Component {
                                     fontSize="15px"
                                     fontWeight="600"
                                     color={nameColor}
+                                    truncate={true}
                                   >
                                     {user.displayName}
                                   </Text>
