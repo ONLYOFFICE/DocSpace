@@ -6,7 +6,7 @@ import UpdateUserForm from "./updateUserForm";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 
-const SectionUserBody = ({ avatarEditorIsOpen, match }) => {
+const SectionUserBody = ({ avatarEditorIsOpen, match, isMy }) => {
   const { type } = match.params;
   return type ? (
     avatarEditorIsOpen ? (
@@ -17,7 +17,7 @@ const SectionUserBody = ({ avatarEditorIsOpen, match }) => {
   ) : avatarEditorIsOpen ? (
     <AvatarEditorPage />
   ) : (
-    <UpdateUserForm />
+    <UpdateUserForm isMy={isMy} />
   );
 };
 

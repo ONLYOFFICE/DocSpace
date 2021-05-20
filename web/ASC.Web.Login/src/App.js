@@ -1,8 +1,14 @@
 import React from "react";
 import Shell from "studio/shell";
+import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
+import "@appserver/common/custom.scss";
 
 const App = () => {
-  return <Shell />;
+  return (
+    <ErrorBoundary>
+      <Shell />
+    </ErrorBoundary>
+  );
 };
 
 export default App;
