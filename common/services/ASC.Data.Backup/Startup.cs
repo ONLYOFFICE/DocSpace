@@ -50,6 +50,10 @@ namespace ASC.Data.Backup
             base.ConfigureServices(services);
 
             DIHelper.AddDistributedTaskQueueService<BaseBackupProgressItem>(1);
+            
+            DIHelper.TryAdd<BackupProgressItem>();
+            DIHelper.TryAdd<RestoreProgressItem>();
+            DIHelper.TryAdd<TransferProgressItem>();
 
             DIHelper.TryAdd<BackupServiceLauncher>();
             DIHelper.TryAdd<BackupController>();
