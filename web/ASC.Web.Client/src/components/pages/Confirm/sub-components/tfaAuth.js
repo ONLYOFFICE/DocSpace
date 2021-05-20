@@ -9,6 +9,7 @@ import PageLayout from "@appserver/common/components/PageLayout";
 import { inject, observer } from "mobx-react";
 import Box from "@appserver/components/box";
 import toastr from "studio/toastr";
+import withLoader from "../withLoader";
 
 const StyledForm = styled(Box)`
   margin: 63px auto auto 216px;
@@ -20,7 +21,7 @@ const StyledForm = styled(Box)`
   }
 `;
 
-const TfaAuthForm = (props) => {
+const TfaAuthForm = withLoader((props) => {
   const { t, loginWithCode, loginWithCodeAndCookie, location, history } = props;
 
   const [code, setCode] = useState("");
@@ -92,9 +93,16 @@ const TfaAuthForm = (props) => {
       </Box>
     </StyledForm>
   );
-};
+});
 
 const TfaAuthFormWrapper = (props) => {
+  const { setIsLoaded, setIsLoading } = props;
+
+  useEffect(async () => {
+    setIsLoaded(true);
+    setIsLoading(false);
+  }, []);
+
   return (
     <PageLayout>
       <PageLayout.SectionBody>
@@ -104,8 +112,9 @@ const TfaAuthFormWrapper = (props) => {
   );
 };
 
-export default inject(({ auth }) => ({
-  isLoaded: auth.isLoaded,
+export default inject(({ auth, confirm }) => ({
+  setIsLoaded: confirm.setIsLoaded,
+  setIsLoading: confirm.setIsLoading,
   loginWithCode: auth.loginWithCode,
   loginWithCodeAndCookie: auth.tfaStore.loginWithCodeAndCookie,
 }))(withRouter(withTranslation("Confirm")(observer(TfaAuthFormWrapper))));
