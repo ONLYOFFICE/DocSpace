@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using ASC.Common.Logging;
 using ASC.Common.Web;
@@ -46,34 +45,21 @@ using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class TestEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string User => SecurityContext.CurrentAccount.ID.ToString();
 
-        public string User
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-
-        public ILog Log { get; private set; }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public CoreSettings CoreSettings { get; }
-        public DaoFactory DaoFactory { get; }
-        public AccountEngine AccountEngine { get; }
-        public MailboxEngine MailboxEngine { get; }
-        public MessageEngine MessageEngine { get; }
-        public IndexEngine IndexEngine { get; }
-        public StorageFactory StorageFactory { get; }
+        private ILog Log { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private CoreSettings CoreSettings { get; }
+        private AccountEngine AccountEngine { get; }
+        private MailboxEngine MailboxEngine { get; }
+        private MessageEngine MessageEngine { get; }
+        private IndexEngine IndexEngine { get; }
+        private StorageFactory StorageFactory { get; }
 
         private const string SAMPLE_UIDL = "api sample";
         private const string SAMPLE_REPLY_UIDL = "api sample reply";
@@ -93,7 +79,6 @@ namespace ASC.Mail.Core.Engine
         public TestEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            DaoFactory daoFactory,
             CoreSettings coreSettings,
             AccountEngine accountEngine,
             MailboxEngine mailboxEngine,
@@ -105,7 +90,6 @@ namespace ASC.Mail.Core.Engine
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             CoreSettings = coreSettings;
-            DaoFactory = daoFactory;
             AccountEngine = accountEngine;
             MailboxEngine = mailboxEngine;
             MessageEngine = messageEngine;
@@ -355,26 +339,6 @@ namespace ASC.Mail.Core.Engine
             IndexEngine.Add(message.ToMailWrapper(mbox.TenantId, new Guid(mbox.UserId)));
 
             return message.Id;
-        }
-    }
-
-    public static class TestEngineExtension
-    {
-        public static DIHelper AddTestEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<TestEngine>();
-
-            services.AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddDaoFactoryService()
-                .AddCoreSettingsService()
-                .AddAccountEngineService()
-                .AddMailboxEngineService()
-                .AddMessageEngineService()
-                .AddIndexEngineService()
-                .AddStorageFactoryService();
-
-            return services;
         }
     }
 }

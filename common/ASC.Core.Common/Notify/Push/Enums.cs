@@ -23,84 +23,41 @@
  *
 */
 
-
-using System.Runtime.Serialization;
-
 namespace ASC.Core.Common.Notify.Push
 {
-    [DataContract]
     public enum PushAction
     {
-        [EnumMember]
         Unknown,
-
-        [EnumMember]
         Created,
-
-        [EnumMember]
         Assigned,
-
-        [EnumMember]
         InvitedTo,
-
-        [EnumMember]
         Closed,
-
-        [EnumMember]
         Resumed,
-
-        [EnumMember]
         Deleted
     }
 
-    [DataContract]
     public enum PushItemType
     {
-        [EnumMember]
         Unknown,
-
-        [EnumMember]
         Task,
-
-        [EnumMember]
         Subtask,
-
-        [EnumMember]
         Milestone,
-
-        [EnumMember]
         Project,
-
-        [EnumMember]
         Message
     }
 
-    [DataContract]
     public enum PushModule
     {
-        [EnumMember]
         Unknown,
-
-        [EnumMember]
         Projects
     }
 
-    [DataContract]
     public enum MobileAppType
     {
-        [EnumMember]
         IosProjects = 0,
-
-        [EnumMember]
         AndroidProjects = 1,
-
-        [EnumMember]
         IosDocuments = 2,
-
-        [EnumMember]
         AndroidDocuments = 3,
-
-        [EnumMember]
         DesktopEditor = 4
     }
 }

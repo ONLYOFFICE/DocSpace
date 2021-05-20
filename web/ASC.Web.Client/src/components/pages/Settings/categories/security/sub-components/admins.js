@@ -1,35 +1,28 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import i18n from "../../../i18n";
-import { I18nextProvider, withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import {
-  changeAdmins,
-  getUpdateListAdmin,
-  fetchPeople
-} from "../../../../../../store/settings/actions";
-import {
-  Text,
-  Avatar,
-  Row,
-  RowContent,
-  RowContainer,
-  Link,
-  Paging,
-  IconButton,
-  toastr,
-  FilterInput,
-  Button,
-  RequestLoader,
-  Loader,
-  EmptyScreenContainer,
-  Icons
-} from "asc-web-components";
-import { PeopleSelector } from "asc-web-common";
-import { getUserRole } from "../../../../../../store/settings/selectors";
+
+import Text from "@appserver/components/text";
+import Avatar from "@appserver/components/avatar";
+import Row from "@appserver/components/row";
+import RowContent from "@appserver/components/row-content";
+import RowContainer from "@appserver/components/row-container";
+import Link from "@appserver/components/link";
+import Paging from "@appserver/components/paging";
+import IconButton from "@appserver/components/icon-button";
+import toastr from "@appserver/components/toast/toastr";
+import Button from "@appserver/components/button";
+import RequestLoader from "@appserver/components/request-loader";
+import Loader from "@appserver/components/loader";
+import EmptyScreenContainer from "@appserver/components/empty-screen-container";
+import { showLoader, hideLoader } from "@appserver/common/utils";
+import FilterInput from "@appserver/common/components/FilterInput";
+import PeopleSelector from "people/PeopleSelector";
+
 import isEmpty from "lodash/isEmpty";
+import { inject, observer } from "mobx-react";
 
 const ToggleContentContainer = styled.div`
   .buttons_container {
@@ -52,7 +45,9 @@ const ToggleContentContainer = styled.div`
       margin-left: 0px;
     }
   }
-
+  .cross_icon {
+    margin-right: 8px;
+  }
   .people-admin_container {
     margin-right: 16px;
     position: relative;
@@ -86,27 +81,28 @@ class PureAdminsSettings extends Component {
       showFullAdminSelector: false,
       isLoading: false,
       showLoader: true,
-      selectedOptions: []
+      selectedOptions: [],
     };
   }
 
   componentDidMount() {
     const { admins, fetchPeople } = this.props;
-
+    showLoader();
     if (isEmpty(admins, true)) {
       const newFilter = this.onAdminsFilter();
       fetchPeople(newFilter)
-        .catch(error => {
+        .catch((error) => {
           toastr.error(error);
         })
         .finally(() =>
           this.setState({
-            showLoader: false
+            showLoader: false,
           })
         );
     } else {
       this.setState({ showLoader: false });
     }
+    hideLoader();
   }
 
   onChangeAdmin = (userIds, isAdmin, productId) => {
@@ -115,7 +111,7 @@ class PureAdminsSettings extends Component {
     const newFilter = this.onAdminsFilter();
 
     changeAdmins(userIds, productId, isAdmin, newFilter)
-      .catch(error => {
+      .catch((error) => {
         toastr.error("accessRights onChangeAdmin", error);
       })
       .finally(() => {
@@ -129,7 +125,7 @@ class PureAdminsSettings extends Component {
     ); */
 
     this.setState({
-      showSelector: !this.state.showSelector
+      showSelector: !this.state.showSelector,
     });
   };
 
@@ -140,11 +136,11 @@ class PureAdminsSettings extends Component {
     ); */
 
     this.setState({
-      showFullAdminSelector: !this.state.showFullAdminSelector
+      showFullAdminSelector: !this.state.showFullAdminSelector,
     });
   };
 
-  onCancelSelector = e => {
+  onCancelSelector = (e) => {
     /* console.log(
       `onCancelSelector(showSelector: false, showFullAdminSelector: false`,
       e
@@ -162,30 +158,30 @@ class PureAdminsSettings extends Component {
 
     this.setState({
       showSelector: false,
-      showFullAdminSelector: false
+      showFullAdminSelector: false,
     });
   };
 
-  onSelect = selected => {
+  onSelect = (selected) => {
     const { productId } = this.props;
     this.onChangeAdmin(
-      selected.map(user => user.key),
+      selected.map((user) => user.key),
       true,
       productId
     );
     this.onShowGroupSelector();
   };
 
-  onSelectFullAdmin = selected => {
+  onSelectFullAdmin = (selected) => {
     this.onChangeAdmin(
-      selected.map(user => user.key),
+      selected.map((user) => user.key),
       true,
       "00000000-0000-0000-0000-000000000000"
     );
     this.onShowFullAdminGroupSelector();
   };
 
-  onChangePage = pageItem => {
+  onChangePage = (pageItem) => {
     const { filter, getUpdateListAdmin } = this.props;
 
     const newFilter = filter.clone();
@@ -193,11 +189,11 @@ class PureAdminsSettings extends Component {
     this.onLoading(true);
 
     getUpdateListAdmin(newFilter)
-      .catch(res => console.log(res))
+      .catch((res) => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
-  onChangePageSize = pageItem => {
+  onChangePageSize = (pageItem) => {
     const { filter, getUpdateListAdmin } = this.props;
 
     const newFilter = filter.clone();
@@ -206,11 +202,11 @@ class PureAdminsSettings extends Component {
     this.onLoading(true);
 
     getUpdateListAdmin(newFilter)
-      .catch(res => console.log(res))
+      .catch((res) => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
-  onPrevClick = e => {
+  onPrevClick = (e) => {
     const { filter, getUpdateListAdmin } = this.props;
 
     if (!filter.hasPrev()) {
@@ -221,11 +217,11 @@ class PureAdminsSettings extends Component {
     newFilter.page--;
     this.onLoading(true);
     getUpdateListAdmin(newFilter)
-      .catch(res => console.log(res))
+      .catch((res) => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
-  onNextClick = e => {
+  onNextClick = (e) => {
     const { filter, getUpdateListAdmin } = this.props;
 
     if (!filter.hasNext()) {
@@ -237,11 +233,11 @@ class PureAdminsSettings extends Component {
     this.onLoading(true);
 
     getUpdateListAdmin(newFilter)
-      .catch(res => console.log(res))
+      .catch((res) => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
-  onLoading = status => {
+  onLoading = (status) => {
     this.setState({ isLoading: status });
   };
 
@@ -255,7 +251,7 @@ class PureAdminsSettings extends Component {
     return newFilter;
   };
 
-  onFilter = data => {
+  onFilter = (data) => {
     const { filter, getUpdateListAdmin } = this.props;
 
     const search = data.inputValue || null;
@@ -273,7 +269,7 @@ class PureAdminsSettings extends Component {
     this.onLoading(true);
 
     getUpdateListAdmin(newFilter)
-      .catch(res => console.log(res))
+      .catch((res) => console.log(res))
       .finally(this.onLoading(false));
   };
 
@@ -284,7 +280,7 @@ class PureAdminsSettings extends Component {
 
     this.onLoading(true);
     getUpdateListAdmin(newFilter)
-      .catch(res => console.log(res))
+      .catch((res) => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
@@ -292,10 +288,10 @@ class PureAdminsSettings extends Component {
     const { t, filter } = this.props;
     if (filter.total < filter.pageCount) return [];
     const totalPages = Math.ceil(filter.total / filter.pageCount);
-    return [...Array(totalPages).keys()].map(item => {
+    return [...Array(totalPages).keys()].map((item) => {
       return {
         key: item,
-        label: t("PageOfTotalPage", { page: item + 1, totalPage: totalPages })
+        label: t("PageOfTotalPage", { page: item + 1, totalPage: totalPages }),
       };
     });
   };
@@ -303,7 +299,7 @@ class PureAdminsSettings extends Component {
   countItems = () => [
     { key: 25, label: this.props.t("CountPerPage", { count: 25 }) },
     { key: 50, label: this.props.t("CountPerPage", { count: 50 }) },
-    { key: 100, label: this.props.t("CountPerPage", { count: 100 }) }
+    { key: 100, label: this.props.t("CountPerPage", { count: 100 }) },
   ];
 
   selectedPageItem = () => {
@@ -312,10 +308,10 @@ class PureAdminsSettings extends Component {
 
     const emptyPageSelection = {
       key: 0,
-      label: t("PageOfTotalPage", { page: 1, totalPage: 1 })
+      label: t("PageOfTotalPage", { page: 1, totalPage: 1 }),
     };
 
-    return pageItems.find(x => x.key === filter.page) || emptyPageSelection;
+    return pageItems.find((x) => x.key === filter.page) || emptyPageSelection;
   };
 
   selectedCountItem = () => {
@@ -323,13 +319,13 @@ class PureAdminsSettings extends Component {
 
     const emptyCountSelection = {
       key: 0,
-      label: t("CountPerPage", { count: 25 })
+      label: t("CountPerPage", { count: 25 }),
     };
 
     const countItems = this.countItems();
 
     return (
-      countItems.find(x => x.key === filter.pageCount) || emptyCountSelection
+      countItems.find((x) => x.key === filter.pageCount) || emptyCountSelection
     );
   };
 
@@ -338,8 +334,20 @@ class PureAdminsSettings extends Component {
 
     return [
       { key: "firstname", label: t("ByFirstNameSorting"), default: true },
-      { key: "lastname", label: t("ByLastNameSorting"), default: true }
+      { key: "lastname", label: t("ByLastNameSorting"), default: true },
     ];
+  };
+
+  getUserRole = (user) => {
+    if (user.isOwner) return "owner";
+    else if (user.isAdmin) return "admin";
+    else if (
+      user.listAdminModules !== undefined &&
+      user.listAdminModules.includes("people")
+    )
+      return "admin";
+    else if (user.isVisitor) return "guest";
+    else return "user";
   };
 
   render() {
@@ -348,7 +356,7 @@ class PureAdminsSettings extends Component {
       showSelector,
       isLoading,
       showFullAdminSelector,
-      showLoader
+      showLoader,
     } = this.state;
 
     console.log("Admins render_");
@@ -429,11 +437,11 @@ class PureAdminsSettings extends Component {
                 <>
                   <div className="wrapper">
                     <RowContainer manualHeight={`${admins.length * 50}px`}>
-                      {admins.map(user => {
+                      {admins.map((user) => {
                         const element = (
                           <Avatar
-                            size="small"
-                            role={getUserRole(user)}
+                            size="min"
+                            role={this.getUserRole(user)}
                             userName={user.displayName}
                             source={user.avatar}
                           />
@@ -450,7 +458,7 @@ class PureAdminsSettings extends Component {
                           >
                             <RowContent disableSideInfo={true}>
                               <Link
-                                containerWidth="120px"
+                                containerWidth="50%"
                                 type="page"
                                 title={user.displayName}
                                 isBold={true}
@@ -460,16 +468,15 @@ class PureAdminsSettings extends Component {
                               >
                                 {user.displayName}
                               </Link>
-                              <div style={{ maxWidth: 120 }} />
-
-                              <Text>
+                              <></>
+                              <Text containerWidth="10%">
                                 {user.isAdmin
                                   ? t("AccessRightsFullAccess")
                                   : t("PeopleAdmin")}
                               </Text>
-
                               {!user.isOwner ? (
                                 <IconButton
+                                  containerWidth="5%"
                                   className="remove_icon"
                                   size="16"
                                   isDisabled={isLoading}
@@ -479,12 +486,14 @@ class PureAdminsSettings extends Component {
                                     false,
                                     "00000000-0000-0000-0000-000000000000"
                                   )}
-                                  iconName={"CatalogTrashIcon"}
+                                  iconName={
+                                    "static/images/catalog.trash.react.svg"
+                                  }
                                   isFill={true}
                                   isClickable={false}
                                 />
                               ) : (
-                                <div />
+                                <div containerWidth="5%" />
                               )}
                             </RowContent>
                           </Row>
@@ -519,13 +528,19 @@ class PureAdminsSettings extends Component {
                   descriptionText={t("NotFoundDescription")}
                   buttons={
                     <>
-                      <Icons.CrossIcon
-                        size="small"
-                        style={{ marginRight: "4px" }}
+                      <IconButton
+                        className="cross_icon"
+                        size="12"
+                        onClick={this.onResetFilter}
+                        iconName="/static/images/cross.react.svg"
+                        isFill
+                        color="#657077"
                       />
                       <Link
                         type="action"
                         isHovered={true}
+                        fontWeight="600"
+                        color="#555f65"
                         onClick={this.onResetFilter}
                       >
                         {t("ClearButton")}
@@ -542,43 +557,33 @@ class PureAdminsSettings extends Component {
   }
 }
 
-const AccessRightsContainer = withTranslation()(PureAdminsSettings);
-
-const AdminsSettings = props => (
-  <I18nextProvider i18n={i18n}>
-    <AccessRightsContainer {...props} />
-  </I18nextProvider>
-);
-
-function mapStateToProps(state) {
-  const { admins, owner, filter } = state.settings.security.accessRight;
-  const { user: me } = state.auth;
-  const groupsCaption = state.auth.settings.customNames.groupsCaption;
-
-  return {
-    admins,
-    productId: state.auth.modules[0].id,
-    owner,
-    filter,
-    me,
-    groupsCaption
-  };
-}
+const AdminsSettings = withTranslation("Settings")(PureAdminsSettings);
 
 AdminsSettings.defaultProps = {
   admins: [],
   productId: "",
-  owner: {}
+  owner: {},
 };
 
 AdminsSettings.propTypes = {
   admins: PropTypes.arrayOf(PropTypes.object),
   productId: PropTypes.string,
-  owner: PropTypes.object
+  owner: PropTypes.object,
 };
 
-export default connect(mapStateToProps, {
-  changeAdmins,
-  fetchPeople,
-  getUpdateListAdmin
-})(withRouter(AdminsSettings));
+export default inject(({ auth, setup }) => {
+  const { admins, owner, filter } = setup.security.accessRight;
+  const { user: me } = auth.userStore;
+
+  return {
+    groupsCaption: auth.settingsStore.customNames.groupsCaption,
+    changeAdmins: setup.changeAdmins,
+    fetchPeople: setup.fetchPeople,
+    getUpdateListAdmin: setup.getUpdateListAdmin,
+    admins,
+    productId: auth.moduleStore.modules[0].id,
+    owner,
+    filter,
+    me,
+  };
+})(withRouter(observer(AdminsSettings)));

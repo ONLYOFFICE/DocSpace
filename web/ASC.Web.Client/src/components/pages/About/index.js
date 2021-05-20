@@ -1,15 +1,18 @@
 ﻿import React, { useEffect } from "react";
-import { Text, Link } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
-import { useTranslation } from "react-i18next";
-import i18n from "./i18n";
+import Text from "@appserver/components/text";
+import Link from "@appserver/components/link";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { I18nextProvider, useTranslation, Trans } from "react-i18next";
 import version from "../../../../package.json";
 import styled from "styled-components";
-import { Trans } from "react-i18next";
-const { changeLanguage } = utils;
+import { isMobile } from "react-device-detect";
+import { setDocumentTitle } from "../../../helpers/utils";
+import i18n from "./i18n";
+import config from "../../../../package.json";
+import { inject } from "mobx-react";
 
 const BodyStyle = styled.div`
-  margin-top: 24px;
+  margin-top: ${isMobile ? "80px" : "24px"};
 
   .avatar {
     text-align: center;
@@ -41,6 +44,9 @@ const BodyStyle = styled.div`
   }
 
   .copyright-line {
+    display: grid;
+    grid-template-columns: 1fr max-content 1fr;
+    grid-column-gap: 24px;
     padding-bottom: 15px;
     text-align: center;
 
@@ -49,7 +55,6 @@ const BodyStyle = styled.div`
       content: "";
       height: 2px;
       margin-top: 9px;
-      width: 26%;
       float: right;
     }
 
@@ -58,7 +63,6 @@ const BodyStyle = styled.div`
       content: "";
       height: 2px;
       margin-top: 9px;
-      width: 26%;
       float: left;
     }
   }
@@ -74,11 +78,10 @@ const VersionStyle = styled.div`
 `;
 
 const Body = () => {
-  const { t } = useTranslation("translation", { i18n });
+  const { t } = useTranslation("About");
 
   useEffect(() => {
-    changeLanguage(i18n);
-    document.title = `${t("AboutTitle")} – ${t("People")}`;
+    setDocumentTitle(t("AboutTitle")); //TODO: implement the ability to read the current module in redux to implement the template `${t("AboutTitle")} – ${t("People")}`
   }, [t]);
 
   const gitHub = "GitHub";
@@ -90,12 +93,13 @@ const Body = () => {
     "20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050";
   const licenseContent = (
     <Text as="div" className="text_style" fontSize="12px">
-      <Trans i18nKey="LicensedUnder" i18n={i18n}>
+      <Trans t={t} i18nKey="LicensedUnder" ns="About">
         "This software is licensed under:"
         <Link
           href="https://www.gnu.org/licenses/gpl-3.0.html"
           isHovered={true}
           fontSize="12px"
+          target="_blank"
         >
           {{ license }}
         </Link>
@@ -126,7 +130,7 @@ const Body = () => {
       </Text>
 
       <Text as="div" className="text_style" fontSize="16px" isBold={true}>
-        <Trans i18nKey="AllRightsReservedCustomMode" i18n={i18n}>
+        <Trans t={t} i18nKey="AllRightsReservedCustomMode" ns="About">
           Ascensio System SIA
           <p className="hidden-text">All rights reserved.</p>
         </Trans>
@@ -165,7 +169,7 @@ const Body = () => {
             {phone}
           </Text>
         </div>
-        <Link href="http://www.onlyoffice.com" fontSize="12px">
+        <Link href="http://www.onlyoffice.com" fontSize="12px" target="_blank">
           {link}
         </Link>
 
@@ -175,9 +179,10 @@ const Body = () => {
           <Text className="text_style" fontSize="12px">
             {t("SourceCode")}:{" "}
             <Link
-              href="https://github.com/ONLYOFFICE/CommunityServer"
+              href="https://github.com/ONLYOFFICE/AppServer"
               isHovered={true}
               fontSize="12px"
+              target="_blank"
             >
               {gitHub}
             </Link>
@@ -188,8 +193,24 @@ const Body = () => {
   );
 };
 
-const About = ({ language }) => (
-  <PageLayout sectionBodyContent={<Body language={language} />} />
-);
+const About = ({ language, setModuleInfo }) => {
+  useEffect(() => {
+    setModuleInfo(config.homepage, "home");
+  }, []);
 
-export default About;
+  return (
+    <I18nextProvider i18n={i18n}>
+      <PageLayout>
+        <PageLayout.SectionBody>
+          <Body language={language} />
+        </PageLayout.SectionBody>
+      </PageLayout>
+    </I18nextProvider>
+  );
+};
+
+export default inject(({ auth }) => {
+  return {
+    setModuleInfo: auth.settingsStore.setModuleInfo,
+  };
+})(About);

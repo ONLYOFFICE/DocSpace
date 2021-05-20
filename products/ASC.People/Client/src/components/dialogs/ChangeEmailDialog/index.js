@@ -1,19 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  toastr,
-  ModalDialog,
-  Button,
-  Text,
-  EmailInput,
-  FieldContainer
-} from "asc-web-components";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Button from "@appserver/components/button";
+import Text from "@appserver/components/text";
+import EmailInput from "@appserver/components/email-input";
+import FieldContainer from "@appserver/components/field-container";
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
-import ModalDialogContainer from '../ModalDialogContainer';
-import { api, utils } from "asc-web-common";
-const { sendInstructionsToChangeEmail } = api.people;
-const { changeLanguage } = utils;
+import ModalDialogContainer from "../ModalDialogContainer";
+import { sendInstructionsToChangeEmail } from "@appserver/common/api/people";
+import toastr from "studio/toastr";
 
 class ChangeEmailDialogComponent extends React.Component {
   constructor(props) {
@@ -27,11 +22,9 @@ class ChangeEmailDialogComponent extends React.Component {
       isRequestRunning: false,
       email,
       hasError: false,
-      errorMessage: '',
-      emailErrors: []
+      errorMessage: "",
+      emailErrors: [],
     };
-
-    changeLanguage(i18n);
   }
 
   componentDidMount() {
@@ -50,9 +43,10 @@ class ChangeEmailDialogComponent extends React.Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  onValidateEmailInput = result => this.setState({ isEmailValid: result.isValid, emailErrors: result.errors });
+  onValidateEmailInput = (result) =>
+    this.setState({ isEmailValid: result.isValid, emailErrors: result.errors });
 
-  onChangeEmailInput = e => {
+  onChangeEmailInput = (e) => {
     const { hasError } = this.state;
     const email = e.target.value;
     hasError && this.setState({ hasError: false });
@@ -70,9 +64,11 @@ class ChangeEmailDialogComponent extends React.Component {
         })
         .catch((error) => toastr.error(error))
         .finally(() => {
-          this.setState({ isRequestRunning: false }, () => this.props.onClose());
+          this.setState({ isRequestRunning: false }, () =>
+            this.props.onClose()
+          );
         });
-    })
+    });
   };
 
   onValidateEmail = () => {
@@ -81,27 +77,24 @@ class ChangeEmailDialogComponent extends React.Component {
     if (isEmailValid) {
       const sameEmailError = email.toLowerCase() === user.email.toLowerCase();
       if (sameEmailError) {
-        this.setState({ errorMessage: t('SameEmail'), hasError: true });
-      }
-      else {
-        this.setState({ errorMessage: '', hasError: false });
+        this.setState({ errorMessage: t("SameEmail"), hasError: true });
+      } else {
+        this.setState({ errorMessage: "", hasError: false });
         this.onSendEmailChangeInstructions();
       }
-    }
-    else {
-      const translatedErrors = emailErrors.map((errorKey => t(errorKey)));
+    } else {
+      const translatedErrors = emailErrors.map((errorKey) => t(errorKey));
       const errorMessage = translatedErrors[0];
       this.setState({ errorMessage, hasError: true });
     }
   };
 
-  onKeyPress = event => {
+  onKeyPress = (event) => {
     const { isRequestRunning } = this.state;
     if (event.key === "Enter" && !isRequestRunning) {
       this.onValidateEmail();
     }
   };
-
 
   render() {
     console.log("ChangeEmailDialog render");
@@ -109,64 +102,51 @@ class ChangeEmailDialogComponent extends React.Component {
     const { isRequestRunning, email, errorMessage, hasError } = this.state;
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t('EmailChangeTitle')}
-          bodyContent={
-            <>
-              <FieldContainer
-                isVertical
-                labelText={t('EnterEmail')}
-                errorMessage={errorMessage}
-                hasError={hasError}
-              >
-                <EmailInput
-                  id="new-email"
-                  scale={true}
-                  isAutoFocussed={true}
-                  value={email}
-                  onChange={this.onChangeEmailInput}
-                  onValidateInput={this.onValidateEmailInput}
-                  onKeyUp={this.onKeyPress}
-                  hasError={hasError}
-                />
-              </FieldContainer>
-              <Text
-                className='text-dialog'
-              >
-                {t('EmailActivationDescription')}
-              </Text>
-            </>
-          }
-          footerContent={
-            <Button
-              key="SendBtn"
-              label={t('SendButton')}
-              size="medium"
-              primary={true}
-              onClick={this.onValidateEmail}
-              isLoading={isRequestRunning}
+      <ModalDialogContainer visible={visible} onClose={onClose}>
+        <ModalDialog.Header>{t("EmailChangeTitle")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <FieldContainer
+            isVertical
+            labelText={t("EnterEmail")}
+            errorMessage={errorMessage}
+            hasError={hasError}
+          >
+            <EmailInput
+              id="new-email"
+              scale={true}
+              isAutoFocussed={true}
+              value={email}
+              onChange={this.onChangeEmailInput}
+              onValidateInput={this.onValidateEmailInput}
+              onKeyUp={this.onKeyPress}
+              hasError={hasError}
             />
-          }
-        />
+          </FieldContainer>
+          <Text className="text-dialog">{t("EmailActivationDescription")}</Text>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            key="SendBtn"
+            label={t("SendButton")}
+            size="medium"
+            primary={true}
+            onClick={this.onValidateEmail}
+            isLoading={isRequestRunning}
+          />
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
 }
 
-const ChangeEmailDialogTranslated = withTranslation()(ChangeEmailDialogComponent);
-
-const ChangeEmailDialog = props => (
-  <ChangeEmailDialogTranslated i18n={i18n} {...props} />
+const ChangeEmailDialog = withTranslation("ChangeEmailDialog")(
+  ChangeEmailDialogComponent
 );
 
 ChangeEmailDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
 };
-
 
 export default ChangeEmailDialog;

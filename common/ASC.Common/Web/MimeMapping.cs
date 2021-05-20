@@ -701,6 +701,7 @@ namespace ASC.Common.Web
             AddMimeMapping(".wdb", "application/vnd.ms-works");
             AddMimeMapping(".web", "application/vnd.xara");
             AddMimeMapping(".webm", "video/webm");
+            AddMimeMapping(".webp", "image/webp");
             AddMimeMapping(".wiz", "application/msword");
             AddMimeMapping(".wk1", "application/x-123");
             AddMimeMapping(".wks", "application/vnd.ms-works");

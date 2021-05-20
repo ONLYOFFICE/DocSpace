@@ -28,60 +28,22 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
 using ASC.Mail.Enums;
 using ASC.Mail.Utils;
 using ASC.Mail.Models;
-using ASC.Mail.Core.Dao;
-using Microsoft.Extensions.Options;
 using ASC.Mail.Core.Entities;
 using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class AlertEngine
     {
-        public DbContextManager<MailDbContext> DbContext { get; }
+        private DaoFactory DaoFactory { get; }
 
-        public int Tenant
+        public AlertEngine(DaoFactory daoFactory)
         {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
-
-        public string UserId
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-
-        public ILog Log { get; }
-
-        public DaoFactory DaoFactory { get; }
-
-        public MailDbContext MailDb { get; }
-
-        public AlertEngine(
-            TenantManager tenantManager,
-            SecurityContext securityContext,
-            DaoFactory daoFactory,
-            IOptionsMonitor<ILog> option)
-        {
-            TenantManager = tenantManager;
-            SecurityContext = securityContext;
-            Log = option.Get("ASC.Mail.AlertEngine");
-
             DaoFactory = daoFactory;
-            MailDb = DaoFactory.MailDb;
         }
 
         public List<MailAlertData> GetAlerts(/*int mailboxId = -1, MailAlertTypes type = MailAlertTypes.Empty*/)
@@ -342,20 +304,6 @@ namespace ASC.Mail.Core.Engine
                 type = a.Type,
                 data = a.Data
             };
-        }
-    }
-
-    public static class AlertEngineExtension
-    {
-        public static DIHelper AddAlertEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<AlertEngine>();
-
-            services.AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddDaoFactoryService();
-
-            return services;
         }
     }
 }

@@ -38,13 +38,13 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Controllers
 {
-
+    [Scope]
     [Obsolete("CoreSettingsController is deprecated, please use SettingsController instead.")]
     [ApiController]
     [Route("[controller]")]
     public class CoreSettingsController : ControllerBase
     {
-        public CoreSettings CoreSettings { get; }
+        private CoreSettings CoreSettings { get; }
         private ILog Log { get; }
 
         public CoreSettingsController(
@@ -187,14 +187,5 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
-    }
-
-    public static class ControllerExtention
-    {
-        public static DIHelper AddCoreSettingsController(this DIHelper services)
-        {
-            return services
-                .AddCoreSettingsService();
-        }
     }
 }

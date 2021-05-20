@@ -65,10 +65,11 @@ namespace ASC.Web.Api.Models
         }
     }
 
+    [Scope]
     public class GroupWraperFullHelper
     {
-        public UserManager UserManager { get; }
-        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        private UserManager UserManager { get; }
+        private EmployeeWraperHelper EmployeeWraperHelper { get; }
 
         public GroupWraperFullHelper(UserManager userManager, EmployeeWraperHelper employeeWraperHelper)
         {
@@ -93,18 +94,6 @@ namespace ASC.Web.Api.Models
             }
 
             return result;
-        }
-    }
-
-    public static class GroupWraperFullExtension
-    {
-        public static DIHelper AddGroupWraperFull(this DIHelper services)
-        {
-            services.TryAddScoped<GroupWraperFullHelper>();
-
-            return services
-                .AddUserManagerService()
-                .AddEmployeeWraper();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Textile
         private readonly Regex VelocityArguments =
             new Regex("nostyle(?<arg>.*?)/nostyle", RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
-        private string argMatchReplace(Match match)
+        private string ArgMatchReplace(Match match)
         {
             return match.Result("${arg}");
         }
@@ -60,7 +60,7 @@ namespace Textile
 
                     // Modify the line with our block modifiers.
                     if (CurrentState == null || CurrentState.ShouldFormatBlocks(tmp))
-                    {    
+                    {
                         foreach (var blockModifier in s_blockModifiers)
                         {
                             //TODO: if not disabled...
@@ -74,7 +74,7 @@ namespace Textile
                         }
                     }
 
-                    tmp = VelocityArguments.Replace(tmp, argMatchReplace);
+                    tmp = VelocityArguments.Replace(tmp, ArgMatchReplace);
 
                     // Format the current line.
                     CurrentState.FormatLine(tmp);

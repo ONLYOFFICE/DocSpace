@@ -32,7 +32,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Security;
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -48,55 +47,32 @@ using ASC.Mail.Utils;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Core;
-using Microsoft.Extensions.Options;
 using Mailbox = ASC.Mail.Core.Entities.Mailbox;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class ServerMailboxEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string User => SecurityContext.CurrentAccount.ID.ToString();
+        private bool IsAdmin => WebItemSecurity.IsProductAdministrator(WebItemManager.MailProductID, SecurityContext.CurrentAccount.ID);
 
-        public string User
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public DaoFactory DaoFactory { get; }
-        public AccountEngine AccountEngine { get; }
-        public CacheEngine CacheEngine { get; }
-        public ServerDomainEngine ServerDomainEngine { get; }
-        public MailboxEngine MailboxEngine { get; }
-        //public OperationEngine OperationEngine { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public SettingsManager SettingsManager { get; }
-        public UserManagerWrapper UserManagerWrapper { get; }
-        public AuthManager AuthManager { get; }
-        public UserManager UserManager { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public IServiceProvider ServiceProvider { get; }
-
-        private bool IsAdmin
-        {
-            get
-            {
-                return WebItemSecurity.IsProductAdministrator(WebItemManager.MailProductID, SecurityContext.CurrentAccount.ID);
-            }
-        }
-
-        public ILog Log { get; private set; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private DaoFactory DaoFactory { get; }
+        private AccountEngine AccountEngine { get; }
+        private CacheEngine CacheEngine { get; }
+        private ServerDomainEngine ServerDomainEngine { get; }
+        private MailboxEngine MailboxEngine { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private SettingsManager SettingsManager { get; }
+        private UserManagerWrapper UserManagerWrapper { get; }
+        private AuthManager AuthManager { get; }
+        private UserManager UserManager { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
         public ServerMailboxEngine(
             SecurityContext securityContext,
@@ -106,16 +82,13 @@ namespace ASC.Mail.Core.Engine
             CacheEngine cacheEngine,
             ServerDomainEngine serverDomainEngine,
             MailboxEngine mailboxEngine,
-            //OperationEngine operationEngine,
             CoreBaseSettings coreBaseSettings,
             WebItemSecurity webItemSecurity,
             SettingsManager settingsManager,
             UserManagerWrapper userManagerWrapper,
             AuthManager authManager,
             UserManager userManager,
-            DisplayUserSettingsHelper displayUserSettingsHelper,
-            IServiceProvider serviceProvider,
-            IOptionsMonitor<ILog> option)
+            DisplayUserSettingsHelper displayUserSettingsHelper)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
@@ -124,7 +97,6 @@ namespace ASC.Mail.Core.Engine
             CacheEngine = cacheEngine;
             ServerDomainEngine = serverDomainEngine;
             MailboxEngine = mailboxEngine;
-            //OperationEngine = operationEngine;
             CoreBaseSettings = coreBaseSettings;
             WebItemSecurity = webItemSecurity;
             SettingsManager = settingsManager;
@@ -132,9 +104,6 @@ namespace ASC.Mail.Core.Engine
             AuthManager = authManager;
             UserManager = userManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
-            ServiceProvider = serviceProvider;
-
-            Log = option.Get("ASC.Mail.ServerMailboxEngine");
         }
 
         public List<ServerMailboxData> GetMailboxes()
@@ -815,32 +784,6 @@ namespace ASC.Mail.Core.Engine
             };
 
             return result;
-        }
-    }
-
-    public static class ServerMailboxEngineExtension
-    {
-        public static DIHelper AddServerMailboxEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<ServerMailboxEngine>();
-
-            services.AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddDaoFactoryService()
-                .AddAccountEngineService()
-                .AddCacheEngineService()
-                .AddServerDomainEngineService()
-                .AddMailboxEngineService()
-                //.AddOperationEngineService()
-                .AddCoreBaseSettingsService()
-                .AddWebItemSecurity()
-                .AddSettingsManagerService()
-                .AddUserManagerWrapperService()
-                .AddAuthManager()
-                .AddUserManagerService()
-                .AddDisplayUserSettingsService();
-
-            return services;
         }
     }
 }

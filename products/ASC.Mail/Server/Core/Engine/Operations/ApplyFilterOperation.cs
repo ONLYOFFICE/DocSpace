@@ -33,6 +33,7 @@ using ASC.Mail.Models;
 using ASC.Mail.Enums.Filter;
 using Microsoft.Extensions.Options;
 using ASC.Mail.Storage;
+using ASC.Data.Storage;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
@@ -56,9 +57,10 @@ namespace ASC.Mail.Core.Engine.Operations
             MessageEngine messageEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
+            StorageFactory storageFactory,
             IOptionsMonitor<ILog> optionsMonitor, 
             int filterId)
-            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor, storageFactory)
         {
             FilterEngine = filterEngine;
             MessageEngine = messageEngine;

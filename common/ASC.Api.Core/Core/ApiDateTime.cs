@@ -27,7 +27,6 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -37,7 +36,6 @@ using ASC.Core;
 
 namespace ASC.Api.Core
 {
-    [DataContract(Name = "date", Namespace = "")]
     [TypeConverter(typeof(ApiDateTimeTypeConverter))]
     public class ApiDateTime : IComparable<ApiDateTime>, IComparable
     {
@@ -274,9 +272,9 @@ namespace ASC.Api.Core
 
         public int CompareTo(object obj)
         {
-            if (obj is DateTime)
-                return CompareTo((DateTime)obj);
-            return obj is ApiDateTime ? CompareTo((ApiDateTime)obj) : 0;
+            if (obj is DateTime dateTime)
+                return CompareTo(dateTime);
+            return obj is ApiDateTime apiDateTime ? CompareTo(apiDateTime) : 0;
         }
 
         public override string ToString()
@@ -291,8 +289,8 @@ namespace ASC.Api.Core
 
         public DateTime UtcTime { get; private set; }
         public TimeSpan TimeZoneOffset { get; private set; }
-        public TenantManager TenantManager { get; }
-        public TimeZoneConverter TimeZoneConverter { get; }
+        private TenantManager TenantManager { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
 
         public static ApiDateTime GetSample()
         {
@@ -311,13 +309,13 @@ namespace ASC.Api.Core
 
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if (value is string)
+            if (value is string @string)
             {
-                return ApiDateTime.Parse((string)value, null, null);
+                return ApiDateTime.Parse(@string, null, null);
             }
-            if (value is DateTime)
+            if (value is DateTime time)
             {
-                return new ApiDateTime(null, null, (DateTime)value);
+                return new ApiDateTime(null, null, time);
             }
             return base.ConvertFrom(context, culture, value);
         }
@@ -350,10 +348,11 @@ namespace ASC.Api.Core
         }
     }
 
+    [Scope]
     public class ApiDateTimeHelper
     {
-        public TenantManager TenantManager { get; }
-        public TimeZoneConverter TimeZoneConverter { get; }
+        private TenantManager TenantManager { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
 
         public ApiDateTimeHelper(TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
         {
@@ -361,17 +360,9 @@ namespace ASC.Api.Core
             TimeZoneConverter = timeZoneConverter;
         }
 
-        public ApiDateTime Get(DateTime? from) => ApiDateTime.FromDate(TenantManager, TimeZoneConverter, from);
-    }
-
-    public static class ApiDateTimeHelperExtension
-    {
-        public static DIHelper AddApiDateTimeHelper(this DIHelper services)
+        public ApiDateTime Get(DateTime? from)
         {
-            services.TryAddScoped<ApiDateTimeHelper>();
-
-            return services
-                .AddTenantManagerService();
+            return ApiDateTime.FromDate(TenantManager, TimeZoneConverter, from);
         }
     }
 }

@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using ASC.Common.Logging;
 using ASC.Common.Notify.Patterns;
 using ASC.Notify.Channels;
@@ -36,6 +37,7 @@ using ASC.Notify.Cron;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -65,7 +67,7 @@ namespace ASC.Notify.Engine
 
         private readonly TimeSpan defaultSleep = TimeSpan.FromSeconds(10);
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public event Action<NotifyEngine, NotifyRequest, IServiceScope> BeforeTransferRequest;
 
@@ -281,7 +283,7 @@ namespace ASC.Notify.Engine
         {
             if (request.Recipient is IDirectRecipient)
             {
-                var subscriptionSource = request.NotifySource.GetSubscriptionProvider();
+                var subscriptionSource = request.GetSubscriptionProvider(serviceScope);
                 if (!request.IsNeedCheckSubscriptions || !subscriptionSource.IsUnsubscribe(request.Recipient as IDirectRecipient, request.NotifyAction, request.ObjectID))
                 {
                     var directresponses = new List<SendResponse>(1);
@@ -307,7 +309,7 @@ namespace ASC.Notify.Engine
                     }
                     else
                     {
-                        var recipientProvider = request.NotifySource.GetRecipientsProvider();
+                        var recipientProvider = request.GetRecipientsProvider(serviceScope);
 
                         try
                         {
@@ -356,13 +358,14 @@ namespace ASC.Notify.Engine
 
             try
             {
-                PrepareRequestFillSenders(request);
-                PrepareRequestFillPatterns(request);
-                PrepareRequestFillTags(request);
+                PrepareRequestFillSenders(request, serviceScope);
+                PrepareRequestFillPatterns(request, serviceScope);
+                PrepareRequestFillTags(request, serviceScope);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 responses.Add(new SendResponse(request.NotifyAction, null, request.Recipient, SendResult.Impossible));
+                log.Error("Prepare", ex);
             }
 
             if (request.SenderNames != null && request.SenderNames.Length > 0)
@@ -418,7 +421,7 @@ namespace ASC.Notify.Engine
         {
             if (request == null) throw new ArgumentNullException("request");
 
-            var recipientProvider = request.NotifySource.GetRecipientsProvider();
+            var recipientProvider = request.GetRecipientsProvider(serviceScope);
             var recipient = request.Recipient as IDirectRecipient;
 
             var addresses = recipient.Addresses;
@@ -447,7 +450,7 @@ namespace ASC.Notify.Engine
             noticeMessage.Pattern = pattern;
             noticeMessage.ContentType = pattern.ContentType;
             noticeMessage.AddArgument(request.Arguments.ToArray());
-            var patternProvider = request.NotifySource.GetPatternProvider();
+            var patternProvider = request.GetPatternProvider(serviceScope);
 
             var formatter = patternProvider.GetFormatter(pattern);
             try
@@ -497,11 +500,11 @@ namespace ASC.Notify.Engine
             }
         }
 
-        private void PrepareRequestFillSenders(NotifyRequest request)
+        private void PrepareRequestFillSenders(NotifyRequest request, IServiceScope serviceScope)
         {
             if (request.SenderNames == null)
             {
-                var subscriptionProvider = request.NotifySource.GetSubscriptionProvider();
+                var subscriptionProvider = request.GetSubscriptionProvider(serviceScope);
 
                 var senderNames = new List<string>();
                 senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(request.NotifyAction, request.Recipient) ?? new string[0]);
@@ -511,14 +514,14 @@ namespace ASC.Notify.Engine
             }
         }
 
-        private void PrepareRequestFillPatterns(NotifyRequest request)
+        private void PrepareRequestFillPatterns(NotifyRequest request, IServiceScope serviceScope)
         {
             if (request.Patterns == null)
             {
                 request.Patterns = new IPattern[request.SenderNames.Length];
                 if (request.Patterns.Length == 0) return;
 
-                var apProvider = request.NotifySource.GetPatternProvider();
+                var apProvider = request.GetPatternProvider(serviceScope);
                 for (var i = 0; i < request.SenderNames.Length; i++)
                 {
                     var senderName = request.SenderNames[i];
@@ -537,9 +540,9 @@ namespace ASC.Notify.Engine
             }
         }
 
-        private void PrepareRequestFillTags(NotifyRequest request)
+        private void PrepareRequestFillTags(NotifyRequest request, IServiceScope serviceScope)
         {
-            var patternProvider = request.NotifySource.GetPatternProvider();
+            var patternProvider = request.GetPatternProvider(serviceScope);
             foreach (var pattern in request.Patterns)
             {
                 IPatternFormatter formatter;

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -41,6 +42,23 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    public enum LoginProviderEnum
+    {
+        Facebook,
+        Google,
+        Dropbox,
+        Docusign,
+        Box,
+        OneDrive,
+        GosUslugi,
+        LinkedIn,
+        MailRu,
+        VK,
+        Wordpress,
+        Yahoo,
+        Yandex
+    }
+
     public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : Consumer, ILoginProvider, new()
     {
         public T Instance
@@ -68,8 +86,9 @@ namespace ASC.FederatedLogin.LoginProviders
             }
         }
 
-        public Signature Signature { get; }
-        public InstanceCrypto InstanceCrypto { get; }
+        private OAuth20TokenHelper OAuth20TokenHelper { get; }
+        internal Signature Signature { get; }
+        internal InstanceCrypto InstanceCrypto { get; }
 
         protected BaseLoginProvider()
         {
@@ -77,16 +96,19 @@ namespace ASC.FederatedLogin.LoginProviders
         }
 
         protected BaseLoginProvider(
+            OAuth20TokenHelper oAuth20TokenHelper,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
+            OAuth20TokenHelper = oAuth20TokenHelper;
             Signature = signature;
             InstanceCrypto = instanceCrypto;
         }
@@ -95,7 +117,12 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             try
             {
-                var token = Auth(context, Scopes);
+                var token = Auth(context, Scopes, out var redirect);
+
+                if (redirect)
+                {
+                    return null;
+                }
 
                 return GetLoginProfile(token?.AccessToken);
             }
@@ -109,7 +136,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
         }
 
-        protected virtual OAuth20Token Auth(HttpContext context, string scopes, Dictionary<string, string> additionalArgs = null)
+        protected virtual OAuth20Token Auth(HttpContext context, string scopes, out bool redirect, Dictionary<string, string> additionalArgs = null)
         {
             var error = context.Request.Query["error"];
             if (!string.IsNullOrEmpty(error))
@@ -124,13 +151,28 @@ namespace ASC.FederatedLogin.LoginProviders
             var code = context.Request.Query["code"];
             if (string.IsNullOrEmpty(code))
             {
-                OAuth20TokenHelper.RequestCode<T>(context, ConsumerFactory, scopes, additionalArgs);
+                context.Response.Redirect(OAuth20TokenHelper.RequestCode<T>(scopes, additionalArgs));
+                redirect = true;
                 return null;
             }
 
+            redirect = false;
             return OAuth20TokenHelper.GetAccessToken<T>(ConsumerFactory, code);
         }
 
         public abstract LoginProfile GetLoginProfile(string accessToken);
+    }
+
+    public class BaseLoginProviderExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<BoxLoginProvider>();
+            services.TryAdd<DropboxLoginProvider>();
+            services.TryAdd<OneDriveLoginProvider>();
+            services.TryAdd<DocuSignLoginProvider>();
+            services.TryAdd<GoogleLoginProvider>();
+            services.TryAdd<WordpressLoginProvider>();
+        }
     }
 }

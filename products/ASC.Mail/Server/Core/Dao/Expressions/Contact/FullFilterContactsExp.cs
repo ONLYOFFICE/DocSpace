@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Enums;
@@ -36,12 +37,14 @@ using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Contact
 {
+    [Scope]
     public class FullFilterContactsExp : SimpleFilterContactsExp
     {
         public ContactInfoType? InfoType { get; private set; }
         public bool? IsPrimary { get; private set; }
         public MailDbContext MailDb { get; }
         public FactoryIndexer<MailContact> FactoryIndexer { get; }
+        public FactoryIndexer FactoryIndexerCommon { get; }
         public IServiceProvider ServiceProvider { get; }
         public string SearchTerm { get; private set; }
         public int? Type { get; set; }
@@ -49,6 +52,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
         public FullFilterContactsExp(int tenant, string user, 
             MailDbContext mailDbContext,
             FactoryIndexer<MailContact> factoryIndexer,
+            FactoryIndexer factoryIndexerCommon,
             IServiceProvider serviceProvider,
             string searchTerm = null, int? type = null, ContactInfoType? infoType = null, 
             bool? isPrimary = null, bool? orderAsc = true, int? startIndex = null,
@@ -59,6 +63,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
             IsPrimary = isPrimary;
             MailDb = mailDbContext;
             FactoryIndexer = factoryIndexer;
+            FactoryIndexerCommon = factoryIndexerCommon;
             ServiceProvider = serviceProvider;
             SearchTerm = searchTerm;
             Type = type;
@@ -73,7 +78,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
                 var foundIndex = false;
 
                 var t = ServiceProvider.GetService<MailContact>();
-                if (FactoryIndexer.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
+                if (FactoryIndexer.Support(t) && FactoryIndexerCommon.CheckState(false))
                 {
                     var selector = new Selector<MailContact>(ServiceProvider)
                         .MatchAll(SearchTerm)

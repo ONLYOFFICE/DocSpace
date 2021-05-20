@@ -39,7 +39,8 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
-    public class NotifySender
+    [Singletone]
+    public class NotifySender : IDisposable
     {
         private readonly ILog log;
 
@@ -59,7 +60,7 @@ namespace ASC.Notify
         {
             db.ResetStates();
             cancellationToken = new CancellationTokenSource();
-            var task = new Task(ThreadManagerWork, cancellationToken.Token, TaskCreationOptions.LongRunning);
+            var task = new Task(async () => await ThreadManagerWork(), cancellationToken.Token, TaskCreationOptions.LongRunning);
             task.Start();
         }
 
@@ -68,7 +69,7 @@ namespace ASC.Notify
             cancellationToken.Cancel();
         }
 
-        private async void ThreadManagerWork()
+        private async Task ThreadManagerWork()
         {
             var tasks = new List<Task>(NotifyServiceCfg.Process.MaxThreads);
 
@@ -146,16 +147,13 @@ namespace ASC.Notify
                 log.Error(e);
             }
         }
-    }
 
-    public static class NotifySenderExtension
-    {
-        public static DIHelper AddNotifySender(this DIHelper services)
+        public void Dispose()
         {
-            services.TryAddSingleton<NotifySender>();
-
-            return services
-                .AddDbWorker();
+            if (cancellationToken != null)
+            {
+                cancellationToken.Dispose();
+            }
         }
     }
 }

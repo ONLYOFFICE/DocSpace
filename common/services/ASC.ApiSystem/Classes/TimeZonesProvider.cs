@@ -35,11 +35,12 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Classes
 {
+    [Singletone]
     public class TimeZonesProvider
     {
         public ILog Log { get; }
 
-        public CommonConstants CommonConstants { get; }
+        private CommonConstants CommonConstants { get; }
 
         public TimeZonesProvider(IOptionsMonitor<ILog> option, CommonConstants commonConstants)
         {
@@ -140,15 +141,5 @@ namespace ASC.ApiSystem.Classes
         }
 
         #endregion
-    }
-
-    public static class TimeZonesProviderExtention
-    {
-        public static DIHelper AddTimeZonesProvider(this DIHelper services)
-        {
-            services.TryAddSingleton<TimeZonesProvider>();
-
-            return services;
-        }
     }
 }

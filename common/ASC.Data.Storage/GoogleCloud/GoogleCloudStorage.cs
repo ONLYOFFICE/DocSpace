@@ -37,6 +37,7 @@ using System.Text;
 using System.Threading;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
@@ -48,11 +49,14 @@ using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
+using static Google.Cloud.Storage.V1.UrlSigner;
+
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
 
 namespace ASC.Data.Storage.GoogleCloud
 {
+    [Scope]
     public class GoogleCloudStorage : BaseStorage
     {
         private string _subDir = string.Empty;
@@ -66,6 +70,14 @@ namespace ASC.Data.Storage.GoogleCloud
         private Uri _bucketSSlRoot;
 
         private bool _lowerCasing = true;
+
+        public GoogleCloudStorage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<ILog> options) : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+        {
+        }
 
         public GoogleCloudStorage(
             TenantManager tenantManager,
@@ -239,7 +251,7 @@ namespace ASC.Data.Storage.GoogleCloud
         {
             var contentDisposition = string.Format("attachment; filename={0};",
                                                  HttpUtility.UrlPathEncode(attachmentFileName));
-            if (attachmentFileName.Any(c => (int)c >= 0 && (int)c <= 127))
+            if (attachmentFileName.Any(c => c >= 0 && c <= 127))
             {
                 contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
                                                    HttpUtility.UrlPathEncode(attachmentFileName));
@@ -316,11 +328,12 @@ namespace ASC.Data.Storage.GoogleCloud
 
         private PredefinedObjectAcl GetGoogleCloudAcl(ACL acl)
         {
-            return acl switch
-            {
-                ACL.Read => PredefinedObjectAcl.PublicRead,
-                _ => PredefinedObjectAcl.PublicRead,
-            };
+            return PredefinedObjectAcl.PublicRead;
+            //return acl switch
+            //{
+            //    ACL.Read => PredefinedObjectAcl.PublicRead,
+            //    _ => PredefinedObjectAcl.PublicRead,
+            //};
         }
 
         private PredefinedObjectAcl GetDomainACL(string domain)
@@ -672,7 +685,7 @@ namespace ASC.Data.Storage.GoogleCloud
             storage.UpdateObject(uploaded);
 
             using var mStream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
-            var preSignedURL = UrlSigner.FromServiceAccountData(mStream).Sign(_bucket, MakePath(domain, path), expires, null);
+            var preSignedURL = FromServiceAccountData(mStream).Sign(RequestTemplate.FromBucket(_bucket).WithObjectName(MakePath(domain, path)), UrlSigner.Options.FromExpiration(expires));
 
             //TODO: CNAME!
             return preSignedURL;
@@ -783,15 +796,15 @@ namespace ASC.Data.Storage.GoogleCloud
                         continue;
                     }
 
-                    if ((int)status != 308)
+                    if (status != 308)
                         throw (ex);
 
                     break;
                 }
-                catch (Exception ex)
+                catch
                 {
                     AbortChunkedUpload(domain, path, uploadUri);
-                    throw (ex);
+                    throw;
                 }
             }
 

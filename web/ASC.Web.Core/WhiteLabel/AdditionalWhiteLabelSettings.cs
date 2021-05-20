@@ -25,8 +25,6 @@
 
 
 using System;
-using System.Globalization;
-using System.Runtime.Serialization;
 
 using ASC.Common;
 using ASC.Core.Common.Settings;
@@ -36,44 +34,36 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core.WhiteLabel
 {
+    public class AdditionalWhiteLabelSettingsWrapper
+    {
+        public AdditionalWhiteLabelSettings Settings { get; set; }
+    }
+
     [Serializable]
-    [DataContract]
     public class AdditionalWhiteLabelSettings : ISettings
     {
-        [DataMember(Name = "StartDocsEnabled")]
         public bool StartDocsEnabled { get; set; }
 
-        [DataMember(Name = "HelpCenterEnabled")]
         public bool HelpCenterEnabled { get; set; }
 
-        [DataMember(Name = "FeedbackAndSupportEnabled")]
         public bool FeedbackAndSupportEnabled { get; set; }
 
-        [DataMember(Name = "FeedbackAndSupportUrl")]
         public string FeedbackAndSupportUrl { get; set; }
 
-        [DataMember(Name = "UserForumEnabled")]
         public bool UserForumEnabled { get; set; }
 
-        [DataMember(Name = "UserForumUrl")]
         public string UserForumUrl { get; set; }
 
-        [DataMember(Name = "VideoGuidesEnabled")]
         public bool VideoGuidesEnabled { get; set; }
 
-        [DataMember(Name = "VideoGuidesUrl")]
         public string VideoGuidesUrl { get; set; }
 
-        [DataMember(Name = "SalesEmail")]
         public string SalesEmail { get; set; }
 
-        [DataMember(Name = "BuyUrl")]
         public string BuyUrl { get; set; }
 
-        [DataMember(Name = "LicenseAgreementsEnabled")]
         public bool LicenseAgreementsEnabled { get; set; }
 
-        [DataMember(Name = "LicenseAgreementsUrl")]
         public string LicenseAgreementsUrl { get; set; }
 
         public bool IsDefault(IConfiguration configuration)
@@ -133,13 +123,8 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                return CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ru" ? "https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=4522572&doc=VzZXY2FQb29EdjZmTnhlZkFYZS9XYzFPK3JTaC9zcC9mNHEvTTZXSXNLUT0_IjQ1MjI1NzIi0" : "https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=4485697&doc=R29zSHZNRi9LYnRTb3JDditmVGpXQThVVXhMTWdja0xwemlYZXpiaDBYdz0_IjQ0ODU2OTci0";
+                return "https://help.onlyoffice.com/Products/Files/doceditor.aspx?fileid=6795868&doc=RG5GaVN6azdUQW5kLzZQNzBXbHZ4Rm9QWVZuNjZKUmgya0prWnpCd2dGcz0_IjY3OTU4Njgi0";
             }
-        }
-
-        public static AdditionalWhiteLabelSettings Instance(SettingsManager settingsManager)
-        {
-            return settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
         }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
@@ -148,9 +133,10 @@ namespace ASC.Web.Core.WhiteLabel
         }
     }
 
+    [Singletone]
     public class AdditionalWhiteLabelSettingsHelper
     {
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public AdditionalWhiteLabelSettingsHelper(IConfiguration configuration)
         {
@@ -161,7 +147,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = Configuration["web.help-center"];
+                var url = Configuration["web:help-center"];
                 return string.IsNullOrEmpty(url) ? null : url;
             }
         }
@@ -170,7 +156,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = Configuration["web.support-feedback"];
+                var url = Configuration["web:support-feedback"];
                 return string.IsNullOrEmpty(url) ? null : url;
             }
         }
@@ -179,7 +165,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = Configuration["web.user-forum"];
+                var url = Configuration["web:user-forum"];
                 return string.IsNullOrEmpty(url) ? null : url;
             }
         }
@@ -197,7 +183,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var email = Configuration["web.payment.email"];
+                var email = Configuration["web:payment:email"];
                 return !string.IsNullOrEmpty(email) ? email : "sales@onlyoffice.com";
             }
         }
@@ -206,18 +192,9 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var site = Configuration["web.teamlab-site"];
+                var site = Configuration["web:teamlab-site"];
                 return !string.IsNullOrEmpty(site) ? site + "/post.ashx?type=buyenterprise" : "";
             }
-        }
-    }
-
-    public static class AdditionalWhiteLabelSettingsExtension
-    {
-        public static DIHelper AddAdditionalWhiteLabelSettingsService(this DIHelper services)
-        {
-            services.TryAddSingleton<AdditionalWhiteLabelSettingsHelper>();
-            return services;
         }
     }
 }

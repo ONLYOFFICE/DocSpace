@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -36,6 +35,7 @@ using ASC.Core.Common.Settings;
 
 using Autofac;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Newtonsoft.Json;
@@ -43,10 +43,8 @@ using Newtonsoft.Json;
 namespace ASC.ElasticSearch.Core
 {
     [Serializable]
-    [DataContract]
     public class SearchSettings : ISettings
     {
-        [DataMember(Name = "Data")]
         public string Data { get; set; }
 
         public Guid ID
@@ -82,14 +80,16 @@ namespace ASC.ElasticSearch.Core
         }
     }
 
+    [Scope]
     public class SearchSettingsHelper
     {
-        public TenantManager TenantManager { get; }
-        public SettingsManager SettingsManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public FactoryIndexer FactoryIndexer { get; }
-        public ICacheNotify<ReIndexAction> CacheNotify { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private FactoryIndexer FactoryIndexer { get; }
+        private ICacheNotify<ReIndexAction> CacheNotify { get; }
+        private IServiceProvider ServiceProvider { get; }
+        public IConfiguration Configuration { get; }
 
         public SearchSettingsHelper(
             TenantManager tenantManager,
@@ -97,7 +97,8 @@ namespace ASC.ElasticSearch.Core
             CoreBaseSettings coreBaseSettings,
             FactoryIndexer factoryIndexer,
             ICacheNotify<ReIndexAction> cacheNotify,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IConfiguration configuration)
         {
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
@@ -105,6 +106,7 @@ namespace ASC.ElasticSearch.Core
             FactoryIndexer = factoryIndexer;
             CacheNotify = cacheNotify;
             ServiceProvider = serviceProvider;
+            Configuration = configuration;
         }
 
         public List<SearchSettingsItem> GetAllItems()
@@ -126,7 +128,7 @@ namespace ASC.ElasticSearch.Core
         {
             get
             {
-                return allItems ?? (allItems = FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().ToList());
+                return allItems ??= FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().ToList();
             }
         }
 
@@ -151,12 +153,14 @@ namespace ASC.ElasticSearch.Core
 
         public bool CanSearchByContent<T>(int tenantId) where T : class, ISearchItem
         {
-            if (!SearchByContentEnabled) return false;
-
             if (typeof(ISearchItemDocument).IsAssignableFrom(typeof(T)))
             {
                 return false;
             }
+
+            if (Convert.ToBoolean(Configuration["core:search-by-content"] ?? "false")) return true;
+
+            if (!SearchByContentEnabled) return false;
 
             var settings = SettingsManager.LoadForTenant<SearchSettings>(tenantId);
 
@@ -173,29 +177,12 @@ namespace ASC.ElasticSearch.Core
     }
 
     [Serializable]
-    [DataContract]
     public class SearchSettingsItem
     {
-        [DataMember(Name = "ID")]
         public string ID { get; set; }
 
-        [DataMember(Name = "Enabled")]
         public bool Enabled { get; set; }
 
         public string Title { get; set; }
-    }
-
-    public static class SearchSettingsHelperExtention
-    {
-        public static DIHelper AddSearchSettingsHelperService(this DIHelper services)
-        {
-            services.TryAddScoped<SearchSettingsHelper>();
-
-            return services
-                .AddSettingsManagerService()
-                .AddCoreBaseSettingsService()
-                .AddFactoryIndexerService()
-                .AddTenantManagerService();
-        }
     }
 }

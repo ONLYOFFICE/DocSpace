@@ -26,11 +26,9 @@
 
 
 
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Common.EF;
 using ASC.Mail.Authorization;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
@@ -49,38 +47,24 @@ using System.Net.Mail;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class MailboxEngine
     {
-        public DbContextManager<MailDbContext> DbContext { get; }
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string UserId => SecurityContext.CurrentAccount.ID.ToString();
 
-        public string UserId
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private ILog Log { get; }
 
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public ILog Log { get; }
+        private MailDbContext MailDb { get; }
 
-        public MailDbContext MailDb { get; }
-
-        public DaoFactory DaoFactory { get; }
-        public AlertEngine AlertEngine { get; }
-        public MailBoxSettingEngine MailBoxSettingEngine { get; }
-        public QuotaEngine QuotaEngine { get; }
-        public CacheEngine CacheEngine { get; }
-        //public OperationEngine OperationEngine { get; }
-        public IndexEngine IndexEngine { get; }
+        private DaoFactory DaoFactory { get; }
+        private AlertEngine AlertEngine { get; }
+        private MailBoxSettingEngine MailBoxSettingEngine { get; }
+        private QuotaEngine QuotaEngine { get; }
+        private CacheEngine CacheEngine { get; }
+        private IndexEngine IndexEngine { get; }
 
         public MailboxEngine(
             TenantManager tenantManager,
@@ -90,7 +74,6 @@ namespace ASC.Mail.Core.Engine
             MailBoxSettingEngine mailBoxSettingEngine,
             QuotaEngine quotaEngine,
             CacheEngine cacheEngine,
-            //OperationEngine operationEngine,
             IndexEngine indexEngine,
             IOptionsMonitor<ILog> option)
         {
@@ -104,7 +87,6 @@ namespace ASC.Mail.Core.Engine
             MailBoxSettingEngine = mailBoxSettingEngine;
             QuotaEngine = quotaEngine;
             CacheEngine = cacheEngine;
-            //OperationEngine = operationEngine;
             IndexEngine = indexEngine;
 
             Log = option.Get("ASC.Mail.AccountEngine");
@@ -941,26 +923,6 @@ namespace ASC.Mail.Core.Engine
             };
 
             return mailboxData;
-        }
-    }
-
-    public static class MailboxEngineExtension
-    {
-        public static DIHelper AddMailboxEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<MailboxEngine>();
-
-            services.AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddDaoFactoryService()
-                .AddAlertEngineService()
-                .AddMailBoxSettingEngineService()
-                .AddQuotaEngineService()
-                .AddCacheEngineService()
-                //TODO: fix .AddOperationEngineService()
-                .AddIndexEngineService();
-
-            return services;
         }
     }
 }

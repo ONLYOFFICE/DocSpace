@@ -1,6 +1,5 @@
 ﻿using ASC.Api.Core;
 using ASC.Common.Logging;
-using ASC.Mail.Core;
 using ASC.Web.Api.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -11,7 +10,6 @@ using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Web.Mail.Resources;
 using ASC.Common.Threading;
 using System.Configuration;
-using Microsoft.AspNetCore.Http;
 using ASC.Web.Core.Users;
 using System;
 
@@ -19,52 +17,45 @@ namespace ASC.Mail.Controllers
 {
     [DefaultRoute]
     [ApiController]
+    [Scope]
     public partial class MailController : ControllerBase
     {
-        public int TenantId { 
-            get { 
-                return TenantManager.GetCurrentTenant().TenantId; 
-            }
-        }
+        private int TenantId => TenantManager.GetCurrentTenant().TenantId;
 
-        public string UserId { 
-            get { 
-                return SecurityContext.CurrentAccount.ID.ToString(); 
-            } 
-        }
+        private string UserId => SecurityContext.CurrentAccount.ID.ToString();
 
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public UserManager UserManager { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public ApiContext ApiContext { get; }
-        public AccountEngine AccountEngine { get; }
-        public AlertEngine AlertEngine { get; }
-        public DisplayImagesAddressEngine DisplayImagesAddressEngine { get; }
-        public SignatureEngine SignatureEngine { get; }
-        public TagEngine TagEngine { get; }
-        public MailboxEngine MailboxEngine { get; }
-        public DocumentsEngine DocumentsEngine { get; }
-        public AutoreplyEngine AutoreplyEngine { get; }
-        public ContactEngine ContactEngine { get; }
-        public MessageEngine MessageEngine { get; }
-        public CrmLinkEngine CrmLinkEngine { get; }
-        public SpamEngine SpamEngine { get; }
-        public FilterEngine FilterEngine { get; }
-        public UserFolderEngine UserFolderEngine { get; }
-        public FolderEngine FolderEngine { get; }
-        public DraftEngine DraftEngine { get; }
-        public TemplateEngine TemplateEngine { get; }
-        public SettingEngine SettingEngine { get; }
-        public ServerEngine ServerEngine { get; }
-        public ServerDomainEngine ServerDomainEngine { get; }
-        public ServerMailboxEngine ServerMailboxEngine { get; }
-        public ServerMailgroupEngine ServerMailgroupEngine { get; }
-        public OperationEngine OperationEngine { get; }
-        public TestEngine TestEngine { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public ILog Log { get; }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private UserManager UserManager { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private ApiContext ApiContext { get; }
+        private AccountEngine AccountEngine { get; }
+        private AlertEngine AlertEngine { get; }
+        private DisplayImagesAddressEngine DisplayImagesAddressEngine { get; }
+        private SignatureEngine SignatureEngine { get; }
+        private TagEngine TagEngine { get; }
+        private MailboxEngine MailboxEngine { get; }
+        private DocumentsEngine DocumentsEngine { get; }
+        private AutoreplyEngine AutoreplyEngine { get; }
+        private ContactEngine ContactEngine { get; }
+        private MessageEngine MessageEngine { get; }
+        private CrmLinkEngine CrmLinkEngine { get; }
+        private SpamEngine SpamEngine { get; }
+        private FilterEngine FilterEngine { get; }
+        private UserFolderEngine UserFolderEngine { get; }
+        private FolderEngine FolderEngine { get; }
+        private DraftEngine DraftEngine { get; }
+        private TemplateEngine TemplateEngine { get; }
+        private SettingEngine SettingEngine { get; }
+        private ServerEngine ServerEngine { get; }
+        private ServerDomainEngine ServerDomainEngine { get; }
+        private ServerMailboxEngine ServerMailboxEngine { get; }
+        private ServerMailgroupEngine ServerMailgroupEngine { get; }
+        private OperationEngine OperationEngine { get; }
+        private TestEngine TestEngine { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private ILog Log { get; }
 
         public MailController(
             TenantManager tenantManager,
@@ -139,7 +130,7 @@ namespace ASC.Mail.Controllers
         {
             var product = new MailProduct();
             product.Init();
-            return new Module(product, false);
+            return new Module(product);
         }
 
 
@@ -282,44 +273,6 @@ namespace ASC.Mail.Controllers
                 int.TryParse(ConfigurationManager.AppSettings["mail.autocomplete-timeout"], out count);
                 return count;
             }
-        }
-    }
-
-    public static class MailControllerExtention
-    {
-        public static DIHelper AddMailController(this DIHelper services)
-        {
-            return services
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddUserManagerService()
-                .AddDisplayUserSettingsService()
-                .AddApiContextService()
-                .AddAccountEngineService()
-                .AddAlertEngineService()
-                .AddDisplayImagesAddressEngineService()
-                .AddSignatureEngineService()
-                .AddTagEngineService()
-                .AddMailboxEngineService()
-                .AddDocumentsEngineService()
-                .AddAutoreplyEngineService()
-                .AddContactEngineService()
-                .AddMessageEngineService()
-                .AddCrmLinkEngineService()
-                .AddSpamEngineService()
-                .AddFilterEngineService()
-                .AddUserFolderEngineService()
-                .AddFolderEngineService()
-                .AddDraftEngineService()
-                .AddTemplateEngineService()
-                .AddSettingEngineService()
-                .AddServerEngineService()
-                .AddServerDomainEngineService()
-                .AddServerMailboxEngineService()
-                .AddServerMailgroupEngineService()
-                .AddOperationEngineService()
-                .AddTestEngineService()
-                .AddCoreBaseSettingsService();
         }
     }
 }

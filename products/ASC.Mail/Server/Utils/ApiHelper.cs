@@ -54,24 +54,25 @@ using RestSharp;
 
 namespace ASC.Mail.Utils
 {
+    [Transient]
     public class ApiHelper
     {
         private const int MAIL_CRM_HISTORY_CATEGORY = -3;
         private const string ERR_MESSAGE = "Error retrieving response. Check inner details for more info.";
         //private Cookie _cookie;
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
         private ILog Log { get; set; }
 
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public CoreSettings CoreSettings { get; }
-        public ApiDateTimeHelper ApiDateTimeHelper { get; }
-        public string Scheme { get; private set; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private CoreSettings CoreSettings { get; }
+        private ApiDateTimeHelper ApiDateTimeHelper { get; }
+        private string Scheme { get; }
 
-        public UriBuilder BaseUrl { get; private set; }
+        protected UriBuilder BaseUrl { get; private set; }
 
-        public HttpContext HttpContext { get; set; }
+        private HttpContext HttpContext { get; set; }
         
         private Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant(HttpContext)); } }
@@ -678,22 +679,6 @@ namespace ASC.Mail.Utils
             var isAvailable = jWebItem != null && jWebItem["enabled"] != null && Convert.ToBoolean(jWebItem["enabled"]);
 
             return isAvailable;
-        }
-    }
-
-    public static class ApiHelperExtension
-    {
-        public static DIHelper AddApiHelperService(this DIHelper services)
-        {
-            services.TryAddTransient<ApiHelper>();
-
-            services
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddCoreSettingsService()
-                .AddApiDateTimeHelper();
-
-            return services;
         }
     }
 }

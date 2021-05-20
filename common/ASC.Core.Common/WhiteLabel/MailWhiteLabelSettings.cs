@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Runtime.Serialization;
 
 using ASC.Common;
 using ASC.Core.Common;
@@ -37,28 +36,20 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
-    [DataContract]
     public class MailWhiteLabelSettings : ISettings
     {
-        [DataMember(Name = "FooterEnabled")]
         public bool FooterEnabled { get; set; }
 
-        [DataMember(Name = "FooterSocialEnabled")]
         public bool FooterSocialEnabled { get; set; }
 
-        [DataMember(Name = "SupportUrl")]
         public string SupportUrl { get; set; }
 
-        [DataMember(Name = "SupportEmail")]
         public string SupportEmail { get; set; }
 
-        [DataMember(Name = "SalesEmail")]
         public string SalesEmail { get; set; }
 
-        [DataMember(Name = "DemotUrl")]
-        public string DemotUrl { get; set; }
+        public string DemoUrl { get; set; }
 
-        [DataMember(Name = "SiteUrl")]
         public string SiteUrl { get; set; }
 
         public Guid ID
@@ -77,7 +68,7 @@ namespace ASC.Web.Core.WhiteLabel
                 SupportUrl = mailWhiteLabelSettingsHelper.DefaultMailSupportUrl,
                 SupportEmail = mailWhiteLabelSettingsHelper.DefaultMailSupportEmail,
                 SalesEmail = mailWhiteLabelSettingsHelper.DefaultMailSalesEmail,
-                DemotUrl = mailWhiteLabelSettingsHelper.DefaultMailDemotUrl,
+                DemoUrl = mailWhiteLabelSettingsHelper.DefaultMailDemoUrl,
                 SiteUrl = mailWhiteLabelSettingsHelper.DefaultMailSiteUrl
             };
         }
@@ -91,7 +82,7 @@ namespace ASC.Web.Core.WhiteLabel
                     SupportUrl == defaultSettings.SupportUrl &&
                     SupportEmail == defaultSettings.SupportEmail &&
                     SalesEmail == defaultSettings.SalesEmail &&
-                    DemotUrl == defaultSettings.DemotUrl &&
+                    DemoUrl == defaultSettings.DemoUrl &&
                     SiteUrl == defaultSettings.SiteUrl;
         }
 
@@ -110,6 +101,7 @@ namespace ASC.Web.Core.WhiteLabel
         }
     }
 
+    [Singletone]
     public class MailWhiteLabelSettingsHelper
     {
         public MailWhiteLabelSettingsHelper(IConfiguration configuration)
@@ -122,7 +114,7 @@ namespace ASC.Web.Core.WhiteLabel
             get
             {
                 var url = BaseCommonLinkUtility.GetRegionalUrl(Configuration["web:support-feedback"] ?? string.Empty, null);
-                return !string.IsNullOrEmpty(url) ? url : "http://support.onlyoffice.com";
+                return !string.IsNullOrEmpty(url) ? url : "http://helpdesk.onlyoffice.com";
             }
         }
 
@@ -144,7 +136,7 @@ namespace ASC.Web.Core.WhiteLabel
             }
         }
 
-        public string DefaultMailDemotUrl
+        public string DefaultMailDemoUrl
         {
             get
             {
@@ -162,15 +154,6 @@ namespace ASC.Web.Core.WhiteLabel
             }
         }
 
-        public IConfiguration Configuration { get; }
-    }
-
-    public static class MailWhiteLabelSettingsExtention
-    {
-        public static DIHelper AddMailWhiteLabelSettingsService(this DIHelper services)
-        {
-            services.TryAddSingleton<MailWhiteLabelSettingsHelper>();
-            return services.AddSettingsManagerService();
-        }
+        private IConfiguration Configuration { get; }
     }
 }

@@ -48,14 +48,15 @@ using Textile.Blocks;
 
 namespace ASC.Notify.Textile
 {
+    [Scope]
     public class TextileStyler : IPatternStyler
     {
         private static readonly Regex VelocityArguments = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IConfiguration Configuration { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public MailWhiteLabelSettingsHelper MailWhiteLabelSettingsHelper { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private IConfiguration Configuration { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private MailWhiteLabelSettingsHelper MailWhiteLabelSettingsHelper { get; }
 
         static TextileStyler()
         {
@@ -92,7 +93,6 @@ namespace ASC.Notify.Textile
             formatter.Format(message.Body);
 
             var template = GetTemplate(message);
-            var analytics = GetAnalytics(message);
             var imagePath = GetImagePath(message);
             var logoImg = GetLogoImg(message, imagePath);
             var logoText = GetLogoText(message);
@@ -102,7 +102,7 @@ namespace ASC.Notify.Textile
 
             InitFooter(message, mailSettings, out var footerContent, out var footerSocialContent);
 
-            message.Body = template.Replace("%ANALYTICS%", analytics)
+            message.Body = template
                                    .Replace("%CONTENT%", output.GetFormattedText())
                                    .Replace("%LOGO%", logoImg)
                                    .Replace("%LOGOTEXT%", logoText)
@@ -130,12 +130,6 @@ namespace ASC.Notify.Textile
             }
 
             return template;
-        }
-
-        private static string GetAnalytics(NoticeMessage message)
-        {
-            var analyticsTag = message.GetArgument("Analytics");
-            return analyticsTag == null ? string.Empty : (string)analyticsTag.Value;
         }
 
         private static string GetImagePath(NoticeMessage message)
@@ -242,7 +236,7 @@ namespace ASC.Notify.Textile
                     NotifyTemplateResource.FooterCommonV10
                                           .Replace("%SUPPORTURL%", MailWhiteLabelSettingsHelper.DefaultMailSupportUrl)
                                           .Replace("%SALESEMAIL%", MailWhiteLabelSettingsHelper.DefaultMailSalesEmail)
-                                          .Replace("%DEMOURL%", MailWhiteLabelSettingsHelper.DefaultMailDemotUrl);
+                                          .Replace("%DEMOURL%", MailWhiteLabelSettingsHelper.DefaultMailDemoUrl);
                 footerSocialContent = NotifyTemplateResource.SocialNetworksFooterV10;
 
             }
@@ -252,7 +246,7 @@ namespace ASC.Notify.Textile
                     NotifyTemplateResource.FooterCommonV10
                     .Replace("%SUPPORTURL%", string.IsNullOrEmpty(settings.SupportUrl) ? "mailto:" + settings.SalesEmail : settings.SupportUrl)
                     .Replace("%SALESEMAIL%", settings.SalesEmail)
-                    .Replace("%DEMOURL%", string.IsNullOrEmpty(settings.DemotUrl) ? "mailto:" + settings.SalesEmail : settings.DemotUrl);
+                    .Replace("%DEMOURL%", string.IsNullOrEmpty(settings.DemoUrl) ? "mailto:" + settings.SalesEmail : settings.DemoUrl);
                 footerSocialContent = settings.FooterSocialEnabled ? NotifyTemplateResource.SocialNetworksFooterV10 : string.Empty;
             }
         }
@@ -323,15 +317,6 @@ namespace ASC.Notify.Textile
                                  WebEncoders.Base64UrlEncode(
                                      InstanceCrypto.Encrypt(
                                          Encoding.UTF8.GetBytes(mail.ToLowerInvariant()))));
-        }
-    }
-
-    public static class TextileStylerExtension
-    {
-        public static DIHelper AddTextileStylerService(this DIHelper services)
-        {
-            services.TryAddScoped<TextileStyler>();
-            return services.AddStylerService();
         }
     }
 }

@@ -39,6 +39,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.MessagingSystem
 {
+    [Scope]
     public class MessageFactory
     {
         private readonly ILog log;
@@ -47,8 +48,8 @@ namespace ASC.MessagingSystem
         private const string hostHeader = "Host";
         private const string refererHeader = "Referer";
 
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
 
         public MessageFactory(AuthContext authContext, TenantManager tenantManager, IOptionsMonitor<ILog> options)
         {
@@ -136,16 +137,6 @@ namespace ASC.MessagingSystem
                 log.Error(string.Format("Error while parse Initiator Message for \"{0}\" type of event: {1}", action, ex));
                 return null;
             }
-        }
-    }
-    public static class MessageFactoryExtension
-    {
-        public static DIHelper AddMessageFactoryService(this DIHelper services)
-        {
-            services.TryAddScoped<MessageFactory>();
-            return services
-                .AddAuthContextService()
-                .AddTenantManagerService();
         }
     }
 }

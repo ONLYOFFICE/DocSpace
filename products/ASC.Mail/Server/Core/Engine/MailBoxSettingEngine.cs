@@ -38,13 +38,14 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class MailBoxSettingEngine
     {
-        public MailDbContext MailDb { get; }
+        private MailDbContext MailDb { get; }
 
-        public DaoFactory DaoFactory { get; }
+        private DaoFactory DaoFactory { get; }
 
-        public ILog Log { get; }
+        private ILog Log { get; }
 
         public MailBoxSettingEngine(
             DaoFactory daoFactory,
@@ -326,18 +327,6 @@ namespace ASC.Mail.Core.Engine
             }
 
             return settingsFromDb;
-        }
-    }
-
-    public static class MailBoxSettingEngineExtension
-    {
-        public static DIHelper AddMailBoxSettingEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<MailBoxSettingEngine>();
-
-            services.AddDaoFactoryService();
-
-            return services;
         }
     }
 }

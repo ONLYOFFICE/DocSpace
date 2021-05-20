@@ -40,36 +40,23 @@ using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class IndexEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
-
-        public string User
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public DaoFactory DaoFactory { get; }
-        public FactoryIndexer<MailMail> FactoryIndexerHelper { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public ILog Log { get; private set; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private DaoFactory DaoFactory { get; }
+        private FactoryIndexer<MailMail> FactoryIndexerHelper { get; }
+        private FactoryIndexer FactoryIndexerCommon { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private ILog Log { get; }
 
         public IndexEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
             DaoFactory daoFactory,
             FactoryIndexer<MailMail> factoryIndexerHelper,
+            FactoryIndexer factoryIndexerCommon,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
@@ -77,6 +64,7 @@ namespace ASC.Mail.Core.Engine
             TenantManager = tenantManager;
             DaoFactory = daoFactory;
             FactoryIndexerHelper = factoryIndexerHelper;
+            FactoryIndexerCommon = factoryIndexerCommon;
             ServiceProvider = serviceProvider;
             Log = option.Get("ASC.Mail.IndexEngine");
         }
@@ -90,9 +78,7 @@ namespace ASC.Mail.Core.Engine
                 return false;
             }
 
-            var indexer = ServiceProvider.GetService<FactoryIndexer<MailMail>>();
-
-            if (!indexer.FactoryIndexerCommon.CheckState(false))
+            if (!FactoryIndexerCommon.CheckState(false))
             {
                 Log.Info("[SKIP INDEX] IsIndexAvailable->FactoryIndexer.CheckState(false) == false");
                 return false;
@@ -288,21 +274,6 @@ namespace ASC.Mail.Core.Engine
             {
                 Log.ErrorFormat("IndexEngine->RemoveContacts(count = {0}) error: {1}", ids == null ? 0 : ids.Count, ex.ToString());
             }
-        }
-    }
-
-    public static class IndexEngineExtension
-    {
-        public static DIHelper AddIndexEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<IndexEngine>();
-
-            services.AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddDaoFactoryService()
-                .AddFactoryIndexerService<MailMail>();
-
-            return services;
         }
     }
 }

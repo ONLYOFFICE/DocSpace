@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -39,62 +38,83 @@ using ASC.Core;
 using ASC.Core.Common.Security;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
+using ASC.Security.Cryptography;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 
 using Google.Authenticator;
 
+using Microsoft.AspNetCore.WebUtilities;
+
 namespace ASC.Web.Studio.Core.TFA
 {
     [Serializable]
-    [DataContract]
     public class BackupCode
     {
-        [DataMember(Name = "Code")]
         private string code;
-
-        public Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private Signature Signature { get; }
 
         public string Code
         {
-            get { return Signature.Read<string>(code); }
-            set { code = Signature.Create(value); }
+            get
+            {
+                try
+                {
+                    return InstanceCrypto.Decrypt(code);
+                }
+                catch
+                {
+                    //support old scheme stored in the DB
+                    return Signature.Read<string>(code);
+                }
+            }
+            set { code = InstanceCrypto.Encrypt(value); }
         }
 
-        [DataMember(Name = "IsUsed")]
         public bool IsUsed { get; set; }
 
-        public BackupCode(Signature signature, string code)
+        public BackupCode(InstanceCrypto instanceCrypto, Signature signature, string code)
         {
+            InstanceCrypto = instanceCrypto;
             Signature = signature;
             Code = code;
             IsUsed = false;
         }
     }
 
+    [Scope]
     public class TfaManager
     {
         private static readonly TwoFactorAuthenticator Tfa = new TwoFactorAuthenticator();
-        private static readonly ICache Cache = AscCache.Memory;
+        private ICache Cache { get; set; }
 
-        public SettingsManager SettingsManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public CookiesManager CookiesManager { get; }
-        public SetupInfo SetupInfo { get; }
-        public Signature Signature { get; }
+        private SettingsManager SettingsManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private CookiesManager CookiesManager { get; }
+        private SetupInfo SetupInfo { get; }
+        private Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        public MachinePseudoKeys MachinePseudoKeys { get; }
 
         public TfaManager(
             SettingsManager settingsManager,
             SecurityContext securityContext,
             CookiesManager cookiesManager,
             SetupInfo setupInfo,
-            Signature signature)
+            Signature signature,
+            InstanceCrypto instanceCrypto,
+            MachinePseudoKeys machinePseudoKeys,
+            ICache cache)
         {
+            Cache = cache;
             SettingsManager = settingsManager;
             SecurityContext = securityContext;
             CookiesManager = cookiesManager;
             SetupInfo = setupInfo;
             Signature = signature;
+            InstanceCrypto = instanceCrypto;
+            MachinePseudoKeys = machinePseudoKeys;
         }
 
         public SetupCode GenerateSetupCode(UserInfo user, int size)
@@ -102,7 +122,7 @@ namespace ASC.Web.Studio.Core.TFA
             return Tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, Encoding.UTF8.GetBytes(GenerateAccessToken(user)), size, true);
         }
 
-        public bool ValidateAuthCode(UserInfo user, int tenantId, string code, bool checkBackup = true)
+        public bool ValidateAuthCode(UserInfo user, string code, bool checkBackup = true)
         {
             if (!TfaAppAuthSettings.IsVisibleSettings
                 || !SettingsManager.Load<TfaAppAuthSettings>().EnableSetting)
@@ -145,14 +165,14 @@ namespace ASC.Web.Studio.Core.TFA
 
             if (!TfaAppUserSettings.EnableForUser(SettingsManager, user.ID))
             {
-                GenerateBackupCodes(user);
+                GenerateBackupCodes();
                 return true;
             }
 
             return false;
         }
 
-        public IEnumerable<BackupCode> GenerateBackupCodes(UserInfo user)
+        public IEnumerable<BackupCode> GenerateBackupCodes()
         {
             var count = SetupInfo.TfaAppBackupCodeCount;
             var length = SetupInfo.TfaAppBackupCodeLength;
@@ -175,7 +195,7 @@ namespace ASC.Web.Studio.Core.TFA
                         result.Append(alphabet[b % (alphabet.Length)]);
                     }
 
-                    list.Add(new BackupCode(Signature, result.ToString()));
+                    list.Add(new BackupCode(InstanceCrypto, Signature, result.ToString()));
                 }
             }
             var settings = SettingsManager.LoadForCurrentUser<TfaAppUserSettings>();
@@ -187,22 +207,14 @@ namespace ASC.Web.Studio.Core.TFA
 
         private string GenerateAccessToken(UserInfo user)
         {
-            return Signature.Create(TfaAppUserSettings.GetSalt(SettingsManager, user.ID)).Substring(0, 10);
-        }
-    }
+            var userSalt = TfaAppUserSettings.GetSalt(SettingsManager, user.ID);
 
-    public static class TfaManagerExtension
-    {
-        public static DIHelper AddTfaManagerService(this DIHelper services)
-        {
-            services.TryAddScoped<TfaManager>();
+            //from Signature.Create
+            var machineSalt = Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant());
+            var token = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(userSalt + machineSalt)));
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            return services
-                .AddSettingsManagerService()
-                .AddSetupInfo()
-                .AddSignatureService()
-                .AddCookiesManagerService()
-                .AddSecurityContextService();
+            return encodedToken.Substring(0, 10);
         }
     }
 }

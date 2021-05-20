@@ -29,17 +29,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model.Resource;
 
 namespace ASC.Resource.Manager
 {
+    [Scope]
     public class ResourceData
     {
         private const string Dbid = "tmresource";
 
-        public ResourceDbContext DbContext { get; }
+        private ResourceDbContext DbContext { get; }
 
         public ResourceData(DbContextManager<ResourceDbContext> dbContext)
         {

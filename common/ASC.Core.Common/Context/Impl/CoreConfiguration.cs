@@ -40,13 +40,14 @@ using Newtonsoft.Json;
 
 namespace ASC.Core
 {
+    [Singletone]
     public class CoreBaseSettings
     {
         private bool? standalone;
         private bool? personal;
         private bool? customMode;
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public CoreBaseSettings(IConfiguration configuration)
         {
@@ -75,9 +76,9 @@ namespace ASC.Core
 
     class ConfigureCoreSettings : IConfigureNamedOptions<CoreSettings>
     {
-        public IOptionsSnapshot<CachedTenantService> TenantService { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IConfiguration Configuration { get; }
+        private IOptionsSnapshot<CachedTenantService> TenantService { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private IConfiguration Configuration { get; }
 
         public ConfigureCoreSettings(
             IOptionsSnapshot<CachedTenantService> tenantService,
@@ -104,6 +105,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope(typeof(ConfigureCoreSettings))]
     public class CoreSettings
     {
         private string basedomain;
@@ -243,6 +245,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope]
     public class CoreConfiguration
     {
         private long? personalMaxSpace;
@@ -305,15 +308,21 @@ namespace ASC.Core
             set { SaveSetting("SmtpSettings", value?.Serialize(), TenantManager.GetCurrentTenant().TenantId); }
         }
 
-        public CoreSettings CoreSettings { get; }
-        public TenantManager TenantManager { get; }
-        public IConfiguration Configuration { get; }
+        private CoreSettings CoreSettings { get; }
+        private TenantManager TenantManager { get; }
+        private IConfiguration Configuration { get; }
 
         #region Methods Get/Save Setting
 
-        public void SaveSetting(string key, string value, int tenant = Tenant.DEFAULT_TENANT) => CoreSettings.SaveSetting(key, value, tenant);
+        public void SaveSetting(string key, string value, int tenant = Tenant.DEFAULT_TENANT)
+        {
+            CoreSettings.SaveSetting(key, value, tenant);
+        }
 
-        public string GetSetting(string key, int tenant = Tenant.DEFAULT_TENANT) => CoreSettings.GetSetting(key, tenant);
+        public string GetSetting(string key, int tenant = Tenant.DEFAULT_TENANT)
+        {
+            return CoreSettings.GetSetting(key, tenant);
+        }
 
         #endregion
 
@@ -366,32 +375,5 @@ namespace ASC.Core
         }
 
         #endregion
-    }
-
-    public static class CoreSettingsConfigExtension
-    {
-        public static DIHelper AddCoreBaseSettingsService(this DIHelper services)
-        {
-            services.TryAddSingleton<CoreBaseSettings>();
-            return services;
-        }
-
-        public static DIHelper AddCoreSettingsService(this DIHelper services)
-        {
-            services.TryAddScoped<CoreSettings>();
-            services.TryAddScoped<CoreConfiguration>();
-            services.TryAddScoped<IConfigureOptions<CoreSettings>, ConfigureCoreSettings>();
-
-            return services
-                .AddCoreBaseSettingsService()
-                .AddTenantService();
-        }
-        public static DIHelper AddCoreConfigurationService(this DIHelper services)
-        {
-            services.TryAddScoped<CoreConfiguration>();
-            return services
-                .AddTenantManagerService()
-                .AddCoreSettingsService();
-        }
     }
 }

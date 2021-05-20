@@ -25,19 +25,17 @@
 
 
 using System.Collections.Generic;
-using System;
 using System.Linq;
 using ASC.Mail.Models;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Interfaces;
-using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class ImapSpecialMailboxDao : BaseDao, IImapSpecialMailboxDao
     {
         public ImapSpecialMailboxDao(
@@ -83,16 +81,6 @@ namespace ASC.Mail.Core.Dao
             });
 
             return serverFolderAccessInfoList;
-        }
-    }
-
-    public static class ImapSpecialMailboxDaoExtension
-    {
-        public static DIHelper AddImapSpecialMailboxDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<ImapSpecialMailboxDao>();
-
-            return services;
         }
     }
 }

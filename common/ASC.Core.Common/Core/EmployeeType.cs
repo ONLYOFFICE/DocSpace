@@ -25,10 +25,12 @@
 
 
 using System;
+using System.Text.Json.Serialization;
 
 namespace ASC.Core.Users
 {
     [Flags]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum EmployeeType
     {
         All = 0,

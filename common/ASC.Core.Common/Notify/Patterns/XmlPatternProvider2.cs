@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Xml;
+
 using ASC.Notify.Engine;
 using ASC.Notify.Model;
 
@@ -158,7 +159,7 @@ namespace ASC.Notify.Patterns
             }
             return property.GetValue(resourceManagerType, null) as string;
 
-            string ToUpper(string name)
+            static string ToUpper(string name)
             {
                 return name.Substring(0, 1).ToUpper() + name.Substring(1);
             }

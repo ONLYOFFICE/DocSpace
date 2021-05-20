@@ -111,7 +111,7 @@ namespace ASC.Core.Common.Tests
             userService.SaveUser(t1.TenantId, user);
 
             var password = "password";
-            userService.SetUserPassword(t1.TenantId, user.ID, password);
+            //userService.SetUserPassword(t1.TenantId, user.ID, password);
 
             tenants = Service.GetTenants(user.Email, Hasher.Base64Hash(password, HashAlg.SHA256));
             CollectionAssert.AreEqual(new[] { t1 }, tenants.ToList());
@@ -152,7 +152,7 @@ namespace ASC.Core.Common.Tests
             }
 
             t.MappedDomain = "abc.defg";
-            _ = Service.SaveTenant(null, t);
+            Service.SaveTenant(null, t);
             Service.RemoveTenant(Tenant);
         }
 

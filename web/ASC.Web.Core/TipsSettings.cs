@@ -26,12 +26,12 @@
 
 using System;
 using System.Runtime.Serialization;
+
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
-    [DataContract]
     public class TipsSettings : ISettings
     {
         [DataMember(Name = "Show")]

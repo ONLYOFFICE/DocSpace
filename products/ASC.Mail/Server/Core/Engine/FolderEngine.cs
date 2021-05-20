@@ -41,30 +41,17 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class FolderEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string User => SecurityContext.CurrentAccount.ID.ToString();
 
-        public string User
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public DaoFactory DaoFactory { get; }
-        // public OperationEngine OperationEngine { get; }
-        public UserFolderEngine UserFolderEngine { get; }
-        public ILog Log { get; private set; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private DaoFactory DaoFactory { get; }
+        private UserFolderEngine UserFolderEngine { get; }
+        private ILog Log { get; }
 
         public class MailFolderInfo
         {
@@ -80,14 +67,12 @@ namespace ASC.Mail.Core.Engine
             SecurityContext securityContext,
             TenantManager tenantManager,
             DaoFactory daoFactory,
-            // OperationEngine operationEngine,
             UserFolderEngine userFolderEngine,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             DaoFactory = daoFactory;
-            // OperationEngine = operationEngine;
             UserFolderEngine = userFolderEngine;
             Log = option.Get("ASC.Mail.FolderEngine");
         }
@@ -354,9 +339,7 @@ namespace ASC.Mail.Core.Engine
             }
 
             tx.Commit();
-        }
-
-        
+        }        
 
         public static List<FolderType> DefaultFolders
         {
@@ -368,21 +351,5 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-    }
-
-    public static class FolderEngineExtension
-    {
-        public static DIHelper AddFolderEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<FolderEngine>();
-
-            services.AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddDaoFactoryService()
-                //TODO: fix .AddOperationEngineService()
-                .AddUserFolderEngineService();
-
-            return services;
-        }
     }
 }

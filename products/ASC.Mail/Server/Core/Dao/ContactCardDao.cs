@@ -24,7 +24,6 @@
 */
 
 
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -33,12 +32,12 @@ using ASC.Mail.Core.Dao.Expressions.Contact;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class ContactCardDao : BaseDao, IContactCardDao
     {
         public ContactCardDao(
@@ -163,16 +162,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return c;
-        }
-    }
-
-    public static class ContactCardDaoExtension
-    {
-        public static DIHelper AddContactCardDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<ContactCardDao>();
-
-            return services;
         }
     }
 }

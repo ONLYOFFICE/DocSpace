@@ -35,6 +35,7 @@ using ASC.Mail.Enums;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class TagMailDao : BaseDao, ITagMailDao
     {
         public TagMailDao(
@@ -196,16 +197,6 @@ namespace ASC.Mail.Core.Dao
             var result = MailDb.SaveChanges();
 
             return result;
-        }
-    }
-
-    public static class TagMailDaoExtension
-    {
-        public static DIHelper AddTagMailDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<TagMailDao>();
-
-            return services;
         }
     }
 }

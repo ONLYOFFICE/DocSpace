@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -34,7 +33,6 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Settings;
-using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,55 +40,71 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.Configuration
 {
+    [Singletone(Additional = typeof(StorageSettingsExtension))]
     public class BaseStorageSettingsListener
     {
+        private IServiceProvider ServiceProvider { get; }
+        private volatile bool Subscribed;
+        private readonly object locker;
+
         public BaseStorageSettingsListener(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
-            serviceProvider.GetService<ICacheNotify<ConsumerCacheItem>>().Subscribe((i) =>
-            {
-                using var scope = ServiceProvider.CreateScope();
-
-                var storageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
-                var storageSettings = scope.ServiceProvider.GetService<SettingsManager>();
-                var settings = storageSettings.LoadForTenant<StorageSettings>(i.TenantId);
-                if (i.Name == settings.Module)
-                {
-                    storageSettingsHelper.Clear(settings);
-                }
-
-                var cdnStorageSettings = scope.ServiceProvider.GetService<CdnStorageSettings>();
-                var cdnSettings = storageSettings.LoadForTenant<CdnStorageSettings>(i.TenantId);
-                if (i.Name == cdnSettings.Module)
-                {
-                    storageSettingsHelper.Clear(cdnSettings);
-                }
-            }, CacheNotifyAction.Remove);
+            locker = new object();
         }
 
-        public IServiceProvider ServiceProvider { get; }
+        public void Subscribe()
+        {
+            if (Subscribed) return;
+
+            lock (locker)
+            {
+                if (Subscribed) return;
+
+                Subscribed = true;
+
+                ServiceProvider.GetService<ICacheNotify<ConsumerCacheItem>>().Subscribe((i) =>
+                {
+                    using var scope = ServiceProvider.CreateScope();
+
+                    var scopeClass = scope.ServiceProvider.GetService<BaseStorageSettingsListenerScope>();
+                    var (storageSettingsHelper, settingsManager, cdnStorageSettings) = scopeClass;
+                    var settings = settingsManager.LoadForTenant<StorageSettings>(i.TenantId);
+                    if (i.Name == settings.Module)
+                    {
+                        storageSettingsHelper.Clear(settings);
+                    }
+
+                    var cdnSettings = settingsManager.LoadForTenant<CdnStorageSettings>(i.TenantId);
+                    if (i.Name == cdnSettings.Module)
+                    {
+                        storageSettingsHelper.Clear(cdnSettings);
+                    }
+                }, CacheNotifyAction.Remove);
+            }
+        }
     }
 
     [Serializable]
-    [DataContract]
     public abstract class BaseStorageSettings<T> : ISettings where T : class, ISettings, new()
     {
-        [DataMember(Name = "Module")]
         public string Module { get; set; }
 
-        [DataMember(Name = "Props")]
         public Dictionary<string, string> Props { get; set; }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider) => new T();
+        public ISettings GetDefault(IServiceProvider serviceProvider)
+        {
+            return new T();
+        }
+
         public virtual Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d; } }
 
-        public ICacheNotify<DataStoreCacheItem> Cache { get; internal set; }
+        internal ICacheNotify<DataStoreCacheItem> Cache { get; set; }
 
         public abstract Guid ID { get; }
     }
 
     [Serializable]
-    [DataContract]
     public class StorageSettings : BaseStorageSettings<StorageSettings>
     {
         public override Guid ID
@@ -99,8 +113,8 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
+    [Scope]
     [Serializable]
-    [DataContract]
     public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>
     {
         public override Guid ID
@@ -111,34 +125,31 @@ namespace ASC.Data.Storage.Configuration
         public override Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d.Cdn; } }
     }
 
+    [Scope]
     public class StorageSettingsHelper
     {
-        public BaseStorageSettingsListener BaseStorageSettingsListener { get; }
-        public StorageFactoryConfig StorageFactoryConfig { get; }
-        public PathUtils PathUtils { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public ICacheNotify<DataStoreCacheItem> Cache { get; }
-        public IOptionsMonitor<ILog> Options { get; }
-        public TenantManager TenantManager { get; }
-        public SettingsManager SettingsManager { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
-        public ConsumerFactory ConsumerFactory { get; }
+        private StorageFactoryConfig StorageFactoryConfig { get; }
+        private PathUtils PathUtils { get; }
+        private ICacheNotify<DataStoreCacheItem> Cache { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
+        private ConsumerFactory ConsumerFactory { get; }
 
         public StorageSettingsHelper(
             BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
             IOptionsMonitor<ILog> options,
             TenantManager tenantManager,
             SettingsManager settingsManager,
             ConsumerFactory consumerFactory)
         {
-            BaseStorageSettingsListener = baseStorageSettingsListener;
+            baseStorageSettingsListener.Subscribe();
             StorageFactoryConfig = storageFactoryConfig;
             PathUtils = pathUtils;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
             Cache = cache;
             Options = options;
             TenantManager = tenantManager;
@@ -149,14 +160,13 @@ namespace ASC.Data.Storage.Configuration
             BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
             IOptionsMonitor<ILog> options,
             TenantManager tenantManager,
             SettingsManager settingsManager,
             IHttpContextAccessor httpContextAccessor,
             ConsumerFactory consumerFactory)
-            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, tenantManager, settingsManager, consumerFactory)
+            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory)
         {
             HttpContextAccessor = httpContextAccessor;
         }
@@ -217,37 +227,33 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
-    public static class StorageSettingsExtension
+    [Scope]
+    public class BaseStorageSettingsListenerScope
     {
-        public static DIHelper AddBaseStorageSettingsService(this DIHelper services)
-        {
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-            services.TryAddSingleton<BaseStorageSettingsListener>();
+        private StorageSettingsHelper StorageSettingsHelper { get; }
+        private SettingsManager SettingsManager { get; }
+        private CdnStorageSettings CdnStorageSettings { get; }
 
-            return services
-                .AddStorageFactoryConfigService()
-                .AddPathUtilsService()
-                .AddEmailValidationKeyProviderService();
+        public BaseStorageSettingsListenerScope(StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager, CdnStorageSettings cdnStorageSettings)
+        {
+            StorageSettingsHelper = storageSettingsHelper;
+            SettingsManager = settingsManager;
+            CdnStorageSettings = cdnStorageSettings;
         }
 
-        public static DIHelper AddCdnStorageSettingsService(this DIHelper services)
+        public void Deconstruct(out StorageSettingsHelper storageSettingsHelper, out SettingsManager settingsManager, out CdnStorageSettings cdnStorageSettings)
         {
-            services.TryAddScoped<StorageSettingsHelper>();
-
-            return services
-                .AddSettingsManagerService()
-                .AddBaseStorageSettingsService()
-                .AddConsumerFactoryService();
+            storageSettingsHelper = StorageSettingsHelper;
+            settingsManager = SettingsManager;
+            cdnStorageSettings = CdnStorageSettings;
         }
+    }
 
-        public static DIHelper AddStorageSettingsService(this DIHelper services)
+    public class StorageSettingsExtension
+    {
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<StorageSettingsHelper>();
-
-            return services
-                .AddSettingsManagerService()
-                .AddBaseStorageSettingsService()
-                .AddConsumerFactoryService();
+            services.TryAdd<BaseStorageSettingsListenerScope>();
         }
     }
 }

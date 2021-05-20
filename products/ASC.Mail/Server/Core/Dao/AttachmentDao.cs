@@ -37,6 +37,7 @@ using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class AttachmentDao : BaseDao, IAttachmentDao
     {
         public AttachmentDao(
@@ -159,16 +160,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return a;
-        }
-    }
-
-    public static class AttachmentDaoExtension
-    {
-        public static DIHelper AddAttachmentDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<AttachmentDao>();
-
-            return services;
         }
     }
 }

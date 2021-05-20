@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 
 using ASC.Core.Tenants;
+using ASC.Security.Cryptography;
 
 namespace ASC.Api.Settings
 {
@@ -50,6 +51,16 @@ namespace ASC.Api.Settings
         public Guid OwnerId { get; set; }
 
         public string NameSchemaId { get; set; }
+
+        public bool? EnabledJoin { get; set; }
+
+        public bool? EnableAdmMess { get; set; }
+
+        public bool? ThirdpartyEnable { get; set; }
+
+        public string WizardToken { get; set; }
+
+        public PasswordHasher PasswordHash { get; set; }
 
         public static SettingsWrapper GetSample()
         {

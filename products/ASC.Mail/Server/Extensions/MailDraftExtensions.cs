@@ -358,7 +358,7 @@ namespace ASC.Mail.Extensions
             };
         }
 
-        public static void ChangeAttachedFileLinksAddresses(this MailDraftData draft, FileStorageService<int> fileStorageService, ILog log = null)
+        public static void ChangeAttachedFileLinksAddresses(this MailDraftData draft, FileStorageService<string> fileStorageService, ILog log = null)
         {
             if (log == null)
                 log = new NullLog();
@@ -386,9 +386,9 @@ namespace ASC.Mail.Extensions
                     continue;
                 }
 
-                var aceCollection = new AceCollection
+                var aceCollection = new AceCollection<string>
                 {
-                    Entries = new ItemList<string> { objectId },
+                    Files = new ItemList<string> { objectId },
                     Aces = new ItemList<AceWrapper>
                             {
                                 new AceWrapper
@@ -403,7 +403,7 @@ namespace ASC.Mail.Extensions
                 fileStorageService.SetAceObject(aceCollection, false);
                 log.InfoFormat("ChangeAttachedFileLinks() Set public accees to file: {0}", fileId);
                 var sharedInfo =
-                    fileStorageService.GetSharedInfo(new ItemList<string> { objectId })
+                    fileStorageService.GetSharedInfo(new ItemList<string> { objectId }, new List<string> { })
                                       .Find(r => r.SubjectId == FileConstant.ShareLinkId);
                 linkNode.SetAttributeValue("href", sharedInfo.Link);
                 log.InfoFormat("ChangeAttachedFileLinks() Change file link href: {0}", fileId);

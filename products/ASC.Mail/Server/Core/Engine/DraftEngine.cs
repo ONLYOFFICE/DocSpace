@@ -53,7 +53,6 @@ using ASC.Mail.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using FileShare = ASC.Files.Core.Security.FileShare;
 using MailMessage = ASC.Mail.Models.MailMessageData;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 using ASC.ElasticSearch;
@@ -64,10 +63,23 @@ using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class DraftEngine : ComposeEngineBase
     {
-        public HttpContext HttpContext { get; set; }
-        public List<ServerFolderAccessInfo> ServerFolderAccessInfos { get; set; }
+        private HttpContext HttpContext { get; set; }
+        private List<ServerFolderAccessInfo> ServerFolderAccessInfos { get; set; }
+
+        private CrmLinkEngine CrmLinkEngine { get; }
+        private EmailInEngine EmailInEngine { get; }
+        private FilterEngine FilterEngine { get; }
+        private AutoreplyEngine AutoreplyEngine { get; }
+        private AlertEngine AlertEngine { get; }
+        private ContactEngine ContactEngine { get; }
+        private SecurityContext SecurityContext { get; }
+        private FileStorageService<string> FileStorageService { get; }
+        private FactoryIndexer<MailContact> FactoryIndexer { get; }
+        FactoryIndexer FactoryIndexerCommon { get; set; }
+        private IServiceProvider ServiceProvider { get; }
 
         public DraftEngine(
             SecurityContext securityContext,
@@ -88,8 +100,9 @@ namespace ASC.Mail.Core.Engine
             StorageManager storageManager,
             CoreSettings coreSettings,
             StorageFactory storageFactory,
-            FileStorageService<int> fileStorageService,
+            FileStorageService<string> fileStorageService,
             FactoryIndexer<MailContact> factoryIndexer,
+            FactoryIndexer factoryIndexerCommon,
             IHttpContextAccessor httpContextAccessor,
             IServiceProvider serviceProvider,
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
@@ -121,6 +134,7 @@ namespace ASC.Mail.Core.Engine
             SecurityContext = securityContext;
             FileStorageService = fileStorageService;
             FactoryIndexer = factoryIndexer;
+            FactoryIndexerCommon = factoryIndexerCommon;
             ServiceProvider = serviceProvider;
             HttpContext = httpContextAccessor?.HttpContext;
 
@@ -513,7 +527,7 @@ namespace ASC.Mail.Core.Engine
                 if (treatedAddresses.Contains(email))
                     continue;
 
-                var exp = new FullFilterContactsExp(tenant, user, DaoFactory.MailDb, FactoryIndexer, ServiceProvider, 
+                var exp = new FullFilterContactsExp(tenant, user, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerCommon, ServiceProvider, 
                     searchTerm: email, infoType: ContactInfoType.Email);
 
                 var contacts = ContactEngine.GetContactCards(exp);
@@ -542,17 +556,6 @@ namespace ASC.Mail.Core.Engine
                 return string.IsNullOrEmpty(config) ? new List<string>() : config.Split('|').ToList();
             }
         }
-
-        public CrmLinkEngine CrmLinkEngine { get; }
-        public EmailInEngine EmailInEngine { get; }
-        public FilterEngine FilterEngine { get; }
-        public AutoreplyEngine AutoreplyEngine { get; }
-        public AlertEngine AlertEngine { get; }
-        public ContactEngine ContactEngine { get; }
-        public SecurityContext SecurityContext { get; }
-        public FileStorageService<int> FileStorageService { get; }
-        public FactoryIndexer<MailContact> FactoryIndexer { get; }
-        public IServiceProvider ServiceProvider { get; }
 
         private void AddNotificationAlertToMailbox(MailDraftData draft, Exception exOnSanding)
         {
@@ -634,36 +637,5 @@ namespace ASC.Mail.Core.Engine
         }
 
         #endregion
-    }
-
-    public static class DraftEngineExtension
-    {
-        public static DIHelper AddDraftEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<DraftEngine>();
-
-            services.AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddDaoFactoryService()
-                .AddAccountEngineService()
-                .AddMailboxEngineService()
-                .AddMessageEngineService()
-                .AddQuotaEngineService()
-                .AddIndexEngineService()
-                .AddFolderEngineService()
-                .AddCrmLinkEngineService()
-                .AddEmailInEngineService()
-                .AddFilterEngineService()
-                .AddAutoreplyEngineService()
-                .AddAlertEngineService()
-                .AddContactEngineService()
-                .AddStorageManagerService()
-                .AddCoreSettingsService()
-                .AddStorageFactoryService()
-                .AddFileStorageService()
-                .AddFactoryIndexerService<MailContact>();
-
-            return services;
-        }
     }
 }

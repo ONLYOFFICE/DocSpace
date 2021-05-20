@@ -35,6 +35,7 @@ using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class ServerGroupDao : BaseDao, IServerGroupDao
     {
         public ServerGroupDao(
@@ -125,16 +126,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return group;
-        }
-    }
-
-    public static class ServerGroupDaoExtension
-    {
-        public static DIHelper AddServerGroupDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<ServerGroupDao>();
-
-            return services;
         }
     }
 }

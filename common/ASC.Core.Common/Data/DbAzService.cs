@@ -29,20 +29,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 
 namespace ASC.Core.Data
 {
+    [Scope]
     class DbAzService : IAzService
     {
         public Expression<Func<Acl, AzRecord>> FromAclToAzRecord { get; set; }
 
-        private CoreDbContext CoreDbContext { get; set; }
+        private CoreDbContext CoreDbContext { get => LazyCoreDbContext.Value; }
+        private Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
 
         public DbAzService(DbContextManager<CoreDbContext> dbContextManager)
         {
-            CoreDbContext = dbContextManager.Value;
+            LazyCoreDbContext = new Lazy<CoreDbContext>(() => dbContextManager.Value);
             FromAclToAzRecord = r => new AzRecord
             {
                 ActionId = r.Action,

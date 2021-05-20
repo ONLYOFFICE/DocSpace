@@ -43,32 +43,19 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class AutoreplyEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string UserId => SecurityContext.CurrentAccount.ID.ToString();
 
-        public string UserId
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public DaoFactory DaoFactory { get; }
-        public ServerEngine ServerEngine { get; }
-        public CacheEngine CacheEngine { get; }
-        public ApiHelper ApiHelper { get; }
-        public StorageManager StorageManager { get; }
-        public ILog Log { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private DaoFactory DaoFactory { get; }
+        private ServerEngine ServerEngine { get; }
+        private CacheEngine CacheEngine { get; }
+        private ApiHelper ApiHelper { get; }
+        private StorageManager StorageManager { get; }
 
         public int AutoreplyDaysInterval { get; set; }
 
@@ -89,7 +76,6 @@ namespace ASC.Mail.Core.Engine
             CacheEngine = cacheEngine;
             ApiHelper = apiHelper;
             StorageManager = storageManager;
-            Log = option.Get("ASC.Mail.AutoreplyEngine");
 
             AutoreplyDaysInterval = Convert.ToInt32(ConfigurationManager.AppSettings["mail.autoreply-days-interval"] ?? "1");
         }
@@ -418,23 +404,5 @@ namespace ASC.Mail.Core.Engine
 
         #endregion
 
-    }
-
-    public static class AutoreplyEngineExtension
-    {
-        public static DIHelper AddAutoreplyEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<AutoreplyEngine>();
-
-            services
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddDaoFactoryService()
-                .AddStorageManagerService()
-                .AddApiHelperService()
-                .AddStorageManagerService();
-
-            return services;
-        }
     }
 }

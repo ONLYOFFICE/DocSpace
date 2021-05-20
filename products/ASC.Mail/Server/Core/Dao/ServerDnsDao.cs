@@ -35,6 +35,7 @@ using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class ServerDnsDao : BaseDao, IServerDnsDao
     {
         public ServerDnsDao(
@@ -156,16 +157,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return s;
-        }
-    }
-
-    public static class ServerDnsDaoExtension
-    {
-        public static DIHelper AddServerDnsDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<ServerDnsDao>();
-
-            return services;
         }
     }
 }

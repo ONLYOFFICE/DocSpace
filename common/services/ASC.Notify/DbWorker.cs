@@ -46,12 +46,13 @@ using Newtonsoft.Json;
 
 namespace ASC.Notify
 {
+    [Singletone(Additional = typeof(DbWorkerExtension))]
     public class DbWorker
     {
         private readonly string dbid;
         private readonly object syncRoot = new object();
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
         public NotifyServiceCfg NotifyServiceCfg { get; }
 
         public DbWorker(IServiceProvider serviceProvider, IOptions<NotifyServiceCfg> notifyServiceCfg)
@@ -79,7 +80,8 @@ namespace ASC.Notify
                 SenderType = m.Sender,
                 CreationDate = new DateTime(m.CreationDate),
                 ReplyTo = m.ReplyTo,
-                Attachments = m.EmbeddedAttachments.ToString()
+                Attachments = m.EmbeddedAttachments.ToString(),
+                AutoSubmitted = m.AutoSubmitted
             };
 
             notifyQueue = dbContext.NotifyQueue.Add(notifyQueue).Entity;
@@ -135,7 +137,8 @@ namespace ASC.Notify
                                 Content = r.queue.Content,
                                 Sender = r.queue.SenderType,
                                 CreationDate = r.queue.CreationDate.Ticks,
-                                ReplyTo = r.queue.ReplyTo
+                                ReplyTo = r.queue.ReplyTo,
+                                AutoSubmitted = r.queue.AutoSubmitted
                             };
                             try
                             {
@@ -156,6 +159,7 @@ namespace ASC.Notify
                 }
 
                 dbContext.SaveChanges();
+                tx.Commit();
 
                 return messages;
             }
@@ -220,14 +224,11 @@ namespace ASC.Notify
         }
     }
 
-    public static class DbWorkerExtension
+    public class DbWorkerExtension
     {
-        public static DIHelper AddDbWorker(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<DbWorker>();
-
-            return services
-                .AddNotifyDbContext();
+            services.TryAdd<DbContextManager<NotifyDbContext>>();
         }
     }
 }

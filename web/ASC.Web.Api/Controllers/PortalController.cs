@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Security;
 
 using ASC.Api.Core;
@@ -7,35 +8,51 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
+using ASC.Core.Common.Notify.Push;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.MessagingSystem;
-using ASC.Security.Cryptography;
+using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
+using ASC.Web.Core.Mobile;
 using ASC.Web.Core.Utility;
-using ASC.Web.Studio.Core.Notify;
+using ASC.Web.Studio.Core;
+using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+
+using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Api.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class PortalController : ControllerBase
     {
-        public Tenant Tenant { get { return ApiContext.Tenant; } }
 
-        public ApiContext ApiContext { get; }
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public PaymentManager PaymentManager { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public UrlShortener UrlShortener { get; }
-        public AuthContext AuthContext { get; }
-        public WebItemSecurity WebItemSecurity { get; }
+        private Tenant Tenant { get { return ApiContext.Tenant; } }
+
+        private ApiContext ApiContext { get; }
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+        private PaymentManager PaymentManager { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private UrlShortener UrlShortener { get; }
+        private AuthContext AuthContext { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private SecurityContext SecurityContext { get; }
+        private SettingsManager SettingsManager { get; }
+        private IMobileAppInstallRegistrator MobileAppInstallRegistrator { get; }
+        private IConfiguration Configuration { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public LicenseReader LicenseReader { get; }
+        public SetupInfo SetupInfo { get; }
+        private TenantExtra TenantExtra { get; set; }
         public ILog Log { get; }
 
 
@@ -48,7 +65,15 @@ namespace ASC.Web.Api.Controllers
             CommonLinkUtility commonLinkUtility,
             UrlShortener urlShortener,
             AuthContext authContext,
-            WebItemSecurity webItemSecurity
+            WebItemSecurity webItemSecurity,
+            SecurityContext securityContext,
+            SettingsManager settingsManager,
+            IMobileAppInstallRegistrator mobileAppInstallRegistrator,
+            TenantExtra tenantExtra,
+            IConfiguration configuration,
+            CoreBaseSettings coreBaseSettings,
+            LicenseReader licenseReader,
+            SetupInfo setupInfo
             )
         {
             Log = options.CurrentValue;
@@ -60,6 +85,14 @@ namespace ASC.Web.Api.Controllers
             UrlShortener = urlShortener;
             AuthContext = authContext;
             WebItemSecurity = webItemSecurity;
+            SecurityContext = securityContext;
+            SettingsManager = settingsManager;
+            MobileAppInstallRegistrator = mobileAppInstallRegistrator;
+            Configuration = configuration;
+            CoreBaseSettings = coreBaseSettings;
+            LicenseReader = licenseReader;
+            SetupInfo = setupInfo;
+            TenantExtra = tenantExtra;
         }
 
         [Read("")]
@@ -75,7 +108,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Read("users/invite/{employeeType}")]
-        public string GeInviteLink(EmployeeType employeeType)
+        public object GeInviteLink(EmployeeType employeeType)
         {
             if (!WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, AuthContext.CurrentAccount.ID))
             {
@@ -87,17 +120,36 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Update("getshortenlink")]
-        public string GetShortenLink(string link)
+        public object GetShortenLink(ShortenLinkModel model)
         {
             try
             {
-                return UrlShortener.Instance.GetShortenLink(link);
+                return UrlShortener.Instance.GetShortenLink(model.Link);
             }
             catch (Exception ex)
             {
                 Log.Error("getshortenlink", ex);
-                return link;
+                return model.Link;
             }
+        }
+
+        [Read("tenantextra")]
+        public object GetTenantExtra()
+        {
+            return new
+            {
+                customMode = CoreBaseSettings.CustomMode,
+                opensource = TenantExtra.Opensource,
+                enterprise = TenantExtra.Enterprise,
+                tariff = TenantExtra.GetCurrentTariff(),
+                quota = TenantExtra.GetTenantQuota(),
+                notPaid = TenantExtra.IsNotPaid(),
+                licenseAccept = SettingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting,
+                enableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
+                    (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(LicenseReader.LicensePath))
+                    && string.IsNullOrEmpty(SetupInfo.AmiMetaUrl)
+                    && !CoreBaseSettings.CustomMode
+            };
         }
 
 
@@ -105,7 +157,7 @@ namespace ASC.Web.Api.Controllers
         public double GetUsedSpace()
         {
             return Math.Round(
-                TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant.TenantId))
+                TenantManager.FindTenantQuotaRows(Tenant.TenantId)
                            .Where(q => !string.IsNullOrEmpty(q.Tag) && new Guid(q.Tag) != Guid.Empty)
                            .Sum(q => q.Counter) / 1024f / 1024f / 1024f, 2);
         }
@@ -144,30 +196,63 @@ namespace ASC.Web.Api.Controllers
 
 
         [Read("path")]
-        public string GetFullAbsolutePath(string virtualPath)
+        public object GetFullAbsolutePath(string virtualPath)
         {
             return CommonLinkUtility.GetFullAbsolutePath(virtualPath);
         }
-    }
 
-    public static class PortalControllerExtension
-    {
-        public static DIHelper AddPortalController(this DIHelper services)
+        [Read("thumb")]
+        public FileResult GetThumb(string url)
         {
-            return services
-                .AddUrlShortener()
-                .AddMessageServiceService()
-                .AddStudioNotifyServiceService()
-                .AddApiContextService()
-                .AddUserManagerService()
-                .AddAuthContextService()
-                .AddAuthContextService()
-                .AddTenantManagerService()
-                .AddEmailValidationKeyProviderService()
-                .AddPaymentManagerService()
-                .AddCommonLinkUtilityService()
-                .AddAuthContextService()
-                .AddWebItemSecurity();
+            if (!SecurityContext.IsAuthenticated || !(Configuration["bookmarking:thumbnail-url"] != null))
+            {
+                return null;
+            }
+
+            url = url.Replace("&amp;", "&");
+            url = WebUtility.UrlEncode(url);
+
+            using var wc = new WebClient();
+            var bytes = wc.DownloadData(string.Format(Configuration["bookmarking:thumbnail-url"], url));
+            var type = wc.ResponseHeaders["Content-Type"] ?? "image/png";
+            return File(bytes, type);
+        }
+
+        [Create("present/mark")]
+        public void MarkPresentAsReaded()
+        {
+            try
+            {
+                var settings = SettingsManager.LoadForCurrentUser<OpensourceGiftSettings>();
+                settings.Readed = true;
+                SettingsManager.SaveForCurrentUser(settings);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("MarkPresentAsReaded", ex);
+            }
+        }
+
+        [Create("mobile/registration")]
+        public void RegisterMobileAppInstallFromBody([FromBody]MobileAppModel model)
+        {
+            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
+        }
+
+        [Create("mobile/registration")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void RegisterMobileAppInstallFromForm([FromForm]MobileAppModel model)
+        {
+            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
+        }
+
+        [Create("mobile/registration")]
+        public void RegisterMobileAppInstall(MobileAppType type)
+        {
+            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, type);
         }
     }
 }

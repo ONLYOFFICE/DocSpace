@@ -35,6 +35,7 @@ using AuthConst = ASC.Common.Security.Authorizing.Constants;
 
 namespace ASC.Core.Users
 {
+    [Singletone]
     public sealed class Constants
     {
         public Constants(IConfiguration configuration)
@@ -61,7 +62,7 @@ namespace ASC.Core.Users
             }
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
 
         #region system group and category groups
@@ -143,14 +144,5 @@ namespace ASC.Core.Users
             "Edit categories and groups");
 
         #endregion
-    }
-
-    public static class ConstantsConfigFactory
-    {
-        public static DIHelper AddConstantsService(this DIHelper services)
-        {
-            services.TryAddSingleton<Constants>();
-            return services;
-        }
     }
 }

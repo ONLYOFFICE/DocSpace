@@ -24,7 +24,6 @@
 */
 
 
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -37,6 +36,7 @@ using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class MailboxAutoreplyHistoryDao : BaseDao, IMailboxAutoreplyHistoryDao
     {
         public MailboxAutoreplyHistoryDao(
@@ -102,16 +102,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return obj;
-        }
-    }
-
-    public static class MailboxAutoreplyHistoryDaoExtension
-    {
-        public static DIHelper AddMailboxAutoreplyHistoryDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<MailboxAutoreplyHistoryDao>();
-
-            return services;
         }
     }
 }

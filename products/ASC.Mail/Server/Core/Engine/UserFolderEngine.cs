@@ -31,52 +31,35 @@ using System.Linq;
 using ASC.Common.Logging;
 using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao.Expressions.UserFolder;
-using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
-using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
 using ASC.Core;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
 using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class UserFolderEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
-        public string UserId
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-        public ILog Log { get; private set; }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string UserId => SecurityContext.CurrentAccount.ID.ToString();
 
-        public DaoFactory DaoFactory { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
+        private ILog Log { get; }
+        private DaoFactory DaoFactory { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
 
         public UserFolderEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
             DaoFactory daoFactory,
-            IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             DaoFactory = daoFactory;
-            ServiceProvider = serviceProvider;
             Log = option.Get("ASC.Mail.UserFolderEngine");
         }
 
@@ -414,20 +397,6 @@ namespace ASC.Mail.Core.Engine
             };
 
             return userFolderData;
-        }
-    }
-
-    public static class UserFolderEngineExtension
-    {
-        public static DIHelper AddUserFolderEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<UserFolderEngine>();
-
-            services.AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddDaoFactoryService();
-
-            return services;
         }
     }
 }

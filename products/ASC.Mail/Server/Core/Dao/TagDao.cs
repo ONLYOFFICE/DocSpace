@@ -36,6 +36,7 @@ using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class TagDao : BaseDao, ITagDao
     {
         public TagDao(
@@ -240,16 +241,6 @@ namespace ASC.Mail.Core.Dao
             MailDb.MailTag.RemoveRange(range);
 
             return MailDb.SaveChanges();
-        }
-    }
-
-    public static class TagDaoExtension
-    {
-        public static DIHelper AddTagDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<TagDao>();
-
-            return services;
         }
     }
 }

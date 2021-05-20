@@ -41,6 +41,7 @@ using Nest;
 
 namespace ASC.ElasticSearch
 {
+    [Scope]
     public class Client
     {
         private static volatile ElasticClient client;
@@ -49,8 +50,8 @@ namespace ASC.ElasticSearch
 
         public ILog Log { get; }
 
-        public CoreConfiguration CoreConfiguration { get; }
-        public Settings Settings { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+        private Settings Settings { get; }
 
         public Client(IOptionsMonitor<ILog> option, CoreConfiguration coreConfiguration, Settings settings)
         {
@@ -76,25 +77,24 @@ namespace ASC.ElasticSearch
                         .RequestTimeout(TimeSpan.FromMinutes(5))
                         .MaximumRetries(10)
                         .ThrowExceptions();
-#if DEBUG
+
                     if (Log.IsTraceEnabled)
                     {
                         settings.DisableDirectStreaming().PrettyJson().EnableDebugMode(r =>
                         {
-                            Log.Trace(r.DebugInformation);
+                            //Log.Trace(r.DebugInformation);
 
-                            if (r.RequestBodyInBytes != null)
-                            {
-                                Log.TraceFormat("Request: {0}", Encoding.UTF8.GetString(r.RequestBodyInBytes));
-                            }
+                            //if (r.RequestBodyInBytes != null)
+                            //{
+                            //    Log.TraceFormat("Request: {0}", Encoding.UTF8.GetString(r.RequestBodyInBytes));
+                            //}
 
-                            if (r.ResponseBodyInBytes != null)
+                            if (r.HttpStatusCode != null && (r.HttpStatusCode == 403 || r.HttpStatusCode == 500) && r.ResponseBodyInBytes != null)
                             {
                                 Log.TraceFormat("Response: {0}", Encoding.UTF8.GetString(r.ResponseBodyInBytes));
                             }
                         });
                     }
-#endif
 
                     client = new ElasticClient(settings);
 
@@ -125,17 +125,6 @@ namespace ASC.ElasticSearch
                     return client;
                 }
             }
-        }
-    }
-
-    public static class ClientExtention
-    {
-        public static DIHelper AddClientService(this DIHelper services)
-        {
-            services.TryAddScoped<Client>();
-            return services
-                .AddSettingsService()
-                .AddCoreConfigurationService();
         }
     }
 }

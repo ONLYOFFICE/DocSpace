@@ -24,7 +24,6 @@
 */
 
 
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -36,6 +35,7 @@ using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class DisplayImagesAddressDao : BaseDao, IDisplayImagesAddressDao
     {
         public DisplayImagesAddressDao(
@@ -94,16 +94,6 @@ namespace ASC.Mail.Core.Dao
             var count = MailDb.SaveChanges();
 
             tr.Commit();
-        }
-    }
-
-    public static class DisplayImagesAddressDaoExtension
-    {
-        public static DIHelper AddDisplayImagesAddressDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<DisplayImagesAddressDao>();
-
-            return services;
         }
     }
 }

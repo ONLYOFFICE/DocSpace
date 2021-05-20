@@ -37,30 +37,19 @@ using ASC.Mail.Utils;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class DocumentsEngine
     {
         public const string MY_DOCS_FOLDER_ID = "@my";
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
 
-        public string User
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string User => SecurityContext.CurrentAccount.ID.ToString();
 
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public ApiHelper ApiHelper { get; }
-        public MessageEngine MessageEngine { get; }
-        public StorageFactory StorageFactory { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private ApiHelper ApiHelper { get; }
+        private MessageEngine MessageEngine { get; }
+        private StorageFactory StorageFactory { get; }
 
         public DocumentsEngine(
             SecurityContext securityContext,
@@ -125,23 +114,6 @@ namespace ASC.Mail.Core.Engine
                 mailAttachmentData.contentType, folderId, true);
 
             return uploadedFileId;
-        }
-    }
-
-    public static class DocumentsEngineEngineExtension
-    {
-        public static DIHelper AddDocumentsEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<DocumentsEngine>();
-
-            services
-                .AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddApiHelperService()
-                .AddMessageEngineService()
-                .AddStorageFactoryConfigService();
-
-            return services;
         }
     }
 }

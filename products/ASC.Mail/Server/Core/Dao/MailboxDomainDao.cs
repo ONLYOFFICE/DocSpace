@@ -24,7 +24,6 @@
 */
 
 using System.Linq;
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -34,6 +33,7 @@ using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class MailboxDomainDao : BaseDao, IMailboxDomainDao
     {
         public MailboxDomainDao(
@@ -80,16 +80,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return d;
-        }
-    }
-
-    public static class MailboxDomainDaoExtension
-    {
-        public static DIHelper AddMailboxDomainDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<MailboxDomainDao>();
-
-            return services;
         }
     }
 }

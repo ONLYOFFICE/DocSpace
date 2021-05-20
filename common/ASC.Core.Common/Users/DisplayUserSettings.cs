@@ -25,7 +25,7 @@
 
 
 using System;
-using System.Runtime.Serialization;
+using System.Reflection;
 using System.Web;
 
 using ASC.Common;
@@ -33,10 +33,11 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 
+using Microsoft.Extensions.Configuration;
+
 namespace ASC.Web.Core.Users
 {
     [Serializable]
-    [DataContract]
     public class DisplayUserSettings : ISettings
     {
         public Guid ID
@@ -44,7 +45,6 @@ namespace ASC.Web.Core.Users
             get { return new Guid("2EF59652-E1A7-4814-BF71-FEB990149428"); }
         }
 
-        [DataMember(Name = "IsDisableGettingStarted")]
         public bool IsDisableGettingStarted { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
@@ -56,16 +56,19 @@ namespace ASC.Web.Core.Users
         }
     }
 
+    [Scope]
     public class DisplayUserSettingsHelper
     {
-        public DisplayUserSettingsHelper(UserManager userManager, UserFormatter userFormatter)
+        private readonly string RemovedProfileName;
+        public DisplayUserSettingsHelper(UserManager userManager, UserFormatter userFormatter, IConfiguration configuration)
         {
             UserManager = userManager;
             UserFormatter = userFormatter;
+            RemovedProfileName = configuration["web:removed-profile-name"] ?? "profile removed";
         }
 
-        public UserManager UserManager { get; }
-        public UserFormatter UserFormatter { get; }
+        private UserManager UserManager { get; }
+        private UserFormatter UserFormatter { get; }
 
         public string GetFullUserName(Guid userID, bool withHtmlEncode = true)
         {
@@ -85,7 +88,18 @@ namespace ASC.Web.Core.Users
             }
             if (!userInfo.ID.Equals(Guid.Empty) && !UserManager.UserExists(userInfo))
             {
-                return "profile removed";
+                try
+                {
+                    var resourceType = Type.GetType("ASC.Web.Core.PublicResources.Resource, ASC.Web.Core");
+                    var resourceProperty = resourceType.GetProperty("ProfileRemoved", BindingFlags.Static | BindingFlags.Public);
+                    var resourceValue = (string)resourceProperty.GetValue(null);
+
+                    return string.IsNullOrEmpty(resourceValue) ? RemovedProfileName : resourceValue;
+                }
+                catch (Exception)
+                {
+                    return RemovedProfileName;
+                }
             }
             var result = UserFormatter.GetUserName(userInfo, format);
             return withHtmlEncode ? HtmlEncode(result) : result;
@@ -93,18 +107,6 @@ namespace ASC.Web.Core.Users
         public string HtmlEncode(string str)
         {
             return !string.IsNullOrEmpty(str) ? HttpUtility.HtmlEncode(str) : str;
-        }
-    }
-
-    public static class DisplayUserSettingsExtention
-    {
-        public static DIHelper AddDisplayUserSettingsService(this DIHelper services)
-        {
-            services.TryAddScoped<DisplayUserSettingsHelper>();
-
-            return services
-                .AddUserFormatter()
-                .AddUserManagerService();
         }
     }
 }

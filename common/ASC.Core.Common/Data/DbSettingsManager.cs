@@ -25,11 +25,8 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Text;
+using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -40,18 +37,20 @@ using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
+    [Singletone]
     public class DbSettingsManagerCache
     {
         public ICache Cache { get; }
-        public ICacheNotify<SettingsCacheItem> Notify { get; }
+        private ICacheNotify<SettingsCacheItem> Notify { get; }
 
-        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify)
+        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             Notify = notify;
             Notify.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
         }
@@ -62,6 +61,7 @@ namespace ASC.Core.Data
         }
     }
 
+    [Scope]
     class ConfigureDbSettingsManager : IConfigureNamedOptions<DbSettingsManager>
     {
         private IServiceProvider ServiceProvider { get; }
@@ -93,7 +93,7 @@ namespace ASC.Core.Data
             Configure(options);
 
             options.TenantManager = TenantManager.Get(name);
-            options.WebstudioDbContext = DbContextManager.Get(name);
+            options.LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => DbContextManager.Get(name));
         }
 
         public void Configure(DbSettingsManager options)
@@ -104,14 +104,14 @@ namespace ASC.Core.Data
             options.Log = ILog.CurrentValue;
 
             options.TenantManager = TenantManager.Value;
-            options.WebstudioDbContext = DbContextManager.Value;
+            options.LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => DbContextManager.Value);
         }
     }
 
+    [Scope(typeof(ConfigureDbSettingsManager))]
     public class DbSettingsManager
     {
         private readonly TimeSpan expirationTimeout = TimeSpan.FromMinutes(5);
-        private readonly IDictionary<Type, DataContractJsonSerializer> jsonSerializers = new Dictionary<Type, DataContractJsonSerializer>();
 
         internal ILog Log { get; set; }
         internal ICache Cache { get; set; }
@@ -119,7 +119,8 @@ namespace ASC.Core.Data
         internal DbSettingsManagerCache DbSettingsManagerCache { get; set; }
         internal AuthContext AuthContext { get; set; }
         internal TenantManager TenantManager { get; set; }
-        internal WebstudioDbContext WebstudioDbContext { get; set; }
+        internal WebstudioDbContext WebstudioDbContext { get => LazyWebstudioDbContext.Value; }
+        internal Lazy<WebstudioDbContext> LazyWebstudioDbContext { get; set; }
 
         public DbSettingsManager()
         {
@@ -140,7 +141,7 @@ namespace ASC.Core.Data
             TenantManager = tenantManager;
             Cache = dbSettingsManagerCache.Cache;
             Log = option.CurrentValue;
-            WebstudioDbContext = dbContextManager.Value;
+            LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
         }
 
         private int tenantID;
@@ -152,7 +153,7 @@ namespace ASC.Core.Data
         private Guid? currentUserID;
         private Guid CurrentUserID
         {
-            get { return (currentUserID ?? (currentUserID = AuthContext.CurrentAccount.ID)).Value; }
+            get { return ((Guid?)(currentUserID ??= AuthContext.CurrentAccount.ID)).Value; }
         }
 
         public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings
@@ -231,7 +232,7 @@ namespace ASC.Core.Data
 
         internal T LoadSettingsFor<T>(int tenantId, Guid userId) where T : class, ISettings
         {
-            var settingsInstance = Activator.CreateInstance<T>();
+            var settingsInstance = ActivatorUtilities.CreateInstance<T>(ServiceProvider);
             var key = settingsInstance.ID.ToString() + tenantId + userId;
             var def = (T)settingsInstance.GetDefault(ServiceProvider);
 
@@ -249,7 +250,7 @@ namespace ASC.Core.Data
 
                 if (result != null)
                 {
-                    settings = Deserialize<T>(result.ToString());
+                    settings = Deserialize<T>(result);
                 }
                 else
                 {
@@ -323,40 +324,13 @@ namespace ASC.Core.Data
 
         private T Deserialize<T>(string data)
         {
-            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(data));
-            var settings = GetJsonSerializer(typeof(T)).ReadObject(stream);
-            return (T)settings;
+            return JsonSerializer.Deserialize<T>(data);
         }
 
-        private string Serialize(ISettings settings)
+        private string Serialize<T>(T settings)
         {
-            using var stream = new MemoryStream();
-            GetJsonSerializer(settings.GetType()).WriteObject(stream, settings);
-            return Encoding.UTF8.GetString(stream.ToArray());
+            return JsonSerializer.Serialize(settings);
         }
 
-        private DataContractJsonSerializer GetJsonSerializer(Type type)
-        {
-            lock (jsonSerializers)
-            {
-                if (!jsonSerializers.ContainsKey(type))
-                {
-                    jsonSerializers[type] = new DataContractJsonSerializer(type);
-                }
-                return jsonSerializers[type];
-            }
-        }
-    }
-
-    public static class DbSettingsManagerExtension
-    {
-        public static DIHelper AddDbSettingsManagerService(this DIHelper services)
-        {
-            services.TryAddSingleton<DbSettingsManagerCache>();
-            services.TryAddScoped<DbSettingsManager>();
-            services.TryAddScoped<IConfigureOptions<DbSettingsManager>, ConfigureDbSettingsManager>();
-
-            return services.AddWebstudioDbContextService();
-        }
     }
 }

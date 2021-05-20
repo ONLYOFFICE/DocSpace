@@ -24,7 +24,6 @@
 */
 
 
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -37,6 +36,7 @@ using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class MailboxSignatureDao : BaseDao, IMailboxSignatureDao
     {
         public MailboxSignatureDao(
@@ -133,16 +133,6 @@ namespace ASC.Mail.Core.Dao
             MailDb.MailMailboxSignature.RemoveRange(query);
 
             return MailDb.SaveChanges();
-        }
-    }
-
-    public static class MailboxSignatureDaoExtension
-    {
-        public static DIHelper AddMailboxSignatureDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<MailboxSignatureDao>();
-
-            return services;
         }
     }
 }

@@ -32,30 +32,30 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage;
-//using ASC.CRM.Core;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Storage;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
-//using ASC.Web.CRM.Core;
 using Microsoft.Extensions.Options;
 using System.Data;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class CrmLinkEngine
     {
-        public int Tenant { get; private set; }
-        public string User { get; private set; }
-        public ILog Log { get; private set; }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public ApiHelper ApiHelper { get; }
-        public DaoFactory DaoFactory { get; }
-        public MessageEngine MessageEngine { get; }
-        public StorageFactory StorageFactory { get; }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string User => SecurityContext.CurrentAccount.ID.ToString();
+
+        private ILog Log { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private ApiHelper ApiHelper { get; }
+        private DaoFactory DaoFactory { get; }
+        private MessageEngine MessageEngine { get; }
+        private StorageFactory StorageFactory { get; }
 
         public CrmLinkEngine(
             SecurityContext securityContext,
@@ -277,23 +277,6 @@ namespace ASC.Mail.Core.Engine
                     "CrmLinkEngine->AddRelationshipEvents(): message with id = {0} has been linked successfully to contact with id = {1}",
                     message.Id, contactEntity.Id);
             }
-        }
-    }
-
-    public static class CrmLinkEngineExtension
-    {
-        public static DIHelper AddCrmLinkEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<CrmLinkEngine>();
-
-            services.AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddApiHelperService()
-                .AddDaoFactoryService()
-                .AddMessageEngineService()
-                .AddStorageFactoryService();
-
-            return services;
         }
     }
 }

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+
 using ASC.Notify.Recipients;
 
 namespace ASC.Core.Users
@@ -74,7 +75,7 @@ namespace ASC.Core.Users
             set
             {
                 contacts = value;
-                _ = ContactsFromString(contacts);
+                ContactsFromString(contacts);
             }
         }
 

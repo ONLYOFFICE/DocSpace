@@ -36,6 +36,7 @@ using ASC.Common;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class AccountDao : BaseDao, IAccountDao
     {
          public AccountDao(
@@ -94,16 +95,6 @@ namespace ASC.Mail.Core.Dao
                            .ToList();
 
             return accounts;
-        }
-    }
-
-    public static class AccountDaoExtension
-    {
-        public static DIHelper AddAccountDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<AccountDao>();
-
-            return services;
         }
     }
 }

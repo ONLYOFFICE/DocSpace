@@ -38,6 +38,7 @@ using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class UserFolderTreeDao : BaseDao, IUserFolderTreeDao
     {
         public UserFolderTreeDao(
@@ -154,16 +155,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return folder;
-        }
-    }
-
-    public static class UserFolderTreeDaoExtension
-    {
-        public static DIHelper AddUserFolderTreeDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<UserFolderTreeDao>();
-
-            return services;
         }
     }
 }

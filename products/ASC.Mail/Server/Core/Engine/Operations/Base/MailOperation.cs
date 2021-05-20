@@ -35,6 +35,7 @@ using ASC.Common.Security.Authorizing;
 using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
+using ASC.Data.Storage;
 using ASC.Mail.Storage;
 using Microsoft.Extensions.Options;
 using SecurityContext = ASC.Core.SecurityContext;
@@ -78,14 +79,15 @@ namespace ASC.Mail.Core.Engine.Operations.Base
         public DaoFactory DaoFactory { get; }
         public CoreSettings CoreSettings { get; }
         public StorageManager StorageManager { get; }
+        public StorageFactory StorageFactory { get; }
 
         protected MailOperation(
             TenantManager tenantManager, 
             SecurityContext securityContext,
             DaoFactory daoFactory,
             CoreSettings coreSettings,
-            StorageManager storageManager,
-            IOptionsMonitor<ILog> option)
+            StorageManager storageManager,            
+            IOptionsMonitor<ILog> option, StorageFactory storageFactory = null)
         {
             CurrentTenant = tenantManager.GetCurrentTenant();
             CurrentUser = securityContext.CurrentAccount;
@@ -104,6 +106,7 @@ namespace ASC.Mail.Core.Engine.Operations.Base
             DaoFactory = daoFactory;
             CoreSettings = coreSettings;
             StorageManager = storageManager;
+            StorageFactory = storageFactory;
             Logger = option.Get("ASC.Mail.Operation");
         }
 

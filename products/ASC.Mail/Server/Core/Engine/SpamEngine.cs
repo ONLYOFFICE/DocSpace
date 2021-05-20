@@ -41,34 +41,28 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class SpamEngine
     {
-        public int Tenant { get; private set; }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
 
-        public string User { get; private set; }
-        public StorageFactory StorageFactory { get; }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public DaoFactory DaoFactory { get; }
-        public MessageEngine MessageEngine { get; }
-        public ApiHelper ApiHelper { get; }
-        public ILog Log { get; private set; }
+        private StorageFactory StorageFactory { get; }
+        private TenantManager TenantManager { get; }
+        private DaoFactory DaoFactory { get; }
+        private ApiHelper ApiHelper { get; }
+        private ILog Log { get; }
 
         public SpamEngine(
-            SecurityContext securityContext,
             TenantManager tenantManager,
             DaoFactory daoFactory,
-            MessageEngine messageEngine,
             ApiHelper apiHelper,
             IOptionsMonitor<ILog> option)
         {
 
             Log = option.Get("ASC.Mail.SpamEngine");
-            SecurityContext = securityContext;
             TenantManager = tenantManager;
 
             DaoFactory = daoFactory;
-            MessageEngine = messageEngine;
             ApiHelper = apiHelper;
         }
 
@@ -196,22 +190,6 @@ namespace ASC.Mail.Core.Engine
             }
 
             return "";
-        }
-    }
-
-    public static class SpamEngineExtension
-    {
-        public static DIHelper AddSpamEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<SpamEngine>();
-
-            services.AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddDaoFactoryService()
-                .AddMessageEngineService()
-                .AddApiHelperService();
-
-            return services;
         }
     }
 }

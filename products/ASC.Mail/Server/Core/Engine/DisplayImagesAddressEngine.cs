@@ -25,56 +25,18 @@
 
 
 using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Mail.Core.Dao;
-using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class DisplayImagesAddressEngine
     {
-        public DbContextManager<MailDbContext> DbContext { get; }
+        private DaoFactory DaoFactory { get; }
 
-        public int Tenant
+        public DisplayImagesAddressEngine(DaoFactory daoFactory)
         {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
-
-        public string UserId
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public ILog Log { get; }
-
-        public DaoFactory DaoFactory { get; }
-
-        public MailDbContext MailDb { get; }
-
-        public DisplayImagesAddressEngine(
-            TenantManager tenantManager,
-            SecurityContext securityContext,
-            DaoFactory daoFactory,
-            IOptionsMonitor<ILog> option)
-        {
-            TenantManager = tenantManager;
-            SecurityContext = securityContext;
-
             DaoFactory = daoFactory;
-            MailDb = DaoFactory.MailDb;
-
-            Log = option.Get("ASC.Mail.DisplayImagesAddressEngine");
         }
 
         public IEnumerable<string> Get()
@@ -91,20 +53,6 @@ namespace ASC.Mail.Core.Engine
         public void Remove(string address)
         {
             DaoFactory.DisplayImagesAddressDao.RemovevDisplayImagesAddress(address);
-        }
-    }
-
-    public static class DisplayImagesAddressEngineExtension
-    {
-        public static DIHelper AddDisplayImagesAddressEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<DisplayImagesAddressEngine>();
-
-            services.AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddDaoFactoryService();
-
-            return services;
         }
     }
 }

@@ -29,6 +29,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Web;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
@@ -43,31 +44,24 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Storage
 {
+    [Scope]
     public class StorageManager
     {
         public const string CKEDITOR_IMAGES_DOMAIN = "mail";
-        
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
-        public string User
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
 
-        public ILog Log { get; private set; }
-        public SecurityContext SecurityContext { get; }
-        public StorageFactory StorageFactory { get; }
-        public TenantManager TenantManager { get; }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string User => SecurityContext.CurrentAccount.ID.ToString();
 
-        public StorageManager(SecurityContext securityContext, StorageFactory storageFactory, TenantManager tenantManager, IOptionsMonitor<ILog> options)
+        private ILog Log { get; }
+        private SecurityContext SecurityContext { get; }
+        private StorageFactory StorageFactory { get; }
+        private TenantManager TenantManager { get; }
+
+        public StorageManager(
+            SecurityContext securityContext, 
+            StorageFactory storageFactory, 
+            TenantManager tenantManager, 
+            IOptionsMonitor<ILog> options)
         {
             SecurityContext = securityContext;
             StorageFactory = storageFactory;
@@ -291,17 +285,6 @@ namespace ASC.Mail.Storage
             var addedByUserToFck = string.Format(src_condition_format, thisMailCkeditorUrl);
             var xpathQuery = string.Format("//img[@src and {0}]", addedByUserToFck);
             return xpathQuery;
-        }
-    }
-
-    public static class StorageManagerExtension
-    {
-        public static DIHelper AddStorageManagerService(this DIHelper services)
-        {
-            services.TryAddScoped<StorageManager>();
-            return services
-                .AddStorageFactoryService()
-                .AddTenantManagerService();
         }
     }
 }

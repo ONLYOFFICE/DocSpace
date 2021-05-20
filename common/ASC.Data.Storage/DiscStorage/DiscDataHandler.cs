@@ -29,7 +29,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+
+using ASC.Common.Utils;
 using ASC.Common.Web;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -101,12 +104,12 @@ namespace ASC.Data.Storage.DiscStorage
         {
             var pathInfo = GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar);
 
-            var path = Path.Combine(physPath, pathInfo);
+            var path = CrossPlatform.PathCombine(physPath, pathInfo);
 
             var tenant = GetRouteValue("0");
             if (string.IsNullOrEmpty(tenant))
             {
-                tenant = Path.Combine(GetRouteValue("t1"), GetRouteValue("t2"), GetRouteValue("t3"));
+                tenant = CrossPlatform.PathCombine(GetRouteValue("t1"), GetRouteValue("t2"), GetRouteValue("t3"));
             }
 
             path = path.Replace("{0}", tenant);

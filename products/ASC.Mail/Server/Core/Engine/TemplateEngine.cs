@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using ASC.Common.Logging;
@@ -44,6 +43,7 @@ using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class TemplateEngine : ComposeEngineBase
     {
         public TemplateEngine(
@@ -160,29 +160,6 @@ namespace ASC.Mail.Core.Engine
             DaemonLabels = translates ?? DeliveryFailureMessageTranslates.Defauilt;
 
             return Save(template);
-        }
-    }
-
-    public static class TemplateEngineExtension
-    {
-        public static DIHelper AddTemplateEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<TemplateEngine>();
-
-            services.AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddDaoFactoryService()
-                .AddAccountEngineService()
-                .AddMailboxEngineService()
-                .AddMessageEngineService()
-                .AddQuotaEngineService()
-                .AddIndexEngineService()
-                .AddFolderEngineService()
-                .AddStorageManagerService()
-                .AddCoreSettingsService()
-                .AddStorageFactoryService();
-
-            return services;
         }
     }
 }

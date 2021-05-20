@@ -25,10 +25,12 @@
 
 
 using System;
+
 using Google.Protobuf;
 
 namespace ASC.Common.Caching
 {
+    [Singletone]
     public interface ICacheNotify<T> where T : IMessage<T>, new()
     {
         void Publish(T obj, CacheNotifyAction action);

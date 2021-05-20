@@ -41,13 +41,14 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class EmailInEngine
     {
         public ILog Log { get; private set; }
-        public AccountEngine AccountEngine { get; }
-        public AlertEngine AlertEngine { get; }
-        public StorageFactory StorageFactory { get; }
-        public ApiHelper ApiHelper { get; }
+        private AccountEngine AccountEngine { get; }
+        private AlertEngine AlertEngine { get; }
+        private StorageFactory StorageFactory { get; }
+        private ApiHelper ApiHelper { get; }
 
         public EmailInEngine(
             AccountEngine accountEngine,
@@ -147,21 +148,6 @@ namespace ASC.Mail.Core.Engine
                 log.ErrorFormat("EmailInEngine->UploadToDocuments(fileName: '{0}', folderId: {1}) Exception:\r\n{2}\r\n",
                                       fileName, mailbox.EMailInFolder, ex.ToString());
             }
-        }
-    }
-
-    public static class EmailInEngineExtension
-    {
-        public static DIHelper AddEmailInEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<EmailInEngine>();
-
-            services.AddAccountEngineService()
-                .AddAlertEngineService()
-                .AddStorageFactoryService()
-                .AddApiHelperService();
-
-            return services;
         }
     }
 }

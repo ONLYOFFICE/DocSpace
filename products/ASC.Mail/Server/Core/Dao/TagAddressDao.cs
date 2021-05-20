@@ -34,6 +34,7 @@ using ASC.Mail.Core.Dao.Interfaces;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class TagAddressDao: BaseDao, ITagAddressDao
     {
         public TagAddressDao(
@@ -113,16 +114,6 @@ namespace ASC.Mail.Core.Dao
             var result = MailDb.SaveChanges();
 
             return result;
-        }
-    }
-
-    public static class TagAddressDaoExtension
-    {
-        public static DIHelper AddTagAddressDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<TagAddressDao>();
-
-            return services;
         }
     }
 }

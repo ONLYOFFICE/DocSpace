@@ -1,10 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <ApplicationIcon />
-    <OutputType>Library</OutputType>
-    <StartupObject />
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -20,14 +17,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Api.Gax" Version="2.10.0" />
-    <PackageReference Include="Google.Api.Gax.Rest" Version="2.10.0" />
-    <PackageReference Include="Google.Apis" Version="1.45.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.45.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.45.0" />
-    <PackageReference Include="Google.Apis.Storage.v1" Version="1.45.0.1964" />
-    <PackageReference Include="Google.Cloud.Storage.V1" Version="2.5.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.27.0">
+    <None Remove="protos\EncryptionStop.proto" />
+    <None Remove="protos\MigrationCache.proto" />
+    <None Remove="protos\MigrationProgress.proto" />
+    <None Remove="protos\MigrationUploadCdn.proto" />
+    <None Remove="protos\ProgressEncryption.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Api.Gax" Version="3.2.0" />
+    <PackageReference Include="Google.Api.Gax.Rest" Version="3.2.0" />
+    <PackageReference Include="Google.Apis" Version="1.49.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.49.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.49.0" />
+    <PackageReference Include="Google.Apis.Storage.v1" Version="1.49.0.2102" />
+    <PackageReference Include="Google.Cloud.Storage.V1" Version="3.3.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.32.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -42,6 +47,11 @@
 
   <ItemGroup>
     <Protobuf Include="protos\DataStoreCacheItem.proto" />
+    <Protobuf Include="protos\EncryptionStop.proto" />
+    <Protobuf Include="protos\MigrationCache.proto" />
+    <Protobuf Include="protos\MigrationProgress.proto" />
+    <Protobuf Include="protos\MigrationUploadCdn.proto" />
+    <Protobuf Include="protos\ProgressEncryption.proto" />
   </ItemGroup>
   
 </Project>

@@ -30,74 +30,41 @@ using System.Data;
 using System.Linq;
 using System.Security;
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
 using ASC.Mail.Server.Core.Entities;
 using ASC.Mail.Utils;
 using ASC.Web.Core;
-using Microsoft.Extensions.Options;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class ServerMailgroupEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private bool IsAdmin => WebItemSecurity.IsProductAdministrator(WebItemManager.MailProductID, SecurityContext.CurrentAccount.ID);
 
-        public string User
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-
-        private bool IsAdmin
-        {
-            get
-            {
-                return WebItemSecurity.IsProductAdministrator(WebItemManager.MailProductID, SecurityContext.CurrentAccount.ID);
-            }
-        }
-
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public DaoFactory DaoFactory { get; }
-        public CacheEngine CacheEngine { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public IServiceProvider ServiceProvider { get; }
-
-        public ILog Log { get; private set; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private DaoFactory DaoFactory { get; }
+        private CacheEngine CacheEngine { get; }
+        private WebItemSecurity WebItemSecurity { get; }
 
         public ServerMailgroupEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
             DaoFactory daoFactory,
             CacheEngine cacheEngine,
-            CoreBaseSettings coreBaseSettings,
-            WebItemSecurity webItemSecurity,
-            IServiceProvider serviceProvider,
-            IOptionsMonitor<ILog> option)
+            WebItemSecurity webItemSecurity)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
 
             DaoFactory = daoFactory;
             CacheEngine = cacheEngine;
-            CoreBaseSettings = coreBaseSettings;
             WebItemSecurity = webItemSecurity;
-            ServiceProvider = serviceProvider;
-
-            Log = option.Get("ASC.Mail.ServerMailgroupEngine");
         }
 
         public List<ServerDomainGroupData> GetMailGroups()
@@ -420,23 +387,6 @@ namespace ASC.Mail.Core.Engine
             };
 
             return group;
-        }
-    }
-
-    public static class ServerMailgroupEngineExtension
-    {
-        public static DIHelper AddServerMailgroupEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<ServerMailgroupEngine>();
-
-            services.AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddDaoFactoryService()
-                .AddCacheEngineService()
-                .AddCoreBaseSettingsService()
-                .AddWebItemSecurity();
-
-            return services;
         }
     }
 }

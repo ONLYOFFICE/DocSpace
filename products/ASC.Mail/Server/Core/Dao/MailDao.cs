@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -36,10 +35,10 @@ using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Enums;
 using ASC.Mail.Utils;
-using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class MailDao : BaseDao, IMailDao
     {
         public MailDao(
@@ -188,16 +187,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return mail;
-        }
-    }
-
-    public static class MailDaoExtension
-    {
-        public static DIHelper AddMailDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<MailDao>();
-
-            return services;
         }
     }
 }

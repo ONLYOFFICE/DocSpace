@@ -1,45 +1,18 @@
 ﻿using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Mail.Models;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class SettingEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        private SettingsManager SettingsManager { get; }
 
-        public string UserId
+        public SettingEngine(SettingsManager settingsManager)
         {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public SettingsManager SettingsManager { get; }
-        public ILog Log { get; }
-
-        public SettingEngine(
-            TenantManager tenantManager,
-            SecurityContext securityContext,
-            SettingsManager settingsManager,
-            IOptionsMonitor<ILog> option)
-        {
-            TenantManager = tenantManager;
-            SecurityContext = securityContext;
             SettingsManager = settingsManager;
-
-            Log = option.Get("ASC.Mail.SettingEngine");
         }
 
         public MailCommonSettings GetCommonSettings()
@@ -140,21 +113,6 @@ namespace ASC.Mail.Core.Engine
             settings.ReplaceMessageBodySetting = enabled;
 
             SettingsManager.SaveForCurrentUser(settings);
-        }
-    }
-
-    public static class SettingEngineExtension
-    {
-        public static DIHelper AddSettingEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<SettingEngine>();
-
-            services
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddSettingsManagerService();
-
-            return services;
         }
     }
 }

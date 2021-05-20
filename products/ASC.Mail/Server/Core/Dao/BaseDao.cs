@@ -32,26 +32,12 @@ namespace ASC.Mail.Core.Dao
 {
     public abstract class BaseDao
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        protected int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        protected string UserId => SecurityContext.CurrentAccount.ID.ToString();
 
-        public string UserId
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
 
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-
-        public ApiContext ApiContext { get; }
         public MailDbContext MailDb { get; }
 
         protected BaseDao(

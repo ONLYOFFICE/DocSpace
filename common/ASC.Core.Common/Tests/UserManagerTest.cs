@@ -30,8 +30,11 @@ namespace ASC.Core.Common.Tests
     using System;
     using System.Diagnostics;
     using System.Threading;
+
     using ASC.Core.Users;
+
     using Microsoft.Extensions.DependencyInjection;
+
     using NUnit.Framework;
 
     [TestFixture]
@@ -82,8 +85,8 @@ namespace ASC.Core.Common.Tests
         public void DepartmentManagers()
         {
             using var scope = ServiceProvider.CreateScope();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var scopeClass = scope.ServiceProvider.GetService<UserManagerTestScope>();
+            var (userManager, tenantManager) = scopeClass;
             var tenant = tenantManager.SetCurrentTenant(1024);
 
             var deps = userManager.GetDepartments();
@@ -93,7 +96,7 @@ namespace ASC.Core.Common.Tests
             var ceo = users[0];
             var u1 = users[1];
             var u2 = users[2];
-            _ = userManager.GetCompanyCEO();
+            userManager.GetCompanyCEO();
             userManager.SetCompanyCEO(ceo.ID);
             var ceoTemp = userManager.GetCompanyCEO();
             Assert.AreEqual(ceo, ceoTemp);
@@ -111,8 +114,8 @@ namespace ASC.Core.Common.Tests
         public void UserGroupsPerformanceTest()
         {
             using var scope = ServiceProvider.CreateScope();
-            var userManager = scope.ServiceProvider.GetService<UserManager>();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var scopeClass = scope.ServiceProvider.GetService<UserManagerTestScope>();
+            (var userManager, var tenantManager) = scopeClass;
             var tenant = tenantManager.SetCurrentTenant(0);
 
             foreach (var u in userManager.GetUsers())
@@ -144,6 +147,24 @@ namespace ASC.Core.Common.Tests
             Assert.IsNotNull(visitors);
             Assert.IsNotNull(all);
             stopwatch.Stop();
+        }
+    }
+
+    public class UserManagerTestScope
+    {
+        private UserManager UserManager { get; }
+        private TenantManager TenantManager { get; }
+
+        public UserManagerTestScope(UserManager userManager, TenantManager tenantManager)
+        {
+            UserManager = userManager;
+            TenantManager = tenantManager;
+        }
+
+        public void Deconstruct(out UserManager userManager, out TenantManager tenantManager)
+        {
+            userManager = UserManager;
+            tenantManager = TenantManager;
         }
     }
 }

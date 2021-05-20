@@ -8,6 +8,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Security;
+using System.ServiceModel.Security;
+using System.Threading;
+using System.Web;
 
 using ASC.Api.Core;
 using ASC.Common;
@@ -20,6 +23,7 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Reassigns;
 using ASC.FederatedLogin;
+using ASC.FederatedLogin.LoginProviders;
 using ASC.FederatedLogin.Profile;
 using ASC.MessagingSystem;
 using ASC.People;
@@ -29,6 +33,7 @@ using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
+using ASC.Web.Core.Mobile;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Core;
@@ -46,43 +51,50 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
 {
+    [Scope(Additional = typeof(BaseLoginProviderExtension))]
     [DefaultRoute]
     [ApiController]
     public class PeopleController : ControllerBase
     {
         public Tenant Tenant { get { return ApiContext.Tenant; } }
-        public ApiContext ApiContext { get; }
-        public MessageService MessageService { get; }
-        public QueueWorkerReassign QueueWorkerReassign { get; }
-        public QueueWorkerRemove QueueWorkerRemove { get; }
-        public StudioNotifyService StudioNotifyService { get; }
-        public UserManagerWrapper UserManagerWrapper { get; }
-        public UserManager UserManager { get; }
-        public TenantExtra TenantExtra { get; }
-        public TenantStatisticsProvider TenantStatisticsProvider { get; }
-        public UserPhotoManager UserPhotoManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public CookiesManager CookiesManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public PermissionContext PermissionContext { get; }
-        public AuthContext AuthContext { get; }
-        public WebItemManager WebItemManager { get; }
-        public CustomNamingPeople CustomNamingPeople { get; }
-        public TenantUtil TenantUtil { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public SetupInfo SetupInfo { get; }
-        public FileSizeComment FileSizeComment { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public Signature Signature { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public WebItemSecurityCache WebItemSecurityCache { get; }
-        public MessageTarget MessageTarget { get; }
-        public SettingsManager SettingsManager { get; }
-        public IOptionsSnapshot<AccountLinker> AccountLinker { get; }
-        public EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
-        public EmployeeWraperHelper EmployeeWraperHelper { get; }
-        public UserFormatter UserFormatter { get; }
-        public ILog Log { get; }
+        private ApiContext ApiContext { get; }
+        private MessageService MessageService { get; }
+        private QueueWorkerReassign QueueWorkerReassign { get; }
+        private QueueWorkerRemove QueueWorkerRemove { get; }
+        private StudioNotifyService StudioNotifyService { get; }
+        private UserManagerWrapper UserManagerWrapper { get; }
+        private UserManager UserManager { get; }
+        private TenantExtra TenantExtra { get; }
+        private TenantStatisticsProvider TenantStatisticsProvider { get; }
+        private UserPhotoManager UserPhotoManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private CookiesManager CookiesManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private PermissionContext PermissionContext { get; }
+        private AuthContext AuthContext { get; }
+        private WebItemManager WebItemManager { get; }
+        private CustomNamingPeople CustomNamingPeople { get; }
+        private TenantUtil TenantUtil { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private SetupInfo SetupInfo { get; }
+        private FileSizeComment FileSizeComment { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private WebItemSecurityCache WebItemSecurityCache { get; }
+        private MessageTarget MessageTarget { get; }
+        private SettingsManager SettingsManager { get; }
+        private IOptionsSnapshot<AccountLinker> AccountLinker { get; }
+        private EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
+        private EmployeeWraperHelper EmployeeWraperHelper { get; }
+        private UserFormatter UserFormatter { get; }
+        private PasswordHasher PasswordHasher { get; }
+        private UserHelpTourHelper UserHelpTourHelper { get; }
+        private PersonalSettingsHelper PersonalSettingsHelper { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private MobileDetector MobileDetector { get; }
+        private ProviderManager ProviderManager { get; }
+        private ILog Log { get; }
 
         public PeopleController(
             MessageService messageService,
@@ -116,9 +128,17 @@ namespace ASC.Employee.Core.Controllers
             IOptionsSnapshot<AccountLinker> accountLinker,
             EmployeeWraperFullHelper employeeWraperFullHelper,
             EmployeeWraperHelper employeeWraperHelper,
-            UserFormatter userFormatter)
+            UserFormatter userFormatter,
+            PasswordHasher passwordHasher,
+            UserHelpTourHelper userHelpTourHelper,
+            PersonalSettingsHelper personalSettingsHelper,
+            CommonLinkUtility commonLinkUtility,
+            MobileDetector mobileDetector,
+            ProviderManager providerManager
+            )
         {
             Log = option.Get("ASC.Api");
+            Log.Debug("Test");
             MessageService = messageService;
             QueueWorkerReassign = queueWorkerReassign;
             QueueWorkerRemove = queueWorkerRemove;
@@ -150,6 +170,12 @@ namespace ASC.Employee.Core.Controllers
             EmployeeWraperFullHelper = employeeWraperFullHelper;
             EmployeeWraperHelper = employeeWraperHelper;
             UserFormatter = userFormatter;
+            PasswordHasher = passwordHasher;
+            UserHelpTourHelper = userHelpTourHelper;
+            PersonalSettingsHelper = personalSettingsHelper;
+            CommonLinkUtility = commonLinkUtility;
+            MobileDetector = mobileDetector;
+            ProviderManager = providerManager;
         }
 
         [Read("info")]
@@ -157,7 +183,7 @@ namespace ASC.Employee.Core.Controllers
         {
             var product = new PeopleProduct();
             product.Init();
-            return new Module(product, true);
+            return new Module(product);
         }
 
         [Read]
@@ -186,7 +212,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Read("email")]
-        public EmployeeWraperFull GetByEmail([FromQuery]string email)
+        public EmployeeWraperFull GetByEmail([FromQuery] string email)
         {
             if (CoreBaseSettings.Personal && !UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOwner(Tenant))
                 throw new MethodAccessException("Method not available");
@@ -246,13 +272,13 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Read("search")]
-        public IEnumerable<EmployeeWraperFull> GetPeopleSearch([FromQuery]string query)
+        public IEnumerable<EmployeeWraperFull> GetPeopleSearch([FromQuery] string query)
         {
             return GetSearch(query);
         }
 
         [Read("status/{status}/search")]
-        public IEnumerable<EmployeeWraperFull> GetAdvanced(EmployeeStatus status, [FromQuery]string query)
+        public IEnumerable<EmployeeWraperFull> GetAdvanced(EmployeeStatus status, [FromQuery] string query)
         {
             if (CoreBaseSettings.Personal) throw new MethodAccessException("Method not available");
             try
@@ -343,7 +369,6 @@ namespace ASC.Employee.Core.Controllers
         public IEnumerable<EmployeeWraper> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
         {
             var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
-
             return users.Select(EmployeeWraperHelper.Get);
         }
 
@@ -395,17 +420,42 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Administrators")]
-        public EmployeeWraperFull AddMember(MemberModel memberModel)
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
+        public EmployeeWraperFull AddMemberFromBody([FromBody]MemberModel memberModel)
+        {
+            return AddMember(memberModel);
+        }
+
+        [Create]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public EmployeeWraperFull AddMemberFromForm([FromForm]MemberModel memberModel)
+        {
+            return AddMember(memberModel);
+        }
+
+        private EmployeeWraperFull AddMember(MemberModel memberModel)
         {
             ApiContext.AuthByClaim();
 
             PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
-            if (string.IsNullOrEmpty(memberModel.Password))
-                memberModel.Password = UserManagerWrapper.GeneratePassword();
+            memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+            if (string.IsNullOrEmpty(memberModel.PasswordHash))
+            {
+                memberModel.Password = (memberModel.Password ?? "").Trim();
 
-            memberModel.Password = memberModel.Password.Trim();
+                if (string.IsNullOrEmpty(memberModel.Password))
+                {
+                    memberModel.Password = UserManagerWrapper.GeneratePassword();
+                }
+                else
+                {
+                    UserManagerWrapper.CheckPasswordPolicy(memberModel.Password);
+                }
+
+                memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+            }
 
             var user = new UserInfo();
 
@@ -422,12 +472,12 @@ namespace ASC.Employee.Core.Controllers
                            ? true
                            : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
 
-            user.BirthDate = memberModel.Birthday != null && memberModel.Birthday != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : (DateTime?)null;
+            user.BirthDate = memberModel.Birthday != null && memberModel.Birthday != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : null;
             user.WorkFromDate = memberModel.Worksfrom != null && memberModel.Worksfrom != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : DateTime.UtcNow.Date;
 
             UpdateContacts(memberModel.Contacts, user);
 
-            user = UserManagerWrapper.AddUser(user, memberModel.Password, false, true, memberModel.IsVisitor);
+            user = UserManagerWrapper.AddUser(user, memberModel.PasswordHash, memberModel.FromInviteLink, true, memberModel.IsVisitor, memberModel.FromInviteLink);
 
             var messageAction = memberModel.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
             MessageService.Send(messageAction, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
@@ -443,14 +493,40 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create("active")]
-        public EmployeeWraperFull AddMemberAsActivated(MemberModel memberModel)
+        public EmployeeWraperFull AddMemberAsActivatedFromBody([FromBody]MemberModel memberModel)
+        {
+            return AddMemberAsActivated(memberModel);
+        }
+
+        [Create("active")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public EmployeeWraperFull AddMemberAsActivatedFromForm([FromForm] MemberModel memberModel)
+        {
+            return AddMemberAsActivated(memberModel);
+        }
+
+        private EmployeeWraperFull AddMemberAsActivated(MemberModel memberModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
             var user = new UserInfo();
 
-            if (string.IsNullOrEmpty(memberModel.Password))
-                memberModel.Password = UserManagerWrapper.GeneratePassword();
+            memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+            if (string.IsNullOrEmpty(memberModel.PasswordHash))
+            {
+                memberModel.Password = (memberModel.Password ?? "").Trim();
+
+                if (string.IsNullOrEmpty(memberModel.Password))
+                {
+                    memberModel.Password = UserManagerWrapper.GeneratePassword();
+                }
+                else
+                {
+                    UserManagerWrapper.CheckPasswordPolicy(memberModel.Password);
+                }
+
+                memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+            }
 
             //Validate email
             var address = new MailAddress(memberModel.Email);
@@ -465,12 +541,12 @@ namespace ASC.Employee.Core.Controllers
                            ? true
                            : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
 
-            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : (DateTime?)null;
+            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : null;
             user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : DateTime.UtcNow.Date;
 
             UpdateContacts(memberModel.Contacts, user);
 
-            user = UserManagerWrapper.AddUser(user, memberModel.Password, false, false, memberModel.IsVisitor);
+            user = UserManagerWrapper.AddUser(user, memberModel.PasswordHash, false, false, memberModel.IsVisitor);
 
             user.ActivationStatus = EmployeeActivationStatus.Activated;
 
@@ -485,7 +561,19 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/culture")]
-        public EmployeeWraperFull UpdateMemberCulture(string userid, UpdateMemberModel memberModel)
+        public EmployeeWraperFull UpdateMemberCultureFromBody(string userid, [FromBody]UpdateMemberModel memberModel)
+        {
+            return UpdateMemberCulture(userid, memberModel);
+        }
+
+        [Update("{userid}/culture")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public EmployeeWraperFull UpdateMemberCultureFromForm(string userid, [FromForm] UpdateMemberModel memberModel)
+        {
+            return UpdateMemberCulture(userid, memberModel);
+        }
+
+        private EmployeeWraperFull UpdateMemberCulture(string userid, UpdateMemberModel memberModel)
         {
             var user = GetUserInfo(userid);
 
@@ -506,10 +594,10 @@ namespace ASC.Employee.Core.Controllers
                     {
                         UserManager.SaveUserInfo(user);
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         user.CultureName = curLng;
-                        throw ex;
+                        throw;
                     }
 
                     MessageService.Send(MessageAction.UserUpdatedLanguage, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
@@ -521,7 +609,19 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}")]
-        public EmployeeWraperFull UpdateMember(string userid, UpdateMemberModel memberModel)
+        public EmployeeWraperFull UpdateMemberFromBody(string userid, [FromBody]UpdateMemberModel memberModel)
+        {
+            return UpdateMember(userid, memberModel);
+        }
+
+        [Update("{userid}")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public EmployeeWraperFull UpdateMemberFromForm(string userid, [FromForm] UpdateMemberModel memberModel)
+        {
+            return UpdateMember(userid, memberModel);
+        }
+
+        private EmployeeWraperFull UpdateMember(string userid, UpdateMemberModel memberModel)
         {
             var user = GetUserInfo(userid);
 
@@ -586,7 +686,7 @@ namespace ASC.Employee.Core.Controllers
             if (memberModel.Disable.HasValue)
             {
                 user.Status = memberModel.Disable.Value ? EmployeeStatus.Terminated : EmployeeStatus.Active;
-                user.TerminatedDate = memberModel.Disable.Value ? DateTime.UtcNow : (DateTime?)null;
+                user.TerminatedDate = memberModel.Disable.Value ? DateTime.UtcNow : null;
             }
 
             if (self && !isAdmin)
@@ -617,7 +717,7 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            UserManager.SaveUserInfo(user, memberModel.IsVisitor);
+            UserManager.SaveUserInfo(user);
             MessageService.Send(MessageAction.UserUpdated, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             if (memberModel.Disable.HasValue && memberModel.Disable.Value)
@@ -672,7 +772,7 @@ namespace ASC.Employee.Core.Controllers
             if (user.IsLDAP())
                 throw new SecurityException();
 
-            _ = SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+            SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
 
             user.Status = EmployeeStatus.Terminated;
 
@@ -700,7 +800,19 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/contacts")]
-        public EmployeeWraperFull UpdateMemberContacts(string userid, UpdateMemberModel memberModel)
+        public EmployeeWraperFull UpdateMemberContactsFromBody(string userid, [FromBody]UpdateMemberModel memberModel)
+        {
+            return UpdateMemberContacts(userid, memberModel);
+        }
+
+        [Update("{userid}/contacts")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public EmployeeWraperFull UpdateMemberContactsFromForm(string userid, [FromForm] UpdateMemberModel memberModel)
+        {
+            return UpdateMemberContacts(userid, memberModel);
+        }
+
+        private EmployeeWraperFull UpdateMemberContacts(string userid, UpdateMemberModel memberModel)
         {
             var user = GetUserInfo(userid);
 
@@ -713,7 +825,19 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create("{userid}/contacts")]
-        public EmployeeWraperFull SetMemberContacts(string userid, UpdateMemberModel memberModel)
+        public EmployeeWraperFull SetMemberContactsFromBody(string userid, [FromBody]UpdateMemberModel memberModel)
+        {
+            return SetMemberContacts(userid, memberModel);
+        }
+
+        [Create("{userid}/contacts")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public EmployeeWraperFull SetMemberContactsFromForm(string userid, [FromForm] UpdateMemberModel memberModel)
+        {
+            return SetMemberContacts(userid, memberModel);
+        }
+
+        private EmployeeWraperFull SetMemberContacts(string userid,UpdateMemberModel memberModel)
         {
             var user = GetUserInfo(userid);
 
@@ -726,7 +850,19 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Delete("{userid}/contacts")]
-        public EmployeeWraperFull DeleteMemberContacts(string userid, UpdateMemberModel memberModel)
+        public EmployeeWraperFull DeleteMemberContactsFromBody(string userid, [FromBody]UpdateMemberModel memberModel)
+        {
+            return DeleteMemberContacts(userid, memberModel);
+        }
+
+        [Delete("{userid}/contacts")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public EmployeeWraperFull DeleteMemberContactsFromForm(string userid, [FromForm]UpdateMemberModel memberModel)
+        {
+            return DeleteMemberContacts(userid, memberModel);
+        }
+
+        private EmployeeWraperFull DeleteMemberContacts(string userid, UpdateMemberModel memberModel)
         {
             var user = GetUserInfo(userid);
 
@@ -748,7 +884,6 @@ namespace ASC.Employee.Core.Controllers
 
             return new ThumbnailsDataWrapper(user.ID, UserPhotoManager);
         }
-
 
         [Create("{userid}/photo")]
         public FileUploadResult UploadMemberPhoto(string userid, IFormCollection model)
@@ -847,7 +982,19 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/photo")]
-        public ThumbnailsDataWrapper UpdateMemberPhoto(string userid, UpdateMemberModel model)
+        public ThumbnailsDataWrapper UpdateMemberPhotoFromBody(string userid, [FromBody]UpdateMemberModel model)
+        {
+            return UpdateMemberPhoto(userid, model);
+        }
+
+        [Update("{userid}/photo")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public ThumbnailsDataWrapper UpdateMemberPhotoFromForm(string userid, [FromForm] UpdateMemberModel model)
+        {
+            return UpdateMemberPhoto(userid, model);
+        }
+
+        private ThumbnailsDataWrapper UpdateMemberPhoto(string userid, UpdateMemberModel model)
         {
             var user = GetUserInfo(userid);
 
@@ -885,7 +1032,19 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Create("{userid}/photo/thumbnails")]
-        public ThumbnailsDataWrapper CreateMemberPhotoThumbnails(string userid, ThumbnailsModel thumbnailsModel)
+        public ThumbnailsDataWrapper CreateMemberPhotoThumbnailsFromBody(string userid, [FromBody]ThumbnailsModel thumbnailsModel)
+        {
+            return CreateMemberPhotoThumbnails(userid, thumbnailsModel);
+        }
+
+        [Create("{userid}/photo/thumbnails")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public ThumbnailsDataWrapper CreateMemberPhotoThumbnailsFromForm(string userid, [FromForm] ThumbnailsModel thumbnailsModel)
+        {
+            return CreateMemberPhotoThumbnails(userid, thumbnailsModel);
+        }
+
+        private ThumbnailsDataWrapper CreateMemberPhotoThumbnails(string userid, ThumbnailsModel thumbnailsModel)
         {
             var user = GetUserInfo(userid);
 
@@ -920,16 +1079,46 @@ namespace ASC.Employee.Core.Controllers
 
         [AllowAnonymous]
         [Create("password", false)]
-        public string SendUserPassword(MemberModel memberModel)
+        public object SendUserPasswordFromBody([FromBody]MemberModel memberModel)
         {
-            var userInfo = UserManagerWrapper.SendUserPassword(memberModel.Email);
+            return SendUserPassword(memberModel);
+        }
 
-            return string.Format(Resource.MessageYourPasswordSuccessfullySendedToEmail, userInfo.Email);
+        [AllowAnonymous]
+        [Create("password", false)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SendUserPasswordFromForm([FromForm] MemberModel memberModel)
+        {
+            return SendUserPassword(memberModel);
+        }
+
+        private object SendUserPassword(MemberModel memberModel)
+        {
+            string error;
+            if (!string.IsNullOrEmpty(error = UserManagerWrapper.SendUserPassword(memberModel.Email)))
+            {
+                Log.ErrorFormat("Password recovery ({0}): {1}", memberModel.Email, error);
+            }
+
+            return string.Format(Resource.MessageYourPasswordSendedToEmail, memberModel.Email);
         }
 
         [Update("{userid}/password")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,Administrators")]
-        public EmployeeWraperFull ChangeUserPassword(Guid userid, MemberModel memberModel)
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
+        public EmployeeWraperFull ChangeUserPasswordFromBody(Guid userid, [FromBody]MemberModel memberModel)
+        {
+            return ChangeUserPassword(userid, memberModel);
+        }
+
+        [Update("{userid}/password")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public EmployeeWraperFull ChangeUserPasswordFromForm(Guid userid, [FromForm] MemberModel memberModel)
+        {
+            return ChangeUserPassword(userid, memberModel);
+        }
+
+        private EmployeeWraperFull ChangeUserPassword(Guid userid, MemberModel memberModel)
         {
             ApiContext.AuthByClaim();
             PermissionContext.DemandPermissions(new UserSecurityProvider(userid), Constants.Action_EditUser);
@@ -952,9 +1141,20 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            if (!string.IsNullOrEmpty(memberModel.Password))
+            memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+            if (string.IsNullOrEmpty(memberModel.PasswordHash))
             {
-                SecurityContext.SetUserPassword(userid, memberModel.Password);
+                memberModel.Password = (memberModel.Password ?? "").Trim();
+
+                if (!string.IsNullOrEmpty(memberModel.Password))
+                {
+                    memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(memberModel.PasswordHash))
+            {
+                SecurityContext.SetUserPasswordHash(userid, memberModel.PasswordHash);
                 MessageService.Send(MessageAction.UserUpdatedPassword);
 
                 CookiesManager.ResetUserCookie(userid);
@@ -966,7 +1166,19 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Create("email", false)]
-        public string SendEmailChangeInstructions(UpdateMemberModel model)
+        public object SendEmailChangeInstructionsFromBody([FromBody]UpdateMemberModel model)
+        {
+            return SendEmailChangeInstructions(model);
+        }
+
+        [Create("email", false)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SendEmailChangeInstructionsFromForm([FromForm] UpdateMemberModel model)
+        {
+            return SendEmailChangeInstructions(model);
+        }
+
+        private object SendEmailChangeInstructions(UpdateMemberModel model)
         {
             Guid.TryParse(model.UserId, out var userid);
 
@@ -1030,8 +1242,21 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("activationstatus/{activationstatus}")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Administrators")]
-        public IEnumerable<EmployeeWraperFull> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersModel model)
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
+        public IEnumerable<EmployeeWraperFull> UpdateEmployeeActivationStatusFromBody(EmployeeActivationStatus activationstatus, [FromBody]UpdateMembersModel model)
+        {
+            return UpdateEmployeeActivationStatus(activationstatus, model);
+        }
+
+        [Update("activationstatus/{activationstatus}")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<EmployeeWraperFull> UpdateEmployeeActivationStatusFromForm(EmployeeActivationStatus activationstatus, [FromForm] UpdateMembersModel model)
+        {
+            return UpdateEmployeeActivationStatus(activationstatus, model);
+        }
+
+        private IEnumerable<EmployeeWraperFull> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersModel model)
         {
             ApiContext.AuthByClaim();
 
@@ -1050,9 +1275,20 @@ namespace ASC.Employee.Core.Controllers
             return retuls;
         }
 
+        [Update("type/{type}")]
+        public IEnumerable<EmployeeWraperFull> UpdateUserTypeFromBody(EmployeeType type, [FromBody]UpdateMembersModel model)
+        {
+            return UpdateUserType(type, model);
+        }
 
         [Update("type/{type}")]
-        public IEnumerable<EmployeeWraperFull> UpdateUserType(EmployeeType type, UpdateMembersModel model)
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<EmployeeWraperFull> UpdateUserTypeFromForm(EmployeeType type, [FromForm] UpdateMembersModel model)
+        {
+            return UpdateUserType(type, model);
+        }
+
+        private IEnumerable<EmployeeWraperFull> UpdateUserType(EmployeeType type, UpdateMembersModel model)
         {
             var users = model.UserIds
                 .Where(userId => !UserManager.IsSystemUser(userId))
@@ -1089,7 +1325,19 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("status/{status}")]
-        public IEnumerable<EmployeeWraperFull> UpdateUserStatus(EmployeeStatus status, UpdateMembersModel model)
+        public IEnumerable<EmployeeWraperFull> UpdateUserStatusFromBody(EmployeeStatus status, [FromBody]UpdateMembersModel model)
+        {
+            return UpdateUserStatus(status, model);
+        }
+
+        [Update("status/{status}")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<EmployeeWraperFull> UpdateUserStatusFromForm(EmployeeStatus status, [FromForm] UpdateMembersModel model)
+        {
+            return UpdateUserStatus(status, model);
+        }
+
+        private IEnumerable<EmployeeWraperFull> UpdateUserStatus(EmployeeStatus status, UpdateMembersModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
@@ -1131,7 +1379,19 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Update("invite")]
-        public IEnumerable<EmployeeWraperFull> ResendUserInvites(UpdateMembersModel model)
+        public IEnumerable<EmployeeWraperFull> ResendUserInvitesFromBody([FromBody]UpdateMembersModel model)
+        {
+            return ResendUserInvites(model);
+        }
+
+        [Update("invite")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<EmployeeWraperFull> ResendUserInvitesFromForm([FromForm] UpdateMembersModel model)
+        {
+            return ResendUserInvites(model);
+        }
+
+        private IEnumerable<EmployeeWraperFull> ResendUserInvites(UpdateMembersModel model)
         {
             var users = model.UserIds
                 .Where(userId => !UserManager.IsSystemUser(userId))
@@ -1141,6 +1401,24 @@ namespace ASC.Employee.Core.Controllers
             foreach (var user in users)
             {
                 if (user.IsActive) continue;
+                var viewer = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+
+                if (user == null) throw new Exception(Resource.ErrorUserNotFound);
+
+                if (viewer == null) throw new Exception(Resource.ErrorAccessDenied);
+
+                if (viewer.IsAdmin(UserManager) || viewer.ID == user.ID)
+                {
+                    if (user.ActivationStatus == EmployeeActivationStatus.Activated)
+                    {
+                        user.ActivationStatus = EmployeeActivationStatus.NotActivated;
+                    }
+                    if (user.ActivationStatus == (EmployeeActivationStatus.AutoGenerated | EmployeeActivationStatus.Activated))
+                    {
+                        user.ActivationStatus = EmployeeActivationStatus.AutoGenerated;
+                    }
+                    UserManager.SaveUserInfo(user);
+                }
 
                 if (user.ActivationStatus == EmployeeActivationStatus.Pending)
                 {
@@ -1165,7 +1443,19 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("delete", Order = -1)]
-        public IEnumerable<EmployeeWraperFull> RemoveUsers(UpdateMembersModel model)
+        public IEnumerable<EmployeeWraperFull> RemoveUsersFromBody([FromBody]UpdateMembersModel model)
+        {
+            return RemoveUsers(model);
+        }
+
+        [Update("delete", Order = -1)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<EmployeeWraperFull> RemoveUsersFromForm([FromForm] UpdateMembersModel model)
+        {
+            return RemoveUsers(model);
+        }
+
+        private IEnumerable<EmployeeWraperFull> RemoveUsers(UpdateMembersModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
@@ -1193,7 +1483,7 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Update("self/delete")]
-        public string SendInstructionsToDelete()
+        public object SendInstructionsToDelete()
         {
             var user = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
 
@@ -1206,11 +1496,67 @@ namespace ASC.Employee.Core.Controllers
             return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
         }
 
+        [AllowAnonymous]
+        [Read("thirdparty/providers")]
+        public ICollection<AccountInfo> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
+        {
+            ICollection<AccountInfo> infos = new List<AccountInfo>();
+            IEnumerable<LoginProfile> linkedAccounts = new List<LoginProfile>();
+
+            if (AuthContext.IsAuthenticated)
+            {
+                linkedAccounts = AccountLinker.Get("webstudio").GetLinkedProfiles(AuthContext.CurrentAccount.ID.ToString());
+            }
+
+            fromOnly = string.IsNullOrWhiteSpace(fromOnly) ? string.Empty : fromOnly.ToLower();
+
+            foreach (var provider in ProviderManager.AuthProviders.Where(provider => string.IsNullOrEmpty(fromOnly) || fromOnly == provider || (provider == "google" && fromOnly == "openid")))
+            {
+                if (inviteView && provider.ToLower() == "twitter") continue;
+
+                var loginProvider = ProviderManager.GetLoginProvider(provider);
+                if (loginProvider != null && loginProvider.IsEnabled)
+                {
+
+                    var url = VirtualPathUtility.ToAbsolute("~/login.ashx") + $"?auth={provider}";
+                    var mode = (settingsView || inviteView || (!MobileDetector.IsMobile() && !Request.DesktopApp())
+                                     ? ("&mode=popup&callback=" + clientCallback)
+                                     : ("&mode=Redirect&returnurl="
+                                    + HttpUtility.UrlEncode(new Uri(Request.GetUrlRewriter(),
+                                        "Auth.aspx"
+                                        + (Request.DesktopApp() ? "?desktop=true" : "")
+                                        ).ToString())
+                                 ));
+
+                    infos.Add(new AccountInfo
+                    {
+                        Linked = linkedAccounts.Any(x => x.Provider == provider),
+                        Provider = provider,
+                        Url = url + mode
+                    });
+                }
+            }
+
+            return infos;
+        }
+
 
         [Update("thirdparty/linkaccount")]
-        public void LinkAccount(string serializedProfile)
+        public void LinkAccountFromBody([FromBody]LinkAccountModel model)
         {
-            var profile = new LoginProfile(Signature, InstanceCrypto, serializedProfile);
+            LinkAccount(model);
+        }
+
+        [Update("thirdparty/linkaccount")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void LinkAccountFromForm([FromForm]LinkAccountModel model)
+        {
+            LinkAccount(model);
+        }
+
+        public void LinkAccount(LinkAccountModel model)
+        {
+            var profile = new LoginProfile(Signature, InstanceCrypto, model.SerializedProfile);
 
             if (string.IsNullOrEmpty(profile.AuthorizationError))
             {
@@ -1232,6 +1578,210 @@ namespace ASC.Employee.Core.Controllers
         {
             GetLinker().RemoveProvider(SecurityContext.CurrentAccount.ID.ToString(), provider);
             MessageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
+        }
+
+        [AllowAnonymous]
+        [Create("thirdparty/signup")]
+        public void SignupAccountFromBody([FromBody] SignupAccountModel model)
+        {
+            SignupAccount(model);
+        }
+
+        [AllowAnonymous]
+        [Create("thirdparty/signup")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void SignupAccountFromForm([FromForm] SignupAccountModel model)
+        {
+            SignupAccount(model);
+        }
+
+        public void SignupAccount(SignupAccountModel model)
+        {
+            var employeeType = model.EmplType ?? EmployeeType.User;
+            var passwordHash = model.PasswordHash;
+            var mustChangePassword = false;
+
+            if (string.IsNullOrEmpty(passwordHash))
+            {
+                passwordHash = UserManagerWrapper.GeneratePassword();
+                mustChangePassword = true;
+            }
+
+            var thirdPartyProfile = new LoginProfile(Signature, InstanceCrypto, model.SerializedProfile);
+            if (!string.IsNullOrEmpty(thirdPartyProfile.AuthorizationError))
+            {
+                // ignore cancellation
+                if (thirdPartyProfile.AuthorizationError != "Canceled at provider")
+                    throw new Exception(thirdPartyProfile.AuthorizationError);
+
+                return;
+            }
+
+            if (string.IsNullOrEmpty(thirdPartyProfile.EMail))
+            {
+                throw new Exception(Resource.ErrorNotCorrectEmail);
+            }
+
+            var userID = Guid.Empty;
+            try
+            {
+                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                var newUser = CreateNewUser(GetFirstName(model, thirdPartyProfile), GetLastName(model, thirdPartyProfile), GetEmailAddress(model, thirdPartyProfile), passwordHash, employeeType, false);
+
+                var messageAction = employeeType == EmployeeType.User ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
+                MessageService.Send(MessageInitiator.System, messageAction, MessageTarget.Create(newUser.ID), newUser.DisplayUserName(false, DisplayUserSettingsHelper));
+
+                userID = newUser.ID;
+                if (!string.IsNullOrEmpty(thirdPartyProfile.Avatar))
+                {
+                    SaveContactImage(userID, thirdPartyProfile.Avatar);
+                }
+
+                GetLinker().AddLink(userID.ToString(), thirdPartyProfile);
+            }
+            finally
+            {
+                SecurityContext.Logout();
+            }
+
+            var user = UserManager.GetUsers(userID);
+            var cookiesKey = SecurityContext.AuthenticateMe(user.Email, passwordHash);
+            CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
+            MessageService.Send(MessageAction.LoginSuccess);
+            StudioNotifyService.UserHasJoin();
+
+            if (mustChangePassword)
+            {
+                StudioNotifyService.UserPasswordChange(user);
+            }
+
+            UserHelpTourHelper.IsNewUser = true;
+            if (CoreBaseSettings.Personal)
+                PersonalSettingsHelper.IsNewUser = true;
+
+        }
+
+        [Create("phone")]
+        public object SendNotificationToChangeFromBody([FromBody] UpdateMemberModel model)
+        {
+            return SendNotificationToChange(model.UserId);
+        }
+
+        [Create("phone")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SendNotificationToChangeFromForm([FromForm] UpdateMemberModel model)
+        {
+            return SendNotificationToChange(model.UserId);
+        }
+
+        public object SendNotificationToChange(string userId)
+        {
+            var user = UserManager.GetUsers(
+                string.IsNullOrEmpty(userId)
+                    ? SecurityContext.CurrentAccount.ID
+                    : new Guid(userId));
+
+            var canChange =
+                user.IsMe(AuthContext)
+                || PermissionContext.CheckPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+
+            if (!canChange)
+                throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
+
+            user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
+            UserManager.SaveUserInfo(user);
+
+            if (user.IsMe(AuthContext))
+            {
+                return CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation);
+            }
+
+            StudioNotifyService.SendMsgMobilePhoneChange(user);
+            return string.Empty;
+        }
+
+        protected string GetEmailAddress(SignupAccountModel model)
+        {
+            if (!string.IsNullOrEmpty(model.Email))
+                return model.Email.Trim();
+
+            return string.Empty;
+        }
+
+        private string GetEmailAddress(SignupAccountModel model, LoginProfile account)
+        {
+            var value = GetEmailAddress(model);
+            return string.IsNullOrEmpty(value) ? account.EMail : value;
+        }
+
+        protected string GetFirstName(SignupAccountModel model)
+        {
+            var value = string.Empty;
+            if (!string.IsNullOrEmpty(model.FirstName)) value = model.FirstName.Trim();
+            return HtmlUtil.GetText(value);
+        }
+
+        private string GetFirstName(SignupAccountModel model, LoginProfile account)
+        {
+            var value = GetFirstName(model);
+            return string.IsNullOrEmpty(value) ? account.FirstName : value;
+        }
+
+        protected string GetLastName(SignupAccountModel model)
+        {
+            var value = string.Empty;
+            if (!string.IsNullOrEmpty(model.LastName)) value = model.LastName.Trim();
+            return HtmlUtil.GetText(value);
+        }
+
+        private string GetLastName(SignupAccountModel model, LoginProfile account)
+        {
+            var value = GetLastName(model);
+            return string.IsNullOrEmpty(value) ? account.LastName : value;
+        }
+
+        private UserInfo CreateNewUser(string firstName, string lastName, string email, string passwordHash, EmployeeType employeeType, bool fromInviteLink)
+        {
+            var isVisitor = employeeType == EmployeeType.Visitor;
+
+            if (SetupInfo.IsSecretEmail(email))
+            {
+                fromInviteLink = false;
+            }
+
+            var userInfo = new UserInfo
+            {
+                FirstName = string.IsNullOrEmpty(firstName) ? UserControlsCommonResource.UnknownFirstName : firstName,
+                LastName = string.IsNullOrEmpty(lastName) ? UserControlsCommonResource.UnknownLastName : lastName,
+                Email = email,
+            };
+
+            if (CoreBaseSettings.Personal)
+            {
+                userInfo.ActivationStatus = EmployeeActivationStatus.Activated;
+                userInfo.CultureName = CoreBaseSettings.CustomMode ? "ru-RU" : Thread.CurrentThread.CurrentUICulture.Name;
+            }
+
+            return UserManagerWrapper.AddUser(userInfo, passwordHash, true, true, isVisitor, fromInviteLink);
+        }
+
+        private void SaveContactImage(Guid userID, string url)
+        {
+            using (var memstream = new MemoryStream())
+            {
+                var req = WebRequest.Create(url);
+                using (var response = req.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    var buffer = new byte[512];
+                    int bytesRead;
+                    while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                        memstream.Write(buffer, 0, bytesRead);
+                    var bytes = memstream.ToArray();
+
+                    UserPhotoManager.SaveOrUpdatePhoto(userID, bytes);
+                }
+            }
         }
 
         private AccountLinker GetLinker()
@@ -1267,35 +1817,56 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update(@"reassign/terminate")]
-        public void TerminateReassign(Guid userId)
+        public void TerminateReassignFromBody([FromBody]TerminateModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            QueueWorkerReassign.Terminate(Tenant.TenantId, userId);
+            QueueWorkerReassign.Terminate(Tenant.TenantId, model.UserId);
+        }
+
+        [Update(@"reassign/terminate")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void TerminateReassignFromForm([FromForm]TerminateModel model)
+        {
+            PermissionContext.DemandPermissions(Constants.Action_EditUser);
+
+            QueueWorkerReassign.Terminate(Tenant.TenantId, model.UserId);
         }
 
         [Create(@"reassign/start")]
-        public ReassignProgressItem StartReassign(Guid fromUserId, Guid toUserId, bool deleteProfile)
+        public ReassignProgressItem StartReassignFromBody([FromBody]StartReassignModel model)
+        {
+            return StartReassign(model);
+        }
+
+        [Create(@"reassign/start")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public ReassignProgressItem StartReassignFromForm([FromForm]StartReassignModel model)
+        {
+            return StartReassign(model);
+        }
+
+        private ReassignProgressItem StartReassign(StartReassignModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            var fromUser = UserManager.GetUsers(fromUserId);
+            var fromUser = UserManager.GetUsers(model.FromUserId);
 
             if (fromUser == null || fromUser.ID == Constants.LostUser.ID)
-                throw new ArgumentException("User with id = " + fromUserId + " not found");
+                throw new ArgumentException("User with id = " + model.FromUserId + " not found");
 
             if (fromUser.IsOwner(Tenant) || fromUser.IsMe(AuthContext) || fromUser.Status != EmployeeStatus.Terminated)
-                throw new ArgumentException("Can not delete user with id = " + fromUserId);
+                throw new ArgumentException("Can not delete user with id = " + model.FromUserId);
 
-            var toUser = UserManager.GetUsers(toUserId);
+            var toUser = UserManager.GetUsers(model.ToUserId);
 
             if (toUser == null || toUser.ID == Constants.LostUser.ID)
-                throw new ArgumentException("User with id = " + toUserId + " not found");
+                throw new ArgumentException("User with id = " + model.ToUserId + " not found");
 
             if (toUser.IsVisitor(UserManager) || toUser.Status == EmployeeStatus.Terminated)
-                throw new ArgumentException("Can not reassign data to user with id = " + toUserId);
+                throw new ArgumentException("Can not reassign data to user with id = " + model.ToUserId);
 
-            return QueueWorkerReassign.Start(Tenant.TenantId, fromUserId, toUserId, SecurityContext.CurrentAccount.ID, deleteProfile);
+            return QueueWorkerReassign.Start(Tenant.TenantId, model.FromUserId, model.ToUserId, SecurityContext.CurrentAccount.ID, model.DeleteProfile);
         }
 
         private void CheckReassignProccess(IEnumerable<Guid> userIds)
@@ -1313,7 +1884,6 @@ namespace ASC.Employee.Core.Controllers
 
         //#endregion
 
-
         #region Remove user data
 
 
@@ -1326,25 +1896,46 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update(@"remove/terminate")]
-        public void TerminateRemove(Guid userId)
+        public void TerminateRemoveFromBody([FromBody]TerminateModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            QueueWorkerRemove.Terminate(Tenant.TenantId, userId);
+            QueueWorkerRemove.Terminate(Tenant.TenantId, model.UserId);
+        }
+
+        [Update(@"remove/terminate")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void TerminateRemoveFromForm([FromForm]TerminateModel model)
+        {
+            PermissionContext.DemandPermissions(Constants.Action_EditUser);
+
+            QueueWorkerRemove.Terminate(Tenant.TenantId, model.UserId);
         }
 
         [Create(@"remove/start")]
-        public RemoveProgressItem StartRemove(Guid userId)
+        public RemoveProgressItem StartRemoveFromBody([FromBody]TerminateModel model)
+        {
+            return StartRemove(model);
+        }
+
+        [Create(@"remove/start")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public RemoveProgressItem StartRemoveFromForm([FromForm]TerminateModel model)
+        {
+            return StartRemove(model);
+        }
+
+        private RemoveProgressItem StartRemove(TerminateModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            var user = UserManager.GetUsers(userId);
+            var user = UserManager.GetUsers(model.UserId);
 
             if (user == null || user.ID == Constants.LostUser.ID)
-                throw new ArgumentException("User with id = " + userId + " not found");
+                throw new ArgumentException("User with id = " + model.UserId + " not found");
 
             if (user.IsOwner(Tenant) || user.IsMe(AuthContext) || user.Status != EmployeeStatus.Terminated)
-                throw new ArgumentException("Can not delete user with id = " + userId);
+                throw new ArgumentException("Can not delete user with id = " + model.UserId);
 
             return QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, true);
         }
@@ -1456,48 +2047,6 @@ namespace ASC.Employee.Core.Controllers
             {
                 throw new UnknownImageFormatException();
             }
-        }
-    }
-
-    public static class PeopleControllerExtention
-    {
-        public static DIHelper AddPeopleController(this DIHelper services)
-        {
-            return services
-                .AddAccountLinker()
-                .AddMessageTargetService()
-                .AddAccountLinkerStorageService()
-                .AddFileSizeCommentService()
-                .AddCookiesManagerService()
-                .AddUserPhotoManagerService()
-                .AddCustomNamingPeopleService()
-                .AddSignatureService()
-                .AddApiContextService()
-                .AddUserManagerWrapperService()
-                .AddInstanceCryptoService()
-                .AddTenantUtilService()
-                .AddSecurityContextService()
-                .AddWebItemSecurityCache()
-                .AddDisplayUserSettingsService()
-                .AddTenantManagerService()
-                .AddSetupInfo()
-                .AddCommonLinkUtilityService()
-                .AddCoreBaseSettingsService()
-                .AddWebItemManager()
-                .AddAuthContextService()
-                .AddWebItemSecurity()
-                .AddPermissionContextService()
-                .AddTenantStatisticsProviderService()
-                .AddTenantExtraService()
-                .AddMessageServiceService()
-                .AddQueueWorkerRemoveService()
-                .AddQueueWorkerReassignService()
-                .AddStudioNotifyServiceService()
-                .AddUserManagerService()
-                .AddSettingsManagerService()
-                .AddEmployeeWraperFull()
-                .AddEmployeeWraper()
-                .AddUserFormatter();
         }
     }
 }

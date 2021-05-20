@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Mail.Core.Engine.Operations.Base;
@@ -39,64 +38,39 @@ using ASC.Mail.Extensions;
 using ASC.Mail.Utils;
 using ASC.Web.Core;
 using SecurityContext = ASC.Core.SecurityContext;
-using Microsoft.Extensions.Options;
 using ASC.Common;
 using ASC.Mail.Server.Utils;
 using System.Data;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class ServerDomainEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        public int Tenant => TenantManager.GetCurrentTenant().TenantId;
 
-        public string User
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
+        public string User => SecurityContext.CurrentAccount.ID.ToString();
 
-        private bool IsAdmin
-        {
-            get
-            {
-                return WebItemSecurity.IsProductAdministrator(WebItemManager.MailProductID, SecurityContext.CurrentAccount.ID);
-            }
-        }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        // public OperationEngine OperationEngine { get; }
-        public DaoFactory DaoFactory { get; }
+        private bool IsAdmin => WebItemSecurity.IsProductAdministrator(WebItemManager.MailProductID, SecurityContext.CurrentAccount.ID);
 
-        public ILog Log { get; private set; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private DaoFactory DaoFactory { get; }
 
         public ServerDomainEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
             DaoFactory daoFactory,
-            // OperationEngine operationEngine,
             CoreBaseSettings coreBaseSettings,
-            WebItemSecurity webItemSecurity,
-            IOptionsMonitor<ILog> option)
+            WebItemSecurity webItemSecurity)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
             WebItemSecurity = webItemSecurity;
-            // OperationEngine = operationEngine;
             DaoFactory = daoFactory;
-
-            Log = option.Get("ASC.Mail.ServerDomainEngine");
         }
 
         public ServerDomainData GetDomain(int id)
@@ -437,23 +411,6 @@ namespace ASC.Mail.Core.Engine
             };
 
             return dnsData;
-        }
-    }
-
-    public static class ServerDomainEngineExtension
-    {
-        public static DIHelper AddServerDomainEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<ServerDomainEngine>();
-
-            services.AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddDaoFactoryService()
-                //TODO: Fix .AddOperationEngineService()
-                .AddCoreBaseSettingsService()
-                .AddWebItemSecurity();
-
-            return services;
         }
     }
 }

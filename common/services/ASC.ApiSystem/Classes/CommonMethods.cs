@@ -39,12 +39,8 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
-using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
-using ASC.Core.Users;
 using ASC.Security.Cryptography;
-using ASC.Web.Core.Helpers;
-using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
@@ -57,9 +53,10 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.ApiSystem.Controllers
 {
+    [Scope]
     public class CommonMethods
     {
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
         private IConfiguration Configuration { get; }
 
@@ -79,6 +76,10 @@ namespace ASC.ApiSystem.Controllers
 
         private IMemoryCache MemoryCache { get; }
 
+        private CoreBaseSettings CoreBaseSettings { get; }
+
+        private TenantManager TenantManager { get; }
+
         public CommonMethods(
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration,
@@ -88,7 +89,9 @@ namespace ASC.ApiSystem.Controllers
             EmailValidationKeyProvider emailValidationKeyProvider,
             TimeZoneConverter timeZoneConverter, CommonConstants commonConstants,
             IMemoryCache memoryCache,
-            IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
+            IOptionsSnapshot<HostedSolution> hostedSolutionOptions,
+            CoreBaseSettings coreBaseSettings,
+            TenantManager tenantManager)
         {
             HttpContextAccessor = httpContextAccessor;
 
@@ -107,7 +110,8 @@ namespace ASC.ApiSystem.Controllers
             CommonConstants = commonConstants;
 
             MemoryCache = memoryCache;
-
+            CoreBaseSettings = coreBaseSettings;
+            TenantManager = tenantManager;
             HostedSolution = hostedSolutionOptions.Get(CommonConstants.BaseDbConnKeyString);
         }
 
@@ -201,6 +205,12 @@ namespace ASC.ApiSystem.Controllers
 
         public bool GetTenant(IModel model, out Tenant tenant)
         {
+            if (CoreBaseSettings.Standalone && model != null && !string.IsNullOrEmpty((model.PortalName ?? "").Trim()))
+            {
+                tenant = TenantManager.GetTenant((model.PortalName ?? "").Trim());
+                return true;
+            }
+
             if (model != null && model.TenantId.HasValue)
             {
                 tenant = HostedSolution.GetTenant(model.TenantId.Value);
@@ -219,8 +229,13 @@ namespace ASC.ApiSystem.Controllers
 
         public bool IsTestEmail(string email)
         {
+            //the point is not needed in gmail.com
+            email = Regex.Replace(email ?? "", "\\.*(?=\\S*(@gmail.com$))", "").ToLower();
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(CommonConstants.AutotestSecretEmails))
+                return false;
+
             var regex = new Regex(CommonConstants.AutotestSecretEmails, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
-            return regex.IsMatch((email ?? "").ToLower());
+            return regex.IsMatch(email);
         }
 
         public bool CheckMuchRegistration(TenantModel model, string clientIP, Stopwatch sw)
@@ -289,7 +304,7 @@ namespace ASC.ApiSystem.Controllers
             try
             {
                 var data = string.Format("secret={0}&remoteip={1}&response={2}", Configuration["recaptcha:private-key"], ip, response);
-                var url = Configuration["recaptcha:verify-url"] ?? "https://www.google.com/recaptcha/api/siteverify";
+                var url = Configuration["recaptcha:verify-url"] ?? "https://www.recaptcha.net/recaptcha/api/siteverify";
 
                 var webRequest = (HttpWebRequest)WebRequest.Create(url);
                 webRequest.Method = WebRequestMethods.Http.Post;
@@ -324,26 +339,6 @@ namespace ASC.ApiSystem.Controllers
                 Log.Error(ex);
             }
             return false;
-        }
-    }
-
-    public static class CommonMethodsExtention
-    {
-        public static DIHelper AddCommonMethods(this DIHelper services)
-        {
-            services.TryAddScoped<CommonMethods>();
-
-            return services
-                .AddCoreSettingsService()
-                .AddCommonLinkUtilityService()
-                .AddEmailValidationKeyProviderService()
-                .AddApiSystemHelper()
-                .AddTenantManagerService()
-                .AddUserFormatter()
-                .AddUserManagerWrapperService()
-                .AddSettingsManagerService()
-                .AddSecurityContextService()
-                .AddHostedSolutionService();
         }
     }
 }

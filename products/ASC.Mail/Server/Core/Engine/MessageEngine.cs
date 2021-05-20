@@ -40,7 +40,6 @@ using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Core.Dao.Expressions.Conversation;
 using ASC.Mail.Core.Dao.Expressions.Message;
-using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Storage;
 using ASC.Mail.Enums;
@@ -53,53 +52,42 @@ using Microsoft.Extensions.DependencyInjection;
 using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Expressions;
-using ASC.Web.Files.Api;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Utils;
 using ASC.Common.Web;
 using ASC.Mail.Exceptions;
 using ASC.Web.Core.Files;
 using Microsoft.EntityFrameworkCore;
-using System.Data.SqlClient;
 using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class MessageEngine
     {
-        public DaoFactory DaoFactory { get; }
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public UserFolderEngine UserFolderEngine { get; }
-        public FolderEngine FolderEngine { get; }
-        public IndexEngine IndexEngine { get; }
-        public QuotaEngine QuotaEngine { get; }
-        public TagEngine TagEngine { get; }
-        public TenantUtil TenantUtil { get; }
-        public CoreSettings CoreSettings { get; }
-        public FactoryIndexer<MailMail> FactoryIndexer { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public StorageFactory StorageFactory { get; }
-        public StorageManager StorageManager { get; }
-        public FilesIntegration FilesIntegration { get; }
-        public FileSecurity FilesSeurity { get; }
-        public FileConverter FileConverter { get; }
-        public ILog Log { get; private set; }
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        private DaoFactory DaoFactory { get; }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private UserFolderEngine UserFolderEngine { get; }
+        private FolderEngine FolderEngine { get; }
+        private IndexEngine IndexEngine { get; }
+        private QuotaEngine QuotaEngine { get; }
+        private TagEngine TagEngine { get; }
+        private TenantUtil TenantUtil { get; }
+        private CoreSettings CoreSettings { get; }
+        private FactoryIndexer<MailMail> FactoryIndexer { get; }
+        private FactoryIndexer FactoryIndexerCommon { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private StorageFactory StorageFactory { get; }
+        private StorageManager StorageManager { get; }
+        private Files.Core.IDaoFactory FilesDaoFactory { get; }
+        private FileSecurity FilesSeurity { get; }
+        private FileConverter FileConverter { get; }
+        private ILog Log { get; }
 
-        public string User
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+
+        private string User => SecurityContext.CurrentAccount.ID.ToString();
 
         public IDataStore Storage { get; set; }
 
@@ -118,10 +106,11 @@ namespace ASC.Mail.Core.Engine
             CoreSettings coreSettings,
             StorageFactory storageFactory,
             StorageManager storageManager,
-            FilesIntegration filesIntegration,
+            Files.Core.IDaoFactory filesDaoFactory,
             FileSecurity filesSeurity,
             FileConverter fileConverter,
             FactoryIndexer<MailMail> factoryIndexer,
+            FactoryIndexer factoryIndexerCommon,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
@@ -136,10 +125,11 @@ namespace ASC.Mail.Core.Engine
             TenantUtil = tenantUtil;
             CoreSettings = coreSettings;
             FactoryIndexer = factoryIndexer;
+            FactoryIndexerCommon = factoryIndexerCommon;
             ServiceProvider = serviceProvider;
             StorageFactory = storageFactory;
             StorageManager = storageManager;
-            FilesIntegration = filesIntegration;
+            FilesDaoFactory = filesDaoFactory;
             FilesSeurity = filesSeurity;
             FileConverter = fileConverter;
             Storage = StorageFactory.GetMailStorage(Tenant);
@@ -206,7 +196,7 @@ namespace ASC.Mail.Core.Engine
                 throw new ArgumentException("Folder not found");
 
             var t = ServiceProvider.GetService<MailMail>();
-            if (!filter.IsDefault() && FactoryIndexer.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
+            if (!filter.IsDefault() && FactoryIndexer.Support(t) && FactoryIndexerCommon.CheckState(false))
             {
                 if (FilterMessagesExp.TryGetFullTextSearchIds(FactoryIndexer, ServiceProvider,
                     filter, User, out ids, out total))
@@ -329,7 +319,7 @@ namespace ASC.Mail.Core.Engine
                 return -1;
 
             var t = ServiceProvider.GetService<MailMail>();
-            if (FactoryIndexer.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
+            if (FactoryIndexer.Support(t) && FactoryIndexerCommon.CheckState(false))
             {
                 if (FilterMessagesExp.TryGetFullTextSearchIds(FactoryIndexer, ServiceProvider,
                     filter, User, out List<int> ids, out long total, mail.DateSent))
@@ -2419,7 +2409,7 @@ namespace ASC.Mail.Core.Engine
                 IMessagesExp exp = null;
 
                 var t = ServiceProvider.GetService<MailMail>();
-                if (!filter.IsDefault() && FactoryIndexer.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
+                if (!filter.IsDefault() && FactoryIndexer.Support(t) && FactoryIndexerCommon.CheckState(false))
                 {
                     filter.Page = chunkIndex * CHUNK_SIZE * pageSize; // Elastic Limit from {index of last message} to {count of messages}
 
@@ -2549,7 +2539,7 @@ namespace ASC.Mail.Core.Engine
         {
             MailAttachmentData result;
 
-            var fileDao = FilesIntegration.DaoFactory.GetFileDao<string>();
+            var fileDao = FilesDaoFactory.GetFileDao<string>();
 
             var file = string.IsNullOrEmpty(version)
                            ? fileDao.GetFile(fileId)
@@ -3083,33 +3073,6 @@ namespace ASC.Mail.Core.Engine
             };
 
             return a;
-        }
-    }
-
-    public static class MessageEngineExtension
-    {
-        public static DIHelper AddMessageEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<MessageEngine>();
-
-            services.AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddDaoFactoryService()
-                .AddUserFolderEngineService()
-                .AddFolderEngineService()
-                .AddIndexEngineService()
-                .AddQuotaEngineService()
-                .AddTagEngineService()
-                .AddTenantUtilService()
-                .AddCoreSettingsService()
-                .AddStorageFactoryService()
-                .AddFactoryIndexerService<MailMail>()
-                .AddStorageManagerService()
-                .AddFilesIntegrationService()
-                .AddFileSecurityService()
-                .AddFileConverterService();
-
-            return services;
         }
     }
 }

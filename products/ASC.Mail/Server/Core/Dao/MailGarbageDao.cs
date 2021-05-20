@@ -34,6 +34,7 @@ using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class MailGarbageDao: BaseDao
     {
         public MailGarbageDao(
@@ -130,16 +131,6 @@ namespace ASC.Mail.Core.Dao
             MailDb.MailMail.RemoveRange(deleteQuery);
 
             MailDb.SaveChanges();
-        }
-    }
-
-    public static class MailGarbageDaoExtension
-    {
-        public static DIHelper AddMailGarbageDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<MailGarbageDao>();
-
-            return services;
         }
     }
 }

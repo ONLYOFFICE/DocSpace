@@ -60,6 +60,7 @@ namespace ASC.Web.Api.Models
         }
     }
 
+    [Scope]
     public class EmployeeWraperHelper
     {
         private ApiContext HttpContext { get; }
@@ -122,20 +123,6 @@ namespace ASC.Web.Api.Models
             }
 
             return result;
-        }
-    }
-
-    public static class EmployeeWraperExtension
-    {
-        public static DIHelper AddEmployeeWraper(this DIHelper services)
-        {
-            services.TryAddScoped<EmployeeWraperHelper>();
-
-            return services
-                .AddApiContextService()
-                .AddDisplayUserSettingsService()
-                .AddUserPhotoManagerService()
-                .AddCommonLinkUtilityService();
         }
     }
 }

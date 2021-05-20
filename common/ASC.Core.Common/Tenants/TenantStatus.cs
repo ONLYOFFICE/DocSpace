@@ -33,6 +33,7 @@ namespace ASC.Core.Tenants
         RemovePending = 2,
         Transfering = 3,
         Restoring = 4,
-        Migrating = 5
+        Migrating = 5,
+        Encryption = 6
     }
 }

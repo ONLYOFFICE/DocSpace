@@ -1,0 +1,117 @@
+import React from "react";
+import styled from "styled-components";
+
+import { withTranslation } from "react-i18next";
+import ModalDialog from "@appserver/components/modal-dialog";
+import Text from "@appserver/components/text";
+import Button from "@appserver/components/button";
+import { inject, observer } from "mobx-react";
+
+const StyledOperationDialog = styled.div`
+  .operation-button {
+    margin-right: 8px;
+  }
+`;
+
+const PureThirdPartyMoveContainer = ({
+  t,
+  visible,
+  provider,
+  selection,
+  destFolderId,
+  setDestFolderId,
+  checkOperationConflict,
+  setThirdPartyMoveDialogVisible,
+}) => {
+  const zIndex = 310;
+  const deleteAfter = true; // TODO: get from settings
+
+  const onClose = () => {
+    setDestFolderId(false);
+    setThirdPartyMoveDialogVisible(false);
+  };
+
+  const startOperation = (e) => {
+    const isCopy = e.target.dataset.copy;
+    const folderIds = [];
+    const fileIds = [];
+
+    for (let item of selection) {
+      if (item.fileExst) {
+        fileIds.push(item.id);
+      } else {
+        folderIds.push(item.id);
+      }
+    }
+
+    const data = {
+      destFolderId,
+      folderIds,
+      fileIds,
+      deleteAfter,
+      isCopy,
+    };
+
+    checkOperationConflict(data);
+    onClose();
+  };
+
+  return (
+    <StyledOperationDialog>
+      <ModalDialog visible={visible} zIndex={zIndex} onClose={onClose}>
+        <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text>{t("MoveConfirmationMessage", { provider })}</Text>
+          <br />
+          <Text>{t("MoveConfirmationAlert")}</Text>
+        </ModalDialog.Body>
+
+        <ModalDialog.Footer>
+          <Button
+            className="operation-button"
+            label={t("Move")}
+            size="big"
+            primary
+            onClick={startOperation}
+          />
+          <Button
+            data-copy="copy"
+            className="operation-button"
+            label={t("Copy")}
+            size="big"
+            onClick={startOperation}
+          />
+          <Button
+            className="operation-button"
+            label={t("CancelButton")}
+            size="big"
+            onClick={onClose}
+          />
+        </ModalDialog.Footer>
+      </ModalDialog>
+    </StyledOperationDialog>
+  );
+};
+
+export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
+  const {
+    thirdPartyMoveDialogVisible: visible,
+    setThirdPartyMoveDialogVisible,
+    destFolderId,
+    setDestFolderId,
+  } = dialogsStore;
+  const { selection } = filesStore;
+  const { checkOperationConflict } = filesActionsStore;
+
+  return {
+    visible,
+    setThirdPartyMoveDialogVisible,
+    destFolderId,
+    setDestFolderId,
+    provider: selection[0].providerKey,
+    checkOperationConflict,
+    selection,
+  };
+})(
+  withTranslation("ThirdPartyMoveDialog")(observer(PureThirdPartyMoveContainer))
+);

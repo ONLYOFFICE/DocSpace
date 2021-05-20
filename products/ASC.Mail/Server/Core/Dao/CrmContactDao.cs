@@ -26,7 +26,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -35,6 +34,7 @@ using ASC.Mail.Enums;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class CrmContactDao : BaseDao, ICrmContactDao
     {
         public CrmContactDao(
@@ -100,16 +100,6 @@ namespace ASC.Mail.Core.Dao
             //}
 
             return ids;
-        }
-    }
-
-    public static class CrmContactDaoExtension
-    {
-        public static DIHelper AddCrmContactDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<CrmContactDao>();
-
-            return services;
         }
     }
 }

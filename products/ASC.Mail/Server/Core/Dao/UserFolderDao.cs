@@ -36,6 +36,7 @@ using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class UserFolderDao : BaseDao, IUserFolderDao
     {
         public UserFolderDao(
@@ -351,16 +352,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return folder;
-        }
-    }
-
-    public static class UserFolderDaoExtension
-    {
-        public static DIHelper AddUserFolderDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<UserFolderDao>();
-
-            return services;
         }
     }
 }

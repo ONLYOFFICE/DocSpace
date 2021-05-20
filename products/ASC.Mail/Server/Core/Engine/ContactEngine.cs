@@ -48,35 +48,24 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class ContactEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string User => SecurityContext.CurrentAccount.ID.ToString();
 
-        public string User
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-
-        public ILog Log { get; private set; }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public DaoFactory DaoFactory { get; }
-        public IndexEngine IndexEngine { get; }
-        public AccountEngine AccountEngine { get; }
-        public ApiHelper ApiHelper { get; }
-        public FactoryIndexer<MailContact> FactoryIndexer { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
+        private ILog Log { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private DaoFactory DaoFactory { get; }
+        private IndexEngine IndexEngine { get; }
+        private AccountEngine AccountEngine { get; }
+        private ApiHelper ApiHelper { get; }
+        private FactoryIndexer<MailContact> FactoryIndexer { get; }
+        private FactoryIndexer FactoryIndexerCommon { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
 
         public ContactEngine(
             SecurityContext securityContext,
@@ -86,6 +75,7 @@ namespace ASC.Mail.Core.Engine
             AccountEngine accountEngine,
             ApiHelper apiHelper,
             FactoryIndexer<MailContact> factoryIndexer,
+            FactoryIndexer factoryIndexerCommon,
             WebItemSecurity webItemSecurity,
             CommonLinkUtility commonLinkUtility,
             IServiceProvider serviceProvider,
@@ -98,6 +88,7 @@ namespace ASC.Mail.Core.Engine
             AccountEngine = accountEngine;
             ApiHelper = apiHelper;
             FactoryIndexer = factoryIndexer;
+            FactoryIndexerCommon = factoryIndexerCommon;
             ServiceProvider = serviceProvider;
             WebItemSecurity = webItemSecurity;
             CommonLinkUtility = commonLinkUtility;
@@ -109,7 +100,7 @@ namespace ASC.Mail.Core.Engine
         {
             var exp = string.IsNullOrEmpty(search) && !contactType.HasValue
                 ? new SimpleFilterContactsExp(Tenant, User, sortorder == Defines.ASCENDING, fromIndex, pageSize)
-                : new FullFilterContactsExp(Tenant, User, DaoFactory.MailDb, FactoryIndexer, ServiceProvider, search, contactType,
+                : new FullFilterContactsExp(Tenant, User, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerCommon, ServiceProvider, search, contactType,
                     orderAsc: sortorder == Defines.ASCENDING,
                     startIndex: fromIndex, limit: pageSize);
 
@@ -129,7 +120,7 @@ namespace ASC.Mail.Core.Engine
 
         public List<MailContactData> GetContactsByContactInfo(ContactInfoType infoType, string data, bool? isPrimary)
         {
-            var exp = new FullFilterContactsExp(Tenant, User, DaoFactory.MailDb, FactoryIndexer, ServiceProvider, 
+            var exp = new FullFilterContactsExp(Tenant, User, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerCommon, ServiceProvider, 
                 data, infoType: infoType, isPrimary: isPrimary);
 
             var contacts = GetContactCards(exp);
@@ -330,7 +321,7 @@ namespace ASC.Mail.Core.Engine
                     TenantManager.SetCurrentTenant(tenant);
                     SecurityContext.AuthenticateMe(userGuid);
 
-                    var exp = new FullFilterContactsExp(tenant, userName, DaoFactory.MailDb, FactoryIndexer, ServiceProvider, 
+                    var exp = new FullFilterContactsExp(tenant, userName, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerCommon, ServiceProvider, 
                         term, infoType: ContactInfoType.Email, orderAsc: true, limit: maxCountPerSystem);
 
                     var contactCards = GetContactCards(exp);
@@ -433,26 +424,6 @@ namespace ASC.Mail.Core.Engine
                 var strParts = str.Split('<');
                 return strParts.Last().Replace(">", "").GetHashCode();
             }
-        }
-    }
-
-    public static class ContactEngineExtension
-    {
-        public static DIHelper AddContactEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<ContactEngine>();
-
-            services.AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddDaoFactoryService()
-                .AddIndexEngineService()
-                .AddAccountEngineService()
-                .AddApiHelperService()
-                .AddFactoryIndexerService<MailContact>()
-                .AddCommonLinkUtilityService()
-                .AddWebItemSecurity();
-
-            return services;
         }
     }
 }

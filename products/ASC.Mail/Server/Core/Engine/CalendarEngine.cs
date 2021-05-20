@@ -36,12 +36,13 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class CalendarEngine
     {
-        public ILog Log { get; private set; }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public ApiHelper ApiHelper { get; }
+        private ILog Log { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private ApiHelper ApiHelper { get; }
 
         public CalendarEngine(SecurityContext securityContext,
             TenantManager tenantManager,
@@ -126,21 +127,6 @@ namespace ASC.Mail.Core.Engine
                     calendarId, calendarEventUid, calendarIcs, calendarCharset, calendarContentType,
                     calendarEventReceiveEmail, ex.ToString());
             }
-        }
-    }
-
-    public static class CalendarEngineExtension
-    {
-        public static DIHelper AddCalendarEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<CalendarEngine>();
-
-            services
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddApiHelperService();
-
-            return services;
         }
     }
 }

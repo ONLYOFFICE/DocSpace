@@ -27,9 +27,11 @@
 #if DEBUG
 using System;
 using System.Reflection;
+
 using log4net;
 using log4net.Appender;
 using log4net.Config;
+
 using NUnit.Framework;
 
 namespace ASC.Common.Tests.Logging
@@ -48,9 +50,9 @@ namespace ASC.Common.Tests.Logging
         [Test]
         public void CommandLineTest()
         {
-            XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()));
-            var appenders = LogManager.GetLogger(Assembly.GetCallingAssembly(), "ASC").Logger.Repository.GetAppenders();
-            _ = ((FileAppender)appenders[0]).File;
+            //XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()));
+            //var appenders = LogManager.GetLogger(Assembly.GetCallingAssembly(), "ASC").Logger.Repository.GetAppenders();
+            //((FileAppender)appenders[0]).File;
             //Assert.AreEqual(Path.GetTempPath() + "onlyoffice\\8.0\\bin\\Test." + DateTime.Now.ToString("MM-dd") + ".log", ((FileAppender)appenders[0]).File);
         }
     }

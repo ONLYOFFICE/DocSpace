@@ -27,13 +27,16 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+
 using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.WebUtilities;
+
 using Newtonsoft.Json;
 
 namespace ASC.Common.Utils
 {
+    [Singletone]
     public class Signature
     {
         public Signature(MachinePseudoKeys machinePseudoKeys)
@@ -41,7 +44,7 @@ namespace ASC.Common.Utils
             MachinePseudoKeys = machinePseudoKeys;
         }
 
-        public MachinePseudoKeys MachinePseudoKeys { get; }
+        private MachinePseudoKeys MachinePseudoKeys { get; }
 
         public string Create<T>(T obj)
         {
@@ -62,17 +65,10 @@ namespace ASC.Common.Utils
 
         public static T Read<T>(string signature, string secret)
         {
-            return Read<T>(signature, secret, true);
-        }
-
-        public static T Read<T>(string signature, string secret, bool useSecret)
-        {
             try
             {
                 var payloadParts = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(signature)).Split('?');
-                if (!useSecret || GetHashBase64(payloadParts[1] + secret) == payloadParts[0]
-                    || GetHashBase64MD5(payloadParts[1] + secret) == payloadParts[0] //todo: delete
-                    )
+                if (GetHashBase64(payloadParts[1] + secret) == payloadParts[0])
                 {
                     //Sig correct
                     return JsonConvert.DeserializeObject<T>(payloadParts[1]);
@@ -94,15 +90,6 @@ namespace ASC.Common.Utils
         {
             using var md5 = MD5.Create();
             return Convert.ToBase64String(md5.ComputeHash(Encoding.UTF8.GetBytes(str)));
-        }
-    }
-
-    public static class SignatureExtension
-    {
-        public static DIHelper AddSignatureService(this DIHelper services)
-        {
-            services.TryAddSingleton<Signature>();
-            return services.AddMachinePseudoKeysService();
         }
     }
 }

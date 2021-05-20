@@ -24,7 +24,6 @@
 */
 
 
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -37,6 +36,7 @@ using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class FilterDao : BaseDao, IFilterDao
     {
         public FilterDao(
@@ -119,16 +119,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return f;
-        }
-    }
-
-    public static class FilterDaoExtension
-    {
-        public static DIHelper AddFilterDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<FilterDao>();
-
-            return services;
         }
     }
 }

@@ -17,15 +17,14 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
+    [Scope]
     public class ProductSecurityFilter : IResourceFilter
     {
         private static readonly IDictionary<string, Guid> products;
         private readonly ILog log;
 
-        public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public AuthContext AuthContext { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private AuthContext AuthContext { get; }
 
         static ProductSecurityFilter()
         {
@@ -57,14 +56,10 @@ namespace ASC.Api.Core.Middleware
 
         public ProductSecurityFilter(
             IOptionsMonitor<ILog> options,
-            UserManager userManager,
-            TenantManager tenantManager,
             WebItemSecurity webItemSecurity,
             AuthContext authContext)
         {
             log = options.CurrentValue;
-            UserManager = userManager;
-            TenantManager = tenantManager;
             WebItemSecurity = webItemSecurity;
             AuthContext = authContext;
         }
@@ -120,18 +115,6 @@ namespace ASC.Api.Core.Middleware
                 return products[name];
             }
             return default;
-        }
-    }
-
-    public static class ProductSecurityFilterExtension
-    {
-        public static DIHelper AddProductSecurityFilter(this DIHelper services)
-        {
-            return services
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddWebItemSecurity()
-                .AddAuthContextService();
         }
     }
 }

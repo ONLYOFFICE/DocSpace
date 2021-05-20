@@ -29,12 +29,15 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 
+using ASC.Common;
+
 using Microsoft.Extensions.DependencyInjection;
 
 using Nest;
 
 namespace ASC.ElasticSearch
 {
+    [Scope]
     public class Selector<T> where T : class, ISearchItem
     {
         private readonly QueryContainerDescriptor<T> queryContainerDescriptor = new QueryContainerDescriptor<T>();
@@ -42,7 +45,7 @@ namespace ASC.ElasticSearch
         private QueryContainer queryContainer = new QueryContainer();
         private int limit = 1000, offset;
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public Selector(IServiceProvider serviceProvider)
         {

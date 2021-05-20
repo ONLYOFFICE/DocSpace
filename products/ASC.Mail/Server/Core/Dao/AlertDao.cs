@@ -37,6 +37,7 @@ using ASC.Common;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class AlertDao : BaseDao, IAlertDao
     {
         public AlertDao(
@@ -164,15 +165,5 @@ namespace ASC.Mail.Core.Dao
             return count;
         }
 
-    }
-
-    public static class AlertDaoExtension
-    {
-        public static DIHelper AddAlertDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<AlertDao>();
-
-            return services;
-        }
     }
 }

@@ -99,7 +99,7 @@ namespace ASC.Core.Tenants
 
         public DateTime CreatedDateTime { get; internal set; }
 
-        public CultureInfo GetCulture() { return !string.IsNullOrEmpty(Language) ? CultureInfo.GetCultureInfo(Language) : CultureInfo.CurrentCulture; }
+        public CultureInfo GetCulture() { return !string.IsNullOrEmpty(Language) ? CultureInfo.GetCultureInfo(Language.Trim()) : CultureInfo.CurrentCulture; }
 
         public DateTime LastModified { get; set; }
 

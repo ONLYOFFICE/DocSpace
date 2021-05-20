@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,11 +49,25 @@ namespace ASC.Web.Core
         All = Normal | Disabled
     }
 
+    [Singletone]
     public class WebItemManager
     {
         private readonly ILog log;
 
-        private readonly Dictionary<Guid, IWebItem> items = new Dictionary<Guid, IWebItem>();
+        private ConcurrentDictionary<Guid, IWebItem> items;
+        private ConcurrentDictionary<Guid, IWebItem> Items
+        {
+            get
+            {
+                if (lazyItems.IsValueCreated)
+                {
+                    return items;
+                }
+
+                return items = lazyItems.Value;
+            }
+        }
+        private readonly Lazy<ConcurrentDictionary<Guid, IWebItem>> lazyItems;
         private readonly List<string> disableItem;
 
         public static Guid CommunityProductID
@@ -105,37 +120,33 @@ namespace ASC.Web.Core
             get { return new Guid("{46CFA73A-F320-46CF-8D5B-CD82E1D67F26}"); }
         }
 
-        public ILifetimeScope Container { get; }
-        public IConfiguration Configuration { get; }
+        private ILifetimeScope Container { get; }
+        private IConfiguration Configuration { get; }
+
 
         public IWebItem this[Guid id]
         {
             get
             {
-                items.TryGetValue(id, out var i);
+                Items.TryGetValue(id, out var i);
                 return i;
             }
         }
 
-        public WebItemManager(IContainer container, IConfiguration configuration, IOptionsMonitor<ILog> options)
+        public WebItemManager(ILifetimeScope container, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
             Container = container;
             Configuration = configuration;
             log = options.Get("ASC.Web");
             disableItem = (Configuration["web:disabled-items"] ?? "").Split(",").ToList();
-            LoadItems();
+            lazyItems = new Lazy<ConcurrentDictionary<Guid, IWebItem>>(LoadItems, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
-        public WebItemManager(ILifetimeScope container, IConfiguration configuration, IOptionsMonitor<ILog> options)
-            : this(null, configuration, options)
+        private ConcurrentDictionary<Guid, IWebItem> LoadItems()
         {
-            Container = container;
-            LoadItems();
-        }
+            var result = new ConcurrentDictionary<Guid, IWebItem>();
 
-        public void LoadItems()
-        {
-            if (Container == null) return;
+            if (Container == null) return result;
 
             foreach (var webitem in Container.Resolve<IEnumerable<IWebItem>>())
             {
@@ -144,46 +155,41 @@ namespace ASC.Web.Core
                 {
                     if (DisabledWebItem(file)) continue;
 
-                    if (RegistryItem(webitem))
-                    {
-                        log.DebugFormat("Web item {0} loaded", webitem.Name);
-                    }
+                    RegistryItem(result, webitem);
                 }
                 catch (Exception exc)
                 {
                     log.Error(string.Format("Couldn't load web item {0}", file), exc);
                 }
             }
+
+            return result;
         }
 
-        public bool RegistryItem(IWebItem webitem)
+        private void RegistryItem(ConcurrentDictionary<Guid, IWebItem> result, IWebItem webitem)
         {
-            lock (items)
+            if (webitem != null && !result.TryGetValue(webitem.ID, out _))
             {
-                if (webitem != null && this[webitem.ID] == null)
+                if (webitem is IAddon addon)
                 {
-                    if (webitem is IAddon)
-                    {
-                        ((IAddon)webitem).Init();
-                    }
-                    if (webitem is IProduct)
-                    {
-                        ((IProduct)webitem).Init();
-                    }
-
-                    if (webitem is IModule module)
-                    {
-                        if (module.Context != null && module.Context.SearchHandler != null)
-                        {
-                            //TODO
-                            //SearchHandlerManager.Registry(module.Context.SearchHandler);
-                        }
-                    }
-
-                    items.Add(webitem.ID, webitem);
-                    return true;
+                    addon.Init();
                 }
-                return false;
+                if (webitem is IProduct product)
+                {
+                    product.Init();
+                }
+
+                if (webitem is IModule module)
+                {
+                    if (module.Context != null && module.Context.SearchHandler != null)
+                    {
+                        //TODO
+                        //SearchHandlerManager.Registry(module.Context.SearchHandler);
+                    }
+                }
+
+                result.TryAdd(webitem.ID, webitem);
+                log.DebugFormat("Web item {0} loaded", webitem.Name);
             }
         }
 
@@ -199,7 +205,7 @@ namespace ASC.Web.Core
 
         public List<IWebItem> GetItemsAll()
         {
-            var list = items.Values.ToList();
+            var list = Items.Values.ToList();
             list.Sort((x, y) => GetSortOrder(x).CompareTo(GetSortOrder(y)));
             return list;
         }
@@ -215,11 +221,12 @@ namespace ASC.Web.Core
         }
     }
 
+    [Scope]
     public class WebItemManagerSecurity
     {
-        public WebItemSecurity WebItemSecurity { get; }
-        public AuthContext AuthContext { get; }
-        public WebItemManager WebItemManager { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private AuthContext AuthContext { get; }
+        private WebItemManager WebItemManager { get; }
 
         public WebItemManagerSecurity(WebItemSecurity webItemSecurity, AuthContext authContext, WebItemManager webItemManager)
         {
@@ -261,23 +268,6 @@ namespace ASC.Web.Core
                                                             .Where(p => p.ProjectId == parentItemID)
                                                             .Cast<IWebItem>()
                                                             .ToList();
-        }
-    }
-
-    public static class WebItemManagerExtension
-    {
-        public static DIHelper AddWebItemManager(this DIHelper services)
-        {
-            services.TryAddSingleton<WebItemManager>();
-            return services;
-        }
-        public static DIHelper AddWebItemManagerSecurity(this DIHelper services)
-        {
-            services.TryAddScoped<WebItemManagerSecurity>();
-            return services
-                .AddAuthContextService()
-                .AddWebItemSecurity()
-                .AddWebItemManager();
         }
     }
 }

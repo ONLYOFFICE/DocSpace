@@ -36,6 +36,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.Settings
 {
+    [Scope]
     public class SettingsManager : DbSettingsManager
     {
         public SettingsManager(
@@ -48,18 +49,6 @@ namespace ASC.Core.Common.Settings
             : base(serviceProvider, dbSettingsManagerCache, option, authContext, tenantManager, dbContextManager)
         {
 
-        }
-    }
-
-    public static class SettingsManagerExtention
-    {
-        public static DIHelper AddSettingsManagerService(this DIHelper services)
-        {
-            services.TryAddScoped<SettingsManager>();
-
-            return services
-                .AddAuthContextService()
-                .AddDbSettingsManagerService();
         }
     }
 }

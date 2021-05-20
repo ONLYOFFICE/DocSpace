@@ -29,61 +29,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Security;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
-using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
 using ASC.Mail.Server.Core.Entities;
 using ASC.Mail.Server.Utils;
 using ASC.Mail.Utils;
 using ASC.Web.Core;
 using SecurityContext = ASC.Core.SecurityContext;
-using Microsoft.Extensions.Options;
 using ASC.Core.Common.Settings;
 using ASC.Web.Core.Users;
 using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class ServerEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private bool IsAdmin => WebItemSecurity.IsProductAdministrator(WebItemManager.MailProductID, SecurityContext.CurrentAccount.ID);
 
-        public string User
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public DaoFactory DaoFactory { get; }
-        public ServerDomainEngine ServerDomainEngine { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public SettingsManager SettingsManager { get; }
-        public UserManagerWrapper UserManagerWrapper { get; }
-        public IServiceProvider ServiceProvider { get; }
-
-        private bool IsAdmin
-        {
-            get
-            {
-                return WebItemSecurity.IsProductAdministrator(WebItemManager.MailProductID, SecurityContext.CurrentAccount.ID);
-            }
-        }
-
-        public ILog Log { get; private set; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private DaoFactory DaoFactory { get; }
+        private ServerDomainEngine ServerDomainEngine { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private WebItemSecurity WebItemSecurity { get; }
+        private SettingsManager SettingsManager { get; }
+        private UserManagerWrapper UserManagerWrapper { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public ServerEngine(
             SecurityContext securityContext,
@@ -94,8 +69,7 @@ namespace ASC.Mail.Core.Engine
             WebItemSecurity webItemSecurity,
             SettingsManager settingsManager,
             UserManagerWrapper userManagerWrapper,
-            IServiceProvider serviceProvider,
-            IOptionsMonitor<ILog> option)
+            IServiceProvider serviceProvider)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
@@ -106,8 +80,6 @@ namespace ASC.Mail.Core.Engine
             SettingsManager = settingsManager;
             UserManagerWrapper = userManagerWrapper;
             ServiceProvider = serviceProvider;
-            
-            Log = option.Get("ASC.Mail.ServerEngine");
         }
 
         public List<MailAddressInfo> GetAliases(int mailboxId)
@@ -526,25 +498,6 @@ namespace ASC.Mail.Core.Engine
             var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
             var version = engine.GetVersion();
             return version;
-        }
-    }
-
-    public static class ServerEngineExtension
-    {
-        public static DIHelper AddServerEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<ServerEngine>();
-
-            services.AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddDaoFactoryService()
-                .AddServerDomainEngineService()
-                .AddCoreBaseSettingsService()
-                .AddWebItemSecurity()
-                .AddSettingsManagerService()
-                .AddUserManagerWrapperService();
-
-            return services;
         }
     }
 }

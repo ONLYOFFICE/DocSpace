@@ -33,6 +33,7 @@ using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Singletone]
     public class CacheEngine
     {
         private ICache Cache { get; }
@@ -42,9 +43,9 @@ namespace ASC.Mail.Core.Engine
 
         private static readonly Regex AllReg = new Regex(".*", RegexOptions.Compiled);
 
-        public CacheEngine(ICacheNotify<AccountCacheItem> notify)
+        public CacheEngine(ICacheNotify<AccountCacheItem> notify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
 
             CacheNotifyItem = notify;
 
@@ -81,17 +82,6 @@ namespace ASC.Mail.Core.Engine
         public void ClearAll()
         {
             CacheNotifyItem.Publish(new AccountCacheItem(), CacheNotifyAction.Remove);
-        }
-    }
-
-    public static class CacheEngineExtension
-    {
-        public static DIHelper AddCacheEngineService(this DIHelper services)
-        {
-            services.TryAddSingleton<CacheEngine>();
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-            return services;
         }
     }
 }

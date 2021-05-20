@@ -32,13 +32,9 @@ using System.Threading;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Settings;
-//using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
 using ASC.Mail.Authorization;
 using ASC.Mail.Clients;
-using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
@@ -47,37 +43,22 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class AccountEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string UserId => SecurityContext.CurrentAccount.ID.ToString();
 
-        public string UserId
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-
-        public SecurityContext SecurityContext { get; }
-        public ILog Log { get; }
-        public MailboxEngine MailboxEngine { get; }
-        public DaoFactory DaoFactory { get; }
-        public TenantManager TenantManager { get; }
-        public CacheEngine CacheEngine { get; }
-        public ServerEngine ServerEngine { get; }
-        public ConsumerFactory ConsumerFactory { get; }
-        public GoogleLoginProvider GoogleLoginProvider { get; }
-        public MailBoxSettingEngine MailBoxSettingEngine { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public SettingsManager SettingsManager { get; }
-        public MailDbContext MailDb { get; }
+        private SecurityContext SecurityContext { get; }
+        private ILog Log { get; }
+        private MailboxEngine MailboxEngine { get; }
+        private DaoFactory DaoFactory { get; }
+        private TenantManager TenantManager { get; }
+        private CacheEngine CacheEngine { get; }
+        private ServerEngine ServerEngine { get; }
+        private MailBoxSettingEngine MailBoxSettingEngine { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private SettingsManager SettingsManager { get; }
 
         public List<ServerFolderAccessInfo> ServerFolderAccessInfos { get; set; }
 
@@ -88,8 +69,6 @@ namespace ASC.Mail.Core.Engine
             MailboxEngine mailboxEngine,
             CacheEngine cacheEngine,
             ServerEngine serverEngine,
-            ConsumerFactory consumerFactory,
-            //GoogleLoginProvider googleLoginProvider,
             MailBoxSettingEngine mailBoxSettingEngine,
             CoreBaseSettings coreBaseSettings,
             SettingsManager settingsManager,
@@ -103,8 +82,6 @@ namespace ASC.Mail.Core.Engine
             TenantManager = tenantManager;
             CacheEngine = cacheEngine;
             ServerEngine = serverEngine;
-            ConsumerFactory = consumerFactory;
-            //GoogleLoginProvider = googleLoginProvider;
             MailBoxSettingEngine = mailBoxSettingEngine;
             CoreBaseSettings = coreBaseSettings;
             SettingsManager = settingsManager;
@@ -703,31 +680,6 @@ namespace ASC.Mail.Core.Engine
             SettingsManager.SaveForCurrentUser(settings);
 
             return email;
-        }
-    }
-
-    public static class AccountEngineExtension
-    {
-        public static DIHelper AddAccountEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<AccountEngine>();
-
-            services
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddDaoFactoryService()
-                .AddMailboxEngineService()
-                .AddMailBoxSettingEngineService()
-                .AddCacheEngineService()
-                .AddServerEngineService()
-                .AddConsumerFactoryService()
-                .AddCoreBaseSettingsService()
-                //.AddDropboxLoginProviderService()
-                //.AddOneDriveLoginProviderService()
-                //.AddGoogleLoginProviderService()
-                .AddSettingsManagerService();
-
-            return services;
         }
     }
 }

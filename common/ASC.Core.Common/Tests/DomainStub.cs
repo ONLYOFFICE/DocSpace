@@ -27,6 +27,7 @@
 #if DEBUG
 using System;
 using System.Collections.Generic;
+
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
@@ -226,7 +227,7 @@ namespace ASC.Common.Tests.Security.Authorizing
         public bool GetObjectAcesInheritance(ISecurityObjectId objectId)
         {
             var fullObjectId = AzObjectIdHelper.GetFullObjectId(objectId);
-            return inheritAces.ContainsKey(fullObjectId) ? inheritAces[fullObjectId] : true;
+            return !inheritAces.ContainsKey(fullObjectId) || inheritAces[fullObjectId];
         }
 
         #region IPermissionProvider Members

@@ -1,0 +1,19 @@
+{
+  "FilesModule": "Files",
+  "FoldersModule": "Folders",
+
+  "DeleteOperation": "Deleting",
+  "DeleteSelectedElem": "Selected elements were successfully deleted",
+  "DeleteFromTrash": "Selected elements were successfully deleted from trash",
+
+  "MoveToTrashOneFileTitle": "Move file to Trash?",
+  "MoveToTrashOneFolderTitle": "Move folder to Trash?",
+  "MoveToTrashItemsTitle": "Move items to Trash?",
+
+  "MoveToTrashOneFileNote": "If you delete a shared file, other users won’t be able to access it.",
+  "MoveToTrashOneFolderNote": "If you delete a shared folder, other users won’t be able to access it.",
+  "MoveToTrashItemsNote": "If you delete shared items, other users won’t be able to access them.",
+
+  "MoveToTrashButton": "Move to Trash",
+  "CancelButton": "Cancel"
+}

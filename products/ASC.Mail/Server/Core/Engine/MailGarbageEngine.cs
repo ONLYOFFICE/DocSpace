@@ -34,7 +34,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Logging;
-using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
@@ -46,33 +45,29 @@ using ASC.Mail.Models;
 using ASC.Mail.Utils;
 using Microsoft.Extensions.Options;
 using System.Data;
+using ASC.Common.Threading;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class MailGarbageEngine : IDisposable
     {
         private static MemoryCache TenantMemCache { get; set; }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public UserManager UserManager { get; }
-        public DaoFactory DaoFactory { get; }
-        public ServerMailboxEngine MailboxEngine1 { get; }
-        public MailboxEngine MailboxEngine { get; }
-        public ServerMailboxEngine ServerMailboxEngine { get; }
-        public ServerDomainEngine ServerDomainEngine { get; }
-        public UserFolderEngine UserFolderEngine { get; }
-        public OperationEngine OperationEngine { get; }
-        public ApiHelper ApiHelper { get; }
-        public StorageFactory StorageFactory { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private UserManager UserManager { get; }
+        private DaoFactory DaoFactory { get; }
+        private MailboxEngine MailboxEngine { get; }
+        private ServerMailboxEngine ServerMailboxEngine { get; }
+        private ServerDomainEngine ServerDomainEngine { get; }
+        private UserFolderEngine UserFolderEngine { get; }
+        private OperationEngine OperationEngine { get; }
+        private ApiHelper ApiHelper { get; }
+        private StorageFactory StorageFactory { get; }
         private static MailGarbageEraserConfig Config { get; set; }
         private static TaskFactory TaskFactory { get; set; }
         private static object Locker { get; set; }
-        public ILog Log { get; private set; }
-
-        //public MailGarbageEngine(ILog log = null)
-        //    : this(MailGarbageEraserConfig.FromConfig(), log)
-        //{
-        //}
+        private ILog Log { get; }
 
         public MailGarbageEngine(
             SecurityContext securityContext,
@@ -722,28 +717,6 @@ namespace ASC.Mail.Core.Engine
             {
                 TenantMemCache.Dispose();
             }
-        }
-    }
-
-    public static class MailGarbageEngineExtension
-    {
-        public static DIHelper AddMailGarbageEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<MailGarbageEngine>();
-
-            services.AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddDaoFactoryService()
-                .AddOperationEngineService()
-                .AddMailboxEngineService()
-                .AddServerMailboxEngineService()
-                .AddServerDomainEngineService()
-                .AddUserFolderEngineService()
-                .AddApiHelperService()
-                .AddStorageFactoryService();
-
-            return services;
         }
     }
 }

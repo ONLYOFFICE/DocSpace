@@ -5,19 +5,18 @@ using System.Linq;
 using ASC.Common;
 using ASC.Common.Utils;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.Configuration
 {
     public static class StorageConfigExtension
     {
-        public static DIHelper AddStorage(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton(r => r.GetService<IConfiguration>().GetSetting<Storage>("Storage"));
-            return services;
+            services.TryAddSingleton(r => r.GetService<ConfigurationExtension>().GetSetting<Storage>("Storage"));
         }
     }
+
 
     public class Storage
     {
@@ -68,14 +67,15 @@ namespace ASC.Data.Storage.Configuration
         public string Data { get; set; }
         public string Type { get; set; }
         public string Path { get; set; }
-        public ACL Acl { get; set; }
+        public ACL Acl { get; set; } = ACL.Read;
         public string VirtualPath { get; set; }
         public TimeSpan Expires { get; set; }
-        public bool Visible { get; set; }
-        public bool AppendTenantId { get; set; }
+        public bool Visible { get; set; } = true;
+        public bool AppendTenantId { get; set; } = true;
         public bool Public { get; set; }
         public bool DisableMigrate { get; set; }
-        public bool Count { get; set; }
+        public bool Count { get; set; } = true;
+        public bool DisabledEncryption { get; set; }
 
         public IEnumerable<Module> Domain { get; set; }
     }

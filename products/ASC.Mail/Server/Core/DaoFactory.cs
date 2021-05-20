@@ -27,12 +27,13 @@
 using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao;
-using ASC.Mail.Core.Dao.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Mail.Core
 {
+    public interface IDaoFactory { }
+    [Scope]
     public class DaoFactory : IDaoFactory
     {
         public MailDbContext MailDb { get; }
@@ -150,52 +151,6 @@ namespace ASC.Mail.Core
 
         public IDbContextTransaction BeginTransaction(System.Data.IsolationLevel? level = null) {
             return level.HasValue ? MailDb.Database.BeginTransaction(level.Value) : MailDb.Database.BeginTransaction();
-        }
-    }
-
-    public static class DaoFactoryExtension
-    {
-        public static DIHelper AddDaoFactoryService(this DIHelper services)
-        {
-            services.TryAddScoped<DaoFactory>();
-
-            return services
-                .AddMailDbContextService()
-                .AddMailboxProviderDaoService()
-                .AddMailboxDomainDaoService()
-                .AddMailboxServerDaoService()
-                .AddMailboxAutoreplyDaoService()
-                .AddMailboxAutoreplyHistoryDaoService()
-                .AddMailboxDaoService()
-                .AddAccountDaoService()
-                .AddAlertDaoService()
-                .AddDisplayImagesAddressDaoService()
-                .AddMailboxSignatureDaoService()
-                .AddTagDaoService()
-                .AddAttachmentDaoService()
-                .AddChainDaoService()
-                .AddContactCardDaoService()
-                .AddContactDaoService()
-                .AddContactInfoDaoService()
-                .AddCrmContactDaoService()
-                .AddCrmLinkDaoService()
-                .AddFilterDaoService()
-                .AddFolderDaoService()
-                .AddImapFlagsDaoService()
-                .AddImapSpecialMailboxDaoService()
-                .AddMailDaoService()
-                .AddMailGarbageDaoService()
-                .AddMailInfoDaoService()
-                .AddServerAddressDaoService()
-                .AddServerDaoService()
-                .AddServerDnsDaoService()
-                .AddServerDomainDaoService()
-                .AddServerGroupDaoService()
-                .AddTagAddressDaoService()
-                .AddTagMailDaoService()
-                .AddUserFolderDaoService()
-                .AddUserFolderTreeDaoService()
-                .AddUserFolderXMailDaoService();
         }
     }
 }

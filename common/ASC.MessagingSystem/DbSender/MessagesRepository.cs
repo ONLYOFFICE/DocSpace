@@ -30,6 +30,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -48,7 +49,8 @@ using IsolationLevel = System.Data.IsolationLevel;
 
 namespace ASC.MessagingSystem.DbSender
 {
-    public class MessagesRepository
+    [Singletone(Additional = typeof(MessagesRepositoryExtension))]
+    public class MessagesRepository: IDisposable
     {
         private static DateTime lastSave = DateTime.UtcNow;
         private readonly TimeSpan CacheTime;
@@ -61,20 +63,21 @@ namespace ASC.MessagingSystem.DbSender
         private readonly Timer ClearTimer;
 
         public ILog Log { get; set; }
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public MessagesRepository(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {
             CacheTime = TimeSpan.FromMinutes(1);
             Cache = new Dictionary<string, EventMessage>();
             Parser = Parser.GetDefault();
-            Timer = new Timer(FlushCache);
             timerStarted = false;
 
-            ClearTimer = new Timer(DeleteOldEvents);
-            ClearTimer.Change(new TimeSpan(0), TimeSpan.FromDays(1));
             Log = options.CurrentValue;
             ServiceProvider = serviceProvider;
+
+            Timer = new Timer(FlushCache);
+            ClearTimer = new Timer(DeleteOldEvents);
+            ClearTimer.Change(new TimeSpan(0), TimeSpan.FromDays(1));
         }
 
         public void Add(EventMessage message)
@@ -300,7 +303,7 @@ namespace ASC.MessagingSystem.DbSender
                     .Where(r => r.Date < DateTime.UtcNow.AddDays(
                         ef.WebstudioSettings
                         .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
-                        .Select(r => Convert.ToDouble(JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings) ?? TenantAuditSettings.MaxLifeTime.ToString()))
+                        .Select(r => -Convert.ToDouble(JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings) ?? TenantAuditSettings.MaxLifeTime.ToString()))
                         .FirstOrDefault()))
                     .Take(1000);
 
@@ -312,6 +315,27 @@ namespace ASC.MessagingSystem.DbSender
                 ef.SaveChanges();
 
             } while (ids.Any());
+        }
+
+        public void Dispose()
+        {
+            if (Timer != null)
+            {
+                Timer.Dispose();
+            }
+
+            if (ClearTimer != null)
+            {
+                ClearTimer.Dispose();
+            }
+        }
+    }
+
+    public class MessagesRepositoryExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<DbContextManager<MessagesContext>>();
         }
     }
 }

@@ -47,30 +47,19 @@ using Newtonsoft.Json.Serialization;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class FilterEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string User => SecurityContext.CurrentAccount.ID.ToString();
 
-        public string User
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-        public ILog Log { get; private set; }
-        public MessageEngine MessageEngine { get; }
-        public UserFolderEngine UserFolderEngine { get; }
-        public TagEngine TagEngine { get; }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public DaoFactory DaoFactory { get; }
+        private ILog Log { get; }
+        private MessageEngine MessageEngine { get; }
+        private UserFolderEngine UserFolderEngine { get; }
+        private TagEngine TagEngine { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantManager TenantManager { get; }
+        private DaoFactory DaoFactory { get; }
 
         public FilterEngine(
             SecurityContext securityContext,
@@ -547,23 +536,6 @@ namespace ASC.Mail.Core.Engine
             res.Position = filter.Position;
 
             return res;
-        }
-    }
-
-    public static class FilterEngineExtension
-    {
-        public static DIHelper AddFilterEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<FilterEngine>();
-
-            services.AddSecurityContextService()
-                .AddTenantManagerService()
-                .AddDaoFactoryService()
-                .AddMessageEngineService()
-                .AddUserFolderEngineService()
-                .AddTagEngineService();
-
-            return services;
         }
     }
 

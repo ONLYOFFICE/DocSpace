@@ -24,7 +24,6 @@
 */
 
 
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -36,6 +35,7 @@ using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class ContactDao : BaseDao, IContactDao
     {
         public ContactDao(
@@ -79,16 +79,6 @@ namespace ASC.Mail.Core.Dao
             var result = MailDb.SaveChanges();
 
             return result;
-        }
-    }
-
-    public static class ContactDaoExtension
-    {
-        public static DIHelper AddContactDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<ContactDao>();
-
-            return services;
         }
     }
 }

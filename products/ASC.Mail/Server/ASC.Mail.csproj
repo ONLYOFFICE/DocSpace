@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
@@ -12,7 +12,7 @@
     <Product>ASC.Mail</Product>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
   </PropertyGroup>
-
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Optimize>false</Optimize>
   </PropertyGroup>
@@ -22,12 +22,13 @@
     <DebugSymbols>false</DebugSymbols>
     <NoWarn>1701;1702;NU1701</NoWarn>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <Service Include="{7080343D-FBE7-423A-9405-4F883F6E235B}" />
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="DotNetZip" Version="1.15.0" />
     <PackageReference Include="Grpc.Tools" Version="2.27.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -35,12 +36,15 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.11.21" />
     <PackageReference Include="Ical.Net" Version="4.1.11" />
     <PackageReference Include="MailKit" Version="2.5.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="MimeKit" Version="2.5.1" />
     <PackageReference Include="RestSharp" Version="106.10.1" />
     <PackageReference Include="Ude.NetStandard" Version="1.2.0" />
+	<PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
   </ItemGroup>
   
   <ItemGroup>
@@ -53,10 +57,37 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <Compile Update="Resources\MailResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MailResource.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\MailResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MailResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MailResource.ru.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MailResource.de.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MailResource.es.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MailResource.fr.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MailResource.it.resx">
+      <DependentUpon>MailResource.resx</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  
   <ItemGroup>
     <Protobuf Include="protos\AccountCacheItem.proto" />
   </ItemGroup>
+  
 </Project>

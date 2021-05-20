@@ -38,12 +38,14 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common
 {
+    [Singletone]
     public class CommonLinkUtilitySettings
     {
         public string ServerUri { get; set; }
     }
 
 
+    [Scope]
     public class BaseCommonLinkUtility
     {
         private const string LOCALHOST = "localhost";
@@ -51,14 +53,14 @@ namespace ASC.Core.Common
         private UriBuilder _serverRoot;
         private string _vpath;
 
-        public IHttpContextAccessor HttpContextAccessor { get; set; }
+        protected IHttpContextAccessor HttpContextAccessor { get; set; }
 
         public BaseCommonLinkUtility(
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             TenantManager tenantManager,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings)
+            CommonLinkUtilitySettings settings)
             : this(null, coreBaseSettings, coreSettings, tenantManager, options, settings)
         {
         }
@@ -69,14 +71,14 @@ namespace ASC.Core.Common
             CoreSettings coreSettings,
             TenantManager tenantManager,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings)
+            CommonLinkUtilitySettings settings)
         {
-            var serverUri = settings.Value.ServerUri;
+            var serverUri = settings.ServerUri;
 
             if (!string.IsNullOrEmpty(serverUri))
             {
                 var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
-                _serverRoot = new UriBuilder(uri.Scheme, LOCALHOST, uri.Port);
+                _serverRoot = new UriBuilder(uri.Scheme, uri.Host != "x" ? uri.Host : LOCALHOST, uri.Port);
                 _vpath = "/" + uri.AbsolutePath.Trim('/');
             }
             else
@@ -108,9 +110,9 @@ namespace ASC.Core.Common
             get { return ToAbsolute("~"); }
         }
 
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public CoreSettings CoreSettings { get; }
-        public TenantManager TenantManager { get; }
+        protected CoreBaseSettings CoreBaseSettings { get; }
+        private CoreSettings CoreSettings { get; }
+        private TenantManager TenantManager { get; }
 
         private string serverRootPath;
         public string ServerRootPath
@@ -223,6 +225,10 @@ namespace ASC.Core.Common
 
             //--remove redundant slashes
             var uri = new Uri(url);
+
+            if (uri.Scheme == "mailto")
+                return uri.OriginalString;
+
             var baseUri = new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri;
             baseUri = uri.Segments.Aggregate(baseUri, (current, segment) => new Uri(current, segment));
             //--
@@ -231,18 +237,12 @@ namespace ASC.Core.Common
 
             return baseUri.ToString().TrimEnd('/');
         }
-    }
 
-    public static class BaseCommonLinkUtilityExtension
-    {
-        public static DIHelper AddBaseCommonLinkUtilityService(this DIHelper services)
+        public void Initialize(string serverUri)
         {
-            services.TryAddScoped<BaseCommonLinkUtility>();
-
-            return services
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService()
-                .AddTenantManagerService();
+            var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
+            _serverRoot = new UriBuilder(uri.Scheme, LOCALHOST, uri.Port);
+            _vpath = "/" + uri.AbsolutePath.Trim('/');
         }
     }
 }

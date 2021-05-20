@@ -747,6 +747,32 @@ Interessato? Ulteriori informazioni su "ONLYOFFICE for business":"http://www.onl
 Cordiali saluti,
 il team ONLYOFFICE</value>
   </data>
+  <data name="pattern_personal_after_registration8" xml:space="preserve">
+    <value>$PersonalHeaderStart Collega il tuo archivio cloud preferito a ONLYOFFICE $PersonalHeaderEnd
+
+È trascorsa una settimana da quando hai creato il tuo cloud office, quindi crediamo sia giunto il momento di svelare alcune funzionalità utili che potresti aver perso.
+
+Collega * Dropbox *, * Google Drive *, * Box *, * OneDrive *, * Nextcloud *, * ownCloud *, * kDrive * o * Yandex.Disk * a ONLYOFFICE e crea un unico spazio di gestione dei documenti per tutti i tuoi documenti. Sarai in grado di modificare i file esterni in ONLYOFFICE e salvarli nella memoria in cui tieni i documenti. Leggi i dettagli sulla connessione di archivi di file a ONLYOFFICE "qui":"${__HelpLink}/tipstricks/add-resource.aspx".
+
+È possibile anche integrare gli editor di ONLYOFFICE in Google Drive utilizzando la nostra "app connettore":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
+
+Hai bisogno di più gestione dei documenti?
+
+h3.Try ONLYOFFICE for business "nel cloud":"https://www.onlyoffice.com/cloud-office.aspx" o "sul tuo server":"https://www.onlyoffice.com/server-solutions .aspx "gratuitamente per 30 giorni e controlla le opportunità di gestione estesa dei documenti insieme a un set di strumenti aziendali:
+
+- Gestire i documenti del team nei progetti;
+
+- Integrare documenti con CRM ed e-mail;
+
+- Condividi file con gruppi di utenti;
+
+- Ottimizza il flusso di lavoro con gli strumenti di comunicazione del team.
+
+Ti interessa? Ulteriori informazioni su "ONLYOFFICE for business":"http://www.onlyoffice.com/document-management.aspx".
+
+Cordiali saluti,
+La squadra di ONLYOFFICE</value>
+  </data>
   <data name="pattern_personal_change_email" xml:space="preserve">
     <value>Hai richiesto di cambiare il tuo indirizzo email utilizzato per accedere al portale ${LetterLogoText}.
 
@@ -1581,6 +1607,15 @@ il team di ONLYOFFICE</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>messaggio di prova SMTP</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Processo di decrittografia fallito</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Processo di decrittografia iniziato</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Processo di decrittografia completato</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Nuovo utente aggiunto al portale ${LetterLogoText}</value>

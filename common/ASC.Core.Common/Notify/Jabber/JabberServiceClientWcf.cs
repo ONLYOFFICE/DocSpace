@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+
 using ASC.Common.Module;
 using ASC.Core.Common.Notify.Jabber;
 
@@ -35,6 +36,11 @@ namespace ASC.Core.Notify.Jabber
     {
         public JabberServiceClientWcf()
         {
+        }
+
+        public string GetVersion()
+        {
+            return Channel.GetVersion();
         }
 
         public byte AddXmppConnection(string connectionId, string userName, byte state, int tenantId)

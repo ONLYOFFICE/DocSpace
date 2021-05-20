@@ -25,7 +25,6 @@
 
 
 using System.Linq;
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -35,6 +34,7 @@ using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class MailboxProviderDao : BaseDao, IMailboxProviderDao
     {
         public MailboxProviderDao(
@@ -95,16 +95,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return p;
-        }
-    }
-
-    public static class MailboxProviderDaoExtension
-    {
-        public static DIHelper AddMailboxProviderDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<MailboxProviderDao>();
-
-            return services;
         }
     }
 }

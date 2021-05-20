@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
+
 using ASC.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
@@ -38,7 +39,7 @@ namespace ASC.Core.Notify
     public abstract class NotifySource : INotifySource
     {
         private readonly object syncRoot = new object();
-        private bool initialized;
+        private readonly bool initialized;
 
         private readonly IDictionary<CultureInfo, IActionProvider> actions = new Dictionary<CultureInfo, IActionProvider>();
 
@@ -66,8 +67,8 @@ namespace ASC.Core.Notify
             get;
             private set;
         }
-        public UserManager UserManager { get; }
-        public SubscriptionManager SubscriptionManager { get; }
+        private UserManager UserManager { get; }
+        private SubscriptionManager SubscriptionManager { get; }
 
         public NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
         {

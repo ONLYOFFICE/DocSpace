@@ -1,7 +1,7 @@
 ﻿{
   "components": [
     {
-      "type": "ASC.Web.Files.Core.Search.FactoryIndexerFolder, ASC.Files",
+      "type": "ASC.Web.Files.Core.Search.FactoryIndexerFolder, ASC.Files.Core",
       "services": [
         {
           "type": "ASC.ElasticSearch.IFactoryIndexer, ASC.ElasticSearch"
@@ -10,7 +10,7 @@
       "instanceScope": "perlifetimescope"
     },
     {
-      "type": "ASC.Web.Files.Core.Search.FactoryIndexerFile, ASC.Files",
+      "type": "ASC.Web.Files.Core.Search.FactoryIndexerFile, ASC.Files.Core",
       "services": [
         {
           "type": "ASC.ElasticSearch.IFactoryIndexer, ASC.ElasticSearch"

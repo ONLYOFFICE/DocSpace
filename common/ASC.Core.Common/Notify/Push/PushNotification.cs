@@ -25,38 +25,27 @@
 
 
 using System;
-using System.Runtime.Serialization;
 
 namespace ASC.Core.Common.Notify.Push
 {
-    [DataContract]
     public class PushNotification
     {
-        [DataMember]
         public int Id { get; set; }
 
-        [DataMember]
         public string Message { get; set; }
 
-        [DataMember]
         public string ShortMessage { get; set; }
 
-        [DataMember]
         public int? Badge { get; set; }
 
-        [DataMember]
         public PushModule Module { get; set; }
 
-        [DataMember]
         public PushAction Action { get; set; }
 
-        [DataMember]
         public PushItem Item { get; set; }
 
-        [DataMember]
         public PushItem ParentItem { get; set; }
 
-        [DataMember]
         public DateTime QueuedOn { get; set; }
 
         public static PushNotification ApiNotification(string message, int? badge)
@@ -65,16 +54,12 @@ namespace ASC.Core.Common.Notify.Push
         }
     }
 
-    [DataContract]
     public class PushItem
     {
-        [DataMember]
         public PushItemType Type { get; set; }
 
-        [DataMember]
         public string ID { get; set; }
 
-        [DataMember]
         public string Description { get; set; }
 
         public PushItem()

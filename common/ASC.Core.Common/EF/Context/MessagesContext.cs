@@ -1,4 +1,6 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+
 using ASC.Common;
 using ASC.Core.Common.EF.Model;
 
@@ -6,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
+    public class MySqlMessagesContext : MessagesContext { }
+    public class PostgreSqlMessagesContext : MessagesContext { }
     public class MessagesContext : BaseDbContext
     {
         public DbSet<AuditEvent> AuditEvents { get; set; }
@@ -13,10 +17,27 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<DbTenant> Tenants { get; set; }
         public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
 
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlMessagesContext() } ,
+                    { Provider.Postgre, () => new PostgreSqlMessagesContext() } ,
+                };
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddDbFunction();
-            modelBuilder.AddWebstudioSettings();
+            ModelBuilderWrapper
+                .From(modelBuilder, Provider)
+                .AddDbTenant()
+                .AddWebstudioSettings()
+                .AddAuditEvent()
+                .AddLoginEvents()
+                .AddDbFunction();
         }
     }
 

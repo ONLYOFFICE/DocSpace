@@ -24,12 +24,9 @@
 */
 
 
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Storage;
 using ASC.Mail.Models;
@@ -38,37 +35,17 @@ using System;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class SignatureEngine
     {
-        public DbContextManager<MailDbContext> DbContext { get; }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string UserId => SecurityContext.CurrentAccount.ID.ToString();
 
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
-
-        public string UserId
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-
-        public ApiContext ApiContext { get; }
-
-        public ILog Log { get; }
-
-        public DaoFactory DaoFactory { get; }
-        public CacheEngine CacheEngine { get; }
-        public StorageManager StorageManager { get; }
-        public MailDbContext MailDb { get; }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private DaoFactory DaoFactory { get; }
+        private CacheEngine CacheEngine { get; }
+        private StorageManager StorageManager { get; }
 
         public SignatureEngine(
             TenantManager tenantManager,
@@ -82,11 +59,8 @@ namespace ASC.Mail.Core.Engine
             SecurityContext = securityContext;
 
             DaoFactory = daoFactory;
-            MailDb = DaoFactory.MailDb;
             CacheEngine = cacheEngine;
             StorageManager = storageManager;
-
-            Log = option.Get("ASC.Mail.SignatureEngine");
         }
 
         public MailSignatureData GetSignature(int mailboxId)
@@ -122,23 +96,6 @@ namespace ASC.Mail.Core.Engine
         protected MailSignatureData ToMailMailSignature(MailboxSignature signature)
         {
             return new MailSignatureData(signature.MailboxId, signature.Tenant, signature.Html, signature.IsActive);
-        }
-    }
-
-    public static class SignatureEngineExtension
-    {
-        public static DIHelper AddSignatureEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<SignatureEngine>();
-
-            services
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddDaoFactoryService()
-                .AddCacheEngineService()
-                .AddStorageManagerService();
-
-            return services;
         }
     }
 }

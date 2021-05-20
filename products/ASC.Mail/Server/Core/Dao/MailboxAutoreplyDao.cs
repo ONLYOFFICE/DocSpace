@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -37,6 +36,7 @@ using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class MailboxAutoreplyDao : BaseDao, IMailboxAutoreplyDao
     {
         public MailboxAutoreplyDao(
@@ -149,16 +149,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return obj;
-        }
-    }
-
-    public static class MailboxAutoreplyDaoExtension
-    {
-        public static DIHelper AddMailboxAutoreplyDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<MailboxAutoreplyDao>();
-
-            return services;
         }
     }
 }

@@ -36,6 +36,7 @@ using ASC.Common.Caching;
 
 namespace ASC.Common.Threading
 {
+    [Singletone]
     public class DistributedTaskCacheNotify
     {
         public ConcurrentDictionary<string, CancellationTokenSource> Cancelations { get; }
@@ -43,11 +44,14 @@ namespace ASC.Common.Threading
         private readonly ICacheNotify<DistributedTaskCancelation> notify;
         private readonly ICacheNotify<DistributedTaskCache> notifyCache;
 
-        public DistributedTaskCacheNotify(ICacheNotify<DistributedTaskCancelation> notify, ICacheNotify<DistributedTaskCache> notifyCache)
+        public DistributedTaskCacheNotify(
+            ICacheNotify<DistributedTaskCancelation> notify, 
+            ICacheNotify<DistributedTaskCache> notifyCache,
+            ICache cache)
         {
             Cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
 
-            Cache = AscCache.Memory;
+            Cache = cache;
 
             this.notify = notify;
 
@@ -90,18 +94,18 @@ namespace ASC.Common.Threading
 
     public class DistributedTaskQueue
     {
-        public static readonly string InstanceId;
+        public static readonly int InstanceId;
 
         private readonly string key;
         private readonly ICache cache;
         private readonly TaskScheduler scheduler;
         private readonly ConcurrentDictionary<string, CancellationTokenSource> cancelations;
 
-        public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
+        private DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
 
         static DistributedTaskQueue()
         {
-            InstanceId = Process.GetCurrentProcess().Id.ToString();
+            InstanceId = Process.GetCurrentProcess().Id;
         }
 
 
@@ -120,7 +124,7 @@ namespace ASC.Common.Threading
             key = name + GetType().Name;
             scheduler = maxThreadsCount <= 0
                 ? TaskScheduler.Default
-                : new LimitedConcurrencyLevelTaskScheduler(maxThreadsCount);
+                : new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, maxThreadsCount).ConcurrentScheduler;
             DistributedTaskCacheNotify = distributedTaskCacheNotify;
             cancelations = DistributedTaskCacheNotify.Cancelations;
             cache = DistributedTaskCacheNotify.Cache;
@@ -140,7 +144,7 @@ namespace ASC.Common.Threading
             var token = cancelation.Token;
             cancelations[distributedTask.Id] = cancelation;
 
-            var task = new Task(() => action(distributedTask, token), token, TaskCreationOptions.LongRunning);
+            var task = new Task(() => { action(distributedTask, token); }, token, TaskCreationOptions.LongRunning);
             task
                 .ConfigureAwait(false)
                 .GetAwaiter()
@@ -159,7 +163,7 @@ namespace ASC.Common.Threading
 
         public IEnumerable<DistributedTask> GetTasks()
         {
-            var tasks = cache.HashGetAll<DistributedTaskCache>(key).Values.Select(r => new DistributedTask(r)).ToList();
+            var tasks = cache.HashGetAll<DistributedTaskCache>(key).Select(r => new DistributedTask(r.Value)).ToList();
             tasks.ForEach(t =>
             {
                 if (t.Publication == null)

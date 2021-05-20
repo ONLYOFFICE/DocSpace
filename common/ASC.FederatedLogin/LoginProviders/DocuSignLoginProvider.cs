@@ -38,9 +38,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class DocuSignLoginProvider : Consumer, IOAuthProvider
     {
-        public string Scopes { get { return "signature"; } }
+        public static string DocuSignLoginProviderScopes { get { return "signature"; } }
+        public string Scopes { get { return DocuSignLoginProviderScopes; } }
         public string CodeUrl { get { return DocuSignHost + "/oauth/auth"; } }
         public string AccessTokenUrl { get { return DocuSignHost + "/oauth/token"; } }
         public string RedirectUri { get { return this["docuSignRedirectUrl"]; } }
@@ -66,8 +68,9 @@ namespace ASC.FederatedLogin.LoginProviders
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
         }
 
@@ -126,19 +129,6 @@ namespace ASC.FederatedLogin.LoginProviders
             refreshed.RedirectUri = RedirectUri;
             refreshed.RefreshToken ??= refreshToken;
             return refreshed;
-        }
-    }
-    public static class DocuSignLoginProviderExtension
-    {
-        public static DIHelper AddDocuSignLoginProviderService(this DIHelper services)
-        {
-            //services.TryAddScoped<DocuSignLoginProvider>();
-            return services
-                .AddConsumerFactoryService()
-                .AddKafkaService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService();
         }
     }
 }

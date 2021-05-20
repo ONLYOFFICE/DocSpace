@@ -1,40 +1,41 @@
 import React, { useEffect } from "react";
-import { connect } from 'react-redux';
-import { PageLayout } from "asc-web-common";
-import i18n from "../i18n";
-import { I18nextProvider } from "react-i18next";
-import {
-  ArticleHeaderContent,
-  ArticleBodyContent
-} from "./Article";
-import { SectionHeaderContent } from './Section';
-import { store } from 'asc-web-common';
-const { setCurrentProductId } = store.auth.actions;
-
-const Layout = ({ currentProductId, setCurrentProductId, language, children }) => {
-
+import { ArticleHeaderContent, ArticleBodyContent } from "./Article";
+import { SectionHeaderContent } from "./Section";
+import { inject, observer } from "mobx-react";
+import PageLayout from "@appserver/common/components/PageLayout";
+const Layout = ({
+  currentProductId,
+  setCurrentProductId,
+  language,
+  children,
+}) => {
   useEffect(() => {
-    currentProductId !== 'settings' && setCurrentProductId('settings');
-    i18n.changeLanguage(language);
+    currentProductId !== "settings" && setCurrentProductId("settings");
   }, [language, currentProductId, setCurrentProductId]);
 
   return (
-    <I18nextProvider i18n={i18n}>
-      <PageLayout
-        withBodyScroll={true}
-        articleHeaderContent={<ArticleHeaderContent />}
-        articleBodyContent={<ArticleBodyContent />}
-        sectionHeaderContent={<SectionHeaderContent />}
-        sectionBodyContent={children}
-      />
-    </I18nextProvider >
+    <PageLayout withBodyScroll={true}>
+      <PageLayout.ArticleHeader>
+        <ArticleHeaderContent />
+      </PageLayout.ArticleHeader>
+
+      <PageLayout.ArticleBody>
+        <ArticleBodyContent />
+      </PageLayout.ArticleBody>
+
+      <PageLayout.SectionHeader>
+        <SectionHeaderContent />
+      </PageLayout.SectionHeader>
+
+      <PageLayout.SectionBody>{children}</PageLayout.SectionBody>
+    </PageLayout>
   );
 };
 
-function mapStateToProps(state) {
+export default inject(({ auth }) => {
+  const { language, settingsStore } = auth;
   return {
-    language: state.auth.user.cultureName || state.auth.settings.culture
+    language,
+    setCurrentProductId: settingsStore.setCurrentProductId,
   };
-}
-
-export default connect(mapStateToProps, { setCurrentProductId })(Layout);
+})(observer(Layout));

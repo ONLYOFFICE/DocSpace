@@ -42,9 +42,11 @@ using ASC.Mail.Storage;
 using ASC.Common;
 using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao.Entities;
+using ASC.Data.Storage;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class OperationEngine
     {
         public DistributedTaskQueue MailOperations { get; }
@@ -58,24 +60,25 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public DaoFactory DaoFactory { get; }
-        public MailboxEngine MailboxEngine { get; }
-        public QuotaEngine QuotaEngine { get; }
-        public FolderEngine FolderEngine { get; }
-        public CacheEngine CacheEngine { get; }
-        public IndexEngine IndexEngine { get; }
-        public UserFolderEngine UserFolderEngine { get; }
-        public FilterEngine FilterEngine { get; }
-        public MessageEngine MessageEngine { get; }
-        public ServerMailboxEngine ServerMailboxEngine { get; }
-        public CoreSettings CoreSettings { get; }
-        public StorageManager StorageManager { get; }
-        public FactoryIndexer<MailMail> FactoryIndexer { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public IOptionsMonitor<ILog> Option { get; }
+        private DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private DaoFactory DaoFactory { get; }
+        private MailboxEngine MailboxEngine { get; }
+        private QuotaEngine QuotaEngine { get; }
+        private FolderEngine FolderEngine { get; }
+        private CacheEngine CacheEngine { get; }
+        private IndexEngine IndexEngine { get; }
+        private UserFolderEngine UserFolderEngine { get; }
+        private FilterEngine FilterEngine { get; }
+        private MessageEngine MessageEngine { get; }
+        private ServerMailboxEngine ServerMailboxEngine { get; }
+        private CoreSettings CoreSettings { get; }
+        private StorageManager StorageManager { get; }
+        private StorageFactory StorageFactory { get; }
+        private FactoryIndexer<MailMail> FactoryIndexer { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private IOptionsMonitor<ILog> Option { get; }
 
         public OperationEngine(
             DistributedTaskCacheNotify distributedTaskCacheNotify,
@@ -93,6 +96,7 @@ namespace ASC.Mail.Core.Engine
             ServerMailboxEngine serverMailboxEngine, 
             CoreSettings coreSettings,
             StorageManager storageManager,
+            StorageFactory storageFactory,
             FactoryIndexer<MailMail> factoryIndexer,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
@@ -115,6 +119,7 @@ namespace ASC.Mail.Core.Engine
             ServerMailboxEngine = serverMailboxEngine;
             CoreSettings = coreSettings;
             StorageManager = storageManager;
+            StorageFactory = storageFactory;
             FactoryIndexer = factoryIndexer;
             ServiceProvider = serviceProvider;
             Option = option;
@@ -212,6 +217,7 @@ namespace ASC.Mail.Core.Engine
                 MessageEngine,
                 CoreSettings,
                 StorageManager,
+                StorageFactory,
                 Option,
                 messageId);
 
@@ -370,6 +376,7 @@ namespace ASC.Mail.Core.Engine
                 MessageEngine,
                 CoreSettings,
                 StorageManager,
+                StorageFactory,
                 Option,
                 filterId);
 
@@ -530,8 +537,7 @@ namespace ASC.Mail.Core.Engine
 
             foreach (var o in operations)
             {
-                if (!string.IsNullOrEmpty(o.InstanceId) &&
-                    Process.GetProcesses().Any(p => p.Id == int.Parse(o.InstanceId)))
+                if (o.InstanceId != 0 && Process.GetProcesses().Any(p => p.Id == o.InstanceId))
                     continue;
 
                 o.SetProperty(MailOperation.PROGRESS, 100);
@@ -573,32 +579,6 @@ namespace ASC.Mail.Core.Engine
             };
 
             return result;
-        }
-    }
-
-    public static class OperationEngineExtension
-    {
-        public static DIHelper AddOperationEngineService(this DIHelper services)
-        {
-            services.TryAddSingleton<DistributedTaskCacheNotify>();
-            services.TryAddScoped<OperationEngine>();
-
-            services.AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddDaoFactoryService()
-                .AddMailboxEngineService()
-                .AddQuotaEngineService()
-                .AddFolderEngineService()
-                .AddCacheEngineService()
-                .AddIndexEngineService()
-                .AddUserFolderEngineService()
-                .AddFilterEngineService()
-                .AddMessageEngineService()
-                .AddServerMailboxEngineService()
-                .AddCoreSettingsService()
-                .AddStorageManagerService();
-
-            return services;
         }
     }
 }

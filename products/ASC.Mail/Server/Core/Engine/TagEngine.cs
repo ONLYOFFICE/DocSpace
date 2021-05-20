@@ -24,7 +24,6 @@
 */
 
 
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -34,10 +33,8 @@ using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Conversation;
 using ASC.Mail.Core.Dao.Expressions.Message;
-using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
-using ASC.Mail.Models;
 using ASC.Web.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -49,34 +46,21 @@ using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class TagEngine
     {
-        public DbContextManager<MailDbContext> DbContext { get; }
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
-        public string UserId
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private string UserId => SecurityContext.CurrentAccount.ID.ToString();
 
-        public TenantManager TenantManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public ApiContext ApiContext { get; }
-        public ILog Log { get; }
-        public DaoFactory DaoFactory { get; }
-        public IndexEngine IndexEngine { get; }
-        public FactoryIndexer<MailMail> FactoryIndexer { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public MailDbContext MailDb { get; }
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private ILog Log { get; }
+        private DaoFactory DaoFactory { get; }
+        private IndexEngine IndexEngine { get; }
+        private FactoryIndexer<MailMail> FactoryIndexer { get; }
+        private FactoryIndexer FactoryIndexerCommon { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private WebItemSecurity WebItemSecurity { get; }
         public TagEngine(
             TenantManager tenantManager,
             SecurityContext securityContext,
@@ -84,6 +68,7 @@ namespace ASC.Mail.Core.Engine
             IndexEngine indexEngine,
             WebItemSecurity webItemSecurity,
             FactoryIndexer<MailMail> factoryIndexer,
+            FactoryIndexer factoryIndexerCommon,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
@@ -91,11 +76,11 @@ namespace ASC.Mail.Core.Engine
             SecurityContext = securityContext;
 
             DaoFactory = daoFactory;
-            MailDb = DaoFactory.MailDb;
 
             IndexEngine = indexEngine;
 
             FactoryIndexer = factoryIndexer;
+            FactoryIndexerCommon = factoryIndexerCommon;
             ServiceProvider = serviceProvider;
             WebItemSecurity = webItemSecurity;
 
@@ -537,7 +522,7 @@ namespace ASC.Mail.Core.Engine
         private void UpdateIndexerTags(List<int> ids, UpdateAction action, int tagId)
         {
             var t = ServiceProvider.GetService<MailMail>();
-            if (!FactoryIndexer.Support(t) || !FactoryIndexer.FactoryIndexerCommon.CheckState(false))
+            if (!FactoryIndexer.Support(t) || !FactoryIndexerCommon.CheckState(false))
                 return;
 
             if(ids == null || !ids.Any())
@@ -590,23 +575,6 @@ namespace ASC.Mail.Core.Engine
                     MailboxId = mailInfo.MailboxId
                 });
             }
-        }
-    }
-
-    public static class TagEngineeExtension
-    {
-        public static DIHelper AddTagEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<TagEngine>();
-
-            services.AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddDaoFactoryService()
-                .AddIndexEngineService()
-                .AddWebItemSecurity()
-                .AddFactoryIndexerService<MailMail>();
-
-            return services;
         }
     }
 }

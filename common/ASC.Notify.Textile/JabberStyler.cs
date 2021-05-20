@@ -30,16 +30,12 @@ using System.Web;
 
 using ASC.Common;
 using ASC.Common.Notify.Patterns;
-using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.WhiteLabel;
-
-using Microsoft.Extensions.Configuration;
 
 namespace ASC.Notify.Textile
 {
+    [Scope]
     public class JabberStyler : IPatternStyler
     {
         static readonly Regex VelocityArguments = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
@@ -49,23 +45,6 @@ namespace ASC.Notify.Textile
         static readonly Regex ClosedTagsReplacer = new Regex(@"</(p|div)>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled | RegexOptions.Singleline);
         static readonly Regex TagReplacer = new Regex(@"<(.|\n)*?>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled | RegexOptions.Singleline);
         static readonly Regex MultiLineBreaksReplacer = new Regex(@"(?:\r\n|\r(?!\n)|(?!<\r)\n){3,}", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IConfiguration Configuration { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public MailWhiteLabelSettingsHelper MailWhiteLabelSettingsHelper { get; }
-
-        public JabberStyler(
-            CoreBaseSettings coreBaseSettings,
-            IConfiguration configuration,
-            InstanceCrypto instanceCrypto,
-            MailWhiteLabelSettingsHelper mailWhiteLabelSettingsHelper)
-        {
-            CoreBaseSettings = coreBaseSettings;
-            Configuration = configuration;
-            InstanceCrypto = instanceCrypto;
-            MailWhiteLabelSettingsHelper = mailWhiteLabelSettingsHelper;
-        }
 
         public void ApplyFormating(NoticeMessage message)
         {
@@ -112,23 +91,6 @@ namespace ASC.Notify.Textile
         private static string ArgMatchReplace(Match match)
         {
             return match.Result("${arg}");
-        }
-    }
-
-    public static class StylerExtension
-    {
-        public static DIHelper AddStylerService(this DIHelper services)
-        {
-            return services
-                .AddCoreBaseSettingsService()
-                .AddInstanceCryptoService()
-                .AddMailWhiteLabelSettingsService()
-                ;
-        }
-        public static DIHelper AddJabberStylerService(this DIHelper services)
-        {
-            services.TryAddScoped<JabberStyler>();
-            return services.AddStylerService();
         }
     }
 }

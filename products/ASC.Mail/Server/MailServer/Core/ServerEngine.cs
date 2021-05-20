@@ -72,8 +72,8 @@ namespace ASC.Mail.Server.Core
 
         public MailServerDbContext GetDb() {
             var optionsBuilder = new DbContextOptionsBuilder<MailServerDbContext>();
-            optionsBuilder.UseMySql(DbConnectionString);
-
+            optionsBuilder.UseMySql(DbConnectionString, ServerVersion.AutoDetect(DbConnectionString));
+            
             return new MailServerDbContext(optionsBuilder.Options);
         }
 

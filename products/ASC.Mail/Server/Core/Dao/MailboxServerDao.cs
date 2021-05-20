@@ -25,19 +25,17 @@
 
 
 using System.Linq;
-using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
 using System.Collections.Generic;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Common;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class MailboxServerDao : BaseDao, IMailboxServerDao
     {
         public MailboxServerDao(
@@ -118,16 +116,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return s;
-        }
-    }
-
-    public static class MailboxServerDaoExtension
-    {
-        public static DIHelper AddMailboxServerDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<MailboxServerDao>();
-
-            return services;
         }
     }
 }

@@ -25,17 +25,14 @@
 
 
 using System;
-using System.Runtime.Serialization;
 
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
-    [DataContract]
     public class PromotionsSettings : ISettings
     {
-        [DataMember(Name = "Show")]
         public bool Show { get; set; }
 
         public Guid ID

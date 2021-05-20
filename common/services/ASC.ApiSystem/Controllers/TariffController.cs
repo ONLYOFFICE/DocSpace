@@ -41,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Controllers
 {
+    [Scope]
     [ApiController]
     [Route("[controller]")]
     public class TariffController : ControllerBase
@@ -50,12 +51,12 @@ namespace ASC.ApiSystem.Controllers
         private ILog Log { get; }
         public TariffController(
             CommonMethods commonMethods,
-            HostedSolution hostedSolution,
+            IOptionsSnapshot<HostedSolution> hostedSolutionOptions,
             IOptionsMonitor<ILog> option
             )
         {
             CommonMethods = commonMethods;
-            HostedSolution = hostedSolution;
+            HostedSolution = hostedSolutionOptions.Value;
             Log = option.Get("ASC.ApiSystem");
         }
 
@@ -79,7 +80,7 @@ namespace ASC.ApiSystem.Controllers
         [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult SetTariff(TariffModel model)
         {
-            if (!CommonMethods.GetTenant(model, out Tenant tenant))
+            if (!CommonMethods.GetTenant(model, out var tenant))
             {
                 Log.Error("Model without tenant");
 
@@ -143,7 +144,7 @@ namespace ASC.ApiSystem.Controllers
         [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult GetTariff([FromQuery] TariffModel model)
         {
-            if (!CommonMethods.GetTenant(model, out Tenant tenant))
+            if (!CommonMethods.GetTenant(model, out var tenant))
             {
                 Log.Error("Model without tenant");
 
@@ -215,16 +216,5 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
-    }
-
-    public static class TariffControllerExtention
-    {
-        public static DIHelper AddTariffController(this DIHelper services)
-        {
-            return services
-                .AddCommonMethods()
-                .AddHostedSolutionService()
-                .AddCoreSettingsService();
-        }
     }
 }

@@ -33,17 +33,12 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class QuotaEngine
     {
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
-        public ILog Log { get; private set; }
-        public TenantManager TenantManager { get; }
+        private int Tenant => TenantManager.GetCurrentTenant().TenantId;
+        private ILog Log { get; }
+        private TenantManager TenantManager { get; }
 
         public QuotaEngine(
             TenantManager tenantManager,
@@ -82,18 +77,6 @@ namespace ASC.Mail.Core.Engine
 
                 throw;
             }
-        }
-    }
-
-    public static class QuotaEngineExtension
-    {
-        public static DIHelper AddQuotaEngineService(this DIHelper services)
-        {
-            services.TryAddScoped<QuotaEngine>();
-
-            services.AddTenantManagerService();
-
-            return services;
         }
     }
 }

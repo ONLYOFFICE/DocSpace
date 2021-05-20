@@ -47,9 +47,11 @@ using ASC.Mail.Utils;
 using Microsoft.Extensions.Options;
 using MailMessage = ASC.Mail.Models.MailMessageData;
 using ASC.Mail.Core.Dao.Entities;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
+    [Scope]
     public class ComposeEngineBase
     {
         public ILog Log { get; set; }
@@ -58,33 +60,22 @@ namespace ASC.Mail.Core.Engine
         public readonly bool _sslCertificatePermit;
         public const string EMPTY_HTML_BODY = "<div dir=\"ltr\"><br></div>"; // GMail style
 
-        public int Tenant
-        {
-            get
-            {
-                return TenantManager.GetCurrentTenant().TenantId;
-            }
-        }
+        public int Tenant => TenantManager.GetCurrentTenant().TenantId;
 
-        public string User
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-        public AccountEngine AccountEngine { get; }
-        public MailboxEngine MailboxEngine { get; }
-        public MessageEngine MessageEngine { get; }
-        public QuotaEngine QuotaEngine { get; }
-        public IndexEngine IndexEngine { get; }
-        public FolderEngine FolderEngine { get; }
-        public DaoFactory DaoFactory { get; }
-        public StorageManager StorageManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
-        public CoreSettings CoreSettings { get; }
-        public StorageFactory StorageFactory { get; }
+        public string User => SecurityContext.CurrentAccount.ID.ToString();
+
+        private protected AccountEngine AccountEngine { get; }
+        private protected MailboxEngine MailboxEngine { get; }
+        private protected MessageEngine MessageEngine { get; }
+        private QuotaEngine QuotaEngine { get; }
+        private protected IndexEngine IndexEngine { get; }
+        private FolderEngine FolderEngine { get; }
+        private protected DaoFactory DaoFactory { get; }
+        private protected StorageManager StorageManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private protected TenantManager TenantManager { get; }
+        private protected CoreSettings CoreSettings { get; }
+        private StorageFactory StorageFactory { get; }
         public class DeliveryFailureMessageTranslates
         {
             public string DaemonEmail { get; set; }

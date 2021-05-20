@@ -40,6 +40,7 @@ using ASC.Mail.Enums;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class ChainDao : BaseDao, IChainDao
     {
         public ChainDao(
@@ -216,16 +217,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return chain;
-        }
-    }
-
-    public static class ChainDaoExtension
-    {
-        public static DIHelper AddChainDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<ChainDao>();
-
-            return services;
         }
     }
 }

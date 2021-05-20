@@ -34,12 +34,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Utility.Skins
 {
+    [Scope]
     public class WebImageSupplier
     {
         private string FolderName { get; }
-        public WebItemManager WebItemManager { get; }
-        public WebPath WebPath { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private WebItemManager WebItemManager { get; }
+        private WebPath WebPath { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
         public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IConfiguration configuration)
         {
@@ -114,18 +115,6 @@ namespace ASC.Web.Core.Utility.Skins
                           webitem.StartURL.Substring(0, webitem.StartURL.LastIndexOf("/")) :
                           webitem.StartURL.TrimEnd('/');
             return dir + "/App_Themes";
-        }
-    }
-
-    public static class WebImageSupplierExtension
-    {
-        public static DIHelper AddWebImageSupplierService(this DIHelper services)
-        {
-            services.TryAddScoped<WebImageSupplier>();
-
-            return services
-                .AddWebPathService()
-                .AddWebItemManager();
         }
     }
 }

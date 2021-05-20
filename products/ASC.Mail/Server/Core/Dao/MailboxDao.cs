@@ -40,9 +40,10 @@ using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class MailboxDao : BaseDao, IMailboxDao
     {
-        public InstanceCrypto InstanceCrypto { get; }
+        private InstanceCrypto InstanceCrypto { get; }
         public MailboxDao(
              TenantManager tenantManager,
              SecurityContext securityContext,
@@ -524,16 +525,6 @@ namespace ASC.Mail.Core.Dao
             {
                 return false;
             }
-        }
-    }
-
-    public static class MailboxDaoExtension
-    {
-        public static DIHelper AddMailboxDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<MailboxDao>();
-
-            return services;
         }
     }
 }

@@ -28,12 +28,12 @@ namespace System
 {
     public static class EnumExtension
     {
-        public static T TryParseEnum<T>(this Type enumType, string value, T defaultValue) where T : struct
+        public static T TryParseEnum<T>(string value, T defaultValue) where T : struct
         {
-            return TryParseEnum<T>(enumType, value, defaultValue, out _);
+            return TryParseEnum(value, defaultValue, out _);
         }
 
-        public static T TryParseEnum<T>(this Type enumType, string value, T defaultValue, out bool isDefault) where T : struct
+        public static T TryParseEnum<T>(string value, T defaultValue, out bool isDefault) where T : struct
         {
             isDefault = false;
             try

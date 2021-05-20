@@ -27,8 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Core;
 using ASC.Core.Tenants;
+
 using Twilio.TwiML;
 
 namespace ASC.VoipService.Twilio
@@ -38,15 +40,15 @@ namespace ASC.VoipService.Twilio
         private readonly VoipSettings settings;
         private readonly string baseUrl;
 
-        public AuthContext AuthContext { get; }
-        public TenantUtil TenantUtil { get; }
-        public SecurityContext SecurityContext { get; }
+        private AuthContext AuthContext { get; }
+        private TenantUtil TenantUtil { get; }
+        private SecurityContext SecurityContext { get; }
 
         public TwilioResponseHelper(
-            VoipSettings settings, 
-            string baseUrl, 
-            AuthContext authContext, 
-            TenantUtil tenantUtil, 
+            VoipSettings settings,
+            string baseUrl,
+            AuthContext authContext,
+            TenantUtil tenantUtil,
             SecurityContext securityContext)
         {
             this.settings = settings;
@@ -59,7 +61,7 @@ namespace ASC.VoipService.Twilio
         public VoiceResponse Inbound(Tuple<Agent, bool> agentTuple)
         {
             var agent = agentTuple?.Item1;
-            var anyOnline = agentTuple != null ? agentTuple.Item2 : false;
+            var anyOnline = agentTuple != null && agentTuple.Item2;
             var response = new VoiceResponse();
 
             if (settings.WorkingHours != null && settings.WorkingHours.Enabled)
@@ -117,7 +119,7 @@ namespace ASC.VoipService.Twilio
             return AddVoiceMail(new VoiceResponse());
         }
 
-        public VoiceResponse Wait(string queueId, string queueTime, string queueSize)
+        public VoiceResponse Wait(string queueTime, string queueSize)
         {
             var response = new VoiceResponse();
             var queue = settings.Queue;
@@ -138,7 +140,7 @@ namespace ASC.VoipService.Twilio
             return response;
         }
 
-        public VoiceResponse GatherQueue(string digits, string number, List<Agent> availableOperators)
+        public VoiceResponse GatherQueue(string digits, List<Agent> availableOperators)
         {
             var response = new VoiceResponse();
 

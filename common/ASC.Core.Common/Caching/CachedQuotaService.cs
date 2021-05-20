@@ -30,7 +30,6 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 
@@ -39,6 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
 {
+    [Singletone]
     class QuotaServiceCache
     {
         internal const string KEY_QUOTA = "quota";
@@ -50,7 +50,7 @@ namespace ASC.Core.Caching
 
         internal bool QuotaCacheEnabled { get; }
 
-        public QuotaServiceCache(IConfiguration Configuration, ICacheNotify<QuotaCacheItem> cacheNotify)
+        public QuotaServiceCache(IConfiguration Configuration, ICacheNotify<QuotaCacheItem> cacheNotify, ICache cache)
         {
             if (Configuration["core:enable-quota-cache"] == null)
             {
@@ -62,27 +62,28 @@ namespace ASC.Core.Caching
             }
 
             CacheNotify = cacheNotify;
-            Cache = AscCache.Memory;
+            Cache = cache;
             Interval = new TrustInterval();
 
             cacheNotify.Subscribe((i) =>
             {
-                if (i.Key == KEY_QUOTA_ROWS)
-                {
-                    Interval.Expire();
-                }
-                else if (i.Key == KEY_QUOTA)
+                if (i.Key == KEY_QUOTA)
                 {
                     Cache.Remove(KEY_QUOTA);
+                }
+                else
+                {
+                    Cache.Remove(i.Key);
                 }
             }, CacheNotifyAction.Any);
         }
     }
 
+    [Scope]
     class ConfigureCachedQuotaService : IConfigureNamedOptions<CachedQuotaService>
     {
-        public IOptionsSnapshot<DbQuotaService> Service { get; }
-        public QuotaServiceCache QuotaServiceCache { get; }
+        private IOptionsSnapshot<DbQuotaService> Service { get; }
+        private QuotaServiceCache QuotaServiceCache { get; }
 
         public ConfigureCachedQuotaService(
             IOptionsSnapshot<DbQuotaService> service,
@@ -107,6 +108,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     class CachedQuotaService : IQuotaService
     {
         internal IQuotaService Service { get; set; }
@@ -166,94 +168,26 @@ namespace ASC.Core.Caching
         public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
         {
             Service.SetTenantQuotaRow(row, exchange);
-            CacheNotify.Publish(new QuotaCacheItem { Key = QuotaServiceCache.KEY_QUOTA_ROWS }, CacheNotifyAction.Any);
+            CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, CacheNotifyAction.InsertOrUpdate);
         }
 
-        public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(TenantQuotaRowQuery query)
+        public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
         {
-            if (query == null) throw new ArgumentNullException("query");
+            var key = GetKey(tenantId);
+            var result = Cache.Get<IEnumerable<TenantQuotaRow>>(key);
 
-            var rows = Cache.Get<Dictionary<string, List<TenantQuotaRow>>>(QuotaServiceCache.KEY_QUOTA_ROWS);
-            if (rows == null || Interval.Expired)
+            if (result == null)
             {
-                var date = rows != null ? Interval.StartTime : DateTime.MinValue;
-                Interval.Start(CacheExpiration);
-
-                var changes = Service.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant.DEFAULT_TENANT).WithLastModified(date))
-                    .GroupBy(r => r.Tenant.ToString())
-                    .ToDictionary(g => g.Key, g => g.ToList());
-
-                // merge changes from db to cache
-                if (rows == null)
-                {
-                    rows = changes;
-                }
-                else
-                {
-                    lock (rows)
-                    {
-                        foreach (var p in changes)
-                        {
-                            if (rows.ContainsKey(p.Key))
-                            {
-                                var cachedRows = rows[p.Key];
-                                foreach (var r in p.Value)
-                                {
-                                    cachedRows.RemoveAll(c => c.Path == r.Path);
-                                    cachedRows.Add(r);
-                                }
-                            }
-                            else
-                            {
-                                rows[p.Key] = p.Value;
-                            }
-                        }
-                    }
-                }
-
-                if (QuotaServiceCache.QuotaCacheEnabled)
-                {
-                    Cache.Insert(QuotaServiceCache.KEY_QUOTA_ROWS, rows, DateTime.UtcNow.Add(CacheExpiration));
-                }
+                result = Service.FindTenantQuotaRows(tenantId);
+                Cache.Insert(key, result, DateTime.UtcNow.Add(CacheExpiration));
             }
 
-            var quotaRows = Cache.Get<Dictionary<string, List<TenantQuotaRow>>>(QuotaServiceCache.KEY_QUOTA_ROWS);
-            if (quotaRows == null)
-            {
-                return Enumerable.Empty<TenantQuotaRow>();
-            }
-
-            lock (quotaRows)
-            {
-                var list = quotaRows.ContainsKey(query.Tenant.ToString()) ?
-                    quotaRows[query.Tenant.ToString()] :
-                    new List<TenantQuotaRow>();
-
-                if (query != null && !string.IsNullOrEmpty(query.Path))
-                {
-                    return list.Where(r => query.Path == r.Path);
-                }
-                return list.ToList();
-            }
+            return result;
         }
-    }
 
-    public static class QuotaConfigExtension
-    {
-        public static DIHelper AddQuotaService(this DIHelper services)
+        public string GetKey(int tenant)
         {
-            services.AddCoreDbContextService();
-
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-            services.TryAddSingleton<QuotaServiceCache>();
-
-            services.TryAddScoped<DbQuotaService>();
-            services.TryAddScoped<IQuotaService, CachedQuotaService>();
-
-            services.TryAddScoped<IConfigureOptions<DbQuotaService>, ConfigureDbQuotaService>();
-            services.TryAddScoped<IConfigureOptions<CachedQuotaService>, ConfigureCachedQuotaService>();
-
-            return services;
+            return QuotaServiceCache.KEY_QUOTA_ROWS + tenant;
         }
     }
 }

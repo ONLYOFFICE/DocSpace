@@ -27,10 +27,8 @@
 #if DEBUG
 namespace ASC.Core.Common.Tests
 {
-    using System.IO;
     using System.Linq;
-    using System.Runtime.Serialization.Json;
-    using System.Text;
+    using System.Text.Json;
 
     using ASC.Core.Billing;
     using ASC.Core.Data;
@@ -49,7 +47,7 @@ namespace ASC.Core.Common.Tests
         public void ClearData()
         {
             Service.RemoveTenantQuota(Tenant);
-            foreach (var row in Service.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant) { Path = "path" }))
+            foreach (var row in Service.FindTenantQuotaRows(Tenant))
             {
                 //DeleteQuotaRow(row);
             }
@@ -73,12 +71,12 @@ namespace ASC.Core.Common.Tests
             var row = new TenantQuotaRow { Tenant = this.Tenant, Path = "path", Counter = 1000, Tag = "tag" };
             Service.SetTenantQuotaRow(row, false);
 
-            var rows = Service.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant).WithPath("path")).ToList();
+            var rows = Service.FindTenantQuotaRows(Tenant).ToList();
             CompareQuotaRows(row, rows.Find(r => r.Tenant == row.Tenant && r.Tag == row.Tag));
 
             Service.SetTenantQuotaRow(row, true);
             row.Counter += 1000;
-            rows = Service.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant).WithPath("path")).ToList();
+            rows = Service.FindTenantQuotaRows(Tenant).ToList();
             CompareQuotaRows(row, rows.Find(r => r.Tenant == row.Tenant && r.Tag == row.Tag));
 
             //DeleteQuotaRow(row);
@@ -100,10 +98,7 @@ namespace ASC.Core.Common.Tests
                 ActiveUsers = 30,
             };
 
-            var serializer = new DataContractJsonSerializer(quota1.GetType());
-            using var ms = new MemoryStream();
-            serializer.WriteObject(ms, quota1);
-            var json = Encoding.UTF8.GetString(ms.ToArray());
+            var json = JsonSerializer.Serialize(quota1);
             Assert.AreEqual("{\"Id\":1024,\"Name\":\"quota1\",\"MaxFileSize\":3,\"MaxTotalSize\":4,\"ActiveUsers\":30,\"Features\":\"trial,year\",\"Price\":12.5,\"Price2\":45.23,\"AvangateId\":\"1\",\"Visible\":true}", json);
         }
 

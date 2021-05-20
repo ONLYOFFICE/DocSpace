@@ -69,9 +69,10 @@ namespace ASC.Mail.Core.Engine.Operations
             MessageEngine messageEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
+            StorageFactory storageFactory,
             IOptionsMonitor<ILog> optionsMonitor,
             int messageId)
-            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor, storageFactory)
         {
             MessageEngine = messageEngine;
             MessageId = messageId;
@@ -112,7 +113,7 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 var damagedAttachments = 0;
 
-                var mailStorage = StorageManager.StorageFactory.GetMailStorage(CurrentTenant.TenantId);
+                var mailStorage = StorageFactory.GetMailStorage(CurrentTenant.TenantId);
 
                 using (var stream = TempStream.Create())
                 {

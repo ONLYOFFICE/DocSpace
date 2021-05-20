@@ -40,6 +40,7 @@ using ASC.Mail.Enums;
 
 namespace ASC.Mail.Core.Dao
 {
+    [Scope]
     public class MailInfoDao : BaseDao, IMailInfoDao
     {
         public MailInfoDao(
@@ -364,16 +365,6 @@ namespace ASC.Mail.Core.Dao
             };
 
             return mailInfo;
-        }
-    }
-
-    public static class MailInfoDaoExtension
-    {
-        public static DIHelper AddMailInfoDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<MailInfoDao>();
-
-            return services;
         }
     }
 }

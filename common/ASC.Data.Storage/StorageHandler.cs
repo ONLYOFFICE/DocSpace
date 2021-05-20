@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
-using ASC.Common.Web;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Security.Cryptography;
 
@@ -61,15 +61,13 @@ namespace ASC.Data.Storage.DiscStorage
             _checkAuth = checkAuth;
         }
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public async Task Invoke(HttpContext context)
         {
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
-            var emailValidationKeyProvider = scope.ServiceProvider.GetService<EmailValidationKeyProvider>();
+            var scopeClass = scope.ServiceProvider.GetService<StorageHandlerScope>();
+            var (tenantManager, securityContext, storageFactory, emailValidationKeyProvider) = scopeClass;
 
             if (_checkAuth && !securityContext.IsAuthenticated)
             {
@@ -78,7 +76,7 @@ namespace ASC.Data.Storage.DiscStorage
             }
 
             var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
-            var path = Path.Combine(_path, GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar));
+            var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar));
             var header = context.Request.Query[Constants.QUERY_HEADER].FirstOrDefault() ?? "";
 
             var auth = context.Request.Query[Constants.QUERY_AUTH].FirstOrDefault() ?? "";
@@ -137,7 +135,15 @@ namespace ASC.Data.Storage.DiscStorage
                 context.Response.Headers[toCopy] = h.Substring(toCopy.Length + 1);
             }
 
-            context.Response.ContentType = MimeMapping.GetMimeMapping(path);
+            //try
+            //{
+            //    context.Response.ContentType = MimeMapping.GetMimeMapping(path);
+            //}
+            //catch (Exception e)
+            //{
+            //    var a = 0;
+            //}
+
             if (encoding != null)
                 context.Response.Headers["Content-Encoding"] = encoding;
 
@@ -145,6 +151,30 @@ namespace ASC.Data.Storage.DiscStorage
             {
                 return (context.GetRouteValue(name) ?? "").ToString();
             }
+        }
+    }
+
+    [Scope]
+    public class StorageHandlerScope
+    {
+        private TenantManager TenantManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private StorageFactory StorageFactory { get; }
+        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+
+        public StorageHandlerScope(TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, EmailValidationKeyProvider emailValidationKeyProvider)
+        {
+            TenantManager = tenantManager;
+            SecurityContext = securityContext;
+            StorageFactory = storageFactory;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
+        }
+        public void Deconstruct(out TenantManager tenantManager, out SecurityContext securityContext, out StorageFactory storageFactory, out EmailValidationKeyProvider emailValidationKeyProvider)
+        {
+            tenantManager = TenantManager;
+            securityContext = SecurityContext;
+            storageFactory = StorageFactory;
+            emailValidationKeyProvider = EmailValidationKeyProvider;
         }
     }
 
@@ -172,14 +202,6 @@ namespace ASC.Data.Storage.DiscStorage
             }
 
             return builder;
-        }
-        public static DIHelper AddStorageHandlerService(this DIHelper services)
-        {
-            return services
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddStorageFactoryService()
-                .AddEmailValidationKeyProviderService();
         }
     }
 }

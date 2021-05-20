@@ -26,9 +26,9 @@
 
 using System;
 using System.IO;
-using System.Runtime.Serialization;
 
 using ASC.Common;
+using ASC.Common.Utils;
 using ASC.Core.Common.Settings;
 
 using Microsoft.AspNetCore.Mvc;
@@ -37,17 +37,14 @@ using Microsoft.Extensions.Hosting;
 namespace ASC.Web.Core.Utility
 {
     [Serializable]
-    [DataContract]
     public class ColorThemesSettings : ISettings
     {
         public const string ThemeFolderTemplate = "<theme_folder>";
         private const string DefaultName = "pure-orange";
 
 
-        [DataMember(Name = "ColorThemeName")]
         public string ColorThemeName { get; set; }
 
-        [DataMember(Name = "FirstRequest")]
         public bool FirstRequest { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
@@ -65,9 +62,10 @@ namespace ASC.Web.Core.Utility
         }
     }
 
+    [Scope]
     public class ColorThemesSettingsHelper
     {
-        public SettingsManager SettingsManager { get; }
+        private SettingsManager SettingsManager { get; }
         public IHostEnvironment HostEnvironment { get; }
 
         public ColorThemesSettingsHelper(
@@ -89,7 +87,7 @@ namespace ASC.Web.Core.Utility
 
             try
             {
-                var filePath = Path.Combine(HostEnvironment.ContentRootPath, resolvedPath);
+                var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
                 if (!File.Exists(filePath))
                     throw new FileNotFoundException("", path);
             }
@@ -100,7 +98,7 @@ namespace ASC.Web.Core.Utility
                 if (!urlHelper.IsLocalUrl(resolvedPath))
                     resolvedPath = urlHelper.Action(resolvedPath);
 
-                var filePath = Path.Combine(HostEnvironment.ContentRootPath, resolvedPath);
+                var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
 
                 if (!File.Exists(filePath))
                     throw new FileNotFoundException("", path);
@@ -131,7 +129,7 @@ namespace ASC.Web.Core.Utility
 
             try
             {
-                var filePath = Path.Combine(HostEnvironment.ContentRootPath, resolvedPath);
+                var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
                 if (Directory.Exists(filePath))
                 {
                     SettingsManager.Save(settings);
@@ -141,15 +139,6 @@ namespace ASC.Web.Core.Utility
             {
 
             }
-        }
-    }
-
-    public static class ColorThemesSettingsHelperExtension
-    {
-        public static DIHelper AddColorThemesSettingsHelperService(this DIHelper services)
-        {
-            services.TryAddScoped<ColorThemesSettingsHelper>();
-            return services.AddSettingsManagerService();
         }
     }
 }

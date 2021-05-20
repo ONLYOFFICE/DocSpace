@@ -40,12 +40,13 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
-    public class NotifyCleaner
+    [Singletone]
+    public class NotifyCleaner : IDisposable
     {
         private readonly ILog log;
         private readonly ManualResetEvent stop = new ManualResetEvent(false);
         public NotifyServiceCfg NotifyServiceCfg { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
         public CancellationTokenSource CancellationTokenSource { get; }
 
         public NotifyCleaner(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
@@ -106,15 +107,13 @@ namespace ASC.Notify
                 }
             }
         }
-    }
 
-    public static class NotifyCleanerExtension
-    {
-        public static DIHelper AddNotifyCleaner(this DIHelper services)
+        public void Dispose()
         {
-            services.TryAddSingleton<NotifyCleaner>();
-
-            return services.AddNotifyDbContext();
+            if (CancellationTokenSource != null)
+            {
+                CancellationTokenSource.Dispose();
+            }
         }
     }
 }

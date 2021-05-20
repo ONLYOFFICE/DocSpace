@@ -79,12 +79,12 @@ namespace ASC.Core.Common.Configuration
 
         private readonly bool OnlyDefault;
 
-        public TenantManager TenantManager { get; set; }
-        public CoreBaseSettings CoreBaseSettings { get; set; }
-        public CoreSettings CoreSettings { get; set; }
-        public ConsumerFactory ConsumerFactory { get; set; }
-        public IConfiguration Configuration { get; }
-        public ICacheNotify<ConsumerCacheItem> Cache { get; }
+        internal protected TenantManager TenantManager { get; set; }
+        internal protected CoreBaseSettings CoreBaseSettings { get; set; }
+        internal protected CoreSettings CoreSettings { get; set; }
+        internal protected ConsumerFactory ConsumerFactory { get; set; }
+        internal protected IConfiguration Configuration { get; }
+        internal protected ICacheNotify<ConsumerCacheItem> Cache { get; }
 
         public bool IsSet
         {
@@ -107,13 +107,15 @@ namespace ASC.Core.Common.Configuration
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            ICacheNotify<ConsumerCacheItem> cache) : this()
+            ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory) : this()
         {
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
             Configuration = configuration;
             Cache = cache;
+            ConsumerFactory = consumerFactory;
             OnlyDefault = configuration["core:default-consumers"] == "true";
             Name = "";
             Order = int.MaxValue;
@@ -125,8 +127,9 @@ namespace ASC.Core.Common.Configuration
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> additional)
-            : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
+            : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory)
         {
             Name = name;
             Order = order;
@@ -140,8 +143,9 @@ namespace ASC.Core.Common.Configuration
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
-            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
-            : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
+            ConsumerFactory consumerFactory,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory)
         {
             Name = name;
             Order = order;
@@ -172,7 +176,7 @@ namespace ASC.Core.Common.Configuration
         {
             if (!CanSet)
             {
-                throw new NotSupportedException("Key for read only.");
+                throw new NotSupportedException("Key for read only. Consumer " + Name);
             }
 
             foreach (var providerProp in Props)
@@ -254,7 +258,7 @@ namespace ASC.Core.Common.Configuration
         {
             if (!CanSet)
             {
-                throw new NotSupportedException("Key for read only.");
+                throw new NotSupportedException("Key for read only. Key " + name);
             }
 
             if (!ManagedKeys.Contains(name))
@@ -300,8 +304,9 @@ namespace ASC.Core.Common.Configuration
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            ICacheNotify<ConsumerCacheItem> cache)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
+            ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory)
         {
 
         }
@@ -312,8 +317,9 @@ namespace ASC.Core.Common.Configuration
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> additional)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
         {
             Init(additional);
         }
@@ -324,8 +330,9 @@ namespace ASC.Core.Common.Configuration
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
             Init(additional);
         }
@@ -356,20 +363,22 @@ namespace ASC.Core.Common.Configuration
         private DataStoreConsumer GetCdn(string cdn)
         {
             var fromConfig = ConsumerFactory.GetByKey<Consumer>(cdn);
+            if (string.IsNullOrEmpty(fromConfig.Name)) return null;
 
             var props = ManagedKeys.ToDictionary(prop => prop, prop => this[prop]);
             var additional = fromConfig.AdditionalKeys.ToDictionary(prop => prop, prop => fromConfig[prop]);
             additional.Add(HandlerTypeKey, HandlerType.AssemblyQualifiedName);
 
-            return new DataStoreConsumer(fromConfig.TenantManager, fromConfig.CoreBaseSettings, fromConfig.CoreSettings, fromConfig.Configuration, fromConfig.Cache, fromConfig.Name, fromConfig.Order, props, additional);
+            return new DataStoreConsumer(fromConfig.TenantManager, fromConfig.CoreBaseSettings, fromConfig.CoreSettings, fromConfig.Configuration, fromConfig.Cache, fromConfig.ConsumerFactory, fromConfig.Name, fromConfig.Order, props, additional);
         }
 
         public object Clone()
         {
-            return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration, Cache, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value), Additional.ToDictionary(r => r.Key, r => r.Value));
+            return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration, Cache, ConsumerFactory, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value), Additional.ToDictionary(r => r.Key, r => r.Value));
         }
     }
 
+    [Scope]
     public class ConsumerFactory : IDisposable
     {
         public ILifetimeScope Builder { get; set; }
@@ -422,15 +431,6 @@ namespace ASC.Core.Common.Configuration
         public void Dispose()
         {
             Builder.Dispose();
-        }
-    }
-
-    public static class ConsumerFactoryExtension
-    {
-        public static DIHelper AddConsumerFactoryService(this DIHelper services)
-        {
-            services.TryAddScoped<ConsumerFactory>();
-            return services;
         }
     }
 }
