@@ -63,12 +63,13 @@ type=rpm-md
 END
 
 #install kafka
-mkdir -p /var/www/appserver/services/
-getent passwd kafka >/dev/null || useradd -m -d /var/www/appserver/services/kafka -s /sbin/nologin -p kafka kafka
-cd /var/www/appserver/services/kafka
+PRODUCT_DIR="/var/www/${product}"
+mkdir -p ${PRODUCT_DIR}/services/
+getent passwd kafka >/dev/null || useradd -m -d ${PRODUCT_DIR}/services/kafka -s /sbin/nologin -p kafka kafka
+cd ${PRODUCT_DIR}/services/kafka
 wget https://downloads.apache.org/kafka/2.7.0/kafka_2.13-2.7.0.tgz
 tar xzf kafka_*.tgz --strip 1 && rm -rf kafka_*.tgz
-chown -R kafka /var/www/appserver/services/kafka
+chown -R kafka ${PRODUCT_DIR}/services/kafka
 cd -
 
 cat > /etc/systemd/system/zookeeper.service <<END
@@ -78,8 +79,8 @@ After=network.target remote-fs.target
 [Service]
 Type=simple
 User=kafka
-ExecStart=/bin/sh -c '/var/www/appserver/services/kafka/bin/zookeeper-server-start.sh /var/www/appserver/services/kafka/config/zookeeper.properties > /var/www/appserver/services/kafka/zookeeper.log 2>&1'
-ExecStop=/var/www/appserver/services/kafka/bin/zookeeper-server-stop.sh
+ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-start.sh ${PRODUCT_DIR}/services/kafka/config/zookeeper.properties > ${PRODUCT_DIR}/services/kafka/zookeeper.log 2>&1'
+ExecStop=${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-stop.sh
 Restart=on-abnormal
 [Install]
 WantedBy=multi-user.target
@@ -92,8 +93,8 @@ After=zookeeper.service
 [Service]
 Type=simple
 User=kafka
-ExecStart=/bin/sh -c '/var/www/appserver/services/kafka/bin/kafka-server-start.sh /var/www/appserver/services/kafka/config/server.properties > /var/www/appserver/services/kafka/kafka.log 2>&1'
-ExecStop=/var/www/appserver/services/kafka/bin/kafka-server-stop.sh
+ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/kafka-server-start.sh ${PRODUCT_DIR}/services/kafka/config/server.properties > ${PRODUCT_DIR}/services/kafka/kafka.log 2>&1'
+ExecStop=${PRODUCT_DIR}/services/kafka/bin/kafka-server-stop.sh
 Restart=on-abnormal
 [Install]
 WantedBy=multi-user.target

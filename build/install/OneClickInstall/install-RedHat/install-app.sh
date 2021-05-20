@@ -55,8 +55,8 @@ if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ]; then
 		systemctl restart mysqld
 	fi
 elif [ "${UPDATE}" = "true" ] && [ "${MYSQL_FIRST_TIME_INSTALL}" != "true" ]; then
-	ENVIRONMENT="$(cat /etc/systemd/system/appserver-api.service | grep -oP 'ENVIRONMENT=\K.*')"
-	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/appserver/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
+	ENVIRONMENT="$(cat /etc/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
+	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
 	MYSQL_SERVER_HOST=$(echo $USER_CONNECTIONSTRING | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
 	MYSQL_SERVER_DB_NAME=$(echo $USER_CONNECTIONSTRING | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
 	MYSQL_SERVER_USER=$(echo $USER_CONNECTIONSTRING | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
@@ -154,9 +154,9 @@ fi
 
 if [ "$APPSERVER_INSTALLED" = "false" ] || [ "$UPDATE" = "true" ]; then
 	if [ "$APPSERVER_INSTALLED" = "false" ]; then
-		${package_manager} install -y ${package_sysname}-appserver 
+		${package_manager} install -y ${package_sysname}-${product} 
 	else
-		${package_manager} -y update ${package_sysname}-appserver
+		${package_manager} -y update ${package_sysname}-${product}
 	fi
 
 	if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ] || [ "$UPDATE" = "true" ]; then
@@ -165,9 +165,9 @@ expect << EOF
 		log_user 1
 
 		if { "${UPDATE}" == "true" } {
-			spawn appserver-configuration.sh -e ${ENVIRONMENT}
+			spawn ${product}-configuration.sh -e ${ENVIRONMENT}
 		} else {
-			spawn appserver-configuration.sh
+			spawn ${product}-configuration.sh
 		}
 
 		expect -re "Database host:"
@@ -186,7 +186,7 @@ expect << EOF
 EOF
 		APPSERVER_INSTALLED="true";
 	else 
-		bash appserver-configuration.sh
+		bash ${product}-configuration.sh
 		APPSERVER_INSTALLED="true";
 	fi
 fi

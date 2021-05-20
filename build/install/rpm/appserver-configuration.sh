@@ -1,8 +1,8 @@
 #!/bin/bash
-SERVICE_SYSNAME="appserver"
+PRODUCT="appserver"
 ENVIRONMENT="production"
 
-APP_DIR="/etc/onlyoffice/${SERVICE_SYSNAME}"
+APP_DIR="/etc/onlyoffice/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 NGINX_CONF="/etc/nginx/conf.d"
 SYSTEMD_DIR="/etc/systemd/system"
@@ -116,11 +116,11 @@ while [ "$1" != "" ]; do
 		;;
 
 		-? | -h | --help )
-			echo "  Usage: bash ${SERVICE_SYSNAME}-configuration.sh [PARAMETER] [[PARAMETER], ...]"
+			echo "  Usage: bash ${PRODUCT}-configuration.sh [PARAMETER] [[PARAMETER], ...]"
 			echo
 			echo "    Parameters:"
-			echo "      -ash, --appshost                    ${SERVICE_SYSNAME} ip"
-			echo "      -asp, --appsport                    ${SERVICE_SYSNAME} port (default 80)"
+			echo "      -ash, --appshost                    ${PRODUCT} ip"
+			echo "      -asp, --appsport                    ${PRODUCT} port (default 80)"
 			echo "      -dsh, --docshost                    document server ip"
 			echo "      -dsp, --docsport                    document server port (default 8083)"
 			echo "      -kh, --kafkahost                    kafka ip"
@@ -178,11 +178,11 @@ install_json() {
 restart_services() {
 	echo -n "Restarting services... "
 
-	for SVC in nginx mysqld ${SERVICE_SYSNAME}-api ${SERVICE_SYSNAME}-api-system ${SERVICE_SYSNAME}-urlshortener ${SERVICE_SYSNAME}-thumbnails \
-	${SERVICE_SYSNAME}-socket ${SERVICE_SYSNAME}-studio-notify ${SERVICE_SYSNAME}-notify ${SERVICE_SYSNAME}-people-server ${SERVICE_SYSNAME}-files \
-	${SERVICE_SYSNAME}-files-services ${SERVICE_SYSNAME}-studio ${SERVICE_SYSNAME}-backup ${SERVICE_SYSNAME}-storage-encryption \
-	${SERVICE_SYSNAME}-storage-migration ${SERVICE_SYSNAME}-projects-server ${SERVICE_SYSNAME}-telegram-service ${SERVICE_SYSNAME}-crm \
-	${SERVICE_SYSNAME}-calendar ${SERVICE_SYSNAME}-mail elasticsearch kafka zookeeper
+	for SVC in nginx mysqld ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
+	${PRODUCT}-socket ${PRODUCT}-studio-notify ${PRODUCT}-notify ${PRODUCT}-people-server ${PRODUCT}-files \
+	${PRODUCT}-files-services ${PRODUCT}-studio ${PRODUCT}-backup ${PRODUCT}-storage-encryption \
+	${PRODUCT}-storage-migration ${PRODUCT}-projects-server ${PRODUCT}-telegram-service ${PRODUCT}-crm \
+	${PRODUCT}-calendar ${PRODUCT}-mail elasticsearch kafka zookeeper
 	do
 		sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/$SVC.service >/dev/null 2>&1
 		
@@ -353,7 +353,7 @@ execute_mysql_script(){
 	#Checking the quantity of the tables created in the db
     DB_TABLES_COUNT=$($MYSQL --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}'"); 
     
-	local SQL_DIR="/var/www/${SERVICE_SYSNAME}/sql"
+	local SQL_DIR="/var/www/${PRODUCT}/sql"
     if [ "${DB_TABLES_COUNT}" -eq "0" ]; then
 
 		echo -n "Installing MYSQL database... "
