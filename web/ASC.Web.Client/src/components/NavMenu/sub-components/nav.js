@@ -24,13 +24,17 @@ const StyledNav = styled.nav`
 
     @media (orientation: landscape) {
       position: ${isMobileOnly && "relative"};
+      margin-top: 16px;
     }
 
     ${(props) =>
       props.numberOfModules &&
-      `@media (max-height: ${props.numberOfModules * 52 + 64}px) {
+      `@media (max-height: ${props.numberOfModules * 52 + 80}px) {
       position: ${isDesktop && "relative"};
+      margin-top: 16px;
     }`}
+
+    //64
 
     bottom: 8px;
     left: 16px;
