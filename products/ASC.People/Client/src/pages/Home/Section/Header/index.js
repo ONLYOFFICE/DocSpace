@@ -314,7 +314,7 @@ const SectionHeaderContent = (props) => {
     return [
       {
         key: "edit-group",
-        label: t("EditButton"),
+        label: t("Common:EditButton"),
         onClick: onEditGroup,
       },
       {

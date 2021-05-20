@@ -369,7 +369,7 @@ class SectionHeaderContent extends React.PureComponent {
         return [
           {
             key: "edit",
-            label: t("EditButton"),
+            label: t("Common:EditButton"),
             onClick: this.onEditClick,
           },
           {
@@ -460,7 +460,7 @@ class SectionHeaderContent extends React.PureComponent {
           onClose={this.onCloseAvatarEditor}
           onSave={this.onSaveAvatar}
           onLoadFile={this.onLoadFileAvatar}
-          headerLabel={t("editAvatar")}
+          headerLabel={t("Common:EditAvatar")}
           selectNewPhotoLabel={t("selectNewPhotoLabel")}
           orDropFileHereLabel={t("orDropFileHereLabel")}
           unknownTypeError={t("ErrorUnknownFileImageType")}

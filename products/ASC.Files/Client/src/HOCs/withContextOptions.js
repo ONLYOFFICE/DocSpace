@@ -274,7 +274,7 @@ export default function withContextOptions(WrappedComponent) {
           case "edit":
             return {
               key: option,
-              label: t("Edit"),
+              label: t("Common:EditButton"),
               icon: "/static/images/access.edit.react.svg",
               onClick: this.onClickLinkEdit,
               disabled: false,

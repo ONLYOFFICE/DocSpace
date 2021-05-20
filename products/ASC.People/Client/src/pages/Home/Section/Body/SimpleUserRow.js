@@ -172,7 +172,7 @@ const SimpleUserRow = ({
         case "edit":
           return {
             key: option,
-            label: t("EditButton"),
+            label: t("Common:EditButton"),
             "data-id": id,
             onClick: onEditClick,
           };

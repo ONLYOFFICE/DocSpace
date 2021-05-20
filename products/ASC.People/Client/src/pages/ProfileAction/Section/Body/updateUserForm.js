@@ -651,7 +651,7 @@ class UpdateUserForm extends React.Component {
               source={this.props.avatarMax || profile.avatarMax}
               userName={profile.displayName}
               editing={true}
-              editLabel={t("editAvatar")}
+              editLabel={t("Common:EditAvatar")}
               editAction={
                 isMobile ? this.openAvatarEditorPage : this.openAvatarEditor
               }
