@@ -10,12 +10,35 @@ import { inject, observer } from "mobx-react";
 import Box from "@appserver/components/box";
 import toastr from "studio/toastr";
 import withLoader from "../withLoader";
+import { mobile, tablet } from "@appserver/components/utils/device";
 
 const StyledForm = styled(Box)`
   margin: 63px auto auto 216px;
   width: 570px;
   display: flex;
   flex-direction: column;
+
+  @media ${tablet} {
+    margin: 120px auto;
+    width: 480px;
+  }
+  @media ${mobile} {
+    margin: 72px 16px auto 8px;
+    width: 311px;
+  }
+
+  .app-code-wrapper {
+    @media ${tablet} {
+      flex-direction: column;
+    }
+  }
+
+  .app-code-continue-btn {
+    @media ${tablet} {
+      margin: 32px 0 0 0;
+    }
+  }
+
   .app-code-text {
     margin-bottom: 14px;
   }
@@ -57,7 +80,7 @@ const TfaAuthForm = withLoader((props) => {
         </Text>
         <Text>{t("EnterAppCodeDescription")}</Text>
       </Box>
-      <Box displayProp="flex">
+      <Box displayProp="flex" className="app-code-wrapper">
         <Box className="app-code-input">
           <TextInput
             id="code"
@@ -81,8 +104,9 @@ const TfaAuthForm = withLoader((props) => {
         </Box>
         <Box className="app-code-continue-btn" marginProp="0 0 0 8px">
           <Button
+            scale
             primary
-            size="medium"
+            size={window.innerWidth <= 1024 ? "large" : "medium"}
             tabIndex={3}
             label={isLoading ? t("LoadingProcessing") : t("Continue")}
             isDisabled={!code.length || isLoading}
