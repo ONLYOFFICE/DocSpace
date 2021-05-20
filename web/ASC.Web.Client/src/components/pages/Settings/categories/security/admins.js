@@ -32,10 +32,7 @@ import {
   EmployeeActivationStatus,
 } from "@appserver/common/constants";
 
-import api from "@appserver/common/api";
-
 import { tablet } from "@appserver/components/utils/device";
-import { ConsoleView } from "react-device-detect";
 
 const getUserStatus = (user) => {
   if (
@@ -720,7 +717,7 @@ class PortalAdmins extends Component {
                               </Text>
                               <HelpButton
                                 displayType="dropdown"
-                                place="top"
+                                place="bottom"
                                 offsetRight={0}
                                 tooltipContent={this.modulesTooltip()}
                               />
