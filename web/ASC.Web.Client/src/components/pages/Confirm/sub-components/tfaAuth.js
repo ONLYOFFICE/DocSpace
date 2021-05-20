@@ -55,6 +55,8 @@ const TfaAuthForm = withLoader((props) => {
     try {
       const { user, hash } = (location && location.state) || {};
 
+      setIsLoading(true);
+
       if (user && hash) {
         const url = await loginWithCode(user, hash, code);
         history.push(url || "/");
@@ -62,6 +64,8 @@ const TfaAuthForm = withLoader((props) => {
         const url = await loginWithCodeAndCookie(code);
         history.push(url || "/");
       }
+
+      setIsLoading(false);
     } catch (e) {
       setError(e);
       toastr.error(e);

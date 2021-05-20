@@ -66,6 +66,8 @@ const TfaActivationForm = withLoader((props) => {
     try {
       const { user, hash } = (location && location.state) || {};
 
+      setIsLoading(true);
+
       if (user && hash) {
         const url = await loginWithCode(user, hash, code);
         history.push(url || "/");
@@ -73,6 +75,8 @@ const TfaActivationForm = withLoader((props) => {
         const url = await loginWithCodeAndCookie(code);
         history.push(url || "/");
       }
+
+      setIsLoading(false);
     } catch (e) {
       setError(e);
       toastr.error(e);
@@ -161,16 +165,7 @@ const TfaActivationForm = withLoader((props) => {
 });
 
 const TfaActivationWrapper = (props) => {
-  const {
-    t,
-    getSecretKeyAndQR,
-    linkData,
-    setIsLoaded,
-    setIsLoading,
-    loginWithCode,
-    location,
-    history,
-  } = props;
+  const { getSecretKeyAndQR, linkData, setIsLoaded, setIsLoading } = props;
 
   const [secretKey, setSecretKey] = useState("");
   const [qrCode, setQrCode] = useState("");
@@ -181,9 +176,10 @@ const TfaActivationWrapper = (props) => {
       setIsLoading(true);
       const confirmKey = linkData.confirmHeader;
       const res = await getSecretKeyAndQR(confirmKey);
+      const { manualEntryKey, qrCodeSetupImageUrl } = res;
 
-      setSecretKey(res.manualEntryKey);
-      setQrCode(res.qrCodeSetupImageUrl);
+      setSecretKey(manualEntryKey);
+      setQrCode(qrCodeSetupImageUrl);
     } catch (e) {
       setError(e);
       toastr.error(e);
