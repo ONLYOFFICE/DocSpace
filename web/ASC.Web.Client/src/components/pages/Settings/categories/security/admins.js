@@ -272,6 +272,10 @@ class PortalAdmins extends Component {
       selectedOptions: [],
       searchValue: "",
       selectedUser: null,
+      request: {
+        pending: false,
+        activeRequestId: null,
+      },
     };
   }
 
@@ -300,10 +304,6 @@ class PortalAdmins extends Component {
     setAddUsers("");
     setRemoveAdmins("");
   }
-
-  onLoading = (status) => {
-    this.setState({ isLoading: status });
-  };
 
   onAdminsFilter = () => {
     const { filter } = this.props;
@@ -478,18 +478,15 @@ class PortalAdmins extends Component {
   };
 
   onFullAccessClick = (access) => {
-    const { selectedUser } = this.state;
-    const {
-      changeAdmins,
-      admins,
-      setAdmins,
-      modules,
-      isLoading,
-      setIsLoading,
-    } = this.props;
+    const { selectedUser, request } = this.state;
+    const { changeAdmins, admins, setAdmins, modules } = this.props;
 
-    if (isLoading) return;
-    setIsLoading(true);
+    if (request.pending) return;
+    this.setActiveRequestId(fullAccessId);
+    setTimeout(() => {
+      if (!this.state.request.activeRequestId) return;
+      this.setRequestPending();
+    }, 100);
 
     changeAdmins([selectedUser.id], fullAccessId, access)
       .then(() => {
@@ -513,28 +510,53 @@ class PortalAdmins extends Component {
           selectedUser: updatedAdmin,
         });
         setAdmins(updatedAdmins);
-        setIsLoading(false);
       })
       .catch((e) => {
         console.log(e);
-        setIsLoading(false);
+      })
+      .finally(() => {
+        this.clearRequest();
       });
   };
 
+  setActiveRequestId = (id) => {
+    this.setState({
+      request: Object.assign(this.state.request, { activeRequestId: id }),
+    });
+  };
+
+  setRequestPending = () => {
+    this.setState({
+      request: Object.assign(this.state.request, {
+        pending: true,
+      }),
+    });
+  };
+
+  clearRequest = () => {
+    this.setState({
+      request: {
+        pending: false,
+        activeRequestId: null,
+      },
+    });
+  };
+
+  toggleIsLoading = (id) => {
+    const { request } = this.state;
+    if (request.activeRequestId === id && request.pending) return true;
+  };
+
   onModuleToggle = (module, access) => {
-    const { selectedUser } = this.state;
-    const {
-      changeAdmins,
-      admins,
-      setAdmins,
-      modules,
-      isLoading,
-      setIsLoading,
-    } = this.props;
+    const { selectedUser, request } = this.state;
+    const { changeAdmins, admins, setAdmins, modules } = this.props;
 
-    if (isLoading) return;
-
-    setIsLoading(true);
+    if (request.pending) return;
+    this.setActiveRequestId(module.id);
+    setTimeout(() => {
+      if (!this.state.request.activeRequestId) return;
+      this.setRequestPending();
+    }, 100);
 
     changeAdmins([selectedUser.id], module.id, access)
       .then(() => {
@@ -570,11 +592,12 @@ class PortalAdmins extends Component {
           selectedUser: updatedAdmin,
         });
         setAdmins(updatedAdmins);
-        setIsLoading(false);
       })
       .catch((e) => {
-        setIsLoading(false);
         console.log(e);
+      })
+      .finally(() => {
+        this.clearRequest();
       });
   };
 
@@ -626,6 +649,8 @@ class PortalAdmins extends Component {
     const filteredAdmins = searchValue
       ? this.getFilteredAdmins(admins, searchValue)
       : admins;
+
+    const fullAccessIsLoading = this.toggleIsLoading(fullAccessId);
 
     return (
       <>
@@ -713,10 +738,15 @@ class PortalAdmins extends Component {
                           </div>
                           <ToggleButton
                             className="toggle-btn"
-                            isChecked={selectedUser.isAdmin}
+                            isChecked={
+                              fullAccessIsLoading
+                                ? !selectedUser.isAdmin
+                                : selectedUser.isAdmin
+                            }
                             onChange={() =>
                               this.onFullAccessClick(!selectedUser.isAdmin)
                             }
+                            isLoading={fullAccessIsLoading}
                             isDisabled={false}
                           />
                         </div>
@@ -742,6 +772,10 @@ class PortalAdmins extends Component {
                                     module.appName
                                   );
 
+                                  const toggleIsLoading = this.toggleIsLoading(
+                                    module.id
+                                  );
+
                                   return (
                                     <div
                                       key={module.appName}
@@ -752,8 +786,12 @@ class PortalAdmins extends Component {
                                       </Text>
                                       <ToggleButton
                                         className="toggle-btn"
-                                        isChecked={isModuleAdmin}
-                                        inputId={module.id}
+                                        isChecked={
+                                          toggleIsLoading
+                                            ? !isModuleAdmin
+                                            : isModuleAdmin
+                                        }
+                                        isLoading={toggleIsLoading}
                                         onChange={() =>
                                           this.onModuleToggle(
                                             module,
@@ -916,7 +954,6 @@ export default inject(({ auth, setup }) => {
   const { admins, owner, filter, selectorIsOpen } = setup.security.accessRight;
   const { user: me } = auth.userStore;
   const { modules } = auth.moduleStore;
-  const { setIsLoading, isLoading } = auth.settingsStore;
   const {
     setAddUsers,
     setRemoveAdmins,
@@ -954,7 +991,5 @@ export default inject(({ auth, setup }) => {
     toggleSelector,
     setAdmins,
     getUsersByIds,
-    setIsLoading,
-    isLoading,
   };
 })(withTranslation("Settings")(withRouter(observer(PortalAdmins))));
