@@ -63,12 +63,13 @@ type=rpm-md
 END
 
 #install kafka
-mkdir -p /var/www/appserver/services/
-getent passwd kafka >/dev/null || useradd -m -d /var/www/appserver/services/kafka -s /sbin/nologin -p kafka kafka
-cd /var/www/appserver/services/kafka
+PRODUCT_DIR="/var/www/${product}"
+mkdir -p ${PRODUCT_DIR}/services/
+getent passwd kafka >/dev/null || useradd -m -d ${PRODUCT_DIR}/services/kafka -s /sbin/nologin -p kafka kafka
+cd ${PRODUCT_DIR}/services/kafka
 wget https://downloads.apache.org/kafka/2.7.0/kafka_2.13-2.7.0.tgz
 tar xzf kafka_*.tgz --strip 1 && rm -rf kafka_*.tgz
-chown -R kafka /var/www/appserver/services/kafka
+chown -R kafka ${PRODUCT_DIR}/services/kafka
 cd -
 
 cat > /etc/systemd/system/zookeeper.service <<END
@@ -78,8 +79,8 @@ After=network.target remote-fs.target
 [Service]
 Type=simple
 User=kafka
-ExecStart=/bin/sh -c '/var/www/appserver/services/kafka/bin/zookeeper-server-start.sh /var/www/appserver/services/kafka/config/zookeeper.properties > /var/www/appserver/services/kafka/zookeeper.log 2>&1'
-ExecStop=/var/www/appserver/services/kafka/bin/zookeeper-server-stop.sh
+ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-start.sh ${PRODUCT_DIR}/services/kafka/config/zookeeper.properties > ${PRODUCT_DIR}/services/kafka/zookeeper.log 2>&1'
+ExecStop=${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-stop.sh
 Restart=on-abnormal
 [Install]
 WantedBy=multi-user.target
@@ -92,8 +93,8 @@ After=zookeeper.service
 [Service]
 Type=simple
 User=kafka
-ExecStart=/bin/sh -c '/var/www/appserver/services/kafka/bin/kafka-server-start.sh /var/www/appserver/services/kafka/config/server.properties > /var/www/appserver/services/kafka/kafka.log 2>&1'
-ExecStop=/var/www/appserver/services/kafka/bin/kafka-server-stop.sh
+ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/kafka-server-start.sh ${PRODUCT_DIR}/services/kafka/config/server.properties > ${PRODUCT_DIR}/services/kafka/kafka.log 2>&1'
+ExecStop=${PRODUCT_DIR}/services/kafka/bin/kafka-server-stop.sh
 Restart=on-abnormal
 [Install]
 WantedBy=multi-user.target
@@ -111,8 +112,9 @@ module_hotfixes=true
 END
 
 if [ "$REV" = "8" ]; then
+	rabbitmq_version="-3.8.12"
 
-cat > /etc/yum.repos.d/rabbitmq-server.repo <<END
+	cat > /etc/yum.repos.d/rabbitmq-server.repo <<END
 [rabbitmq-server]
 name=rabbitmq-server
 baseurl=https://packagecloud.io/rabbitmq/rabbitmq-server/el/7/\$basearch
@@ -126,6 +128,7 @@ metadata_expire=300
 END
 
 fi
+
 ${package_manager} -y install yum-plugin-versionlock
 ${package_manager} versionlock clear
 
@@ -136,20 +139,23 @@ ${package_manager} -y install epel-release \
 			gcc-c++ \
 			make \
 			yarn \
-			dotnet-sdk-3.1 \
+			dotnet-sdk-5.0 \
 			elasticsearch-7.8.1 --enablerepo=elasticsearch \
 			mysql-server \
 			nginx \
 			supervisor \
 			postgresql \
 			postgresql-server \
-			rabbitmq-server \
+			rabbitmq-server$rabbitmq_version \
 			redis --enablerepo=remi
 	
 postgresql-setup initdb	|| true
 
 semanage permissive -a httpd_t
 
+if [ ! -e /usr/bin/json ]; then
+	npm i json -g >/dev/null 2>&1
+fi
+
 systemctl daemon-reload
-package_services="rabbitmq-server postgresql redis supervisord nginx kafka"
-systemctl enable mysqld && systemctl start mysqld
+package_services="rabbitmq-server postgresql redis supervisord nginx kafka mysqld"
