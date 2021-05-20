@@ -34,8 +34,6 @@ const StyledNav = styled.nav`
       margin-top: 16px;
     }`}
 
-    //64
-
     bottom: 8px;
     left: 16px;
 
