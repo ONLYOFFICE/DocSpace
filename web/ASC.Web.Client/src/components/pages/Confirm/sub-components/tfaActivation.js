@@ -83,6 +83,8 @@ const TfaActivationForm = withLoader((props) => {
     if (target.code === "Enter") onSubmit();
   };
 
+  const width = window.innerWidth;
+
   return (
     <PageLayout>
       <PageLayout.SectionBody>
@@ -112,7 +114,7 @@ const TfaActivationForm = withLoader((props) => {
                   id="code"
                   name="code"
                   type="text"
-                  size="base"
+                  size={width <= 1024 ? "large" : "base"}
                   scale
                   isAutoFocussed
                   tabIndex={1}
@@ -132,7 +134,7 @@ const TfaActivationForm = withLoader((props) => {
                 <Button
                   scale
                   primary
-                  size={window.innerWidth <= 1024 ? "large" : "medium"}
+                  size={width <= 1024 ? "large" : "medium"}
                   tabIndex={3}
                   label={isLoading ? t("LoadingProcessing") : t("SetAppButton")}
                   isDisabled={!code.length || isLoading}

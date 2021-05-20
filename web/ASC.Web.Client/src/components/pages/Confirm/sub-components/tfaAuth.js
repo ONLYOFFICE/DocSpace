@@ -72,6 +72,8 @@ const TfaAuthForm = withLoader((props) => {
     if (target.code === "Enter") onSubmit();
   };
 
+  const width = window.innerWidth;
+
   return (
     <StyledForm className="app-code-container">
       <Box className="app-code-description" marginProp="0 0 32px 0">
@@ -86,7 +88,7 @@ const TfaAuthForm = withLoader((props) => {
             id="code"
             name="code"
             type="text"
-            size="base"
+            size={width <= 1024 ? "large" : "base"}
             scale
             isAutoFocussed
             tabIndex={1}
@@ -106,7 +108,7 @@ const TfaAuthForm = withLoader((props) => {
           <Button
             scale
             primary
-            size={window.innerWidth <= 1024 ? "large" : "medium"}
+            size={width <= 1024 ? "large" : "medium"}
             tabIndex={3}
             label={isLoading ? t("LoadingProcessing") : t("Continue")}
             isDisabled={!code.length || isLoading}
