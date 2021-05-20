@@ -4,6 +4,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
+import FieldContainer from "@appserver/components/field-container";
 import Text from "@appserver/components/text";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { inject, observer } from "mobx-react";
@@ -64,12 +65,11 @@ const TfaAuthForm = withLoader((props) => {
         const url = await loginWithCodeAndCookie(code);
         history.push(url || "/");
       }
-
-      setIsLoading(false);
     } catch (e) {
       setError(e);
       toastr.error(e);
     }
+    setIsLoading(false);
   };
 
   const onKeyPress = (target) => {
@@ -88,25 +88,31 @@ const TfaAuthForm = withLoader((props) => {
       </Box>
       <Box displayProp="flex" className="app-code-wrapper">
         <Box className="app-code-input">
-          <TextInput
-            id="code"
-            name="code"
-            type="text"
-            size={width <= 1024 ? "large" : "base"}
-            scale
-            isAutoFocussed
-            tabIndex={1}
-            placeholder={t("EnterCodePlaceholder")}
-            isDisabled={isLoading}
-            maxLength={6}
-            onChange={(e) => {
-              setCode(e.target.value);
-              setError("");
-            }}
-            value={code}
+          <FieldContainer
+            labelVisible={false}
             hasError={error ? true : false}
-            onKeyDown={onKeyPress}
-          />
+            errorMessage={error}
+          >
+            <TextInput
+              id="code"
+              name="code"
+              type="text"
+              size={width <= 1024 ? "large" : "base"}
+              scale
+              isAutoFocussed
+              tabIndex={1}
+              placeholder={t("EnterCodePlaceholder")}
+              isDisabled={isLoading}
+              maxLength={6}
+              onChange={(e) => {
+                setCode(e.target.value);
+                setError("");
+              }}
+              value={code}
+              hasError={error ? true : false}
+              onKeyDown={onKeyPress}
+            />
+          </FieldContainer>
         </Box>
         <Box className="app-code-continue-btn" marginProp="0 0 0 8px">
           <Button
