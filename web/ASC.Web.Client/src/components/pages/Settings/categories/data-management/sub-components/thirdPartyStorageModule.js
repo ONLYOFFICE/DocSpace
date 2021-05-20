@@ -67,7 +67,11 @@ class ThirdPartyStorageModule extends React.PureComponent {
   }
 
   getOptions = (storageBackup) => {
-    const { isManualBackup, onSetDisableOptions } = this.props;
+    const {
+      isManualBackup,
+      onSetDisableOptions,
+      isDisableOptions,
+    } = this.props;
     this.setState({
       isLoading: true,
     });
@@ -108,6 +112,9 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
       if (this.isSetDefaultIdStorage)
         onSetDisableOptions && onSetDisableOptions(true);
+
+      if (!this.isSetDefaultIdStorage && isDisableOptions)
+        onSetDisableOptions && onSetDisableOptions(false);
 
       if (!this.isFirstSet && storageBackup[item].isSet) {
         this.isFirstSet = true;

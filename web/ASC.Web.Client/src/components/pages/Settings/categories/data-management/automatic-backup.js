@@ -787,11 +787,11 @@ class AutomaticBackup extends React.PureComponent {
     }
     if (isCheckedThirdPartyStorage) {
       if (+defaultStorageType === 5) {
-        // changed = this.checkOptions();
-        // isChanged !== changed &&
-        //   this.setState({
-        //     isChanged: changed,
-        //   });
+        changed = this.checkOptions();
+        isChanged !== changed &&
+          this.setState({
+            isChanged: changed,
+          });
         return;
       } else {
         isChanged !== changed &&
@@ -1040,7 +1040,6 @@ class AutomaticBackup extends React.PureComponent {
                     selectedMonthOption={selectedMonthOption}
                     selectedMaxCopies={selectedMaxCopies}
                     isLoadingData={isLoadingData}
-                    isDisableOptions={isDisableOptions}
                     periodOptions={this.periodOptions}
                     monthNumberOptionsArray={this.monthNumberOptionsArray}
                     timeOptionsArray={this.timeOptionsArray}
@@ -1101,7 +1100,6 @@ class AutomaticBackup extends React.PureComponent {
                     selectedMonthOption={selectedMonthOption}
                     selectedMaxCopies={selectedMaxCopies}
                     isLoadingData={isLoadingData}
-                    isDisableOptions={isDisableOptions}
                     periodOptions={this.periodOptions}
                     monthNumberOptionsArray={this.monthNumberOptionsArray}
                     timeOptionsArray={this.timeOptionsArray}
@@ -1143,6 +1141,7 @@ class AutomaticBackup extends React.PureComponent {
                     onCancelModuleSettings={this.onCancelModuleSettings}
                     isCopyingToLocal={isCopyingToLocal}
                     isLoadingData={isLoadingData}
+                    isDisableOptions={isDisableOptions}
                     isChanged={isChanged}
                     onSetDisableOptions={this.onSetDisableOptions}
                   />
