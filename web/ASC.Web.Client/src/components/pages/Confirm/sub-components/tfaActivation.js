@@ -11,6 +11,7 @@ import Box from "@appserver/components/box";
 import withLoader from "../withLoader";
 import toastr from "studio/toastr";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
+import { mobile, tablet, isMobile } from "@appserver/components/utils/device";
 
 const StyledForm = styled(Box)`
   margin: 63px auto auto 216px;
@@ -19,6 +20,29 @@ const StyledForm = styled(Box)`
   flex: 1fr 1fr;
   gap: 50px;
   flex-direction: row;
+
+  @media ${tablet} {
+    margin: 120px auto;
+    width: 480px;
+  }
+
+  @media ${mobile} {
+    margin: 72px 16px auto 8px;
+    width: 311px;
+  }
+
+  .app-code-wrapper {
+    @media ${tablet} {
+      flex-direction: column;
+    }
+  }
+
+  .app-code-continue-btn {
+    @media ${tablet} {
+      margin: 32px 0 0 0;
+    }
+  }
+
   .set-app-text {
     margin-bottom: 14px;
   }
@@ -82,7 +106,7 @@ const TfaActivationForm = withLoader((props) => {
                 </Text>
               </Trans>
             </Box>
-            <Box displayProp="flex">
+            <Box displayProp="flex" className="app-code-wrapper">
               <Box className="app-code-input">
                 <TextInput
                   id="code"
@@ -106,8 +130,9 @@ const TfaActivationForm = withLoader((props) => {
               </Box>
               <Box className="app-code-continue-btn" marginProp="0 0 0 8px">
                 <Button
+                  scale
                   primary
-                  size="medium"
+                  size={window.innerWidth <= 1024 ? "large" : "medium"}
                   tabIndex={3}
                   label={isLoading ? t("LoadingProcessing") : t("SetAppButton")}
                   isDisabled={!code.length || isLoading}
@@ -117,9 +142,16 @@ const TfaActivationForm = withLoader((props) => {
               </Box>
             </Box>
           </div>
-          <div id="qrcode">
-            <img src={qrCode} height="180px" width="180px" alt="QR-code"></img>
-          </div>
+          {window.innerWidth > 375 && (
+            <div id="qrcode">
+              <img
+                src={qrCode}
+                height="180px"
+                width="180px"
+                alt="QR-code"
+              ></img>
+            </div>
+          )}
         </StyledForm>
       </PageLayout.SectionBody>
     </PageLayout>
