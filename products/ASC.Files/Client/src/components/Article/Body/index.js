@@ -75,8 +75,7 @@ class ArticleBodyContent extends React.Component {
   };
 
   onShowNewFilesPanel = (folderId) => {
-    this.props.setNewFilesPanelVisible(true);
-    this.props.setNewFilesIds([folderId]);
+    this.props.setNewFilesPanelVisible(true, [folderId]);
   };
 
   render() {
@@ -127,7 +126,7 @@ export default inject(
         ? selectedNode
         : [selectedFolderStore.id + ""];
 
-    const { setNewFilesPanelVisible, setNewFilesIds } = dialogsStore;
+    const { setNewFilesPanelVisible } = dialogsStore;
 
     return {
       selectedFolderTitle: selectedFolderStore.title,
@@ -142,7 +141,6 @@ export default inject(
       setSelectedNode,
       setTreeFolders,
       setNewFilesPanelVisible,
-      setNewFilesIds,
 
       homepage: config.homepage,
     };

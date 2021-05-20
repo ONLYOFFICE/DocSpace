@@ -10,6 +10,7 @@ import {
   downloadFiles,
   markAsRead,
   checkFileConflicts,
+  removeShareFiles,
 } from "@appserver/common/api/files";
 import { ConflictResolveType, FileAction } from "@appserver/common/constants";
 import { TIMEOUT } from "../helpers/constants";
@@ -331,7 +332,6 @@ class FilesActionStore {
         label: translations.deleteOperation,
         alert: false,
       });
-
       isFile
         ? this.deleteFileAction(itemId, currentFolderId, translations)
         : this.deleteFolderAction(itemId, currentFolderId, translations);
@@ -359,6 +359,31 @@ class FilesActionStore {
         });
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
+  };
+
+  unsubscribeAction = async (fileIds, folderIds) => {
+    const { setUnsubscribe } = this.dialogsStore;
+    const { filter, fetchFiles } = this.filesStore;
+    const {
+      treeFolders,
+      isRecycleBinFolder,
+      setTreeFolders,
+    } = this.treeFoldersStore;
+
+    return removeShareFiles(fileIds, folderIds)
+      .then(() => setUnsubscribe(false))
+      .then(() =>
+        fetchFiles(this.selectedFolderStore.id, filter).then((data) => {
+          if (!isRecycleBinFolder && !!folderIds.length) {
+            const path = data.selectedFolder.pathParts.slice(0);
+            const newTreeFolders = treeFolders;
+            const folders = data.selectedFolder.folders;
+            const foldersCount = data.selectedFolder.foldersCount;
+            loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+            setTreeFolders(newTreeFolders);
+          }
+        })
+      );
   };
 
   deleteFolderAction = (folderId, currentFolderId, translations) => {
@@ -525,11 +550,10 @@ class FilesActionStore {
 
   openLocationAction = (locationId, isFolder) => {
     const locationFilter = isFolder ? this.filesStore.filter : null;
-
-    return this.filesStore.fetchFiles(locationId, locationFilter).then(() =>
+    return this.filesStore.fetchFiles(locationId, locationFilter);
+    /*.then(() =>
       //isFolder ? null : this.selectRowAction(!checked, item)
-      isFolder ? null : this.selectRowAction(false, item)
-    );
+    );*/
   };
 
   setThirdpartyInfo = (providerKey) => {
@@ -546,7 +570,20 @@ class FilesActionStore {
     setConnectItem({ ...provider, ...capability });
   };
 
-  markAsRead = (folderIds, fileId) => {
+  setNewBadgeCount = (item) => {
+    const { getRootFolder, updateRootBadge } = this.treeFoldersStore;
+    const { updateFileBadge, updateFolderBadge } = this.filesStore;
+    const { rootFolderType, fileExst, id } = item;
+
+    const count = item.new ? item.new : 1;
+    const rootFolder = getRootFolder(rootFolderType);
+    updateRootBadge(rootFolder.id, count);
+
+    if (fileExst) updateFileBadge(id);
+    else updateFolderBadge(id, item.new);
+  };
+
+  markAsRead = (folderIds, fileId, item) => {
     const {
       setSecondaryProgressBarData,
     } = this.uploadDataStore.secondaryProgressDataStore;
@@ -558,10 +595,13 @@ class FilesActionStore {
       visible: true,
     });
 
-    return markAsRead(folderIds, fileId).then((res) => {
-      const id = res[0] && res[0].id ? res[0].id : null;
-      this.loopFilesOperations(id);
-    });
+    return markAsRead(folderIds, fileId)
+      .then((res) => {
+        const id = res[0] && res[0].id ? res[0].id : null;
+        this.loopFilesOperations(id);
+      })
+      .then(() => item && this.setNewBadgeCount(item))
+      .catch((err) => toastr.error(err));
   };
 
   moveDragItems = (destFolderId, folderTitle, translations) => {

@@ -427,6 +427,15 @@ export function setShareFiles(
   });
 }
 
+export function removeShareFiles(fileIds, folderIds) {
+  const data = { fileIds, folderIds };
+  return request({
+    method: "delete",
+    url: "/files/share",
+    data,
+  });
+}
+
 export function setFileOwner(folderIds, fileIds, userId) {
   const data = { folderIds, fileIds, userId };
   return request({
