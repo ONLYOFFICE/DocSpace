@@ -13,6 +13,7 @@ import withLoader from "../withLoader";
 import toastr from "studio/toastr";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import { mobile, tablet, isMobile } from "@appserver/components/utils/device";
+import Link from "@appserver/components/link";
 
 const StyledForm = styled(Box)`
   margin: 63px auto auto 216px;
@@ -98,7 +99,27 @@ const TfaActivationForm = withLoader((props) => {
               <Text isBold fontSize="14px" className="set-app-text">
                 {t("SetAppTitle")}
               </Text>
-              <Text className="set-app-text">{t("SetAppDescription")}</Text>
+
+              <Trans t={t} i18nKey="SetAppDescription" ns="Confirm">
+                The two-factor authentication is enabled to provide additional
+                portal security. Configure your authenticator application to
+                continue work on the portal. For example you could use Google
+                Authenticator for
+                <Link isHovered href={props.tfaAndroidAppUrl} target="_blank">
+                  Android
+                </Link>
+                and{" "}
+                <Link isHovered href={props.tfaIosAppUrl} target="_blank">
+                  iOS
+                </Link>{" "}
+                or Authenticator for{" "}
+                <Link isHovered href={props.tfaWinAppUrl} target="_blank">
+                  Windows Phone
+                </Link>{" "}
+                .
+              </Trans>
+              <br />
+              <br />
               <Trans
                 t={t}
                 i18nKey="SetAppInstallDescription"
@@ -208,4 +229,7 @@ export default inject(({ auth, confirm }) => ({
   getSecretKeyAndQR: auth.tfaStore.getSecretKeyAndQR,
   loginWithCode: auth.loginWithCode,
   loginWithCodeAndCookie: auth.tfaStore.loginWithCodeAndCookie,
+  tfaAndroidAppUrl: auth.tfaStore.tfaAndroidAppUrl,
+  tfaIosAppUrl: auth.tfaStore.tfaIosAppUrl,
+  tfaWinAppUrl: auth.tfaStore.tfaWinAppUrl,
 }))(withRouter(withTranslation("Confirm")(observer(TfaActivationWrapper))));
