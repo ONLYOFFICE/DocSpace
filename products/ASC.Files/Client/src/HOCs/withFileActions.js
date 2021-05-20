@@ -141,7 +141,14 @@ export default function withFileActions(WrappedFileItem) {
         addExpandedKeys,
         setMediaViewerData,
       } = this.props;
-      const { id, fileExst, viewUrl, providerKey, contentLength } = item;
+      const {
+        id,
+        fileExst,
+        viewUrl,
+        providerKey,
+        contentLength,
+        fileStatus,
+      } = item;
 
       if (isTrashFolder) return;
 
@@ -160,7 +167,8 @@ export default function withFileActions(WrappedFileItem) {
           })
           .finally(() => setIsLoading(false));
       } else {
-        this.onMarkAsRead(id);
+        if (fileStatus === 2) this.onMarkAsRead(id);
+
         if (canWebEdit) {
           return openDocEditor(id, providerKey);
         }
