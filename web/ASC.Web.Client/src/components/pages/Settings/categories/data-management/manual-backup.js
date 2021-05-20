@@ -1,15 +1,12 @@
 import React from "react";
 import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
-import commonSettingsStyles from "../../utils/commonSettingsStyles";
-import styled from "styled-components";
+
 import Button from "@appserver/components/button";
-import Checkbox from "@appserver/components/checkbox";
 import { inject, observer } from "mobx-react";
 
 import { getBackupProgress, startBackup } from "@appserver/common/api/portal";
 import toastr from "@appserver/components/toast/toastr";
-import { toast } from "react-toastify";
 import ThirdPartyModule from "./sub-components-manual-backup/thirdPartyModule";
 import DocumentsModule from "./sub-components-manual-backup/documentsModule";
 import ThirdPartyStorageModule from "./sub-components/thirdPartyStorageModule";
@@ -22,12 +19,6 @@ class ManualBackup extends React.Component {
     super(props);
     this.manualBackup = true;
 
-    // this.state = {
-    //   backupMailTemporaryStorage: false,
-    //   backupMailDocuments: false,
-    //   backupMailThirdParty: false,
-    //   backupMailThirdPartyStorage: false,
-    // };
     this.state = {
       isVisiblePanel: false,
       downloadingProgress: 100,
@@ -75,11 +66,6 @@ class ManualBackup extends React.Component {
     );
   }
 
-  // onClickCheckbox = (e) => {
-  //   const name = e.target.name;
-  //   let change = !this.state[name];
-  //   this.setState({ [name]: change });
-  // };
   componentWillUnmount() {
     this._isMounted = false;
     clearInterval(this.timerId);
@@ -250,13 +236,7 @@ class ManualBackup extends React.Component {
     }
   };
   render() {
-    const {
-      t,
-      providers,
-      panelVisible,
-      folderPath,
-      commonThirdPartyList,
-    } = this.props;
+    const { t, commonThirdPartyList } = this.props;
     const {
       downloadingProgress,
       link,
@@ -268,14 +248,7 @@ class ManualBackup extends React.Component {
       isCheckedThirdPartyStorage,
     } = this.state;
     const maxProgress = downloadingProgress === 100;
-    // const {
-    //   backupMailTemporaryStorage,
-    //   backupMailDocuments,
-    //   backupMailThirdParty,
-    //   backupMailThirdPartyStorage,
-    // } = this.state;
-    // console.log("isLoading", isLoading);
-    // console.log("commonThirdPartyList", commonThirdPartyList);
+
     return isLoading ? (
       <></>
     ) : (
@@ -298,14 +271,6 @@ class ManualBackup extends React.Component {
           </Text>
           {isCheckedTemporaryStorage && (
             <div className="category-item-wrapper temporary-storage">
-              {/* <div className="backup-include_mail">
-            <Checkbox
-              name={"backupMailTemporaryStorage"}
-              isChecked={backupMailTemporaryStorage}
-              label={t("IncludeMail")}
-              onChange={this.onClickCheckbox}
-            />
-          </div> */}
               <div className="manual-backup_buttons">
                 <Button
                   label={t("MakeCopy")}
