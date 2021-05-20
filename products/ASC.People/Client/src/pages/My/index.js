@@ -1,34 +1,28 @@
 import React from "react";
+import MyProfileI18n from "./i18n";
+import PeopleStore from "../../store/PeopleStore";
+
 import PropTypes from "prop-types";
 import PageLayout from "@appserver/common/components/PageLayout";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
-import {
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-  ArticleBodyContent,
-} from "../../components/Article";
-import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withRouter } from "react-router";
 
-import { inject, observer } from "mobx-react";
-import { withTranslation } from "react-i18next";
+import { Provider as PeopleProvider, inject, observer } from "mobx-react";
+import { I18nextProvider, withTranslation } from "react-i18next";
+import {
+  SectionBodyContent as ViewBodyContent,
+  SectionHeaderContent as ViewHeaderContent,
+} from "../Profile/Section";
+import { SectionHeaderContent as EditHeaderContent } from "../ProfileAction/Section";
+import EditBodyContent from "../ProfileAction/Section/Body";
 
-class Profile extends React.Component {
+class My extends React.Component {
   componentDidMount() {
-    const {
-      match,
-      fetchProfile,
-      profile,
-      location,
-      t,
-      setDocumentTitle,
-    } = this.props;
-    let { userId } = match.params;
-
-    if (!userId) userId = "@self";
+    const { fetchProfile, profile, location, t, setDocumentTitle } = this.props;
 
     setDocumentTitle(t("Profile"));
+
     this.documentElement = document.getElementsByClassName("hidingHeader");
     const queryString = ((location && location.search) || "").slice(1);
     const queryParams = queryString.split("&");
@@ -41,7 +35,7 @@ class Profile extends React.Component {
       toastr.success(t("ChangeEmailSuccess"));
     }
     if (!profile) {
-      fetchProfile(userId);
+      fetchProfile("@self");
     }
 
     if (!profile && this.documentElement) {
@@ -51,73 +45,73 @@ class Profile extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    const { match, fetchProfile, profile } = this.props;
-    const { userId } = match.params;
-    const prevUserId = prevProps.match.params.userId;
-
-    if (userId !== undefined && userId !== prevUserId) {
-      fetchProfile(userId);
-    }
-
-    if (profile && this.documentElement) {
-      for (var i = 0; i < this.documentElement.length; i++) {
-        this.documentElement[i].style.transition = "";
-      }
-    }
-  }
-
   componentWillUnmount() {
     this.props.resetProfile();
   }
 
   render() {
-    //console.log("Profile render");
+    const { profile, tReady, location } = this.props;
 
-    const { profile } = this.props;
+    const isEdit = (location && location.search === "?action=edit") || false;
+
+    //console.log("My Profile render", this.props, isEdit);
 
     return (
       <PageLayout withBodyAutoFocus>
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
-
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent />
-        </PageLayout.ArticleMainButton>
-
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
-
         <PageLayout.SectionHeader>
-          {profile ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
+          {profile && tReady ? (
+            isEdit ? (
+              <EditHeaderContent isMy={true} />
+            ) : (
+              <ViewHeaderContent isMy={true} />
+            )
+          ) : (
+            <Loaders.SectionHeader />
+          )}
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {profile ? <SectionBodyContent /> : <Loaders.ProfileView />}
+          {profile && tReady ? (
+            isEdit ? (
+              <EditBodyContent isMy={true} />
+            ) : (
+              <ViewBodyContent isMy={true} />
+            )
+          ) : (
+            <Loaders.ProfileView />
+          )}
         </PageLayout.SectionBody>
       </PageLayout>
     );
   }
 }
 
-Profile.propTypes = {
+My.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  isAdmin: PropTypes.bool,
   language: PropTypes.string,
 };
 
-export default withRouter(
+const MyProfile = withRouter(
   inject(({ auth, peopleStore }) => ({
     setDocumentTitle: auth.setDocumentTitle,
-    isAdmin: auth.isAdmin,
     language: auth.language,
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
-  }))(observer(withTranslation("Profile")(Profile)))
+  }))(withTranslation(["Profile", "ProfileAction"])(observer(My)))
 );
+
+const peopleStore = new PeopleStore();
+
+export default ({ i18n, ...rest }) => {
+  return (
+    <PeopleProvider peopleStore={peopleStore}>
+      <I18nextProvider i18n={MyProfileI18n}>
+        <MyProfile {...rest} />
+      </I18nextProvider>
+    </PeopleProvider>
+  );
+};
