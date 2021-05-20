@@ -164,6 +164,10 @@ class AutomaticBackup extends React.PureComponent {
                 )
                 .then(() => this.onSetDefaultOptions());
             }
+          } else {
+            this.setState({
+              isLoading: false,
+            });
           }
         });
     });
@@ -185,6 +189,7 @@ class AutomaticBackup extends React.PureComponent {
 
   onSetDefaultOptions = () => {
     const { isLoading } = this.state;
+
     if (defaultStorageType === "0") {
       // Documents Module
       this.setState({
@@ -256,6 +261,7 @@ class AutomaticBackup extends React.PureComponent {
         });
       }
     }
+
     isLoading &&
       this.setState({
         isLoading: false,
