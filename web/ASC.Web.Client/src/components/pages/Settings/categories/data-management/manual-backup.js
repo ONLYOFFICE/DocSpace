@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import ThirdPartyModule from "./sub-components-manual-backup/thirdPartyModule";
 import DocumentsModule from "./sub-components-manual-backup/documentsModule";
 import ThirdPartyStorageModule from "./sub-components/thirdPartyStorageModule";
+import FloatingButton from "@appserver/common/components/FloatingButton";
 
 const StyledComponent = styled.div`
   ${commonSettingsStyles}
@@ -33,6 +34,7 @@ const StyledComponent = styled.div`
     margin-top: 16px;
   }
 `;
+var timerId = null;
 class ManualBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -52,9 +54,14 @@ class ManualBackup extends React.Component {
       isPanelVisible: false,
       isLoading: true,
     };
+    this._isMounted = false;
+    this.timerId = null;
   }
   componentDidMount() {
+    this._isMounted = true;
+
     const { getCommonThirdPartyList } = this.props;
+
     this.setState(
       {
         isLoading: true,
@@ -69,7 +76,7 @@ class ManualBackup extends React.Component {
                 link: res.link,
               });
               if (res.progress !== 100)
-                this.timerId = setInterval(() => this.getProgress(), 1000);
+                this.timerId = setInterval(() => this.getProgress(), 5000);
             }
           })
           .finally(() =>
@@ -87,13 +94,17 @@ class ManualBackup extends React.Component {
   //   this.setState({ [name]: change });
   // };
   componentWillUnmount() {
+    this._isMounted = false;
     clearInterval(this.timerId);
   }
 
   onClickButton = () => {
     const storageParams = null;
     startBackup("4", storageParams);
-    this.timerId = setInterval(() => this.getProgress(), 1000);
+    this.setState({
+      downloadingProgress: 1,
+    });
+    this.timerId = setInterval(() => this.getProgress(), 5000);
   };
 
   getProgress = () => {
@@ -104,33 +115,50 @@ class ManualBackup extends React.Component {
       .then((res) => {
         if (res.error.length > 0 && res.progress !== 100) {
           clearInterval(this.timerId);
-          toastr.error(`${res.error}`);
+          this.timerId && toastr.error(`${res.error}`);
           console.log("error", res.error);
+          this.timerId = null;
           this.setState({
             downloadingProgress: 100,
           });
           return;
         }
-        this.setState({
-          downloadingProgress: res.progress,
-        });
 
         if (res.progress === 100) {
           clearInterval(this.timerId);
+
+          if (this._isMounted) {
+            this.setState({
+              link: res.link,
+            });
+          }
+
+          this.timerId && toastr.success(`${t("SuccessCopied")}`);
+          this.timerId = null;
+        }
+        if (this._isMounted) {
           this.setState({
-            link: res.link,
+            downloadingProgress: res.progress,
           });
-          toastr.success(`${t("SuccessCopied")}`);
         }
       })
-      .catch(() => {
-        toastr.error();
+      .catch((err) => {
         clearInterval(this.timerId);
+        this.timerId && toastr.error(err);
+        this.timerId = null;
+        if (this._isMounted) {
+          this.setState({
+            downloadingProgress: 100,
+          });
+        }
       });
   };
 
   setInterval = () => {
-    this.timerId = setInterval(() => this.getProgress(), 1000);
+    this.setState({
+      downloadingProgress: 1,
+    });
+    this.timerId = setInterval(() => this.getProgress(), 5000);
   };
 
   onClickDownload = () => {
@@ -228,6 +256,14 @@ class ManualBackup extends React.Component {
           isManualBackup
           setInterval={this.setInterval}
         />
+        {downloadingProgress > 0 && downloadingProgress !== 100 && (
+          <FloatingButton
+            className="layout-progress-bar"
+            icon="upload"
+            alert={false}
+            percent={downloadingProgress}
+          />
+        )}
       </StyledComponent>
     );
   }
