@@ -6,7 +6,7 @@ import "@appserver/common/custom.scss";
 const App = () => {
   return (
     <ErrorBoundary>
-      <Shell />
+      <Editor />
     </ErrorBoundary>
   );
 };
