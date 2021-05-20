@@ -16,21 +16,12 @@ import {
 } from "../Profile/Section";
 import { SectionHeaderContent as EditHeaderContent } from "../ProfileAction/Section";
 import EditBodyContent from "../ProfileAction/Section/Body";
-import config from "../../../package.json";
 
 class My extends React.Component {
   componentDidMount() {
-    const {
-      fetchProfile,
-      profile,
-      location,
-      t,
-      setDocumentTitle,
-      setModuleInfo,
-    } = this.props;
+    const { fetchProfile, profile, location, t, setDocumentTitle } = this.props;
 
     setDocumentTitle(t("Profile"));
-    setModuleInfo(config.homepage, config.id);
 
     this.documentElement = document.getElementsByClassName("hidingHeader");
     const queryString = ((location && location.search) || "").slice(1);
@@ -110,7 +101,6 @@ const MyProfile = withRouter(
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
-    setModuleInfo: auth.settingsStore.setModuleInfo,
   }))(observer(withTranslation("Profile")(My)))
 );
 
