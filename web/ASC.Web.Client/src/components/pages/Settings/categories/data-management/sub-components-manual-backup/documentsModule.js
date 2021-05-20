@@ -34,19 +34,9 @@ const DocumentsModule = ({ maxProgress, setInterval }) => {
     startBackup("0", storageParams);
     setInterval();
   };
-  //console.log("thirdparty!!! commonThirdPartyList", commonThirdPartyList);
+
   return (
     <div className="category-item-wrapper">
-      <div className="category-item-heading">
-        <Text className="inherit-title-link header">
-          {t("DocumentsModule")}
-        </Text>
-      </div>
-
-      <Text className="category-item-description">
-        {t("DocumentsModuleDescription")}
-      </Text>
-
       <OperationsDialog
         onSelectFolder={onSelectFolder}
         name={"common"}
@@ -65,6 +55,16 @@ const DocumentsModule = ({ maxProgress, setInterval }) => {
           size="medium"
           tabIndex={10}
         />
+        {!maxProgress && (
+          <Button
+            label={t("Copying")}
+            onClick={() => console.log("click")}
+            isDisabled={true}
+            size="medium"
+            style={{ marginLeft: "8px" }}
+            tabIndex={11}
+          />
+        )}
       </div>
     </div>
   );

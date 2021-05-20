@@ -44,18 +44,6 @@ const ThirdPartyModule = ({
 
   return (
     <div className="category-item-wrapper">
-      <div className="category-item-heading">
-        <Text className="inherit-title-link header">
-          {t("ThirdPartyResource")}
-        </Text>
-      </div>
-
-      <Text className="category-item-description">
-        {t("ThirdPartyResourceDescription")}
-      </Text>
-      <Text className="category-item-description note_description">
-        {t("ThirdPartyResourceNoteDescription")}
-      </Text>
       <Box marginProp="16px 0 16px 0">
         <Link
           color="#316DAA"
@@ -86,6 +74,16 @@ const ThirdPartyModule = ({
           size="medium"
           tabIndex={10}
         />
+        {!maxProgress && (
+          <Button
+            label={t("Copying")}
+            onClick={() => console.log("click")}
+            isDisabled={true}
+            size="medium"
+            style={{ marginLeft: "8px" }}
+            tabIndex={11}
+          />
+        )}
       </div>
     </div>
   );

@@ -522,6 +522,16 @@ class ThirdPartyStorageModule extends React.PureComponent {
               size="medium"
               tabIndex={10}
             />
+            {!maxProgress && (
+              <Button
+                label={t("Copying")}
+                onClick={() => console.log("click")}
+                isDisabled={true}
+                size="medium"
+                style={{ marginLeft: "8px" }}
+                tabIndex={11}
+              />
+            )}
           </div>
         )}
       </StyledComponent>

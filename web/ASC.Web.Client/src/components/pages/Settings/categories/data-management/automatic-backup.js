@@ -1,13 +1,12 @@
 import React from "react";
 import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
-import commonSettingsStyles from "../../utils/commonSettingsStyles";
+
 import { inject, observer } from "mobx-react";
 import Button from "@appserver/components/button";
 import Checkbox from "@appserver/components/checkbox";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import RadioButton from "@appserver/components/radio-button";
-import styled from "styled-components";
 import moment from "moment";
 import ScheduleComponent from "./sub-components-automatic-backup/scheduleComponent";
 import {
@@ -23,48 +22,7 @@ import ThirdPartyStorageModule from "./sub-components/thirdPartyStorageModule";
 import Loader from "@appserver/components/loader";
 import { getFolderPath } from "@appserver/common/api/files";
 import FloatingButton from "@appserver/common/components/FloatingButton";
-
-const StyledComponent = styled.div`
-  ${commonSettingsStyles}
-  .manual-backup_buttons {
-    margin-top: 16px;
-  }
-  .backup-include_mail,
-  .backup_combobox {
-    margin-top: 16px;
-    margin-bottom: 16px;
-  }
-  .inherit-title-link {
-    margin-bottom: 8px;
-  }
-  .note_description {
-    margin-top: 8px;
-  }
-  .radio-button_text {
-    font-size: 19px;
-  }
-  .automatic-backup_main {
-    margin-bottom: 30px;
-    .radio-button_text {
-      font-size: 13px;
-    }
-  }
-  .radio-button_text {
-    margin-right: 7px;
-    font-size: 19px;
-    font-weight: 600;
-  }
-  .automatic-backup_radio-button {
-    margin-bottom: 8px;
-  }
-  .backup_combobox {
-    display: inline-block;
-    margin-right: 8px;
-  }
-`;
-const StyledModules = styled.div`
-  margin-bottom: 40px;
-`;
+import { StyledModules, StyledComponent } from "./styled-backup";
 
 let folderDocumentsModulePath = "";
 let folderThirdPartyModulePath = "";
