@@ -153,7 +153,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     const selectedStorageId = option.key;
     const { availableStorage, isSetDefaultStorage } = this.state;
     const { onSetDisableOptions } = this.props;
-    //debugger;
+
     if (isSetDefaultStorage) onSetDisableOptions && onSetDisableOptions(false);
 
     this.setState({
@@ -228,6 +228,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
   fillInputValueArray = () => {
     const { selectedId, availableStorage } = this.state;
     let obj = {};
+    inputValueArray = [];
     const selectedStorage = availableStorage[selectedId];
 
     for (let i = 1; i <= 6; i++) {
@@ -247,7 +248,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     if (!this.isInvalidForm()) return;
 
     this.fillInputValueArray();
-
+    this.isSetDefaultIdStorage = true;
     this.setState({
       isSelectedOptionChanges: false,
       isError: false,
@@ -256,7 +257,11 @@ class ThirdPartyStorageModule extends React.PureComponent {
   };
 
   onCancelSettings = () => {
-    const { defaultSelectedOption, defaultSelectedId } = this.state;
+    const {
+      defaultSelectedOption,
+      defaultSelectedId,
+      isSetDefaultStorage,
+    } = this.state;
     const { onCancelModuleSettings, onSetDisableOptions } = this.props;
 
     if (this.isSetDefaultIdStorage) {
@@ -278,6 +283,11 @@ class ThirdPartyStorageModule extends React.PureComponent {
       input_6: "",
     });
 
+    if (this.isSetDefaultIdStorage && !isSetDefaultStorage) {
+      this.setState({
+        isSetDefaultStorage: true,
+      });
+    }
     onCancelModuleSettings();
   };
 
