@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
@@ -42,13 +43,13 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("id")
                     .HasColumnType("varchar(200)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.UId)
                     .HasColumnName("uid")
                     .HasColumnType("varchar(200)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Linked)
                     .HasColumnName("linked")
@@ -59,13 +60,13 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("profile")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Provider)
                     .HasColumnName("provider")
                     .HasColumnType("char(60)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddAccountLinks(this ModelBuilder modelBuilder)

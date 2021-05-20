@@ -160,6 +160,7 @@ const PureConnectDialogContainer = (props) => {
         });
       })
       .catch((err) => {
+        onClose();
         toastr.error(err);
         setIsLoading(false);
       });

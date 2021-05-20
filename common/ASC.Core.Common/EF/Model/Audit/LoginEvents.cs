@@ -37,7 +37,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("browser")
                     .HasColumnType("varchar(200)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Date)
                     .HasColumnName("date")
@@ -47,31 +47,31 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("description")
                     .HasColumnType("varchar(500)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Ip)
                     .HasColumnName("ip")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Login)
                     .HasColumnName("login")
                     .HasColumnType("varchar(200)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Page)
                     .HasColumnName("page")
                     .HasColumnType("varchar(300)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Platform)
                     .HasColumnName("platform")
                     .HasColumnType("varchar(200)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
@@ -80,7 +80,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("user_id")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddLoginEvents(this ModelBuilder modelBuilder)

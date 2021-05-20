@@ -188,13 +188,11 @@ const DeleteDialog = withTranslation(["DeleteDialog", "Common"])(
 export default inject(
   ({
     filesStore,
-    uploadDataStore,
     treeFoldersStore,
     selectedFolderStore,
     dialogsStore,
     filesActionsStore,
   }) => {
-    const { secondaryProgressDataStore } = uploadDataStore;
     const { fetchFiles, selection, filter, isLoading } = filesStore;
     const { deleteAction } = filesActionsStore;
 
@@ -204,11 +202,6 @@ export default inject(
       isRecycleBinFolder,
       isPrivacyFolder,
     } = treeFoldersStore;
-
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
 
     const {
       deleteDialogVisible: visible,
@@ -230,8 +223,6 @@ export default inject(
 
       fetchFiles,
       setTreeFolders,
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
       setDeleteDialogVisible,
       deleteAction,
 

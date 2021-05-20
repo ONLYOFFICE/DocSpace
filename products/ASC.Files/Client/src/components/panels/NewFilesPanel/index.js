@@ -11,7 +11,7 @@ import Box from "@appserver/components/box";
 import RowContainer from "@appserver/components/row-container";
 import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
-import { getNewFiles, markAsRead } from "@appserver/common/api/files";
+import { getNewFiles } from "@appserver/common/api/files";
 import toastr from "studio/toastr";
 import { ReactSVG } from "react-svg";
 import {
@@ -45,18 +45,15 @@ class NewFilesPanel extends React.Component {
     this.props.setNewFilesPanelVisible(false);
   };
 
-  getItemIcon = (item, isEdit) => {
+  getItemIcon = (item) => {
     const extension = item.fileExst;
     const icon = extension
-      ? this.props.getFileIcon(extension, 24)
+      ? this.props.getIcon(24, extension)
       : this.props.getFolderIcon(item.providerKey, 24);
 
     return (
       <ReactSVG
-        beforeInjection={(svg) => {
-          svg.setAttribute("style", "margin-top: 4px");
-          isEdit && svg.setAttribute("style", "margin-left: 24px");
-        }}
+        beforeInjection={(svg) => svg.setAttribute("style", "margin-top: 4px")}
         src={icon}
         loading={this.svgLoader}
       />
@@ -70,7 +67,8 @@ class NewFilesPanel extends React.Component {
       fileIds.push(`${item.id}`);
     }
 
-    markAsRead([], fileIds)
+    this.props
+      .markAsRead([], fileIds)
       .then(() => this.setNewBadgeCount())
       .catch((err) => toastr.error(err))
       .finally(() => this.onClose());
@@ -88,8 +86,6 @@ class NewFilesPanel extends React.Component {
 
     markAsRead([], [item.id])
       .then(() => {
-        // TODO: How update row folder badge count? Fetch?
-
         if (readingFiles.includes(item.id)) return this.onFileClick(item);
 
         updateRootBadge(+newFilesIds[0], 1);
@@ -113,7 +109,9 @@ class NewFilesPanel extends React.Component {
     } = this.props;
 
     if (!fileExst) {
-      fetchFiles(id, filter).catch((err) => toastr.error(err));
+      fetchFiles(id, filter)
+        .catch((err) => toastr.error(err))
+        .finally(() => this.onClose);
     } else {
       const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
       const isMedia = [2, 3, 4].includes(fileType);
@@ -275,7 +273,7 @@ export default inject(
     } = filesStore;
     const { updateRootBadge } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;
-    const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+    const { getIcon, getFolderIcon } = formatsStore.iconFormatsStore;
     const { markAsRead } = filesActionsStore;
     const { pathParts } = selectedFolderStore;
 
@@ -296,7 +294,7 @@ export default inject(
       fetchFiles,
       setMediaViewerData,
       addFileToRecentlyViewed,
-      getFileIcon,
+      getIcon,
       getFolderIcon,
       markAsRead,
       setNewFilesPanelVisible,
