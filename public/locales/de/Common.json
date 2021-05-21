@@ -20,5 +20,7 @@
   "EditButton": "Bearbeiten",
   "EditAvatar": "Bearbeiten",
   "UnknownError": "Unbekannter Fehler",
-  "Type": "Typ"
+  "Type": "Typ",
+  "RequiredField": "Pflichtfeld",
+  "FullAccess": "Voller Zugriff"
 }

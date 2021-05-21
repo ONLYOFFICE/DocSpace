@@ -65,7 +65,7 @@ const RegisterModalDialog = ({
           isVertical={true}
           hasError={emailErr}
           labelVisible={false}
-          errorMessage={t("RequiredFieldMessage")}
+          errorMessage={t("Common:RequiredField")}
         >
           <TextInput
             hasError={emailErr}

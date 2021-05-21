@@ -595,7 +595,7 @@ class UpdateUserForm extends React.Component {
               </tr>
               <tr>
                 <Td>{t("DocumentsProduct")}</Td>
-                <Td>{t("AccessRightsFullAccess")}</Td>
+                <Td>{t("Common:FullAccess")}</Td>
                 <Td>{t("ViewAccess")}</Td>
               </tr>
               <tr>
@@ -605,7 +605,7 @@ class UpdateUserForm extends React.Component {
               </tr>
               <tr>
                 <Td>{t("CommunityProduct")}</Td>
-                <Td>{t("AccessRightsFullAccess")}</Td>
+                <Td>{t("Common:FullAccess")}</Td>
                 <Td>{t("ViewAccess")}</Td>
               </tr>
               <tr>

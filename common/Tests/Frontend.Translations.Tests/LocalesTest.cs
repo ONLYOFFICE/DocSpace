@@ -99,8 +99,9 @@ namespace Frontend.Translations.Tests
                 .Where(file => file.Path.Contains("public\\locales\\en"))
                 .SelectMany(item => item.Translations)
                 .GroupBy(t => t.Value)
-                .Where(grp => grp.Count() > 2)
-                .Select(grp => new { Key = grp.Key, Count = grp.Count() })
+                .Where(grp => grp.Count() > 1)
+                .Select(grp => new { Key = grp.Key, Count = grp.Count(), Grouped = grp.ToList() })
+                //.Where(grp => grp.Grouped.GroupBy(n => n.Key).Any(c => c.Count() > 1))
                 .OrderByDescending(itm => itm.Count)
                 .ToList();
 

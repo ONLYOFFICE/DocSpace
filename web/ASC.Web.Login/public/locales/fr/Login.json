@@ -18,6 +18,5 @@
   "RegisterTitle": "Demande d\u0027inscription",
   "RegistrationEmailWatermark": "Adresse de courriel",
   "Remember": "Se souvenir de moi",
-  "RememberHelper": "La durée de validité de la session par défaut est de 20 minutes. Cochez cette option pour la définir sur 1 an. Pour définir votre propre valeur, accédez aux paramètres.",
-  "RequiredFieldMessage": "Champ obligatoire"
+  "RememberHelper": "La durée de validité de la session par défaut est de 20 minutes. Cochez cette option pour la définir sur 1 an. Pour définir votre propre valeur, accédez aux paramètres."
 }

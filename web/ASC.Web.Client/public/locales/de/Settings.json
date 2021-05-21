@@ -6,7 +6,6 @@
   "AccessRightsChangeOwnerConfirmText": "Die Änderungen werden nach der Bestätigung per E-Mail übernommen.",
   "AccessRightsChangeOwnerText": "Wählen Sie einen Namen unten aus, um Portalbesitzer zu ändern.",
   "AccessRightsDisabledProduct": "Das Modul {{module}} wurde deaktiviert und ist deswegen auf dem Portal unsichtbar. Zum Aktivieren öffnen Sie Module und Tools in Einstellungen.",
-  "AccessRightsFullAccess": "Voller Zugriff",
   "AccessRightsOwnerCan": "Portalbesitzer kann",
   "AccessRightsOwnerOpportunities": "Dieselben Operationen wie die Moduladministratoren durchführen|Moduladministratoren bestimmen|Modulzugriffsrechte bestimmen|Portal einrichten|Benutzerprofile verwalten|Portalbesitzer ändern|Backup von Portaldaten erstellen|Portal deaktivieren oder löschen",
   "AccessRightsProductUsersCan": "Im Modul {{category}} Portalbenutzer können",

@@ -6,6 +6,5 @@
   "ConnectMakeShared": "Share and put into \u0027Common\u0027 folder",
   "EmptyField": "All fields are required",
   "Login": "Login",
-  "Reconnect": "Reconnect",
-  "RequiredFieldMessage": "Required field"
+  "Reconnect": "Reconnect"
 }

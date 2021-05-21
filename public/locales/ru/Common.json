@@ -20,5 +20,7 @@
   "EditButton": "Редактировать",
   "EditAvatar": "Изменить",
   "UnknownError": "Неизвестная ошибка",
-  "Type": "Тип"
+  "Type": "Тип",
+  "RequiredField": "Обязательное поле",
+  "FullAccess": "Полный доступ"
 }

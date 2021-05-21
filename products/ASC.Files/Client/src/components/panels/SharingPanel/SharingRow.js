@@ -248,7 +248,7 @@ class SharingRow extends React.Component {
                   className="sharing_panel-remove-icon"
                   //color="#A3A9AE"
                 >
-                  {t("AccessRightsFullAccess")}
+                  {t("Common:FullAccess")}
                 </Text>
               ) : (
                 !shareLink &&

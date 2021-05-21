@@ -20,5 +20,8 @@
   "EditButton": "Edit",
   "EditAvatar": "Edit",
   "UnknownError": "Unknown error",
-  "Type": "Type"
+  "Type": "Type",
+  "RequiredField": "Required field",
+  "FullAccess": "Full access",
+  
 }

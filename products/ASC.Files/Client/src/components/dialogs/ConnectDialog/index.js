@@ -237,7 +237,7 @@ const PureConnectDialogContainer = (props) => {
                 labelText={t("ConnectionUrl")}
                 isVertical
                 hasError={!isUrlValid}
-                errorMessage={t("RequiredFieldMessage")}
+                errorMessage={t("Common:RequiredField")}
               >
                 <TextInput
                   isAutoFocussed={true}
@@ -256,7 +256,7 @@ const PureConnectDialogContainer = (props) => {
               isRequired
               isVertical
               hasError={!isLoginValid}
-              errorMessage={t("RequiredFieldMessage")}
+              errorMessage={t("Common:RequiredField")}
             >
               <TextInput
                 hasError={!isLoginValid}
@@ -272,7 +272,7 @@ const PureConnectDialogContainer = (props) => {
               isRequired
               isVertical
               hasError={!isPasswordValid}
-              errorMessage={t("RequiredFieldMessage")}
+              errorMessage={t("Common:RequiredField")}
             >
               <PasswordInput
                 hasError={!isPasswordValid}
@@ -292,7 +292,7 @@ const PureConnectDialogContainer = (props) => {
           isRequired
           isVertical
           hasError={!isTitleValid}
-          errorMessage={t("RequiredFieldMessage")}
+          errorMessage={t("Common:RequiredField")}
         >
           <TextInput
             hasError={!isTitleValid}

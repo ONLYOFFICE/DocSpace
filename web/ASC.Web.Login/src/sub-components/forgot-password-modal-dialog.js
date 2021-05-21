@@ -76,7 +76,7 @@ const ForgotPasswordModalDialog = (props) => {
           isVertical={true}
           hasError={emailError}
           labelVisible={false}
-          errorMessage={t("RequiredFieldMessage")}
+          errorMessage={t("Common:RequiredField")}
         >
           <TextInput
             hasError={emailError}

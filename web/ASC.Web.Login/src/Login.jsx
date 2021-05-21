@@ -425,7 +425,7 @@ const Form = (props) => {
           isVertical={true}
           labelVisible={false}
           hasError={!identifierValid}
-          errorMessage={errorText ? errorText : t("RequiredFieldMessage")} //TODO: Add wrong login server error
+          errorMessage={errorText ? errorText : t("Common:RequiredField")} //TODO: Add wrong login server error
         >
           <TextInput
             id="login"
@@ -449,7 +449,7 @@ const Form = (props) => {
           isVertical={true}
           labelVisible={false}
           hasError={!passwordValid}
-          errorMessage={errorText ? "" : t("RequiredFieldMessage")} //TODO: Add wrong password server error
+          errorMessage={errorText ? "" : t("Common:RequiredField")} //TODO: Add wrong password server error
         >
           <PasswordInput
             simpleView={true}

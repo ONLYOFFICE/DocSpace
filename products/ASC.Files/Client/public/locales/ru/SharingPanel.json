@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRightsFullAccess": "Полный доступ",
   "AddGroupsForSharingButton": "Добавить группы",
   "AddShareMessage": "Добавить сообщение",
   "Comment": "Комментирование",
@@ -12,7 +11,6 @@
   "EncryptedFileSharing": "К файлу \u003Cstrong\u003E{{title}}\u003C/strong\u003E успешно предоставлен доступ",
   "ExternalLink": "Внешняя ссылка",
   "FormFilling": "Заполнение форм",
-  "FullAccess": "Полный доступ",
   "InternalLink": "Внутренняя ссылка",
   "LinkCopySuccess": "Ссылка скопирована в буфер обмена",
   "LinkText": "Добавить пользователей",

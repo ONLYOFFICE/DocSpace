@@ -473,7 +473,7 @@ class PureAdminsSettings extends Component {
                               <></>
                               <Text containerWidth="10%">
                                 {user.isAdmin
-                                  ? t("AccessRightsFullAccess")
+                                  ? t("Common:FullAccess")
                                   : t("PeopleAdmin")}
                               </Text>
                               {!user.isOwner ? (

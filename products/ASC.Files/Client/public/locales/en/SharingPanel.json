@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRightsFullAccess": "Full access",
   "AddGroupsForSharingButton": "Add groups",
   "AddShareMessage": "Add message",
   "Comment": "Comment",
@@ -12,7 +11,6 @@
   "EncryptedFileSharing": "File \u003Cstrong\u003E{{title}}\u003C/strong\u003E successfully shared",
   "ExternalLink": "External link",
   "FormFilling": "Form filling",
-  "FullAccess": "Full access",
   "InternalLink": "Internal link",
   "LinkCopySuccess": "Link has been copied to the clipboard",
   "LinkText": "Add users",

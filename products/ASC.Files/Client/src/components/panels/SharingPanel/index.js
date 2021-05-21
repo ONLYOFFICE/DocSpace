@@ -652,12 +652,12 @@ const SharingPanel = inject(
 
 class Panel extends React.Component {
   static convertSharingUsers = (shareDataItems) => {
-    const t = i18n.getFixedT(null, "SharingPanel");
+    const t = i18n.getFixedT(null, ["SharingPanel", "Common"]);
     let sharingSettings = [];
     for (let i = 1; i < shareDataItems.length; i++) {
       let resultAccess =
         shareDataItems[i].access === 1
-          ? t("FullAccess")
+          ? t("Common:FullAccess")
           : shareDataItems[i].access === 2
           ? t("ReadOnly")
           : shareDataItems[i].access === 3

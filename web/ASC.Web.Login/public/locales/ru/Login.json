@@ -21,7 +21,6 @@
   "RegistrationEmailWatermark": "Регистрационный email",
   "Remember": "Запомнить",
   "RememberHelper": "Время существования сессии по умолчанию составляет 20 минут. Отметьте эту опцию, чтобы установить значение 1 год. Чтобы задать собственное значение, перейдите в настройки.",
-  "RequiredFieldMessage": "Обязательное поле",
   "SignInWithFacebook": "Вход через Facebook",
   "SignInWithGoogle": "Вход через Google",
   "SignInWithLinkedIn": "Вход через LinkedIn",

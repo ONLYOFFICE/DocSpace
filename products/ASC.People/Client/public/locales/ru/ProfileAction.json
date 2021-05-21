@@ -1,5 +1,4 @@
 ﻿{
-  "AccessRightsFullAccess": "Полный доступ",
   "ActivationLink": "Ссылка для активации",
   "AddButton": "Добавить",
   "AddContact": "Добавить новый контакт",
@@ -40,7 +39,6 @@
   "ProfileAction": "Работа с профилем",
   "ProfileTypePopupHelper": "Гости имеют ограниченный доступ к некоторым функциям и модулям портала",
   "ProjectsProduct": "Проекты",
-  "RequiredField": "Обязательное поле",
   "ReviewingCustomMode": "Рецензирование",
   "SearchDepartments": "Поиск группы",
   "SelectAll": "Выбрать все",
