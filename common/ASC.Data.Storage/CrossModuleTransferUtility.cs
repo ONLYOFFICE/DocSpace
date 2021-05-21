@@ -44,12 +44,19 @@ namespace ASC.Data.Storage
         private readonly int chunksize;
         private IOptionsMonitor<ILog> Option { get; }
         private TempStream TempStream { get; }
+        private TempPath TempPath { get; }
 
-        public CrossModuleTransferUtility(IOptionsMonitor<ILog> option, TempStream tempStream, IDataStore source, IDataStore destination)
+        public CrossModuleTransferUtility(
+            IOptionsMonitor<ILog> option, 
+            TempStream tempStream,
+            TempPath tempPath,
+            IDataStore source, 
+            IDataStore destination)
         {
             Log = option.Get("ASC.CrossModuleTransferUtility");
             Option = option;
             TempStream = tempStream;
+            TempPath = tempPath;
             this.source = source ?? throw new ArgumentNullException("source");
             this.destination = destination ?? throw new ArgumentNullException("destination");
             maxChunkUploadSize = 10 * 1024 * 1024;
@@ -71,7 +78,7 @@ namespace ASC.Data.Storage
             else
             {
                 var session = new CommonChunkedUploadSession(stream.Length);
-                var holder = new CommonChunkedUploadSessionHolder(Option, destination, destDomain);
+                var holder = new CommonChunkedUploadSessionHolder(TempPath, Option, destination, destDomain);
                 holder.Init(session);
                 try
                 {

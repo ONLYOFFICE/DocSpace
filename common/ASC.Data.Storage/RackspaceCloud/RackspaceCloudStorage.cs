@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -65,6 +66,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         private readonly ILog _logger;
 
         public RackspaceCloudStorage(
+            TempPath tempPath,
             TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
@@ -73,9 +75,11 @@ namespace ASC.Data.Storage.RackspaceCloud
             : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, options)
         {
             _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
+            TempPath = tempPath;
         }
 
         public RackspaceCloudStorage(
+            TempPath tempPath,
             TempStream tempStream,
             TenantManager tenantManager,
             PathUtils pathUtils,
@@ -85,6 +89,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
             _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
+            TempPath = tempPath;
         }
 
         private string MakePath(string domain, string path)
@@ -246,6 +251,11 @@ namespace ASC.Data.Storage.RackspaceCloud
             if (0 < offset) outputStream.Seek(Convert.ToInt64(offset), SeekOrigin.Begin);
 
             return outputStream;
+        }
+
+        public override Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
+        {
+            return Task.FromResult(GetReadStream(domain, path, offset));
         }
 
         public override Uri Save(string domain, string path, Stream stream)
@@ -495,7 +505,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             }
         }
 
-        public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath)
+        public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
         {
             var srcKey = MakePath(srcdomain, srcpath);
             var dstKey = MakePath(newdomain, newpath);
@@ -508,7 +518,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             Delete(srcdomain, srcpath);
 
             QuotaUsedDelete(srcdomain, size);
-            QuotaUsedAdd(newdomain, size);
+            QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
 
             return GetUri(newdomain, newpath);
         }
@@ -548,6 +558,12 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             return objects.Count() > 0;
         }
+
+        public override Task<bool> IsFileAsync(string domain, string path)
+        {
+            return Task.FromResult(IsFile(domain, path));
+        }
+
 
         public override bool IsDirectory(string domain, string path)
         {
@@ -704,7 +720,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override string InitiateChunkedUpload(string domain, string path)
         {
-            return Path.GetTempFileName();
+            return TempPath.GetTempFileName();
         }
 
         public override string UploadChunk(string domain, string path, string filePath, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
@@ -756,6 +772,8 @@ namespace ASC.Data.Storage.RackspaceCloud
         }
 
         public override bool IsSupportChunking { get { return true; } }
+
+        public TempPath TempPath { get; }
 
         #endregion
     }

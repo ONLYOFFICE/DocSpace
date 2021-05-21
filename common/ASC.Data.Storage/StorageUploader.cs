@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -165,6 +166,7 @@ namespace ASC.Data.Storage
             {
                 Log.DebugFormat("Tenant: {0}", tenantId);
                 using var scope = ServiceProvider.CreateScope();
+                var tempPath = scope.ServiceProvider.GetService<TempPath>();
                 var scopeClass = scope.ServiceProvider.GetService<MigrateOperationScope>();
                 var (tenantManager, securityContext, storageFactory, options, storageSettingsHelper, settingsManager) = scopeClass;
                 var tenant = tenantManager.GetTenant(tenantId);
@@ -178,7 +180,7 @@ namespace ASC.Data.Storage
                     var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(settings));
                     var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
-                    var crossModuleTransferUtility = new CrossModuleTransferUtility(options, TempStream, oldStore, store);
+                    var crossModuleTransferUtility = new CrossModuleTransferUtility(options, TempStream, tempPath, oldStore, store);
 
                     string[] files;
                     foreach (var domain in domains)

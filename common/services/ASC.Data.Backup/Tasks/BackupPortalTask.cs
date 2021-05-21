@@ -89,7 +89,7 @@ namespace ASC.Data.Backup.Tasks
             TenantManager.SetCurrentTenant(TenantId);
 
 
-            using (var writer = new ZipWriteOperator(BackupFilePath))
+            using (var writer = new ZipWriteOperator(TempStream, BackupFilePath))
             {
                 if (Dump)
                 {
