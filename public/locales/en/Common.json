@@ -25,5 +25,7 @@
   "FullAccess": "Full access",
   "Documents": "Documents",
   "MeLabel": "Me",
-  "Actions": "Actions"
+  "Actions": "Actions",
+  "Pin": "Pin",
+  "Unpin": "Unpin"
 }

@@ -22,6 +22,8 @@ import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
 import { SelectableGroup } from "react-selectable-fast";
 import styled from "styled-components";
+import { I18nextProvider } from "react-i18next";
+import i18n from "./i18n";
 
 const StyledSelectableGroup = styled(SelectableGroup)`
   display: contents;
@@ -438,19 +440,23 @@ class PageLayout extends React.Component {
       );
     };
 
-    return isMobile || !uploadFiles ? (
-      renderPageLayout()
-    ) : (
-      <StyledSelectableGroup
-        dragging={dragging}
-        enableDeselect
-        resetOnStart
-        allowClickWithoutSelected={false}
-        duringSelection={this.duringSelection}
-        ignoreList={[".not-selectable", "draggable"]}
-      >
-        {renderPageLayout()}
-      </StyledSelectableGroup>
+    return (
+      <I18nextProvider i18n={i18n}>
+        {isMobile || !uploadFiles ? (
+          renderPageLayout()
+        ) : (
+          <StyledSelectableGroup
+            dragging={dragging}
+            enableDeselect
+            resetOnStart
+            allowClickWithoutSelected={false}
+            duringSelection={this.duringSelection}
+            ignoreList={[".not-selectable", "draggable"]}
+          >
+            {renderPageLayout()}
+          </StyledSelectableGroup>
+        )}
+      </I18nextProvider>
     );
   }
 }

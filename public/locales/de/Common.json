@@ -25,5 +25,7 @@
   "FullAccess": "Voller Zugriff",
   "Documents": "Dokumente",
   "MeLabel": "Ich",
-  "Actions": "Vorgänge"
+  "Actions": "Vorgänge",
+  "Pin": "Anheften",
+  "Unpin": "Lösen"
 }
