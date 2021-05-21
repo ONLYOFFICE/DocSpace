@@ -15,7 +15,6 @@ const sideColor = "#A3A9AE";
 
 const SimpleFilesRowContent = styled(RowContent)`
   .badge-ext {
-    margin-left: -8px;
     margin-right: 8px;
   }
 
@@ -30,6 +29,7 @@ const SimpleFilesRowContent = styled(RowContent)`
   .badges {
     display: flex;
     align-items: center;
+    height: 19px;
   }
 
   .favorite {
@@ -98,9 +98,6 @@ const FilesRowContent = ({
           isTextOverflow
         >
           {titleWithoutExt}
-        </Link>
-
-        <div className="badges">
           {fileExst ? (
             <Text
               className="badge-ext"
@@ -114,8 +111,9 @@ const FilesRowContent = ({
               {fileExst}
             </Text>
           ) : null}
-          {badgesComponent}
-        </div>
+        </Link>
+
+        <div className="badges">{badgesComponent}</div>
         <Text
           containerMinWidth="120px"
           containerWidth="15%"
