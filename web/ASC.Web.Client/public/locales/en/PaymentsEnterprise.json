@@ -9,7 +9,6 @@
   "ButtonUploadLicense": "Upload license",
   "ContactEmail": "For any purchase questions, contact us at ",
   "ContactUrl": "For solving technical issues, use",
-  "ErrorLicense": "License is not valid",
   "ErrorLoadingLicense": "Make sure you choose the right file",
   "ExpiryPaidLicense": "Support is no longer available for your license since",
   "ExpiryTrialLicense": "Thank you for having checked out {{organizationName}}!",
