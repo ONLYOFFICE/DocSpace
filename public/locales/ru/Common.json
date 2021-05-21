@@ -32,5 +32,6 @@
   "SignInWithTwitter": "Вход через Twitter",
   "Pin": "Закрепить",
   "Unpin": "Открепить",
-  "ShowUsersList": "Показать список пользователей"
+  "ShowUsersList": "Показать список пользователей",
+  "AddButton": "Добавить"
 }

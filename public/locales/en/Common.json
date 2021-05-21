@@ -32,5 +32,6 @@
   "SignInWithTwitter": "Sign in with Twitter",
   "Pin": "Pin",
   "Unpin": "Unpin",
-  "ShowUsersList": "View users list"
+  "ShowUsersList": "View users list",
+  "AddButton": "Add"
 }

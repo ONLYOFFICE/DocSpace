@@ -32,5 +32,6 @@
   "SignInWithTwitter": "Login über Twitter",
   "Pin": "Anheften",
   "Unpin": "Lösen",
-  "ShowUsersList": "Liste der Benutzer anzeigen"
+  "ShowUsersList": "Liste der Benutzer anzeigen",
+  "AddButton": "Hinzufügen"
 }

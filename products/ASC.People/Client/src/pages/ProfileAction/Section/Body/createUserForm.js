@@ -445,7 +445,7 @@ class CreateUserForm extends React.Component {
               role={getUserRole(profile)}
               editing={true}
               source={croppedAvatar}
-              editLabel={t("AddButton")}
+              editLabel={t("Common:AddButton")}
               editAction={
                 isMobile ? this.openAvatarEditorPage : this.openAvatarEditor
               }
@@ -592,7 +592,7 @@ class CreateUserForm extends React.Component {
             <DepartmentField
               labelText={`${groupCaption}:`}
               isDisabled={isLoading}
-              showGroupSelectorButtonTitle={t("AddButton")}
+              showGroupSelectorButtonTitle={t("Common:AddButton")}
               onShowGroupSelector={this.onShowGroupSelector}
               onCloseGroupSelector={this.onCloseGroupSelector}
               onRemoveGroup={this.onRemoveGroup}

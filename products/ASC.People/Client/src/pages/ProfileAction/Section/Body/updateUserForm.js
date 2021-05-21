@@ -823,7 +823,7 @@ class UpdateUserForm extends React.Component {
               <DepartmentField
                 labelText={`${groupCaption}:`}
                 isDisabled={isLoading || !isAdmin}
-                showGroupSelectorButtonTitle={t("AddButton")}
+                showGroupSelectorButtonTitle={t("Common:AddButton")}
                 onShowGroupSelector={this.onShowGroupSelector}
                 onCloseGroupSelector={this.onCloseGroupSelector}
                 onRemoveGroup={this.onRemoveGroup}
