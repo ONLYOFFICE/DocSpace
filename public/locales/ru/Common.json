@@ -24,5 +24,6 @@
   "RequiredField": "Обязательное поле",
   "FullAccess": "Полный доступ",
   "Documents": "Документы",
-  "MeLabel": "Я"
+  "MeLabel": "Я",
+  "Actions": "Действия"
 }

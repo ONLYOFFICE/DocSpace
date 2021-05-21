@@ -24,5 +24,6 @@
   "RequiredField": "Required field",
   "FullAccess": "Full access",
   "Documents": "Documents",
-  "MeLabel": "Me"
+  "MeLabel": "Me",
+  "Actions": "Actions"
 }

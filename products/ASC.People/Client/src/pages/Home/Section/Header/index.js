@@ -473,7 +473,7 @@ const SectionHeaderContent = (props) => {
                     <ContextMenuButton
                       className="action-button"
                       directionX="right"
-                      title={t("Actions")}
+                      title={t("Common:Actions")}
                       iconName="/static/images/vertical-dots.react.svg"
                       size={17}
                       color="#A3A9AE"
@@ -496,7 +496,7 @@ const SectionHeaderContent = (props) => {
                       <ContextMenuButton
                         className="action-button"
                         directionX="right"
-                        title={t("Actions")}
+                        title={t("Common:Actions")}
                         iconName="/static/images/actions.header.touch.react.svg"
                         size={17}
                         color="#A3A9AE"

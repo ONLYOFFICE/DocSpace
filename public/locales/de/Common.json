@@ -24,5 +24,6 @@
   "RequiredField": "Pflichtfeld",
   "FullAccess": "Voller Zugriff",
   "Documents": "Dokumente",
-  "MeLabel": "Ich"
+  "MeLabel": "Ich",
+  "Actions": "Vorgänge"
 }

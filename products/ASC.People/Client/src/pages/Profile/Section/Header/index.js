@@ -445,7 +445,7 @@ class SectionHeaderContent extends React.PureComponent {
           <ContextMenuButton
             className="action-button"
             directionX="right"
-            title={t("Actions")}
+            title={t("Common:Actions")}
             iconName="/static/images/vertical-dots.react.svg"
             size={17}
             color="#A3A9AE"

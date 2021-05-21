@@ -75,7 +75,11 @@ class PureArticleMainButtonContent extends React.Component {
         <Loaders.Rectangle />
       ) : (
         <>
-          <MainButton isDisabled={false} isDropdown={true} text={t("Actions")}>
+          <MainButton
+            isDisabled={false}
+            isDropdown={true}
+            text={t("Common:Actions")}
+          >
             <DropDownItem
               icon={combineUrl(
                 AppServerConfig.proxyURL,
@@ -143,7 +147,7 @@ class PureArticleMainButtonContent extends React.Component {
   }
 }
 
-const ArticleMainButtonContent = withTranslation("Article")(
+const ArticleMainButtonContent = withTranslation(["Article", "Common"])(
   PureArticleMainButtonContent
 );
 
