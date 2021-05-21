@@ -140,16 +140,7 @@ class FilesActionStore {
             alert: false,
           });
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          fetchFiles(this.selectedFolderStore.id, filter).then((data) => {
-            if (!isRecycleBinFolder) {
-              const path = data.selectedFolder.pathParts.slice(0);
-              const newTreeFolders = this.treeFoldersStore.treeFolders;
-              const folders = data.selectedFolder.folders;
-              const foldersCount = data.selectedFolder.foldersCount;
-              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              setTreeFolders(newTreeFolders);
-            }
-          });
+          fetchFiles(this.selectedFolderStore.id, filter);
         }
       })
       .catch((err) => {
@@ -372,18 +363,7 @@ class FilesActionStore {
 
     return removeShareFiles(fileIds, folderIds)
       .then(() => setUnsubscribe(false))
-      .then(() =>
-        fetchFiles(this.selectedFolderStore.id, filter).then((data) => {
-          if (!isRecycleBinFolder && !!folderIds.length) {
-            const path = data.selectedFolder.pathParts.slice(0);
-            const newTreeFolders = treeFolders;
-            const folders = data.selectedFolder.folders;
-            const foldersCount = data.selectedFolder.foldersCount;
-            loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-            setTreeFolders(newTreeFolders);
-          }
-        })
-      );
+      .then(() => fetchFiles(this.selectedFolderStore.id, filter));
   };
 
   deleteFolderAction = (folderId, currentFolderId, translations) => {
@@ -443,16 +423,6 @@ class FilesActionStore {
           alert: false,
         });
         fetchFiles(folderId, filter)
-          .then((data) => {
-            if (!isRecycleBinFolder && isFolder) {
-              const path = data.selectedFolder.pathParts.slice(0);
-              const newTreeFolders = treeFolders;
-              const folders = data.selectedFolder.folders;
-              const foldersCount = data.selectedFolder.foldersCount;
-              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              setTreeFolders(newTreeFolders);
-            }
-          })
           .catch((err) => {
             setSecondaryProgressBarData({
               visible: true,
