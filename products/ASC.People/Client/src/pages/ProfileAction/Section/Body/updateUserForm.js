@@ -775,7 +775,7 @@ class UpdateUserForm extends React.Component {
               radioOnChange={this.onInputChange}
             />
             <RadioField
-              labelText={`${t("UserType")}:`}
+              labelText={`${t("Common:Type")}:`}
               radioName="isVisitor"
               radioValue={profile.isVisitor.toString()}
               radioOptions={[
@@ -787,7 +787,7 @@ class UpdateUserForm extends React.Component {
               }
               radioOnChange={this.onUserTypeChange}
               tooltipContent={tooltipTypeContent}
-              helpButtonHeaderContent={t("UserType")}
+              helpButtonHeaderContent={t("Common:Type")}
             />
             <DateField
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}

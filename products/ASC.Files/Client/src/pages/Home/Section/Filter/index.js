@@ -105,7 +105,7 @@ class SectionFilterContent extends React.Component {
       {
         key: "filter-filterType",
         group: "filter-filterType",
-        label: t("Type"),
+        label: t("Common:Type"),
         isHeader: true,
       },
       {
@@ -202,7 +202,7 @@ class SectionFilterContent extends React.Component {
       { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
       { key: "DateAndTimeCreation", label: t("ByCreationDate"), default: true },
       { key: "AZ", label: t("ByTitle"), default: true },
-      { key: "Type", label: t("ByType"), default: true },
+      { key: "Type", label: t("Common:Type"), default: true },
       { key: "Size", label: t("BySize"), default: true },
       { key: "Author", label: t("ByAuthor"), default: true },
     ];

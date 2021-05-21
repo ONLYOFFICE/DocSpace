@@ -19,5 +19,6 @@
   "ViewWeb": "View web version",
   "EditButton": "Edit",
   "EditAvatar": "Edit",
-  "UnknownError": "Unknown error"
+  "UnknownError": "Unknown error",
+  "Type": "Type"
 }

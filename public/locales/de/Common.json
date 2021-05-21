@@ -19,5 +19,6 @@
   "ViewWeb": "Web-Version öffnen",
   "EditButton": "Bearbeiten",
   "EditAvatar": "Bearbeiten",
-  "UnknownError": "Unbekannter Fehler"
+  "UnknownError": "Unbekannter Fehler",
+  "Type": "Typ"
 }

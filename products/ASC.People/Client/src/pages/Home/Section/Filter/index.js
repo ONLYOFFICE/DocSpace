@@ -135,7 +135,7 @@ class SectionFilterContent extends React.Component {
       {
         key: "filter-type",
         group: "filter-type",
-        label: t("UserType"),
+        label: t("Common:Type"),
         isHeader: true,
       },
       { key: "admin", group: "filter-type", label: t("Administrator") },

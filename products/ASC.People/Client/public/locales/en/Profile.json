@@ -46,6 +46,5 @@
   "SocialProfiles": "Social profiles",
   "Subscriptions": "Subscriptions",
   "SuccessChangeUserStatus": "The user status was successfully changed",
-  "SuccessSentInvitation": "The invitation was successfully sent",
-  "UserType": "Type"
+  "SuccessSentInvitation": "The invitation was successfully sent"
 }

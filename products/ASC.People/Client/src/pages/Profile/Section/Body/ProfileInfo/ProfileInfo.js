@@ -261,7 +261,7 @@ class ProfileInfo extends React.PureComponent {
     return (
       <InfoContainer>
         <InfoItem>
-          <InfoItemLabel>{t("UserType")}:</InfoItemLabel>
+          <InfoItemLabel>{t("Common:Type")}:</InfoItemLabel>
           <InfoItemValue>{type}</InfoItemValue>
         </InfoItem>
         {email && (

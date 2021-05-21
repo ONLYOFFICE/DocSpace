@@ -45,6 +45,5 @@
   "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert",
   "SuccessfullyRemovedGroup": "Die Gruppe wurde erfolgreich entfernt",
   "SuccessfullyRemovedUsers": "Benutzer wurden erfolgreich gelöscht",
-  "UserStatus": "Status",
-  "UserType": "Typ"
+  "UserStatus": "Status"
 }
