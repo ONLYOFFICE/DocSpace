@@ -33,14 +33,14 @@ const DragTooltip = (props) => {
   const tooltipRef = useRef(null);
   const {
     t,
-    tooltipValue,
+    tooltipOptions,
     iconOfDraggedFile,
     isSingleItem,
     item,
     tooltipPageX,
     tooltipPageY,
   } = props;
-  const { label, filesCount } = tooltipValue;
+  const { filesCount, operationName } = tooltipOptions;
   const { title } = item;
 
   useEffect(() => {
@@ -85,11 +85,15 @@ const DragTooltip = (props) => {
     );
   }, [title, iconOfDraggedFile]);
 
-  const tooltipLabel = tooltipValue
-    ? isSingleItem && label === "TooltipElementMoveMessage"
+  const tooltipLabel = tooltipOptions
+    ? operationName === "copy"
+      ? isSingleItem
+        ? t("TooltipElementCopyMessage", { element: filesCount })
+        : t("TooltipElementsCopyMessage", { element: filesCount })
+      : isSingleItem
       ? renderFileMoveTooltip()
-      : t(label, { element: filesCount })
-    : "";
+      : t("TooltipElementsMoveMessage", { element: filesCount })
+    : t("");
 
   return <StyledTooltip ref={tooltipRef}>{tooltipLabel}</StyledTooltip>;
 };
@@ -98,7 +102,7 @@ export default inject(({ filesStore }) => {
   const {
     selection,
     iconOfDraggedFile,
-    tooltipValue,
+    tooltipOptions,
     tooltipPageX,
     tooltipPageY,
   } = filesStore;
@@ -108,7 +112,7 @@ export default inject(({ filesStore }) => {
   return {
     item: selection[0],
     isSingleItem,
-    tooltipValue,
+    tooltipOptions,
     iconOfDraggedFile,
 
     tooltipPageX,
