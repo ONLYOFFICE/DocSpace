@@ -116,7 +116,7 @@ class SectionFilterContent extends React.Component {
       {
         key: FilterType.DocumentsOnly.toString(),
         group: "filter-filterType",
-        label: t("Documents"),
+        label: t("Common:Documents"),
       },
       {
         key: FilterType.PresentationsOnly.toString(),

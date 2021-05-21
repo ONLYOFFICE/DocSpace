@@ -342,7 +342,7 @@ class SectionHeaderContent extends React.Component {
           />,
           <DropDownItem
             key={FilterType.DocumentsOnly}
-            label={t("Documents")}
+            label={t("Common:Documents")}
             data-index={2}
           />,
           <DropDownItem

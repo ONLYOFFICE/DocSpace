@@ -22,5 +22,6 @@
   "UnknownError": "Неизвестная ошибка",
   "Type": "Тип",
   "RequiredField": "Обязательное поле",
-  "FullAccess": "Полный доступ"
+  "FullAccess": "Полный доступ",
+  "Documents": "Документы"
 }

@@ -223,7 +223,7 @@ const DownloadContent = (props) => {
   const getTitle = () => {
     switch (type) {
       case "document":
-        return t("Documents");
+        return t("Common:Documents");
       case "spreadsheet":
         return t("Spreadsheets");
       case "presentation":
