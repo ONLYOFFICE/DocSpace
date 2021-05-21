@@ -16,9 +16,5 @@
   "LoginWithAccount": "или войдите с:",
   "PassworResetTitle": "Теперь вы можете создать новый пароль.",
   "ProviderLoginError": "Ошибка авторизации",
-  "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту",
-  "SignInWithFacebook": "Вход через Facebook",
-  "SignInWithGoogle": "Вход через Google",
-  "SignInWithLinkedIn": "Вход через LinkedIn",
-  "SignInWithTwitter": "Вход через Twitter"
+  "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту"
 }

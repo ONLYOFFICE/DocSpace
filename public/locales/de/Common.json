@@ -25,5 +25,9 @@
   "FullAccess": "Voller Zugriff",
   "Documents": "Dokumente",
   "MeLabel": "Ich",
-  "Actions": "Vorgänge"
+  "Actions": "Vorgänge",
+  "SignInWithFacebook": "Login über Facebook",
+  "SignInWithGoogle": "Login über Google",
+  "SignInWithLinkedIn": "Login über LinkedIn",
+  "SignInWithTwitter": "Login über Twitter"
 }

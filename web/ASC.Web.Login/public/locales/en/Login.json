@@ -20,9 +20,5 @@
   "RegisterTitle": "Registration request",
   "RegistrationEmailWatermark": "Email",
   "Remember": "Remember me",
-  "RememberHelper": "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to Settings.",
-  "SignInWithFacebook": "Sign in with Facebook",
-  "SignInWithGoogle": "Sign in with Google",
-  "SignInWithLinkedIn": "Sign in with LinkedIn",
-  "SignInWithTwitter": "Sign in with Twitter"
+  "RememberHelper": "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to Settings."
 }
