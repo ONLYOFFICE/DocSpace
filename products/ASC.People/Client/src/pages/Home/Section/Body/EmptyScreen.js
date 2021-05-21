@@ -11,10 +11,10 @@ import { inject, observer } from "mobx-react";
 const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
   const { t } = useTranslation("Home");
 
-  const title = isEmptyGroup ? "EmptyGroupTitle" : "NotFoundTitle";
+  const title = isEmptyGroup ? t("EmptyGroupTitle") : t("NotFoundTitle");
   const description = isEmptyGroup
-    ? "EmptyGroupDescription"
-    : "NotFoundDescription";
+    ? t("EmptyGroupDescription")
+    : t("NotFoundDescription");
 
   const onResetFilter = () => {
     setIsLoading(true);
@@ -25,8 +25,8 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
     <EmptyScreenContainer
       imageSrc="images/empty_screen_filter.png"
       imageAlt="Empty Screen Filter image"
-      headerText={t(title)}
-      descriptionText={t(description)}
+      headerText={title}
+      descriptionText={description}
       buttons={
         <Grid
           marginProp="13px 0"

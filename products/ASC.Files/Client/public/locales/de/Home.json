@@ -14,7 +14,6 @@
   "DisableUserButton": "Deaktivieren",
   "EmailChangeButton": "E-Mail-Adresse ändern",
   "EmptyGroupDescription": "Sie können neue Teammitglieder manuell oder über den Link einladen.",
-  "EmptyGroupTitle": "Keine Teammitglieder hier",
   "EnableUserButton": "Aktivieren",
   "LblActive": "Aktiv",
   "LblInviteAgain": "Erneut einladen",
@@ -39,10 +38,8 @@
   "ReassignData": "Daten erneut zuweisen",
   "RemoveData": "Persönliche Daten löschen ",
   "Search": "Suche",
-  "SendEmailAction": "E-Mail-Nachricht senden",
   "SendInviteAgain": "Einladung erneut senden",
   "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert",
   "SuccessfullyRemovedGroup": "Die Gruppe wurde erfolgreich entfernt",
-  "SuccessfullyRemovedUsers": "Benutzer wurden erfolgreich gelöscht",
   "UserStatus": "Status"
 }

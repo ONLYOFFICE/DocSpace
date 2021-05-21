@@ -40,8 +40,6 @@
   "DirectionAscLabel": "A-Z",
   "DirectionDescLabel": "Z-A",
   "MakeInvitationLink": "Make invitation link",
-  "SuccessfullyRemovedUsers": "Users have been removed successfully",
-  "SendEmailAction": "Send e-mail action",
   "SuccessfullyRemovedGroup": "Group has been removed successfully",
   "AddFilter": "Add filter",
   "SuccessChangeUserStatus": "The user status was successfully changed"

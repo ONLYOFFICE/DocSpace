@@ -1,14 +1,5 @@
 ﻿{
-  "ChooseUser": "Выберите пользователя",
-  "DeleteProfileAfterReassignment": "Удалить профиль, когда переназначение будет завершено",
   "LDAPLbl": "LDAP",
   "NotBeUndone": "Примечание: это действие нельзя отменить.",
-  "ReassignButton": "Переназначить",
-  "ReassignmentData": "Переназначение данных",
-  "ReassignsReadMore": "Подробнее о передаче данных",
-  "ReassignsToUser": "Сотрудник, которому будут переданы данные —",
-  "ReassignsTransferedListHdr": "Будет передан:",
-  "ReassignsTransferedListItem1": "Общие документы и личные документы, доступные другим пользователям портала;",
-  "ReassignsTransferedListItem2": "Открытые проекты, вехи и задачи;",
-  "ReassignsTransferedListItem3": "Контакты, открытые задачи, незакрытые возможности и кейсы CRM;"
+  "ReassignmentData": "Переназначение данных"
 }
