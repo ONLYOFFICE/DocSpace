@@ -9,6 +9,7 @@ import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { sendInstructionsToChangeEmail } from "@appserver/common/api/people";
 import toastr from "studio/toastr";
+import { errorKeys } from "@appserver/components/utils/constants";
 
 class ChangeEmailDialogComponent extends React.Component {
   constructor(props) {
@@ -83,7 +84,34 @@ class ChangeEmailDialogComponent extends React.Component {
         this.onSendEmailChangeInstructions();
       }
     } else {
-      const translatedErrors = emailErrors.map((errorKey) => t(errorKey));
+      const translatedErrors = emailErrors.map((errorKey) => {
+        switch (errorKey) {
+          case errorKeys.LocalDomain:
+            return t("LocalDomain");
+          case errorKeys.IncorrectDomain:
+            return t("IncorrectDomain");
+          case errorKeys.DomainIpAddress:
+            return t("DomainIpAddress");
+          case errorKeys.PunycodeDomain:
+            return t("PunycodeDomain");
+          case errorKeys.PunycodeLocalPart:
+            return t("PunycodeLocalPart");
+          case errorKeys.IncorrectLocalPart:
+            return t("IncorrectLocalPart");
+          case errorKeys.SpacesInLocalPart:
+            return t("SpacesInLocalPart");
+          case errorKeys.MaxLengthExceeded:
+            return t("MaxLengthExceeded");
+          case errorKeys.IncorrectEmail:
+            return t("IncorrectEmail");
+          case errorKeys.ManyEmails:
+            return t("ManyEmails");
+          case errorKeys.EmptyEmail:
+            return t("EmptyEmail");
+          default:
+            throw new Error("Unknown translation key");
+        }
+      });
       const errorMessage = translatedErrors[0];
       this.setState({ errorMessage, hasError: true });
     }
