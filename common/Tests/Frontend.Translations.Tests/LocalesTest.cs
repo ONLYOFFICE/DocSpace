@@ -48,7 +48,9 @@ namespace Frontend.Translations.Tests
 
                 var translationFile = new TranslationFile(path);
 
-                translationFile.Translations = jsonTranslation.Properties().Select(p => new TranslationItem(p.Name, (string)p.Value)).ToList();
+                translationFile.Translations = jsonTranslation.Properties()
+                    .Select(p => new TranslationItem(p.Name, (string)p.Value))
+                    .ToList();
 
                 TranslationFiles.Add(translationFile);
             }
@@ -79,7 +81,11 @@ namespace Frontend.Translations.Tests
 
                 var matches = regexp.Matches(jsFileText);
 
-                var translationKeys = matches.Select(m => m.Groups[2].Value == "" ? m.Groups[4].Value : m.Groups[2].Value).ToList();
+                var translationKeys = matches
+                    .Select(m => m.Groups[2].Value == ""
+                        ? m.Groups[4].Value
+                        : m.Groups[2].Value)
+                    .ToList();
 
                 if (!translationKeys.Any())
                     continue;
@@ -117,11 +123,18 @@ namespace Frontend.Translations.Tests
                 .ToList();
 
             var enGroup = groupedByLng.Find(f => f.Lng == "en");
+            var expectedCount = enGroup.Count;
 
-            foreach (var lng in groupedByLng.Where(g => g.Lng != "en"))
-            {
-                Assert.AreEqual(enGroup.Count, lng.Count, "language '{0}' is not equals 'en' by translated files count", lng.Lng);
-            }
+            var otherLngs = groupedByLng.Where(g => g.Lng != "en");
+
+            var incompleteList = otherLngs
+                    .Where(lng => lng.Count != expectedCount)
+                    .Select(lng => $"{lng.Lng} (Count={lng.Count})")
+                    .ToList();
+
+            Assert.AreEqual(0, incompleteList.Count,
+                "languages '{0}' are not equal 'en' (Count= {1}) by translated files count",
+                string.Join(", ", incompleteList), expectedCount);
 
             //Assert.AreEqual(true, groupedByLng.All(g => g.Count == enGroup.Count));
         }
@@ -137,17 +150,24 @@ namespace Frontend.Translations.Tests
                     Keys = grp
                         .SelectMany(k => k.Translations)
                         .OrderByDescending(itm => itm.Key)
+                        .ToList()
                 })
                 .ToList();
 
             var enGroup = groupedByLng.Find(f => f.Lng == "en");
 
-            var expectedCount = enGroup.Keys.Count();
+            var expectedCount = enGroup.Keys.Count;
 
-            foreach (var lng in groupedByLng.Where(g => g.Lng != "en"))
-            {
-                Assert.AreEqual(expectedCount, lng.Keys.Count(), "language '{0}' is not equals 'en' by translated keys count", lng.Lng);
-            }
+            var otherLngs = groupedByLng.Where(g => g.Lng != "en");
+
+            var incompleteList = otherLngs
+                    .Where(lng => lng.Keys.Count != expectedCount)
+                    .Select(lng => $"{lng.Lng} (Count={lng.Keys.Count})")
+                    .ToList();
+
+            Assert.AreEqual(0, incompleteList.Count,
+                "languages '{0}' are not equal 'en' (Count= {1}) by translated keys count",
+                string.Join(", ", incompleteList), expectedCount);
 
             //Assert.AreEqual(true, groupedByLng.All(g => g.Keys.Count() == enGroup.Keys.Count()));
         }
@@ -167,7 +187,9 @@ namespace Frontend.Translations.Tests
 
             var notFoundJsKeys = allJsTranslationKeys.Except(allEnKeys);
 
-            Assert.AreEqual(0, notFoundJsKeys.Count(), "Some i18n-keys are not exist in translations in 'en' language: Keys: '{0}'", string.Join(", ", notFoundJsKeys));
+            Assert.AreEqual(0, notFoundJsKeys.Count(),
+                "Some i18n-keys are not exist in translations in 'en' language: Keys: '{0}'",
+                string.Join(", ", notFoundJsKeys));
         }
 
         [Test]
@@ -187,7 +209,9 @@ namespace Frontend.Translations.Tests
 
             var notFoundi18nKeys = allEnKeys.Except(allJsTranslationKeys);
 
-            Assert.AreEqual(0, notFoundi18nKeys.Count(), "Some i18n-keys are not found in js: Keys: '{0}'", string.Join(", ", notFoundi18nKeys));
+            Assert.AreEqual(0, notFoundi18nKeys.Count(),
+                "Some i18n-keys are not found in js: Keys: '{0}'",
+                string.Join(", ", notFoundi18nKeys));
         }
     }
 }
