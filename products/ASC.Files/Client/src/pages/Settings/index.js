@@ -30,16 +30,16 @@ const PureSettings = ({
   useEffect(() => {
     switch (setting) {
       case "common":
-        setTitle("CommonSettings");
+        setTitle(t("CommonSettings"));
         break;
       case "admin":
-        setTitle("AdminSettings");
+        setTitle(t("AdminSettings"));
         break;
       case "thirdParty":
-        setTitle("ThirdPartySettings");
+        setTitle(t("ThirdPartySettings"));
         break;
       default:
-        setTitle("CommonSettings");
+        setTitle(t("CommonSettings"));
         break;
     }
   }, [setting]);
@@ -55,7 +55,7 @@ const PureSettings = ({
   //console.log("render settings");
 
   useEffect(() => {
-    setDocumentTitle(t(`${title}`));
+    setDocumentTitle(title);
   }, [title, t]);
 
   return (
