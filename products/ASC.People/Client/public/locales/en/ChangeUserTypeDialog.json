@@ -4,7 +4,6 @@
   "ChangeUserTypeMessage": "Users with the \u0027{{ firstType }}\u0027 type will be moved to \u0027{{ secondType }}\u0027 type.",
   "ChangeUserTypeMessageWarning": "You can\u0027t change the type for the portal administrators and for yourself",
   "GuestCaption": "Guest",
-  "ShowUsersList": "View users list",
   "SuccessChangeUserType": "The user type was successfully changed",
   "UserCol": "User"
 }

@@ -7,6 +7,5 @@
   "ChangeUserStatusDialogHeader": "Benutzerstatus ändern",
   "ChangeUserStatusDialogMessage": "Sie können Status für Sie oder Portalbesitzer nicht ändern",
   "DisabledEmployeeTitle": "Deaktiviert",
-  "ShowUsersList": "Liste der Benutzer anzeigen",
   "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert"
 }

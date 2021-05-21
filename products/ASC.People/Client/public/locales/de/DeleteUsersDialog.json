@@ -4,6 +4,5 @@
   "DeleteGroupUsersSuccessMessage": "Benutzer wurden erfolgreich gelöscht.",
   "DeleteUserDataConfirmation": "Freigegebene Dokumente dieses Benutzers werden gelöscht. Um dies zu vermeiden, weisen Sie Daten neu zu.",
   "NotBeUndone": "Dies kann nicht rückgängig gemacht werden.",
-  "ShowUsersList": "Liste der Benutzer anzeigen",
   "Warning": "Warnung"
 }

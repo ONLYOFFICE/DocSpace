@@ -7,6 +7,5 @@
   "ChangeUserStatusDialogHeader": "Change user status",
   "ChangeUserStatusDialogMessage": "You can\u0027t change the status for the portal owner and for yourself",
   "DisabledEmployeeTitle": "Disabled",
-  "ShowUsersList": "View users list",
   "SuccessChangeUserStatus": "The user status was successfully changed"
 }

@@ -31,5 +31,6 @@
   "SignInWithLinkedIn": "Login über LinkedIn",
   "SignInWithTwitter": "Login über Twitter",
   "Pin": "Anheften",
-  "Unpin": "Lösen"
+  "Unpin": "Lösen",
+  "ShowUsersList": "Liste der Benutzer anzeigen"
 }
