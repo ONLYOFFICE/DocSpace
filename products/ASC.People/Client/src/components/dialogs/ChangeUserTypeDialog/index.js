@@ -127,7 +127,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
 
           <ToggleContent
             className="toggle-content-dialog"
-            label={t("ShowUsersList")}
+            label={t("Common:ShowUsersList")}
           >
             <div style={containerStyles} className="modal-dialog-content">
               <AutoSizer>{renderList}</AutoSizer>

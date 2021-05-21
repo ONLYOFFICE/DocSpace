@@ -229,7 +229,7 @@ const SectionBodyContent = ({
     if (nameError) setNameError(null);
   };
 
-  const buttonLabel = id ? t("Common:SaveButton") : t("AddButton");
+  const buttonLabel = id ? t("Common:SaveButton") : t("Common:AddButton");
 
   return (
     <MainContainer>

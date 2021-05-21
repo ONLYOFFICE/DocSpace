@@ -124,7 +124,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
           <Text>{t("DeleteUserDataConfirmation")}</Text>
           <ToggleContent
             className="toggle-content-dialog"
-            label={t("ShowUsersList")}
+            label={t("Common:ShowUsersList")}
           >
             <div style={containerStyles} className="modal-dialog-content">
               <AutoSizer>{renderList}</AutoSizer>

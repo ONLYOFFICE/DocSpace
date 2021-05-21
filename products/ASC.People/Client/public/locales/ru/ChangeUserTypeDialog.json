@@ -4,7 +4,6 @@
   "ChangeUserTypeMessage": "Пользователи с типом \u0027{{ firstType }}\u0027 будут переведены в тип \u0027{{ secondType }}\u0027.",
   "ChangeUserTypeMessageWarning": "Вы не можете изменить тип для администраторов портала и для самого себя",
   "GuestCaption": "Гость",
-  "ShowUsersList": "Показать список пользователей",
   "SuccessChangeUserType": "Тип пользователя успешно изменен",
   "UserCol": "Пользователь"
 }

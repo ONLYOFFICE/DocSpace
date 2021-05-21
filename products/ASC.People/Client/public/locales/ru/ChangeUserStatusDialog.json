@@ -7,6 +7,5 @@
   "ChangeUserStatusDialogHeader": "Изменение статуса пользователя",
   "ChangeUserStatusDialogMessage": "Вы не можете изменить статус владельца портала и свой собственный статус",
   "DisabledEmployeeTitle": "Заблокирован",
-  "ShowUsersList": "Показать список пользователей",
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен"
 }

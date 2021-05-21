@@ -31,5 +31,7 @@
   "SignInWithLinkedIn": "Вход через LinkedIn",
   "SignInWithTwitter": "Вход через Twitter",
   "Pin": "Закрепить",
-  "Unpin": "Открепить"
+  "Unpin": "Открепить",
+  "ShowUsersList": "Показать список пользователей",
+  "AddButton": "Добавить"
 }
