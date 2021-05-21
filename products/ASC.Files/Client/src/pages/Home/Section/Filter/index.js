@@ -163,7 +163,7 @@ class SectionFilterContent extends React.Component {
         group: "filter-author",
         label: usersCaption,
         isSelector: true,
-        defaultOptionLabel: t("DefaultOptionLabel"),
+        defaultOptionLabel: t("Common:MeLabel"),
         defaultSelectLabel: t("LblSelect"),
         groupsCaption,
         defaultOption: user,

@@ -291,7 +291,7 @@ const SectionBodyContent = ({
               onCancel={onCancelSelector}
               groupsCaption={groupsCaption}
               defaultOption={me}
-              defaultOptionLabel={t("MeLabel")}
+              defaultOptionLabel={t("Common:MeLabel")}
               employeeStatus={1}
               groupList={groups}
             />
@@ -329,7 +329,7 @@ const SectionBodyContent = ({
               searchPlaceHolderLabel={t("SearchAddedMembers")}
               groupsCaption={groupsCaption}
               defaultOption={me}
-              defaultOptionLabel={t("MeLabel")}
+              defaultOptionLabel={t("Common:MeLabel")}
               selectedOptions={newGroupMembers}
               employeeStatus={1}
               groupList={groups}

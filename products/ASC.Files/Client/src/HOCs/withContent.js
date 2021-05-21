@@ -275,7 +275,7 @@ export default function withContent(WrappedContent) {
 
       const fileOwner =
         createdBy &&
-        ((viewer.id === createdBy.id && t("AuthorMe")) ||
+        ((viewer.id === createdBy.id && t("Common:MeLabel")) ||
           createdBy.displayName);
 
       const accessToEdit =

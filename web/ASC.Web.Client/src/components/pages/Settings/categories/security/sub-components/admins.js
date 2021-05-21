@@ -399,7 +399,7 @@ class PureAdminsSettings extends Component {
                     onSelect={this.onSelect}
                     onCancel={this.onCancelSelector}
                     defaultOption={me}
-                    defaultOptionLabel={t("MeLabel")}
+                    defaultOptionLabel={t("Common:MeLabel")}
                     groupsCaption={groupsCaption}
                   />
                 </div>
@@ -420,7 +420,7 @@ class PureAdminsSettings extends Component {
                     onSelect={this.onSelectFullAdmin}
                     onCancel={this.onCancelSelector}
                     defaultOption={me}
-                    defaultOptionLabel={t("MeLabel")}
+                    defaultOptionLabel={t("Common:MeLabel")}
                     groupsCaption={groupsCaption}
                   />
                 </div>

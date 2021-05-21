@@ -23,5 +23,6 @@
   "Type": "Typ",
   "RequiredField": "Pflichtfeld",
   "FullAccess": "Voller Zugriff",
-  "Documents": "Dokumente"
+  "Documents": "Dokumente",
+  "MeLabel": "Ich"
 }

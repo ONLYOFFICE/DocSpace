@@ -23,5 +23,6 @@
   "Type": "Тип",
   "RequiredField": "Обязательное поле",
   "FullAccess": "Полный доступ",
-  "Documents": "Документы"
+  "Documents": "Документы",
+  "MeLabel": "Я"
 }
