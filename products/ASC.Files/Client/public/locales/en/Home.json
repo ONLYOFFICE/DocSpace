@@ -111,7 +111,6 @@
   "TitleSubfolders": "Flds",
   "TitleUploaded": "Uploaded",
   "TooltipElementCopyMessage": "Copy {{element}}",
-  "TooltipElementMoveMessage": "Move {{element}}",
   "TooltipElementsCopyMessage": "Copy {{element}} elements",
   "TooltipElementsMoveMessage": "Move {{element}} elements",
   "TrashEmptyContainerDescription": "Trash is where all the deleted files are moved. You can restore or delete them permanently by emptying Trash. ",

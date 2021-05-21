@@ -111,7 +111,6 @@
   "TitleSubfolders": "Папки",
   "TitleUploaded": "Загружен",
   "TooltipElementCopyMessage": "Скопировать {{element}}",
-  "TooltipElementMoveMessage": "Переместить {{element}}",
   "TooltipElementsCopyMessage": "Скопировать {{element}} элемента(ов)",
   "TooltipElementsMoveMessage": "Переместить {{element}} элемента(ов)",
   "TrashEmptyContainerDescription": "В разделе «Корзина» находятся все удаленные файлы. Вы можете восстановить их, если они были удалены по ошибке, или удалить их навсегда. Обратите внимание, что когда вы удаляете файлы из корзины, они больше не могут быть восстановлены.",
