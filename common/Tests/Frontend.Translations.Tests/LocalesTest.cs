@@ -58,14 +58,14 @@ namespace Frontend.Translations.Tests
             var javascriptFiles = (from wsPath in Workspaces
                                    let clientDir = Path.Combine(BasePath, wsPath)
                                    from file in Directory.EnumerateFiles(clientDir, "*.js", SearchOption.AllDirectories)
-                                   where file.Contains("src\\")
+                                   where !file.Contains("dist\\")
                                    select file)
                                   .ToList();
 
             javascriptFiles.AddRange(from wsPath in Workspaces
                                      let clientDir = Path.Combine(BasePath, wsPath)
                                      from file in Directory.EnumerateFiles(clientDir, "*.jsx", SearchOption.AllDirectories)
-                                     where file.Contains("src\\")
+                                     where !file.Contains("dist\\")
                                      select file);
 
             JavaScriptFiles = new List<JavaScriptFile>();
