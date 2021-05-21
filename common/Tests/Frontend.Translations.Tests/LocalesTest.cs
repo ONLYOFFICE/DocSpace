@@ -68,7 +68,7 @@ namespace Frontend.Translations.Tests
 
             JavaScriptFiles = new List<JavaScriptFile>();
 
-            var pattern1 = "[.{\\s]t\\(\"([a-zA-Z0-9_.-]+)\"\\)";
+            var pattern1 = "[.{\\s\\(]t\\(\\s*[\"\'`]([a-zA-Z0-9_.:_\\$\\s{}/_-]+)[\"\'`]\\s*[\\),]";
             var pattern2 = "i18nKey=\"([a-zA-Z0-9_.-]+)\"";
 
             var regexp = new Regex($"({pattern1})|({pattern2})", RegexOptions.Multiline | RegexOptions.ECMAScript);
@@ -168,6 +168,26 @@ namespace Frontend.Translations.Tests
             var notFoundJsKeys = allJsTranslationKeys.Except(allEnKeys);
 
             Assert.AreEqual(0, notFoundJsKeys.Count(), "Some i18n-keys are not exist in translations in 'en' language: Keys: '{0}'", string.Join(", ", notFoundJsKeys));
+        }
+
+        [Test]
+        public void UselessTranslationKeysTest()
+        {
+            var allEnKeys = TranslationFiles
+                 .Where(file => file.Path.Contains("public\\locales\\en"))
+                 .SelectMany(item => item.Translations)
+                 .Select(item => item.Key)
+                 .Where(k => !k.StartsWith("Culture_"));
+
+            var allJsTranslationKeys = JavaScriptFiles
+                .SelectMany(j => j.TranslationKeys)
+                .Select(k => k.Replace("Common:", ""))
+                .Where(k => !k.StartsWith("Culture_"))
+                .Distinct();
+
+            var notFoundi18nKeys = allEnKeys.Except(allJsTranslationKeys);
+
+            Assert.AreEqual(0, notFoundi18nKeys.Count(), "Some i18n-keys are not found in js: Keys: '{0}'", string.Join(", ", notFoundi18nKeys));
         }
     }
 }
