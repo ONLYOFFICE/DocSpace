@@ -13,7 +13,6 @@
   "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту",
   "Register": "Регистрация",
   "RegisterPlaceholder": "Ваш регистрационный email",
-  "RegisterProcessSending": "Отправка...",
   "RegisterSendButton": "Отправить запрос",
   "RegisterTextBodyAfterDomainsList": "Чтобы зарегистрироваться, введите свой email и нажмите кнопку Отправить запрос. Сообщение со ссылкой для активации вашей учётной записи будет отправлено на указанный адрес.",
   "RegisterTextBodyBeforeDomainsList": "Регистрация доступна для пользователей, которые имеют почтовый ящик на",

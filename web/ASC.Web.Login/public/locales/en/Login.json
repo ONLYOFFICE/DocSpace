@@ -13,7 +13,6 @@
   "ProviderNotConnected": "Provider is not connected to your account",
   "Register": "Register",
   "RegisterPlaceholder": "Your registration email",
-  "RegisterProcessSending": "Sending...",
   "RegisterSendButton": "Send request",
   "RegisterTextBodyAfterDomainsList": "To register, enter your email and click Send request. An activation link will be sent to you.  ",
   "RegisterTextBodyBeforeDomainsList": "Registration is available to users with an email account at",

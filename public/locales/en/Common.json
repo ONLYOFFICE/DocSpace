@@ -35,5 +35,6 @@
   "ShowUsersList": "View users list",
   "AddButton": "Add",
   "DirectionAscLabel": "A-Z",
-  "DirectionDescLabel": "Z-A"
+  "DirectionDescLabel": "Z-A",
+  "Sending": "Sending..."
 }

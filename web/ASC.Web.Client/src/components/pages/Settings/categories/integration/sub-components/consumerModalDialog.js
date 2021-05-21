@@ -189,9 +189,7 @@ class ConsumerModalDialog extends React.Component {
             primary
             size="big"
             label={
-              isLoading
-                ? t("ThirdPartyProcessSending")
-                : t("ThirdPartyEnableButton")
+              isLoading ? t("Common:Sending") : t("ThirdPartyEnableButton")
             }
             tabIndex={1}
             isLoading={isLoading}

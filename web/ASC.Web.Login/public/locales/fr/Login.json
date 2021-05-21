@@ -11,7 +11,6 @@
   "PasswordRecoveryTitle": "Récupération de mot de passe",
   "Register": "Inscription",
   "RegisterPlaceholder": "Votre mail d\u0027inscription",
-  "RegisterProcessSending": "Envoi...",
   "RegisterSendButton": "Envoyer une demande",
   "RegisterTextBodyAfterDomainsList": "Pour vous inscrire, saisissez votre adresse de courriel et cliquez sur Envoyer une demande. Vous allez recevoir un courriel à l\u0027adresse spécifiée. Veuillez indiquer l\u0027adresse de courriel à laquelle votre invitation sera envoyée :",
   "RegisterTextBodyBeforeDomainsList": "L\u0027inscription est disponible aux utilisateurs avec le compte de mail à ",

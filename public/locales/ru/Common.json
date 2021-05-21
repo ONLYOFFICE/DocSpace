@@ -35,5 +35,6 @@
   "ShowUsersList": "Показать список пользователей",
   "AddButton": "Добавить",
   "DirectionAscLabel": "А-Я",
-  "DirectionDescLabel": "Я-А"
+  "DirectionDescLabel": "Я-А",
+  "Sending": "Отправка..."
 }

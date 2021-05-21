@@ -87,9 +87,7 @@ const RegisterModalDialog = ({
         <Button
           className="modal-dialog-button"
           key="SendBtn"
-          label={
-            loading ? t("RegisterProcessSending") : t("RegisterSendButton")
-          }
+          label={loading ? t("Common:Sending") : t("RegisterSendButton")}
           size="big"
           scale={false}
           primary={true}
