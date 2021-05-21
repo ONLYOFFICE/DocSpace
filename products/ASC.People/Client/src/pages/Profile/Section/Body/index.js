@@ -9,7 +9,11 @@ import Link from "@appserver/components/link";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import toastr from "studio/toastr";
 import React from "react";
-import { combineUrl, isMe } from "@appserver/common/utils";
+import {
+  combineUrl,
+  isMe,
+  getProviderTranslation,
+} from "@appserver/common/utils";
 import styled from "styled-components";
 
 import { withRouter } from "react-router";
@@ -208,7 +212,7 @@ class SectionBodyContent extends React.PureComponent {
                 <FacebookButton
                   noHover={true}
                   iconName={icon}
-                  label={t(label)}
+                  label={getProviderTranslation(label, t)}
                   className="socialButton"
                   $iconOptions={iconOptions}
                 />
@@ -216,7 +220,7 @@ class SectionBodyContent extends React.PureComponent {
                 <SocialButton
                   noHover={true}
                   iconName={icon}
-                  label={t(label)}
+                  label={getProviderTranslation(label, t)}
                   className="socialButton"
                   $iconOptions={iconOptions}
                 />

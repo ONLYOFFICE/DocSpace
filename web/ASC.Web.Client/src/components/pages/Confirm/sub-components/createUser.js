@@ -18,7 +18,11 @@ import FacebookButton from "@appserver/components/facebook-button";
 import EmailInput from "@appserver/components/email-input";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import PageLayout from "@appserver/common/components/PageLayout";
-import { combineUrl, createPasswordHash } from "@appserver/common/utils";
+import {
+  combineUrl,
+  createPasswordHash,
+  getProviderTranslation,
+} from "@appserver/common/utils";
 import { AppServerConfig, providersData } from "@appserver/common/constants";
 import { isMobile } from "react-device-detect";
 import { desktop } from "@appserver/components/utils/device";
@@ -182,7 +186,7 @@ class Confirm extends React.PureComponent {
       >
         <FacebookButton
           iconName={icon}
-          label={t(label)}
+          label={getProviderTranslation(label, t)}
           className="socialButton"
           $iconOptions={iconOptions}
           data-url={faceBookData.url}
@@ -213,7 +217,7 @@ class Confirm extends React.PureComponent {
           <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
             <SocialButton
               iconName={icon}
-              label={t(label)}
+              label={getProviderTranslation(label, t)}
               className={`socialButton ${className ? className : ""}`}
               $iconOptions={iconOptions}
               data-url={item.url}
