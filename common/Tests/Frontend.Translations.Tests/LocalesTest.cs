@@ -68,7 +68,7 @@ namespace Frontend.Translations.Tests
 
             JavaScriptFiles = new List<JavaScriptFile>();
 
-            var pattern1 = "[.{\\s\\(]t\\(\\s*[\"\'`]([a-zA-Z0-9_.:_\\$\\s{}/_-]+)[\"\'`]\\s*[\\),]";
+            var pattern1 = "[.{\\s\\(]t\\(\\s*[\"\'`]([a-zA-Z0-9_.:_\\s{}/_-]+)[\"\'`]\\s*[\\),]";
             var pattern2 = "i18nKey=\"([a-zA-Z0-9_.-]+)\"";
 
             var regexp = new Regex($"({pattern1})|({pattern2})", RegexOptions.Multiline | RegexOptions.ECMAScript);
