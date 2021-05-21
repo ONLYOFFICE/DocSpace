@@ -340,11 +340,17 @@ class FilesStore {
           return Promise.resolve(selectedFolder);
         })
         .catch(() => {
-          if (folderId === "@my" && requestCounter !== 0 && !this.isInit) {
-            requestCounter--;
+          if (!requestCounter) return;
+          requestCounter--;
+
+          if (folderId === "@my" && !this.isInit) {
             setTimeout(() => {
               return request();
             }, 5000);
+          } else {
+            return this.fetchFiles(
+              this.userStore.user.isVisitor ? "@common" : "@my"
+            );
           }
         });
 
