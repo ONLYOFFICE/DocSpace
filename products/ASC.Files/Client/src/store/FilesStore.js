@@ -348,6 +348,7 @@ class FilesStore {
               return request();
             }, 5000);
           } else {
+            this.treeFoldersStore.fetchTreeFolders();
             return this.fetchFiles(
               this.userStore.user.isVisitor ? "@common" : "@my"
             );
