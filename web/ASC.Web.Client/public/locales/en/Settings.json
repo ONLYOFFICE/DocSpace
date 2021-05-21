@@ -27,8 +27,6 @@
   "Customization": "Customization",
   "CustomTitles": "Custom titles",
   "CustomTitlesSettingsDescription": "Will be displayed on your welcome page and used for email notifications (From field). The custom domain name is a way to set an alternative URL for your portal. The custom portal name will appear next to the onlyoffice.com/onlyoffice.eu address.",
-  "DirectionAscLabel": "A-Z",
-  "DirectionDescLabel": "Z-A",
   "Employees": "users",
   "EmptyFieldError": "Empty field",
   "Group": "Group",

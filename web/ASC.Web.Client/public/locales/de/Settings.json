@@ -26,8 +26,6 @@
   "Customization": "Anpassung",
   "CustomTitles": "Benutzerdefinierte Titel",
   "CustomTitlesSettingsDescription": "Wird auf Ihrer Begrüßungsseite angezeigt und für E-Mail-Benachrichtigungen verwendet (im Feld \u0022Von\u0022). Mit dem benutzerdefinierten Domainnamen können Sie eine andere URL für Ihr Portal festlegen. Der Name des benutzerdefinierten Portals wird neben der Adresse onlyoffice.com/onlyoffice.eu angezeigt.",
-  "DirectionAscLabel": "A-Z",
-  "DirectionDescLabel": "Z-A",
   "DnsChangeMsg": "Der Bestätigungslink wurde an {{email}} (E-Mail des Portalbesitzers) gesendet.",
   "Employees": "Benutzer",
   "Language": "Sprache",

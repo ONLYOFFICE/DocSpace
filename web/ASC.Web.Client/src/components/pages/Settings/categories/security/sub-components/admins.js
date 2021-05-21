@@ -431,8 +431,8 @@ class PureAdminsSettings extends Component {
                 getFilterData={() => []}
                 getSortData={this.getSortData}
                 onFilter={this.onFilter}
-                directionAscLabel={t("DirectionAscLabel")}
-                directionDescLabel={t("DirectionDescLabel")}
+                directionAscLabel={t("Common:DirectionAscLabel")}
+                directionDescLabel={t("Common:DirectionDescLabel")}
               />
 
               {admins.length > 0 ? (

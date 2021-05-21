@@ -33,5 +33,7 @@
   "Pin": "Anheften",
   "Unpin": "Lösen",
   "ShowUsersList": "Liste der Benutzer anzeigen",
-  "AddButton": "Hinzufügen"
+  "AddButton": "Hinzufügen",
+  "DirectionAscLabel": "A-Z",
+  "DirectionDescLabel": "Z-A"
 }

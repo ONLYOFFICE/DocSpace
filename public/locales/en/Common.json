@@ -33,5 +33,7 @@
   "Pin": "Pin",
   "Unpin": "Unpin",
   "ShowUsersList": "View users list",
-  "AddButton": "Add"
+  "AddButton": "Add",
+  "DirectionAscLabel": "A-Z",
+  "DirectionDescLabel": "Z-A"
 }

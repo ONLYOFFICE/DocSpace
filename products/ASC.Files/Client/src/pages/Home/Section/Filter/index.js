@@ -276,8 +276,8 @@ class SectionFilterContent extends React.Component {
         onFilter={this.onFilter}
         onChangeViewAs={this.onChangeViewAs}
         viewAs={false} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
-        directionAscLabel={t("DirectionAscLabel")}
-        directionDescLabel={t("DirectionDescLabel")}
+        directionAscLabel={t("Common:DirectionAscLabel")}
+        directionDescLabel={t("Common:DirectionDescLabel")}
         placeholder={t("Search")}
         isReady={this.state.isReady}
         {...filterColumnCount}
@@ -320,6 +320,8 @@ export default inject(({ auth, filesStore, selectedFolderStore }) => {
   };
 })(
   withRouter(
-    withLayoutSize(withTranslation("Home")(observer(SectionFilterContent)))
+    withLayoutSize(
+      withTranslation(["Home", "Common"])(observer(SectionFilterContent))
+    )
   )
 );

@@ -37,8 +37,6 @@
   "LblInvited": "Приглашен",
   "LblSetActive": "Разблокировать",
   "LblSetDisabled": "Заблокировать",
-  "DirectionAscLabel": "А-Я",
-  "DirectionDescLabel": "Я-А",
   "MakeInvitationLink": "Создать пригласительную ссылку",
   "SuccessfullyRemovedGroup": "Группа была успешно удалена",
   "AddFilter": "Добавить фильтр",

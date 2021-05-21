@@ -33,5 +33,7 @@
   "Pin": "Закрепить",
   "Unpin": "Открепить",
   "ShowUsersList": "Показать список пользователей",
-  "AddButton": "Добавить"
+  "AddButton": "Добавить",
+  "DirectionAscLabel": "А-Я",
+  "DirectionDescLabel": "Я-А"
 }
