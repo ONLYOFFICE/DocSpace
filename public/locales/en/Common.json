@@ -18,5 +18,6 @@
   "OpenApp": "Open your {{title}} app",
   "ViewWeb": "View web version",
   "EditButton": "Edit",
-  "EditAvatar": "Edit"
+  "EditAvatar": "Edit",
+  "UnknownError": "Unknown error"
 }

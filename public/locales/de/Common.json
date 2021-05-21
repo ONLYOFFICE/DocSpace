@@ -18,5 +18,6 @@
   "OpenApp": "Öffnen Sie {{title}}",
   "ViewWeb": "Web-Version öffnen",
   "EditButton": "Bearbeiten",
-  "EditAvatar": "Bearbeiten"
+  "EditAvatar": "Bearbeiten",
+  "UnknownError": "Unbekannter Fehler"
 }

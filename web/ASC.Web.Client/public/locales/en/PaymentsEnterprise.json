@@ -18,5 +18,6 @@
   "PaymentsTitle": "Payments",
   "RenewalLicense": "If you have already purchased the renewal, upload the license file.",
   "SubscriptionRenewedLicense": "Renew subscription to get:",
-  "SuccessLoadingLicense": "License activated successfully"
+  "SuccessLoadingLicense": "License activated successfully",
+  "Payments": "Payments"
 }

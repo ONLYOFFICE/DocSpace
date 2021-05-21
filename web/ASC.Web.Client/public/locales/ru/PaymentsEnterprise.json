@@ -18,5 +18,6 @@
   "PaymentsTitle": "Платежи",
   "RenewalLicense": " Если вы уже купили обновление, загрузите файл лицензии.",
   "SubscriptionRenewedLicense": "Обновите подписку, чтобы получить:",
-  "SuccessLoadingLicense": "Лицензия успешно активирована"
+  "SuccessLoadingLicense": "Лицензия успешно активирована",
+  "Payments": "Оплата"
 }

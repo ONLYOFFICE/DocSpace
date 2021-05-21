@@ -18,5 +18,6 @@
   "OpenApp": "Откройте {{title}}",
   "ViewWeb": "Просмотреть веб-версию",
   "EditButton": "Редактировать",
-  "EditAvatar": "Изменить"
+  "EditAvatar": "Изменить",
+  "UnknownError": "Неизвестная ошибка"
 }
