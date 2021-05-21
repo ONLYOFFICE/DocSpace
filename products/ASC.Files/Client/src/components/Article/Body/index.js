@@ -42,36 +42,34 @@ class ArticleBodyContent extends React.Component {
       history,
     } = this.props;
 
-    if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
-      setSelectedNode(data);
-      setIsLoading(true);
+    //if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
+    setSelectedNode(data);
+    setIsLoading(true);
 
-      const newFilter = filter.clone();
-      newFilter.page = 0;
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.startIndex = 0;
+    newFilter.folder = data[0];
+
+    const selectedFolderTitle =
+      (e.node && e.node.props && e.node.props.title) || null;
+
+    selectedFolderTitle
+      ? setDocumentTitle(selectedFolderTitle)
+      : setDocumentTitle();
+
+    if (window.location.pathname.indexOf("/filter") > 0) {
+      fetchFiles(data[0], newFilter)
+        .catch((err) => toastr.error(err))
+        .finally(() => setIsLoading(false));
+    } else {
       newFilter.startIndex = 0;
-      newFilter.folder = data[0];
-
-      const selectedFolderTitle =
-        (e.node && e.node.props && e.node.props.title) || null;
-
-      selectedFolderTitle
-        ? setDocumentTitle(selectedFolderTitle)
-        : setDocumentTitle();
-
-      if (window.location.pathname.indexOf("/filter") > 0) {
-        fetchFiles(data[0], newFilter)
-          .catch((err) => toastr.error(err))
-          .finally(() => {
-            setIsLoading(false);
-          });
-      } else {
-        newFilter.startIndex = 0;
-        const urlFilter = newFilter.toUrlParams();
-        history.push(
-          combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
-        );
-      }
+      const urlFilter = newFilter.toUrlParams();
+      history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+      );
     }
+    //}
   };
 
   onShowNewFilesPanel = (folderId) => {
