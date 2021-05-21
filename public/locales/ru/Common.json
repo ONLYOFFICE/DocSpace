@@ -26,6 +26,10 @@
   "Documents": "Документы",
   "MeLabel": "Я",
   "Actions": "Действия",
+  "SignInWithFacebook": "Вход через Facebook",
+  "SignInWithGoogle": "Вход через Google",
+  "SignInWithLinkedIn": "Вход через LinkedIn",
+  "SignInWithTwitter": "Вход через Twitter",
   "Pin": "Закрепить",
   "Unpin": "Открепить"
 }

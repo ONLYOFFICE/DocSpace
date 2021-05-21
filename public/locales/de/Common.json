@@ -26,6 +26,10 @@
   "Documents": "Dokumente",
   "MeLabel": "Ich",
   "Actions": "Vorgänge",
+  "SignInWithFacebook": "Login über Facebook",
+  "SignInWithGoogle": "Login über Google",
+  "SignInWithLinkedIn": "Login über LinkedIn",
+  "SignInWithTwitter": "Login über Twitter",
   "Pin": "Anheften",
   "Unpin": "Lösen"
 }

@@ -26,6 +26,10 @@
   "Documents": "Documents",
   "MeLabel": "Me",
   "Actions": "Actions",
+  "SignInWithFacebook": "Sign in with Facebook",
+  "SignInWithGoogle": "Sign in with Google",
+  "SignInWithLinkedIn": "Sign in with LinkedIn",
+  "SignInWithTwitter": "Sign in with Twitter",
   "Pin": "Pin",
   "Unpin": "Unpin"
 }

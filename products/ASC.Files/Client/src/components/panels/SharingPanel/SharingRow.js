@@ -176,7 +176,7 @@ class SharingRow extends React.Component {
       <>
         {externalLinkVisible && (
           <LinkRow
-            linkText="ExternalLink"
+            linkText={t("ExternalLink")}
             options={externalLinkOptions}
             externalLinkData={externalLinkData}
             onToggleLink={onToggleLink}
@@ -186,7 +186,7 @@ class SharingRow extends React.Component {
         )}
         {internalLinkVisible && (
           <LinkRow
-            linkText="InternalLink"
+            linkText={t("InternalLink")}
             options={internalLinkData}
             {...this.props}
           />

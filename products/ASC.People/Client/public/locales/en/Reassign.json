@@ -1,14 +1,5 @@
 ﻿{
-  "ChooseUser": "Choose user",
-  "DeleteProfileAfterReassignment": "Delete profile after reassignment is finished",
   "LDAPLbl": "LDAP",
   "NotBeUndone": "Note: this action can\u0027t be undone.",
-  "ReassignButton": "Reassign",
-  "ReassignmentData": "Data reassignment",
-  "ReassignsReadMore": "More about data transfer",
-  "ReassignsToUser": "Employee to whom the data will be transferred —",
-  "ReassignsTransferedListHdr": "Will be transferred:",
-  "ReassignsTransferedListItem1": "General documents and personal documents that are available to other portal users;",
-  "ReassignsTransferedListItem2": "Open projects, milestones and tasks;",
-  "ReassignsTransferedListItem3": "Contacts, open tasks, unclosed opportunities, and CRM cases;"
+  "ReassignmentData": "Data reassignment"
 }

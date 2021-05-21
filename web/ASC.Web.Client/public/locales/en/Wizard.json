@@ -1,7 +1,6 @@
 ﻿{
   "ButtonContinue": "Continue",
   "ChangeEmailTitle": "Change email",
-  "CloseModalButton": "Close",
   "Desc": "Please set up the portal registration data.",
   "Domain": "Domain:",
   "ErrorEmail": "Invalid email address",
