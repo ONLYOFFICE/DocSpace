@@ -110,20 +110,20 @@ export const ConflictResolveType = Object.freeze({
 });
 export const providersData = Object.freeze({
   Google: {
-    label: "SignInWithGoogle",
+    label: "Google",
     icon: "/static/images/share.google.react.svg",
   },
   Facebook: {
-    label: "SignInWithFacebook",
+    label: "Facebook",
     icon: "/static/images/share.facebook.react.svg",
   },
   Twitter: {
-    label: "SignInWithTwitter",
+    label: "Twitter",
     icon: "/static/images/share.twitter.react.svg",
     iconOptions: { color: "#2AA3EF" },
   },
   LinkedIn: {
-    label: "SignInWithLinkedIn",
+    label: "LinkedIn",
     icon: "/static/images/share.linkedin.react.svg",
   },
 });

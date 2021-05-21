@@ -19,7 +19,10 @@ import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-di
 import Register from "./sub-components/register-container";
 import { getAuthProviders } from "@appserver/common/api/settings";
 import { checkPwd } from "@appserver/common/desktop";
-import { createPasswordHash } from "@appserver/common/utils";
+import {
+  createPasswordHash,
+  getProviderTranslation,
+} from "@appserver/common/utils";
 import { providersData } from "@appserver/common/constants";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
@@ -350,7 +353,7 @@ const Form = (props) => {
       >
         <FacebookButton
           iconName={icon}
-          label={t(label)}
+          label={getProviderTranslation(label, t)}
           className="socialButton"
           $iconOptions={iconOptions}
           data-url={faceBookData.url}
@@ -380,7 +383,7 @@ const Form = (props) => {
           <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
             <SocialButton
               iconName={icon}
-              label={t(label)}
+              label={getProviderTranslation(label, t)}
               className={`socialButton ${className ? className : ""}`}
               $iconOptions={iconOptions}
               data-url={item.url}
