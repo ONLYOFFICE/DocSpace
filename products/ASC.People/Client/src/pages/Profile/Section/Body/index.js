@@ -375,5 +375,5 @@ export default withRouter(
     setProviders: peopleStore.usersStore.setProviders,
     getOAuthToken: auth.settingsStore.getOAuthToken,
     getLoginLink: auth.settingsStore.getLoginLink,
-  }))(observer(withTranslation("Profile")(SectionBodyContent)))
+  }))(observer(withTranslation(["Profile", "Common"])(SectionBodyContent)))
 );

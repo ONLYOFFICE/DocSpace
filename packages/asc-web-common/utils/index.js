@@ -228,12 +228,12 @@ export function toCommunityHostname(hostname) {
 export function getProviderTranslation(provider, t) {
   switch (provider) {
     case "Google":
-      return t("SignInWithGoogle");
+      return t("Common:SignInWithGoogle");
     case "Facebook":
-      return t("SignInWithFacebook");
+      return t("Common:SignInWithFacebook");
     case "Twitter":
-      return t("SignInWithTwitter");
+      return t("Common:SignInWithTwitter");
     case "LinkedIn":
-      return t("SignInWithLinkedIn");
+      return t("Common:SignInWithLinkedIn");
   }
 }

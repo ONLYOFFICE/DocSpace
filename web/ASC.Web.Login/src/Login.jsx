@@ -621,7 +621,7 @@ const Login = inject(({ auth }) => {
     setProviders,
     providers,
   };
-})(withRouter(observer(withTranslation("Login", "Common")(LoginForm))));
+})(withRouter(observer(withTranslation(["Login", "Common"])(LoginForm))));
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

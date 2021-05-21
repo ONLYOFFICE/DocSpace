@@ -21,9 +21,5 @@
   "LoginWithAccount": "or log in with:",
   "PassworResetTitle": "Now you can create a new password.",
   "ProviderLoginError": "Authorization error",
-  "ProviderNotConnected": "Provider is not connected to your account",
-  "SignInWithFacebook": "Sign in with Facebook",
-  "SignInWithGoogle": "Sign in with Google",
-  "SignInWithLinkedIn": "Sign in with LinkedIn",
-  "SignInWithTwitter": "Sign in with Twitter"
+  "ProviderNotConnected": "Provider is not connected to your account"
 }

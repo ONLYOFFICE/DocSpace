@@ -25,5 +25,9 @@
   "FullAccess": "Полный доступ",
   "Documents": "Документы",
   "MeLabel": "Я",
-  "Actions": "Действия"
+  "Actions": "Действия",
+  "SignInWithFacebook": "Вход через Facebook",
+  "SignInWithGoogle": "Вход через Google",
+  "SignInWithLinkedIn": "Вход через LinkedIn",
+  "SignInWithTwitter": "Вход через Twitter"
 }
