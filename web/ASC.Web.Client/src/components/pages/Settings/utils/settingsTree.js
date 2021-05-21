@@ -56,7 +56,7 @@ export const settingsTree = [
         key: "1-0",
         icon: "",
         link: "accessrights",
-        tKey: "AccessRights",
+        tKey: "",
         isCategory: true,
       },
     ],
