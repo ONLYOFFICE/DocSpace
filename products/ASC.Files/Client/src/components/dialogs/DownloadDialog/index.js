@@ -153,7 +153,7 @@ class DownloadDialogComponent extends React.Component {
   getItemIcon = (item) => {
     const extension = item.fileExst;
     const icon = extension
-      ? this.props.getFileIcon(extension, 24)
+      ? this.props.getIcon(24, extension)
       : this.props.getFolderIcon(item.providerKey, 24);
 
     return (
@@ -414,11 +414,7 @@ class DownloadDialogComponent extends React.Component {
       indeterminateOtherTitle,
     } = this.state;
 
-    console.log("this.props", this.props);
-    console.log("this.state", this.state);
-
     const otherLength = other.length;
-
     const showOther = otherLength > 1;
     const minHeight = otherLength > 2 ? 110 : otherLength * 50;
 
@@ -426,141 +422,134 @@ class DownloadDialogComponent extends React.Component {
       documents.filter((f) => f.checked).length +
         spreadsheets.filter((f) => f.checked).length +
         presentations.filter((f) => f.checked).length +
-        other.filter((f) => f.checked).length ===
+        other.filter((f) => f.checked).length <=
       1;
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog visible={visible} onClose={this.onClose}>
-          <ModalDialog.Header>{t("DownloadAs")}</ModalDialog.Header>
-          <ModalDialog.Body>
-            <Text>{t("ChooseFormatText")}</Text>
-            {documents.length > 0 && (
-              <DownloadContent
-                t={t}
-                checkedTitle={checkedDocTitle}
-                indeterminateTitle={indeterminateDocTitle}
-                items={documents}
-                onSelectFormat={this.onSelectFormat}
-                onRowSelect={this.onRowSelect}
-                getItemIcon={this.getItemIcon}
-                getTitleLabel={this.getTitleLabel}
-                titleFormat={documentsTitleFormat}
-                type="document"
-              />
-            )}
+      <ModalDialogContainer visible={visible} onClose={this.onClose}>
+        <ModalDialog.Header>{t("DownloadAs")}</ModalDialog.Header>
+        <ModalDialog.Body>
+          <Text>{t("ChooseFormatText")}</Text>
+          {documents.length > 0 && (
+            <DownloadContent
+              t={t}
+              checkedTitle={checkedDocTitle}
+              indeterminateTitle={indeterminateDocTitle}
+              items={documents}
+              onSelectFormat={this.onSelectFormat}
+              onRowSelect={this.onRowSelect}
+              getItemIcon={this.getItemIcon}
+              getTitleLabel={this.getTitleLabel}
+              titleFormat={documentsTitleFormat}
+              type="document"
+            />
+          )}
 
-            {spreadsheets.length > 0 && (
-              <DownloadContent
-                t={t}
-                checkedTitle={checkedSpreadsheetTitle}
-                indeterminateTitle={indeterminateSpreadsheetTitle}
-                items={spreadsheets}
-                onSelectFormat={this.onSelectFormat}
-                onRowSelect={this.onRowSelect}
-                getItemIcon={this.getItemIcon}
-                getTitleLabel={this.getTitleLabel}
-                titleFormat={spreadsheetsTitleFormat}
-                type="spreadsheet"
-              />
-            )}
+          {spreadsheets.length > 0 && (
+            <DownloadContent
+              t={t}
+              checkedTitle={checkedSpreadsheetTitle}
+              indeterminateTitle={indeterminateSpreadsheetTitle}
+              items={spreadsheets}
+              onSelectFormat={this.onSelectFormat}
+              onRowSelect={this.onRowSelect}
+              getItemIcon={this.getItemIcon}
+              getTitleLabel={this.getTitleLabel}
+              titleFormat={spreadsheetsTitleFormat}
+              type="spreadsheet"
+            />
+          )}
 
-            {presentations.length > 0 && (
-              <DownloadContent
-                t={t}
-                checkedTitle={checkedPresentationTitle}
-                indeterminateTitle={indeterminatePresentationTitle}
-                items={presentations}
-                onSelectFormat={this.onSelectFormat}
-                onRowSelect={this.onRowSelect}
-                getItemIcon={this.getItemIcon}
-                getTitleLabel={this.getTitleLabel}
-                titleFormat={presentationsTitleFormat}
-                type="presentation"
-              />
-            )}
+          {presentations.length > 0 && (
+            <DownloadContent
+              t={t}
+              checkedTitle={checkedPresentationTitle}
+              indeterminateTitle={indeterminatePresentationTitle}
+              items={presentations}
+              onSelectFormat={this.onSelectFormat}
+              onRowSelect={this.onRowSelect}
+              getItemIcon={this.getItemIcon}
+              getTitleLabel={this.getTitleLabel}
+              titleFormat={presentationsTitleFormat}
+              type="presentation"
+            />
+          )}
 
-            {otherLength > 0 && (
-              <>
-                {showOther && (
-                  <Row
-                    key="title2"
-                    onSelect={this.onRowSelect.bind(this, "All", "other")}
-                    checked={checkedOtherTitle}
-                    indeterminate={indeterminateOtherTitle}
-                  >
-                    <RowContent>
-                      <Text
-                        truncate
-                        type="page"
-                        title={"Other"}
-                        fontSize="14px"
-                      >
-                        {t("Other")}
-                      </Text>
-                      <></>
-                    </RowContent>
-                  </Row>
-                )}
-
-                <RowContainer
-                  useReactWindow
-                  style={{ minHeight: minHeight, padding: "8px 0" }}
-                  itemHeight={50}
+          {otherLength > 0 && (
+            <>
+              {showOther && (
+                <Row
+                  key="title2"
+                  onSelect={this.onRowSelect.bind(this, "All", "other")}
+                  checked={checkedOtherTitle}
+                  indeterminate={indeterminateOtherTitle}
                 >
-                  {other.map((folder) => {
-                    const element = this.getItemIcon(folder);
-                    return (
-                      <Row
-                        key={folder.id}
-                        onSelect={this.onRowSelect.bind(this, folder, "other")}
-                        checked={folder.checked}
-                        element={element}
-                      >
-                        <RowContent>
-                          <Text
-                            truncate
-                            type="page"
-                            title={folder.title}
-                            fontSize="14px"
-                          >
-                            {folder.title}
-                          </Text>
-                          <></>
-                          <Text fontSize="12px" containerWidth="auto">
-                            {folder.fileExst && t("OriginalFormat")}
-                          </Text>
-                        </RowContent>
-                      </Row>
-                    );
-                  })}
-                </RowContainer>
-              </>
-            )}
+                  <RowContent>
+                    <Text truncate type="page" title={"Other"} fontSize="14px">
+                      {t("Other")}
+                    </Text>
+                    <></>
+                  </RowContent>
+                </Row>
+              )}
 
-            {!isSingleFile && <Text>{t("ConvertToZip")}</Text>}
-            <Text>{t("ConvertMessage")}</Text>
-          </ModalDialog.Body>
-          <ModalDialog.Footer>
-            <Button
-              className="button-dialog-accept"
-              key="DownloadButton"
-              label={t("DownloadButton")}
-              size="medium"
-              primary
-              onClick={this.onDownload}
-              //isLoading={isLoading}
-            />
-            <Button
-              className="button-dialog"
-              key="CancelButton"
-              label={t("CancelButton")}
-              size="medium"
-              onClick={this.onClose}
-              //isLoading={isLoading}
-            />
-          </ModalDialog.Footer>
-        </ModalDialog>
+              <RowContainer
+                useReactWindow
+                style={{ minHeight: minHeight, padding: "8px 0" }}
+                itemHeight={50}
+              >
+                {other.map((folder) => {
+                  const element = this.getItemIcon(folder);
+                  return (
+                    <Row
+                      key={folder.id}
+                      onSelect={this.onRowSelect.bind(this, folder, "other")}
+                      checked={folder.checked}
+                      element={element}
+                    >
+                      <RowContent>
+                        <Text
+                          truncate
+                          type="page"
+                          title={folder.title}
+                          fontSize="14px"
+                        >
+                          {folder.title}
+                        </Text>
+                        <></>
+                        <Text fontSize="12px" containerWidth="auto">
+                          {folder.fileExst && t("OriginalFormat")}
+                        </Text>
+                      </RowContent>
+                    </Row>
+                  );
+                })}
+              </RowContainer>
+            </>
+          )}
+
+          {!isSingleFile && <Text>{t("ConvertToZip")}</Text>}
+          <Text>{t("ConvertMessage")}</Text>
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <Button
+            className="button-dialog-accept"
+            key="DownloadButton"
+            label={t("DownloadButton")}
+            size="medium"
+            primary
+            onClick={this.onDownload}
+            //isLoading={isLoading}
+          />
+          <Button
+            className="button-dialog"
+            key="CancelButton"
+            label={t("CancelButton")}
+            size="medium"
+            onClick={this.onClose}
+            //isLoading={isLoading}
+          />
+        </ModalDialog.Footer>
       </ModalDialogContainer>
     );
   }
@@ -580,7 +569,7 @@ export default inject(
   }) => {
     const { secondaryProgressDataStore } = uploadDataStore;
     const { sortedFiles } = filesStore;
-    const { getFileIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+    const { getIcon, getFolderIcon } = formatsStore.iconFormatsStore;
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -599,7 +588,7 @@ export default inject(
 
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
-      getFileIcon,
+      getIcon,
       getFolderIcon,
       setDownloadDialogVisible,
       getDownloadProgress,

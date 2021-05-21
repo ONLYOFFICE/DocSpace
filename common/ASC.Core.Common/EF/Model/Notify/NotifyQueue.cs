@@ -43,25 +43,25 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("attachments")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.AutoSubmitted)
                     .HasColumnName("auto_submitted")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Content)
                     .HasColumnName("content")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ContentType)
                     .HasColumnName("content_type")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.CreationDate)
                     .HasColumnName("creation_date")
@@ -71,31 +71,31 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("reciever")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ReplyTo)
                     .HasColumnName("reply_to")
                     .HasColumnType("varchar(1024)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Sender)
                     .HasColumnName("sender")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.SenderType)
                     .HasColumnName("sender_type")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Subject)
                     .HasColumnName("subject")
                     .HasColumnType("varchar(1024)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });

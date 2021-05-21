@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
+﻿
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
@@ -47,27 +46,27 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("addr_type")
                     .HasColumnType("enum('ipv4','ipv6')")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.City)
                     .IsRequired()
                     .HasColumnName("city")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Country)
                     .IsRequired()
                     .HasColumnName("country")
                     .HasColumnType("varchar(2)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.District)
                     .HasColumnName("district")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.GeonameId).HasColumnName("geoname_id");
 
@@ -76,14 +75,14 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("ip_end")
                     .HasColumnType("varchar(39)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.IPStart)
                     .IsRequired()
                     .HasColumnName("ip_start")
                     .HasColumnType("varchar(39)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Latitude).HasColumnName("latitude");
 
@@ -98,13 +97,13 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("stateprov")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TimezoneName)
                     .HasColumnName("timezone_name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.TimezoneOffset).HasColumnName("timezone_offset");
 
@@ -112,7 +111,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("zipcode")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
 
         }

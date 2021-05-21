@@ -151,11 +151,8 @@ export default function withContextOptions(WrappedComponent) {
         item,
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
-        confirmDelete,
-        setDeleteDialogVisible,
         t,
-        deleteFileAction,
-        deleteFolderAction,
+        deleteItemAction,
         isThirdPartyFolder,
       } = this.props;
       const { id, title, fileExst, contentLength, folderId, parentId } = item;
@@ -167,27 +164,33 @@ export default function withContextOptions(WrappedComponent) {
         return;
       }
 
-      if (confirmDelete) {
-        setDeleteDialogVisible(true);
-      } else {
-        const translations = {
-          deleteOperation: t("DeleteOperation"),
-        };
+      const translations = {
+        deleteOperation: t("DeleteOperation"),
+        successRemoveFile: t("FileRemoved"),
+        successRemoveFolder: t("FolderRemoved"),
+      };
 
-        fileExst || contentLength
-          ? deleteFileAction(id, folderId, translations)
-              .then(() => toastr.success(t("FileRemoved")))
-              .catch((err) => toastr.error(err))
-          : deleteFolderAction(id, parentId, translations)
-              .then(() => toastr.success(t("FolderRemoved")))
-              .catch((err) => toastr.error(err));
-      }
+      deleteItemAction(id, folderId, translations, fileExst || contentLength);
     };
 
     onClickShare = () => {
       const { onSelectItem, setSharingPanelVisible, item } = this.props;
       onSelectItem(item);
       setSharingPanelVisible(true);
+    };
+
+    onClickMarkRead = () => {
+      const { markAsRead, item } = this.props;
+      item.fileExst
+        ? markAsRead([], [item.id], item)
+        : markAsRead([item.id], [], item);
+    };
+
+    onClickUnsubscribe = () => {
+      const { setDeleteDialogVisible, setUnsubscribe } = this.props;
+
+      setUnsubscribe(true);
+      setDeleteDialogVisible(true);
     };
 
     getFilesContextOptions = () => {
@@ -294,9 +297,9 @@ export default function withContextOptions(WrappedComponent) {
             return {
               key: option,
               label: t("Preview"),
-              icon: "EyeIcon",
+              icon: "/static/images/eye.react.svg",
               onClick: this.onClickLinkEdit,
-              disabled: true,
+              disabled: false,
             };
           case "view":
             return {
@@ -388,6 +391,22 @@ export default function withContextOptions(WrappedComponent) {
               "data-action": "remove",
               action: "remove",
             };
+          case "unsubscribe":
+            return {
+              key: option,
+              label: t("RemoveFromList"),
+              icon: "images/remove.svg",
+              onClick: this.onClickUnsubscribe,
+              disabled: false,
+            };
+          case "mark-read":
+            return {
+              key: option,
+              label: t("MarkRead"),
+              icon: "images/tick.rounded.svg",
+              onClick: this.onClickMarkRead,
+              disabled: false,
+            };
           default:
             break;
         }
@@ -426,7 +445,6 @@ export default function withContextOptions(WrappedComponent) {
         auth,
         versionHistoryStore,
         mediaViewerDataStore,
-        settingsStore,
         selectedFolderStore,
         dialogsStore,
         treeFoldersStore,
@@ -442,9 +460,10 @@ export default function withContextOptions(WrappedComponent) {
         downloadAction,
         duplicateAction,
         setThirdpartyInfo,
-        deleteFileAction,
-        deleteFolderAction,
         onSelectItem,
+        deleteItemAction,
+        markAsRead,
+        unsubscribeAction,
       } = filesActionsStore;
       const {
         setChangeOwnerPanelVisible,
@@ -453,17 +472,19 @@ export default function withContextOptions(WrappedComponent) {
         setDownloadDialogVisible,
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
-        setDeleteDialogVisible,
         setSharingPanelVisible,
+        setDeleteDialogVisible,
+        setUnsubscribe,
       } = dialogsStore;
       const { isTabletView } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
       const { isRootFolder } = selectedFolderStore;
-      const { isRecycleBinFolder } = treeFoldersStore;
+      const { isRecycleBinFolder, isShare } = treeFoldersStore;
 
       const isThirdPartyFolder = item.providerKey && isRootFolder;
+      const isShareFolder = isShare(item.rootFolderType);
 
       return {
         openLocationAction,
@@ -486,10 +507,7 @@ export default function withContextOptions(WrappedComponent) {
         setMediaViewerData,
         setRemoveItem,
         setDeleteThirdPartyDialogVisible,
-        confirmDelete: settingsStore.confirmDelete,
-        setDeleteDialogVisible,
-        deleteFileAction,
-        deleteFolderAction,
+        deleteItemAction,
         isThirdPartyFolder,
         onSelectItem,
         setSharingPanelVisible,
@@ -497,6 +515,11 @@ export default function withContextOptions(WrappedComponent) {
         actionId: id,
         actionExtension: extension,
         isTrashFolder: isRecycleBinFolder,
+        isShareFolder,
+        markAsRead,
+        unsubscribeAction,
+        setDeleteDialogVisible,
+        setUnsubscribe,
       };
     }
   )(observer(WithContextOptions));

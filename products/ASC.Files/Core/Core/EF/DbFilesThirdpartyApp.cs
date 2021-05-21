@@ -1,4 +1,5 @@
 ﻿using System;
+
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 
@@ -41,13 +42,13 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("user_id")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.App)
                     .HasColumnName("app")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ModifiedOn)
                     .HasColumnName("modified_on")
@@ -61,7 +62,7 @@ namespace ASC.Files.Core.EF
                     .HasColumnName("token")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
             });
         }
         public static void PgSqlAddDbFilesThirdpartyApp(this ModelBuilder modelBuilder)

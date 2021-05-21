@@ -8,7 +8,6 @@ import AppLoader from "@appserver/common/components/AppLoader";
 import toastr from "studio/toastr";
 import { combineUrl, updateTempContent } from "@appserver/common/utils";
 import stores from "./store/index";
-import "./custom.scss";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 import { regDesktop } from "@appserver/common/desktop";

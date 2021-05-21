@@ -25,11 +25,10 @@
 
 
 using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Linq;
 
 using ASC.Common;
-using ASC.Common.Caching;
+using ASC.Common.Threading;
 using ASC.Core.Encryption;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -39,16 +38,15 @@ namespace ASC.Data.Storage.Encryption
     [Singletone]
     public class EncryptionWorker
     {
-        private CancellationTokenSource TokenSource { get; set; }
-        private ICache Cache { get; }
         private object Locker { get; }
         private FactoryOperation FactoryOperation { get; }
+        private DistributedTaskQueue Queue { get; }
 
-        public EncryptionWorker(FactoryOperation factoryOperation, ICache cache)
+        public EncryptionWorker(FactoryOperation factoryOperation, DistributedTaskQueueOptionsManager options)
         {
-            Cache = cache;
             Locker = new object();
             FactoryOperation = factoryOperation;
+            Queue = options.Get<EncryptionOperation>();
         }
 
         public void Start(EncryptionSettingsProto encryptionSettings)
@@ -56,36 +54,27 @@ namespace ASC.Data.Storage.Encryption
             EncryptionOperation encryptionOperation;
             lock (Locker)
             {
-                if (Cache.Get<EncryptionOperation>(GetCacheKey()) != null) return;
-                TokenSource = new CancellationTokenSource();
-                encryptionOperation = FactoryOperation.CreateOperation(encryptionSettings);
-                Cache.Insert(GetCacheKey(), encryptionOperation, DateTime.MaxValue);
+                if (Queue.GetTask<EncryptionOperation>(GetCacheId()) != null) return;
+                encryptionOperation = FactoryOperation.CreateOperation(encryptionSettings, GetCacheId());
+                Queue.QueueTask(encryptionOperation);
             }
-
-            var task = new Task(encryptionOperation.RunJob, TokenSource.Token, TaskCreationOptions.LongRunning);
-
-            task.ConfigureAwait(false)
-                .GetAwaiter()
-                .OnCompleted(() =>
-                {
-                    lock (Locker)
-                    {
-                        Cache.Remove(GetCacheKey());
-                    }
-                });
-
-            task.Start();
         }
 
         public void Stop()
         {
-            TokenSource.Cancel();
+            Queue.CancelTask(GetCacheId());
         }
 
-        public string GetCacheKey()
+        public string GetCacheId()
         {
             return typeof(EncryptionOperation).FullName;
         }
+
+        public double? GetEncryptionProgress()
+        {
+            var progress = Queue.GetTasks<EncryptionOperation>().FirstOrDefault();
+            return progress.Percentage;
+    }
     }
 
     [Singletone(Additional = typeof(FactoryOperationExtension))]
@@ -98,10 +87,10 @@ namespace ASC.Data.Storage.Encryption
             ServiceProvider = serviceProvider;
         }
 
-        public EncryptionOperation CreateOperation(EncryptionSettingsProto encryptionSettings)
+        public EncryptionOperation CreateOperation(EncryptionSettingsProto encryptionSettings, string id)
         {
             var item = ServiceProvider.GetService<EncryptionOperation>();
-            item.Init(encryptionSettings);
+            item.Init(encryptionSettings, id);
             return item;
         }
     }
@@ -111,6 +100,7 @@ namespace ASC.Data.Storage.Encryption
         public static void Register(DIHelper dIHelper)
         {
             dIHelper.TryAdd<EncryptionOperation>();
+            dIHelper.AddDistributedTaskQueueService<EncryptionOperation>(1);
         }
     }
 }
