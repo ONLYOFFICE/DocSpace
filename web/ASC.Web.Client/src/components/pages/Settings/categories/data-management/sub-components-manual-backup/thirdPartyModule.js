@@ -16,6 +16,7 @@ const ThirdPartyModule = ({
 }) => {
   const [selectedFolder, setSelectedFolder] = useState("");
   const [isPanelVisible, setPanelVisible] = useState(false);
+  const [isError, setError] = useState(false);
   const { t } = useTranslation("Settings");
 
   const onSelectFolder = (folderId) => {
@@ -30,8 +31,19 @@ const ThirdPartyModule = ({
     setPanelVisible(false);
   };
 
+  const isInvalidForm = () => {
+    if (selectedFolder) return false;
+
+    setError(true);
+    return true;
+  };
   const onClickButton = () => {
     console.log("selectedFolder", selectedFolder);
+
+    if (isInvalidForm()) return;
+
+    isError && setError(false);
+
     const storageParams = [
       {
         key: "folderId",
@@ -41,7 +53,7 @@ const ThirdPartyModule = ({
     startBackup("1", storageParams);
     setInterval();
   };
-
+  console.log("isError", isError);
   return (
     <div className="category-item-wrapper">
       <Box marginProp="16px 0 16px 0">
@@ -62,6 +74,7 @@ const ThirdPartyModule = ({
         onClickInput={onClickInput}
         isPanelVisible={isPanelVisible}
         folderList={commonThirdPartyList}
+        isError={isError}
         withoutTopLevelFolder
       />
 
