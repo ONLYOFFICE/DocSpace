@@ -407,8 +407,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
                       !availableStorage[selectedId].isSet)
                   }
                   placeholder={
-                    availableStorage[selectedId] &&
-                    availableStorage[selectedId].properties[1].title
+                    selectedId === "S3"
+                      ? t("ForcePathStyle")
+                      : availableStorage[selectedId] &&
+                        availableStorage[selectedId].properties[1].title
                   }
                   tabIndex={1}
                 />
@@ -449,10 +451,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
                         (availableStorage[selectedId] &&
                           !availableStorage[selectedId].isSet)
                       }
-                      placeholder={
-                        availableStorage[selectedId] &&
-                        availableStorage[selectedId].properties[3].title
-                      }
+                      placeholder={t("ServiceUrl")}
                       tabIndex={1}
                     />
                     <TextInput
@@ -468,10 +467,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
                         (availableStorage[selectedId] &&
                           !availableStorage[selectedId].isSet)
                       }
-                      placeholder={
-                        availableStorage[selectedId] &&
-                        availableStorage[selectedId].properties[4].title
-                      }
+                      placeholder={t("UseHttp")}
                       tabIndex={1}
                     />
                     <TextInput
@@ -487,10 +483,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
                         (availableStorage[selectedId] &&
                           !availableStorage[selectedId].isSet)
                       }
-                      placeholder={
-                        availableStorage[selectedId] &&
-                        availableStorage[selectedId].properties[5].title
-                      }
+                      placeholder={t("SSE")}
                       tabIndex={1}
                     />
                   </>

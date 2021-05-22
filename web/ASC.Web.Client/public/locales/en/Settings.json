@@ -156,5 +156,9 @@
   "WeeklyPeriodSchedule": "Every week",
   "MaxCopies": "copies max will be saved",
   "Copying": "Copying...",
-  "SuccessCopied": "The backup copy has been successfully created."
+  "SuccessCopied": "The backup copy has been successfully created.",
+  "UseHttp": "Use Http",
+  "SSE": "Server Side Encryption Method",
+  "ServiceUrl": "Service Url",
+  "ForcePathStyle": "Force Path Style"
 }
