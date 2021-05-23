@@ -2210,6 +2210,22 @@ namespace ASC.Web.Files.Services.WCFService
             return FilesSettingsHelper.ConfirmDelete;
         }
 
+        public IEnumerable<String> CreateThumbnails(IEnumerable<JsonElement> fileIds)
+        {
+            try
+            {
+                using (var thumbnailBuilderServiceClient = new ThumbnailBuilderServiceClient())
+                {
+                    thumbnailBuilderServiceClient.BuildThumbnails(TenantManager.GetCurrentTenant().TenantId, fileIds);
+                }
+            }
+            catch (Exception e)
+            {
+                Common.Logging.LogManager.GetLogger("ASC.Api.Documents").Error("CreateThumbnails", e);
+            }
+            return fileIds;
+        }
+
         public string GetHelpCenter()
         {
             return ""; //TODO: Studio.UserControls.Common.HelpCenter.HelpCenter.RenderControlToString();

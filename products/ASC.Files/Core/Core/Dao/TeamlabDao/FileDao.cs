@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -38,6 +39,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
+using ASC.ElasticSearch.Service;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
@@ -60,8 +62,6 @@ namespace ASC.Files.Core.Data
     [Scope]
     internal class FileDao : AbstractDao, IFileDao<int>
     {
-        public const long MaxContentLength = 2 * 1024 * 1024 * 1024L;
-
         private static readonly object syncRoot = new object();
         private FactoryIndexerFile FactoryIndexer { get; }
         private GlobalStore GlobalStore { get; }
@@ -71,7 +71,8 @@ namespace ASC.Files.Core.Data
         private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
         private ProviderFolderDao ProviderFolderDao { get; }
         private CrossDao CrossDao { get; }
-        public TempStream TempStream { get; }
+        private Settings Settings { get; }
+        private TempStream TempStream { get; }
 
         public FileDao(
             FactoryIndexerFile factoryIndexer,
@@ -94,7 +95,8 @@ namespace ASC.Files.Core.Data
             IDaoFactory daoFactory,
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
             ProviderFolderDao providerFolderDao,
-            CrossDao crossDao)
+            CrossDao crossDao,
+            Settings settings)
             : base(
                   dbContextManager,
                   userManager,
@@ -118,6 +120,7 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             ProviderFolderDao = providerFolderDao;
             CrossDao = crossDao;
+            Settings = settings;
         }
 
         public void InvalidateCache(int fileId)
@@ -1405,7 +1408,7 @@ namespace ASC.Files.Core.Data
 
         internal protected DbFile InitDocument(DbFile dbFile)
         {
-            if (!FactoryIndexer.CanSearchByContent())
+            if (!FactoryIndexer.CanIndexByContent())
             {
                 dbFile.Document = new Document
                 {
@@ -1420,9 +1423,43 @@ namespace ASC.Files.Core.Data
             file.Version = dbFile.Version;
             file.ContentLength = dbFile.ContentLength;
 
-            if (!IsExistOnStorage(file) || file.ContentLength > MaxContentLength) return dbFile;
+            if (!IsExistOnStorage(file) || file.ContentLength > Settings.MaxContentLength) return dbFile;
 
             using var stream = GetFileStream(file);
+            if (stream == null) return dbFile;
+
+            using (var ms = new MemoryStream())
+            {
+                stream.CopyTo(ms);
+                dbFile.Document = new Document
+                {
+                    Data = Convert.ToBase64String(ms.GetBuffer())
+                };
+            }
+
+            return dbFile;
+        }
+
+        internal protected async Task<DbFile> InitDocumentAsync(DbFile dbFile)
+        {
+            if (!FactoryIndexer.CanIndexByContent())
+            {
+                dbFile.Document = new Document
+                {
+                    Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
+                };
+                return dbFile;
+            }
+
+            var file = ServiceProvider.GetService<File<int>>();
+            file.ID = dbFile.Id;
+            file.Title = dbFile.Title;
+            file.Version = dbFile.Version;
+            file.ContentLength = dbFile.ContentLength;
+
+            if (!await IsExistOnStorageAsync(file) || file.ContentLength > Settings.MaxContentLength) return dbFile;
+
+            using var stream = await GetFileStreamAsync(file);
             if (stream == null) return dbFile;
 
             using (var ms = new MemoryStream())

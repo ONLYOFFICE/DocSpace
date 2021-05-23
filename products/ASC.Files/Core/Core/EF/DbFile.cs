@@ -6,6 +6,7 @@ using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
+using ASC.ElasticSearch.Core;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -59,10 +60,14 @@ namespace ASC.Files.Core.EF
 
         public Document Document { get; set; }
 
-        [Ignore]
-        public Expression<Func<ISearchItem, object[]>> SearchContentFields
+        public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
         {
-            get => (a) => new[] { Title, Comment, Changes, Document.Attachment.Content };
+            if (searchSettings.CanSearchByContent(GetType()))
+            {
+                return (a) => new[] { Title, Comment, Changes, Document.Attachment.Content };
+            }
+
+            return (a) => new[] { Title, Comment, Changes };
         }
 
         public override object[] GetKeys()
