@@ -12,6 +12,8 @@ import FileInputWithFolderPath from "./fileInputWithFolderPath";
 import styled from "styled-components";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
+import i18n from "./i18n";
+import { I18nextProvider } from "react-i18next";
 
 const { auth: authStore } = store;
 
@@ -37,7 +39,7 @@ const StyledComponent = styled.div`
 `;
 let commonTreeFolder;
 let pathName = "";
-class OperationsDialog extends React.PureComponent {
+class SelectedFolder extends React.PureComponent {
   constructor(props) {
     super(props);
     this.inputRef = React.createRef();
@@ -162,6 +164,7 @@ class OperationsDialog extends React.PureComponent {
       isError,
       withoutTopLevelFolder,
       isSavingProcess,
+      commonThirdPartyList,
     } = this.props;
     const { isLoading, isLoadingData, baseFolder, fullFolderPath } = this.state;
     const zIndex = 310;
@@ -216,17 +219,22 @@ class OperationsDialog extends React.PureComponent {
   }
 }
 
-OperationsDialog.defaultProps = {
+SelectedFolder.defaultProps = {
   isCommonWithoutProvider: false,
   withoutTopLevelFolder: false,
   folderList: "",
   folderPath: "",
+  isThirdParty: false,
 };
-const OperationsDialogWrapper = inject(
+const SelectedFolderWrapper = inject(
   ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
     const { filter } = filesStore;
     const { setPanelVisible, panelVisible } = auth;
-    const { getFolderPath } = auth.settingsStore;
+    const {
+      getFolderPath,
+      getCommonThirdPartyList,
+      commonThirdPartyList,
+    } = auth.settingsStore;
     const {
       fetchTreeFolders,
       expandedPanelKeys,
@@ -240,23 +248,25 @@ const OperationsDialogWrapper = inject(
         ? expandedPanelKeys
         : selectedFolderStore.pathParts,
       filter,
-
+      getCommonThirdPartyList,
       fetchTreeFolders,
-
+      commonThirdPartyList,
       getCommonFolder,
       panelVisible,
     };
   }
-)(observer(withTranslation("OperationsPanel")(OperationsDialog)));
+)(observer(withTranslation("SelectedFolder")(SelectedFolder)));
 
-class OperationsModal extends React.Component {
+class SelectedFolderModal extends React.Component {
   render() {
     return (
       <MobxProvider auth={authStore} {...stores}>
-        <OperationsDialogWrapper {...this.props} />
+        <I18nextProvider i18n={i18n}>
+          <SelectedFolderWrapper {...this.props} />
+        </I18nextProvider>
       </MobxProvider>
     );
   }
 }
 
-export default OperationsModal;
+export default SelectedFolderModal;
