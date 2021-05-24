@@ -72,7 +72,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
           </Text>
           <Text>{t("NotBeUndone")}</Text>
           {/* <Text color="#c30" fontSize="18px" className="warning-text">
-              {t("Warning")}
+              {t("Common:Warning")}!
             </Text>
             <Text>{t("DeleteUserDataConfirmation")}</Text> */}
         </ModalDialog.Body>

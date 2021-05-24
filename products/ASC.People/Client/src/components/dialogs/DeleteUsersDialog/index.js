@@ -118,7 +118,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
           <Text>{t("NotBeUndone")}</Text>
           <br />
           <Text color="#c30" fontSize="18px">
-            {t("Warning")}
+            {t("Common:Warning")}!
           </Text>
           <br />
           <Text>{t("DeleteUserDataConfirmation")}</Text>

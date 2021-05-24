@@ -36,5 +36,7 @@
   "AddButton": "Добавить",
   "DirectionAscLabel": "А-Я",
   "DirectionDescLabel": "Я-А",
-  "Sending": "Отправка..."
+  "Sending": "Отправка...",
+  "User": "Пользователь",
+  "Warning": "Внимание"
 }

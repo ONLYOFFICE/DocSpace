@@ -111,8 +111,8 @@ class ChangeUserTypeDialogComponent extends React.Component {
       </List>
     );
 
-    const firstType = userType === 1 ? t("GuestCaption") : t("UserCol");
-    const secondType = userType === 1 ? t("UserCol") : t("GuestCaption");
+    const firstType = userType === 1 ? t("GuestCaption") : t("Common:User");
+    const secondType = userType === 1 ? t("Common:User") : t("GuestCaption");
     return (
       <ModalDialogContainer visible={visible} onClose={onClose}>
         <ModalDialog.Header>{t("ChangeUserTypeHeader")}</ModalDialog.Header>

@@ -36,5 +36,7 @@
   "AddButton": "Hinzufügen",
   "DirectionAscLabel": "A-Z",
   "DirectionDescLabel": "Z-A",
-  "Sending": "Senden..."
+  "Sending": "Senden...",
+  "User": "Benutzer",
+  "Warning": "Warnung"
 }

@@ -514,7 +514,7 @@ class TeamTemplate extends React.Component {
             <FieldContainer
               className="team-template_field-container"
               isVertical
-              labelText={t("User")}
+              labelText={t("Common:User")}
               place="top"
               hasError={formErrors.userCaption}
               errorMessage={t("EmptyFieldError")}
