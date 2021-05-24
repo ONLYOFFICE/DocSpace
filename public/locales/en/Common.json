@@ -36,5 +36,10 @@
   "AddButton": "Add",
   "DirectionAscLabel": "A-Z",
   "DirectionDescLabel": "Z-A",
-  "Sending": "Sending..."
+  "Sending": "Sending...",
+  "PasswordLimitLength": "from {{fromNumber}} to {{toNumber}} characters",
+  "PasswordLimitMessage": "Password must contain",
+  "PasswordLimitDigits": "digits",
+  "PasswordLimitSpecialSymbols": "special characters",
+  "PasswordLimitUpperCase": "capital letters"
 }

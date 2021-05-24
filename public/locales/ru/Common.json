@@ -36,5 +36,10 @@
   "AddButton": "Добавить",
   "DirectionAscLabel": "А-Я",
   "DirectionDescLabel": "Я-А",
-  "Sending": "Отправка..."
+  "Sending": "Отправка...",
+  "PasswordLimitLength": "от {{fromNumber}} до {{toNumber}} символов",
+  "PasswordLimitMessage": "Пароль должен содержать",
+  "PasswordLimitDigits": "цифры",
+  "PasswordLimitSpecialSymbols": "специальные символы",
+  "PasswordLimitUpperCase": "заглавные буквы"
 }

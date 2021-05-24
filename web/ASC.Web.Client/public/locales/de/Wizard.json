@@ -21,11 +21,6 @@
   "LicenseLink": "Lizenzvereinbarung ",
   "PlaceholderLicense": "Ihre Lizenzdatei",
   "Timezone": "Zeitzone:",
-  "TooltipPasswordCapital": "Großbuchstaben",
-  "TooltipPasswordDigits": "Zahlen",
-  "TooltipPasswordLength": "-30 Symbole",
-  "TooltipPasswordSpecial": "Sonderzeichen (!@#$%^\u0026*)",
-  "TooltipPasswordTitle": "Passwort muss enthalten:",
   "WelcomeTitle": "Willkommen auf Ihrem Portal!",
   "WizardTitle": "Ihr Portal einstellen"
 }

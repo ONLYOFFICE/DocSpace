@@ -21,11 +21,7 @@
   "LicenseLink": "License agreements",
   "PlaceholderLicense": "Your license file",
   "Timezone": "Time zone:",
-  "TooltipPasswordCapital": "capital letters",
-  "TooltipPasswordDigits": "digits",
-  "TooltipPasswordLength": "-30 characters",
-  "TooltipPasswordSpecial": "special characters (!@#$%^\u0026*)",
-  "TooltipPasswordTitle": "Password must contain:",
+
   "WelcomeTitle": "Welcome to your portal!",
   "WizardTitle": "Set up your portal"
 }

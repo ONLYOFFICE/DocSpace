@@ -21,11 +21,6 @@
   "LicenseLink": "лицензионного соглашения",
   "PlaceholderLicense": "Ваш файл лицензии",
   "Timezone": "Часовой пояс:",
-  "TooltipPasswordCapital": "Заглавные буквы",
-  "TooltipPasswordDigits": "цыфры",
-  "TooltipPasswordLength": "-30 символов",
-  "TooltipPasswordSpecial": "Специальные символы (!@#$%^\u0026*)",
-  "TooltipPasswordTitle": "Пароль должен содержать:",
   "WelcomeTitle": "Добро пожаловать на Ваш портал!",
   "WizardTitle": "Благодарим Вас за выбор ONLYOFFICE! В целях безопасности необходимо выполнить процедуру установки пароля"
 }

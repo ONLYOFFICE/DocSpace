@@ -119,5 +119,5 @@ export default withRouter(
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
-  }))(observer(withTranslation("Profile")(Profile)))
+  }))(observer(withTranslation(["Profile", "Common"])(Profile)))
 );

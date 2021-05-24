@@ -187,3 +187,5 @@ export const FilesFormats = Object.freeze({
   PptxFormat: 9,
   CustomFormat: 10,
 });
+
+export const PasswordLimitSpecialCharacters = "!@#$%^&*";

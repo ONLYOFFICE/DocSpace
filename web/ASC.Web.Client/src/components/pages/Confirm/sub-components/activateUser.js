@@ -20,6 +20,7 @@ import PageLayout from "@appserver/common/components/PageLayout";
 import {
   AppServerConfig,
   EmployeeActivationStatus,
+  PasswordLimitSpecialCharacters,
 } from "@appserver/common/constants";
 import { combineUrl, createPasswordHash } from "@appserver/common/utils";
 
@@ -316,17 +317,17 @@ class Confirm extends React.PureComponent {
               clipActionResource={t("CopyEmailAndPassword")}
               clipEmailResource={`${t("Common:Email")}: `}
               clipPasswordResource={`${t("Common:Password")}: `}
-              tooltipPasswordTitle={`${t("ErrorPasswordMessage")}:`}
-              tooltipPasswordLength={`${t("ErrorPasswordLength", {
-                fromNumber: settings.minLength,
+              tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
+              tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
+                fromNumber: settings ? settings.minLength : 8,
                 toNumber: 30,
               })}:`}
-              tooltipPasswordDigits={t("ErrorPasswordNoDigits")}
-              tooltipPasswordCapital={t("ErrorPasswordNoUpperCase")}
+              tooltipPasswordDigits={t("Common:PasswordLimitDigits")}
+              tooltipPasswordCapital={t("Common:PasswordLimitUpperCase")}
               tooltipPasswordSpecial={`${t(
-                "ErrorPasswordNoSpecialSymbols"
-              )} (!@#$%^&*)`}
-              generatorSpecial="!@#$%^&*"
+                "Common:PasswordLimitSpecialSymbols"
+              )} (${PasswordLimitSpecialCharacters})`}
+              generatorSpecial={PasswordLimitSpecialCharacters}
               passwordSettings={settings}
               isDisabled={this.state.isLoading}
               onKeyDown={this.onKeyPress}

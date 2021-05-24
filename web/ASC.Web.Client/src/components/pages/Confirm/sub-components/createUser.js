@@ -23,7 +23,11 @@ import {
   createPasswordHash,
   getProviderTranslation,
 } from "@appserver/common/utils";
-import { AppServerConfig, providersData } from "@appserver/common/constants";
+import {
+  AppServerConfig,
+  providersData,
+  PasswordLimitSpecialCharacters,
+} from "@appserver/common/constants";
 import { isMobile } from "react-device-detect";
 import { desktop } from "@appserver/components/utils/device";
 
@@ -492,17 +496,17 @@ class Confirm extends React.PureComponent {
               clipActionResource={t("CopyEmailAndPassword")}
               clipEmailResource={`${t("Common:Email")}: `}
               clipPasswordResource={`${t("Common:Password")}: `}
-              tooltipPasswordTitle={`${t("ErrorPasswordMessage")}:`}
-              tooltipPasswordLength={`${t("ErrorPasswordLength", {
-                fromNumber: settings.minLength,
+              tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
+              tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
+                fromNumber: settings ? settings.minLength : 8,
                 toNumber: 30,
               })}:`}
-              tooltipPasswordDigits={t("ErrorPasswordNoDigits")}
-              tooltipPasswordCapital={t("ErrorPasswordNoUpperCase")}
+              tooltipPasswordDigits={t("Common:PasswordLimitDigits")}
+              tooltipPasswordCapital={t("Common:PasswordLimitUpperCase")}
               tooltipPasswordSpecial={`${t(
-                "ErrorPasswordNoSpecialSymbols"
-              )} (!@#$%^&*)`}
-              generatorSpecial="!@#$%^&*"
+                "Common:PasswordLimitSpecialSymbols"
+              )} (${PasswordLimitSpecialCharacters})`}
+              generatorSpecial={PasswordLimitSpecialCharacters}
               passwordSettings={settings}
               isDisabled={this.state.isLoading}
               onKeyDown={this.onKeyPress}
