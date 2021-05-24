@@ -77,7 +77,7 @@ const PureSettings = ({
           {(!isLoadedSettingsTree && isLoading) || isLoading ? (
             <Loaders.SectionHeader />
           ) : (
-            <SectionHeaderContent title={t(`${title}`)} />
+            <SectionHeaderContent title={title} />
           )}
         </PageLayout.SectionHeader>
 
