@@ -44,5 +44,9 @@
   "PasswordLimitMessage": "Пароль должен содержать",
   "PasswordLimitDigits": "цифры",
   "PasswordLimitSpecialSymbols": "специальные символы",
-  "PasswordLimitUpperCase": "заглавные буквы"
+  "PasswordLimitUpperCase": "заглавные буквы",
+  "Next": "Следующая",
+  "Previous": "Предыдущая",
+  "PageOfTotalPage": "{{page}} из {{totalPage}}",
+  "CountPerPage": "{{count}} на странице"
 }

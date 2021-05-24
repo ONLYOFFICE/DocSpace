@@ -44,5 +44,9 @@
   "PasswordLimitMessage": "Das Kennwort muss enthalten:",
   "PasswordLimitDigits": "Zahlen",
   "PasswordLimitSpecialSymbols": "Sonderzeichen",
-  "PasswordLimitUpperCase": "Großbuchstaben"
+  "PasswordLimitUpperCase": "Großbuchstaben",
+  "Next": "Weiter",
+  "Previous": "Zurück",
+  "PageOfTotalPage": "Seite {{page}} von {{totalPage}}",
+  "CountPerPage": "{{count}} pro Seite"
 }

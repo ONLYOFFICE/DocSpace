@@ -44,5 +44,9 @@
   "PasswordLimitMessage": "Password must contain",
   "PasswordLimitDigits": "digits",
   "PasswordLimitSpecialSymbols": "special characters",
-  "PasswordLimitUpperCase": "capital letters"
+  "PasswordLimitUpperCase": "capital letters",
+  "Next": "Next",
+  "Previous": "Previous",
+  "PageOfTotalPage": "{{page}} of {{totalPage}}",
+  "CountPerPage": "{{count}} per page"
 }

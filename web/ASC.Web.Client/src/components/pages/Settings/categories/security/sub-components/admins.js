@@ -291,15 +291,18 @@ class PureAdminsSettings extends Component {
     return [...Array(totalPages).keys()].map((item) => {
       return {
         key: item,
-        label: t("PageOfTotalPage", { page: item + 1, totalPage: totalPages }),
+        label: t("Common:PageOfTotalPage", {
+          page: item + 1,
+          totalPage: totalPages,
+        }),
       };
     });
   };
 
   countItems = () => [
-    { key: 25, label: this.props.t("CountPerPage", { count: 25 }) },
-    { key: 50, label: this.props.t("CountPerPage", { count: 50 }) },
-    { key: 100, label: this.props.t("CountPerPage", { count: 100 }) },
+    { key: 25, label: this.props.t("Common:CountPerPage", { count: 25 }) },
+    { key: 50, label: this.props.t("Common:CountPerPage", { count: 50 }) },
+    { key: 100, label: this.props.t("Common:CountPerPage", { count: 100 }) },
   ];
 
   selectedPageItem = () => {
@@ -308,7 +311,7 @@ class PureAdminsSettings extends Component {
 
     const emptyPageSelection = {
       key: 0,
-      label: t("PageOfTotalPage", { page: 1, totalPage: 1 }),
+      label: t("Common:PageOfTotalPage", { page: 1, totalPage: 1 }),
     };
 
     return pageItems.find((x) => x.key === filter.page) || emptyPageSelection;
@@ -319,7 +322,7 @@ class PureAdminsSettings extends Component {
 
     const emptyCountSelection = {
       key: 0,
-      label: t("CountPerPage", { count: 25 }),
+      label: t("Common:CountPerPage", { count: 25 }),
     };
 
     const countItems = this.countItems();
@@ -505,8 +508,8 @@ class PureAdminsSettings extends Component {
                   </div>
                   <div className="wrapper">
                     <Paging
-                      previousLabel={t("PreviousPage")}
-                      nextLabel={t("NextPage")}
+                      previousLabel={t("Common:Previous")}
+                      nextLabel={t("Common:Next")}
                       openDirection="top"
                       countItems={this.countItems()}
                       pageItems={this.pageItems()}
