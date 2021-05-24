@@ -49,5 +49,6 @@
   "Previous": "Zurück",
   "PageOfTotalPage": "Seite {{page}} von {{totalPage}}",
   "CountPerPage": "{{count}} pro Seite",
-  "Settings": "Einstellungen"
+  "Settings": "Einstellungen",
+  "Guest": "Gast"
 }

@@ -49,5 +49,6 @@
   "Previous": "Предыдущая",
   "PageOfTotalPage": "{{page}} из {{totalPage}}",
   "CountPerPage": "{{count}} на странице",
-  "Settings": "Настройки"
+  "Settings": "Настройки",
+  "Guest": "Гость"
 }
