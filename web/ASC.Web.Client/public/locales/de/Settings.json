@@ -7,7 +7,6 @@
   "AccessRightsOwnerOpportunities": "Dieselben Operationen wie die Moduladministratoren durchführen|Moduladministratoren bestimmen|Modulzugriffsrechte bestimmen|Portal einrichten|Benutzerprofile verwalten|Portalbesitzer ändern|Backup von Portaldaten erstellen|Portal deaktivieren oder löschen",
   "AccessRightsProductUsersCan": "Im Modul {{category}} Portalbenutzer können",
   "AccessRightsUsersFromList": "{{users}} aus der Liste",
-  "AdminSettings": "Administrative Einstellungen",
   "Backup": "Backup",
   "BrowserNoCanvasSupport": "Ihr Browser unterstützt die HTML5 Canvas-Tag nicht.",
   "ByFirstNameSorting": "Nach Vornamen",

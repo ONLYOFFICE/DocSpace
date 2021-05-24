@@ -166,7 +166,7 @@ const PureTreeSettings = ({
             id="admin-settings"
             key="admin"
             isLeaf={true}
-            title={t("TreeSettingsAdminSettings")}
+            title={t("Common:AdminSettings")}
           />
         ) : null}
         {enableThirdParty && !isVisitor ? (

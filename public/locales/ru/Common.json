@@ -50,5 +50,6 @@
   "PageOfTotalPage": "{{page}} из {{totalPage}}",
   "CountPerPage": "{{count}} на странице",
   "Settings": "Настройки",
-  "Guest": "Гость"
+  "Guest": "Гость",
+  "AdminSettings": "Настройки администратора"
 }

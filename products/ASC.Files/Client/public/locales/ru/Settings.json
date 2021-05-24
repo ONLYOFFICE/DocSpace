@@ -1,9 +1,7 @@
 {
   "TreeSettingsCommonSettings": "Общие настройки",
-  "TreeSettingsAdminSettings": "Настройки администратора",
   "TreeSettingsConnectedCloud": "Подключенные облака",
   "CommonSettings": "Общие настройки",
-  "AdminSettings": "Настройки администратора",
   "ThirdPartySettings": "Подключенные облака",
   "IntermediateVersion": "Хранить все сохраненные промежуточные версии",
   "ThirdPartyBtn": "Разрешить пользователям подключать сторонние хранилища",

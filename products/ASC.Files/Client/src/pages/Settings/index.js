@@ -33,7 +33,7 @@ const PureSettings = ({
         setTitle(t("CommonSettings"));
         break;
       case "admin":
-        setTitle(t("AdminSettings"));
+        setTitle(t("Common:AdminSettings"));
         break;
       case "thirdParty":
         setTitle(t("ThirdPartySettings"));

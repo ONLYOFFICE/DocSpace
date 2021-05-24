@@ -50,5 +50,6 @@
   "PageOfTotalPage": "Seite {{page}} von {{totalPage}}",
   "CountPerPage": "{{count}} pro Seite",
   "Settings": "Einstellungen",
-  "Guest": "Gast"
+  "Guest": "Gast",
+  "AdminSettings": "Administrative Einstellungen"
 }
