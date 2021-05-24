@@ -253,7 +253,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
                 if (!fileStream.CanSeek)
                 {
-                    var tempBuffer = new FileStream(Path.GetTempFileName(), FileMode.OpenOrCreate, FileAccess.ReadWrite, System.IO.FileShare.Read, 8096, FileOptions.DeleteOnClose);
+                    var tempBuffer = TempStream.Create();
 
                     fileStream.CopyTo(tempBuffer);
                     tempBuffer.Flush();
@@ -555,14 +555,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
             else
             {
-                uploadSession.Items["TempPath"] = Path.GetTempFileName();
+                uploadSession.Items["TempPath"] = TempPath.GetTempFileName();
             }
 
             uploadSession.File = MakeId(uploadSession.File);
             return uploadSession;
         }
 
-        public void UploadChunk(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
+        public File<string> UploadChunk(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
         {
             if (!uploadSession.UseChunks)
             {
@@ -571,7 +571,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
                 uploadSession.File = SaveFile(uploadSession.File, stream);
                 uploadSession.BytesUploaded = chunkLength;
-                return;
+                return uploadSession.File;
             }
 
             if (uploadSession.Items.ContainsKey("SharpboxSession"))
@@ -604,6 +604,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
                 uploadSession.File = MakeId(uploadSession.File);
             }
+
+            return uploadSession.File;
         }
 
         public File<string> FinalizeUploadSession(ChunkedUploadSession<string> uploadSession)

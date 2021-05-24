@@ -238,7 +238,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             return files.ToList();
         }
 
-        public Stream GetFileStream(File<string> file)
+        public override Stream GetFileStream(File<string> file)
         {
             return GetFileStream(file, 0);
         }
@@ -507,14 +507,14 @@ namespace ASC.Files.Thirdparty.Dropbox
             }
             else
             {
-                uploadSession.Items["TempPath"] = Path.GetTempFileName();
+                uploadSession.Items["TempPath"] = TempPath.GetTempFileName();
             }
 
             uploadSession.File = RestoreIds(uploadSession.File);
             return uploadSession;
         }
 
-        public void UploadChunk(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
+        public File UploadChunk(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
         {
             if (!uploadSession.UseChunks)
             {
@@ -523,7 +523,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
                 uploadSession.File = SaveFile(uploadSession.File, stream);
                 uploadSession.BytesUploaded = chunkLength;
-                return;
+                return uploadSession.File;
             }
 
             if (uploadSession.Items.ContainsKey("DropboxSession"))
@@ -548,6 +548,8 @@ namespace ASC.Files.Thirdparty.Dropbox
             {
                 uploadSession.File = RestoreIds(uploadSession.File);
             }
+
+            return uploadSession.File;
         }
 
         public File<string> FinalizeUploadSession(ChunkedUploadSession<string> uploadSession)

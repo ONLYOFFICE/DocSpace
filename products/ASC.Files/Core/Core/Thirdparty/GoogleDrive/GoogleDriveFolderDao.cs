@@ -402,7 +402,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public bool UseRecursiveOperation(string folderId, string toRootFolderId)
         {
-            return true;
+            return false;
         }
 
         public bool UseRecursiveOperation<TTo>(string folderId, TTo toRootFolderId)

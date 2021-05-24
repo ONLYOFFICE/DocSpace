@@ -234,7 +234,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             return files.ToList();
         }
 
-        public Stream GetFileStream(File<string> file)
+        public override Stream GetFileStream(File<string> file)
         {
             return GetFileStream(file, 0);
         }
@@ -512,14 +512,14 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
             else
             {
-                uploadSession.Items["TempPath"] = Path.GetTempFileName();
+                uploadSession.Items["TempPath"] = TempPath.GetTempFileName();
             }
 
             uploadSession.File = RestoreIds(uploadSession.File);
             return uploadSession;
         }
 
-        public void UploadChunk(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
+        public File<string> UploadChunk(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
         {
             if (!uploadSession.UseChunks)
             {
@@ -528,7 +528,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
                 uploadSession.File = SaveFile(uploadSession.File, stream);
                 uploadSession.BytesUploaded = chunkLength;
-                return;
+                return uploadSession.File;
             }
 
             if (uploadSession.Items.ContainsKey("OneDriveSession"))
@@ -553,6 +553,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             {
                 uploadSession.File = RestoreIds(uploadSession.File);
             }
+            return uploadSession.File;
         }
 
         private File<string> FinalizeUploadSession(ChunkedUploadSession<string> uploadSession)
