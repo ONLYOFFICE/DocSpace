@@ -149,7 +149,7 @@ const PureTreeSettings = ({
       <TreeNode
         id="settings"
         key="settings"
-        title={t("TreeSettingsMenuTitle")}
+        title={t("Common:Settings")}
         isLeaf={false}
         icon={<StyledSettingsIcon size="scale" />}
       >
@@ -205,7 +205,9 @@ const PureTreeSettings = ({
   );
 };
 
-const TreeSettings = withTranslation("Settings")(withRouter(PureTreeSettings));
+const TreeSettings = withTranslation(["Settings", "Common"])(
+  withRouter(PureTreeSettings)
+);
 
 export default inject(
   ({

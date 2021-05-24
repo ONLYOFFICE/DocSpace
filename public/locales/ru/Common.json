@@ -48,5 +48,6 @@
   "Next": "Следующая",
   "Previous": "Предыдущая",
   "PageOfTotalPage": "{{page}} из {{totalPage}}",
-  "CountPerPage": "{{count}} на странице"
+  "CountPerPage": "{{count}} на странице",
+  "Settings": "Настройки"
 }

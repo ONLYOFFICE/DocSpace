@@ -48,5 +48,6 @@
   "Next": "Weiter",
   "Previous": "Zurück",
   "PageOfTotalPage": "Seite {{page}} von {{totalPage}}",
-  "CountPerPage": "{{count}} pro Seite"
+  "CountPerPage": "{{count}} pro Seite",
+  "Settings": "Einstellungen"
 }
