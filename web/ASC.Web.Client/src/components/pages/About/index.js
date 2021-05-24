@@ -77,7 +77,7 @@ const VersionStyle = styled.div`
 
 const Body = ({ t }) => {
   useEffect(() => {
-    setDocumentTitle(t("AboutTitle"));
+    setDocumentTitle(t("Common:About"));
   }, [t]);
 
   const gitHub = "GitHub";
@@ -189,7 +189,7 @@ const Body = ({ t }) => {
   );
 };
 
-const BodyWrapper = withTranslation("About")(Body);
+const BodyWrapper = withTranslation(["About", "Common"])(Body);
 
 const About = (props) => {
   return (

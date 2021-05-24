@@ -4,6 +4,5 @@
   "DeleteUserDataConfirmation": "Будут удалены личные документы пользователя, доступные для других. Чтобы избежать этого, нужно перед удалением запустить процесс передачи данных.",
   "NotBeUndone": "Внимание: это действие необратимо.",
   "ReassignData": "Передать данные",
-  "SuccessfullyDeleteUserInfoMessage": "Пользователь успешно удален",
-  "Warning": "Внимание!"
+  "SuccessfullyDeleteUserInfoMessage": "Пользователь успешно удален"
 }

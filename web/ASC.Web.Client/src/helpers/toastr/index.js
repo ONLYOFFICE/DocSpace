@@ -14,7 +14,7 @@ function success(data, title, timeout, withCross, centerPosition) {
 function error(data, title, timeout, withCross, centerPosition) {
   return toastr.error(
     data,
-    title ? title : i18n.t("Warning"),
+    title ? title : i18n.t("Common:Warning"),
     timeout,
     withCross,
     centerPosition

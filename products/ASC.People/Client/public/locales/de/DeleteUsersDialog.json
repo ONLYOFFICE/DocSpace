@@ -3,6 +3,5 @@
   "DeleteGroupUsersMessageHeader": "Löschung der Benutzer aus dem Portal",
   "DeleteGroupUsersSuccessMessage": "Benutzer wurden erfolgreich gelöscht.",
   "DeleteUserDataConfirmation": "Freigegebene Dokumente dieses Benutzers werden gelöscht. Um dies zu vermeiden, weisen Sie Daten neu zu.",
-  "NotBeUndone": "Dies kann nicht rückgängig gemacht werden.",
-  "Warning": "Warnung"
+  "NotBeUndone": "Dies kann nicht rückgängig gemacht werden."
 }
