@@ -185,7 +185,6 @@ class OperationsDialog extends React.PureComponent {
           <StyledAsidePanel visible={isPanelVisible}>
             <ModalDialog
               visible={isPanelVisible}
-              displayType="aside"
               zIndex={zIndex}
               onClose={onClose}
             >
