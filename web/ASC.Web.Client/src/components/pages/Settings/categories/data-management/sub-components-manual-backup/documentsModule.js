@@ -1,7 +1,7 @@
 import { useState } from "react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import OperationsDialog from "files/OperationsDialog";
+import SelectedFolder from "files/SelectedFolder";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import { useEffect } from "react";
@@ -37,7 +37,7 @@ const DocumentsModule = ({ maxProgress, setInterval }) => {
 
   return (
     <div className="category-item-wrapper">
-      <OperationsDialog
+      <SelectedFolder
         onSelectFolder={onSelectFolder}
         name={"common"}
         onClose={onClose}

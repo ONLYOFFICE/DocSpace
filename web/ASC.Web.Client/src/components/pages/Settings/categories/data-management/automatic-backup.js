@@ -17,7 +17,7 @@ import {
 } from "@appserver/common/api/portal";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import toastr from "@appserver/components/toast/toastr";
-import OperationsDialog from "files/OperationsDialog";
+import SelectedFolder from "files/SelectedFolder";
 import ThirdPartyStorageModule from "./sub-components/thirdPartyStorageModule";
 import Loader from "@appserver/components/loader";
 import { getFolderPath } from "@appserver/common/api/files";
@@ -1013,7 +1013,7 @@ class AutomaticBackup extends React.PureComponent {
               </Text>
               {isShowDocuments && (
                 <>
-                  <OperationsDialog
+                  <SelectedFolder
                     onSelectFolder={this.onSelectFolder}
                     name={"common"}
                     onClose={this.onClose}
@@ -1072,7 +1072,7 @@ class AutomaticBackup extends React.PureComponent {
               </Text>
               {isShowThirdParty && (
                 <>
-                  <OperationsDialog
+                  <SelectedFolder
                     onSelectFolder={this.onSelectFolder}
                     name={"thirdParty"}
                     onClose={this.onClose}

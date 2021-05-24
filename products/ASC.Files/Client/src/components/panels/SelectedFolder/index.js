@@ -65,7 +65,7 @@ class OperationsDialog extends React.PureComponent {
 
       fetchTreeFolders()
         .then(() => getCommonFolder())
-        .then((commonFolder) => (commonTreeFolder = commonFolder))
+        .then((commonFolder) => (commonTreeFolder = commonFolder)) //только общие сразу вызвать
         .then(
           () =>
             folderPath.length === 0 &&

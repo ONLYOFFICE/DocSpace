@@ -149,7 +149,7 @@ var config = {
       exposes: {
         "./app": "./src/Files.jsx",
         "./SharingDialog": "./src/components/panels/SharingDialog",
-        "./OperationsDialog": "./src/components/panels/OperationsDialog",
+        "./SelectedFolder": "./src/components/panels/SelectedFolder",
       },
       shared: {
         ...deps,

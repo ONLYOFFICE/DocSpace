@@ -1,7 +1,7 @@
 import { useState } from "react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import OperationsDialog from "files/OperationsDialog";
+import SelectedFolder from "files/SelectedFolder";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import { startBackup } from "@appserver/common/api/portal";
@@ -67,7 +67,7 @@ const ThirdPartyModule = ({
         </Link>
       </Box>
 
-      <OperationsDialog
+      <SelectedFolder
         onSelectFolder={onSelectFolder}
         name={"thirdParty"}
         onClose={onClose}
