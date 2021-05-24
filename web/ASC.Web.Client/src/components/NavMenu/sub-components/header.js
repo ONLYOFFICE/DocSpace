@@ -128,7 +128,7 @@ const HeaderComponent = ({
   backdropClick,
   ...props
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("Common");
 
   const isNavAvailable = mainModules.length > 0;
 
@@ -271,7 +271,7 @@ const HeaderComponent = ({
                 to={combineUrl(proxyURL, "/about")}
                 className="nav-menu-header_link"
               >
-                {t("AboutShort")}
+                {t("Common:About")}
               </LinkWithoutRedirect>
             </StyledLink>
           </Box>
