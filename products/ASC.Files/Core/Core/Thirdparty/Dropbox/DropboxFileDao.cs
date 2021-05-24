@@ -514,7 +514,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             return uploadSession;
         }
 
-        public File UploadChunk(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
+        public File<string> UploadChunk(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
         {
             if (!uploadSession.UseChunks)
             {

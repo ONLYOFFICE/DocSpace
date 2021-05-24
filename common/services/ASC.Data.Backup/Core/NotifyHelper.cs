@@ -61,7 +61,7 @@ namespace ASC.Data.Backup
 
         public void SendAboutTransferComplete(Tenant tenant, string targetRegion, string targetAddress, bool notifyOnlyOwner, int toTenantId)
         {
-            MigrationNotify(tenant, Actions.MigrationPortalSuccess, targetRegion, targetAddress, !notifyOnlyOwner, toTenantId);
+            MigrationNotify(tenant, Actions.MigrationPortalSuccessV115, targetRegion, targetAddress, !notifyOnlyOwner, toTenantId);
         }
 
         public void SendAboutTransferError(Tenant tenant, string targetRegion, string resultAddress, bool notifyOnlyOwner)
@@ -106,21 +106,30 @@ namespace ASC.Data.Backup
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyHelperScope>();
-            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, _) = scopeClass;
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+            var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, authManager) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
             var owner = userManager.GetUsers(tenant.OwnerId);
+            var users = notifyAllUsers
+                ? userManager.GetUsers(EmployeeStatus.Active)
+                : new[] { userManager.GetUsers(tenantManager.GetCurrentTenant().OwnerId) };
 
-            var users =
-                notifyAllUsers
-                    ? userManager.GetUsers(EmployeeStatus.Active).Select(u => studioNotifyHelper.ToRecipient(u.ID)).ToArray()
-                    : new[] { studioNotifyHelper.ToRecipient(owner.ID) };
+            foreach (var user in users)
+            {
+                var hash = authManager.GetUserPasswordStamp(user.ID).ToString("s");
+                var confirmationUrl = commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PasswordChange, hash);
 
-            client.SendNoticeToAsync(
-                Actions.RestoreCompleted,
-                users,
-                new[] { StudioNotifyService.EMailSenderName },
-                new TagValue(Tags.OwnerName, owner.DisplayUserName(displayUserSettingsHelper)));
+                Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
+
+                client.SendNoticeToAsync(
+                    Actions.RestoreCompletedV115,
+                    new IRecipient[] { user },
+                    new[] { StudioNotifyService.EMailSenderName },
+                    null,
+                    TagValues.GreenButton(greenButtonText, confirmationUrl));
+            }
         }
 
         private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify, int? toTenantId = null)

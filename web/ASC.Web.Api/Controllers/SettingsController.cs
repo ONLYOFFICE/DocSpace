@@ -165,6 +165,7 @@ namespace ASC.Api.Settings
         private TelegramHelper TelegramHelper { get; }
         private BackupAjaxHandler BackupAjaxHandler { get; }
         private PaymentManager PaymentManager { get; }
+        public Constants Constants { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -226,7 +227,8 @@ namespace ASC.Api.Settings
             EncryptionServiceNotifier encryptionServiceNotifier,
             PasswordHasher passwordHasher,
             BackupAjaxHandler backupAjaxHandler,
-            PaymentManager paymentManager)
+            PaymentManager paymentManager,
+            Constants constants)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -288,6 +290,7 @@ namespace ASC.Api.Settings
             TelegramHelper = telegramHelper;
             BackupAjaxHandler = backupAjaxHandler;
             PaymentManager = paymentManager;
+            Constants = constants;
         }
 
         [Read("", Check = false)]
@@ -642,7 +645,7 @@ namespace ASC.Api.Settings
         [Read("quota")]
         public QuotaWrapper GetQuotaUsed()
         {
-            return new QuotaWrapper(Tenant, CoreBaseSettings, CoreConfiguration, TenantExtra, TenantStatisticsProvider, AuthContext, SettingsManager, WebItemManager);
+            return new QuotaWrapper(Tenant, CoreBaseSettings, CoreConfiguration, TenantExtra, TenantStatisticsProvider, AuthContext, SettingsManager, WebItemManager, Constants);
         }
 
         [AllowAnonymous]
