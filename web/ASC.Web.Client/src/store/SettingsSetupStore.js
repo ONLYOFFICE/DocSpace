@@ -128,24 +128,32 @@ class SettingsSetupStore {
     this.setFilter(filterData);
   };
 
-  updateListAdmins = async (filter, withoutOwner) => {
-    let filterData = filter && filter.clone();
-    if (!filterData) {
-      filterData = Filter.getDefault();
-    }
-    const admins = await api.people.getListAdmins(filterData);
+  updateListAdmins = (filter, withoutOwner) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let filterData = filter && filter.clone();
+        if (!filterData) {
+          filterData = Filter.getDefault();
+        }
+        const admins = await api.people.getListAdmins(filterData);
 
-    if (withoutOwner) {
-      admins.items = admins.items.filter((admin) => {
-        if (admin.isOwner) return false;
-        return true;
-      });
-    }
+        if (withoutOwner) {
+          admins.items = admins.items.filter((admin) => {
+            if (admin.isOwner) return false;
+            return true;
+          });
+        }
 
-    filterData.total = admins.total;
+        filterData.total = admins.total;
 
-    this.setAdmins(admins.items);
-    this.setFilter(filterData);
+        this.setAdmins(admins.items);
+        this.setFilter(filterData);
+
+        resolve(admins.items);
+      } catch (e) {
+        reject(e);
+      }
+    });
   };
 
   getWhiteLabelLogoText = async () => {

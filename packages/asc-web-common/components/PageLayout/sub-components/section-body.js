@@ -14,20 +14,22 @@ const commonStyles = css`
   flex-grow: 1;
   height: 100%;
 
+  .section-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
   .section-wrapper-content {
     flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
     padding: 17px 7px 16px 24px;
     outline: none;
     ${(props) => props.viewAs == "tile" && "padding-right:0;"}
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;
-    }
-
-    .section-wrapper {
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
     }
 
     .people-row-container,
