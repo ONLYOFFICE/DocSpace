@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 using Newtonsoft.Json.Linq;
@@ -110,6 +111,20 @@ namespace Frontend.Translations.Tests
                 //.Where(grp => grp.Grouped.GroupBy(n => n.Key).Any(c => c.Count() > 1))
                 .OrderByDescending(itm => itm.Count)
                 .ToList();
+
+            /*var listForSave = allDuplicates
+                .SelectMany(g => g.Grouped)
+                .GroupBy(item => item.Key)
+                .Select(grp => new
+                {
+                    Key = grp.Key,
+                    Value = grp.FirstOrDefault().Value
+                });
+
+            string json = JsonSerializer.Serialize(listForSave);
+            json = json.Replace("\"Key\":", "").Replace(",\"Value\"", "").Replace("},{", ",");
+            json = json.Substring(1, json.Length - 2);
+            File.WriteAllText(@"D:\dublicates.json", json);*/
 
             Assert.AreEqual(0, allDuplicates.Count);
         }
