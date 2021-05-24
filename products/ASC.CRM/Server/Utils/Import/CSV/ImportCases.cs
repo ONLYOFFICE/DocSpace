@@ -47,7 +47,7 @@ namespace ASC.Web.CRM.Classes
     {
         private void ImportCaseData(DaoFactory _daoFactory)
         {
-            using (var CSVFileStream = _dataStore.GetReadStream("temp", _CSVFileURI))
+            using (var CSVFileStream = _dataStore.GetReadStream("temp", _csvFileURI))
             using (CsvReader csv = ImportFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
             {
                 int currentIndex = 0;
@@ -153,15 +153,7 @@ namespace ASC.Web.CRM.Classes
                 }
 
                 Percentage = 62.5;
-
-                if (ImportDataCache.CheckCancelFlag(EntityType.Case))
-                {
-                    ImportDataCache.ResetAll(EntityType.Case);
-
-                    throw new OperationCanceledException();
-                }
-
-                ImportDataCache.Insert(EntityType.Case, (ImportDataOperation)Clone());
+                PublishChanges();
 
                 var newIDs = casesDao.SaveCasesList(findedCases);
                 findedCases.ForEach(d => d.ID = newIDs[d.ID]);
@@ -171,15 +163,7 @@ namespace ASC.Web.CRM.Classes
                 customFieldDao.SaveList(findedCustomField);
 
                 Percentage += 12.5;
-
-                if (ImportDataCache.CheckCancelFlag(EntityType.Case))
-                {
-                    ImportDataCache.ResetAll(EntityType.Case);
-
-                    throw new OperationCanceledException();
-                }
-
-                ImportDataCache.Insert(EntityType.Case, (ImportDataOperation)Clone());
+                PublishChanges();
 
                 foreach (var findedCasesMemberKey in findedCasesMembers.Keys)
                 {
@@ -187,15 +171,7 @@ namespace ASC.Web.CRM.Classes
                 }
 
                 Percentage += 12.5;
-
-                if (ImportDataCache.CheckCancelFlag(EntityType.Case))
-                {
-                    ImportDataCache.ResetAll(EntityType.Case);
-
-                    throw new OperationCanceledException();
-                }
-
-                ImportDataCache.Insert(EntityType.Case, (ImportDataOperation)Clone());
+                PublishChanges();
 
 
                 foreach (var findedTagKey in findedTags.Keys)
@@ -204,20 +180,11 @@ namespace ASC.Web.CRM.Classes
                 }
 
                 if (_importSettings.IsPrivate)
-                    findedCases.ForEach(dealItem => CRMSecurity.SetAccessTo(dealItem, _importSettings.AccessList));
+                    findedCases.ForEach(dealItem => _crmSecurity.SetAccessTo(dealItem, _importSettings.AccessList));
 
 
                 Percentage += 12.5;
-
-                if (ImportDataCache.CheckCancelFlag(EntityType.Case))
-                {
-                    ImportDataCache.ResetAll(EntityType.Case);
-
-                    throw new OperationCanceledException();
-                }
-
-                ImportDataCache.Insert(EntityType.Case, (ImportDataOperation)Clone());
-
+                PublishChanges();
             }
 
             Complete();

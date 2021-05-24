@@ -49,9 +49,9 @@ namespace ASC.Web.CRM.Classes
     {
         private void ImportOpportunityData(DaoFactory _daoFactory)
         {
-            var allUsers = UserManager.GetUsers(EmployeeStatus.All).ToList();
+            var allUsers = _userManager.GetUsers(EmployeeStatus.All).ToList();
 
-            using (var CSVFileStream = _dataStore.GetReadStream("temp", _CSVFileURI))
+            using (var CSVFileStream = _dataStore.GetReadStream("temp", _csvFileURI))
             using (CsvReader csv = ImportFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
             {
                 int currentIndex = 0;
@@ -101,10 +101,10 @@ namespace ASC.Web.CRM.Classes
                     if (DateTime.TryParse(GetPropertyValue("expected_close_date"), out expectedCloseDate))
                         obj.ExpectedCloseDate = expectedCloseDate;
 
-                    var currency = CurrencyProvider.Get(GetPropertyValue("bid_currency"));
+                    var currency = _currencyProvider.Get(GetPropertyValue("bid_currency"));
 
-                    var crmSettings = SettingsManager.Load<CrmSettings>();
-                    var defaultCurrency = CurrencyProvider.Get(crmSettings.DefaultCurrency);
+                    var crmSettings = _settingsManager.Load<CrmSettings>();
+                    var defaultCurrency = _currencyProvider.Get(crmSettings.DefaultCurrency);
 
                     if (currency != null)
                         obj.BidCurrency = currency.Abbreviation;
@@ -263,15 +263,7 @@ namespace ASC.Web.CRM.Classes
                     }
 
                     Percentage += 1.0 * 100 / (ImportFromCSV.MaxRoxCount * 2);
-
-                    if (ImportDataCache.CheckCancelFlag(EntityType.Opportunity))
-                    {
-                        ImportDataCache.ResetAll(EntityType.Opportunity);
-
-                        throw new OperationCanceledException();
-                    }
-
-                    ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());
+                    PublishChanges();
 
                     findedDeals.Add(obj);
 
@@ -282,44 +274,21 @@ namespace ASC.Web.CRM.Classes
                 }
 
                 Percentage = 50;
+                PublishChanges();
 
-                if (ImportDataCache.CheckCancelFlag(EntityType.Opportunity))
-                {
-                    ImportDataCache.ResetAll(EntityType.Opportunity);
-
-                    throw new OperationCanceledException();
-                }
-
-                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());
 
                 var newDealIDs = dealDao.SaveDealList(findedDeals);
                 findedDeals.ForEach(d => d.ID = newDealIDs[d.ID]);
 
                 Percentage += 12.5;
-
-                if (ImportDataCache.CheckCancelFlag(EntityType.Opportunity))
-                {
-                    ImportDataCache.ResetAll(EntityType.Opportunity);
-
-                    throw new OperationCanceledException();
-                }
-
-                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());
+                PublishChanges();
 
                 findedCustomField.ForEach(item => item.EntityID = newDealIDs[item.EntityID]);
 
                 customFieldDao.SaveList(findedCustomField);
 
                 Percentage += 12.5;
-
-                if (ImportDataCache.CheckCancelFlag(EntityType.Opportunity))
-                {
-                    ImportDataCache.ResetAll(EntityType.Opportunity);
-
-                    throw new OperationCanceledException();
-                }
-
-                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());
+                PublishChanges();
 
                 foreach (var findedDealMemberKey in findedDealMembers.Keys)
                 {
@@ -327,15 +296,7 @@ namespace ASC.Web.CRM.Classes
                 }
 
                 Percentage += 12.5;
-
-                if (ImportDataCache.CheckCancelFlag(EntityType.Opportunity))
-                {
-                    ImportDataCache.ResetAll(EntityType.Opportunity);
-
-                    throw new OperationCanceledException();
-                }
-
-                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());
+                PublishChanges();
 
                 foreach (var findedTagKey in findedTags.Keys)
                 {
@@ -343,19 +304,10 @@ namespace ASC.Web.CRM.Classes
                 }
 
                 if (_importSettings.IsPrivate)
-                    findedDeals.ForEach(dealItem => CRMSecurity.SetAccessTo(dealItem, _importSettings.AccessList));
+                    findedDeals.ForEach(dealItem => _crmSecurity.SetAccessTo(dealItem, _importSettings.AccessList));
 
                 Percentage += 12.5;
-
-                if (ImportDataCache.CheckCancelFlag(EntityType.Opportunity))
-                {
-                    ImportDataCache.ResetAll(EntityType.Opportunity);
-
-                    throw new OperationCanceledException();
-                }
-
-                ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());
-
+                PublishChanges();
             }
 
             Complete();

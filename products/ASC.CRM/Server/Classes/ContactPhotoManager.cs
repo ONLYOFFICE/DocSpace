@@ -35,7 +35,7 @@ using System.Net;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Threading.Workers;
+using ASC.Common.Threading;
 using ASC.CRM.Resources;
 using ASC.Data.Storage;
 using ASC.Web.Core;
@@ -46,7 +46,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.CRM.Classes
 {
-    public class ResizeWorkerItem
+    public class ResizeWorkerItem : DistributedTask
     {
         public int ContactID { get; set; }
 
@@ -78,41 +78,15 @@ namespace ASC.Web.CRM.Classes
     [Scope]
     public class ContactPhotoManager
     {
-        public ContactPhotoManager(Global global,
-                                   WebImageSupplier webImageSupplier,
-                                   IOptionsMonitor<ILog> logger,
-                                   ICache cache,
-                                   ICacheNotify<ContactPhotoManagerCacheItem> cacheNotify,
-                                   WorkerQueueOptionsManager<ResizeWorkerItem> workerQueueOptionsManager)
-        {
-            Global = global;
-            WebImageSupplier = webImageSupplier;
-            CacheNotify = cacheNotify;
-            Cache = cache;
-            ResizeQueue = workerQueueOptionsManager.Value;
-            Logger = logger.Get("ASC.CRM");
-
-            CacheNotify.Subscribe((x) =>
-            {
-                Cache.Remove($"contact_photo_cache_key_id_{x.Id}");
-
-            }, CacheNotifyAction.Remove);
-        }
-
-        public ILog Logger { get; }
-
-        public Global Global { get; }
-
-        public WebImageSupplier WebImageSupplier { get; }
-
-        #region Members
+        public readonly ILog _logger;
+        public readonly Global _global;
+        public readonly WebImageSupplier _webImageSupplier;
+        private readonly DistributedTaskQueue _resizeQueue;
+        private readonly ICacheNotify<ContactPhotoManagerCacheItem> _cacheNotify;
+        private readonly ICache _cache;
 
         private const string PhotosBaseDirName = "photos";
         private const string PhotosDefaultTmpDirName = "temp";
-
-        private readonly WorkerQueue<ResizeWorkerItem> ResizeQueue;
-        private readonly ICacheNotify<ContactPhotoManagerCacheItem> CacheNotify;
-        private readonly ICache Cache;
 
         private static readonly Size _oldBigSize = new Size(145, 145);
 
@@ -122,13 +96,33 @@ namespace ASC.Web.CRM.Classes
 
         private readonly object locker = new object();
 
-        #endregion
+
+        public ContactPhotoManager(Global global,
+                                   WebImageSupplier webImageSupplier,
+                                   IOptionsMonitor<ILog> logger,
+                                   ICache cache,
+                                   ICacheNotify<ContactPhotoManagerCacheItem> cacheNotify,
+                                   DistributedTaskQueueOptionsManager optionsQueue)
+        {
+            _global = global;
+            _webImageSupplier = webImageSupplier;
+            _cacheNotify = cacheNotify;
+            _cache = cache;
+            _resizeQueue = optionsQueue.Get<ResizeWorkerItem>();
+            _logger = logger.Get("ASC.CRM");
+
+            _cacheNotify.Subscribe((x) =>
+            {
+                _cache.Remove($"contact_photo_cache_key_id_{x.Id}");
+
+            }, CacheNotifyAction.Remove);
+        }
 
         #region Cache and DataStore Methods
 
         private String FromCache(int contactID, Size photoSize)
         {
-            var cacheItem = Cache.Get<Dictionary<Size, String>>($"contact_photo_cache_key_id_{contactID}");
+            var cacheItem = _cache.Get<Dictionary<Size, String>>($"contact_photo_cache_key_id_{contactID}");
 
             if (cacheItem is null) return String.Empty;
 
@@ -139,14 +133,14 @@ namespace ASC.Web.CRM.Classes
 
         private void ToCache(int contactID, String photoUri, Size photoSize)
         {
-            var photoUriBySize = Cache.Get<Dictionary<Size, String>>($"contact_photo_cache_key_id_{contactID}");
+            var photoUriBySize = _cache.Get<Dictionary<Size, String>>($"contact_photo_cache_key_id_{contactID}");
 
             if (photoUriBySize.ContainsKey(photoSize))
                 photoUriBySize[photoSize] = photoUri;
             else
                 photoUriBySize.Add(photoSize, photoUri);
 
-            Cache.Insert($"contact_photo_cache_key_id_{contactID}", photoUriBySize, TimeSpan.FromMinutes(15));
+            _cache.Insert($"contact_photo_cache_key_id_{contactID}", photoUriBySize, TimeSpan.FromMinutes(15));
         }
 
         private String FromDataStore(int contactID, Size photoSize)
@@ -160,11 +154,11 @@ namespace ASC.Web.CRM.Classes
                                     ? BuildFileDirectory(contactID)
                                     : (String.IsNullOrEmpty(tmpDirName) ? BuildFileTmpDirectory(contactID) : BuildFileTmpDirectory(tmpDirName));
 
-            var filesURI = Global.GetStore().ListFiles(directoryPath, BuildFileName(contactID, photoSize) + "*", false);
+            var filesURI = _global.GetStore().ListFiles(directoryPath, BuildFileName(contactID, photoSize) + "*", false);
 
             if (filesURI.Length == 0 && photoSize == _bigSize)
             {
-                filesURI = Global.GetStore().ListFiles(directoryPath, BuildFileName(contactID, _oldBigSize) + "*", false);
+                filesURI = _global.GetStore().ListFiles(directoryPath, BuildFileName(contactID, _oldBigSize) + "*", false);
             }
 
             if (filesURI.Length == 0)
@@ -181,11 +175,11 @@ namespace ASC.Web.CRM.Classes
                                     ? BuildFileDirectory(contactID)
                                     : (String.IsNullOrEmpty(tmpDirName) ? BuildFileTmpDirectory(contactID) : BuildFileTmpDirectory(tmpDirName));
 
-            var filesPaths = Global.GetStore().ListFilesRelative("", directoryPath, BuildFileName(contactID, photoSize) + "*", false);
+            var filesPaths = _global.GetStore().ListFilesRelative("", directoryPath, BuildFileName(contactID, photoSize) + "*", false);
 
             if (filesPaths.Length == 0 && photoSize == _bigSize)
             {
-                filesPaths = Global.GetStore().ListFilesRelative("", directoryPath, BuildFileName(contactID, _oldBigSize) + "*", false);
+                filesPaths = _global.GetStore().ListFilesRelative("", directoryPath, BuildFileName(contactID, _oldBigSize) + "*", false);
             }
 
             if (filesPaths.Length == 0)
@@ -200,10 +194,10 @@ namespace ASC.Web.CRM.Classes
         {
             var directoryPath = BuildFileTmpDirectory(tmpDirName);
 
-            if (!Global.GetStore().IsDirectory(directoryPath))
+            if (!_global.GetStore().IsDirectory(directoryPath))
                 return null;
 
-            var filesURI = Global.GetStore().ListFiles(directoryPath, BuildFileName(0, photoSize) + "*", false);
+            var filesURI = _global.GetStore().ListFiles(directoryPath, BuildFileName(0, photoSize) + "*", false);
 
             if (filesURI.Length == 0) return null;
 
@@ -329,9 +323,9 @@ namespace ASC.Web.CRM.Classes
             if (!String.IsNullOrEmpty(defaultPhotoUri)) return defaultPhotoUri;
 
             if (isCompany)
-                defaultPhotoUri = WebImageSupplier.GetAbsoluteWebPath(String.Format("empty_company_logo_{0}_{1}.png", photoSize.Height, photoSize.Width), ProductEntryPoint.ID);
+                defaultPhotoUri = _webImageSupplier.GetAbsoluteWebPath(String.Format("empty_company_logo_{0}_{1}.png", photoSize.Height, photoSize.Width), ProductEntryPoint.ID);
             else
-                defaultPhotoUri = WebImageSupplier.GetAbsoluteWebPath(String.Format("empty_people_logo_{0}_{1}.png", photoSize.Height, photoSize.Width), ProductEntryPoint.ID);
+                defaultPhotoUri = _webImageSupplier.GetAbsoluteWebPath(String.Format("empty_people_logo_{0}_{1}.png", photoSize.Height, photoSize.Width), ProductEntryPoint.ID);
 
             ToCache(contactID, defaultPhotoUri, photoSize);
 
@@ -354,17 +348,18 @@ namespace ASC.Web.CRM.Classes
 
             lock (locker)
             {
-                ResizeQueue.GetItems().Where(item => item.ContactID == contactID)
+                _resizeQueue.GetTasks<ResizeWorkerItem>().Where(item => item.ContactID == contactID)
                            .All(item =>
                                {
-                                   ResizeQueue.Remove(item);
+                                   _resizeQueue.RemoveTask(item.Id);
+
                                    return true;
                                });
 
                 var photoDirectory = !isTmpDir
                                          ? BuildFileDirectory(contactID)
                                          : (String.IsNullOrEmpty(tmpDirName) ? BuildFileTmpDirectory(contactID) : BuildFileTmpDirectory(tmpDirName));
-                var store = Global.GetStore();
+                var store = _global.GetStore();
 
                 if (store.IsDirectory(photoDirectory))
                 {
@@ -377,8 +372,8 @@ namespace ASC.Web.CRM.Classes
 
                 if (!isTmpDir)
                 {
-                    Cache.Remove($"contact_photo_cache_key_id_{contactID}");
-                    CacheNotify.Publish(new ContactPhotoManagerCacheItem { Id = contactID }, CacheNotifyAction.Remove);
+                    _cache.Remove($"contact_photo_cache_key_id_{contactID}");
+                    _cacheNotify.Publish(new ContactPhotoManagerCacheItem { Id = contactID }, CacheNotifyAction.Remove);
                 }
             }
         }
@@ -389,7 +384,7 @@ namespace ASC.Web.CRM.Classes
             {
 
                 var photoDirectory = BuildFileTmpDirectory(tmpDirName);
-                var store = Global.GetStore();
+                var store = _global.GetStore();
 
                 if (store.IsDirectory(photoDirectory))
                 {
@@ -403,7 +398,7 @@ namespace ASC.Web.CRM.Classes
         public void TryUploadPhotoFromTmp(int contactID, bool isNewContact, string tmpDirName)
         {
             var directoryPath = BuildFileDirectory(contactID);
-            var dataStore = Global.GetStore();
+            var dataStore = _global.GetStore();
 
             try
             {
@@ -436,7 +431,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception ex)
             {
-                Logger.ErrorFormat("TryUploadPhotoFromTmp for contactID={0} failed witth error: {1}", contactID, ex);
+                _logger.ErrorFormat("TryUploadPhotoFromTmp for contactID={0} failed witth error: {1}", contactID, ex);
 
                 return;
             }
@@ -483,7 +478,7 @@ namespace ASC.Web.CRM.Classes
                 UploadOnly = uploadOnly,
                 RequireFotoSize = new[] { _bigSize },
                 ImageData = imageData,
-                DataStore = Global.GetStore(),
+                DataStore = _global.GetStore(),
                 TmpDirName = tmpDirName
             };
 
@@ -522,14 +517,15 @@ namespace ASC.Web.CRM.Classes
                 UploadOnly = uploadOnly,
                 RequireFotoSize = new[] { _mediumSize, _smallSize },
                 ImageData = imageData,
-                DataStore = Global.GetStore(),
+                DataStore = _global.GetStore(),
                 TmpDirName = tmpDirName
             };
-
-            if (!ResizeQueue.GetItems().Contains(resizeWorkerItem))
-                ResizeQueue.Add(resizeWorkerItem);
-
-            if (!ResizeQueue.IsStarted) ResizeQueue.Start(ExecResizeImage);
+            
+            if (!_resizeQueue.GetTasks<ResizeWorkerItem>().Contains(resizeWorkerItem))
+            {
+                //Add
+                _resizeQueue.QueueTask((a, b) => ExecResizeImage(resizeWorkerItem), resizeWorkerItem);
+            }
         }
 
         private byte[] ToByteArray(Stream inputStream, int streamLength)

@@ -37,6 +37,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
+using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Users;
@@ -62,58 +63,9 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.CRM.Classes
-{
-    [Singletone]
-    public class ExportDataCache
-    {
-        public ExportDataCache(ICache ascCache)
-        {
-            Cache = ascCache;
-        }
-
-        public readonly ICache Cache;
-
-        public String GetStateCacheKey(string key)
-        {
-            return String.Format("{0}:crm:queue:exporttocsv", key);
-        }
-
-        public String GetCancelCacheKey(string key)
-        {
-            return String.Format("{0}:crm:queue:exporttocsv:cancel", key);
-        }
-
-        public ExportDataOperation Get(string key)
-        {
-            return Cache.Get<ExportDataOperation>(GetStateCacheKey(key));
-        }
-
-        public void Insert(string key, ExportDataOperation data)
-        {
-            Cache.Insert(GetStateCacheKey(key), data, TimeSpan.FromMinutes(1));
-        }
-
-        public bool CheckCancelFlag(string key)
-        {
-            var fromCache = Cache.Get<String>(GetCancelCacheKey(key));
-
-            return !String.IsNullOrEmpty(fromCache);
-        }
-
-        public void SetCancelFlag(string key)
-        {
-            Cache.Insert(GetCancelCacheKey(key), "true", TimeSpan.FromMinutes(1));
-        }
-
-        public void ResetAll(string key)
-        {
-            Cache.Remove(GetStateCacheKey(key));
-            Cache.Remove(GetCancelCacheKey(key));
-        }
-    }
-
+{  
     [Transient]
-    public class ExportDataOperation : IProgressItem
+    public class ExportDataOperation : DistributedTaskProgress, IProgressItem
     {
         public ExportDataOperation(UserManager userManager,
                                    FileUtility fileUtility,
@@ -121,7 +73,6 @@ namespace ASC.Web.CRM.Classes
                                    IOptionsMonitor<ILog> logger,
                                    TenantManager tenantManager,
                                    Global global,
-                                   ExportDataCache exportDataCache,
                                    CommonLinkUtility commonLinkUtility,
                                    NotifyClient notifyClient,
                                    DaoFactory daoFactory,
@@ -145,13 +96,11 @@ namespace ASC.Web.CRM.Classes
 
             _log = logger.Get("ASC.CRM");
 
-            Status = ProgressStatus.Queued;
             Error = null;
             Percentage = 0;
             IsCompleted = false;
             FileUrl = null;
 
-            ExportDataCache = exportDataCache;
             SecurityContext = securityContext;
 
             CommonLinkUtility = commonLinkUtility;
@@ -166,7 +115,7 @@ namespace ASC.Web.CRM.Classes
         {
             FileName = fileName ?? CRMSettingResource.Export + (filterObject == null ? ".zip" : ".csv");
             _filterObject = filterObject;
-            Id = id;
+            Id = id.ToString();
         }
 
 
@@ -180,7 +129,6 @@ namespace ASC.Web.CRM.Classes
         public CommonLinkUtility CommonLinkUtility { get; }
         public SecurityContext SecurityContext { get; }
         public DaoFactory DaoFactory { get; }
-        public ExportDataCache ExportDataCache { get; }
         public UserManager UserManager { get; }
         public FileUtility FileUtility { get; }
 
@@ -218,16 +166,8 @@ namespace ASC.Web.CRM.Classes
         {
             return MemberwiseClone();
         }
-
-        public object Id { get; set; }
-
-        public object Status { get; set; }
-
+ 
         public object Error { get; set; }
-
-        public double Percentage { get; set; }
-
-        public bool IsCompleted { get; set; }
 
         public string FileName { get; set; }
 
@@ -272,12 +212,10 @@ namespace ASC.Web.CRM.Classes
             return result.ToString();
         }
 
-        public void RunJob()
+        protected override void DoJob()
         {
             try
             {
-                Status = ProgressStatus.Started;
-
                 TenantManager.SetCurrentTenant(_tenantId);
                 SecurityContext.AuthenticateMe(_author);
 
@@ -287,44 +225,37 @@ namespace ASC.Web.CRM.Classes
                 System.Threading.Thread.CurrentThread.CurrentUICulture = userCulture;
 
                 _log.Debug("Start Export Data");
-
-                ExportDataCache.Insert((string)Id, (ExportDataOperation)Clone());
-
+                 
                 if (_filterObject == null)
                     ExportAllData(DaoFactory);
                 else
                     ExportPartData(DaoFactory);
 
-                Complete(100, ProgressStatus.Done, null);
+                Complete(100, DistributedTaskStatus.Completed, null);
 
                 _log.Debug("Export is completed");
             }
             catch (OperationCanceledException)
             {
-                Complete(0, ProgressStatus.Done, null);
+                Complete(0, DistributedTaskStatus.Completed, null);
 
                 _log.Debug("Export is cancel");
             }
             catch (Exception ex)
             {
-                Complete(0, ProgressStatus.Failed, ex.Message);
+                Complete(0, DistributedTaskStatus.Failted, ex.Message);
 
                 _log.Error(ex);
             }
-            finally
-            {
-                ExportDataCache.ResetAll((string)Id);
-            }
         }
 
-        private void Complete(double percentage, ProgressStatus status, object error)
+        private void Complete(double percentage, DistributedTaskStatus status, object error)
         {
             IsCompleted = true;
             Percentage = percentage;
             Status = status;
             Error = error;
 
-            ExportDataCache.Insert((string)Id, (ExportDataOperation)Clone());
         }
 
         private void ExportAllData(DaoFactory daoFactory)
@@ -604,16 +535,9 @@ namespace ASC.Web.CRM.Classes
 
             foreach (var contact in contacts)
             {
-                if (ExportDataCache.CheckCancelFlag(key))
-                {
-                    ExportDataCache.ResetAll(key);
-
-                    throw new OperationCanceledException();
-                }
-
-                ExportDataCache.Insert(key, (ExportDataOperation)Clone());
-
                 Percentage += 1.0 * 100 / _totalCount;
+                PublishChanges();
+
 
                 var isCompany = contact is Company;
 
@@ -838,16 +762,9 @@ namespace ASC.Web.CRM.Classes
 
             foreach (var deal in deals)
             {
-                if (ExportDataCache.CheckCancelFlag(key))
-                {
-                    ExportDataCache.ResetAll(key);
-
-                    throw new OperationCanceledException();
-                }
-
-                ExportDataCache.Insert(key, (ExportDataOperation)Clone());
 
                 Percentage += 1.0 * 100 / _totalCount;
+                PublishChanges();
 
                 var contactTags = String.Empty;
 
@@ -956,16 +873,8 @@ namespace ASC.Web.CRM.Classes
 
             foreach (var item in cases)
             {
-                if (ExportDataCache.CheckCancelFlag(key))
-                {
-                    ExportDataCache.ResetAll(key);
-
-                    throw new OperationCanceledException();
-                }
-
-                ExportDataCache.Insert(key, (ExportDataOperation)Clone());
-
                 Percentage += 1.0 * 100 / _totalCount;
+                PublishChanges();
 
                 var contactTags = String.Empty;
 
@@ -1031,16 +940,8 @@ namespace ASC.Web.CRM.Classes
 
             foreach (var item in events)
             {
-                if (ExportDataCache.CheckCancelFlag(key))
-                {
-                    ExportDataCache.ResetAll(key);
-
-                    throw new OperationCanceledException();
-                }
-
-                ExportDataCache.Insert(key, (ExportDataOperation)Clone());
-
                 Percentage += 1.0 * 100 / _totalCount;
+                PublishChanges();
 
                 var entityTitle = String.Empty;
 
@@ -1166,16 +1067,8 @@ namespace ASC.Web.CRM.Classes
 
             foreach (var item in tasks)
             {
-                if (ExportDataCache.CheckCancelFlag(key))
-                {
-                    ExportDataCache.ResetAll(key);
-
-                    throw new OperationCanceledException();
-                }
-
-                ExportDataCache.Insert(key, (ExportDataOperation)Clone());
-
                 Percentage += 1.0 * 100 / _totalCount;
+                PublishChanges();
 
                 var entityTitle = String.Empty;
 
@@ -1298,16 +1191,8 @@ namespace ASC.Web.CRM.Classes
 
             foreach (var item in invoiceItems)
             {
-                if (ExportDataCache.CheckCancelFlag(key))
-                {
-                    ExportDataCache.ResetAll(key);
-
-                    throw new OperationCanceledException();
-                }
-
-                ExportDataCache.Insert(key, (ExportDataOperation)Clone());
-
                 Percentage += 1.0 * 100 / _totalCount;
+                PublishChanges();
 
                 var tax1 = item.InvoiceTax1ID != 0 ? taxes.Find(t => t.ID == item.InvoiceTax1ID) : null;
                 var tax2 = item.InvoiceTax2ID != 0 ? taxes.Find(t => t.ID == item.InvoiceTax2ID) : null;
@@ -1359,34 +1244,29 @@ namespace ASC.Web.CRM.Classes
     public class ExportToCsv
     {
         private readonly object Locker = new object();
-
-        private readonly ProgressQueue<ExportDataOperation> Queue;
+        private readonly DistributedTaskQueue _queue;
+        private readonly ExportDataOperation _exportDataOperation;
+        private readonly SecurityContext _securityContext;
+        protected readonly int _tenantID;
 
         public ExportToCsv(SecurityContext securityContext,
-                           ExportDataCache exportDataCache,
                            TenantManager tenantManager,
-                           ProgressQueueOptionsManager<ExportDataOperation> progressQueueOptionsManager,
+                           DistributedTaskQueueOptionsManager  queueOptions,
                            ExportDataOperation exportDataOperation)
         {
-            SecurityContext = securityContext;
-            ExportDataCache = exportDataCache;
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
-            Queue = progressQueueOptionsManager.Value;
-            ExportDataOperation = exportDataOperation;
+            _securityContext = securityContext;
+            _tenantID = tenantManager.GetCurrentTenant().TenantId;
+            _queue = queueOptions.Get<ExportDataOperation>();
+            _exportDataOperation = exportDataOperation;
         }
-
-        protected int TenantID { get; private set; }
-
-        public ExportDataOperation ExportDataOperation { get; }
-        public ExportDataCache ExportDataCache { get; }
-
-        public SecurityContext SecurityContext { get; }
 
         public IProgressItem GetStatus(bool partialDataExport)
         {
             var key = GetKey(partialDataExport);
 
-            return Queue.GetStatus(key) ?? ExportDataCache.Get(key);
+            var operation = _queue.GetTasks<ExportDataOperation>().FirstOrDefault(x => x.Id == key);
+
+            return operation;
         }
 
         public IProgressItem Start(FilterObject filterObject, string fileName)
@@ -1395,26 +1275,20 @@ namespace ASC.Web.CRM.Classes
             {
                 var key = GetKey(filterObject != null);
 
-                var operation = Queue.GetStatus(key);
+                var operation = _queue.GetTasks<ExportDataOperation>().FirstOrDefault(x => x.Id == key);
 
-                if (operation == null)
+                if (operation != null && operation.IsCompleted)
                 {
-                    var fromCache = ExportDataCache.Get(key);
-
-                    if (fromCache != null)
-                        return fromCache;
+                    _queue.RemoveTask(operation.Id);
+                    operation = null;
                 }
 
                 if (operation == null)
                 {
+                    _exportDataOperation.Configure(key, filterObject, fileName);
 
-                    ExportDataOperation.Configure(key, filterObject, fileName);
-
-                    Queue.Add(ExportDataOperation);
+                    _queue.QueueTask(_exportDataOperation);
                 }
-
-                if (!Queue.IsStarted)
-                    Queue.Start(x => x.RunJob());
 
                 return operation;
             }
@@ -1426,21 +1300,19 @@ namespace ASC.Web.CRM.Classes
             {
                 var key = GetKey(partialDataExport);
 
-                var findedItem = Queue.GetItems().FirstOrDefault(elem => (string)elem.Id == key);
+                var findedItem = _queue.GetTasks<ExportDataOperation>().FirstOrDefault(x => x.Id == key);
 
                 if (findedItem != null)
                 {
-                    Queue.Remove(findedItem);
+                    _queue.RemoveTask(findedItem.Id);
                 }
-
-                ExportDataCache.SetCancelFlag(key);
             }
         }
 
         public string GetKey(bool partialDataExport)
         {
-            return string.Format("{0}_{1}", TenantID,
-                                 partialDataExport ? SecurityContext.CurrentAccount.ID : Guid.Empty);
+            return string.Format("{0}_{1}", _tenantID,
+                                 partialDataExport ? _securityContext.CurrentAccount.ID : Guid.Empty);
         }
     }
 }

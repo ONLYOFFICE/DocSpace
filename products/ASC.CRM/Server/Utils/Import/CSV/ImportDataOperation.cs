@@ -32,6 +32,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
+using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -46,99 +47,33 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.CRM.Classes
 {
-    [Scope]
-    public class ImportDataCache
-    {
-        public ImportDataCache(TenantManager tenantManager,
-                              ICache cache)
-        {
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
-            Cache = cache;
-        }
-
-        public int TenantID { get; }
-
-        public readonly ICache Cache;
-
-        public String GetStateCacheKey(EntityType entityType, int tenantId = -1)
-        {
-            if (tenantId == -1)
-            {
-                tenantId = TenantID;
-            }
-
-            return String.Format("{0}:crm:queue:importtocsv:{1}", tenantId.ToString(CultureInfo.InvariantCulture), entityType.ToString());
-        }
-
-        public String GetCancelCacheKey(EntityType entityType, int tenantId = -1)
-        {
-            if (tenantId == -1)
-            {
-                tenantId = TenantID;
-            }
-
-            return String.Format("{0}:crm:queue:importtocsv:{1}:cancel", tenantId.ToString(CultureInfo.InvariantCulture), entityType.ToString());
-        }
-
-        public ImportDataOperation Get(EntityType entityType)
-        {
-            return Cache.Get<ImportDataOperation>(GetStateCacheKey(entityType));
-        }
-
-        public void Insert(EntityType entityType, ImportDataOperation data)
-        {
-            Cache.Insert(GetStateCacheKey(entityType), data, TimeSpan.FromMinutes(1));
-        }
-
-        public bool CheckCancelFlag(EntityType entityType)
-        {
-            var fromCache = Cache.Get<String>(GetCancelCacheKey(entityType));
-
-            if (!String.IsNullOrEmpty(fromCache))
-                return true;
-
-            return false;
-
-        }
-
-        public void SetCancelFlag(EntityType entityType)
-        {
-            Cache.Insert(GetCancelCacheKey(entityType), true, TimeSpan.FromMinutes(1));
-        }
-
-        public void ResetAll(EntityType entityType, int tenantId = -1)
-        {
-            Cache.Remove(GetStateCacheKey(entityType, tenantId));
-            Cache.Remove(GetCancelCacheKey(entityType, tenantId));
-        }
-    }
-
     [Transient]
-    public partial class ImportDataOperation : IProgressItem
+    public partial class ImportDataOperation : DistributedTaskProgress, IProgressItem
     {
         private readonly ILog _log;
-
         private readonly IDataStore _dataStore;
-
         private readonly IAccount _author;
-
         private readonly int _tenantID;
-
-        private string _CSVFileURI;
-
+        private string _csvFileURI;
         private ImportCSVSettings _importSettings;
-
         private EntityType _entityType;
-
         private string[] _columns;
-
         private bool _IsConfigure;
+
+        public readonly CurrencyProvider _currencyProvider;
+        public readonly NotifyClient _notifyClient;
+        public readonly SettingsManager _settingsManager;
+        public readonly CrmSecurity _crmSecurity;
+        public readonly TenantManager _tenantManager;
+        public readonly SecurityContext _securityContext;
+        public readonly UserManager _userManager;
+        public readonly DaoFactory _daoFactory;
+        public readonly ILog _logManager;
 
         public ImportDataOperation(Global global,
                                    TenantManager tenantManager,
                                    IOptionsMonitor<ILog> logger,
                                    UserManager userManager,
-                                   ImportDataCache importDataCache,
                                    CrmSecurity crmSecurity,
                                    NotifyClient notifyClient,
                                    SettingsManager settingsManager,
@@ -147,27 +82,24 @@ namespace ASC.Web.CRM.Classes
                                    SecurityContext securityContext
                                  )
         {
-            ImportDataCache = importDataCache;
+            _userManager = userManager;
 
-            UserManager = userManager;
-
-
-            SecurityContext = securityContext;
+            _securityContext = securityContext;
             _dataStore = global.GetStore();
 
             _tenantID = tenantManager.GetCurrentTenant().TenantId;
-            _author = SecurityContext.CurrentAccount;
+            _author = _securityContext.CurrentAccount;
 
-            NotifyClient = notifyClient;
+            _notifyClient = notifyClient;
 
             Id = String.Format("{0}_{1}", _tenantID, (int)_entityType);
 
             _log = logger.Get("ASC.CRM");
 
-            CRMSecurity = crmSecurity;
-            SettingsManager = settingsManager;
-            CurrencyProvider = currencyProvider;
-            DaoFactory = daoFactory;
+            _crmSecurity = crmSecurity;
+            _settingsManager = settingsManager;
+            _currencyProvider = currencyProvider;
+            _daoFactory = daoFactory;
         }
 
         public void Configure(EntityType entityType,
@@ -176,7 +108,7 @@ namespace ASC.Web.CRM.Classes
         {
 
             _entityType = entityType;
-            _CSVFileURI = CSVFileURI;
+            _csvFileURI = CSVFileURI;
 
             if (!String.IsNullOrEmpty(importSettingsJSON))
                 _importSettings = new ImportCSVSettings(importSettingsJSON);
@@ -184,26 +116,7 @@ namespace ASC.Web.CRM.Classes
             _IsConfigure = true;
         }
 
-        public CurrencyProvider CurrencyProvider { get; }
-
-        public NotifyClient NotifyClient { get; }
-
-        public SettingsManager SettingsManager { get; }
-
-        public CrmSecurity CRMSecurity { get; }
-
-        public ImportDataCache ImportDataCache { get; }
-
-        public TenantManager TenantManager { get; }
-
-        public SecurityContext SecurityContext { get; }
-
-        public UserManager UserManager { get; }
-
-        public DaoFactory DaoFactory { get; }
-
-        public ILog LogManager { get; }
-
+      
 
         public override bool Equals(object obj)
         {
@@ -227,15 +140,8 @@ namespace ASC.Web.CRM.Classes
             return MemberwiseClone();
         }
 
-        public object Id { get; set; }
-
-        public object Status { get; set; }
-
+     
         public object Error { get; set; }
-
-        public double Percentage { get; set; }
-
-        public bool IsCompleted { get; set; }
 
         private String GetPropertyValue(String propertyName)
         {
@@ -257,41 +163,37 @@ namespace ASC.Web.CRM.Classes
 
             _log.Debug("Import is completed");
 
-            NotifyClient.SendAboutImportCompleted(_author.ID, _entityType);
-
-            ImportDataCache.Insert(_entityType, (ImportDataOperation)Clone());
+            _notifyClient.SendAboutImportCompleted(_author.ID, _entityType);
         }
 
-        public void RunJob()
+        protected override void DoJob()
         {
             try
             {
                 if (!_IsConfigure)
                     throw new Exception("Is not configure. Please, call configure method.");
 
-                TenantManager.SetCurrentTenant(_tenantID);
-                SecurityContext.AuthenticateMe(_author);
+                _tenantManager.SetCurrentTenant(_tenantID);
+                _securityContext.AuthenticateMe(_author);
 
-                var userCulture = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).GetCulture();
+                var userCulture = _userManager.GetUsers(_securityContext.CurrentAccount.ID).GetCulture();
 
                 System.Threading.Thread.CurrentThread.CurrentCulture = userCulture;
                 System.Threading.Thread.CurrentThread.CurrentUICulture = userCulture;
 
-                ImportDataCache.Insert(_entityType, (ImportDataOperation)Clone());
-
                 switch (_entityType)
                 {
                     case EntityType.Contact:
-                        ImportContactsData(DaoFactory);
+                        ImportContactsData(_daoFactory);
                         break;
                     case EntityType.Opportunity:
-                        ImportOpportunityData(DaoFactory);
+                        ImportOpportunityData(_daoFactory);
                         break;
                     case EntityType.Case:
-                        ImportCaseData(DaoFactory);
+                        ImportCaseData(_daoFactory);
                         break;
                     case EntityType.Task:
-                        ImportTaskData(DaoFactory);
+                        ImportTaskData(_daoFactory);
                         break;
                     default:
                         throw new ArgumentException(CRMErrorsResource.EntityTypeUnknown);
@@ -301,10 +203,6 @@ namespace ASC.Web.CRM.Classes
             catch (OperationCanceledException)
             {
                 _log.Debug("Queue canceled");
-            }
-            finally
-            {
-                ImportDataCache.ResetAll(_entityType, _tenantID);
             }
         }
     }

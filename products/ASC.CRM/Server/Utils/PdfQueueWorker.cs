@@ -25,9 +25,16 @@
 
 
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Net;
 using System.Web;
 
 using ASC.Common;
+using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.CRM.Core.Enums;
@@ -41,16 +48,17 @@ namespace ASC.Web.CRM.Classes
     [Transient]
     public class PdfQueueWorker
     {
-        private readonly ProgressQueue<PdfProgressItem> Queue;
+        private readonly DistributedTaskQueue Queue;
         private readonly int tenantId;
         private readonly Guid userId;
+        private readonly object Locker = new object();
 
-        public PdfQueueWorker(ProgressQueueOptionsManager<PdfProgressItem> progressQueueOptionsManager,
+        public PdfQueueWorker(DistributedTaskQueueOptionsManager queueOptions,
                               PdfProgressItem pdfProgressItem,
                               TenantManager tenantProvider,
                               SecurityContext securityContext)
         {
-            Queue = progressQueueOptionsManager.Value;
+            Queue = queueOptions.Get<PdfProgressItem>();
             PdfProgressItem = pdfProgressItem;
             tenantId = tenantProvider.GetCurrentTenant().TenantId;
             userId = securityContext.CurrentAccount.ID;
@@ -67,7 +75,9 @@ namespace ASC.Web.CRM.Classes
         {
             var id = GetTaskId(tenantId, invoiceId);
 
-            return Queue.GetStatus(id) as PdfProgressItem;
+            var findedItem = Queue.GetTasks<PdfProgressItem>().FirstOrDefault(x => x.Id == id);
+
+            return findedItem;
         }
 
         public void TerminateTask(int invoiceId)
@@ -75,32 +85,27 @@ namespace ASC.Web.CRM.Classes
             var item = GetTaskStatus(tenantId, invoiceId);
 
             if (item != null)
-                Queue.Remove(item);
+                Queue.RemoveTask(item.Id);
         }
 
         public PdfProgressItem StartTask(int invoiceId)
         {
-            lock (Queue.SynchRoot)
+            lock (Locker)
             {
                 var task = GetTaskStatus(tenantId, invoiceId);
 
                 if (task != null && task.IsCompleted)
                 {
-                    Queue.Remove(task);
+                    Queue.RemoveTask(task.Id);
                     task = null;
                 }
 
                 if (task == null)
                 {
-
                     PdfProgressItem.Configure(GetTaskId(tenantId, invoiceId), tenantId, userId, invoiceId);
-
-                    Queue.Add(PdfProgressItem);
+                    Queue.QueueTask(PdfProgressItem);
 
                 }
-
-                if (!Queue.IsStarted)
-                    Queue.Start(x => x.RunJob());
 
                 return task;
             }
@@ -108,27 +113,22 @@ namespace ASC.Web.CRM.Classes
     }
 
     [Transient]
-    public class PdfProgressItem : IProgressItem
+    public class PdfProgressItem : DistributedTaskProgress, IProgressItem
     {
         private readonly string _contextUrl;
         private int _tenantId;
         private int _invoiceId;
         private Guid _userId;
 
-        public object Id { get; set; }
-        public object Status { get; set; }
         public object Error { get; set; }
-        public double Percentage { get; set; }
-        public bool IsCompleted { get; set; }
-        public PdfCreator PdfCreator { get; }
-        public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
+        private readonly PdfCreator PdfCreator;
+        private readonly SecurityContext SecurityContext;
+        private readonly TenantManager TenantManager;
 
         public PdfProgressItem(IHttpContextAccessor httpContextAccessor)
         {
             _contextUrl = httpContextAccessor.HttpContext != null ? httpContextAccessor.HttpContext.Request.GetUrlRewriter().ToString() : null;
 
-            Status = ProgressStatus.Queued;
             Error = null;
             Percentage = 0;
             IsCompleted = false;
@@ -139,18 +139,18 @@ namespace ASC.Web.CRM.Classes
                                Guid userId,
                                int invoiceId)
         {
-            Id = id;
+            Id = id.ToString();
             _tenantId = tenantId;
             _invoiceId = invoiceId;
             _userId = userId;
         }
 
-        public void RunJob()
+
+        protected override void DoJob()
         {
             try
             {
                 Percentage = 0;
-                Status = ProgressStatus.Started;
 
                 TenantManager.SetCurrentTenant(_tenantId);
 
@@ -166,14 +166,16 @@ namespace ASC.Web.CRM.Classes
                 PdfCreator.CreateAndSaveFile(_invoiceId);
 
                 Percentage = 100;
-                Status = ProgressStatus.Done;
+                PublishChanges();
+
+                Status = DistributedTaskStatus.Completed;
             }
             catch (Exception ex)
             {
                 LogManager.GetLogger("ASC.Web").Error(ex);
 
                 Percentage = 0;
-                Status = ProgressStatus.Failed;
+                Status = DistributedTaskStatus.Failted;
                 Error = ex.Message;
             }
             finally
@@ -190,6 +192,23 @@ namespace ASC.Web.CRM.Classes
 
                 IsCompleted = true;
             }
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (obj is PdfProgressItem)
+            {
+               return ((PdfProgressItem)obj).Id == Id;
+            }
+
+            return base.Equals(obj);    
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
         }
 
         public object Clone()

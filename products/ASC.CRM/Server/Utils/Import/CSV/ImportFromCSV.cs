@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.CRM.Core.Enums;
@@ -43,26 +44,18 @@ namespace ASC.Web.CRM.Classes
     public class ImportFromCSV
     {
         public ImportFromCSV(TenantManager tenantProvider,
-                             ImportDataCache importDataCache,
-                             ProgressQueueOptionsManager<ImportDataOperation> progressQueueOptionsManager,
+                             DistributedTaskQueueOptionsManager progressQueueOptionsManager,
                              ImportDataOperation importDataOperation)
         {
-            TenantId = tenantProvider.GetCurrentTenant().TenantId;
-            ImportDataCache = importDataCache;
-            _importQueue = progressQueueOptionsManager.Value;
-            ImportDataOperation = importDataOperation;
+            _tenantId = tenantProvider.GetCurrentTenant().TenantId;
+            _importQueue = progressQueueOptionsManager.Get<ImportDataOperation>();
+            _importDataOperation = importDataOperation;
         }
 
-        public ImportDataOperation ImportDataOperation { get; }
-
-        public ImportDataCache ImportDataCache { get; }
-
-        public int TenantId { get; }
-
+        private readonly ImportDataOperation _importDataOperation;
+        private readonly int _tenantId;
         private readonly object _syncObj = new object();
-
-        private readonly ProgressQueue<ImportDataOperation> _importQueue;
-
+        private readonly DistributedTaskQueue _importQueue;
         public readonly int MaxRoxCount = 10000;
 
         public int GetQuotas()
@@ -120,38 +113,37 @@ namespace ASC.Web.CRM.Classes
 
         }
 
+        protected String GetKey(EntityType entityType)
+        {
+            return String.Format("{0}_{1}", _tenantId, (int)entityType);
+        }
+
         public IProgressItem GetStatus(EntityType entityType)
         {
-            var result = _importQueue.GetStatus(String.Format("{0}_{1}", TenantId, (int)entityType));
+            var operation = _importQueue.GetTasks<ImportDataOperation>().FirstOrDefault(x => x.Id == GetKey(entityType));
 
-            if (result == null)
-            {
-                return ImportDataCache.Get(entityType);
-            }
-
-            return result;
+            return operation;
         }
 
         public IProgressItem Start(EntityType entityType, String CSVFileURI, String importSettingsJSON)
         {
             lock (_syncObj)
             {
-                var operation = GetStatus(entityType);
+                var operation = _importQueue.GetTasks<ImportDataOperation>().FirstOrDefault(x => x.Id == GetKey(entityType));
+
+                if (operation != null && operation.IsCompleted)
+                {
+                    _importQueue.RemoveTask(operation.Id);
+                    
+                    operation = null;
+
+                }
 
                 if (operation == null)
                 {
-                    var fromCache = ImportDataCache.Get(entityType);
-
-                    if (fromCache != null)
-                        return fromCache;
-
-                    ImportDataOperation.Configure(entityType, CSVFileURI, importSettingsJSON);
-
-                    _importQueue.Add(ImportDataOperation);
+                    _importDataOperation.Configure(entityType, CSVFileURI, importSettingsJSON);
+                    _importQueue.QueueTask(_importDataOperation);
                 }
-
-                if (!_importQueue.IsStarted)
-                    _importQueue.Start(x => x.RunJob());
 
                 return operation;
             }

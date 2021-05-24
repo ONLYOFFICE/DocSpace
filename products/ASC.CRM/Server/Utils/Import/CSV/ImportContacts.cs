@@ -67,7 +67,7 @@ namespace ASC.Web.CRM.Classes
             var findedContactInfos = new List<ContactInfo>();
 
             #region Read csv
-            using (var CSVFileStream = _dataStore.GetReadStream("temp", _CSVFileURI))
+            using (var CSVFileStream = _dataStore.GetReadStream("temp", _csvFileURI))
             {
                 CsvReader csv = ImportFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings);
 
@@ -128,17 +128,7 @@ namespace ASC.Web.CRM.Classes
             #endregion
 
             Percentage = 37.5;
-
-            #region Check Cancel flag | Insert Operation InCache
-            if (ImportDataCache.CheckCancelFlag(EntityType.Contact))
-            {
-                ImportDataCache.ResetAll(EntityType.Contact);
-
-                throw new OperationCanceledException();
-            }
-
-            ImportDataCache.Insert(EntityType.Contact, (ImportDataOperation)Clone());
-            #endregion
+            PublishChanges();
 
             #region Processing duplicate rule
 
@@ -154,17 +144,7 @@ namespace ASC.Web.CRM.Classes
             #endregion
 
             Percentage += 12.5;
-
-            #region Check Cancel flag | Insert Operation InCache
-            if (ImportDataCache.CheckCancelFlag(EntityType.Contact))
-            {
-                ImportDataCache.ResetAll(EntityType.Contact);
-
-                throw new OperationCanceledException();
-            }
-
-            ImportDataCache.Insert(EntityType.Contact, (ImportDataOperation)Clone());
-            #endregion
+            PublishChanges();
 
             #region Manipulation for saving Companies for persons + CRMSecurity
 
@@ -190,7 +170,7 @@ namespace ASC.Web.CRM.Classes
 
                     #region CRMSecurity set -by every item-
 
-                    portion.ForEach(ct => CRMSecurity.SetAccessTo(ct, _importSettings.ContactManagers));
+                    portion.ForEach(ct => _crmSecurity.SetAccessTo(ct, _importSettings.ContactManagers));
 
                     #endregion
 
@@ -236,7 +216,7 @@ namespace ASC.Web.CRM.Classes
                         findedCompany.ID = contactDao.SaveContact(findedCompany);
 
                         person.CompanyID = findedCompany.ID;
-                        CRMSecurity.SetAccessTo(findedCompany, _importSettings.ContactManagers);
+                        _crmSecurity.SetAccessTo(findedCompany, _importSettings.ContactManagers);
 
                         if (_importSettings.Tags.Count != 0)
                         {
@@ -271,7 +251,7 @@ namespace ASC.Web.CRM.Classes
 
                     #region CRMSecurity set -by every item-
 
-                    portion.ForEach(ct => CRMSecurity.SetAccessTo(ct, _importSettings.ContactManagers));
+                    portion.ForEach(ct => _crmSecurity.SetAccessTo(ct, _importSettings.ContactManagers));
 
                     #endregion
 
@@ -287,17 +267,7 @@ namespace ASC.Web.CRM.Classes
             #endregion
 
             Percentage += 12.5;
-
-            #region Check Cancel flag | Insert Operation InCache
-            if (ImportDataCache.CheckCancelFlag(EntityType.Contact))
-            {
-                ImportDataCache.ResetAll(EntityType.Contact);
-
-                throw new OperationCanceledException();
-            }
-
-            ImportDataCache.Insert(EntityType.Contact, (ImportDataOperation)Clone());
-            #endregion
+            PublishChanges();
 
             #region Save contact infos -by portions-
 
@@ -323,17 +293,7 @@ namespace ASC.Web.CRM.Classes
             #endregion
 
             Percentage += 12.5;
-
-            #region Check Cancel flag | Insert Operation InCache
-            if (ImportDataCache.CheckCancelFlag(EntityType.Contact))
-            {
-                ImportDataCache.ResetAll(EntityType.Contact);
-
-                throw new OperationCanceledException();
-            }
-
-            ImportDataCache.Insert(EntityType.Contact, (ImportDataOperation)Clone());
-            #endregion
+            PublishChanges();
 
             #region Save custom fields -by portions-
 
@@ -359,17 +319,7 @@ namespace ASC.Web.CRM.Classes
             #endregion
 
             Percentage += 12.5;
-
-            #region Check Cancel flag | Insert Operation InCache
-            if (ImportDataCache.CheckCancelFlag(EntityType.Contact))
-            {
-                ImportDataCache.ResetAll(EntityType.Contact);
-
-                throw new OperationCanceledException();
-            }
-
-            ImportDataCache.Insert(EntityType.Contact, (ImportDataOperation)Clone());
-            #endregion
+            PublishChanges();
 
             #region Save tags
 
@@ -391,17 +341,7 @@ namespace ASC.Web.CRM.Classes
             #endregion
 
             Percentage += 12.5;
-
-            #region Check Cancel flag | Insert Operation InCache
-            if (ImportDataCache.CheckCancelFlag(EntityType.Contact))
-            {
-                ImportDataCache.ResetAll(EntityType.Contact);
-
-                throw new OperationCanceledException();
-            }
-
-            ImportDataCache.Insert(EntityType.Contact, (ImportDataOperation)Clone());
-            #endregion
+            PublishChanges();
 
             Complete();
         }
@@ -416,6 +356,8 @@ namespace ASC.Web.CRM.Classes
                 return false;
 
             Percentage += 1.0 * 100 / (ImportFromCSV.MaxRoxCount * 3);
+            PublishChanges();
+
 
             var listItemDao = _daoFactory.GetListItemDao();
 

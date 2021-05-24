@@ -62,7 +62,7 @@ namespace ASC.Web.CRM.Classes
 
         private void ImportTaskData(DaoFactory _daoFactory)
         {
-            using (var CSVFileStream = _dataStore.GetReadStream("temp", _CSVFileURI))
+            using (var CSVFileStream = _dataStore.GetReadStream("temp", _csvFileURI))
             using (CsvReader csv = ImportFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
             {
                 int currentIndex = 0;
@@ -74,7 +74,7 @@ namespace ASC.Web.CRM.Classes
                 var findedTasks = new List<Task>();
                 var taskCategories = listItemDao.GetItems(ListType.TaskCategory);
 
-                var allUsers = UserManager.GetUsers(EmployeeStatus.All).ToList();
+                var allUsers = _userManager.GetUsers(EmployeeStatus.All).ToList();
 
                 while (csv.ReadNextRecord())
                 {
@@ -170,10 +170,12 @@ namespace ASC.Web.CRM.Classes
                 }
 
                 Percentage = 50;
+                PublishChanges();
 
                 taskDao.SaveTaskList(findedTasks);
 
                 Percentage += 12.5;
+                PublishChanges();
 
                 Complete();
 
