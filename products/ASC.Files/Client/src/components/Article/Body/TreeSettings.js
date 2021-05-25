@@ -158,7 +158,7 @@ const PureTreeSettings = ({
           id="common-settings"
           key="common"
           isLeaf={true}
-          title={t("TreeSettingsCommonSettings")}
+          title={t("CommonSettings")}
         />
         {isAdmin ? (
           <TreeNode
@@ -176,7 +176,7 @@ const PureTreeSettings = ({
             id="connected-clouds"
             key="thirdParty"
             isLeaf={true}
-            title={t("TreeSettingsConnectedCloud")}
+            title={t("ThirdPartySettings")}
           />
         ) : null}
       </TreeNode>

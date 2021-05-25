@@ -270,7 +270,10 @@ class ProfileInfo extends React.PureComponent {
             <InfoItemValue>
               <>
                 {activationStatus === 2 && (isAdmin || isSelf) && (
-                  <IconButtonWrapper isBefore={true} title={t("PendingTitle")}>
+                  <IconButtonWrapper
+                    isBefore={true}
+                    title={t("Translations:PendingTitle")}
+                  >
                     <IconButton
                       color="#C96C27"
                       size={16}
@@ -389,7 +392,9 @@ export default withRouter(
     updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
   }))(
     observer(
-      withTranslation(["Profile", "Common"])(withCultureNames(ProfileInfo))
+      withTranslation(["Profile", "Common", "Translations"])(
+        withCultureNames(ProfileInfo)
+      )
     )
   )
 );
