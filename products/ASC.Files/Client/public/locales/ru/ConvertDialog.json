@@ -1,5 +1,4 @@
 ﻿{
-  "ContinueButton": "Продолжить",
   "ConversionMessage": "Все документы, которые Вы загружаете, будут сконвертированы в соответствующий формат Office Open XML (docx, xlsx или pptx) для быстрого редактирования.",
   "ConversionTitle": "Загрузка документа",
   "ConvertingLabel": "Сконвертировано файлов: {{file}} из {{totalFiles}}",

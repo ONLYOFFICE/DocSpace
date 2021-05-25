@@ -51,5 +51,6 @@
   "CountPerPage": "{{count}} per page",
   "Settings": "Settings",
   "Guest": "Guest",
-  "AdminSettings": "Admin settings"
+  "AdminSettings": "Admin settings",
+  "ContinueButton": "Continue"
 }

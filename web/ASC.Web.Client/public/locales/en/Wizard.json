@@ -1,5 +1,4 @@
 ﻿{
-  "ButtonContinue": "Continue",
   "ChangeEmailTitle": "Change email",
   "Desc": "Please set up the portal registration data.",
   "Domain": "Domain:",
@@ -20,7 +19,6 @@
   "LicenseLink": "License agreements",
   "PlaceholderLicense": "Your license file",
   "Timezone": "Time zone:",
-
   "WelcomeTitle": "Welcome to your portal!",
   "WizardTitle": "Set up your portal"
 }
