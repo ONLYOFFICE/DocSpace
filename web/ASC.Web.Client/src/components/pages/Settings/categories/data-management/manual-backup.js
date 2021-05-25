@@ -412,4 +412,4 @@ class ManualBackup extends React.Component {
   }
 }
 
-export default ManualBackup;
+export default withTranslation("Settings")(ManualBackup);
