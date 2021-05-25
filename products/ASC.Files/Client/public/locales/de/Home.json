@@ -6,7 +6,6 @@
   "ChangeToGuest": "Zu {{guestCaption}} ändern",
   "ChangeToUser": "Zu {{userCaption}} ändern",
   "ClearButton": "Filter zurücksetzen",
-  "DeleteButton": "Löschen",
   "DisableUserButton": "Deaktivieren",
   "EmailChangeButton": "E-Mail-Adresse ändern",
   "EmptyGroupDescription": "Sie können neue Teammitglieder manuell oder über den Link einladen.",

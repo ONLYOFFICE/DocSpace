@@ -362,7 +362,9 @@ export default function withContextOptions(WrappedComponent) {
           case "delete":
             return {
               key: option,
-              label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
+              label: isThirdPartyFolder
+                ? t("DeleteThirdParty")
+                : t("Common:Delete"),
               icon: "/static/images/catalog.trash.react.svg",
               onClick: this.onClickDelete,
               disabled: false,
