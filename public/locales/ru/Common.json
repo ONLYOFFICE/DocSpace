@@ -51,5 +51,6 @@
   "CountPerPage": "{{count}} на странице",
   "Settings": "Настройки",
   "Guest": "Гость",
-  "AdminSettings": "Настройки администратора"
+  "AdminSettings": "Настройки администратора",
+  "Enable": "Включить"
 }
