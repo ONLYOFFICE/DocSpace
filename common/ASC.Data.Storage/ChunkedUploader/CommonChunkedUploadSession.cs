@@ -27,11 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json;
 
 namespace ASC.Core.ChunkedUploader
 {
-    [Serializable]
     public class CommonChunkedUploadSession : ICloneable
     {
         public string Id { get; set; }
@@ -86,21 +85,18 @@ namespace ASC.Core.ChunkedUploader
             UseChunks = true;
         }
 
+        public static CommonChunkedUploadSession Deserialize(Stream stream)
+        {
+            stream.Position = 0;
+            var sr = new StreamReader(stream);
+            string myStr = sr.ReadToEnd();
+            var w = JsonSerializer.Deserialize<CommonChunkedUploadSession>(myStr);
+            return w;
+        }
+
         public T GetItemOrDefault<T>(string key)
         {
             return Items.ContainsKey(key) && Items[key] is T t ? t : default;
-        }
-
-        public Stream Serialize()
-        {
-            var stream = new MemoryStream();
-            new BinaryFormatter().Serialize(stream, this);
-            return stream;
-        }
-
-        public static CommonChunkedUploadSession Deserialize(Stream stream)
-        {
-            return (CommonChunkedUploadSession)new BinaryFormatter().Deserialize(stream);
         }
 
         public virtual object Clone()

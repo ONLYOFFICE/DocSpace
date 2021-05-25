@@ -26,7 +26,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Text.Json.Serialization;
 
 using ASC.Common;
 using ASC.Web.Core.Files;
@@ -57,7 +56,6 @@ namespace ASC.Files.Core
     }
 
     [Transient]
-    [Serializable]
     [DebuggerDisplay("{Title} ({ID} v{Version})")]
     public class File<T> : FileEntry<T>
     {
@@ -81,7 +79,6 @@ namespace ASC.Files.Core
 
         public int Version { get; set; }
 
-        [JsonPropertyName("version_group")]
         public int VersionGroup { get; set; }
 
         public string Comment { get; set; }
@@ -103,10 +100,8 @@ namespace ASC.Files.Core
             set { base.Title = value; }
         }
 
-        [JsonPropertyName("content_length")]
         public long ContentLength { get; set; }
 
-        [JsonPropertyName("content_length_string")]
         public string ContentLengthString
         {
             get { return FileSizeComment.FilesSizeToString(ContentLength); }
@@ -138,7 +133,6 @@ namespace ASC.Files.Core
             }
         }
 
-        [JsonPropertyName("file_status")]
         public FileStatus FileStatus
         {
             get
@@ -165,7 +159,6 @@ namespace ASC.Files.Core
 
         public bool Locked { get; set; }
 
-        [JsonPropertyName("locked_by")]
         public string LockedBy { get; set; }
 
         public override bool IsNew
@@ -234,16 +227,12 @@ namespace ASC.Files.Core
 
         public object NativeAccessor { get; set; }
 
-        [NonSerialized]
         private FileTrackerHelper FileTracker;
 
-        [NonSerialized]
         private readonly FilesLinkUtility FilesLinkUtility;
 
-        [NonSerialized]
         private readonly FileUtility FileUtility;
 
-        [NonSerialized]
         private readonly FileConverter FileConverter;
     }
 }

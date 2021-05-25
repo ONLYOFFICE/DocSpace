@@ -34,6 +34,8 @@ using ASC.Files.Core;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Utils
@@ -46,12 +48,14 @@ namespace ASC.Web.Files.Utils
         private IOptionsMonitor<ILog> Options { get; }
         private GlobalStore GlobalStore { get; }
         private SetupInfo SetupInfo { get; }
+        private IServiceProvider ServiceProvider { get; }
 
-        public ChunkedUploadSessionHolder(IOptionsMonitor<ILog> options, GlobalStore globalStore, SetupInfo setupInfo)
+        public ChunkedUploadSessionHolder(IOptionsMonitor<ILog> options, GlobalStore globalStore, SetupInfo setupInfo, IServiceProvider serviceProvider)
         {
             Options = options;
             GlobalStore = globalStore;
             SetupInfo = setupInfo;
+            ServiceProvider = serviceProvider;
 
             // clear old sessions
             try
@@ -66,7 +70,8 @@ namespace ASC.Web.Files.Utils
 
         public void StoreSession<T>(ChunkedUploadSession<T> s)
         {
-            CommonSessionHolder(false).Store(s);
+            using var stream = s.Serialize();
+            CommonSessionHolder(false).Store(stream, s);
         }
 
         public void RemoveSession<T>(ChunkedUploadSession<T> s)
@@ -76,11 +81,15 @@ namespace ASC.Web.Files.Utils
 
         public ChunkedUploadSession<T> GetSession<T>(string sessionId)
         {
-            return (ChunkedUploadSession<T>)GetSession(sessionId);
+            var file = ServiceProvider.GetService<File<T>>();
+            using var stream = CommonSessionHolder(false).GetStream(sessionId);
+            return ChunkedUploadSession<T>.Deserialize(stream, file);
         }
+
         public CommonChunkedUploadSession GetSession(string sessionId)
         {
-            return CommonSessionHolder(false).Get(sessionId);
+            using var stream = CommonSessionHolder(false).GetStream(sessionId);
+            return CommonChunkedUploadSession.Deserialize(stream);
         }
 
         public ChunkedUploadSession<T> CreateUploadSession<T>(File<T> file, long contentLength)

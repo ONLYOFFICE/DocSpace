@@ -25,14 +25,12 @@
 
 
 using System;
-using System.Text.Json.Serialization;
 
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core
 {
-    [Serializable]
     public abstract class FileEntry : ICloneable
     {
         public FileEntry(Global global)
@@ -42,34 +40,28 @@ namespace ASC.Files.Core
 
         public virtual string Title { get; set; }
 
-        [JsonPropertyName("create_by_id")]
         public Guid CreateBy { get; set; }
 
-        [JsonPropertyName("create_by")]
         public string CreateByString
         {
             get { return !CreateBy.Equals(Guid.Empty) ? Global.GetUserName(CreateBy) : _createByString; }
             set { _createByString = value; }
         }
 
-        [JsonPropertyName("create_on")]
         public string CreateOnString
         {
             get { return CreateOn.Equals(default) ? null : CreateOn.ToString("g"); }
             set { throw new NotImplementedException(); }
         }
 
-        [JsonPropertyName("modified_on")]
         public string ModifiedOnString
         {
             get { return ModifiedOn.Equals(default) ? null : ModifiedOn.ToString("g"); }
             set { throw new NotImplementedException(); }
         }
 
-        [JsonPropertyName("modified_by_id")]
         public Guid ModifiedBy { get; set; }
 
-        [JsonPropertyName("modified_by")]
         public string ModifiedByString
         {
             get { return !ModifiedBy.Equals(Guid.Empty) ? Global.GetUserName(ModifiedBy) : _modifiedByString; }
@@ -82,10 +74,8 @@ namespace ASC.Files.Core
 
         public bool Shared { get; set; }
 
-        [JsonPropertyName("provider_id")]
         public int ProviderId { get; set; }
 
-        [JsonPropertyName("provider_key")]
         public string ProviderKey { get; set; }
         public bool ProviderEntry
         {
@@ -104,7 +94,6 @@ namespace ASC.Files.Core
 
         public FileEntryType FileEntryType;
 
-        [NonSerialized]
         protected Global Global;
 
         private string _modifiedByString;
@@ -122,7 +111,6 @@ namespace ASC.Files.Core
         }
     }
 
-    [Serializable]
     public abstract class FileEntry<T> : FileEntry, ICloneable
     {
         public FileEntry(Global global) : base(global)
@@ -135,7 +123,6 @@ namespace ASC.Files.Core
 
         private T _folderIdDisplay;
 
-        [JsonPropertyName("folder_id")]
         public T FolderIdDisplay
         {
             get
