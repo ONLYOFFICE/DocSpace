@@ -100,33 +100,89 @@ namespace Frontend.Translations.Tests
         }
 
         [Test]
+        public void FullDublicatesTest()
+        {
+            var fullEnDuplicates = TranslationFiles
+                .Where(file => file.Language == "en")
+                .SelectMany(item => item.Translations)
+                .GroupBy(t => new { t.Key, t.Value })
+                .Where(grp => grp.Count() > 1)
+                .Select(grp => new { Key = grp.Key, Count = grp.Count(), Keys = grp.ToList() })
+                //.Where(grp => grp.Grouped.GroupBy(n => n.Key).Any(c => c.Count() > 1))
+                .OrderByDescending(itm => itm.Count)
+                .Select(grp => new { Key = grp.Key.Key, Value = grp.Key.Value, grp.Count })
+                .ToList();
+
+            Assert.AreEqual(0, fullEnDuplicates.Count, string.Join("\r\n", fullEnDuplicates.Select(d => JObject.FromObject(d).ToString())));
+        }
+
+        [Test]
         public void DublicatesByContentTest()
         {
-            var allDuplicates = TranslationFiles
-                .Where(file => file.Path.Contains("public\\locales\\en"))
+            var allRuTranslations = TranslationFiles
+                .Where(file => file.Language == "ru")
+                .SelectMany(item => item.Translations)
+                .ToList();
+
+            var allEnDuplicates = TranslationFiles
+                .Where(file => file.Language == "en")
                 .SelectMany(item => item.Translations)
                 .GroupBy(t => t.Value)
                 .Where(grp => grp.Count() > 1)
-                .Select(grp => new { Key = grp.Key, Count = grp.Count(), Grouped = grp.ToList() })
+                .Select(grp => new { ContentKey = grp.Key, Count = grp.Count(), List = grp.ToList() })
                 //.Where(grp => grp.Grouped.GroupBy(n => n.Key).Any(c => c.Count() > 1))
                 .OrderByDescending(itm => itm.Count)
                 .ToList();
 
-            /*var listForSave = allDuplicates
-                .SelectMany(g => g.Grouped)
+            var duplicatesKeys = new List<TranslationItem>();
+
+            foreach (var item in allEnDuplicates)
+            {
+                var ruEquivalents = allRuTranslations
+                    .Where(t => item.List.Select(k => k.Key).Contains(t.Key))
+                    .GroupBy(t => t.Value)
+                    .Select(grp => new
+                    {
+                        ContentKey = grp.Key,
+                        Count = grp.Count(),
+                        Keys = grp.Select(k => k.Key).ToList()
+                    })
+                    .Where(t => t.Count > 1)
+                    .ToList();
+
+                if (!ruEquivalents.Any())
+                    continue;
+
+                duplicatesKeys.AddRange(
+                    item.List.Where(item => ruEquivalents
+                        .SelectMany(k => k.Keys)
+                        .Any(k => k == item.Key)
+                        )
+                    );
+
+            }
+
+            var duplicates = duplicatesKeys
+                .GroupBy(k => k.Value)
+                .Select(g => new { ContentKey = g.Key, Count = g.Count(), Keys = g.ToList() })
+                .ToList();
+
+            /*var listForSave = duplicates
+                .SelectMany(g => g.Keys)
                 .GroupBy(item => item.Key)
                 .Select(grp => new
                 {
                     Key = grp.Key,
                     Value = grp.FirstOrDefault().Value
-                });
+                })
+                .OrderByDescending(t => t.Value);
 
             string json = JsonSerializer.Serialize(listForSave);
             json = json.Replace("\"Key\":", "").Replace(",\"Value\"", "").Replace("},{", ",");
             json = json.Substring(1, json.Length - 2);
             File.WriteAllText(@"D:\dublicates.json", json);*/
 
-            Assert.AreEqual(0, allDuplicates.Count);
+            Assert.AreEqual(0, duplicates.Count, string.Join(", ", duplicates.Select(d => JObject.FromObject(d).ToString())));
         }
 
         [Test]
@@ -148,7 +204,7 @@ namespace Frontend.Translations.Tests
                     .ToList();
 
             Assert.AreEqual(0, incompleteList.Count,
-                "languages '{0}' are not equal 'en' (Count= {1}) by translated files count",
+                "This languages: '{0}' are not equal 'en' (Count= {1}) by translated files count",
                 string.Join(", ", incompleteList), expectedCount);
 
             //Assert.AreEqual(true, groupedByLng.All(g => g.Count == enGroup.Count));
@@ -181,7 +237,7 @@ namespace Frontend.Translations.Tests
                     .ToList();
 
             Assert.AreEqual(0, incompleteList.Count,
-                "languages '{0}' are not equal 'en' (Count= {1}) by translated keys count",
+                "This languages: '{0}' are not equal 'en' (Count= {1}) by translated keys count",
                 string.Join(", ", incompleteList), expectedCount);
 
             //Assert.AreEqual(true, groupedByLng.All(g => g.Keys.Count() == enGroup.Keys.Count()));
@@ -191,7 +247,7 @@ namespace Frontend.Translations.Tests
         public void NotFoundKeysTest()
         {
             var allEnKeys = TranslationFiles
-                 .Where(file => file.Path.Contains("public\\locales\\en"))
+                 .Where(file => file.Language == "en")
                  .SelectMany(item => item.Translations)
                  .Select(item => item.Key);
 
@@ -204,14 +260,14 @@ namespace Frontend.Translations.Tests
 
             Assert.AreEqual(0, notFoundJsKeys.Count(),
                 "Some i18n-keys are not exist in translations in 'en' language: Keys: '{0}'",
-                string.Join(", ", notFoundJsKeys));
+                string.Join("\r\n", notFoundJsKeys));
         }
 
         [Test]
         public void UselessTranslationKeysTest()
         {
             var allEnKeys = TranslationFiles
-                 .Where(file => file.Path.Contains("public\\locales\\en"))
+                 .Where(file => file.Language == "en")
                  .SelectMany(item => item.Translations)
                  .Select(item => item.Key)
                  .Where(k => !k.StartsWith("Culture_"));
@@ -226,7 +282,7 @@ namespace Frontend.Translations.Tests
 
             Assert.AreEqual(0, notFoundi18nKeys.Count(),
                 "Some i18n-keys are not found in js: Keys: '{0}'",
-                string.Join(", ", notFoundi18nKeys));
+                string.Join("\r\n", notFoundi18nKeys));
         }
     }
 }
