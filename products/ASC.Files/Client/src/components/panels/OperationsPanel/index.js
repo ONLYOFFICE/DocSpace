@@ -103,7 +103,11 @@ const OperationsPanelComponent = (props) => {
         onClose={onClose}
       >
         <ModalDialog.Header>
-          {isRecycleBin ? t("Restore") : isCopy ? t("Copy") : t("Move")}
+          {isRecycleBin
+            ? t("Restore")
+            : isCopy
+            ? t("Copy")
+            : t("Translations:Move")}
         </ModalDialog.Header>
         <ModalDialog.Body>
           <TreeFolders
@@ -119,7 +123,7 @@ const OperationsPanelComponent = (props) => {
   );
 };
 
-const OperationsPanel = withTranslation("OperationsPanel")(
+const OperationsPanel = withTranslation(["OperationsPanel", "Translations"])(
   OperationsPanelComponent
 );
 
