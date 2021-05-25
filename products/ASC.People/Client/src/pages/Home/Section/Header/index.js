@@ -265,7 +265,7 @@ const SectionHeaderContent = (props) => {
         onClick: onSendEmail,
       },
       {
-        label: t("DeleteButton"),
+        label: t("Common:Delete"),
         disabled: !hasUsersToRemove,
         onClick: toggleDeleteDialog,
       },
@@ -319,7 +319,7 @@ const SectionHeaderContent = (props) => {
       },
       {
         key: "delete-group",
-        label: t("DeleteButton"),
+        label: t("Common:Delete"),
         onClick: onDeleteGroup,
       },
     ];

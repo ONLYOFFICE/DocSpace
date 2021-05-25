@@ -21,7 +21,6 @@
   "CopyItems": "\u003Cstrong\u003E{{qty}}\u003C/strong\u003E elements copied",
   "CopyOperation": "Copying",
   "CreateWithEmptyTitle": "Can\u0027t create a folder or file with an empty title",
-  "Delete": "Delete",
   "DeleteFromTrash": "Selected elements were successfully deleted from Trash",
   "DeleteOperation": "Deleting",
   "DeleteSelectedElem": "Selected elements were successfully deleted",

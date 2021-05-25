@@ -18,7 +18,6 @@
   "LblPending": "Pending",
   "Administrator": "Administrator",
   "LblOther": "Other",
-  "DeleteButton": "Delete",
   "LblSelect": "Select",
   "More": "More",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",

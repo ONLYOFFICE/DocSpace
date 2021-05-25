@@ -21,7 +21,6 @@
   "CopyItems": "Скопировано элементов: \u003Cstrong\u003E{{qty}}\u003C/strong\u003E",
   "CopyOperation": "Копирование",
   "CreateWithEmptyTitle": "Нельзя создать папку или файл с пустым названием",
-  "Delete": "Удалить",
   "DeleteFromTrash": "Выбранные элементы успешно удалены из корзины",
   "DeleteOperation": "Удаление",
   "DeleteSelectedElem": "Выбранные элементы успешно удалены",

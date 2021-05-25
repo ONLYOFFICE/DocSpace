@@ -52,5 +52,6 @@
   "Settings": "Einstellungen",
   "Guest": "Gast",
   "AdminSettings": "Administrative Einstellungen",
-  "ContinueButton": "Weiter"
+  "ContinueButton": "Weiter",
+  "Delete": "Löschen"
 }

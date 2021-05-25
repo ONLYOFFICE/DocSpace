@@ -52,5 +52,6 @@
   "Settings": "Настройки",
   "Guest": "Гость",
   "AdminSettings": "Настройки администратора",
-  "ContinueButton": "Продолжить"
+  "ContinueButton": "Продолжить",
+  "Delete": "Удалить"
 }

@@ -18,7 +18,6 @@
   "LblPending": "Ожидание",
   "Administrator": "Администратор",
   "LblOther": "Другое",
-  "DeleteButton": "Удалить",
   "LblSelect": "Выберите",
   "More": "Больше",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",

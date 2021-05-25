@@ -285,7 +285,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         key: "delete",
-        label: t("Delete"),
+        label: t("Common:Delete"),
         onClick: this.onDeleteAction,
         disabled: true,
       },
@@ -413,7 +413,7 @@ class SectionHeaderContent extends React.Component {
         onClick: this.onCopyAction,
       },
       {
-        label: t("Delete"),
+        label: t("Common:Delete"),
         disabled:
           !selectionCount || !deleteDialogVisible || isThirdPartySelection,
         onClick: this.onDeleteAction,
