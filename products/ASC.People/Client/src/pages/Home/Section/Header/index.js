@@ -223,7 +223,7 @@ const SectionHeaderContent = (props) => {
           <DropDownItem key="active" label={t("LblActive")} data-index={0} />,
           <DropDownItem
             key="disabled"
-            label={t("LblTerminated")}
+            label={t("Translations:DisabledEmployeeStatus")}
             data-index={1}
           />,
           <DropDownItem key="invited" label={t("LblInvited")} data-index={2} />,
@@ -551,5 +551,9 @@ export default withRouter(
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
     group: peopleStore.selectedGroupStore.group,
     isTabletView: auth.settingsStore.isTabletView,
-  }))(observer(withTranslation(["Home", "Common"])(SectionHeaderContent)))
+  }))(
+    observer(
+      withTranslation(["Home", "Common", "Translations"])(SectionHeaderContent)
+    )
+  )
 );

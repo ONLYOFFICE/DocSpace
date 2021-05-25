@@ -91,7 +91,7 @@ const ModalContainer = ({
       <BtnContainer>
         <Button
           key="saveBtn"
-          label={t("ErrorParamsFooter")}
+          label={t("Common:CloseButton")}
           primary={true}
           scale={true}
           size="big"

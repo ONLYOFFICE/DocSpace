@@ -111,11 +111,13 @@ class ChangeUserStatusDialogComponent extends React.Component {
     );
 
     const statusTranslation =
-      userStatus === 1
+      userStatus === EmployeeStatus.Active
         ? t("ChangeUsersActiveStatus")
         : t("ChangeUsersDisableStatus");
     const userStatusTranslation =
-      userStatus === 1 ? t("DisabledEmployeeTitle") : t("ActiveEmployeeTitle");
+      userStatus === EmployeeStatus.Active
+        ? t("Translations:DisabledEmployeeStatus")
+        : t("ActiveEmployeeTitle");
 
     return (
       <ModalDialogContainer visible={visible} onClose={onClose}>
@@ -164,6 +166,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
 const ChangeUserStatusDialog = withTranslation([
   "ChangeUserStatusDialog",
   "Common",
+  "Translations",
 ])(ChangeUserStatusDialogComponent);
 
 ChangeUserStatusDialog.propTypes = {
