@@ -1,7 +1,7 @@
 import React from "react";
 import { Provider as MobxProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
-import { getFolderPath } from "@appserver/common/api/files";
+import { getFolderPath, thirdParty } from "@appserver/common/api/files";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import stores from "../../../store/index";
 import store from "studio/store";
@@ -14,6 +14,7 @@ import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
+import { getCommonThirdPartyList } from "@appserver/common/api/settings";
 
 const { auth: authStore } = store;
 
@@ -39,6 +40,7 @@ const StyledComponent = styled.div`
 `;
 let commonTreeFolder;
 let pathName = "";
+let folderList;
 class SelectedFolder extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -46,45 +48,76 @@ class SelectedFolder extends React.PureComponent {
     this.state = {
       isLoading: false,
       isLoadingData: false,
-      baseFolder: "",
+      baseFolderPath: "",
       fullFolderPath: "",
       fullFolderPathDefault: "",
+      isAvailableFolders: true,
     };
   }
+  getFields = (obj) => {
+    return Object.keys(obj).reduce((acc, rec) => {
+      return [...acc, obj[rec]];
+    }, []);
+  };
   componentDidMount() {
     const {
       fetchTreeFolders,
       getCommonFolder,
       folderPath,
       onSelectFolder,
-      folderList,
-      isCommonWithoutProvider,
       onSetLoadingData,
+      isThirdPartyFolders,
+      isCommonFolders,
     } = this.props;
 
     this.setState({ isLoading: true }, function () {
       onSetLoadingData && onSetLoadingData(true);
 
-      fetchTreeFolders()
-        .then(() => getCommonFolder())
-        .then((commonFolder) => (commonTreeFolder = commonFolder)) //только общие сразу вызвать
-        .then(
-          () =>
-            folderPath.length === 0 &&
-            isCommonWithoutProvider &&
-            onSelectFolder([`${commonTreeFolder.id}`])
-        )
-        .finally(() => {
-          onSetLoadingData && onSetLoadingData(false);
-          this.setState({
-            isLoading: false,
-            baseFolder: folderList ? "" : commonTreeFolder.title,
+      if (isCommonFolders) {
+        //debugger;
+        fetchTreeFolders()
+          .then(() => getCommonFolder())
+          .then((commonFolder) => (folderList = [commonFolder])) //только общие сразу вызвать
+          .then(
+            () =>
+              folderPath.length === 0 && onSelectFolder([`${folderList[0].id}`])
+          )
+          .finally(() => {
+            onSetLoadingData && onSetLoadingData(false);
+            this.setState({
+              isLoading: false,
+              baseFolderPath: folderList[0].title,
+            });
           });
-        });
+      }
+
+      if (isThirdPartyFolders) {
+        SelectedFolderModal.getCommonThirdPartyList()
+          .then((commonThirdPartyArray) => (folderList = commonThirdPartyArray))
+          .then(
+            () =>
+              folderList.length === 0 &&
+              this.setState({ isAvailableFolders: false })
+          )
+          .then(
+            () =>
+              folderPath.length !== 0 &&
+              this.setState({
+                baseFolderPath: folderList,
+              })
+          )
+          .finally(() => {
+            onSetLoadingData && onSetLoadingData(false);
+
+            this.setState({
+              isLoading: false,
+            });
+          });
+      }
     });
 
     if (folderPath.length !== 0) {
-      pathName = this.getTitlesFolders(folderPath);
+      pathName = this.setFullFolderPath(folderPath);
 
       this.setState({
         fullFolderPath: pathName,
@@ -105,10 +138,10 @@ class SelectedFolder extends React.PureComponent {
       });
     }
     if (folderPath !== prevProps.folderPath) {
-      pathName = this.getTitlesFolders(folderPath);
+      pathName = this.setFullFolderPath(folderPath);
 
       this.setState({
-        baseFolder: pathName,
+        baseFolderPath: pathName,
       });
     }
   }
@@ -117,7 +150,9 @@ class SelectedFolder extends React.PureComponent {
 
     this.setState({ isLoadingData: true }, function () {
       getFolderPath(folder)
-        .then((folderPath) => (pathName = this.getTitlesFolders(folderPath)))
+        .then(
+          (foldersArray) => (pathName = this.setFullFolderPath(foldersArray))
+        )
         .then(() =>
           this.setState(
             {
@@ -132,17 +167,17 @@ class SelectedFolder extends React.PureComponent {
         .finally(() => this.setState({ isLoadingData: false }));
     });
   };
-  getTitlesFolders = (folderPath) => {
-    //debugger;
+
+  setFullFolderPath = (foldersArray) => {
     path = "";
-    if (folderPath.length > 1) {
-      for (let item of folderPath) {
+    if (foldersArray.length > 1) {
+      for (let item of foldersArray) {
         if (!path) {
           path = path + `${item.title}`;
         } else path = path + " " + "/" + " " + `${item.title}`;
       }
     } else {
-      for (let item of folderPath) {
+      for (let item of foldersArray) {
         path = `${item.title}`;
       }
     }
@@ -158,33 +193,40 @@ class SelectedFolder extends React.PureComponent {
       name,
       onClickInput,
       isPanelVisible,
-      folderList,
+      //folderList,
       isCommonWithoutProvider,
       onClose,
       isError,
       withoutTopLevelFolder,
       isSavingProcess,
-      commonThirdPartyList,
+      isDisabled,
+      //commonThirdPartyList,
     } = this.props;
-    const { isLoading, isLoadingData, baseFolder, fullFolderPath } = this.state;
+    const {
+      isLoading,
+      isLoadingData,
+      baseFolderPath,
+      fullFolderPath,
+      isAvailableFolders,
+    } = this.state;
     const zIndex = 310;
     //console.log("name", name);
 
-    //console.log("folderList", folderList);
+    // console.log("folderList", folderList);
 
     return (
       <StyledComponent>
         <FileInputWithFolderPath
           name={name}
           className="input-with-folder-path"
-          baseFolder={baseFolder}
-          isDisabled={isLoading || isSavingProcess}
+          baseFolderPath={baseFolderPath}
           folderPath={fullFolderPath}
+          isDisabled={isLoading || isSavingProcess || isDisabled}
+          isError={isError}
           onClickInput={onClickInput}
-          hasError={isError}
         />
 
-        {!isLoading && commonTreeFolder && isPanelVisible && (
+        {!isLoading && isPanelVisible && (
           <StyledAsidePanel visible={isPanelVisible}>
             <ModalDialog
               visible={isPanelVisible}
@@ -195,15 +237,19 @@ class SelectedFolder extends React.PureComponent {
 
               <ModalDialog.Body>
                 {!isLoadingData ? (
-                  <TreeFolders
-                    expandedPanelKeys={expandedKeys}
-                    data={folderList ? folderList : [commonTreeFolder]}
-                    filter={filter}
-                    onSelect={this.onSelect}
-                    needUpdate={false}
-                    withoutProvider={isCommonWithoutProvider}
-                    withoutTopLevelFolder={withoutTopLevelFolder}
-                  />
+                  isAvailableFolders ? (
+                    <TreeFolders
+                      expandedPanelKeys={expandedKeys}
+                      data={folderList}
+                      filter={filter}
+                      onSelect={this.onSelect}
+                      needUpdate={false}
+                      withoutProvider={isCommonWithoutProvider}
+                      withoutTopLevelFolder={withoutTopLevelFolder}
+                    />
+                  ) : (
+                    <Text as="span">{t("NotAvailableFolder")}</Text>
+                  )
                 ) : (
                   <div key="loader" className="panel-loader-wrapper">
                     <Loader type="oval" size="16px" className="panel-loader" />
@@ -258,6 +304,15 @@ const SelectedFolderWrapper = inject(
 )(observer(withTranslation("SelectedFolder")(SelectedFolder)));
 
 class SelectedFolderModal extends React.Component {
+  static getCommonThirdPartyList = async () => {
+    const commonThirdPartyArray = await getCommonThirdPartyList();
+
+    commonThirdPartyArray.map((currentValue, index) => {
+      commonThirdPartyArray[index].key = `0-${index}`;
+    });
+
+    return commonThirdPartyArray;
+  };
   render() {
     return (
       <MobxProvider auth={authStore} {...stores}>

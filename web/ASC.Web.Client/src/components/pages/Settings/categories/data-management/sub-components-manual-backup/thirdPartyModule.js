@@ -73,9 +73,9 @@ const ThirdPartyModule = ({
         onClose={onClose}
         onClickInput={onClickInput}
         isPanelVisible={isPanelVisible}
-        folderList={commonThirdPartyList}
         isError={isError}
         withoutTopLevelFolder
+        isThirdPartyFolders
       />
 
       <div className="manual-backup_buttons">

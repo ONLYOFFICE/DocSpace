@@ -12,10 +12,10 @@ const FileInputWithFolderPath = (
     placeholder,
     isDisabled,
     scale,
-    hasError,
+    isError,
     hasWarning,
     id,
-    baseFolder,
+    baseFolderPath,
     onClickInput,
     name,
     className,
@@ -26,7 +26,7 @@ const FileInputWithFolderPath = (
     <StyledFileInput
       size={size}
       scale={scale ? 1 : 0}
-      hasError={hasError}
+      hasError={isError}
       hasWarning={hasWarning}
       isDisabled={isDisabled}
       className={className}
@@ -36,10 +36,10 @@ const FileInputWithFolderPath = (
         id={id}
         className="text-input-with-folder-path"
         placeholder={placeholder}
-        value={folderPath || baseFolder}
+        value={folderPath || baseFolderPath}
         size={size}
         isDisabled={isDisabled}
-        hasError={hasError}
+        hasError={isError}
         hasWarning={hasWarning}
         scale={scale}
         onClick={onClickInput}

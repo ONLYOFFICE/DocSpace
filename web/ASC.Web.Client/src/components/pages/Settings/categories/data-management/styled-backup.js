@@ -41,6 +41,9 @@ const StyledComponent = styled.div`
 `;
 const StyledModules = styled.div`
   margin-bottom: 40px;
+  .category-item-description {
+    ${(props) => props.isDisabled && `color: #A3A9AE`}
+  }
 `;
 
 export { StyledModules, StyledComponent };

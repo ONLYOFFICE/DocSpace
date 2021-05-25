@@ -13,7 +13,7 @@ import ThirdPartyStorageModule from "./sub-components/thirdPartyStorageModule";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import RadioButton from "@appserver/components/radio-button";
 import { StyledModules, StyledComponent } from "./styled-backup";
-
+import SelectedFolder from "files/SelectedFolder";
 class ManualBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -45,7 +45,10 @@ class ManualBackup extends React.Component {
         isLoading: true,
       },
       function () {
-        getCommonThirdPartyList()
+        SelectedFolder.getCommonThirdPartyList()
+          .then(
+            (thirdPartyArray) => (this.commonThirdPartyList = thirdPartyArray)
+          )
           .then(() => getBackupProgress())
           .then((res) => {
             if (res) {
@@ -332,7 +335,11 @@ class ManualBackup extends React.Component {
           )}
         </StyledModules>
 
-        <StyledModules>
+        <StyledModules
+          isDisabled={
+            this.commonThirdPartyList && this.commonThirdPartyList.length === 0
+          }
+        >
           <RadioButton
             fontSize="13px"
             fontWeight="400"
@@ -341,7 +348,10 @@ class ManualBackup extends React.Component {
             key={2}
             onClick={this.onClickShowStorage}
             isChecked={isCheckedThirdParty}
-            //isDisabled={isLoadingData}
+            isDisabled={
+              this.commonThirdPartyList &&
+              this.commonThirdPartyList.length === 0
+            }
             value="value"
             className="automatic-backup_radio-button"
           />
@@ -355,7 +365,7 @@ class ManualBackup extends React.Component {
           {isCheckedThirdParty && (
             <ThirdPartyModule
               maxProgress={maxProgress}
-              commonThirdPartyList={commonThirdPartyList}
+              commonThirdPartyList={this.commonThirdPartyList}
               setInterval={this.setInterval}
             />
           )}
@@ -402,18 +412,4 @@ class ManualBackup extends React.Component {
   }
 }
 
-export default inject(({ auth, setup }) => {
-  const { setPanelVisible, panelVisible } = auth;
-  const { folderPath } = auth.settingsStore;
-  const { getCommonThirdPartyList } = setup;
-  const { commonThirdPartyList } = setup.dataManagement;
-
-  return {
-    setPanelVisible,
-    panelVisible,
-    folderPath,
-
-    commonThirdPartyList,
-    getCommonThirdPartyList,
-  };
-})(withTranslation("Settings")(observer(ManualBackup)));
+export default ManualBackup;

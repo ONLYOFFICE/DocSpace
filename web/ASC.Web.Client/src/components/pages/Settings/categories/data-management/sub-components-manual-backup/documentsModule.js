@@ -43,6 +43,7 @@ const DocumentsModule = ({ maxProgress, setInterval }) => {
         onClose={onClose}
         onClickInput={onClickInput}
         isPanelVisible={isPanelVisible}
+        isCommonFolders
         isCommonWithoutProvider
       />
 

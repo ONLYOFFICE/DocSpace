@@ -38,7 +38,7 @@ let defaultSelectedWeekdayOption = "";
 let defaultMonthly = false;
 let defaultWeekly = false;
 let defaultDaily = false;
-
+let defaultSelectedFolder = "";
 class AutomaticBackup extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -113,7 +113,7 @@ class AutomaticBackup extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { getCommonThirdPartyList } = this.props;
+    //const { getCommonThirdPartyList } = this.props;
     const { selectedFolder } = this.state;
     this.getWeekdaysOptions();
 
@@ -133,13 +133,17 @@ class AutomaticBackup extends React.PureComponent {
     });
 
     this.setState({ isLoading: true }, function () {
-      getCommonThirdPartyList()
+      SelectedFolder.getCommonThirdPartyList()
+        .then(
+          (thirdPartyArray) => (this.commonThirdPartyList = thirdPartyArray)
+        )
         .then(() => getBackupSchedule())
 
         .then((selectedSchedule) => {
           if (selectedSchedule) {
             const folderId = selectedSchedule.storageParams.folderId;
 
+            defaultSelectedFolder = [folderId];
             defaultStorageType = `${selectedSchedule.storageType}`;
             defaultHour = `${selectedSchedule.cronParams.hour}:00`;
             defaultPeriod = `${selectedSchedule.cronParams.period}`;
@@ -155,12 +159,10 @@ class AutomaticBackup extends React.PureComponent {
                     ? (folderDocumentsModulePath = folderPath)
                     : (folderThirdPartyModulePath = folderPath)
                 )
-                .then(
-                  () =>
-                    defaultStorageType === "1" &&
-                    this.setState({
-                      selectedFolder: [folderId],
-                    })
+                .then(() =>
+                  this.setState({
+                    selectedFolder: [folderId],
+                  })
                 )
                 .then(() => this.onSetDefaultOptions());
             }
@@ -966,9 +968,9 @@ class AutomaticBackup extends React.PureComponent {
       downloadingProgress,
     } = this.state;
 
-    console.log("this.state", this.state);
-    console.log("this.props", this.props);
-    console.log("__________________");
+    //console.log("commonThirdPartyList auto", this.commonThirdPartyList);
+    //console.log("this.props", this.props);
+    //console.log("__________________");
 
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -1024,6 +1026,7 @@ class AutomaticBackup extends React.PureComponent {
                     isSetDefaultFolderPath={isSetDefaultFolderPath}
                     onSetLoadingData={this.onSetLoadingData}
                     isSavingProcess={isLoadingData}
+                    isCommonFolders
                   />
 
                   <ScheduleComponent
@@ -1052,7 +1055,12 @@ class AutomaticBackup extends React.PureComponent {
               )}
             </StyledModules>
 
-            <StyledModules>
+            <StyledModules
+              isDisabled={
+                this.commonThirdPartyList &&
+                this.commonThirdPartyList.length === 0
+              }
+            >
               <RadioButton
                 fontSize="13px"
                 fontWeight="400"
@@ -1060,7 +1068,11 @@ class AutomaticBackup extends React.PureComponent {
                 name={"1"}
                 onClick={this.onClickShowStorage}
                 isChecked={isCheckedThirdParty}
-                isDisabled={isLoadingData}
+                isDisabled={
+                  isLoadingData ||
+                  (this.commonThirdPartyList &&
+                    this.commonThirdPartyList.length === 0)
+                }
                 value="value"
                 className="automatic-backup_radio-button"
               />
@@ -1070,6 +1082,7 @@ class AutomaticBackup extends React.PureComponent {
               <Text className="category-item-description note_description">
                 {t("ThirdPartyResourceNoteDescription")}
               </Text>
+
               {isShowThirdParty && (
                 <>
                   <SelectedFolder
@@ -1078,11 +1091,11 @@ class AutomaticBackup extends React.PureComponent {
                     onClose={this.onClose}
                     onClickInput={this.onClickInput}
                     isPanelVisible={isPanelVisible}
-                    folderList={commonThirdPartyList}
                     folderPath={folderThirdPartyModulePath}
                     isSetDefaultFolderPath={isSetDefaultFolderPath}
                     isError={isError}
                     onSetLoadingData={this.onSetLoadingData}
+                    isThirdPartyFolders
                     withoutTopLevelFolder
                     isSavingProcess={isLoadingData}
                   />
@@ -1218,15 +1231,10 @@ class AutomaticBackup extends React.PureComponent {
     );
   }
 }
-export default inject(({ auth, setup }) => {
+export default inject(({ auth }) => {
   const { language } = auth;
-  const { panelVisible } = auth;
-  const { getCommonThirdPartyList } = setup;
-  const { commonThirdPartyList } = setup.dataManagement;
+
   return {
     language,
-    panelVisible,
-    getCommonThirdPartyList,
-    commonThirdPartyList,
   };
 })(withTranslation("Settings")(observer(AutomaticBackup)));
