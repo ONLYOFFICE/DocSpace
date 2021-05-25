@@ -130,7 +130,7 @@ class SectionFilterContent extends React.Component {
       {
         key: "2",
         group: "filter-email",
-        label: t("LblPending"),
+        label: t("Translations:PendingTitle"),
       },
       {
         key: "filter-type",

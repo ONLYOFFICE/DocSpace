@@ -193,7 +193,7 @@ const SimpleUserRow = ({
         case "delete-self-profile":
           return {
             key: option,
-            label: t("DeleteSelfProfile"),
+            label: t("Translations:DeleteSelfProfile"),
             "data-id": id,
             onClick: toggleDeleteSelfProfileDialog,
           };
@@ -228,7 +228,7 @@ const SimpleUserRow = ({
         case "delete-profile":
           return {
             key: option,
-            label: t("DeleteSelfProfile"),
+            label: t("Translations:DeleteSelfProfile"),
             "data-id": id,
             onClick: toggleDeleteProfileEverDialog,
           };

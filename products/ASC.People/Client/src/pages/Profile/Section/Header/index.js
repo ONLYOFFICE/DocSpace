@@ -333,7 +333,7 @@ class SectionHeaderContent extends React.PureComponent {
               ? {}
               : {
                   key: "delete-profile",
-                  label: t("DeleteSelfProfile"),
+                  label: t("Translations:DeleteSelfProfile"),
                   onClick: this.toggleDeleteSelfProfileDialog,
                 }
             : {
@@ -361,7 +361,7 @@ class SectionHeaderContent extends React.PureComponent {
           },
           {
             key: "delete-profile",
-            label: t("DeleteSelfProfile"),
+            label: t("Translations:DeleteSelfProfile"),
             onClick: this.toggleDeleteProfileEverDialog,
           },
         ];
@@ -391,7 +391,7 @@ class SectionHeaderContent extends React.PureComponent {
                 }),
           isMe && {
             key: "delete-profile",
-            label: t("DeleteSelfProfile"),
+            label: t("Translations:DeleteSelfProfile"),
             onClick: this.toggleDeleteSelfProfileDialog,
           },
         ];
