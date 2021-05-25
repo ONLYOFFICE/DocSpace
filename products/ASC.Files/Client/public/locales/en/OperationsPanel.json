@@ -1,6 +1,5 @@
 ﻿{
   "Copy": "Copy",
-  "CopyOperation": "Copying",
   "MoveConfirmationMessage": "You are about to move elements from the {{provider}} directory. They will be deleted from your {{provider}} account and will no longer be accessible to other users.",
   "MoveToFolderMessage": "You can\u0027t move the folder to its subfolder",
   "Restore": "Restore"

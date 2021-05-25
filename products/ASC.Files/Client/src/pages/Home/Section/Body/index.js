@@ -117,7 +117,7 @@ const SectionBodyContent = (props) => {
   const onMoveTo = (destFolderId, title) => {
     const id = isNaN(+destFolderId) ? destFolderId : +destFolderId;
     moveDragItems(id, title, {
-      copy: t("CopyOperation"),
+      copy: t("Translations:CopyOperation"),
       move: t("Translations:MoveToOperation"),
     }); //TODO: then catch
   };

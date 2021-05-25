@@ -119,7 +119,7 @@ export default function withContextOptions(WrappedComponent) {
 
     onDuplicate = () => {
       const { duplicateAction, t, item } = this.props;
-      duplicateAction(item, t("CopyOperation")).catch((err) =>
+      duplicateAction(item, t("Translations:CopyOperation")).catch((err) =>
         toastr.error(err)
       );
     };
@@ -363,7 +363,7 @@ export default function withContextOptions(WrappedComponent) {
             return {
               key: option,
               label: isThirdPartyFolder
-                ? t("DeleteThirdParty")
+                ? t("Translations:DeleteThirdParty")
                 : t("Common:Delete"),
               icon: "/static/images/catalog.trash.react.svg",
               onClick: this.onClickDelete,

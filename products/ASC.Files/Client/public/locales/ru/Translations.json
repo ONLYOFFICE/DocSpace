@@ -2,5 +2,7 @@
   "Move": "Перемещение",
   "MoveToOperation": "Перемещение",
   "LinkCopySuccess": "Ссылка скопирована в буфер обмена",
-  "EncryptedFileSaving": "Сохранение зашифрованного файла"
+  "EncryptedFileSaving": "Сохранение зашифрованного файла",
+  "DeleteThirdParty": "Отключить сторонний ресурс",
+  "CopyOperation": "Копирование"
 }

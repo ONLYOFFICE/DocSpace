@@ -90,7 +90,7 @@ const OperationsPanelComponent = (props) => {
       isCopy,
       folderTitle,
       translations: {
-        copy: t("CopyOperation"),
+        copy: t("Translations:CopyOperation"),
         move: t("Translations:MoveToOperation"),
       },
     });
