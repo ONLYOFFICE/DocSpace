@@ -3,7 +3,6 @@
   "DeleteOperation": "Удаление",
   "DeleteSelectedElem": "Выбранные элементы успешно удалены",
   "FilesModule": "Файлы",
-  "FoldersModule": "Папки",
   "MoveToTrashButton": "Переместить в корзину",
   "MoveToTrashItemsNote": "Если вы удалите расшаренные элементы, другие пользователи не смогут получить к ним доступ.",
   "MoveToTrashItemsTitle": "Переместить элементы в корзину?",

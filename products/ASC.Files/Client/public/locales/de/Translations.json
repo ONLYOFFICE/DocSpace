@@ -6,5 +6,8 @@
   "DeleteThirdParty": "Drittanbieterdienst deaktivieren",
   "CopyOperation": "Kopieren",
   "Spreadsheets": "Tabellenkalkulationen",
-  "Presentations": "Präsentationen"
+  "Presentations": "Präsentationen",
+  "DownloadAs": "Herunterladen als",
+  "ArchivingData": "Archivieren der Daten",
+  "Folders": "Ordner"
 }

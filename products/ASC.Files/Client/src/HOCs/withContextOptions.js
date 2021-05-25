@@ -109,7 +109,9 @@ export default function withContextOptions(WrappedComponent) {
       const isFile = !!fileExst && contentLength;
       isFile
         ? window.open(viewUrl, "_blank")
-        : downloadAction(t("ArchivingData")).catch((err) => toastr.error(err));
+        : downloadAction(t("Translations:ArchivingData")).catch((err) =>
+            toastr.error(err)
+          );
     };
 
     onClickDownloadAs = () => {
@@ -306,7 +308,7 @@ export default function withContextOptions(WrappedComponent) {
           case "download-as":
             return {
               key: option,
-              label: t("DownloadAs"),
+              label: t("Translations:DownloadAs"),
               icon: "images/download-as.react.svg",
               onClick: this.onClickDownloadAs,
               disabled: false,

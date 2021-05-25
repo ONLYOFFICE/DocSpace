@@ -1,11 +1,9 @@
 ﻿{
-  "ArchivingData": "Archivieren der Daten",
   "ChooseFormatText": "Wählen Sie Formate für Herunterladen von Dateien aus",
   "ConvertInto": "Konvertieren in",
   "ConvertMessage": "Wenn Sie das Dateiformat ändern, können Sie möglicherweise einige Daten verloren.",
   "ConvertToZip": "Dateien werden in eine ZIP-Datei archiviert",
   "CustomFormat": "Benutzerdefiniertes Format",
-  "DownloadAs": "Herunterladen als",
   "DownloadButton": "Herunterladen",
   "OriginalFormat": "Originalformat",
   "Other": "Sonstiges"

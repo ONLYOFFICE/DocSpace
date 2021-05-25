@@ -213,7 +213,7 @@ class SectionHeaderContent extends React.Component {
   onCopyAction = () => this.props.setCopyPanelVisible(true);
   downloadAction = () =>
     this.props
-      .downloadAction(this.props.t("ArchivingData"))
+      .downloadAction(this.props.t("Translations:ArchivingData"))
       .catch((err) => toastr.error(err));
 
   downloadAsAction = () => this.props.setDownloadDialogVisible(true);
@@ -337,7 +337,7 @@ class SectionHeaderContent extends React.Component {
           <DropDownItem key="all" label={t("All")} data-index={0} />,
           <DropDownItem
             key={FilterType.FoldersOnly}
-            label={t("Folders")}
+            label={t("Translations:Folders")}
             data-index={1}
           />,
           <DropDownItem
@@ -393,7 +393,7 @@ class SectionHeaderContent extends React.Component {
         onClick: this.downloadAction,
       },
       {
-        label: t("DownloadAs"),
+        label: t("Translations:DownloadAs"),
         disabled: !selectionCount || !isWebEditSelected,
         onClick: this.downloadAsAction,
       },

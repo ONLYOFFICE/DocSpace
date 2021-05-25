@@ -111,7 +111,7 @@ class SectionFilterContent extends React.Component {
       {
         key: FilterType.FoldersOnly.toString(),
         group: "filter-filterType",
-        label: t("Folders"),
+        label: t("Translations:Folders"),
       },
       {
         key: FilterType.DocumentsOnly.toString(),
@@ -180,7 +180,7 @@ class SectionFilterContent extends React.Component {
       {
         key: "filter-folders",
         group: "filter-folders",
-        label: t("Folders"),
+        label: t("Translations:Folders"),
         isHeader: true,
       },
       {

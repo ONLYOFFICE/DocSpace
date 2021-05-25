@@ -6,5 +6,8 @@
   "DeleteThirdParty": "Отключить сторонний ресурс",
   "CopyOperation": "Копирование",
   "Spreadsheets": "Таблицы",
-  "Presentations": "Презентации"
+  "Presentations": "Презентации",
+  "DownloadAs": "Скачать как",
+  "ArchivingData": "Архивирование данных",
+  "Folders": "Папки"
 }

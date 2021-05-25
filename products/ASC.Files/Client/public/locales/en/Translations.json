@@ -6,5 +6,8 @@
   "DeleteThirdParty": "Delete third-party",
   "CopyOperation": "Copying",
   "Spreadsheets": "Spreadsheets",
-  "Presentations": "Presentations"
+  "Presentations": "Presentations",
+  "DownloadAs": "Download as",
+  "ArchivingData": "Archiving data",
+  "Folders": "Folders"
 }

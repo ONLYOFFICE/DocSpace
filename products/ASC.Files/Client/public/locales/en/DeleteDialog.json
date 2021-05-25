@@ -3,7 +3,6 @@
   "DeleteOperation": "Deleting",
   "DeleteSelectedElem": "Selected elements were successfully deleted",
   "FilesModule": "Files",
-  "FoldersModule": "Folders",
   "MoveToTrashButton": "Move to Trash",
   "MoveToTrashItemsNote": "If you delete shared items, other users won’t be able to access them.",
   "MoveToTrashItemsTitle": "Move items to Trash?",
