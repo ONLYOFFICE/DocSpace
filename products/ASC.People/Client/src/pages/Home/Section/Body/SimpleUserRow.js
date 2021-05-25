@@ -29,7 +29,7 @@ const SimpleUserRow = ({
   updateUserStatus,
   history,
 }) => {
-  const { t } = useTranslation("Home");
+  const { t } = useTranslation(["Home", "Translations"]);
   const isRefetchPeople = true;
 
   const {
@@ -179,7 +179,7 @@ const SimpleUserRow = ({
         case "change-password":
           return {
             key: option,
-            label: t("PasswordChangeButton"),
+            label: t("Translations:PasswordChangeButton"),
             "data-id": id,
             onClick: toggleChangePasswordDialog,
           };
@@ -221,7 +221,7 @@ const SimpleUserRow = ({
         case "delete-personal-data":
           return {
             key: option,
-            label: t("RemoveData"),
+            label: t("Translations:RemoveData"),
             "data-id": id,
             onClick: onDeletePersonalDataClick,
           };

@@ -1,12 +1,10 @@
 {
   "LblSendEmail": "Send email",
   "LblSendMessage": "Send message",
-  "PasswordChangeButton": "Change password",
   "EmailChangeButton": "Change email",
   "DisableUserButton": "Disable",
   "EnableUserButton": "Enable",
   "ReassignData": "Reassign data",
-  "RemoveData": "Delete personal data",
   "DeleteSelfProfile": "Delete profile",
   "NotFoundDescription": "Try a different filter or clear it to view all people in the section.",
   "NotFoundTitle": "No teammates found",

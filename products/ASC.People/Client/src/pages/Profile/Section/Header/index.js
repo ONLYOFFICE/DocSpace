@@ -320,7 +320,7 @@ class SectionHeaderContent extends React.PureComponent {
           },
           {
             key: "change-password",
-            label: t("PasswordChangeButton"),
+            label: t("Translations:PasswordChangeButton"),
             onClick: this.toggleChangePasswordDialog,
           },
           {
@@ -356,7 +356,7 @@ class SectionHeaderContent extends React.PureComponent {
           },
           {
             key: "delete-personal-data",
-            label: t("RemoveData"),
+            label: t("Translations:RemoveData"),
             onClick: this.onDeletePersonalDataClick,
           },
           {
@@ -524,5 +524,11 @@ export default withRouter(
       updateProfile: peopleStore.targetUserStore.updateProfile,
       getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     };
-  })(observer(withTranslation(["Profile", "Common"])(SectionHeaderContent)))
+  })(
+    observer(
+      withTranslation(["Profile", "Common", "Translations"])(
+        SectionHeaderContent
+      )
+    )
+  )
 );

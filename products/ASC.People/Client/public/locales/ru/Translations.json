@@ -1,4 +1,6 @@
 {
   "DisabledEmployeeStatus": "Заблокирован",
-  "AddMembers": "Добавить участников"
+  "AddMembers": "Добавить участников",
+  "PasswordChangeButton": "Изменить пароль",
+  "RemoveData": "Удалить личные данные"
 }

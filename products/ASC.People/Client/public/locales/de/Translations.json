@@ -1,4 +1,6 @@
 {
   "DisabledEmployeeStatus": "Deaktiviert",
-  "AddMembers": "Mitglieder hinzufügen"
+  "AddMembers": "Mitglieder hinzufügen",
+  "PasswordChangeButton": "Kennwort ändern",
+  "RemoveData": "Persönliche Daten löschen "
 }
