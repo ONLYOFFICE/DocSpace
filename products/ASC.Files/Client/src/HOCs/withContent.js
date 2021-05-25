@@ -194,7 +194,7 @@ export default function withContent(WrappedContent) {
               if (isPrivacy) {
                 return setEncryptionAccess(file).then((encryptedFile) => {
                   if (!encryptedFile) return Promise.resolve();
-                  toastr.info(t("EncryptedFileSaving"));
+                  toastr.info(t("Translations:EncryptedFileSaving"));
                   return replaceFileStream(
                     file.id,
                     encryptedFile,

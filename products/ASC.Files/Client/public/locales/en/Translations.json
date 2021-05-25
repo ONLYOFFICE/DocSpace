@@ -1,3 +1,6 @@
 {
-  "Move": "Move"
+  "Move": "Move",
+  "MoveToOperation": "Moving",
+  "LinkCopySuccess": "Link has been copied to the clipboard",
+  "EncryptedFileSaving": "Saving encrypted file"
 }

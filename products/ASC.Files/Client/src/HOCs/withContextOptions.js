@@ -94,7 +94,7 @@ export default function withContextOptions(WrappedComponent) {
           : `${window.location.origin + homepage}/filter?folder=${id}`
       );
 
-      toastr.success(t("LinkCopySuccess"));
+      toastr.success(t("Translations:LinkCopySuccess"));
     };
 
     onClickLinkEdit = () => {

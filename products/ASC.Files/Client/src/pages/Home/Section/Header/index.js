@@ -206,7 +206,7 @@ class SectionHeaderContent extends React.Component {
       `${window.location.origin}/products/files/filter?folder=${currentFolderId}`
     );
 
-    toastr.success(t("LinkCopySuccess"));
+    toastr.success(t("Translations:LinkCopySuccess"));
   };
 
   onMoveAction = () => this.props.setMoveToPanelVisible(true);
@@ -650,7 +650,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Home", "Common"])(
+  withTranslation(["Home", "Common", "Translations"])(
     withRouter(observer(SectionHeaderContent))
   )
 );

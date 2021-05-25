@@ -1,3 +1,6 @@
 {
-  "Move": "Verschieben"
+  "Move": "Verschieben",
+  "MoveToOperation": "Wird verschoben",
+  "LinkCopySuccess": "Der Link wurde in die Zwischenablage kopiert",
+  "EncryptedFileSaving": "Die verschlüsselte Datei wird gespeichert"
 }

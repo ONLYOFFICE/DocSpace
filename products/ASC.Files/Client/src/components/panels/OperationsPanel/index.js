@@ -89,7 +89,10 @@ const OperationsPanelComponent = (props) => {
       deleteAfter,
       isCopy,
       folderTitle,
-      translations: { copy: t("CopyOperation"), move: t("MoveToOperation") },
+      translations: {
+        copy: t("CopyOperation"),
+        move: t("Translations:MoveToOperation"),
+      },
     });
   };
 

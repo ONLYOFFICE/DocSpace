@@ -177,7 +177,7 @@ class SharingPanelComponent extends React.Component {
             return setEncryptionAccess(item).then((encryptedFile) => {
               if (!encryptedFile) return Promise.resolve();
 
-              toastr.info(t("EncryptedFileSaving"));
+              toastr.info(t("Translations:EncryptedFileSaving"));
 
               const title = item.title;
 
@@ -648,7 +648,13 @@ const SharingPanel = inject(
       getFolderInfo,
     };
   }
-)(observer(withTranslation(["SharingPanel", "Common"])(SharingPanelComponent)));
+)(
+  observer(
+    withTranslation(["SharingPanel", "Common", "Translations"])(
+      SharingPanelComponent
+    )
+  )
+);
 
 class Panel extends React.Component {
   static convertSharingUsers = (shareDataItems) => {
