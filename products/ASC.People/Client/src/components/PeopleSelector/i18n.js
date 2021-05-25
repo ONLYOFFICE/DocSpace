@@ -26,13 +26,11 @@ newInstance.use(Backend).init({
   },
 
   backend: {
-    loadPath: (lng, ns) => {
-      if (ns.length > 0 && ns[0] === "Common") {
-        return `/static/locales/${lng}/Common.json`;
-      }
-      return `${config.homepage}/locales/${lng}/PeopleSelector.json`;
-    },
+    loadPath: `${config.homepage}/locales/{{lng}}/{{ns}}.json`,
   },
+
+  ns: ["PeopleSelector", "Common", "Translations"],
+  defaultNS: "PeopleSelector",
 
   react: {
     useSuspense: false,
