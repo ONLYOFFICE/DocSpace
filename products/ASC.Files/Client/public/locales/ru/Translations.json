@@ -4,5 +4,7 @@
   "LinkCopySuccess": "Ссылка скопирована в буфер обмена",
   "EncryptedFileSaving": "Сохранение зашифрованного файла",
   "DeleteThirdParty": "Отключить сторонний ресурс",
-  "CopyOperation": "Копирование"
+  "CopyOperation": "Копирование",
+  "Spreadsheets": "Таблицы",
+  "Presentations": "Презентации"
 }

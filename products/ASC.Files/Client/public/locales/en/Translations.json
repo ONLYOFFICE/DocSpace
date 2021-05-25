@@ -4,5 +4,7 @@
   "LinkCopySuccess": "Link has been copied to the clipboard",
   "EncryptedFileSaving": "Saving encrypted file",
   "DeleteThirdParty": "Delete third-party",
-  "CopyOperation": "Copying"
+  "CopyOperation": "Copying",
+  "Spreadsheets": "Spreadsheets",
+  "Presentations": "Presentations"
 }

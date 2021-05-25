@@ -555,9 +555,11 @@ class DownloadDialogComponent extends React.Component {
   }
 }
 
-const DownloadDialog = withTranslation(["DownloadDialog", "Common"])(
-  DownloadDialogComponent
-);
+const DownloadDialog = withTranslation([
+  "DownloadDialog",
+  "Common",
+  "Translations",
+])(DownloadDialogComponent);
 
 export default inject(
   ({

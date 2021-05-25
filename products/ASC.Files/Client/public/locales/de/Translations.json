@@ -4,5 +4,7 @@
   "LinkCopySuccess": "Der Link wurde in die Zwischenablage kopiert",
   "EncryptedFileSaving": "Die verschlüsselte Datei wird gespeichert",
   "DeleteThirdParty": "Drittanbieterdienst deaktivieren",
-  "CopyOperation": "Kopieren"
+  "CopyOperation": "Kopieren",
+  "Spreadsheets": "Tabellenkalkulationen",
+  "Presentations": "Präsentationen"
 }

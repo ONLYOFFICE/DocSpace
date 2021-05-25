@@ -121,12 +121,12 @@ class SectionFilterContent extends React.Component {
       {
         key: FilterType.PresentationsOnly.toString(),
         group: "filter-filterType",
-        label: t("Presentations"),
+        label: t("Translations:Presentations"),
       },
       {
         key: FilterType.SpreadsheetsOnly.toString(),
         group: "filter-filterType",
-        label: t("Spreadsheets"),
+        label: t("Translations:Spreadsheets"),
       },
       {
         key: FilterType.ImagesOnly.toString(),
@@ -155,7 +155,7 @@ class SectionFilterContent extends React.Component {
       {
         key: "filter-author",
         group: "filter-author",
-        label: t("Author"),
+        label: t("ByAuthor"),
         isHeader: true,
       },
       {
@@ -321,7 +321,9 @@ export default inject(({ auth, filesStore, selectedFolderStore }) => {
 })(
   withRouter(
     withLayoutSize(
-      withTranslation(["Home", "Common"])(observer(SectionFilterContent))
+      withTranslation(["Home", "Common", "Translations"])(
+        observer(SectionFilterContent)
+      )
     )
   )
 );

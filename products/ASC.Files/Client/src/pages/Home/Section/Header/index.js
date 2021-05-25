@@ -347,12 +347,12 @@ class SectionHeaderContent extends React.Component {
           />,
           <DropDownItem
             key={FilterType.PresentationsOnly}
-            label={t("Presentations")}
+            label={t("Translations:Presentations")}
             data-index={3}
           />,
           <DropDownItem
             key={FilterType.SpreadsheetsOnly}
-            label={t("Spreadsheets")}
+            label={t("Translations:Spreadsheets")}
             data-index={4}
           />,
           <DropDownItem
