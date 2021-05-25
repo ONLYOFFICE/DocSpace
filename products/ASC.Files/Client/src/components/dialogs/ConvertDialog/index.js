@@ -62,7 +62,7 @@ class ConvertDialogComponent extends React.Component {
             <Button
               className="convert_dialog_button-accept"
               key="ContinueButton"
-              label={t("ContinueButton")}
+              label={t("Common:ContinueButton")}
               size="medium"
               primary
               onClick={this.onConvert}

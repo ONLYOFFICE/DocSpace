@@ -7,7 +7,7 @@ const FilesTileContainer = (props) => {
       className="tileContainer"
       draggable
       useReactWindow={false}
-      headingFolders={t("Folders")}
+      headingFolders={t("Translations:Folders")}
       headingFiles={t("Files")}
     >
       {items.map((item) => {

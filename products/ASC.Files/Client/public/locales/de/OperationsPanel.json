@@ -1,11 +1,6 @@
 ﻿{
   "Copy": "Kopieren",
-  "CopyOperation": "Kopieren",
-  "Move": "Verschieben",
-  "MoveConfirmation": "Verschiebung bestätigen",
-  "MoveConfirmationAlert": "Möchten Sie diese Elemente wirklich verschieben?",
   "MoveConfirmationMessage": "Sie verschieben Elemente aus dem Ordner {{provider}}. Diese werden aus dem Konto {{provider}} entfernt und für andere Benutzer unverfügbar.",
   "MoveToFolderMessage": "Ordner können nicht in Unterordner verschoben werden",
-  "MoveToOperation": "Wird verschoben",
   "Restore": "Wiederherstellen"
 }

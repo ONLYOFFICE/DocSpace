@@ -223,7 +223,7 @@ const SectionHeaderContent = (props) => {
           <DropDownItem key="active" label={t("LblActive")} data-index={0} />,
           <DropDownItem
             key="disabled"
-            label={t("LblTerminated")}
+            label={t("Translations:DisabledEmployeeStatus")}
             data-index={1}
           />,
           <DropDownItem key="invited" label={t("LblInvited")} data-index={2} />,
@@ -265,7 +265,7 @@ const SectionHeaderContent = (props) => {
         onClick: onSendEmail,
       },
       {
-        label: t("DeleteButton"),
+        label: t("Common:Delete"),
         disabled: !hasUsersToRemove,
         onClick: toggleDeleteDialog,
       },
@@ -319,7 +319,7 @@ const SectionHeaderContent = (props) => {
       },
       {
         key: "delete-group",
-        label: t("DeleteButton"),
+        label: t("Common:Delete"),
         onClick: onDeleteGroup,
       },
     ];
@@ -551,5 +551,9 @@ export default withRouter(
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
     group: peopleStore.selectedGroupStore.group,
     isTabletView: auth.settingsStore.isTabletView,
-  }))(observer(withTranslation(["Home", "Common"])(SectionHeaderContent)))
+  }))(
+    observer(
+      withTranslation(["Home", "Common", "Translations"])(SectionHeaderContent)
+    )
+  )
 );

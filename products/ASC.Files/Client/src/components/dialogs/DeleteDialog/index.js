@@ -123,7 +123,7 @@ class DeleteDialogComponent extends React.Component {
             <Scrollbar style={{ height, maxHeight: 330 }} stype="mediumBlack">
               {foldersList.length > 0 && (
                 <Text isBold className="delete_dialog-text">
-                  {t("FoldersModule")}:
+                  {t("Translations:Folders")}:
                 </Text>
               )}
               {foldersList.map((item, index) => (
@@ -181,9 +181,11 @@ class DeleteDialogComponent extends React.Component {
   }
 }
 
-const DeleteDialog = withTranslation(["DeleteDialog", "Common"])(
-  DeleteDialogComponent
-);
+const DeleteDialog = withTranslation([
+  "DeleteDialog",
+  "Common",
+  "Translations",
+])(DeleteDialogComponent);
 
 export default inject(
   ({

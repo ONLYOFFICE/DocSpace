@@ -1,5 +1,4 @@
 ﻿{
-  "ButtonContinue": "Weiter",
   "ChangeEmailTitle": "E-Mail-Adresse ändern",
   "Desc": "Bitte Registrierungsdaten eingeben.",
   "Domain": "Domain:",
@@ -11,7 +10,6 @@
   "ErrorLicenseRead": "Akzeptieren Sie die Lizenzvereinbarung",
   "ErrorLicenseTitle": "Fehler beim Laden",
   "ErrorParamsBody": "Ungültige Daten:",
-  "ErrorParamsFooter": "Schließen",
   "ErrorParamsTitle": "Registrierungsfehler",
   "ErrorPassword": "Passwort erfüllt Anforderungen nicht",
   "ErrorUploadLicenseFile": "Bitte Lizenzdatei auswählen",

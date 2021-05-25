@@ -101,7 +101,7 @@ class SectionFilterContent extends React.Component {
           {
             key: "2",
             group: "filter-status",
-            label: t("LblTerminated"),
+            label: t("Translations:DisabledEmployeeStatus"),
           },
         ];
 
@@ -130,7 +130,7 @@ class SectionFilterContent extends React.Component {
       {
         key: "2",
         group: "filter-email",
-        label: t("LblPending"),
+        label: t("Translations:PendingTitle"),
       },
       {
         key: "filter-type",
@@ -258,7 +258,11 @@ export default withRouter(
     };
   })(
     observer(
-      withLayoutSize(withTranslation(["Home", "Common"])(SectionFilterContent))
+      withLayoutSize(
+        withTranslation(["Home", "Common", "Translations"])(
+          SectionFilterContent
+        )
+      )
     )
   )
 );

@@ -151,5 +151,5 @@ const FilesTileContent = ({
 };
 
 export default withRouter(
-  withTranslation("Home")(withContent(FilesTileContent))
+  withTranslation(["Home", "Translations"])(withContent(FilesTileContent))
 );

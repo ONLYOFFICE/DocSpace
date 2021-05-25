@@ -69,7 +69,7 @@ const PureThirdPartyMoveContainer = ({
         <ModalDialog.Footer>
           <Button
             className="operation-button"
-            label={t("Move")}
+            label={t("Translations:Move")}
             size="big"
             primary
             onClick={startOperation}
@@ -113,7 +113,7 @@ export default inject(({ filesStore, dialogsStore, filesActionsStore }) => {
     selection,
   };
 })(
-  withTranslation(["ThirdPartyMoveDialog", "Common"])(
+  withTranslation(["ThirdPartyMoveDialog", "Common", "Translations"])(
     observer(PureThirdPartyMoveContainer)
   )
 );

@@ -94,7 +94,7 @@ export default function withContextOptions(WrappedComponent) {
           : `${window.location.origin + homepage}/filter?folder=${id}`
       );
 
-      toastr.success(t("LinkCopySuccess"));
+      toastr.success(t("Translations:LinkCopySuccess"));
     };
 
     onClickLinkEdit = () => {
@@ -109,7 +109,9 @@ export default function withContextOptions(WrappedComponent) {
       const isFile = !!fileExst && contentLength;
       isFile
         ? window.open(viewUrl, "_blank")
-        : downloadAction(t("ArchivingData")).catch((err) => toastr.error(err));
+        : downloadAction(t("Translations:ArchivingData")).catch((err) =>
+            toastr.error(err)
+          );
     };
 
     onClickDownloadAs = () => {
@@ -119,7 +121,7 @@ export default function withContextOptions(WrappedComponent) {
 
     onDuplicate = () => {
       const { duplicateAction, t, item } = this.props;
-      duplicateAction(item, t("CopyOperation")).catch((err) =>
+      duplicateAction(item, t("Translations:CopyOperation")).catch((err) =>
         toastr.error(err)
       );
     };
@@ -306,7 +308,7 @@ export default function withContextOptions(WrappedComponent) {
           case "download-as":
             return {
               key: option,
-              label: t("DownloadAs"),
+              label: t("Translations:DownloadAs"),
               icon: "images/download-as.react.svg",
               onClick: this.onClickDownloadAs,
               disabled: false,
@@ -362,7 +364,9 @@ export default function withContextOptions(WrappedComponent) {
           case "delete":
             return {
               key: option,
-              label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
+              label: isThirdPartyFolder
+                ? t("Translations:DeleteThirdParty")
+                : t("Common:Delete"),
               icon: "/static/images/catalog.trash.react.svg",
               onClick: this.onClickDelete,
               disabled: false,

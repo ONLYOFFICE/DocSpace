@@ -225,9 +225,9 @@ const DownloadContent = (props) => {
       case "document":
         return t("Common:Documents");
       case "spreadsheet":
-        return t("Spreadsheets");
+        return t("Translations:Spreadsheets");
       case "presentation":
-        return t("Presentations");
+        return t("Translations:Presentations");
       default:
         return "";
     }

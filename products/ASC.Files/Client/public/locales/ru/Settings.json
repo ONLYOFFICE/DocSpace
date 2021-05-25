@@ -1,6 +1,4 @@
 {
-  "TreeSettingsCommonSettings": "Общие настройки",
-  "TreeSettingsConnectedCloud": "Подключенные облака",
   "CommonSettings": "Общие настройки",
   "ThirdPartySettings": "Подключенные облака",
   "IntermediateVersion": "Хранить все сохраненные промежуточные версии",
@@ -26,7 +24,6 @@
   "ConnectFolderTitle": "Название папки",
   "ConnectMakeShared": "Сделать доступным и поместить в папку 'Общие'",
   "ConnectionUrl": "URL-адрес подключения",
-  "DeleteThirdParty": "Отключить сторонний ресурс",
   "ThirdPartyInfo": "Изменить настройки подключения",
   "Account": "Аккаунт",
   "Reconnect": "Подключить повторно"

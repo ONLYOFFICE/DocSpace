@@ -6,6 +6,5 @@
   "ChangeUserStatusDialog": "Пользователи со статусом \u0027{{ userStatus }}\u0027 будут  {{ status }}.",
   "ChangeUserStatusDialogHeader": "Изменение статуса пользователя",
   "ChangeUserStatusDialogMessage": "Вы не можете изменить статус владельца портала и свой собственный статус",
-  "DisabledEmployeeTitle": "Заблокирован",
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен"
 }

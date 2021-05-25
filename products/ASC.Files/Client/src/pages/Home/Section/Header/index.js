@@ -206,14 +206,14 @@ class SectionHeaderContent extends React.Component {
       `${window.location.origin}/products/files/filter?folder=${currentFolderId}`
     );
 
-    toastr.success(t("LinkCopySuccess"));
+    toastr.success(t("Translations:LinkCopySuccess"));
   };
 
   onMoveAction = () => this.props.setMoveToPanelVisible(true);
   onCopyAction = () => this.props.setCopyPanelVisible(true);
   downloadAction = () =>
     this.props
-      .downloadAction(this.props.t("ArchivingData"))
+      .downloadAction(this.props.t("Translations:ArchivingData"))
       .catch((err) => toastr.error(err));
 
   downloadAsAction = () => this.props.setDownloadDialogVisible(true);
@@ -285,7 +285,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         key: "delete",
-        label: t("Delete"),
+        label: t("Common:Delete"),
         onClick: this.onDeleteAction,
         disabled: true,
       },
@@ -337,7 +337,7 @@ class SectionHeaderContent extends React.Component {
           <DropDownItem key="all" label={t("All")} data-index={0} />,
           <DropDownItem
             key={FilterType.FoldersOnly}
-            label={t("Folders")}
+            label={t("Translations:Folders")}
             data-index={1}
           />,
           <DropDownItem
@@ -347,12 +347,12 @@ class SectionHeaderContent extends React.Component {
           />,
           <DropDownItem
             key={FilterType.PresentationsOnly}
-            label={t("Presentations")}
+            label={t("Translations:Presentations")}
             data-index={3}
           />,
           <DropDownItem
             key={FilterType.SpreadsheetsOnly}
-            label={t("Spreadsheets")}
+            label={t("Translations:Spreadsheets")}
             data-index={4}
           />,
           <DropDownItem
@@ -393,7 +393,7 @@ class SectionHeaderContent extends React.Component {
         onClick: this.downloadAction,
       },
       {
-        label: t("DownloadAs"),
+        label: t("Translations:DownloadAs"),
         disabled: !selectionCount || !isWebEditSelected,
         onClick: this.downloadAsAction,
       },
@@ -413,7 +413,7 @@ class SectionHeaderContent extends React.Component {
         onClick: this.onCopyAction,
       },
       {
-        label: t("Delete"),
+        label: t("Common:Delete"),
         disabled:
           !selectionCount || !deleteDialogVisible || isThirdPartySelection,
         onClick: this.onDeleteAction,
@@ -650,7 +650,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Home", "Common"])(
+  withTranslation(["Home", "Common", "Translations"])(
     withRouter(observer(SectionHeaderContent))
   )
 );

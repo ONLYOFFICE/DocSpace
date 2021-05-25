@@ -184,7 +184,7 @@ class ConnectClouds extends React.Component {
         key: `${index}_delete`,
         "data-id": item.provider_id,
         "data-title": item.customer_title,
-        label: t("DeleteThirdParty"),
+        label: t("Translations:DeleteThirdParty"),
         onClick: this.onDeleteThirdParty,
       },
     ];
@@ -306,4 +306,8 @@ export default inject(
       homepage: config.homepage,
     };
   }
-)(withTranslation("Settings")(observer(withRouter(ConnectClouds))));
+)(
+  withTranslation(["Settings", "Translations"])(
+    observer(withRouter(ConnectClouds))
+  )
+);

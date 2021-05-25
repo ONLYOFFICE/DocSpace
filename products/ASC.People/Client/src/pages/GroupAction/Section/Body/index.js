@@ -94,7 +94,7 @@ const SectionBodyContent = ({
   isLoaded,
   tReady,
 }) => {
-  const { t, i18n } = useTranslation("GroupAction");
+  const { t, i18n } = useTranslation(["GroupAction", "Translations"]);
 
   const [inLoading, setInLoading] = useState(false);
   const [isHeadSelectorOpen, setIsHeadSelectorOpen] = useState(false);
@@ -311,7 +311,7 @@ const SectionBodyContent = ({
               isDisabled={inLoading}
               selectedOption={{
                 key: 0,
-                label: t("AddMembers"),
+                label: t("Translations:AddMembers"),
                 default: true,
               }}
               scaled={true}
