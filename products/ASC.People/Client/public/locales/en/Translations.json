@@ -18,5 +18,8 @@
   "ErrorUnknownFileImageType": "Unknown image file type",
   "FemaleSexStatus": "Female",
   "LDAPLbl": "LDAP",
-  "Location": "Location"
+  "Location": "Location",
+  "MaleSexStatus": "Male",
+  "maxSizeFileError": "Maximum file size exceeded",
+  "orDropFileHereLabel": "or drop a file here"
 }

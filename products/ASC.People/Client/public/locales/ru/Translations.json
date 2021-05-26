@@ -18,5 +18,8 @@
   "ErrorUnknownFileImageType": "Неизвестный тип файла изображения",
   "FemaleSexStatus": "Женский",
   "LDAPLbl": "LDAP",
-  "Location": "Местоположение"
+  "Location": "Местоположение",
+  "MaleSexStatus": "Мужской",
+  "maxSizeFileError": "Превышен максимальный размер файла",
+  "orDropFileHereLabel": "или перетащите файл сюда"
 }

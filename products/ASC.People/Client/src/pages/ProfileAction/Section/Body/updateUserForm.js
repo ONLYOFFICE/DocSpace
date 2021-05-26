@@ -664,9 +664,9 @@ class UpdateUserForm extends React.Component {
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("EditPhoto")}
               selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
-              orDropFileHereLabel={t("orDropFileHereLabel")}
+              orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
               unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
-              maxSizeFileError={t("maxSizeFileError")}
+              maxSizeFileError={t("Translations:maxSizeFileError")}
               unknownError={t("Common:Error")}
               saveButtonLabel={
                 this.state.isLoading
@@ -768,7 +768,7 @@ class UpdateUserForm extends React.Component {
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
-                { value: "male", label: t("MaleSexStatus") },
+                { value: "male", label: t("Translations:MaleSexStatus") },
                 { value: "female", label: t("Translations:FemaleSexStatus") },
               ]}
               radioIsDisabled={isLoading}

@@ -10,11 +10,8 @@
   "EditUserDialogTitle": "Profil bearbeiten",
   "InviteAgainLbl": "Erneut einladen",
   "Language": "Sprache",
-  "MaleSexStatus": "Männlich",
-  "maxSizeFileError": "Maximale Dateigröße überschritten",
   "MessageEmailActivationInstuctionsSentOnEmail": "Die Hinweise für die Aktivierung wurden an \u003Cstrong\u003E{{ email }}\u003C/strong\u003E versandt.",
   "NotFoundLanguage": "Können Sie Ihre Sprache nicht finden? Wenden Sie sich an uns unter \u003C1\u003E{{supportEmail}}\u003C/1\u003E, um ONLYOFFICE für Belohnungen zu übersetzen.",
-  "orDropFileHereLabel": "oder legen Sie eine Datei hier ab",
   "PhoneLbl": "Telefon",
   "Subscriptions": "Abonnements"
 }

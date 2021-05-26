@@ -458,9 +458,9 @@ class CreateUserForm extends React.Component {
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("AddPhoto")}
               selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
-              orDropFileHereLabel={t("orDropFileHereLabel")}
+              orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
               unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
-              maxSizeFileError={t("maxSizeFileError")}
+              maxSizeFileError={t("Translations:maxSizeFileError")}
               unknownError={t("Common:Error")}
               saveButtonLabel={t("Common:SaveButton")}
             />
@@ -553,7 +553,7 @@ class CreateUserForm extends React.Component {
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
-                { value: "male", label: t("MaleSexStatus") },
+                { value: "male", label: t("Translations:MaleSexStatus") },
                 { value: "female", label: t("Translations:FemaleSexStatus") },
               ]}
               radioIsDisabled={isLoading}

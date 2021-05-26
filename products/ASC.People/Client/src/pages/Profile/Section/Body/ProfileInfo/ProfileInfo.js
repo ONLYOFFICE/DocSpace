@@ -231,7 +231,7 @@ class ProfileInfo extends React.PureComponent {
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
 
     const formatedSex =
-      (sex === "male" && t("MaleSexStatus")) ||
+      (sex === "male" && t("Translations:MaleSexStatus")) ||
       t("Translations:FemaleSexStatus");
 
     const formatedDepartments =
