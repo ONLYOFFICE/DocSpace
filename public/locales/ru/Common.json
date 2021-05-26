@@ -67,5 +67,8 @@
   "AddFilter": "Добавить фильтр",
   "Search": "Поиск",
   "More": "Больше",
-  "ProjectsProduct": "Проекты"
+  "ProjectsProduct": "Проекты",
+  "LastName": "Фамилия",
+  "Language": "Язык",
+  "Mail": "Почта"
 }

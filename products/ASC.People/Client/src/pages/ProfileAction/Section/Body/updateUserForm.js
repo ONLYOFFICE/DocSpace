@@ -589,7 +589,7 @@ class UpdateUserForm extends React.Component {
                 </Th>
               </tr>
               <tr>
-                <Td>{t("Mail")}</Td>
+                <Td>{t("Common:Mail")}</Td>
                 <Td>{t("ReviewingCustomMode")}</Td>
                 <Td>-</Td>
               </tr>
@@ -685,7 +685,7 @@ class UpdateUserForm extends React.Component {
               buttonIsDisabled={isLoading}
               buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={1}
-              helpButtonHeaderContent={t("Mail")}
+              helpButtonHeaderContent={t("Common:Mail")}
               tooltipContent={
                 <Text fontSize="13px" as="div">
                   <Trans t={t} i18nKey="EmailPopupHelper" ns="ProfileAction">
@@ -744,7 +744,7 @@ class UpdateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={errors.lastName}
-              labelText={`${t("LastName")}:`}
+              labelText={`${t("Common:LastName")}:`}
               inputName="lastName"
               inputValue={profile.lastName}
               inputIsDisabled={isLoading}

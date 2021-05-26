@@ -15,8 +15,6 @@
   "EditUserDialogTitle": "Edit profile",
   "EmailPopupHelper": "The main email is used for notifications and restoring access. \u003C1\u003E You can create a new email on this domain for the user and set a one-time password for the first login.\u003C/1\u003E",
   "FirstName": "First Name",
-  "LastName": "Last Name",
-  "Mail": "Mail",
   "Message": "Talk",
   "Phone": "Phone",
   "ProductsAndInstruments_Products": "Modules",
