@@ -38,6 +38,16 @@ const StyledComponent = styled.div`
     display: inline-block;
     margin-right: 8px;
   }
+
+  .input-with-folder-path {
+    margin-top: 16px;
+  }
+
+  .input-with-folder-path,
+  .text-input-with-folder-path {
+    width: 100%;
+    max-width: 820px;
+  }
 `;
 const StyledModules = styled.div`
   margin-bottom: 40px;

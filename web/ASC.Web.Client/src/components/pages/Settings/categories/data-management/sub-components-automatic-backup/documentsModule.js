@@ -10,9 +10,9 @@ import {
 } from "@appserver/common/api/portal";
 import { getFolderPath } from "@appserver/common/api/files";
 import toastr from "@appserver/components/toast/toastr";
-import TextInput from "@appserver/components/text-input";
 import { saveToSessionStorage, getFromSessionStorage } from "../.././../utils";
 import { StyledComponent } from "../styled-backup";
+import TextInput from "@appserver/components/text-input";
 // let defaultSelectedFolder = "";
 // let defaultStorageType = "";
 // let defaultHour = "";
@@ -29,7 +29,7 @@ let maxCopiesFromSessionStorage = "";
 let weekdayNameFromSessionStorage = "";
 
 const settingNames = ["period", "day", "time", "maxCopies", "weekdayName"];
-class ThirdPartyModule extends React.Component {
+class DocumentsModule extends React.Component {
   constructor(props) {
     super(props);
     const {
@@ -55,6 +55,12 @@ class ThirdPartyModule extends React.Component {
     maxCopiesFromSessionStorage = getFromSessionStorage("maxCopies");
     weekdayNameFromSessionStorage = getFromSessionStorage("weekdayName");
 
+    const monthNumber = monthlySchedule
+      ? dayFromSessionStorage || `${defaultDay}`
+      : "1";
+    const weekdayNumber = weeklySchedule
+      ? dayFromSessionStorage || defaultDay
+      : "2";
     this.state = {
       isPanelVisible: false,
       isChanged: false,
@@ -72,9 +78,9 @@ class ThirdPartyModule extends React.Component {
         t("DailyPeriodSchedule"),
       selectedWeekdayOption:
         weekdayNameFromSessionStorage || selectedWeekdayOption,
-      selectedNumberWeekdayOption: dayFromSessionStorage || defaultDay || "2",
+      selectedNumberWeekdayOption: weekdayNumber,
       selectedTimeOption: defaultHour || "12:00",
-      selectedMonthOption: dayFromSessionStorage || defaultDay || "1",
+      selectedMonthOption: monthNumber,
       selectedMaxCopies:
         maxCopiesFromSessionStorage || defaultMaxCopies || "10",
       selectedNumberMaxCopies:
@@ -83,6 +89,7 @@ class ThirdPartyModule extends React.Component {
       isSetDefaultFolderPath: false,
     };
     this._isMounted = false;
+    this.folderDocumentsModulePath = "";
   }
 
   componentDidMount() {
@@ -96,12 +103,14 @@ class ThirdPartyModule extends React.Component {
     onSetLoadingData && onSetLoadingData(true);
     this.checkChanges();
     //debugger;
+
     this.setState({ isLoading: true }, function () {
-      +defaultStorageType === 1
+      +defaultStorageType === 0
         ? getFolderPath(defaultSelectedFolder)
-            .then(
-              (folderPath) => (this.folderThirdPartyModulePath = folderPath)
-            )
+            .then((folderPath) => {
+              debugger;
+              this.folderThirdPartyModulePath = folderPath;
+            })
             .then(
               () =>
                 this._isMounted &&
@@ -252,9 +261,9 @@ class ThirdPartyModule extends React.Component {
   checkChanges = () => {
     const { defaultStorageType } = this.props;
     const { isChanged } = this.state;
-    //debugger;
+    // debugger;
     let changed;
-    if (+defaultStorageType === 1) {
+    if (+defaultStorageType === 0) {
       changed = this.checkOptions();
       isChanged !== changed &&
         this.setState({
@@ -336,16 +345,17 @@ class ThirdPartyModule extends React.Component {
       changedDefaultOptions,
       onSetDefaultOptions,
       onSetLoadingData,
+      weekdaysOptions,
     } = this.props;
 
     let storageParams = [];
 
-    if (!selectedFolder) {
-      this.setState({
-        isError: true,
-      });
-      return;
-    }
+    // if (!selectedFolder) {
+    //   this.setState({
+    //     isError: true,
+    //   });
+    //   return;
+    // }
     onSetLoadingData && onSetLoadingData(true);
     this.setState({ isLoadingData: true }, function () {
       let period = weeklySchedule ? "1" : monthlySchedule ? "2" : "0";
@@ -360,7 +370,7 @@ class ThirdPartyModule extends React.Component {
         0,
         selectedTimeOption.indexOf(":")
       );
-      let storageType = "1";
+      let storageType = "0";
 
       //console.log("storageFiledValue", this.storageFiledValue);
 
@@ -400,13 +410,13 @@ class ThirdPartyModule extends React.Component {
               defaultDay,
               defaultMaxCopies
             );
-
+            //debugger;
             this.onSelectFolder([`${folderId}`]);
           }
         })
         .then(() => getFolderPath(folderId))
         .then((folderPath) => {
-          this.folderThirdPartyModulePath = folderPath;
+          this.folderDocumentsModulePath = folderPath;
         })
         .then(() => {
           this._isMounted && onSetDefaultOptions();
@@ -416,6 +426,7 @@ class ThirdPartyModule extends React.Component {
         .finally(() => {
           this._isMounted && onSetLoadingData && onSetLoadingData(false);
           if (isError && this._isMounted) this.setState({ isError: false });
+
           this._isMounted &&
             this.setState({
               isLoadingData: false,
@@ -548,8 +559,8 @@ class ThirdPartyModule extends React.Component {
       t,
       onSetLoadingData,
     } = this.props;
-    //console.log("selectedFolder THRDPARTY", selectedFolder);
-    console.log("third-party", isLoading);
+
+    console.log("documents module render", selectedFolder);
     console.log("___");
     return (
       <div className="category-item-wrapper">
@@ -565,7 +576,8 @@ class ThirdPartyModule extends React.Component {
               isSetDefaultFolderPath={isSetDefaultFolderPath} //здесь
               isError={isError} //здесь
               onSetLoadingData={onSetLoadingData}
-              isThirdPartyFolders
+              isCommonFolders
+              isCommonWithoutProvider
               withoutTopLevelFolder
               isSavingProcess={isLoadingData}
             />
@@ -613,4 +625,4 @@ class ThirdPartyModule extends React.Component {
     );
   }
 }
-export default withTranslation("Settings")(observer(ThirdPartyModule));
+export default withTranslation("Settings")(observer(DocumentsModule));

@@ -18,11 +18,12 @@ const ScheduleComponent = ({
   onSelectMaxCopies,
   maxNumberCopiesArray,
   onSelectPeriod,
-  onSelectWeedDay,
+  onSelectWeekDay,
   isLoadingData,
   isDisableOptions,
 }) => {
   const { t } = useTranslation("Settings");
+  //console.log("selectedWeekdayOption", selectedWeekdayOption);
   return (
     <div>
       <ComboBox
@@ -47,7 +48,7 @@ const ScheduleComponent = ({
             key: 0,
             label: selectedWeekdayOption,
           }}
-          onSelect={onSelectWeedDay}
+          onSelect={onSelectWeekDay}
           isDisabled={isLoadingData || isDisableOptions}
           noBorder={false}
           scaled={false}
