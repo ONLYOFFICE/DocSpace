@@ -21,5 +21,6 @@
   "Location": "Standort",
   "MaleSexStatus": "Männlich",
   "maxSizeFileError": "Maximale Dateigröße überschritten",
-  "orDropFileHereLabel": "oder legen Sie eine Datei hier ab"
+  "orDropFileHereLabel": "oder legen Sie eine Datei hier ab",
+  "Comments": "Kommentare"
 }

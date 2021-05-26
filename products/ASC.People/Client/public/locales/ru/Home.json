@@ -11,9 +11,7 @@
   "Administrator": "Администратор",
   "LblOther": "Другое",
   "LblSelect": "Выберите",
-  "More": "Больше",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
-  "Search": "Поиск",
   "ChangeToUser": "Изменить на {{userCaption}}",
   "ChangeToGuest": "Изменить на {{guestCaption}}",
   "LblInviteAgain": "Выслать прилашение ещё раз",
@@ -23,6 +21,5 @@
   "LblSetActive": "Разблокировать",
   "LblSetDisabled": "Заблокировать",
   "MakeInvitationLink": "Создать пригласительную ссылку",
-  "SuccessfullyRemovedGroup": "Группа была успешно удалена",
-  "AddFilter": "Добавить фильтр"
+  "SuccessfullyRemovedGroup": "Группа была успешно удалена"
 }

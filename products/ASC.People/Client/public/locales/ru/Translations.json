@@ -21,5 +21,6 @@
   "Location": "Местоположение",
   "MaleSexStatus": "Мужской",
   "maxSizeFileError": "Превышен максимальный размер файла",
-  "orDropFileHereLabel": "или перетащите файл сюда"
+  "orDropFileHereLabel": "или перетащите файл сюда",
+  "Comments": "Комментарии"
 }

@@ -278,10 +278,10 @@ class SectionFilterContent extends React.Component {
         viewAs={false} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
         directionAscLabel={t("Common:DirectionAscLabel")}
         directionDescLabel={t("Common:DirectionDescLabel")}
-        placeholder={t("Search")}
+        placeholder={t("Common:Search")}
         isReady={this.state.isReady}
         {...filterColumnCount}
-        contextMenuHeader={t("AddFilter")}
+        contextMenuHeader={t("Common:AddFilter")}
         isMobile={isMobileOnly}
       />
     );

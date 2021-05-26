@@ -11,9 +11,7 @@
   "Administrator": "Administrator",
   "LblOther": "Other",
   "LblSelect": "Select",
-  "More": "More",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
-  "Search": "Search",
   "ChangeToUser": "Change to {{userCaption}}",
   "ChangeToGuest": "Change to {{guestCaption}}",
   "LblInviteAgain": "Invite again",
@@ -23,6 +21,5 @@
   "LblSetActive": "Set active",
   "LblSetDisabled": "Set disabled",
   "MakeInvitationLink": "Make invitation link",
-  "SuccessfullyRemovedGroup": "Group has been removed successfully",
-  "AddFilter": "Add filter"
+  "SuccessfullyRemovedGroup": "Group has been removed successfully"
 }

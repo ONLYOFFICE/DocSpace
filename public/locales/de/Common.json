@@ -62,5 +62,8 @@
   "ClearButton": "Filter zurücksetzen",
   "CommunityProduct": "Community",
   "EmptyFieldError": "Leeres Feld",
-  "Error": "Fehler"
+  "Error": "Fehler",
+  "AddFilter": "Filter hinzufügen",
+  "Search": "Suche",
+  "More": "Mehr"
 }

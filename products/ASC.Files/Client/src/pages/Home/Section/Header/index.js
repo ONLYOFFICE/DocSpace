@@ -482,7 +482,7 @@ class SectionHeaderContent extends React.Component {
                   onChange={this.onCheck}
                   menuItems={menuItems}
                   visible={isHeaderVisible}
-                  moreLabel={t("More")}
+                  moreLabel={t("Common:More")}
                   closeTitle={t("Common:CloseButton")}
                   onClose={this.onClose}
                   selected={menuItems[0].label}

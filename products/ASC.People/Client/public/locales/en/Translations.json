@@ -21,5 +21,6 @@
   "Location": "Location",
   "MaleSexStatus": "Male",
   "maxSizeFileError": "Maximum file size exceeded",
-  "orDropFileHereLabel": "or drop a file here"
+  "orDropFileHereLabel": "or drop a file here",
+  "Comments": "Comments"
 }

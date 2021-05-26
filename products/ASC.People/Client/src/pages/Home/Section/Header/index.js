@@ -449,7 +449,7 @@ const SectionHeaderContent = (props) => {
                 onChange={onCheck}
                 menuItems={menuItems}
                 visible={isHeaderVisible}
-                moreLabel={t("More")}
+                moreLabel={t("Common:More")}
                 closeTitle={t("Common:CloseButton")}
                 onClose={onClose}
                 selected={menuItems[0].label}

@@ -63,5 +63,8 @@
   "ClearButton": "Сбросить фильтр",
   "CommunityProduct": "Сообщество",
   "EmptyFieldError": "Пустое поле",
-  "Error": "Ошибка"
+  "Error": "Ошибка",
+  "AddFilter": "Добавить фильтр",
+  "Search": "Поиск",
+  "More": "Больше"
 }

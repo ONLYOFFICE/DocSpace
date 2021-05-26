@@ -837,7 +837,7 @@ class UpdateUserForm extends React.Component {
             )}
           </MainFieldsContainer>
         </MainContainer>
-        <InfoFieldContainer headerText={t("Comments")}>
+        <InfoFieldContainer headerText={t("Translations:Comments")}>
           <Textarea
             placeholder={t("WriteComment")}
             name="notes"
