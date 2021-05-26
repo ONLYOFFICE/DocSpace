@@ -41,6 +41,7 @@ const StyledTreeMenu = styled(TreeMenu)`
   span.rc-tree-node-content-wrapper:not(.rc-tree-node-content-wrapper-open) {
     width: unset;
     padding: 0 4px 0 4px !important;
+    max-width: 98%;
     @media ${tablet} {
       margin-left: 24px;
     }
