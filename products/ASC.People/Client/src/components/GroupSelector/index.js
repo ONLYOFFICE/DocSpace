@@ -115,7 +115,7 @@ class GroupSelector extends React.Component {
           searchPlaceHolderLabel || t("SearchPlaceholder")
         }
         selectButtonLabel={t("AddDepartmentsButtonLabel")}
-        selectAllLabel={t("SelectAllLabel")}
+        selectAllLabel={t("Common:SelectAll")}
         emptySearchOptionsLabel={t("EmptySearchOptionsLabel")}
         emptyOptionsLabel={t("EmptyOptionsLabel")}
         loadingLabel={`${t("Common:LoadingProcessing")} ${t(
