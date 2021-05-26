@@ -1,0 +1,696 @@
+{
+  "components": [
+    {
+      "type": "ASC.FederatedLogin.LoginProviders.BitlyLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.BitlyLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Bitly",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Bitly",
+		  "type": "ASC.FederatedLogin.LoginProviders.BitlyLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Bitly",
+		  "order": "13",
+		  "props": {
+			"bitlyClientId": "",
+			"bitlyClientSecret": ""
+		  },
+		  "additional": {
+			"bitlyUrl" : "https://api-ssl.bitly.com/v3/shorten?format=xml&amp;login={0}&amp;apiKey={1}&amp;longUrl={2}"
+		  }
+	  }
+    },    
+    {
+      "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Telegram",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Telegram",
+		  "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Telegram",
+		  "order": "13",
+		  "props": {
+			"telegramBotToken": "",
+			"telegramBotName": ""
+		  },
+		  "additional": {
+			"telegramAuthTokenLifespan" : 20,
+			"telegramProxy": ""
+		  }
+	  }
+    },    
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.BoxLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.BoxLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Box",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Box",
+		  "type": "ASC.FederatedLogin.LoginProviders.BoxLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Box",
+		  "order": "3",
+		  "props": {
+			"boxClientId": "",
+			"boxClientSecret": ""
+		  },
+		  "additional": {
+			"boxRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    }, 
+	{
+      "type": "ASC.Web.Core.Sms.ClickatellProvider, ASC.Web.Core",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.Web.Core.Sms.ClickatellProvider, ASC.Web.Core"
+		}, 
+		{
+		  "key": "Clickatell",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Clickatell",
+		  "type": "ASC.Web.Core.Sms.ClickatellProvider, ASC.Web.Core"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Clickatell",
+		  "order": "10",
+		  "props": {
+			"clickatellapiKey": ""
+		  }
+	  }
+    },
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.DocuSignLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.DocuSignLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "DocuSign",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "DocuSign",
+		  "type": "ASC.FederatedLogin.LoginProviders.DocuSignLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "DocuSign",
+		  "order": "1",
+		  "props": {
+			"docuSignClientId": "",
+			"docuSignClientSecret": "",
+			"docuSignHost": ""
+		  },
+		  "additional": {
+			"docuSignRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    },
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.DropboxLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.DropboxLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "DropBox",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "DropBox",
+		  "type": "ASC.FederatedLogin.LoginProviders.DropboxLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "DropBox",
+		  "order": "2",
+		  "props": {
+			"dropboxClientId": "",
+			"dropboxClientSecret": ""
+		  },
+		  "additional": {
+			"dropboxRedirectUrl" : "",
+			"dropboxappkey" : "",
+			"dropboxappsecret" : ""
+		  }
+	  }
+    },
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.FacebookLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.FacebookLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Facebook",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Facebook",
+		  "type": "ASC.FederatedLogin.LoginProviders.FacebookLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Facebook",
+		  "order": "6",
+		  "props": {
+			"facebookClientId": "",
+			"facebookClientSecret": ""
+		  },
+		  "additional": {
+			"facebookRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    },
+	{
+      "type": "ASC.Web.Core.Jabber.FireBase, ASC.Web.Core",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.Web.Core.Jabber.FireBase, ASC.Web.Core"
+		}, 
+		{
+		  "key": "Firebase",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Firebase",
+		  "type": "ASC.Web.Core.Jabber.FireBase, ASC.Web.Core"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Firebase",
+		  "order": "12",
+		  "props": {
+			"firebase_apiKey": "",
+			"firebase_projectId": "",
+			"firebase_messagingSenderId": "",
+			"firebase_authorization": ""
+		  }
+	  }
+    },
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.GoogleLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.GoogleLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Google",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Google",
+		  "type": "ASC.FederatedLogin.LoginProviders.GoogleLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Google",
+		  "order": "5",
+		  "props": {
+			"googleClientId": "",
+			"googleClientSecret": ""
+		  },
+		  "additional": {
+			"googleRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    },
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.LinkedInLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.LinkedInLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "LinkedIn",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "LinkedIn",
+		  "type": "ASC.FederatedLogin.LoginProviders.LinkedInLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "LinkedIn",
+		  "order": "8",
+		  "props": {
+			"linkedInKey": "",
+			"linkedInSecret": ""
+		  },
+		  "additional": {
+			"linkedInRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    },
+		{
+      "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Mailru",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Mailru",
+		  "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Mailru",
+		  "order": "4",
+		  "props": {
+			"mailRuClientId": "",
+			"mailRuClientSecret": ""
+		  },
+		  "additional": {
+			"mailRuRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    },
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.OneDriveLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.OneDriveLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "SkyDrive",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "SkyDrive",
+		  "type": "ASC.FederatedLogin.LoginProviders.OneDriveLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "SkyDrive",
+		  "order": "4",
+		  "props": {
+			"skydriveappkey": "",
+			"skydriveappsecret": ""
+		  },
+		  "additional": {
+			"skydriveRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    },
+	{
+      "type": "ASC.Web.Core.Sms.SmscProvider, ASC.Web.Core",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.Web.Core.Sms.SmscProvider, ASC.Web.Core"
+		}, 
+		{
+		  "key": "Smsc",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Smsc",
+		  "type": "ASC.Web.Core.Sms.SmscProvider, ASC.Web.Core"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Smsc",
+		  "order": "11",
+		  "props": {
+			"smsclogin": "",
+			"smscpsw": ""
+		  },
+		  "additional": {
+			"smscsender" : "",
+			"smsccis": ""
+		  }
+	  }
+    },
+	{
+      "type": "ASC.Web.Core.Sms.TwilioProvider, ASC.Web.Core",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.Web.Core.Sms.TwilioProvider, ASC.Web.Core"
+		}, 
+		{
+		  "key": "Twilio",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Twilio",
+		  "type": "ASC.Web.Core.Sms.TwilioProvider, ASC.Web.Core"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Twilio",
+		  "order": "9",
+		  "props": {
+			"twilioAccountSid": "",
+			"twilioAuthToken": "",
+			"twiliosender": ""
+		  }
+	  }
+    },
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.YahooLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.YahooLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Yahoo",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Yahoo",
+		  "type": "ASC.FederatedLogin.LoginProviders.YahooLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Yahoo",
+		  "order": "14",
+		  "props": {
+			"yahooClientId": "",
+			"yahooClientSecret": ""
+		  },
+		  "additional": {
+			"yahooRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    },
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Vk",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Vk",
+		  "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Vk",
+		  "order": "14",
+		  "props": {
+			"vkClientId": "",
+			"vkClientSecret": ""
+		  },
+		  "additional": {
+			"vkRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    },
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.WordpressLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.WordpressLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Wordpress",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Wordpress",
+		  "type": "ASC.FederatedLogin.LoginProviders.WordpressLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Wordpress",
+		  "order": "15",
+		  "props": {
+			"wpClientId": "",
+			"wpClientSecret": ""
+		  },
+		  "additional": {
+			"wpRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    },
+	{
+      "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Yandex",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Yandex",
+		  "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Yandex",
+		  "order": "15",
+		  "props": {
+			"yandexClientId": "",
+			"yandexClientSecret": ""
+		  },
+		  "additional": {
+			"yandexRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+		  }
+	  }
+    },
+	{
+      "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "S3",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "S3",
+		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "S3",
+		  "order": "20",
+		  "props": {
+			"acesskey": "",
+			"secretaccesskey": ""
+		  },
+		  "additional": {
+			"handlerType" : "ASC.Data.Storage.S3.S3Storage, ASC.Data.Storage",
+			"bucket" : "",
+			"region" : "",
+			"serviceurl": "",
+			"forcepathstyle": "",
+			"usehttp": "",
+			"sse": "",
+			"cdn": "S3Cdn"
+		  }
+	  }
+    },
+	{
+      "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "GoogleCloud",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "GoogleCloud",
+		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "GoogleCloud",
+		  "order": "21",
+		  "props": {
+			"json": ""
+		  },
+		  "additional": {
+			"handlerType" : "ASC.Data.Storage.GoogleCloud.GoogleCloudStorage, ASC.Data.Storage",
+			"bucket" : ""
+		  }
+	  }
+    },
+	{
+      "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Rackspace",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Rackspace",
+		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Rackspace",
+		  "order": "22",
+		  "props": {
+			"username": "",
+			"apiKey": ""
+		  },
+		  "additional": {
+			"handlerType" : "ASC.Data.Storage.RackspaceCloud.RackspaceCloudStorage, ASC.Data.Storage",
+			"public_container" : "",
+			"private_container" : "",
+			"region" : ""
+		  }
+	  }
+    },
+	{
+      "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Selectel",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Selectel",
+		  "type": "ASC.Core.Common.Configuration.DataStoreConsumer, ASC.Core.Common"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Selectel",
+		  "order": "23",
+		  "props": {
+			"authUser": "",
+			"authPwd": ""
+		  },
+		  "additional": {
+			"handlerType" : "ASC.Data.Storage.Selectel.SelectelStorage, ASC.Data.Storage",
+			"public_container" : "",
+			"private_container" : ""
+		  }
+	  }
+    }
+  ]
+}
