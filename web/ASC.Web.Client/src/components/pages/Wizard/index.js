@@ -398,7 +398,7 @@ class Body extends Component {
     if (errorInitWizard) {
       return (
         <ErrorContainer
-          headerText={t("ErrorInitWizardHeader")}
+          headerText={t("Common:SpmethingWentWrong")}
           bodyText={t("ErrorInitWizard")}
           buttonText={t("ErrorInitWizardButton")}
           buttonUrl="/"

@@ -77,5 +77,6 @@
   "Size": "Size",
   "LblActive": "Active",
   "LblSelect": "Select",
-  "Version": "Version"
+  "Version": "Version",
+  "SomethingWentWrong": "Something went wrong."
 }

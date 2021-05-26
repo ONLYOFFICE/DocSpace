@@ -77,5 +77,6 @@
   "Size": "Размер",
   "LblActive": "Активный",
   "LblSelect": "Выберите",
-  "Version": "Версия"
+  "Version": "Версия",
+  "SomethingWentWrong": "Что-то пошло не так."
 }
