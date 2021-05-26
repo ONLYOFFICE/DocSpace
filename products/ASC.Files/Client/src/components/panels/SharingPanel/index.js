@@ -669,7 +669,7 @@ class Panel extends React.Component {
           : shareDataItems[i].access === 3
           ? t("DenyAccess")
           : shareDataItems[i].access === 5
-          ? t("Review")
+          ? t("Common:Review")
           : shareDataItems[i].access === 6
           ? t("Comment")
           : shareDataItems[i].access === 7

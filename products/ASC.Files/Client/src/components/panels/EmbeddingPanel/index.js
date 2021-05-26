@@ -143,7 +143,9 @@ class EmbeddingPanelComponent extends React.Component {
             </StyledHeaderContent>
             <StyledBody size={size}>
               <div className="embedding-panel_body">
-                <Text className="embedding-panel_text">{t("Size")}:</Text>
+                <Text className="embedding-panel_text">
+                  {t("Common:Size")}:
+                </Text>
                 <div className="embedding-panel_links-container">
                   <Link
                     isHovered

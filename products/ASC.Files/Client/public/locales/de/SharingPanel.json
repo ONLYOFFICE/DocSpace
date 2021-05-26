@@ -15,7 +15,6 @@
   "Notify users": "Benutzer benachrichtigen",
   "Owner": "Besitzer",
   "ReadOnly": "Schreibgeschützt",
-  "Review": "Review",
   "ShareEmailBody": "Ihnen wurde Zugriff auf das Dokument {{itemName}} erteilt. Zum Öffnen klicken Sie auf den Link: {{shareLink}}",
   "ShareEmailSubject": "Ihnen wurde Zugriff auf das Dokument {{itemName}} erteilt",
   "ShareEveryone": "Alle",
