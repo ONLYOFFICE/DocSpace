@@ -23,10 +23,8 @@
   "More": "Mehr",
   "NotFoundDescription": "Ändern oder entfernen Sie Filterungsoptionen, um alle Personen im Bereich zu sehen.",
   "NotFoundTitle": "Keine Teammitglieder gefunden",
-  "ReassignData": "Daten erneut zuweisen",
   "Search": "Suche",
   "SendInviteAgain": "Einladung erneut senden",
-  "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert",
   "SuccessfullyRemovedGroup": "Die Gruppe wurde erfolgreich entfernt",
   "UserStatus": "Status"
 }

@@ -2,7 +2,5 @@
   "Confirmation": "Подтверждение",
   "DeleteUserConfirmation": "{{userCaption}} \u003Cstrong\u003E{{user}}\u003C/strong\u003E будет удален.",
   "DeleteUserDataConfirmation": "Будут удалены личные документы пользователя, доступные для других. Чтобы избежать этого, нужно перед удалением запустить процесс передачи данных.",
-  "NotBeUndone": "Внимание: это действие необратимо.",
-  "ReassignData": "Передать данные",
   "SuccessfullyDeleteUserInfoMessage": "Пользователь успешно удален"
 }

@@ -3,7 +3,6 @@
   "LblSendMessage": "Send message",
   "DisableUserButton": "Disable",
   "EnableUserButton": "Enable",
-  "ReassignData": "Reassign data",
   "NotFoundDescription": "Try a different filter or clear it to view all people in the section.",
   "NotFoundTitle": "No teammates found",
   "ClearButton": "Clear filter",
@@ -28,6 +27,5 @@
   "LblSetDisabled": "Set disabled",
   "MakeInvitationLink": "Make invitation link",
   "SuccessfullyRemovedGroup": "Group has been removed successfully",
-  "AddFilter": "Add filter",
-  "SuccessChangeUserStatus": "The user status was successfully changed"
+  "AddFilter": "Add filter"
 }

@@ -115,7 +115,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
         </ModalDialog.Header>
         <ModalDialog.Body>
           <Text>{t("DeleteGroupUsersMessage")}</Text>
-          <Text>{t("NotBeUndone")}</Text>
+          <Text>{t("Translations:NotBeUndone")}</Text>
           <br />
           <Text color="#c30" fontSize="18px">
             {t("Common:Warning")}!
@@ -153,9 +153,11 @@ class DeleteGroupUsersDialogComponent extends React.Component {
   }
 }
 
-const DeleteUsersDialog = withTranslation(["DeleteUsersDialog", "Common"])(
-  DeleteGroupUsersDialogComponent
-);
+const DeleteUsersDialog = withTranslation([
+  "DeleteUsersDialog",
+  "Common",
+  "Translations",
+])(DeleteGroupUsersDialogComponent);
 
 DeleteUsersDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

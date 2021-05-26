@@ -5,6 +5,5 @@
   "ChangeUsersStatusButton": "Benutzerstatus ändern",
   "ChangeUserStatusDialog": "Die Benutzer mit dem Status \u0027{{ status }}\u0027 werden deaktiviert.",
   "ChangeUserStatusDialogHeader": "Benutzerstatus ändern",
-  "ChangeUserStatusDialogMessage": "Sie können Status für Sie oder Portalbesitzer nicht ändern",
-  "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert"
+  "ChangeUserStatusDialogMessage": "Sie können Status für Sie oder Portalbesitzer nicht ändern"
 }

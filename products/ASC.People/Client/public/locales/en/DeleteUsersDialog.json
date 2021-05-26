@@ -2,6 +2,5 @@
   "DeleteGroupUsersMessage": "The disabled users you selected will be deleted.",
   "DeleteGroupUsersMessageHeader": "Delete the users from portal",
   "DeleteGroupUsersSuccessMessage": "Users have been successfully deleted.",
-  "DeleteUserDataConfirmation": "User documents shared others will be deleted. To avoid this, reassign data.",
-  "NotBeUndone": "Note: this action can\u0027t be undone."
+  "DeleteUserDataConfirmation": "User documents shared others will be deleted. To avoid this, reassign data."
 }

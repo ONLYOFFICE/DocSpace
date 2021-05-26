@@ -9,5 +9,8 @@
   "SuccessSentInvitation": "Die Einladung wurde erfolgreich gesendet",
   "SocialProfiles": "Soziale Profile",
   "Sex": "Geschlecht",
-  "selectNewPhotoLabel": "Neues Foto auswählen"
+  "selectNewPhotoLabel": "Neues Foto auswählen",
+  "NotBeUndone": "Dies kann nicht rückgängig gemacht werden.",
+  "ReassignData": "Daten erneut zuweisen",
+  "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert"
 }

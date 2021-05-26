@@ -28,8 +28,6 @@
   "Profile": "Профиль",
   "ProviderSuccessfullyConnected": "Провайдер успешно подключен",
   "ProviderSuccessfullyDisconnected": "Провайдер успешно отключен",
-  "ReassignData": "Передать данные",
   "SendInviteAgain": "Отправить приглашение ещё раз",
-  "Subscriptions": "Подписки",
-  "SuccessChangeUserStatus": "Статус пользователя успешно изменен"
+  "Subscriptions": "Подписки"
 }

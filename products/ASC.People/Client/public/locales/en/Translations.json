@@ -9,5 +9,8 @@
   "SuccessSentInvitation": "The invitation was successfully sent",
   "SocialProfiles": "Social profiles",
   "Sex": "Sex",
-  "selectNewPhotoLabel": "Select new photo"
+  "selectNewPhotoLabel": "Select new photo",
+  "NotBeUndone": "Note: this action can\u0027t be undone.",
+  "ReassignData": "Reassign data",
+  "SuccessChangeUserStatus": "The user status was successfully changed"
 }

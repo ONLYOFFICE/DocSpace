@@ -9,5 +9,8 @@
   "SuccessSentInvitation": "Приглашение было успешно отправлено",
   "SocialProfiles": "Социальные профили",
   "Sex": "Пол",
-  "selectNewPhotoLabel": "Выбрать новое фото"
+  "selectNewPhotoLabel": "Выбрать новое фото",
+  "NotBeUndone": "Внимание: это действие необратимо.",
+  "ReassignData": "Передать данные",
+  "SuccessChangeUserStatus": "Статус пользователя успешно изменен"
 }

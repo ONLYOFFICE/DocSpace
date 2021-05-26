@@ -242,7 +242,7 @@ class SectionHeaderContent extends React.PureComponent {
     updateUserStatus(status, new Array(userId))
       .then(() => this.props.updateProfile(this.props.profile))
       .then(() => fetchProfile(userId))
-      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .then(() => toastr.success(t("Translations:SuccessChangeUserStatus")))
       .catch((error) => toastr.error(error));
   };
 
@@ -351,7 +351,7 @@ class SectionHeaderContent extends React.PureComponent {
           },
           {
             key: "reassign-data",
-            label: t("ReassignData"),
+            label: t("Translations:ReassignData"),
             onClick: this.onReassignDataClick.bind(this, user),
           },
           {

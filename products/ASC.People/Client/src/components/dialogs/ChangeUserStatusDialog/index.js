@@ -46,7 +46,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
     const { userIds } = this.state;
     this.setState({ isRequestRunning: true }, () => {
       updateUserStatus(userStatus, userIds, true)
-        .then(() => toastr.success(t("SuccessChangeUserStatus")))
+        .then(() => toastr.success(t("Translations:SuccessChangeUserStatus")))
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {

@@ -28,8 +28,6 @@
   "Profile": "Profile",
   "ProviderSuccessfullyConnected": "Provider successfully connected",
   "ProviderSuccessfullyDisconnected": "Provider successfully disconnected",
-  "ReassignData": "Reassign data",
   "SendInviteAgain": "Send invitation once again",
-  "Subscriptions": "Subscriptions",
-  "SuccessChangeUserStatus": "The user status was successfully changed"
+  "Subscriptions": "Subscriptions"
 }

@@ -23,8 +23,6 @@
   "orDropFileHereLabel": "oder legen Sie eine Datei hier ab",
   "PhoneLbl": "Telefon",
   "Profile": "Profil",
-  "ReassignData": "Daten erneut zuweisen",
   "SendInviteAgain": "Einladung erneut senden",
-  "Subscriptions": "Abonnements",
-  "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert"
+  "Subscriptions": "Abonnements"
 }
