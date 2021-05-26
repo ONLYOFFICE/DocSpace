@@ -117,7 +117,7 @@ const Body = ({ t }) => {
 
       <VersionStyle>
         <Text className="text_style" fontSize="14px" color="#A3A9AE">
-          {`${t("AboutCompanyVersion")}: ${config.version}`}
+          {`${t("Common:Version")}: ${config.version}`}
         </Text>
       </VersionStyle>
 

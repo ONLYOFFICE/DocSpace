@@ -229,7 +229,7 @@ const HeaderComponent = ({
               target="_blank"
               {...versionBadgeProps}
             >
-              {t("Version")} {version}
+              {t("Common:Version")} {version}
             </Link>
             <Text as="span" {...versionBadgeProps}>
               {" "}
