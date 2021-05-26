@@ -830,7 +830,7 @@ class UpdateUserForm extends React.Component {
                 selectorIsVisible={selector.visible}
                 selectorOptions={selector.options}
                 selectorSelectedOptions={selector.selected}
-                selectorSelectAllText={t("SelectAll")}
+                selectorSelectAllText={t("Common:SelectAll")}
                 selectorOnSearchGroups={this.onSearchGroups}
                 selectorOnSelectGroups={this.onSelectGroups}
               />

@@ -54,5 +54,6 @@
   "AdminSettings": "Administrative Einstellungen",
   "ContinueButton": "Weiter",
   "Delete": "Löschen",
-  "Enable": "Aktivieren"
+  "Enable": "Aktivieren",
+  "SelectAll": "Alle auswählen"
 }

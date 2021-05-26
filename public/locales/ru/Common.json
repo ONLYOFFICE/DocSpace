@@ -54,5 +54,6 @@
   "AdminSettings": "Настройки администратора",
   "ContinueButton": "Продолжить",
   "Delete": "Удалить",
-  "Enable": "Включить"
+  "Enable": "Включить",
+  "SelectAll": "Выбрать все"
 }
