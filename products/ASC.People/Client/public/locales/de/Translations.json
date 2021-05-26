@@ -4,5 +4,6 @@
   "PasswordChangeButton": "Kennwort ändern",
   "RemoveData": "Persönliche Daten löschen",
   "DeleteSelfProfile": "Profil löschen",
-  "PendingTitle": "Ausstehend"
+  "PendingTitle": "Ausstehend",
+  "EmailChangeButton": "E-Mail-Adresse ändern"
 }

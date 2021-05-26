@@ -1,7 +1,6 @@
 {
   "LblSendEmail": "Отправить email",
   "LblSendMessage": "Отправить сообщение",
-  "EmailChangeButton": "Изменить email",
   "DisableUserButton": "Заблокировать",
   "EnableUserButton": "Разблокировать",
   "ReassignData": "Передать данные",
