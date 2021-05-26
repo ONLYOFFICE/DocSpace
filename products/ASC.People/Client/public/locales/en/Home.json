@@ -8,7 +8,6 @@
   "UserStatus": "Status",
   "Administrator": "Administrator",
   "LblOther": "Other",
-  "LblSelect": "Select",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
   "ChangeToUser": "Change to {{userCaption}}",
   "ChangeToGuest": "Change to {{guestCaption}}",

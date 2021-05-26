@@ -8,7 +8,6 @@
   "UserStatus": "Статус",
   "Administrator": "Администратор",
   "LblOther": "Другое",
-  "LblSelect": "Выберите",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
   "ChangeToUser": "Изменить на {{userCaption}}",
   "ChangeToGuest": "Изменить на {{guestCaption}}",

@@ -160,7 +160,7 @@ class SectionFilterContent extends React.Component {
         group: "filter-other",
         subgroup: "filter-group",
         label: groupCaption,
-        defaultSelectLabel: t("LblSelect"),
+        defaultSelectLabel: t("Common:LblSelect"),
       },
       ...groupOptions,
     ];
