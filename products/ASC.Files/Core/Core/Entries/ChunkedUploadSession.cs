@@ -80,33 +80,11 @@ namespace ASC.Files.Core
         }
 
         [Serializable]
-        public class Property<T>
+        public class Property<T> : Property
         {
             public T FolderId { get; set; }
 
             public bool Encrypted { get; set; }
-
-            public string Id { get; set; }
-
-            public DateTime Created { get; set; }
-
-            public DateTime Expired { get; set; }
-
-            public string Location { get; set; }
-
-            public long BytesUploaded { get; set; }
-
-            public long BytesTotal { get; set; }
-
-            public int TenantId { get; set; }
-
-            public Guid UserId { get; set; }
-
-            public bool UseChunks { get; set; }
-
-            public string CultureName { get; set; }
-
-            public Dictionary<string, object> Items { get; set; }
 
             public PropertyFile<T> File { get; set; }
 

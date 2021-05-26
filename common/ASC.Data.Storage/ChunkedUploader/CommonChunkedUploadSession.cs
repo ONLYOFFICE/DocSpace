@@ -90,17 +90,85 @@ namespace ASC.Core.ChunkedUploader
             return Items.ContainsKey(key) && Items[key] is T t ? t : default;
         }
 
-        public static CommonChunkedUploadSession Deserialize(Stream stream)
-        {
-            var sr = new StreamReader(stream);
-            string myStr = sr.ReadToEnd();
-            var commonChunkedUploadSession = JsonSerializer.Deserialize<CommonChunkedUploadSession>(myStr);
-            return commonChunkedUploadSession;
-        }
-
         public virtual object Clone()
         {
             return (CommonChunkedUploadSession)MemberwiseClone();
+        }
+
+        public static CommonChunkedUploadSession Deserialize(Stream stream)
+        {
+            var sr = new StreamReader(stream);
+            string str = sr.ReadToEnd();
+            var property = JsonSerializer.Deserialize<Property>(str);
+            return property.Deserialize();
+        }
+
+        [Serializable]
+        public class Property
+        {
+            public string Id { get; set; }
+
+            public DateTime Created { get; set; }
+
+            public DateTime Expired { get; set; }
+
+            public string Location { get; set; }
+
+            public long BytesUploaded { get; set; }
+
+            public long BytesTotal { get; set; }
+
+            public int TenantId { get; set; }
+
+            public Guid UserId { get; set; }
+
+            public bool UseChunks { get; set; }
+
+            public string CultureName { get; set; }
+
+            public Dictionary<string, object> Items { get; set; }
+
+            public CommonChunkedUploadSession Deserialize()
+            {
+                var chunk = new CommonChunkedUploadSession(BytesTotal);
+                Initialization(chunk);
+                return chunk;
+            }
+
+            private Dictionary<string, object> GetItems()
+            {
+                var items = new Dictionary<string, object>();
+                foreach (var item in Items)
+                {
+                    if (item.Value.GetType() == typeof(JsonElement))
+                    {
+                        var value = (JsonElement)item.Value;
+                        if (value.ValueKind == JsonValueKind.String)
+                        {
+                            items.Add(item.Key, item.Value.ToString());
+                        }
+                    }
+                    else
+                    {
+                        items.Add(item.Key, item.Value);
+                    }
+                }
+                return items;
+            }
+
+            private void Initialization(CommonChunkedUploadSession chunk)
+            {
+                chunk.Id = Id;
+                chunk.Created = Created;
+                chunk.Expired = Expired;
+                chunk.Location = Location;
+                chunk.BytesUploaded = BytesUploaded;
+                chunk.TenantId = TenantId;
+                chunk.UserId = UserId;
+                chunk.UseChunks = UseChunks;
+                chunk.CultureName = CultureName;
+                chunk.Items = GetItems();
+            }
         }
     }
 }
