@@ -1,7 +1,11 @@
 import React from "react";
 import { Provider as MobxProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
-import { getFolderPath, thirdParty } from "@appserver/common/api/files";
+import {
+  getCommonFolderList,
+  getFolderPath,
+  thirdParty,
+} from "@appserver/common/api/files";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import stores from "../../../store/index";
 import store from "studio/store";
@@ -53,12 +57,8 @@ class SelectedFolder extends React.PureComponent {
       fullFolderPathDefault: "",
       isAvailableFolders: true,
     };
+    this._isMounted = false;
   }
-  getFields = (obj) => {
-    return Object.keys(obj).reduce((acc, rec) => {
-      return [...acc, obj[rec]];
-    }, []);
-  };
   componentDidMount() {
     const {
       fetchTreeFolders,
@@ -69,63 +69,77 @@ class SelectedFolder extends React.PureComponent {
       isThirdPartyFolders,
       isCommonFolders,
     } = this.props;
+    this._isMounted = true;
+    this._isMounted &&
+      this.setState({ isLoading: true }, function () {
+        onSetLoadingData && onSetLoadingData(true);
 
-    this.setState({ isLoading: true }, function () {
-      onSetLoadingData && onSetLoadingData(true);
-
-      if (isCommonFolders) {
+        if (isCommonFolders) {
+          //debugger;
+          SelectedFolderModal.getCommonFolders()
+            .then((commonFolder) => {
+              //debugger;
+              folderList = commonFolder;
+            }) //только общие сразу вызвать
+            .then(
+              () =>
+                folderPath.length === 0 &&
+                onSelectFolder([`${folderList[0].id}`])
+            )
+            .finally(() => {
+              onSetLoadingData && onSetLoadingData(false);
+              this._isMounted &&
+                this.setState({
+                  isLoading: false,
+                  baseFolderPath: folderList[0].title,
+                });
+            });
+        }
         //debugger;
-        fetchTreeFolders()
-          .then(() => getCommonFolder())
-          .then((commonFolder) => (folderList = [commonFolder])) //только общие сразу вызвать
-          .then(
-            () =>
-              folderPath.length === 0 && onSelectFolder([`${folderList[0].id}`])
-          )
-          .finally(() => {
-            onSetLoadingData && onSetLoadingData(false);
-            this.setState({
-              isLoading: false,
-              baseFolderPath: folderList[0].title,
-            });
-          });
-      }
+        if (isThirdPartyFolders) {
+          SelectedFolderModal.getCommonThirdPartyList()
+            .then(
+              (commonThirdPartyArray) => (folderList = commonThirdPartyArray)
+            )
+            .then(
+              () =>
+                folderList.length === 0 &&
+                this.setState({ isAvailableFolders: false })
+            )
+            .then(
+              () =>
+                folderPath.length !== 0 &&
+                this._isMounted &&
+                this.setState({
+                  baseFolderPath: folderList,
+                })
+            )
+            .finally(() => {
+              onSetLoadingData && onSetLoadingData(false);
 
-      if (isThirdPartyFolders) {
-        SelectedFolderModal.getCommonThirdPartyList()
-          .then((commonThirdPartyArray) => (folderList = commonThirdPartyArray))
-          .then(
-            () =>
-              folderList.length === 0 &&
-              this.setState({ isAvailableFolders: false })
-          )
-          .then(
-            () =>
-              folderPath.length !== 0 &&
-              this.setState({
-                baseFolderPath: folderList,
-              })
-          )
-          .finally(() => {
-            onSetLoadingData && onSetLoadingData(false);
-
-            this.setState({
-              isLoading: false,
+              this._isMounted &&
+                this.setState({
+                  isLoading: false,
+                });
             });
-          });
-      }
-    });
+        }
+      });
 
     if (folderPath.length !== 0) {
+      //debugger;
       pathName = this.setFullFolderPath(folderPath);
 
-      this.setState({
-        fullFolderPath: pathName,
-        fullFolderPathDefault: pathName,
-      });
+      this._isMounted &&
+        this.setState({
+          fullFolderPath: pathName,
+          fullFolderPathDefault: pathName,
+        });
     }
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
   componentDidUpdate(prevProps) {
     const { isSetDefaultFolderPath, folderPath } = this.props;
 
@@ -169,6 +183,7 @@ class SelectedFolder extends React.PureComponent {
   };
 
   setFullFolderPath = (foldersArray) => {
+    //debugger;
     path = "";
     if (foldersArray.length > 1) {
       for (let item of foldersArray) {
@@ -200,6 +215,7 @@ class SelectedFolder extends React.PureComponent {
       withoutTopLevelFolder,
       isSavingProcess,
       isDisabled,
+      folderPath,
       //commonThirdPartyList,
     } = this.props;
     const {
@@ -312,6 +328,36 @@ class SelectedFolderModal extends React.Component {
     });
 
     return commonThirdPartyArray;
+  };
+
+  static getCommonFolders = async () => {
+    const commonFolders = await getCommonFolderList();
+
+    const convertedData = {
+      id: commonFolders.current.id,
+      key: 0 - 1,
+      parentId: commonFolders.current.parentId,
+      title: commonFolders.current.title,
+      rootFolderType: +commonFolders.current.rootFolderType,
+      rootFolderName: "@common",
+      folders: commonFolders.folders.map((folder) => {
+        return {
+          id: folder.id,
+          title: folder.title,
+          access: folder.access,
+          foldersCount: folder.foldersCount,
+          rootFolderType: folder.rootFolderType,
+          providerKey: folder.providerKey,
+          newItems: folder.new,
+        };
+      }),
+      pathParts: commonFolders.pathParts,
+      foldersCount: commonFolders.current.foldersCount,
+      newItems: commonFolders.new,
+    };
+    console.log("convertedData", convertedData);
+    //debugger;
+    return [convertedData];
   };
   render() {
     return (
