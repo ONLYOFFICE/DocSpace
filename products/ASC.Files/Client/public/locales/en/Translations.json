@@ -9,5 +9,8 @@
   "Presentations": "Presentations",
   "DownloadAs": "Download as",
   "ArchivingData": "Archiving data",
-  "Folders": "Folders"
+  "Folders": "Folders",
+  "Files": "Files",
+  "DeleteSelectedElem": "Selected elements were successfully deleted",
+  "DeleteFromTrash": "Selected elements were successfully deleted from Trash"
 }

@@ -48,8 +48,8 @@ class DeleteDialogComponent extends React.Component {
     const { t, deleteAction } = this.props;
     const translations = {
       deleteOperation: t("DeleteOperation"),
-      deleteFromTrash: t("DeleteFromTrash"),
-      deleteSelectedElem: t("DeleteSelectedElem"),
+      deleteFromTrash: t("Translations:DeleteFromTrash"),
+      deleteSelectedElem: t("Translations:DeleteSelectedElem"),
     };
 
     const selection = this.state.selection.filter((f) => f.checked);
@@ -140,7 +140,7 @@ class DeleteDialogComponent extends React.Component {
 
               {filesList.length > 0 && (
                 <Text isBold className="delete_dialog-text">
-                  {t("FilesModule")}:
+                  {t("Translations:Files")}:
                 </Text>
               )}
               {filesList.map((item, index) => (

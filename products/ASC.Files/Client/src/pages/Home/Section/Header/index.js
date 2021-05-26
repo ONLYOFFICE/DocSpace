@@ -233,8 +233,8 @@ class SectionHeaderContent extends React.Component {
     } else {
       const translations = {
         deleteOperation: t("DeleteOperation"),
-        deleteFromTrash: t("DeleteFromTrash"),
-        deleteSelectedElem: t("DeleteSelectedElem"),
+        deleteFromTrash: t("Translations:DeleteFromTrash"),
+        deleteSelectedElem: t("Translations:DeleteSelectedElem"),
       };
 
       deleteAction(translations).catch((err) => toastr.error(err));
