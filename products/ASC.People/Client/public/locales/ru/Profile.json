@@ -29,11 +29,7 @@
   "ProviderSuccessfullyConnected": "Провайдер успешно подключен",
   "ProviderSuccessfullyDisconnected": "Провайдер успешно отключен",
   "ReassignData": "Передать данные",
-  "selectNewPhotoLabel": "Выбрать новое фото",
   "SendInviteAgain": "Отправить приглашение ещё раз",
-  "Sex": "Пол",
-  "SocialProfiles": "Социальные профили",
   "Subscriptions": "Подписки",
-  "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
-  "SuccessSentInvitation": "Приглашение было успешно отправлено"
+  "SuccessChangeUserStatus": "Статус пользователя успешно изменен"
 }

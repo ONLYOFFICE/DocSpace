@@ -5,5 +5,9 @@
   "RemoveData": "Persönliche Daten löschen",
   "DeleteSelfProfile": "Profil löschen",
   "PendingTitle": "Ausstehend",
-  "EmailChangeButton": "E-Mail-Adresse ändern"
+  "EmailChangeButton": "E-Mail-Adresse ändern",
+  "SuccessSentInvitation": "Die Einladung wurde erfolgreich gesendet",
+  "SocialProfiles": "Soziale Profile",
+  "Sex": "Geschlecht",
+  "selectNewPhotoLabel": "Neues Foto auswählen"
 }

@@ -352,7 +352,10 @@ class SectionBodyContent extends React.PureComponent {
         )}
         {socialContacts && (
           <ToggleWrapper isContacts={true}>
-            <ToggleContent label={t("SocialProfiles")} isOpen={true}>
+            <ToggleContent
+              label={t("Translations:SocialProfiles")}
+              isOpen={true}
+            >
               <Text as="span">{socialContacts}</Text>
             </ToggleContent>
           </ToggleWrapper>
@@ -375,5 +378,9 @@ export default withRouter(
     setProviders: peopleStore.usersStore.setProviders,
     getOAuthToken: auth.settingsStore.getOAuthToken,
     getLoginLink: auth.settingsStore.getLoginLink,
-  }))(observer(withTranslation(["Profile", "Common"])(SectionBodyContent)))
+  }))(
+    observer(
+      withTranslation(["Profile", "Common", "Translations"])(SectionBodyContent)
+    )
+  )
 );

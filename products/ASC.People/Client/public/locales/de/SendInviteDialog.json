@@ -1,6 +1,5 @@
 ﻿{
   "SendInviteAgain": "Einladung erneut senden",
   "SendInviteAgainDialog": "Der Einladungslink wird erneut an ausgewählten Benutzern mit dem Status \u0022Ausstehend\u0022 gesendet.",
-  "SendInviteAgainDialogMessage": "Nachdem Benutzer Einladung annehmen, bekommen sie den Status \u0022Aktiv\u0022",
-  "SuccessSendInvitation": "Die Einladung wurde erfolgreich gesendet"
+  "SendInviteAgainDialogMessage": "Nachdem Benutzer Einladung annehmen, bekommen sie den Status \u0022Aktiv\u0022"
 }

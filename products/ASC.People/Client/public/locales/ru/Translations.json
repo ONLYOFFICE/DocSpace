@@ -5,5 +5,9 @@
   "RemoveData": "Удалить личные данные",
   "DeleteSelfProfile": "Удалить профиль",
   "PendingTitle": "Ожидание",
-  "EmailChangeButton": "Изменить email"
+  "EmailChangeButton": "Изменить email",
+  "SuccessSentInvitation": "Приглашение было успешно отправлено",
+  "SocialProfiles": "Социальные профили",
+  "Sex": "Пол",
+  "selectNewPhotoLabel": "Выбрать новое фото"
 }

@@ -457,7 +457,7 @@ class CreateUserForm extends React.Component {
               onSave={this.onSaveAvatar}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("AddPhoto")}
-              selectNewPhotoLabel={t("selectNewPhotoLabel")}
+              selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
               orDropFileHereLabel={t("orDropFileHereLabel")}
               unknownTypeError={t("ErrorUnknownFileImageType")}
               maxSizeFileError={t("maxSizeFileError")}
@@ -549,7 +549,7 @@ class CreateUserForm extends React.Component {
               inputTabIndex={5}
             />
             <RadioField
-              labelText={`${t("Sex")}:`}
+              labelText={`${t("Translations:Sex")}:`}
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
@@ -627,7 +627,7 @@ class CreateUserForm extends React.Component {
             onItemRemove={this.onContactsItemRemove}
           />
         </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("SocialProfiles")}>
+        <InfoFieldContainer headerText={t("Translations:SocialProfiles")}>
           <ContactsField
             pattern={pattern.social}
             contacts={contacts.social}
@@ -683,5 +683,11 @@ export default withRouter(
     setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
     updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
-  }))(observer(withTranslation(["ProfileAction", "Common"])(CreateUserForm)))
+  }))(
+    observer(
+      withTranslation(["ProfileAction", "Common", "Translations"])(
+        CreateUserForm
+      )
+    )
+  )
 );

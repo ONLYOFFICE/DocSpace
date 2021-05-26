@@ -461,7 +461,7 @@ class SectionHeaderContent extends React.PureComponent {
           onSave={this.onSaveAvatar}
           onLoadFile={this.onLoadFileAvatar}
           headerLabel={t("Common:EditAvatar")}
-          selectNewPhotoLabel={t("selectNewPhotoLabel")}
+          selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
           orDropFileHereLabel={t("orDropFileHereLabel")}
           unknownTypeError={t("ErrorUnknownFileImageType")}
           maxSizeFileError={t("maxSizeFileError")}

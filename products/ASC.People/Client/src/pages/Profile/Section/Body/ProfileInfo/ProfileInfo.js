@@ -147,7 +147,7 @@ class ProfileInfo extends React.PureComponent {
   onSentInviteAgain = (id) => {
     const { t } = this.props;
     resendUserInvites(new Array(id))
-      .then(() => toastr.success(t("SuccessSentInvitation")))
+      .then(() => toastr.success(t("Translations:SuccessSentInvitation")))
       .catch((error) =>
         toastr.error(error && error.message ? error.message : error)
       );
@@ -305,7 +305,7 @@ class ProfileInfo extends React.PureComponent {
         )}
         {sex && (
           <InfoItem>
-            <InfoItemLabel>{t("Sex")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Translations:Sex")}:</InfoItemLabel>
             <InfoItemValue>{formatedSex}</InfoItemValue>
           </InfoItem>
         )}

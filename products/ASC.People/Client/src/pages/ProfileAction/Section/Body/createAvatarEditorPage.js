@@ -257,7 +257,7 @@ class CreateAvatarEditorPage extends React.PureComponent {
           onCancel={this.onCancel}
           onLoadFile={this.onLoadFileAvatar}
           headerLabel={t("EditPhoto")}
-          selectNewPhotoLabel={t("selectNewPhotoLabel")}
+          selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
           orDropFileHereLabel={t("orDropFileHereLabel")}
           unknownTypeError={t("ErrorUnknownFileImageType")}
           maxSizeFileError={t("maxSizeFileError")}
@@ -293,7 +293,9 @@ export default withRouter(
     croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
   }))(
     observer(
-      withTranslation(["ProfileAction", "Common"])(CreateAvatarEditorPage)
+      withTranslation(["ProfileAction", "Common", "Translations"])(
+        CreateAvatarEditorPage
+      )
     )
   )
 );
