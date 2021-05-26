@@ -23,5 +23,6 @@
   "maxSizeFileError": "Превышен максимальный размер файла",
   "orDropFileHereLabel": "или перетащите файл сюда",
   "Comments": "Комментарии",
-  "InviteLinkTitle": "Пригласительная ссылка"
+  "InviteLinkTitle": "Пригласительная ссылка",
+  "DisableUserButton": "Заблокировать"
 }

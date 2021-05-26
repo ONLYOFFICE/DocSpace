@@ -200,7 +200,7 @@ const SimpleUserRow = ({
         case "disable":
           return {
             key: option,
-            label: t("DisableUserButton"),
+            label: t("Translations:DisableUserButton"),
             "data-id": id,
             onClick: onDisableClick,
           };

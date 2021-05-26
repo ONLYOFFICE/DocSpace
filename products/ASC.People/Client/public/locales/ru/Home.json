@@ -1,7 +1,6 @@
 {
   "LblSendEmail": "Отправить email",
   "LblSendMessage": "Отправить сообщение",
-  "DisableUserButton": "Заблокировать",
   "NotFoundDescription": "Попробуйте изменить или очистить настройки фильтра, чтобы увидеть всех людей в разделе.",
   "NotFoundTitle": "Сотрудников не найдено",
   "EmptyGroupTitle": "Здесь пока нет сотрудников",

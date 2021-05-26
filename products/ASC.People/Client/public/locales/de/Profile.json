@@ -3,13 +3,11 @@
   "ChangeEmailSuccess": "E-Mail wurde erfolgreich geändert",
   "ChangesApplied": "Die Änderungen wurden übernommen",
   "ContactInformation": "Kontaktdaten",
-  "DisableUserButton": "Deaktivieren",
   "EditPhoto": "Bild bearbeiten",
   "EditSubscriptionsBtn": "Abonnements bearbeiten",
   "EditUserDialogTitle": "Profil bearbeiten",
   "InviteAgainLbl": "Erneut einladen",
   "MessageEmailActivationInstuctionsSentOnEmail": "Die Hinweise für die Aktivierung wurden an \u003Cstrong\u003E{{ email }}\u003C/strong\u003E versandt.",
-  "NotFoundLanguage": "Können Sie Ihre Sprache nicht finden? Wenden Sie sich an uns unter \u003C1\u003E{{supportEmail}}\u003C/1\u003E, um ONLYOFFICE für Belohnungen zu übersetzen.",
   "PhoneLbl": "Telefon",
   "Subscriptions": "Abonnements"
 }

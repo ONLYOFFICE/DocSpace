@@ -23,5 +23,6 @@
   "maxSizeFileError": "Maximum file size exceeded",
   "orDropFileHereLabel": "or drop a file here",
   "Comments": "Comments",
-  "InviteLinkTitle": "Invitation link"
+  "InviteLinkTitle": "Invitation link",
+  "DisableUserButton": "Disable"
 }

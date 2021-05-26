@@ -338,7 +338,7 @@ class SectionHeaderContent extends React.PureComponent {
                 }
             : {
                 key: "disable",
-                label: t("DisableUserButton"),
+                label: t("Translations:DisableUserButton"),
                 onClick: this.onDisableClick,
               },
         ];
@@ -381,7 +381,7 @@ class SectionHeaderContent extends React.PureComponent {
             (user.status === EmployeeStatus.Active
               ? {
                   key: "disable",
-                  label: t("DisableUserButton"),
+                  label: t("Translations:DisableUserButton"),
                   onClick: this.onDisableClick,
                 }
               : {
