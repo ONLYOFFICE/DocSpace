@@ -154,7 +154,7 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
 
                     b.Property<bool>("Thumb")
                         .HasColumnName("thumb")
-                        .HasColumnType("boolean");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id", "TenantId", "Version")
                         .HasName("files_file_pkey");

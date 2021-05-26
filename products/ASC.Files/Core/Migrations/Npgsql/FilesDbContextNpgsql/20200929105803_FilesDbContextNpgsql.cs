@@ -67,7 +67,7 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                     changes = table.Column<string>(nullable: true),
                     encrypted = table.Column<bool>(nullable: false),
                     forcesave = table.Column<int>(nullable: false),
-                    thumb = table.Column<bool>(nullable: false)
+                    thumb = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

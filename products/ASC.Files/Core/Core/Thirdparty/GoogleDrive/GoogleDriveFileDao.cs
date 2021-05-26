@@ -65,8 +65,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             FileUtility fileUtility,
             CrossDao crossDao,
             GoogleDriveDaoSelector googleDriveDaoSelector,
-            IFileDao<int> fileDao)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+            IFileDao<int> fileDao,
+            TempPath tempPath)
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
             CrossDao = crossDao;
             GoogleDriveDaoSelector = googleDriveDaoSelector;

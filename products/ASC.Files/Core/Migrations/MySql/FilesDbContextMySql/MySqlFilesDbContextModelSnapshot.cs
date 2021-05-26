@@ -265,7 +265,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                         .HasDefaultValueSql("'1'");
 
                     b.Property<bool>("Thumb")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("int")
                         .HasColumnName("thumb");
 
                     b.HasKey("TenantId", "Id", "Version")

@@ -53,7 +53,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                         .Annotation("MySql:CharSet", "utf8"),
                     encrypted = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     forcesave = table.Column<int>(type: "int", nullable: false),
-                    thumb = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    thumb = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

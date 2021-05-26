@@ -108,7 +108,7 @@ namespace ASC.Web.Files.Utils
 
         public void Move<T>(ChunkedUploadSession<T> chunkedUploadSession, string newPath)
         {
-            CommonSessionHolder().Move(chunkedUploadSession, newPath);
+            CommonSessionHolder().Move(chunkedUploadSession, newPath, chunkedUploadSession.CheckQuota);
         }
 
         public void AbortUploadSession<T>(ChunkedUploadSession<T> uploadSession)

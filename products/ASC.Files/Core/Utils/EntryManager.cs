@@ -711,7 +711,7 @@ namespace ASC.Web.Files.Utils
                 ,
                 SortedByType.Author => (x, y) =>
                 {
-                    var cmp = c * string.Compare(x.ModifiedByString, y.ModifiedByString);
+                    var cmp = c * string.Compare(x.CreateByString, y.CreateByString);
                     return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
                 }
                 ,
@@ -931,7 +931,7 @@ namespace ASC.Web.Files.Utils
                     var path = FileConstant.NewDocPath + Thread.CurrentThread.CurrentCulture + "/";
                     if (!storeTemplate.IsDirectory(path))
                     {
-                        path = FileConstant.NewDocPath + "default/";
+                        path = FileConstant.NewDocPath + "en-US/";
                     }
                     path += "new" + FileUtility.GetInternalExtension(file.Title);
 
@@ -951,6 +951,7 @@ namespace ASC.Web.Files.Utils
             file.Encrypted = encrypted;
 
             file.ConvertedType = FileUtility.GetFileExtension(file.Title) != newExtension ? newExtension : null;
+            file.ThumbnailStatus = encrypted ? Thumbnail.NotRequired : Thumbnail.Waiting;
 
             if (file.ProviderEntry && !newExtension.Equals(currentExt))
             {
@@ -964,7 +965,7 @@ namespace ASC.Web.Files.Utils
                     }
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUri);
-                    DocumentServiceConnector.GetConvertedUri(downloadUri, newExtension, currentExt, key, null, false, out downloadUri);
+                    DocumentServiceConnector.GetConvertedUri(downloadUri, newExtension, currentExt, key, null, null, null, false, out downloadUri);
 
                     stream = null;
                 }
@@ -1107,6 +1108,15 @@ namespace ASC.Web.Files.Utils
                 {
                     newFile.ContentLength = stream.CanSeek ? stream.Length : fromFile.ContentLength;
                     newFile = fileDao.SaveFile(newFile, stream);
+                }
+
+                if (fromFile.ThumbnailStatus == Thumbnail.Created)
+                {
+                    using (var thumb = fileDao.GetThumbnail(fromFile))
+                    {
+                        fileDao.SaveThumbnail(newFile, thumb);
+                    }
+                    newFile.ThumbnailStatus = Thumbnail.Created;
                 }
 
                 FileMarker.MarkAsNew(newFile);

@@ -61,6 +61,7 @@ namespace ASC.Web.Files.Services.DocumentService
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private LockerManager LockerManager { get; }
         private FileTrackerHelper FileTracker { get; }
+        private EntryManager EntryManager { get; }
         private IServiceProvider ServiceProvider { get; }
 
         public DocumentServiceHelper(
@@ -75,7 +76,8 @@ namespace ASC.Web.Files.Services.DocumentService
             Global global,
             DocumentServiceConnector documentServiceConnector,
             LockerManager lockerManager,
-            FileTrackerHelper fileTracker, 
+            FileTrackerHelper fileTracker,
+            EntryManager entryManager,
             IServiceProvider serviceProvider)
         {
             DaoFactory = daoFactory;
@@ -90,6 +92,7 @@ namespace ASC.Web.Files.Services.DocumentService
             DocumentServiceConnector = documentServiceConnector;
             LockerManager = lockerManager;
             FileTracker = fileTracker;
+            EntryManager = entryManager;
             ServiceProvider = serviceProvider;
         }
 
@@ -274,6 +277,11 @@ namespace ASC.Web.Files.Services.DocumentService
 
             var docKey = GetDocKey(fileStable);
             var modeWrite = (editPossible || reviewPossible || fillFormsPossible || commentPossible) && tryEdit;
+
+            if (file.FolderID != null)
+            {
+                EntryManager.SetFileStatus(file);
+            }
 
             configuration = new Configuration<T>(file, ServiceProvider)
             {

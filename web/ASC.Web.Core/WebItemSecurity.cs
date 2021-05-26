@@ -100,7 +100,7 @@ namespace ASC.Web.Core
         private AuthContext AuthContext { get; }
         private PermissionContext PermissionContext { get; }
         private AuthManager Authentication { get; }
-        public WebItemManager WebItemManager { get; }
+        private WebItemManager WebItemManager { get; }
         private TenantManager TenantManager { get; }
         private AuthorizationManager AuthorizationManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }

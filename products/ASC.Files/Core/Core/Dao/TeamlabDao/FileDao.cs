@@ -67,12 +67,12 @@ namespace ASC.Files.Core.Data
         private GlobalStore GlobalStore { get; }
         private GlobalSpace GlobalSpace { get; }
         private GlobalFolder GlobalFolder { get; }
+        private Global Global { get; }
         private IDaoFactory DaoFactory { get; }
         private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
         private ProviderFolderDao ProviderFolderDao { get; }
         private CrossDao CrossDao { get; }
         private Settings Settings { get; }
-        private TempStream TempStream { get; }
 
         public FileDao(
             FactoryIndexerFile factoryIndexer,
@@ -92,6 +92,7 @@ namespace ASC.Files.Core.Data
             GlobalStore globalStore,
             GlobalSpace globalSpace,
             GlobalFolder globalFolder,
+            Global global,
             IDaoFactory daoFactory,
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
             ProviderFolderDao providerFolderDao,
@@ -116,6 +117,7 @@ namespace ASC.Files.Core.Data
             GlobalStore = globalStore;
             GlobalSpace = globalSpace;
             GlobalFolder = globalFolder;
+            Global = global;
             DaoFactory = daoFactory;
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             ProviderFolderDao = providerFolderDao;
@@ -351,8 +353,17 @@ namespace ASC.Files.Core.Data
         {
             return GetFileStream(file, 0);
         }
+        public async Task<Stream> GetFileStreamAsync(File<int> file)
+        {
+            return await GlobalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), 0);
+        }
 
         public File<int> SaveFile(File<int> file, Stream fileStream)
+        {
+            return SaveFile(file, fileStream, true);
+        }
+
+        public File<int> SaveFile(File<int> file, Stream fileStream, bool checkQuota = true)
         {
             if (file == null)
             {
@@ -360,7 +371,7 @@ namespace ASC.Files.Core.Data
             }
 
             var maxChunkedUploadSize = SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider);
-            if (maxChunkedUploadSize < file.ContentLength)
+            if (checkQuota && maxChunkedUploadSize < file.ContentLength)
             {
                 throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
             }
@@ -426,6 +437,7 @@ namespace ASC.Files.Core.Data
                     Comment = file.Comment,
                     Encrypted = file.Encrypted,
                     Forcesave = file.Forcesave,
+                    Thumb = file.ThumbnailStatus,
                     TenantId = TenantID
                 };
 
@@ -554,6 +566,7 @@ namespace ASC.Files.Core.Data
                 toUpdate.Comment = file.Comment;
                 toUpdate.Encrypted = file.Encrypted;
                 toUpdate.Forcesave = file.Forcesave;
+                toUpdate.Thumb = file.ThumbnailStatus;
 
                 FilesDbContext.SaveChanges();
 
@@ -824,6 +837,15 @@ namespace ASC.Files.Core.Data
                     copy = SaveFile(copy, stream);
                 }
 
+                if (file.ThumbnailStatus == Thumbnail.Created)
+                {
+                    using (var thumbnail = GetThumbnail(file))
+                    {
+                        SaveThumbnail(copy, thumbnail);
+                    }
+                    copy.ThumbnailStatus = Thumbnail.Created;
+                }
+
                 return copy;
             }
             return null;
@@ -964,7 +986,7 @@ namespace ASC.Files.Core.Data
             return ChunkedUploadSessionHolder.CreateUploadSession(file, contentLength);
         }
 
-        public void UploadChunk(ChunkedUploadSession<int> uploadSession, Stream stream, long chunkLength)
+        public File<int> UploadChunk(ChunkedUploadSession<int> uploadSession, Stream stream, long chunkLength)
         {
             if (!uploadSession.UseChunks)
             {
@@ -974,7 +996,7 @@ namespace ASC.Files.Core.Data
                     uploadSession.File = SaveFile(GetFileForCommit(uploadSession), streamToSave);
                 }
 
-                return;
+                return uploadSession.File;
             }
 
             ChunkedUploadSessionHolder.UploadChunk(uploadSession, stream, chunkLength);
@@ -983,6 +1005,8 @@ namespace ASC.Files.Core.Data
             {
                 uploadSession.File = FinalizeUploadSession(uploadSession);
             }
+
+            return uploadSession.File;
         }
 
         private File<int> FinalizeUploadSession(ChunkedUploadSession<int> uploadSession)
@@ -990,7 +1014,7 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder.FinalizeUploadSession(uploadSession);
 
             var file = GetFileForCommit(uploadSession);
-            SaveFile(file, null);
+            SaveFile(file, null, uploadSession.CheckQuota);
             ChunkedUploadSessionHolder.Move(uploadSession, GetUniqFilePath(file));
 
             return file;
@@ -1011,6 +1035,8 @@ namespace ASC.Files.Core.Data
                 file.ConvertedType = null;
                 file.Comment = FilesCommonResource.CommentUpload;
                 file.Encrypted = uploadSession.Encrypted;
+                file.ThumbnailStatus = Thumbnail.Waiting;
+
                 return file;
             }
             var result = ServiceProvider.GetService<File<int>>();
@@ -1134,6 +1160,11 @@ namespace ASC.Files.Core.Data
             return GlobalStore.GetStore().IsFile(GetUniqFilePath(file));
         }
 
+        public async Task<bool> IsExistOnStorageAsync(File<int> file)
+        {
+            return await GlobalStore.GetStore().IsFileAsync(string.Empty, GetUniqFilePath(file));
+        }
+
         private const string DiffTitle = "diff.zip";
 
         public void SaveEditHistory(File<int> file, string changes, Stream differenceStream)
@@ -1248,6 +1279,36 @@ namespace ASC.Files.Core.Data
                 .ToList();
 
             return q1.Union(q2);
+        }
+
+        private const string ThumbnailTitle = "thumb";
+
+        public void SaveThumbnail(File<int> file, Stream thumbnail)
+        {
+            if (file == null) throw new ArgumentNullException("file");
+
+            var toUpdate = FilesDbContext.Files
+                .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID);
+
+            if (toUpdate != null) 
+            {
+                toUpdate.Thumb = thumbnail != null ? Thumbnail.Created : file.ThumbnailStatus;
+                FilesDbContext.SaveChanges();
+            }
+
+            if (thumbnail == null) return;
+
+            var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
+            GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
+        }
+
+        public Stream GetThumbnail(File<int> file)
+        {
+            var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
+            var path = GetUniqFilePath(file, thumnailName);
+            var storage = GlobalStore.GetStore();
+            if (!storage.IsFile(string.Empty, path)) throw new FileNotFoundException();
+            return storage.GetReadStream(string.Empty, path);
         }
 
         #endregion
@@ -1388,6 +1449,7 @@ namespace ASC.Files.Core.Data
             file.Comment = r.File.Comment;
             file.Encrypted = r.File.Encrypted;
             file.Forcesave = r.File.Forcesave;
+            file.ThumbnailStatus = r.File.Thumb;
             return file;
         }
 

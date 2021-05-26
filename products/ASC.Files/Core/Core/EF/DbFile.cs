@@ -46,7 +46,7 @@ namespace ASC.Files.Core.EF
         public string Changes { get; set; }
         public bool Encrypted { get; set; }
         public ForcesaveType Forcesave { get; set; }
-        public bool Thumb { get; set; }
+        public Thumbnail Thumb { get; set; }
 
 
         [Nested]

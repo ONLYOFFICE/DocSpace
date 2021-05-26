@@ -238,7 +238,7 @@ namespace ASC.Web.Files.Utils
                             var docKey = documentServiceHelper.GetDocKey(file);
 
                             fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
-                            operationResultProgress = documentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, true, out convertedFileUrl);
+                            operationResultProgress = documentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, null, null, true, out convertedFileUrl);
                         }
                         catch (Exception exception)
                         {
@@ -648,7 +648,7 @@ namespace ASC.Web.Files.Utils
             var fileUri = PathProvider.GetFileStreamUrl(file);
             var docKey = DocumentServiceHelper.GetDocKey(file);
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, false, out var convertUri);
+            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, null, null, false, out var convertUri);
 
             if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
             {
@@ -680,7 +680,7 @@ namespace ASC.Web.Files.Utils
             var docKey = DocumentServiceHelper.GetDocKey(file);
 
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, false, out var convertUri);
+            DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, null, null, false, out var convertUri);
 
             return SaveConvertedFile(file, convertUri);
         }
@@ -777,6 +777,7 @@ namespace ASC.Web.Files.Utils
             newFile.Title = newFileTitle;
             newFile.ConvertedType = null;
             newFile.Comment = string.Format(FilesCommonResource.CommentConvert, file.Title);
+            newFile.ThumbnailStatus = Thumbnail.Waiting;
 
             var req = (HttpWebRequest)WebRequest.Create(convertedFileUrl);
 

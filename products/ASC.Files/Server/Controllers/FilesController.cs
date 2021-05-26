@@ -1889,6 +1889,18 @@ namespace ASC.Api.Documents
             return true;
         }
 
+        [Read("favorites/{fileId}")]
+        public bool ToggleFileFavorite(string fileId, bool favorite)
+        {
+            return FileStorageService.ToggleFileFavorite(fileId, favorite);
+        }
+
+        [Read("favorites/{fileId:int}")]
+        public bool ToggleFavoriteFromForm(int fileId, bool favorite)
+        {
+            return FileStorageServiceInt.ToggleFileFavorite(fileId, favorite);
+        }
+
         /// <summary>
         /// Removing files from favorite list
         /// </summary>
@@ -2192,13 +2204,13 @@ namespace ASC.Api.Documents
         /// <visible>false</visible>
         /// <returns></returns>
         [Create("thumbnails")]
-        public IEnumerable<string> CreateThumbnailsFromBody([FromBody]BaseBatchModel<JsonElement> model)
+        public IEnumerable<JsonElement> CreateThumbnailsFromBody([FromBody]BaseBatchModel<JsonElement> model)
         {
             return FileStorageService.CreateThumbnails(model.FileIds);
         }
 
         [Create("thumbnails")]
-        public IEnumerable<string> CreateThumbnailsFromForm([FromForm] BaseBatchModel<JsonElement> model)
+        public IEnumerable<JsonElement> CreateThumbnailsFromForm([FromForm] BaseBatchModel<JsonElement> model)
         {
             return FileStorageService.CreateThumbnails(model.FileIds);
         }

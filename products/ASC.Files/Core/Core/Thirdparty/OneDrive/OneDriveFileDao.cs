@@ -64,8 +64,9 @@ namespace ASC.Files.Thirdparty.OneDrive
             FileUtility fileUtility,
             CrossDao crossDao,
             OneDriveDaoSelector oneDriveDaoSelector,
-            IFileDao<int> fileDao)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+            IFileDao<int> fileDao,
+            TempPath tempPath)
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
             CrossDao = crossDao;
             OneDriveDaoSelector = oneDriveDaoSelector;

@@ -609,22 +609,33 @@ namespace ASC.Web.Files.Services.WCFService
                 var path = FileConstant.NewDocPath + culture + "/";
                 if (!storeTemplate.IsDirectory(path))
                 {
-                    path = FileConstant.NewDocPath + "default/";
+                    path = FileConstant.NewDocPath + "en-US/";
                 }
-
-                path += "new" + fileExt;
 
                 try
                 {
                     if (!externalExt)
                     {
-                        using var stream = storeTemplate.GetReadStream("", path);
-                        file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(path);
-                        file = fileDao.SaveFile(file, stream);
+                        var pathNew = path + "new" + fileExt;
+                        using (var stream = storeTemplate.GetReadStream("", pathNew))
+                        {
+                            file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(pathNew);
+                            file = fileDao.SaveFile(file, stream);
+                        }
                     }
                     else
                     {
                         file = fileDao.SaveFile(file, null);
+                    }
+
+                    var pathThumb = path + fileExt.Trim('.') + "." + Global.ThumbnailExtension;
+                    if (storeTemplate.IsFile("", pathThumb))
+                    {
+                        using (var streamThumb = storeTemplate.GetReadStream("", pathThumb))
+                        {
+                            fileDao.SaveThumbnail(file, streamThumb);
+                        }
+                        file.ThumbnailStatus = Thumbnail.Created;
                     }
                 }
                 catch (Exception e)
@@ -640,9 +651,20 @@ namespace ASC.Web.Files.Services.WCFService
 
                 try
                 {
-                    using var stream = fileDao.GetFileStream(template);
-                    file.ContentLength = template.ContentLength;
-                    file = fileDao.SaveFile(file, stream);
+                    using (var stream = fileDao.GetFileStream(template))
+                    {
+                        file.ContentLength = template.ContentLength;
+                        file = fileDao.SaveFile(file, stream);
+                    }
+
+                    if (template.ThumbnailStatus == Thumbnail.Created)
+                    {
+                        using (var thumb = fileDao.GetThumbnail(template))
+                        {
+                            fileDao.SaveThumbnail(file, thumb);
+                        }
+                        file.ThumbnailStatus = Thumbnail.Created;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -1050,7 +1072,7 @@ namespace ASC.Web.Files.Services.WCFService
                     var path = FileConstant.NewDocPath + culture + "/";
                     if (!storeTemplate.IsDirectory(path))
                     {
-                        path = FileConstant.NewDocPath + "default/";
+                        path = FileConstant.NewDocPath + "en-US/";
                     }
 
                     var fileExt = FileUtility.GetFileExtension(file.Title);
@@ -1656,6 +1678,19 @@ namespace ASC.Web.Files.Services.WCFService
         }
         #region Favorites Manager
 
+        public bool ToggleFileFavorite(T fileId, bool favorite)
+        {
+            if (favorite)
+            {
+                AddToFavorites(new List<T>(0), new List<T>(1) { fileId });
+            }
+            else
+            {
+                DeleteFavorites(new List<T>(0), new List<T>(1) { fileId });
+            }
+            return favorite;
+        }
+
         public ItemList<FileEntry<T>> AddToFavorites(IEnumerable<T> foldersId, IEnumerable<T> filesId)
         {
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
@@ -1665,7 +1700,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = GetFolderDao();
             var entries = Enumerable.Empty<FileEntry<T>>();
 
-            var files = fileDao.GetFiles(filesId);
+            var files = fileDao.GetFiles(filesId).Where(file => !file.Encrypted);
             files = FileSecurity.FilterRead(files).ToList();
             entries = entries.Concat(files);
 
@@ -2115,6 +2150,15 @@ namespace ASC.Web.Files.Services.WCFService
                         newFile = fileDao.SaveFile(newFile, stream);
                     }
 
+                    if (file.ThumbnailStatus == Thumbnail.Created)
+                    {
+                        using (var thumbnail = fileDao.GetThumbnail(file))
+                        {
+                            fileDao.SaveThumbnail(newFile, thumbnail);
+                        }
+                        newFile.ThumbnailStatus = Thumbnail.Created;
+                    }
+
                     FileMarker.MarkAsNew(newFile);
 
                     EntryManager.SetFileStatus(newFile);
@@ -2202,6 +2246,12 @@ namespace ASC.Web.Files.Services.WCFService
             return FilesSettingsHelper.TemplatesSection;
         }
 
+        public bool ChangeDownloadTarGz(bool set)
+        {
+            FilesSettingsHelper.DownloadTarGz = set;
+
+            return FilesSettingsHelper.DownloadTarGz;
+        }
 
         public bool ChangeDeleteConfrim(bool set)
         {
@@ -2210,7 +2260,7 @@ namespace ASC.Web.Files.Services.WCFService
             return FilesSettingsHelper.ConfirmDelete;
         }
 
-        public IEnumerable<String> CreateThumbnails(IEnumerable<JsonElement> fileIds)
+        public IEnumerable<JsonElement> CreateThumbnails(IEnumerable<JsonElement> fileIds)
         {
             try
             {
@@ -2221,8 +2271,9 @@ namespace ASC.Web.Files.Services.WCFService
             }
             catch (Exception e)
             {
-                Common.Logging.LogManager.GetLogger("ASC.Api.Documents").Error("CreateThumbnails", e);
+                Logger.Error("CreateThumbnails", e);
             }
+
             return fileIds;
         }
 
