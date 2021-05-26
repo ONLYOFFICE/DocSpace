@@ -325,9 +325,9 @@ class LanguageAndTimeZone extends React.Component {
             <FieldContainer
               id="fieldContainerLanguage"
               className="field-container-width"
-              labelText={`${t("Language")}:`}
+              labelText={`${t("Common:Language")}:`}
               tooltipContent={tooltipLanguage}
-              helpButtonHeaderContent={t("Language")}
+              helpButtonHeaderContent={t("Common:Language")}
               isVertical={true}
             >
               <ComboBox

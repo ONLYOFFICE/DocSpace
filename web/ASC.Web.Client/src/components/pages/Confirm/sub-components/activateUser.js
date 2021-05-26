@@ -276,7 +276,7 @@ class Confirm extends React.PureComponent {
                 id="surname"
                 name="surname"
                 value={this.state.lastName}
-                placeholder={t("LastName")}
+                placeholder={t("Common:LastName")}
                 size="huge"
                 scale={true}
                 tabIndex={2}

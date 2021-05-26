@@ -480,7 +480,7 @@ class CreateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={errors.lastName}
-              labelText={`${t("LastName")}:`}
+              labelText={`${t("Common:LastName")}:`}
               inputName="lastName"
               inputValue={profile.lastName}
               inputIsDisabled={isLoading}
@@ -496,7 +496,7 @@ class CreateUserForm extends React.Component {
               inputIsDisabled={isLoading}
               inputOnChange={this.onInputChange}
               inputTabIndex={3}
-              helpButtonHeaderContent={t("Mail")}
+              helpButtonHeaderContent={t("Common:Mail")}
               tooltipContent={
                 <Text fontSize="13px" as="div">
                   <Trans t={t} i18nKey="EmailPopupHelper" ns="ProfileAction">

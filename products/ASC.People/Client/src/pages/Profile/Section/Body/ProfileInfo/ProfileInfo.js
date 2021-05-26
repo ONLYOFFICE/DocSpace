@@ -342,7 +342,7 @@ class ProfileInfo extends React.PureComponent {
         )}
         {isSelf && (
           <InfoItem>
-            <InfoItemLabel>{t("Language")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Common:Language")}:</InfoItemLabel>
             <InfoItemValue>
               {cultureNames && selectedLanguage ? (
                 <>
@@ -363,7 +363,7 @@ class ProfileInfo extends React.PureComponent {
                     offsetLeft={50}
                     offsetRight={0}
                     tooltipContent={tooltipLanguage}
-                    helpButtonHeaderContent={t("Language")}
+                    helpButtonHeaderContent={t("Common:Language")}
                     className="help-icon"
                   />
                 </>
