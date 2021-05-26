@@ -4,5 +4,6 @@
   "PasswordChangeButton": "Изменить пароль",
   "RemoveData": "Удалить личные данные",
   "DeleteSelfProfile": "Удалить профиль",
-  "PendingTitle": "Ожидание"
+  "PendingTitle": "Ожидание",
+  "EmailChangeButton": "Изменить email"
 }

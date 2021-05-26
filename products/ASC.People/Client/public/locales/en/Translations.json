@@ -4,5 +4,6 @@
   "PasswordChangeButton": "Change password",
   "RemoveData": "Delete personal data",
   "DeleteSelfProfile": "Delete profile",
-  "PendingTitle": "Pending"
+  "PendingTitle": "Pending",
+  "EmailChangeButton": "Change email"
 }
