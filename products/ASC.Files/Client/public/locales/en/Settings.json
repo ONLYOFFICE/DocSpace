@@ -15,16 +15,11 @@
   "ConnectAccounts": "Connect Accounts",
   "ConnectAccountsSubTitle": "No connected accounts",
   "AddAccount": "Add account",
-  "ConnectingAccount": "Connecting account",
   "ConnectDescription": "You can connect the following accounts to the ONLYOFFICE Documents. They will be displayed in 'My Documents' folder and you will be able to edit and save them right on the portal all in one place. ",
   "ConnectAdminDescription": "For successful connection enter the necessary data at <1>this page</1>.",
   "ConnextOtherAccount": "Other account",
   "ConnectedCloud": "Connected cloud",
-  "Login": "Login",
-  "ConnectFolderTitle": "Folder title",
   "ConnectMakeShared": "Make shared and put into the 'Common' folder",
-  "ConnectionUrl": "Connection url",
   "ThirdPartyInfo": "Change the third party info",
-  "Account": "Account",
-  "Reconnect": "Reconnect"
+  "Account": "Account"
 }
