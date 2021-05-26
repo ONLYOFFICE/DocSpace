@@ -70,5 +70,9 @@
   "LastName": "Familienname",
   "Language": "Sprache",
   "NotFoundLanguage": "Können Sie Ihre Sprache nicht finden? Wenden Sie sich an uns unter \u003C1\u003E{{supportEmail}}\u003C/1\u003E, um ONLYOFFICE für Belohnungen zu übersetzen.",
+  "View": "Anzeigen",
+  "Review": "Review",
+  "Size": "Größe",
+  "LblActive": "Aktiv",
   "Version": "Version"
 }

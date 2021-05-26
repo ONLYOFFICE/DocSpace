@@ -6,7 +6,6 @@
   "ByAuthor": "Author",
   "ByCreationDate": "Created",
   "ByLastModifiedDate": "Modified",
-  "BySize": "Size",
   "ByTitle": "Title",
   "CommonEmptyContainerDescription": "\u0027Common\u0027 section contains files shared to all users by the portal admin. Only portal admins can create files there. Users can be granted Full access to a certain folder within the section. This way they will be able to create/upload files in this very folder.  ",
   "ContainsSpecCharacter": "The title can\u0027t contain any of the following characters: *\u002B:\u0022\u003C\u003E?|/",
@@ -82,7 +81,6 @@
   "UnblockVersion": "Unblock/Check-in",
   "UploadToFolder": "Upload to folder",
   "Version": "Ver.{{version}}",
-  "View": "View",
   "ViewList": "List",
   "ViewTiles": "Tiles"
 }

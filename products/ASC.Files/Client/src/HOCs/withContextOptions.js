@@ -292,7 +292,7 @@ export default function withContextOptions(WrappedComponent) {
           case "view":
             return {
               key: option,
-              label: t("View"),
+              label: t("Common:View"),
               icon: "/static/images/eye.react.svg",
               onClick: this.onMediaFileClick,
               disabled: false,

@@ -96,7 +96,7 @@ class SectionFilterContent extends React.Component {
           {
             key: "1",
             group: "filter-status",
-            label: t("LblActive"),
+            label: t("Common:Active"),
           },
           {
             key: "2",
@@ -125,7 +125,7 @@ class SectionFilterContent extends React.Component {
       {
         key: "1",
         group: "filter-email",
-        label: t("LblActive"),
+        label: t("Common:Active"),
       },
       {
         key: "2",

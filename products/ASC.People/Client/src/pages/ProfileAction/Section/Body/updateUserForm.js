@@ -590,38 +590,38 @@ class UpdateUserForm extends React.Component {
               </tr>
               <tr>
                 <Td>{t("Common:Mail")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:Review")}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
                 <Td>{t("Common:Documents")}</Td>
                 <Td>{t("Common:FullAccess")}</Td>
-                <Td>{t("ViewAccess")}</Td>
+                <Td>{t("Common:View")}</Td>
               </tr>
               <tr>
                 <Td>{t("Common:ProjectsProduct")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:Review")}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
                 <Td>{t("Common:CommunityProduct")}</Td>
                 <Td>{t("Common:FullAccess")}</Td>
-                <Td>{t("ViewAccess")}</Td>
+                <Td>{t("Common:View")}</Td>
               </tr>
               <tr>
                 <Td>{t("Common:People")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:Review")}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
                 <Td>{t("Message")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:Review")}</Td>
+                <Td>{t("Common:Review")}</Td>
               </tr>
               <tr>
                 <Td>{t("Calendar")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
-                <Td>{t("ReviewingCustomMode")}</Td>
+                <Td>{t("Common:Review")}</Td>
+                <Td>{t("Common:Review")}</Td>
               </tr>
             </tbody>
           </Table>

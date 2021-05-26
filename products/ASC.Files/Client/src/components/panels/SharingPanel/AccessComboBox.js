@@ -50,7 +50,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("Review") && (
         <DropDownItem
-          label={t("Review")}
+          label={t("Common:Review")}
           icon="/static/images/access.review.react.svg"
           data-id={itemId}
           data-access={Review}

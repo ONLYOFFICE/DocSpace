@@ -203,7 +203,7 @@ class SectionFilterContent extends React.Component {
       { key: "DateAndTimeCreation", label: t("ByCreationDate"), default: true },
       { key: "AZ", label: t("ByTitle"), default: true },
       { key: "Type", label: t("Common:Type"), default: true },
-      { key: "Size", label: t("BySize"), default: true },
+      { key: "Size", label: t("Common:Size"), default: true },
       { key: "Author", label: t("ByAuthor"), default: true },
     ];
 
