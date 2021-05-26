@@ -23,12 +23,6 @@
   "orDropFileHereLabel": "oder legen Sie eine Datei hier ab",
   "PhoneLbl": "Telefon",
   "Profile": "Profil",
-  "ReassignData": "Daten erneut zuweisen",
-  "selectNewPhotoLabel": "Neues Foto auswählen",
   "SendInviteAgain": "Einladung erneut senden",
-  "Sex": "Geschlecht",
-  "SocialProfiles": "Soziale Profile",
-  "Subscriptions": "Abonnements",
-  "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert",
-  "SuccessSentInvitation": "Die Einladung wurde erfolgreich gesendet"
+  "Subscriptions": "Abonnements"
 }

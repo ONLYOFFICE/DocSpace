@@ -5,6 +5,5 @@
   "ChangeUsersStatusButton": "Change user status",
   "ChangeUserStatusDialog": "The users with the \u0027{{ status }}\u0027 status will be disabled.",
   "ChangeUserStatusDialogHeader": "Change user status",
-  "ChangeUserStatusDialogMessage": "You can\u0027t change the status for the portal owner and for yourself",
-  "SuccessChangeUserStatus": "The user status was successfully changed"
+  "ChangeUserStatusDialogMessage": "You can\u0027t change the status for the portal owner and for yourself"
 }

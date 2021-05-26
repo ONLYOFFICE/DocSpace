@@ -104,7 +104,7 @@ const SimpleUserRow = ({
   const onDisableClick = (e) => {
     //onLoading(true);
     updateUserStatus(EmployeeStatus.Disabled, [id], isRefetchPeople)
-      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .then(() => toastr.success(t("Translations:SuccessChangeUserStatus")))
       .catch((error) => toastr.error(error));
     //.finally(() => onLoading(false));
   };
@@ -112,7 +112,7 @@ const SimpleUserRow = ({
   const onEnableClick = (e) => {
     //onLoading(true);
     updateUserStatus(EmployeeStatus.Active, [id], isRefetchPeople)
-      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .then(() => toastr.success(t("Translations:SuccessChangeUserStatus")))
       .catch((error) => toastr.error(error));
     //.finally(() => onLoading(false));
   };
@@ -214,7 +214,7 @@ const SimpleUserRow = ({
         case "reassign-data":
           return {
             key: option,
-            label: t("ReassignData"),
+            label: t("Translations:ReassignData"),
             "data-id": id,
             onClick: onReassignDataClick,
           };

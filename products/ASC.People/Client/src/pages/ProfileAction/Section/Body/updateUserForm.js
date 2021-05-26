@@ -663,7 +663,7 @@ class UpdateUserForm extends React.Component {
               onSave={this.onSaveAvatar}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("EditPhoto")}
-              selectNewPhotoLabel={t("selectNewPhotoLabel")}
+              selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
               orDropFileHereLabel={t("orDropFileHereLabel")}
               unknownTypeError={t("ErrorUnknownFileImageType")}
               maxSizeFileError={t("maxSizeFileError")}
@@ -764,7 +764,7 @@ class UpdateUserForm extends React.Component {
               inputTabIndex={6}
             />
             <RadioField
-              labelText={`${t("Sex")}:`}
+              labelText={`${t("Translations:Sex")}:`}
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
@@ -859,7 +859,7 @@ class UpdateUserForm extends React.Component {
             onItemRemove={this.onContactsItemRemove}
           />
         </InfoFieldContainer>
-        <InfoFieldContainer headerText={t("SocialProfiles")}>
+        <InfoFieldContainer headerText={t("Translations:SocialProfiles")}>
           <ContactsField
             pattern={pattern.social}
             contacts={contacts.social}
@@ -939,5 +939,11 @@ export default withRouter(
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
     disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
     isSelf: peopleStore.targetUserStore.isMe,
-  }))(observer(withTranslation(["ProfileAction", "Common"])(UpdateUserForm)))
+  }))(
+    observer(
+      withTranslation(["ProfileAction", "Common", "Translations"])(
+        UpdateUserForm
+      )
+    )
+  )
 );

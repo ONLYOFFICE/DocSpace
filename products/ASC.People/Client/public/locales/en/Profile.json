@@ -28,12 +28,6 @@
   "Profile": "Profile",
   "ProviderSuccessfullyConnected": "Provider successfully connected",
   "ProviderSuccessfullyDisconnected": "Provider successfully disconnected",
-  "ReassignData": "Reassign data",
-  "selectNewPhotoLabel": "Select new photo",
   "SendInviteAgain": "Send invitation once again",
-  "Sex": "Sex",
-  "SocialProfiles": "Social profiles",
-  "Subscriptions": "Subscriptions",
-  "SuccessChangeUserStatus": "The user status was successfully changed",
-  "SuccessSentInvitation": "The invitation was successfully sent"
+  "Subscriptions": "Subscriptions"
 }

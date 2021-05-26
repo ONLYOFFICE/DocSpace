@@ -45,7 +45,7 @@ class SendInviteDialogComponent extends React.Component {
 
     this.setState({ isRequestRunning: true }, () => {
       resendUserInvites(userIds)
-        .then(() => toastr.success(t("SuccessSendInvitation")))
+        .then(() => toastr.success(t("Translations:SuccessSentInvitation")))
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
@@ -148,9 +148,11 @@ class SendInviteDialogComponent extends React.Component {
   }
 }
 
-const SendInviteDialog = withTranslation(["SendInviteDialog", "Common"])(
-  SendInviteDialogComponent
-);
+const SendInviteDialog = withTranslation([
+  "SendInviteDialog",
+  "Common",
+  "Translations",
+])(SendInviteDialogComponent);
 
 SendInviteDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

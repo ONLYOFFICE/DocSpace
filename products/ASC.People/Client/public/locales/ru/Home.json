@@ -3,7 +3,6 @@
   "LblSendMessage": "Отправить сообщение",
   "DisableUserButton": "Заблокировать",
   "EnableUserButton": "Разблокировать",
-  "ReassignData": "Передать данные",
   "NotFoundDescription": "Попробуйте изменить или очистить настройки фильтра, чтобы увидеть всех людей в разделе.",
   "NotFoundTitle": "Сотрудников не найдено",
   "ClearButton": "Очистить фильтр",
@@ -28,6 +27,5 @@
   "LblSetDisabled": "Заблокировать",
   "MakeInvitationLink": "Создать пригласительную ссылку",
   "SuccessfullyRemovedGroup": "Группа была успешно удалена",
-  "AddFilter": "Добавить фильтр",
-  "SuccessChangeUserStatus": "Статус пользователя успешно изменен"
+  "AddFilter": "Добавить фильтр"
 }
