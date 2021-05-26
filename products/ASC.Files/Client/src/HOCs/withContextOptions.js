@@ -300,7 +300,7 @@ export default function withContextOptions(WrappedComponent) {
           case "download":
             return {
               key: option,
-              label: t("Download"),
+              label: t("Common:Download"),
               icon: "images/download.react.svg",
               onClick: this.onClickDownload,
               disabled: false,

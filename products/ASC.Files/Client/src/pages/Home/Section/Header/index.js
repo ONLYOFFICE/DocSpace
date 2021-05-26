@@ -273,7 +273,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         key: "download",
-        label: t("Download"),
+        label: t("Common:Download"),
         onClick: this.downloadAction,
         disabled: true,
       },
@@ -388,7 +388,7 @@ class SectionHeaderContent extends React.Component {
         onClick: this.onOpenSharingPanel,
       },
       {
-        label: t("Download"),
+        label: t("Common:Download"),
         disabled: !selectionCount,
         onClick: this.downloadAction,
       },

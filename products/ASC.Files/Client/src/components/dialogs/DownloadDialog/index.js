@@ -536,7 +536,7 @@ class DownloadDialogComponent extends React.Component {
           <Button
             className="button-dialog-accept"
             key="DownloadButton"
-            label={t("DownloadButton")}
+            label={t("Common:Download")}
             size="medium"
             primary
             onClick={this.onDownload}

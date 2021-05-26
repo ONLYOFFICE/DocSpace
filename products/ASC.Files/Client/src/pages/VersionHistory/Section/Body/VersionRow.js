@@ -78,7 +78,7 @@ const VersionRow = (props) => {
     canEdit && { key: "restore", label: t("Restore"), onClick: onRestoreClick },
     {
       key: "download",
-      label: `${t("Download")} (${info.contentLength})`,
+      label: `${t("Common:Download")} (${info.contentLength})`,
       onClick: onDownloadAction,
     },
   ];
@@ -196,7 +196,7 @@ const VersionRow = (props) => {
               {...linkStyles}
               className="version_link-action"
             >
-              {t("Download")}
+              {t("Common:Download")}
             </Link>
           </div>
         </Box>
