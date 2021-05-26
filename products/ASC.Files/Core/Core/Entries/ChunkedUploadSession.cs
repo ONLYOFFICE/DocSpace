@@ -73,18 +73,47 @@ namespace ASC.Files.Core
 
         public static ChunkedUploadSession<T> Deserialize(Stream stream, File<T> file)
         {
-            stream.Position = 0;
             var sr = new StreamReader(stream);
             string str = sr.ReadToEnd();
             var property = JsonSerializer.Deserialize<Property<T>>(str);
             return property.Deserialize(file);
         }
+
         [Serializable]
         public class Property<T>
         {
+            public T FolderId { get; set; }
+
+            public bool Encrypted { get; set; }
+
+            public string Id { get; set; }
+
+            public DateTime Created { get; set; }
+
+            public DateTime Expired { get; set; }
+
+            public string Location { get; set; }
+
+            public long BytesUploaded { get; set; }
+
+            public long BytesTotal { get; set; }
+
+            public int TenantId { get; set; }
+
+            public Guid UserId { get; set; }
+
+            public bool UseChunks { get; set; }
+
+            public string CultureName { get; set; }
+
+            public Dictionary<string, object> Items { get; set; }
+
+            public PropertyFile<T> File { get; set; }
+
             public static Property<T> Serialize(ChunkedUploadSession<T> session)
             {
-                var serializeFile = new Property<T>() {
+                var file = new PropertyFile<T>()
+                {
                     Title = session.File.Title,
                     CreateBy = session.File.CreateBy,
                     CreateByString = session.File.CreateByString,
@@ -119,9 +148,13 @@ namespace ASC.Files.Core
                     Encrypted = session.File.Encrypted,
                     Forcesave = session.File.Forcesave,
                     ConvertedType = session.File.ConvertedType,
-                    NativeAccessor = session.File.NativeAccessor,
+                    NativeAccessor = session.File.NativeAccessor
+                };
+
+                var serializeFile = new Property<T>() {
+                    File = file,
                     FolderId = session.FolderId,
-                    EncryptedChunk = session.Encrypted,
+                    Encrypted = session.Encrypted,
                     Id = session.Id,
                     Created = session.Created,
                     Expired = session.Expired,
@@ -132,170 +165,70 @@ namespace ASC.Files.Core
                     UserId = session.UserId,
                     UseChunks = session.UseChunks,
                     CultureName = session.CultureName,
-                    Items = session.Items,
-                    TempPath = session.TempPath,
-                    UploadId = session.UploadId,
-                    ChunksBuffer = session.ChunksBuffer
+                    Items = session.Items
                 };
                 return serializeFile;
             }
 
-            public string TempPath { get; set; }
-
-            public string UploadId { get; set; }
-
-            public string ChunksBuffer { get; set; }
-
-            public T FolderId { get; set; }
-
-            public bool EncryptedChunk { get; set; }
-
-            public string Id { get; set; }
-
-            public DateTime Created { get; set; }
-
-            public DateTime Expired { get; set; }
-
-            public string Location { get; set; }
-
-            public long BytesUploaded { get; set; }
-
-            public long BytesTotal { get; set; }
-
-            public int TenantId { get; set; }
-
-            public Guid UserId { get; set; }
-
-            public bool UseChunks { get; set; }
-
-            public string CultureName { get; set; }
-
-            public Dictionary<string, object> Items { get; set; }
-
-            public string Title { get; set; }
-
-            [JsonPropertyName("create_by_id")]
-            public Guid CreateBy { get; set; }
-
-            [JsonPropertyName("create_by")]
-            public string CreateByString { get; set; }
-
-            [JsonPropertyName("modified_by_id")]
-            public Guid ModifiedBy { get; set; }
-
-            [JsonPropertyName("modified_by")]
-            public string ModifiedByString { get; set; }
-
-            public string Error { get; set; }
-
-            public Security.FileShare Access { get; set; }
-
-            public bool Shared { get; set; }
-
-            [JsonPropertyName("provider_id")]
-            public int ProviderId { get; set; }
-
-            [JsonPropertyName("provider_key")]
-            public string ProviderKey { get; set; }
-
-            public DateTime CreateOn { get; set; }
-
-            public DateTime ModifiedOn { get; set; }
-
-            public FolderType RootFolderType { get; set; }
-
-            public Guid RootFolderCreator { get; set; }
-
-            public FileEntryType FileEntryType { get; set; }
-
-            public T ID { get; set; }
-
-            public T FolderID { get; set; }
-
-            [JsonPropertyName("folder_id")]
-            public T FolderIdDisplay { get; set; }
-
-            public T RootFolderId { get; set; }
-
-            public int Version { get; set; }
-
-            [JsonPropertyName("version_group")]
-            public int VersionGroup { get; set; }
-
-            public string Comment { get; set; }
-
-            public string PureTitle { get; set; }
-
-            [JsonPropertyName("content_length")]
-            public long ContentLength { get; set; }
-
-            [JsonPropertyName("content_length_string")]
-            public string ContentLengthString { get; set; }
-
-            [JsonPropertyName("file_status")]
-            public FileStatus FileStatus { get; set; }
-
-            public bool Locked { get; set; }
-
-            [JsonPropertyName("locked_by")]
-            public string LockedBy { get; set; }
-
-            public bool IsNew { get; set; }
-
-            public bool IsFavorite { get; set; }
-
-            public bool IsTemplate { get; set; }
-
-            public bool Encrypted { get; set; }
-
-            public ForcesaveType Forcesave { get; set; }
-
-            public string ConvertedType { get; set; }
-
-            public object NativeAccessor { get; set; }
 
             public ChunkedUploadSession<T> Deserialize(File<T> file)
             {
-                file.Title = Title;
-                file.CreateBy = CreateBy;
-                file.CreateByString = CreateByString;
-                file.ModifiedBy = ModifiedBy;
-                file.ModifiedByString = ModifiedByString;
-                file.Error = Error;
-                file.Access = Access;
-                file.Shared = Shared;
-                file.ProviderId = ProviderId;
-                file.ProviderKey = ProviderKey;
-                file.CreateOn = CreateOn;
-                file.ModifiedOn = ModifiedOn;
-                file.RootFolderType = RootFolderType;
-                file.RootFolderCreator = RootFolderCreator;
-                file.FileEntryType = FileEntryType;
-                file.ID = ID;
-                file.FolderID = FolderID;
-                file.FolderIdDisplay = FolderIdDisplay;
-                file.RootFolderId = RootFolderId;
-                file.Version = Version;
-                file.VersionGroup = VersionGroup;
-                file.Comment = Comment;
-                file.PureTitle = PureTitle;
-                file.ContentLength = ContentLength;
-                file.ContentLengthString = ContentLengthString;
-                file.FileStatus = FileStatus;
-                file.Locked = Locked;
-                file.LockedBy = LockedBy;
-                file.IsNew = IsNew;
-                file.IsFavorite = IsFavorite;
-                file.IsTemplate = IsTemplate;
-                file.Encrypted = Encrypted;
-                file.Forcesave = Forcesave;
-                file.ConvertedType = ConvertedType;
-                file.NativeAccessor = NativeAccessor;
+                file.Title = File.Title;
+                file.CreateBy = File.CreateBy;
+                file.CreateByString = File.CreateByString;
+                file.ModifiedBy = File.ModifiedBy;
+                file.ModifiedByString = File.ModifiedByString;
+                file.Error = File.Error;
+                file.Access = File.Access;
+                file.Shared = File.Shared;
+                file.ProviderId = File.ProviderId;
+                file.ProviderKey = File.ProviderKey;
+                file.CreateOn = File.CreateOn;
+                file.ModifiedOn = File.ModifiedOn;
+                file.RootFolderType = File.RootFolderType;
+                file.RootFolderCreator = File.RootFolderCreator;
+                file.FileEntryType = File.FileEntryType;
+                file.ID = File.ID;
+                file.FolderID = File.FolderID;
+                file.FolderIdDisplay = File.FolderIdDisplay;
+                file.RootFolderId = File.RootFolderId;
+                file.Version = File.Version;
+                file.VersionGroup = File.VersionGroup;
+                file.Comment = File.Comment;
+                file.PureTitle = File.PureTitle;
+                file.ContentLength = File.ContentLength;
+                file.ContentLengthString = File.ContentLengthString;
+                file.FileStatus = File.FileStatus;
+                file.Locked = File.Locked;
+                file.LockedBy = File.LockedBy;
+                file.IsNew = File.IsNew;
+                file.IsFavorite = File.IsFavorite;
+                file.IsTemplate = File.IsTemplate;
+                file.Encrypted = File.Encrypted;
+                file.Forcesave = File.Forcesave;
+                file.ConvertedType = File.ConvertedType;
+                file.NativeAccessor = File.NativeAccessor;
 
                 var chunk = new ChunkedUploadSession<T>(file, BytesTotal);
+                chunk.Items = new Dictionary<string, object>();
+                foreach (var item in Items)
+                {
+                    if (item.Value.GetType() == typeof(JsonElement))
+                    {
+                        var value = (JsonElement)item.Value;
+                        if (value.ValueKind == JsonValueKind.String)
+                        {
+                            chunk.Items.Add(item.Key, item.Value.ToString());
+                        }
+                    }
+                    else
+                    {
+                        chunk.Items.Add(item.Key, item.Value);
+                    }
+                }
 
                 chunk.FolderId = FolderId;
-                chunk.Encrypted = EncryptedChunk;
+                chunk.Encrypted = Encrypted;
                 chunk.Id = Id;
                 chunk.Created = Created;
                 chunk.Expired = Expired;
@@ -305,11 +238,92 @@ namespace ASC.Files.Core
                 chunk.UserId = UserId;
                 chunk.UseChunks = UseChunks;
                 chunk.CultureName = CultureName;
-                chunk.Items = Items;
-                chunk.TempPath = TempPath;
-                chunk.UploadId = UploadId;
-                chunk.ChunksBuffer = ChunksBuffer;
                 return chunk;
+            }
+
+            public class PropertyFile<T>
+            {
+                public string Title { get; set; }
+
+                [JsonPropertyName("create_by_id")]
+                public Guid CreateBy { get; set; }
+
+                [JsonPropertyName("create_by")]
+                public string CreateByString { get; set; }
+
+                [JsonPropertyName("modified_by_id")]
+                public Guid ModifiedBy { get; set; }
+
+                [JsonPropertyName("modified_by")]
+                public string ModifiedByString { get; set; }
+
+                public string Error { get; set; }
+
+                public Security.FileShare Access { get; set; }
+
+                public bool Shared { get; set; }
+
+                [JsonPropertyName("provider_id")]
+                public int ProviderId { get; set; }
+
+                [JsonPropertyName("provider_key")]
+                public string ProviderKey { get; set; }
+
+                public DateTime CreateOn { get; set; }
+
+                public DateTime ModifiedOn { get; set; }
+
+                public FolderType RootFolderType { get; set; }
+
+                public Guid RootFolderCreator { get; set; }
+
+                public FileEntryType FileEntryType { get; set; }
+
+                public T ID { get; set; }
+
+                public T FolderID { get; set; }
+
+                [JsonPropertyName("folder_id")]
+                public T FolderIdDisplay { get; set; }
+
+                public T RootFolderId { get; set; }
+
+                public int Version { get; set; }
+
+                [JsonPropertyName("version_group")]
+                public int VersionGroup { get; set; }
+
+                public string Comment { get; set; }
+
+                public string PureTitle { get; set; }
+
+                [JsonPropertyName("content_length")]
+                public long ContentLength { get; set; }
+
+                [JsonPropertyName("content_length_string")]
+                public string ContentLengthString { get; set; }
+
+                [JsonPropertyName("file_status")]
+                public FileStatus FileStatus { get; set; }
+
+                public bool Locked { get; set; }
+
+                [JsonPropertyName("locked_by")]
+                public string LockedBy { get; set; }
+
+                public bool IsNew { get; set; }
+
+                public bool IsFavorite { get; set; }
+
+                public bool IsTemplate { get; set; }
+
+                public bool Encrypted { get; set; }
+
+                public ForcesaveType Forcesave { get; set; }
+
+                public string ConvertedType { get; set; }
+
+                public object NativeAccessor { get; set; }
             }
         }
     }

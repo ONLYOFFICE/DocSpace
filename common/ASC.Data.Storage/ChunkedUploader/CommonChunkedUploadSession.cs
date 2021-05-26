@@ -85,18 +85,17 @@ namespace ASC.Core.ChunkedUploader
             UseChunks = true;
         }
 
-        public static CommonChunkedUploadSession Deserialize(Stream stream)
-        {
-            stream.Position = 0;
-            var sr = new StreamReader(stream);
-            string myStr = sr.ReadToEnd();
-            var w = JsonSerializer.Deserialize<CommonChunkedUploadSession>(myStr);
-            return w;
-        }
-
         public T GetItemOrDefault<T>(string key)
         {
             return Items.ContainsKey(key) && Items[key] is T t ? t : default;
+        }
+
+        public static CommonChunkedUploadSession Deserialize(Stream stream)
+        {
+            var sr = new StreamReader(stream);
+            string myStr = sr.ReadToEnd();
+            var commonChunkedUploadSession = JsonSerializer.Deserialize<CommonChunkedUploadSession>(myStr);
+            return commonChunkedUploadSession;
         }
 
         public virtual object Clone()
