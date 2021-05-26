@@ -17,6 +17,7 @@
 using System.IO;
 
 using ASC.Common;
+using ASC.Files.Core.Resources;
 
 using ICSharpCode.SharpZipLib.Zip;
 

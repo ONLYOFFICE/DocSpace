@@ -59,80 +59,78 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_DocuSignComplete" xml:space="preserve">
-    <value>h1. All signers completed $DocumentTitle
+    <value>h1. Tutti i firmatari hanno firmato $DocumentTitle
 
-This is an email notification to inform you that all signers completed "$DocumentTitle":"$DocumentURL".
+Questa è una email di notifica per informarti che tutti i firmatari hanno firmato "$DocumentTitle":"$DocumentURL".
 
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.^</value>
+^Ricevi questa email in quanto utente registrato del portale "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
   </data>
   <data name="pattern_DocuSignStatus" xml:space="preserve">
     <value>h1. $Message: $DocumentTitle
 
-Sign in to your DocuSign account for more information.
+Accedi al tuo account DocuSign per maggiori informazioni.
 
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.^</value>
+^Ricevi questa email perché sei un utente registrato del portale "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
   </data>
   <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__AuthorName":"$__AuthorUrl" mentioned you in the document comment
+    <value>h1. "$$__AuthorName":"$__AuthorUrl" ti ha menzionato nel commento al documento
 
-This is a mail message to notify that you have been mentioned by "$__AuthorName":"$__AuthorUrl" in the comment to the "$DocumentTitle":"$DocumentURL" document:
+Hai ricevuto questo messaggio di posta elettronica per informarti che sei stato menzionato da "$__AuthorName":"$__AuthorUrl" nel commento al documento "$DocumentTitle":"$DocumentURL".
 
 $Message
 
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.^</value>
+^Ricevi questa email perché sei un utente registrato del portale "${__VirtualRootPath}":"${__VirtualRootPath}"^</value>
   </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
-    <value>h1. Mailing completed
+    <value>h1. Invio completato
 
-This is an email notification to inform you that you have requested the mailing of $MailsCount messages and the process is now complete. $Message
+Questa è una email di notifica per informarti che hai richiesto l'invio di $MailsCount messaggi e che il processo è ora stato completato. $Message
 
-The successfully sent mail messages can be found in your "Sent":"$__VirtualRootPath/addons/mail/#sent" folder of the Mail module.
+Puoi controllare le mail inviate con successo possono nella cartella "Inviati":"$__VirtualRootPath/addons/mail/#sent" del Modulo mail.
 
-^You receive this email because you are a registered user of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.^</value>
+^Ricevi questa email in quanto utente registrato del portale "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
   </data>
   <data name="pattern_ShareDocument" xml:space="preserve">
-    <value>h1. Access granted to document: "$DocumentTitle":"$DocumentURL"
+    <value>h1. Accesso consentito al documento: "$DocumentTitle":"$DocumentURL"
 
-$__DateTime "$__AuthorName":"$__AuthorUrl" granted you the access to the "$DocumentTitle":"$DocumentURL" document with the following access rights: "$AccessRights". 
+$__DateTime "$__AuthorName":"$__AuthorUrl" ti ha concesso l'accesso al documento "$DocumentTitle":"$DocumentURL" con i seguenti diritti di accesso: "$AccessRights".
 
-$Message</value>
+$Message
+
+^Ricevi questa email perché sei un utente registrato del portale "${__VirtualRootPath}":"${__VirtualRootPath}". Se non desideri ricevere le notifiche relative ai documenti condivisi, si prega di gestire le "opzioni di iscrizione":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
-    <value>h1. Access granted to folder: "$DocumentTitle":"$DocumentURL"
+    <value>h1. Accesso concesso alla cartella: "$DocumentTitle":"$DocumentURL"
 
-$__DateTime "$__AuthorName":"$__AuthorUrl" granted you the access to the "$DocumentTitle":"$DocumentURL" folder with the following access rights: "$AccessRights". 
+$__DateTime "$__AuthorName":"$__AuthorUrl" ti ha concesso l'accesso alla cartella "$DocumentTitle":"$DocumentURL" con i diritti di accesso: "$AccessRights".
 
 $Message</value>
   </data>
   <data name="subject_DocuSignComplete" xml:space="preserve">
-    <value>Documents. All signers completed $DocumentTitle</value>
+    <value>Documenti. Tutti i firmatari hanno firmato $DocumentTitle</value>
   </data>
   <data name="subject_DocuSignComplete_tg" xml:space="preserve">
-    <value>Documents. All signers completed [$DocumentTitle]($DocumentURL)</value>
+    <value>Documenti. Tutti i firmatari hanno completato [$DocumentTitle]($DocumentURL)</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
-    <value>Documents. Sign status changed</value>
+    <value>Documenti. Lo status della firma è cambiato</value>
   </data>
   <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Documents. Mentioned in document</value>
+    <value>Documenti. Menzionato nel documento</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
-    <value>Documents. Mailing is complete.</value>
+    <value>Documenti. L'invio è stato completato.</value>
   </data>
   <data name="subject_ShareDocument" xml:space="preserve">
-    <value>Documents. Access granted to document: $DocumentTitle</value>
+    <value>Documenti. Accesso concesso al documento: $DocumentTitle</value>
   </data>
   <data name="subject_ShareDocument_tg" xml:space="preserve">
-    <value>Documents. Access granted to document: [$DocumentTitle]($DocumentURL)</value>
+    <value>Documenti. Accesso concesso al documento: [$DocumentTitle]($DocumentURL)</value>
   </data>
   <data name="subject_ShareFolder" xml:space="preserve">
-    <value>Documents. Access granted to folder: $DocumentTitle</value>
+    <value>Documenti. Accesso concesso alla cartella: $DocumentTitle</value>
   </data>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
-    <value>Documents. Access granted to folder: [$DocumentTitle]($DocumentURL)</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="patterns" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>patterns.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>Documenti. Accesso concesso alla cartella: [$DocumentTitle]($DocumentURL)</value>
   </data>
 </root>
