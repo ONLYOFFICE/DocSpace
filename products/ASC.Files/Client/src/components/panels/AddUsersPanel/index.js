@@ -204,6 +204,6 @@ AddUsersPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default withTranslation(["AddUsersPanel", "Translations"])(
+export default withTranslation(["SharingPanel", "Translations"])(
   AddUsersPanelComponent
 );
