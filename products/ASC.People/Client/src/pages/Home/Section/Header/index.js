@@ -214,7 +214,7 @@ const SectionHeaderContent = (props) => {
   const menuItems = useMemo(
     () => [
       {
-        label: t("LblSelect"),
+        label: t("Common:LblSelect"),
         isDropdown: true,
         isSeparator: true,
         isSelect: true,
