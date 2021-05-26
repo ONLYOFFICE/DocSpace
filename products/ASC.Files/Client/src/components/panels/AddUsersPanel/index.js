@@ -163,7 +163,7 @@ class AddUsersPanelComponent extends React.Component {
                 size="medium"
                 truncate
               >
-                {isMultiSelect ? t("LinkText") : t("OwnerChange")}
+                {isMultiSelect ? t("LinkText") : t("Translations:OwnerChange")}
               </Heading>
               {/*<IconButton
                 size="16"
@@ -204,4 +204,6 @@ AddUsersPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default withTranslation("AddUsersPanel")(AddUsersPanelComponent);
+export default withTranslation(["SharingPanel", "Translations"])(
+  AddUsersPanelComponent
+);

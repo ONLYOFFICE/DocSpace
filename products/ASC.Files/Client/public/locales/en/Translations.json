@@ -13,5 +13,7 @@
   "Files": "Files",
   "DeleteSelectedElem": "Selected elements were successfully deleted",
   "DeleteFromTrash": "Selected elements were successfully deleted from Trash",
-  "ConnectingAccount": "Connecting account"
+  "ConnectingAccount": "Connecting account",
+  "AddAccount": "Add account",
+  "OwnerChange": "Change owner"
 }

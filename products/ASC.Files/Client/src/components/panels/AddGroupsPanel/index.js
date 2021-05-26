@@ -174,4 +174,4 @@ AddGroupsPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default withTranslation("AddGroupsPanel")(AddGroupsPanelComponent);
+export default withTranslation("SharingPanel")(AddGroupsPanelComponent);

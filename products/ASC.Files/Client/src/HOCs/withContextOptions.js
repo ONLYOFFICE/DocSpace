@@ -260,7 +260,7 @@ export default function withContextOptions(WrappedComponent) {
           case "owner-change":
             return {
               key: option,
-              label: t("ChangeOwner"),
+              label: t("Translations:OwnerChange"),
               icon: "images/catalog.user.react.svg",
               onClick: this.onOwnerChange,
               disabled: false,
