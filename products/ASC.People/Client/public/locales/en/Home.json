@@ -16,7 +16,6 @@
   "More": "More",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
   "Search": "Search",
-  "SendInviteAgain": "Send invitation once again",
   "ChangeToUser": "Change to {{userCaption}}",
   "ChangeToGuest": "Change to {{guestCaption}}",
   "LblInviteAgain": "Invite again",

@@ -12,5 +12,6 @@
   "selectNewPhotoLabel": "Neues Foto auswählen",
   "NotBeUndone": "Dies kann nicht rückgängig gemacht werden.",
   "ReassignData": "Daten erneut zuweisen",
-  "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert"
+  "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert",
+  "SendInviteAgain": "Einladung erneut senden"
 }

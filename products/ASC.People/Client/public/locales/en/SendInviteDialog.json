@@ -1,5 +1,4 @@
 ﻿{
-  "SendInviteAgain": "Send invitation once again",
   "SendInviteAgainDialog": "The invitation will be sent again to the selected users with the \u0027Pending\u0027 status.",
   "SendInviteAgainDialogMessage": "After users accept the invitation, their status will be changed to \u0027Active\u0027"
 }

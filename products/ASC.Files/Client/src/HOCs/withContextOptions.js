@@ -167,7 +167,7 @@ export default function withContextOptions(WrappedComponent) {
       }
 
       const translations = {
-        deleteOperation: t("DeleteOperation"),
+        deleteOperation: t("Translations:DeleteOperation"),
         successRemoveFile: t("FileRemoved"),
         successRemoveFolder: t("FolderRemoved"),
       };

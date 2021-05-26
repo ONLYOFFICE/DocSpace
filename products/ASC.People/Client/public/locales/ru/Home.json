@@ -16,7 +16,6 @@
   "More": "Больше",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
   "Search": "Поиск",
-  "SendInviteAgain": "Отправить приглашение ещё раз",
   "ChangeToUser": "Изменить на {{userCaption}}",
   "ChangeToGuest": "Изменить на {{guestCaption}}",
   "LblInviteAgain": "Выслать прилашение ещё раз",

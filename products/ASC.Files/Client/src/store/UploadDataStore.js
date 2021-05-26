@@ -139,7 +139,7 @@ class UploadDataStore {
 
   setDialogVisible = (t) => {
     this.setConvertDialogVisible(false);
-    const label = t("UploadingLabel", {
+    const label = t("Translations:UploadingLabel", {
       file: this.uploadedFiles,
       totalFiles: this.files.length,
     });

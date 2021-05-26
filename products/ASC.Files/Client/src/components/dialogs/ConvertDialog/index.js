@@ -81,9 +81,11 @@ class ConvertDialogComponent extends React.Component {
   }
 }
 
-const ConvertDialog = withTranslation(["ConvertDialog", "Common"])(
-  ConvertDialogComponent
-);
+const ConvertDialog = withTranslation([
+  "ConvertDialog",
+  "Common",
+  "setDialogVisible",
+])(ConvertDialogComponent);
 
 export default inject(({ uploadDataStore, treeFoldersStore }) => {
   const { setTreeFolders } = treeFoldersStore;

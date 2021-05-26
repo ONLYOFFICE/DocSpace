@@ -3,6 +3,5 @@
   "ConversionTitle": "Das Dokument wird hochgeladen",
   "ConvertingLabel": "Dateien konvertiert: {{file}} von {{totalFiles}}",
   "HideMessage": "Diese Nachricht nicht mehr anzeigen.",
-  "SaveOriginalFormatMessage": "Kopie dieser Datei im Originalformat speichern",
-  "UploadingLabel": "Dateien hochgeladen: {{file}} von {{totalFiles}}"
+  "SaveOriginalFormatMessage": "Kopie dieser Datei im Originalformat speichern"
 }

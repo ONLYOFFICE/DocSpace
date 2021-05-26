@@ -15,5 +15,7 @@
   "DeleteFromTrash": "Selected elements were successfully deleted from Trash",
   "ConnectingAccount": "Connecting account",
   "AddAccount": "Add account",
-  "OwnerChange": "Change owner"
+  "OwnerChange": "Change owner",
+  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}",
+  "DeleteOperation": "Deleting"
 }

@@ -373,7 +373,7 @@ const SectionHeaderContent = (props) => {
       } /* ,
       {
         key: "send-invitation",
-        label: t("SendInviteAgain"),
+        label: t("Translations:SendInviteAgain"),
         onClick: onSentInviteAgain
       } */,
     ];

@@ -12,5 +12,6 @@
   "selectNewPhotoLabel": "Select new photo",
   "NotBeUndone": "Note: this action can\u0027t be undone.",
   "ReassignData": "Reassign data",
-  "SuccessChangeUserStatus": "The user status was successfully changed"
+  "SuccessChangeUserStatus": "The user status was successfully changed",
+  "SendInviteAgain": "Send invitation once again"
 }
