@@ -439,7 +439,7 @@ class SectionHeaderContent extends React.PureComponent {
         />
         <Headline className="header-headline" type="content" truncate={true}>
           {profile.displayName}
-          {profile.isLDAP && ` (${t("LDAPLbl")})`}
+          {profile.isLDAP && ` (${t("Translations:LDAPLbl")})`}
         </Headline>
         {((isAdmin && !profile.isOwner) || isMe) && (
           <ContextMenuButton
@@ -463,9 +463,9 @@ class SectionHeaderContent extends React.PureComponent {
           headerLabel={t("Common:EditAvatar")}
           selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
           orDropFileHereLabel={t("orDropFileHereLabel")}
-          unknownTypeError={t("ErrorUnknownFileImageType")}
+          unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
           maxSizeFileError={t("maxSizeFileError")}
-          unknownError={t("Error")}
+          unknownError={t("Common:Error")}
           saveButtonLabel={t("Common:SaveButton")}
         />
 

@@ -459,9 +459,9 @@ class CreateUserForm extends React.Component {
               headerLabel={t("AddPhoto")}
               selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
               orDropFileHereLabel={t("orDropFileHereLabel")}
-              unknownTypeError={t("ErrorUnknownFileImageType")}
+              unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
               maxSizeFileError={t("maxSizeFileError")}
-              unknownError={t("Error")}
+              unknownError={t("Common:Error")}
               saveButtonLabel={t("Common:SaveButton")}
             />
           </AvatarContainer>
@@ -554,7 +554,7 @@ class CreateUserForm extends React.Component {
               radioValue={profile.sex}
               radioOptions={[
                 { value: "male", label: t("MaleSexStatus") },
-                { value: "female", label: t("FemaleSexStatus") },
+                { value: "female", label: t("Translations:FemaleSexStatus") },
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
@@ -574,7 +574,7 @@ class CreateUserForm extends React.Component {
               }
             />
             <TextField
-              labelText={`${t("Location")}:`}
+              labelText={`${t("Translations:Location")}:`}
               inputName="location"
               inputValue={profile.location}
               inputIsDisabled={isLoading}

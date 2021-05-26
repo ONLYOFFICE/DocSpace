@@ -62,5 +62,6 @@
   "Profile": "Profile",
   "ClearButton": "Reset filter",
   "CommunityProduct": "Community",
-  "EmptyFieldError": "Empty field"
+  "EmptyFieldError": "Empty field",
+  "Error": "Error"
 }

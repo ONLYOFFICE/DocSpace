@@ -14,5 +14,9 @@
   "ReassignData": "Daten erneut zuweisen",
   "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert",
   "SendInviteAgain": "Einladung erneut senden",
-  "EnableUserButton": "Aktivieren"
+  "EnableUserButton": "Aktivieren",
+  "ErrorUnknownFileImageType": "Unbekannter Bilddateityp",
+  "FemaleSexStatus": "Weiblich",
+  "LDAPLbl": "LDAP",
+  "Location": "Standort"
 }

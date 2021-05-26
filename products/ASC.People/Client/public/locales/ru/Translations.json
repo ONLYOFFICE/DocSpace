@@ -14,5 +14,9 @@
   "ReassignData": "Передать данные",
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
   "SendInviteAgain": "Отправить приглашение ещё раз",
-  "EnableUserButton": "Разблокировать"
+  "EnableUserButton": "Разблокировать",
+  "ErrorUnknownFileImageType": "Неизвестный тип файла изображения",
+  "FemaleSexStatus": "Женский",
+  "LDAPLbl": "LDAP",
+  "Location": "Местоположение"
 }

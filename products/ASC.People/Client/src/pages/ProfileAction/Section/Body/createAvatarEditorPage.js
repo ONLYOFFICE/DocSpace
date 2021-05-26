@@ -259,9 +259,9 @@ class CreateAvatarEditorPage extends React.PureComponent {
           headerLabel={t("EditPhoto")}
           selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
           orDropFileHereLabel={t("orDropFileHereLabel")}
-          unknownTypeError={t("ErrorUnknownFileImageType")}
+          unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
           maxSizeFileError={t("maxSizeFileError")}
-          unknownError={t("Error")}
+          unknownError={t("Common:Error")}
           saveButtonLabel={
             this.state.isLoading ? t("UpdatingProcess") : t("Common:SaveButton")
           }

@@ -62,5 +62,6 @@
   "Profile": "Профиль",
   "ClearButton": "Сбросить фильтр",
   "CommunityProduct": "Сообщество",
-  "EmptyFieldError": "Пустое поле"
+  "EmptyFieldError": "Пустое поле",
+  "Error": "Ошибка"
 }
