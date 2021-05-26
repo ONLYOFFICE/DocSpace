@@ -80,7 +80,7 @@ const ForgotPasswordModalDialog = (props) => {
         >
           <TextInput
             hasError={emailError}
-            placeholder={t("PasswordRecoveryPlaceholder")}
+            placeholder={t("RegistrationEmail")}
             isAutoFocussed={true}
             id="e-mail"
             name="e-mail"

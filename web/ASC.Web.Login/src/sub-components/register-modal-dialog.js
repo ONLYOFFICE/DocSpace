@@ -69,7 +69,7 @@ const RegisterModalDialog = ({
         >
           <TextInput
             hasError={emailErr}
-            placeholder={t("RegisterPlaceholder")}
+            placeholder={t("RegistrationEmail")}
             isAutoFocussed={true}
             id="e-mail"
             name="e-mail"
