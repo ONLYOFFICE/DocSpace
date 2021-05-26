@@ -324,7 +324,7 @@ export default function withContextOptions(WrappedComponent) {
           case "restore":
             return {
               key: option,
-              label: t("Restore"),
+              label: t("Translations:Restore"),
               icon: "images/move.react.svg",
               onClick: this.onMoveAction,
               disabled: false,

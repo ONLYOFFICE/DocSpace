@@ -17,5 +17,6 @@
   "OwnerChange": "Besitzer ändern",
   "Copy": "Kopieren",
   "UploadingLabel": "Dateien hochgeladen: {{file}} von {{totalFiles}}",
-  "DeleteOperation": "Löschen"
+  "DeleteOperation": "Löschen",
+  "Restore": "Wiederherstellen"
 }

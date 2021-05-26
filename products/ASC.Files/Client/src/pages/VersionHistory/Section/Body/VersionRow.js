@@ -75,7 +75,11 @@ const VersionRow = (props) => {
 
   const contextOptions = [
     canEdit && { key: "edit", label: t("EditComment"), onClick: onEditComment },
-    canEdit && { key: "restore", label: t("Restore"), onClick: onRestoreClick },
+    canEdit && {
+      key: "restore",
+      label: t("Translations:Restore"),
+      onClick: onRestoreClick,
+    },
     {
       key: "download",
       label: `${t("Common:Download")} (${info.contentLength})`,
@@ -188,7 +192,7 @@ const VersionRow = (props) => {
                 {...linkStyles}
                 className="version_link-action"
               >
-                {t("Restore")}
+                {t("Translations:Restore")}
               </Link>
             )}
             <Link
@@ -252,6 +256,8 @@ export default inject(({ auth, versionHistoryStore }) => {
   };
 })(
   withRouter(
-    withTranslation(["VersionHistory", "Common"])(observer(VersionRow))
+    withTranslation(["VersionHistory", "Common", "Translations"])(
+      observer(VersionRow)
+    )
   )
 );

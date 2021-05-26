@@ -18,5 +18,6 @@
   "OwnerChange": "Change owner",
   "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}",
   "DeleteOperation": "Deleting",
-  "Copy": "Copy"
+  "Copy": "Copy",
+  "Restore": "Restore"
 }

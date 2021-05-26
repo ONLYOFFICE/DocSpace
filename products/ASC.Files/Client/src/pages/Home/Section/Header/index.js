@@ -427,7 +427,7 @@ class SectionHeaderContent extends React.Component {
       });
 
       menu.splice(4, 2, {
-        label: t("Restore"),
+        label: t("Translations:Restore"),
         onClick: this.onMoveAction,
       });
 
