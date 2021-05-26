@@ -56,5 +56,6 @@
   "Delete": "Löschen",
   "Enable": "Aktivieren",
   "SelectAll": "Alle auswählen",
-  "Download": "Herunterladen"
+  "Download": "Herunterladen",
+  "ProviderLoginError": "Authorization error"
 }

@@ -56,5 +56,7 @@
   "Delete": "Delete",
   "Enable": "Enable",
   "SelectAll": "Select all",
-  "Download": "Download"
+  "Download": "Download",
+  "ProviderLoginError": "Authorization error",
+  "ProviderNotConnected": "Provider is not connected to your account"
 }

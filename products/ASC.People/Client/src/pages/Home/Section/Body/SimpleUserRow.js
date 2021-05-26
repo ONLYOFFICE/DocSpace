@@ -207,7 +207,7 @@ const SimpleUserRow = ({
         case "enable":
           return {
             key: option,
-            label: t("EnableUserButton"),
+            label: t("Translations:EnableUserButton"),
             "data-id": id,
             onClick: onEnableClick,
           };

@@ -346,7 +346,7 @@ class SectionHeaderContent extends React.PureComponent {
         return [
           {
             key: "enable",
-            label: t("EnableUserButton"),
+            label: t("Translations:EnableUserButton"),
             onClick: this.onEnableClick,
           },
           {
@@ -386,7 +386,7 @@ class SectionHeaderContent extends React.PureComponent {
                 }
               : {
                   key: "enable",
-                  label: t("EnableUserButton"),
+                  label: t("Translations:EnableUserButton"),
                   onClick: this.onEnableClick,
                 }),
           isMe && {

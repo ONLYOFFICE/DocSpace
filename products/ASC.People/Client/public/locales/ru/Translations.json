@@ -13,5 +13,6 @@
   "NotBeUndone": "Внимание: это действие необратимо.",
   "ReassignData": "Передать данные",
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
-  "SendInviteAgain": "Отправить приглашение ещё раз"
+  "SendInviteAgain": "Отправить приглашение ещё раз",
+  "EnableUserButton": "Разблокировать"
 }

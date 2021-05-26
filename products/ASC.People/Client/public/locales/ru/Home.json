@@ -2,7 +2,6 @@
   "LblSendEmail": "Отправить email",
   "LblSendMessage": "Отправить сообщение",
   "DisableUserButton": "Заблокировать",
-  "EnableUserButton": "Разблокировать",
   "NotFoundDescription": "Попробуйте изменить или очистить настройки фильтра, чтобы увидеть всех людей в разделе.",
   "NotFoundTitle": "Сотрудников не найдено",
   "ClearButton": "Очистить фильтр",
