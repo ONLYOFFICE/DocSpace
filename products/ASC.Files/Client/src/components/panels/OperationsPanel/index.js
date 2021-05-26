@@ -107,7 +107,7 @@ const OperationsPanelComponent = (props) => {
       >
         <ModalDialog.Header>
           {isRecycleBin
-            ? t("Restore")
+            ? t("Translations:Restore")
             : isCopy
             ? t("Translations:Copy")
             : t("Translations:Move")}

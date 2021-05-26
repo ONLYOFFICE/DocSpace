@@ -18,5 +18,6 @@
   "OwnerChange": "Сменить владельца",
   "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}",
   "DeleteOperation": "Удаление",
-  "Copy": "Копировать"
+  "Copy": "Копировать",
+  "Restore": "Восстановить"
 }
