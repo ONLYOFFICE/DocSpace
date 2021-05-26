@@ -22,5 +22,6 @@
   "MaleSexStatus": "Männlich",
   "maxSizeFileError": "Maximale Dateigröße überschritten",
   "orDropFileHereLabel": "oder legen Sie eine Datei hier ab",
-  "Comments": "Kommentare"
+  "Comments": "Kommentare",
+  "InviteLinkTitle": "Einladungslink"
 }

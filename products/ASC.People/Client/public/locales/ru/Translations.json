@@ -22,5 +22,6 @@
   "MaleSexStatus": "Мужской",
   "maxSizeFileError": "Превышен максимальный размер файла",
   "orDropFileHereLabel": "или перетащите файл сюда",
-  "Comments": "Комментарии"
+  "Comments": "Комментарии",
+  "InviteLinkTitle": "Пригласительная ссылка"
 }

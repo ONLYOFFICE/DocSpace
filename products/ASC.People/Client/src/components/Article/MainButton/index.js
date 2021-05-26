@@ -114,7 +114,7 @@ class PureArticleMainButtonContent extends React.Component {
                 AppServerConfig.proxyURL,
                 "/static/images/invitation.link.react.svg"
               )}
-              label={t("InviteLinkTitle")}
+              label={t("Translations:InviteLinkTitle")}
               onClick={this.onInvitationDialogClick}
             />
             {/* <DropDownItem
@@ -147,9 +147,11 @@ class PureArticleMainButtonContent extends React.Component {
   }
 }
 
-const ArticleMainButtonContent = withTranslation(["Article", "Common"])(
-  PureArticleMainButtonContent
-);
+const ArticleMainButtonContent = withTranslation([
+  "Article",
+  "Common",
+  "Translations",
+])(PureArticleMainButtonContent);
 
 export default withRouter(
   inject(({ auth }) => ({

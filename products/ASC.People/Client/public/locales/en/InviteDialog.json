@@ -2,7 +2,6 @@
   "CopyToClipboard": "Copy the link",
   "GetShortenLink": "Get shortened link",
   "HelpAnswerLinkInviteSettings": "Share the link to invite colleagues to your portal.",
-  "InviteLinkTitle": "Invitation link",
   "InviteLinkValidInterval": "This link is valid for {{ count }} days only.",
   "InviteUsersAsCollaborators": "Add users as {{guestsCaption, lowercase}}",
   "LinkCopySuccess": "Link has been copied"

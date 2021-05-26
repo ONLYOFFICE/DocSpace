@@ -127,7 +127,9 @@ class InviteDialogComponent extends React.Component {
           onClose={this.onClose}
           zIndex={400}
         >
-          <ModalDialog.Header>{t("InviteLinkTitle")}</ModalDialog.Header>
+          <ModalDialog.Header>
+            {t("Translations:InviteLinkTitle")}
+          </ModalDialog.Header>
           <ModalDialog.Body>
             <Text as="p">{t("HelpAnswerLinkInviteSettings")}</Text>
             <Text className="text-dialog" as="p">
@@ -193,9 +195,11 @@ class InviteDialogComponent extends React.Component {
   }
 }
 
-const InviteDialog = withTranslation(["InviteDialog", "Common"])(
-  InviteDialogComponent
-);
+const InviteDialog = withTranslation([
+  "InviteDialog",
+  "Common",
+  "Translations",
+])(InviteDialogComponent);
 
 InviteDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

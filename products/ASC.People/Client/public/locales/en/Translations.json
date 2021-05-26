@@ -22,5 +22,6 @@
   "MaleSexStatus": "Male",
   "maxSizeFileError": "Maximum file size exceeded",
   "orDropFileHereLabel": "or drop a file here",
-  "Comments": "Comments"
+  "Comments": "Comments",
+  "InviteLinkTitle": "Invitation link"
 }
