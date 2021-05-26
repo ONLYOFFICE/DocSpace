@@ -267,7 +267,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         key: "copy",
-        label: t("Copy"),
+        label: t("Translations:Copy"),
         onClick: this.onCopyAction,
         disabled: true,
       },
@@ -408,7 +408,7 @@ class SectionHeaderContent extends React.Component {
         onClick: this.onMoveAction,
       },
       {
-        label: t("Copy"),
+        label: t("Translations:Copy"),
         disabled: !selectionCount,
         onClick: this.onCopyAction,
       },

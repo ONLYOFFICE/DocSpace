@@ -13,7 +13,6 @@
   "CommonEmptyContainerDescription": "\u0027Common\u0027 section contains files shared to all users by the portal admin. Only portal admins can create files there. Users can be granted Full access to a certain folder within the section. This way they will be able to create/upload files in this very folder.  ",
   "ContainsSpecCharacter": "The title can\u0027t contain any of the following characters: *\u002B:\u0022\u003C\u003E?|/",
   "Convert": "Convert",
-  "Copy": "Copy",
   "CopyItem": "\u003Cstrong\u003E{{title}}\u003C/strong\u003E copied",
   "CopyItems": "\u003Cstrong\u003E{{qty}}\u003C/strong\u003E elements copied",
   "CreateWithEmptyTitle": "Can\u0027t create a folder or file with an empty title",

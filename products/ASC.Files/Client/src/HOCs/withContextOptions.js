@@ -332,7 +332,7 @@ export default function withContextOptions(WrappedComponent) {
           case "copy-to":
             return {
               key: option,
-              label: t("Copy"),
+              label: t("Translations:Copy"),
               icon: "/static/images/copy.react.svg",
               onClick: this.onCopyAction,
               disabled: false,

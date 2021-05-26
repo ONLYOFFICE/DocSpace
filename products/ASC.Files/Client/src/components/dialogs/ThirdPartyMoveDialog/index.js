@@ -77,7 +77,7 @@ const PureThirdPartyMoveContainer = ({
           <Button
             data-copy="copy"
             className="operation-button"
-            label={t("Copy")}
+            label={t("Translations:Copy")}
             size="big"
             onClick={startOperation}
           />
