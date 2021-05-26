@@ -57,5 +57,6 @@
   "Enable": "Aktivieren",
   "SelectAll": "Alle auswählen",
   "Download": "Herunterladen",
-  "ProviderLoginError": "Authorization error"
+  "ProviderLoginError": "Authorization error",
+  "Profile": "Profil"
 }

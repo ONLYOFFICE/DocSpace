@@ -24,7 +24,6 @@
   "NotFoundLanguage": "Can\u0027t find your language? Contact us at \u003C1\u003E{{supportEmail}}\u003C/1\u003E to take part in the translation and get rewards.",
   "orDropFileHereLabel": "or drop a file here",
   "PhoneLbl": "Phone",
-  "Profile": "Profile",
   "ProviderSuccessfullyConnected": "Provider successfully connected",
   "ProviderSuccessfullyDisconnected": "Provider successfully disconnected",
   "Subscriptions": "Subscriptions"

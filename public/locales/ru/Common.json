@@ -58,5 +58,6 @@
   "SelectAll": "Выбрать все",
   "Download": "Скачать",
   "ProviderLoginError": "Ошибка авторизации",
-  "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту"
+  "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту",
+  "Profile": "Профиль"
 }
