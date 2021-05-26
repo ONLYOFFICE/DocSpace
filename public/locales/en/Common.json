@@ -74,5 +74,6 @@
   "NotFoundLanguage": "Can\u0027t find your language? Contact us at \u003C1\u003E{{supportEmail}}\u003C/1\u003E to take part in the translation and get rewards.",
   "View": "View",
   "Review": "Review",
-  "Size": "Size"
+  "Size": "Size",
+  "LblActive": "Active"
 }

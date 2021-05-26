@@ -220,7 +220,11 @@ const SectionHeaderContent = (props) => {
         isSelect: true,
         fontWeight: "bold",
         children: [
-          <DropDownItem key="active" label={t("LblActive")} data-index={0} />,
+          <DropDownItem
+            key="active"
+            label={t("Common:Active")}
+            data-index={0}
+          />,
           <DropDownItem
             key="disabled"
             label={t("Translations:DisabledEmployeeStatus")}
