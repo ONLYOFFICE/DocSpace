@@ -2,10 +2,8 @@
   "LblSendEmail": "Send email",
   "LblSendMessage": "Send message",
   "DisableUserButton": "Disable",
-  "EnableUserButton": "Enable",
   "NotFoundDescription": "Try a different filter or clear it to view all people in the section.",
   "NotFoundTitle": "No teammates found",
-  "ClearButton": "Clear filter",
   "EmptyGroupTitle": "No teammates here yet",
   "EmptyGroupDescription": "You can add new team members manually or invite them via link.",
   "UserStatus": "Status",
@@ -13,10 +11,7 @@
   "Administrator": "Administrator",
   "LblOther": "Other",
   "LblSelect": "Select",
-  "More": "More",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
-  "Search": "Search",
-  "SendInviteAgain": "Send invitation once again",
   "ChangeToUser": "Change to {{userCaption}}",
   "ChangeToGuest": "Change to {{guestCaption}}",
   "LblInviteAgain": "Invite again",
@@ -26,6 +21,5 @@
   "LblSetActive": "Set active",
   "LblSetDisabled": "Set disabled",
   "MakeInvitationLink": "Make invitation link",
-  "SuccessfullyRemovedGroup": "Group has been removed successfully",
-  "AddFilter": "Add filter"
+  "SuccessfullyRemovedGroup": "Group has been removed successfully"
 }

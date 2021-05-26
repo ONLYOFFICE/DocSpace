@@ -113,7 +113,9 @@ class SendInviteDialogComponent extends React.Component {
     //console.log("SendInviteDialog render");
     return (
       <ModalDialogContainer visible={visible} onClose={onClose}>
-        <ModalDialog.Header>{t("SendInviteAgain")}</ModalDialog.Header>
+        <ModalDialog.Header>
+          {t("Translations:SendInviteAgain")}
+        </ModalDialog.Header>
         <ModalDialog.Body>
           <Text>{t("SendInviteAgainDialog")}</Text>
           <Text>{t("SendInviteAgainDialogMessage")}</Text>

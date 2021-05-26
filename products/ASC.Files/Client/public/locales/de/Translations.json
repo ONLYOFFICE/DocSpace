@@ -15,5 +15,7 @@
   "DeleteFromTrash": "Die ausgewählten Elemente wurden aus dem Papierkorb gelöscht",
   "ConnectingAccount": "Konto wird verbunden",
   "OwnerChange": "Besitzer ändern",
-  "Copy": "Kopieren"
+  "Copy": "Kopieren",
+  "UploadingLabel": "Dateien hochgeladen: {{file}} von {{totalFiles}}",
+  "DeleteOperation": "Löschen"
 }

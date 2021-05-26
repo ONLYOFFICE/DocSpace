@@ -232,7 +232,7 @@ class SectionHeaderContent extends React.Component {
       setDeleteDialogVisible(true);
     } else {
       const translations = {
-        deleteOperation: t("DeleteOperation"),
+        deleteOperation: t("Translations:DeleteOperation"),
         deleteFromTrash: t("Translations:DeleteFromTrash"),
         deleteSelectedElem: t("Translations:DeleteSelectedElem"),
       };
@@ -482,7 +482,7 @@ class SectionHeaderContent extends React.Component {
                   onChange={this.onCheck}
                   menuItems={menuItems}
                   visible={isHeaderVisible}
-                  moreLabel={t("More")}
+                  moreLabel={t("Common:More")}
                   closeTitle={t("Common:CloseButton")}
                   onClose={this.onClose}
                   selected={menuItems[0].label}

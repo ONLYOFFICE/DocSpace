@@ -56,5 +56,15 @@
   "Delete": "Delete",
   "Enable": "Enable",
   "SelectAll": "Select all",
-  "Download": "Download"
+  "Download": "Download",
+  "ProviderLoginError": "Authorization error",
+  "ProviderNotConnected": "Provider is not connected to your account",
+  "Profile": "Profile",
+  "ClearButton": "Reset filter",
+  "CommunityProduct": "Community",
+  "EmptyFieldError": "Empty field",
+  "Error": "Error",
+  "AddFilter": "Add filter",
+  "Search": "Search",
+  "More": "More"
 }

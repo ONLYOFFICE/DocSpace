@@ -604,7 +604,7 @@ class UpdateUserForm extends React.Component {
                 <Td>-</Td>
               </tr>
               <tr>
-                <Td>{t("CommunityProduct")}</Td>
+                <Td>{t("Common:CommunityProduct")}</Td>
                 <Td>{t("Common:FullAccess")}</Td>
                 <Td>{t("ViewAccess")}</Td>
               </tr>
@@ -664,10 +664,10 @@ class UpdateUserForm extends React.Component {
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("EditPhoto")}
               selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
-              orDropFileHereLabel={t("orDropFileHereLabel")}
-              unknownTypeError={t("ErrorUnknownFileImageType")}
-              maxSizeFileError={t("maxSizeFileError")}
-              unknownError={t("Error")}
+              orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
+              unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
+              maxSizeFileError={t("Translations:maxSizeFileError")}
+              unknownError={t("Common:Error")}
               saveButtonLabel={
                 this.state.isLoading
                   ? t("UpdatingProcess")
@@ -768,8 +768,8 @@ class UpdateUserForm extends React.Component {
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
-                { value: "male", label: t("MaleSexStatus") },
-                { value: "female", label: t("FemaleSexStatus") },
+                { value: "male", label: t("Translations:MaleSexStatus") },
+                { value: "female", label: t("Translations:FemaleSexStatus") },
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
@@ -804,7 +804,7 @@ class UpdateUserForm extends React.Component {
               }
             />
             <TextField
-              labelText={`${t("Location")}:`}
+              labelText={`${t("Translations:Location")}:`}
               inputName="location"
               inputValue={profile.location}
               inputIsDisabled={isLoading}
@@ -837,7 +837,7 @@ class UpdateUserForm extends React.Component {
             )}
           </MainFieldsContainer>
         </MainContainer>
-        <InfoFieldContainer headerText={t("Comments")}>
+        <InfoFieldContainer headerText={t("Translations:Comments")}>
           <Textarea
             placeholder={t("WriteComment")}
             name="notes"

@@ -47,7 +47,7 @@ class DeleteDialogComponent extends React.Component {
     this.onClose();
     const { t, deleteAction } = this.props;
     const translations = {
-      deleteOperation: t("DeleteOperation"),
+      deleteOperation: t("Translations:DeleteOperation"),
       deleteFromTrash: t("Translations:DeleteFromTrash"),
       deleteSelectedElem: t("Translations:DeleteSelectedElem"),
     };

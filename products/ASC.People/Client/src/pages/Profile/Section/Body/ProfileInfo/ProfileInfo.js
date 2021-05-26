@@ -231,7 +231,8 @@ class ProfileInfo extends React.PureComponent {
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
 
     const formatedSex =
-      (sex === "male" && t("MaleSexStatus")) || t("FemaleSexStatus");
+      (sex === "male" && t("Translations:MaleSexStatus")) ||
+      t("Translations:FemaleSexStatus");
 
     const formatedDepartments =
       department && this.getFormattedDepartments(groups);
@@ -329,7 +330,7 @@ class ProfileInfo extends React.PureComponent {
         )}
         {location && (
           <InfoItem>
-            <InfoItemLabel>{t("Location")}:</InfoItemLabel>
+            <InfoItemLabel>{t("Translations:Location")}:</InfoItemLabel>
             <InfoItemValue>{location}</InfoItemValue>
           </InfoItem>
         )}

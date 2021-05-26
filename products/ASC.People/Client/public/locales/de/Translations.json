@@ -12,5 +12,15 @@
   "selectNewPhotoLabel": "Neues Foto auswählen",
   "NotBeUndone": "Dies kann nicht rückgängig gemacht werden.",
   "ReassignData": "Daten erneut zuweisen",
-  "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert"
+  "SuccessChangeUserStatus": "Der Benutzerstatus war erfolgreich geändert",
+  "SendInviteAgain": "Einladung erneut senden",
+  "EnableUserButton": "Aktivieren",
+  "ErrorUnknownFileImageType": "Unbekannter Bilddateityp",
+  "FemaleSexStatus": "Weiblich",
+  "LDAPLbl": "LDAP",
+  "Location": "Standort",
+  "MaleSexStatus": "Männlich",
+  "maxSizeFileError": "Maximale Dateigröße überschritten",
+  "orDropFileHereLabel": "oder legen Sie eine Datei hier ab",
+  "Comments": "Kommentare"
 }

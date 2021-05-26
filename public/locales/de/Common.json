@@ -56,5 +56,14 @@
   "Delete": "Löschen",
   "Enable": "Aktivieren",
   "SelectAll": "Alle auswählen",
-  "Download": "Herunterladen"
+  "Download": "Herunterladen",
+  "ProviderLoginError": "Authorization error",
+  "Profile": "Profil",
+  "ClearButton": "Filter zurücksetzen",
+  "CommunityProduct": "Community",
+  "EmptyFieldError": "Leeres Feld",
+  "Error": "Fehler",
+  "AddFilter": "Filter hinzufügen",
+  "Search": "Suche",
+  "More": "Mehr"
 }

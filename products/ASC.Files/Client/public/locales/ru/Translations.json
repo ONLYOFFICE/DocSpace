@@ -16,5 +16,7 @@
   "ConnectingAccount": "Подключение аккаунта",
   "AddAccount": "Подключить",
   "OwnerChange": "Сменить владельца",
+  "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}",
+  "DeleteOperation": "Удаление",
   "Copy": "Копировать"
 }

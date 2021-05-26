@@ -346,7 +346,7 @@ class SectionHeaderContent extends React.PureComponent {
         return [
           {
             key: "enable",
-            label: t("EnableUserButton"),
+            label: t("Translations:EnableUserButton"),
             onClick: this.onEnableClick,
           },
           {
@@ -386,7 +386,7 @@ class SectionHeaderContent extends React.PureComponent {
                 }
               : {
                   key: "enable",
-                  label: t("EnableUserButton"),
+                  label: t("Translations:EnableUserButton"),
                   onClick: this.onEnableClick,
                 }),
           isMe && {
@@ -439,7 +439,7 @@ class SectionHeaderContent extends React.PureComponent {
         />
         <Headline className="header-headline" type="content" truncate={true}>
           {profile.displayName}
-          {profile.isLDAP && ` (${t("LDAPLbl")})`}
+          {profile.isLDAP && ` (${t("Translations:LDAPLbl")})`}
         </Headline>
         {((isAdmin && !profile.isOwner) || isMe) && (
           <ContextMenuButton
@@ -462,10 +462,10 @@ class SectionHeaderContent extends React.PureComponent {
           onLoadFile={this.onLoadFileAvatar}
           headerLabel={t("Common:EditAvatar")}
           selectNewPhotoLabel={t("Translations:selectNewPhotoLabel")}
-          orDropFileHereLabel={t("orDropFileHereLabel")}
-          unknownTypeError={t("ErrorUnknownFileImageType")}
-          maxSizeFileError={t("maxSizeFileError")}
-          unknownError={t("Error")}
+          orDropFileHereLabel={t("Translations:orDropFileHereLabel")}
+          unknownTypeError={t("Translations:ErrorUnknownFileImageType")}
+          maxSizeFileError={t("Translations:maxSizeFileError")}
+          unknownError={t("Common:Error")}
           saveButtonLabel={t("Common:SaveButton")}
         />
 

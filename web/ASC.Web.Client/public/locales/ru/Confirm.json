@@ -9,7 +9,5 @@
   "LastName": "Фамилия",
   "LoginRegistryButton": "Присоединиться",
   "LoginWithAccount": "или войдите с:",
-  "PassworResetTitle": "Теперь вы можете создать новый пароль.",
-  "ProviderLoginError": "Ошибка авторизации",
-  "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту"
+  "PassworResetTitle": "Теперь вы можете создать новый пароль."
 }

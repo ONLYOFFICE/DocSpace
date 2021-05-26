@@ -1,6 +1,5 @@
 ﻿{
   "ConfirmationTitle": "Bestätigung",
-  "DeleteOperation": "Löschen",
   "EmptyTrashDialogMessage": "Die Dateien werden dauerhaft gelöscht.",
   "EmptyTrashDialogQuestion": "Möchten Sie Papierkorb wirklich leeren?",
   "SuccessEmptyTrash": "Papierkorb wurde geleert"

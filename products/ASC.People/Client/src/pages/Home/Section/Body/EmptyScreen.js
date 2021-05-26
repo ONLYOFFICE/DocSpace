@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
 const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
-  const { t } = useTranslation("Home");
+  const { t } = useTranslation(["Home", "Common"]);
 
   const title = isEmptyGroup ? t("EmptyGroupTitle") : t("NotFoundTitle");
   const description = isEmptyGroup
@@ -53,7 +53,7 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
                   color="#555f65"
                   onClick={onResetFilter}
                 >
-                  {t("ClearButton")}
+                  {t("Common:ClearButton")}
                 </Link>
               </Box>{" "}
             </>

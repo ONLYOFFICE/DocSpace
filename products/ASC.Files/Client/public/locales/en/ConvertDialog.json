@@ -3,6 +3,5 @@
   "ConversionTitle": "Document uploading",
   "ConvertingLabel": "Converting files: {{file}} of {{totalFiles}}",
   "HideMessage": "Do not show this message again",
-  "SaveOriginalFormatMessage": "Save the file copy in the original format",
-  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}"
+  "SaveOriginalFormatMessage": "Save the file copy in the original format"
 }

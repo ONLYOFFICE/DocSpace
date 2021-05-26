@@ -212,7 +212,10 @@ const Form = (props) => {
         history.push(defaultPage);
       })
       .catch(() => {
-        toastr.error(t("ProviderNotConnected"), t("ProviderLoginError"));
+        toastr.error(
+          t("Common:ProviderNotConnected"),
+          t("Common:ProviderLoginError")
+        );
       });
   };
 

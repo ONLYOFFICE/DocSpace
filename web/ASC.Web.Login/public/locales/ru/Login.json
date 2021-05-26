@@ -9,8 +9,6 @@
   "Or": "ИЛИ",
   "PasswordRecoveryPlaceholder": "Ваш регистрационный email",
   "PasswordRecoveryTitle": "Восстановление пароля",
-  "ProviderLoginError": "Ошибка авторизации",
-  "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту",
   "Register": "Регистрация",
   "RegisterPlaceholder": "Ваш регистрационный email",
   "RegisterSendButton": "Отправить запрос",

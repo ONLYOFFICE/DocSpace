@@ -28,7 +28,7 @@ class Profile extends React.Component {
 
     if (!userId) userId = "@self";
 
-    setDocumentTitle(t("Profile"));
+    setDocumentTitle(t("Common:Profile"));
     this.documentElement = document.getElementsByClassName("hidingHeader");
     const queryString = ((location && location.search) || "").slice(1);
     const queryParams = queryString.split("&");

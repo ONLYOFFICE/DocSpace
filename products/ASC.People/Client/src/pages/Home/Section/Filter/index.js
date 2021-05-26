@@ -234,8 +234,8 @@ class SectionFilterContent extends React.Component {
         onFilter={this.onFilter}
         directionAscLabel={t("Common:DirectionAscLabel")}
         directionDescLabel={t("Common:DirectionDescLabel")}
-        placeholder={t("Search")}
-        contextMenuHeader={t("AddFilter")}
+        placeholder={t("Common:Search")}
+        contextMenuHeader={t("Common:AddFilter")}
         isMobile={isMobileOnly}
       />
     ) : (

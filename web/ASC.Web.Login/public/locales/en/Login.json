@@ -9,8 +9,6 @@
   "Or": "OR",
   "PasswordRecoveryPlaceholder": "Your registration email",
   "PasswordRecoveryTitle": "Password recovery",
-  "ProviderLoginError": "Authorization error",
-  "ProviderNotConnected": "Provider is not connected to your account",
   "Register": "Register",
   "RegisterPlaceholder": "Your registration email",
   "RegisterSendButton": "Send request",

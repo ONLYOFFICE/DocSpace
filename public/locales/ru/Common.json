@@ -56,5 +56,15 @@
   "Delete": "Удалить",
   "Enable": "Включить",
   "SelectAll": "Выбрать все",
-  "Download": "Скачать"
+  "Download": "Скачать",
+  "ProviderLoginError": "Ошибка авторизации",
+  "ProviderNotConnected": "Провайдер не подключен к вашему аккаунту",
+  "Profile": "Профиль",
+  "ClearButton": "Сбросить фильтр",
+  "CommunityProduct": "Сообщество",
+  "EmptyFieldError": "Пустое поле",
+  "Error": "Ошибка",
+  "AddFilter": "Добавить фильтр",
+  "Search": "Поиск",
+  "More": "Больше"
 }

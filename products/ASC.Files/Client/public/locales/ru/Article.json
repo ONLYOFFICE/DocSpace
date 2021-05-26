@@ -4,6 +4,5 @@
   "NewPresentation": "Новая презентация",
   "NewSpreadsheet": "Новая таблица",
   "UploadFiles": "Загрузить файлы",
-  "UploadFolder": "Загрузить папку",
-  "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}"
+  "UploadFolder": "Загрузить папку"
 }
