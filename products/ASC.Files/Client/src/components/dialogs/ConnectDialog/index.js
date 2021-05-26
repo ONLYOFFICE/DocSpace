@@ -216,7 +216,9 @@ const PureConnectDialogContainer = (props) => {
 
   return (
     <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
-      <ModalDialog.Header>{t("ConnectingAccount")}</ModalDialog.Header>
+      <ModalDialog.Header>
+        {t("Translations:ConnectingAccount")}
+      </ModalDialog.Header>
       <ModalDialog.Body>
         {isAccount ? (
           <FieldContainer labelVisible labelText={t("Account")} isVertical>
@@ -325,9 +327,11 @@ const PureConnectDialogContainer = (props) => {
   );
 };
 
-const ConnectDialog = withTranslation(["ConnectDialog", "Common"])(
-  PureConnectDialogContainer
-);
+const ConnectDialog = withTranslation([
+  "ConnectDialog",
+  "Common",
+  "Translations",
+])(PureConnectDialogContainer);
 
 export default inject(
   ({

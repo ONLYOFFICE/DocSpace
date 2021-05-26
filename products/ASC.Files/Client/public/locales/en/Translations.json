@@ -12,5 +12,6 @@
   "Folders": "Folders",
   "Files": "Files",
   "DeleteSelectedElem": "Selected elements were successfully deleted",
-  "DeleteFromTrash": "Selected elements were successfully deleted from Trash"
+  "DeleteFromTrash": "Selected elements were successfully deleted from Trash",
+  "ConnectingAccount": "Connecting account"
 }
