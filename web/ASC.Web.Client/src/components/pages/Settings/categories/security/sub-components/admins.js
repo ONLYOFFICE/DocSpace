@@ -548,7 +548,7 @@ class PureAdminsSettings extends Component {
                         color="#555f65"
                         onClick={this.onResetFilter}
                       >
-                        {t("ClearButton")}
+                        {t("Common:ClearButton")}
                       </Link>
                     </>
                   }

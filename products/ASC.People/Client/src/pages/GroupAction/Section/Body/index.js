@@ -157,7 +157,7 @@ const SectionBodyContent = ({
 
   const onSave = () => {
     if (!groupName || !groupName.trim().length) {
-      setNameError(t("EmptyFieldError"));
+      setNameError(t("Common:EmptyFieldError"));
       return false;
     }
 

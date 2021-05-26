@@ -59,5 +59,8 @@
   "Download": "Download",
   "ProviderLoginError": "Authorization error",
   "ProviderNotConnected": "Provider is not connected to your account",
-  "Profile": "Profile"
+  "Profile": "Profile",
+  "ClearButton": "Reset filter",
+  "CommunityProduct": "Community",
+  "EmptyFieldError": "Empty field"
 }

@@ -58,5 +58,8 @@
   "SelectAll": "Alle auswählen",
   "Download": "Herunterladen",
   "ProviderLoginError": "Authorization error",
-  "Profile": "Profil"
+  "Profile": "Profil",
+  "ClearButton": "Filter zurücksetzen",
+  "CommunityProduct": "Community",
+  "EmptyFieldError": "Leeres Feld"
 }
