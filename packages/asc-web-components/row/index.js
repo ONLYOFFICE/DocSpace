@@ -74,8 +74,9 @@ class Row extends React.Component {
     return (
       <StyledRow ref={this.row} {...this.props} onContextMenu={onContextMenu}>
         {renderCheckbox && (
-          <StyledCheckbox>
+          <StyledCheckbox className="not-selectable">
             <Checkbox
+              className="checkbox"
               isChecked={checked}
               isIndeterminate={indeterminate}
               onChange={changeCheckbox}
