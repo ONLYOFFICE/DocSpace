@@ -16,6 +16,7 @@ import { combineUrl, showLoader, hideLoader } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import ArrowRightIcon from "@appserver/studio/public/images/arrow.right.react.svg";
+import Loader from "@appserver/components/loader";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
@@ -26,14 +27,16 @@ const StyledArrowRightIcon = styled(ArrowRightIcon)`
 
 const MainContainer = styled.div`
   width: 100%;
+  position: relative;
+
+  .page-loader {
+    position: absolute;
+    left: calc(50% - 35px);
+    top: 35%;
+  }
 
   .settings_tabs {
     padding-bottom: 16px;
-  }
-
-  .page_loader {
-    position: fixed;
-    left: 50%;
   }
 
   .category-item-wrapper {
@@ -73,6 +76,10 @@ class AccessRights extends PureComponent {
   constructor(props) {
     super(props);
 
+    this.state = {
+      isLoading: false,
+    };
+
     const { t } = props;
 
     setDocumentTitle(t("ManagementCategorySecurity"));
@@ -81,17 +88,23 @@ class AccessRights extends PureComponent {
   async componentDidMount() {
     const { admins, updateListAdmins } = this.props;
 
-    showLoader();
     if (isEmpty(admins, true)) {
+      this.setIsLoading(true);
       try {
         await updateListAdmins(null, true);
+        this.setIsLoading(false);
       } catch (error) {
         toastr.error(error);
+        this.setIsLoading(false);
       }
     }
-
-    hideLoader();
   }
+
+  setIsLoading = (isLoading) => {
+    this.setState({
+      isLoading,
+    });
+  };
 
   onClickLink = (e) => {
     e.preventDefault();
@@ -101,7 +114,13 @@ class AccessRights extends PureComponent {
 
   render() {
     const { t, admins } = this.props;
-    return (
+    const { isLoading } = this.state;
+    console.log(isLoading);
+    return isLoading ? (
+      <MainContainer>
+        <Loader className="page-loader" type="rombs" size="40px" />
+      </MainContainer>
+    ) : (
       <MainContainer>
         <OwnerSettings />
         {
