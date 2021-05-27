@@ -1,24 +1,25 @@
 import React from "react";
 import { Provider as MobxProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
+import { I18nextProvider } from "react-i18next";
+import { withTranslation } from "react-i18next";
+import styled from "styled-components";
+
+import store from "studio/store";
 import {
   getCommonFolderList,
   getFolderPath,
-  thirdParty,
 } from "@appserver/common/api/files";
-import TreeFolders from "../../Article/Body/TreeFolders";
-import stores from "../../../store/index";
-import store from "studio/store";
+import { getCommonThirdPartyList } from "@appserver/common/api/settings";
 import ModalDialog from "@appserver/components/modal-dialog";
-import { StyledAsidePanel } from "../StyledPanels";
-import { useTranslation, withTranslation } from "react-i18next";
-import FileInputWithFolderPath from "./fileInputWithFolderPath";
-import styled from "styled-components";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
+
 import i18n from "./i18n";
-import { I18nextProvider } from "react-i18next";
-import { getCommonThirdPartyList } from "@appserver/common/api/settings";
+import TreeFolders from "../../Article/Body/TreeFolders";
+import stores from "../../../store/index";
+import { StyledAsidePanel } from "../StyledPanels";
+import FileInputWithFolderPath from "./fileInputWithFolderPath";
 
 const { auth: authStore } = store;
 
@@ -155,7 +156,7 @@ class SelectedFolder extends React.PureComponent {
     }
     if (folderPath !== prevProps.folderPath) {
       this.setState({
-        baseFolderPath: folderPath,
+        fullFolderPath: folderPath,
         fullFolderPathDefault: folderPath,
       });
     }
