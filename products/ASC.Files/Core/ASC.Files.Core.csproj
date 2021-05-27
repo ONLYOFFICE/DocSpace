@@ -115,6 +115,25 @@
     <EmbeddedResource Update="Resources\FilesCommonResource.ru.resx">
       <DependentUpon>FilesCommonResource.resx</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.de.resx">
+      <DependentUpon>FilesPatternResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.es.resx">
+      <DependentUpon>FilesPatternResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.fr.resx">
+      <DependentUpon>FilesPatternResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.it.resx">
+      <DependentUpon>FilesPatternResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.resx">
+      <LastGenOutput>FilesPatternResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Services\NotifyService\FilesPatternResource.ru.resx">
+      <DependentUpon>FilesPatternResource.resx</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\FilesJSResource.de.resx">
       <DependentUpon>FilesJSResource.resx</DependentUpon>
     </EmbeddedResource>

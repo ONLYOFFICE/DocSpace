@@ -18,14 +18,12 @@ namespace ASC.Data.Backup
         private TenantManager TenantManager { get; }
         private IOptionsMonitor<ILog> Options { get; }
         private TenantUtil TenantUtil { get; }
-        private BackupHelper BackupHelper { get; }
 
-        public Schedule(IOptionsMonitor<ILog> options, TenantManager tenantManager, TenantUtil tenantUtil, BackupHelper backupHelper)
+        public Schedule(IOptionsMonitor<ILog> options, TenantManager tenantManager, TenantUtil tenantUtil)
         {
             Options = options;
             TenantManager = tenantManager;
             TenantUtil = tenantUtil;
-            BackupHelper = backupHelper;
         }
 
         public bool IsToBeProcessed(BackupSchedule backupSchedule)

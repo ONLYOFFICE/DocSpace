@@ -721,7 +721,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         else if (dueDateIsNotMax && dueDate.AddDays(-7) == nowDate)
                         {
-                            action = Actions.EnterpriseAdminTrialWarningBefore7v115;
+                            action = Actions.EnterpriseAdminTrialWarningBefore7V10;
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
@@ -734,7 +734,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         else if (dueDate == nowDate)
                         {
-                            action = Actions.EnterpriseAdminTrialWarningv115;
+                            action = Actions.EnterpriseAdminTrialWarningV10;
                             toadmins = true;
                         }
 
@@ -750,7 +750,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         if (createdDate.AddDays(1) == nowDate)
                         {
-                            action = Actions.EnterpriseWhitelabelAdminCustomizePortalv115;
+                            action = Actions.EnterpriseWhitelabelAdminCustomizePortalV10;
                             paymentMessage = false;
                             toadmins = true;
 
@@ -794,8 +794,8 @@ namespace ASC.Web.Studio.Core.Notify
                         if (dueDateIsNotMax && dueDate.AddDays(-7) == nowDate)
                         {
                             action = defaultRebranding
-                                         ? Actions.EnterpriseAdminPaymentWarningBefore7v115
-                                         : Actions.EnterpriseWhitelabelAdminPaymentWarningBefore7v115;
+                                         ? Actions.EnterpriseAdminPaymentWarningBefore7V10
+                                         : Actions.EnterpriseWhitelabelAdminPaymentWarningBefore7V10;
                             toadmins = true;
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
                             greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
@@ -808,8 +808,8 @@ namespace ASC.Web.Studio.Core.Notify
                         else if (dueDate == nowDate)
                         {
                             action = defaultRebranding
-                                         ? Actions.EnterpriseAdminPaymentWarningv115
-                                         : Actions.EnterpriseWhitelabelAdminPaymentWarningv115;
+                                         ? Actions.EnterpriseAdminPaymentWarningV10
+                                         : Actions.EnterpriseWhitelabelAdminPaymentWarningV10;
                             toadmins = true;
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
                             greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");

@@ -318,7 +318,7 @@ namespace ASC.Api.Settings
             {
                 if (!SettingsManager.Load<WizardSettings>().Completed)
                 {
-                    settings.WizardToken = CommonLinkUtility.GetToken("", ConfirmType.Wizard, userId: Tenant.OwnerId);
+                    settings.WizardToken = CommonLinkUtility.GetToken(Tenant.TenantId, "", ConfirmType.Wizard, userId: Tenant.OwnerId);
                 }
 
                 settings.EnabledJoin =
@@ -500,7 +500,7 @@ namespace ASC.Api.Settings
                     case TenantTrustedDomainsType.Custom:
                     {
                         var address = new MailAddress(email);
-                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
+                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d.Replace("*", ""), StringComparison.InvariantCultureIgnoreCase)))
                         {
                             StudioNotifyService.SendJoinMsg(email, emplType);
                             MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
@@ -2741,7 +2741,10 @@ namespace ASC.Api.Settings
         private bool SaveAuthKeys(AuthServiceModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            if (!SetupInfo.IsVisibleSettings(ManagementType.ThirdPartyAuthorization.ToString()))
+
+            var saveAvailable = CoreBaseSettings.Standalone || TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).ThirdParty;
+            if (!SetupInfo.IsVisibleSettings(ManagementType.ThirdPartyAuthorization.ToString())
+                || !saveAvailable)
                 throw new BillingException(Resource.ErrorNotAllowedOption, "ThirdPartyAuthorization");
 
             var changed = false;
