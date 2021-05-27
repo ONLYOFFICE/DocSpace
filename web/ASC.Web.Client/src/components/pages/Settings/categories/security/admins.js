@@ -16,7 +16,7 @@ import IconButton from "@appserver/components/icon-button";
 import toastr from "@appserver/components/toast/toastr";
 import SearchInput from "@appserver/components/search-input";
 import RequestLoader from "@appserver/components/request-loader";
-import Loader from "@appserver/components/loader";
+import Loaders from "@appserver/common/components/Loaders";
 import EmptyScreenContainer from "@appserver/components/empty-screen-container";
 import PeopleSelector from "people/PeopleSelector";
 
@@ -268,7 +268,7 @@ class PortalAdmins extends Component {
     this.state = {
       showFullAdminSelector: false,
       isLoading: false,
-      showLoader: false,
+      showLoader: true,
       selectedOptions: [],
       searchValue: "",
       selectedUser: null,
@@ -654,8 +654,8 @@ class PortalAdmins extends Component {
 
     return (
       <>
-        {showLoader ? (
-          <Loader className="pageLoader" type="rombs" size="40px" />
+        {!filteredAdmins || !filteredAdmins.length > 0 ? (
+          <Loaders.Rows isRectangle={false} />
         ) : (
           <>
             <RequestLoader

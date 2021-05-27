@@ -4,11 +4,13 @@ import { withRouter } from "react-router";
 import Layout from "./Layout";
 import { combineUrl } from "@appserver/common/utils";
 import AppServerConfig from "@appserver/common/constants/AppServerConfig";
+import Admins from "./categories/security/admins";
+import SecuritySettings from "./categories/security/access-rights";
 
-const SecuritySettings = lazy(() =>
-  import("./categories/security/access-rights")
-);
-const Admins = lazy(() => import("./categories/security/admins"));
+//const SecuritySettings = lazy(() =>
+//  import("./categories/security/access-rights")
+//);
+//const Admins = lazy(() => import("./categories/security/admins"));
 const CustomizationSettings = lazy(() =>
   import("./categories/common/customization")
 );

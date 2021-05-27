@@ -76,10 +76,6 @@ class AccessRights extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isLoading: false,
-    };
-
     const { t } = props;
 
     setDocumentTitle(t("ManagementCategorySecurity"));
@@ -89,22 +85,13 @@ class AccessRights extends PureComponent {
     const { admins, updateListAdmins } = this.props;
 
     if (isEmpty(admins, true)) {
-      this.setIsLoading(true);
       try {
         await updateListAdmins(null, true);
-        this.setIsLoading(false);
       } catch (error) {
         toastr.error(error);
-        this.setIsLoading(false);
       }
     }
   }
-
-  setIsLoading = (isLoading) => {
-    this.setState({
-      isLoading,
-    });
-  };
 
   onClickLink = (e) => {
     e.preventDefault();
@@ -113,10 +100,8 @@ class AccessRights extends PureComponent {
   };
 
   render() {
-    const { t, admins } = this.props;
-    const { isLoading } = this.state;
-    console.log(isLoading);
-    return isLoading ? (
+    const { t, admins, owner } = this.props;
+    return !admins || !admins.length > 0 || !owner ? (
       <MainContainer>
         <Loader className="page-loader" type="rombs" size="40px" />
       </MainContainer>
@@ -161,5 +146,6 @@ export default inject(({ auth, setup }) => {
     admins,
     updateListAdmins,
     organizationName: auth.settingsStore.organizationName,
+    owner: auth.settingsStore.owner,
   };
 })(withTranslation("Settings")(withRouter(AccessRights)));
