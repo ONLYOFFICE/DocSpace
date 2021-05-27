@@ -74,9 +74,10 @@
   "Review": "Review",
   "Size": "Größe",
   "Active": "Aktiv",
-  "LblSelect": "Auswählen",
+  "Select": "Auswählen",
   "Version": "Version",
   "SomethingWentWrong": "Ein Fehler ist aufgetreten.",
+  "CopyEmailAndPassword": "E-Mail und Passwort kopieren",
   "ByFirstNameSorting": "Nach Vornamen",
   "ByLastNameSorting": "Nach Familiennamen"
 }

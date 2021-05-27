@@ -5,7 +5,7 @@
   "ContactInformation": "Kontaktdaten",
   "EditPhoto": "Bild bearbeiten",
   "EditSubscriptionsBtn": "Abonnements bearbeiten",
-  "EditUserDialogTitle": "Profil bearbeiten",
+  "EditUser": "Profil bearbeiten",
   "InviteAgainLbl": "Erneut einladen",
   "MessageEmailActivationInstuctionsSentOnEmail": "Die Hinweise für die Aktivierung wurden an \u003Cstrong\u003E{{ email }}\u003C/strong\u003E versandt.",
   "PhoneLbl": "Telefon",

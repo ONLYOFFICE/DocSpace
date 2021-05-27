@@ -76,9 +76,10 @@
   "Review": "Review",
   "Size": "Size",
   "Active": "Active",
-  "LblSelect": "Select",
+  "Select": "Select",
   "Version": "Version",
   "SomethingWentWrong": "Something went wrong.",
+  "CopyEmailAndPassword": "Copy email and password",
   "ByFirstNameSorting": "By first name",
   "ByLastNameSorting": "By last name"
 }
