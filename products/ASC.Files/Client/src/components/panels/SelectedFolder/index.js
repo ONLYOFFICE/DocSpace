@@ -46,6 +46,21 @@ let commonTreeFolder;
 let pathName = "";
 let folderList;
 class SelectedFolder extends React.PureComponent {
+  static setFullFolderPath = (foldersArray) => {
+    path = "";
+    if (foldersArray.length > 1) {
+      for (let item of foldersArray) {
+        if (!path) {
+          path = path + `${item.title}`;
+        } else path = path + " " + "/" + " " + `${item.title}`;
+      }
+    } else {
+      for (let item of foldersArray) {
+        path = `${item.title}`;
+      }
+    }
+    return path;
+  };
   constructor(props) {
     super(props);
     this.inputRef = React.createRef();
@@ -75,12 +90,10 @@ class SelectedFolder extends React.PureComponent {
         onSetLoadingData && onSetLoadingData(true);
 
         if (isCommonFolders) {
-          //debugger;
           SelectedFolderModal.getCommonFolders()
             .then((commonFolder) => {
-              //debugger;
               folderList = commonFolder;
-            }) //только общие сразу вызвать
+            })
             .then(
               () =>
                 folderPath.length === 0 &&
@@ -95,7 +108,7 @@ class SelectedFolder extends React.PureComponent {
                 });
             });
         }
-        //debugger;
+
         if (isThirdPartyFolders) {
           SelectedFolderModal.getCommonThirdPartyList()
             .then(
@@ -105,14 +118,6 @@ class SelectedFolder extends React.PureComponent {
               () =>
                 folderList.length === 0 &&
                 this.setState({ isAvailableFolders: false })
-            )
-            .then(
-              () =>
-                folderPath.length !== 0 &&
-                this._isMounted &&
-                this.setState({
-                  baseFolderPath: folderList,
-                })
             )
             .finally(() => {
               onSetLoadingData && onSetLoadingData(false);
@@ -126,13 +131,10 @@ class SelectedFolder extends React.PureComponent {
       });
 
     if (folderPath.length !== 0) {
-      //debugger;
-      pathName = this.setFullFolderPath(folderPath);
-
       this._isMounted &&
         this.setState({
-          fullFolderPath: pathName,
-          fullFolderPathDefault: pathName,
+          fullFolderPath: folderPath,
+          fullFolderPathDefault: folderPath,
         });
     }
   }
@@ -152,10 +154,9 @@ class SelectedFolder extends React.PureComponent {
       });
     }
     if (folderPath !== prevProps.folderPath) {
-      pathName = this.setFullFolderPath(folderPath);
-
       this.setState({
-        baseFolderPath: pathName,
+        baseFolderPath: folderPath,
+        fullFolderPathDefault: folderPath,
       });
     }
   }
@@ -165,7 +166,8 @@ class SelectedFolder extends React.PureComponent {
     this.setState({ isLoadingData: true }, function () {
       getFolderPath(folder)
         .then(
-          (foldersArray) => (pathName = this.setFullFolderPath(foldersArray))
+          (foldersArray) =>
+            (pathName = SelectedFolder.setFullFolderPath(foldersArray))
         )
         .then(() =>
           this.setState(
@@ -180,23 +182,6 @@ class SelectedFolder extends React.PureComponent {
         .then(() => onClose())
         .finally(() => this.setState({ isLoadingData: false }));
     });
-  };
-
-  setFullFolderPath = (foldersArray) => {
-    //debugger;
-    path = "";
-    if (foldersArray.length > 1) {
-      for (let item of foldersArray) {
-        if (!path) {
-          path = path + `${item.title}`;
-        } else path = path + " " + "/" + " " + `${item.title}`;
-      }
-    } else {
-      for (let item of foldersArray) {
-        path = `${item.title}`;
-      }
-    }
-    return path;
   };
 
   render() {
@@ -227,8 +212,6 @@ class SelectedFolder extends React.PureComponent {
     } = this.state;
     const zIndex = 310;
     //console.log("name", name);
-
-    // console.log("folderList", folderList);
 
     return (
       <StyledComponent>
@@ -282,11 +265,11 @@ class SelectedFolder extends React.PureComponent {
 }
 
 SelectedFolder.defaultProps = {
+  isThirdParty: false,
   isCommonWithoutProvider: false,
   withoutTopLevelFolder: false,
   folderList: "",
   folderPath: "",
-  isThirdParty: false,
 };
 const SelectedFolderWrapper = inject(
   ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
@@ -355,9 +338,15 @@ class SelectedFolderModal extends React.Component {
       foldersCount: commonFolders.current.foldersCount,
       newItems: commonFolders.new,
     };
-    console.log("convertedData", convertedData);
-    //debugger;
+
     return [convertedData];
+  };
+
+  static getFolderPath = async (folderId) => {
+    const foldersArray = await getFolderPath(folderId);
+    const convertFoldersArray = SelectedFolder.setFullFolderPath(foldersArray);
+
+    return convertFoldersArray;
   };
   render() {
     return (
