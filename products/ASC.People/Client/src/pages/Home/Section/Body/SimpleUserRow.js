@@ -186,7 +186,7 @@ const SimpleUserRow = ({
         case "change-email":
           return {
             key: option,
-            label: t("Translation:EmailChangeButton"),
+            label: t("Translations:EmailChangeButton"),
             "data-id": id,
             onClick: toggleChangeEmailDialog,
           };

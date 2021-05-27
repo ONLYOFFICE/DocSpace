@@ -325,7 +325,7 @@ class SectionHeaderContent extends React.PureComponent {
           },
           {
             key: "change-email",
-            label: t("Translation:EmailChangeButton"),
+            label: t("Translations:EmailChangeButton"),
             onClick: this.toggleChangeEmailDialog,
           },
           isMe
