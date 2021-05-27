@@ -1,4 +1,4 @@
-﻿{
+{
   "All": "All",
   "AllFiles": "All files",
   "Archives": "Archives",
@@ -81,5 +81,8 @@
   "UploadToFolder": "Upload to folder",
   "Version": "Ver.{{version}}",
   "ViewList": "List",
+  "Version": "Ver.{{version}}",
+  "RemoveFromList": "Remove from list",
+  "MarkRead": "Mark as read",
   "ViewTiles": "Tiles"
 }

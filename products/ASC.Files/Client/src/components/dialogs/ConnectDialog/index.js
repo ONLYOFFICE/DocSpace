@@ -163,7 +163,8 @@ const PureConnectDialogContainer = (props) => {
         onClose();
         toastr.error(err);
         setIsLoading(false);
-      });
+      })
+      .finally(() => setIsLoading(false));
   }, [
     commonFolderId,
     customerTitle,

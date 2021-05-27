@@ -1,4 +1,4 @@
-﻿{
+{
   "All": "Все",
   "AllFiles": "Все файлы",
   "Archives": "Архивы",
@@ -81,5 +81,8 @@
   "UploadToFolder": "Загрузить в папку",
   "Version": "Вер.{{version}}",
   "ViewList": "Список",
+  "Version": "Вер.{{version}}",
+  "RemoveFromList": "Убрать из списка",
+  "MarkRead": "Пометить прочтённым",
   "ViewTiles": "Плитки"
 }
