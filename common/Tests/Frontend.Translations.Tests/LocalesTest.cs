@@ -235,20 +235,21 @@ namespace Frontend.Translations.Tests
                 .Select(g => new { ContentKey = g.Key, Count = g.Count(), Keys = g.ToList() })
                 .ToList();
 
-            /*var listForSave = duplicates
-                .SelectMany(g => g.Keys)
-                .GroupBy(item => item.Key)
-                .Select(grp => new
-                {
-                    Key = grp.Key,
-                    Value = grp.FirstOrDefault().Value
-                })
-                .OrderByDescending(t => t.Value);
+            /*== Save dublicates.json ==*/
+            /* var listForSave = duplicates
+               .SelectMany(g => g.Keys)
+               .GroupBy(item => item.Key)
+               .Select(grp => new
+               {
+                   Key = grp.Key,
+                   Value = grp.FirstOrDefault().Value
+               })
+               .OrderByDescending(t => t.Value);
 
-            string json = JsonSerializer.Serialize(listForSave);
-            json = json.Replace("\"Key\":", "").Replace(",\"Value\"", "").Replace("},{", ",");
-            json = json.Substring(1, json.Length - 2);
-            File.WriteAllText(@"D:\dublicates.json", json);*/
+           string json = JsonSerializer.Serialize(listForSave);
+           json = json.Replace("\"Key\":", "").Replace(",\"Value\"", "").Replace("},{", ",");
+           json = json.Substring(1, json.Length - 2);
+           File.WriteAllText(@"D:\dublicates.json", json);*/
 
             Assert.AreEqual(0, duplicates.Count, string.Join(", ", duplicates.Select(d => JObject.FromObject(d).ToString())));
         }
@@ -281,7 +282,7 @@ namespace Frontend.Translations.Tests
                 {
                     var lng = incompleteList[i];
 
-                    message += $"{++i}. {lng.Issue}\r\n";
+                    message += $"{i}. {lng.Issue}\r\n";
 
                     var lngFilePaths = lng.Files.Select(f => f.Path).ToList();
 
@@ -294,8 +295,6 @@ namespace Frontend.Translations.Tests
             }
 
             Assert.AreEqual(0, incompleteList.Count, message);
-
-            //Assert.AreEqual(true, groupedByLng.All(g => g.Count == enGroup.Count));
         }
 
         [Test]
@@ -321,12 +320,30 @@ namespace Frontend.Translations.Tests
 
             var incompleteList = otherLngs
                     .Where(lng => lng.Keys.Count != expectedCount)
-                    .Select(lng => $"{lng.Lng} (Count={lng.Keys.Count})")
+                    .Select(lng => new { Issue = $"Language '{lng.Lng}' (Count={lng.Keys.Count}). Not found keys:\r\n", lng.Lng, lng.Keys })
                     .ToList();
 
-            Assert.AreEqual(0, incompleteList.Count,
-                "This languages: '{0}' are not equal 'en' (Count= {1}) by translated keys count",
-                string.Join(", ", incompleteList), expectedCount);
+            var message = $"Next languages are not equal 'en' (Count= {expectedCount}) by translated keys count:\r\n\r\n";
+
+            if (incompleteList.Count > 0)
+            {
+                var enKeys = enGroup.Keys.Select(f => f.Key);
+
+                for (int i = 0; i < incompleteList.Count; i++)
+                {
+                    var lng = incompleteList[i];
+
+                    message += $"{i}. {lng.Issue}\r\n";
+
+                    var lngKeys = lng.Keys.Select(f => f.Key).ToList();
+
+                    var notFoundKeys = enKeys.Except(lngKeys);
+
+                    message += string.Join("\r\n", notFoundKeys) + "\r\n\r\n";
+                }
+            }
+
+            Assert.AreEqual(0, incompleteList.Count, message);
         }
 
         [Test]
