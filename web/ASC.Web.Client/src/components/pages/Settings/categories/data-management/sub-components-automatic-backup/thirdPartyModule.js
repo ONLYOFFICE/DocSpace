@@ -54,7 +54,12 @@ class ThirdPartyModule extends React.Component {
     timeFromSessionStorage = getFromSessionStorage("time");
     maxCopiesFromSessionStorage = getFromSessionStorage("maxCopies");
     weekdayNameFromSessionStorage = getFromSessionStorage("weekdayName");
-
+    const monthNumber = monthlySchedule
+      ? dayFromSessionStorage || `${defaultDay}`
+      : "1";
+    const weekdayNumber = weeklySchedule
+      ? dayFromSessionStorage || defaultDay
+      : "2";
     this.state = {
       isPanelVisible: false,
       isChanged: false,
@@ -72,9 +77,9 @@ class ThirdPartyModule extends React.Component {
         t("DailyPeriodSchedule"),
       selectedWeekdayOption:
         weekdayNameFromSessionStorage || selectedWeekdayOption,
-      selectedNumberWeekdayOption: dayFromSessionStorage || defaultDay || "2",
+      selectedNumberWeekdayOption: weekdayNumber,
       selectedTimeOption: defaultHour || "12:00",
-      selectedMonthOption: dayFromSessionStorage || defaultDay || "1",
+      selectedMonthOption: monthNumber,
       selectedMaxCopies:
         maxCopiesFromSessionStorage || defaultMaxCopies || "10",
       selectedNumberMaxCopies:
@@ -98,7 +103,7 @@ class ThirdPartyModule extends React.Component {
     //debugger;
     this.setState({ isLoading: true }, function () {
       +defaultStorageType === 1
-        ? getFolderPath(defaultSelectedFolder)
+        ? SelectedFolder.getFolderPath(defaultSelectedFolder)
             .then(
               (folderPath) => (this.folderThirdPartyModulePath = folderPath)
             )
@@ -404,7 +409,7 @@ class ThirdPartyModule extends React.Component {
             this.onSelectFolder([`${folderId}`]);
           }
         })
-        .then(() => getFolderPath(folderId))
+        .then(() => SelectedFolder.getFolderPath(folderId))
         .then((folderPath) => {
           this.folderThirdPartyModulePath = folderPath;
         })
@@ -549,8 +554,8 @@ class ThirdPartyModule extends React.Component {
       onSetLoadingData,
     } = this.props;
     //console.log("selectedFolder THRDPARTY", selectedFolder);
-    console.log("third-party", isLoading);
-    console.log("___");
+    // console.log("third-party module render", this.folderThirdPartyModulePath);
+    // console.log("___");
     return (
       <div className="category-item-wrapper">
         <>

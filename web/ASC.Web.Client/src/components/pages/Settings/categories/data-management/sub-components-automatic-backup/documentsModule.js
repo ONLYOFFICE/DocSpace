@@ -106,10 +106,9 @@ class DocumentsModule extends React.Component {
 
     this.setState({ isLoading: true }, function () {
       +defaultStorageType === 0
-        ? getFolderPath(defaultSelectedFolder)
+        ? SelectedFolder.getFolderPath(defaultSelectedFolder)
             .then((folderPath) => {
-              debugger;
-              this.folderThirdPartyModulePath = folderPath;
+              this.folderDocumentsModulePath = folderPath;
             })
             .then(
               () =>
@@ -414,7 +413,7 @@ class DocumentsModule extends React.Component {
             this.onSelectFolder([`${folderId}`]);
           }
         })
-        .then(() => getFolderPath(folderId))
+        .then(() => SelectedFolder.getFolderPath(folderId))
         .then((folderPath) => {
           this.folderDocumentsModulePath = folderPath;
         })
@@ -560,8 +559,8 @@ class DocumentsModule extends React.Component {
       onSetLoadingData,
     } = this.props;
 
-    console.log("documents module render", selectedFolder);
-    console.log("___");
+    // console.log("documents module render", this.folderDocumentsModulePath);
+    // console.log("___");
     return (
       <div className="category-item-wrapper">
         <>
@@ -572,13 +571,12 @@ class DocumentsModule extends React.Component {
               onClose={this.onClose} //здесь
               onClickInput={this.onClickInput} //здесь
               isPanelVisible={isPanelVisible} //здесь
-              folderPath={this.folderThirdPartyModulePath}
+              folderPath={this.folderDocumentsModulePath}
               isSetDefaultFolderPath={isSetDefaultFolderPath} //здесь
               isError={isError} //здесь
               onSetLoadingData={onSetLoadingData}
               isCommonFolders
               isCommonWithoutProvider
-              withoutTopLevelFolder
               isSavingProcess={isLoadingData}
             />
           ) : (
