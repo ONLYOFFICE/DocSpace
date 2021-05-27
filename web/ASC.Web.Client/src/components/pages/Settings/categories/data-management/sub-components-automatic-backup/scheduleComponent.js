@@ -2,6 +2,8 @@ import React from "react";
 import ComboBox from "@appserver/components/combobox";
 import { useTranslation } from "react-i18next";
 import Checkbox from "@appserver/components/checkbox";
+import { StyledScheduleComponent } from "../styled-backup";
+
 const ScheduleComponent = ({
   weeklySchedule,
   monthlySchedule,
@@ -25,7 +27,7 @@ const ScheduleComponent = ({
   const { t } = useTranslation("Settings");
   //console.log("selectedWeekdayOption", selectedWeekdayOption);
   return (
-    <div>
+    <StyledScheduleComponent>
       <ComboBox
         options={periodOptions}
         selectedOption={{
@@ -36,8 +38,7 @@ const ScheduleComponent = ({
         isDisabled={isLoadingData || isDisableOptions}
         noBorder={false}
         scaled={false}
-        scaledOptions={false}
-        dropDownMaxHeight={300}
+        scaledOptions={true}
         size="content"
         className="backup_combobox "
       />
@@ -52,8 +53,7 @@ const ScheduleComponent = ({
           isDisabled={isLoadingData || isDisableOptions}
           noBorder={false}
           scaled={false}
-          scaledOptions={false}
-          dropDownMaxHeight={300}
+          scaledOptions={true}
           size="content"
           className="backup_combobox"
         />
@@ -69,7 +69,7 @@ const ScheduleComponent = ({
           isDisabled={isLoadingData || isDisableOptions}
           noBorder={false}
           scaled={false}
-          scaledOptions={false}
+          scaledOptions={true}
           dropDownMaxHeight={300}
           size="content"
           className="backup_combobox"
@@ -85,10 +85,10 @@ const ScheduleComponent = ({
         isDisabled={isLoadingData || isDisableOptions}
         noBorder={false}
         scaled={false}
-        scaledOptions={false}
+        scaledOptions={true}
         dropDownMaxHeight={300}
         size="content"
-        className="backup_combobox"
+        className="backup_combobox time_options"
       />
       <ComboBox
         options={maxNumberCopiesArray}
@@ -100,7 +100,7 @@ const ScheduleComponent = ({
         isDisabled={isLoadingData || isDisableOptions}
         noBorder={false}
         scaled={false}
-        scaledOptions={false}
+        scaledOptions={true}
         dropDownMaxHeight={300}
         size="content"
         className="backup_combobox"
@@ -113,7 +113,7 @@ const ScheduleComponent = ({
           onChange={onClickCheckbox}
         />
       </div> */}
-    </div>
+    </StyledScheduleComponent>
   );
 };
 ScheduleComponent.defaultProps = {

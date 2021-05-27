@@ -56,4 +56,11 @@ const StyledModules = styled.div`
   }
 `;
 
-export { StyledModules, StyledComponent };
+const StyledScheduleComponent = styled.div`
+  .time_options {
+    .drop-down_variable-size {
+      width: 60px !important;
+    }
+  }
+`;
+export { StyledModules, StyledComponent, StyledScheduleComponent };
