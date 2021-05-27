@@ -16,8 +16,6 @@ class AuthStore {
   moduleStore = null;
   settingsStore = null;
 
-  panelVisible = false;
-
   isLoading = false;
   isAuthenticated = false;
   version = null;
@@ -227,9 +225,7 @@ class AuthStore {
       return promise;
     });
   };
-  setPanelVisible = (isVisible) => {
-    this.panelVisible = isVisible;
-  };
+
   setDocumentTitle = (subTitle = null) => {
     let title;
 

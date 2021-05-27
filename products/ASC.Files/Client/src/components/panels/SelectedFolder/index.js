@@ -79,7 +79,6 @@ class SelectedFolder extends React.PureComponent {
   componentDidMount() {
     const {
       fetchTreeFolders,
-      getCommonFolder,
       folderPath,
       onSelectFolder,
       onSetLoadingData,
@@ -99,6 +98,7 @@ class SelectedFolder extends React.PureComponent {
             .then(
               () =>
                 folderPath.length === 0 &&
+                onSelectFolder &&
                 onSelectFolder([`${folderList[0].id}`])
             )
             .finally(() => {
@@ -277,32 +277,15 @@ SelectedFolder.defaultProps = {
   folderPath: "",
 };
 const SelectedFolderWrapper = inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  ({ filesStore, treeFoldersStore, selectedFolderStore }) => {
     const { filter } = filesStore;
-    const { setPanelVisible, panelVisible } = auth;
-    const {
-      getFolderPath,
-      getCommonThirdPartyList,
-      commonThirdPartyList,
-    } = auth.settingsStore;
-    const {
-      fetchTreeFolders,
-      expandedPanelKeys,
-
-      getCommonFolder,
-    } = treeFoldersStore;
+    const { fetchTreeFolders, expandedPanelKeys } = treeFoldersStore;
     return {
-      getFolderPath,
-      setPanelVisible,
       expandedKeys: expandedPanelKeys
         ? expandedPanelKeys
         : selectedFolderStore.pathParts,
       filter,
-      getCommonThirdPartyList,
       fetchTreeFolders,
-      commonThirdPartyList,
-      getCommonFolder,
-      panelVisible,
     };
   }
 )(observer(withTranslation("SelectedFolder")(SelectedFolder)));
