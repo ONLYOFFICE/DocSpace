@@ -190,7 +190,7 @@ namespace Frontend.Translations.Tests
         {
             var groupedByLng = TranslationFiles
                 .GroupBy(t => t.Language)
-                .Select(grp => new { Lng = grp.Key, Count = grp.Count() })
+                .Select(grp => new { Lng = grp.Key, Count = grp.Count(), Files = grp.ToList() })
                 .ToList();
 
             var enGroup = groupedByLng.Find(f => f.Lng == "en");
@@ -200,12 +200,32 @@ namespace Frontend.Translations.Tests
 
             var incompleteList = otherLngs
                     .Where(lng => lng.Count != expectedCount)
-                    .Select(lng => $"{lng.Lng} (Count={lng.Count})")
+                    .Select(lng => new { Issue = $"Language '{lng.Lng}' (Count={lng.Count}). Not found files:\r\n", lng.Lng, lng.Files })
                     .ToList();
 
-            Assert.AreEqual(0, incompleteList.Count,
-                "This languages: '{0}' are not equal 'en' (Count= {1}) by translated files count",
-                string.Join(", ", incompleteList), expectedCount);
+            var message = $"Next languages are not equal 'en' (Count= {expectedCount}) by translated files count:\r\n\r\n";
+
+            if (incompleteList.Count > 0)
+            {
+                var enFilePaths = enGroup.Files.Select(f => f.Path);
+
+                for (int i = 0; i < incompleteList.Count; i++)
+                {
+                    var lng = incompleteList[i];
+
+                    message += $"{++i}. {lng.Issue}\r\n";
+
+                    var lngFilePaths = lng.Files.Select(f => f.Path).ToList();
+
+                    var notFoundFilePaths = enFilePaths
+                        .Select(p => p.Replace("\\en\\", $"\\{lng.Lng}\\"))
+                        .Where(p => !lngFilePaths.Contains(p));
+
+                    message += string.Join("\r\n", notFoundFilePaths);
+                }
+            }
+
+            Assert.AreEqual(0, incompleteList.Count, message);
 
             //Assert.AreEqual(true, groupedByLng.All(g => g.Count == enGroup.Count));
         }
@@ -239,8 +259,6 @@ namespace Frontend.Translations.Tests
             Assert.AreEqual(0, incompleteList.Count,
                 "This languages: '{0}' are not equal 'en' (Count= {1}) by translated keys count",
                 string.Join(", ", incompleteList), expectedCount);
-
-            //Assert.AreEqual(true, groupedByLng.All(g => g.Keys.Count() == enGroup.Keys.Count()));
         }
 
         [Test]

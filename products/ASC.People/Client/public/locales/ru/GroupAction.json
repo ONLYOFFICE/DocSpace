@@ -1,7 +1,7 @@
 ﻿{
   "CustomNewDepartment": "{{groupCaption}} (создание)",
   "GroupAction": "Работа с группой",
-  "LblSelect": "Выбрать",
+  "SelectAction": "Выбрать",
   "Members": "Участники",
   "Name": "Название",
   "SearchAddedMembers": "Поиск добавленных участников",

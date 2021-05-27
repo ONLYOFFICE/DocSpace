@@ -297,8 +297,8 @@ class SectionBodyContent extends React.PureComponent {
               <Button
                 size="big"
                 scale={true}
-                label={t("EditUserDialogTitle")}
-                title={t("EditUserDialogTitle")}
+                label={t("EditUser")}
+                title={t("EditUser")}
                 onClick={this.onEditProfileClick}
               />
             </EditButtonWrapper>
