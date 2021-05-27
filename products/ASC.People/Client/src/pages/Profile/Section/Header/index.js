@@ -315,7 +315,7 @@ class SectionHeaderContent extends React.PureComponent {
         return [
           {
             key: "edit",
-            label: t("EditUserDialogTitle"),
+            label: t("EditUser"),
             onClick: this.onEditClick,
           },
           {

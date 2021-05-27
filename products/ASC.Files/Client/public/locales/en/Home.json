@@ -79,9 +79,7 @@
   "TrashEmptyContainerDescription": "Trash is where all the deleted files are moved. You can restore or delete them permanently by emptying Trash. ",
   "UnblockVersion": "Unblock/Check-in",
   "UploadToFolder": "Upload to folder",
-  "Version": "Ver.{{version}}",
   "ViewList": "List",
-  "Version": "Ver.{{version}}",
   "RemoveFromList": "Remove from list",
   "MarkRead": "Mark as read",
   "ViewTiles": "Tiles"
