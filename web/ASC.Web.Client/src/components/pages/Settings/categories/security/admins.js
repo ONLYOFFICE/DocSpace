@@ -3,11 +3,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import AutoSizer from "react-virtualized-auto-sizer";
-import { FixedSizeList as List } from "react-window";
 import HelpButton from "@appserver/components/help-button";
-import InfiniteLoader from "react-window-infinite-loader";
-import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
 
 import ToggleButton from "@appserver/components/toggle-button";
 import ModalDialog from "@appserver/components/modal-dialog";
@@ -35,8 +31,6 @@ import {
   EmployeeStatus,
   EmployeeActivationStatus,
 } from "@appserver/common/constants";
-import api from "@appserver/common/api";
-const { Filter } = api;
 
 import { tablet } from "@appserver/components/utils/device";
 
@@ -137,10 +131,6 @@ const StyledModalBody = styled.div`
 `;
 
 const ToggleContentContainer = styled.div`
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-
   .buttons_container {
     display: flex;
     @media (max-width: 1024px) {
@@ -151,9 +141,8 @@ const ToggleContentContainer = styled.div`
     margin-bottom: 24px;
   }
 
-  .auto-sizer-wrapper {
+  .wrapper {
     margin-top: 8px;
-    flex: 1 1 auto;
   }
 
   .remove_icon {
@@ -260,7 +249,7 @@ const ToggleContentContainer = styled.div`
       }
     }
 
-    .auto-sizer-wrapper {
+    .wrapper {
       #rowContainer {
         .styled-element {
           margin-right: 8px;
@@ -275,11 +264,8 @@ const fullAccessId = "00000000-0000-0000-0000-000000000000";
 class PortalAdmins extends Component {
   constructor(props) {
     super(props);
-    this.listOptionsRef = React.createRef();
 
     this.state = {
-      hasNextPage: true,
-      isNextPageLoading: false,
       showFullAdminSelector: false,
       isLoading: false,
       showLoader: false,
@@ -452,12 +438,6 @@ class PortalAdmins extends Component {
       });
     }
     return newListAdminModules;
-  };
-
-  isItemLoaded = (index) => {
-    const { hasNextPage } = this.state;
-    const { admins } = this.props;
-    return !hasNextPage || index < admins.length;
   };
 
   onContentRowSelect = (checked, user) => {
@@ -649,161 +629,6 @@ class PortalAdmins extends Component {
     return filteredAdmins;
   };
 
-  loadMoreItems = (startIndex) => {
-    const { isNextPageLoading, searchValue } = this.state;
-    if (isNextPageLoading) return;
-
-    const options = {
-      startIndex: startIndex || 0,
-      searchValue: searchValue,
-    };
-
-    this.loadNextPage && this.loadNextPage(options);
-  };
-
-  loadNextPage = (startIndex, searchValue) => {
-    const pageCount = 50;
-    const { updateListAdmins } = this.props;
-
-    this.setState({ isNextPageLoading: true }, () => {
-      const filter = Filter.getDefault();
-      filter.page = startIndex / pageCount;
-      filter.pageCount = pageCount;
-
-      if (searchValue) {
-        filter.search = searchValue;
-      }
-
-      updateListAdmins(filter, true)
-        .then((response) => {
-          const { admins } = this.props;
-
-          this.setState({
-            hasNextPage: admins.length < response.total,
-            isNextPageLoading: false,
-          });
-        })
-        .catch((error) => console.log(error));
-    });
-  };
-
-  renderAdmin = ({ index }) => {
-    console.log("RenderAdmin");
-    const { admins } = this.props;
-    const isLoaded = this.isItemLoaded(index);
-
-    if (!isLoaded) {
-      return this.renderOptionLoader();
-    }
-
-    const admin = admins[index];
-
-    return this.renderAdminItem(admin);
-  };
-
-  renderOptionLoader = () => {
-    return (
-      <div className="row-option">
-        <div key="loader">
-          <Loader
-            type="oval"
-            size="16px"
-            style={{
-              display: "inline",
-              marginRight: "10px",
-            }}
-          />
-          <Text as="span">Loading</Text>
-        </div>
-      </div>
-    );
-  };
-
-  renderAdminItem = (admin) => {
-    const userRole = getUserRole(admin);
-    const { isUserSelected, t } = this.props;
-
-    const element = (
-      <Avatar
-        size="min"
-        role={userRole}
-        userName={admin.displayName}
-        source={admin.avatar}
-      />
-    );
-
-    const nameColor =
-      getUserStatus(admin) === "pending" ? "#A3A9AE" : "#333333";
-
-    const checked = isUserSelected(admin.id);
-
-    return (
-      <Row
-        key={admin.id}
-        status={admin.status}
-        onSelect={this.onContentRowSelect}
-        data={admin}
-        element={element}
-        checkbox={true}
-        checked={checked}
-        contextButtonSpacerWidth={"0px"}
-        onRowClick={() => this.onRowClick(admin)}
-      >
-        <>
-          <div className="userData">
-            <div className="nameAndStatus">
-              <Text
-                fontSize="15px"
-                fontWeight="600"
-                color={nameColor}
-                truncate={true}
-              >
-                {admin.displayName}
-              </Text>
-            </div>
-          </div>
-          <div className="actionIconsWrapper">
-            {admin.isAdmin ? (
-              <div className="fullAccessWrapper">
-                <Text
-                  truncate={true}
-                  color="#FFFFFF"
-                  fontSize="9px"
-                  fontWeight={600}
-                >
-                  {t("FullAccess")}
-                </Text>
-              </div>
-            ) : admin.listAdminModules ? (
-              <div className="iconsWrapper">
-                {admin.listAdminModules.map((moduleName) => {
-                  const { modules } = this.props;
-                  const module = modules.find((module) => {
-                    return module.appName === moduleName;
-                  });
-
-                  return (
-                    <div key={`key-${moduleName}`} className="iconWrapper">
-                      <IconButton
-                        iconName={module.iconUrl}
-                        size={14}
-                        color="#2DA7DB"
-                        isfill={true}
-                        isClickable={false}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <></>
-            )}
-          </div>
-        </>
-      </Row>
-    );
-  };
-
   render() {
     const {
       t,
@@ -819,188 +644,292 @@ class PortalAdmins extends Component {
       searchValue,
       modalIsVisible,
       selectedUser,
-      hasNextPage,
     } = this.state;
 
+    const filteredAdmins = searchValue
+      ? this.getFilteredAdmins(admins, searchValue)
+      : admins;
+
     const fullAccessIsLoading = this.toggleIsLoading(fullAccessId);
-    const itemCount = hasNextPage ? admins.length + 1 : admins.length;
 
     return (
       <>
         {showLoader ? (
           <Loader className="pageLoader" type="rombs" size="40px" />
         ) : (
-          <ToggleContentContainer>
-            <SearchInput
-              className="filter_container"
-              placeholder="Search added employees"
-              onChange={this.onSearchChange}
-              onClearSearch={this.onSearchChange}
-              value={searchValue}
+          <>
+            <RequestLoader
+              visible={isLoading}
+              zIndex={256}
+              loaderSize="16px"
+              loaderColor={"#999"}
+              label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
+              fontSize="12px"
+              fontColor={"#999"}
+              className="page_loader"
             />
-            <PeopleSelector
-              isMultiSelect={true}
-              displayType="aside"
-              isOpen={!!selectorIsOpen}
-              onSelect={this.onSelect}
-              groupsCaption={groupsCaption}
-              onCancel={this.onCancelSelector}
-            />
-            {selectedUser && (
-              <ModalDialog
-                visible={modalIsVisible}
-                zIndex={310}
-                onClose={this.closeModal}
-              >
-                <ModalDialog.Header>{t("AccessSettings")}</ModalDialog.Header>
-                <ModalDialog.Body>
-                  <StyledModalBody>
-                    <div className="user-info">
-                      <Avatar
-                        size="medium"
-                        role={getUserRole(selectedUser)}
-                        userName={selectedUser.displayName}
-                        source={selectedUser.avatar}
-                        className="avatar"
-                      />
-                      <div className="user-info-wrapper">
-                        <Text
-                          color="#316DAA"
-                          fontWeight={600}
-                          fontSize="19px"
-                          truncate={true}
-                        >
-                          {selectedUser.displayName}
-                        </Text>
-                        {selectedUser.department && (
+
+            <ToggleContentContainer>
+              <SearchInput
+                className="filter_container"
+                placeholder="Search added employees"
+                onChange={this.onSearchChange}
+                onClearSearch={this.onSearchChange}
+                value={searchValue}
+              />
+              <PeopleSelector
+                isMultiSelect={true}
+                displayType="aside"
+                isOpen={!!selectorIsOpen}
+                onSelect={this.onSelect}
+                groupsCaption={groupsCaption}
+                onCancel={this.onCancelSelector}
+              />
+              {selectedUser && (
+                <ModalDialog
+                  visible={modalIsVisible}
+                  zIndex={310}
+                  onClose={this.closeModal}
+                >
+                  <ModalDialog.Header>{t("AccessSettings")}</ModalDialog.Header>
+                  <ModalDialog.Body>
+                    <StyledModalBody>
+                      <div className="user-info">
+                        <Avatar
+                          size="medium"
+                          role={getUserRole(selectedUser)}
+                          userName={selectedUser.displayName}
+                          source={selectedUser.avatar}
+                          className="avatar"
+                        />
+                        <div className="user-info-wrapper">
                           <Text
-                            color="#A3A9AE"
-                            fontWeight={400}
-                            fontSize="13px"
+                            color="#316DAA"
+                            fontWeight={600}
+                            fontSize="19px"
                             truncate={true}
                           >
-                            {selectedUser.department}
+                            {selectedUser.displayName}
                           </Text>
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="full-access-wrapper">
-                        <div className="help-button-wrapper">
-                          <Text as="p" fontWeight={600} fontSize="15px">
-                            {t("FullAccess")}
-                          </Text>
-                          <HelpButton
-                            displayType="dropdown"
-                            place="top"
-                            offsetRight={0}
-                            tooltipContent={this.fullAccessTooltip()}
-                          />
+                          {selectedUser.department && (
+                            <Text
+                              color="#A3A9AE"
+                              fontWeight={400}
+                              fontSize="13px"
+                              truncate={true}
+                            >
+                              {selectedUser.department}
+                            </Text>
+                          )}
                         </div>
-                        <ToggleButton
-                          className="toggle-btn"
-                          isChecked={
-                            fullAccessIsLoading
-                              ? !selectedUser.isAdmin
-                              : selectedUser.isAdmin
-                          }
-                          onChange={() =>
-                            this.onFullAccessClick(!selectedUser.isAdmin)
-                          }
-                          isLoading={fullAccessIsLoading}
-                          isDisabled={false}
-                        />
                       </div>
-                      {modules && modules.length > 0 && (
-                        <>
-                          <div className="help-button-wrapper modules">
+                      <div>
+                        <div className="full-access-wrapper">
+                          <div className="help-button-wrapper">
                             <Text as="p" fontWeight={600} fontSize="15px">
-                              {t("AdminInModules")}
+                              {t("FullAccess")}
                             </Text>
                             <HelpButton
                               displayType="dropdown"
-                              place="bottom"
+                              place="top"
                               offsetRight={0}
-                              tooltipContent={this.modulesTooltip()}
+                              tooltipContent={this.fullAccessTooltip()}
                             />
                           </div>
-
-                          <div className="modules-settings">
-                            <div className="module-settings">
-                              {modules.map((module) => {
-                                const isModuleAdmin = this.isModuleAdmin(
-                                  selectedUser,
-                                  module.appName
-                                );
-
-                                const toggleIsLoading = this.toggleIsLoading(
-                                  module.id
-                                );
-
-                                return (
-                                  <div
-                                    key={module.appName}
-                                    className="setting-wrapper"
-                                  >
-                                    <Text fontWeight={400} fontSize="13px">
-                                      {module.title}
-                                    </Text>
-                                    <ToggleButton
-                                      className="toggle-btn"
-                                      isChecked={
-                                        toggleIsLoading
-                                          ? !isModuleAdmin
-                                          : isModuleAdmin
-                                      }
-                                      isLoading={toggleIsLoading}
-                                      onChange={() =>
-                                        this.onModuleToggle(
-                                          module,
-                                          !isModuleAdmin
-                                        )
-                                      }
-                                      isDisabled={selectedUser.isAdmin}
-                                    />
-                                  </div>
-                                );
-                              })}
+                          <ToggleButton
+                            className="toggle-btn"
+                            isChecked={
+                              fullAccessIsLoading
+                                ? !selectedUser.isAdmin
+                                : selectedUser.isAdmin
+                            }
+                            onChange={() =>
+                              this.onFullAccessClick(!selectedUser.isAdmin)
+                            }
+                            isLoading={fullAccessIsLoading}
+                            isDisabled={false}
+                          />
+                        </div>
+                        {modules && modules.length > 0 && (
+                          <>
+                            <div className="help-button-wrapper modules">
+                              <Text as="p" fontWeight={600} fontSize="15px">
+                                {t("AdminInModules")}
+                              </Text>
+                              <HelpButton
+                                displayType="dropdown"
+                                place="bottom"
+                                offsetRight={0}
+                                tooltipContent={this.modulesTooltip()}
+                              />
                             </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </StyledModalBody>
-                </ModalDialog.Body>
-              </ModalDialog>
-            )}
-            <div className="auto-sizer-wrapper">
-              <AutoSizer>
-                {({ height, width }) => (
-                  <InfiniteLoader
-                    ref={this.listOptionsRef}
-                    isItemLoaded={this.isItemLoaded}
-                    itemCount={5}
-                    loadMoreItems={this.loadMoreItems}
-                  >
-                    {({ onItemsRendered, ref }) => (
-                      <List
-                        className="options_list"
-                        height={height}
-                        itemCount={itemCount}
-                        itemSize={36}
-                        onItemsRendered={onItemsRendered}
-                        ref={ref}
-                        width={width + 8}
-                        outerElementType={CustomScrollbarsVirtualList}
+
+                            <div className="modules-settings">
+                              <div className="module-settings">
+                                {modules.map((module) => {
+                                  const isModuleAdmin = this.isModuleAdmin(
+                                    selectedUser,
+                                    module.appName
+                                  );
+
+                                  const toggleIsLoading = this.toggleIsLoading(
+                                    module.id
+                                  );
+
+                                  return (
+                                    <div
+                                      key={module.appName}
+                                      className="setting-wrapper"
+                                    >
+                                      <Text fontWeight={400} fontSize="13px">
+                                        {module.title}
+                                      </Text>
+                                      <ToggleButton
+                                        className="toggle-btn"
+                                        isChecked={
+                                          toggleIsLoading
+                                            ? !isModuleAdmin
+                                            : isModuleAdmin
+                                        }
+                                        isLoading={toggleIsLoading}
+                                        onChange={() =>
+                                          this.onModuleToggle(
+                                            module,
+                                            !isModuleAdmin
+                                          )
+                                        }
+                                        isDisabled={selectedUser.isAdmin}
+                                      />
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </StyledModalBody>
+                  </ModalDialog.Body>
+                </ModalDialog>
+              )}
+
+              {filteredAdmins.length > 0 ? (
+                <>
+                  <div className="wrapper">
+                    <RowContainer useReactWindow={false}>
+                      {filteredAdmins.map((user) => {
+                        const userRole = getUserRole(user);
+
+                        if (userRole === "owner") return;
+                        const element = (
+                          <Avatar
+                            size="min"
+                            role={userRole}
+                            userName={user.displayName}
+                            source={user.avatar}
+                          />
+                        );
+
+                        const nameColor =
+                          getUserStatus(user) === "pending"
+                            ? "#A3A9AE"
+                            : "#333333";
+
+                        const checked = isUserSelected(user.id);
+
+                        return (
+                          <Row
+                            key={user.id}
+                            status={user.status}
+                            onSelect={this.onContentRowSelect}
+                            data={user}
+                            element={element}
+                            checkbox={true}
+                            checked={checked}
+                            contextButtonSpacerWidth={"0px"}
+                            onRowClick={() => this.onRowClick(user)}
+                          >
+                            <>
+                              <div className="userData">
+                                <div className="nameAndStatus">
+                                  <Text
+                                    fontSize="15px"
+                                    fontWeight="600"
+                                    color={nameColor}
+                                    truncate={true}
+                                  >
+                                    {user.displayName}
+                                  </Text>
+                                </div>
+                              </div>
+                              <div className="actionIconsWrapper">
+                                {user.isAdmin ? (
+                                  <div className="fullAccessWrapper">
+                                    <Text
+                                      truncate={true}
+                                      color="#FFFFFF"
+                                      fontSize="9px"
+                                      fontWeight={600}
+                                    >
+                                      {t("FullAccess")}
+                                    </Text>
+                                  </div>
+                                ) : user.listAdminModules ? (
+                                  <div className="iconsWrapper">
+                                    {user.listAdminModules.map((moduleName) => {
+                                      const { modules } = this.props;
+                                      const module = modules.find((module) => {
+                                        return module.appName === moduleName;
+                                      });
+
+                                      return (
+                                        <div
+                                          key={`key-${moduleName}`}
+                                          className="iconWrapper"
+                                        >
+                                          <IconButton
+                                            iconName={module.iconUrl}
+                                            size={14}
+                                            color="#2DA7DB"
+                                            isfill={true}
+                                            isClickable={false}
+                                          />
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                ) : (
+                                  <></>
+                                )}
+                              </div>
+                            </>
+                          </Row>
+                        );
+                      })}
+                    </RowContainer>
+                  </div>
+                </>
+              ) : (
+                <EmptyScreenContainer
+                  imageSrc="products/people/images/empty_screen_filter.png"
+                  imageAlt="Empty Screen Filter image"
+                  headerText={t("NotFoundTitle")}
+                  descriptionText={t("NotFoundDescription")}
+                  buttons={
+                    <>
+                      <Link
+                        type="action"
+                        isHovered={true}
+                        onClick={this.onSearchChange.bind(this, "")}
                       >
-                        {this.renderAdmin}
-                      </List>
-                    )}
-                  </InfiniteLoader>
-                )}
-              </AutoSizer>
-            </div>
-          </ToggleContentContainer>
+                        {t("ClearButton")}
+                      </Link>
+                    </>
+                  }
+                />
+              )}
+            </ToggleContentContainer>
+          </>
         )}
       </>
     );
