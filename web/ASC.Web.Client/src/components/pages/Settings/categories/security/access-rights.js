@@ -78,6 +78,10 @@ class AccessRights extends PureComponent {
 
     const { t } = props;
 
+    this.state = {
+      isLoading: false,
+    };
+
     setDocumentTitle(t("ManagementCategorySecurity"));
   }
 
@@ -85,10 +89,13 @@ class AccessRights extends PureComponent {
     const { admins, updateListAdmins } = this.props;
 
     if (isEmpty(admins, true)) {
+      this.setIsLoading(true);
       try {
         await updateListAdmins(null, true);
+        this.setIsLoading(false);
       } catch (error) {
         toastr.error(error);
+        this.setIsLoading(false);
       }
     }
   }
@@ -99,9 +106,16 @@ class AccessRights extends PureComponent {
     history.push(e.target.pathname);
   };
 
+  setIsLoading = (isLoading) => {
+    this.setState({
+      isLoading,
+    });
+  };
+
   render() {
-    const { t, admins, owner } = this.props;
-    return !admins || !admins.length > 0 || !owner ? (
+    const { t, admins } = this.props;
+    const { isLoading } = this.state;
+    return isLoading ? (
       <MainContainer>
         <Loader className="page-loader" type="rombs" size="40px" />
       </MainContainer>

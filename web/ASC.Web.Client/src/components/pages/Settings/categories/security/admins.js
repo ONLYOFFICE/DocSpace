@@ -295,13 +295,22 @@ class PortalAdmins extends Component {
     setRemoveAdmins(this.removeAdmins);
 
     if (isEmpty(admins, true)) {
+      this.setIsLoading(true);
       try {
         await updateListAdmins(null, true);
+        this.setIsLoading(false);
       } catch (error) {
         toastr.error(error);
+        this.setIsLoading(false);
       }
     }
   }
+
+  setIsLoading = (isLoading) => {
+    this.setState({
+      isLoading,
+    });
+  };
 
   componentWillUnmount() {
     const { setAddUsers, setRemoveAdmins } = this.props;
@@ -658,21 +667,10 @@ class PortalAdmins extends Component {
 
     return (
       <>
-        {!filteredAdmins || !filteredAdmins.length > 0 ? (
+        {isLoading ? (
           <Loaders.Rows isRectangle={false} />
         ) : (
           <>
-            <RequestLoader
-              visible={isLoading}
-              zIndex={256}
-              loaderSize="16px"
-              loaderColor={"#999"}
-              label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-              fontSize="12px"
-              fontColor={"#999"}
-              className="page_loader"
-            />
-
             <ToggleContentContainer>
               <SearchInput
                 className="filter_container"
