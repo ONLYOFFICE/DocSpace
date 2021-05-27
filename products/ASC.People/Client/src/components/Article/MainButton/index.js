@@ -119,8 +119,8 @@ class PureArticleMainButtonContent extends React.Component {
             />
             {/* <DropDownItem
               icon="images/plane.react.svg"
-              label={t('LblInviteAgain')}
-              onClick={this.onNotImplementedClick.bind(this, "Invite again action")}
+              label={t("SendInvitesAgain")}
+              onClick={this.onNotImplementedClick.bind(this, t("SendInvitesAgain"))}
             /> */}
             {false && (
               <DropDownItem
