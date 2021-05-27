@@ -253,7 +253,7 @@ namespace Frontend.Translations.Tests
 
             var allJsTranslationKeys = JavaScriptFiles
                 .SelectMany(j => j.TranslationKeys)
-                .Select(k => k.Replace("Common:", ""))
+                .Select(k => k.Replace("Common:", "").Replace("Translations:", ""))
                 .Distinct();
 
             var notFoundJsKeys = allJsTranslationKeys.Except(allEnKeys);
@@ -274,7 +274,7 @@ namespace Frontend.Translations.Tests
 
             var allJsTranslationKeys = JavaScriptFiles
                 .SelectMany(j => j.TranslationKeys)
-                .Select(k => k.Replace("Common:", ""))
+                .Select(k => k.Replace("Common:", "").Replace("Translations:", ""))
                 .Where(k => !k.StartsWith("Culture_"))
                 .Distinct();
 
