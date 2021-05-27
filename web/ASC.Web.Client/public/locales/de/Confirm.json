@@ -2,7 +2,6 @@
   "ChangePasswordSuccess": "Passwort wurde erfolgreich geändert",
   "ConfirmOwnerPortalSuccessMessage": "Der Portalbesitzer wurde erfolgreich geändert. {0} In 10 Sekunden werden Sie {1} hier {2} umgeleitet werden",
   "ConfirmOwnerPortalTitle": "Bitte bestätigen Sie, dass {{newOwner}} Portalbesitzer werden soll",
-  "CopyEmailAndPassword": "E-Mail und Passwort kopieren",
   "DeleteProfileBtn": "Mein Konto löschen",
   "DeleteProfileConfirmation": "Achtung! Dies wird Ihr Konto löschen.",
   "DeleteProfileConfirmationInfo": "Wenn Sie auf \u0022Mein Konto löschen\u0022 klicken, akzeptieren Sie unsere Datenschutzerklärung.",

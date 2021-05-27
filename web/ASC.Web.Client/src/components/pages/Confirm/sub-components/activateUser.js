@@ -314,7 +314,7 @@ class Confirm extends React.PureComponent {
               onChange={this.onChangePassword}
               onCopyToClipboard={this.onCopyToClipboard}
               onValidateInput={this.validatePassword}
-              clipActionResource={t("CopyEmailAndPassword")}
+              clipActionResource={t("Common:CopyEmailAndPassword")}
               clipEmailResource={`${t("Common:Email")}: `}
               clipPasswordResource={`${t("Common:Password")}: `}
               tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}

@@ -78,5 +78,6 @@
   "Active": "Active",
   "LblSelect": "Select",
   "Version": "Version",
-  "SomethingWentWrong": "Something went wrong."
+  "SomethingWentWrong": "Something went wrong.",
+  "CopyEmailAndPassword": "Copy email and password"
 }
