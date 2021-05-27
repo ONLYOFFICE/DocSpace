@@ -328,7 +328,7 @@ class SectionHeaderContent extends React.Component {
 
     let menu = [
       {
-        label: t("LblSelect"),
+        label: t("Common:LblSelect"),
         isDropdown: true,
         isSeparator: true,
         isSelect: true,
