@@ -1,7 +1,7 @@
 ﻿{
   "CustomNewDepartment": "{{groupCaption}} (Erstellung)",
   "GroupAction": "Arbeit mit Gruppe",
-  "LblSelect": "Auswählen",
+  "SelectAction": "Auswählen",
   "Members": "Mitglieder",
   "Name": "Name",
   "SearchAddedMembers": "Hinzugefügte Mitglieder suchen",

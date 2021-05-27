@@ -7,7 +7,7 @@
   "Disconnect": "Отключить",
   "EditPhoto": "Изменить фотографию",
   "EditSubscriptionsBtn": "Изменить подписки",
-  "EditUserDialogTitle": "Редактировать",
+  "EditUser": "Редактировать",
   "InviteAgainLbl": "Активировать адрес email ещё раз",
   "LoginSettings": "Вход через социальные сети",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкция по активации почты пользователя была отправлена по адресу \u003Cstrong\u003E{{ email }}\u003C/strong\u003E",

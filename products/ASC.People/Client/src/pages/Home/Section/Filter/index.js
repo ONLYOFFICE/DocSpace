@@ -160,7 +160,7 @@ class SectionFilterContent extends React.Component {
         group: "filter-other",
         subgroup: "filter-group",
         label: groupCaption,
-        defaultSelectLabel: t("Common:LblSelect"),
+        defaultSelectLabel: t("Common:Select"),
       },
       ...groupOptions,
     ];
@@ -174,8 +174,12 @@ class SectionFilterContent extends React.Component {
     const { t } = this.props;
 
     return [
-      { key: "firstname", label: t("ByFirstNameSorting"), default: true },
-      { key: "lastname", label: t("ByLastNameSorting"), default: true },
+      {
+        key: "firstname",
+        label: t("Common:ByFirstNameSorting"),
+        default: true,
+      },
+      { key: "lastname", label: t("Common:ByLastNameSorting"), default: true },
     ];
   };
 

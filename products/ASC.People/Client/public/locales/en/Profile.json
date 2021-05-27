@@ -7,7 +7,7 @@
   "Disconnect": "Disconnect",
   "EditPhoto": "Edit photo",
   "EditSubscriptionsBtn": "Edit subscriptions",
-  "EditUserDialogTitle": "Edit profile",
+  "EditUser": "Edit profile",
   "InviteAgainLbl": "Invite again",
   "LoginSettings": "Login settings",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the \u003Cstrong\u003E{{ email }}\u003C/strong\u003E email address",

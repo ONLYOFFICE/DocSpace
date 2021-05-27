@@ -12,8 +12,6 @@
   "ChangeToUser": "Change to {{userCaption}}",
   "ChangeToGuest": "Change to {{guestCaption}}",
   "LblInviteAgain": "Invite again",
-  "ByFirstNameSorting": "By first name",
-  "ByLastNameSorting": "By last name",
   "LblInvited": "Invited",
   "LblSetActive": "Set active",
   "LblSetDisabled": "Set disabled",

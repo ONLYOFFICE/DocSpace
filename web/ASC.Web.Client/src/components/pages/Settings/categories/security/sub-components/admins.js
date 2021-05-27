@@ -336,8 +336,12 @@ class PureAdminsSettings extends Component {
     const { t } = this.props;
 
     return [
-      { key: "firstname", label: t("ByFirstNameSorting"), default: true },
-      { key: "lastname", label: t("ByLastNameSorting"), default: true },
+      {
+        key: "firstname",
+        label: t("Common:ByFirstNameSorting"),
+        default: true,
+      },
+      { key: "lastname", label: t("Common:ByLastNameSorting"), default: true },
     ];
   };
 

@@ -12,8 +12,6 @@
   "ChangeToUser": "Изменить на {{userCaption}}",
   "ChangeToGuest": "Изменить на {{guestCaption}}",
   "LblInviteAgain": "Выслать прилашение ещё раз",
-  "ByFirstNameSorting": "Имя",
-  "ByLastNameSorting": "Фамилия",
   "LblInvited": "Приглашен",
   "LblSetActive": "Разблокировать",
   "LblSetDisabled": "Заблокировать",

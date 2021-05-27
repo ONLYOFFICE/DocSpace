@@ -2,7 +2,6 @@
   "ChangePasswordSuccess": "Пароль был успешно изменен",
   "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}",
   "ConfirmOwnerPortalTitle": "Пожалуйста, подтвердите, что Вы хотите изменить владельца портала на {{newOwner}}",
-  "CopyEmailAndPassword": "Скопировать email и пароль",
   "EmailAndPasswordCopiedToClipboard": "Email и пароль скопированы",
   "FirstName": "Имя",
   "InviteTitle": "Вы приглашены присоединиться к этому порталу!",
