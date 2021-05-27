@@ -78,5 +78,7 @@
   "Active": "Активный",
   "LblSelect": "Выберите",
   "Version": "Версия",
-  "SomethingWentWrong": "Что-то пошло не так."
+  "SomethingWentWrong": "Что-то пошло не так.",
+  "ByFirstNameSorting": "Имя",
+  "ByLastNameSorting": "Фамилия"
 }

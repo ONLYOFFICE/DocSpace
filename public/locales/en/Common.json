@@ -78,5 +78,7 @@
   "Active": "Active",
   "LblSelect": "Select",
   "Version": "Version",
-  "SomethingWentWrong": "Something went wrong."
+  "SomethingWentWrong": "Something went wrong.",
+  "ByFirstNameSorting": "By first name",
+  "ByLastNameSorting": "By last name"
 }

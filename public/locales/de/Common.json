@@ -76,5 +76,7 @@
   "Active": "Aktiv",
   "LblSelect": "Auswählen",
   "Version": "Version",
-  "SomethingWentWrong": "Ein Fehler ist aufgetreten."
+  "SomethingWentWrong": "Ein Fehler ist aufgetreten.",
+  "ByFirstNameSorting": "Nach Vornamen",
+  "ByLastNameSorting": "Nach Familiennamen"
 }
