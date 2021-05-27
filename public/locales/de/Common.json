@@ -76,5 +76,6 @@
   "Active": "Aktiv",
   "Select": "Auswählen",
   "Version": "Version",
-  "SomethingWentWrong": "Ein Fehler ist aufgetreten."
+  "SomethingWentWrong": "Ein Fehler ist aufgetreten.",
+  "CopyEmailAndPassword": "E-Mail und Passwort kopieren"
 }
