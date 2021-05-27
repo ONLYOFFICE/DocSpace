@@ -190,9 +190,14 @@ const ToggleContentContainer = styled.div`
     color: #d0d5da;
   }
 
+  .styled-element {
+    cursor: pointer; //TODO:  temporary solution. Layouts for desktops will be different
+  }
+
   .row_content {
     justify-content: space-between;
     align-items: center;
+    cursor: pointer; //TODO:  temporary solution. Layouts for desktops will be different
 
     .userData {
       flex: 1 1 auto;
@@ -210,7 +215,6 @@ const ToggleContentContainer = styled.div`
     align-items: center;
 
     .fullAccessWrapper {
-      margin-right: 20px;
       display: flex;
       align-items: center;
       padding: 0px 5px;
@@ -220,7 +224,7 @@ const ToggleContentContainer = styled.div`
 
     .iconWrapper {
       display: inline-block;
-      margin-right: 32px;
+      margin-right: 15px;
 
       &:last-child {
         margin-right: 0;
@@ -892,7 +896,7 @@ class PortalAdmins extends Component {
                                             size={14}
                                             color="#2DA7DB"
                                             isfill={true}
-                                            isClickable={false}
+                                            isClickable={true} // TODO: temporary solution for desktop. Layouts for desktops will be different
                                           />
                                         </div>
                                       );
