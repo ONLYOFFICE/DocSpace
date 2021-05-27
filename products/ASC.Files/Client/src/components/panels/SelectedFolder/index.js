@@ -4,6 +4,7 @@ import { inject, observer } from "mobx-react";
 import { I18nextProvider } from "react-i18next";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 import store from "studio/store";
 import {
@@ -176,11 +177,11 @@ class SelectedFolder extends React.PureComponent {
               fullFolderPath: pathName,
             },
             function () {
-              onSelectFolder(folder);
+              onSelectFolder && onSelectFolder(folder);
             }
           )
         )
-        .then(() => onClose())
+        .then(() => onClose && onClose())
         .finally(() => this.setState({ isLoadingData: false }));
     });
   };
@@ -194,15 +195,12 @@ class SelectedFolder extends React.PureComponent {
       name,
       onClickInput,
       isPanelVisible,
-      //folderList,
       isCommonWithoutProvider,
       onClose,
       isError,
       withoutTopLevelFolder,
       isSavingProcess,
       isDisabled,
-      folderPath,
-      //commonThirdPartyList,
     } = this.props;
     const {
       isLoading,
@@ -264,6 +262,12 @@ class SelectedFolder extends React.PureComponent {
     );
   }
 }
+
+SelectedFolder.propTypes = {
+  onClickInput: PropTypes.func.isRequired,
+  onSelectFolder: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+};
 
 SelectedFolder.defaultProps = {
   isThirdParty: false,
