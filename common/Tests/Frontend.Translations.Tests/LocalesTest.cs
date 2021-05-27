@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 
 using Newtonsoft.Json.Linq;
@@ -25,13 +24,19 @@ namespace Frontend.Translations.Tests
         public List<TranslationFile> TranslationFiles { get; set; }
         public List<JavaScriptFile> JavaScriptFiles { get; set; }
 
+        public List<ModuleFolder> ModuleFolders { get; set; }
+
         [SetUp]
         public void Setup()
         {
             var packageJsonPath = Path.Combine(BasePath, @"package.json");
             var jsonPackage = JObject.Parse(File.ReadAllText(packageJsonPath));
 
-            Workspaces = ((JArray)jsonPackage["workspaces"]).Select(p => (string)p).ToList();
+            var moduleWorkspaces = ((JArray)jsonPackage["workspaces"]).Select(p => ((string)p).Replace("/", "\\")).ToList();
+
+            Workspaces = new List<string>();
+
+            Workspaces.AddRange(moduleWorkspaces);
 
             Workspaces.Add("public\\locales");
 
@@ -96,6 +101,69 @@ namespace Frontend.Translations.Tests
                 jsFile.TranslationKeys = translationKeys;
 
                 JavaScriptFiles.Add(jsFile);
+            }
+
+            ModuleFolders = new List<ModuleFolder>();
+
+            var list = TranslationFiles
+                //.Where(file => file.Language == "en")
+                .Select(t => new
+                {
+                    ModulePath = moduleWorkspaces.FirstOrDefault(m => t.Path.Contains(m)),
+                    Language = new LanguageItem
+                    {
+                        Path = t.Path,
+                        Language = t.Language,
+                        Translations = t.Translations
+                    },
+                    lng = t.Language
+                }).ToList();
+
+            var moduleTranslations = list
+                .GroupBy(t => t.ModulePath)
+                .Select(g => new
+                {
+                    ModulePath = g.Key,
+                    Languages = g.ToList().Select(t => t.Language).ToList()
+                    .ToList()
+                })
+                //.GroupBy(t => new { t.ModulePath, t.Language.Language })
+                //.Select(g => new
+                //{
+                //    ModulePath = g.Key.ModulePath,
+                //    Languages = g.ToList()
+                //})
+                .ToList();
+
+            var moduleJsTranslatedFiles = JavaScriptFiles
+                .Select(t => new
+                {
+                    ModulePath = moduleWorkspaces.FirstOrDefault(m => t.Path.Contains(m)),
+                    t.Path,
+                    t.TranslationKeys
+                })
+                .GroupBy(t => t.ModulePath)
+                .Select(g => new
+                {
+                    ModulePath = g.Key,
+                    TranslationKeys = g.ToList().SelectMany(t => t.TranslationKeys).ToList()
+                })
+                .ToList();
+
+            foreach (var ws in moduleWorkspaces)
+            {
+                var t = moduleTranslations.FirstOrDefault(t => t.ModulePath == ws);
+                var j = moduleJsTranslatedFiles.FirstOrDefault(t => t.ModulePath == ws);
+
+                if (j == null && t == null)
+                    continue;
+
+                ModuleFolders.Add(new ModuleFolder
+                {
+                    Path = ws,
+                    AvailableLanguages = t?.Languages,
+                    AppliedJsTranslationKeys = j?.TranslationKeys
+                });
             }
         }
 
