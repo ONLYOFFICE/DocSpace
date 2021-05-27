@@ -1,7 +1,6 @@
 import React from "react";
 import ComboBox from "@appserver/components/combobox";
 import { useTranslation } from "react-i18next";
-import Checkbox from "@appserver/components/checkbox";
 import { StyledScheduleComponent } from "../styled-backup";
 
 const ScheduleComponent = ({
@@ -105,14 +104,6 @@ const ScheduleComponent = ({
         size="content"
         className="backup_combobox"
       />
-      {/* <div className="backup-include_mail">
-        <Checkbox
-          name={"backupMail"}
-          isChecked={backupMail}
-          label={t("IncludeMail")}
-          onChange={onClickCheckbox}
-        />
-      </div> */}
     </StyledScheduleComponent>
   );
 };
