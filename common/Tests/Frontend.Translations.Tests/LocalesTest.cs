@@ -23,13 +23,15 @@ namespace Frontend.Translations.Tests
 
         public List<TranslationFile> TranslationFiles { get; set; }
         public List<JavaScriptFile> JavaScriptFiles { get; set; }
-
         public List<ModuleFolder> ModuleFolders { get; set; }
+
+        public List<LanguageItem> CommonTranslations { get; set; }
 
         [SetUp]
         public void Setup()
         {
             var packageJsonPath = Path.Combine(BasePath, @"package.json");
+
             var jsonPackage = JObject.Parse(File.ReadAllText(packageJsonPath));
 
             var moduleWorkspaces = ((JArray)jsonPackage["workspaces"]).Select(p => ((string)p).Replace("/", "\\")).ToList();
@@ -127,12 +129,6 @@ namespace Frontend.Translations.Tests
                     Languages = g.ToList().Select(t => t.Language).ToList()
                     .ToList()
                 })
-                //.GroupBy(t => new { t.ModulePath, t.Language.Language })
-                //.Select(g => new
-                //{
-                //    ModulePath = g.Key.ModulePath,
-                //    Languages = g.ToList()
-                //})
                 .ToList();
 
             var moduleJsTranslatedFiles = JavaScriptFiles
@@ -165,6 +161,15 @@ namespace Frontend.Translations.Tests
                     AppliedJsTranslationKeys = j?.TranslationKeys
                 });
             }
+
+            CommonTranslations = TranslationFiles
+                .Where(file => file.Path.StartsWith($"{BasePath}public\\locales"))
+                .Select(t => new LanguageItem
+                {
+                    Path = t.Path,
+                    Language = t.Language,
+                    Translations = t.Translations
+                }).ToList();
         }
 
         [Test]
@@ -176,7 +181,6 @@ namespace Frontend.Translations.Tests
                 .GroupBy(t => new { t.Key, t.Value })
                 .Where(grp => grp.Count() > 1)
                 .Select(grp => new { Key = grp.Key, Count = grp.Count(), Keys = grp.ToList() })
-                //.Where(grp => grp.Grouped.GroupBy(n => n.Key).Any(c => c.Count() > 1))
                 .OrderByDescending(itm => itm.Count)
                 .Select(grp => new { Key = grp.Key.Key, Value = grp.Key.Value, grp.Count })
                 .ToList();
@@ -198,7 +202,6 @@ namespace Frontend.Translations.Tests
                 .GroupBy(t => t.Value)
                 .Where(grp => grp.Count() > 1)
                 .Select(grp => new { ContentKey = grp.Key, Count = grp.Count(), List = grp.ToList() })
-                //.Where(grp => grp.Grouped.GroupBy(n => n.Key).Any(c => c.Count() > 1))
                 .OrderByDescending(itm => itm.Count)
                 .ToList();
 
@@ -386,6 +389,87 @@ namespace Frontend.Translations.Tests
             Assert.AreEqual(0, notFoundi18nKeys.Count(),
                 "Some i18n-keys are not found in js: \r\nKeys: '\r\n{0}'",
                 string.Join("\r\n", notFoundi18nKeys));
+        }
+
+        [Test]
+        public void UselessModuleTranslationKeysTest()
+        {
+            var notFoundi18nKeys = new List<KeyValuePair<string, List<string>>>();
+
+            var message = $"Some i18n-keys are not found in js: \r\nKeys: \r\n\r\n";
+
+            for (int i = 0; i < ModuleFolders.Count; i++)
+            {
+                var module = ModuleFolders[i];
+
+                if (module.AppliedJsTranslationKeys == null && module.AvailableLanguages != null)
+                {
+                    message += $"{i}. 'ANY LANGUAGES' '{module.Path}' NOT USES";
+
+                    var list = module.AvailableLanguages
+                        .SelectMany(l => l.Translations.Select(t => t.Key).ToList())
+                        .ToList();
+
+                    notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>("ANY LANGUAGES", list));
+
+                    continue;
+                }
+
+                var notCommonKeys = module.AppliedJsTranslationKeys
+                    .Where(k => !k.StartsWith("Common:"))
+                    .ToList();
+
+                var onlyCommonKeys = module.AppliedJsTranslationKeys
+                    .Except(notCommonKeys)
+                    .Select(k => k.Replace("Common:", ""))
+                    .ToList();
+
+                if (onlyCommonKeys.Any())
+                {
+                    foreach (var lng in CommonTranslations)
+                    {
+                        var list = onlyCommonKeys
+                            .Except(lng.Translations.Select(t => t.Key))
+                            .ToList();
+
+                        if (!list.Any())
+                            continue;
+
+                        message += $"{i}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
+
+                        notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>(lng.Language, list));
+                    }
+                }
+
+                if (module.AvailableLanguages == null)
+                {
+                    if (notCommonKeys.Any())
+                    {
+                        message += $"{i}. 'ANY LANGUAGES' '{module.Path}' \r\n {string.Join("\r\n", notCommonKeys)} \r\n";
+
+                        notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>("ANY LANGUAGES", notCommonKeys));
+                    }
+
+                    continue;
+                }
+
+                foreach (var lng in module.AvailableLanguages)
+                {
+                    var list = lng.Translations
+                         .Select(t => t.Key.Replace("Translations:", ""))
+                         .Except(notCommonKeys)
+                         .ToList();
+
+                    if (!list.Any())
+                        continue;
+
+                    message += $"{i}. '{lng.Language}' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
+
+                    notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>(lng.Language, list));
+                }
+            }
+
+            Assert.AreEqual(0, notFoundi18nKeys.Count(), message);
         }
     }
 }
