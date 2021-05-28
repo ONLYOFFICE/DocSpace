@@ -47,7 +47,7 @@ namespace ASC.Web.CRM.Classes
         private void ImportCaseData(DaoFactory _daoFactory)
         {
             using (var CSVFileStream = _dataStore.GetReadStream("temp", _csvFileURI))
-            using (CsvReader csv = ImportFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
+            using (CsvReader csv = _importFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
             {
                 int currentIndex = 0;
 
@@ -146,7 +146,7 @@ namespace ASC.Web.CRM.Classes
 
                     findedCases.Add(objCases);
 
-                    if (currentIndex + 1 > ImportFromCSV.MaxRoxCount) break;
+                    if (currentIndex + 1 > _importFromCSV.MaxRoxCount) break;
 
                     currentIndex++;
                 }

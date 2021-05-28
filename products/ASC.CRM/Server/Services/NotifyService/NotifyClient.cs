@@ -54,12 +54,12 @@ namespace ASC.Web.CRM.Services.NotifyService
     [Scope]
     public class NotifyClient
     {
+        private IServiceProvider _serviceProvider;
+
         public NotifyClient(IServiceProvider serviceProvider)
         {
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
         }
-
-        public IServiceProvider ServiceProvider { get; }
 
         public void SendAboutCreateNewContact(List<Guid> recipientID,
                                               int contactID,
@@ -67,7 +67,7 @@ namespace ASC.Web.CRM.Services.NotifyService
         {
             if ((recipientID.Count == 0) || String.IsNullOrEmpty(contactTitle)) return;
 
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
@@ -86,7 +86,7 @@ namespace ASC.Web.CRM.Services.NotifyService
         {
             if (userID.Length == 0) return;
 
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
@@ -105,7 +105,7 @@ namespace ASC.Web.CRM.Services.NotifyService
 
         private NameValueCollection ExtractBaseDataFrom(EntityType entityType, int entityID, DaoFactory daoFactory)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var pathProvider = scope.ServiceProvider.GetService<PathProvider>();
 
             var result = new NameValueCollection();
@@ -154,7 +154,7 @@ namespace ASC.Web.CRM.Services.NotifyService
         {
             if (userID.Length == 0) return;
 
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
             var pathProvider = scope.ServiceProvider.GetService<PathProvider>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
@@ -219,7 +219,7 @@ namespace ASC.Web.CRM.Services.NotifyService
         {
             if (recipientID == Guid.Empty) return;
 
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
@@ -239,7 +239,7 @@ namespace ASC.Web.CRM.Services.NotifyService
         {
             if (recipientID == Guid.Empty) return;
 
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
             var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
@@ -282,7 +282,7 @@ namespace ASC.Web.CRM.Services.NotifyService
 
         public void SendAutoReminderAboutTask(DateTime scheduleDate)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
 
             var defaultDao = scope.ServiceProvider.GetService<DaoFactory>();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -379,7 +379,7 @@ namespace ASC.Web.CRM.Services.NotifyService
 
         public void SendTaskReminder(Task task, String taskCategoryTitle, Contact taskContact, ASC.CRM.Core.Entities.Cases taskCase, ASC.CRM.Core.Entities.Deal taskDeal)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
@@ -447,7 +447,7 @@ namespace ASC.Web.CRM.Services.NotifyService
 
         public void SendAboutResponsibleByTask(Task task, String taskCategoryTitle, Contact taskContact, Cases taskCase, ASC.CRM.Core.Entities.Deal taskDeal, Hashtable fileListInfoHashtable)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
             var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
@@ -518,7 +518,7 @@ namespace ASC.Web.CRM.Services.NotifyService
 
         public void SendAboutResponsibleForOpportunity(Deal deal)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);

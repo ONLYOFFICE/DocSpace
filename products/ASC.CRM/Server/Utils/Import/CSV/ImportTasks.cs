@@ -47,23 +47,23 @@ namespace ASC.Web.CRM.Classes
 {
     public partial class ImportDataOperation
     {
+        private ImportFromCSV _importFromCSV;
+        private TenantUtil _tenantUtil;
+        private DisplayUserSettingsHelper _displayUserSettingsHelper;
+
         public ImportDataOperation(TenantUtil tenantUtil,
                                    ImportFromCSV importFromCSV,
                                    DisplayUserSettingsHelper displayUserSettingsHelper)
         {
-            TenantUtil = tenantUtil;
-            ImportFromCSV = importFromCSV;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            _tenantUtil = tenantUtil;
+            _importFromCSV = importFromCSV;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
         }
-
-        public ImportFromCSV ImportFromCSV { get; }
-        public TenantUtil TenantUtil { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-
+            
         private void ImportTaskData(DaoFactory _daoFactory)
         {
             using (var CSVFileStream = _dataStore.GetReadStream("temp", _csvFileURI))
-            using (CsvReader csv = ImportFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
+            using (CsvReader csv = _importFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
             {
                 int currentIndex = 0;
 
@@ -95,10 +95,10 @@ namespace ASC.Web.CRM.Classes
                     if (DateTime.TryParse(GetPropertyValue("due_date"), out deadline))
                         obj.DeadLine = deadline;
                     else
-                        obj.DeadLine = TenantUtil.DateTimeNow();
+                        obj.DeadLine = _tenantUtil.DateTimeNow();
 
                     var csvResponsibleValue = GetPropertyValue("responsible");
-                    var responsible = allUsers.Where(n => n.DisplayUserName(DisplayUserSettingsHelper).Equals(csvResponsibleValue)).FirstOrDefault();
+                    var responsible = allUsers.Where(n => n.DisplayUserName(_displayUserSettingsHelper).Equals(csvResponsibleValue)).FirstOrDefault();
 
                     if (responsible != null)
                         obj.ResponsibleID = responsible.ID;
@@ -163,7 +163,7 @@ namespace ASC.Web.CRM.Classes
 
                     findedTasks.Add(obj);
 
-                    if ((currentIndex + 1) > ImportFromCSV.MaxRoxCount) break;
+                    if ((currentIndex + 1) > _importFromCSV.MaxRoxCount) break;
 
                     currentIndex++;
 

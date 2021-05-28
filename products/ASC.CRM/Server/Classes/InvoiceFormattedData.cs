@@ -42,16 +42,16 @@ namespace ASC.Web.CRM.Classes
     [Scope]
     public class InvoiceFormattedData
     {
+        private OrganisationLogoManager _organisationLogoManager;
+        private DaoFactory _daoFactory;
+
         public InvoiceFormattedData(DaoFactory daoFactory,
             OrganisationLogoManager organisationLogoManager)
         {
-            DaoFactory = daoFactory;
-            OrganisationLogoManager = organisationLogoManager;
+            _daoFactory = daoFactory;
+            _organisationLogoManager = organisationLogoManager;
         }
 
-        public OrganisationLogoManager OrganisationLogoManager { get; }
-
-        public DaoFactory DaoFactory { get; }
 
         public int TemplateType { get; set; }
         public Tuple<string, string> Seller { get; set; }
@@ -92,7 +92,7 @@ namespace ASC.Web.CRM.Classes
 
         private InvoiceFormattedData CreateData(Invoice invoice, int billingAddressID, int deliveryAddressID)
         {
-            var data = new InvoiceFormattedData(DaoFactory, OrganisationLogoManager);
+            var data = new InvoiceFormattedData(_daoFactory, _organisationLogoManager);
             var sb = new StringBuilder();
             var list = new List<string>();
             var cultureInfo = string.IsNullOrEmpty(invoice.Language)
@@ -107,7 +107,7 @@ namespace ASC.Web.CRM.Classes
 
             #region Seller, LogoBase64, LogoSrcFormat
 
-            var invoiceSettings = DaoFactory.GetInvoiceDao().GetSettings();
+            var invoiceSettings = _daoFactory.GetInvoiceDao().GetSettings();
 
             if (!string.IsNullOrEmpty(invoiceSettings.CompanyName))
             {
@@ -153,7 +153,7 @@ namespace ASC.Web.CRM.Classes
             {
                 data.LogoBase64Id = invoiceSettings.CompanyLogoID;
                 //data.LogoBase64 = OrganisationLogoManager.GetOrganisationLogoBase64(invoiceSettings.CompanyLogoID);
-                data.LogoSrcFormat = OrganisationLogoManager.OrganisationLogoSrcFormat;
+                data.LogoSrcFormat = _organisationLogoManager.OrganisationLogoSrcFormat;
             }
 
             #endregion
@@ -190,7 +190,7 @@ namespace ASC.Web.CRM.Classes
 
             #region Customer
 
-            var customer = DaoFactory.GetContactDao().GetByID(invoice.ContactID);
+            var customer = _daoFactory.GetContactDao().GetByID(invoice.ContactID);
 
             if (customer != null)
             {
@@ -199,7 +199,7 @@ namespace ASC.Web.CRM.Classes
                 sb.Append(customer.GetTitle());
 
                 var billingAddress = billingAddressID != 0
-                    ? DaoFactory.GetContactInfoDao().GetByID(billingAddressID)
+                    ? _daoFactory.GetContactInfoDao().GetByID(billingAddressID)
                     : null;
                 if (billingAddress != null && billingAddress.InfoType == ContactInfoType.Address &&
                     billingAddress.Category == (int)AddressCategory.Billing)
@@ -258,7 +258,7 @@ namespace ASC.Web.CRM.Classes
 
             data.TableBodyRows = new List<List<string>>();
 
-            var invoiceLines = invoice.GetInvoiceLines(DaoFactory);
+            var invoiceLines = invoice.GetInvoiceLines(_daoFactory);
             var invoiceTaxes = new Dictionary<int, decimal>();
 
             decimal subtotal = 0;
@@ -267,12 +267,12 @@ namespace ASC.Web.CRM.Classes
 
             foreach (var line in invoiceLines)
             {
-                var item = DaoFactory.GetInvoiceItemDao().GetByID(line.InvoiceItemID);
+                var item = _daoFactory.GetInvoiceItemDao().GetByID(line.InvoiceItemID);
                 var tax1 = line.InvoiceTax1ID > 0
-                    ? DaoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax1ID)
+                    ? _daoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax1ID)
                     : null;
                 var tax2 = line.InvoiceTax2ID > 0
-                    ? DaoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax2ID)
+                    ? _daoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax2ID)
                     : null;
 
                 var subtotalValue = Math.Round(line.Quantity * line.Price, 2);
@@ -332,7 +332,7 @@ namespace ASC.Web.CRM.Classes
 
             foreach (var invoiceTax in invoiceTaxes)
             {
-                var iTax = DaoFactory.GetInvoiceTaxDao().GetByID(invoiceTax.Key);
+                var iTax = _daoFactory.GetInvoiceTaxDao().GetByID(invoiceTax.Key);
                 data.TableFooterRows.Add(new Tuple<string, string>(
                     string.Format("{0} ({1}%)", iTax.Name, iTax.Rate),
                     invoiceTax.Value.ToString(CultureInfo.InvariantCulture)));
@@ -373,7 +373,7 @@ namespace ASC.Web.CRM.Classes
 
             #region Consignee
 
-            var consignee = DaoFactory.GetContactDao().GetByID(invoice.ConsigneeID);
+            var consignee = _daoFactory.GetContactDao().GetByID(invoice.ConsigneeID);
 
             if (consignee != null)
             {
@@ -382,7 +382,7 @@ namespace ASC.Web.CRM.Classes
                 sb.Append(consignee.GetTitle());
 
                 var deliveryAddress = deliveryAddressID != 0
-                    ? DaoFactory.GetContactInfoDao().GetByID(deliveryAddressID)
+                    ? _daoFactory.GetContactInfoDao().GetByID(deliveryAddressID)
                     : null;
                 if (deliveryAddress != null && deliveryAddress.InfoType == ContactInfoType.Address &&
                     deliveryAddress.Category == (int)AddressCategory.Postal)
@@ -438,7 +438,7 @@ namespace ASC.Web.CRM.Classes
 
         private InvoiceFormattedData ReadData(string jsonData)
         {
-            var data = new InvoiceFormattedData(DaoFactory, OrganisationLogoManager);
+            var data = new InvoiceFormattedData(_daoFactory, _organisationLogoManager);
             var jsonObj = JsonDocument.Parse(jsonData).RootElement;
 
             #region TemplateType
@@ -461,7 +461,7 @@ namespace ASC.Web.CRM.Classes
 
             if (string.IsNullOrEmpty(data.LogoBase64) && data.LogoBase64Id != 0)
             {
-                data.LogoBase64 = OrganisationLogoManager.GetOrganisationLogoBase64(data.LogoBase64Id);
+                data.LogoBase64 = _organisationLogoManager.GetOrganisationLogoBase64(data.LogoBase64Id);
             }
 
 
@@ -588,7 +588,7 @@ namespace ASC.Web.CRM.Classes
 
             data.TableBodyRows = new List<List<string>>();
 
-            var invoiceLines = invoice.GetInvoiceLines(DaoFactory);
+            var invoiceLines = invoice.GetInvoiceLines(_daoFactory);
             var invoiceTaxes = new Dictionary<int, decimal>();
 
             decimal subtotal = 0;
@@ -597,12 +597,12 @@ namespace ASC.Web.CRM.Classes
 
             foreach (var line in invoiceLines)
             {
-                var item = DaoFactory.GetInvoiceItemDao().GetByID(line.InvoiceItemID);
+                var item = _daoFactory.GetInvoiceItemDao().GetByID(line.InvoiceItemID);
                 var tax1 = line.InvoiceTax1ID > 0
-                    ? DaoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax1ID)
+                    ? _daoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax1ID)
                     : null;
                 var tax2 = line.InvoiceTax2ID > 0
-                    ? DaoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax2ID)
+                    ? _daoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax2ID)
                     : null;
 
                 var subtotalValue = Math.Round(line.Quantity * line.Price, 2);
@@ -662,7 +662,7 @@ namespace ASC.Web.CRM.Classes
 
             foreach (var invoiceTax in invoiceTaxes)
             {
-                var iTax = DaoFactory.GetInvoiceTaxDao().GetByID(invoiceTax.Key);
+                var iTax = _daoFactory.GetInvoiceTaxDao().GetByID(invoiceTax.Key);
                 data.TableFooterRows.Add(new Tuple<string, string>(
                     string.Format("{0} ({1}%)", iTax.Name, iTax.Rate),
                     invoiceTax.Value.ToString(CultureInfo.InvariantCulture)));

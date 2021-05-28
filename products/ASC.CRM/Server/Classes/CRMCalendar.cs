@@ -48,10 +48,10 @@ namespace ASC.CRM.Api
         {
         }
 
-        public WebItemSecurity WebItemSecurity { get; }
-        public DaoFactory DaoFactory { get; }
-        public TenantManager TenantManager { get; }
-        public TenantUtil TenantUtil { get; }
+        private WebItemSecurity _webItemSecurity;
+        private DaoFactory _daoFactory;
+        private TenantManager _tenantManager;
+        private TenantUtil _tenantUtil;
 
         public CrmCalendar(WebItemSecurity webItemSecurity,
                            DaoFactory daoFactory,
@@ -61,10 +61,10 @@ namespace ASC.CRM.Api
                            TenantUtil tenantUtil
                            ) : base(authContext, timeZoneConverter)
         {
-            TenantUtil = tenantUtil;
-            TenantManager = tenantManager;
-            WebItemSecurity = webItemSecurity;
-            DaoFactory = daoFactory;
+            _tenantUtil = tenantUtil;
+            _tenantManager = tenantManager;
+            _webItemSecurity = webItemSecurity;
+            _daoFactory = daoFactory;
 
             Context.HtmlBackgroundColor = "";
             Context.HtmlTextColor = "";
@@ -84,12 +84,12 @@ namespace ASC.CRM.Api
             var events = new List<IEvent>();
 
             if (
-                !WebItemSecurity.IsAvailableForMe(WebItemManager.CRMProductID))
+                !_webItemSecurity.IsAvailableForMe(WebItemManager.CRMProductID))
             {
                 return events;
             }
 
-            var tasks = DaoFactory.GetTaskDao().GetTasks(String.Empty, userId, 0, false, DateTime.MinValue,
+            var tasks = _daoFactory.GetTaskDao().GetTasks(String.Empty, userId, 0, false, DateTime.MinValue,
                 DateTime.MinValue, EntityType.Any, 0, 0, 0, null);
 
             foreach (var t in tasks)
@@ -97,7 +97,7 @@ namespace ASC.CRM.Api
                 if (t.DeadLine == DateTime.MinValue) continue;
 
                 var allDayEvent = t.DeadLine.Hour == 0 && t.DeadLine.Minute == 0;
-                var utcDate = allDayEvent ? t.DeadLine.Date : TenantUtil.DateTimeToUtc(t.DeadLine);
+                var utcDate = allDayEvent ? t.DeadLine.Date : _tenantUtil.DateTimeToUtc(t.DeadLine);
 
                 var e = new Event
                 {
@@ -121,7 +121,7 @@ namespace ASC.CRM.Api
 
         public override TimeZoneInfo TimeZone
         {
-            get { return TimeZoneInfo.FindSystemTimeZoneById(TenantManager.GetCurrentTenant().TimeZone); }
+            get { return TimeZoneInfo.FindSystemTimeZoneById(_tenantManager.GetCurrentTenant().TimeZone); }
         }
 
         private bool IsVisibleEvent(DateTime startDate, DateTime endDate, DateTime eventStartDate, DateTime eventEndDate)

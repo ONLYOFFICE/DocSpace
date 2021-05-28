@@ -49,13 +49,14 @@ namespace ASC.Web.CRM
         private readonly Guid _importCompleted = new Guid("{6A717AAD-16AE-4713-A782-B887766BEB9F}");
         private readonly Guid _createNewContact = new Guid("{ADAC1E70-4163-41c1-8968-67A44E4D24E7}");
 
+        private CoreBaseSettings _coreBaseSettings;
+
         public ProductSubscriptionManager(CoreBaseSettings coreBaseSettings, NotifySource notifySource)
         {
-            CoreBaseSettings = coreBaseSettings;
+            _coreBaseSettings = coreBaseSettings;
         }
 
         public NotifySource NotifySource { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
 
         public List<SubscriptionObject> GetSubscriptionObjects(Guid subItem)
         {
@@ -102,7 +103,7 @@ namespace ASC.Web.CRM
                            {
                                ID = _exportCompleted,
                                Name = CRMCommonResource.SubscriptionType_ExportCompleted,
-                               NotifyAction = CoreBaseSettings.CustomMode ? NotifyConstants.Event_ExportCompletedCustomMode : NotifyConstants.Event_ExportCompleted,
+                               NotifyAction = _coreBaseSettings.CustomMode ? NotifyConstants.Event_ExportCompletedCustomMode : NotifyConstants.Event_ExportCompleted,
                                Single = true,
                                CanSubscribe = true
                            },
@@ -110,7 +111,7 @@ namespace ASC.Web.CRM
                            {
                                ID = _importCompleted,
                                Name = CRMCommonResource.SubscriptionType_ImportCompleted,
-                               NotifyAction = CoreBaseSettings.CustomMode ? NotifyConstants.Event_ImportCompletedCustomMode : NotifyConstants.Event_ImportCompleted,
+                               NotifyAction = _coreBaseSettings.CustomMode ? NotifyConstants.Event_ImportCompletedCustomMode : NotifyConstants.Event_ImportCompleted,
                                Single = true,
                                CanSubscribe = true
                            },

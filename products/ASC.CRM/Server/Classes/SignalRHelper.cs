@@ -36,38 +36,38 @@ namespace ASC.Web.CRM.Classes
     {
         private readonly string numberId;
 
-        public SignalrServiceClient SignalrServiceClient { get; }
+        private SignalrServiceClient _signalrServiceClient;
 
         public SignalRHelper(string numberId,
             SignalrServiceClient signalrServiceClient)
         {
-            SignalrServiceClient = signalrServiceClient;
+            _signalrServiceClient = signalrServiceClient;
             this.numberId = numberId.TrimStart('+');
         }
 
         public void Enqueue(string call, string agent)
         {
-            SignalrServiceClient.EnqueueCall(numberId, call, agent);
+            _signalrServiceClient.EnqueueCall(numberId, call, agent);
         }
 
         public void Incoming(string call, string agent)
         {
-            SignalrServiceClient.IncomingCall(call, agent);
+            _signalrServiceClient.IncomingCall(call, agent);
         }
 
         public void MissCall(string call, string agent)
         {
-            SignalrServiceClient.MissCall(numberId, call, agent);
+            _signalrServiceClient.MissCall(numberId, call, agent);
         }
 
         public void Reload(string agentId = null)
         {
-            SignalrServiceClient.Reload(numberId, agentId);
+            _signalrServiceClient.Reload(numberId, agentId);
         }
 
         public Tuple<Agent, bool> GetAgent(List<Guid> contactsResponsibles)
         {
-            return SignalrServiceClient.GetAgent<Tuple<Agent, bool>>(numberId, contactsResponsibles);
+            return _signalrServiceClient.GetAgent<Tuple<Agent, bool>>(numberId, contactsResponsibles);
         }
     }
 }

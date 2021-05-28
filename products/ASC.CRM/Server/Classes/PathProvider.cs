@@ -41,19 +41,19 @@ namespace ASC.Web.CRM
     [Scope]
     public class PathProvider
     {
+        private HttpContext _httpContext;
+        private CommonLinkUtility _commonLinkUtility;
+        private WebPath _webPath;
+
         public PathProvider(IHttpContextAccessor httpContextAccessor,
                             CommonLinkUtility commonLinkUtility)
         {
-            CommonLinkUtility = commonLinkUtility;
-            HttpContext = httpContextAccessor.HttpContext;
+            _commonLinkUtility = commonLinkUtility;
+            _httpContext = httpContextAccessor.HttpContext;
 
-            BaseAbsolutePath = CommonLinkUtility.ToAbsolute(BaseVirtualPath);
+            BaseAbsolutePath = _commonLinkUtility.ToAbsolute(BaseVirtualPath);
         }
 
-        public HttpContext HttpContext { get; }
-
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public WebPath WebPath { get; }
 
         public readonly String BaseVirtualPath = "~/Products/CRM/";
         public readonly String BaseAbsolutePath;

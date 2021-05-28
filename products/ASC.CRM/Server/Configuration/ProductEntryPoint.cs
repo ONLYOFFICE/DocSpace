@@ -48,23 +48,24 @@ namespace ASC.Web.CRM.Configuration
     [Scope]
     public class ProductEntryPoint : Product
     {
+        private ProductContext _context;
+        private FilesIntegration _filesIntegration;
+        private PathProvider _pathProvider;
+        private SecurityContext _securityContext;
+        private UserManager _userManager;
+
         public ProductEntryPoint(SecurityContext securityContext,
                                  UserManager userManager,
                                  PathProvider pathProvider,
                                  FilesIntegration filesIntegration)
         {
-            SecurityContext = securityContext;
-            UserManager = userManager;
-            PathProvider = pathProvider;
-            FilesIntegration = filesIntegration;
+            _securityContext = securityContext;
+            _userManager = userManager;
+            _pathProvider = pathProvider;
+            _filesIntegration = filesIntegration;
         }
 
         public static readonly Guid ID = WebItemManager.CRMProductID;
-        private ProductContext _context;
-        public FilesIntegration FilesIntegration { get; }
-        public PathProvider PathProvider { get; }
-        public SecurityContext SecurityContext { get; }
-        public UserManager UserManager { get; }
         public override string ApiURL
         {
             get => "api/2.0/crm/info.json";
@@ -75,17 +76,17 @@ namespace ASC.Web.CRM.Configuration
         {
             get
             {
-                var id = SecurityContext.CurrentAccount.ID;
+                var id = _securityContext.CurrentAccount.ID;
 
-                if (UserManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupAdmin.ID) || UserManager.IsUserInGroup(id, ID))
+                if (_userManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupAdmin.ID) || _userManager.IsUserInGroup(id, ID))
                     return CRMCommonResource.ProductDescriptionEx;
 
                 return CRMCommonResource.ProductDescription;
             }
         }
 
-        public override string StartURL { get { return PathProvider.StartURL(); } }
-        public override string HelpURL { get { return string.Concat(PathProvider.BaseVirtualPath, "help.aspx"); } }
+        public override string StartURL { get { return _pathProvider.StartURL(); } }
+        public override string HelpURL { get { return string.Concat(_pathProvider.BaseVirtualPath, "help.aspx"); } }
         public override string ProductClassName { get { return "crm"; } }
         public override bool Visible { get { return true; } }
         public override ProductContext Context { get { return _context; } }

@@ -51,7 +51,7 @@ namespace ASC.Web.CRM.Classes
             var allUsers = _userManager.GetUsers(EmployeeStatus.All).ToList();
 
             using (var CSVFileStream = _dataStore.GetReadStream("temp", _csvFileURI))
-            using (CsvReader csv = ImportFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
+            using (CsvReader csv = _importFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
             {
                 int currentIndex = 0;
 
@@ -83,7 +83,7 @@ namespace ASC.Web.CRM.Classes
                     obj.Description = GetPropertyValue("description");
 
                     var csvResponsibleValue = GetPropertyValue("responsible");
-                    var responsible = allUsers.Where(n => n.DisplayUserName(DisplayUserSettingsHelper).Equals(csvResponsibleValue)).FirstOrDefault();
+                    var responsible = allUsers.Where(n => n.DisplayUserName(_displayUserSettingsHelper).Equals(csvResponsibleValue)).FirstOrDefault();
 
                     if (responsible != null)
                         obj.ResponsibleID = responsible.ID;
@@ -261,12 +261,12 @@ namespace ASC.Web.CRM.Classes
                         }
                     }
 
-                    Percentage += 1.0 * 100 / (ImportFromCSV.MaxRoxCount * 2);
+                    Percentage += 1.0 * 100 / (_importFromCSV.MaxRoxCount * 2);
                     PublishChanges();
 
                     findedDeals.Add(obj);
 
-                    if (currentIndex + 1 > ImportFromCSV.MaxRoxCount) break;
+                    if (currentIndex + 1 > _importFromCSV.MaxRoxCount) break;
 
                     currentIndex++;
 

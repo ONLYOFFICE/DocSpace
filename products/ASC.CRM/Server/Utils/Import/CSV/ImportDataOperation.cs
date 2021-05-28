@@ -61,15 +61,15 @@ namespace ASC.Web.CRM.Classes
         private string[] _columns;
         private bool _IsConfigure;
 
-        public readonly CurrencyProvider _currencyProvider;
-        public readonly NotifyClient _notifyClient;
-        public readonly SettingsManager _settingsManager;
-        public readonly CrmSecurity _crmSecurity;
-        public readonly TenantManager _tenantManager;
-        public readonly SecurityContext _securityContext;
-        public readonly UserManager _userManager;
-        public readonly DaoFactory _daoFactory;
-        public readonly ILog _logManager;
+        private readonly CurrencyProvider _currencyProvider;
+        private readonly NotifyClient _notifyClient;
+        private readonly SettingsManager _settingsManager;
+        private readonly CrmSecurity _crmSecurity;
+        private readonly TenantManager _tenantManager;
+        private readonly SecurityContext _securityContext;
+        private readonly UserManager _userManager;
+        private readonly DaoFactory _daoFactory;
+        private readonly ILog _logManager;
 
         public ImportDataOperation(Global global,
                                    TenantManager tenantManager,

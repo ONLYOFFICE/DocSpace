@@ -94,7 +94,6 @@ namespace ASC.Web.CRM.Classes
         private SecurityContext _securityContext;
         private TenantUtil _tenantUtil;
 
-
         public object Error { get; set; }
 
         private SendBatchEmailsOperation()

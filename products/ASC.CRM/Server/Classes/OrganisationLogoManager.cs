@@ -44,23 +44,22 @@ namespace ASC.Web.CRM.Classes
     [Scope]
     public class OrganisationLogoManager
     {
+        private DaoFactory _daoFactory;
+        private ILog _logger;
+        private Global _global;
+        private WebImageSupplier _webImageSupplier;
+
         public OrganisationLogoManager(WebImageSupplier webImageSupplier,
                                        Global global,
                                        IOptionsMonitor<ILog> logger,
                                        DaoFactory daoFactory)
         {
-            WebImageSupplier = webImageSupplier;
-            Global = global;
-            Logger = logger.Get("ASC.CRM");
-            DaoFactory = daoFactory;
+            _webImageSupplier = webImageSupplier;
+            _global = global;
+            _logger = logger.Get("ASC.CRM");
+            _daoFactory = daoFactory;
         }
 
-        public DaoFactory DaoFactory { get; }
-        public ILog Logger { get; }
-
-        public Global Global { get; }
-
-        public WebImageSupplier WebImageSupplier { get; }
 
         #region Members
 
@@ -120,14 +119,14 @@ namespace ASC.Web.CRM.Classes
 
         public String GetDefaultLogoUrl()
         {
-            return WebImageSupplier.GetAbsoluteWebPath("org_logo_default.png", ProductEntryPoint.ID);
+            return _webImageSupplier.GetAbsoluteWebPath("org_logo_default.png", ProductEntryPoint.ID);
         }
 
         public String GetOrganisationLogoBase64(int logoID)
         {
             if (logoID <= 0) { return ""; }
 
-            return DaoFactory.GetInvoiceDao().GetOrganisationLogoBase64(logoID);
+            return _daoFactory.GetInvoiceDao().GetOrganisationLogoBase64(logoID);
 
 
         }
@@ -141,7 +140,7 @@ namespace ASC.Web.CRM.Classes
         public void DeletePhoto(bool recursive)
         {
             var photoDirectory = BuildFileDirectory();
-            var store = Global.GetStore();
+            var store = _global.GetStore();
 
             lock (_synchronizedObj)
             {
@@ -159,14 +158,14 @@ namespace ASC.Web.CRM.Classes
         public int TryUploadOrganisationLogoFromTmp(DaoFactory factory)
         {
             var directoryPath = BuildFileDirectory();
-            var dataStore = Global.GetStore();
+            var dataStore = _global.GetStore();
 
             if (!dataStore.IsDirectory(directoryPath))
                 return 0;
 
             try
             {
-                var photoPaths = Global.GetStore().ListFilesRelative("", directoryPath, OrganisationLogoImgName + "*", false);
+                var photoPaths = _global.GetStore().ListFilesRelative("", directoryPath, OrganisationLogoImgName + "*", false);
                 if (photoPaths.Length == 0)
                     return 0;
 
@@ -183,7 +182,7 @@ namespace ASC.Web.CRM.Classes
 
             catch (Exception ex)
             {
-                Logger.ErrorFormat("TryUploadOrganisationLogoFromTmp failed with error: {0}", ex);
+                _logger.ErrorFormat("TryUploadOrganisationLogoFromTmp failed with error: {0}", ex);
 
                 return 0;
             }
@@ -193,7 +192,7 @@ namespace ASC.Web.CRM.Classes
         {
             var photoPath = BuildFilePath("." + Global.GetImgFormatName(imageFormat));
 
-            return ExecResizeImage(imageData, OrganisationLogoSize, Global.GetStore(), photoPath);
+            return ExecResizeImage(imageData, OrganisationLogoSize, _global.GetStore(), photoPath);
         }
     }
 }

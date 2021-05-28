@@ -49,6 +49,16 @@ namespace ASC.Web.CRM.Classes
     [Scope]
     public class Global
     {
+
+        private IConfiguration _configuration;
+        private SettingsManager _settingsManager;
+        protected int _tenantID;
+        private FilesLinkUtility _filesLinkUtility;
+        private SetupInfo _setupInfo;
+        private SecurityContext _securityContext;
+        private StorageFactory _storageFactory;
+        private CrmSecurity _crmSecurity;
+
         public Global(StorageFactory storageFactory,
                       SecurityContext securityContext,
                       SetupInfo setupInfo,
@@ -59,19 +69,16 @@ namespace ASC.Web.CRM.Classes
                       IConfiguration configuration
                       )
         {
-            StorageFactory = storageFactory;
-            FilesLinkUtility = filesLinkUtility;
-            SetupInfo = setupInfo;
-            SecurityContext = securityContext;
-            CRMSecurity = crmSecurity;
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
-            SettingsManager = settingsManager;
-            Configuration = configuration;
+            _storageFactory = storageFactory;
+            _filesLinkUtility = filesLinkUtility;
+            _setupInfo = setupInfo;
+            _securityContext = securityContext;
+            _crmSecurity = crmSecurity;
+            _tenantID = tenantManager.GetCurrentTenant().TenantId;
+            _settingsManager = settingsManager;
+            _configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
-        public SettingsManager SettingsManager { get; }
 
         public static readonly int EntryCountOnPage = 25;
         public static readonly int VisiblePageCount = 10;
@@ -87,25 +94,15 @@ namespace ASC.Web.CRM.Classes
         public static readonly int MaxHistoryEventCharacters = 65000;
         public static readonly decimal MaxInvoiceItemPrice = (decimal)99999999.99;
 
-        protected int TenantID { get; private set; }
-
-        public FilesLinkUtility FilesLinkUtility { get; }
-
-        public SetupInfo SetupInfo { get; }
-        public SecurityContext SecurityContext { get; }
-
-        public StorageFactory StorageFactory { get; }
-
-        public CrmSecurity CRMSecurity { get; }
 
         public IDataStore GetStore()
         {
-            return StorageFactory.GetStorage(TenantID.ToString(), "crm");
+            return _storageFactory.GetStorage(_tenantID.ToString(), "crm");
         }
 
         public IDataStore GetStoreTemplate()
         {
-            return StorageFactory.GetStorage(String.Empty, "crm_template");
+            return _storageFactory.GetStorage(String.Empty, "crm_template");
         }
 
         public bool CanCreateProjects()
@@ -150,12 +147,12 @@ namespace ASC.Web.CRM.Classes
         {
             get
             {
-                var value = Configuration["crm:invoice:download:enable"];
+                var value = _configuration["crm:invoice:download:enable"];
 
                 if (string.IsNullOrEmpty(value)) return false;
 
                 bool canDownloadFiles = Convert.ToBoolean(value);
-                if (canDownloadFiles && string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl))
+                if (canDownloadFiles && string.IsNullOrEmpty(_filesLinkUtility.DocServiceConverterUrl))
                 {
                     canDownloadFiles = false;
                 }
@@ -168,16 +165,16 @@ namespace ASC.Web.CRM.Classes
         {
             get
             {
-                return !string.IsNullOrEmpty(FilesLinkUtility.DocServiceDocbuilderUrl) && CRMSecurity.IsAdmin;
+                return !string.IsNullOrEmpty(_filesLinkUtility.DocServiceDocbuilderUrl) && _crmSecurity.IsAdmin;
             }
         }
 
         public void SaveDefaultCurrencySettings(CurrencyInfo currency)
         {
-            var tenantSettings = SettingsManager.Load<CrmSettings>();
+            var tenantSettings = _settingsManager.Load<CrmSettings>();
 
             tenantSettings.DefaultCurrency = currency.Abbreviation;
-            SettingsManager.Save<CrmSettings>(tenantSettings);
+            _settingsManager.Save<CrmSettings>(tenantSettings);
         }
 
 

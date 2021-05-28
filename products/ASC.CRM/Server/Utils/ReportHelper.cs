@@ -47,6 +47,17 @@ namespace ASC.Web.CRM.Classes
     [Scope]
     public class ReportHelper
     {
+        private CurrencyProvider _currencyProvider;
+        private IHttpContextAccessor _httpContext;
+        private SecurityContext _securityContext;
+        private DocbuilderReportsUtilityHelper _docbuilderReportsUtilityHelper;
+        private DaoFactory _daoFactory;
+        private IServiceProvider _serviceProvider;
+        private Global _global;
+        private SettingsManager _settingsManager;
+        private TenantUtil _tenantUtil;
+        private TenantManager _tenantManager;
+
         public ReportHelper(TenantManager tenantManager,
                             TenantUtil tenantUtil,
                             Global global,
@@ -59,29 +70,18 @@ namespace ASC.Web.CRM.Classes
                             CurrencyProvider currencyProvider
                           )
         {
-            TenantManager = tenantManager;
-            TenantUtil = tenantUtil;
-            Global = global;
-            SettingsManager = settingsManager;
-            ServiceProvider = serviceProvider;
-            DaoFactory = daoFactory;
-            DocbuilderReportsUtilityHelper = docbuilderReportsUtilityHelper;
-            SecurityContext = securityContext;
-            HttpContext = httpContextAccessor;
-            CurrencyProvider = currencyProvider;
+            _tenantManager = tenantManager;
+            _tenantUtil = tenantUtil;
+            _global = global;
+            _settingsManager = settingsManager;
+            _serviceProvider = serviceProvider;
+            _daoFactory = daoFactory;
+            _docbuilderReportsUtilityHelper = docbuilderReportsUtilityHelper;
+            _securityContext = securityContext;
+            _httpContext = httpContextAccessor;
+            _currencyProvider = currencyProvider;
         }
 
-        private CurrencyProvider CurrencyProvider { get; }
-        public IHttpContextAccessor HttpContext { get; }
-        public SecurityContext SecurityContext { get; }
-        public DocbuilderReportsUtilityHelper DocbuilderReportsUtilityHelper { get; }
-        public DaoFactory DaoFactory { get; }
-        public IServiceProvider ServiceProvider { get; }
-
-        public Global Global { get; }
-        public SettingsManager SettingsManager { get; }
-        public TenantUtil TenantUtil { get; }
-        public TenantManager TenantManager { get; }
         private string GetFileName(ReportType reportType)
         {
             string reportName;
@@ -125,13 +125,13 @@ namespace ASC.Web.CRM.Classes
 
             return string.Format("{0} ({1} {2}).xlsx",
                                  reportName,
-                                 TenantUtil.DateTimeNow().ToShortDateString(),
-                                 TenantUtil.DateTimeNow().ToShortTimeString());
+                                 _tenantUtil.DateTimeNow().ToShortDateString(),
+                                 _tenantUtil.DateTimeNow().ToShortTimeString());
         }
 
         public bool CheckReportData(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
         {
-            var reportDao = DaoFactory.GetReportDao();
+            var reportDao = _daoFactory.GetReportDao();
 
             throw new NotImplementedException();
 
@@ -164,23 +164,23 @@ namespace ASC.Web.CRM.Classes
 
         public List<string> GetMissingRates(ReportType reportType)
         {
-            var reportDao = DaoFactory.GetReportDao();
+            var reportDao = _daoFactory.GetReportDao();
 
             if (reportType == ReportType.WorkloadByTasks || reportType == ReportType.WorkloadByInvoices ||
                 reportType == ReportType.WorkloadByContacts || reportType == ReportType.WorkloadByVoip) return null;
 
-            var crmSettings = SettingsManager.Load<CrmSettings>();
-            var defaultCurrency = CurrencyProvider.Get(crmSettings.DefaultCurrency);
+            var crmSettings = _settingsManager.Load<CrmSettings>();
+            var defaultCurrency = _currencyProvider.Get(crmSettings.DefaultCurrency);
 
             return reportDao.GetMissingRates(defaultCurrency.Abbreviation);
         }
 
         private object GetReportData(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
         {
-            var crmSettings = SettingsManager.Load<CrmSettings>();
+            var crmSettings = _settingsManager.Load<CrmSettings>();
 
-            var reportDao = DaoFactory.GetReportDao();
-            var defaultCurrency = CurrencyProvider.Get(crmSettings.DefaultCurrency).Abbreviation;
+            var reportDao = _daoFactory.GetReportDao();
+            var defaultCurrency = _currencyProvider.Get(crmSettings.DefaultCurrency).Abbreviation;
 
             switch (reportType)
             {
@@ -227,15 +227,15 @@ namespace ASC.Web.CRM.Classes
 
             using (var stream = new System.IO.MemoryStream(data))
             {
-                var document = ServiceProvider.GetService<File<int>>();
+                var document = _serviceProvider.GetService<File<int>>();
 
                 document.Title = state.FileName;
-                document.FolderID = DaoFactory.GetFileDao().GetRoot();
+                document.FolderID = _daoFactory.GetFileDao().GetRoot();
                 document.ContentLength = stream.Length;
 
-                var file = DaoFactory.GetFileDao().SaveFile(document, stream);
+                var file = _daoFactory.GetFileDao().SaveFile(document, stream);
 
-                DaoFactory.GetReportDao().SaveFile((int)file.ID, state.ReportType);
+                _daoFactory.GetReportDao().SaveFile((int)file.ID, state.ReportType);
 
                 state.FileId = (int)file.ID;
             }
@@ -264,12 +264,12 @@ namespace ASC.Web.CRM.Classes
                 ReportOrigin.CRM,
                 SaveReportFile,
                 null,
-                TenantManager.GetCurrentTenant().TenantId,
-                SecurityContext.CurrentAccount.ID);
+                _tenantManager.GetCurrentTenant().TenantId,
+                _securityContext.CurrentAccount.ID);
 
-            var state = new ReportState(ServiceProvider, reportStateData, HttpContext);
+            var state = new ReportState(_serviceProvider, reportStateData, _httpContext);
 
-            DocbuilderReportsUtilityHelper.Enqueue(state);
+            _docbuilderReportsUtilityHelper.Enqueue(state);
 
             return state;
         }

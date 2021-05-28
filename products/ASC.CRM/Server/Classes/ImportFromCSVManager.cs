@@ -43,24 +43,24 @@ namespace ASC.Web.CRM.Classes
     [Scope]
     public class ImportFromCSVManager
     {
+        private MessageService _messageService;
+        private ImportFromCSV _importFromCSV;
+        private Global _global;
+
         public ImportFromCSVManager(Global global,
                                     ImportFromCSV importFromCSV,
                                     MessageService messageService)
         {
-            Global = global;
-            ImportFromCSV = importFromCSV;
-            MessageService = messageService;
+            _global = global;
+            _importFromCSV = importFromCSV;
+            _messageService = messageService;
         }
-
-        public MessageService MessageService { get; }
-        public ImportFromCSV ImportFromCSV { get; }
-        public Global Global { get; }
 
         public void StartImport(EntityType entityType, String CSVFileURI, String importSettingsJSON)
         {
-            ImportFromCSV.Start(entityType, CSVFileURI, importSettingsJSON);
+            _importFromCSV.Start(entityType, CSVFileURI, importSettingsJSON);
 
-            MessageService.Send(GetMessageAction(entityType));
+            _messageService.Send(GetMessageAction(entityType));
         }
 
         public FileUploadResult ProcessUploadFake(string fileTemp, string importSettingsJSON)
@@ -69,12 +69,12 @@ namespace ASC.Web.CRM.Classes
 
             if (String.IsNullOrEmpty(fileTemp) || String.IsNullOrEmpty(importSettingsJSON)) return fileUploadResult;
 
-            if (!Global.GetStore().IsFile("temp", fileTemp)) return fileUploadResult;
+            if (!_global.GetStore().IsFile("temp", fileTemp)) return fileUploadResult;
 
             JsonDocument jObject;
 
             //Read contents
-            using (Stream storeStream = Global.GetStore().GetReadStream("temp", fileTemp))
+            using (Stream storeStream = _global.GetStore().GetReadStream("temp", fileTemp))
             {
                 using (var CSVFileStream = new MemoryStream())
                 {
@@ -87,7 +87,7 @@ namespace ASC.Web.CRM.Classes
                     }
                     CSVFileStream.Position = 0;
 
-                    jObject = ImportFromCSV.GetInfo(CSVFileStream, importSettingsJSON);
+                    jObject = _importFromCSV.GetInfo(CSVFileStream, importSettingsJSON);
                 }
             }
 

@@ -44,6 +44,12 @@ namespace ASC.Web.CRM.Classes
     [Scope]
     public class ImportFromCSV
     {
+        private readonly ImportDataOperation _importDataOperation;
+        private readonly int _tenantId;
+        private readonly object _syncObj = new object();
+        private readonly DistributedTaskQueue _importQueue;
+        public readonly int MaxRoxCount = 10000;
+
         public ImportFromCSV(TenantManager tenantProvider,
                              DistributedTaskQueueOptionsManager progressQueueOptionsManager,
                              ImportDataOperation importDataOperation)
@@ -53,11 +59,6 @@ namespace ASC.Web.CRM.Classes
             _importDataOperation = importDataOperation;
         }
 
-        private readonly ImportDataOperation _importDataOperation;
-        private readonly int _tenantId;
-        private readonly object _syncObj = new object();
-        private readonly DistributedTaskQueue _importQueue;
-        public readonly int MaxRoxCount = 10000;
 
         public int GetQuotas()
         {

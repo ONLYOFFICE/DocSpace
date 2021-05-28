@@ -36,15 +36,16 @@ namespace ASC.Web.CRM.Configuration
     [WebZone(WebZoneType.CustomProductList)]
     public class VoipModule : IAddon
     {
+        private PathProvider _pathProvider;
+        private SetupInfo _setupInfo;
+
         public VoipModule(PathProvider pathProvider,
                           SetupInfo setupInfo)
         {
-            PathProvider = pathProvider;
-            SetupInfo = setupInfo;
+            _pathProvider = pathProvider;
+            _setupInfo = setupInfo;
         }
 
-        public PathProvider PathProvider { get; }
-        public SetupInfo SetupInfo { get; }
 
         public Guid ID
         {
@@ -63,7 +64,7 @@ namespace ASC.Web.CRM.Configuration
 
         public string StartURL
         {
-            get { return PathProvider.StartURL() + "settings.aspx?type=voip.common&sysname=/modules/voip"; }
+            get { return _pathProvider.StartURL() + "settings.aspx?type=voip.common&sysname=/modules/voip"; }
         }
 
         public string HelpURL
@@ -73,7 +74,7 @@ namespace ASC.Web.CRM.Configuration
 
         public string ProductClassName { get { return "voip"; } }
 
-        public bool Visible { get { return SetupInfo.VoipEnabled; } }
+        public bool Visible { get { return _setupInfo.VoipEnabled; } }
 
         public AddonContext Context { get; private set; }
 

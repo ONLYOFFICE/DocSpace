@@ -65,7 +65,7 @@ namespace ASC.Web.CRM.Classes
             #region Read csv
             using (var CSVFileStream = _dataStore.GetReadStream("temp", _csvFileURI))
             {
-                CsvReader csv = ImportFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings);
+                CsvReader csv = _importFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings);
 
                 int currentIndex = 0;
 
@@ -116,7 +116,7 @@ namespace ASC.Web.CRM.Classes
                     }
                     #endregion
 
-                    if (currentIndex + 1 > ImportFromCSV.MaxRoxCount) break;
+                    if (currentIndex + 1 > _importFromCSV.MaxRoxCount) break;
                     currentIndex++;
                 }
             }
@@ -352,7 +352,7 @@ namespace ASC.Web.CRM.Classes
             if (String.IsNullOrEmpty(firstName) && String.IsNullOrEmpty(lastName) && String.IsNullOrEmpty(companyName))
                 return false;
 
-            Percentage += 1.0 * 100 / (ImportFromCSV.MaxRoxCount * 3);
+            Percentage += 1.0 * 100 / (_importFromCSV.MaxRoxCount * 3);
             PublishChanges();
 
 

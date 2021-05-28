@@ -48,23 +48,23 @@ namespace ASC.Web.CRM.Classes
     [Transient]
     public class PdfQueueWorker
     {
-        private readonly DistributedTaskQueue Queue;
-        private readonly int tenantId;
-        private readonly Guid userId;
+        private readonly DistributedTaskQueue _queue;
+        private readonly int _tenantId;
+        private readonly Guid _userId;
         private readonly object Locker = new object();
+        private PdfProgressItem _pdfProgressItem;
 
         public PdfQueueWorker(DistributedTaskQueueOptionsManager queueOptions,
                               PdfProgressItem pdfProgressItem,
                               TenantManager tenantProvider,
                               SecurityContext securityContext)
         {
-            Queue = queueOptions.Get<PdfProgressItem>();
-            PdfProgressItem = pdfProgressItem;
-            tenantId = tenantProvider.GetCurrentTenant().TenantId;
-            userId = securityContext.CurrentAccount.ID;
+            _queue = queueOptions.Get<PdfProgressItem>();
+            _pdfProgressItem = pdfProgressItem;
+            _tenantId = tenantProvider.GetCurrentTenant().TenantId;
+            _userId = securityContext.CurrentAccount.ID;
         }
 
-        public PdfProgressItem PdfProgressItem { get; }
 
         public string GetTaskId(int tenantId, int invoiceId)
         {
@@ -75,35 +75,35 @@ namespace ASC.Web.CRM.Classes
         {
             var id = GetTaskId(tenantId, invoiceId);
 
-            var findedItem = Queue.GetTasks<PdfProgressItem>().FirstOrDefault(x => x.Id == id);
+            var findedItem = _queue.GetTasks<PdfProgressItem>().FirstOrDefault(x => x.Id == id);
 
             return findedItem;
         }
 
         public void TerminateTask(int invoiceId)
         {
-            var item = GetTaskStatus(tenantId, invoiceId);
+            var item = GetTaskStatus(_tenantId, invoiceId);
 
             if (item != null)
-                Queue.RemoveTask(item.Id);
+                _queue.RemoveTask(item.Id);
         }
 
         public PdfProgressItem StartTask(int invoiceId)
         {
             lock (Locker)
             {
-                var task = GetTaskStatus(tenantId, invoiceId);
+                var task = GetTaskStatus(_tenantId, invoiceId);
 
                 if (task != null && task.IsCompleted)
                 {
-                    Queue.RemoveTask(task.Id);
+                    _queue.RemoveTask(task.Id);
                     task = null;
                 }
 
                 if (task == null)
                 {
-                    PdfProgressItem.Configure(GetTaskId(tenantId, invoiceId), tenantId, userId, invoiceId);
-                    Queue.QueueTask(PdfProgressItem);
+                    _pdfProgressItem.Configure(GetTaskId(_tenantId, invoiceId), _tenantId, _userId, invoiceId);
+                    _queue.QueueTask(_pdfProgressItem);
 
                 }
 

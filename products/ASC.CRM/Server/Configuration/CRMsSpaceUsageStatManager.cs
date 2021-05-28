@@ -44,31 +44,32 @@ namespace ASC.Web.CRM.Configuration
     [Scope]
     public class CrmSpaceUsageStatManager : SpaceUsageStatManager
     {
+        private int _tenantId;
+        private FilesDbContext _filesDbContext;
+        private PathProvider _pathProvider;
+
         public CrmSpaceUsageStatManager(DbContextManager<FilesDbContext> filesDbContext,
                                         PathProvider pathProvider,
                                         TenantManager tenantManager)
         {
-            PathProvider = pathProvider;
-            FilesDbContext = filesDbContext.Value;
-            TenantId = tenantManager.GetCurrentTenant().TenantId;
+            _pathProvider = pathProvider;
+            _filesDbContext = filesDbContext.Value;
+            _tenantId = tenantManager.GetCurrentTenant().TenantId;
         }
 
-        public int TenantId { get; }
-        public FilesDbContext FilesDbContext { get; }
-        public PathProvider PathProvider { get; }
 
         public override List<UsageSpaceStatItem> GetStatData()
         {
-            var spaceUsage = FilesDbContext.Files.Join(FilesDbContext.Tree,
+            var spaceUsage = _filesDbContext.Files.Join(_filesDbContext.Tree,
                                      x => x.FolderId,
                                      y => y.FolderId,
                                      (x, y) => new { x, y }
                                    )
-                              .Join(FilesDbContext.BunchObjects,
+                              .Join(_filesDbContext.BunchObjects,
                                      x => x.y.ParentId,
                                      y => Convert.ToInt32(y.LeftNode),
                                      (x, y) => new { x, y })
-                              .Where(x => x.y.TenantId == TenantId &&
+                              .Where(x => x.y.TenantId == _tenantId &&
                                           Microsoft.EntityFrameworkCore.EF.Functions.Like(x.y.RightNode, "crm/crm_common/%"))
                               .Sum(x => x.x.x.ContentLength);
 
@@ -78,7 +79,7 @@ namespace ASC.Web.CRM.Configuration
 
                     Name = CRMCommonResource.WholeCRMModule,
                     SpaceUsage = spaceUsage,
-                    Url = VirtualPathUtility.ToAbsolute(PathProvider.StartURL())
+                    Url = VirtualPathUtility.ToAbsolute(_pathProvider.StartURL())
                 }
 
             };
