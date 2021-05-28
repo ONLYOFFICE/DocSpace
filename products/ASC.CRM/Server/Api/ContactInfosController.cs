@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 using ASC.Api.CRM;
 using ASC.Common.Web;
@@ -42,9 +43,6 @@ using ASC.Web.Api.Routing;
 using AutoMapper;
 
 using Microsoft.AspNetCore.Mvc;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace ASC.CRM.Api
 {
@@ -161,10 +159,10 @@ namespace ASC.CRM.Api
         ///<exception cref="ArgumentException"></exception>
         [Create(@"contact/{contactid:int}/data")]
         public ContactInfoDto CreateContactInfo(
-            [FromRoute] int contactid, 
-            [FromForm] ContactInfoType infoType, 
-            [FromForm] string data, 
-            [FromForm] bool isPrimary, 
+            [FromRoute] int contactid,
+            [FromForm] ContactInfoType infoType,
+            [FromForm] string data,
+            [FromForm] bool isPrimary,
             [FromForm] string category)
         {
             if (string.IsNullOrEmpty(data) || contactid <= 0) throw new ArgumentException();
@@ -241,13 +239,10 @@ namespace ASC.CRM.Api
 
             address.CategoryName = ((AddressCategory)address.Category).ToLocalizedString();
 
-            var settings = new JsonSerializerSettings
+            var settings = new JsonSerializerOptions
             {
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                },
-                Formatting = Formatting.Indented
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
             };
 
             var contactInfo = new ContactInfo
@@ -256,7 +251,7 @@ namespace ASC.CRM.Api
                 ContactID = contactid,
                 IsPrimary = address.IsPrimary,
                 Category = address.Category,
-                Data = JsonConvert.SerializeObject(address, settings)
+                Data = JsonSerializer.Serialize(address, settings)
             };
 
             contactInfo.ID = _daoFactory.GetContactInfoDao().Save(contactInfo);
@@ -415,18 +410,15 @@ namespace ASC.CRM.Api
 
             address.CategoryName = ((AddressCategory)address.Category).ToLocalizedString();
 
-            var settings = new JsonSerializerSettings
+            var settings = new JsonSerializerOptions
             {
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                },
-                Formatting = Formatting.Indented
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
             };
 
             contactInfo.IsPrimary = address.IsPrimary;
             contactInfo.Category = address.Category;
-            contactInfo.Data = JsonConvert.SerializeObject(address, settings);
+            contactInfo.Data = JsonSerializer.Serialize(address, settings);
 
             _daoFactory.GetContactInfoDao().Update(contactInfo);
 

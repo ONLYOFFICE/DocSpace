@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 using ASC.Collections;
@@ -49,8 +50,6 @@ using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
 
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -638,7 +637,9 @@ namespace ASC.CRM.Core.Dao
             {
                 jsonData.LogoBase64 = null;
             }
-            invoice.JsonData = JsonConvert.SerializeObject(jsonData);
+            
+            invoice.JsonData = JsonSerializer.Serialize(jsonData);
+            
             UpdateInvoiceJsonData(invoice.ID, invoice.JsonData);
         }
 

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 using ASC.Collections;
@@ -41,11 +42,8 @@ using ASC.CRM.Core.Entities;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -73,7 +71,7 @@ namespace ASC.CRM.Core.Dao
         {
             return invoiceItem == null ?
                     string.Empty :
-                    JsonConvert.SerializeObject(new
+                    JsonSerializer.Serialize(new
                     {
                         id = invoiceItem.ID,
                         title = invoiceItem.Title,
@@ -84,7 +82,7 @@ namespace ASC.CRM.Core.Dao
         {
             return invoiceTax == null ?
                     string.Empty :
-                    JsonConvert.SerializeObject(new
+                    JsonSerializer.Serialize(new
                     {
                         id = invoiceTax.ID,
                         name = invoiceTax.Name,

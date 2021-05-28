@@ -27,14 +27,14 @@
 #region Import
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 
 using ASC.Common;
 using ASC.CRM.Core.Enums;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Utility;
-
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -71,7 +71,7 @@ namespace ASC.Web.CRM.Classes
 
             if (!Global.GetStore().IsFile("temp", fileTemp)) return fileUploadResult;
 
-            JObject jObject;
+            JsonDocument jObject;
 
             //Read contents
             using (Stream storeStream = Global.GetStore().GetReadStream("temp", fileTemp))
@@ -91,10 +91,12 @@ namespace ASC.Web.CRM.Classes
                 }
             }
 
-            jObject.Add("assignedPath", fileTemp);
+            var jsonDocumentAsDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(jObject.ToString());
+
+            jsonDocumentAsDictionary.Add("assignedPath", fileTemp);
 
             fileUploadResult.Success = true;
-            fileUploadResult.Data = Global.EncodeTo64(jObject.ToString());
+            fileUploadResult.Data = Global.EncodeTo64(JsonSerializer.Serialize(jsonDocumentAsDictionary));
 
             return fileUploadResult;
         }

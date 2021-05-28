@@ -33,6 +33,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -62,8 +63,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 using MimeKit;
-
-using Newtonsoft.Json.Linq;
 
 using File = System.IO.File;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
@@ -810,8 +809,7 @@ namespace ASC.Web.CRM.Classes
                         {
                             var addressPart = (AddressPart)Enum.Parse(typeof(AddressPart), tagParts[3]);
 
-                            tagValue = JObject.Parse(contactInfo.Data)[addressPart.ToString().ToLower()].Value<String>();
-
+                            tagValue = JsonDocument.Parse(contactInfo.Data).RootElement.GetProperty(addressPart.ToString().ToLower()).GetString();
                         }
                         else
                             tagValue = contactInfo.Data;

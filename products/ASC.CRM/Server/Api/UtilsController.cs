@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
+using System.Text.Json;
 
 using ASC.Api.CRM;
 using ASC.Common.Threading.Progress;
@@ -297,7 +298,7 @@ namespace ASC.CRM.Api
                 tenantSettings.InvoiceSetting = _invoiceSetting.DefaultSettings;
             }
 
-            var companyAddress = Newtonsoft.Json.JsonConvert.SerializeObject(new
+            var companyAddress = JsonSerializer.Serialize(new
             {
                 type = AddressCategory.Billing.ToString(),
                 street,

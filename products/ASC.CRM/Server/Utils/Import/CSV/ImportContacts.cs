@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
@@ -37,8 +38,6 @@ using ASC.CRM.Core.Enums;
 
 using LumenWorks.Framework.IO.Csv;
 
-using Newtonsoft.Json.Linq;
-
 #endregion
 
 namespace ASC.Web.CRM.Classes
@@ -46,9 +45,6 @@ namespace ASC.Web.CRM.Classes
     public partial class ImportDataOperation
     {
         private readonly Int32 DaoIterationStep = 200;
-
-
-
 
         private void ImportContactsData(DaoFactory _daoFactory)
         {
@@ -97,24 +93,25 @@ namespace ASC.Web.CRM.Classes
 
                     var primaryFields = new List<int>();
 
-                    foreach (JProperty jToken in _importSettings.ColumnMapping.Children())
+                    foreach (JsonProperty jProperty in _importSettings.ColumnMapping.EnumerateObject())
                     {
-                        var propertyValue = GetPropertyValue(jToken.Name);
+                        var propertyValue = GetPropertyValue(jProperty.Name);
                         if (String.IsNullOrEmpty(propertyValue)) continue;
 
-                        if (jToken.Name.StartsWith("customField_"))
+                        if (jProperty.Name.StartsWith("customField_"))
                         {
-                            _ReadCustomField(jToken, propertyValue, contact, ref findedCustomField, customFieldDao);
+                            _ReadCustomField(jProperty, propertyValue, contact, ref findedCustomField, customFieldDao);
                         }
-                        else if (jToken.Name.StartsWith("contactInfo_"))
+                        else if (jProperty.Name.StartsWith("contactInfo_"))
                         {
-                            var addressTemplate = new JObject();
+                            var addressTemplate = new Dictionary<String, Object>();
+
                             foreach (String addressPartName in Enum.GetNames(typeof(AddressPart)))
                                 addressTemplate.Add(addressPartName.ToLower(), "");
 
                             var addressTemplateStr = addressTemplate.ToString();
 
-                            _ReadContactInfo(jToken, propertyValue, contact, ref findedContactInfos, ref primaryFields, addressTemplateStr);
+                            _ReadContactInfo(jProperty, propertyValue, contact, ref findedContactInfos, ref primaryFields, addressTemplateStr);
                         }
                     }
                     #endregion
@@ -449,7 +446,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        private void _ReadCustomField(JProperty jToken, String propertyValue, Contact contact, ref List<CustomField> findedCustomField, CustomFieldDao customFieldDao)
+        private void _ReadCustomField(JsonProperty jToken, String propertyValue, Contact contact, ref List<CustomField> findedCustomField, CustomFieldDao customFieldDao)
         {
             var fieldID = Convert.ToInt32(jToken.Name.Split(new[] { '_' })[1]);
             var field = customFieldDao.GetFieldDescription(fieldID);
@@ -466,7 +463,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        private void _ReadContactInfo(JProperty jToken, String propertyValue, Contact contact, ref List<ContactInfo> findedContactInfos, ref List<int> primaryFields, String addressTemplateStr)
+        private void _ReadContactInfo(JsonProperty jToken, String propertyValue, Contact contact, ref List<ContactInfo> findedContactInfos, ref List<int> primaryFields, String addressTemplateStr)
         {
             var nameParts = jToken.Name.Split(new[] { '_' }).Skip(1).ToList();
             var contactInfoType =
@@ -522,11 +519,11 @@ namespace ASC.Web.CRM.Classes
                     findedContactInfos.Add(findedAddress);
                 }
 
-                var addressParts = JObject.Parse(findedAddress.Data);
+                var addressParts = JsonSerializer.Deserialize<Dictionary<String, Object>>(findedAddress.Data);
 
                 addressParts[addressPart.ToString().ToLower()] = propertyValue;
 
-                findedAddress.Data = addressParts.ToString();
+                findedAddress.Data = JsonSerializer.Serialize(addressParts);
 
                 return;
             }

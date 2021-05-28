@@ -26,16 +26,14 @@
 
 using System;
 using System.Runtime.Serialization;
+using System.Text.Json;
 
 using ASC.Common.Mapping;
 using ASC.CRM.Classes;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Enums;
-using ASC.CRM.Mapping;
 
 using AutoMapper;
-
-using Newtonsoft.Json.Linq;
 
 namespace ASC.CRM.ApiModels
 {
@@ -53,11 +51,13 @@ namespace ASC.CRM.ApiModels
         {
             if (contactInfo.InfoType != ContactInfoType.Address) throw new ArgumentException();
 
-            City = JObject.Parse(contactInfo.Data)["city"].Value<String>();
-            Country = JObject.Parse(contactInfo.Data)["country"].Value<String>();
-            State = JObject.Parse(contactInfo.Data)["state"].Value<String>();
-            Street = JObject.Parse(contactInfo.Data)["street"].Value<String>();
-            Zip = JObject.Parse(contactInfo.Data)["zip"].Value<String>();
+            var jsonElement =  JsonDocument.Parse(contactInfo.Data).RootElement;
+
+            City = jsonElement.GetProperty("city").GetString();
+            Country = jsonElement.GetProperty("country").GetString();
+            State = jsonElement.GetProperty("state").GetString();
+            Street = jsonElement.GetProperty("street").GetString();
+            Zip = jsonElement.GetProperty("zip").GetString();
             Category = contactInfo.Category;
             CategoryName = contactInfo.CategoryToString();
             IsPrimary = contactInfo.IsPrimary;
@@ -73,7 +73,7 @@ namespace ASC.CRM.ApiModels
 
             try
             {
-                res = Newtonsoft.Json.JsonConvert.DeserializeObject<Address>(contactInfo.Data);
+                res = JsonSerializer.Deserialize<Address>(contactInfo.Data);
                 res.Category = contactInfo.Category;
                 res.CategoryName = contactInfo.CategoryToString();
                 res.IsPrimary = contactInfo.IsPrimary;

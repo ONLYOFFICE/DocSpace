@@ -30,6 +30,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using System.Web;
 
 using ASC.Common.Logging;
@@ -51,7 +52,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-using Newtonsoft.Json.Linq;
+using SimpleJson;
 
 namespace ASC.Web.CRM.HttpHandlers
 {
@@ -146,10 +147,12 @@ namespace ASC.Web.CRM.HttpHandlers
 
                 var fieldCollector = new NameValueCollection();
 
-                var addressTemplate = new JObject();
+                var addressTemplate = new Dictionary<String, Object>();                
+                
                 foreach (String addressPartName in Enum.GetNames(typeof(AddressPart)))
                     addressTemplate.Add(addressPartName.ToLower(), "");
-                var addressTemplateStr = addressTemplate.ToString();
+                                
+                var addressTemplateStr = JsonSerializer.Serialize(addressTemplate);
 
                 var isCompany = false;
 
@@ -290,11 +293,11 @@ namespace ASC.Web.CRM.HttpHandlers
                                 contactInfos.Add(findedAddress);
                             }
 
-                            var addressParts = JObject.Parse(findedAddress.Data);
-
+                            Dictionary<string, object> addressParts = JsonSerializer.Deserialize<Dictionary<string, object>>(findedAddress.Data);
                             addressParts[addressPart.ToString().ToLower()] = GetValue(key);
-
-                            findedAddress.Data = addressParts.ToString();
+                            string newJson = JsonSerializer.Serialize(addressParts);
+                                                 
+                            findedAddress.Data = JsonSerializer.Serialize(addressParts);
 
                             continue;
                         }
@@ -372,12 +375,12 @@ namespace ASC.Web.CRM.HttpHandlers
         {
             if (contactInfoType != ContactInfoType.Address) return data;
 
-            var addressParts = JObject.Parse(data);
+            var addressParts = JsonDocument.Parse(data).RootElement;
 
             var address = new StringBuilder();
 
             foreach (AddressPart addressPartEnum in Enum.GetValues(typeof(AddressPart)))
-                address.Append(addressParts[addressPartEnum.ToString().ToLower()] + " ");
+                address.Append(addressParts.GetProperty(addressPartEnum.ToString().ToLower()).GetString() + " ");
 
             return address.ToString();
         }

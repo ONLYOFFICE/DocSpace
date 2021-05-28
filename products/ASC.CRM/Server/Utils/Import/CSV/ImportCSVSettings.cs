@@ -28,10 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 
 using ASC.CRM.Core.Enums;
-
-using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -39,65 +38,56 @@ namespace ASC.Web.CRM.Classes
     {
         public ImportCSVSettings(String jsonStr)
         {
-            var json = JObject.Parse(jsonStr);
+            var jsonDocument = JsonDocument.Parse(jsonStr);
 
-            if (json == null) return;
+            if (jsonDocument == null) return;
 
-            HasHeader = json["has_header"].Value<bool>();
-            DelimiterCharacter = Convert.ToChar(json["delimiter_character"].Value<int>());
-            Encoding = Encoding.GetEncoding(json["encoding"].Value<int>());
-            QuoteType = Convert.ToChar(json["quote_character"].Value<int>());
+            var jsonElement = jsonDocument.RootElement;
 
-            JToken columnMappingToken;
+            HasHeader = jsonElement.GetProperty("has_header").GetBoolean();
+            DelimiterCharacter = Convert.ToChar(jsonElement.GetProperty("delimiter_character").GetInt32());
+            Encoding = Encoding.GetEncoding(jsonElement.GetProperty("encoding").GetInt32());
+            QuoteType = Convert.ToChar(jsonElement.GetProperty("quote_character").GetInt32());
 
-            if (json.TryGetValue("column_mapping", out columnMappingToken))
-                ColumnMapping = (JObject)columnMappingToken;
+            JsonElement columnMappingToken;
+            if (jsonElement.TryGetProperty("column_mapping", out columnMappingToken))
+                ColumnMapping = columnMappingToken;
 
-            JToken duplicateRecordRuleToken;
-
-            if (json.TryGetValue("removing_duplicates_behavior", out duplicateRecordRuleToken))
-                DuplicateRecordRule = duplicateRecordRuleToken.Value<int>();
-
-            JToken isPrivateToken;
-            if (json.TryGetValue("is_private", out isPrivateToken))
+            JsonElement duplicateRecordRuleToken;
+            if (jsonElement.TryGetProperty("removing_duplicates_behavior", out duplicateRecordRuleToken))
+                DuplicateRecordRule = duplicateRecordRuleToken.GetInt32();
+            
+            JsonElement isPrivateToken;
+            if (jsonElement.TryGetProperty("is_private", out isPrivateToken))
             {
-                IsPrivate = isPrivateToken.Value<bool>();
-                AccessList = json["access_list"].Values<String>().Select(item => new Guid(item)).ToList();
+                IsPrivate = isPrivateToken.GetBoolean();
+                AccessList = jsonElement.GetProperty("access_list").EnumerateArray().Select(x => x.GetGuid()).ToList();
+            }
+            
+            JsonElement shareTypeToken;
+            if (jsonElement.TryGetProperty("share_type", out shareTypeToken))
+            {
+                ShareType = (ShareType)(shareTypeToken.GetInt32());
+                ContactManagers = jsonElement.GetProperty("contact_managers").EnumerateArray().Select(x => x.GetGuid()).ToList();
             }
 
-            JToken shareTypeToken;
-            if (json.TryGetValue("share_type", out shareTypeToken))
+            JsonElement tagsToken;
+            if (jsonElement.TryGetProperty("tags", out tagsToken))
             {
-                ShareType = (ShareType)(shareTypeToken.Value<int>());
-                ContactManagers = json["contact_managers"].Values<String>().Select(item => new Guid(item)).ToList();
-            }
-
-            if (json["tags"] != null)
-            {
-                Tags = json["tags"].Values<String>().ToList();
+                Tags = tagsToken.EnumerateArray().Select(x => x.GetString()).ToList();
             }
         }
 
         public bool IsPrivate { get; set; }
-
         public ShareType ShareType { get; set; }
-
         public int DuplicateRecordRule { get; set; }
-
         public bool HasHeader { get; set; }
-
         public char DelimiterCharacter { get; set; }
-
         public char QuoteType { get; set; }
-
         public Encoding Encoding { get; set; }
-
         public List<Guid> AccessList { get; set; }
-
         public List<Guid> ContactManagers { get; set; }
-
-        public JObject ColumnMapping { get; set; }
-
+        public JsonElement ColumnMapping { get; set; }
         public List<String> Tags { get; set; }
     }
 

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -42,8 +43,6 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -109,7 +108,7 @@ namespace ASC.CRM.Core.Dao
         {
             int[] tags = GetTagsLinkCount(entityType).ToArray();
 
-            return JsonConvert.SerializeObject(tags);
+            return JsonSerializer.Serialize(tags);
         }
 
         public IEnumerable<int> GetTagsLinkCount(EntityType entityType)

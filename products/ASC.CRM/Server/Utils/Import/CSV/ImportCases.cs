@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
@@ -36,8 +37,6 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 
 using LumenWorks.Framework.IO.Csv;
-
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -73,7 +72,7 @@ namespace ASC.Web.CRM.Classes
 
                     if (String.IsNullOrEmpty(objCases.Title)) continue;
 
-                    foreach (JProperty jToken in _importSettings.ColumnMapping.Children())
+                    foreach (JsonProperty jToken in _importSettings.ColumnMapping.EnumerateObject())
                     {
                         var propertyValue = GetPropertyValue(jToken.Name);
 

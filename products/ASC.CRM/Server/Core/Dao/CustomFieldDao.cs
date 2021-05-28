@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -46,9 +47,6 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
 namespace ASC.CRM.Core.Dao
 {
     [Scope]
@@ -56,7 +54,7 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly TenantUtil _tenantUtil;
         private readonly FactoryIndexerFieldValue _factoryIndexer;
-     
+
         public CustomFieldDao(
             DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
@@ -71,7 +69,7 @@ namespace ASC.CRM.Core.Dao
                  tenantManager,
                  securityContext,
                  logger,
-                 ascCache, 
+                 ascCache,
                  mapper)
         {
             _tenantUtil = tenantUtil;
@@ -111,8 +109,8 @@ namespace ASC.CRM.Core.Dao
             fieldValue = fieldValue.Trim();
 
             var dbEntity = Query(CrmDbContext.FieldValue)
-                                    .FirstOrDefault(x => x.EntityId == entityID && 
-                                                x.EntityType == entityType && 
+                                    .FirstOrDefault(x => x.EntityId == entityID &&
+                                                x.EntityType == entityType &&
                                                 x.FieldId == fieldID);
 
             if (string.IsNullOrEmpty(fieldValue))
@@ -122,7 +120,7 @@ namespace ASC.CRM.Core.Dao
                 CrmDbContext.Remove(dbEntity);
             }
             else
-            {  
+            {
                 dbEntity.Value = fieldValue;
                 dbEntity.LastModifedOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
                 dbEntity.LastModifedBy = _securityContext.CurrentAccount.ID;
@@ -135,7 +133,7 @@ namespace ASC.CRM.Core.Dao
 
         private string GetValidMask(CustomFieldType customFieldType, String mask)
         {
-            var resultMask = new JObject();
+            var resultMask = new Dictionary<String, Object>();
 
             if (customFieldType == CustomFieldType.CheckBox || customFieldType == CustomFieldType.Heading || customFieldType == CustomFieldType.Date)
                 return String.Empty;
@@ -145,10 +143,10 @@ namespace ASC.CRM.Core.Dao
 
             try
             {
-                var maskObj = JToken.Parse(mask);
+                var maskObj = JsonDocument.Parse(mask).RootElement;
                 if (customFieldType == CustomFieldType.TextField)
                 {
-                    var size = maskObj.Value<int>("size");
+                    var size = maskObj.GetProperty("size").GetInt32();
                     if (size == 0)
                     {
                         resultMask.Add("size", 1);
@@ -164,8 +162,8 @@ namespace ASC.CRM.Core.Dao
                 }
                 if (customFieldType == CustomFieldType.TextArea)
                 {
-                    var rows = maskObj.Value<int>("rows");
-                    var cols = maskObj.Value<int>("cols");
+                    var rows = maskObj.GetProperty("rows").GetInt32();
+                    var cols = maskObj.GetProperty("cols").GetInt32();
 
                     if (rows == 0)
                     {
@@ -195,11 +193,14 @@ namespace ASC.CRM.Core.Dao
                 }
                 if (customFieldType == CustomFieldType.SelectBox)
                 {
-                    if (maskObj is JArray)
+                    try
                     {
+                        var arrayLength = maskObj.GetArrayLength();
+
                         return mask;
+
                     }
-                    else
+                    catch (Exception ex)
                     {
                         throw new ArgumentException(CRMErrorsResource.CustomFieldMaskNotValid);
                     }
@@ -223,14 +224,14 @@ namespace ASC.CRM.Core.Dao
                     throw;
                 }
             }
-            return JsonConvert.SerializeObject(resultMask);
+            return JsonSerializer.Serialize(resultMask);
         }
 
         public int CreateField(EntityType entityType, String label, CustomFieldType customFieldType, String mask)
         {
             if (!_supportedEntityType.Contains(entityType) || String.IsNullOrEmpty(label))
                 throw new ArgumentException();
-            
+
             var resultMask = GetValidMask(customFieldType, mask);
 
             var sortOrder = Query(CrmDbContext.FieldDescription).Select(x => x.SortOrder).Max() + 1;
@@ -336,19 +337,20 @@ namespace ASC.CRM.Core.Dao
                         }
                         else
                         {
-                            var maskObjOld = JToken.Parse(oldMask);
-                            var maskObjNew = JToken.Parse(customField.Mask);
+                            try
+                            {
 
-                            if (!(maskObjOld is JArray && maskObjNew is JArray))
-                            {
-                                throw new ArgumentException(CRMErrorsResource.CustomFieldMaskNotValid);
+                                var maskObjOld = JsonSerializer.Deserialize<List<String>>(oldMask);
+                                var maskObjNew = JsonSerializer.Deserialize<List<String>>(customField.Mask);
+
+                                var inm = maskObjNew.Intersect(maskObjOld).ToList();
+
+                                if (inm.Count == maskObjOld.Count)
+                                {
+                                    resultMask = customField.Mask;
+                                }
                             }
-                            var inm = (((JArray)maskObjNew).ToList()).Intersect(((JArray)maskObjOld).ToList()).ToList();
-                            if (inm.Count == ((JArray)maskObjOld).ToList().Count)
-                            {
-                                resultMask = customField.Mask;
-                            }
-                            else
+                            catch (Exception ex)
                             {
                                 throw new ArgumentException(CRMErrorsResource.CustomFieldMaskNotValid);
                             }
@@ -431,8 +433,8 @@ namespace ASC.CRM.Core.Dao
                 sqlQuery = sqlQuery.Where(x => x.x.EntityType == entityType);
             }
 
-            return JsonConvert.SerializeObject(sqlQuery.GroupBy(x => x.x.Id)
-                                                       .Select(x => x.Count()).ToList());
+            return JsonSerializer.Serialize(sqlQuery.GroupBy(x => x.x.Id)
+                                                    .Select(x => x.Count()).ToList());
         }
 
         public int GetContactLinkCount(EntityType entityType, int entityID)
@@ -538,7 +540,7 @@ namespace ASC.CRM.Core.Dao
 
             var dbEntities = sqlQuery.ToList();
 
-            return _mapper.Map<List<DbFieldDescription>, List<CustomField>>(dbEntities);        
+            return _mapper.Map<List<DbFieldDescription>, List<CustomField>>(dbEntities);
         }
 
         public void DeleteField(int id)
@@ -568,7 +570,7 @@ namespace ASC.CRM.Core.Dao
         {
             var customField = _mapper.Map<CustomField>(dbFieldDescription);
 
-            if (customField != null &&  dbFieldValue != null)
+            if (customField != null && dbFieldValue != null)
             {
                 customField.Value = dbFieldValue.Value;
                 customField.EntityID = dbFieldValue.EntityId;

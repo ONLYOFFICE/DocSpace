@@ -30,6 +30,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.Json;
 
 using ASC.Collections;
 using ASC.Common;
@@ -50,11 +51,8 @@ using ASC.Web.Studio.Core;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
 
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
@@ -304,8 +302,8 @@ namespace ASC.CRM.Core.Dao
 
             if (item.CategoryID == (int)HistoryCategorySystem.MailMessage)
             {
-                var jsonObj = JObject.Parse(item.Content);
-                var messageId = jsonObj.Value<Int32>("message_id");
+                var jsonObj = JsonDocument.Parse(item.Content).RootElement;
+                var messageId = jsonObj.GetProperty("message_id").GetInt32();
 
                 //var apiServer = new ApiServer();
                 //var msg = apiServer.GetApiResponse(
@@ -603,21 +601,21 @@ namespace ASC.CRM.Core.Dao
             public long message_id;
         }
 
-        private static string GetHistoryContentJson(JObject apiResponse)
+        private static string GetHistoryContentJson(JsonElement apiResponse)
         {
             var content_struct = new CrmHistoryContent
             {
-                @from = apiResponse.Value<String>("from"),
-                to = apiResponse.Value<String>("to"),
-                cc = apiResponse.Value<String>("cc"),
-                bcc = apiResponse.Value<String>("bcc"),
-                subject = apiResponse.Value<String>("subject"),
-                important = apiResponse.Value<Boolean>("important"),
-                chain_id = apiResponse.Value<String>("chainId"),
-                is_sended = apiResponse.Value<Int32>("folder") == 1,
-                date_created = apiResponse.Value<String>("date"),
-                introduction = apiResponse.Value<String>("introduction"),
-                message_id = apiResponse.Value<Int32>("id")
+                @from = apiResponse.GetProperty("from").GetString(),
+                to = apiResponse.GetProperty("to").GetString(),
+                cc = apiResponse.GetProperty("cc").GetString(),
+                bcc = apiResponse.GetProperty("bcc").GetString(),
+                subject = apiResponse.GetProperty("subject").GetString(),
+                important = apiResponse.GetProperty("important").GetBoolean(),
+                chain_id = apiResponse.GetProperty("chainId").GetString(),
+                is_sended = apiResponse.GetProperty("folder").GetInt32() == 1,
+                date_created = apiResponse.GetProperty("date").GetString(),
+                introduction = apiResponse.GetProperty("introduction").GetString(),
+                message_id = apiResponse.GetProperty("id").GetInt32()
             };
 
             var serializer = new DataContractJsonSerializer(typeof(CrmHistoryContent));

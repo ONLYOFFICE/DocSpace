@@ -32,6 +32,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -60,13 +61,32 @@ using ICSharpCode.SharpZipLib.Zip;
 
 using Microsoft.Extensions.Options;
 
-using Newtonsoft.Json.Linq;
-
 namespace ASC.Web.CRM.Classes
 {  
     [Transient]
     public class ExportDataOperation : DistributedTaskProgress, IProgressItem
     {
+
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+        private readonly FilesLinkUtility _filesLinkUtility;
+        private readonly FileMarker _fileMarker;
+        private readonly IDaoFactory _fileDaoFactory;
+        private readonly GlobalFolder _globalFolder;
+        private readonly FileUploader _fileUploader;
+        private readonly TenantManager _tenantManager;
+        private readonly CommonLinkUtility _commonLinkUtility;
+        private readonly SecurityContext _securityContext;
+        private readonly DaoFactory _daoFactory;
+        private readonly UserManager _userManager;
+        private readonly FileUtility _fileUtility;
+        private readonly int _tenantId;
+        private readonly IAccount _author;
+        private readonly IDataStore _dataStore;
+        private readonly NotifyClient _notifyClient;
+        private FilterObject _filterObject;
+        private readonly ILog _log;
+        private int _totalCount;
+
         public ExportDataOperation(UserManager userManager,
                                    FileUtility fileUtility,
                                    SecurityContext securityContext,
@@ -83,10 +103,10 @@ namespace ASC.Web.CRM.Classes
                                    FilesLinkUtility filesLinkUtility,
                                    DisplayUserSettingsHelper displayUserSettingsHelper)
         {
-            DaoFactory = daoFactory;
-            UserManager = userManager;
-            FileUtility = fileUtility;
-            FileUploader = fileUploader;
+            _daoFactory = daoFactory;
+            _userManager = userManager;
+            _fileUtility = fileUtility;
+            _fileUploader = fileUploader;
 
             _tenantId = tenantManager.GetCurrentTenant().TenantId;
 
@@ -101,14 +121,14 @@ namespace ASC.Web.CRM.Classes
             IsCompleted = false;
             FileUrl = null;
 
-            SecurityContext = securityContext;
+            _securityContext = securityContext;
 
-            CommonLinkUtility = commonLinkUtility;
-            GlobalFolder = globalFolder;
-            FileMarker = fileMarker;
-            FileDaoFactory = fileDaoFactory;
-            FilesLinkUtility = filesLinkUtility;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            _commonLinkUtility = commonLinkUtility;
+            _globalFolder = globalFolder;
+            _fileMarker = fileMarker;
+            _fileDaoFactory = fileDaoFactory;
+            _filesLinkUtility = filesLinkUtility;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
         }
 
         public void Configure(object id, FilterObject filterObject, string fileName)
@@ -117,34 +137,6 @@ namespace ASC.Web.CRM.Classes
             _filterObject = filterObject;
             Id = id.ToString();
         }
-
-
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public FilesLinkUtility FilesLinkUtility { get; }
-        public FileMarker FileMarker { get; }
-        public IDaoFactory FileDaoFactory { get; }
-        public GlobalFolder GlobalFolder { get; }
-        public FileUploader FileUploader { get; }
-        public TenantManager TenantManager { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public SecurityContext SecurityContext { get; }
-        public DaoFactory DaoFactory { get; }
-        public UserManager UserManager { get; }
-        public FileUtility FileUtility { get; }
-
-        private readonly int _tenantId;
-
-        private readonly IAccount _author;
-
-        private readonly IDataStore _dataStore;
-
-        private readonly NotifyClient _notifyClient;
-
-        private FilterObject _filterObject;
-
-        private readonly ILog _log;
-
-        private int _totalCount;
 
         public override bool Equals(object obj)
         {
@@ -168,9 +160,7 @@ namespace ASC.Web.CRM.Classes
         }
  
         public object Error { get; set; }
-
         public string FileName { get; set; }
-
         public string FileUrl { get; set; }
 
         private String WrapDoubleQuote(String value)
@@ -216,10 +206,10 @@ namespace ASC.Web.CRM.Classes
         {
             try
             {
-                TenantManager.SetCurrentTenant(_tenantId);
-                SecurityContext.AuthenticateMe(_author);
+                _tenantManager.SetCurrentTenant(_tenantId);
+                _securityContext.AuthenticateMe(_author);
 
-                var userCulture = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).GetCulture();
+                var userCulture = _userManager.GetUsers(_securityContext.CurrentAccount.ID).GetCulture();
 
                 System.Threading.Thread.CurrentThread.CurrentCulture = userCulture;
                 System.Threading.Thread.CurrentThread.CurrentUICulture = userCulture;
@@ -227,9 +217,9 @@ namespace ASC.Web.CRM.Classes
                 _log.Debug("Start Export Data");
                  
                 if (_filterObject == null)
-                    ExportAllData(DaoFactory);
+                    ExportAllData(_daoFactory);
                 else
-                    ExportPartData(DaoFactory);
+                    ExportPartData(_daoFactory);
 
                 Complete(100, DistributedTaskStatus.Completed, null);
 
@@ -255,7 +245,6 @@ namespace ASC.Web.CRM.Classes
             Percentage = percentage;
             Status = status;
             Error = error;
-
         }
 
         private void ExportAllData(DaoFactory daoFactory)
@@ -321,7 +310,6 @@ namespace ASC.Web.CRM.Classes
                         zipEntryData.CopyTo(zipStream);
                     }
 
-
                     zipStream.PutNextEntry(new ZipEntry(CRMCommonResource.TaskModuleName + ".csv"));
 
                     var taskData = taskDao.GetAllTasks();
@@ -355,7 +343,7 @@ namespace ASC.Web.CRM.Classes
                     stream.Position = 0;
                 }
 
-                FileUrl = CommonLinkUtility.GetFullAbsolutePath(_dataStore.SavePrivate(String.Empty, FileName, stream, DateTime.Now.AddDays(1)));
+                FileUrl = _commonLinkUtility.GetFullAbsolutePath(_dataStore.SavePrivate(String.Empty, FileName, stream, DateTime.Now.AddDays(1)));
 
                 _notifyClient.SendAboutExportCompleted(_author.ID, FileName, FileUrl);
             }
@@ -632,10 +620,10 @@ namespace ASC.Web.CRM.Classes
                         {
                             if (!String.IsNullOrEmpty(columnValue))
                             {
-                                var addresses = JArray.Parse(String.Concat("[", columnValue, "]"));
+                                var addresses = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(String.Concat("[", columnValue, "]"));
 
-                                dataRowItems.AddRange((from AddressPart addressPartEnum in Enum.GetValues(typeof(AddressPart))
-                                                       select String.Join(",", addresses.Select(item => (String)item.SelectToken(addressPartEnum.ToString().ToLower())).ToArray())).ToArray());
+                                dataRowItems.AddRange(from AddressPart addressPartEnum in Enum.GetValues(typeof(AddressPart))
+                                                      select String.Join(",", addresses.Select(x => x[addressPartEnum.ToString().ToLower()]).ToArray()));
                             }
                             else
                             {
@@ -817,7 +805,7 @@ namespace ASC.Web.CRM.Classes
                         deal.ActualCloseDate.Date == DateTime.MinValue.Date ? "" : deal.ActualCloseDate.ToString(),
                         //deal.ExpectedCloseDate.Date == DateTime.MinValue.Date ? "" : deal.ExpectedCloseDate.ToString(DateTimeExtension.DateFormatPattern),
                         //deal.ActualCloseDate.Date == DateTime.MinValue.Date ? "" : deal.ActualCloseDate.ToString(DateTimeExtension.DateFormatPattern),
-                        UserManager.GetUsers(deal.ResponsibleID).DisplayUserName(DisplayUserSettingsHelper),
+                        _userManager.GetUsers(deal.ResponsibleID).DisplayUserName(_displayUserSettingsHelper),
                         currentDealMilestone.Title,
                         currentDealMilestoneStatus,
                         deal.DealMilestoneProbability.ToString(CultureInfo.InvariantCulture),
@@ -997,7 +985,7 @@ namespace ASC.Web.CRM.Classes
                         categoryTitle,
                         contactTitle,
                         entityTitle,
-                        UserManager.GetUsers(item.CreateBy).DisplayUserName(DisplayUserSettingsHelper),
+                        _userManager.GetUsers(item.CreateBy).DisplayUserName(_displayUserSettingsHelper),
                //         item.CreateOn.ToShortString()
                         item.CreateOn
                     });
@@ -1107,7 +1095,7 @@ namespace ASC.Web.CRM.Classes
                             ? ""
 //                            : item.DeadLine.ToShortString(),
                             : item.DeadLine.ToString(),
-                        UserManager.GetUsers(item.ResponsibleID).DisplayUserName(DisplayUserSettingsHelper),
+                        _userManager.GetUsers(item.ResponsibleID).DisplayUserName(_displayUserSettingsHelper),
                         contactTitle,
                         item.IsClosed
                             ? CRMTaskResource.TaskStatus_Closed
@@ -1222,18 +1210,18 @@ namespace ASC.Web.CRM.Classes
 
             using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(data)))
             {
-                var file = FileUploader.Exec(GlobalFolder.GetFolderMy(FileMarker, FileDaoFactory).ToString(), title, memStream.Length, memStream, true);
+                var file = _fileUploader.Exec(_globalFolder.GetFolderMy(_fileMarker, _fileDaoFactory).ToString(), title, memStream.Length, memStream, true);
 
-                if (FileUtility.CanWebView(title) || FileUtility.CanWebEdit(title))
+                if (_fileUtility.CanWebView(title) || _fileUtility.CanWebEdit(title))
                 {
-                    fileUrl = FilesLinkUtility.GetFileWebEditorUrl(file.ID);
+                    fileUrl = _filesLinkUtility.GetFileWebEditorUrl(file.ID);
                     fileUrl += string.Format("&options={{\"delimiter\":{0},\"codePage\":{1}}}",
                                      (int)FileUtility.CsvDelimiter.Comma,
                                      Encoding.UTF8.CodePage);
                 }
                 else
                 {
-                    fileUrl = FilesLinkUtility.GetFileDownloadUrl(file.ID);
+                    fileUrl = _filesLinkUtility.GetFileDownloadUrl(file.ID);
                 }
             }
 

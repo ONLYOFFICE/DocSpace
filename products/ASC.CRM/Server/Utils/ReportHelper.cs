@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text.Json;
 
 using ASC.Common;
 using ASC.Core;
@@ -40,8 +41,6 @@ using ASC.Web.Files.Services.DocumentService;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-
-using Newtonsoft.Json;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -219,7 +218,7 @@ namespace ASC.Web.CRM.Classes
                 throw new Exception(CRMReportResource.BuildErrorEmptyDocbuilderTemplate);
 
             return script.Replace("${outputFilePath}", fileName)
-                         .Replace("${reportData}", JsonConvert.SerializeObject(data));
+                         .Replace("${reportData}", JsonSerializer.Serialize(data));
         }
 
         private void SaveReportFile(ReportState state, string url)

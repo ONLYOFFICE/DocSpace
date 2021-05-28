@@ -31,13 +31,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Enums;
 using ASC.Web.CRM.Classes;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 using EnumExtension = ASC.CRM.Classes.EnumExtension;
 
@@ -83,32 +81,32 @@ namespace ASC.CRM.Core.Entities
 
             foreach (var filterItem in jsonArray)
             {
-                var filterObj = JObject.Parse(filterItem);
+                var filterObj = JsonDocument.Parse(filterItem).RootElement;
 
-                var paramString = filterObj.Value<string>("params");
+                var paramString = filterObj.GetProperty("params").GetString();
 
                 if (string.IsNullOrEmpty(paramString)) continue;
 
-                var filterParam = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(paramString)));
+                var filterParam = JsonDocument.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(paramString))).RootElement;
 
-                switch (filterObj.Value<string>("id"))
+                switch (filterObj.GetProperty("id").GetString())
                 {
                     case "sorter":
-                        SortBy = filterParam.Value<string>("id");
-                        SortOrder = filterParam.Value<string>("sortOrder");
+                        SortBy = filterParam.GetProperty("id").GetString();
+                        SortOrder = filterParam.GetProperty("sortOrder").GetString();
                         break;
 
                     case "text":
-                        FilterValue = filterParam.Value<string>("value");
+                        FilterValue = filterParam.GetProperty("value").GetString();
                         break;
 
                     case "closed":
                     case "opened":
-                        IsClosed = filterParam.Value<bool>("value");
+                        IsClosed = filterParam.GetProperty("value").GetBoolean();
                         break;
 
                     case "tags":
-                        Tags = filterParam.Value<JArray>("value").ToList().ConvertAll(n => n.ToString());
+                        Tags = filterParam.GetProperty("value").EnumerateArray().Select(x => x.GetString()).ToList();
                         break;
                 }
             }
@@ -160,36 +158,42 @@ namespace ASC.CRM.Core.Entities
 
             foreach (var filterItem in jsonArray)
             {
-                var filterObj = JObject.Parse(filterItem);
+                var filterObj = JsonDocument.Parse(filterItem).RootElement;
 
-                var paramString = filterObj.Value<string>("params");
+                var paramString = filterObj.GetProperty("params").GetString();
 
                 if (string.IsNullOrEmpty(paramString)) continue;
 
-                var filterParam = Global.JObjectParseWithDateAsString(Encoding.UTF8.GetString(Convert.FromBase64String(paramString)));
+                var filterParam = Global.JObjectParseWithDateAsString(Encoding.UTF8.GetString(Convert.FromBase64String(paramString))).RootElement;
 
-                switch (filterObj.Value<string>("id"))
+                switch (filterObj.GetProperty("id").GetString())
                 {
                     case "sorter":
-                        SortBy = filterParam.Value<string>("id");
-                        SortOrder = filterParam.Value<string>("sortOrder");
+                        SortBy = filterParam.GetProperty("id").GetString();
+                        SortOrder = filterParam.GetProperty("sortOrder").GetString();
                         break;
 
                     case "text":
-                        FilterValue = filterParam.Value<string>("value");
+                        FilterValue = filterParam.GetProperty("value").GetString();
                         break;
 
                     case "my":
                     case "responsibleID":
-                        ResponsibleId = new Guid(filterParam.Value<string>("value"));
+                        ResponsibleId = filterParam.GetProperty("value").GetGuid();
                         break;
 
                     case "overdue":
                     case "today":
                     case "theNext":
-                        var valueString = filterParam.Value<string>("value");
-                        var fromToArray = JsonConvert.DeserializeObject<List<string>>(valueString);
+                        var valueString = filterParam.GetProperty("value").GetString();
+                        var fromToArray = JsonDocument.Parse(valueString)
+                                         .RootElement
+                                         .EnumerateArray()
+                                         .Select(x => x.GetString())
+                                         .ToList();
+
                         if (fromToArray.Count != 2) continue;
+                        
                         FromDate = !String.IsNullOrEmpty(fromToArray[0])
                                               ? Global.ApiDateTimeParse(fromToArray[0]) : DateTime.MinValue;
                         ToDate = !String.IsNullOrEmpty(fromToArray[1])
@@ -197,21 +201,21 @@ namespace ASC.CRM.Core.Entities
                         break;
 
                     case "fromToDate":
-                        FromDate = filterParam.Value<DateTime>("from");
-                        ToDate = (filterParam.Value<DateTime>("to")).AddDays(1).AddSeconds(-1);
+                        FromDate = filterParam.GetProperty("from").GetDateTime();
+                        ToDate = (filterParam.GetProperty("to").GetDateTime()).AddDays(1).AddSeconds(-1);
                         break;
 
                     case "categoryID":
-                        CategoryId = filterParam.Value<int>("value");
+                        CategoryId = filterParam.GetProperty("value").GetInt32();
                         break;
 
                     case "openTask":
                     case "closedTask":
-                        IsClosed = filterParam.Value<bool>("value");
+                        IsClosed = filterParam.GetProperty("value").GetBoolean();
                         break;
 
                     case "contactID":
-                        ContactId = filterParam.Value<int>("id");
+                        ContactId = filterParam.GetProperty("id").GetInt32();
                         break;
                 }
             }
@@ -269,68 +273,72 @@ namespace ASC.CRM.Core.Entities
 
             foreach (var filterItem in jsonArray)
             {
-                var filterObj = JObject.Parse(filterItem);
+                var filterObj = JsonDocument.Parse(filterItem).RootElement;
 
-                var paramString = filterObj.Value<string>("params");
+                var paramString = filterObj.GetProperty("params").GetString();
 
                 if (string.IsNullOrEmpty(paramString)) continue;
 
-                var filterParam = Global.JObjectParseWithDateAsString(Encoding.UTF8.GetString(Convert.FromBase64String(paramString)));
+                var filterParam = Global.JObjectParseWithDateAsString(Encoding.UTF8.GetString(Convert.FromBase64String(paramString))).RootElement;
 
-                switch (filterObj.Value<string>("id"))
+                switch (filterObj.GetProperty("id").GetString())
                 {
                     case "sorter":
-                        SortBy = filterParam.Value<string>("id");
-                        SortOrder = filterParam.Value<string>("sortOrder");
+                        SortBy = filterParam.GetProperty("id").GetString();
+                        SortOrder = filterParam.GetProperty("sortOrder").GetString();
                         break;
 
                     case "text":
-                        FilterValue = filterParam.Value<string>("value");
+                        FilterValue = filterParam.GetProperty("value").GetString();
                         break;
 
                     case "my":
                     case "responsibleID":
-                        ResponsibleId = new Guid(filterParam.Value<string>("value"));
+                        ResponsibleId = filterParam.GetProperty("value").GetGuid();                       
+                        
                         break;
-
                     case "stageTypeOpen":
                     case "stageTypeClosedAndWon":
                     case "stageTypeClosedAndLost":
-                        StageType = filterParam.Value<string>("value");
+                        StageType = filterParam.GetProperty("value").GetString();                        
                         break;
-
                     case "opportunityStagesID":
-                        OpportunityStageId = filterParam.Value<int>("value");
+                        OpportunityStageId = filterParam.GetProperty("value").GetInt32();
                         break;
-
                     case "lastMonth":
                     case "yesterday":
                     case "today":
                     case "thisMonth":
-                        var valueString = filterParam.Value<string>("value");
-                        var fromToArray = JsonConvert.DeserializeObject<List<string>>(valueString);
+                        var valueString = filterParam.GetProperty("value").GetString();
+                        var fromToArray = JsonDocument.Parse(valueString)
+                                                      .RootElement
+                                                      .EnumerateArray()
+                                                      .Select(x => x.GetString())
+                                                      .ToList();
+                        
                         if (fromToArray.Count != 2) continue;
+                        
                         FromDate = Global.ApiDateTimeParse(fromToArray[0]);
                         ToDate = Global.ApiDateTimeParse(fromToArray[1]);
                         break;
 
                     case "fromToDate":
-                        FromDate = Global.ApiDateTimeParse(filterParam.Value<string>("from"));
-                        ToDate = Global.ApiDateTimeParse(filterParam.Value<string>("to"));
+                        FromDate = Global.ApiDateTimeParse(filterParam.GetProperty("from").GetString());
+                        ToDate = Global.ApiDateTimeParse(filterParam.GetProperty("to").GetString());
                         break;
 
                     case "participantID":
-                        ContactId = filterParam.Value<int>("id");
+                        ContactId = filterParam.GetProperty("id").GetInt32();
                         ContactAlsoIsParticipant = true;
                         break;
 
                     case "contactID":
-                        ContactId = filterParam.Value<int>("id");
+                        ContactId = filterParam.GetProperty("id").GetInt32();
                         ContactAlsoIsParticipant = false;
                         break;
 
                     case "tags":
-                        Tags = filterParam.Value<JArray>("value").ToList().ConvertAll(n => n.ToString());
+                        Tags = filterParam.GetProperty("value").EnumerateArray().Select(x => x.GetString()).ToList();
                         break;
                 }
             }
@@ -399,68 +407,74 @@ namespace ASC.CRM.Core.Entities
 
             foreach (var filterItem in jsonArray)
             {
-                var filterObj = JObject.Parse(filterItem);
+                var filterObj = JsonDocument.Parse(filterItem).RootElement;
 
-                var paramString = filterObj.Value<string>("params");
+                var paramString = filterObj.GetProperty("params").GetString();
 
                 if (string.IsNullOrEmpty(paramString)) continue;
 
-                var filterParam = Global.JObjectParseWithDateAsString(Encoding.UTF8.GetString(Convert.FromBase64String(paramString)));
+                var filterParam = Global.JObjectParseWithDateAsString(Encoding.UTF8.GetString(Convert.FromBase64String(paramString))).RootElement;
 
-                switch (filterObj.Value<string>("id"))
+                switch (filterObj.GetProperty("id").GetString())
                 {
                     case "sorter":
-                        SortBy = filterParam.Value<string>("id");
-                        SortOrder = filterParam.Value<string>("sortOrder");
+                        SortBy = filterParam.GetProperty("id").GetString();
+                        SortOrder = filterParam.GetProperty("sortOrder").GetString();
                         break;
 
                     case "text":
-                        FilterValue = filterParam.Value<string>("value");
+                        FilterValue = filterParam.GetProperty("value").GetString();
                         break;
 
                     case "my":
                     case "responsibleID":
                     case "noresponsible":
-                        ResponsibleId = new Guid(filterParam.Value<string>("value"));
+                        ResponsibleId = filterParam.GetProperty("value").GetGuid();
                         break;
 
                     case "tags":
-                        Tags = filterParam.Value<JArray>("value").ToList().ConvertAll(n => n.ToString());
+                        Tags = filterParam.GetProperty("value").EnumerateArray().Select(x => x.GetString()).ToList();
                         break;
 
                     case "withopportunity":
                     case "person":
                     case "company":
-                        ContactListView = filterParam.Value<string>("value");
+                        ContactListView = filterParam.GetProperty("value").GetString();
                         break;
 
                     case "contactType":
-                        ContactType = filterParam.Value<int>("value");
+                        ContactType = filterParam.GetProperty("value").GetInt32();
                         break;
 
                     case "contactStage":
-                        ContactStage = filterParam.Value<int>("value");
+                        ContactStage = filterParam.GetProperty("value").GetInt32();
                         break;
 
                     case "lastMonth":
                     case "yesterday":
                     case "today":
                     case "thisMonth":
-                        var valueString = filterParam.Value<string>("value");
-                        var fromToArray = JsonConvert.DeserializeObject<List<string>>(valueString);
+                        var valueString = filterParam.GetProperty("value").GetString();
+                        var fromToArray = JsonDocument.Parse(valueString)
+                                                      .RootElement
+                                                      .EnumerateArray()
+                                                      .Select(x => x.GetString())
+                                                      .ToList();
+                        
                         if (fromToArray.Count != 2) continue;
+
                         FromDate = Global.ApiDateTimeParse(fromToArray[0]);
                         ToDate = Global.ApiDateTimeParse(fromToArray[1]);
                         break;
 
                     case "fromToDate":
-                        FromDate = Global.ApiDateTimeParse(filterParam.Value<string>("from"));
-                        ToDate = Global.ApiDateTimeParse(filterParam.Value<string>("to"));
+                        FromDate = Global.ApiDateTimeParse(filterParam.GetProperty("from").GetString());
+                        ToDate = Global.ApiDateTimeParse(filterParam.GetProperty("to").GetString());
                         break;
 
                     case "restricted":
                     case "shared":
-                        IsShared = filterParam.Value<bool>("value");
+                        IsShared = filterParam.GetProperty("value").GetBoolean();
                         break;
                 }
             }
@@ -514,28 +528,28 @@ namespace ASC.CRM.Core.Entities
 
             foreach (var filterItem in jsonArray)
             {
-                var filterObj = JObject.Parse(filterItem);
+                var filterObj = JsonDocument.Parse(filterItem).RootElement;
 
-                var paramString = filterObj.Value<string>("params");
+                var paramString = filterObj.GetProperty("params").GetString();
 
                 if (string.IsNullOrEmpty(paramString)) continue;
 
-                var filterParam = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(paramString)));
+                var filterParam = JsonDocument.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(paramString))).RootElement;
 
-                switch (filterObj.Value<string>("id"))
+                switch (filterObj.GetProperty("id").GetString())
                 {
                     case "sorter":
-                        SortBy = filterParam.Value<string>("id");
-                        SortOrder = filterParam.Value<string>("sortOrder");
+                        SortBy = filterParam.GetProperty("id").GetString();
+                        SortOrder = filterParam.GetProperty("sortOrder").GetString();
                         break;
 
                     case "text":
-                        FilterValue = filterParam.Value<string>("value");
+                        FilterValue = filterParam.GetProperty("value").GetString();
                         break;
 
                     case "withInventoryStock":
                     case "withoutInventoryStock":
-                        InventoryStock = filterParam.Value<bool>("value");
+                        InventoryStock = filterParam.GetProperty("value").GetBoolean();
                         break;
                 }
             }

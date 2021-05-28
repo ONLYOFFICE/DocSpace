@@ -29,6 +29,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
+using System.Text;
+using System.Text.Json;
 
 using ASC.Common;
 using ASC.Core;
@@ -41,9 +43,6 @@ using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
 using Microsoft.Extensions.Configuration;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -262,13 +261,20 @@ namespace ASC.Web.CRM.Classes
             throw new ArgumentException(CRMErrorsResource.DateTimeFormatInvalid);
         }
 
-        public static JObject JObjectParseWithDateAsString(string data)
+        public static JsonDocument JObjectParseWithDateAsString(string data)
         {
-            JsonReader reader = new JsonTextReader(
-                          new StringReader(data)
-                          );
-            reader.DateParseHandling = DateParseHandling.None;
-            return JObject.Load(reader);
+            var readOnlySpan = new ReadOnlySpan<byte>(Encoding.UTF8.GetBytes(data));
+
+            Utf8JsonReader reader = new Utf8JsonReader(readOnlySpan);
+
+            JsonDocument result;
+
+            if (JsonDocument.TryParseValue(ref reader, out result))
+            {
+                return result;
+            }
+
+            return null;
         }
     }
 }

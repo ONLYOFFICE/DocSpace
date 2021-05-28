@@ -25,6 +25,8 @@
 
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -74,10 +76,12 @@ namespace ASC.Web.CRM.HttpHandlers
 
             var jObject = importFromCSV.GetInfo(context.Request.Form.Files[0].OpenReadStream(), context.Request.Form["importSettings"]);
 
-            jObject.Add("assignedPath", assignedPath);
+            var jsonDocumentAsDictionary = JsonSerializer.Deserialize<Dictionary<string, string>>(jObject.ToString());
+
+            jsonDocumentAsDictionary.Add("assignedPath", assignedPath);
 
             fileUploadResult.Success = true;
-            fileUploadResult.Data = Global.EncodeTo64(jObject.ToString());
+            fileUploadResult.Data = Global.EncodeTo64(JsonSerializer.Serialize(jsonDocumentAsDictionary));
 
             await context.Response.WriteAsync(JsonSerializer.Serialize(fileUploadResult));
         }

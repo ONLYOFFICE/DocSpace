@@ -27,6 +27,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Threading;
@@ -36,7 +37,7 @@ using ASC.CRM.Core.Enums;
 
 using LumenWorks.Framework.IO.Csv;
 
-using Newtonsoft.Json.Linq;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -85,12 +86,13 @@ namespace ASC.Web.CRM.Classes
 
             while (countRows++ != index && csv.ReadNextRecord()) ;
 
-            return new JObject(new JProperty("data", new JArray(csv.GetCurrentRowFields(false).ToArray())),
-                               new JProperty("isMaxIndex", csv.EndOfStream)).ToString();
-
+            return JsonSerializer.Serialize(new { 
+                data = csv.GetCurrentRowFields(false).ToArray(),
+                isMaxIndex = csv.EndOfStream
+            });
         }
 
-        public JObject GetInfo(Stream CSVFileStream, String jsonSettings)
+        public JsonDocument GetInfo(Stream CSVFileStream, String jsonSettings)
         {
             var importCSVSettings = new ImportCSVSettings(jsonSettings);
 
@@ -105,12 +107,12 @@ namespace ASC.Web.CRM.Classes
             if (!importCSVSettings.HasHeader)
                 headerRowFields = firstRowFields;
 
-            return new JObject(
-                new JProperty("headerColumns", new JArray(headerRowFields)),
-                new JProperty("firstContactFields", new JArray(firstRowFields)),
-                new JProperty("isMaxIndex", csv.EndOfStream)
-                );
-
+            return JsonDocument.Parse(JsonSerializer.Serialize(new
+            {
+                headerColumns = headerRowFields,
+                firstContactFields = firstRowFields,
+                isMaxIndex = csv.EndOfStream
+            }));
         }
 
         protected String GetKey(EntityType entityType)
@@ -134,7 +136,7 @@ namespace ASC.Web.CRM.Classes
                 if (operation != null && operation.IsCompleted)
                 {
                     _importQueue.RemoveTask(operation.Id);
-                    
+
                     operation = null;
 
                 }

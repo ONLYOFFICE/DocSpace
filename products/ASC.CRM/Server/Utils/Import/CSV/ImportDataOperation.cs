@@ -27,6 +27,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -114,9 +115,7 @@ namespace ASC.Web.CRM.Classes
                 _importSettings = new ImportCSVSettings(importSettingsJSON);
 
             _IsConfigure = true;
-        }
-
-      
+        }     
 
         public override bool Equals(object obj)
         {
@@ -145,10 +144,11 @@ namespace ASC.Web.CRM.Classes
 
         private String GetPropertyValue(String propertyName)
         {
-            if (_importSettings.ColumnMapping[propertyName] == null) return String.Empty;
+            JsonElement jsonElement;
 
-            var values =
-                _importSettings.ColumnMapping[propertyName].Values<int>().ToList().ConvertAll(columnIndex => _columns[columnIndex]);
+            if (!_importSettings.ColumnMapping.TryGetProperty(propertyName, out jsonElement)) return String.Empty;
+
+            var values = jsonElement.EnumerateArray().Select(x => x.GetInt32()).ToList().ConvertAll(columnIndex => _columns[columnIndex]);
 
             values.RemoveAll(item => item == String.Empty);
 

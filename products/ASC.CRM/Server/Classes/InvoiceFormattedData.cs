@@ -27,15 +27,15 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Text.Json;
 
 using ASC.Common;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
-
-using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -116,25 +116,25 @@ namespace ASC.Web.CRM.Classes
 
             if (!string.IsNullOrEmpty(invoiceSettings.CompanyAddress))
             {
-                var obj = JObject.Parse(invoiceSettings.CompanyAddress);
+                var obj = JsonDocument.Parse(invoiceSettings.CompanyAddress).RootElement;
 
-                var str = obj.Value<string>("street");
+                var str = obj.GetProperty("street").GetString();
                 if (!string.IsNullOrEmpty(str))
                     list.Add(str);
 
-                str = obj.Value<string>("city");
+                str = obj.GetProperty("city").GetString();
                 if (!string.IsNullOrEmpty(str))
                     list.Add(str);
 
-                str = obj.Value<string>("state");
+                str = obj.GetProperty("state").GetString();
                 if (!string.IsNullOrEmpty(str))
                     list.Add(str);
 
-                str = obj.Value<string>("zip");
+                str = obj.GetProperty("zip").GetString();
                 if (!string.IsNullOrEmpty(str))
                     list.Add(str);
 
-                str = obj.Value<string>("country");
+                str = obj.GetProperty("country").GetString();
                 if (!string.IsNullOrEmpty(str))
                     list.Add(str);
 
@@ -206,25 +206,25 @@ namespace ASC.Web.CRM.Classes
                 {
                     list = new List<string>();
 
-                    var obj = JObject.Parse(billingAddress.Data);
+                    var obj = JsonDocument.Parse(billingAddress.Data).RootElement;
 
-                    var str = obj.Value<string>("street");
+                    var str = obj.GetProperty("street").GetString();
                     if (!string.IsNullOrEmpty(str))
                         list.Add(str);
 
-                    str = obj.Value<string>("city");
+                    str = obj.GetProperty("city").GetString();
                     if (!string.IsNullOrEmpty(str))
                         list.Add(str);
 
-                    str = obj.Value<string>("state");
+                    str = obj.GetProperty("state").GetString();
                     if (!string.IsNullOrEmpty(str))
                         list.Add(str);
 
-                    str = obj.Value<string>("zip");
+                    str = obj.GetProperty("zip").GetString();
                     if (!string.IsNullOrEmpty(str))
                         list.Add(str);
 
-                    str = obj.Value<string>("country");
+                    str = obj.GetProperty("country").GetString();
                     if (!string.IsNullOrEmpty(str))
                         list.Add(str);
 
@@ -389,25 +389,25 @@ namespace ASC.Web.CRM.Classes
                 {
                     list = new List<string>();
 
-                    var obj = JObject.Parse(deliveryAddress.Data);
+                    var obj = JsonDocument.Parse(deliveryAddress.Data).RootElement;
 
-                    var str = obj.Value<string>("street");
+                    var str = obj.GetProperty("street").GetString();
                     if (!string.IsNullOrEmpty(str))
                         list.Add(str);
 
-                    str = obj.Value<string>("city");
+                    str = obj.GetProperty("city").GetString();
                     if (!string.IsNullOrEmpty(str))
                         list.Add(str);
 
-                    str = obj.Value<string>("state");
+                    str = obj.GetProperty("state").GetString();
                     if (!string.IsNullOrEmpty(str))
                         list.Add(str);
 
-                    str = obj.Value<string>("zip");
+                    str = obj.GetProperty("zip").GetString();
                     if (!string.IsNullOrEmpty(str))
                         list.Add(str);
 
-                    str = obj.Value<string>("country");
+                    str = obj.GetProperty("country").GetString();
                     if (!string.IsNullOrEmpty(str))
                         list.Add(str);
 
@@ -439,27 +439,25 @@ namespace ASC.Web.CRM.Classes
         private InvoiceFormattedData ReadData(string jsonData)
         {
             var data = new InvoiceFormattedData(DaoFactory, OrganisationLogoManager);
-
-            var jsonObj = JObject.Parse(jsonData);
-
+            var jsonObj = JsonDocument.Parse(jsonData).RootElement;
 
             #region TemplateType
 
-            data.TemplateType = jsonObj.Value<int>("TemplateType");
+            data.TemplateType = jsonObj.GetProperty("TemplateType").GetInt32();
 
             #endregion
 
 
             #region Seller, LogoBase64, LogoSrcFormat
 
-            var seller = jsonObj.Value<JObject>("Seller");
-            if (seller != null)
+            JsonElement seller;
+            if (jsonObj.TryGetProperty("Seller", out seller))
             {
-                data.Seller = seller.ToObject<Tuple<string, string>>();
+                data.Seller = JsonSerializer.Deserialize<Tuple<string, string>>(seller.ToString());
             }
 
-            data.LogoBase64 = jsonObj.Value<string>("LogoBase64");
-            data.LogoBase64Id = !String.IsNullOrEmpty(jsonObj.Value<string>("LogoBase64Id")) ? jsonObj.Value<int>("LogoBase64Id") : 0;
+            data.LogoBase64 = jsonObj.GetProperty("LogoBase64").GetString();
+            data.LogoBase64Id = !String.IsNullOrEmpty(jsonObj.GetProperty("LogoBase64Id").GetString()) ? jsonObj.GetProperty("LogoBase64Id").GetInt32() : 0;
 
             if (string.IsNullOrEmpty(data.LogoBase64) && data.LogoBase64Id != 0)
             {
@@ -467,17 +465,17 @@ namespace ASC.Web.CRM.Classes
             }
 
 
-            data.LogoSrcFormat = jsonObj.Value<string>("LogoSrcFormat");
+            data.LogoSrcFormat = jsonObj.GetProperty("LogoSrcFormat").GetString();
 
             #endregion
 
 
             #region Number
 
-            var number = jsonObj.Value<JObject>("Number");
-            if (number != null)
+            JsonElement number;
+            if (jsonObj.TryGetProperty("Number", out number))
             {
-                data.Number = number.ToObject<Tuple<string, string>>();
+                data.Number = JsonSerializer.Deserialize<Tuple<string, string>>(number.ToString());
             }
 
             #endregion
@@ -485,10 +483,10 @@ namespace ASC.Web.CRM.Classes
 
             #region Invoice
 
-            var invoice = jsonObj.Value<JArray>("Invoice");
-            if (invoice != null)
+            JsonElement invoice;
+            if (jsonObj.TryGetProperty("Invoice", out invoice))
             {
-                data.Invoice = invoice.ToObject<List<Tuple<string, string>>>();
+                data.Invoice = JsonSerializer.Deserialize<List<Tuple<string, string>>>(invoice.ToString());
             }
 
             #endregion
@@ -496,10 +494,10 @@ namespace ASC.Web.CRM.Classes
 
             #region Customer
 
-            var customer = jsonObj.Value<JObject>("Customer");
-            if (customer != null)
+            JsonElement customer;
+            if (jsonObj.TryGetProperty("Customer", out customer))
             {
-                data.Customer = customer.ToObject<Tuple<string, string>>();
+                data.Customer = JsonSerializer.Deserialize<Tuple<string, string>>(customer.ToString());
             }
 
             #endregion
@@ -507,28 +505,28 @@ namespace ASC.Web.CRM.Classes
 
             #region TableHeaderRow, TableBodyRows, TableFooterRows, Total
 
-            var tableHeaderRow = jsonObj.Value<JArray>("TableHeaderRow");
-            if (tableHeaderRow != null)
+            JsonElement tableHeaderRow;
+            if (jsonObj.TryGetProperty("TableHeaderRow", out tableHeaderRow))
             {
-                data.TableHeaderRow = tableHeaderRow.ToObject<List<string>>();
+                data.TableHeaderRow = tableHeaderRow.EnumerateArray().Select(x => x.GetString()).ToList();
             }
 
-            var tableBodyRows = jsonObj.Value<JArray>("TableBodyRows");
-            if (tableBodyRows != null)
+            JsonElement tableBodyRows;
+            if (jsonObj.TryGetProperty("TableBodyRows", out tableBodyRows))
             {
-                data.TableBodyRows = tableBodyRows.ToObject<List<List<string>>>();
+                data.TableBodyRows = JsonSerializer.Deserialize<List<List<string>>>(tableBodyRows.ToString()); 
             }
 
-            var tableFooterRows = jsonObj.Value<JArray>("TableFooterRows");
-            if (tableFooterRows != null)
+            JsonElement tableFooterRows;
+            if (jsonObj.TryGetProperty("TableFooterRows", out tableFooterRows))
             {
-                data.TableFooterRows = tableFooterRows.ToObject<List<Tuple<string, string>>>();
+                data.TableFooterRows = JsonSerializer.Deserialize<List<Tuple<string, string>>>(tableFooterRows.ToString());
             }
 
-            var tableTotalRow = jsonObj.Value<JObject>("TableTotalRow");
-            if (tableTotalRow != null)
+            JsonElement tableTotalRow;
+            if (jsonObj.TryGetProperty("TableTotalRow", out tableTotalRow))
             {
-                data.TableTotalRow = tableTotalRow.ToObject<Tuple<string, string>>();
+                data.TableTotalRow = JsonSerializer.Deserialize<Tuple<string, string>>(tableTotalRow.ToString());
             }
 
             #endregion
@@ -536,10 +534,10 @@ namespace ASC.Web.CRM.Classes
 
             #region Terms
 
-            var terms = jsonObj.Value<JObject>("Terms");
-            if (terms != null)
+            JsonElement terms;
+            if (jsonObj.TryGetProperty("Terms", out terms))
             {
-                data.Terms = terms.ToObject<Tuple<string, string>>();
+                data.Terms = JsonSerializer.Deserialize<Tuple<string, string>>(terms.ToString());
             }
 
             #endregion
@@ -547,10 +545,10 @@ namespace ASC.Web.CRM.Classes
 
             #region Notes
 
-            var notes = jsonObj.Value<JObject>("Notes");
-            if (notes != null)
+            JsonElement notes; 
+            if (jsonObj.TryGetProperty("Notes", out notes))
             {
-                data.Notes = notes.ToObject<Tuple<string, string>>();
+                data.Notes = JsonSerializer.Deserialize<Tuple<string, string>>(notes.ToString());
             }
 
             #endregion
@@ -558,10 +556,10 @@ namespace ASC.Web.CRM.Classes
 
             #region Consignee
 
-            var consignee = jsonObj.Value<JObject>("Consignee");
-            if (consignee != null)
+            JsonElement consignee;
+            if (jsonObj.TryGetProperty("Consignee", out consignee))
             {
-                data.Consignee = consignee.ToObject<Tuple<string, string>>();
+                data.Consignee = JsonSerializer.Deserialize<Tuple<string, string>>(consignee.ToString());
             }
 
             #endregion
@@ -569,8 +567,8 @@ namespace ASC.Web.CRM.Classes
 
             #region Addresses
 
-            data.DeliveryAddressID = !String.IsNullOrEmpty(jsonObj.Value<string>("DeliveryAddressID")) ? jsonObj.Value<int>("DeliveryAddressID") : 0;
-            data.BillingAddressID = !String.IsNullOrEmpty(jsonObj.Value<string>("BillingAddressID")) ? jsonObj.Value<int>("BillingAddressID") : 0;
+            data.DeliveryAddressID = !String.IsNullOrEmpty(jsonObj.GetProperty("DeliveryAddressID").GetString()) ? jsonObj.GetProperty("DeliveryAddressID").GetInt32() : 0;
+            data.BillingAddressID = !String.IsNullOrEmpty(jsonObj.GetProperty("BillingAddressID").GetString()) ? jsonObj.GetProperty("BillingAddressID").GetInt32() : 0;
 
             #endregion
 
