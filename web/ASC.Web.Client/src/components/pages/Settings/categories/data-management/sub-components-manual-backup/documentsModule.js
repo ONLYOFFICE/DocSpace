@@ -1,30 +1,67 @@
-import { useState } from "react";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import SelectedFolder from "files/SelectedFolder";
 import Button from "@appserver/components/button";
-import Text from "@appserver/components/text";
-import { useEffect } from "react";
+import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { startBackup } from "@appserver/common/api/portal";
-const DocumentsModule = ({ maxProgress, setInterval }) => {
-  const [selectedFolder, setSelectedFolder] = useState("");
-  const [isPanelVisible, setPanelVisible] = useState(false);
-  const { t } = useTranslation("Settings");
 
-  const onSelectFolder = (folderId) => {
-    setSelectedFolder(folderId);
+let selectedManualBackupFromSessionStorage = "";
+
+class DocumentsModule extends React.Component {
+  constructor(props) {
+    super(props);
+
+    selectedManualBackupFromSessionStorage = getFromSessionStorage(
+      "selectedManualStorageType"
+    );
+
+    this.state = {
+      isLoadingData: false,
+      selectedFolder: "",
+      isPanelVisible: false,
+    };
+    this._isMounted = false;
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+  onSetLoadingData = (isLoading) => {
+    this._isMounted &&
+      this.setState({
+        isLoadingData: isLoading,
+      });
   };
 
-  const onClickInput = (e) => {
-    setPanelVisible(true);
+  onSelectFolder = (folderId) => {
+    console.log("folderId", folderId);
+    this._isMounted &&
+      this.setState({
+        selectedFolder: folderId,
+        isChanged: true,
+      });
   };
 
-  const onClose = () => {
-    setPanelVisible(false);
+  onClickInput = () => {
+    this.setState({
+      isPanelVisible: true,
+    });
   };
 
-  const onClickButton = () => {
+  onClose = () => {
+    this.setState({
+      isPanelVisible: false,
+    });
+  };
+
+  onClickButton = () => {
     console.log("selectedFolder", selectedFolder);
+    saveToSessionStorage("selectedManualStorageType", "documents");
+    const { selectedFolder } = this.state;
+    const { setInterval } = this.props;
     const storageParams = [
       {
         key: "folderId",
@@ -34,41 +71,45 @@ const DocumentsModule = ({ maxProgress, setInterval }) => {
     startBackup("0", storageParams);
     setInterval();
   };
-
-  return (
-    <div className="category-item-wrapper">
-      <SelectedFolder
-        onSelectFolder={onSelectFolder}
-        name={"common"}
-        onClose={onClose}
-        onClickInput={onClickInput}
-        isPanelVisible={isPanelVisible}
-        isCommonFolders
-        isCommonWithoutProvider
-      />
-
-      <div className="manual-backup_buttons">
-        <Button
-          label={t("MakeCopy")}
-          onClick={onClickButton}
-          primary
-          isDisabled={!maxProgress}
-          size="medium"
-          tabIndex={10}
+  render() {
+    const { maxProgress, t, isCopyingLocal } = this.props;
+    const { isPanelVisible, isLoadingData } = this.state;
+    return (
+      <div className="category-item-wrapper">
+        <SelectedFolder
+          onSelectFolder={this.onSelectFolder}
+          name={"common"}
+          onClose={this.onClose}
+          onClickInput={this.onClickInput}
+          onSetLoadingData={this.onSetLoadingData}
+          isPanelVisible={isPanelVisible}
+          isSavingProcess={isCopyingLocal}
+          isCommonFolders
+          isCommonWithoutProvider
         />
-        {!maxProgress && (
-          <Button
-            label={t("Copying")}
-            onClick={() => console.log("click")}
-            isDisabled={true}
-            size="medium"
-            style={{ marginLeft: "8px" }}
-            tabIndex={11}
-          />
-        )}
-      </div>
-    </div>
-  );
-};
 
-export default DocumentsModule;
+        <div className="manual-backup_buttons">
+          <Button
+            label={t("MakeCopy")}
+            onClick={this.onClickButton}
+            primary
+            isDisabled={!maxProgress || isLoadingData}
+            size="medium"
+            tabIndex={10}
+          />
+          {!maxProgress && (
+            <Button
+              label={t("Copying")}
+              onClick={() => console.log("click")}
+              isDisabled={true}
+              size="medium"
+              style={{ marginLeft: "8px" }}
+              tabIndex={11}
+            />
+          )}
+        </div>
+      </div>
+    );
+  }
+}
+export default withTranslation("Settings")(DocumentsModule);

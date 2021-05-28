@@ -3,8 +3,6 @@ import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
 
 import Button from "@appserver/components/button";
-import { inject, observer } from "mobx-react";
-
 import { getBackupProgress, startBackup } from "@appserver/common/api/portal";
 import toastr from "@appserver/components/toast/toastr";
 import ThirdPartyModule from "./sub-components-manual-backup/thirdPartyModule";
@@ -14,10 +12,34 @@ import FloatingButton from "@appserver/common/components/FloatingButton";
 import RadioButton from "@appserver/components/radio-button";
 import { StyledModules, StyledComponent } from "./styled-backup";
 import SelectedFolder from "files/SelectedFolder";
+import Loader from "@appserver/components/loader";
+import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
+
+let selectedManualBackupFromSessionStorage = "";
+
 class ManualBackup extends React.Component {
   constructor(props) {
     super(props);
     this.manualBackup = true;
+    selectedManualBackupFromSessionStorage = getFromSessionStorage(
+      "selectedManualStorageType"
+    );
+
+    const checkedDocuments = selectedManualBackupFromSessionStorage
+      ? selectedManualBackupFromSessionStorage === "documents"
+      : false;
+
+    const checkedTemporary = selectedManualBackupFromSessionStorage
+      ? selectedManualBackupFromSessionStorage === "temporary"
+      : true;
+
+    const checkedThirdPartyResource = selectedManualBackupFromSessionStorage
+      ? selectedManualBackupFromSessionStorage === "thirdPartyResource"
+      : false;
+
+    const checkedThirdPartyStorage = selectedManualBackupFromSessionStorage
+      ? selectedManualBackupFromSessionStorage === "thirdPartyStorage"
+      : false;
 
     this.state = {
       isVisiblePanel: false,
@@ -26,19 +48,18 @@ class ManualBackup extends React.Component {
       selectedFolder: "",
       isPanelVisible: false,
       isLoading: true,
+      isLoadingData: false,
 
-      isCheckedTemporaryStorage: true,
-      isCheckedDocuments: false,
-      isCheckedThirdParty: false,
-      isCheckedThirdPartyStorage: false,
+      isCheckedTemporaryStorage: checkedTemporary,
+      isCheckedDocuments: checkedDocuments,
+      isCheckedThirdParty: checkedThirdPartyResource,
+      isCheckedThirdPartyStorage: checkedThirdPartyStorage,
     };
     this._isMounted = false;
     this.timerId = null;
   }
   componentDidMount() {
     this._isMounted = true;
-
-    const { getCommonThirdPartyList } = this.props;
 
     this.setState(
       {
@@ -56,8 +77,14 @@ class ManualBackup extends React.Component {
                 downloadingProgress: res.progress,
                 link: res.link,
               });
-              if (res.progress !== 100)
+              if (res.progress !== 100) {
+                saveToSessionStorage("selectedManualStorageType", "");
+                this._isMounted &&
+                  this.setState({
+                    isLoadingData: true,
+                  });
                 this.timerId = setInterval(() => this.getProgress(), 5000);
+              }
             }
           })
           .finally(() =>
@@ -75,37 +102,48 @@ class ManualBackup extends React.Component {
   }
 
   onClickButton = () => {
+    saveToSessionStorage("selectedManualStorageType", "temporary");
     const storageParams = null;
     startBackup("4", storageParams);
     this.setState({
       downloadingProgress: 1,
+      isLoadingData: true,
     });
+
     this.timerId = setInterval(() => this.getProgress(), 5000);
   };
 
   getProgress = () => {
-    const { downloadingProgress } = this.state;
+    const { downloadingProgress, isLoadingData } = this.state;
     const { t } = this.props;
     console.log("downloadingProgress", downloadingProgress);
+
     getBackupProgress()
       .then((res) => {
         if (res.error.length > 0 && res.progress !== 100) {
+          saveToSessionStorage("selectedManualStorageType", "");
           clearInterval(this.timerId);
           this.timerId && toastr.error(`${res.error}`);
           console.log("error", res.error);
           this.timerId = null;
           this.setState({
             downloadingProgress: 100,
+            isLoadingData: false,
           });
           return;
         }
 
         if (res.progress === 100) {
+          //debugger;
+          saveToSessionStorage("selectedManualStorageType", "");
           clearInterval(this.timerId);
 
           if (this._isMounted) {
             this.setState({
               link: res.link,
+            });
+            this.setState({
+              isLoadingData: false,
             });
           }
 
@@ -133,6 +171,7 @@ class ManualBackup extends React.Component {
   setInterval = () => {
     this.setState({
       downloadingProgress: 1,
+      isLoadingData: true,
     });
     this.timerId = setInterval(() => this.getProgress(), 5000);
   };
@@ -238,22 +277,28 @@ class ManualBackup extends React.Component {
         break;
     }
   };
+  onSetLoadingData = (isLoading) => {
+    this._isMounted &&
+      this.setState({
+        isLoadingData: isLoading,
+      });
+  };
   render() {
     const { t, commonThirdPartyList } = this.props;
     const {
       downloadingProgress,
       link,
-      isPanelVisible,
       isLoading,
       isCheckedTemporaryStorage,
       isCheckedDocuments,
       isCheckedThirdParty,
       isCheckedThirdPartyStorage,
+      isLoadingData,
     } = this.state;
     const maxProgress = downloadingProgress === 100;
 
     return isLoading ? (
-      <></>
+      <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledComponent>
         <StyledModules>
@@ -265,7 +310,7 @@ class ManualBackup extends React.Component {
             key={0}
             onClick={this.onClickShowStorage}
             isChecked={isCheckedTemporaryStorage}
-            //isDisabled={isLoadingData}
+            isDisabled={isLoadingData}
             value="value"
             className="automatic-backup_radio-button"
           />
@@ -317,7 +362,7 @@ class ManualBackup extends React.Component {
             key={1}
             onClick={this.onClickShowStorage}
             isChecked={isCheckedDocuments}
-            //isDisabled={isLoadingData}
+            isDisabled={isLoadingData}
             value="value"
             className="automatic-backup_radio-button"
           />
@@ -331,6 +376,7 @@ class ManualBackup extends React.Component {
               maxProgress={maxProgress}
               setInterval={this.setInterval}
               isCheckedDocuments={isCheckedDocuments}
+              isCopyingLocal={isLoadingData}
             />
           )}
         </StyledModules>
@@ -349,8 +395,9 @@ class ManualBackup extends React.Component {
             onClick={this.onClickShowStorage}
             isChecked={isCheckedThirdParty}
             isDisabled={
-              this.commonThirdPartyList &&
-              this.commonThirdPartyList.length === 0
+              (this.commonThirdPartyList &&
+                this.commonThirdPartyList.length === 0) ||
+              isLoadingData
             }
             value="value"
             className="automatic-backup_radio-button"
@@ -367,6 +414,7 @@ class ManualBackup extends React.Component {
               maxProgress={maxProgress}
               commonThirdPartyList={this.commonThirdPartyList}
               setInterval={this.setInterval}
+              isCopyingLocal={isLoadingData}
             />
           )}
         </StyledModules>
@@ -380,7 +428,7 @@ class ManualBackup extends React.Component {
             key={3}
             onClick={this.onClickShowStorage}
             isChecked={isCheckedThirdPartyStorage}
-            //isDisabled={isLoadingData}
+            isDisabled={isLoadingData}
             value="value"
             className="automatic-backup_radio-button"
           />
