@@ -755,26 +755,26 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-brand-100.png");
-                            tableItemText1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v115_item_brand_hdr;
-                            tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v115_item_brand;
+                            tableItemText1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand_hdr;
+                            tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand;
 
                             tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-regional-100.png");
-                            tableItemText2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v115_item_regional_hdr;
-                            tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v115_item_regional;
+                            tableItemText2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional_hdr;
+                            tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional;
 
                             tableItemImg3 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
-                            tableItemText3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v115_item_customize_hdr;
-                            tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v115_item_customize;
+                            tableItemText3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize_hdr;
+                            tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize;
 
                             tableItemImg4 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
-                            tableItemText4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v115_item_modules_hdr;
-                            tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v115_item_modules;
+                            tableItemText4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules_hdr;
+                            tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules;
 
                             if (!coreBaseSettings.CustomMode)
                             {
                                 tableItemImg5 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-3rdparty-100.png");
-                                tableItemText5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v115_item_3rdparty_hdr;
-                                tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v115_item_3rdparty;
+                                tableItemText5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr;
+                                tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty;
                             }
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfigureRightNow;

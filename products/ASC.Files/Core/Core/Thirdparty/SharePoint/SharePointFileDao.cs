@@ -63,8 +63,9 @@ namespace ASC.Files.Thirdparty.SharePoint
             FileUtility fileUtility,
             CrossDao crossDao,
             SharePointDaoSelector sharePointDaoSelector,
-            IFileDao<int> fileDao)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+            IFileDao<int> fileDao,
+            TempPath tempPath)
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
             CrossDao = crossDao;
             SharePointDaoSelector = sharePointDaoSelector;

@@ -65,8 +65,9 @@ namespace ASC.Files.Thirdparty.Dropbox
             FileUtility fileUtility,
             CrossDao crossDao,
             DropboxDaoSelector dropboxDaoSelector,
-            IFileDao<int> fileDao)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+            IFileDao<int> fileDao,
+            TempPath tempPath)
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
             CrossDao = crossDao;
             DropboxDaoSelector = dropboxDaoSelector;

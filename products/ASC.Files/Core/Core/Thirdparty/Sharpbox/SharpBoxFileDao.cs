@@ -70,8 +70,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             FileUtility fileUtility,
             CrossDao crossDao,
             SharpBoxDaoSelector sharpBoxDaoSelector,
-            IFileDao<int> fileDao)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+            IFileDao<int> fileDao,
+            TempPath tempPath)
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
             TempStream = tempStream;
             CrossDao = crossDao;
