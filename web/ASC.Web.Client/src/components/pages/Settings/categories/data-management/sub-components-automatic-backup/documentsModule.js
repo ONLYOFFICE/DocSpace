@@ -284,7 +284,8 @@ class DocumentsModule extends React.Component {
     const { isChanged } = this.state;
     // debugger;
     let changed;
-    if (+defaultStorageType === 0) {
+
+    if (defaultStorageType && +defaultStorageType === 0) {
       changed = this.checkOptions();
       isChanged !== changed &&
         this.setState({
