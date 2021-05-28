@@ -1,0 +1,7 @@
+## COPY PUBLIC ##
+../../../public/*.png          var/www/public/
+../../../public/*.json         var/www/public/
+../../../public/*.js           var/www/public/
+../../../public/images/*       var/www/public/images/
+../../../public/offline/*      var/www/public/offline/
+../../../public/thirdparty/*   var/www/public/thirdparty/

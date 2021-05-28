@@ -1,0 +1,22 @@
+var/www/public
+var/www/public/images
+var/www/public/offline
+var/www/public/thirdparty
+
+
+
+# config/nginx/includes/*.conf /etc/nginx/includes/
+# COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
+# COPY --from=base /etc/nginx/includes /etc/nginx/includes
+# COPY --from=base /var/www/public /var/www/public
+# COPY --from=base ${SRC_PATH}/products/ASC.CRM/Client/dist ${BUILD_PATH}/products/ASC.CRM/client
+# COPY --from=base ${SRC_PATH}/web/ASC.Web.Editor/dist ${BUILD_PATH}/products/ASC.Files/editor
+# COPY --from=base ${SRC_PATH}/products/ASC.Files/Client/dist ${BUILD_PATH}/products/ASC.Files/client
+# COPY --from=base ${SRC_PATH}/web/ASC.Web.Login/dist ${BUILD_PATH}/studio/login
+# COPY --from=base ${SRC_PATH}/products/ASC.People/Client/dist ${BUILD_PATH}/products/ASC.People/client
+# COPY --from=base ${SRC_PATH}/products/ASC.Projects/Client/dist ${BUILD_PATH}/products/ASC.Projects/client
+# COPY --from=base ${SRC_PATH}/web/ASC.Web.Client/dist ${BUILD_PATH}/studio/client
+# COPY --from=base ${SRC_PATH}/products/ASC.Calendar/Client/dist ${BUILD_PATH}/products/ASC.Calendar/client
+# COPY --from=base ${SRC_PATH}/products/ASC.Mail/Client/dist ${BUILD_PATH}/products/ASC.Mail/client
+
+# COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template

@@ -2,7 +2,7 @@ Source: appserver
 Section: web
 Priority: optional
 Maintainer: onlyoffice
-Build-Depends: debhelper (>= 10), nodejs (>=10), dotnet-sdk-5.0
+Build-Depends: debhelper (>= 10), nodejs (>=10), dotnet-sdk-5.0, yarn
 Standards-Version: 1.0-0
 Homepage: https://www.onlyoffice.com/
 Architecture: any
@@ -10,7 +10,6 @@ Architecture: any
 Package: appserver
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends},
-         appserver-common,
          appserver-api-system,
          appserver-backup,
          appserver-calendar,
