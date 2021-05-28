@@ -97,7 +97,7 @@ const PureSettings = ({
   );
 };
 
-const Settings = withTranslation("Settings")(PureSettings);
+const Settings = withTranslation(["Settings", "Common"])(PureSettings);
 
 export default inject(({ filesStore, settingsStore, treeFoldersStore }) => {
   const { setFirstLoad, isLoading } = filesStore;
