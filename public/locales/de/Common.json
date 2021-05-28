@@ -79,5 +79,7 @@
   "SomethingWentWrong": "Ein Fehler ist aufgetreten.",
   "CopyEmailAndPassword": "E-Mail und Passwort kopieren",
   "ByFirstNameSorting": "Nach Vornamen",
-  "ByLastNameSorting": "Nach Familiennamen"
+  "ByLastNameSorting": "Nach Familiennamen",
+  "ProviderNotConnected": "Der Anbieter ist nicht mit Ihrem Konto verbunden",
+  "Mail": "Mail"
 }
