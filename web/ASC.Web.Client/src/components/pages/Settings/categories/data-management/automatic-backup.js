@@ -74,10 +74,9 @@ class AutomaticBackup extends React.PureComponent {
       isDisableOptions: false,
 
       selectedFolder: "",
-      //isPanelVisible: false,
+
       isChanged: false,
       isSetDefaultFolderPath: false,
-      //isError: false,
       downloadingProgress: 100,
     };
 
@@ -110,7 +109,6 @@ class AutomaticBackup extends React.PureComponent {
   }
 
   componentDidMount() {
-    //const { getCommonThirdPartyList } = this.props;
     this._isMounted = true;
     const { selectedFolder } = this.state;
     this.getWeekdaysOptions();
@@ -192,12 +190,9 @@ class AutomaticBackup extends React.PureComponent {
       defaultPeriod,
       defaultStorageType,
       defaultDay,
-      defaultHour,
-      defaultMaxCopies,
     } = this.state;
     //debugger;
 
-    console.log("onSetDefaultOptions");
     if (defaultStorageType === "0") {
       // Documents Module
       this._isMounted &&
@@ -207,9 +202,6 @@ class AutomaticBackup extends React.PureComponent {
 
           isShowDocuments: true,
           isCheckedDocuments: true,
-          // selectedTimeOption: defaultHour,
-          // selectedMaxCopies: defaultMaxCopies,
-          // selectedNumberMaxCopies: defaultMaxCopies,
         });
     }
     if (defaultStorageType === "1") {
@@ -221,9 +213,6 @@ class AutomaticBackup extends React.PureComponent {
 
           isShowThirdParty: true,
           isCheckedThirdParty: true,
-          // selectedTimeOption: defaultHour,
-          // selectedMaxCopies: defaultMaxCopies,
-          // selectedNumberMaxCopies: defaultMaxCopies,
         });
     }
 
@@ -236,15 +225,15 @@ class AutomaticBackup extends React.PureComponent {
 
           isShowThirdPartyStorage: true,
           isCheckedThirdPartyStorage: true,
-          // selectedTimeOption: defaultHour,
-          // selectedMaxCopies: defaultMaxCopies,
-          // selectedNumberMaxCopies: defaultMaxCopies,
         });
     }
 
     if (+defaultPeriod === 1) {
       //Every Week option
-      const arrayIndex = this.lng === "en" ? defaultDay - 1 : defaultDay - 2; //selected number of week
+      //debugger;
+      const arrayIndex = this.lng === "en" ? defaultDay : defaultDay - 1;
+      defaultWeekly = true;
+
       this._isMounted &&
         this.setState({
           defaultSelectedOption: this.periodOptions[1].label,
@@ -252,39 +241,21 @@ class AutomaticBackup extends React.PureComponent {
           defaultSelectedWeekdayOption: defaultDay,
           weeklySchedule: true,
         });
-
-      defaultWeekly = true;
-      // this.setState({
-      //   selectedOption: defaultSelectedOption,
-      //   weeklySchedule: true,
-      //   selectedWeekdayOption: this.weekdaysOptions[arrayIndex].label,
-      //   selectedNumberWeekdayOption: defaultDay,
-      // });
     } else {
       if (+defaultPeriod === 2) {
         //Every Month option
+        defaultMonthly = true;
         this._isMounted &&
           this.setState({
             defaultSelectedOption: this.periodOptions[2].label,
             monthlySchedule: true,
           });
-        // defaultSelectedOption = this.periodOptions[2].label;
-        defaultMonthly = true;
-        // this.setState({
-        //   selectedOption: defaultSelectedOption,
-        //   monthlySchedule: true,
-        //   selectedMonthOption: `${defaultDay}`, //selected day of month
-        // });
       } else {
         defaultDaily = true;
         this._isMounted &&
           this.setState({
             defaultSelectedOption: this.periodOptions[0].label,
           });
-        //defaultSelectedOption = this.periodOptions[0].label;
-        // this.setState({
-        //   selectedOption: defaultSelectedOption,
-        // });
       }
     }
 
@@ -382,16 +353,12 @@ class AutomaticBackup extends React.PureComponent {
     }
     const isEnglishLanguage = this.lng === "en";
 
-    if (!isEnglishLanguage) {
-      const startWeek = this.weekdaysOptions[0];
-      this.weekdaysOptions.shift();
-      this.weekdaysOptions.push(startWeek);
-    }
-    console.log("this.weekdaysOptions", this.weekdaysOptions);
     this._isMounted &&
       this.setState({
         weekOptions: this.weekdaysOptions,
-        selectedWeekdayOption: this.weekdaysOptions[0].label,
+        selectedWeekdayOption: isEnglishLanguage
+          ? this.weekdaysOptions[0].label
+          : this.weekdaysOptions[1].label,
       });
   };
 
@@ -405,16 +372,13 @@ class AutomaticBackup extends React.PureComponent {
       weeklySchedule,
       defaultSelectedFolder,
       defaultStorageType,
-      //isError,
     } = this.state;
 
     this.setState({
       isChanged: false,
-      // isSetDefaultFolderPath: true,
       selectedFolder: defaultSelectedFolder,
     });
 
-    //if (isError) this.setState({ isError: false });
     if (defaultStorageType) {
       //debugger;
       selectedPermission === "disable" &&
@@ -679,7 +643,7 @@ class AutomaticBackup extends React.PureComponent {
     //console.log("commonThirdPartyList auto", this.commonThirdPartyList);
     //console.log("this.props", this.props);
     //console.log("__________________");
-    console.log("selectedPermission", selectedPermission);
+    //console.log("selectedPermission", selectedPermission);
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -876,7 +840,7 @@ class AutomaticBackup extends React.PureComponent {
                 </>
               )}
             </StyledModules>
-            {isChanged && !isShowThirdPartyStorage && !isShowThirdParty && (
+            {/* {isChanged && !isShowThirdPartyStorage && !isShowThirdParty && (
               <SaveCancelButtons
                 className="team-template_buttons"
                 onSaveClick={this.onSaveModuleSettings}
@@ -887,7 +851,7 @@ class AutomaticBackup extends React.PureComponent {
                 cancelButtonLabel={t("CancelButton")}
                 isDisabled={isCopyingToLocal || isLoadingData}
               />
-            )}
+            )} */}
           </>
         )}
 

@@ -1,34 +1,33 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import SelectedFolder from "files/SelectedFolder";
-import { inject, observer } from "mobx-react";
 import ScheduleComponent from "./scheduleComponent";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import {
   createBackupSchedule,
   getBackupSchedule,
 } from "@appserver/common/api/portal";
-import { getFolderPath } from "@appserver/common/api/files";
+
 import toastr from "@appserver/components/toast/toastr";
 import { saveToSessionStorage, getFromSessionStorage } from "../.././../utils";
 import { StyledComponent } from "../styled-backup";
 import TextInput from "@appserver/components/text-input";
-// let defaultSelectedFolder = "";
-// let defaultStorageType = "";
-// let defaultHour = "";
-// let defaultPeriod = "";
-// let defaultDay = 1;
-// let defaultMaxCopies = "10";
-// let defaultSelectedOption = "";
-// let defaultSelectedWeekdayOption = "";
 
 let periodFromSessionStorage = "";
+let numberPeriodFromSessionStorage = null;
 let dayFromSessionStorage = "";
 let timeFromSessionStorage = "";
 let maxCopiesFromSessionStorage = "";
 let weekdayNameFromSessionStorage = "";
 
-const settingNames = ["period", "day", "time", "maxCopies", "weekdayName"];
+const settingNames = [
+  "period",
+  "day",
+  "time",
+  "maxCopies",
+  "weekdayName",
+  "numberPeriod",
+];
 class DocumentsModule extends React.Component {
   constructor(props) {
     super(props);
@@ -39,13 +38,9 @@ class DocumentsModule extends React.Component {
       defaultDay,
       defaultHour,
       defaultMaxCopies,
-      weekdaysOptions,
-      lng,
+
       monthlySchedule,
       weeklySchedule,
-      defaultStorageType,
-      defaultPeriod,
-      defaultSelectedWeekdayOption,
     } = this.props;
     //debugger;
 
@@ -54,13 +49,30 @@ class DocumentsModule extends React.Component {
     timeFromSessionStorage = getFromSessionStorage("time");
     maxCopiesFromSessionStorage = getFromSessionStorage("maxCopies");
     weekdayNameFromSessionStorage = getFromSessionStorage("weekdayName");
+    numberPeriodFromSessionStorage = getFromSessionStorage("numberPeriod");
+
+    const numberMaxCopies = maxCopiesFromSessionStorage
+      ? maxCopiesFromSessionStorage.substring(
+          0,
+          maxCopiesFromSessionStorage.indexOf(" ")
+        )
+      : "";
 
     const monthNumber = monthlySchedule
       ? dayFromSessionStorage || `${defaultDay}`
-      : "1";
+      : dayFromSessionStorage || "1";
+
     const weekdayNumber = weeklySchedule
       ? dayFromSessionStorage || defaultDay
-      : "2";
+      : dayFromSessionStorage || "2";
+
+    const weekdayOption = numberPeriodFromSessionStorage
+      ? numberPeriodFromSessionStorage === 2
+      : weeklySchedule || false;
+    const monthOption = numberPeriodFromSessionStorage
+      ? numberPeriodFromSessionStorage === 3
+      : monthlySchedule || false;
+
     this.state = {
       isPanelVisible: false,
       isChanged: false,
@@ -68,9 +80,9 @@ class DocumentsModule extends React.Component {
       isError: false,
       isLoading: false,
 
-      monthlySchedule: monthlySchedule || false,
+      monthlySchedule: monthOption,
       dailySchedule: false,
-      weeklySchedule: weeklySchedule || false,
+      weeklySchedule: weekdayOption,
 
       selectedOption:
         periodFromSessionStorage ||
@@ -79,12 +91,11 @@ class DocumentsModule extends React.Component {
       selectedWeekdayOption:
         weekdayNameFromSessionStorage || selectedWeekdayOption,
       selectedNumberWeekdayOption: weekdayNumber,
-      selectedTimeOption: defaultHour || "12:00",
+      selectedTimeOption: timeFromSessionStorage || defaultHour || "12:00",
       selectedMonthOption: monthNumber,
       selectedMaxCopies:
         maxCopiesFromSessionStorage || defaultMaxCopies || "10",
-      selectedNumberMaxCopies:
-        maxCopiesFromSessionStorage || defaultMaxCopies || "10",
+      selectedNumberMaxCopies: numberMaxCopies || defaultMaxCopies || "10",
 
       isSetDefaultFolderPath: false,
     };
@@ -162,6 +173,9 @@ class DocumentsModule extends React.Component {
     const key = options.key;
     const label = options.label;
     //debugger;
+    saveToSessionStorage("period", label);
+    saveToSessionStorage("numberPeriod", key);
+
     this.setState({ selectedOption: label });
     key === 1
       ? this.setState(
@@ -203,6 +217,10 @@ class DocumentsModule extends React.Component {
     const key = options.key;
     const label = options.label;
     //debugger;
+
+    saveToSessionStorage("weekdayName", label);
+    saveToSessionStorage("day", key);
+
     this.setState(
       {
         selectedNumberWeekdayOption: key,
@@ -218,10 +236,12 @@ class DocumentsModule extends React.Component {
     const label = options.label;
 
     if (key <= 24) {
+      saveToSessionStorage("time", label);
       this.setState({ selectedTimeOption: label }, function () {
         this.checkChanges();
       });
     } else {
+      saveToSessionStorage("day", label);
       this.setState(
         {
           selectedMonthOption: label,
@@ -236,6 +256,8 @@ class DocumentsModule extends React.Component {
   onSelectMaxCopies = (options) => {
     const key = options.key;
     const label = options.label;
+
+    saveToSessionStorage("maxCopies", label);
 
     this.setState(
       {
@@ -349,12 +371,13 @@ class DocumentsModule extends React.Component {
 
     let storageParams = [];
 
-    // if (!selectedFolder) {
-    //   this.setState({
-    //     isError: true,
-    //   });
-    //   return;
-    // }
+    if (!selectedFolder) {
+      this.setState({
+        isError: true,
+      });
+      return;
+    }
+
     onSetLoadingData && onSetLoadingData(true);
     this.setState({ isLoadingData: true }, function () {
       let period = weeklySchedule ? "1" : monthlySchedule ? "2" : "0";
@@ -369,9 +392,8 @@ class DocumentsModule extends React.Component {
         0,
         selectedTimeOption.indexOf(":")
       );
-      let storageType = "0";
 
-      //console.log("storageFiledValue", this.storageFiledValue);
+      let storageType = "0";
 
       storageParams = [
         {
@@ -460,6 +482,11 @@ class DocumentsModule extends React.Component {
     } = this.state;
 
     onSetLoadingData && onSetLoadingData(true);
+
+    settingNames.forEach((settingName) => {
+      saveToSessionStorage(settingName, "");
+    });
+
     if (defaultStorageType) {
       this.setState({
         isSetDefaultFolderPath: true,
@@ -491,7 +518,7 @@ class DocumentsModule extends React.Component {
       if (+defaultPeriod === 1) {
         //Every Week option
         //debugger;
-        const arrayIndex = lng === "en" ? defaultDay - 1 : defaultDay - 2; //selected number of week
+        const arrayIndex = lng === "en" ? defaultDay : defaultDay - 1; //selected number of week
         defaultSelectedOption = periodOptions[1].label;
         defaultSelectedWeekdayOption = defaultDay;
         // defaultWeekly = true;
@@ -505,14 +532,12 @@ class DocumentsModule extends React.Component {
         if (+defaultPeriod === 2) {
           //Every Month option
           defaultSelectedOption = periodOptions[2].label;
-          //defaultMonthly = true;
           this.setState({
             selectedOption: defaultSelectedOption,
             monthlySchedule: true,
             selectedMonthOption: `${defaultDay}`, //selected day of month
           });
         } else {
-          // defaultDaily = true;
           defaultSelectedOption = periodOptions[0].label;
           this.setState({
             selectedOption: defaultSelectedOption,
@@ -552,8 +577,6 @@ class DocumentsModule extends React.Component {
       monthNumberOptionsArray,
       timeOptionsArray,
       maxNumberCopiesArray,
-      // weeklySchedule,
-      // monthlySchedule,
       isCopyingToLocal,
       t,
       onSetLoadingData,
@@ -566,14 +589,14 @@ class DocumentsModule extends React.Component {
         <>
           {!isLoading ? (
             <SelectedFolder
-              onSelectFolder={this.onSelectFolder} //здесь
+              onSelectFolder={this.onSelectFolder}
               name={"thirdParty"}
-              onClose={this.onClose} //здесь
-              onClickInput={this.onClickInput} //здесь
-              isPanelVisible={isPanelVisible} //здесь
+              onClose={this.onClose}
+              onClickInput={this.onClickInput}
+              isPanelVisible={isPanelVisible}
               folderPath={this.folderDocumentsModulePath}
-              isSetDefaultFolderPath={isSetDefaultFolderPath} //здесь
-              isError={isError} //здесь
+              isSetDefaultFolderPath={isSetDefaultFolderPath}
+              isError={isError}
               onSetLoadingData={onSetLoadingData}
               isCommonFolders
               isCommonWithoutProvider
@@ -589,10 +612,10 @@ class DocumentsModule extends React.Component {
             monthlySchedule={monthlySchedule}
             weekOptions={weekOptions}
             selectedOption={selectedOption}
-            selectedWeekdayOption={selectedWeekdayOption} //здесь ?
-            selectedTimeOption={selectedTimeOption} //здесь ?
-            selectedMonthOption={selectedMonthOption} //здесь ?
-            selectedMaxCopies={selectedMaxCopies} //здесь ?
+            selectedWeekdayOption={selectedWeekdayOption}
+            selectedTimeOption={selectedTimeOption}
+            selectedMonthOption={selectedMonthOption}
+            selectedMaxCopies={selectedMaxCopies}
             isLoadingData={isLoadingData}
             periodOptions={periodOptions}
             monthNumberOptionsArray={monthNumberOptionsArray}
@@ -623,4 +646,4 @@ class DocumentsModule extends React.Component {
     );
   }
 }
-export default withTranslation("Settings")(observer(DocumentsModule));
+export default withTranslation("Settings")(DocumentsModule);
