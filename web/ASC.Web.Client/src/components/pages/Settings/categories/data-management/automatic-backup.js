@@ -713,6 +713,7 @@ class AutomaticBackup extends React.PureComponent {
                     monthlySchedule={monthlySchedule}
                     dailySchedule={dailySchedule}
                     weeklySchedule={weeklySchedule}
+                    isCopyingToLocal={isCopyingToLocal}
                     onCancelModuleSettings={this.onCancelModuleSettings}
                     changedDefaultOptions={this.changedDefaultOptions}
                     onSetDefaultOptions={this.onSetDefaultOptions}
@@ -777,6 +778,7 @@ class AutomaticBackup extends React.PureComponent {
                   monthlySchedule={monthlySchedule}
                   dailySchedule={dailySchedule}
                   weeklySchedule={weeklySchedule}
+                  isCopyingToLocal={isCopyingToLocal}
                   onCancelModuleSettings={this.onCancelModuleSettings}
                   changedDefaultOptions={this.changedDefaultOptions}
                   onSetDefaultOptions={this.onSetDefaultOptions}
