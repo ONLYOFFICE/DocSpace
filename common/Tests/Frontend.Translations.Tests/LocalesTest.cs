@@ -471,5 +471,38 @@ namespace Frontend.Translations.Tests
 
             Assert.AreEqual(0, notFoundi18nKeys.Count(), message);
         }
+
+        [Test]
+        public void NotTranslatedCommonKeysTest()
+        {
+            var notFoundi18nKeys = new List<KeyValuePair<string, List<string>>>();
+            var message = $"Some i18n-keys are not found in COMMON translations: \r\nKeys: \r\n\r\n";
+
+            var enLanguageKeys = CommonTranslations
+                .Where(l => l.Language == "en")
+                .FirstOrDefault()
+                .Translations
+                .Select(k => k.Key)
+                .ToList();
+
+            var otherCommonLanguages = CommonTranslations.Where(l => l.Language != "en");
+
+            var i = 0;
+            foreach (var lng in otherCommonLanguages)
+            {
+                var list = enLanguageKeys
+                    .Except(lng.Translations.Select(t => t.Key))
+                    .ToList();
+
+                if (!list.Any())
+                    continue;
+
+                message += $"{++i}. '{lng.Language}' Keys: \r\n {string.Join("\r\n", list)} \r\n";
+
+                notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>(lng.Language, list));
+            }
+
+            Assert.AreEqual(0, notFoundi18nKeys.Count(), message);
+        }
     }
 }
