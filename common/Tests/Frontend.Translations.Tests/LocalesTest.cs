@@ -456,8 +456,8 @@ namespace Frontend.Translations.Tests
                 foreach (var lng in module.AvailableLanguages)
                 {
                     var list = lng.Translations
-                         .Select(t => t.Key.Replace("Translations:", ""))
-                         .Except(notCommonKeys)
+                         .Select(t => t.Key)
+                         .Except(notCommonKeys.Select(k => k.Replace("Translations:", "")))
                          .ToList();
 
                     if (!list.Any())
