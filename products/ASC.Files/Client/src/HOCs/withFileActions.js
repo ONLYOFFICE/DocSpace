@@ -4,6 +4,7 @@ import { ReactSVG } from "react-svg";
 
 import IconButton from "@appserver/components/icon-button";
 import Text from "@appserver/components/text";
+import toastr from "@appserver/components/toast/toastr";
 
 import { EncryptedFileIcon } from "../components/Icons";
 
@@ -77,6 +78,7 @@ export default function withFileActions(WrappedFileItem) {
 
     onDropZoneUpload = (files, uploadToFolder) => {
       const {
+        t,
         selectedFolderId,
         dragging,
         setDragging,
@@ -131,6 +133,9 @@ export default function withFileActions(WrappedFileItem) {
       setStartDrag(true);
     };
 
+    onMarkAsRead = (id) =>
+      this.props.markAsRead([], [`${id}`], this.props.item);
+
     onMouseUpHandler = (e) => {
       const { isMouseDown } = this.state;
       const { isFolder, viewAs, checked, item } = this.props;
@@ -158,7 +163,6 @@ export default function withFileActions(WrappedFileItem) {
       }
       this.setState({ isMouseDown: false });
     };
-
     onFilesClick = () => {
       const {
         filter,
@@ -176,7 +180,14 @@ export default function withFileActions(WrappedFileItem) {
         addExpandedKeys,
         setMediaViewerData,
       } = this.props;
-      const { id, fileExst, viewUrl, providerKey, contentLength } = item;
+      const {
+        id,
+        fileExst,
+        viewUrl,
+        providerKey,
+        contentLength,
+        fileStatus,
+      } = item;
 
       if (isTrashFolder) return;
 
@@ -188,12 +199,15 @@ export default function withFileActions(WrappedFileItem) {
         }
 
         fetchFiles(id, filter)
+          .then(() => this.setNewBadgeCount())
           .catch((err) => {
             toastr.error(err);
             setIsLoading(false);
           })
           .finally(() => setIsLoading(false));
       } else {
+        if (fileStatus === 2) this.onMarkAsRead(id);
+
         if (canWebEdit) {
           return openDocEditor(id, providerKey);
         }
@@ -289,7 +303,7 @@ export default function withFileActions(WrappedFileItem) {
       },
       { item, t, history }
     ) => {
-      const { selectRowAction, onSelectItem } = filesActionsStore;
+      const { selectRowAction, onSelectItem, markAsRead } = filesActionsStore;
       const { setSharingPanelVisible } = dialogsStore;
       const {
         isPrivacyFolder,
@@ -311,6 +325,7 @@ export default function withFileActions(WrappedFileItem) {
         setIsLoading,
         fetchFiles,
         openDocEditor,
+        getFolderInfo,
         viewAs,
       } = filesStore;
       const { startUpload } = uploadDataStore;
@@ -375,6 +390,8 @@ export default function withFileActions(WrappedFileItem) {
         expandedKeys,
         addExpandedKeys,
         setMediaViewerData,
+        getFolderInfo,
+        markAsRead,
         viewAs,
       };
     }

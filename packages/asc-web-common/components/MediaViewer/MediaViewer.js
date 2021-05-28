@@ -436,13 +436,14 @@ class MediaViewer extends React.Component {
               onClick={this.props.onClose && this.props.onClose}
               className="mediaPlayerClose"
             >
-              <CrossIcon size="medium" isfill={true} color="#fff" />
+              <CrossIcon size="medium" /* isfill={true} */ color="#fff" />
             </ControlBtn>
           </div>
         </div>
         {canOpen &&
           (isImage ? (
             <ImageViewer
+              userAccess={this.props.userAccess}
               visible={this.state.visible}
               onClose={this.onClose}
               images={[{ src: url, alt: "" }]}
@@ -488,7 +489,7 @@ class MediaViewer extends React.Component {
 MediaViewer.propTypes = {
   allowConvert: PropTypes.bool,
   visible: PropTypes.bool,
-  currentFileId: PropTypes.number,
+  currentFileId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   playlist: PropTypes.arrayOf(PropTypes.object),
   extsImagePreviewed: PropTypes.arrayOf(PropTypes.string),
   extsMediaPreviewed: PropTypes.arrayOf(PropTypes.string),

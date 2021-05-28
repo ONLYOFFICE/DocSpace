@@ -44,6 +44,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
+    [Transient]
     class FileMoveCopyOperation : ComposeFileOperation<FileMoveCopyOperationData<string>, FileMoveCopyOperationData<int>>
     {
         public FileMoveCopyOperation(IServiceProvider serviceProvider,

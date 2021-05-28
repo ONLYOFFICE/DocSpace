@@ -16,7 +16,7 @@ import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 import ContextOptionsStore from "./ContextOptionsStore";
 
 import VersionHistoryStore from "./VersionHistoryStore";
-import dialogsStore from "./DialogsStore";
+import DialogsStore from "./DialogsStore";
 
 import store from "studio/store";
 
@@ -35,7 +35,8 @@ const filesStore = new FilesStore(
   treeFoldersStore,
   formatsStore
 );
-const settingsStore = new SettingsStore(thirdPartyStore);
+const mediaViewerDataStore = new MediaViewerDataStore(filesStore);
+const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
 const uploadDataStore = new UploadDataStore(
@@ -46,6 +47,11 @@ const uploadDataStore = new UploadDataStore(
   secondaryProgressDataStore,
   primaryProgressDataStore
 );
+const dialogsStore = new DialogsStore(
+  treeFoldersStore,
+  filesStore,
+  selectedFolderStore
+);
 const filesActionsStore = new FilesActionsStore(
   store.auth,
   uploadDataStore,
@@ -53,20 +59,11 @@ const filesActionsStore = new FilesActionsStore(
   filesStore,
   selectedFolderStore,
   settingsStore,
-  dialogsStore
-);
-
-const mediaViewerDataStore = new MediaViewerDataStore(filesStore);
-const versionHistoryStore = new VersionHistoryStore(filesStore);
-const contextOptionsStore = new ContextOptionsStore(
-  filesStore,
-  fileActionStore,
-  selectedFolderStore,
-  filesActionsStore,
   dialogsStore,
-  versionHistoryStore,
   mediaViewerDataStore
 );
+
+const versionHistoryStore = new VersionHistoryStore(filesStore);
 
 const stores = {
   filesStore,

@@ -277,16 +277,9 @@ class PageLayout extends React.Component {
         isArticleAvailable,
       isBackdropAvailable = isArticleAvailable;
 
-    return (
-      <>
-        <StyledSelectableGroup
-          dragging={dragging}
-          enableDeselect
-          resetOnStart
-          allowClickWithoutSelected={false}
-          duringSelection={this.duringSelection}
-          ignoreList={[".not-selectable", "draggable"]}
-        >
+    const renderPageLayout = () => {
+      return (
+        <>
           {isBackdropAvailable && (
             <Backdrop
               zIndex={400}
@@ -446,8 +439,23 @@ class PageLayout extends React.Component {
               )}
             </ReactResizeDetector>
           )}
-        </StyledSelectableGroup>
-      </>
+        </>
+      );
+    };
+
+    return isMobile || !uploadFiles ? (
+      renderPageLayout()
+    ) : (
+      <StyledSelectableGroup
+        dragging={dragging}
+        enableDeselect
+        resetOnStart
+        allowClickWithoutSelected={false}
+        duringSelection={this.duringSelection}
+        ignoreList={[".not-selectable", "draggable"]}
+      >
+        {renderPageLayout()}
+      </StyledSelectableGroup>
     );
   }
 }

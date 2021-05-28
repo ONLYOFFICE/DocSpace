@@ -38,7 +38,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasColumnName("connection_string")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ImapSettingsId).HasColumnName("imap_settings_id");
 
@@ -48,7 +48,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasColumnType("varchar(128)")
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.ServerType).HasColumnName("server_type");
 
