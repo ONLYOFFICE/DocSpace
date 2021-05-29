@@ -1,6 +1,7 @@
 {
   "name": "appserver",
   "private": true,
+  "version": "0.1.9",
   "workspaces": [
     "packages/asc-web-components",
     "packages/asc-web-common",
@@ -23,7 +24,8 @@
     "test": "yarn workspace @appserver/components test",
     "clean": "concurrently \"wsrun --parallel clean\"",
     "storybook": "yarn workspace @appserver/components storybook",
-    "storybook-build": "yarn workspace @appserver/components run storybook-build"
+    "storybook-build": "yarn workspace @appserver/components run storybook-build",
+    "bump": "lerna version --no-push --no-git-tag-version"
   },
   "devDependencies": {
     "lerna": "^3.22.1",
