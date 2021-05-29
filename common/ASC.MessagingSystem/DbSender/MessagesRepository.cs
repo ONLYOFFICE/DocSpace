@@ -300,11 +300,11 @@ namespace ASC.MessagingSystem.DbSender
                         r.TenantId,
                         ef = r
                     })
-                    .Where(r => r.Date < DateTime.UtcNow.AddDays(
+                    .Where(r => r.Date < DateTime.UtcNow.AddDays(-Convert.ToDouble(
                         ef.WebstudioSettings
                         .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
-                        .Select(r => -Convert.ToDouble(JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings) ?? TenantAuditSettings.MaxLifeTime.ToString()))
-                        .FirstOrDefault()))
+                        .Select(r => JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings))
+                        .FirstOrDefault() ?? TenantAuditSettings.MaxLifeTime.ToString())))
                     .Take(1000);
 
                 ids = ae.Select(r => r.ef).ToList();
