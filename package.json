@@ -25,7 +25,7 @@
     "clean": "concurrently \"wsrun --parallel clean\"",
     "storybook": "yarn workspace @appserver/components storybook",
     "storybook-build": "yarn workspace @appserver/components run storybook-build",
-    "bump": "lerna version --no-push --no-git-tag-version",
+    "bump": "lerna version --no-push --no-git-tag-version"
   },
   "devDependencies": {
     "lerna": "^3.22.1",
