@@ -132,7 +132,7 @@ class SectionBodyContent extends React.PureComponent {
       viewer,
       isSelf,
       setProviders,
-      getTfaSettings,
+      getTfaType,
       getBackupCodes,
     } = this.props;
 
@@ -150,10 +150,11 @@ class SectionBodyContent extends React.PureComponent {
       console.error(e);
     }
 
-    await getTfaSettings().then((type) => this.setState({ tfa: type }));
-    await getBackupCodes().then((codes) =>
-      this.setState({ backupCodes: codes })
-    );
+    const type = await getTfaType();
+    this.setState({ tfa: type });
+
+    const codes = await getBackupCodes();
+    this.setState({ backupCodes: codes });
 
     window.loginCallback = this.loginCallback;
   }
@@ -509,6 +510,6 @@ export default withRouter(
     getBackupCodes: auth.tfaStore.getBackupCodes,
     getNewBackupCodes: auth.tfaStore.getNewBackupCodes,
     resetTfaApp: auth.tfaStore.unlinkApp,
-    getTfaSettings: auth.tfaStore.getTfaSettings,
+    getTfaType: auth.tfaStore.getTfaType,
   }))(observer(withTranslation("Profile")(SectionBodyContent)))
 );

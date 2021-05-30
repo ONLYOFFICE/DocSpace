@@ -62,6 +62,6 @@
   "TwoFactorDescription": "<strong>Двухфакторная аутентификация</strong> через приложение для генерации кодов включена для всех пользователей администратором облачного сервиса.",
   "ResetApplication": "Сбросить приложение",
   "ShowBackupCodes": "Показать резервные коды",
-  "CountCodesRemaining": "<1>({{count}} кодов осталось)</1>",
+  "CountCodesRemaining": "({{count}} кодов осталось)",
   "TfaLoginSettings": "Настройки входа"
 }
