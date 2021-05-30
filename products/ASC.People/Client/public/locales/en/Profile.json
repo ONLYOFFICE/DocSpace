@@ -58,7 +58,7 @@
 
   "ProviderSuccessfullyConnected": "Provider successfully connected",
   "ProviderSuccessfullyDisconnected": "Provider successfully disconnected",
-  "TwoFactorDescription": "<strong>Two-factor authentication</strong> via code generating application was enabled for all users by cloud service administrator.",
+  "TwoFactorDescription": "Two-factor authentication via code generating application was enabled for all users by cloud service administrator.",
   "ResetApplication": "Reset application",
   "ShowBackupCodes": "Show backup codes",
   "CountCodesRemaining": "({{count}} codes remaining)",

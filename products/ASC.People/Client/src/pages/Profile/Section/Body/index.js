@@ -71,7 +71,12 @@ const ContactWrapper = styled.div`
 
 const LinkActionWrapper = styled.div`
   margin-top: 17px;
-  .link-action {
+
+  .link-action-reset {
+    margin-right: 18px;
+  }
+
+  .link-action-backup {
     margin-right: 5px;
   }
 `;
@@ -412,16 +417,16 @@ class SectionBodyContent extends React.PureComponent {
             <ToggleContent label={t("TfaLoginSettings")} isOpen={true}>
               <Trans t={t} i18nKey="TwoFactorDescription" ns="Profile">
                 <Text>
-                  <strong>Two-factor authentication</strong> via code generating
-                  application was enabled for all users by cloud service
-                  administrator.
+                  Two-factor authentication via code generating application was
+                  enabled for all users by cloud service administrator.
                 </Text>
               </Trans>
               <LinkActionWrapper>
                 <Link
                   type="action"
                   isHovered={true}
-                  className="link-action"
+                  className="link-action-reset"
+                  isBold={true}
                   onClick={this.toggleResetAppDialogVisible}
                 >
                   {t("ResetApplication")}
@@ -429,21 +434,23 @@ class SectionBodyContent extends React.PureComponent {
                 <Link
                   type="action"
                   isHovered={true}
-                  className="link-action"
+                  className="link-action-backup"
+                  isBold={true}
                   onClick={this.toggleBackupCodesDialogVisible}
                 >
                   {t("ShowBackupCodes")}
                 </Link>
-                <Trans
-                  t={t}
-                  i18nKey="CountCodesRemaining"
-                  ns="Profile"
-                  count={backupCodesCount}
-                >
-                  <Text color="#A3A9AE">
+
+                <Link color="#A3A9AE" noHover={true}>
+                  <Trans
+                    t={t}
+                    i18nKey="CountCodesRemaining"
+                    ns="Profile"
+                    count={backupCodesCount}
+                  >
                     ({{ count: backupCodesCount }} codes remaining)
-                  </Text>
-                </Trans>
+                  </Trans>
+                </Link>
               </LinkActionWrapper>
             </ToggleContent>
           </ToggleWrapper>
