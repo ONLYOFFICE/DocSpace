@@ -34,25 +34,34 @@ class PureAccessPortal extends Component {
     super(props);
 
     const { t } = props;
-    this.state = { isLoaded: false, type: "none", showButton: false };
+    this.state = {
+      isLoaded: false,
+      type: "none",
+      showButton: false,
+      smsDisabled: false,
+      appDisabled: false,
+    };
 
     setDocumentTitle(t("PortalSecurity"));
   }
 
   async componentDidMount() {
-    const { getTfaSettings } = this.props;
+    const { getTfaType, getTfaSettings } = this.props;
     showLoader();
 
-    await getTfaSettings().then((type) => {
-      this.setState({ type: type, isLoaded: true });
-      hideLoader();
-    });
+    const type = await getTfaType();
+    this.setState({ type: type, isLoaded: true });
+
+    const r = await getTfaSettings();
+    this.setState({ smsDisabled: r[0].avaliable, appDisabled: r[1].avaliable });
+
+    hideLoader();
   }
 
   onSelectTfaType = async (e) => {
-    const { getTfaSettings } = this.props;
+    const { getTfaType } = this.props;
 
-    const type = await getTfaSettings();
+    const type = await getTfaType();
 
     if (type !== e.target.value) {
       this.setState({ type: e.target.value, showButton: true });
@@ -68,7 +77,7 @@ class PureAccessPortal extends Component {
     setTfaSettings(type).then((res) => {
       toastr.success(t("SuccessfullySaveSettingsMessage"));
       if (type !== "none") {
-        getTfaConfirmLink(type, res).then((link) =>
+        getTfaConfirmLink(res).then((link) =>
           history.push(link.replace(window.location.origin, ""))
         );
       }
@@ -77,7 +86,7 @@ class PureAccessPortal extends Component {
   };
 
   render() {
-    const { isLoaded, type, showButton } = this.state;
+    const { isLoaded, type, showButton, smsDisabled, appDisabled } = this.state;
     const { t } = this.props;
 
     return !isLoaded ? (
@@ -100,11 +109,12 @@ class PureAccessPortal extends Component {
             {
               label: t("BySms"),
               value: "sms",
-              disabled: true, //TODO: get from api, when added sms tfa
+              disabled: !smsDisabled,
             },
             {
               label: t("ByApp"),
               value: "app",
+              disabled: !appDisabled,
             },
           ]}
           selected={type}
@@ -126,6 +136,7 @@ class PureAccessPortal extends Component {
 
 export default inject(({ auth }) => ({
   organizationName: auth.settingsStore.organizationName,
+  getTfaType: auth.tfaStore.getTfaType,
   getTfaSettings: auth.tfaStore.getTfaSettings,
   setTfaSettings: auth.tfaStore.setTfaSettings,
   getTfaConfirmLink: auth.tfaStore.getTfaConfirmLink,

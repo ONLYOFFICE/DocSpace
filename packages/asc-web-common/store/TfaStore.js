@@ -14,7 +14,7 @@ class TfaStore {
     makeAutoObservable(this);
   }
 
-  getTfaSettings = async () => {
+  getTfaType = async () => {
     const res = await api.settings.getTfaSettings();
     const sms = res[0].enabled;
     const app = res[1].enabled;
@@ -25,12 +25,16 @@ class TfaStore {
     return type;
   };
 
+  getTfaSettings = async () => {
+    return await api.settings.getTfaSettings();
+  };
+
   setTfaSettings = async (type) => {
     return await api.settings.setTfaSettings(type);
   };
 
-  getTfaConfirmLink = async (res, type) => {
-    if (res && type !== "none") {
+  getTfaConfirmLink = async (res) => {
+    if (res) {
       return await api.settings.getTfaConfirmLink();
     }
   };
@@ -44,7 +48,7 @@ class TfaStore {
   };
 
   loginWithCodeAndCookie = async (code) => {
-    return api.settings.loginWithTfaCodeAndCookie(code);
+    return api.settings.validateTfaCode(code);
   };
 
   getBackupCodes = async () => {

@@ -304,7 +304,7 @@ export function getTfaSecretKeyAndQR(confirmKey = null) {
   return request(options);
 }
 
-export function loginWithTfaCodeAndCookie(code) {
+export function validateTfaCode(code) {
   const data = {
     code,
   };
