@@ -30,8 +30,8 @@ namespace ASC.Common.Threading.Progress
 {
     public interface IProgressItem : ICloneable
     {
-        object Id { get; set; }
-        object Status { get; set; }
+        string Id { get; }
+        DistributedTaskStatus Status { get; set; }
         object Error { get; set; }
         double Percentage { get; set; }
         bool IsCompleted { get; set; }

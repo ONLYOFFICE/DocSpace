@@ -1,6 +1,7 @@
 {
   "name": "appserver",
   "private": true,
+  "version": "0.1.10",
   "workspaces": [
     "packages/asc-web-components",
     "packages/asc-web-common",
@@ -10,18 +11,22 @@
     "products/ASC.People/Client",
     "products/ASC.Files/Client",
     "products/ASC.CRM/Client",
-    "products/ASC.Projects/Client"
+    "products/ASC.Projects/Client",
+    "products/ASC.Mail/Client",
+    "products/ASC.Calendar/Client"
   ],
   "scripts": {
     "wipe": "rimraf node_modules yarn.lock web/**/node_modules products/**/node_modules",
-    "build": "yarn workspaces run build",
+    "build": "concurrently \"wsrun --parallel build\"",
     "start": "concurrently \"wsrun --parallel start\"",
     "start-prod": "concurrently \"wsrun --parallel start-prod\"",
     "serve": "concurrently \"wsrun --parallel serve\"",
     "test": "yarn workspace @appserver/components test",
     "clean": "concurrently \"wsrun --parallel clean\"",
     "storybook": "yarn workspace @appserver/components storybook",
-    "storybook-build": "yarn workspace @appserver/components run storybook-build"
+    "storybook-build": "yarn workspace @appserver/components run storybook-build",
+    "bump": "lerna version --no-push --no-git-tag-version",
+    "deploy": "rimraf build/deploy && concurrently \"wsrun --parallel deploy\""
   },
   "devDependencies": {
     "lerna": "^3.22.1",

@@ -112,6 +112,8 @@
   "AddFilter": "Add filter",
   "FolderCreated": "New folder <strong>{{itemTitle}}</strong> is created",
   "FileCreated": "New file <strong>{{itemTitle}}.{{exst}}</strong> is created",
+  "FileRenamed": "The document '{{oldTitle}}' is renamed to '{{newTitle}}'",
+  "FolderRenamed": "The folder '{{folderTitle}}' is renamed to '{{newFoldedTitle}}'",
   "FolderRemoved": "Folder moved to recycle bin",
   "FileRemoved": "File moved to recycle bin",
   "MoveItem": "<strong>{{title}}</strong> moved",
@@ -129,5 +131,7 @@
   "DeleteSelectedElem": "Selected elements were successfully deleted",
   "DeleteFromTrash": "Selected elements were successfully deleted from trash",
   "New": "New",
-  "Version": "Ver.{{version}}"
+  "Version": "Ver.{{version}}",
+  "RemoveFromList": "Remove from list",
+  "MarkRead": "Mark as read"
 }

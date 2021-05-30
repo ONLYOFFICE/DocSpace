@@ -15,6 +15,13 @@ services:
       target: backup
     image: "${REPO}/${STATUS}appserver-backup:${SRV_VERSION}"
 
+  onlyoffice-calendar:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: calendar
+    image: "${REPO}/${STATUS}appserver-calendar:${SRV_VERSION}"
+
   onlyoffice-crm:
     build:
       context: ./
@@ -42,6 +49,13 @@ services:
       dockerfile: "${DOCKERFILE}"
       target: files_services
     image: "${REPO}/${STATUS}appserver-files-services:${SRV_VERSION}"
+
+  onlyoffice-mail:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: mail
+    image: "${REPO}/${STATUS}appserver-mail:${SRV_VERSION}"
 
   onlyoffice-storage-migration:
     build:
@@ -119,7 +133,21 @@ services:
       dockerfile: "${DOCKERFILE}"
       target: studio
     image: "${REPO}/${STATUS}appserver-studio:${SRV_VERSION}"
-    
+
+  onlyoffice-bin-share:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: bin_share
+    image: "${REPO}/${STATUS}appserver-bin-share:${SRV_VERSION}"
+
+  onlyoffice-wait-bin-share:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: wait_bin_share
+    image: "${REPO}/${STATUS}appserver-wait-bin-share:${SRV_VERSION}"
+
   onlyoffice-proxy:
     build:
       context:  ./

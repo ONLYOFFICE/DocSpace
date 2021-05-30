@@ -271,7 +271,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            return (checkShare ? FromQueryWithShared(q) : FromQuery(q)).Select(ToFolder).ToList();
+            return (checkShare ? FromQueryWithShared(q) : FromQuery(q)).Select(ToFolder).Distinct().ToList();
         }
 
         public List<Folder<int>> GetParentFolders(int folderId)
@@ -976,10 +976,12 @@ namespace ASC.Files.Core.Data
                 };
 
                 FilesDbContext.AddOrUpdate(r => r.BunchObjects, toInsert);
+                FilesDbContext.SaveChanges();
+
                 tx.Commit(); //Commit changes
             }
 
-            FilesDbContext.SaveChanges();
+
 
             return newFolderId;
         }

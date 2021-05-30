@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
@@ -11,6 +11,7 @@ import ModuleTile from "./ModuleTile";
 import { tryRedirectTo } from "@appserver/common/utils";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
+import config from "../../../../package.json";
 
 const HomeContainer = styled.div`
   padding: 62px 15px 0 15px;
@@ -96,23 +97,13 @@ const Body = ({ modules, match, isLoaded }) => {
   );
 };
 
-const Home = ({
-  defaultPage,
-  currentProductId,
-  setCurrentProductId,
-  ...props
-}) => {
-  useEffect(() => {
-    console.log("SET setCurrentProductId");
-    currentProductId !== "homePage" && setCurrentProductId("homePage");
-  }, [currentProductId, setCurrentProductId]);
-
+const Home = ({ defaultPage, ...rest }) => {
   return tryRedirectTo(defaultPage) ? (
     <></>
   ) : (
     <PageLayout>
       <PageLayout.SectionBody>
-        <Body {...props} />
+        <Body {...rest} />
       </PageLayout.SectionBody>
     </PageLayout>
   );
@@ -126,12 +117,11 @@ Home.propTypes = {
 
 export default inject(({ auth }) => {
   const { isLoaded, settingsStore, moduleStore } = auth;
-  const { defaultPage, setCurrentProductId } = settingsStore;
+  const { defaultPage } = settingsStore;
   const { modules } = moduleStore;
   return {
     defaultPage,
     modules,
     isLoaded,
-    setCurrentProductId,
   };
 })(withRouter(observer(Home)));

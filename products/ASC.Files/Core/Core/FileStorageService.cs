@@ -382,7 +382,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
             }
 
-            EntryManager.SetFileStatus(entries.OfType<File<TId>>().Where(r => r.ID != null).ToList());
+            EntryManager.SetFileStatus(entries);
 
             return new ItemList<FileEntry>(entries);
         }
@@ -1225,7 +1225,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
                 catch (Exception e)
                 {
-                    throw GenerateException(e);
+                    throw GenerateException(e.InnerException ?? e);
                 }
             }
             else

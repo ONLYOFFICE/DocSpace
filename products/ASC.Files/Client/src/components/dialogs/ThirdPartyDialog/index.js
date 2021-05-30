@@ -52,6 +52,7 @@ const ServiceItem = (props) => {
   const dataProps = {
     "data-link": capabilityLink,
     "data-title": capabilityName,
+    "data-key": capabilityName,
   };
 
   return <img {...dataProps} {...rest} alt="" />;
@@ -105,11 +106,13 @@ const ThirdPartyDialog = (props) => {
       );
       openConnectWindow(item.title, authModal).then((modal) =>
         getOAuthToken(modal).then((token) => {
+          authModal.close();
           showOAuthModal(token, item);
-          setConnectItem(item);
-          setConnectDialogVisible(true);
         })
       );
+    } else {
+      setConnectItem(item);
+      setConnectDialogVisible(true);
     }
 
     setThirdPartyDialogVisible(false);
@@ -220,6 +223,7 @@ const ThirdPartyDialog = (props) => {
               onClick={onShowService}
               className="service-item service-text"
               data-title={webDavConnectItem[0]}
+              data-key={webDavConnectItem[0]}
             >
               {t("ConnextOtherAccount")}
             </Text>
@@ -242,7 +246,6 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     ownCloudConnectItem,
     webDavConnectItem,
     sharePointConnectItem,
-    getOAuthToken,
     openConnectWindow,
   } = settingsStore.thirdPartyStore;
   const {
@@ -251,6 +254,7 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     setConnectDialogVisible,
     setConnectItem,
   } = dialogsStore;
+  const { getOAuthToken } = auth.settingsStore;
 
   return {
     visible,

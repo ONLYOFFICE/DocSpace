@@ -745,11 +745,11 @@ namespace ASC.Core.Data
             if (!string.IsNullOrEmpty(text))
             {
                 q = q.Where(
-                    u => u.FirstName.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
-                    u.LastName.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
-                    u.Title.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
-                    u.Location.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
-                    u.Email.Contains(text, StringComparison.InvariantCultureIgnoreCase));
+                    u => u.FirstName.Contains(text) ||
+                    u.LastName.Contains(text) ||
+                    u.Title.Contains(text) ||
+                    u.Location.Contains(text) ||
+                    u.Email.Contains(text));
             }
 
             return q;

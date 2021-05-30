@@ -112,6 +112,8 @@
   "AddFilter": "Добавить фильтр",
   "FolderCreated": "Создана новая папка <strong>{{itemTitle}}</strong>",
   "FileCreated": "Создан новый файл <strong>{{itemTitle}}.{{exst}}</strong>",
+  "FileRenamed": "Документ '{{oldTitle}}' переименован в '{{newTitle}}'",
+  "FolderRenamed": "Папка '{{folderTitle}}' переименована в '{{newFoldedTitle}}'",
   "FolderRemoved": "Папка перемещена в корзину",
   "FileRemoved": "Файл перемещен в корзину",
   "MoveItem": "<strong>{{title}}</strong> перемещен",
@@ -129,5 +131,7 @@
   "DeleteSelectedElem": "Выбранные элементы успешно удалены",
   "DeleteFromTrash": "Выбранные элементы успешно удалены из корзины",
   "New": "Новое",
-  "Version": "Вер.{{version}}"
+  "Version": "Вер.{{version}}",
+  "RemoveFromList": "Убрать из списка",
+  "MarkRead": "Пометить прочтённым"
 }

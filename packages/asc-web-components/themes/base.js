@@ -213,14 +213,13 @@ const Base = {
   socialButton: {
     fontWeight: "600",
     textDecoration: "none",
-    margin: "20px 0 0 20px",
     padding: "0",
     borderRadius: "2px",
-    width: "201px",
     height: "40px",
     textAlign: "left",
     stroke: " none",
     outline: "none",
+    width: "100%",
 
     background: white,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
@@ -236,16 +235,17 @@ const Base = {
     disableColor: "rgba(0, 0, 0, 0.4)",
 
     text: {
-      width: "142px",
+      width: "100%",
       height: "16px",
-      margin: "12px 9px 12px 10px",
-      fontWeight: "500",
+      margin: "0 11px",
+      fontWeight: "600",
       fontSize: "14px",
-      lineHeight: "16px",
+      lineHeight: "14px",
       letterSpacing: "0.21875px",
       overflow: "hidden",
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
+      color: "#757575",
     },
 
     svg: {

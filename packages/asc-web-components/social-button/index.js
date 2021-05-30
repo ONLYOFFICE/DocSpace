@@ -13,10 +13,10 @@ class SocialButton extends React.Component {
   }
 
   render() {
-    const { label, iconName } = this.props;
+    const { label, iconName, ...otherProps } = this.props;
     return (
-      <StyledSocialButton {...this.props}>
-        <ReactSVG src={iconName} />
+      <StyledSocialButton {...otherProps}>
+        <ReactSVG className="iconWrapper" src={iconName} />
         {label && (
           <Text as="span" className="social_button_text">
             {label}
@@ -42,6 +42,8 @@ SocialButton.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  onClick: PropTypes.func,
+  $iconOptions: PropTypes.object,
 };
 
 SocialButton.defaultProps = {
@@ -49,6 +51,7 @@ SocialButton.defaultProps = {
   iconName: "SocialButtonGoogleIcon",
   tabIndex: -1,
   isDisabled: false,
+  $iconOptions: {},
 };
 
 export default SocialButton;

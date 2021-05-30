@@ -483,7 +483,6 @@ export default inject(
   ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
     const {
       filter,
-      setFilter,
       selection,
       setIsLoading,
       dragging,
@@ -519,7 +518,6 @@ export default inject(
       setDragging,
       setIsLoading,
       setTreeFolders,
-      setFilter,
       setExpandedKeys,
       setExpandedPanelKeys,
     };

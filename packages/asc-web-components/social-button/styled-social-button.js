@@ -1,8 +1,9 @@
+import React from "react";
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import PropTypes from "prop-types";
 
-const ButtonWrapper = ({ label, iconName, isDisabled, ...props }) => (
+const ButtonWrapper = ({ label, iconName, isDisabled, noHover, ...props }) => (
   <button type="button" {...props}></button>
 );
 
@@ -12,6 +13,7 @@ ButtonWrapper.propTypes = {
   tabIndex: PropTypes.number,
   isDisabled: PropTypes.bool,
   onClick: PropTypes.func,
+  $iconOptions: PropTypes.object,
 };
 
 const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
@@ -20,7 +22,8 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
 }))`
   font-family: ${(props) => props.theme.fontFamily};
   border: none;
-  display: inline-block;
+  display: flex;
+  align-items: center;
 
   font-weight: ${(props) => props.theme.socialButton.fontWeight};
   text-decoration: ${(props) => props.theme.socialButton.textDecoration};
@@ -43,26 +46,42 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   }
 
   ${(props) =>
+    props.$iconOptions &&
+    props.$iconOptions.color &&
+    css`
+      svg path {
+        fill: ${props.$iconOptions.color};
+      }
+    `}
+
+  ${(props) =>
     !props.isDisabled
       ? css`
           background: ${(props) => props.theme.socialButton.background};
           box-shadow: ${(props) => props.theme.socialButton.boxShadow};
           color: ${(props) => props.theme.socialButton.color};
 
-          :hover,
-          :active {
-            cursor: pointer;
-            box-shadow: ${(props) => props.theme.socialButton.hoverBoxShadow};
-          }
+          ${(props) =>
+            !props.noHover &&
+            css`
+              :hover,
+              :active {
+                cursor: pointer;
+                box-shadow: ${(props) =>
+                  props.theme.socialButton.hoverBoxShadow};
+              }
 
-          :hover {
-            background: ${(props) => props.theme.socialButton.hoverBackground};
-          }
+              :hover {
+                background: ${(props) =>
+                  props.theme.socialButton.hoverBackground};
+              }
 
-          :active {
-            background: ${(props) => props.theme.socialButton.activeBackground};
-            border: none;
-          }
+              :active {
+                background: ${(props) =>
+                  props.theme.socialButton.activeBackground};
+                border: none;
+              }
+            `}
         `
       : css`
           box-shadow: none;
@@ -75,8 +94,14 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
           }
         `};
 
+  .iconWrapper {
+    display: flex;
+    pointer-events: none;
+  }
+
   .social_button_text {
-    position: absolute;
+    position: relative;
+    pointer-events: none;
 
     width: ${(props) => props.theme.socialButton.text.width};
     height: ${(props) => props.theme.socialButton.text.height};

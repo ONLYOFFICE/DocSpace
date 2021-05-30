@@ -9,8 +9,6 @@ import { LANGUAGE } from "@appserver/common/constants";
 // have a look at the Quick start guide
 // for passing in lng and translations on init
 
-const languages = ["en", "ru"];
-
 i18n
   /*
      load translation using http -> see /public/locales (i.e. https://github.com/i18next/react-i18next/tree/master/example/react/public/locales)
@@ -32,8 +30,6 @@ i18n
     */
   .init({
     lng: localStorage.getItem(LANGUAGE) || "en",
-    supportedLngs: languages,
-    whitelist: languages,
     fallbackLng: "en",
     load: "languageOnly",
     //debug: true,

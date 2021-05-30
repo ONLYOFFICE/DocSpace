@@ -233,6 +233,13 @@ export function getConsumersList() {
   });
 }
 
+export function getAuthProviders() {
+  return request({
+    method: "get",
+    url: `/people/thirdparty/providers`,
+  });
+}
+
 export function updateConsumerProps(newProps) {
   const options = {
     method: "post",

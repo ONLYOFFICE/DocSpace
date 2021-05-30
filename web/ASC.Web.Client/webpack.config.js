@@ -170,6 +170,9 @@ const config = {
           singleton: true,
           requiredVersion: deps["react-dom"],
         },
+        "./src/store": {
+          singleton: true,
+        },
       },
     }),
     new HtmlWebpackPlugin({
@@ -199,7 +202,11 @@ module.exports = (env, argv) => {
     config.optimization = {
       splitChunks: { chunks: "all" },
       minimize: true,
-      minimizer: [new TerserPlugin()],
+      minimizer: [
+        new TerserPlugin({
+          include: "./src/store",
+        }),
+      ],
     };
 
     config.plugins.push(

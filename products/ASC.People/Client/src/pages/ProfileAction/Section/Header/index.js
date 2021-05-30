@@ -40,6 +40,7 @@ const SectionHeaderContent = (props) => {
     setIsVisibleDataLossDialog,
     toggleAvatarEditor,
     avatarEditorIsOpen,
+    isMy,
   } = props;
   const { userCaption, guestCaption } = customNames;
   const { type } = match.params;
@@ -72,6 +73,10 @@ const SectionHeaderContent = (props) => {
   );
 
   const goBackAndReset = useCallback(() => {
+    if (isMy) {
+      return history.goBack();
+    }
+
     if (!profile || !document.referrer) {
       setFilterAndReset(filter);
       const urlFilter = filter.toUrlParams();

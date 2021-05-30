@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
@@ -47,7 +48,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("id")
                     .HasColumnType("varchar(128)")
                     .HasCharSet("utf8")
-                    .HasCollation("utf8_general_ci");
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")

@@ -1,4 +1,4 @@
-resolver 127.0.0.11 valid=30s;
+resolver $DNS_NAMESERVER valid=30s;
 
 map $SERVICE_API_SYSTEM $service_api_system {
     volatile;
@@ -8,6 +8,11 @@ map $SERVICE_API_SYSTEM $service_api_system {
 map $SERVICE_BACKUP $service_backup {
     volatile;
     $SERVICE_BACKUP $SERVICE_BACKUP;
+}
+
+map $SERVICE_CALENDAR $service_calendar {
+    volatile;
+    $SERVICE_CALENDAR $SERVICE_CALENDAR;
 }
 
 map $SERVICE_CRM $service_crm {
@@ -28,6 +33,11 @@ map $SERVICE_FILES $service_files {
 map $SERVICE_FILES_SERVICES $service_files_services {
     volatile;
     $SERVICE_FILES_SERVICES $SERVICE_FILES_SERVICES;
+}
+
+map $SERVICE_MAIL $service_mail {
+    volatile;
+    $SERVICE_MAIL $SERVICE_MAIL;
 }
 
 map $SERVICE_STORAGE_MIGRATION $service_storage_migration {

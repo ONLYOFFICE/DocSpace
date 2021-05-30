@@ -1,6 +1,6 @@
 {
   "name": "@appserver/components",
-  "version": "0.0.2",
+  "version": "0.1.10",
   "private": true,
   "scripts": {
     "build": "echo 'skip it'",
@@ -12,7 +12,8 @@
     "storybook": "start-storybook -p 8082 -s public",
     "storybook-build": "build-storybook",
     "storybook-serve": "serve storybook-static -p 8082",
-    "clean": "echo 'skip it'"
+    "clean": "echo 'skip it'",
+    "deploy": "echo 'skip it'"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.10",
@@ -69,8 +70,7 @@
     "email-addresses": "^3.1.0",
     "fast-deep-equal": "^3.1.3",
     "html-to-react": "^1.4.5",
-    "lodash": "4.17.19",
-    "lodash-es": "4.17.15",
+    "lodash": "4.17.21",
     "moment": "^2.29.1",
     "prop-types": "^15.7.2",
     "punycode": "^2.1.1",

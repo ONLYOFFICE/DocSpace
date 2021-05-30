@@ -42,47 +42,48 @@ class ArticleBodyContent extends React.Component {
       history,
     } = this.props;
 
-    if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
-      setSelectedNode(data);
-      setIsLoading(true);
+    //if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
+    setSelectedNode(data);
+    setIsLoading(true);
 
-      const newFilter = filter.clone();
-      newFilter.page = 0;
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.startIndex = 0;
+    newFilter.folder = data[0];
+
+    const selectedFolderTitle =
+      (e.node && e.node.props && e.node.props.title) || null;
+
+    selectedFolderTitle
+      ? setDocumentTitle(selectedFolderTitle)
+      : setDocumentTitle();
+
+    if (window.location.pathname.indexOf("/filter") > 0) {
+      fetchFiles(data[0], newFilter)
+        .catch((err) => toastr.error(err))
+        .finally(() => setIsLoading(false));
+    } else {
       newFilter.startIndex = 0;
-      newFilter.folder = data[0];
-
-      const selectedFolderTitle =
-        (e.node && e.node.props && e.node.props.title) || null;
-
-      selectedFolderTitle
-        ? setDocumentTitle(selectedFolderTitle)
-        : setDocumentTitle();
-
-      if (window.location.pathname.indexOf("/filter") > 0) {
-        fetchFiles(data[0], newFilter)
-          .catch((err) => toastr.error(err))
-          .finally(() => {
-
-            setIsLoading(false);
-          });
-      } else {
-
-        newFilter.startIndex = 0;
-        const urlFilter = newFilter.toUrlParams();
-        history.push(
-          combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
-        );
-      }
+      const urlFilter = newFilter.toUrlParams();
+      history.push(
+        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
+      );
     }
+    //}
   };
 
   onShowNewFilesPanel = (folderId) => {
-    this.props.setNewFilesPanelVisible(true);
-    this.props.setNewFilesIds([folderId]);
+    this.props.setNewFilesPanelVisible(true, [folderId]);
   };
 
   render() {
-    const { treeFolders, onTreeDrop, selectedTreeNode } = this.props;
+    const {
+      treeFolders,
+      onTreeDrop,
+      selectedTreeNode,
+      enableThirdParty,
+      isVisitor,
+    } = this.props;
 
     return isEmpty(treeFolders) ? (
       <Loaders.TreeFolders />
@@ -96,36 +97,48 @@ class ArticleBodyContent extends React.Component {
           onTreeDrop={onTreeDrop}
         />
         <TreeSettings />
-        <ThirdPartyList />
+        {enableThirdParty && !isVisitor && <ThirdPartyList />}
       </>
     );
   }
 }
 
 export default inject(
-  ({ filesStore, treeFoldersStore, selectedFolderStore, dialogsStore }) => {
+  ({
+    auth,
+    filesStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    dialogsStore,
+    settingsStore,
+  }) => {
     const { fetchFiles, filter, setIsLoading } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
+
+    const selectedNode = treeFoldersStore.selectedTreeNode;
+
     const selectedTreeNode =
-      treeFoldersStore.selectedTreeNode.length > 0 &&
-      treeFoldersStore.selectedTreeNode[0] !== "@my"
-        ? treeFoldersStore.selectedTreeNode
+      selectedNode.length > 0 &&
+      selectedNode[0] !== "@my" &&
+      selectedNode[0] !== "@common"
+        ? selectedNode
         : [selectedFolderStore.id + ""];
 
-    const { setNewFilesPanelVisible, setNewFilesIds } = dialogsStore;
+    const { setNewFilesPanelVisible } = dialogsStore;
 
     return {
       selectedFolderTitle: selectedFolderStore.title,
       treeFolders,
       selectedTreeNode,
       filter,
+      enableThirdParty: settingsStore.enableThirdParty,
+      isVisitor: auth.userStore.user.isVisitor,
 
       setIsLoading,
       fetchFiles,
       setSelectedNode,
       setTreeFolders,
       setNewFilesPanelVisible,
-      setNewFilesIds,
 
       homepage: config.homepage,
     };

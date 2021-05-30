@@ -6,7 +6,7 @@ import uniqueid from "lodash/uniqueId";
 import throttle from "lodash/throttle";
 import sumBy from "lodash/sumBy";
 import { ConflictResolveType } from "@appserver/common/constants";
-
+//import toastr from "studio/toastr";
 import { copyToFolder, moveToFolder } from "@appserver/common/api/files";
 
 const chunkSize = 1024 * 1023; //~0.999mb
@@ -334,20 +334,11 @@ class UploadDataStore {
       this.selectedFolderStore.id === folderId &&
       window.location.pathname.indexOf("/history") === -1
     ) {
-      return this.filesStore
-        .fetchFiles(
-          this.selectedFolderStore.id,
-          this.filesStore.filter.clone(),
-          false
-        )
-        .then((data) => {
-          const path = data.selectedFolder.pathParts;
-          const newTreeFolders = this.treeFoldersStore.treeFolders;
-          const folders = data.selectedFolder.folders;
-          const foldersCount = data.selectedFolder.foldersCount;
-          loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-          setTreeFolders(newTreeFolders);
-        });
+      return this.filesStore.fetchFiles(
+        this.selectedFolderStore.id,
+        this.filesStore.filter.clone(),
+        false
+      );
     } else {
       return api.files
         .getFolder(folderId, this.filesStore.filter.clone())
@@ -744,21 +735,6 @@ class UploadDataStore {
                     this.selectedFolderStore.id,
                     this.filesStore.filter
                   )
-                  .then((data) => {
-                    if (!this.treeFoldersStore.isRecycleBinFolder) {
-                      newTreeFolders = treeFolders;
-                      path = data.selectedFolder.pathParts.slice(0);
-                      folders = data.selectedFolder.folders;
-                      foldersCount = data.selectedFolder.foldersCount;
-                      loopTreeFolders(
-                        path,
-                        newTreeFolders,
-                        folders,
-                        foldersCount
-                      );
-                      this.treeFoldersStore.setTreeFolders(newTreeFolders);
-                    }
-                  })
                   .finally(() => {
                     setTimeout(
                       () =>

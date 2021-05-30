@@ -12,7 +12,6 @@ import {
   getObjectByLocation,
   //showLoader,
   //hideLoader,
-  tryRedirectTo,
 } from "@appserver/common/utils";
 import {
   getDocServiceUrl,
@@ -29,7 +28,6 @@ import throttle from "lodash/throttle";
 import { isIOS, deviceType } from "react-device-detect";
 import { homepage } from "../package.json";
 
-import "./custom.scss";
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
 
@@ -53,6 +51,7 @@ const Editor = () => {
   const fileId = urlParams
     ? urlParams.fileId || urlParams.fileid || null
     : null;
+  const version = urlParams ? urlParams.version || null : null;
   const doc = urlParams ? urlParams.doc || null : null;
   const isDesktop = window["AscDesktopEditor"] !== undefined;
 
@@ -80,7 +79,9 @@ const Editor = () => {
     try {
       if (!fileId) return;
 
-      console.log("PureEditor componentDidMount", fileId, doc);
+      console.log(
+        `Editor componentDidMount fileId=${fileId}, version=${version}, doc=${doc}`
+      );
 
       if (isIPad()) {
         const vh = window.innerHeight * 0.01;
@@ -90,19 +91,29 @@ const Editor = () => {
       //showLoader();
 
       const docApiUrl = await getDocServiceUrl();
+      const success = await checkIsAuthenticated();
 
-      if (!doc) {
-        const success = await checkIsAuthenticated();
-
-        if (!success) {
-          return tryRedirectTo(combineUrl(AppServerConfig.proxyURL, "/login"));
-        } else {
-          setIsAuthenticated(success);
-        }
+      if (!doc && !success) {
+        window.open(
+          combineUrl(AppServerConfig.proxyURL, "/login"),
+          "_self",
+          "",
+          true
+        );
+        return;
       }
-      fileInfo = await getFileInfo(fileId);
 
-      config = await openEdit(fileId, doc);
+      if (success) {
+        try {
+          fileInfo = await getFileInfo(fileId);
+        } catch (err) {
+          console.error(err);
+        }
+
+        setIsAuthenticated(success);
+      }
+
+      config = await openEdit(fileId, version, doc);
 
       if (isDesktop) {
         const isEncryption =
@@ -142,7 +153,8 @@ const Editor = () => {
       if (
         config &&
         config.document.permissions.edit &&
-        config.document.permissions.modifyFilter
+        config.document.permissions.modifyFilter &&
+        fileInfo
       ) {
         const sharingSettings = await SharingDialog.getSharingSettings(fileId);
         config.document.info = {
@@ -246,19 +258,35 @@ const Editor = () => {
         config.type = "mobile";
       }
 
-      const filterObj = FilesFilter.getDefault();
-      filterObj.folder = fileInfo.folderId;
-      const urlFilter = filterObj.toUrlParams();
+      let goback;
 
-      config.editorConfig.customization = {
-        ...config.editorConfig.customization,
-        goback: {
+      if (fileInfo) {
+        const filterObj = FilesFilter.getDefault();
+        filterObj.folder = fileInfo.folderId;
+        const urlFilter = filterObj.toUrlParams();
+
+        goback = {
           blank: true,
           requestClose: false,
           text: i18n.t("FileLocation"),
           url: `${combineUrl(filesUrl, `/filter?${urlFilter}`)}`,
-        },
+        };
+      }
+
+      config.editorConfig.customization = {
+        ...config.editorConfig.customization,
+        goback,
       };
+
+      let onRequestSharingSettings;
+
+      if (
+        fileInfo &&
+        config.document.permissions.edit &&
+        config.document.permissions.modifyFilter
+      ) {
+        onRequestSharingSettings = onSDKRequestSharingSettings;
+      }
 
       const events = {
         events: {
@@ -269,10 +297,7 @@ const Editor = () => {
           onInfo: onSDKInfo,
           onWarning: onSDKWarning,
           onError: onSDKError,
-          ...(config.document.permissions.edit &&
-            config.document.permissions.modifyFilter && {
-              onRequestSharingSettings: onSDKRequestSharingSettings,
-            }),
+          onRequestSharingSettings,
         },
       };
 
@@ -354,13 +379,14 @@ const Editor = () => {
       {!isLoading ? (
         <>
           <div id="editor"></div>
-
-          <SharingDialog
-            isVisible={isVisible}
-            sharingObject={fileInfo}
-            onCancel={onCancel}
-            onSuccess={updateUsersRightsList}
-          />
+          {fileInfo && (
+            <SharingDialog
+              isVisible={isVisible}
+              sharingObject={fileInfo}
+              onCancel={onCancel}
+              onSuccess={updateUsersRightsList}
+            />
+          )}
         </>
       ) : (
         <Box paddingProp="16px">
