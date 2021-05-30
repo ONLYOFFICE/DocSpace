@@ -143,7 +143,9 @@ class SectionHeaderContent extends React.Component {
 
     const fullSettingsUrlLength = fullSettingsUrl.length;
     const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
-    const arrayOfParams = resultPath.split("/");
+    const arrayOfParams = resultPath.split("/").filter((param) => {
+      return param !== "filter";
+    });
     return arrayOfParams;
   };
 

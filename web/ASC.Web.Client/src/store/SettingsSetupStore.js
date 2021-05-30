@@ -2,6 +2,9 @@ import api from "@appserver/common/api";
 import { makeAutoObservable } from "mobx";
 const { Filter } = api;
 import SelectionStore from "./SelectionStore";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../package.json";
 
 class SettingsSetupStore {
   selectionStore = null;
@@ -18,6 +21,7 @@ class SettingsSetupStore {
       options: [],
       users: [],
       admins: [],
+      adminsTotal: 0,
       owner: {},
       filter: Filter.getDefault(),
       selectorIsOpen: false,
@@ -54,6 +58,10 @@ class SettingsSetupStore {
 
   setAdmins = (admins) => {
     this.security.accessRight.admins = admins;
+  };
+
+  setTotalAdmins = (total) => {
+    this.security.accessRight.adminsTotal = total;
   };
 
   setOwner = (owner) => {
@@ -96,6 +104,23 @@ class SettingsSetupStore {
     this.integration.selectedConsumer =
       this.integration.consumers.find((c) => c.name === selectedConsumerName) ||
       {};
+  };
+
+  setFilterUrl = (filter) => {
+    window.history.replaceState(
+      "",
+      "",
+      combineUrl(
+        AppServerConfig.proxyURL,
+        `${config.homepage}/settings/security/access-rights/admins`,
+        `/filter?page=${filter.page}`
+      )
+    );
+  };
+
+  setFilterParams = (data) => {
+    this.setFilterUrl(data);
+    this.setFilter(data);
   };
 
   changeAdmins = async (userIds, productId, isAdmin) => {
@@ -148,8 +173,12 @@ class SettingsSetupStore {
     }
 
     filterData.total = admins.total;
+    if (filter) {
+      this.setFilterParams(filterData);
+    }
 
     this.setAdmins(admins.items);
+    this.setTotalAdmins(admins.total);
     this.setFilter(filterData);
   };
 

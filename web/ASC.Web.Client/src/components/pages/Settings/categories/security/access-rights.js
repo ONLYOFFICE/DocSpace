@@ -113,7 +113,7 @@ class AccessRights extends PureComponent {
   };
 
   render() {
-    const { t, admins } = this.props;
+    const { t, adminsTotal } = this.props;
     const { isLoading } = this.state;
     return isLoading ? (
       <MainContainer>
@@ -138,9 +138,9 @@ class AccessRights extends PureComponent {
               </Link>
               <StyledArrowRightIcon size="small" color="#333333" />
             </div>
-            {admins.length > 0 && (
+            {adminsTotal > 0 && (
               <Text className="category-item-subheader" truncate={true}>
-                {admins.length} {t("Employees")}
+                {adminsTotal} {t("Employees")}
               </Text>
             )}
             <Text className="category-item-description">
@@ -155,9 +155,10 @@ class AccessRights extends PureComponent {
 
 export default inject(({ auth, setup }) => {
   const { updateListAdmins } = setup;
-  const { admins } = setup.security.accessRight;
+  const { admins, adminsTotal } = setup.security.accessRight;
   return {
     admins,
+    adminsTotal,
     updateListAdmins,
     organizationName: auth.settingsStore.organizationName,
     owner: auth.settingsStore.owner,

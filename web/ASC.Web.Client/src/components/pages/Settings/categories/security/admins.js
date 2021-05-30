@@ -4,6 +4,8 @@ import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import HelpButton from "@appserver/components/help-button";
+import api from "@appserver/common/api";
+const { Filter } = api;
 
 import ToggleButton from "@appserver/components/toggle-button";
 import ModalDialog from "@appserver/components/modal-dialog";
@@ -289,7 +291,17 @@ class PortalAdmins extends Component {
       setAddUsers,
       setRemoveAdmins,
       updateListAdmins,
+      history,
     } = this.props;
+
+    const { location } = history;
+    const { pathname } = location;
+    let filter = Filter.getDefault();
+
+    if (pathname.indexOf("/admins/filter") > -1) {
+      filter = Filter.getFilter(location);
+      filter.page += 1;
+    }
 
     setAddUsers(this.addUsers);
     setRemoveAdmins(this.removeAdmins);
@@ -297,7 +309,7 @@ class PortalAdmins extends Component {
     if (isEmpty(admins, true)) {
       this.setIsLoading(true);
       try {
-        await updateListAdmins(null, true);
+        await updateListAdmins(filter, true);
         this.setIsLoading(false);
       } catch (error) {
         toastr.error(error);
