@@ -38,6 +38,6 @@
   "Continue": "Continue",
   "SetAppTitle": "Configure your authenticator application",
   "SetAppDescription": "The two-factor authentication is enabled to provide additional portal security. Configure your authenticator application to continue work on the portal. For example you could use Google Authenticator for <1>Android</1> and <4>iOS</4> or Authenticator for <8>Windows Phone</8>.",
-  "SetAppInstallDescription": "To connect your application scan the QR code or manually enter your secret key <strong>{{key}}</strong> then enter 6-digit code from your application in the field below.",
+  "SetAppInstallDescription": "To connect your application scan the QR code or manually enter your secret key <1>{{ secretKey }}</1> then enter 6-digit code from your application in the field below.",
   "SetAppButton": "Connect App"
 }

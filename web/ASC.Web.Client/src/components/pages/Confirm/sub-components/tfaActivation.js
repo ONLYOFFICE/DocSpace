@@ -47,8 +47,12 @@ const StyledForm = styled(Box)`
     }
   }
 
-  .set-app-text {
+  .set-app-title {
     margin-bottom: 14px;
+  }
+
+  .set-app-text {
+    margin-top: 14px;
   }
 `;
 const TfaActivationForm = withLoader((props) => {
@@ -98,7 +102,7 @@ const TfaActivationForm = withLoader((props) => {
         <StyledForm className="set-app-container">
           <div>
             <Box className="set-app-description" marginProp="0 0 32px 0">
-              <Text isBold fontSize="14px" className="set-app-text">
+              <Text isBold fontSize="14px" className="set-app-title">
                 {t("SetAppTitle")}
               </Text>
 
@@ -120,20 +124,19 @@ const TfaActivationForm = withLoader((props) => {
                 </Link>{" "}
                 .
               </Trans>
-              <br />
-              <br />
-              <Trans
-                t={t}
-                i18nKey="SetAppInstallDescription"
-                ns="Confirm"
-                key={secretKey}
-              >
-                <Text>
+
+              <Text className="set-app-text">
+                <Trans
+                  t={t}
+                  i18nKey="SetAppInstallDescription"
+                  ns="Confirm"
+                  key={secretKey}
+                >
                   To connect your apllication scan the QR code or manually enter
-                  your secret key <strong>{{ key: secretKey }}</strong> then
-                  enter 6-digit code from your application in the field below.
-                </Text>
-              </Trans>
+                  your secret key <strong>{{ secretKey }}</strong> then enter
+                  6-digit code from your application in the field below.
+                </Trans>
+              </Text>
             </Box>
             <Box displayProp="flex" className="app-code-wrapper">
               <Box className="app-code-input">
