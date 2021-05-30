@@ -17,7 +17,7 @@ import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 
 let selectedManualBackupFromSessionStorage = "";
 let selectedFolderPathFromSessionStorage = "";
-
+let selectedFolderFromSessionStorage = "";
 class ManualBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -29,6 +29,7 @@ class ManualBackup extends React.Component {
     selectedFolderPathFromSessionStorage = getFromSessionStorage(
       "selectedFolderPath"
     );
+    selectedFolderFromSessionStorage = getFromSessionStorage("selectedFolder");
 
     const checkedDocuments = selectedManualBackupFromSessionStorage
       ? selectedManualBackupFromSessionStorage === "documents"
@@ -90,8 +91,11 @@ class ManualBackup extends React.Component {
                 this.timerId = setInterval(() => this.getProgress(), 5000);
               } else {
                 saveToSessionStorage("selectedManualStorageType", "");
-                saveToSessionStorage &&
+                getFromSessionStorage("selectedFolderPath") &&
                   saveToSessionStorage("selectedFolderPath", "");
+
+                getFromSessionStorage("selectedFolder") &&
+                  saveToSessionStorage("selectedFolder", "");
               }
             }
           })
@@ -130,8 +134,13 @@ class ManualBackup extends React.Component {
       .then((res) => {
         if (res.error.length > 0 && res.progress !== 100) {
           saveToSessionStorage("selectedManualStorageType", "");
-          saveToSessionStorage &&
+
+          getFromSessionStorage("selectedFolderPath") &&
             saveToSessionStorage("selectedFolderPath", "");
+
+          getFromSessionStorage("selectedFolder") &&
+            saveToSessionStorage("selectedFolder", "");
+
           clearInterval(this.timerId);
           this.timerId && toastr.error(`${res.error}`);
           console.log("error", res.error);
@@ -146,8 +155,13 @@ class ManualBackup extends React.Component {
         if (res.progress === 100) {
           //debugger;
           saveToSessionStorage("selectedManualStorageType", "");
-          saveToSessionStorage &&
+
+          getFromSessionStorage("selectedFolderPath") &&
             saveToSessionStorage("selectedFolderPath", "");
+
+          getFromSessionStorage("selectedFolder") &&
+            saveToSessionStorage("selectedFolder", "");
+
           clearInterval(this.timerId);
 
           if (this._isMounted) {

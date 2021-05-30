@@ -7,7 +7,7 @@ import { startBackup } from "@appserver/common/api/portal";
 
 let selectedManualBackupFromSessionStorage = "";
 let selectedFolderPathFromSessionStorage = "";
-
+let selectedFolderFromSessionStorage = "";
 class DocumentsModule extends React.Component {
   constructor(props) {
     super(props);
@@ -20,9 +20,11 @@ class DocumentsModule extends React.Component {
       "selectedFolderPath"
     );
 
+    selectedFolderFromSessionStorage = getFromSessionStorage("selectedFolder");
+
     this.state = {
       isLoadingData: false,
-      selectedFolder: "",
+      selectedFolder: selectedFolderFromSessionStorage || "",
       isPanelVisible: false,
       folderPath: selectedFolderPathFromSessionStorage || "",
     };
@@ -47,7 +49,6 @@ class DocumentsModule extends React.Component {
     this._isMounted &&
       this.setState({
         selectedFolder: folderId,
-        isChanged: true,
       });
   };
 
@@ -64,17 +65,21 @@ class DocumentsModule extends React.Component {
   };
 
   onClickButton = () => {
-    console.log("selectedFolder", selectedFolder);
+    //debugger;
     saveToSessionStorage("selectedManualStorageType", "documents");
     const { selectedFolder } = this.state;
-    SelectedFolder.getFolderPath(selectedFolder[0]).then((folderPath) => {
+    console.log("selectedFolder", selectedFolder);
+
+    saveToSessionStorage("selectedFolder", `${selectedFolder}`);
+
+    SelectedFolder.getFolderPath(selectedFolder).then((folderPath) => {
       saveToSessionStorage("selectedFolderPath", `${folderPath}`);
     });
     const { setInterval } = this.props;
     const storageParams = [
       {
         key: "folderId",
-        value: selectedFolder[0],
+        value: selectedFolder,
       },
     ];
     startBackup("0", storageParams);
@@ -83,6 +88,7 @@ class DocumentsModule extends React.Component {
   render() {
     const { maxProgress, t, isCopyingLocal } = this.props;
     const { isPanelVisible, isLoadingData, folderPath } = this.state;
+
     return (
       <div className="category-item-wrapper">
         <SelectedFolder

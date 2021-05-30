@@ -11,6 +11,7 @@ import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 
 let selectedManualBackupFromSessionStorage = "";
 let selectedFolderPathFromSessionStorage = "";
+let selectedFolderFromSessionStorage = "";
 class ThirdPartyModule extends React.Component {
   constructor(props) {
     super(props);
@@ -20,9 +21,11 @@ class ThirdPartyModule extends React.Component {
     selectedFolderPathFromSessionStorage = getFromSessionStorage(
       "selectedFolderPath"
     );
+
+    selectedFolderFromSessionStorage = getFromSessionStorage("selectedFolder");
     this.state = {
       isLoadingData: false,
-      selectedFolder: "",
+      selectedFolder: selectedFolderFromSessionStorage || "",
       isPanelVisible: false,
       isError: false,
       folderPath: selectedFolderPathFromSessionStorage || "",
@@ -74,12 +77,14 @@ class ThirdPartyModule extends React.Component {
     return true;
   };
   onClickButton = () => {
-    console.log("selectedFolder", selectedFolder);
+    //console.log("selectedFolder", selectedFolder);
     saveToSessionStorage("selectedManualStorageType", "thirdPartyResource");
     const { selectedFolder, isError } = this.state;
     const { setInterval } = this.props;
 
-    SelectedFolder.getFolderPath(selectedFolder[0]).then((folderPath) => {
+    saveToSessionStorage("selectedFolder", `${selectedFolder}`);
+
+    SelectedFolder.getFolderPath(selectedFolder).then((folderPath) => {
       saveToSessionStorage("selectedFolderPath", `${folderPath}`);
     });
 
@@ -93,7 +98,7 @@ class ThirdPartyModule extends React.Component {
     const storageParams = [
       {
         key: "folderId",
-        value: selectedFolder[0],
+        value: selectedFolder,
       },
     ];
     startBackup("1", storageParams);

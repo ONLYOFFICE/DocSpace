@@ -399,7 +399,7 @@ class DocumentsModule extends React.Component {
       storageParams = [
         {
           key: "folderId",
-          value: selectedFolder[0],
+          value: selectedFolder,
         },
       ];
 
@@ -417,7 +417,7 @@ class DocumentsModule extends React.Component {
           if (selectedSchedule) {
             folderId = selectedSchedule.storageParams.folderId;
 
-            defaultSelectedFolder = [folderId];
+            defaultSelectedFolder = folderId;
             const defaultStorageType = `${selectedSchedule.storageType}`;
             const defaultHour = `${selectedSchedule.cronParams.hour}:00`;
             const defaultPeriod = `${selectedSchedule.cronParams.period}`;
@@ -433,7 +433,7 @@ class DocumentsModule extends React.Component {
               defaultMaxCopies
             );
             //debugger;
-            this.onSelectFolder([`${folderId}`]);
+            this.onSelectFolder(`${folderId}`);
           }
         })
         .then(() => SelectedFolder.getFolderPath(folderId))

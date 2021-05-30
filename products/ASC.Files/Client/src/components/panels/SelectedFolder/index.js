@@ -99,7 +99,7 @@ class SelectedFolder extends React.PureComponent {
               () =>
                 folderPath.length === 0 &&
                 onSelectFolder &&
-                onSelectFolder([`${folderList[0].id}`])
+                onSelectFolder(`${folderList[0].id}`)
             )
             .finally(() => {
               onSetLoadingData && onSetLoadingData(false);
@@ -177,7 +177,7 @@ class SelectedFolder extends React.PureComponent {
               fullFolderPath: pathName,
             },
             function () {
-              onSelectFolder && onSelectFolder(folder);
+              onSelectFolder && onSelectFolder(folder[0]);
             }
           )
         )
