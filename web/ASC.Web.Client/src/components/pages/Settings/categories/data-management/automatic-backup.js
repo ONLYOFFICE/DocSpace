@@ -18,11 +18,15 @@ import toastr from "@appserver/components/toast/toastr";
 import SelectedFolder from "files/SelectedFolder";
 import ThirdPartyStorageModule from "./sub-components/thirdPartyStorageModule";
 import Loader from "@appserver/components/loader";
-
+import { AppServerConfig } from "@appserver/common/constants";
+import { combineUrl } from "@appserver/common/utils";
 import FloatingButton from "@appserver/common/components/FloatingButton";
+
 import { StyledModules, StyledComponent } from "./styled-backup";
 import ThirdPartyModule from "./sub-components-automatic-backup/thirdPartyModule";
 import DocumentsModule from "./sub-components-automatic-backup/documentsModule";
+
+const { proxyURL } = AppServerConfig;
 
 let defaultStorageType = "";
 
@@ -601,6 +605,13 @@ class AutomaticBackup extends React.PureComponent {
       isDisableOptions: isDisable,
     });
   };
+
+  onClickFloatingButton = () => {
+    const { history } = this.props;
+    history.push(
+      combineUrl(proxyURL, "/settings/datamanagement/backup/manual-backup")
+    );
+  };
   render() {
     const { t } = this.props;
     const {
@@ -873,9 +884,10 @@ class AutomaticBackup extends React.PureComponent {
         {downloadingProgress > 0 && downloadingProgress !== 100 && (
           <FloatingButton
             className="layout-progress-bar"
-            icon="upload"
+            icon="file"
             alert={false}
             percent={downloadingProgress}
+            onClick={this.onClickFloatingButton}
           />
         )}
       </StyledComponent>
