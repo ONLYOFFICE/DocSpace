@@ -55,16 +55,17 @@ class BackupCodesDialogComponent extends React.Component {
               {t("BackupCodesSecondDescription")}
             </Text>
 
-            <Trans
-              t={t}
-              i18nKey="CodesCounter"
-              ns="BackupCodesDialog"
-              count={backupCodesCount}
-            >
-              <Text className="text-dialog">
-                <strong>{{ count: backupCodesCount }} codes:</strong>
-              </Text>
-            </Trans>
+            <Text className="text-dialog" isBold={true}>
+              <Trans
+                t={t}
+                i18nKey="CodesCounter"
+                ns="BackupCodesDialog"
+                count={backupCodesCount}
+              >
+                {{ count: backupCodesCount }} codes:
+              </Trans>
+            </Text>
+
             <Text className="text-dialog" isBold={true}>
               {backupCodes.length > 0 &&
                 backupCodes.map((item) => {
