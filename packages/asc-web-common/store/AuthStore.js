@@ -157,7 +157,7 @@ class AuthStore {
       const response = await api.user.login(user, hash);
 
       if (!response || (!response.token && !response.tfa))
-        throw "Empty API response";
+        throw response.error.message;
 
       if (response.tfa && response.confirmUrl) {
         const url = response.confirmUrl.replace(window.location.origin, "");
