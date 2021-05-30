@@ -6,6 +6,7 @@ import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { startBackup } from "@appserver/common/api/portal";
 
 let selectedManualBackupFromSessionStorage = "";
+let selectedFolderPathFromSessionStorage = "";
 
 class DocumentsModule extends React.Component {
   constructor(props) {
@@ -15,10 +16,15 @@ class DocumentsModule extends React.Component {
       "selectedManualStorageType"
     );
 
+    selectedFolderPathFromSessionStorage = getFromSessionStorage(
+      "selectedFolderPath"
+    );
+
     this.state = {
       isLoadingData: false,
       selectedFolder: "",
       isPanelVisible: false,
+      folderPath: selectedFolderPathFromSessionStorage || "",
     };
     this._isMounted = false;
   }
@@ -61,6 +67,9 @@ class DocumentsModule extends React.Component {
     console.log("selectedFolder", selectedFolder);
     saveToSessionStorage("selectedManualStorageType", "documents");
     const { selectedFolder } = this.state;
+    SelectedFolder.getFolderPath(selectedFolder[0]).then((folderPath) => {
+      saveToSessionStorage("selectedFolderPath", `${folderPath}`);
+    });
     const { setInterval } = this.props;
     const storageParams = [
       {
@@ -73,7 +82,7 @@ class DocumentsModule extends React.Component {
   };
   render() {
     const { maxProgress, t, isCopyingLocal } = this.props;
-    const { isPanelVisible, isLoadingData } = this.state;
+    const { isPanelVisible, isLoadingData, folderPath } = this.state;
     return (
       <div className="category-item-wrapper">
         <SelectedFolder
@@ -82,6 +91,7 @@ class DocumentsModule extends React.Component {
           onClose={this.onClose}
           onClickInput={this.onClickInput}
           onSetLoadingData={this.onSetLoadingData}
+          folderPath={folderPath}
           isPanelVisible={isPanelVisible}
           isSavingProcess={isCopyingLocal}
           isCommonFolders

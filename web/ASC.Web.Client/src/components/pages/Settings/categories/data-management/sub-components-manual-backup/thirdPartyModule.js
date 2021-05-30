@@ -10,18 +10,22 @@ import Link from "@appserver/components/link";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 
 let selectedManualBackupFromSessionStorage = "";
-
+let selectedFolderPathFromSessionStorage = "";
 class ThirdPartyModule extends React.Component {
   constructor(props) {
     super(props);
     selectedManualBackupFromSessionStorage = getFromSessionStorage(
       "selectedManualStorageType"
     );
+    selectedFolderPathFromSessionStorage = getFromSessionStorage(
+      "selectedFolderPath"
+    );
     this.state = {
       isLoadingData: false,
       selectedFolder: "",
       isPanelVisible: false,
       isError: false,
+      folderPath: selectedFolderPathFromSessionStorage || "",
     };
     this._isMounted = false;
   }
@@ -75,6 +79,10 @@ class ThirdPartyModule extends React.Component {
     const { selectedFolder, isError } = this.state;
     const { setInterval } = this.props;
 
+    SelectedFolder.getFolderPath(selectedFolder[0]).then((folderPath) => {
+      saveToSessionStorage("selectedFolderPath", `${folderPath}`);
+    });
+
     if (this.isInvalidForm()) return;
 
     isError &&
@@ -98,7 +106,7 @@ class ThirdPartyModule extends React.Component {
       helpUrlCreatingBackup,
       isCopyingLocal,
     } = this.props;
-    const { isPanelVisible, isLoadingData, isError } = this.state;
+    const { isPanelVisible, isLoadingData, isError, folderPath } = this.state;
     return (
       <div className="category-item-wrapper">
         <Box marginProp="16px 0 16px 0">
@@ -121,6 +129,7 @@ class ThirdPartyModule extends React.Component {
           isSavingProcess={isCopyingLocal}
           isPanelVisible={isPanelVisible}
           isError={isError}
+          folderPath={folderPath}
           withoutTopLevelFolder
           isThirdPartyFolders
         />
