@@ -37,6 +37,7 @@ using System.Text.Json;
 using System.Web;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
@@ -116,6 +117,8 @@ namespace ASC.Web.Files.Services.WCFService
         private FileOperationsManager FileOperationsManager { get; }
         private TenantManager TenantManager { get; }
         private FileTrackerHelper FileTracker { get; }
+        private ICacheNotify<ThumbnailRequest> ThumbnailNotify { get; }
+        private EntryStatusManager EntryStatusManager { get; }
         private ILog Logger { get; set; }
 
         public FileStorageService(
@@ -158,7 +161,9 @@ namespace ASC.Web.Files.Services.WCFService
             SettingsManager settingsManager,
             FileOperationsManager fileOperationsManager,
             TenantManager tenantManager,
-            FileTrackerHelper fileTracker)
+            FileTrackerHelper fileTracker,
+            ICacheNotify<ThumbnailRequest> thumbnailNotify,
+            EntryStatusManager entryStatusManager)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -200,6 +205,8 @@ namespace ASC.Web.Files.Services.WCFService
             FileOperationsManager = fileOperationsManager;
             TenantManager = tenantManager;
             FileTracker = fileTracker;
+            ThumbnailNotify = thumbnailNotify;
+            EntryStatusManager = entryStatusManager;
         }
 
         public Folder<T> GetFolder(T folderId)
@@ -382,7 +389,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
             }
 
-            EntryManager.SetFileStatus(entries);
+            EntryStatusManager.SetFileStatus(entries);
 
             return new ItemList<FileEntry>(entries);
         }
@@ -467,7 +474,7 @@ namespace ASC.Web.Files.Services.WCFService
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
             ErrorIf(!FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-            EntryManager.SetFileStatus(file);
+            EntryStatusManager.SetFileStatus(file);
 
             if (file.RootFolderType == FolderType.USER
                 && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
@@ -993,7 +1000,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
             }
 
-            EntryManager.SetFileStatus(file);
+            EntryStatusManager.SetFileStatus(file);
 
             if (file.RootFolderType == FolderType.USER
                 && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
@@ -2161,7 +2168,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                     FileMarker.MarkAsNew(newFile);
 
-                    EntryManager.SetFileStatus(newFile);
+                    EntryStatusManager.SetFileStatus(newFile);
 
                     FilesMessageService.Send(newFile, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFile.Title, userInfo.DisplayUserName(false, DisplayUserSettingsHelper) });
                 }
@@ -2264,10 +2271,18 @@ namespace ASC.Web.Files.Services.WCFService
         {
             try
             {
-                using (var thumbnailBuilderServiceClient = new ThumbnailBuilderServiceClient())
+                var req = new ThumbnailRequest()
                 {
-                    thumbnailBuilderServiceClient.BuildThumbnails(TenantManager.GetCurrentTenant().TenantId, fileIds);
+                    Tenant = TenantManager.GetCurrentTenant().TenantId,
+                    BaseUrl = BaseCommonLinkUtility.GetFullAbsolutePath("")
+                };
+
+                foreach(var f in fileIds.Where(r=> r.ValueKind == JsonValueKind.Number))
+                {
+                    req.Files.Add(f.GetInt32());
                 }
+
+                ThumbnailNotify.Publish(req, CacheNotifyAction.Insert);
             }
             catch (Exception e)
             {

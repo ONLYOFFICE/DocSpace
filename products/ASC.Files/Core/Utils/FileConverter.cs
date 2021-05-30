@@ -375,7 +375,7 @@ namespace ASC.Web.Files.Utils
             return string.Format("fileConvertation-{0}", f.ID);
         }
 
-        private string FileJsonSerializer(EntryManager EntryManager, File<T> file, string folderTitle)
+        private string FileJsonSerializer(EntryStatusManager EntryManager, File<T> file, string folderTitle)
         {
             if (file == null) return string.Empty;
 
@@ -423,7 +423,7 @@ namespace ASC.Web.Files.Utils
         private FileUtility FileUtility { get; }
         private DocumentServiceHelper DocumentServiceHelper { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
-        private EntryManager EntryManager { get; }
+        private EntryStatusManager EntryManager { get; }
         private FileConverter FileConverter { get; }
 
         public FileConverterQueueScope(IOptionsMonitor<ILog> options,
@@ -437,7 +437,7 @@ namespace ASC.Web.Files.Utils
             FileUtility fileUtility,
             DocumentServiceHelper documentServiceHelper,
             DocumentServiceConnector documentServiceConnector,
-            EntryManager entryManager,
+            EntryStatusManager entryManager,
             FileConverter fileConverter)
         {
             Options = options;
@@ -467,7 +467,7 @@ namespace ASC.Web.Files.Utils
             out FileUtility fileUtility,
             out DocumentServiceHelper documentServiceHelper,
             out DocumentServiceConnector documentServiceConnector,
-            out EntryManager entryManager,
+            out EntryStatusManager entryManager,
             out FileConverter fileConverter)
         {
             optionsMonitor = Options;

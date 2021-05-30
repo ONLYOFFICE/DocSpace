@@ -13,6 +13,7 @@
     <None Remove="proto\OneDriveCacheItem.proto" />
     <None Remove="proto\ProviderAccountCacheItem.proto" />
     <None Remove="proto\SharePointProviderCacheItem.proto" />
+    <None Remove="proto\ThumbnailRequest.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,6 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="proto\ThumbnailRequest.proto" />
     <Protobuf Include="proto\BoxCacheItem.proto" />
     <Protobuf Include="proto\DropboxCacheItem.proto" />
     <Protobuf Include="proto\GoogleDriveCacheItem.proto" />

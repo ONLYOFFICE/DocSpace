@@ -182,7 +182,7 @@ namespace ASC.Web.Files.Core.Search
         }
     }
 
-    class FileTenant
+    public class FileTenant
     {
         public DbTenant DbTenant { get; set; }
         public DbFile DbFile { get; set; }

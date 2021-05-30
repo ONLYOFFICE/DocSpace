@@ -38,7 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common
 {
-    [Singletone]
+    [Scope]
     public class CommonLinkUtilitySettings
     {
         public string ServerUri { get; set; }

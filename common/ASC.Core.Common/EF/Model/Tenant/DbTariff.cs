@@ -49,7 +49,7 @@ namespace ASC.Core.Common.EF
                     .ValueGeneratedOnAddOrUpdate();
 
                 entity.Property(e => e.Quantity)
-                    .HasColumnName("stamp")
+                    .HasColumnName("quantity")
                     .HasColumnType("int");
 
                 entity.Property(e => e.Stamp)

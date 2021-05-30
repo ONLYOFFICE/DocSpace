@@ -61,7 +61,7 @@ namespace ASC.Web.Files.Services.DocumentService
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private LockerManager LockerManager { get; }
         private FileTrackerHelper FileTracker { get; }
-        private EntryManager EntryManager { get; }
+        private EntryStatusManager EntryStatusManager { get; }
         private IServiceProvider ServiceProvider { get; }
 
         public DocumentServiceHelper(
@@ -77,7 +77,7 @@ namespace ASC.Web.Files.Services.DocumentService
             DocumentServiceConnector documentServiceConnector,
             LockerManager lockerManager,
             FileTrackerHelper fileTracker,
-            EntryManager entryManager,
+            EntryStatusManager entryStatusManager,
             IServiceProvider serviceProvider)
         {
             DaoFactory = daoFactory;
@@ -92,7 +92,7 @@ namespace ASC.Web.Files.Services.DocumentService
             DocumentServiceConnector = documentServiceConnector;
             LockerManager = lockerManager;
             FileTracker = fileTracker;
-            EntryManager = entryManager;
+            EntryStatusManager = entryStatusManager;
             ServiceProvider = serviceProvider;
         }
 
@@ -280,7 +280,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (file.FolderID != null)
             {
-                EntryManager.SetFileStatus(file);
+                EntryStatusManager.SetFileStatus(file);
             }
 
             configuration = new Configuration<T>(file, ServiceProvider)

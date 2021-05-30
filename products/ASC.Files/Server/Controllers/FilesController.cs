@@ -2210,6 +2210,7 @@ namespace ASC.Api.Documents
         }
 
         [Create("thumbnails")]
+        [Consumes("application/x-www-form-urlencoded")]
         public IEnumerable<JsonElement> CreateThumbnailsFromForm([FromForm] BaseBatchModel<JsonElement> model)
         {
             return FileStorageService.CreateThumbnails(model.FileIds);
