@@ -21,6 +21,7 @@ class SettingsSetupStore {
       owner: {},
       filter: Filter.getDefault(),
       selectorIsOpen: false,
+      isLoading: false,
     },
   };
 
@@ -38,6 +39,10 @@ class SettingsSetupStore {
     this.selectionStore = new SelectionStore(this);
     makeAutoObservable(this);
   }
+
+  setIsLoading = (isLoading) => {
+    this.security.accessRight.isLoading = isLoading;
+  };
 
   setOptions = (options) => {
     this.security.accessRight.options = options;
