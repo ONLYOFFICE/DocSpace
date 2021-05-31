@@ -25,7 +25,7 @@
 
 
 using System;
-using System.Runtime.Serialization;
+
 
 using ASC.Api.Core;
 using ASC.Common.Mapping;
@@ -40,7 +40,6 @@ namespace ASC.CRM.ApiModels
     /// <summary>
     ///  Task
     /// </summary>
-    [DataContract(Name = "task", Namespace = "")]
     public class TaskDto : IMapFrom<Task>
     {
         public int Id { get; set; }
@@ -77,7 +76,6 @@ namespace ASC.CRM.ApiModels
         }
     }
 
-    [DataContract(Name = "taskBase", Namespace = "")]
     public class TaskBaseDto
     {
         public int Id { get; set; }

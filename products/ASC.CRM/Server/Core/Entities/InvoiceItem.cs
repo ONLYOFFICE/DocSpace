@@ -25,16 +25,13 @@
 
 
 using System;
-using System.Runtime.Serialization;
 
 using ASC.Common.Mapping;
 using ASC.Common.Security;
 using ASC.CRM.Core.EF;
-using ASC.CRM.Mapping;
 
 namespace ASC.CRM.Core.Entities
 {
-    [DataContract]
     public class InvoiceItem : DomainObject, ISecurityObjectId, IMapFrom<DbInvoiceItem>
     {
         public string Title { get; set; }

@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -42,10 +42,6 @@ using AutoMapper;
 
 namespace ASC.CRM.ApiModels
 {
-    /// <summary>
-    ///   Person
-    /// </summary>
-    [DataContract(Name = "person", Namespace = "")]
     public class PersonDto : ContactDto
     {
         public String FirstName { get; set; }
@@ -95,10 +91,6 @@ namespace ASC.CRM.ApiModels
         }
     }
 
-    /// <summary>
-    ///  Company
-    /// </summary>
-    [DataContract(Name = "company", Namespace = "")]
     public class CompanyDto : ContactDto
     {
         public String CompanyName { get; set; }
@@ -118,7 +110,6 @@ namespace ASC.CRM.ApiModels
         }
     }
 
-    [DataContract(Name = "contact", Namespace = "")]
     public class ContactDto : ContactBaseDto, IMapFrom<ASC.CRM.Core.Entities.Contact>
     {
         public ContactDto()
@@ -176,13 +167,11 @@ namespace ASC.CRM.ApiModels
         }
     }
 
-    [DataContract(Name = "contactBase", Namespace = "")]
     public class ContactBaseWithEmailDto : ContactBaseDto
     {
         public ContactInfoDto Email { get; set; }
     }
 
-    [DataContract(Name = "contactBase", Namespace = "")]
     public class ContactBaseWithPhoneDto : ContactBaseDto
     {
         public ContactInfoDto Phone { get; set; }
@@ -225,7 +214,6 @@ namespace ASC.CRM.ApiModels
     /// <summary>
     ///  Contact base information
     /// </summary>
-    [DataContract(Name = "contactBase", Namespace = "")]
     public class ContactBaseDto
     {
         public ContactBaseDto()
@@ -258,7 +246,6 @@ namespace ASC.CRM.ApiModels
         }
     }
 
-    [DataContract(Name = "contact_task", Namespace = "")]
     public class ContactWithTaskDto
     {
         public TaskBaseDto Task { get; set; }

@@ -24,20 +24,14 @@
 */
 
 
-using System.Runtime.Serialization;
+
 
 namespace ASC.CRM.Core.Enums
 {
-    [DataContract(Name = "contactShare", Namespace = "")]
     public enum ShareType
     {
-        [EnumMember(Value = "0")]
         None,
-
-        [EnumMember(Value = "1")]
         ReadWrite,
-
-        [EnumMember(Value = "2")]
         Read
     }
 }

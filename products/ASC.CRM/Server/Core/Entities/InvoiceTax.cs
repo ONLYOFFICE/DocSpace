@@ -25,12 +25,10 @@
 
 
 using System;
-using System.Runtime.Serialization;
 
 using ASC.Common.Mapping;
 using ASC.Common.Security;
 using ASC.CRM.Core.EF;
-using ASC.CRM.Mapping;
 
 using AutoMapper;
 

@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+
 
 using ASC.Api.Core;
 using ASC.Api.Documents;
@@ -42,7 +42,6 @@ using AutoMapper;
 
 namespace ASC.CRM.ApiModels
 {
-    [DataContract(Name = "entity", Namespace = "")]
     public class EntityDto
     {
         public String EntityType { get; set; }
@@ -106,7 +105,6 @@ namespace ASC.CRM.ApiModels
         }
     }
 
-    [DataContract(Name = "historyEvent", Namespace = "")]
     public class RelationshipEventDto : IMapFrom<RelationshipEvent>
     {
         public RelationshipEventDto()

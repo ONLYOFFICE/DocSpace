@@ -25,7 +25,7 @@
 
 
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+
 
 using ASC.Api.Core;
 using ASC.VoipService;
@@ -33,7 +33,6 @@ using ASC.Web.Api.Models;
 
 namespace ASC.CRM.ApiModels
 {
-    [DataContract(Name = "voipCall", Namespace = "")]
     public class VoipCallDto
     {
         public string Id { get; set; }

@@ -31,7 +31,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-using System.Runtime.Serialization;
+
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -651,8 +651,6 @@ namespace ASC.Web.CRM.Classes
         }
     }
 
-    [Serializable]
-    [DataContract]
     public class MailTemplateTag
     {
         [JsonPropertyName("sysname")]

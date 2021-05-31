@@ -25,20 +25,15 @@
 
 
 using System;
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 using ASC.Common.Mapping;
 using ASC.Common.Security;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
-using ASC.CRM.Mapping;
-
-using AutoMapper;
 
 namespace ASC.CRM.Core.Entities
 {
-    [DataContract]
     public class Deal : DomainObject, ISecurityObjectId, IMapFrom<DbDeal>
     {
         public Guid CreateBy { get; set; }

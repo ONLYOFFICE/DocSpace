@@ -24,7 +24,7 @@
 */
 
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+
 
 using ASC.Api.Core;
 using ASC.Common.Mapping;
@@ -40,7 +40,6 @@ namespace ASC.CRM.ApiModels
     /// <summary>
     ///  Invoice
     /// </summary>
-    [DataContract(Name = "invoiceBase", Namespace = "")]
     public class InvoiceBaseDto : IMapFrom<Invoice>
     {
         public int Id { get; set; }
@@ -74,7 +73,6 @@ namespace ASC.CRM.ApiModels
     /// <summary>
     ///  Invoice
     /// </summary>
-    [DataContract(Name = "invoice", Namespace = "")]
     public class InvoiceDto : InvoiceBaseDto
     {
         public List<InvoiceLineDto> InvoiceLines { get; set; }

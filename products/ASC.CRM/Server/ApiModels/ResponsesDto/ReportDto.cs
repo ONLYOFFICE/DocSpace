@@ -26,11 +26,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+
 
 namespace ASC.CRM.ApiModels
 {
-    [DataContract]
     public class ReportDto
     {
         public String ReportTitle { get; set; }

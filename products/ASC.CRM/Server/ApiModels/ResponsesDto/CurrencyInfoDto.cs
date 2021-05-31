@@ -26,6 +26,7 @@
 
 using System;
 
+
 using ASC.Common.Mapping;
 using ASC.CRM.Core;
 using ASC.CRM.Mapping;
@@ -37,7 +38,6 @@ namespace ASC.CRM.ApiModels
     /// <summary>
     ///  Currency information
     /// </summary>
-    [DataContract(Name = "currencyInfo", Namespace = "")]
     public class CurrencyInfoDto : IMapFrom<CurrencyInfo>
     {
         public CurrencyInfoDto()
@@ -73,7 +73,6 @@ namespace ASC.CRM.ApiModels
     /// <summary>
     ///  Currency rate information
     /// </summary>
-    [DataContract(Name = "currencyRateInfo", Namespace = "")]
     public class CurrencyRateInfoDto : CurrencyInfoDto, IMapFrom<CurrencyInfo>
     {
         public CurrencyRateInfoDto()

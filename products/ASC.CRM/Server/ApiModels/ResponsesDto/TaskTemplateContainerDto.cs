@@ -26,13 +26,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+
 
 using ASC.Web.Api.Models;
 
 namespace ASC.CRM.ApiModels
 {
-    [DataContract(Namespace = "taskTemplateContainer")]
     public class TaskTemplateContainerDto
     {
         public TaskTemplateContainerDto()
@@ -58,7 +57,6 @@ namespace ASC.CRM.ApiModels
         }
     }
 
-    [DataContract(Namespace = "taskTemplate")]
     public class TaskTemplateDto
     {
         public TaskTemplateDto()

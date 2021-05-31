@@ -25,7 +25,7 @@
 
 
 using System;
-using System.Runtime.Serialization;
+
 using System.Text.Json;
 
 using ASC.Common.Mapping;
@@ -40,7 +40,6 @@ namespace ASC.CRM.ApiModels
     /// <summary>
     ///   Address
     /// </summary>
-    [DataContract(Name = "address", Namespace = "")]
     public class Address
     {
         public Address()
@@ -114,7 +113,6 @@ namespace ASC.CRM.ApiModels
     /// <summary>
     ///   Contact information
     /// </summary>
-    [DataContract(Name = "commonDataItem", Namespace = "")]
     public class ContactInfoDto : IMapFrom<ContactInfo>
     {
         public ContactInfoDto()

@@ -23,7 +23,7 @@
  *
 */
 
-using System.Runtime.Serialization;
+
 
 using ASC.Common.Mapping;
 using ASC.CRM.Classes;
@@ -37,7 +37,6 @@ namespace ASC.CRM.ApiModels
     /// <summary>
     ///  Invoice Status
     /// </summary>
-    [DataContract(Name = "invoiceStatus", Namespace = "")]
     public class InvoiceStatusDto : IMapFrom<InvoiceStatus>
     {
         public int Id { get; set; }

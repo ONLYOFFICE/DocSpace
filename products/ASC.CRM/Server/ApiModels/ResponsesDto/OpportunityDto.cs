@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+
 
 using ASC.Api.Core;
 using ASC.Common.Mapping;
@@ -42,7 +42,6 @@ namespace ASC.CRM.ApiModels
     /// <summary>
     ///  Opportunity
     /// </summary>
-    [DataContract(Name = "opportunity", Namespace = "")]
     public class OpportunityDto : IMapFrom<Deal>
     {
 

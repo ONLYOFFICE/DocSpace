@@ -25,7 +25,7 @@
 
 
 using System;
-using System.Runtime.Serialization;
+
 
 using ASC.Common.Mapping;
 using ASC.CRM.Core.Entities;
@@ -38,8 +38,6 @@ namespace ASC.CRM.ApiModels
 {
 
     #region History Category
-
-    [DataContract(Name = "historyCategoryBase", Namespace = "")]
     public class HistoryCategoryBaseDto : ListItemDto
     {
         public HistoryCategoryBaseDto()
@@ -67,7 +65,6 @@ namespace ASC.CRM.ApiModels
         }
     }
 
-    [DataContract(Name = "historyCategory", Namespace = "")]
     public class HistoryCategoryDto : HistoryCategoryBaseDto
     {
         public HistoryCategoryDto()
@@ -100,7 +97,6 @@ namespace ASC.CRM.ApiModels
 
     #region Deal Milestone
 
-    [DataContract(Name = "opportunityStagesBase", Namespace = "")]
     public class DealMilestoneBaseDto : ListItemDto
     {
         public DealMilestoneBaseDto()
@@ -132,7 +128,6 @@ namespace ASC.CRM.ApiModels
         }
     }
 
-    [DataContract(Name = "opportunityStages", Namespace = "")]
     public class DealMilestoneDto : DealMilestoneBaseDto, IMapFrom<DealMilestone>
     {
         public DealMilestoneDto()
@@ -169,7 +164,6 @@ namespace ASC.CRM.ApiModels
 
     #region Task Category
 
-    [DataContract(Name = "taskCategoryBase", Namespace = "")]
     public class TaskCategoryBaseDto : ListItemDto
     {
         public TaskCategoryBaseDto()
@@ -198,7 +192,6 @@ namespace ASC.CRM.ApiModels
 
     }
 
-    [DataContract(Name = "taskCategory", Namespace = "")]
     public class TaskCategoryDto : TaskCategoryBaseDto
     {
         public TaskCategoryDto()
@@ -237,7 +230,6 @@ namespace ASC.CRM.ApiModels
 
     #region Contact Status
 
-    [DataContract(Name = "contactStatusBase", Namespace = "")]
     public class ContactStatusBaseDto : ListItemDto
     {
         public ContactStatusBaseDto()
@@ -260,7 +252,6 @@ namespace ASC.CRM.ApiModels
         }
     }
 
-    [DataContract(Name = "contactStatus", Namespace = "")]
     public class ContactStatusDto : ContactStatusBaseDto
     {
         public ContactStatusDto()
@@ -291,7 +282,6 @@ namespace ASC.CRM.ApiModels
 
     #region Contact Type
 
-    [DataContract(Name = "contactTypeBase", Namespace = "")]
     public class ContactTypeBaseDto : ListItemDto
     {
         public ContactTypeBaseDto()
@@ -316,7 +306,6 @@ namespace ASC.CRM.ApiModels
         }
     }
 
-    [DataContract(Name = "contactType", Namespace = "")]
     public class ContactTypeDto : ContactTypeBaseDto
     {
         public ContactTypeDto()
@@ -348,7 +337,6 @@ namespace ASC.CRM.ApiModels
 
     #region Tags
 
-    [DataContract(Name = "tagDto", Namespace = "")]
     public class TagDto
     {
         public TagDto()
@@ -377,7 +365,6 @@ namespace ASC.CRM.ApiModels
 
     #endregion
 
-    [DataContract(Name = "listItem", Namespace = "")]
     public class ListItemDto : IMapFrom<ListItem>
     {
         public ListItemDto()

@@ -24,13 +24,11 @@
 */
 
 
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 using ASC.Common.Mapping;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
-using ASC.CRM.Mapping;
 
 namespace ASC.CRM.Core.Entities
 {

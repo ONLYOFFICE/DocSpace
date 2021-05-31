@@ -25,7 +25,7 @@
 
 
 using System;
-using System.Runtime.Serialization;
+
 
 using ASC.Api.Core;
 using ASC.Common.Mapping;
@@ -37,7 +37,6 @@ using AutoMapper;
 
 namespace ASC.CRM.ApiModels
 {
-    [DataContract(Name = "customField", Namespace = "")]
     public class CustomFieldDto : CustomFieldBaseDto, IMapFrom<CustomField>
     {
         public CustomFieldDto()
@@ -71,7 +70,6 @@ namespace ASC.CRM.ApiModels
     /// <summary>
     ///  User custom fields
     /// </summary>
-    [DataContract(Name = "customField", Namespace = "")]
     public class CustomFieldBaseDto : IMapFrom<CustomField>
     {
         public CustomFieldBaseDto()
