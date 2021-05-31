@@ -338,7 +338,7 @@ class ManualBackup extends React.Component {
             isChecked={isCheckedTemporaryStorage}
             isDisabled={isLoadingData}
             value="value"
-            className="automatic-backup_radio-button"
+            className="backup_radio-button"
           />
           <Text className="category-item-description">
             {t("TemporaryStorageDescription")}
@@ -390,7 +390,7 @@ class ManualBackup extends React.Component {
             isChecked={isCheckedDocuments}
             isDisabled={isLoadingData}
             value="value"
-            className="automatic-backup_radio-button"
+            className="backup_radio-button"
           />
 
           <Text className="category-item-description">
@@ -426,7 +426,7 @@ class ManualBackup extends React.Component {
               isLoadingData
             }
             value="value"
-            className="automatic-backup_radio-button"
+            className="backup_radio-button"
           />
           <Text className="category-item-description">
             {t("ThirdPartyResourceDescription")}
@@ -456,7 +456,7 @@ class ManualBackup extends React.Component {
             isChecked={isCheckedThirdPartyStorage}
             isDisabled={isLoadingData}
             value="value"
-            className="automatic-backup_radio-button"
+            className="backup_radio-button"
           />
           <Text className="category-item-description">
             {t("ThirdPartyStorageDescription")}

@@ -9,45 +9,11 @@ import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import styled from "styled-components";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import { getBackupProgress } from "@appserver/common/api/portal";
-import { Redirect } from "react-router-dom";
+import { StyledBackup } from "./styled-backup";
 
 const { proxyURL } = AppServerConfig;
 
 import toastr from "@appserver/components/toast/toastr";
-
-const StyledComponent = styled.div`
-  .category-item-wrapper {
-    margin-bottom: 40px;
-
-    .category-item-heading {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-
-    .category-item-subheader {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-
-    .category-item-description {
-      color: #555f65;
-      font-size: 12px;
-      max-width: 1024px;
-    }
-
-    .inherit-title-link {
-      margin-right: 7px;
-      font-size: 19px;
-      font-weight: 600;
-    }
-
-    .link-text {
-      margin: 0;
-    }
-  }
-`;
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
@@ -142,7 +108,7 @@ class Backup extends React.Component {
     const { t } = this.props;
     const { downloadingProgress } = this.state;
     return (
-      <StyledComponent>
+      <StyledBackup>
         <div className="category-item-wrapper">
           <div className="category-item-heading">
             <Link
@@ -205,7 +171,7 @@ class Backup extends React.Component {
             onClick={this.onClickFloatingButton}
           />
         )}
-      </StyledComponent>
+      </StyledBackup>
     );
   }
 }

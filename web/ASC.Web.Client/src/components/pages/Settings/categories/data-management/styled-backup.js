@@ -3,6 +3,7 @@ import commonSettingsStyles from "../../utils/commonSettingsStyles";
 
 const StyledComponent = styled.div`
   ${commonSettingsStyles}
+
   .manual-backup_buttons {
     margin-top: 16px;
   }
@@ -32,7 +33,7 @@ const StyledComponent = styled.div`
     font-size: 19px;
     font-weight: 600;
   }
-  .automatic-backup_radio-button {
+  .backup_radio-button {
     margin-bottom: 8px;
   }
   .backup_combobox {
@@ -64,4 +65,13 @@ const StyledScheduleComponent = styled.div`
     }
   }
 `;
-export { StyledModules, StyledComponent, StyledScheduleComponent };
+
+const StyledBackup = styled.div`
+  ${commonSettingsStyles}
+`;
+export {
+  StyledModules,
+  StyledComponent,
+  StyledScheduleComponent,
+  StyledBackup,
+};

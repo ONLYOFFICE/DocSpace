@@ -691,7 +691,7 @@ class AutomaticBackup extends React.PureComponent {
                 isChecked={isCheckedDocuments}
                 isDisabled={isLoadingData}
                 value="value"
-                className="automatic-backup_radio-button"
+                className="backup_radio-button"
               />
               <Text className="category-item-description">
                 {t("DocumentsModuleDescription")}
@@ -753,7 +753,7 @@ class AutomaticBackup extends React.PureComponent {
                     this.commonThirdPartyList.length === 0)
                 }
                 value="value"
-                className="automatic-backup_radio-button"
+                className="backup_radio-button"
               />
               <Text className="category-item-description">
                 {t("ThirdPartyResourceDescription")}
@@ -808,7 +808,7 @@ class AutomaticBackup extends React.PureComponent {
                 isChecked={isCheckedThirdPartyStorage}
                 isDisabled={isLoadingData}
                 value="value"
-                className="automatic-backup_radio-button"
+                className="backup_radio-button"
               />
               <Text className="category-item-description">
                 {t("ThirdPartyStorageDescription")}

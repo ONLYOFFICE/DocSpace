@@ -242,7 +242,6 @@ class SelectedFolder extends React.PureComponent {
                       data={folderList}
                       filter={filter}
                       onSelect={this.onSelect}
-                      needUpdate={false}
                       withoutProvider={isCommonWithoutProvider}
                       certainFolders={certainFolders}
                     />
