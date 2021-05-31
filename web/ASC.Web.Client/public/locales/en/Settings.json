@@ -1,4 +1,4 @@
-﻿{
+{
   "AccessRights": "Access rights",
   "AccessRightsAccessToProduct": "Access to {{product}} module is given to",
   "AccessRightsAllUsers": "All {{users}}",
@@ -28,7 +28,7 @@
   "LogoFavicon": "Favicon",
   "LogoLightSmall": "Logo for the portal header",
   "LogoSettings": "Portal Logo Settings",
-  "LogoUploadRecommendation": "We recommended that you use images in \u003C1\u003EPNG\u003C/1\u003E format with transparent background",
+  "LogoUploadRecommendation": "We recommended that you use images in <1>PNG</1> format with transparent background",
   "ManagementCategoryCommon": "Common",
   "ManagementCategoryIntegration": "Integration",
   "ManagementCategorySecurity": "Security",
@@ -53,8 +53,8 @@
   "TeamTemplateSettingsDescription": "Team Template is a customizable way to name the organization (or group), its members and their activities. Drop down the Template list to choose one of the available presets or enter the names yourselves selecting the custom option from the list.",
   "Template": "Template",
   "ThirdPartyAuthorization": "Third-party Authorization",
-  "ThirdPartyBodyDescription": "Detailed instructions in our \u003C2\u003EHelp Center\u003C/2\u003E.",
-  "ThirdPartyBottomDescription": "Need help? Contact our \u003C2\u003ESupport Team.\u003C/2\u003E",
+  "ThirdPartyBodyDescription": "Detailed instructions in our <2>Help Center</2>.",
+  "ThirdPartyBottomDescription": "Need help? Contact our <2>Support Team.</2>",
   "ThirdPartyHowItWorks": "How It Works?",
   "ThirdPartyPropsActivated": "Updated successfully",
   "ThirdPartyPropsDeactivated": "Deactivated successfully",

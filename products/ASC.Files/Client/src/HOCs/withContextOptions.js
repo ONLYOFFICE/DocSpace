@@ -370,7 +370,7 @@ export default function withContextOptions(WrappedComponent) {
           case "change-thirdparty-info":
             return {
               key: option,
-              label: t("ThirdPartyInfo"),
+              label: t("Translations:ThirdPartyInfo"),
               icon: "/static/images/access.edit.react.svg",
               onClick: this.onChangeThirdPartyInfo,
               disabled: false,

@@ -1,4 +1,4 @@
-﻿{
+{
   "ActivationLink": "Activation link",
   "AddContact": "Add contact",
   "AddPhoto": "Add photo",
@@ -12,7 +12,7 @@
   "CustomCreation": "{{user}} (creation)",
   "EditPhoto": "Edit Photo",
   "EditUserDialogTitle": "Edit profile",
-  "EmailPopupHelper": "The main email is used for notifications and restoring access. \u003C1\u003E You can create a new email on this domain for the user and set a one-time password for the first login.\u003C/1\u003E",
+  "EmailPopupHelper": "The main email is used for notifications and restoring access. <1> You can create a new email on this domain for the user and set a one-time password for the first login.</1>",
   "FirstName": "First Name",
   "Message": "Talk",
   "Phone": "Phone",

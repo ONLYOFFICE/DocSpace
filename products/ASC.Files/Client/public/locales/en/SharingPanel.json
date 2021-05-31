@@ -1,4 +1,4 @@
-﻿{
+{
   "AddGroupsForSharingButton": "Add groups",
   "AddShareMessage": "Add message",
   "Comment": "Comment",
@@ -7,7 +7,7 @@
   "CustomFilter": "Custom filter",
   "DenyAccess": "Deny access",
   "Embedding": "Embedding",
-  "EncryptedFileSharing": "File \u003Cstrong\u003E{{title}}\u003C/strong\u003E successfully shared",
+  "EncryptedFileSharing": "File <strong>{{title}}</strong> successfully shared",
   "ExternalLink": "External link",
   "FormFilling": "Form filling",
   "InternalLink": "Internal link",

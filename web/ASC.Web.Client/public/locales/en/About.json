@@ -1,9 +1,9 @@
-﻿{
+{
   "AboutCompanyAddressTitle": "address",
   "AboutCompanyEmailTitle": "email",
   "AboutCompanyLicensor": "Copyright",
   "AboutCompanyTelTitle": "tel.",
-  "AllRightsReservedCustomMode": "\u003C0\u003EAscensio System SIA.\u003C/0\u003E \u003C1\u003EAll rights reserved.\u003C/1\u003E",
-  "LicensedUnder": "This software is licensed under: \u003C1\u003E{{license}}\u003C/1\u003E",
+  "AllRightsReservedCustomMode": "<0>Ascensio System SIA.</0> <1>All rights reserved.</1>",
+  "LicensedUnder": "This software is licensed under: <1>{{license}}</1>",
   "SourceCode": "Source code is available on"
 }

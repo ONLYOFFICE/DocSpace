@@ -19,5 +19,6 @@
   "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}",
   "DeleteOperation": "Deleting",
   "Copy": "Copy",
-  "Restore": "Restore"
+  "Restore": "Restore",
+  "ThirdPartyInfo": "Change the third-party info"
 }

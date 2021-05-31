@@ -177,7 +177,7 @@ class ConnectClouds extends React.Component {
       {
         key: `${index}_change`,
         "data-provider_id": item.provider_id,
-        label: t("ThirdPartyInfo"),
+        label: t("Translations:ThirdPartyInfo"),
         onClick: this.onChangeThirdPartyInfo,
       },
       {

@@ -1,7 +1,7 @@
-﻿{
+{
   "ChangeUserTypeButton": "Change type",
   "ChangeUserTypeHeader": "Change user type",
-  "ChangeUserTypeMessage": "Users with the \u0027{{ firstType }}\u0027 type will be moved to \u0027{{ secondType }}\u0027 type.",
-  "ChangeUserTypeMessageWarning": "You can\u0027t change the type for the portal administrators and for yourself",
+  "ChangeUserTypeMessage": "Users with the '{{ firstType }}' type will be moved to '{{ secondType }}' type.",
+  "ChangeUserTypeMessageWarning": "You can't change the type for the portal administrators and for yourself",
   "SuccessChangeUserType": "The user type was successfully changed"
 }

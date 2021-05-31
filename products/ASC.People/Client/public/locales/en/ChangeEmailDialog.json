@@ -1,4 +1,4 @@
-﻿{
+{
   "DomainIpAddress": "Domains as IP address are not supported",
   "EmailActivationDescription": "The activation instructions will be sent to the entered email",
   "EmailChangeTitle": "Email change",
@@ -12,6 +12,6 @@
   "MaxLengthExceeded": "The maximum length of a user name or other local part is 64 characters.",
   "PunycodeDomain": "Punycode domains are not supported",
   "PunycodeLocalPart": "Punycode local part is not supported",
-  "SameEmail": "You can\u0027t use the same email",
-  "SpacesInLocalPart": "Local part can\u0027t contain spaces"
+  "SameEmail": "You can't use the same email",
+  "SpacesInLocalPart": "Local part can't contain spaces"
 }

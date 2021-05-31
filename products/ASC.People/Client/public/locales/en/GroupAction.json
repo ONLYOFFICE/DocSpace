@@ -1,9 +1,9 @@
-﻿{
+{
   "CustomNewDepartment": "{{groupCaption}} (creation)",
   "GroupAction": "Group action",
   "SelectAction": "Select",
   "Members": "Members",
   "Name": "Name",
   "SearchAddedMembers": "Search added members",
-  "SuccessSaveGroup": "{{groupCaption}} \u0027{{ groupName }}\u0027 has been saved successfully"
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' has been saved successfully"
 }

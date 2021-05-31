@@ -19,5 +19,6 @@
   "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}",
   "DeleteOperation": "Удаление",
   "Copy": "Копировать",
-  "Restore": "Восстановить"
+  "Restore": "Восстановить",
+  "ThirdPartyInfo": "Изменить настройки подключения"
 }

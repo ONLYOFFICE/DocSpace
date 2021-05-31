@@ -1,10 +1,10 @@
-﻿{
+{
   "ChangePasswordSuccess": "Password has been successfully changed",
   "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}",
   "ConfirmOwnerPortalTitle": "Please confirm that you want to change portal owner to {{newOwner}}",
   "DeleteProfileBtn": "Delete my account",
   "DeleteProfileConfirmation": "Attention! You are about to delete your account.",
-  "DeleteProfileConfirmationInfo": "By clicking \u0022Delete my account\u0022 you agree with our Privacy policy.",
+  "DeleteProfileConfirmationInfo": "By clicking \"Delete my account\" you agree with our Privacy policy.",
   "DeleteProfileSuccessMessage": "Your account has been successfully deleted.",
   "DeleteProfileSuccessMessageInfo": "See our Privacy policy to learn more about deleting your account and the data associated with it.",
   "EmailAndPasswordCopiedToClipboard": "Email and password copied to clipboard",
