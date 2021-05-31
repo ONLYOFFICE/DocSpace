@@ -119,7 +119,6 @@ namespace Frontend.Translations.Tests
             ModuleFolders = new List<ModuleFolder>();
 
             var list = TranslationFiles
-                //.Where(file => file.Language == "en")
                 .Select(t => new
                 {
                     ModulePath = moduleWorkspaces.FirstOrDefault(m => t.Path.Contains(m)),
@@ -249,22 +248,6 @@ namespace Frontend.Translations.Tests
                 .Select(g => new { ContentKey = g.Key, Count = g.Count(), Keys = g.ToList() })
                 .ToList();
 
-            /*== Save dublicates.json ==*/
-            /* var listForSave = duplicates
-               .SelectMany(g => g.Keys)
-               .GroupBy(item => item.Key)
-               .Select(grp => new
-               {
-                   Key = grp.Key,
-                   Value = grp.FirstOrDefault().Value
-               })
-               .OrderByDescending(t => t.Value);
-
-           string json = JsonSerializer.Serialize(listForSave);
-           json = json.Replace("\"Key\":", "").Replace(",\"Value\"", "").Replace("},{", ",");
-           json = json.Substring(1, json.Length - 2);
-           File.WriteAllText(@"D:\dublicates.json", json);*/
-
             Assert.AreEqual(0, duplicates.Count, string.Join(", ", duplicates.Select(d => JObject.FromObject(d).ToString())));
         }
 
@@ -352,7 +335,7 @@ namespace Frontend.Translations.Tests
 
             var properties = jsonTranslation.Properties().Select(t => t).ToList();
 
-            properties.AddRange(newKeys.Select(k => new JProperty(k, ""))); //.ForEach(p => p.Value = "");
+            properties.AddRange(newKeys.Select(k => new JProperty(k, "")));
 
             properties = properties.OrderBy(t => t.Name).ToList();
 
@@ -562,7 +545,7 @@ namespace Frontend.Translations.Tests
                 notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>(lng.Language, list));
             }
 
-            Assert.AreEqual(0, notFoundi18nKeys.Count(), message);
+            Assert.AreEqual(0, notFoundi18nKeys.Count, message);
         }
 
 
