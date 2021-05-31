@@ -46,13 +46,8 @@ const DeleteThirdPartyDialog = (props) => {
     deleteThirdParty(+removeItem.id)
       .then(() => {
         setThirdPartyProviders(newProviders);
-        if (currentFolderId) {
-          fetchFiles(currentFolderId).then((data) => {
-            const path = data.selectedFolder.pathParts;
-            const folders = data.selectedFolder.folders;
-            updateTree(path, folders);
-          });
-        } else {
+        if (currentFolderId) fetchFiles(currentFolderId);
+        else {
           const folderId = providerItem.corporate ? commonId : myId;
           getFolder(folderId).then((data) => {
             const path = [folderId];

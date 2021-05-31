@@ -131,5 +131,7 @@
   "DeleteSelectedElem": "Выбранные элементы успешно удалены",
   "DeleteFromTrash": "Выбранные элементы успешно удалены из корзины",
   "New": "Новое",
-  "Version": "Вер.{{version}}"
+  "Version": "Вер.{{version}}",
+  "RemoveFromList": "Убрать из списка",
+  "MarkRead": "Пометить прочтённым"
 }

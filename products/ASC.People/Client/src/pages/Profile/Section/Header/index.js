@@ -223,14 +223,17 @@ class SectionHeaderContent extends React.PureComponent {
     });
 
   onEditClick = () => {
-    const { history } = this.props;
-    history.push(
-      combineUrl(
-        AppServerConfig.proxyURL,
-        config.homepage,
-        `/edit/${this.state.profile.userName}`
-      )
-    );
+    const { history, isMy } = this.props;
+
+    const editUrl = isMy
+      ? combineUrl(AppServerConfig.proxyURL, `/my?action=edit`)
+      : combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          `/edit/${this.state.profile.userName}`
+        );
+
+    history.push(editUrl);
   };
 
   onUpdateUserStatus = (status, userId) => {
@@ -398,8 +401,12 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   onClickBack = () => {
-    const { filter, setFilter, history, resetProfile } = this.props;
+    const { filter, setFilter, history, resetProfile, isMy } = this.props;
     resetProfile();
+
+    if (isMy) {
+      return history.goBack();
+    }
 
     const url = filter.toUrlParams();
     const backUrl = combineUrl(

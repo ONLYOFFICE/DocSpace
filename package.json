@@ -1,7 +1,7 @@
 {
   "name": "appserver",
   "private": true,
-  "version": "0.1.9",
+  "version": "0.1.10",
   "workspaces": [
     "packages/asc-web-components",
     "packages/asc-web-common",

@@ -47,9 +47,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private TempStream TempStream { get; }
         private IServiceProvider ServiceProvider { get; }
 
-        public FileOperationsManager(TempStream tempStream, DistributedTaskCacheNotify distributedTaskCacheNotify, IServiceProvider serviceProvider)
+        public FileOperationsManager(TempStream tempStream, DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager, IServiceProvider serviceProvider)
         {
-            tasks = new DistributedTaskQueue(distributedTaskCacheNotify, "fileOperations", 10);
+            tasks = distributedTaskQueueOptionsManager.Get<FileOperation>();
             TempStream = tempStream;
             ServiceProvider = serviceProvider;
         }
@@ -181,6 +181,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             services.TryAdd<FileMoveCopyOperationScope>();
             services.TryAdd<FileOperationScope>();
             services.TryAdd<FileDownloadOperationScope>();
+            services.AddDistributedTaskQueueService<FileOperation>(10);
         }
     }
 }

@@ -31,7 +31,6 @@ using System.Linq;
 using System.ServiceModel;
 
 using ASC.Common;
-using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Data.Backup.Contracts;
@@ -45,45 +44,6 @@ using Newtonsoft.Json;
 
 namespace ASC.Data.Backup.Service
 {
-    [Singletone]
-    public class BackupServiceNotifier
-    {
-        private ICacheNotify<BackupProgress> СacheBackupProgress { get; }
-        private ICache Cache { get; }
-
-        public BackupServiceNotifier(ICacheNotify<BackupProgress> сacheBackupProgress, ICache cache)
-        {
-            Cache = cache;
-            СacheBackupProgress = сacheBackupProgress;
-
-            СacheBackupProgress.Subscribe((a) =>
-            {
-                Cache.Insert(GetCacheKey(a.TenantId, a.BackupProgressEnum), a, DateTime.UtcNow.AddDays(1));
-            },
-            CacheNotifyAction.InsertOrUpdate);
-        }
-
-        public BackupProgress GetBackupProgress(int tenantId)
-        {
-            return Cache.Get<BackupProgress>(GetCacheKey(tenantId, BackupProgressEnum.Backup));
-        }
-
-        public BackupProgress GetTransferProgress(int tenantID)
-        {
-            return Cache.Get<BackupProgress>(GetCacheKey(tenantID, BackupProgressEnum.Transfer));
-        }
-
-        public BackupProgress GetRestoreProgress(int tenantId)
-        {
-            return Cache.Get<BackupProgress>(GetCacheKey(tenantId, BackupProgressEnum.Restore));
-        }
-
-        private string GetCacheKey(int tenantId, BackupProgressEnum backupProgressEnum)
-        {
-            return $"{backupProgressEnum}backup{tenantId}";
-        }
-    }
-
     [Scope]
     public class BackupService : IBackupService
     {
@@ -91,7 +51,6 @@ namespace ASC.Data.Backup.Service
         private BackupStorageFactory BackupStorageFactory { get; set; }
         private BackupWorker BackupWorker { get; set; }
         private BackupRepository BackupRepository { get; }
-        private BackupServiceNotifier BackupServiceNotifier { get; }
         private ConfigurationExtension Configuration { get; }
 
         public BackupService(
@@ -99,14 +58,12 @@ namespace ASC.Data.Backup.Service
             BackupStorageFactory backupStorageFactory,
             BackupWorker backupWorker,
             BackupRepository backupRepository,
-            BackupServiceNotifier backupServiceNotifier,
             ConfigurationExtension configuration)
         {
             Log = options.CurrentValue;
             BackupStorageFactory = backupStorageFactory;
             BackupWorker = backupWorker;
             BackupRepository = backupRepository;
-            BackupServiceNotifier = backupServiceNotifier;
             Configuration = configuration;
         }
 
@@ -214,17 +171,17 @@ namespace ASC.Data.Backup.Service
 
         public BackupProgress GetBackupProgress(int tenantId)
         {
-            return BackupServiceNotifier.GetBackupProgress(tenantId);
+            return BackupWorker.GetBackupProgress(tenantId);
         }
 
         public BackupProgress GetTransferProgress(int tenantId)
         {
-            return BackupServiceNotifier.GetTransferProgress(tenantId);
+            return BackupWorker.GetTransferProgress(tenantId);
         }
 
         public BackupProgress GetRestoreProgress(int tenantId)
         {
-            return BackupServiceNotifier.GetRestoreProgress(tenantId);
+            return BackupWorker.GetRestoreProgress(tenantId);
         }
 
         public string GetTmpFolder()

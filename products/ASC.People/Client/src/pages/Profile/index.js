@@ -24,7 +24,9 @@ class Profile extends React.Component {
       t,
       setDocumentTitle,
     } = this.props;
-    const { userId } = match.params;
+    let { userId } = match.params;
+
+    if (!userId) userId = "@self";
 
     setDocumentTitle(t("Profile"));
     this.documentElement = document.getElementsByClassName("hidingHeader");
