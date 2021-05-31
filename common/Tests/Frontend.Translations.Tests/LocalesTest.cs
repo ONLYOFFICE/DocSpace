@@ -268,6 +268,31 @@ namespace Frontend.Translations.Tests
             Assert.AreEqual(0, duplicates.Count, string.Join(", ", duplicates.Select(d => JObject.FromObject(d).ToString())));
         }
 
+        private static void SaveNotFoundLanguage(string existJsonPath, string notExistJsonPath)
+        {
+            if (!File.Exists(existJsonPath) || File.Exists(notExistJsonPath))
+                return;
+
+            var jsonTranslation = JObject.Parse(File.ReadAllText(existJsonPath));
+
+            var properties = jsonTranslation.Properties().Select(t => t).ToList();
+
+            properties.ForEach(p => p.Value = "");
+
+            var result = new JObject(properties);
+
+            var sortedJsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
+
+            string currentDirectory = Path.GetDirectoryName(notExistJsonPath);
+
+            string fullPathOnly = Path.GetFullPath(currentDirectory);
+
+            if (!Directory.Exists(fullPathOnly))
+                Directory.CreateDirectory(fullPathOnly);
+
+            File.WriteAllText(notExistJsonPath, sortedJsonString);
+        }
+
         [Test]
         public void NotAllLanguageTranslatedTest()
         {
@@ -305,6 +330,13 @@ namespace Frontend.Translations.Tests
                         .Where(p => !lngFilePaths.Contains(p));
 
                     message += string.Join("\r\n", notFoundFilePaths);
+
+                    /* Save empty 'EN' keys to not found files */
+
+                    //foreach (var path in notFoundFilePaths)
+                    //{
+                    //    SaveNotFoundLanguage(path.Replace($"\\{lng.Lng}\\", "\\en\\"), path);
+                    //}
                 }
             }
 
